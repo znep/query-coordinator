@@ -27,7 +27,7 @@
         isEnabled,
         onEnableSuccess,
         ...props
-        } = this.props;
+      } = this.props;
 
       return (
         <EnabledWidget
@@ -38,7 +38,14 @@
       );
     },
     render: function() {
-      const { action, authenticityToken, name, renderActions, onEdit } = this.props;
+      const {
+        action,
+        authenticityToken,
+        name,
+        renderActions,
+        onEdit
+      } = this.props;
+
       return (
         <tr className="item">
           <td className="name">{name}</td>

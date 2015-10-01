@@ -66,6 +66,7 @@
 
 <%- content_for :modals do -%>
   <%= render :partial => 'modals/select_georegion', :locals => { :title => t("#{prefix}.choose_a_dataset") } %>
+  <div class="modalDialog" id="react-modal"></div>
 <%- end -%>
 
 <% content_for :js_footer do %>

@@ -127,13 +127,135 @@ describe AdministrationController do
     end
 
     describe 'PUT /admin/geo/:id' do
+      let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
+
       before(:each) do
         stub_admin_user
+        allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
+        allow_any_instance_of(ApplicationHelper).to receive(:translate) { |_, key| "Translation for: #{key}" }
+        allow_any_instance_of(ApplicationHelper).to receive(:t) { |_, key| "Translation for: #{key}" }
       end
 
-      it 'redirects to /admin/geo' do
+      it 'redirects to /admin/geo for html requests' do
         put :edit_georegion, :id => 1
         expect(response).to redirect_to('/admin/geo')
+      end
+
+      it 'returns a response for json requests' do
+        put :edit_georegion, :id => 1, :format => :json
+        expect(response).to be_success
+        expect(response).to have_http_status(200)
+      end
+
+      it 'edits the region' do
+        expect_any_instance_of(::Services::Administration::GeoregionEditor).
+          to receive(:edit).
+              and_return(curated_region_double)
+        put :edit_georegion, :id => 1
+      end
+
+      describe 'with core server error' do
+        before(:each) do
+          allow_any_instance_of(::Services::Administration::GeoregionEditor).
+            to receive(:edit).
+                and_raise(CoreServer::CoreServerError.new(1, 2, 3))
+        end
+
+        describe 'html request' do
+          before(:each) do
+            put :edit_georegion, :id => 1
+          end
+
+          it 'sets the appropriate flash error' do
+            expect(flash[:error]).to eq('Translation for: screens.admin.georegions.configure_boundary.save_error')
+          end
+
+          it 'redirects to /admin/geo' do
+            expect(response).to redirect_to('/admin/geo')
+          end
+        end
+
+        describe 'json request' do
+          before(:each) do
+            put :edit_georegion, :id => 1, :format => :json
+          end
+
+          it 'set the appropriate error' do
+            expect(JSON.parse(response.body)).to include(
+                'error' => true,
+                'message' => 'Translation for: screens.admin.georegions.configure_boundary.save_error'
+              )
+          end
+        end
+      end
+
+      describe 'with missing name' do
+        before(:each) do
+          allow_any_instance_of(::Services::Administration::GeoregionEditor).
+            to receive(:edit).
+                and_raise(::Services::Administration::MissingBoundaryNameError)
+        end
+
+        describe 'html request' do
+          before(:each) do
+            put :edit_georegion, :id => 1
+          end
+          it 'sets the appropriate error for failed html requests' do
+            expect(flash[:error]).to eq('Translation for: screens.admin.georegions.configure_boundary.boundary_name_required_page_error')
+          end
+
+          it 're-renders the /admin/geo/:id/configure page for html requests' do
+            expect(response).to redirect_to('/admin/geo/1/configure')
+          end
+        end
+
+        describe 'json request' do
+          before(:each) do
+            put :edit_georegion, :id => 1, :format => :json
+
+          end
+
+          it 'set the appropriate error' do
+            expect(JSON.parse(response.body)).to include(
+                'error' => true,
+                'message' => 'Translation for: screens.admin.georegions.configure_boundary.boundary_name_required_page_error'
+              )
+          end
+        end
+      end
+    end
+
+    describe 'GET /admin/geo/:id/configure' do
+      let(:curated_region_double) do
+        double(
+          CuratedRegion,
+          :id => 1,
+          :name => 'My Region',
+          :geometry_label_columns => [],
+          :geometryLabel => 'label column'
+        )
+      end
+
+      before(:each) do
+        stub_admin_user
+        allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
+        allow_any_instance_of(ApplicationHelper).to receive(:translate) { |_, key| "Translation for: #{key}" }
+        allow_any_instance_of(ApplicationHelper).to receive(:t) { |_, key| "Translation for: #{key}" }
+      end
+
+      it 'renders' do
+        get :configure_boundary, :id => 1
+        expect(response).to be_success
+      end
+
+      it 'loads template data into @view_model' do
+        get :configure_boundary, :id => 1
+        view_model = assigns(:view_model)
+        expect(view_model.boundary).to eq(curated_region_double)
+        expect(view_model.site_title).to eq('My Site')
+        expect(view_model.is_name_missing).to eq(false)
+        expect(view_model.shape_label_options).to eq([])
+        expect(view_model.selected_shape_label).to eq('label column')
       end
     end
 

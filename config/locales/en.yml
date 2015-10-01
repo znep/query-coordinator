@@ -908,6 +908,7 @@ en:
       years_past: "%{time} years ago"
     dialogs:
       apply: Apply
+      back: Back
       cancel: Cancel
       close: Close
       continue: Continue
@@ -1452,6 +1453,20 @@ en:
         actions: Actions
         add_new: Add new
         choose_a_dataset: Choose a new geospatial Dataset
+        configure_boundary:
+          page_title: Manage Boundaries
+          configure_boundary: Configure Boundary
+          boundary_name: Boundary Name
+          boundary_name_description: "The name of the boundary (ex: \"States\" or \"Neighborhoods\"). Will be displayed in Spatial Lens maps"
+          boundary_name_required_page_error: "Unable to save: the boundary must have a name."
+          boundary_name_required_field_error: The boundary must have a name.
+          boundary_geometry_label_page_error: "Unable to save: the boundary must have a shape label."
+          boundary_geometry_label_field_error: The boundary must have a shape label.
+          shape_label: Shape Label
+          shape_label_description: "The column that should be used as the label for each shape (ex: a column containing \"WA\" and \"NY\")"
+          choose_a_column: Choose a column...
+          save_success: Changes saved successfully
+          save_error: Something went wrong while trying to save your changes. Please try again later, or contact Socrata Support if the problem persists.
         custom_georegions: Custom Georegions
         default_georegions: Socrata Default Georegions
         delete: Delete

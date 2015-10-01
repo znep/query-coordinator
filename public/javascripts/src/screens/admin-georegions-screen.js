@@ -5,13 +5,16 @@ var t = function(str, props) {
 (function() {
   const PropTypes = React.PropTypes;
   const {
-    FlashMessage
+    FlashMessage,
   } = blist.namespace.fetch('blist.components');
   let georegionsComponentsNS = blist.namespace.fetch('blist.georegions.components');
   let georegionsNS = blist.namespace.fetch('blist.georegions');
-  const { GeoregionAdminTable } = georegionsComponentsNS;
+  const {
+    ConfigureBoundaryForm,
+    GeoregionAdminTable
+  } = georegionsComponentsNS;
   georegionsNS.flash = georegionsNS.flash || {};
-  
+
   function onEnableSuccess(id, newState, response) {
     if (response.success) {
       setFlashMessage(response.message, 'notice');
@@ -24,6 +27,11 @@ var t = function(str, props) {
 
   function setFlashMessage(message, type) {
     georegionsNS.flash = [{ message, type }];
+    renderPage();
+  }
+
+  function clearFlashMessage() {
+    georegionsNS.flash = [];
     renderPage();
   }
 
@@ -50,6 +58,7 @@ var t = function(str, props) {
 
     React.render(
       <GeoregionAdminTable
+        onEdit={showConfigureModal}
         onEnableSuccess={onEnableSuccess}
         rows={customBoundaries}
         {...baseTableProps} />,
@@ -93,6 +102,32 @@ var t = function(str, props) {
     renderTables(georegions, allowEnablement);
     renderPageSubtitle(enabledBoundaries.length, georegionsNS.maximumEnabledCount);
     renderFlashMessage(georegionsNS.flash);
+  }
+
+  function showConfigureModal(id) {
+    let $reactModal = $('#react-modal');
+    clearFlashMessage();
+    const handleSave = (response) => {
+      updateGeoregion(id, response.message);
+      setFlashMessage(t('configure_boundary.save_success'), 'notice');
+    };
+
+    React.render(
+      <ConfigureBoundaryForm
+        id={id}
+        onClose={hideConfigureModal}
+        onSave={handleSave}
+        title={t('configure_boundary.configure_boundary')}
+        />,
+      $reactModal.get(0)
+    );
+    $reactModal.jqmShow();
+  }
+
+  function hideConfigureModal() {
+    let $reactModal = $('#react-modal');
+    React.unmountComponentAtNode($reactModal.get(0));
+    $reactModal.jqmHide();
   }
 
   georegionsNS.renderPage = renderPage;

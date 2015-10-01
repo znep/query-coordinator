@@ -18,4 +18,20 @@ chai.use(function(_chai) {
     );
   });
 
+  Assertion.addMethod('textContent', function(textContent) {
+    var obj = this._obj;
+
+    // first, our instanceof check, shortcut
+    new Assertion(obj).to.be.instanceof(Node);
+
+    // second, our type check
+    this.assert(
+      obj.textContent.trim() === textContent,
+      'expected #{this} to have textContent #{exp} but was #{act}',
+      'expected #{this} to not have textContent #{act}',
+      textContent        /* expected*/,
+      obj.textContent    // actual
+    );
+  });
+
 });

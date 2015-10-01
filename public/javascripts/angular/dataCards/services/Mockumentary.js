@@ -11,7 +11,7 @@
         expanded: false,
         activeFilters: [
           {
-            function: 'BinaryOperator',
+            'function': 'BinaryOperator',
             arguments: {
               operand: 0.12,
               operator: '='

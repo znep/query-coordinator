@@ -112,7 +112,7 @@
           var vif = {
             aggregation: {
               field: pageModel.getCurrentValue('primaryAmountField'),
-              function: pageModel.getCurrentValue('primaryAggregation')
+              'function': pageModel.getCurrentValue('primaryAggregation')
             },
             columnName: cardModel.fieldName,
             configuration: {},

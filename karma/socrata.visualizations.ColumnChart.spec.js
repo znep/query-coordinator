@@ -175,7 +175,8 @@ describe('socrata.visualizations.ColumnChart', function() {
           'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'UNFILTERED VALUE',
           'FLYOUT_FILTERED_AMOUNT_LABEL': 'FILTERED VALUE',
           'FLYOUT_SELECTED_NOTICE': 'THIS COLUMN IS CURRENTLY SELECTED'
-        }
+        },
+        interactive: true
       },
       unit: {
         one: 'case',

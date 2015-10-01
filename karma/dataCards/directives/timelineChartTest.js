@@ -150,6 +150,7 @@ describe('timelineChart', function() {
     scope.precision = precision || 'MONTH';
     scope.rowDisplayUnit = 'rowDisplayUnit';
     scope.activeFilters = [];
+    scope.allowFilterChange = true;
 
     return testHelpers.TestDom.compileAndAppend(html, scope);
 

@@ -27,6 +27,7 @@ describe('A Choropleth Directive', function() {
   function createChoropleth(expanded, attrs) {
     scope.baseLayerUrl = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
     scope.rowDisplayUnit = 'crimes';
+    scope.allowFilterChange = true;
 
     if (!scope.geojsonAggregateData) {
       scope.geojsonAggregateData = testData.polygonData2;

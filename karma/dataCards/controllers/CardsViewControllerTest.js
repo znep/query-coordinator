@@ -1319,26 +1319,28 @@ describe('CardsViewController', function() {
 
     it('loads single-card-layout if the page has a display type of data_lens_*', function() {
       ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
+
       var context = makeContext(null, {
         displayType: 'data_lens_chart',
         cards: [Mockumentary.createCardMetadata()]
       });
       var view = renderCardsView({layout: null, context: context});
+
       expect(view.element.find('.single-card').length).to.equal(1);
       expect(view.element.find('.multiple-cards').length).to.equal(0);
     });
 
     it('loads multi-card-layout if the page does not have a display type of data_lens_*', function() {
       ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
+
       var context = makeContext(null, {
         displayType: 'data_lens',
         cards: [Mockumentary.createCardMetadata()]
       });
       var view = renderCardsView({layout: null, context: context});
+
       expect(view.element.find('.single-card').length).to.equal(0);
       expect(view.element.find('.multiple-cards').length).to.equal(1);
     });
-
   });
-
 });

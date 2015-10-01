@@ -183,10 +183,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
               format(
                 _.escape(data.title),
                 data.unfilteredValueLabel,
-                _.escape(formatFlyoutValue(data.unfilteredValue, data.labelUnit)),
+                _.escape(data.unfilteredValue),
                 flyoutSpanClass,
                 data.filteredValueLabel,
-                _.escape(formatFlyoutValue(data.filteredValue, data.labelUnit)),
+                _.escape(data.filteredValue),
                 data.selectedNotice
               );
 
@@ -197,7 +197,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
               format(
                 _.escape(data.title),
                 data.unfilteredValueLabel,
-                _.escape(formatFlyoutValue(data.unfilteredValue, data.labelUnit))
+                _.escape(data.unfilteredValue)
               );
 
           }
@@ -207,17 +207,24 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       }
 
       columnChartConfig = {
-        columns: {
-          name: 0,
-          unfilteredValue: 1,
-          filteredValue: 2,
-          selected: 3
+        configuration: {
+          columns: {
+            name: 0,
+            unfilteredValue: 1,
+            filteredValue: 2,
+            selected: 3
+          },
+          interactive: scope.allowFilterChange,
+          localization: {
+            'NO_VALUE': '({0})'.format(I18n.common.noValue),
+            'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.flyout.total,
+            'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.flyout.filteredAmount,
+            'FLYOUT_SELECTED_NOTICE': scope.allowFilterChange ? I18n.flyout.clearFilterLong : ''
+          }
         },
-        localization: {
-          'NO_VALUE': '({0})'.format(I18n.common.noValue),
-          'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.flyout.total,
-          'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.flyout.filteredAmount,
-          'FLYOUT_SELECTED_NOTICE': I18n.flyout.clearFilterLong
+        unit: {
+          one: 'row',
+          other: 'rows'
         }
       };
       columnChart = new socrata.visualizations.ColumnChart(element, columnChartConfig);
@@ -275,7 +282,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
         var payload = event.originalEvent.detail;
 
-        lastFlyoutData = payload.data;
+        lastFlyoutData = payload;
       }
     }
   };

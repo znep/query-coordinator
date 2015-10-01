@@ -733,9 +733,13 @@ javascripts:
     - public/javascripts/bower/pbf.min.js
     - public/javascripts/bower/lodash.js
     - public/javascripts/bower/d3.js
+    - public/javascripts/bower/leaflet.js
     - public/javascripts/bower/socrata.utils.js
     - public/javascripts/bower/socrata.visualizations.Visualization.js
     - public/javascripts/bower/socrata.visualizations.ColumnChart.js
+    - public/javascripts/bower/socrata.visualizations.pbf.js
+    - public/javascripts/bower/socrata.visualizations.VectorTileManager.js
+    - public/javascripts/bower/socrata.visualizations.FeatureMap.js
 
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS

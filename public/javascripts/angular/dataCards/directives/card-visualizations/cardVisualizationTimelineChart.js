@@ -7,6 +7,8 @@
       restrict: 'E',
       scope: {
         'model': '=',
+        'interactive': '=',
+        'allowFilterChange': '=',
         'whereClause': '='
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTimelineChart.html',

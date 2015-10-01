@@ -17,6 +17,9 @@
     };
     var _config = _.merge(_defaultConfig, config);
 
+    /**
+     * Public methods
+     */
 
     /**
      * @param {String} property - The desired configuration property key.
@@ -45,17 +48,43 @@
       );
     };
 
-    function _logWarning(message) {
-      if (root.console && root.console.warn) {
-        root.console.warn(message);
-      }
-    }
+    /**
+     * Parse headers into a key => value mapping.
+     *
+     * @param {string} headers - Raw headers as a string.
+     *
+     * @return {Object} Parsed headers as key value object.
+     */
+    this.parseHeaders = function(headers) {
 
-    function _logError(message) {
-      if (root.console && root.console.error) {
-        root.console.error(message);
+      var parsed = {};
+      var key;
+      var val;
+      var colonIndex;
+
+      if (!headers) {
+        return parsed;
       }
-    }
+
+      headers.
+        split('\n').
+        forEach(function(line) {
+          colonIndex = line.indexOf(':');
+          key = line.substr(0, colonIndex).trim().toLowerCase();
+          val = line.substr(colonIndex + 1).trim();
+
+          if (key) {
+            parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+          }
+        }
+      );
+
+      return parsed;
+    };
+
+    /**
+     * Private methods
+     */
   }
 
   root.socrata.visualizations.DataProvider = DataProvider;

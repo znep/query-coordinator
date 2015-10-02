@@ -71,8 +71,9 @@ en:
       image_upload:
         name: 'Image Upload'
         description: 'Upload an image from your computer up to 5MB.'
-        heading: 'Upload an image'
-        input_label: 'Select an image (supported image types .jpg, .gif, or a .png)'
+        input_label: 'Images can be JPG, PNG, or GIF format and up to 5MB file size.'
+        input_subtext: 'Select an image from your computer...'
+        input_button_text: 'Choose File'
         uploading_message: 'Uploading...'
         errors:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'

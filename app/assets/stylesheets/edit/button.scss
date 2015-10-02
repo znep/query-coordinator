@@ -60,6 +60,16 @@
         border-right-color: lighten($btn-default-bg-color, 15);
       }
     }
+
+    &.btn-inverse {
+      background-color: white;
+      color: $btn-default-bg-color;
+
+      &:hover {
+        background-color: #dbdbdb;
+        color: #6e6e6e;
+      }
+    }
   }
 
   &.btn-primary {
@@ -89,6 +99,11 @@
         border-color: $btn-primary-color;
         border-right-color: lighten($btn-primary-bg-color, 15)
       }
+    }
+
+    &.btn-inverse {
+      background-color: white;
+      color: $btn-primary-bg-color;
     }
   }
 

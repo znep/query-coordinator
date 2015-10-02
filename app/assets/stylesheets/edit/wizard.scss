@@ -8,10 +8,29 @@
   padding: 1rem;
   background-color: $asset-selector-input-group-bg-color;
 
+  &.asset-selector-input-group-fixed-height {
+    height: 32rem;
+    padding: 1.5rem;
+  }
+
+  .asset-selector-input-subtext {
+    color: #4a4a4a;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
   .asset-selector-input-label {
     margin: 1rem 0;
-    font-size: 1.75em;
+    text-align: center;
+    color: #4a4a4a;
+    font-size: 1.5rem;
     font-weight: normal;
+  }
+
+  .btn-primary {
+    margin: 0 auto;
+    display: block;
+    margin-top: 12rem;
   }
 
   .asset-selector-preview-image-container,
@@ -25,6 +44,12 @@
     );
 
     position: relative;
+
+    .btn-busy {
+      position: absolute;
+      top: 45%;
+      left: 45%;
+    }
 
     .asset-selector-uploading-message {
       font-size: 1.6rem;

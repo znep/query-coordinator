@@ -345,25 +345,25 @@
 
       var closeButton = _renderModalCloseButton();
 
-      var youtubeHeader = $('<h3>')
-        .text(I18n.t('editor.asset_selector.youtube.name'));
-      var youtubeDescription = $('<p>')
-        .text(I18n.t('editor.asset_selector.youtube.description'));
+      var youtubeHeader = $('<h3>').
+        text(I18n.t('editor.asset_selector.youtube.name'));
+      var youtubeDescription = $('<p>').
+        text(I18n.t('editor.asset_selector.youtube.description'));
 
-      var visualizationHeader = $('<h3>')
-        .text(I18n.t('editor.asset_selector.visualization.name'));
-      var visualizationDescription = $('<p>')
-        .text(I18n.t('editor.asset_selector.visualization.description'));
+      var visualizationHeader = $('<h3>').
+        text(I18n.t('editor.asset_selector.visualization.name'));
+      var visualizationDescription = $('<p>').
+        text(I18n.t('editor.asset_selector.visualization.description'));
 
-      var imageUploadHeader = $('<h3>')
-        .text(I18n.t('editor.asset_selector.image_upload.name'));
-      var imageUploadDescription = $('<p>')
-        .text(I18n.t('editor.asset_selector.image_upload.description'));
+      var imageUploadHeader = $('<h3>').
+        text(I18n.t('editor.asset_selector.image_upload.name'));
+      var imageUploadDescription = $('<p>').
+        text(I18n.t('editor.asset_selector.image_upload.description'));
 
-      var embedCodeHeader = $('<h3>')
-        .text(I18n.t('editor.asset_selector.embed_code.name'));
-      var embedCodeDescription = $('<p>')
-        .text(I18n.t('editor.asset_selector.embed_code.description'));
+      var embedCodeHeader = $('<h3>').
+        text(I18n.t('editor.asset_selector.embed_code.name'));
+      var embedCodeDescription = $('<p>').
+        text(I18n.t('editor.asset_selector.embed_code.description'));
 
       var providers = $('<ul>', {'class': 'button-list'}).append([
         $('<li>', {
@@ -388,24 +388,41 @@
     function _renderChooseImageUploadTemplate() {
 
       var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.image_upload.heading')
+        I18n.t('editor.asset_selector.image_upload.name')
       );
 
       var closeButton = _renderModalCloseButton();
+
+      var inputSubtext = $(
+        '<h3>',
+        { 'class': 'asset-selector-input-subtext' }
+      ).text(I18n.t('editor.asset_selector.image_upload.input_subtext'));
 
       var inputLabel = $(
         '<h2>',
         { 'class': 'asset-selector-input-label input-label' }
       ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
 
+      var inputButton = $(
+        '<button>',
+        {
+          'class': 'btn btn-primary'
+        }
+      ).text(I18n.t('editor.asset_selector.image_upload.input_button_text'));
+
       var inputControl = $(
         '<input>',
         {
-          'class': 'asset-selector-text-input',
+          'class': 'asset-selector-text-input hidden',
           'data-asset-selector-validate-field': 'imageUpload',
           'type': 'file'
         }
       );
+
+      inputButton.click(function(event) {
+        event.preventDefault();
+        inputControl.click();
+      });
 
       var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
@@ -420,8 +437,10 @@
 
       var content = $(
         '<div>',
-        { 'class': 'asset-selector-input-group' }
+        { 'class': 'asset-selector-input-group asset-selector-input-group-fixed-height' }
       ).append([
+        inputSubtext,
+        inputButton,
         inputLabel,
         inputControl
       ]);
@@ -439,25 +458,30 @@
 
     function _renderFileUploadProgressTemplate() {
       var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.image_upload.heading')
+        I18n.t('editor.asset_selector.image_upload.name')
       );
 
       var closeButton = _renderModalCloseButton();
 
       var progress = $(
         '<div>',
-        { 'class': 'asset-selector-image-upload-progress bg-loading-spinner' }
+        { 'class': 'asset-selector-image-upload-progress' }
       );
 
+      var progressSpinner = $(
+        '<button>',
+        { 'class': 'btn btn-transparent btn-busy', 'disabled': true }
+      ).append($('<span>'));
+
       var uploadProgressMessage = $(
-        '<div>',
-        { 'class': 'asset-selector-uploading-message' }
+        '<h3>',
+        { 'class': 'asset-selector-input-subtext' }
       ).text(I18n.t('editor.asset_selector.image_upload.uploading_message'));
 
       var uploadCancelButton = $(
         '<button>',
         {
-          'class': 'btn asset-selector-cancel-upload',
+          'class': 'btn btn-default btn-inverse asset-selector-cancel-upload',
           'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
       ).text(I18n.t('editor.asset_selector.cancel_button_text'));
@@ -465,13 +489,14 @@
       var tryAgainButton = $(
         '<button>',
         {
-          'class': 'hidden btn asset-selector-try-again',
+          'class': 'hidden btn btn-default btn-inverse asset-selector-try-again',
           'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
       ).text(I18n.t('editor.asset_selector.try_again_button_text'));
 
       progress.append([
         uploadProgressMessage,
+        progressSpinner,
         uploadCancelButton,
         tryAgainButton
       ]);
@@ -508,6 +533,7 @@
 
     function _renderImageUploadErrorData(componentProperties) {
       var progressContainer = _dialog.find('.asset-selector-image-upload-progress');
+      var progressSpinner = progressContainer.find('.btn-busy');
       var progressMessage = progressContainer.find('.asset-selector-uploading-message');
       var cancelButton = progressContainer.find('.asset-selector-cancel-upload');
       var tryAgainButton = progressContainer.find('.asset-selector-try-again');
@@ -515,8 +541,8 @@
       var messageTranslationKey;
 
       if (componentProperties.step) {
-        progressContainer.removeClass('bg-loading-spinner');
         cancelButton.remove();
+        progressSpinner.addClass('hidden');
         tryAgainButton.removeClass('hidden');
 
         if (/^validation.*/.test(errorStep)) {
@@ -532,7 +558,7 @@
     function _renderImagePreviewTemplate() {
 
       var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.image_upload.heading')
+        I18n.t('editor.asset_selector.image_upload.name')
       );
 
       var closeButton = _renderModalCloseButton();
@@ -1090,18 +1116,12 @@
       return $(
         '<button>',
         {
-          'class': 'btn back-btn',
+          'class': 'btn btn-default btn-inverse back-btn',
           'data-action': backAction
         }
-      ).append([
-        $(
-          '<span>',
-          {
-            'class': 'icon-arrow-left2'
-          }
-        ),
+      ).text(
         I18n.t('editor.asset_selector.back_button_text')
-      ]);
+      );
     }
 
     function _showSelector() {

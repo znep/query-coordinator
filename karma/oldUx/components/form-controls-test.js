@@ -8,7 +8,6 @@ describe('FormControls', function() {
 
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();
-    this.onSuccessStub = sinon.stub();
     sinon.stub($, 't', function(key) {
       return 'Translation for: ' + key;
     });

@@ -1464,9 +1464,13 @@ en:
           boundary_geometry_label_field_error: The boundary must have a shape label.
           shape_label: Shape Label
           shape_label_description: "The column that should be used as the label for each shape (ex: a column containing \"WA\" and \"NY\")."
+          primary_key_column: Stable Identifier
+          primary_key_column_description: "A unique identifier column that remains stable across updates to the boundary shapes. Do not use the shapefile feature ID"
+          primary_key_column_missing_field_error: "The boundary must have a stable identifier."
           choose_a_column: Choose a column...
           save_success: Changes saved successfully.
           save_error: Something went wrong while trying to save your changes. Please try again later, or contact Socrata Support if the problem persists.
+          save_core_error: "Could not create the boundary: %{error_message}"
         custom_georegions: Custom Georegions
         default_georegions: Socrata Default Georegions
         delete: Delete

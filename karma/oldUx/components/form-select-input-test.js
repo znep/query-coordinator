@@ -13,6 +13,7 @@ describe('FormSelectInput', function() {
       return 'Translation for: ' + key;
     });
     this.props = {
+      description: 'my description',
       id: 'id',
       label: 'my input'
     };
@@ -40,10 +41,11 @@ describe('FormSelectInput', function() {
 
   it('shows validation errors', function() {
     var props = _.extend({
-      showValidationError: true,
+      required: true,
       validationError: 'error message'
     }, this.props);
     var node = TestUtils.renderIntoDocument(React.createElement(FormSelectInput, props));
+    TestUtils.Simulate.change(findByTag(node, 'select'));
     var label = findAllByTag(node, 'label')[1].getDOMNode();
     expect(label).to.exist.and.to.have.textContent('error message');
   });
@@ -58,10 +60,7 @@ describe('FormSelectInput', function() {
   });
 
   it('has a description', function() {
-    var props = _.extend({
-      description: 'my description'
-    }, this.props);
-    var node = TestUtils.renderIntoDocument(React.createElement(FormSelectInput, props));
+    var node = TestUtils.renderIntoDocument(React.createElement(FormSelectInput, this.props));
     var option = findByTag(node, 'p').getDOMNode();
     expect(option).to.exist.and.to.have.textContent('my description');
   });

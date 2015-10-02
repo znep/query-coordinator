@@ -46,10 +46,11 @@ describe('FormTextInput', function() {
 
   it('shows validation errors', function() {
     var props = _.extend({
-      showValidationError: true,
+      required: true,
       validationError: 'error message'
     }, this.props);
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, props));
+    TestUtils.Simulate.change(findByTag(node, 'input'));
     var label = findAllByTag(node, 'label')[1].getDOMNode();
     expect(label).to.exist.and.to.have.textContent('error message');
   });

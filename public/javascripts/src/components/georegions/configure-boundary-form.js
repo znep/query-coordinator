@@ -4,6 +4,7 @@
   let componentsNS = blist.namespace.fetch('blist.components');
   let georegionsComponentsNS = blist.namespace.fetch('blist.georegions.components');
   const {
+    FlashMessage,
     FormControls,
     FormSelectInput,
     FormTextInput
@@ -15,84 +16,68 @@
 
   georegionsComponentsNS.ConfigureBoundaryForm = React.createClass({
     propType: {
+      allowPrimaryKeySelection: PropTypes.bool,
       authenticityToken: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
-      onClose: PropTypes.func.isRequired,
+      fetchInitialState: PropTypes.func.isRequired,
+      onBack: PropTypes.func,
+      onClose: PropTypes.func,
       onSave: PropTypes.func.isRequired,
-      title: PropTypes.string.isRequired
+      title: PropTypes.string.isRequired,
+      initialState: PropTypes.object,
+      requiredFields: PropTypes.arrayOf(PropTypes.string)
+    },
+    getDefaultProps: function() {
+      return {
+        allowPrimaryKeySelection: false,
+        requiredFields: []
+      };
     },
     getInitialState: function() {
-      return {
+      return _.extend({
         geometryLabel: '',
         geometryLabelColumns: [],
         isLoading: true,
         name: ''
-      };
+      }, this.props.initialState);
     },
     componentDidMount: function() {
-      const { id } = this.props;
-
-      $.ajax({
-        url: `/admin/geo/${id}`,
-        type: 'get',
-        dataType: 'json',
-        complete: () => this.setState({ isLoading: false }),
-        success: (response) => {
-          const { error, message, success } = response;
-          if (success) {
-            this.setState({ ...message });
-          }
-          if (error) {
-            // Error!
-          }
-        }
-      });
+      if (!_.isEmpty(this.props.initialState)) {
+        return;
+      }
+      const complete = () => this.setState({ isLoading: false });
+      const success = (initialState) => this.setState({ ...initialState });
+      const error = (message) => this.setState({ errorMessage: message });
+      this.props.fetchInitialState(complete, success, error);
     },
 
     handleSave: function() {
       const {
-        authenticityToken,
-        id,
-        onClose,
         onSave
       } = this.props;
 
       const {
+        geometryLabel,
         name,
-        geometryLabel
+        primaryKey
       } = this.state;
 
-      const data = {
-        authenticityToken,
-        boundary: {
-          geometryLabel,
-          name
-        }
+      const boundary = {
+        geometryLabel,
+        name,
+        primaryKey
       };
 
-      this.setState({ isLoading: true });
-      const handleComplete = () => {
+      const complete = () => {
         if (this.isMounted()) {
           this.setState({ isLoading: false });
         }
       };
-      const handleSuccess = (response) => {
-        if (response.success) {
-          handleComplete();
-          onSave(response);
-          onClose();
-        }
-      };
+      const error = (message) => this.setState({ errorMessage: message });
 
-      $.ajax({
-        contentType: 'application/json',
-        url: `/admin/geo/${id}`,
-        type: 'put',
-        data: JSON.stringify(data),
-        dataType: 'json',
-        complete: handleComplete,
-        success: handleSuccess
-      });
+      this.setState({ isLoading: true });
+
+      onSave(boundary, complete, error);
     },
 
     handleSubmit: function(event) {
@@ -114,19 +99,46 @@
 
     validateForm: function() {
       const {
-        name,
-        geometryLabel
+        requiredFields
+      } = this.props;
+
+      return !_.any(requiredFields, (fieldName) => (_.isEmpty(this.state[fieldName])));
+    },
+
+    renderKeySelector: function() {
+      const { allowPrimaryKeySelection } = this.props;
+      const {
+        primaryKey,
+        primaryKeyColumns,
       } = this.state;
-      return !(_.isEmpty(name) || _.isEmpty(geometryLabel));
+
+      if(allowPrimaryKeySelection) {
+        return (
+          <FormSelectInput
+            description={ t('configure_boundary.primary_key_column_description') }
+            id="shape_label"
+            initialValue={primaryKey}
+            initialOption={"Choose a column..."}
+            label={ t('configure_boundary.primary_key_column') }
+            onChange={ (primaryKey) => { this.setState({ primaryKey }) } }
+            options={this.makeFormSelectInputOptions(primaryKeyColumns)}
+            required={true}
+            validationError={ t('configure_boundary.primary_key_column_missing_field_error') }
+            />
+        )
+      }
     },
 
     render: function() {
       const {
-        onClose,
+        cancelLabel,
+        onCancel,
+        saveLabel,
         title
       } = this.props;
 
       const {
+        errorMessage,
         geometryLabel,
         geometryLabelColumns,
         isLoading,
@@ -145,6 +157,8 @@
 
           <h2>{title}</h2>
 
+          <div>{_.isUndefined(errorMessage) ? null : <FlashMessage messages={[{ type: 'error', message: errorMessage }]} />}</div>
+
           <form
             className="commonForm"
             onSubmit={this.handleSubmit}
@@ -156,7 +170,6 @@
               label={ t('configure_boundary.boundary_name') }
               onChange={ (name) => this.setState({ name }) }
               required={true}
-              showValidationError={!isLoading && _.isEmpty(name)}
               validationError={ t('configure_boundary.boundary_name_required_field_error') }
               />
 
@@ -168,14 +181,18 @@
               label={ t('configure_boundary.shape_label') }
               onChange={ (geometryLabel) => { this.setState({ geometryLabel }) } }
               options={this.makeFormSelectInputOptions(geometryLabelColumns)}
-              showValidationError={!isLoading && _.isEmpty(geometryLabel)}
+              required={true}
               validationError={ t('configure_boundary.boundary_geometry_label_field_error') }
               />
 
+            {this.renderKeySelector()}
+
             <FormControls
-              saveDisabled={_.isEmpty(name) || _.isEmpty(geometryLabel)}
-              onCancel={onClose}
+              cancelLabel={cancelLabel}
+              saveDisabled={!this.validateForm()}
+              onCancel={onCancel}
               onSave={this.handleSave}
+              saveLabel={saveLabel}
               />
           </form>
         </div>

@@ -6,10 +6,12 @@
 
   componentsNS.FormControls = React.createClass({
     propTypes: {
+      cancelLabel: PropTypes.string,
       onCancel: PropTypes.func,
       onSave: PropTypes.func,
       onBack: PropTypes.func,
-      saveDisabled: PropTypes.bool
+      saveDisabled: PropTypes.bool,
+      saveLabel: PropTypes.string
     },
     getDefaultProps: function() {
       return {
@@ -33,14 +35,15 @@
     },
     render: function() {
       const {
+        cancelLabel,
+        saveLabel,
         saveDisabled
       } = this.props;
 
       return (
         <div className="line clearfix form-controls">
-          {this.renderButton('onCancel', $.t('core.dialogs.cancel'))}
-          {this.renderButton('onSave', $.t('core.dialogs.save'), saveDisabled)}
-          {this.renderButton('onBack', $.t('core.dialog.back'))}
+          {this.renderButton('onCancel', cancelLabel || $.t('core.dialogs.cancel'))}
+          {this.renderButton('onSave', saveLabel || $.t('core.dialogs.save'), saveDisabled)}
         </div>
       );
     }

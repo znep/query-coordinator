@@ -10,10 +10,8 @@
       id: PropTypes.string.isRequired,
       initialValue: PropTypes.string,
       label: PropTypes.string.isRequired,
-      onBlur: PropTypes.func,
       onChange: PropTypes.func,
       required: PropTypes.bool,
-      showValidationError: PropTypes.bool,
       validationError: PropTypes.string
     },
     getDefaultProps: function() {
@@ -23,12 +21,12 @@
         initialValue: '',
         onBlur: _.noop,
         onChange: _.noop,
-        required: false,
-        showValidationError: false
+        required: false
       };
     },
     getInitialState: function() {
       return {
+        dirty: false,
         value: this.props.initialValue
       };
     },
@@ -38,25 +36,29 @@
       }
     },
     handleChange: function() {
+      const { onChange } = this.props;
       const input = React.findDOMNode(this.refs.input);
       const value = input.value;
-      this.setState({value});
-      this.props.onChange(value);
+      this.setState({ dirty: true, value: value });
+      onChange(value);
     },
     render: function() {
       const {
         description,
         id,
         label,
-        onBlur,
         required,
-        showValidationError,
         validationError
       } = this.props;
 
-      const { value } = this.state;
+      const {
+        dirty,
+        value
+      } = this.state;
 
       const className = classNames({ required });
+
+      const showValidationError = required && dirty && _.isEmpty(value);
 
       return (
         <div className="line">
@@ -67,7 +69,7 @@
               className={className}
               defaultValue={this.props.value}
               id={id}
-              onBlur={onBlur}
+              onBlur={() => {this.setState({ dirty: true })}}
               onChange={this.handleChange}
               ref="input"
               type="text"

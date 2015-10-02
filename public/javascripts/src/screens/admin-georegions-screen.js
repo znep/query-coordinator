@@ -46,6 +46,11 @@ var t = function(str, props) {
     renderPage();
   }
 
+  function addGeoregion(newValue) {
+    georegionsNS.georegions.push(newValue);
+    renderPage();
+  }
+
   function renderTables(georegions, allowEnablement) {
     const authenticityToken = $('.georegions-controls-custom [name="authenticity_token"]').value();
     const baseUrlPath = '/admin/geo/';
@@ -107,16 +112,56 @@ var t = function(str, props) {
   function showConfigureModal(id) {
     let $reactModal = $('#react-modal');
     clearFlashMessage();
-    const handleSave = (response) => {
-      updateGeoregion(id, response.message);
-      setFlashMessage(t('configure_boundary.save_success'), 'notice');
+
+    const fetchInitialState = (completeCallback, successCallback) => {
+      $.ajax({
+        url: `/admin/geo/${id}`,
+        type: 'get',
+        dataType: 'json',
+        complete: completeCallback,
+        success: (response) => {
+          const { error, message, success } = response;
+          if (success) {
+            successCallback(message);
+          }
+          if (error) {
+            errorCallback(message);
+          }
+        }
+      });
+    };
+
+    const onSave = (boundary, completeCallback, successCallback, errorCallback) => {
+      const success = (response) => {
+        if (response.success) {
+          updateGeoregion(id, response.message);
+          setFlashMessage(t('configure_boundary.save_success'), 'notice');
+          closeConfigureModal();
+        }
+        if (response.error) {
+          errorCallback(t('configure_boundary.save_error'));
+        }
+      };
+
+      $.ajax({
+        contentType: 'application/json',
+        url: `/admin/geo/${id}`,
+        type: 'put',
+        data: JSON.stringify({ boundary }),
+        dataType: 'json',
+        complete: completeCallback,
+        success: success,
+        error: () => errorCallback(t('configure_boundary.save_error'))
+      });
     };
 
     React.render(
       <ConfigureBoundaryForm
+        fetchInitialState={fetchInitialState}
         id={id}
-        onClose={closeConfigureModal}
-        onSave={handleSave}
+        onCancel={closeConfigureModal}
+        onSave={onSave}
+        requiredFields={['name', 'geometryLabel']}
         title={t('configure_boundary.configure_boundary')}
         />,
       $reactModal.get(0)
@@ -130,16 +175,83 @@ var t = function(str, props) {
     $reactModal.jqmHide();
   }
 
+  function showInitialConfigureModal(uid) {
+    let $reactModal = $('#react-modal');
+    georegionsNS.clearFlashMessage();
+
+    const fetchInitialState = (completeCallback, successCallback, errorCallback) => {
+      $.ajax({
+        url: `/admin/geo/candidate/${uid}`,
+        type: 'get',
+        dataType: 'json',
+        complete: completeCallback,
+        success: (response) => {
+          const { error, message, success } = response;
+          if (success) {
+            successCallback(message);
+          }
+          if (error) {
+            errorCallback(message);
+          }
+        },
+        error: () => errorCallback(t('configure_boundary.save_error'))
+      });
+    };
+
+    const onSave = (boundary, completeCallback, errorCallback) => {
+      const success = (response) => {
+        if (response.success) {
+          addGeoregion(response.message);
+          setFlashMessage(t('configure_boundary.save_success'), 'notice');
+          closeConfigureModal();
+        }
+        if (response.error) {
+          errorCallback(t('configure_boundary.save_core_error', {error_message: response.message}));
+        }
+      };
+
+      $.ajax({
+        contentType: 'application/json',
+        url: `/admin/geo`,
+        type: 'post',
+        data: JSON.stringify(_.extend({ id: uid }, boundary)),
+        dataType: 'json',
+        complete: completeCallback,
+        success: success,
+        error: () => errorCallback(t('configure_boundary.save_error'))
+      });
+    };
+
+    const onBack = () => {
+      closeConfigureModal();
+      $('#selectDataset').jqmShow();
+    };
+
+    React.render(
+      <ConfigureBoundaryForm
+        allowPrimaryKeySelection={true}
+        cancelLabel={$.t('core.dialogs.back')}
+        fetchInitialState={fetchInitialState}
+        id={uid}
+        onCancel={onBack}
+        onSave={onSave}
+        requiredFields={['name', 'geometryLabel', 'primaryKey']}
+        saveLabel={$.t('core.dialogs.create')}
+        title={t('configure_boundary.configure_boundary')}
+        />,
+      $reactModal.get(0)
+    );
+    $reactModal.jqmShow();
+  }
+
   georegionsNS.renderPage = renderPage;
+  georegionsNS.clearFlashMessage = clearFlashMessage;
 
   var commonNS = blist.namespace.fetch('blist.common');
 
-  commonNS.georegionSelected = function(newGeoregionData) {
+  commonNS.georegionSelected = function(datasetId) {
     $('#selectDataset').jqmHide();
-    georegionsNS.georegions || (georegionsNS.georegions = []);
-    var newGeoregionObj = _.extend({}, newGeoregionData);
-    georegionsNS.georegions.push(newGeoregionObj);
-    georegionsNS.renderPage();
+    showInitialConfigureModal(datasetId);
   };
 
 })();

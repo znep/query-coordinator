@@ -3,8 +3,7 @@ describe('admin-georegions-screen', function() {
   var TestUtils = React.addons.TestUtils;
 
   beforeEach(function() {
-    this.target = $('<div/>').appendTo(document.body).get(0);
-    this.shallowRenderer = TestUtils.createRenderer();
+    this.target = $('<div id="react-modal"/>').appendTo(document.body).get(0);
   });
 
   afterEach(function() {
@@ -12,15 +11,16 @@ describe('admin-georegions-screen', function() {
   });
 
   describe('commonNS.georegionsSelected', function() {
-    var renderPageStub;
-
     beforeEach(function() {
+      $.fn.jqmShow = sinon.stub();
       $.fn.jqmHide = sinon.stub();
-      renderPageStub = sinon.stub(blist.namespace.fetch('blist.georegions'), 'renderPage');
+      this.renderPageStub = sinon.stub(blist.namespace.fetch('blist.georegions'), 'renderPage');
+      this.clearFlashMessageStub = sinon.stub(blist.namespace.fetch('blist.georegions'), 'clearFlashMessage');
     });
 
     afterEach(function() {
-      renderPageStub.restore();
+      this.renderPageStub.restore();
+      this.clearFlashMessageStub.restore();
     });
 
     var georegionsSelected = blist.namespace.fetch('blist.common.georegionSelected');
@@ -29,9 +29,11 @@ describe('admin-georegions-screen', function() {
       expect(_.isFunction(georegionsSelected)).to.eq(true);
     });
 
-    it('renders the page', function() {
-      georegionsSelected();
-      expect(renderPageStub).to.have.been.calledOnce;
+    it('renders the configure boundary modal', function() {
+      georegionsSelected('four-four');
+      expect(this.clearFlashMessageStub).to.have.been.calledOnce;
+      expect($.fn.jqmShow).to.have.been.calledOnce;
+      expect($(this.target)).to.contain('')
     });
 
     it('adds an item to georegions', function() {

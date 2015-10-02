@@ -33,10 +33,18 @@ class CuratedRegion < Model
   end
 
   def geometry_label_columns
-    view.columns.select { |column| %w(text number boolean date).include?(column.dataTypeName) }
+    CuratedRegion.geometry_label_columns(view)
   end
 
   def primary_key_columns
+    CuratedRegion.primary_key_columns(view)
+  end
+
+  def self.geometry_label_columns(view)
+    view.columns.select { |column| %w(text number boolean date).include?(column.dataTypeName) }
+  end
+
+  def self.primary_key_columns(view)
     view.columns.select { |column| column.dataTypeName == 'number' }
   end
 

@@ -141,8 +141,57 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
     end
   end
 
+  describe 'attacks against the story metadata' do
+    let!(:attack_story_uid) do
+      evil_title = '"><script>window.xssFailure="title injection"</script>'
+      evil_description = '"><script>window.xssFailure="description injection"</script>'
 
-  describe 'attacks against JSON embeds' do
+      story = FactoryGirl.build(:draft_story, uid: 'titl-doom')
+      story.save!
+
+      published_story = PublishedStory.from_draft_story(story)
+      published_story.created_by = '11'
+      published_story.save!
+
+      stub_core_view(
+        story.uid,
+        name: evil_title,
+        description: evil_description
+      )
+
+      story.uid
+    end
+
+    describe 'View mode' do
+      before do
+        visit "/s/magic-thing/#{attack_story_uid}"
+      end
+      it 'should not evaluate JS' do
+        expect(page.evaluate_script('window.xssFailure')).to eq(nil)
+      end
+    end
+
+    describe 'Preview mode' do
+      before do
+        visit "/s/magic-thing/#{attack_story_uid}/preview"
+      end
+      it 'should not evaluate JS' do
+        expect(page.evaluate_script('window.xssFailure')).to eq(nil)
+      end
+    end
+
+    describe 'Edit mode' do
+      before do
+        visit "/s/magic-thing/#{attack_story_uid}/edit"
+      end
+      it 'should not evaluate JS' do
+        expect(page.evaluate_script('window.xssFailure')).to eq(nil)
+      end
+    end
+  end
+
+
+  describe 'attacks against story JSON' do
     let!(:attack_story_uid) do
       evil_json = '</script><script>window.xssFailure=true</script>'
 

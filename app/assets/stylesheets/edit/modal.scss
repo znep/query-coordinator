@@ -55,6 +55,8 @@
       margin-bottom: 1rem;
       font-size: $modal-title-font-size;
       line-height: $modal-title-line-height;
+      color: #6d6d6d;
+      font-size: 1.8rem;
     }
 
     .modal-close-btn {
@@ -69,10 +71,11 @@
       border: none;
       outline: none;
       cursor: pointer;
-    }
+      color: #9b9b9b;
 
-    .modal-content {
-      //background-color: $modal-bg-color;
+      &:hover {
+        color: #474747;
+      }
     }
 
     .back-btn .icon-arrow-left2 {
@@ -80,7 +83,44 @@
     }
 
     .button-list li {
-      margin-bottom: 5px;
+      padding: 1.5rem 1rem;
+      border-bottom: solid 1px #DEDEDE;
+      position: relative;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &::after {
+        font-family: icomoon;
+        content: "\edb9";
+        position: absolute;
+        right: 1rem;
+        top: calc(6.8rem / 2 - 0.75rem);
+        display: inline-block;
+        font-size: 1.5rem;
+        color: #9b9b9b;
+      }
+
+      &:hover {
+        background-color: #f7f7f7;
+        cursor: pointer;
+
+        &::after {
+          color: #474747;
+        }
+      }
+
+      h3 {
+        color: #3498db;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        color: #9b9b9b;
+        font-size: 1.2rem;
+      }
     }
 
     /* Visualization chooser */

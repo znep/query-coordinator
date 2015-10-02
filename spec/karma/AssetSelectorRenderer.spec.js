@@ -451,7 +451,7 @@ describe('AssetSelectorRenderer', function() {
 
       it('disables the insert button on render', function() {
         assert.equal(
-          container.find('.btn.accent-btn').attr('disabled'),
+          container.find('.btn.btn-primary').attr('disabled'),
           'disabled'
         );
       });

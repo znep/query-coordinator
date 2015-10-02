@@ -345,32 +345,41 @@
 
       var closeButton = _renderModalCloseButton();
 
-      var youtubeButton = $('<button>', {
-        'class': 'btn accent-btn',
-        'data-action': Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
-      }).text(I18n.t('editor.asset_selector.youtube.button_text'));
+      var youtubeHeader = $('<h3>')
+        .text(I18n.t('editor.asset_selector.youtube.name'));
+      var youtubeDescription = $('<p>')
+        .text(I18n.t('editor.asset_selector.youtube.description'));
 
-      var visualizationButton = $('<button>', {
-        'class': 'btn accent-btn',
-        'data-action': Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
-      }).text(I18n.t('editor.asset_selector.visualization.button_text'));
+      var visualizationHeader = $('<h3>')
+        .text(I18n.t('editor.asset_selector.visualization.name'));
+      var visualizationDescription = $('<p>')
+        .text(I18n.t('editor.asset_selector.visualization.description'));
 
-      var imageUploadButton = $('<button>', {
-        'class': 'btn accent-btn',
-        'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
-      }).text(I18n.t('editor.asset_selector.image_upload.button_text'));
+      var imageUploadHeader = $('<h3>')
+        .text(I18n.t('editor.asset_selector.image_upload.name'));
+      var imageUploadDescription = $('<p>')
+        .text(I18n.t('editor.asset_selector.image_upload.description'));
 
-      var embedCodeButton = $('<button>', {
-        'class': 'btn accent-btn',
-        'data-action': Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE
-      }).text(I18n.t('editor.asset_selector.embed_code.button_text'));
+      var embedCodeHeader = $('<h3>')
+        .text(I18n.t('editor.asset_selector.embed_code.name'));
+      var embedCodeDescription = $('<p>')
+        .text(I18n.t('editor.asset_selector.embed_code.description'));
 
       var providers = $('<ul>', {'class': 'button-list'}).append([
-        $('<li>').html(youtubeButton),
-        $('<li>').html(visualizationButton),
-        $('<li>').html(imageUploadButton),
-        $('<li>').html(embedCodeButton)
+        $('<li>', {
+          'data-action': Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        }).append(youtubeHeader, youtubeDescription),
+        $('<li>', {
+          'data-action': Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
+        }).append(visualizationHeader, visualizationDescription),
+        $('<li>', {
+          'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+        }).append(imageUploadHeader, imageUploadDescription),
+        $('<li>', {
+          'data-action': Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE
+        }).append(embedCodeHeader, embedCodeDescription)
       ]);
+
       var content = $('<div>', { 'class': 'modal-content' }).append(providers);
 
       return [ heading, closeButton, content ];
@@ -403,7 +412,7 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn accent-btn',
+          'class': 'btn btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
@@ -472,7 +481,7 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn accent-btn',
+          'class': 'btn btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
@@ -545,7 +554,7 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn accent-btn',
+          'class': 'btn btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
@@ -671,7 +680,7 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn accent-btn',
+          'class': 'btn btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
@@ -886,7 +895,7 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn accent-btn',
+          'class': 'btn btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
@@ -1033,7 +1042,7 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn accent-btn',
+          'class': 'btn btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));

@@ -50,24 +50,27 @@ en:
         errors:
           not_published_not_updated: 'Your story has not been published and cannot be updated.'
     asset_selector:
-      choose_provider_heading: 'Select data or media provider'
+      choose_provider_heading: 'Select Data or Media Provider'
       back_button_text: 'Back'
       insert_button_text: 'Insert'
       cancel_button_text: 'Cancel'
       try_again_button_text: 'Try again'
       youtube:
-        button_text: 'YouTube'
+        name: 'YouTube'
+        description: 'Add a video from a YouTube link.'
         heading: 'Add a YouTube video'
         input_label: 'Link to video'
         invalid_message_title_1: 'Oh No!'
         invalid_message_title_2: 'Something went wrong.'
         invalid_message_description: 'Try using a valid link to a YouTube video.'
       visualization:
-        button_text: 'Visualization'
+        name: 'Socrata Visualization'
+        description: 'Create or insert a chart, map, or table.'
         choose_dataset_heading: 'Choose a dataset to visualize'
         configure_vizualization_heading: 'Choose data to visualize'
       image_upload:
-        button_text: 'Image Upload'
+        name: 'Image Upload'
+        description: 'Upload an image from your computer up to 5MB.'
         heading: 'Upload an image'
         input_label: 'Select an image (supported image types .jpg, .gif, or a .png)'
         uploading_message: 'Uploading...'
@@ -76,7 +79,8 @@ en:
           validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'
           exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."
       embed_code:
-        button_text: 'Embed code'
+        name: 'HTML Embed'
+        description: 'Insert embed code to include external web content.'
         heading: 'HTML Embed'
         input_label: 'Paste or type HTML code'
         preview_label: 'Preview'

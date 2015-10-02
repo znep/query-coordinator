@@ -16,26 +16,32 @@ describe('FormButton', function() {
       onSuccess: this.onSuccessStub,
       value: 'Click'
     };
+    this.createElement = function(addProps) {
+      var props = _.extend({}, this.props, addProps);
+      return React.createElement(FormButton, props);
+    };
+    this.renderIntoDocument = function(props) {
+      return TestUtils.renderIntoDocument(this.createElement(props));
+    };
   });
 
   afterEach(function() {
     $(this.target).remove();
   });
 
-
   it('exists', function() {
-    expect(FormButton).to.exist;
+    expect(this.createElement()).to.be.a.reactElement;
   });
 
   it('renders', function() {
-    this.shallowRenderer.render(React.createElement(FormButton, this.props));
+    this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result.type).to.eq('form');
+    expect(result).to.be.an.elementOfType('form');
   });
 
   describe('rendered', function() {
     beforeEach(function() {
-      this.node = TestUtils.renderIntoDocument(React.createElement(FormButton, this.props));
+      this.node = this.renderIntoDocument();
       sinon.stub($, 'ajax').yieldsTo('success', {
         success: true,
         message: 'message'

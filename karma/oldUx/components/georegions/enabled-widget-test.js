@@ -5,37 +5,41 @@ describe('EnabledWidget', function() {
   var EnabledWidget = georegionComponents.EnabledWidget;
 
   beforeEach(function() {
-    this.target = $('<div/>').appendTo(document.body).get(0);
     this.shallowRenderer = TestUtils.createRenderer();
     this.props = {
       action: '/foo',
-      authenticityToken: 'abcd'
+      authenticityToken: 'abcd',
+      isEnabled: true
     };
     sinon.stub($, 't', function(key) {
       return 'Translation for: ' + key;
     });
+    this.createElement = function(addProps) {
+      var props = _.extend({}, this.props, addProps);
+      return React.createElement(EnabledWidget, props);
+    };
+    this.renderIntoDocument = function(props) {
+      return TestUtils.renderIntoDocument(this.createElement(props));
+    };
   });
 
   afterEach(function() {
-    $(this.target).remove();
     $.t.restore();
   });
 
   it('exists', function() {
-    expect(EnabledWidget).to.exist;
+    expect(this.createElement()).to.be.a.reactElement;
   });
 
   it('renders', function() {
-    this.props['isEnabled'] = true;
-    this.shallowRenderer.render(React.createElement(EnabledWidget, this.props));
+    this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result.type).to.eq('div');
+    expect(result).to.be.an.elementOfType('div');
   });
 
   describe('when enabled', function() {
     beforeEach(function() {
-      this.props['isEnabled'] = true;
-      this.node = TestUtils.renderIntoDocument(React.createElement(EnabledWidget, this.props));
+      this.node = this.renderIntoDocument();
     });
 
     it('says "Yes"', function() {
@@ -47,8 +51,7 @@ describe('EnabledWidget', function() {
 
   describe('when disabled', function() {
     beforeEach(function() {
-      this.props['isEnabled'] = false;
-      this.node = TestUtils.renderIntoDocument(React.createElement(EnabledWidget, this.props));
+      this.node = this.renderIntoDocument({ isEnabled: false });
     });
 
     it('says "No" when disabled', function() {

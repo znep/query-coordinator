@@ -2,6 +2,7 @@
 
   const PropTypes = React.PropTypes;
   let componentsNS = blist.namespace.fetch('blist.components');
+  const { FormInput } = componentsNS;
   const { classNames } = blist.namespace.fetch('blist.components.utils');
 
   componentsNS.FormTextInput = React.createClass({
@@ -10,10 +11,8 @@
       id: PropTypes.string.isRequired,
       initialValue: PropTypes.string,
       label: PropTypes.string.isRequired,
-      onBlur: PropTypes.func,
       onChange: PropTypes.func,
       required: PropTypes.bool,
-      showValidationError: PropTypes.bool,
       validationError: PropTypes.string
     },
     getDefaultProps: function() {
@@ -23,12 +22,12 @@
         initialValue: '',
         onBlur: _.noop,
         onChange: _.noop,
-        required: false,
-        showValidationError: false
+        required: false
       };
     },
     getInitialState: function() {
       return {
+        dirty: false,
         value: this.props.initialValue
       };
     },
@@ -38,51 +37,50 @@
       }
     },
     handleChange: function() {
+      const { onChange } = this.props;
       const input = React.findDOMNode(this.refs.input);
       const value = input.value;
-      this.setState({value});
-      this.props.onChange(value);
+      this.setState({ dirty: true, value: value });
+      onChange(value);
+    },
+    handleBlur: function() {
+      this.setState({ dirty: true });
     },
     render: function() {
       const {
-        description,
         id,
-        label,
-        onBlur,
         required,
-        showValidationError,
-        validationError
+        ...props
       } = this.props;
 
-      const { value } = this.state;
+      const {
+        dirty,
+        value
+      } = this.state;
 
       const className = classNames({ required });
 
-      return (
-        <div className="line">
-          <label htmlFor={id} className={className}>{label}</label>
+      const showValidationError = required && dirty && _.isEmpty(value);
 
-          <div>
-            <input
-              className={className}
-              defaultValue={this.props.value}
-              id={id}
-              onBlur={onBlur}
-              onChange={this.handleChange}
-              ref="input"
-              type="text"
-              value={value}
-              />
-            <p>{description}</p>
-            <label
-              className="error"
-              htmlFor={id}
-              generated="true"
-              >
-              {showValidationError ? validationError : ''}
-            </label>
-          </div>
-        </div>
+      const formInputProps = {
+        id,
+        required,
+        showValidationError,
+        ...props
+      };
+
+      return (
+        <FormInput {...formInputProps}>
+          <input
+            className={className}
+            id={id}
+            onBlur={this.handleBlur}
+            onChange={this.handleChange}
+            ref="input"
+            type="text"
+            value={value}
+            />
+        </FormInput>
       );
     }
   });

@@ -126,6 +126,7 @@ Frontend::Application.routes do
       get 'data_slate/create', :as => 'canvas_create', :action => 'create_canvas_page'
       post 'data_slate/create', :as => 'canvas_create', :action => 'post_canvas_page'
       get 'geo', :action => :georegions, :as => 'georegions_administration'
+      get 'geo/candidate/:id', :action => :georegion_candidate, :format => 'json'
       get 'geo/:id', :action => :georegion, :format => 'json'
       get 'geo/:id/configure', :action => :configure_boundary
       post 'geo', :action => :add_georegion

@@ -10,20 +10,19 @@ module Services
       #   "defaultFlag" : false
       # }
 
-      def add(view_id, feature_pk, geometry_label = nil, name = nil, options = nil)
+      def add(view_id, primary_key, geometry_label = nil, name = nil, options = nil)
+        raise '"id" is required' if view_id.nil?
+        raise '"primaryKey" is required' if primary_key.nil?
+
         view = View.find(view_id)
         return unless validate_view(view)
 
-        geometry_label_column = view.columns.detect { |column| column.name == 'name' }
-        feature_pk_column = view.columns.detect { |column| column.name == '_feature_id' }
         attributes = {
           :uid => view_id,
           :name => name || view.name,
-          :geometryLabel => geometry_label || geometry_label_column.fieldName,
-          :featurePk => feature_pk || feature_pk_column.fieldName,
+          :geometryLabel => geometry_label,
+          :featurePk => primary_key
         }
-        attributes = attributes.merge(:geometryLabel => geometry_label) unless geometry_label.nil?
-        attributes = attributes.merge(:featurePk => feature_pk) unless feature_pk.nil?
         attributes = attributes.merge(options) unless options.nil?
         response = make_request(attributes)
         CuratedRegion.parse(response)

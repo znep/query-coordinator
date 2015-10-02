@@ -2,6 +2,8 @@
 
   const PropTypes = React.PropTypes;
   let componentsNS = blist.namespace.fetch('blist.components');
+  const { FormInput } = componentsNS;
+  const { classNames } = blist.namespace.fetch('blist.components.utils');
 
   const FormSelectInputOptionPropType = PropTypes.shape({
     key: PropTypes.string.isRequired,
@@ -11,6 +13,7 @@
 
   componentsNS.FormSelectInput = React.createClass({
     propTypes: {
+      description: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       id: PropTypes.string.isRequired,
       initialOption: PropTypes.string,
@@ -19,7 +22,6 @@
       onChange: PropTypes.func,
       options: PropTypes.arrayOf(FormSelectInputOptionPropType),
       required: PropTypes.bool,
-      showValidationError: PropTypes.bool,
       validationError: PropTypes.string
     },
     getDefaultProps: function() {
@@ -28,12 +30,12 @@
         onChange: _.noop,
         options: [],
         initialValue: '',
-        required: false,
-        showValidationError: false
+        required: false
       }
     },
     getInitialState: function() {
       return {
+        dirty: false,
         value: this.props.initialValue
       }
     },
@@ -43,9 +45,10 @@
       }
     },
     handleChange: function() {
+      const { onChange } = this.props;
       const { value } = React.findDOMNode(this.refs.select);
-      this.setState({ value });
-      this.props.onChange(value);
+      this.setState({ dirty: true, value: value });
+      onChange(value);
     },
     renderOptions: function(columns = []) {
       return _.map(columns, ({key, label, value}) => {
@@ -56,39 +59,46 @@
     },
     render: function() {
       const {
-        description,
         id,
         initialOption,
-        label,
         options,
-        showValidationError,
-        validationError
+        required,
+        ...props
       } = this.props;
-      const { value } = this.state;
+
+      const {
+        dirty,
+        value
+      } = this.state;
+
+      const className = classNames({ required });
+      const showValidationError = required && dirty && _.isEmpty(value);
+
+      const formInputProps = {
+        id,
+        required,
+        showValidationError,
+        ...props
+      };
+
+      let initialOptionFragment = null;
+      if (initialOption) {
+        initialOptionFragment = (<option value="">{initialOption}</option>);
+      }
 
       return (
-        <div className="line">
-          <label htmlFor={id}>{label}</label>
-          <div>
-            <select
-              id={id}
-              onChange={this.handleChange}
-              ref="select"
-              value={value}
-              >
-              {initialOption ? (<option value="">{initialOption}</option>) : null}
-              {this.renderOptions(options)}
-            </select>
-            <p>{description}</p>
-            <label
-              className="error"
-              htmlFor={id}
-              generated="true"
-              >
-              {showValidationError ? validationError : ''}
-            </label>
-          </div>
-        </div>
+        <FormInput {...formInputProps}>
+          <select
+            className={className}
+            id={id}
+            onChange={this.handleChange}
+            ref="select"
+            value={value}
+            >
+            {initialOptionFragment}
+            {this.renderOptions(options)}
+          </select>
+        </FormInput>
       );
     }
   });

@@ -165,7 +165,7 @@ class AdministrationController < ApplicationController
     success_message = nil
     begin
       success_message = georegion_adder.add(
-        params[:id], params[:key], params[:label], params[:name],
+        params[:id], params[:primaryKey], params[:geometryLabel], params[:name],
         { :enabledFlag => false }
       )
       is_success = success_message.present?
@@ -256,6 +256,21 @@ class AdministrationController < ApplicationController
     end
 
     handle_button_response(is_success, error_message, success_message, redirect_action)
+  end
+
+  def georegion_candidate
+    is_success = false
+    error_message = nil
+    success_message = nil
+
+    begin
+      success_message = ::ViewModels::Administration::GeoregionCandidate.new(params[:id])
+      is_success = true
+    rescue
+      error_message = t('screens.admin.georegions.configure_boundary.save_error')
+    end
+
+    handle_button_response(is_success, error_message, success_message, :georegions)
   end
 
   def remove_georegion

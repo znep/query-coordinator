@@ -19,6 +19,7 @@
  *= require lib/normalize
  *= require_tree ./lib
  *= require_tree ./edit
+ *= require_tree ./new
  *= require themes/themes
  *= require_self
  */

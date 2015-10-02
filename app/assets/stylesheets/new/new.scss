@@ -1,0 +1,35 @@
+#create-story-modal {
+  .modal-dialog {
+    padding: 6rem 2rem;
+  }
+
+  .modal-title {
+    color: #4a4a4a;
+    font-size: 3.62rem;
+    text-align: center;
+    margin: 2rem 0;
+    padding: 0;
+  }
+
+  .media-selector-input-label {
+    color: #9b9b9b;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: normal;
+    margin: 2rem 0;
+  }
+
+  .media-selector-text-input {
+    width: 80%;
+    margin: 0 auto;
+    padding: 1rem;
+    font-size: 1.75rem;
+    height: auto;
+  }
+
+  .btn-primary {
+    margin: 2rem auto;
+    width: auto;
+    font-size: 1.75rem;
+  }
+}

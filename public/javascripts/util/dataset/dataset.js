@@ -1518,31 +1518,24 @@ var Dataset = ServerModel.extend({
         Dataset.saveRecentDataset(this);
     },
 
+    _isGeoExport: function(ext) {
+        return this.isGeoDataset() && ext !== 'json' && ext !== 'csv';
+    },
+
     downloadUrl: function(type)
     {
         var ext = type.toLowerCase().split(' ')[0];
-        var nbeExportUrl = '/api/export/v1/{0}.{1}'.format(this.id, ext);
 
-        if (this.isGeoDataset())
-        {
-            var geoExportUrl = this.metadata.geo.owsUrl + '?method=export&format=' + type;
-            if(this.newBackend) {
-                if(ext === 'json' || ext === 'csv') {
-                    return nbeExportUrl;
-                } else {
-                    return geoExportUrl;
-                }
-            } else {
-                return geoExportUrl;
-            }
+        if (this._isGeoExport(ext)) {
+            return this.metadata.geo.owsUrl + '?method=export&format=' + type;
+        }
+
+        if (this.newBackend && blist.feature_flags.enable_export_service) {
+            return '/api/export/v1/{0}.{1}'.format(this.id, ext);
         }
 
         var bom = (type == 'CSV for Excel') ? '&bom=true' : '';
-        if (this.newBackend && blist.feature_flags.enable_export_service) {
-          return nbeExportUrl
-        } else {
-          return '/api/views/' + this.id + '/rows.' + ext + '?accessType=DOWNLOAD' + bom;
-        }
+        return '/api/views/{0}/rows.{1}?accessType=DOWNLOAD{2}'.format(this.id, ext, bom);
     },
 
     _getCommentCacheKey: function(comment)

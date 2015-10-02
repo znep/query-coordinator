@@ -602,12 +602,19 @@ $(function()
 
 
     // downloads
+    var dlType = blist.dataset.getDownloadType();
+
+    var downloadOptions = {
+        downloadTypes: $.templates.downloadsTable.downloadTypes[dlType],
+        view: blist.dataset
+    };
+
     $('.widgetContent_downloads').append(
         $.renderTemplate(
             'downloadsSectionContent',
-            { downloadTypes: $.templates.downloadsTable.downloadTypes.normal,
-              view: blist.dataset },
-            $.templates.downloadsTable.directive.normal));
+            downloadOptions,
+            $.templates.downloadsTable.directive[dlType])
+        );
     $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 
     $.live('.feed .commentActions a, .feedNewCommentButton', 'click', function(event)

@@ -43,7 +43,41 @@
           <li><a class="<%= network %>" rel="external" title="<%= t("screens.ds.bar.share_#{network}") %>" href="<%= data['href'] %>">
             <span class="icon"><%= t("screens.ds.bar.share_#{network}") %></span></a></li>
           <%- end %>
-          <%- if @view.has_right?('grant') || @view.is_public? -%>
+          <%-
+          # ONCALL-3032: Spam e-mail sent via the Socrata platform
+          #
+          # The ability for unauthenticated users to send 'share this dataset via email' messages
+          # including arbitrary content was being abused by someone to send SPAM.
+          #
+          # Our solution, for the time being, is to disable this feature for unauthenticated or
+          # non-domain-role-holding users. This is accomplished in the frontend with a feature
+          # flag that hides the button which causes the send email dialog box to be shown; the
+          # more substantive fix will be in Core Server and will entail disabling the endpoint
+          # used to send unauthenticated email:
+          #
+          # /api/views/<four-four>.json?method=sendAsEmail&accessType=WEBSITE
+          #
+          # The work to disable this endpoint in Core Server is tracked by ONCALL-3037.
+          #
+          # Note that a different endpoint is used to send email on behalf of users who have
+          # a domain role, and who we trust not to send spam:
+          #
+          #
+          # This endpoint will remain active.
+          -%>
+          <%-
+            # Not sure what `.has_right?('grant')` is expected to return-- it is nil even on a public
+            # dataset as a superadmin on my local machine. I am leaving it in place because I can't
+            # understand its behavior.
+            if @view.has_right?('grant') ||
+              # If the current user is an admin on the domain we want to allow them to send email regardless
+              # of the state of the feature flag. The dialog box used for this case hits a different,
+              # authenticated endpoint for email.
+              (CurrentDomain.member?(current_user) && current_user.is_admin?) ||
+              # If the feature flag to show the button is set to true and the view is public, then enable
+              # the share by email dialog box that hits the unauthenticated endpoint.
+              (FeatureFlags.derive(@view, request).show_share_dataset_by_email_button_for_general_users && @view.is_public?)
+          -%>
             <li><a class="email" href="#email" title="<%= t('screens.ds.bar.share_email') %>">
               <span class="icon"><%= t('screens.ds.bar.share_email') %></span></a></li>
           <%- end -%>

@@ -293,10 +293,18 @@ javascripts:
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-users-screen.js
   admin-georegions:
+    - public/javascripts/dist/components/utils.js
     - public/javascripts/dist/components/flash-message.js
     - public/javascripts/dist/components/socrata-title-tip-mixin.js
     - public/javascripts/dist/components/loading-button.js
     - public/javascripts/dist/components/form-button.js
+    - public/javascripts/dist/components/form-controls.js
+    - public/javascripts/dist/components/form-select-input.js
+    - public/javascripts/dist/components/form-text-input.js
+    - public/javascripts/dist/components/georegions/configure-boundary-form.js
+    - public/javascripts/dist/components/georegions/enabled-widget.js
+    - public/javascripts/dist/components/georegions/georegion-admin-row.js
+    - public/javascripts/dist/components/georegions/georegion-admin-table.js
     - public/javascripts/dist/screens/admin-georegions-screen.js
   admin-home:
     - public/javascripts/util/serialize.js

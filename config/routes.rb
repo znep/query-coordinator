@@ -125,11 +125,13 @@ Frontend::Application.routes do
       get :data_slate, :as => 'canvas_admin', :action => 'canvas_pages'
       get 'data_slate/create', :as => 'canvas_create', :action => 'create_canvas_page'
       post 'data_slate/create', :as => 'canvas_create', :action => 'post_canvas_page'
-      get 'geo', :action => :georegions
+      get 'geo', :action => :georegions, :as => 'georegions_administration'
+      get 'geo/:id', :action => :georegion, :format => 'json'
+      get 'geo/:id/configure', :action => :configure_boundary
       post 'geo', :action => :add_georegion
       match 'geo/:id/enable', :action => :enable_georegion, :via => [:put, :post]
       match 'geo/:id/disable', :action => :disable_georegion, :via => [:put, :post]
-      put 'geo/:id', :action => :edit_georegion
+      match 'geo/:id', :action => :edit_georegion, :via => [:put, :post]
       delete 'geo/:id', :action => :remove_georegion
       get :home, :as => 'home_administration'
       get :metadata, :as => 'metadata_administration'

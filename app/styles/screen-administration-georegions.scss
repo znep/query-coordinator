@@ -75,3 +75,62 @@ $is-disabled-color: #999;
     width: 80em;
   }
 }
+
+.georegion-spinner {
+  background-color: rgba(255, 255, 255, 0.5);
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+
+  > img {
+    $img-size: 48px;
+    position: absolute;
+    top: calc(50% - #{$img-size / 2});
+    left: calc(50% - #{$img-size / 2});
+  }
+}
+
+#react-modal {
+  $modal-width: 65em;
+  width: $modal-width;
+  margin-left: -($modal-width / 2);
+  .line > div {
+    width: calc(100% - 15em);
+  }
+}
+
+#react-modal, .georegions-configure-boundary {
+  form {
+    .line {
+      margin-bottom: 2em;
+    }
+
+    .form-controls {
+      float: right;
+      margin-bottom: 0;
+      margin-top: 1em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+    }
+
+    label:not(.error) {
+      width: 10em;
+    }
+
+    label.error {
+      padding-left: 0;
+      min-height: 1.8em;
+    }
+
+    p {
+      padding-top: 0.25em;
+      font-size: 1em;
+    }
+  }
+}

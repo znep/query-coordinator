@@ -147,6 +147,17 @@ class AdministrationController < ApplicationController
     )
   end
 
+  def georegion
+    curated_region = CuratedRegion.find(params[:id])
+    respond_to do |format|
+      format.data { render :json => {
+          :success => true,
+          :message => curated_region
+        }.to_json }
+    end
+
+  end
+
   def add_georegion
     georegion_adder = ::Services::Administration::GeoregionAdder.new
     is_success = false
@@ -217,11 +228,47 @@ class AdministrationController < ApplicationController
   end
 
   def edit_georegion
-    handle_button_response(true, 'error', 'success', :georegions)
+    georegion_editor = ::Services::Administration::GeoregionEditor.new
+    curated_region = CuratedRegion.find(params[:id])
+    is_success = false
+    error_message = nil
+    success_message = nil
+    redirect_action = :georegions
+
+    begin
+      updated_region = georegion_editor.edit(curated_region, params[:boundary])
+      is_success = true
+      if request.xhr?
+        success_message = updated_region
+      else
+        success_message = t('screens.admin.georegions.configure_boundary.save_success')
+      end
+    rescue ::Services::Administration::MissingBoundaryNameError
+      flash[:is_name_missing] = true
+      error_message = t('screens.admin.georegions.configure_boundary.boundary_name_required_page_error')
+      redirect_action = :configure_boundary
+    rescue ::Services::Administration::MissingGeometryLabelError
+      flash[:is_label_missing] = true
+      error_message = t('screens.admin.georegions.configure_boundary.boundary_name_required_page_error')
+      redirect_action = :configure_boundary
+    rescue
+      error_message = t('screens.admin.georegions.configure_boundary.save_error')
+    end
+
+    handle_button_response(is_success, error_message, success_message, redirect_action)
   end
 
   def remove_georegion
     handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+  def configure_boundary
+    curated_region = CuratedRegion.find(params[:id])
+    @view_model = ::ViewModels::Administration::ConfigureBoundary.new(
+      curated_region,
+      CurrentDomain.strings.site_title,
+      !!flash[:is_name_missing]
+    )
   end
 
 

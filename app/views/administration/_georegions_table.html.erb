@@ -48,9 +48,9 @@
         <%- if allow_actions -%>
         <td class="edit-action">
           <%= form_button(
-                { :action => :edit_georegion, :id => georegion.id },
+                { :action => :configure_boundary, :id => georegion.id },
                 t("#{prefix}.edit"),
-                { :method => :put },
+                { :method => :get },
                 { :class => 'button', 'data-action' => 'edit' }) %>
         </td>
         <td class="remove-action">

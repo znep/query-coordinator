@@ -2,6 +2,7 @@
 
   const PropTypes = React.PropTypes;
   let componentsNS = blist.namespace.fetch('blist.components');
+  const { classNames } = blist.namespace.fetch('blist.components.utils');
 
   const FlashMessagePropType = PropTypes.shape({
     message: PropTypes.string.isRequired,
@@ -20,7 +21,7 @@
     },
     render: function() {
       const messages = _.map(this.props.messages, ({ message, type }, index) => {
-        const className = _.compact(['flash', type]).join(' ');
+        const className = classNames('flash', type);
         return (
           <div key={index} className={className}>{message}</div>
         );

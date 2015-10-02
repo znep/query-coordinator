@@ -249,3 +249,10 @@ a[role="button"] {
   padding-top: 40px;
   text-align: center;
 }
+
+// Developer mode Rack Mini Profiler.
+// Positioned under the header.
+.profiler-results {
+  top: 6rem !important;
+  z-index: 10 !important;
+}

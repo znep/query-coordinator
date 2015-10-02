@@ -29,7 +29,8 @@
 
         $scope.$bindObservable('enablePublisherPages', enablePublisherPages$);
         $scope.$bindObservable('datasetPublisherPages', datasetPublisherPages$.startWith([]));
-        $scope.togglePanel = function() {
+        $scope.togglePanel = function($event) {
+          $event.stopPropagation();
           $scope.panelActive = !$scope.panelActive;
         };
 

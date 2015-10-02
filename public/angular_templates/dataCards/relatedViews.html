@@ -3,9 +3,9 @@
   <a type="button"
     ng-class="{ touched: panelActive, 'l-to-r': dataLensVersion === 2 }"
     class="tool-panel-toggle-btn action-btn"
-    ng-click="togglePanel()"
+    ng-click="togglePanel($event)"
     ng-show="enablePublisherPages">
-    <span class="icon-chart"></span>
+    <span class="icon-chart" ng-click="togglePanel($event)"></span>
     {{::'relatedViews.title' | I18n}} ({{datasetPublisherPages.length}})
   </a>
 

@@ -8,11 +8,9 @@ module Services
 
     class GeoregionEditor
       attr_reader :allowed_fields
-      attr_reader :required_fields
 
       def initialize
         @allowed_fields = %w(geometryLabel name)
-        @required_fields = %w(name)
       end
       
       def edit(georegion, fields = {})
@@ -23,6 +21,8 @@ module Services
         CuratedRegion.parse(response)
       end
 
+      private
+
       def make_request(curated_region, fields)
         CoreServer::Base.connection.update_request(
           path(curated_region.id),
@@ -32,6 +32,7 @@ module Services
       def path(id)
         "/#{CuratedRegion.service_name}/#{id}"
       end
+
 
       def validate_fields(fields)
         # very specific validation, per the current AC
@@ -52,8 +53,6 @@ module Services
 
         Hash[filtered_fields.map { |key, value| [key, strip_string(value)] }]
       end
-
-      private
 
       def strip_string(value)
         if value.is_a?(String)

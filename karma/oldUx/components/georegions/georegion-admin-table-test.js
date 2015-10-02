@@ -40,9 +40,15 @@ describe('GeoregionAdminTable', function() {
     it('renders the rows', function() {
       var rows = TestUtils.scryRenderedComponentsWithType(this.node, georegionComponents.GeoregionAdminRow);
       expect(rows).to.have.length(3);
+      expect(rows[0]).to.have.deep.property('props.isEnabled', true);
+      expect(rows[0]).to.have.deep.property('props.renderActions', true);
+      expect(rows[0]).to.have.deep.property('props.action', '/admin/geo/1');
       expect(rows[1]).to.have.deep.property('props.isEnabled', false);
       expect(rows[1]).to.have.deep.property('props.renderActions', true);
       expect(rows[1]).to.have.deep.property('props.action', '/admin/geo/2');
+      expect(rows[2]).to.have.deep.property('props.isEnabled', true);
+      expect(rows[2]).to.have.deep.property('props.renderActions', true);
+      expect(rows[2]).to.have.deep.property('props.action', '/admin/geo/3');
     });
 
   });

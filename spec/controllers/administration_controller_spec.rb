@@ -121,8 +121,8 @@ describe AdministrationController do
         allow_any_instance_of(::Services::Administration::GeoregionAdder).to receive(:add).and_return(response_hash)
         post :add_georegion, :format => :json
         expect(JSON.parse(response.body)).to include(
-            'message' => response_hash
-          )
+          'message' => response_hash
+        )
       end
     end
 
@@ -143,14 +143,17 @@ describe AdministrationController do
 
       it 'returns a response for json requests' do
         put :edit_georegion, :id => 1, :format => :json
-        expect(response).to be_success
         expect(response).to have_http_status(200)
+        expect(response.body).to eq({
+          :error => true,
+          :message => 'Translation for: screens.admin.georegions.configure_boundary.save_error'
+        }.to_json)
       end
 
       it 'edits the region' do
         expect_any_instance_of(::Services::Administration::GeoregionEditor).
           to receive(:edit).
-              and_return(curated_region_double)
+            and_return(curated_region_double)
         put :edit_georegion, :id => 1
       end
 
@@ -158,7 +161,7 @@ describe AdministrationController do
         before(:each) do
           allow_any_instance_of(::Services::Administration::GeoregionEditor).
             to receive(:edit).
-                and_raise(CoreServer::CoreServerError.new(1, 2, 3))
+              and_raise(CoreServer::CoreServerError.new(1, 2, 3))
         end
 
         describe 'html request' do
@@ -182,9 +185,9 @@ describe AdministrationController do
 
           it 'set the appropriate error' do
             expect(JSON.parse(response.body)).to include(
-                'error' => true,
-                'message' => 'Translation for: screens.admin.georegions.configure_boundary.save_error'
-              )
+              'error' => true,
+              'message' => 'Translation for: screens.admin.georegions.configure_boundary.save_error'
+            )
           end
         end
       end
@@ -193,7 +196,7 @@ describe AdministrationController do
         before(:each) do
           allow_any_instance_of(::Services::Administration::GeoregionEditor).
             to receive(:edit).
-                and_raise(::Services::Administration::MissingBoundaryNameError)
+              and_raise(::Services::Administration::MissingBoundaryNameError)
         end
 
         describe 'html request' do
@@ -212,14 +215,13 @@ describe AdministrationController do
         describe 'json request' do
           before(:each) do
             put :edit_georegion, :id => 1, :format => :json
-
           end
 
           it 'set the appropriate error' do
             expect(JSON.parse(response.body)).to include(
-                'error' => true,
-                'message' => 'Translation for: screens.admin.georegions.configure_boundary.boundary_name_required_page_error'
-              )
+              'error' => true,
+              'message' => 'Translation for: screens.admin.georegions.configure_boundary.boundary_name_required_page_error'
+            )
           end
         end
       end

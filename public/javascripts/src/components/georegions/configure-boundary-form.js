@@ -55,12 +55,12 @@
         id,
         onClose,
         onSave
-        } = this.props;
+      } = this.props;
 
       const {
         name,
         geometryLabel
-        } = this.state;
+      } = this.state;
 
       const data = {
         authenticityToken,
@@ -124,7 +124,7 @@
       const {
         onClose,
         title
-        } = this.props;
+      } = this.props;
 
       const {
         geometryLabel,

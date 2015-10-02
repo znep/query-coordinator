@@ -40,7 +40,7 @@
         onEdit,
         onEnableSuccess,
         renderActions
-        } = this.props;
+      } = this.props;
 
       const baseRowProps = {
         allowEnablement,
@@ -53,7 +53,7 @@
         const {
           enabledFlag,
           ...itemProps
-          } = row;
+        } = row;
         const rowProps = {
           action: `${baseUrlPath}${itemProps.id}`,
           isEnabled: enabledFlag,
@@ -73,7 +73,7 @@
         authenticityToken,
         renderActions,
         rows
-        } = this.props;
+      } = this.props;
 
       return (
         <table className="gridList georegions-table" cellSpacing="0">

@@ -85,7 +85,7 @@
               htmlFor={id}
               generated="true"
               >
-              {showValidationError ? validationError : ''}&nbsp;
+              {showValidationError ? validationError : ''}
             </label>
           </div>
         </div>

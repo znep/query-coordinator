@@ -152,14 +152,7 @@ class AdministrationController < ApplicationController
     respond_to do |format|
       format.data { render :json => {
           :success => true,
-          :message => {
-            :id => curated_region.id,
-            :enabledFlag => curated_region.enabledFlag,
-            :name => curated_region.name,
-            :featurePk => curated_region.featurePk,
-            :geometryLabel => curated_region.geometryLabel,
-            :geometryLabelColumns => curated_region.geometry_label_columns
-          }
+          :message => curated_region
         }.to_json }
     end
 

@@ -115,7 +115,7 @@ var t = function(str, props) {
     React.render(
       <ConfigureBoundaryForm
         id={id}
-        onClose={hideConfigureModal}
+        onClose={closeConfigureModal}
         onSave={handleSave}
         title={t('configure_boundary.configure_boundary')}
         />,
@@ -124,7 +124,7 @@ var t = function(str, props) {
     $reactModal.jqmShow();
   }
 
-  function hideConfigureModal() {
+  function closeConfigureModal() {
     let $reactModal = $('#react-modal');
     React.unmountComponentAtNode($reactModal.get(0));
     $reactModal.jqmHide();

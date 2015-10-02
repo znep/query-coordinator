@@ -52,11 +52,9 @@
         required,
         showValidationError,
         validationError
-        } = this.props;
+      } = this.props;
 
-      const {
-        value
-      } = this.state;
+      const { value } = this.state;
 
       const className = classNames({ required });
 
@@ -81,7 +79,7 @@
               htmlFor={id}
               generated="true"
               >
-              {showValidationError ? validationError : ''}&nbsp;
+              {showValidationError ? validationError : ''}
             </label>
           </div>
         </div>

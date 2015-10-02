@@ -10,34 +10,34 @@ describe ::Services::Administration::GeoregionEditor do
   end
 
   it 'provides the appropriate API path' do
-    expect(subject.path(1)).to eq('/curated_regions/1')
+    expect(subject.send(:path, 1)).to eq('/curated_regions/1')
   end
 
   describe '#sanitize_fields' do
     it 'removes extraneous fields' do
-       actual = subject.sanitize_fields(curated_region, { 'invalid' => 'not allowed', 'name' => 'allowed' })
+       actual = subject.send(:sanitize_fields, curated_region, { 'invalid' => 'not allowed', 'name' => 'allowed' })
        expect(actual).to eq({'name' => 'allowed'})
     end
 
     it 'removes fields that have not changed' do
-      actual = subject.sanitize_fields(curated_region, { 'name' => 'My Region' })
+      actual = subject.send(:sanitize_fields, curated_region, { 'name' => 'My Region' })
       expect(actual).to eq({})
     end
 
     it 'strips spaces from strings' do
-      actual = subject.sanitize_fields(curated_region, { 'name' => '  changed  ' })
+      actual = subject.send(:sanitize_fields, curated_region, { 'name' => '  changed  ' })
       expect(actual).to eq({ 'name' => 'changed' })
     end
   end
 
   describe '#validate_fields' do
     it 'does not raise if name is present' do
-      expect { subject.validate_fields({ 'name' => 'valid' }) }.
+      expect { subject.send(:validate_fields, { 'name' => 'valid' }) }.
         not_to raise_error
     end
 
     it 'raises if name is empty' do
-      expect { subject.validate_fields({ 'name' => '' }) }.
+      expect { subject.send(:validate_fields, { 'name' => '' }) }.
         to raise_error(::Services::Administration::MissingBoundaryNameError)
     end
   end
@@ -46,7 +46,7 @@ describe ::Services::Administration::GeoregionEditor do
     it 'makes the correct core server request' do
       request_stub = stub_request(:put, 'http://localhost:8080/curated_regions/5').
         with(:body => { :name => 'New Name' }.to_json)
-      subject.make_request(curated_region, { 'name' => 'New Name' })
+      subject.send(:make_request, curated_region, { 'name' => 'New Name' })
       expect(request_stub).to have_been_requested
     end
   end

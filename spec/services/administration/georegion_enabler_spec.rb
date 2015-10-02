@@ -39,6 +39,8 @@ describe ::Services::Administration::GeoregionEnabler do
     end
 
     it 'raises if we are enabling at the limit' do
+      allow_any_instance_of(CuratedRegion).to receive(:primary_key_columns).and_return([])
+      allow_any_instance_of(CuratedRegion).to receive(:geometry_label_columns).and_return([])
       stub_request(:get, 'http://localhost:8080/curated_regions.json?enabledOnly=true').
         to_return(:status => 200, :body => [
             build(:curated_region, :enabled),

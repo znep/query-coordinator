@@ -54,12 +54,12 @@
           </td>
           { renderActions ?
             (<td className="edit-action">
-              <button className="button" type="button" onClick={onEdit}>Edit</button>
+              <button className="button" type="button" onClick={onEdit}>{$.t('screens.admin.georegions.edit')}</button>
             </td>)
             : null }
           { renderActions ?
             (<td className="remove-action">
-              <FormButton action={action} method="delete" authenticityToken={authenticityToken} value="Remove" />
+              <FormButton action={action} method="delete" authenticityToken={authenticityToken} value={$.t('screens.admin.georegions.remove')} />
             </td>)
             : null }
         </tr>

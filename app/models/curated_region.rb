@@ -40,4 +40,16 @@ class CuratedRegion < Model
     view.columns.select { |column| column.dataTypeName == 'number' }
   end
 
+  def as_json(options={})
+    {
+      :id => id,
+      :enabledFlag => enabledFlag,
+      :name => name,
+      :featurePk => featurePk,
+      :primaryKeyColumns => primary_key_columns,
+      :geometryLabel => geometryLabel,
+      :geometryLabelColumns => geometry_label_columns
+    }
+  end
+
 end

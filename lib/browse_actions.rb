@@ -4,75 +4,84 @@ module BrowseActions
   include ActionView::Helpers::TranslationHelper
   include ApplicationHelper
 
-protected
+  protected
+
   attr_reader :request_params
 
   def cetera_search_enabled?
     FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search]
   end
 
-  # In order to use Cetera search: the cetera_search_enabled feature flag must be true,
-  # the user must be anonymous, and the admin parameter cannot be true
-  def using_cetera?(user_params)
-    cetera_search_enabled? && User.current_user.nil? && !user_params[:admin] && APP_CONFIG.cetera_host.present?
+  def using_cetera?
+    request_params.present? &&
+      request_params[:cetera_search].present? &&
+      cetera_search_enabled? &&
+      APP_CONFIG.cetera_host.present? &&
+      User.current_user.nil?
   end
 
-  def view_types_facet(user_params = {})
-    if using_cetera?(user_params)
-      vts = {
-        :title => t('controls.browse.facets.view_types_title'),
-        :singular_description => t('controls.browse.facets.view_types_singular_title'),
-        :param => :limitTo,
-        :use_icon => true,
-        :options => [
-          {:text => t('controls.browse.facets.view_types.datasets'), :value => 'datasets', :class => 'typeBlist'}
-        ]
-      }
-    else
-      vts = {
-        :title => t('controls.browse.facets.view_types_title'),
-        :singular_description => t('controls.browse.facets.view_types_singular_title'),
-        :param => :limitTo,
-        :use_icon => true,
-        :options => [
-          {:text => t('controls.browse.facets.view_types.datasets'), :value => 'datasets', :class => 'typeBlist'},
-          {:text => t('controls.browse.facets.view_types.charts'), :value => 'charts', :class => 'typeChart'},
-          {:text => t('controls.browse.facets.view_types.maps'), :value => 'maps', :class => 'typeMap'},
-          {:text => t('controls.browse.facets.view_types.calendars'), :value => 'calendars', :class => 'typeCalendar'},
-          {:text => t('controls.browse.facets.view_types.filters'), :value => 'filters', :class => 'typeFilter'},
-          {:text => t('controls.browse.facets.view_types.href'), :value => 'href', :class => 'typeHref'},
-          {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
-          {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}
-        ]
-      }
-    end
+  def standard_view_types
+    [
+      { text: t('controls.browse.facets.view_types.datasets'), value: 'datasets', class: 'typeBlist' },
+      { text: t('controls.browse.facets.view_types.charts'), value: 'charts', class: 'typeChart' },
+      { text: t('controls.browse.facets.view_types.maps'), value: 'maps', class: 'typeMap' },
+      { text: t('controls.browse.facets.view_types.calendars'), value: 'calendars', class: 'typeCalendar' },
+      { text: t('controls.browse.facets.view_types.filters'), value: 'filters', class: 'typeFilter' },
+      { text: t('controls.browse.facets.view_types.href'), value: 'href', class: 'typeHref' },
+      { text: t('controls.browse.facets.view_types.blob'), value: 'blob', class: 'typeBlob' },
+      { text: t('controls.browse.facets.view_types.forms'), value: 'forms', class: 'typeForm' }
+    ]
+  end
 
-    add_data_lens_view_type_if_enabled!(vts[:options])
-    add_stories_view_type_if_enabled!(vts[:options])
-    add_pulse_view_type_if_enabled!(vts[:options])
+  def cetera_view_types
+    # These are FE values, not translated into Cetera types
+    supported_core_objects = %w(datasets maps blob href).to_set
+
+    standard_view_types.select do |view_type|
+      supported_core_objects.include? view_type[:value]
+    end
+  end
+
+  def base_view_types_facet
+    {
+      title: t('controls.browse.facets.view_types_title'),
+      singular_description: t('controls.browse.facets.view_types_singular_title'),
+      param: :limitTo,
+      use_icon: true
+    }
+  end
+
+  def view_types_facet
+    view_types = using_cetera? ? cetera_view_types : standard_view_types
+
+    add_data_lens_view_type_if_enabled!(view_types) unless using_cetera?
+    add_stories_view_type_if_enabled!(view_types) unless using_cetera?
+    add_pulse_view_type_if_enabled!(view_types) unless using_cetera?
 
     if module_enabled?(:api_foundry)
-      vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
+      view_types <<
+        { text: t('controls.browse.facets.view_types.apis'), value: 'apis', class: 'typeApi' }
     end
 
-    override_allowed_view_types = CurrentDomain.property(:view_types_facet, :catalog)
+    whitelisted_view_types = CurrentDomain.property(:view_types_facet, :catalog)
+    if whitelisted_view_types # WARN: if you leave this an empty array, no view types!
+      view_types.select! { |vt| whitelisted_view_types.include?(vt) }
+    end
 
-    return vts unless override_allowed_view_types.present?
-    vts[:options].select!{ |opt| override_allowed_view_types.include?(opt[:value]) }
-
-    vts
+    base_view_types_facet.merge(options: view_types)
   end
 
   def categories_facet(params = nil)
     params = params || request_params || {}
 
-    cats = View.category_tree.reject { |c, o| c.blank? }
+    cats = View.category_tree.reject { |c, _| c.blank? }
     return nil if cats.empty?
 
     cat_chop = get_facet_cutoff(:category)
     cats = cats.values.sort_by { |o| o[:value] }
     cats, hidden_cats = cats[0..(cat_chop - 1)], cats[cat_chop..-1] if cats.length > cat_chop
 
+    # This logic is unreadable
     if params[:category].present? && !cats.any? { |cat| cat[:value] == params[:category] ||
       (cat[:children] || []).any? { |cc| cc[:value] == params[:category] } }
       found_cat = (hidden_cats || []).detect { |cat| cat[:value] == params[:category] ||
@@ -118,29 +127,50 @@ protected
     }
   end
 
-  def federated_facet
-    all_feds = Federation.find.
-      select {|f| f.targetDomainCName == CurrentDomain.cname &&
-        f.lensName.empty? && f.acceptedUserId.present?}.
-      sort_by {|f| f.sourceDomainCName}.
-      map {|f| {:text => f.sourceDomainCName, :value => f.sourceDomainId.to_s,
-        :icon => {:type => 'static', :href => "/api/domains/#{f.sourceDomainCName}/icons/smallIcon"}} }
-    return nil if all_feds.length < 1
+  def federations_hash
+    @federations_hash ||= Federation.find.each_with_object({}) do |f, hash|
+      next unless
+        f.targetDomainCName == CurrentDomain.cname &&
+        f.lensName.empty? &&
+        f.acceptedUserId.present?
 
-    fed_chop = get_facet_cutoff(:federation)
-    all_feds.unshift({:text => 'This site only', :value => CurrentDomain.domain.id.to_s,
-        :icon => {:type => 'static', :href => "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"}})
-    top_feds = all_feds.slice(0, fed_chop)
-    fed_cloud = nil
-    if all_feds.length > fed_chop
-      fed_cloud = all_feds[fed_chop..-1]
+      hash[f.sourceDomainId] = f.sourceDomainCName
+    end
+  end
+
+  def federated_facet
+    all_feds = federations_hash.sort_by(&:last).map do |f_id, f_cname|
+      {
+        text: f_cname,
+        value: f_id.to_s,
+        icon: {
+          type: 'static',
+          href: "/api/domains/#{f_cname}/icons/smallIcon"
+        }
+      }
     end
 
-    { :title => t('controls.browse.facets.federated_domains_title'),
-      :singular_description => t('controls.browse.facets.federated_domains_singular_title'),
-      :param => :federation_filter,
-      :options => top_feds,
-      :extra_options => fed_cloud
+    return nil if all_feds.length < 1
+
+    all_feds.unshift(
+      text: 'This site only',
+      value: CurrentDomain.domain.id.to_s,
+      icon: {
+        type: 'static',
+        href: "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"
+      }
+    )
+
+    fed_chop = get_facet_cutoff(:federation)
+    top_feds = all_feds.slice(0, fed_chop)
+    fed_cloud = all_feds[fed_chop..-1] if all_feds.length > fed_chop
+
+    {
+      title: t('controls.browse.facets.federated_domains_title'),
+      singular_description: t('controls.browse.facets.federated_domains_singular_title'),
+      param: :federation_filter,
+      options: top_feds,
+      extra_options: fed_cloud
     }
   end
 
@@ -307,20 +337,15 @@ protected
         end
     end
 
-    browse_options[:facets] ||=
-      if using_cetera?(user_params)
-        [ view_types_facet(user_params) ]
-      else
-        [
-          view_types_facet(user_params),
-          cfs,
-          categories_facet,
-          topics_facet,
-          federated_facet
-        ]
-      end
+    browse_options[:facets] ||= [
+      view_types_facet,
+      (cfs unless using_cetera?), # to be implemented
+      categories_facet,
+      (topics_facet unless using_cetera?), # to be implemented
+      federated_facet
+    ]
 
-    browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }
+    browse_options[:facets] = browse_options[:facets].compact.flatten.reject { |f| f[:hidden] }
 
     if browse_options[:suppressed_facets].is_a? Array
       browse_options[:facets].reject! do |facet|
@@ -335,11 +360,13 @@ protected
     browse_options[:sort_opts] ||= default_browse_sort_opts
     browse_options[:disable] = {} unless browse_options[:disable].present?
 
+    # TODO: include? filters should be done on sets
     # get the subset relevant to various things
-    browse_options[:search_options] = browse_options.select{ |k| @@search_options.include?(k) }
-                                                    .merge(search_options)
-    ignore_params = (browse_options[:ignore_params] || []) + [ :controller, :action, :page ]
-    browse_options[:user_params] = user_params.reject{ |k| ignore_params.include?(k) }
+    browse_options[:search_options] =
+      browse_options.select { |k| @@search_options.include?(k) }.merge(search_options)
+
+    ignore_params = (browse_options[:ignore_params] || []) + [:controller, :action, :page]
+    browse_options[:user_params] = user_params.reject { |k| ignore_params.include?(k) }
 
     # insert utf8 snowman thing
     browse_options[:user_params][:utf8] = '✓'
@@ -347,27 +374,48 @@ protected
     # Don't get rows in search, just in JS
     browse_options[:row_count] = browse_options[:search_options].delete(:row_count)
 
-    if browse_options[:view_results].nil? || browse_options[:view_results].empty?
-      Rails.logger.info("IT WAS AN EMPTY ARRAY") unless browse_options[:view_results].nil?
+    if browse_options[:view_results].blank?
       begin
-        browse_options[:cetera_search] = using_cetera?(user_params)
-        if browse_options[:cetera_search]
-          view_results = Cetera.search_views(browse_options[:search_options])
-        else
-          view_results = Clytemnestra.search_views(browse_options[:search_options])
-        end
+        view_results =
+          if using_cetera?
+            # TODO: actually check if federation is enabled first
+            fed_id = browse_options[:search_options][:federation_filter]
+            browse_options[:search_options][:domains] =
+              if fed_id.present?
+                # Federation filter domain id has to be translated to domain cname for Cetera
+                federations_hash.merge(CurrentDomain.domain.id => CurrentDomain.cname)[fed_id.to_i]
+              else
+                # All domains in the federation
+                [CurrentDomain.cname].concat(federations_hash.values.sort).join(',')
+              end
+            Cetera.search_views(browse_options[:search_options])
+          else
+            Clytemnestra.search_views(browse_options[:search_options])
+          end
+
         browse_options[:view_count] = view_results.count
         browse_options[:view_results] = view_results.results
+
       rescue CoreServer::TimeoutError
         Rails.logger.warn("Timeout on Clytemnestra request for #{browse_options.to_json}")
-        browse_options[:view_request_timed_out] = true
+        browse_options[:view_request_error] = true
+        browse_options[:view_results] = []
+
+      rescue => e
+        Rails.logger.error("Unexpected error for #{browse_options.to_json}: #{e}")
+        browse_options[:view_request_error] = true
         browse_options[:view_results] = []
       end
     end
 
+    # TODO: implement federated? for Cetera
     # check whether or not we need to display icons for other domains
-    browse_options[:use_federations] = browse_options[:nofederate] ? false :
-      browse_options[:view_results].any?{ |v| v.federated? } if browse_options[:use_federations].nil?
+    browse_options[:use_federations] =
+      if browse_options[:nofederate]
+        false
+      elsif browse_options[:use_federations].nil?
+        browse_options[:view_results].any?(&:federated?)
+      end
 
     # set up which grid columns to display if we don't have one already
     browse_options[:grid_items] ||=
@@ -392,14 +440,14 @@ protected
       end
 
     # In Cetera search, hide the RSS feed links as well as the popularity count
-    if using_cetera?(user_params)
+    if using_cetera?
       browse_options[:hide_catalog_rss] = true
       browse_options[:grid_items][:rss] = false
       browse_options[:grid_items][:popularity] = false
     end
 
     # Set browse partial paths based on using_cetera
-    if using_cetera?(user_params)
+    if using_cetera?
       browse_options[:browse_table_partial] = 'datasets/browse_table_cetera'
       browse_options[:browse_counter_partial] = 'datasets/browse_counter_cetera'
     else
@@ -412,7 +460,7 @@ protected
     browse_options[:show_catalog_sort_dropdown] =
       browse_options[:view_count] &&
       browse_options[:view_count] > 0 &&
-      !browse_options[:view_request_timed_out] &&
+      !browse_options[:view_request_error] &&
       !browse_options[:sort_opts].empty? &&
       !browse_options[:disable][:sort] &&
       !browse_options[:cetera_search]
@@ -420,7 +468,7 @@ protected
     return browse_options
   end
 
-private
+  private
 
   def get_title(options, facets)
     title = []
@@ -504,6 +552,8 @@ private
 
     should_show_data_lenses
   end
+
+  # TODO: All the add with pluck should be made immutable merges and sorted
 
   def add_data_lens_view_type_if_enabled!(view_type_list)
     if add_data_lens_view_type?

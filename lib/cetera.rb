@@ -1,54 +1,37 @@
-require 'ostruct'
 require 'forwardable'
-require 'cgi'
+require 'httparty'
+require 'ostruct'
 
 module Cetera
-  @@cetera_host = APP_CONFIG.cetera_host
-  @@version = 'v1'
-  @@api_path = "catalog/#{@@version}"
-
   def self.search_views(opts)
-    params = cetera_soql_params(opts)
-    path = "#{@@cetera_host}/#{@@api_path}#{params}"
-    result = Net::HTTP.get_response(URI(path))
+    cetera_url = "#{APP_CONFIG.cetera_host}/catalog/v1"
+    result = HTTParty.get(cetera_url, query: cetera_soql_params(opts))
     CeteraSearchResult.from_result(result.body)
   end
 
-  def self.cetera_soql_params(opts = {})
-    # Hack to populate catalog with chicago data for local testing
-    # Add local_data_hack=true in the URL search params
-    domain = opts[:local_data_hack] ? 'data.cityofchicago.org' : CurrentDomain.cname
-
-    # Translate to Cetera syntax
-    only = case opts[:limitTo]
-    when 'tables'
-      'datasets'
-    when 'new_view'
-      'pages'
-    else
-      opts[:limitTo]
-    end
-
-    params = ''
-
-    query = opts[:q] ? CGI::escape(opts[:q]) : nil
-    # Calculate the Cetera offset by 0-indexing page and multiplying
-    # by the limit (number of results per page).
-    offset = opts[:page] ? (opts[:page] - 1) * opts[:limit] : 0
+  # Translate FE 'limitTo' param to Cetera 'only' param
+  def self.translate_limit_type(limitTo)
     {
-      :domains => domain,
-      :search_context => domain,
-      :only => only,
-      :q => query,
-      :offset => offset,
-      :limit => opts[:limit],
-      :highlight => true
-    }.reject { |k, v| v.nil? }.each_with_index { |(key, value), index|
-      params += "#{(index == 0) ? '?' : '&'}#{key}=#{value}"
-    }
-    params
+      'tables' => 'datasets', # blame browse_actions.rb
+      'blob' => 'files',
+      'href' => 'external' # this will become 'links'
+    }.fetch(limitTo, limitTo)
   end
 
+  def self.cetera_soql_params(opts = {})
+    {
+      domains: opts[:domains],
+      search_context: CurrentDomain.cname,
+      only: translate_limit_type(opts[:limitTo]),
+      categories: opts[:category],
+      q: opts[:q],
+      offset: opts[:page] ? (opts[:page] - 1) * opts[:limit] : 0,
+      limit: opts[:limit],
+      highlight: true
+    }.reject { |_, v| v.blank? }
+  end
+
+  # A row of Cetera results
   class CeteraResultRow
     extend Forwardable
 
@@ -56,63 +39,68 @@ module Cetera
       @data = data
       @resource = @data['resource']
       @classification = @data['classification']
+      @metadata = @data['metadata']
+      @id = @resource['id']
+
+      # NOTE: dataset.js reasons about federation like so: if a row has a domainCName, that row is federated
+      # Yes, we have the same thing in two places and one can be defined while the other is not.
+      @domainCName = @metadata['domain'] if @metadata['domain'] != CurrentDomain.cname
 
       @data_ostruct = OpenStruct.new(
-        :id => @resource['id'],
-        :link => @data['link'],
-        :name => @resource['name'],
-        :description => @resource['description'],
-        :type => @resource['type'],
-        :categories => @classification['categories'],
-        :tags => @classification['tags']
+        id: @resource['id'],
+        link: @data['link'],
+        name: @resource['name'],
+        description: @resource['description'],
+        type: @resource['type'],
+        categories: [@classification['customerCategory']],
+        tags: @classification['tags'],
+        viewCount: @resource['view_count'] && @resource['view_count']['page_views_total'].to_i,
+        domainCName: @metadata['domain']
       )
     end
 
-    def_delegators :@data_ostruct, :id, :link, :name, :description, :type, :categories, :tags
+    def_delegators :@data_ostruct, :id, :link, :name, :description, :type, :categories, :tags, :viewCount, :domainCName
 
-    def display_title
+    def airbrake_type_error(type)
+      Airbrake.notify(
+        error_class: 'CeteraUnrecognizedTypeError',
+        error_message: "Frontend unable to match Cetera type #{type}"
+      )
+    end
+
+    def display
       case type
       when 'dataset'
-        Cetera::Displays::Dataset.title
-      when 'page'
-        Cetera::Displays::Page.title
+        Cetera::Displays::Dataset
+      when 'file'
+        Cetera::Displays::File
+
+      # Cetera is replacing type 'href' with type 'link'
+      when 'href'
+        Cetera::Displays::Link
+      when 'link'
+        Cetera::Displays::Link
+
+      when 'map'
+        Cetera::Displays::Map
       else
-        Airbrake.notify(
-          :error_class => 'CeteraUnrecognizedTypeError',
-          :error_message => "Frontend unable to match Cetera type #{type}"
-        )
-        ''
+        airbrake_type_error(type)
+        # In development, you might want this to raise.
+        # In production, probably not.
+        Cetera::Displays::Base
       end
+    end
+
+    def display_title
+      display.title
     end
 
     def display_class
-      case type
-      when 'dataset'
-        Cetera::Displays::Dataset.type.capitalize
-      when 'page'
-        Cetera::Displays::Page.type.capitalize
-      else
-        Airbrake.notify(
-          :error_class => 'CeteraUnrecognizedTypeError',
-          :error_message => "Frontend unable to match Cetera type #{type}"
-        )
-        ''
-      end
+      display.type.capitalize
     end
 
     def icon_class
-      case type
-      when 'dataset'
-        Cetera::Displays::Dataset.icon_class
-      when 'page'
-        Cetera::Displays::Page.icon_class
-      else
-        Airbrake.notify(
-          :error_class => 'CeteraUnrecognizedTypeError',
-          :error_message => "Frontend unable to match Cetera type #{type}"
-        )
-        'icon'
-      end
+      display.icon_class
     end
 
     def default_page
@@ -120,7 +108,7 @@ module Cetera
     end
 
     def federated?
-      false # TODO
+      domainCName != CurrentDomain.cname
     end
 
     def new_view?
@@ -131,8 +119,8 @@ module Cetera
       type == 'story'
     end
 
-    def domainCName
-      @resource['domain'] || ''
+    def domain_icon_href
+      "/api/domains/#{domainCName}/icons/smallIcon"
     end
   end
 
@@ -146,20 +134,22 @@ module Cetera
     end
 
     def self.from_result(result)
-      unless result.nil?
-        obj = self.new(JSON.parse(result, :max_nesting => 25))
-      end
+      new(JSON.parse(result, max_nesting: 25)) if result.present?
     end
 
     def results
-      @results ||= (data['results'] || []).map{ |data| self.class.klass.new(data) }
+      @results ||= (data['results'] || []).map { |data| self.class.klass.new(data) }
     end
 
     def count
       data['resultSetSize']
     end
+
+    def display
+    end
   end
 
+  # Who uses this @klass?
   class CeteraSearchResult < SearchResult
     @klass = Cetera::CeteraResultRow
   end

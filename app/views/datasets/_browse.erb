@@ -215,7 +215,7 @@
       </div>
 
       <div class="results">
-        <%- if opts[:view_request_timed_out] -%>
+        <%- if opts[:view_request_error] -%>
           <div class="noResults">
             <span class="message"><%= opts[:timeout_text] %></span>
             <%- unless opts[:embedded_browse_iframe_hack] -%>
@@ -394,7 +394,7 @@
         <%- end -%>
       </div>
 
-      <%- if !opts[:view_request_timed_out] && opts[:view_count] && opts[:view_count] > 0 -%>
+      <%- if !opts[:view_request_error] && opts[:view_count] && opts[:view_count] > 0 -%>
         <%= create_pagination(opts[:view_count], opts[:limit],
         opts[:page], opts[:base_url] + '?' + opts[:user_params].to_param, 'button') unless opts[:disable][:pagination] %>
         <%- if (opts[:footer_config].nil? || opts[:footer_config].counter) && !opts[:disable][:counter] -%>

@@ -64,19 +64,18 @@
           #
           #
           # This endpoint will remain active.
-          -%>
-          <%-
-            # Not sure what `.has_right?('grant')` is expected to return-- it is nil even on a public
-            # dataset as a superadmin on my local machine. I am leaving it in place because I can't
-            # understand its behavior.
-            if @view.has_right?('grant') ||
-              # If the current user is an admin on the domain we want to allow them to send email regardless
-              # of the state of the feature flag. The dialog box used for this case hits a different,
-              # authenticated endpoint for email.
-              (CurrentDomain.member?(current_user) && current_user.is_admin?) ||
-              # If the feature flag to show the button is set to true and the view is public, then enable
-              # the share by email dialog box that hits the unauthenticated endpoint.
-              (FeatureFlags.derive(@view, request).show_share_dataset_by_email_button_for_general_users && @view.is_public?)
+          #
+          # I am not sure what `.has_right?('grant')` is expected to return non-nil-- it is nil even
+          # on a public dataset as a superadmin on my local machine. I am leaving it in place because
+          # I can't understand its behavior.
+          if @view.has_right?('grant') ||
+            # If the current user is an admin on the domain we want to allow them to send email regardless
+            # of the state of the feature flag. The dialog box used for this case hits a different,
+            # authenticated endpoint for email.
+            (CurrentDomain.member?(current_user) && current_user.is_admin?) ||
+            # If the feature flag to show the button is set to true and the view is public, then enable
+            # the share by email dialog box that hits the unauthenticated endpoint.
+            (FeatureFlags.derive(@view, request).show_share_dataset_by_email_button_for_general_users && @view.is_public?)
           -%>
             <li><a class="email" href="#email" title="<%= t('screens.ds.bar.share_email') %>">
               <span class="icon"><%= t('screens.ds.bar.share_email') %></span></a></li>

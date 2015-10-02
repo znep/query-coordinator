@@ -72,7 +72,7 @@
 <% content_for :js_footer do %>
   <%- unless params[:no_js] == 'true' -%>
     <script type="text/javascript" id="bar">
-      blist.namespace.fetch('blist.georegions').georegions = <%== @view_model.curated_regions.to_json %>;
+      blist.namespace.fetch('blist.georegions').georegions = <%== @view_model.curated_regions.map {|region| region.name = j(region.name); region }.to_json %>;
       blist.namespace.fetch('blist.georegions').maximumEnabledCount = <%== @view_model.maximum_enabled_count.to_json %>;
       blist.namespace.fetch('blist.georegions').flash = <%== flash.map { |type, message| { :type => type, :message => message } }.to_json %>;
     </script>

@@ -43,6 +43,9 @@
       this.setState({ dirty: true, value: value });
       onChange(value);
     },
+    handleBlur: function() {
+      this.setState({ dirty: true });
+    },
     render: function() {
       const {
         id,
@@ -71,7 +74,7 @@
           <input
             className={className}
             id={id}
-            onBlur={() => {this.setState({ dirty: true })}}
+            onBlur={this.handleBlur}
             onChange={this.handleChange}
             ref="input"
             type="text"

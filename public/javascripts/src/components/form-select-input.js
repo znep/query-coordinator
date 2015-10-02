@@ -81,6 +81,11 @@
         ...props
       };
 
+      let initialOptionFragment = null;
+      if (initialOption) {
+        initialOptionFragment = (<option value="">{initialOption}</option>);
+      }
+
       return (
         <FormInput {...formInputProps}>
           <select
@@ -90,7 +95,7 @@
             ref="select"
             value={value}
             >
-            {initialOption ? (<option value="">{initialOption}</option>) : null}
+            {initialOptionFragment}
             {this.renderOptions(options)}
           </select>
         </FormInput>

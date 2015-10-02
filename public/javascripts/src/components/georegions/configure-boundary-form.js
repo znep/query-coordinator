@@ -45,6 +45,7 @@
       if (!_.isEmpty(this.props.initialState)) {
         return;
       }
+
       const complete = () => this.setState({ isLoading: false });
       const success = (initialState) => this.setState({ ...initialState });
       const error = (message) => this.setState({ errorMessage: message });
@@ -112,6 +113,10 @@
         primaryKeyColumns,
       } = this.state;
 
+      const handleChange = (primaryKey) => {
+        this.setState({ primaryKey });
+      };
+
       if(allowPrimaryKeySelection) {
         return (
           <FormSelectInput
@@ -120,7 +125,7 @@
             initialValue={primaryKey}
             initialOption={"Choose a column..."}
             label={ t('configure_boundary.primary_key_column') }
-            onChange={ (primaryKey) => { this.setState({ primaryKey }) } }
+            onChange={handleChange}
             options={this.makeFormSelectInputOptions(primaryKeyColumns)}
             required={true}
             validationError={ t('configure_boundary.primary_key_column_missing_field_error') }
@@ -129,71 +134,106 @@
       }
     },
 
-    render: function() {
+    renderBoundaryNameField: function() {
+      const { name } = this.state;
+
+      const handleChange = (name) => {
+        this.setState({ name });
+      };
+
+      return (
+        <FormTextInput
+          description={ t('configure_boundary.boundary_name_description') }
+          id="boundary_name"
+          initialValue={name}
+          label={ t('configure_boundary.boundary_name') }
+          onChange={handleChange}
+          required={true}
+          validationError={ t('configure_boundary.boundary_name_required_field_error') }
+          />
+      );
+    },
+
+    renderFlashMessage: function() {
+      const { errorMessage } = this.state;
+
+      if (!_.isUndefined(errorMessage)) {
+        return (
+          <FlashMessage messages={[{ type: 'error', message: errorMessage }]} />
+        )
+      }
+    },
+
+    renderFormControls: function() {
       const {
         cancelLabel,
         onCancel,
         saveLabel,
-        title
       } = this.props;
 
+      return (
+        <FormControls
+          cancelLabel={cancelLabel}
+          saveDisabled={!this.validateForm()}
+          onCancel={onCancel}
+          onSave={this.handleSave}
+          saveLabel={saveLabel}
+          />
+      );
+    },
+
+    renderShapeLabelField: function() {
       const {
-        errorMessage,
         geometryLabel,
         geometryLabelColumns,
-        isLoading,
-        name
       } = this.state;
+
+      const handleChange = (geometryLabel) => {
+        this.setState({ geometryLabel });
+      };
+
+      return (
+        <FormSelectInput
+          description={ t('configure_boundary.shape_label_description') }
+          id="shape_label"
+          initialValue={geometryLabel}
+          initialOption={"Choose a column..."}
+          label={ t('configure_boundary.shape_label') }
+          onChange={handleChange}
+          options={this.makeFormSelectInputOptions(geometryLabelColumns)}
+          required={true}
+          validationError={ t('configure_boundary.boundary_geometry_label_field_error') }
+          />
+      );
+    },
+
+    renderSpinner: function() {
+      const { isLoading } = this.state;
 
       const spinnerStyle = {
         display: isLoading ? 'block' : 'none'
       };
 
       return (
+        <div className="georegion-spinner" style={spinnerStyle}>
+          <img src="/stylesheets/images/common/BrandedSpinner.gif" />
+        </div>
+      )
+    },
+
+    render: function() {
+      const { title } = this.props;
+
+      return (
         <div>
-          <div className="georegion-spinner" style={spinnerStyle}>
-            <img src="/stylesheets/images/common/BrandedSpinner.gif" />
-          </div>
-
+          {this.renderSpinner()}
           <h2>{title}</h2>
-
-          <div>{_.isUndefined(errorMessage) ? null : <FlashMessage messages={[{ type: 'error', message: errorMessage }]} />}</div>
-
-          <form
-            className="commonForm"
-            onSubmit={this.handleSubmit}
-            >
-            <FormTextInput
-              description={ t('configure_boundary.boundary_name_description') }
-              id="boundary_name"
-              initialValue={name}
-              label={ t('configure_boundary.boundary_name') }
-              onChange={ (name) => this.setState({ name }) }
-              required={true}
-              validationError={ t('configure_boundary.boundary_name_required_field_error') }
-              />
-
-            <FormSelectInput
-              description={ t('configure_boundary.shape_label_description') }
-              id="shape_label"
-              initialValue={geometryLabel}
-              initialOption={"Choose a column..."}
-              label={ t('configure_boundary.shape_label') }
-              onChange={ (geometryLabel) => { this.setState({ geometryLabel }) } }
-              options={this.makeFormSelectInputOptions(geometryLabelColumns)}
-              required={true}
-              validationError={ t('configure_boundary.boundary_geometry_label_field_error') }
-              />
-
+          {this.renderFlashMessage()}
+          <form className="commonForm" onSubmit={this.handleSubmit}>
+          {this.renderBoundaryNameField()}
+            {this.renderShapeLabelField()}
             {this.renderKeySelector()}
-
-            <FormControls
-              cancelLabel={cancelLabel}
-              saveDisabled={!this.validateForm()}
-              onCancel={onCancel}
-              onSave={this.handleSave}
-              saveLabel={saveLabel}
-              />
+            {this.renderFormControls()}
           </form>
         </div>
       );

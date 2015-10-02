@@ -15,13 +15,12 @@ var t = function(str, props) {
   } = georegionsComponentsNS;
   georegionsNS.flash = georegionsNS.flash || {};
 
-  function onEnableSuccess(id, newState, response) {
-    if (response.success) {
-      setFlashMessage(response.message, 'notice');
+  function onEnableSuccess(id, newState, { error, message, success }) {
+    if (success) {
+      setFlashMessage(message, 'notice');
       updateGeoregion(id, { enabledFlag: newState });
-    }
-    else if (response.error) {
-      setFlashMessage(response.message, 'error');
+    } else if (error) {
+      setFlashMessage(message, 'error');
     }
   }
 
@@ -113,18 +112,16 @@ var t = function(str, props) {
     let $reactModal = $('#react-modal');
     clearFlashMessage();
 
-    const fetchInitialState = (completeCallback, successCallback) => {
+    const fetchInitialState = (completeCallback, successCallback, errorCallback) => {
       $.ajax({
         url: `/admin/geo/${id}`,
         type: 'get',
         dataType: 'json',
         complete: completeCallback,
-        success: (response) => {
-          const { error, message, success } = response;
+        success: ({ error, message, success }) => {
           if (success) {
             successCallback(message);
-          }
-          if (error) {
+          } else if (error) {
             errorCallback(message);
           }
         }
@@ -132,13 +129,13 @@ var t = function(str, props) {
     };
 
     const onSave = (boundary, completeCallback, successCallback, errorCallback) => {
-      const success = (response) => {
-        if (response.success) {
-          updateGeoregion(id, response.message);
+      const success = ({ error, message, success }) => {
+        if (success) {
+          updateGeoregion(id, message);
           setFlashMessage(t('configure_boundary.save_success'), 'notice');
           closeConfigureModal();
         }
-        if (response.error) {
+        if (error) {
           errorCallback(t('configure_boundary.save_error'));
         }
       };
@@ -185,12 +182,10 @@ var t = function(str, props) {
         type: 'get',
         dataType: 'json',
         complete: completeCallback,
-        success: (response) => {
-          const { error, message, success } = response;
+        success: ({ error, message, success }) => {
           if (success) {
             successCallback(message);
-          }
-          if (error) {
+          } else if (error) {
             errorCallback(message);
           }
         },
@@ -199,20 +194,19 @@ var t = function(str, props) {
     };
 
     const onSave = (boundary, completeCallback, errorCallback) => {
-      const success = (response) => {
-        if (response.success) {
-          addGeoregion(response.message);
+      const success = ({ error, message, success }) => {
+        if (success) {
+          addGeoregion(message);
           setFlashMessage(t('configure_boundary.save_success'), 'notice');
           closeConfigureModal();
-        }
-        if (response.error) {
-          errorCallback(t('configure_boundary.save_core_error', {error_message: response.message}));
+        } else if (error) {
+          errorCallback(t('configure_boundary.save_core_error', {error_message: message}));
         }
       };
 
       $.ajax({
         contentType: 'application/json',
-        url: `/admin/geo`,
+        url: '/admin/geo',
         type: 'post',
         data: JSON.stringify(_.extend({ id: uid }, boundary)),
         dataType: 'json',

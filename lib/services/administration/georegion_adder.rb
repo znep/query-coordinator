@@ -10,9 +10,9 @@ module Services
       #   "defaultFlag" : false
       # }
 
-      def add(view_id, feature_pk, geometry_label = nil, name = nil, options = nil)
+      def add(view_id, primary_key, geometry_label = nil, name = nil, options = nil)
         raise '"id" is required' if view_id.nil?
-        raise '"primaryKey" is required' if feature_pk.nil?
+        raise '"primaryKey" is required' if primary_key.nil?
 
         view = View.find(view_id)
         return unless validate_view(view)
@@ -21,7 +21,7 @@ module Services
           :uid => view_id,
           :name => name || view.name,
           :geometryLabel => geometry_label,
-          :featurePk => feature_pk
+          :featurePk => primary_key
         }
         attributes = attributes.merge(options) unless options.nil?
         response = make_request(attributes)

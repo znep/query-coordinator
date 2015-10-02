@@ -20,7 +20,7 @@
       if (_.isFunction(commonNS.georegionSelected)) {
         commonNS.georegionSelected(selectedDataset.id);
       } else {
-        throw "Can't find the georegionSelected handler in the parent!"
+        throw "Can't find the georegionSelected handler in the parent!";
       }
     });
   });

@@ -31,7 +31,7 @@ describe('FormInput', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement()).to.exist.and.to.be.a.reactElement;
+    expect(this.createElement()).to.be.a.reactElement;
   });
 
   it('renders', function() {
@@ -43,7 +43,7 @@ describe('FormInput', function() {
   it('has a label', function() {
     var node = this.renderIntoDocument();
     var label = findAllByTag(node, 'label')[0].getDOMNode();
-    expect(label).to.exist.and.to.have.textContent('my input');
+    expect(label).to.have.textContent('my input');
   });
 
   it('shows validation errors', function() {
@@ -52,13 +52,13 @@ describe('FormInput', function() {
       validationError: 'error message'
     });
     var label = findAllByTag(node, 'label')[1].getDOMNode();
-    expect(label).to.exist.and.to.have.textContent('error message');
+    expect(label).to.have.textContent('error message');
   });
 
   it('has a description', function() {
     var node = this.renderIntoDocument();
     var option = findByTag(node, 'p').getDOMNode();
-    expect(option).to.exist.and.to.have.textContent('my description');
+    expect(option).to.have.textContent('my description');
   });
 
   it('can be required', function() {

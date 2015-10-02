@@ -18,6 +18,13 @@ describe('FormSelectInput', function() {
       id: 'id',
       label: 'my input'
     };
+    this.createElement = function(addProps) {
+      var props = _.extend({}, this.props, addProps);
+      return React.createElement(FormSelectInput, props);
+    };
+    this.renderIntoDocument = function(props) {
+      return TestUtils.renderIntoDocument(this.createElement(props));
+    };
   });
 
   afterEach(function() {
@@ -25,55 +32,40 @@ describe('FormSelectInput', function() {
   });
 
   it('exists', function() {
-    expect(FormSelectInput).to.exist;
+    expect(this.createElement()).to.be.a.reactElement;
   });
 
   it('renders', function() {
-    this.shallowRenderer.render(React.createElement(FormSelectInput, this.props));
+    this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(TestUtils.isElementOfType(result, FormInput)).to.eq(true);
-  });
-
-  it('has a label', function() {
-    var node = TestUtils.renderIntoDocument(React.createElement(FormSelectInput, this.props));
-    var label = findAllByTag(node, 'label')[0].getDOMNode();
-    expect(label).to.exist.and.to.have.textContent('my input');
+    expect(result).to.be.an.elementOfType(FormInput);
   });
 
   it('shows validation errors', function() {
-    var props = _.extend({
+    var node = this.renderIntoDocument({
       required: true,
       validationError: 'error message'
-    }, this.props);
-    var node = TestUtils.renderIntoDocument(React.createElement(FormSelectInput, props));
+    });
     TestUtils.Simulate.change(findByTag(node, 'select'));
-    var label = findAllByTag(node, 'label')[1].getDOMNode();
-    expect(label).to.exist.and.to.have.textContent('error message');
+    var formInput = TestUtils.findRenderedComponentWithType(node, FormInput);
+    expect(formInput.props.showValidationError).to.eq(true);
   });
 
   it('has a default option', function() {
-    var props = _.extend({
+    var node = this.renderIntoDocument({
       initialOption: 'Choose something'
-    }, this.props);
-    var node = TestUtils.renderIntoDocument(React.createElement(FormSelectInput, props));
+    });
     var option = findByTag(node, 'option').getDOMNode();
-    expect(option).to.exist.and.to.have.textContent('Choose something');
-  });
-
-  it('has a description', function() {
-    var node = TestUtils.renderIntoDocument(React.createElement(FormSelectInput, this.props));
-    var option = findByTag(node, 'p').getDOMNode();
-    expect(option).to.exist.and.to.have.textContent('my description');
+    expect(option).to.have.textContent('Choose something');
   });
 
   it('renders the options passed to it', function() {
-    var props = _.extend({
+    var node = this.renderIntoDocument({
       options: [
         { key: '1', label: 'one', value: 'uno' },
         { key: '2', label: 'two', value: 'dos' }
       ]
-    }, this.props);
-    var node = TestUtils.renderIntoDocument(React.createElement(FormSelectInput, props));
+    });
     var options = findAllByTag(node, 'option');
     expect(options).to.have.length(2);
     var option1 = options[0].getDOMNode();
@@ -82,14 +74,13 @@ describe('FormSelectInput', function() {
   });
 
   it('can have an initial value', function() {
-    var props = _.extend({
+    var node = this.renderIntoDocument({
       initialValue: 'dos',
       options: [
         { key: '1', label: 'one', value: 'uno' },
         { key: '2', label: 'two', value: 'dos' }
       ]
-    }, this.props);
-    var node = TestUtils.renderIntoDocument(React.createElement(FormSelectInput, props));
+    });
     var options = findAllByTag(node, 'option');
     var option2 = options[1].getDOMNode();
     expect(option2).to.have.textContent('two');

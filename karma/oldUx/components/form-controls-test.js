@@ -11,6 +11,13 @@ describe('FormControls', function() {
     sinon.stub($, 't', function(key) {
       return 'Translation for: ' + key;
     });
+    this.createElement = function(addProps) {
+      var props = _.extend({}, this.props, addProps);
+      return React.createElement(FormControls, props);
+    };
+    this.renderIntoDocument = function(props) {
+      return TestUtils.renderIntoDocument(this.createElement(props));
+    };
   });
 
   afterEach(function() {
@@ -22,19 +29,21 @@ describe('FormControls', function() {
   });
 
   it('renders', function() {
-    this.shallowRenderer.render(React.createElement(FormControls));
+    this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result.type).to.eq('div');
+    expect(result).to.be.an.elementOfType('div');
   });
 
   describe('cancel button', function() {
     beforeEach(function() {
-      this.node = TestUtils.renderIntoDocument(React.createElement(FormControls, { onCancel: _.noop }));
+      this.node = this.renderIntoDocument({ onCancel: _.noop });
     });
+
     it('renders a button', function() {
       var buttons = findAllByTag(this.node, 'button');
       expect(buttons).to.have.length(1);
     });
+
     it('renders with the appropriate text', function() {
       var button = findByTag(this.node, 'button').getDOMNode();
       expect(button).to.have.className('button').
@@ -44,7 +53,7 @@ describe('FormControls', function() {
 
   describe('save button', function() {
     beforeEach(function() {
-      this.node = TestUtils.renderIntoDocument(React.createElement(FormControls, { onSave: _.noop }));
+      this.node = this.renderIntoDocument({ onSave: _.noop });
     });
 
     it('renders a button', function() {
@@ -66,7 +75,10 @@ describe('FormControls', function() {
 
     describe('disabled', function() {
       beforeEach(function() {
-        var node = TestUtils.renderIntoDocument(React.createElement(FormControls, { onSave: _.noop, saveDisabled: true }));
+        var node = this.renderIntoDocument({
+          onSave: _.noop,
+          saveDisabled: true
+        });
         this.button = findByTag(node, 'button').getDOMNode();
       });
 

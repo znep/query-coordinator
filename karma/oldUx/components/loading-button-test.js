@@ -7,31 +7,32 @@ describe('LoadingButton', function() {
   var findByClass = TestUtils.findRenderedDOMComponentWithClass;
 
   beforeEach(function() {
-    this.target = $('<div/>').appendTo(document.body).get(0);
     this.shallowRenderer = TestUtils.createRenderer();
     this.props = {
     };
-  });
-
-  afterEach(function() {
-    $(this.target).remove();
+    this.createElement = function(addProps) {
+      var props = _.extend({}, this.props, addProps);
+      return React.createElement(LoadingButton, props);
+    };
+    this.renderIntoDocument = function(props) {
+      return TestUtils.renderIntoDocument(this.createElement(props));
+    };
   });
 
   it('exists', function() {
-    expect(LoadingButton).to.exist;
+    expect(this.createElement()).to.be.a.reactElement;
   });
 
   it('renders', function() {
-    this.shallowRenderer.render(React.createElement(LoadingButton, this.props));
+    this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result.type).to.eq('button');
+    expect(result).to.be.an.elementOfType('button');
   });
 
   describe('when isLoading=true', function() {
 
     beforeEach(function() {
-      this.props['isLoading'] = true;
-      this.node = TestUtils.renderIntoDocument(React.createElement(LoadingButton, this.props));
+      this.node = this.renderIntoDocument({ isLoading: true });
     });
 
     it('shows the spinner', function() {
@@ -44,8 +45,7 @@ describe('LoadingButton', function() {
 
   describe('disabled', function() {
     beforeEach(function() {
-      this.props['disabled'] = true;
-      this.node = TestUtils.renderIntoDocument(React.createElement(LoadingButton, this.props));
+      this.node = this.renderIntoDocument({ disabled: true });
       this.button = findByTag(this.node, 'button').getDOMNode();
     });
 

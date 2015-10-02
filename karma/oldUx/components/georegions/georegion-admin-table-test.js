@@ -10,11 +10,19 @@ describe('GeoregionAdminTable', function() {
       baseUrlPath: '/admin/geo/',
       onEnableSuccess: _.noop
     };
-    this.node = TestUtils.renderIntoDocument(React.createElement(GeoregionAdminTable, this.props));
+
+    this.createElement = function(addProps) {
+      var props = _.extend({}, this.props, addProps);
+      return React.createElement(GeoregionAdminTable, props);
+    };
+    this.renderIntoDocument = function(props) {
+      return TestUtils.renderIntoDocument(this.createElement(props));
+    };
+    this.node = this.renderIntoDocument();
   });
 
   it('exists', function() {
-    expect(GeoregionAdminTable).to.exist;
+    expect(this.createElement()).to.be.a.reactElement;
   });
 
   it('renders', function() {
@@ -22,19 +30,20 @@ describe('GeoregionAdminTable', function() {
   });
 
   it('renders', function() {
-    this.shallowRenderer.render(React.createElement(GeoregionAdminTable, this.props));
+    this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
     expect(result.type).to.eq('table');
   });
 
   describe('with row data', function() {
     beforeEach(function() {
-      this.props['rows'] = [
-        { enabledFlag: true, id: 1, name: 'Item 1' },
-        { enabledFlag: false, id: 2, name: 'Item 2' },
-        { enabledFlag: true, id: 3, name: 'Item 3' }
-      ];
-      this.node = TestUtils.renderIntoDocument(React.createElement(GeoregionAdminTable, this.props));
+      this.node = this.renderIntoDocument({
+        rows: [
+          { enabledFlag: true, id: 1, name: 'Item 1' },
+          { enabledFlag: false, id: 2, name: 'Item 2' },
+          { enabledFlag: true, id: 3, name: 'Item 3' }
+        ]
+      });
     });
 
     it('renders the rows', function() {

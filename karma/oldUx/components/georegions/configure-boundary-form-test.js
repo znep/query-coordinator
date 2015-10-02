@@ -24,6 +24,13 @@ describe('ConfigureBoundaryForm', function() {
     });
 
     sinon.stub($, 'ajax');
+    this.createElement = function(addProps) {
+      var props = _.extend({}, this.props, addProps);
+      return React.createElement(ConfigureBoundaryForm, props);
+    };
+    this.renderIntoDocument = function(props) {
+      return TestUtils.renderIntoDocument(this.createElement(props));
+    };
   });
 
   afterEach(function() {
@@ -33,45 +40,42 @@ describe('ConfigureBoundaryForm', function() {
   });
 
   it('exists', function() {
-    expect(ConfigureBoundaryForm).to.exist;
+    expect(this.createElement()).to.be.a.reactElement;
   });
 
   it('renders', function() {
-    this.shallowRenderer.render(React.createElement(ConfigureBoundaryForm, this.props));
+    this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result.type).to.eq('div');
+    expect(result).to.be.an.elementOfType('div');
   });
 
   it('has a title', function() {
-    var node = TestUtils.renderIntoDocument(React.createElement(ConfigureBoundaryForm, this.props));
+    var node = this.renderIntoDocument();
     var title = findByTag(node, 'h2').getDOMNode();
-    expect(title).to.exist.and.to.have.textContent('my title');
+    expect(title).to.have.textContent('my title');
   });
 
   it('fetches initial state on mount', function() {
     var fetchStub = sinon.stub();
-    var props = _.extend({}, this.props, {
+    this.renderIntoDocument({
       fetchInitialState: fetchStub
     });
-    TestUtils.renderIntoDocument(React.createElement(ConfigureBoundaryForm, props));
     expect(fetchStub).to.have.been.calledOnce;
   });
 
   it('shows the spinner when loading', function() {
-    var props = _.extend({}, this.props, {
+    var node = this.renderIntoDocument({
       fetchInitialState: _.noop
     });
-    var node = TestUtils.renderIntoDocument(React.createElement(ConfigureBoundaryForm, props));
     var spinner = findByClass(node, 'georegion-spinner').getDOMNode();
     expect(spinner.style.display).to.eq('block');
   });
 
   it('hides the spinner when not loading', function() {
     var fetchStub = sinon.stub();
-    var props = _.extend({}, this.props, {
+    var node = this.renderIntoDocument({
       fetchInitialState: fetchStub
     });
-    var node = TestUtils.renderIntoDocument(React.createElement(ConfigureBoundaryForm, props));
     var spinner = findByClass(node, 'georegion-spinner').getDOMNode();
     expect(spinner.style.display).to.eq('block');
     fetchStub.firstCall.args[0]();
@@ -80,14 +84,13 @@ describe('ConfigureBoundaryForm', function() {
 
   it('saves on submit', function() {
     var saveStub = sinon.stub();
-    var props = _.extend({}, this.props, {
+    var node = this.renderIntoDocument({
       onSave: saveStub,
       initialState: {
         name: 'name',
         geometryLabel: 'geometryLabel'
       }
     });
-    var node = TestUtils.renderIntoDocument(React.createElement(ConfigureBoundaryForm, props));
 
     var form = findByTag(node, 'form').getDOMNode();
     TestUtils.Simulate.submit(form);

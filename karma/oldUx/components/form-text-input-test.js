@@ -27,16 +27,10 @@ describe('FormTextInput', function() {
     expect(FormTextInput).to.exist;
   });
 
-  it('renders', function() {
+  it('renders in a <FormInput />', function() {
     this.shallowRenderer.render(React.createElement(FormTextInput, this.props));
     var result = this.shallowRenderer.getRenderOutput();
     expect(TestUtils.isElementOfType(result, FormInput)).to.eq(true);
-  });
-
-  it('has a label', function() {
-    var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, this.props));
-    var label = findAllByTag(node, 'label')[0].getDOMNode();
-    expect(label).to.exist.and.to.have.textContent('my input');
   });
 
   it('has an input', function() {
@@ -52,17 +46,8 @@ describe('FormTextInput', function() {
     }, this.props);
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, props));
     TestUtils.Simulate.change(findByTag(node, 'input'));
-    var label = findAllByTag(node, 'label')[1].getDOMNode();
-    expect(label).to.exist.and.to.have.textContent('error message');
-  });
-
-  it('has a description', function() {
-    var props = _.extend({
-      description: 'my description'
-    }, this.props);
-    var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, props));
-    var option = findByTag(node, 'p').getDOMNode();
-    expect(option).to.exist.and.to.have.textContent('my description');
+    var formInput = TestUtils.findRenderedComponentWithType(node, FormInput);
+    expect(formInput.props.showValidationError).to.eq(true);
   });
 
   it('can have an initial value', function() {
@@ -79,8 +64,6 @@ describe('FormTextInput', function() {
       required: true
     }, this.props);
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, props));
-    var label = findAllByTag(node, 'label')[0].getDOMNode();
-    expect(label).to.have.className('required');
     var input = findByTag(node, 'input').getDOMNode();
     expect(input).to.have.className('required');
   });

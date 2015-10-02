@@ -2,6 +2,7 @@
 
   const PropTypes = React.PropTypes;
   let componentsNS = blist.namespace.fetch('blist.components');
+  const { FormInput } = componentsNS;
   const { classNames } = blist.namespace.fetch('blist.components.utils');
 
   componentsNS.FormTextInput = React.createClass({
@@ -44,11 +45,9 @@
     },
     render: function() {
       const {
-        description,
         id,
-        label,
         required,
-        validationError
+        ...props
       } = this.props;
 
       const {
@@ -60,31 +59,25 @@
 
       const showValidationError = required && dirty && _.isEmpty(value);
 
-      return (
-        <div className="line">
-          <label htmlFor={id} className={className}>{label}</label>
+      const formInputProps = {
+        id,
+        required,
+        showValidationError,
+        ...props
+      };
 
-          <div>
-            <input
-              className={className}
-              defaultValue={this.props.value}
-              id={id}
-              onBlur={() => {this.setState({ dirty: true })}}
-              onChange={this.handleChange}
-              ref="input"
-              type="text"
-              value={value}
-              />
-            <p>{description}</p>
-            <label
-              className="error"
-              htmlFor={id}
-              generated="true"
-              >
-              {showValidationError ? validationError : ''}
-            </label>
-          </div>
-        </div>
+      return (
+        <FormInput {...formInputProps}>
+          <input
+            className={className}
+            id={id}
+            onBlur={() => {this.setState({ dirty: true })}}
+            onChange={this.handleChange}
+            ref="input"
+            type="text"
+            value={value}
+            />
+        </FormInput>
       );
     }
   });

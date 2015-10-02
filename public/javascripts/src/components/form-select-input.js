@@ -2,6 +2,7 @@
 
   const PropTypes = React.PropTypes;
   let componentsNS = blist.namespace.fetch('blist.components');
+  const { FormInput } = componentsNS;
   const { classNames } = blist.namespace.fetch('blist.components.utils');
 
   const FormSelectInputOptionPropType = PropTypes.shape({
@@ -58,13 +59,11 @@
     },
     render: function() {
       const {
-        description,
         id,
         initialOption,
-        label,
         options,
         required,
-        validationError
+        ...props
       } = this.props;
 
       const {
@@ -75,30 +74,26 @@
       const className = classNames({ required });
       const showValidationError = required && dirty && _.isEmpty(value);
 
+      const formInputProps = {
+        id,
+        required,
+        showValidationError,
+        ...props
+      };
+
       return (
-        <div className="line">
-          <label htmlFor={id} className={className}>{label}</label>
-          <div>
-            <select
-              className={className}
-              id={id}
-              onChange={this.handleChange}
-              ref="select"
-              value={value}
-              >
-              {initialOption ? (<option value="">{initialOption}</option>) : null}
-              {this.renderOptions(options)}
-            </select>
-            <p>{description}</p>
-            <label
-              className="error"
-              htmlFor={id}
-              generated="true"
-              >
-              {showValidationError ? validationError : ''}
-            </label>
-          </div>
-        </div>
+        <FormInput {...formInputProps}>
+          <select
+            className={className}
+            id={id}
+            onChange={this.handleChange}
+            ref="select"
+            value={value}
+            >
+            {initialOption ? (<option value="">{initialOption}</option>) : null}
+            {this.renderOptions(options)}
+          </select>
+        </FormInput>
       );
     }
   });

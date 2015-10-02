@@ -2,6 +2,7 @@ describe('FormTextInput', function() {
 
   var components = blist.namespace.fetch('blist.components');
   var FormTextInput = components.FormTextInput;
+  var FormInput = components.FormInput;
   var TestUtils = React.addons.TestUtils;
   var findByTag = TestUtils.findRenderedDOMComponentWithTag;
   var findAllByTag = TestUtils.scryRenderedDOMComponentsWithTag;
@@ -29,7 +30,7 @@ describe('FormTextInput', function() {
   it('renders', function() {
     this.shallowRenderer.render(React.createElement(FormTextInput, this.props));
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result.type).to.eq('div');
+    expect(TestUtils.isElementOfType(result, FormInput)).to.eq(true);
   });
 
   it('has a label', function() {

@@ -367,11 +367,11 @@
 
       var providers = $('<ul>', {'class': 'button-list'}).append([
         $('<li>', {
-          'data-action': Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
-        }).append(youtubeHeader, youtubeDescription),
-        $('<li>', {
           'data-action': Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
         }).append(visualizationHeader, visualizationDescription),
+        $('<li>', {
+          'data-action': Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        }).append(youtubeHeader, youtubeDescription),
         $('<li>', {
           'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }).append(imageUploadHeader, imageUploadDescription),

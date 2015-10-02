@@ -527,7 +527,9 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('has a spinner', function() {
-        assert.include(container.find('.asset-selector-image-upload-progress').attr('class'), 'bg-loading-spinner');
+        var $busy = container.find('.btn-busy');
+        assert.lengthOf($busy, 1);
+        assert.notInclude($busy.attr('class'), 'hidden');
       });
 
       it('has a cancel button in the progress pane', function() {

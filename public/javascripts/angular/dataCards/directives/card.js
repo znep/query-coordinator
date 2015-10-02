@@ -162,10 +162,13 @@
           // as well as a generic fallback case.
           if ($scope.chooserMode) {
             switch ($scope.chooserMode.action) {
-              case 'polaroid':
-                return I18n.common.download;
               case 'vif':
                 return I18n.common.save;
+              case 'polaroid':
+              default:
+                // The old-style Download dropdown menu may not
+                // define this property, so fall back.
+                return I18n.common.download;
             }
           } else {
             return I18n.common.download;

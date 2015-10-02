@@ -59,10 +59,6 @@
       ],
       "lodash-compat": "bower_components/lodash-compat/lodash.js",
       "pbf": "bower_components/pbf/dist/pbf.min.js",
-      "react": [
-        "bower_components/react/react-with-addons.js",
-        "bower_components/react/react-with-addons.min.js"
-      ],
       "rxjs": [
         "bower_components/rxjs/dist/rx.js",
         "bower_components/rxjs/dist/rx.async.js",

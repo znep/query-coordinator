@@ -38,6 +38,7 @@ describe('CardsViewController', function() {
   beforeEach(module('socrataCommon.filters'));
   beforeEach(module('socrataCommon.directives'));
   beforeEach(module('socrataCommon.services'));
+  beforeEach(module('/angular_templates/common/intractableList.html'));
   beforeEach(module('/angular_templates/dataCards/pages/cards-view.html'));
   beforeEach(module('/angular_templates/dataCards/multiCardLayout.html'));
   beforeEach(module('/angular_templates/dataCards/singleCardLayout.html'));

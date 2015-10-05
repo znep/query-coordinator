@@ -205,7 +205,8 @@
     $scope.components.sharing = {
       save: save,
       postSave: postSave,
-      hasChanges: false
+      hasChanges: false,
+      hasErrors: false
     };
 
     Rx.Observable.subscribeLatest(

@@ -249,6 +249,25 @@ manage-lens-dialog-v2 {
     }
   }
 
+  section.ownership {
+    margin-bottom: 2rem;
+    .ownership-input {
+      outline: none;
+      padding: .5rem 1rem;
+      width: 15rem;
+    }
+    .icon-warning {
+      display: inline-block;
+      margin-left: .5rem;
+    }
+    .tool-panel.suggestion-tool-panel {
+      display: block;
+    }
+    .tool-panel.suggestion-tool-panel .tool-panel-main {
+      top: 20px;
+    }
+  }
+
   section.sharing {
     margin-bottom: 2rem;
     .shares {

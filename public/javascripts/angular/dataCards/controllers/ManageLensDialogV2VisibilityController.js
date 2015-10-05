@@ -78,7 +78,8 @@
     $scope.components.visibility = {
       save: save,
       postSave: postSave,
-      hasChanges: false
+      hasChanges: false,
+      hasErrors: false
     };
   }
 

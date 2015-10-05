@@ -222,6 +222,16 @@ en:
         dataset_private_page_public: <span class="icon-warning"></span> This page’s source dataset is set to <b>Private</b>, so even though this page is set to Public, anyone without access to the source dataset will not be able to see it. It will still appear in the public catalog. You should consider setting the dataset to Public, or setting this page to Private.
         dataset_public_page_private: This page is set to <b>Private</b>, so only those with privileged access will be able to see it. It will not appear in the public catalog.
         dataset_public_page_public: This page and its source dataset are both <b>Public</b>, so anyone will be able to see this page and it will appear in the public catalog.
+        error:
+          ownership: The owner could not be changed.
+          preamble: 'Some of your changes were not saved:'
+          sharing: Role and sharing settings could not be updated.
+          unknown: An unknown error occurred. Please contact Socrata support.
+          visibility: Visibility could not be updated.
+        ownership:
+          owner_unavailable: Owner information is temporarily unavailable.
+          title: Owner
+          warning: You must select an Owner for this Dataset in order to proceed.
         title: Manage
         sharing:
           title: Shared with

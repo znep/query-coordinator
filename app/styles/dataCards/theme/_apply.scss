@@ -254,6 +254,28 @@
   }
 }
 
+manage-lens-dialog-v2 {
+  section.ownership {
+    .ownership-input {
+      background-color: $soc-select-background-color;
+      border: 1px solid $soc-select-border-color;
+      color: $soc-select-text-color;
+      &.disabled {
+        color: $soc-select-disabled-text-color;
+      }
+      &.error {
+        border-color: $red-error-color;
+      }
+    }
+    .icon-warning {
+      color: $red-error-color;
+    }
+    .tool-panel.suggestion-tool-panel .tool-panel-main {
+      background-color: $search-card-suggestions-background-color;
+    }
+  }
+}
+
 new-share-dialog {
   section {
     .new-share {

@@ -151,4 +151,50 @@ RSpec.describe Block, type: :model do
   end
 
   # TODO tests for as_json and from_json
+  describe '#from_json' do
+    describe 'html components' do
+      # TODO: Figure out a way to share this properly with spec/features/xss_protection_spec.rb
+      let(:html_component_attacks) do
+        [
+          '<script>window.xssFailure = "simple script tag injection"</script>',
+          '</script><script>window.xssFailure="premature script close"</script>',
+          '<img src="javascript:window.xssFailure = \'img src script injection\'">',
+          '<IMG """><SCRIPT>window.xssFailure = "malformed IMG tag script injection"</SCRIPT>">',
+          '<<SCRIPT>window.xssFailure = "extraneous open brackets script injection";//<</SCRIPT>',
+          '<BODY onload="window.xssFailure=\'body.onload event injection\'">',
+          '<DIV STYLE="width: expression(window.xssFailure=\'style expression script injection\');">',
+          '<!--[if gte IE 4]>\n<SCRIPT>window.xssFailure = "ie comment conditional script injection"</SCRIPT>\n<![endif]-->'
+        ]
+      end
+
+      let(:html_component_attacks_sanitized) do
+        [
+          'window.xssFailure = "simple script tag injection"',
+          'window.xssFailure="premature script close"',
+          '',
+          'window.xssFailure = "malformed IMG tag script injection""&gt;',
+          '&lt;window.xssFailure = "extraneous open brackets script injection";//&lt;',
+          '',
+          '',
+          ''
+        ]
+      end
+
+      let(:html_component_sanitizations) do
+        Hash[html_component_attacks.zip(html_component_attacks_sanitized)]
+      end
+
+      it 'are sanitized properly' do
+        html_component_sanitizations.each do |attack_markup, sanitized_markup|
+          sanitized_block = Block.from_json({
+            layout: 12,
+            components: [ { type: 'html', value: attack_markup } ],
+            created_by: 'test_user@socrata.com'
+          })
+
+          expect(sanitized_block.components.first['value']).to eq(sanitized_markup)
+        end
+      end
+    end
+  end
 end

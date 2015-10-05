@@ -50,7 +50,6 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
     stub_core_view(attack_story_uid, view_metadata)
   end
 
-
   describe 'attacks against the html component' do
     # A selection of HTML-based attacks.
     # Many of these come from
@@ -120,5 +119,4 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
 
     it_behaves_like 'a secure application'
   end
-
 end

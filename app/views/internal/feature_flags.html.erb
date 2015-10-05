@@ -7,6 +7,7 @@
 <%= render :partial => 'left_nav' %>
 
 <div class="contentBox withLeftNavigation featureFlags">
+  <%= render :partial => 'production_warning' %>
   <%- @flags.each do |flag, flag_config| %>
   <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +
     '/domains/' + @domain.cname + '/set_feature_flags') do %>

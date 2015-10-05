@@ -17,6 +17,7 @@ karma/coverage-reports
 karma/dataCards/mockTranslations.js
 /.idea/
 node_modules
+npm-debug.log
 .sass-cache
 dev-server/logs
 dev-server/*.pid

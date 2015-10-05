@@ -8,6 +8,9 @@ shared_examples 'a secure application' do
     it 'should not evaluate JS' do
       expect(page.evaluate_script('window.xssFailure')).to eq(nil)
     end
+    it 'should successfully load the page' do
+      expect(page.text).to include('positive test')
+    end
   end
 
   describe 'Preview mode' do
@@ -17,6 +20,9 @@ shared_examples 'a secure application' do
     it 'should not evaluate JS' do
       expect(page.evaluate_script('window.xssFailure')).to eq(nil)
     end
+    it 'should successfully load the page' do
+      expect(page.text).to include('positive test')
+    end
   end
 
   describe 'Edit mode' do
@@ -25,6 +31,9 @@ shared_examples 'a secure application' do
     end
     it 'should not evaluate JS' do
       expect(page.evaluate_script('window.xssFailure')).to eq(nil)
+    end
+    it 'should successfully load the page' do
+      expect(page.html).to include('positive test')
     end
   end
 end
@@ -71,7 +80,12 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
       html_component_attacks.map do |attack_markup|
         FactoryGirl.create(
           :block,
-          { components: [ { type: 'html', value: attack_markup } ] }
+          { layout: '6-6',
+            components: [
+              { type: 'html', value: attack_markup },
+              { type: 'html', value: 'positive test' }
+            ]
+          }
         )
       end
     end
@@ -90,7 +104,12 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
       [
         FactoryGirl.create(
           :block,
-          { components: [ { type: 'youtube.video', value: evil_youtube_value } ] }
+          { layout: '6-6',
+            components: [
+              { type: 'youtube.video', value: evil_youtube_value },
+              { type: 'html', value: 'positive test' }
+            ]
+          }
         )
       ]
     end
@@ -112,7 +131,9 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
     }
 
     let(:story_blocks) do
-      []
+      [
+        FactoryGirl.create(:block, components: [ { type: 'html', value: 'positive test' } ])
+      ]
     end
 
     let(:attack_story_uid) { 'mtda-doom' }

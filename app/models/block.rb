@@ -27,6 +27,13 @@ class Block < ActiveRecord::Base
     where("components @> ?", json_query)
   end
 
+  after_initialize do
+    (components || []).each do |component|
+      next unless component['type'] == 'html'
+      component['value'] = Sanitize.fragment(component['value'])
+    end
+  end
+
   def serializable_attributes
     attributes.except('id')
   end

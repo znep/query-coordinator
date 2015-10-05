@@ -175,7 +175,7 @@ RSpec.describe Block, type: :model do
           'window.xssFailure = "malformed IMG tag script injection""&gt;',
           '&lt;window.xssFailure = "extraneous open brackets script injection";//&lt;',
           '',
-          '',
+          ' ',
           ''
         ]
       end

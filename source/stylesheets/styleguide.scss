@@ -29,6 +29,13 @@ section {
 	background-color: #4A4A4A;
 	padding: ms(-3);
 }
+.medium-dark-context {
+	background-color: $light-gray-bg;
+	padding-top: ms(-3);
+	padding-bottom: 200px;
+	padding-left: ms(-3);
+	padding-right: ms(-3)
+}
 
 .styleguide-title {
 	font-weight: 300;

@@ -12,14 +12,14 @@ $(function () {
 
   $intro.find('.text-link').on('click', function() {
     // show all desc
-    $intro.addClass('hidden');
-    $all.removeClass('hidden');
+    $(this).parents('.intro-text').find('.all').removeClass('hidden');
+    $(this).parent('.intro').addClass('hidden');
   });
 
   $all.find('.text-link').on('click', function() {
     // show intro desc
-    $all.addClass('hidden');
-    $intro.removeClass('hidden');
+    $(this).parents('.intro-text').find('.intro').removeClass('hidden');
+    $(this).parents('.all').addClass('hidden');
   });
 
   var $window = $(window);
@@ -52,5 +52,4 @@ $(function () {
     }
     lastScrollTop = stp;
   });
-
 });

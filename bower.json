@@ -70,10 +70,14 @@
         "bower_components/socrata-utils/socrata.utils.js"
       ],
       "socrata-visualizations": [
+        "bower_components/socrata-visualizations/socrata.visualizations.pbf.js",
+        "bower_components/socrata-visualizations/socrata.visualizations.VectorTileManager.js",
         "bower_components/socrata-visualizations/socrata.visualizations.Visualization.js",
         "bower_components/socrata-visualizations/socrata.visualizations.ColumnChart.js",
+        "bower_components/socrata-visualizations/socrata.visualizations.FeatureMap.js",
         {
-          "bower_components/socrata-visualizations/socrata.visualizations.columnChart.css": "../socrata.visualizations.columnChart.css"
+          "bower_components/socrata-visualizations/socrata.visualizations.columnChart.css": "../socrata.visualizations.columnChart.css",
+          "bower_components/socrata-visualizations/socrata.visualizations.columnChart.css": "../socrata.visualizations.featureMap.css"
         }
       ],
       "vector-tile-js": "bower_components/vector-tile-js/dist/vectortile.min.js"

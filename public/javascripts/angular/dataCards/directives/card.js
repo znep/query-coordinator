@@ -10,6 +10,7 @@
         'whereClause': '=',
         'editMode': '=',
         'interactive': '=',
+        'allowFilterChange': '=',
         'cardDraggable': '=',
         'chooserMode': '=',
         'isGrabbed': '=',

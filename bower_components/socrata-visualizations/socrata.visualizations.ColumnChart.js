@@ -2,6 +2,8 @@
 
   'use strict';
 
+  var utils = root.socrata.utils;
+
   if (!_.has(root, 'socrata.visualizations.Visualization')) {
     throw new Error(
       '`{0}` must be loaded before `{1}`'.
@@ -26,9 +28,9 @@
     return width;
   };
 
-  function ColumnChart(element, config) {
+  function ColumnChart(element, vif) {
 
-    _.extend(this, new root.socrata.visualizations.Visualization(element, config));
+    _.extend(this, new root.socrata.visualizations.Visualization(element, vif));
 
     var self = this;
 
@@ -52,12 +54,14 @@
     var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
 
     // TODO: Validate columns
-    var NAME_INDEX = config.columns.name;
-    var UNFILTERED_INDEX = config.columns.unfilteredValue;
-    var FILTERED_INDEX = config.columns.filteredValue;
-    var SELECTED_INDEX = config.columns.selected;
+    var NAME_INDEX = vif.configuration.columns.name;
+    var UNFILTERED_INDEX = vif.configuration.columns.unfilteredValue;
+    var FILTERED_INDEX = vif.configuration.columns.filteredValue;
+    var SELECTED_INDEX = vif.configuration.columns.selected;
 
-    _renderTemplate(this.element, this.getAxisLabels());
+    var _interactive = vif.configuration.interactive;
+
+    _renderTemplate(this.element);
 
     _attachEvents(this.element);
 
@@ -70,8 +74,12 @@
       _renderData(_chartElement, data, options);
     };
 
+    this.renderError = function() {
+      // TODO: Some helpful error message.
+    };
+
     this.destroy = function() {
-      _unattachEvents(this.element);
+      _detachEvents(this.element);
     };
 
     /**
@@ -118,74 +126,16 @@
         }
       ).append(chartScroll);
 
-      var topAxisLabel = $(
-        '<div>',
-        {
-          'class': 'top-axis-label'
-        }
-      );
-
-      var rightAxisLabel = $(
-        '<div>',
-        {
-          'class': 'right-axis-label'
-        }
-      );
-
-      var bottomAxisLabel = $(
-        '<div>',
-        {
-          'class': 'bottom-axis-label'
-        }
-      );
-
-      var leftAxisLabel = $(
-        '<div>',
-        {
-          'class': 'left-axis-label'
-        }
-      );
-
       var chartContainer = $(
         '<div>',
         {
           'class': 'column-chart-container'
         }
-      ).append([
-        chartElement,
-        topAxisLabel,
-        rightAxisLabel,
-        bottomAxisLabel,
-        leftAxisLabel
-      ]);
+      ).append(
+        chartElement
+      );
 
-      if (axisLabels.top) {
-
-        chartContainer.addClass('top-axis-label');
-        topAxisLabel.
-          text(axisLabels.top);
-      }
-
-      if (axisLabels.right) {
-
-        chartContainer.addClass('right-axis-label');
-        rightAxisLabel.
-          text(axisLabels.right);
-      }
-
-      if (axisLabels.bottom) {
-
-        chartContainer.addClass('bottom-axis-label');
-        bottomAxisLabel.
-          text(axisLabels.bottom);
-      }
-
-      if (axisLabels.left) {
-
-        chartContainer.addClass('left-axis-label');
-        leftAxisLabel.
-          text(axisLabels.left);
-      }
+      self.renderAxisLabels(chartContainer);
 
       // Cache element selections
       _chartContainer = chartContainer;
@@ -195,27 +145,10 @@
       _chartLabels = chartLabels;
       _truncationMarker = truncationMarker;
 
-      _chartTopAxisLabel = topAxisLabel;
-      _chartRightAxisLabel = rightAxisLabel;
-      _chartBottomAxisLabel = bottomAxisLabel;
-      _chartLeftAxisLabel = leftAxisLabel;
-
       element.append(chartContainer);
     }
 
     function _attachEvents(element) {
-
-      element.on(
-        'click',
-        _barGroupAndLabelContentsSpanSelector,
-        selectDatum
-      );
-
-      element.on(
-        'click',
-        _truncationMarkerSelector,
-        expandVisualization
-      );
 
       element.on(
         'mouseenter, mousemove',
@@ -246,31 +179,34 @@
         removeHoverClassFromBarGroup
       );
 
-      // We respond to mouseup in this case because if the user clicks to
-      // clear a selection with a non-default label (i.e. not one of the first
-      // three when not expanded), then we should dismiss the highlight.
-      // (The 'non-default' class is applied to labels that wouldn't normally
-      // be drawn unless a datum is selected)
-      element.on(
-        'mouseup',
-        _nonDefaultSelectedLabelSelector,
-        removeHoverClassFromBarGroup
-      );
+      if (_interactive) {
+
+        element.on(
+          'click',
+          _barGroupAndLabelContentsSpanSelector,
+          selectDatum
+        );
+
+        element.on(
+          'click',
+          _truncationMarkerSelector,
+          expandVisualization
+        );
+
+        // We respond to mouseup in this case because if the user clicks to
+        // clear a selection with a non-default label (i.e. not one of the first
+        // three when not expanded), then we should dismiss the highlight.
+        // (The 'non-default' class is applied to labels that wouldn't normally
+        // be drawn unless a datum is selected)
+        element.on(
+          'mouseup',
+          _nonDefaultSelectedLabelSelector,
+          removeHoverClassFromBarGroup
+        );
+      }
     }
 
-    function _unattachEvents(element) {
-
-      element.off(
-        'click',
-        _barGroupAndLabelContentsSpanSelector,
-        selectDatum
-      );
-
-      element.off(
-        'click',
-        _truncationMarkerSelector,
-        expandVisualization
-      );
+    function _detachEvents(element) {
 
       element.off(
         'mouseenter, mousemove',
@@ -301,11 +237,26 @@
         removeHoverClassFromBarGroup
       );
 
-      element.off(
-        'mouseup',
-        _nonDefaultSelectedLabelSelector,
-        removeHoverClassFromBarGroup
-      );
+      if (_interactive) {
+
+        element.off(
+          'click',
+          _barGroupAndLabelContentsSpanSelector,
+          selectDatum
+        );
+
+        element.off(
+          'click',
+          _truncationMarkerSelector,
+          expandVisualization
+        );
+
+        element.off(
+          'mouseup',
+          _nonDefaultSelectedLabelSelector,
+          removeHoverClassFromBarGroup
+        );
+      }
     }
 
     function selectDatum(event) {
@@ -327,23 +278,52 @@
     }
 
     function showFlyout(event) {
-
       var datum = d3.select(event.currentTarget).datum();
-
       var barGroupName = _escapeQuotesAndBackslashes(datum[NAME_INDEX]);
-
       var barGroupElement = _chartWrapper.
         find('.bar-group').
         filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
         find('.unfiltered').
         get(0);
+      var unfilteredValueUnit;
+      var filteredValueUnit;
+
+      if (datum[UNFILTERED_INDEX] === 1) {
+
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
+
+      } else {
+
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
+
+      }
+
+      if (datum[FILTERED_INDEX] === 1) {
+
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
+
+      } else {
+
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
+
+      }
 
       var payload = {
         element: barGroupElement,
         title: _labelValueOrPlaceholder(datum[NAME_INDEX]),
         unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
-        unfilteredValue: datum[UNFILTERED_INDEX],
-        labelUnit: _lastRenderOptions.labelUnit,
+        unfilteredValue: '{0} {1}'.format(
+          utils.formatNumber(datum[UNFILTERED_INDEX]),
+          unfilteredValueUnit
+        ),
         selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE'),
         selected: datum[SELECTED_INDEX]
       };
@@ -351,15 +331,15 @@
       if (_lastRenderOptions.showFiltered) {
 
         payload.filteredValueLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
-        payload.filteredValue = datum[FILTERED_INDEX];
-
+        payload.filteredValue = '{0} {1}'.format(
+          utils.formatNumber(datum[FILTERED_INDEX]),
+          filteredValueUnit
+        );
       }
 
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-        {
-          data: payload
-        }
+        payload
       );
     }
 
@@ -367,9 +347,7 @@
 
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-        {
-          data: null
-        }
+        null
       );
     }
 
@@ -398,10 +376,12 @@
       var chartWidth = element.width();
       var chartHeight = element.height();
       var showAllLabels = options.showAllLabels;
-      var labelUnit = options.labelUnit;
       var showFiltered = options.showFiltered;
 
       if (chartWidth <= 0 || chartHeight <= 0) {
+        if (window.console && window.console.warn) {
+          console.warn('Aborted rendering column chart: chart width or height is zero.');
+        }
         return;
       }
 
@@ -487,27 +467,36 @@
       var _renderTicks = function() {
 
         var numberOfTicks = 3;
-        var element = $('<div>', {
+
+        var tickMarks = _.uniq([0].concat(verticalScale.ticks(numberOfTicks))).map(function(tickValue) {
+
+          var tick = $('<div>', {
+            'class': tickValue === 0 ? 'tick origin' : 'tick',
+            text: socrata.utils.formatNumber(tickValue)
+          });
+
+          var tickTopOffset = chartHeight - verticalScale(tickValue);
+          // The `+ 3` term accounts for the border-width.
+          var tickHeight = parseInt(element.css('font-size'), 10) + 3;
+
+          if (tickTopOffset <= tickHeight) {
+            tick.addClass('below');
+            tickTopOffset += tickHeight;
+          }
+
+          tick.css('top', tickTopOffset);
+
+          return tick;
+        });
+
+        return $('<div>', {
           'class': 'ticks',
           css: {
             top: _chartScroll.position().top + topMargin,
             width: chartWidth,
             height: chartHeight + topMargin
           }
-        });
-        var tickMarks = _.map(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-          return $('<div>', {
-            'class': tick === 0 ? 'origin' : '',
-            css: {
-              top: chartHeight - verticalScale(tick)
-            },
-            text: socrata.utils.formatNumber(tick)
-          });
-        });
-
-        element.append(tickMarks);
-
-        return element;
+        }).append(tickMarks);
       };
 
       var updateLabels = function(labelSelection) {
@@ -822,7 +811,7 @@
         // Update the position of the individual bars.
         bars.
           style('width', rangeBand + 'px').
-          style('height', function (d) {
+          style('height', function(d) {
 
             if (_.isNaN(d.value)) {
               return 0;

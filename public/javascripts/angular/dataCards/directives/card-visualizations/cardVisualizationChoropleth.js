@@ -15,6 +15,7 @@
       restrict: 'E',
       scope: {
         'model': '=',
+        'allowFilterChange': '=',
         'whereClause': '='
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationChoropleth.html',

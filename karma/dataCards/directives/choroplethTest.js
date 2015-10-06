@@ -24,9 +24,15 @@ describe('A Choropleth Directive', function() {
     });
   }
 
-  function createChoropleth(expanded, attrs) {
+  function createChoropleth(expanded, attrs, allowFilterChange) {
     scope.baseLayerUrl = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
     scope.rowDisplayUnit = 'crimes';
+
+    if (typeof allowFilterChange === 'boolean') {
+      scope.allowFilterChange = allowFilterChange;
+    } else {
+      scope.allowFilterChange = true;
+    }
 
     if (!scope.geojsonAggregateData) {
       scope.geojsonAggregateData = testData.polygonData2;
@@ -990,6 +996,22 @@ describe('A Choropleth Directive', function() {
         timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
 
         expect(toggleDatasetFilterCallback).to.have.been.called;
+      });
+
+      it('should not signal the region to toggle in the active filter names if scope.allowFilterChange is false', function() {
+        var toggleDatasetFilterCallback = sinon.spy();
+        scope.geojsonAggregateData = testData.polygonData2;
+        el = createChoropleth(false, false, false);
+
+        var polygon = el.find('path')[0];
+
+        scope.$on('toggle-dataset-filter:choropleth', toggleDatasetFilterCallback);
+
+        testHelpers.fireEvent(polygon, 'click');
+
+        timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
+
+        expect(toggleDatasetFilterCallback).to.not.have.been.called;
       });
     });
 

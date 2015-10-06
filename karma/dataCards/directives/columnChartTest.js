@@ -120,6 +120,7 @@ describe('columnChart', function() {
     scope.expanded = expanded;
     scope.cardData = data;
     scope.showFiltered = false;
+    scope.allowFilterChange = true;
     scope.$digest();
 
     return {

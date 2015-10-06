@@ -775,7 +775,6 @@
                     '</div>',
                   '</div>'].join(''),
       link: function choroplethLink(scope, element, attrs) {
-
         // Merge 'mousemove' and 'mouseleave' events into a single flyout
         // registration stream.
         var registerFlyout$ = Rx.Observable.merge(
@@ -1050,25 +1049,29 @@
         }
 
         function onFeatureClick(e) {
-          var now = Date.now();
-          var delay = now - lastClick;
-          lastClick = now;
-          if (delay < doubleClickThreshold) {
-            if (!_.isNull(lastClickTimeout)) {
 
-              // If this is actually a double click, cancel the timeout which selects
-              // the feature and zoom in instead.
-              $timeout.cancel(lastClickTimeout);
-              map.setView(e.latlng, map.getZoom() + 1);
-            }
-          } else {
-            lastClickTimeout = $timeout(function() {
-              if (isLayerSelected(e.target)) {
-                clearDatasetFilter(e.target.feature);
-              } else {
-                setDatasetFilter(e.target.feature);
+          if (scope.allowFilterChange) {
+
+            var now = Date.now();
+            var delay = now - lastClick;
+            lastClick = now;
+            if (delay < doubleClickThreshold) {
+              if (!_.isNull(lastClickTimeout)) {
+
+                // If this is actually a double click, cancel the timeout which selects
+                // the feature and zoom in instead.
+                $timeout.cancel(lastClickTimeout);
+                map.setView(e.latlng, map.getZoom() + 1);
               }
-            }, singleClickSuppressionThreshold);
+            } else {
+              lastClickTimeout = $timeout(function() {
+                if (isLayerSelected(e.target)) {
+                  clearDatasetFilter(e.target.feature);
+                } else {
+                  setDatasetFilter(e.target.feature);
+                }
+              }, singleClickSuppressionThreshold);
+            }
           }
         }
 

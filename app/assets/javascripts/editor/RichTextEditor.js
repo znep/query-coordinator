@@ -177,7 +177,7 @@
 
         _addThemeStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
-        _editorBodyElement = $(_editor.getDocument()).find('body');
+        _editorBodyElement = $(e.target.contentWindow.document).find('body');
         _formatController = new storyteller.RichTextEditorFormatController(
           _editor,
           _formats
@@ -314,7 +314,7 @@
       //
       // I have no idea why having both a top and bottom modifier on the layout
       // of block elements causes things to get so fiddly.
-      var contentHeight = parseInt(_editorBodyElement.css('padding-top'), 10);
+      var contentHeight = parseFloat(_editorBodyElement.css('padding-top') || 0, 10);
 
       // We need to recalculate the height of each individual element rather
       // than just checking the outerHeight of the body because the body

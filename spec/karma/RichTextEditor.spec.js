@@ -295,6 +295,47 @@ describe('RichTextEditor', function() {
       });
     });
 
+    describe('content height', function() {
+      var body;
+      beforeEach(function() {
+        body = $documentElement.find('body');
+        body.empty();
+      });
+
+      it('adds to a proper height, taking into account margin collapsing', function() {
+        var child = $('<div>', {style: 'height: 200px; margin: 10px 0;'});
+        var child2 = $('<div>', {style: 'height: 200px; margin-top: 10px;'});
+
+        body.append([child, child2]);
+
+        // Just to jump start a content height adjustment.
+        // This <div> will be ignored.
+        editor.setContent('<div></div>');
+        assert.equal(editor.getContentHeight(), 420);
+      });
+
+      it('adds to a proper height, taking into account body top padding', function() {
+        var child = $('<div>', {style: 'height: 200px;'});
+
+        body.css({'padding-top': '10px'});
+        body.append(child);
+
+        editor.setContent('<div></div>');
+        assert.equal(editor.getContentHeight(), 210);
+      });
+
+      it('adds to a proper height, taking into account margin collapsing and body top padding', function() {
+        var child = $('<div>', {style: 'height: 200px; margin: 10px 0;'});
+        var child2 = $('<div>', {style: 'height: 200px; margin-top: 10px;'});
+
+        body.css({'padding-top': '10px'});
+        body.append([child, child2]);
+
+        editor.setContent('<div></div>');
+        assert.equal(editor.getContentHeight(), 430);
+      });
+    });
+
   });
 
 

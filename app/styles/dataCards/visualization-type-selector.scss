@@ -41,6 +41,7 @@ visualization-type-selector {
           color: $dark-btn-disabled-font-color;
           background-color: $dark-btn-disabled-bg-color;
           border: 1px solid $dark-btn-disabled-border-color;
+          cursor: default;
         }
         .icon-warning {
           position: absolute;
@@ -52,6 +53,13 @@ visualization-type-selector {
           color: white;
         }
       }
+    }
+  }
+
+  .curated-region-selector {
+    soc-select {
+      margin-left: .5rem;
+      margin-bottom: 1rem;
     }
   }
 }

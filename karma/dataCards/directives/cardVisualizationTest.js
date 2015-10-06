@@ -62,6 +62,7 @@ describe('cardVisualization directive', function() {
       cardModel.defineObservableProperty('page', null);
       cardModel.defineObservableProperty('activeFilters', []);
       cardModel.defineObservableProperty('column', { availableCardTypes: ['column'], defaultCardType: 'column' });
+      cardModel.defineObservableProperty('customTitle', null);
       scope.cardModel = cardModel;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
     });

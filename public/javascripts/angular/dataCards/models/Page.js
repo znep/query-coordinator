@@ -170,6 +170,7 @@
                 return {
                   filters: card.getCurrentValue('activeFilters'),
                   fieldName: card.fieldName,
+                  filteredColumn: card.getFilteredColumn(),
                   uniqueId: card.uniqueId
                 };
               });
@@ -185,7 +186,7 @@
             if (_.isEmpty(cardFilterInfo.filters)) {
               return null;
             } else {
-              return _.invoke(cardFilterInfo.filters, 'generateSoqlWhereFragment', cardFilterInfo.fieldName).
+              return _.invoke(cardFilterInfo.filters, 'generateSoqlWhereFragment', cardFilterInfo.filteredColumn).
                 join(' AND ');
             }
           });

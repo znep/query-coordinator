@@ -9,6 +9,7 @@
         cardSize: 2,
         cardType: 'column',
         expanded: false,
+        computedColumn: null,
         activeFilters: [
           {
             'function': 'BinaryOperator',
@@ -37,7 +38,7 @@
         },
         primaryAmountField: null,
         primaryAggregation: null,
-        version: 2
+        version: 3
       };
 
       return $.extend(true, minimalPageMetadata, pageOptions);
@@ -71,7 +72,7 @@
               moderationStatus: true,
               primaryAmountField: null,
               primaryAggregation: null,
-              version: 2
+              version: 1
             },
             {
               cards: [],
@@ -82,7 +83,7 @@
               moderationStatus: true,
               primaryAmountField: null,
               primaryAggregation: null,
-              version: 2
+              version: 1
             }
           ],
           user: []

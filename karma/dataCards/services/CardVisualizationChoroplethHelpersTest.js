@@ -16,7 +16,7 @@ describe('CardVisualizationChoroplethHelpers service', function() {
 
   describe('in metadata transition phase 1', function() {
 
-    describe('when extracting a shapeFile', function() {
+    describe('when extracting a shapefile', function() {
 
       it('should log errors if the region is not present in a v1 dataset metadata column', function() {
 
@@ -50,14 +50,14 @@ describe('CardVisualizationChoroplethHelpers service', function() {
 
       });
 
-      it('should extract a shapeFile from a v1 dataset metadata columns', function() {
+      it('should extract a shapefile from a v1 dataset metadata columns', function() {
 
-        var validShapeFile = 'c8h8-ygvf';
+        var validShapefile = 'c8h8-ygvf';
 
         var validColumn = {
           "computationStrategy": {
             "parameters": {
-              "region": "_" + validShapeFile,
+              "region": "_" + validShapefile,
               "geometryLabel": "geoid10"
             },
             "strategy_type": "georegion_match_on_point"
@@ -68,7 +68,7 @@ describe('CardVisualizationChoroplethHelpers service', function() {
           "physicalDatatype": "text"
         };
 
-        expect(cardVisualizationChoroplethHelpers.extractShapeFileFromColumn(validColumn)).to.equal(validShapeFile);
+        expect(cardVisualizationChoroplethHelpers.extractShapeFileFromColumn(validColumn)).to.equal(validShapefile);
 
       });
 

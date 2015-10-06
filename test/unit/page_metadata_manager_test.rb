@@ -27,6 +27,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
         :migrations => stub_migrations
       )
     )
+    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, false)
     @dataset_copy_stub = stub_dataset_copy_request('vtvh-wqgq')
   end
 

@@ -29,6 +29,7 @@
         var unfilteredData$ = new Rx.Subject();
         var filteredData$ = new Rx.Subject();
         var whereClause$ = scope.$observe('whereClause');
+        var computedColumn$ = model.observeOnLatest('computedColumn').filter(_.isPresent);
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
@@ -38,12 +39,12 @@
         var dataRequestCount$ = dataRequests$.scan(0, function(acc) { return acc + 1; });
         var dataResponseCount$ = dataResponses$.scan(0, function(acc) { return acc + 1; });
 
-        var shapeFile$;
+        var shapefile$;
         var geometryLabel$;
         var geojsonRegions$;
 
-        var shapeFileRegionQueryLimit = ServerConfig.getScalarValue(
-          'shapeFileRegionQueryLimit',
+        var shapefileRegionQueryLimit = ServerConfig.getScalarValue(
+          'shapefileRegionQueryLimit',
           Constants.DEFAULT_SHAPE_FILE_REGION_QUERY_LIMIT
         );
 
@@ -69,52 +70,65 @@
         * THEN set up other observable sequences. *
         ******************************************/
 
-        Rx.Observable.combineLatest(
-          whereClause$,
-          baseSoqlFilter,
-          function(whereClause, baseFilter) {
-            return !_.isEmpty(whereClause) && whereClause !== baseFilter;
-          }
-        );
-
-        shapeFile$ = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
+        // Set a custom card title corresponding to the computed column.
+        Rx.Observable.subscribeLatest(
+          model,
           dataset.observeOnLatest('columns'),
-          function(fieldName, columns) {
+          computedColumn$,
+          function(currentModel, columns, computedColumn) {
+            var columnName = columns[currentModel.fieldName].name;
+            var regionName = columns[computedColumn].name;
+            var customTitle = '{0} &mdash; {1}'.format(columnName, regionName);
+            currentModel.set('customTitle', customTitle);
+          });
+
+        // If the card type switches, clear the current title.
+        model.
+          filter(function(currentModel) {
+            return currentModel.getCurrentValue('cardType') !== 'choropleth';
+          }).
+          subscribe(function(currentModel) {
+            currentModel.set('customTitle', undefined);
+          });
+
+        shapefile$ = Rx.Observable.combineLatest(
+          dataset.observeOnLatest('columns'),
+          computedColumn$,
+          function(columns, computedColumn) {
             if (_.isEmpty(columns)) {
-              return Rx.Observable.never();
+              return undefined;
             }
 
-            // The shapeFile and the sourceColumn are both found in the
+            // The shapefile and the sourceColumn are both found in the
             // computationStrategy blob that is attached to computed columns.
-            var shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
-              columns[fieldName]
+            var shapefile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
+              columns[computedColumn]
             );
 
-            if (shapeFile === null) {
+            if (shapefile === null) {
               scope.$safeApply(function() {
                 scope.choroplethRenderError = true;
               });
             }
 
-            return shapeFile;
+            return shapefile;
           }
         );
 
-        geometryLabel$ = shapeFile$.map(
-          function(shapeFile) {
+        geometryLabel$ = shapefile$.map(
+          function(shapefile) {
             var dataPromise;
 
             dataRequests$.onNext(1);
 
-            dataPromise = CardDataService.getChoroplethGeometryLabel(shapeFile);
+            dataPromise = CardDataService.getChoroplethGeometryLabel(shapefile);
 
             dataPromise.then(
               function() {
-                // Ok
                 dataResponses$.onNext(1);
               },
               function() {
+
                 // Still increment the counter to stop the spinner
                 dataResponses$.onNext(1);
 
@@ -132,53 +146,29 @@
           dataset,
           dataset.observeOnLatest('columns'),
           model.pluck('fieldName'),
-          shapeFile$,
-          function(currentDataset, columns, fieldName, shapeFile) {
-            var sourceColumn = null;
+          shapefile$,
+          computedColumn$,
+          function(currentDataset, columns, fieldName, shapefile, computedColumn) {
+            var sourceColumn = fieldName;
             var dataPromise;
-            var computationStrategy = _.get(columns[fieldName], 'computationStrategy.strategy_type');
+            var computationStrategy = _.get(columns[computedColumn], 'computationStrategy.strategy_type');
 
             dataRequests$.onNext(1);
-
-            sourceColumn = CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(
-              columns[fieldName]
-            );
-
-            // If we were unable to extract the source column from the
-            // computationStrategy, attempt to find a location/point column
-            // that could potentially be the source column. This will not
-            // always be correct if there is more than one location/point
-            // column in the dataset.
-            if (sourceColumn === null) {
-              _.each(columns, function(column, currentFieldName) {
-                if (column.physicalDatatype === 'point' &&
-                  column.fred === 'location') {
-
-                  sourceColumn = currentFieldName;
-                }
-              });
-
-              // If we still could not determine the source column, issue a warning.
-              if (sourceColumn === null) {
-                $log.warn('Unable to get source column of computed ' +
-                  'column "{0}"'.format(fieldName));
-              }
-            }
 
             // If we have successfully found a source column and it uses the
             // georegion_match_on_point strategy, make the more specific bounding
             // box query utilizing the source column's extents.
-            if (sourceColumn !== null && computationStrategy === 'georegion_match_on_point') {
+            if (computationStrategy === 'georegion_match_on_point') {
 
               dataPromise = CardDataService.getChoroplethRegionsUsingSourceColumn(
                 currentDataset.id,
                 sourceColumn,
-                shapeFile
+                shapefile
               );
 
             // Otherwise, use the less efficient but more robust request.
             } else {
-              dataPromise = CardDataService.getChoroplethRegions(shapeFile);
+              dataPromise = CardDataService.getChoroplethRegions(shapefile);
             }
 
             dataPromise.then(
@@ -201,18 +191,18 @@
         );
 
         Rx.Observable.subscribeLatest(
-          model.pluck('fieldName'),
+          computedColumn$,
           dataset,
           baseSoqlFilter,
           aggregation$,
-          function(fieldName, currentDataset, whereClauseFragment, aggregationData) {
+          function(computedColumn, currentDataset, whereClauseFragment, aggregationData) {
             dataRequests$.onNext(1);
             var dataPromise = CardDataService.getData(
-              fieldName,
+              computedColumn,
               currentDataset.id,
               whereClauseFragment,
               aggregationData,
-              { limit: shapeFileRegionQueryLimit }
+              { limit: shapefileRegionQueryLimit }
             );
             dataPromise.then(
               function(result) {
@@ -229,18 +219,18 @@
           });
 
         Rx.Observable.subscribeLatest(
-          model.pluck('fieldName'),
+          computedColumn$,
           dataset,
           whereClause$,
           aggregation$,
-          function(fieldName, currentDataset, whereClauseFragment, aggregationData) {
+          function(computedColumn, currentDataset, whereClauseFragment, aggregationData) {
             dataRequests$.onNext(1);
             var dataPromise = CardDataService.getData(
-              fieldName,
+              computedColumn,
               currentDataset.id,
               whereClauseFragment,
               aggregationData,
-              { limit: shapeFileRegionQueryLimit }
+              { limit: shapefileRegionQueryLimit }
             );
             dataPromise.then(
               function(result) {

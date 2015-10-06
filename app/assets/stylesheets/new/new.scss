@@ -1,0 +1,42 @@
+@import 'lib/variables';
+
+#create-story-modal {
+  .modal-dialog {
+    padding: 6rem 2rem;
+  }
+
+  .modal-title {
+    color: $create-story-modal-title-color;
+    font-size: 3.62rem;
+    text-align: center;
+    margin: 2rem 0;
+    padding: 0;
+  }
+
+  .asset-selector-input-group {
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .asset-selector-input-label {
+    color: $create-story-modal-input-label-color;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: normal;
+    margin: 2rem 0;
+  }
+
+  .asset-selector-text-input {
+    width: 80%;
+    margin: 0 auto;
+    padding: 1rem;
+    font-size: 1.75rem;
+    height: auto;
+  }
+
+  .btn-primary {
+    margin: 2rem auto;
+    width: auto;
+    font-size: 1.75rem;
+  }
+}

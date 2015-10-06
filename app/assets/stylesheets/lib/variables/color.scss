@@ -12,11 +12,21 @@ $header-story-title-color: #dbdbdb;
 $header-story-title-hover-color: #fff;
 $header-btn-disabled-color: #777;
 
+// Create A Story
+$create-story-modal-title-color: #4a4a4a;
+$create-story-modal-input-label-color: #9b9b9b;
+
 // Story save error bar
 $story-save-error-bar-color: #c47f59;
 $story-save-error-bar-icon-color: #f5a623;
 $story-save-error-bar-background: #f7e7cd;
 $story-save-error-bar-border-color: #f5b03e;
+
+// Warning bar
+$warning-bar-border-color: #F7A700;
+$warning-bar-background-color: #F7E7CC;
+$warning-bar-color: #B37538;
+$warning-bar-icon-color: #F7A700;
 
 // Settings Panel
 $settings-panel-btn-color: #929292;
@@ -25,10 +35,6 @@ $settings-panel-hr-color: #666;
 $settings-panel-close-font-color: #aaa;
 $settings-panel-light-gray-color: #ccc;
 $settings-panel-visibility-status-state-color: #93c4e8;
-$settings-panel-errors-border-color: #F7A700;
-$settings-panel-errors-background-color: #F7E7CC;
-$settings-panel-errors-color: #B37538;
-$settings-panel-warning-color: #F7A700;
 
 // Content panels
 $content-panel-bg-color: #eee;
@@ -53,7 +59,7 @@ $theme-list-theme-active-border-color: #3498db;
 $block-bg-color: #fafafa;
 
 // Block edit controls
-$block-edit-controls-bg-color: #23d6b0;
+$block-edit-controls-bg-color: #00be9b;
 $block-edit-controls-hover-color: #1CAB8D;
 
 // Rich text editor toolbar
@@ -74,43 +80,93 @@ $empty-story-warning-font-color: rgb(153,153,153);
 
 // Modal windows
 $modal-bg-color: #fff;
+$modal-title-color: #6d6d6d;
 $modal-overlay-bg-color: rgba(0, 0, 0, 0.5);
+$modal-box-shadow-color: #333;
+$modal-close-btn-color: #9b9b9b;
+$modal-close-btn-hover-color: #474747;
+$modal-button-list-border-color: #dedede;
+$modal-button-list-arrow-color: #9b9b9b;
+$modal-button-list-hover-background-color: #f7f7f7;
+$modal-button-list-hover-arrow-color: #474747;
+$modal-button-list-header-color: #3498db;
+$modal-button-list-description-color: #9b9b9b;
 
 // Media Selector
 $asset-selector-input-group-bg-color: #eee;
 $asset-selector-preview-container-bg-color: #fff;
 $asset-selector-invalid-message-color: #333;
+$asset-selector-input-subtext-color: #4a4a4a;
+$asset-selector-input-label-color: #4a4a4a;
 
 // Forms
 $input-element-border-color: #ccc;
 
 // Buttons
-$btn-color: #dbdbdb;
-$btn-hover-color: #444;
-$btn-disabled-color: #ccc;
-$btn-disabled-bg-color: #eee;
-
-$btn-default-color: #fff;
-$btn-default-bg-color: #929292;
+$btn-default-color: #757575;
+$btn-default-background-color: #fff;
 $btn-default-border-color: #b7b7b7;
-$btn-default-hover-color: #fff;
-$btn-default-hover-bg-color: #757575;
-$btn-default-hover-border-color: #929292;
-$btn-default-disabled-color: #b7b7b7;
-$btn-default-disabled-border-color: #838383;
+$btn-default-hover-color: #6e6e6e;
+$btn-default-hover-background-color: #dbdbdb;
+$btn-default-dark-color: #fff;
+$btn-default-dark-background-color: #929292;
+$btn-default-dark-border-color: #b7b7b7;
+$btn-default-dark-hover-background-color: #757575;
+$btn-default-busy-border-color: #fff;
+$btn-default-busy-border-right-color: #d2d2d2;
 
 $btn-primary-color: #fff;
-$btn-primary-bg-color: #2295e1;
-$btn-primary-border-color: #2295e1;
-$btn-primary-hover-color: #fff;
-$btn-primary-hover-bg-color: #2379b2;
-$btn-primary-disabled-color: #ddd;
-$btn-primary-disabled-bg-color: #ccc;
+$btn-primary-background-color: #2c97de;
+$btn-primary-border-color: #2c97de;
+$btn-primary-hover-background-color: #2379b2;
+$btn-primary-active-border-color: #2379b2;
+$btn-primary-inverse-color: #2c97de;
+$btn-primary-inverse-background-color: #fff;
+$btn-primary-inverse-hover-color: #fff;
+$btn-primary-inverse-hover-background-color: #2c97de;
+$btn-primary-busy-border-right-color: #8ad0ff;
 
 $btn-secondary-color: #fff;
-$btn-secondary-bg-color: #00be9b;
+$btn-secondary-background-color: #00be9b;
 $btn-secondary-border-color: #00be9b;
-$btn-secondary-hover-bg-color: #00987c;
+$btn-secondary-hover-background-color: #00987c;
+$btn-secondary-active-border-color: #00987c;
+$btn-secondary-inverse-color: #00be9b;
+$btn-secondary-inverse-background-color: #fff;
+$btn-secondary-inverse-hover-color: #fff;
+$btn-secondary-inverse-hover-background-color: #00be9b;
+$btn-secondary-busy-border-color: #fff;
+$btn-secondary-busy-border-right-color: #66e2cc;
+
+$btn-success-color: #fff;
+$btn-success-background-color: #64cf6c;
+$btn-success-border-color: #64cf6c;
+$btn-success-hover-background-color: #50a656;
+$btn-success-hover-border-color: #50a656;
+$btn-success-inverse-color: #64cf6c;
+$btn-success-inverse-background-color: #fff;
+$btn-success-inverse-hover-color: #fff;
+$btn-success-inverse-hover-background-color: #64cf6c;
+
+$btn-error-color: #fff;
+$btn-error-background-color: #ce6565;
+$btn-error-border-color: #ce6565;
+$btn-error-hover-background-color: #a55151;
+$btn-error-active-border-color: #a55151;
+$btn-error-inverse-color: #ce6565;
+$btn-error-inverse-background-color: #fff;
+$btn-error-inverse-hover-color: #fff;
+$btn-error-inverse-hover-background-color: #ce6565;
+
+$btn-transparent-busy-border-color: #9b9b9b;
+$btn-transparent-busy-border-right-color: #c9c9c9;
+
+$btn-disabled-color: dimgray;
+$btn-disabled-border-color: #929292;
+$btn-disabled-background-color: #c5c5c5;
+$btn-disabled-dark-color: #b7b7b7;
+$btn-disabled-dark-border-color: #838383;
+$btn-disabled-dark-background-color: #716d6d;
 
 // View Mode buttons
 $view-mode-button-color: #ddd;

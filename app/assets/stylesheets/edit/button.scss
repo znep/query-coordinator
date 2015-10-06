@@ -7,123 +7,217 @@
   }
 }
 
-.btn {
+[class^="btn-"], [class*=" btn-"] {
   @include unselectable();
 
-  padding: 0.9rem 1.5rem;
+  padding: $btn-padding-top-bottom $btn-padding-left-right;
   font-size: 1.5rem;
   border-radius: $btn-border-radius;
+  border: solid 1px transparent;
   outline: none;
   transition: color $transition-duration, background-color $transition-duration;
   cursor: pointer;
 
-  // Adds a spinner in place of button text.
-  &.btn-busy {
-    font-size: 0;
+  &:disabled,
+  &.btn-primary:disabled,
+  &.btn-secondary:disabled,
+  &.btn-success:disabled,
+  &.btn-error:disabled {
+    color: $btn-disabled-color;
+    border-color: $btn-disabled-border-color;
+    background-color: $btn-disabled-background-color;
+    cursor: not-allowed;
 
-    span {
-      @include animation(spin 0.9s linear infinite);
-
-      border: 3px solid;
-      border-radius: 60%;
-      display: inline-block;
-      width: 2rem;
-      height: 2rem;
-    }
-  }
-
-  &.btn-default {
-    color: $btn-default-color;
-    border: solid 1px $btn-default-border-color;
-    background-color: $btn-default-bg-color;
-
-    &:hover {
-      color: $btn-default-hover-color;
-      background-color: $btn-default-hover-bg-color;
-      border-color: $btn-default-hover-border-color;
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      color: $btn-default-disabled-color;
-      background-color: $btn-default-bg-color;
-      border-color: $btn-default-disabled-border-color;
-    }
-
-    &:active {
-      border-color: transparent;
-    }
-
-    &.btn-busy {
-      span {
-        border-color: $btn-default-color;
-        border-right-color: lighten($btn-default-bg-color, 15);
-      }
-    }
-  }
-
-  &.btn-primary {
-    color: $btn-primary-color;
-    background-color: $btn-primary-bg-color;
-    border: solid 1px $btn-primary-bg-color;
-
-    &:hover {
-      color: $btn-primary-hover-color;
-      background-color: $btn-primary-hover-bg-color;
-      border-color: $btn-primary-border-color;
-    }
-
-    &:active {
-      border-color: transparent;
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      color: $btn-default-disabled-color;
-      background-color: $btn-default-bg-color;
-      border-color: $btn-default-disabled-border-color;
-    }
-
-    &.btn-busy {
-      span {
-        border-color: $btn-primary-color;
-        border-right-color: lighten($btn-primary-bg-color, 15)
-      }
-    }
-  }
-
-  &.btn-secondary {
-    color: $btn-secondary-color;
-    background-color: $btn-secondary-bg-color;
-    border: solid 1px $btn-secondary-border-color;
-
-    &:hover {
-      color: $btn-secondary-color;
-      background-color: $btn-secondary-hover-bg-color;
-      border-color: $btn-secondary-border-color;
-    }
-
-    &:active {
-      border-color: transparent;
-    }
-
-    &.btn-busy {
-      span {
-        border-color: #fff;
-        border-top-color: #6cecd4;
-      }
-    }
-  }
-
-  &.btn-transparent {
-    background-color: transparent;
-    border: solid 1px transparent;
-
-    &.btn-busy {
-      span {
-        border-color: $btn-color;
-        border-right-color: darken(#ddd, 15);
-      }
+    &.btn-dark,
+    &.btn-dark:hover,
+    &.btn-dark:active,
+    &.btn-dark:focus {
+      color: $btn-disabled-dark-color;
+      border-color: $btn-disabled-dark-border-color;
+      background-color: $btn-disabled-dark-background-color;
     }
   }
 }
+
+// Adds a spinner in place of button text.
+.btn-busy {
+  font-size: 0;
+  cursor: progress;
+  border: solid $btn-busy-border-width transparent;
+
+  span {
+    @include animation(spin 0.6s linear infinite);
+
+    border: 3px solid;
+    border-radius: 60%;
+    display: inline-block;
+    width: $btn-busy-width;
+    height: $btn-busy-height;
+  }
+}
+
+.btn-default {
+  color: $btn-default-color;
+  background-color: $btn-default-background-color;
+  border-color: $btn-default-border-color;
+
+  &:hover {
+    color: $btn-default-hover-color;
+    background-color: $btn-default-hover-background-color;
+  }
+
+  &:active {
+    border-color: transparent;
+  }
+
+  &.btn-dark {
+    color: $btn-default-dark-color;
+    background-color: $btn-default-dark-background-color;
+    border-color: $btn-default-dark-border-color;
+
+    &:hover {
+      background-color: $btn-default-dark-hover-background-color;
+    }
+  }
+
+  &.btn-busy span {
+    border-color: $btn-default-busy-border-color;
+    border-right-color: $btn-default-busy-border-right-color;
+  }
+}
+
+.btn-primary {
+  color: $btn-primary-color;
+  background-color: $btn-primary-background-color;
+  border-color: $btn-primary-border-color;
+
+  &:hover {
+    background-color: $btn-primary-hover-background-color;
+  }
+
+  &:active {
+    border-color: $btn-primary-active-border-color;
+  }
+
+  &.btn-inverse {
+    color: $btn-primary-inverse-color;
+    background-color: $btn-primary-inverse-background-color;
+
+    &:hover {
+      color: $btn-primary-inverse-hover-color;
+      background-color: $btn-primary-inverse-hover-background-color;
+    }
+  }
+
+  &.btn-busy span {
+    border-right-color: $btn-primary-busy-border-right-color;
+  }
+
+  // .btn-dark is used in both contexts.
+}
+
+.btn-secondary {
+  color: $btn-secondary-color;
+  background-color: $btn-secondary-background-color;
+  border-color: $btn-secondary-border-color;
+
+  &:hover {
+    background-color: $btn-secondary-hover-background-color;
+  }
+
+  &:active {
+    border-color: $btn-secondary-active-border-color;
+  }
+
+  &.btn-inverse {
+    color: $btn-secondary-inverse-color;
+    background-color: $btn-secondary-inverse-background-color;
+
+    &:hover {
+      color: $btn-secondary-inverse-hover-color;
+      background-color: $btn-secondary-inverse-hover-background-color;
+    }
+  }
+
+  &.btn-busy span {
+    border-color: $btn-secondary-busy-border-color;
+    border-right-color: $btn-secondary-busy-border-right-color;
+  }
+
+  // .btn-dark is used in both contexts.
+}
+
+.btn-success {
+  color: $btn-success-color;
+  background-color: $btn-success-background-color;
+  border-color: $btn-success-border-color;
+
+  &:hover {
+    background-color: $btn-success-hover-background-color;
+  }
+
+  &:active {
+    border-color: $btn-success-hover-border-color;
+  }
+
+  &.btn-inverse {
+    color: $btn-success-inverse-color;
+    background-color: $btn-success-inverse-background-color;
+
+    &:hover {
+      color: $btn-success-inverse-hover-color;
+      background-color: $btn-success-inverse-hover-background-color;
+    }
+
+    &:disabled {
+      background-color: inherit;
+    }
+  }
+}
+
+.btn-error {
+  color: $btn-error-color;
+  background-color: $btn-error-background-color;
+  border-color: $btn-error-border-color;
+
+  &:hover {
+    background-color: $btn-error-hover-background-color;
+  }
+
+  &:active {
+    border-color: $btn-error-active-border-color;
+  }
+
+  &.btn-inverse {
+    color: $btn-error-inverse-color;
+    background-color: $btn-error-inverse-background-color;
+
+    &:hover {
+      color: $btn-error-inverse-hover-color;
+      background-color: $btn-error-inverse-hover-background-color;
+    }
+
+    &:disabled {
+      background-color: inherit;
+    }
+  }
+}
+
+.btn-transparent,
+.btn-transparent:hover,
+.btn-transparent:active,
+.btn-transparent:focus,
+.btn-transparent:disabled {
+  border-color: transparent;
+  background-color: transparent;
+
+  &.btn-busy {
+    cursor: progress;
+
+    span {
+      border-color: $btn-transparent-busy-border-color;
+      border-right-color: $btn-transparent-busy-border-right-color;
+    }
+  }
+}
+

@@ -413,8 +413,8 @@ describe('AssetSelectorRenderer', function() {
           assert.include(iframeSrc, 'limitTo=datasets');
         });
 
-        it('has the background spinner class', function() {
-          assert.include(container.find('iframe').attr('class'), 'bg-loading-spinner');
+        it('has a modal title loading spinner', function() {
+          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
         });
       });
 
@@ -451,7 +451,7 @@ describe('AssetSelectorRenderer', function() {
 
       it('disables the insert button on render', function() {
         assert.equal(
-          container.find('.btn.accent-btn').attr('disabled'),
+          container.find('.btn-primary').attr('disabled'),
           'disabled'
         );
       });
@@ -462,8 +462,8 @@ describe('AssetSelectorRenderer', function() {
           assert.include(iframeSrc, 'component/visualization/add?datasetId');
         });
 
-        it('has the background spinner class', function() {
-          assert.include(container.find('iframe').attr('class'), 'bg-loading-spinner');
+        it('has a modal title loading spinner', function() {
+          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
         });
       });
 
@@ -527,7 +527,9 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('has a spinner', function() {
-        assert.include(container.find('.asset-selector-image-upload-progress').attr('class'), 'bg-loading-spinner');
+        var $busy = container.find('.btn-busy');
+        assert.lengthOf($busy, 1);
+        assert.notInclude($busy.attr('class'), 'hidden');
       });
 
       it('has a cancel button in the progress pane', function() {

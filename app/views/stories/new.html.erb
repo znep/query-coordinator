@@ -8,12 +8,12 @@
       <form action="/stories/s/<%= params[:uid] -%>/create" method="POST">
         <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
 
-        <div class="media-selector-input-group">
-          <h2 class="media-selector-input-label">To get started, choose a name for your story.</h2>
-          <input id="create-story-title-input" class="media-selector-text-input" type="text" name="title" autofocus="autofocus" placeholder="Choose a name for your story..." value="<%= @story_title %>" />
+        <div class="asset-selector-input-group">
+          <h2 class="asset-selector-input-label">To get started, choose a name for your story.</h2>
+          <input id="create-story-title-input" class="asset-selector-text-input" type="text" name="title" autofocus="autofocus" placeholder="Choose a name for your story..." value="<%= @story_title %>" />
         </div>
-        <div class="media-selector-button-group r-to-l">
-          <button id="create-story-submit-btn" class="btn accent-btn" type="submit">Create Story</button>
+        <div class="asset-selector-button-group r-to-l">
+          <button id="create-story-submit-btn" class="btn-primary" type="submit">Create Story</button>
         </div>
       </form>
 

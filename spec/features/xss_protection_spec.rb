@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 shared_examples 'a secure application' do
+  self.use_transactional_fixtures = false
+
   describe 'View mode' do
     before do
       visit "/s/magic-thing/#{attack_story_uid}"

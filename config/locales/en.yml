@@ -2714,6 +2714,7 @@ en:
       problem_importing: There was a problem importing that file. Please make sure it is valid.
       problem_uploading: There was a problem uploading that file. Please make sure it is valid.
       rows_imported: "%{num} rows imported so far."
+      replicating: Replicating the dataset.
       try_again: Please try again in a bit.
       unknown_error: An unknown error has occurred
       uploading: Uploading your file

@@ -759,7 +759,6 @@ javascripts:
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.pbf.js
     - public/javascripts/bower/vector-tile-js/vectortile.min.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.VectorTileManager.js
-    - public/javascripts/bower/socrata-visualizations/socrata.visualizations.FeatureMap.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.RowInspector.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.FlyoutRenderer.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.DataProvider.js
@@ -767,7 +766,6 @@ javascripts:
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.TileserverDataProvider.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.SoqlDataProvider.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.MetadataProvider.js
-    - public/javascripts/bower/socrata-visualizations/SocrataFeatureMap.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.ColumnChart.js
     # - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS
@@ -777,6 +775,8 @@ javascripts:
     - public/javascripts/util/lodash-mixins.js
 
   mobile:
+    - public/javascripts/mobile/mobile.visualizations.FeatureMap.js
+    - public/javascripts/mobile/components/SocrataFeatureMap.js
     - public/javascripts/mobile/main.js
     - public/javascripts/mobile/mobile.featuremap.js
 

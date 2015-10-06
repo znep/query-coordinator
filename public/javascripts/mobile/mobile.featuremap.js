@@ -86,7 +86,7 @@ $(document).ready(function() {
   };
 
   var $featureMapElement = $('#feature-map');
-  $featureMapElement.socrataFeatureMap(featureMap1VIF);
+  $featureMapElement.socrataMobileFeatureMap(featureMap1VIF);
 
   mapHeight = (60 * $(window).height()) / 100 // Map should be 60% of device height
   $featureMapElement.height(mapHeight)

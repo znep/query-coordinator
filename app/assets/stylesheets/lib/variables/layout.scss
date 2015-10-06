@@ -17,8 +17,9 @@ $settings-panel-width: 42rem;
 $settings-panel-close-bar-height: 2rem;
 $settings-panel-padding-width: 3rem;
 $settings-panel-publishing-label-width: 30%;
-$settings-panel-warning-width: 7.5%;
-$settings-panel-error-message-width: 100% - $settings-panel-warning-width;
+
+$warning-bar-icon-width: 2.5rem;
+$warning-bar-message-width: 92.5%;
 
 // Content panels
 $content-panel-padding: 2rem;
@@ -104,6 +105,7 @@ $btn-padding-top-bottom: 0.9rem;
 $btn-padding-left-right: 1.5rem;
 $btn-busy-width: 2rem;
 $btn-busy-height: 2rem;
+$btn-busy-border-width: 1px;
 
 // Preview button
 $preview-btn-right-margin: 3rem;

@@ -250,6 +250,37 @@ a[role="button"] {
   text-align: center;
 }
 
+.warning-bar {
+  border: solid 1px $warning-bar-border-color;
+  background-color: $warning-bar-background-color;
+  padding: .75rem;
+  font-size: 1.25rem;
+  color: $warning-bar-color;
+  font-weight: lighter;
+
+  &::after {
+    content: '';
+    display: table;
+    clear: left;
+  }
+
+  p {
+    float: left;
+    box-sizing: border-box;
+
+    &:first-child {
+      width: $warning-bar-icon-width;
+      font-size: $warning-bar-icon-font-size;
+      color: $warning-bar-icon-color;
+    }
+
+    &:last-child {
+      width: $warning-bar-message-width;
+      padding-top: .25rem;
+    }
+  }
+}
+
 // Developer mode Rack Mini Profiler.
 // Positioned under the header.
 .profiler-results {

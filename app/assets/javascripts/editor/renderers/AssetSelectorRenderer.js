@@ -1047,9 +1047,10 @@
 
       var previewInsecureMessage = $(
         '<div>',
-        { 'class': 'asset-selector-insecure-html-warning' }
-      ).html(
-        I18n.t('editor.asset_selector.embed_code.insecure_html_warning')
+        { 'class': 'asset-selector-insecure-html-warning warning-bar' }
+      ).append(
+        $('<p>').append($('<span>', {'class': 'icon-warning'})),
+        $('<p>').text(I18n.t('editor.asset_selector.embed_code.insecure_html_warning'))
       );
 
       var previewInvalidMessageTitle = $(

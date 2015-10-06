@@ -177,7 +177,7 @@
 
         _addThemeStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
-        _editorBodyElement = $(_editor.getDocument()).find('body');
+        _editorBodyElement = $(e.target.contentWindow.document).find('body');
         _formatController = new storyteller.RichTextEditorFormatController(
           _editor,
           _formats
@@ -314,7 +314,7 @@
       //
       // I have no idea why having both a top and bottom modifier on the layout
       // of block elements causes things to get so fiddly.
-      var contentHeight = parseInt(_editorBodyElement.css('padding-top'), 10);
+      var contentHeight = parseFloat(_editorBodyElement.css('padding-top') || 0, 10);
 
       // We need to recalculate the height of each individual element rather
       // than just checking the outerHeight of the body because the body
@@ -324,14 +324,21 @@
       _editorBodyElement.
         children().
         each(function() {
-          contentHeight += $(this).outerHeight(true);
-        });
+          var marginTop;
+          var siblingMarginCollapsing = 0;
+          var previous = $(this).prev();
 
-      // Sub-pixel heights and other iframe weirdness can sometimes cause
-      // the scrollbar to appear with a tiny distance to scroll.
-      // Adding one to the computed content height seems to solve this and
-      // is more or less imperceptible.
-      contentHeight += 1;
+          // If we have a previous sibling, we need to take into account
+          // margin collapsing ("Adjacent sibling" case only).
+          // See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing.
+          if (previous) {
+            marginTop = parseFloat($(this).css('margin-top') || 0, 10);
+            siblingMarginCollapsing = parseFloat(previous.css('margin-bottom') || 0, 10);
+            siblingMarginCollapsing = siblingMarginCollapsing > marginTop ? marginTop : siblingMarginCollapsing;
+          }
+
+          contentHeight += $(this).outerHeight(true) - siblingMarginCollapsing;
+        });
 
       if (contentHeight !== _lastContentHeight) {
         _lastContentHeight = contentHeight;

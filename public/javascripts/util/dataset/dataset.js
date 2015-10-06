@@ -209,6 +209,11 @@ var Dataset = ServerModel.extend({
         return false;
     },
 
+    getDownloadType: function()
+    {
+        return this.isGeoDataset() ? 'geo' : this.newBackend ? 'nbe' : 'normal'
+    },
+
     isGeoDataset: function()
     {
         return (this.metadata && this.metadata.geo);

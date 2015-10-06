@@ -2228,7 +2228,7 @@
         // and event handlers when the directive is destroyed.
         scope.$destroyAsObservable(element).subscribe(function() {
 
-          if (scope.allowFilterChange) {
+          if (mouseLeftButtonChangesSubscription) {
             mouseLeftButtonChangesSubscription.dispose();
           }
 

@@ -382,7 +382,7 @@ private
   end
 
   def editing_this_page_is_dangerous?(domain = @domain)
-    Rails.env.end_with?('production') && [ 'default', 'socrata' ].include?(domain.shortName)
+    !Rails.env.development? && [ 'default', 'socrata' ].include?(domain.shortName)
   end
   helper_method :editing_this_page_is_dangerous?
 

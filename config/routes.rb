@@ -308,7 +308,9 @@ Frontend::Application.routes do
       match '/view/:id', :action => 'serve_app', :app => 'dataCards', :as => :opendata_cards_view
       match '/view/:id/:field_id', :action => 'serve_app', :app => 'dataCards'
       match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
+    end
 
+    scope :controller => 'angular' do
       # Angular endpoint for a standalone add card page that uses dataset metadata
       match '/component/visualization/add', :action => 'visualization_add', :app => 'dataCards'
     end

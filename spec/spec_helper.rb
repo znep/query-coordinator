@@ -213,9 +213,13 @@ def stub_logged_in_user
   allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
 end
 
-def stub_core_view(uid)
+def stub_core_view(uid, options={})
+  view = {
+    name: 'test story'
+  }.merge(options)
+
   stub_request(:get, /\/views\/#{uid}.json/).
-    to_return(:status => 200, :body => '{"name": "test story" }')
+    to_return(:status => 200, :body => view.to_json)
 end
 
 class Capybara::Session

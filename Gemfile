@@ -46,6 +46,9 @@ gem 'paperclip', '~> 4.3'
 gem 'delayed_job_active_record'
 gem 'daemons'
 
+# Use sanitize to clean html
+gem 'sanitize'
+
 # Use Unicorn as the app server
 gem 'unicorn'
 

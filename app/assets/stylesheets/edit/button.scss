@@ -13,7 +13,7 @@
   padding: 0.9rem 1.5rem;
   font-size: 1.5rem;
   border-radius: $btn-border-radius;
-  border: none;
+  border: solid 1px transparent;
   outline: none;
   transition: color $transition-duration, background-color $transition-duration;
   cursor: pointer;
@@ -23,18 +23,18 @@
   &.btn-secondary:disabled,
   &.btn-success:disabled,
   &.btn-error:disabled {
-    color: dimgray;
-    border-color: #929292;
-    background-color: #c5c5c5;
+    color: $btn-disabled-color;
+    border-color: $btn-disabled-border-color;
+    background-color: $btn-disabled-background-color;
     cursor: not-allowed;
 
     &.btn-dark,
     &.btn-dark:hover,
     &.btn-dark:active,
     &.btn-dark:focus {
-      color: #b7b7b7;
-      border-color: #838383;
-      background-color: #716d6d;
+      color: $btn-disabled-dark-color;
+      border-color: $btn-disabled-dark-border-color;
+      background-color: $btn-disabled-dark-background-color;
     }
   }
 }
@@ -56,13 +56,13 @@
 }
 
 .btn-default {
-  color: #757575;
-  background-color: #fff;
-  border: solid 1px #b7b7b7;
+  color: $btn-default-color;
+  background-color: $btn-default-background-color;
+  border-color: $btn-default-border-color;
 
   &:hover {
-    background-color: #dbdbdb;
-    color: #6e6e6e;
+    color: $btn-default-hover-color;
+    background-color: $btn-default-hover-background-color;
   }
 
   &:active {
@@ -70,102 +70,102 @@
   }
 
   &.btn-dark {
-    color: #fff;
-    background-color: #929292;
-    border-color: #b7b7b7;
+    color: $btn-default-dark-color;
+    background-color: $btn-default-dark-background-color;
+    border-color: $btn-default-dark-border-color;
 
     &:hover {
-      background-color: #757575;
+      background-color: $btn-default-dark-hover-background-color;
     }
   }
 
   &.btn-busy span {
-    border-color: #fff;
-    border-right-color: #d2d2d2;
+    border-color: $btn-default-busy-border-color;
+    border-right-color: $btn-default-busy-border-right-color;
   }
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #2c97de;
-  border: solid 1px #2c97de;
+  color: $btn-primary-color;
+  background-color: $btn-primary-background-color;
+  border-color: $btn-primary-border-color;
 
   &:hover {
-    background-color: #2379b2;
+    background-color: $btn-primary-hover-background-color;
   }
 
   &:active {
-    border-color: #2379b2;
+    border-color: $btn-primary-active-border-color;
   }
 
   &.btn-inverse {
-    color: #2c97de;
-    background-color: #fff;
+    color: $btn-primary-inverse-color;
+    background-color: $btn-primary-inverse-background-color;
 
     &:hover {
-      color: #fff;
-      background-color: #2c97de;
+      color: $btn-primary-inverse-hover-color;
+      background-color: $btn-primary-inverse-hover-background-color;
     }
   }
 
   &.btn-busy span {
-    border-right-color: #8ad0ff;
+    border-right-color: $btn-primary-busy-border-right-color;
   }
 
   // .btn-dark is used in both contexts.
 }
 
 .btn-secondary {
-  color: #fff;
-  background-color: #00be9b;
-  border: solid 1px #00be9b;
+  color: $btn-secondary-color;
+  background-color: $btn-secondary-background-color;
+  border-color: $btn-secondary-border-color;
 
   &:hover {
-    background-color: #00987c;
+    background-color: $btn-secondary-hover-background-color;
   }
 
   &:active {
-    border-color: #00987c;
+    border-color: $btn-secondary-active-border-color;
   }
 
   &.btn-inverse {
-    color: #00be9b;
-    background-color: #fff;
+    color: $btn-secondary-inverse-color;
+    background-color: $btn-secondary-inverse-background-color;
 
     &:hover {
-      color: #fff;
-      background-color: #00be9b;
+      color: $btn-secondary-inverse-hover-color;
+      background-color: $btn-secondary-inverse-hover-background-color;
     }
   }
 
   &.btn-busy span {
-    border-color: #fff;
-    border-right-color: #66e2cc;
+    border-color: $btn-secondary-busy-border-color;
+    border-right-color: $btn-secondary-busy-border-right-color;
   }
 
   // .btn-dark is used in both contexts.
 }
 
 .btn-success {
-  color: #fff;
-  background-color: #64cf6c;
-  border: solid 1px #64cf6c;
+  color: $btn-success-color;
+  background-color: $btn-success-background-color;
+  border-color: $btn-success-border-color;
 
   &:hover {
-    background-color: #50a656;
+    background-color: $btn-success-hover-background-color;
   }
 
   &:active {
-    border-color: #50a656;
+    border-color: $btn-success-hover-border-color;
   }
 
   &.btn-inverse {
-    color: #64cf6c;
-    background-color: #fff;
+    color: $btn-success-inverse-color;
+    background-color: $btn-success-inverse-background-color;
 
     &:hover {
-      color: #fff;
-      background-color: #64cf6c;
+      color: $btn-success-inverse-hover-color;
+      background-color: $btn-success-inverse-hover-background-color;
     }
 
     &:disabled {
@@ -175,25 +175,29 @@
 }
 
 .btn-error {
-  color: #fff;
-  background-color: #ce6565;
-  border: solid 1px #ce6565;
+  color: $btn-error-color;
+  background-color: $btn-error-background-color;
+  border-color: $btn-error-border-color;
 
   &:hover {
-    background-color: #a55151;
+    background-color: $btn-error-hover-background-color;
   }
 
   &:active {
-    border-color: #a55151;
+    border-color: $btn-error-active-border-color;
   }
 
   &.btn-inverse {
-    color: #ce6565;
-    background-color: #fff;
+    color: $btn-error-inverse-color;
+    background-color: $btn-error-inverse-background-color;
 
     &:hover {
-      color: #fff;
-      background-color: #ce6565;
+      color: $btn-error-inverse-hover-color;
+      background-color: $btn-error-inverse-hover-background-color;
+    }
+
+    &:disabled {
+      background-color: inherit;
     }
   }
 }
@@ -210,8 +214,8 @@
     cursor: progress;
 
     span {
-      border-color: #9b9b9b;
-      border-right-color: #c9c9c9;
+      border-color: $btn-transparent-busy-border-color;
+      border-right-color: $btn-transparent-busy-border-right-color;
     }
   }
 }

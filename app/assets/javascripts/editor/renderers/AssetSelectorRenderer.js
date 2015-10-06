@@ -393,22 +393,18 @@
 
       var closeButton = _renderModalCloseButton();
 
-      var inputSubtext = $(
-        '<h3>',
-        { 'class': 'asset-selector-input-subtext' }
-      ).text(I18n.t('editor.asset_selector.image_upload.input_subtext'));
+      var inputSubtext = $('<h3>', {
+        'class': 'asset-selector-input-subtext'
+      }).text(I18n.t('editor.asset_selector.image_upload.input_subtext'));
 
       var inputLabel = $(
         '<h2>',
         { 'class': 'asset-selector-input-label asset-selector-input-label-centered input-label' }
       ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
 
-      var inputButton = $(
-        '<button>',
-        {
-          'class': 'btn btn-primary'
-        }
-      ).text(I18n.t('editor.asset_selector.image_upload.input_button_text'));
+      var inputButton = $('<button>', {
+        'class': 'btn-primary'
+      }).text(I18n.t('editor.asset_selector.image_upload.input_button_text'));
 
       var inputControl = $(
         '<input>',
@@ -418,11 +414,6 @@
           'type': 'file'
         }
       );
-
-      inputButton.click(function(event) {
-        event.preventDefault();
-        inputControl.click();
-      });
 
       var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
@@ -453,6 +444,13 @@
         insertButton
       ]);
 
+      // Indirection for styling's sake.
+      // The <button> clicks triggers an <input type=file> click.
+      inputButton.click(function(event) {
+        event.preventDefault();
+        inputControl.click();
+      });
+
       return [ heading, closeButton, content, buttonGroup ];
     }
 
@@ -468,10 +466,10 @@
         { 'class': 'asset-selector-image-upload-progress' }
       );
 
-      var progressSpinner = $(
-        '<button>',
-        { 'class': 'btn btn-transparent btn-busy', 'disabled': true }
-      ).append($('<span>'));
+      var progressSpinner = $('<button>', {
+        'class': 'btn btn-transparent btn-busy',
+        'disabled': true
+      }).append($('<span>'));
 
       var uploadProgressMessage = $(
         '<h3>',
@@ -481,7 +479,7 @@
       var uploadCancelButton = $(
         '<button>',
         {
-          'class': 'btn btn-default btn-inverse asset-selector-cancel-upload',
+          'class': 'btn-default btn-inverse asset-selector-cancel-upload',
           'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
       ).text(I18n.t('editor.asset_selector.cancel_button_text'));
@@ -489,7 +487,7 @@
       var tryAgainButton = $(
         '<button>',
         {
-          'class': 'hidden btn btn-default btn-inverse asset-selector-try-again',
+          'class': 'hidden btn-default btn-inverse asset-selector-try-again',
           'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
       ).text(I18n.t('editor.asset_selector.try_again_button_text'));
@@ -506,7 +504,7 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn btn-primary',
+          'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
@@ -580,7 +578,7 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn btn-primary',
+          'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
@@ -846,6 +844,7 @@
         iframeContainer.
           removeClass('placeholder').
           removeClass('invalid');
+
         loadingButton.addClass('hidden');
         invalidMessageContainer.hide();
         insertButton.prop('disabled', false);
@@ -901,21 +900,16 @@
         }
       );
 
-      var loadingButton = $(
-        '<button>',
-        {
-          'class': 'btn btn-transparent btn-busy',
-          'disabled': true
-        }
-      ).append($('<span>'));
+      var loadingButton = $('<button>', {
+        'class': 'btn btn-transparent btn-busy',
+        'disabled': true
+      }).append($('<span>'));
 
       heading.append(loadingButton);
 
-      var buttonGroup = $(
-        '<div>',
-        {
-          'class': 'asset-selector-button-group r-to-l'
-        }).append([ backButton ]);
+      var buttonGroup = $('<div>', {
+        'class': 'asset-selector-button-group r-to-l'
+      }).append([ backButton ]);
 
       datasetChooserIframe[0].onDatasetSelected = function(datasetObj) {
         $(this).trigger('datasetSelected', datasetObj);
@@ -951,28 +945,22 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn btn-primary',
+          'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
-      var loadingButton = $(
-        '<button>',
-        {
-          'class': 'btn btn-transparent btn-busy',
-          'disabled': true
-        }
-      ).append($('<span>'));
+      var loadingButton = $('<button>', {
+        'class': 'btn-transparent btn-busy',
+        'disabled': true
+      }).append($('<span>'));
 
       heading.append(loadingButton);
 
-      var buttonGroup = $(
-        '<div>',
-        {
-          'class': 'asset-selector-button-group r-to-l'
-        }).append([ backButton, insertButton ]);
-
+      var buttonGroup = $('<div>', {
+        'class': 'asset-selector-button-group r-to-l'
+      }).append([ backButton, insertButton ]);
 
       configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj) {
         // This function is called by the visualization chooser when:
@@ -1114,7 +1102,7 @@
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn btn-primary',
+          'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
@@ -1162,7 +1150,7 @@
       return $(
         '<button>',
         {
-          'class': 'btn btn-default btn-inverse back-btn',
+          'class': 'btn-default btn-inverse back-btn',
           'data-action': backAction
         }
       ).text(

@@ -14,7 +14,7 @@
     $controlsInsertButton = $(
       '<button>',
       {
-        'class': 'btn btn-primary asset-selector-insert-btn',
+        'class': 'btn-primary asset-selector-insert-btn',
         'data-action': Actions.ASSET_SELECTOR_CHOOSE_PROVIDER
       }
     ).text(I18n.t('editor.components.asset_selector.insert_btn'));

@@ -33,10 +33,9 @@ describe('<page-header />', function() {
   });
 
   function createPageHeader(currentUser) {
+    window.currentUser = currentUser;
     var outerScope = rootScope.$new();
-    outerScope.currentUser = currentUser;
-
-    var html = '<page-header current-user="currentUser"></page-header>';
+    var html = '<page-header></page-header>';
     return testHelpers.TestDom.compileAndAppend(html, outerScope);
   }
 

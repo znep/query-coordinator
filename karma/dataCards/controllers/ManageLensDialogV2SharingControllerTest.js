@@ -40,9 +40,16 @@ describe('ManageLensDialogV2SharingController', function() {
     $httpBackend.when('POST', addGrantUrl).respond({});
   });
 
+  beforeEach(function() {
+    window.currentUser = {
+      id: 'pliz-whyy'
+    };
+  });
+
   function createController(pageData) {
     $dialogScope = $rootScope.$new();
     $dialogScope.page = Mockumentary.createPage(pageData);
+    $dialogScope.shouldShowSharingSection = true;
     $controller('ManageLensDialogV2Controller', { $scope: $dialogScope });
     $scope = $dialogScope.$new();
     $controller('ManageLensDialogV2SharingController', { $scope: $scope });

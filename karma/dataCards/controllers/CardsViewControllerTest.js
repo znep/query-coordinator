@@ -142,7 +142,8 @@ describe('CardsViewController', function() {
     _.defaults(
       pageOverrides, {
         name: DEFAULT_PAGE_NAME,
-        description: DEFAULT_PAGE_DESCRIPTION
+        description: DEFAULT_PAGE_DESCRIPTION,
+        version: 1
       }
     );
     if (datasetOverrides && datasetOverrides.id) {
@@ -177,6 +178,7 @@ describe('CardsViewController', function() {
   function makeController(datasetOverrides) {
     var context = makeContext(datasetOverrides);
     var controller = $controller('CardsViewController', context);
+    context.$scope.dataLensVersion = 1;
     testHelpers.mockDirective(_$provide, 'modalDialog');
     testHelpers.mockDirective(_$provide, 'addCardDialog');
     testHelpers.mockDirective(_$provide, 'manageLensDialog');
@@ -393,10 +395,10 @@ describe('CardsViewController', function() {
       ServerConfig.override('enableDataLensOtherViews', true);
       ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       var context = renderCardsView();
-      var relatedViews = context.element.find('related-views');
-      $scope = context.$scope;
+      $scope = context.element.scope();
       $scope.currentUserHasSaveRight = true;
       $scope.$digest();
+      var relatedViews = context.element.find('related-views');
       expect(relatedViews).to.not.have.class('ng-hide');
     });
 
@@ -684,27 +686,27 @@ describe('CardsViewController', function() {
       });
 
       it('should not occur if no user is logged in', function() {
+        window.currentUser = null;
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-        $scope.$apply(controllerHarness.currentUserDefer.resolve(null));
 
         expect($scope.manageLensState).to.equal(undefined);
         expect($scope.shouldShowManageLens).to.equal(false);
       });
 
       it("should not occur if the current user does not have the 'edit_others_datasets' right", function() {
+        window.currentUser = mockUser(false);
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(false)));
 
         expect($scope.manageLensState).to.equal(undefined);
         expect($scope.shouldShowManageLens).to.equal(false);
       });
 
       it("should not occur if the current user has the 'edit_others_datasets' right", function() {
+        window.currentUser = mockUser(true);
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(true)));
 
         expect($scope.manageLensState).to.equal(undefined);
         expect($scope.shouldShowManageLens).to.equal(false);
@@ -718,27 +720,27 @@ describe('CardsViewController', function() {
       });
 
       it('should not occur if no user is logged in', function() {
+        window.currentUser = null;
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-        $scope.$apply(controllerHarness.currentUserDefer.resolve(null));
 
         expect($scope.manageLensState).to.equal(undefined);
         expect($scope.shouldShowManageLens).to.equal(false);
       });
 
       it("should not occur if the current user does not have the 'edit_others_datasets' right", function() {
+        window.currentUser = mockUser(false);
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(false)));
 
         expect($scope.manageLensState).to.equal(undefined);
         expect($scope.shouldShowManageLens).to.equal(false);
       });
 
       it("should not occur if the current user has the 'edit_others_datasets' right", function() {
+        window.currentUser = mockUser(true);
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(true)));
 
         expect($scope.manageLensState).to.equal(undefined);
         expect($scope.shouldShowManageLens).to.equal(false);
@@ -752,27 +754,27 @@ describe('CardsViewController', function() {
       });
 
       it('should not occur if no user is logged in', function() {
+        window.currentUser = null;
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-        $scope.$apply(controllerHarness.currentUserDefer.resolve(null));
 
         expect($scope.manageLensState).to.equal(undefined);
         expect($scope.shouldShowManageLens).to.equal(false);
       });
 
       it("should not occur if the current user does not have the 'edit_others_datasets' right", function() {
+        window.currentUser = mockUser(false);
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(false)));
 
         expect($scope.manageLensState).to.equal(undefined);
         expect($scope.shouldShowManageLens).to.equal(false);
       });
 
       it("should occur if the current user has the 'edit_others_datasets' right", function() {
+        window.currentUser = mockUser(true);
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(true)));
 
         expect($scope.manageLensState.hasOwnProperty('show')).to.equal(true);
         expect($scope.manageLensState.show).to.equal(false);
@@ -793,16 +795,13 @@ describe('CardsViewController', function() {
 
       function runCase(isAdmin, isOwner, userRole) {
         // false, true, 'editor'
+        window.currentUser = mockUser(
+          isAdmin,
+          isOwner ? datasetOwnerId : 'xnot-ownr',
+          userRole
+        );
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-
-        controllerHarness.currentUserDefer.resolve(
-          mockUser(
-            isAdmin,
-            isOwner ? datasetOwnerId : 'xnot-ownr',
-            userRole
-          )
-        );
 
         $scope.$digest();
 
@@ -814,10 +813,9 @@ describe('CardsViewController', function() {
       }
 
       it('should be false if no user is logged in', function() {
+        window.currentUser = null;
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
-
-        controllerHarness.currentUserDefer.reject({});
 
         $scope.$digest();
         expect($scope.currentUserHasSaveRight).to.be.false;

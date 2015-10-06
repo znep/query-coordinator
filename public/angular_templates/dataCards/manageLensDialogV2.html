@@ -1,6 +1,6 @@
 <h2>{{::'manageLensDialog.title' | I18n}}</h2>
 
-<section class="row sharing" ng-controller="ManageLensDialogV2SharingController">
+<section class="row sharing" ng-controller="ManageLensDialogV2SharingController" ng-if="shouldShowSharingSection">
   <label class="span2">{{::'manageLensDialog.sharing.title' | I18n}}</label>
   <div class="contents span10">
     <div class="shares">
@@ -11,13 +11,13 @@
             <div ng-hide="share.link" class="share-user" ng-class="{'pending-removal': share.pendingRemoval}">{{share.name}}</div>
           </div>
           <div class="span8">
-            <soc-select ng-model="share.type" ng-disabled="share.pendingRemoval">
+            <soc-select ng-model="share.type" ng-disabled="disableSharingDropdown(share)">
               <soc-option value="owner">{{::'manageLensDialog.sharing.owner' | I18n}}</soc-option>
               <soc-option value="contributor">{{::'manageLensDialog.sharing.contributor' | I18n}}</soc-option>
               <soc-option value="viewer">{{::'manageLensDialog.sharing.viewer' | I18n}}</soc-option>
             </soc-select>
             <button
-              ng-hide="share.newShare"
+              ng-hide="disableRemoveButton(share)"
               class="action-btn dark share-remove-button"
               ng-click="toggleSharePendingRemovalStatus(share)"
               ng-bind="share.pendingRemoval ? 'Keep' : 'Remove'"></button>

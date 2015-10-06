@@ -3,6 +3,8 @@
 
   function ManageLensDialogV2SharingController($scope, $q, I18n, http) {
 
+    $scope.currentUserId = window.currentUser.id;
+
     // Common share functions
     function formatShare(share) {
       var result = {
@@ -51,6 +53,14 @@
 
     $scope.toggleSharePendingRemovalStatus = function(share) {
       share.pendingRemoval = !share.pendingRemoval;
+    };
+
+    $scope.disableSharingDropdown = function(share) {
+      return share.pendingRemoval || $scope.currentUserId === share.userId;
+    };
+
+    $scope.disableRemoveButton = function(share) {
+      return share.newShare || $scope.currentUserId === share.userId;
     };
 
     // Inherited shares

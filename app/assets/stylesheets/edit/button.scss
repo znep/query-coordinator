@@ -10,7 +10,7 @@
 [class^="btn-"], [class*=" btn-"] {
   @include unselectable();
 
-  padding: 0.9rem 1.5rem;
+  padding: $btn-padding-top-bottom $btn-padding-left-right;
   font-size: 1.5rem;
   border-radius: $btn-border-radius;
   border: solid 1px transparent;
@@ -50,8 +50,8 @@
     border: 3px solid;
     border-radius: 60%;
     display: inline-block;
-    width: 2rem;
-    height: 2rem;
+    width: $btn-busy-width;
+    height: $btn-busy-height;
   }
 }
 

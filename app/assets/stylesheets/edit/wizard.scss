@@ -14,7 +14,7 @@
   }
 
   .asset-selector-input-subtext {
-    color: #4a4a4a;
+    color: $asset-selector-input-subtext-color;
     font-size: 1.5rem;
     font-weight: 600;
   }
@@ -22,7 +22,7 @@
   .asset-selector-input-label {
     margin: 1rem 0;
     text-align: left;
-    color: #4a4a4a;
+    color: $asset-selector-input-label-color;
     font-size: 1.5rem;
     font-weight: normal;
 
@@ -51,8 +51,8 @@
 
     .btn-busy {
       position: absolute;
-      top: calc(50% - 25px - 1rem);
-      left: calc(50% - 19px - 1rem);
+      top: calc(50% - 1rem - (#{$btn-padding-top-bottom} * 2 + #{$btn-busy-height}) / 2);
+      left: calc(50% - 1rem - (#{$btn-padding-left-right} * 2 + #{$btn-busy-width}) / 2);
     }
 
     .asset-selector-uploading-message {
@@ -105,8 +105,8 @@
 
     .btn-busy {
       position: absolute;
-      top: calc(50% - 25px);
-      left: calc(50% - 19px);
+      top: calc(50% - (#{$btn-padding-top-bottom} * 2 + #{$btn-busy-height}) / 2);
+      left: calc(50% - (#{$btn-padding-left-right} * 2 + #{$btn-busy-width}) / 2);
     }
 
     .asset-selector-insecure-html-warning {
@@ -160,7 +160,7 @@
   &.r-to-l {
     text-align: right;
 
-    .btn {
+    [class^="btn-"], [class*=" btn-"] {
       margin-left: 1rem;
     }
   }

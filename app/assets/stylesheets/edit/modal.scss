@@ -40,7 +40,7 @@
     background-color: $modal-bg-color;
     border-radius: $modal-border-radius;
     margin-bottom: 2rem;
-    box-shadow: 0 0 14px -3px #333;
+    box-shadow: 0 0 14px -3px $modal-box-shadow-color;
 
     &.modal-dialog-wide {
       width: $modal-wide-static-width;
@@ -58,8 +58,7 @@
       margin-bottom: 2rem;
       font-size: $modal-title-font-size;
       line-height: $modal-title-line-height;
-      color: #6d6d6d;
-      font-size: 1.8rem;
+      color: $modal-title-color;
 
       .btn-busy {
         padding: 0;
@@ -80,10 +79,10 @@
       border: none;
       outline: none;
       cursor: pointer;
-      color: #9b9b9b;
+      color: $modal-close-btn-color;
 
       &:hover {
-        color: #474747;
+        color: $modal-close-btn-hover-color;
       }
     }
 
@@ -93,7 +92,7 @@
 
     .button-list li {
       padding: 1.5rem 1rem;
-      border-bottom: solid 1px #DEDEDE;
+      border-bottom: solid 1px $modal-button-list-border-color;
       position: relative;
 
       &:last-child {
@@ -108,26 +107,26 @@
         top: calc(6.8rem / 2 - 0.75rem);
         display: inline-block;
         font-size: 1.5rem;
-        color: #9b9b9b;
+        color: $modal-button-list-arrow-color;
       }
 
       &:hover {
-        background-color: #f7f7f7;
+        background-color: $modal-button-list-hover-background-color;
         cursor: pointer;
 
         &::after {
-          color: #474747;
+          color: $modal-button-list-hover-arrow-color;
         }
       }
 
       h3 {
-        color: #3498db;
+        color: $modal-button-list-header-color;
         font-size: 1.5rem;
         margin-bottom: 1rem;
       }
 
       p {
-        color: #9b9b9b;
+        color: $modal-button-list-description-color;
         font-size: 1.2rem;
       }
     }

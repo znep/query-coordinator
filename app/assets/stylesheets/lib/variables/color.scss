@@ -12,6 +12,10 @@ $header-story-title-color: #dbdbdb;
 $header-story-title-hover-color: #fff;
 $header-btn-disabled-color: #777;
 
+// Create A Story
+$create-story-modal-title-color: #4a4a4a;
+$create-story-modal-input-label-color: #9b9b9b;
+
 // Story save error bar
 $story-save-error-bar-color: #c47f59;
 $story-save-error-bar-icon-color: #f5a623;
@@ -74,12 +78,24 @@ $empty-story-warning-font-color: rgb(153,153,153);
 
 // Modal windows
 $modal-bg-color: #fff;
+$modal-title-color: #6d6d6d;
 $modal-overlay-bg-color: rgba(0, 0, 0, 0.5);
+$modal-box-shadow-color: #333;
+$modal-close-btn-color: #9b9b9b;
+$modal-close-btn-hover-color: #474747;
+$modal-button-list-border-color: #dedede;
+$modal-button-list-arrow-color: #9b9b9b;
+$modal-button-list-hover-background-color: #f7f7f7;
+$modal-button-list-hover-arrow-color: #474747;
+$modal-button-list-header-color: #3498db;
+$modal-button-list-description-color: #9b9b9b;
 
 // Media Selector
 $asset-selector-input-group-bg-color: #eee;
 $asset-selector-preview-container-bg-color: #fff;
 $asset-selector-invalid-message-color: #333;
+$asset-selector-input-subtext-color: #4a4a4a;
+$asset-selector-input-label-color: #4a4a4a;
 
 // Forms
 $input-element-border-color: #ccc;

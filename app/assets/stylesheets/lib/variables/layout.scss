@@ -93,13 +93,17 @@ $rich-text-editor-toolbar-select-width: 16rem;
 
 // Modal windows
 $modal-padding: 2rem;
-$modal-title-font-size: 2rem;
+$modal-title-font-size: 1.8rem;
 $modal-title-line-height: 2.5rem;
 $modal-close-btn-width: 2.5rem;
 $modal-wide-static-width: 800px;
 
 // Buttons
 $btn-height: 2rem;
+$btn-padding-top-bottom: 0.9rem;
+$btn-padding-left-right: 1.5rem;
+$btn-busy-width: 2rem;
+$btn-busy-height: 2rem;
 
 // Preview button
 $preview-btn-right-margin: 3rem;

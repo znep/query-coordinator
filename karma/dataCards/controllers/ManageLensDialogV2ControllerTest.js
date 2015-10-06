@@ -1,15 +1,25 @@
 describe('ManageLensDialogV2Controller', function() {
   'use strict';
 
-  beforeEach(module('dataCards.controllers'));
+  beforeEach(module('dataCards'));
 
-  var $rootScope;
   var $scope;
 
-  beforeEach(inject(function($rootScope, $controller) {
+  beforeEach(inject(function($rootScope, $controller, Mockumentary) {
     $scope = $rootScope.$new();
+    $scope.page = Mockumentary.createPage();
     $controller('ManageLensDialogV2Controller', {$scope: $scope});
   }));
+
+  it('should set shouldShowSharingSection to false if the user does not have grants right', function() {
+    $scope.page.set('rights', []);
+    $scope.$digest();
+    expect($scope.shouldShowSharingSection).to.equal(false);
+
+    $scope.page.set('rights', ['grant']);
+    $scope.$digest();
+    expect($scope.shouldShowSharingSection).to.equal(true);
+  });
 
   it('should add a components object to the scope', function() {
     expect($scope.components).to.be.an.object;

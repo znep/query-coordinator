@@ -82,6 +82,7 @@ class PageMetadataManager
       page_metadata[:permissions] = permissions.stringify_keys!
       page_metadata[:moderationStatus] = result[:moderationStatus]
       page_metadata[:shares] = View.new(result).shares
+      page_metadata[:rights] = result[:rights]
       page_metadata[:displayType] = result[:displayType]
       page_metadata
     else
@@ -91,9 +92,9 @@ class PageMetadataManager
         return { body: { body: 'Not found' }, status: '404' }
       end
 
-      page_metadata = phiddy_result[:body]
-      page_metadata[:permissions] = permissions.stringify_keys! if page_metadata
-      page_metadata[:moderationStatus] = result[:moderationStatus] if page_metadata
+      page_metadata = phiddy_result[:body] || {}
+      page_metadata[:permissions] = permissions.stringify_keys!
+      page_metadata[:moderationStatus] = result[:moderationStatus]
       page_metadata[:displayType] = result[:displayType]
       page_metadata
     end

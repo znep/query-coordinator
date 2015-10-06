@@ -91,6 +91,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
       largestTimeSpanDays defaultDateTruncFunction permissions displayType moderationStatus shares
+      rights
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -108,6 +109,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
       largestTimeSpanDays defaultDateTruncFunction permissions displayType moderationStatus shares
+      rights
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
   end

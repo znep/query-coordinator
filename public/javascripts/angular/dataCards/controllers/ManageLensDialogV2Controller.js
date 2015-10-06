@@ -3,6 +3,13 @@
 
   function ManageLensDialogV2Controller($scope) {
 
+    // Show sharing section for users who have 'grant' right
+    $scope.$bindObservable('shouldShowSharingSection',
+      $scope.page.observe('rights').map(function(rights) {
+        return _.includes(rights, 'grant');
+      })
+    );
+
     // Decorate the $scope of the permissions with a components object. Each
     // component should be placed in this object with a save function that
     // returns a promise and a hasChanges$ observable that fires whenever it

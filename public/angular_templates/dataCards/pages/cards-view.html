@@ -1,6 +1,6 @@
 <div class="cards-view" notify-resize="headerContent">
   <!-- HEADER -->
-  <page-header ng-show="pageHeaderEnabled" current-user="currentUser"></page-header>
+  <page-header ng-show="pageHeaderEnabled"></page-header>
   <!-- METADATA BAR -->
   <div class="cards-metadata" ng-class="{'page-header-enabled': pageHeaderEnabled}">
     <!-- TODO - Remove this entire ng-if div once we are migrated to V2 -->
@@ -199,7 +199,7 @@
           <export-menu ng-if="standaloneLensChartEnabled"></export-menu>
           <api-explorer></api-explorer>
           <div class="manage-section">
-            <div class="action-btn r-to-l manage-button" ng-if="shouldShowManageLens && pagePermissions && currentUserHasSaveRight" ng-click="manageLensState.show = true">
+            <div class="action-btn r-to-l manage-button" ng-if="shouldShowManageLens" ng-click="manageLensState.show = true">
               {{::'manageLensDialog.title' | I18n}}
             </div>
             <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">

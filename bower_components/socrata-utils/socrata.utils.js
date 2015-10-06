@@ -405,61 +405,6 @@
           return cookie.replace(name, '');
         }
       }
-    },
-
-    /**
-     * Serializes a Date object into a floating timestamp.
-     * NOTE: Untestable due to time zone dependency.
-     *
-     * @param {Date} date to serialize
-     */
-    serializeFloatingTimestamp: function(date) {
-      function formatToTwoPlaces(value) {
-        return (value < 10) ?
-          '0' + value.toString() :
-          value.toString();
-      }
-
-      // The month component of JavaScript dates is 0-indexed
-      // (I have no idea why) so when we are serializing a
-      // JavaScript date as ISO-8601 date we need to increment
-      // the month value.
-      return '{0}-{1}-{2}T{3}:{4}:{5}'.format(
-        date.getFullYear(),
-        formatToTwoPlaces(date.getMonth() + 1),
-        formatToTwoPlaces(date.getDate()),
-        formatToTwoPlaces(date.getHours()),
-        formatToTwoPlaces(date.getMinutes()),
-        formatToTwoPlaces(date.getSeconds())
-      );
-    },
-
-    /**
-     * Deserializes an ISO-8601 timestamp to a Date object.
-     * NOTE: Untestable due to time zone dependency.
-     *
-     * @param {String} timestamp to deserialize
-     */
-    deserializeFloatingTimestamp: function(timestamp) {
-      if (timestamp.length < 19 || isNaN(new Date(timestamp).getTime())) {
-        throw new Error(
-          'Could not parse floating timestamp: "{0}" is not a valid ISO-8601 date.'.
-            format(timestamp)
-        );
-      }
-
-      // The month component of JavaScript dates is 0-indexed
-      // (I have no idea why) so when we are deserializing a
-      // properly-formatted ISO-8601 date we need to decrement
-      // the month value.
-      return new Date(
-        timestamp.substring(0, 4),
-        timestamp.substring(5, 7) - 1,
-        timestamp.substring(8, 10),
-        timestamp.substring(11, 13),
-        timestamp.substring(14, 16),
-        timestamp.substring(17, 19)
-      );
     }
   };
 

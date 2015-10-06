@@ -72,28 +72,8 @@
       "socrata-visualizations": [
         "bower_components/socrata-visualizations/socrata.visualizations.Visualization.js",
         "bower_components/socrata-visualizations/socrata.visualizations.ColumnChart.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.pbf.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.VectorTileManager.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.FeatureMap.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.RowInspector.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.FlyoutRenderer.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.DataProvider.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.GeospaceDataProvider.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.TileserverDataProvider.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.SoqlDataProvider.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.MetadataProvider.js",
-        "bower_components/socrata-visualizations/components/SocrataFeatureMap.js",
         {
-          "bower_components/socrata-visualizations/socrata.visualizations.columnChart.css": "../socrata-visualizations/socrata.visualizations.columnChart.css"
-        },
-        {
-          "bower_components/socrata-visualizations/socrata.visualizations.featureMap.css": "../socrata-visualizations/socrata.visualizations.featureMap.css"
-        },
-        {
-          "bower_components/socrata-visualizations/socrata.visualizations.rowInspector.css": "../socrata-visualizations/socrata.visualizations.rowInspector.css"
-        },
-        {
-          "bower_components/socrata-visualizations/socrata.visualizations.flyoutRenderer.css": "../socrata-visualizations/socrata.visualizations.flyoutRenderer.css"
+          "bower_components/socrata-visualizations/socrata.visualizations.columnChart.css": "../socrata.visualizations.columnChart.css"
         }
       ],
       "vector-tile-js": "bower_components/vector-tile-js/dist/vectortile.min.js"

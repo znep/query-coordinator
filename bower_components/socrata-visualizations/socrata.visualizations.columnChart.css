@@ -214,29 +214,13 @@
   position: absolute;
 }
 
-.column-chart .ticks .tick {
+.column-chart .ticks div {
   position: absolute;
-  width: 99.5%;
+  width: 100%;
   height: 1rem;
   text-align: right;
   margin-top: -1rem;
-  padding-right: 0.5%;
   font-size: 0.75em;
-  line-height: 1.25rem;
-  color: #bbb;
-  border-bottom: 1px solid #bbb;
-}
-
-.column-chart .ticks .tick.origin {
-  font-weight: bold;
-  color: #666;
-  border-bottom: 1px solid #666;
-}
-
-.column-chart .ticks .tick.below {
-  line-height: 0.75rem;
-  border-top: 1px solid #bbb;
-  border-bottom: none;
 }
 
 /**
@@ -364,4 +348,14 @@
 
 .column-chart .labels .label.selected .contents .text {
   color: #8f8f8f;
+}
+
+.column-chart .ticks div {
+  color: #bbb;
+  border-bottom: 1px solid #bbb;
+}
+
+.column-chart .ticks .origin {
+  color: #666;
+  border-bottom: 1px solid #666;
 }

@@ -150,8 +150,7 @@ RSpec.describe Block, type: :model do
     end
   end
 
-  # TODO tests for as_json and from_json
-  describe '#from_json' do
+  describe '.from_json' do
     describe 'html components' do
       # TODO: Figure out a way to share this properly with spec/features/xss_protection_spec.rb
       let(:html_component_attacks) do
@@ -184,15 +183,23 @@ RSpec.describe Block, type: :model do
         Hash[html_component_attacks.zip(html_component_attacks_sanitized)]
       end
 
+      let(:image_url) do
+        'https://media.giphy.com/media/Bk1tJSiem5hEk/giphy.gif'
+      end
+
       it 'are sanitized properly' do
         html_component_sanitizations.each do |attack_markup, sanitized_markup|
           sanitized_block = Block.from_json({
-            layout: 12,
-            components: [ { type: 'html', value: attack_markup } ],
+            layout: '6-6',
+            components: [
+              { type: 'html', value: attack_markup },
+              { type: 'image', url: image_url }
+            ],
             created_by: 'test_user@socrata.com'
           })
 
-          expect(sanitized_block.components.first['value']).to eq(sanitized_markup)
+          expect(sanitized_block.components[0]['value']).to eq(sanitized_markup)
+          expect(sanitized_block.components[1]['url']).to eq(image_url)
         end
       end
     end

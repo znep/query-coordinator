@@ -174,7 +174,7 @@ RSpec.describe Block, type: :model do
           'window.xssFailure = "malformed IMG tag script injection""&gt;',
           '&lt;window.xssFailure = "extraneous open brackets script injection";//&lt;',
           '',
-          ' ',
+          '<div></div>',
           ''
         ]
       end
@@ -200,6 +200,33 @@ RSpec.describe Block, type: :model do
 
           expect(sanitized_block.components[0]['value']).to eq(sanitized_markup)
           expect(sanitized_block.components[1]['url']).to eq(image_url)
+        end
+      end
+
+      let(:valid_html_tags) do
+        alignable_tags = %w( div h1 h2 h3 h4 h5 h6 blockquote )
+        basic_tags = %w( b i p )
+        list_tags = %w( ol ul )
+        closed_tags = %w( br )
+
+        alignable_tags.collect { |tag| "<#{tag} class=\"align-left\" style=\"text-align: left\">some #{tag}</#{tag}>" } +
+          basic_tags.collect { |tag| "<#{tag}>some #{tag}</#{tag}>" } +
+          list_tags.collect { |tag| "<#{tag}><li class=\"align-left\" style=\"text-align: left\">item in #{tag}</li></#{tag}>" } +
+          closed_tags.collect { |tag| "<#{tag}>" } +
+          [
+            '<a href="foo.html">text</a>'
+          ]
+      end
+
+      it 'does not sanitize valid html tags' do
+        valid_html_tags.each do |valid_markup|
+          sanitized_block = Block.from_json({
+            layout: 12,
+            components: [ { type: 'html', value: valid_markup } ],
+            created_by: 'test_user@socrata.com'
+          })
+
+          expect(sanitized_block.components[0]['value']).to eq(valid_markup)
         end
       end
     end

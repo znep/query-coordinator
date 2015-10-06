@@ -27,10 +27,29 @@ class Block < ActiveRecord::Base
     where("components @> ?", json_query)
   end
 
+  # Using our own config because it's more restrictive than the ones Sanitize provides.
+  SANITIZE_CONFIG = {}
+  SANITIZE_CONFIG['html'] = {
+    :elements => %w(
+      h1 h2 h3 h4 h5 h6
+      div blockquote
+      ol ul li
+      b i em
+      a p br
+    ),
+    :attributes => {
+      :all => [ 'class', 'style' ],
+      'a' => [ 'href' ]
+    },
+    :properties => 'text-align'
+  }
+
   after_initialize do
     (components || []).each do |component|
-      next unless component['type'] == 'html'
-      component['value'] = Sanitize.fragment(component['value'])
+      case component['type']
+      when 'html'
+        component['value'] = Sanitize.fragment(component['value'], SANITIZE_CONFIG['html'])
+      end
     end
   end
 

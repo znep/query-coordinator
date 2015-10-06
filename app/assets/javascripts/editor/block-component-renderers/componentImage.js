@@ -36,7 +36,7 @@
     imgSrc = componentData.value.url;
     documentId = componentData.value.documentId;
 
-    if ($imgElement.attr('src') !== imgSrc || $imgElement.attr('data-document-id') !== documentId) {
+    if ($imgElement.attr('src') !== imgSrc || $imgElement.attr('data-document-id') !== String(documentId)) {
       $imgElement.attr('src', imgSrc);
       $imgElement.attr('data-document-id', documentId);
     }

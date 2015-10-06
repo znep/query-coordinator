@@ -35,7 +35,15 @@ end
 
 packages.each do |package, libraries|
   print "[verify compression] "
-  buffer = libraries.inject('') { |buf, lib| buf << File.read(File.join(FRONTEND, lib)) }
+  buffer = libraries.inject('') do |buf, lib|
+    begin
+      buf << File.read(File.join(FRONTEND, lib))
+    rescue Errno::ENOENT
+      Dir.glob(File.join(FRONTEND, lib)).each do |file|
+        buf << File.read(file)
+      end
+    end
+  end
 
   begin
     data_length = YUI::JavaScriptCompressor.new.compress(buffer).length

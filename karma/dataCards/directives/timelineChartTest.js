@@ -127,7 +127,7 @@ describe('timelineChart', function() {
 
   }
 
-  function createTimelineChart(width, expanded, data, precision) {
+  function createTimelineChart(width, expanded, data, precision, allowFilterChange) {
 
     var html;
     var childScope;
@@ -150,7 +150,12 @@ describe('timelineChart', function() {
     scope.precision = precision || 'MONTH';
     scope.rowDisplayUnit = 'rowDisplayUnit';
     scope.activeFilters = [];
-    scope.allowFilterChange = true;
+
+    if (typeof allowFilterChange === 'boolean') {
+      scope.allowFilterChange = allowFilterChange;
+    } else {
+      scope.allowFilterChange = true;
+    }
 
     return testHelpers.TestDom.compileAndAppend(html, scope);
 
@@ -535,6 +540,35 @@ describe('timelineChart', function() {
     expect(wasUnhighlighted).to.equal(true);
     expect(wasThenHighlighted).to.equal(true);
     expect(wasThenSelected).to.equal(true);
+  });
+
+  it('should not create a selection when scope.allowFilterChange is set to false and the mouse is clicked on the chart display', function() {
+    var chart = createTimelineChart(640, false, false, false, false);
+
+    var wasUnselected = !$('.timeline-chart-wrapper').hasClass('selected');
+
+    mockWindowStateService.scrollPosition$.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+    mockWindowStateService.mousePosition$.onNext({
+      clientX: 320,
+      clientY: 100,
+      target: $('.timeline-chart-highlight-target')[0]
+    });
+
+    var wasStillUnselected = !$('.timeline-chart-wrapper').hasClass('selected');
+
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+    mockWindowStateService.mousePosition$.onNext({
+      clientX: 320,
+      clientY: 100,
+      target: $('.timeline-chart-highlight-target')[0]
+    });
+
+    var wasYetStillUnselected = !$('.timeline-chart-wrapper').hasClass('selected');
+
+    expect(wasUnselected).to.equal(true);
+    expect(wasStillUnselected).to.equal(true);
+    expect(wasYetStillUnselected).to.equal(true);
   });
 
   it('should highlight the chart when the mouse is moved over the chart labels', function() {

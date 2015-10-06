@@ -7,11 +7,9 @@
       scope: true,
       templateUrl: '/angular_templates/dataCards/singleCardLayout.html',
       link: function($scope, cardContainer) {
-        $scope.model = $scope.page.getCurrentValue('cards')[0];
-        // Enforce 'expanded' cards (the Column Chart, in particular, will not render
-        // all columns by default unless 'expanded' is true).
-        $scope.model.set('expanded', true);
+        window.socrata.utils.assertEqual($scope.page.getCurrentValue('cards').length, 1);
 
+        $scope.model = $scope.page.getCurrentValue('cards')[0];
         $scope.cardType = $scope.model.cardType;
 
         var windowHeight$ = WindowState.windowSize$.shareReplay().pluck('height');

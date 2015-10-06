@@ -7,7 +7,6 @@
       restrict: 'E',
       scope: {
         'model': '=',
-        'interactive': '=',
         'allowFilterChange': '=',
         'whereClause': '='
       },

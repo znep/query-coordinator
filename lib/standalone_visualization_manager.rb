@@ -86,7 +86,7 @@ class StandaloneVisualizationManager
       :cardOptions => {},
       :cardSize => 1,
       :cardType => card_type_from_vif(vif),
-      :expanded => false,
+      :expanded => true,
       :fieldName => vif[:columnName]
     }.with_indifferent_access
   end

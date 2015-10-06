@@ -222,10 +222,21 @@ en:
         title: Manage
         sharing:
           title: Shared with
+          add_new: Add New
+          add_new_prompt: Save your changes below to invite these new users to this Data Lens
           inherited_description: 'Inherited from the source dataset:'
           contributor: Contributor
           owner: Co-owner
           viewer: Viewer
+          keep: Keep
+          remove: Remove
+          new_share_dialog:
+            title: Share this Data Lens
+            description: 'Specify additional people you wish to grant permissions on this Data Lens to. If someone doesn’t yet have an account, they will be sent an invitation to register, after which they will be granted the permissions.'
+            email: Email address
+            remove: Remove
+            add_more: Add More
+            message: Optional message
         visibility:
           title: Visibility
           shown: Shown in catalog

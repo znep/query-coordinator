@@ -1,7 +1,7 @@
 <div class="related-views tool-panel" ng-class="{'down-right': dataLensVersion === 2}">
 
   <a type="button"
-    ng-class="{ touched: panelActive, 'l-to-r': dataLensVersion === 2 }"
+    ng-class="{ touched: panelActive, 'l-to-r': dataLensVersion === 2, 'r-to-l': dataLensVersion === 1 }"
     class="tool-panel-toggle-btn action-btn"
     ng-click="togglePanel($event)"
     ng-show="enablePublisherPages">

@@ -3,7 +3,7 @@
   <button
     type="button"
     title="{{::'apiExplorer.apiButtonTitle' | I18n}}"
-    ng-class="{touched: panelActive, disabled: editMode, 'l-to-r': dataLensVersion === 2}"
+    ng-class="{touched: panelActive, disabled: editMode, 'l-to-r': dataLensVersion === 2, 'r-to-l': dataLensVersion === 1}"
     class="tool-panel-toggle-btn action-btn"
     ng-click="panelActive = editMode ? false : !panelActive">
     {{::'apiExplorer.apiButton' | I18n}}

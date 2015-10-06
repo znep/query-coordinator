@@ -214,6 +214,7 @@ describe('CardsViewController', function() {
     testHelpers.mockDirective(_$provide, 'multilineEllipsis');
     testHelpers.mockDirective(_$provide, 'notifyResize');
     testHelpers.mockDirective(_$provide, 'aggregationChooser');
+    testHelpers.mockDirective(_$provide, 'newShareDialog');
     _$provide.value('page', context.page);
     _$provide.value('domain', context.domain);
     var html = '<ng-include ng-controller="CardsViewController"' +

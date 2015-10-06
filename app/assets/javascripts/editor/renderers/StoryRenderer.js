@@ -484,7 +484,7 @@
         $(
           '<span>',
           {
-            'class': 'block-edit-controls-move-up-btn btn icon-arrow-up2',
+            'class': 'block-edit-controls-move-up-btn btn-secondary icon-arrow-up2',
             'data-block-id': blockId,
             'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
           }
@@ -493,7 +493,7 @@
         $(
           '<span>',
           {
-            'class': 'block-edit-controls-move-down-btn btn icon-arrow-down2',
+            'class': 'block-edit-controls-move-down-btn btn-secondary icon-arrow-down2',
             'data-block-id': blockId,
             'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
           }
@@ -502,7 +502,7 @@
         $(
           '<span>',
           {
-            'class': 'block-edit-controls-delete-btn btn icon-cross2',
+            'class': 'block-edit-controls-delete-btn btn-secondary icon-cross2',
             'data-block-id': blockId,
             'data-block-delete-action': Actions.STORY_DELETE_BLOCK
           }

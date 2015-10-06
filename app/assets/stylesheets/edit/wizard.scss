@@ -21,10 +21,14 @@
 
   .asset-selector-input-label {
     margin: 1rem 0;
-    text-align: center;
+    text-align: left;
     color: #4a4a4a;
     font-size: 1.5rem;
     font-weight: normal;
+
+    &.asset-selector-input-label-centered {
+      text-align: center;
+    }
   }
 
   .btn-primary {
@@ -47,8 +51,8 @@
 
     .btn-busy {
       position: absolute;
-      top: 45%;
-      left: 45%;
+      top: calc(50% - 25px - 1rem);
+      left: calc(50% - 19px - 1rem);
     }
 
     .asset-selector-uploading-message {
@@ -83,6 +87,7 @@
     background-color: $asset-selector-preview-container-bg-color;
     &.placeholder {
       background-image: asset-url('embed-preview.png');
+      background-size: 10%;
     }
     background-size: 20%;
     background-position: 50% 50%;
@@ -96,6 +101,12 @@
       .asset-selector-invalid-message {
         display: block;
       }
+    }
+
+    .btn-busy {
+      position: absolute;
+      top: calc(50% - 25px);
+      left: calc(50% - 19px);
     }
 
     .asset-selector-insecure-html-warning {

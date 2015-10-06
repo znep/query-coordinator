@@ -400,7 +400,7 @@
 
       var inputLabel = $(
         '<h2>',
-        { 'class': 'asset-selector-input-label input-label' }
+        { 'class': 'asset-selector-input-label asset-selector-input-label-centered input-label' }
       ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
 
       var inputButton = $(
@@ -819,6 +819,7 @@
       var invalidMessageContainer = _dialog.find('.asset-selector-invalid-message');
       var invalidMessageElement = _dialog.find('.asset-selector-invalid-description');
       var iframeSrc = iframeElement.attr('src');
+      var loadingButton = _dialog.find('.btn-busy');
       var insertButton = _dialog.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY));
       var insecureHtmlWarning = _dialog.find('.asset-selector-insecure-html-warning');
 
@@ -842,8 +843,10 @@
           iframeElement.attr('src', htmlFragmentUrl);
         }
 
-        iframeContainer.removeClass('placeholder');
-        iframeContainer.removeClass('bg-loading-spinner');
+        iframeContainer.
+          removeClass('placeholder').
+          removeClass('invalid');
+        loadingButton.addClass('hidden');
         invalidMessageContainer.hide();
         insertButton.prop('disabled', false);
       } else if (!_.isNull(errorStep)) {
@@ -858,18 +861,25 @@
         invalidMessageContainer.show();
         invalidMessageElement.html(I18n.t(messageTranslationKey));
 
-        iframeContainer.removeClass('placeholder');
-        iframeContainer.removeClass('bg-loading-spinner');
+        iframeContainer.
+          removeClass('placeholder').
+          addClass('invalid');
+
+        loadingButton.addClass('hidden');
         insertButton.prop('disabled', true);
       } else if (!_.isNull(percentLoaded)) {
 
         invalidMessageContainer.hide();
-        iframeContainer.removeClass('placeholder');
-        iframeContainer.addClass('bg-loading-spinner');
+
+        iframeContainer.
+          removeClass('placeholder').
+          removeClass('invalid');
+
+        loadingButton.removeClass('hidden');
         insertButton.prop('disabled', true);
       } else {
         invalidMessageContainer.hide();
-        iframeContainer.removeClass('bg-loading-spinner');
+        loadingButton.addClass('hidden');
         insertButton.prop('disabled', true);
       }
     }
@@ -886,16 +896,36 @@
       var datasetChooserIframe = $(
         '<iframe>',
         {
-          'class': 'asset-selector-dataset-chooser-iframe asset-selector-full-width-iframe bg-loading-spinner',
+          'class': 'asset-selector-dataset-chooser-iframe asset-selector-full-width-iframe',
           'src': _datasetChooserUrl()
         }
       );
+
+      var loadingButton = $(
+        '<button>',
+        {
+          'class': 'btn btn-transparent btn-busy',
+          'disabled': true
+        }
+      ).append($('<span>'));
+
+      heading.append(loadingButton);
+
+      var buttonGroup = $(
+        '<div>',
+        {
+          'class': 'asset-selector-button-group r-to-l'
+        }).append([ backButton ]);
 
       datasetChooserIframe[0].onDatasetSelected = function(datasetObj) {
         $(this).trigger('datasetSelected', datasetObj);
       };
 
-      return [ heading, closeButton, datasetChooserIframe, backButton ];
+      datasetChooserIframe.load(function() {
+        loadingButton.addClass('hidden');
+      });
+
+      return [ heading, closeButton, datasetChooserIframe, buttonGroup ];
     }
 
     function _renderConfigureVisualizationTemplate() {
@@ -905,7 +935,7 @@
       var configureVisualizationIframe = $(
         '<iframe>',
         {
-          'class': 'asset-selector-configure-visualization-iframe asset-selector-full-width-iframe bg-loading-spinner',
+          'class': 'asset-selector-configure-visualization-iframe asset-selector-full-width-iframe',
           'src': ''
         }
       );
@@ -927,6 +957,16 @@
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
+      var loadingButton = $(
+        '<button>',
+        {
+          'class': 'btn btn-transparent btn-busy',
+          'disabled': true
+        }
+      ).append($('<span>'));
+
+      heading.append(loadingButton);
+
       var buttonGroup = $(
         '<div>',
         {
@@ -940,8 +980,8 @@
         //   - The page finishes loading (argument is null).
         // In either case, we should consider the iframe loaded.
         configureVisualizationIframe.
-          removeClass('bg-loading-spinner').
           trigger('visualizationSelected', datasetObj);
+        loadingButton.addClass('hidden');
       };
 
       return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];
@@ -996,6 +1036,11 @@
       );
 
       var closeButton = _renderModalCloseButton();
+
+      var loadingButton = $('<button>', {
+        'class': 'btn-transparent btn-busy hidden',
+        disabled: true
+      }).append($('<span>'));
 
       var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
         text(I18n.t('editor.asset_selector.embed_code.input_label'));
@@ -1058,6 +1103,7 @@
           'class': 'asset-selector-preview-container placeholder'
         }
       ).append([
+        loadingButton,
         previewInsecureMessage,
         previewInvalidMessage,
         previewIframe

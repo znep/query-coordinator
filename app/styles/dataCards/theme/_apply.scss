@@ -776,20 +776,37 @@ soc-select {
       background-color: $feature-map-flannel-chart-background-color;
     }
   }
-  &.southwest .tool-panel-hint {
+
+  &.north .tool-panel-hint {
     &:before {
-      border-color: $feature-map-flannel-border-color transparent transparent transparent;
+      border-bottom-color: $feature-map-flannel-border-color;
     }
     &:after {
-      border-color: $feature-map-flannel-chart-background-color transparent transparent transparent;
+      border-bottom-color: $feature-map-flannel-chart-background-color;
     }
   }
-  &.southeast .tool-panel-hint {
+  &.south .tool-panel-hint {
     &:before {
-      border-color: transparent $feature-map-flannel-border-color transparent transparent;
+      border-top-color: $feature-map-flannel-border-color;
     }
     &:after {
-      border-color: transparent $feature-map-flannel-chart-background-color transparent transparent;
+      border-top-color: $feature-map-flannel-chart-background-color;
+    }
+  }
+  &.east .tool-panel-hint {
+    &:before {
+      border-right-color: $feature-map-flannel-border-color;
+    }
+    &:after {
+      border-right-color: $feature-map-flannel-chart-background-color;
+    }
+  }
+  &.west .tool-panel-hint {
+    &:before {
+      border-left-color: $feature-map-flannel-border-color;
+    }
+    &:after {
+      border-left-color: $feature-map-flannel-chart-background-color;
     }
   }
 }

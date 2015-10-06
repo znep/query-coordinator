@@ -1,5 +1,5 @@
 <div class="feature-map-flannel">
-  <div class="tool-panel" ng-class="{southwest: !useSoutheastHint, southeast: useSoutheastHint}" ng-style="panelPositionStyle">
+  <div class="tool-panel" ng-class="{north: positionFlannelNorth, south: !positionFlannelNorth, east: positionFlannelEast, west: !positionFlannelEast}" ng-style="panelPositionStyle">
     <div class="tool-panel-main">
 
       <div class="icon-close" ng-show="queryStatus !== 'pending'"></div>

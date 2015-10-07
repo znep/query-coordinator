@@ -154,6 +154,16 @@
       }
     };
 
+    this.deselect = function() {
+      var iframe = _editorElement[0];
+
+      if (iframe.contentDocument.selection) {
+        iframe.contentDocument.selection.clear();
+      } else {
+        iframe.contentWindow.getSelection().removeAllRanges();
+      }
+    };
+
     /**
      * This method assumes that jQuery's .remove() function will correctly
      * remove any event listeners attached to _editorElement or any of its

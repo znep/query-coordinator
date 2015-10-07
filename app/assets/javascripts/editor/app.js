@@ -137,9 +137,15 @@ $(document).on('ready', function() {
    */
 
   $(window).on('rich-text-editor::focus-change', function(event) {
+    var editors;
+    var currentEditorId;
 
     if (event.originalEvent.detail.content === true) {
-      richTextEditorManager.linkToolbar(event.originalEvent.detail.id);
+      currentEditorId = event.originalEvent.detail.id;
+      editors = _.omit(richTextEditorManager.getAllEditors(), currentEditorId);
+
+      richTextEditorManager.linkToolbar(currentEditorId);
+      _.invoke(editors, 'deselect');
     }
   });
 

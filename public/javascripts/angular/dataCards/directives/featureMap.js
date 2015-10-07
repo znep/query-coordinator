@@ -499,8 +499,12 @@
 
                 flannelScope.panelPositionStyle.top = '{0}px'.format(yPosition);
 
+                // Display flannel above clicked point if the point is more than halfway
+                // down the window viewport. Else display flannel below the point.
+                flannelScope.positionFlannelNorth = (yPosition - distanceOutOfView) < (window.innerHeight / 2);
+
                 if (flannelScope.abutsRightEdge) {
-                  flannelScope.useSoutheastHint = xPosition + (Constants.FEATURE_MAP_FLANNEL_WIDTH / 2) >
+                  flannelScope.positionFlannelEast = xPosition + (Constants.FEATURE_MAP_FLANNEL_WIDTH / 2) >
                     windowWidth - (Constants.FLYOUT_WINDOW_PADDING + Constants.FEATURE_MAP_FLANNEL_PADDING_COMPENSATION);
 
                   flannelScope.panelPositionStyle.right = '{0}px'.format(
@@ -508,13 +512,13 @@
                   );
 
                   var hintRightOffset = xPosition + Constants.FLYOUT_WINDOW_PADDING +
-                    (flannelScope.useSoutheastHint ? 0 : Constants.FEATURE_MAP_FLANNEL_HINT_WIDTH);
+                    (flannelScope.positionFlannelEast ? 0 : Constants.FEATURE_MAP_FLANNEL_HINT_WIDTH);
                   var hintPositionFromRight = Math.max(0, windowWidth - hintRightOffset);
                   flannelScope.hintPositionStyle.right = '{0}px'.format(hintPositionFromRight);
                   flannelScope.hintPositionStyle.left = 'auto';
                 } else {
                   flannelScope.panelPositionStyle.left = '{0}px'.format(xPosition);
-                  flannelScope.useSoutheastHint = false;
+                  flannelScope.positionFlannelEast = false;
                 }
               });
             }

@@ -45,10 +45,15 @@ $sticky-border-height: 10px;
       display: block;
       width: 350px;
       max-height: $flannel-max-height;
-      bottom: 10px;
       right: inherit;
       left: 50%;
       z-index: 1003;
+    }
+    &.north .tool-panel-main {
+      top: 10px;
+    }
+    &.south .tool-panel-main {
+      bottom: 10px;
     }
     .tool-panel-inner-container {
       padding: 0;
@@ -71,26 +76,43 @@ $sticky-border-height: 10px;
         position: absolute;
       }
     }
-    &.southwest .tool-panel-hint {
-      left: 0;
-      bottom: -9px;
+    &.north .tool-panel-hint {
+      top: -9px;
       &:after {
-        border-width: $flannel-hint-tip-size $flannel-hint-tip-size 0 0;
+        border-bottom-width: $flannel-hint-tip-size;
       }
       &:before {
-        border-width: ($flannel-hint-tip-size + 1) ($flannel-hint-tip-size + 1) 0 0;
-        top: 1px;
-        left: -1px;
+        border-bottom-width: $flannel-hint-tip-size + 1;
+        top: -1px;
       }
     }
-    &.southeast .tool-panel-hint {
-      bottom: -9px;
+    &.east .tool-panel-hint {
       &:after {
-        border-width: 0 $flannel-hint-tip-size $flannel-hint-tip-size 0;
+        border-left-width: $flannel-hint-tip-size;
       }
       &:before {
-        border-width: 0 ($flannel-hint-tip-size + 1) ($flannel-hint-tip-size + 1) 0;
+        border-left-width: $flannel-hint-tip-size + 1;
+        left: 1px;
+      }
+    }
+    &.south .tool-panel-hint {
+      bottom: -9px;
+      &:after {
+        border-top-width: $flannel-hint-tip-size;
+      }
+      &:before {
+        border-top-width: $flannel-hint-tip-size + 1;
         top: 1px;
+      }
+    }
+    &.west .tool-panel-hint {
+      left: 0;
+      &:after {
+        border-right-width: $flannel-hint-tip-size;
+      }
+      &:before {
+        border-right-width: $flannel-hint-tip-size + 1;
+        left: -1px;
       }
     }
   }

@@ -212,7 +212,13 @@
           // (somewhat arbitrarily) by exportMenu.html and get
           // plumbed through to here.
           switch ($scope.chooserMode.action) {
+            case 'vif':
+              $scope.downloadState = 'success';
+              $scope.$emit('save-visualization-as', $scope.model);
+              resetDownloadButton(0);
+              break;
             case 'polaroid':
+            default:
               DownloadService.download($scope.downloadUrl).then(
                 function() {
                   $scope.$safeApply(function() {
@@ -226,12 +232,6 @@
               )['finally'](function() {
                 resetDownloadButton(2000);
               });
-
-              break;
-            case 'vif':
-              $scope.downloadState = 'success';
-              $scope.$emit('save-visualization-as', $scope.model);
-              resetDownloadButton(0);
               break;
           }
         };

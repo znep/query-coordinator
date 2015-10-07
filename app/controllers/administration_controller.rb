@@ -45,7 +45,7 @@ class AdministrationController < ApplicationController
   end
 
   def moderation_flag_if_needed
-    if check_feature(:view_moderation)
+    if CurrentDomain.feature?(:view_moderation)
       {}
     else
       {moderation: 'any'}

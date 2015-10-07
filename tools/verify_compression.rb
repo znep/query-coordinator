@@ -53,7 +53,14 @@ unless PROCESS_ALL || PROCESS_SPECIFIC
 end
 
 packages = yaml.select do |package, libraries|
-  PROCESS_ALL || PROCESS_SPECIFIC == package || libraries.any? { |js| (changed_js || []).include? js }
+  PROCESS_ALL || PROCESS_SPECIFIC == package || libraries.any? do |js|
+    next false unless changed_js.respond_to? :each # Testing that it's like an Array, basically.
+    if js.include? '*'
+      (changed_js - Dir.glob(js)).compact.size > 0
+    else
+      changed_js.include? js
+    end
+  end
 end
 
 packages.each do |package, libraries|

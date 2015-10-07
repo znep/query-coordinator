@@ -207,7 +207,7 @@
           'type': 'object',
           'properties': {
             'activeFilters': {'type': 'array'},
-            'baseLayerUrl': {'type': 'string'},
+            'baseLayerUrl': {},
             'bucketType': {'type': 'string'},
             'cardCustomStyle': {'type': 'object'},
             'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 4},
@@ -231,7 +231,7 @@
           'type': 'object',
           'properties': {
             'activeFilters': {'type': 'array'},
-            'baseLayerUrl': {'type': 'string'},
+            'baseLayerUrl': {},
             'bucketType': {'type': 'string'},
             'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 3},
             'cardType': {'type': 'string'},
@@ -248,7 +248,7 @@
           'type': 'object',
           'properties': {
             'activeFilters': {'type': 'array'},
-            'baseLayerUrl': {'type': 'string'},
+            'baseLayerUrl': {},
             'bucketType': {'type': 'string'},
             'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 3},
             'cardType': {'type': 'string'},

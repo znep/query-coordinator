@@ -10,39 +10,53 @@ FRONTEND = `git rev-parse --show-toplevel`.chop
 TMP_DIR  = File.expand_path(File.join(FRONTEND, '..', '..', 'tmp'))
 YUI_PATH = `gem contents yui-compressor`.split($\).detect { |name| name.end_with? '.jar' }
 
-git_command = if ARGV.first
-                # Intended for discovering problematic SHAs.
-                # Argument can be any git pointer: SHA, tag, or branch.
-                "git show --name-only #{ARGV.first}"
-              else
-                # Intended as a pre-commit hook.
-                # Looks at staged but un-commited files.
-                "git diff --staged --name-only"
-              end
+PROCESS_ALL = ARGV.first == '--all' # Yes, should probably be using OptParser but way too lazy.
 
-changed_js = IO.popen("cd #{FRONTEND} && #{git_command}") do |f|
-  f.readlines.collect do |line|
-    if md = line.match(/public\/javascripts.*\.js/)
-      md[0]
+yaml = YAML::load_file(File.join(FRONTEND, 'config/assets.yml'))['javascripts']
+PROCESS_SPECIFIC = yaml.keys.include?(ARGV.first) && ARGV.first
+
+unless PROCESS_ALL || PROCESS_SPECIFIC
+  git_command = if ARGV.first
+                  # Intended for discovering problematic SHAs.
+                  # Argument can be any git pointer: SHA, tag, or branch.
+                  "git show --name-only #{ARGV.first}"
+                else
+                  # Intended as a pre-commit hook.
+                  # Looks at staged but un-commited files.
+                  "git diff --staged --name-only"
+                end
+
+  changed_js = IO.popen("cd #{FRONTEND} && #{git_command}") do |f|
+    f.readlines.collect do |line|
+      if md = line.match(/public\/javascripts.*\.js/)
+        md[0]
+      end
     end
   end
 end
 
-yaml = YAML::load_file(File.join(FRONTEND, 'config/assets.yml'))['javascripts']
 packages = yaml.select do |package, libraries|
-  libraries.any? { |js| changed_js.include? js }
+  PROCESS_ALL || PROCESS_SPECIFIC == package || libraries.any? { |js| (changed_js || []).include? js }
 end
 
 packages.each do |package, libraries|
   print "[verify compression] "
-  buffer = libraries.inject('') do |buf, lib|
-    begin
-      buf << File.read(File.join(FRONTEND, lib))
-    rescue Errno::ENOENT
-      Dir.glob(File.join(FRONTEND, lib)).each do |file|
-        buf << File.read(file)
+  read_file = lambda { |filename| File.open(filename, 'rb:UTF-8') { |f| f.read } }
+  buffer = libraries.inject([]) do |buf, lib|
+    absolute_filename = File.join(FRONTEND, lib)
+    if absolute_filename.include? '**'
+      Dir.glob(absolute_filename).each do |file|
+        buf << File.open(file, 'rb:UTF-8') { |f| f.read }
       end
+    else
+      buf << read_file.call(absolute_filename)
     end
+    buf
+  end.join("\n")
+
+  if buffer.length.zero?
+    puts "#{package}.js was empty for some reason. Skipping."
+    next
   end
 
   begin

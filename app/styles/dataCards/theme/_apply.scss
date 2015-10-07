@@ -616,11 +616,11 @@ soc-select {
     .intractable-list {
       ul.list {
         li {
-          color: $search-card-suggestions-intractable-list-item-background-color;
-          background-color: $search-card-suggestions-intractable-list-item-text-color;
+          background-color: $search-card-suggestions-intractable-list-item-background-color;
+          color: $search-card-suggestions-intractable-list-item-text-color;
           &.active {
-            color: $search-card-suggestions-intractable-list-item-active-text-color;
             background-color: $search-card-suggestions-intractable-list-item-active-background-color;
+            color: $search-card-suggestions-intractable-list-item-active-text-color;
           }
         }
       }

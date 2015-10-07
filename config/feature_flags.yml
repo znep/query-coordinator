@@ -153,6 +153,9 @@ show_newux_page_header:
   description: Show the header logo and sign in/up/out links.
   defaultValue: true
   category: data lens
+show_share_dataset_by_email_button_for_general_users:
+  description: Toggle the visibility of the "share by email" button on dataset pages for unauthenticated or non-domain-role-holding users (see ONCALL-3032).
+  defaultValue: true
 stamen:
   description: Easter egg of map backgrounds. Set false to turn it off. Choose one of the available values to select this base layer for ALL maps on the domain.
   defaultValue: false

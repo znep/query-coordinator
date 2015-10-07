@@ -172,25 +172,35 @@ $(function()
                     }
             }));
 
-        blist.datasetControls.hookUpShareMenu(ds, $content.find('.share.menu'),
+        blist.datasetControls.hookUpShareMenu(
+            ds,
+            $content.find('.share.menu'),
+            {
+                menuButtonContents: $.tag([
+                    {tagName: 'span', 'class': 'shareIcon'},
+                    {tagName: 'span', 'class': 'shareText', contents: $.t('controls.browse.actions.share_button')}
+                ], true),
+                onOpen: function($menu)
                 {
-
-                    menuButtonContents: $.tag([
-                        {tagName: 'span', 'class': 'shareIcon'},
-                        {tagName: 'span', 'class': 'shareText', contents: $.t('controls.browse.actions.share_button')}
-                    ], true),
-                    onOpen: function($menu)
-                    {
-                        $.analytics.trackEvent('browse ' + window.location.pathname,
-                            'share menu opened', ds.id);
-                    },
-                    onClose: function($menu)
-                    {
-                        if (($.browser.msie) && ($.browser.majorVersion < 8))
-                        { $menu.closest('.extraInfo').css('z-index', 0); }
-                    },
-                    parentContainer: $row.closest('.results')
-                }, true);
+                    $.analytics.trackEvent('browse ' + window.location.pathname,
+                        'share menu opened', ds.id);
+                },
+                onClose: function($menu)
+                {
+                    if (($.browser.msie) && ($.browser.majorVersion < 8))
+                    { $menu.closest('.extraInfo').css('z-index', 0); }
+                },
+                parentContainer: $row.closest('.results')
+            },
+            // ONCALL-3032: Disable unauthenticated share-by-email functionality.
+            // Because the SDP share button is created at runtime, we have chosen
+            // to disable the share-by-email functionality in this context altogether
+            // rather than attempting to guarantee that we always have the current user
+            // and other related data when this code executes.
+            // The fourth argument to `blist.datasetControls.hookUpShareMenu()` is
+            // `hideEmail`, so we just set it to true in each invocation of the function.
+            true
+        );
 
         $content.find('.datasetAverageRating').stars({ value: ds.averageRating });
 

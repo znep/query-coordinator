@@ -1,5 +1,18 @@
 #!/usr/bin/env ruby
 
+if ARGV.first == '--help'
+  puts <<-USAGE_HELP.gsub(/^ {2}/, '')
+  Usage:
+  This is a tool for finding compression errors due to Jammit using YUICompressor.
+
+  `tools/verify_compression.rb` - Run as a pre-commit hook to spot errors in changed files.
+  `tools/verify_compression.rb SHA` - Inspect the specific commit to find errors in changed files for that specific SHA.
+  `tools/verify_compression.rb --all` - Run against all packages.
+  `tools/verify_compression.rb bower-all` - Run against a specific package.
+  USAGE_HELP
+  exit
+end
+
 require 'yaml'
 require 'yui/compressor'
 require 'action_view'
@@ -41,12 +54,14 @@ end
 
 packages.each do |package, libraries|
   print "[verify compression] "
+
+  # Some of this is intentionally un-great Ruby because it's copying Jammit code.
   read_file = lambda { |filename| File.open(filename, 'rb:UTF-8') { |f| f.read } }
   buffer = libraries.inject([]) do |buf, lib|
     absolute_filename = File.join(FRONTEND, lib)
-    if absolute_filename.include? '**'
+    if absolute_filename.include? '*'
       Dir.glob(absolute_filename).each do |file|
-        buf << File.open(file, 'rb:UTF-8') { |f| f.read }
+        buf << read_file.call(file)
       end
     else
       buf << read_file.call(absolute_filename)

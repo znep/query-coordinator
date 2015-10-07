@@ -34,7 +34,7 @@ module CoreServer
         @batch_queue[batch_id] << {:url => path, :requestType => 'GET'}
         nil
       else
-        cache_key = "#{CurrentDomain.cname}:#{path}"
+        cache_key = "#{CurrentDomain.cname}:#{path}:#{custom_headers}"
         cache_key += ':anon' if is_anon
         result_body = cache.read(cache_key)
         if result_body.nil?

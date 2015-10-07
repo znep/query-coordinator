@@ -5,7 +5,6 @@
     factory('Card', function(ServerConfig, CardOptions, Model, Schemas, Filter, Constants) {
 
       var schemas = Schemas.regarding('card_metadata');
-      var schemaVersion = '1';
 
       // Determine additional customization and export parameters based on enabled features
       var CUSTOMIZABLE_MAP_TYPES = ['choropleth'];
@@ -126,7 +125,7 @@
         serialize: function() {
           var serialized = this._super();
           serialized.fieldName = this.fieldName;
-          validateCardBlobSchema(serialized);
+          validateCardBlobSchema(this.version, serialized);
           return serialized;
         },
 
@@ -138,8 +137,6 @@
       });
 
       Card.deserialize = function(page, blob) {
-        validateCardBlobSchema(blob);
-
         // Since cardType was expected to be required but was later decided
         // to be optional, we need to gracefully handle the case where cardType
         // is not present on the serialized card.
@@ -151,8 +148,8 @@
         }
 
         var instance = new Card(page, blob.fieldName, blob);
-        _.each(_.keys(schemas.getSchemaDefinition(schemaVersion).properties), function(field) {
-          if (field === 'fieldName') {
+        _.each(_.keys(schemas.getSchemaDefinition(instance.version).properties), function(field) {
+          if (field === 'fieldName' || field === 'cardOptions') {
             // fieldName isn't observable.
             return;
           }
@@ -167,7 +164,7 @@
         return instance;
       };
 
-      function validateCardBlobSchema(blob) {
+      function validateCardBlobSchema(schemaVersion, blob) {
         schemas.assertValidAgainstVersion(schemaVersion, blob, 'Card deserialization failed.');
       }
 

@@ -24,7 +24,7 @@ class AngularController < ActionController::Base
     # If we're reaching the data lens page via an SEO-friendly URL,
     # ensure that we end up on the canonical (SEO-friendly) URL.
     # Uses the same basic technique as DatasetsController#show.
-    unless request.path =~ %r'/view/\w{4}-\w{4}$'
+    unless request.path =~ %r'/view/\w{4}-\w{4}'
       begin
         view = View.find(params[:id])
         href = Proc.new { |params| view_path(view.route_params.merge(params || {})) }

@@ -34,7 +34,20 @@ class AdministrationController < ApplicationController
       limit: 30,
       nofederate: true,
       view_type: 'table',
-    })
+    }.merge(moderation_flag_if_needed))
+  end
+
+  #In the /admin/datasets endpoint ...
+  # If View Moderation is ON, do exactly what's done today. Data Lenses will only be shown in /admin/datasets
+  #   if they have been approved. Otherwise, they're shown in the view moderation queue (/admin/views)
+  # If View Moderation is OFF, pass moderation: 'any' to the ViewSearch service so that we explicitly include
+  #   all views regardless of their view moderation status.
+  def moderation_flag_if_needed
+    if CurrentDomain.feature?(:view_moderation)
+      {}
+    else
+      {moderation: 'any'}
+    end
   end
 
   before_filter :only => [:modify_sidebar_config] {|c| c.check_auth_level('edit_site_theme')}

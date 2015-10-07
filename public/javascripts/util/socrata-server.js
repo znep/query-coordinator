@@ -78,10 +78,11 @@ var ServerModel = Model.extend({
                 }
                 else if (statusCode >= 500 && statusCode < 600)
                 {
-                  model._finishRequest();
-                  throw new Error('There was a problem with our servers');
+                  if (!req.reportServiceErrors) {
+                    model._finishRequest();
+                    throw new Error('There was a problem with our servers');
+                  }
                 }
-
                 // TODO This is a terrible hack to serve until code in the Rails backend is settled
                 // TODO This doesn't handle filtered views, which could depend on OoD datasets
                 if (model.displayName === 'dataset' || model.displayName === 'working copy') {

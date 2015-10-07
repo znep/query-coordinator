@@ -2100,6 +2100,7 @@ importNS.importingPaneConfig = {
               url: '/api/imports2.json?' + $.toParam(urlParams),
               contentType: 'application/x-www-form-urlencoded',
               data: dataPayload,
+              reportServiceErrors: true,
               success: function(response)
               {
                   state.submittedView = new Dataset(response);
@@ -2110,7 +2111,7 @@ importNS.importingPaneConfig = {
               {
                   setTimeout(function()
                   {
-                      submitError = (request.status == 500) ?
+                      submitError = (request.status >= 500) ?
                                      (t('unknown_error') + '. ' + t('try_again')) :
                                      JSON.parse(request.responseText).message;
                       command.prev();

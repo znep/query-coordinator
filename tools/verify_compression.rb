@@ -1,12 +1,16 @@
 #!/usr/bin/env ruby
 
+# TODO: In theory, we should be able to capture the STDERR (?) output of YUICompressor.compress in order to find
+# the relevant line number automatically, rather than forcing people to do the search manually. But it's way too
+# much work for too little gain at the moment. Probably involves threads and Open3.
+
 if ARGV.first == '--help'
   puts <<-USAGE_HELP.gsub(/^ {2}/, '')
   Usage:
   This is a tool for finding compression errors due to Jammit using YUICompressor.
 
   `tools/verify_compression.rb` - Run as a pre-commit hook to spot errors in changed files.
-  `tools/verify_compression.rb SHA` - Inspect the specific commit to find errors in changed files for that specific SHA.
+  `tools/verify_compression.rb SHA` - Inspect the specific commit to find errors in changed files.
   `tools/verify_compression.rb --all` - Run against all packages.
   `tools/verify_compression.rb bower-all` - Run against a specific package.
   USAGE_HELP

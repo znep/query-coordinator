@@ -18,13 +18,6 @@ class AdministrationController < ApplicationController
       datasets_index = 0
     end
 
-    #In the /admin/datasets endpoint ...
-    # If View Moderation is ON, do exactly what's done today. Data Lenses will only be shown in /admin/datasets
-    #   if they have been approved. Otherwise, they're shown in the view moderation queue (/admin/views)
-    # If View Moderation is OFF, pass moderation: 'any' to the ViewSearch service so that we explicitly include
-    #   all views regardless of their view moderation status.
-    extra_flag_for_moderation = moderation_flag_if_needed
-
     # always show "unpublished datasets" after "datasets", or at least after "data lens"
     vtf[:options].insert(datasets_index + 1, {
       :text => t('screens.admin.datasets.unpublished_datasets'), :value => 'unpublished',
@@ -41,9 +34,14 @@ class AdministrationController < ApplicationController
       limit: 30,
       nofederate: true,
       view_type: 'table',
-    }.merge(extra_flag_for_moderation))
+    }.merge(moderation_flag_if_needed))
   end
 
+  #In the /admin/datasets endpoint ...
+  # If View Moderation is ON, do exactly what's done today. Data Lenses will only be shown in /admin/datasets
+  #   if they have been approved. Otherwise, they're shown in the view moderation queue (/admin/views)
+  # If View Moderation is OFF, pass moderation: 'any' to the ViewSearch service so that we explicitly include
+  #   all views regardless of their view moderation status.
   def moderation_flag_if_needed
     if CurrentDomain.feature?(:view_moderation)
       {}

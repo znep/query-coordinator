@@ -223,7 +223,7 @@ class ApplicationHelperTest < ActionView::TestCase
     # Mock a view with the 'grant' right (by responding true to any rights query)
     # This should override any other checks
     @view.stubs(:has_right? => true)
-    assert @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    assert @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
   def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_present_and_is_member_of_current_domain_and_has_create_datasets_right
@@ -235,7 +235,7 @@ class ApplicationHelperTest < ActionView::TestCase
     CurrentDomain.stubs(:member? => true)
     # Mock a current_user that exists and has the 'create_datasets' right (by responding true to any rights query)
     @object.current_user.stubs(:has_right? => true)
-    assert @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    assert @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
   def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_present_and_is_member_of_current_domain_and_does_not_have_create_datasets_right
@@ -247,104 +247,119 @@ class ApplicationHelperTest < ActionView::TestCase
     CurrentDomain.stubs(:member? => true)
     # Mock a current_user that exists and does not have the 'create_datasets' right (by responding true to any rights query)
     @object.current_user.stubs(:has_right? => false)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
-  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_present_and_is_not_member_of_current_domain
+  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_present_and_is_not_member_of_current_domain_and_user_has_create_datasets_right
     setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
 
-    # Mock a view without the 'grant' right (by responding true to any rights query)
+    # Mock a view without the 'grant' right (by responding false to any rights query)
     @view.stubs(:has_right? => false)
     # Mock CurrentDomain to report that no users are a member
     CurrentDomain.stubs(:member? => false)
     # Mock a current_user that exists and has the 'create_datasets' right (by responding true to any rights query)
     @object.current_user.stubs(:has_right? => true)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
-    # Mock a current_user that exists and does not have the 'create_datasets' right (by responding true to any rights query)
-    @object.current_user.stubs(:has_right? => false)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
-  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present
+  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_present_and_is_not_member_of_current_domain_and_user_does_not_have_create_datasets_right
     setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
 
-    # Mock a view without the 'grant' right (by responding true to any rights query)
+    # Mock a view without the 'grant' right (by responding false to any rights query)
+    @view.stubs(:has_right? => false)
+    # Mock CurrentDomain to report that no users are a member
+    CurrentDomain.stubs(:member? => false)
+    # Mock a current_user that exists and does not have the 'create_datasets' right (by responding true to any rights query)
+    @object.current_user.stubs(:has_right? => false)
+    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
+  end
+
+  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_is_member_of_the_current_domain
+    setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
+
+    # Mock a view without the 'grant' right (by responding false to any rights query)
     @view.stubs(:has_right? => false)
     # Mock no current user
     @object.stubs(:current_user => nil)
     # Mock CurrentDomain to report that all users are a member
     CurrentDomain.stubs(:member? => true)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
+  end
+
+  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_is_not_member_of_the_current_domain
+    setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
+
+    # Mock a view without the 'grant' right (by responding false to any rights query)
+    @view.stubs(:has_right? => false)
+    # Mock no current user
+    @object.stubs(:current_user => nil)
     # Mock CurrentDomain to report that no users are a member
     CurrentDomain.stubs(:member? => false)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
   def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_feature_flag_is_true_and_view_is_public
     setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
 
-    # Mock a view without the 'grant' right (by responding true to any rights query)
+    # Mock a view without the 'grant' right (by responding false to any rights query)
     @view.stubs(:has_right? => false)
     # Mock no current user
     @object.stubs(:current_user => nil)
     # Mock CurrentDomain to report that no users are a member
     CurrentDomain.stubs(:member? => false)
     # Stub feature flag to always return true
-    FeatureFlags.stubs(:derive => OpenStruct.new({ show_share_dataset_by_email_button_for_general_users: true }))
+    FeatureFlags.stubs(:derive => OpenStruct.new(show_share_dataset_by_email_button_for_general_users: true))
     # Mock view to always report it is public
     @view.stubs(:is_public? => true)
-    assert @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    assert @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
   def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_feature_flag_is_true_and_view_is_not_public
     setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
 
-    # Mock a view without the 'grant' right (by responding true to any rights query)
+    # Mock a view without the 'grant' right (by responding false to any rights query)
     @view.stubs(:has_right? => false)
     # Mock no current user
     @object.stubs(:current_user => nil)
     # Mock CurrentDomain to report that no users are a member
     CurrentDomain.stubs(:member? => false)
     # Stub feature flag to always return true
-    FeatureFlags.stubs(:derive => OpenStruct.new({ show_share_dataset_by_email_button_for_general_users: true }))
+    FeatureFlags.stubs(:derive => OpenStruct.new(show_share_dataset_by_email_button_for_general_users: true))
     # Mock view to always report it is public
     @view.stubs(:is_public? => false)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
   def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_feature_flag_is_false_and_view_is_public
     setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
 
-    # Mock a view without the 'grant' right (by responding true to any rights query)
+    # Mock a view without the 'grant' right (by responding false to any rights query)
     @view.stubs(:has_right? => false)
     # Mock no current user
     @object.stubs(:current_user => nil)
     # Mock CurrentDomain to report that no users are a member
     CurrentDomain.stubs(:member? => false)
     # Stub feature flag to always return false
-    FeatureFlags.stubs(:derive => OpenStruct.new({ show_share_dataset_by_email_button_for_general_users: false }))
+    FeatureFlags.stubs(:derive => OpenStruct.new(show_share_dataset_by_email_button_for_general_users: false))
     # Mock view to always report it is public
     @view.stubs(:is_public? => true)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
   def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_feature_flag_is_false_and_view_is_not_public
     setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
 
-    # Mock a view without the 'grant' right (by responding true to any rights query)
+    # Mock a view without the 'grant' right (by responding false to any rights query)
     @view.stubs(:has_right? => false)
     # Mock no current user
     @object.stubs(:current_user => nil)
     # Mock CurrentDomain to report that no users are a member
     CurrentDomain.stubs(:member? => false)
     # Stub feature flag to always return false
-    FeatureFlags.stubs(:derive => OpenStruct.new({ show_share_dataset_by_email_button_for_general_users: false }))
-    # Mock view to always report it is public
-    @view.stubs(:is_public? => true)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    FeatureFlags.stubs(:derive => OpenStruct.new(show_share_dataset_by_email_button_for_general_users: false))
     # Mock view to always report it is not public
     @view.stubs(:is_public? => false)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
   private

@@ -728,19 +728,25 @@ module ApplicationHelper
   #
   # This endpoint will remain active.
   #
-  # I am not sure when `.has_right?('grant')` is expected to return non-nil-- it is nil even
+  # I am not sure when `.has_right?('grant')` is expected to return non-nil: it is nil even
   # on a public dataset as a superadmin on my local machine. I am leaving it in place because
   # I can't understand its behavior.
-  def user_has_domain_role_or_unauthenticated_share_by_email_enabled(view)
-    (
-      view.has_right?('grant') ||
-      # If the current user is a member of this domain and can create datasets on this domain
-      # we want to allow them to send email regardless of the state of the feature flag.
-      # The dialog box used for this case hits a different, authenticated endpoint for email.
-      (current_user.present? && (CurrentDomain.member?(current_user) && current_user.has_right?('create_datasets'))) ||
-      # If the feature flag to show the button is set to true and the view is public, then enable
-      # the share by email dialog box that hits the unauthenticated endpoint.
-      (FeatureFlags.derive(view, request).show_share_dataset_by_email_button_for_general_users && view.is_public?)
-    )
+  def user_has_domain_role_or_unauthenticated_share_by_email_enabled?(view)
+    view.has_right?('grant') ||
+    current_user_is_domain_member_and_has_create_datasets_right? ||
+    share_dataset_by_email_is_enabled_and_dataset_is_public?(view)
+  end
+
+  def current_user_is_domain_member_and_has_create_datasets_right?
+    # If the current user is a member of this domain and can create datasets on this domain
+    # we want to allow them to send email regardless of the state of the feature flag.
+    # The dialog box used for this case hits a different, authenticated endpoint for email.
+    current_user.present? && (CurrentDomain.member?(current_user) && current_user.has_right?('create_datasets'))
+  end
+
+  def share_dataset_by_email_is_enabled_and_dataset_is_public?(view)
+    # If the feature flag to show the button is set to true and the view is public, then enable
+    # the share by email dialog box that hits the unauthenticated endpoint.
+    FeatureFlags.derive(view, request).show_share_dataset_by_email_button_for_general_users && view.is_public?
   end
 end

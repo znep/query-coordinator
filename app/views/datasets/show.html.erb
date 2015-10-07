@@ -45,7 +45,7 @@
           <%- end %>
           <%-
           # See comment on implementation in `application_helpers.rb`
-          if user_has_domain_role_or_unauthenticated_share_by_email_enabled(@view)
+          if user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
           -%>
             <li><a class="email" href="#email" title="<%= t('screens.ds.bar.share_email') %>">
               <span class="icon"><%= t('screens.ds.bar.share_email') %></span></a></li>

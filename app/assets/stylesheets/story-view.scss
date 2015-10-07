@@ -48,7 +48,9 @@
     border: none;
     width: $view-mode-button-width;
     height: $view-mode-button-width;
+    padding: 0;
     font-size: $presentation-mode-button-font-size;
+    border-radius: 0;
     right: 0;
     text-align: center;
     transition: color 0.2s;

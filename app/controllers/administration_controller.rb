@@ -34,7 +34,16 @@ class AdministrationController < ApplicationController
       limit: 30,
       nofederate: true,
       view_type: 'table',
-    })
+    }.merge(moderation_flag_if_needed))
+  end
+
+  def moderation_flag_if_needed
+    if CurrentDomain.feature?(:view_moderation)
+#    if check_feature(:view_moderation)
+      {}
+    else
+      {moderation: 'any'}
+    end
   end
 
   before_filter :only => [:modify_sidebar_config] {|c| c.check_auth_level('edit_site_theme')}

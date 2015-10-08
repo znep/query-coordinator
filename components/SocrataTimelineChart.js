@@ -17,7 +17,7 @@
   var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
   var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
   var PRECISION_QUERY = 'SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < \'{1}\'';
-  var DATA_QUERY = 'SELECT {3}(`{0}`) AS {1}, count(*) AS {2} WHERE `{0}` IS NOT NULL AND `{0}` < \'{4}\' AND (1=1) GROUP BY {1} ORDER BY {1}';
+  var DATA_QUERY = 'SELECT {3}(`{0}`) AS {1}, count(*) AS {2} WHERE `{0}` IS NOT NULL AND `{0}` < \'{4}\' AND (1=1) GROUP BY {1}';
   //'SELECT {2}({0}) AS {4}, {3} AS {5} {1} GROUP BY {4}'.  format(fieldName, whereClause, dateTruncFunction, aggregationClause, dateAlias, valueAlias)
   var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
@@ -327,7 +327,8 @@
 
         visualizationData = _mergeUnfilteredAndFilteredData(
           unfilteredQueryResponse,
-          filteredQueryResponse
+          filteredQueryResponse,
+          precision
         );
 
         visualization.render(
@@ -337,7 +338,7 @@
       }
     }
 
-    function _mergeUnfilteredAndFilteredData(unfiltered, filtered) {
+    function _mergeUnfilteredAndFilteredData(unfiltered, filtered, precision) {
 
       var unfilteredAsHash;
       var filteredAsHash;
@@ -352,16 +353,44 @@
         filtered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
       );
 
-      return transformChartDataForRendering(
-        Object.keys(unfilteredAsHash).map(function(date) {
+      var dates = Object.keys(unfilteredAsHash).map(function(date) {
+        return moment((_.isNull(date) || _.isUndefined(date)) ? '' : date);
+      });
+      var timeStart = _.min(dates);
+      var timeEnd = _.max(dates);
+      var timeData = Array(timeEnd.diff(timeStart, precision));
+      _.each(unfiltered.rows, function(item) {
+        var date = item[DATE_INDEX];
+        date = moment((_.isNull(date) || _.isUndefined(date)) ? '' : date);
+        var timeSlot = date.diff(timeStart, precision);
 
-          return {
-            date: moment((_.isNull(date) || _.isUndefined(date)) ? '' : date),
-            total: Number(unfilteredAsHash[date][1]),
-            filtered: Number(filteredAsHash[date][1]) || 0
-          };
-        })
-      );
+        // Default to null in case we don't receive a value associated with
+        // this date. If we do not, the result of Number(item.value) is NaN
+        // and the timeline chart breaks because it tries to use NaN to
+        // calculate the height of the chart.
+        var itemValue = !_.isUndefined(item[UNFILTERED_INDEX]) ?
+          Number(item[UNFILTERED_INDEX]) :
+          null;
+
+        timeData[timeSlot] = {
+          date: date,
+          filtered: itemValue,
+          total: itemValue
+        };
+      });
+
+      return transformChartDataForRendering(
+          _.map(timeData, function(item, i) {
+            if (_.isUndefined(item)) {
+              item = {
+                date: moment(timeStart, moment.ISO_8601).add(i, precision),
+                filtered: null,
+                total: null
+              };
+            }
+            return item;
+          })
+        );
     }
 
     function _logError(error) {

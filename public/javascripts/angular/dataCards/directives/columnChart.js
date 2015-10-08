@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n) {
+angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n, PluralizeService) {
 
   'use strict';
 
@@ -106,6 +106,24 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
         if (!lastFlyoutData) {
           return undefined;
+        }
+
+        // // Helper function to properly format flyout values.
+        function formatFlyoutValue(value, labelUnit) {
+
+          var formattedValue;
+
+          if (_.isFinite(value)) {
+            if (labelUnit) {
+              formattedValue = ' ' + PluralizeService.pluralize(labelUnit, value);
+            }
+
+            formattedValue = window.socrata.utils.formatNumber(value) + formattedValue;
+          } else {
+            formattedValue = 'No value';
+          }
+
+          return formattedValue;
         }
 
         var data = lastFlyoutData;

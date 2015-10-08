@@ -24,6 +24,7 @@
 
         $scope.description = '';
         $scope.name = '';
+        $('#save-visualization-as-name').focus();
         var nameValid$ = $scope.$observe('name').map(_.negate(_.isEmpty));
 
         $scope.invalid = false;

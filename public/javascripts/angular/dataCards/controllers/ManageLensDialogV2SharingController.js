@@ -188,7 +188,9 @@
           user_member: null
         };
 
-        pageShares.push(newShareConfig);
+        if (!_.find(pageShares, newShareConfig)) {
+          pageShares.push(newShareConfig);
+        }
       });
       /* eslint-enable camelcase */
 

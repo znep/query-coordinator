@@ -30,6 +30,10 @@ It is only enabled for v2 data lenses.
          * the "saved" success message in the button.
          */
         $scope.save = function() {
+          if (!$scope.dialogHasChanges || $scope.saveStatus === 'saving') {
+            return;
+          }
+
           var promises = _.invoke($scope.components, 'save');
 
           $scope.saveStatus = 'saving';

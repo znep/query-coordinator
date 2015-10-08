@@ -258,19 +258,19 @@
       </div>
     </div>
 
-    <div ng-if="!page.isStandaloneVisualization">
-      <multi-card-layout
-        id="card-container"
-        class="cards multiple-cards"
-        ng-class="{'edit-mode': editMode}"
-        page="page"
-        edit-mode="editMode"
-        global-where-clause-fragment="globalWhereClauseFragment"
-        expanded-card="expandedCard"
-        allow-add-card="!allVisualizableColumnsVisualized"
-        chooser-mode="chooserMode">
-      </multi-card-layout>
-    </div>
+    <multi-card-layout
+      id="card-container"
+      class="cards multiple-cards"
+      ng-class="{'edit-mode': editMode}"
+      ng-if="!page.isStandaloneVisualization"
+      page="page"
+      edit-mode="editMode"
+      global-where-clause-fragment="globalWhereClauseFragment"
+      expanded-card="expandedCard"
+      allow-add-card="!allVisualizableColumnsVisualized"
+      chooser-mode="chooserMode">
+    </multi-card-layout>
+
     <div ng-if="page.isStandaloneVisualization">
       <single-card-layout
          id="card-container"

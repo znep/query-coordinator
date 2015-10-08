@@ -110,9 +110,12 @@ svg:not(:root).timeline-chart-highlight-container {
   font-weight: bold;
   line-height: 30px;
   text-align: center;
-  cursor: pointer;
   white-space: nowrap;
   z-index: 8;
+}
+
+.filterable .datum-label {
+  cursor: pointer;
 }
 
 .selected .timeline-chart-clear-selection-label {
@@ -171,11 +174,13 @@ svg:not(:root).timeline-chart-highlight-container {
   height: 100%;
   line-height: 30px;
   text-align: center;
-  cursor: pointer;
   white-space: nowrap;
 }
 .x-ticks .x-tick-label.emphasis {
   font-weight: bold;
+}
+.filterable .x-ticks .x-tick-label {
+  cursor: pointer;
 }
 
 .dimmed .x-tick-label,

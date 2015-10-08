@@ -185,7 +185,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
   end
 
-  def test_create_ignores_provided_pageId
+  def test_create_ignores_provided_pageId_with_v1_page_metadata
+    stub_feature_flags_with(:create_v2_data_lens, false)
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     NewViewManager.any_instance.expects(:create).times(1).with do |metadata|
       assert_equal(v1_page_metadata['name'], metadata['name'])
@@ -200,6 +201,26 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end.returns({ body: nil, status: '200' })
 
     result = manager.create(v1_page_metadata_without_rollup_columns)
+    assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
+  end
+
+  def test_create_ignores_provided_pageId_with_v2_page_metadata
+    metadata = v2_page_metadata['displayFormat']['data_lens_page_metadata']
+    stub_feature_flags_with(:create_v2_data_lens, true)
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
+    PageMetadataManager.any_instance.expects(:request_soda_fountain_secondary_index).with do |args|
+      assert_equal('thw2-8btq', args)
+    end.then.returns({ status: '200' })
+    NewViewManager.any_instance.expects(:create).times(1).with do |metadata|
+      assert_equal(metadata['name'], metadata['name'])
+      assert_equal(metadata['description'], metadata['description'])
+    end.returns('data-lens')
+    Phidippides.any_instance.stubs(
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
+    )
+    Phidippides.any_instance.expects(:update_page_metadata).times(0)
+
+    result = manager.create(metadata)
     assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
   end
 
@@ -225,9 +246,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
   end
 
-  def test_update_metadb_page_metadata_success
+  def test_update_v2_page_metadata_success
     NewViewManager.any_instance.stubs(
-      fetch: metadb_page_metadata
+      fetch: v2_page_metadata
     )
     core_stub = mock
     core_stub.expects(:update_request).with do |url, payload|
@@ -353,7 +374,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_delete_does_not_impact_phidippides_when_metadata_backed_by_metadb
     NewViewManager.any_instance.stubs(
-      fetch: metadb_page_metadata
+      fetch: v2_page_metadata
     )
     SodaFountain.any_instance.expects(:delete_rollup_table).with do |args|
       assert_equal({dataset_id: 'thw2-8btq', identifier: 'mjcb-9cxc'}, args)
@@ -672,6 +693,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     metadata
   end
 
+  def v2_page_metadata
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v2-page-metadata.json")).with_indifferent_access
+  end
+
   # We need this because some tests in metadata transition phase 1 match
   # cards in the page metadata to columns in the dataset metadata. The
   # cards in the v0 page metadata stub do not match the columns in the
@@ -712,10 +737,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     v1_page_metadata_as_v0.delete('version')
 
     v1_page_metadata_as_v0
-  end
-
-  def metadb_page_metadata
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/metadb-page-metadata.json")).with_indifferent_access
   end
 
   def v0_dataset_metadata

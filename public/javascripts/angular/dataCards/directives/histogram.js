@@ -15,6 +15,14 @@
       scope: true,
       template: '<div class="histogram" ng-class="{\'has-selection\': hasSelection}"></div>',
       link: function($scope, element) {
+        if ($scope.allowFilterChange) {
+          element.addClass('filterable');
+        } else {
+          element[0].addEventListener('mousedown', function(evt) {
+            evt.stopPropagation();
+          }, true);
+        }
+
         var service = HistogramVisualizationService;
         var container = element.find('.histogram')[0];
 

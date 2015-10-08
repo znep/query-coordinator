@@ -34,10 +34,13 @@ card.expanded .choropleth-container .choropleth-legend.continuous {
 .choropleth-container {
   padding: 0;
   height: 100%;
+  &.filterable .choropleth-map-container path.leaflet-clickable {
+    cursor: pointer;
+  }
   .choropleth-map-container {
     height: 100%;
-    path {
-      cursor: pointer;
+    path.leaflet-clickable {
+      cursor: default;
     }
   }
   .choropleth-legend {

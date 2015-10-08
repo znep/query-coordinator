@@ -175,8 +175,8 @@ describe('CardsViewController', function() {
     };
   }
 
-  function makeController(datasetOverrides) {
-    var context = makeContext(datasetOverrides);
+  function makeController(datasetOverrides, pageOverrides) {
+    var context = makeContext(datasetOverrides, pageOverrides);
     var controller = $controller('CardsViewController', context);
     context.$scope.dataLensVersion = 1;
     testHelpers.mockDirective(_$provide, 'modalDialog');
@@ -432,6 +432,37 @@ describe('CardsViewController', function() {
 
       $scope.page.set('description', newDescription);
       expect($scope.pageDescription).to.equal(newDescription);
+    });
+  });
+
+  describe('expanded card', function() {
+    var controllerHarness;
+    var $scope;
+    var card;
+
+    beforeEach(function() {
+      controllerHarness = makeController(undefined, {
+        cards: [testCard(1)]
+      });
+
+      $scope = controllerHarness.$scope;
+      card = controllerHarness.page.getCurrentValue('cards')[0];
+    });
+
+    it('should assign the expanded card to the scope if a card is expanded', function() {
+      expect($scope.expandedCard).to.equal(undefined);
+
+      $scope.page.toggleExpanded(card);
+      $scope.$digest();
+
+      expect($scope.expandedCard).to.equal(card);
+    });
+
+    it('should clear the expanded card property from the scope if the card is collapsed', function() {
+      $scope.page.toggleExpanded(card);
+      $scope.page.toggleExpanded(card);
+
+      expect($scope.expandedCard).to.equal(undefined);
     });
   });
 

@@ -233,6 +233,12 @@
     });
     $scope.$bindObservable('cardModels', cardModelsObservable);
     $scope.$bindObservable('cardCount', cardCountObservable);
+    $scope.$bindObservable('expandedCard', page.observe('hasExpandedCard').map(function() {
+      var cards = page.getCurrentValue('cards');
+      return _.find(cards, function(card) {
+        return card.getCurrentValue('expanded');
+      });
+    }));
 
     pageName$.subscribe(function(pageName) {
       WindowOperations.setTitle('{0} | Socrata'.format(pageName));

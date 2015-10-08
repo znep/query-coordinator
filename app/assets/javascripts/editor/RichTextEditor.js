@@ -154,13 +154,20 @@
       }
     };
 
+    /**
+     * Deselects the rich text <iframe>.
+     */
     this.deselect = function() {
-      var iframe = _editorElement[0];
+      var contentDocument = _editorElement[0].contentDocument;
 
-      if (iframe.contentDocument.selection) {
-        iframe.contentDocument.selection.clear();
+      // IE supports .selection, while everything else
+      // supports .getSelection.
+      if (contentDocument.selection) {
+        contentDocument.selection.clear();
       } else {
-        iframe.contentWindow.getSelection().removeAllRanges();
+        contentDocument.
+          getSelection().
+          removeAllRanges();
       }
     };
 

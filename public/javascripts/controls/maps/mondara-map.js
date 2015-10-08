@@ -68,7 +68,6 @@
     },
 
     _setBoundingBox: function() {
-      // console.log(this, this.layerModel)
       if (this._layerModel._config.bbox) {
         this._layerModel._maxExtent = OpenLayers.Bounds.fromString(this._layerModel._config.bbox).transform(
           new OpenLayers.Projection(this._layerModel._config.bboxCrs), this._layerModel._mapProjection
@@ -127,31 +126,45 @@
     getLayer: function(layerName, layerOpts) {
       var style = encodeURIComponent(
         '#main, #multipoint, #point {' +
-          'line-width: 0.5;' +
+          'line-width: 2.0;' +
           'line-color: #000;' +
-          'marker-width: 8;' +
-          'marker-fill: #f45;' +
-          'line-width:1;' +
           'line-opacity:0.85;' +
+          'marker-width: 15.0;' +
+          'marker-fill: #fb5e2e;' +
+          'marker-line-color: #000;' +
+          'marker-line-width: 2.0;' +
         '}' +
         '#multipolygon, #polygon {' +
-          'polygon-fill:#a9a9a9;' +
-          'polygon-opacity:0.5;' +
+          'polygon-fill: #a9a9a9;' +
+          'polygon-opacity: 0.5;' +
           'line-width: 0.5;' +
           'line-color: #000;' +
         '}' +
         '#multilinestring, #linestring {' +
-          'line-width: 0.5;' +
-          'line-color: #000;' +
+          'line-width: 5.0;' +
+          'line-color: #7f7fff;' +
         '}'
       );
-      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$style=' + style;
+      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=50000&$style=' + style;
       return new OpenLayers.Layer.XYZ(layerName, tileUrl, layerOpts);
+    },
+
+    // this has some meaning in the OBE way. The NBE just hits the dummy
+    // feature protocol. the whole feature protocol thing doesn't really
+    // map well onto our use cases afaict and adds a bunch of complexity, so
+    // instead of figuring it out and using it this will just have to suffice.
+    _dummyProtocol:function() {
+      return {
+        setFeatureType: function(_featureType) {
+          //;_;
+        }
+      };
     },
 
     featureGetter: function() {
       return new NBEFeatureGetter({
-        layer: this._layerModel
+        layer: this._layerModel,
+        protocol: this._dummyProtocol()
       });
     }
   });
@@ -220,6 +233,7 @@
           }).
           compact().
           value();
+
         layerObj._getFeature.protocol.setFeatureType(featureType);
       });
     },

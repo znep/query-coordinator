@@ -68,15 +68,24 @@
       return cellContent;
     };
 
+    // Helper for retrieving the geoCell cellContent coordinates
+    var cellCoordinates = function(cellContent) {
+      var coordinates = _.has(cellContent, 'value.coordinates') ?
+        cellContent.value.coordinates :
+        cellContent.coordinates;
+      return _.isArray(coordinates) ? coordinates : null;
+    };
+
     /**
     * Renders a Point in plain text as a lat/lng pair.
     */
     var renderGeoCell = function(cellContent) {
       var latitudeIndex = 1;
       var longitudeIndex = 0;
-      if (_.isArray(cellContent.coordinates)) {
-        var latitude = cellContent.coordinates[latitudeIndex];
-        var longitude = cellContent.coordinates[longitudeIndex];
+      var coordinates = cellCoordinates(cellContent);
+      if (coordinates) {
+        var latitude = coordinates[latitudeIndex];
+        var longitude = coordinates[longitudeIndex];
         return '({0}°, {1}°)'.format(latitude, longitude);
       } else {
         return '';
@@ -89,10 +98,11 @@
     var renderGeoCellHTML = function(cellContent) {
       var latitudeIndex = 1;
       var longitudeIndex = 0;
-      if (_.isArray(cellContent.coordinates)) {
+      var coordinates = cellCoordinates(cellContent);
+      if (coordinates) {
         var template = '<span title="{0}">{1}°</span>';
-        var latitude = template.format(I18n.common.latitude, cellContent.coordinates[latitudeIndex]);
-        var longitude = template.format(I18n.common.longitude, cellContent.coordinates[longitudeIndex]);
+        var latitude = template.format(I18n.common.latitude, coordinates[latitudeIndex]);
+        var longitude = template.format(I18n.common.longitude, coordinates[longitudeIndex]);
         return '({0}, {1})'.format(latitude, longitude);
       } else {
         return '';

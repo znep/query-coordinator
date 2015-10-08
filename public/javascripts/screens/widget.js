@@ -384,7 +384,8 @@ $(function()
         }
     });
 
-    blist.datasetControls.hookUpShareMenu(blist.dataset,
+    blist.datasetControls.hookUpShareMenu(
+        blist.dataset,
         $('.subHeaderBar .share .shareMenu'),
         {
             menuButtonClass: 'icon',
@@ -392,7 +393,16 @@ $(function()
             {
                 $.analytics.trackEvent('widget (v2)', 'share menu opened', document.referrer);
             }
-        });
+        },
+        // ONCALL-3032: Disable unauthenticated share-by-email functionality.
+        // Because the SDP share button is created at runtime, we have chosen
+        // to disable the share-by-email functionality in this context altogether
+        // rather than attempting to guarantee that we always have the current user
+        // and other related data when this code executes.
+        // The fourth argument to `blist.datasetControls.hookUpShareMenu()` is
+        // `hideEmail`, so we just set it to true in each invocation of the function.
+        true
+    );
 
     // Hook up search form
     var $searchForm = $('.toolbar .toolbarSearchForm');
@@ -602,12 +612,19 @@ $(function()
 
 
     // downloads
+    var dlType = blist.dataset.getDownloadType();
+
+    var downloadOptions = {
+        downloadTypes: $.templates.downloadsTable.downloadTypes[dlType],
+        view: blist.dataset
+    };
+
     $('.widgetContent_downloads').append(
         $.renderTemplate(
             'downloadsSectionContent',
-            { downloadTypes: $.templates.downloadsTable.downloadTypes.normal,
-              view: blist.dataset },
-            $.templates.downloadsTable.directive.normal));
+            downloadOptions,
+            $.templates.downloadsTable.directive[dlType])
+        );
     $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 
     $.live('.feed .commentActions a, .feedNewCommentButton', 'click', function(event)

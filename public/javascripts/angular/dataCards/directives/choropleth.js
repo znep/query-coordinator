@@ -494,22 +494,22 @@
           append('rect');
 
         rectangles.attr({
-            x: 0,
-            y: function(value) {
+          x: 0,
+          y: function(value) {
 
-              // Since y is actually 'top', and we want the lowest value at the bottom, subtract
-              // from 100
-              return '{0}%'.format(100 - positionScale(value));
-            },
-            width: '100%',
-            height: function(value, i) {
-              if (i === 0) {
-                return 0;
-              }
-              return '{0}%'.format(Math.abs(positionScale(value) - positionScale(tickStops[i - 1])));
-            },
-            fill: 'url(#{0})'.format(this.gradientId)
-          });
+            // Since y is actually 'top', and we want the lowest value at the bottom, subtract
+            // from 100
+            return '{0}%'.format(100 - positionScale(value));
+          },
+          width: '100%',
+          height: function(value, i) {
+            if (i === 0) {
+              return 0;
+            }
+            return '{0}%'.format(Math.abs(positionScale(value) - positionScale(tickStops[i - 1])));
+          },
+          fill: 'url(#{0})'.format(this.gradientId)
+        });
 
         rectangles.exit().remove();
       },
@@ -775,7 +775,6 @@
                     '</div>',
                   '</div>'].join(''),
       link: function choroplethLink(scope, element, attrs) {
-
         // Merge 'mousemove' and 'mouseleave' events into a single flyout
         // registration stream.
         var registerFlyout$ = Rx.Observable.merge(
@@ -1050,25 +1049,29 @@
         }
 
         function onFeatureClick(e) {
-          var now = Date.now();
-          var delay = now - lastClick;
-          lastClick = now;
-          if (delay < doubleClickThreshold) {
-            if (!_.isNull(lastClickTimeout)) {
 
-              // If this is actually a double click, cancel the timeout which selects
-              // the feature and zoom in instead.
-              $timeout.cancel(lastClickTimeout);
-              map.setView(e.latlng, map.getZoom() + 1);
-            }
-          } else {
-            lastClickTimeout = $timeout(function() {
-              if (isLayerSelected(e.target)) {
-                clearDatasetFilter(e.target.feature);
-              } else {
-                setDatasetFilter(e.target.feature);
+          if (scope.allowFilterChange) {
+
+            var now = Date.now();
+            var delay = now - lastClick;
+            lastClick = now;
+            if (delay < doubleClickThreshold) {
+              if (!_.isNull(lastClickTimeout)) {
+
+                // If this is actually a double click, cancel the timeout which selects
+                // the feature and zoom in instead.
+                $timeout.cancel(lastClickTimeout);
+                map.setView(e.latlng, map.getZoom() + 1);
               }
-            }, singleClickSuppressionThreshold);
+            } else {
+              lastClickTimeout = $timeout(function() {
+                if (isLayerSelected(e.target)) {
+                  clearDatasetFilter(e.target.feature);
+                } else {
+                  setDatasetFilter(e.target.feature);
+                }
+              }, singleClickSuppressionThreshold);
+            }
           }
         }
 
@@ -1133,11 +1136,11 @@
           filteredValue = formatValue(filteredValue);
 
           flyoutContent = [
-             '<div class="flyout-title">{0}</div>',
-             '<div class="flyout-row">',
-               '<span class="flyout-cell">{1}</span>',
-               '<span class="flyout-cell">{2}</span>',
-             '</div>'
+            '<div class="flyout-title">{0}</div>',
+            '<div class="flyout-row">',
+              '<span class="flyout-cell">{1}</span>',
+              '<span class="flyout-cell">{2}</span>',
+            '</div>'
           ];
 
           if (isFiltered || isSelected) {
@@ -1276,7 +1279,7 @@
 
         var tileLayer = baseLayerUrl$.
           map(function(url) {
-            if (_.isUndefined(url)) {
+            if (_.isNull(url) || _.isUndefined(url)) {
               return {
                 url: Constants.DEFAULT_MAP_BASE_LAYER_URL,
                 opacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY

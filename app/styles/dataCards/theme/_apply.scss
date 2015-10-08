@@ -238,6 +238,9 @@
     border: 1px solid $modal-dialog-border-color;
     .modal-dialog-content {
       color: $modal-dialog-text-color;
+      input.invalid {
+        border-color: $modal-dialog-save-visualization-as-dialog-red-error-color;
+      }
     }
     .modal-close-button {
       color: $modal-dialog-close-button-color;
@@ -248,6 +251,29 @@
     a {
       color: $modal-dialog-link-text-color;
     }
+  }
+}
+
+new-share-dialog {
+  section {
+    .new-share {
+      input.email {
+        color: $modal-dialog-new-share-dialog-email-text-color;
+        background-color: $soc-select-background-color;
+        border: 1px solid $soc-select-border-color;
+      }
+    }
+  }
+  .optional-message {
+    color: $modal-dialog-new-share-dialog-message-text-color;
+    background-color: $soc-select-background-color;
+    border: 1px solid $soc-select-border-color;
+  }
+}
+
+#save-visualization-as-dialog .modal-dialog {
+  .icon-warning {
+    color: $modal-dialog-save-visualization-as-dialog-red-error-color;
   }
 }
 
@@ -590,11 +616,11 @@ soc-select {
     .intractable-list {
       ul.list {
         li {
-          color: $search-card-suggestions-intractable-list-item-background-color;
-          background-color: $search-card-suggestions-intractable-list-item-text-color;
+          background-color: $search-card-suggestions-intractable-list-item-background-color;
+          color: $search-card-suggestions-intractable-list-item-text-color;
           &.active {
-            color: $search-card-suggestions-intractable-list-item-active-text-color;
             background-color: $search-card-suggestions-intractable-list-item-active-background-color;
+            color: $search-card-suggestions-intractable-list-item-active-text-color;
           }
         }
       }
@@ -750,20 +776,37 @@ soc-select {
       background-color: $feature-map-flannel-chart-background-color;
     }
   }
-  &.southwest .tool-panel-hint {
+
+  &.north .tool-panel-hint {
     &:before {
-      border-color: $feature-map-flannel-border-color transparent transparent transparent;
+      border-bottom-color: $feature-map-flannel-border-color;
     }
     &:after {
-      border-color: $feature-map-flannel-chart-background-color transparent transparent transparent;
+      border-bottom-color: $feature-map-flannel-chart-background-color;
     }
   }
-  &.southeast .tool-panel-hint {
+  &.south .tool-panel-hint {
     &:before {
-      border-color: transparent $feature-map-flannel-border-color transparent transparent;
+      border-top-color: $feature-map-flannel-border-color;
     }
     &:after {
-      border-color: transparent $feature-map-flannel-chart-background-color transparent transparent;
+      border-top-color: $feature-map-flannel-chart-background-color;
+    }
+  }
+  &.east .tool-panel-hint {
+    &:before {
+      border-right-color: $feature-map-flannel-border-color;
+    }
+    &:after {
+      border-right-color: $feature-map-flannel-chart-background-color;
+    }
+  }
+  &.west .tool-panel-hint {
+    &:before {
+      border-left-color: $feature-map-flannel-border-color;
+    }
+    &:after {
+      border-left-color: $feature-map-flannel-chart-background-color;
     }
   }
 }
@@ -1056,7 +1099,7 @@ body.state-view-cards {
 }
 
 // customize-bar
-.customize-bar-action-btn {
+button.customize-bar-action-btn {
   @include action-button($customize-bar-button-color, $customize-bar-button-background-color, $customize-bar-button-border-color);
   &:hover, &.active, &.touched {
     @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color);

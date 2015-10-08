@@ -53,6 +53,36 @@ class AngularControllerTest < ActionController::TestCase
     assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
   end
 
+  test 'should successfully get serve_app for single card view' do
+    NewViewManager.any_instance.stubs(:fetch).returns({})
+    View.stubs(
+      :migrations => {
+        :nbeId => '1234-1234',
+        :obeId => '1234-1234'
+      }
+    )
+    PageMetadataManager.any_instance.stubs(
+      :show => v1_page_metadata
+    )
+    Phidippides.any_instance.stubs(
+      :fetch_dataset_metadata => {
+        :status => '200',
+        :body => v1_dataset_metadata
+      },
+      :fetch_pages_for_dataset => {
+        :status => '200',
+        :body => v1_pages_for_dataset
+      },
+      :set_default_and_available_card_types_to_columns! => {}
+    )
+
+    # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
+    get :serve_app, :id => '1234-1234', :field_id => 'field', :app => 'dataCards'
+    assert_response :success
+    # Should flag subcolumns
+    assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
+  end
+
   test 'should successfully get serve_app with empty Phidippides page data' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
     View.stubs(

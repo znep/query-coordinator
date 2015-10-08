@@ -27,4 +27,37 @@ class CuratedRegion < Model
     save!
   end
 
+  # we get a partial view object from the curated_region API, this gets the whole view
+  def view
+    @view ||= View.find(@data['view']['id'])
+  end
+
+  def geometry_label_columns
+    CuratedRegion.geometry_label_columns(view)
+  end
+
+  def primary_key_columns
+    CuratedRegion.primary_key_columns(view)
+  end
+
+  def self.geometry_label_columns(view)
+    view.columns.select { |column| %w(text number boolean date).include?(column.dataTypeName) }
+  end
+
+  def self.primary_key_columns(view)
+    view.columns.select { |column| column.dataTypeName == 'number' }
+  end
+
+  def as_json(options={})
+    {
+      :id => id,
+      :enabledFlag => enabledFlag,
+      :name => name,
+      :featurePk => featurePk,
+      :primaryKeyColumns => primary_key_columns,
+      :geometryLabel => geometryLabel,
+      :geometryLabelColumns => geometry_label_columns
+    }
+  end
+
 end

@@ -3,7 +3,11 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
   return {
     restrict: 'E',
-    scope: { 'model': '=', 'whereClause': '=' },
+    scope: {
+      'model': '=',
+      'allowFilterChange': '=',
+      'whereClause': '='
+    },
     templateUrl: '/angular_templates/dataCards/cardVisualizationColumnChart.html',
     link: function($scope, element) {
       var model = $scope.$observe('model');

@@ -19,7 +19,7 @@ module ApplicationHelper
     if view.is_api?
       # use the view's federation resolution but throw away the rest for the resource name instead.
       developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
-    elsif view.data_lens?
+    elsif view.data_lens? || view.standalone_visualization?
       "#{locale_part}/view/#{view.id}"
     elsif view.new_view?
       begin
@@ -706,4 +706,47 @@ module ApplicationHelper
             '</div></noscript>').html_safe
   end
 
+  # ONCALL-3032: Spam e-mail sent via the Socrata platform
+  #
+  # The ability for unauthenticated users to send 'share this dataset via email' messages
+  # including arbitrary content was being abused by someone to send SPAM.
+  #
+  # Our solution, for the time being, is to disable this feature for unauthenticated or
+  # non-domain-role-holding users. This is accomplished in the frontend with a feature
+  # flag that hides the button which causes the send email dialog box to be shown; the
+  # more substantive fix will be in Core Server and will entail disabling the endpoint
+  # used to send unauthenticated email:
+  #
+  # /api/views/<four-four>.json?method=sendAsEmail&accessType=WEBSITE
+  #
+  # The work to disable this endpoint in Core Server is tracked by ONCALL-3037.
+  #
+  # Note that a different endpoint is used to send email on behalf of users who have
+  # a domain role, and who we trust not to send spam:
+  #
+  # /api/views/<four-four>/grants/?accessType=WEBSITE
+  #
+  # This endpoint will remain active.
+  #
+  # I am not sure when `.has_right?('grant')` is expected to return non-nil: it is nil even
+  # on a public dataset as a superadmin on my local machine. I am leaving it in place because
+  # I can't understand its behavior.
+  def user_has_domain_role_or_unauthenticated_share_by_email_enabled?(view)
+    view.has_right?('grant') ||
+    current_user_is_domain_member_and_has_create_datasets_right? ||
+    share_dataset_by_email_is_enabled_and_dataset_is_public?(view)
+  end
+
+  def current_user_is_domain_member_and_has_create_datasets_right?
+    # If the current user is a member of this domain and can create datasets on this domain
+    # we want to allow them to send email regardless of the state of the feature flag.
+    # The dialog box used for this case hits a different, authenticated endpoint for email.
+    current_user.present? && (CurrentDomain.member?(current_user) && current_user.has_right?('create_datasets'))
+  end
+
+  def share_dataset_by_email_is_enabled_and_dataset_is_public?(view)
+    # If the feature flag to show the button is set to true and the view is public, then enable
+    # the share by email dialog box that hits the unauthenticated endpoint.
+    FeatureFlags.derive(view, request).show_share_dataset_by_email_button_for_general_users && view.is_public?
+  end
 end

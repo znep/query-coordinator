@@ -3,198 +3,249 @@ var t = function(str, props) {
 };
 
 (function() {
-  var PropTypes = React.PropTypes;
-  var georegionsNS = blist.namespace.fetch('blist.georegions');
+  const PropTypes = React.PropTypes;
+  const {
+    FlashMessage,
+  } = blist.namespace.fetch('blist.components');
+  let georegionsComponentsNS = blist.namespace.fetch('blist.georegions.components');
+  let georegionsNS = blist.namespace.fetch('blist.georegions');
+  const {
+    ConfigureBoundaryForm,
+    GeoregionAdminTable
+  } = georegionsComponentsNS;
+  georegionsNS.flash = georegionsNS.flash || {};
 
-  var FormButton = React.createClass({
-    propTypes: {
-      action: PropTypes.string.isRequired,
-      authenticityToken: PropTypes.string.isRequired,
-      method: PropTypes.string.isRequired,
-      onSubmit: PropTypes.func,
-      value: PropTypes.string.isRequired
-    },
-    handleSubmit: function(event) {
-      event.preventDefault();
-      if (this.props.onSubmit) {
-        this.props.onSubmit();
-      }
-    },
-    render: function() {
-      var props = this.props;
-      return (
-        <form onSubmit={this.handleSubmit} acceptCharset="UTF-8" action={props.action} method="post" style={{display: 'inline'}}>
-          <div style={{ margin: 0, padding: 0, display: 'inline' }}>
-            <input name="utf8" type="hidden" value="✓" />
-            <input name="_method" type="hidden" value={props.method} />
-            <input name="authenticity_token" type="hidden" value={props.authenticityToken} />
-          </div>
-          <input className="button" name="commit" type="submit" value={props.value} />
-        </form>
-      );
+  function onEnableSuccess(id, newState, { error, message, success }) {
+    if (success) {
+      setFlashMessage(message, 'notice');
+      updateGeoregion(id, { enabledFlag: newState });
+    } else if (error) {
+      setFlashMessage(message, 'error');
     }
-  });
+  }
 
-  var EnabledWidget = React.createClass({
-    propTypes: {
-      action: PropTypes.string.isRequired,
-      authenticityToken: PropTypes.string.isRequired,
-      isEnabled: PropTypes.bool.isRequired
-    },
-    render: function() {
-      var props = this.props;
-      var isEnabledLabel = props.isEnabled ? t('enabled_yes') : t('enabled_no');
-      var enabledClassName = props.isEnabled ? 'is-enabled' : 'is-disabled';
-      var actionButton;
-      if (props.isEnabled) {
-        actionButton = (
-          <FormButton action={props.action + '/disable'} method="put" authenticityToken={props.authenticityToken} value={t('disable')} />
-        );
+  function setFlashMessage(message, type) {
+    georegionsNS.flash = [{ message, type }];
+    renderPage();
+  }
+
+  function clearFlashMessage() {
+    georegionsNS.flash = [];
+    renderPage();
+  }
+
+  function updateGeoregion(id, newValue) {
+    georegionsNS.georegions = _.map(georegionsNS.georegions, function(georegion) {
+      if (georegion.id === id) {
+        return _.extend({}, georegion, newValue);
       } else {
-        actionButton = (
-          <FormButton action={props.action + '/enable'} method="put" authenticityToken={props.authenticityToken} value={t('enable')} />
-        );
+        return georegion;
       }
+    });
+    renderPage();
+  }
 
-      return (
-        <div>
-          <span className={'enabled-widget-label ' + enabledClassName}>{isEnabledLabel}</span>
-          {actionButton}
-        </div>
-      );
-    }
-  });
+  function addGeoregion(newValue) {
+    georegionsNS.georegions.push(newValue);
+    renderPage();
+  }
 
-  var Row = React.createClass({
-    propTypes: {
-      action: PropTypes.string.isRequired,
-      authenticityToken: PropTypes.string.isRequired,
-      isEnabled: PropTypes.bool.isRequired,
-      name: PropTypes.string.isRequired,
-      renderActions: PropTypes.bool.isRequired
-    },
-    render: function() {
-      var props = this.props;
-      return (
-        <tr className="item">
-          <td className="name">{props.name}</td>
-          <td className="toggle-enabled">
-            <EnabledWidget isEnabled={props.isEnabled} action={props.action} authenticityToken={props.authenticityToken} />
-          </td>
-          { props.renderActions ?
-            (<td className="edit-action">
-              <FormButton action={props.action} method="put" authenticityToken={props.authenticityToken} value="Edit" />
-            </td>)
-            : null }
-          { props.renderActions ?
-            (<td className="remove-action">
-              <FormButton action={props.action} method="delete" authenticityToken={props.authenticityToken} value="Remove" />
-            </td>)
-            : null }
-        </tr>
-      );
-    }
-  });
+  function renderTables(georegions, allowEnablement) {
+    const authenticityToken = $('.georegions-controls-custom [name="authenticity_token"]').value();
+    const baseUrlPath = '/admin/geo/';
+    const [defaultBoundaries, customBoundaries] = _.partition(georegions, 'defaultFlag');
+    const baseTableProps = {
+      allowEnablement,
+      authenticityToken,
+      baseUrlPath
+    };
 
-  var GeoregionPropType = PropTypes.shape({
-    enabledFlag: PropTypes.bool.isRequired,
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired
-  });
-
-  var GeoregionAdminTable = React.createClass({
-    propTypes: {
-      authenticityToken: PropTypes.string.isRequired,
-      baseUrlPath: PropTypes.string.isRequired,
-      renderActions: PropTypes.bool,
-      rows: PropTypes.arrayOf(GeoregionPropType).isRequired
-    },
-    getDefaultProps: function() {
-      return {
-        renderActions: true,
-        rows: []
-      };
-    },
-    renderRows: function(rows) {
-      var props = this.props;
-      return rows.map(function(row) {
-        return (
-          <Row
-            key={row.id}
-            renderActions={props.renderActions}
-            action={props.baseUrlPath + row.id}
-            name={row.name}
-            isEnabled={row.enabledFlag}
-            authenticityToken={props.authenticityToken} />
-        );
-      });
-    },
-    render: function() {
-      var props = this.props;
-      return (
-        <table className="gridList georegions-table" cellSpacing="0">
-          <colgroup>
-            <col className="name" />
-            <col className="toggle-enabled" />
-            { props.renderActions ? (<col className="edit-action" />) : null }
-            { props.renderActions ? (<col className="remove-action" />) : null }
-            <col className="edit-action" />
-            <col className="remove-action" />
-          </colgroup>
-          <thead>
-          <tr>
-            <th className="name"><div>{ t('region_name') }</div><span className="icon"></span></th>
-            <th className="toggle-enabled"><div>{ t('enabled?') }</div><span className="icon"></span></th>
-            { props.renderActions ? (<th className="edit-action"><div>{ t('actions') }</div><span className="icon"></span></th>) : null }
-            { props.renderActions ? (<th className="remove-action"></th>) : null }
-          </tr>
-          </thead>
-          <tbody>
-          {this.renderRows(props.rows, props.authenticityToken)}
-          </tbody>
-        </table>
-      );
-    }
-  });
-
-  function renderPage() {
-    var authenticityToken = $('.georegions-controls-custom [name="authenticity_token"]').value();
-    var baseUrlPath = '/admin/geo/';
-    var data = georegionsNS.georegions;
-    var enabledBoundaries = _.filter(data, _.property('enabledFlag'));
-    var [defaultBoundaries, customBoundaries] = _.partition(data, _.property('defaultFlag'));
     React.render(
-      <GeoregionAdminTable rows={customBoundaries} baseUrlPath={baseUrlPath} authenticityToken={authenticityToken} />,
+      <GeoregionAdminTable
+        onEdit={showConfigureModal}
+        onEnableSuccess={onEnableSuccess}
+        rows={customBoundaries}
+        {...baseTableProps} />,
       $('.georegions-custom .gridListWrapper').get(0)
     );
-    React.render(
-      <GeoregionAdminTable rows={defaultBoundaries} renderActions={false} baseUrlPath={baseUrlPath} authenticityToken={authenticityToken} />,
-      $('.georegions-default .gridListWrapper').get(0)
-    );
 
     React.render(
-      <span>{t('page_subtitle', { enabled_count: enabledBoundaries.length, available_count: georegionsNS.maximumEnabledCount })}</span>,
+      <GeoregionAdminTable
+        onEnableSuccess={onEnableSuccess}
+        renderActions={false}
+        rows={defaultBoundaries}
+        {...baseTableProps} />,
+      $('.georegions-default .gridListWrapper').get(0)
+    );
+  }
+
+  function renderPageSubtitle(enabledCount, availableCount) {
+    const pageSubtitle = t('page_subtitle', {
+      enabled_count: String(enabledCount),
+      available_count: String(availableCount)
+    });
+
+    React.render(
+      <span>{pageSubtitle}</span>,
       $('#georegions-page-subtitle').get(0)
     );
   }
 
-  georegionsNS.renderPage = renderPage;
+  function renderFlashMessage(messages) {
+    React.render(
+      <FlashMessage messages={messages} />,
+      $('#flash-container').get(0)
+    );
+  }
 
-  georegionsNS.components = {
-    GeoregionAdminTable,
-    Row,
-    FormButton,
-    EnabledWidget
-  };
+  function renderPage() {
+    const georegions = georegionsNS.georegions;
+    const enabledBoundaries = _.filter(georegions, 'enabledFlag');
+    const allowEnablement = enabledBoundaries.length < georegionsNS.maximumEnabledCount;
+
+    renderTables(georegions, allowEnablement);
+    renderPageSubtitle(enabledBoundaries.length, georegionsNS.maximumEnabledCount);
+    renderFlashMessage(georegionsNS.flash);
+  }
+
+  function showConfigureModal(id) {
+    let $reactModal = $('#react-modal');
+    clearFlashMessage();
+
+    const fetchInitialState = (completeCallback, successCallback, errorCallback) => {
+      $.ajax({
+        url: `/admin/geo/${id}`,
+        type: 'get',
+        dataType: 'json',
+        complete: completeCallback,
+        success: ({ error, message, success }) => {
+          if (success) {
+            successCallback(message);
+          } else if (error) {
+            errorCallback(message);
+          }
+        }
+      });
+    };
+
+    const onSave = (boundary, completeCallback, successCallback, errorCallback) => {
+      const success = ({ error, message, success }) => {
+        if (success) {
+          updateGeoregion(id, message);
+          setFlashMessage(t('configure_boundary.save_success'), 'notice');
+          closeConfigureModal();
+        }
+        if (error) {
+          errorCallback(t('configure_boundary.save_error'));
+        }
+      };
+
+      $.ajax({
+        contentType: 'application/json',
+        url: `/admin/geo/${id}`,
+        type: 'put',
+        data: JSON.stringify({ boundary }),
+        dataType: 'json',
+        complete: completeCallback,
+        success: success,
+        error: () => errorCallback(t('configure_boundary.save_error'))
+      });
+    };
+
+    React.render(
+      <ConfigureBoundaryForm
+        fetchInitialState={fetchInitialState}
+        id={id}
+        onCancel={closeConfigureModal}
+        onSave={onSave}
+        requiredFields={['name', 'geometryLabel']}
+        title={t('configure_boundary.configure_boundary')}
+        />,
+      $reactModal.get(0)
+    );
+    $reactModal.jqmShow();
+  }
+
+  function closeConfigureModal() {
+    let $reactModal = $('#react-modal');
+    React.unmountComponentAtNode($reactModal.get(0));
+    $reactModal.jqmHide();
+  }
+
+  function showInitialConfigureModal(uid) {
+    let $reactModal = $('#react-modal');
+    georegionsNS.clearFlashMessage();
+
+    const fetchInitialState = (completeCallback, successCallback, errorCallback) => {
+      $.ajax({
+        url: `/admin/geo/candidate/${uid}`,
+        type: 'get',
+        dataType: 'json',
+        complete: completeCallback,
+        success: ({ error, message, success }) => {
+          if (success) {
+            successCallback(message);
+          } else if (error) {
+            errorCallback(message);
+          }
+        },
+        error: () => errorCallback(t('configure_boundary.save_error'))
+      });
+    };
+
+    const onSave = (boundary, completeCallback, errorCallback) => {
+      const success = ({ error, message, success }) => {
+        if (success) {
+          addGeoregion(message);
+          setFlashMessage(t('configure_boundary.save_success'), 'notice');
+          closeConfigureModal();
+        } else if (error) {
+          errorCallback(t('configure_boundary.save_core_error', {error_message: message}));
+        }
+      };
+
+      $.ajax({
+        contentType: 'application/json',
+        url: '/admin/geo',
+        type: 'post',
+        data: JSON.stringify(_.extend({ id: uid }, boundary)),
+        dataType: 'json',
+        complete: completeCallback,
+        success: success,
+        error: () => errorCallback(t('configure_boundary.save_error'))
+      });
+    };
+
+    const onBack = () => {
+      closeConfigureModal();
+      $('#selectDataset').jqmShow();
+    };
+
+    React.render(
+      <ConfigureBoundaryForm
+        allowPrimaryKeySelection={true}
+        cancelLabel={$.t('core.dialogs.back')}
+        fetchInitialState={fetchInitialState}
+        id={uid}
+        onCancel={onBack}
+        onSave={onSave}
+        requiredFields={['name', 'geometryLabel', 'primaryKey']}
+        saveLabel={$.t('core.dialogs.create')}
+        title={t('configure_boundary.configure_boundary')}
+        />,
+      $reactModal.get(0)
+    );
+    $reactModal.jqmShow();
+  }
+
+  georegionsNS.renderPage = renderPage;
+  georegionsNS.clearFlashMessage = clearFlashMessage;
 
   var commonNS = blist.namespace.fetch('blist.common');
 
-  commonNS.georegionSelected = function(newGeoregionData) {
+  commonNS.georegionSelected = function(datasetId) {
     $('#selectDataset').jqmHide();
-    georegionsNS.georegions || (georegionsNS.georegions = []);
-    var newGeoregionObj = _.extend({}, newGeoregionData);
-    georegionsNS.georegions.push(newGeoregionObj);
-    georegionsNS.renderPage();
+    showInitialConfigureModal(datasetId);
   };
 
 })();

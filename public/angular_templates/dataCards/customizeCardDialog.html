@@ -26,7 +26,7 @@
         <input name="customLayerUrl"
           type="url"
           class="dark"
-          placeholder="http://domain.com/.../{x}/{y}/{z}.png"
+          placeholder="http://domain.com/.../{z}/{x}/{y}.png"
           ng-model="customLayerUrl"
           ng-pattern="TILEURL_REGEX"
           ng-show="baseLayerOption === 'custom'"
@@ -65,6 +65,6 @@
 </div>
 
 <div class="controls">
-  <button class="action-btn dark" ng-click="updateCard()">{{::'common.done' | I18n}}</button>
-  <button class="action-btn dark" ng-click="dialogState.show = false">{{::'common.cancel' | I18n}}</button>
+  <button class="action-btn dark r-to-l" ng-click="updateCard()">{{::'common.done' | I18n}}</button>
+  <button class="action-btn dark r-to-l" ng-click="dialogState.show = false">{{::'common.cancel' | I18n}}</button>
 </div>

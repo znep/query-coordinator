@@ -23,7 +23,7 @@
         {
             var cObj = this;
             var _view = this._view;
-            var type = this._view.isGeoDataset() ? 'geo' : this._view.newBackend ? 'nbe' : 'normal';
+            var type = this._view.getDownloadType();
             var catchForm = !this._view.isGeoDataset();
             return [
                 {

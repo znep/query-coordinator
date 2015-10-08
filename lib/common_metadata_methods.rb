@@ -49,6 +49,30 @@ module CommonMetadataMethods
     end
   end
 
+  def domain_metadata
+    categories = CurrentDomain.configuration('view_categories')
+    if categories.nil?
+      {
+        :categories => []
+      }
+    else
+      enabled_categories = categories.properties.select do |category_name, category_settings|
+        category_settings['enabled']
+      end
+      enabled_category_names = enabled_categories.map do |category_name, category_settings|
+        if category_settings.has_key? 'locale_strings'
+          localized_category_name = category_settings['locale_strings'].fetch(I18n.locale.to_s, category_name)
+          localized_category_name.empty? ? category_name : localized_category_name
+        else
+          category_name
+        end
+      end
+      {
+        :categories => enabled_category_names
+      }
+    end
+  end
+
   def fetch_permissions(id)
     catalog_response = new_view_manager.fetch(id)
     {

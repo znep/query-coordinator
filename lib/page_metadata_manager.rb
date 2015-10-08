@@ -67,22 +67,35 @@ class PageMetadataManager
     end
 
     if is_backed_by_metadb?(result)
-      page_metadata = result[:displayFormat][:data_lens_page_metadata]
+      case result[:displayType]
+        when 'data_lens_chart', 'data_lens_map'
+          # VIFs stored in DB in JSON.dump'd form because core removes keys with null values otherwise
+          vif = JSON.parse(result[:displayFormat][:visualization_interchange_format_v1]).with_indifferent_access
+          page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(vif, id, permissions)
+          page_metadata[:sourceVif] = vif
+        when 'data_lens'
+          page_metadata = result[:displayFormat][:data_lens_page_metadata].with_indifferent_access
+        else
+          raise "data lens #{id} is backed by metadb but is not of display type data_lens_chart, data_lens_map, or data_lens"
+      end
       page_metadata = ensure_page_metadata_properties(page_metadata)
-      page_metadata['permissions'] = permissions.stringify_keys!
-      page_metadata['moderationStatus'] = result[:moderationStatus]
-      page_metadata['shares'] = View.new(result).shares
+      page_metadata[:permissions] = permissions.stringify_keys!
+      page_metadata[:moderationStatus] = result[:moderationStatus]
+      page_metadata[:shares] = View.new(result).shares
+      page_metadata[:rights] = result[:rights]
+      page_metadata[:displayType] = result[:displayType]
       page_metadata
     else
-      result = phidippides.fetch_page_metadata(id, options)
+      phiddy_result = phidippides.fetch_page_metadata(id, options).with_indifferent_access
 
-      if result[:status] !~ /^2[0-9][0-9]$/
+      if phiddy_result[:status] !~ /^2[0-9][0-9]$/
         return { body: { body: 'Not found' }, status: '404' }
       end
 
-      page_metadata = result[:body]
-      page_metadata['permissions'] = permissions.stringify_keys! if page_metadata
-      page_metadata['moderationStatus'] = result[:moderationStatus] if page_metadata
+      page_metadata = phiddy_result[:body] || {}
+      page_metadata[:permissions] = permissions.stringify_keys!
+      page_metadata[:moderationStatus] = result[:moderationStatus]
+      page_metadata[:displayType] = result[:displayType]
       page_metadata
     end
 
@@ -238,6 +251,51 @@ class PageMetadataManager
     response
   end
 
+  def build_rollup_soql(page_metadata, columns, cards, options = {})
+    non_date_card_types_for_rollup = %w{column choropleth}
+    normalized_columns = transformed_columns(columns)
+
+    columns_to_roll_up = cards.
+      select { |card| non_date_card_types_for_rollup.include?(card['cardType']) }.
+      pluck(column_field_name)
+
+    # Nothing to roll up
+    return if columns_to_roll_up.blank? &&
+      columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank? &&
+      cards.select { |card| card['cardType'] == 'histogram' }.empty?
+
+    if columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
+      page_metadata['defaultDateTruncFunction'].blank?
+        update_date_trunc_function(page_metadata, columns, cards, options)
+    end
+
+    rolled_up_columns_soql = (
+      columns_to_roll_up +
+      columns_to_roll_up_by_date_trunc(normalized_columns, cards).map do |field_name|
+        "#{page_metadata['defaultDateTruncFunction']}(#{field_name})"
+      end +
+      bucketed_column_queries(page_metadata['datasetId'], cards)
+    ).compact.join(', ')
+
+    aggregation_function = page_metadata['primaryAggregation'] || 'count'
+    aggregation_field = page_metadata['primaryAmountField'] || '*'
+    aggregation_clause = "#{aggregation_function}(#{aggregation_field}) as value"
+
+    "select #{rolled_up_columns_soql}, #{aggregation_clause} group by #{rolled_up_columns_soql}"
+  end
+
+  # Phidippides call for the dataset metadata - needed to fetch columns for both
+  # metadb and phidippides backed page metadata.
+  def fetch_dataset_columns(dataset_id, options = {})
+    dataset_metadata_result = dataset_metadata(dataset_id, options)
+    if dataset_metadata_result.fetch(:status) != '200'
+      raise Phidippides::NoDatasetMetadataException.new(
+        "could not fetch dataset metadata for id: #{dataset_id}"
+      )
+    end
+    dataset_metadata_result.fetch(:body).fetch('columns')
+  end
+
   private
 
   # Examine the given metadata and determine whether it has the hallmarks which
@@ -246,9 +304,10 @@ class PageMetadataManager
   def is_backed_by_metadb?(metadb_page_metadata)
     return false if metadb_page_metadata.nil?
 
-    has_metadb_display_type = metadb_page_metadata[:displayType] == 'data_lens'
-    # future work may check other properties and &&-together on the line below
-    has_metadb_display_type
+    display_type = metadb_page_metadata[:displayType]
+    # future work may check other properties and &&-together
+
+    %w(data_lens data_lens_chart data_lens_map).include?(display_type)
   end
 
   # When page metadata is returned from metadb, null-valued properties may be
@@ -341,46 +400,6 @@ class PageMetadataManager
     end
   end
 
-  def build_rollup_soql(page_metadata, columns, cards, options = {})
-    non_date_card_types_for_rollup = %w{column choropleth}
-    normalized_columns = transformed_columns(columns)
-
-    columns_to_roll_up = cards.
-      select { |card| non_date_card_types_for_rollup.include?(card['cardType']) }.
-      pluck(column_field_name)
-
-    # Nothing to roll up
-    return if columns_to_roll_up.blank? &&
-      columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank? &&
-      cards.select { |card| card['cardType'] == 'histogram' }.empty?
-
-    if columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
-      page_metadata['defaultDateTruncFunction'].blank?
-        raise Phidippides::NoDefaultDateTruncFunction.new(
-          "page does not have default date trunc function set for pageId: #{page_metadata['pageId']}"
-        )
-    end
-
-    rolled_up_columns_soql = (
-      columns_to_roll_up +
-      columns_to_roll_up_by_date_trunc(normalized_columns, cards).map do |field_name|
-        "#{page_metadata['defaultDateTruncFunction']}(#{field_name})"
-      end +
-      bucketed_column_queries(page_metadata['datasetId'], cards)
-    ).compact.join(', ')
-
-    aggregation_function = page_metadata['primaryAggregation'] || 'count'
-    aggregation_field = page_metadata['primaryAmountField'] || '*'
-    aggregation_clause = "#{aggregation_function}(#{aggregation_field}) as value"
-
-    soql = 'select '
-    soql << rolled_up_columns_soql
-    soql << ', '
-    soql << aggregation_clause
-    soql << ' group by '
-    soql << rolled_up_columns_soql
-  end
-
   def update_date_trunc_function(page_metadata, columns, cards, options)
     # Need to find the largest time nugget for rollups because rollups are not magic
     # We will only be able to roll-up dates on the largest time span. For example,
@@ -393,18 +412,6 @@ class PageMetadataManager
     )
     page_metadata['largestTimeSpanDays'] = largest_time_span_days
     page_metadata['defaultDateTruncFunction'] = date_trunc_function(largest_time_span_days)
-  end
-
-  # Phidippides call for the dataset metadata - needed to fetch columns for both
-  # metadb and phidippides backed page metadata.
-  def fetch_dataset_columns(dataset_id, options = {})
-    dataset_metadata_result = dataset_metadata(dataset_id, options)
-    if dataset_metadata_result.fetch(:status) != '200'
-      raise Phidippides::NoDatasetMetadataException.new(
-        "could not fetch dataset metadata for id: #{dataset_id}"
-      )
-    end
-    dataset_metadata_result.fetch(:body).fetch('columns')
   end
 
   def transformed_columns(columns)

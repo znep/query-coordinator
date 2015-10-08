@@ -23,7 +23,8 @@ module DataLensHelper
   def render_metadata
     javascript_tag(
       "var pageMetadata = #{json_escape(@page_metadata.to_json)};\n" \
-      "var datasetMetadata = #{json_escape(@dataset_metadata.to_json)};"
+      "var datasetMetadata = #{json_escape(@dataset_metadata.to_json)};\n" \
+      "var domainMetadata = #{json_escape(@domain_metadata.to_json)};"
     )
   end
 

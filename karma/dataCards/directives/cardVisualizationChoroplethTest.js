@@ -189,8 +189,9 @@ describe('A Choropleth Card Visualization', function() {
     var childScope = scope.$new();
     childScope.whereClause = whereClause;
     childScope.model = model;
+    childScope.allowFilterChange = true;
 
-    var html = '<card-visualization-choropleth id="{0}" model="model" where-clause="whereClause"></card-visualization-choropleth>'.format(id);
+    var html = '<card-visualization-choropleth id="{0}" model="model" allow-filter-change="allowFilterChange" where-clause="whereClause"></card-visualization-choropleth>'.format(id);
     var el = testHelpers.TestDom.compileAndAppend(html, childScope);
 
     // The choropleth throttles its renderer via Rx.throttle

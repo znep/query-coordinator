@@ -22,6 +22,10 @@ module ViewModels
         @curated_regions.count
       end
 
+      def allow_enablement?
+        enabled_count < @maximum_enabled_count
+      end
+
       def translations
         LocalePart.screens.admin.georegions
       end

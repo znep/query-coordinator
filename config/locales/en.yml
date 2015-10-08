@@ -120,6 +120,7 @@ en:
           export_visualization_disabled: This visualization is not available<br/>for image export
           invalid_card: Invalid Card Visualization
           map_render_error: An error was encountered when trying to render this map.
+        export: Export
         latitude: Latitude
         longitude: Longitude
         no_value: No value
@@ -128,6 +129,7 @@ en:
           permissions: Permissions
           private: Private
           public: Public
+        save: Save
       customize_bar:
         changes_warning: You have made changes to this page.
         collapse_card: 'To enter customization mode: Collapse the big card using the arrows in its top right corner'
@@ -161,8 +163,17 @@ en:
         errors:
           error: An error was encountered when trying to render this card.
           no_data: There is no data to display.
+      export_menu:
+        download_button_for_image: Visualization as Image
+        download_button_for_rows: Rows as CSV (Excel)
+        download_explanation: Export the currently filtered view as a file on your computer. See the <u>Source Dataset</u> to download the full source data.
+        download_title: Download
+        save_to_catalog_button: Standalone Visualization
+        save_to_catalog_explanation: Save a part of this Data Lens directly to the site Catalog.
+        save_to_catalog_title: Save to Catalog
       feature_map:
         zoom_disabled: Zoom is temporarily unavailable. Please try again later.
+        feature_map_disabled: Feature maps are unavailable.
       feature_map_flannel:
         previous: Previous
         next: Next
@@ -211,10 +222,21 @@ en:
         title: Manage
         sharing:
           title: Shared with
+          add_new: Add New
+          add_new_prompt: Save your changes below to invite these new users to this Data Lens
           inherited_description: 'Inherited from the source dataset:'
           contributor: Contributor
           owner: Co-owner
           viewer: Viewer
+          keep: Keep
+          remove: Remove
+          new_share_dialog:
+            title: Share this Data Lens
+            description: 'Specify additional people you wish to grant permissions on this Data Lens to. If someone doesn’t yet have an account, they will be sent an invitation to register, after which they will be granted the permissions.'
+            email: Email address
+            remove: Remove
+            add_more: Add More
+            message: Optional message
         visibility:
           title: Visibility
           shown: Shown in catalog
@@ -225,6 +247,23 @@ en:
           view_moderation_pending: Pending
           dataset_is_private: The source dataset is set to Private, so this Data Lens may not be shown in the catalog.
           user_is_unprivileged: You must be an administrator or a publisher to modify Data Lens visibility. Please contact the site administrator to change this setting.
+      save_visualization_as_dialog:
+        title: Save Visualization As
+        name_label: Save this visualization with a new name
+        enter_name_placeholder: Enter a name
+        description_label: Enter a description for your new visualization (optional)
+        category_label: Choose a category for your new visualization (optional)
+        enter_name_error: Please enter a title
+        official_view_label: Official View
+        official_view_explanation: Selecting this option will give the view a special designation indicating that it is an Official View.
+        server_error: Sorry, something went wrong. Please try again later.
+        description_help_text: >
+          As a guideline, describe:
+          <ul>
+            <li>What this visualization means</li>
+            <li>Why it’s important to the viewer</li>
+            <li>How this information will be used to inform future plans or decisions</li>
+          </ul>
       metadata:
         data_as_csv: Full source data as CSV (Excel)
         edit_description_prompt: Give your page a good description that helps people understand the story your data is trying to tell. (Optional)
@@ -880,6 +919,7 @@ en:
       years_past: "%{time} years ago"
     dialogs:
       apply: Apply
+      back: Back
       cancel: Cancel
       close: Close
       continue: Continue
@@ -1424,19 +1464,40 @@ en:
         actions: Actions
         add_new: Add new
         choose_a_dataset: Choose a new geospatial Dataset
+        configure_boundary:
+          page_title: Manage Boundaries
+          configure_boundary: Configure Boundary
+          boundary_name: Boundary Name
+          boundary_name_description: "The name of the boundary (ex: \"States\" or \"Neighborhoods\"). Will be displayed in Spatial Lens maps."
+          boundary_name_required_page_error: "Unable to save: the boundary must have a name."
+          boundary_name_required_field_error: The boundary must have a name.
+          boundary_geometry_label_page_error: "Unable to save: the boundary must have a shape label."
+          boundary_geometry_label_field_error: The boundary must have a shape label.
+          shape_label: Shape Label
+          shape_label_description: "The column that should be used as the label for each shape (ex: a column containing \"WA\" and \"NY\")."
+          primary_key_column: Stable Identifier
+          primary_key_column_description: "A unique identifier column that remains stable across updates to the boundary shapes. Do not use the shapefile feature ID"
+          primary_key_column_missing_field_error: "The boundary must have a stable identifier."
+          choose_a_column: Choose a column...
+          save_success: Changes saved successfully.
+          save_error: Something went wrong while trying to save your changes. Please try again later, or contact Socrata Support if the problem persists.
+          save_core_error: "Could not create the boundary: %{error_message}"
         custom_georegions: Custom Georegions
         default_georegions: Socrata Default Georegions
         delete: Delete
         disable: Disable
+        disable_success: "%{name} has been disabled and will no longer be automatically computed for new datasets."
         edit: Edit
         enable: Enable
         enabled?: Enabled?
         enabled_no: "No"
         enabled_yes: "Yes"
+        enable_success: "%{name} has been enabled. Note that this will not retroactively enable the boundary for datasets created previously; the computation must be triggered for each extant dataset for which it should apply."
+        enabled_georegions_limit: You have reached the limit of %{limit} enabled boundaries for this site.
         flashes:
           add_georegion_error: <div>%{error_message}</div><div>Link to <a target="_blank" href="https://www.xkcd.com/627/">support KB article</a></div>
         page_title: Manage Spatial Lens
-        page_subtitle: You have enabled %{enabled_count} of %{available_count} available regions
+        page_subtitle: You have enabled %{enabled_count} of %{available_count} available regions.
         region_name: Region Name
         remove: Remove
         title: Spatial Lens
@@ -2653,6 +2714,7 @@ en:
       problem_importing: There was a problem importing that file. Please make sure it is valid.
       problem_uploading: There was a problem uploading that file. Please make sure it is valid.
       rows_imported: "%{num} rows imported so far."
+      replicating: Replicating the dataset.
       try_again: Please try again in a bit.
       unknown_error: An unknown error has occurred
       uploading: Uploading your file

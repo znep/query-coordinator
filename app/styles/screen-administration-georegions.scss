@@ -12,8 +12,20 @@ $is-disabled-color: #999;
   }
 }
 
-input.button {
+.button {
   font-size: 0.65rem;
+  position: relative;
+
+  .loading {
+    display: block;
+    text-align: left;
+    background: transparent url('/stylesheets/images/content/snuffleupasnake.gif') no-repeat 0 0;
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    top: calc(50% - 8px);
+    left: calc(50% - 8px);
+  }
 }
 
 .georegions-table {
@@ -21,13 +33,13 @@ input.button {
     width: 50%;
   }
   .toggle-enabled, .edit-action, .remove-action {
-    input.button {
+    input.button, button.button {
       font-size: 0.8em;
       opacity: 0.3;
       @include transition-duration(0.5s);
       @include transition-property(opacity);
     }
-    &:hover .button {
+    &:hover .button:not(.disabled) {
       opacity: 1;
     }
   }
@@ -61,5 +73,64 @@ input.button {
     border: none;
     height: 55em;
     width: 80em;
+  }
+}
+
+.georegion-spinner {
+  background-color: rgba(255, 255, 255, 0.5);
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+
+  > img {
+    $img-size: 48px;
+    position: absolute;
+    top: calc(50% - #{$img-size / 2});
+    left: calc(50% - #{$img-size / 2});
+  }
+}
+
+#react-modal {
+  $modal-width: 65em;
+  width: $modal-width;
+  margin-left: -($modal-width / 2);
+  .line > div {
+    width: calc(100% - 15em);
+  }
+}
+
+#react-modal, .georegions-configure-boundary {
+  form {
+    .line {
+      margin-bottom: 2em;
+    }
+
+    .form-controls {
+      float: right;
+      margin-bottom: 0;
+      margin-top: 1em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+    }
+
+    label:not(.error) {
+      width: 10em;
+    }
+
+    label.error {
+      padding-left: 0;
+      min-height: 1.8em;
+    }
+
+    p {
+      padding-top: 0.25em;
+      font-size: 1em;
+    }
   }
 }

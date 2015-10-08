@@ -566,7 +566,7 @@ describe('Customize card dialog', function() {
         standard.prop('selected', true).change();
         dialog.scope.$digest();
 
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
 
         // Select Custom
         var input = dialog.element.find('input[name=customLayerUrl]')
@@ -577,17 +577,17 @@ describe('Customize card dialog', function() {
 
         expect(input.is(':visible')).to.equal(true);
         // Shouldn't change the baseLayerUrl yet
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
 
         // Shouldn't change the baseLayerUrl when given a non-url
         input.val('foobar').trigger('input').trigger('change');
         dialog.scope.$digest();
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
 
         // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
         input.val('http://www.google.com/').trigger('input').trigger('change');
         dialog.scope.$digest();
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
 
         // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
         input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
@@ -631,7 +631,7 @@ describe('Customize card dialog', function() {
         standard.prop('selected', true).change();
         dialog.scope.$digest();
 
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
 
         // Select Custom
         var input = dialog.element.find('input[name=customLayerUrl]')
@@ -643,17 +643,17 @@ describe('Customize card dialog', function() {
         expect(input.is(':visible')).to.equal(true);
 
         // Shouldn't change the baseLayerUrl yet
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
 
         // Shouldn't change the baseLayerUrl when given a non-url
         input.val('foobar').trigger('input').trigger('change');
         dialog.scope.$digest();
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
 
         // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
         input.val('http://www.google.com/').trigger('input').trigger('change');
         dialog.scope.$digest();
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
 
         // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
         input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
@@ -678,7 +678,7 @@ describe('Customize card dialog', function() {
 
         // Now go back to the standard
         standard.prop('selected', true).change();
-        expect(card.getCurrentValue('baseLayerUrl')).to.equal(undefined);
+        expect(card.getCurrentValue('baseLayerUrl')).to.equal(null);
 
         // Now back to custom
         custom.prop('selected', true).change();

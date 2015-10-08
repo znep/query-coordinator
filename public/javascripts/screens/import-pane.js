@@ -2118,8 +2118,9 @@ importNS.importingPaneConfig = {
               },
               pending: function(response)
               {
-                  if ($.subKeyDefined(response, 'details.progress'))
-                  {
+                  if ($.subKeyDefined(response, 'details.stage')) {
+                    $pane.find('.importStatus').text(t(response.details.stage))
+                  } else if ($.subKeyDefined(response, 'details.progress')) {
                       var message = t('rows_imported', { num: response.details.progress });
                       if ($.subKeyDefined(response, 'details.layer'))
                           message = t('layer') + '  ' + response.details.layer + ": " + message;

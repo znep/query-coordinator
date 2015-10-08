@@ -33,7 +33,7 @@ module FeatureFlags
 
   def self.iframe_parameters(referer)
     begin
-      CGI.parse(URI.parse(referer).query || '')
+      Rack::Utils.parse_query(URI.parse(referer).query || '')
     rescue URI::InvalidURIError
       nil
     end

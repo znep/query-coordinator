@@ -1,0 +1,62 @@
+<div class="tool-panel" ng-class="{'down-right': dataLensVersion === 2}">
+  <button
+    type="button"
+    title="{{::'common.export' | I18n}}"
+    class="tool-panel-toggle-btn action-btn l-to-r"
+    ng-class="{active: panelActive, disabled: editMode, 'l-to-r': (dataLensVersion === 2), 'r-to-l': (dataLensVersion === 1)}"
+    ng-click="panelActive = editMode ? false : !panelActive"
+    ng-show="!allowChooserModeCancel">
+    {{::'common.export' | I18n}}
+  </button>
+  <button
+    type="button"
+    data-action="quit-chooser"
+    title="{{::'common.cancel' | I18n}}"
+    class="tool-panel-toggle-btn action-btn active l-to-r"
+    ng-click="quitCardSelectionMode()"
+    ng-show="allowChooserModeCancel">
+    {{::'common.cancel' | I18n}}
+  </button>
+  <div ng-class="{active: panelActive}" class="tool-panel-main">
+    <div class="tool-panel-inner-container">
+      <div class="tool-panel-hint"></div>
+      <h2>{{::'exportMenu.downloadTitle' | I18n}}</h2>
+      <p ng-bind-html="downloadExplanation"></p>
+      <div class="tool-panel-input-group alt-group-padding">
+        <button
+          type="button"
+          data-action="export-csv"
+          title="{{::'exportMenu.downloadButtonForRows' | I18n}}"
+          class="tool-panel-btn action-btn l-to-r">
+          {{::'exportMenu.downloadButtonForRows' | I18n}}
+        </button>
+        <button
+          ng-if="showPolaroidButton"
+          ng-click="initiateCardSelectionMode('polaroid')"
+          ng-class='{"export-to-polaroid-disabled disabled": hasChanges}'
+          ng-show="!page.isStandaloneVisualization"
+          type="button"
+          data-action="export-polaroid"
+          title="{{::'exportMenu.downloadButtonForImage' | I18n}}"
+          class="tool-panel-btn action-btn l-to-r">
+          {{::'exportMenu.downloadButtonForImage' | I18n}}
+        </button>
+      </div>
+
+      <div ng-if="currentUserHasSaveRight && !page.isStandaloneVisualization">
+        <h2>{{::'exportMenu.saveToCatalogTitle' | I18n}}</h2>
+        <p>{{::'exportMenu.saveToCatalogExplanation' | I18n}}</p>
+        <div class="tool-panel-input-group alt-group-padding">
+          <button
+            ng-click="initiateCardSelectionMode('vif')"
+            type="button"
+            data-action="export-vif"
+            title="{{::'exportMenu.saveToCatalogButton' | I18n}}"
+            class="tool-panel-btn action-btn l-to-r">
+            {{::'exportMenu.saveToCatalogButton' | I18n}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

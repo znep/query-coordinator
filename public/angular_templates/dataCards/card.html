@@ -1,4 +1,4 @@
-<div class="card-text">
+<div class="card-text" ng-show="!isStandaloneVisualization">
   <card-title model="model"></card-title>
   <div class="description"
     ng-show="showDescription"
@@ -26,19 +26,19 @@
 </div>
 
 <div class="card-visualization-wrapper">
-  <card-visualization model="model" where-clause="whereClause"></card-visualization>
+  <card-visualization model="model" allow-filter-change="allowFilterChange" where-clause="whereClause"></card-visualization>
 </div>
 
  <!--Card controls are only available if card is not a table card, and is customizable-->
  <!--They are hidden on table cards, and visible but disabled on other non-customizable cards-->
-<div class="card-controls" ng-show="!isChoosingForExport">
+<div class="card-controls" ng-show="!chooserMode.show">
   <div class="card-control icon-table debug-flyout"
     ng-show="debugDataLens">
   </div>
   <div class="card-control icon-settings"
     ng-class="{ disabled: !isCustomizable }"
     ng-click="customizeCardIfCustomizable(isCustomizable)"
-    ng-show="editMode && interactive && model.fieldName !== '*'"
+    ng-show="editMode && interactive && model.fieldName !== '*' && !isStandaloneVisualization"
     title="{{ (isCustomizable ?
       'cardControls.customizeEnabled' :
       'cardControls.customizeDisabled') | I18n}}">
@@ -46,13 +46,13 @@
   <div ng-attr-title="{{ (expanded ? 'cardControls.collapseCard' : 'cardControls.expandCard') | I18n }}"
     ng-click="toggleExpanded()"
     ng-class="{'icon-expand': !expanded, 'icon-collapse': expanded}"
-    ng-show="!editMode && interactive"
+    ng-show="!editMode && interactive && !isStandaloneVisualization"
     class="card-control">
   </div>
   <div class="card-control icon-close"
     title="{{::'cardControls.removeCard' | I18n}}"
     ng-click="deleteCard()"
-    ng-show="editMode && interactive && model.fieldName !== '*'">
+    ng-show="editMode && interactive && model.fieldName !== '*' && !isStandaloneVisualization">
   </div>
 </div>
 
@@ -60,14 +60,14 @@
   data-card-id="{{cardState.model.uniqueId}}"
   ng-if="editMode && model.fieldName !== '*'"></div>
 
-<div ng-show="isChoosingForExport"
+<div ng-show="chooserMode.show"
   class="card-chooser overlay"
   ng-class="{ enabled: isExportable }">
   <div ng-switch="isExportable">
     <a ng-switch-when="true"
       class="action-btn action-png-export"
       href="{{downloadUrl}}"
-      ng-click="downloadPng($event)"
+      ng-click="exportCard($event)"
       ng-class="{
         disabled: !isExportable,
         working: downloadState === 'loading',

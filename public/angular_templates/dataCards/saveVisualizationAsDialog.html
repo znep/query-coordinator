@@ -1,0 +1,49 @@
+<div class="tool-panel">
+  <h2>{{::'saveVisualizationAsDialog.title' | I18n}}</h2>
+  <div class="control-group">
+    <label for="save-as-name">{{::'saveVisualizationAsDialog.nameLabel' | I18n}}</label><br/>
+    <input
+      type="text"
+      id="save-as-name"
+      class="form-control"
+      ng-class="{ invalid: nameInvalid }"
+      ng-model="name"
+      placeholder="{{::'saveVisualizationAsDialog.enterNamePlaceholder' | I18n}}"
+      size="60"/>
+    <span class="icon-warning" id="save-as-invalid-name" ng-if="nameInvalid"></span>
+  </div>
+  <div class="control-group">
+    <label for="save-as-description">{{::'saveVisualizationAsDialog.descriptionLabel' | I18n}}</label><br/>
+    <textarea
+      id="save-as-description"
+      class="form-control no-resize"
+      rows="8"
+      ng-model="description">
+    </textarea>
+    <div id="save-as-description-guidelines" ng-bind-html="'saveVisualizationAsDialog.descriptionHelpText' | I18n">
+    </div>
+  </div>
+  <div class="control-group">
+    <label for="category-selector">{{::'saveVisualizationAsDialog.categoryLabel' | I18n}}</label><br/>
+    <soc-select id="category-selector" ng-model="category">
+      <soc-option
+         ng-repeat="category in categories"
+         value="{{category}}">{{category}}</soc-option>
+    </soc-select>
+  </div>
+  <div class="control-group">
+    <input id="save-as-official-view" type="checkbox" ng-model="isOfficial"/>
+    <label for="save-as-official-view">{{::'saveVisualizationAsDialog.officialViewLabel' | I18n}}</label>
+    <p class="save-as-official-view-description">{{::'saveVisualizationAsDialog.officialViewExplanation' | I18n}}</p>
+  </div>
+  <div class="controls">
+    <button
+      class="action-btn l-to-r dark"
+      ng-click="dialogState.show = false">{{::'common.cancel' | I18n}}</button>
+    <save-button
+      class="l-to-r dark"
+      enabled="true"
+      save-status="saveStatus">
+    </save-button>
+  </div>
+</div>

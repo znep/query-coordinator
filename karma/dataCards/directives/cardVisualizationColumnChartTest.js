@@ -17,7 +17,7 @@ describe('A Column Chart Card Visualization', function() {
     testHelpers.TestDom.clear();
   });
 
-  function createChart(whereClause) {
+  function createChart(whereClause, allowFilterChange) {
     var pageOverrides = {
       pageId: 'asdf-fdsa'
     };
@@ -44,10 +44,16 @@ describe('A Column Chart Card Visualization', function() {
     model.defineObservableProperty('page', pageModel);
 
     var outerScope = rootScope.$new();
-    outerScope.whereClause = whereClause;
     outerScope.model = model;
+    outerScope.whereClause = whereClause;
 
-    var html = '<div class="card-visualization"><card-visualization-column-chart model="model" where-clause="whereClause"></card-visualization-column-chart></div>';
+    if (typeof allowFilterChange === 'boolean') {
+      outerScope.allowFilterChange = allowFilterChange;
+    } else {
+      outerScope.allowFilterChange = true;
+    }
+
+    var html = '<div class="card-visualization"><card-visualization-column-chart model="model" allow-filter-change="allowFilterChange" where-clause="whereClause"></card-visualization-column-chart></div>';
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
     return {
@@ -204,6 +210,22 @@ describe('A Column Chart Card Visualization', function() {
 
       expect(chart.model.getCurrentValue('activeFilters')).to.have.length(1);
       expect(chart.model.getCurrentValue('activeFilters')[0]).to.be.instanceof(Filter.IsNullFilter);
+    });
+  });
+
+  describe('when created with scope.allowFilterChange set to false', function() {
+
+    createMockDataService([]);
+    initInjector();
+
+    it('should not add an active filter when a bar is clicked', function() {
+      var chart = createChart('', false);
+
+      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+
+      $('.bar-group .bar').eq(0).trigger('click');
+
+      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
     });
   });
 });

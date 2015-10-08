@@ -49,7 +49,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('four-four')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField
-      version largestTimeSpanDays defaultDateTruncFunction permissions moderationStatus
+      version largestTimeSpanDays defaultDateTruncFunction permissions displayType moderationStatus
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -73,7 +73,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('four-four')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField
-      version largestTimeSpanDays defaultDateTruncFunction permissions moderationStatus
+      version largestTimeSpanDays defaultDateTruncFunction permissions displayType moderationStatus
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -90,7 +90,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('four-four')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
-      largestTimeSpanDays defaultDateTruncFunction permissions moderationStatus shares
+      largestTimeSpanDays defaultDateTruncFunction permissions displayType moderationStatus shares
+      rights
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -107,7 +108,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('four-four')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
-      largestTimeSpanDays defaultDateTruncFunction permissions moderationStatus shares
+      largestTimeSpanDays defaultDateTruncFunction permissions displayType moderationStatus shares
+      rights
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -391,7 +393,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       'count(*) as value group by some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
       'signed_magnitude_10(some_number_column), signed_magnitude_linear(some_other_number_column, 500)'
 
-    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
+    soql = manager.build_rollup_soql(v1_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)
   end
 
@@ -404,7 +406,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     )
     columns = v1_dataset_metadata.fetch('columns')
     cards = v1_page_metadata.fetch('cards')
-    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
+    soql = manager.build_rollup_soql(v1_page_metadata, columns, cards)
     assert_match(/date_trunc/, soql)
   end
 
@@ -417,11 +419,11 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     )
     columns = v1_dataset_metadata.fetch('columns')
     cards = v1_page_metadata.fetch('cards')
-    soql = manager.send(:build_rollup_soql, v1_page_metadata_with_aggregation, columns, cards)
+    soql = manager.build_rollup_soql(v1_page_metadata_with_aggregation, columns, cards)
     assert_match(/sum\([^\)]+\) as value/, soql)
   end
 
-  def test_raise_when_missing_default_date_trunc_function
+  def test_fills_in_missing_default_date_trunc_function
     manager.stubs(
       phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }),
       date_trunc_function: nil,
@@ -431,9 +433,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     columns = v1_dataset_metadata.fetch('columns')
     cards = v1_page_metadata.fetch('cards')
 
-    assert_raises(Phidippides::NoDefaultDateTruncFunction) do
-      manager.send(:build_rollup_soql, v1_page_metadata.except('defaultDateTruncFunction'), columns, cards)
-    end
+    manager.build_rollup_soql(v1_page_metadata.except('defaultDateTruncFunction'), columns, cards)
+
+    assert_includes(v1_page_metadata, 'defaultDateTruncFunction')
   end
 
   def test_date_trunc_function_with_decades_of_days

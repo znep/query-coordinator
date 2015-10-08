@@ -1,0 +1,32 @@
+<div class="line">
+  <label for="boundary_name" class="required"><%= t("#{prefix}.boundary_name") %></label>
+
+  <div>
+    <input type="text" name="boundary[name]" id="boundary_name"
+           value="<%= boundary.name %>" class="required"/>
+    <p><%= t("#{prefix}.boundary_name_description") %></p>
+    <%- if is_name_missing -%>
+      <label class="error"><%= t("#{prefix}.boundary_name_required_field_error") %></label>
+    <%- end -%>
+  </div>
+</div>
+
+<div class="line">
+  <label for="shape_label"><%= t("#{prefix}.shape_label") %></label>
+
+  <div>
+    <select name="boundary[geometryLabel]" id="shape_label">
+      <option><%= t("#{prefix}.choose_a_column") %></option>
+      <%= options_for_select(shape_label_options, :selected => selected_shape_label) %>
+    </select>
+
+    <p><%= t("#{prefix}.shape_label_description") %></p>
+
+
+  </div>
+</div>
+
+<div class="line clearfix">
+  <input type="submit" value="<%= t('core.dialogs.save') %>" class="button"/>
+  <%= link_to t('core.dialogs.cancel'), georegions_administration_path, :class => 'button' %>
+</div>

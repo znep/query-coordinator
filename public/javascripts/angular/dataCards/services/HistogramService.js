@@ -218,7 +218,7 @@
         return parseInt(x, 10) === parseFloat(x);
       }
 
-      return _.every(buckets, isInteger) ? 'columnChart' : 'histogram';
+      return _.every(buckets, isInteger) ? 'column' : 'histogram';
     }
 
     // Given an array of bucketed data and a bucket index that is being

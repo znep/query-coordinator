@@ -1,0 +1,29 @@
+{
+  "cards": [
+    {
+      "fieldName": "plausibility",
+      "cardOptions": {},
+      "cardSize": 1,
+      "cardType": "column",
+      "activeFilters": [],
+      "expanded": true
+    }
+  ],
+  "datasetId": "vdj8-z7h2",
+  "description": "Test VIF description",
+  "displayType": "data_lens_chart",
+  "name": "UFO Sightings Test: plausibility (filtered on BAC)",
+  "pageId": "page-test",
+  "permissions": {
+    "isPublic": true,
+    "rights": [
+      "read",
+      "write"
+    ]
+  },
+  "primaryAggregation": "count",
+  "primaryAmountField": null,
+  "version": 1,
+  "largestTimeSpanDays": null,
+  "defaultDateTruncFunction": null
+}

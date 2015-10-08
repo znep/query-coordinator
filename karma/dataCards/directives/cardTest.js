@@ -1,7 +1,7 @@
 describe('card directive', function() {
   'use strict';
 
-  var CARD_HTML = '<card model="cardModel" interactive="true" edit-mode="editMode"></card>';
+  var CARD_HTML = '<card model="cardModel" interactive="true" edit-mode="editMode" is-standalone-visualization="isStandaloneVisualization"></card>';
 
   var $rootScope;
   var testHelpers;
@@ -95,6 +95,7 @@ describe('card directive', function() {
     var scope = $rootScope.$new();
     scope.editMode = false;
     scope.cardModel = createCardModel(pageModel, options);
+    scope.isStandaloneVisualization = false;
 
     return {
       element: testHelpers.TestDom.compileAndAppend(CARD_HTML, scope),

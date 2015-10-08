@@ -226,18 +226,12 @@ customize-card-dialog {
 manage-lens-dialog,
 manage-lens-dialog-v2 {
   section {
-    margin-bottom: 2rem;
-
     label {
-      float: left;
-      soc-select {
-        visibility: hidden;
-        width: 0;
-      }
+      line-height: 29px;
     }
     .contents {
       .flavor-text {
-        margin-top: 1rem;
+        margin: 1rem 0;
         line-height: 1.5em;
         position: relative;
         .icon-warning {
@@ -255,12 +249,43 @@ manage-lens-dialog-v2 {
     }
   }
 
-  section.visibility {
-    label {
-      line-height: 29px;
-    }
-  }
   section.sharing {
+    margin-bottom: 2rem;
+    .shares {
+      .share {
+        margin-bottom: .75rem;
+        .share-user {
+          display: block;
+          line-height: 29px;
+          padding-right: .5rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          &.pending-removal {
+            text-decoration: line-through;
+          }
+        }
+        .share-remove-button {
+          font-size: .75rem;
+          margin-left: 1rem;
+        }
+      }
+      .add-new-shares-prompt {
+        position: relative;
+        margin-bottom: 1rem;
+        .icon-info {
+          position: absolute;
+          top: -1px;
+          font-size: 1.2rem;
+        }
+        .message {
+          padding-left: 1.5rem;
+        }
+      }
+      .manage-lens-dialog-add-shares {
+        margin-bottom: 1.5rem;
+      }
+    }
     .row.description {
       margin-bottom: 1rem;
     }
@@ -274,5 +299,120 @@ manage-lens-dialog-v2 {
 
   a:hover {
     text-decoration: underline;
+  }
+
+  .controls {
+    margin-top: 0;
+  }
+
+  new-share-dialog {
+    section {
+      margin-bottom: 1rem;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      .new-share {
+        margin-bottom: .75rem;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        >div {
+          margin-right: 0.5rem;
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+        input.email {
+          box-sizing: border-box;
+          display: inline-block;
+          position: relative;
+          margin-top: 1px;
+          padding: 0.5rem 0.6rem;
+          width: 12rem;
+          outline: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+        }
+      }
+      textarea.optional-message {
+        height: 5rem;
+        padding: 0.5rem;
+        box-sizing: border-box;
+        resize: none;
+        outline: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+      }
+      .done-button, .remove-button {
+        float: right;
+      }
+      .done-button {
+        font-size: 1rem;
+      }
+      .add-more-button, .remove-button {
+        font-size: .75rem;
+      }
+    }
+  }
+}
+
+#save-visualization-as-dialog .modal-dialog {
+  width: 40rem;
+
+  .control-group {
+    margin-bottom: 1rem;
+
+    /**
+     * For modern browsers
+     * 1. The space content is one way to avoid an Opera bug when the
+     *    contenteditable attribute is included anywhere else in the document.
+     *    Otherwise it causes space to appear at the top and bottom of elements
+     *    that are clearfixed.
+     * 2. The use of `table` rather than `block` is only necessary if using
+     *    `:before` to contain the top-margins of child elements.
+     */
+    &:before,
+    &:after {
+      content: " "; /* 1 */
+      display: table; /* 2 */
+    }
+
+    &:after {
+      clear: both;
+    }
+
+    label {
+      display: inline-block;
+      margin: 0.25em 0;
+      font-weight: bold;
+    }
+
+    textarea {
+      float: left;
+      width: 19rem;
+    }
+
+    .save-as-official-view-description {
+      margin-top: 0;
+      margin-left: 1.66em;
+    }
+  }
+
+  .form-control {
+    width: 95%;
+    display: inline;
+  }
+
+}
+
+#save-as-description-guidelines {
+  margin-left: 20rem;
+  margin-top: 1rem;
+
+  ul {
+    margin-top: .5rem;
+    padding-left: 1.5rem;
   }
 }

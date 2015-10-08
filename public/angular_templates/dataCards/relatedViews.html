@@ -1,16 +1,17 @@
-<div class="related-views tool-panel" ng-class="{'down-right': v2DataLens}">
+<div class="related-views tool-panel" ng-class="{'down-right': dataLensVersion === 2}">
 
   <a type="button"
-    ng-class="{ touched: panelActive, 'l-to-r': v2DataLens }"
+    ng-class="{ touched: panelActive, 'l-to-r': dataLensVersion === 2, 'r-to-l': dataLensVersion === 1 }"
     class="tool-panel-toggle-btn action-btn"
-    ng-click="togglePanel()"
+    ng-click="togglePanel($event)"
     ng-show="enablePublisherPages">
-    <span class="icon-chart"></span>
+    <span class="icon-chart" ng-click="togglePanel($event)"></span>
     {{::'relatedViews.title' | I18n}} ({{datasetPublisherPages.length}})
   </a>
 
   <span
     class="tool-panel-toggle-btn action-btn disabled"
+    ng-class="{'l-to-r': dataLensVersion === 2}"
     ng-hide="enablePublisherPages">
     <span class="icon-chart"></span> {{::'relatedViews.title' | I18n}} (0)
   </span>

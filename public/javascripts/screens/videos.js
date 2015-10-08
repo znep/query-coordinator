@@ -142,7 +142,7 @@
     // detect if we have a hash at the end of the url; if
     // so locate and load that video straight away
     var hash = window.location.hash || '';
-    hash = hash.replace('#', '');
+    hash = hash.replace('#', '').replace(/[^a-z\-]/g, '');
     if (!$.isBlank(hash))
     {
         var $item = $('.videoList li[data-id=' + hash + ']');

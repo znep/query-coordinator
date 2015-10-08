@@ -1482,11 +1482,11 @@
             filteredValue = formatFlyoutValue(filteredUnit, filteredValue);
 
             flyoutContent = [
-               '<div class="flyout-title">{0}</div>',
-               '<div class="flyout-row">',
-                 '<span class="flyout-cell">{1}</span>',
-                 '<span class="flyout-cell">{2}</span>',
-               '</div>'
+              '<div class="flyout-title">{0}</div>',
+              '<div class="flyout-row">',
+                '<span class="flyout-cell">{1}</span>',
+                '<span class="flyout-cell">{2}</span>',
+              '</div>'
             ];
 
             if (withinSelection || showBlueFiltered) {
@@ -2034,31 +2034,33 @@
 
         }
 
-        // This sequence combines mouse movements with left mouse button
-        // down/up events. We use this sequence to handle chart selection:
-        // selection begins when the left mouse button is pressed and the
-        // selection changes as the user moves the mouse. Selection ends
-        // when the user releases the left mouse button.
-        //
-        // BUG: This does not update the mouse target if you click but don't
-        // move the mouse, and that click causes a different element to fall
-        // under the pointer for the second click (clicking to dismiss, for
-        // example)
-        mouseLeftButtonChangesSubscription = WindowState.mouseLeftButtonPressed$.flatMapLatest(
-          function(mouseLeftButtonNowPressed) {
-            return Rx.Observable.combineLatest(
-              Rx.Observable.returnValue(mouseLeftButtonNowPressed),
-              WindowState.mousePosition$.take(1),
-              function(mouseLeftButtonNowPressed$, mousePosition$) {
-                return {
-                  leftButtonPressed: mouseLeftButtonNowPressed$,
-                  position: mousePosition$
-                };
-              }
-            );
-          }
-        ).subscribe(handleChartSelectionEvents);
+        if (scope.allowFilterChange) {
 
+          // This sequence combines mouse movements with left mouse button
+          // down/up events. We use this sequence to handle chart selection:
+          // selection begins when the left mouse button is pressed and the
+          // selection changes as the user moves the mouse. Selection ends
+          // when the user releases the left mouse button.
+          //
+          // BUG: This does not update the mouse target if you click but don't
+          // move the mouse, and that click causes a different element to fall
+          // under the pointer for the second click (clicking to dismiss, for
+          // example)
+          mouseLeftButtonChangesSubscription = WindowState.mouseLeftButtonPressed$.flatMapLatest(
+            function(mouseLeftButtonNowPressed) {
+              return Rx.Observable.combineLatest(
+                Rx.Observable.returnValue(mouseLeftButtonNowPressed),
+                WindowState.mousePosition$.take(1),
+                function(mouseLeftButtonNowPressed$, mousePosition$) {
+                  return {
+                    leftButtonPressed: mouseLeftButtonNowPressed$,
+                    position: mousePosition$
+                  };
+                }
+              );
+            }
+          ).subscribe(handleChartSelectionEvents);
+        }
 
         // This sequence represents ordinary mouse movement and is used
         // to update flyouts, labels and highlights.
@@ -2226,7 +2228,10 @@
         // and event handlers when the directive is destroyed.
         scope.$destroyAsObservable(element).subscribe(function() {
 
-          mouseLeftButtonChangesSubscription.dispose();
+          if (mouseLeftButtonChangesSubscription) {
+            mouseLeftButtonChangesSubscription.dispose();
+          }
+
           mouseMoveOrLeftButtonChangesSubscription.dispose();
 
           FlyoutService.deregister({

@@ -444,15 +444,15 @@
             if (_.isDefined(flannelScope)) {
               // Destroy flannel if it is closed.
               var closeSubscriber = WindowState.closeDialogEvent$.skip(1).filter(function(evt) {
-                  var target = $(evt.target);
-                  return target.closest('.feature-map-flannel').length === 0 || target.is('.icon-close');
-                }).subscribe(function(evt) {
-                  scope.$safeApply(handleDestroyFlannel);
-                  if ($(evt.target).closest('.feature-map-container').length === 0) {
-                    // If click outside map itself, clear all hover and clicked point highlighting
-                    map.fire('clearhighlightrequest');
-                  }
-                });
+                var target = $(evt.target);
+                return target.closest('.feature-map-flannel').length === 0 || target.is('.icon-close');
+              }).subscribe(function(evt) {
+                scope.$safeApply(handleDestroyFlannel);
+                if ($(evt.target).closest('.feature-map-container').length === 0) {
+                  // If click outside map itself, clear all hover and clicked point highlighting
+                  map.fire('clearhighlightrequest');
+                }
+              });
 
               // Shift flannel position if scroll occurs
               var scrollSubscriber = WindowState.scrollPosition$.subscribe(adjustPosition);
@@ -499,8 +499,12 @@
 
                 flannelScope.panelPositionStyle.top = '{0}px'.format(yPosition);
 
+                // Display flannel above clicked point if the point is more than halfway
+                // down the window viewport. Else display flannel below the point.
+                flannelScope.positionFlannelNorth = (yPosition - distanceOutOfView) < (window.innerHeight / 2);
+
                 if (flannelScope.abutsRightEdge) {
-                  flannelScope.useSoutheastHint = xPosition + (Constants.FEATURE_MAP_FLANNEL_WIDTH / 2) >
+                  flannelScope.positionFlannelEast = xPosition + (Constants.FEATURE_MAP_FLANNEL_WIDTH / 2) >
                     windowWidth - (Constants.FLYOUT_WINDOW_PADDING + Constants.FEATURE_MAP_FLANNEL_PADDING_COMPENSATION);
 
                   flannelScope.panelPositionStyle.right = '{0}px'.format(
@@ -508,13 +512,13 @@
                   );
 
                   var hintRightOffset = xPosition + Constants.FLYOUT_WINDOW_PADDING +
-                    (flannelScope.useSoutheastHint ? 0 : Constants.FEATURE_MAP_FLANNEL_HINT_WIDTH);
+                    (flannelScope.positionFlannelEast ? 0 : Constants.FEATURE_MAP_FLANNEL_HINT_WIDTH);
                   var hintPositionFromRight = Math.max(0, windowWidth - hintRightOffset);
                   flannelScope.hintPositionStyle.right = '{0}px'.format(hintPositionFromRight);
                   flannelScope.hintPositionStyle.left = 'auto';
                 } else {
                   flannelScope.panelPositionStyle.left = '{0}px'.format(xPosition);
-                  flannelScope.useSoutheastHint = false;
+                  flannelScope.positionFlannelEast = false;
                 }
               });
             }
@@ -709,15 +713,15 @@
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
         baseTileLayer$ = baseLayerUrl$.
           map(function(url) {
-            if (!_.isDefined(url)) {
+            if (_.isNull(url) || _.isUndefined(url)) {
               return {
                 url: Constants.DEFAULT_MAP_BASE_LAYER_URL,
-                opacity: 0.15
+                opacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY
               };
             } else {
               return {
                 url: url,
-                opacity: 0.35
+                opacity: Constants.DEFINED_MAP_BASE_LAYER_OPACITY
               };
             }
           }).

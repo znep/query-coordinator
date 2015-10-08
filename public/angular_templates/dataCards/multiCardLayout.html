@@ -61,9 +61,11 @@
     where-clause="globalWhereClauseFragment"
     edit-mode="editMode"
     interactive="true"
+    allow-filter-change="true"
     card-draggable="true"
-    is-choosing-for-export="chooserMode.show"
+    chooser-mode="chooserMode"
     is-grabbed="isGrabbedCard(cardState.model)"
+    is-standalone-visualization="page.isStandaloneVisualization"
     ng-class="{
       expanded: cardState.model.getCurrentValue('expanded'),
       dragged: cardState.model === grabbedCard.model

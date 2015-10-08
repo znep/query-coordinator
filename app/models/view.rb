@@ -1041,7 +1041,19 @@ class View < Model
   end
 
   def data_lens?
-    viewType == 'tabular' && displayType == 'data_lens'
+    is_tabular? && displayType == 'data_lens'
+  end
+
+  def standalone_visualization?
+    is_tabular? && (is_data_lens_chart? || is_data_lens_map?)
+  end
+
+  def is_data_lens_chart?
+    displayType == 'data_lens_chart'
+  end
+
+  def is_data_lens_map?
+    displayType == 'data_lens_map'
   end
 
   # DEPRECATED

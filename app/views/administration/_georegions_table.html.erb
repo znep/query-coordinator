@@ -27,21 +27,38 @@
             <%=  t(georegion.enabled? ? "#{prefix}.enabled_yes" : "#{prefix}.enabled_no") %>
           </span>
           <%- if georegion.enabled? -%>
-            <%= form_button({ :action => :disable_georegion, :id => georegion.id }, t("#{prefix}.disable"),
-              {:method => :put}, {:class => 'button', 'data-action' => 'disable' }) %>
+            <%= form_button(
+                  { :action => :disable_georegion, :id => georegion.id }.merge(request.query_parameters),
+                  t("#{prefix}.disable"),
+                  { :method => :put },
+                  { :class => 'button', 'data-action' => 'disable' }) %>
           <%- else -%>
-            <%= form_button({ :action => :enable_georegion, :id => georegion.id }, t("#{prefix}.enable"),
-              {:method => :put}, {:class => 'button', 'data-action' => 'enable' }) %>
+            <%= form_button(
+                  { :action => :enable_georegion, :id => georegion.id }.merge(request.query_parameters),
+                  t("#{prefix}.enable"),
+                  { :method => :put },
+                  {
+                    :class => ['button', allow_enablement ? nil : 'disabled'].compact.join(' '),
+                    'data-action' => 'enable',
+                    :disabled => allow_enablement ? nil : 'disabled',
+                    :title => (allow_enablement ? nil : t("#{prefix}.enabled_georegions_limit", :limit => limit))
+                  }) %>
           <%- end -%>
         </td>
         <%- if allow_actions -%>
         <td class="edit-action">
-          <%= form_button({ :action => :edit_georegion, :id => georegion.id }, t("#{prefix}.edit"),
-            {:method => :put}, {:class => 'button', 'data-action' => 'edit' }) %>
+          <%= form_button(
+                { :action => :configure_boundary, :id => georegion.id },
+                t("#{prefix}.edit"),
+                { :method => :get },
+                { :class => 'button', 'data-action' => 'edit' }) %>
         </td>
         <td class="remove-action">
-          <%= form_button({ :action => :remove_georegion, :id => georegion.id }, t("#{prefix}.remove"),
-            {:method => :delete}, {:class => 'button', 'data-action' => 'remove' }) %>
+          <%= form_button(
+                { :action => :remove_georegion, :id => georegion.id },
+                t("#{prefix}.remove"),
+                { :method => :delete },
+                { :class => 'button', 'data-action' => 'remove' }) %>
         </td>
         <%- end -%>
       </tr>

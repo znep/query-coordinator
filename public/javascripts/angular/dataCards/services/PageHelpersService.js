@@ -1,14 +1,13 @@
 (function() {
   'use strict';
 
-  function PageHelpersService(Page, I18n, PluralizeService) {
+  function PageHelpersService(I18n, PluralizeService) {
     return {
-      dynamicAggregationTitle: function(pageModel) {
-        window.socrata.utils.assert(pageModel instanceof Page, 'pageModel must be a Page model, durr');
-        var aggregation$ = pageModel.observe('aggregation');
-        var primaryAmountFieldName$ = pageModel.observe('primaryAmountField').
+      dynamicAggregationTitle: function(pageModel$) {
+        var aggregation$ = pageModel$.observeOnLatest('aggregation');
+        var primaryAmountFieldName$ = pageModel$.observeOnLatest('primaryAmountField').
           combineLatest(
-            pageModel.observe('dataset.columns'),
+            pageModel$.observeOnLatest('dataset.columns'),
             function(fieldName, columns) {
               return columns[fieldName];
             }
@@ -24,14 +23,14 @@
           });
 
         var sumTitle$ = Rx.Observable.combineLatest(
-          primaryAmountFieldName$.filter(_.isPresent),
+          primaryAmountFieldName$,
           aggregation$.filter(function(value) { return value['function'] === 'sum'; }),
           function(primaryAmountField) {
             return I18n.t('cardTitles.sumOf', PluralizeService.pluralize(primaryAmountField));
           });
 
         var meanTitle$ = Rx.Observable.combineLatest(
-          primaryAmountFieldName$.filter(_.isPresent),
+          primaryAmountFieldName$,
           aggregation$.filter(function(value) { return value['function'] === 'mean'; }),
           function(primaryAmountField) {
             return I18n.t('cardTitles.average', primaryAmountField);

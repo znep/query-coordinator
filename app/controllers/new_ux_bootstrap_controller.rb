@@ -333,6 +333,10 @@ class NewUxBootstrapController < ActionController::Base
     column[:physicalDatatype] == 'point'
   end
 
+  def feature_map_disabled?
+    !APP_CONFIG.odux_enable_feature_map
+  end
+
   # If the column is either money or number, then we only support bootstrapping
   # it if the histogram feature is enabled.
   def histogram_is_unsupported_on_column?(column)
@@ -364,6 +368,7 @@ class NewUxBootstrapController < ActionController::Base
       histogram_is_unsupported_on_column?(column) ||
       column_too_large_for_feature_card?(column) ||
       point_column_has_insufficient_cardinality?(column) ||
+      (feature_map_disabled? && point_column?(column)) ||
       column_is_known_uniform?(column) ||
       money_column?(column)
   end
@@ -450,6 +455,8 @@ class NewUxBootstrapController < ActionController::Base
     rescue
       @migration_info = {}
     end
+
+    @domain_metadata = domain_metadata
 
     request[:app] = 'dataCards'
   end

@@ -8,7 +8,7 @@ $customize-bar-font-size: 1.2em;
 $customize-bar-button-height: 24px;
 $customize-bar-button-border-width: 2px;
 
-.customize-bar-action-btn {
+button.customize-bar-action-btn {
   font-size: 0.85em;
   height: $customize-bar-button-height + 2 * $customize-bar-button-border-width;
   line-height: $customize-bar-button-height;

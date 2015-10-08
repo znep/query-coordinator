@@ -288,6 +288,10 @@ html, body {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+
+    .layerTableDownloads {
+      display: none;
+    }
   }
   .widgetContentGrid {
     display: block;

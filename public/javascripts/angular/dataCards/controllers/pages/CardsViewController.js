@@ -36,6 +36,7 @@
     );
 
     // Download menu
+    $scope.standaloneLensChartEnabled = ServerConfig.get('standaloneLensChart');
     $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
     WindowState.closeDialogEvent$.filter(function(e) {
       return $scope.downloadOpened &&
@@ -60,26 +61,43 @@
         });
       });
 
-    $scope.chooserMode = { show: false };
+    // Unsets chooser mode on init and whenever completion is signaled.
+    var clearChooserMode = function() {
+      $scope.chooserMode = {
+        show: false,
+        action: null
+      };
 
-    $scope.$on('exit-export-card-visualization-mode', function() {
-      $scope.chooserMode.show = false;
+      // NOTE: I don't really like having this event, but I feel like it's
+      // preferable to plumbing the chooserMode object itself. Once the original
+      // Download dropdown is gone, we should reevaluate the way that such
+      // communication happens between components.
+      $scope.$broadcast('exit-chooser-mode');
+    };
+    $scope.$on('exit-export-card-visualization-mode', clearChooserMode);
+    clearChooserMode();
+
+    // Activates chooser mode in an event-based manner, allowing this mode to be
+    // triggered by child directives.
+    $scope.$on('enter-export-card-visualization-mode', function(e, action) {
+      $scope.chooserMode = {
+        show: true,
+        action: action
+      };
     });
 
+    // Activates the old "Download" dropdown for CSV and Polaroid functionality.
     $scope.onDownloadClick = function(event) {
       if (!$scope.editMode) {
         // Clicking the 'Cancel' button
         if ($(event.target).hasClass('download-menu') && $scope.chooserMode.show) {
-          $scope.chooserMode.show = false;
+          clearChooserMode();
         } else {
           // Otherwise, toggle the dialog
           $scope.downloadOpened = !$scope.downloadOpened;
         }
       }
     };
-
-    $scope.dataLensVersion = $scope.page.version;
-    $scope.$bindObservable('moderationStatusIsPublic', $scope.page.observe('moderationStatus'));
   }
 
   function initManageLens($scope, page) {
@@ -171,7 +189,8 @@
     PageHelpersService,
     DeviceService,
     I18n,
-    Constants
+    Constants,
+    domain
   ) {
 
     VALIDATION_ERROR_STRINGS = {
@@ -189,8 +208,11 @@
     *************************/
 
     $scope.page = page;
+    $scope.domain = domain;
     $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
     $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
+    $scope.dataLensVersion = page.version;
+    $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
 
     var pageName$ = page.observe('name').filter(_.isPresent);
     $scope.$bindObservable('pageName', pageName$);
@@ -200,7 +222,7 @@
     $scope.$bindObservable('dataset', page.observe('dataset'));
     $scope.$bindObservable('datasetPages', page.observe('dataset.pages'));
     $scope.$bindObservable('aggregation', page.observe('aggregation'));
-    $scope.$bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(page));
+    $scope.$bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(Rx.Observable.returnValue(page)));
     $scope.$bindObservable('sourceDatasetName', page.observe('dataset.name'));
 
     var cardModelsObservable = page.observe('cards');
@@ -241,17 +263,22 @@
     * User session *
     ***************/
 
-    // Bind the current user to the scope, or null if no user is logged in or there was an error
-    // fetching the current user.
-    var currentUser$ = UserSessionService.getCurrentUser$();
-    $scope.$bindObservable('currentUser', currentUser$);
+    var currentUser$ = Rx.Observable.returnValue(window.currentUser);
 
-    var isCurrentUserAdminOrPublisher =
+    var isCurrentUserAdminOrPublisher$ =
       currentUser$.
       map(function(user) {
         var roleName = user.roleName;
         return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
       });
+
+    // Once we migrate entirely to v2, we can remove the isCurrentUserAdminOrPublisher entirely
+    // and only care about page-specific user rights
+    var userHasWriteRight$ = page.observe('rights').map(function(rights) {
+      return _.include(rights, 'write');
+    });
+
+    var userHasEditRights$ = $scope.dataLensVersion === 2 ? userHasWriteRight$ : isCurrentUserAdminOrPublisher$;
 
     var isCurrentUserOwnerOfDataset$ =
       page.
@@ -265,7 +292,7 @@
 
     $scope.$bindObservable(
       'currentUserHasSaveRight',
-      isCurrentUserAdminOrPublisher.
+      userHasEditRights$.
       combineLatest(isCurrentUserOwnerOfDataset$, function(a, b) { return a || b; }).
       catchException(Rx.Observable.returnValue(false))
     );
@@ -275,27 +302,32 @@
 
     $scope.shouldShowManageLens = false;
 
-    currentUser$.subscribe(
-      function(currentUser) {
+    if ($scope.dataLensVersion === 2) {
+      $scope.$bindObservable('shouldShowManageLens', userHasWriteRight$);
+      initManageLens($scope, page);
+    } else {
+      // TODO - remove once v2 migration is donions
+      currentUser$.subscribe(
+        function(currentUser) {
 
-        var currentUserCanEditOthersDatasets =
-          _.isPresent(currentUser) &&
-          currentUser.hasOwnProperty('rights') &&
-          currentUser.rights.indexOf('edit_others_datasets') > -1;
+          var currentUserCanEditOthersDatasets =
+            _.isPresent(currentUser) &&
+            _.includes(currentUser.rights, 'edit_others_datasets');
 
-        var shouldShowManageLens =
-          ServerConfig.get('dataLensTransitionState') === 'post_beta' &&
-          currentUserCanEditOthersDatasets;
+          var shouldShowManageLens =
+            ServerConfig.get('dataLensTransitionState') === 'post_beta' &&
+            currentUserCanEditOthersDatasets;
 
-        if (shouldShowManageLens) {
+          if (shouldShowManageLens) {
 
-          $scope.$safeApply(function() {
-            $scope.shouldShowManageLens = true;
-            initManageLens($scope, page);
-          });
+            $scope.$safeApply(function() {
+              $scope.shouldShowManageLens = true;
+              initManageLens($scope, page);
+            });
+          }
         }
-      }
-    );
+      );
+    }
 
     /*******************************
     * Filters and the where clause *
@@ -596,8 +628,8 @@
     // This is an object, so that we can pass it to child scopes, and they can control the
     // visibility of the customize modal.
     $scope.addCardState = {
-      'cardSize': null,
-      'show': false
+      cardSize: null,
+      show: false
     };
 
     $scope.$on('add-card-with-size', function(e, cardSize) {
@@ -606,12 +638,21 @@
     });
 
     $scope.customizeState = {
-      'cardModel': null,
-      'show': false
+      cardModel: null,
+      show: false
     };
     $scope.$on('customize-card-with-model', function(e, cardModel) {
       $scope.customizeState.cardModel = cardModel;
       $scope.customizeState.show = true;
+    });
+
+    $scope.saveVisualizationAsState = {
+      cardModel: null,
+      show: false
+    };
+    $scope.$on('save-visualization-as', function(e, cardModel) {
+      $scope.saveVisualizationAsState.cardModel = cardModel;
+      $scope.saveVisualizationAsState.show = true;
     });
 
     // Handle the event emitted by the Remove All Cards button and delegate

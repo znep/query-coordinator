@@ -265,9 +265,9 @@ javascripts:
   shared-blob:
     - public/javascripts/controls/blob-dataset.js
   react-dev:
-    - public/javascripts/bower/react-with-addons.js
+    - public/javascripts/react-with-addons.js
   react-prod:
-    - public/javascripts/bower/react-with-addons.min.js
+    - public/javascripts/react-with-addons.min.js
   browse-select-dataset:
     - public/javascripts/screens/browse-select-dataset.js
   browse-select-georegion:
@@ -293,7 +293,19 @@ javascripts:
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-users-screen.js
   admin-georegions:
-    - public/javascripts/controls/admin-buttons.js
+    - public/javascripts/dist/components/utils.js
+    - public/javascripts/dist/components/flash-message.js
+    - public/javascripts/dist/components/socrata-title-tip-mixin.js
+    - public/javascripts/dist/components/loading-button.js
+    - public/javascripts/dist/components/form-button.js
+    - public/javascripts/dist/components/form-controls.js
+    - public/javascripts/dist/components/form-input.js
+    - public/javascripts/dist/components/form-select-input.js
+    - public/javascripts/dist/components/form-text-input.js
+    - public/javascripts/dist/components/georegions/configure-boundary-form.js
+    - public/javascripts/dist/components/georegions/enabled-widget.js
+    - public/javascripts/dist/components/georegions/georegion-admin-row.js
+    - public/javascripts/dist/components/georegions/georegion-admin-table.js
     - public/javascripts/dist/screens/admin-georegions-screen.js
   admin-home:
     - public/javascripts/util/serialize.js
@@ -730,9 +742,12 @@ javascripts:
     - public/javascripts/bower/pbf.min.js
     - public/javascripts/bower/lodash.js
     - public/javascripts/bower/d3.js
+    - public/javascripts/bower/leaflet.js
     - public/javascripts/bower/socrata.utils.js
     - public/javascripts/bower/socrata.visualizations.Visualization.js
     - public/javascripts/bower/socrata.visualizations.ColumnChart.js
+    - public/javascripts/bower/socrata.visualizations.VectorTileManager.js
+    - public/javascripts/bower/socrata.visualizations.FeatureMap.js
 
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS

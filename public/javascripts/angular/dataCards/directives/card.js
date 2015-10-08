@@ -10,9 +10,11 @@
         'whereClause': '=',
         'editMode': '=',
         'interactive': '=',
+        'allowFilterChange': '=',
         'cardDraggable': '=',
-        'isChoosingForExport': '=',
-        'isGrabbed': '='
+        'chooserMode': '=',
+        'isGrabbed': '=',
+        'isStandaloneVisualization': '='
       },
       templateUrl: '/angular_templates/dataCards/card.html',
       link: function($scope, element) {
@@ -65,15 +67,15 @@
             selector: selector,
             render: function() {
               var title = [
-                  '<div class="flyout-title">Card Debug Info</div>'
+                '<div class="flyout-title">Card Debug Info</div>'
               ];
 
               var renderTime = [
-                  '<div class="flyout-row">',
-                    '<span class="flyout-cell">Render time</span>',
-                    '<span class="flyout-cell">{0} ms</span>'.
-                        format(debugInfo.renderCompleteTime - debugInfo.renderStartTime),
-                  '</div>'
+                '<div class="flyout-row">',
+                  '<span class="flyout-cell">Render time</span>',
+                  '<span class="flyout-cell">{0} ms</span>'.
+                    format(debugInfo.renderCompleteTime - debugInfo.renderStartTime),
+                '</div>'
               ];
 
               var filteredUsedRollups;
@@ -82,7 +84,7 @@
                   '<div class="flyout-row">',
                     '<span class="flyout-cell">Filtered query used rollups</span>',
                     '<span class="flyout-cell">{0}</span>'.
-                        format(_.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])),
+                      format(_.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])),
                   '</div>'
                 ];
               } else {
@@ -95,7 +97,7 @@
                   '<div class="flyout-row">',
                     '<span class="flyout-cell">Unfiltered query used rollups</span>',
                     '<span class="flyout-cell">{0}</span>'.
-                        format(_.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])),
+                      format(_.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])),
                   '</div>'
                 ];
               } else {
@@ -143,31 +145,51 @@
           }
         });
 
-        $scope.downloadUrl = './' + $scope.model.page.id + '/' + $scope.model.fieldName + '.png';
+        $scope.$bindObservable('downloadUrl', model$.map(function(model) {
+          return './{0}/{1}.png'.format(model.page.id, model.fieldName);
+        }));
 
         $scope.downloadStateText = function(state) {
+
+          // Handle non-default states common to all export modes.
           switch (state) {
             case 'success':
               return I18n.common.done;
             case 'error':
               return I18n.common.error;
-            default:
-              return I18n.common.download;
           }
+
+          // Handle the default state whose text varies by mode,
+          // as well as a generic fallback case.
+          if ($scope.chooserMode) {
+            switch ($scope.chooserMode.action) {
+              case 'vif':
+                return I18n.common.save;
+              case 'polaroid':
+              default:
+                // The old-style Download dropdown menu may not
+                // define this property, so fall back.
+                return I18n.common.download;
+            }
+          } else {
+            return I18n.common.download;
+          }
+
         };
 
-        $scope.downloadPng = function(e) {
+        $scope.exportCard = function(e) {
 
-          function resetDownloadButton() {
+          function resetDownloadButton(delayMs) {
             $timeout(
               function() {
                 delete $scope.downloadState;
                 $scope.$emit('exit-export-card-visualization-mode');
               },
-              2000
+              delayMs
             );
           }
 
+          // Prevent unwanted activity.
           if (e && e.metaKey) {
             return;
           }
@@ -180,28 +202,38 @@
             return;
           }
 
+          // Indicate a busy state.
           $scope.downloadState = 'loading';
 
           $(e.target).blur();
 
-          DownloadService.download($scope.downloadUrl).then(
-            function success() {
-
-              $scope.$safeApply(function() {
-                $scope.downloadState = 'success';
-                resetDownloadButton();
+          // Perform an activity depending on the current mode.
+          // The string values signifying these modes are defined
+          // (somewhat arbitrarily) by exportMenu.html and get
+          // plumbed through to here.
+          switch ($scope.chooserMode.action) {
+            case 'vif':
+              $scope.downloadState = 'success';
+              $scope.$emit('save-visualization-as', $scope.model);
+              resetDownloadButton(0);
+              break;
+            case 'polaroid':
+            default:
+              DownloadService.download($scope.downloadUrl).then(
+                function() {
+                  $scope.$safeApply(function() {
+                    $scope.downloadState = 'success';
+                  });
+                }, function() {
+                  $scope.$safeApply(function() {
+                    $scope.downloadState = 'error';
+                  });
+                }
+              )['finally'](function() {
+                resetDownloadButton(2000);
               });
-
-            }, function error() {
-
-              $scope.$safeApply(function() {
-                $scope.downloadState = 'error';
-                resetDownloadButton();
-              });
-
-            }
-          );
-
+              break;
+          }
         };
 
         descriptionTruncatedContent = element.find('.description-truncated-content');

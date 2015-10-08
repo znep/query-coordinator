@@ -5,12 +5,11 @@
     return {
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/apiExplorer.html',
-      scope: {
-        datasetObservable: '=',
-        editMode: '='
-      },
+      scope: true,
       link: function($scope, element) {
         var destroy$ = $scope.$destroyAsObservable(element);
+
+        $scope.dataset$ = $scope.page.observe('dataset');
 
         /*
          * Scope variables
@@ -44,14 +43,14 @@
 
         var selectedFormat$ = $scope.$observe('selectedFormat');
 
-        var datasetId$ = $scope.datasetObservable.map(function(dataset) {
+        var datasetId$ = $scope.dataset$.map(function(dataset) {
           if (dataset) {
             return dataset.id;
           } else {
             return null;
           }
         });
-        var domain$ = $scope.datasetObservable.observeOnLatest('domain').map(function(domain) {
+        var domain$ = $scope.dataset$.observeOnLatest('domain').map(function(domain) {
           if (domain) {
             return domain;
           } else {
@@ -132,11 +131,6 @@
         destroy$.subscribe(function() {
           $scope.$emit('cleaned-up');
         });
-
-        // Temporary for v2 migration
-        // We need to check if we're on a v2 or v1 data lens page to know which
-        // button styling and tooltip panel classes to apply
-        $scope.v2DataLens = element.closest('div.activities').length > 0;
       }
     };
   }

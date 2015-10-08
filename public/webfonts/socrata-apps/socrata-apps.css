@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'socrata-apps';
-	src:url('socrata-apps.eot?-vw18uu');
-	src:url('socrata-apps.eot?#iefix-vw18uu') format('embedded-opentype'),
-		url('socrata-apps.ttf?-vw18uu') format('truetype'),
-		url('socrata-apps.woff?-vw18uu') format('woff'),
-		url('socrata-apps.svg?-vw18uu#socrata-apps') format('svg');
+	src:url('socrata-apps.eot?-vyl2g8');
+	src:url('socrata-apps.eot?-vyl2g8#iefix') format('embedded-opentype'),
+		url('socrata-apps.ttf?-vyl2g8') format('truetype'),
+		url('socrata-apps.woff?-vyl2g8') format('woff'),
+		url('socrata-apps.svg?-vyl2g8#socrata-apps') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -23,50 +23,14 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.icon-add:before {
-	content: "\e619";
-}
-.icon-story:before {
-	content: "\e618";
-}
-.icon-edit:before {
-	content: "\e616";
-}
-.icon-link:before {
-	content: "\e613";
-}
-.icon-italic:before {
-	content: "\e614";
-}
-.icon-bold:before {
-	content: "\e615";
-}
-.icon-filter:before {
-	content: "\e610";
-}
-.icon-warning:before {
-	content: "\e611";
-}
-.icon-close:before {
-	content: "\e60f";
-}
-.icon-chevron-up:before {
-	content: "\e60d";
-}
-.icon-chevron-down:before {
-	content: "\e60e";
-}
-.icon-chart:before {
-	content: "\e608";
+.icon-number:before {
+	content: "\e600";
 }
 .icon-dataset:before {
 	content: "\e601";
 }
 .icon-cards:before {
 	content: "\e602";
-}
-.icon-number:before {
-	content: "\e600";
 }
 .icon-bar-chart:before {
 	content: "\e603";
@@ -80,14 +44,11 @@
 .icon-region:before {
 	content: "\e606";
 }
-.icon-distribution:before {
-	content: "\e617";
-}
-.icon-geo:before {
-	content: "\e612";
-}
 .icon-map:before {
 	content: "\e607";
+}
+.icon-chart:before {
+	content: "\e608";
 }
 .icon-search:before {
 	content: "\e609";
@@ -101,3 +62,46 @@
 .icon-settings:before {
 	content: "\e60c";
 }
+.icon-chevron-up:before {
+	content: "\e60d";
+}
+.icon-chevron-down:before {
+	content: "\e60e";
+}
+.icon-close:before {
+	content: "\e60f";
+}
+.icon-filter:before {
+	content: "\e610";
+}
+.icon-warning:before {
+	content: "\e611";
+}
+.icon-geo:before {
+	content: "\e612";
+}
+.icon-link:before {
+	content: "\e613";
+}
+.icon-italic:before {
+	content: "\e614";
+}
+.icon-bold:before {
+	content: "\e615";
+}
+.icon-edit:before {
+	content: "\e616";
+}
+.icon-distribution:before {
+	content: "\e617";
+}
+.icon-story:before {
+	content: "\e618";
+}
+.icon-add:before {
+	content: "\e619";
+}
+.icon-info:before {
+	content: "\e61a";
+}
+

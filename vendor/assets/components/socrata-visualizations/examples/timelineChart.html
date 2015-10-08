@@ -30,11 +30,21 @@
         border: 1px solid #aaa;
       }
 
+      #timeline-chart-3 {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 100px auto 0 auto;
+        border: 1px solid #aaa;
+      }
+
     </style>
   </head>
   <body>
     <div id="timeline-chart-1"></div>
     <div id="timeline-chart-2"></div>
+    <div id="timeline-chart-3"></div>
   </body>
   <!-- lodash must be loaded before `socrata.utils.js` -->
   <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
@@ -107,6 +117,15 @@
 
     var $timelineChart2Element = $('#timeline-chart-2');
     $timelineChart2Element.socrataTimelineChart(timelineChart2VIF);
+
+    var timelineChart3VIF = _.cloneDeep(timelineChart1VIF);
+    timelineChart3VIF.domain = 'localhost';
+    timelineChart3VIF.datasetUid = '7bvi-sz9y';
+    timelineChart3VIF.columnName = 'date';
+    delete timelineChart3VIF.configuration.precision;
+
+    var $timelineChart3Element = $('#timeline-chart-3');
+    $timelineChart3Element.socrataTimelineChart(timelineChart3VIF);
 
     /**
      * Handle flyout events.

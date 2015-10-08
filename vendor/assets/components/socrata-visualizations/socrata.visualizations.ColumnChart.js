@@ -59,6 +59,8 @@
     var FILTERED_INDEX = vif.configuration.columns.filteredValue;
     var SELECTED_INDEX = vif.configuration.columns.selected;
 
+    var _interactive = vif.configuration.interactive;
+
     _renderTemplate(this.element);
 
     _attachEvents(this.element);
@@ -77,7 +79,7 @@
     };
 
     this.destroy = function() {
-      _unattachEvents(this.element);
+      _detachEvents(this.element);
     };
 
     /**
@@ -149,18 +151,6 @@
     function _attachEvents(element) {
 
       element.on(
-        'click',
-        _barGroupAndLabelContentsSpanSelector,
-        selectDatum
-      );
-
-      element.on(
-        'click',
-        _truncationMarkerSelector,
-        expandVisualization
-      );
-
-      element.on(
         'mouseenter, mousemove',
         _barGroupAndLabelContentsSpanNotCloseIconSelector,
         showFlyout
@@ -189,31 +179,34 @@
         removeHoverClassFromBarGroup
       );
 
-      // We respond to mouseup in this case because if the user clicks to
-      // clear a selection with a non-default label (i.e. not one of the first
-      // three when not expanded), then we should dismiss the highlight.
-      // (The 'non-default' class is applied to labels that wouldn't normally
-      // be drawn unless a datum is selected)
-      element.on(
-        'mouseup',
-        _nonDefaultSelectedLabelSelector,
-        removeHoverClassFromBarGroup
-      );
+      if (_interactive) {
+
+        element.on(
+          'click',
+          _barGroupAndLabelContentsSpanSelector,
+          selectDatum
+        );
+
+        element.on(
+          'click',
+          _truncationMarkerSelector,
+          expandVisualization
+        );
+
+        // We respond to mouseup in this case because if the user clicks to
+        // clear a selection with a non-default label (i.e. not one of the first
+        // three when not expanded), then we should dismiss the highlight.
+        // (The 'non-default' class is applied to labels that wouldn't normally
+        // be drawn unless a datum is selected)
+        element.on(
+          'mouseup',
+          _nonDefaultSelectedLabelSelector,
+          removeHoverClassFromBarGroup
+        );
+      }
     }
 
-    function _unattachEvents(element) {
-
-      element.off(
-        'click',
-        _barGroupAndLabelContentsSpanSelector,
-        selectDatum
-      );
-
-      element.off(
-        'click',
-        _truncationMarkerSelector,
-        expandVisualization
-      );
+    function _detachEvents(element) {
 
       element.off(
         'mouseenter, mousemove',
@@ -244,11 +237,26 @@
         removeHoverClassFromBarGroup
       );
 
-      element.off(
-        'mouseup',
-        _nonDefaultSelectedLabelSelector,
-        removeHoverClassFromBarGroup
-      );
+      if (_interactive) {
+
+        element.off(
+          'click',
+          _barGroupAndLabelContentsSpanSelector,
+          selectDatum
+        );
+
+        element.off(
+          'click',
+          _truncationMarkerSelector,
+          expandVisualization
+        );
+
+        element.off(
+          'mouseup',
+          _nonDefaultSelectedLabelSelector,
+          removeHoverClassFromBarGroup
+        );
+      }
     }
 
     function selectDatum(event) {

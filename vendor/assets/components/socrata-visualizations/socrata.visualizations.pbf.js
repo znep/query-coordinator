@@ -710,9 +710,9 @@
       length = strLen / 2
     }
     for (var i = 0; i < length; i++) {
-      var byte = parseInt(string.substr(i * 2, 2), 16)
-      if (isNaN(byte)) throw new Error('Invalid hex string')
-      buf[offset + i] = byte
+      var thisByte = parseInt(string.substr(i * 2, 2), 16)
+      if (isNaN(thisByte)) throw new Error('Invalid hex string')
+      buf[offset + i] = thisByte
     }
     return i
   }

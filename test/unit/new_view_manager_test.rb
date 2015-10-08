@@ -121,7 +121,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
   def test_create_v2_data_lens
     stub_feature_flags_with(:create_v2_data_lens, true)
-    response = File.read("#{Rails.root}/test/fixtures/metadb-page-metadata.json")
+    response = File.read("#{Rails.root}/test/fixtures/v2-page-metadata.json")
     connection_stub = mock
     created = false
     connection_stub.expects(:create_request).times(1).with do |url, payload|

@@ -244,6 +244,22 @@ class AngularControllerTest < ActionController::TestCase
 
       assert_response(500)
     end
+
+    should 'redirect to 403 for permission denied error on migration endpoint' do
+      @controller.stubs(
+        :fetch_page_metadata => v1_page_metadata,
+        :fetch_dataset_metadata => v1_dataset_metadata
+      )
+      View.stubs(:migrations).raises(CoreServer::CoreServerError.new(
+        'GET http://hostname/migrations/cant-hazz',
+        'permission_denied',
+        "The current user doesn't have access to this view"
+      ))
+
+      get :serve_app, :id => 'cant-hazz', :app => 'dataCards'
+
+      assert_response(403)
+    end
   end
 
   context 'when authenticated' do

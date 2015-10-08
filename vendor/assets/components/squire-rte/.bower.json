@@ -21,14 +21,13 @@
     "test",
     "tests"
   ],
-  "version": "1.4.0",
-  "_release": "1.4.0",
+  "_release": "e5329bb46c",
   "_resolution": {
-    "type": "version",
-    "tag": "v1.4.0",
-    "commit": "edfd35ccecba06814823952dd345ec82c4d63eec"
+    "type": "branch",
+    "branch": "1.4.0-fixes",
+    "commit": "e5329bb46c92e93cd5310972cac6bdc3aa8c095b"
   },
-  "_source": "git://github.com/neilj/Squire.git",
-  "_target": "^1.2.0",
-  "_originalSource": "squire-rte"
+  "_source": "git@github.com:socrata-platform/Squire.git",
+  "_target": "1.4.0-fixes",
+  "_originalSource": "git@github.com:socrata-platform/Squire.git"
 }

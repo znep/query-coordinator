@@ -39,36 +39,5 @@ RSpec.describe 'rich text editor content', type: :feature, js: true do
       end
     end
 
-    # it 'moves up when "move up" button is clicked' do
-    #   initial_position = @last_block.native.location.y
-
-    #   # move block up
-    #   @last_block.hover
-    #   @last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]').click
-    #   after_move_position = @last_block.native.location.y
-
-    #   expect(after_move_position).to be < initial_position
-    # end
-
-    # it 'disables "move up" for the first block' do
-    #   @first_block.hover
-    #   expect(@first_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]')[:disabled]).to eq('true')
-    # end
-
-    # it 'moves down when "move down" button is clicked' do
-    #   initial_position = @first_block.native.location.y
-
-    #   # move block down
-    #   @first_block.hover
-    #   @first_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]').click
-    #   after_move_position = @first_block.native.location.y
-
-    #   expect(after_move_position).to be > initial_position
-    # end
-
-    # it 'disables "move down" for the last block' do
-    #   @last_block.hover
-    #   expect(@last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]')[:disabled]).to eq("true")
-    # end
   end
 end

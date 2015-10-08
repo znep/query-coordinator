@@ -63,22 +63,90 @@ packages = yaml.select do |package, libraries|
   end
 end
 
+# Stolen from yui-compressor-0.12.0/lib/yui/compress.rb#compress
+module MockCompressor
+  class RuntimeError < StandardError; end
+
+  def self.compress(command, stream_or_string)
+    streamify(stream_or_string) do |stream|
+      @tempfile = Tempfile.new('yui_compress')
+      @tempfile.write stream.read
+      @tempfile.flush
+      full_command = "%s %s" % [command, @tempfile.path]
+
+      begin
+        # XXX: Modified from original copy-paste to use PTY starting here.
+        require 'pty'
+        output = PTY.spawn full_command do |r, w, pid|
+          begin
+            r.sync
+            r.each_line { |line| (@errors ||= []) << line }
+          rescue Errno::EIO => e
+            # simply ignoring this
+          ensure
+            ::Process.wait pid
+          end
+        end
+        # XXX: Modification ends here.
+      rescue Exception => e
+        # windows shells tend to blow up here when the command fails
+        raise RuntimeError, "compression failed: %s" % e.message
+      ensure
+        @tempfile.close! unless @errors.length > 0
+      end
+
+      if $?.exitstatus.zero?
+        output
+      else
+        # Bourne shells tend to blow up here when the command fails, usually
+        # because java is missing
+        raise RuntimeError, "Command '%s' returned non-zero exit status" %
+          full_command
+      end
+    end
+  end
+
+  def self.streamify(stream_or_string)
+    if stream_or_string.respond_to?(:read)
+      yield stream_or_string
+    else
+      yield StringIO.new(stream_or_string.to_s)
+    end
+  end
+
+  def self.errors
+    @errors
+  end
+
+  def self.tempfile
+    @tempfile
+  end
+end
+
 packages.each do |package, libraries|
   print "[verify compression] "
 
-  # Some of this is intentionally un-great Ruby because it's copying Jammit code.
-  read_file = lambda { |filename| File.open(filename, 'rb:UTF-8') { |f| f.read } }
-  buffer = libraries.inject([]) do |buf, lib|
-    absolute_filename = File.join(FRONTEND, lib)
+  # Explode globs
+  libraries.collect! do |library|
+    absolute_filename = File.join(FRONTEND, library)
     if absolute_filename.include? '*'
-      Dir.glob(absolute_filename).each do |file|
-        buf << read_file.call(file)
-      end
+      Dir.glob(absolute_filename)
     else
-      buf << read_file.call(absolute_filename)
+      absolute_filename
     end
-    buf
-  end.join("\n")
+  end
+  libraries.flatten!
+  libraries.uniq!
+
+  # Build buffer
+  lineno_to_library_map = {}
+  buffer = libraries.inject([]) { |buf, lib| buf << File.open(lib, 'rb:UTF-8') { |f| f.read } }
+  buffer.inject(0) do |lineno, library|
+    line_count = library.split($/).size
+    lineno_to_library_map[lineno..lineno+line_count+1] = libraries[lineno_to_library_map.size]
+    lineno += line_count + 1
+  end
+  buffer = buffer.join("\n")
 
   if buffer.length.zero?
     puts "#{package}.js was empty for some reason. Skipping."
@@ -86,18 +154,41 @@ packages.each do |package, libraries|
   end
 
   begin
-    data_length = YUI::JavaScriptCompressor.new.compress(buffer).length
+    compressor = YUI::JavaScriptCompressor.new(munge: true) # Use the original to get the command.
+    data_length = MockCompressor.compress(compressor.command, buffer).length
     puts "Compression of #{package}.js worked fine.".color(:green) + " [#{number_to_human_size(data_length)}]"
-  rescue YUI::Compressor::RuntimeError => e
-    puts "Compression failed. Overwriting #{TMP_DIR}/#{package}.js".color(:red)
+  rescue MockCompressor::RuntimeError => e
+    troubleshooting_file = File.join(TMP_DIR, "#{package}.js")
+    puts "Compression failed. Overwriting #{troubleshooting_file} for troubleshooting".color(:red)
 
-    # No longer appears necessary to re-run the compressor in order to dump errors into the console.
-    # Un-comment the below lines if you don't see any upon failure.
-    concatted_file = File.join(TMP_DIR, "#{package}.js")
-    #minified_file  = File.join(TMP_DIR, "#{package}.min.js")
-    File.open(concatted_file, 'w') do |f| f.write(buffer) end
-    #system("java -jar #{YUI_PATH} #{concatted_file} -o #{minified_file}")
+    # Attempt to parse the results of STDERR to display the actual problems.
+    begin
+      MockCompressor.tempfile.rewind
+      lines = MockCompressor.tempfile.readlines
 
-    exit 1
+      File.open(troubleshooting_file, 'w') { |f| lines.each { |l| f.puts l }}
+
+      raise 'whee'
+      MockCompressor.errors.each do |error_line|
+        next unless error_line =~ /^\s*(\d+):(\d+):(.*)/
+        lineno, charno, message = $1.to_i, $2.to_i, $3
+        next if message.include? 'Compilation produced'
+        key = lineno_to_library_map.keys.find { |range| range.include? lineno }
+        puts "Problem: #{message}".color(:red)
+        puts "     in: #{lineno_to_library_map[key]}, line ~#{lineno - key.begin}, char #{charno}; line #{lineno} in troubleshooter file"
+        puts lines[lineno - 1]
+        puts '^'.rjust(charno)
+      end
+    # Hahahahah nope.
+    rescue => e
+      puts 'Whoops. Something exploded in the error parsing. Dumping original STDERR output without parsing it'.color(:cyan)
+      puts e.message
+      puts
+      MockCompressor.errors.each { |line| $stderr.puts line }
+
+      raise
+    ensure
+      exit 1
+    end
   end
 end

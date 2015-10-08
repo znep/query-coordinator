@@ -110,7 +110,9 @@ class AngularController < ActionController::Base
     # Fetch migration info to get mapping from nbe to obe for skipLinks
     begin
       @migration_info = View.migrations(@page_metadata[:datasetId])
-    rescue
+    rescue CoreServer::CoreServerError => error
+      return render_403 if error.error_code == 'permission_denied'
+
       @migration_info = {}
     end
 

@@ -203,7 +203,7 @@ class AngularControllerTest < ActionController::TestCase
       )
     end
 
-    should 'should redirect to the login page if the page is private' do
+    should 'redirect to the login page if the page is private' do
       PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewAuthenticationRequired)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -212,7 +212,7 @@ class AngularControllerTest < ActionController::TestCase
       assert_redirected_to('/login?referer_redirect=1')
     end
 
-    should 'should redirect to the 404 page if the page is not found' do
+    should 'redirect to the 404 page if the page is not found' do
       PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewNotFound)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -220,7 +220,7 @@ class AngularControllerTest < ActionController::TestCase
       assert_response(404)
     end
 
-    should 'should redirect to the login page if the dataset is private' do
+    should 'redirect to the login page if the dataset is private' do
       NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewAuthenticationRequired)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -229,7 +229,7 @@ class AngularControllerTest < ActionController::TestCase
       assert_redirected_to('/login?referer_redirect=1')
     end
 
-    should 'should redirect to the 404 page if the dataset is not found' do
+    should 'redirect to the 404 page if the dataset is not found' do
       NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewNotFound)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -237,7 +237,7 @@ class AngularControllerTest < ActionController::TestCase
       assert_response(404)
     end
 
-    should 'should redirect to the 500 page if it encounters an upstream error' do
+    should 'redirect to the 500 page if it encounters an upstream error' do
       NewViewManager.any_instance.stubs(:fetch).raises(RuntimeError)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -261,7 +261,7 @@ class AngularControllerTest < ActionController::TestCase
       )
     end
 
-    should 'should redirect to the 403 page if the page is private' do
+    should 'redirect to the 403 page if the page is private' do
       PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewAccessDenied)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -269,7 +269,7 @@ class AngularControllerTest < ActionController::TestCase
       assert_response(403)
     end
 
-    should 'should redirect to the 404 page if the page is not found' do
+    should 'redirect to the 404 page if the page is not found' do
       PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewNotFound)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -277,7 +277,7 @@ class AngularControllerTest < ActionController::TestCase
       assert_response(404)
     end
 
-    should 'should redirect to the 403 page if the dataset is private' do
+    should 'redirect to the 403 page if the dataset is private' do
       PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
       AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::UnauthorizedDatasetMetadataRequest)
       NewViewManager.any_instance.stubs(:fetch).returns({})
@@ -289,7 +289,7 @@ class AngularControllerTest < ActionController::TestCase
       assert_response(403)
     end
 
-    should 'should redirect to the 404 page if the dataset is not found' do
+    should 'redirect to the 404 page if the dataset is not found' do
       PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
       AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::DatasetMetadataNotFound)
       NewViewManager.any_instance.stubs(:fetch).returns({})
@@ -301,7 +301,7 @@ class AngularControllerTest < ActionController::TestCase
       assert_response(404)
     end
 
-    should 'should redirect to the 500 page if it encounters an upstream error' do
+    should 'redirect to the 500 page if it encounters an upstream error' do
       NewViewManager.any_instance.stubs(:fetch).raises(RuntimeError)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'

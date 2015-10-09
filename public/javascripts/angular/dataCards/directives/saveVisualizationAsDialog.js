@@ -23,7 +23,8 @@
         $scope.isOfficial = false;
 
         $scope.description = '';
-        $scope.name = $scope.page.getCurrentValue('name') + ': ' + $scope.dialogState.cardModel.fieldName;
+        $scope.name = '';
+        $('#save-visualization-as-name').focus();
         var nameValid$ = $scope.$observe('name').map(_.negate(_.isEmpty));
 
         $scope.invalid = false;

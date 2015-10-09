@@ -2173,7 +2173,6 @@
 
       }
 
-      // TODO: Flyouts based on mouse hover
       function mouseHasMoved(mousePosition, scrollPosition, mouseLeftButtonNowPressed) {
 
         var offsetX;
@@ -2347,10 +2346,14 @@
     function showFlyout(event) {
       var offsetX = event.clientX - _chartElement.offset().left;
       console.log('showFlyout', event.offsetX, offsetX, event.currentTarget);
+
+      if (offsetX > cachedChartDimensions.width || offsetX < 1) {
+        return;
+      }
       highlightChartByMouseOffset(offsetX);
 
       var payload = {
-        element: jqueryHighlightTargetElement,
+        element: _chartElement.find('.timeline-chart-flyout-target').get(0),
         title: 'Hi'
       };
 

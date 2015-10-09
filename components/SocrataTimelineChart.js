@@ -331,7 +331,7 @@
 
       $element[0].dispatchEvent(
         new root.CustomEvent(
-          'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
+          'SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT',
           {
             detail: flyoutPayload,
             bubbles: true

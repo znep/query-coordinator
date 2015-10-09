@@ -64,7 +64,7 @@
   <script type="text/javascript" src="../components/SocrataTimelineChart.js"></script>
   <script type="text/javascript">
 
-    //var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();
+    var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();
 
     var COLUMN_NAME = 'date';
     var DATASET_UID = '52my-2pak';
@@ -131,8 +131,8 @@
      * Handle flyout events.
      */
 
-    //$timelineChart1Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
-    //$timelineChart2Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+    $timelineChart1Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+    $timelineChart2Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
 
     function handleFlyout(event) {
 

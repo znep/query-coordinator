@@ -357,6 +357,7 @@ class AngularControllerTest < ActionController::TestCase
 
       related_chart = View.new
       related_chart.data = {
+        'viewType' => 'tabular',
         'displayType' => 'data_lens_chart',
         'displayFormat' => {
           'visualization_interchange_format_v1' => vif_fixture_string
@@ -365,6 +366,7 @@ class AngularControllerTest < ActionController::TestCase
 
       related_map = View.new
       related_map.data = {
+        'viewType' => 'tabular',
         'displayType' => 'data_lens_map',
         'displayFormat' => {
           'visualization_interchange_format_v1' => vif_fixture_string

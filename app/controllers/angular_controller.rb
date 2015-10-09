@@ -112,7 +112,7 @@ class AngularController < ActionController::Base
       @migration_info = View.migrations(@page_metadata[:datasetId])
     rescue CoreServer::CoreServerError => error
       return render_403 if error.error_code == 'permission_denied'
-
+    rescue
       @migration_info = {}
     end
 

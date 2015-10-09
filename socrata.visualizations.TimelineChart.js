@@ -403,9 +403,24 @@
       //highlightChartByMouseOffset(offsetX);
       mouseHasMoved(event, false);
 
+      var $target = $(event.target);
+      var isInterval = $target.
+        is(flyoutIntervalTopSelectors.concat([flyoutIntervalPathSelector]).join(', '));
+
       var payload = {
-        element: _chartElement.find('.timeline-chart-flyout-target').get(0),
-        title: 'Hi'
+        element: _chartElement.find('.timeline-chart-flyout-target').get(0)
+      };
+
+      if (isInterval) {
+        payload.title = $target.attr('data-start');
+        var unfilteredValue = $target.attr('data-aggregate-unfiltered');
+        payload.unfilteredValue = _.isUndefined(unfilteredValue) ? null : parseFloat(unfilteredValue);
+        var filteredValue = $target.attr('data-aggregate-filtered');
+        payload.filteredValue = _.isUndefined(filteredValue) ? null : parseFloat(filteredValue);
+      } else {
+        payload.title = currentDatum.date;
+        payload.unfilteredValue = currentDatum.unfiltered;
+        payload.filteredValue = currentDatum.filtered;
       };
 
       self.emitEvent(
@@ -481,6 +496,12 @@
     var currentlyDragging = false;
     
     var allChartLabelsShown = true;
+
+    var flyoutIntervalPathSelector = '.datum-label';
+    var flyoutIntervalTopSelectors = [
+      '.x-tick-label',
+      '.timeline-chart-clear-selection-label'
+    ];
 
     function _renderData(element, data, options) {
 
@@ -1560,12 +1581,6 @@
         renderChartUnfilteredValues();
         renderChartFilteredValues();
       }
-
-      var flyoutIntervalPathSelector = '.datum-label';
-      var flyoutIntervalTopSelectors = [
-        '.x-tick-label',
-        '.timeline-chart-clear-selection-label'
-      ];
 
       /**
        * @param {DOM Element} target - The DOM element which triggered the

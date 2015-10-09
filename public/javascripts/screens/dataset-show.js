@@ -828,7 +828,7 @@ $(function()
         var linkHref = null;
         var localePart = blist.locale === blist.defaultLocale ? '' : localePart = '/' + blist.locale;
 
-        if (linkParams.dataset.newBackend) {
+        if (linkParams.dataset.newBackend && linkParams.dataset.displayType !== "map") {
           if (linkParams.canUpdateMetadata && !linkParams.hasGroupBys) {
             linkHref = localePart + '/view/bootstrap/{0}'.format(linkParams.dataset.id);
             datasetShowHelpers.createNewUXLink(linkParams, linkHref);

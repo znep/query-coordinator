@@ -832,9 +832,10 @@ $(function()
 
         return linkParams;
       },
+      // This logic is duplicated with promises by generateDataLensLinkHref in data-lense-create.js
       getNewUXLinkHref: function(linkParams) {
         var linkHref = null;
-        var localePart = blist.locale === blist.defaultLocale ? '' : localePart = '/' + blist.locale;
+        var localePart = blist.locale === blist.defaultLocale ? '' : '/' + blist.locale;
 
         if (linkParams.dataset.newBackend) {
           if (linkParams.canUpdateMetadata && !linkParams.hasGroupBys) {
@@ -945,7 +946,7 @@ $(function()
 
     // setTimeout needed for extra frame to run for blist properties =(
     blist.configuration.onCurrentUserComplete(function() {
-      if (blist && blist.feature_flags && blist.feature_flags.data_lens_transition_state !== 'pre_beta') {
+      if (blist && blist.feature_flags && blist.feature_flags.data_lens_transition_state !== 'pre_beta' && !blist.feature_flags.use_ephemeral_bootstrap) {
         var linkParams = datasetShowHelpers.getNewUXLinkParams();
         datasetShowHelpers.getNewUXLinkHref(linkParams);
       }

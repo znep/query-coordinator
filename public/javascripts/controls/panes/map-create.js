@@ -185,7 +185,7 @@
     { return _.include(cpObj._view.metadata.availableDisplayTypes, 'map'); };
 
     if ($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.mapCreate)
-    { $.gridSidebar.registerConfig('visualize.mapCreate', 'pane_mapCreate', 2, 'map'); }
+    { $.gridSidebar.registerConfig('visualize.mapCreate', 'pane_mapCreate', 3, 'map'); }
 
     $.Control.extend('pane_mapDataLayerCreate', {
         _init: function()

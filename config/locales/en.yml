@@ -2262,6 +2262,10 @@ en:
           validation:
             no_columns: This view has no columns to filter
             no_icons: Icons are only relevant for map view
+        data_lens:
+          subtitle: Data Lens is a visually engaging and interactive experience that includes improved data exploration and better data curation.  Click on <strong>New Data Lens</strong> to create a new one.  From there, you can visually explore the data, customize how it is shown, and manage how it will be presented in the catalog.
+          title: Data Lens
+          button: New Data Lens
         delete:
           confirm: This will delete the %{view_type} permanently. There is no undo! Are you sure you wish to proceed?
           delete_button: Delete this %{view_type}

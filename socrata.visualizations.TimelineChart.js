@@ -406,19 +406,30 @@
       var $target = $(event.target);
       var isInterval = $target.
         is(flyoutIntervalTopSelectors.concat([flyoutIntervalPathSelector]).join(', '));
+      var datumIsDefined = !(_.isUndefined(currentDatum) || _.isNull(currentDatum));
 
       var payload = {
         element: _chartElement.find('.timeline-chart-flyout-target').get(0)
       };
 
+      var formatStrings = {
+        DECADE: 'YYYYs',
+        YEAR: 'YYYY',
+        MONTH: 'MMMM YYYY',
+        DAY: 'D MMMM YYYY'
+      };
+
       if (isInterval) {
-        payload.title = $target.attr('data-start');
+        //payload.title = $target.attr('data-start');
+        payload.title = $target.attr('data-flyout-label');
         var unfilteredValue = $target.attr('data-aggregate-unfiltered');
         payload.unfilteredValue = _.isUndefined(unfilteredValue) ? null : parseFloat(unfilteredValue);
         var filteredValue = $target.attr('data-aggregate-filtered');
         payload.filteredValue = _.isUndefined(filteredValue) ? null : parseFloat(filteredValue);
-      } else {
-        payload.title = currentDatum.date;
+      } else if (datumIsDefined) {
+        payload.title = currentDatum.hasOwnProperty('flyoutLabel') ?
+          currentDatum.flyoutLabel :
+          moment(currentDatum.date).format(formatStrings[datasetPrecision]);
         payload.unfilteredValue = currentDatum.unfiltered;
         payload.filteredValue = currentDatum.filtered;
       };

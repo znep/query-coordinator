@@ -260,6 +260,19 @@ class AngularControllerTest < ActionController::TestCase
 
       assert_response(403)
     end
+
+    should 'return success for CoreServer::ResourceNotFound' do
+      @controller.stubs(
+        :fetch_page_metadata => v1_page_metadata,
+        :fetch_dataset_metadata => v1_dataset_metadata
+      )
+      View.stubs(:migrations).raises(
+        CoreServer::ResourceNotFound.new(Net::HTTPNotFound.new(nil, nil, nil))
+      )
+      get :serve_app, :id => 'aint-here', :app => 'dataCards'
+
+      assert_response(200)
+    end
   end
 
   context 'when authenticated' do

@@ -56,6 +56,10 @@
       return editor;
     };
 
+    this.getAllEditors = function() {
+      return _editors;
+    };
+
     this.deleteEditor = function(editorId) {
 
       _editors[editorId].destroy();

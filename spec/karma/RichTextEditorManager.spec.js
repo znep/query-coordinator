@@ -137,4 +137,40 @@ describe('RichTextEditorManager', function() {
       });
     });
   });
+
+  describe('.getAllEditors()', function() {
+    var manager;
+
+    beforeEach(function() {
+      manager = new storyteller.RichTextEditorManager(
+        window.socrata.storyteller.assetFinder,
+        validToolbar,
+        validFormats
+      );
+    });
+
+    describe('when called when no editors have been created', function() {
+      it('returns an empty object', function() {
+        assert.isObject(manager.getAllEditors());
+      });
+    });
+
+    describe('when called with one or more editors', function() {
+      it('returns an object with editor IDs as keys and instances as values', function() {
+        var editors;
+        var keys;
+
+        manager.createEditor(validElement, '1', 'Hello, Mars!');
+        manager.createEditor(validElement, '2', 'Hello, World!');
+
+        editors = manager.getAllEditors();
+
+        assert.isObject(editors);
+
+        keys = Object.keys(editors);
+        assert.lengthOf(keys, 2);
+        assert.deepEqual(keys, ['1', '2']);
+      });
+    });
+  });
 });

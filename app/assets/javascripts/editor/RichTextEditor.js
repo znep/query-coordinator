@@ -155,6 +155,23 @@
     };
 
     /**
+     * Deselects the rich text <iframe>.
+     */
+    this.deselect = function() {
+      var contentDocument = _editorElement[0].contentDocument;
+
+      // IE supports .selection, while everything else
+      // supports .getSelection.
+      if (contentDocument.selection) {
+        contentDocument.selection.clear();
+      } else {
+        contentDocument.
+          getSelection().
+          removeAllRanges();
+      }
+    };
+
+    /**
      * This method assumes that jQuery's .remove() function will correctly
      * remove any event listeners attached to _editorElement or any of its
      * children.

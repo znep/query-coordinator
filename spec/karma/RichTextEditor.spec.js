@@ -338,6 +338,39 @@ describe('RichTextEditor', function() {
 
   });
 
+  describe('.deselect()', function() {
+    var $textEditor;
+    var $iframe;
+    var editor;
+
+    beforeEach(function() {
+     $textEditor = $('.text-editor');
+      editor = new storyteller.RichTextEditor(
+        $textEditor,
+        validEditorId,
+        window.socrata.storyteller.assetFinder,
+        validFormats,
+        'Hello, world!'
+      );
+
+      $iframe = $textEditor.find('iframe');
+    });
+
+    it('removes any selection that the user or program has made within the iframe', function() {
+      var contentDocument = $iframe[0].contentDocument;
+      var body = contentDocument.documentElement.querySelector('body');
+
+      body.appendChild($('<span>').text('Hello, World!')[0]);
+      contentDocument.documentElement.appendChild(body);
+
+      // Start a selection.
+      contentDocument.getSelection().selectAllChildren(body);
+
+      assert.equal(contentDocument.getSelection().toString(), 'Hello, World!');
+      editor.deselect();
+      assert.equal(contentDocument.getSelection().toString(), '');
+    });
+  });
 
   describe('.destroy()', function() {
 

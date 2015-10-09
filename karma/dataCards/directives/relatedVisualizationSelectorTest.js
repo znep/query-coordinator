@@ -75,11 +75,11 @@ describe('relatedVisualizationSelector', function() {
   });
 
   describe('parent scope', function() {
-    it('correctly setup should not throw', function() {
+    it('should not throw on correct setup', function() {
       createDirective(minimalScopeProperties);
     });
 
-    it('missing columnNameToReadableNameFn should throw', function() {
+    it('should throw on missing columnNameToReadableNameFn', function() {
       expect(function() {
         createDirective(_.omit(minimalScopeProperties, 'columnNameToReadableNameFn'));
       }).to.throw();

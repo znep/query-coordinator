@@ -16,8 +16,12 @@ describe('VisualizationAddController', function() {
   // aren't easy to write (as window.frameElement isn't
   // writeable in all browsers).
   // Fortunately, tests run in an iframe in most cases.
+  //
   // Unfortunately, the one exception is when a dev is running tests
-  // in debug mode...
+  // in debug mode. We have made the tests that won't pass conditionally
+  // xdescribe for now. If you need to actually test something in the
+  // conditionally xdescribe'd tests, simply change the possiblyDescribe
+  // declaration and assignment a few lines below.
   var canRunParentWindowTests = !!(window.frameElement);
   if (!canRunParentWindowTests) {
     console.warn('WARNING: disabling some VisualizationAddController tests because test run is not in an iframe');

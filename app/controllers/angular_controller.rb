@@ -138,7 +138,7 @@ class AngularController < ActionController::Base
       # Find all standalone visualizations based on this dataset
       related_views = View.find(dataset_id).find_related(1, 1000)
       related_standalone_visualizations = related_views.select do |view|
-        view.displayType == 'data_lens_chart' || view.displayType == 'data_lens_map'
+        view.standalone_visualization?
       end
 
       # Map all standalone visualizations to synthetic Page metadata

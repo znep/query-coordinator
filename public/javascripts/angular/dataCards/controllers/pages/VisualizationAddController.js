@@ -5,6 +5,7 @@
   var utils = socrata.utils;
 
   function getSupportedRelatedVisualizations(supportedVIFTypes) {
+
     // Injected via AngularController for the visualization_add action.
     var relatedVisualizations = window.relatedVisualizations;
     utils.assert(relatedVisualizations, 'relatedVisualizations was not injected by AngularController');
@@ -21,13 +22,10 @@
     if (_.isNull(window.frameElement)) {
       throw new Error('Page expects to be in an iframe, passing information to the parent window.');
     } else if (_.isFunction(window.frameElement.onVisualizationSelected)) {
-
       window.frameElement.onVisualizationSelected(vif);
     } else {
-
       throw new Error('Cannot find onVisualizationSelected on the iframe.');
     }
-
   }
 
   function VisualizationAddController($scope, $rootScope, $log, DatasetColumnsService, dataset, WindowState, Page) {

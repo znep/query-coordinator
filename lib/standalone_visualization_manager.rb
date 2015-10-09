@@ -60,6 +60,7 @@ class StandaloneVisualizationManager
 
   def page_metadata_from_vif(vif, vif_lens_id, permissions)
     page_metadata = {
+      :sourceVif => vif,
       :datasetId => vif[:datasetUid],
       :cards => [card_from_vif(vif)],
       :defaultDateTruncFunction => nil,

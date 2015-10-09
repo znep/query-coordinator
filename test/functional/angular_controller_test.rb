@@ -12,7 +12,10 @@ class AngularControllerTest < ActionController::TestCase
     @new_view_manager = NewViewManager.new
     @page_metadata_manager = PageMetadataManager.new
     load_sample_data('test/fixtures/sample-data.json')
+
+
     test_view = View.find('test-data')
+
     View.any_instance.stubs(
       :find => test_view,
       :find_related => [test_view],
@@ -23,7 +26,7 @@ class AngularControllerTest < ActionController::TestCase
     )
   end
 
-  test 'should successfully get serve_app' do
+  test 'should successfully get data_lens' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
     View.stubs(
       :migrations => {
@@ -46,14 +49,14 @@ class AngularControllerTest < ActionController::TestCase
       :set_default_and_available_card_types_to_columns! => {}
     )
 
-    # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
+    get :data_lens, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
     # Should flag subcolumns
     assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
   end
 
-  test 'should successfully get serve_app for single card view' do
+  test 'should successfully get data_lens for single card view' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
     View.stubs(
       :migrations => {
@@ -76,14 +79,14 @@ class AngularControllerTest < ActionController::TestCase
       :set_default_and_available_card_types_to_columns! => {}
     )
 
-    # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
-    get :serve_app, :id => '1234-1234', :field_id => 'field', :app => 'dataCards'
+    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
+    get :data_lens, :id => '1234-1234', :field_id => 'field', :app => 'dataCards'
     assert_response :success
     # Should flag subcolumns
     assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
   end
 
-  test 'should successfully get serve_app with empty Phidippides page data' do
+  test 'should successfully get data_lens with empty Phidippides page data' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
     View.stubs(
       :migrations => {
@@ -106,14 +109,14 @@ class AngularControllerTest < ActionController::TestCase
       :set_default_and_available_card_types_to_columns! => {}
     )
 
-    # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
+    get :data_lens, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
     # Should flag subcolumns
     assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
   end
 
-  test 'should successfully get serve_app with empty metadb page data' do
+  test 'should successfully get data_lens with empty metadb page data' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
     View.any_instance.stubs(:find_related).returns({})
     PageMetadataManager.any_instance.stubs(
@@ -131,8 +134,8 @@ class AngularControllerTest < ActionController::TestCase
       :set_default_and_available_card_types_to_columns! => {}
     )
 
-    # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
+    get :data_lens, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
     # Should flag subcolumns
     assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
@@ -140,26 +143,16 @@ class AngularControllerTest < ActionController::TestCase
 
   test 'should raise an error when a non-existent app is requested' do
     assert_raises(ActionController::RoutingError) do
-      get :serve_app, :id => '1234-1234', :app => nil
+      get :data_lens, :id => '1234-1234', :app => nil
     end
     assert_raises(ActionController::RoutingError) do
-      get :serve_app, :id => '1234-1234', :app => 'notAnApp'
+      get :data_lens, :id => '1234-1234', :app => 'notAnApp'
     end
   end
 
   context 'accessibility' do
     setup do
       NewViewManager.any_instance.stubs(:fetch).returns({})
-      load_sample_data('test/fixtures/sample-data.json')
-      test_view = View.find('test-data')
-      View.any_instance.stubs(
-        :find => test_view,
-        :find_related => [test_view],
-        :migrations => {
-          :nbeId => '1234-1234',
-          :obeId => '1234-1234'
-        }
-      )
       PageMetadataManager.any_instance.stubs(
         :show => v1_page_metadata
       )
@@ -175,7 +168,7 @@ class AngularControllerTest < ActionController::TestCase
         :set_default_and_available_card_types_to_columns! => {}
       )
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
     end
 
     should 'render skip-links in html' do
@@ -206,7 +199,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the login page if the page is private' do
       PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewAuthenticationRequired)
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
       assert_equal('/view/1234-1234', @controller.session[:return_to])
       assert_redirected_to('/login?referer_redirect=1')
@@ -215,7 +208,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the 404 page if the page is not found' do
       PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewNotFound)
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
       assert_response(404)
     end
@@ -223,7 +216,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the login page if the dataset is private' do
       NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewAuthenticationRequired)
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
       assert_equal('/view/1234-1234', @controller.session[:return_to])
       assert_redirected_to('/login?referer_redirect=1')
@@ -232,7 +225,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the 404 page if the dataset is not found' do
       NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewNotFound)
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
       assert_response(404)
     end
@@ -240,7 +233,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the 500 page if it encounters an upstream error' do
       NewViewManager.any_instance.stubs(:fetch).raises(RuntimeError)
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
       assert_response(500)
     end
@@ -256,7 +249,7 @@ class AngularControllerTest < ActionController::TestCase
         "The current user doesn't have access to this view"
       ))
 
-      get :serve_app, :id => 'cant-hazz', :app => 'dataCards'
+      get :data_lens, :id => 'cant-hazz', :app => 'dataCards'
 
       assert_response(403)
     end
@@ -269,7 +262,7 @@ class AngularControllerTest < ActionController::TestCase
       View.stubs(:migrations).raises(
         CoreServer::ResourceNotFound.new(Net::HTTPNotFound.new(nil, nil, nil))
       )
-      get :serve_app, :id => 'aint-here', :app => 'dataCards'
+      get :data_lens, :id => 'aint-here', :app => 'dataCards'
 
       assert_response(200)
     end
@@ -293,7 +286,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the 403 page if the page is private' do
       PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewAccessDenied)
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
       assert_response(403)
     end
@@ -301,7 +294,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the 404 page if the page is not found' do
       PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewNotFound)
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
       assert_response(404)
     end
@@ -311,7 +304,7 @@ class AngularControllerTest < ActionController::TestCase
       AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::UnauthorizedDatasetMetadataRequest)
       NewViewManager.any_instance.stubs(:fetch).returns({})
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(403)
 
       get :visualization_add, :datasetId => 'data-sett', :app => 'dataCards'
@@ -323,7 +316,7 @@ class AngularControllerTest < ActionController::TestCase
       AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::DatasetMetadataNotFound)
       NewViewManager.any_instance.stubs(:fetch).returns({})
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(404)
 
       get :visualization_add, :datasetId => 'data-sett', :app => 'dataCards'
@@ -333,7 +326,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the 500 page if it encounters an upstream error' do
       NewViewManager.any_instance.stubs(:fetch).raises(RuntimeError)
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(500)
 
       get :visualization_add, :datasetId => 'data-sett', :app => 'dataCards'
@@ -341,26 +334,59 @@ class AngularControllerTest < ActionController::TestCase
     end
   end
 
-  test 'should successfully get visualization_add' do
-    NewViewManager.any_instance.stubs(:fetch).returns({})
-    View.stubs(
-      :migrations => {
-        :nbeId => '1234-1234',
-        :obeId => '1234-1234'
-      }
-    )
-    Phidippides.any_instance.stubs(
-      :fetch_dataset_metadata => {
-        :status => '200',
-        :body => v1_dataset_metadata
-      },
-      :set_default_and_available_card_types_to_columns! => {}
-    )
+  context 'visualization_add' do
+    setup do
+      Phidippides.any_instance.stubs(
+        :fetch_dataset_metadata => {
+          :status => '200',
+          :body => v1_dataset_metadata
+        },
+        :set_default_and_available_card_types_to_columns! => {}
+      )
+    end
 
-    get :visualization_add, :datasetId => '1234-1234', :app => 'dataCards'
-    assert_response :success
-    # Should flag subcolumns
-    assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
+    should 'successfully get' do
+      get :visualization_add, :datasetId => 'test-data', :app => 'dataCards'
+      assert_response :success
+      # Should flag subcolumns
+      assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
+    end
+
+    should 'provide related data_lens_chart and data_lens_map' do
+      test_view = View.find('test-data')
+
+      related_chart = View.new
+      related_chart.data = {
+        'displayType' => 'data_lens_chart',
+        'displayFormat' => {
+          'visualization_interchange_format_v1' => vif_fixture_string
+        }
+      }
+
+      related_map = View.new
+      related_map.data = {
+        'displayType' => 'data_lens_map',
+        'displayFormat' => {
+          'visualization_interchange_format_v1' => vif_fixture_string
+        }
+      }
+
+      View.any_instance.stubs(
+        :find => test_view,
+        :find_related => [test_view, related_chart, related_map]
+      )
+
+      get :visualization_add, :datasetId => 'test-data', :app => 'dataCards'
+      assert_response :success
+
+      related_visualizations_json_pattern = /var relatedVisualizations\s*=\s*(.*);/
+      related_visualizations = JSON.parse(
+        @response.body.match(related_visualizations_json_pattern)[1]
+      )
+      assert_equal(2, related_visualizations.length)
+      assert_equal(JSON.parse(vif_fixture_string), related_visualizations[0]['sourceVif'])
+      assert_equal(JSON.parse(vif_fixture_string), related_visualizations[1]['sourceVif'])
+    end
   end
 
   context 'google analytics' do
@@ -379,12 +405,6 @@ class AngularControllerTest < ActionController::TestCase
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
-      load_sample_data('test/fixtures/sample-data.json')
-      test_view = View.find('test-data')
-      View.any_instance.stubs(
-        :find => test_view,
-        :find_related => [test_view]
-      )
       NewViewManager.any_instance.stubs(:fetch).returns({})
     end
 
@@ -394,7 +414,7 @@ class AngularControllerTest < ActionController::TestCase
           :enable_opendata_ga_tracking => false
         }
       )
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_no_match(/_gaSocrata\('create', 'UA-.+-.+'/, @response.body)
     end
 
@@ -405,7 +425,7 @@ class AngularControllerTest < ActionController::TestCase
           :enable_opendata_ga_tracking => true
         }
       )
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_match(/_gaSocrata\('create', 'UA-9046230', 'auto', 'socrata'\);/, @response.body)
     end
 
@@ -416,7 +436,7 @@ class AngularControllerTest < ActionController::TestCase
           :enable_opendata_ga_tracking => ''
         }
       )
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_match(/_gaSocrata\('create', 'UA-9046230', 'auto', 'socrata'\);/, @response.body)
     end
 
@@ -426,7 +446,7 @@ class AngularControllerTest < ActionController::TestCase
           :enable_opendata_ga_tracking => 'UA-1234-567890'
         }
       )
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_match(/_gaSocrata\('create', 'UA-1234-567890', 'auto', 'socrata'\);/, @response.body)
     end
   end
@@ -444,4 +464,9 @@ class AngularControllerTest < ActionController::TestCase
   def v1_pages_for_dataset
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-pages-for-dataset.json")).with_indifferent_access
   end
+
+  def vif_fixture_string
+    File.read("#{Rails.root}/test/fixtures/vif.json")
+  end
+
 end

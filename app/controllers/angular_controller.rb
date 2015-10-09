@@ -14,11 +14,7 @@ class AngularController < ActionController::Base
 
   layout 'angular'
 
-  rescue_from ActionView::MissingTemplate do
-    render :status => '400', :nothing => true, :content_type => 'text/html'
-  end
-
-  def serve_app
+  def data_lens
     raise 'The "app" parameter is required.' unless request[:app]
 
     # If we're reaching the data lens page via an SEO-friendly URL,
@@ -117,7 +113,6 @@ class AngularController < ActionController::Base
     end
 
     @domain_metadata = domain_metadata
-
   end
 
   def visualization_add
@@ -140,6 +135,19 @@ class AngularController < ActionController::Base
 
     # Fetch dataset metadata
     begin
+      # Find all standalone visualizations based on this dataset
+      related_views = View.find(dataset_id).find_related(1, 1000)
+      related_standalone_visualizations = related_views.select do |view|
+        view.displayType == 'data_lens_chart' || view.displayType == 'data_lens_map'
+      end
+
+      # Map all standalone visualizations to synthetic Page metadata
+      standalone_visualization_manager = StandaloneVisualizationManager.new
+      @related_visualizations = related_standalone_visualizations.map do |view|
+        vif = JSON::parse(view.displayFormat.visualization_interchange_format_v1).with_indifferent_access
+        standalone_visualization_manager.page_metadata_from_vif(vif, dataset_id, {})
+      end
+
       @dataset_metadata = fetch_dataset_metadata(dataset_id)
     rescue AuthenticationRequired
       return redirect_to_login
@@ -155,8 +163,6 @@ class AngularController < ActionController::Base
       report_error(error_class, error_message)
       return render_500
     end
-
-    render 'serve_app'
   end
 
   private

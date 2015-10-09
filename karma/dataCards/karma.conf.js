@@ -135,6 +135,9 @@ module.exports = function ( karma ) {
       'app/styles/dataCards/theme/default.scss',
       { pattern: 'public/stylesheets/images/**/*.{jpg,png}', watched: false, included: false, served: true },
 
+      /* TEST CONFIGURATION */
+      'karma/chai-configuration.js',
+
       /* TEST MOCKS */
 
       /* Test datasets */

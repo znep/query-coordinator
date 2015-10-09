@@ -385,6 +385,8 @@ en:
           bad_dates: Chart cannot be rendered due to invalid date values.
           default: Chart cannot be rendered.
           no_data: Chart cannot be rendered with no values.
+      related_visualization_selector:
+        based_on_column: "Based on {0}"
   controls:
     browse:
       actions:

@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="span7">
+  <div ng-class="disableVisualizationTypeSelector ? 'span12' : 'span7'">
     <div class="add-card-select-column">
       <soc-select class="column-selector" ng-model="addCardSelectedColumnFieldName">
         <soc-option
@@ -33,6 +33,7 @@
         <card model="selectedCardModel"
           interactive="false"
           card-draggable="false"
+          where-clause="whereClause"
           class="card preview">
         </card>
         <div class="add-card-controls">
@@ -47,7 +48,7 @@
       </div>
     </div>
   </div>
-  <div class="span5 customize-card-options">
+  <div class="span5 customize-card-options" ng-if="!disableVisualizationTypeSelector">
     <visualization-type-selector
       card-model="selectedCardModel"
       supported-card-types="supportedCardTypes"

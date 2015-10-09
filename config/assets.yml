@@ -717,7 +717,7 @@ javascripts:
     - public/javascripts/angular/common/**/*.js
 
   # Angular apps served from the Angular controller.
-  # These packages are referenced via the :app parameter to serve_app.
+  # These packages are referenced via the :app parameter to data_lens.
   angular-app-dataCards:
     - public/javascripts/util/typed-arrays.js
     - public/javascripts/util/polyfills.js

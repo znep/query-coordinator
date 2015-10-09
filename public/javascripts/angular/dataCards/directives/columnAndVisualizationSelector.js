@@ -1,7 +1,16 @@
 (function() {
   'use strict';
 
-  function columnAndVisualizationSelector(Constants, Card, Dataset, FlyoutService, DatasetColumnsService, $log) {
+  /**
+   * UI for configuring a visualization.
+   *
+   * The scope event 'card-model-selected' is emitted
+   * when the user selects a visualization or changes
+   * visualization settings. It is up to the consumer
+   * to decide when the user has finished editing
+   * (for example, an OK button).
+   */
+  function columnAndVisualizationSelector(Card, DatasetColumnsService, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -12,12 +21,15 @@
         // Optional, if set will limit available card types to the given list.
         supportedCardTypes: '=?',
         // Override the DataLens-specific message about adding a new card
-        addVisualizationPrompt: '=?'
+        addVisualizationPrompt: '=?',
+        // Optional whereClause to pass to card.
+        whereClause: '=?',
+        addCardSelectedColumnFieldName: '='
       },
       templateUrl: '/angular_templates/dataCards/columnAndVisualizationSelector.html',
-      link: function(scope) {
+      link: function(scope, element, attr) {
 
-        scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$(scope));
+        scope.disableVisualizationTypeSelector = attr.hasOwnProperty('disableVisualizationTypeSelector');
 
         /************************
         * Add new card behavior *
@@ -79,29 +91,19 @@
             };
           });
 
-        scope.$bindObservable('availableColumns', datasetColumnsInfo$.pluck('available'));
-        scope.$bindObservable('unsupportedColumns', datasetColumnsInfo$.pluck('unsupported'));
+        var addCardSelectedColumnFieldName$ = scope.$observe('addCardSelectedColumnFieldName');
+        var columns$ = scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined);
+        var availableColumns$ = datasetColumnsInfo$.filter(_.isDefined).pluck('available');
 
-        scope.addCardSelectedColumnFieldName = null;
-        scope.selectedCardModel = null;
-        scope.availableCardTypes = [];
-        scope.addVisualizationPrompt = scope.addVisualizationPrompt || 'addCardDialog.prompt';
-
-        var selectedCardModel$ = scope.$observe('selectedCardModel');
-
-        Rx.Observable.subscribeLatest(
-          scope.$observe('addCardSelectedColumnFieldName'),
-          datasetColumnsInfo$.filter(_.isDefined).pluck('available'),
-          datasetColumnsInfo$.filter(_.isDefined).pluck('adjustedDefaultCardTypeHash'),
-          scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
-          function(fieldName, availableColumns, adjustedDefaultCardTypeHash, columns) {
-
-            var serializedCard;
+        var column$ = Rx.Observable.combineLatest(
+          columns$,
+          availableColumns$,
+          addCardSelectedColumnFieldName$,
+          function(columns, availableColumns, fieldName) {
             var column;
 
-            if (_.isNull(fieldName)) {
-              scope.selectedCardModel = null;
-              return;
+            if (!fieldName) {
+              return null;
             }
 
             if (_.include(availableColumns, fieldName)) {
@@ -110,38 +112,78 @@
 
             if (_.isUndefined(column)) {
               $log.error('Could not get available column by fieldName.');
-              scope.selectedCardModel = null;
-              return;
+              return null;
             }
 
-            scope.availableCardTypes = column.availableCardTypes;
-
-            // TODO: Enforce some kind of schema validation at this step.
-            serializedCard = {
-              'cardSize': parseInt(scope.cardSize, 10),
-              'expanded': false,
-              'fieldName': fieldName
-            };
-
-            serializedCard.cardType = adjustedDefaultCardTypeHash[fieldName];
-            // TODO: We're going towards passing in serialized blobs to Model constructors.
-            // Revisit this line when that effort reaches Card.
-            scope.selectedCardModel = Card.deserialize(scope.page, serializedCard);
+            return column;
           }
         );
 
-        scope.$watch('selectedCardModel', function(selectedCardModel) {
-          scope.$emit('card-model-selected', selectedCardModel);
-        });
+        var selectedCardModel$ = Rx.Observable.combineLatest(
+          addCardSelectedColumnFieldName$,
+          column$,
+          datasetColumnsInfo$.filter(_.isDefined).pluck('adjustedDefaultCardTypeHash'),
+          function(fieldName, column, adjustedDefaultCardTypeHash) {
+            var serializedCard;
 
-        scope.onCustomizeCard = function(selectedCardModel) {
-          scope.$emit('customize-card-with-model', selectedCardModel);
-        };
+            if (!column) {
+              return null;
+            } else {
+              // TODO: Enforce some kind of schema validation at this step.
+              serializedCard = {
+                'cardSize': parseInt(scope.cardSize, 10),
+                'expanded': false,
+                'fieldName': fieldName,
+                'cardType': adjustedDefaultCardTypeHash[fieldName]
+              };
 
+              // TODO: We're going towards passing in serialized blobs to Model constructors.
+              // Revisit this line when that effort reaches Card.
+              return Card.deserialize(scope.page, serializedCard);
+            }
+          }
+        ).share();
+
+        scope.selectedCardModel = null;
+        scope.availableCardTypes = [];
+        scope.addVisualizationPrompt = scope.addVisualizationPrompt || 'addCardDialog.prompt';
+
+        scope.$bindObservable(
+          'availableCardTypes',
+          column$.map(function(column) {
+            if (column) {
+              return column.availableCardTypes;
+            } else {
+              return [];
+            }
+          })
+        );
+
+        scope.$bindObservable('availableColumns', datasetColumnsInfo$.pluck('available'));
+        scope.$bindObservable('unsupportedColumns', datasetColumnsInfo$.pluck('unsupported'));
+        scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$(scope));
+        scope.$bindObservable('selectedCardModel', selectedCardModel$);
         scope.$bindObservable(
           'isCustomizableMap',
           selectedCardModel$.observeOnLatest('isCustomizableMap')
         );
+
+        // When a user selects a column,
+        // emit card-model-selected.
+        // It's not sufficient to simply monitor scope.selectedCardModel
+        // for changes, as that value can change for reasons outside
+        // of the user making a selection inside this directive.
+        // For instance, if the incoming binding of addCardSelectedColumnFieldName
+        // changes, scope.selectedCardModel will be updated to reflect the new
+        // field, but this does not mean the user selected a column.
+        scope.$emitEventsFromObservable(
+          'card-model-selected',
+          selectedCardModel$.sample(scope.$eventToObservable('soc-select-change'))
+        );
+
+        scope.onCustomizeCard = function(selectedCardModel) {
+          scope.$emit('customize-card-with-model', selectedCardModel);
+        };
       }
     };
   }

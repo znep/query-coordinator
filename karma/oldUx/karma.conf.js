@@ -78,6 +78,9 @@ module.exports = function ( karma ) {
       'public/javascripts/plugins/html2markdown.js',
       'public/javascripts/component/util/html-sanitizer-utils.js',
 
+      // Test Configuration
+      'karma/chai-configuration.js',
+
       // Test Files
       'karma/oldUx/**/*.js'
 

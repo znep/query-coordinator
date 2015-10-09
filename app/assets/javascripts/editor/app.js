@@ -23,11 +23,11 @@ $(document).on('ready', function() {
     });
   }
 
-  storyteller.notifyAirbrake = function() {
+  storyteller.notifyAirbrake = function(error) {
     if (!_.isUndefined(storyteller.airbrake)) {
-      storyteller.airbrake.notify(arguments);
+      storyteller.airbrake.notify(error);
     }
-    console.error(arguments);
+    console.error(error);
   };
 
   $(window).error(function(event) {

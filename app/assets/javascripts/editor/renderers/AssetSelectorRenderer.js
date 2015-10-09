@@ -915,7 +915,7 @@
         $(this).trigger('datasetSelected', datasetObj);
       };
 
-      datasetChooserIframe.load(function() {
+      datasetChooserIframe.one('load', function() {
         loadingButton.addClass('hidden');
       });
 
@@ -969,7 +969,6 @@
         // In either case, we should consider the iframe loaded.
         configureVisualizationIframe.
           trigger('visualizationSelected', datasetObj);
-        loadingButton.addClass('hidden');
       };
 
       return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];
@@ -984,7 +983,11 @@
       );
 
       if (currentIframeSrc !== newIframeSrc) {
-        iframeElement.attr('src', newIframeSrc);
+        iframeElement.
+          attr('src', newIframeSrc).
+          one('load', function() {
+            $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
+          });
       }
 
       if (_isVisualizationValid(componentProperties)) {

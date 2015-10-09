@@ -129,20 +129,22 @@
           'line-width: 2.0;' +
           'line-color: #000;' +
           'line-opacity:0.85;' +
-          'marker-width: 15.0;' +
+          'marker-width: 8.0;' +
           'marker-fill: #fb5e2e;' +
           'marker-line-color: #000;' +
           'marker-line-width: 2.0;' +
         '}' +
         '#multipolygon, #polygon {' +
-          'polygon-fill: #a9a9a9;' +
+          'polygon-fill: #AAAAAA;' +
           'polygon-opacity: 0.5;' +
-          'line-width: 0.5;' +
-          'line-color: #000;' +
+          'line-width: 1;' +
+          'line-opacity: 0.5;' +
+          'line-color: #000000;' +
         '}' +
         '#multilinestring, #linestring {' +
-          'line-width: 5.0;' +
-          'line-color: #7f7fff;' +
+          'line-width: 2.0;' +
+          'line-color: #0000ff;' +
+          'line-opacity: 0.5;' +
         '}'
       );
       var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=50000&$style=' + style;

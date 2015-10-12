@@ -13,8 +13,6 @@ describe('socrata.visualizations.TimelineChart', function() {
   // the affected tests in that platform only.
   var isSafari6 = /Mozilla\/5\.0.*AppleWebKit.*Version\/6\.[0-9.]+ Safari/.test(navigator.userAgent);
 
-  var mockWindowStateService;
-  var testHelpers;
   var rootScope;
   var scope = {};
   var timeout;
@@ -502,16 +500,14 @@ describe('socrata.visualizations.TimelineChart', function() {
     expect(unfilteredPath).to.not.equal(filteredPath);
   });
 
-  xit('should highlight the chart when the mouse is moved over the chart display', function() {
+  it('should highlight the chart when the mouse is moved over the chart display', function() {
     var chart = createTimelineChart(640, false);
 
     var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-    mockWindowStateService.scrollPosition$.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-    mockWindowStateService.mousePosition$.onNext({
+    testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
       clientX: 320,
-      clientY: 100,
+      clientY: chart.element.offset().top + 100,
       target: $('.timeline-chart-highlight-target')[0]
     });
 
@@ -991,50 +987,37 @@ describe('socrata.visualizations.TimelineChart', function() {
 
     });
 
-    xdescribe('and the mouse is hovering over a label', function() {
+    describe('and the mouse is hovering over a label', function() {
 
       it('should emphasize the hovered-over datum', function() {
 
-        var chart = createTimelineChart(640, false);
-
-        scope.precision = 'DAY';
-        scope.chartData = hiddenLabelTestData;
-        scope.$apply();
+        var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
 
         var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
         expect(datumLabelNotVisible).to.equal(true);
 
-        mockWindowStateService.scrollPosition$.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-        mockWindowStateService.mousePosition$.onNext({
+        testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 360,
-          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          clientY: $('#chart').offset().top + $('#chart').height() - 15,
           target: $('.timeline-chart-highlight-target')[0]
         });
 
         var datumLabelVisible = $('.datum-label').css('display') === 'block';
         expect(datumLabelVisible).to.equal(true);
-
       });
 
       it('should position the datum label correctly in the middle of the highlighted region', function() {
 
-        var chart = createTimelineChart(640, false);
+        var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
         var highlightTarget = $('.timeline-chart-highlight-target');
         var datumLabel = $('.datum-label');
         var middleOfHighlightTarget;
         var middleOfDatumLabel;
         var TOLERANCE = 2;
 
-        scope.precision = 'DAY';
-        scope.chartData = hiddenLabelTestData;
-        scope.$apply();
-
-        mockWindowStateService.scrollPosition$.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-        mockWindowStateService.mousePosition$.onNext({
+        testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 360,
-          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          clientY: $('#chart').offset().top + $('#chart').height() - 15,
           target: highlightTarget[0]
         });
 
@@ -1045,70 +1028,54 @@ describe('socrata.visualizations.TimelineChart', function() {
 
       it('should correctly position the datum label on the right edge of the chart', function() {
 
-        var chart = createTimelineChart(640, false);
+        var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
         var highlightTarget = $('.timeline-chart-highlight-target');
         var datumLabel = $('.datum-label');
         var datumLabelRightEdge;
         var TOLERANCE = 2;
+        var chartOffset = chart.element.offset().left;
 
-        scope.precision = 'DAY';
-        scope.chartData = hiddenLabelTestData;
-        scope.$apply();
-
-        mockWindowStateService.scrollPosition$.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-        mockWindowStateService.mousePosition$.onNext({
+        testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 630,
-          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          clientY: chart.element.offset().top + chart.element.height() - 15,
           target: highlightTarget[0]
         });
 
         datumLabelRightEdge = datumLabel.offset().left + datumLabel.width();
-        expect(datumLabelRightEdge - 640).to.be.within(-TOLERANCE, TOLERANCE);
+        expect(datumLabelRightEdge - 640 - chartOffset).to.be.within(-TOLERANCE, TOLERANCE);
       });
 
       it('should correctly position the datum label on the left edge of the chart', function() {
 
-        var chart = createTimelineChart(640, false);
+        var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
         var highlightTarget = $('.timeline-chart-highlight-target');
         var datumLabel = $('.datum-label');
         var TOLERANCE = 2;
+        var chartOffset = chart.element.offset().left;
 
-        scope.precision = 'DAY';
-        scope.chartData = hiddenLabelTestData;
-        scope.$apply();
-
-        mockWindowStateService.scrollPosition$.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-        mockWindowStateService.mousePosition$.onNext({
+        testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 10,
-          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          clientY: $('#chart').offset().top + $('#chart').height() - 15,
           target: highlightTarget[0]
         });
 
-        expect(datumLabel.offset().left).to.be.within(-TOLERANCE, TOLERANCE);
+        expect(datumLabel.offset().left - chartOffset).to.be.within(-TOLERANCE, TOLERANCE);
       });
 
     });
 
-    xdescribe('and the mouse is hovering over a labeled datum', function() {
+    describe('and the mouse is hovering over a labeled datum', function() {
 
       it('should emphasize the hovered-over datum', function() {
 
-        var chart = createTimelineChart(640, false);
-
-        scope.precision = 'DAY';
-        scope.chartData = hiddenLabelTestData;
-        scope.$apply();
+        var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
 
         var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
         expect(datumLabelNotVisible).to.equal(true);
 
-        mockWindowStateService.scrollPosition$.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-        mockWindowStateService.mousePosition$.onNext({
+        testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 360,
-          clientY: 100,
+          clientY: chart.element.offset().top + 100,
           target: $('.timeline-chart-highlight-target')[0]
         });
 
@@ -1119,23 +1086,17 @@ describe('socrata.visualizations.TimelineChart', function() {
 
     });
 
-    xdescribe('and the mouse is hovering over the labels in an unlabeled area', function() {
+    describe('and the mouse is hovering over the labels in an unlabeled area', function() {
 
       it('should highlight the chart', function() {
 
-        var chart = createTimelineChart(640, false);
-
-        scope.precision = 'DAY';
-        scope.chartData = hiddenLabelTestData;
-        scope.$apply();
+        var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
 
         var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-        mockWindowStateService.scrollPosition$.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-        mockWindowStateService.mousePosition$.onNext({
+        testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 360,
-          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          clientY: $('#chart').offset().top + $('#chart').height() - 15,
           target: $('.timeline-chart-highlight-target')[0]
         });
 
@@ -1148,20 +1109,14 @@ describe('socrata.visualizations.TimelineChart', function() {
 
       it('should render a bolded label for the datum and dim every x-axis tick label', function() {
 
-        var chart = createTimelineChart(640, false);
-
-        scope.precision = 'DAY';
-        scope.chartData = hiddenLabelTestData;
-        scope.$apply();
+        var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
 
         var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
         expect(datumLabelNotVisible).to.equal(true);
 
-        mockWindowStateService.scrollPosition$.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-        mockWindowStateService.mousePosition$.onNext({
+        testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 320,
-          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          clientY: $('#chart').offset().top + $('#chart').height() - 15,
           target: $('.timeline-chart-highlight-target')[0]
         });
 
@@ -1172,23 +1127,17 @@ describe('socrata.visualizations.TimelineChart', function() {
 
     });
 
-    xdescribe('and the mouse is hovering over the chart in an unlabeled area', function() {
+    describe('and the mouse is hovering over the chart in an unlabeled area', function() {
 
       it('should highlight the chart', function() {
 
-        var chart = createTimelineChart(640, false);
-
-        scope.precision = 'DAY';
-        scope.chartData = hiddenLabelTestData;
-        scope.$apply();
+        var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
 
         var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-        mockWindowStateService.scrollPosition$.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-        mockWindowStateService.mousePosition$.onNext({
+        testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 360,
-          clientY: 100,
+          clientY: chart.element.offset().top + 100,
           target: $('.timeline-chart-highlight-target')[0]
         });
 
@@ -1201,20 +1150,14 @@ describe('socrata.visualizations.TimelineChart', function() {
 
       it('should render a bolded label for the datum and dim every x-axis tick label', function() {
 
-        var chart = createTimelineChart(640, false);
-
-        scope.precision = 'DAY';
-        scope.chartData = hiddenLabelTestData;
-        scope.$apply();
+        var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
 
         var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
         expect(datumLabelNotVisible).to.equal(true);
 
-        mockWindowStateService.scrollPosition$.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-        mockWindowStateService.mousePosition$.onNext({
+        testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 320,
-          clientY: 100,
+          clientY: chart.element.offset().top + 100,
           target: $('.timeline-chart-highlight-target')[0]
         });
 
@@ -1234,18 +1177,15 @@ describe('socrata.visualizations.TimelineChart', function() {
       var chart1 = createTimelineChart(640, false);
       var chart2 = createTimelineChart(640, false);
 
-      mockWindowStateService.scrollPosition$.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
-      mockWindowStateService.mousePosition$.onNext({
+      testHelpers.fireMouseEvent(chart1.element.find('.timeline-chart').get(0), 'mousemove', {
         clientX: 320,
-        clientY: 100,
+        clientY: chart1.element.offset().top + 100,
         target: $('#test-timeline-chart .timeline-chart-highlight-target')[0]
       });
 
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-      mockWindowStateService.mousePosition$.onNext({
+      testHelpers.fireMouseEvent(chart2.element.find('.timeline-chart').get(0), 'mousemove', {
         clientX: 370,
-        clientY: 100,
+        clientY: chart2.element.offset().top + 100,
         target: $('#test-timeline-chart .timeline-chart-highlight-target')[0]
       });
 
@@ -1261,7 +1201,7 @@ describe('socrata.visualizations.TimelineChart', function() {
 
   // TODO: load a filtered timeline chart correctly
 
-  xdescribe('flyouts', function() {
+  describe('flyouts', function() {
 
     var chart;
     var chartHeight;
@@ -1277,20 +1217,13 @@ describe('socrata.visualizations.TimelineChart', function() {
       chart.element.css({
         'margin-top': 200
       });
-      flyout = $('#uber-flyout');
-      hint = flyout.find('.hint');
-      chartTop = chart.offset().top;
+      flyout = $('#socrata-flyout');
+      hint = flyout.find('.socrata-flyout-hint');
+      chartTop = chart.element.offset().top;
     });
 
     function simulateMouseover(x, y, target) {
-      mockWindowStateService.scrollPosition$.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-      mockWindowStateService.mousePosition$.onNext({
-        clientX: x,
-        clientY: y,
-        target: target
-      });
-      mockWindowStateService.mousePosition$.onNext({
+      testHelpers.fireMouseEvent(chart.element.get(0), 'mousemove', {
         clientX: x,
         clientY: y,
         target: target
@@ -1301,7 +1234,7 @@ describe('socrata.visualizations.TimelineChart', function() {
      * @param {Boolean} interval - Whether or not we are hovering over an interval.
      */
     function expectFlyoutPosition(interval) {
-      var flyoutTargetDimensions = $('.timeline-chart-flyout-target').get(0).getBoundingClientRect();
+      var flyoutTargetDimensions = $('.timeline-chart-flyout-target')[0].getBoundingClientRect();
       var flyoutTargetMiddle = flyoutTargetDimensions.left + (flyoutTargetDimensions.width / 2);
       var hintOffsetLeft = hint.offset().left;
       var flyoutTargetTop = flyoutTargetDimensions.top;
@@ -1328,27 +1261,6 @@ describe('socrata.visualizations.TimelineChart', function() {
       var labelTarget = $('.x-tick-label')[0];
       simulateMouseover(chartWidth / 2, (chartHeight - 5) + chartTop, labelTarget);
       expect(flyout.is(':visible')).to.be.true;
-    });
-
-    it('should be positioned correctly on the timeline path if hovering over chart display', function() {
-      var highlightTarget = $('.timeline-chart-highlight-target')[0];
-      simulateMouseover(chartWidth / 2, (chartHeight / 2) + chartTop, highlightTarget);
-      expectFlyoutPosition();
-    });
-
-    it('should be positioned correctly above the timeline if hovering on a large interval', function() {
-      var labelTarget = $('.x-tick-label')[0];
-      simulateMouseover(chartWidth / 2, (chartHeight - 5) + chartTop, labelTarget);
-      expectFlyoutPosition(true);
-    });
-
-    it('should have the correct title', function() {
-      var labelTarget = $('.x-tick-label')[0];
-      var labelTitle = $(labelTarget).attr('data-flyout-label');
-      simulateMouseover(chartWidth / 2, (chartHeight - 5) + chartTop, labelTarget);
-
-      var flyoutTitle = flyout.find('.flyout-title').text();
-      expect(flyoutTitle).to.equal(labelTitle);
     });
   });
 });

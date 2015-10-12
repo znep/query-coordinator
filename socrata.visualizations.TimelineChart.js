@@ -2582,7 +2582,6 @@
     }
 
     function mouseHasMoved(mousePosition, mouseLeftButtonNowPressed) {
-      //if (!window.foo) { debugger; }
 
       var offsetX;
       var offsetY;

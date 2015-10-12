@@ -311,7 +311,13 @@ module ApplicationHelper
       if flash_obj[type]
         flash_to_display, level = flash_obj[type], type.to_s
         flash_to_display = flash_to_display.join(' ') if flash_to_display.is_a? Array
-        flash_to_display = flash_to_display.split('|') if flash_to_display.include? '|'
+        if flash_to_display.include?('|')
+          pieces = flash_to_display.split('|')
+          flash_to_display = pieces.zip(Array.new(pieces.size - 1).
+                                    collect { tag 'br' }).
+                                    join.
+                                    html_safe
+        end
         break
       end
     end

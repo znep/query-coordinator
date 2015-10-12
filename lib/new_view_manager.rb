@@ -36,7 +36,6 @@ class NewViewManager
   # 4x4 as itself. Note that it will not create the requisite page_metadata for
   # that url to serve anything meaningful.
   def create(page_metadata={}, category=nil, v2_data_lens=false)
-    page_metadata = ActiveSupport::HashWithIndifferentAccess.new(page_metadata)
     new_view = v2_data_lens ?
       persist_v2_data_lens_to_metadb(page_metadata, category) :
       create_v1_data_lens_in_phidippides(page_metadata, category)
@@ -126,13 +125,16 @@ class NewViewManager
       },
       :displayType => 'data_lens',
       :displayFormat => {
-        :data_lens_page_metadata => page_metadata.reject { |key, _| key == 'moderationStatus' }
+        :data_lens_page_metadata => page_metadata.reject { |key, _|
+          PageMetadataManager.keys_to_skip.include?(key)
+        }
       },
       :query => {},
       :flags => ['default'],
       :id => page_metadata['datasetId'],
       :originalViewId => page_metadata['datasetId'],
-      :category => category
+      :category => category,
+      :provenance => page_metadata['provenance']
     }
 
     begin

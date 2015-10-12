@@ -27,6 +27,7 @@
             <span class="hide" itemprop="name"><%= v.name %></span>
             <a itemprop="url" href="<%= v.link %>" class="name"
               rel="<%= rel_type %>"><%= v.name %></a>
+            <%= render :partial => 'datasets/browse_provenance', :locals => { :v => v } %>
             <%- v.categories.each do |cat| -%>
               <span class="category infoItem"><%= cat %></span>
             <%- end -%>

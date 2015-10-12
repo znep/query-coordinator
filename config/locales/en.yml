@@ -223,8 +223,8 @@ en:
       last_updated:
         label: last updated
       lens_type:
-        community: community data lens
-        official: official data lens
+        community: community
+        official: official
       manage_lens_dialog:
         dataset_private_page_private: Because this page’s source dataset is set to <b>Private</b>, this page cannot be made Public.  Only those with privileged access will be able to see it, and it will not appear in the public catalog.
         dataset_private_page_public: <span class="icon-warning"></span> This page’s source dataset is set to <b>Private</b>, so even though this page is set to Public, anyone without access to the source dataset will not be able to see it. It will still appear in the public catalog. You should consider setting the dataset to Public, or setting this page to Private.
@@ -241,6 +241,9 @@ en:
           title: Owner
           warning: You must select an Owner for this Dataset in order to proceed.
         title: Manage
+        provenance:
+          title: Official View
+          description: Selecting this option will give the view a special demarcation indicating that it is an Official View
         sharing:
           title: Shared with
           add_new: Add New

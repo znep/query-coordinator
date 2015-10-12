@@ -5,6 +5,7 @@
     return {
       scope: {
         'cardCount': '=',
+        'currentUserHasRights': '=',
         'editMode': '=',
         'hasChanges': '=',
         'isEphemeral': '=',

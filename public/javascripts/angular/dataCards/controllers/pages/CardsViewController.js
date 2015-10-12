@@ -271,6 +271,14 @@
 
     var currentUser$ = Rx.Observable.returnValue(window.currentUser);
 
+    var isCurrentUserDomainUser$ =
+      currentUser$.
+      map(function(user) {
+        return _.get(user, 'rights.length', 0) > 0;
+      });
+
+    $scope.$bindObservable('currentUserHasRights', isCurrentUserDomainUser$);
+
     var isCurrentUserAdminOrPublisher$ =
       currentUser$.
       map(function(user) {
@@ -511,13 +519,6 @@
     }
 
     $scope.savePage = function() {
-      if ($scope.isEphemeral) {
-        return $scope.savePageAs(
-          $.trim(page.getCurrentValue('name')),
-          $.trim(page.getCurrentValue('description'))
-        );
-      }
-
       var savePromise;
       if ($scope.hasChanges) {
         try {
@@ -554,14 +555,15 @@
       }
     };
 
-    $scope.savePageAs = function(name, description, moderationStatus) {
+    $scope.savePageAs = function(name, description, moderationStatus, provenance) {
       var saveStatus$ = new Rx.BehaviorSubject();
       var savePromise;
 
       try {
         var newPageSerializedBlob = _.extend(page.serialize(), {
           name: $.trim(name),
-          description: description
+          description: description,
+          provenance: provenance
         });
         if (!_.isUndefined(moderationStatus)) {
           newPageSerializedBlob.moderationStatus = moderationStatus;

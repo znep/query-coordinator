@@ -367,7 +367,6 @@ $data_lens_icon_color: #80acca;
           div.titleLine {
             //white-space: nowrap
             //overflow: hidden
-         
           }
           padding: {
             bottom: 0;
@@ -387,6 +386,20 @@ $data_lens_icon_color: #80acca;
             &.federation-source {
               font-size: 1em;
               margin: 0.25em 0;
+            }
+            &.browse-listing-provenance {
+              padding: 0.2rem 0.3rem;
+              text-transform: capitalize;
+              color: #333;
+              background-color: #eee;
+              .icon-check {
+                @include border-radius(100%);
+                font-size: 0.5rem;
+                padding: 0.15rem;
+                margin-right: 0.5rem;
+                color: white;
+                background-color: #68b0cc;
+              }
             }
           }
           .description {
@@ -861,14 +874,29 @@ $data_lens_icon_color: #80acca;
       font-size: 1em;
     }
     .browse-listing-titleinfo {
-      margin-bottom: 0.5em;
+      margin-bottom: 0.75em;
+    }
+    .browse-listing-provenance {
+      padding: 0.3em;
+      text-transform: capitalize;
+      color: #444;
+      background-color: #eee;
+      margin-right: 0.5em;
+      .icon-check {
+        @include border-radius(100%);
+        font-size: 0.5em;
+        padding: 0.25em;
+        margin-right: 0.5em;
+        color: white;
+        background-color: #68b0cc;
+      }
     }
     .browse-listing-category {
       @include border-radius(0.2em);
       background-color: #eee;
       color: #444;
       font-size: 1em;
-      padding: 0 0.2em;
+      padding: 0.3em;
     }
     .browse-listing-description {
       @include prefixer(transition, max-height 0.5s ease);

@@ -143,6 +143,18 @@ $tool-panel-z-index: 1004;
   }
   .tool-panel-input-group {
     padding: 10px 0;
+    &.official-view {
+      label {
+        display: inline-block;
+        font-weight: bold;
+        margin-left: 0.1rem;
+      }
+      .save-as-official-view-description {
+        line-height: normal;
+        margin-top: 0;
+        margin-left: 1.5rem;
+      }
+    }
   }
   .tool-panel-input-group.alt-group-padding {
     padding: 0 0 20px;

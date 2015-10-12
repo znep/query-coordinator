@@ -1164,6 +1164,8 @@ describe('CardsViewController', function() {
     var $scope;
     var NEW_PAGE_NAME = 'my new page name';
     var NEW_PAGE_DESCRIPTION = 'my new page description';
+    var NEW_PAGE_MODERATION_STATUS = undefined;
+    var NEW_PAGE_PROVENANCE = 'OFFICIAL';
 
     beforeEach(function() {
       controllerHarness = makeController();
@@ -1174,7 +1176,7 @@ describe('CardsViewController', function() {
       var saveStub = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
-      var saveEvents = $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      var saveEvents = $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION, NEW_PAGE_MODERATION_STATUS, NEW_PAGE_PROVENANCE);
 
       saveEvents.subscribe(function(event) {
         if (event.status === 'saved') {
@@ -1186,7 +1188,7 @@ describe('CardsViewController', function() {
 
     it('should redirect to the new page URL on success', function(done) {
       mockWindowServiceLocationSeq.onNext(undefined);
-      $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION, NEW_PAGE_MODERATION_STATUS, NEW_PAGE_PROVENANCE);
       mockWindowServiceLocationSeq.subscribe(function(href) {
         if (href) {
           expect(href).to.match(new RegExp('/view/{0}$'.format(TEST_PAGE_ID)));

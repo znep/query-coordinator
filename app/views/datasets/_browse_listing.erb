@@ -22,6 +22,8 @@
         <span class="hide" itemprop="name"><%= v.name %></span>
         <a class="browse-listing-name" href="<%= link %>" itemprop="url" data-search="highlight"><%= v.name %></a>
 
+        <%= render :partial => 'datasets/browse_provenance', :locals => { :v => v } %>
+
         <%- if categories.try(:respond_to?, :each) -%>
           <%- categories.each do |category| -%>
             <span class="browse-listing-category" itemprop="keywords" data-search="highlight"><%= category %></span>

@@ -11,9 +11,10 @@
     return {
       restrict: 'E',
       scope: {
+        currentUserHasRights: '=',
         dialogState: '=',
-        page: '=',
-        domain: '='
+        domain: '=',
+        page: '='
       },
       templateUrl: '/angular_templates/dataCards/saveVisualizationAsDialog.html',
       link: function($scope, element) {

@@ -29,6 +29,7 @@
               <span class="hide" itemprop="name"><%= v.name %></span>
               <a itemprop="url" href="<%= view_url %>" class="name"
                 rel="<%= rel_type %>"><%= v.name %></a>
+              <%= render :partial => 'datasets/browse_provenance', :locals => { :v => v } %>
               <%- if !v.category.blank? -%>
               <span class="category infoItem"><%= v.category_display %></span>
               <%- end -%>

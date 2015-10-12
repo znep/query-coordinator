@@ -137,6 +137,9 @@ This only works for Data Lens/Angular component tests (not old UX).
 #### To run a specific Ruby unit test
     ruby -I test path/to/file.rb -n /regex_matcher_for_your_test_name/
 
+    or for rspec
+    bundle exec rspec path/to/file.rb:line_number
+
 ## Javascript/other asset package management
 
 The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/) 

@@ -102,14 +102,6 @@
               error = xhr.statusText;
             }
 
-            if ( parseInt(xhr.status, 10) === 304) {
-                data = JSON.parse(xhr.responseText);
-
-                return resolve(
-                  _mapQueryResponseToTable(data, nameAlias, valueAlias)
-                );
-            }
-
             return reject({
               status: parseInt(xhr.status, 10),
               message: xhr.statusText,

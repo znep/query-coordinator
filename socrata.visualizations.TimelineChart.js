@@ -418,6 +418,26 @@
         DAY: 'D MMMM YYYY'
       };
 
+      var renderUnit = function(value, rules) {
+        utils.assertHasProperty(rules, 'other');
+        if (_.isNull(value)) {
+          return 'No value';
+        }
+
+        value = Number(value);
+        utils.assert(!_.isNaN(value));
+
+        var resolve = function(rule) {
+          return '{0} {1}'.format(utils.formatNumber(value), rule);
+        };
+
+        if (value === 1 && rules.one) {
+          return resolve(rules.one);
+        } else {
+          return resolve(rules.other);
+        }
+      };
+
       var unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit')) ?
         _lastRenderOptions.unit :
         vif.unit;
@@ -425,20 +445,14 @@
       if (isInterval) {
         payload.title = $target.attr('data-flyout-label');
         var unfilteredValue = $target.attr('data-aggregate-unfiltered');
-        payload.unfilteredValue = '{0} {1}'.format(
-            utils.formatNumber(unfilteredValue),
-            unfilteredValueUnit[unfilteredValue === 1 ? 'one' : 'other']
-            );
+        payload.unfilteredValue = renderUnit(unfilteredValue, unfilteredValueUnit);
         //var filteredValue = $target.attr('data-aggregate-filtered');
         //payload.filteredValue = _.isUndefined(filteredValue) ? null : parseFloat(filteredValue);
       } else if (datumIsDefined) {
         payload.title = currentDatum.hasOwnProperty('flyoutLabel') ?
           currentDatum.flyoutLabel :
           moment(currentDatum.date).format(formatStrings[datasetPrecision]);
-        payload.unfilteredValue = '{0} {1}'.format(
-            utils.formatNumber(Number(currentDatum.unfiltered)),
-            unfilteredValueUnit[currentDatum.unfiltered === 1 ? 'one' : 'other']
-            );
+        payload.unfilteredValue = renderUnit(currentDatum.unfiltered, unfilteredValueUnit);
         //payload.filteredValue = currentDatum.filtered;
       };
 

@@ -394,14 +394,12 @@
      */
 
     function showFlyout(event) {
-      var offsetX = event.clientX - _chartElement.offset().left;
-      //console.log('showFlyout', event.offsetX, offsetX, event.currentTarget);
-
-    //if (offsetX > cachedChartDimensions.width || offsetX < 1) {
-    //  return;
-    //}
-      //highlightChartByMouseOffset(offsetX);
       mouseHasMoved(event, false);
+      var flyoutTarget = _chartElement.find('.timeline-chart-flyout-target');
+
+      if (flyoutTarget.length === 0) {
+        return;
+      }
 
       var $target = $(event.target);
       var isInterval = $target.
@@ -409,7 +407,8 @@
       var datumIsDefined = !(_.isUndefined(currentDatum) || _.isNull(currentDatum));
 
       var payload = {
-        element: _chartElement.find('.timeline-chart-flyout-target').get(0)
+        element: flyoutTarget.get(0),
+        unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL')
       };
 
       var formatStrings = {
@@ -419,19 +418,28 @@
         DAY: 'D MMMM YYYY'
       };
 
+      var unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit')) ?
+        _lastRenderOptions.unit :
+        vif.unit;
+
       if (isInterval) {
-        //payload.title = $target.attr('data-start');
         payload.title = $target.attr('data-flyout-label');
         var unfilteredValue = $target.attr('data-aggregate-unfiltered');
-        payload.unfilteredValue = _.isUndefined(unfilteredValue) ? null : parseFloat(unfilteredValue);
-        var filteredValue = $target.attr('data-aggregate-filtered');
-        payload.filteredValue = _.isUndefined(filteredValue) ? null : parseFloat(filteredValue);
+        payload.unfilteredValue = '{0} {1}'.format(
+            utils.formatNumber(unfilteredValue),
+            unfilteredValueUnit[unfilteredValue === 1 ? 'one' : 'other']
+            );
+        //var filteredValue = $target.attr('data-aggregate-filtered');
+        //payload.filteredValue = _.isUndefined(filteredValue) ? null : parseFloat(filteredValue);
       } else if (datumIsDefined) {
         payload.title = currentDatum.hasOwnProperty('flyoutLabel') ?
           currentDatum.flyoutLabel :
           moment(currentDatum.date).format(formatStrings[datasetPrecision]);
-        payload.unfilteredValue = currentDatum.unfiltered;
-        payload.filteredValue = currentDatum.filtered;
+        payload.unfilteredValue = '{0} {1}'.format(
+            utils.formatNumber(Number(currentDatum.unfiltered)),
+            unfilteredValueUnit[currentDatum.unfiltered === 1 ? 'one' : 'other']
+            );
+        //payload.filteredValue = currentDatum.filtered;
       };
 
       self.emitEvent(

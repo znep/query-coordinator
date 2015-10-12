@@ -358,6 +358,11 @@
      * Data requests
      */
 
+    function handleError(error) {
+      _logError(error);
+      visualization.renderError();
+    }
+
     function _updateData() {
 
       var precisionQueryString = PRECISION_QUERY.format(
@@ -379,10 +384,7 @@
 
       Promise.all([ dataPromise, precisionPromise ]).
         then(renderDataFromPromises).
-        catch(function(error) {
-          _logError(error);
-          visualization.renderError();
-        });
+        catch(handleError);
 
       function mapQueryResponseToPrecision(response) {
         var startIndex = _.indexOf(response.columns, SOQL_PRECISION_START_ALIAS);
@@ -461,17 +463,11 @@
       function mapQueryToPromises(dataQueryString) {
         var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
           query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-          catch(function(error) {
-            _logError(error);
-            visualization.renderError();
-          });
+          catch(handleError);
 
         var filteredSoqlQuery = filteredSoqlDataProvider.
           query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-          catch(function(error) {
-            _logError(error);
-            visualization.renderError();
-          });
+          catch(handleError);
 
         return Promise.all([unfilteredSoqlQuery, filteredSoqlQuery]);
       }

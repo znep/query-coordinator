@@ -35,6 +35,10 @@
         var rowDisplayUnit$ = scope.$observe('rowDisplayUnit');
         var activeFilters$ = scope.$observe('activeFilters');
 
+        if (scope.allowFilterChange) {
+          element.addClass('filterable');
+        }
+
         // The following cached jQuery/d3 selectors are used throughout the
         // directive.
         var jqueryBodyElement = $('body');

@@ -50,6 +50,9 @@ $tick-font-size: 0.75rem;
 
 .histogram-hover-shield {
   fill: transparent;
+}
+
+.filterable .histogram-hover-shield {
   cursor: pointer;
 }
 
@@ -62,7 +65,7 @@ $tick-font-size: 0.75rem;
   stroke-dasharray: 7, 3;
 }
 
-.histogram-brush-clear {
+.filterable .histogram-brush-clear {
   cursor: pointer;
 }
 

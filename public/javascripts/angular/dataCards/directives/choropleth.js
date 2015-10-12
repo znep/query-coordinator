@@ -775,6 +775,10 @@
                     '</div>',
                   '</div>'].join(''),
       link: function choroplethLink(scope, element, attrs) {
+        if (scope.allowFilterChange) {
+          element.addClass('filterable');
+        }
+
         // Merge 'mousemove' and 'mouseleave' events into a single flyout
         // registration stream.
         var registerFlyout$ = Rx.Observable.merge(

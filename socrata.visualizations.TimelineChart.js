@@ -2086,6 +2086,7 @@
         // provided chart data, we need to first check to make sure we
         // won't try to divide by zero and throw an exception instead of
         // rendering if that's the case.
+        utils.assertHasProperty(chartData, 'values.length');
         if (chartData.values.length === 0) {
           throw new Error('Cannot render timeline chart with zero values.');
         }
@@ -2545,7 +2546,7 @@
      */
     function isMouseWithinChartDisplay(offsetX, offsetY) {
 
-      return offsetX > 0 &&
+      return offsetX > 0.5 &&
         offsetX <= cachedChartDimensions.width &&
         offsetY > 0 &&
         offsetY <= cachedChartDimensions.height -

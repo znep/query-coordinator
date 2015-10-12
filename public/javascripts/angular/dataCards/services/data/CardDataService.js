@@ -605,7 +605,9 @@
       },
 
       getChoroplethGeometryLabel: function(shapefileId) {
-        var url = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(shapefileId));
+        var url = $.baseUrl('/api/curated_regions');
+        url.searchParams.set('method', 'getByViewUid');
+        url.searchParams.set('viewUid', shapefileId);
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {

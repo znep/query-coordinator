@@ -37,7 +37,7 @@
 
         // Select match say it to fancy Search.
         scope.selectMatch = function(index) {
-          scope.$emit('intractableList:selectedItem', scope.listData[index + scope.pageNumber * scope.maxResults]);
+          scope.$emit('intractableList:selectedItem', scope.listData[index + scope.pageNumber * scope.maxResults], index);
         };
 
         scope.$watchCollection('[emptySelection, hideEmptySelection]', function(newVals) {

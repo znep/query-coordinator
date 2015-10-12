@@ -1,5 +1,43 @@
 <h2>{{::'manageLensDialog.title' | I18n}}</h2>
 
+<section class="row ownership" ng-controller="ManageLensDialogV2OwnershipController">
+  <label class="span2">{{::'manageLensDialog.ownership.title' | I18n}}</label>
+
+  <div class="contents span10">
+    <input
+      type="text"
+      autocomplete="off"
+      class="ownership-input"
+      ng-model="ownerInput"
+      ng-disabled="!hasPermission"
+      ng-class="{disabled: !hasPermission, error: showWarning}">
+    <span class="icon-warning" ng-show="showWarning"></span>
+
+    <div class="results suggestion-tool-panel tool-panel downwards light left" ng-show="shouldShowOwnershipSuggestions">
+      <div class="tool-panel-main active">
+        <div class="tool-panel-inner-container">
+          <div class="tool-panel-hint"></div>
+
+          <div class="suggestions-status">
+            <div ng-show="suggestionsLoading">
+              <div class="loading-message">{{::'searchCard.loading' | I18n}}</div>
+              <spinner class="spinner"></spinner>
+            </div>
+
+            <span ng-hide="suggestionsLoading">{{suggestionsStatus}}</span>
+          </div>
+
+          <intractable-list
+            ng-if="suggestions"
+            list-data="suggestions"
+            ng-hide="suggestionsLoading">
+          </intractable-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="row sharing" ng-controller="ManageLensDialogV2SharingController" ng-if="shouldShowSharingSection">
   <label class="span2">{{::'manageLensDialog.sharing.title' | I18n}}</label>
   <div class="contents span10">
@@ -78,7 +116,7 @@
   <save-button
     class="dark r-to-l manage-lens-dialog-save"
     ng-click="save()"
-    enabled="!manageLensState.disableCloseDialog && dialogHasChanges"
+    enabled="!manageLensState.disableCloseDialog && dialogHasChanges && !dialogHasErrors"
     save-status="saveStatus"></save-button>
   <button
     ng-disabled="manageLensState.disableCloseDialog"

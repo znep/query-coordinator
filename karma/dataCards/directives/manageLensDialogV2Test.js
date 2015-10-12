@@ -9,7 +9,9 @@ describe('manage-lens dialog v2', function() {
   var ServerConfig;
   var $timeout;
 
+  beforeEach(module('/angular_templates/common/intractableList.html'));
   beforeEach(module('/angular_templates/dataCards/manageLensDialogV2.html'));
+  beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('dataCards/cards.scss'));
   beforeEach(module('dataCards'));
 
@@ -45,7 +47,9 @@ describe('manage-lens dialog v2', function() {
     var pageOverrides = _.extend({pageId: 'asdf-fdsa'}, pageMetadata);
     var datasetOverrides = _.extend({}, datasetMetadata);
     $scope.page = Mockumentary.createPage(pageOverrides, datasetOverrides);
+    $scope.dataset = Mockumentary.createDataset(datasetOverrides);
     $scope.manageLensState = {show: true};
+
     return testHelpers.TestDom.compileAndAppend(
       '<manage-lens-dialog-v2 ng-controller="ManageLensDialogV2Controller" />',
       $scope
@@ -159,16 +163,28 @@ describe('manage-lens dialog v2', function() {
     });
 
     it('should have three options if the page has no moderation status', function() {
+      // handle initialization of ownership component
+      $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });
+      $httpBackend.expectGET(/\/api\/search\/users\.json/).respond({});
+
       var element = createElement({moderationStatus: null});
       expect(element.find('option')).to.have.length(3);
+
+      $httpBackend.flush();
     });
 
     it('should have two options if the page has a moderation status', function() {
+      // handle initialization of ownership component
+      $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });
+      $httpBackend.expectGET(/\/api\/search\/users\.json/).respond({});
+
       var element = createElement({moderationStatus: false});
       expect(element.find('option')).to.have.length(2);
 
       element = createElement({moderationStatus: true});
       expect(element.find('option')).to.have.length(2);
+
+      $httpBackend.flush();
     });
   });
 });

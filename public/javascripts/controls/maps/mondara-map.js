@@ -147,7 +147,7 @@
           'line-opacity: 0.5;' +
         '}'
       );
-      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=50000&$style=' + style;
+      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=80000&$style=' + style;
       return new OpenLayers.Layer.XYZ(layerName, tileUrl, layerOpts);
     },
 

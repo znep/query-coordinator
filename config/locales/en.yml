@@ -153,6 +153,7 @@ en:
           standard: Standard
           title: Map base layer
         feature_map_flannel:
+          default_option: (Default)
           title: Flyout title
           select_column: Select a column
         visualization_options:

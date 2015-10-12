@@ -284,7 +284,7 @@
       return _.include(rights, 'write');
     });
 
-    var userHasEditRights$ = $scope.dataLensVersion === 2 ? userHasWriteRight$ : isCurrentUserAdminOrPublisher$;
+    var userHasEditRights$ = $scope.dataLensVersion >= 2 ? userHasWriteRight$ : isCurrentUserAdminOrPublisher$;
 
     var isCurrentUserOwnerOfDataset$ =
       page.
@@ -308,7 +308,7 @@
 
     $scope.shouldShowManageLens = false;
 
-    if ($scope.dataLensVersion === 2) {
+    if ($scope.dataLensVersion >= 2) {
       $scope.$bindObservable('shouldShowManageLens', userHasWriteRight$);
       initManageLens($scope, page);
     } else {

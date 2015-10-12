@@ -1,7 +1,65 @@
 (function() {
   'use strict';
 
-  function visualizationTypeSelector(Constants, FlyoutService, $log, I18n) {
+  function visualizationTypeSelector(Constants, FlyoutService, $log, I18n, CardDataService) {
+
+    function initializeCuratedRegionSelector(scope, cardModel$, cardType$) {
+      var columns$ = cardModel$.observeOnLatest('page.dataset.columns');
+      var computedColumn$ = cardModel$.observeOnLatest('computedColumn');
+
+      // Only show the dropdown if the card is a choropleth.
+      var isChoropleth = _.partial(_.isEqual, 'choropleth');
+      var showCuratedRegionSelector$ = cardType$.map(isChoropleth);
+      scope.$bindObservable('showCuratedRegionSelector', showCuratedRegionSelector$);
+
+      // Retrieve the list of curated regions, used to populate the dropdown.
+      var curatedRegions$ = Rx.Observable.fromPromise(CardDataService.getCuratedRegions());
+      scope.$bindObservable('curatedRegions', curatedRegions$);
+      scope.$bindObservable('showChoroplethWarning', curatedRegions$.map(_.isEmpty));
+
+      // Set the initial value of the dropdown.
+      var initialCuratedRegion$ = Rx.Observable.combineLatest(
+        columns$,
+        computedColumn$,
+        curatedRegions$,
+        function(columns, computedColumn, curatedRegions) {
+          var defaultCuratedRegion = _.get(_.first(curatedRegions), 'view.id');
+
+          if (!_.isPresent(computedColumn)) {
+            return defaultCuratedRegion;
+          }
+
+          var path = '{0}.computationStrategy.parameters.region'.format(computedColumn);
+          var shapefile = _.get(columns, path);
+
+          if (_.isUndefined(shapefile)) {
+            return defaultCuratedRegion;
+          }
+
+          // Remove the underscore prefix from the computed column's region.
+          return shapefile.substring(1);
+        }).first();
+
+      scope.$bindObservable('selectedCuratedRegion', initialCuratedRegion$);
+
+      // If the value of the dropdown changes, set it on the CardOptions.
+      var selectedCuratedRegion$ = scope.$observe('selectedCuratedRegion');
+
+      Rx.Observable.subscribeLatest(
+        columns$,
+        cardModel$,
+        selectedCuratedRegion$.filter(_.isPresent),
+        function(columns, cardModel, selectedCuratedRegion) {
+          var region = '_{0}'.format(selectedCuratedRegion);
+
+          var computedColumn = _.findKey(columns, function(column) {
+            return _.get(column, 'computationStrategy.parameters.region') === region;
+          });
+
+          cardModel.set('computedColumn', computedColumn);
+        });
+    }
+
     return {
       restrict: 'E',
       scope: {
@@ -48,7 +106,13 @@
           }
         );
 
-        scope.setCardType = function(cardType) {
+        initializeCuratedRegionSelector(scope, cardModel$, cardType$);
+
+        scope.setCardType = function(cardType, event) {
+          if (_.isPresent(event) && $(event.currentTarget).hasClass('disabled')) {
+            return;
+          }
+
           if (_.isNull(scope.cardModel) || !_.contains(scope.availableCardTypes, cardType)) {
             $log.error('Could not set card type of "{0}".'.format(cardType));
             return;
@@ -69,10 +133,13 @@
               flyoutMessage = I18n.addCardDialog.columnChartWarning;
             } else if (scope.showHistogramColumnChartWarning && $(el).hasClass('icon-distribution')) {
               flyoutMessage = I18n.addCardDialog.histogramColumnChartWarning;
+            } else if (scope.showChoroplethWarning && $(el).hasClass('icon-region')) {
+              flyoutMessage = I18n.addCardDialog.choroplethWarning;
             }
 
             return FLYOUT_TEMPLATE.format(flyoutMessage);
           },
+          persistOnMousedown: true,
           destroySignal: scope.$destroyAsObservable(element)
         });
 
@@ -82,6 +149,7 @@
           positionOn: function(el) {
             return $(el).closest('.visualization-type')[0];
           },
+          persistOnMousedown: true,
           destroySignal: scope.$destroyAsObservable(element)
         });
 
@@ -91,6 +159,17 @@
           positionOn: function(el) {
             return $(el).closest('.visualization-type')[0];
           },
+          persistOnMousedown: true,
+          destroySignal: scope.$destroyAsObservable(element)
+        });
+
+        FlyoutService.register({
+          selector: '.icon-region .icon-warning',
+          render: _.constant(FLYOUT_TEMPLATE.format(I18n.addCardDialog.choroplethWarning)),
+          positionOn: function(el) {
+            return el.closest('.visualization-type');
+          },
+          persistOnMousedown: true,
           destroySignal: scope.$destroyAsObservable(element)
         });
       }

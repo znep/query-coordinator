@@ -87,6 +87,8 @@
         scope.availableCardTypes = [];
         scope.addVisualizationPrompt = scope.addVisualizationPrompt || 'addCardDialog.prompt';
 
+        var selectedCardModel$ = scope.$observe('selectedCardModel');
+
         Rx.Observable.subscribeLatest(
           scope.$observe('addCardSelectedColumnFieldName'),
           datasetColumnsInfo$.filter(_.isDefined).pluck('available'),
@@ -138,7 +140,7 @@
 
         scope.$bindObservable(
           'isCustomizableMap',
-          scope.$observe('selectedCardModel').observeOnLatest('isCustomizableMap')
+          selectedCardModel$.observeOnLatest('isCustomizableMap')
         );
       }
     };

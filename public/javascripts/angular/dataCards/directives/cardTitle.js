@@ -13,16 +13,16 @@
         '<div class="title-one-line dynamic-title" ng-show="displayDynamicTitle">{{dynamicTitle}}</div>',
         '<div class="title-one-line custom-title" ng-show="customTitle" ng-bind-html="customTitle"></div>',
         '<div class="title-one-line" ng-hide="customTitle">',
-          '<div class="wrap card-title">{{title}}</div>',
-          '<div class="title-expanded">',
-            '<div class="wrap">{{title}}</div>',
-          '</div>',
+        '  <div class="wrap card-title">{{title}}</div>',
+        '  <div class="title-expanded">',
+        '    <div class="wrap">{{title}}</div>',
+        '  </div>',
         '</div>'
       ].join(''),
 
       link: function($scope) {
         var model$ = $scope.$observe('model').filter(_.isPresent);
-        var customTitle$ = model$.observeOnLatest('customTitle').filter(_.isPresent);
+        var customTitle$ = model$.observeOnLatest('customTitle');
 
         var dynamicTitle$ = PageHelpersService.dynamicAggregationTitle(model$.pluck('page')).
           map(function(title) {

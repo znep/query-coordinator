@@ -81,6 +81,9 @@ enable_api_foundry_pane:
 enable_data_lens_other_views:
   description: Show the "other views of this data" button in the upper left of Data Lens pages (only for admins and publishers for now). Will also enable the "Save As" button on the Customize bar of the Data Lens pages.
   defaultValue: false
+enable_data_lens_page_metadata_migrations:
+  description: Lazily migrate data lens page metadata schemas on each request.
+  defaultValue: true
 enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false

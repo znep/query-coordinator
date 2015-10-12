@@ -4,22 +4,22 @@
   function CardVisualizationChoroplethHelpers(Constants, ServerConfig, $log) {
 
     /**
-     * Extracts the shapeFile from a dataset metadata column.
+     * Extracts the shapefile from a dataset metadata column.
      *
      * @param {Object} column
      *
-     * @return {String} shapeFile
+     * @return {String} shapefile
      */
     function extractShapeFileFromColumn(column) {
 
       function reportMissingProperty(property) {
         $log.error(
-          'Could not determine column shapeFile: "{0}" not present on column "{1}".'.
+          'Could not determine column shapefile: "{0}" not present on column "{1}".'.
           format(property, column.name)
         );
       }
 
-      var shapeFile = null;
+      var shapefile = null;
 
       if (!column.hasOwnProperty('computationStrategy')) {
         reportMissingProperty('computationStrategy');
@@ -28,10 +28,10 @@
       } else if (!column.computationStrategy.parameters.hasOwnProperty('region')) {
         reportMissingProperty('region');
       } else {
-        shapeFile = column.computationStrategy.parameters.region.replace(/_/, '');
+        shapefile = column.computationStrategy.parameters.region.replace(/_/, '');
       }
 
-      return shapeFile;
+      return shapefile;
 
     }
 
@@ -76,7 +76,7 @@
     }
 
     /**
-     * Creates a slimmed-down version of the supplied geojson shapeFile that
+     * Creates a slimmed-down version of the supplied geojson shapefile that
      * includes per-region aggreagate data and the preferred geometryLabel.
      *
      * @param {String} geometryLabel - The name of the property that should be

@@ -84,6 +84,14 @@ class PageMetadataManager
       page_metadata[:shares] = View.new(result).shares
       page_metadata[:rights] = result[:rights]
       page_metadata[:displayType] = result[:displayType]
+
+      old_version = page_metadata[:version]
+      page_metadata = migrated_page_metadata(page_metadata)
+
+      if old_version != page_metadata[:version]
+        update_metadb_page_metadata(page_metadata, result)
+      end
+
       page_metadata
     else
       phiddy_result = phidippides.fetch_page_metadata(id, options).with_indifferent_access
@@ -320,6 +328,34 @@ class PageMetadataManager
     metadata[:primaryAmountField] ||= nil
     metadata[:largestTimeSpanDays] ||= nil
     metadata
+  end
+
+  def migrated_page_metadata(page_metadata)
+    return page_metadata unless enable_data_lens_page_metadata_migrations?
+
+    version = page_metadata[:version]
+    return page_metadata unless version.present?
+
+    migrations = DataLensMigrations.active_migrations
+    return page_metadata unless migrations.present?
+
+    while version < migrations.keys.max do
+      version += 1
+      migration = migrations[version]
+
+      begin
+        page_metadata = migration.call(page_metadata)
+      rescue DataLensMigrations::DataLensMigrationException => exception
+        Airbrake.notify(exception)
+        Rails.logger.error(exception)
+        version -= 1
+        break
+      end
+    end
+
+    page_metadata[:version] = version
+
+    page_metadata
   end
 
   def initialize_metadata_key_names
@@ -591,4 +627,7 @@ class PageMetadataManager
     dataset_category
   end
 
+  def enable_data_lens_page_metadata_migrations?
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_data_lens_page_metadata_migrations]
+  end
 end

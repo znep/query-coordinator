@@ -18,9 +18,10 @@
         $scope.$bindObservable(
           'cardType',
           Rx.Observable.combineLatest(
+            model$,
             model$.observeOnLatest('cardType'),
             model$.observeOnLatest('column'),
-            function(cardType, column) {
+            function(model, cardType, column) {
 
               if (!column.hasOwnProperty('defaultCardType')) {
                 throw new Error(
@@ -37,6 +38,9 @@
                   format(JSON.stringify(column))
                 );
               }
+
+              // When the card type changes, clear custom titles.
+              model.set('customTitle', undefined);
 
               // If the card metadata did not include an explicit cardType,
               // the Card model will have set it to null as a default. In

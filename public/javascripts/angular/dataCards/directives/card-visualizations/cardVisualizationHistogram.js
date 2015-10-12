@@ -82,7 +82,7 @@
         });
 
         function convertFiltersToWhereClauseFragments(cardFilter) {
-          return _.invoke(cardFilter.filters, 'generateSoqlWhereFragment', cardFilter.fieldName);
+          return _.invoke(cardFilter.filters, 'generateSoqlWhereFragment', cardFilter.filteredColumn);
         }
 
         var whereClauseExcludingOwn$ = cardModel$.observeOnLatest('page.activeFilters').

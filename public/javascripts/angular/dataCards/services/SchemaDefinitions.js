@@ -182,6 +182,7 @@
           'required': ['user', 'publisher']
         }
       );
+
       datasetPagesMetadataSchemas.addSchemaWithVersion(
         '1',
         {
@@ -199,6 +200,43 @@
           }
         }
       );
+
+      datasetPagesMetadataSchemas.addSchemaWithVersion(
+        '2',
+        {
+          'type': 'object',
+          'patternProperties': {
+            '^\\w{4}-\\w{4}$': {
+              'type': 'object',
+              // NOTE: not full validation here. Page blob is properly checked during Page deserialization.
+              'required': ['pageId']
+            }
+          },
+          'not': {
+            'type': 'object',
+            'required': ['user', 'publisher']
+          }
+        }
+      );
+
+      datasetPagesMetadataSchemas.addSchemaWithVersion(
+        '3',
+        {
+          'type': 'object',
+          'patternProperties': {
+            '^\\w{4}-\\w{4}$': {
+              'type': 'object',
+              // NOTE: not full validation here. Page blob is properly checked during Page deserialization.
+              'required': ['pageId']
+            }
+          },
+          'not': {
+            'type': 'object',
+            'required': ['user', 'publisher']
+          }
+        }
+      );
+
 
       var cardMetadataSchemas = schemasService.regarding('card_metadata');
       cardMetadataSchemas.addSchemaWithVersion(
@@ -255,6 +293,25 @@
             'expanded': {'type': 'boolean'},
             'fieldName': {'type': 'string', 'minLength': 1},
             'cardOptions': {'type': 'object'}
+          },
+          'required': ['fieldName', 'cardSize', 'expanded']
+        }
+      );
+
+      cardMetadataSchemas.addSchemaWithVersion(
+        '3',
+        {
+          'type': 'object',
+          'properties': {
+            'activeFilters': {'type': 'array'},
+            'baseLayerUrl': {},
+            'bucketType': {'type': 'string'},
+            'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 3},
+            'cardType': {'type': 'string'},
+            'expanded': {'type': 'boolean'},
+            'fieldName': {'type': 'string', 'minLength': 1},
+            'cardOptions': {'type': 'object'},
+            'computedColumn': {'type': 'string'}
           },
           'required': ['fieldName', 'cardSize', 'expanded']
         }

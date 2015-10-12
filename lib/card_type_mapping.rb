@@ -132,7 +132,7 @@ module CardTypeMapping
           available_card_types = ['column', 'search']
         end
       when 'point'
-        available_card_types = ['feature']
+        available_card_types = ['feature', 'choropleth']
       when 'text'
         if has_georegion_computation_strategy?(column)
           available_card_types = ['choropleth']

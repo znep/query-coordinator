@@ -18,9 +18,9 @@
     // It is important to use this value both for fetching the shape file regions
     // as well as the aggregated data for those regions, otherwise we can end up
     // drawing regions on the map that appear as though they have no data.
-    function shapeFileRegionQueryLimit() {
+    function shapefileRegionQueryLimit() {
       return ServerConfig.getScalarValue(
-        'shapeFileRegionQueryLimit',
+        'shapefileRegionQueryLimit',
         Constants.DEFAULT_SHAPE_FILE_REGION_QUERY_LIMIT
       );
     }
@@ -363,10 +363,10 @@
 
       // This now appears here rather than cardVizualizationChoropleth.js in order to
       // prepare for live GeoJSON data.
-      getChoroplethRegions: function(shapeFileId) {
-        shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
-        var url = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
-        url.searchParams.set('$limit', shapeFileRegionQueryLimit());
+      getChoroplethRegions: function(shapefileId) {
+        shapefileId = DeveloperOverrides.dataOverrideForDataset(shapefileId) || shapefileId;
+        var url = $.baseUrl('/resource/{0}.geojson'.format(shapefileId));
+        url.searchParams.set('$limit', shapefileRegionQueryLimit());
         var config = httpConfig.call(this, { headers: { 'Accept': 'application/vnd.geo+json' } });
         return http.get(url.href, config).
           then(function(response) {
@@ -505,7 +505,7 @@
 
       },
 
-      getChoroplethRegionsUsingSourceColumn: function(datasetId, datasetSourceColumn, shapeFileId) {
+      getChoroplethRegionsUsingSourceColumn: function(datasetId, datasetSourceColumn, shapefileId) {
 
         function validateExtentResponse(response) {
 
@@ -560,7 +560,7 @@
 
         return http.get(url.href, config).then(function(response) {
           if (response.status === 200) {
-            shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
+            shapefileId = DeveloperOverrides.dataOverrideForDataset(shapefileId) || shapefileId;
 
             try {
               var extent = validateExtentResponse(response);
@@ -579,10 +579,10 @@
                 extent.bottomRight
               );
 
-            var geoJsonUrl = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
+            var geoJsonUrl = $.baseUrl('/resource/{0}.geojson'.format(shapefileId));
             geoJsonUrl.searchParams.set('$select', '*');
             geoJsonUrl.searchParams.set('$where', 'intersects(the_geom,{0})'.format(multiPolygon));
-            geoJsonUrl.searchParams.set('$limit', shapeFileRegionQueryLimit());
+            geoJsonUrl.searchParams.set('$limit', shapefileRegionQueryLimit());
 
             var geoJsonConfig = httpConfig.call(self, {
               headers: {
@@ -604,8 +604,8 @@
         });
       },
 
-      getChoroplethGeometryLabel: function(shapeFileId) {
-        var url = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(shapeFileId));
+      getChoroplethGeometryLabel: function(shapefileId) {
+        var url = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(shapefileId));
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
@@ -653,8 +653,14 @@
           var data = response.data;
           return _.isEmpty(data) ? data : _.mapValues(data[0], parseFloat);
         });
-      }
+      },
 
+      getCuratedRegions: function() {
+        var url = $.baseUrl('/api/curated_regions');
+        return http.get(url.href).then(function(response) {
+          return response.data;
+        });
+      }
     };
 
     return serviceDefinition;

@@ -962,7 +962,7 @@
         FlyoutService.register({
           selector: '.card-group-customize-hint-text .icon-help',
           render: function() {
-            return I18n.t('multiCardLayout.cardGroupCustomizeHintFlyoutText');
+            return I18n.t('cardLayout.cardGroupCustomizeHintFlyoutText');
           },
           destroySignal: scope.$destroyAsObservable(cardContainer)
         });

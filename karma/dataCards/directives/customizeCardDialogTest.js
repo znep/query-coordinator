@@ -753,7 +753,7 @@ describe('Customize card dialog', function() {
 
         expect(scope.selectedFlannelTitleColumnName).to.be.null;
         expect(selectedOption.attr('value')).to.equal('null');
-        expect(selectedOption.text()).to.equal(I18n.addCardDialog.chooseColumn);
+        expect(selectedOption.text()).to.equal(I18n.customizeCardDialog.featureMapFlannel.defaultOption);
       });
 
       it('should default to the existing map flannel title column in dropdown if defined', function() {
@@ -790,7 +790,7 @@ describe('Customize card dialog', function() {
         // Check defaults
         expect(scope.selectedFlannelTitleColumnName).to.be.null;
         expect(selectedOption.attr('value')).to.equal('null');
-        expect(selectedOption.text()).to.equal(I18n.addCardDialog.chooseColumn);
+        expect(selectedOption.text()).to.equal(I18n.customizeCardDialog.featureMapFlannel.defaultOption);
 
         // Select a different title and see changes reflected
         manyKinds.prop('selected', true).change();
@@ -809,7 +809,7 @@ describe('Customize card dialog', function() {
         expect(selectedOption.text()).to.equal(COLUMNS['bar'].name);
       });
 
-      it('should allow you to reselect no title (the "Choose a column..." hint entry) once another has been chosen', function() {
+      it('should allow you to reselect no title via the "(Default)" hint entry once another has been chosen', function() {
         var dialog = createDialog({ card: featureMapCard });
 
         var scope = dialog.scope;
@@ -822,7 +822,7 @@ describe('Customize card dialog', function() {
         // Check defaults
         expect(scope.selectedFlannelTitleColumnName).to.be.null;
         expect(selectedOption.attr('value')).to.equal('null');
-        expect(selectedOption.text()).to.equal(I18n.addCardDialog.chooseColumn);
+        expect(selectedOption.text()).to.equal(I18n.customizeCardDialog.featureMapFlannel.defaultOption);
 
         // Select a column as the flannel title column
         manyKinds.prop('selected', true).change();
@@ -832,14 +832,14 @@ describe('Customize card dialog', function() {
         expect(selectedOption.attr('value')).to.equal('many_kinds');
         expect(selectedOption.text()).to.equal(COLUMNS['many_kinds'].name);
 
-        // Select 'Choose a column...' to reset title back to defaults
+        // Select '(Default)' to reset title back to defaults
         defaults.prop('selected', true).change();
         selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
         // Value will now be null as a String rather than just null
         expect(scope.selectedFlannelTitleColumnName).to.equal('null');
         expect(selectedOption.attr('value')).to.equal('null');
-        expect(selectedOption.text()).to.equal(I18n.addCardDialog.chooseColumn);
+        expect(selectedOption.text()).to.equal(I18n.customizeCardDialog.featureMapFlannel.defaultOption);
       });
     });
   });

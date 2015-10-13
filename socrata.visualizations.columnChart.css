@@ -120,7 +120,7 @@
   display: none;
 }
 
-.filterable .column-chart .bar-group {
+.filterable .column-chart .column-chart-wrapper .bar-group {
   cursor: pointer;
 }
 
@@ -183,7 +183,7 @@
   cursor: default;
 }
 
-.filterable .labels .label .contents .text {
+.filterable .column-chart .labels .label .contents .text {
   cursor: pointer;
 }
 

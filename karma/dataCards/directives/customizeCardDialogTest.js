@@ -252,7 +252,7 @@ describe('Customize card dialog', function() {
       expect($card.length).to.equal(1);
       expect(customizedModel).to.not.be.undefined;
       expect(customizedModel.fieldName).to.equal(originalModel.fieldName);
-      expect(dialog.element.find('option:contains("Standard")').length).to.equal(1);
+      expect(dialog.element.find('option:contains("Simple Grey")').length).to.equal(1);
     });
 
     // CORE-5814: Verify that the card height is not manually set for customizeCardDialog
@@ -270,7 +270,7 @@ describe('Customize card dialog', function() {
       dialog.scope.$digest();
       doneButton.click();
 
-      expect(customizedModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+      expect(customizedModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_LAYER_URL);
     });
 
     it('should discard card changes when clicking "Cancel"', function() {
@@ -563,29 +563,38 @@ describe('Customize card dialog', function() {
         var dialog = createDialog();
         var cardModel = dialog.scope.customizedCard;
 
-        var standard = dialog.element.find('option:contains("Standard")');
+        var simpleBlue = dialog.element.find('option:contains("Simple Blue")');
+        var simpleGrey = dialog.element.find('option:contains("Simple Grey")');
         var esri = dialog.element.find('option:contains("Esri")');
         var custom = dialog.element.find('option:contains("Custom")');
 
-        expect(standard.length).to.equal(1);
+        expect(simpleBlue.length).to.equal(1);
+        expect(simpleGrey.length).to.equal(1);
         expect(esri.length).to.equal(1);
         expect(custom.length).to.equal(1);
 
         // Assert the default is right
-        expect(standard.is(':selected')).to.be.true;
+        expect(simpleGrey.is(':selected')).to.be.false;
+        expect(simpleBlue.is(':selected')).to.be.true;
         expect(esri.is(':selected')).to.be.false;
 
         // Select the Esri
         esri.prop('selected', true).change();
         dialog.scope.$digest();
 
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_LAYER_URL);
 
-        // Select Standard
-        standard.prop('selected', true).change();
+        // Select Simple Grey
+        simpleGrey.prop('selected', true).change();
         dialog.scope.$digest();
 
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.MAPBOX_SIMPLE_GREY_BASE_LAYER_URL);
+
+        // Select Simple Blue
+        simpleBlue.prop('selected', true).change();
+        dialog.scope.$digest();
+
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null; // because it's the default
 
         // Select Custom
         var input = dialog.element.find('input[name=customLayerUrl]')
@@ -628,32 +637,41 @@ describe('Customize card dialog', function() {
 
         var cardModel = dialog.scope.customizedCard;
 
-        var standard = dialog.element.find('option:contains("Standard")');
+        var simpleBlue = dialog.element.find('option:contains("Simple Blue")');
+        var simpleGrey = dialog.element.find('option:contains("Simple Grey")');
         var esri = dialog.element.find('option:contains("Esri")');
         var custom = dialog.element.find('option:contains("Custom")');
 
-        expect(standard.length).to.equal(1);
+        expect(simpleGrey.length).to.equal(1);
+        expect(simpleBlue.length).to.equal(1);
         expect(esri.length).to.equal(1);
         expect(custom.length).to.equal(1);
 
         // Assert the default is right
-        expect(standard.is(':selected')).to.be.true;
+        expect(simpleBlue.is(':selected')).to.be.true;
+        expect(simpleGrey.is(':selected')).to.be.false;
         expect(esri.is(':selected')).to.be.false;
 
         // Select the Esri
         esri.prop('selected', true).change();
         dialog.scope.$digest();
 
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_LAYER_URL);
 
-        // Select Standard
-        standard.prop('selected', true).change();
+        // Select Simple Grey
+        simpleGrey.prop('selected', true).change();
         dialog.scope.$digest();
 
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.MAPBOX_SIMPLE_GREY_BASE_LAYER_URL);
+
+        // Select Simple Blue
+        simpleBlue.prop('selected', true).change();
+        dialog.scope.$digest();
+
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null; // because it's the default
 
         // Select Custom
-        var input = dialog.element.find('input[name=customLayerUrl]')
+        var input = dialog.element.find('input[name=customLayerUrl]');
         expect(input.is(':visible')).to.equal(false);
 
         custom.prop('selected', true).change();
@@ -685,7 +703,7 @@ describe('Customize card dialog', function() {
         var card = dialog.scope.customizedCard;
         var custom = dialog.element.find('option:contains("Custom")');
         var customInput = dialog.element.find('input[name=customLayerUrl]');
-        var standard = dialog.element.find('option:contains("Standard")');
+        var simpleBlue = dialog.element.find('option:contains("Simple Blue")');
 
         // Set a custom url
         var url = 'http://www.socrata.com/{x}/{y}/{z}';
@@ -696,7 +714,7 @@ describe('Customize card dialog', function() {
         expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
 
         // Now go back to the standard
-        standard.prop('selected', true).change();
+        simpleBlue.prop('selected', true).change();
         expect(card.getCurrentValue('baseLayerUrl')).to.equal(null);
 
         // Now back to custom

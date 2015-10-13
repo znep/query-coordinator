@@ -43,11 +43,12 @@
 
       // Visualization
       'NULL_VALUE_LABEL': '(No Value)',
-      'DEFAULT_MAP_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
-      'ESRI_BASE_URL': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+      'MAPBOX_SIMPLE_GREY_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+      'MAPBOX_SIMPLE_BLUE_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
+      'ESRI_BASE_LAYER_URL': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
       'TILEURL_REGEX': /^ *https?:\/\/(.*(\{|%7b)[xyz](\}|%7d)){3}/i,
-      'DEFAULT_MAP_BASE_LAYER_OPACITY': 0.15,
-      'DEFINED_MAP_BASE_LAYER_OPACITY': 0.35,
+      'SIMPLE_GREY_MAP_BASE_LAYER_OPACITY': 0.15,
+      'DEFAULT_MAP_BASE_LAYER_OPACITY': 0.35,
 
       // Column chart visualization parameters.
       'COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD': 100,

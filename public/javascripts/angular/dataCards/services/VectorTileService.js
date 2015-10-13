@@ -122,14 +122,14 @@
       return new L.Point(coordinates.x / this.divisor, coordinates.y / this.divisor);
     };
 
-    VectorTileFeature.prototype.draw = function(tileId) {
+    VectorTileFeature.prototype.draw = function(tileId, offset) {
 
       var feature = this.feature;
       var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, tileId);
 
       switch (feature.type) {
         case 1: //Point
-          this.drawPoint(canvas, feature.coordinates, this.styleFn);
+          this.drawPoint(canvas, feature.coordinates, this.styleFn, offset);
           break;
 
         case 2: //LineString
@@ -145,7 +145,7 @@
       }
     };
 
-    VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle) {
+    VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle, offset) {
       var ctx;
       var projectedPoint;
       var color;
@@ -167,6 +167,11 @@
 
       projectedPoint = this.projectGeometryToTilePoint(geometry[0][0]);
 
+      if (offset) {
+        projectedPoint.x += offset.x;
+        projectedPoint.y += offset.y;
+      }
+
       // Determine point styling based on computed style and map zoom
       if (_.isFunction(computedStyle.color)) {
         color = computedStyle.color(this.map.getZoom());
@@ -179,6 +184,8 @@
       } else {
         radius = computedStyle.radius;
       }
+
+      radius *= 3;
 
       if (_.isFunction(computedStyle.strokeStyle)) {
         strokeStyle = computedStyle.strokeStyle(this.map.getZoom());
@@ -366,6 +373,7 @@
         this.featuresByTile = {};
         this.totalPointsByTile = {};
         this.quadTreesByTile = {};
+        this.renderedNeighborOverlapByTile = {};
       },
 
       onAdd: function(map) {
@@ -427,6 +435,80 @@
         this.renderTile(tileId, tileRenderedCallback);
       },
 
+      renderTileOverlap: function(tileId) {
+
+        var features;
+        var featureCount;
+        var i;
+
+        this.renderedNeighborOverlapByTile[tileId] = this.renderedNeighborOverlapByTile[tileId] || {};
+
+        var tileInfo = _.chain(['z', 'x', 'y']).
+          zipObject(tileId.split(':')).
+          mapValues(Number).
+          value();
+
+        // Find all edge and corner directions
+        var edges = [['top'], ['left'], ['bottom'], ['right']];
+        var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
+        var hotspots = Array.prototype.concat.call(edges, corners);
+
+        // Get neighboring tile id for a tile's edge
+        var tileIdModifiers = {
+          top: function(neighborTile) {
+            neighborTile.y--;
+          },
+          left: function(neighborTile) {
+            neighborTile.x--;
+          },
+          bottom: function(neighborTile) {
+            neighborTile.y++;
+          },
+          right: function(neighborTile) {
+            neighborTile.x++;
+          }
+        };
+
+        var tileSize = 256;
+        var tileOffsetModifiers = {
+          top: function(tileOffset) {
+            tileOffset.y -= tileSize;
+          },
+          left: function(tileOffset) {
+            tileOffset.x -= tileSize;
+          },
+          bottom: function(tileOffset) {
+            tileOffset.y += tileSize;
+          },
+          right: function(tileOffset) {
+            tileOffset.x += tileSize;
+          }
+        };
+
+        _.each(hotspots, function(hotspot) {
+          var neighbor = _.clone(tileInfo);
+          var offset = {x: 0, y: 0};
+          _.each(hotspot, function(direction) {
+            tileIdModifiers[direction](neighbor);
+            tileOffsetModifiers[direction](offset);
+          });
+
+          neighbor.zoom = neighbor.z;
+          neighbor.id = VectorTileUtil.getTileId(neighbor);
+
+          features = this.featuresByTile[neighbor.id];
+          if (features && features.length > 0) {
+            featureCount = features.length;
+            if (!this.renderedNeighborOverlapByTile[tileId][neighbor.id] || this.renderedNeighborOverlapByTile[tileId][neighbor.id] < featureCount) {
+              this.renderedNeighborOverlapByTile[tileId][neighbor.id] = featureCount;
+              for (i = 0; i < featureCount; i++) {
+                features[i].draw(tileId, offset);
+              }
+            }
+          }
+        }, this);
+      },
+
       renderTile: function(tileId, tileRenderedCallback) {
 
         var features;
@@ -437,6 +519,11 @@
         if (_.has(this._tiles, VectorTileUtil.getLeafletTileId(tileId))) {
           this.clearTile(tileId);
         }
+
+        var tileInfo = _.chain(['z', 'x', 'y']).
+          zipObject(tileId.split(':')).
+          mapValues(Number).
+          value();
 
         features = this.featuresByTile[tileId];
         featureCount = features.length;
@@ -505,6 +592,8 @@
           getHoverThreshold: _.noop,
           maxHoverThreshold: pointStyle.radius(Constants.FEATURE_MAP_MAX_ZOOM)
         };
+
+        options.debug = true;
 
         L.Util.setOptions(this, options);
 
@@ -1097,6 +1186,12 @@
         this.outstandingTileDataRequests['delete'](tileId);
 
         if (this.outstandingTileDataRequests.size === 0) {
+          this.layers.forEach(function(layer) {
+            _.each(_.keys(layer.featuresByTile), function(tileId) {
+              layer.renderTileOverlap(tileId);
+            });
+          });
+
           this.options.onRenderComplete();
         }
       }

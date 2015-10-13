@@ -1,3 +1,135 @@
 # This is a generated file to pretend that we support this locale without actually supporting it.
 
-ar: {}
+ar: 
+	controls:
+    browse:
+      actions:
+        about:
+          button: About
+          title: About this Dataset
+        all_options: View All
+        clear_all: Clear All Options
+        clear_facet: "(All)"
+        compact_list: View as a compact list
+        create_dataset: Create or upload your own dataset
+        create_dataset_short: Create a new Dataset
+        create_dataset_shorter: Dataset
+        create_dataset_verb: Create
+        create_resource: Create a New Socrata Resource
+        create_resource_short: Create new...
+        create_resource_verb: Create
+        create_story_short: Story
+        dataset_subscribe: Subscribe to changes on this view
+        delete:
+          button: Delete
+          confirm: Are you sure you want to delete %{dataset}?
+          title: Delete this item
+        expand_section: Click to expand
+        less_options: View Less
+        manage_api:
+          button: Manage
+          title: Manage this API
+        moderation:
+          accept: Accept
+          reject: Reject
+        permissions:
+          change_button:
+            private_html: Make Public
+            public_html: Make Private
+          title: Change the public visibility
+        rich_list: View as a rich list
+        share_button: Share
+        subscribe: Subscribe
+        suggest_dataset: Didn't find what you're looking for? Suggest a dataset.
+        suggest_dataset_short: Suggest a Dataset
+        suggest_dataset_verb: Suggest
+      back_to_dataset: Back to Dataset
+      facets:
+        categories_singular_title: category
+        categories_title: Categories
+        federated_domains_singular_title: domain
+        federated_domains_title: Federated Domains
+        moderation_status:
+          accepted: Accepted
+          pending: Pending
+          rejected: Rejected
+        moderation_status_singular_title: moderation
+        moderation_status_title: Moderation Status
+        topics_singular_title: topic
+        topics_title: Topics
+        view_types:
+          apis: APIs
+          blob: Files and Documents
+          calendars: Calendars
+          charts: Charts
+          datasets: Datasets
+          filters: Filtered Views
+          forms: Forms
+          href: External Datasets
+          maps: Maps
+          new_view: Data Lens pages
+          new_view_help: What's this?
+          pulse: Pulse
+          pulse_help: Learn about Pulse
+          story: Stories
+          story_help: Coming soon
+          unpublished: Unpublished Datasets
+        view_types_singular_title: type
+        view_types_title: View Types
+      listing:
+        comment_count: Number of comments
+        federation_source: Federated from %{source}
+        federation_source_html: Provided by %{source_link}
+        no_results: No Results
+        result_count: Showing %{this} of %{total}
+        result_count_cetera: Showing %{start}-%{end} of %{total}
+        table_header:
+          name: Name
+          popularity: Popularity
+          rss: RSS
+          type: Type
+        timeout: We're sorry. Results could not be retrieved at this time. Please try again later.
+      row_results:
+        less_link: Less
+        matching_rows: Searching dataset for matching rows
+        more_link: More
+        no_matching_rows: No matching rows found
+        title_html: 'Showing <span class="rowResultCountText"></span> of <span class="totalResultCountText"></span> matching rows <a href="#" class="rowSearchLink">(view results)</a>:'
+      search: Search
+      sort_period_title: Sort Period
+      sort_periods:
+        month: This month
+        week: This week
+        year: This year
+      sort_title: Sort By
+      sorts:
+        alpha: Alphabetical
+        comments: Most Comments
+        last_modified: Recently Updated
+        most_accessed: Most Accessed
+        newest: Newest
+        oldest: Oldest
+        rating: Highest Rated
+        relevance: Most Relevant
+      title:
+        default: Search & Browse Datasets and Views
+        result:
+          facet: "%{facet_type} of %{facet_value}"
+          facet_main: matching %{body}
+          main: Results %{body}
+          term: for "%{term}"
+    screens:
+	    header:
+	      links:
+	        account_html: Hello, <span class="currentUser">Unknown User</span>
+	        account_tooltip: Your Home
+	        administration: Administration
+  support:
+    array:
+      last_word_connector: ", and "
+      two_words_connector: " and "
+    array_or:
+      last_word_connector: ", or "
+      two_words_connector: " or "
+
+

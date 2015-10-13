@@ -49,7 +49,12 @@ class SocrataHttp
       result = on_failure(response, url, verb)
     end
 
-    headers = response.to_hash.slice(*http_response_headers_to_pass_through)
+    if pass_through_headers.nil?
+      headers = response.to_hash
+    else
+      headers = response.to_hash.slice(*pass_through_headers)
+    end
+
     result[:headers] = headers if headers.present?
 
     result.with_indifferent_access
@@ -100,7 +105,7 @@ class SocrataHttp
     raise RuntimeError.new('To be implemented by extending class')
   end
 
-  def http_response_headers_to_pass_through
+  def pass_through_headers
     ['last-modified', 'Cache-Control']
   end
 

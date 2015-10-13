@@ -470,6 +470,15 @@ Frontend::Application.routes do
       match '/metadata/v1/page/:id', :to => 'phidippides_pages#destroy', :via => [:delete], :constraints => { :id => Frontend::UID_REGEXP }
     end
 
+    scope :controller => 'data_lens' do
+      match '/geo/initiate',
+        :to => 'data_lens#initiate_region_coding',
+        :via => [:post]
+      match '/geo/status',
+        :to => 'data_lens#region_coding_status',
+        :via => [:get]
+    end
+
     # Custom pages, catalogs, facets
     scope :controller => 'custom_content' do
       # Canvas 1

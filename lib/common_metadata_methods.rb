@@ -101,6 +101,73 @@ module CommonMetadataMethods
     @new_view_manager ||= NewViewManager.new
   end
 
+  def fetch_dataset_metadata(dataset_id)
+    # Grab permissions from core.
+    permissions = fetch_permissions_and_normalize_exceptions(dataset_id)
+
+    result = phidippides.fetch_dataset_metadata(
+      dataset_id,
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
+
+    if result[:status] != '200'
+      case result[:status]
+        when '401'
+          raise AuthenticationRequired.new
+        when '403'
+          raise UnauthorizedDatasetMetadataRequest.new
+        when '404'
+          raise DatasetMetadataNotFound.new
+        else
+          raise UnknownRequestError.new result[:body].to_s
+      end
+    end
+
+    # Moving forward, we also compute and insert two card type mapping
+    # properties on columns before we send them to the front-end.
+    # This method call will check the metadata transition phase
+    # internally and just pass through if it is not set to '3'.
+    phidippides.set_default_and_available_card_types_to_columns!(result)
+
+    dataset_metadata = result[:body]
+    dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /\A20[0-9]\z/
+
+    add_table_column_to_dataset_metadata!(dataset_metadata)
+
+    flag_subcolumns!(dataset_metadata[:columns])
+
+    dataset_metadata
+  end
+
+  def fetch_permissions_and_normalize_exceptions(resource_id)
+    begin
+      fetch_permissions(resource_id)
+    rescue NewViewManager::ViewAuthenticationRequired
+      raise AuthenticationRequired.new
+    rescue NewViewManager::ViewAccessDenied
+      raise UnauthorizedPageMetadataRequest.new
+    rescue NewViewManager::ViewNotFound
+      raise PageMetadataNotFound.new
+    rescue => error
+      raise UnknownRequestError.new error.to_s
+    end
+  end
+
+  def add_table_column_to_dataset_metadata!(dataset_metadata)
+    table_column = {
+      :availableCardTypes => ['table'],
+      :defaultCardType => 'table',
+      :name => 'Data Table',
+      :description => '',
+      :fred => '*',
+      :physicalDatatype => '*'
+    }
+    dataset_metadata[:columns]['*'] = table_column
+
+    dataset_metadata
+  end
+
   # CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
   # sub-columns become their own columns. This function flags them with a 'subcolumn' boolean, via
   # heuristics (so not guaranteed to be 100% accurate!)

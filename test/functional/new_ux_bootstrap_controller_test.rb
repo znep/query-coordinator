@@ -21,6 +21,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       test_view = View.find('test-data')
       View.any_instance.stubs(:find => test_view)
       stub_feature_flags_with(:odux_enable_histogram, true)
+      stub_feature_flags_with(:create_v2_data_lens, false)
     end
 
     should 'have no route if no id' do
@@ -29,7 +30,13 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       end
     end
 
-    should 'return 403 if anonymous' do
+    should 'return 403 if anonymous - for V1 Data Lenses' do
+      get :bootstrap, id: 'four-four'
+      assert_response(403)
+    end
+
+    should 'return 403 if anonymous - even for V2 Data Lenses' do
+      stub_feature_flags_with(:create_v2_data_lens, true)
       get :bootstrap, id: 'four-four'
       assert_response(403)
     end
@@ -41,7 +48,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
       end
 
-      should 'return 403 if role is not set, and not admin' do
+      should 'return 403 if role is not set, and not admin - for V1 Data Lenses' do
         stub_user = stub(is_owner?: false, is_admin?: false, roleName: nil)
         @controller.stubs(is_owner?: false, is_admin?: false, current_user: stub_user)
 
@@ -49,7 +56,17 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         assert_response(403)
       end
 
-      should 'return 403 if role is viewer, and not admin' do
+      should 'return 403 if role is not set, and not admin - even for V2 Data Lenses' do
+        stub_feature_flags_with(:create_v2_data_lens, true)
+        stub_user = stub(is_owner?: false, is_admin?: false, roleName: nil)
+        @controller.stubs(is_owner?: false, is_admin?: false, current_user: stub_user)
+
+        get :bootstrap, id: 'four-four'
+        assert_response(403)
+      end
+
+
+      should 'return 403 if role is viewer, and not admin - ONLY for V1 Data Lenses' do
         stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'viewer')
         @controller.stubs(current_user: stub_user)
 

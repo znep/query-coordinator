@@ -261,6 +261,11 @@
         scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
         scope.$bindObservable('isFiltered', whereClause$.map(_.isPresent));
 
+        // TODO - Drive off of checking if computed column is done being added (another service?)
+        scope.$bindObservable('isPendingComputation', Rx.Observable.returnValue(false));
+
+        scope.$bindObservable('isPendingAddingColumn', Rx.Observable.returnValue(false));
+
         scope.$bindObservable(
           'geojsonAggregateData',
           Rx.Observable.combineLatest(
@@ -280,7 +285,6 @@
             $log.error(e);
           }
         );
-
 
         /*********************************************************
         * Respond to events in the child 'choropleth' directive. *

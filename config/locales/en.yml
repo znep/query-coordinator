@@ -129,6 +129,8 @@ en:
         longitude: Longitude
         no_value: No value
         ok: OK
+        pending_adding_column: Add this card to the page to begin computing this visualization.
+        pending_computation: This visualization is currently being computed. This may take a few minutes.
         permissions:
           permissions: Permissions
           private: Private

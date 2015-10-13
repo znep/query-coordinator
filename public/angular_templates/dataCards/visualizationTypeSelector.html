@@ -37,7 +37,7 @@
   <li ng-show="availableCardTypes.indexOf('histogram') > -1">
     <button
       class="visualization-type icon-distribution"
-      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram', }"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram' }"
       ng-click="setCardType('histogram', $event)"
       data-visualization-name="distributionChart">
         <span class="icon-warning" ng-show="showHistogramColumnChartWarning"></span>

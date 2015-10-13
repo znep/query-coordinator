@@ -5,7 +5,10 @@ html {
   font-family: "Open Sans", "Helvetica", sans-serif;
   font-size: 10px;
   overflow-y: auto;
-  min-width: 768px;
+
+  body#story-edit {
+    min-width: 768px;
+  }
 }
 
 // 100    Extra Light or Ultra Light

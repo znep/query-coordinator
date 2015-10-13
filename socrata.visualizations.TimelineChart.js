@@ -507,15 +507,15 @@
 
     // The following cached jQuery/d3 selectors are used throughout the
     // directive.
-    var jqueryBodyElement = $('body');
-    var jqueryChartElement = _chartElement.find('.timeline-chart-wrapper');
-    var jqueryHighlightTargetElement = _chartElement.find('.timeline-chart-highlight-target');
-    var jqueryChartSelectionElement = _chartElement.find('.timeline-chart-selection');
-    var jqueryLeftSelectionMarker = _chartElement.find('.timeline-chart-left-selection-marker');
-    var jqueryRightSelectionMarker = _chartElement.find('.timeline-chart-right-selection-marker');
-    var jqueryClearSelectionLabel = _chartElement.find('.timeline-chart-clear-selection-label');
-    var jqueryDatumLabel = _chartElement.find('.datum-label');
-    var d3ChartElement = d3.select(jqueryChartElement[0]);
+    var $body = $('body');
+    var $chartElement = _chartElement.find('.timeline-chart-wrapper');
+    var $highlightTargetElement = _chartElement.find('.timeline-chart-highlight-target');
+    var $chartSelectionElement = _chartElement.find('.timeline-chart-selection');
+    var $leftSelectionMarker = _chartElement.find('.timeline-chart-left-selection-marker');
+    var $rightSelectionMarker = _chartElement.find('.timeline-chart-right-selection-marker');
+    var $clearSelectionLabel = _chartElement.find('.timeline-chart-clear-selection-label');
+    var $datumLabel = _chartElement.find('.datum-label');
+    var d3ChartElement = d3.select($chartElement[0]);
 
     // Keep track of the start and end of the selection.
     var selectionStartDate = null;
@@ -962,7 +962,7 @@
             // Note that even if we are quitting early we still may need to
             // show the selection (since it may be possible that the same
             // interval was previously rendered but is now just hidden).
-            jqueryChartSelectionElement.show();
+            $chartSelectionElement.show();
             return;
           }
 
@@ -1033,7 +1033,7 @@
           // element to which we are rendering.
           selectionEndPosition = Math.floor(d3XScale(transformedMaxDate)) - 1;
 
-          jqueryLeftSelectionMarker.css(
+          $leftSelectionMarker.css(
             {
               left: selectionStartPosition -
                 Constants.TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET -
@@ -1042,7 +1042,7 @@
             }
           );
 
-          jqueryRightSelectionMarker.css(
+          $rightSelectionMarker.css(
             {
               left: selectionEndPosition -
                 Constants.TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET +
@@ -1113,7 +1113,7 @@
           dateRangeFlyoutLabel = '{0} - {1}'.
             format(formatDateLabel(minDate, true), formatDateLabel(maxDate, true));
 
-          jqueryClearSelectionLabel.
+          $clearSelectionLabel.
             attr('data-start', selectionStartDate).
             attr('data-end', selectionEndDate).
             attr('data-aggregate-unfiltered', unfilteredAggregate).
@@ -1130,7 +1130,7 @@
                 Constants.TIMELINE_CHART_MARGIN.BOTTOM
             });
 
-          jqueryChartSelectionElement.show();
+          $chartSelectionElement.show();
 
           renderedSelectionStartDate = selectionStartDate;
           renderedSelectionEndDate = selectionEndDate;
@@ -1146,8 +1146,8 @@
         selectionEndDate = null;
         renderedSelectionStartDate = null;
         renderedSelectionEndDate = null;
-        jqueryChartSelectionElement.hide();
-        jqueryChartElement.removeClass('selected');
+        $chartSelectionElement.hide();
+        $chartElement.removeClass('selected');
 
       }
 
@@ -1413,7 +1413,7 @@
         });
 
         // Replace the existing x-axis ticks with the new ones.
-        jqueryChartElement.children('.x-ticks').replaceWith(jqueryAxisContainer);
+        $chartElement.children('.x-ticks').replaceWith(jqueryAxisContainer);
 
       }
 
@@ -1468,7 +1468,7 @@
         });
 
         // Remove old y-axis ticks and replace them
-        jqueryChartElement.children('.y-ticks').replaceWith(jqueryAxisContainer);
+        $chartElement.children('.y-ticks').replaceWith(jqueryAxisContainer);
 
       }
 
@@ -1763,9 +1763,9 @@
         currentlyDragging = true;
         selectionIsCurrentlyRendered = false;
         hideDatumLabel();
-        jqueryChartElement.find('.timeline-chart-filtered-mask').hide();
-        jqueryBodyElement.addClass('prevent-user-select');
-        jqueryChartElement.removeClass('selected').addClass('selecting');
+        $chartElement.find('.timeline-chart-filtered-mask').hide();
+        $body.addClass('prevent-user-select');
+        $chartElement.removeClass('selected').addClass('selecting');
       }
 
       function enterSelectedState() {
@@ -1773,9 +1773,9 @@
         selectionIsCurrentlyRendered = true;
         hideDatumLabel();
         renderChartFilteredValues();
-        jqueryChartElement.find('.timeline-chart-filtered-mask').show();
-        jqueryBodyElement.removeClass('prevent-user-select');
-        jqueryChartElement.removeClass('selecting').addClass('selected');
+        $chartElement.find('.timeline-chart-filtered-mask').show();
+        $body.removeClass('prevent-user-select');
+        $chartElement.removeClass('selecting').addClass('selected');
       }
 
       function enterDefaultState() {
@@ -1789,8 +1789,8 @@
           // and the chart has a width/height of zero, so the scales are still null.
           renderChartFilteredValues();
         }
-        jqueryBodyElement.removeClass('prevent-user-select');
-        jqueryChartElement.removeClass('selecting').removeClass('selected');
+        $body.removeClass('prevent-user-select');
+        $chartElement.removeClass('selecting').removeClass('selected');
       }
 
       function requestChartFilterByCurrentSelection() {
@@ -2140,17 +2140,12 @@
      *                               values and the formatted flyout label.
      */
     function highlightChartByInterval(target) {
-
       var startDate;
       var endDate;
-
       startDate = new Date(target.getAttribute('data-start'));
       endDate = new Date(target.getAttribute('data-end'));
-
       hideDatumLabel();
-
       highlightChart(startDate, endDate);
-
     }
 
     /**
@@ -2186,7 +2181,7 @@
       width = Math.min(width, cardWidth + gutter - leftPos);
       leftPos = Math.max(leftPos, -gutter);
 
-      jqueryHighlightTargetElement.css({
+      $highlightTargetElement.css({
         left: leftPos,
         width: width,
         height: cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM
@@ -2320,8 +2315,8 @@
       endDate = new Date(moment(currentDatum.date).add(1, currentPrecision).toDate());
 
       // Dim existing labels and add text and attribute information to the datum label.
-      jqueryChartElement.addClass('dimmed');
-      jqueryDatumLabel.
+      $chartElement.addClass('dimmed');
+      $datumLabel.
         text(formatDateLabel(startDate, false, currentPrecision)).
         attr('data-start', startDate).
         attr('data-end', endDate).
@@ -2331,7 +2326,7 @@
 
       // Now that the datum label has text (and thus a width), calculate its
       // left offset.  Make sure it does not overflow either edge of the chart.
-      datumLabelWidth = jqueryDatumLabel.width();
+      datumLabelWidth = $datumLabel.width();
       datumLabelOffset = Math.ceil(d3XScale(startDate));
       datumLabelOffset = (datumLabelOffset > (datumLabelWidth / 2)) ?
          datumLabelOffset - (datumLabelWidth / 2) : 0;
@@ -2341,7 +2336,7 @@
       );
 
       // Set the left offset and show the label.
-      jqueryDatumLabel.
+      $datumLabel.
         css('left', Math.floor(datumLabelOffset)).
         show();
 
@@ -2413,8 +2408,8 @@
     }
 
     function hideDatumLabel() {
-      jqueryDatumLabel.hide();
-      jqueryChartElement.removeClass('dimmed');
+      $datumLabel.hide();
+      $chartElement.removeClass('dimmed');
     }
 
     /**
@@ -2685,7 +2680,7 @@
 
         } else {
 
-          jqueryChartElement.find('.x-tick-label').removeClass('emphasis');
+          $chartElement.find('.x-tick-label').removeClass('emphasis');
           hideDatumLabel();
           clearChartHighlight();
 

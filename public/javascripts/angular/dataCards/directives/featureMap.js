@@ -444,8 +444,12 @@
             if (_.isDefined(flannelScope)) {
               // Destroy flannel if it is closed.
               var closeSubscriber = WindowState.closeDialogEvent$.skip(1).filter(function(evt) {
-                var target = $(evt.target);
-                return target.closest('.feature-map-flannel').length === 0 || target.is('.icon-close');
+                if (evt.type === 'click') {
+                  var target = $(evt.target);
+                  return target.closest('.feature-map-flannel').length === 0 || target.is('.icon-close');
+                } else {
+                  return true; // Escape key
+                }
               }).subscribe(function(evt) {
                 scope.$safeApply(handleDestroyFlannel);
                 if ($(evt.target).closest('.feature-map-container').length === 0) {

@@ -14,13 +14,27 @@ module CommonMetadataMethods
   # migration what parses JSON. The risk associated with that was deemed worse
   # than keying off of the role.
   # Note that bootstrapping old backend datasets is controlled by this as well.
-  ROLES_ALLOWED_TO_UPDATE_METADATA = %w(administrator publisher)
+  ROLES_ALLOWED_TO_CREATE_V1_DATA_LENSES = %w(administrator publisher)
+  ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES = %w(administrator publisher designer editor viewer)
+
+  def roles_allowed_to_create_data_lenses
+    if FeatureFlags.derive(nil, nil)[:create_v2_data_lens]
+      ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES
+    else
+      ROLES_ALLOWED_TO_CREATE_V1_DATA_LENSES
+    end
+  end
+
+  def role_allows_data_lens_creation?(role)
+    roles_allowed_to_create_data_lenses.include?(role)
+  end
 
   def can_create_metadata?
-    current_user &&
-      (ROLES_ALLOWED_TO_UPDATE_METADATA.include?(current_user.roleName) ||
-      current_user.is_owner?(dataset) ||
-      current_user.is_admin?)
+    return false unless current_user
+
+    role_allows_data_lens_creation?(current_user.roleName) ||
+    current_user.is_owner?(dataset) ||
+    current_user.is_admin?
   end
 
   def page_metadata_manager

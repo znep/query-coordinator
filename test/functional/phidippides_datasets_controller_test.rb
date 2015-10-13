@@ -18,6 +18,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
       :phidippides => @phidippides,
       :new_view_manager => @new_view_manager
     )
+    stub_feature_flags_with(:create_v2_data_lens, false)
   end
 
   def set_up_json_request(body = nil)

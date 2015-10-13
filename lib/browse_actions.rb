@@ -512,11 +512,7 @@ private
         :text => ::I18n.t('controls.browse.facets.view_types.new_view'),
         :value => 'new_view',
         :class => 'typeNewView',
-        :icon_font_class => 'icon-cards',
-        :help_link => {
-          :href => 'http://www.socrata.com/datalens',
-          :text => ::I18n.t('controls.browse.facets.view_types.new_view_help')
-        }
+        :icon_font_class => 'icon-cards'
       }
 
       # Data lens pages are the new way to look at datasets, so insert above datasets

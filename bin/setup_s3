@@ -25,7 +25,8 @@ On Ubuntu:
   end
 
   puts '== Copying AWS credentials to .env'
-  system("lpass show --notes 5520851962 | cat >> .env")
+  # Title is: 'Storyteller Upload IAM' if searching in the GUI is needed
+  system("lpass show --notes 5520856862 | cat >> .env")
 
   puts "\n== Restarting application server =="
   system "mkdir -p tmp"

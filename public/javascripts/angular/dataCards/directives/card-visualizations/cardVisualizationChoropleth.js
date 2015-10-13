@@ -190,61 +190,41 @@
           }
         );
 
-        Rx.Observable.subscribeLatest(
-          computedColumn$,
-          dataset,
-          baseSoqlFilter,
-          aggregation$,
-          function(computedColumn, currentDataset, whereClauseFragment, aggregationData) {
-            dataRequests$.onNext(1);
-            var dataPromise = CardDataService.getData(
-              computedColumn,
-              currentDataset.id,
-              whereClauseFragment,
-              aggregationData,
-              { limit: shapefileRegionQueryLimit }
-            );
-            dataPromise.then(
-              function(result) {
-                // Ok
-                unfilteredData$.onNext(dataPromise);
-                dataResponses$.onNext(1);
-                scope.$emit('unfiltered_query:complete', result.headers);
-              },
-              function() {
-                // Still increment the counter to stop the spinner
-                dataResponses$.onNext(1);
-              });
-            return Rx.Observable.fromPromise(dataPromise);
-          });
+        function trackPromiseFlightStatus(eventLabel, dataPromise) {
+          dataRequests$.onNext(1);
+          dataPromise.then(
+            function(result) {
+              // Ok
+              dataResponses$.onNext(1);
+              scope.$emit(eventLabel, result.headers);
+            },
+            function() {
+              // Still increment the counter to stop the spinner
+              dataResponses$.onNext(1);
+            });
+        }
 
-        Rx.Observable.subscribeLatest(
-          computedColumn$,
-          dataset,
-          whereClause$,
-          aggregation$,
-          function(computedColumn, currentDataset, whereClauseFragment, aggregationData) {
-            dataRequests$.onNext(1);
-            var dataPromise = CardDataService.getData(
-              computedColumn,
-              currentDataset.id,
-              whereClauseFragment,
-              aggregationData,
-              { limit: shapefileRegionQueryLimit }
-            );
-            dataPromise.then(
-              function(result) {
-                // Ok
-                filteredData$.onNext(dataPromise);
-                dataResponses$.onNext(1);
-                scope.$emit('filtered_query:complete', result.headers);
-              },
-              function() {
-                // Still increment the counter to stop the spinner
-                dataResponses$.onNext(1);
-              });
-            return Rx.Observable.fromPromise(dataPromise);
-          });
+        function requestDataWithWhereClauseSequence(where$, eventLabel) {
+          return Rx.Observable.combineLatest(
+            computedColumn$,
+            dataset,
+            where$,
+            aggregation$,
+            function(computedColumn, currentDataset, whereClauseFragment, aggregationData) {
+              return CardDataService.getData(
+                computedColumn,
+                currentDataset.id,
+                whereClauseFragment,
+                aggregationData,
+                { limit: shapefileRegionQueryLimit }
+              );
+            }).
+            tap(_.partial(trackPromiseFlightStatus, eventLabel)).
+            switchLatest();
+        }
+
+        unfilteredData$ = requestDataWithWhereClauseSequence(baseSoqlFilter, 'unfiltered_query:complete');
+        filteredData$ = requestDataWithWhereClauseSequence(whereClause$, 'filtered_query:complete');
 
         // NOTE: This needs to be defined on the scope BEFORE
         // the 'geojsonAggregateData' observable is bound, or
@@ -271,8 +251,8 @@
           Rx.Observable.combineLatest(
             geometryLabel$.switchLatest(),
             geojsonRegions$.switchLatest(),
-            unfilteredData$.switchLatest().pluck('data'),
-            filteredData$.switchLatest().pluck('data'),
+            unfilteredData$.pluck('data'),
+            filteredData$.pluck('data'),
             model.observeOnLatest('activeFilters'),
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),

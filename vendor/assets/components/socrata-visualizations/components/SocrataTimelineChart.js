@@ -156,12 +156,12 @@
 
     function _attachEvents() {
       $(root).on('resize', _handleWindowResize);
-      // TODO: Events for flyouts.
+      $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
     }
 
     function _detachEvents() {
       $(root).off('resize', _handleWindowResize);
-      // TODO: Events for flyouts.
+      $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
     }
 
     function _handleWindowResize() {
@@ -181,7 +181,164 @@
       );
     }
 
-    // TODO: Handle flyouts.
+    function _handleVisualizationFlyout(event) {
+
+      var payload = event.originalEvent.detail;
+      var flyoutPayload = null;
+      var flyoutContent = null;
+      var flyoutTable = null;
+      var flyoutElements = null;
+      var flyoutTitle;
+      var flyoutUnfilteredValueLabelCell;
+      var flyoutUnfilteredValueCell;
+      var flyoutUnfilteredValueRow;
+      var filteredRowClass;
+      var flyoutFilteredValueLabelCell;
+      var flyoutFilteredValueCell;
+      var flyoutFilteredValueRow;
+      var flyoutSpacerRow;
+      var flyoutSelectedNoticeLabel;
+      var flyoutSelectedNoticeRow;
+
+      if (payload !== null) {
+
+        flyoutContent = $(document.createDocumentFragment());
+        flyoutTable = $('<table>', { 'class': 'socrata-flyout-table' });
+        flyoutElements = [];
+
+        // 'Datum Title'
+        flyoutTitle = $(
+          '<div>',
+          {
+            'class': 'socrata-flyout-title'
+          }
+        ).text(payload.title);
+
+        // 'Total: XXX rows'
+        flyoutUnfilteredValueLabelCell = $(
+          '<td>',
+          {
+            'class': 'socrata-flyout-cell'
+          }
+        ).text(payload.unfilteredValueLabel);
+
+        flyoutUnfilteredValueCell = $(
+          '<td>',
+          {
+            'class': 'socrata-flyout-cell'
+          }
+        ).text(payload.unfilteredValue);
+
+        flyoutUnfilteredValueRow = $(
+          '<tr>',
+          {
+            'class': 'socrata-flyout-row'
+          }
+        ).append([
+          flyoutUnfilteredValueLabelCell,
+          flyoutUnfilteredValueCell
+        ]);
+
+        flyoutElements.push(flyoutUnfilteredValueRow);
+
+        // If we are showing filtered data, then
+        // show the filtered data on the flyout.
+        if (payload.hasOwnProperty('filteredValue')) {
+
+          filteredRowClass = (payload.selected) ?
+            'socrata-flyout-cell is-selected' :
+            'socrata-flyout-cell emphasis';
+
+          // 'Filtered: XXX rows'
+          flyoutFilteredValueLabelCell = $(
+            '<td>',
+            {
+              'class': filteredRowClass
+            }
+          ).text(payload.filteredValueLabel);
+
+          flyoutFilteredValueCell = $(
+            '<td>',
+            {
+              'class': filteredRowClass
+            }
+          ).text(payload.filteredValue);
+
+          flyoutFilteredValueRow = $(
+            '<tr>',
+            {
+              'class': 'socrata-flyout-row'
+            }
+          ).append([
+            flyoutFilteredValueLabelCell,
+            flyoutFilteredValueCell
+          ]);
+
+          flyoutElements.push(flyoutFilteredValueRow);
+        }
+
+        // If we are hovering over a bar we are
+        // currently filtering by, then display a special
+        // flyout message.
+        if (payload.selected) {
+
+          // 'This visualization is currently filtered...'
+          flyoutSpacerRow = $(
+            '<tr>',
+            {
+              'class': 'socrata-flyout-row',
+              'colspan': '2'
+            }
+          ).append(
+            $('<td>', { 'class': 'socrata-flyout-cell' }).html('&#8203;')
+          );
+
+          flyoutSelectedNoticeLabel = $(
+            '<td>',
+            {
+              'class': 'socrata-flyout-cell'
+            }
+          ).text(payload.selectedNotice);
+
+          flyoutSelectedNoticeRow = $(
+            '<tr>',
+            {
+              'class': 'socrata-flyout-row',
+              'colspan': '2'
+            }
+          ).append([
+            flyoutSelectedNoticeLabel
+          ]);
+
+          flyoutElements.push(flyoutSpacerRow);
+          flyoutElements.push(flyoutSelectedNoticeRow);
+        }
+
+        flyoutTable.append(flyoutElements);
+
+        flyoutContent.append([
+          flyoutTitle,
+          flyoutTable
+        ]);
+
+        flyoutPayload = {
+          element: payload.element,
+          content: flyoutContent,
+          rightSideHint: false,
+          belowTarget: false
+        };
+      }
+
+      $element[0].dispatchEvent(
+        new root.CustomEvent(
+          'SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT',
+          {
+            detail: flyoutPayload,
+            bubbles: true
+          }
+        )
+      );
+    }
 
     function _handleDatumSelect() {// event) { ---> Linting sucks
 
@@ -200,6 +357,11 @@
     /**
      * Data requests
      */
+
+    function handleError(error) {
+      _logError(error);
+      visualization.renderError();
+    }
 
     function _updateData() {
 
@@ -222,10 +384,7 @@
 
       Promise.all([ dataPromise, precisionPromise ]).
         then(renderDataFromPromises).
-        catch(function(error) {
-          _logError(error);
-          visualization.renderError();
-        });
+        catch(handleError);
 
       function mapQueryResponseToPrecision(response) {
         var startIndex = _.indexOf(response.columns, SOQL_PRECISION_START_ALIAS);
@@ -304,17 +463,11 @@
       function mapQueryToPromises(dataQueryString) {
         var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
           query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-          catch(function(error) {
-            _logError(error);
-            visualization.renderError();
-          });
+          catch(handleError);
 
         var filteredSoqlQuery = filteredSoqlDataProvider.
           query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-          catch(function(error) {
-            _logError(error);
-            visualization.renderError();
-          });
+          catch(handleError);
 
         return Promise.all([unfilteredSoqlQuery, filteredSoqlQuery]);
       }

@@ -278,6 +278,10 @@ module DatasetsHelper
       </a>}
     end
 
+    if facet_option[:help_text]
+      ret << %Q{<span class="help-text">#{facet_option[:help_text]}</span>}
+    end
+
     if options[param] == facet_option[:value] && !(facet_option[:children] || []).empty? ||
       (facet_option[:children] || []).any? { |cc| cc[:value] == options[param] }
       ret += '<ul class="childList">' +

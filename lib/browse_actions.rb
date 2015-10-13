@@ -562,10 +562,7 @@ private
         :value => 'story',
         :class => 'typeStory',
         :icon_font_class => 'icon-story',
-        :help_link => {
-          :href => 'http://www.socrata.com',
-          :text => ::I18n.t('controls.browse.facets.view_types.story_help')
-        }
+        :help_text => ::I18n.t('controls.browse.facets.view_types.story_help')
       }
 
       # Stories are more contextualized than datasets, so put them above dataset entry

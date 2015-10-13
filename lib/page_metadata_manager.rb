@@ -68,7 +68,7 @@ class PageMetadataManager
 
     if is_backed_by_metadb?(result)
       case result[:displayType]
-        when 'data_lens_chart', 'data_lens_map'
+        when 'data_lens_chart', 'data_lens_map' # standalone visualizations
           # VIFs stored in DB in JSON.dump'd form because core removes keys with null values otherwise
           vif = JSON.parse(result[:displayFormat][:visualization_interchange_format_v1]).with_indifferent_access
           page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(vif, id, permissions)
@@ -84,11 +84,15 @@ class PageMetadataManager
       page_metadata[:rights] = result[:rights]
       page_metadata[:displayType] = result[:displayType]
 
-      old_version = page_metadata[:version]
-      page_metadata = migrated_page_metadata(page_metadata)
+      # don't migrate page metadata if we're looking at a standalone visualization
+      # ('data_lens_chart' or 'data_lens_map' display type)
+      if result[:displayType] == 'data_lens'
+        old_version = page_metadata[:version]
+        page_metadata = migrated_page_metadata(page_metadata)
 
-      if old_version != page_metadata[:version]
-        update_metadb_page_metadata(page_metadata, result)
+        if old_version != page_metadata[:version]
+          update_metadb_page_metadata(page_metadata, result)
+        end
       end
 
       page_metadata

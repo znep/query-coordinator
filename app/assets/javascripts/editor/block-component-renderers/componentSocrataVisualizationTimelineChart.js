@@ -3,6 +3,7 @@
   'use strict';
 
   var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
   function _renderTemplate($element, componentData) {
@@ -12,7 +13,17 @@
 
     $element.
       addClass(utils.typeToClassNameForComponentType(componentData.type)).
-      one('destroy', $element.destroySocrataTimelineChart);
+      one('destroy', $element.destroySocrataTimelineChart).
+      on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', function(event) {
+        var payload = event.originalEvent.detail;
+
+        if (payload !== null) {
+          storyteller.flyoutRenderer.render(payload);
+        } else {
+          storyteller.flyoutRenderer.clear();
+        }
+      });
+
 
     $element.append($componentContent);
   }

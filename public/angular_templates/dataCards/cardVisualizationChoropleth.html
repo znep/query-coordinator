@@ -11,7 +11,7 @@
   </div>
 </div>
 
-<div class="visualization-render-error" ng-show="isPendingAddingColumn">
+<div class="visualization-render-error" ng-show="isPendingColumnAddition">
   <div class="row">
     <div class="span2"><span class="icon-info"></span></div>
     <div class="span10">{{::'common.pendingAddingColumn' | I18n}}</div>
@@ -25,4 +25,4 @@
   </div>
 </div>
 
-<load-spinner busy="busy"></load-spinner>
+<load-spinner busy="busy" ng-hide="isPendingColumnAddition || isPendingComputation || choroplethRenderError"></load-spinner>

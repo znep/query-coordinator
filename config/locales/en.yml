@@ -49,6 +49,9 @@ en:
         column_chart_warning: 'Note: This would result in a bar chart with over a hundred bars, it might be slower than other charts'
         histogram_column_chart_warning: 'Note: Because of the distribution of values of this column, it will be presented as a histogram of bars instead of a distribution curve'
         choropleth_warning: 'No regions are available for this column to be plotted against.'
+        disabled_curated_region_message:
+          dataset_too_big: 'Boundaries not yet supported for datasets with &gt; 1,000,000 rows:'
+          permissions: 'Boundaries not yet enabled by site admin:'
         customize_prompt: Customize this card
         not_supported: Not currently supported
         not_supported_long: This card type is currently unsupported

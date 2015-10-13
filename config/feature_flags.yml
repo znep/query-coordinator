@@ -104,7 +104,7 @@ enable_pulse:
   description: Enable the Pulse application, including catalog link.
   category: pulse
   defaultValue: false
-enable_data_lens_spatial_lens_region_coding:
+enable_spatial_lens_region_coding:
   description: Lets an admin kick off region coding for curated regions in the Data Lens interface.
   category: data lens
   defaultValue: false

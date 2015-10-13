@@ -10,10 +10,10 @@ angular.module('dataCards.models').factory('Dataset', function(
 
   var datasetMetadataSchemas = Schemas.regarding('dataset_metadata');
 
-  function isSystemColumn(columnFieldName) {
+  function isSystemColumnFieldName(columnFieldName) {
     // A column is a system column if its name starts with a :.
     // TODO computation strategy.
-    return columnFieldName[0] === ':';
+    return _.startsWith(columnFieldName, ':');
   }
 
   //TODO cache instances or share cache.
@@ -49,7 +49,7 @@ angular.module('dataCards.models').factory('Dataset', function(
       // Decorate each column with a flag representing whether or not it is a
       // system column and a reference back to its parent dataset.
       _.forOwn(datasetMetadata.columns, function(columnBlob, columnFieldName) {
-        columnBlob.isSystemColumn = isSystemColumn(columnFieldName);
+        columnBlob.isSystemColumn = isSystemColumnFieldName(columnFieldName);
         columnBlob.dataset = self;
       });
 
@@ -65,6 +65,7 @@ angular.module('dataCards.models').factory('Dataset', function(
     }
   });
 
+  Dataset.isSystemColumnFieldName = isSystemColumnFieldName;
   Dataset.extractHumanReadableColumnName = _.property('name');
 
   return Dataset;

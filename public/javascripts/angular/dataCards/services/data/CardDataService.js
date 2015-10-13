@@ -659,9 +659,32 @@
 
       getCuratedRegions: function() {
         var url = $.baseUrl('/api/curated_regions');
-        return http.get(url.href).then(function(response) {
+        var config = httpConfig.call(this);
+        return http.get(url.href, config).then(function(response) {
           return response.data;
         });
+      },
+
+      initiateRegionCoding: function(datasetId, shapefileId, sourceColumn) {
+        var url = $.baseUrl('/geo/initiate');
+        var config = httpConfig.call(this);
+
+        var payload = {
+          datasetId: datasetId,
+          shapefileId: shapefileId,
+          column: sourceColumn
+        };
+
+        return http.post(url.href, payload, config);
+      },
+
+      getRegionCodingStatus: function(datasetId, shapefileId) {
+        var url = $.baseUrl('/geo/status');
+        url.searchParams.set('datasetId', datasetId);
+        url.searchParams.set('shapefileId', shapefileId);
+        var config = httpConfig.call(this);
+
+        return http.get(url.href, config);
       }
     };
 

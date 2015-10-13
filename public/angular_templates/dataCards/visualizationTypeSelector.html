@@ -65,5 +65,20 @@
       ng-selected="curatedRegion.view.id === selectedCuratedRegion">
         {{curatedRegion.name}}
     </soc-option>
+    <soc-option
+      ng-if="showDisabledCuratedRegionSection"
+      disabled="disabled">
+    </soc-option>
+    <soc-option
+      ng-if="showDisabledCuratedRegionSection"
+      disabled="disabled"
+      ng-bind-html="disabledCuratedRegionMessage">
+    </soc-option>
+    <soc-option
+      ng-if="showDisabledCuratedRegionSection"
+      ng-repeat="curatedRegion in disabledCuratedRegions"
+      disabled="disabled">
+      {{curatedRegion.name}}
+    </soc-option>
   </soc-select>
 </div>

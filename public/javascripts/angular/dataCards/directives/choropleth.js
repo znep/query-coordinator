@@ -1377,7 +1377,7 @@
                       onFeatureClick(e);
 
                       /* CORE-6981 :
-                        The leaflet click does not propogate to the body, so the WindowState
+                        The leaflet click does not propagate to the body, so the WindowState
                         mouseLeftButtonClick$ does not get triggered, meaning closeDialogEvent$
                         doesn't get fired. This causes bugs where flannels are already open
                         and do not close despite clicking on a leaflet feature.
@@ -1406,6 +1406,8 @@
                   timestamp: _.now()
                 });
               });
+            } else {
+              map.invalidateSize();
             }
           });
 

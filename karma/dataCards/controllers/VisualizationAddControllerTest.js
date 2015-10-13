@@ -135,19 +135,11 @@ describe('VisualizationAddController', function() {
       expect($scope.dataset).to.be.instanceof(Dataset);
     });
 
-    it('should set relatedVisualizations to visualizations currently supported', function() {
-      var supportedPage = Mockumentary.createPageMetadata();
-      supportedPage.sourceVif = validVIF;
-
-      var unsupportedPage = Mockumentary.createPageMetadata();
-      unsupportedPage.sourceVif = {type: 'notSupported'};
-
-      window.relatedVisualizations.push(supportedPage, unsupportedPage);
-
-      controllerHarness = makeController();
+    it('should set relatedVisualizations to window.relatedVisualizations', function() {
       $scope = controllerHarness.$scope;
 
-      expect(_.pluck($scope.relatedVisualizations, 'sourceVif.type')).to.deep.equal(['columnChart']);
+      expect($scope.relatedVisualizations).to.
+        equal(window.relatedVisualizations);
     });
   });
 

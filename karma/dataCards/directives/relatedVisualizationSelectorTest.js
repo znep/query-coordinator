@@ -34,6 +34,7 @@ describe('relatedVisualizationSelector', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('/angular_templates/dataCards/relatedVisualizationSelector.html'));
+  beforeEach(module('/angular_templates/dataCards/relatedVisualization.html'));
 
   beforeEach(function() {
     module(['$provide', function(_$provide) {
@@ -118,7 +119,8 @@ describe('relatedVisualizationSelector', function() {
           return 'Human Name ' + columnName;
         },
         relatedVisualizations: relatedVisualizations,
-        highlightedColumns: []
+        highlightedColumns: [],
+        supportedCardTypes: ['column', 'feature', 'timeline']
       });
     });
 
@@ -165,12 +167,48 @@ describe('relatedVisualizationSelector', function() {
           payloads.push(payload);
         });
 
-        directive.element.find('li').click();
+        directive.element.find('li a').click();
 
         expect(_.pluck(payloads, 'sourceVif.columnName')).to.deep.equal([
           '1',
           '2',
           '3'
+        ]);
+      });
+    });
+
+    describe('shouldDisable', function() {
+      function getVisualizationDisabledStatus() {
+        return _.reduce(directive.element.find('li'), function(acc, item) {
+          var columnName = $(item).scope().visualization.sourceVif.columnName;
+          acc[columnName] = $(item).hasClass('disabled');
+          return acc;
+        }, {});
+      }
+      it('should apply the `disabled` class to all related visualizations that are not supported', function() {
+        directive.scope.relatedVisualizations[0].cards[0].cardType = 'choropleth';
+        directive.scope.$apply();
+        expect(getVisualizationDisabledStatus()).to.deep.equal({
+          '1': true,
+          '2': false,
+          '3': false
+        });
+      });
+    });
+
+    describe('sort order', function() {
+      function getColumnNamesInDisplayOrder() {
+        return _.map(directive.element.find('li'), function(item) {
+          return $(item).scope().visualization.sourceVif.columnName;
+        });
+      }
+      it('should place all unsupported visualizations at the end', function() {
+        directive.scope.relatedVisualizations[0].cards[0].cardType = 'choropleth'; // not supported
+        directive.scope.$apply();
+        expect(getColumnNamesInDisplayOrder()).to.deep.equal([
+          '2',
+          '3',
+          '1'
         ]);
       });
     });

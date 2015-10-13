@@ -4,18 +4,6 @@
   var socrata = window.socrata;
   var utils = socrata.utils;
 
-  function getSupportedRelatedVisualizations(supportedVIFTypes) {
-
-    // Injected via AngularController for the visualization_add action.
-    var relatedVisualizations = window.relatedVisualizations;
-    utils.assert(relatedVisualizations, 'relatedVisualizations was not injected by AngularController');
-
-    return _.filter(relatedVisualizations, function(visualization) {
-      utils.assertHasProperty(visualization, 'sourceVif.type');
-      return _.contains(supportedVIFTypes, visualization.sourceVif.type);
-    });
-  }
-
   function sendVifToEnclosingWindow(vif) {
 
     // Trigger function attached to the iframe element in the parent
@@ -70,7 +58,7 @@
       cardTypesToVIFTypes[cardType] = $scope.supportedVIFTypes[index];
     });
 
-    $scope.relatedVisualizations = getSupportedRelatedVisualizations($scope.supportedVIFTypes);
+    $scope.relatedVisualizations = window.relatedVisualizations;
 
     function generateVIF(selectedCard) {
       var metadata = dataset.serialize();

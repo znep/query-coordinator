@@ -27,6 +27,10 @@ $related-visualization-icon-width: 50px;
 $related-visualization-info-width: 100%;
 $related-visualization-title-font-size: 15px;
 $related-visualization-icon-font-size: 30px;
+$related-visualization-disabled-color: #999;
+$related-visualization-disabled-bg-color: #f2f2f2;
+$related-visualization-dim-opacity: 0.5;
+$related-visualization-dim-hover-opacity: 0.8;
 
 body.state-view-visualizationAdd {
   overflow: hidden;
@@ -135,9 +139,22 @@ body.state-view-visualizationAdd {
       overflow: auto;
 
       li {
-        padding: 10px;
         border-bottom: solid 1px $related-visualization-list-item-border-color;
         cursor: pointer;
+        box-sizing: border-box;
+
+        > a, .visualization-disabled {
+          width: 100%;
+          padding: 10px;
+          display: block;
+          box-sizing: border-box;
+
+          &::after {
+            display: table;
+            content: "";
+            clear: both;
+          }
+        }
 
         &:last-child {
           border-bottom: none;
@@ -148,18 +165,24 @@ body.state-view-visualizationAdd {
         }
 
         &.dim {
-          opacity: 0.5;
+          opacity: $related-visualization-dim-opacity;
 
           &:hover {
-            opacity: 0.8;
+            opacity: $related-visualization-dim-hover-opacity;
+          }
+        }
+
+        &.disabled {
+          background-color: $related-visualization-disabled-bg-color;
+          cursor: not-allowed;
+          opacity: $related-visualization-dim-opacity;
+
+          .related-visualization-icon,
+          .related-visualization-info h4 {
+            color: $related-visualization-disabled-color;
           }
         }
       }
-    }
-
-    [class*="icon-"] {
-      font-size: $related-visualization-icon-font-size;
-      color: $related-visualization-secondary-color;
     }
   }
 
@@ -170,6 +193,8 @@ body.state-view-visualizationAdd {
 
   .related-visualization-icon {
     width: $related-visualization-icon-width;
+    font-size: $related-visualization-icon-font-size;
+    color: $related-visualization-secondary-color;
   }
 
   .related-visualization-info {

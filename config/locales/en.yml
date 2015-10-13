@@ -387,6 +387,7 @@ en:
           no_data: Chart cannot be rendered with no values.
       related_visualization_selector:
         based_on_column: "Based on {0}"
+        visualization_not_supported: "Pardon our dust!  We're still developing the functionality that will let you embed this chart type in a story."
   controls:
     browse:
       actions:

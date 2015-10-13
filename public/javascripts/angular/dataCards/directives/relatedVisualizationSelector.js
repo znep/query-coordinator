@@ -4,6 +4,16 @@
   var socrata = window.socrata;
   var utils = socrata.utils;
 
+  function getCardTypeFromVisualization(visualization) {
+    utils.assert(
+      visualization.cards.length === 1,
+      'Related Visualization Selector requires exactly one card.'
+    );
+
+    var card = visualization.cards[0];
+    return card.cardType;
+  }
+
   /**
    * Lets user select from a list of a dataset's related visualizations.
    *
@@ -15,7 +25,7 @@
    *
    * Emits related-visualization when the user selects. The payload is the page metadata blob.
    */
-  function relatedVisualizationSelector() {
+  function relatedVisualizationSelector(FlyoutService, I18n) {
     return {
       restrict: 'E',
       scope: true,
@@ -31,6 +41,11 @@
           scope.$emit('related-visualization-selected', visualization);
         };
 
+        scope.shouldDisable = function(visualization) {
+          var cardType = getCardTypeFromVisualization(visualization);
+          return !_.contains(scope.supportedCardTypes, cardType);
+        };
+
         scope.shouldDim = function(visualization) {
           if (_.isEmpty(scope.highlightedColumns)) {
             return false;
@@ -44,16 +59,38 @@
         };
 
         scope.iconClass = function(visualization) {
-          utils.assert(visualization.cards.length === 1, 'Related Visualization Selector requires exactly one card.');
-
-          var card = visualization.cards[0];
+          var cardType = getCardTypeFromVisualization(visualization);
 
           return {
-            'icon-bar-chart': card.cardType === 'column',
-            'icon-line-chart': card.cardType === 'timeline',
-            'icon-map': card.cardType === 'feature'
+            'icon-bar-chart': cardType === 'column',
+            'icon-line-chart': cardType === 'timeline',
+            'icon-map': cardType === 'feature',
+            'icon-region': cardType === 'choropleth',
+            'icon-distribution': cardType === 'histogram'
           };
         };
+
+        FlyoutService.register({
+          'selector': '.visualization-disabled, .visualization-disabled *',
+          'render': _.constant(I18n.t('relatedVisualizationSelector.visualizationNotSupported')),
+          'trackCursor': true
+        });
+
+        scope.$watch('[relatedVisualizations, supportedCardTypes]', function() {
+          // Sort by columnName and title, then place all disabled visualizations
+          // at end of list.
+          var orderedVisualizations = _.chain(scope.relatedVisualizations).
+            sortByAll(
+              'sourceVif.columnName',
+              'sourceVif.title'
+            ).
+            groupBy(function(visualization) {
+              return scope.shouldDisable(visualization);
+            }
+          ).value();
+          scope.orderedVisualizations = (orderedVisualizations['false'] || []).
+            concat(orderedVisualizations['true'] || []);
+        }, true);
       }
     };
   }

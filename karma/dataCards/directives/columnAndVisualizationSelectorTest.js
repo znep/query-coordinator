@@ -187,7 +187,7 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     var card = directive.element.find('card');
     expect(card.length).to.equal(1);
-    expect(directive.scope.selectedCardModel.fieldName).to.eq('ward');
+    expect(directive.scope.selectedCardModel.fieldName).to.eq('point');
   });
 
   it('should display multiple visualization choices when a column in the "Choose a column..." select control is selected which allows multiple visualizations', function() {

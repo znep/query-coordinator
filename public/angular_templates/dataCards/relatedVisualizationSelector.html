@@ -2,18 +2,15 @@
 <ul>
   <li
     class="row"
-    ng-repeat="visualization in relatedVisualizations"
-    ng-class="{ dim: shouldDim(visualization) }"
-    ng-click="onVisualizationSelected(visualization)">
-    <span class="related-visualization-icon" ng-class="iconClass( visualization )"></span>
-    <div class="related-visualization-info">
-      <a href title="{{visualization.sourceVif.title}}">
-        <h4>{{visualization.sourceVif.title}}</h4>
-        <p class="related-visualization-description" title="{{visualization.sourceVif.description}}">{{visualization.sourceVif.description}}</p>
-        <span class="related-visualization-metadata" ng-class="{ highlight: shouldHighlightSourceColumn(visualization) }">
-          {{ 'relatedVisualizationSelector.basedOnColumn' | I18n:columnNameToReadableNameFn(visualization.sourceVif.columnName) }}
-        </span>
-      </a>
+    ng-repeat="visualization in orderedVisualizations"
+    ng-class="{ dim: shouldDim(visualization), disabled: shouldDisable(visualization) }">
+    <a
+      ng-if="!shouldDisable(visualization)" title="{{visualization.sourceVif.title}}"
+      ng-click="onVisualizationSelected(visualization)">
+      <related-visualization></related-visualization>
+    </a>
+    <div class="visualization-disabled" ng-if="shouldDisable(visualization)">
+      <related-visualization></related-visualization>
     </div>
   </li>
 </ul>

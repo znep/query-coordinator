@@ -160,14 +160,16 @@
     this.deselect = function() {
       var contentDocument = _editorElement[0].contentDocument;
 
-      // IE supports .selection, while everything else
-      // supports .getSelection.
-      if (contentDocument.selection) {
-        contentDocument.selection.clear();
-      } else {
-        contentDocument.
-          getSelection().
-          removeAllRanges();
+      if (contentDocument) {
+        // IE supports .selection, while everything else
+        // supports .getSelection.
+        if (contentDocument.selection) {
+          contentDocument.selection.clear();
+        } else if (contentDocument.getSelection) {
+          contentDocument.
+            getSelection().
+            removeAllRanges();
+        }
       }
     };
 

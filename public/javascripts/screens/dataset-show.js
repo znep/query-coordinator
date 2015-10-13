@@ -802,9 +802,17 @@ $(function()
 
     var datasetShowHelpers = {
       canUpdateMetadata: function() {
-        return !_.isNull(blist.currentUser) && !_.isUndefined(blist.currentUser) &&
-                blist.currentUser.hasOwnProperty('rights') &&
-                blist.currentUser.rights.indexOf('edit_others_datasets') > -1;
+        if (blist.feature_flags.create_v2_data_lens) {
+            return !_.isNull(blist.currentUser) && !_.isUndefined(blist.currentUser) &&
+                    blist.currentUser.hasOwnProperty('rights') &&
+                    // The user has a role on the domain.
+                    blist.currentUser.rights.length > 0;
+        } else {
+            return !_.isNull(blist.currentUser) && !_.isUndefined(blist.currentUser) &&
+                    blist.currentUser.hasOwnProperty('rights') &&
+                    // The user is an admin or publisher.
+                    blist.currentUser.rights.indexOf('edit_others_datasets') > -1;
+        }
       },
       getNewUXLinkParams: function() {
         var hasQuery = !_.isUndefined(blist.dataset.query);

@@ -305,9 +305,9 @@ Frontend::Application.routes do
       # As of 9/24/2014, the angular app itself figures out what particular view to render.
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
       # reflect the changes.
-      match '/view/:id', :action => 'serve_app', :app => 'dataCards', :as => :opendata_cards_view
-      match '/view/:id/:field_id', :action => 'serve_app', :app => 'dataCards'
-      match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
+      match '/view/:id', :action => 'data_lens', :app => 'dataCards', :as => :opendata_cards_view
+      match '/view/:id/:field_id', :action => 'data_lens', :app => 'dataCards'
+      match '/view/*angularRoute', :action => 'data_lens', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 
     scope :controller => 'angular' do
@@ -342,7 +342,7 @@ Frontend::Application.routes do
     # Overloaded route matcher for SEO purposes.
     # The route structure is identical in each case; the handler for the route
     # is determined by the constraint that is satisfied.
-    get ':category/:view_name/:id', :to => 'angular#serve_app', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
+    get ':category/:view_name/:id', :to => 'angular#data_lens', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
     # Fallback: let DatasetsController#show handle it, since it was the original
     # catch-all for SEO-friendly routes (including charts, calendars, etc.).
     get ':category/:view_name/:id', :to => 'datasets#show', :as => :view, :constraints => Constraints::ResourceConstraint.new

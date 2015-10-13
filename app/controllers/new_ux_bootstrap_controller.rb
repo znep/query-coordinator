@@ -144,7 +144,7 @@ class NewUxBootstrapController < ActionController::Base
         if default_page[:version].to_i > 0
           # If the default page version is greater than or equal to 1,
           # immediately redirect to the default page.
-          redirect_args = { controller: 'angular', action: 'serve_app', app: 'dataCards', id: default_page[:pageId] }
+          redirect_args = { controller: 'angular', action: 'data_lens', app: 'dataCards', id: default_page[:pageId] }
           unless I18n.locale.to_s == CurrentDomain.default_locale
             redirect_args[:locale] = I18n.locale
           end
@@ -166,7 +166,7 @@ class NewUxBootstrapController < ActionController::Base
           # If we have found a qualifying default page, set it as the default
           # and then redirect to it.
           set_default_page(dataset_metadata_response_body, some_page[:pageId])
-          redirect_args = { controller: 'angular', action: 'serve_app', app: 'dataCards', id: some_page[:pageId] }
+          redirect_args = { controller: 'angular', action: 'data_lens', app: 'dataCards', id: some_page[:pageId] }
           unless I18n.locale.to_s == CurrentDomain.default_locale
             redirect_args[:locale] = I18n.locale
           end
@@ -409,7 +409,7 @@ class NewUxBootstrapController < ActionController::Base
 
     # Set the newly-created page as the default.
     set_default_page(dataset_metadata, default_page_id)
-    redirect_args = {controller: 'angular', action: 'serve_app', app: 'dataCards', id: default_page_id}
+    redirect_args = {controller: 'angular', action: 'data_lens', app: 'dataCards', id: default_page_id}
     unless I18n.locale.to_s == CurrentDomain.default_locale
       redirect_args[:locale] = I18n.locale
     end

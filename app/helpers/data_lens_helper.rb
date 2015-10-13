@@ -28,6 +28,10 @@ module DataLensHelper
     )
   end
 
+  def render_related_visualizations
+    javascript_tag("var relatedVisualizations = #{json_escape(@related_visualizations.to_json)};")
+  end
+
   def tileserver_hosts
     APP_CONFIG.tileserver_hosts.present? ?
       APP_CONFIG.tileserver_hosts.split(',').map { |value| value.strip } :

@@ -1,39 +1,95 @@
+@import "dataCards/common/open-sans-font";
+
 // Styles for the standalone component/visualization/add page. Added for storyteller
 
+$visualization-add-color: #777;
+$visualization-add-column-and-vis-selector-width: 60%;
+$visualization-add-column-and-vis-selector-width: 60%;
+$visualization-add-column-padding: 20px;
+
+$visualization-add-column-select-bg-color: #ddd;
+$visualization-add-column-select-color: #666;
+
+$visualization-add-column-preview-height: 44vw;
+
+$visualization-add-column-base-font: 12px;
+$visualization-add-column-font-family: "Open Sans", sans-serif;
+
+$related-visualization-width: 100% - $visualization-add-column-and-vis-selector-width;
+$related-visualization-border-width: 1px;
+$related-visualization-border-color: #dedede;
+$related-visualization-primary-color: #6d6d6d;
+$related-visualization-list-item-border-color: #ccc;
+$related-visualization-list-item-hover-bg-color: #f7f7f7;
+$related-visualization-secondary-color: #3498db;
+$related-visualization-metadata-color: #aaa;
+$related-visualization-icon-width: 50px;
+$related-visualization-info-width: 100%;
+$related-visualization-title-font-size: 15px;
+$related-visualization-icon-font-size: 30px;
+$related-visualization-disabled-color: #999;
+$related-visualization-disabled-bg-color: #f2f2f2;
+$related-visualization-dim-opacity: 0.5;
+$related-visualization-dim-hover-opacity: 0.8;
+
 body.state-view-visualizationAdd {
-  overflow-y: auto;
+  overflow: hidden;
+  color: $visualization-add-color;
+  font-family: $visualization-add-column-font-family;
+
+  column-and-visualization-selector,
+  related-visualization-selector {
+    float: left;
+  }
+
   column-and-visualization-selector {
     position: relative;
     display: block;
+    width: 100%;
+    padding-right: 0;
+
+    &.has-related-visualizations {
+      width: calc(#{$visualization-add-column-and-vis-selector-width} - #{$visualization-add-column-padding});
+      padding-right: $visualization-add-column-padding;
+    }
+
     .customize-card-options,
     .card-text {
       display: none;
     }
     .add-card-select-column soc-select {
       margin-bottom: 1rem;
-      background-color: #ddd;
+      background-color: $visualization-add-column-select-bg-color;
+
       select {
-        color: #666;
+        color: $visualization-add-column-select-color;
+        font-size: $visualization-add-column-base-font;
+        font-family: $visualization-add-column-font-family;
       }
+
       .arrow {
-        border-color: #666 transparent transparent transparent;
+        border-color: $visualization-add-column-select-color transparent transparent transparent;
       }
     }
+
     .add-card-preview {
       position: relative;
-      height: 44vw;
-      color: #666;
+      height: $visualization-add-column-preview-height;
+      color: $visualization-add-column-select-color;
       background-color: transparent;
+
       .add-card-preview-placeholder {
         width: 100%;
         height: 100%;
         border: 1px dashed #999;
+
         .placeholder-inner-text {
           position: absolute;
           width: 100%;
           top: 50%;
           transform: translate(0, -50%);
           text-align: center;
+          font-size: $visualization-add-column-base-font;
         }
       }
       .card-spot {
@@ -44,6 +100,129 @@ body.state-view-visualizationAdd {
             height: 100% !important;
           }
         }
+      }
+    }
+  }
+
+  related-visualization-selector {
+    position: absolute;
+    width: calc(#{$related-visualization-width} - #{$related-visualization-border-width});
+    top: 0;
+    bottom: 0;
+    border-left: solid $related-visualization-border-width $related-visualization-border-color;
+    padding-bottom: 0;
+
+    h3 {
+      position: absolute;
+      top: 0;
+      left: 10px;
+      right: 10px;
+      margin: 10px;
+      margin-top: 0;
+      font-size: 15px;
+      font-weight: 400;
+      color: $related-visualization-primary-color;
+    }
+
+    ul {
+      position: absolute;
+      top: 10px;
+      right: 0;
+      bottom: 0;
+      left: $visualization-add-column-padding;
+      margin-top: $visualization-add-column-padding + 3px;
+      margin-bottom: 0;
+      padding: 0;
+      padding-top: 10px;
+      border-top: solid 1px $related-visualization-border-color;
+      list-style: none;
+      overflow: auto;
+
+      li {
+        border-bottom: solid 1px $related-visualization-list-item-border-color;
+        cursor: pointer;
+        box-sizing: border-box;
+
+        > a, .visualization-disabled {
+          width: 100%;
+          padding: 10px;
+          display: block;
+          box-sizing: border-box;
+
+          &::after {
+            display: table;
+            content: "";
+            clear: both;
+          }
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: $related-visualization-list-item-hover-bg-color;
+        }
+
+        &.dim {
+          opacity: $related-visualization-dim-opacity;
+
+          &:hover {
+            opacity: $related-visualization-dim-hover-opacity;
+          }
+        }
+
+        &.disabled {
+          background-color: $related-visualization-disabled-bg-color;
+          cursor: not-allowed;
+          opacity: $related-visualization-dim-opacity;
+
+          .related-visualization-icon,
+          .related-visualization-info h4 {
+            color: $related-visualization-disabled-color;
+          }
+        }
+      }
+    }
+  }
+
+  .related-visualization-icon,
+  .related-visualization-info {
+    float: left;
+  }
+
+  .related-visualization-icon {
+    width: $related-visualization-icon-width;
+    font-size: $related-visualization-icon-font-size;
+    color: $related-visualization-secondary-color;
+  }
+
+  .related-visualization-info {
+    width: calc(#{$related-visualization-info-width} - #{$related-visualization-icon-width});
+
+    h4 {
+      margin-top: 0;
+      margin-bottom: 5px;
+      color: $related-visualization-secondary-color;
+      font-size: $related-visualization-title-font-size;
+      font-weight: 400;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    p, .related-visualization-metadata {
+      margin: 5px 0;
+      font-size: $visualization-add-column-base-font;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .related-visualization-metadata {
+      color: $related-visualization-metadata-color;
+
+      &.highlight {
+        color: $related-visualization-secondary-color;
       }
     }
   }

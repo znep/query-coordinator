@@ -72,7 +72,6 @@ class PageMetadataManager
           # VIFs stored in DB in JSON.dump'd form because core removes keys with null values otherwise
           vif = JSON.parse(result[:displayFormat][:visualization_interchange_format_v1]).with_indifferent_access
           page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(vif, id, permissions)
-          page_metadata[:sourceVif] = vif
         when 'data_lens'
           page_metadata = result[:displayFormat][:data_lens_page_metadata].with_indifferent_access
         else

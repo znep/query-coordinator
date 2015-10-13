@@ -77,6 +77,7 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     outerScope.page = pageModel;
     outerScope.cardSize = 1;
+    outerScope.addCardSelectedColumnFieldName = null;
 
     var html =
       '<column-and-visualization-selector ' +
@@ -85,6 +86,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         'card-size="cardSize" ' +
         'supported-card-types="supportedCardTypes" ' +
         'add-card-prompt="false" ' +
+        'add-card-selected-column-field-name="addCardSelectedColumnFieldName"' +
       '></column-and-visualization-selector>';
 
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -183,7 +185,9 @@ describe('columnAndVisualizationSelectorTest', function() {
     directive.scope.cardSize = 2;
     directive.element.find('option[value=point]').prop('selected', true).trigger('change');
 
-    expect(directive.element.find('card').length).to.equal(1);
+    var card = directive.element.find('card');
+    expect(card.length).to.equal(1);
+    expect(directive.scope.selectedCardModel.fieldName).to.eq('point');
   });
 
   it('should display multiple visualization choices when a column in the "Choose a column..." select control is selected which allows multiple visualizations', function() {
@@ -213,6 +217,47 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     expect(directive.element.find('.icon-bar-chart').find('.icon-warning').css('display')).to.not.equal('none');
 
+  });
+
+  describe('when addCardSelectedColumnFieldName is changed externally', function() {
+    var directive;
+
+    function setFieldName(fieldName) {
+      directive.outerScope.addCardSelectedColumnFieldName = fieldName;
+      directive.outerScope.$digest();
+    }
+
+    beforeEach(function() {
+      directive = createDirective();
+    });
+
+    it('should display the correct card in the preview', function() {
+      function currentlyShownCardModel() {
+        return directive.scope.selectedCardModel;
+      }
+
+      expect(currentlyShownCardModel()).to.eq(null); // Test sanity
+      setFieldName('point');
+      expect(currentlyShownCardModel().fieldName).to.eq('point');
+    });
+
+    it('should update the dropdown', function() {
+      function selectedDropdownOption() {
+        return directive.element.find('select').val();
+      }
+
+      expect(selectedDropdownOption()).to.not.eq('point'); // Test sanity
+      setFieldName('point');
+      expect(selectedDropdownOption()).to.eq('point');
+    });
+
+    it('should not emit card-model-selected', function() {
+      directive.outerScope.$on('card-model-selected', function() {
+        throw new Error('card-model-selected should not be emitted');
+      });
+
+      setFieldName('point');
+    });
   });
 
   describe('when an enabled column is selected', function() {

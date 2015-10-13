@@ -20,6 +20,7 @@
         ************************/
 
         scope.addCardModel = null;
+        scope.addCardSelectedColumnFieldName = null;
 
         scope.$on('card-model-selected', function(event, addCardModel) {
           scope.addCardModel = addCardModel;

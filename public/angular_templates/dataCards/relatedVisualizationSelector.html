@@ -1,0 +1,16 @@
+<h3>Existing Visualizations</h3>
+<ul>
+  <li
+    class="row"
+    ng-repeat="visualization in orderedVisualizations"
+    ng-class="{ dim: shouldDim(visualization), disabled: shouldDisable(visualization) }">
+    <a
+      ng-if="!shouldDisable(visualization)" title="{{visualization.sourceVif.title}}"
+      ng-click="onVisualizationSelected(visualization)">
+      <related-visualization></related-visualization>
+    </a>
+    <div class="visualization-disabled" ng-if="shouldDisable(visualization)">
+      <related-visualization></related-visualization>
+    </div>
+  </li>
+</ul>

@@ -1,0 +1,8 @@
+<span class="related-visualization-icon" ng-class="iconClass(visualization)"></span>
+<div class="related-visualization-info">
+  <h4>{{ visualization.sourceVif.title }}</h4>
+  <p class="related-visualization-description" title="{{ visualization.sourceVif.description }}">{{ visualization.sourceVif.description }}</p>
+  <span class="related-visualization-metadata" ng-class="{ highlight: shouldHighlightSourceColumn(visualization) }">
+    {{ 'relatedVisualizationSelector.basedOnColumn' | I18n:columnNameToReadableNameFn(visualization.sourceVif.columnName) }}
+  </span>
+</div>

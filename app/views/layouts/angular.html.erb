@@ -29,8 +29,6 @@
 
   </head>
 
-  <%# See also: app/views/angular/serve_app.html.erb %>
-
   <body ng-app="<%= angular_app %>">
     <%- angular_templates.each do |obj| -%>
       <script type="text/ng-template" id="<%= obj[:id] %>">
@@ -44,8 +42,15 @@
       </div>
       <%= render_noscript(@migration_info[:obeId]) %>
     <% end %>
-    <%= render angular_app %>
-    <%= yield :layout %>
+
+    <%= include_javascripts 'bower-all' %>
+    <%= include_javascripts 'angular-jquery-extensions' %>
+    <%= include_javascripts_unminified 'angular-socrata-common' %>
+    <%= render_airbrake_shim %>
+    <%= render_airbrake_notifier %>
+    <%= angular_javascript_tag %>
+
+    <%= yield %>
   </body>
 
 

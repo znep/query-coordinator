@@ -12,6 +12,32 @@ describe('VisualizationAddController', function() {
   var validVIF;
   var serializedDataset;
 
+  // If the tests aren't running in an iframe, these tests
+  // aren't easy to write (as window.frameElement isn't
+  // writeable in all browsers).
+  // Fortunately, tests run in an iframe in most cases.
+  //
+  // Unfortunately, the one exception is when a dev is running tests
+  // in debug mode. We have made the tests that won't pass conditionally
+  // xdescribe for now. If you need to actually test something in the
+  // conditionally xdescribe'd tests, simply change the possiblyDescribe
+  // declaration and assignment a few lines below.
+  var canRunParentWindowTests = !!(window.frameElement);
+  if (!canRunParentWindowTests) {
+    console.warn('WARNING: disabling some VisualizationAddController tests because test run is not in an iframe');
+  }
+  var possiblyDescribe = canRunParentWindowTests ? describe : xdescribe;
+
+  function emitCardModelSelected(payload) {
+    $scope.$emit('card-model-selected', payload);
+    $scope.$apply();
+  }
+
+  function emitRelatedVisualizationSelected(payload) {
+    $scope.$emit('related-visualization-selected', payload);
+    $scope.$apply();
+  }
+
   beforeEach(module('dataCards'));
 
   beforeEach(
@@ -31,13 +57,24 @@ describe('VisualizationAddController', function() {
           _$controller,
           _testHelpers) {
 
-      Page = _Page;
-      Dataset = _Dataset;
-      Mockumentary = _Mockumentary;
-      $rootScope = _$rootScope;
-      $controller = _$controller;
-      testHelpers = _testHelpers;
-  }]));
+          Page = _Page;
+          Dataset = _Dataset;
+          Mockumentary = _Mockumentary;
+          $rootScope = _$rootScope;
+          $controller = _$controller;
+          testHelpers = _testHelpers;
+        }
+      ]
+    )
+  );
+
+  beforeEach(function() {
+    window.relatedVisualizations = [];
+  });
+
+  afterEach(function() {
+    delete window.relatedVisualizations;
+  });
 
   function makeContext(datasetOverrides) {
     if (datasetOverrides && datasetOverrides.id) {
@@ -93,91 +130,123 @@ describe('VisualizationAddController', function() {
       expect($scope.page).to.be.instanceof(Page);
       expect($scope.page.getCurrentValue('dataset')).to.equal($scope.dataset);
     });
+
     it('should contain a valid Dataset', function() {
       expect($scope.dataset).to.be.instanceof(Dataset);
     });
+
+    it('should set relatedVisualizations to window.relatedVisualizations', function() {
+      $scope = controllerHarness.$scope;
+
+      expect($scope.relatedVisualizations).to.
+        equal(window.relatedVisualizations);
+    });
   });
 
-  describe('card-model-selected scope event', function() {
-    function emitCardModelSelected(payload) {
-      $scope.$emit('card-model-selected', payload);
-    }
+  possiblyDescribe('with valid onVisualizationSelected function', function() {
+    beforeEach(function() {
+      window.frameElement.onVisualizationSelected = sinon.spy();
+    });
+    afterEach(function() {
+      delete window.frameElement.onVisualizationSelected;
+    });
 
-    // This isn't easy to test as window.parent isn't
-    // writeable in all browsers.
-    // Disabling the test for now - this functionality is
-    // for developer convenience only.
-    xdescribe('with no parent window', function() {
-      var originalParent;
-      beforeEach(function() {
-        originalParent = window.parent;
-        window.parent = undefined;
-      });
-      afterEach(function() {
-        window.parent = originalParent;
-      });
 
-      it('should trigger an error', function() {
-        expect(function() {
+    describe('related-visualization-selected scope event', function() {
+      describe('with a valid VIF', function() {
+        var relatedVisualizationVIF = {
+          type: 'test',
+          columnName: 'thisWasPresumablySavedFromADataLens',
+          origin: {
+            type: 'unit tests'
+          },
+          filters: [
+            {
+              'function': 'BinaryOperator',
+              'arguments': {
+                'operand': true,
+                'operator': '='
+              },
+              columnName: 'tinymonster_6'
+            }
+          ]
+        };
+
+        var resultantWhereClause = '`tinymonster_6`=true';
+
+        beforeEach(function() {
+          var relatedVisualizationPageMetadata = Mockumentary.createPageMetadata();
+          relatedVisualizationPageMetadata.sourceVif = relatedVisualizationVIF;
+          emitRelatedVisualizationSelected(relatedVisualizationPageMetadata);
+        });
+
+        it('should call onVisualizationSelected with the original VIF', function() {
+          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
+          sinon.assert.calledWithExactly(window.frameElement.onVisualizationSelected, relatedVisualizationVIF);
+        });
+
+        it('should set addCardSelectedColumnFieldName to the VIF\'s columnName', function() {
+          expect($scope.addCardSelectedColumnFieldName).to.equal(relatedVisualizationVIF.columnName);
+        });
+
+        it('should set scope.page to a Page instance with the VIF set', function(done) {
+          // We have no direct way of querying a Page for its source VIF, but we can test
+          // computedWhereClauseFragment, which is computed from the VIF.
+          $scope.page.observe('computedWhereClauseFragment').subscribe(function(fragment) {
+            expect(fragment).to.equal(resultantWhereClause);
+            done();
+          });
+        });
+
+        it('should set scope.whereClause to match the VIF filters key', function(done) {
+          $scope.$observe('whereClause').subscribe(function(whereClause) {
+            // whereClause starts out blank; the next digest brings it to the correct value.
+            if (whereClause.length > 0) {
+              expect(whereClause).to.equal(resultantWhereClause);
+              done();
+            }
+          });
+        });
+      });
+    });
+
+    describe('card-model-selected scope event', function() {
+      describe('with a null payload', function() {
+        it('should call onVisualizationSelected with null', function() {
           emitCardModelSelected(null);
-        }).to.throw(/on the iframe/);
+          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
+          sinon.assert.calledWith(window.frameElement.onVisualizationSelected, null);
+        });
       });
-    });
 
-    // If the tests aren't running in an iframe, these tests
-    // aren't easy to write (as window.frameElement isn't
-    // writeable in all browsers).
-    // Fortunately, tests run in an iframe in most cases.
-    // Unfortunately, the one exception is when a dev is running tests
-    // in debug mode...
-    var canRunParentWindowTests = !!(window.frameElement);
-    if (!canRunParentWindowTests) {
-      console.warn('WARNING: disabling some VisualizationAddController tests because test run is not in an iframe');
-    }
+      describe('with a non-null payload', function() {
+        beforeEach(function() {
+          var cardSelected = {
+            fieldName: validVIF.columnName
+          };
 
-    (canRunParentWindowTests ? describe : xdescribe)('with a parent window', function() {
-      describe('but with no or invalid onVisualizationSelected function', function() {
-        it('should trigger an error', function() {
-          expect(function() {
-            emitCardModelSelected(null);
-          }).to.throw(/onVisualizationSelected/);
-
-          window.frameElement.onVisualizationSelected = 'notAFunction';
-          expect(function() {
-            emitCardModelSelected(null);
-          }).to.throw(/onVisualizationSelected/);
+          emitCardModelSelected(cardSelected);
         });
 
-        describe('with valid onVisualizationSelected function', function() {
-          beforeEach(function() {
-            window.frameElement.onVisualizationSelected = sinon.spy();
-          });
-          afterEach(function() {
-            delete window.frameElement.onVisualizationSelected;
-          });
-
-          describe('with a null payload', function() {
-            it('should call onVisualizationSelected with null', function() {
-              emitCardModelSelected(null);
-              sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
-              sinon.assert.calledWith(window.frameElement.onVisualizationSelected, null);
-            });
-          });
-
-          describe('with a non-null payload', function() {
-            it('should call onVisualizationSelected with the results of VIF synthesis in the payload', function() {
-              var cardSelected = {
-                fieldName: validVIF.columnName
-              };
-
-              emitCardModelSelected(cardSelected);
-
-              sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
-              sinon.assert.calledWithMatch(window.frameElement.onVisualizationSelected, validVIF);
-            });
-          });
+        it('should call onVisualizationSelected with the results of VIF synthesis in the payload', function() {
+          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
+          sinon.assert.calledWithMatch(window.frameElement.onVisualizationSelected, validVIF);
         });
       });
     });
+  });
+
+  possiblyDescribe('with no or invalid onVisualizationSelected function', function() {
+    it('should trigger an error on card-model-selected', function() {
+      expect(function() {
+        emitCardModelSelected(null);
+      }).to.throw(/onVisualizationSelected/);
+
+      window.frameElement.onVisualizationSelected = 'notAFunction';
+      expect(function() {
+        emitCardModelSelected(null);
+      }).to.throw(/onVisualizationSelected/);
+    });
+
   });
 });

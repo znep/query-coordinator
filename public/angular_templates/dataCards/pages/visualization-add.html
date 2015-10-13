@@ -1,7 +1,12 @@
 <column-and-visualization-selector
+  ng-class="{'has-related-visualizations': relatedVisualizations.length > 0}"
   on-customize-card="customizeCard"
   card-size="1"
-  page="page"
+  page="blankPage"
   supported-card-types="supportedCardTypes"
-  add-visualization-prompt="'addCardDialog.genericPrompt'">
+  add-card-selected-column-field-name="addCardSelectedColumnFieldName"
+  where-clause="whereClause"
+  add-visualization-prompt="'addCardDialog.genericPrompt'"
+  disable-visualization-type-selector>
 </column-and-visualization-selector>
+<related-visualization-selector ng-if="relatedVisualizations.length > 0"></related-visualization-selector>

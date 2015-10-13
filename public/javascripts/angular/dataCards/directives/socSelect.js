@@ -63,6 +63,10 @@
         $scope.$watch('disabled', function(disabled) {
           selectElement.attr('disabled', disabled);
         });
+
+        $element.find('select').change(function(event) {
+          $scope.$emit('soc-select-change', event.target.value);
+        });
       }
     };
   }).

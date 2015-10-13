@@ -31,7 +31,7 @@
   z-index: 5;
 }
 
-.timeline-chart-highlight-container {
+svg:not(:root).timeline-chart-highlight-container {
   position: absolute;
   top: 0;
   overflow: visible;

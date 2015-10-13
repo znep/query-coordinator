@@ -93,8 +93,6 @@
     throw new Error('d3 is a required dependency for `socrata.visualizations.TimelineChart.js`.');
   }
 
-  _.isDefined = function(x) { return !!x; };
-
   /*
   KNOWN BUGS
 
@@ -346,14 +344,197 @@
     }
 
     function _attachEvents(element) {
+      element.on(
+        'mouseenter, mousemove',
+        '.timeline-chart',
+        showFlyout
+      );
+
+      element.on(
+        'mouseleave',
+        '.timeline-chart',
+        hideFlyout
+      );
+
+    //element.on(
+    //  'mouseenter',
+    //  _labelsSelector,
+    //  addHoverClassToBarGroup
+    //);
+
+    //element.on(
+    //  'mouseleave',
+    //  _labelsSelector,
+    //  removeHoverClassFromBarGroup
+    //);
+
+    //_chartElement.on(
+    //  'mouseleave',
+    //  removeHoverClassFromBarGroup
+    //);
     }
 
     function _unattachEvents(element) {
+      element.off(
+        'mouseenter, mousemove',
+        '.timeline-chart',
+        showFlyout
+      );
+
+      element.off(
+        'mouseleave',
+        '.timeline-chart',
+        hideFlyout
+      );
+
     }
 
     /**
      * Visualization renderer and helper functions
      */
+
+    function showFlyout(event) {
+      mouseHasMoved(event, false);
+      var flyoutTarget = _chartElement.find('.timeline-chart-flyout-target');
+
+      if (flyoutTarget.length === 0) {
+        return;
+      }
+
+      var $target = $(event.target);
+      var isInterval = $target.
+        is(flyoutIntervalTopSelectors.concat([flyoutIntervalPathSelector]).join(', '));
+      var datumIsDefined = !(_.isUndefined(currentDatum) || _.isNull(currentDatum));
+
+      var payload = {
+        element: flyoutTarget.get(0),
+        unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL')
+      };
+
+      var formatStrings = {
+        DECADE: 'YYYYs',
+        YEAR: 'YYYY',
+        MONTH: 'MMMM YYYY',
+        DAY: 'D MMMM YYYY'
+      };
+
+      var renderUnit = function(value, rules) {
+        utils.assertHasProperty(rules, 'other');
+        if (_.isNull(value)) {
+          return 'No value';
+        }
+
+        value = Number(value);
+        utils.assert(!_.isNaN(value));
+
+        var resolve = function(rule) {
+          return '{0} {1}'.format(utils.formatNumber(value), rule);
+        };
+
+        if (value === 1 && rules.one) {
+          return resolve(rules.one);
+        } else {
+          return resolve(rules.other);
+        }
+      };
+
+      var unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit')) ?
+        _lastRenderOptions.unit :
+        vif.unit;
+
+      if (isInterval) {
+        payload.title = $target.attr('data-flyout-label');
+        var unfilteredValue = $target.attr('data-aggregate-unfiltered');
+        payload.unfilteredValue = renderUnit(unfilteredValue, unfilteredValueUnit);
+        //var filteredValue = $target.attr('data-aggregate-filtered');
+        //payload.filteredValue = _.isUndefined(filteredValue) ? null : parseFloat(filteredValue);
+      } else if (datumIsDefined) {
+        payload.title = currentDatum.hasOwnProperty('flyoutLabel') ?
+          currentDatum.flyoutLabel :
+          moment(currentDatum.date).format(formatStrings[datasetPrecision]);
+        payload.unfilteredValue = renderUnit(currentDatum.unfiltered, unfilteredValueUnit);
+        //payload.filteredValue = currentDatum.filtered;
+      };
+
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+        payload
+      );
+    }
+
+    function hideFlyout(event) {
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+        null
+      );
+    }
+
+    // Cache a bunch of stuff that is useful in a lot of places that don't
+    // need to be wrapped in Rx mojo.
+    var cachedChartDimensions = null;
+    var cachedChartData = null;
+    var cachedRowDisplayUnit = null;
+
+    // Keep track of whether or not the mouse position is within this
+    // instance of a timeline chart's visualization area (the chart itself
+    // and the x-axis labels beneath it).
+    var mousePositionWithinChartElement = false;
+    var mousePositionWithinChartDisplay = false;
+    var mousePositionWithinChartLabels = true;
+
+    // These two values are in pixels.
+    var visualizedDatumWidth = 0;
+    var halfVisualizedDatumWidth = 0;
+
+    // currentDatum is used to persist information about the highlighted
+    // region between the filterChartData and flyout rendering functions.
+    var currentDatum = null;
+
+    // datasetPrecision is used in multiple places in order to test and
+    // modify dates, but we only really have a notion of it within the
+    // context of Rx reactions; for this reason it's cached globally.
+    var datasetPrecision = null;
+
+    var labelPrecision = null;
+
+    // The X and Y scales that d3 uses are global to the directive so
+    // that we can use the same ones between the renderChart and
+    // renderChartHighlight functions.
+    // They are initialized to null so that we don't accidentally try
+    // to render a highlight before a chart is rendered.
+    var d3XScale = null;
+    var d3YScale = null;
+
+    // The following cached jQuery/d3 selectors are used throughout the
+    // directive.
+    var $body = $('body');
+    var $chartElement = _chartElement.find('.timeline-chart-wrapper');
+    var $highlightTargetElement = _chartElement.find('.timeline-chart-highlight-target');
+    var $chartSelectionElement = _chartElement.find('.timeline-chart-selection');
+    var $leftSelectionMarker = _chartElement.find('.timeline-chart-left-selection-marker');
+    var $rightSelectionMarker = _chartElement.find('.timeline-chart-right-selection-marker');
+    var $clearSelectionLabel = _chartElement.find('.timeline-chart-clear-selection-label');
+    var $datumLabel = _chartElement.find('.datum-label');
+    var d3ChartElement = d3.select($chartElement[0]);
+
+    // Keep track of the start and end of the selection.
+    var selectionStartDate = null;
+    var selectionEndDate = null;
+
+    var selectionIsCurrentlyRendered = false;
+
+    // Keep track of whether or not this instance of a timeline chart is in
+    // the 'dragging' state so that we can selectively listen for mouseup
+    // and apply the 'goalpost' selection area.
+    var currentlyDragging = false;
+    
+    var allChartLabelsShown = true;
+
+    var flyoutIntervalPathSelector = '.datum-label';
+    var flyoutIntervalTopSelectors = [
+      '.x-tick-label',
+      '.timeline-chart-clear-selection-label'
+    ];
 
     function _renderData(element, data, options) {
 
@@ -392,18 +573,6 @@
        */
 
 
-      // The following cached jQuery/d3 selectors are used throughout the
-      // directive.
-      var jqueryBodyElement = $('body');
-      var jqueryChartElement = element.find('.timeline-chart-wrapper');
-      var jqueryHighlightTargetElement = element.find('.timeline-chart-highlight-target');
-      var jqueryChartSelectionElement = element.find('.timeline-chart-selection');
-      var jqueryLeftSelectionMarker = element.find('.timeline-chart-left-selection-marker');
-      var jqueryRightSelectionMarker = element.find('.timeline-chart-right-selection-marker');
-      var jqueryClearSelectionLabel = element.find('.timeline-chart-clear-selection-label');
-      var jqueryDatumLabel = element.find('.datum-label');
-      var d3ChartElement = d3.select(jqueryChartElement[0]);
-
       // These rendering functions are generated by a helper due to their
       // high degree of similarity. The functions are decoupled so that we
       // can independently update and manipulate the filtered values as
@@ -432,61 +601,12 @@
         lineClass: 'shaded-trace'
       });
 
-      // The X and Y scales that d3 uses are global to the directive so
-      // that we can use the same ones between the renderChart and
-      // renderChartHighlight functions.
-      // They are initialized to null so that we don't accidentally try
-      // to render a highlight before a chart is rendered.
-      var d3XScale = null;
-      var d3YScale = null;
-
-      // currentDatum is used to persist information about the highlighted
-      // region between the filterChartData and flyout rendering functions.
-      var currentDatum = null;
-
-      // datasetPrecision is used in multiple places in order to test and
-      // modify dates, but we only really have a notion of it within the
-      // context of Rx reactions; for this reason it's cached globally.
-      var datasetPrecision = null;
-
-      var labelPrecision = null;
-
-      // Cache a bunch of stuff that is useful in a lot of places that don't
-      // need to be wrapped in Rx mojo.
-      var cachedChartDimensions = null;
-      var cachedChartData = null;
-      var cachedRowDisplayUnit = null;
-
-      // Keep track of whether or not this instance of a timeline chart is in
-      // the 'dragging' state so that we can selectively listen for mouseup
-      // and apply the 'goalpost' selection area.
-      var currentlyDragging = false;
-
-      // Keep track of whether or not the mouse position is within this
-      // instance of a timeline chart's visualization area (the chart itself
-      // and the x-axis labels beneath it).
-      var mousePositionWithinChartElement = false;
-      var mousePositionWithinChartDisplay = false;
-      var mousePositionWithinChartLabels = true;
-
-      // These two values are in pixels.
-      var visualizedDatumWidth = 0;
-      var halfVisualizedDatumWidth = 0;
-
-      var selectionIsCurrentlyRendered = false;
-
-      // Keep track of the start and end of the selection.
-      var selectionStartDate = null;
-      var selectionEndDate = null;
-
       // We use these two values to 'dirty check' changes
       // to selectionStartDate and selectionEndDate and
       // conditionally NOOP in the selection rendering
       // code if what would be rendered has not changed.
       var renderedSelectionStartDate = null;
       var renderedSelectionEndDate = null;
-
-      var allChartLabelsShown = true;
 
       var mouseLeftButtonChangesSubscription;
       var mouseMoveOrLeftButtonChangesSubscription;
@@ -584,275 +704,8 @@
         return outputValues;
       }
 
-      /**
-       * Data can be filtered by the x-offset of the cursor from the left
-       * edge of the chart or by arbitrary intervals specified with start-
-       * and end Date objects.
-       *
-       * The two filter functions each have a SIDE-EFFECT: they both set
-       * the global 'currentDatum' variable to a synthetic value which is
-       * used by the flyout code to keep the highlighted areas and their
-       * corresponding flyout labels in sync.
-       *
-       * @param {Number} offsetX - The left offset of the mouse cursor into the
-       *                           visualization, in pixels.
-       * @return {Object}
-       *   @property {Array} highlightData - The data for the start and end
-       *                                     date including the unfiltered
-       *                                     and filtered values.
-       *   @property {Number} left - The left offset of the selection,
-       *                             in pixels.
-       *   @property {Number} width - The width of one <datum>, in pixels.
-       *   @property {Number} maxValue - the maximum unfiltered value in the
-       *                                 latest data request.
-       */
-      function filterChartDataByOffset(offsetX) {
 
-        var indexIntoChartData;
-        var transformedStartDate;
-        var transformedEndDate;
-        var highlightData;
-        var leftOffset;
-        var width = visualizedDatumWidth;
-        var maxValue = cachedChartData.maxValue;
 
-        indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) *
-          cachedChartData.values.length);
-
-        // Note that currentDatum is a global variable that is set when the
-        // user hovers over the visualization. The value of currentDatum is
-        // read by the flyout code.
-        currentDatum = cachedChartData.values[indexIntoChartData];
-
-        transformedStartDate = DateHelpers.decrementDateByHalfInterval(
-          currentDatum.date, datasetPrecision
-        );
-        transformedEndDate = DateHelpers.decrementDateByHalfInterval(
-          moment(currentDatum.date).add(1, datasetPrecision).toDate(), datasetPrecision
-        );
-
-        highlightData = [
-          { date: transformedStartDate },
-          { date: transformedEndDate }
-        ];
-
-        leftOffset = d3XScale(transformedStartDate);
-
-        return {
-          data: highlightData,
-          left: leftOffset,
-          width: width,
-          maxValue: maxValue
-        };
-
-      }
-
-      /**
-       * Returns a bundle of stuff about the data points occurring between
-       * two points in time.
-       *
-       * @param {Date} startDate
-       * @param {Date} endDate
-       * @return {Object}
-       *   @property {Array} highlightData - The data for the start and end
-       *                                     date including the unfiltered
-       *                                     and filtered values.
-       *   @property {Number} left - The left offset of the selection,
-       *                             in pixels.
-       *   @property {Number} width - The width of the selection, in pixels.
-       *   @property {Number} maxValue - The maximum unfiltered value in the
-       *                                 latest data request.
-       */
-      function filterChartDataByInterval(startDate, endDate) {
-
-        var transformedStartDate = DateHelpers.decrementDateByHalfInterval(
-          startDate, datasetPrecision);
-        var transformedEndDate = DateHelpers.decrementDateByHalfInterval(
-          endDate, datasetPrecision);
-        var highlightData;
-        var leftOffset = d3XScale(transformedStartDate);
-        var width = d3XScale(transformedEndDate) - leftOffset;
-        var maxValue = cachedChartData.maxValue;
-
-        highlightData = [
-          { date: transformedStartDate },
-          { date: transformedEndDate }
-        ];
-
-        return {
-          data: highlightData,
-          left: leftOffset,
-          width: width,
-          maxValue: maxValue
-        };
-
-      }
-
-      /**
-       * This function renders the white highlight on the visualization.
-       * This rendering is agnostic to how the underlying data has been filtered
-       * and simply takes a subset of the full chart data and renders it in a
-       * similar fashion to how the filtered and unfiltered chart data
-       * is rendered.
-       *
-       * This function also determines flyout positioning by drawing
-       * a small line where the flyout should be positioned.
-       *
-       * @param {Object} highlightData - The output of either
-       *                                 filterChartDataByOffset
-       *                                 or filterChartDataByInterval.
-       */
-      function renderChartHighlight(highlightData) {
-
-        var highlightArea;
-        var flyoutPosition;
-        var selection;
-
-        if (_.isNull(d3XScale) || _.isNull(d3YScale)) {
-          return;
-        }
-
-        var targetMargin = Constants.TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN;
-        var gutter = Constants.TIMELINE_CHART_GUTTER;
-
-        var cardWidth = cachedChartDimensions.width;
-        var width = highlightData.width + (targetMargin * 2);
-        var leftPos = highlightData.left - targetMargin;
-        width = Math.min(width, cardWidth + gutter - leftPos);
-        leftPos = Math.max(leftPos, -gutter);
-
-        jqueryHighlightTargetElement.css({
-          left: leftPos,
-          width: width,
-          height: cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM
-        });
-
-        highlightArea = d3.
-          svg.
-          area().
-          x(function(d) { return d3XScale(d.date); }).
-          y0(cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM).
-          y1(d3YScale(highlightData.maxValue));
-
-        d3ChartElement.
-          select('svg.timeline-chart-highlight-container').
-          select('g').
-          remove();
-
-        selection = d3ChartElement.
-          select('svg.timeline-chart-highlight-container').
-          attr('width', highlightData.width).
-          attr('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM).
-          append('g');
-
-        selection.
-          append('path').
-          datum(highlightData.data).
-          attr('class', 'timeline-chart-highlight').
-          attr('d', highlightArea);
-
-        // This function determines the vertical position of the flyout.
-        // It always positions the flyout above all timeline paths.
-        function flyoutVerticalPosition() {
-          var hoveringWithinSelection =
-            currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
-
-          return (selectionIsCurrentlyRendered && !hoveringWithinSelection) ?
-            d3YScale(_.max([currentDatum.unfiltered, 0])) :
-            d3YScale(_.max([currentDatum.unfiltered, currentDatum.filtered, 0]));
-        }
-
-        // Sets the x and y flyout position.
-        flyoutPosition = d3.
-          svg.
-          line().
-          x(function(d) { return d3XScale(d.date); }).
-          y(flyoutVerticalPosition());
-
-        // This is the actual svg element that flyouts are
-        // positioned on.
-        selection.
-          append('path').
-          datum(highlightData.data).
-          attr('class', 'timeline-chart-flyout-target').
-          attr('d', flyoutPosition);
-
-      }
-
-      function clearChartHighlight() {
-        element.find('.timeline-chart-highlight-container > g > path').remove();
-        element.find('.timeline-chart-highlight-container').
-          css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
-      }
-
-      /**
-       * Converts a date and a unit into a string representation.
-       *
-       * @param {Date} labelDate - The date to format.
-       * @param {Boolean} useFullMonthNames - Whether or not the date should
-       *                                      be rendered with full month
-       *                                      names.
-       * @param {String} overriddenLabelPrecision - An optional precision
-       *                                            to use in favor of the
-       *                                            globally-defined dataset
-       *                                            precision. Must be one of
-       *                                            'decade', 'year', 'month'
-       *                                            or 'day'.
-       * @return {String} The formatted date.
-       */
-      function formatDateLabel(labelDate, useFullMonthNames, overriddenLabelPrecision) {
-
-        var labelPrecisionToUse = overriddenLabelPrecision || labelPrecision;
-        var label;
-
-        switch (labelPrecisionToUse) {
-
-          case 'DECADE':
-            label = Math.floor(labelDate.getFullYear() / 10) + '0s';
-            break;
-
-          case 'YEAR':
-            label = labelDate.getFullYear();
-            break;
-
-          case 'MONTH':
-            if (useFullMonthNames) {
-              label = '{0} {1}'.format(
-                moment(labelDate).format('MMMM'),
-                labelDate.getFullYear()
-              );
-            } else {
-              label = '{0} \'{1}'.format(
-                moment(labelDate).format('MMM'),
-                '0{0}'.format(labelDate.getFullYear() % 100).slice(-2)
-              );
-            }
-            break;
-
-          case 'DAY':
-            if (useFullMonthNames) {
-              label = '{0} {1} {2}'.format(
-                labelDate.getDate(),
-                moment(labelDate).format('MMMM'),
-                labelDate.getFullYear()
-              );
-            } else {
-              label = '{0} {1}'.format(
-                labelDate.getDate(),
-                moment(labelDate).format('MMM')
-              );
-            }
-            break;
-
-          default:
-            throw new Error(
-              'Cannot format date label for unrecognized unit "{0}".'.format(labelPrecisionToUse));
-
-        }
-
-        return label;
-
-      }
 
       /**
        * Similar to formatDateLabel but for ranges instead of discrete dates.
@@ -1109,7 +962,7 @@
             // Note that even if we are quitting early we still may need to
             // show the selection (since it may be possible that the same
             // interval was previously rendered but is now just hidden).
-            jqueryChartSelectionElement.show();
+            $chartSelectionElement.show();
             return;
           }
 
@@ -1180,7 +1033,7 @@
           // element to which we are rendering.
           selectionEndPosition = Math.floor(d3XScale(transformedMaxDate)) - 1;
 
-          jqueryLeftSelectionMarker.css(
+          $leftSelectionMarker.css(
             {
               left: selectionStartPosition -
                 Constants.TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET -
@@ -1189,7 +1042,7 @@
             }
           );
 
-          jqueryRightSelectionMarker.css(
+          $rightSelectionMarker.css(
             {
               left: selectionEndPosition -
                 Constants.TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET +
@@ -1260,7 +1113,7 @@
           dateRangeFlyoutLabel = '{0} - {1}'.
             format(formatDateLabel(minDate, true), formatDateLabel(maxDate, true));
 
-          jqueryClearSelectionLabel.
+          $clearSelectionLabel.
             attr('data-start', selectionStartDate).
             attr('data-end', selectionEndDate).
             attr('data-aggregate-unfiltered', unfilteredAggregate).
@@ -1277,7 +1130,7 @@
                 Constants.TIMELINE_CHART_MARGIN.BOTTOM
             });
 
-          jqueryChartSelectionElement.show();
+          $chartSelectionElement.show();
 
           renderedSelectionStartDate = selectionStartDate;
           renderedSelectionEndDate = selectionEndDate;
@@ -1293,8 +1146,8 @@
         selectionEndDate = null;
         renderedSelectionStartDate = null;
         renderedSelectionEndDate = null;
-        jqueryChartSelectionElement.hide();
-        jqueryChartElement.removeClass('selected');
+        $chartSelectionElement.hide();
+        $chartElement.removeClass('selected');
 
       }
 
@@ -1560,7 +1413,7 @@
         });
 
         // Replace the existing x-axis ticks with the new ones.
-        jqueryChartElement.children('.x-ticks').replaceWith(jqueryAxisContainer);
+        $chartElement.children('.x-ticks').replaceWith(jqueryAxisContainer);
 
       }
 
@@ -1615,7 +1468,7 @@
         });
 
         // Remove old y-axis ticks and replace them
-        jqueryChartElement.children('.y-ticks').replaceWith(jqueryAxisContainer);
+        $chartElement.children('.y-ticks').replaceWith(jqueryAxisContainer);
 
       }
 
@@ -1762,12 +1615,6 @@
         renderChartFilteredValues();
       }
 
-      var flyoutIntervalPathSelector = '.datum-label';
-      var flyoutIntervalTopSelectors = [
-        '.x-tick-label',
-        '.timeline-chart-clear-selection-label'
-      ];
-
       /**
        * @param {DOM Element} target - The DOM element which triggered the
        *                               flyout.
@@ -1789,7 +1636,7 @@
         var date;
         var isInterval = $target.
           is(flyoutIntervalTopSelectors.concat([flyoutIntervalPathSelector]).join(', '));
-        var definedDatum = _.isDefined(currentDatum) && !_.isNull(currentDatum);
+        var definedDatum = !_.isUndefined(currentDatum) && !_.isNull(currentDatum);
         var formatStrings = {
           DECADE: 'YYYYs',
           YEAR: 'YYYY',
@@ -1912,18 +1759,13 @@
         }
       }
 
-      function hideDatumLabel() {
-        jqueryDatumLabel.hide();
-        jqueryChartElement.removeClass('dimmed');
-      }
-
       function enterDraggingState() {
         currentlyDragging = true;
         selectionIsCurrentlyRendered = false;
         hideDatumLabel();
-        jqueryChartElement.find('.timeline-chart-filtered-mask').hide();
-        jqueryBodyElement.addClass('prevent-user-select');
-        jqueryChartElement.removeClass('selected').addClass('selecting');
+        $chartElement.find('.timeline-chart-filtered-mask').hide();
+        $body.addClass('prevent-user-select');
+        $chartElement.removeClass('selected').addClass('selecting');
       }
 
       function enterSelectedState() {
@@ -1931,9 +1773,9 @@
         selectionIsCurrentlyRendered = true;
         hideDatumLabel();
         renderChartFilteredValues();
-        jqueryChartElement.find('.timeline-chart-filtered-mask').show();
-        jqueryBodyElement.removeClass('prevent-user-select');
-        jqueryChartElement.removeClass('selecting').addClass('selected');
+        $chartElement.find('.timeline-chart-filtered-mask').show();
+        $body.removeClass('prevent-user-select');
+        $chartElement.removeClass('selecting').addClass('selected');
       }
 
       function enterDefaultState() {
@@ -1947,8 +1789,8 @@
           // and the chart has a width/height of zero, so the scales are still null.
           renderChartFilteredValues();
         }
-        jqueryBodyElement.removeClass('prevent-user-select');
-        jqueryChartElement.removeClass('selecting').removeClass('selected');
+        $body.removeClass('prevent-user-select');
+        $chartElement.removeClass('selecting').removeClass('selected');
       }
 
       function requestChartFilterByCurrentSelection() {
@@ -1963,16 +1805,6 @@
 
       function requestChartFilterReset() {
         scope.$emit('filter-timeline-chart', null);
-      }
-
-      /**
-       * This is used to keep the flyout updated as you drag a selection
-       * marker.
-       */
-      function setCurrentDatumByDate(date) {
-        currentDatum = _.find(cachedChartData.values, function(value) {
-          return value.date >= date;
-        });
       }
 
       /**
@@ -2242,179 +2074,11 @@
         enterDefaultState();
       }
 
-      /**
-       * @param {Date} startDate
-       * @param {Date} endDate
-       */
-      function highlightChart(startDate, endDate) {
-
-        var highlightData;
-
-        setCurrentDatumByDate(startDate);
-
-        highlightData = filterChartDataByInterval(
-          startDate,
-          endDate
-        );
-
-        renderChartHighlight(highlightData);
-
-      }
-
-      /**
-       * @param {Number} offsetX - The left offset of the mouse cursor into
-       *                           the visualization, in pixels.
-       */
-      function highlightChartByMouseOffset(offsetX) {
-
-        var highlightData;
-
-        if (mousePositionWithinChartDisplay || mousePositionWithinChartLabels) {
-
-          highlightData = filterChartDataByOffset(offsetX);
-
-          renderChartHighlight(highlightData);
-
-          hideDatumLabel();
-
-        }
-
-      }
-
-      /**
-       * @param {Number} offsetX - The left offset of the mouse cursor into
-       *                           the visualization, in pixels.
-       */
-      function highlightChartWithHiddenLabelsByMouseOffset(offsetX) {
-
-        var indexIntoChartData;
-        var startDate;
-        var endDate;
-        var currentPrecision;
-        var datumLabelOffset;
-        var datumLabelWidth;
-
-        indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) *
-          cachedChartData.values.length);
-
-        // Note that currentDatum is a global variable that is set when the
-        // user hovers over the visualization. The value of currentDatum is
-        // read by the flyout code.
-        currentDatum = cachedChartData.values[indexIntoChartData];
-
-        // If we are hovering within the labels and they are all shown, we should use
-        // the label precision.  Otherwise, because labels are hidden, we should use
-        // the smaller datasetPrecision.
-        currentPrecision = (mousePositionWithinChartLabels && allChartLabelsShown) ?
-          labelPrecision : datasetPrecision;
-
-        startDate = currentDatum.date;
-        endDate = new Date(moment(currentDatum.date).add(1, currentPrecision).toDate());
-
-        // Dim existing labels and add text and attribute information to the datum label.
-        jqueryChartElement.addClass('dimmed');
-        jqueryDatumLabel.
-          text(formatDateLabel(startDate, false, currentPrecision)).
-          attr('data-start', startDate).
-          attr('data-end', endDate).
-          attr('data-aggregate-unfiltered', currentDatum.unfiltered).
-          attr('data-aggregate-filtered', currentDatum.filtered).
-          attr('data-flyout-label', formatDateLabel(startDate, true, currentPrecision));
-
-        // Now that the datum label has text (and thus a width), calculate its
-        // left offset.  Make sure it does not overflow either edge of the chart.
-        datumLabelWidth = jqueryDatumLabel.width();
-        datumLabelOffset = Math.ceil(d3XScale(startDate));
-        datumLabelOffset = (datumLabelOffset > (datumLabelWidth / 2)) ?
-           datumLabelOffset - (datumLabelWidth / 2) : 0;
-        datumLabelOffset = Math.min(
-          datumLabelOffset,
-          cachedChartDimensions.width - datumLabelWidth
-        );
-
-        // Set the left offset and show the label.
-        jqueryDatumLabel.
-          css('left', Math.floor(datumLabelOffset)).
-          show();
-
-        highlightChart(startDate, endDate);
-
-      }
-
-      /**
-       * @param {DOM Element} target - A DOM element with data attributes
-       *                               describing an interval's start date,
-       *                               end date, filtered and unfiltered
-       *                               values and the formatted flyout label.
-       */
-      function highlightChartByInterval(target) {
-
-        var startDate;
-        var endDate;
-
-        startDate = new Date(target.getAttribute('data-start'));
-        endDate = new Date(target.getAttribute('data-end'));
-
-        hideDatumLabel();
-
-        highlightChart(startDate, endDate);
-
-      }
-
-      /**
-       * @param {Number} offsetX - The left offset of the mouse cursor into
-       *                           the visualization, in pixels.
-       * @param {Number} offsetY - The top offset of the mouse cursor into
-       *                           the visualization, in pixels.
-       * @return {Boolean}
-       */
-      function isMouseWithinChartDisplay(offsetX, offsetY) {
-
-        return offsetX > 0 &&
-          offsetX <= cachedChartDimensions.width &&
-          offsetY > 0 &&
-          offsetY <= cachedChartDimensions.height -
-            Constants.TIMELINE_CHART_MARGIN.BOTTOM;
-
-      }
-
-      /**
-       * @param {Number} offsetX - The left offset of the mouse cursor into
-       *                           the visualization, in pixels.
-       * @param {Number} offsetY - The top offset of the mouse cursor into
-       *                           the visualization, in pixels.
-       * @return {Boolean}
-       */
-      function isMouseWithinChartLabels(offsetX, offsetY) {
-        return offsetX > 0 &&
-          offsetX <= cachedChartDimensions.width &&
-          offsetY > cachedChartDimensions.height -
-            Constants.TIMELINE_CHART_MARGIN.BOTTOM &&
-          offsetY <= cachedChartDimensions.height;
-
-      }
-
-      /**
-       * @param {DOM Element} target - The DOM element belonging to this
-       *                               instance of the visualization.
-       * @return {Boolean}
-       */
-      function isMouseOverChartElement(target) {
-
-        var closestChart = $(target).closest('.timeline-chart');
-        return closestChart.length > 0 && closestChart[0] === element[0];
-
-      }
-
-      // TODO: Flyouts based on mouse hover
-
-      jqueryChartElement.on('mouseleave', handleChartMouseleaveEvent);
-      jqueryClearSelectionLabel.on('mousedown', handleClearSelectionLabelMousedownEvent);
 
       // Render the chart
       function cacheThenRender(chartDimensions, chartData, precision, rowDisplayUnit) {
 
-        if (!_.isDefined(chartData) || _.isNull(chartData) || !_.isDefined(precision)) {
+        if (_.isUndefined(chartData) || _.isNull(chartData) || _.isUndefined(precision)) {
           return;
         }
 
@@ -2422,6 +2086,7 @@
         // provided chart data, we need to first check to make sure we
         // won't try to divide by zero and throw an exception instead of
         // rendering if that's the case.
+        utils.assertHasProperty(chartData, 'values.length');
         if (chartData.values.length === 0) {
           throw new Error('Cannot render timeline chart with zero values.');
         }
@@ -2466,6 +2131,521 @@
       cacheThenRender(dimensions, data, precision, unit);
 
       // TODO: React to active filters being cleared.
+    }
+
+    /**
+     * @param {DOM Element} target - A DOM element with data attributes
+     *                               describing an interval's start date,
+     *                               end date, filtered and unfiltered
+     *                               values and the formatted flyout label.
+     */
+    function highlightChartByInterval(target) {
+      var startDate;
+      var endDate;
+      startDate = new Date(target.getAttribute('data-start'));
+      endDate = new Date(target.getAttribute('data-end'));
+      hideDatumLabel();
+      highlightChart(startDate, endDate);
+    }
+
+    /**
+     * This function renders the white highlight on the visualization.
+     * This rendering is agnostic to how the underlying data has been filtered
+     * and simply takes a subset of the full chart data and renders it in a
+     * similar fashion to how the filtered and unfiltered chart data
+     * is rendered.
+     *
+     * This function also determines flyout positioning by drawing
+     * a small line where the flyout should be positioned.
+     *
+     * @param {Object} highlightData - The output of either
+     *                                 filterChartDataByOffset
+     *                                 or filterChartDataByInterval.
+     */
+    function renderChartHighlight(highlightData) {
+
+      var highlightArea;
+      var flyoutPosition;
+      var selection;
+
+      if (_.isNull(d3XScale) || _.isNull(d3YScale)) {
+        return;
+      }
+
+      var targetMargin = Constants.TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN;
+      var gutter = Constants.TIMELINE_CHART_GUTTER;
+
+      var cardWidth = cachedChartDimensions.width;
+      var width = highlightData.width + (targetMargin * 2);
+      var leftPos = highlightData.left - targetMargin;
+      width = Math.min(width, cardWidth + gutter - leftPos);
+      leftPos = Math.max(leftPos, -gutter);
+
+      $highlightTargetElement.css({
+        left: leftPos,
+        width: width,
+        height: cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM
+      });
+
+      highlightArea = d3.
+        svg.
+        area().
+        x(function(d) { return d3XScale(d.date); }).
+        y0(cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM).
+        y1(d3YScale(highlightData.maxValue));
+
+      d3ChartElement.
+        select('svg.timeline-chart-highlight-container').
+        select('g').
+        remove();
+
+      selection = d3ChartElement.
+        select('svg.timeline-chart-highlight-container').
+        attr('width', highlightData.width).
+        attr('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM).
+        append('g');
+
+      selection.
+        append('path').
+        datum(highlightData.data).
+        attr('class', 'timeline-chart-highlight').
+        attr('d', highlightArea);
+
+      // This function determines the vertical position of the flyout.
+      // It always positions the flyout above all timeline paths.
+      function flyoutVerticalPosition() {
+        var hoveringWithinSelection =
+          currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
+
+        return (selectionIsCurrentlyRendered && !hoveringWithinSelection) ?
+          d3YScale(_.max([currentDatum.unfiltered, 0])) :
+          d3YScale(_.max([currentDatum.unfiltered, currentDatum.filtered, 0]));
+      }
+
+      // Sets the x and y flyout position.
+      flyoutPosition = d3.
+        svg.
+        line().
+        x(function(d) { return d3XScale(d.date); }).
+        y(flyoutVerticalPosition());
+
+      // This is the actual svg element that flyouts are
+      // positioned on.
+      selection.
+        append('path').
+        datum(highlightData.data).
+        attr('class', 'timeline-chart-flyout-target').
+        attr('d', flyoutPosition);
+
+    }
+
+    function clearChartHighlight() {
+      element.find('.timeline-chart-highlight-container > g > path').remove();
+      element.find('.timeline-chart-highlight-container').
+        css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
+    }
+
+    /**
+     * @param {Date} startDate
+     * @param {Date} endDate
+     */
+    function highlightChart(startDate, endDate) {
+      var highlightData;
+      setCurrentDatumByDate(startDate);
+      highlightData = filterChartDataByInterval(
+        startDate,
+        endDate
+      );
+      renderChartHighlight(highlightData);
+    }
+
+    /**
+     * @param {Number} offsetX - The left offset of the mouse cursor into
+     *                           the visualization, in pixels.
+     */
+    function highlightChartByMouseOffset(offsetX) {
+      var highlightData;
+      if (mousePositionWithinChartDisplay || mousePositionWithinChartLabels) {
+        highlightData = filterChartDataByOffset(offsetX);
+        renderChartHighlight(highlightData);
+        hideDatumLabel();
+      }
+    }
+
+    /**
+     * @param {Number} offsetX - The left offset of the mouse cursor into
+     *                           the visualization, in pixels.
+     */
+    function highlightChartWithHiddenLabelsByMouseOffset(offsetX) {
+
+      var indexIntoChartData;
+      var startDate;
+      var endDate;
+      var currentPrecision;
+      var datumLabelOffset;
+      var datumLabelWidth;
+
+      indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) *
+        cachedChartData.values.length);
+
+      // Note that currentDatum is a global variable that is set when the
+      // user hovers over the visualization. The value of currentDatum is
+      // read by the flyout code.
+      currentDatum = cachedChartData.values[indexIntoChartData];
+
+      // If we are hovering within the labels and they are all shown, we should use
+      // the label precision.  Otherwise, because labels are hidden, we should use
+      // the smaller datasetPrecision.
+      currentPrecision = (mousePositionWithinChartLabels && allChartLabelsShown) ?
+        labelPrecision : datasetPrecision;
+
+      startDate = currentDatum.date;
+      endDate = new Date(moment(currentDatum.date).add(1, currentPrecision).toDate());
+
+      // Dim existing labels and add text and attribute information to the datum label.
+      $chartElement.addClass('dimmed');
+      $datumLabel.
+        text(formatDateLabel(startDate, false, currentPrecision)).
+        attr('data-start', startDate).
+        attr('data-end', endDate).
+        attr('data-aggregate-unfiltered', currentDatum.unfiltered).
+        attr('data-aggregate-filtered', currentDatum.filtered).
+        attr('data-flyout-label', formatDateLabel(startDate, true, currentPrecision));
+
+      // Now that the datum label has text (and thus a width), calculate its
+      // left offset.  Make sure it does not overflow either edge of the chart.
+      datumLabelWidth = $datumLabel.width();
+      datumLabelOffset = Math.ceil(d3XScale(startDate));
+      datumLabelOffset = (datumLabelOffset > (datumLabelWidth / 2)) ?
+         datumLabelOffset - (datumLabelWidth / 2) : 0;
+      datumLabelOffset = Math.min(
+        datumLabelOffset,
+        cachedChartDimensions.width - datumLabelWidth
+      );
+
+      // Set the left offset and show the label.
+      $datumLabel.
+        css('left', Math.floor(datumLabelOffset)).
+        show();
+
+      highlightChart(startDate, endDate);
+
+    }
+
+    /**
+     * Data can be filtered by the x-offset of the cursor from the left
+     * edge of the chart or by arbitrary intervals specified with start-
+     * and end Date objects.
+     *
+     * The two filter functions each have a SIDE-EFFECT: they both set
+     * the global 'currentDatum' variable to a synthetic value which is
+     * used by the flyout code to keep the highlighted areas and their
+     * corresponding flyout labels in sync.
+     *
+     * @param {Number} offsetX - The left offset of the mouse cursor into the
+     *                           visualization, in pixels.
+     * @return {Object}
+     *   @property {Array} highlightData - The data for the start and end
+     *                                     date including the unfiltered
+     *                                     and filtered values.
+     *   @property {Number} left - The left offset of the selection,
+     *                             in pixels.
+     *   @property {Number} width - The width of one <datum>, in pixels.
+     *   @property {Number} maxValue - the maximum unfiltered value in the
+     *                                 latest data request.
+     */
+    function filterChartDataByOffset(offsetX) {
+
+      var indexIntoChartData;
+      var transformedStartDate;
+      var transformedEndDate;
+      var highlightData;
+      var leftOffset;
+      var width = visualizedDatumWidth;
+      var maxValue = cachedChartData.maxValue;
+
+      indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) *
+        cachedChartData.values.length);
+
+      // Note that currentDatum is a global variable that is set when the
+      // user hovers over the visualization. The value of currentDatum is
+      // read by the flyout code.
+      currentDatum = cachedChartData.values[indexIntoChartData];
+
+      transformedStartDate = DateHelpers.decrementDateByHalfInterval(
+        currentDatum.date, datasetPrecision
+      );
+      transformedEndDate = DateHelpers.decrementDateByHalfInterval(
+        moment(currentDatum.date).add(1, datasetPrecision).toDate(), datasetPrecision
+      );
+
+      highlightData = [
+        { date: transformedStartDate },
+        { date: transformedEndDate }
+      ];
+
+      leftOffset = d3XScale(transformedStartDate);
+
+      return {
+        data: highlightData,
+        left: leftOffset,
+        width: width,
+        maxValue: maxValue
+      };
+
+    }
+
+    function hideDatumLabel() {
+      $datumLabel.hide();
+      $chartElement.removeClass('dimmed');
+    }
+
+    /**
+     * This is used to keep the flyout updated as you drag a selection
+     * marker.
+     */
+    function setCurrentDatumByDate(date) {
+      currentDatum = _.find(cachedChartData.values, function(value) {
+        return value.date >= date;
+      });
+    }
+
+    /**
+     * Converts a date and a unit into a string representation.
+     *
+     * @param {Date} labelDate - The date to format.
+     * @param {Boolean} useFullMonthNames - Whether or not the date should
+     *                                      be rendered with full month
+     *                                      names.
+     * @param {String} overriddenLabelPrecision - An optional precision
+     *                                            to use in favor of the
+     *                                            globally-defined dataset
+     *                                            precision. Must be one of
+     *                                            'decade', 'year', 'month'
+     *                                            or 'day'.
+     * @return {String} The formatted date.
+     */
+    function formatDateLabel(labelDate, useFullMonthNames, overriddenLabelPrecision) {
+
+      var labelPrecisionToUse = overriddenLabelPrecision || labelPrecision;
+      var label;
+
+      switch (labelPrecisionToUse) {
+
+        case 'DECADE':
+          label = Math.floor(labelDate.getFullYear() / 10) + '0s';
+          break;
+
+        case 'YEAR':
+          label = labelDate.getFullYear();
+          break;
+
+        case 'MONTH':
+          if (useFullMonthNames) {
+            label = '{0} {1}'.format(
+              moment(labelDate).format('MMMM'),
+              labelDate.getFullYear()
+            );
+          } else {
+            label = '{0} \'{1}'.format(
+              moment(labelDate).format('MMM'),
+              '0{0}'.format(labelDate.getFullYear() % 100).slice(-2)
+            );
+          }
+          break;
+
+        case 'DAY':
+          if (useFullMonthNames) {
+            label = '{0} {1} {2}'.format(
+              labelDate.getDate(),
+              moment(labelDate).format('MMMM'),
+              labelDate.getFullYear()
+            );
+          } else {
+            label = '{0} {1}'.format(
+              labelDate.getDate(),
+              moment(labelDate).format('MMM')
+            );
+          }
+          break;
+
+        default:
+          throw new Error(
+            'Cannot format date label for unrecognized unit "{0}".'.format(labelPrecisionToUse));
+
+      }
+
+      return label;
+
+    }
+
+    /**
+     * Returns a bundle of stuff about the data points occurring between
+     * two points in time.
+     *
+     * @param {Date} startDate
+     * @param {Date} endDate
+     * @return {Object}
+     *   @property {Array} highlightData - The data for the start and end
+     *                                     date including the unfiltered
+     *                                     and filtered values.
+     *   @property {Number} left - The left offset of the selection,
+     *                             in pixels.
+     *   @property {Number} width - The width of the selection, in pixels.
+     *   @property {Number} maxValue - The maximum unfiltered value in the
+     *                                 latest data request.
+     */
+    function filterChartDataByInterval(startDate, endDate) {
+
+      var transformedStartDate = DateHelpers.decrementDateByHalfInterval(
+        startDate, datasetPrecision);
+      var transformedEndDate = DateHelpers.decrementDateByHalfInterval(
+        endDate, datasetPrecision);
+      var highlightData;
+      var leftOffset = d3XScale(transformedStartDate);
+      var width = d3XScale(transformedEndDate) - leftOffset;
+      var maxValue = cachedChartData.maxValue;
+
+      highlightData = [
+        { date: transformedStartDate },
+        { date: transformedEndDate }
+      ];
+
+      return {
+        data: highlightData,
+        left: leftOffset,
+        width: width,
+        maxValue: maxValue
+      };
+
+    }
+
+    /**
+     * @param {Number} offsetX - The left offset of the mouse cursor into
+     *                           the visualization, in pixels.
+     * @param {Number} offsetY - The top offset of the mouse cursor into
+     *                           the visualization, in pixels.
+     * @return {Boolean}
+     */
+    function isMouseWithinChartDisplay(offsetX, offsetY) {
+
+      return offsetX > 0.5 &&
+        offsetX <= cachedChartDimensions.width &&
+        offsetY > 0 &&
+        offsetY <= cachedChartDimensions.height -
+          Constants.TIMELINE_CHART_MARGIN.BOTTOM;
+
+    }
+
+    /**
+     * @param {Number} offsetX - The left offset of the mouse cursor into
+     *                           the visualization, in pixels.
+     * @param {Number} offsetY - The top offset of the mouse cursor into
+     *                           the visualization, in pixels.
+     * @return {Boolean}
+     */
+    function isMouseWithinChartLabels(offsetX, offsetY) {
+      return offsetX > 0 &&
+        offsetX <= cachedChartDimensions.width &&
+        offsetY > cachedChartDimensions.height -
+          Constants.TIMELINE_CHART_MARGIN.BOTTOM &&
+        offsetY <= cachedChartDimensions.height;
+
+    }
+
+    /**
+     * @param {DOM Element} target - The DOM element belonging to this
+     *                               instance of the visualization.
+     * @return {Boolean}
+     */
+    function isMouseOverChartElement(target) {
+      return $(target).closest('.timeline-chart').get(0) === _chartElement[0];
+    }
+
+    function mouseHasMoved(mousePosition, mouseLeftButtonNowPressed) {
+      var offsetX;
+      var offsetY;
+      var mousePositionTarget = mousePosition.target;
+
+      // Work-around for browsers with no pointer-event support.
+      //mousePositionTarget = FlyoutService.targetUnder();
+
+      var $mousePositionTarget = $(mousePositionTarget);
+      var mousePositionIsClearButton = $mousePositionTarget.
+        hasClass('timeline-chart-clear-selection-button');
+      var mousePositionIsSelectionLabel = $mousePositionTarget.
+        hasClass('timeline-chart-clear-selection-label');
+
+      // Fail early if the chart hasn't rendered itself at all yet.
+      if (_.isNull(cachedChartDimensions) || _.isNull(element.offset())) {
+        return;
+      }
+
+      offsetX = mousePosition.clientX - element.offset().left;
+
+      // The method 'getBoundingClientRect().top' must be used here
+      // because the offset of expanded cards changes as the window
+      // scrolls.
+      offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
+
+      // mousePositionWithinChartElement is a global variable that is
+      // used elsewhere as well
+      mousePositionWithinChartElement = isMouseOverChartElement(mousePositionTarget);
+
+      // First figure out which region (display, labels, outside) of the
+      // visualization the mouse is currently over and cache the result
+      // for this and other functions to use.
+      //
+      // mousePositionWithinChartDisplay and
+      // mousePositionWithinChartLabels are both also global variables
+      // that are used elsewhere as well.
+      if (isMouseWithinChartDisplay(offsetX, offsetY) && mousePositionWithinChartElement) {
+        mousePositionWithinChartDisplay = true;
+        mousePositionWithinChartLabels = false;
+      } else if (isMouseWithinChartLabels(offsetX, offsetY) && mousePositionWithinChartElement) {
+        mousePositionWithinChartDisplay = false;
+        mousePositionWithinChartLabels = true;
+      } else {
+        mousePositionWithinChartDisplay = false;
+        mousePositionWithinChartLabels = false;
+      }
+
+      // If we are currently dragging, then we need to update and
+      // re-render the selected area.
+      if (currentlyDragging) {
+        setSelectionStartAndEndDateByMousePosition(offsetX, mousePositionTarget);
+        renderChartSelection();
+      // Otherwise we need to update and render an appropriate highlight
+      // (by mouse position if the mouse is within the display or by
+      // interval if the mouse is over the chart labels).
+      } else {
+        if (mousePositionWithinChartDisplay) {
+          if (!allChartLabelsShown) {
+            highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePositionTarget);
+          } else {
+            highlightChartByMouseOffset(offsetX, mousePositionTarget);
+          }
+        } else if (mousePositionWithinChartLabels && !mouseLeftButtonNowPressed) {
+          // Clear the chart highlight if the mouse is currently over the
+          // 'clear chart selection' button.
+          if (mousePositionIsClearButton) {
+            clearChartHighlight();
+            hideDatumLabel();
+          // Otherwise, render a highlight over the interval indicated by
+          // the label that is currently under the mouse.
+          } else {
+            if (!allChartLabelsShown && !mousePositionIsSelectionLabel) {
+              highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePositionTarget);
+            } else {
+              highlightChartByInterval(mousePosition.target);
+            }
+          }
+        } else {
+          $chartElement.find('.x-tick-label').removeClass('emphasis');
+          hideDatumLabel();
+          clearChartHighlight();
+        }
+      }
     }
   }
 

@@ -2250,18 +2250,13 @@
      * @param {Date} endDate
      */
     function highlightChart(startDate, endDate) {
-
       var highlightData;
-
       setCurrentDatumByDate(startDate);
-
       highlightData = filterChartDataByInterval(
         startDate,
         endDate
       );
-
       renderChartHighlight(highlightData);
-
     }
 
     /**
@@ -2269,19 +2264,12 @@
      *                           the visualization, in pixels.
      */
     function highlightChartByMouseOffset(offsetX) {
-
       var highlightData;
-
       if (mousePositionWithinChartDisplay || mousePositionWithinChartLabels) {
-
         highlightData = filterChartDataByOffset(offsetX);
-
         renderChartHighlight(highlightData);
-
         hideDatumLabel();
-
       }
-
     }
 
     /**
@@ -2571,14 +2559,10 @@
      * @return {Boolean}
      */
     function isMouseOverChartElement(target) {
-
-      var closestChart = $(target).closest('.timeline-chart');
-      return closestChart.length > 0 && closestChart[0] === _chartElement[0];
-
+      return $(target).closest('.timeline-chart').get(0) === _chartElement[0];
     }
 
     function mouseHasMoved(mousePosition, mouseLeftButtonNowPressed) {
-
       var offsetX;
       var offsetY;
       var mousePositionTarget = mousePosition.target;
@@ -2616,78 +2600,52 @@
       // mousePositionWithinChartLabels are both also global variables
       // that are used elsewhere as well.
       if (isMouseWithinChartDisplay(offsetX, offsetY) && mousePositionWithinChartElement) {
-
         mousePositionWithinChartDisplay = true;
         mousePositionWithinChartLabels = false;
-
       } else if (isMouseWithinChartLabels(offsetX, offsetY) && mousePositionWithinChartElement) {
-
         mousePositionWithinChartDisplay = false;
         mousePositionWithinChartLabels = true;
-
       } else {
-
         mousePositionWithinChartDisplay = false;
         mousePositionWithinChartLabels = false;
-
       }
 
       // If we are currently dragging, then we need to update and
       // re-render the selected area.
       if (currentlyDragging) {
-
         setSelectionStartAndEndDateByMousePosition(offsetX, mousePositionTarget);
-
         renderChartSelection();
-
       // Otherwise we need to update and render an appropriate highlight
       // (by mouse position if the mouse is within the display or by
       // interval if the mouse is over the chart labels).
       } else {
-
         if (mousePositionWithinChartDisplay) {
-
           if (!allChartLabelsShown) {
             highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePositionTarget);
           } else {
             highlightChartByMouseOffset(offsetX, mousePositionTarget);
           }
-
         } else if (mousePositionWithinChartLabels && !mouseLeftButtonNowPressed) {
-
           // Clear the chart highlight if the mouse is currently over the
           // 'clear chart selection' button.
           if (mousePositionIsClearButton) {
-
             clearChartHighlight();
             hideDatumLabel();
-
           // Otherwise, render a highlight over the interval indicated by
           // the label that is currently under the mouse.
           } else {
-
             if (!allChartLabelsShown && !mousePositionIsSelectionLabel) {
-
               highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePositionTarget);
-
             } else {
-
               highlightChartByInterval(mousePosition.target);
-
             }
-
           }
-
         } else {
-
           $chartElement.find('.x-tick-label').removeClass('emphasis');
           hideDatumLabel();
           clearChartHighlight();
-
         }
-
       }
-
     }
   }
 

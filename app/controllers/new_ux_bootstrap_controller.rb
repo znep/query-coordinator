@@ -62,10 +62,11 @@ class NewUxBootstrapController < ActionController::Base
     # because it has the side effect of obtaining the user session.
     # If the order is swapped, the logic is short-circuited and the call to
     # dataset_is_new_backend? will fail unexpectedly.
+
     unless can_create_metadata? || use_ephemeral_bootstrap
       return render :json => {
         error: true,
-        reason: "User must be one of these roles: #{ROLES_ALLOWED_TO_UPDATE_METADATA.join(', ')}"
+        reason: "User must be one of these roles: #{roles_allowed_to_create_data_lenses.join(', ')}"
       }, :status => :forbidden
     end
 
@@ -89,7 +90,6 @@ class NewUxBootstrapController < ActionController::Base
       :request_id => request_id,
       :cookies => forwardable_session_cookies
     )
-
     unless dataset_metadata_response[:status] == '200' && dataset_metadata_response.try(:[], :body).present?
       Airbrake.notify(
         :error_class => 'BootstrapUXFailure',

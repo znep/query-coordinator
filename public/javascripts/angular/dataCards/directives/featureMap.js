@@ -716,18 +716,22 @@
 
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
         baseTileLayer$ = baseLayerUrl$.
-          map(function(url) {
-            if (_.isNull(url) || _.isUndefined(url)) {
-              return {
-                url: Constants.DEFAULT_MAP_BASE_LAYER_URL,
-                opacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY
-              };
+          map(function(urlFromScope) {
+            var resultUrl;
+            if (_.isNull(urlFromScope) || _.isUndefined(urlFromScope)) {
+              resultUrl = Constants.MAPBOX_SIMPLE_BLUE_BASE_LAYER_URL;
             } else {
-              return {
-                url: url,
-                opacity: Constants.DEFINED_MAP_BASE_LAYER_OPACITY
-              };
+              resultUrl = urlFromScope;
             }
+            var opacity =
+              urlFromScope === Constants.MAPBOX_SIMPLE_GREY_BASE_LAYER_URL
+                ? Constants.SIMPLE_GREY_MAP_BASE_LAYER_OPACITY
+                : Constants.DEFAULT_MAP_BASE_LAYER_OPACITY;
+
+            return {
+              url: resultUrl,
+              opacity: opacity
+            };
           }).
           distinctUntilChanged(_.property('url')).
           map(function(layerInfo) {

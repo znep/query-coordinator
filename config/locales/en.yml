@@ -152,7 +152,8 @@ en:
           warning: Changing the bucket sizing will clear your current filter on this card
         map_layer:
           custom: Custom Map
-          standard: Standard
+          simple_grey: Simple Grey
+          simple_blue: Simple Blue
           title: Map base layer
         feature_map_flannel:
           default_option: (Default)

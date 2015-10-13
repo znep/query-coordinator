@@ -38,8 +38,11 @@
           switch (url) {
             case null:
             case undefined:
-              return 'standard';
-            case Constants.ESRI_BASE_URL:
+            case Constants.MAPBOX_SIMPLE_BLUE_BASE_LAYER_URL:
+              return 'simpleBlue';
+            case Constants.MAPBOX_SIMPLE_GREY_BASE_LAYER_URL:
+              return 'simpleGrey';
+            case Constants.ESRI_BASE_LAYER_URL:
               return 'esri';
             default:
               return 'custom';
@@ -55,11 +58,14 @@
       baseLayerOption$ = $scope.$observe('baseLayerOption');
       baseLayerOption$.subscribe(function(value) {
         switch (value) {
-          case 'standard':
+          case 'simpleBlue':
             cardModel.set('baseLayerUrl', null);
             break;
+          case 'simpleGrey':
+            cardModel.set('baseLayerUrl', Constants.MAPBOX_SIMPLE_GREY_BASE_LAYER_URL);
+            break;
           case 'esri':
-            cardModel.set('baseLayerUrl', Constants.ESRI_BASE_URL);
+            cardModel.set('baseLayerUrl', Constants.ESRI_BASE_LAYER_URL);
             break;
           case 'custom':
             if ($scope.customLayerUrl) {

@@ -79,7 +79,7 @@
   // This function duplicates logic, but returns a promise instead of creating data lens popup
   // through side effects.
   function generateDataLensLinkHref() {
-    var dummyHref = '#';
+    var href = '#';
     var localePart = blist.locale === blist.defaultLocale ? '' : '/' + blist.locale;
     var linkParams = generateDataLensLinkParams();
     var canBootstrapDataLens = !linkParams.hasGroupBys;
@@ -87,51 +87,28 @@
 
     // Prevent data lens button for geo dataset
     if (linkParams.dataset.viewType === 'geo') {
-      deferred.resolve(dummyHref);
+
+      deferred.resolve(href);
       return deferred.promise();
+
     } else if (linkParams.dataset.newBackend) {
+
       if (canBootstrapDataLens) {
-        deferred.resolve(localePart + '/view/bootstrap/{0}'.format(linkParams.dataset.id));
-        return deferred.promise();
-      } else {
-        deferred.resolve(dummyHref);
-        return deferred.promise();
+        href = '{0}/view/bootstrap/{1}'.format(localePart, linkParams.dataset.id);
       }
+      deferred.resolve(href);
+      return deferred.promise();
+
     } else {
+
       // pipe is deprecated as of jQuery 1.8, but the promise chain breaks without it :(
       return _newBackendMetadata.pipe(function(nbeMetadata) {
-        if (!nbeMetadata) return dummyHref;
-        if (nbeMetadata.defaultPage) {
-          var lensViewId = nbeMetadata.defaultPage;
-          return $.get('/metadata/v1/page/{0}.json'.format(lensViewId)).pipe(function(lensMetadata) {
-            // For OBE dataset pages, only show link to the lens view if the domain is post_beta
-            // and the corresponding lens page is set to public.
-            var isDataLensAccessible = linkParams.dataLensState === 'post_beta' && lensMetadata.permissions.isPublic;
-
-              if (isDataLensAccessible) {
-                return localePart + '/view/{0}'.format(lensViewId);
-              } else {
-                return dummyHref;
-              }
-          }).fail(function() {
-            // This is a workaround because the metadata holds a `defaultPage` reference
-            // that doesn't correspond to an existing page (i.e. page deleted but metadata
-            // not kept in sync). In this case, attempt to rebootstrap the page, which will
-            // update the metadata appropriately.
-            if (canBootstrapDataLens) {
-              return localePart + '/view/bootstrap/{0}'.format(nbeMetadata.id);
-            } else {
-              return dummyHref;
-            }
-          });
-        } else if (canBootstrapDataLens) {
-          // No view has been bootstrapped yet, only let the user bootstrap if the
-          // dataset can be bootstrapped.
-          return localePart + '/view/bootstrap/{0}'.format(nbeMetadata.id);
-        } else {
-          return dummyHref;
+        if (nbeMetadata && canBootstrapDataLens) {
+          href = '{0}/view/bootstrap/{1}'.format(localePart, nbeMetadata.id);
         }
+        return href;
       });
+
     }
   }
 })(jQuery);

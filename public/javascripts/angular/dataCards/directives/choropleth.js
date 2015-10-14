@@ -1373,7 +1373,19 @@
                     mouseover: onFeatureMouseOver,
                     mouseout: onFeatureMouseOut,
                     mousemove: onFeatureMouseMove,
-                    click: onFeatureClick
+                    click: function(e) {
+                      onFeatureClick(e);
+
+                      /* CORE-6981 :
+                        The leaflet click does not propogate to the body, so the WindowState
+                        mouseLeftButtonClick$ does not get triggered, meaning closeDialogEvent$
+                        doesn't get fired. This causes bugs where flannels are already open
+                        and do not close despite clicking on a leaflet feature.
+
+                        Therefore we fake a click on document.body :'(
+                      */
+                      document.body.click();
+                    }
                   });
 
                   // Then, if a layer is selected, show a clear selection box for it

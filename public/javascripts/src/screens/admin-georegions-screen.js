@@ -53,7 +53,7 @@ var t = function(str, props) {
   function renderTables(georegions, allowEnablement) {
     const authenticityToken = $('.georegions-controls-custom [name="authenticity_token"]').value();
     const baseUrlPath = '/admin/geo/';
-    const [defaultBoundaries, customBoundaries] = _.partition(georegions, 'defaultFlag');
+    const [ignored, customBoundaries] = _.partition(georegions, 'defaultFlag');
     const baseTableProps = {
       allowEnablement,
       authenticityToken,
@@ -67,15 +67,6 @@ var t = function(str, props) {
         rows={customBoundaries}
         {...baseTableProps} />,
       $('.georegions-custom .gridListWrapper').get(0)
-    );
-
-    React.render(
-      <GeoregionAdminTable
-        onEnableSuccess={onEnableSuccess}
-        renderActions={false}
-        rows={defaultBoundaries}
-        {...baseTableProps} />,
-      $('.georegions-default .gridListWrapper').get(0)
     );
   }
 

@@ -34,8 +34,8 @@ describe 'administration/georegions.html.erb' do
       expect(rendered).to include('You have enabled 4 of 5 available regions')
     end
 
-    it 'renders the table partial twice' do
-      expect(view).to render_template(:partial => '_georegions_table', :count => 2)
+    it 'renders the table partial once' do
+      expect(view).to render_template(:partial => '_georegions_table', :count => 1)
     end
 
   end

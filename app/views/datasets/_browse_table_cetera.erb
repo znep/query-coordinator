@@ -1,7 +1,7 @@
 <tbody>
   <%- start_index = (opts[:page].to_i - 1) * opts[:limit].to_i + 1 -%>
   <%- opts[:view_results].each_with_index do |v, i| -%>
-    <tr itemscope="itemscope" itemtype="http://schema.org/Dataset" class="item collapsed <%= !v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %>" data-viewId="<%= v.id %>">
+    <tr itemscope="itemscope" itemtype="http://schema.org/Dataset" class="item collapsed <%= !v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %>" data-view-id="<%= v.id %>">
 
       <%- if opts[:grid_items][:index] -%>
         <td class="index" scope="row">
@@ -12,6 +12,15 @@
         </td>
       <%- end -%>
       <%- rel_type = view_rel_type(v, CurrentDomain, opts) -%>
+      <%- if opts[:grid_items][:domainIcon] -%>
+          <td class="domainIcon">
+              <%- if v.federated? -%>
+                  <a itemprop="url" href="<%= v.link %>" rel="<%= rel_type %>">
+                      <img src="<%= v.domain_icon_href %>" alt="<%= view_img_alt(v, CurrentDomain.cname) %>" />
+                  </a>
+              <%- end -%>
+          </td>
+      <%- end -%>
       <%- if opts[:grid_items][:nameDesc] -%>
         <td class="nameDesc">
           <div class="titleLine">
@@ -34,7 +43,6 @@
 
           <div class="expandBlock clearfix collapsed">
             <div class="description"><%= view_format_description_text(v.description) %></div>
-            <div class="rowSearchResults"><% if in_search %><span><%= t('controls.browse.row_results.matching_rows') %></span><% end %></div>
             <div class="extraInfo <%= opts[:use_federations] ? 'federated' : '' %>">
               <div class="infoContent"></div>
               <a class="close" href="#Close"><span class="icon"></span></a>
@@ -71,7 +79,6 @@
               <span class="icon"></span>
             </a>
           </div>
-          <div class="rowSearchResults"><% if in_search %><span><%= t('controls.browse.row_results.matching_rows') %></span><% end %></div>
         </td>
       <%- end -%>
 

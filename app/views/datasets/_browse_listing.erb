@@ -40,7 +40,9 @@
 
       <div class="browse-listing-metadata">
         <span class="browse-listing-viewcount">
-          <%= pluralize(number_with_delimiter(v.viewCount), t('core.analytics.visit'), t('core.analytics.visits')) %>
+          <%- if v.respond_to?(:viewCount) %>
+            <%= pluralize(number_with_delimiter(v.viewCount), t('core.analytics.visit'), t('core.analytics.visits')) %>
+          <%- end %>
         </span>
         <span class="browse-listing-tags" data-search="highlight">
           <%- if v.tags.present? -%>

@@ -527,8 +527,6 @@
       renderTileOverlap: function(tileId) {
         var self = this;
 
-        console.time('overlap');
-
         var features;
         var featureCount;
         var i;
@@ -568,8 +566,6 @@
             }
           }
         });
-
-        console.timeEnd('overlap');
       },
 
       renderTile: function(tileId, tileRenderedCallback) {
@@ -1043,14 +1039,14 @@
 
       debounceGetTileData: function(tilePoint, zoom, callback) {
         if (this.firstRequest) {
-          this.lastCommitedZoomLevel = zoom;
+          this.lastCommittedZoomLevel = zoom;
           this.firstRequest = false;
         }
-        var userHasZoomed = _.isUndefined(this.lastCommitedZoomLevel) || this.lastCommitedZoomLevel !== zoom;
+        var userHasZoomed = _.isUndefined(this.lastCommittedZoomLevel) || this.lastCommittedZoomLevel !== zoom;
         this.lastSeenZoomLevel = zoom;
 
         if (userHasZoomed) {
-          this.lastCommitedZoomLevel = undefined;
+          this.lastCommittedZoomLevel = undefined;
           this.delayedTileDataRequests.push({
             tilePoint: tilePoint,
             zoom: zoom,
@@ -1065,10 +1061,10 @@
       },
 
       flushOutstandingQueue: function() {
-        this.lastCommitedZoomLevel = this.lastSeenZoomLevel;
+        this.lastCommittedZoomLevel = this.lastSeenZoomLevel;
         var self = this;
         _.each(this.delayedTileDataRequests, function(request) {
-          if (request.zoom === self.lastCommitedZoomLevel) {
+          if (request.zoom === self.lastCommittedZoomLevel) {
             self.getTileData(request.tilePoint, request.zoom, request.callback);
           } else {
             // CORE-6027:
@@ -1209,11 +1205,13 @@
         this.outstandingTileDataRequests['delete'](tileId);
 
         if (this.outstandingTileDataRequests.size === 0) {
-          this.layers.forEach(function(layer) {
-            _.each(_.keys(layer.featuresByTile), function(tileId) {
-              layer.renderTileOverlap(tileId);
+          if (this.lastCommittedZoomLevel > Constants['FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD']) {
+            this.layers.forEach(function(layer) {
+              _.each(_.keys(layer.featuresByTile), function(tileId) {
+                layer.renderTileOverlap(tileId);
+              });
             });
-          });
+          }
 
           this.options.onRenderComplete();
         }

@@ -373,7 +373,7 @@
         this.featuresByTile = {};
         this.totalPointsByTile = {};
         this.quadTreesByTile = {};
-        this.renderedNeighborOverlapByTile = {};
+        this.boundaryPointsByTile = {};
       },
 
       onAdd: function(map) {
@@ -393,6 +393,12 @@
         this.featuresByTile[tileId] = [];
         this.totalPointsByTile[tileId] = 0;
         this.quadTreesByTile[tileId] = this.tileManager.quadTreeFactory([]);
+        this.boundaryPointsByTile[tileId] = {
+          top: [],
+          left: [],
+          bottom: [],
+          right: []
+        };
 
         return this;
       },
@@ -405,6 +411,17 @@
         var feature;
         var featureArray;
         var featurePointCount = 0;
+        var tileSize = this.options.tileSize;
+
+        var style = this.styleFn({type: 1});
+        var featureRadius;
+        if (_.isFunction(style.radius)) {
+          featureRadius = style.radius(this.map.getZoom());
+        } else {
+          featureRadius = style.radius;
+        }
+
+        featureRadius *= 3;
 
         if (!this.featuresByTile.hasOwnProperty(tileId) && featureCount > 0) {
           this.featuresByTile[tileId] = [];
@@ -422,6 +439,18 @@
           var vectorTileFeature = new VectorTileFeature(this, feature, this.styleFn(feature));
           var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
 
+          if (projectedPoint.x <= featureRadius) {
+            this.boundaryPointsByTile[tileId].left.push(vectorTileFeature);
+          } else if(projectedPoint.x >= tileSize - featureRadius) {
+            this.boundaryPointsByTile[tileId].right.push(vectorTileFeature);
+          }
+
+          if(projectedPoint.y <= featureRadius) {
+            this.boundaryPointsByTile[tileId].top.push(vectorTileFeature);
+          } else if(projectedPoint.y >= tileSize - featureRadius) {
+            this.boundaryPointsByTile[tileId].bottom.push(vectorTileFeature);
+          }
+
           projectedPoint.count = vectorTileFeature.properties.count;
           featurePointCount += parseInt(_.get(vectorTileFeature, 'properties.count', 0), 10);
 
@@ -436,13 +465,17 @@
       },
 
       renderTileOverlap: function(tileId) {
+        var self = this;
+
+        if (_.isEmpty(self.featuresByTile[tileId])) {
+          return;
+        }
 
         var features;
         var featureCount;
         var i;
 
-        this.renderedNeighborOverlapByTile[tileId] = this.renderedNeighborOverlapByTile[tileId] || {};
-
+        var tileSize = self.options.tileSize;
         var tileInfo = _.chain(['z', 'x', 'y']).
           zipObject(tileId.split(':')).
           mapValues(Number).
@@ -452,6 +485,12 @@
         var edges = [['top'], ['left'], ['bottom'], ['right']];
         var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
         var hotspots = Array.prototype.concat.call(edges, corners);
+        var oppositeDirections = {
+          top: 'bottom',
+          bottom: 'top',
+          left: 'right',
+          right: 'left'
+        };
 
         // Get neighboring tile id for a tile's edge
         var tileIdModifiers = {
@@ -469,7 +508,6 @@
           }
         };
 
-        var tileSize = 256;
         var tileOffsetModifiers = {
           top: function(tileOffset) {
             tileOffset.y -= tileSize;
@@ -488,6 +526,7 @@
         _.each(hotspots, function(hotspot) {
           var neighbor = _.clone(tileInfo);
           var offset = {x: 0, y: 0};
+
           _.each(hotspot, function(direction) {
             tileIdModifiers[direction](neighbor);
             tileOffsetModifiers[direction](offset);
@@ -495,18 +534,19 @@
 
           neighbor.zoom = neighbor.z;
           neighbor.id = VectorTileUtil.getTileId(neighbor);
+          var features = [];
 
-          features = this.featuresByTile[neighbor.id];
-          if (features && features.length > 0) {
-            featureCount = features.length;
-            if (!this.renderedNeighborOverlapByTile[tileId][neighbor.id] || this.renderedNeighborOverlapByTile[tileId][neighbor.id] < featureCount) {
-              this.renderedNeighborOverlapByTile[tileId][neighbor.id] = featureCount;
-              for (i = 0; i < featureCount; i++) {
-                features[i].draw(tileId, offset);
-              }
+          _.each(hotspot, function(direction) {
+            if (self.boundaryPointsByTile[neighbor.id]) {
+              features = features.concat(self.boundaryPointsByTile[neighbor.id][oppositeDirections[direction]]);
             }
+          });
+
+          featureCount = features.length;
+          for (i = 0; i < featureCount; i++) {
+            features[i].draw(tileId, offset);
           }
-        }, this);
+        });
       },
 
       renderTile: function(tileId, tileRenderedCallback) {

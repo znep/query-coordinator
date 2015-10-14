@@ -334,6 +334,10 @@ en:
         description: Enter a description for your new page (optional)
         new_name: Save the current page with a new name
         title: Save As
+        visibility: Set the visibility of your new page
+        visibility_with_view_moderation: Set the view moderation status of your new page
+        visibility_disabled: You don't have permissions to update Data Lens visibility. Please contact the site administrator to change this setting.
+        visibility_hidden: Note that this page will appear in the catalog if the dataset is made public.
       save_button:
         failed: Failed
         flyoutFailedBody: Please contact Socrata Support

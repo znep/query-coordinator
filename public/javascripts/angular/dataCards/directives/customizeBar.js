@@ -14,7 +14,8 @@
         'revertInitiated': '=',
         'savePage': '=',
         'saveStatus': '=',
-        'savePageAs': '='
+        'savePageAs': '=',
+        'page': '='
       },
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/customizeBar.html',
@@ -22,6 +23,10 @@
         var expandedCard$ = $scope.$observe('expandedCard');
         var exportingVisualization$ = $scope.$observe('exportingVisualization');
         var editMode$ = $scope.$observe('editMode');
+
+        if ($scope.isEphemeral) {
+          $scope.editMode = true;
+        }
 
         var hasCardsObservable = $scope.$observe('cardCount').map(function(count) {
           return count > 0;

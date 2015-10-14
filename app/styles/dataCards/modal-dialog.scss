@@ -316,6 +316,12 @@ manage-lens-dialog-v2 {
     }
   }
 
+  section.visibility {
+    .with-private-dataset {
+      margin-top: 0.25rem;
+    }
+  }
+
   a:hover {
     text-decoration: underline;
   }

@@ -38,7 +38,7 @@ class NewViewManager
   def create(page_metadata={}, category=nil, v2_data_lens=false)
     page_metadata = ActiveSupport::HashWithIndifferentAccess.new(page_metadata)
     new_view = v2_data_lens ?
-      create_v2_data_lens_in_metadb(page_metadata, category) :
+      persist_v2_data_lens_to_metadb(page_metadata, category) :
       create_v1_data_lens_in_phidippides(page_metadata, category)
 
     unless new_view.try(:[], :id)
@@ -113,11 +113,7 @@ class NewViewManager
   private
 
   # Creates metadata in MetaDB with page metadata, rather than in Phidippides.
-  def create_v2_data_lens_in_metadb(page_metadata, category)
-
-    # We are creating a V2 data lens. Therefore its version should be 2.
-    page_metadata['version'] = 2
-
+  def persist_v2_data_lens_to_metadb(page_metadata, category)
     # NOTE: Category is not validated. If category is not present in the
     # domain's defined categories, the category will be ignored by core.
     url = '/views.json?accessType=WEBSITE'
@@ -130,7 +126,7 @@ class NewViewManager
       },
       :displayType => 'data_lens',
       :displayFormat => {
-        :data_lens_page_metadata => page_metadata
+        :data_lens_page_metadata => page_metadata.reject { |key, _| key == 'moderationStatus' }
       },
       :query => {},
       :flags => ['default'],
@@ -155,6 +151,10 @@ class NewViewManager
     payload_with_id = parse_core_response(response)
     new_page_id = payload_with_id[:id]
     payload_with_id[:displayFormat][:data_lens_page_metadata][:pageId] = new_page_id
+
+    if page_metadata.has_key?(:moderationStatus)
+      payload_with_id[:moderationStatus] = page_metadata[:moderationStatus]
+    end
 
     update(new_page_id, payload_with_id)
   end

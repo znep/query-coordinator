@@ -96,12 +96,12 @@
 <section class="row visibility" ng-controller="ManageLensDialogV2VisibilityController">
   <label class="span2">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationTitle' : 'manageLensDialog.visibility.title') | I18n}}</label>
   <div class="contents span10">
-    <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled">
+    <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled" ng-if="!datasetIsPrivate">
       <soc-option value="approved">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationApproved' : 'manageLensDialog.visibility.shown') | I18n}}</soc-option>
       <soc-option value="rejected">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationRejected' : 'manageLensDialog.visibility.hidden') | I18n}}</soc-option>
       <soc-option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">{{::'manageLensDialog.visibility.viewModerationPending' | I18n}}</soc-option>
     </soc-select>
-    <div class="flavor-text">
+    <div class="flavor-text" ng-class="{'with-private-dataset': datasetIsPrivate}">
       <div ng-show="datasetIsPrivate && userCanApproveNominations"
         ng-bind-html="'manageLensDialog.visibility.datasetIsPrivate' | I18n">
       </div>

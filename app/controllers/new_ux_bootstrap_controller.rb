@@ -424,6 +424,7 @@ class NewUxBootstrapController < ActionController::Base
       {}
     end
     @page_metadata = generate_page_metadata(dataset_metadata)
+    @page_metadata['displayType'] = 'data_lens'
 
     # Set up card-type info for (non-system) columns
     @dataset_metadata[:columns].each do |field_name, column|
@@ -459,6 +460,8 @@ class NewUxBootstrapController < ActionController::Base
     @domain_metadata = domain_metadata
 
     request[:app] = 'dataCards'
+
+    render 'angular/data_lens'
   end
 
   def dataset_size

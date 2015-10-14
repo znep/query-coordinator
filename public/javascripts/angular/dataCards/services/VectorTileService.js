@@ -497,17 +497,18 @@
           var vectorTileFeature = new VectorTileFeature(this, feature, this.styleFn(feature));
           var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
 
-          if (this.boundaryPointsByTile[tileId]) {
+          var boundaryPoints = this.boundaryPointsByTile[tileId];
+          if (boundaryPoints) {
             if (projectedPoint.x <= featureRadius) {
-              this.boundaryPointsByTile[tileId].left.push(vectorTileFeature);
-            } else if(projectedPoint.x >= tileSize - featureRadius) {
-              this.boundaryPointsByTile[tileId].right.push(vectorTileFeature);
+              boundaryPoints.left.push(vectorTileFeature);
+            } else if (projectedPoint.x >= tileSize - featureRadius) {
+              boundaryPoints.right.push(vectorTileFeature);
             }
 
-            if(projectedPoint.y <= featureRadius) {
-              this.boundaryPointsByTile[tileId].top.push(vectorTileFeature);
-            } else if(projectedPoint.y >= tileSize - featureRadius) {
-              this.boundaryPointsByTile[tileId].bottom.push(vectorTileFeature);
+            if (projectedPoint.y <= featureRadius) {
+              boundaryPoints.top.push(vectorTileFeature);
+            } else if (projectedPoint.y >= tileSize - featureRadius) {
+              boundaryPoints.bottom.push(vectorTileFeature);
             }
           }
 
@@ -527,11 +528,6 @@
       renderTileOverlap: function(tileId) {
         var self = this;
 
-        var features;
-        var featureCount;
-        var i;
-
-        var tileSize = self.options.tileSize;
         var tileInfo = _.chain(['z', 'x', 'y']).
           zipObject(tileId.split(':')).
           mapValues(Number).
@@ -556,12 +552,12 @@
             }
           });
 
-          featureCount = features.length;
+          var featureCount = features.length;
           var serializedHotspot = hotspot.join('');
           var boundaryPointCount = self.boundaryPointCountByTileAndDirection[tileId];
           if (boundaryPointCount && (!boundaryPointCount[serializedHotspot] || boundaryPointCount[serializedHotspot] < featureCount)) {
             boundaryPointCount[serializedHotspot] = featureCount;
-            for (i = 0; i < featureCount; i++) {
+            for (var i = 0; i < featureCount; i++) {
               features[i].draw(tileId, offset);
             }
           }
@@ -578,11 +574,6 @@
         if (_.has(this._tiles, VectorTileUtil.getLeafletTileId(tileId))) {
           this.clearTile(tileId);
         }
-
-        var tileInfo = _.chain(['z', 'x', 'y']).
-          zipObject(tileId.split(':')).
-          mapValues(Number).
-          value();
 
         features = this.featuresByTile[tileId];
         featureCount = features.length;
@@ -1205,10 +1196,10 @@
         this.outstandingTileDataRequests['delete'](tileId);
 
         if (this.outstandingTileDataRequests.size === 0) {
-          if (this.lastCommittedZoomLevel > Constants['FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD']) {
+          if (this.lastCommittedZoomLevel > Constants.FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD) {
             this.layers.forEach(function(layer) {
-              _.each(_.keys(layer.featuresByTile), function(tileId) {
-                layer.renderTileOverlap(tileId);
+              _.each(_.keys(layer.featuresByTile), function(tile) {
+                layer.renderTileOverlap(tile);
               });
             });
           }

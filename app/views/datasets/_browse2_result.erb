@@ -19,12 +19,14 @@
       <%- end -%>
 
       <%-
-        if true#result_is_federated
+        if result_is_federated
       -%>
+
         <a class="browse2-result-federated-link" href="<%= result_federated_origin_url %>" title="<%= t('controls.browse.browse2.federation.source', :source => result_federated_origin) %>">
           <span class="browse2-result-federated-icon icon-linked"></span>
           <%= t('controls.browse.browse2.federation.label') %>
         </a>
+
       <%-
         end
       -%>
@@ -35,9 +37,11 @@
       <span class="browse2-result-type-name">
         <%= result_display_title %>
       </span>
-      <!--<button class="settings-icon <%= result.id %>" title="<%= t('controls.browse.browse2.settings.title') %>">
-        <%= t('controls.browse.browse2.settings.label') %>
-      </button>-->
+      <!--
+        <button class="settings-icon <%= result.id %>" title="<%= t('controls.browse.browse2.settings.title') %>">
+          <%= t('controls.browse.browse2.settings.label') %>
+        </button>
+      -->
     </div>
   </div>
 

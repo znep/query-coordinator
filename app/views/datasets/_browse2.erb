@@ -166,11 +166,25 @@ end
       <%-
         if opts[:view_request_timed_out]
       -%>
-        <%= render :partial => 'datasets/browse2_results_request_timed_out', :locals => { :opts => opts } %>
+        <%=
+          render(
+            :partial => 'datasets/browse2_results_request_timed_out',
+            :locals => {
+              :opts => opts
+            }
+          )
+        %>
       <%-
         elsif opts[:view_count] == 0
       -%>
-        <%= render :partial => 'datasets/browse2_results_no_results', :locals => { :opts => opts } %>
+        <%=
+          render(
+            :partial => 'datasets/browse2_results_no_results',
+            :locals => {
+              :opts => opts
+            }
+          )
+        %>
       <%-
         else
           opts[:view_results].each do |result|
@@ -326,7 +340,8 @@ end
                   Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y'),
                 :result_view_count => number_with_delimiter(result.viewCount),
                 :result_topics => result.tags.present? ? join_and_truncate_array(result.tags) : '',
-                :result_data_types => 'Location, Amount, Date',
+                 # Pending a way to determine the result's data types, they will be set to nil and ignored
+                :result_data_types => nil,
                 :result_is_federated => result.federated?,
                 :result_federated_origin => result.domainCName,
                 :result_federated_origin_url => result_federated_origin_url

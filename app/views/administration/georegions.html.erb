@@ -48,22 +48,6 @@
   </div>
 </div>
 
-<div class="contentBox withLeftNavigation georegionsScreen">
-  <div class="georegions-default">
-    <div>
-      <h1><%= t("#{prefix}.default_georegions") %></h1>
-    </div>
-
-    <%= render :partial => 'georegions_table', :locals => {
-        :allow_actions => false,
-        :allow_enablement => @view_model.allow_enablement?,
-        :georegions => @view_model.default_regions,
-        :limit => @view_model.maximum_enabled_count,
-        :prefix => prefix,
-      } %>
-  </div>
-</div>
-
 <%- content_for :modals do -%>
   <%= render :partial => 'modals/select_georegion', :locals => { :title => t("#{prefix}.choose_a_dataset") } %>
   <div class="modalDialog" id="react-modal"></div>

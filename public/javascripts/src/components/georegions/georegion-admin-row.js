@@ -1,10 +1,8 @@
 (() => {
 
   const PropTypes = React.PropTypes;
-  let componentsNS = blist.namespace.fetch('blist.components');
   let georegionsComponentsNS = blist.namespace.fetch('blist.georegions.components');
   const { EnabledWidget } = georegionsComponentsNS;
-  const { FormButton } = componentsNS;
 
   georegionsComponentsNS.GeoregionAdminRow = React.createClass({
     propTypes: {
@@ -39,8 +37,6 @@
     },
     render: function() {
       const {
-        action,
-        authenticityToken,
         name,
         renderActions,
         onEdit
@@ -58,9 +54,7 @@
             </td>)
             : null }
           { renderActions ?
-            (<td className="remove-action">
-              <FormButton action={action} method="delete" authenticityToken={authenticityToken} value={$.t('screens.admin.georegions.remove')} />
-            </td>)
+            (<td className="remove-action"></td>)
             : null }
         </tr>
       );

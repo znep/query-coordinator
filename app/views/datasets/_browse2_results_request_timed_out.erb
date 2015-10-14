@@ -1,0 +1,47 @@
+<div class="noResults">
+  <span class="message"><%= opts[:timeout_text] %></span>
+  <%- unless opts[:embedded_browse_iframe_hack] -%>
+
+    <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
+            CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
+
+      <%- if CurrentDomain.feature_flags[:enable_stories] -%>
+
+        <a class="button dropdown-button downArrow" href="#" data-jq-dropdown="#create-resource-footer-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
+          <%= t('controls.browse.actions.create_resource_short') %>
+          <span class="icon"></span>
+        </a>
+
+        <div id="create-resource-footer-dropdown" class="create-resource-dropdown jq-dropdown jq-dropdown-tip jq-dropdown-anchor-right jq-dropdown-relative">
+          <div class="create-resource-panel jq-dropdown-panel">
+
+            <div class="create-resource-buttons">
+              <a class="button secondary-button next" href="<%= new_dataset_path %>" title="<%= t('controls.browse.actions.create_dataset_shorter') %>">
+                <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_shorter') : t('controls.browse.actions.create_dataset_verb') %>
+                <span class="icon"></span>
+              </a>
+
+              <a id="create-story-footer-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_story_short') %>">
+                <%= opts[:browse_in_container] ? t('controls.browse.actions.create_story_short') : t('controls.browse.actions.create_story_verb') %>
+                <span class="icon"></span>
+              </a>
+            </div>
+          </div>
+
+          <div class="create-resource-spinner">
+            <div class="loadingSpinner"></div>
+          </div>
+        </div>
+
+      <%- else -%>
+
+        <a class="button createLink" href="<%= new_dataset_path %>"><%= t('controls.browse.actions.create_dataset_short') %></a>
+
+      <%- end -%>
+    <%- end -%>
+
+  <%- end -%>
+  <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !opts[:suppress_dataset_creation] -%>
+    <a class="button suggestLink" href="<%= nominate_index_path %>"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
+  <%- end -%>
+</div>

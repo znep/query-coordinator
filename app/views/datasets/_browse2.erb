@@ -1,0 +1,480 @@
+<%-
+# Derive additional configuration values
+current_sort = opts[:sort_opts].detect { |s| s[:value] == opts[:sortBy] }
+
+opts[:derived_config] = {
+  :current_sort => current_sort,
+  :show_time_period => current_sort.nil? ? false: current_sort[:is_time_period],
+  :in_search => opts[:user_params][:q] && opts[:row_count]
+}
+-%>
+
+<!-- Stylesheets -->
+
+<%- content_for :head do -%>
+  <%= rendered_stylesheet_tag 'browse2-control' %>
+<%- end -%>
+
+<!-- Container -->
+
+<%-
+# Set up classes for container
+container_classes = "browse2 browseSection"
+
+if opts[:facets].length < 1
+  container_classes << " noFacets"
+end
+
+if opts[:custom_class]
+  container_classes << " #{opts[:custom_class]}"
+end
+
+if opts[:browse_in_container]
+  container_classes << " inContainer"
+end
+
+if opts[:disable][:sort]
+  container_classes << " noSort"
+end
+
+-%>
+
+<div data-view-type="<%= opts[:view_type] %>" class="<%= container_classes %>">
+
+  <!-- Create Asset Dropdown -->
+
+  <%=
+    if (
+      !opts[:embedded_browse_iframe_hack] &&
+      (
+        ((CurrentDomain.user_can?(current_user, :create_datasets) ||
+        CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation]
+      )
+    )
+      render :partial => 'datasets/browse2_create_asset_controls', :locals => { :opts => opts }
+    end
+  -%>
+
+  <!-- Search -->
+
+  <%-
+    clear_search_url = nil
+
+    if opts[:q].present?
+      non_search_query_string_params = opts[:user_params].reject{ |param| param == :q }
+      clear_search_url = "#{opts[:base_url]}?#{non_search_query_string_params.to_param}"
+    end
+  -%>
+  <%=
+    # Because the search box formerly appeared in the facets sidebar, the variable that
+    # controls whether it should be displayed is in the :sidebar_config options hash and
+    # is called 'search'.
+    if opts[:sidebar_config].nil? || opts[:sidebar_config].search
+      render({
+        :partial => 'datasets/browse2_search',
+        :locals => {
+          :opts => opts,
+          :clear_search_url => clear_search_url
+        }
+      })
+    end
+  -%>
+
+  <hr class="browse2-section-separator" />
+
+  <!-- Facets -->
+
+  <div class="browse2-content">
+
+    <%=
+      if opts[:facets].length > 0
+        render(
+          :partial => 'datasets/browse2_facets',
+          :locals => {
+            :opts => opts,
+            :facets_pane_classes => opts[:derived_config][:show_time_period] ? 'hasTimePeriod' : ''
+          }
+        )
+      end
+    -%>
+
+    <!-- Results Header -->
+    <%=
+      if opts[:header_config]
+        render :partial => 'datasets/browse2_header', :locals => { :opts => opts }
+      end
+    -%>
+
+    <!-- Results Container -->
+
+    <%-
+
+    results_container_classes = "browse2-results-pane clearfix"
+
+    if !opts[:browse_in_container]
+      results_container_classes << " hasTitle"
+    end
+
+    if opts[:show_catalog_sort_dropdown]
+      results_container_classes << " hasSort"
+    end
+    -%>
+
+    <div class="<%= results_container_classes %>">
+
+      <div class="browse2-results-pane-header">
+
+        <!-- Results Title -->
+        <%-
+          clear_all_facets_url = nil
+
+          if (
+            opts[:q].present? ||
+            opts[:facets].any?{ |facet| opts[:user_params][facet[:param]].present? }
+          )
+            clear_all_facets_query_params = opts[:user_params].reject{ |param| param == :q }
+            opts[:facets].each { |facet| clear_all_facets_query_params.delete(facet[:param]) }
+            clear_all_facets_url = "#{opts[:base_url]}?#{clear_all_facets_query_params.to_param}&limitTo=all"
+          end
+
+        -%>
+        <%=
+          if !opts[:browse_in_container]
+            render(
+              :partial => 'datasets/browse2_results_title',
+              :locals => {
+                :opts => opts,
+                :clear_all_facets_url => clear_all_facets_url
+              }
+            )
+          end
+        -%>
+     
+        <!-- Results Sort Controls -->
+
+        <%=
+          if opts[:show_catalog_sort_dropdown]
+            render :partial => 'datasets/browse2_results_sort_controls', :locals => { :opts => opts }
+          end
+        -%>
+      </div>
+
+      <!-- Results -->
+
+      <div class="browse2-results">
+
+      <%-
+        if opts[:view_request_timed_out]
+      -%>
+        <%= render :partial => 'datasets/browse2_results_request_timed_out', :locals => { :opts => opts } %>
+      <%-
+        elsif opts[:view_count] == 0
+      -%>
+        <%= render :partial => 'datasets/browse2_results_no_results', :locals => { :opts => opts } %>
+      <%-
+        else
+          opts[:view_results].each do |result|
+
+            result_classes = 'browse2-result clearfix'
+
+            if result.federated?
+              result_classes << ' federated'
+              result_federated_origin_url = link_to(result.domainCName, "//#{result.domainCName}")
+            end
+
+            result_display_title = t('controls.browse.browse2.display_types.unknown')
+            result_display_type_icon_class = ''
+
+            # From `core-misc`:
+            #
+            # TABLES(ViewFinderConst.COLUMN_DISPLAY_TYPE, "table", "fatrow", "page"),
+            # HREF(ViewFinderConst.COLUMN_DISPLAY_TYPE, "href"),
+            # NEW_VIEW(ViewFinderConst.COLUMN_DISPLAY_TYPE, "new_view", "data_lens"),
+            # STORY(ViewFinderConst.COLUMN_DISPLAY_TYPE, "story"),
+            # PULSE(ViewFinderConst.COLUMN_DISPLAY_TYPE, "pulse"),
+            # BLOB(ViewFinderConst.COLUMN_VIEW_TYPE, ViewType.BLOBBY.toString()),
+            # MAPS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "map", "intensitymap", "geomap", "data_lens_map"),
+            # CALENDARS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "calendar"),
+            # CHARTS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "chart", "annotatedtimeline", "imagesparkline", "areachart", "barchart", "columnchart", "linechart", "piechart", "data_lens_chart"),
+            # FORMS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "form"),
+            # APIS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "api"),
+            # PREDEPLOY_APIS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "api-predeploy");
+
+            case result.display.type
+            # NO BLIST???
+            when 'blist'
+              result_display_type_icon_class = 'icon-dataset'              
+              result_display_title = t('controls.browse.browse2.display_types.dataset')
+
+            # TABLES
+            when 'table'
+              result_display_type_icon_class = 'icon-dataset'              
+              result_display_title = t('controls.browse.browse2.display_types.dataset')
+            when 'fatrow'
+              result_display_type_icon_class = 'icon-dataset'              
+              result_display_title = t('controls.browse.browse2.display_types.dataset')
+            when 'page'
+              result_display_type_icon_class = 'icon-dataset'              
+              result_display_title = t('controls.browse.browse2.display_types.dataset')
+
+            # HREF
+            when 'href'
+              result_display_type_icon_class = 'icon-external'              
+              result_display_title = t('controls.browse.browse2.display_types.href')
+
+            # NEW_VIEW
+            when 'new_view'
+              result_display_type_icon_class = 'icon-cards'
+              result_display_title = t('controls.browse.browse2.display_types.data_lens')
+            when 'data_lens'
+              result_display_type_icon_class = 'icon-cards'
+              result_display_title = t('controls.browse.browse2.display_types.data_lens')
+
+            # STORY
+            when 'story'
+              result_display_type_icon_class = 'icon-story'
+              result_display_title = t('controls.browse.browse2.display_types.story')
+
+            # PULSE
+            when 'pulse'
+              result_display_type_icon_class = 'icon-geo'
+              result_display_title = t('controls.browse.browse2.display_types.story')
+
+            # BLOB
+            # ???
+
+            # MAPS
+            when 'map'
+              result_display_type_icon_class = 'icon-map'
+              result_display_title = t('controls.browse.browse2.display_types.map')
+            when 'intensitymap'
+              result_display_type_icon_class = 'icon-map'
+              result_display_title = t('controls.browse.browse2.display_types.map')
+            when 'geomap'
+              result_display_type_icon_class = 'icon-map'
+              result_display_title = t('controls.browse.browse2.display_types.map')
+            when 'data_lens_map'
+              result_display_type_icon_class = 'icon-map'
+              result_display_title = t('controls.browse.browse2.display_types.map')
+
+            # CALENDARS
+            when 'calendar'
+              result_display_type_icon_class = 'icon-table'
+              result_display_title = t('controls.browse.browse2.display_types.calendar')
+
+            # CHARTS
+            when 'chart'
+              result_display_type_icon_class = 'icon-chart'
+              result_display_title = t('controls.browse.browse2.display_types.chart')
+            when 'annotatedtimeline'
+              result_display_type_icon_class = 'icon-chart'
+              result_display_title = t('controls.browse.browse2.display_types.chart')
+            when 'imagesparkline'
+              result_display_type_icon_class = 'icon-chart'
+              result_display_title = t('controls.browse.browse2.display_types.chart')
+            when 'areachart'
+              result_display_type_icon_class = 'icon-chart'
+              result_display_title = t('controls.browse.browse2.display_types.chart')
+            when 'barchart'
+              result_display_type_icon_class = 'icon-chart'
+              result_display_title = t('controls.browse.browse2.display_types.chart')
+            when 'columnchart'
+              result_display_type_icon_class = 'icon-chart'
+              result_display_title = t('controls.browse.browse2.display_types.chart')
+            when 'linechart'
+              result_display_type_icon_class = 'icon-chart'
+              result_display_title = t('controls.browse.browse2.display_types.chart')
+            when 'piechart'
+              result_display_type_icon_class = 'icon-chart'
+              result_display_title = t('controls.browse.browse2.display_types.chart')
+            when 'data_lens_chart'
+              result_display_type_icon_class = 'icon-chart'
+              result_display_title = t('controls.browse.browse2.display_types.chart')
+
+            # FORMS
+            when 'form'
+              result_display_type_icon_class = 'icon-check'
+              result_display_title = t('controls.browse.browse2.display_types.form')
+
+            # APIS
+            when 'api'
+              result_display_type_icon_class = 'icon-data'
+              result_display_title = t('controls.browse.browse2.display_types.api')
+
+            # PREDEPLOY_APIS
+            when 'api-predeploy'
+              result_display_type_icon_class = 'icon-data'
+              result_display_title = t('controls.browse.browse2.display_types.predeploy_api')
+
+            end
+      -%>
+          <%=
+            render(
+              :partial => 'datasets/browse2_result',
+              :locals => {
+                :opts => opts,
+                :result => result,
+                :result_classes => result_classes,
+                :result_display_type => result.display.type,
+                :result_display_type_icon_class => result_display_type_icon_class,
+                :result_display_title => result_display_title,
+                :result_link => result.link.present? ? result.link : view_url(result),
+                :result_description => result.description.present? ? view_format_description_text(result.description) : nil,
+                :result_categories => result.categories.present? ? result.categories : [ result.category_display ].compact,
+                :result_last_updated => result.rowsUpdatedAt.present? ?
+                  Time.at(result.rowsUpdatedAt).to_datetime.strftime('%B %-d, %Y') :
+                  Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y'),
+                :result_view_count => number_with_delimiter(result.viewCount),
+                :result_topics => result.tags.present? ? join_and_truncate_array(result.tags) : '',
+                :result_data_types => 'Location, Amount, Date',
+                :result_is_federated => result.federated?,
+                :result_federated_origin => result.domainCName,
+                :result_federated_origin_url => result_federated_origin_url
+              }
+            )
+          %>
+      <%-
+          end
+        end
+      -%>
+      </div>
+
+      <!-- Results Pagination -->
+
+      <div class="browse2-results-pagination-controls">
+        <%- if !opts[:view_request_timed_out] && opts[:view_count] && opts[:view_count] > 0 -%>
+          <%-
+            if !opts[:disable][:pagination]
+          -%>
+            <%=
+              create_pagination(
+                opts[:view_count],
+                opts[:limit],
+                opts[:page],
+                opts[:base_url] + '?' + opts[:user_params].to_param,
+                'browse2-pagination-button'
+              )
+            %>
+          <%-
+            end
+          -%>
+          <%=
+            if (opts[:footer_config].nil? || opts[:footer_config].counter) && !opts[:disable][:counter]
+
+              render(
+                :partial => 'datasets/browse2_counter',
+                :locals => {
+                  :opts => opts
+                }
+              )
+            end
+          %>
+        <%- end -%>
+      </div>
+    </div>
+
+    <!-- Suggest Dataset Call-to-action -->
+
+    <%- if !opts[:browse_in_container] && CurrentDomain.module_enabled?(:dataset_nomination) -%>
+      <div class="browse2-suggest-dataset">
+        <h3 class="browse2-suggest-dataset-prompt">
+          <%= t('controls.browse.actions.suggest_dataset') %>
+        </h3>
+        <a class="browse2-suggest-dataset-button" href="<%= nominate_index_path %>">
+          <%= t('controls.browse.actions.suggest_dataset_verb') %>
+          <span class="icon-arrow-right"></span>
+        </a>
+      </div>
+    <%- end -%>
+  </div>
+</div>
+
+<!-- Modals -->
+
+<%- content_for :modals do -%>
+  <%= modal :class => 'browseOptionsDialog' do %>
+    <div class="optionsContent"></div>
+  <%- end -%>
+
+  <%= modal :class => 'externalDomainNotice' do %>
+    <h2>
+      <%= t('core.interstitial.leaving_notice_html', :site_name => CurrentDomain.cname) %>
+    </h2>
+    <p>
+      <%= t('core.interstitial.leaving_explanation_html') %>
+    </p>
+    <div class="nameDescription">
+      <p class="dsName"></p>
+      <p class="dsDesc"></p>
+    </div>
+    <div class="leavingLinkWrapper">
+      <a class="leavingLink noInterstitial" href="#" rel="external"></a>
+    </div>
+    <ul class="actions clearfix">
+      <li>
+        <a class="noInterstitial default button accept" href="#" rel="external">
+          <span class="icon"></span>
+          <%= t('core.dialogs.continue') %>
+        </a>
+      </li>
+      <li>
+        <a class="jqmClose button cancel" href="#cancel">
+          <span class="icon"></span>
+          <%= t('core.dialogs.cancel') %>
+        </a>
+      </li>
+    </ul>
+  <%- end -%>
+<%- end -%>
+
+<!-- Templates -->
+
+<% content_for :templates do %>
+<div class="expandedInfo">
+  <div class="actions">
+    <a class="manageApi button" href="#Manage" title="<%= t('controls.browse.actions.manage_api.title') %>">
+      <%= t('controls.browse.actions.manage_api.button') %>
+    </a>
+    <a class="permissions button" href="#Permissions"
+      title="<%= t('controls.browse.actions.permissions.title') %>">
+    </a>
+    <a class="delete button" href="#Delete" title="<%= t('controls.browse.actions.delete.title') %>">
+      <%= t('controls.browse.actions.delete.button') %>
+    </a>
+    <a class="about button" href="#About" title="<%= t('controls.browse.actions.about.title') %>">
+      <%= t('controls.browse.actions.about.button') %>
+    </a>
+    <div class="share menu"></div>
+  </div>
+  <div class="comments" title="<%= t('controls.browse.browse2.comment_count') %>">
+    <span class="icon"></span><span class="value"></span>
+  </div>
+  <%= stars_control('datasetAverageRating') %>
+</div>
+<%= render :partial => 'browse/row_search_templates' %>
+<% end %>
+
+<!-- Localization -->
+
+<%= render_translations LocalePart.controls.browse %>
+
+<!-- JavaScript -->
+
+<% content_for :js_footer do %>
+  <script type='text/javascript'>
+    $(function()
+    {
+       blist.namespace.fetch('blist.browse');
+       blist.browse.datasets = {};
+       <%- opts[:view_results].each do |v| -%>
+       blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
+       <%- end -%>
+       blist.browse.baseURL = "<%= opts[:base_url] %>";
+       <%- if opts[:row_count].present? -%>
+       blist.browse.rowCount = <%= opts[:row_count].to_i %>;
+       blist.browse.searchOptions = <%= safe_json(opts[:search_options]) %>;
+       <%- end -%>
+    });
+  </script>
+  <%= include_javascripts 'browse2-control' %>
+<% end %>

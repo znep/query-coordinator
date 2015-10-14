@@ -1,0 +1,10 @@
+<div class="browse2-results-title-and-categories">
+  <h2 class="browse2-results-title" title="<%= opts[:title] %>"><%= opts[:title] %></h2>
+
+  <%- if clear_all_facets_url.present? -%>
+    <a class="browse2-results-clear-all-facets-control" href="<%= clear_all_facets_url %>">
+      <%= t('controls.browse.browse2.facets.clear_all.label') %>
+      <span class="icon-close"></span>
+    </a>
+  <%- end -%>
+</div>

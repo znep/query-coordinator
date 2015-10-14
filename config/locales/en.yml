@@ -438,6 +438,62 @@ en:
         suggest_dataset_short: Suggest a Dataset
         suggest_dataset_verb: Suggest
       back_to_dataset: Back to Dataset
+      browse2:
+        comment_count: Number of comments
+        create:
+          title: Create a New Socrata Resource
+          dataset:
+            label: Create/Upload a Dataset
+            title: Create or upload a dataset to the Socrata platform
+          story:
+            label: Create a Socrata Story
+            title: Create a new Socrata Story
+        data_types:
+          label: Data Types
+        display_types:
+          api: API
+          blob: File or Document
+          calendar: Calendar
+          chart: Chart
+          dataset: Dataset
+          data_lens: Data Lens
+          form: Form
+          href: External Link
+          map: Map
+          predeply_api: Pre-deploy API
+          pulse: Pulse
+          story: Story
+          unknown: Unknown
+        facets:
+          hint: Filter or Browse Results
+          clear_all:
+            label: Show All Types
+        federation:
+          label: Federated
+          source: Federated from %{source}
+        last_updated:
+          label: Last Updated
+        results:
+          count: Showing %{this} of %{total}
+          cetera_count: Showing %{start}-%{end} of %{total}
+        search:
+          title: Search
+          placeholder: Search Datasets, Topics (e.g. Crime in Mission District)
+        settings:
+          title: Settings
+          label: Settings
+        sort:
+          label: Order by
+          periods:
+            label: Sort Period
+            month: This month
+            week: This week
+            year: This year
+        topics:
+          label: Topics
+          empty: No topics assigned
+        view_count:
+          label: Views
       facets:
         categories_singular_title: category
         categories_title: Categories

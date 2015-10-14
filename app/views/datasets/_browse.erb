@@ -1,3 +1,11 @@
+<%-
+# Render an alternative partial if the 'new' catalog view is set in the
+# query string or domain config.
+if opts[:view_type] == 'browse2'
+  return render :partial => 'datasets/browse2', :locals => { :opts => opts }
+end
+-%>
+
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'browse-control' %>
 <% end %>

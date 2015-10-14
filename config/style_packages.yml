@@ -288,3 +288,4 @@ mobile:
 - mobile/components/navbar
 - mobile/components/meta
 - mobile/components/feature-map
+- mobile/components/row-inspector

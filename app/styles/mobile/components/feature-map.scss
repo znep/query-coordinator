@@ -15,11 +15,20 @@
   border-radius: 2px;
   padding: 0;
 
-  .feature-map-locate-user-icon {
+  .feature-map-locate-user-icon,
+  .feature-map-locate-user-error-icon {
     width: 25px;
     margin: 0 auto;
   }
+
+  &[data-locate-user-status="success"] {
+    .feature-map-locate-user-icon {
+      display: block;
+      fill: #037AFF;
+    }
+  }
 }
+
 
 #feature-map {
   display: block;

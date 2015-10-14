@@ -309,8 +309,6 @@
         // the check for map existence anyway.
         if (_locateUser) {
           _mapLocateUserButton.on('click', _handleLocateUserButtonClick);
-          _mapLocateUserButton.on('mousemove', _handleLocateUserButtonMousemove);
-          _mapLocateUserButton.on('mouseout', _hideFlyout);
         }
       }
 
@@ -339,8 +337,6 @@
         // the check for map existence anyway.
         if (_locateUser) {
           _mapLocateUserButton.off('click', _handleLocateUserButtonClick);
-          _mapLocateUserButton.off('mousemove', _handleLocateUserButtonMousemove);
-          _mapLocateUserButton.off('mouseout', _hideFlyout);
         }
       }
 
@@ -373,6 +369,7 @@
 
       _hideFlyout();
       _hideRowInspector();
+      _updateLocateUserButtonStatus('ready');
     }
 
     function _handleMousemove(event) {
@@ -486,7 +483,7 @@
         }
       );
 
-      _updateLocateUserButtonStatus('ready');
+      _updateLocateUserButtonStatus('success');
     }
 
     function _handleLocateUserError(error) {
@@ -499,6 +496,7 @@
 
       utils.assert(
         status === 'ready' ||
+        status === 'success' ||
         status === 'busy' ||
         status === 'error',
         'Unrecognized locate user button status: {0}'.format(status)
@@ -508,6 +506,10 @@
 
         case 'ready':
           _mapLocateUserButton.attr('data-locate-user-status', 'ready');
+          break;
+
+        case 'success':
+          _mapLocateUserButton.attr('data-locate-user-status', 'success');
           break;
 
         case 'busy':
@@ -549,16 +551,26 @@
 
     function _handleVectorTileClick(event) {
 
+      _flyoutData.offset = {
+        x: event.originalEvent.clientX,
+        y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
+      };
+      _flyoutData.count = _.sum(event.points, 'count');
+      
+
       var inspectorDataQueryConfig;
 
       if (_flyoutData.count > 0 &&
         _flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
 
+        _map.setView(event.latlng);
+        var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
+
         inspectorDataQueryConfig = {
           latLng: event.latlng,
           position: {
-            pageX: event.originalEvent.pageX,
-            pageY: event.originalEvent.pageY
+            pageX: 0,
+            pageY: bottom
           },
           rowCount: _.sum(event.points, 'count'),
           queryBounds: _getQueryBounds(event.containerPoint)
@@ -646,36 +658,18 @@
       var locateUserStatus = _mapLocateUserButton.attr('data-locate-user-status');
       var payload;
 
-      if (locateUserStatus === 'ready') {
-
-        payload = {
-          element: _mapLocateUserButton[0],
-          title: self.getLocalization('FLYOUT_CLICK_TO_LOCATE_USER_TITLE'),
-          notice: self.getLocalization('FLYOUT_CLICK_TO_LOCATE_USER_NOTICE')
-        };
-
-      } else if (locateUserStatus === 'busy') {
-
-        payload = {
-          element: _mapLocateUserButton[0],
-          title: self.getLocalization('FLYOUT_LOCATING_USER_TITLE'),
-          notice: null
-        };
-
-      } else {
+      if (locateUserStatus === 'error') {
 
         payload = {
           element: _mapLocateUserButton[0],
           title: self.getLocalization('FLYOUT_LOCATE_USER_ERROR_TITLE'),
           notice: self.getLocalization('FLYOUT_LOCATE_USER_ERROR_NOTICE')
         };
-
+        self.emitEvent(
+          'SOCRATA_VISUALIZATION_FLYOUT_SHOW',
+          payload
+        );  
       }
-
-      self.emitEvent(
-        'SOCRATA_VISUALIZATION_FLYOUT_SHOW',
-        payload
-      );
     }
 
     function _hideFlyout() {
@@ -792,7 +786,6 @@
         // Event handlers
         onRenderStart: _handleVectorTileRenderStart,
         onRenderComplete: _handleVectorTileRenderComplete,
-        onMousemove: _handleVectorTileMousemove,
         onClick: _handleVectorTileClick
       };
 
@@ -927,10 +920,10 @@
 
       return {
         color: _calculatePointColor,
-        highlightColor: 'rgba(255, 255, 255, .5)',
+        highlightColor: 'rgba(131, 231, 209 , 1.0)',
         radius: _scalePointFeatureRadiusByZoomLevel,
         lineWidth: 1,
-        strokeStyle: _calculateStrokeStyleColor
+        strokeStyle: 'rgba(115, 153, 145 , .5)'
       };
     }
 
@@ -939,15 +932,7 @@
     * Makes points more transparent as map zooms out.
     */
     function _calculatePointColor(zoomLevel) {
-      return 'rgba(0,80,114,' + (0.3 * Math.pow(zoomLevel / 18, 5) + 0.4) + ')';
-    }
-
-    /**
-    * Determine stroke style (point outline) at given zoom level.
-    * Dims point outline color as map zooms out.
-    */
-    function _calculateStrokeStyleColor(zoomLevel) {
-      return 'rgba(255,255,255,' + (0.8 * Math.pow(zoomLevel / 18, 8) + 0.1) + ')';
+      return 'rgba(115, 153, 145,' + (0.3 * Math.pow(zoomLevel / 18, 5) + 0.4) + ')';
     }
 
     /**
@@ -981,7 +966,7 @@
     function _getPolygonStyle() {
 
       return {
-        color: 'rgba(149,139,255,0.4)',
+        color: 'rgba(255,0,0,.5)',
         outline: {
           color: 'rgb(20,20,20)',
           size: 2

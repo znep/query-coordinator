@@ -41,7 +41,7 @@ $(document).ready(function() {
       'mapOptions': {
         'tap': true,
         'dragging': true,
-        'tapTolerance': 150,
+        'tapTolerance': 15,
         'trackResize': true,
         'maxZoom': 300,
         'zoomControl': false,

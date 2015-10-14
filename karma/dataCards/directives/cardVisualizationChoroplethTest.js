@@ -219,6 +219,9 @@ describe('A Choropleth Card Visualization', function() {
       selectionBoxClearButton = selectionBox.find('.icon-close');
       feature = choropleth.find('.choropleth-container path')[0];
       flyout = $('#uber-flyout').hide();
+      if (typeof document.body.click !== 'function') {
+        document.body.click = function() {};
+      }
 
       // Trigger a 'mouseenter' event on the choroplethContainer in order to
       // register all of our flyouts.

@@ -59,7 +59,8 @@
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-timeline-chart,
-  .component-socrata-visualization-feature-map {
+  .component-socrata-visualization-feature-map,
+  .component-embedded-html {
     $small-height: $col3-block-edit-content-width-small * (3/4);
     $medium-height: $col3-block-edit-content-width-medium * (3/4);
     $large-height: $col3-block-edit-content-width-large * (3/4);
@@ -90,7 +91,8 @@
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-timeline-chart,
-  .component-socrata-visualization-feature-map {
+  .component-socrata-visualization-feature-map,
+  .component-embedded-html {
     $small-height: $col4-block-edit-content-width-small * (3/4);
     $medium-height: $col4-block-edit-content-width-medium * (3/4);
     $large-height: $col4-block-edit-content-width-large * (3/4);
@@ -117,16 +119,16 @@
 }
 
 .col6 {
+  $small-height: $col6-block-edit-content-width-small * (3/4);
+  $medium-height: $col6-block-edit-content-width-medium * (3/4);
+  $large-height: $col6-block-edit-content-width-large * (3/4);
+  $extra-large-height: $col6-block-edit-content-width-extra-large * (3/4);
+
   .component-asset-selector,
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map {
-    $small-height: $col6-block-edit-content-width-small * (3/4);
-    $medium-height: $col6-block-edit-content-width-medium * (3/4);
-    $large-height: $col6-block-edit-content-width-large * (3/4);
-    $extra-large-height: $col6-block-edit-content-width-extra-large * (3/4);
-
     @include media-query-property(
       'height',
       $small-height,
@@ -144,20 +146,30 @@
         $extra-large-height  - ($btn-height * 2.5)
       );
     }
+  }
+
+  .component-embedded-html {
+     @include media-query-property(
+      'height',
+      $col8-block-edit-content-width-small * 1.8,
+      $col6-block-edit-content-width-medium * 1.5,
+      $col6-block-edit-content-width-large * 1,
+      $col6-block-edit-content-width-extra-large * (4/5)
+    );
   }
 }
 
 .col8 {
+  $small-height: $col8-block-edit-content-width-small;
+  $medium-height: $col8-block-edit-content-width-medium * (3/4);
+  $large-height: $col8-block-edit-content-width-large * (3/4);
+  $extra-large-height: $col8-block-edit-content-width-extra-large * (3/4);
+
   .component-asset-selector,
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map {
-    $small-height: $col8-block-edit-content-width-small * (3/4);
-    $medium-height: $col8-block-edit-content-width-medium * (3/4);
-    $large-height: $col8-block-edit-content-width-large * (3/4);
-    $extra-large-height: $col8-block-edit-content-width-extra-large * (3/4);
-
     @include media-query-property(
       'height',
       $small-height,
@@ -176,19 +188,31 @@
       );
     }
   }
+
+  /* Embedded HTML optimized for budget embed */
+  .component-embedded-html {
+    @include media-query-property(
+      'height',
+      $col8-block-edit-content-width-small * 1.2,
+      $col8-block-edit-content-width-medium,
+      $large-height,
+      $col8-block-edit-content-width-extra-large * (3/5)
+    );
+  }
+
 }
 
 .col12 {
+  $small-height: $col12-block-edit-content-width-small;
+  $medium-height: $col12-block-edit-content-width-medium * (3/4);
+  $large-height: $col12-block-edit-content-width-large * (3/4);
+  $extra-large-height: $col12-block-edit-content-width-extra-large * (3/4);
+
   .component-asset-selector,
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map {
-    $small-height: $col12-block-edit-content-width-small * (3/4);
-    $medium-height: $col12-block-edit-content-width-medium * (3/4);
-    $large-height: $col12-block-edit-content-width-large * (3/4);
-    $extra-large-height: $col12-block-edit-content-width-extra-large * (3/4);
-
     @include media-query-property(
       'height',
       $small-height,
@@ -202,9 +226,21 @@
         'margin-top',
         $small-height - ($btn-height * 2.5),
         $medium-height - ($btn-height * 2.5),
-        $large-height - ($btn-height * 2.5),
-        $extra-large-height  - ($btn-height * 2.5)
+        $large-height - ($btn-height * 3),
+        $extra-large-height  - ($btn-height * 3)
       );
     }
   }
+  .component-embedded-html {
+    @include media-query-property(
+      'height',
+      $col8-block-edit-content-width-small * 1.2,
+      $col12-block-edit-content-width-medium * 0.7,
+      $col12-block-edit-content-width-large * 0.5,
+      $col12-block-edit-content-width-extra-large * (2/5)
+    );
+  }
+}
+.small .component-embedded-html {
+  height: $main-content-width-small * 1.2;
 }

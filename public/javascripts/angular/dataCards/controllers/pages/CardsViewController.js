@@ -284,7 +284,12 @@
       return _.include(rights, 'write');
     });
 
-    var userHasEditRights$ = $scope.dataLensVersion === 2 ? userHasWriteRight$ : isCurrentUserAdminOrPublisher$;
+    var userHasEditRights$ = $scope.dataLensVersion >= 2 ? userHasWriteRight$ : isCurrentUserAdminOrPublisher$;
+    if ($scope.isEphemeral) {
+      userHasEditRights$ = currentUser$.map(function(user) {
+        return !!(user && user.roleName);
+      });
+    }
 
     var isCurrentUserOwnerOfDataset$ =
       page.
@@ -547,7 +552,7 @@
       }
     };
 
-    $scope.savePageAs = function(name, description) {
+    $scope.savePageAs = function(name, description, moderationStatus) {
       var saveStatus$ = new Rx.BehaviorSubject();
       var savePromise;
 
@@ -556,6 +561,10 @@
           name: $.trim(name),
           description: description
         });
+        if (!_.isUndefined(moderationStatus)) {
+          newPageSerializedBlob.moderationStatus = moderationStatus;
+        }
+
         // PageDataService looks at whether or not pageId is set on the blob.
         // If it's set, it will do a regular save. We want it to save a new page.
         delete newPageSerializedBlob.pageId;

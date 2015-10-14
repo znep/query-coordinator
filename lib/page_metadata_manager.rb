@@ -132,7 +132,7 @@ class PageMetadataManager
     )
 
     # For V2 Data Lenses, adding the pageId is handled at the tail end of
-    # new_view_manager.create_v2_data_lens_in_metadb
+    # new_view_manager.persist_v2_data_lens_to_metadb
     page_metadata['pageId'] = new_page_id
 
     if v2_data_lens

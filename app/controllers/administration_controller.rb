@@ -144,7 +144,7 @@ class AdministrationController < ApplicationController
   #
   def allow_georegions_access?
     run_access_check do
-      current_user.is_admin? &&
+      (current_user.is_admin? || current_user.roleName == 'administrator') &&
         feature_flag?(:enable_spatial_lens_admin, request)
     end
   end

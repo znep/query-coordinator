@@ -1499,6 +1499,7 @@ en:
           save_error: Something went wrong while trying to save your changes. Please try again later, or contact Socrata Support if the problem persists.
           save_core_error: "Could not create the boundary: %{error_message}"
         custom_georegions: Custom Georegions
+        description: Configure custom boundaries that can be used to create Spatial Lens maps
         default_georegions: Socrata Default Georegions
         delete: Delete
         disable: Disable

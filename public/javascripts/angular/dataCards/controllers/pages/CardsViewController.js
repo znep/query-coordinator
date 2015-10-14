@@ -296,13 +296,18 @@
           return ownerId === userId;
         });
 
-    $scope.$bindObservable(
-      'currentUserHasSaveRight',
-      userHasEditRights$.
+    var currentUserHasSaveRight$ = userHasEditRights$.
       combineLatest(isCurrentUserOwnerOfDataset$, function(a, b) { return a || b; }).
-      catchException(Rx.Observable.returnValue(false))
-    );
+      catchException(Rx.Observable.returnValue(false));
 
+    $scope.$bindObservable('currentUserHasSaveRight', currentUserHasSaveRight$);
+
+    $scope.$bindObservable(
+      'shouldDisplayCustomizeBar',
+      currentUserHasSaveRight$.combineLatest(currentUser$, function(hasSaveRight) {
+        return hasSaveRight && (page.displayType == 'data_lens' || page.displayType == 'new_view');
+      })
+    );
 
     initDownload($scope, page, obeId$, WindowState, ServerConfig);
 

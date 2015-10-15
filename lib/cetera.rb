@@ -5,7 +5,8 @@ require 'ostruct'
 module Cetera
   def self.search_views(opts)
     cetera_url = "#{APP_CONFIG.cetera_host}/catalog/v1"
-    result = HTTParty.get(cetera_url, query: cetera_soql_params(opts))
+    query = cetera_soql_params(opts)
+    result = HTTParty.get(cetera_url, query: query)
     CeteraSearchResult.from_result(result.body)
   end
 
@@ -19,16 +20,16 @@ module Cetera
   end
 
   def self.cetera_soql_params(opts = {})
-    {
+    (opts[:metadata_tag] || {}).merge(
       domains: opts[:domains],
       search_context: CurrentDomain.cname,
       only: translate_limit_type(opts[:limitTo]),
       categories: opts[:category],
+      tags: opts[:tags],
       q: opts[:q],
       offset: opts[:page] ? (opts[:page] - 1) * opts[:limit] : 0,
-      limit: opts[:limit],
-      highlight: true
-    }.reject { |_, v| v.blank? }
+      limit: opts[:limit]
+    ).reject { |_, v| v.blank? }
   end
 
   # A row of Cetera results
@@ -53,7 +54,7 @@ module Cetera
         description: @resource['description'],
         type: @resource['type'],
         categories: [@classification['domain_category']],
-        tags: @classification['tags'],
+        tags: @classification['domain_tags'],
         viewCount: @resource['view_count'] && @resource['view_count']['page_views_total'].to_i,
         domainCName: @metadata['domain'],
         updatedAt: @resource['updatedAt']
@@ -71,23 +72,28 @@ module Cetera
 
     def display
       case type
-      when 'dataset'
-        Cetera::Displays::Dataset
-      when 'file'
-        Cetera::Displays::File
+
+      when 'page' then Cetera::Displays::DataLens
+      when 'dataset' then Cetera::Displays::Dataset
+      when 'chart' then Cetera::Displays::Chart
+      when 'map' then Cetera::Displays::Map
+      when 'calendar' then Cetera::Displays::Calendar
+      when 'filter' then Cetera::Displays::Filter
 
       # Cetera is replacing type 'href' with type 'link'
-      when 'href'
-        Cetera::Displays::Link
-      when 'link'
-        Cetera::Displays::Link
+      when 'href' then Cetera::Displays::Link
+      when 'link' then Cetera::Displays::Link
 
-      when 'map'
-        Cetera::Displays::Map
+      when 'file' then Cetera::Displays::File
+      when 'form' then Cetera::Displays::Form
+      when 'api' then Cetera::Displays::Api
+
       else
         airbrake_type_error(type)
         # In development, you might want this to raise.
         # In production, probably not.
+        #
+        # NOTE: we could set name and title to type and roll with it
         Cetera::Displays::Base
       end
     end

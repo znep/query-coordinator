@@ -23,5 +23,4 @@ class Displays::DataLensMap < Displays::Base
   def display_type
     'data_lens_map'
   end
-
 end

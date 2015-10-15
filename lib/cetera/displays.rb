@@ -1,7 +1,5 @@
 # Display types that Cetera search returns.
 # Beginnings of deprecation of /app/models/displays which rely on View class
-
-# 10/5/2015 - Cetera supports these types: %w(dataset file external map)
 #
 # Also add new types to cetera.rb (See display_title, display_class, and icon_class)
 # TODO: it should not be necesary to update this in two difference places
@@ -38,6 +36,18 @@ module Cetera
 
     ##############
     # Cetera types
+    #
+    # Yes this can be much smaller but let's write it out long for now.
+
+    class DataLens < Base
+      def self.name
+        I18n.t('core.view_types.new_view')
+      end
+
+      def self.front_end_type
+        'data_lens'
+      end
+    end
 
     class Dataset < Base
       def self.name
@@ -49,13 +59,43 @@ module Cetera
       end
     end
 
-    class File < Base
+    class Chart < Base
       def self.name
-        I18n.t('core.view_types.blob')
+        I18n.t('core.view_types.chart')
       end
 
       def self.front_end_type
-        'blob'
+        'chart'
+      end
+    end
+
+    class Map < Base
+      def self.name
+        I18n.t('core.view_types.map')
+      end
+
+      def self.front_end_type
+        'map'
+      end
+    end
+
+    class Calendar < Base
+      def self.name
+        I18n.t('core.view_types.calendar')
+      end
+
+      def self.front_end_type
+        'calendar'
+      end
+    end
+
+    class Filter < Base
+      def self.name
+        I18n.t('core.view_types.filter')
+      end
+
+      def self.front_end_type
+        'filter'
       end
     end
 
@@ -69,13 +109,33 @@ module Cetera
       end
     end
 
-    class Map < Base
+    class File < Base
       def self.name
-        I18n.t('core.view_types.map')
+        I18n.t('core.view_types.blob')
       end
 
       def self.front_end_type
-        'map'
+        'blob'
+      end
+    end
+
+    class Form < Base
+      def self.name
+        I18n.t('core.view_types.form')
+      end
+
+      def self.front_end_type
+        'form'
+      end
+    end
+
+    class Api < Base
+      def self.name
+        I18n.t('core.view_types.api')
+      end
+
+      def self.front_end_type
+        'api'
       end
     end
   end

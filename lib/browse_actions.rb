@@ -52,9 +52,9 @@ module BrowseActions
   def view_types_facet
     view_types = using_cetera? ? cetera_view_types : standard_view_types
 
-    add_data_lens_view_type_if_enabled!(view_types) unless using_cetera?
-    add_stories_view_type_if_enabled!(view_types) unless using_cetera?
-    add_pulse_view_type_if_enabled!(view_types) unless using_cetera?
+    add_data_lens_view_type_if_enabled!(view_types)
+    add_stories_view_type_if_enabled!(view_types)
+    add_pulse_view_type_if_enabled!(view_types)
 
     if module_enabled?(:api_foundry)
       view_types <<
@@ -294,9 +294,16 @@ module BrowseActions
     cfs = custom_facets
     if cfs
       cfs.each do |facet|
-        if browse_options[facet[:param]]
+        f_value = browse_options[facet[:param]]
+        next unless f_value.present?
+
+        f_param = facet[:param].to_s
+        if using_cetera?
+          browse_options[:metadata_tag] ||= {}
+          browse_options[:metadata_tag].merge!(f_param => f_value)
+        else
           browse_options[:metadata_tag] ||= []
-          browse_options[:metadata_tag] << facet[:param].to_s + ":" + browse_options[facet[:param]]
+          browse_options[:metadata_tag] << "#{f_param}:{f_value}"
         end
       end
     end
@@ -337,9 +344,9 @@ module BrowseActions
 
     browse_options[:facets] ||= [
       view_types_facet,
-      (cfs unless using_cetera?), # to be implemented
+      cfs,
       categories_facet,
-      (topics_facet unless using_cetera?), # to be implemented
+      topics_facet,
       federated_facet
     ]
 
@@ -406,7 +413,6 @@ module BrowseActions
       end
     end
 
-    # TODO: implement federated? for Cetera
     # check whether or not we need to display icons for other domains
     browse_options[:use_federations] =
       if browse_options[:nofederate]

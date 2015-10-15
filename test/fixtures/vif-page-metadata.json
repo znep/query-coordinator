@@ -6,7 +6,8 @@
       "cardSize": 1,
       "cardType": "column",
       "activeFilters": [],
-      "expanded": true
+      "expanded": true,
+      "computedColumn": null
     }
   ],
   "datasetId": "vdj8-z7h2",
@@ -23,7 +24,7 @@
   },
   "primaryAggregation": "count",
   "primaryAmountField": null,
-  "version": 1,
+  "version": 3,
   "largestTimeSpanDays": null,
   "defaultDateTruncFunction": null,
   "sourceVif": {

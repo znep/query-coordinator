@@ -307,33 +307,8 @@ class PageMetadataManager
     dataset_metadata_result.fetch(:body).fetch('columns')
   end
 
-  private
-
-  # Examine the given metadata and determine whether it has the hallmarks which
-  # indicate that the complete page metadata is stored in in metadb.
-  # If this method returns false, we assume that phiddy holds the page metadata.
-  def is_backed_by_metadb?(metadb_page_metadata)
-    return false if metadb_page_metadata.nil?
-
-    display_type = metadb_page_metadata[:displayType]
-    # future work may check other properties and &&-together
-
-    %w(data_lens data_lens_chart data_lens_map).include?(display_type)
-  end
-
-  # When page metadata is returned from metadb, null-valued properties may be
-  # stripped out. We should ensure that properties are present by supplying nil
-  # defaults where needed. This doesn't affect the phidippides read path.
-  # See https://docs.google.com/document/d/1IE-vWpY-HzHvxwWRh6XRny10BOZXcbTpjUG4Lm8ObV8
-  # for the set of properties to check.
-  def ensure_page_metadata_properties(metadata)
-    metadata[:primaryAggregation] ||= nil
-    metadata[:primaryAmountField] ||= nil
-    metadata[:largestTimeSpanDays] ||= nil
-    metadata
-  end
-
   def migrated_page_metadata(page_metadata)
+    page_metadata = HashWithIndifferentAccess.new(page_metadata)
     return page_metadata unless enable_data_lens_page_metadata_migrations?
 
     version = page_metadata[:version]
@@ -359,6 +334,32 @@ class PageMetadataManager
     page_metadata[:version] = version
 
     page_metadata
+  end
+
+  private
+
+  # Examine the given metadata and determine whether it has the hallmarks which
+  # indicate that the complete page metadata is stored in in metadb.
+  # If this method returns false, we assume that phiddy holds the page metadata.
+  def is_backed_by_metadb?(metadb_page_metadata)
+    return false if metadb_page_metadata.nil?
+
+    display_type = metadb_page_metadata[:displayType]
+    # future work may check other properties and &&-together
+
+    %w(data_lens data_lens_chart data_lens_map).include?(display_type)
+  end
+
+  # When page metadata is returned from metadb, null-valued properties may be
+  # stripped out. We should ensure that properties are present by supplying nil
+  # defaults where needed. This doesn't affect the phidippides read path.
+  # See https://docs.google.com/document/d/1IE-vWpY-HzHvxwWRh6XRny10BOZXcbTpjUG4Lm8ObV8
+  # for the set of properties to check.
+  def ensure_page_metadata_properties(metadata)
+    metadata[:primaryAggregation] ||= nil
+    metadata[:primaryAmountField] ||= nil
+    metadata[:largestTimeSpanDays] ||= nil
+    metadata
   end
 
   def initialize_metadata_key_names

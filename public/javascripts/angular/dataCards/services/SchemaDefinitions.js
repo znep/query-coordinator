@@ -311,7 +311,7 @@
             'expanded': {'type': 'boolean'},
             'fieldName': {'type': 'string', 'minLength': 1},
             'cardOptions': {'type': 'object'},
-            'computedColumn': {'type': 'string'}
+            'computedColumn': {}
           },
           'required': ['fieldName', 'cardSize', 'expanded']
         }

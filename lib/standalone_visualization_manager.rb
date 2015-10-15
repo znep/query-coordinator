@@ -72,7 +72,7 @@ class StandaloneVisualizationManager
       :permissions => permissions,
       :primaryAggregation => vif[:aggregation][:function],
       :primaryAmountField => vif[:aggregation][:columnName],
-      :version => 1
+      :version => 3
     }.with_indifferent_access
 
     # update_metadata_date_trunc(page_metadata)
@@ -88,7 +88,8 @@ class StandaloneVisualizationManager
       :cardSize => 1,
       :cardType => card_type_from_vif(vif),
       :expanded => true,
-      :fieldName => vif[:columnName]
+      :fieldName => vif[:columnName],
+      :computedColumn => vif[:computedColumn]
     }.with_indifferent_access
   end
 

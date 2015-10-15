@@ -85,6 +85,10 @@
         }
       }
 
+      function addChoroplethComputedColumn(vif, cardModel) {
+        vif.computedColumn = cardModel.getCurrentValue('computedColumn');
+      }
+
       socrata.utils.assertIsOneOfTypes(pageModel, 'object');
       socrata.utils.assertIsOneOfTypes(uniqueIdOfCardToExport, 'number', 'string');
       socrata.utils.assertIsOneOfTypes(title, 'string');
@@ -139,6 +143,7 @@
             case 'choropleth':
               conditionallyDecorateBaseLayerUrl(vif, cardModel);
               conditionallyDecorateMapExtent(vif, cardModel);
+              addChoroplethComputedColumn(vif, cardModel);
               vif.type = 'choroplethMap';
               break;
 

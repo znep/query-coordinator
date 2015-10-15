@@ -295,7 +295,7 @@ class NewUxBootstrapController < ActionController::Base
       cards = cards.first(MAX_NUMBER_OF_CARDS)
     end
 
-    {
+    unmigrated_metadata = {
       'cards' => cards,
       'datasetId' => new_dataset_metadata[:id],
       'description' => new_dataset_metadata[:description],
@@ -304,6 +304,8 @@ class NewUxBootstrapController < ActionController::Base
       'primaryAmountField' => nil,
       'version' => get_version
     }
+
+    page_metadata_manager.migrated_page_metadata(unmigrated_metadata)
   end
 
   # CORE-4770 Avoid card creation for latitude/longitude column types (because no one cares)

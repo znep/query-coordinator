@@ -102,14 +102,23 @@
       </div>
     </div>
 
-    <div class="browse2-result-view-count">
-      <div class="browse2-result-view-count-label">
-        <%= t('controls.browse.browse2.view_count.label') %>
+    <%-
+      if result_view_count.present?
+    -%>
+
+      <div class="browse2-result-view-count">
+        <div class="browse2-result-view-count-label">
+          <%= t('controls.browse.browse2.view_count.label') %>
+        </div>
+        <div class="browse2-result-view-count-value">
+          <%= result_view_count %>
+        </div>
       </div>
-      <div class="browse2-result-view-count-value">
-        <%= result_view_count %>
-      </div>
-    </div>
+
+    <%-
+      end
+    -%>
+
   </div>
 
   <div class="browse2-result-footer">

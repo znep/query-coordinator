@@ -467,7 +467,7 @@ en:
         facets:
           hint: Filter or Browse Results
           clear_all:
-            label: Show All Types
+            label: Clear
         federation:
           label: Linked
           source: Linked from %{source}

@@ -235,10 +235,11 @@ body {
         .browse2-facet-section-title {
           position: relative;
           display: block;
-          padding: 1em;
+          padding: 1em 1em 1em 0.5em;
           border-top: 1px solid #eee;
           border-left: 10px solid #ddd;
           border-bottom: 1px solid #eee;
+          font-size: 15px;
           font-weight: 600;
           -webkit-user-select: none;
           -moz-user-select: none;
@@ -279,7 +280,7 @@ body {
             display: block;
             padding: 0.5em 0.75em;
             font-size: 1.1em;
-            color: #333;
+            color: #4a4a4a;
             border-left: 10px solid #eee;
 
             .browse2-facet-section-option-clear-icon {
@@ -310,13 +311,13 @@ body {
 
             &.active {
               background-color: #eee;
-              border-left: 10px solid #f00;
+              border-left: 10px solid #f9690e;
             }
           }
         }
 
         &[data-facet-display="show"] > .browse2-facet-section-title {
-          border-left: 10px solid #8af;
+          border-left: 10px solid #2c97de;
 
           .browse2-facet-section-expand-icon {
             display: block;
@@ -361,7 +362,7 @@ body {
         color: #555;
       }
 
-      .browse2-results-clear-all-facets-control {
+      .browse2-results-clear-all-control {
         display: inline-block;
         padding: 0.5em 0.75em;
         font-weight: 300;
@@ -372,7 +373,7 @@ body {
         -ms-transform: translate(0, -0.5em);
         transform: translate(0, -0.5em);
 
-        .browse2-facet-section-option-clear-icon {
+        .browse2-clear-all-icon {
           margin-left: 0.5em;
           font-size: 0.5em;
           font-weight: 300;
@@ -493,11 +494,11 @@ body {
             .browse2-result-name {
               display: inline;
               margin-right: 1em;
-              font-size: 2em;
+              font-size: 23px;
               font-weight: 300;
 
               .browse2-result-name-link {
-                color: #9af;
+                color: #2c97de;
 
                 &:hover {
                   text-decoration: underline;
@@ -535,6 +536,7 @@ body {
                 position: relative;
                 display: inline-block;
                 font-size: 1.5em;
+                color: #4a4a4a;
                 -webkit-transform: translate(0, 0.15em);
                 -moz-transform: translate(0, 0.15em);
                 -ms-transform: translate(0, 0.15em);
@@ -560,7 +562,6 @@ body {
             margin-top: 0.5em;
             font-size: 1.25em;
             text-align: right;
-            text-transform: capitalize;
 
             .browse2-result-type-icon {
               position: relative;
@@ -583,6 +584,7 @@ body {
         .browse2-result-metadata {
           width: 80%;
           min-height: 8.3em;
+          color: #4a4a4a;
           border-right: 1px solid #ddd;
 
           .browse2-result-description {
@@ -591,9 +593,9 @@ body {
 
             p {
               margin-bottom: 0.5em;
-              font-size: 1.25em;
+              font-size: 15px;
               font-weight: 400;
-              line-height: 1.5em;
+              line-height: 24px;
             }
           }
 

@@ -93,8 +93,8 @@
                 '</div>',
                 '<div class="sticky-border bottom show-more">',
                   '<a class="show-more-button">',
-                  '<span class="show-details">Show Details</span>',
-                  '<span class="hide-details">Hide Details</span>',
+                  '<span class="show-details">Show More</span>',
+                  '<span class="hide-details">Show Less</span>',
                   '</a>',
                 '</div>',
               '</div>',
@@ -161,6 +161,8 @@
 
       _setState(payload);
     });
+
+    $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE', _hide);
 
     $document.on('click', _captureLeftClickAndHide);
     $document.on('keydown', _captureEscapeAndHide);

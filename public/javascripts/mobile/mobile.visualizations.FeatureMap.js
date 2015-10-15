@@ -311,8 +311,6 @@
           _mapLocateUserButton.on('click', _handleLocateUserButtonClick);
         }
       }
-
-      $(window).on('resize', _hideRowInspector);
     }
 
     function _detachEvents(element) {
@@ -339,8 +337,6 @@
           _mapLocateUserButton.off('click', _handleLocateUserButtonClick);
         }
       }
-
-      $(window).off('resize', _hideRowInspector);
     }
 
     function _handleMapResize() {

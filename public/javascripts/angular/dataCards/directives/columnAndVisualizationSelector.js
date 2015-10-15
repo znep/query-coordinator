@@ -24,7 +24,8 @@
         addVisualizationPrompt: '=?',
         // Optional whereClause to pass to card.
         whereClause: '=?',
-        addCardSelectedColumnFieldName: '='
+        addCardSelectedColumnFieldName: '=',
+        classicVisualization: '='
       },
       templateUrl: '/angular_templates/dataCards/columnAndVisualizationSelector.html',
       link: function(scope, element, attr) {
@@ -126,7 +127,7 @@
           function(fieldName, column, adjustedDefaultCardTypeHash) {
             var serializedCard;
 
-            if (!column) {
+            if (!column || !fieldName) {
               return null;
             } else {
               // TODO: Enforce some kind of schema validation at this step.

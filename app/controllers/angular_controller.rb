@@ -117,7 +117,7 @@ class AngularController < ActionController::Base
 
   def visualization_add
 
-    dataset_id = params['datasetId']
+    dataset_id_param = params['datasetId']
 
     # First fetch the current user's profile.
     # NOTE: The call to `current_user` is side-effecty and if we do
@@ -126,7 +126,7 @@ class AngularController < ActionController::Base
     @current_user = current_user
 
     # Can't render add card without a dataset
-    if dataset_id.empty?
+    if dataset_id_param.empty?
       error_class = 'DatasetMetadataRequestFailure'
       error_message = "Could not serve app: dataset_id is required."
       report_error(error_class, error_message)
@@ -135,20 +135,27 @@ class AngularController < ActionController::Base
 
     # Fetch dataset metadata
     begin
-      # Find all standalone visualizations based on this dataset
-      related_views = View.find(dataset_id).find_related(1, 1000)
-      related_standalone_visualizations = related_views.select do |view|
-        view.standalone_visualization?
-      end
+      view = View.find(dataset_id_param)
 
-      # Map all standalone visualizations to synthetic Page metadata
-      standalone_visualization_manager = StandaloneVisualizationManager.new
-      @related_visualizations = related_standalone_visualizations.map do |view|
-        vif = JSON::parse(view.displayFormat.visualization_interchange_format_v1).with_indifferent_access
-        standalone_visualization_manager.page_metadata_from_vif(vif, dataset_id, {})
-      end
+      all_backend_views = [
+        view.nbe_view, # Require this (data lens won't work otherwise).
+        view.obe_view # Optional, dataset might be nbe only.
+      ].compact
 
-      @dataset_metadata = fetch_dataset_metadata(dataset_id)
+      @dataset_metadata = fetch_dataset_metadata(view.nbe_view.id)
+
+      # Grab related views for both potential copies of dataset (nbe and obe).
+      related_views = all_backend_views.map do |view|
+        view.find_related(1, 1000)
+      end.flatten
+
+      # Select only those related views that are visualizations.
+      # Also dedup.
+      related_visualizations = related_views.select(&:visualization?).uniq(&:id)
+
+      # Finally, convert each related visualization to a format that the JS can consume.
+      @related_visualizations = related_visualizations.map(&:to_visualization_embed_blob)
+
     rescue AuthenticationRequired
       return redirect_to_login
     rescue UnauthorizedDatasetMetadataRequest
@@ -159,7 +166,7 @@ class AngularController < ActionController::Base
       error_class = 'DatasetMetadataRequestFailure'
       error_message = "Could not serve app: encountered unknown error " \
         "fetching dataset metadata for dataset id " \
-        "#{dataset_id}: #{error}"
+        "#{dataset_id_param}: #{error}"
       report_error(error_class, error_message)
       return render_500
     end

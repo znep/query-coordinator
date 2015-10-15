@@ -26,7 +26,7 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationFeatureMap.html',
       link: function cardVisualizationFeatureMapLink(scope) {
-        var model = scope.$observe('model');
+        var model = scope.$observe('model').filter(_.isPresent);
         var whereClause$ = scope.$observe('whereClause');
         var dataset$ = model.observeOnLatest('page.dataset').filter(_.isPresent);
         var columns$ = dataset$.observeOnLatest('columns').filter(_.isPresent);

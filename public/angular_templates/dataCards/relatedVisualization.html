@@ -1,8 +1,14 @@
 <span class="related-visualization-icon" ng-class="iconClass(visualization)"></span>
 <div class="related-visualization-info">
-  <h4>{{ visualization.sourceVif.title }}</h4>
-  <p class="related-visualization-description" title="{{ visualization.sourceVif.description }}">{{ visualization.sourceVif.description }}</p>
+  <h4>
+    <span
+      class="icon-puzzle"
+      title="{{ 'addCardDialog.classicChart' | I18n }}"
+      ng-if="visualization.format === 'classic'"></span>
+    {{ visualization.title }}
+  </h4>
+  <p class="related-visualization-description" title="{{ visualization.description }}">{{ visualization.description }}</p>
   <span class="related-visualization-metadata" ng-class="{ highlight: shouldHighlightSourceColumn(visualization) }">
-    {{ 'relatedVisualizationSelector.basedOnColumn' | I18n:columnNameToReadableNameFn(visualization.sourceVif.columnName) }}
+    {{ 'relatedVisualizationSelector.basedOnColumn' | I18n:humanReadableColumnList }}
   </span>
 </div>

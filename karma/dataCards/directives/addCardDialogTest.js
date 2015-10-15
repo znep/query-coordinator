@@ -133,6 +133,7 @@ describe('addCardDialog', function() {
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
+  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('dataCards/cards.scss'));

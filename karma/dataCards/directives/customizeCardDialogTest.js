@@ -9,6 +9,7 @@ describe('Customize card dialog', function() {
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
+  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));

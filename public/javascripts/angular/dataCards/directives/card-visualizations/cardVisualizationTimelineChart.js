@@ -12,7 +12,7 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTimelineChart.html',
       link: function(scope) {
-        var cardModel$ = scope.$observe('model');
+        var cardModel$ = scope.$observe('model').filter(_.isPresent);
         var dataset$ = cardModel$.observeOnLatest('page.dataset').filter(_.isPresent);
         var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
         var aggregation$ = cardModel$.observeOnLatest('page.aggregation');

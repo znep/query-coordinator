@@ -310,9 +310,17 @@ Frontend::Application.routes do
       match '/view/*angularRoute', :action => 'data_lens', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 
-    scope :controller => 'angular' do
+    scope do
       # Angular endpoint for a standalone add card page that uses dataset metadata
-      match '/component/visualization/add', :action => 'visualization_add', :app => 'dataCards'
+      match '/component/visualization/add', {
+        :controller => 'angular',
+        :action => 'visualization_add',
+        :app => 'dataCards'
+      }
+      match '/component/visualization/v0/show', {
+        :controller => 'classic_visualization',
+        :action => 'show'
+      }
     end
 
     # Dataset SEO URLs (only add here if the action has a view with it;

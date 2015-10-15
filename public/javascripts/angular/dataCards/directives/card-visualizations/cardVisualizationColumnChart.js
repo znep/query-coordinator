@@ -10,7 +10,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
     },
     templateUrl: '/angular_templates/dataCards/cardVisualizationColumnChart.html',
     link: function($scope, element) {
-      var model = $scope.$observe('model');
+      var model = $scope.$observe('model').filter(_.isPresent);
       var dataset = model.observeOnLatest('page.dataset');
       var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
       var aggregation$ = model.observeOnLatest('page.aggregation');

@@ -84,14 +84,39 @@ class View < Model
       if newBackend?
         self
       elsif parent_view.nil?
-        View.find migrations[:nbeId]
+        View.find(migrations[:nbeId])
       else
-        View.find parent_view.migrations[:nbeId]
+        View.find(parent_view.migrations[:nbeId])
       end
     rescue CoreServer::CoreServerError => e
       raise e
     end
   end
+
+  def obe_view
+    @obe_view ||= begin
+      if !newBackend?
+        self
+      elsif parent_view.nil?
+        View.find(migrations[:obeId])
+      else
+        View.find(parent_view.migrations[:obeId])
+      end
+    rescue CoreServer::ResourceNotFound
+      nil # This means the migration was not found.
+    rescue CoreServer::CoreServerError => e
+      raise e
+    end
+  end
+
+  def fetch_json
+    path = "/views/#{id}.json"
+    JSON::parse(
+      CoreServer::Base.connection.get_request(path),
+      :max_nesting => 25
+    )
+  end
+
 
   # TODO Factor these new_backend methods out into a different container
   def row_count
@@ -1044,8 +1069,24 @@ class View < Model
     is_tabular? && displayType == 'data_lens'
   end
 
+  def visualization?
+    standalone_visualization? || classic_visualization?
+  end
+
   def standalone_visualization?
     is_tabular? && (is_data_lens_chart? || is_data_lens_map?)
+  end
+
+  def classic_visualization?
+    classic_chart? || classic_map?
+  end
+
+  def classic_chart?
+    is_tabular? && displayType == 'chart'
+  end
+
+  def classic_map?
+    is_tabular? && displayType == 'map'
   end
 
   def is_data_lens_chart?
@@ -1054,6 +1095,24 @@ class View < Model
 
   def is_data_lens_map?
     displayType == 'data_lens_map'
+  end
+
+  def visualization_interchange_format_v1
+    raise 'Only standalone visualizations have VIF representations' unless standalone_visualization?
+
+    JSON::parse(
+      displayFormat.visualization_interchange_format_v1
+    ).with_indifferent_access
+  end
+
+  # Returns an array of column names that are mentioned in
+  # display_format.
+  def display_format_columns
+    [
+      (displayFormat.valueColumns || []).pluck('fieldName'),
+      displayFormat.fixedColumns || [],
+      (displayFormat.seriesColumns || []).pluck('fieldName')
+    ].flatten.compact.uniq
   end
 
   # DEPRECATED
@@ -1501,6 +1560,48 @@ class View < Model
   def can_replace?
     can_modify_data? || is_blobby? || is_geo?
   end
+
+  # Maps this View to a JSON blob for use while selecting visualizations for embed.
+  # Specific to relatedVisualizationChooser and VisualizationAddController javascript.
+  def to_visualization_embed_blob
+    visualization = {
+      title: name,
+      description: description,
+      originalUid: id
+    }
+
+    if standalone_visualization?
+      # Map standalone visualizations to synthetic Page metadata
+      standalone_visualization_manager = StandaloneVisualizationManager.new
+      page_metadata = standalone_visualization_manager.page_metadata_from_vif(
+        visualization_interchange_format_v1,
+        nbe_view.id,
+        {}
+      )
+      visualization[:data] = page_metadata
+      visualization[:columns] = [ page_metadata[:cards][0][:fieldName] ]
+      visualization[:type] = page_metadata[:cards][0][:cardType]
+      visualization[:format] = 'page_metadata'
+    else
+      json = fetch_json.deep_merge(
+        'metadata' => {
+          'renderTypeConfig' => {
+            'visible' => {
+              'table' => false
+            }
+          }
+        }
+      )
+
+      visualization[:data] = json
+      visualization[:columns] = display_format_columns
+      visualization[:type] = displayFormat.chartType
+      visualization[:format] = 'classic'
+    end
+
+    visualization
+  end
+
 
   @@default_categories = {
     '' => { text: "-- #{I18n.t 'core.no_category'} --", value: '' }

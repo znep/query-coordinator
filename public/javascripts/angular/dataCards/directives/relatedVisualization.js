@@ -4,7 +4,13 @@
   function relatedVisualization() {
     return {
       restrict: 'E',
-      templateUrl: '/angular_templates/dataCards/relatedVisualization.html'
+      scope: true,
+      templateUrl: '/angular_templates/dataCards/relatedVisualization.html',
+      link: function(scope) {
+        scope.humanReadableColumnList = scope.visualization.columns.map(
+          scope.columnNameToReadableNameFn
+        ).join(', ');
+      }
     };
   }
 

@@ -50,6 +50,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
+  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
   beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
   beforeEach(module('/angular_templates/dataCards/manageLensDialogV2.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));

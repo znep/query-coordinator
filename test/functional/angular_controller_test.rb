@@ -20,20 +20,15 @@ class AngularControllerTest < ActionController::TestCase
       :find => test_view,
       :find_related => [test_view],
       :migrations => {
-        :nbeId => '1234-1234',
-        :obeId => '1234-1234'
+        :nbeId => 'test-data',
+        :obeId => 'obev-rson'
       }
     )
+
   end
 
   test 'should successfully get data_lens' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
-    View.stubs(
-      :migrations => {
-        :nbeId => '1234-1234',
-        :obeId => '1234-1234'
-      }
-    )
     PageMetadataManager.any_instance.stubs(
       :show => v1_page_metadata
     )
@@ -58,12 +53,6 @@ class AngularControllerTest < ActionController::TestCase
 
   test 'should successfully get data_lens for single card view' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
-    View.stubs(
-      :migrations => {
-        :nbeId => '1234-1234',
-        :obeId => '1234-1234'
-      }
-    )
     PageMetadataManager.any_instance.stubs(
       :show => v1_page_metadata
     )
@@ -88,12 +77,6 @@ class AngularControllerTest < ActionController::TestCase
 
   test 'should successfully get data_lens with empty Phidippides page data' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
-    View.stubs(
-      :migrations => {
-        :nbeId => '1234-1234',
-        :obeId => '1234-1234'
-      }
-    )
     PageMetadataManager.any_instance.stubs(
       :show => v1_page_metadata
     )
@@ -328,9 +311,6 @@ class AngularControllerTest < ActionController::TestCase
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(500)
-
-      get :visualization_add, :datasetId => 'data-sett', :app => 'dataCards'
-      assert_response(500)
     end
   end
 
@@ -343,6 +323,15 @@ class AngularControllerTest < ActionController::TestCase
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
+
+      # note that this is not parsed json!
+      View.any_instance.stubs(:find_related_as_json => '[]')
+      AngularController.stubs(
+        :find_all_uids => {
+          :nbe => 'test-data',
+          :all => [ 'test-data', 'obev-rson' ]
+        }
+      )
     end
 
     should 'successfully get' do
@@ -352,11 +341,17 @@ class AngularControllerTest < ActionController::TestCase
       assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
     end
 
-    should 'provide related data_lens_chart and data_lens_map' do
-      test_view = View.find('test-data')
+    should 'provide related visualizations from both OBE and NBE replicas' do
+      test_view_nbe = View.find('test-data')
+      test_view_obe = View.find('obev-rson')
 
-      related_chart = View.new
-      related_chart.data = {
+      test_view_nbe.stubs(
+        :obe_view => test_view_obe,
+        :new_backend? => true
+      )
+
+      related_chart_data = {
+        'id' => 'relt-chrt',
         'viewType' => 'tabular',
         'displayType' => 'data_lens_chart',
         'displayFormat' => {
@@ -364,8 +359,8 @@ class AngularControllerTest < ActionController::TestCase
         }
       }
 
-      related_map = View.new
-      related_map.data = {
+      related_map_data = {
+        'id' => 'relt-mapp',
         'viewType' => 'tabular',
         'displayType' => 'data_lens_map',
         'displayFormat' => {
@@ -373,10 +368,57 @@ class AngularControllerTest < ActionController::TestCase
         }
       }
 
-      View.any_instance.stubs(
-        :find => test_view,
-        :find_related => [test_view, related_chart, related_map]
+      related_classic_chart_data = {
+        'id' => 'sooo-oldd',
+        'viewType' => 'tabular',
+        'displayType' => 'chart',
+        'displayFormat' => ''
+      }
+
+      related_chart = View.new(related_chart_data)
+      related_map = View.new(related_map_data)
+      related_classic_chart = View.new(related_classic_chart_data)
+
+      test_view_nbe.stubs(
+        :find_related => [
+          related_chart,
+          related_map
+        ]
       )
+
+      test_view_obe.stubs(
+        :find_related => [
+          related_chart, # NOTE THE DUPLICATE, code under test should dedupe
+          related_classic_chart
+        ]
+      )
+
+      # Test sanity.
+      assert(related_chart.visualization?)
+      assert(related_map.visualization?)
+      assert(related_classic_chart.visualization?)
+
+      related_chart.stubs(
+        :to_visualization_embed_blob => visualization_embed_json.merge(id: 'relt-chrt')
+      )
+
+      related_map.stubs(
+        :to_visualization_embed_blob => visualization_embed_json.merge(id: 'relt-mapp')
+      )
+
+      related_classic_chart.stubs(
+        :to_visualization_embed_blob => visualization_embed_json.merge(id: 'sooo-oldd')
+      )
+
+      View.stubs(:find).with('test-data').returns(test_view_nbe)
+
+      View.any_instance.stubs(:fetch_json).with do
+        {
+          :id => self.id,
+          :viewType => 'tabular',
+          :displayType => 'data_lens_chart'
+        }.with_indifferent_access
+      end
 
       get :visualization_add, :datasetId => 'test-data', :app => 'dataCards'
       assert_response :success
@@ -385,9 +427,14 @@ class AngularControllerTest < ActionController::TestCase
       related_visualizations = JSON.parse(
         @response.body.match(related_visualizations_json_pattern)[1]
       )
-      assert_equal(2, related_visualizations.length)
-      assert_equal(JSON.parse(vif_fixture_string), related_visualizations[0]['sourceVif'])
-      assert_equal(JSON.parse(vif_fixture_string), related_visualizations[1]['sourceVif'])
+      assert_equal(
+        related_visualizations.pluck('id'),
+        [
+          'relt-chrt',
+          'relt-mapp',
+          'sooo-oldd'
+        ]
+      )
     end
   end
 
@@ -469,6 +516,10 @@ class AngularControllerTest < ActionController::TestCase
 
   def vif_fixture_string
     File.read("#{Rails.root}/test/fixtures/vif.json")
+  end
+
+  def visualization_embed_json
+    JSON::parse(File.read("#{Rails.root}/test/fixtures/vif.json"))
   end
 
 end

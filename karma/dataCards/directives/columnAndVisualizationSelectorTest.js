@@ -87,6 +87,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         'supported-card-types="supportedCardTypes" ' +
         'add-card-prompt="false" ' +
         'add-card-selected-column-field-name="addCardSelectedColumnFieldName"' +
+        'classic-visualization="classicVisualization" ' +
       '></column-and-visualization-selector>';
 
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -107,6 +108,7 @@ describe('columnAndVisualizationSelectorTest', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
+  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
 
   beforeEach(function() {
@@ -217,6 +219,39 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     expect(directive.element.find('.icon-bar-chart').find('.icon-warning').css('display')).to.not.equal('none');
 
+  });
+
+  it('should display "(Custom...)" in the dropdown if classicVisualization is set', function() {
+    var directive = createDirective();
+    var customOptionSelector = '.classic-visualization-option';
+
+    expect(directive.element.find(customOptionSelector)).to.have.length(0);
+    directive.outerScope.classicVisualization = 'I am truthy';
+    directive.outerScope.$apply();
+    expect(directive.element.find(customOptionSelector)).to.have.length(1);
+    expect(directive.element.find(customOptionSelector).prop('selected')).to.equal(true);
+  });
+
+  describe('with classicVisualization set', function() {
+    var directive;
+    beforeEach(function() {
+      directive = createDirective();
+
+      directive.outerScope.classicVisualization = 'I am truthy';
+      directive.outerScope.$apply();
+    });
+
+    it('should display the preview', function() {
+      expect(directive.element.find('.classic-visualization-preview')).to.be.visible;
+    });
+
+    it('should display the customizability warning', function() {
+      expect(directive.element.find('.classic-visualization-preview p')).to.be.visible;
+    });
+
+    it('should hide the card preview placeholder', function() {
+      expect(directive.element.find('.add-card-preview-placeholder')).to.not.be.visible;
+    });
   });
 
   describe('when addCardSelectedColumnFieldName is changed externally', function() {

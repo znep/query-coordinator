@@ -4,13 +4,13 @@
   var socrata = window.socrata;
   var utils = socrata.utils;
 
-  function sendVifToEnclosingWindow(vif) {
+  function sendVisualizationToEnclosingWindow(visualizationData, visualizationType) {
 
     // Trigger function attached to the iframe element in the parent
     if (_.isNull(window.frameElement)) {
       throw new Error('Page expects to be in an iframe, passing information to the parent window.');
     } else if (_.isFunction(window.frameElement.onVisualizationSelected)) {
-      window.frameElement.onVisualizationSelected(vif);
+      window.frameElement.onVisualizationSelected(visualizationData, visualizationType);
     } else {
       throw new Error('Cannot find onVisualizationSelected on the iframe.');
     }
@@ -44,8 +44,12 @@
     $scope.$bindObservable(
       'highlightedColumns',
       $scope.$observe('addCardSelectedColumnFieldName').
-        map(function(fieldName) {
-          return fieldName ? [ fieldName ] : [];
+        combineLatest($scope.$observe('classicVisualization'), function(fieldName, classicVisualization) {
+          if (fieldName) {
+            return [fieldName];
+          } else if (classicVisualization) {
+            return classicVisualization.columns;
+          }
         })
     );
 
@@ -97,13 +101,20 @@
 
     // Emitted by relatedVisualizationSelector. This page metadata contains a
     // sourceVif property.
-    $scope.$on('related-visualization-selected', function(event, pageMetadata) {
-      utils.assertHasProperty(pageMetadata, 'sourceVif.type');
+    $scope.$on('related-visualization-selected', function(event, visualization) {
+      if (visualization.format === 'page_metadata') {
+        utils.assertHasProperty(visualization, 'data.sourceVif.type');
 
-      $scope.page = new Page(pageMetadata, dataset);
-      $scope.addCardSelectedColumnFieldName = pageMetadata.sourceVif.columnName;
+        $scope.page = new Page(visualization.data, dataset);
+        $scope.addCardSelectedColumnFieldName = visualization.data.sourceVif.columnName;
+        $scope.classicVisualization = null;
 
-      sendVifToEnclosingWindow(pageMetadata.sourceVif);
+        sendVisualizationToEnclosingWindow(visualization.data.sourceVif, 'vif');
+      } else if (visualization.format === 'classic') {
+        $scope.addCardSelectedColumnFieldName = null;
+        $scope.classicVisualization = visualization;
+        sendVisualizationToEnclosingWindow(visualization.data, 'classic');
+      }
     });
 
     /*************************
@@ -113,7 +124,8 @@
     $scope.$on('card-model-selected', function(event, selectedCard) {
       var vif = selectedCard ? generateVIF(selectedCard) : null;
       $scope.page = $scope.blankPage;
-      sendVifToEnclosingWindow(vif);
+      $scope.classicVisualization = null;
+      sendVisualizationToEnclosingWindow(vif, 'vif');
     });
   }
 

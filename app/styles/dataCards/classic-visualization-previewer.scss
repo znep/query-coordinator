@@ -1,0 +1,35 @@
+@import "dataCards/common/open-sans-font";
+
+// Styles for the standalone component/visualization/add page. Added for storyteller
+
+$visualization-primary-color: #6d6d6d;
+$visualization-border-width: 1px;
+$visualization-border-color: #dedede;
+$title-height: 20px;
+$title-margin-bottom: 10px;
+
+classic-visualization-previewer {
+
+  display: block;
+  background-color: white;
+  border: none;
+  border-top: solid 1px white;
+  border-bottom: solid 1px white;
+
+  h2 {
+    font-size: 15px;
+    font-weight: 400;
+    color: $visualization-primary-color;
+
+    height: $title-height;
+    margin: 0;
+    margin-bottom: $title-margin-bottom;
+  }
+
+  iframe {
+    border: $visualization-border-width solid $visualization-border-color;
+    box-sizing: border-box;
+    width: 100%;
+    height: calc(100% - #{$title-margin-bottom} - #{$title-height});
+  }
+}

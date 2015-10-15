@@ -92,10 +92,12 @@ describe('relatedVisualizationSelector', function() {
     var relatedVisualizations;
 
     function buildRelatedVisualization(columnName) {
+      var title = 'Test Viz ' + columnName;
+      var description = 'Test Viz Description ' + columnName;
       var relatedVisualizationPageMetadata = Mockumentary.createPageMetadata();
       var relatedVisualizationVIF = {
-        title: 'Test Viz ' + columnName,
-        description: 'Test Viz Description ' + columnName,
+        title: title,
+        description: description,
         type: 'test',
         columnName: columnName,
         origin: {
@@ -103,9 +105,18 @@ describe('relatedVisualizationSelector', function() {
         },
         filters: []
       };
+
       relatedVisualizationPageMetadata.sourceVif = relatedVisualizationVIF;
       relatedVisualizationPageMetadata.cards = [Mockumentary.createCardMetadata()];
-      return relatedVisualizationPageMetadata;
+
+      return {
+        title: title,
+        description: description,
+        data: relatedVisualizationPageMetadata,
+        columns: [columnName],
+        format: 'page_metadata',
+        type: 'column'
+      };
     }
 
     beforeEach(function() {
@@ -148,6 +159,13 @@ describe('relatedVisualizationSelector', function() {
       ]);
     });
 
+    it('displays the special icon for classic visualizations', function() {
+      directive.scope.relatedVisualizations[0].format = 'classic';
+      directive.scope.$apply();
+
+      expect(directive.element.find('related-visualization .icon-puzzle')).to.have.length(1);
+    });
+
     it('uses the human name for the "based on" text', function() {
       var texts = _.map(directive.element.find('.related-visualization-metadata'), function(item) {
         return $(item).text().trim();
@@ -169,27 +187,37 @@ describe('relatedVisualizationSelector', function() {
 
         directive.element.find('li a').click();
 
-        expect(_.pluck(payloads, 'sourceVif.columnName')).to.deep.equal([
-          '1',
-          '2',
-          '3'
-        ]);
+        expect(_.pluck(payloads, 'data.sourceVif.columnName')).
+          to.deep.equal(['1', '2', '3']);
       });
     });
 
     describe('shouldDisable', function() {
       function getVisualizationDisabledStatus() {
         return _.reduce(directive.element.find('li'), function(acc, item) {
-          var columnName = $(item).scope().visualization.sourceVif.columnName;
+          var columnName = $(item).scope().visualization.data.sourceVif.columnName;
           acc[columnName] = $(item).hasClass('disabled');
           return acc;
         }, {});
       }
-      it('should apply the `disabled` class to all related visualizations that are not supported', function() {
-        directive.scope.relatedVisualizations[0].cards[0].cardType = 'choropleth';
+      it('should apply the `disabled` class to all related data lens visualizations that are not supported', function() {
+        directive.scope.relatedVisualizations[0].type = 'choropleth';
         directive.scope.$apply();
         expect(getVisualizationDisabledStatus()).to.deep.equal({
           '1': true,
+          '2': false,
+          '3': false
+        });
+      });
+
+      it('should not apply the `disabled` class to any classic visualizations', function() {
+        _.each(directive.scope.relatedVisualizations, function(viz) {
+          viz.format = 'classic';
+        });
+        directive.scope.$apply();
+
+        expect(getVisualizationDisabledStatus()).to.deep.equal({
+          '1': false,
           '2': false,
           '3': false
         });
@@ -199,11 +227,11 @@ describe('relatedVisualizationSelector', function() {
     describe('sort order', function() {
       function getColumnNamesInDisplayOrder() {
         return _.map(directive.element.find('li'), function(item) {
-          return $(item).scope().visualization.sourceVif.columnName;
+          return $(item).scope().visualization.data.sourceVif.columnName;
         });
       }
       it('should place all unsupported visualizations at the end', function() {
-        directive.scope.relatedVisualizations[0].cards[0].cardType = 'choropleth'; // not supported
+        directive.scope.relatedVisualizations[0].type = 'choropleth'; // not supported
         directive.scope.$apply();
         expect(getColumnNamesInDisplayOrder()).to.deep.equal([
           '2',
@@ -214,17 +242,9 @@ describe('relatedVisualizationSelector', function() {
     });
 
     describe('highlightedColumns', function() {
-      function getVisualizationDimStatus() {
-        return _.reduce(directive.element.find('li'), function(acc, item) {
-          var columnName = $(item).scope().visualization.sourceVif.columnName;
-          acc[columnName] = $(item).hasClass('dim');
-          return acc;
-        }, {});
-      }
-
       function getVisualizationHighlightStatus() {
         return _.reduce(directive.element.find('li'), function(acc, item) {
-          var columnName = $(item).scope().visualization.sourceVif.columnName;
+          var columnName = $(item).scope().visualization.data.sourceVif.columnName;
           acc[columnName] = $(item).find('.related-visualization-metadata').hasClass('highlight');
           return acc;
         }, {});
@@ -234,14 +254,6 @@ describe('relatedVisualizationSelector', function() {
         beforeEach(function() {
           directive.scope.highlightedColumns = [];
           directive.scope.$apply();
-        });
-
-        it('should not dim anything', function() {
-          expect(getVisualizationDimStatus()).to.deep.equal({
-            '1': false,
-            '2': false,
-            '3': false
-          });
         });
 
         it('should not highlight anything', function() {
@@ -257,14 +269,6 @@ describe('relatedVisualizationSelector', function() {
         beforeEach(function() {
           directive.scope.highlightedColumns = [ '2' ];
           directive.scope.$apply();
-        });
-
-        it('should dim the visualizations not based on that fieldName', function() {
-          expect(getVisualizationDimStatus()).to.deep.equal({
-            '1': true,
-            '2': false,
-            '3': true
-          });
         });
 
         it('should highlight the visualization metadata that uses the fieldName', function() {

@@ -16,7 +16,7 @@ en:
     story_save_error_conflict: 'There was a conflict saving. To continue, you need to reload the page.'
     components:
       asset_selector:
-        insert_btn: 'Insert...'
+        insert_btn: 'Insert'
     settings_panel:
       panel_title: 'Menu'
       errors:

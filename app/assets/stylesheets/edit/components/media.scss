@@ -1,17 +1,34 @@
 @import 'lib/variables';
 
 .component-asset-selector {
-  background-image: asset-url('media-block-icon.png');
-  background-size: 25%;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
+  position: relative;
   border: 1px solid transparent;
   box-sizing: border-box;
   background-color: #f2f2f2;
+  cursor: pointer;
 
   &:hover {
     background-color: #ddd;
     transition: color $transition-duration, background-color $transition-duration;
+  }
+
+  &:before {
+    background-image: asset-url('media-block-icon.png');
+    background-size: 30%;
+    background-position: 50% 38%;
+    background-repeat: no-repeat;
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+
+    .small & {
+      background-size: 24%;
+    }
   }
 
   .asset-selector-insert-btn {
@@ -20,9 +37,16 @@
     width: auto;
     margin-left: auto;
     margin-right: auto;
+    top: 70%;
+    font-weight: 600;
+
+    .small & {
+      top: 70%;
+    }
   }
 }
 
+.component-asset-selector,
 .component-youtube-video,
 .component-image,
 .component-socrata-visualization-column-chart,
@@ -61,7 +85,7 @@
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map,
   .component-embedded-html {
-    $small-height: $col3-block-edit-content-width-small * (3/4);
+    $small-height: $col3-block-edit-content-width-small * (4/5);
     $medium-height: $col3-block-edit-content-width-medium * (3/4);
     $large-height: $col3-block-edit-content-width-large * (3/4);
     $extra-large-height: $col3-block-edit-content-width-extra-large * (3/4);
@@ -73,16 +97,6 @@
       $large-height,
       $extra-large-height
     );
-
-    .asset-selector-insert-btn {
-      @include media-query-property(
-        'margin-top',
-        $small-height - ($btn-height * 2.5),
-        $medium-height - ($btn-height * 2.5),
-        $large-height - ($btn-height * 2.5),
-        $extra-large-height  - ($btn-height * 2.5)
-      );
-    }
   }
 }
 
@@ -93,7 +107,7 @@
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map,
   .component-embedded-html {
-    $small-height: $col4-block-edit-content-width-small * (3/4);
+    $small-height: $col4-block-edit-content-width-small * (4/5);
     $medium-height: $col4-block-edit-content-width-medium * (3/4);
     $large-height: $col4-block-edit-content-width-large * (3/4);
     $extra-large-height: $col4-block-edit-content-width-extra-large * (3/4);
@@ -105,24 +119,14 @@
       $large-height,
       $extra-large-height
     );
-
-    .asset-selector-insert-btn {
-      @include media-query-property(
-        'margin-top',
-        $small-height - ($btn-height * 2.5),
-        $medium-height - ($btn-height * 2.5),
-        $large-height - ($btn-height * 2.5),
-        $extra-large-height  - ($btn-height * 2.5)
-      );
-    }
   }
 }
 
 .col6 {
-  $small-height: $col6-block-edit-content-width-small * (3/4);
-  $medium-height: $col6-block-edit-content-width-medium * (3/4);
-  $large-height: $col6-block-edit-content-width-large * (3/4);
-  $extra-large-height: $col6-block-edit-content-width-extra-large * (3/4);
+  $small-height: $col6-block-edit-content-width-small * (4/5);
+  $medium-height: $col6-block-edit-content-width-medium * (3/5);
+  $large-height: $col6-block-edit-content-width-large * (3/5);
+  $extra-large-height: $col6-block-edit-content-width-extra-large * (3/5);
 
   .component-asset-selector,
   .component-youtube-video,
@@ -136,16 +140,6 @@
       $large-height,
       $extra-large-height
     );
-
-    .asset-selector-insert-btn {
-      @include media-query-property(
-        'margin-top',
-        $small-height - ($btn-height * 2.5),
-        $medium-height - ($btn-height * 2.5),
-        $large-height - ($btn-height * 2.5),
-        $extra-large-height  - ($btn-height * 2.5)
-      );
-    }
   }
 
   .component-embedded-html {
@@ -160,10 +154,10 @@
 }
 
 .col8 {
-  $small-height: $col8-block-edit-content-width-small;
-  $medium-height: $col8-block-edit-content-width-medium * (3/4);
-  $large-height: $col8-block-edit-content-width-large * (3/4);
-  $extra-large-height: $col8-block-edit-content-width-extra-large * (3/4);
+  $small-height: $col8-block-edit-content-width-small * (4/5);
+  $medium-height: $col8-block-edit-content-width-medium * (3/5);
+  $large-height: $col8-block-edit-content-width-large * (3/5);
+  $extra-large-height: $col8-block-edit-content-width-extra-large * (3/5);
 
   .component-asset-selector,
   .component-youtube-video,
@@ -177,16 +171,6 @@
       $large-height,
       $extra-large-height
     );
-
-    .asset-selector-insert-btn {
-      @include media-query-property(
-        'margin-top',
-        $small-height - ($btn-height * 2.5),
-        $medium-height - ($btn-height * 2.5),
-        $large-height - ($btn-height * 2.5),
-        $extra-large-height  - ($btn-height * 2.5)
-      );
-    }
   }
 
   /* Embedded HTML optimized for budget embed */
@@ -203,10 +187,10 @@
 }
 
 .col12 {
-  $small-height: $col12-block-edit-content-width-small;
-  $medium-height: $col12-block-edit-content-width-medium * (3/4);
-  $large-height: $col12-block-edit-content-width-large * (3/4);
-  $extra-large-height: $col12-block-edit-content-width-extra-large * (3/4);
+  $small-height: $col12-block-edit-content-width-small * (4/5);
+  $medium-height: $col12-block-edit-content-width-medium * (3/5);
+  $large-height: $col12-block-edit-content-width-large * (3/5);
+  $extra-large-height: $col12-block-edit-content-width-extra-large * (3/5);
 
   .component-asset-selector,
   .component-youtube-video,
@@ -220,16 +204,6 @@
       $large-height,
       $extra-large-height
     );
-
-    .asset-selector-insert-btn {
-      @include media-query-property(
-        'margin-top',
-        $small-height - ($btn-height * 2.5),
-        $medium-height - ($btn-height * 2.5),
-        $large-height - ($btn-height * 3),
-        $extra-large-height  - ($btn-height * 3)
-      );
-    }
   }
   .component-embedded-html {
     @include media-query-property(
@@ -241,6 +215,7 @@
     );
   }
 }
+
 .small .component-embedded-html {
   height: $main-content-width-small * 1.2;
 }

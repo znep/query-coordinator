@@ -298,6 +298,9 @@ manage-lens-dialog-v2 {
   }
 
   section.visibility {
+    .invisible {
+      visibility: hidden;
+    }
     .with-private-dataset {
       margin-top: 0.25rem;
     }

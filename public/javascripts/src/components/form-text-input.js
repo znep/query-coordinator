@@ -38,7 +38,7 @@
     },
     handleChange: function() {
       const { onChange } = this.props;
-      const input = React.findDOMNode(this.refs.input);
+      const input = this.refs.input;
       const value = input.value;
       this.setState({ dirty: true, value: value });
       onChange(value);

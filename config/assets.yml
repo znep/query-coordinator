@@ -288,7 +288,7 @@ javascripts:
   admin-georegions:
     - public/javascripts/dist/components/utils.js
     - public/javascripts/dist/components/flash-message.js
-    - public/javascripts/dist/components/socrata-title-tip-mixin.js
+    - public/javascripts/dist/components/socrata-title-tip-wrapper.js
     - public/javascripts/dist/components/loading-button.js
     - public/javascripts/dist/components/form-button.js
     - public/javascripts/dist/components/form-controls.js

@@ -35,7 +35,7 @@ describe('FormTextInput', function() {
 
   it('has an input', function() {
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, this.props));
-    var input = findByTag(node, 'input').getDOMNode();
+    var input = findByTag(node, 'input');
     expect(input).to.exist;
   });
 
@@ -55,7 +55,7 @@ describe('FormTextInput', function() {
       initialValue: 'my value'
     }, this.props);
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, props));
-    var input = findByTag(node, 'input').getDOMNode();
+    var input = findByTag(node, 'input');
     expect(input.value).to.eq('my value');
   });
 
@@ -64,7 +64,7 @@ describe('FormTextInput', function() {
       required: true
     }, this.props);
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, props));
-    var input = findByTag(node, 'input').getDOMNode();
+    var input = findByTag(node, 'input');
     expect(input).to.have.className('required');
   });
 

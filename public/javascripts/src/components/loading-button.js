@@ -2,11 +2,11 @@
 
   const PropTypes = React.PropTypes;
   let componentsNS = blist.namespace.fetch('blist.components');
+  const { socrataTitleTipWrapper } = componentsNS;
   const { classNames } = blist.namespace.fetch('blist.components.utils');
 
-  componentsNS.LoadingButton = React.createClass({
+  componentsNS.LoadingButton = socrataTitleTipWrapper(React.createClass({
     displayName: 'LoadingButton',
-    mixins: [ componentsNS.socrataTitleTipMixin ],
     propTypes: {
       children: PropTypes.string,
       disabled: PropTypes.bool,
@@ -43,6 +43,6 @@
         </button>
       );
     }
-  });
+  }));
 
 })();

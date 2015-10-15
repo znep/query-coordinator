@@ -26,10 +26,10 @@ describe('GeoregionAdminTable', function() {
   });
 
   it('renders', function() {
-    expect(_.isElement(this.node.getDOMNode())).to.eq(true);
+    expect(_.isElement(ReactDOM.findDOMNode(this.node))).to.eq(true);
   });
 
-  it('renders', function() {
+  it('renders as a table', function() {
     this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
     expect(result.type).to.eq('table');

@@ -46,7 +46,7 @@
     },
     handleChange: function() {
       const { onChange } = this.props;
-      const { value } = React.findDOMNode(this.refs.select);
+      const { value } = this.refs.select;
       this.setState({ dirty: true, value: value });
       onChange(value);
     },

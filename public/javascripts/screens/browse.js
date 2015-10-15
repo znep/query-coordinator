@@ -33,7 +33,12 @@ $(function()
             case 'table':
             case 'rich':
             default:
-                id = $item.closest('tr').attr('data-viewId');
+                var rowElement = $item.closest('tr');
+                if (rowElement.attr('data-viewId')) {
+                    id = rowElement.attr('data-viewId');
+                } else if (rowElement.attr('data-view-id')) {
+                    id = rowElement.attr('data-view-id');
+                }
                 break;
         }
         if (!(blist.browse.datasets[id] instanceof Dataset))
@@ -225,9 +230,8 @@ $(function()
         });
 
         $content.find('.button.about:not(.hide)')
-          .attr("href", ds.fullUrl +
-              ((ds.type == "blob" || ds.type == "href") ? "" : "/about"))
-          .attr('rel', ds.isFederated() ? 'external' : '');
+            .attr("href", ds.fullUrl + ((ds.type == "blob" || ds.type == "href") ? "" : "/about"))
+            .attr('rel', ds.isFederated() ? 'external' : '');
     };
 
     function controlDeleteButton(e, ds) {
@@ -504,12 +508,20 @@ $(function()
         };
     };
 
+    // Disable in-dataset matches for Cetera searches
+    // (which should not have rowSearchResults divs)
+    var rowSearchResultsEnabled = $('.rowSearchResults').length > 0;
+
     // Need to load rows related to the search
-    if (!isListingViewType && !$.isBlank(blist.browse.rowCount))
-    {
-        var stopEllipsis = $('.rowSearchResults span')
-                .dancingEllipsis({ text: $.t('controls.browse.row_results.matching_rows') }),
-            savePoint = $('table tr').savePoint(); // This order is important.
+    if (
+        rowSearchResultsEnabled &&
+        !isListingViewType &&
+        !$.isBlank(blist.browse.rowCount)
+    ) {
+        var stopEllipsis = $('.rowSearchResults span').
+            dancingEllipsis({ text: $.t('controls.browse.row_results.matching_rows') });
+
+        var savePoint = $('table tr').savePoint(); // This order is important.
 
         Dataset.search($.extend({}, blist.browse.searchOptions, { row_count: blist.browse.rowCount }),
             function(results)

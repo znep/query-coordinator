@@ -40,6 +40,9 @@ dataset_count_v2:
 debug_assets:
   description: Switch over to using unpackaged Javascript files.
   defaultValue: false
+debug_labjs:
+  description: Turn on debugging in the lazy-loader that old UX uses so that we can see problems.
+  defaultValue: false
 debug_data_lens:
   description: expose useful debugging information (data source, etc) for data lens pages
   defaultValue: false
@@ -181,7 +184,7 @@ use_auth0:
   defaultValue: false
 use_ephemeral_bootstrap:
   description: When true, bootstrapping a Data Lens page is ephemeral — that is, the page is not immediately persisted in the catalog.
-  defaultValue: false
+  defaultValue: true
   category: data lens
 useSoda2:
   description: Switch to using SODA2.

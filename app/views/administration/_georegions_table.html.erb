@@ -54,11 +54,6 @@
                 { :class => 'button', 'data-action' => 'edit' }) %>
         </td>
         <td class="remove-action">
-          <%= form_button(
-                { :action => :remove_georegion, :id => georegion.id },
-                t("#{prefix}.remove"),
-                { :method => :delete },
-                { :class => 'button', 'data-action' => 'remove' }) %>
         </td>
         <%- end -%>
       </tr>

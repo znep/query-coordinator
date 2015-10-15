@@ -17,6 +17,22 @@
       </div>
 
       <div class="tool-panel-input-group">
+        <label for="save-as-visibility" ng-if="!datasetIsPrivate && !usingViewModeration">{{::'saveAsPanel.visibility' | I18n}}</label>
+        <label for="save-as-visibility" ng-if="!datasetIsPrivate && usingViewModeration">{{::'saveAsPanel.visibilityWithViewModeration' | I18n}}</label>
+        <soc-select id="save-as-visibility" ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled" ng-if="!datasetIsPrivate">
+          <soc-option value="approved">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationApproved' : 'manageLensDialog.visibility.shown') | I18n}}</soc-option>
+          <soc-option value="rejected">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationRejected' : 'manageLensDialog.visibility.hidden') | I18n}}</soc-option>
+          <soc-option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">{{::'manageLensDialog.visibility.viewModerationPending' | I18n}}</soc-option>
+        </soc-select>
+        <p class="visibility-alert" ng-if="visibilityDropdownDisabled && !datasetIsPrivate">
+          {{::'saveAsPanel.visibilityDisabled' | I18n}}
+        </p>
+        <p class="visibility-alert" ng-if="datasetIsPrivate">
+          {{::'manageLensDialog.visibility.datasetIsPrivate' | I18n}}
+        </p>
+      </div>
+
+      <div class="tool-panel-input-group">
         <save-button
           ng-click="save()"
           enabled="hasChanges || isEphemeral"

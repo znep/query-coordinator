@@ -280,11 +280,18 @@
 
     // Once we migrate entirely to v2, we can remove the isCurrentUserAdminOrPublisher entirely
     // and only care about page-specific user rights
-    var userHasWriteRight$ = page.observe('rights').map(function(rights) {
-      return _.include(rights, 'write');
+    var userCanManageView$ = page.observe('rights').map(function(rights) {
+      return _.any(rights, function(right) {
+        return right === 'write' || right === 'update_view' || right === 'grant';
+      });
     });
 
-    var userHasEditRights$ = $scope.dataLensVersion >= 2 ? userHasWriteRight$ : isCurrentUserAdminOrPublisher$;
+    var userHasEditRights$ = $scope.dataLensVersion >= 2 ? userCanManageView$ : isCurrentUserAdminOrPublisher$;
+    if ($scope.isEphemeral) {
+      userHasEditRights$ = currentUser$.map(function(user) {
+        return !!(user && user.roleName);
+      });
+    }
 
     var isCurrentUserOwnerOfDataset$ =
       page.
@@ -296,20 +303,25 @@
           return ownerId === userId;
         });
 
-    $scope.$bindObservable(
-      'currentUserHasSaveRight',
-      userHasEditRights$.
+    var currentUserHasSaveRight$ = userHasEditRights$.
       combineLatest(isCurrentUserOwnerOfDataset$, function(a, b) { return a || b; }).
-      catchException(Rx.Observable.returnValue(false))
-    );
+      catchException(Rx.Observable.returnValue(false));
 
+    $scope.$bindObservable('currentUserHasSaveRight', currentUserHasSaveRight$);
+
+    $scope.$bindObservable(
+      'shouldDisplayCustomizeBar',
+      currentUserHasSaveRight$.combineLatest(currentUser$, function(hasSaveRight) {
+        return hasSaveRight && (page.displayType == 'data_lens' || page.displayType == 'new_view');
+      })
+    );
 
     initDownload($scope, page, obeId$, WindowState, ServerConfig);
 
     $scope.shouldShowManageLens = false;
 
     if ($scope.dataLensVersion >= 2) {
-      $scope.$bindObservable('shouldShowManageLens', userHasWriteRight$);
+      $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
       initManageLens($scope, page);
     } else {
       // TODO - remove once v2 migration is donions
@@ -542,7 +554,7 @@
       }
     };
 
-    $scope.savePageAs = function(name, description) {
+    $scope.savePageAs = function(name, description, moderationStatus) {
       var saveStatus$ = new Rx.BehaviorSubject();
       var savePromise;
 
@@ -551,6 +563,10 @@
           name: $.trim(name),
           description: description
         });
+        if (!_.isUndefined(moderationStatus)) {
+          newPageSerializedBlob.moderationStatus = moderationStatus;
+        }
+
         // PageDataService looks at whether or not pageId is set on the blob.
         // If it's set, it will do a regular save. We want it to save a new page.
         delete newPageSerializedBlob.pageId;

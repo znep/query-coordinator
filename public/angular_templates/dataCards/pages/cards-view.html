@@ -223,7 +223,8 @@
     save-page="savePage"
     save-page-as="savePageAs"
     save-status="saveStatus"
-    ng-show="currentUserHasSaveRight && (page.displayType == 'data_lens' || page.displayType == 'new_view')">
+    page="page"
+    ng-show="shouldDisplayCustomizeBar">
   </customize-bar>
   <div class="cards-content">
     <div id="quick-filter-bar-container">

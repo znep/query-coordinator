@@ -1,7 +1,6 @@
 module GeoregionsHelper
   def can_view_georegions_admin?(current_user)
-    feature_flag?(:enable_spatial_lens_admin, request) &&
-      (user_can?(current_user, :edit_others_datasets) ||
-        user_can?(current_user, :edit_site_theme))
+    (current_user.is_admin? || current_user.roleName == 'administrator') &&
+      feature_flag?(:enable_spatial_lens_admin, request)
   end
 end

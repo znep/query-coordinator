@@ -1,5 +1,6 @@
 class AdministrationController < ApplicationController
   include BrowseActions
+  include GeoregionsHelper
 
   before_filter :check_member, :only => :index
   def index
@@ -144,8 +145,7 @@ class AdministrationController < ApplicationController
   #
   def allow_georegions_access?
     run_access_check do
-      current_user.is_admin? &&
-        feature_flag?(:enable_spatial_lens_admin, request)
+      can_view_georegions_admin?(current_user)
     end
   end
 

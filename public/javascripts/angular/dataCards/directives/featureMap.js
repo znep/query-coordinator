@@ -559,7 +559,7 @@
         function createNewFeatureLayer(vectorTileGetter) {
           var layer;
           var featureLayerOptions = {
-            debug: false,
+            debug: ServerConfig.get('debugDataLens'),
             // disable interactivity during load
             disableMapInteractions: true,
             getFeatureId: getFeatureId,

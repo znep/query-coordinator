@@ -269,6 +269,10 @@ class NewUxBootstrapController < ActionController::Base
     page_id
   end
 
+  def get_version
+    FeatureFlags.derive(@view, request)[:create_v2_data_lens] ? 2 : 1
+  end
+
   def generate_page_metadata(new_dataset_metadata)
     cards = generate_cards_from_dataset_metadata_columns(new_dataset_metadata[:columns])
 
@@ -298,7 +302,7 @@ class NewUxBootstrapController < ActionController::Base
       'name' => new_dataset_metadata[:name],
       'primaryAggregation' => nil,
       'primaryAmountField' => nil,
-      'version' => 1
+      'version' => get_version
     }
   end
 
@@ -418,12 +422,17 @@ class NewUxBootstrapController < ActionController::Base
 
   def instantiate_ephemeral_view(dataset_metadata)
     @dataset_metadata = dataset_metadata
+
     @dataset_metadata[:pages] = begin
       fetch_pages_for_dataset(@dataset_metadata[:id])
     rescue DatasetMetadataNotFound
       {}
     end
+
     @page_metadata = generate_page_metadata(dataset_metadata)
+    @page_metadata['displayType'] = 'data_lens'
+
+    @dataset_metadata[:permissions] = fetch_permissions(@dataset_metadata[:id])
 
     # Set up card-type info for (non-system) columns
     @dataset_metadata[:columns].each do |field_name, column|
@@ -459,6 +468,8 @@ class NewUxBootstrapController < ActionController::Base
     @domain_metadata = domain_metadata
 
     request[:app] = 'dataCards'
+
+    render 'angular/data_lens'
   end
 
   def dataset_size

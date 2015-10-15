@@ -199,9 +199,11 @@
         // Set up map customization dropdowns.
         setupBaseLayerSelect($scope.customizedCard, $scope, element);
 
-        $scope.showFlannelTitleMenu = false;
         if (ServerConfig.get('oduxEnableFeatureMapHover')) {
-          $scope.showFlannelTitleMenu = $scope.customizedCard.getCurrentValue('cardType') === 'feature';
+          $scope.$bindObservable('showFlannelTitleMenu',
+            $scope.customizedCard.observe('cardType').map(function(cardType) {
+              return cardType === 'feature';
+            }));
           setupFlannelTitleSelect($scope.customizedCard, $scope);
         }
 

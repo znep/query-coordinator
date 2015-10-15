@@ -20,6 +20,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       load_sample_data('test/fixtures/sample-data.json')
       test_view = View.find('test-data')
       View.any_instance.stubs(:find => test_view)
+      # TODO determine why 23 tests fail or break when :use_ephemeral_bootstrap is set to true
+      stub_feature_flags_with(:use_ephemeral_bootstrap, false)
       stub_feature_flags_with(:odux_enable_histogram, true)
       stub_feature_flags_with(:create_v2_data_lens, false)
     end

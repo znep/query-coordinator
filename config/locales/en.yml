@@ -245,7 +245,7 @@ en:
           view_moderation_approved: Approved
           view_moderation_rejected: Rejected
           view_moderation_pending: Pending
-          dataset_is_private: The source dataset is set to Private, so this Data Lens may not be shown in the catalog.
+          dataset_is_private: The source dataset is set to Private, so this Data Lens may not be shown in the catalog. Note that this page will appear in the catalog if the dataset is made public.
           user_is_unprivileged: You must be an administrator or a publisher to modify Data Lens visibility. Please contact the site administrator to change this setting.
       save_visualization_as_dialog:
         title: Save Visualization As
@@ -323,7 +323,6 @@ en:
         visibility: Set the visibility of your new page
         visibility_with_view_moderation: Set the view moderation status of your new page
         visibility_disabled: You don't have permissions to update Data Lens visibility. Please contact the site administrator to change this setting.
-        visibility_hidden: Note that this page will appear in the catalog if the dataset is made public.
       save_button:
         failed: Failed
         flyoutFailedBody: Please contact Socrata Support

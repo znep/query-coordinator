@@ -92,7 +92,7 @@ ar:
         matching_rows: البحث عن البيانات المطابقة للصفوف
         more_link: أكثر
         no_matching_rows: لا توجد صفوف متطابقة
-        title_html: 'Showing <span class="rowResultCountText"></span> of <span class="totalResultCountText"></span> matching rows <a href="#" class="rowSearchLink">(view results)</a>:'
+        title_html: 'يظهر <span class="rowResultCountText"></span> من <span class="totalResultCountText"></span> المطابقة للصفوف <a href="#" class="rowSearchLink">(إعرض النتائج)</a>:'
       search: بحث
       sort_period_title: الترتيب بناءاّ على الفترة
       sort_periods:

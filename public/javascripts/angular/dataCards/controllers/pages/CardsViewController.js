@@ -751,9 +751,12 @@
     FlyoutService.register({
       selector: '.customize-bar .save-as-button',
       render: function() {
-        var flyoutTitle = $scope.hasChanges ?
-          I18n.saveAs.flyoutIdle :
-          I18n.saveAs.flyoutNoChanges;
+        var flyoutTitle = I18n.saveAs.flyoutNoChanges;
+        if ($scope.isEphemeral) {
+          flyoutTitle = I18n.saveAs.flyoutEphemeral;
+        } else if ($scope.hasChanges) {
+          flyoutTitle = I18n.saveAs.flyoutIdle;
+        }
 
         return '<div class="flyout-title">{0}</div>'.format(flyoutTitle);
       },

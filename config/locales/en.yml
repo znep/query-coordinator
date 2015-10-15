@@ -325,6 +325,7 @@ en:
         link_placeholder: Enter a URL here
         underline: Underline
       save_as:
+        flyoutEphemeral: Click to save this Data Lens
         flyoutFailedBody: Please contact Socrata Support
         flyoutFailedTitle: An error occurred
         flyoutIdle: Click to save your changes as a new page

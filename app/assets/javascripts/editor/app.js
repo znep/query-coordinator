@@ -286,6 +286,18 @@ $(document).on('ready', function() {
   $('#story-save-btn').storySaveButton();
   $('#story-save-error-bar').storySaveErrorBar();
 
+  // Preview button
+  $('.preview-btn').storyPreviewLink();
+
+  // Autosave
+  var autosave = _.debounce(function() {
+    var storySaveIsPossible = storyteller.storySaveStatusStore.isStorySavePossible();
+    if (storySaveIsPossible) {
+      storyteller.StoryDraftCreator.saveDraft(storyteller.userStoryUid);
+    }
+  }, storyteller.config.autosaveDebounceTimeInMilliseconds);
+  storyteller.storySaveStatusStore.addChangeListener(autosave);
+
   // Close confirmation
   $(window).on('beforeunload', function() {
     if (

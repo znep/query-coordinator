@@ -91,6 +91,14 @@
       return _poisonedWithSaveConflictForever;
     };
 
+    self.isStorySavePossible = function() {
+      var isStorySaved = !self.isStoryDirty();
+      var isStorySaveInProgress = self.isStorySaveInProgress();
+      var isSaveImpossible = self.isSaveImpossibleDueToConflict();
+
+      return (!(isStorySaveInProgress || isStorySaved || isSaveImpossible));
+    };
+
     /**
      * Returns the last save error, if any. The error is cleared when
      * a new save is started.

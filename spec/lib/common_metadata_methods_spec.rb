@@ -4,18 +4,18 @@ require_relative '../../lib/common_metadata_methods'
 
 describe CommonMetadataMethods do
 
+  class DummyClass
+    include CommonMetadataMethods
+  end
+
+  let(:dummy_class_instance) { DummyClass.new }
+
   describe '#domain_metadata' do
 
     before :each do
       allow(CurrentDomain).to receive(:configuration).with('view_categories').and_return(configuration)
       allow(I18n).to receive(:locale).and_return(:es)
     end
-
-    class DummyClass
-      include CommonMetadataMethods
-    end
-
-    let(:dummy_class_instance) { DummyClass.new }
 
     let(:configuration) { double('Configuration') }
 
@@ -103,6 +103,40 @@ describe CommonMetadataMethods do
         expect(dummy_class_instance.domain_metadata[:categories].sort).to eq(%w(Business Gobierno))
       end
 
+    end
+
+  end
+
+  describe '#flag_subcolumns!' do
+
+    it 'flags subcolumns when there is a suffix' do
+      columns_with_suffix = {
+        'location_1' => {
+          :name => 'Location'
+        },
+        'location_1_city' => {
+          :name => 'Location (City)'
+        }
+      }
+
+      dummy_class_instance.flag_subcolumns!(columns_with_suffix)
+      expect(columns_with_suffix['location_1'][:isSubcolumn]).to eq(false)
+      expect(columns_with_suffix['location_1_city'][:isSubcolumn]).to eq(true)
+    end
+
+    it 'flags subcolumns when there is not a suffix' do
+      columns_no_suffix = {
+        'location' => {
+          :name => 'Location'
+        },
+        'location_city' => {
+          :name => 'Location (City)'
+        }
+      }
+
+      dummy_class_instance.flag_subcolumns!(columns_no_suffix)
+      expect(columns_no_suffix['location'][:isSubcolumn]).to eq(false)
+      expect(columns_no_suffix['location_city'][:isSubcolumn]).to eq(true)
     end
 
   end

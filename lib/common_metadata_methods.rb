@@ -118,7 +118,7 @@ module CommonMetadataMethods
     columns.each do |field_name, column|
       # The naming convention is that child column names are the parent column name, followed by the
       # child column name in parentheses. Remove the parentheses to get the parent column's name.
-      parent_column = column[:name].sub(/(\w) +\(.+\)$/, '\1')
+      parent_column_name = column[:name].sub(/(\w) +\(.+\)$/, '\1')
 
       # CORE-6925: Fairly brittle, but with no other clear option, it seems that
       # we can and should only flag a column as a subcolumn if it follows the
@@ -147,9 +147,9 @@ module CommonMetadataMethods
       field_name_without_collision_suffix = field_name.sub(/_\d+$/, '')
       has_exploded_suffix = field_name_without_collision_suffix =~ /_(address|city|state|zip|type|description)$/
 
-      if parent_column != column[:name] && has_exploded_suffix
+      if parent_column_name != column[:name] && has_exploded_suffix
         # Look for the parent column
-        parent_field_names = field_name_by_name[parent_column]
+        parent_field_names = field_name_by_name[parent_column_name]
         is_subcolumn = (parent_field_names &&
             # There are columns that have the same name as this one, sans parenthetical.
             # Its field_name naming convention should also match, for us to infer it's a subcolumn.

@@ -8,14 +8,24 @@
       <div class="row">
         <div class="span6 padded-wrapper">
           <div class="left-pane span12">
-            <header ng-hide="nonEphemeralEditMode"
-                    multiline-ellipsis
-                    max-lines="2"
-                    tolerance="8"
-                    text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
-                    escape-html="true"
-                    show-more-mode="title-attr">
-            </header>
+            <div ng-hide="nonEphemeralEditMode">
+              <header ng-hide="isEphemeral"
+                      multiline-ellipsis
+                      max-lines="2"
+                      tolerance="8"
+                      text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
+                      escape-html="true"
+                      show-more-mode="title-attr">
+              </header>
+              <header ng-show="isEphemeral"
+                      multiline-ellipsis
+                      max-lines="2"
+                      tolerance="8"
+                      text="{{('metadata.pageNamePlaceholder' | I18n)}}"
+                      escape-html="true"
+                      show-more-mode="title-attr">
+              </header>
+            </div>
             <!-- Text field & decorations for editing page name -->
             <label class="edit-page-name" ng-if="nonEphemeralEditMode">
               <div class="icon-warning edit-page-warning"
@@ -31,7 +41,7 @@
               <div class="icon-edit placeholder"><span>({{::'metadata.pageNamePlaceholder' | I18n}})</span></div>
             </label>
             <!-- description -->
-            <div ng-hide="nonEphemeralEditMode"
+            <div ng-hide="nonEphemeralEditMode || isEphemeral"
                  class="page-description"
                  expanded="expanded"
                  multiline-ellipsis
@@ -109,14 +119,24 @@
       <div class="row">
         <div class="span6 padded-wrapper">
           <div class="left-pane span12">
-            <header ng-hide="nonEphemeralEditMode"
-                    multiline-ellipsis
-                    max-lines="2"
-                    tolerance="8"
-                    text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
-                    escape-html="true"
-                    show-more-mode="title-attr">
-            </header>
+            <div ng-hide="nonEphemeralEditMode">
+              <header ng-hide="isEphemeral"
+                      multiline-ellipsis
+                      max-lines="2"
+                      tolerance="8"
+                      text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
+                      escape-html="true"
+                      show-more-mode="title-attr">
+              </header>
+              <header ng-show="isEphemeral"
+                      multiline-ellipsis
+                      max-lines="2"
+                      tolerance="8"
+                      text="{{('metadata.pageNamePlaceholder' | I18n)}}"
+                      escape-html="true"
+                      show-more-mode="title-attr">
+              </header>
+            </div>
             <!-- Text field & decorations for editing page name -->
             <label class="edit-page-name" ng-if="nonEphemeralEditMode">
               <div class="icon-warning edit-page-warning"
@@ -132,7 +152,7 @@
               <div class="icon-edit placeholder"><span>({{::'metadata.pageNamePlaceholder' | I18n}})</span></div>
             </label>
             <!-- description -->
-            <div ng-hide="nonEphemeralEditMode"
+            <div ng-hide="nonEphemeralEditMode || isEphemeral"
                  class="page-description"
                  expanded="expanded"
                  multiline-ellipsis

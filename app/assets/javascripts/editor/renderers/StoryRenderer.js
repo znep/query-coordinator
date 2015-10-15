@@ -270,15 +270,15 @@
       });
 
       $container.on('click', '[data-action]', function(event) {
-        var action = event.target.getAttribute('data-action');
+        var action = this.getAttribute('data-action');
 
         switch (action) {
 
           case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
-              blockId: utils.findClosestAttribute(event.target, 'data-block-id'),
-              componentIndex: utils.findClosestAttribute(event.target, 'data-component-index')
+              blockId: utils.findClosestAttribute(this, 'data-block-id'),
+              componentIndex: utils.findClosestAttribute(this, 'data-component-index')
             });
             break;
 

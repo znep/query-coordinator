@@ -10,12 +10,12 @@
     var $controlsInsertButton;
 
     $element.addClass(utils.typeToClassNameForComponentType(componentData.type));
+    $element.attr('data-action', Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
     $controlsInsertButton = $(
       '<button>',
       {
-        'class': 'btn-primary asset-selector-insert-btn',
-        'data-action': Actions.ASSET_SELECTOR_CHOOSE_PROVIDER
+        'class': 'btn-primary asset-selector-insert-btn btn'
       }
     ).text(I18n.t('editor.components.asset_selector.insert_btn'));
 

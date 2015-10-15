@@ -96,7 +96,7 @@
 <section class="row visibility" ng-controller="ManageLensDialogV2VisibilityController">
   <label class="span2">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationTitle' : 'manageLensDialog.visibility.title') | I18n}}</label>
   <div class="contents span10">
-    <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled" ng-if="!datasetIsPrivate">
+    <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled" ng-show="!datasetIsPrivate">
       <soc-option value="approved">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationApproved' : 'manageLensDialog.visibility.shown') | I18n}}</soc-option>
       <soc-option value="rejected">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationRejected' : 'manageLensDialog.visibility.hidden') | I18n}}</soc-option>
       <soc-option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">{{::'manageLensDialog.visibility.viewModerationPending' | I18n}}</soc-option>

@@ -895,7 +895,7 @@ class View < Model
   end
 
   def mutation_rights?
-    %w(add delete write).any? { |right| rights_include?(right) }
+    %w(add delete write update_view).any? { |right| rights_include?(right) }
   end
 
   def can_read?

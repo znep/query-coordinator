@@ -134,6 +134,10 @@ describe('CardsViewController', function() {
       testHelpers.mockDirective(_$provide, 'pageHeader');
   }]));
 
+  beforeEach(function() {
+    window.currentUser = {};
+  });
+
   afterEach(function() {
     testHelpers.TestDom.clear();
   });

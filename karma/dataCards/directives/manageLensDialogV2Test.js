@@ -19,6 +19,10 @@ describe('manage-lens dialog v2', function() {
     _$provide = $provide;
   }));
 
+  beforeEach(function() {
+    window.currentUser = {};
+  });
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');

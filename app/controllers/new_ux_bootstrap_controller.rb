@@ -468,8 +468,6 @@ class NewUxBootstrapController < ActionController::Base
     @domain_metadata = domain_metadata
 
     request[:app] = 'dataCards'
-
-    render 'angular/data_lens'
   end
 
   def dataset_size

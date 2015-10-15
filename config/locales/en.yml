@@ -469,8 +469,8 @@ en:
           clear_all:
             label: Show All Types
         federation:
-          label: Federated
-          source: Federated from %{source}
+          label: Linked
+          source: Linked from %{source}
         last_updated:
           label: Last Updated
         results:

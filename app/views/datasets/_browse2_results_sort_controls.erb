@@ -16,7 +16,7 @@
     { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
   ] -%>
   <%-
-    if opts[:derived_config][:show_time_period]
+    if opts[:show_time_period]
   -%>
     <label for="browseSortPeriod" class="browse2-results-sort-control-label"><%= t('controls.browse.browse2.sort.periods.label') %></label>
     <select class="browse2-results-sort-control sortType" name="sortPeriod" id="browseSortPeriod">

@@ -1,4 +1,4 @@
-<div class="<%= result_classes %>" data-view-id="<%= result.id %>" itemscope="itemscope" itemtype="http://schema.org/Dataset">
+<div class="<%= result_classes %>" data-view-id="<%= result_id %>" itemscope="itemscope" itemtype="http://schema.org/Dataset">
 
   <!-- Settings Dropdown Menu-->
   <!--<div class="settings menu"></div>-->
@@ -8,7 +8,7 @@
       
       <h2 class="browse2-result-name">
         <a class="browse2-result-name-link" href="<%= result_link %>" itemprop="url" data-search="highlight">
-          <%= result.name %>
+          <%= result_name %>
         </a>
       </h2>
 
@@ -38,7 +38,7 @@
         <%= result_display_title %>
       </span>
       <!--
-        <button class="settings-icon <%= result.id %>" title="<%= t('controls.browse.browse2.settings.title') %>">
+        <button class="settings-icon <%= result_id %>" title="<%= t('controls.browse.browse2.settings.title') %>">
           <%= t('controls.browse.browse2.settings.label') %>
         </button>
       -->

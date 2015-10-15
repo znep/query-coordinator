@@ -1,12 +1,28 @@
 <%-
 # Derive additional configuration values
-current_sort = opts[:sort_opts].detect { |s| s[:value] == opts[:sortBy] }
 
-opts[:derived_config] = {
-  :current_sort => current_sort,
-  :show_time_period => current_sort.nil? ? false: current_sort[:is_time_period],
-  :in_search => opts[:user_params][:q] && opts[:row_count]
-}
+opts[:current_sort] = nil
+
+if opts[:sort_opts].present? && opts[:sort_opts].respond_to?('detect')
+  opts[:current_sort] = opts[:sort_opts].detect { |s| s[:value] == opts[:sortBy] }
+end
+
+opts[:show_time_period] = opts[:current_sort].nil? ? false : opts[:current_sort][:is_time_period]
+
+opts[:in_search] = false
+
+if opts[:user_params].present? && opts[:user_params][:q].present? && opts[:row_count].present?
+  opts[:in_search] = opts[:user_params][:q] && opts[:row_count]
+end
+
+using_cetera = (
+  APP_CONFIG.cetera_host.present? &&
+  User.current_user.nil? &&
+  FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search] &&
+  params[:cetera_search].present? &&
+  params[:cetera_search] == 'true'
+)
+
 -%>
 
 <!-- Stylesheets -->
@@ -92,7 +108,7 @@ end
           :partial => 'datasets/browse2_facets',
           :locals => {
             :opts => opts,
-            :facets_pane_classes => opts[:derived_config][:show_time_period] ? 'hasTimePeriod' : ''
+            :facets_pane_classes => opts[:show_time_period] ? 'hasTimePeriod' : ''
           }
         )
       end
@@ -134,7 +150,7 @@ end
           )
             clear_all_facets_query_params = opts[:user_params].reject{ |param| param == :q }
             opts[:facets].each { |facet| clear_all_facets_query_params.delete(facet[:param]) }
-            clear_all_facets_url = "#{opts[:base_url]}?#{clear_all_facets_query_params.to_param}&limitTo=all"
+            clear_all_facets_url = "#{opts[:base_url]}?#{clear_all_facets_query_params.to_param}"
           end
 
         -%>
@@ -154,9 +170,15 @@ end
 
         <%=
           if opts[:show_catalog_sort_dropdown]
-            render :partial => 'datasets/browse2_results_sort_controls', :locals => { :opts => opts }
+            render(
+              :partial => 'datasets/browse2_results_sort_controls',
+              :locals => {
+                :opts => opts
+              }
+            )
           end
         -%>
+
       </div>
 
       <!-- Results -->
@@ -166,6 +188,7 @@ end
       <%-
         if opts[:view_request_timed_out]
       -%>
+
         <%=
           render(
             :partial => 'datasets/browse2_results_request_timed_out',
@@ -174,9 +197,11 @@ end
             }
           )
         %>
+
       <%-
-        elsif opts[:view_count] == 0
+        elsif opts[:view_count] == 0 || opts[:view_count].nil?
       -%>
+
         <%=
           render(
             :partial => 'datasets/browse2_results_no_results',
@@ -185,16 +210,12 @@ end
             }
           )
         %>
+
       <%-
         else
           opts[:view_results].each do |result|
 
             result_classes = 'browse2-result clearfix'
-
-            if result.federated?
-              result_classes << ' federated'
-              result_federated_origin_url = link_to(result.domainCName, "//#{result.domainCName}")
-            end
 
             result_display_title = t('controls.browse.browse2.display_types.unknown')
             result_display_type_icon_class = ''
@@ -217,23 +238,23 @@ end
             case result.display.type
             # NO BLIST???
             when 'blist'
-              result_display_type_icon_class = 'icon-dataset'              
+              result_display_type_icon_class = 'icon-dataset'
               result_display_title = t('controls.browse.browse2.display_types.dataset')
 
             # TABLES
             when 'table'
-              result_display_type_icon_class = 'icon-dataset'              
+              result_display_type_icon_class = 'icon-dataset'
               result_display_title = t('controls.browse.browse2.display_types.dataset')
             when 'fatrow'
-              result_display_type_icon_class = 'icon-dataset'              
+              result_display_type_icon_class = 'icon-dataset'
               result_display_title = t('controls.browse.browse2.display_types.dataset')
             when 'page'
-              result_display_type_icon_class = 'icon-dataset'              
+              result_display_type_icon_class = 'icon-dataset'
               result_display_title = t('controls.browse.browse2.display_types.dataset')
 
             # HREF
             when 'href'
-              result_display_type_icon_class = 'icon-external'              
+              result_display_type_icon_class = 'icon-external'
               result_display_title = t('controls.browse.browse2.display_types.href')
 
             # NEW_VIEW
@@ -319,27 +340,56 @@ end
             when 'api-predeploy'
               result_display_type_icon_class = 'icon-data'
               result_display_title = t('controls.browse.browse2.display_types.predeploy_api')
+            end
 
+            # Certain values must be derived differently based on whether this
+            # is a result from Cetera or Clytemnestra/Core Server
+            if using_cetera
+              result_link = result.link
+              result_categories = result.categories.present? ?
+                result.categories.map { |category| category.split(' ').map(&:capitalize).join(' ') }.select { |category| category != '' } :
+                []
+              result_topics = result.tags.present? ? join_and_truncate_array(result.tags.map(&:capitalize)) : nil
+              result_last_updated = Time.iso8601(result.updated_at).strftime('%B %-d, %Y')
+            else
+              result_link = result.link.present? ? result.link : view_url(result)
+              result_categories = result.categories.present? ? result.categories : [ result.category_display ].compact
+              result_topics = result.tags.present? ?
+                join_and_truncate_array(
+                  result.tags.map(&:to_s).map { |topic| topic.split(' ').map(&:capitalize).join(' ') }
+                ) :
+                ''
+
+              resulut_last_updated = nil
+              # Prefer the 'rowsUpdatedAt' timestamp over the 'viewLastModified' timestamp
+              if result.rowsUpdatedAt.present?
+                result_last_updated = Time.at(result.rowsUpdatedAt).to_datetime.strftime('%B %-d, %Y')
+              elsif result.viewLastModified.present?
+                result_last_updated = Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y')
+              end
+            end
+
+            if result.federated?
+              result_classes << ' federated'
+              result_federated_origin_url = "//#{result.domainCName}"
             end
       -%>
           <%=
             render(
               :partial => 'datasets/browse2_result',
               :locals => {
-                :opts => opts,
-                :result => result,
+                :result_id => result.id,
+                :result_name => result.name,
                 :result_classes => result_classes,
                 :result_display_type => result.display.type,
                 :result_display_type_icon_class => result_display_type_icon_class,
                 :result_display_title => result_display_title,
-                :result_link => result.link.present? ? result.link : view_url(result),
+                :result_link => result_link,
                 :result_description => result.description.present? ? view_format_description_text(result.description) : nil,
-                :result_categories => result.categories.present? ? result.categories : [ result.category_display ].compact,
-                :result_last_updated => result.rowsUpdatedAt.present? ?
-                  Time.at(result.rowsUpdatedAt).to_datetime.strftime('%B %-d, %Y') :
-                  Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y'),
+                :result_categories => result_categories,
+                :result_last_updated => result_last_updated,
                 :result_view_count => number_with_delimiter(result.viewCount),
-                :result_topics => result.tags.present? ? join_and_truncate_array(result.tags) : '',
+                :result_topics => result_topics,
                  # Pending a way to determine the result's data types, they will be set to nil and ignored
                 :result_data_types => nil,
                 :result_is_federated => result.federated?,
@@ -360,13 +410,19 @@ end
         <%- if !opts[:view_request_timed_out] && opts[:view_count] && opts[:view_count] > 0 -%>
           <%-
             if !opts[:disable][:pagination]
+
+              current_params_with_view_type = opts[:user_params].dup
+
+              if params[:view_type] == 'browse2'
+                current_params_with_view_type[:view_type] = 'browse2'
+              end
           -%>
             <%=
               create_pagination(
                 opts[:view_count],
                 opts[:limit],
                 opts[:page],
-                opts[:base_url] + '?' + opts[:user_params].to_param,
+                "#{opts[:base_url]}?#{current_params_with_view_type.to_param}",
                 'browse2-pagination-button'
               )
             %>
@@ -391,15 +447,14 @@ end
     <!-- Suggest Dataset Call-to-action -->
 
     <%- if !opts[:browse_in_container] && CurrentDomain.module_enabled?(:dataset_nomination) -%>
-      <div class="browse2-suggest-dataset">
-        <h3 class="browse2-suggest-dataset-prompt">
-          <%= t('controls.browse.actions.suggest_dataset') %>
-        </h3>
-        <a class="browse2-suggest-dataset-button" href="<%= nominate_index_path %>">
-          <%= t('controls.browse.actions.suggest_dataset_verb') %>
-          <span class="icon-arrow-right"></span>
-        </a>
-      </div>
+      <%=
+        render(
+          :partial => 'datasets/browse2_suggest_dataset',
+          :locals => {
+            :opts => opts
+          }
+        )
+      %>
     <%- end -%>
   </div>
 </div>

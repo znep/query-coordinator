@@ -48,4 +48,32 @@ class BrowseActionsTest < Test::Unit::TestCase
         'data lens transition state is post_beta but we do not have a data lens link in the catalog')
     end
   end
+
+  describe 'cetera_feature_flag' do
+    def setup
+      @browse_actions_container = BrowseActionsContainer.new
+      init_current_domain
+      stub_feature_flags_with(:cetera_search, true)
+      APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api/catalog')
+    end
+
+    def test_use_cetera_if_feature_flag_enabled
+      assert @browse_actions_container.send(:using_cetera?)
+    end
+
+    def test_do_not_use_cetera_if_logged_in
+      User.stubs(current_user: true)
+      assert !@browse_actions_container.send(:using_cetera?)
+    end
+
+    def test_do_not_use_cetera_if_feature_flag_not_enabled
+      stub_feature_flags_with(:cetera_search, nil)
+      assert !@browse_actions_container.send(:using_cetera?)
+    end
+
+    def test_do_not_use_cetera_if_cetera_host_not_present
+      APP_CONFIG.stubs(cetera_host: nil)
+      assert !@browse_actions_container.send(:using_cetera?)
+    end
+  end
 end

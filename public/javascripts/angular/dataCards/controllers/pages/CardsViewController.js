@@ -280,11 +280,13 @@
 
     // Once we migrate entirely to v2, we can remove the isCurrentUserAdminOrPublisher entirely
     // and only care about page-specific user rights
-    var userHasWriteRight$ = page.observe('rights').map(function(rights) {
-      return _.include(rights, 'write');
+    var userCanManageView$ = page.observe('rights').map(function(rights) {
+      return _.any(rights, function(right) {
+        return right === 'write' || right === 'update_view' || right === 'grant';
+      });
     });
 
-    var userHasEditRights$ = $scope.dataLensVersion >= 2 ? userHasWriteRight$ : isCurrentUserAdminOrPublisher$;
+    var userHasEditRights$ = $scope.dataLensVersion >= 2 ? userCanManageView$ : isCurrentUserAdminOrPublisher$;
     if ($scope.isEphemeral) {
       userHasEditRights$ = currentUser$.map(function(user) {
         return !!(user && user.roleName);
@@ -319,7 +321,7 @@
     $scope.shouldShowManageLens = false;
 
     if ($scope.dataLensVersion >= 2) {
-      $scope.$bindObservable('shouldShowManageLens', userHasWriteRight$);
+      $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
       initManageLens($scope, page);
     } else {
       // TODO - remove once v2 migration is donions

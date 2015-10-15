@@ -7,6 +7,7 @@ window.socrata.storyteller.config = (function () {
   var airbrakeConfigHash = <%= airbrake_config_for_js.to_json.html_safe %>;
 
   return {
+    autosaveDebounceTimeInMilliseconds: 2000,
     coreServiceAppToken: '<%= Rails.application.config.core_service_app_token %>',
     fileUploader: {
       checkDocumentProcessedRetryInterval: 1000,

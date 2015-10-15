@@ -226,6 +226,28 @@ class Capybara::Session
   def evaluate_multiline_script javascript
     evaluate_script "(function(){ #{javascript} })()"
   end
+
+  # This method is intended to port over Webmock's `stub_request` method.
+  # It's useful when the request that needs stubbing is fired from Javascript,
+  # but the feature test is written in Ruby, making it inaccessible.
+  #
+  # I'd like the code to be patterned after `stub_request` such that it's otherwise
+  # indistinguishable, but that will take a lot of work.
+  #
+  # TODO: This is the seed for something ridiculously complicated.
+  # It should be fleshed out eventually, but it's probably not worth doing immediately.
+  def stub_ajax_request opts
+    evaluate_multiline_script <<END
+      $.ajax = function(url, opts) {
+        // TODO: Test that opts matches opts[:request].
+        // TODO: Make response match opts[:response].
+        var body = '';
+        var status = 200;
+        var response = { getResponseHeader: function() { return 'abc'; } };
+        return jQuery.when(body, status, response);
+      };
+END
+  end
 end
 
 # Force the "are you sure you want to discard your unsaved changes"

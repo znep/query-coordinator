@@ -130,8 +130,14 @@ body .header-main {
     margin-right: 1.2rem;
   }
 
-  .preview-btn span {
-    margin-left: 3px;
+  .preview-btn {
+    &.disabled {
+      color: $header-btn-disabled-color;
+    }
+
+    span {
+      margin-left: 3px;
+    }
   }
 
   .settings-panel-btn {

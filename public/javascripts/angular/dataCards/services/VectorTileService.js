@@ -76,6 +76,57 @@
 
       getTileLayerCanvas: function(tileLayer, tileId) {
         return _.get(tileLayer, '_tiles.' + VectorTileUtil.getLeafletTileId(tileId));
+      },
+
+      hotspots: [
+        ['top'],
+        ['left'],
+        ['bottom'],
+        ['right']
+      ].concat(
+        _.zip(
+          ['top', 'top', 'bottom', 'bottom'],
+          ['left', 'right', 'left', 'right']
+        )
+      ),
+
+      oppositeDirections: {
+        top: 'bottom',
+        bottom: 'top',
+        left: 'right',
+        right: 'left'
+      },
+
+      tileSize: 256,
+
+      tileIdModifiers: {
+        top: function(neighborTile) {
+          neighborTile.y--;
+        },
+        left: function(neighborTile) {
+          neighborTile.x--;
+        },
+        bottom: function(neighborTile) {
+          neighborTile.y++;
+        },
+        right: function(neighborTile) {
+          neighborTile.x++;
+        }
+      },
+
+      tileOffsetModifiers: {
+        top: function(tileOffset) {
+          tileOffset.y -= VectorTileUtil.tileSize;
+        },
+        left: function(tileOffset) {
+          tileOffset.x -= VectorTileUtil.tileSize;
+        },
+        bottom: function(tileOffset) {
+          tileOffset.y += VectorTileUtil.tileSize;
+        },
+        right: function(tileOffset) {
+          tileOffset.x += VectorTileUtil.tileSize;
+        }
       }
     };
 
@@ -122,14 +173,14 @@
       return new L.Point(coordinates.x / this.divisor, coordinates.y / this.divisor);
     };
 
-    VectorTileFeature.prototype.draw = function(tileId) {
+    VectorTileFeature.prototype.draw = function(tileId, offset) {
 
       var feature = this.feature;
       var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, tileId);
 
       switch (feature.type) {
         case 1: //Point
-          this.drawPoint(canvas, feature.coordinates, this.styleFn);
+          this.drawPoint(canvas, feature.coordinates, this.styleFn, offset);
           break;
 
         case 2: //LineString
@@ -145,7 +196,7 @@
       }
     };
 
-    VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle) {
+    VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle, offset) {
       var ctx;
       var projectedPoint;
       var color;
@@ -166,6 +217,11 @@
       }
 
       projectedPoint = this.projectGeometryToTilePoint(geometry[0][0]);
+
+      if (offset) {
+        projectedPoint.x += offset.x;
+        projectedPoint.y += offset.y;
+      }
 
       // Determine point styling based on computed style and map zoom
       if (_.isFunction(computedStyle.color)) {
@@ -357,7 +413,7 @@
       initialize: function(tileManager, options) {
 
         this.options = {
-          tileSize: 256
+          tileSize: VectorTileUtil.tileSize
         };
         L.Util.setOptions(this, options);
 
@@ -366,6 +422,8 @@
         this.featuresByTile = {};
         this.totalPointsByTile = {};
         this.quadTreesByTile = {};
+        this.boundaryPointsByTile = {};
+        this.boundaryPointCountByTileAndDirection = {};
       },
 
       onAdd: function(map) {
@@ -385,6 +443,22 @@
         this.featuresByTile[tileId] = [];
         this.totalPointsByTile[tileId] = 0;
         this.quadTreesByTile[tileId] = this.tileManager.quadTreeFactory([]);
+        this.boundaryPointsByTile[tileId] = {
+          top: [],
+          left: [],
+          bottom: [],
+          right: []
+        };
+        this.boundaryPointCountByTileAndDirection[tileId] = {
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          topleft: 0,
+          topright: 0,
+          bottomleft: 0,
+          bottomright: 0
+        };
 
         return this;
       },
@@ -397,6 +471,15 @@
         var feature;
         var featureArray;
         var featurePointCount = 0;
+        var tileSize = this.options.tileSize;
+
+        var style = this.styleFn({type: 1});
+        var featureRadius;
+        if (_.isFunction(style.radius)) {
+          featureRadius = style.radius(this.map.getZoom());
+        } else {
+          featureRadius = style.radius;
+        }
 
         if (!this.featuresByTile.hasOwnProperty(tileId) && featureCount > 0) {
           this.featuresByTile[tileId] = [];
@@ -414,6 +497,21 @@
           var vectorTileFeature = new VectorTileFeature(this, feature, this.styleFn(feature));
           var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
 
+          var boundaryPoints = this.boundaryPointsByTile[tileId];
+          if (boundaryPoints) {
+            if (projectedPoint.x <= featureRadius) {
+              boundaryPoints.left.push(vectorTileFeature);
+            } else if (projectedPoint.x >= tileSize - featureRadius) {
+              boundaryPoints.right.push(vectorTileFeature);
+            }
+
+            if (projectedPoint.y <= featureRadius) {
+              boundaryPoints.top.push(vectorTileFeature);
+            } else if (projectedPoint.y >= tileSize - featureRadius) {
+              boundaryPoints.bottom.push(vectorTileFeature);
+            }
+          }
+
           projectedPoint.count = vectorTileFeature.properties.count;
           featurePointCount += parseInt(_.get(vectorTileFeature, 'properties.count', 0), 10);
 
@@ -425,6 +523,45 @@
 
         this.totalPointsByTile[tileId] = featurePointCount;
         this.renderTile(tileId, tileRenderedCallback);
+      },
+
+      renderTileOverlap: function(tileId) {
+        var self = this;
+
+        var tileInfo = _.chain(['z', 'x', 'y']).
+          zipObject(tileId.split(':')).
+          mapValues(Number).
+          value();
+
+        _.each(VectorTileUtil.hotspots, function(hotspot) {
+          var neighbor = _.clone(tileInfo);
+          var offset = {x: 0, y: 0};
+
+          _.each(hotspot, function(direction) {
+            VectorTileUtil.tileIdModifiers[direction](neighbor);
+            VectorTileUtil.tileOffsetModifiers[direction](offset);
+          });
+
+          neighbor.zoom = neighbor.z;
+          neighbor.id = VectorTileUtil.getTileId(neighbor);
+          var features = [];
+
+          _.each(hotspot, function(direction) {
+            if (self.boundaryPointsByTile[neighbor.id]) {
+              features = features.concat(self.boundaryPointsByTile[neighbor.id][VectorTileUtil.oppositeDirections[direction]]);
+            }
+          });
+
+          var featureCount = features.length;
+          var serializedHotspot = hotspot.join('');
+          var boundaryPointCount = self.boundaryPointCountByTileAndDirection[tileId];
+          if (boundaryPointCount && (!boundaryPointCount[serializedHotspot] || boundaryPointCount[serializedHotspot] < featureCount)) {
+            boundaryPointCount[serializedHotspot] = featureCount;
+            for (var i = 0; i < featureCount; i++) {
+              features[i].draw(tileId, offset);
+            }
+          }
+        });
       },
 
       renderTile: function(tileId, tileRenderedCallback) {
@@ -497,7 +634,7 @@
           disableMapInteractions: false,
           url: '',
           headers: {},
-          tileSize: 256,
+          tileSize: VectorTileUtil.tileSize,
           debounceMilliseconds: 500,
           onRenderStart: _.noop,
           onRenderComplete: _.noop,
@@ -593,11 +730,6 @@
         this.hoverHighlightLayer.addTo(map);
         this.clickHighlightLayer.addTo(map);
 
-        // Find all edges and corners that the mouse is near
-        var edges = [['top'], ['left'], ['bottom'], ['right']];
-        var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
-        var hotspots = Array.prototype.concat.call(edges, corners);
-
         // For a given tile, mouse offset coordinates, and threshold,
         // calculate the neighboring tiles (tiles other than the current tile
         // that the user's mouse is within the threshold of.
@@ -615,41 +747,8 @@
             right: tileSize - mouseTileOffset.x < hoverThreshold
           };
 
-          // Get neighboring tile id for a tile's edge
-          var tileIdModifiers = {
-            top: function(neighborTile) {
-              neighborTile.y--;
-            },
-            left: function(neighborTile) {
-              neighborTile.x--;
-            },
-            bottom: function(neighborTile) {
-              neighborTile.y++;
-            },
-            right: function(neighborTile) {
-              neighborTile.x++;
-            }
-          };
-
-          // Modify tile pixel offsets
-          // tileOffset = {x: tileOffsetX, y: tileOffsetY}
-          var tileOffsetModifiers = {
-            top: function(tileOffset) {
-              tileOffset.y += tileSize;
-            },
-            left: function(tileOffset) {
-              tileOffset.x += tileSize;
-            },
-            bottom: function(tileOffset) {
-              tileOffset.y -= tileSize;
-            },
-            right: function(tileOffset) {
-              tileOffset.x -= tileSize;
-            }
-          };
-
           // Now get those neighboring tile ids
-          neighboringTiles = _.compact(_.map(hotspots, function(hotspot) {
+          neighboringTiles = _.compact(_.map(VectorTileUtil.hotspots, function(hotspot) {
 
             // hotspot is ['left'], ['left', 'top'], etc...
             // This ensures that all edgeTests for the given hotspot values
@@ -660,8 +759,8 @@
               var neighborOffset = _.clone(mouseTileOffset);
 
               _.each(hotspot, function(dir) {
-                tileIdModifiers[dir](neighborTile);
-                tileOffsetModifiers[dir](neighborOffset);
+                VectorTileUtil.tileIdModifiers[dir](neighborTile);
+                VectorTileUtil.tileOffsetModifiers[VectorTileUtil.oppositeDirections[dir]](neighborOffset);
               });
 
               return {
@@ -931,14 +1030,14 @@
 
       debounceGetTileData: function(tilePoint, zoom, callback) {
         if (this.firstRequest) {
-          this.lastCommitedZoomLevel = zoom;
+          this.lastCommittedZoomLevel = zoom;
           this.firstRequest = false;
         }
-        var userHasZoomed = _.isUndefined(this.lastCommitedZoomLevel) || this.lastCommitedZoomLevel !== zoom;
+        var userHasZoomed = _.isUndefined(this.lastCommittedZoomLevel) || this.lastCommittedZoomLevel !== zoom;
         this.lastSeenZoomLevel = zoom;
 
         if (userHasZoomed) {
-          this.lastCommitedZoomLevel = undefined;
+          this.lastCommittedZoomLevel = undefined;
           this.delayedTileDataRequests.push({
             tilePoint: tilePoint,
             zoom: zoom,
@@ -953,10 +1052,10 @@
       },
 
       flushOutstandingQueue: function() {
-        this.lastCommitedZoomLevel = this.lastSeenZoomLevel;
+        this.lastCommittedZoomLevel = this.lastSeenZoomLevel;
         var self = this;
         _.each(this.delayedTileDataRequests, function(request) {
-          if (request.zoom === self.lastCommitedZoomLevel) {
+          if (request.zoom === self.lastCommittedZoomLevel) {
             self.getTileData(request.tilePoint, request.zoom, request.callback);
           } else {
             // CORE-6027:
@@ -1097,6 +1196,14 @@
         this.outstandingTileDataRequests['delete'](tileId);
 
         if (this.outstandingTileDataRequests.size === 0) {
+          if (this.lastCommittedZoomLevel > Constants.FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD) {
+            this.layers.forEach(function(layer) {
+              _.each(_.keys(layer.featuresByTile), function(tile) {
+                layer.renderTileOverlap(tile);
+              });
+            });
+          }
+
           this.options.onRenderComplete();
         }
       }

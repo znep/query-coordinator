@@ -128,7 +128,7 @@ describe('Customize card dialog', function() {
       defaultCardType: 'column',
       cardinality: 1000
     },
-    computedColumn: {
+    ':@computedColumn': {
       name: 'Computed Column',
       fred: 'number',
       physicalDatatype: 'number',
@@ -764,22 +764,22 @@ describe('Customize card dialog', function() {
 
       it('should display column options excluding subcolumns and system columns and computed columns, plus a null option', function() {
         var dialog = createDialog({ card: featureMapCard });
-        var scope = dialog.scope;
         var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
         var options = flannelTitleConfigurationElement.find('option');
-        var optionNames = _.reduce(options, function(result, option) {
-          result.push($(option).attr('value'));
-          return result;
-        }, []);
+        var optionNames = _.map(options, function(option) { return $(option).attr('value'); });
+
+        expect(optionNames).to.not.include(':system_column');
+        expect(optionNames).to.not.include('sub_column');
+        expect(optionNames).to.not.include(':@computed_column');
+        expect(optionNames).to.include('null');
+
 
         // We expect to have an option for each column unless it is a system column
         // or subcolumn or computed column, plus one option for null.
+        // (There are 2 computed columns in COLUMNS)
         var expectedLength = (_.keys(COLUMNS).length - 4) + 1;
 
         expect(options).to.have.length(expectedLength);
-        expect(optionNames).to.not.include(':system_column');
-        expect(optionNames).to.not.include('sub_column');
-        expect(optionNames).to.include('null');
       });
 
       it('should default to null and show a hint entry if no title column is defined', function() {
@@ -947,7 +947,7 @@ describe('Customize card dialog', function() {
 
         expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal('choropleth');
         dialog.element.find('option[value="rook-king"]').prop('selected', true).change();
-        expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal('computedColumn');
+        expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal(':@computedColumn');
 
         CardDataService.getCuratedRegions.restore();
       });

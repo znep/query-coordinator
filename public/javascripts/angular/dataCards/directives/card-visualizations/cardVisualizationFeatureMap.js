@@ -155,7 +155,7 @@
             return Rx.Observable.fromPromise(rowQueryResponsePromise);
           });
 
-          var formattedRowQueryResponse$ = Rx.Observable.combineLatest(
+          return Rx.Observable.combineLatest(
             rowQueryResponse$,
             columns$.filter(_.isDefined),
             dataFieldName$,
@@ -247,7 +247,6 @@
               });
             }
           );
-          return formattedRowQueryResponse$;
         };
 
         /*

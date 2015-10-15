@@ -25,7 +25,7 @@
 
         scope.$bindObservable('busy', busy$);
 
-        // Compile a formatted row title from the given title column or lack there of.
+        // Compile a formatted row title from the given title column or lack thereof.
         function compileRowTitle(titleColumn) {
           if (_.isUndefined(titleColumn)) {
             return;

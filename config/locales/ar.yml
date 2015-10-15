@@ -116,9 +116,20 @@ ar:
           facet_main: التصفح %{body}
           main: النتائج %{body}
           term: ل "%{term}"
+    common:
+      share:
+        button_prompt: إجمع البيانات مع بعضها 
+        button_tooltip: مشاركة هذه البيانات
+        networks:
+          email: إميل
+          facebook: فيسبوك
+  core:
+    analytics:
+      visit: 
+      visits:
   screens:
-  	header:
+    header:
       links:
-        account_html: سلام <span class="currentUser">Unknown User</span>
+        account_html: سلام <span class="currentUser"></span>
         account_tooltip: بيت
         administration: إدارة

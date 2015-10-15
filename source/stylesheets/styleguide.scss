@@ -3,6 +3,7 @@
 @import "components/typography";
 @import "components/color";
 @import "components/buttons";
+@import "components/loader";
 
 .container {
 	@include outer-container();
@@ -45,3 +46,13 @@ section {
 	font-weight: 300;
 	color: $quiet-text-color;
 }
+
+.usage {
+	background-color: $almost-white-bg;
+	border: 1px solid $extra-light-gray;
+	font-size: ms(-1);
+	padding: ms(-2);
+	border-radius: 1px;
+	color: $medium-gray;
+
+} 

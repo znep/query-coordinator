@@ -81,7 +81,7 @@ RSpec.describe PermissionsUpdater do
       it 'raises error' do
         expect { subject.update_permissions(is_public: true) }.to raise_error(
           ArgumentError,
-          /Must initialize Permissions service object with valid uid./
+          /Must initialize PermissionsUpdater service object with valid uid./
         )
       end
     end
@@ -92,7 +92,7 @@ RSpec.describe PermissionsUpdater do
       it 'raises error' do
         expect { subject.update_permissions(is_public: true) }.to raise_error(
           ArgumentError,
-          /Must initialize Permissions service object with valid core_request_headers./
+          /Must initialize PermissionsUpdater service object with valid core_request_headers./
         )
       end
     end
@@ -103,7 +103,7 @@ RSpec.describe PermissionsUpdater do
       it 'raises error' do
         expect { subject.update_permissions(is_public: true) }.to raise_error(
           ArgumentError,
-          /Must initialize Permissions service object with valid uid./
+          /Must initialize PermissionsUpdater service object with valid uid./
         )
       end
     end

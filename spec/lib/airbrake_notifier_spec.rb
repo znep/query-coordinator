@@ -16,7 +16,7 @@ describe AirbrakeNotifier do
     end
 
     it 'notifies airbrake' do
-      expect(Airbrake).to receive(:notify_or_ignore).with(error, { :error_message => message })
+      expect(Airbrake).to receive(:notify_or_ignore).with(error, { :error_message => "This is a test error. (on Some additional error message here):\n\n" })
       AirbrakeNotifier.report_error(error, message)
     end
   end

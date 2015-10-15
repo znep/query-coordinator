@@ -13,8 +13,8 @@ class PermissionsUpdater
   end
 
   def update_permissions(options)
-    raise ArgumentError.new('Must initialize Permissions service object with valid uid.') unless @clean_uid.present?
-    raise ArgumentError.new('Must initialize Permissions service object with valid core_request_headers.') unless @core_request_headers.present?
+    raise ArgumentError.new('Must initialize PermissionsUpdater service object with valid uid.') unless @clean_uid.present?
+    raise ArgumentError.new('Must initialize PermissionsUpdater service object with valid core_request_headers.') unless @core_request_headers.present?
     raise ArgumentError.new("'is_public' must be set as an option.") unless options.key?(:is_public)
 
     query_params = {

@@ -13,9 +13,7 @@ module BrowseActions
   end
 
   def using_cetera?
-    request_params.present? &&
-      request_params[:cetera_search].present? &&
-      cetera_search_enabled? &&
+    cetera_search_enabled? &&
       APP_CONFIG.cetera_host.present? &&
       User.current_user.nil?
   end
@@ -439,11 +437,12 @@ module BrowseActions
         }
       end
 
-    # In Cetera search, hide the RSS feed links as well as the popularity count
+    # In Cetera search, hide sort_dropdown, popularity, and rss links
     if using_cetera?
-      browse_options[:hide_catalog_rss] = true
-      browse_options[:grid_items][:rss] = false
+      browse_options[:disable][:sort] = true
       browse_options[:grid_items][:popularity] = false
+      browse_options[:grid_items][:rss] = false
+      browse_options[:hide_catalog_rss] = true
     end
 
     # Set browse partial paths based on using_cetera
@@ -462,10 +461,9 @@ module BrowseActions
       browse_options[:view_count] > 0 &&
       !browse_options[:view_request_error] &&
       !browse_options[:sort_opts].empty? &&
-      !browse_options[:disable][:sort] &&
-      !browse_options[:cetera_search]
+      !browse_options[:disable][:sort]
 
-    return browse_options
+    browse_options
   end
 
   private

@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'socrata-apps';
-	src:url('fonts/socrata-apps.eot?klmmyd');
-	src:url('fonts/socrata-apps.eot?klmmyd#iefix') format('embedded-opentype'),
-		url('fonts/socrata-apps.ttf?klmmyd') format('truetype'),
-		url('fonts/socrata-apps.woff?klmmyd') format('woff'),
-		url('fonts/socrata-apps.svg?klmmyd#icomoon') format('svg');
+	src:url('socrata-apps.eot?klmmyd');
+	src:url('socrata-apps.eot?klmmyd#iefix') format('embedded-opentype'),
+		url('socrata-apps.ttf?klmmyd') format('truetype'),
+		url('socrata-apps.woff?klmmyd') format('woff'),
+		url('socrata-apps.svg?klmmyd#icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }

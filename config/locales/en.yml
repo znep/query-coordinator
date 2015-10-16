@@ -46,20 +46,20 @@ en:
         card_on_page: Card already on page
         card_on_page_long: This card is already on the page
         choose_column: Choose a column...
+        choropleth_warning: No boundaries are available for this column to be plotted against.
+        classic_chart: If you'd like to customize this Socrata visualization, locate it in the catalog, edit it, and then add it to your story.
         column_chart_warning: 'Note: This would result in a bar chart with over a hundred bars, it might be slower than other charts'
-        histogram_column_chart_warning: 'Note: Because of the distribution of values of this column, it will be presented as a histogram of bars instead of a distribution curve'
-        choropleth_warning: 'No boundaries are available for this column to be plotted against.'
+        custom: (Custom...)
+        customize_prompt: Customize this card
         disabled_curated_region_message:
           dataset_too_big: 'Boundaries not yet supported for datasets with &gt; 1,000,000 rows:'
           permissions: 'Boundaries not yet enabled by site admin:'
-        customize_prompt: Customize this card
+        generic_prompt: Choose a column from the dropdown above to add a new visualization
+        histogram_column_chart_warning: 'Note: Because of the distribution of values of this column, it will be presented as a histogram of bars instead of a distribution curve'
         not_supported: Not currently supported
         not_supported_long: This card type is currently unsupported
         prompt: Choose a column from the dropdown above to add a new card
-        generic_prompt: Choose a column from the dropdown above to add a new visualization
         settings: Settings
-        custom: (Custom...)
-        classic_chart: If you'd like to customize this Socrata visualization, locate it in the catalog, edit it, and then add it to your story.
         visualize_flyout:
           choropleth: Use Spatial Lens to visualize this data as a choropleth map
           column_chart: Visualize this column as a column chart
@@ -101,8 +101,8 @@ en:
         remove_card: Remove this card
       card_layout:
         add_card_here: Add a New Card
-        card_group_customize_hint_text: Up to {0} cards per row in this section
         card_group_customize_hint_flyout_text: Drag cards between sections to adjust the maximum number of columns per row. The cards will automatically resize to fill any gaps
+        card_group_customize_hint_text: Up to {0} cards per row in this section
         card_group_placeholder_text: Drag and drop cards here
       card_titles:
         average: average {0}
@@ -151,6 +151,10 @@ en:
         exit_visualization_export: 'To enter customization mode: Exit "Download Visualization as Image" mode by clicking the cancel button in the Info Pane'
         unsaved_warning: This view has not yet been saved.
       customize_card_dialog:
+        feature_map_flannel:
+          default_option: "(Default)"
+          select_column: Select a column
+          title: Flyout title
         histogram_bucket_type:
           linear: Linear
           linear_desc: This option defines the bins on the axis at a linear scale (10, 20, ...) and is most useful for smaller numeric ranges.
@@ -160,13 +164,9 @@ en:
           warning: Changing the bucket sizing will clear your current filter on this card
         map_layer:
           custom: Custom Map
-          simple_grey: Simple Grey
           simple_blue: Simple Blue
+          simple_grey: Simple Grey
           title: Map base layer
-        feature_map_flannel:
-          default_option: (Default)
-          title: Flyout title
-          select_column: Select a column
         visualization_options:
           title: Card Type
       distribution_chart:
@@ -184,13 +184,13 @@ en:
         save_to_catalog_explanation: Save a part of this Data Lens directly to the site Catalog.
         save_to_catalog_title: Save to Catalog
       feature_map:
-        zoom_disabled: Zoom is temporarily unavailable. Please try again later.
         feature_map_disabled: Feature maps are unavailable.
+        zoom_disabled: Zoom is temporarily unavailable. Please try again later.
       feature_map_flannel:
-        previous: Previous
-        next: Next
-        showing: <div>Showing {0}</div><div>{1}&nbsp;of&nbsp;{2}</div>
         error_message: An error occurred while fetching location data.
+        next: Next
+        previous: Previous
+        showing: "<div>Showing {0}</div><div>{1}&nbsp;of&nbsp;{2}</div>"
       feedback_panel:
         broken: Something seems broken
         feedback: Feedback
@@ -214,13 +214,13 @@ en:
         clear_filter_long: The page is currently filtered by this value, click to clear it
         clear_range_filter_long: The page is currently filtered by this selection, click to clear it
         current_filter: Current Filter
+        dense_data: Numerous {0}
         details: Click to see details
         expand: Click to expand
+        filter_prompt: Apply a filter to see details
         filtered_amount: Filtered amount
         total: Total
-        dense_data: Numerous {0}
         zoom_or_filter_prompt: Zoom in or apply a filter to see details
-        filter_prompt: Apply a filter to see details
       last_updated:
         label: last updated
       lens_type:
@@ -241,54 +241,37 @@ en:
           owner_unavailable: Owner information is temporarily unavailable.
           title: Owner
           warning: You must select an Owner for this Data Lens in order to proceed.
-        title: Manage
         provenance:
           title: Official View
           description: Selecting this option will give the view a special demarcation indicating that it is an Official View
         sharing:
-          title: Shared with
           add_new: Add New
           add_new_prompt: Save your changes below to invite these new users to this Data Lens
-          inherited_description: 'Inherited from the source dataset:'
           contributor: Contributor
-          owner: Co-owner
-          viewer: Viewer
+          inherited_description: 'Inherited from the source dataset:'
           keep: Keep
-          remove: Remove
           new_share_dialog:
-            title: Share this Data Lens
-            description: 'Specify additional people you wish to grant permissions on this Data Lens to. If someone doesn’t yet have an account, they will be sent an invitation to register, after which they will be granted the permissions.'
-            email: Email address
-            remove: Remove
             add_more: Add More
+            description: Specify additional people you wish to grant permissions on this Data Lens to. If someone doesn’t yet have an account, they will be sent an invitation to register, after which they will be granted the permissions.
+            email: Email address
             message: Optional message
+            remove: Remove
+            title: Share this Data Lens
+          owner: Co-owner
+          remove: Remove
+          title: Shared with
+          viewer: Viewer
+        title: Manage
         visibility:
-          title: Visibility
-          shown: Shown in catalog
-          hidden: Hidden from catalog
-          view_moderation_title: View Moderation
-          view_moderation_approved: Approved
-          view_moderation_rejected: Rejected
-          view_moderation_pending: Pending
           dataset_is_private: The source dataset is set to Private, so this Data Lens may not be shown in the catalog. Note that this page will appear in the catalog if the dataset is made public.
+          hidden: Hidden from catalog
+          shown: Shown in catalog
+          title: Visibility
           user_is_unprivileged: You must be an administrator or a publisher to modify Data Lens visibility. Please contact the site administrator to change this setting.
-      save_visualization_as_dialog:
-        title: Save Visualization As
-        name_label: Save this visualization with a new name
-        enter_name_placeholder: Enter a name
-        description_label: Enter a description for your new visualization (optional)
-        category_label: Choose a category for your new visualization (optional)
-        enter_name_error: Please enter a title
-        official_view_label: Official View
-        official_view_explanation: Selecting this option will give the view a special designation indicating that it is an Official View.
-        server_error: Sorry, something went wrong. Please try again later.
-        description_help_text: >
-          As a guideline, describe:
-          <ul>
-            <li>What this visualization means</li>
-            <li>Why it’s important to the viewer</li>
-            <li>How this information will be used to inform future plans or decisions</li>
-          </ul>
+          view_moderation_approved: Approved
+          view_moderation_pending: Pending
+          view_moderation_rejected: Rejected
+          view_moderation_title: View Moderation
       metadata:
         data_as_csv: Full source data as CSV (Excel)
         edit_description_prompt: Give your page a good description that helps people understand the story your data is trying to tell. (Optional)
@@ -317,6 +300,9 @@ en:
       related_views:
         button: Other views of this data
         title: Other views of this data
+      related_visualization_selector:
+        based_on_column: Based on {0}
+        visualization_not_supported: Pardon our dust! We're still developing the functionality that will let you embed this chart type in a story.
       remove_all_cards:
         button: Remove All Cards
         flyout: Click to remove all cards on this page
@@ -347,8 +333,8 @@ en:
         new_name: Save the current page with a new name
         title: Save As
         visibility: Set the visibility of your new page
-        visibility_with_view_moderation: Set the view moderation status of your new page
         visibility_disabled: You don't have permissions to update Data Lens visibility. Please contact the site administrator to change this setting.
+        visibility_with_view_moderation: Set the view moderation status of your new page
       save_button:
         failed: Failed
         flyoutFailedBody: Please contact Socrata Support
@@ -358,8 +344,25 @@ en:
         save: Save
         saved: Saved!
         saving: Saving...
+      save_visualization_as_dialog:
+        category_label: Choose a category for your new visualization (optional)
+        description_help_text: |-
+          As a guideline, describe:
+          <ul>
+          <li>What this visualization means</li>
+          <li>Why it’s important to the viewer</li>
+          <li>How this information will be used to inform future plans or decisions</li>
+          </ul>
+        description_label: Enter a description for your new visualization (optional)
+        enter_name_error: Please enter a title
+        enter_name_placeholder: Enter a name
+        name_label: Save this visualization with a new name
+        official_view_explanation: Selecting this option will give the view a special designation indicating that it is an Official View.
+        official_view_label: Official View
+        server_error: Sorry, something went wrong. Please try again later.
+        title: Save Visualization As
       search_card:
-        error_explanation: <p>An error was encountered while fetching search suggestions.</p><p>You can still press Enter at any time to search exactly by the text you entered, or you can try again later to see suggested values.</p>
+        error_explanation: "<p>An error was encountered while fetching search suggestions.</p><p>You can still press Enter at any time to search exactly by the text you entered, or you can try again later to see suggested values.</p>"
         invalid_search: Try searching for a number containing no letters.
         loading: Loading suggestions...
         no_results: Your search returned no results. Check your spelling, or try a different term.
@@ -370,12 +373,12 @@ en:
         two_examples: 'Examples: ''{0}'' or ''{1}'''
       suggestion_tool_panel:
         all_suggestions: 'Showing all {0} suggestions:'
+        loading_suggestions_hint: Type some text and press Enter to search, or wait for suggestions.
         max_suggestions: 'Showing the first {0} suggestions:'
         no_suggestions: No data found matching your search term.
         no_suggestions_hint: Try broadening your search for more results.
         only_suggestion: 'Showing the only suggestion:'
         some_suggestions_hint: Choose a suggestion above, or keep typing for more suggestions.
-        loading_suggestions_hint: Type some text and press Enter to search, or wait for suggestions.
       table:
         a_to_z: A-Z
         ascending: ascending
@@ -385,8 +388,8 @@ en:
         newest_first: newest first
         no_rows: No rows to display
         no_sort: No sort available
-        oldest_first: oldest first
         non_range_label: "{0} <strong>{1} out of {2}</strong>"
+        oldest_first: oldest first
         range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
         range_label_all: Showing all {0} {1}
         range_label_subtitle: Showing {0} {1} <span class="subtitle">out of {2}</span>
@@ -401,9 +404,6 @@ en:
           bad_dates: Chart cannot be rendered due to invalid date values.
           default: Chart cannot be rendered.
           no_data: Chart cannot be rendered with no values.
-      related_visualization_selector:
-        based_on_column: "Based on {0}"
-        visualization_not_supported: "Pardon our dust!  We're still developing the functionality that will let you embed this chart type in a story."
   controls:
     browse:
       actions:
@@ -572,7 +572,7 @@ en:
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
-          story_help: Coming soon
+          story_help: Learn about Stories
           unpublished: Unpublished Datasets
         view_types_singular_title: type
         view_types_title: View Types
@@ -983,10 +983,14 @@ en:
       flag: Flag
       geospatial: Geospatial
       html: Formatted Text
+      line: Line-String
       link: Link Column
       list: List
       location: Location
       money: Money
+      multiline: Multi-Line-String
+      multipoint: Multi-Point
+      multipolygon: Multi-Polygon
       nested_table: Nested Table
       number: Number
       object: Object
@@ -994,11 +998,7 @@ en:
       phone: Phone
       photo: Photo (Image)
       point: Point
-      multipoint: Multi-Point
-      line: Line-String
-      multiline: Multi-Line-String
       polygon: Polygon
-      multipolygon: Multi-Polygon
       stars: Star
       text: Plain Text
       url: Website URL
@@ -1594,27 +1594,28 @@ en:
         add_new: Add new
         choose_a_dataset: Choose a new geospatial Dataset
         configure_boundary:
-          page_title: Manage Boundaries
-          configure_boundary: Configure Boundary
-          boundary_name: Boundary Name
-          boundary_name_description: "The name of the boundary (ex: \"States\" or \"Neighborhoods\"). Will be displayed in Spatial Lens maps."
-          boundary_name_required_page_error: "Unable to save: the boundary must have a name."
-          boundary_name_required_field_error: The boundary must have a name.
-          boundary_geometry_label_page_error: "Unable to save: the boundary must have a shape label."
           boundary_geometry_label_field_error: The boundary must have a shape label.
+          boundary_geometry_label_page_error: "Unable to save: the boundary must have a shape label."
+          boundary_name: Boundary Name
+          boundary_name_description: 'The name of the boundary (ex: "States" or "Neighborhoods"). Will be displayed in Spatial Lens maps.'
+          boundary_name_required_field_error: The boundary must have a name.
+          boundary_name_required_page_error: "Unable to save: the boundary must have a name."
+          choose_a_column: Choose a column...
+          configure_boundary: Configure Boundary
+          page_title: Manage Boundaries
+          primary_key_column: Shape ID
+          primary_key_column_description: The column that contains the unique ID that identifies each shape in the boundary.  If there isn’t such a column, pick any unique column.
+          primary_key_column_missing_field_error: You must specify a column for the shape ID.
+          save_core_error: "Could not create the boundary: %{error_message}"
+          save_error: Something went wrong while trying to save your changes. Please try again later, or contact Socrata Support if the problem persists.
+          save_success: Changes saved successfully.
           shape_label: Shape Label
           shape_label_description: "The column that should be used as the label for each shape (ex: a column containing \"WA\" and \"NY\")."
-          primary_key_column: Shape ID
-          primary_key_column_description: "The column that contains the unique ID that identifies each shape in the boundary.  If there isn’t such a column, pick any unique column."
-          primary_key_column_missing_field_error: "You must specify a column for the shape ID."
-          choose_a_column: Choose a column...
-          save_success: Changes saved successfully.
-          save_error: Something went wrong while trying to save your changes. Please try again later, or contact Socrata Support if the problem persists.
-          save_core_error: "Could not create the boundary: %{error_message}"
         custom_georegions: Custom Boundaries
         description: Configure custom boundaries that can be used to create Spatial Lens maps
         default_georegions: Socrata Default Boundaries
         delete: Delete
+        description: Configure custom boundaries that can be used to create Spatial Lens maps
         disable: Disable
         disable_success: "%{name} has been disabled and will no longer be automatically computed for new datasets."
         edit: Edit
@@ -1622,8 +1623,8 @@ en:
         enabled?: Enabled?
         enabled_no: "No"
         enabled_yes: "Yes"
-        enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         enabled_georegions_limit: You have reached the limit of %{limit} enabled boundaries for this site.
+        enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         flashes:
           add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
         page_title: Manage Spatial Lens
@@ -1805,8 +1806,8 @@ en:
         missing_name: Dataset name is required.
         need_description: Please describe &ldquo;%{name}&rdquo;
         point:
-          suboptimal_column: set to import its <strong>%{field}</strong> from the source column <strong>%{originalColumnName}</strong>, but our analysis shows that the source column is a %{suggestion} column, while %{field} expects a column of type %{type}. Should you choose to proceed with these import settings, import or geocoding errors are likely to occur.
           missing_latlong: set to import a <strong>%{coordinateType} but not a <strong>%{missingCoordinateType} column. Please specify the full lat/long pair.
+          suboptimal_column: set to import its <strong>%{field}</strong> from the source column <strong>%{originalColumnName}</strong>, but our analysis shows that the source column is a %{suggestion} column, while %{field} expects a column of type %{type}. Should you choose to proceed with these import settings, import or geocoding errors are likely to occur.
       finish:
         headline: Your Dataset has been created.
         subheadline: Click on Finish to see it!
@@ -2082,9 +2083,6 @@ en:
             selectable: Valid Columns
             unselect: Deselect column
           datatypes:
-            groups:
-              standard: Standard
-              geometry: Geometry
             checkbox: checkbox
             dataset_link: dataset link
             date_time: date & time
@@ -2094,6 +2092,9 @@ en:
             flag: flag
             formatted_text: formatted text
             geospatial: geospatial
+            groups:
+              geometry: Geometry
+              standard: Standard
             list: list
             location: location
             money: money
@@ -2324,12 +2325,12 @@ en:
             thousands: Thousands
             title: Localization
           money:
-            groups:
-              common: Common
-              all: All
             abbreviated: Abbreviated
             currency: Currency
             format_mask_warning:
+            groups:
+              all: All
+              common: Common
             no_precision: None
             precision: Precision
             title: Money Formatting
@@ -2393,9 +2394,9 @@ en:
             no_columns: This view has no columns to filter
             no_icons: Icons are only relevant for map view
         data_lens:
+          button: New Data Lens
           subtitle: Data Lens is a visually engaging and interactive experience that includes improved data exploration and better data curation.  Click on <strong>New Data Lens</strong> to create a new one.  From there, you can visually explore the data, customize how it is shown, and manage how it will be presented in the catalog.
           title: Data Lens
-          button: New Data Lens
         delete:
           confirm: This will delete the %{view_type} permanently. There is no undo! Are you sure you wish to proceed?
           delete_button: Delete this %{view_type}
@@ -2804,12 +2805,11 @@ en:
       existing_latlng_cols: Existing Latitude and Longitude Columns
       find: find
       find_and_replace: Find and Replace value...
+      import_from_latlong: Import from <strong>latitude</strong> and <strong>longitude</strong> columns
       import_from_multiple: Import from <strong>multiple columns</strong>
       import_from_single: Import from <strong>single column</strong>
-      import_from_latlong: Import from <strong>latitude</strong> and <strong>longitude</strong> columns
       latitude: Latitude
       location_source_col: Location Source Columns
-      point_source_col: Point Source Columns
       longitude: Longitude
       make_lower_case: Make lowercase
       make_title_case: Make Title Case
@@ -2819,6 +2819,7 @@ en:
       new_source_col: Add new source column
       new_transform: Add new transform
       options: Options
+      point_source_col: Point Source Columns
       properly_formatted: Column must be <a href="%{formatting_link}" rel="external">properly formatted</a> prior to import.
       regular_expression: regular expression
       remove: remove
@@ -2847,8 +2848,8 @@ en:
       one_header: One of your rows is a header.
       problem_importing: There was a problem importing that file. Please make sure it is valid.
       problem_uploading: There was a problem uploading that file. Please make sure it is valid.
-      rows_imported: "%{num} rows imported so far."
       replicating: Replicating the dataset.
+      rows_imported: "%{num} rows imported so far."
       try_again: Please try again in a bit.
       unknown_error: An unknown error has occurred
       uploading: Uploading your file

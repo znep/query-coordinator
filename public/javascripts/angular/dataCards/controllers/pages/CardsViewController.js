@@ -282,7 +282,7 @@
     // and only care about page-specific user rights
     var userCanManageView$ = page.observe('rights').map(function(rights) {
       return _.any(rights, function(right) {
-        return right === 'write' || right === 'update_view' || right === 'grant';
+        return right === 'update_view' || right === 'grant';
       });
     });
 

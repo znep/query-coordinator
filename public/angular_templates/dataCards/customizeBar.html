@@ -21,7 +21,7 @@
     button-class="customize-bar-action-btn"
     ng-click="savePage()"
     enabled="hasChanges"
-    ng-hide="isEphemeral"
+    ng-hide="isEphemeral || !canUpdateView"
     save-status="saveStatus">
   </save-button>
   <save-as

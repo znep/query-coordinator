@@ -1,5 +1,6 @@
 class ClassicVisualizationController < ApplicationController
   include ApplicationHelper
+  skip_before_filter :require_user
   layout false
   helper_method :render_inline_setup_js
 

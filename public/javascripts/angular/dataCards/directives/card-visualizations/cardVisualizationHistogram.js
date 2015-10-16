@@ -389,10 +389,13 @@
         // see which chart we decided to render as.
         visualizationType$.subscribe(_.bind($scope.model.set, $scope.model, 'visualizationType'));
 
+        var histogramRenderError$ = $scope.$observe('histogramRenderError').filter(_.isPresent);
+
         var loading$ = Rx.Observable.merge(
           baseSoqlFilter$.map(_.constant(true)),
           whereClauseExcludingOwn$.map(_.constant(true)),
-          cardData$.map(_.constant(false))
+          cardData$.map(_.constant(false)),
+          histogramRenderError$.map(_.constant(false))
         ).startWith(true);
 
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);

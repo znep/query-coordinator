@@ -299,7 +299,7 @@ class AngularControllerTest < ActionController::TestCase
       @controller.stubs(:fetch_permissions_and_normalize_exceptions).raises(CommonMetadataMethods::UnauthorizedPageMetadataRequest)
       NewViewManager.any_instance.stubs(:fetch).returns({})
 
-      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(403)
 
       get :visualization_add, :datasetId => 'data-sett', :app => 'dataCards'

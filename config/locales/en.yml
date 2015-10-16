@@ -487,8 +487,8 @@ en:
             label: on the Open Data Network
             title: Find more data like this on the Open Data Network
         results:
-          count: Showing %{this} of %{total}
-          cetera_count: Showing %{start}-%{end} of %{total}
+          count: Showing %{this} of %{total} results
+          cetera_count: Showing %{start}-%{end} of %{total} results
         search:
           title: Search
           placeholder: Search Datasets, Topics (e.g. Crime in Mission District)

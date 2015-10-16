@@ -376,6 +376,9 @@ javascripts:
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/row-search-render-type.js
     - public/javascripts/screens/browse.js
+  browse2-control:
+    - public/javascripts/controls/dataset-controls.js
+    - public/javascripts/screens/browse2.js
   screen-nominations:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/util/base-model.js

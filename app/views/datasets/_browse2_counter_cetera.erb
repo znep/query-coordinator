@@ -1,0 +1,15 @@
+<div class="resultCount">
+  <%-
+    total = opts[:view_count]
+    startIndex = opts[:limit] * (opts[:page] - 1) + 1
+    endIndex = [startIndex + opts[:limit] - 1, total].min
+  -%>
+  <%=
+    t(
+      'controls.browse.listing.results.cetera_count',
+      :start => startIndex,
+      :end => endIndex,
+      :total => total
+    )
+  %>
+</div>

@@ -52,14 +52,15 @@ module Cetera
         name: @resource['name'],
         description: @resource['description'],
         type: @resource['type'],
-        categories: [@classification['customerCategory']],
+        categories: [@classification['domain_category']],
         tags: @classification['tags'],
         viewCount: @resource['view_count'] && @resource['view_count']['page_views_total'].to_i,
-        domainCName: @metadata['domain']
+        domainCName: @metadata['domain'],
+        updatedAt: @resource['updatedAt']
       )
     end
 
-    def_delegators :@data_ostruct, :id, :link, :name, :description, :type, :categories, :tags, :viewCount, :domainCName
+    def_delegators :@data_ostruct, :id, :link, :name, :description, :type, :categories, :tags, :viewCount, :domainCName, :updatedAt
 
     def airbrake_type_error(type)
       Airbrake.notify(

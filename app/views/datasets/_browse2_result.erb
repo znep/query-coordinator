@@ -1,0 +1,141 @@
+<div class="<%= result_classes %>" data-view-id="<%= result_id %>" itemscope="itemscope" itemtype="http://schema.org/Dataset">
+
+  <div class="browse2-result-header clearfix">
+    <div class="browse2-result-title">
+      
+      <h2 class="browse2-result-name">
+        <a class="browse2-result-name-link" href="<%= result_link %>" rel="<%= result_link_rel_type %>" itemprop="url" data-search="highlight">
+          <%= result_name %>
+        </a>
+      </h2>
+
+      <%- result_categories.each do |category| -%>
+        <span class="browse2-result-category" itemprop="keywords" data-search="highlight">
+          <%= category %>
+        </span>
+      <%- end -%>
+
+      <%- if result_is_federated -%>
+
+        <a class="browse2-result-federated-link" href="<%= result_federated_origin_url %>" rel="<%= result_link_rel_type %>" title="<%= t('controls.browse.browse2.federation.source', :source => result_federated_origin) %>">
+          <span class="browse2-result-federated-icon icon-linked"></span>
+          <%= t('controls.browse.browse2.federation.label') %>
+        </a>
+
+      <%- end -%>
+
+    </div>
+    <div class="browse2-result-type">
+      <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
+      <span class="browse2-result-type-name">
+        <%= result_display_title %>
+      </span>
+    </div>
+  </div>
+
+  <div class="browse2-result-metadata">
+    <%- if result_description.present? -%>
+      <div class="browse2-result-description-container">
+        <div class="browse2-result-description">
+          <div data-search="highlight"><%= result_description %></div>
+        </div>
+        <div class="browse2-result-truncation-toggle-control">
+          <span class="browse2-result-truncation-toggle-show-more-label">
+            <span class="browse2-result-truncation-toggle-show-more-icon icon-arrow-down"></span>
+            <%= t('controls.browse.browse2.description.show_more_label') %>
+          </span>
+          <span class="browse2-result-truncation-toggle-show-less-label">
+            <span class="browse2-result-truncation-toggle-show-more-icon icon-arrow-up"></span>
+            <%= t('controls.browse.browse2.description.show_less_label') %>
+          </span>
+        </div>
+      </div>
+    <%- end -%>
+
+    <div class="browse2-result-topics-and-data-types clearfix">
+      <div class="browse2-result-topics" data-search="highlight">
+        <span class="browse2-result-topics-icon icon-tag" data-display-type="<%= result_display_type %>"></span>
+        <span class="browse2-result-topics-label">
+          <%= t('controls.browse.browse2.topics.label') %>
+        </span>
+
+        <%- if result_topics.present? -%>
+
+          <div class="browse2-result-topics-content">
+            <%= result_topics %>
+          </div>
+
+        <%- else -%>
+
+          <div class="browse2-result-no-topics-content">
+            <%= t('controls.browse.browse2.topics.empty') %>
+          </div>
+
+        <%- end -%>
+      </div>
+
+      <div class="browse2-result-data-types" data-search="highlight">
+
+        <%- if result_data_types.present? -%>
+
+          <span class="browse2-result-data-types-icon icon-data" data-display-type="<%= result_display_type %>"></span>
+          <span class="browse2-result-data-types-label">
+            <%= t('controls.browse.browse2.data_types.label') %>
+          </span>
+          <div class="browse2-result-data-types-content">
+            <%= result_data_types %>
+          </div>
+
+        <%- end -%>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="browse2-result-metrics">
+
+    <%- if result_last_updated.present? -%>
+
+      <div class="browse2-result-last-updated">
+        <div class="browse2-result-last-updated-label">
+          <%= t('controls.browse.browse2.last_updated.label') %>
+        </div>
+        <div class="browse2-result-last-updated-value">
+          <%= result_last_updated %>
+        </div>
+      </div>
+
+    <%- end -%>
+
+    <%- if result_view_count.present? -%>
+
+      <div class="browse2-result-view-count">
+        <div class="browse2-result-view-count-label">
+          <%= t('controls.browse.browse2.view_count.label') %>
+        </div>
+        <div class="browse2-result-view-count-value">
+          <%= result_view_count %>
+        </div>
+      </div>
+
+    <%- end -%>
+  </div>
+
+  <div class="browse2-result-footer">
+
+    <div class="browse2-result-odn">
+      <span class="browse2-result-odn-prompt">
+        <%= t('controls.browse.browse2.odn.prompt') %>
+      </span>
+      <a class="browse2-result-odn-link" href="<%= result_odn_link %>" title="<%= t('controls.browse.browse2.odn.link.title') %>">
+        <span class="browse2-result-odn-link-label"><%= t('controls.browse.browse2.odn.link.label') %></span>
+        <span class="browse2-result-odn-link-icon icon-external"></span>
+      </a>
+    </div>
+    <div class="browse2-result-explore">
+      <a class="browse2-result-api-link" href="<%= result_api_link %>" title="<%= t('controls.browse.browse2.api.link.title') %>">
+        <%= t('controls.browse.browse2.api.link.label') %>
+      </a>
+    </div>
+  </div>
+</div>

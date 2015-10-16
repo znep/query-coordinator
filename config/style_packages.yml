@@ -145,6 +145,8 @@ browse-select-dataset:
 browse-control:
 - screen-browse
 - rich-render-types
+browse2-control:
+- screen-browse2
 rich-render-bundle:
 - table-core
 - dataset-grid

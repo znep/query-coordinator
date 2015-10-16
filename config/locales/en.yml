@@ -443,6 +443,75 @@ en:
         suggest_dataset_short: Suggest a Dataset
         suggest_dataset_verb: Suggest
       back_to_dataset: Back to Dataset
+      browse2:
+        api:
+          link:
+            label: API Docs
+            title: View API documentation for this dataset
+        comment_count: Number of comments
+        create:
+          dataset:
+            label: Create/Upload a Dataset
+            title: Create or upload a dataset to the Socrata platform
+          label: Add New
+          story:
+            label: Create a Socrata Story
+            title: Create a new Socrata Story
+          title: Create a New Socrata Resource
+        data_types:
+          label: Data Types
+        description:
+          show_more_label: Show More
+          show_less_label: Show Less
+        display_types:
+          api: API
+          blob: File or Document
+          calendar: Calendar
+          chart: Chart
+          dataset: Dataset
+          data_lens: Data Lens
+          form: Form
+          href: External Link
+          map: Map
+          predeply_api: Pre-deploy API
+          pulse: Pulse
+          story: Story
+          unknown: Unknown
+        facets:
+          hint: Filter or Browse Results
+          clear_all:
+            label: Clear
+        federation:
+          label: Federated
+          source: Federated from %{source}
+        last_updated:
+          label: Last Updated
+        odn:
+          prompt: Find Data Like This
+          link:
+            label: on the Open Data Network
+            title: Find more data like this on the Open Data Network
+        results:
+          count: Showing %{this} of %{total} results
+          cetera_count: Showing %{start}-%{end} of %{total} results
+        search:
+          title: Search
+          placeholder: Search Datasets, Topics (e.g. Crime in Mission District)
+        settings:
+          title: Settings
+          label: Settings
+        sort:
+          label: Order by
+          periods:
+            label: Sort Period
+            month: This month
+            week: This week
+            year: This year
+        topics:
+          label: Topics
+          empty: No topics assigned
+        view_count:
+          label: Views
       facets:
         categories_singular_title: category
         categories_title: Categories

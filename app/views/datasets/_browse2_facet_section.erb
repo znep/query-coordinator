@@ -1,0 +1,57 @@
+<div class="browse2-facet-section" data-facet-display="show">
+  <h4 class="browse2-facet-section-title">
+    <%= facet[:title] %>
+    <span class="browse2-facet-section-expand-icon icon-arrow-down"></span>
+    <span class="browse2-facet-section-contract-icon icon-arrow-up"></span>
+  </h4>
+
+  <ul class="browse2-facet-section-options">
+    <%- facet[:options].each do |facet_option| -%>
+      <li>
+        <%-
+          facet_option_url = nil
+
+          facet_param = facet[:param]
+          facet_option_is_active = opts[facet_param] == facet_option[:value]
+
+          current_params_with_view_type = opts[:user_params].dup
+
+          if params[:view_type] === 'browse2'
+            current_params_with_view_type[:view_type] = 'browse2'
+          end
+
+          if opts[:strip_params] && opts[:strip_params][facet_param.to_sym]
+            current_params_with_view_type.delete_if do |key, value|
+              opts[:strip_params][facet_param.to_sym][key.to_sym]
+            end
+          end
+
+          current_params_with_view_type[facet_param.to_sym] = facet_option[:value]
+
+          if facet_option_is_active
+            current_params_with_view_type_without_facet = current_params_with_view_type.dup.reject do |param|
+              param == facet[:param]
+            end
+            facet_option_url = "#{opts[:base_url]}?#{current_params_with_view_type_without_facet.to_param}"
+          else
+            facet_option_url = "#{opts[:base_url]}?#{current_params_with_view_type.to_param}"
+          end
+
+          facet_option_class = 'browse2-facet-section-option'
+          facet_option_class << (" #{facet_option[:class]}" || '')
+          facet_option_class << (facet_option_is_active ? ' active' : '')
+
+          facet_text = facet[:param] == :tags ?
+            facet_option[:text].split(' ').map(&:capitalize).join(' ') :
+            facet_option[:text]
+        -%>
+        <a class="<%= facet_option_class %>" href="<%= facet_option_url %>">
+          <%= facet_text %>
+          <%- if facet_option_is_active -%>
+            <span class="browse2-facet-section-option-clear-icon icon-close-2"></span>
+          <%- end -%>
+        </a>
+      </li>
+    <%- end -%>
+  </ul>
+</div>

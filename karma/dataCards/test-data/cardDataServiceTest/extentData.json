@@ -1,6 +1,6 @@
 [
   {
-    "extent_coordinates_9": {
+    "extent": {
       "type": "MultiPolygon",
       "coordinates" :[
         [

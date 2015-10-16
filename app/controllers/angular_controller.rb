@@ -46,7 +46,7 @@ class AngularController < ActionController::Base
       @page_metadata = fetch_page_metadata(params[:id])
     rescue AuthenticationRequired
       return redirect_to_login
-    rescue UnauthorizedPageMetadataRequest
+    rescue UnauthorizedDatasetMetadataRequest, UnauthorizedPageMetadataRequest
       return render_403
     rescue PageMetadataNotFound
       return render_404
@@ -72,7 +72,7 @@ class AngularController < ActionController::Base
       @dataset_metadata = fetch_dataset_metadata(@page_metadata[:datasetId])
     rescue AuthenticationRequired
       return redirect_to_login
-    rescue UnauthorizedDatasetMetadataRequest
+    rescue UnauthorizedDatasetMetadataRequest, UnauthorizedPageMetadataRequest
       return render_403
     rescue DatasetMetadataNotFound
       return render_404
@@ -90,7 +90,7 @@ class AngularController < ActionController::Base
       @dataset_metadata[:pages] = fetch_pages_for_dataset(@page_metadata[:datasetId])
     rescue AuthenticationRequired
       return redirect_to_login
-    rescue UnauthorizedDatasetMetadataRequest
+    rescue UnauthorizedDatasetMetadataRequest, UnauthorizedPageMetadataRequest
       return render_403
     rescue DatasetMetadataNotFound
       return render_404
@@ -116,7 +116,6 @@ class AngularController < ActionController::Base
   end
 
   def visualization_add
-
     dataset_id_param = params['datasetId']
 
     # First fetch the current user's profile.
@@ -158,7 +157,7 @@ class AngularController < ActionController::Base
 
     rescue AuthenticationRequired
       return redirect_to_login
-    rescue UnauthorizedDatasetMetadataRequest
+    rescue UnauthorizedDatasetMetadataRequest, UnauthorizedPageMetadataRequest
       return render_403
     rescue DatasetMetadataNotFound
       return render_404

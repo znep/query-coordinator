@@ -294,6 +294,18 @@ class AngularControllerTest < ActionController::TestCase
       assert_response(403)
     end
 
+    should 'redirect to the 403 page if the dataset is private case two' do
+      PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
+      @controller.stubs(:fetch_permissions_and_normalize_exceptions).raises(CommonMetadataMethods::UnauthorizedPageMetadataRequest)
+      NewViewManager.any_instance.stubs(:fetch).returns({})
+
+      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      assert_response(403)
+
+      get :visualization_add, :datasetId => 'data-sett', :app => 'dataCards'
+      assert_response(403)
+    end
+
     should 'redirect to the 404 page if the dataset is not found' do
       PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
       AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::DatasetMetadataNotFound)

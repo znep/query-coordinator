@@ -37,8 +37,8 @@ beforeEach(function() {
             "edit_dashboards",
             "create_dashboards"
           ],
-          "screenName": "Trey Cordova",
-          "displayName": "Trey Cordova",
+          "screenName": "Ryan Gosling",
+          "displayName": "Ryan Gosling",
           "emailUnsubscribed": false,
           "profileLastModified": 1437494094
         },

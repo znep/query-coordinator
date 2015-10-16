@@ -49,7 +49,6 @@
           'baseSoqlFilter',
           'defaultDateTruncFunction',
           'moderationStatus',
-          'shares',
           'rights'
         ];
 
@@ -68,6 +67,7 @@
 
         self.defineObservableProperty('dataset', dataset);
         self.defineEphemeralObservableProperty('hasExpandedCard', null);
+        self.defineEphemeralObservableProperty('shares', pageMetadata.shares);
 
         var primaryAmountField$ = self.observe('primaryAmountField');
 

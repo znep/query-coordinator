@@ -229,6 +229,7 @@ manage-lens-dialog-v2 {
     label {
       display: inline-block;
       line-height: 29px;
+      margin-right: 0.5rem;
     }
     .contents {
       .flavor-text {
@@ -254,12 +255,12 @@ manage-lens-dialog-v2 {
     margin-bottom: 2rem;
     .ownership-input {
       outline: none;
-      padding: .5rem 1rem;
+      padding: 0.5rem 1rem;
       width: 15rem;
     }
     .icon-warning {
       display: inline-block;
-      margin-left: .5rem;
+      margin-left: 0.5rem;
     }
     .tool-panel.suggestion-tool-panel {
       display: block;
@@ -277,7 +278,7 @@ manage-lens-dialog-v2 {
         .share-user {
           display: block;
           line-height: 29px;
-          padding-right: .5rem;
+          padding-right: 0.5rem;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -442,7 +443,7 @@ manage-lens-dialog-v2 {
   margin-top: 1rem;
 
   ul {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     padding-left: 1.5rem;
   }
 }

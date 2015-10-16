@@ -29,13 +29,17 @@
 
   function _updateVisualization($element, componentData) {
 
-    var iframe = $element.find('iframe')[0];
+    var $iframe = $element.find('iframe');
 
-    utils.assertInstanceOf(iframe, HTMLElement);
+    utils.assertInstanceOf($iframe, jQuery);
 
-    if ($(iframe).data('classic-visualization') !== componentData.value.visualization) {
-      iframe.contentWindow.renderVisualization(componentData.value.visualization);
-      $(iframe).data('classic-visualization', componentData.value.visualization);
+    // This guard is to wait for loading.
+    // The iframe load event above should invoke _updateVisualization again.
+    if (_.isFunction($iframe[0].contentWindow.renderVisualization)) {
+      if ($iframe.data('classic-visualization') !== componentData.value.visualization) {
+        $iframe.data('classic-visualization', componentData.value.visualization);
+        $iframe[0].contentWindow.renderVisualization(componentData.value.visualization);
+      }
     }
   }
 

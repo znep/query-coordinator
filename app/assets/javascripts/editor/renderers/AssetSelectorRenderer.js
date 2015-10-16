@@ -245,6 +245,7 @@
     function _renderSelector() {
 
       var state = storyteller.assetSelectorStore.getCurrentSelectorState();
+      var componentType = storyteller.assetSelectorStore.getCurrentComponentType();
       var componentValue = storyteller.assetSelectorStore.getCurrentComponentValue();
       var selectorContent;
 
@@ -315,7 +316,7 @@
           break;
 
         case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
-          _renderConfigureVisualizationData(componentValue);
+          _renderConfigureVisualizationData(componentType, componentValue);
           break;
 
         case Actions.FILE_UPLOAD_DONE:
@@ -977,7 +978,7 @@
       return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];
     }
 
-    function _renderConfigureVisualizationData(componentProperties) {
+    function _renderConfigureVisualizationData(componentType, componentProperties) {
       if (componentProperties.dataset) {
         var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
         var currentIframeSrc = iframeElement.attr('src');
@@ -995,7 +996,7 @@
           '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
         );
 
-        if (_isVisualizationValid(componentProperties)) {
+        if (componentType) {
           insertButton.prop('disabled', false);
         } else {
           insertButton.prop('disabled', true);
@@ -1006,21 +1007,6 @@
     /**
      * Small helper functions
      */
-
-    function _isVisualizationValid(componentProperties) {
-      // columnName will only be added once a valid column is selected.
-      return _isVIF(componentProperties) || _isClassicVisualization(componentProperties);
-    }
-
-    function _isVIF(componentProperties) {
-      return componentProperties.hasOwnProperty('vif') &&
-        componentProperties.vif.hasOwnProperty('type');
-    }
-
-    function _isClassicVisualization(componentProperties) {
-      return componentProperties.hasOwnProperty('visualization') &&
-        componentProperties.visualization.hasOwnProperty('displayFormat');
-    }
 
     function _datasetChooserUrl() {
       return encodeURI(

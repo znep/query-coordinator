@@ -282,6 +282,9 @@ $(document).on('ready', function() {
   // Story title
   $('.story-title').storyTitle(storyteller.userStoryUid);
 
+  // Draft or Published status
+  $('#story-publication-status').storyPublicationStatus(storyteller.userStoryUid);
+
   // Save button
   $('#story-save-btn').storySaveButton();
   $('#story-save-error-bar').storySaveErrorBar();

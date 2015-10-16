@@ -46,6 +46,11 @@ $(document).on('ready', function() {
             componentSocrataVisualizationFeatureMap(componentData);
           break;
 
+        case 'socrata.visualization.classic':
+          $element.
+            componentSocrataVisualizationClassic(componentData);
+          break;
+
         default:
           break;
       }

@@ -199,7 +199,7 @@
 
     function _setVisualizationDatasetUid(uid) {
       _currentComponentProperties = {
-        vif: {
+        dataset: {
           domain: window.location.host,
           datasetUid: uid
         }
@@ -209,26 +209,33 @@
     }
 
     function _updateVisualizationConfiguration(payload) {
-      var vif = payload.vif;
+      var visualization = payload.visualization.data;
 
-      if (vif) {
-        switch (vif.type) {
+      if (payload.visualization.format === 'classic') {
+        _currentComponentType = 'socrata.visualization.classic';
+        _currentComponentProperties = {
+          visualization: visualization
+        };
+
+        self._emitChange();
+      } else if (payload.visualization.format === 'vif') {
+        switch (visualization.type) {
           case 'columnChart':
             _currentComponentType = 'socrata.visualization.columnChart';
             _currentComponentProperties = {
-              vif: vif
+              vif: visualization
             };
             break;
           case 'timelineChart':
             _currentComponentType = 'socrata.visualization.timelineChart';
             _currentComponentProperties = {
-              vif: vif
+              vif: visualization
             };
             break;
           case 'featureMap':
             _currentComponentType = 'socrata.visualization.featureMap';
             _currentComponentProperties = {
-              vif: vif
+              vif: visualization
             };
             break;
         }

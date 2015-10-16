@@ -18,6 +18,7 @@ module StoriesHelper
       'socrata.visualization.columnChart' => 'component_socrata_visualization_column_chart',
       'socrata.visualization.timelineChart' => 'component_socrata_visualization_timeline_chart',
       'socrata.visualization.featureMap' => 'component_socrata_visualization_feature_map',
+      'socrata.visualization.classic' => 'component_socrata_visualization_classic',
       'assetSelector' => 'component_asset_selector',
       'horizontalRule' => 'component_horizontal_rule',
       'spacer' => 'component_spacer',

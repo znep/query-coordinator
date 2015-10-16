@@ -215,11 +215,12 @@ describe('AssetSelectorRenderer', function() {
       storyteller.dispatcher.register(function(payload) {
         assert.equal(payload.action, Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION);
         // the values will be empty, but assert that the event adds the correct keys
-        assert.property(payload, 'vif');
+        assert.property(payload, 'visualization');
+        assert.property(payload.visualization, 'format');
         done();
       });
 
-      container.find('.modal-dialog').trigger('visualizationSelected', {});
+      container.find('.modal-dialog').trigger('visualizationSelected', {format: 'vif', data: {}});
     });
 
     describe('select file in image upload', function() {

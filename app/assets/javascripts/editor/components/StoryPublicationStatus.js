@@ -17,8 +17,7 @@
       var storyIsClean;
       var translationKey;
 
-      if (permissions && permissions.isPublic && storyIsClean) {
-        storyIsClean = !storyteller.storySaveStatusStore.isStoryDirty();
+      if (permissions && permissions.isPublic) {
         havePublishedAndDraftDiverged = _havePublishedAndDraftDiverged();
 
         if (storyIsClean || havePublishedAndDraftDiverged) {

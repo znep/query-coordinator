@@ -284,7 +284,7 @@ class AngularControllerTest < ActionController::TestCase
 
     should 'redirect to the 403 page if the dataset is private' do
       PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
-      AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::UnauthorizedDatasetMetadataRequest)
+      Phidippides.any_instance.stubs(:fetch_dataset_metadata => { status: '403' })
       NewViewManager.any_instance.stubs(:fetch).returns({})
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'

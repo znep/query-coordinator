@@ -106,6 +106,7 @@ body .header-main {
     color: $header-text-color;
     background-color: transparent;
     font-weight: lighter;
+    line-height: 4.1rem;
 
     &:hover,
     &:active {
@@ -163,6 +164,10 @@ body .header-main {
     &:before {
       text-align: center;
     }
+  }
+
+  #story-publication-status {
+    color: $header-publication-status-color;
   }
 
   .panel-btn, #story-save-btn {

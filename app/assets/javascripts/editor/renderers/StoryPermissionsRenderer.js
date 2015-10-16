@@ -82,28 +82,31 @@
     function _render() {
       var havePublishedAndDraftDiverged;
       var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
+      var i18n = function(key) {
+        return I18n.t('editor.settings_panel.publishing_section.{0}'.format(key));
+      };
 
       if (permissions && permissions.isPublic) {
         havePublishedAndDraftDiverged = _havePublishedAndDraftDiverged();
 
-        _$visibilityLabel.text(I18n.t('editor.settings_panel.publishing_section.visibility.public'));
-        _$visibilityButtonText.text(I18n.t('editor.settings_panel.publishing_section.visibility.make_story_private'));
+        _$visibilityLabel.text(i18n('visibility.public'));
+        _$visibilityButtonText.text(i18n('visibility.make_story_private'));
         _$visibilityButton.addClass('btn-default').removeClass('btn-secondary');
         _$updatePublicButton.prop('disabled', true);
-        _$updatePublicLabel.text(I18n.t('editor.settings_panel.publishing_section.status.published'));
-        _$publishingHelpText.text(I18n.t('editor.settings_panel.publishing_section.messages.has_been_published'));
+        _$updatePublicLabel.text(i18n('status.published'));
+        _$publishingHelpText.text(i18n('messages.has_been_published'));
 
         if (havePublishedAndDraftDiverged) {
           _$updatePublicButton.prop('disabled', false);
-          _$publishingHelpText.text(I18n.t('editor.settings_panel.publishing_section.messages.previously_published'));
-          _$updatePublicLabel.text(I18n.t('editor.settings_panel.publishing_section.status.draft'));
+          _$publishingHelpText.text(i18n('messages.previously_published'));
+          _$updatePublicLabel.text(i18n('status.draft'));
         }
       } else {
-        _$visibilityLabel.text(I18n.t('editor.settings_panel.publishing_section.visibility.private'));
-        _$visibilityButtonText.text(I18n.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
+        _$visibilityLabel.text(i18n('visibility.private'));
+        _$visibilityButtonText.text(i18n('visibility.make_story_public'));
         _$visibilityButton.removeClass('btn-default').addClass('btn-secondary');
         _$updatePublicButton.prop('disabled', true);
-        _$publishingHelpText.text(I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publically'));
+        _$publishingHelpText.text(i18n('messages.can_be_shared_publically'));
       }
 
       _$settingsPanelStoryStatus.toggleClass('hidden', !permissions || !permissions.isPublic);

@@ -185,7 +185,7 @@ describe('AssetSelectorStore', function() {
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getCurrentComponentValue().vif.datasetUid,
+          storyteller.assetSelectorStore.getCurrentComponentValue().dataset.datasetUid,
           standardMocks.validStoryUid
         );
       });
@@ -203,28 +203,17 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      it('does not change baseQuery if payload has no vif', function() {
-        var startingComponentValue = _.cloneDeep(storyteller.assetSelectorStore.getCurrentComponentValue());
-
-        storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
-          vif: null
-        });
-
-        assert.deepEqual(
-          startingComponentValue,
-          storyteller.assetSelectorStore.getCurrentComponentValue()
-        )
-      });
-
       it('adds visualization configuration to componentValue when there is vif', function() {
-        var fakeVIFData = {
-          'type': 'columnChart'
+        var payload = {
+          'format': 'vif',
+          'data': {
+            type: 'columnChart'
+          }
         };
 
         storyteller.dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
-          vif: fakeVIFData
+          visualization: payload
         });
 
         assert.equal(

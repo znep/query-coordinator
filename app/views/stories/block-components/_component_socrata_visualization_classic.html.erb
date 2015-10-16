@@ -1,0 +1,14 @@
+<%
+# Component format:
+# {
+#   type: "socrata.visualization.classic",
+#   value: {
+#     visualization: {
+#       // This data is a core view metadata json blob.
+#       // Checkout any 4x4 at /api/views/4x4.json
+#       ...
+#     }
+#   }
+# }
+%>
+<div data-component-data="<%= component.to_json %>" ></div>

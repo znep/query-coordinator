@@ -139,7 +139,7 @@
         function(event, selectedVisualization) {
           storyteller.dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
-            vif: selectedVisualization
+            visualization: selectedVisualization
           });
         }
       );
@@ -245,6 +245,7 @@
     function _renderSelector() {
 
       var state = storyteller.assetSelectorStore.getCurrentSelectorState();
+      var componentType = storyteller.assetSelectorStore.getCurrentComponentType();
       var componentValue = storyteller.assetSelectorStore.getCurrentComponentValue();
       var selectorContent;
 
@@ -315,7 +316,7 @@
           break;
 
         case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
-          _renderConfigureVisualizationData(componentValue);
+          _renderConfigureVisualizationData(componentType, componentValue);
           break;
 
         case Actions.FILE_UPLOAD_DONE:
@@ -962,49 +963,52 @@
         'class': 'asset-selector-button-group r-to-l'
       }).append([ backButton, insertButton ]);
 
-      configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj) {
+      configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format) {
         // This function is called by the visualization chooser when:
         //   - The user makes or clears a selection (argument is either null or a visualization).
         //   - The page finishes loading (argument is null).
         // In either case, we should consider the iframe loaded.
         configureVisualizationIframe.
-          trigger('visualizationSelected', datasetObj);
+          trigger('visualizationSelected', {
+            data: datasetObj,
+
+            // format can either be 'classic' or 'vif'.
+            format: format
+          });
       };
 
       return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];
     }
 
-    function _renderConfigureVisualizationData(componentProperties) {
-      var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
-      var currentIframeSrc = iframeElement.attr('src');
-      var newIframeSrc = _visualizationChooserUrl(componentProperties.vif.datasetUid);
-      var insertButton = _dialog.find(
-        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
-      );
+    function _renderConfigureVisualizationData(componentType, componentProperties) {
+      if (componentProperties.dataset) {
+        var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
+        var currentIframeSrc = iframeElement.attr('src');
+        var newIframeSrc = _visualizationChooserUrl(componentProperties.dataset.datasetUid);
 
-      if (currentIframeSrc !== newIframeSrc) {
-        iframeElement.
-          attr('src', newIframeSrc).
-          one('load', function() {
-            $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
-          });
-      }
-
-      if (_isVisualizationValid(componentProperties)) {
-        insertButton.prop('disabled', false);
+        if (currentIframeSrc !== newIframeSrc) {
+          iframeElement.
+            attr('src', newIframeSrc).
+            one('load', function() {
+              $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
+            });
+        }
       } else {
-        insertButton.prop('disabled', true);
+        var insertButton = _dialog.find(
+          '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
+        );
+
+        if (componentType) {
+          insertButton.prop('disabled', false);
+        } else {
+          insertButton.prop('disabled', true);
+        }
       }
     }
 
     /**
      * Small helper functions
      */
-
-    function _isVisualizationValid(componentProperties) {
-      // columnName will only be added once a valid column is selected.
-      return componentProperties.hasOwnProperty('vif') && componentProperties.vif.hasOwnProperty('columnName');
-    }
 
     function _datasetChooserUrl() {
       return encodeURI(

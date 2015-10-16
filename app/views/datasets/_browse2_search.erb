@@ -3,11 +3,9 @@
   <form class="browse2-search">
     <span class="browse2-search-icon icon-search"></span>
     <input class="browse2-search-control searchBox" type="text" name="browseSearch" value="<%= opts[:q] %>" title="<%= t('controls.browse.browse2.search.title') %>" placeholder="<%= t('controls.browse.browse2.search.placeholder') %>" />
-
     <%- if clear_search_url.present? -%>
       <a href="<%= clear_search_url %>" class="browse2-clear-search-icon"><span class="icon"></span></a>
     <%- end -%>
-
   </form>
 
 <%- end -%>

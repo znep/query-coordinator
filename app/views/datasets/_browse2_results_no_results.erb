@@ -3,23 +3,7 @@
     <%= opts[:no_results_text] %>
   </span>
 
-  <%-
-    if (
-      CurrentDomain.module_enabled?(:dataset_nomination) &&
-      !opts[:suppress_dataset_creation]
-    )
-  -%>
-
-    <%=
-      render(
-        :partial => 'datasets/browse2_suggest_dataset',
-        :locals => {
-          :opts => opts
-        }
-      )
-    %>
-
-  <%-
-    end
-  -%>
+  <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !opts[:suppress_dataset_creation] -%>
+    <%= render :partial => 'datasets/browse2_suggest_dataset', :locals => { :opts => opts } %>
+  <%- end -%>
 </div>

@@ -1,8 +1,5 @@
 <div class="<%= result_classes %>" data-view-id="<%= result_id %>" itemscope="itemscope" itemtype="http://schema.org/Dataset">
 
-  <!-- Settings Dropdown Menu-->
-  <!--<div class="settings menu"></div>-->
-
   <div class="browse2-result-header clearfix">
     <div class="browse2-result-title">
       
@@ -18,18 +15,14 @@
         </span>
       <%- end -%>
 
-      <%-
-        if result_is_federated
-      -%>
+      <%- if result_is_federated -%>
 
         <a class="browse2-result-federated-link" href="<%= result_federated_origin_url %>" rel="<%= result_link_rel_type %>" title="<%= t('controls.browse.browse2.federation.source', :source => result_federated_origin) %>">
           <span class="browse2-result-federated-icon icon-linked"></span>
           <%= t('controls.browse.browse2.federation.label') %>
         </a>
 
-      <%-
-        end
-      -%>
+      <%- end -%>
 
     </div>
     <div class="browse2-result-type">
@@ -37,11 +30,6 @@
       <span class="browse2-result-type-name">
         <%= result_display_title %>
       </span>
-      <!--
-        <button class="settings-icon <%= result_id %>" title="<%= t('controls.browse.browse2.settings.title') %>">
-          <%= t('controls.browse.browse2.settings.label') %>
-        </button>
-      -->
     </div>
   </div>
 
@@ -106,26 +94,20 @@
 
   <div class="browse2-result-metrics">
 
-    <%-
-      if result_last_updated.present?
-    -%>
+    <%- if result_last_updated.present? -%>
 
-    <div class="browse2-result-last-updated">
-      <div class="browse2-result-last-updated-label">
-        <%= t('controls.browse.browse2.last_updated.label') %>
+      <div class="browse2-result-last-updated">
+        <div class="browse2-result-last-updated-label">
+          <%= t('controls.browse.browse2.last_updated.label') %>
+        </div>
+        <div class="browse2-result-last-updated-value">
+          <%= result_last_updated %>
+        </div>
       </div>
-      <div class="browse2-result-last-updated-value">
-        <%= result_last_updated %>
-      </div>
-    </div>
 
-    <%-
-      end
-    -%>
+    <%- end -%>
 
-    <%-
-      if result_view_count.present?
-    -%>
+    <%- if result_view_count.present? -%>
 
       <div class="browse2-result-view-count">
         <div class="browse2-result-view-count-label">
@@ -136,12 +118,24 @@
         </div>
       </div>
 
-    <%-
-      end
-    -%>
-
+    <%- end -%>
   </div>
 
   <div class="browse2-result-footer">
+
+    <div class="browse2-result-odn">
+      <span class="browse2-result-odn-prompt">
+        <%= t('controls.browse.browse2.odn.prompt') %>
+      </span>
+      <a class="browse2-result-odn-link" href="<%= result_odn_link %>" title="<%= t('controls.browse.browse2.odn.link.title') %>">
+        <span class="browse2-result-odn-link-label"><%= t('controls.browse.browse2.odn.link.label') %></span>
+        <span class="browse2-result-odn-link-icon icon-external"></span>
+      </a>
+    </div>
+    <div class="browse2-result-explore">
+      <a class="browse2-result-api-link" href="<%= result_api_link %>" title="<%= t('controls.browse.browse2.api.link.title') %>">
+        <%= t('controls.browse.browse2.api.link.label') %>
+      </a>
+    </div>
   </div>
 </div>

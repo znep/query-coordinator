@@ -260,23 +260,178 @@ body {
     margin: 2em 0 2em 0;
   }
 
-  .browse2-facets-pane {
-    position: relative;
-    float: left;
-    width: 21em;
+  .browse2-facet-and-results-header {
+    padding-bottom: 0.5em;
+    overflow: hidden;
 
-    .browse2-facets-pane-header {
+    .browse2-facets-header {
       position: relative;
       display: block;
-      height: 5em;
+      float: left;
+      width: 21em;
 
       .browse2-facets-hint {
+        position: relative;
+        display: block;
         padding-top: 1.1em;
         font-size: 1.25em;
         font-weight: 300;
         color: #666;
       }
     }
+
+    .browse2-results-header {
+      position: relative;
+      display: block;
+      margin-left: 25em;
+
+      .browse2-results-title-container,
+      .browse2-results-sort-controls-container {
+        position: relative;
+        display: block;
+        float: left;
+      }
+
+      .browse2-results-title-container {
+        width: 60%;
+        padding-bottom: 0.5em;
+
+        .browse2-results-title {
+          position: relative;
+          display: inline;
+          margin-right: 0.75em;
+          font-size: 2.5em;
+          font-weight: 300;
+          color: #555;
+        }
+
+        .browse2-results-clear-controls {
+          position: relative;
+          display: inline-block;
+          margin-top: 0.5em;
+
+
+          .browse2-results-clear-control {
+            position: relative;
+            display: inline-block;
+            padding: 0.5em 0.75em;
+            font-weight: 300;
+            color: #fff;
+            background-color: #f64;
+
+            .browse2-clear-all-icon {
+              margin-left: 0.5em;
+              font-size: 0.5em;
+              font-weight: 300;
+            }
+
+            &:active,
+            &:focus {
+              text-decoration: none;
+            }
+          }
+        }
+
+        &.browse2-results-title-container-full-width {
+          width: 100%;
+        }
+      }
+
+      .browse2-results-sort-controls-container {
+        width: 40%;
+
+        .browse2-results-sort-controls {
+          position: relative;
+          display: block;
+          float: left;
+          width: 100%;
+          min-width: 20em;
+          text-align: right;
+
+          .browse2-results-sort-control-group {
+            position: relative;
+            display: inline-block;
+
+            .browse2-results-sort-control-type-label,
+            .browse2-results-sort-control-period-label {
+              display: inline-block;
+              margin: 0 1em 0 0;
+              padding: 1.9em 0 0 0;
+              color: #888;
+            }
+
+            .browse2-results-sort-control-period-label {
+              margin-left: 1em;
+            }
+
+            .browse2-results-sort-control-container {
+              position: relative;
+              display: inline-block;
+              background-color: #e8e8e8;
+              border: 1px solid $panel-border-color;
+
+              .browse2-results-sort-control {
+                position: relative;
+                width: 100%;
+                margin: 0;
+                padding: 0.5em 2.5em 0.5em 0.5em;
+                font-size: 1.25em;
+                color: #666;
+                background-color: transparent;
+                border: none;
+                border-radius: 0;
+                outline: none;
+                z-index: 1;
+                cursor: pointer;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+
+                // Hide dotted border around select element in Firefox
+                &:-moz-focusring {
+                  color: transparent;
+                  text-shadow: 0 0 0 #000;
+                }
+
+                // Hide dropdown arrow button in IE10 (and maybe above)
+                &::-ms-expand {
+                  display: none;
+                }
+              }
+
+              .browse2-results-sort-control-icon {
+                position: absolute;
+                right: 0.5em;
+                top: 0.5em;
+                font-size: 1.25em;
+                font-weight: 300;
+                color: #666;
+                z-index: 0;
+              }
+
+              &:hover {
+                background-color: #c8c8c8;
+              }
+            }
+
+            &.hidden {
+              display: none;
+            }
+          }
+        }
+      }
+
+      &.browse2-results-header-no-title {
+        .browse2-results-sort-controls-container {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .browse2-facets-pane {
+    position: relative;
+    float: left;
+    width: 21em;
 
     .browse2-facets {
       background-color: white;
@@ -302,8 +457,9 @@ body {
           .browse2-facet-section-expand-icon,
           .browse2-facet-section-contract-icon {
             position: absolute;
-            right: 0.5em;
-            top: 1.25em;
+            right: 8px;
+            top: 19px;
+            font-size: 12px;
             font-weight: 300;
             color: #666;
           }
@@ -339,9 +495,9 @@ body {
 
             .browse2-facet-section-option-clear-icon {
               position: absolute;
-              right: 0.6em;
-              top: 0.4em;
-              font-size: 1.1em;
+              right: 10px;
+              top: 8px;
+              font-size: 9px;
               font-weight: 300;
               color: #f00;
             }
@@ -396,136 +552,6 @@ body {
     background-color: transparent;
     border: none;
 
-    .browse2-results-pane-header {
-      position: relative;
-      display: block;
-      height: 5em;
-    }
-
-    .browse2-results-title-and-categories {
-      position: relative;
-      display: block;
-      float: left;
-      width: 60%;
-
-      .browse2-results-title {
-        display: inline;
-        margin-right: 0.75em;
-        font-size: 2.5em;
-        font-weight: 300;
-        color: #555;
-      }
-
-      .browse2-results-clear-all-control {
-        display: inline-block;
-        padding: 0.5em 0.75em;
-        font-weight: 300;
-        color: #fff;
-        background-color: #f64;
-        -webkit-transform: translate(0, -0.5em);
-        -moz-transform: translate(0, -0.5em);
-        -ms-transform: translate(0, -0.5em);
-        transform: translate(0, -0.5em);
-
-        .browse2-clear-all-icon {
-          margin-left: 0.5em;
-          font-size: 0.5em;
-          font-weight: 300;
-        }
-
-        &:active,
-        &:focus {
-          text-decoration: none;
-        }
-      }
-    }
-
-    .browse2-results-sort-controls {
-      position: relative;
-      display: block;
-      float: left;
-      width: 100%;
-      min-width: 20em;
-      text-align: right;
-
-      .browse2-results-sort-control-group {
-        position: relative;
-        display: inline-block;
-        margin-bottom: 1em;
-
-        .browse2-results-sort-control-type-label,
-        .browse2-results-sort-control-period-label {
-          display: inline-block;
-          margin: 0 1em 0 0;
-          padding: 1.9em 0 0 0;
-          color: #888;
-        }
-
-        .browse2-results-sort-control-period-label {
-          margin-left: 1em;
-        }
-
-        .browse2-results-sort-control-container {
-          position: relative;
-          display: inline-block;
-          background-color: #e8e8e8;
-          border: 1px solid $panel-border-color;
-
-          .browse2-results-sort-control {
-            position: relative;
-            width: 100%;
-            margin: 0;
-            padding: 0.5em 2.5em 0.5em 0.5em;
-            font-size: 1.25em;
-            color: #666;
-            background-color: transparent;
-            border: none;
-            border-radius: 0;
-            outline: none;
-            z-index: 1;
-            cursor: pointer;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-
-            // Hide dotted border around select element in Firefox
-            &:-moz-focusring {
-              color: transparent;
-              text-shadow: 0 0 0 #000;
-            }
-
-            // Hide dropdown arrow button in IE10 (and maybe above)
-            &::-ms-expand {
-              display: none;
-            }
-          }
-
-          .browse2-results-sort-control-icon {
-            position: absolute;
-            right: 0.5em;
-            top: 0.5em;
-            font-size: 1.25em;
-            font-weight: 300;
-            color: #666;
-            z-index: 0;
-          }
-
-          &:hover {
-            background-color: #c8c8c8;
-          }
-        }
-
-        &.hidden {
-          display: none;
-        }
-      }
-    }
-
-    &.hasTitle {
-      .browse2-results-sort-controls {
-        width: 40%;
-      }
-    }
-
     .browse2-results {
       position: relative;
       display: block;
@@ -536,7 +562,7 @@ body {
 
         .browse2-no-results-message {
           display: block;
-          margin-bottom: 3em;
+          margin: 2em 0 4em 0;
           font-size: 15px;
           line-height: 24px;
         }
@@ -546,7 +572,7 @@ body {
         position: relative;
         display: block;
         margin-bottom: 3em;
-        padding: 1.25em;
+        padding: 1.25em 1.25em 0 1.25em;
         background-color: white;
         border: 1px solid $panel-border-color;
 
@@ -737,7 +763,7 @@ body {
           .browse2-result-topics-and-data-types {
             display: block;
             position: relative;
-            margin: 1.5em 0 0.5em 0;
+            margin: 1.5em 0 1em 0;
           }
 
           .browse2-result-topics,
@@ -845,6 +871,75 @@ body {
             .browse2-result-view-count-value {
               font-size: 1.1em;
               color: #666;
+            }
+          }
+        }
+
+        .browse2-result-footer {
+          position: relative;
+          display: block;
+          float: left;
+          width: 100%;
+          border-top: 1px solid $panel-internal-border-color;
+
+          .browse2-result-odn,
+          .browse2-result-explore {
+            position: relative;
+            display: block;
+            float: left;
+            width: 50%;
+            font-size: 12px;
+            line-height: 42px
+          }
+
+          .browse2-result-odn {
+
+            .browse2-result-odn-prompt {
+              color: #4a4a4a;
+            }
+
+            .browse2-result-odn-link {
+
+              .browse2-result-odn-link-label {
+                color: #aaa;
+              }
+
+              .browse2-result-odn-link-icon {
+                margin-left: 0.25em;
+                color: #888;
+              }
+
+              &:hover {
+                .browse2-result-odn-link-label {
+                  text-decoration: underline;
+                }
+              }
+
+              &:active,
+              &:focus {
+                text-decoration: none;
+              }
+            }
+          }
+
+          .browse2-result-explore {
+            text-align: right;
+
+            .browse2-result-api-link {
+              color: #2c97de;
+
+              &:hover {
+                text-decoration: underline;
+              }
+
+              &:focus,
+              &:active {
+                text-decoration: none;
+              }
+
+              &:visited {
+                color: #46a;
+              }
             }
           }
         }

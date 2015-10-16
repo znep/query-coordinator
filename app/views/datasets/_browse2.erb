@@ -1,34 +1,31 @@
 <%-
-# Derive additional configuration values
-
-opts[:current_sort] = nil
-
-if opts[:sort_opts].present? && opts[:sort_opts].respond_to?('detect')
-  opts[:current_sort] = opts[:sort_opts].detect { |s| s[:value] == opts[:sortBy] }
-end
-
-opts[:show_time_period] = opts[:current_sort].nil? ? false : opts[:current_sort][:is_time_period]
-
-opts[:in_search] = false
-
-if opts[:user_params].present? && opts[:user_params][:q].present? && opts[:row_count].present?
-  opts[:in_search] = opts[:user_params][:q] && opts[:row_count]
-end
-
-using_cetera = (
-  APP_CONFIG.cetera_host.present? &&
-  User.current_user.nil? &&
-  FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search]
-)
-
-create_asset_enabled = (
-  !opts[:embedded_browse_iframe_hack] &&
-  (
-    ((CurrentDomain.user_can?(current_user, :create_datasets) ||
-    CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation]
+  using_cetera = (
+    APP_CONFIG.cetera_host.present? &&
+      User.current_user.nil? &&
+      FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search]
   )
-)
 
+  create_asset_enabled = (
+    !opts[:embedded_browse_iframe_hack] &&
+    (
+      ((CurrentDomain.user_can?(current_user, :create_datasets) ||
+      CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation]
+    )
+  )
+
+  opts[:current_sort] = nil
+
+  if opts[:sort_opts].present? && opts[:sort_opts].respond_to?('detect')
+    opts[:current_sort] = opts[:sort_opts].detect { |s| s[:value] == opts[:sortBy] }
+  end
+
+  opts[:show_time_period] = opts[:current_sort].nil? ? false : opts[:current_sort][:is_time_period]
+
+  opts[:in_search] = false
+
+  if opts[:user_params].present? && opts[:user_params][:q].present? && opts[:row_count].present?
+    opts[:in_search] = opts[:user_params][:q] && opts[:row_count]
+  end
 -%>
 
 <!-- Stylesheets -->
@@ -40,29 +37,28 @@ create_asset_enabled = (
 <!-- Container -->
 
 <%-
-# Set up classes for container
-container_classes = "browse2"
+  # Set up classes for container
+  container_classes = "browse2"
 
-if opts[:facets].length < 1
-  container_classes << " noFacets"
-end
+  if opts[:facets].length < 1
+    container_classes << " noFacets"
+  end
 
-if opts[:custom_class]
-  container_classes << " #{opts[:custom_class]}"
-end
+  if opts[:custom_class]
+    container_classes << " #{opts[:custom_class]}"
+  end
 
-if opts[:browse_in_container]
-  container_classes << " inContainer"
-end
+  if opts[:browse_in_container]
+    container_classes << " inContainer"
+  end
 
-if opts[:disable][:sort]
-  container_classes << " noSort"
-end
+  if opts[:disable][:sort]
+    container_classes << " noSort"
+  end
 
-if create_asset_enabled
-  container_classes << " create-asset"
-end
-
+  if create_asset_enabled
+    container_classes << " create-asset"
+  end
 -%>
 
 <div data-view-type="<%= opts[:view_type] %>" class="<%= container_classes %>">
@@ -78,7 +74,7 @@ end
         }
       )
     end
-  -%>
+  %>
 
   <!-- Search -->
 
@@ -107,9 +103,78 @@ end
 
   <hr class="browse2-section-separator" />
 
-  <!-- Facets -->
-
   <div class="browse2-content">
+
+    <div class="browse2-facet-and-results-header">
+
+      <!-- Facets Header -->
+
+      <div class="browse2-facets-header">
+        <%- if opts[:facets].length > 0 -%>
+          <h3 class="browse2-facets-hint"><%= t('controls.browse.browse2.facets.hint') %></h3>
+        <%- end-%>
+      </div>
+
+      <!-- Results Header -->
+
+      <%-
+        clear_facet_options = []
+
+        if opts[:q].present? ||
+          opts[:facets].any?{ |facet| opts[:user_params][facet[:param]].present? }
+
+          opts[:facets].each do |facet|
+            facet_param = facet[:param]
+
+            if opts[:user_params].include?(facet_param)
+              clear_facet_url_params = opts[:user_params].reject { |param| param == facet_param }
+
+              clear_facet_options.push({
+                :label => opts[:user_params][facet_param].titleize,
+                :url => "#{opts[:base_url]}?#{clear_facet_url_params.to_param}"
+              })
+            end
+          end
+        end
+      -%>
+
+      <div class="browse2-results-header clearfix<%= opts[:browse_in_container] ? ' browse2-results-header-no-title' : '' %>">
+
+        <!-- Results Title -->
+
+        <%=
+          if !opts[:browse_in_container]
+
+            render(
+              :partial => 'datasets/browse2_results_title',
+              :locals => {
+                :opts => opts,
+                :title_full_width => !opts[:show_catalog_sort_dropdown] || using_cetera,
+                :clear_facet_options => clear_facet_options
+              }
+            )
+          end
+        %>
+
+        <!-- Results Sort Controls -->
+
+        <%- if opts[:show_catalog_sort_dropdown] && !using_cetera -%>
+            <%=
+              render(
+                :partial => 'datasets/browse2_results_sort_controls',
+                :locals => {
+                  :opts => opts,
+                  :time_options => [
+                    { :value => 'week', :name => t('controls.browse.browse2.sort.periods.week') },
+                    { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
+                    { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
+                  ]
+                }
+              )
+            %>
+        <%- end -%>
+      </div>
+    </div>
 
     <%=
       if opts[:facets].length > 0
@@ -121,80 +186,30 @@ end
           }
         )
       end
-    -%>
+    %>
 
     <!-- Results Header -->
     <%=
       if opts[:header_config]
         render :partial => 'datasets/browse2_header', :locals => { :opts => opts }
       end
-    -%>
+    %>
 
     <!-- Results Container -->
 
     <%-
+      results_container_classes = "browse2-results-pane clearfix"
 
-    results_container_classes = "browse2-results-pane clearfix"
+      # if !opts[:browse_in_container]
+      #   results_container_classes << " hasTitle"
+      # end
 
-    if !opts[:browse_in_container]
-      results_container_classes << " hasTitle"
-    end
-
-    if opts[:show_catalog_sort_dropdown]
-      results_container_classes << " hasSort"
-    end
+      # if opts[:show_catalog_sort_dropdown]
+      #   results_container_classes << " hasSort"
+      # end
     -%>
 
     <div class="<%= results_container_classes %>">
-
-      <div class="browse2-results-pane-header">
-
-        <!-- Results Title -->
-
-        <%-
-          clear_all_url = nil
-
-          if (
-            opts[:q].present? ||
-            opts[:facets].any?{ |facet| opts[:user_params][facet[:param]].present? }
-          )
-            clear_all_query_params = opts[:user_params].reject{ |param| param == :q }
-            opts[:facets].each { |facet| clear_all_query_params.delete(facet[:param]) }
-            clear_all_url = "#{opts[:base_url]}?#{clear_all_query_params.to_param}"
-          end
-
-        -%>
-        <%=
-          if !opts[:browse_in_container]
-            render(
-              :partial => 'datasets/browse2_results_title',
-              :locals => {
-                :opts => opts,
-                :clear_all_url => clear_all_url
-              }
-            )
-          end
-        -%>
-     
-        <!-- Results Sort Controls -->
-
-        <%=
-          if opts[:show_catalog_sort_dropdown] && !using_cetera
-            render(
-              :partial => 'datasets/browse2_results_sort_controls',
-              :locals => {
-                :opts => opts,
-                :time_options => [
-                  { :value => 'week', :name => t('controls.browse.browse2.sort.periods.week') },
-                  { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
-                  { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
-                ]
-              }
-            )
-          end
-        -%>
-
-      </div>
 
       <!-- Results -->
 
@@ -257,13 +272,7 @@ end
               result_display_title = t('controls.browse.browse2.display_types.dataset')
 
             # TABLES
-            when 'table'
-              result_display_type_icon_class = 'icon-dataset'
-              result_display_title = t('controls.browse.browse2.display_types.dataset')
-            when 'fatrow'
-              result_display_type_icon_class = 'icon-dataset'
-              result_display_title = t('controls.browse.browse2.display_types.dataset')
-            when 'page'
+            when 'table', 'fatrow', 'page'
               result_display_type_icon_class = 'icon-dataset'
               result_display_title = t('controls.browse.browse2.display_types.dataset')
 
@@ -273,10 +282,7 @@ end
               result_display_title = t('controls.browse.browse2.display_types.href')
 
             # NEW_VIEW
-            when 'new_view'
-              result_display_type_icon_class = 'icon-cards'
-              result_display_title = t('controls.browse.browse2.display_types.data_lens')
-            when 'data_lens'
+            when 'new_view', 'data_lens'
               result_display_type_icon_class = 'icon-cards'
               result_display_title = t('controls.browse.browse2.display_types.data_lens')
 
@@ -296,16 +302,7 @@ end
               result_display_title = t('controls.browse.browse2.display_types.blob')
 
             # MAPS
-            when 'map'
-              result_display_type_icon_class = 'icon-map'
-              result_display_title = t('controls.browse.browse2.display_types.map')
-            when 'intensitymap'
-              result_display_type_icon_class = 'icon-map'
-              result_display_title = t('controls.browse.browse2.display_types.map')
-            when 'geomap'
-              result_display_type_icon_class = 'icon-map'
-              result_display_title = t('controls.browse.browse2.display_types.map')
-            when 'data_lens_map'
+            when 'map', 'intensitymap', 'geomap', 'data_lens_map'
               result_display_type_icon_class = 'icon-map'
               result_display_title = t('controls.browse.browse2.display_types.map')
 
@@ -315,31 +312,8 @@ end
               result_display_title = t('controls.browse.browse2.display_types.calendar')
 
             # CHARTS
-            when 'chart'
-              result_display_type_icon_class = 'icon-chart'
-              result_display_title = t('controls.browse.browse2.display_types.chart')
-            when 'annotatedtimeline'
-              result_display_type_icon_class = 'icon-chart'
-              result_display_title = t('controls.browse.browse2.display_types.chart')
-            when 'imagesparkline'
-              result_display_type_icon_class = 'icon-chart'
-              result_display_title = t('controls.browse.browse2.display_types.chart')
-            when 'areachart'
-              result_display_type_icon_class = 'icon-chart'
-              result_display_title = t('controls.browse.browse2.display_types.chart')
-            when 'barchart'
-              result_display_type_icon_class = 'icon-chart'
-              result_display_title = t('controls.browse.browse2.display_types.chart')
-            when 'columnchart'
-              result_display_type_icon_class = 'icon-chart'
-              result_display_title = t('controls.browse.browse2.display_types.chart')
-            when 'linechart'
-              result_display_type_icon_class = 'icon-chart'
-              result_display_title = t('controls.browse.browse2.display_types.chart')
-            when 'piechart'
-              result_display_type_icon_class = 'icon-chart'
-              result_display_title = t('controls.browse.browse2.display_types.chart')
-            when 'data_lens_chart'
+            when 'chart', 'annotatedtimeline', 'imagesparkline', 'areachart', 'barchart',
+              'columnchart', 'linechart', 'piechart', 'data_lens_chart'
               result_display_type_icon_class = 'icon-chart'
               result_display_title = t('controls.browse.browse2.display_types.chart')
 
@@ -363,20 +337,14 @@ end
             # is a result from Cetera or Clytemnestra/Core Server
             if using_cetera
               result_link = result.link
-              result_categories = result.categories.present? ?
-                result.categories.map(&:titleize).reject(&:empty?) :
-                []
-              result_topics = result.tags.present? ? join_and_truncate_array(result.tags.map(&:titleize).reject(&:empty?)) : nil
+              result_categories = (result.categories || []).map(&:titleize).reject(&:empty?)
+              result_topics = (result.tags || []).map(&:titleize).reject(&:empty?)
               result_last_updated = result.updatedAt.present? ? Time.iso8601(result.updatedAt).strftime('%B %-d, %Y') : nil
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             else
               result_link = result.link.present? ? result.link : view_url(result)
               result_categories = result.categories.present? ? result.categories : [ result.category_display ].compact
-              result_topics = result.tags.present? ?
-                join_and_truncate_array(
-                  result.tags.map(&:to_s).map(&:titleize).reject(&:empty?)
-                ) :
-                ''
+              result_topics = (result.tags || []).map(&:to_s).map(&:titleize).reject(&:empty?)
 
               result_last_updated = nil
               # Prefer the 'rowsUpdatedAt' timestamp over the 'viewLastModified' timestamp
@@ -386,7 +354,7 @@ end
                 result_last_updated = Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y')
               end
 
-              result_view_count = number_with_delimiter(result.viewCount)
+              result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             end
 
             if result.federated?
@@ -394,7 +362,10 @@ end
               result_federated_origin_url = "//#{result.domainCName}"
             end
 
-      -%>
+            result_odn_query_param = { :q => [ result.name, result_categories.join(' '), result_topics ].reject(&:empty?).join(' ') }.to_param
+            result_odn_link = "http://www.opendatanetwork.com/search?#{result_odn_query_param}"
+            result_api_link = "http://dev.socrata.com/foundry/#/#{result.domainCName}/#{result.id}"
+          -%>
           <%=
             render(
               :partial => 'datasets/browse2_result',
@@ -411,16 +382,18 @@ end
                 :result_categories => result_categories,
                 :result_last_updated => result_last_updated,
                 :result_view_count => result_view_count,
-                :result_topics => result_topics,
+                :result_topics => join_and_truncate_array(result_topics),
                  # Pending a way to determine the result's data types, they will be set to nil and ignored
                 :result_data_types => nil,
                 :result_is_federated => result.federated?,
                 :result_federated_origin => result.domainCName,
-                :result_federated_origin_url => result_federated_origin_url
+                :result_federated_origin_url => result_federated_origin_url,
+                :result_odn_link => result_odn_link,
+                :result_api_link => result_api_link
               }
             )
           %>
-      <%-
+        <%-
           end
         end
       -%>
@@ -429,16 +402,14 @@ end
       <!-- Results Pagination -->
 
       <div class="browse2-results-pagination-controls">
-        <%- if !opts[:view_request_timed_out] && opts[:view_count] && opts[:view_count] > 0 -%>
-          <%-
+        <%-
+          if !opts[:view_request_timed_out] && opts[:view_count] && opts[:view_count] > 0
             if !opts[:disable][:pagination]
-
               current_params_with_view_type = opts[:user_params].dup
-
               if params[:view_type] == 'browse2'
                 current_params_with_view_type[:view_type] = 'browse2'
               end
-          -%>
+            -%>
             <%=
               create_pagination(
                 opts[:view_count],
@@ -450,33 +421,22 @@ end
             %>
           <%-
             end
-          -%>
-          <%=
-            if (opts[:footer_config].nil? || opts[:footer_config].counter) && !opts[:disable][:counter]
 
-              render(
-                :partial => 'datasets/browse2_counter',
-                :locals => {
-                  :opts => opts
-                }
-              )
+            if (opts[:footer_config].nil? || opts[:footer_config].counter) &&
+              !opts[:disable][:counter]
+          -%>
+            <%= render :partial => 'datasets/browse2_counter', :locals => { :opts => opts } %>
+          <%-
             end
-          %>
-        <%- end -%>
+          end
+        -%>
       </div>
     </div>
 
     <!-- Suggest Dataset Call-to-action -->
 
     <%- if !opts[:browse_in_container] && CurrentDomain.module_enabled?(:dataset_nomination) -%>
-      <%=
-        render(
-          :partial => 'datasets/browse2_suggest_dataset',
-          :locals => {
-            :opts => opts
-          }
-        )
-      %>
+      <%= render :partial => 'datasets/browse2_suggest_dataset', :locals => { :opts => opts } %>
     <%- end -%>
   </div>
 </div>

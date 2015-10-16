@@ -439,6 +439,10 @@ en:
         suggest_dataset_verb: Suggest
       back_to_dataset: Back to Dataset
       browse2:
+        api:
+          link:
+            label: API Docs
+            title: View API documentation for this dataset
         comment_count: Number of comments
         create:
           dataset:
@@ -477,6 +481,11 @@ en:
           source: Federated from %{source}
         last_updated:
           label: Last Updated
+        odn:
+          prompt: Find Data Like This
+          link:
+            label: on the Open Data Network
+            title: Find more data like this on the Open Data Network
         results:
           count: Showing %{this} of %{total}
           cetera_count: Showing %{start}-%{end} of %{total}

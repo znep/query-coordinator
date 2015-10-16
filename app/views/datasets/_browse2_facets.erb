@@ -1,16 +1,13 @@
 <div class="browse2-facets-pane <%= facets_pane_classes %>">
   <%= raw opts[:sidebar_config].header if opts[:sidebar_config] && opts[:sidebar_config].header %>
 
-  <div class="browse2-facets-pane-header">
-    <h3 class="browse2-facets-hint"><%= t('controls.browse.browse2.facets.hint') %></h3>
-  </div>
-
   <div class="browse2-facets">
 
-    <%- opts[:facets].each do |facet| -%>
-      <%-
-        next if (facet[:options].nil? || facet[:options].length < 1) && facet[:custom_content].nil?
-      -%>
+    <%-
+      opts[:facets].
+        reject { |facet| (facet[:options].nil? || facet[:options].length < 1) && facet[:custom_content].nil? }.
+        each do |facet|
+    -%>
       <%=
         render(
           :partial => 'datasets/browse2_facet_section',
@@ -20,7 +17,6 @@
           }
         )
       %>
-
     <%- end -%>
   </div>
 </div>

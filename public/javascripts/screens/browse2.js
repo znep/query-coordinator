@@ -152,7 +152,7 @@ $(function() {
             // This isn't perfect but it should (hopefully) be
             // reliable enough that users will not totally fail to
             // create stories when they intend to do so.
-            window.location.href = '/stories/s/' + data.id + '/create';
+            window.location.href = '/stories/s/{0}/create'.format(data.id);
 
           } else {
             onError();
@@ -163,7 +163,7 @@ $(function() {
           // Next we need to publish the newly-created catalog
           // asset, since the publish action provisions a new
           // 4x4.
-          var publishUrl = '/api/views/' + data.id + '/publication.json?accessType=WEBSITE';
+          var publishUrl = '/api/views/{0}/publication.json?accessType=WEBSITE'.format(data.id);
           var publishSettings = {
             contentType: false,
             error: onError,
@@ -181,10 +181,7 @@ $(function() {
         }
       }
 
-      var newStoryName = (
-        'Untitled Story - ' +
-        (new Date().format('m-d-Y'))
-      );
+      var newStoryName = 'Untitled Story - {0}'.format(new Date().format('m-d-Y'));
 
       var newStoryData = {
         name: newStoryName,

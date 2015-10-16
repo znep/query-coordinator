@@ -6,12 +6,8 @@
   </h4>
 
   <ul class="browse2-facet-section-options">
-    <%-
-      facet[:options].each do |facet_option|
-    -%>
-
+    <%- facet[:options].each do |facet_option| -%>
       <li>
-
         <%-
           facet_option_url = nil
 
@@ -25,7 +21,6 @@
           end
 
           if opts[:strip_params] && opts[:strip_params][facet_param.to_sym]
-
             current_params_with_view_type.delete_if do |key, value|
               opts[:strip_params][facet_param.to_sym][key.to_sym]
             end
@@ -34,11 +29,9 @@
           current_params_with_view_type[facet_param.to_sym] = facet_option[:value]
 
           if facet_option_is_active
-
             current_params_with_view_type_without_facet = current_params_with_view_type.dup.reject do |param|
               param == facet[:param]
             end
-            
             facet_option_url = "#{opts[:base_url]}?#{current_params_with_view_type_without_facet.to_param}"
           else
             facet_option_url = "#{opts[:base_url]}?#{current_params_with_view_type.to_param}"
@@ -52,23 +45,13 @@
             facet_option[:text].split(' ').map(&:capitalize).join(' ') :
             facet_option[:text]
         -%>
-
         <a class="<%= facet_option_class %>" href="<%= facet_option_url %>">
           <%= facet_text %>
-
-          <%-
-            if facet_option_is_active
-          -%>
+          <%- if facet_option_is_active -%>
             <span class="browse2-facet-section-option-clear-icon icon-close-2"></span>
-          <%-
-            end
-          -%>
+          <%- end -%>
         </a>
       </li>
-
-    <%-
-      end
-    -%>
-
+    <%- end -%>
   </ul>
 </div>

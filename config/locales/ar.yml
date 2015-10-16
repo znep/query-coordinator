@@ -1,3 +1,135 @@
-# This is a generated file to pretend that we support this locale without actually supporting it.
-
-ar: {}
+ar:
+  controls:
+    browse:
+      actions:
+        about:
+          button: عن
+          title: حول هذه البيانات
+        all_options: مشاهدة الكل 
+        clear_all: إمسح كل الخيارات
+        clear_facet: "(الكل)"
+        compact_list: إظهر البيانات كقائمة مدمجة 
+        create_dataset: إنشاء أو تحميل مجموعة البيانات الخاصة بك
+        create_dataset_short: إنشاء مجموعة بيانات جديدة
+        create_dataset_shorter: مجموعة البيانات 
+        create_dataset_verb: إنشاء 
+        create_resource: إنشاء جديد بإستعمال مصادر سكراتا
+        create_resource_short: إنشاء جديد
+        create_resource_verb: إنشاء
+        create_story_short: قصة
+        dataset_subscribe: إشترك لتتمكن من تغيير نتيجة العرض هذه 
+        delete:
+          button: إمسح
+          confirm: هل أنت متأكد أنك تريد مسح مجموعة هذه %{dataset}?
+          title: إمسح هذا العنصر
+        expand_section: إضغط للتوسيع
+        less_options: عرض أقل
+        manage_api:
+          button: إدارة
+          title: تحكّم فى ال API
+        moderation:
+          accept: قبول
+          reject: رفض
+        permissions:
+          change_button:
+            private_html: إجعلها عامة
+            public_html: إجعلها خاصة
+          title: غيّ طريقة المشاهدة العامة
+        rich_list: أعرض البيانات مثل قائمة غنية 
+        share_button: ساهِم
+        subscribe: إشترك
+        suggest_dataset: لم تجد عن الذى تبحث عنه؛ إقتراح مجموعة البيانات هذه
+        suggest_dataset_short: إقتراح مجموعة البيانات
+        suggest_dataset_verb: إقتراح
+      back_to_dataset: الرجوع الى مجموعة البيانات 
+      facets:
+        categories_singular_title: فئة
+        categories_title: الفئات
+        federated_domains_singular_title: مجال
+        federated_domains_title: إتحاد المجالات
+        moderation_status:
+          accepted: قُبلت
+          pending: معلقة أو فى الإنتظا
+          rejected: إترفضت
+        moderation_status_singular_title: الإعتدال
+        moderation_status_title: حالة الإعتدال
+        topics_singular_title: الموضوع
+        topics_title: المواضيع
+        view_types:
+          apis: APIs
+          blob: الملفات والوثائق
+          calendars: التقويمات
+          charts: الرسوم البيانية
+          datasets: مجموعة البيانات
+          filters: المشاهدات المصنفة
+          forms: إستمارات 
+          href: مجموعة البيانات الخارجية
+          maps: الخرائط
+          new_view: صفحات <<دايتا لانس>>
+          new_view_help: ما هذا؟
+          pulse: نبض
+          pulse_help: تعلم عن <<نبض>>
+          story: قصص
+          story_help: قريبا
+          unpublished: البيانات غير المنشورة
+        view_types_singular_title: نوع
+        view_types_title: عرض الأنواع
+      listing:
+        comment_count: عدد التعليقات
+        federation_source: ميكرونيزيا من %{source}
+        federation_source_html: التى تقدمها %{source_link}
+        no_results: لا توجد نتائج 
+        result_count: عرض %{this} من %{total}
+        result_count_cetera: عرض %{start}-%{end} من %{total}
+        table_header:
+          name: الأسم
+          popularity: شعبية
+          rss: RSS
+          type: نوع
+        timeout: نحن آسفون. لا يمكن إسترجاع النتائج فى هذا الوقت. الرجاء المحاولة لاحقاً
+      row_results:
+        less_link: أقل
+        matching_rows: البحث عن البيانات المطابقة للصفوف
+        more_link: أكثر
+        no_matching_rows: لا توجد صفوف متطابقة
+        title_html: 'يظهر <span class="rowResultCountText"></span> من <span class="totalResultCountText"></span> المطابقة للصفوف <a href="#" class="rowSearchLink">(إعرض النتائج)</a>:'
+      search: بحث
+      sort_period_title: الترتيب بناءاّ على الفترة
+      sort_periods:
+        month: هذا الشهر
+        week: هذا الأسبوع
+        year: هذه السنة
+      sort_title: ترتيب حسب
+      sorts:
+        alpha: الأبجدى
+        comments: أكثر التعليقات
+        last_modified: تم تحديثه مؤخراً
+        most_accessed: الأكثر استخداما
+        newest: الجديد
+        oldest: الأقدم
+        rating: الأعلى تصنيفاً
+        relevance: الأكثر صلة
+      title:
+        default: إبحث وتصفح عر ض مجموعة البيانات 
+        result:
+          facet: "%{facet_type} من %{facet_value}"
+          facet_main: التصفح %{body}
+          main: النتائج %{body}
+          term: ل "%{term}"
+    common:
+      share:
+        button_prompt: إجمع البيانات مع بعضها 
+        button_tooltip: مشاركة هذه البيانات
+        networks:
+          email: إميل
+          facebook: فيسبوك
+  core:
+    analytics:
+      visit: مشهد
+      visits: عدد المشاهدات
+  screens:
+    header:
+      links:
+        account_html: سلام <span class="currentUser"></span>
+        account_tooltip: بيت
+        administration: إدارة

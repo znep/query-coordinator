@@ -529,6 +529,13 @@ javascripts:
   screen-dataset-thumbnail:
     - public/javascripts/plugins/jquery.imgareaselect.js
     - public/javascripts/screens/dataset-thumbnail.js
+  screen-classic-visualization:
+    - public/javascripts/controls/full-screen.js
+    - public/javascripts/controls/dataset-controls.js
+    - public/javascripts/plugins/lab.js
+    - public/javascripts/util/asset-loading.js
+    - public/javascripts/controls/render-type-manager.js
+    - public/javascripts/screens/classic-visualization.js
   screen-bare-dataset:
     - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/dataset-controls.js

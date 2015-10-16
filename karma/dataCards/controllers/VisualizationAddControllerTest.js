@@ -177,12 +177,16 @@ describe('VisualizationAddController', function() {
         beforeEach(function() {
           var relatedVisualizationPageMetadata = Mockumentary.createPageMetadata();
           relatedVisualizationPageMetadata.sourceVif = relatedVisualizationVIF;
-          emitRelatedVisualizationSelected(relatedVisualizationPageMetadata);
+          emitRelatedVisualizationSelected({format: 'page_metadata', data: relatedVisualizationPageMetadata});
         });
 
         it('should call onVisualizationSelected with the original VIF', function() {
           sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
-          sinon.assert.calledWithExactly(window.frameElement.onVisualizationSelected, relatedVisualizationVIF);
+          sinon.assert.calledWithExactly(
+            window.frameElement.onVisualizationSelected,
+            relatedVisualizationVIF,
+            'vif'
+          );
         });
 
         it('should set addCardSelectedColumnFieldName to the VIF\'s columnName', function() {
@@ -206,6 +210,38 @@ describe('VisualizationAddController', function() {
               done();
             }
           });
+        });
+      });
+
+      describe('with a valid classic visualization', function() {
+        var relatedVisualizationData = {
+          something: 'something'
+        };
+
+        var relatedVisualization = {
+          format: 'classic',
+          data: relatedVisualizationData
+        };
+
+        beforeEach(function() {
+          emitRelatedVisualizationSelected(relatedVisualization);
+        });
+
+        it('should call onVisualizationSelected with the original data', function() {
+          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
+          sinon.assert.calledWithExactly(
+            window.frameElement.onVisualizationSelected,
+            relatedVisualizationData,
+            'classic'
+          );
+        });
+
+        it('should set addCardSelectedColumnFieldName to null', function() {
+          expect($scope.addCardSelectedColumnFieldName).to.equal(null);
+        });
+
+        it('should set classicVisualization', function() {
+          expect($scope.classicVisualization).to.equal(relatedVisualization);
         });
       });
     });

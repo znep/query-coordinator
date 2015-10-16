@@ -4,16 +4,6 @@
   var socrata = window.socrata;
   var utils = socrata.utils;
 
-  function getCardTypeFromVisualization(visualization) {
-    utils.assert(
-      visualization.cards.length === 1,
-      'Related Visualization Selector requires exactly one card.'
-    );
-
-    var card = visualization.cards[0];
-    return card.cardType;
-  }
-
   /**
    * Lets user select from a list of a dataset's related visualizations.
    *
@@ -42,32 +32,38 @@
         };
 
         scope.shouldDisable = function(visualization) {
-          var cardType = getCardTypeFromVisualization(visualization);
-          return !_.contains(scope.supportedCardTypes, cardType);
-        };
-
-        scope.shouldDim = function(visualization) {
-          if (_.isEmpty(scope.highlightedColumns)) {
-            return false;
-          } else {
-            return !_.contains(scope.highlightedColumns, visualization.sourceVif.columnName);
-          }
+          return !_.contains(scope.supportedCardTypes, visualization.type) && visualization.format === 'page_metadata';
         };
 
         scope.shouldHighlightSourceColumn = function(visualization) {
-          return _.contains(scope.highlightedColumns, visualization.sourceVif.columnName);
+          return _.intersection(scope.highlightedColumns, visualization.columns).length > 0;
         };
 
         scope.iconClass = function(visualization) {
-          var cardType = getCardTypeFromVisualization(visualization);
+          var type = visualization.type;
 
-          return {
-            'icon-bar-chart': cardType === 'column',
-            'icon-line-chart': cardType === 'timeline',
-            'icon-map': cardType === 'feature',
-            'icon-region': cardType === 'choropleth',
-            'icon-distribution': cardType === 'histogram'
-          };
+          // This handles both Data Lens card types and classic
+          // visualization chart types.
+          switch (type) {
+            case 'column':
+            case 'stackedcolumn':
+            case 'bar':
+            case 'stackedbar':
+              return 'icon-bar-chart';
+            case 'line':
+            case 'area':
+            case 'histogram':
+              return 'icon-distribution';
+            case 'timeline':
+              return 'icon-line-chart';
+            case 'map':
+            case 'feature':
+              return 'icon-map';
+            case 'choropleth':
+              return 'icon-region';
+            default:
+              return 'icon-chart';
+          }
         };
 
         FlyoutService.register({
@@ -81,13 +77,14 @@
           // at end of list.
           var orderedVisualizations = _.chain(scope.relatedVisualizations).
             sortByAll(
-              'sourceVif.columnName',
-              'sourceVif.title'
+              'primaryColumn',
+              'title'
             ).
             groupBy(function(visualization) {
               return scope.shouldDisable(visualization);
             }
           ).value();
+
           scope.orderedVisualizations = (orderedVisualizations['false'] || []).
             concat(orderedVisualizations['true'] || []);
         }, true);

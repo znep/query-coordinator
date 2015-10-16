@@ -348,6 +348,229 @@ class ViewTest < Test::Unit::TestCase
     assert_equal(123, view.row_count)
   end
 
+  def test_visualization?
+    load_sample_data('test/fixtures/sample-data.json')
+    view = View.find('test-data')
+
+    view.stubs(:standalone_visualization? => true, :classic_visualization? => true)
+    assert(view.visualization?)
+
+    view.stubs(:standalone_visualization? => true, :classic_visualization? => false)
+    assert(view.visualization?)
+
+    view.stubs(:standalone_visualization? => false, :classic_visualization? => true)
+    assert(view.visualization?)
+
+    view.stubs(:standalone_visualization? => false, :classic_visualization? => false)
+    assert(view.visualization? == false)
+  end
+
+  def test_classic_visualization?
+    load_sample_data('test/fixtures/sample-data.json')
+    view = View.find('test-data')
+
+    view.stubs(:classic_chart? => true, :classic_map? => true)
+    assert(view.classic_visualization?)
+
+    view.stubs(:classic_chart? => true, :classic_map? => false)
+    assert(view.classic_visualization?)
+
+    view.stubs(:classic_chart? => false, :classic_map? => true)
+    assert(view.classic_visualization?)
+
+    view.stubs(:classic_chart? => false, :classic_map? => false)
+    refute(view.classic_visualization?)
+  end
+
+  def test_classic_chart?
+    load_sample_data('test/fixtures/sample-data.json')
+    view = View.find('test-data')
+
+    view.stubs(:is_tabular? => true, :displayType => 'chart')
+    assert(view.classic_chart?)
+
+    view.stubs(:is_tabular? => false, :displayType => 'chart')
+    refute(view.classic_chart?)
+
+    view.stubs(:is_tabular? => true, :displayType => 'notchart')
+    refute(view.classic_chart?)
+
+    view.stubs(:is_tabular? => false, :displayType => 'notchart')
+    refute(view.classic_chart?)
+  end
+
+  def test_classic_map?
+    load_sample_data('test/fixtures/sample-data.json')
+    view = View.find('test-data')
+
+    view.stubs(:is_tabular? => true, :displayType => 'map')
+    assert(view.classic_map?)
+
+    view.stubs(:is_tabular? => false, :displayType => 'map')
+    refute(view.classic_map?)
+
+    view.stubs(:is_tabular? => true, :displayType => 'notmap')
+    refute(view.classic_map?)
+
+    view.stubs(:is_tabular? => false, :displayType => 'notmap')
+    refute(view.classic_map?)
+  end
+
+  def test_visualization_interchange_format_v1
+    vif_fixture_string = '{"5": "five"}'
+    view = View.new
+    view.data = {
+      'viewType' => 'tabular',
+      'displayType' => 'data_lens_chart',
+      'displayFormat' => {
+        'visualization_interchange_format_v1' => vif_fixture_string
+      }
+    }
+
+    assert_equal(view.visualization_interchange_format_v1, "5" => "five")
+
+    view.stubs(:standalone_visualization? => false)
+
+    assert_raises(RuntimeError) do
+      view.visualization_interchange_format_v1
+    end
+  end
+
+  def test_display_format_columns
+    view = View.new
+    view.data = {
+      'viewType' => 'tabular',
+      'displayType' => 'data_lens_chart',
+      'displayFormat' => {
+        'valueColumns' => [{'fieldName' => '1'}],
+        'fixedColumns' => ['2'],
+        'seriesColumns' => [{'fieldName' => '3'}]
+      }
+    }
+
+    assert_equal(view.display_format_columns, ['1', '2', '3'])
+
+    view = View.new
+    view.data = {
+      'viewType' => 'tabular',
+      'displayType' => 'data_lens_chart',
+      'displayFormat' => {
+        'valueColumns' => [{'fieldName' => '1'}],
+        'fixedColumns' => ['2'],
+        'seriesColumns' => [{'fieldName' => '2'}]
+      }
+    }
+
+    assert_equal(view.display_format_columns, ['1', '2'])
+
+    view = View.new
+    view.data = {
+      'viewType' => 'tabular',
+      'displayType' => 'data_lens_chart',
+      'displayFormat' => {
+        'valueColumns' => nil,
+        'fixedColumns' => nil,
+        'seriesColumns' => nil
+      }
+    }
+
+    assert_equal(view.display_format_columns, [])
+  end
+
+  def test_to_visualization_embed_blob_for_nbe_visualization
+    stub_page_metadata = {
+      :cards => [
+        {
+          :cardType => 'columnChart',
+          :fieldName => 'source_column'
+        }
+      ]
+    }
+    StandaloneVisualizationManager.any_instance.stubs(
+      :page_metadata_from_vif => stub_page_metadata
+    )
+
+    json = {
+      'id' => 'sooo-neww',
+      'name' => 'SOOO NEW!',
+      'description' => 'i have no lawn',
+      'viewType' => 'tabular',
+      'displayType' => 'data_lens_chart',
+      'displayFormat' => {
+        'something' => 'something'
+      }
+    }
+    view = View.new(json)
+    view.stubs(
+      :visualization_interchange_format_v1 => { },
+      :newBackend? => true
+    )
+
+    assert_equal(
+      view.to_visualization_embed_blob,
+      {
+        :originalUid => 'sooo-neww',
+        :title => 'SOOO NEW!',
+        :description => 'i have no lawn',
+        :data => stub_page_metadata,
+        :format => 'page_metadata',
+        :type => 'columnChart',
+        :columns => [ 'source_column' ]
+      }
+    )
+  end
+
+  def test_to_visualization_embed_blob_for_obe_visualization
+    json = {
+      'id' => 'sooo-oldd',
+      'name' => 'SOOO OLD!',
+      'description' => 'get off my lawn',
+      'viewType' => 'tabular',
+      'displayType' => 'chart',
+      'displayFormat' => {
+        'chartType' => 'someChartType'
+      },
+      'metadata' => {
+        'renderTypeConfig' => {
+          'visible' => {
+            'table' => true,
+            'chart' => true
+          }
+        }
+      }
+    }
+
+    view = View.new(json)
+    view.stubs(
+      :display_format_columns => [ 'source_col_1', 'source_col_2' ],
+      :fetch_json => json
+    )
+
+    expected_json = json.merge(
+      'metadata' => {
+        'renderTypeConfig' => {
+          'visible' => {
+            'table' => false,
+            'chart' => true
+          }
+        }
+      }
+    )
+
+    assert_equal(
+      view.to_visualization_embed_blob,
+      {
+        :originalUid => 'sooo-oldd',
+        :title => 'SOOO OLD!',
+        :description => 'get off my lawn',
+        :data => expected_json,
+        :format => 'classic',
+        :type => 'someChartType',
+        :columns => [ 'source_col_1', 'source_col_2'],
+      }
+    )
+  end
+
   private
 
   def stub_core_server_connection

@@ -56,7 +56,7 @@
       link: function($scope, element) {
         var whereClause$ = $scope.$observe('whereClause');
         var isFiltered$ = whereClause$.map(_.isPresent);
-        var cardModel$ = $scope.$observe('model');
+        var cardModel$ = $scope.$observe('model').filter(_.isPresent);
         var dataset$ = cardModel$.observeOnLatest('page.dataset');
         var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
         var aggregation$ = cardModel$.observeOnLatest('page.aggregation');

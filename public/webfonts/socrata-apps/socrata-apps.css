@@ -24,84 +24,120 @@
 }
 
 .icon-number:before {
-	content: "\e600";
+	content: "\e61b";
 }
 .icon-dataset:before {
-	content: "\e601";
+	content: "\e61c";
 }
 .icon-cards:before {
-	content: "\e602";
+	content: "\e61d";
 }
 .icon-bar-chart:before {
-	content: "\e603";
+	content: "\e61e";
 }
 .icon-table:before {
-	content: "\e604";
+	content: "\e61f";
 }
 .icon-line-chart:before {
-	content: "\e605";
+	content: "\e620";
 }
 .icon-region:before {
-	content: "\e606";
+	content: "\e621";
 }
 .icon-map:before {
-	content: "\e607";
+	content: "\e622";
 }
 .icon-chart:before {
-	content: "\e608";
+	content: "\e623";
 }
 .icon-search:before {
-	content: "\e609";
+	content: "\e624";
 }
 .icon-expand:before {
-	content: "\e60a";
+	content: "\e625";
 }
 .icon-collapse:before {
-	content: "\e60b";
+	content: "\e626";
 }
 .icon-settings:before {
-	content: "\e60c";
+	content: "\e627";
 }
 .icon-chevron-up:before {
-	content: "\e60d";
+	content: "\e628";
 }
 .icon-chevron-down:before {
-	content: "\e60e";
+	content: "\e629";
 }
 .icon-close:before {
-	content: "\e60f";
+	content: "\e62a";
 }
 .icon-filter:before {
-	content: "\e610";
+	content: "\e62b";
 }
 .icon-warning:before {
-	content: "\e611";
+	content: "\e62c";
 }
 .icon-geo:before {
-	content: "\e612";
+	content: "\e62d";
 }
 .icon-link:before {
-	content: "\e613";
+	content: "\e62e";
 }
 .icon-italic:before {
-	content: "\e614";
+	content: "\e62f";
 }
 .icon-bold:before {
-	content: "\e615";
+	content: "\e630";
 }
 .icon-edit:before {
-	content: "\e616";
+	content: "\e631";
 }
 .icon-distribution:before {
-	content: "\e617";
+	content: "\e632";
 }
 .icon-story:before {
-	content: "\e618";
+	content: "\e633";
 }
 .icon-add:before {
-	content: "\e619";
+	content: "\e634";
 }
 .icon-info:before {
-	content: "\e61a";
+	content: "\e635";
+}
+.icon-check:before {
+	content: "\e801";
+}
+.icon-arrow-down:before {
+	content: "\e802";
+}
+.icon-arrow-left:before {
+	content: "\e803";
+}
+.icon-arrow-right:before {
+	content: "\e804";
+}
+.icon-arrow-up:before {
+	content: "\e805";
+}
+.icon-close-2:before {
+	content: "\e806";
+}
+.icon-data:before {
+	content: "\e807";
+}
+.icon-external:before {
+	content: "\e808";
+}
+.icon-linked:before {
+	content: "\e809";
+}
+.icon-official:before {
+	content: "\e80a";
+}
+.icon-tag:before {
+	content: "\e80b";
+}
+.icon-puzzle:before {
+	content: "\e80c";
 }
 

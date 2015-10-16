@@ -5,28 +5,35 @@
         <soc-option
           value="null"
           disabled="disabled"
-          ng-selected="addCardSelectedColumnFieldName === null">{{::'addCardDialog.chooseColumn' | I18n}}</soc-option>
+          ng-selected="addCardSelectedColumnFieldName === null">{{ ::'addCardDialog.chooseColumn' | I18n }}</soc-option>
         <soc-option value="null" disabled="disabled" ng-if="availableColumns.length > 0"></soc-option>
         <soc-option
-          value="{{fieldName}}"
-          title="{{::'addCardDialog.addThisCard' | I18n}}"
-          ng-repeat="fieldName in availableColumns">{{columnHumanNameFn(fieldName)}}</soc-option>
+          value="{{ fieldName }}"
+          title="{{ ::'addCardDialog.addThisCard' | I18n }}"
+          ng-repeat="fieldName in availableColumns">{{ columnHumanNameFn(fieldName) }}</soc-option>
         <soc-option value="null" disabled="disabled" ng-if="unsupportedColumns.length > 0"></soc-option>
         <soc-option
           value="null"
           disabled="disabled"
-          ng-if="unsupportedColumns.length > 0">{{::'addCardDialog.notSupported' | I18n}}</soc-option>
+          ng-if="unsupportedColumns.length > 0">{{ ::'addCardDialog.notSupported' | I18n }}</soc-option>
         <soc-option
-          value="{{fieldName}}"
-          title="{{::'addCardDialog.notSupportedLong' | I18n}}"
+          value="{{ fieldName }}"
+          title="{{ ::'addCardDialog.notSupportedLong' | I18n }}"
           disabled="disabled"
-          ng-repeat="fieldName in unsupportedColumns">-{{columnHumanNameFn(fieldName)}}</soc-option>
+          ng-repeat="fieldName in unsupportedColumns">-{{ columnHumanNameFn(fieldName) }}</soc-option>
+        <soc-option
+          title="{{ ::'addCardDialog.custom' | I18n }}"
+          class="classic-visualization-option"
+          ng-if="classicVisualization"
+          ng-selected="true">
+          {{ ::'addCardDialog.custom' | I18n }}
+        </soc-option>
       </soc-select>
     </div>
     <div class="add-card-preview customize-card-preview">
-      <div ng-if="selectedCardModel === null" class="add-card-preview-placeholder">
+      <div ng-if="selectedCardModel === null && !classicVisualization" class="add-card-preview-placeholder">
         <div class="placeholder-inner-text">
-          <span>{{addVisualizationPrompt | I18n}}</span>
+          <span>{{ addVisualizationPrompt | I18n }}</span>
         </div>
       </div>
       <div class="card-spot" ng-if="selectedCardModel !== null">
@@ -38,11 +45,11 @@
         </card>
         <div class="add-card-controls">
           <div class="card-control add-card-settings"
-            title="{{::'addCardDialog.customizePrompt' | I18n}}"
+            title="{{ ::'addCardDialog.customizePrompt' | I18n }}"
             ng-if="isCustomizableMap"
             ng-click="onCustomizeCard(selectedCardModel)">
             <span class="icon-settings"></span>
-            {{::'addCardDialog.settings' | I18n}}
+            {{ ::'addCardDialog.settings' | I18n }}
           </div>
         </div>
       </div>
@@ -55,4 +62,12 @@
       ng-show="availableCardTypes.length > 1">
     </visualization-type-selector>
   </div>
+</div>
+<div class="classic-visualization-preview" ng-show="classicVisualization">
+  <classic-visualization-previewer classic-visualization="classicVisualization">
+  </classic-visualization-previewer>
+  <p>
+    <span class="icon-info"></span>
+    <span>{{ 'addCardDialog.classicChart' | I18n }}</span>
+  </p>
 </div>

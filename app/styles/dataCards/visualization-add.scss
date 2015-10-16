@@ -28,9 +28,11 @@ $related-visualization-info-width: 100%;
 $related-visualization-title-font-size: 15px;
 $related-visualization-icon-font-size: 30px;
 $related-visualization-disabled-color: #999;
-$related-visualization-disabled-bg-color: #f2f2f2;
 $related-visualization-dim-opacity: 0.5;
 $related-visualization-dim-hover-opacity: 0.8;
+$classic-visualization-message-height: 38px;
+$classic-visualization-message-margin-top: 15px;
+$classic-visualization-message-padding-right: 20px;
 
 body.state-view-visualizationAdd {
   overflow: hidden;
@@ -94,8 +96,11 @@ body.state-view-visualizationAdd {
       }
       .card-spot {
         height: 100%;
+
         .card.preview {
           height: 100%;
+          padding: 15px 0;
+
           .card-visualization-wrapper {
             height: 100% !important;
           }
@@ -164,18 +169,16 @@ body.state-view-visualizationAdd {
           background-color: $related-visualization-list-item-hover-bg-color;
         }
 
-        &.dim {
-          opacity: $related-visualization-dim-opacity;
+        &.disabled {
+          cursor: not-allowed;
 
           &:hover {
-            opacity: $related-visualization-dim-hover-opacity;
+            background-color: white;
           }
-        }
 
-        &.disabled {
-          background-color: $related-visualization-disabled-bg-color;
-          cursor: not-allowed;
-          opacity: $related-visualization-dim-opacity;
+          .related-visualization-metadata.highlight {
+            color: $related-visualization-disabled-color;
+          }
 
           .related-visualization-icon,
           .related-visualization-info h4 {
@@ -219,10 +222,21 @@ body.state-view-visualizationAdd {
     }
 
     .related-visualization-metadata {
+      position: relative;
       color: $related-visualization-metadata-color;
 
       &.highlight {
         color: $related-visualization-secondary-color;
+
+        &::before {
+          content: '\2022';
+          display: block;
+          position: absolute;
+          left: -16px;
+          font-size: 40px;
+          top: 0;
+          line-height: 16px;
+        }
       }
     }
   }
@@ -230,4 +244,37 @@ body.state-view-visualizationAdd {
   .add-card-controls {
     display: none;
   }
+}
+
+.classic-visualization-preview p {
+  height: $classic-visualization-message-height;
+  margin: 0;
+  margin-top: $classic-visualization-message-margin-top;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding-right: $classic-visualization-message-padding-right;
+
+  span {
+    display: block;
+    float: left;
+
+    &.icon-info {
+      font-size: 20px;
+    }
+
+    & + span {
+      margin-left: 5px;
+      width: 92%;
+    }
+  }
+}
+
+classic-visualization-previewer {
+  width: calc(100% - 20px);
+  padding-right: 20px;
+  position: absolute;
+  height: calc(44vw - #{$classic-visualization-message-height} - #{$classic-visualization-message-margin-top});
+  top: 59px;
+  left: 0;
 }

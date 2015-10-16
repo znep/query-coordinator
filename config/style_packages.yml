@@ -30,6 +30,7 @@ angular-app-dataCards:
 - dataCards/feedback-panel
 - dataCards/lens-type
 - dataCards/visualization-type-selector
+- dataCards/classic-visualization-previewer
 
 ie9:
 - dataCards/ie9

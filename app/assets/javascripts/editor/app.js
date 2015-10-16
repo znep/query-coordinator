@@ -293,13 +293,7 @@ $(document).on('ready', function() {
   $('.preview-btn').storyPreviewLink();
 
   // Autosave
-  var autosave = _.debounce(function() {
-    var storySaveIsPossible = storyteller.storySaveStatusStore.isStorySavePossible();
-    if (storySaveIsPossible) {
-      storyteller.StoryDraftCreator.saveDraft(storyteller.userStoryUid);
-    }
-  }, storyteller.config.autosaveDebounceTimeInMilliseconds);
-  storyteller.storySaveStatusStore.addChangeListener(autosave);
+  storyteller.autosave = new storyteller.Autosave(storyteller.userStoryUid);
 
   // Close confirmation
   $(window).on('beforeunload', function() {

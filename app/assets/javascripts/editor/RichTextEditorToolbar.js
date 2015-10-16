@@ -64,6 +64,7 @@
 
     _createToolbar();
     _createLinkPanel();
+    _showToolbar();
 
     storyteller.dispatcher.register(function(payload) {
 
@@ -279,6 +280,10 @@
 
       _linkPanelElement = linkPanelElement;
       _element.append(linkPanelElement);
+    }
+
+    function _showToolbar() {
+      _element.addClass('visible');
     }
 
     function _updateActiveFormats(payload) {

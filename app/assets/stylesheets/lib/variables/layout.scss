@@ -80,6 +80,8 @@ $col6-block-edit-content-width-extra-large: ($main-content-width-extra-large - $
 $col8-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width) * (2/3);
 $col12-block-edit-content-width-extra-large: $main-content-width-extra-large - $block-edit-controls-width;
 
+$component-fade-in-duration: 0.5s;
+
 // Block component margin top values (these are controlled by page width, not component width)
 $media-component-small-margin-top: 1.6rem;
 $media-component-medium-margin-top: 2.4rem;

@@ -1,4 +1,26 @@
 @import 'lib/variables';
+@import 'bourbon';
+
+@include keyframes(fadeIn) {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+// .component-html already includes its own fade in.
+.component[class^="component-"]:not(.component-html),
+.component[class*=" component-"]:not(.component-html),
+#story-view .component-html {
+  @include animation(fadeIn $component-fade-in-duration);
+}
 
 @mixin centered-busy-button {
   position: absolute;

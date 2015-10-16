@@ -121,7 +121,7 @@
         clear_facet_options = []
 
         if opts[:q].present? ||
-          opts[:facets].any?{ |facet| opts[:user_params][facet[:param]].present? }
+          opts[:facets].any? { |facet| opts[:user_params][facet[:param]].present? }
 
           opts[:facets].each do |facet|
             facet_param = facet[:param]
@@ -129,10 +129,10 @@
             if opts[:user_params].include?(facet_param)
               clear_facet_url_params = opts[:user_params].reject { |param| param == facet_param }
 
-              clear_facet_options.push({
+              clear_facet_options.push(
                 :label => opts[:user_params][facet_param].titleize,
                 :url => "#{opts[:base_url]}?#{clear_facet_url_params.to_param}"
-              })
+              )
             end
           end
         end
@@ -197,19 +197,7 @@
 
     <!-- Results Container -->
 
-    <%-
-      results_container_classes = "browse2-results-pane clearfix"
-
-      # if !opts[:browse_in_container]
-      #   results_container_classes << " hasTitle"
-      # end
-
-      # if opts[:show_catalog_sort_dropdown]
-      #   results_container_classes << " hasSort"
-      # end
-    -%>
-
-    <div class="<%= results_container_classes %>">
+    <div class="browse2-results-pane clearfix">
 
       <!-- Results -->
 
@@ -337,14 +325,14 @@
             # is a result from Cetera or Clytemnestra/Core Server
             if using_cetera
               result_link = result.link
-              result_categories = (result.categories || []).map(&:titleize).reject(&:empty?)
-              result_topics = (result.tags || []).map(&:titleize).reject(&:empty?)
+              result_categories = (result.categories || []).reject(&:empty?).map(&:titleize)
+              result_topics = (result.tags || []).reject(&:empty?).map(&:titleize)
               result_last_updated = result.updatedAt.present? ? Time.iso8601(result.updatedAt).strftime('%B %-d, %Y') : nil
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             else
               result_link = result.link.present? ? result.link : view_url(result)
               result_categories = result.categories.present? ? result.categories : [ result.category_display ].compact
-              result_topics = (result.tags || []).map(&:to_s).map(&:titleize).reject(&:empty?)
+              result_topics = (result.tags || []).map(&:to_s).reject(&:empty?).map(&:titleize)
 
               result_last_updated = nil
               # Prefer the 'rowsUpdatedAt' timestamp over the 'viewLastModified' timestamp

@@ -482,13 +482,13 @@
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         var url = $.baseUrl('/resource/{0}.json'.format(datasetId));
-        url.searchParams.set('$select', 'extent({0})'.format(fieldName));
+        url.searchParams.set('$select', 'extent({0}) as extent'.format(fieldName));
         config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
 
           try {
-            var coordinates = _.get(response, 'data[0].extent_{0}.coordinates[0][0]'.format(fieldName));
+            var coordinates = _.get(response, 'data[0].extent.coordinates[0][0]'.format(fieldName));
             if (_.isDefined(coordinates)) {
               return {
                 southwest: [coordinates[0][1], coordinates[0][0]],

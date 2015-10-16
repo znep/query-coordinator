@@ -179,6 +179,7 @@ describe('addCardDialog', function() {
           $templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
 
           $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
+          $httpBackend.whenGET(/\/api\/id\/rook-king.json\?%24query=select\+count\(0\).*/).respond([]);
           $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
           $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
           $httpBackend.whenGET(/\/api\/curated_regions.*/).respond([]);

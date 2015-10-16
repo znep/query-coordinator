@@ -147,6 +147,7 @@ describe('columnAndVisualizationSelectorTest', function() {
           $httpBackend = _$httpBackend;
 
           $httpBackend.whenGET(/\/api\/curated_regions.*/).respond([]);
+          $httpBackend.whenGET(/\/api\/id\/rook-king.json\?%24query=select\+count\(0\).*/).respond([]);
 
           testHelpers.mockDirective($provide, 'card');
       }

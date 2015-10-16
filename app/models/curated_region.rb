@@ -14,6 +14,13 @@ class CuratedRegion < Model
     find(options, custom_headers, batch, is_anon)
   end
 
+  def self.find_by_view_id(view_id)
+    find({
+      :method => 'getByViewUid',
+      :viewUid => view_id
+    })
+  end
+
   def default?
     defaultFlag
   end

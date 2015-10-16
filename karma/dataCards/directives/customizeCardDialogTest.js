@@ -185,7 +185,7 @@ describe('Customize card dialog', function() {
     var cards = options.cards || [];
 
     var pageOverrides = {cards: cards};
-    var datasetOverrides = {id: 'rook-king', rowDisplayUnit: 'row', columns: COLUMNS};
+    var datasetOverrides = {id: 'rook-king', rowDisplayUnit: 'row', columns: COLUMNS, permissions: {rights: ['write']}};
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
     var outerScope = $rootScope.$new();
 
@@ -917,6 +917,8 @@ describe('Customize card dialog', function() {
       });
 
       it('should display the correct number of curated regions in the dropdown', function() {
+        ServerConfig.override('enableSpatialLensRegionCoding', true);
+
         var curatedRegions = [
           { name: 'the most curated region ever', view: { id: 'rook-king' }},
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
@@ -924,6 +926,10 @@ describe('Customize card dialog', function() {
 
         sinon.stub(CardDataService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
+        });
+
+        sinon.stub(CardDataService, 'getRowCount', function() {
+          return $q.when(10);
         });
 
         var dialog = createDialog({ card: choroplethCard });
@@ -935,16 +941,24 @@ describe('Customize card dialog', function() {
       });
 
       it('should set the computedColumn property on the card when an option is selected', function() {
+        ServerConfig.override('enableSpatialLensRegionCoding', true);
+
         var curatedRegions = [
-          { name: 'the most curated region ever', view: { id: 'mash-apes' }},
-          { name: 'the 2nd most curated region ever', view: { id: 'rook-king' }},
+          { name: 'the most curated region ever', uid: 'mash-apes', view: { id: 'mash-apes' }},
+          { name: 'the 2nd most curated region ever', uid: 'mash-apes', view: { id: 'rook-king' }},
         ];
 
         sinon.stub(CardDataService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
         });
 
+        sinon.stub(CardDataService, 'getRowCount', function() {
+          return $q.when(10);
+        });
+
         var dialog = createDialog({ card: choroplethCard });
+
+        dialog.scope.$digest();
 
         expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal('choropleth');
         dialog.element.find('option[value="rook-king"]').prop('selected', true).change();

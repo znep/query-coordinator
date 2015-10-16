@@ -3,10 +3,26 @@
   allow-filter-change="allowFilterChange"
   ng-class="{ 'card-size-1': cardSize === 1, 'card-size-2': cardSize === 2, 'card-size-3': cardSize === 3 }">
 </choropleth>
+
 <div class="visualization-render-error" ng-show="choroplethRenderError">
   <div class="row">
     <div class="span2"><span class="icon-warning"></span></div>
     <div class="span10">{{::'common.errors.mapRenderError' | I18n}}</div>
   </div>
 </div>
-<load-spinner busy="busy"></load-spinner>
+
+<div class="visualization-render-error" ng-show="isPendingColumnAddition">
+  <div class="row">
+    <div class="span2"><span class="icon-info"></span></div>
+    <div class="span10">{{::'common.pendingAddingColumn' | I18n}}</div>
+  </div>
+</div>
+
+<div class="visualization-render-error" ng-show="isPendingComputation">
+  <div class="row">
+    <div class="span2" style="position: relative"><load-spinner busy="true"></load-spinner></div>
+    <div class="span10">{{::'common.pendingComputation' | I18n}}</div>
+  </div>
+</div>
+
+<load-spinner busy="busy" ng-hide="isPendingColumnAddition || isPendingComputation || choroplethRenderError"></load-spinner>

@@ -1,11 +1,56 @@
 (function() {
   'use strict';
 
-  function visualizationTypeSelector(Constants, FlyoutService, $log, I18n, CardDataService) {
+  function visualizationTypeSelector(Constants, FlyoutService, $log, I18n, CardDataService, ServerConfig) {
 
     function initializeCuratedRegionSelector(scope, cardModel$, cardType$) {
+      var dataset$ = cardModel$.observeOnLatest('page.dataset');
       var columns$ = cardModel$.observeOnLatest('page.dataset.columns');
       var computedColumn$ = cardModel$.observeOnLatest('computedColumn');
+      var datasetRowCount$ = dataset$.
+        pluck('id').
+        flatMapLatest(CardDataService.getRowCount.bind(CardDataService)).
+        share();
+
+      scope.showDisabledCuratedRegionSection = false;
+      var regionCodingDetails$ = Rx.Observable.combineLatest(
+        dataset$,
+        datasetRowCount$,
+        function(dataset, rowCount) {
+          if (!_.includes(dataset.getCurrentValue('permissions').rights, 'write')) {
+            return {
+              enabled: false,
+              disabledMessage: I18n.addCardDialog.disabledCuratedRegionMessage.permissions,
+              showDisabledSection: true
+            };
+          }
+
+          if (rowCount > Constants.CHOROPLETH_REGION_CODE_ROW_COUNT_THRESHOLD) {
+            return {
+              enabled: false,
+              disabledMessage: I18n.addCardDialog.disabledCuratedRegionMessage.datasetTooBig,
+              showDisabledSection: true
+            };
+          }
+
+          if (!ServerConfig.get('enableSpatialLensRegionCoding')) {
+            return {
+              enabled: false,
+              disabledMessage: null,
+              showDisabledSection: false
+            };
+          }
+
+          return {
+            enabled: true,
+            disabledMessage: null,
+            showDisabledSection: false
+          };
+        }).share();
+
+      var isRegionCodingEnabled$ = regionCodingDetails$.pluck('enabled');
+      scope.$bindObservable('showDisabledCuratedRegionSection', regionCodingDetails$.pluck('showDisabledSection'));
+      scope.$bindObservable('disabledCuratedRegionMessage', regionCodingDetails$.pluck('disabledMessage'));
 
       // Only show the dropdown if the card is a choropleth.
       var isChoropleth = _.partial(_.isEqual, 'choropleth');
@@ -14,33 +59,60 @@
 
       // Retrieve the list of curated regions, used to populate the dropdown.
       var curatedRegions$ = Rx.Observable.fromPromise(CardDataService.getCuratedRegions());
-      scope.$bindObservable('curatedRegions', curatedRegions$);
-      scope.$bindObservable('showChoroplethWarning', curatedRegions$.map(_.isEmpty));
 
-      // Set the initial value of the dropdown.
-      var initialCuratedRegion$ = Rx.Observable.combineLatest(
-        columns$,
-        computedColumn$,
+      // Bootstrap initial dropdown options and selection.
+      Rx.Observable.subscribeLatest(
         curatedRegions$,
-        function(columns, computedColumn, curatedRegions) {
-          var defaultCuratedRegion = _.get(_.first(curatedRegions), 'view.id');
-
-          if (!_.isPresent(computedColumn)) {
-            return defaultCuratedRegion;
+        columns$,
+        isRegionCodingEnabled$,
+        computedColumn$.take(1),
+        function(curatedRegions, columns, isRegionCodingEnabled, computedColumn) {
+          function shouldEnableCuratedRegion(curatedRegion) {
+            var shapefileId = curatedRegion.uid;
+            return _.find(columns, {
+              computationStrategy: {
+                parameters: {
+                  region: '_{0}'.format(shapefileId)
+                }
+              }
+            });
           }
 
-          var path = '{0}.computationStrategy.parameters.region'.format(computedColumn);
-          var shapefile = _.get(columns, path);
-
-          if (_.isUndefined(shapefile)) {
-            return defaultCuratedRegion;
+          if (isRegionCodingEnabled) {
+            scope.curatedRegions = curatedRegions;
+          } else {
+            var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);
+            scope.curatedRegions = partitionedCuratedRegions[0];
+            scope.disabledCuratedRegions = partitionedCuratedRegions[1];
+            if (_.isEmpty(scope.disabledCuratedRegions)) {
+              scope.disabledCuratedRegions = null;
+              scope.showDisabledCuratedRegionSection = false;
+            }
           }
 
-          // Remove the underscore prefix from the computed column's region.
-          return shapefile.substring(1);
-        }).first();
+          var disableChoropleths = _.isEmpty(scope.curatedRegions) &&
+            (!scope.showDisabledCuratedRegionSection || _.isNull(scope.disabledCuratedRegions));
 
-      scope.$bindObservable('selectedCuratedRegion', initialCuratedRegion$);
+          if (disableChoropleths) {
+            scope.showChoroplethWarning = true;
+          } else {
+            var defaultCuratedRegion = _.get(_.first(scope.curatedRegions), 'view.id');
+
+            if (_.isPresent(computedColumn)) {
+              var path = '{0}.computationStrategy.parameters.region'.format(computedColumn);
+              var shapefile = _.get(columns, path);
+
+              if (_.isUndefined(shapefile)) {
+                scope.selectedCuratedRegion = defaultCuratedRegion;
+              } else {
+                scope.selectedCuratedRegion = shapefile.substring(1);
+              }
+            } else {
+              scope.selectedCuratedRegion = defaultCuratedRegion;
+            }
+          }
+        }
+      );
 
       // If the value of the dropdown changes, set it on the CardOptions.
       var selectedCuratedRegion$ = scope.$observe('selectedCuratedRegion');
@@ -55,6 +127,10 @@
           var computedColumn = _.findKey(columns, function(column) {
             return _.get(column, 'computationStrategy.parameters.region') === region;
           });
+
+          if (_.isUndefined(computedColumn)) {
+            computedColumn = ':@computed_region_{0}'.format(selectedCuratedRegion.replace('-', '_'));
+          }
 
           cardModel.set('computedColumn', computedColumn);
         });

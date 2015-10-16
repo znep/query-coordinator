@@ -5,7 +5,9 @@
 
     // Create helper functions that identify columns that should be hidden from the dropdown.
     var isTableColumn = _.flow(_.property('physicalDatatype'), _.partial(_.isEqual, '*'));
-    var isSystemColumn = _.property('isSystemColumn');
+    var isSystemColumn = function(column) {
+      return Dataset.isSystemColumnFieldName(column.fieldName) || _.get(column, 'isSystemColumn', false);
+    };
     var isComputedColumn = _.flow(_.property('computationStrategy'), _.isDefined);
     var isSubColumn = _.property('isSubcolumn');
 
@@ -51,7 +53,8 @@
 
     return {
       getSortedColumns$: getSortedColumns$,
-      getReadableColumnNameFn$: getReadableColumnNameFn$
+      getReadableColumnNameFn$: getReadableColumnNameFn$,
+      isSystemColumn: isSystemColumn
     };
   }
 

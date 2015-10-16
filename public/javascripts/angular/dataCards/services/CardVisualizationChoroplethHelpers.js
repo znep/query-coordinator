@@ -86,7 +86,7 @@
      *   associated with each region.
      * @param {Object} filteredDataAsHash - The aggregate filtered values
      *   associated with each region.
-     * @param {String[]} activeFilters - An array of currently-filtered regions
+     * @param {String[]} activeFilterNames - An array of currently-filtered regions
      *   keyed by id.
      *
      * @return {Object} - A GeoJSON shape file.
@@ -111,18 +111,16 @@
       activeFilterNames
     ) {
 
-      var newFeatures = geojsonRegions.features.filter(
-        function(geojsonFeature) {
-
+      var newFeatures = _.chain(_.get(geojsonRegions, 'features', [])).
+        filter(function(geojsonFeature) {
           return (
             geojsonFeature.properties.hasOwnProperty(
               Constants.INTERNAL_DATASET_FEATURE_ID
             ) &&
             geojsonFeature.properties[Constants.INTERNAL_DATASET_FEATURE_ID]
           );
-        }
-      ).map(
-        function(geojsonFeature) {
+        }).
+        map(function(geojsonFeature) {
 
           var name = geojsonFeature.
             properties[Constants.INTERNAL_DATASET_FEATURE_ID];
@@ -157,8 +155,7 @@
             properties: properties,
             type: geojsonFeature.type
           };
-        }
-      );
+        }).value();
 
       return {
         crs: geojsonRegions.crs,
@@ -171,6 +168,8 @@
     /**
      * Consolidates the given geojson data into one object.
      *
+     * @param {String} geometryLabel - The name of the property that should be
+     *   used as the 'human-readable' name for a region.
      * @param {Object} geojsonRegions - A geoJson-formatted object.
      * @param {Object[]} unfilteredData - An array of objects with 'name' and
      *   'value' keys (the unfiltered values of the data).

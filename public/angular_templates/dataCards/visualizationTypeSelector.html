@@ -37,7 +37,7 @@
   <li ng-show="availableCardTypes.indexOf('histogram') > -1">
     <button
       class="visualization-type icon-distribution"
-      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram', }"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram' }"
       ng-click="setCardType('histogram', $event)"
       data-visualization-name="distributionChart">
         <span class="icon-warning" ng-show="showHistogramColumnChartWarning"></span>
@@ -64,6 +64,21 @@
       ng-repeat="curatedRegion in curatedRegions"
       ng-selected="curatedRegion.view.id === selectedCuratedRegion">
         {{curatedRegion.name}}
+    </soc-option>
+    <soc-option
+      ng-if="showDisabledCuratedRegionSection"
+      disabled="disabled">
+    </soc-option>
+    <soc-option
+      ng-if="showDisabledCuratedRegionSection"
+      disabled="disabled"
+      ng-bind-html="disabledCuratedRegionMessage">
+    </soc-option>
+    <soc-option
+      ng-if="showDisabledCuratedRegionSection"
+      ng-repeat="curatedRegion in disabledCuratedRegions"
+      disabled="disabled">
+      {{curatedRegion.name}}
     </soc-option>
   </soc-select>
 </div>

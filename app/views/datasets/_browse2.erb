@@ -41,7 +41,7 @@ create_asset_enabled = (
 
 <%-
 # Set up classes for container
-container_classes = "browse2 browseSection"
+container_classes = "browse2"
 
 if opts[:facets].length < 1
   container_classes << " noFacets"
@@ -150,6 +150,7 @@ end
       <div class="browse2-results-pane-header">
 
         <!-- Results Title -->
+
         <%-
           clear_all_url = nil
 
@@ -182,7 +183,12 @@ end
             render(
               :partial => 'datasets/browse2_results_sort_controls',
               :locals => {
-                :opts => opts
+                :opts => opts,
+                :time_options => [
+                  { :value => 'week', :name => t('controls.browse.browse2.sort.periods.week') },
+                  { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
+                  { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
+                ]
               }
             )
           end
@@ -387,6 +393,7 @@ end
               result_classes << ' federated'
               result_federated_origin_url = "//#{result.domainCName}"
             end
+
       -%>
           <%=
             render(
@@ -399,6 +406,7 @@ end
                 :result_display_type_icon_class => result_display_type_icon_class,
                 :result_display_title => result_display_title,
                 :result_link => result_link,
+                :result_link_rel_type => view_rel_type(result, CurrentDomain, opts),
                 :result_description => result.description.present? ? view_format_description_text(result.description) : nil,
                 :result_categories => result_categories,
                 :result_last_updated => result_last_updated,
@@ -406,7 +414,7 @@ end
                 :result_topics => result_topics,
                  # Pending a way to determine the result's data types, they will be set to nil and ignored
                 :result_data_types => nil,
-                :result_is_federated => true,#result.federated?,
+                :result_is_federated => result.federated?,
                 :result_federated_origin => result.domainCName,
                 :result_federated_origin_url => result_federated_origin_url
               }
@@ -488,8 +496,8 @@ end
       <%= t('core.interstitial.leaving_explanation_html') %>
     </p>
     <div class="nameDescription">
-      <p class="dsName"></p>
-      <p class="dsDesc"></p>
+      <h3 class="browse2-external-link-title"></h3>
+      <p class="browse2-external-link-description"></p>
     </div>
     <div class="leavingLinkWrapper">
       <a class="leavingLink noInterstitial" href="#" rel="external"></a>

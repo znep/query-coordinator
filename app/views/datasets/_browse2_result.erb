@@ -7,7 +7,7 @@
     <div class="browse2-result-title">
       
       <h2 class="browse2-result-name">
-        <a class="browse2-result-name-link" href="<%= result_link %>" itemprop="url" data-search="highlight">
+        <a class="browse2-result-name-link" href="<%= result_link %>" rel="<%= result_link_rel_type %>" itemprop="url" data-search="highlight">
           <%= result_name %>
         </a>
       </h2>
@@ -22,7 +22,7 @@
         if result_is_federated
       -%>
 
-        <a class="browse2-result-federated-link" href="<%= result_federated_origin_url %>" title="<%= t('controls.browse.browse2.federation.source', :source => result_federated_origin) %>">
+        <a class="browse2-result-federated-link" href="<%= result_federated_origin_url %>" rel="<%= result_link_rel_type %>" title="<%= t('controls.browse.browse2.federation.source', :source => result_federated_origin) %>">
           <span class="browse2-result-federated-icon icon-linked"></span>
           <%= t('controls.browse.browse2.federation.label') %>
         </a>

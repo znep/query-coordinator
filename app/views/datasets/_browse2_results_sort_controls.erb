@@ -1,32 +1,42 @@
 <div class="browse2-results-sort-controls">
-  <label for="browseSortType" class="browse2-results-sort-control-label"><%= t('controls.browse.browse2.sort.label') %></label>
-  <div class="browse2-results-sort-control-container">
-    <select id="browseSortType" class="browse2-results-sort-control sortType" name="sortType">
-    <%- opts[:sort_opts].each do |sort_option| -%>
-      <%- next if !sort_option[:requires].nil? && opts[sort_option[:requires]].nil? -%>
-      <option value="<%= sort_option[:value] %>" class="<%= 'timePeriod' if sort_option[:is_time_period] %>"
-        <%= "selected='selected'" if sort_option[:value] == opts[:sortBy] %>><%= sort_option[:name] %></option>
-    <%- end -%>
-    </select>
-    <span class="browse2-results-sort-control-icon icon-arrow-down"></span>
-  </div>
-  <%- time_opts = [
-    { :value => 'week', :name => t('controls.browse.browse2.sort.periods.week') },
-    { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
-    { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
-  ] -%>
-  <%-
-    if opts[:show_time_period]
-  -%>
-    <label for="browseSortPeriod" class="browse2-results-sort-control-label"><%= t('controls.browse.browse2.sort.periods.label') %></label>
-    <select class="browse2-results-sort-control sortType" name="sortPeriod" id="browseSortPeriod">
-      <%- time_opts.each do |time_option| -%>
-        <option value="<%= time_option[:value] %>"<%= ' selected="selected"' if time_option[:value] == opts[:sortPeriod] %>>
-          <%= time_option[:name] %>
-        </option>
+  <div class="browse2-results-sort-control-group">
+    <label for="browseSortType" class="browse2-results-sort-control-type-label">
+      <%= t('controls.browse.browse2.sort.label') %>
+    </label>
+    <div class="browse2-results-sort-control-container">
+      <select id="browse2-sort-type" class="browse2-results-sort-control" name="sortType">
+      <%- opts[:sort_opts].each do |sort_option| -%>
+        <%- next if !sort_option[:requires].nil? && opts[sort_option[:requires]].nil? -%>
+        <option value="<%= sort_option[:value] %>" class="<%= 'timePeriod' if sort_option[:is_time_period] %>"
+          <%= "selected='selected'" if sort_option[:value] == opts[:sortBy] %>><%= sort_option[:name] %></option>
       <%- end -%>
-    </select>
+      </select>
+      <span class="browse2-results-sort-control-icon icon-arrow-down"></span>
+    </div>
+  </div>
+
   <%-
-    end
+    #if opts[:show_time_period]
   -%>
+
+    <div class="browse2-results-sort-control-group <%= 'hidden' if !opts[:show_time_period] %>">
+      <label for="browseSortPeriod" class="browse2-results-sort-control-period-label">
+        <%= t('controls.browse.browse2.sort.periods.label') %>
+      </label>
+      <div class="browse2-results-sort-control-container">
+        <select id="browse2-sort-period" class="browse2-results-sort-control" name="sortPeriod">
+          <%- time_options.each do |time_option| -%>
+            <option value="<%= time_option[:value] %>"<%= ' selected="selected"' if time_option[:value] == opts[:sortPeriod] %>>
+              <%= time_option[:name] %>
+            </option>
+          <%- end -%>
+        </select>
+        <span class="browse2-results-sort-control-icon icon-arrow-down"></span>
+      </div>
+    </div>
+
+  <%-
+    #end
+  -%>
+
 </div>

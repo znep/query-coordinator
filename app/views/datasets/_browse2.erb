@@ -235,7 +235,7 @@
 
             result_classes = 'browse2-result clearfix'
 
-            result_display_title = t('controls.browse.browse2.display_types.unknown')
+            result_display_title = nil
             result_display_type_icon_class = ''
 
             # From `core-misc`:
@@ -345,14 +345,15 @@
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             end
 
+            result_odn_query_param = { :q => [ result.name, result_categories.join(' '), result_topics ].reject(&:empty?).join(' ') }.to_param
+            result_odn_link = "http://www.opendatanetwork.com/search?#{result_odn_query_param}"
+            result_api_link = "http://dev.socrata.com/foundry/#/#{CurrentDomain.cname}/#{result.id}"
+
             if result.federated?
               result_classes << ' federated'
               result_federated_origin_url = "//#{result.domainCName}"
+              result_api_link = "http://dev.socrata.com/foundry/#/#{result.domainCName}/#{result.id}"
             end
-
-            result_odn_query_param = { :q => [ result.name, result_categories.join(' '), result_topics ].reject(&:empty?).join(' ') }.to_param
-            result_odn_link = "http://www.opendatanetwork.com/search?#{result_odn_query_param}"
-            result_api_link = "http://dev.socrata.com/foundry/#/#{result.domainCName}/#{result.id}"
           -%>
           <%=
             render(

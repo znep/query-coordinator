@@ -10,7 +10,8 @@ class CeteraTest < Test::Unit::TestCase
         limitTo: 'tables',
         q: 'giraffes are whack!&@*!',
         limit: 10,
-        page: 4
+        page: 4,
+        metadata_tag: { 'Dataset-Information_Superhero' => 'Superman' }
       }
     end
 
@@ -21,7 +22,8 @@ class CeteraTest < Test::Unit::TestCase
         only: 'datasets',
         q: 'giraffes are whack!&@*!', # CGI.escape happens in search_views params.to_query
         limit: 10,
-        offset: 30
+        offset: 30,
+        'Dataset-Information_Superhero' => 'Superman'
       }
     end
 
@@ -76,7 +78,7 @@ class CeteraTest < Test::Unit::TestCase
         assert_match(/availability metrics/, row.description)
         assert_equal 'dataset', row.type
         assert_equal ['Administration & Finance'], row.categories
-        assert_equal [], row.tags
+        assert_equal ['administration', 'finance'], row.tags
       end
 
       def test_cetera_result_row_other_methods

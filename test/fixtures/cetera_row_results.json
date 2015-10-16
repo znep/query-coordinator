@@ -6,7 +6,12 @@
             "economy"
         ],
         "tags": [],
-        "domain_category": "Administration & Finance"
+        "domain_category": "Administration & Finance",
+        "domain_tags": ["administration", "finance"],
+        "domain_metadata": [
+            { "key": "potter", "value": "palmer" },
+            { "key": "black", "value": "sox"}
+        ]
     },
     "link": "https://data.cityofchicago.org/d/r8ea-mq83",
     "metadata": {

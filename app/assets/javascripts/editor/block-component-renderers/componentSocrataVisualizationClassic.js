@@ -36,8 +36,15 @@
     // This guard is to wait for loading.
     // The iframe load event above should invoke _updateVisualization again.
     if (_.isFunction($iframe[0].contentWindow.renderVisualization)) {
+
+      // Don't re-render if we've already rendered this visualization.
       if ($iframe.data('classic-visualization') !== componentData.value.visualization) {
         $iframe.data('classic-visualization', componentData.value.visualization);
+
+        // The iframe we're using goes to a frontend endpoint: /component/visualization/v0/show.
+        // This endpoint contains a function on window called renderVisualization.
+        // renderVisualization kicks off a classic visualization rendering using a view
+        // metadata object. See the frontend implementation for more information.
         $iframe[0].contentWindow.renderVisualization(componentData.value.visualization);
       }
     }

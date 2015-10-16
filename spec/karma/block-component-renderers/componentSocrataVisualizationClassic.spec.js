@@ -59,5 +59,15 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
       };
     });
 
+    it('should render a classic visualization once if the visualization doesn\'t change', function() {
+      var iframe = $component.find('iframe');
+      iframe[0].contentWindow.renderVisualization = sinon.spy();
+
+      // Try to force another render with the same data.
+      $component.componentSocrataVisualizationClassic(validComponentData);
+      $component.componentSocrataVisualizationClassic(validComponentData);
+
+      assert(iframe[0].contentWindow.renderVisualization.calledOnce);
+    });
   });
 });

@@ -971,6 +971,8 @@
         configureVisualizationIframe.
           trigger('visualizationSelected', {
             data: datasetObj,
+
+            // format can either be 'classic' or 'vif'.
             format: format
           });
       };

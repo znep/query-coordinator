@@ -108,7 +108,7 @@
         filter(function(cardModel) {
           return String(cardModel.uniqueId) === uniqueIdOfCardToExport;
         }).map(function(cardModel) {
-          var visualizationType = cardModel.getCurrentValue('visualizationType');
+          var visualizationType = cardModel.getCurrentValue('cardType');
           var vif = {
             aggregation: {
               field: pageModel.getCurrentValue('primaryAmountField'),

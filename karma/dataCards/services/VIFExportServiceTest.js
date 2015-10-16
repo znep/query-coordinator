@@ -33,7 +33,7 @@ describe('VIFExportService', function() {
     return pageModel.
       getCurrentValue('cards').
       filter(function(cardModel) {
-        return cardType === cardModel.getCurrentValue('visualizationType');
+        return cardType === cardModel.getCurrentValue('cardType');
       }).map(function(cardModel) {
         return cardModel.uniqueId;
       })[0];

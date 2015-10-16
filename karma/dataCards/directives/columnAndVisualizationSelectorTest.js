@@ -430,8 +430,8 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     it('should not include computed columns', function() {
       var newColumns = {
-        ':@computed_column': {computationStrategy: {}},
-        'normal_column': {}
+        ':@computed_column': {computationStrategy: {}, fieldName: ':@computed_column'},
+        'normal_column': {fieldName: 'normal_column'}
       };
 
       directive.scope.page.
@@ -515,24 +515,6 @@ describe('columnAndVisualizationSelectorTest', function() {
       makeAllColumnsUnsupported();
 
       expect(directive.scope.unsupportedColumns).to.deep.equal(currentColumnFieldNames);
-    });
-
-
-    it('not include subcolumns unless their defaultCardType is `invalid`', function() {
-      var newColumns = _.mapValues(currentColumns, function(column) {
-        column = _.cloneDeep(column);
-        column.isSubcolumn = true;
-        return column;
-      });
-
-      newColumns['bar'].defaultCardType = 'invalid';
-
-      directive.scope.page.
-        getCurrentValue('dataset').
-        set('columns', newColumns);
-
-      expect(directive.scope.unsupportedColumns).to.have.length(1);
-      expect(directive.scope.unsupportedColumns).to.include('bar');
     });
 
     it('should not include system columns', function() {

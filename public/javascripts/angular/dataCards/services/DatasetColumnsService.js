@@ -3,6 +3,12 @@
 
   function DatasetColumnsService(Dataset) {
 
+    // Create helper functions that identify columns that should be hidden from the dropdown.
+    var isTableColumn = _.flow(_.property('physicalDatatype'), _.partial(_.isEqual, '*'));
+    var isSystemColumn = _.property('isSystemColumn');
+    var isComputedColumn = _.flow(_.property('computationStrategy'), _.isDefined);
+    var isSubColumn = _.property('isSubcolumn');
+
     // Returns an observable containing the columns of a page's dataset,
     // sorted in the order they appear in the table.
     // Excludes system columns but retains computed columns.
@@ -11,14 +17,9 @@
         $observe('page').observeOnLatest('dataset.columns').
         map(function(columns) {
 
-          // Create helper functions that identify columns that should be hidden from the dropdown.
-          var isTableColumn = _.flow(_.property('physicalDatatype'), _.partial(_.isEqual, '*'));
-          var isSystemColumn = _.property('isSystemColumn');
-          var isComputedColumn = _.flow(_.property('computationStrategy'), _.isDefined);
-
           // Combine them into a function that returns true if a column should be hidden from the dropdown.
           function shouldHideColumnFromDropdown(column) {
-            return isTableColumn(column) || isSystemColumn(column) || isComputedColumn(column);
+            return isTableColumn(column) || isSystemColumn(column) || isComputedColumn(column) || isSubColumn(column);
           }
 
           // Given an array of ['fieldName', {columnInfo}] pairs, turn it into an array of

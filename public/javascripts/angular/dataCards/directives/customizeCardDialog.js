@@ -87,13 +87,7 @@
       scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$(scope));
 
       scope.$bindObservable('titleColumnOptions', DatasetColumnsService.getSortedColumns$(scope).map(function(sortedColumns) {
-        return _.reduce(sortedColumns, function(result, column) {
-          // Exclude subcolumns so as to only reflect the columns in the dataset table.
-          if (!column.columnInfo.isSubcolumn) {
-            result.push(column.fieldName);
-          }
-          return result;
-        }, []);
+        return _.pluck(sortedColumns, 'fieldName');
       }));
 
       // Initialize selection to the existing flannel title column.

@@ -197,6 +197,8 @@ dataset-upload:
 - screen-dataset-upload
 dataset-bare:
 - screen-dataset-bare
+screen-classic-visualization:
+- screen-classic-visualization
 error-pages:
 - screen-error-pages
 internal:

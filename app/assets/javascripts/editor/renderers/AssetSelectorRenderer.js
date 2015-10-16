@@ -139,7 +139,7 @@
         function(event, selectedVisualization) {
           storyteller.dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
-            vif: selectedVisualization
+            visualization: selectedVisualization
           });
         }
       );
@@ -962,38 +962,44 @@
         'class': 'asset-selector-button-group r-to-l'
       }).append([ backButton, insertButton ]);
 
-      configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj) {
+      configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format) {
         // This function is called by the visualization chooser when:
         //   - The user makes or clears a selection (argument is either null or a visualization).
         //   - The page finishes loading (argument is null).
         // In either case, we should consider the iframe loaded.
         configureVisualizationIframe.
-          trigger('visualizationSelected', datasetObj);
+          trigger('visualizationSelected', {
+            data: datasetObj,
+            format: format
+          });
       };
 
       return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];
     }
 
     function _renderConfigureVisualizationData(componentProperties) {
-      var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
-      var currentIframeSrc = iframeElement.attr('src');
-      var newIframeSrc = _visualizationChooserUrl(componentProperties.vif.datasetUid);
-      var insertButton = _dialog.find(
-        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
-      );
+      if (componentProperties.dataset) {
+        var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
+        var currentIframeSrc = iframeElement.attr('src');
+        var newIframeSrc = _visualizationChooserUrl(componentProperties.dataset.datasetUid);
 
-      if (currentIframeSrc !== newIframeSrc) {
-        iframeElement.
-          attr('src', newIframeSrc).
-          one('load', function() {
-            $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
-          });
-      }
-
-      if (_isVisualizationValid(componentProperties)) {
-        insertButton.prop('disabled', false);
+        if (currentIframeSrc !== newIframeSrc) {
+          iframeElement.
+            attr('src', newIframeSrc).
+            one('load', function() {
+              $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
+            });
+        }
       } else {
-        insertButton.prop('disabled', true);
+        var insertButton = _dialog.find(
+          '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
+        );
+
+        if (_isVisualizationValid(componentProperties)) {
+          insertButton.prop('disabled', false);
+        } else {
+          insertButton.prop('disabled', true);
+        }
       }
     }
 
@@ -1003,7 +1009,17 @@
 
     function _isVisualizationValid(componentProperties) {
       // columnName will only be added once a valid column is selected.
-      return componentProperties.hasOwnProperty('vif') && componentProperties.vif.hasOwnProperty('columnName');
+      return _isVIF(componentProperties) || _isClassicVisualization(componentProperties);
+    }
+
+    function _isVIF(componentProperties) {
+      return componentProperties.hasOwnProperty('vif') &&
+        componentProperties.vif.hasOwnProperty('type');
+    }
+
+    function _isClassicVisualization(componentProperties) {
+      return componentProperties.hasOwnProperty('visualization') &&
+        componentProperties.visualization.hasOwnProperty('displayFormat');
     }
 
     function _datasetChooserUrl() {

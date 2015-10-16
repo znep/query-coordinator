@@ -29,8 +29,10 @@
           if (href !== '#') {
             var button = $('.dataLensPaneContentWrapper .finishButtons .button');
 
-            button.toggleClass('disabled');
+            button.removeClass('disabled');
             button.attr('href', href);
+          } else {
+            button.addClass('disabled');
           }
         });
       });

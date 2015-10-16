@@ -364,6 +364,7 @@ manage-lens-dialog-v2 {
         }
       }
       textarea.optional-message {
+        overflow: auto;
         height: 5rem;
         padding: 0.5rem;
         box-sizing: border-box;

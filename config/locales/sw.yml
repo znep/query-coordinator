@@ -48,8 +48,13 @@ sw:
         card_on_page:
         card_on_page_long:
         choose_column:
+        choropleth_warning:
+        classic_chart:
         column_chart_warning:
+        custom:
         customize_prompt:
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported:
         not_supported_long:
         prompt:
@@ -95,11 +100,15 @@ sw:
         remove_card:
       card_layout:
         add_card_here:
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average:
         number_of:
         sum_of:
       common:
+        by:
         cancel:
         cards:
           choropleth:
@@ -117,6 +126,7 @@ sw:
           export_visualization_disabled:
           invalid_card:
           map_render_error:
+        export:
         latitude:
         longitude:
         no_value:
@@ -136,10 +146,23 @@ sw:
         customizing_flyout:
         customizing_flyout_instructions:
         exit_visualization_export:
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom:
-          standard:
+          simple_blue:
+          simple_grey:
           title:
         visualization_options:
           title:
@@ -149,8 +172,22 @@ sw:
         errors:
           error:
           no_data:
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled:
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken:
         feedback:
@@ -174,10 +211,13 @@ sw:
         clear_filter_long:
         clear_range_filter_long:
         current_filter:
+        dense_data:
         details:
         expand:
+        filter_prompt:
         filtered_amount:
         total:
+        zoom_or_filter_prompt:
       last_updated:
         label:
       lens_type:
@@ -188,7 +228,44 @@ sw:
         dataset_private_page_public:
         dataset_public_page_private:
         dataset_public_page_public:
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title:
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv:
         edit_description_prompt:
@@ -217,6 +294,16 @@ sw:
       related_views:
         button:
         title:
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges:
         flyoutNoChanges:
@@ -229,6 +316,7 @@ sw:
         link_placeholder:
         underline:
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody:
         flyoutFailedTitle:
         flyoutIdle:
@@ -238,6 +326,9 @@ sw:
         description:
         new_name:
         title:
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed:
         flyoutFailedBody:
@@ -247,7 +338,19 @@ sw:
         save:
         saved:
         saving:
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search:
         loading:
         no_results:
@@ -258,6 +361,7 @@ sw:
         two_examples:
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -272,6 +376,7 @@ sw:
         newest_first:
         no_rows:
         no_sort:
+        non_range_label:
         oldest_first:
         range_label:
         range_label_all:
@@ -354,7 +459,8 @@ sw:
           href: Setidata za Nje
           maps: Ramani
           new_view:
-          new_view_help:
+          pulse:
+          pulse_help:
           story:
           story_help:
           unpublished: Setidata Ambayo haijachapishwa
@@ -366,6 +472,7 @@ sw:
         federation_source_html: Imetolewa na %{source_link}
         no_results: Hakuna Matokeo
         result_count: Kuonyesha %{this} kwa %{total}
+        result_count_cetera:
         table_header:
           name: Jina
           popularity: Umaarufu
@@ -787,10 +894,14 @@ sw:
       flag: Bendera
       geospatial: Jiografia ya Sehemu
       html: Maandiko Yaliyoundwa
+      line:
       link: Unga Safu
       list: Orodha
       location: Mahali
       money: Hela
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: Jedwali lenye umbo la kiota
       number: Namba
       object: Madhumuni
@@ -798,6 +909,7 @@ sw:
       phone: Simu
       photo: Picha (Picha)
       point:
+      polygon:
       stars: Nyota
       text: Maandiko ya Kawaida
       url: URL ya Tovuti
@@ -847,6 +959,7 @@ sw:
       years_past: "%{time} miaka iliyopita"
     dialogs:
       apply: Tumia
+      back:
       cancel: Batilisha
       close: Funga
       continue: Endelea
@@ -1211,9 +1324,15 @@ sw:
       date_range: Safu ya Tarehe
       done: Imefanywa
       end_date: Tarehe ya Mwisho
+      last_30_days:
       last_month: Mwezi Uliopita
+      last_week:
+      last_year:
       month_to_date: Mwezi kwenda Tarehe
       next: Ijayo
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: Iliyotangulia
       specific_date: Tarehe Maalumu
       start_date: Tarehe ya kuanza
@@ -1223,6 +1342,7 @@ sw:
       today: Leo
       week_to_date: Wiki kwenda Tarehe
       year_to_date: Mwaka kwenda Tarehe
+      yesterday:
     fileuploader:
       drop_files: Dondosha nyaraka hapa ili kupakia
       failed: Imeshindwa
@@ -1377,6 +1497,48 @@ sw:
         target_domain: Jina la mtumiaji Likusudiwalo
         terminate: Simamisha
         title: Fungua Muungano wa Data
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: Ongeza Setidata Mpya Iliyoonyeshwa
         are_you_sure: Je, una uhakika? Tendo hili haliwezi kubatilishwa
@@ -1555,6 +1717,9 @@ sw:
         missing_esri_url: URL halali ya tabaka la ramani ESRI inahitajika.
         missing_name: Jina la Setidata linahitajika.
         need_description: Tafadhali elezea “%{name}”
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: Setidata Yako imeundwa.
         subheadline: Kuiona bofya kwenye Maliza!
@@ -1861,6 +2026,9 @@ sw:
             flag: bendera
             formatted_text: 'maandiko '
             geospatial: jiografia ya mahali
+            groups:
+              geometry:
+              standard:
             list: orodha
             location: mahali
             money: hela
@@ -2101,6 +2269,9 @@ sw:
             abbreviated: Imefupishwa
             currency: Fedha
             format_mask_warning: bila
+            groups:
+              all:
+              common:
             no_precision: Hakuna
             precision: Usahihi
             title: Umbo la Hela
@@ -2165,6 +2336,10 @@ sw:
           validation:
             no_columns: Mtazamo huu hauna safu za kuchuja
             no_icons: Ikoni zinahusika na mwonekano wa ramani tu
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: Hii itafuta %{view_type} kwa kudumu. Hakuna ubatilishaji! Je, una uhakika unataka kuendelea?
           delete_button: |
@@ -2379,6 +2554,8 @@ sw:
           subtitle: Rekebisha safu zipi zionekane katika mwonekano huu
           title: |
             Onyesha &amp; Ficha Safu
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: Ongeza Safu ya Upangaji
@@ -2590,6 +2767,7 @@ sw:
       existing_latlng_cols: Safu za Longitudo na Latitudo Zilizopo
       find: pata
       find_and_replace: Pata na Badilisha thamani…
+      import_from_latlong:
       import_from_multiple: Leta kutoka <strong>safu nyingi</strong>
       import_from_single: Leta kutoka <strong>safu moja</strong>
       latitude: Latitudo
@@ -2603,6 +2781,7 @@ sw:
       new_source_col: Ongeza safu mpya ya chanzo
       new_transform: Ongeza mgeuzo mpya
       options: Chaguzi
+      point_source_col:
       properly_formatted: Safu sharti iwe <a href="%{formatting_link}" rel="external">imeumbwa sawasawa</a> kabla ya kuleta.
       regular_expression: Maelezo ya kawaida
       remove: ondoa
@@ -2632,6 +2811,7 @@ sw:
       problem_importing: Tatizo limetokea wakati wa kuleta faili hilo. Tafadhali hakikisha ni halali.
       problem_uploading: |
         Tatizo limetokea wakati wa kupakia faili hilo. Tafadhali hakikisha ni halali.
+      replicating:
       rows_imported: "%{num} mistari iliyoletwa mpaka sasa."
       try_again: Tafadhali jaribu tena baadaye.
       unknown_error: Kosa lisilojulikana limetokea
@@ -2832,6 +3012,10 @@ sw:
       comments_created: Maoni yaliyoundwa
       daily: Kila siku
       deleted_application: programu iliyofutwa
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: Vipimo Vitegemeavyo
       download: ilipakuliwa
       downloads: vilipakuliwa
@@ -2856,6 +3040,7 @@ sw:
       no_data_time_period: Hakuna data kwa kipindi hichi
       page_viewed: ukurasa ulitazamwa
       pages_viewed: 'kurasa zilitazamwa '
+      preceding_period:
       referrals: Rufaa
       rows_loaded: Mistari Ilipakizwa
       sdp: SDP

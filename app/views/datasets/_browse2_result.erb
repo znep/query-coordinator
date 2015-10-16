@@ -47,8 +47,20 @@
 
   <div class="browse2-result-metadata">
     <%- if result_description.present? -%>
-      <div class="browse2-result-description">
-        <div data-search="highlight"><%= result_description %></div>
+      <div class="browse2-result-description-container">
+        <div class="browse2-result-description">
+          <div data-search="highlight"><%= result_description %></div>
+        </div>
+        <div class="browse2-result-truncation-toggle-control">
+          <span class="browse2-result-truncation-toggle-show-more-label">
+            <span class="browse2-result-truncation-toggle-show-more-icon icon-arrow-down"></span>
+            <%= t('controls.browse.browse2.description.show_more_label') %>
+          </span>
+          <span class="browse2-result-truncation-toggle-show-less-label">
+            <span class="browse2-result-truncation-toggle-show-more-icon icon-arrow-up"></span>
+            <%= t('controls.browse.browse2.description.show_less_label') %>
+          </span>
+        </div>
       </div>
     <%- end -%>
 
@@ -93,6 +105,11 @@
   </div>
 
   <div class="browse2-result-metrics">
+
+    <%-
+      if result_last_updated.present?
+    -%>
+
     <div class="browse2-result-last-updated">
       <div class="browse2-result-last-updated-label">
         <%= t('controls.browse.browse2.last_updated.label') %>
@@ -101,6 +118,10 @@
         <%= result_last_updated %>
       </div>
     </div>
+
+    <%-
+      end
+    -%>
 
     <%-
       if result_view_count.present?

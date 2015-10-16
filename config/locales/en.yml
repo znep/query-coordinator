@@ -441,15 +441,19 @@ en:
       browse2:
         comment_count: Number of comments
         create:
-          title: Create a New Socrata Resource
           dataset:
             label: Create/Upload a Dataset
             title: Create or upload a dataset to the Socrata platform
+          label: Add New
           story:
             label: Create a Socrata Story
             title: Create a new Socrata Story
+          title: Create a New Socrata Resource
         data_types:
           label: Data Types
+        description:
+          show_more_label: Show More
+          show_less_label: Show Less
         display_types:
           api: API
           blob: File or Document
@@ -469,8 +473,8 @@ en:
           clear_all:
             label: Clear
         federation:
-          label: Linked
-          source: Linked from %{source}
+          label: Federated
+          source: Federated from %{source}
         last_updated:
           label: Last Updated
         results:

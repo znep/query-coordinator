@@ -737,6 +737,18 @@ $(function()
         }
     }
 
+    function toggleBrowse2CreateAssetDisplay(event) {
+        var sectionContainer = $(this).parent('.browse2-create-asset');
+        var currentDisplay = sectionContainer.attr('data-panel-display');
+
+        if (currentDisplay === 'show') {
+            sectionContainer.attr('data-panel-display', 'hide');
+            $(this).blur();
+        } else {
+            sectionContainer.attr('data-panel-display', 'show');
+        }
+    }
+
     function toggleBrowse2FacetDisplay(event) {
         var sectionContainer = $(this).parent('.browse2-facet-section');
         var currentDisplay = sectionContainer.attr('data-facet-display');
@@ -748,5 +760,45 @@ $(function()
         }
     }
 
+    function toggleBrowse2FacetDisplay(event) {
+        var sectionContainer = $(this).parent('.browse2-facet-section');
+        var currentDisplay = sectionContainer.attr('data-facet-display');
+
+        if (currentDisplay === 'show') {
+            sectionContainer.attr('data-facet-display', 'hide');
+        } else {
+            sectionContainer.attr('data-facet-display', 'show');
+        }
+    }
+
+    function toggleBrowse2DescriptionTruncation(event) {
+        var sectionContainer = $(this).parent('.browse2-result-description-container');
+        var currentDisplay = sectionContainer.attr('data-description-display');
+
+        if (currentDisplay === 'show') {
+            sectionContainer.attr('data-description-display', 'truncate');
+        } else {
+            sectionContainer.attr('data-description-display', 'show');
+        }
+    }
+
+    $('.browse2-create-asset-button').on('click', toggleBrowse2CreateAssetDisplay);
     $('.browse2-facet-section-title').on('click', toggleBrowse2FacetDisplay);
+    $('.browse2-result-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
+
+    $('.browse2-result-description').each(function(index, element) {
+        var truncationThreshold = 60;
+        var descriptionHeight = 0;
+
+        $(element).children().each(function(index, childElement) {
+            descriptionHeight += $(childElement).outerHeight(true);
+        });
+
+        if (descriptionHeight >= truncationThreshold) {
+
+            $(element).
+                parent('.browse2-result-description-container').
+                attr('data-description-display', 'truncate');
+        }
+    });
 });

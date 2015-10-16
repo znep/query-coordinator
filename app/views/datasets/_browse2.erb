@@ -18,9 +18,15 @@ end
 using_cetera = (
   APP_CONFIG.cetera_host.present? &&
   User.current_user.nil? &&
-  FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search] &&
-  params[:cetera_search].present? &&
-  params[:cetera_search] == 'true'
+  FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search]
+)
+
+create_asset_enabled = (
+  !opts[:embedded_browse_iframe_hack] &&
+  (
+    ((CurrentDomain.user_can?(current_user, :create_datasets) ||
+    CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation]
+  )
 )
 
 -%>
@@ -53,6 +59,10 @@ if opts[:disable][:sort]
   container_classes << " noSort"
 end
 
+if create_asset_enabled
+  container_classes << " create-asset"
+end
+
 -%>
 
 <div data-view-type="<%= opts[:view_type] %>" class="<%= container_classes %>">
@@ -60,14 +70,13 @@ end
   <!-- Create Asset Dropdown -->
 
   <%=
-    if (
-      !opts[:embedded_browse_iframe_hack] &&
-      (
-        ((CurrentDomain.user_can?(current_user, :create_datasets) ||
-        CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation]
+    if create_asset_enabled
+      render(
+        :partial => 'datasets/browse2_create_asset_controls',
+        :locals => {
+          :opts => opts
+        }
       )
-    )
-      render :partial => 'datasets/browse2_create_asset_controls', :locals => { :opts => opts }
     end
   -%>
 
@@ -349,21 +358,21 @@ end
             if using_cetera
               result_link = result.link
               result_categories = result.categories.present? ?
-                result.categories.map { |category| category.split(' ').map(&:capitalize).join(' ') }.select { |category| category != '' } :
+                result.categories.map(&:titleize).reject(&:empty?) :
                 []
-              result_topics = result.tags.present? ? join_and_truncate_array(result.tags.map(&:capitalize)) : nil
-              result_last_updated = Time.iso8601(result.updatedAt).strftime('%B %-d, %Y')
+              result_topics = result.tags.present? ? join_and_truncate_array(result.tags.map(&:titleize).reject(&:empty?)) : nil
+              result_last_updated = result.updatedAt.present? ? Time.iso8601(result.updatedAt).strftime('%B %-d, %Y') : nil
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             else
               result_link = result.link.present? ? result.link : view_url(result)
               result_categories = result.categories.present? ? result.categories : [ result.category_display ].compact
               result_topics = result.tags.present? ?
                 join_and_truncate_array(
-                  result.tags.map(&:to_s).map { |topic| topic.split(' ').map(&:capitalize).join(' ') }
+                  result.tags.map(&:to_s).map(&:titleize).reject(&:empty?)
                 ) :
                 ''
 
-              resulut_last_updated = nil
+              result_last_updated = nil
               # Prefer the 'rowsUpdatedAt' timestamp over the 'viewLastModified' timestamp
               if result.rowsUpdatedAt.present?
                 result_last_updated = Time.at(result.rowsUpdatedAt).to_datetime.strftime('%B %-d, %Y')
@@ -397,7 +406,7 @@ end
                 :result_topics => result_topics,
                  # Pending a way to determine the result's data types, they will be set to nil and ignored
                 :result_data_types => nil,
-                :result_is_federated => result.federated?,
+                :result_is_federated => true,#result.federated?,
                 :result_federated_origin => result.domainCName,
                 :result_federated_origin_url => result_federated_origin_url
               }

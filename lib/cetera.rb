@@ -52,7 +52,7 @@ module Cetera
         name: @resource['name'],
         description: @resource['description'],
         type: @resource['type'],
-        categories: [@classification['customerCategory']],
+        categories: [@classification['domain_category']],
         tags: @classification['tags'],
         viewCount: @resource['view_count'] && @resource['view_count']['page_views_total'].to_i,
         domainCName: @metadata['domain'],

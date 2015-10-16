@@ -1,17 +1,18 @@
-<div class="browse2-create-asset">
+<div class="browse2-create-asset" data-panel-display="hide">
+  <button class="browse2-create-asset-button" title="<%= t('controls.browse.browse2.create.title') %>">
 
-  <h3 class="browse2-create-asset-prompt">
-    <%= t('controls.browse.browse2.create.title') %>
-  </h3>
+    <span class="browse2-create-asset-icon icon-add"></span>
+    <%= t('controls.browse.browse2.create.label') %>
 
-  <a class="browse2-create-dataset-button" href="<%= new_dataset_path %>" title="<%= t('controls.browse.browse2.create.dataset.title') %>">
+  </button>
+  <div class="browse2-create-asset-panel">
 
-    <span class="browse2-create-dataset-button-icon icon-dataset"></span>
-    <%= t('controls.browse.browse2.create.dataset.label') %>
+    <a class="browse2-create-dataset-button" href="<%= new_dataset_path %>" title="<%= t('controls.browse.browse2.create.dataset.title') %>">
 
-  </a>
+      <span class="browse2-create-dataset-button-icon icon-dataset"></span>
+      <%= t('controls.browse.browse2.create.dataset.label') %>
 
-  <%- if CurrentDomain.feature_flags[:enable_stories] -%>
+    </a>
 
     <a id="create-story-button" class="browse2-create-story-button" href="#" title="<%= t('controls.browse.browse2.create.story.title') %>" data-status="ready">
 
@@ -22,7 +23,5 @@
       <span class="browse2-create-story-button-busy-spinner"></span>
 
     </a>
-
-  <%- end -%>
-
+  </div>
 </div>

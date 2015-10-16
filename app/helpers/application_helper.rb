@@ -20,7 +20,11 @@ module ApplicationHelper
       # use the view's federation resolution but throw away the rest for the resource name instead.
       developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
     elsif view.data_lens? || view.standalone_visualization?
-      "#{locale_part}/view/#{view.id}"
+      if view.federated?
+        "//#{view.domainCName}#{locale_part}/view/#{view.id}"
+      else
+        "#{locale_part}/view/#{view.id}"
+      end
     elsif view.new_view?
       begin
         # use the direct link stored in the metadata for 'new_view' display types

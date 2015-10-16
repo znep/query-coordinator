@@ -195,7 +195,7 @@ class AngularController < ActionController::Base
         when '401'
           raise AuthenticationRequired.new
         when '403'
-          raise UnauthorizedPageMetadataRequest.new
+          raise UnauthorizedDatasetMetadataRequest.new
         when '404'
           raise DatasetMetadataNotFound.new
         else

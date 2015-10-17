@@ -16,21 +16,23 @@
       <%- end -%>
 
       <%- if result_is_federated -%>
-
         <a class="browse2-result-federated-link" href="<%= result_federated_origin_url %>" rel="<%= result_link_rel_type %>" title="<%= t('controls.browse.browse2.federation.source', :source => result_federated_origin) %>">
           <span class="browse2-result-federated-icon icon-linked"></span>
           <%= t('controls.browse.browse2.federation.label') %>
         </a>
-
       <%- end -%>
 
     </div>
-    <div class="browse2-result-type">
-      <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
-      <span class="browse2-result-type-name">
-        <%= result_display_title %>
-      </span>
-    </div>
+
+    <%- if result_display_title.present? -%>
+      <div class="browse2-result-type">
+        <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
+        <span class="browse2-result-type-name">
+          <%= result_display_title %>
+        </span>
+      </div>
+    <%- end -%>
+
   </div>
 
   <div class="browse2-result-metadata">

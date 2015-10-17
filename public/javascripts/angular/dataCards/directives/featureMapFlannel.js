@@ -42,6 +42,10 @@
 
         // Format content based on data type
         function formatContentByType(content, column, isTitle) {
+          if (_.isNull(column.value)) {
+            return '';
+          }
+
           isTitle = isTitle || false;
 
           var isLatLng = column.physicalDatatype === 'point' || column.physicalDatatype === 'geo_entity';
@@ -66,6 +70,10 @@
 
         // Format an array of subcolumns under a given parent column
         scope.formatCellValue = function(column, isTitle) {
+          if (_.isNull(column.value)) {
+            return '';
+          }
+
           isTitle = isTitle || false;
 
           // Format cell value if it is a single column without subcolumns

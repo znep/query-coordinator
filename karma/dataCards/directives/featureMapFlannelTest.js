@@ -274,4 +274,26 @@ describe('feature map flannel', function() {
       expect(flannelTitle).to.equal(FORMATTED_TITLES[0]);
     });
   });
+
+  describe('with null entries', function() {
+    beforeEach(function() {
+      scope.titles = MOCK_QUERY_DEFAULT_TITLES.slice(0, 1);
+      scope.rows = MOCK_QUERY_RESPONSES.slice(0, 1);
+      scope.rows = [scope.rows[0].map(function(row) {
+        row.value = null;
+        return row;
+      })];
+      scope.queryStatus = Constants.QUERY_SUCCESS;
+      scope.$digest();
+    });
+
+    it('should render a label and an empty value', function() {
+      var dataItems = element.find('.row-data-item');
+
+      for (var idx = 0, len = dataItems.length; idx < len; idx++) {
+        expect(dataItems.eq(idx).children('.name').text()).to.not.be.empty;
+        expect(dataItems.eq(idx).children('.value').text()).to.be.empty;
+      }
+    });
+  });
 });

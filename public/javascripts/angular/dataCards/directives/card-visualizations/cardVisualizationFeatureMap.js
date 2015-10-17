@@ -165,6 +165,15 @@
                 return null;
               }
 
+              var orderedDisplayableColumns = _.chain(columns).
+                filter(function(column) {
+                  var hasValidPosition = column.position >= 0;
+                  var isViableForDisplay = !column.hideInTable && !column.isSubcolumn && !column.isSystemColumn;
+                  return hasValidPosition && isViableForDisplay;
+                }).
+                sortBy('position').
+                value();
+
               // Each of our rows will be mapped to 'formattedRowData',
               // an array of objects.  Each row corresponds to a single
               // page in the flannel.
@@ -243,6 +252,24 @@
                     };
                   }
                 });
+
+                // The row data response from Core strips away any columns with
+                // null values, so we must manually reconstitute empty entries.
+                _.each(orderedDisplayableColumns, function(column) {
+                  if (_.isUndefined(formattedRowData[column.position])) {
+                    formattedRowData[column.position] = {
+                      columnName: column.name,
+                      isTitleColumn: false,
+                      isFeatureMapColumn: false,
+                      isParentColumn: false,
+                      value: null,
+                      format: column.format,
+                      physicalDatatype: column.physicalDatatype,
+                      renderTypeName: column.renderTypeName
+                    };
+                  }
+                });
+
                 return formattedRowData.filter(_.isDefined);
               });
             }

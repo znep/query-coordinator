@@ -95,6 +95,14 @@ describe('A FeatureMap Card Visualization', function() {
       'defaultCardType': 'search',
       'availableCardTypes': ['search'],
       'isSubcolumn': true
+    },
+    'test_null': {
+      'name': 'test null',
+      'fred': 'text',
+      'physicalDatatype': 'text',
+      'defaultCardType': 'search',
+      'availableCardTypes': ['column', 'search'],
+      'position': 7
     }
   };
   var CARD_DATA_ROWS = [{
@@ -340,6 +348,7 @@ describe('A FeatureMap Card Visualization', function() {
           var fourthRow = formattedRows[0][3];
           var fifthRow = formattedRows[0][4];
           var sixthRow = formattedRows[0][5];
+          var seventhRow = formattedRows[0][6];
 
           expect(firstRow.columnName).to.equal('number title');
           expect(firstRow.value).to.deep.equal([10]);
@@ -403,6 +412,8 @@ describe('A FeatureMap Card Visualization', function() {
               renderTypeName: undefined
             }
           ]);
+          expect(seventhRow.columnName).to.equal('test null');
+          expect(seventhRow.value).to.be.a('null');
           done();
         });
 
@@ -432,6 +443,7 @@ describe('A FeatureMap Card Visualization', function() {
           var fourthRow = formattedRows[0][3];
           var fifthRow = formattedRows[0][4];
           var sixthRow = formattedRows[0][5];
+          var seventhRow = formattedRows[0][6];
 
           expect(firstRow.isTitleColumn).to.be.true;
           expect(secondRow.isTitleColumn).to.be.false;
@@ -439,6 +451,7 @@ describe('A FeatureMap Card Visualization', function() {
           expect(fourthRow.isTitleColumn).to.be.false;
           expect(fifthRow.isTitleColumn).to.be.false;
           expect(sixthRow.isTitleColumn).to.be.false;
+          expect(seventhRow.isTitleColumn).to.be.false;
           done();
         });
 
@@ -465,6 +478,7 @@ describe('A FeatureMap Card Visualization', function() {
           var fourthRow = formattedRows[0][3];
           var fifthRow = formattedRows[0][4];
           var sixthRow = formattedRows[0][5];
+          var seventhRow = formattedRows[0][6];
 
           expect(firstRow.isFeatureMapColumn).to.be.false;
           expect(secondRow.isFeatureMapColumn).to.be.false;
@@ -472,6 +486,7 @@ describe('A FeatureMap Card Visualization', function() {
           expect(fourthRow.isFeatureMapColumn).to.be.false;
           expect(fifthRow.isFeatureMapColumn).to.be.false;
           expect(sixthRow.isFeatureMapColumn).to.be.false;
+          expect(seventhRow.isFeatureMapColumn).to.be.false;
           done();
         });
 
@@ -480,7 +495,7 @@ describe('A FeatureMap Card Visualization', function() {
         });
       });
 
-      it('should properly mark isParentColumn as true when cooresponding subcolumns are present', function(done) {
+      it('should properly mark isParentColumn as true when corresponding subcolumns are present', function(done) {
         var elementInfo = buildElement({ 'dataset': dataset });
         var elementScope = elementInfo.scope;
         var element = elementInfo.element;
@@ -498,6 +513,7 @@ describe('A FeatureMap Card Visualization', function() {
           var fourthRow = formattedRows[0][3];
           var fifthRow = formattedRows[0][4];
           var sixthRow = formattedRows[0][5];
+          var seventhRow = formattedRows[0][6];
 
           expect(firstRow.isParentColumn).to.be.false;
           expect(secondRow.isParentColumn).to.be.false;
@@ -505,6 +521,7 @@ describe('A FeatureMap Card Visualization', function() {
           expect(fourthRow.isParentColumn).to.be.false;
           expect(fifthRow.isParentColumn).to.be.false;
           expect(sixthRow.isParentColumn).to.be.true;
+          expect(seventhRow.isParentColumn).to.be.false;
           done();
         });
 

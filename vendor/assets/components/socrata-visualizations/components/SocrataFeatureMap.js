@@ -14,7 +14,7 @@
   ];
   var DEFAULT_FEATURES_PER_TILE = 256 * 256;
   var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
-  var DEFAULT_BASE_LAYER_OPACITY = 0.5;
+  var DEFAULT_BASE_LAYER_OPACITY = 0.8;
 
   /**
    * Instantiates a Socrata FeatureMap Visualization from the

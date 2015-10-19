@@ -59,9 +59,15 @@
   if create_asset_enabled
     container_classes << " create-asset"
   end
+
+  if using_cetera
+    search_provider = 'cetera'
+  else
+    search_provider = 'clytemnestra'
+  end
 -%>
 
-<div data-view-type="<%= opts[:view_type] %>" class="<%= container_classes %>">
+<div class="<%= container_classes %>" data-view-type="<%= opts[:view_type] %>" data-search-provider="<%= search_provider %>">
 
   <!-- Create Asset Dropdown -->
 
@@ -123,20 +129,23 @@
         if opts[:q].present? ||
           opts[:facets].any? { |facet| opts[:user_params][facet[:param]].present? }
 
-          opts[:facets].each do |facet|
-            facet_param = facet[:param]
+          opts[:facets].each do |facet_section|
+            facet_param = facet_section[:param]
 
             if opts[:user_params].include?(facet_param)
               clear_facet_url_params = opts[:user_params].reject { |param| param == facet_param }
 
+              selected_facet_option = facet_section[:options].select { |facet_option| facet_option[:value] == opts[:user_params][facet_param] }.first
+
               clear_facet_options.push(
-                :label => opts[:user_params][facet_param].titleize,
+                :label => "#{facet_section[:title]} > #{selected_facet_option[:text].titleize}",
                 :url => "#{opts[:base_url]}?#{clear_facet_url_params.to_param}"
               )
             end
           end
         end
       -%>
+
 
       <div class="browse2-results-header clearfix<%= opts[:browse_in_container] ? ' browse2-results-header-no-title' : '' %>">
 
@@ -233,7 +242,7 @@
         else
           opts[:view_results].each do |result|
 
-            result_classes = 'browse2-result clearfix'
+            result_classes = 'browse2-result-content clearfix'
 
             result_display_title = nil
             result_display_type_icon_class = ''
@@ -255,9 +264,17 @@
 
             case result.display.type
             # 'blist' appears to be the default in case no other type matches.
-            when 'blist'
+            # The other types in this `when` block represent various states that
+            # a dataset can be in.
+            #
+            # See: ../app/models/displays/table.rb
+            when 'unpublished', 'snapshotted', 'blist'
               result_display_type_icon_class = 'icon-dataset'
               result_display_title = t('controls.browse.browse2.display_types.dataset')
+
+            when 'grouped', 'filter'
+              result_display_type_icon_class = 'icon-filter'
+              result_display_title = t('controls.browse.browse2.display_types.filter')
 
             # TABLES
             when 'table', 'fatrow', 'page'
@@ -349,10 +366,13 @@
             result_odn_link = "http://www.opendatanetwork.com/search?#{result_odn_query_param}"
             result_api_link = "http://dev.socrata.com/foundry/#/#{CurrentDomain.cname}/#{result.id}"
 
+            result_edit_controls = create_asset_enabled
+
             if result.federated?
               result_classes << ' federated'
               result_federated_origin_url = "//#{result.domainCName}"
               result_api_link = "http://dev.socrata.com/foundry/#/#{result.domainCName}/#{result.id}"
+              result_edit_controls = false
             end
           -%>
           <%=
@@ -378,7 +398,9 @@
                 :result_federated_origin => result.domainCName,
                 :result_federated_origin_url => result_federated_origin_url,
                 :result_odn_link => result_odn_link,
-                :result_api_link => result_api_link
+                :result_api_link => result_api_link,
+                :result_edit_controls => result_edit_controls,
+                :result_is_public => result.is_public?
               }
             )
           %>

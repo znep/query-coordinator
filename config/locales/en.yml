@@ -470,6 +470,7 @@ en:
           chart: Chart
           dataset: Dataset
           data_lens: Data Lens
+          filter: Filtered View
           form: Form
           href: External Link
           map: Map
@@ -477,6 +478,20 @@ en:
           pulse: Pulse
           story: Story
           unknown: Unknown
+        edit:
+          make_public:
+            error: There was an error making "%{dataset}" public. Please try again.
+            label: Make Public
+            title: Make "%{name}" public
+          make_private:
+            error: There was an error making "%{dataset}" private. Please try again.
+            label: Make Private
+            title: Make "%{name}" private
+          delete:
+            confirm: Are you sure you want to delete "%{dataset}"?
+            error: There was an error deleting "%{dataset}". Please try again.
+            label: Delete
+            title: Delete "%{name}"
         facets:
           hint: Filter or Browse Results
           clear_all:
@@ -495,8 +510,10 @@ en:
           count: Showing %{this} of %{total} results
           cetera_count: Showing %{start}-%{end} of %{total} results
         search:
+          clear:
+            title: Clear search
           title: Search
-          placeholder: Search Datasets, Topics (e.g. Crime in Mission District)
+          placeholder: Search
         settings:
           title: Settings
           label: Settings
@@ -512,6 +529,11 @@ en:
           empty: No topics assigned
         view_count:
           label: Views
+        visibility:
+          public:
+            label: 'Visibility: Public'
+          private:
+            label: 'Visibility: Private'
       facets:
         categories_singular_title: category
         categories_title: Categories

@@ -758,7 +758,6 @@ javascripts:
     - public/javascripts/bower/leaflet/leaflet.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.pbf.js
     - public/javascripts/bower/vector-tile-js/vectortile.min.js
-    - public/javascripts/bower/socrata-visualizations/socrata.visualizations.VectorTileManager.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.FlyoutRenderer.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.DataProvider.js
     - public/javascripts/bower/socrata-visualizations/socrata.visualizations.GeospaceDataProvider.js
@@ -774,6 +773,7 @@ javascripts:
     - public/javascripts/util/lodash-mixins.js
 
   mobile:
+    - public/javascripts/mobile/mobile.visualizations.VectorTileManager.js
     - public/javascripts/mobile/mobile.visualizations.rowInspector.js
     - public/javascripts/mobile/mobile.visualizations.FeatureMap.js
     - public/javascripts/mobile/components/SocrataFeatureMap.js

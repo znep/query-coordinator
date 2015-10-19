@@ -556,24 +556,34 @@
 
       var inspectorDataQueryConfig;
 
-      if (_flyoutData.count > 0 &&
-        _flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
-
+      if (_flyoutData.count > 0) {
         _map.setView(event.latlng);
         var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
-
-        inspectorDataQueryConfig = {
-          latLng: event.latlng,
-          position: {
-            pageX: 0,
-            pageY: bottom
-          },
-          rowCount: _.sum(event.points, 'count'),
-          queryBounds: _getQueryBounds(event.containerPoint)
-        };
-
+        
+        if (_flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
+          inspectorDataQueryConfig = {
+            data: null,
+            latLng: event.latlng,
+            position: {
+              pageX: 0,
+              pageY: bottom
+            },
+            rowCount: _.sum(event.points, 'count'),
+            queryBounds: _getQueryBounds(event.containerPoint)
+          };
+        } else {
+          inspectorDataQueryConfig = {
+            data: [[{column: _.sum(event.points, 'count') + " "+
+              vif.unit.other, value: ""}, {column: "", value: "Zoom in first to select fewer "+
+              vif.unit.other + " and see their details."}]],
+            position: {
+              pageX: 0,
+              pageY: bottom
+            },
+            rowCount: _.sum(event.points, 'count'),
+          };
+        }
         _showRowInspector(inspectorDataQueryConfig);
-
       }
     }
 
@@ -679,7 +689,7 @@
     function _showRowInspector(inspectorDataQueryConfig) {
 
       var payload = {
-        data: null,
+        data: inspectorDataQueryConfig.data,
         position: inspectorDataQueryConfig.position,
         error: false,
         message: null
@@ -693,10 +703,12 @@
 
       // Emit a second event to initiate a query for the row
       // data which we intend to inspect.
-      self.emitEvent(
-        'SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY',
-        inspectorDataQueryConfig
-      );
+      if (inspectorDataQueryConfig.queryBounds) {
+        self.emitEvent(
+          'SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY',
+          inspectorDataQueryConfig
+        );
+      };
     }
 
     function _hideRowInspector() {
@@ -782,6 +794,7 @@
         // Event handlers
         onRenderStart: _handleVectorTileRenderStart,
         onRenderComplete: _handleVectorTileRenderComplete,
+        onMousemove: _handleVectorTileMousemove,
         onClick: _handleVectorTileClick
       };
 

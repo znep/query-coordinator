@@ -11,6 +11,13 @@
     }
   }
 
+  .row-inspector-content {
+    .value {
+      display: inline;
+      word-break: inherit;
+    }
+  }
+
   .icon-close {
     top: 7px;
   }
@@ -33,7 +40,7 @@
       bottom: inherit;
       max-width: 100%;
       width: 100%;
-      height: 180px;
+      min-height: 180px;
       background-color: #ffffff;
       border: solid #A1A1A1;
       border-width: 0 10px 10px;
@@ -44,6 +51,7 @@
         width: 100%;
         text-align: center;
         background-color: #fff;
+        display: none;
 
         .hide-details {
           display: none;
@@ -157,3 +165,4 @@
     }
   }
 }
+

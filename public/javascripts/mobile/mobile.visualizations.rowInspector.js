@@ -296,6 +296,12 @@
       return;
     }
 
+    if (row.length > 5) {
+      _$showMoreContent.show();
+    } else {
+      _$showMoreContent.hide();
+    }
+
     utils.assert(Array.isArray(row), 'rowInspector data must be composed of an array of arrays');
     utils.assert(row.length > 0, 'This row is empty.');
 

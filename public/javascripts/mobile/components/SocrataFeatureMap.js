@@ -61,7 +61,6 @@
     );
 
     this.destroySocrataFeatureMap = function() {
-
       detachEvents();
       visualization.destroy();
     };
@@ -103,13 +102,11 @@
     );
 
     if (vif.configuration.datasetMetadata) {
-
       // If the caller already has datasetMetadata, it can be passed through as
       // a configuration property.
       datasetMetadata = vif.configuration.datasetMetadata;
 
     } else {
-
       // Otherwise, we also need to fetch the dataset metadata for the
       // specified dataset so that we can use its column definitions when
       // formatting data for the row inspector.
@@ -175,14 +172,12 @@
      */
 
     function attachEvents() {
-
       $element.on('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
       $element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
       $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
     }
 
     function detachEvents() {
-
       $element.off('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
       $element.off('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
       $element.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
@@ -193,7 +188,6 @@
      */
 
     function handleDatasetMetadataRequestSuccess(data) {
-
       datasetMetadata = data;
     }
 
@@ -294,7 +288,6 @@
     }
 
     function handleRowInspectorQuery(event) {
-
       var payload = event.originalEvent.detail;
 
       var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}'.
@@ -307,7 +300,6 @@
         );
 
       function generateWithinBoxClause(columnName, bounds) {
-
         return '&$where=within_box({0}, {1}, {2})'.format(
           columnName,
           '{0}, {1}'.format(bounds.northeast.lat, bounds.northeast.lng),
@@ -328,7 +320,6 @@
     }
 
     function handleRowInspectorQuerySuccess(data) {
-
       $element[0].dispatchEvent(
         new root.CustomEvent(
           'SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE',
@@ -345,7 +336,6 @@
     }
 
     function handleRowInspectorQueryError() {
-
       $element[0].dispatchEvent(
         new root.CustomEvent(
           'SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE',
@@ -366,7 +356,6 @@
      */
 
     function initializeVisualization() {
-
       attachEvents();
 
       // For now, we don't need to use any where clause but the default
@@ -377,7 +366,6 @@
     }
 
     function updateRenderOptionsBounds(extent) {
-
       var southWest = L.latLng(extent.southwest[0], extent.southwest[1]);
       var northEast = L.latLng(extent.northeast[0], extent.northeast[1]);
 
@@ -385,7 +373,6 @@
     }
 
     function updateRenderOptionsVectorTileGetter(whereClause, useOriginHost) {
-
       useOriginHost = useOriginHost || false;
 
       visualizationRenderOptions.vectorTileGetter = tileserverDataProvider.buildTileGetter(
@@ -395,12 +382,10 @@
     }
 
     function renderIfReady() {
-
       var hasBounds = visualizationRenderOptions.hasOwnProperty('bounds');
       var hasTileGetter = visualizationRenderOptions.hasOwnProperty('vectorTileGetter');
 
       if (hasBounds && hasTileGetter) {
-
         visualization.render(visualizationRenderOptions);
       }
     }
@@ -415,21 +400,17 @@
       // objects.  Each row corresponds to a single page in the flannel.
       return data.rows.map(
         function(row) {
-
           // If the dataset metadata request fails, then datasetMetadata will
           // be undefined. In this case, we should fall back to sorting
           // alphabetically instead of sorting by the order in which the
           // columns have been arranged in the dataset view.
           if (datasetMetadata) {
-
             return orderRowDataByColumnIndex(
               datasetMetadata.columns,
               data.columns,
               row
             );
-
           } else {
-
             return orderRowDataAlphabetically(
               data.columns,
               row
@@ -440,7 +421,6 @@
     }
 
     function orderRowDataByColumnIndex(datasetMetadataColumns, columnNames, row) {
-
       var formattedRowData = [];
 
       // This method takes in the column name of the subColumn
@@ -452,22 +432,18 @@
         var subColumnMatch = existingName.match(/\(([^()]+)\)$/);
 
         if (subColumnMatch.length >= 2) {
-
           var existingNameSuffix = subColumnMatch[1];
 
           if (_.contains(['address', 'city', 'state', 'zip'], existingNameSuffix)) {
             return existingNameSuffix;
           }
         }
-
         return existingName.replace('{0} '.format(parentColumnName), '');
       }
 
       columnNames.forEach(
         function(columnName) {
-
           if (datasetMetadataColumns.hasOwnProperty(columnName)) {
-
             var columnMetadata = datasetMetadataColumns[columnName];
             var columnValue = row[columnNames.indexOf(columnName)];
 
@@ -485,7 +461,6 @@
               var parentColumnName = columnName.slice(0, columnName.lastIndexOf('_'));
 
               if (datasetMetadataColumns.hasOwnProperty(parentColumnName)) {
-
                 var parentPosition = datasetMetadataColumns[parentColumnName].position;
                 var subColumnName = extractSubColumnName(columnName, parentColumnName);
                 var subColumnDatum = {
@@ -494,12 +469,10 @@
                   format: columnMetadata.format,
                   physicalDatatype: columnMetadata.physicalDatatype
                 };
-
                 formattedRowData[parentPosition].value.push(subColumnDatum);
               }
 
             } else {
-
               // If the column value is an object (e.g. a coordinate point),
               // we should format it slightly differently.
               formattedRowData[columnMetadata.position] = {
@@ -508,7 +481,6 @@
                 format: _.isObject(columnValue) ? undefined : columnMetadata.format,
                 physicalDatatype: columnMetadata.physicalDatatype
               };
-
             }
           }
         }
@@ -527,14 +499,12 @@
     }
 
     function orderRowDataAlphabetically(columnNames, row) {
-
       var formattedRowData = [];
       var sortedColumnNames = columnNames.sort();
 
       sortedColumnNames.
         forEach(
         function(columnName) {
-
           var originalColumnIndex = columnNames.indexOf(columnName);
           var columnValue = row[originalColumnIndex];
 
@@ -544,16 +514,13 @@
             format: undefined,
             physicalDatatype: undefined
           };
-
           formattedRowData.push(rowDatum);
         }
       );
-
       return formattedRowData;
     }
 
     function logError(e) {
-
       if (console && console.error) {
         console.error(e);
       }

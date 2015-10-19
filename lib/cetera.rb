@@ -10,12 +10,16 @@ module Cetera
     CeteraSearchResult.from_result(result.body)
   end
 
-  # Translate FE 'limitTo' param to Cetera 'only' param
-  def self.translate_limit_type(limitTo)
+  # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
+  def self.translate_display_type(limitTo)
     {
-      'tables' => 'datasets', # blame browse_actions.rb
+      'data_lens' => 'lenses',
+      'new_view' => 'lenses',
+      'story' => 'stories',
+      'pulse' => 'pulses',
+      'tables' => 'datasets',
       'blob' => 'files',
-      'href' => 'external' # this will become 'links'
+      'href' => 'links'
     }.fetch(limitTo, limitTo)
   end
 
@@ -23,7 +27,7 @@ module Cetera
     (opts[:metadata_tag] || {}).merge(
       domains: opts[:domains],
       search_context: CurrentDomain.cname,
-      only: translate_limit_type(opts[:limitTo]),
+      only: translate_display_type(opts[:limitTo]),
       categories: opts[:category],
       tags: opts[:tags],
       q: opts[:q],
@@ -73,7 +77,10 @@ module Cetera
     def display
       case type
 
-      when 'page' then Cetera::Displays::DataLens
+      when 'lense' then Cetera::Displays::DataLens
+      when 'pulse' then Cetera::Displays::Pulse
+      when 'story' then Cetera::Displays::Story
+
       when 'dataset' then Cetera::Displays::Dataset
       when 'chart' then Cetera::Displays::Chart
       when 'map' then Cetera::Displays::Map

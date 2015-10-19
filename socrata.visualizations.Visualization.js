@@ -26,7 +26,8 @@
           bottom: false,
           left: false
         },
-        localization: {}
+        localization: {},
+        interactive: true
       }
     };
     var _vif = _.merge(_defaultVIF, vif);
@@ -37,6 +38,10 @@
     utils.assertIsOneOfTypes(_vif.configuration.axisLabels.left, 'boolean', 'string');
 
     this.element = element;
+
+    if (_vif.configuration.interactive) {
+      element.addClass('filterable');
+    }
 
     /**
      * Public methods

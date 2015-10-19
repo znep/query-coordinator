@@ -32,6 +32,11 @@ module Cetera
       def self.icon_class
         'icon'
       end
+
+      # Cetera only returns public objects as of 2015/10/19
+      def self.is_public?
+        true
+      end
     end
 
     ##############
@@ -46,6 +51,26 @@ module Cetera
 
       def self.front_end_type
         'data_lens'
+      end
+    end
+
+    class Story < Base
+      def self.name
+        I18n.t('core.view_types.story')
+      end
+
+      def self.front_end_type
+        'story'
+      end
+    end
+
+    class Pulse < Base
+      def self.name
+        I18n.t('core.view_types.pulse')
+      end
+
+      def self.front_end_type
+        'pulse'
       end
     end
 

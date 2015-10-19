@@ -31,15 +31,6 @@ module BrowseActions
     ]
   end
 
-  def cetera_view_types
-    # These are FE values, not translated into Cetera types
-    supported_core_objects = %w(datasets maps blob href).to_set
-
-    standard_view_types.select do |view_type|
-      supported_core_objects.include? view_type[:value]
-    end
-  end
-
   def base_view_types_facet
     {
       title: t('controls.browse.facets.view_types_title'),
@@ -50,7 +41,7 @@ module BrowseActions
   end
 
   def view_types_facet
-    view_types = using_cetera? ? cetera_view_types : standard_view_types
+    view_types = standard_view_types
 
     add_data_lens_view_type_if_enabled!(view_types)
     add_stories_view_type_if_enabled!(view_types)

@@ -34,6 +34,28 @@ class CeteraTest < Test::Unit::TestCase
       end
     end
 
+    def test_cetera_limit_type_translator
+      frontend_to_cetera = {
+        'data_lens' => 'lenses',
+        'new_view' => 'lenses',
+        'story' => 'stories',
+        'pulse' => 'pulses',
+        'tables' => 'datasets',
+        'charts' => 'charts',
+        'maps' => 'maps',
+        'calendars' => 'calendars',
+        'filters' => 'filters',
+        'href' => 'links',
+        'blob' => 'files',
+        'forms' => 'forms',
+        'apis' => 'apis'
+      }
+
+      frontend_to_cetera.each do |frontend_type, cetera_type|
+        assert_equal cetera_type, Cetera.translate_display_type(frontend_type)
+      end
+    end
+
     describe 'Displays' do
       def test_dataset
         dataset = Cetera::Displays::Dataset

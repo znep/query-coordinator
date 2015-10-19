@@ -1,9 +1,14 @@
 <div id="settings-panel-container">
   <div class="settings-panel">
-    <button class="close-side-panel-btn" data-panel-toggle="settings-panel">
-      <span class="close-panel-label" title="<%= t('common.close') %>">
-        <%= t('common.close') %>
+    <%- if current_user.present? %>
+    <a class="back-to-profile-btn" href="/profile/<%= current_user['id'] %>?limitTo=story">
+      <span class="icon-arrow-prev back-to-profile-icon"></span>
+      <span class="back-to-profile-label" title="<%= t('editor.settings_panel.back_to_profile') %>">
+        <%= t('editor.settings_panel.back_to_profile') %>
       </span>
+    </a>
+    <%- end %>
+    <button class="close-side-panel-btn" data-panel-toggle="settings-panel">
       <span class="icon-cross2 close-panel-icon"></span>
     </button>
 

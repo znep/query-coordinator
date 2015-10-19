@@ -23,30 +23,45 @@
     z-index: 2;
     overflow: auto;
 
-    .close-side-panel-btn {
-      position: absolute;
-      width: 100%;
-      left: 0;
-      top: 0px;
+    .back-to-profile-btn, .close-side-panel-btn {
       padding: 0.3em 0.8em;
       color: $settings-panel-close-font-color;
       line-height: $settings-panel-close-bar-height;
       text-align: left;
       text-decoration: none;
-      background-color: $header-bg-color;
       box-sizing: border-box;
       border: none;
       cursor: pointer;
 
       &:focus,
       &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
         outline: none;
       }
+    }
+
+    .back-to-profile-btn {
+      position: absolute;
+      left: 0;
+      top: 0px;
+
+      background-color: rgba(255, 255, 255, 0.1);
+      font-size: 1.2rem;
+
+      .back-to-profile-icon {
+        position: relative;
+        top: 1px;
+      }
+    }
+
+    .close-side-panel-btn {
+      position: absolute;
+      right: 0;
+      top: 0px;
+      background-color: $header-bg-color;
 
       .close-panel-icon {
         float: right;
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         line-height: $settings-panel-close-bar-height;
       }
     }

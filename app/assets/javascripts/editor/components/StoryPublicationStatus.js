@@ -13,14 +13,14 @@
 
     function render() {
       var permissions = storyteller.storyStore.getStoryPermissions(storyUid);
+      var storyIsDirty = storyteller.storySaveStatusStore.isStoryDirty();
       var havePublishedAndDraftDiverged;
-      var storyIsClean;
       var translationKey;
 
       if (permissions && permissions.isPublic) {
         havePublishedAndDraftDiverged = _havePublishedAndDraftDiverged();
 
-        if (storyIsClean || havePublishedAndDraftDiverged) {
+        if (storyIsDirty || havePublishedAndDraftDiverged) {
           translationKey = 'status.draft';
         } else {
           translationKey = 'status.published';

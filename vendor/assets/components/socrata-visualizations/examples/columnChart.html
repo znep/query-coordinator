@@ -30,11 +30,21 @@
         border: 1px solid #aaa;
       }
 
+      #column-chart-3 {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 100px auto 0 auto;
+        border: 1px solid #aaa;
+      }
+
     </style>
   </head>
   <body>
     <div id="column-chart-1"></div>
     <div id="column-chart-2"></div>
+    <div id="column-chart-3"></div>
   </body>
   <!-- lodash must be loaded before `socrata.utils.js` -->
   <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
@@ -95,14 +105,20 @@
       }
     };
 
-    var columnChart2VIF = _.cloneDeep(columnChart1VIF);
-    columnChart2VIF.columnName = 'source';
-
     var $columnChart1Element = $('#column-chart-1');
     $columnChart1Element.socrataColumnChart(columnChart1VIF);
 
+    var columnChart2VIF = _.cloneDeep(columnChart1VIF);
+    columnChart2VIF.columnName = 'source';
+
     var $columnChart2Element = $('#column-chart-2');
     $columnChart2Element.socrataColumnChart(columnChart2VIF);
+
+    var columnChart3VIF = _.cloneDeep(columnChart1VIF);
+    columnChart3VIF.configuration.interactive = false;
+
+    var $columnChart3Element = $('#column-chart-3');
+    $columnChart3Element.socrataColumnChart(columnChart3VIF);
 
     /**
      * Handle flyout events.

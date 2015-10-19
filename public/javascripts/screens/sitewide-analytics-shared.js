@@ -37,7 +37,7 @@ blist.metrics.sitewideShared = {
       id: 'detailLenses',
       displayName: 'Data Lens Pages Added',
       summary: {
-        plus: 'lense-new_view-published-v1',
+        plus: 'lense-data_lens-published-v1',
         verbPhrase: 'Data Lens pages created',
         verbPhraseSingular: 'Data Lens page created',
         deltaPhrase: 'Data Lens pages'

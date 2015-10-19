@@ -82,9 +82,14 @@ module.exports = function ( karma ) {
       'karma/chai-configuration.js',
 
       // Test Files
-      'karma/oldUx/**/*.js'
+      'karma/oldUx/**/*.js',
+      { pattern: 'public/stylesheets/images/**/*.{gif,jpg,png}', watched: false, included: false, served: true }
 
     ],
+
+    proxies: {
+      '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/'
+    },
 
     sauceLabs: {
       testName: 'oldUx Unit Tests',

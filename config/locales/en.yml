@@ -48,7 +48,7 @@ en:
         choose_column: Choose a column...
         column_chart_warning: 'Note: This would result in a bar chart with over a hundred bars, it might be slower than other charts'
         histogram_column_chart_warning: 'Note: Because of the distribution of values of this column, it will be presented as a histogram of bars instead of a distribution curve'
-        choropleth_warning: 'No regions are available for this column to be plotted against.'
+        choropleth_warning: 'No boundaries are available for this column to be plotted against.'
         disabled_curated_region_message:
           dataset_too_big: 'Boundaries not yet supported for datasets with &gt; 1,000,000 rows:'
           permissions: 'Boundaries not yet enabled by site admin:'
@@ -61,7 +61,7 @@ en:
         custom: (Custom...)
         classic_chart: 'This legacy Socrata visualization may be imported here for display, but cannot be reconfigured once added.'
         visualize_flyout:
-          choropleth: Visualize this column as a choropleth
+          choropleth: Use Spatial Lens to visualize this data as a choropleth map
           column_chart: Visualize this column as a column chart
           distribution_chart: Visualize this column as a distribution chart
           feature_map: Visualize this column as a feature map
@@ -112,7 +112,7 @@ en:
         by: by
         cancel: Cancel
         cards:
-          choropleth: Region Map
+          choropleth: Choropleth Map
           column_chart: Column Chart
           distribution_chart: Distribution Chart
           feature_map: Point Map
@@ -1593,16 +1593,16 @@ en:
           boundary_geometry_label_field_error: The boundary must have a shape label.
           shape_label: Shape Label
           shape_label_description: "The column that should be used as the label for each shape (ex: a column containing \"WA\" and \"NY\")."
-          primary_key_column: Stable Identifier
-          primary_key_column_description: "A unique identifier column that remains stable across updates to the boundary shapes. Do not use the shapefile feature ID"
-          primary_key_column_missing_field_error: "The boundary must have a stable identifier."
+          primary_key_column: Shape ID
+          primary_key_column_description: "The column that contains the unique ID that identifies each shape in the boundary.  If there isn’t such a column, pick any unique column."
+          primary_key_column_missing_field_error: "You must specify a column for the shape ID."
           choose_a_column: Choose a column...
           save_success: Changes saved successfully.
           save_error: Something went wrong while trying to save your changes. Please try again later, or contact Socrata Support if the problem persists.
           save_core_error: "Could not create the boundary: %{error_message}"
-        custom_georegions: Custom Georegions
+        custom_georegions: Custom Boundaries
         description: Configure custom boundaries that can be used to create Spatial Lens maps
-        default_georegions: Socrata Default Georegions
+        default_georegions: Socrata Default Boundaries
         delete: Delete
         disable: Disable
         disable_success: "%{name} has been disabled and will no longer be automatically computed for new datasets."
@@ -1611,13 +1611,13 @@ en:
         enabled?: Enabled?
         enabled_no: "No"
         enabled_yes: "Yes"
-        enable_success: "%{name} has been enabled. Note that this will not retroactively enable the boundary for datasets created previously; the computation must be triggered for each extant dataset for which it should apply."
+        enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         enabled_georegions_limit: You have reached the limit of %{limit} enabled boundaries for this site.
         flashes:
-          add_georegion_error: <div>%{error_message}</div><div>Link to <a target="_blank" href="https://www.xkcd.com/627/">support KB article</a></div>
+          add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
         page_title: Manage Spatial Lens
-        page_subtitle: You have enabled %{enabled_count} of %{available_count} available regions.
-        region_name: Region Name
+        page_subtitle: You have enabled %{enabled_count} of %{available_count} available boundaries.
+        region_name: Boundary Name
         remove: Remove
         title: Spatial Lens
       home:

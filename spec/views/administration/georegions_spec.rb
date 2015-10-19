@@ -31,7 +31,7 @@ describe 'administration/georegions.html.erb' do
     end
 
     it 'renders the available and enabled counts' do
-      expect(rendered).to include('You have enabled 4 of 5 available regions')
+      expect(rendered).to include('You have enabled 4 of 5 available boundaries')
     end
 
     it 'renders the table partial once' do

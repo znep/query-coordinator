@@ -16,11 +16,13 @@ describe('admin-georegions-screen', function() {
       $.fn.jqmHide = sinon.stub();
       this.renderPageStub = sinon.stub(blist.namespace.fetch('blist.georegions'), 'renderPage');
       this.clearFlashMessageStub = sinon.stub(blist.namespace.fetch('blist.georegions'), 'clearFlashMessage');
+      sinon.stub($, 'ajax').returns({});
     });
 
     afterEach(function() {
       this.renderPageStub.restore();
       this.clearFlashMessageStub.restore();
+      $.ajax.restore();
     });
 
     var georegionsSelected = blist.namespace.fetch('blist.common.georegionSelected');
@@ -36,11 +38,6 @@ describe('admin-georegions-screen', function() {
       expect($(this.target)).to.contain('')
     });
 
-    it('adds an item to georegions', function() {
-      var stubItem = {};
-      georegionsSelected(stubItem);
-      expect(blist.namespace.fetch('blist.georegions').georegions).to.include(stubItem);
-    });
   });
 
 });

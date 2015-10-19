@@ -250,6 +250,10 @@ class View < Model
     self.columns.find{ |c| c.id == column_id }
   end
 
+  def column_by_table_column_id(table_column_id)
+    self.columns.find{ |c| c.tableColumnId == table_column_id }
+  end
+
   def column_by_id_or_field_name(column_id_or_field_name)
     self.columns.find{ |c|
       c.id == column_id_or_field_name.to_i ||
@@ -1108,7 +1112,17 @@ class View < Model
   # Returns an array of column names that are mentioned in
   # display_format.
   def display_format_columns
+    # Maps don't use the normal valueColumns/seriesColumns/fixedColumns thing.
+    view_definition_column_field_names = (displayFormat.viewDefinitions || []).select do |viewDefinition|
+      viewDefinition['uid'] == 'self' || viewDefinition['uid'] == id
+    end.map do |viewDefinition|
+      viewDefinition.try(:[], 'plot').try(:[], 'locationId')
+    end.map do |locationId|
+      column_by_table_column_id(locationId)
+    end.compact.map(&:fieldName)
+
     [
+      view_definition_column_field_names,
       (displayFormat.valueColumns || []).pluck('fieldName'),
       displayFormat.fixedColumns || [],
       (displayFormat.seriesColumns || []).pluck('fieldName')
@@ -1583,6 +1597,8 @@ class View < Model
       visualization[:type] = page_metadata[:cards][0][:cardType]
       visualization[:format] = 'page_metadata'
     else
+      # re-fetch the JSON to ensure we have column information (some core calls
+      # like that used in find_related strip it out).
       json = fetch_json.deep_merge(
         'metadata' => {
           'renderTypeConfig' => {
@@ -1593,9 +1609,11 @@ class View < Model
         }
       )
 
+      real_view = View.new(json)
+
       visualization[:data] = json
-      visualization[:columns] = display_format_columns
-      visualization[:type] = displayFormat.chartType
+      visualization[:columns] = real_view.display_format_columns
+      visualization[:type] = real_view.displayFormat.chartType
       visualization[:format] = 'classic'
     end
 

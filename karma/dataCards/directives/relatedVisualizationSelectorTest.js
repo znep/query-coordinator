@@ -178,6 +178,22 @@ describe('relatedVisualizationSelector', function() {
       ]);
     });
 
+    it('hides "Based on..." when there are no columns in the metadata', function() {
+      directive.scope.relatedVisualizations[0].columns = [];
+      directive.scope.$apply();
+
+      var visibilities = _.map(directive.element.find('.related-visualization-metadata'), function(item) {
+        return $(item).is(':visible');
+      });
+
+      expect(visibilities).to.deep.equal([
+        false,
+        true,
+        true
+      ]);
+    });
+
+
     describe('clicking on visualization', function() {
       it('should emit "related-visualization-selected"', function() {
         var payloads = [];

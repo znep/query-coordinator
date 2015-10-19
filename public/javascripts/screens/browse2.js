@@ -109,7 +109,6 @@ $(function() {
   }
 
   function createNewStory(event) {
-
     event.preventDefault();
     event.stopPropagation();
 
@@ -273,6 +272,121 @@ $(function() {
       sectionContainer.attr('data-description-display', 'truncate');
     } else {
       sectionContainer.attr('data-description-display', 'show');
+    }
+  }
+
+  function makeResultPublic(event) {
+    var id = $(event.target).closest('[data-result-id]').attr('data-result-id');
+    var dataset;
+    var url = '/views/{0}.json?accessType=WEBSITE&method=setPermission&value=public.read'.format(id);
+    var makePublicSettings;
+
+    function onMakePublicSuccess() {
+      window.location.href = window.location.href;
+    }
+
+    function onMakePublicError() {
+      alert(
+        $.t('controls.browse.browse2.edit.make_public.error', { dataset: dataset.name })
+      );
+    }
+
+    if (!(blist.browse.datasets[id] instanceof Dataset)) {
+      blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]);
+    }
+
+    dataset = blist.browse.datasets[id];
+
+    makePublicSettings = {
+      contentType: false,
+      error: onMakePublicError,
+      headers: {
+        'X-App-Token': blist.configuration.appToken
+      },
+      type: 'PUT',
+      success: onMakePublicSuccess
+    };
+
+    $.ajax(url, makePublicSettings);
+  }
+
+  function makeResultPrivate(event) {
+    var id = $(event.target).closest('[data-result-id]').attr('data-result-id');
+    var dataset;
+    var url = '/views/{0}.json?accessType=WEBSITE&method=setPermission&value=private'.format(id);
+    var makePrivateSettings;
+
+    function onMakePrivateSuccess() {
+      window.location.href = window.location.href;
+    }
+
+    function onMakePrivateError() {
+      alert(
+        $.t('controls.browse.browse2.edit.make_private.error', { dataset: dataset.name })
+      );
+    }
+
+    if (!(blist.browse.datasets[id] instanceof Dataset)) {
+      blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]);
+    }
+
+    dataset = blist.browse.datasets[id];
+
+    makePrivateSettings = {
+      contentType: false,
+      error: onMakePrivateError,
+      headers: {
+        'X-App-Token': blist.configuration.appToken
+      },
+      type: 'PUT',
+      success: onMakePrivateSuccess
+    };
+
+    $.ajax(url, makePrivateSettings);
+  }
+
+  function deleteResult(event) {
+    var id = $(event.target).closest('[data-result-id]').attr('data-result-id');
+    var dataset;
+    var url;
+    var deleteSettings;
+
+    function onDeleteSuccess() {
+      window.location.href = window.location.href;
+    }
+
+    function onDeleteError() {
+      alert(
+        $.t('controls.browse.browse2.edit.delete.error', { dataset: dataset.name })
+      );
+    }
+
+    if (!(blist.browse.datasets[id] instanceof Dataset)) {
+      blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]);
+    }
+
+    dataset = blist.browse.datasets[id];
+
+    if (dataset.isNewView() || dataset.isDataLens()) {
+      // Send a DELETE request to the NFE endpoint, which should propagate the delete to the
+      // OBE representation.
+      url = '/metadata/v1/page/{0}'.format(id); 
+    } else {
+      url = '/api/views/{0}.json'.format(id);
+    }
+
+    deleteSettings = {
+      contentType: false,
+      error: onDeleteError,
+      headers: {
+        'X-App-Token': blist.configuration.appToken
+      },
+      type: 'DELETE',
+      success: onDeleteSuccess
+    };
+
+    if (confirm($.t('controls.browse.browse2.edit.delete.confirm', { dataset: dataset.name }))) {
+      $.ajax(url, deleteSettings);
     }
   }
 
@@ -458,7 +572,7 @@ $(function() {
   $('.browse2-facet-section-title').on('click', toggleBrowse2FacetDisplay);
   $('.browse2-result-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
   $('.browse2-result-description').each(function(index, element) {
-    var truncationThreshold = 60;
+    var truncationThreshold = 68;
     var descriptionHeight = 0;
 
     $(element).
@@ -473,4 +587,8 @@ $(function() {
         attr('data-description-display', 'truncate');
     }
   });
+
+  $('.browse2-result-make-public-button').on('click', makeResultPublic);
+  $('.browse2-result-make-private-button').on('click', makeResultPrivate);
+  $('.browse2-result-delete-button').on('click', deleteResult);
 });

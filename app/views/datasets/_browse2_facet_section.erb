@@ -41,9 +41,7 @@
           facet_option_class << (" #{facet_option[:class]}" || '')
           facet_option_class << (facet_option_is_active ? ' active' : '')
 
-          facet_text = facet[:param] == :tags ?
-            facet_option[:text].split(' ').map(&:capitalize).join(' ') :
-            facet_option[:text]
+          facet_text = facet_option[:text].titleize
         -%>
         <a class="<%= facet_option_class %>" href="<%= facet_option_url %>">
           <%= facet_text %>

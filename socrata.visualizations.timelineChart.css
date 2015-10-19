@@ -114,10 +114,6 @@ svg:not(:root).timeline-chart-highlight-container {
   z-index: 8;
 }
 
-.filterable .datum-label {
-  cursor: pointer;
-}
-
 .selected .timeline-chart-clear-selection-label {
   z-index: 9;
 }
@@ -179,8 +175,12 @@ svg:not(:root).timeline-chart-highlight-container {
 .x-ticks .x-tick-label.emphasis {
   font-weight: bold;
 }
-.filterable .x-ticks .x-tick-label {
+.filterable .timeline-chart-wrapper {
   cursor: pointer;
+}
+
+.timeline-chart-wrapper {
+  cursor: default;
 }
 
 .dimmed .x-tick-label,

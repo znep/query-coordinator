@@ -856,7 +856,7 @@ $new-view-color: #80acca;
   #{$subselector} {
     @include text-hiding;
     @include ie6-fix;
-    background-image: url(/stylesheets/images/icons/admin_icons.png?1);
+    background-image: url(/stylesheets/images/icons/admin_icons.png?2);
     height: 13px;
     width: 16px;
   }
@@ -905,6 +905,9 @@ $new-view-color: #80acca;
   &.routingApproval #{$subselector} {
     background-position: 0 -182px;
   }
+  &.georegions #{$subselector} {
+    background-position: 0 -195px;
+  }
 }
 
 // icons/admin_header_icons.png
@@ -912,7 +915,7 @@ $new-view-color: #80acca;
   #{$subselector} {
     @include text-hiding;
     @include ie6-fix;
-    background-image: url(/stylesheets/images/icons/admin_header_icons.png?1);
+    background-image: url(/stylesheets/images/icons/admin_header_icons.png?2);
     height: 32px;
     width: 38px;
   }
@@ -951,6 +954,9 @@ $new-view-color: #80acca;
   }
   &.routingApproval #{$subselector} {
     background-position: 0 -352px;
+  }
+  &.georegions #{$subselector} {
+    background-position: 0 -384px;
   }
 }
 

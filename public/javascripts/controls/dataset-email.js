@@ -187,7 +187,7 @@
               }
             },
             errorPlacement: function($error, $element)
-            { $element.closest('.emailLine').append($error); },
+            { $element.closest('.emailLine').after($error); },
             onkeyup: false,
             onfocusout: false,
             focusInvalid: false
@@ -263,7 +263,7 @@
         });
 
         $('.emailDatasetContent .cancel').click(function(e) {
-          $('form').find('label.error').remove();
+          $form.find('label.error').remove();
         });
 
         didSetup = true;

@@ -288,9 +288,12 @@
 
     var userHasEditRights$ = $scope.dataLensVersion >= 2 ? userCanManageView$ : isCurrentUserAdminOrPublisher$;
     if ($scope.isEphemeral) {
-      userHasEditRights$ = currentUser$.map(function(user) {
-        return !!(user && user.roleName);
-      });
+      userHasEditRights$ = currentUser$.combineLatest(
+        isCurrentUserAdminOrPublisher$,
+        function(user, isAdminOrPublisher) {
+          return isAdminOrPublisher || !!(user && user.roleName);
+        }
+      );
     }
 
     var isCurrentUserOwnerOfDataset$ =

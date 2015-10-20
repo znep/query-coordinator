@@ -198,8 +198,16 @@ class PageMetadataManager
 
     begin
       metadb_metadata = new_view_manager.fetch(id)
-    rescue
-      metadb_metadata = nil
+    rescue CoreServer::TimeoutError => error
+      report_error('Core server timeout error', error)
+      return { body: {
+        body: "Core server timeout error (#{error.error_code}): #{error.error_message}"
+      }, status: '500' }
+    rescue CoreServer::ConnectionError => error
+      report_error('Core server connection error', error)
+      return { body: {
+        body: "Core server connection error (#{error.error_code}): #{error.error_message}"
+      }, status: '500' }
     end
 
     # Delete the core pointer to the page

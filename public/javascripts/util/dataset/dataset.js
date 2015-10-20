@@ -3439,21 +3439,24 @@ var Dataset = ServerModel.extend({
     {
         var ds = this;
         var coreViewsPromise = this._loadRelatedCoreViews(justCount);
-        var dataLensPromise = this._getRelatedDataLenses(justCount);
+        var v1dataLensPromise = this._getV1RelatedDataLenses(justCount);
+        var v2DataLensPromise = this._getV2RelatedDataLenses(justCount);
 
-        $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
+        $.whenever(coreViewsPromise, v1dataLensPromise, v2DataLensPromise).done(function(coreResult, v1dataLensResult, v2DataLensResult) {
             if (justCount) {
                 // Subtract one for dataset
                 ds._relViewCount = (
                     (coreResult ? Math.max(0, coreResult[0] - 1) : 0) +
-                    (dataLensResult ? dataLensResult[0].length : 0)
+                    (v1dataLensResult ? v1dataLensResult[0].length : 0) +
+                    (v2DataLensResult ? Math.max(0, v2DataLensResult[0] - 1) : 0)
                 );
                 if (_.isFunction(callback)) { callback(ds._relViewCount); }
             } else {
                 ds._relatedViews = ds._processRelatedViews(
-                    (coreResult ? coreResult[0] : []).concat(
-                        dataLensResult ? dataLensResult[0] : []
-                ));
+                    (coreResult ? coreResult[0] : []).
+                        concat(v1dataLensResult ? v1dataLensResult[0] : []).
+                        concat(v2DataLensResult ? v2DataLensResult[0] : [])
+                );
                 if (_.isFunction(callback)) { callback(); }
             }
         });
@@ -3497,13 +3500,12 @@ var Dataset = ServerModel.extend({
         });
     },
 
-    _getRelatedDataLenses: function(justCount) {
+    // TODO: Remove this once everything is v2+
+    // (this will quietly 404 for new datasets until then)
+    _getV1RelatedDataLenses: function(justCount) {
         var ds = this;
         var deferred = $.Deferred();
         var reject = function() {
-            if (window.console) {
-                console.log(arguments)
-            }
             deferred.reject();
         };
 
@@ -3540,10 +3542,46 @@ var Dataset = ServerModel.extend({
                     deferred.resolveWith(this, arguments);
 
                 }).fail(reject);
+
             }).fail(reject);
         }).fail(reject);
 
         return deferred.promise();
+    },
+
+    _getV2RelatedDataLenses: function(justCount) {
+        var ds = this;
+
+        return this.
+            getNewBackendId().
+            pipe(_.bind(ds._fetchViewJson, ds)).
+            pipe(function(result) {
+                return ds._lookUpDataLensesByTableId(result.tableId, justCount);
+            });
+    },
+
+    _fetchViewJson: function(nbeId) {
+        return this.makeRequestWithPromise({
+            url: '/views/{0}.json'.format(nbeId),
+            pageCache: true,
+            type: 'GET',
+        });
+    },
+
+    _lookUpDataLensesByTableId: function(nbeTableId, justCount) {
+        if ($.isBlank(nbeTableId)) {
+          throw new Error('nbeTableId is blank');
+        }
+
+        return this.makeRequestWithPromise({
+            url: '/views.json',
+            pageCache: true,
+            type: 'GET',
+            data: {
+                method: justCount ? 'getCountForTableId' : 'getByTableId',
+                tableId: nbeTableId
+            }
+        })
     },
 
     _loadPublicationViews: function(callback)

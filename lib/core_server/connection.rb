@@ -230,9 +230,11 @@ module CoreServer
       raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
       if env.present?
         set_cookie = result["set-cookie"]
-        if !set_cookie.nil?
-          core_cookie = set_cookie.split(";")[0].split("=")[1] + "="
-          env["socrata.new-core-session-cookie"] = core_cookie
+        if set_cookie.present?
+          core_cookie = set_cookie.split(";")[0].split("=")[1]
+          if core_cookie.present?
+            env["socrata.new-core-session-cookie"] = core_cookie + "="
+          end
         end
       end
       if !result.is_a?(Net::HTTPSuccess)

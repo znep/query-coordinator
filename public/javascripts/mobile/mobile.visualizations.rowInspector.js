@@ -47,6 +47,7 @@
   var _state;
 
   function rowInspectorSetup(config) {
+    var self = this;
     _config = _.cloneDeep(config || {});
 
     _config.localization = _config.localization || {};
@@ -312,12 +313,19 @@
 
       utils.assertHasProperties(columnValue, 'column', 'value');
 
-      $name.text(columnValue.column);
-      $value.text(columnValue.value);
+      $name.html(columnValue.column);
+      $value.html(columnValue.value);
 
       $rowDataItem.append($name).append($value);
       _$rowInspectorContent.append($rowDataItem);
     });
+
+    _$rowInspectorContainer[0].dispatchEvent(
+      new root.CustomEvent(
+        'SOCRATA_VISUALIZATION_ROW_INSPECTOR_RENDERED',
+        { detail: {}, bubbles: true }
+      )
+    );
   }
 
   function _renderPagination() {

@@ -41,6 +41,7 @@
     _.extend(this, new root.socrata.visualizations.Visualization(element, vif));
 
     var self = this;
+    var $body = $(root.document.body);
 
     var _mapContainer;
     var _mapElement;
@@ -311,6 +312,8 @@
           _mapLocateUserButton.on('click', _handleLocateUserButtonClick);
         }
       }
+
+      $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_RENDERED', _handleZoomInButtonClick);
     }
 
     function _detachEvents(element) {
@@ -337,6 +340,8 @@
           _mapLocateUserButton.off('click', _handleLocateUserButtonClick);
         }
       }
+
+      $body.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_RENDERED', _handleZoomInButtonClick);
     }
 
     function _handleMapResize() {
@@ -552,7 +557,7 @@
         y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
       };
       _flyoutData.count = _.sum(event.points, 'count');
-      
+      _flyoutData.latlng = event.latlng;
 
       var inspectorDataQueryConfig;
 
@@ -574,7 +579,7 @@
         } else {
           inspectorDataQueryConfig = {
             data: [[{column: _.sum(event.points, 'count') + " "+
-              vif.unit.other, value: ""}, {column: "", value: "Zoom in first to select fewer "+
+              vif.unit.other, value: ""}, {column: "", value: "<a class='zoom-in-button'>Zoom in</a> first to select fewer "+
               vif.unit.other + " and see their details."}]],
             position: {
               pageX: 0,
@@ -596,6 +601,12 @@
     function _handleVectorTileRenderComplete() {
 
       _removeOldFeatureLayers();
+    }
+
+    function _handleZoomInButtonClick() {
+      $('.zoom-in-button').on('click', function(e){
+        _map.setView(_flyoutData.latlng, _map._zoom + 1);
+      });
     }
 
     function _showFeatureFlyout(event) {

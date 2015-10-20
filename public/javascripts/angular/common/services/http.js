@@ -20,7 +20,7 @@
 
       addCSRF(requestConfig);
 
-      if (_.isDefined(requestConfig.requester)) {
+      if (_.isObject(requestConfig.requester)) {
         if (_.isFunction(requestConfig.requester.requesterLabel)) {
           eventMetadata.requester = requestConfig.requester;
           eventMetadata.requesterLabel = requestConfig.requester.requesterLabel.call(requestConfig.requester);
@@ -50,13 +50,23 @@
         requestConfig.headers = {};
         requestConfig.headers[requestIdHeaderName] = id;
       }
-      var httpPromise = $http(requestConfig);
+
+      if (_.includes(['put', 'post', 'patch'], requestConfig.method)) {
+        if (!socrata.utils.getCookie('socrata-csrf-token')) {
+          throw new Error('Missing socrata-csrf-token - Unable to make authenticated "{0}" request to {1}'.
+            format(requestConfig.method, requestConfig.url));
+        } else {
+          requestConfig.headers['X-CSRF-Token'] = decodeURIComponent(socrata.utils.getCookie('socrata-csrf-token'));
+        }
+      }
 
       function emitEventFn(eventLabel) {
         return function() {
           $rootScope.$emit(eventLabel, extend({ stopTime: Date.now() }, eventMetadata));
         };
       }
+
+      var httpPromise = $http(requestConfig);
       httpPromise.then(
         emitEventFn('http:stop'),
         emitEventFn('http:error')

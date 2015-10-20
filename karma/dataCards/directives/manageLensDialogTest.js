@@ -55,6 +55,11 @@ describe('manage-lens dialog', function() {
     });
 
     it('saves public permissions', function() {
+      var getCookieStub = sinon.stub();
+
+      getCookieStub.returns('CSRF-TOKEN');
+      socrata.utils.getCookie = getCookieStub;
+
       $httpBackend.expectPUT('/views/asdf-fdsa.json?method=setPermission&value=public.read').
         respond({});
 

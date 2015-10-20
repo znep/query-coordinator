@@ -2,8 +2,16 @@
   'use strict';
 
   function ManageLensDialogV2SharingController($scope, $q, I18n, http) {
+    var self = this;
 
     $scope.currentUserId = window.currentUser.id;
+
+    // This function provides a description of the entity making the request to the http() service.
+    // The requester object is expected present in the config options passed to http(), and it is expected
+    // that the requester object expose a requesterLabel function that returns the descriptive string.
+    self.requesterLabel = function() {
+      return 'ManageLensDialogV2SharingController';
+    };
 
     // Common share functions
     function formatShare(share) {
@@ -100,7 +108,7 @@
           payload.userEmail = share.name;
         }
 
-        return http.put(url.href, payload);
+        return http.put(url.href, payload, { requester: self });
       });
 
       // Wait for all of the requests to complete, then figure out which
@@ -134,7 +142,7 @@
             payload.message = $scope.newShares.message;
           }
 
-          return http.post(url.href, payload).then(function(response) {
+          return http.post(url.href, payload, { requester: self }).then(function(response) {
             var userId = response.data.userId;
             if (userId) {
               share.userId = userId;

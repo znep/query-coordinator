@@ -86,7 +86,7 @@ describe('Socrata-flavored $http service', function() {
     headers[HEADER_KEY] = CUSTOM_HEADER_VALUE;
 
     $httpBackend.whenGET('/test', function(headers) {
-      return headers[HEADER_KEY] === CUSTOM_HEADER_VALUE
+      return headers[HEADER_KEY] === CUSTOM_HEADER_VALUE;
     }).respond(200, '');
 
     http({
@@ -98,14 +98,39 @@ describe('Socrata-flavored $http service', function() {
   });
 
   describe('csrf', function() {
+    it('throws an error when the CSRF token is not available', function() {
+      var config = {url: '/test', method: 'put'};
+      var getCookieStub = sinon.stub();
+
+      getCookieStub.returns(undefined);
+      socrata.utils.getCookie = getCookieStub;
+
+      $httpBackend.whenPUT('/test').respond(403, '');
+
+      expect(function() {
+        http(config);
+      }).to.throw('Unable to make authenticated "put" request to /test');
+    });
+
     it('configures requests to use our csrf token/header', function() {
-      var config = {url: '/test'};
+      var config = {url: '/test', method: 'put'};
+      var getCookieStub = sinon.stub();
+
+      getCookieStub.returns('CSRF-TOKEN');
+      socrata.utils.getCookie = getCookieStub;
+
+      $httpBackend.expectPUT('/test', function(data) { return true; }, function(headers) {
+        return headers['X-CSRF-Token'] === 'CSRF-TOKEN';
+      }).respond(200, '');
+
       http(config);
+
+      expect($httpBackend.flush).to.not.throw();
+
+      sinon.assert.alwaysCalledWithExactly(getCookieStub, 'socrata-csrf-token')
+
       expect(config.xsrfHeaderName).to.equal('X-CSRF-Token');
       expect(config.xsrfCookieName).to.equal('socrata-csrf-token');
-
-      $httpBackend.whenGET('/test').respond(200, '');
-      expect($httpBackend.flush).to.not.throw();
     });
   });
 

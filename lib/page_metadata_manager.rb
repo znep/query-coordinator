@@ -91,7 +91,13 @@ class PageMetadataManager
         page_metadata = migrated_page_metadata(page_metadata)
 
         if old_version != page_metadata[:version]
-          update_metadb_page_metadata(page_metadata, result)
+          begin
+            update_metadb_page_metadata(page_metadata, result)
+          rescue => ignored
+            # this may occur when a user without edit rights tries to view this page
+            # because we try to save the migrated page metadata on their behalf
+            # but they don't have the edit rights to do so.
+          end
         end
       end
 

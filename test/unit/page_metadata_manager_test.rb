@@ -141,6 +141,21 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
   end
 
+  def test_show_succeeds_when_migration_happens_without_update_rights
+    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, true)
+    core_stub = mock
+    core_stub.expects(:get_request).times(2).with do |url|
+      assert_equal('/views/four-four.json', url)
+    end.returns(v2_page_metadata.to_json)
+    PageMetadataManager.any_instance.expects(:fetch_dataset_columns).returns(v1_dataset_metadata[:columns])
+    core_stub.expects(:update_request).raises(CoreServer::CoreServerError.new(nil, 'permission_denied', nil))
+    CoreServer::Base.stubs(connection: core_stub)
+
+    manager.show('four-four')
+
+    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, false)
+  end
+
   def test_create_creates_data_lens_with_category_from_obe_dataset
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},

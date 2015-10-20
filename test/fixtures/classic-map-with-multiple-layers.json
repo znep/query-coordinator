@@ -1,0 +1,37 @@
+{
+  "id": "sooo-oldd",
+  "viewType": "tabular",
+  "displayType": "map",
+  "columns": [
+    {
+      "fieldName": "location_1",
+      "tableColumnId": 1111
+    },
+    {
+      "fieldName": "location_2",
+      "tableColumnId": 2222
+    }
+  ],
+  "displayFormat": {
+    "viewDefinitions": [
+      {
+        "uid": "self",
+        "plot": {
+          "locationId": 1111
+        }
+      },
+      {
+        "uid": "sooo-oldd",
+        "plot": {
+          "locationId": 2222
+        }
+      },
+      {
+        "uid": "some-other",
+        "plot": {
+          "locationId": 1111
+        }
+      }
+    ]
+  }
+}

@@ -499,43 +499,7 @@ class ViewTest < Test::Unit::TestCase
 
 
     view = View.new
-    view.data = {
-      'id' => 'sooo-oldd',
-      'viewType' => 'tabular',
-      'displayType' => 'map',
-      'columns' => [
-        {
-          'fieldName' => 'location_1',
-          'tableColumnId' => 1111
-        },
-        {
-          'fieldName' => 'location_2',
-          'tableColumnId' => 2222
-        }
-      ],
-      'displayFormat' => {
-        'viewDefinitions' => [
-          {
-            'uid' => 'self',
-            'plot' => {
-              'locationId' => 1111
-            }
-          },
-          {
-            'uid' => 'sooo-oldd', # Same dataset.
-            'plot' => {
-              'locationId' => 2222
-            }
-          },
-          {
-            'uid' => 'some-other', # Other dataset. This should be ignored.
-            'plot' => {
-              'locationId' => 1111
-            }
-          }
-        ]
-      }
-    }
+    view.data = classic_map_with_multiple_layers
 
     assert_equal(view.display_format_columns, [ 'location_1', 'location_2' ])
   end
@@ -638,6 +602,10 @@ class ViewTest < Test::Unit::TestCase
 
   def stub_core_server_connection
     CoreServer::Base.stubs(:connection => mock.tap { |mock| mock.stubs(:get_request) })
+  end
+
+  def classic_map_with_multiple_layers
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/classic-map-with-multiple-layers.json"))
   end
 
 end

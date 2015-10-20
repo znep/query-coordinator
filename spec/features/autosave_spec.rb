@@ -1,23 +1,6 @@
 require 'rails_helper'
 
-module AutosaveSpecHelper
-  extend RSpec::Matchers::DSL
-
-  matcher :be_disabled do |expected|
-    match do |actual|
-      case actual.tag_name
-      when 'button'
-        actual[:disabled] == 'true'
-      when 'a'
-        actual[:class].split(' ').include? 'disabled'
-      end
-    end
-  end
-end
-
 RSpec.describe 'autosave', type: :feature, js: true do
-  include AutosaveSpecHelper
-
   before do
     stub_logged_in_user
     stub_core_view('hasb-lock')
@@ -32,9 +15,7 @@ RSpec.describe 'autosave', type: :feature, js: true do
         # response header: 'X-Story-Digest' => 'abc'
       }
     })
-    @blocks = page.all('.user-story .block-edit')
 
-    @save_btn = page.find('#story-save-btn')
     @preview_btn = page.find('.preview-btn')
   end
 
@@ -67,25 +48,26 @@ RSpec.describe 'autosave', type: :feature, js: true do
     expect(block_count).to eq(initial_block_count + 1)
   end
 
+  def preview_disabled?
+    @preview_btn[:class].split(' ').include? 'disabled'
+  end
+
   it 'should trigger when a change occurs' do
     # On page load, the starting state is 'saved'.
-    expect(@save_btn).to be_disabled
-    expect(@preview_btn).not_to be_disabled
+    expect(is_story_dirty?).to be_falsey
+    expect(preview_disabled?).to be_falsey
 
     trigger_change!
 
     # New state: unsaved. Preview disabled.
     expect(is_story_dirty?).to be_truthy
-    expect(@save_btn).not_to be_disabled
-    expect(@preview_btn).to be_disabled
+    expect(preview_disabled?).to be_truthy
 
     # wait expected delay
     sleep(expected_delay_before_autosave)
 
     # Last state: saved. Preview re-enabled.
     expect(is_story_dirty?).to be_falsey
-    expect(@preview_btn).not_to be_disabled
-
-    unload_page_and_dismiss_confirmation_dialog
+    expect(preview_disabled?).to be_falsey
   end
 end

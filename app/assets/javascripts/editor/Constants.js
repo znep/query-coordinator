@@ -41,7 +41,12 @@
 
     DEFAULT_VISUALIZATION_HEIGHT: 300,
 
-    SOCRATA_VISUALIZATION_FEATURE_MAP_DEFAULT_BASE_LAYER: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png'
+    SOCRATA_VISUALIZATION_FEATURE_MAP_DEFAULT_BASE_LAYER: 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
+
+    SAVE_BUTTON_STATE_IDLE: 'idle',
+    SAVE_BUTTON_STATE_UNSAVED: 'unsaved',
+    SAVE_BUTTON_STATE_SAVING: 'saving',
+    SAVE_BUTTON_STATE_SAVED: 'saved'
   };
 
   root.Constants = Constants;

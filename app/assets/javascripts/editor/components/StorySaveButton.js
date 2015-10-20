@@ -32,26 +32,32 @@
       var isStorySaved = !storyteller.storySaveStatusStore.isStoryDirty();
       var isStorySaveInProgress = storyteller.storySaveStatusStore.isStorySaveInProgress();
       var isSaveImpossible = storyteller.storySaveStatusStore.isSaveImpossibleDueToConflict();
-      var translationKey;
+      var buttonState;
 
       clearHoldInSaveStateAfterDebounce();
 
       if (isSaveImpossible) {
-        translationKey = 'editor.story_save_button.idle';
+        buttonState = Constants.SAVE_BUTTON_STATE_IDLE;
       } else if (isStorySaveInProgress) {
-        translationKey = 'editor.story_save_button.saving';
+        buttonState = Constants.SAVE_BUTTON_STATE_SAVING;
       } else if (isStorySaved) {
         if (holdInSavedState) {
-          translationKey = 'editor.story_save_button.saved';
+          buttonState = Constants.SAVE_BUTTON_STATE_SAVED;
         } else {
-          translationKey = 'editor.story_save_button.idle';
+          buttonState = Constants.SAVE_BUTTON_STATE_IDLE;
         }
       } else {
-        translationKey = 'editor.story_save_button.unsaved';
+        buttonState = Constants.SAVE_BUTTON_STATE_UNSAVED;
       }
 
-      $this.text(I18n.t(translationKey));
-      $this.prop('disabled', isStorySaveInProgress || isStorySaved || isSaveImpossible);
+      if (buttonState === Constants.SAVE_BUTTON_STATE_IDLE
+          || buttonState === Constants.SAVE_BUTTON_STATE_UNSAVED) {
+        $this.hide();
+      } else {
+        $this.show();
+        $this.text(I18n.t('editor.story_save_button.{0}'.format(buttonState)));
+        $this.prop('disabled', isStorySaveInProgress || isStorySaved || isSaveImpossible);
+      }
     }
 
     storyteller.storySaveStatusStore.addChangeListener(function() {

@@ -110,7 +110,6 @@ svg:not(:root).timeline-chart-highlight-container {
   font-weight: bold;
   line-height: 30px;
   text-align: center;
-  cursor: pointer;
   white-space: nowrap;
   z-index: 8;
 }
@@ -171,11 +170,17 @@ svg:not(:root).timeline-chart-highlight-container {
   height: 100%;
   line-height: 30px;
   text-align: center;
-  cursor: pointer;
   white-space: nowrap;
 }
 .x-ticks .x-tick-label.emphasis {
   font-weight: bold;
+}
+.filterable .timeline-chart-wrapper {
+  cursor: pointer;
+}
+
+.timeline-chart-wrapper {
+  cursor: default;
 }
 
 .dimmed .x-tick-label,

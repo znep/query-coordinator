@@ -203,9 +203,24 @@ class PageMetadataManager
   end
 
   def delete(id, options = {})
+
+    begin
+      metadb_metadata = new_view_manager.fetch(id)
+    rescue CoreServer::TimeoutError => error
+      report_error('Core server timeout error', error)
+      return { body: {
+        body: "Core server timeout error (#{error.error_code}): #{error.error_message}"
+      }, status: '500' }
+    rescue CoreServer::ConnectionError => error
+      report_error('Core server connection error', error)
+      return { body: {
+        body: "Core server connection error (#{error.error_code}): #{error.error_message}"
+      }, status: '500' }
+    end
+
     # Delete the core pointer to the page
     begin
-      result = View.delete(id)
+      View.delete(id)
     rescue CoreServer::ResourceNotFound => error
       report_error(
         "Page #{id} not found in core during delete. " +
@@ -217,12 +232,6 @@ class PageMetadataManager
       return { body: {
         body: "Core server error (#{error.error_code}): #{error.error_message}"
       }, status: '500' }
-    end
-
-    begin
-      metadb_metadata = new_view_manager.fetch(id)
-    rescue
-      metadb_metadata = nil
     end
 
     # Check if metadata is stored in metadb or phiddy. If phiddy, we need to actually delete
@@ -239,10 +248,10 @@ class PageMetadataManager
       # Delete the actual page
       # Need to get the page_metadata in order to get the dataset_id
       page_metadata = phidippides.fetch_page_metadata(id, options)
-      dataset_id = page_metadata.fetch(:body, {}).fetch(:datasetId)
       if page_metadata[:status] !~ /^2[0-9][0-9]$/
         return { body: { body: 'Not found' }, status: '404' }
       end
+      dataset_id = page_metadata.fetch(:body, {}).fetch(:datasetId)
       begin
         phidippides_response = phidippides.delete_page_metadata(id, options)
       rescue Phidippides::ConnectionError => error

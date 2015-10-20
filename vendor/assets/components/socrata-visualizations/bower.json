@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "main": [
     "components/SocrataFeatureMap.js",
     "socrata.visualizations.DataProvider.js",

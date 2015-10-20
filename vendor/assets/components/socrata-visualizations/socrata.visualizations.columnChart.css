@@ -87,8 +87,11 @@
   right: 0;
   font-family: sans-serif;
   font-size: 1.2em;
-  cursor: pointer;
   z-index: 2;
+}
+
+.column-chart.filterable .column-chart-wrapper .truncation-marker {
+  cursor: pointer;
 }
 
 .column-chart .column-chart-wrapper .truncation-marker:hover {
@@ -112,9 +115,12 @@
   opacity: 0;
 }
 
-.bar-group {
+.column-chart .column-chart-wrapper .bar-group {
   position: absolute;
   display: none;
+}
+
+.filterable .column-chart .column-chart-wrapper .bar-group {
   cursor: pointer;
 }
 
@@ -171,10 +177,14 @@
 }
 
 .column-chart .labels .label .contents {
-  cursor: pointer;
   position: absolute;
   font-size: 0.85em;
   line-height: 1em;
+  cursor: default;
+}
+
+.filterable .column-chart .labels .label .contents .text {
+  cursor: pointer;
 }
 
 .column-chart .labels .label .contents.undefined {

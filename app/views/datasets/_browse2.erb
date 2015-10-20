@@ -366,13 +366,22 @@
             result_odn_link = "http://www.opendatanetwork.com/search?#{result_odn_query_param}"
             result_api_link = "http://dev.socrata.com/foundry/#/#{CurrentDomain.cname}/#{result.id}"
 
-            result_edit_controls = create_asset_enabled
+            # Assume we will not show the edit controls unless we can verify that we should.
+            result_edit_controls = false
+            # Assume all results are private unless we can verify that they are not.
+            result_is_public = false
+
+            # Only show the result edit controls if the user is permissioned to create assets
+            # on the domain (`create_asset_enabled`) and the result is not federated.
+            if create_asset_enabled && result.respond_to?(:is_public?) && result.respond_to?(:federated?) && !result.federated?
+              result_edit_controls = true
+              result_is_public = result.is_public?
+            end
 
             if result.federated?
               result_classes << ' federated'
               result_federated_origin_url = "//#{result.domainCName}"
               result_api_link = "http://dev.socrata.com/foundry/#/#{result.domainCName}/#{result.id}"
-              result_edit_controls = false
             end
           -%>
           <%=
@@ -400,7 +409,7 @@
                 :result_odn_link => result_odn_link,
                 :result_api_link => result_api_link,
                 :result_edit_controls => result_edit_controls,
-                :result_is_public => result.is_public?
+                :result_is_public => result_is_public
               }
             )
           %>

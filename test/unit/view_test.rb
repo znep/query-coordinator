@@ -496,6 +496,12 @@ class ViewTest < Test::Unit::TestCase
     }
 
     assert_equal(view.display_format_columns, [])
+
+
+    view = View.new
+    view.data = classic_map_with_multiple_layers
+
+    assert_equal(view.display_format_columns, [ 'location_1', 'location_2' ])
   end
 
   def test_to_visualization_embed_blob_for_nbe_visualization
@@ -562,7 +568,7 @@ class ViewTest < Test::Unit::TestCase
     }
 
     view = View.new(json)
-    view.stubs(
+    View.any_instance.stubs(
       :display_format_columns => [ 'source_col_1', 'source_col_2' ],
       :fetch_json => json
     )
@@ -596,6 +602,10 @@ class ViewTest < Test::Unit::TestCase
 
   def stub_core_server_connection
     CoreServer::Base.stubs(:connection => mock.tap { |mock| mock.stubs(:get_request) })
+  end
+
+  def classic_map_with_multiple_layers
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/classic-map-with-multiple-layers.json"))
   end
 
 end

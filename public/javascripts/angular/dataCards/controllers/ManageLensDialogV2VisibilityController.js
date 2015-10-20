@@ -2,10 +2,18 @@
   'use strict';
 
   function ManageLensDialogV2VisibilityController($scope, ServerConfig, http, $q) {
+    var self = this;
+
+    // This function provides a description of the entity making the request to the http() service.
+    // The requester object is expected present in the config options passed to http(), and it is expected
+    // that the requester object expose a requesterLabel function that returns the descriptive string.
+    self.requesterLabel = function() {
+      return 'ManageLensDialogV2VisibilityController';
+    };
 
     var datasetIsPrivate$ = $scope.page.observe('dataset.permissions').
-        filter(_.isObject).
-        map(_.negate(_.property('isPublic')));
+      filter(_.isObject).
+      map(_.negate(_.property('isPublic')));
 
     var userCanApproveNominations$ = Rx.Observable.returnValue(
       typeof currentUser !== 'undefined' &&
@@ -60,7 +68,7 @@
         visibility
       );
 
-      return http.post(url);
+      return http.post(url, null, { requester: self });
     };
 
     var postSave = function() {

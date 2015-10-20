@@ -11,7 +11,15 @@
     http
   ) {
 
+    var self = this;
     var SUGGESTION_LIMIT = Constants.MAX_NUMBER_OF_SUGGESTIONS;
+
+    // This function provides a description of the entity making the request to the http() service.
+    // The requester object is expected present in the config options passed to http(), and it is expected
+    // that the requester object expose a requesterLabel function that returns the descriptive string.
+    self.requesterLabel = function() {
+      return 'ManageLensDialogV2OwnershipController';
+    };
 
     // Observe non-error changes to the input text.
     var suggestionInput$ = $scope.$observe('ownerInput').filter(function(input) {
@@ -181,7 +189,7 @@
       url.searchParams.set('userId', nextOwnerId);
       url.searchParams.set('accessType', 'WEBSITE');
 
-      return http.put(url);
+      return http.put(url, null, { requester: self });
     };
 
     // update dataset owner on success

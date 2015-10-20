@@ -38,6 +38,11 @@ describe StandaloneVisualizationManager do
         receive(:fetch_dataset_columns).
             with('vdj8-z7h2', hash_including(:cookies => {:_core_session_id => 123})).
             and_return({'plausibility' => {}})
+
+      core_server_connection = double('connection')
+      allow(CoreServer::Base).to receive(:connection).and_return(core_server_connection)
+      allow(core_server_connection).to receive(:create_request).and_return('{}')
+
       standalone_visualization_manager.create(vif_fixture, 'Business', 'vdj8-z7h2', true, :cookies => {:_core_session_id => 123})
     end
 

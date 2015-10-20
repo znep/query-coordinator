@@ -49,7 +49,8 @@
           'baseSoqlFilter',
           'defaultDateTruncFunction',
           'moderationStatus',
-          'rights'
+          'rights',
+          'provenance'
         ];
 
         this.displayType = pageMetadata.displayType;

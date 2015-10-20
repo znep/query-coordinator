@@ -251,6 +251,13 @@ manage-lens-dialog-v2 {
     }
   }
 
+  section.provenance {
+    margin-bottom: 2rem;
+    input.view-provenance-checkbox {
+      height: 29px;
+    }
+  }
+
   section.ownership {
     margin-bottom: 2rem;
     .ownership-input {

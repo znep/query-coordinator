@@ -233,6 +233,7 @@
   <!-- CUSTOMIZE_BAR -->
   <customize-bar
     card-count="cardCount"
+    current-user-has-rights="currentUserHasRights"
     edit-mode="editMode"
     has-changes="hasChanges"
     is-ephemeral="isEphemeral"
@@ -337,9 +338,10 @@
     dialog-state="saveVisualizationAsState"
     id="save-visualization-as-dialog">
     <save-visualization-as-dialog
-      page="page"
+      current-user-has-rights="currentUserHasRights"
       domain="domain"
-      dialog-state="saveVisualizationAsState">
+      dialog-state="saveVisualizationAsState"
+      page="page">
     </save-visualization-as-dialog>
   </modal-dialog>
 

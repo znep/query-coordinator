@@ -1,5 +1,13 @@
 <h2>{{::'manageLensDialog.title' | I18n}}</h2>
 
+<section class="row provenance" ng-controller="ManageLensDialogV2ProvenanceController" ng-show="currentUserHasRights">
+  <label class="span2">{{::'manageLensDialog.provenance.title' | I18n}}</label>
+  <div class="contents span10">
+    <input type="checkbox" name="view-provenance-checkbox" class="view-provenance-checkbox" ng-model="isOfficial" />
+    <div class="view-provenance-description">{{::'manageLensDialog.provenance.description' | I18n}}</div>
+  </div>
+</section>
+
 <section class="row ownership" ng-controller="ManageLensDialogV2OwnershipController">
   <label class="span2">{{::'manageLensDialog.ownership.title' | I18n}}</label>
 

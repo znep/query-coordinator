@@ -249,6 +249,28 @@ class ViewTest < Test::Unit::TestCase
     assert_equal [], view.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant id'
   end
 
+  def test_is_official_returns_false_by_default
+    view = View.new
+    assert_nil(view.is_official?)
+  end
+
+  def test_is_official_returns_true
+    view = View.new
+    view.provenance = 'OFFICIAL'
+    assert_not_nil(view.is_official?)
+  end
+
+  def test_is_community_returns_false_by_default
+    view = View.new
+    assert_nil(view.is_community?)
+  end
+
+  def test_is_community_returns_true
+    view = View.new
+    view.provenance = 'COMMUNITY'
+    assert_not_nil(view.is_community?)
+  end
+
   def test_has_rights_returns_true
     stub_core_server_connection
     View.any_instance.stubs(:data => {'rights' => %w(read write)})
@@ -258,7 +280,6 @@ class ViewTest < Test::Unit::TestCase
     assert view.has_rights?('read', 'write'), 'Should have both read/write rights'
     assert view.has_rights?(['read', 'write']), 'should have both read/write rights'
   end
-
 
   def test_has_rights_returns_false
     stub_core_server_connection

@@ -5,10 +5,9 @@
     return {
       templateUrl: '/angular_templates/dataCards/lensType.html',
       restrict: 'E',
-      scope: {},
+      scope: true,
       link: function($scope) {
-        // Currently no lenses can be non-official so we can hard-code this.
-        $scope.lensType = 'official';
+        $scope.$bindObservable('lensType', $scope.page.observe('provenance'));
       }
     };
   }

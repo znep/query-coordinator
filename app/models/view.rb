@@ -801,6 +801,14 @@ class View < Model
     end
   end
 
+  def is_official?
+    provenance =~ /^official$/i
+  end
+
+  def is_community?
+    provenance =~ /^community$/i
+  end
+
   def federated?
     !domainCName.blank?
   end

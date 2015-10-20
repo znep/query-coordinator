@@ -25,11 +25,12 @@
     save-status="saveStatus">
   </save-button>
   <save-as
+    current-user-has-rights="currentUserHasRights"
     has-changes="hasChanges"
-    save-page-as="savePageAs"
     is-ephemeral="isEphemeral"
     page="page"
-    ng-show="showSaveAsButton || isEphemeral"></save-as>
+    ng-show="showSaveAsButton || isEphemeral"
+    save-page-as="savePageAs"></save-as>
   <span
     class="unsaved-warning unsaved-dirty"
     ng-show="hasChanges">

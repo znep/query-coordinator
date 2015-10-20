@@ -5,10 +5,11 @@
     return {
       restrict: 'E',
       scope: {
+        currentUserHasRights: '=',
         hasChanges: '=',
-        savePageAs: '=',
         isEphemeral: '=',
-        page: '='
+        page: '=',
+        savePageAs: '='
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
       link: function($scope, element) {
@@ -88,14 +89,19 @@
             rejected: false,
             pending: null
           };
+
           if (!$scope.visibilityDropdownDisabled) {
             moderationStatus = moderationStatusLookup[$scope.visibilityDropdownSelection];
+          }
+
+          if ($scope.isOfficial) {
+            $scope.provenance = 'official';
           }
 
           if ($scope.name.trim() === '') {
             $nameInput.addClass('form-error').focus();
           } else if ($scope.saveStatus !== 'saving' && $scope.saveStatus !== 'saved') {
-            $scope.savePageAs($scope.name.trim(), $scope.description.trim(), moderationStatus).
+            $scope.savePageAs($scope.name.trim(), $scope.description.trim(), moderationStatus, $scope.provenance).
               subscribe(saveEvents$);
             $scope.$bindObservable('saveStatus', Rx.Observable.returnValue('saving'));
           }

@@ -78,13 +78,8 @@ class PageMetadataManager
           raise "data lens #{id} is backed by metadb but is not of display type data_lens_chart, data_lens_map, or data_lens"
       end
       page_metadata = ensure_page_metadata_properties(page_metadata)
-      page_metadata[:permissions] = permissions.stringify_keys!
-      page_metadata[:moderationStatus] = result[:moderationStatus]
-      page_metadata[:shares] = View.new(result).shares
-      page_metadata[:rights] = result[:rights]
-      page_metadata[:displayType] = result[:displayType]
 
-      # don't migrate page metadata if we're looking at a standalone visualization
+      # Don't migrate page metadata if we're looking at a standalone visualization
       # ('data_lens_chart' or 'data_lens_map' display type)
       if result[:displayType] == 'data_lens'
         old_version = page_metadata[:version]
@@ -94,6 +89,12 @@ class PageMetadataManager
           update_metadb_page_metadata(page_metadata, result)
         end
       end
+      page_metadata[:permissions] = permissions.stringify_keys!
+      page_metadata[:moderationStatus] = result[:moderationStatus]
+      page_metadata[:shares] = View.new(result).shares
+      page_metadata[:rights] = result[:rights]
+      page_metadata[:displayType] = result[:displayType]
+      page_metadata[:provenance] = result[:provenance]
 
       page_metadata
     else
@@ -121,6 +122,8 @@ class PageMetadataManager
     unless page_metadata.key?('cards')
       raise Phidippides::NoCardsException.new('no cards entry on page metadata')
     end
+
+    page_metadata = ActiveSupport::HashWithIndifferentAccess.new(page_metadata)
 
     initialize_metadata_key_names
 
@@ -174,6 +177,11 @@ class PageMetadataManager
       metadb_metadata = new_view_manager.fetch(page_metadata['pageId'])
     rescue
       metadb_metadata = nil
+    end
+
+    if is_backed_by_metadb?(metadb_metadata)
+      metadb_metadata['provenance'] = page_metadata['provenance']
+      strip_page_metadata_properties!(page_metadata)
     end
 
     # Update the name and description of the lens in metadb.
@@ -336,6 +344,11 @@ class PageMetadataManager
     page_metadata
   end
 
+  # Page metadata keys we don't want in the inner page_metadata
+  def self.keys_to_skip
+    %w(permissions moderationStatus shares rights displayType provenance)
+  end
+
   private
 
   # Examine the given metadata and determine whether it has the hallmarks which
@@ -367,11 +380,20 @@ class PageMetadataManager
     @logical_datatype_name = 'fred'
   end
 
+  # Strip out outer keys we don't want in the inner page_metadata
+  def strip_page_metadata_properties!(page_metadata)
+    self.class.keys_to_skip.each do |property|
+      page_metadata.delete(property)
+    end
+  end
+
   # Updates a metadb backed page.
   # NOTE - currently this is "last write wins", meaning that if multiple users are editing the
   # metadata at the same time, the last one to save will obliterate any changes other users
   # may have made. This should be fixed with versioning within the metadata.
   def update_metadb_page_metadata(page_metadata, metadb_metadata)
+    strip_page_metadata_properties!(page_metadata)
+
     url = "/views/#{CGI::escape(metadb_metadata['id'])}.json"
     payload = {
       :displayFormat => {

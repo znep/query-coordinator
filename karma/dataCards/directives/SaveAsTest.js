@@ -119,7 +119,7 @@ describe('<save-as/>', function() {
       expect($saveAsName.hasClass('form-error')).to.be.false;
       expect(scope.savePageAs.calledOnce).to.be.true;
       var savePageAsCall = scope.savePageAs.getCall(0);
-      expect(savePageAsCall.calledWithExactly(TEST_INPUT, '', undefined)).to.be.true;
+      expect(savePageAsCall.calledWithExactly(TEST_INPUT, '', undefined, undefined)).to.be.true;
     });
 
     it('should call the savePageAs callback only once if the user clicks the "Save" button multiple times', function() {

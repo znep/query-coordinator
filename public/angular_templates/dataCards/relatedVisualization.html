@@ -8,7 +8,10 @@
     {{ visualization.title }}
   </h4>
   <p class="related-visualization-description" title="{{ visualization.description }}">{{ visualization.description }}</p>
-  <span class="related-visualization-metadata" ng-class="{ highlight: shouldHighlightSourceColumn(visualization) }">
+  <span
+    class="related-visualization-metadata"
+      ng-show="visualization.columns.length"
+      ng-class="{ highlight: shouldHighlightSourceColumn(visualization) }">
     {{ 'relatedVisualizationSelector.basedOnColumn' | I18n:humanReadableColumnList }}
   </span>
 </div>

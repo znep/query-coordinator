@@ -496,6 +496,48 @@ class ViewTest < Test::Unit::TestCase
     }
 
     assert_equal(view.display_format_columns, [])
+
+
+    view = View.new
+    view.data = {
+      'id' => 'sooo-oldd',
+      'viewType' => 'tabular',
+      'displayType' => 'map',
+      'columns' => [
+        {
+          'fieldName' => 'location_1',
+          'tableColumnId' => 1111
+        },
+        {
+          'fieldName' => 'location_2',
+          'tableColumnId' => 2222
+        }
+      ],
+      'displayFormat' => {
+        'viewDefinitions' => [
+          {
+            'uid' => 'self',
+            'plot' => {
+              'locationId' => 1111
+            }
+          },
+          {
+            'uid' => 'sooo-oldd', # Same dataset.
+            'plot' => {
+              'locationId' => 2222
+            }
+          },
+          {
+            'uid' => 'some-other', # Other dataset. This should be ignored.
+            'plot' => {
+              'locationId' => 1111
+            }
+          }
+        ]
+      }
+    }
+
+    assert_equal(view.display_format_columns, [ 'location_1', 'location_2' ])
   end
 
   def test_to_visualization_embed_blob_for_nbe_visualization
@@ -562,7 +604,7 @@ class ViewTest < Test::Unit::TestCase
     }
 
     view = View.new(json)
-    view.stubs(
+    View.any_instance.stubs(
       :display_format_columns => [ 'source_col_1', 'source_col_2' ],
       :fetch_json => json
     )

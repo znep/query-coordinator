@@ -132,6 +132,10 @@ describe('ManageLensDialogV2SharingController', function() {
     });
 
     it('requests that pendingRemoval shares be removed', function() {
+      var getCookieStub = sinon.stub();
+
+      getCookieStub.returns('CSRF-TOKEN');
+      socrata.utils.getCookie = getCookieStub;
       createController({ shares: defaultShares });
       $scope.toggleSharePendingRemovalStatus($scope.shares[0]);
 

@@ -81,6 +81,7 @@ $th-headings: (
   color: $default-type-color;
   font-size-adjust: 0.5;
   -webkit-font-smoothing: antialiased;
+  font-weight: $body-font-weight;
 
 
   // View Styles
@@ -98,6 +99,7 @@ $th-headings: (
   h1, h2, h3, h4, h5, h6 {
     font-family: $heading-font-stack;
     color: $heading-type-color;
+    font-weight: $heading-font-weight;
   }
 
   // Set the primary type face and vertical rhythm

@@ -1,5 +1,12 @@
 //Theme Vars
 
+// Basic media queries for typeset regions.
+$medium:  768px;
+$large:   1200px;
+$xlarge:  1400px;
+$xxlarge:   1600px;
+
+
 // Modular Scale Ratios --
 // Used for grid and typography. Setting type dimensions using these scales improves balance of the typographic design.
 $ms-ratio-1: 1.333;
@@ -12,31 +19,33 @@ $base-type-size: 1em;
 $base-line-height: $ms-ratio-3;
 
 
-// Standard (mobile, tablet, and small device) type size.
-$std-type-size: 1em;
-$std-line-height: $ms-ratio-3;
+// Standard (mobile, tablet, and small device) type sie.
+$std-type-size: 1.1em;
+$std-line-height: $ms-ratio-2;
 
 
 // Large Screeen Typesize.
-$lg-type-size: 1.18em;
-$lg-line-height: 1.8333;
+$lg-type-size: 1.2em;
+$lg-line-height: $ms-ratio-4;
 
 
 //Colors // Need to scrub and rework
-$default-type-color: #252525;
-$heading-type-color: #5590ba;
+$default-type-color: #31383C;
+$heading-type-color: #056cb6;
 $quiet-type-color: #ccc;
 
 
 // Font Stacks
-$body-font-stack: 'Merriweather', sans-serif;
-$body-font-weight: normal;
-$heading-font-stack: 'Lusitana', serif;
-$heading-font-weight: bold;
+
+
+$body-font-stack: "Trade Gothic W01", sans-serif;
+$body-font-weight: 300;
+$heading-font-stack: "Trade Gothic W01", serif;
+$heading-font-weight: 300;
 
 
 // Hyperlinks
-$link-color: darken(#5590ba, 10%);
+$link-color: #056cb6;
 $link-text-decoration: underline;
 $link-hover: darken($link-color, 12%);
 $link-hover: darken($link-color, 12%);
@@ -50,7 +59,7 @@ $blockquote-margin-left: 1.3rem;
 
 
 // Lists
-$list-padding-left: 0;
+$list-padding-left: 1.3rem;
 $ul-list-style-type: disc;
 $ol-list-styke-type: decimal;
 
@@ -71,6 +80,7 @@ $subtitle-font-family: $body-font-stack;
 
 // END Theme Settings //
 
+$breakpoint-to-ems: true;
 
 // Import typography
 @import "includes/typography";

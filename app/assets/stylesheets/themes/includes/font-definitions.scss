@@ -10,3 +10,24 @@
 // Serif theme
 @import url('https://fonts.googleapis.com/css?family=Lusitana:400,700');
 @import url('https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic');
+
+// Current custom theme (implemented the fake for-the-demo way)
+@font-face {
+  font-family: "Trade Gothic W01";
+  font-weight: 300;
+  src: url("https://performance.smcgov.org/api/assets/253616F8-547B-46F1-A5EC-337DE6D433D8?#iefix");
+  src: url("https://performance.smcgov.org/api/assets/253616F8-547B-46F1-A5EC-337DE6D433D8?#iefix") format("eot"), url("https://performance.smcgov.org/api/assets/D72DAEE8-5A2F-44BB-AAD4-5FF07B133B92") format("woff"), url("https://performance.smcgov.org/api/assets/AA981A1F-59C0-4880-B60F-79468203BB40") format("truetype"), url("https://performance.smcgov.org/api/assets/D98B859F-C208-4B0E-ADDD-3948FCC0E706#d918b947-5fcb-42e2-8286-a98a801876de") format("svg");
+}
+@font-face {
+  font-family: "Trade Gothic W01";
+  font-weight: normal;
+  src: url("https://performance.smcgov.org/api/assets/253616F8-547B-46F1-A5EC-337DE6D433D8?#iefix");
+  src: url("https://performance.smcgov.org/api/assets/253616F8-547B-46F1-A5EC-337DE6D433D8?#iefix") format("eot"), url("https://performance.smcgov.org/api/assets/D72DAEE8-5A2F-44BB-AAD4-5FF07B133B92") format("woff"), url("https://performance.smcgov.org/api/assets/AA981A1F-59C0-4880-B60F-79468203BB40") format("truetype"), url("https://performance.smcgov.org/api/assets/D98B859F-C208-4B0E-ADDD-3948FCC0E706#d918b947-5fcb-42e2-8286-a98a801876de") format("svg");
+}
+
+@font-face {
+  font-family: "Trade Gothic W01";
+  font-weight: bold;
+  src: url("https://performance.smcgov.org/api/assets/008B1A59-9B5B-4047-9F17-80C378D65618?#iefix");
+  src: url("https://performance.smcgov.org/api/assets/008B1A59-9B5B-4047-9F17-80C378D65618?#iefix") format("eot"), url("https://performance.smcgov.org/api/assets/9EA260D6-9445-437A-9AC6-8D91E2D4DD3B") format("woff"), url("https://performance.smcgov.org/api/assets/D592B17D-8CA1-43C8-A073-86F9BD00E5A4.ttf") format("truetype"), url("https://performance.smcgov.org/api/assets/C92E83FE-42EB-41DA-8F15-F3D1D4D7ECB5#d5153ad4-7c93-4757-9147-640e69ec4801") format("svg");
+}

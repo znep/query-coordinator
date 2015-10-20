@@ -32,11 +32,6 @@ module Cetera
       def self.icon_class
         'icon'
       end
-
-      # Cetera only returns public objects as of 2015/10/19
-      def self.is_public?
-        true
-      end
     end
 
     ##############

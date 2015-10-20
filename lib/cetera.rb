@@ -125,6 +125,11 @@ module Cetera
       domainCName != CurrentDomain.cname
     end
 
+    # Cetera only returns public objects as of 2015/10/19
+    def is_public?
+      true
+    end
+
     def new_view?
       type == 'page'
     end

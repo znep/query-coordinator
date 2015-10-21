@@ -902,11 +902,9 @@
       );
 
       var loadingButton = $('<button>', {
-        'class': 'btn btn-transparent btn-busy',
+        'class': 'btn btn-transparent btn-busy visualization-busy',
         'disabled': true
       }).append($('<span>'));
-
-      heading.append(loadingButton);
 
       var buttonGroup = $('<div>', {
         'class': 'asset-selector-button-group r-to-l'
@@ -920,7 +918,7 @@
         loadingButton.addClass('hidden');
       });
 
-      return [ heading, closeButton, datasetChooserIframe, buttonGroup ];
+      return [ heading, closeButton, loadingButton, datasetChooserIframe, buttonGroup ];
     }
 
     function _renderConfigureVisualizationTemplate() {
@@ -953,11 +951,9 @@
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
       var loadingButton = $('<button>', {
-        'class': 'btn-transparent btn-busy',
+        'class': 'btn-transparent btn-busy visualization-busy',
         'disabled': true
       }).append($('<span>'));
-
-      heading.append(loadingButton);
 
       var buttonGroup = $('<div>', {
         'class': 'asset-selector-button-group r-to-l'
@@ -977,7 +973,7 @@
           });
       };
 
-      return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];
+      return [ heading, closeButton, loadingButton, configureVisualizationIframe, buttonGroup ];
     }
 
     function _renderConfigureVisualizationData(componentType, componentProperties) {

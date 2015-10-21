@@ -9,7 +9,8 @@ module ViewModels
 
       def initialize(curated_georegions, site_title)
         @curated_regions = curated_georegions
-        @default_regions, @custom_regions = curated_georegions.partition(&:default?)
+        @default_regions = []
+        @custom_regions = curated_georegions
         @maximum_enabled_count = 5 # Move to config?
         @site_title = site_title
       end

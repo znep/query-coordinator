@@ -53,7 +53,7 @@ var t = function(str, props) {
   function renderTables(georegions, allowEnablement) {
     const authenticityToken = $('.georegions-controls-custom [name="authenticity_token"]').value();
     const baseUrlPath = '/admin/geo/';
-    const [ignored, customBoundaries] = _.partition(georegions, 'defaultFlag');
+    const customBoundaries = georegions;
     const baseTableProps = {
       allowEnablement,
       authenticityToken,

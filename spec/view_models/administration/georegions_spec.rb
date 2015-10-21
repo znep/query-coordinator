@@ -22,12 +22,11 @@ describe ::ViewModels::Administration::Georegions do
   end
 
   it 'has default regions' do
-    expect(subject.default_regions).to eq([default_region])
+    expect(subject.default_regions).to eq([])
   end
 
   it 'has custom regions' do
-    expect(subject.custom_regions).to include(curated_region, enabled_region)
-    expect(subject.custom_regions).to_not include(default_region)
+    expect(subject.custom_regions).to include(curated_region, enabled_region, default_region)
   end
 
   it 'has translations' do

@@ -33,7 +33,10 @@ module Services
       def make_request(curated_region, enabled)
         CoreServer::Base.connection.update_request(
           path(curated_region.id),
-          { :enabledFlag => enabled }.to_json
+          {
+            :enabledFlag => enabled,
+            :defaultFlag => enabled
+          }.to_json
         )
       end
 

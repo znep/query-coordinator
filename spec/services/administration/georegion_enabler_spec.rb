@@ -13,7 +13,7 @@ describe ::Services::Administration::GeoregionEnabler do
   describe 'enabling' do
     before(:each) do
       @request_stub = stub_request(:put, 'http://localhost:8080/curated_regions/5').
-        with(:body => { :enabledFlag => true }.to_json).
+        with(:body => { :enabledFlag => true, :defaultFlag => true }.to_json).
         to_return(:status => 200, :body => '')
     end
 
@@ -59,7 +59,7 @@ describe ::Services::Administration::GeoregionEnabler do
   describe 'disabling' do
     before(:each) do
       @request_stub = stub_request(:put, 'http://localhost:8080/curated_regions/5').
-        with(:body => { :enabledFlag => false }.to_json).
+        with(:body => { :enabledFlag => false, :defaultFlag => false }.to_json).
         to_return(:status => 200, :body => '')
     end
 

@@ -39,47 +39,64 @@ module Services
           }
         }
 
-        begin
-          make_request(path(working_copy), payload)
-        rescue => ex
-          working_copy.delete
-          error_message = "An error occurred while creating computed column: #{ex}"
-          Airbrake.notify(
-            :error_class => 'ComputedColumnCreationError',
-            :error_message => error_message
-          )
+        post_computed_column(payload, working_copy)
+        publish_working_copy(working_copy)
+      end
 
-          Rails.logger.warn(error_message)
-          raise RegionCodingError.new('An error occurred while creating computed column')
-        end
-        begin
-          working_copy.publish
-        rescue => ex
-          error_message = "An error occurred while publishing working copy: #{ex}"
-          Airbrake.notify(
-            :error_class => 'WorkingCopyPublishError',
-            :error_message => error_message
-          )
-          Rails.logger.warn(error_message)
-        end
+      def post_computed_column(payload, working_copy)
+        make_request(path(working_copy), payload)
+      rescue => ex
+        error_message = "An error occurred while creating computed column: #{ex}"
+        Airbrake.notify(
+          :error_class => 'ComputedColumnCreationError',
+          :error_message => error_message
+        )
+
+        Rails.logger.warn(error_message)
+        delete_working_copy(working_copy)
+        raise RegionCodingError.new('An error occurred while creating computed column')
+      end
+
+      def publish_working_copy(working_copy)
+        working_copy.publish
+      rescue => ex
+        error_message = "An error occurred while publishing working copy: #{ex}"
+        Airbrake.notify(
+          :error_class => 'WorkingCopyPublishError',
+          :error_message => error_message
+        )
+        Rails.logger.warn(error_message)
+      end
+
+      def delete_working_copy(working_copy, tries = 3)
+        working_copy.delete
+      rescue => ex
+        tries -= 1
+        Rails.logger.warn('Deleting working copy failed, retrying in 1 second') if tries > 0
+        sleep 1
+        retry if tries > 0
+        error_message = "An error occurred while deleting working copy: #{ex}"
+        Airbrake.notify(
+          :error_class => 'WorkingCopyDeletionError',
+          :error_message => error_message
+        )
+        Rails.logger.warn(error_message)
       end
 
       def make_request(path, payload)
-        View.parse(CoreServer::Base.connection.create_request(path, payload.to_json))
+        View.parse(CoreServer::Base.connection.create_request(path, payload.to_json, {}, false, nil, false, 300))
       end
 
       def make_working_copy(view)
-        begin
-          view.make_unpublished_copy
-        rescue => ex
-          error_message = "Unable to create working copy for this dataset: #{ex}"
-          Airbrake.notify(
-            :error_class => 'WorkingCopyCreationError',
-            :error_message => error_message
-          )
-          Rails.logger.warn(error_message)
-          raise RegionCodingError.new('Unable to create working copy for this dataset')
-        end
+        view.make_unpublished_copy
+      rescue => ex
+        error_message = "Unable to create working copy for this dataset: #{ex}"
+        Airbrake.notify(
+          :error_class => 'WorkingCopyCreationError',
+          :error_message => error_message
+        )
+        Rails.logger.warn(error_message)
+        raise RegionCodingError.new('Unable to create working copy for this dataset')
       end
 
       def path(view)

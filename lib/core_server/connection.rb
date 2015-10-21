@@ -48,7 +48,7 @@ module CoreServer
     end
 
     def create_request(path, payload = "{}", custom_headers = {}, cache_req = false, batch_id = nil,
-                      is_anon = false)
+                      is_anon = false, timeout = 60)
       # Check true/false for legacy
       if !batch_id.nil? && batch_id != true && batch_id != false
        @batch_queue[batch_id] << {:url => path, :body => payload, :requestType => 'POST'}
@@ -58,7 +58,7 @@ module CoreServer
         result_body = cache_req ? cache.read(cache_key) : nil
         if result_body.nil?
           result_body = generic_request(Net::HTTP::Post.new(path),
-                                        payload, custom_headers, is_anon).body
+                                        payload, custom_headers, is_anon, timeout).body
           cache.write(cache_key, result_body) if cache_req
         end
 

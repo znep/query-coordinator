@@ -268,7 +268,7 @@
       });
 
       $container.on('rich-text-editor::height-change', _renderStory);
-      $container.on('component-image::height-change', _renderStory);
+      $container.on('component::height-change', _renderStory);
 
       $container.on('click', '[data-action]', function() {
         var action = this.getAttribute('data-action');

@@ -51,7 +51,7 @@
     $image.one('load', function() {
       $image[0].dispatchEvent(
         new storyteller.CustomEvent(
-          'component-image::height-change',
+          'component::height-change',
           { detail: {}, bubbles: true }
         )
       );

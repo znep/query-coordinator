@@ -24,6 +24,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       stub_feature_flags_with(:use_ephemeral_bootstrap, false)
       stub_feature_flags_with(:odux_enable_histogram, true)
       stub_feature_flags_with(:create_v2_data_lens, false)
+      stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, false)
     end
 
     should 'have no route if no id' do

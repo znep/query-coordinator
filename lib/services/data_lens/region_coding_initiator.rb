@@ -18,12 +18,27 @@ module Services
           working_copy = make_working_copy(view)
         end
 
-        execute_region_coding(working_copy, curated_region, source_column_name)
+        add_computed_column(working_copy, curated_region, source_column_name)
+        recompute_column(view, region_column_field_name(shapefile_id))
       end
 
       private
 
-      def execute_region_coding(working_copy, curated_region, source_column_name)
+      def recompute_column(view, column_field_name)
+        path = "/views/#{view.id}/columns/#{column_field_name}?method=compute"
+        make_request(path, {})
+      rescue => ex
+        error_message = "An error occurred while triggering recomputation. " +
+          "DatasetID: #{view.id}, Column: #{column_field_name}, Exception: #{ex}"
+        Airbrake.notify(
+          :error_class => 'ColumnRecomputationError',
+          :error_message => error_message
+        )
+        Rails.logger.warn(error_message)
+        raise RegionCodingError.new('Unable to compute rows for column')
+      end
+
+      def add_computed_column(working_copy, curated_region, source_column_name)
         payload = {
           :name => curated_region.name,
           :dataTypeName => 'number',
@@ -46,7 +61,8 @@ module Services
       def post_computed_column(payload, working_copy)
         make_request(path(working_copy), payload)
       rescue => ex
-        error_message = "An error occurred while creating computed column: #{ex}"
+        error_message = "An error occurred while creating computed column. " +
+          "Working Copy ID: #{working_copy.id}, Payload: #{payload}, Exception: #{ex}"
         Airbrake.notify(
           :error_class => 'ComputedColumnCreationError',
           :error_message => error_message
@@ -60,7 +76,8 @@ module Services
       def publish_working_copy(working_copy)
         working_copy.publish
       rescue => ex
-        error_message = "An error occurred while publishing working copy: #{ex}"
+        error_message = "An error occurred while publishing working copy. " +
+          "Working Copy ID: #{working_copy.id}, Exception: #{ex}"
         Airbrake.notify(
           :error_class => 'WorkingCopyPublishError',
           :error_message => error_message
@@ -75,7 +92,8 @@ module Services
         Rails.logger.warn('Deleting working copy failed, retrying in 1 second') if tries > 0
         sleep 1
         retry if tries > 0
-        error_message = "An error occurred while deleting working copy: #{ex}"
+        error_message = "An error occurred while deleting working copy. " +
+          "Working Copy ID: #{working_copy.id}, Exception: #{ex}"
         Airbrake.notify(
           :error_class => 'WorkingCopyDeletionError',
           :error_message => error_message
@@ -90,7 +108,8 @@ module Services
       def make_working_copy(view)
         view.make_unpublished_copy
       rescue => ex
-        error_message = "Unable to create working copy for this dataset: #{ex}"
+        error_message = "Unable to create working copy for this dataset. " +
+          "DatasetID: #{view.id}, Exception: #{ex}"
         Airbrake.notify(
           :error_class => 'WorkingCopyCreationError',
           :error_message => error_message
@@ -100,7 +119,7 @@ module Services
       end
 
       def path(view)
-        "/views/#{view.id}/columns"
+        "/views/#{view.id}/columns?compute=false"
       end
 
     end

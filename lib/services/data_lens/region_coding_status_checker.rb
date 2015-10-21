@@ -11,28 +11,18 @@ module Services
           computed_column_name = region_column_field_name(curated_region.uid)
           if has_computed_column?(working_copy, computed_column_name) &&
             !has_computed_column?(view, computed_column_name)
-            begin
-              working_copy.publish
-            rescue => ex
-              error_message = "An error occurred while publishing working copy: #{ex}"
-              Airbrake.notify(
-                :error_class => 'PublishingWorkingCopyError',
-                :error_message => error_message
-              )
-              Rails.logger.warn(error_message)
-              return false
-            end
+            return false
           else
             return !has_computed_column?(view, computed_column_name)
           end
         end
         response = get_selection(view.id)
-        !data_out_of_date(response)
+        !data_out_of_date?(response)
       end
 
       private
 
-      def data_out_of_date(response)
+      def data_out_of_date?(response)
         header = 'x-soda2-data-out-of-date'
         return false unless response_has_header?(response, header)
         response[:headers][header] == 'true'

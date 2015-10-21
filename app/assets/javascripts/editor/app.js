@@ -285,8 +285,8 @@ $(document).on('ready', function() {
   // Draft or Published status
   $('#story-publication-status').storyPublicationStatus(storyteller.userStoryUid);
 
-  // Save button
-  $('#story-save-btn').storySaveButton();
+  // Save status
+  $('#story-saving-indicator').storySavingStatus();
   $('#story-save-error-bar').storySaveErrorBar();
 
   // Preview button

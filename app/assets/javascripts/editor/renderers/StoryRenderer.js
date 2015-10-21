@@ -534,7 +534,7 @@
            iframe.contentDocument.body &&
            iframe.contentDocument.body.clientHeight === 0);
       };
-      var $iframes = $blockElement.find('iframe');
+      var $iframes = $blockElement.find('.component-html iframe');
       var iframeContentMissing = $iframes.toArray().some(contentMissingCheck);
 
       componentData.forEach(function(componentDatum, i) {

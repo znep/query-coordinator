@@ -73,8 +73,8 @@ describe AdministrationController do
           view_model = assigns(:view_model)
           expect(view_model.available_count).to eq(3)
           expect(view_model.enabled_count).to eq(1)
-          expect(view_model.custom_regions).to contain_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion))
-          expect(view_model.default_regions).to contain_exactly(an_instance_of(CuratedRegion))
+          expect(view_model.custom_regions).to contain_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion),an_instance_of(CuratedRegion))
+          expect(view_model.default_regions).to eq([])
           expect(view_model.translations).to be_an_instance_of(LocalePart)
         end
 

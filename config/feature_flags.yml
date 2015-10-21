@@ -10,6 +10,10 @@
 # This is truth. Anything not in this list gets ignored.
 #
 
+allow_data_lens_owner_change:
+  description: Controls whether ownership of data lenses can be transferred away from the creator.
+  defaultValue: false
+  category: data lens
 asteroids:
   description: Unlocked on datasets by the Konami code.
   defaultValue: false

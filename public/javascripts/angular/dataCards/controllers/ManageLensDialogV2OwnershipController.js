@@ -184,7 +184,7 @@
 
     // write ownership info via plagiarize endpoint
     var save = function() {
-      var url = $.baseUrl('/views/{0}'.format($scope.dataset.id));
+      var url = $.baseUrl('/views/{0}'.format($scope.page.id));
       url.searchParams.set('method', 'plagiarize');
       url.searchParams.set('userId', nextOwnerId);
       url.searchParams.set('accessType', 'WEBSITE');
@@ -192,9 +192,9 @@
       return http.put(url, null, { requester: self });
     };
 
-    // update dataset owner on success
+    // update lens owner on success
     var postSave = function() {
-      $scope.dataset.set('ownerId', nextOwnerId);
+      $scope.page.set('ownerId', nextOwnerId);
     };
 
     // determine whether the current user is allowed to access this control
@@ -214,7 +214,7 @@
     $scope.$bindObservable('hasPermission', hasPermission$);
 
     // capture the original owner and initialize input field
-    var currentOwnerId = $scope.dataset.getCurrentValue('ownerId');
+    var currentOwnerId = $scope.page.getCurrentValue('ownerId');
     var nextOwnerId = currentOwnerId;
     UserSearchService.find(currentOwnerId).then(function(results) {
       $scope.ownerInput = _.where(results, {id: currentOwnerId})[0].displayName;

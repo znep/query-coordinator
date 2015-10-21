@@ -101,6 +101,7 @@ class PageMetadataManager
       page_metadata[:rights] = result[:rights]
       page_metadata[:displayType] = result[:displayType]
       page_metadata[:provenance] = result[:provenance]
+      page_metadata[:ownerId] = result[:owner][:id]
 
       page_metadata
     else
@@ -114,6 +115,7 @@ class PageMetadataManager
       page_metadata[:permissions] = permissions.stringify_keys!
       page_metadata[:moderationStatus] = result[:moderationStatus]
       page_metadata[:displayType] = result[:displayType]
+
       page_metadata
     end
 
@@ -361,7 +363,7 @@ class PageMetadataManager
 
   # Page metadata keys we don't want in the inner page_metadata
   def self.keys_to_skip
-    %w(permissions moderationStatus shares rights displayType provenance)
+    %w(permissions moderationStatus shares rights displayType provenance ownerId)
   end
 
   private

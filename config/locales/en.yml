@@ -239,7 +239,7 @@ en:
         ownership:
           owner_unavailable: Owner information is temporarily unavailable.
           title: Owner
-          warning: You must select an Owner for this Dataset in order to proceed.
+          warning: You must select an Owner for this Data Lens in order to proceed.
         title: Manage
         provenance:
           title: Official View

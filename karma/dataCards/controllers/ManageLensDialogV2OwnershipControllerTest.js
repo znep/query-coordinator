@@ -78,12 +78,12 @@ describe('ManageLensDialogV2OwnershipController', function() {
   });
 
   function createController() {
-    var datasetOverrides = {
+    var pageOverrides = {
       ownerId: 'fake-user'
     };
     $dialogScope = $rootScope.$new();
-    $dialogScope.page = Mockumentary.createPage();
-    $dialogScope.dataset = Mockumentary.createDataset(datasetOverrides);
+    $dialogScope.page = Mockumentary.createPage(pageOverrides);
+    $dialogScope.dataset = Mockumentary.createDataset();
     $controller('ManageLensDialogV2Controller', { $scope: $dialogScope });
     $scope = $dialogScope.$new();
     $controller('ManageLensDialogV2OwnershipController', { $scope: $scope });

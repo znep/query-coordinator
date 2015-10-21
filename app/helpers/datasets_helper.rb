@@ -311,10 +311,23 @@ module DatasetsHelper
     # If the dataset is new_backend, it will never be blobby.
     #  It will not (yet) be geo. It will not (yet) be unpublished.
     [ !view.is_unpublished? && !view.is_geo? && !view.is_blobby?,
-      view.new_backend? && !FeatureFlags.derive(@view, request).default_imports_to_nbe,
+      hide_append_replace_for_nbe_geo?,
       view.is_href?,
       !view.flag?('default') && !view.is_geo?, # Allow Mondara maps to be editable.
       !view.has_rights?('add')
+    ].any?
+  end
+
+  def hide_append_replace_for_nbe_geo?
+    [
+      [ view.new_backend?,
+        !view.is_geo?,
+        !FeatureFlags.derive(@view, request).default_imports_to_nbe
+      ].all?,
+      [ view.new_backend?,
+        view.is_geo?,
+        !FeatureFlags.derive(@view, request).geo_imports_to_nbe_enabled
+      ].all?
     ].any?
   end
 
@@ -396,8 +409,15 @@ module DatasetsHelper
     [ view.is_unpublished?,
       view.is_alt_view? && !view.available_display_types.include?('map'),
       view.is_grouped?,
-      view.new_backend? && !FeatureFlags.derive(view, request).use_soql_for_clustering
+      hide_nbe_map_create?
     ].any?
+  end
+
+  def hide_nbe_map_create?
+    [ view.new_backend?, # OBE is fine.
+      !view.is_geo?, # NBE geo works now.
+      !FeatureFlags.derive(view, request).use_soql_for_clustering
+    ].all?
   end
 
   def hide_cell_feed?

@@ -235,7 +235,7 @@
         function getPointStyle() {
           return {
             color: calculatePointColor,
-            highlightColor: 'rgba(255, 255, 255, .5)',
+            highlightColor: 'rgba(255,255,255,.5)',
             radius: scalePointFeatureRadiusByZoomLevel,
             lineWidth: 1,
             strokeStyle: calculateStrokeStyleColor
@@ -247,7 +247,7 @@
         * Makes points more transparent as map zooms out.
         */
         function calculatePointColor(zoomLevel) {
-          return 'rgba(0,80,114,' + (0.3 * Math.pow(zoomLevel / 18, 5) + 0.4) + ')';
+          return 'rgba(234,105,0,' + (0.2 * Math.pow(zoomLevel / 18, 5) + 0.6) + ')';
         }
 
         /**

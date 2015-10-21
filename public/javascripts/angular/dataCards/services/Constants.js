@@ -48,7 +48,7 @@
       'ESRI_BASE_LAYER_URL': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
       'TILEURL_REGEX': /^ *https?:\/\/(.*(\{|%7b)[xyz](\}|%7d)){3}/i,
       'SIMPLE_GREY_MAP_BASE_LAYER_OPACITY': 0.15,
-      'DEFAULT_MAP_BASE_LAYER_OPACITY': 0.35,
+      'DEFAULT_MAP_BASE_LAYER_OPACITY': .42,
 
       // Column chart visualization parameters.
       'COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD': 100,

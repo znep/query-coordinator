@@ -78,11 +78,6 @@ class PageMetadataManager
           raise "data lens #{id} is backed by metadb but is not of display type data_lens_chart, data_lens_map, or data_lens"
       end
       page_metadata = ensure_page_metadata_properties(page_metadata)
-      page_metadata[:permissions] = permissions.stringify_keys!
-      page_metadata[:moderationStatus] = result[:moderationStatus]
-      page_metadata[:shares] = View.new(result).shares
-      page_metadata[:rights] = result[:rights]
-      page_metadata[:displayType] = result[:displayType]
 
       # don't migrate page metadata if we're looking at a standalone visualization
       # ('data_lens_chart' or 'data_lens_map' display type)
@@ -100,6 +95,13 @@ class PageMetadataManager
           end
         end
       end
+      page_metadata[:permissions] = permissions.stringify_keys!
+      page_metadata[:moderationStatus] = result[:moderationStatus]
+      page_metadata[:shares] = View.new(result).shares
+      page_metadata[:rights] = result[:rights]
+      page_metadata[:displayType] = result[:displayType]
+      page_metadata[:provenance] = result[:provenance]
+      page_metadata[:ownerId] = result[:owner][:id]
 
       page_metadata
     else

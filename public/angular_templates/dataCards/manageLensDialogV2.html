@@ -1,6 +1,6 @@
 <h2>{{::'manageLensDialog.title' | I18n}}</h2>
 
-<section class="row ownership" ng-controller="ManageLensDialogV2OwnershipController">
+<section class="row ownership" ng-controller="ManageLensDialogV2OwnershipController" ng-if="shouldShowOwnershipSection">
   <label class="span2">{{::'manageLensDialog.ownership.title' | I18n}}</label>
 
   <div class="contents span10">

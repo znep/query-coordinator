@@ -41,6 +41,7 @@
           getDefaultPageMetadataVersion();
 
         var fields = [
+          'ownerId',
           'datasetId',
           'description',
           'name',

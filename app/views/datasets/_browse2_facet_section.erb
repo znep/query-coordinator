@@ -40,11 +40,9 @@
           facet_option_class = 'browse2-facet-section-option'
           facet_option_class << (" #{facet_option[:class]}" || '')
           facet_option_class << (facet_option_is_active ? ' active' : '')
-
-          facet_text = facet_option[:text].titleize
         -%>
         <a class="<%= facet_option_class %>" href="<%= facet_option_url %>">
-          <%= facet_text %>
+          <%= facet_option[:text] %>
           <%- if facet_option_is_active -%>
             <span class="browse2-facet-section-option-clear-icon icon-close-2"></span>
           <%- end -%>

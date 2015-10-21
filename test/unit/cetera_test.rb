@@ -36,8 +36,8 @@ class CeteraTest < Test::Unit::TestCase
 
     def test_cetera_limit_type_translator
       frontend_to_cetera = {
-        'data_lens' => 'lenses',
-        'new_view' => 'lenses',
+        'data_lens' => 'datalenses',
+        'new_view' => 'datalenses',
         'story' => 'stories',
         'pulse' => 'pulses',
         'tables' => 'datasets',

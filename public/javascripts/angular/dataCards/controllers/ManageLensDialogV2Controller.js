@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ManageLensDialogV2Controller($scope) {
+  function ManageLensDialogV2Controller($scope, ServerConfig) {
 
     // Show sharing section for users who have 'grant' right
     $scope.$bindObservable('shouldShowSharingSection',
@@ -9,6 +9,9 @@
         return _.includes(rights, 'grant');
       })
     );
+
+    // Show ownership section if the feature flag is enabled
+    $scope.shouldShowOwnershipSection = ServerConfig.get('allowDataLensOwnerChange');
 
     // Decorate the $scope of the permissions with a components object. Each
     // component should be placed in this object with a save function that

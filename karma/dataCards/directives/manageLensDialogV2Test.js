@@ -168,19 +168,21 @@ describe('manage-lens dialog v2', function() {
 
     it('should have three options if the page has no moderation status', function() {
       // handle initialization of ownership component
-      $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });
-      $httpBackend.expectGET(/\/api\/search\/users\.json/).respond({});
+      // (uncomment these lines if the feature flag for the ownership component is removed)
+      // $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });
+      // $httpBackend.expectGET(/\/api\/search\/users\.json/).respond({});
 
       var element = createElement({moderationStatus: null});
       expect(element.find('option')).to.have.length(3);
 
-      $httpBackend.flush();
+      // $httpBackend.flush();
     });
 
     it('should have two options if the page has a moderation status', function() {
       // handle initialization of ownership component
-      $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });
-      $httpBackend.expectGET(/\/api\/search\/users\.json/).respond({});
+      // (uncomment these lines if the feature flag for the ownership component is removed)
+      // $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });
+      // $httpBackend.expectGET(/\/api\/search\/users\.json/).respond({});
 
       var element = createElement({moderationStatus: false});
       expect(element.find('option')).to.have.length(2);
@@ -188,7 +190,7 @@ describe('manage-lens dialog v2', function() {
       element = createElement({moderationStatus: true});
       expect(element.find('option')).to.have.length(2);
 
-      $httpBackend.flush();
+      // $httpBackend.flush();
     });
   });
 });

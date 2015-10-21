@@ -11,7 +11,6 @@ body.story-save-error .user-story-container {
   padding-top: $header-height + $user-story-container-vertical-padding;
   z-index: $user-story-container-z-index;
   -webkit-font-smoothing: antialiased;
-  transition: top $transition-duration;
 
   .user-story {
     @include media-query-property(
@@ -31,7 +30,7 @@ body.story-save-error .user-story-container {
   }
 
   .block-edit {
-    background-color: transparent;
+    background-color: $body-bg-color;
     border: 1px solid transparent;
 
     &:hover {

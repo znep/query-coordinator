@@ -4,7 +4,7 @@
 html {
   font-family: "Open Sans", "Helvetica", sans-serif;
   font-size: 10px;
-  overflow-y: auto;
+  overflow-y: scroll;
 
   body#story-edit {
     min-width: 768px;
@@ -81,6 +81,7 @@ body .header-main {
     display: inline-block;
     margin: 0 1em;
     max-width: $header-title-max-width;
+    height: 5.5rem;
     line-height: 5.5rem;
     font-weight: 600;
     color: $header-story-title-color;
@@ -300,3 +301,4 @@ a[role="button"] {
   top: 6rem !important;
   z-index: 10 !important;
 }
+

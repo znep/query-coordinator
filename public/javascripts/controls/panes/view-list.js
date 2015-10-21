@@ -73,6 +73,13 @@
                     { return a.context.view.displayName.capitalize(); },
                     '.viewIcon@class+': function(a)
                     { return 'type' + a.context.view.styleClass; },
+                    '.icon@class+': function(a)
+                    {
+                        if (a.context.view.styleClass === 'Data_lens')
+                        { return 'icon-cards'; }
+                        else
+                        { return ''; }
+                    },
                     '.nameLink@href': 'view.url',
                     '.name': 'view.name!',
                     '.name@title': 'view.name',

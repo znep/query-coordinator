@@ -435,11 +435,12 @@ $new-view-color: #80acca;
   &.typeData_lens #{$subselector} {
     background: none;
     text-indent: 0;
-    &::before {
-      content: "";
-      font-family: "socrata-apps";
-      font-size: 30px;
-      color: $new-view-color;
+    font-size: 30px;
+    color: $new-view-color;
+  }
+  &.typeData_lens {
+    .icon-cards {
+      font-family: 'socrata-apps';
     }
   }
   &.typeUnpublished #{$subselector} {

@@ -181,10 +181,13 @@
         // Use lazy validation, otherwise it interferes with the autocomplete
         $form.validate({
             rules: {
-              emailRecipient0: 'email'
+              emailRecipient0: {
+                email: true,
+                required: true
+              }
             },
             errorPlacement: function($error, $element)
-            { $element.closest('.emailLine').append($error); },
+            { $element.closest('.emailLine').after($error); },
             onkeyup: false,
             onfocusout: false,
             focusInvalid: false
@@ -257,6 +260,10 @@
         {
             e.preventDefault();
             $form.submit();
+        });
+
+        $('.emailDatasetContent .cancel').click(function(e) {
+          $form.find('label.error').remove();
         });
 
         didSetup = true;

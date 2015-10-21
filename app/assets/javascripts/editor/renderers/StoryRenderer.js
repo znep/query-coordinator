@@ -271,7 +271,7 @@
         _renderStory();
       });
 
-      $container.on('click', '[data-action]', function(event) {
+      $container.on('click', '[data-action]', function() {
         var action = this.getAttribute('data-action');
 
         switch (action) {

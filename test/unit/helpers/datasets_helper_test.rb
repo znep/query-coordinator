@@ -16,6 +16,11 @@ class DatasetsHelperTest < Test::Unit::TestCase
     refute @object.hide_append_replace?, 'Should be true when new_backend? is true'
     @view.stubs( :is_geo? => true, :new_backend? => false)
     refute @object.hide_append_replace?, 'Should be false when geo is true'
+    @view.stubs( :is_geo? => true, :new_backend? => true)
+    refute @object.hide_append_replace?, 'Should be false when geo is true and nbe is true and flag is true'
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:geo_imports_to_nbe_enabled => false))
+    @view.stubs( :is_geo? => true, :new_backend? => true)
+    assert @object.hide_append_replace?, 'Should be true when geo is true and nbe is true and flag is false'
   end
 
   def test_hide_append_replace_on_feature_flag
@@ -152,6 +157,9 @@ class DatasetsHelperTest < Test::Unit::TestCase
     refute @object.hide_map_create?, 'hide_map_create expected to be false'
     @view.stubs(:new_backend? => true)
     assert @object.hide_map_create?, 'hide_map_create expected to be true'
+
+    @view.stubs(:new_backend? => true, :is_geo? => true)
+    refute @object.hide_map_create?, 'hide_map_create expected to be false'
 
     FeatureFlags.stubs(:derive => Hashie::Mash.new(:use_soql_for_clustering => true))
     @view.stubs(:new_backend? => true)

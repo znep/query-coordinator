@@ -138,7 +138,7 @@
               selected_facet_option = facet_section[:options].select { |facet_option| facet_option[:value] == opts[:user_params][facet_param] }.first
 
               clear_facet_options.push(
-                :label => "#{facet_section[:title]} > #{selected_facet_option[:text].titleize}",
+                :label => "#{facet_section[:title]} > #{selected_facet_option[:text]}",
                 :url => "#{opts[:base_url]}?#{clear_facet_url_params.to_param}"
               )
             end
@@ -342,14 +342,14 @@
             # is a result from Cetera or Clytemnestra/Core Server
             if using_cetera
               result_link = result.link
-              result_categories = (result.categories || []).reject(&:empty?).map(&:titleize)
-              result_topics = (result.tags || []).reject(&:empty?).map(&:titleize)
+              result_categories = (result.categories || []).reject(&:empty?)
+              result_topics = (result.tags || []).reject(&:empty?)
               result_last_updated = result.updatedAt.present? ? Time.iso8601(result.updatedAt).strftime('%B %-d, %Y') : nil
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             else
               result_link = result.link.present? ? result.link : view_url(result)
               result_categories = result.categories.present? ? result.categories : [ result.category_display ].compact
-              result_topics = (result.tags || []).map(&:to_s).reject(&:empty?).map(&:titleize)
+              result_topics = (result.tags || []).map(&:to_s).reject(&:empty?)
 
               result_last_updated = nil
               # Prefer the 'rowsUpdatedAt' timestamp over the 'viewLastModified' timestamp

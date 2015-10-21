@@ -18,15 +18,6 @@
       }
     );
 
-    $imgElement.one('load', function() {
-      $imgElement[0].dispatchEvent(
-        new storyteller.CustomEvent(
-          'component-image::height-change',
-          { detail: {}, bubbles: true }
-        )
-      );
-    });
-
     $element.
       addClass(utils.typeToClassNameForComponentType(componentData.type)).
       append($imgElement);
@@ -47,9 +38,24 @@
     documentId = componentData.value.documentId;
 
     if ($imgElement.attr('src') !== imgSrc || $imgElement.attr('data-document-id') !== String(documentId)) {
+      _informHeightChanges($imgElement);
+
       $imgElement.attr('src', imgSrc);
       $imgElement.attr('data-document-id', documentId);
     }
+  }
+
+  function _informHeightChanges($image) {
+    utils.assertInstanceOf($image, $);
+
+    $image.one('load', function() {
+      $image[0].dispatchEvent(
+        new storyteller.CustomEvent(
+          'component-image::height-change',
+          { detail: {}, bubbles: true }
+        )
+      );
+    });
   }
 
   function componentImage(componentData) {

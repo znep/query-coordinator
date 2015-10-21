@@ -267,9 +267,8 @@
         }
       });
 
-      $container.on('rich-text-editor::height-change', function() {
-        _renderStory();
-      });
+      $container.on('rich-text-editor::height-change', _renderStory);
+      $container.on('component-image::height-change', _renderStory);
 
       $container.on('click', '[data-action]', function(event) {
         var action = this.getAttribute('data-action');

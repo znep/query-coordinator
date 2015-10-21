@@ -17,6 +17,15 @@
       }
     );
 
+    $imgElement.one('load', function() {
+      $imgElement[0].dispatchEvent(
+        new storyteller.CustomEvent(
+          'component-image::height-change',
+          { detail: {}, bubbles: true }
+        )
+      );
+    });
+
     $element.
       addClass(utils.typeToClassNameForComponentType(componentData.type)).
       append($imgElement);

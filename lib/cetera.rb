@@ -6,6 +6,9 @@ module Cetera
   def self.search_views(opts)
     cetera_url = "#{APP_CONFIG.cetera_host}/catalog/v1"
     query = cetera_soql_params(opts)
+
+    Rails.logger.info("Cetera request with params: #{query.inspect}")
+
     result = HTTParty.get(cetera_url, query: query)
     CeteraSearchResult.from_result(result.body)
   end
@@ -13,8 +16,8 @@ module Cetera
   # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
   def self.translate_display_type(limitTo)
     {
-      'data_lens' => 'lenses',
-      'new_view' => 'lenses',
+      'data_lens' => 'datalenses',
+      'new_view' => 'datalenses',
       'story' => 'stories',
       'pulse' => 'pulses',
       'tables' => 'datasets',
@@ -77,7 +80,7 @@ module Cetera
     def display
       case type
 
-      when 'lense' then Cetera::Displays::DataLens
+      when 'datalens' then Cetera::Displays::DataLens
       when 'pulse' then Cetera::Displays::Pulse
       when 'story' then Cetera::Displays::Story
 

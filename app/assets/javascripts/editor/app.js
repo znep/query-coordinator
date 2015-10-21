@@ -280,7 +280,7 @@ $(document).on('ready', function() {
   dragDrop.setup();
 
   // Story title
-  $('.story-title').storyTitle(storyteller.userStoryUid);
+  $('title, .story-title').storyTitle(storyteller.userStoryUid);
 
   // Draft or Published status
   $('#story-publication-status').storyPublicationStatus(storyteller.userStoryUid);

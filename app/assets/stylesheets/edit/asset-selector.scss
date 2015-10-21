@@ -1,5 +1,11 @@
 @import 'lib/variables';
 
+@mixin centered-busy-button {
+  position: absolute;
+  top: calc(50%  - (#{$btn-padding-top-bottom} * 2 + #{$btn-busy-height} + #{$btn-busy-border-width} * 2) / 2);
+  left: calc(50% - (#{$btn-padding-left-right} * 2 + #{$btn-busy-width} + #{$btn-busy-border-width} * 2) / 2);
+}
+
 .asset-selector-input-group {
 
   display: block;
@@ -50,9 +56,7 @@
     position: relative;
 
     .btn-busy {
-      position: absolute;
-      top: calc(50%  - (#{$btn-padding-top-bottom} * 2 + #{$btn-busy-height} + #{$btn-busy-border-width} * 2) / 2);
-      left: calc(50% - (#{$btn-padding-left-right} * 2 + #{$btn-busy-width} + #{$btn-busy-border-width} * 2) / 2);
+      @include centered-busy-button;
     }
 
     .asset-selector-uploading-message {
@@ -104,9 +108,7 @@
     }
 
     .btn-busy {
-      position: absolute;
-      top: calc(50%  - (#{$btn-padding-top-bottom} * 2 + #{$btn-busy-height} + #{$btn-busy-border-width} * 2) / 2);
-      left: calc(50% - (#{$btn-padding-left-right} * 2 + #{$btn-busy-width} + #{$btn-busy-border-width} * 2) / 2);
+      @include centered-busy-button;
     }
 
     .asset-selector-insecure-html-warning {
@@ -164,4 +166,8 @@
       margin-left: 1rem;
     }
   }
+}
+
+.visualization-busy {
+  @include centered-busy-button;
 }

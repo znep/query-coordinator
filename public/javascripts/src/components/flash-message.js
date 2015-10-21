@@ -22,8 +22,9 @@
     render: function() {
       const messages = _.map(this.props.messages, ({ message, type }, index) => {
         const className = classNames('flash', type);
+        const htmlMessage = {__html: message};
         return (
-          <div key={index} className={className}>{message}</div>
+          <div key={index} className={className} dangerouslySetInnerHTML={htmlMessage}></div>
         );
       });
       return (

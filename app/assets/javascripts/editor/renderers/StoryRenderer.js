@@ -577,7 +577,7 @@
       if (iframeContentMissing) {
         var $elements = $blockElement.find('div.typeset');
 
-        maxEditorHeight =  _.chain($elements).
+        maxEditorHeight = _.chain($elements).
           map($).
           invoke('outerHeight', true).
           concat(maxEditorHeight).

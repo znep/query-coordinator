@@ -26,7 +26,14 @@ module Services
 
       def recompute_column(view, column_field_name)
         path = "/views/#{view.id}/columns/#{column_field_name}?method=compute"
-        make_request(path, {})
+        make_request(path, {}, 30)
+      rescue CoreServer::TimeoutError => ex
+        # Timing out here is expected, as the compute operation is synchronous,
+        # but dependent on the number of rows be computed, so we allow the request
+        # to timeout, since it will continue processing in core
+        error_message = "Request timed out triggering recomputation. " +
+          "DatasetID: #{view.id}, Column: #{column_field_name}, Exception: #{ex}"
+        Rails.logger.warn(error_message)
       rescue => ex
         error_message = "An error occurred while triggering recomputation. " +
           "DatasetID: #{view.id}, Column: #{column_field_name}, Exception: #{ex}"
@@ -101,8 +108,8 @@ module Services
         Rails.logger.warn(error_message)
       end
 
-      def make_request(path, payload)
-        View.parse(CoreServer::Base.connection.create_request(path, payload.to_json, {}, false, nil, false, 300))
+      def make_request(path, payload, timeout = 300)
+        View.parse(CoreServer::Base.connection.create_request(path, payload.to_json, {}, false, nil, false, timeout))
       end
 
       def make_working_copy(view)

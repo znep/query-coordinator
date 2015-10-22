@@ -76,6 +76,11 @@
       return _.filter(shares, 'inherited');
     }
 
+    // Remove the new shares after save, since they have been added to the page shares
+    function resetNewShares() {
+      $scope.newShares.shares = [];
+    }
+
     var inheritedShares$ = $scope.page.observe('shares').map(filterForInheritedShares);
     $scope.$bindObservable('showInheritedSharingSection', inheritedShares$.map(_.negate(_.isEmpty)));
     $scope.$bindObservable('inheritedShares', inheritedShares$.map(formatShares));
@@ -205,6 +210,10 @@
       $scope.page.set('shares', pageShares);
     };
 
+    var postClose = function() {
+      resetNewShares();
+    };
+
     var deepShares$ = new Rx.BehaviorSubject();
     $scope.$watch('shares', function(shares) {
       deepShares$.onNext(shares);
@@ -213,6 +222,7 @@
     $scope.components.sharing = {
       save: save,
       postSave: postSave,
+      postClose: postClose,
       hasChanges: false,
       hasErrors: false
     };

@@ -71,6 +71,7 @@ It is only enabled for v2 data lenses.
             // Now close the dialog after 1.5 seconds
             $timeout(function() {
               $scope.manageLensState.show = false;
+              _.invoke($scope.components, 'postClose');
             }, 1500);
           })['catch'](function(failureResponse) {
             $scope.saveStatus = 'failed';

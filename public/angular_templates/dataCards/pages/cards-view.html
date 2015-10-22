@@ -222,9 +222,6 @@
             <div class="action-btn r-to-l manage-button" ng-if="shouldShowManageLens" ng-click="manageLensState.show = true">
               {{::'manageLensDialog.title' | I18n}}
             </div>
-            <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">
-              <manage-lens-dialog-v2 ng-controller="ManageLensDialogV2Controller"></manage-lens-dialog-v2>
-            </modal-dialog>
           </div>
         </div>
       </div>
@@ -300,6 +297,15 @@
       </single-card-layout>
     </div>
 
+  </div>
+
+  <div class="manage-lens-dialogs" ng-controller="ManageLensDialogV2Controller">
+    <modal-dialog ng-if="manageLensState.show" ng-hide="newSharesState.show" dialog-state="manageLensState">
+      <manage-lens-dialog-v2></manage-lens-dialog-v2>
+    </modal-dialog>
+    <modal-dialog ng-if="newSharesState.show" dialog-state="newSharesState">
+      <new-share-dialog dialog-state="newSharesState" save-new-shares="saveNewShares"></new-share-dialog>
+    </modal-dialog>
   </div>
 
   <modal-dialog

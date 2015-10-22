@@ -148,7 +148,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       assert_equal('/views/four-four.json', url)
     end.returns(v2_page_metadata.to_json)
     PageMetadataManager.any_instance.expects(:fetch_dataset_columns).returns(v1_dataset_metadata[:columns])
-    core_stub.expects(:update_request).raises(CoreServer::CoreServerError.new(nil, 'permission_denied', nil))
     CoreServer::Base.stubs(connection: core_stub)
 
     manager.show('four-four')

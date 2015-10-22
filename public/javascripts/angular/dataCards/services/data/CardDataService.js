@@ -610,24 +610,34 @@
         url.searchParams.set('viewUid', shapefileId);
         var config = httpConfig.call(this);
 
-        return http.get(url.href, config).then(function(response) {
-          var geometryLabel = null;
+        return http.get(url.href, config)['catch'](function() {
+            var datasetMetadataUrl = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(shapefileId));
+            var datasetMetadataConfig = httpConfig.call(this);
 
-          if (response.status !== 200) {
-            $log.warn(
-              'Could not determine geometry label: request failed with status code {0}'.
-                format(response.status)
-            );
-          } else if (!response.data.hasOwnProperty('geometryLabel')) {
-            $log.warn(
-              'Could not determine geometry label: dataset metadata does not include property ({0}).'.
-                format(url)
-            );
-          } else {
-            geometryLabel = response.data.geometryLabel;
-          }
+            return http.get(datasetMetadataUrl.href, datasetMetadataConfig);
+          }).
+          then(function(response) {
+            var geometryLabel = null;
 
-          return geometryLabel;
+            if (response.status !== 200) {
+              $log.warn(
+                'Could not determine geometry label: request failed with status code {0}'.
+                  format(response.status)
+              );
+            } else if (!response.data.hasOwnProperty('geometryLabel')) {
+              $log.warn(
+                'Could not determine geometry label: dataset metadata does not include property ({0}).'.
+                  format(url)
+              );
+            } else {
+              geometryLabel = response.data.geometryLabel;
+            }
+
+            return geometryLabel;
+          },
+        function() {
+          // If the dataset metadata fetch fails, return null (no labels)
+          return null;
         });
       },
 

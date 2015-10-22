@@ -14,23 +14,27 @@ module Cetera
   end
 
   # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
-  def self.translate_display_type(limitTo)
-    {
-      'data_lens' => 'datalenses',
-      'new_view' => 'datalenses',
-      'story' => 'stories',
-      'pulse' => 'pulses',
-      'tables' => 'datasets',
-      'blob' => 'files',
-      'href' => 'links'
-    }.fetch(limitTo, limitTo)
+  def self.translate_display_type(limitTo, datasetView)
+    if limitTo == 'tables' && datasetView == 'view'
+      'filters'
+    else
+      {
+        'data_lens' => 'datalenses',
+        'new_view' => 'datalenses',
+        'story' => 'stories',
+        'pulse' => 'pulses',
+        'tables' => 'datasets',
+        'blob' => 'files',
+        'href' => 'links'
+      }.fetch(limitTo, limitTo)
+    end
   end
 
   def self.cetera_soql_params(opts = {})
     (opts[:metadata_tag] || {}).merge(
       domains: opts[:domains],
       search_context: CurrentDomain.cname,
-      only: translate_display_type(opts[:limitTo]),
+      only: translate_display_type(opts[:limitTo], opts[:datasetView]),
       categories: opts[:category],
       tags: opts[:tags],
       q: opts[:q],

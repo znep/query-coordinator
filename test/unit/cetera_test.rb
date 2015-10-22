@@ -52,8 +52,10 @@ class CeteraTest < Test::Unit::TestCase
       }
 
       frontend_to_cetera.each do |frontend_type, cetera_type|
-        assert_equal cetera_type, Cetera.translate_display_type(frontend_type)
+        assert_equal cetera_type, Cetera.translate_display_type(frontend_type, 'dataset')
       end
+
+      assert_equal 'filters', Cetera.translate_display_type('tables', 'view')
     end
 
     describe 'Displays' do

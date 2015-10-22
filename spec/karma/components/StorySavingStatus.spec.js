@@ -1,4 +1,4 @@
-describe('storySaveButton jQuery plugin', function() {
+describe('storySavingStatus jQuery plugin', function() {
   var $button;
   var storyteller = window.socrata.storyteller;
   var mockStore;
@@ -33,19 +33,19 @@ describe('storySaveButton jQuery plugin', function() {
   });
 
   it('should throw when passed invalid arguments', function() {
-    assert.throws(function() { $button.storySaveButton(1); });
-    assert.throws(function() { $button.storySaveButton(''); });
+    assert.throws(function() { $button.storySavingStatus(1); });
+    assert.throws(function() { $button.storySavingStatus(''); });
   });
 
   it('should return a jQuery object for chaining', function() {
-    var returnValue = $button.storySaveButton();
+    var returnValue = $button.storySavingStatus();
     assert.instanceOf(returnValue, jQuery);
   });
 
 
   describe('instance', function() {
     beforeEach(function() {
-      $button.storySaveButton({ savedMessageTimeout: 10 });
+      $button.storySavingStatus({ savedMessageTimeout: 10 });
     });
 
     describe('button text', function() {

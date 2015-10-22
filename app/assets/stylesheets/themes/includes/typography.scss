@@ -121,7 +121,6 @@ $th-headings: (
 
   // Left align lists
   ul, ol {
-    list-style-position: inside;
     padding-left: $list-padding-left;
   }
 
@@ -136,6 +135,10 @@ $th-headings: (
   // List items are often long, so set set them apart by 1/2 the line height
   li {
     margin-bottom: $ms-ratio-1*.5 + em;
+  }
+
+  li ol, li ul {
+    font-size: 1em;
   }
 
   // In text hyperlinks
@@ -276,6 +279,10 @@ $th-headings: (
 
   li {
      margin-bottom: $ms-ratio-2*.5 + em;
+  }
+
+  li ul, li ol {
+    font-size: 1em;
   }
 
   .title {

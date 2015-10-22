@@ -672,6 +672,8 @@
         var config = httpConfig.call(this);
         return http.get(url.href, config).then(function(response) {
           return response.data;
+        }, function() {
+          return [];
         });
       },
 

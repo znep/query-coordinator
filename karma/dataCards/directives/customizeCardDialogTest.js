@@ -138,7 +138,7 @@ describe('Customize card dialog', function() {
       computationStrategy: {
         parameters: {
           region: '_rook-king',
-          geometryLabel: 'You can\'t label me',
+          geometryLabel: 'You can\'t label me'
         }
       }
     },
@@ -147,13 +147,7 @@ describe('Customize card dialog', function() {
       fred: 'amount',
       physicalDatatype: 'number',
       availableCardTypes: ['column', 'histogram'],
-      defaultCardType: 'column',
-      computationStrategy: {
-        parameters: {
-          region: 'zip',
-          geometryLabel: 'Zip Code',
-        }
-      }
+      defaultCardType: 'column'
     },
     sub_column: {
       name: 'Subcolumn to Exclude',
@@ -161,7 +155,7 @@ describe('Customize card dialog', function() {
       physicalDatatype: 'number',
       availableCardTypes: ['column', 'histogram'],
       defaultCardType: 'column',
-      isSubcolumn: true,
+      isSubcolumn: true
     }
   };
 
@@ -935,7 +929,7 @@ describe('Customize card dialog', function() {
         var dialog = createDialog({ card: choroplethCard });
         var options = dialog.element.find('.curated-region-selector option');
 
-        expect(options).to.have.length(curatedRegions.length);
+        expect(options).to.have.length(3);
 
         CardDataService.getCuratedRegions.restore();
       });

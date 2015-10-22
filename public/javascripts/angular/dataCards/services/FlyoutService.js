@@ -43,12 +43,20 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
       // Work-around for browsers with no pointer-event support.
       target = targetUnder();
 
+      var selectorHandler;
       var matcher = target.matches || target.matchesSelector || target.msMatchesSelector;
 
       // Find a selector that matches our target, if it exists.
-      var selectorHandler = _.find(handlers, function(selectorHandlers, selector) {
-        return matcher.call(target, selector);
-      });
+      if (matcher) {
+        selectorHandler = _.find(handlers, function(selectorHandlers, selector) {
+          return matcher.call(target, selector);
+        });
+      } else {
+        var $target = $(target);
+        selectorHandler = _.find(handlers, function(selectorHandlers, selector) {
+          return $target.is($(selector));
+        });
+      }
 
       // If this selector exists, execute its handlers.
       if (selectorHandler) {

@@ -137,7 +137,7 @@
 
         getFilteredColumn: function() {
           var cardType = this.getCurrentValue('cardType');
-          if (cardType === 'choropleth') {
+          if (this.version >= 3 && cardType === 'choropleth') {
             return this.getCurrentValue('computedColumn');
           } else {
             return this.fieldName;

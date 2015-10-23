@@ -110,13 +110,13 @@ RSpec.describe StoriesHelper, type: :helper do
     it 'adds a `component-container` class' do
       expect(
         component_container_classes('6')
-      ).to match(/component-container /)
+      ).to include_class('component-container')
     end
 
     it 'adds a class for col width' do
       expect(
         component_container_classes('6')
-      ).to match(/col6/)
+      ).to include_class('col6')
     end
   end
 
@@ -124,7 +124,7 @@ RSpec.describe StoriesHelper, type: :helper do
     it 'adds a `component` class' do
       expect(
         component_classes('youtube.video')
-      ).to match(/component /)
+      ).to include_class('component')
     end
 
     it 'calls `type_to_class_name_for_component_type`' do
@@ -132,12 +132,19 @@ RSpec.describe StoriesHelper, type: :helper do
       helper.component_classes('youtube.video')
     end
 
-    it 'adds `typeset` to any block' do
-      # This controls whether our typography styles apply
-      # right now they should apply to all blocks
+    it 'adds `typeset` to a specific set of blocks' do
+      expected_to_have_typeset = %w{html spacer horizontalRule assetSelector image youtube.video embeddedHtml}
+      expected_to_have_typeset.each do |component_type|
       expect(
-          component_classes('anyComponentTypeForNow')
-        ).to match(/typeset /)
+        component_classes(component_type)
+      ).to include_class('typeset')
+      end
+    end
+
+    it 'does not add `typeset` to blocks not specifically typeset' do
+      expect(
+        component_classes('some.other.block.type')
+      ).to_not include_class('typeset')
     end
 
     it 'adds `component-media` to media blocks only' do
@@ -156,13 +163,13 @@ RSpec.describe StoriesHelper, type: :helper do
       media_component_types.each do |component_type|
         expect(
           component_classes(component_type)
-        ).to match(/component-media/)
+        ).to include_class('component-media')
       end
 
       non_media_component_types.each do |component_type|
         expect(
           component_classes(component_type)
-        ).not_to match(/component-media/)
+        ).not_to include_class('component-media')
       end
     end
 

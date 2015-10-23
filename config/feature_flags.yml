@@ -96,7 +96,7 @@ enable_export_service:
   defaultValue: false
   category: obe deprecation
 enable_spatial_lens_admin:
-  description: Allow visibility of spatial lens admin panel
+  description: Allow visibility of spatial lens admin panel at /admin/geo.
   defaultValue: false
   category: spatial-lens
 enable_feedback:
@@ -157,7 +157,7 @@ nbe_bucket_size:
   defaultValue: false
 odux_enable_feature_map_hover:
   description: Enable hover functionality in point maps.
-  defaultValue: false
+  defaultValue: true
   category: data lens
 odux_enable_histogram:
   description: Enable histogram visualizations.

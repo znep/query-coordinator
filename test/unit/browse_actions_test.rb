@@ -80,5 +80,59 @@ class BrowseActionsTest < Test::Unit::TestCase
       APP_CONFIG.stubs(cetera_host: nil)
       assert !@browse_actions_container.send(:using_cetera?)
     end
+
+    # This is an emergency fix and appropriately heinous
+    def test_browse_options_for_metadata_facets
+      stub_feature_flags_with(:cetera_search, nil)
+
+      # Unsound mess, verify the symbolize_keys move
+      custom_facets = [
+        { 'singular_description' => 'superhero',
+          'title' => 'Superhero',
+          'param' => :'Dataset-Information_Superhero',
+          'options' => [
+            { 'summary' => true,
+              'text' => 'Superman',
+              'value' => 'Superman' },
+            { 'summary' => true,
+              'text' => 'Batman',
+              'value' => 'Batman' },
+            { 'summary' => true,
+              'text' => 'Flash',
+              'value' => 'Flash' },
+            { 'summary' => true,
+              'text' => 'Spiderman',
+              'value' => 'Spiderman' },
+            { 'summary' => true,
+              'text' => 'Hulk',
+              'value' => 'Hulk' }
+          ]
+        }.symbolize_keys
+      ]
+
+      @browse_actions_container.stubs(custom_facets: custom_facets)
+
+      @browse_actions_container.stubs(categories_facet: nil)
+      @browse_actions_container.stubs(topics_facet: nil)
+      @browse_actions_container.stubs(federations_hash: {})
+
+      CurrentDomain.stubs(configuration: nil)
+      CurrentDomain.stubs(default_locale: 'en')
+      I18n.stubs(locale: CurrentDomain.default_locale.to_s)
+
+      Clytemnestra.stubs(search_views: [])
+
+      field = :"Dataset-Information_Superhero"
+      value = 'Superman'
+
+      request = OpenStruct.new
+      request.params = {
+        field => value
+      }
+
+      expected = [[field, value].join(':')]
+
+      assert_equal expected, @browse_actions_container.send(:process_browse, request)[:metadata_tag]
+    end
   end
 end

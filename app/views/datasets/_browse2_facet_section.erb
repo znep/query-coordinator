@@ -1,4 +1,23 @@
-<div class="browse2-facet-section" data-facet-display="show">
+<%-
+facet_options = facet[:options]
+truncate_facet_section = false
+truncate_facet_section_at_index = Float::INFINITY
+facet_extra_options = nil
+
+
+if facet[:extra_options].present?
+  truncate_facet_section = true
+  truncate_facet_section_at_index = facet[:options].length
+
+  facet_extra_options = facet[:extra_options].reject do |extra_facet_option|
+    facet_options.select { |facet_option| extra_facet_option[:value] == facet_option[:value] }.length > 0
+  end
+
+  facet_options.concat(facet_extra_options)
+end
+
+-%>
+<div class="browse2-facet-section" data-facet-display="show"<%== ' data-facet-truncation="truncate"' if truncate_facet_section %>>
   <h4 class="browse2-facet-section-title">
     <%= facet[:title] %>
     <span class="browse2-facet-section-expand-icon icon-arrow-down"></span>
@@ -6,8 +25,8 @@
   </h4>
 
   <ul class="browse2-facet-section-options">
-    <%- facet[:options].each do |facet_option| -%>
-      <li>
+    <%- facet_options.each_with_index do |facet_option, index| -%>
+      <li <%== 'class="truncated"' if index >= truncate_facet_section_at_index %>>
         <%-
           facet_option_url = nil
 
@@ -50,4 +69,16 @@
       </li>
     <%- end -%>
   </ul>
+
+  <%- if truncate_facet_section && facet_extra_options.present? -%>
+    <button class="browse2-facet-section-expand-button" title="<%= t('controls.browse.browse2.facets.expand.title') %>">
+      <span class="browse2-facet-section-expand-label"><%= t('controls.browse.browse2.facets.expand.label') %></span>
+      <span class="browse2-facet-section-expand-icon icon-arrow-down"></span>
+    </button>
+    <button class="browse2-facet-section-contract-button" title="<%= t('controls.browse.browse2.facets.contract.title') %>">
+      <span class="browse2-facet-section-contract-label"><%= t('controls.browse.browse2.facets.contract.label') %></span>
+      <span class="browse2-facet-section-contract-icon icon-arrow-up"></span>
+    </button>
+  <%- end -%>
+
 </div>

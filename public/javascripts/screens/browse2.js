@@ -570,9 +570,10 @@ $(function() {
 
   $('.browse2-create-asset-button').on('click', toggleBrowse2CreateAssetDisplay);
   $('.browse2-facet-section-title').on('click', toggleBrowse2FacetDisplay);
-  $('.browse2-result-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
+  $('.browse2-result-description-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
   $('.browse2-result-description').each(function(index, element) {
-    var truncationThreshold = 68;
+    // 3x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
+    var truncationThreshold = 82;
     var descriptionHeight = 0;
 
     $(element).

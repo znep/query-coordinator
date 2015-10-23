@@ -3497,51 +3497,11 @@ var Dataset = ServerModel.extend({
         });
     },
 
-    _getRelatedDataLenses: function(justCount) {
-        var ds = this;
+    _getRelatedDataLenses: function() {
         var deferred = $.Deferred();
-        var reject = function() {
-            if (window.console) {
-                console.log(arguments)
-            }
-            deferred.reject();
-        };
 
-        // First, we need the NBE id, so we can query what data lenses are on it.
-        this.getNewBackendId().done(function(nbeId) {
-            if (!nbeId) { return deferred.resolve([]); }
-
-            // Next, get the pages for that id from the NBE / phidippides.
-            ds.makeRequestWithPromise({
-                url: '/metadata/v1/dataset/{0}/pages'.format(nbeId),
-                pageCache: true,
-                type: 'GET',
-            }).then(function(result) {
-                // Fail fast if the server doesn't return what we expect it to.
-                if (!(_.isObject(result) &&
-                      _.isArray(result.publisher) &&
-                      _.isArray(result.user))) {
-                    return reject('Unexpected format from server', result);
-                }
-                var pages = result.publisher.concat(result.user);
-                if (!pages.length) { return deferred.resolve([]); }
-
-                // The pages are not in the format that we want (they don't have the owner metadata,
-                // for instance). So - grab the OBE representations of those pages.
-                ds.makeRequestWithPromise({
-                    url: '/views.json',
-                    pageCache: true,
-                    type: 'GET',
-                    data: {
-                        method: 'getByIds',
-                        ids: _.pluck(pages, 'pageId').join(',')
-                    }
-                }).then(function() {
-                    deferred.resolveWith(this, arguments);
-
-                }).fail(reject);
-            }).fail(reject);
-        }).fail(reject);
+        // EMERGENCY FIX
+        deferred.resolve([]);
 
         return deferred.promise();
     },

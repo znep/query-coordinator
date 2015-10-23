@@ -499,6 +499,13 @@ en:
           hint: Filter or Browse Results
           clear_all:
             label: Clear
+          contract:
+            label: Show Less
+            title: Click to show fewer options
+          expand:
+            label: Show All
+            title: Click to show all options
+          hint: Filter or Browse Results
         federation:
           label: Federated
           source: Federated from %{source}

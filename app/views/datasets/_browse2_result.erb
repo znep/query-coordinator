@@ -138,9 +138,11 @@
         </a>
       </div>
       <div class="browse2-result-explore">
-        <a class="browse2-result-api-link" href="<%= result_api_link %>" title="<%= t('controls.browse.browse2.api.link.title') %>">
-          <%= t('controls.browse.browse2.api.link.label') %>
-        </a>
+        <%- if result_api_link.present? -%>
+          <a class="browse2-result-api-link" href="<%= result_api_link %>" title="<%= t('controls.browse.browse2.api.link.title') %>">
+            <%= t('controls.browse.browse2.api.link.label') %>
+          </a>
+        <%- end -%>
       </div>
     </div>
   </div>

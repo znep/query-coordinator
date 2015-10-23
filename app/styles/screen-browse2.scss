@@ -450,6 +450,7 @@ body {
       border: 1px solid $panel-border-color;
 
       .browse2-facet-section {
+        border-top: 1px solid $panel-internal-border-color;
 
         .browse2-facet-section-title {
           position: relative;
@@ -494,46 +495,87 @@ body {
           display: block;
           height: 0;
           border-top: 1px solid $panel-internal-border-color;
-          border-bottom: 1px solid $panel-internal-border-color;
           overflow: hidden;
 
-          .browse2-facet-section-option {
-            position: relative;
-            display: block;
-            padding: 0.5em 0.75em;
-            font-size: 12px;
-            color: #4a4a4a;
-            border-left: 10px solid #eee;
+          li {
 
-            .browse2-facet-section-option-clear-icon {
-              position: absolute;
-              right: 10px;
-              top: 8px;
-              font-size: 9px;
-              font-weight: 300;
-              color: #f00;
-            }
-
-            &:hover {
-              background-color: #efefef;
-              border-left: 10px solid #ccc;
-              text-decoration: underline;
+            .browse2-facet-section-option {
+              position: relative;
+              display: block;
+              padding: 0.5em 0.75em;
+              font-size: 12px;
+              color: #4a4a4a;
+              border-left: 10px solid #eee;
 
               .browse2-facet-section-option-clear-icon {
-                text-decoration: none;
+                position: absolute;
+                right: 10px;
+                top: 8px;
+                font-size: 9px;
+                font-weight: 300;
+                color: #f00;
+              }
+
+              &:hover {
+                background-color: #efefef;
+                border-left: 10px solid #ccc;
+                text-decoration: underline;
+
+                .browse2-facet-section-option-clear-icon {
+                  text-decoration: none;
+                }
+              }
+
+              &:hover,
+              &:active,
+              &:visited,
+              &:focus {
+                color: #333;
+              }
+
+              &.active {
+                background-color: #eee;
+                border-left: 10px solid #f9690e;
               }
             }
 
-            &:hover,
-            &:active,
-            &:visited,
-            &:focus {
-              color: #333;
+            &.truncated {
+              display: none;
+            }
+          }
+        }
+
+        .browse2-facet-section-expand-button,
+        .browse2-facet-section-contract-button {
+          width: 100%;
+          padding: 0.5em 0;
+          font-family: 'Open Sans', sans-serif;
+          color: #888;
+          background-color: #f8f8f8;
+          border: none;
+          border-left: 10px solid #eee;
+          cursor: pointer;
+
+          .browse2-facet-section-expand-icon,
+          .browse2-facet-section-contract-icon {
+            margin-left: 0.5em;
+            font-size: 10px;
+          }
+
+          &:hover,
+          &:active,
+          &:focus {
+            background-color: #efefef;
+            border-left: 10px solid #ccc;
+
+            .browse2-facet-section-expand-label,
+            .browse2-facet-section-contract-label {
+              text-decoration: underline;
             }
 
-            &.active {
-              background-color: #eee;
-              border-left: 10px solid #f9690e;
+            .browse2-facet-section-expand-icon,
+            .browse2-facet-section-contract-icon {
+              text-decoration: none;
             }
           }
         }
@@ -552,6 +594,40 @@ body {
 
         &[data-facet-display="show"] > .browse2-facet-section-options {
           height: auto;
+        }
+
+        .browse2-facet-section-expand-button {
+          display: block;
+        }
+
+        .browse2-facet-section-contract-button {
+          display: none;
+        }
+
+        &[data-facet-display="hide"] > .browse2-facet-section-expand-button,
+        &[data-facet-display="hide"] > .browse2-facet-section-contract-button, {
+          display: none !important;
+        }
+
+        &[data-facet-truncation="show"] {
+
+          .browse2-facet-section-options {
+            li.truncated {
+              display: block;
+            }
+          }
+
+          .browse2-facet-section-expand-button {
+            display: none;
+          }
+
+          .browse2-facet-section-contract-button {
+            display: block;
+          }
+        }
+
+        &:first-child {
+          border-top: none;
         }
       }
     }

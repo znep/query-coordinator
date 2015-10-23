@@ -25,7 +25,12 @@ class CoreServer
     core_server_request_with_retries(core_server_request_options)
   end
 
-  # Generate Cookie, X-CSRF-Token, and X-Socrata-Host headers from the given request.
+  # Generate Cookie, X-CSRF-Token, X-Socrata-RequestId, and X-Socrata-Host
+  # headers from the given request.
+  #
+  # If X-Socrata-RequestId is present on the incoming request, its value
+  # is passed through to the return value. Otherwise, request.uuid is
+  # used.
   def self.headers_from_request(request)
     headers = {}
 
@@ -39,6 +44,7 @@ class CoreServer
 
     headers['Cookie'] = authentication_cookie
     headers['X-Socrata-Host'] = request.host
+    headers['X-Socrata-RequestId'] = request.env['HTTP_X_SOCRATA_REQUESTID'] || request.uuid
     headers['X-CSRF-Token'] = csrf_token unless csrf_token.blank?
 
     headers

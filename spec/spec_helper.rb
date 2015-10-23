@@ -149,6 +149,18 @@ RSpec.configure do |config|
 =end
 end
 
+# Matches against a class list string. I.e.
+# expect('foo bar baz').to include_class('baz')  # pass
+# expect('foo bar baz').to include_class('bing') # fail
+RSpec::Matchers.define :include_class do |expected|
+  match do |actual|
+    actual.split(/\s+/).include?(expected)
+  end
+  failure_message do |actual|
+    "expected that the class list [#{actual}] would include #{expected}"
+  end
+end
+
 def mock_valid_user
   {
     'id' => 'tugg-xxxx',

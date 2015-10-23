@@ -64,6 +64,7 @@
     }
 
     &:disabled {
+      cursor: default;
       background-color: $view-mode-button-disabled-background-color;
       color: $view-mode-button-disabled-color;
     }

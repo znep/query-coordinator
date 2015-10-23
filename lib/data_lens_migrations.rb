@@ -7,23 +7,23 @@ class DataLensMigrations
   # system for the first two page metadata versions.
   def self.active_migrations
     {
-      1 => lambda { |page_metadata|
+      1 => lambda { |page_metadata, _|
         page_metadata
       },
 
-      2 => lambda { |page_metadata|
+      2 => lambda { |page_metadata, _|
         page_metadata
       },
 
-      3 => lambda { |page_metadata|
+      3 => lambda { |page_metadata, options|
         return page_metadata if page_metadata[:cards].blank?
 
         # Fetch columns for dataset, which are used to read computed columns
         begin
           dataset_id = page_metadata[:datasetId]
-          dataset_columns = page_metadata_manager.fetch_dataset_columns(dataset_id)
-        rescue
-          raise DataLensMigrationException.new("Unable to fetch columns for dataset '#{dataset_id}'")
+          dataset_columns = page_metadata_manager.fetch_dataset_columns(dataset_id, options)
+        rescue => ex
+          raise DataLensMigrationException.new("Unable to fetch columns for dataset '#{dataset_id}', exception: '#{ex}'")
         end
 
         # If a card's fieldName is a computed column, change its fieldName to be

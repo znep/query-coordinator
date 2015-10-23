@@ -5,7 +5,7 @@
 .block {
   @include row();
 
-  div[class*="col"] {
+  > div[class*="col"] {
     @media (max-width : $stack-to-single-column-width) {
       @include span-columns(12);
     }

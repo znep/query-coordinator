@@ -47,11 +47,13 @@ module StoriesHelper
   # Generates classes for components
   # Param ex: 'youtube.video'
   def component_classes(component_type)
+    typeset_component_types = %w{html spacer horizontalRule assetSelector image youtube.video embeddedHtml}
     media_component_types = %w{image youtube.video assetSelector}
+
     classes = []
 
     classes << 'component'
-    classes << 'typeset'
+    classes << 'typeset' if typeset_component_types.include?(component_type)
     classes << type_to_class_name_for_component_type(component_type)
 
     if component_type == 'html'

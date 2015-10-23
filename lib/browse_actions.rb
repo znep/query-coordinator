@@ -294,7 +294,7 @@ module BrowseActions
           browse_options[:metadata_tag].merge!(f_param => f_value)
         else
           browse_options[:metadata_tag] ||= []
-          browse_options[:metadata_tag] << "#{f_param}:{f_value}"
+          browse_options[:metadata_tag] << "#{f_param}:#{f_value}"
         end
       end
     end

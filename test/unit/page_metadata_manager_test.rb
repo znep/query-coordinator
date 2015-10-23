@@ -155,6 +155,22 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, false)
   end
 
+  def test_fetch_dataset_columns_does_not_raise_on_success
+    manager.expects(:dataset_metadata).returns(:status => '200', :body => v1_dataset_metadata)
+    Rails.logger.expects(:error).never
+    assert_nothing_raised do
+      manager.fetch_dataset_columns('four-four', options)
+    end
+  end
+
+  def test_fetch_dataset_columns_raises_on_non_success
+    manager.expects(:dataset_metadata).returns(:status => '403', :body => v1_dataset_metadata)
+    Rails.logger.expects(:error).once
+    assert_raises(Phidippides::NoDatasetMetadataException) do
+      manager.fetch_dataset_columns('four-four', options)
+    end
+  end
+
   def test_create_creates_data_lens_with_category_from_obe_dataset
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
@@ -822,6 +838,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
         "syncedAt" : 1426732353
       }'
     )
+  end
+
+  def options
+    {
+      :request_id => 'request_id',
+      :cookies => { :chocolate_chip => 'secretly raisins' }
+    }
   end
 
 end

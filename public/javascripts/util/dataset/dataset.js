@@ -3452,7 +3452,7 @@ var Dataset = ServerModel.extend({
             } else {
                 ds._relatedViews = ds._processRelatedViews(
                     (coreResult ? coreResult[0] : []).concat(
-                        dataLensResult ? dataLensResult[0] : []
+                        _.isEmpty(dataLensResult) ? [] : dataLensResult[0]
                 ));
                 if (_.isFunction(callback)) { callback(); }
             }

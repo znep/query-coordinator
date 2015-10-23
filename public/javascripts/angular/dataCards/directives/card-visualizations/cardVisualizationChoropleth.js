@@ -358,7 +358,6 @@
               waiting$.onNext(true);
               return errors.delay(5000);
             }).
-            take(6).
             tap(function() {
               scope.$safeApply(function() {
                 scope.isPendingComputation = false;

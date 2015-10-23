@@ -3448,14 +3448,14 @@ var Dataset = ServerModel.extend({
                 ds._relViewCount = (
                     (coreResult ? Math.max(0, coreResult[0] - 1) : 0) +
                     (v1dataLensResult ? v1dataLensResult[0].length : 0) +
-                    (v2DataLensResult ? Math.max(0, v2DataLensResult[0] - 1) : 0)
+                    (v2DataLensResult ? Math.max(0, v2DataLensResult.length - 1) : 0)
                 );
                 if (_.isFunction(callback)) { callback(ds._relViewCount); }
             } else {
                 ds._relatedViews = ds._processRelatedViews(
                     (coreResult ? coreResult[0] : []).
                         concat(v1dataLensResult ? v1dataLensResult[0] : []).
-                        concat(v2DataLensResult ? v2DataLensResult[0] : [])
+                        concat(v2DataLensResult ? v2DataLensResult : [])
                 );
                 if (_.isFunction(callback)) { callback(); }
             }
@@ -3557,7 +3557,8 @@ var Dataset = ServerModel.extend({
             pipe(_.bind(ds._fetchViewJson, ds)).
             pipe(function(result) {
                 return ds._lookUpDataLensesByTableId(result.tableId, justCount);
-            });
+            }).
+            pipe(_.bind(ds._onlyDataLenses, ds));
     },
 
     _fetchViewJson: function(nbeId) {
@@ -3581,7 +3582,15 @@ var Dataset = ServerModel.extend({
                 method: justCount ? 'getCountForTableId' : 'getByTableId',
                 tableId: nbeTableId
             }
-        })
+        });
+    },
+
+    _onlyDataLenses: function(views) {
+        var dataLens = _.filter(views, function(view) {
+            return view.displayType === 'data_lens';
+        });
+
+        return $.when(dataLens);
     },
 
     _loadPublicationViews: function(callback)

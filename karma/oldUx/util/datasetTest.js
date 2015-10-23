@@ -87,12 +87,37 @@ describe('blist.dataset', function () {
             });
           });
 
-          it('should return the result from _lookUpDataLensesByTableId', function(done) {
-            var promise = dataset._getV2RelatedDataLenses(false);
+          describe('_onlyDataLenses fails', function() {
+            beforeEach(function() {
+              sinon.stub(dataset, '_onlyDataLenses', function() {
+                return generateRejectedPromise('rejection from _onlyDataLenses');
+              });
+            });
 
-            promise.done(function(result) {
-              expect(result).to.equal('awesome sauce');
-              done();
+            it('should reject the promise', function(done) {
+              var promise = dataset._getV2RelatedDataLenses(false);
+
+              promise.fail(function(reason) {
+                expect(reason).to.equal('rejection from _onlyDataLenses');
+                done();
+              });
+            });
+          });
+
+          describe('_onlyDataLenses succeeds', function() {
+            beforeEach(function() {
+              sinon.stub(dataset, '_onlyDataLenses', function() {
+                return $.when('awesome dinosaurs');
+              });
+            });
+
+            it('should return the result from _onlyDataLenses', function(done) {
+              var promise = dataset._getV2RelatedDataLenses(false);
+
+              promise.done(function(result) {
+                expect(result).to.equal('awesome dinosaurs');
+                done();
+              });
             });
           });
         });

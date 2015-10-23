@@ -30,7 +30,7 @@ class CreateDocument
   private
 
   def queue_process
-    ProcessDocumentJob.perform_later(@document)
+    ProcessDocumentJob.perform_later(@document.id)
   end
 
 end

@@ -48,7 +48,7 @@ RSpec.describe CreateDocument do
       it 'queues ProcessDocumentJob' do
         class_spy('ProcessDocumentJob').as_stubbed_const
         subject.create
-        expect(ProcessDocumentJob).to have_received(:perform_later).with(subject.document)
+        expect(ProcessDocumentJob).to have_received(:perform_later).with(subject.document.id)
       end
     end
 

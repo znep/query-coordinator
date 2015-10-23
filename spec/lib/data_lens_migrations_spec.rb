@@ -1,8 +1,9 @@
 describe DataLensMigrations do
 
-  def migrate(i, page_metadata)
+  def migrate(version, page_metadata)
     migrations = DataLensMigrations.active_migrations
-    migrations[i].call(Marshal.load(Marshal.dump(page_metadata)))
+    # The Marshal.load(Marshal.dump) dance is a clever deep-dupe hack
+    migrations[version].call(Marshal.load(Marshal.dump(page_metadata)), options)
   end
 
   describe '#active_migrations[1]' do
@@ -125,4 +126,14 @@ describe DataLensMigrations do
       end
     end
   end
+
+  private
+
+  def options
+    {
+      :request_id => 'request_id',
+      :cookies => { :chocolate_chip => 'secretly raisins' }
+    }
+  end
+
 end

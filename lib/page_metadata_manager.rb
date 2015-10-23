@@ -83,7 +83,7 @@ class PageMetadataManager
       # ('data_lens_chart' or 'data_lens_map' display type)
       if result[:displayType] == 'data_lens'
         old_version = page_metadata[:version]
-        page_metadata = migrated_page_metadata(page_metadata)
+        page_metadata = migrated_page_metadata(page_metadata, options)
       end
       page_metadata[:permissions] = permissions.stringify_keys!
       page_metadata[:moderationStatus] = result[:moderationStatus]
@@ -304,9 +304,10 @@ class PageMetadataManager
 
   # Phidippides call for the dataset metadata - needed to fetch columns for both
   # metadb and phidippides backed page metadata.
-  def fetch_dataset_columns(dataset_id, options = {})
+  def fetch_dataset_columns(dataset_id, options)
     dataset_metadata_result = dataset_metadata(dataset_id, options)
     if dataset_metadata_result.fetch(:status) != '200'
+      Rails.logger.error("#{self.class}##{__method__} - result: #{dataset_metadata_result}")
       raise Phidippides::NoDatasetMetadataException.new(
         "could not fetch dataset metadata for id: #{dataset_id}"
       )
@@ -314,7 +315,7 @@ class PageMetadataManager
     dataset_metadata_result.fetch(:body).fetch('columns')
   end
 
-  def migrated_page_metadata(page_metadata)
+  def migrated_page_metadata(page_metadata, options)
     page_metadata = HashWithIndifferentAccess.new(page_metadata)
     return page_metadata unless enable_data_lens_page_metadata_migrations?
 
@@ -329,7 +330,7 @@ class PageMetadataManager
       migration = migrations[version]
 
       begin
-        page_metadata = migration.call(page_metadata)
+        page_metadata = migration.call(page_metadata, options)
       rescue DataLensMigrations::DataLensMigrationException => exception
         Airbrake.notify(exception)
         Rails.logger.error(exception)

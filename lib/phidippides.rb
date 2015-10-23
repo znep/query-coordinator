@@ -57,6 +57,7 @@ class Phidippides < SocrataHttp
 
   # Dataset Metadata requests
 
+  # TODO Remove the initializer for the options argument -- cookies are _required_ for all requests
   def fetch_dataset_metadata(dataset_id, options = {})
     fetched_response = issue_request(
       :verb => :get,

@@ -305,7 +305,11 @@ class NewUxBootstrapController < ActionController::Base
       'version' => get_version
     }
 
-    page_metadata_manager.migrated_page_metadata(unmigrated_metadata)
+    page_metadata_manager.migrated_page_metadata(
+      unmigrated_metadata,
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
   end
 
   # CORE-4770 Avoid card creation for latitude/longitude column types (because no one cares)

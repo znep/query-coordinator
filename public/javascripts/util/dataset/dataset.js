@@ -1700,6 +1700,8 @@ var Dataset = ServerModel.extend({
                 type: 'POST', success: successCallback, error: errorCallback});
     },
 
+    // TODO: strongly suspected to be dead code.
+    // only possible consumer is janus-govstat.
     getRelatedViewCount: function(callback)
     {
         var ds = this;
@@ -3442,18 +3444,18 @@ var Dataset = ServerModel.extend({
         var dataLensPromise = this._getRelatedDataLenses(justCount);
 
         $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
+            var coreViews = coreResult ? coreResult[0] : [];
+            var dataLensViews = _.isEmpty(dataLensResult) ? [] : dataLensResult[0];
+            var moreViews = _.reject(coreViews.concat(dataLensViews), function(view) {
+                return /^data_lens/.test(view.displayType);
+            });
+
             if (justCount) {
                 // Subtract one for dataset
-                ds._relViewCount = (
-                    (coreResult ? Math.max(0, coreResult[0] - 1) : 0) +
-                    (dataLensResult ? dataLensResult[0].length : 0)
-                );
+                ds._relViewCount = moreViews.length - 1;
                 if (_.isFunction(callback)) { callback(ds._relViewCount); }
             } else {
-                ds._relatedViews = ds._processRelatedViews(
-                    (coreResult ? coreResult[0] : []).concat(
-                        _.isEmpty(dataLensResult) ? [] : dataLensResult[0]
-                ));
+                ds._relatedViews = ds._processRelatedViews(moreViews);
                 if (_.isFunction(callback)) { callback(); }
             }
         });

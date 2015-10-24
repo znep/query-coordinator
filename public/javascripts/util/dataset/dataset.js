@@ -3439,22 +3439,31 @@ var Dataset = ServerModel.extend({
     {
         var ds = this;
         var coreViewsPromise = this._loadRelatedCoreViews(justCount);
-        var v1dataLensPromise = this._getV1RelatedDataLenses(justCount);
-        var v2DataLensPromise = this._getV2RelatedDataLenses(justCount);
+        // CORE-7303: We are hiding all lenses from More Views for now.
+        // var v1DataLensPromise = this._getV1RelatedDataLenses(justCount);
+        // var v2DataLensPromise = this._getV2RelatedDataLenses(justCount);
+        var v1DataLensPromise = $.Deferred().resolve();
+        var v2DataLensPromise = $.Deferred().resolve();
 
-        $.whenever(coreViewsPromise, v1dataLensPromise, v2DataLensPromise).done(function(coreResult, v1dataLensResult, v2DataLensResult) {
+        $.whenever(coreViewsPromise, v1DataLensPromise, v2DataLensPromise).done(function(coreResult, v1DataLensResult, v2DataLensResult) {
+            // CORE-7303: We are hiding all lenses from More Views for now.
+            var coreViews = coreResult ? coreResult[0] : [];
+            coreViews = _.reject(coreViews, function(view) {
+                return /^data_lens/.test(view.displayType);
+            });
+
             if (justCount) {
                 // Subtract one for dataset
                 ds._relViewCount = (
-                    (coreResult ? Math.max(0, coreResult[0] - 1) : 0) +
-                    (v1dataLensResult ? v1dataLensResult[0].length : 0) +
+                    Math.max(0, coreViews.length - 1) +
+                    (v1DataLensResult ? v1DataLensResult[0].length : 0) +
                     (v2DataLensResult ? Math.max(0, v2DataLensResult.length - 1) : 0)
                 );
                 if (_.isFunction(callback)) { callback(ds._relViewCount); }
             } else {
                 ds._relatedViews = ds._processRelatedViews(
-                    (coreResult ? coreResult[0] : []).
-                        concat(v1dataLensResult ? v1dataLensResult[0] : []).
+                    coreViews.
+                        concat(v1DataLensResult ? v1DataLensResult[0] : []).
                         concat(v2DataLensResult ? v2DataLensResult : [])
                 );
                 if (_.isFunction(callback)) { callback(); }

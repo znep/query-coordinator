@@ -6,7 +6,6 @@ end
 
 CORESERVICE_URI = URI.parse(APP_CONFIG.coreservice_uri)
 ODYSSEUS_URI = URI.parse(APP_CONFIG.odysseus_uri || "http://localhost:4747")
-INTERCESSIO_URI = URI.parse(APP_CONFIG.intercessio_uri || "http://localhost:1313" )
 
 revision_file = File.join(Rails.root, "REVISION")
 

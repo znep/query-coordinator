@@ -152,6 +152,37 @@ class DatasetsHelperTest < Test::Unit::TestCase
     assert @object.hide_update_column?, 'hide_update_column expected to be true'
   end
 
+  def test_hide_data_lens_create
+    # no current user
+    @object.stubs(:current_user => nil)
+    assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be true'
+
+    # existing current_user
+    @object.stubs(:current_user => User.new)
+
+    # create_v2_data_lens feature flag is false
+    FeatureFlags.stub :derive, Hashie::Mash.new(:create_v2_data_lens => false) do
+      # current_user is an admin or publisher
+      @object.current_user.stubs(:rights => [:edit_others_datasets])
+      assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be false'
+
+      # current_user is not an admin or publisher
+      @object.current_user.stubs(:rights => [])
+      assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be true'
+    end
+
+    # create_v2_data_lens feature flag is true
+    FeatureFlags.stub :derive, Hashie::Mash.new(:create_v2_data_lens => true) do
+      # current_user has rights
+      @object.current_user.stubs(:rights => [:some_right])
+      refute @object.hide_data_lens_create?, 'hide_data_lens_create expected to be false'
+
+      # current_user has no rights
+      @object.current_user.stubs(:rights => [])
+      assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be true'
+    end
+  end
+
   def test_enable_xls_download_type
     FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_xls_download_type => true))
     assert @object.enable_xls_download_type, 'enable_xls_download_type to be true'

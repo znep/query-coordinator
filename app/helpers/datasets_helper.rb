@@ -405,6 +405,21 @@ module DatasetsHelper
     view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('chart')
   end
 
+  def hide_data_lens_create?
+    # (Replicating the logic from canUpdateMetadata in dataset-show.js)
+    # Always hide if current_user doesn't exist (spooooky)
+    return true unless current_user
+
+    if !FeatureFlags.derive(view, request).create_v2_data_lens
+      # for v1 data lenses, hide unless current_user is admin or publisher
+      !CurrentDomain.user_can?(current_user, :edit_others_datasets)
+    else
+      # otherwise hide if current_user doesn't have any rights
+      # (i.e. doesn't have a domain role)
+      current_user.rights.empty?
+    end
+  end
+
   def hide_map_create?
     [ view.is_unpublished?,
       view.is_alt_view? && !view.available_display_types.include?('map'),
@@ -515,6 +530,7 @@ module DatasetsHelper
 
     hash.visualize!.calendarCreate = hide_calendar_create?
     hash.visualize!.chartCreate = hide_chart_create?
+    hash.visualize!.dataLensCreate = hide_data_lens_create?
     hash.visualize!.mapCreate = hide_map_create?
 
     hash.embed!.formCreate = hide_form_create?

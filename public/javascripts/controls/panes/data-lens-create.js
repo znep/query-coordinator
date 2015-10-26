@@ -26,13 +26,11 @@
         }
 
         generateDataLensLinkHref().then(function(href) {
-          if (href !== '#') {
-            var button = $('.dataLensPaneContentWrapper .finishButtons .button');
+          var button = $('.dataLensPaneContentWrapper .finishButtons .button');
 
+          if (href !== '#') {
             button.removeClass('disabled');
             button.attr('href', href);
-          } else {
-            button.addClass('disabled');
           }
         });
       });
@@ -44,26 +42,16 @@
 
   }, {name: 'dataLensCreate'}, 'controlPane');
 
-  // Checks if dataset migrates successfully before rendering data lens pane
-  var _newBackendMetadata = blist.dataset.getNewBackendMetadata();
+  // See datasets_helper.rb for sidebarHidden settings
+  var userCanUpdateMetadata = $.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.dataLensCreate;
+  var useEphemeralBootstrap = blist.feature_flags.use_ephemeral_bootstrap;
+  var _newBackendMetadata;
 
-  _newBackendMetadata.pipe(function() {
-    if (canUpdateMetadata() && blist.feature_flags.use_ephemeral_bootstrap) {
-      $.gridSidebar.registerConfig('visualize.dataLensCreate', 'pane_dataLensCreate', 2, 'chart');
-    }
-  });
+  if (useEphemeralBootstrap && userCanUpdateMetadata) {
+    $.gridSidebar.registerConfig('visualize.dataLensCreate', 'pane_dataLensCreate', 2, 'chart');
 
-  // Refer to canUpdateMetadata in dataset-show.js
-  function canUpdateMetadata() {
-    var hasRights = !_.isNull(blist.currentUser) && !_.isUndefined(blist.currentUser) && blist.currentUser.hasOwnProperty('rights');
-
-    if (blist.feature_flags.create_v2_data_lens) {
-      // The user has a role on the domain.
-      return hasRights && blist.currentUser.rights.length > 0;
-    } else {
-      // The user is an admin or publisher.
-      return hasRights && blist.currentUser.rights.indexOf('edit_others_datasets') > -1;
-    }
+    // Fetch dataset migration, in case it's needed later
+    _newBackendMetadata = blist.dataset.getNewBackendMetadata();
   }
 
   // Refer to getNewUXLinkParams in dataset-show.js
@@ -103,13 +91,18 @@
 
     } else {
 
+      if (_.isUndefined(_newBackendMetadata)) {
+        deferred.resolve(href);
+        return deferred.promise();
+      }
+
       // pipe is deprecated as of jQuery 1.8, but the promise chain breaks without it :(
       return _newBackendMetadata.pipe(function(nbeMetadata) {
         if (nbeMetadata && canBootstrapDataLens) {
           href = '{0}/view/bootstrap/{1}'.format(localePart, nbeMetadata.id);
         }
         return href;
-      });
+      }).fail(function() { return href; });
 
     }
   }

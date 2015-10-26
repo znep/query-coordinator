@@ -29,7 +29,7 @@ class CoreServer
   # headers from the given request.
   #
   # If X-Socrata-RequestId is present on the incoming request, its value
-  # is passed through to the return value. Otherwise, request.uuid is
+  # is passed through to the return value. Otherwise, the request's uuid is
   # used.
   def self.headers_from_request(request)
     headers = {}
@@ -44,7 +44,8 @@ class CoreServer
 
     headers['Cookie'] = authentication_cookie
     headers['X-Socrata-Host'] = request.host
-    headers['X-Socrata-RequestId'] = request.env['HTTP_X_SOCRATA_REQUESTID'] || request.uuid
+    headers['X-Socrata-RequestId'] = request.env['HTTP_X_SOCRATA_REQUESTID'] ||
+      request.env['action_dispatch.request_id']
     headers['X-CSRF-Token'] = csrf_token unless csrf_token.blank?
 
     headers

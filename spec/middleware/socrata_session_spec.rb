@@ -48,7 +48,7 @@ describe SocrataSession do
         expect(app).to receive(:call).with(
           hash_including(SocrataSession::SOCRATA_SESSION_ENV_KEY => respond_to(:authenticate))
         ) do |env_passed_to_app|
-          expect(env_passed_to_app[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env_passed_to_app)).to equal(mock_current_user)
+          expect(env_passed_to_app[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env_passed_to_app)).to include(mock_current_user)
         end
 
         subject.call(env)
@@ -71,9 +71,7 @@ describe SocrataSession do
 
   def env_with_session
     env_without_session.merge(
-      'rack.request.cookie_hash' => {
-        '_core_session_id' => 'core321'
-      }
+      'HTTP_COOKIE' => '_core_session_id=core321'
     )
   end
 end

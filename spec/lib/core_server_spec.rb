@@ -9,7 +9,8 @@ describe CoreServer do
   describe '#headers_from_request' do
     let(:env) do
       {
-        'HTTP_COOKIE' => http_cookie
+        'HTTP_COOKIE' => http_cookie,
+        'action_dispatch.request_id' => request_uuid
       }
     end
 

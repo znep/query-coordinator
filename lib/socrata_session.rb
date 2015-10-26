@@ -71,12 +71,8 @@ class SocrataSession
   end
 
   def current_user(request)
-    socrata_session_cookie =
-      "_core_session_id=#{request.cookies['_core_session_id']}"
-
     CoreServer.current_user(
-      'Cookie' => socrata_session_cookie,
-      'X-Socrata-Host' => request.host
+      CoreServer.headers_from_request(request)
     )
   end
 end

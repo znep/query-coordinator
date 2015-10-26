@@ -43,10 +43,12 @@
         control.syntheticPoints = options.syntheticPoints;
       }
 
-      // TODO: More option handling here.
-      
       // do cardinality count
-      control.columnStatistics = true;
+      if (control.action == 'replace') {
+        control.columnStatistics = true;
+      }
+
+      // TODO: More option handling here.
 
       var controlFile = {};
       if (_.isUndefined(options.fileType)) {

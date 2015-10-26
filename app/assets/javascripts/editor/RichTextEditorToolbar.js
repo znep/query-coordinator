@@ -348,9 +348,15 @@
 
       if (_formatController !== null) {
 
-        if (_formatController.hasLink()) {
+        // TODO: We have not implemented the link button yet.
+        var linkButtonImplemented = _.isFunction(_formatController.hasLink);
+
+        if (linkButtonImplemented && _formatController.hasLink()) {
           _formatController.execute('removeLink');
         } else {
+          if (!linkButtonImplemented) {
+            console.error('The link button has not been implemented.');
+          }
           _toggleLinkPanel();
         }
       }

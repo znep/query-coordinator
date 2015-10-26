@@ -44,6 +44,9 @@
       }
 
       // TODO: More option handling here.
+      
+      // do cardinality count
+      control.columnStatistics = true;
 
       var controlFile = {};
       if (_.isUndefined(options.fileType)) {

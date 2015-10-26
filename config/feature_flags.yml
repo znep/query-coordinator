@@ -125,7 +125,7 @@ force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false
 geo_imports_to_nbe_enabled:
-  description: Show Append/Replace pane on nbe geo datasets.
+  description: Show Append/Replace pane on nbe geo datasets. This setting will be ignored if `ingress_strategy` is set to `obe`.
   defaultValue: true
 govstat_missing_locale_crash:
   description: Crash (500) when a translation is missing.

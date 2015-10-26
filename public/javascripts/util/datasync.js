@@ -44,7 +44,7 @@
       }
 
       // do cardinality count
-      if (control.action == 'replace') {
+      if (control.action === 'replace') {
         control.columnStatistics = true;
       }
 

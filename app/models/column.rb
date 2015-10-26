@@ -40,7 +40,7 @@ class Column < Model
   def self.importable_types(request = nil)
     feature_flags = FeatureFlags.derive(nil, request)
     types = @@importable_types.clone
-    if feature_flags.enable_ingress_geometry_types && feature_flags.default_imports_to_nbe
+    if feature_flags.enable_ingress_geometry_types && feature_flags.ingress_strategy == 'nbe'
       types.merge!(@@nbe_importable_types)
     end
 

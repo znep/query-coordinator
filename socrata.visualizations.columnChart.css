@@ -206,7 +206,7 @@
   vertical-align: top;
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .column-chart .labels .label.orientation-left {

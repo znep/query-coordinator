@@ -31,7 +31,7 @@ describe('StoryPermissionsManager', function() {
     storytellerApiRequestStub.restore();
   });
 
-  function testVariant(apiName, expectedUrl, expectedHttpMethod, expectedPayload) {
+  function testVariant(apiName, expectedUrl, expectedHttpMethod, expectedData, expectedActions, expectedPayload) {
     describe('.' + apiName, function() {
       it('should throw on non-function arguments', function() {
         assert.throws(function() { manager[apiName](2); });
@@ -58,13 +58,14 @@ describe('StoryPermissionsManager', function() {
           );
         });
 
-        describe('that succeeds with no uid in the data', function() {
+        describe('that succeeds', function() {
           var data;
           var actions;
           beforeEach(function() {
-            data = {
-              isPublic: false
-            };
+            data = expectedData;
+            _.each(expectedActions, function(expectedAction) {
+              expectedAction.storyUid = storyteller.userStoryUid;
+            });
             actions = [];
             storyteller.dispatcher.register(function(payload) {
               actions.push(payload);
@@ -79,61 +80,11 @@ describe('StoryPermissionsManager', function() {
             });
           });
 
-          it('should emit STORY_SET_PERMISSIONS only', function(done) {
+          it('should emit expected actions only', function(done) {
             _.defer(function() {
               assert.deepEqual(
                 actions,
-                [
-                  {
-                    action: Actions.STORY_SET_PERMISSIONS,
-                    storyUid: storyteller.userStoryUid,
-                    isPublic: false
-                  }
-                ]
-              );
-              done();
-            });
-          });
-        });
-
-        describe('that succeeds with a uid in the data', function() {
-          var data;
-          var actions;
-          beforeEach(function() {
-            data = {
-              uid: 'foo',
-              isPublic: false
-            };
-            actions = [];
-            storyteller.dispatcher.register(function(payload) {
-              actions.push(payload);
-            });
-            storytellerApiRequestPromiseResolve(data);
-          });
-
-          it('should not call the error callback', function(done) {
-            _.defer(function() {
-              sinon.assert.notCalled(errorSpy);
-              done();
-            });
-          });
-
-          it('should emit STORY_SET_PUBLISHED_STORY and STORY_SET_PERMISSIONS', function(done) {
-            _.defer(function() {
-              assert.deepEqual(
-                actions,
-                [
-                  {
-                    action: Actions.STORY_SET_PUBLISHED_STORY,
-                    storyUid: storyteller.userStoryUid,
-                    publishedStory: data
-                  },
-                  {
-                    action: Actions.STORY_SET_PERMISSIONS,
-                    storyUid: storyteller.userStoryUid,
-                    isPublic: false
-                  }
-                ]
+                expectedActions
               );
               done();
             });
@@ -168,7 +119,23 @@ describe('StoryPermissionsManager', function() {
     });
   }
 
-  testVariant('makePublic', 'stories/test-test/published', 'POST', JSON.stringify({ digest: 'test-digest' }));
-  testVariant('makePrivate', 'stories/test-test/permissions', 'PUT', JSON.stringify({ isPublic: false }));
+  var publicActions = [{
+    action: Actions.STORY_SET_PUBLISHED_STORY,
+    storyUid: 'not defined yet',
+    publishedStory: { isPublic: true }
+  }, {
+    action: Actions.STORY_SET_PERMISSIONS,
+    storyUid: 'not defined yet',
+    isPublic: true
+  }];
+
+  var privateActions = [{
+    action: Actions.STORY_SET_PERMISSIONS,
+    storyUid: 'not defined yet',
+    isPublic: false
+  }];
+
+  testVariant('makePublic', 'stories/test-test/published', 'POST', { isPublic: true }, publicActions, JSON.stringify({ digest: 'test-digest' }));
+  testVariant('makePrivate', 'stories/test-test/permissions', 'PUT', { isPublic: false }, privateActions, JSON.stringify({ isPublic: false }));
 
 });

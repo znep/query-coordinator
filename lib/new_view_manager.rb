@@ -35,10 +35,8 @@ class NewViewManager
   # This will create a new view lens that points to a cards view url of the same
   # 4x4 as itself. Note that it will not create the requisite page_metadata for
   # that url to serve anything meaningful.
-  def create(page_metadata={}, category=nil, v2_data_lens=false)
-    new_view = v2_data_lens ?
-      persist_v2_data_lens_to_metadb(page_metadata, category) :
-      create_v1_data_lens_in_phidippides(page_metadata, category)
+  def create(category=nil, page_metadata={})
+    new_view = persist_v2_data_lens_to_metadb(category, page_metadata)
 
     unless new_view.try(:[], :id)
       raise NewViewNotCreatedError.new('Error while creating view in core')
@@ -54,21 +52,6 @@ class NewViewManager
       :port => APP_CONFIG.ssl_port,
       :protocol => 'https'
     )
-
-    # V2 data lens handles this separately inside its create method
-    update_page_url(new_page_id, page_url) unless v2_data_lens
-
-    begin
-      View.find(new_page_id).publish unless v2_data_lens
-    rescue CoreServer::ResourceNotFound => error
-      report_error(
-        "Failed to mark bootstrapped page as published. Core responded with 404 for new_page_id: #{new_page_id}"
-      )
-    rescue CoreServer::Error => error
-      report_error(
-        "Failed to mark bootstrapped page as published. Unhandled Core exception: #{error.inspect}"
-      )
-    end
 
     new_page_id
   end
@@ -112,7 +95,7 @@ class NewViewManager
   private
 
   # Creates metadata in MetaDB with page metadata, rather than in Phidippides.
-  def persist_v2_data_lens_to_metadb(page_metadata, category)
+  def persist_v2_data_lens_to_metadb(category, page_metadata)
     # NOTE: Category is not validated. If category is not present in the
     # domain's defined categories, the category will be ignored by core.
     url = '/views.json?accessType=WEBSITE'
@@ -159,47 +142,6 @@ class NewViewManager
     end
 
     update(new_page_id, payload_with_id)
-  end
-
-  # v1 data lens, where the page metadata will be stored in Phidippides
-  def create_v1_data_lens_in_phidippides(page_metadata, category)
-    # NOTE: Category is not validated. If category is not present in the
-    # domain's defined categories, the category will be ignored by core.
-    url = '/views.json?accessType=WEBSITE'
-    payload = {
-      :name => page_metadata[:name],
-      :description => page_metadata[:description],
-      :metadata => {
-        :renderTypeConfig => {
-          :visible => {
-            :href => true
-          }
-        },
-        :accessPoints => {
-          :new_view => ''
-        },
-        :availableDisplayTypes => ['new_view'],
-        :jsonQuery => {}
-      },
-      :displayType => 'new_view',
-      :displayFormat => {},
-      :query => {},
-      :category => category
-    }
-
-    begin
-      response = CoreServer::Base.connection.create_request(url, JSON.dump(payload))
-    rescue CoreServer::Error => error
-      report_error(
-        "Error creating new_view lens for page: #{error}",
-        error,
-        :url => url,
-        :payload => payload,
-        :page_url => ''
-      )
-    end
-
-    parse_core_response(response)
   end
 
   def update_page_url(page_id, page_url)

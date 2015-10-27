@@ -1,23 +1,128 @@
 <h2>{{::'manageLensDialog.title' | I18n}}</h2>
-<section class="row">
-  <label class="span2">{{::'common.permissions.permissions' | I18n}}</label>
+
+<section class="row provenance" ng-controller="ManageLensDialogProvenanceController" ng-show="currentUserHasRights">
+  <label class="span2">{{::'manageLensDialog.provenance.title' | I18n}}</label>
   <div class="contents span10">
-    <soc-select ng-model="pageVisibility" ng-disabled="selectDisabled">
-      <soc-option value="public">{{::'common.permissions.public' | I18n}}</soc-option>
-      <soc-option value="private">{{::'common.permissions.private' | I18n}}</soc-option>
+    <input type="checkbox" name="view-provenance-checkbox" class="view-provenance-checkbox" ng-model="isOfficial" />
+    <div class="view-provenance-description">{{::'manageLensDialog.provenance.description' | I18n}}</div>
+  </div>
+</section>
+
+<section class="row ownership" ng-controller="ManageLensDialogOwnershipController" ng-if="shouldShowOwnershipSection">
+  <label class="span2">{{::'manageLensDialog.ownership.title' | I18n}}</label>
+
+  <div class="contents span10">
+    <input
+      type="text"
+      autocomplete="off"
+      class="ownership-input"
+      ng-model="ownerInput"
+      ng-disabled="!hasPermission"
+      ng-class="{disabled: !hasPermission, error: showWarning}">
+    <span class="icon-warning" ng-show="showWarning"></span>
+
+    <div class="results suggestion-tool-panel tool-panel downwards light left" ng-show="shouldShowOwnershipSuggestions">
+      <div class="tool-panel-main active">
+        <div class="tool-panel-inner-container">
+          <div class="tool-panel-hint"></div>
+
+          <div class="suggestions-status">
+            <div ng-show="suggestionsLoading">
+              <div class="loading-message">{{::'searchCard.loading' | I18n}}</div>
+              <spinner class="spinner"></spinner>
+            </div>
+
+            <span ng-hide="suggestionsLoading">{{suggestionsStatus}}</span>
+          </div>
+
+          <intractable-list
+            ng-if="suggestions"
+            list-data="suggestions"
+            ng-hide="suggestionsLoading">
+          </intractable-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="row sharing" ng-controller="ManageLensDialogSharingController" ng-if="shouldShowSharingSection">
+  <label class="span2">{{::'manageLensDialog.sharing.title' | I18n}}</label>
+  <div class="contents span10">
+    <div class="shares">
+      <div class="shares-list">
+        <div ng-repeat="share in shares.concat(newShares.shares)" class="share row">
+          <div class="span4">
+            <a href="{{share.link}}" target="_blank" ng-show="share.link" class="share-user"
+              ng-class="{'pending-removal': share.pendingRemoval}">{{share.name}}
+            </a>
+            <div ng-hide="share.link" class="share-user" ng-class="{'pending-removal': share.pendingRemoval}">{{share.name}}</div>
+          </div>
+          <div class="span8">
+            <soc-select ng-model="share.type" ng-disabled="disableSharingDropdown(share)">
+              <soc-option value="owner">{{::'manageLensDialog.sharing.owner' | I18n}}</soc-option>
+              <soc-option value="contributor">{{::'manageLensDialog.sharing.contributor' | I18n}}</soc-option>
+              <soc-option value="viewer">{{::'manageLensDialog.sharing.viewer' | I18n}}</soc-option>
+            </soc-select>
+            <button
+              ng-hide="disableRemoveButton(share)"
+              class="action-btn dark share-remove-button"
+              ng-click="toggleSharePendingRemovalStatus(share)"
+              ng-bind="share.pendingRemoval ? 'Keep' : 'Remove'"></button>
+          </div>
+        </div>
+      </div>
+      <div ng-show="newShares.shares.length > 0" class="add-new-shares-prompt">
+        <span class="icon-info"></span>
+        <span class="message">
+          {{::'manageLensDialog.sharing.addNewPrompt' | I18n}}
+        </span>
+      </div>
+      <button class="action-btn dark manage-lens-dialog-add-shares" ng-click="newSharesState.show = true">
+        {{::'manageLensDialog.sharing.addNew' | I18n}}
+      </button>
+    </div>
+
+    <div class="inherited-shares" ng-if="showInheritedSharingSection">
+      <div class="row description">
+        {{::'manageLensDialog.sharing.inheritedDescription' | I18n}}
+      </div>
+      <div ng-repeat="share in inheritedShares" class="inherited-share">
+        <div ng-show="share.link" class="row">
+          <div class="span4">
+            <a href="{{share.link}}" target="_blank">{{share.name}}</a>
+          </div>
+          <div class="span8">{{share.label}}</div>
+        </div>
+        <div ng-hide="share.link" class="row">
+          <div class="span4">{{share.name}}</div>
+          <div class="span8">{{share.label}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="row visibility" ng-controller="ManageLensDialogVisibilityController">
+  <label class="span2" ng-class="{invisible: datasetIsPrivate}">{{(usingViewModeration ?
+    'manageLensDialog.visibility.viewModerationTitle' : 'manageLensDialog.visibility.title') | I18n}}
+  </label>
+  <div class="contents span10">
+    <soc-select ng-model="visibilityDropdownSelection"
+      ng-disabled="visibilityDropdownDisabled"
+      ng-hide="datasetIsPrivate">
+      <soc-option value="approved">{{visibilityDropdownStrings.approved}}</soc-option>
+      <soc-option value="rejected">{{visibilityDropdownStrings.rejected}}</soc-option>
+      <soc-option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">
+        {{visibilityDropdownStrings.pending}}
+      </soc-option>
     </soc-select>
-    <div class="flavor-text">
-      <div ng-if="datasetIsPublic && pageVisibility === 'public'"
-        ng-bind-html="::'manageLensDialog.datasetPublicPagePublic' | I18n">
+    <div class="flavor-text" ng-class="{'with-private-dataset': datasetIsPrivate}">
+      <div ng-show="datasetIsPrivate"
+        ng-bind-html="'manageLensDialog.visibility.datasetIsPrivate' | I18n">
       </div>
-      <div ng-if="datasetIsPublic && pageVisibility === 'private'"
-        ng-bind-html="::'manageLensDialog.datasetPublicPagePrivate' | I18n">
-      </div>
-      <div ng-if="!datasetIsPublic && pageVisibility === 'private'"
-        ng-bind-html="::'manageLensDialog.datasetPrivatePagePrivate' | I18n">
-      </div>
-      <div ng-if="!datasetIsPublic && pageVisibility === 'public'"
-        ng-bind-html="::'manageLensDialog.datasetPrivatePagePublic' | I18n">
+      <div ng-show="!datasetIsPrivate && !userCanApproveNominations"
+        ng-bind-html="'manageLensDialog.visibility.userIsUnprivileged' | I18n">
       </div>
     </div>
   </div>
@@ -25,12 +130,12 @@
 
 <div class="controls">
   <save-button
-    class="dark r-to-l"
-    ng-click="dialogHasChanges && save()"
-    enabled="!dialogState.disableCloseDialog && dialogHasChanges"
+    class="dark r-to-l manage-lens-dialog-save"
+    ng-click="save()"
+    enabled="!manageLensState.disableCloseDialog && dialogHasChanges && !dialogHasErrors"
     save-status="saveStatus"></save-button>
   <button
-    ng-disabled="dialogState.disableCloseDialog"
-    class="action-btn dark r-to-l"
-    ng-click="dialogState.show = false">{{::'common.cancel' | I18n}}</button>
+    ng-disabled="manageLensState.disableCloseDialog"
+    class="action-btn dark manage-lens-dialog-cancel"
+    ng-click="manageLensState.show = false">{{::'common.cancel' | I18n}}</button>
 </div>

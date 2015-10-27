@@ -76,7 +76,7 @@ describe('blist.dataset', function () {
     });
   });
 
-  describe('_getV2RelatedDataLenses', function() {
+  describe('_getRelatedDataLenses', function() {
     var dataset;
 
     beforeEach(function() {
@@ -91,7 +91,7 @@ describe('blist.dataset', function () {
       });
 
       it('should reject the promise', function(done) {
-        var promise = dataset._getV2RelatedDataLenses(false);
+        var promise = dataset._getRelatedDataLenses(false);
 
         promise.fail(function(reason) {
           expect(reason).to.equal('I reject you');
@@ -115,7 +115,7 @@ describe('blist.dataset', function () {
         });
 
         it('should reject the promise', function(done) {
-          var promise = dataset._getV2RelatedDataLenses(false);
+          var promise = dataset._getRelatedDataLenses(false);
 
           promise.fail(function(reason) {
             expect(reason).to.equal('rejection from _fetchViewJson');
@@ -139,7 +139,7 @@ describe('blist.dataset', function () {
           });
 
           it('should reject the promise', function(done) {
-            var promise = dataset._getV2RelatedDataLenses(false);
+            var promise = dataset._getRelatedDataLenses(false);
 
             promise.fail(function(reason) {
               expect(reason).to.equal('rejection from _lookUpDataLensesByTableId');
@@ -163,7 +163,7 @@ describe('blist.dataset', function () {
             });
 
             it('should reject the promise', function(done) {
-              var promise = dataset._getV2RelatedDataLenses(false);
+              var promise = dataset._getRelatedDataLenses(false);
 
               promise.fail(function(reason) {
                 expect(reason).to.equal('rejection from _onlyDataLenses');
@@ -180,7 +180,7 @@ describe('blist.dataset', function () {
             });
 
             it('should return the result from _onlyDataLenses', function(done) {
-              var promise = dataset._getV2RelatedDataLenses(false);
+              var promise = dataset._getRelatedDataLenses(false);
 
               promise.done(function(result) {
                 expect(result).to.equal('awesome dinosaurs');

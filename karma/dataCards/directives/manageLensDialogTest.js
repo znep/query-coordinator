@@ -7,9 +7,12 @@ describe('manage-lens dialog', function() {
   var _$provide;
   var Mockumentary;
   var ServerConfig;
-  var clock;
+  var $timeout;
+  var $q;
 
+  beforeEach(module('/angular_templates/common/intractableList.html'));
   beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('dataCards/cards.scss'));
   beforeEach(module('dataCards'));
 
@@ -17,104 +20,301 @@ describe('manage-lens dialog', function() {
     _$provide = $provide;
   }));
 
+  beforeEach(function() {
+    window.currentUser = {};
+  });
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');
     $httpBackend = $injector.get('$httpBackend');
+    $timeout = $injector.get('$timeout');
+    $q = $injector.get('$q');
     Mockumentary = $injector.get('Mockumentary');
     ServerConfig = $injector.get('ServerConfig');
 
     testHelpers.mockDirective(_$provide, 'socSelect');
     testHelpers.mockDirective(_$provide, 'saveButton');
-
-    clock = sinon.useFakeTimers();
+    testHelpers.mockDirective(_$provide, 'modalDialog');
+    testHelpers.mockDirective(_$provide, 'newShareDialog');
   }));
 
   afterEach(function(){
     testHelpers.TestDom.clear();
     testHelpers.cleanUp();
+
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
   });
 
-  function createElement() {
+  function createElement(pageMetadata, datasetMetadata) {
     var $scope = $rootScope.$new();
 
-    var pageOverrides = {pageId: 'asdf-fdsa'};
-    var datasetOverrides = {};
+    var pageOverrides = _.extend({pageId: 'asdf-fdsa'}, pageMetadata);
+    var datasetOverrides = _.extend({}, datasetMetadata);
     $scope.page = Mockumentary.createPage(pageOverrides, datasetOverrides);
-    $scope.dialogState = {show: true};
+    $scope.dataset = Mockumentary.createDataset(datasetOverrides);
+    $scope.manageLensState = {show: true};
+
     return testHelpers.TestDom.compileAndAppend(
-      '<manage-lens-dialog page="page" dialog-state="dialogState" />',
+      '<manage-lens-dialog ng-controller="ManageLensDialogController" />',
       $scope
     );
   }
 
-  describe('save', function() {
-    afterEach(function() {
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
-    });
-
-    it('saves public permissions', function() {
-      var getCookieStub = sinon.stub();
-
-      getCookieStub.returns('CSRF-TOKEN');
-      socrata.utils.getCookie = getCookieStub;
-
-      $httpBackend.expectPUT('/views/asdf-fdsa.json?method=setPermission&value=public.read').
-        respond({});
+  // These tests became invalid after refactoring this dialog to use controllers,
+  // so the tests should be transplanted to something like
+  // ManageLensDialogVisibilityController.
+  xdescribe('visibility', function() {
+    it('should have a disabled dropdown if the dataset is private', function() {
+      window.currentUser = {
+        rights: [
+          'approve_nominations'
+        ]
+      };
 
       var element = createElement();
       var $scope = element.children().scope();
-      $scope.page.set('permissions', {isPublic: false});
 
-      $scope.pageVisibility = 'public';
+      $scope.page.set('dataset', { permissions: { isPublic: false }});
+      expect($scope.visibilityDropdownDisabled).to.equal(true);
+    });
+
+    it('should have an enabled dropdown if the dataset is public', function() {
+      window.currentUser = {
+        rights: [
+          'approve_nominations'
+        ]
+      };
+
+      var element = createElement();
+      var $scope = element.children().scope();
+
+      $scope.page.set('dataset', { permissions: { isPublic: true }});
+      expect($scope.visibilityDropdownDisabled).to.equal(false);
+    });
+
+    it('should have a disabled dropdown if the user is unprivileged', function() {
+      window.currentUser = {
+        rights: []
+      };
+
+      var element = createElement();
+      var $scope = element.children().scope();
+
+      expect($scope.visibilityDropdownDisabled).to.equal(true);
+    });
+
+    it('should have an enabled dropdown if the user is privileged', function() {
+      window.currentUser = {
+        rights: [
+          'approve_nominations'
+        ]
+      };
+
+      var element = createElement();
+      var $scope = element.children().scope();
+
+      expect($scope.visibilityDropdownDisabled).to.equal(false);
+    });
+
+    it('does not save moderation status if you click cancel', function() {
+      window.currentUser = {
+        rights: [
+          'approve_nominations'
+        ]
+      };
+
+      var element = createElement();
+      var $scope = element.children().scope();
+
+      var saveSpy = sinon.spy($scope, 'save');
+
+      var cancelButton = element.find('.manage-lens-dialog-cancel');
+      cancelButton.click();
+
+      expect(saveSpy.called).to.equal(false);
+    });
+
+    it('successfully saves the selected moderation status', function() {
+      window.currentUser = {
+        rights: [
+          'approve_nominations'
+        ]
+      };
+
+      var element = createElement();
+      var $scope = element.children().scope();
+
+      $scope.visibilityDropdownSelection = 'approved';
+      $httpBackend.expectPOST('/admin/views/asdf-fdsa/set/yes.json').respond({});
       $scope.save();
 
       expect($scope.saveStatus).to.equal('saving');
-      expect($scope.page.getCurrentValue('permissions').isPublic).to.equal(false);
 
       $httpBackend.flush();
 
       expect($scope.saveStatus).to.equal('saved');
-      expect($scope.page.getCurrentValue('permissions').isPublic).to.equal(true);
       expect($scope.dialogState.show).to.equal(true);
 
-      clock.tick(1501);
+      $timeout.flush();
+
       expect($scope.dialogState.show).to.equal(false);
     });
+  });
 
-    it('saves private permissions', function() {
-      $httpBackend.expectPUT('/views/asdf-fdsa.json?method=setPermission&value=private').
-        respond({});
+  describe('when view moderation is enabled', function() {
+    beforeEach(function() {
+      ServerConfig.override('featureSet', {view_moderation: true});
+    });
 
-      var element = createElement();
-      var $scope = element.children().scope();
+    it('should have three options if the page has no moderation status', function() {
+      // handle initialization of ownership component
+      // (uncomment these lines if the feature flag for the ownership component is removed)
+      // $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });
+      // $httpBackend.expectGET(/\/api\/search\/users\.json/).respond({});
 
-      $scope.pageVisibility = 'private';
+      var element = createElement({moderationStatus: null});
+      expect(element.find('option')).to.have.length(3);
+
+      // $httpBackend.flush();
+    });
+
+    it('should have two options if the page has a moderation status', function() {
+      // handle initialization of ownership component
+      // (uncomment these lines if the feature flag for the ownership component is removed)
+      // $httpBackend.expectGET(/\/api\/users\/current\.json/).respond({ id: 'fdsa-asdf', rights: [] });
+      // $httpBackend.expectGET(/\/api\/search\/users\.json/).respond({});
+
+      var element = createElement({moderationStatus: false});
+      expect(element.find('option')).to.have.length(2);
+
+      element = createElement({moderationStatus: true});
+      expect(element.find('option')).to.have.length(2);
+
+      // $httpBackend.flush();
+    });
+  });
+
+  describe('save error types', function() {
+    var element;
+    var $scope;
+
+    beforeEach(function() {
+      element = createElement();
+      $scope = element.scope();
+    });
+
+    it('should give a default error', function() {
+      var failureResponse = {
+        'config': {
+          'url': '/random/page'
+        }
+      };
+
+      var errorMock = function () {
+        var deferred = $q.defer();
+        deferred.reject(failureResponse);
+        return deferred.promise;
+      };
+
+      $scope.$apply($scope.components = {
+        'provenance': {
+          'hasChanges': true,
+          'hasErrors': false,
+          'save': errorMock
+        }
+      });
+
       $scope.save();
+      $scope.$digest();
 
-      expect($scope.saveStatus).to.equal('saving');
-      expect($scope.page.getCurrentValue('permissions').isPublic).to.equal(true);
-
-      $httpBackend.flush();
-
-      expect($scope.saveStatus).to.equal('saved');
-      expect($scope.page.getCurrentValue('permissions').isPublic).to.equal(false);
-      expect($scope.dialogState.show).to.equal(true);
-
-      clock.tick(1501);
-      expect($scope.dialogState.show).to.equal(false);
+      expect($scope.saveStatus === 'failed').to.be.true;
+      expect($scope.errorType).to.match(/An unknown error occurred. Please contact Socrata support./);
     });
 
-    it('should disable the on click handler if no changes are on the manage lens dialog', function() {
+    it('should give a visibility error', function() {
+      var failureResponse = {
+        'config': {
+          'url': '/admin/views'
+        }
+      };
 
-      var element = createElement();
-      var $scope = element.children().scope();
-      testHelpers.fireMouseEvent(element.find('save-button')[0], 'click');
+      var errorMock = function () {
+        var deferred = $q.defer();
+        deferred.reject(failureResponse);
+        return deferred.promise;
+      };
 
-      // '$scope.saveStatus' should not equal to 'saving'
-      expect($scope.saveStatus).to.be.undefined;
+      $scope.$apply($scope.components = {
+        'provenance': {
+          'hasChanges': true,
+          'hasErrors': false,
+          'save': errorMock
+        }
+      });
+
+      $scope.save();
+      $scope.$digest();
+
+      expect($scope.saveStatus === 'failed').to.be.true;
+      expect($scope.errorType).to.match(/Visibility could not be updated./);
+    });
+
+    it('should give a sharing error', function() {
+      var failureResponse = {
+        'config': {
+          'url': '/api/views'
+        }
+      };
+
+      var errorMock = function () {
+        var deferred = $q.defer();
+        deferred.reject(failureResponse);
+        return deferred.promise;
+      };
+
+      $scope.$apply($scope.components = {
+        'provenance': {
+          'hasChanges': true,
+          'hasErrors': false,
+          'save': errorMock
+        }
+      });
+
+      $scope.save();
+      $scope.$digest();
+
+      expect($scope.saveStatus === 'failed').to.be.true;
+      expect($scope.errorType).to.match(/Role and sharing settings could not be updated./);
+    });
+
+    it('should give an ownership error', function() {
+      var failureResponse = {
+        'config': {
+          'url': '/views'
+        }
+      };
+
+      var errorMock = function () {
+        var deferred = $q.defer();
+        deferred.reject(failureResponse);
+        return deferred.promise;
+      };
+
+      $scope.$apply($scope.components = {
+        'provenance': {
+          'hasChanges': true,
+          'hasErrors': false,
+          'save': errorMock
+        }
+      });
+
+      $scope.save();
+      $scope.$digest();
+
+      expect($scope.saveStatus === 'failed').to.be.true;
+      expect($scope.errorType).to.match(/The owner could not be changed./);
     });
   });
 });
-

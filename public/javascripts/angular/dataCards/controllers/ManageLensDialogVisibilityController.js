@@ -1,14 +1,14 @@
 (function() {
   'use strict';
 
-  function ManageLensDialogV2VisibilityController($scope, ServerConfig, http, $q) {
+  function ManageLensDialogVisibilityController($scope, ServerConfig, I18n, http, $q) {
     var self = this;
 
     // This function provides a description of the entity making the request to the http() service.
     // The requester object is expected present in the config options passed to http(), and it is expected
     // that the requester object expose a requesterLabel function that returns the descriptive string.
     self.requesterLabel = function() {
-      return 'ManageLensDialogV2VisibilityController';
+      return 'ManageLensDialogVisibilityController';
     };
 
     var datasetIsPrivate$ = $scope.page.observe('dataset.permissions').
@@ -56,6 +56,17 @@
       )
     );
 
+    $scope.visibilityDropdownStrings = $scope.usingViewModeration ?
+      {
+        'approved': I18n.t('manageLensDialog.visibility.viewModerationApproved'),
+        'rejected': I18n.t('manageLensDialog.visibility.viewModerationRejected'),
+        'pending': I18n.t('manageLensDialog.visibility.viewModerationPending')
+      } :
+      {
+        'approved': I18n.t('manageLensDialog.visibility.shown'),
+        'rejected': I18n.t('manageLensDialog.visibility.hidden')
+      };
+
     var save = function() {
       if (!$scope.components.visibility.hasChanges) {
         return $q.when(null);
@@ -93,6 +104,6 @@
 
   angular.
     module('dataCards.controllers').
-    controller('ManageLensDialogV2VisibilityController', ManageLensDialogV2VisibilityController);
+    controller('ManageLensDialogVisibilityController', ManageLensDialogVisibilityController);
 
 })();

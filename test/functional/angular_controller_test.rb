@@ -30,7 +30,7 @@ class AngularControllerTest < ActionController::TestCase
   test 'should successfully get data_lens' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
     PageMetadataManager.any_instance.stubs(
-      :show => v1_page_metadata
+      :show => data_lens_page_metadata
     )
     Phidippides.any_instance.stubs(
       :fetch_dataset_metadata => {
@@ -39,7 +39,7 @@ class AngularControllerTest < ActionController::TestCase
       },
       :fetch_pages_for_dataset => {
         :status => '200',
-        :body => v1_pages_for_dataset
+        :body => v2_pages_for_dataset
       },
       :set_default_and_available_card_types_to_columns! => {}
     )
@@ -54,7 +54,7 @@ class AngularControllerTest < ActionController::TestCase
   test 'should successfully get data_lens for single card view' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
     PageMetadataManager.any_instance.stubs(
-      :show => v1_page_metadata
+      :show => data_lens_page_metadata
     )
     Phidippides.any_instance.stubs(
       :fetch_dataset_metadata => {
@@ -63,7 +63,7 @@ class AngularControllerTest < ActionController::TestCase
       },
       :fetch_pages_for_dataset => {
         :status => '200',
-        :body => v1_pages_for_dataset
+        :body => v2_pages_for_dataset
       },
       :set_default_and_available_card_types_to_columns! => {}
     )
@@ -78,7 +78,7 @@ class AngularControllerTest < ActionController::TestCase
   test 'should successfully get data_lens with empty Phidippides page data' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
     PageMetadataManager.any_instance.stubs(
-      :show => v1_page_metadata
+      :show => data_lens_page_metadata
     )
     Phidippides.any_instance.stubs(
       :fetch_dataset_metadata => {
@@ -103,7 +103,7 @@ class AngularControllerTest < ActionController::TestCase
     NewViewManager.any_instance.stubs(:fetch).returns({})
     View.any_instance.stubs(:find_related).returns({})
     PageMetadataManager.any_instance.stubs(
-      :show => v1_page_metadata
+      :show => data_lens_page_metadata
     )
     Phidippides.any_instance.stubs(
       :fetch_dataset_metadata => {
@@ -112,7 +112,7 @@ class AngularControllerTest < ActionController::TestCase
       },
       :fetch_pages_for_dataset => {
         :status => '200',
-        :body => v1_pages_for_dataset
+        :body => v2_pages_for_dataset
       },
       :set_default_and_available_card_types_to_columns! => {}
     )
@@ -137,7 +137,7 @@ class AngularControllerTest < ActionController::TestCase
     setup do
       NewViewManager.any_instance.stubs(:fetch).returns({})
       PageMetadataManager.any_instance.stubs(
-        :show => v1_page_metadata
+        :show => data_lens_page_metadata
       )
       Phidippides.any_instance.stubs(
         :fetch_dataset_metadata => {
@@ -146,7 +146,7 @@ class AngularControllerTest < ActionController::TestCase
         },
         :fetch_pages_for_dataset => {
           :status => '200',
-          :body => v1_pages_for_dataset
+          :body => v2_pages_for_dataset
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
@@ -173,7 +173,7 @@ class AngularControllerTest < ActionController::TestCase
         },
         :fetch_pages_for_dataset => {
           :status => '200',
-          :body => v1_pages_for_dataset
+          :body => v2_pages_for_dataset
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
@@ -223,7 +223,7 @@ class AngularControllerTest < ActionController::TestCase
 
     should 'redirect to 403 for permission denied error on migration endpoint' do
       @controller.stubs(
-        :fetch_page_metadata => v1_page_metadata,
+        :fetch_page_metadata => data_lens_page_metadata,
         :fetch_dataset_metadata => v1_dataset_metadata
       )
       View.stubs(:migrations).raises(CoreServer::CoreServerError.new(
@@ -239,7 +239,7 @@ class AngularControllerTest < ActionController::TestCase
 
     should 'return success for CoreServer::ResourceNotFound' do
       @controller.stubs(
-        :fetch_page_metadata => v1_page_metadata,
+        :fetch_page_metadata => data_lens_page_metadata,
         :fetch_dataset_metadata => v1_dataset_metadata
       )
       View.stubs(:migrations).raises(
@@ -260,7 +260,7 @@ class AngularControllerTest < ActionController::TestCase
         },
         :fetch_pages_for_dataset => {
           :status => '200',
-          :body => v1_pages_for_dataset
+          :body => v2_pages_for_dataset
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
@@ -283,7 +283,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the 403 page if the dataset is private' do
-      PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
+      PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
       Phidippides.any_instance.stubs(:fetch_dataset_metadata => { status: '403' })
       NewViewManager.any_instance.stubs(:fetch).returns({})
 
@@ -295,7 +295,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the 403 page if the dataset is private case two' do
-      PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
+      PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
       @controller.stubs(:fetch_permissions_and_normalize_exceptions).raises(CommonMetadataMethods::UnauthorizedPageMetadataRequest)
       NewViewManager.any_instance.stubs(:fetch).returns({})
 
@@ -307,7 +307,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the 404 page if the dataset is not found' do
-      PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
+      PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
       AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::DatasetMetadataNotFound)
       NewViewManager.any_instance.stubs(:fetch).returns({})
 
@@ -453,7 +453,7 @@ class AngularControllerTest < ActionController::TestCase
   context 'google analytics' do
     setup do
       PageMetadataManager.any_instance.stubs(
-        :show => v1_page_metadata
+        :show => data_lens_page_metadata
       )
       Phidippides.any_instance.stubs(
         :fetch_dataset_metadata => {
@@ -462,7 +462,7 @@ class AngularControllerTest < ActionController::TestCase
         },
         :fetch_pages_for_dataset => {
           :status => '200',
-          :body => v1_pages_for_dataset
+          :body => v2_pages_for_dataset
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
@@ -514,16 +514,17 @@ class AngularControllerTest < ActionController::TestCase
 
   private
 
-  def v1_page_metadata
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json")).with_indifferent_access
+  def data_lens_page_metadata
+    outer_metadata = JSON.parse(File.read("#{Rails.root}/test/fixtures/v2-page-metadata.json")).with_indifferent_access
+    outer_metadata['displayFormat']['data_lens_page_metadata']
+  end
+
+  def v2_pages_for_dataset
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v2-pages-for-dataset.json")).with_indifferent_access
   end
 
   def v1_dataset_metadata
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-dataset-metadata.json")).with_indifferent_access
-  end
-
-  def v1_pages_for_dataset
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-pages-for-dataset.json")).with_indifferent_access
   end
 
   def vif_fixture_string

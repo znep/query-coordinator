@@ -9,7 +9,7 @@ Eventually we want to introduce another value, "COMMUNITY", but for now it is ei
 (function() {
   'use strict';
 
-  function ManageLensDialogV2ProvenanceController($scope, http, $q) {
+  function ManageLensDialogProvenanceController($scope, http, $q) {
     var initialProvenance$ = $scope.page.observe('provenance');
 
     var initialOfficial$ = initialProvenance$.map(function(provenance) {
@@ -64,5 +64,5 @@ Eventually we want to introduce another value, "COMMUNITY", but for now it is ei
 
   angular.
     module('dataCards.controllers').
-    controller('ManageLensDialogV2ProvenanceController', ManageLensDialogV2ProvenanceController);
+    controller('ManageLensDialogProvenanceController', ManageLensDialogProvenanceController);
 })();

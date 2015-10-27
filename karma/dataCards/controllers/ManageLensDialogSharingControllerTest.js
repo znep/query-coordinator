@@ -1,4 +1,4 @@
-describe('ManageLensDialogV2SharingController', function() {
+describe('ManageLensDialogSharingController', function() {
   'use strict';
 
   var $rootScope;
@@ -50,9 +50,9 @@ describe('ManageLensDialogV2SharingController', function() {
     $dialogScope = $rootScope.$new();
     $dialogScope.page = Mockumentary.createPage(pageData);
     $dialogScope.shouldShowSharingSection = true;
-    $controller('ManageLensDialogV2Controller', { $scope: $dialogScope });
+    $controller('ManageLensDialogController', { $scope: $dialogScope });
     $scope = $dialogScope.$new();
-    $controller('ManageLensDialogV2SharingController', { $scope: $scope });
+    $controller('ManageLensDialogSharingController', { $scope: $scope });
   }
 
   describe('inherited shares', function() {

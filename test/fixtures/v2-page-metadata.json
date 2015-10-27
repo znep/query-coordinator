@@ -3,7 +3,7 @@
   "name" : "My new page",
   "averageRating" : 0,
   "createdAt" : 1441143996,
-  "description" : "<div>description</div>",
+  "description" : "My page has a fun description",
   "displayType" : "data_lens",
   "downloadCount" : 0,
   "newBackend" : true,
@@ -24,58 +24,58 @@
   "displayFormat" : {
     "data_lens_page_metadata" : {
       "defaultDateTruncFunction" : "date_trunc_ymd",
-      "description" : "<div>description</div>",
+      "description" : "My page has a fun description",
       "pageId" : "mjcb-9cxc",
       "datasetId" : "thw2-8btq",
       "name" : "My new page",
-      "cards" : [ {
-        "cardSize" : 1,
-        "expanded" : false,
-        "fieldName" : "datetime",
-        "cardType" : "timeline",
-        "activeFilters" : [ {
-          "arguments" : {
-            "start" : "2015-03-30T00:00:00",
-            "end" : "2015-04-26T00:00:00"
-          },
-          "function" : "TimeRange"
-        } ]
+      "cards" : [{
+        "description": "Test Card",
+        "fieldName": "some_column",
+        "cardSize": 2,
+        "cardType": "column",
+        "appliedFilters": [],
+        "expanded": false
       }, {
-        "cardSize" : 2,
-        "expanded" : false,
-        "fieldName" : "type",
-        "cardType" : "column"
+        "description": "Test Card",
+        "fieldName": "some_other_column",
+        "cardSize": 2,
+        "cardType": "column",
+        "appliedFilters": [],
+        "expanded": false
       }, {
-        "cardSize" : 2,
-        "expanded" : false,
-        "fieldName" : "latitude",
-        "cardType" : "column"
+        "description": "Timeline Card",
+        "fieldName": "time_column_fine_granularity",
+        "cardSize": 3,
+        "cardType": "timeline",
+        "appliedFilters": [],
+        "expanded": false
       }, {
-        "cardSize" : 3,
-        "expanded" : false,
-        "fieldName" : "incident_number",
-        "cardType" : "search"
+        "description": "Number Card",
+        "fieldName": "some_number_column",
+        "cardSize": 3,
+        "cardType": "histogram",
+        "appliedFilters": [],
+        "expanded": false,
+        "bucketType": "logarithmic"
       }, {
-        "cardSize" : 2,
-        "expanded" : false,
-        "fieldName" : "*",
-        "cardType" : "table"
+        "description": "Another Number Card",
+        "fieldName": "some_other_number_column",
+        "cardSize": 3,
+        "cardType": "histogram",
+        "appliedFilters": [],
+        "expanded": false,
+        "bucketType": "linear",
+        "cardOptions": {
+          "bucketSize": 500
+        }
       }, {
-        "cardSize" : 3,
-        "expanded" : false,
-        "fieldName" : "report_location",
-        "cardType" : "column"
-      }, {
-        "cardSize" : 3,
-        "expanded" : false,
-        "fieldName" : "address",
-        "cardType" : "column"
-      }, {
-        "cardSize" : 3,
-        "expanded" : false,
-        "fieldName" : "longitude",
-        "cardType" : "search"
-      } ],
+        "description": "Table",
+        "fieldName": "*",
+        "cardSize": 3,
+        "cardType": "table",
+        "appliedFilters": [],
+        "expanded": false
+      }],
       "version" : 2
     }
   },

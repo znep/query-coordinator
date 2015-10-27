@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ManageLensDialogV2SharingController($scope, $q, I18n, http) {
+  function ManageLensDialogSharingController($scope, $q, I18n, http) {
     var self = this;
 
     $scope.currentUserId = window.currentUser.id;
@@ -10,7 +10,7 @@
     // The requester object is expected present in the config options passed to http(), and it is expected
     // that the requester object expose a requesterLabel function that returns the descriptive string.
     self.requesterLabel = function() {
-      return 'ManageLensDialogV2SharingController';
+      return 'ManageLensDialogSharingController';
     };
 
     // Common share functions
@@ -239,6 +239,6 @@
 
   angular.
     module('dataCards.controllers').
-    controller('ManageLensDialogV2SharingController', ManageLensDialogV2SharingController);
+    controller('ManageLensDialogSharingController', ManageLensDialogSharingController);
 
 })();

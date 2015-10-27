@@ -98,8 +98,7 @@ modal-dialog.second {
 // Instances of the modal dialog
 add-card-dialog,
 customize-card-dialog,
-manage-lens-dialog,
-manage-lens-dialog-v2 {
+manage-lens-dialog {
   .controls {
     clear: both;
     margin-top: 1.5rem;
@@ -231,8 +230,7 @@ customize-card-dialog {
   }
 }
 
-manage-lens-dialog,
-manage-lens-dialog-v2 {
+manage-lens-dialog {
   section {
     label {
       display: inline-block;

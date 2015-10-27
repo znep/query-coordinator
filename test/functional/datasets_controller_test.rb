@@ -144,7 +144,7 @@ class DatasetsControllerTest < ActionController::TestCase
   def setup_nbe_dataset_test(is_admin = false, has_page_metadata = false)
     load_sample_data('test/fixtures/sample-data.json')
     @view.stubs(new_backend?: true, category_display: nil)
-    stub_user = stub(is_admin?: is_admin, id: 'prix-fixe', email: nil)
+    stub_user = stub(is_admin?: is_admin, id: 'prix-fixe', email: nil, rights: [:some_right])
     @controller.stubs(current_user: stub_user)
     if has_page_metadata
       @phidippides.stubs(

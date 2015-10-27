@@ -3,15 +3,23 @@ module FeatureFlags
     flags = Hashie::Mash.new
     other_with_indifferent_access = other.with_indifferent_access
     ExternalConfig.for(:feature_flag).each do |flag, config|
+      expected_values = if config['expectedValues'].nil?
+        nil
+      else
+        values = config['expectedValues'].split(' ')
+        values += ['true', 'false'] unless config['disableTrueFalse']
+        values
+      end
+
       # No restrictions on value. Anything goes.
-      if config['expectedValues'].nil?
+      if expected_values.nil?
         value = other_with_indifferent_access[flag]
         value = base[flag] if value.nil?
         flags[flag] = process_value(value)
       # Check the whitelist. true and false are always valid
       # We must to_s other[flag] because expectedValues is always a string (if present), unlike
       # the actual flag value which may be a bool or number.
-      elsif config['expectedValues'].split(' ').concat(['true', 'false']).include?(other_with_indifferent_access[flag].to_s)
+      elsif expected_values.include?(other_with_indifferent_access[flag].to_s)
         flags[flag] = process_value(other_with_indifferent_access[flag])
       # Drop to default.
       else

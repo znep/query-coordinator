@@ -57,6 +57,28 @@ describe 'FeatureFlags' do
         expect(FeatureFlags.merge({}, { 'flag_name' => 'foo' }).flag_name).to eq('foo')
         expect(FeatureFlags.merge({}, { 'flag_name' => '1' }).flag_name).to eq(1)
         expect(FeatureFlags.merge({}, { 'flag_name' => '1.1' }).flag_name).to eq(1.1)
+        expect(FeatureFlags.merge({}, { 'flag_name' => 'true' }).flag_name).to eq(true)
+        expect(FeatureFlags.merge({}, { 'flag_name' => 'false' }).flag_name).to eq(false)
+      end
+
+      describe 'and disableTrueFalse set' do
+        let(:default_value) { 'default' }
+        let(:test_flags) do
+          {
+            'flag_name' => {
+              'defaultValue' => default_value,
+              'disableTrueFalse' => true
+            }
+          }
+        end
+
+        it 'should still accept any value' do
+          expect(FeatureFlags.merge({}, { 'flag_name' => 'foo' }).flag_name).to eq('foo')
+          expect(FeatureFlags.merge({}, { 'flag_name' => '1' }).flag_name).to eq(1)
+          expect(FeatureFlags.merge({}, { 'flag_name' => '1.1' }).flag_name).to eq(1.1)
+          expect(FeatureFlags.merge({}, { 'flag_name' => 'true' }).flag_name).to eq(true)
+          expect(FeatureFlags.merge({}, { 'flag_name' => 'false' }).flag_name).to eq(false)
+        end
       end
     end
 
@@ -85,7 +107,53 @@ describe 'FeatureFlags' do
         expect(FeatureFlags.merge({}, { 'flag_name' => 'foo' }).flag_name).to eq('foo')
         expect(FeatureFlags.merge({}, { 'flag_name' => 'bar' }).flag_name).to eq('bar')
       end
+
+      describe 'and disableTrueFalse set' do
+        let(:default_value) { 'default' }
+        let(:test_flags) do
+          {
+            'flag_name' => {
+              'defaultValue' => default_value,
+              'expectedValues' => 'foo bar',
+              'disableTrueFalse' => true
+            }
+          }
+        end
+
+        it 'should exclude non-whitelisted values by dropping through to the default value' do
+          expect(FeatureFlags.merge({}, { 'flag_name' => '1' }).flag_name).to eq(default_value)
+          expect(FeatureFlags.merge({}, { 'flag_name' => '1.1' }).flag_name).to eq(default_value)
+        end
+
+        it 'should reject true and false' do
+          expect(FeatureFlags.merge({}, { 'flag_name' => 'true' }).flag_name).to eq(default_value)
+          expect(FeatureFlags.merge({}, { 'flag_name' => 'false' }).flag_name).to eq(default_value)
+        end
+
+        it 'should accept whitelisted values' do
+          expect(FeatureFlags.merge({}, { 'flag_name' => 'foo' }).flag_name).to eq('foo')
+          expect(FeatureFlags.merge({}, { 'flag_name' => 'bar' }).flag_name).to eq('bar')
+        end
+
+        describe 'but true and false are expectedValues' do #wtf
+          let(:test_flags) do
+            {
+              'flag_name' => {
+                'defaultValue' => default_value,
+                'expectedValues' => 'foo bar true false',
+                'disableTrueFalse' => true
+              }
+            }
+          end
+
+          it 'should no longer reject true and false' do
+            expect(FeatureFlags.merge({}, { 'flag_name' => 'true' }).flag_name).to eq(true)
+            expect(FeatureFlags.merge({}, { 'flag_name' => 'false' }).flag_name).to eq(false)
+          end
+        end
+      end
     end
+
   end
 
   describe '.derive' do

@@ -53,7 +53,7 @@ class DatasetsController < ApplicationController
         flash[:notice] = I18n.t('screens.ds.new_ux_nbe_warning', url: "<a href=#{destination_url}>#{destination_url}</a>").html_safe
       end
 
-      if !is_admin? && !FeatureFlags.derive(@view, request).disable_obe_redirection
+      if !is_admin? && !FeatureFlags.derive(@view, request).disable_obe_redirection && !@view.is_geospatial?
         if FeatureFlags.derive(@view, request).force_redirect_to_data_lens === true
           begin
             pages = fetch_pages_for_dataset(@view.id).fetch(:publisher, [])

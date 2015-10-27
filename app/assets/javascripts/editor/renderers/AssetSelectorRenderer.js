@@ -474,7 +474,7 @@
 
       var uploadProgressMessage = $(
         '<h3>',
-        { 'class': 'asset-selector-input-subtext' }
+        { 'class': 'asset-selector-input-subtext asset-selector-uploading-message' }
       ).text(I18n.t('editor.asset_selector.image_upload.uploading_message'));
 
       var uploadCancelButton = $(
@@ -539,7 +539,7 @@
       var errorStep = componentProperties.step;
       var messageTranslationKey;
 
-      if (componentProperties.step) {
+      if (errorStep) {
         cancelButton.remove();
         progressSpinner.addClass('hidden');
         tryAgainButton.removeClass('hidden');

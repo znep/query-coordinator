@@ -1166,16 +1166,21 @@ describe('CardsViewController', function() {
     var NEW_PAGE_DESCRIPTION = 'my new page description';
     var NEW_PAGE_MODERATION_STATUS = undefined;
     var NEW_PAGE_PROVENANCE = 'OFFICIAL';
+    var saveStub;
 
     beforeEach(function() {
       controllerHarness = makeController();
       $scope = controllerHarness.$scope;
+      saveStub = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+        { data: { pageId: TEST_PAGE_ID } }
+      )));
+    });
+
+    afterEach(function() {
+      PageDataService.save.restore();
     });
 
     it('should call save on PageDataService with no id and updated data', function(done) {
-      var saveStub = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
-        { data: { pageId: TEST_PAGE_ID } }
-      )));
       var saveEvents = $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION, NEW_PAGE_MODERATION_STATUS, NEW_PAGE_PROVENANCE);
 
       saveEvents.subscribe(function(event) {

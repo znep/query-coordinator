@@ -322,7 +322,7 @@ module DatasetsHelper
     [
       [ view.new_backend?,
         !view.is_geo?,
-        !FeatureFlags.derive(@view, request).default_imports_to_nbe
+        FeatureFlags.derive(@view, request).ingress_strategy == 'obe'
       ].all?,
       [ view.new_backend?,
         view.is_geo?,

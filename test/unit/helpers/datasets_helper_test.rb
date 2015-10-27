@@ -27,7 +27,7 @@ class DatasetsHelperTest < Test::Unit::TestCase
     @view.stubs( :is_unpublished? => true, :new_backend? => true )
     assert @object.hide_append_replace?, 'Should be true when new_backend? is true'
     @view.stubs( :is_unpublished? => true, :new_backend? => false )
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(:default_imports_to_nbe => true))
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:ingress_strategy => 'nbe'))
     refute @object.hide_append_replace?, 'Should be false when Feature Flag is set'
   end
 

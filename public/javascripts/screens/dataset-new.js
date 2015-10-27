@@ -361,7 +361,7 @@ $wizard.wizard({
 
                 var saveFormMetadata = function() {
                   if (_.isUndefined(state.submittedView)) {
-                    var useNBE = blist.feature_flags.default_imports_to_nbe;
+                    var useNBE = blist.feature_flags.ingress_strategy === 'nbe';
                     new Dataset(viewData).saveNew(useNBE, successCallback, errorCallback);
                   } else {
                       state.submittedView.update(viewData);

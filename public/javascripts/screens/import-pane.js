@@ -84,7 +84,7 @@ var pointTypes = {
 
 // Delta Importer implementation requires Web Workers.
 var useDI2 = _.isFunction(window.Worker) && !_.isNull($.dataSync.ssync())
-    && blist.feature_flags.default_imports_to_nbe == 'delta-importer';
+    && blist.feature_flags.ingress_strategy == 'delta-importer';
 
 // helpers
 
@@ -1324,7 +1324,7 @@ importNS.uploadFilePaneConfig = {
         var uploadEndpoint = '/imports2.txt?method=';
         if (state.type == 'blist')
         {
-            uploadEndpoint += 'scan&nbe=' + !!blist.feature_flags.default_imports_to_nbe;
+            uploadEndpoint += 'scan&nbe=' + (blist.feature_flags.ingress_strategy === 'nbe');
         }
         else if (state.type == 'shapefile')
         {
@@ -1948,7 +1948,7 @@ importNS.importingPaneConfig = {
             });
         }
 
-        var urlParams = { nbe: !!blist.feature_flags.default_imports_to_nbe };
+        var urlParams = { nbe: blist.feature_flags.ingress_strategy === 'nbe' };
         if (state.operation != 'import') {
           urlParams.method = state.operation;
         }

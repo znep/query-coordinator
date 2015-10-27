@@ -201,6 +201,3 @@ useSoda2:
   description: Switch to using SODA2.
   defaultValue: never
   expectedValues: never read-only always
-use_soql_for_clustering:
-  description: Use the (currently unwritten) core method soql_clustering for clustering.
-  defaultValue: false

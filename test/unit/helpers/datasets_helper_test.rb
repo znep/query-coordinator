@@ -152,20 +152,6 @@ class DatasetsHelperTest < Test::Unit::TestCase
     assert @object.hide_update_column?, 'hide_update_column expected to be true'
   end
 
-  def test_hide_map_create
-    @view.stubs(:new_backend? => false)
-    refute @object.hide_map_create?, 'hide_map_create expected to be false'
-    @view.stubs(:new_backend? => true)
-    assert @object.hide_map_create?, 'hide_map_create expected to be true'
-
-    @view.stubs(:new_backend? => true, :is_geo? => true)
-    refute @object.hide_map_create?, 'hide_map_create expected to be false'
-
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(:use_soql_for_clustering => true))
-    @view.stubs(:new_backend? => true)
-    refute @object.hide_map_create?, 'hide_map_create expected to be false'
-  end
-
   def test_enable_xls_download_type
     FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_xls_download_type => true))
     assert @object.enable_xls_download_type, 'enable_xls_download_type to be true'

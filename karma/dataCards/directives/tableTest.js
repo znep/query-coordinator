@@ -1,4 +1,4 @@
-describe('table directive', function() {
+describe('tableCard', function() {
   'use strict';
 
   function createTableCard(expanded, getRows, rowCount, showCount, rowDisplayUnit) {
@@ -41,10 +41,10 @@ describe('table directive', function() {
     var html =
       '<div class="card {0}" style="width: 640px; height: 480px; position: relative;">'.
       format(expanded ? 'expanded': '') +
-        '<div table class="table" row-count="rowCount" get-rows="getRows" where-clause="whereClause" ' +
+        '<table-card row-count="rowCount" get-rows="getRows" where-clause="whereClause" ' +
         'filtered-row-count="filteredRowCount" expanded="expanded" column-details="columnDetails" ' +
         'show-count="showCount" row-display-unit="rowDisplayUnit" ' +
-        'default-sort-column-name="defaultSortColumnName"></div>' +
+        'default-sort-column-name="defaultSortColumnName"></table-card>' +
       '</div>';
 
     var compiledElem = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -106,7 +106,7 @@ describe('table directive', function() {
   var descriptionColumnIndex;
   var idColumnIndex;
 
-  beforeEach(module('/angular_templates/dataCards/table.html'));
+  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));

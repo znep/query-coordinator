@@ -1,4 +1,4 @@
-describe('A Choropleth Card Visualization', function() {
+describe('ChoroplethController', function() {
   'use strict';
 
   var provide;
@@ -18,11 +18,11 @@ describe('A Choropleth Card Visualization', function() {
   var testTimeoutScheduler;
   var normalTimeoutScheduler;
   var mockCardDataService;
+  var $controller;
 
   var testWards = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var testAggregates = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
   var testAggregatesWhere = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values_where.json';
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module(testWards));
   beforeEach(module(testAggregates));
   beforeEach(module(testAggregatesWhere));
@@ -37,6 +37,7 @@ describe('A Choropleth Card Visualization', function() {
 
       setMockCardDataServiceToDefault();
       $provide.value('CardDataService', mockCardDataService);
+      $provide.value('$element', $('<div>'));
     });
   });
 
@@ -54,10 +55,12 @@ describe('A Choropleth Card Visualization', function() {
     CardDataService = $injector.get('CardDataService');
     Constants = $injector.get('Constants');
     I18n = $injector.get('I18n');
+    $controller = $injector.get('$controller');
     Constants.DISABLE_LEAFLET_ZOOM_ANIMATION = true;
     testTimeoutScheduler = new Rx.TestScheduler();
     normalTimeoutScheduler = Rx.Scheduler.timeout;
     Rx.Scheduler.timeout = testTimeoutScheduler;
+    testHelpers.mockDirective(provide, 'choropleth');
   }));
 
   afterEach(function() {
@@ -192,21 +195,15 @@ describe('A Choropleth Card Visualization', function() {
     childScope.model = model;
     childScope.allowFilterChange = true;
 
-    var html = '<card-visualization-choropleth id="{0}" model="model" allow-filter-change="allowFilterChange" where-clause="whereClause"></card-visualization-choropleth>'.format(id);
-    var el = testHelpers.TestDom.compileAndAppend(html, childScope);
-
-    // The choropleth throttles its renderer via Rx.throttle
-    // Advance the scheduler to get it to render
-    // Using advanceBy instead of advanceTo, since we test rendering multiple churros
-    testTimeoutScheduler.advanceBy(500);
+    $controller('ChoroplethController', { $scope: childScope });
 
     return {
-      element: el,
-      scope: childScope
+      $scope: childScope
     };
   }
 
-  describe('clear selection box', function() {
+  // TODO migrate these to cheetah.
+  xdescribe('clear selection box', function() {
 
     var choropleth;
     var choroplethContainer;
@@ -294,7 +291,8 @@ describe('A Choropleth Card Visualization', function() {
     });
   });
 
-  describe('when created with instantiated choropleth visualizations', function() {
+  // TODO migrate these to cheetah
+  xdescribe('when created with instantiated choropleth visualizations', function() {
 
     it('should provide a flyout on hover with the current value, and row display unit on the first and second choropleth encountered', function() {
 
@@ -348,13 +346,6 @@ describe('A Choropleth Card Visualization', function() {
   });
 
   describe('when created with mock choropleth visualizations', function() {
-
-    // We don't need actual choropleth directives to be instantiated for any of
-    // the following tests, so just mock it out.
-    beforeEach(function() {
-      testHelpers.mockDirective(provide, 'choropleth');
-    });
-
     it('should not let click events leak', function() {
 
       var choropleth1Fired = false;
@@ -363,17 +354,17 @@ describe('A Choropleth Card Visualization', function() {
       var choropleth1 = createChoropleth({ id: 'choropleth-1' });
       var choropleth2 = createChoropleth({ id: 'choropleth-2' });
 
-      choropleth1.scope.$on('toggle-dataset-filter:choropleth', function() {
+      choropleth1.$scope.$on('toggle-dataset-filter:choropleth', function() {
         choropleth1Fired = true;
       });
 
-      choropleth2.scope.$on('toggle-dataset-filter:choropleth', function() {
+      choropleth2.$scope.$on('toggle-dataset-filter:choropleth', function() {
         choropleth2Fired = true;
       });
 
       // Simulate the event raised by clicking on a choropleth region
       var fakeFeature = { properties: {} };
-      choropleth1.scope.$$childHead.$emit('toggle-dataset-filter:choropleth', fakeFeature);
+      choropleth1.$scope.$emit('toggle-dataset-filter:choropleth', fakeFeature);
 
       timeout.flush();
 
@@ -447,7 +438,7 @@ describe('A Choropleth Card Visualization', function() {
         version: '1'
       });
 
-      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
+      expect(testSubject.$scope.choroplethRenderError).to.equal(true);
     });
 
     describe('if the extent query used to get the choropleth regions fails', function() {
@@ -495,7 +486,7 @@ describe('A Choropleth Card Visualization', function() {
           version: '1'
         });
 
-        expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
+        expect(testSubject.$scope.choroplethRenderError).to.equal(true);
       });
     });
 
@@ -544,7 +535,7 @@ describe('A Choropleth Card Visualization', function() {
           version: '1'
         });
 
-        expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
+        expect(testSubject.$scope.choroplethRenderError).to.equal(true);
       });
 
     });
@@ -588,7 +579,7 @@ describe('A Choropleth Card Visualization', function() {
 
       expect(CardDataService.getChoroplethRegions.called).to.equal(true);
       expect(CardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
-      expect(choropleth.scope.$$childHead.choroplethRenderError).to.equal(false);
+      expect(choropleth.$scope.choroplethRenderError).to.equal(false);
 
       CardDataService.getChoroplethRegions.restore();
       CardDataService.getChoroplethRegionsUsingSourceColumn.restore();
@@ -605,21 +596,21 @@ describe('A Choropleth Card Visualization', function() {
 
     it('uses the cardOptions.mapExtent if it has been saved', function() {
       var choropleth = createChoropleth({ mapExtent: testExtent });
-      expect(choropleth.element.isolateScope().defaultExtent).to.be.undefined;
-      expect(choropleth.element.isolateScope().savedExtent).to.eql(testExtent);
+      expect(choropleth.$scope.defaultExtent).to.be.undefined;
+      expect(choropleth.$scope.savedExtent).to.eql(testExtent);
     });
 
     it('uses the default extent if it has been set and there is no saved mapExtent', function() {
       CardDataService.getDefaultFeatureExtent.returns(testExtent);
       var choropleth = createChoropleth({});
-      expect(choropleth.element.isolateScope().defaultExtent).to.eql(testExtent);
-      expect(choropleth.element.isolateScope().savedExtent).to.be.undefined;
+      expect(choropleth.$scope.defaultExtent).to.eql(testExtent);
+      expect(choropleth.$scope.savedExtent).to.be.undefined;
     });
 
     it('defers to the choropleth visualization for extent if there is neither a saved nor default extent', function() {
       var choropleth = createChoropleth({});
-      expect(choropleth.element.isolateScope().defaultExtent).to.be.undefined;
-      expect(choropleth.element.isolateScope().savedExtent).to.be.undefined;
+      expect(choropleth.$scope.defaultExtent).to.be.undefined;
+      expect(choropleth.$scope.savedExtent).to.be.undefined;
     });
 
   });

@@ -134,15 +134,17 @@ describe('card directive', function() {
         ServerConfig = _ServerConfig;
 
         // Override the templates of the other directives. We don't need to test them.
-        _$templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
-        _$templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
-        _$templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
-        _$templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
-        _$templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
-        _$templateCache.put('/angular_templates/dataCards/cardVisualization.html', '');
-        _$templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
+        _$templateCache.put('/angular_templates/dataCards/choropleth.html', '');
+        _$templateCache.put('/angular_templates/dataCards/columnChart.html', '');
+        _$templateCache.put('/angular_templates/dataCards/featureMap.html', '');
+        _$templateCache.put('/angular_templates/dataCards/histogram.html', '');
+        _$templateCache.put('/angular_templates/dataCards/invalidCard.html', '');
+        _$templateCache.put('/angular_templates/dataCards/searchCard.html', '');
+        _$templateCache.put('/angular_templates/dataCards/tableCard.html', '');
+        _$templateCache.put('/angular_templates/dataCards/timelineChart.html', '');
         _$templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
         testHelpers.mockDirective($provide, 'cardTitle');
+        testHelpers.mockDirective($provide, 'tableCard');
         // The css styles are scoped to the body class
         $('body').addClass('state-view-cards');
       }
@@ -243,7 +245,7 @@ describe('card directive', function() {
 
     it('should be set whenever the description height changes', function(done) {
       var textElement = el.find('.description-truncated-content').text('');
-      var visualizationElement = el.find('card-visualization');
+      var visualizationElement = el.find('.card-visualization');
       var originalHeight = visualizationElement.height();
 
       textElement.text(_.range(100).join('text '));
@@ -266,7 +268,7 @@ describe('card directive', function() {
     });
 
     it('should be set whenever the card height changes', function(done) {
-      var visualizationElement = el.find('card-visualization');
+      var visualizationElement = el.find('.card-visualization');
       var originalHeight = visualizationElement.height();
 
       el.height(2 * (el.height() + 1));
@@ -451,4 +453,10 @@ describe('card directive', function() {
     });
   });
 
+  describe('when the card type is invalid', function() {
+    it('sets the cardType to be invalid', function() {
+      var directive = createDirective({ cardType: 'queen of hearts' });
+      expect(directive.element.isolateScope().cardType).to.equal('invalid');
+    });
+  });
 });

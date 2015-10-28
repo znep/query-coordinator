@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardVisualizationSearch(CardDataService, ServerConfig, SoqlHelpers, Constants, ellipsifyFilter) {
+  function searchCard(CardDataService, ServerConfig, SoqlHelpers, Constants, ellipsifyFilter) {
 
     function pluckEventArg(val) {
       return _.get(val, 'additionalArguments[0]');
@@ -38,8 +38,8 @@
 
     return {
       restrict: 'E',
-      scope: { 'model': '=', 'whereClause': '=' },
-      templateUrl: '/angular_templates/dataCards/cardVisualizationSearch.html',
+      scope: true,
+      templateUrl: '/angular_templates/dataCards/searchCard.html',
       link: function($scope, element) {
         var model = $scope.$observe('model');
         var dataset$ = model.observeOnLatest('page.dataset');
@@ -282,6 +282,7 @@
     };
   }
 
-  angular.module('dataCards.directives').directive('cardVisualizationSearch', CardVisualizationSearch);
-
+  angular.
+    module('dataCards.directives').
+    directive('searchCard', searchCard);
 })();

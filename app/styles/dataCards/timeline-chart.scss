@@ -94,7 +94,7 @@ $fill-opacity: 0.5;
   z-index: 5;
 }
 
-.timeline-chart .timeline-chart-wrapper .datum-label {
+timeline-chart .timeline-chart-wrapper .datum-label {
   display: none;
   position: absolute;
   height: 30px;
@@ -106,7 +106,7 @@ $fill-opacity: 0.5;
   z-index: 8;
 }
 
-.timeline-chart.filterable {
+timeline-chart.filterable {
   .timeline-chart-wrapper .datum-label {
     cursor: pointer;
   }

@@ -1,8 +1,17 @@
-<choropleth
-  stops="continuous"
-  allow-filter-change="allowFilterChange"
-  ng-class="{ 'card-size-1': cardSize === 1, 'card-size-2': cardSize === 2, 'card-size-3': cardSize === 3 }">
-</choropleth>
+<div class="choropleth-container" ng-class="{ 'card-size-1': cardSize === 1, 'card-size-2': cardSize === 2, 'card-size-3': cardSize === 3 }">
+  <div class="choropleth-map-container"></div>
+  <div class="choropleth-legend">
+    <svg class="gradient"></svg>
+    <svg class="legend-ticks">
+      <g class="ticks"></g>
+    </svg>
+  </div>
+  <div class="choropleth-selection-box">
+    <span class="icon-filter"></span>
+    <span class="choropleth-selection-value"></span>
+    <span class="icon-close"></span>
+  </div>
+</div>
 
 <div class="visualization-render-error" ng-show="choroplethRenderError">
   <div class="row">

@@ -1,4 +1,4 @@
-describe('lensType directive', function() {
+describe('lensType', function() {
   'use strict';
 
   var testHelpers;

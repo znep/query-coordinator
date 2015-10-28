@@ -169,13 +169,14 @@ describe('addCardDialog', function() {
 
           // Override the templates of the other directives. We don't need to test them.
           $templateCache.put('/angular_templates/dataCards/spinner.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualization.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
+          $templateCache.put('/angular_templates/dataCards/choropleth.html', '');
+          $templateCache.put('/angular_templates/dataCards/columnChart.html', '');
+          $templateCache.put('/angular_templates/dataCards/featureMap.html', '');
+          $templateCache.put('/angular_templates/dataCards/histogram.html', '');
+          $templateCache.put('/angular_templates/dataCards/invalidCard.html', '');
+          $templateCache.put('/angular_templates/dataCards/searchCard.html', '');
+          $templateCache.put('/angular_templates/dataCards/tableCard.html', '');
+          $templateCache.put('/angular_templates/dataCards/timelineChart.html', '');
           $templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
 
           $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);

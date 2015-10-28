@@ -1,4 +1,4 @@
-describe('<remove-all-cards> directive', function() {
+describe('removeAllCards', function() {
   'use strict';
 
   var testHelpers;

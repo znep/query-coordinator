@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function FeatureMap(
+  function featureMap(
     $compile,
     $rootScope,
     Constants,
@@ -17,6 +17,7 @@
     return {
       restrict: 'E',
       scope: true,
+      controller: 'FeatureMapController',
       templateUrl: '/angular_templates/dataCards/featureMap.html',
       link: function(scope, element) {
         var baseLayerUrl$ = scope.$observe('baseLayerUrl');
@@ -822,5 +823,5 @@
 
   angular.
     module('dataCards.directives').
-      directive('featureMap', FeatureMap);
+    directive('featureMap', featureMap);
 })();

@@ -14,7 +14,7 @@
   'filter' is the mechanism by which queries are altered.
   */
 
-  function timelineChartDirective(
+  function timelineChart(
     $timeout,
     WindowState,
     DateHelpers,
@@ -26,9 +26,10 @@
   ) {
 
     return {
-      templateUrl: '/angular_templates/dataCards/timelineChart.html',
       restrict: 'E',
       scope: true,
+      controller: 'TimelineChartController',
+      templateUrl: '/angular_templates/dataCards/timelineChart.html',
       link: function(scope, element) {
         var chartData$ = scope.$observe('chartData');
         var precision$ = scope.$observe('precision');
@@ -2033,7 +2034,7 @@
          */
         function isMouseOverChartElement(target) {
 
-          var closestChart = $(target).closest('.timeline-chart');
+          var closestChart = $(target).closest('timeline-chart');
           return closestChart.length > 0 && closestChart[0] === element[0];
 
         }
@@ -2360,6 +2361,6 @@
   }
 
   angular.
-    module('socrataCommon.directives').
-    directive('timelineChart', timelineChartDirective);
+    module('dataCards.directives').
+    directive('timelineChart', timelineChart);
 })();

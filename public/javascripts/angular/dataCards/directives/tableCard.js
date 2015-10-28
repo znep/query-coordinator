@@ -15,9 +15,15 @@
     PluralizeService
   ) {
     return {
-      templateUrl: '/angular_templates/dataCards/tableCard.html',
       restrict: 'E',
-      scope: true,
+      scope: {
+        model: '=',
+        whereClause: '=',
+        isEmbedded: '=?',
+        firstColumn: '=?'
+      },
+      controller: 'TableCardController',
+      templateUrl: '/angular_templates/dataCards/tableCard.html',
       link: function(scope, element) {
         var columnDetails$ = scope.$observe('columnDetails');
         var whereClause$ = scope.$observe('whereClause');
@@ -716,5 +722,4 @@
   angular.
     module('dataCards.directives').
     directive('tableCard', tableCard);
-
 })();

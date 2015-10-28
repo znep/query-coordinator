@@ -1,4 +1,4 @@
-describe('A Timeline Chart Card Visualization', function() {
+describe('TimelineChartController', function() {
   'use strict';
 
   var testHelpers;
@@ -8,12 +8,8 @@ describe('A Timeline Chart Card Visualization', function() {
   var timelineChartVisualizationHelpers;
   var _$provide;
   var mockCardDataService;
-  var html = [
-    '<div class="card-visualization">',
-      '<card-visualization-timeline-chart model="model" where-clause="whereClause">',
-      '</card-visualization-timeline-chart>',
-    '</div>'
-  ].join('');
+  var $controller;
+  var $scope;
 
   /**
    * @param {Object} HTTP headers (e.g. put 'X-SODA2-Rollup': <4x4>)
@@ -31,8 +27,6 @@ describe('A Timeline Chart Card Visualization', function() {
     });
   }
 
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
-
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
   beforeEach(module(function($provide) {
@@ -44,6 +38,7 @@ describe('A Timeline Chart Card Visualization', function() {
     $rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
     timelineChartVisualizationHelpers = $injector.get('TimelineChartVisualizationHelpers');
+    $controller = $injector.get('$controller');
 
     mockCardDataService = {
       getTimelineDomain: function() {
@@ -92,13 +87,10 @@ describe('A Timeline Chart Card Visualization', function() {
   }
 
   function makeDirective() {
-    var outerScope = $rootScope.$new();
-
-    outerScope.model = stubCardModel();
-
-    return testHelpers.TestDom.compileAndAppend(html, outerScope);
+    $scope = $rootScope.$new();
+    $scope.model = stubCardModel();
+    $controller('TimelineChartController', { $scope: $scope });
   }
-
 
   describe('transformChartDataForRendering', function() {
     it('should add min/max for dates and values, and mean for value', function() {
@@ -133,43 +125,36 @@ describe('A Timeline Chart Card Visualization', function() {
   });
 
   it('should successfully render when given an undefined dataset binding, and then also successfully render when that dataset is populated', function() {
-    var outerScope = $rootScope.$new();
+    var $scope = $rootScope.$new();
 
     // STUBS
     var card = stubCardModel();
     var originalDataset = card.page.getCurrentValue('dataset');
     card.page.set('dataset', undefined); // The important bit
 
-    outerScope.model = card;
-    outerScope.whereClause = '';
+    $scope.model = card;
+    $scope.whereClause = '';
     // END STUBS
 
     // If it's going to crash, it's here.
-    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+    $controller('TimelineChartController', { $scope: $scope });
 
     card.page.set('dataset', originalDataset);
 
-    var timelineChartScope = element.find('.timeline-chart').scope();
-
     // Use chartData as a proxy for TimelineChart's happiness.
-    expect(timelineChartScope.chartData).to.equal(undefined);
-    outerScope.$apply(); // Resolve some internal promises :(
-    expect(timelineChartScope.chartData).to.not.equal(undefined);
+    expect($scope.chartData).to.equal(undefined);
+    $scope.$apply(); // Resolve some internal promises :(
+    expect($scope.chartData).to.not.equal(undefined);
   });
 
   it('should not crash given an undefined whereClause', function() {
-    var outerScope = $rootScope.$new();
+    var $scope = $rootScope.$new();
 
-    outerScope.model = stubCardModel();
+    $scope.model = stubCardModel();
+    $scope.whereClause = undefined; // The important bit.
 
-    outerScope.whereClause = undefined; // The important bit.
-
-    // If it's going to crash, it's here.
-    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
-
-    // Use chartData as a proxy for TimelineChart's happiness.
-    var timelineChartScope = element.find('.timeline-chart').scope();
-    expect(timelineChartScope.chartData).to.not.equal(undefined);
+    $controller('TimelineChartController', { $scope: $scope });
+    expect($scope.chartData).to.not.equal(undefined);
   });
 
   it('should not display an error message all timeline data has the same timestamp', function() {
@@ -182,9 +167,8 @@ describe('A Timeline Chart Card Visualization', function() {
       ]));
     };
 
-    var element = makeDirective();
-    var errorMessage = element.find('.chart-render-error');
-    expect(errorMessage.length).to.equal(0);
+    makeDirective();
+    expect($scope.cannotRenderTimelineChart).to.not.exist;
   });
 
   it('should display an error message if the timeline data is null', function() {
@@ -192,9 +176,9 @@ describe('A Timeline Chart Card Visualization', function() {
       return withHeaders({}, $q.when(null));
     };
 
-    var element = makeDirective();
-    var errorMessage = element.find('.chart-render-error');
-    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered with no values.');
+    makeDirective();
+    $scope.$apply();
+    expect($scope.cannotRenderTimelineChart.reason).to.equal('noData');
   });
 
   it('should display an error message if the timeline data is undefined', function() {
@@ -202,9 +186,9 @@ describe('A Timeline Chart Card Visualization', function() {
       return withHeaders({}, $q.when(undefined));
     };
 
-    var element = makeDirective();
-    var errorMessage = element.find('.chart-render-error');
-    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered with no values.');
+    makeDirective();
+    $scope.$apply();
+    expect($scope.cannotRenderTimelineChart.reason).to.equal('noData');
   });
 
   it('should display an error message if the timeline data is empty', function() {
@@ -212,9 +196,9 @@ describe('A Timeline Chart Card Visualization', function() {
       return withHeaders({}, $q.when([]));
     };
 
-    var element = makeDirective();
-    var errorMessage = element.find('.chart-render-error');
-    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered with no values.');
+    makeDirective();
+    $scope.$apply();
+    expect($scope.cannotRenderTimelineChart.reason).to.equal('noData');
   });
 
   it('should display an error message if the timeline domain is undefined', function() {
@@ -222,9 +206,9 @@ describe('A Timeline Chart Card Visualization', function() {
       return $q.when(undefined);
     };
 
-    var element = makeDirective();
-    var errorMessage = element.find('.chart-render-error');
-    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered due to invalid date values.');
+    makeDirective();
+    $scope.$apply();
+    expect($scope.cannotRenderTimelineChart.reason).to.equal('badDates');
   });
 
   it('should display an error message if the timeline domain start and end values are null', function() {
@@ -235,9 +219,9 @@ describe('A Timeline Chart Card Visualization', function() {
       });
     };
 
-    var element = makeDirective();
-    var errorMessage = element.find('.chart-render-error');
-    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered due to invalid date values.');
+    makeDirective();
+    $scope.$apply();
+    expect($scope.cannotRenderTimelineChart.reason).to.equal('badDates');
   });
 
 });

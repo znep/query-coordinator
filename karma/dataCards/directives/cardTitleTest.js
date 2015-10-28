@@ -1,4 +1,4 @@
-describe('<card-title />', function() {
+describe('cardTitle', function() {
   'use strict';
 
   var CARD_TITLE_HTML = '<card-title model="cardModel"></card-title>';

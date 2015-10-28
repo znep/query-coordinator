@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function Mockumentary(Page, Dataset) {
+  function Mockumentary(Page, Dataset, Card) {
 
     function createCardMetadata(cardOptions) {
       var minimalInitialValues = {
@@ -22,6 +22,10 @@
       };
 
       return $.extend(true, minimalInitialValues, cardOptions);
+    }
+
+    function createCard(page, fieldName, cardOptions) {
+      return new Card(page, fieldName, cardOptions);
     }
 
     function createPageMetadata(pageOptions) {
@@ -107,6 +111,7 @@
     return {
       createPageMetadata: createPageMetadata,
       createCardMetadata: createCardMetadata,
+      createCard: createCard,
       createPage: createPage,
       createDatasetMetadata: createDatasetMetadata,
       createDataset: createDataset

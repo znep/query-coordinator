@@ -194,7 +194,7 @@ $card-description-transition-duration: 0.5s;
   }
 }
 
-card-visualization {
+.card-visualization {
   display: block;
   height: 100%;
   .chart-render-error {
@@ -202,12 +202,9 @@ card-visualization {
     text-align: center;
     padding-top: 1em;
   }
-  .card-visualization {
-    height: 100%;
-    .card-text {
-      .description {
-        padding-bottom: $card-description-padding-bottom;
-      }
+  .card-text {
+    .description {
+      padding-bottom: $card-description-padding-bottom;
     }
   }
 }

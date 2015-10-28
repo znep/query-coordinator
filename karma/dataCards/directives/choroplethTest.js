@@ -1,4 +1,4 @@
-describe('A Choropleth Directive', function() {
+describe('Choropleth', function() {
   'use strict';
 
   // Indices into an rgb array, for greater semantics!
@@ -38,12 +38,17 @@ describe('A Choropleth Directive', function() {
       scope.geojsonAggregateData = testData.polygonData2;
     }
 
-    var html = '<choropleth base-layer-url="baseLayerUrl" ' +
+    $controllerProvider.register('ChoroplethController', function($scope) {
+      $scope.stops = /continuous/.test(attrs) ? 'continuous' : 'discrete';
+    });
+
+    var html = '<div class="card-visualization">' +
+        '<choropleth base-layer-url="baseLayerUrl" ' +
         'geojson-aggregate-data="geojsonAggregateData" ' +
-        (attrs || '') +
-        ' row-display-unit="rowDisplayUnit" ' +
-        (/style="[^"]"/.test(attrs) ? '' : 'style="height: 400px; display: block">') +
-        '</choropleth>';
+        'row-display-unit="rowDisplayUnit" ' +
+        (/style="[^"]"/.test(attrs) ? '' : 'style="height: 400px; display: block;">') +
+        '</choropleth>'+
+        '</div>';
     var el = testHelpers.TestDom.compileAndAppend(html, scope);
 
     // Choropleth has "interesting" double-click detection, so we need to
@@ -156,9 +161,16 @@ describe('A Choropleth Directive', function() {
   var flyoutSelector = '#uber-flyout';
   var featureMergedValueName = '__SOCRATA_FILTERED_VALUE__';
   var Constants;
+  var $controllerProvider;
 
   var testTimeoutScheduler;
   var normalTimeoutScheduler;
+
+  beforeEach(function() {
+    if (typeof document.body.click !== 'function') {
+      document.body.click = function() {};
+    }
+  });
 
   beforeEach(function() {
     testTimeoutScheduler = new Rx.TestScheduler();
@@ -178,7 +190,12 @@ describe('A Choropleth Directive', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
   beforeEach(module('dataCards/choropleth.scss'));
+  beforeEach(module('/angular_templates/dataCards/choropleth.html'));
   beforeEach(module(testJson));
+
+  beforeEach(module(function(_$controllerProvider_) {
+    $controllerProvider = _$controllerProvider_;
+  }));
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');

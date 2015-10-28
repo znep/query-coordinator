@@ -4,8 +4,11 @@
 #
 # Description should also explain the expected values. This is messaging for client services.
 # Possible values should not have spaces.
-# expectedValues are delimited by space.
+# `expectedValues` are delimited by space.
 #   Because I don't like YAML arrays, and it enforces simple values.
+# `category` is a UI convenience. it is the full string.
+# `disableTrueFalse` indicates that true/false are invalid values.
+#   If `expectedValues` is undefined, this setting is ignored.
 #
 # This is truth. Anything not in this list gets ignored.
 #
@@ -37,6 +40,7 @@ current_page_metadata_version:
 data_lens_transition_state:
   description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
   defaultValue: post_beta
+  disableTrueFalse: true
   expectedValues: pre_beta beta post_beta
 dataset_count_v2:
   description: Display the new metric was created that computes dataset count based more closely on our contractual definition of dataset.
@@ -147,6 +151,7 @@ include_sr_in_esri:
 ingress_strategy:
   description: When performing import operations, such as via the wizard or append/replace, this determines the endpoint to use. If `obe`, it will use the existing endpoint. If `nbe`, it will be set `nbe=true` on relevant calls. If `delta-importer`, it will use the Delta Importer Javascript port.
   defaultValue: obe
+  disableTrueFalse: true
   expectedValues: obe nbe delta-importer
   category: obe deprecation
 kill_esri_reprojection_and_pass_different_webm:
@@ -200,4 +205,5 @@ use_ephemeral_bootstrap:
 useSoda2:
   description: Switch to using SODA2.
   defaultValue: never
+  disableTrueFalse: never
   expectedValues: never read-only always

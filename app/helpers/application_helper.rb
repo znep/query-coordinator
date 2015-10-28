@@ -618,12 +618,14 @@ module ApplicationHelper
     other_selected = [String, Array, Fixnum].include?(flag_value.class)
 
     html = []
-    html << radio_button_tag(name, true, flag_value === true, :disabled => options[:disabled])
-    html << label_tag("#{label_for}_true", 'true')
-    html << radio_button_tag(name, false, flag_value === false, :disabled => options[:disabled])
-    html << label_tag("#{label_for}_false", 'false')
-    html << radio_button_tag(name, nil, other_selected, :class => 'other', :disabled => options[:disabled])
-    html << label_tag(label_for, 'Other:')
+    unless flag_config['disableTrueFalse']
+      html << radio_button_tag(name, true, flag_value === true, :disabled => options[:disabled])
+      html << label_tag("#{label_for}_true", 'true')
+      html << radio_button_tag(name, false, flag_value === false, :disabled => options[:disabled])
+      html << label_tag("#{label_for}_false", 'false')
+      html << radio_button_tag(name, nil, other_selected, :class => 'other', :disabled => options[:disabled])
+      html << label_tag(label_for, 'Other:')
+    end
     if flag_config.expectedValues?
       html << select_tag(
                 name,

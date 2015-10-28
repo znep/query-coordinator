@@ -4,7 +4,7 @@
   var rowsPerBlock = 50;
   var rowHeight = $.relativeToPx('2rem');
 
-  function tableDirectiveFactory(
+  function tableCard(
     Constants,
     Dataset,
     SoqlHelpers,
@@ -15,8 +15,8 @@
     PluralizeService
   ) {
     return {
-      templateUrl: '/angular_templates/dataCards/table.html',
-      restrict: 'A',
+      templateUrl: '/angular_templates/dataCards/tableCard.html',
+      restrict: 'E',
       scope: true,
       link: function(scope, element) {
         var columnDetails$ = scope.$observe('columnDetails');
@@ -700,18 +700,16 @@
             }
           }));
 
-
           scope.$destroyAsObservable(element).subscribe(function() {
             _.invoke(subscriptions, 'dispose');
           });
         }
       }
     };
-
   }
 
   angular.
-    module('socrataCommon.directives').
-      directive('table', tableDirectiveFactory);
+    module('dataCards.directives').
+    directive('tableCard', tableCard);
 
 })();

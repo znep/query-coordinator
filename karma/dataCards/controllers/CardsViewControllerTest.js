@@ -70,7 +70,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationInvalid.html'));
   beforeEach(module('/angular_templates/dataCards/featureMap.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
-  beforeEach(module('/angular_templates/dataCards/table.html'));
+  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
   beforeEach(module('/angular_templates/dataCards/customizeBar.html'));

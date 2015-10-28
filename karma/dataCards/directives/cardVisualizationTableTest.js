@@ -69,7 +69,7 @@ describe('A Table Card Visualization', function() {
   var Mockumentary;
   var $q;
 
-  beforeEach(module('/angular_templates/dataCards/table.html'));
+  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
 
   beforeEach(module('dataCards'));
@@ -198,7 +198,7 @@ describe('A Table Card Visualization', function() {
       model: model,
       element: element,
       outerScope: outerScope,
-      scope: element.find('div[table]').scope()
+      scope: element.find('table-card').scope()
     };
   }
 

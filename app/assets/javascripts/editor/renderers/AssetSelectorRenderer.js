@@ -168,7 +168,7 @@
           progressAction: Actions.EMBED_CODE_UPLOAD_PROGRESS,
           errorAction: Actions.EMBED_CODE_UPLOAD_ERROR,
           doneAction: Actions.EMBED_CODE_UPLOAD_DONE
-        }));
+        });
 
         currentHtmlFragment = htmlFragment;
       }, Constants.EMBED_CODE_DEBOUNCE_DELAY);

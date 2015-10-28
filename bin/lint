@@ -1,20 +1,14 @@
 #!/bin/bash
 
-# eslint must be installed.
-npm update eslint > /dev/null
+npm update eslint
 
-NEW_PROBLEMS=`./node_modules/.bin/eslint --ignore-path .eslintignore -c package.json -f compact app | sort | tail -n +3`
+NEW_PROBLEMS=`./node_modules/.bin/eslint -c package.json -f compact app | sort | tail -n +3`
+NEW_PROBLEMS_COUNT=`wc -l <(echo "$NEW_PROBLEMS") | awk '{print $1}'`
 
-git checkout `git merge-base HEAD origin/master`
-OLD_PROBLEMS=`./node_modules/.bin/eslint --ignore-path .eslintignore -c package.json -f compact app | sort | tail -n +3`
-
-git checkout -
-DELTA=`diff  <(echo "$OLD_PROBLEMS" ) <(echo "$NEW_PROBLEMS") | grep '^> '`
-
-if [ -n "$DELTA" ]; then
+if [ "$NEW_PROBLEMS_COUNT" -gt 0 ]; then
   echo
   echo "New errors:"
-  echo "$DELTA"
+  echo "$NEW_PROBLEMS"
   echo
   false
 else

@@ -70,6 +70,12 @@ describe('columnChart', function() {
     return modifiedData;
   }
 
+  function testDataWithStringNumberAtIndex(index) {
+    var modifiedData = _.clone(testData);
+    modifiedData[index][0] = '5';
+    return modifiedData;
+  }
+
   function testDataWithFiltered() {
     var modifiedData = _.clone(testData);
     _(modifiedData).forEach(function(n) {
@@ -207,6 +213,18 @@ describe('columnChart', function() {
 
     it('should not fail on numeric titles', function() {
       chart = createColumnChart(640, false, testDataWithNumberAtIndex(0));
+      var barLabel = $(labelContents).eq(0);
+      var labelText = barLabel.find('.text').text();
+      var flyoutTitle;
+      var flyout = $('#uber-flyout');
+
+      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      flyoutTitle = flyout.find('.flyout-title').text();
+      expect(labelText).to.equal(flyoutTitle);
+    });
+
+    it('should not fail on numeric titles even though they are actually strings', function() {
+      chart = createColumnChart(640, false, testDataWithStringNumberAtIndex(0));
       var barLabel = $(labelContents).eq(0);
       var labelText = barLabel.find('.text').text();
       var flyoutTitle;

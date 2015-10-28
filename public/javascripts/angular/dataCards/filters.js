@@ -9,6 +9,12 @@
     };
   }).
 
+  filter('localizedLink', function(I18n) {
+    return function(href) {
+      return I18n.a(href);
+    };
+  }).
+
   filter('pluralize', function(PluralizeService) {
     return function() {
       return PluralizeService.pluralize.apply(this, arguments);

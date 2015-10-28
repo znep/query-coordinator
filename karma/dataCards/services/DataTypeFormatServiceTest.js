@@ -153,7 +153,7 @@ describe('test DataTypeFormatService output', function() {
   // -$123.45 | -$12.3K
   var MONEY_HUMANE_FORMAT_REGEX = /^-?\$(?:\d{1,3}\.\d{2}|\d{1,3}(?:\.\d{1,2})?[KMBTPEZY])$/;
 
-
+  beforeEach(module('dataCards'));
   beforeEach(module('dataCards.services'));
 
   var DataTypeFormatService;

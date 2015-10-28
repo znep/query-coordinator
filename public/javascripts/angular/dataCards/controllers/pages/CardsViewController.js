@@ -259,10 +259,7 @@
       catchException(Rx.Observable.never());
 
     $scope.$bindObservable('sourceDatasetURL', obeId$.map(function(obeId) {
-      // Now construct the source dataset url from the obe id
-      var localeInfo = ServerConfig.get('locales');
-      var localePart = localeInfo.currentLocale === localeInfo.defaultLocale ? '' : '/' + localeInfo.currentLocale;
-      return localePart + OBE_DATASET_PAGE.format(obeId);
+      return I18n.a(OBE_DATASET_PAGE.format(obeId));
     }));
 
     /***************

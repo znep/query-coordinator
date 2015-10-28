@@ -26,7 +26,7 @@
         </li>
         <li ng-repeat="page in datasetPublisherPages"
             class="related-views-list-item">
-          <a ng-href="{{localePart}}/view/{{page.pageId}}">
+          <a ng-href="{{('/view/' + page.pageId) | localizedLink}}">
             <p class="related-view-name">{{page.name}}</p>
           </a>
         </li>

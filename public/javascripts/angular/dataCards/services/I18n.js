@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function I18n($log) {
+  function I18n($log, ServerConfig) {
 
     // TODO clean this up using _.mapKeys when we upgrade lodash
     function camelCaseKeys(obj) {
@@ -12,6 +12,7 @@
 
     var i18n = camelCaseKeys(window.translations);
 
+    // Retrieve a translation key
     i18n.t = function(key) {
 
       if (_.isString(key)) {
@@ -30,6 +31,22 @@
       }
 
       return '';
+    };
+
+    // Turns a url into a localized version of the url:
+    // I18n.a('/path/to/page') -> '/ru/path/to/page'
+    i18n.a = function(href) {
+      var localeInfo = ServerConfig.get('locales');
+      var localePart = '';
+      if (localeInfo.currentLocale !== localeInfo.defaultLocale) {
+        localePart = '/' + localeInfo.currentLocale;
+      }
+
+      if (!_.startsWith(href, '/')) {
+        href = '/' + href;
+      }
+
+      return localePart + href;
     };
 
     return i18n;

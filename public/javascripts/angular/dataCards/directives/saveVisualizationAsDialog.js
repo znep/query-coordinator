@@ -4,7 +4,6 @@
   function saveVisualizationAsDialog(
     $http,
     I18n,
-    ServerConfig,
     VIFExportService,
     FlyoutService
   ) {
@@ -37,10 +36,6 @@
 
         $scope.$bindObservable('nameInvalid', validState$.map(function(x) { return !x; }));
 
-        // Cache locale segment to use in redirect path
-        var localeInfo = ServerConfig.get('locales');
-        var localePart = localeInfo.currentLocale === localeInfo.defaultLocale ? '' : '/' + localeInfo.currentLocale;
-
         Rx.Observable.subscribeLatest(
           saveClicks$.withLatestFrom(validState$, function(a, b) { return b; }).filter(_.identity),
           $scope.page.observe('dataset'),
@@ -62,7 +57,7 @@
                 $http.post('/metadata/v1/standalone_viz.json', payload).
                   then(function(response) {
                     $scope.saveStatus = 'saved';
-                    window.location = '{0}/view/{1}'.format(localePart, response.data.id);
+                    window.location = I18n.a('/view/{0}'.format(response.data.id));
                   }, function() {
                     $scope.saveStatus = 'failed';
                   });

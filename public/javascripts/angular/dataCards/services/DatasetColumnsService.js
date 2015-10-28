@@ -14,8 +14,8 @@
     // Returns an observable containing the columns of a page's dataset,
     // sorted in the order they appear in the table.
     // Excludes system columns but retains computed columns.
-    function getSortedColumns$(scope) {
-      return scope.
+    function getSortedColumns$($scope) {
+      return $scope.
         $observe('page').observeOnLatest('dataset.columns').
         map(function(columns) {
 
@@ -41,8 +41,8 @@
         });
     }
 
-    function getReadableColumnNameFn$(scope) {
-      return scope.$observe('page').observeOnLatest('dataset.columns').map(
+    function getReadableColumnNameFn$($scope) {
+      return $scope.$observe('page').observeOnLatest('dataset.columns').map(
         function(datasetColumns) {
           return function(fieldName) {
             var column = datasetColumns[fieldName];

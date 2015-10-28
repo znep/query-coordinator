@@ -148,6 +148,7 @@
       var debounceForOneSecondThenUploadHtmlFragment = _.debounce(function(event) {
         if (storyteller.fileUploader !== undefined && storyteller.fileUploader !== null) {
           storyteller.fileUploader.destroy();
+          currentHtmlFragment = undefined;
         }
 
         var htmlFragment = $(event.target).val();

@@ -1,5 +1,5 @@
 <div class="downloadsSectionContent">
-  <%- if @view.should_expose_geo_export_links? -%>
+  <%- if @view.is_geo? -%>
   <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.geo_header') %></label>
   <%- end -%>
   <div class="downloadsTable">
@@ -7,7 +7,7 @@
       <%= render :partial => 'datasets/downloads_table_inner' %>
     </div>
   </div>
-  <%- if @view.has_multiple_layers? -%>
+  <%- if @view.is_geo? -%>
   <div class="layerTableDownloads">
     <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.layers_header') %></label>
     <select id="layerChooserForTabular" class="layerChooser"></select>

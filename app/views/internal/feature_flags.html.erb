@@ -25,6 +25,7 @@
             <input type="submit" value="Update" />
         </div>
     </div>
+    <%= hidden_field_tag 'category', params[:category] if params[:category].present? %>
     <%- end %>
   <%- end %>
 </div>

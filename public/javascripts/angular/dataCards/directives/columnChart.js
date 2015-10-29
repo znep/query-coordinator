@@ -51,20 +51,17 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             target = $(target).parent().get(0);
           }
 
-          // Escape problematic characters from data-bar-name strings
+          // To string and escape backslashes and quotes
           var escapeBarName = function(name) {
-            if (_.isString(name)) {
-              return name.replace(/\\/g, '\\\\').
-                          replace(/"/g, '\\\"');
-            } else {
-              return name;
-            }
+            return String(name).
+              replace(/\\/g, '\\\\').
+              replace(/"/g, '\\\"');
           };
 
           barName = escapeBarName(lastFlyoutData.title);
           barGroup = $(target).closest(element).
             find('.bar-group').
-            filter(function() { return $(this).data('bar-name') === barName; }).
+            filter(function() { return String($(this).data('bar-name')) === barName; }).
             get(0);
 
 
@@ -106,24 +103,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
         if (!lastFlyoutData) {
           return undefined;
-        }
-
-        // // Helper function to properly format flyout values.
-        function formatFlyoutValue(value, labelUnit) {
-
-          var formattedValue;
-
-          if (_.isFinite(value)) {
-            if (labelUnit) {
-              formattedValue = ' ' + PluralizeService.pluralize(labelUnit, value);
-            }
-
-            formattedValue = window.socrata.utils.formatNumber(value) + formattedValue;
-          } else {
-            formattedValue = 'No value';
-          }
-
-          return formattedValue;
         }
 
         var data = lastFlyoutData;

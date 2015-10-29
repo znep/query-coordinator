@@ -126,6 +126,10 @@
                 };
               }
             ).
+            safeApplyOnError(scope, function() {
+              scope.isPendingComputation = false;
+              scope.choroplethRenderError = true;
+            }).
             subscribe(function(responseDataAndDataset) {
               var responseData = responseDataAndDataset.responseData;
               var datasetModel = responseDataAndDataset.dataset;
@@ -137,11 +141,10 @@
 
                   // Perform transformations on the datasetMetadata
                   newColumns = _.mapValues(newColumns, function(column, fieldName) {
-                    var extendedData = _.extend({
+                    return _.extend({
                       fieldName: fieldName,
                       isSystemColumn: DatasetColumnsService.isSystemColumn(column)
                     }, column);
-                    return extendedData;
                   });
 
                   // Set the dataset columns, which retriggers the computedColumn$
@@ -150,11 +153,6 @@
                   datasetModel.set('columns', newColumns);
                 }
               }
-            }, function() {
-              scope.$safeApply(function() {
-                scope.isPendingComputation = false;
-                scope.choroplethRenderError = true;
-              });
             });
         }
 
@@ -337,32 +335,27 @@
         }
 
         function requestDataWithWhereClauseSequence(where$, eventLabel) {
-          return Rx.Observable.combineLatest(
-            computedColumn$,
-            computedColumnName$,
-            dataset,
-            where$,
-            aggregation$,
-            function(computedColumn, computedColumnName, currentDataset, whereClauseFragment, aggregationData) {
-              return CardDataService.getData(
-                computedColumnName,
-                currentDataset.id,
-                whereClauseFragment,
-                aggregationData,
-                { limit: shapefileRegionQueryLimit }
-              );
-            }).
-            tap(_.partial(trackPromiseFlightStatus, eventLabel)).
-            switchLatest().
-            retryWhen(function(errors) {
-              waiting$.onNext(true);
-              return errors.delay(5000);
-            }).
-            tap(function() {
-              scope.$safeApply(function() {
-                scope.isPendingComputation = false;
-              });
-            });
+
+          // For every change in the where clause, we kick off a new observable
+          // with incremental back-off, and flatten
+          return where$.flatMapLatest(function(whereClauseFragment) {
+
+            var getDataWithWhereClauseAndLimit = _.partial(
+              CardDataService.getData,
+              _, _, whereClauseFragment, _, { limit: shapefileRegionQueryLimit });
+
+            return Rx.Observable.combineLatest(
+              computedColumnName$,
+              dataset.pluck('id'),
+              aggregation$,
+              computedColumn$,
+              getDataWithWhereClauseAndLimit).
+              tap(_.partial(trackPromiseFlightStatus, eventLabel)).
+              switchLatest().
+              incrementalFallbackRetry(6, function() { waiting$.onNext(true); }).
+              safeApply(scope, function() { scope.isPendingComputation = false; }).
+              safeApplyOnError(scope, function() { scope.choroplethRenderError = true; });
+          });
         }
 
         unfilteredData$ = requestDataWithWhereClauseSequence(baseSoqlFilter, 'unfiltered_query:complete');

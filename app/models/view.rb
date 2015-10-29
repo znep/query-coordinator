@@ -1158,8 +1158,38 @@ class View < Model
     viewType == 'href'
   end
 
+  # checks if a dataset is tagged as 'geo'-- applies to shapefiles
   def is_geo?
     metadata.present? && metadata.data['geo'].present?
+  end
+
+  # expose geo export links for all nbe types with spatially encoded data
+  def should_expose_geo_export_links?
+    is_geo? || (new_backend? && is_spatial_data_container?)
+  end
+
+  def has_multiple_layers?
+    # checks for layers as direct child lenses
+    if metadata.present? &&
+       metadata.data['geo'].present? &&
+       metadata.data['geo']['layers'].respond_to?(:split) &&
+       metadata.data['geo']['layers'].split(",").length > 1
+        return true
+    end
+    # checks for layers that come from a separate dataset (derived views)
+    if displayFormat.present? && displayFormat.viewDefinitions.present?
+      return displayFormat.viewDefinitions.any? { |v| v["uid"] != "self" }
+    end
+    false
+  end
+
+  # checks if dataset contains spacially encoded data
+  def is_spatial_data_container?
+    spatial_types = %w{ point multipoint line multiline polygon multipolygon }
+    if columns.present?
+      return columns.any? { |col| spatial_types.include?(col.dataTypeName) }
+    end
+    false
   end
 
   def is_arcgis?

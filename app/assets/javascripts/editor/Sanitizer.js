@@ -87,6 +87,8 @@
 
       if (_isNodeTypeSafeToUse(nodeName)) {
         cleanEl = document.createElement(nodeName);
+      } else if (nodeName === 'p') {
+        cleanEl = document.createElement('div');
       } else {
         // DocumentFragments are ignored by squire.
         // We use them here to maintain the DOM structure.

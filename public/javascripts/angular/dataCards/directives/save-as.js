@@ -42,7 +42,7 @@
           )
         );
 
-        /* END OF COPY from ManageLensDialogV2VisibilityController.js */
+        /* END OF COPY from ManageLensDialogVisibilityController.js */
 
         var saveEvents$ = new Rx.BehaviorSubject({ status: 'idle' });
 

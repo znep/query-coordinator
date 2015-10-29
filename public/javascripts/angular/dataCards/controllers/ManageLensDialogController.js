@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ManageLensDialogV2Controller($scope, ServerConfig) {
+  function ManageLensDialogController($scope, ServerConfig) {
 
     // Show sharing section for users who have 'grant' right
     $scope.$bindObservable('shouldShowSharingSection',
@@ -46,6 +46,6 @@
 
   angular.
     module('dataCards.controllers').
-    controller('ManageLensDialogV2Controller', ManageLensDialogV2Controller);
+    controller('ManageLensDialogController', ManageLensDialogController);
 
 })();

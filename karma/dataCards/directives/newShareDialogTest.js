@@ -22,7 +22,7 @@ describe('newShareDialog', function() {
     testHelpers.mockDirective(_$provide, 'socSelect');
     testHelpers.mockDirective(_$provide, 'saveButton');
     testHelpers.mockDirective(_$provide, 'modalDialog');
-    testHelpers.mockDirective(_$provide, 'manageLensDialogV2');
+    testHelpers.mockDirective(_$provide, 'manageLensDialog');
   }));
 
   afterEach(function(){

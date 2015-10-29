@@ -4,94 +4,93 @@
   function manageLensDialog(
     http,
     FlyoutService,
-    I18n
+    I18n,
+    ServerConfig,
+    $timeout,
+    $q
   ) {
     return {
       restrict: 'E',
-      scope: {
-        dialogState: '=',
-        page: '='
-      },
+      scope: true,
       templateUrl: '/angular_templates/dataCards/manageLensDialog.html',
       link: function($scope) {
-        var currentVisibility;
-
-        var pageIsPublic$ = $scope.page.observe('permissions').
-            filter(_.isObject).
-            map(_.property('isPublic'));
-
-        var datasetIsPublic$ = $scope.page.observe('dataset.permissions').
-            filter(_.isObject).
-            map(_.property('isPublic'));
-
-        $scope.$bindObservable(
-          'pageVisibility',
-          pageIsPublic$.map(function(isPublic) { return isPublic ? 'public' : 'private'; })
-        );
-
-        $scope.$bindObservable(
-          'datasetIsPublic',
-          datasetIsPublic$
-        );
-
-        $scope.$bindObservable('selectDisabled', Rx.Observable.combineLatest(
-          pageIsPublic$,
-          datasetIsPublic$,
-          function(pageIsPublic, datasetIsPublic) {
-            return !pageIsPublic && !datasetIsPublic;
-          }
-        ));
-
-        currentVisibility = $scope.pageVisibility;
-        $scope.$observe('pageVisibility').
-          subscribe(function(changedVisibility) {
-            $scope.dialogHasChanges = (changedVisibility !== currentVisibility);
-          }
-        );
-
-        FlyoutService.register({
-          selector: 'manage-lens-dialog .save-button.disabled',
-          render: _.constant('<div class="flyout-title">{0}</div>'.
-            format(I18n.saveButton.flyoutNoChanges))
-        });
 
         /**
-         * Save the permissions.
+         * Checks which request failed in order to yield the correct error message.
+         */
+        function determineErrorType(failureResponse) {
+          var path = failureResponse.config.url;
+          if (path.pathname) {
+            path = path.pathname; // url may be string or object
+          }
+
+          var errorType = 'unknown';
+          if (/^\/admin\/views/.test(path)) {
+            errorType = 'visibility';
+          } else if (/^\/api\/views/.test(path)) {
+            errorType = 'sharing';
+          } else if (/^\/views/.test(path)) {
+            errorType = 'ownership';
+          }
+
+          return I18n.manageLensDialog.error[errorType];
+        }
+
+        /**
+         * Calls `save` on all components and waits for all promises to resolve before showing
+         * the "saved" success message in the button.
          */
         $scope.save = function() {
-          var isPublic = $scope.pageVisibility === 'public';
-          var url = '/views/{0}.json?method=setPermission&value={1}'.format(
-            $scope.page.id,
-            isPublic ? 'public.read' : 'private'
-          );
+          if (!$scope.dialogHasChanges || $scope.dialogHasErrors) {
+            return;
+          }
+          if ($scope.saveStatus === 'saving') {
+            return;
+          }
+
+          var promises = _.invoke($scope.components, 'save');
 
           $scope.saveStatus = 'saving';
-          $scope.dialogState.disableCloseDialog = true;
-          http.put(url).then(function() {
+          $scope.manageLensState.disableCloseDialog = true;
+
+          $q.all(promises).then(function() {
             $scope.saveStatus = 'saved';
 
-            // Update our data model
-            var permissions = $scope.page.getCurrentValue('permissions');
-            permissions.isPublic = isPublic;
-            $scope.page.set('permissions', permissions);
+            _.invoke($scope.components, 'postSave');
 
             // Now close the dialog after 1.5 seconds
-            setTimeout(function() {
-              $scope.$safeApply(function() {
-                $scope.dialogState.show = false;
-              });
+            $timeout(function() {
+              $scope.manageLensState.show = false;
+              _.invoke($scope.components, 'postClose');
             }, 1500);
-          })['catch'](function() {
+          })['catch'](function(failureResponse) {
             $scope.saveStatus = 'failed';
-            setTimeout(function() {
-              $scope.$safeApply(function() {
-                $scope.saveStatus = null;
-              });
+            $scope.errorType = determineErrorType(failureResponse);
+            _.defer(FlyoutService.refreshFlyout);
+
+            $timeout(function() {
+              $scope.saveStatus = null;
+              _.defer(FlyoutService.refreshFlyout);
             }, 8000);
           })['finally'](function() {
-            $scope.dialogState.disableCloseDialog = false;
+            $scope.manageLensState.disableCloseDialog = false;
           });
         };
+
+        FlyoutService.register({
+          selector: 'manage-lens-dialog .ownership .icon-warning',
+          render: _.constant(I18n.manageLensDialog.ownership.warning)
+        });
+
+        FlyoutService.register({
+          selector: 'manage-lens-dialog .controls save-button .error',
+          render: function() {
+            return '<p>{0}</p><p>{1}</p>'.format(
+              I18n.manageLensDialog.error.preamble,
+              $scope.errorType
+            );
+          }
+        });
       }
     };
   }
@@ -101,4 +100,3 @@
     directive('manageLensDialog', manageLensDialog);
 
 })();
-

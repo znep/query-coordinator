@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ManageLensDialogV2OwnershipController(
+  function ManageLensDialogOwnershipController(
     $scope,
     $document,
     UserSessionService,
@@ -18,7 +18,7 @@
     // The requester object is expected present in the config options passed to http(), and it is expected
     // that the requester object expose a requesterLabel function that returns the descriptive string.
     self.requesterLabel = function() {
-      return 'ManageLensDialogV2OwnershipController';
+      return 'ManageLensDialogOwnershipController';
     };
 
     // Observe non-error changes to the input text.
@@ -236,6 +236,6 @@
 
   angular.
     module('dataCards.controllers').
-    controller('ManageLensDialogV2OwnershipController', ManageLensDialogV2OwnershipController);
+    controller('ManageLensDialogOwnershipController', ManageLensDialogOwnershipController);
 
 })();

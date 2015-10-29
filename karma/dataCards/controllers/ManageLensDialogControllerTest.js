@@ -1,4 +1,4 @@
-describe('ManageLensDialogV2Controller', function() {
+describe('ManageLensDialogController', function() {
   'use strict';
 
   beforeEach(module('dataCards'));
@@ -8,7 +8,7 @@ describe('ManageLensDialogV2Controller', function() {
   beforeEach(inject(function($rootScope, $controller, Mockumentary) {
     $scope = $rootScope.$new();
     $scope.page = Mockumentary.createPage();
-    $controller('ManageLensDialogV2Controller', {$scope: $scope});
+    $controller('ManageLensDialogController', {$scope: $scope});
   }));
 
   it('should set shouldShowSharingSection to false if the user does not have grants right', function() {

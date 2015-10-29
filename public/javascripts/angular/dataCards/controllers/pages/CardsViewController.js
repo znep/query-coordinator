@@ -211,7 +211,6 @@
     $scope.domain = domain;
     $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
     $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
-    $scope.dataLensVersion = page.version;
     $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
 
     var pageName$ = page.observe('name').filter(_.isPresent);
@@ -283,22 +282,15 @@
         return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
       });
 
-    // Once we migrate entirely to v2, we can remove the isCurrentUserAdminOrPublisher entirely
-    // and only care about page-specific user rights
-    var userCanManageView$ = page.observe('rights').map(function(rights) {
-      return _.any(rights, function(right) {
-        return right === 'update_view' || right === 'grant';
-      });
-    });
-
-    var userHasEditRights$ = $scope.dataLensVersion >= 2 ? userCanManageView$ : isCurrentUserAdminOrPublisher$;
+    var userCanManageView$;
     if ($scope.isEphemeral) {
-      userHasEditRights$ = currentUser$.combineLatest(
-        isCurrentUserAdminOrPublisher$,
-        function(user, isAdminOrPublisher) {
-          return isAdminOrPublisher || !!(user && user.roleName);
-        }
-      );
+      userCanManageView$ = currentUser$.pluck('roleName').map(_.isPresent);
+    } else {
+      userCanManageView$ = page.observe('rights').map(function(rights) {
+        return _.any(rights, function(right) {
+          return right === 'update_view' || right === 'grant';
+        });
+      });
     }
 
     var isCurrentUserOwnerOfDataset$ =
@@ -311,8 +303,11 @@
           return ownerId === userId;
         });
 
-    var currentUserHasSaveRight$ = userHasEditRights$.
-      combineLatest(isCurrentUserOwnerOfDataset$, function(a, b) { return a || b; }).
+    var currentUserHasSaveRight$ = userCanManageView$.
+      combineLatest(
+        isCurrentUserOwnerOfDataset$,
+        isCurrentUserAdminOrPublisher$,
+        function(a, b, c) { return a || b || c; }).
       catchException(Rx.Observable.returnValue(false));
 
     $scope.$bindObservable('currentUserHasSaveRight', currentUserHasSaveRight$);
@@ -320,7 +315,7 @@
     $scope.$bindObservable(
       'shouldDisplayCustomizeBar',
       currentUserHasSaveRight$.combineLatest(currentUser$, function(hasSaveRight) {
-        return hasSaveRight && (page.displayType == 'data_lens' || page.displayType == 'new_view');
+        return hasSaveRight && page.displayType == 'data_lens';
       })
     );
 
@@ -328,32 +323,8 @@
 
     $scope.shouldShowManageLens = false;
 
-    if ($scope.dataLensVersion >= 2) {
-      $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
-      initManageLens($scope, page);
-    } else {
-      // TODO - remove once v2 migration is donions
-      currentUser$.subscribe(
-        function(currentUser) {
-
-          var currentUserCanEditOthersDatasets =
-            _.isPresent(currentUser) &&
-            _.includes(currentUser.rights, 'edit_others_datasets');
-
-          var shouldShowManageLens =
-            ServerConfig.get('dataLensTransitionState') === 'post_beta' &&
-            currentUserCanEditOthersDatasets;
-
-          if (shouldShowManageLens) {
-
-            $scope.$safeApply(function() {
-              $scope.shouldShowManageLens = true;
-              initManageLens($scope, page);
-            });
-          }
-        }
-      );
-    }
+    $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
+    initManageLens($scope, page);
 
     /*******************************
     * Filters and the where clause *

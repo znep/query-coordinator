@@ -1,4 +1,4 @@
-describe('ManageLensDialogV2OwnershipController', function() {
+describe('ManageLensDialogOwnershipController', function() {
   'use strict';
 
   var $rootScope;
@@ -84,9 +84,9 @@ describe('ManageLensDialogV2OwnershipController', function() {
     $dialogScope = $rootScope.$new();
     $dialogScope.page = Mockumentary.createPage(pageOverrides);
     $dialogScope.dataset = Mockumentary.createDataset();
-    $controller('ManageLensDialogV2Controller', { $scope: $dialogScope });
+    $controller('ManageLensDialogController', { $scope: $dialogScope });
     $scope = $dialogScope.$new();
-    $controller('ManageLensDialogV2OwnershipController', { $scope: $scope });
+    $controller('ManageLensDialogOwnershipController', { $scope: $scope });
   }
 
   function setText(value) {

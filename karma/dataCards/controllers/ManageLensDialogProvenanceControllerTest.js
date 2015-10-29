@@ -1,4 +1,4 @@
-describe('ManageLensDialogV2ProvenanceController', function() {
+describe('ManageLensDialogProvenanceController', function() {
   'use strict';
 
   var $rootScope;
@@ -35,9 +35,9 @@ describe('ManageLensDialogV2ProvenanceController', function() {
     $dialogScope = $rootScope.$new();
     $dialogScope.page = Mockumentary.createPage();
     $dialogScope.dataset = Mockumentary.createDataset(datasetOverrides);
-    $controller('ManageLensDialogV2Controller', { $scope: $dialogScope });
+    $controller('ManageLensDialogController', { $scope: $dialogScope });
     $scope = $dialogScope.$new();
-    $controller('ManageLensDialogV2ProvenanceController', { $scope: $scope });
+    $controller('ManageLensDialogProvenanceController', { $scope: $scope });
   }
 
   it('is not official by default', function(done) {

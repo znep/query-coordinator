@@ -598,58 +598,6 @@ class ViewTest < Test::Unit::TestCase
     )
   end
 
-  def test_is_spatial_data_container
-    json = {
-      'columns' => [
-        {
-          'id' => 332,
-          'name' => 'Location 1',
-          'dataTypeName' => 'point',
-          'fieldName' => 'location_1',
-          'position' => 18,
-          'renderTypeName' => 'point',
-          'tableColumnId' => 332,
-          'format' => { }
-        },
-        {
-          'id' => 328,
-          'name' => 'Contractor',
-          'dataTypeName' => 'text',
-          'fieldName' => 'contractor',
-          'position' => 14,
-          'renderTypeName' => 'text',
-          'tableColumnId' => 328,
-          'width' => 220,
-          'format' => { }
-          }
-        ]
-    }
-    view = View.new(json)
-    assert(view.is_spatial_data_container?)
-  end
-
-  def test_has_multiple_layers
-    view_without_keys = View.new
-    assert_equal(false, view_without_keys.has_multiple_layers?)
-
-    json = {'metadata' => {'geo' => {'layers' => '4444-4444'}}}
-    view_with_single_layer = View.new(json)
-    assert_equal(false, view_with_single_layer.has_multiple_layers?)
-
-    json = {'metadata' => {'geo' => {'layers' => '4444-4444,5555-5555'}}}
-    view_with_multiple_layers = View.new(json)
-    assert(view_with_multiple_layers.has_multiple_layers?)
-
-    json = {'displayFormat' => {'viewDefinitions' => [{'uid' => 'self'}]}}
-    derived_view_from_single_dataset = View.new(json)
-    assert_equal(false, derived_view_from_single_dataset.has_multiple_layers?)
-
-    json = {'displayFormat' => {'viewDefinitions' => [ {'uid' => 'self'},
-                                                       {'uid' => '4444-4444'} ]}}
-    derived_view_from_multiple_datasets = View.new(json)
-    assert(derived_view_from_multiple_datasets.has_multiple_layers?)
-  end
-
   private
 
   def stub_core_server_connection

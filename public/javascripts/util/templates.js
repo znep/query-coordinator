@@ -32,10 +32,9 @@
     $.templates.downloadsTable = {
         downloadTypes: {
             'normal': normalDownloadTypes,
-            'geo_attributes': [ 'CSV', 'JSON', 'GeoJSON' ],
-            'nbe': [ 'CSV', 'JSON'],
-            'multilayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON'],
-            'monolayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON', 'CSV', 'JSON']
+            'geo_attributes': [ 'CSV', 'JSON' ],
+            'nbe': [ 'CSV', 'JSON' ],
+            'geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ]
         },
         directive: {
             'normal': {
@@ -44,10 +43,7 @@
             'nbe': {
                 '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
             },
-            'monolayer_geo': {
-              '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
-            },
-            'multilayer_geo': {
+            'geo': {
                 '.downloadsTable .downloadsList tbody .item':
                     downloadTypesDirective('downloadTypes'),
                 '.layerDownloadsContent .downloadsList tbody .item':

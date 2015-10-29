@@ -211,62 +211,9 @@ var Dataset = ServerModel.extend({
 
     getDownloadType: function()
     {
-      if (this.shouldExposeGeoExportLinks())
-      {
-         return this.isLayered() ? 'multilayer_geo' : 'monolayer_geo';
-      }
-      return this.newBackend ? 'nbe' : 'normal';
+        return this.isGeoDataset() ? 'geo' : this.newBackend ? 'nbe' : 'normal'
     },
 
-    isLayered: function()
-    {
-      //checks for layers as direct children
-      if (this.isGeoDataset() &&
-          typeof(this.metadata.geo.layers) === "string" &&
-          this.metadata.geo.layers.split(",").length > 1)
-      {
-        return true;
-      }
-      //checks for layers from a separate dataset (derived views)
-      if (this.displayFormat && this.displayFormat.viewDefinitions)
-      {
-        var l = this.displayFormat.viewDefinitions.length
-        for ( var i = 0; i < l; i++ )
-        {
-          if (this.displayFormat.viewDefinitions[i].uid != "self")
-          {
-            return true
-          }
-        }
-      }
-      return false;
-    },
-
-    shouldExposeGeoExportLinks: function()
-    {
-        return (this.isGeoDataset() || (this.newBackend && this.isSpatialDataContainer()));
-    },
-
-    //checks if the dataset columns contain geo related data
-    isSpatialDataContainer: function()
-    {
-
-      function isGeoDataType(dataType) {
-        return ['point', 'multipoint', 'line', 'multiline', 'polygon', 'multipolygon'].indexOf(dataType) >= 0;
-      }
-
-      var colLen = this.columns.length;
-      for (var i = 0; i < colLen; i++ )
-      {
-        if (isGeoDataType(this.columns[i].dataTypeName))
-        {
-          return true;
-        }
-      }
-      return false;
-    },
-
-    //checks if a dataset is a shapefile type dataset (ex 'map' datatype)
     isGeoDataset: function()
     {
         return (this.metadata && this.metadata.geo);
@@ -1577,7 +1524,7 @@ var Dataset = ServerModel.extend({
     },
 
     _isGeoExport: function(ext) {
-        return this.shouldExposeGeoExportLinks() && ext !== 'json' && ext !== 'csv';
+        return this.isGeoDataset() && ext !== 'json' && ext !== 'csv';
     },
 
     downloadUrl: function(type)
@@ -1585,7 +1532,7 @@ var Dataset = ServerModel.extend({
         var ext = type.toLowerCase().split(' ')[0];
 
         if (this._isGeoExport(ext)) {
-            return '/api/geospatial/{0}?method=export&format={1}'.format(this.id, type);
+            return this.metadata.geo.owsUrl + '?method=export&format=' + type;
         }
 
         if (this.newBackend && blist.feature_flags.enable_export_service) {

@@ -45,6 +45,7 @@ module.exports = function ( karma ) {
       'public/javascripts/plugins/lodash.js',
       'bower_components/sinon-browser-only/sinon.js',
       'bower_components/react/react-with-addons.js',
+      'bower_components/react/react-dom.js',
 
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
@@ -71,6 +72,7 @@ module.exports = function ( karma ) {
       // 'public/javascripts/controls/grid-sidebar.js',
       // 'public/javascripts/screens/dataset-show.js',
       'public/javascripts/dist/components/utils.js',
+      'public/javascripts/dist/components/socrata-title-tip-wrapper.js',
       'public/javascripts/dist/components/loading-button.js',
       'public/javascripts/dist/components/*.js',
       'public/javascripts/dist/components/georegions/*.js',

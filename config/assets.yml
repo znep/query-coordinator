@@ -256,9 +256,11 @@ javascripts:
   shared-blob:
     - public/javascripts/controls/blob-dataset.js
   react-dev:
-    - public/javascripts/react-with-addons.js
+    - public/javascripts/react.js
+    - public/javascripts/react-dom.js
   react-prod:
-    - public/javascripts/react-with-addons.min.js
+    - public/javascripts/react.min.js
+    - public/javascripts/react-dom.min.js
   browse-select-dataset:
     - public/javascripts/screens/browse-select-dataset.js
   browse-select-georegion:
@@ -286,7 +288,7 @@ javascripts:
   admin-georegions:
     - public/javascripts/dist/components/utils.js
     - public/javascripts/dist/components/flash-message.js
-    - public/javascripts/dist/components/socrata-title-tip-mixin.js
+    - public/javascripts/dist/components/socrata-title-tip-wrapper.js
     - public/javascripts/dist/components/loading-button.js
     - public/javascripts/dist/components/form-button.js
     - public/javascripts/dist/components/form-controls.js

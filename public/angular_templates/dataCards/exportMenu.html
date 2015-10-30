@@ -1,9 +1,9 @@
-<div class="tool-panel" ng-class="{'down-right': dataLensVersion >= 2}">
+<div class="tool-panel down-right">
   <button
     type="button"
     title="{{::'common.export' | I18n}}"
     class="tool-panel-toggle-btn action-btn l-to-r"
-    ng-class="{active: panelActive, disabled: editMode, 'l-to-r': (dataLensVersion >= 2), 'r-to-l': (dataLensVersion === 1)}"
+    ng-class="{active: panelActive, disabled: editMode}"
     ng-click="panelActive = editMode ? false : !panelActive"
     ng-show="!allowChooserModeCancel">
     {{::'common.export' | I18n}}

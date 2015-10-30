@@ -364,7 +364,12 @@
 
             result_odn_query_param = { :q => [ result.name, result_categories.join(' '), result_topics ].reject(&:empty?).join(' ') }.to_param
             result_odn_link = "http://www.opendatanetwork.com/search?#{result_odn_query_param}"
-            result_api_link = "http://dev.socrata.com/foundry/#/#{CurrentDomain.cname}/#{result.id}"
+
+            if ['unpublished', 'snapshotted', 'blist', 'table', 'fatrow', 'page'].include?(result.display.type)
+              result_api_link = "http://dev.socrata.com/foundry/#/#{CurrentDomain.cname}/#{result.id}"
+            else
+              result_api_link = nil
+            end
 
             # Assume we will not show the edit controls unless we can verify that we should.
             result_edit_controls = false
@@ -381,7 +386,12 @@
             if result.federated?
               result_classes << ' federated'
               result_federated_origin_url = "//#{result.domainCName}"
-              result_api_link = "http://dev.socrata.com/foundry/#/#{result.domainCName}/#{result.id}"
+
+              if ['unpublished', 'snapshotted', 'blist', 'table', 'fatrow', 'page'].include?(result.display.type)
+                result_api_link = "http://dev.socrata.com/foundry/#/#{result.domainCName}/#{result.id}"
+              else
+                result_api_link = nil
+              end
             end
           -%>
           <%=
@@ -445,7 +455,7 @@
             if (opts[:footer_config].nil? || opts[:footer_config].counter) &&
               !opts[:disable][:counter]
           -%>
-            <%= render :partial => 'datasets/browse2_counter', :locals => { :opts => opts } %>
+            <%= render :partial => 'datasets/browse2_counter', :locals => { :opts => opts, :using_cetera => using_cetera } %>
           <%-
             end
           end

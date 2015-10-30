@@ -4,8 +4,11 @@
 #
 # Description should also explain the expected values. This is messaging for client services.
 # Possible values should not have spaces.
-# expectedValues are delimited by space.
+# `expectedValues` are delimited by space.
 #   Because I don't like YAML arrays, and it enforces simple values.
+# `category` is a UI convenience. it is the full string.
+# `disableTrueFalse` indicates that true/false are invalid values.
+#   If `expectedValues` is undefined, this setting is ignored.
 #
 # This is truth. Anything not in this list gets ignored.
 #
@@ -37,6 +40,7 @@ current_page_metadata_version:
 data_lens_transition_state:
   description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
   defaultValue: post_beta
+  disableTrueFalse: true
   expectedValues: pre_beta beta post_beta
 dataset_count_v2:
   description: Display the new metric was created that computes dataset count based more closely on our contractual definition of dataset.
@@ -51,16 +55,11 @@ debug_data_lens:
   description: expose useful debugging information (data source, etc) for data lens pages
   defaultValue: false
   category: data lens
-default_imports_to_nbe:
-  description: When performing import operations, such as via the wizard or append/replace, the endpoint will be NBE by default rather than needing a migration. Set to `delta-importer` for using that instead.
-  defaultValue: false
-  expectedValues: delta-importer
-  category: obe deprecation
 disable_dataset_search_box:
   description: Disable the search box in dataset pages.
   defaultValue: false
 enable_ingress_geometry_types:
-  description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when "default_imports_to_nbe" is not false.'
+  description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false
   category: obe deprecation
 disable_legacy_types:
@@ -96,7 +95,7 @@ enable_export_service:
   defaultValue: false
   category: obe deprecation
 enable_spatial_lens_admin:
-  description: Allow visibility of spatial lens admin panel
+  description: Allow visibility of spatial lens admin panel at /admin/geo.
   defaultValue: false
   category: spatial-lens
 enable_feedback:
@@ -130,7 +129,7 @@ force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false
 geo_imports_to_nbe_enabled:
-  description: Show Append/Replace pane on nbe geo datasets.
+  description: Show Append/Replace pane on nbe geo datasets. This setting will be ignored if `ingress_strategy` is set to `obe`.
   defaultValue: true
 govstat_missing_locale_crash:
   description: Crash (500) when a translation is missing.
@@ -149,6 +148,12 @@ hide_interpolated_nulls:
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false
+ingress_strategy:
+  description: When performing import operations, such as via the wizard or append/replace, this determines the endpoint to use. If `obe`, it will use the existing endpoint. If `nbe`, it will be set `nbe=true` on relevant calls. If `delta-importer`, it will use the Delta Importer Javascript port.
+  defaultValue: obe
+  disableTrueFalse: true
+  expectedValues: obe nbe delta-importer
+  category: obe deprecation
 kill_esri_reprojection_and_pass_different_webm:
   description: 'Special magic for Iowa, whose ArcGIS server appears to hate EPSG:900913 and projected maps'
   defaultValue: false
@@ -157,7 +162,7 @@ nbe_bucket_size:
   defaultValue: false
 odux_enable_feature_map_hover:
   description: Enable hover functionality in point maps.
-  defaultValue: false
+  defaultValue: true
   category: data lens
 odux_enable_histogram:
   description: Enable histogram visualizations.
@@ -200,7 +205,5 @@ use_ephemeral_bootstrap:
 useSoda2:
   description: Switch to using SODA2.
   defaultValue: never
+  disableTrueFalse: never
   expectedValues: never read-only always
-use_soql_for_clustering:
-  description: Use the (currently unwritten) core method soql_clustering for clustering.
-  defaultValue: false

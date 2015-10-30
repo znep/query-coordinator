@@ -5,6 +5,7 @@ describe('<remove-all-cards> directive', function() {
   var $rootScope;
 
   beforeEach(module('/angular_templates/dataCards/removeAllCards.html'));
+  beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
   beforeEach(module('dataCards.services'));
   beforeEach(module('dataCards.filters'));

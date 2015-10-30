@@ -51,7 +51,7 @@ describe('ConfigureBoundaryForm', function() {
 
   it('has a title', function() {
     var node = this.renderIntoDocument();
-    var title = findByTag(node, 'h2').getDOMNode();
+    var title = findByTag(node, 'h2');
     expect(title).to.have.textContent('my title');
   });
 
@@ -67,7 +67,7 @@ describe('ConfigureBoundaryForm', function() {
     var node = this.renderIntoDocument({
       fetchInitialState: _.noop
     });
-    var spinner = findByClass(node, 'georegion-spinner').getDOMNode();
+    var spinner = findByClass(node, 'georegion-spinner');
     expect(spinner.style.display).to.eq('block');
   });
 
@@ -76,7 +76,7 @@ describe('ConfigureBoundaryForm', function() {
     var node = this.renderIntoDocument({
       fetchInitialState: fetchStub
     });
-    var spinner = findByClass(node, 'georegion-spinner').getDOMNode();
+    var spinner = findByClass(node, 'georegion-spinner');
     expect(spinner.style.display).to.eq('block');
     fetchStub.firstCall.args[0]();
     expect(spinner.style.display).to.eq('none');
@@ -92,7 +92,7 @@ describe('ConfigureBoundaryForm', function() {
       }
     });
 
-    var form = findByTag(node, 'form').getDOMNode();
+    var form = findByTag(node, 'form');
     TestUtils.Simulate.submit(form);
     expect(saveStub).to.have.been.calledOnce;
   });

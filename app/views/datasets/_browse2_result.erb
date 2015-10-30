@@ -43,13 +43,14 @@
           <div class="browse2-result-description">
             <div data-search="highlight"><%= result_description %></div>
           </div>
-          <div class="browse2-result-truncation-toggle-control">
-            <span class="browse2-result-truncation-toggle-show-more-label">
-              <span class="browse2-result-truncation-toggle-show-more-icon icon-arrow-down"></span>
+          <div class="browse2-result-description-truncation-toggle-control">
+            <div class="browse2-result-description-truncation-hint"></div>
+            <span class="browse2-result-description-show-more-label">
+              <span class="browse2-result-description-show-more-icon icon-arrow-down"></span>
               <%= t('controls.browse.browse2.description.show_more_label') %>
             </span>
-            <span class="browse2-result-truncation-toggle-show-less-label">
-              <span class="browse2-result-truncation-toggle-show-more-icon icon-arrow-up"></span>
+            <span class="browse2-result-description-show-less-label">
+              <span class="browse2-result-description-show-more-icon icon-arrow-up"></span>
               <%= t('controls.browse.browse2.description.show_less_label') %>
             </span>
           </div>
@@ -137,9 +138,11 @@
         </a>
       </div>
       <div class="browse2-result-explore">
-        <a class="browse2-result-api-link" href="<%= result_api_link %>" title="<%= t('controls.browse.browse2.api.link.title') %>">
-          <%= t('controls.browse.browse2.api.link.label') %>
-        </a>
+        <%- if result_api_link.present? -%>
+          <a class="browse2-result-api-link" href="<%= result_api_link %>" title="<%= t('controls.browse.browse2.api.link.title') %>">
+            <%= t('controls.browse.browse2.api.link.label') %>
+          </a>
+        <%- end -%>
       </div>
     </div>
   </div>

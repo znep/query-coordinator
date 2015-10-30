@@ -43,7 +43,7 @@ describe('EnabledWidget', function() {
     });
 
     it('says "Yes"', function() {
-      var actual = findByClass(this.node, 'enabled-widget-label').getDOMNode().textContent;
+      var actual = findByClass(this.node, 'enabled-widget-label').textContent;
       expect(actual).to.eq('Translation for: screens.admin.georegions.enabled_yes');
     });
 
@@ -55,7 +55,7 @@ describe('EnabledWidget', function() {
     });
 
     it('says "No" when disabled', function() {
-      var actual = findByClass(this.node, 'enabled-widget-label').getDOMNode().textContent;
+      var actual = findByClass(this.node, 'enabled-widget-label').textContent;
       expect(actual).to.eq('Translation for: screens.admin.georegions.enabled_no');
     });
 

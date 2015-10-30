@@ -60,7 +60,7 @@ var t = function(str, props) {
       baseUrlPath
     };
 
-    React.render(
+    ReactDOM.render(
       <GeoregionAdminTable
         onEdit={showConfigureModal}
         onEnableSuccess={onEnableSuccess}
@@ -76,14 +76,14 @@ var t = function(str, props) {
       available_count: String(availableCount)
     });
 
-    React.render(
+    ReactDOM.render(
       <span>{pageSubtitle}</span>,
       $('#georegions-page-subtitle').get(0)
     );
   }
 
   function renderFlashMessage(messages) {
-    React.render(
+    ReactDOM.render(
       <FlashMessage messages={messages} />,
       $('#flash-container').get(0)
     );
@@ -143,7 +143,7 @@ var t = function(str, props) {
       });
     };
 
-    React.render(
+    ReactDOM.render(
       <ConfigureBoundaryForm
         fetchInitialState={fetchInitialState}
         id={id}
@@ -159,7 +159,7 @@ var t = function(str, props) {
 
   function closeConfigureModal() {
     let $reactModal = $('#react-modal');
-    React.unmountComponentAtNode($reactModal.get(0));
+    ReactDOM.unmountComponentAtNode($reactModal.get(0));
     $reactModal.jqmHide();
   }
 
@@ -212,7 +212,7 @@ var t = function(str, props) {
       $('#selectDataset').jqmShow();
     };
 
-    React.render(
+    ReactDOM.render(
       <ConfigureBoundaryForm
         allowPrimaryKeySelection={true}
         cancelLabel={$.t('core.dialogs.back')}

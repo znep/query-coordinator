@@ -1,9 +1,25 @@
 <div class="browse2-result-count">
-  <%=
-    t(
-      'controls.browse.browse2.results.count',
-      :this => opts[:view_results].length,
-      :total => opts[:view_count]
-    )
-  %>
+  <%- if using_cetera -%>
+    <%-
+      total = opts[:view_count]
+      startIndex = opts[:limit] * (opts[:page] - 1) + 1
+      endIndex = [startIndex + opts[:limit] - 1, total].min
+    -%>
+    <%=
+      t(
+        'controls.browse.browse2.results.cetera_count',
+        :start => startIndex,
+        :end => endIndex,
+        :total => total
+      )
+    %>
+  <%- else -%>
+    <%=
+      t(
+        'controls.browse.browse2.results.count',
+        :this => opts[:view_results].length,
+        :total => opts[:view_count]
+      )
+    %>
+  <%- end -%>
 </div>

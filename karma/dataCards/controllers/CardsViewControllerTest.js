@@ -52,7 +52,6 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
   beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
   beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/manageLensDialogV2.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/mobileWarningDialog.html'));
@@ -70,7 +69,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationInvalid.html'));
   beforeEach(module('/angular_templates/dataCards/featureMap.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
-  beforeEach(module('/angular_templates/dataCards/table.html'));
+  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
   beforeEach(module('/angular_templates/dataCards/customizeBar.html'));
@@ -184,11 +183,9 @@ describe('CardsViewController', function() {
   function makeController(datasetOverrides, pageOverrides) {
     var context = makeContext(datasetOverrides, pageOverrides);
     var controller = $controller('CardsViewController', context);
-    context.$scope.dataLensVersion = 1;
     testHelpers.mockDirective(_$provide, 'modalDialog');
     testHelpers.mockDirective(_$provide, 'addCardDialog');
     testHelpers.mockDirective(_$provide, 'manageLensDialog');
-    testHelpers.mockDirective(_$provide, 'manageLensDialogV2');
     testHelpers.mockDirective(_$provide, 'mobileWarningDialog');
     context.$scope.$apply();
     expect(context.$scope.page).to.be.instanceof(Page);
@@ -708,116 +705,40 @@ describe('CardsViewController', function() {
     });
   });
 
-  describe('manage lens dialog initialization', function() {
+  describe('manage lens dialog', function() {
 
-    function mockUser(hasEditOthersDatasetsRight) {
+    function mockUser(rights) {
       return {
-        rights: hasEditOthersDatasetsRight ? ['edit_others_datasets'] : []
+        rights: rights
       };
     }
 
-    describe("when the dataLensTransitionState feature flag is set to 'pre_beta'", function() {
-
-      beforeEach(function() {
-        ServerConfig.override('dataLensTransitionState', 'pre_beta');
-      });
-
-      it('should not occur if no user is logged in', function() {
-        window.currentUser = null;
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        expect($scope.manageLensState).to.equal(undefined);
-        expect($scope.shouldShowManageLens).to.equal(false);
-      });
-
-      it("should not occur if the current user does not have the 'edit_others_datasets' right", function() {
-        window.currentUser = mockUser(false);
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        expect($scope.manageLensState).to.equal(undefined);
-        expect($scope.shouldShowManageLens).to.equal(false);
-      });
-
-      it("should not occur if the current user has the 'edit_others_datasets' right", function() {
-        window.currentUser = mockUser(true);
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        expect($scope.manageLensState).to.equal(undefined);
-        expect($scope.shouldShowManageLens).to.equal(false);
-      });
+    it('should be initialized', function() {
+      var harness = makeController();
+      expect(harness.$scope.manageLensState).to.not.be.undefined;
     });
 
-    describe("when the dataLensTransitionState feature flag is set to 'beta'", function() {
-
-      beforeEach(function() {
-        ServerConfig.override('dataLensTransitionState', 'beta');
+    it('should hide the manage lens button when the user lacks any sufficient permissions', function() {
+      var harness = makeController({}, {
+        rights: ['add', 'write', 'delete']
       });
-
-      it('should not occur if no user is logged in', function() {
-        window.currentUser = null;
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        expect($scope.manageLensState).to.equal(undefined);
-        expect($scope.shouldShowManageLens).to.equal(false);
-      });
-
-      it("should not occur if the current user does not have the 'edit_others_datasets' right", function() {
-        window.currentUser = mockUser(false);
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        expect($scope.manageLensState).to.equal(undefined);
-        expect($scope.shouldShowManageLens).to.equal(false);
-      });
-
-      it("should not occur if the current user has the 'edit_others_datasets' right", function() {
-        window.currentUser = mockUser(true);
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        expect($scope.manageLensState).to.equal(undefined);
-        expect($scope.shouldShowManageLens).to.equal(false);
-      });
+      expect(harness.$scope.shouldShowManageLens).to.be.false;
     });
 
-    describe("when the dataLensTransitionState feature flag is set to 'post_beta'", function() {
-
-      beforeEach(function() {
-        ServerConfig.override('dataLensTransitionState', 'post_beta');
+    it('should show the manage lens button when the user has the grant permission', function() {
+      var harness = makeController({}, {
+        rights: ['add', 'write', 'grant']
       });
-
-      it('should not occur if no user is logged in', function() {
-        window.currentUser = null;
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        expect($scope.manageLensState).to.equal(undefined);
-        expect($scope.shouldShowManageLens).to.equal(false);
-      });
-
-      it("should not occur if the current user does not have the 'edit_others_datasets' right", function() {
-        window.currentUser = mockUser(false);
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        expect($scope.manageLensState).to.equal(undefined);
-        expect($scope.shouldShowManageLens).to.equal(false);
-      });
-
-      it("should occur if the current user has the 'edit_others_datasets' right", function() {
-        window.currentUser = mockUser(true);
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        expect($scope.manageLensState.hasOwnProperty('show')).to.equal(true);
-        expect($scope.manageLensState.show).to.equal(false);
-        expect($scope.shouldShowManageLens).to.equal(true);
-      });
+      expect(harness.$scope.shouldShowManageLens).to.be.true;
     });
+
+    it('should show the manage lens button when the user has the update_view permission', function() {
+      var harness = makeController({}, {
+        rights: ['add', 'write', 'update_view']
+      });
+      expect(harness.$scope.shouldShowManageLens).to.be.true;
+    });
+
   });
 
   describe('user save rights', function() {
@@ -1166,16 +1087,21 @@ describe('CardsViewController', function() {
     var NEW_PAGE_DESCRIPTION = 'my new page description';
     var NEW_PAGE_MODERATION_STATUS = undefined;
     var NEW_PAGE_PROVENANCE = 'OFFICIAL';
+    var saveStub;
 
     beforeEach(function() {
       controllerHarness = makeController();
       $scope = controllerHarness.$scope;
+      saveStub = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+        { data: { pageId: TEST_PAGE_ID } }
+      )));
+    });
+
+    afterEach(function() {
+      PageDataService.save.restore();
     });
 
     it('should call save on PageDataService with no id and updated data', function(done) {
-      var saveStub = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
-        { data: { pageId: TEST_PAGE_ID } }
-      )));
       var saveEvents = $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION, NEW_PAGE_MODERATION_STATUS, NEW_PAGE_PROVENANCE);
 
       saveEvents.subscribe(function(event) {

@@ -279,7 +279,7 @@
 
     function showFlyout(event) {
       var datum = d3.select(event.currentTarget).datum();
-      var barGroupName = _escapeQuotesAndBackslashes(datum[NAME_INDEX]);
+      var barGroupName = _toEscapedString(datum[NAME_INDEX]);
       var barGroupElement = _chartWrapper.
         find('.bar-group').
         filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
@@ -574,7 +574,7 @@
           classed('label', true).
           classed('non-default', isOnlyInSelected).
           attr('data-bar-name', function(d) {
-            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
+            return _toEscapedString(_labelValueOrPlaceholder(d[NAME_INDEX]));
           });
 
         // For new labels, add a contents div containing a span for the filter icon,
@@ -795,7 +795,7 @@
         // Update the position of the groups.
         selection.
           attr('data-bar-name', function(d) {
-            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
+            return _toEscapedString(_labelValueOrPlaceholder(d[NAME_INDEX]));
           }).
           style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
           style('width', rangeBand + 'px').
@@ -852,19 +852,11 @@
       });
     }
 
-    function _escapeQuotesAndBackslashes(value) {
-
-      if (_.isString(value)) {
-
-        return value.
-          replace(/\\/g, '\\\\').
-          replace(/"/g, '\\\"');
-
-      } else {
-
-        return String(value);
-
-      }
+    // To string and escape backslashes and quotes
+    function _toEscapedString(value) {
+      return String(value).
+        replace(/\\/g, '\\\\').
+        replace(/"/g, '\\\"');
     }
 
     function _labelValueOrPlaceholder(value, placeholder) {

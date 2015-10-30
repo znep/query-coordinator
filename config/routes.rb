@@ -35,13 +35,6 @@ Frontend::Application.routes do
       get '/manage/:id/delete',         :action => 'manage', :admin_section => 'delete'
     end
 
-    scope :path => '/intercessio', :controller => 'intercessio' do
-      get '/request/*path', :action => 'request_async'
-      get '/request/*path.*ext', :action => 'request_async'
-      get '/receive/:token', :action => 'request_receive'
-      get '/status/:token', :action => 'request_status'
-    end
-
     # New frontend pages
     scope :controller => 'odysseus', :action => 'index' do
       match '/stat', :as => 'govstat_root'

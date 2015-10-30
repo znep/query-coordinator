@@ -42,7 +42,7 @@ describe('FormInput', function() {
 
   it('has a label', function() {
     var node = this.renderIntoDocument();
-    var label = findAllByTag(node, 'label')[0].getDOMNode();
+    var label = findAllByTag(node, 'label')[0];
     expect(label).to.have.textContent('my input');
   });
 
@@ -51,13 +51,13 @@ describe('FormInput', function() {
       showValidationError: true,
       validationError: 'error message'
     });
-    var label = findAllByTag(node, 'label')[1].getDOMNode();
+    var label = findAllByTag(node, 'label')[1];
     expect(label).to.have.textContent('error message');
   });
 
   it('has a description', function() {
     var node = this.renderIntoDocument();
-    var option = findByTag(node, 'p').getDOMNode();
+    var option = findByTag(node, 'p');
     expect(option).to.have.textContent('my description');
   });
 
@@ -65,7 +65,7 @@ describe('FormInput', function() {
     var node = this.renderIntoDocument({
       required: true
     });
-    var label = findAllByTag(node, 'label')[0].getDOMNode();
+    var label = findAllByTag(node, 'label')[0];
     expect(label).to.have.className('required');
   });
 

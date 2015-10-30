@@ -11,7 +11,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
   end
 
-  def test_create_creates_a_new_data_lens_whose_href_points_to_its_own_4x4_and_is_published
+  def test_create_creates_a_new_data_lens
     connection_stub = mock
     created = false
     connection_stub.expects(:create_request).times(1).with do |url, payload|
@@ -20,25 +20,19 @@ class NewViewManagerTest < Test::Unit::TestCase
         payload = JSON.parse(payload).with_indifferent_access
         assert_equal('my title', payload[:name])
         assert_equal('my description', payload[:description])
-        assert_equal('', payload[:metadata][:accessPoints][:new_view])
         # Should not have the dataPublicRead flag - ie should default to private
-        assert_equal(nil, payload[:flags])
+        assert_equal(['default'], payload[:flags])
       end
-    end.returns('{"id": "niew-veww"}')
+    end.returns(v2_page_metadata.to_json)
     connection_stub.expects(:update_request).times(1).with do |url, payload|
-      assert_equal('/views/niew-veww.json', url)
+      assert_equal('/views/mjcb-9cxc.json', url)
       payload = JSON.parse(payload).with_indifferent_access
-      assert_equal('opendata_url', payload[:metadata][:accessPoints][:new_view])
-    end.returns('{}')
+    end.returns(v2_page_metadata.to_json)
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    expectant_stub = mock.tap { |stub| stub.expects(:publish) }
-    View.expects(:find).with('niew-veww').returns(expectant_stub)
-    Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
-
-    result = new_view_manager.create(:name =>'my title', :description=>'my description')
-    assert_equal('niew-veww', result)
+    result = new_view_manager.create(category = nil, {:name =>'my title', :description=>'my description'})
+    assert_equal('mjcb-9cxc', result)
     assert(created)
   end
 
@@ -52,16 +46,12 @@ class NewViewManagerTest < Test::Unit::TestCase
         created = true
         assert_equal(given_category, JSON.parse(payload)['category'])
       end
-    end.returns('{"id": "niew-veww"}')
+    end.returns(v2_page_metadata.to_json)
 
-    connection_stub.expects(:update_request).returns('{}')
+    connection_stub.expects(:update_request).returns(v2_page_metadata.to_json)
     CoreServer::Base.stubs(connection: connection_stub)
 
-    expectant_stub = mock.tap { |stub| stub.expects(:publish) }
-    View.expects(:find).with('niew-veww').returns(expectant_stub)
-    Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
-
-    result = new_view_manager.create({:name =>'my title', :description=>'my description'}, given_category)
+    result = new_view_manager.create(given_category, {:name =>'my title', :description=>'my description'})
     assert(created)
   end
 
@@ -73,50 +63,13 @@ class NewViewManagerTest < Test::Unit::TestCase
         created = true
         assert_nil(JSON.parse(payload)['category'])
       end
-    end.returns('{"id": "niew-veww"}')
+    end.returns(v2_page_metadata.to_json)
 
-    connection_stub.expects(:update_request).returns('{}')
+    connection_stub.expects(:update_request).returns(v2_page_metadata.to_json)
     CoreServer::Base.stubs(connection: connection_stub)
 
-    expectant_stub = mock.tap { |stub| stub.expects(:publish) }
-    View.expects(:find).with('niew-veww').returns(expectant_stub)
-    Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
-
-    result = new_view_manager.create(:name =>'my title', :description=>'my description')
+    result = new_view_manager.create(category = nil, {:name =>'my title', :description=>'my description'})
     assert(created)
-  end
-
-  def test_create_does_not_raise_on_resource_not_found
-    new_view_manager.stubs(
-      :create_v1_data_lens_in_phidippides => { :id => '1234-1234' },
-      :update_page_url => nil
-    )
-    Rails.application.routes.url_helpers.stubs(:opendata_cards_view_url => 'url')
-
-    View.expects(:find).raises(CoreServer::ResourceNotFound.new(nil))
-    assert_nothing_raised do
-      new_view_manager.create(:name =>'my title', :description=>'my description')
-    end
-  end
-
-  def test_create_does_not_raise_on_core_error
-    new_view_manager.stubs(
-      :create_v1_data_lens_in_phidippides => { :id => '1234-1234' },
-      :update_page_url => nil
-    )
-    Rails.application.routes.url_helpers.stubs(:opendata_cards_view_url => 'url')
-
-    View.expects(:find).raises(CoreServer::Error)
-    assert_nothing_raised do
-      new_view_manager.create(:name =>'my title', :description=>'my description')
-    end
-  end
-
-  def test_create_raises_when_view_not_created
-    new_view_manager.stubs(:create_v1_data_lens_in_phidippides => nil)
-    assert_raises(NewViewManager::NewViewNotCreatedError) do
-      new_view_manager.create(:name =>'my title', :description=>'my description')
-    end
   end
 
   def test_create_v2_data_lens
@@ -144,11 +97,10 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    result = new_view_manager.create({:name=>'my title', :description=>'my description'}, nil, true)
+    result = new_view_manager.create(category = nil, {:name=>'my title', :description=>'my description'})
     assert_equal('mjcb-9cxc', result)
     assert(created)
   end
-
 
   def test_update
     connection_stub = mock
@@ -282,6 +234,10 @@ class NewViewManagerTest < Test::Unit::TestCase
     assert_nothing_raised do
       new_view_manager.delete('asdf-asdf')
     end
+  end
+
+  def v2_page_metadata
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v2-page-metadata.json")).with_indifferent_access
   end
 
 end

@@ -8,6 +8,7 @@
 
 <div class="contentBox withLeftNavigation featureFlags">
   <%= render :partial => 'production_warning' %>
+  <%= display_standard_flashes %>
   <%- @flags.each do |flag, flag_config| %>
   <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +
     '/domains/' + @domain.cname + '/set_feature_flags') do %>
@@ -24,6 +25,7 @@
             <input type="submit" value="Update" />
         </div>
     </div>
+    <%= hidden_field_tag 'category', params[:category] if params[:category].present? %>
     <%- end %>
   <%- end %>
 </div>
@@ -41,8 +43,11 @@
             $('.valueBox').each(function()
             {
                 var $this = $(this);
-                if (!$this.find('.other').is(':checked'))
-                { $this.find('input:text, select').prop('disabled', true); }
+                var otherNotSelected = $this.find('.other').not(':checked');
+                var otherPresent = $this.find('.other').exists();
+                if (otherNotSelected && otherPresent) {
+                  $this.find('input:text, select').prop('disabled', true);
+                }
             });
         });
     });

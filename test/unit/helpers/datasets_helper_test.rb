@@ -27,7 +27,7 @@ class DatasetsHelperTest < Test::Unit::TestCase
     @view.stubs( :is_unpublished? => true, :new_backend? => true )
     assert @object.hide_append_replace?, 'Should be true when new_backend? is true'
     @view.stubs( :is_unpublished? => true, :new_backend? => false )
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(:default_imports_to_nbe => true))
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:ingress_strategy => 'nbe'))
     refute @object.hide_append_replace?, 'Should be false when Feature Flag is set'
   end
 
@@ -152,18 +152,35 @@ class DatasetsHelperTest < Test::Unit::TestCase
     assert @object.hide_update_column?, 'hide_update_column expected to be true'
   end
 
-  def test_hide_map_create
-    @view.stubs(:new_backend? => false)
-    refute @object.hide_map_create?, 'hide_map_create expected to be false'
-    @view.stubs(:new_backend? => true)
-    assert @object.hide_map_create?, 'hide_map_create expected to be true'
+  def test_hide_data_lens_create
+    # no current user
+    @object.stubs(:current_user => nil)
+    assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be true'
 
-    @view.stubs(:new_backend? => true, :is_geo? => true)
-    refute @object.hide_map_create?, 'hide_map_create expected to be false'
+    # existing current_user
+    @object.stubs(:current_user => User.new)
 
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(:use_soql_for_clustering => true))
-    @view.stubs(:new_backend? => true)
-    refute @object.hide_map_create?, 'hide_map_create expected to be false'
+    # create_v2_data_lens feature flag is false
+    FeatureFlags.stub :derive, Hashie::Mash.new(:create_v2_data_lens => false) do
+      # current_user is an admin or publisher
+      @object.current_user.stubs(:rights => [:edit_others_datasets])
+      assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be false'
+
+      # current_user is not an admin or publisher
+      @object.current_user.stubs(:rights => [])
+      assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be true'
+    end
+
+    # create_v2_data_lens feature flag is true
+    FeatureFlags.stub :derive, Hashie::Mash.new(:create_v2_data_lens => true) do
+      # current_user has rights
+      @object.current_user.stubs(:rights => [:some_right])
+      refute @object.hide_data_lens_create?, 'hide_data_lens_create expected to be false'
+
+      # current_user has no rights
+      @object.current_user.stubs(:rights => [])
+      assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be true'
+    end
   end
 
   def test_enable_xls_download_type

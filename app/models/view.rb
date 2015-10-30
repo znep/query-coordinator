@@ -79,6 +79,12 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.get_request(path)).with_indifferent_access
   end
 
+  # This method addresses the fact that NBE geospatial datasets no longer have an OBE component, so this
+  # method answers the question of whether or not an NBE dataset is geospatial.
+  def is_geospatial?
+    viewType == 'geo' && displayType == 'map' && new_backend?
+  end
+
   def nbe_view
     @nbe_view ||= begin
       if newBackend?

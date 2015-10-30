@@ -148,6 +148,45 @@
     return this.distinctUntilChanged().filter(_.negateValue);
   };
 
+  Rx.Observable.prototype.incrementalFallbackRetry = function(tries, onRetryStart) {
+    return this.retryWhen(function(errors) {
+      if (_.isFunction(onRetryStart)) {
+        onRetryStart();
+      }
+      return Rx.Observable.range(1, tries).
+        zip(errors, function(i) { return i; }).
+        flatMap(function(i) { return Rx.Observable.timer(i * 5000); });
+    });
+  };
+
+  function makeSafeApplyTap(tapType) {
+    return function($scope, fn) {
+      fn = _.isFunction(fn) ? fn : _.noop;
+
+      return this[tapType](function(data) {
+        ($scope.$$phase || $scope.$root.$$phase) ?
+          fn(data) :
+          $scope.$apply(function() { fn(data); });
+      });
+    };
+  }
+
+  Rx.Observable.prototype.safeApplyOnError = makeSafeApplyTap('tapOnError');
+  Rx.Observable.prototype.safeApplyOnCompleted = makeSafeApplyTap('tapOnCompleted');
+  Rx.Observable.prototype.safeApplyFinally = makeSafeApplyTap('finally');
+
+  Rx.Observable.prototype.safeApplySubscribe = function($scope, onNext, onError, onCompleted) {
+    onNext = _.isFunction(onNext) ? onNext : _.noop;
+    onError = _.isFunction(onError) ? onError : _.noop;
+    onCompleted = _.isFunction(onCompleted) ? onCompleted : _.noop;
+
+    return this.
+      safeApply($scope, onNext).
+      safeApplyOnError($scope, onError).
+      safeApplyOnCompleted($scope, onCompleted).
+      subscribe();
+  };
+
   // Returns a single-element sequence containing the first sequence to produce an element.
   // Similar to Rx.Observable.amb, but it creates a sequence of sequences instead of a sequence
   // of values.

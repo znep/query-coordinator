@@ -712,7 +712,7 @@ var Dataset = ServerModel.extend({
                 (ds.columnForIdentifier(displayFormat.plot.locationId) || {}).renderTypeName)))
         { errorCallback(); return; }
 
-        if (ds._useSODA2 && blist.feature_flags.use_soql_for_clustering)
+        if (ds._useSODA2)
         {
             ds._getClustersViaSODA2.apply(ds, arguments);
             return;
@@ -3439,23 +3439,28 @@ var Dataset = ServerModel.extend({
     {
         var ds = this;
         var coreViewsPromise = this._loadRelatedCoreViews(justCount);
-        var v1dataLensPromise = this._getV1RelatedDataLenses(justCount);
-        var v2DataLensPromise = this._getV2RelatedDataLenses(justCount);
+        // CORE-7303: We are hiding all lenses from More Views for now.
+        // var dataLensPromise = this._getRelatedDataLenses(justCount);
+        var dataLensPromise = $.Deferred().resolve();
 
-        $.whenever(coreViewsPromise, v1dataLensPromise, v2DataLensPromise).done(function(coreResult, v1dataLensResult, v2DataLensResult) {
+        $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
+            // CORE-7303: We are hiding all lenses from More Views for now.
+            var coreViews = coreResult ? coreResult[0] : [];
+            coreViews = _.reject(coreViews, function(view) {
+                return /^data_lens/.test(view.displayType);
+            });
+
             if (justCount) {
                 // Subtract one for dataset
                 ds._relViewCount = (
-                    (coreResult ? Math.max(0, coreResult[0] - 1) : 0) +
-                    (v1dataLensResult ? v1dataLensResult[0].length : 0) +
-                    (v2DataLensResult ? Math.max(0, v2DataLensResult.length - 1) : 0)
+                    Math.max(0, coreViews.length - 1) +
+                    (dataLensResult ? Math.max(0, dataLensResult.length - 1) : 0)
                 );
                 if (_.isFunction(callback)) { callback(ds._relViewCount); }
             } else {
                 ds._relatedViews = ds._processRelatedViews(
-                    (coreResult ? coreResult[0] : []).
-                        concat(v1dataLensResult ? v1dataLensResult[0] : []).
-                        concat(v2DataLensResult ? v2DataLensResult : [])
+                    coreViews.
+                        concat(dataLensResult ? dataLensResult : [])
                 );
                 if (_.isFunction(callback)) { callback(); }
             }
@@ -3500,56 +3505,7 @@ var Dataset = ServerModel.extend({
         });
     },
 
-    // TODO: Remove this once everything is v2+
-    // (this will quietly 404 for new datasets until then)
-    _getV1RelatedDataLenses: function(justCount) {
-        var ds = this;
-        var deferred = $.Deferred();
-        var reject = function() {
-            deferred.reject();
-        };
-
-        // First, we need the NBE id, so we can query what data lenses are on it.
-        this.getNewBackendId().done(function(nbeId) {
-            if (!nbeId) { return deferred.resolve([]); }
-
-            // Next, get the pages for that id from the NBE / phidippides.
-            ds.makeRequestWithPromise({
-                url: '/metadata/v1/dataset/{0}/pages'.format(nbeId),
-                pageCache: true,
-                type: 'GET',
-            }).then(function(result) {
-                // Fail fast if the server doesn't return what we expect it to.
-                if (!(_.isObject(result) &&
-                      _.isArray(result.publisher) &&
-                      _.isArray(result.user))) {
-                    return reject('Unexpected format from server', result);
-                }
-                var pages = result.publisher.concat(result.user);
-                if (!pages.length) { return deferred.resolve([]); }
-
-                // The pages are not in the format that we want (they don't have the owner metadata,
-                // for instance). So - grab the OBE representations of those pages.
-                ds.makeRequestWithPromise({
-                    url: '/views.json',
-                    pageCache: true,
-                    type: 'GET',
-                    data: {
-                        method: 'getByIds',
-                        ids: _.pluck(pages, 'pageId').join(',')
-                    }
-                }).then(function() {
-                    deferred.resolveWith(this, arguments);
-
-                }).fail(reject);
-
-            }).fail(reject);
-        }).fail(reject);
-
-        return deferred.promise();
-    },
-
-    _getV2RelatedDataLenses: function(justCount) {
+    _getRelatedDataLenses: function(justCount) {
         var ds = this;
 
         return this.

@@ -334,8 +334,15 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
+    flash[:error] = errors unless errors.empty?
+    flash[:notice] = infos unless infos.empty?
+
     respond_to do |format|
-      format.html { redirect_to "/internal/orgs/#{@domain.organizationId}/domains/#{params[:domain_id]}/feature_flags" }
+      format.html do
+        redirect_url = "/internal/orgs/#{@domain.organizationId}/domains/#{params[:domain_id]}/feature_flags"
+        redirect_url << "/#{params[:category]}" if params[:category].present?
+        redirect_to redirect_url
+      end
       format.data { render :json => { :success => errors.empty?, :errors => errors, :infos => infos } }
     end
   end

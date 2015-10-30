@@ -45,7 +45,7 @@ describe('FormControls', function() {
     });
 
     it('renders with the appropriate text', function() {
-      var button = findByTag(this.node, 'button').getDOMNode();
+      var button = findByTag(this.node, 'button');
       expect(button).to.have.className('button').
         and.to.have.textContent('Translation for: core.dialogs.cancel');
     });
@@ -62,14 +62,14 @@ describe('FormControls', function() {
     });
 
     it('renders with the appropriate text', function() {
-      var button = findByTag(this.node, 'button').getDOMNode();
+      var button = findByTag(this.node, 'button');
       expect(button).to.have.className('button').
         and.to.have.textContent('Translation for: core.dialogs.save').
         and.to.not.have.className('disabled');
     });
 
     it('should not be disabled', function() {
-      var button = findByTag(this.node, 'button').getDOMNode();
+      var button = findByTag(this.node, 'button');
       expect(button.attributes.disabled).to.not.exist;
     });
 
@@ -79,7 +79,7 @@ describe('FormControls', function() {
           onSave: _.noop,
           saveDisabled: true
         });
-        this.button = findByTag(node, 'button').getDOMNode();
+        this.button = findByTag(node, 'button');
       });
 
       it('renders with disabled attribute', function() {

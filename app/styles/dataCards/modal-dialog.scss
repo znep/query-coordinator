@@ -19,7 +19,9 @@ $modal-z-start: 9999;
     box-sizing: border-box;
     width: 70rem;
     max-width: 80%;
+    max-height: 90%;
     min-height: 150px;
+    overflow-y: auto;
     top: 50%;
     left: 50%;
     @include prefixer("transform", "translate(-50%, -50%)");
@@ -96,8 +98,7 @@ modal-dialog.second {
 // Instances of the modal dialog
 add-card-dialog,
 customize-card-dialog,
-manage-lens-dialog,
-manage-lens-dialog-v2 {
+manage-lens-dialog {
   .controls {
     clear: both;
     margin-top: 1.5rem;
@@ -223,8 +224,13 @@ customize-card-dialog {
 }
 
 // Manage lens dialog
-manage-lens-dialog,
-manage-lens-dialog-v2 {
+.manage-lens-dialogs {
+  .modal-dialog {
+    max-width: 45rem;
+  }
+}
+
+manage-lens-dialog {
   section {
     label {
       display: inline-block;
@@ -341,57 +347,66 @@ manage-lens-dialog-v2 {
   .controls {
     margin-top: 0;
   }
+}
 
-  new-share-dialog {
-    section {
-      margin-bottom: 1rem;
+new-share-dialog {
+  section {
+    margin-bottom: 1rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    .new-share {
+      margin-bottom: .75rem;
       &:last-child {
         margin-bottom: 0;
       }
-      .new-share {
-        margin-bottom: .75rem;
+      label {
+        display: inline-block;
+        line-height: 29px;
+        margin-right: 0.5rem;
+      }
+      >div {
+        margin-right: 0.5rem;
         &:last-child {
-          margin-bottom: 0;
-        }
-        >div {
-          margin-right: 0.5rem;
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-        input.email {
-          box-sizing: border-box;
-          display: inline-block;
-          position: relative;
-          margin-top: 1px;
-          padding: 0.5rem 0.6rem;
-          width: 12rem;
-          outline: none;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          appearance: none;
+          margin-right: 0;
         }
       }
-      textarea.optional-message {
-        overflow: auto;
-        height: 5rem;
-        padding: 0.5rem;
+      input.email {
         box-sizing: border-box;
-        resize: none;
+        display: inline-block;
+        position: relative;
+        margin-top: 1px;
+        padding: 0.5rem 0.6rem;
+        width: 12rem;
         outline: none;
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
       }
-      .done-button, .remove-button {
-        float: right;
+      soc-select select {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
       }
-      .done-button {
-        font-size: 1rem;
-      }
-      .add-more-button, .remove-button {
-        font-size: .75rem;
-      }
+    }
+    textarea.optional-message {
+      overflow: auto;
+      height: 5rem;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      resize: none;
+      outline: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    .done-button, .remove-button {
+      float: right;
+    }
+    .done-button {
+      font-size: 1rem;
+    }
+    .add-more-button, .remove-button {
+      font-size: .75rem;
     }
   }
 }

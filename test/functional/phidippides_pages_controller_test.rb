@@ -38,7 +38,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   def set_up_json_request(body = nil)
-    body = v1_page_metadata.to_json unless body.present?
+    body = data_lens_page_metadata.to_json unless body.present?
 
     @request.env['RAW_POST_DATA'] = body
     @request.env['CONTENT_TYPE'] = 'application/json'
@@ -47,14 +47,14 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   test 'show returns data for a given page' do
     @controller.stubs(can_create_metadata?: true)
     @page_metadata_manager.stubs(
-      show: v1_page_metadata.merge(core_permissions_public)
+      show: data_lens_page_metadata.merge(core_permissions_public)
     )
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
     result = JSON.parse(@response.body)
-    assert_equal(%w(
-      cards datasetId description name pageId primaryAggregation primaryAmountField version largestTimeSpanDays defaultDateTruncFunction permissions
-    ).sort, result.keys.sort)
+    assert((%w(
+      cards datasetId description name pageId version defaultDateTruncFunction permissions
+    ) - result.keys).empty?)
   end
 
   test 'show returns 401 if the Core view requires authn' do
@@ -139,8 +139,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   private
 
-  def v1_page_metadata
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json"))
+  def data_lens_page_metadata
+    outer_metadata = JSON.parse(File.read("#{Rails.root}/test/fixtures/v2-page-metadata.json"))
+    outer_metadata['displayFormat']['data_lens_page_metadata']
   end
 
   def core_permissions_public

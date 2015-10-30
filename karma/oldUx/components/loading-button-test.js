@@ -23,10 +23,9 @@ describe('LoadingButton', function() {
     expect(this.createElement()).to.be.a.reactElement;
   });
 
-  it('renders', function() {
-    this.shallowRenderer.render(this.createElement());
-    var result = this.shallowRenderer.getRenderOutput();
-    expect(result).to.be.an.elementOfType('button');
+  it('renders as a button', function() {
+    var node = this.renderIntoDocument();
+    expect(ReactDOM.findDOMNode(node).tagName.toLowerCase()).to.eq('button');
   });
 
   describe('when isLoading=true', function() {
@@ -36,7 +35,7 @@ describe('LoadingButton', function() {
     });
 
     it('shows the spinner', function() {
-      var spinner = findByClass(this.node, 'loading').getDOMNode();
+      var spinner = findByClass(this.node, 'loading');
       var spinnerStyle = spinner.style;
       expect(spinnerStyle.display).to.eq('block');
     });
@@ -46,7 +45,7 @@ describe('LoadingButton', function() {
   describe('disabled', function() {
     beforeEach(function() {
       this.node = this.renderIntoDocument({ disabled: true });
-      this.button = findByTag(this.node, 'button').getDOMNode();
+      this.button = findByTag(this.node, 'button');
     });
 
     it('has the disabled class', function() {

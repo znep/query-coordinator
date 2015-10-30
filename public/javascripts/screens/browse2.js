@@ -264,6 +264,17 @@ $(function() {
     }
   }
 
+  function toggleBrowse2FacetTruncation(event) {
+    var sectionContainer = $(this).parent('.browse2-facet-section');
+    var currentDisplay = sectionContainer.attr('data-facet-truncation');
+
+    if (currentDisplay === 'show') {
+      sectionContainer.attr('data-facet-truncation', 'truncate');
+    } else {
+      sectionContainer.attr('data-facet-truncation', 'show');
+    }
+  }
+
   function toggleBrowse2DescriptionTruncation(event) {
     var sectionContainer = $(this).parent('.browse2-result-description-container');
     var currentDisplay = sectionContainer.attr('data-description-display');
@@ -570,9 +581,11 @@ $(function() {
 
   $('.browse2-create-asset-button').on('click', toggleBrowse2CreateAssetDisplay);
   $('.browse2-facet-section-title').on('click', toggleBrowse2FacetDisplay);
-  $('.browse2-result-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
+  $('.browse2-facet-section-expand-button, .browse2-facet-section-contract-button').on('click', toggleBrowse2FacetTruncation);
+  $('.browse2-result-description-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
   $('.browse2-result-description').each(function(index, element) {
-    var truncationThreshold = 68;
+    // 3x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
+    var truncationThreshold = 82;
     var descriptionHeight = 0;
 
     $(element).
@@ -587,7 +600,6 @@ $(function() {
         attr('data-description-display', 'truncate');
     }
   });
-
   $('.browse2-result-make-public-button').on('click', makeResultPublic);
   $('.browse2-result-make-private-button').on('click', makeResultPrivate);
   $('.browse2-result-delete-button').on('click', deleteResult);

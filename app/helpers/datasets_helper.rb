@@ -322,7 +322,7 @@ module DatasetsHelper
     [
       [ view.new_backend?,
         !view.is_geo?,
-        !FeatureFlags.derive(@view, request).default_imports_to_nbe
+        FeatureFlags.derive(@view, request).ingress_strategy == 'obe'
       ].all?,
       [ view.new_backend?,
         view.is_geo?,
@@ -405,19 +405,26 @@ module DatasetsHelper
     view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('chart')
   end
 
+  def hide_data_lens_create?
+    # (Replicating the logic from canUpdateMetadata in dataset-show.js)
+    # Always hide if current_user doesn't exist (spooooky)
+    return true unless current_user
+
+    if !FeatureFlags.derive(view, request).create_v2_data_lens
+      # for v1 data lenses, hide unless current_user is admin or publisher
+      !CurrentDomain.user_can?(current_user, :edit_others_datasets)
+    else
+      # otherwise hide if current_user doesn't have any rights
+      # (i.e. doesn't have a domain role)
+      current_user.rights.empty?
+    end
+  end
+
   def hide_map_create?
     [ view.is_unpublished?,
       view.is_alt_view? && !view.available_display_types.include?('map'),
-      view.is_grouped?,
-      hide_nbe_map_create?
+      view.is_grouped?
     ].any?
-  end
-
-  def hide_nbe_map_create?
-    [ view.new_backend?, # OBE is fine.
-      !view.is_geo?, # NBE geo works now.
-      !FeatureFlags.derive(view, request).use_soql_for_clustering
-    ].all?
   end
 
   def hide_cell_feed?
@@ -523,6 +530,7 @@ module DatasetsHelper
 
     hash.visualize!.calendarCreate = hide_calendar_create?
     hash.visualize!.chartCreate = hide_chart_create?
+    hash.visualize!.dataLensCreate = hide_data_lens_create?
     hash.visualize!.mapCreate = hide_map_create?
 
     hash.embed!.formCreate = hide_form_create?

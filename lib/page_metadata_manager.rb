@@ -1,4 +1,4 @@
-# Wrapper around page metadata - metadata stored in both Phidippides and Metadb.
+# Wrapper around page metadata.
 class PageMetadataManager
 
   include CommonMetadataMethods
@@ -66,48 +66,32 @@ class PageMetadataManager
       result = nil
     end
 
-    if is_backed_by_metadb?(result)
-      case result[:displayType]
-        when 'data_lens_chart', 'data_lens_map' # standalone visualizations
-          # VIFs stored in DB in JSON.dump'd form because core removes keys with null values otherwise
-          vif = JSON.parse(result[:displayFormat][:visualization_interchange_format_v1]).with_indifferent_access
-          page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(vif, id, permissions)
-        when 'data_lens'
-          page_metadata = result[:displayFormat][:data_lens_page_metadata].with_indifferent_access
-        else
-          raise "data lens #{id} is backed by metadb but is not of display type data_lens_chart, data_lens_map, or data_lens"
-      end
-      page_metadata = ensure_page_metadata_properties(page_metadata)
-
-      # Don't migrate page metadata if we're looking at a standalone visualization
-      # ('data_lens_chart' or 'data_lens_map' display type)
-      if result[:displayType] == 'data_lens'
-        old_version = page_metadata[:version]
-        page_metadata = migrated_page_metadata(page_metadata)
-      end
-      page_metadata[:permissions] = permissions.stringify_keys!
-      page_metadata[:moderationStatus] = result[:moderationStatus]
-      page_metadata[:shares] = View.new(result).shares
-      page_metadata[:rights] = result[:rights]
-      page_metadata[:displayType] = result[:displayType]
-      page_metadata[:provenance] = result[:provenance]
-      page_metadata[:ownerId] = result[:owner][:id]
-
-      page_metadata
-    else
-      phiddy_result = phidippides.fetch_page_metadata(id, options).with_indifferent_access
-
-      if phiddy_result[:status] !~ /^2[0-9][0-9]$/
-        return { body: { body: 'Not found' }, status: '404' }
-      end
-
-      page_metadata = phiddy_result[:body] || {}
-      page_metadata[:permissions] = permissions.stringify_keys!
-      page_metadata[:moderationStatus] = result[:moderationStatus]
-      page_metadata[:displayType] = result[:displayType]
-
-      page_metadata
+    case result[:displayType]
+      when 'data_lens_chart', 'data_lens_map' # standalone visualizations
+        # VIFs stored in DB in JSON.dump'd form because core removes keys with null values otherwise
+        vif = JSON.parse(result[:displayFormat][:visualization_interchange_format_v1]).with_indifferent_access
+        page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(vif, id, permissions)
+      when 'data_lens'
+        page_metadata = result[:displayFormat][:data_lens_page_metadata].with_indifferent_access
+      else
+        raise "data lens #{id} is backed by metadb but is not of display type data_lens_chart, data_lens_map, or data_lens"
     end
+    page_metadata = ensure_page_metadata_properties(page_metadata)
+
+    # Don't migrate page metadata if we're looking at a standalone visualization
+    # ('data_lens_chart' or 'data_lens_map' display type)
+    if result[:displayType] == 'data_lens'
+      page_metadata = migrated_page_metadata(page_metadata, options)
+    end
+    page_metadata[:permissions] = permissions.stringify_keys!
+    page_metadata[:moderationStatus] = result[:moderationStatus]
+    page_metadata[:shares] = View.new(result).shares
+    page_metadata[:rights] = result[:rights]
+    page_metadata[:displayType] = result[:displayType]
+    page_metadata[:provenance] = result[:provenance]
+    page_metadata[:ownerId] = result[:owner][:id]
+
+    page_metadata
 
   end
 
@@ -127,8 +111,6 @@ class PageMetadataManager
 
     update_metadata_date_trunc(page_metadata, options)
 
-    v2_data_lens = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:create_v2_data_lens]
-
     # Make sure that there is a table card
     has_table_card = page_metadata['cards'].any? do |card|
       card['fieldName'] == '*' || card['cardType'] == 'table'
@@ -138,27 +120,17 @@ class PageMetadataManager
 
     # The core lens id for this page is the same one we use to refer to it in phidippides
     new_page_id = new_view_manager.create(
-      page_metadata,
       dataset_category(page_metadata['datasetId']),
-      v2_data_lens
+      page_metadata
     )
 
-    # For V2 Data Lenses, adding the pageId is handled at the tail end of
-    # new_view_manager.persist_v2_data_lens_to_metadb
     page_metadata['pageId'] = new_page_id
 
-    if v2_data_lens
-      update_metadata_rollup_table(page_metadata, options)
-      result = { :body => page_metadata, :status => 200 }
-    else
-      result = update_phidippides_page_metadata(page_metadata, options)
-    end
+    update_metadata_rollup_table(page_metadata, options)
 
-    if result[:status].to_s == '200'
-      request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
-    end
+    request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
 
-    result
+    { :body => page_metadata, :status => 200 }
   end
 
   # Updates an existing page - if the page is using metadb for its metadata, update metadb.
@@ -177,14 +149,10 @@ class PageMetadataManager
       metadb_metadata = nil
     end
 
-    if is_backed_by_metadb?(metadb_metadata)
-      metadb_metadata['provenance'] = page_metadata['provenance']
-      strip_page_metadata_properties!(page_metadata)
-    end
+    metadb_metadata['provenance'] = page_metadata['provenance']
+    strip_page_metadata_properties!(page_metadata)
 
     # Update the name and description of the lens in metadb.
-    # For v1 data lenses, this is a lens with display_type of "new_view"
-    # For v2 data lenses, this is a lens with display_type of "data_lens"
     # Note that this *only* affects the lenses name and description, *not*
     # the page_metadata in displayFormat.
     new_view_manager.update(page_metadata['pageId'],
@@ -192,12 +160,7 @@ class PageMetadataManager
       :description => page_metadata['description']
     )
 
-    if is_backed_by_metadb?(metadb_metadata)
-      update_metadb_page_metadata(page_metadata, metadb_metadata)
-    else
-      # TODO: verify that phidippides does auth checks for this
-      update_phidippides_page_metadata(page_metadata, options)
-    end
+    update_metadb_page_metadata(page_metadata, metadb_metadata)
   end
 
   def delete(id, options = {})
@@ -216,7 +179,10 @@ class PageMetadataManager
       }, status: '500' }
     end
 
-    # Delete the core pointer to the page
+    # Delete the core pointer to the page.
+    # Don't delete metadata from metadb; since the entry in the lenses table
+    # is already marked as soft-deleted (deleted_at), we can ignore the metadata
+    # rather than deleting it.
     begin
       View.delete(id)
     rescue CoreServer::ResourceNotFound => error
@@ -232,38 +198,7 @@ class PageMetadataManager
       }, status: '500' }
     end
 
-    # Check if metadata is stored in metadb or phiddy. If phiddy, we need to actually delete
-    # the phidippides metadata.
-    # In either case, we need to pluck the dataset id so that we can remove the rollup tables
-    # from soda fountain.
-    if is_backed_by_metadb?(metadb_metadata)
-      dataset_id = metadb_metadata['displayFormat']['data_lens_page_metadata']['datasetId']
-      # Don't delete metadb-backed metadata from metadb. Since the entry in the lenses table
-      # is already marked as soft-deleted (deleted_at), we can ignore the metadb entry rather
-      # than deleting it.
-      response = { body: '', status: '200' }
-    else
-      # Delete the actual page
-      # Need to get the page_metadata in order to get the dataset_id
-      page_metadata = phidippides.fetch_page_metadata(id, options)
-      if page_metadata[:status] !~ /^2[0-9][0-9]$/
-        return { body: { body: 'Not found' }, status: '404' }
-      end
-      dataset_id = page_metadata.fetch(:body, {}).fetch(:datasetId)
-      begin
-        phidippides_response = phidippides.delete_page_metadata(id, options)
-      rescue Phidippides::ConnectionError => error
-        report_error('Phidippides connection error on delete', error)
-        return { body: {
-          body: "Phidippides connection error on delete (#{error.error_code}): #{error.error_message}"
-        }, status: '500' }
-      end
-      if phidippides_response.fetch(:status) !~ /^2[0-9][0-9]$/
-        report_error("Error deleting page #{id} in phidippides: #{phidippides_response.inspect}")
-        return phidippides_response
-      end
-      response = phidippides_response
-    end
+    dataset_id = metadb_metadata['displayFormat']['data_lens_page_metadata']['datasetId']
 
     # Delete any rollups created for the page
     response = soda_fountain.delete_rollup_table(
@@ -274,7 +209,7 @@ class PageMetadataManager
       report_error("Error deleting rollup table for page #{id}: #{response.inspect}")
     end
 
-    response
+    { body: '', status: '200' }
   end
 
   def build_rollup_soql(page_metadata, columns, cards, options = {})
@@ -312,9 +247,10 @@ class PageMetadataManager
 
   # Phidippides call for the dataset metadata - needed to fetch columns for both
   # metadb and phidippides backed page metadata.
-  def fetch_dataset_columns(dataset_id, options = {})
+  def fetch_dataset_columns(dataset_id, options)
     dataset_metadata_result = dataset_metadata(dataset_id, options)
     if dataset_metadata_result.fetch(:status) != '200'
+      Rails.logger.error("#{self.class}##{__method__} - result: #{dataset_metadata_result}")
       raise Phidippides::NoDatasetMetadataException.new(
         "could not fetch dataset metadata for id: #{dataset_id}"
       )
@@ -322,7 +258,7 @@ class PageMetadataManager
     dataset_metadata_result.fetch(:body).fetch('columns')
   end
 
-  def migrated_page_metadata(page_metadata)
+  def migrated_page_metadata(page_metadata, options)
     page_metadata = HashWithIndifferentAccess.new(page_metadata)
     return page_metadata unless enable_data_lens_page_metadata_migrations?
 
@@ -337,7 +273,7 @@ class PageMetadataManager
       migration = migrations[version]
 
       begin
-        page_metadata = migration.call(page_metadata)
+        page_metadata = migration.call(page_metadata, options)
       rescue DataLensMigrations::DataLensMigrationException => exception
         Airbrake.notify(exception)
         Rails.logger.error(exception)
@@ -357,18 +293,6 @@ class PageMetadataManager
   end
 
   private
-
-  # Examine the given metadata and determine whether it has the hallmarks which
-  # indicate that the complete page metadata is stored in in metadb.
-  # If this method returns false, we assume that phiddy holds the page metadata.
-  def is_backed_by_metadb?(metadb_page_metadata)
-    return false if metadb_page_metadata.nil?
-
-    display_type = metadb_page_metadata[:displayType]
-    # future work may check other properties and &&-together
-
-    %w(data_lens data_lens_chart data_lens_map).include?(display_type)
-  end
 
   # When page metadata is returned from metadb, null-valued properties may be
   # stripped out. We should ensure that properties are present by supplying nil

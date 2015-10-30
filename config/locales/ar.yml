@@ -92,7 +92,7 @@ ar:
         matching_rows: البحث عن البيانات المطابقة للصفوف
         more_link: أكثر
         no_matching_rows: لا توجد صفوف متطابقة
-        title_html: 'يظهر <span class="rowResultCountText"></span> من <span class="totalResultCountText"></span> المطابقة للصفوف <a href="#" class="rowSearchLink">(إعرض النتائج)</a>:'
+        title_html: 'جارى عرض الأرقام من <span class="rowResultCountText"></span> الى <span class="totalResultCountText"></span> فى الصفوف المطابقة <a href="#" class="rowSearchLink">(إعرض النتائج)</a>:'
       search: بحث
       sort_period_title: الترتيب بناءاّ على الفترة
       sort_periods:
@@ -112,8 +112,8 @@ ar:
       title:
         default: إبحث وتصفح عر ض مجموعة البيانات 
         result:
-          facet: "%{facet_type} من %{facet_value}"
-          facet_main: التصفح %{body}
+          facet: "ل%{facet_type} %{facet_value}"
+          facet_main: مطابقة %{body}
           main: النتائج %{body}
           term: ل "%{term}"
     common:
@@ -125,11 +125,18 @@ ar:
           facebook: فيسبوك
   core:
     analytics:
-      visit: مشهد
-      visits: عدد المشاهدات
+      visit: زيارة
+      visits: عدد الزيارات
   screens:
     header:
       links:
         account_html: سلام <span class="currentUser"></span>
         account_tooltip: بيت
         administration: إدارة
+  support:
+    array:
+      last_word_connector: " و "
+      two_words_connector: " و "
+    array_or:
+      last_word_connector: " او "
+      two_words_connector: " او "

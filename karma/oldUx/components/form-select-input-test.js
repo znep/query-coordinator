@@ -55,7 +55,7 @@ describe('FormSelectInput', function() {
     var node = this.renderIntoDocument({
       initialOption: 'Choose something'
     });
-    var option = findByTag(node, 'option').getDOMNode();
+    var option = findByTag(node, 'option');
     expect(option).to.have.textContent('Choose something');
   });
 
@@ -68,7 +68,7 @@ describe('FormSelectInput', function() {
     });
     var options = findAllByTag(node, 'option');
     expect(options).to.have.length(2);
-    var option1 = options[0].getDOMNode();
+    var option1 = options[0];
     expect(option1).to.have.textContent('one');
     expect(option1.value).to.eq('uno');
   });
@@ -82,7 +82,7 @@ describe('FormSelectInput', function() {
       ]
     });
     var options = findAllByTag(node, 'option');
-    var option2 = options[1].getDOMNode();
+    var option2 = options[1];
     expect(option2).to.have.textContent('two');
     expect(option2.value).to.eq('dos');
     expect(option2.selected).to.eq(true);

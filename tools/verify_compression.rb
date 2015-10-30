@@ -67,6 +67,7 @@ end
 module MockCompressor
   class RuntimeError < StandardError; end
 
+  # Changed to return size of compressed file.
   def self.compress(command, stream_or_string)
     streamify(stream_or_string) do |stream|
       @tempfile = Tempfile.new('yui_compress')
@@ -77,10 +78,14 @@ module MockCompressor
       begin
         # XXX: Modified from original copy-paste to use PTY starting here.
         require 'pty'
+        data_length = 0
         output = PTY.spawn full_command do |r, w, pid|
           begin
             r.sync
-            r.each_line { |line| (@errors ||= []) << line }
+            r.each_line do |line|
+              (@stdout ||= []) << line
+              data_length += line.length
+            end
           rescue Errno::EIO => e
             # simply ignoring this
           ensure
@@ -92,11 +97,11 @@ module MockCompressor
         # windows shells tend to blow up here when the command fails
         raise RuntimeError, "compression failed: %s" % e.message
       ensure
-        @tempfile.close! unless @errors.length > 0
       end
 
       if $?.exitstatus.zero?
-        output
+        @tempfile.close!
+        data_length
       else
         # Bourne shells tend to blow up here when the command fails, usually
         # because java is missing
@@ -114,8 +119,8 @@ module MockCompressor
     end
   end
 
-  def self.errors
-    @errors
+  def self.stdout
+    @stdout
   end
 
   def self.tempfile
@@ -155,7 +160,7 @@ packages.each do |package, libraries|
 
   begin
     compressor = YUI::JavaScriptCompressor.new(munge: true) # Use the original to get the command.
-    data_length = MockCompressor.compress(compressor.command, buffer).length
+    data_length = MockCompressor.compress(compressor.command, buffer)
     puts "Compression of #{package}.js worked fine.".color(:green) + " [#{number_to_human_size(data_length)}]"
   rescue MockCompressor::RuntimeError => e
     troubleshooting_file = File.join(TMP_DIR, "#{package}.js")
@@ -168,8 +173,7 @@ packages.each do |package, libraries|
 
       File.open(troubleshooting_file, 'w') { |f| lines.each { |l| f.puts l }}
 
-      raise 'whee'
-      MockCompressor.errors.each do |error_line|
+      MockCompressor.stdout.each do |error_line|
         next unless error_line =~ /^\s*(\d+):(\d+):(.*)/
         lineno, charno, message = $1.to_i, $2.to_i, $3
         next if message.include? 'Compilation produced'
@@ -184,7 +188,7 @@ packages.each do |package, libraries|
       puts 'Whoops. Something exploded in the error parsing. Dumping original STDERR output without parsing it'.color(:cyan)
       puts e.message
       puts
-      MockCompressor.errors.each { |line| $stderr.puts line }
+      MockCompressor.stdout.each { |line| $stderr.puts line }
 
       raise
     ensure

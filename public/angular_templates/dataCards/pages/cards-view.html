@@ -3,228 +3,110 @@
   <page-header ng-show="pageHeaderEnabled"></page-header>
   <!-- METADATA BAR -->
   <div class="cards-metadata" ng-class="{'page-header-enabled': pageHeaderEnabled}">
-    <!-- TODO - Remove this entire ng-if div once we are migrated to V2 -->
-    <div ng-if="dataLensVersion === 1">
-      <div class="row">
-        <div class="span6 padded-wrapper">
-          <div class="left-pane span12">
-            <div ng-hide="nonEphemeralEditMode">
-              <header ng-hide="isEphemeral"
-                      multiline-ellipsis
-                      max-lines="2"
-                      tolerance="8"
-                      text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
-                      escape-html="true"
-                      show-more-mode="title-attr">
-              </header>
-              <header ng-show="isEphemeral"
-                      multiline-ellipsis
-                      max-lines="2"
-                      tolerance="8"
-                      text="{{('metadata.pageNamePlaceholder' | I18n)}}"
-                      escape-html="true"
-                      show-more-mode="title-attr">
-              </header>
-            </div>
-            <!-- Text field & decorations for editing page name -->
-            <label class="edit-page-name" ng-if="nonEphemeralEditMode">
-              <div class="icon-warning edit-page-warning"
-                ng-if="writablePage.warnings.name"
-                title="{{ writablePage.warnings.name.join('\n') }}"></div>
-              <textarea
-                msd-elastic
-                disable-newline
-                ng-model="writablePage.name"
-                ng-trim="false">
-                {{writablePage.name}}
-              </textarea>
-              <div class="icon-edit placeholder"><span>({{::'metadata.pageNamePlaceholder' | I18n}})</span></div>
-            </label>
-            <!-- description -->
-            <div ng-hide="nonEphemeralEditMode || isEphemeral"
-                 class="page-description"
-                 expanded="expanded"
-                 multiline-ellipsis
-                 max-lines="3"
-                 tolerance="2"
-                 text="{{pageDescription}}"
-                 show-more-mode="expand-link">
-            </div>
-            <label class="edit-page-description" ng-if="nonEphemeralEditMode">
-              <rich-text-editor
-                buttons="bold italic link"
-                content="writablePage.description"
-                placeholder="{{::'metadata.editDescriptionPrompt' | I18n}}">
-              </rich-text-editor>
-            </label>
+    <div class="row">
+      <div class="span6 padded-wrapper">
+        <div class="left-pane span12">
+          <div ng-hide="nonEphemeralEditMode">
+            <header ng-hide="isEphemeral"
+              multiline-ellipsis
+              max-lines="2"
+              tolerance="8"
+              text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
+              escape-html="true"
+              show-more-mode="title-attr">
+            </header>
+            <header ng-show="isEphemeral"
+              multiline-ellipsis
+              max-lines="2"
+              tolerance="8"
+              text="{{('metadata.pageNamePlaceholder' | I18n)}}"
+              escape-html="true"
+              show-more-mode="title-attr">
+            </header>
           </div>
+          <!-- Text field & decorations for editing page name -->
+          <label class="edit-page-name" ng-if="nonEphemeralEditMode">
+            <div class="icon-warning edit-page-warning"
+              ng-if="writablePage.warnings.name"
+              title="{{ writablePage.warnings.name.join('\n') }}"></div>
+            <textarea
+              msd-elastic
+              disable-newline
+              ng-model="writablePage.name"
+              ng-trim="false">
+              {{writablePage.name}}
+            </textarea>
+            <div class="icon-edit placeholder"><span>({{::'metadata.pageNamePlaceholder' | I18n}})</span></div>
+          </label>
+          <!-- description -->
+          <div ng-hide="nonEphemeralEditMode || isEphemeral"
+            class="page-description"
+            expanded="expanded"
+            multiline-ellipsis
+            max-lines="3"
+            tolerance="2"
+            text="{{pageDescription}}"
+            show-more-mode="expand-link">
+          </div>
+          <label class="edit-page-description" ng-if="nonEphemeralEditMode">
+            <rich-text-editor
+              buttons="bold italic link"
+              content="writablePage.description"
+              placeholder="{{::'metadata.editDescriptionPrompt' | I18n}}">
+            </rich-text-editor>
+          </label>
         </div>
-        <div class="span6 padded-wrapper">
-          <div class="right-pane span12">
-            <div class="metadata">
-              <div class="metadatum-wrapper row">
-                <lens-type></lens-type>
-              </div>
-              <div class="metadatum-wrapper row" ng-show="sourceDatasetURL">
-                <div class="metadatum">
-                  <span class="label">{{::'metadata.sourceDataset' | I18n}}</span>
-                  <span class="value source-dataset-name">
-                    <a href="{{sourceDatasetURL}}" title="{{sourceDatasetName}}" target="_parent">{{sourceDatasetName}}</a>
-                  </span>
-                </div>
-              </div>
-              <div class="metadatum-wrapper row manage-lens-link" ng-if="shouldShowManageLens && pagePermissions && currentUserHasSaveRight">
-                <div class="metadatum">
-                  <span class="label">{{::'common.permissions.permissions' | I18n}}</span>
-                  <span class="value">
-                    <a href=# ng-click="manageLensState.show = true">{{('common.permissions.' + pagePermissions) | I18n}} <small>({{::'common.change' | I18n}})</small><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span></a>
-                  </span>
-                </div>
-                <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">
-                  <manage-lens-dialog dialog-state="manageLensState" page="page"></manage-lens-dialog>
-                </modal-dialog>
-              </div>
-              <div class="metadatum-wrapper row">
-                <related-views ng-show="showOtherViewsButton && currentUserHasSaveRight"></related-views>
+      </div>
+      <div class="span6 padded-wrapper">
+        <div class="right-pane span12">
+          <div class="metadata">
+            <div class="metadatum-wrapper row">
+              <lens-type></lens-type>
+            </div>
+            <div class="metadatum-wrapper row" ng-show="sourceDatasetURL">
+              <div class="metadatum">
+                <span class="label">{{::'metadata.sourceDataset' | I18n}}</span>
+                <span class="value source-dataset-name">
+                  <a href="{{sourceDatasetURL}}" title="{{sourceDatasetName}}" target="_parent">{{sourceDatasetName}}</a>
+                </span>
               </div>
             </div>
-            <div
-              ng-click="onDownloadClick($event)"
-              class="action-btn r-to-l download-menu"
-              ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
-              ng-if="showDownloadButton && !standaloneLensChartEnabled"
-              >{{ (chooserMode.show ? 'common.cancel' : 'common.download') | I18n }}
-              <dropdown-menu ng-if="downloadOpened">
-              <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
-                <a href='#'
-                   ng-class="{'download-menu-item-disabled': hasChanges}"
-                   ng-click="chooserMode.show = !hasChanges"
-                   >
-                  <span ng-class="{'download-menu-item-disabled-text': hasChanges}">
-                    {{::'metadata.visualizationAsImage' | I18n}}
-                  </span>
-                </a>
-              </dropdown-menu>
-            </div>
-            <a ng-if="!showDownloadButton && !standaloneLensChartEnabled"
-               class="action-btn r-to-l"
-               href="{{datasetCSVDownloadURL}}">{{::'common.download' | I18n}}</a>
-            <export-menu ng-if="standaloneLensChartEnabled"></export-menu>
-            <api-explorer></api-explorer>
           </div>
         </div>
       </div>
     </div>
-    <div ng-if="dataLensVersion >= 2">
-      <div class="row">
-        <div class="span6 padded-wrapper">
-          <div class="left-pane span12">
-            <div ng-hide="nonEphemeralEditMode">
-              <header ng-hide="isEphemeral"
-                      multiline-ellipsis
-                      max-lines="2"
-                      tolerance="8"
-                      text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
-                      escape-html="true"
-                      show-more-mode="title-attr">
-              </header>
-              <header ng-show="isEphemeral"
-                      multiline-ellipsis
-                      max-lines="2"
-                      tolerance="8"
-                      text="{{('metadata.pageNamePlaceholder' | I18n)}}"
-                      escape-html="true"
-                      show-more-mode="title-attr">
-              </header>
-            </div>
-            <!-- Text field & decorations for editing page name -->
-            <label class="edit-page-name" ng-if="nonEphemeralEditMode">
-              <div class="icon-warning edit-page-warning"
-                ng-if="writablePage.warnings.name"
-                title="{{ writablePage.warnings.name.join('\n') }}"></div>
-              <textarea
-                msd-elastic
-                disable-newline
-                ng-model="writablePage.name"
-                ng-trim="false">
-                {{writablePage.name}}
-              </textarea>
-              <div class="icon-edit placeholder"><span>({{::'metadata.pageNamePlaceholder' | I18n}})</span></div>
-            </label>
-            <!-- description -->
-            <div ng-hide="nonEphemeralEditMode || isEphemeral"
-                 class="page-description"
-                 expanded="expanded"
-                 multiline-ellipsis
-                 max-lines="3"
-                 tolerance="2"
-                 text="{{pageDescription}}"
-                 show-more-mode="expand-link">
-            </div>
-            <label class="edit-page-description" ng-if="nonEphemeralEditMode">
-              <rich-text-editor
-                buttons="bold italic link"
-                content="writablePage.description"
-                placeholder="{{::'metadata.editDescriptionPrompt' | I18n}}">
-              </rich-text-editor>
-            </label>
-          </div>
+    <div class="row activities">
+      <div class="span12 room-for-activities padded-wrapper">
+        <related-views
+          page="page"
+          dataset-pages="datasetPages"
+          ng-show="showOtherViewsButton && currentUserHasSaveRight">
+        </related-views>
+        <div
+          ng-click="onDownloadClick($event)"
+          class="action-btn l-to-r download-menu"
+          ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
+          ng-if="showDownloadButton && !standaloneLensChartEnabled"
+          >{{ (chooserMode.show ? 'common.cancel' : 'common.download') | I18n }}
+          <dropdown-menu ng-if="downloadOpened">
+            <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
+            <a href='#'
+              ng-class="{'download-menu-item-disabled': hasChanges}"
+              ng-click="chooserMode.show = !hasChanges">
+              <span ng-class="{'download-menu-item-disabled-text': hasChanges}">
+                {{::'metadata.visualizationAsImage' | I18n}}
+              </span>
+            </a>
+          </dropdown-menu>
         </div>
-        <div class="span6 padded-wrapper">
-          <div class="right-pane span12">
-            <div class="metadata">
-              <div class="metadatum-wrapper row">
-                <lens-type></lens-type>
-              </div>
-              <div class="metadatum-wrapper row" ng-show="sourceDatasetURL">
-                <div class="metadatum">
-                  <span class="label">{{::'metadata.sourceDataset' | I18n}}</span>
-                  <span class="value source-dataset-name">
-                    <a href="{{sourceDatasetURL}}" title="{{sourceDatasetName}}" target="_parent">{{sourceDatasetName}}</a>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row activities">
-        <div class="span12 room-for-activities padded-wrapper">
-          <related-views
-            page="page"
-            dataset-pages="datasetPages"
-            ng-show="showOtherViewsButton && currentUserHasSaveRight">
-          </related-views>
-          <div
-            ng-click="onDownloadClick($event)"
-            class="action-btn l-to-r download-menu"
-            ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
-            ng-if="showDownloadButton && !standaloneLensChartEnabled"
-            >{{ (chooserMode.show ? 'common.cancel' : 'common.download') | I18n }}
-            <dropdown-menu ng-if="downloadOpened">
-              <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
-              <a href='#'
-                 ng-class="{'download-menu-item-disabled': hasChanges}"
-                 ng-click="chooserMode.show = !hasChanges"
-                 >
-                <span ng-class="{'download-menu-item-disabled-text': hasChanges}">
-                  {{::'metadata.visualizationAsImage' | I18n}}
-                </span>
-              </a>
-            </dropdown-menu>
-          </div>
-          <a ng-if="!showDownloadButton && !standaloneLensChartEnabled"
-             class="action-btn l-to-r"
-             href="{{datasetCSVDownloadURL}}">{{::'common.download' | I18n}}</a>
-          <export-menu ng-if="standaloneLensChartEnabled"></export-menu>
-          <api-explorer></api-explorer>
-          <div class="manage-section">
-            <div class="action-btn r-to-l manage-button" ng-if="shouldShowManageLens" ng-click="manageLensState.show = true">
-              {{::'manageLensDialog.title' | I18n}}
-            </div>
-            <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">
-              <manage-lens-dialog-v2 ng-controller="ManageLensDialogV2Controller"></manage-lens-dialog-v2>
-            </modal-dialog>
+        <a ng-if="!showDownloadButton && !standaloneLensChartEnabled"
+           class="action-btn l-to-r"
+           href="{{datasetCSVDownloadURL}}">{{::'common.download' | I18n}}</a>
+        <export-menu ng-if="standaloneLensChartEnabled"></export-menu>
+        <api-explorer></api-explorer>
+        <div class="manage-section">
+          <div class="action-btn r-to-l manage-button" ng-if="shouldShowManageLens" ng-click="manageLensState.show = true">
+            {{::'manageLensDialog.title' | I18n}}
           </div>
         </div>
       </div>
@@ -300,6 +182,15 @@
       </single-card-layout>
     </div>
 
+  </div>
+
+  <div class="manage-lens-dialogs" ng-controller="ManageLensDialogController">
+    <modal-dialog ng-if="manageLensState.show" ng-hide="newSharesState.show" dialog-state="manageLensState">
+      <manage-lens-dialog></manage-lens-dialog>
+    </modal-dialog>
+    <modal-dialog ng-if="newSharesState.show" dialog-state="newSharesState">
+      <new-share-dialog dialog-state="newSharesState" save-new-shares="saveNewShares"></new-share-dialog>
+    </modal-dialog>
   </div>
 
   <modal-dialog

@@ -59,10 +59,6 @@ default: &default
   kafka_rest_uri: {{ KAFKA_REST_URI }}
   {%- endif %}
 
-  {% if INTERCESSIO_SERVER is defined -%}
-  intercessio_uri: http://{{ INTERCESSIO_SERVER }}:1313
-  {%- endif %}
-
   {% if STATSD_ENABLED is defined and STATSD_SERVER is defined -%}
   statsd_enabled: {{ STATSD_ENABLED }}
   statsd_server: {{ STATSD_SERVER }}

@@ -115,12 +115,10 @@ javascripts:
     - public/javascripts/component/content/menu.js
     - public/javascripts/component/content/picture.js
     - public/javascripts/component/content/header.js
-    - public/javascripts/component/content/related.js
     - public/javascripts/component/content/text.js
     - public/javascripts/component/content/formatted-text.js
     - public/javascripts/component/content/safe-html.js
     - public/javascripts/component/content/title.js
-    - public/javascripts/component/data/calendar.js
     - public/javascripts/component/data/charts.js
     - public/javascripts/component/data/govstat.js
     - public/javascripts/component/data/map.js
@@ -130,23 +128,16 @@ javascripts:
     - public/javascripts/component/data/table.js
     - public/javascripts/component/data/tabular-export.js
     - public/javascripts/component/data/visualization.js
-    - public/javascripts/component/actions/create-chart.js
-    - public/javascripts/component/actions/create-map.js
     - public/javascripts/component/actions/button.js
     - public/javascripts/component/actions/download.js
-    - public/javascripts/component/actions/embed.js
-    - public/javascripts/component/actions/hide-show.js
     - public/javascripts/component/actions/print.js
-    - public/javascripts/component/actions/rate-vote.js
     - public/javascripts/component/actions/select.js
     - public/javascripts/component/actions/share.js
     - public/javascripts/component/input/dataset-list-filter.js
     - public/javascripts/component/input/geolocator.js
     - public/javascripts/component/input/inline-filter.js
     - public/javascripts/component/input/pager.js
-    - public/javascripts/component/input/popup-filter.js
     - public/javascripts/component/input/search.js
-    - public/javascripts/component/input/slide-filter.js
     - public/javascripts/component/input/sort.js
   configurator:
     - public/javascripts/plugins/awesomemarkup.js
@@ -265,9 +256,11 @@ javascripts:
   shared-blob:
     - public/javascripts/controls/blob-dataset.js
   react-dev:
-    - public/javascripts/react-with-addons.js
+    - public/javascripts/react.js
+    - public/javascripts/react-dom.js
   react-prod:
-    - public/javascripts/react-with-addons.min.js
+    - public/javascripts/react.min.js
+    - public/javascripts/react-dom.min.js
   browse-select-dataset:
     - public/javascripts/screens/browse-select-dataset.js
   browse-select-georegion:
@@ -295,7 +288,7 @@ javascripts:
   admin-georegions:
     - public/javascripts/dist/components/utils.js
     - public/javascripts/dist/components/flash-message.js
-    - public/javascripts/dist/components/socrata-title-tip-mixin.js
+    - public/javascripts/dist/components/socrata-title-tip-wrapper.js
     - public/javascripts/dist/components/loading-button.js
     - public/javascripts/dist/components/form-button.js
     - public/javascripts/dist/components/form-controls.js

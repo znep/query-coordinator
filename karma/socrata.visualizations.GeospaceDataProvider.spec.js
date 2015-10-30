@@ -56,6 +56,33 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
     }
   ]);
 
+  var SAMPLE_GEOJSON_REQUEST_ERROR = JSON.stringify({
+    "message": "query.soql.no-such-column",
+    "errorCode": "query.soql.no-such-column",
+    "data": {
+      "data": {
+        "column": "npoint",
+        "dataset": "alpha.90",
+        "position": {
+          "row": 1,
+          "column": 15,
+          "line": "SELECT extent(`npoint`)\n              ^"
+        }
+      }
+    }
+  });
+
+  var SAMPLE_GEOJSON_COORDINATES = [[[[-87.7051,41.8463],[-87.7054,41.8463]]]];
+
+  var SAMPLE_GEOJSON_REQUEST_RESPONSE = JSON.stringify([
+    {
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": SAMPLE_GEOJSON_COORDINATES
+      }
+    }
+  ]);
+
   var GeospaceDataProvider = window.socrata.visualizations.GeospaceDataProvider;
 
   describe('constructor', function() {
@@ -339,6 +366,211 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
           );
 
         server.respond([SUCCESS_STATUS, {}, SAMPLE_EXTENT_REQUEST_RESPONSE]);
+      });
+    });
+  });
+
+  describe('`.getShapefile()`', function() {
+
+    describe('on request error', function() {
+
+      var server;
+      var geospaceDataProviderOptions = {
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID
+      };
+      var geospaceDataProvider;
+
+      beforeEach(function() {
+
+        server = sinon.fakeServer.create();
+        geospaceDataProvider = new GeospaceDataProvider(geospaceDataProviderOptions);
+
+        // Ensure requesting the geojson endpoint
+        server.respondWith(/geojson/, [ERROR_STATUS, {}, SAMPLE_GEOJSON_REQUEST_ERROR]);
+      });
+
+      afterEach(function() {
+
+        server.restore();
+      });
+
+      it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
+
+        geospaceDataProvider.
+          getShapefile(VALID_COLUMN_NAME).
+          then(
+            function(data) {
+
+              // Fail the test since we expected an error response.
+              assert.isTrue(undefined);
+              done();
+            },
+            function(error) {
+
+              assert.property(error, 'status');
+              assert.property(error, 'message');
+              assert.property(error, 'soqlError');
+              done();
+            }
+          )['catch'](
+            function(e) {
+
+              // Fail the test since we shouldn't be encountering an
+              // exception in any case.
+              console.log(e.message);
+              assert.isFalse(e);
+              done();
+            }
+          );
+
+        server.respond();
+      });
+
+      it('should include the correct request error status', function(done) {
+
+        geospaceDataProvider.
+          getShapefile(VALID_COLUMN_NAME).
+          then(
+            function(data) {
+
+              // Fail the test since we expected an error response.
+              assert.isTrue(undefined);
+              done();
+            },
+            function(error) {
+
+              assert.equal(error.status, ERROR_STATUS);
+              done();
+            }
+          )['catch'](
+            function(e) {
+
+              // Fail the test since we shouldn't be encountering an
+              // exception in any case.
+              console.log(e.message);
+              assert.isFalse(e);
+              done();
+            }
+          );
+
+        server.respond();
+      });
+
+      it('should include the correct request error message', function(done) {
+
+        geospaceDataProvider.
+          getShapefile(VALID_COLUMN_NAME).
+          then(
+            function(data) {
+
+              // Fail the test since we expected an error response.
+              assert.isTrue(undefined);
+              done();
+            },
+            function(error) {
+
+              assert.equal(error.message.toLowerCase(), ERROR_MESSAGE.toLowerCase());
+              done();
+            }
+          )['catch'](
+            function(e) {
+
+              // Fail the test since we shouldn't be encountering an
+              // exception in any case.
+              console.log(e.message);
+              assert.isFalse(e);
+              done();
+            }
+          );
+
+        server.respond();
+      });
+
+      it('should include the correct soqlError object', function(done) {
+
+        geospaceDataProvider.
+          getShapefile(VALID_COLUMN_NAME).
+          then(
+            function(data) {
+
+              // Fail the test since we expected an error response.
+              assert.isTrue(undefined);
+              done();
+            },
+            function(error) {
+
+              assert.deepEqual(error.soqlError, JSON.parse(SAMPLE_GEOJSON_REQUEST_ERROR));
+              done();
+            }
+          )['catch'](
+            function(e) {
+
+              // Fail the test since we shouldn't be encountering an
+              // exception in any case.
+              console.log(e.message);
+              assert.isFalse(e);
+              done();
+            }
+          );
+
+        server.respond();
+      });
+    });
+
+    describe('on request success', function(done) {
+
+      var server;
+      var geospaceDataProviderOptions = {
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID
+      };
+      var geospaceDataProvider;
+
+      beforeEach(function() {
+
+        server = sinon.fakeServer.create();
+        geospaceDataProvider = new GeospaceDataProvider(geospaceDataProviderOptions);
+
+        // Ensure requesting the geojson endpoint
+        server.respondWith(/geojson/,[SUCCESS_STATUS, {}, SAMPLE_GEOJSON_REQUEST_RESPONSE]);
+      });
+
+      afterEach(function() {
+
+        server.restore();
+      });
+
+      it('should return the parsed GeoJson', function(done) {
+
+        geospaceDataProvider.
+          getShapefile(VALID_COLUMN_NAME).
+          then(
+            function(data) {
+
+              assert.equal(data.length, 1);
+              assert.equal(data[0].geometry.type, 'MultiPolygon');
+              assert.deepEqual(data[0].geometry.coordinates, SAMPLE_GEOJSON_COORDINATES);
+              done();
+            },
+            function(error) {
+
+              // Fail the test since we expected a success response.
+              assert.isTrue(undefined);
+              done();
+            }
+          )['catch'](
+            function(e) {
+
+              // Fail the test since we shouldn't be encountering an
+              // exception in any case.
+              console.log(e.message);
+              assert.isFalse(e);
+              done();
+            }
+          );
+
+        server.respond();
       });
     });
   });

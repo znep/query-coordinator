@@ -24,6 +24,8 @@ module.exports = function(config) {
       'bower_components/moment/moment.js',
       'bower_components/socrata-utils/socrata.utils.js',
       'bower_components/vector-tile/dist/vectortile.js',
+      'bower_components/simple-statistics/src/simple_statistics.js',
+      'bower_components/chroma-js/chroma.js',      
       'socrata.visualizations.DataProvider.js',
       'socrata.visualizations.MetadataProvider.js',
       'socrata.visualizations.SoqlDataProvider.js',
@@ -33,6 +35,8 @@ module.exports = function(config) {
       'socrata.visualizations.VectorTileManager.js',
       'socrata.visualizations.Visualization.js',
       'socrata.visualizations.ColumnChart.js',
+      'socrata.visualizations.ChoroplethMapUtils.js',
+      'socrata.visualizations.ChoroplethMap.js',
       'socrata.visualizations.FeatureMap.js',
       'socrata.visualizations.FlyoutRenderer.js',
       'socrata.visualizations.RowInspector.js',
@@ -45,7 +49,9 @@ module.exports = function(config) {
       'components/SocrataColumnChart.js',
       'components/SocrataFeatureMap.js',
       'components/SocrataTimelineChart.js',
+      'components/SocrataChoroplethMap.js',
       'karma/**/*spec.js',
+      'karma/choroplethTestData/*.js',
       'karma/timelineTestData/*.js'
     ],
 

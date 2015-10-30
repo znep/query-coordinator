@@ -343,6 +343,9 @@
 
       if (_editor.hasFormat('ol')) {
         _editor.removeList();
+      } else if (_editor.hasFormat('ul')) {
+        _editor.removeList();
+        _editor.makeOrderedList();
       } else {
         _editor.makeOrderedList();
       }
@@ -352,6 +355,9 @@
 
       if (_editor.hasFormat('ul')) {
         _editor.removeList();
+      } else if (_editor.hasFormat('ol')) {
+        _editor.removeList();
+        _editor.makeUnorderedList();
       } else {
         _editor.makeUnorderedList();
       }

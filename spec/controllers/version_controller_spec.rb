@@ -31,5 +31,9 @@ RSpec.describe VersionController, type: :controller do
     it 'renders delayedJobAge30sCount' do
       expect(result['delayedJobAge30sCount']).to eq(0)
     end
+
+    it 'renders semantic version' do
+      expect(result['version']).to eq(SemVer.find.format('%M.%m.%p'))
+    end
   end
 end

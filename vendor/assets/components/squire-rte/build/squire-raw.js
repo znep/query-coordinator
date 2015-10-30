@@ -698,7 +698,7 @@ var insertNodeInRange = function ( range, node ) {
 
     childCount = children.length;
 
-    if ( startOffset === childCount) {
+    if ( startOffset === childCount ) {
         startContainer.appendChild( node );
     } else {
         startContainer.insertBefore( node, children[ startOffset ] );
@@ -1405,11 +1405,9 @@ var keyHandlers = {
         if ( nodeAfterSplit.nodeType === TEXT_NODE ) {
             nodeAfterSplit = nodeAfterSplit.parentNode;
         }
-        var doc = self._doc,
-            body = self._body;
-        if ( nodeAfterSplit.offsetTop + nodeAfterSplit.offsetHeight >
-                ( doc.documentElement.scrollTop || body.scrollTop ) +
-                body.offsetHeight ) {
+        // 16 ~ one standard line height in px.
+        if ( nodeAfterSplit.getBoundingClientRect().top + 16 >
+                self._doc.documentElement.clientHeight ) {
             nodeAfterSplit.scrollIntoView( false );
         }
     },
@@ -1538,10 +1536,8 @@ var keyHandlers = {
     tab: function ( self, event, range ) {
         var node, parent;
         self._removeZWS();
-        // If no selection and in an empty block
-        if ( range.collapsed &&
-                rangeDoesStartAtBlockBoundary( range ) &&
-                rangeDoesEndAtBlockBoundary( range ) ) {
+        // If no selection and at start of block
+        if ( range.collapsed && rangeDoesStartAtBlockBoundary( range ) ) {
             node = getStartBlockOfRange( range );
             // Iterate through the block's parents
             while ( parent = node.parentNode ) {
@@ -1557,7 +1553,6 @@ var keyHandlers = {
                 }
                 node = parent;
             }
-            event.preventDefault();
         }
     },
     space: function ( self, _, range ) {
@@ -1790,7 +1785,7 @@ var stylesRewriters = {
     }
 };
 
-var allowedBlock = /^(?:A(?:DDRESS|RTICLE|SIDE|UDIO)|BLOCKQUOTE|CAPTION|D(?:[DLT]|IV)|F(?:IGURE|OOTER)|H[1-6]|HEADER|L(?:ABEL|EGEND|I)|O(?:L|UTPUT)|P(?:RE)?|SECTION|T(?:ABLE|BODY|D|FOOT|H|HEAD|R)|UL)$/;
+var allowedBlock = /^(?:A(?:DDRESS|RTICLE|SIDE|UDIO)|BLOCKQUOTE|CAPTION|D(?:[DLT]|IV)|F(?:IGURE|IGCAPTION|OOTER)|H[1-6]|HEADER|L(?:ABEL|EGEND|I)|O(?:L|UTPUT)|P(?:RE)?|SECTION|T(?:ABLE|BODY|D|FOOT|H|HEAD|R)|UL)$/;
 
 var blacklist = /^(?:HEAD|META|STYLE)/;
 
@@ -2174,7 +2169,6 @@ function Squire ( doc, config ) {
 
     this._events = {};
 
-    this._sel = win.getSelection();
     this._lastSelection = null;
 
     // IE loses selection state of iframe on blur, so make sure we
@@ -2460,17 +2454,23 @@ proto.setSelection = function ( range ) {
         if ( isIOS ) {
             this._win.focus();
         }
-        var sel = this._sel;
-        sel.removeAllRanges();
-        sel.addRange( range );
+        var sel = this._getWindowSelection();
+        if ( sel ) {
+            sel.removeAllRanges();
+            sel.addRange( range );
+        }
     }
     return this;
 };
 
+proto._getWindowSelection = function () {
+    return this._win.getSelection() || null;
+};
+
 proto.getSelection = function () {
-    var sel = this._sel,
+    var sel = this._getWindowSelection(),
         selection, startContainer, endContainer;
-    if ( sel.rangeCount ) {
+    if ( sel && sel.rangeCount ) {
         selection  = sel.getRangeAt( 0 ).cloneRange();
         startContainer = selection.startContainer;
         endContainer = selection.endContainer;
@@ -2716,7 +2716,7 @@ proto._keyUpDetectChange = function ( event ) {
     // 3. The key pressed is not in range 33<=x<=45 (navigation keys)
     if ( !event.ctrlKey && !event.metaKey && !event.altKey &&
             ( code < 16 || code > 20 ) &&
-            ( code < 33 || code > 45 ) )  {
+            ( code < 33 || code > 45 ) ) {
         this._docWasChanged();
     }
 };
@@ -2745,7 +2745,7 @@ proto._recordUndoState = function ( range ) {
             undoStack = this._undoStack;
 
         // Truncate stack if longer (i.e. if has been previously undone)
-        if ( undoIndex < this._undoStackLength) {
+        if ( undoIndex < this._undoStackLength ) {
             undoStack.length = this._undoStackLength = undoIndex;
         }
 
@@ -2814,6 +2814,20 @@ proto.hasFormat = function ( tag, attributes, range ) {
         return false;
     }
 
+    // Sanitize range to prevent weird IE artifacts
+    if ( !range.collapsed &&
+            range.startContainer.nodeType === TEXT_NODE &&
+            range.startOffset === range.startContainer.length &&
+            range.startContainer.nextSibling ) {
+        range.setStartBefore( range.startContainer.nextSibling );
+    }
+    if ( !range.collapsed &&
+            range.endContainer.nodeType === TEXT_NODE &&
+            range.endOffset === 0 &&
+            range.endContainer.previousSibling ) {
+        range.setEndAfter( range.endContainer.previousSibling );
+    }
+
     // If the common ancestor is inside the tag we require, we definitely
     // have the format.
     var root = range.commonAncestorContainer,
@@ -2845,6 +2859,38 @@ proto.hasFormat = function ( tag, attributes, range ) {
     return seenNode;
 };
 
+// Extracts the font-family and font-size (if any) of the element
+// holding the cursor. If there's a selection, returns an empty object.
+proto.getFontInfo = function ( range ) {
+    var fontInfo = {
+            family: undefined,
+            size: undefined
+        },
+        element, style;
+
+    if ( !range && !( range = this.getSelection() ) ) {
+        return fontInfo;
+    }
+
+    element = range.commonAncestorContainer;
+    if ( range.collapsed || element.nodeType === TEXT_NODE ) {
+        if ( element.nodeType === TEXT_NODE ) {
+            element = element.parentNode;
+        }
+        while ( !( fontInfo.family && fontInfo.size ) &&
+                element && ( style = element.style ) ) {
+            if ( !fontInfo.family ) {
+                fontInfo.family = style.fontFamily;
+            }
+            if ( !fontInfo.size ) {
+                fontInfo.size = style.fontSize;
+            }
+            element = element.parentNode;
+        }
+    }
+    return fontInfo;
+ };
+
 proto._addFormat = function ( tag, attributes, range ) {
     // If the range is collapsed we simply insert the node by wrapping
     // it round the range and focus it.
@@ -2869,13 +2915,17 @@ proto._addFormat = function ( tag, attributes, range ) {
         // Therefore we wrap this in the tag as well, as this will then cause it
         // to apply when the user types something in the block, which is
         // presumably what was intended.
+        //
+        // IMG tags are included because we may want to create a link around them,
+        // and adding other styles is harmless.
         walker = new TreeWalker(
             range.commonAncestorContainer,
             SHOW_TEXT|SHOW_ELEMENT,
             function ( node ) {
                 return ( node.nodeType === TEXT_NODE ||
-                                                    node.nodeName === 'BR' ) &&
-                    isNodeContainedInRange( range, node, true );
+                        node.nodeName === 'BR' ||
+                        node.nodeName === 'IMG'
+                    ) && isNodeContainedInRange( range, node, true );
             },
             false
         );
@@ -3782,7 +3832,7 @@ function removeFormatting ( self, root, clean ) {
     for ( node = root.firstChild; node; node = next ) {
         next = node.nextSibling;
         if ( isInline( node ) ) {
-            if ( node.nodeType === TEXT_NODE || isLeaf( node ) ) {
+            if ( node.nodeType === TEXT_NODE || node.nodeName === 'BR' || node.nodeName === 'IMG' ) {
                 clean.appendChild( node );
                 continue;
             }

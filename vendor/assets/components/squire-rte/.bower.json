@@ -21,13 +21,13 @@
     "test",
     "tests"
   ],
-  "_release": "e5329bb46c",
+  "_release": "8a8c00e650",
   "_resolution": {
     "type": "branch",
-    "branch": "1.4.0-fixes",
-    "commit": "e5329bb46c92e93cd5310972cac6bdc3aa8c095b"
+    "branch": "1.4.2-fixes",
+    "commit": "8a8c00e6503296c9c93fee2ccaec07ce6e944f90"
   },
   "_source": "git@github.com:socrata-platform/Squire.git",
-  "_target": "1.4.0-fixes",
+  "_target": "1.4.2-fixes",
   "_originalSource": "git@github.com:socrata-platform/Squire.git"
 }

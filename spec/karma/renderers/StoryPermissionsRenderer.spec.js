@@ -179,7 +179,7 @@ describe('StoryPermissionsRenderer', function() {
             assert.equal($visibilityButtonText.text(), I18n.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
             assert.isTrue($visibilityButton.hasClass('btn-secondary'));
             assert.equal($updatePublicButton.prop('disabled'), true);
-            assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publically'));
+            assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly'));
           });
         });
       })

@@ -4,6 +4,7 @@ class VersionController < ApplicationController
   # We use this endpoint as a health check and for monitoring.
   def show
     render json: {
+      version: Rails.application.config.version,
       revision: Storyteller::REVISION_NUMBER,
       buildTimestamp: Storyteller::BUILD_TIMESTAMP,
       bootedTimestamp: Storyteller::BOOTED_TIMESTAMP,

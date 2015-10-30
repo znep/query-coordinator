@@ -16,7 +16,9 @@ module Constraints
         params = request.path_parameters
         # The current user hasn't been initialized at this point,
         # so manually add the cookie header to avoid an auth error.
-        view = View.find(params[:id], 'Cookie' => request.cookies)
+        cookie_string = request.cookies.kind_of?(Hash) ?
+          request.cookies.map { |k, v| "#{k}=#{v}" }.join(';') : request.cookies.to_s
+        view = View.find(params[:id], 'Cookie' => cookie_string)
         standalone_visualizations_enabled = FeatureFlags.derive(nil, request)[:standalone_lens_chart]
         view.data_lens? || view.new_view? || (view.standalone_visualization? && standalone_visualizations_enabled)
       rescue

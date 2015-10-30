@@ -66,7 +66,7 @@ var insertNodeInRange = function ( range, node ) {
 
     childCount = children.length;
 
-    if ( startOffset === childCount) {
+    if ( startOffset === childCount ) {
         startContainer.appendChild( node );
     } else {
         startContainer.insertBefore( node, children[ startOffset ] );
@@ -127,7 +127,17 @@ var extractContentsOfRange = function ( range, common ) {
     range.setStart( startContainer, startOffset );
     range.collapse( true );
 
-    fixCursor( common );
+    // Socrata Edit:
+    // When there is a single block-level element in the editor and it's format is
+    // modified (Ex: changing a paragraph to a blockquote)
+    // - It is removed
+    // - This function is run
+    // - The newly formatted block is added
+    // This leads to an empty node being inserted by fixCursor while the body is
+    // empty. Instead, only run fixCursor if there are children in `common`
+    if ( common.childElementCount > 0 ) {
+        fixCursor( common );
+    }
 
     return frag;
 };

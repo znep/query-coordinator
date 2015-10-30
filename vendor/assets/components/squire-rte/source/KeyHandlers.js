@@ -246,11 +246,9 @@ var keyHandlers = {
         if ( nodeAfterSplit.nodeType === TEXT_NODE ) {
             nodeAfterSplit = nodeAfterSplit.parentNode;
         }
-        var doc = self._doc,
-            body = self._body;
-        if ( nodeAfterSplit.offsetTop + nodeAfterSplit.offsetHeight >
-                ( doc.documentElement.scrollTop || body.scrollTop ) +
-                body.offsetHeight ) {
+        // 16 ~ one standard line height in px.
+        if ( nodeAfterSplit.getBoundingClientRect().top + 16 >
+                self._doc.documentElement.clientHeight ) {
             nodeAfterSplit.scrollIntoView( false );
         }
     },
@@ -379,10 +377,8 @@ var keyHandlers = {
     tab: function ( self, event, range ) {
         var node, parent;
         self._removeZWS();
-        // If no selection and in an empty block
-        if ( range.collapsed &&
-                rangeDoesStartAtBlockBoundary( range ) &&
-                rangeDoesEndAtBlockBoundary( range ) ) {
+        // If no selection and at start of block
+        if ( range.collapsed && rangeDoesStartAtBlockBoundary( range ) ) {
             node = getStartBlockOfRange( range );
             // Iterate through the block's parents
             while ( parent = node.parentNode ) {
@@ -398,7 +394,6 @@ var keyHandlers = {
                 }
                 node = parent;
             }
-            event.preventDefault();
         }
     },
     space: function ( self, _, range ) {

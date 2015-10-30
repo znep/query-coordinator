@@ -179,6 +179,10 @@ Returns self (the Squire instance).
 
 Returns the path through the DOM tree from the `<body>` element to the current current cursor position. This is a string consisting of the tag, id and class names in CSS format. For example `BODY>BLOCKQUOTE>DIV#id>STRONG>SPAN.font>EM`. If a selection has been made, so different parts of the selection may have different paths, the value will be `(selection)`. The path is useful for efficiently determining the current formatting for bold, italic, underline etc, and thus determining button state. If a selection has been made, you can has the `hasFormat` method instead to get the current state for the properties you care about.
 
+### getFontInfo
+
+Returns an object containing the font-family and font-size information for the element the cursor is in, if any was set. It uses style declarations to detect this, and so will not detect FONT tags. If a selection across multiple elements has been made, it will return an empty object.
+
 ### getSelection
 
 Returns a [W3C Range object](https://developer.mozilla.org/en-US/docs/Web/API/Range) representing the current selection/cursor position.
@@ -411,3 +415,13 @@ Returns self (the Squire instance).
 Removes all formatting from the selection. Block elements (list items, table cells, etc.) are kept as separate blocks.
 
 Returns self (the Squire instance).
+
+### changeFormat
+
+Change the **inline** formatting of the current selection. This is a high-level method which is used to implement the bold, italic etc. helper methods. THIS METHOD IS ONLY FOR USE WITH INLINE TAGS, NOT BLOCK TAGS. It takes 4 arguments:
+
+1. An object describing the formatting to add, or `null` if you only wish to remove formatting. If supplied, this object should have a `tag` property with the string name of the tag to wrap around the selected text (e.g. `"STRONG"`) and optionally an `attributes` property, consisting of an object of attributes to apply to the tag (e.g. `{"class": "bold"}`).
+2. An object describing the formatting to remove, in the same format as the object given to add formatting, or `null` if you only wish to add formatting.
+3. A Range object with the range to apply the formatting changes to (or `null`/omit to apply to current selection).
+4. A boolean (defaults to `false` if omitted). If `true`, any formatting nodes that cover at least part of the selected range will be removed entirely (so will potentially be removed from text outside the selected range as well). If `false`, the formatting nodes will continue to apply to any text outside the selection. This is useful, for example, when removing links. If any of the text in the selection is part of a link, the whole link is removed, rather than the link continuing to apply to bits of text outside the selection.
+

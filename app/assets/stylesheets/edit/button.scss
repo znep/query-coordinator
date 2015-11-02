@@ -7,6 +7,19 @@
   }
 }
 
+@mixin btn-disabled {
+  color: $btn-disabled-color;
+  border-color: $btn-disabled-border-color;
+  background-color: $btn-disabled-background-color;
+  cursor: not-allowed;
+
+  &.btn-dark, &.btn-inverse {
+    color: $btn-disabled-dark-color;
+    border-color: $btn-disabled-dark-border-color;
+    background-color: $btn-disabled-dark-background-color;
+  }
+}
+
 [class^="btn-"], [class*=" btn-"] {
   @include unselectable();
 
@@ -17,26 +30,6 @@
   outline: none;
   transition: color $transition-duration, background-color $transition-duration;
   cursor: pointer;
-
-  &:disabled,
-  &.btn-primary:disabled,
-  &.btn-secondary:disabled,
-  &.btn-success:disabled,
-  &.btn-error:disabled {
-    color: $btn-disabled-color;
-    border-color: $btn-disabled-border-color;
-    background-color: $btn-disabled-background-color;
-    cursor: not-allowed;
-
-    &.btn-dark,
-    &.btn-dark:hover,
-    &.btn-dark:active,
-    &.btn-dark:focus {
-      color: $btn-disabled-dark-color;
-      border-color: $btn-disabled-dark-border-color;
-      background-color: $btn-disabled-dark-background-color;
-    }
-  }
 }
 
 // Adds a spinner in place of button text.
@@ -44,6 +37,10 @@
   font-size: 0;
   cursor: progress;
   border: solid $btn-busy-border-width transparent;
+
+  &:disabled {
+    @include btn-disabled;
+  }
 
   span {
     @include animation(spin 0.6s linear infinite);
@@ -64,20 +61,24 @@
   &:hover {
     color: $btn-default-hover-color;
     background-color: $btn-default-hover-background-color;
+
+    &.btn-dark {
+      background-color: $btn-default-dark-hover-background-color;
+    }
   }
 
   &:active {
     border-color: transparent;
   }
 
+  &:disabled {
+    @include btn-disabled;
+  }
+
   &.btn-dark {
     color: $btn-default-dark-color;
     background-color: $btn-default-dark-background-color;
     border-color: $btn-default-dark-border-color;
-
-    &:hover {
-      background-color: $btn-default-dark-hover-background-color;
-    }
   }
 
   &.btn-busy span {
@@ -93,20 +94,24 @@
 
   &:hover {
     background-color: $btn-primary-hover-background-color;
+
+    &.btn-inverse {
+      color: $btn-primary-inverse-hover-color;
+      background-color: $btn-primary-inverse-hover-background-color;
+    }
   }
 
   &:active {
     border-color: $btn-primary-active-border-color;
   }
 
+  &:disabled {
+    @include btn-disabled;
+  }
+
   &.btn-inverse {
     color: $btn-primary-inverse-color;
     background-color: $btn-primary-inverse-background-color;
-
-    &:hover {
-      color: $btn-primary-inverse-hover-color;
-      background-color: $btn-primary-inverse-hover-background-color;
-    }
   }
 
   &.btn-busy span {
@@ -123,20 +128,24 @@
 
   &:hover {
     background-color: $btn-secondary-hover-background-color;
+
+    &.btn-inverse {
+      color: $btn-secondary-inverse-hover-color;
+      background-color: $btn-secondary-inverse-hover-background-color;
+    }
   }
 
   &:active {
     border-color: $btn-secondary-active-border-color;
   }
 
+  &:disabled {
+    @include btn-disabled;
+  }
+
   &.btn-inverse {
     color: $btn-secondary-inverse-color;
     background-color: $btn-secondary-inverse-background-color;
-
-    &:hover {
-      color: $btn-secondary-inverse-hover-color;
-      background-color: $btn-secondary-inverse-hover-background-color;
-    }
   }
 
   &.btn-busy span {
@@ -154,24 +163,28 @@
 
   &:hover {
     background-color: $btn-success-hover-background-color;
+
+    &.btn-inverse {
+      color: $btn-success-inverse-hover-color;
+      background-color: $btn-success-inverse-hover-background-color;
+    }
   }
 
   &:active {
     border-color: $btn-success-hover-border-color;
   }
 
+  &:disabled {
+    @include btn-disabled;
+
+    &.btn-inverse {
+      background-color: inherit;
+    }
+  }
+
   &.btn-inverse {
     color: $btn-success-inverse-color;
     background-color: $btn-success-inverse-background-color;
-
-    &:hover {
-      color: $btn-success-inverse-hover-color;
-      background-color: $btn-success-inverse-hover-background-color;
-    }
-
-    &:disabled {
-      background-color: inherit;
-    }
   }
 }
 
@@ -182,24 +195,28 @@
 
   &:hover {
     background-color: $btn-error-hover-background-color;
+
+    &.btn-inverse {
+      color: $btn-error-inverse-hover-color;
+      background-color: $btn-error-inverse-hover-background-color;
+    }
   }
 
   &:active {
     border-color: $btn-error-active-border-color;
   }
 
+  &:disabled {
+    @include btn-disabled;
+
+    &.btn-inverse {
+      background-color: inherit;
+    }
+  }
+
   &.btn-inverse {
     color: $btn-error-inverse-color;
     background-color: $btn-error-inverse-background-color;
-
-    &:hover {
-      color: $btn-error-inverse-hover-color;
-      background-color: $btn-error-inverse-hover-background-color;
-    }
-
-    &:disabled {
-      background-color: inherit;
-    }
   }
 }
 

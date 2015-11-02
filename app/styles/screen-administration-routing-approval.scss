@@ -34,15 +34,6 @@
           .searchSection {
             display: inline-block;
             margin-right: 0.5em;
-            .ie7 & {
-              display: inline;
-              input {
-                width: auto;
-              }
-            }
-          }
-          .ie7 & select {
-            margin-bottom: 1em;
           }
         }
       }
@@ -67,10 +58,6 @@
                 display: inline-block;
                 margin-right: 0.2em;
                 vertical-align: bottom;
-                .ie7 & {
-                  display: inline;
-                  text-indent: 0;
-                }
               }
             }
           }
@@ -98,23 +85,11 @@
               .infoContent {
                 margin-right: -33.6em;
               }
-              .ie7 & {
-                padding-right: 35.6em;
-                .infoContent {
-                  margin-right: -35.6em;
-                }
-              }
               &.federated {
                 margin-left: -5.9em;
                 padding-right: 36.7em;
                 .infoContent {
                   margin-right: -36.7em;
-                }
-                .ie7 & {
-                  padding-right: 38.7em;
-                  .infoContent {
-                    margin-right: -38.7em;
-                  }
                 }
               }
               .line {
@@ -123,45 +98,27 @@
               .title {
                 display: inline-block;
                 line-height: 1.2em;
-                .ie7 & {
-                  display: inline;
-                }
                 font-weight: bold;
                 vertical-align: top;
                 width: 12em;
               }
               .value {
                 display: inline-block;
-                .ie7 & {
-                  display: inline;
-                }
               }
               .leftColumn {
                 display: inline-block;
                 width: 66%;
-                .ie7 & {
-                  display: inline;
-                }
               }
               .rightColumn {
                 display: inline-block;
-                .ie7 & {
-                  display: inline;
-                }
                 .title {
                   width: 14em;
                 }
               }
               .nextApprover ul {
                 display: inline-block;
-                .ie7 & {
-                  display: inline;
-                }
                 li {
                   margin-bottom: 0.25em;
-                  .ie7 & {
-                    margin-left: -1.2em;
-                  }
                 }
               }
               .userLoad {
@@ -176,15 +133,9 @@
           }
           .actions {
             width: 14em;
-            .ie7 & {
-              width: 20em;
-            }
             form {
               display: inline-block;
               position: relative;
-              .ie7 & {
-                display: inline;
-              }
             }
             .button {
               @include approval-button-icons;
@@ -193,11 +144,6 @@
               padding: 0.4em 0.5em {
                 left: 2em;
               };
-              .ie7 & {
-                padding: 0.2em 0.5em {
-                  left: 1.25em;
-                };
-              }
             }
           }
         }
@@ -300,9 +246,6 @@
           display: inline-block;
           margin-right: 0.5em;
           vertical-align: middle;
-          .ie7 & {
-            text-indent: 0;
-          }
         }
       }
       .stage {
@@ -371,9 +314,6 @@
       }
       .userList {
         margin-top: 0.3em;
-        .ie7 & {
-          display: inline;
-        }
         .userLink {
           font-size: 1.2em;
         }

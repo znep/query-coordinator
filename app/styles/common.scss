@@ -284,12 +284,12 @@ a {
       &.shown {
         opacity: 1;
         //@include prefixer(transform, rotateY(0deg) translateX(0))
-     
+
       }
       &.pushed {
         opacity: 0;
         //@include prefixer(transform, rotateY(-5deg) translateX(-15em))
-     
+
       }
     }
   }
@@ -311,10 +311,6 @@ a {
 .stage .icon {
   display: inline-block;
   margin-right: 0.5em;
-  .ie7 & {
-    display: inline;
-    vertical-align: middle;
-  }
   span {
     @include rounded-ends;
     background-color: #dedede;

@@ -166,9 +166,6 @@ div.blist-th-first {
     background-position: top left;
     background-repeat: repeat;
     cursor: move;
-    .ie6 & {
-      background-image: url(/stylesheets/images/content/table/column_drag_handle.gif);
-    }
   }
 }
 
@@ -199,9 +196,6 @@ div.blist-th-first {
     height: 12px;
     top: 0;
     width: 12px;
-    .ie6 & {
-      background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.gif?1);
-    }
   }
   .filter {
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
@@ -210,9 +204,6 @@ div.blist-th-first {
     top: 0;
     width: 12px;
     right: 50%;
-    .ie6 & {
-      background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.gif?1);
-    }
   }
   .sort-asc {
     background-position: 0 -24px;
@@ -288,10 +279,6 @@ div.blist-th-first {
   height: 100%;
   margin-left: -4px;
   padding: 0 4px;
-  // Styling this in IE6 with everything else is too hard to get right
-  .ie6 & {
-    display: none;
-  }
 }
 
 .blist-th-tooltip {
@@ -502,16 +489,6 @@ div.blist-tr-pending {
       z-index: 1;
     }
   }
-  // IE6 doesn't like overflow: visible; so switch to overflow: hidden,
-  // then pull the content out of normal layout so we display as much as possible
-  // without making the container too large
-  .ie6 & .blist-table-row-numbers {
-    overflow: hidden;
-  }
-}
-
-.ie6 .blist-table-row-numbers .blist-tf-value {
-  position: absolute;
 }
 
 .blist-table .blist-tr .blist-table-row-numbers {
@@ -1135,25 +1112,6 @@ ul.menu.rowMenu li {
   display: inline-block;
   float: none;
   width: 15em;
-}
-
-.ie6 {
-  .itemType,
-  div.blist-type-default,
-  div.blist-type-filter,
-  div.blist-type-defaultSharedTo,
-  div.blist-type-defaultSharedBy,
-  div.blist-type-filterSharedTo,
-  div.blist-type-filterSharedBy {
-    background-image: url(/stylesheets/images/content/table/icon_type_sprites_on_white.gif);
-  }
-  .infoContentOuter .itemType {
-    background-image: url(/stylesheets/images/content/table/icon_type_sprites_on_gray.gif);
-  }
-  div.blist-tstar-on,
-  div.blist-tstar-off {
-    background-image: url(/stylesheets/images/content/table/grid_stars_sprites.gif);
-  }
 }
 
 // catalog dataset viewType column

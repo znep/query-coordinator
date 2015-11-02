@@ -663,8 +663,6 @@ javascripts:
     - public/javascripts/plugins/vis/r2d3.v3.js
   excanvas:
     - public/javascripts/plugins/excanvas.compiled.js
-  bgiframe:
-    - public/javascripts/plugins/jquery.bgiframe.min.js
   oldie:
     - public/javascripts/screens/oldie.js
   ace:

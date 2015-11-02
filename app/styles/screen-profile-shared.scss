@@ -39,7 +39,6 @@
       }
       .fieldValue {
         display: inline-block;
-        @include ie7-inline-block;
       }
     }
     .appTokenLine {

@@ -168,7 +168,6 @@
       font-size: 1.4em;
       font-weight: bold;
       padding: 0.4em 0 0.6em 0.7em;
-      @include ie7-inline-block;
       .icon {
         float: left;
         padding-left: 0.5em;
@@ -269,7 +268,6 @@
             position: relative;
             top: 0.3em;
             visibility: hidden;
-            @include ie7-inline-block;
           }
         }
         &.loadingMore .showMore .icon {
@@ -294,7 +292,6 @@
   .summaryDisplay, .detailDisplay {
     margin: 1em 0;
     width: 100%;
-    @include ie7-inline-block;
     .summaryContainer {
       float: left;
       display: none;

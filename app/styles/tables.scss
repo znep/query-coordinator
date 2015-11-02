@@ -106,9 +106,6 @@
     }
     th.status {
       width: 19.5em;
-      .ie7 & {
-        width: 21em;
-      }
     }
   }
   tbody {
@@ -122,11 +119,6 @@
   thead {
     th.name {
       width: 18em;
-    }
-    .ie7 & {
-      th.preview {
-        width: 40em;
-      }
     }
     th.actions {
       width: 21em;
@@ -143,15 +135,9 @@
   thead {
     th.date {
       width: 11em;
-      .ie7 & {
-        width: 12em;
-      }
     }
     th.actions {
       width: 21em;
-      .ie7 & {
-        width: 23em;
-      }
     }
   }
   tbody {

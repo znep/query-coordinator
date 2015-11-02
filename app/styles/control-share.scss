@@ -33,9 +33,6 @@
     margin-left: 0.8em;
     position: relative;
     top: -0.3em;
-    .ie7 & {
-      display: inline;
-    }
     .ie & {
       top: -0.2em;
     }
@@ -118,9 +115,6 @@
     font-size: 1.2em;
     position: relative;
     top: -0.3em;
-    .ie7 & {
-      top: 0.1em;
-    }
   }
   .unsubscribeText {
     display: none;

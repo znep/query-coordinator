@@ -2,9 +2,6 @@
   .richColumn {
     float: left;
     vertical-align: top;
-    .ie7 & {
-      display: inline;
-    }
   }
   .richLine {
     overflow: hidden;
@@ -24,9 +21,6 @@
     .invalid {
       color: #888888;
       font-style: italic;
-    }
-    .ie7 & {
-      display: inline;
     }
     // Renderer-specific styles
     &.photo, &.photo_obsolete {
@@ -105,9 +99,6 @@
     margin-bottom: 4em;
     overflow: auto;
     padding: 2em 3em 0;
-    .ie7 & {
-      position: relative;
-    }
   }
   .richLine {
     margin-top: 1em;
@@ -211,12 +202,6 @@
           bottom: -0.1em;
           top: 0.9em;
         };
-        .ie7 & {
-          // now undo it all for IE7...
-          display: inline;
-          line-height: 20px;
-          margin: 0;
-        }
       }
       .sort {
         display: inline-block;
@@ -254,9 +239,6 @@
     border-bottom: 1px solid #cacaca;
     margin-bottom: 4em;
     overflow: auto;
-    .ie7 & {
-      position: relative;
-    }
     .noResults {
       font-size: 2em;
       left: 50%;
@@ -398,9 +380,6 @@
       }
       .button {
         padding: 0.3em;
-      }
-      .ie7 & {
-        display: inline;
       }
     }
   }

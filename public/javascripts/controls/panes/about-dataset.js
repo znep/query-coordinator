@@ -15,11 +15,6 @@
                         data: {},
                         callback: function($sect)
                         {
-                            // IE7/8 can't handle the slideToggle.  It also gets
-                            // confused about the current state.
-                            var toggleAction = ($.browser.msie && ($.browser.majorVersion <= 8)) ?
-                                'toggle' : 'slideToggle';
-
                             if (cpObj._view.isTabular())
                             {
                                 cpObj._view.getTotalRows(function()
@@ -42,8 +37,8 @@
 
                                 $this.toggleClass('expanded')
                                     .toggleClass('collapsed')
-                                    .siblings('.sectionContent')[toggleAction]
-                                        ($this.hasClass('expanded'));
+                                    .siblings('.sectionContent')
+                                    .slideToggle($this.hasClass('expanded'));
                             });
 
                             $sect.find('.routingApproval .reasonBox').each(function()

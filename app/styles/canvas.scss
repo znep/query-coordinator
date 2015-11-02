@@ -209,22 +209,12 @@
       @include sprite-menu-icons;
       font-size: 1em;
       padding: 0.3em;
-      .ie7 & {
-        position: relative;
-        top: 0.5em;
-      }
     }
     .prevLink {
       margin-right: 1em;
-      .ie7 & {
-        margin-left: 0.5em;
-      }
     }
     .nextLink {
       margin-left: 1em;
-      .ie7 & {
-        margin-right: 0.5em;
-      }
     }
   }
   .resultCount {

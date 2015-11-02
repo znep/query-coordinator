@@ -109,16 +109,6 @@ $is_customizer: false !default;
           color: #000;
         }
       }
-      @if $stories_pager_type == "bullets" {
-        .ie7 & {
-          display: inline;
-          // text-indent is moving the background image (???)
-          line-height: 9999px;
-          overflow: hidden;
-          text-indent: 0;
-          zoom: 1;
-        }
-      }
     }
   }
   @if $stories_pager_position == "center" or $is_customizer == true {

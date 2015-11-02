@@ -51,9 +51,6 @@
     ul {
       li {
         display: inline-block;
-        .ie7 & {
-          display: inline;
-        }
       }
     }
   }
@@ -91,9 +88,6 @@
       clear: right;
       .datasetCustomImage {
         padding: 1em;
-      }
-      .ie7 & {
-        width: 27.5em;
       }
     }
     .editMetadataButton {
@@ -142,9 +136,6 @@
       padding: 1em {
         right: 2em;
       };
-      .ie7 & #uniform-contactPurpose {
-        width: 13em;
-      }
       label.required {
         @include required-star;
         padding-left: 1.2em;

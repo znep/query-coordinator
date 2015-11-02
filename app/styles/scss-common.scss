@@ -169,9 +169,6 @@ $new-ux-link-button-color: #fafafa;
 
 @mixin opacity($o) {
   opacity: $o;
-  .ie7 & {
-    filter: alpha(opacity=#{$o * 100});
-  }
   .ie8 & {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$o * 100})";
   }
@@ -272,7 +269,7 @@ $new-ux-link-button-color: #fafafa;
     .noLinearGradient & {
       @include box-gradient-buttons-default-background(3, 21, $box_gradient_alias_fix);
     }
-    .ie6 &, .ie7 &, .ie8 &, .ie9 & {
+    .ie8 &, .ie9 & {
       @include box-gradient-buttons-default-background(3, 31, $box_gradient_alias_fix);
     }
   }
@@ -363,20 +360,9 @@ $new-ux-link-button-color: #fafafa;
   }
 }
 
-@mixin ie7-inline-block {
-  .ie7 & {
-    display: inline;
-    zoom: 1;
-    // clearfix in IE7 still has a block element :after, so it continues to wrap
-    &:after {
-      display: inline;
-    }
-  }
-}
-
 @mixin no-pointer-events($pngurl: "/stylesheets/images/content/blank.png") {
   pointer-events: none;
-  .ie7 &, .ie8 & {
+  .ie8 & {
     filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=#{$pngurl}, sizingMethod='scale');
     background: none !important;
   }
@@ -419,11 +405,6 @@ $new-ux-link-button-color: #fafafa;
       left: 50%;
     };
     text-align: right;
-    .ie7 & {
-      // These would sit below dts in IE7, so you couldn't rate
-      position: relative;
-      z-index: 1;
-    }
   }
 }
 

@@ -71,16 +71,7 @@ body {
         display: block;
       }
     }
-    .ie7 & > .controlIndicators {
-      width: 97%;
-    }
-    .ie7 &.directMenuOpen > .controlIndicators {
-      z-index: 100000;
-    }
     &.menuOpen {
-      .ie7 & {
-        z-index: 100000;
-      }
       > .controlIndicators {
         overflow: visible;
       }
@@ -270,13 +261,7 @@ body {
         display: block;
       }
     }
-    .ie7 &.directMenuOpen > .controlIndicators {
-      z-index: 100000;
-    }
     &.menuOpen {
-      .ie7 & {
-        z-index: 100000;
-      }
       > .controlIndicators {
         overflow: visible;
       }
@@ -333,14 +318,8 @@ body {
         display: block;
       }
     }
-    .ie7 &.directMenuOpen > .controlIndicators {
-      z-index: 100000;
-    }
     &.menuOpen {
       overflow: visible;
-      .ie7 & {
-        z-index: 100000;
-      }
       > .controlIndicators {
         overflow: visible;
       }
@@ -381,9 +360,6 @@ body {
       display: inline-block;
       float: none;
       padding: 0.2em;
-      .ie7 & {
-        display: inline;
-      }
       &.columnLabel {
         font-size: 1.2em;
         font-weight: bold;
@@ -430,13 +406,7 @@ body {
       display: block;
     }
   }
-  .ie7 &.directMenuOpen > .controlIndicators {
-    z-index: 100000;
-  }
   &.menuOpen {
-    .ie7 & {
-      z-index: 100000;
-    }
     > .controlIndicators {
       overflow: visible;
     }

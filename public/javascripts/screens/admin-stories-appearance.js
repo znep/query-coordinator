@@ -55,7 +55,6 @@ blist.publish.customizationApplication = {
                                               { selector: '.storiesContainer .storyPager', css: 'width', map: { box: 'auto', center: '100%' } },
                                               { selector: '.storiesContainer .storyPagerBackground', css: 'display', map: { box: 'none', center: 'block' } } ],
               type:                         [ { selector: '.storiesContainer .storyPager a', css: 'text-indent', map: { bullets: '-9999px', numbers: '0' } },
-                                              { selector: '.ie7 .storiesContainer .storyPager a', css: 'line-height', map: { bullets: '9999px', numbers: '1em' } },
                                               { selector: '.storiesContainer .storyPager a', css: 'background-image', map: { bullets: 'url(/stylesheets/images/interface/story_pager.png)', numbers: 'none' } } ] }
 };
 

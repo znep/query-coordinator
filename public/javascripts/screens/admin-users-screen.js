@@ -133,9 +133,5 @@ $(function()
         $bulkCreateButton.removeClass('disabled');
     });
 
-    // Hackity hack hack
-    if (!$('html').hasClass('ie7'))
-    {
-        $('#adminContent select, .adminUserTable :checkbox').uniform();
-    }
+    $('#adminContent select, .adminUserTable :checkbox').uniform();
 });

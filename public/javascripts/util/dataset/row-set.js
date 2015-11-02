@@ -468,6 +468,12 @@ var RowSet = ServerModel.extend({
     updateRow: function(row, oldID)
     {
         var curRow = this._rowIDLookup[$.isBlank(oldID) ? row.id : oldID];
+        // When updateRow is called by Dataset#_updateRows, there is no guarantee
+        // that all row sets will have the row being updated. If curRow doesn't
+        // exist, we can just exit early.
+        if (!curRow) {
+          return;
+        }
         $.extend(curRow, row, {index: curRow.index});
         this._setRowFormatting(curRow);
         delete this._aggCache;

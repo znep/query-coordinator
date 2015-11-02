@@ -167,6 +167,8 @@ $(document).on('ready', function() {
         action: Actions.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
         activeFormats: []
       });
+
+      _.invoke(richTextEditorManager.getAllEditors(), 'deselect');
     }
   });
 

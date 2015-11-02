@@ -130,7 +130,7 @@
         then(
           handleDatasetMetadataRequestSuccess,
           handleDatasetMetadataRequestError
-        ).catch(function(e) {
+        )['catch'](function(e) {
           logError(e);
         });
     }
@@ -161,7 +161,7 @@
       then(
         handleFeatureExtentQuerySuccess,
         handleFeatureExtentQueryError
-      ).catch(function(e) {
+      )['catch'](function(e) {
         logError(e);
       });
 
@@ -312,7 +312,7 @@
         then(
           handleRowInspectorQuerySuccess,
           handleRowInspectorQueryError
-        ).catch(function(e) {
+        )['catch'](function(e) {
           logError(e);
         });
 

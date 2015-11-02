@@ -5,6 +5,8 @@ class View < Model
   attr_accessor :custom_vis_cols, :sodacan
 
   def self.find(options = nil, custom_headers = {}, batch = false, is_anon = false, get_all = false)
+    raise ArgumentError.new("Invalid header value (must be a string): #{custom_headers}") unless
+      custom_headers.all? { |k, v| k.kind_of?(String) && v.kind_of?(String) }
     custom_headers.merge!({'X-Socrata-Federation' => 'Honey Badger'})
     if get_all || options.is_a?(String)
       return super(options, custom_headers, batch, is_anon)

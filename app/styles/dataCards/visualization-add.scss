@@ -30,9 +30,14 @@ $related-visualization-icon-font-size: 30px;
 $related-visualization-disabled-color: #999;
 $related-visualization-dim-opacity: 0.5;
 $related-visualization-dim-hover-opacity: 0.8;
+
 $classic-visualization-message-height: 38px;
 $classic-visualization-message-margin-top: 15px;
-$classic-visualization-message-padding-right: 20px;
+$classic-visualization-message-margin-right: 20px;
+$classic-visualization-message-color: #b37538;
+$classic-visualization-message-background-color: #f7e7cc;
+$classic-visualization-message-border-color: #f7a700;
+$classic-visualization-message-icon-color: $classic-visualization-message-border-color;
 
 body.state-view-visualizationAdd {
   overflow: hidden;
@@ -247,20 +252,25 @@ body.state-view-visualizationAdd {
 }
 
 .classic-visualization-preview p {
-  height: $classic-visualization-message-height;
   margin: 0;
-  margin-top: $classic-visualization-message-margin-top;
   position: absolute;
   bottom: 0;
   left: 0;
-  padding-right: $classic-visualization-message-padding-right;
+  padding: 5px;
+  margin-right: $classic-visualization-message-margin-right;
+  background-color: $classic-visualization-message-background-color;
+  color: $classic-visualization-message-color;
+  border: solid 1px $classic-visualization-message-border-color;
+  font-size: 12px;
 
   span {
     display: block;
     float: left;
 
     &.icon-info {
-      font-size: 20px;
+      font-size: 26px;
+      margin-top: -3px;
+      color: $classic-visualization-message-icon-color;
     }
 
     & + span {

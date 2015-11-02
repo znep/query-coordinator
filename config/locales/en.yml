@@ -59,7 +59,7 @@ en:
         generic_prompt: Choose a column from the dropdown above to add a new visualization
         settings: Settings
         custom: (Custom...)
-        classic_chart: 'This legacy Socrata visualization may be imported here for display, but cannot be reconfigured once added.'
+        classic_chart: If you'd like to customize this Socrata visualization, locate it in the catalog, edit it, and then add it to your story.
         visualize_flyout:
           choropleth: Visualize this column as a choropleth
           column_chart: Visualize this column as a column chart

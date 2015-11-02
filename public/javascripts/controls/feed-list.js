@@ -584,7 +584,7 @@
         hideFeed: false,
         highlightCallback: function(feedItem) {
             // by default highlight items that have to do with the blist owner
-            return blist.dataset && (feedItem.user.id == blist.dataset.tableAuthor.id);
+            return blist.dataset && ((feedItem.user || {}).id == blist.dataset.tableAuthor.id);
         },
         firstPageSize: null, // if not specified, defaults to pageSize
         mainView: null,

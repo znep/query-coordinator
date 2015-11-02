@@ -1,0 +1,125 @@
+#column-chart {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 420px;
+  margin: 10px auto 0 auto;
+  border: 1px solid #aaa;
+  overflow: hidden;
+
+  &.responsive {
+    .column-chart-container {
+      .labels {
+        display: none;
+      }
+    }
+  }
+
+  .column-chart {
+    overflow: scroll;
+    background-color: #ECEBE9;
+
+    .chart-scroll {
+      padding-left: 25px;
+      width: initial !important;
+    }
+
+    .column-chart-wrapper {
+      display: flex;
+
+      .bar-group {
+        &.active {
+          position: relative !important;
+          width: 50px !important;
+          float: left;
+          left: inherit !important;
+          z-index: 2;
+
+          .bar.filtered,
+          .bar.unfiltered {
+            background-color: #21AE8F !important;
+            width: 40px !important;
+          }
+
+          &:hover {
+            .bar.filtered,
+            .bar.unfiltered {
+              background-color: #31FFD2 !important;
+            }
+          }
+
+          &.selected {
+            overflow: hidden;
+            &:after {
+              content: '';
+              position: absolute;
+              bottom: -14px;
+              left: 6px;
+              width: 28px;
+              height: 28px;
+              display: block;
+              background-color: #ffffff;
+              transform: rotate(45deg);
+              -webkit-box-shadow: -2px -2px 10px -5px rgba(0, 0, 0, 1);
+              -moz-box-shadow: -2px -2px 10px -5px rgba(0, 0, 0, 1);
+              box-shadow: -2px -2px 10px -5px rgba(0, 0, 0, 1);
+            }
+
+            .bar.filtered,
+            .bar.unfiltered {
+              background-color: #7FEAD2 !important;
+            }
+          }
+        }
+      }
+    }
+    
+    .ticks {
+      z-index: 1;
+      width: 100% !important;
+      .tick {
+        color: #000;
+        text-align: left;
+        font-size: 9px;
+        padding-left: 2px;
+        border-color: #fff;
+      }
+      .origin {
+        opacity: 0;
+      }
+    }
+  }
+  .labels {
+    &.mobile {
+      position: absolute;
+      left: 0;
+      right: 0;
+      padding: 0 15px;
+      bottom: 0;
+      background-color: #fff;
+      height: 40px;
+
+      .title,
+      .value {
+        overflow: hidden;
+        height: 30px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 15px;
+      }
+      .title {
+        width: 70%;
+      }
+      .value {
+        width: 30%;
+        color: #5BDEBF;
+        font-weight: 900;
+        span {
+          color: #333;
+          font-weight: normal;
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+}

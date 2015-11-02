@@ -43,7 +43,8 @@
       document.querySelector('.btn-presentation-mode').setAttribute('disabled', 'disabled');
       document.querySelector('.btn-linear-mode').removeAttribute('disabled');
 
-      blocks.forEach(function(block, index) {
+      blocks.forEach(function(block) {
+        var index = parseInt(block.getAttribute('data-page-index'));
         block.classList.toggle('hidden', index !== 0);
       });
 

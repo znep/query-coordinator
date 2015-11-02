@@ -123,6 +123,7 @@ hi:
           permissions: "अनुमतियां"
           private: "निजी"
           public: "सार्वजनिक"
+        row:
         save: "सहेजें"
       customize_bar:
         changes_warning: "आपने इस पेज पर परिवर्तन किए हैं।"

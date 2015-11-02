@@ -123,6 +123,7 @@ it:
           permissions: Permessi
           private: Privato
           public: Pubblico
+        row:
         save: Salva
       customize_bar:
         changes_warning: Hai effettuato dei cambiamenti in questa pagina.

@@ -125,6 +125,7 @@ sw:
           permissions:
           private:
           public:
+        row:
         save:
       customize_bar:
         changes_warning:

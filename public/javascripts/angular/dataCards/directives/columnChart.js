@@ -185,6 +185,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         }
       }
 
+      var initialRowDisplayUnit = scope.rowDisplayUnit || I18n.common.row;
       columnChartConfig = {
         configuration: {
           columns: {
@@ -202,8 +203,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           }
         },
         unit: {
-          one: 'row',
-          other: 'rows'
+          one: initialRowDisplayUnit,
+          other: PluralizeService.pluralize(initialRowDisplayUnit)
         }
       };
       columnChart = new socrata.visualizations.ColumnChart(element, columnChartConfig);
@@ -230,11 +231,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             return undefined;
           }
 
+          rowDisplayUnit = rowDisplayUnit || I18n.common.row;
+
           scope.$emit('render:start', { source: 'columnChart_{0}'.format(scope.$id), timestamp: _.now() });
 
           var chartRenderOptions = {
             expanded: expanded,
-            labelUnit: rowDisplayUnit,
+            unit: {
+              one: rowDisplayUnit,
+              other: PluralizeService.pluralize(rowDisplayUnit)
+            },
             showFiltered: isFiltered,
             showAllLabels: expanded || showAllLabels
           };

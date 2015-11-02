@@ -123,6 +123,7 @@ fr:
           permissions: Autorisation
           private: Privé
           public: Public
+        row:
         save: Enregistrer
       customize_bar:
         changes_warning: Vous avez apporté des modifications à cette page.

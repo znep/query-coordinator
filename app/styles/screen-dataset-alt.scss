@@ -102,7 +102,6 @@ a.interactiveBackButton {
 #pagination {
   margin: 2em;
   a {
-    @include ie7-inline-block;
     display: inline-block;
     font-size: 1.4em;
     font-weight: bold;

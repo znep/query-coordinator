@@ -49,9 +49,6 @@
     right: 0.5em;
     top: 0.7em;
     z-index: 1;
-    .ie7 & .icon {
-      display: block;
-    }
   }
   .ui-resizable-w {
     left: 0;
@@ -72,13 +69,7 @@
     top: 33%;
   }
   .outerPane {
-    // IE7 had a weird issue where the scrollbar from a hidden pane would still
-    // show up on top of a visible pane, thereby disallowing the user from
-    // scrolling the real pane.  Apparently position: relative fixes it
     @include sidebar-colors($sidebar_default_tab_color_top);
-    .ie7 & {
-      position: relative;
-    }
     .mainTitleBlock {
       padding: 0.5em 1em;
       .title {
@@ -109,12 +100,8 @@
         color: #999999;
         cursor: default;
         .icon {
-          // IE7 hides the title if this is display: none
           visibility: hidden;
         }
-      }
-      .ie7 & {
-        position: relative;
       }
       .icon {
         float: right;
@@ -229,10 +216,6 @@
         display: inline-block;
         margin-right: 0.4em;
         vertical-align: bottom;
-        @include ie7-inline-block;
-      }
-      .ie7 & .icon {
-        float: left;
       }
     }
     &.active {

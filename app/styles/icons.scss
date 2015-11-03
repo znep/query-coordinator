@@ -1,10 +1,3 @@
-// util
-@mixin ie6-fix {
-  .ie6 & {
-    overflow: hidden;
-  }
-}
-
 @mixin icon-include-active($className, $subselector, $top, $left) {
   &.#{$className} #{$subselector} {
     background-position: 0 $top;
@@ -31,7 +24,6 @@
 @mixin sprite-button-icons($subselector: ".icon") {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/icons/button_icons.png?1);
     height: 10px;
     width: 10px;
@@ -73,13 +65,9 @@ $new-view-color: #80acca;
 @mixin sprite-menu-icons($subselector: ".icon", $defaultDown: true) {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/icons/menu_icons.png?3);
     height: 13px;
     width: 13px;
-    .ie6 & {
-      background-image: url(/stylesheets/images/icons/menu_icons.gif?1);
-    }
   }
   @if $defaultDown == true {
     #{$subselector} {
@@ -376,7 +364,6 @@ $new-view-color: #80acca;
   #{$subselector},
   .alertIcon {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/icons/type_icons_30.png?1);
     height: 30px;
     width: 30px;
@@ -459,7 +446,6 @@ $new-view-color: #80acca;
   #{$subselector},
   .alertIcon {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/icons/type_icons_50.png);
     height: 50px;
     width: 50px;
@@ -537,7 +523,6 @@ $new-view-color: #80acca;
 @mixin sprite-feed-icons($subselector: ".icon") {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/icons/feed_icons.png);
     height: 13px;
     width: 19px;
@@ -559,7 +544,6 @@ $new-view-color: #80acca;
 // icons/dataset_toolbar_icons.png
 @mixin dataset-toolbar-icon-base {
   @include text-hiding;
-  @include ie6-fix;
   background-image: url(/stylesheets/images/icons/dataset_toolbar_icons.png);
   height: 13px;
   width: 16px;
@@ -604,7 +588,6 @@ $new-view-color: #80acca;
 @mixin sprite-repeater-icons($subselector: ".icon") {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/icons/repeater_icons.png);
     height: 14px;
     width: 14px;
@@ -741,7 +724,6 @@ $new-view-color: #80acca;
 // common/close.png
 @mixin close-button {
   @include text-hiding;
-  @include ie6-fix;
   background-image: url(/stylesheets/images/common/close.png);
   height: 13px;
   width: 13px;
@@ -750,7 +732,6 @@ $new-view-color: #80acca;
 // content/table/drilldown.png
 @mixin drilldown-icon {
   @include text-hiding;
-  @include ie6-fix;
   background-image: url(/stylesheets/images/content/table/drilldown.png);
   height: 16px;
   width: 24px;
@@ -759,7 +740,6 @@ $new-view-color: #80acca;
 // content/snuffleupasnake.gif
 @mixin throbber-icon {
   @include text-hiding;
-  @include ie6-fix;
   background-image: url(/stylesheets/images/content/snuffleupasnake.gif);
   height: 16px;
   width: 16px;
@@ -774,13 +754,9 @@ $new-view-color: #80acca;
 @mixin grid-header-icons($subselector: ".icon", $includeHover: true) {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
     height: 12px;
     width: 12px;
-    .ie6 & {
-      background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.gif?1);
-    }
   }
   &.sortDesc #{$subselector} {
     background-position: 0 0;
@@ -855,7 +831,6 @@ $new-view-color: #80acca;
 @mixin admin-icons($subselector: ".icon") {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/icons/admin_icons.png?2);
     height: 13px;
     width: 16px;
@@ -914,7 +889,6 @@ $new-view-color: #80acca;
 @mixin admin-header-icons($subselector: ".icon") {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/icons/admin_header_icons.png?2);
     height: 32px;
     width: 38px;
@@ -964,7 +938,6 @@ $new-view-color: #80acca;
 @mixin api-management-icons($subselector: ".apiicon") {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     height: 50px;
     width: 50px;
     background-position: center;
@@ -1052,7 +1025,6 @@ $new-view-color: #80acca;
 @mixin analytic-icons($subselector: ".icon") {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/icons/analytic_icons.png?1);
     height: 9px;
     width: 9px;
@@ -1069,7 +1041,6 @@ $new-view-color: #80acca;
 @mixin datatype-icons($subselector: ".icon") {
   #{$subselector} {
     @include text-hiding;
-    @include ie6-fix;
     background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
     height: 20px;
     width: 20px;
@@ -1148,7 +1119,6 @@ $new-view-color: #80acca;
   @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, ColumnChart, LineChart, Map, PieChart, Repeater, BubbleChart, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, VerticalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap, HorizontalContainer {
     &.#{$namepart}-#{$name} #{$subselector} {
       @include text-hiding;
-      @include ie6-fix;
       background-image: url(/stylesheets/images/component/cf-icons.png?3);
       background-repeat: no-repeat;
       background-position: 0 (-44px * $icon_slot);
@@ -1167,7 +1137,6 @@ $new-view-color: #80acca;
   $icon_slot: 0;
   @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, column, line, Map, pie, Repeater, bubble, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap {
     .#{$name} > label {
-      @include ie6-fix;
       background-image: url(/stylesheets/images/component/cf-icons.png?2);
       background-repeat: no-repeat;
       background-position: 0 (-44px * $icon_slot);
@@ -1193,7 +1162,6 @@ $new-view-color: #80acca;
   $icon_slot: 0;
   @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, column, line, Map, pie, Repeater, bubble, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap {
     &.#{$name}-selected .currentSelection > .selectionIcon {
-      @include ie6-fix;
       background-image: url(/stylesheets/images/component/cf-icons-small.png?2);
       background-repeat: no-repeat;
       background-position: 0 (-23px * $icon_slot);

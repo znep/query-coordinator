@@ -28,21 +28,9 @@
   .formSection {
     margin-bottom: 1em;
     padding: 0;
-    // Expand/collapse of sections would sometimes leave visual artifacts unless we add this
-    .ie7 & {
-      position: relative;
-    }
     > .uniform.checker, .sectionSelect {
       display: none;
       margin-right: 0.4em;
-    }
-    .ie7 &.selectable .sectionSelect {
-      position: absolute;
-      + .formHeader {
-        left: 2.3em;
-        margin-left: 0;
-        position: relative;
-      }
     }
     &.selectable > .uniform.checker, &.selectable .sectionSelect {
       display: inline-block;
@@ -58,12 +46,6 @@
       &.hide {
         display: none;
       }
-    }
-    .ie7 &.selectable .formHeader {
-      margin: {
-        left: 1.2em;
-        top: 0.4em;
-      };
     }
     .sectionDisabledMessage, .sectionWarningMessage {
       color: #333333;
@@ -124,9 +106,6 @@
         top: 0.5em;
         width: 6.7em;
         white-space: nowrap;
-        .ie7 & {
-          width: 7em;
-        }
       }
       .inputWrapper {
         display: block;
@@ -148,9 +127,6 @@
       input[type="radio"], .uniform.radio,
       input[type="checkbox"], .uniform.checker {
         margin-right: 0.5em;
-        .ie7 & {
-          display: inline;
-        }
       }
       .customWrapper:before {
         content: " ";
@@ -364,9 +340,6 @@
         .inputWrapper {
           float: left;
           padding-left: 0;
-          .ie7 & {
-            display: inline;
-          }
         }
         label {
           display: block;
@@ -486,9 +459,6 @@
               top: 0;
               .inputWrapper {
                 padding-left: 0;
-                .ie7 & .container {
-                  width: auto;
-                }
               }
               select {
                 width: 6.1em;

@@ -66,16 +66,10 @@
       &.actions {
         overflow: visible;
         padding-left: 6em;
-        .ie7 & {
-          z-index: 2;
-        }
         form {
           display: inline-block;
           margin-right: 0.5em;
           position: relative;
-          .ie7 & {
-            display: inline;
-          }
           .reasonBox {
             label {
               padding-left: 0;
@@ -94,11 +88,6 @@
           padding: 0.4em 0.5em {
             left: 2em;
           };
-          .ie7 & {
-            padding: 0.2em 0.5em {
-              left: 1.25em;
-            };
-          }
         }
       }
     }
@@ -144,9 +133,6 @@
       margin: 0.5em 0;
       overflow: auto;
       width: 95%;
-      .ie7 & {
-        width: 93%;
-      }
       // Reset to defaults for this input
       &#recaptcha_response_field {
         overflow: visible;

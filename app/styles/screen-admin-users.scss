@@ -25,9 +25,6 @@
       bottom: 0.6em;
       font-size: 1.3em;
       position: relative;
-      .ie7 & {
-        bottom: 0.4em;
-      }
     }
     select {
       width: 10em;
@@ -84,7 +81,6 @@
         &.isWorking {
           .loading {
             display: inline-block;
-            @include ie7-inline-block;
           }
         }
       }

@@ -292,9 +292,6 @@ div.menu {
 
 div.wizard {
   overflow: hidden;
-  .ie7 & {
-    position: relative;
-  }
   > ul {
     display: block;
     position: relative;
@@ -392,7 +389,6 @@ ul.wizardButtons {
       li {
         display: inline-block;
         float: none;
-        @include ie7-inline-block;
         a {
           display: inline-block;
         }
@@ -700,10 +696,6 @@ ul.autocomplete {
   overflow: hidden;
   padding: 2px;
   position: absolute;
-  .ie7 & {
-    left: 0;
-    top: 2.5em;
-  }
   li {
     border-top: 1px solid #aaa;
     cursor: pointer;
@@ -772,9 +764,6 @@ form.search {
     text-transform: uppercase;
     // The IEs don't position or size this quite right
     // because they have special rules about input buttons.
-    .ie7 & {
-      padding-bottom: 0.2em;
-    }
     .ie8 & {
       bottom: 2px;
       padding: 0.4em 0.6em 0.45em;
@@ -857,9 +846,6 @@ form.search {
       right: 5px;
       top: 2px;
       z-index: 1;
-      .ie7 & .icon {
-        display: block;
-      }
     }
   }
   .renderContent {
@@ -1067,10 +1053,6 @@ ul.autocompleteComboDropdown {
   padding: 0;
   position: absolute;
   z-index: 3002;
-  .ie7 & {
-    left: 0;
-    top: 2.5em;
-  }
   li {
     border-top: 1px solid #aaa;
     cursor: pointer;

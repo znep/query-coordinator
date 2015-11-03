@@ -277,20 +277,14 @@ blist.datasetControls.datasetContact = function($sect)
         $sect.find('#contactBody').focus();
     };
 
-    // IE7/8 can't handle the slideToggle.  It also gets
-    // confused about the current state.
-    var toggleAction = ($.browser.msie &&
-        ($.browser.majorVersion <= 8)) ?
-        'toggle' : 'slideToggle';
-
     // Swap out links for form and back, show 'required' hint
     var toggleContactActions = function()
     {
-        $sect.find('.contactOwnerForm')[toggleAction]()
+        $sect.find('.contactOwnerForm').slideToggle()
             .find('#contactBody')
                 .focus().end().end()
             .find('.contactOwnerLinks')
-                [toggleAction]().end();
+                slideToggle().end();
     };
 
     $sect.delegate('.contactButton', 'click', function(event)

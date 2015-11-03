@@ -113,9 +113,6 @@ form textarea.text_wide {
     height: 18px;
     text-indent: -9999px;
     width: 20px;
-    .ie7 & {
-      display: block;
-    }
   }
   div.required, span.required {
     @include required-star;
@@ -128,17 +125,6 @@ form textarea.text_wide {
     min-height: 1.8em;
     padding-top: 0.4em;
     > *, .fieldContainer > * {
-      display: inline-block;
-      float: left;
-      margin-right: 0.2em;
-      &.span {
-        height: 1.8em;
-        line-height: 1.8em;
-      }
-    }
-    // IE6 refuses to parse the above rule with >'s, even as a comma statement
-    // Additionally, IE6 doesn't have uniform to worry about, so just select everything
-    .ie6 & * {
       display: inline-block;
       float: left;
       margin-right: 0.2em;
@@ -353,7 +339,6 @@ div.uniform.checker {
   position: relative;
   vertical-align: bottom;
   width: 19px;
-  @include ie7-inline-block;
   input {
     display: inline-block;
     height: 19px;

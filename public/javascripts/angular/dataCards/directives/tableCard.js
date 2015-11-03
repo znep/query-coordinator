@@ -416,12 +416,14 @@
                   var tableCellDiv = $('<div>').
                     addClass('cell {0}'.format(column.physicalDatatype)).
                     attr('data-index', index).
-                    css('width', '{0}px'.format(columnWidths[column.fieldName])).
+                    css('width', '{0}px'.format(columnWidths[column.fieldName]));
+
+                  tableCellDiv.append($('<div>').
                     html(formatCellText(
                       column.physicalDatatype,
                       cellContent,
                       column
-                    ));
+                    )));
 
                   tableRowDiv.append(tableCellDiv);
                 });

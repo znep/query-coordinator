@@ -46,8 +46,13 @@ ca:
         card_on_page: La targeta ja és a la pàgina
         card_on_page_long: Aquesta targeta ja és a la pàgina
         choose_column: Tria una columna
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: 'Nota: Això es convertirà en un gràfic de barres amb més de cent barres, pot ser que vagi una mica més lent que altres gràfics'
+        custom:
         customize_prompt: Personalitza aquesta targeta
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: Actualment no és compatible
         not_supported_long: Aquesta mena de targetes actualment no són compatibles
         prompt: Tria una columna del menú desplegable de sobre per afegir-hi una targeta nova
@@ -93,11 +98,15 @@ ca:
         remove_card: Elimineu aquesta targeta
       card_layout:
         add_card_here: Afegiu una targeta aquí
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average: mitjana de {0}
         number_of: número de {0}
         sum_of: quantitat de {0}
       common:
+        by:
         cancel: Cancel·leu-ho
         cards:
           choropleth: Coroplètic
@@ -115,6 +124,7 @@ ca:
           export_visualization_disabled: Aquesta visualització no està disponible<br/> per exportar imatges
           invalid_card: Visualització d'una targeta invàlida
           map_render_error: Hem trobat un error mentre intentàvem representar el mapa.
+        export: Esportar
         latitude: Latitud
         longitude: Longitud
         no_value: Cap valor
@@ -134,10 +144,23 @@ ca:
         customizing_flyout: Esteu personalitzant aquesta pàgina actualment
         customizing_flyout_instructions: Podeu fer clic a aquest botó sempre que vulgueu visualitzar i guardar els canvis
         exit_visualization_export: 'Per entrar en el mode de personalització: Sortiu  del mode "Descarregar la visualització com a imatge" fent clic al botó de cancel·lar al panell informatiu'
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: Mapa custom
-          standard: Estàndard
+          simple_blue:
+          simple_grey:
           title: Mapa basat en estrats
         visualization_options:
           title: Tipus de targeta
@@ -147,8 +170,22 @@ ca:
         errors:
           error: Hem trobat un error mentre intentàvem de proveir aquesta targeta
           no_data: No hi ha cap dada per mostrar
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: El zoom no és disponible temporalment. Si us plau, proveu-ho més tard.
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: Sembla que alguna cosa no va bé.
         feedback: Opinió
@@ -172,10 +209,13 @@ ca:
         clear_filter_long: Actualment la pàgina és filtrada amb aquest valor, feu clic aquí per esborrar-ho
         clear_range_filter_long: Actualment aquesta pàgina és filtrada per aquesta selecció, feu clic aquí per esborrar-ho
         current_filter: Filtre actual
+        dense_data:
         details: Cliqueu per veure els detalls
         expand: Cliqueu per expandir-ho
+        filter_prompt:
         filtered_amount: Quantitat filtrada
         total: Total
+        zoom_or_filter_prompt:
       last_updated:
         label: "última actualització"
       lens_type:
@@ -186,7 +226,44 @@ ca:
         dataset_private_page_public: '<span class="icon-warning"></span>  La font de la taula de dades d''aquesta pàgina s''ha configurat com a <b>Private</b>, així que encara que aquesta pàgina sigui configurada com a pública, ningú sense accés no podrà veure la font d''aquesta taula de dades. Així i tot, apareixerà en el catàleg públic. Hauríeu de considerar de configurar la taula de dades com a pública o la pàgina com a privada. '
         dataset_public_page_private: 'Aquesta pàgina s''ha configurat com a <b>Private</b>, així que només aquells que tinguin accés privilegiat podran veure-la. No apareixerà en el catàleg públic. '
         dataset_public_page_public: 'Aquesta pàgina i les fonts de les taules de dades són totes <b>Public</b>, així doncs tothom ho podrà veure i apareixerà en el catàleg públic. '
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: Dirigir
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: Totes les fonts de les dades com a CSV (Exel)
         edit_description_prompt: Descriviu bé la vostra pàgina perquè ajuda que la gent entengui tot el que les vostres dades volen dir. (Opcional)
@@ -215,6 +292,16 @@ ca:
       related_views:
         button: Altres vistes d'aquesta dada
         title: Aaltres vistes d'aquesta dada
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: Feu clic per desfer tots els canvis des de l'última vegada que vàreu guardar-ho
         flyoutNoChanges: Cap canvi a fer
@@ -227,6 +314,7 @@ ca:
         link_placeholder: Entreu un URL aquí
         underline: Subratllat
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: Si us plau, contacteu amb Socrata Support
         flyoutFailedTitle: Hi ha hagut un error
         flyoutIdle: Feu clic per guardar tots els canvis coma una pàgina nova
@@ -236,6 +324,9 @@ ca:
         description: Entreu una descripció per la vostra nova pàgina (opcional)
         new_name: Guardeu la pàgina actual amb un nom nou
         title: Guardar com
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: Ha fallat
         flyoutFailedBody: Si us plau, contacteu amb Socrata Support
@@ -245,7 +336,19 @@ ca:
         save: Guardar
         saved: Guardat!
         saving: Guardant...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: Intenteu buscar per números, no per lletres.
         loading: 'Carregant suggeriments... '
         no_results: 'La vostra cerca no té cap resultat. Reviseu que estigui tot ben escrit o canvieu de terme. '
@@ -256,6 +359,7 @@ ca:
         two_examples: 'Exemples: ''{0}'' o ''{1}'''
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -270,6 +374,7 @@ ca:
         newest_first: El primer més nou
         no_rows: No hi ha files per mostrar
         no_sort:
+        non_range_label:
         oldest_first: El primer més antic
         range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
         range_label_all: Mostra-ho tot {0} {1}
@@ -352,7 +457,8 @@ ca:
           href: Conjunts de Dades Externs
           maps: Mapes
           new_view: Pàgines de visió de dades
-          new_view_help: Què és això?
+          pulse:
+          pulse_help:
           story: Històries
           story_help: Apreneu més coses sobre les històries
           unpublished: Conjunts de Dades No Publicats
@@ -364,6 +470,7 @@ ca:
         federation_source_html: Proveït per %{source_link}
         no_results: Sense Resultats
         result_count: Mostrant %{this} de %{total}
+        result_count_cetera:
         table_header:
           name: Nom
           popularity: Popularitat
@@ -766,10 +873,14 @@ ca:
       flag: Bandera
       geospatial: Geoespacial
       html: Text Formatat
+      line:
       link: Enllaça a la Columna
       list: Llista
       location: Localització
       money: Moneda
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: Taula Ennierada
       number: Nombre
       object: Objecte
@@ -777,6 +888,7 @@ ca:
       phone: Telèfon
       photo: Foto (Imatge)
       point: Punt
+      polygon:
       stars: 'Estrella '
       text: Text Pla
       url: URL del Lloc Web
@@ -826,6 +938,7 @@ ca:
       years_past: fa %{time} anys
     dialogs:
       apply: Sol·licitar
+      back:
       cancel: Cancel·lar
       close: Tancar
       continue: Continuar
@@ -1196,9 +1309,15 @@ ca:
       date_range: Interval de Dades
       done: Fet
       end_date: Data de finalització
+      last_30_days:
       last_month: Mes passat
+      last_week:
+      last_year:
       month_to_date: De Mes a Dates
       next: Següent
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: Previ
       specific_date: Data Específica
       start_date: Data d'inici
@@ -1208,6 +1327,7 @@ ca:
       today: Avui
       week_to_date: De Setmanes a Dates
       year_to_date: D'anys a Dates
+      yesterday:
     fileuploader:
       drop_files: Deixi caure els fitxers ací per a carregar-los
       failed: Fallida
@@ -1359,6 +1479,48 @@ ca:
         target_domain: Domini Objectiu
         terminate: Finalitzar
         title: Federació de Dades Obertes
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: Afegir un Nou Conjunt de Dades Destacat
         are_you_sure: Està segur? Aquesta acció no es pot desfer.
@@ -1532,6 +1694,9 @@ ca:
         missing_esri_url: Es requereix una capa de mapes ESRI vàlida.
         missing_name: Es requereix un nom per al conjunt de dades.
         need_description: Si us plau, descrigui &ldquo;%{name}&rdquo;
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: El seu Conjunt de Dades ha estat creat.
         subheadline: Cliqui en Finalitzar per veure-ho!
@@ -1816,6 +1981,9 @@ ca:
             flag: marca
             formatted_text: text formatat
             geospatial: geoespacial
+            groups:
+              geometry:
+              standard:
             list: llista
             location: localització
             money: moneda
@@ -2049,6 +2217,9 @@ ca:
             abbreviated: Abreviatura
             currency: Moneda
             format_mask_warning: "-"
+            groups:
+              all:
+              common:
             no_precision: Cap
             precision: Precisió
             title: Format de Moneda
@@ -2111,6 +2282,10 @@ ca:
           validation:
             no_columns: Aquesta vista no té columnes que filtrar
             no_icons: Les icones són relevants únicament per a la vista de mapa
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: Açò eliminarà el %{view_type} permanentment. No hi ha volta de fulla! Segur que desitja continuar?
           delete_button: Eliminar aquest %{view_type}
@@ -2315,6 +2490,8 @@ ca:
             title: Columnes
           subtitle: Ajustar les columnes que seran visibles en aquesta vista
           title: Mostrar i Amagar Columnes
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: Afegir Columna d'Agrupament
@@ -2517,6 +2694,7 @@ ca:
       existing_latlng_cols: Columnes de Latitud i Longitud Existents
       find: cercar
       find_and_replace: Cercar i Reemplaçar valors...
+      import_from_latlong:
       import_from_multiple: Importar des de <strong>múltiples columnes</strong>
       import_from_single: Importar des d'una <strong>columna única</strong>
       latitude: Latitud
@@ -2530,6 +2708,7 @@ ca:
       new_source_col: Afegir nova columna font
       new_transform: Afegir nova transformació
       options: Opcions
+      point_source_col:
       properly_formatted: La columna ha d'estar a href="%{formatting_link}" rel="external">adequadament formatada</a> abans d'importar
       regular_expression: expressió regular
       remove: eliminar
@@ -2558,6 +2737,7 @@ ca:
       one_header: Una de les seves files és una capçalera.
       problem_importing: Ha ocorregut un problema mentre importàvem aquest fitxer. Si us plau, asseguri's de que siga vàlid.
       problem_uploading: Ha ocorregut un problema mentre carregàvem aquest fitxer. Si us plau, asseguri's de que siga vàlid.
+      replicating:
       rows_imported: "%{num} files importades fins al moment."
       try_again: Si us plau, provi una altra vegada en uns moments.
       unknown_error: Ha ocorregut un error desconegut
@@ -2749,6 +2929,10 @@ ca:
       comments_created: comentaris creats
       daily: Diàriament
       deleted_application: aplicació eliminada
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: Mètriques Depenents
       download: descarregar
       downloads: descàrregues
@@ -2773,6 +2957,7 @@ ca:
       no_data_time_period: Cap dada en aquest període
       page_viewed: pàgina vista
       pages_viewed: pàgines vistes
+      preceding_period:
       referrals: Referents
       rows_loaded: Files Carregades
       sdp: SDP

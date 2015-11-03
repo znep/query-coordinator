@@ -46,8 +46,13 @@ ru:
         card_on_page: "Карта уже на странице"
         card_on_page_long: "Эта карта уже на странице"
         choose_column: "Выбрать столбец"
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: "Примечание: это приведет к созданию столбчатой диаграммы с более чем 100 столбцами, которая может быть медленнее других диаграмм"
+        custom:
         customize_prompt: "Настроить эту карту"
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: "В данный момент не поддерживается"
         not_supported_long: "Этот тип карты в данный момент не поддерживается"
         prompt: "Выбрать столбец из раскрывающегося меню выше, чтобы добавить новую карту"
@@ -93,11 +98,15 @@ ru:
         remove_card: "Удалить эту карту"
       card_layout:
         add_card_here: "Добавить карту здесь"
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average: "средний {0}"
         number_of: "количество {0}"
         sum_of: "сумма {0}"
       common:
+        by:
         cancel: "Отмена"
         cards:
           choropleth: "Картограмма"
@@ -115,6 +124,7 @@ ru:
           export_visualization_disabled: " Эта визуализация недоступна для<br/>экспорта изображения"
           invalid_card: "Неправильная визуализация карты"
           map_render_error: "Произошла ошибка при попытке отрисовать эту карту."
+        export: "Экспортировать"
         latitude: "Широта"
         longitude: "Долгота"
         no_value: "Нет значений"
@@ -134,10 +144,23 @@ ru:
         customizing_flyout: "Сейчас вы настраиваете эту страницу"
         customizing_flyout_instructions: "Вы можете нажать эту кнопку в любое время для предварительного просмотра и сохранения изменений"
         exit_visualization_export: "Для входа в режим настройки: необходимо выйти из режима «Загрузить визуализацию как изображение», нажав на кнопку отмены на панели информации "
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: "Пользовательская карта"
-          standard: "Стандарт"
+          simple_blue:
+          simple_grey:
           title: "Базовый слой карты"
         visualization_options:
           title: "Тип карты"
@@ -147,8 +170,22 @@ ru:
         errors:
           error: "Произошла ошибка при попытке отрисовать эту карту."
           no_data: "Нет данных для показа"
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: "Масштабирование временно недоступно. Пожалуйста, повторите попытку позже."
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: "Похоже, что-то сломалось"
         feedback: "Отзыв"
@@ -172,10 +209,13 @@ ru:
         clear_filter_long: "В данный момент страница отфильтрована по этому значению, нажмите, чтобы его очистить"
         clear_range_filter_long: "В данный момент страница отфильтрована по этому выбору, нажмите, чтобы его очистить"
         current_filter: "Текущий фильтр"
+        dense_data:
         details: "Щелкните, чтобы просмотреть подробные сведения"
         expand: "Нажать для расширения"
+        filter_prompt:
         filtered_amount: "Отфильтрованное количество"
         total: "Итого"
+        zoom_or_filter_prompt:
       last_updated:
         label: "последнее обновление"
       lens_type:
@@ -186,7 +226,44 @@ ru:
         dataset_private_page_public: <span class="icon-warning"></span> Набор данных источника этой страницы установлен как <b>Частный</b>, даже если эту страницу сделать Публичной, пользователи без права доступа не смогут ее увидеть. Она появится в публичном каталоге. Вы можете установить набор данных как Публичный или установить эту страницу как Частная.
         dataset_public_page_private: "Эта страница установлена как <b>Частная</b>, поэтому ее могут увидеть только пользователи с правом доступа. Она не появится в публичном каталоге."
         dataset_public_page_public: "Эта страница и ее набор данных источника установлены как <b>Публичный</b>, поэтому эту страницу смогут увидеть все пользователи и она появится в публичном каталоге."
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: "Управление"
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: "Полные данные источника как CSV (Excel)"
         edit_description_prompt: "Сделайте хорошее описание своей страницы, которое поможет людям понять историю ваших данных (дополнительно)."
@@ -215,6 +292,16 @@ ru:
       related_views:
         button: "Другие виды этих данных"
         title: "Другие виды этих данных"
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: "Нажмите для отмены всех изменений с момента вашего последнего сохранения"
         flyoutNoChanges: "Нет изменений для отмены "
@@ -227,6 +314,7 @@ ru:
         link_placeholder: "Ввести URL здесь"
         underline: "Подчеркнутый"
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: "Обратитесь в службу поддержки Socrata"
         flyoutFailedTitle: "Произошла ошибка"
         flyoutIdle: "Нажать, чтобы сохранить изменения в виде новой страницы"
@@ -236,6 +324,9 @@ ru:
         description: "Введите описание новой страницы (необязательно)"
         new_name: "Сохранить текущую страницу с новым именем"
         title: "Сохранить как"
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: "Сбой"
         flyoutFailedBody: "Обратитесь в службу поддержки Socrata"
@@ -245,7 +336,19 @@ ru:
         save: "Сохранить"
         saved: "Сохранено!"
         saving: "Идет сохранение..."
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: "Попробуйте искать число, не содержащее буквы."
         loading: "Загрузка вариантов..."
         no_results: "Поиск не дал результатов. Проверьте орфографию или введите другой термин."
@@ -256,6 +359,7 @@ ru:
         two_examples: "Примеры: '{0}' or '{1}'"
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -270,6 +374,7 @@ ru:
         newest_first: "начиная с самого нового"
         no_rows: "Нет строк для показа"
         no_sort:
+        non_range_label:
         oldest_first: "начиная с самого старого"
         range_label: "{0} <strong>{1}-{2} из {3}</strong>"
         range_label_all: "Показ всех {0} {1}"
@@ -352,7 +457,8 @@ ru:
           href: "Массивы данных из внешних источников"
           maps: "Карты"
           new_view: "Страницы Линз данных "
-          new_view_help: "Что это?"
+          pulse:
+          pulse_help:
           story: "Истории"
           story_help: "Узнать об историях"
           unpublished: "Неопубликованные массивы данных"
@@ -364,6 +470,7 @@ ru:
         federation_source_html: "Предоставлено %{source_link}"
         no_results: "Результаты не найдены"
         result_count: "Показано %{this} из %{total}"
+        result_count_cetera:
         table_header:
           name: "Название"
           popularity: "Популярность"
@@ -764,10 +871,14 @@ ru:
       flag: "Флажок"
       geospatial: "Геопространственный"
       html: "Форматированный текст"
+      line:
       link: "Ссылка на столбец"
       list: "Список"
       location: "Местоположение"
       money: "Деньги"
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: "Вложенная таблица"
       number: "Число"
       object: "Объект"
@@ -775,6 +886,7 @@ ru:
       phone: "Телефон"
       photo: "Фото (изображение)"
       point: "Точка"
+      polygon:
       stars: "Звездочка"
       text: "Текст в текстовом формате"
       url: URL сайта
@@ -824,6 +936,7 @@ ru:
       years_past: "%{time} лет (года) назад"
     dialogs:
       apply: "Применить"
+      back:
       cancel: "Отменить"
       close: "Закрыть"
       continue: "Продолжить"
@@ -1194,9 +1307,15 @@ ru:
       date_range: "Диапазон дат"
       done: "Готово"
       end_date: "Дата окончания"
+      last_30_days:
       last_month: "Прошлый месяц"
+      last_week:
+      last_year:
       month_to_date: "С начала месяца"
       next: "Следующий"
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: "Предыдущий"
       specific_date: "Конкретная дата"
       start_date: "Дата начала"
@@ -1206,6 +1325,7 @@ ru:
       today: "Сегодня"
       week_to_date: "С начала недели"
       year_to_date: "С начала года"
+      yesterday:
     fileuploader:
       drop_files: "Перетащите файлы сюда для загрузки"
       failed: "Не удалось"
@@ -1359,6 +1479,48 @@ ru:
         target_domain: "Целевой домен"
         terminate: "Завершить"
         title: "Федерация открытых данных"
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: "Добавить новый популярный набор данных"
         are_you_sure: "Вы уверены? Это действие необратимо."
@@ -1534,6 +1696,9 @@ ru:
         missing_esri_url: "Требуется действительный URL слоя карты ESRI."
         missing_name: "Требуется имя набора данных."
         need_description: "Опишите &ldquo;%{name}&rdquo;"
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: "Ваш набор данных был создан."
         subheadline: "Чтобы его увидеть, нажмите на Завершить!"
@@ -1818,6 +1983,9 @@ ru:
             flag: "флаг"
             formatted_text: "Форматированный тест"
             geospatial: "геопространственное"
+            groups:
+              geometry:
+              standard:
             list: "Список"
             location: "расположение"
             money: "Деньги"
@@ -2060,6 +2228,9 @@ ru:
             abbreviated: "Сокращенное наименование"
             currency: "Валюта"
             format_mask_warning: "-"
+            groups:
+              all:
+              common:
             no_precision: "Нет"
             precision: "Точность"
             title: "Формат отображения денежных сумм"
@@ -2122,6 +2293,10 @@ ru:
           validation:
             no_columns: "В этом режиме просмотра нет столбцов для отбора при помощи фильтра"
             no_icons: "Пиктограммы относятся только к картам"
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: "Данный %{view_type} будет удален навсегда. Отменить удаление невозможно! Уверены, что намерены продолжить?"
           delete_button: "Удалить данный  %{view_type}"
@@ -2326,6 +2501,8 @@ ru:
             title: "Столбцы"
           subtitle: "Указать, какие столбцы должны быть показаны в данном режиме просмотра"
           title: "Показать (Show &amp); скрыть столбцы"
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: "Добавить столбец для группировки"
@@ -2528,6 +2705,7 @@ ru:
       existing_latlng_cols: "Существующие столбцы широты и долготы"
       find: "найти"
       find_and_replace: "Найти и заменить значение..."
+      import_from_latlong:
       import_from_multiple: "Импортировать из <strong>нескольких столбцов</strong>"
       import_from_single: "Импортировать из <strong>одного столбца</strong>"
       latitude: "Широта"
@@ -2541,6 +2719,7 @@ ru:
       new_source_col: "Добавить новый исходный столбец"
       new_transform: "Добавить новое преобразование"
       options: "Параметры"
+      point_source_col:
       properly_formatted: Столбец должен быть <a href="%{formatting_link}" rel="external">правильно отформатирован</a> перед импортом.
       regular_expression: "регулярное выражение"
       remove: "удалить"
@@ -2569,6 +2748,7 @@ ru:
       one_header: "Одна ваша строка является заголовком."
       problem_importing: "Произошла ошибка при импорте этого файла. Убедитесь, что файл допустимый."
       problem_uploading: "Произошла ошибка при загрузке этого файла. Убедитесь, что файл допустимый."
+      replicating:
       rows_imported: "на настоящий момент импортировано %{num} строк"
       try_again: "Повторите попытку позже."
       unknown_error: "Произошла неизвестная ошибка"
@@ -2760,6 +2940,10 @@ ru:
       comments_created: "комментарии созданы"
       daily: "Ежедневно"
       deleted_application: "удаленное приложение"
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: "Зависимые метрики"
       download: "загрузка"
       downloads: "загрузки"
@@ -2784,6 +2968,7 @@ ru:
       no_data_time_period: "Нет данных за этот период времени"
       page_viewed: "просмотренная страница"
       pages_viewed: "просмотренные страницы"
+      preceding_period:
       referrals: "Ссылки"
       rows_loaded: "Строк загружено"
       sdp: SDP

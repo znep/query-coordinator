@@ -46,8 +46,13 @@ pt:
         card_on_page: O cartão já consta da página
         card_on_page_long: Este cartão já se encontra na página
         choose_column: Selecione uma coluna...
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: 'Atenção: Isto resultaria num gráfico de barras com mais de cem barras, podendo ser mais lento do que os outros gráficos'
+        custom:
         customize_prompt: Personalize este cartão
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: Não é suportado atualmente
         not_supported_long: Este tipo de cartão não é suportado atualmente
         prompt: Selecione uma coluna a partir da janela suspensa acima para adicionar um novo cartão.
@@ -93,11 +98,15 @@ pt:
         remove_card: Eliminar este cartão
       card_layout:
         add_card_here: Adicionar o cartão aqui
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average: média de {0}
         number_of: número de {0}
         sum_of: quantia de {0}
       common:
+        by:
         cancel: Cancelar
         cards:
           choropleth: Choropleth
@@ -115,6 +124,7 @@ pt:
           export_visualization_disabled: Esta visualização não está disponível<br/>para a exportação de imagens
           invalid_card: 'Visualização inválida de Cartão '
           map_render_error: Foi encontrado um erro ao tentarmos apresentar este mapa.
+        export: Exportar
         latitude: Latitude
         longitude: Longitude
         no_value: Sem qualquer valor
@@ -134,10 +144,23 @@ pt:
         customizing_flyout: Encontra-se agora a personalizar esta página
         customizing_flyout_instructions: Pode clicar neste botão a qualquer momento para pré-visualizar as suas alterações e guardá-las a qualquer momento.
         exit_visualization_export: 'Para entrar no modo de personalização: Saia do modo "Desacarregar a Visualização como Imagem" clicando no botão cancelar no Painel de Informações'
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: Mapa Personalizado
-          standard: Padrão
+          simple_blue:
+          simple_grey:
           title: Camada de base do mapa
         visualization_options:
           title: Tipo de cartão
@@ -147,8 +170,22 @@ pt:
         errors:
           error: Foi encontrado um erro ao tentar apresentar este cartão.
           no_data: Não existem dados para apresentar.
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: A ampliação está temporariamente indisponível. Queira tentar novamente mais tarde.
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: Algo parece estar fracionado
         feedback: Análise
@@ -172,10 +209,13 @@ pt:
         clear_filter_long: A página é atualmente filtrada por este valor, clique para a limpar
         clear_range_filter_long: Esta página é atualmente filtrada por esta seleção, clique para a limpar
         current_filter: Filtro atual
+        dense_data:
         details: Clique para ver os detalhes
         expand: Clique para expandir
+        filter_prompt:
         filtered_amount: Valor filtrado
         total: Total
+        zoom_or_filter_prompt:
       last_updated:
         label: "último atualizado"
       lens_type:
@@ -186,7 +226,44 @@ pt:
         dataset_private_page_public: <span class="icon-warning"></span> O conjunto de dados da fonte desta página está definido como <b>Private</b>, por isso embora esta página esteja definida para o público, qualquer pessoa sem acesso ao conjunto de dados da fonte não conseguirá visualizar a mesma. Continuará a aparecer no catálogo público. Deverá considerar a definir o conjunto de dados como Públicos, ou então definir esta página como Privada.
         dataset_public_page_private: Esta página está definida como <b>Private</b>, pelo que apenas aqueles que possuem acesso privilegiado poderão visualizá-la. Não irá surgir no catálogo público.
         dataset_public_page_public: Esta página e o conjunto de dados da sua fonte são ambos <b>Públicos</b>, por isso qualquer pessoa poderá visualizá-la e a mesma irá surgir no catálogo público.
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: Gerir
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: Dados de fontes completos como CSV (Exel)
         edit_description_prompt: Dê à sua página uma boa descrição que ajude as pessoas a compreenderem a história que os seus dados estão a tentar contar. (Opcional)
@@ -215,6 +292,16 @@ pt:
       related_views:
         button: Outras vistas destes dados
         title: Outras vistas destes dados
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: Clique para anular todas as alterações desde que guardou pela última vez
         flyoutNoChanges: Não existem alterações para anular
@@ -227,6 +314,7 @@ pt:
         link_placeholder: Introduza uma URL aqui
         underline: Sublinhar
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: Queira contactar o Serviço de Apoio ao Cliente da Socrata
         flyoutFailedTitle: Ocorreu um erro
         flyoutIdle: Clique para guardar as suas alterações como uma nova página
@@ -236,6 +324,9 @@ pt:
         description: Introduza uma descrição para a sua nova página (opcional)
         new_name: Guarde a página atual com um novo nome.
         title: Guardar como
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: Falhou
         flyoutFailedBody: Queira contactar o serviço de apoio da Socrata
@@ -245,7 +336,19 @@ pt:
         save: Guardar
         saved: Guardado!
         saving: A guardar...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: Tente pesquisar um número que não contenha letras.
         loading: A carregar sugestões...
         no_results: A sua pesquisa não teve resultados. Verifique a sua ortografia ou tente um termo diferente.
@@ -256,6 +359,7 @@ pt:
         two_examples: 'Examplos: ''{0}'' ou ''{1}'''
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -270,6 +374,7 @@ pt:
         newest_first: O mais recente em primeiro lugar
         no_rows: Sem colunas para apresentar
         no_sort:
+        non_range_label:
         oldest_first: Os mais velhos primeiro
         range_label: "{0} <strong>{1}-{2} de {3}</strong>"
         range_label_all: Exibindo todos {0} {1}
@@ -352,7 +457,8 @@ pt:
           href: Tabelas Externas
           maps: Mapas
           new_view: Páginas de Data Lens
-          new_view_help: O que é isto?
+          pulse:
+          pulse_help:
           story: Histórias
           story_help: Conheça as histórias
           unpublished: Tabelas Não-Publicadas
@@ -364,6 +470,7 @@ pt:
         federation_source_html: Fornecido por %{source_link}
         no_results: Sem Resultados
         result_count: Mostrando %{this} de %{total}
+        result_count_cetera:
         table_header:
           name: Nome
           popularity: Popularidade
@@ -764,10 +871,14 @@ pt:
       flag: Marcar
       geospatial: Geoespacial
       html: Texto formatado
+      line:
       link: Ligar coluna
       list: Lista
       location: Localização
       money: Dinheiro
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: Tabela aninhada
       number: Número
       object: Objeto
@@ -775,6 +886,7 @@ pt:
       phone: Telefone
       photo: Foto (Imagem)
       point: Ponto
+      polygon:
       stars: Estrela
       text: Texto simples
       url: URL da página
@@ -825,6 +937,7 @@ pt:
       years_past: há %{time} anos atrás
     dialogs:
       apply: Aplicar
+      back:
       cancel: Cancelar
       close: Fechar
       continue: Continuar
@@ -1195,9 +1308,15 @@ pt:
       date_range: Intervalo de Datas
       done: Concluído
       end_date: Data final
+      last_30_days:
       last_month: Mês Passado
+      last_week:
+      last_year:
       month_to_date: Mês da Data
       next: Seguinte
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: Anterior
       specific_date: Data Específica
       start_date: Data inicial
@@ -1207,6 +1326,7 @@ pt:
       today: Hoje
       week_to_date: Semana da Data
       year_to_date: Ano da Data
+      yesterday:
     fileuploader:
       drop_files: Solte os arquivos aqui para carregar
       failed: Falhou
@@ -1358,6 +1478,48 @@ pt:
         target_domain: Domínio Alvo
         terminate: Terminar
         title: Federação de Dados Abertos
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: Adicionar uma Nova Tabela de Dados em Destaque
         are_you_sure: Tem certeza? Esta ação não pode ser revertida.
@@ -1531,6 +1693,9 @@ pt:
         missing_esri_url: Uma camada de mapa ESRI válida é necessária.
         missing_name: O nome da tabela de dados é obrigatório.
         need_description: Por favor, descreva &ldquo;%{name}&rdquo;
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: A sua Tabela de Dados foi criada.
         subheadline: Clique em Terminar para vê-la!
@@ -1815,6 +1980,9 @@ pt:
             flag: assinalar
             formatted_text: texto formatado
             geospatial: geoespacial
+            groups:
+              geometry:
+              standard:
             list: lista
             location: localização
             money: dinheiro
@@ -2048,6 +2216,9 @@ pt:
             abbreviated: Abreviado
             currency: Câmbio
             format_mask_warning:
+            groups:
+              all:
+              common:
             no_precision: Nenhum
             precision: Precisão
             title: Formatação do dinheiro
@@ -2110,6 +2281,10 @@ pt:
           validation:
             no_columns: Esta visualização não tem colunas para filtrar
             no_icons: Os ícones apenas são relevantes para a visualização de mapa
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: Isto irá deletar %{view_type} permanentemente. Não haverá como desfazer isso! Tem a certeza de que quer continuar?
           delete_button: Deletar esta %{view_type}
@@ -2314,6 +2489,8 @@ pt:
             title: Colunas
           subtitle: Ajuste quais colunas são visíveis nesta visualização
           title: Mostrar &amp; Omitir colunas
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: Adicionar coluna de agrupamento
@@ -2516,6 +2693,7 @@ pt:
       existing_latlng_cols: Colunas de Latitude e Longitude existentes
       find: localizar
       find_and_replace: Localizar e Substituir valor...
+      import_from_latlong:
       import_from_multiple: Importar de <strong>múltiplas colunas</strong>
       import_from_single: Importar de <strong>uma única coluna</strong>
       latitude: Latitude
@@ -2529,6 +2707,7 @@ pt:
       new_source_col: Adicionar nova coluna fonte
       new_transform: Adicionar nova transformação
       options: Opções
+      point_source_col:
       properly_formatted: A coluna tem de ser <a href="%{formatting_link}" rel="external">formatada corretamente</a> antes da importação.
       regular_expression: expressão regular (regex)
       remove: remover
@@ -2557,6 +2736,7 @@ pt:
       one_header: Uma das suas linhas é um cabeçalho.
       problem_importing: Ocorreu um problema ao importar o arquivo. Por favor, certifique-se que é válido.
       problem_uploading: Ocorreu um problema ao carregar o arquivo. Por favor, certifique-se que é válido.
+      replicating:
       rows_imported: "%{num} linhas importadas até agora."
       try_again: Por favor, tente novamente daqui a pouco.
       unknown_error: Ocorreu um erro desconhecido
@@ -2748,6 +2928,10 @@ pt:
       comments_created: comentários criados
       daily: Diariamente
       deleted_application: aplicativo deletado
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: Métricas Dependentes
       download: download
       downloads: downloads
@@ -2772,6 +2956,7 @@ pt:
       no_data_time_period: Nenhum dado para este período de tempo
       page_viewed: página visualizada
       pages_viewed: páginas visualizadas
+      preceding_period:
       referrals: Referências
       rows_loaded: Linhas Carregadas
       sdp: SDP

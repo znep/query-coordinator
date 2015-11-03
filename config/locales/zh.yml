@@ -46,8 +46,13 @@ zh:
         card_on_page: "卡片已在页面上"
         card_on_page_long: "该卡片已在页面上"
         choose_column: "选择一列"
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: "注意：这将产生一个超过一百条的柱状图，可能比其它图表慢"
+        custom:
         customize_prompt: "自定义此卡片"
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: "目前暂不支持"
         not_supported_long: "目前暂不支持此卡片类型"
         prompt: "从上面的下拉列表中选择一列添加新卡"
@@ -93,11 +98,15 @@ zh:
         remove_card: "删除此卡片"
       card_layout:
         add_card_here: "在此添加卡片"
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average:
         number_of:
         sum_of:
       common:
+        by:
         cancel: "取消"
         cards:
           choropleth: "等值线"
@@ -115,6 +124,7 @@ zh:
           export_visualization_disabled: "这种可视化是不可用于<br/>图像导出"
           invalid_card: "无效的卡片可视化"
           map_render_error: "尝试解析该地图时遇到错误。"
+        export: "导出"
         latitude: "纬度"
         longitude: "经度"
         no_value: "无数值"
@@ -134,10 +144,23 @@ zh:
         customizing_flyout: "你正在自定义此页面"
         customizing_flyout_instructions: "你可以随时点击此按钮预览你的修改并保存"
         exit_visualization_export: "要进入自定义模式：点击点击信息窗格中的取消按钮退出“下载图形可视化”模式"
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: "自定义地图"
-          standard: "标准"
+          simple_blue:
+          simple_grey:
           title: "地图基底层"
         visualization_options:
           title: "卡片类型"
@@ -147,8 +170,22 @@ zh:
         errors:
           error: "尝试解析此卡片时遇到错误。"
           no_data: "没有可显示的数据。"
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: "缩放功能暂不可用。请稍后再试。"
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: "似乎出了故障"
         feedback: "反馈"
@@ -172,10 +209,13 @@ zh:
         clear_filter_long: "此页面当前由该值过滤，点击清除"
         clear_range_filter_long: "此页面当前由该选项过滤，点击清除"
         current_filter: "当前过滤器"
+        dense_data:
         details: "点击查看详情"
         expand: "点击展开"
+        filter_prompt:
         filtered_amount: "过滤量"
         total: "总计"
+        zoom_or_filter_prompt:
       last_updated:
         label: "最近更新"
       lens_type:
@@ -186,7 +226,44 @@ zh:
         dataset_private_page_public: <span class="icon-warning"></span>此页面的源数据集被设为<b>隐私</b>，因此尽管此页面被设为公开，没有源数据集访问权限的任何人都无法看到该页面。它仍然会出现在公共目录中。你应该考虑将数据集设置为公开，或将本页面设置为隐私。
         dataset_public_page_private: "此页面被设为<b>隐私</b>，因此只有拥有访问特权的人可以看到。它不会出现在公共目录中。"
         dataset_public_page_public: "此页面及其源数据集均为<b>公开</b>，因此任何人都可以看到此页面并且它将出现在公共目录中。"
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: "管理"
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: "完整的源数据为CSV（Excel）"
         edit_description_prompt: "给你的页面写一段好的介绍，帮助别人理解你的数据所讲述的故事。（可选）"
@@ -215,6 +292,16 @@ zh:
       related_views:
         button: "此数据的其他视图"
         title: "此数据的其他视图"
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: "点击撤销上次保存后所做的所有修改"
         flyoutNoChanges: "没有要还原的修改"
@@ -227,6 +314,7 @@ zh:
         link_placeholder: "在此输入一个URL"
         underline: "下划线"
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: "请联系Socrata支持团队"
         flyoutFailedTitle: "发生了一个错误"
         flyoutIdle: "点击保存你的修改为新页面"
@@ -236,6 +324,9 @@ zh:
         description: "为你的页面输入一段说明（可选）"
         new_name: "以新名称保存当前页面"
         title: "保存为"
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: "失败"
         flyoutFailedBody: "请联系Socrata支持团队"
@@ -245,7 +336,19 @@ zh:
         save: "保存"
         saved: "已保存！"
         saving: "正在保存……"
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: "尝试搜索不含字母的数字。"
         loading: "加载建议……"
         no_results: "没有搜到任何记录。请检查你的拼写，或尝试不同的词语。"
@@ -256,6 +359,7 @@ zh:
         two_examples: "例如：'{0}'或'{1}'"
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -270,6 +374,7 @@ zh:
         newest_first: "最新者优先"
         no_rows: "没有可显示的行"
         no_sort:
+        non_range_label:
         oldest_first: "最旧者优先"
         range_label: "{0} <strong>{1}-{2}之{3}</strong>"
         range_label_all: "显示所有{0} {1}"
@@ -352,7 +457,8 @@ zh:
           href: "外部数据集"
           maps: "地图"
           new_view: "数据透镜页面"
-          new_view_help: "这是什么？"
+          pulse:
+          pulse_help:
           story: "故事"
           story_help: "了解故事"
           unpublished: "未发布的数据集"
@@ -364,6 +470,7 @@ zh:
         federation_source_html: "来源：%{source_link}"
         no_results: "没有结果"
         result_count: "共%{total}个结果，显示 %{this} "
+        result_count_cetera:
         table_header:
           name: "名称"
           popularity: "关注度"
@@ -764,10 +871,14 @@ zh:
       flag: "旗标"
       geospatial: "地理空间"
       html: "格式化文本"
+      line:
       link: "链接列"
       list: "列表"
       location: "地点"
       money: "金额"
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: "嵌套表"
       number: "数字"
       object: "对象"
@@ -775,6 +886,7 @@ zh:
       phone: "电话"
       photo: "照片（图像）"
       point: "点"
+      polygon:
       stars: "星号"
       text: "纯文本"
       url: "网址"
@@ -824,6 +936,7 @@ zh:
       years_past: "%{time} 年前"
     dialogs:
       apply: "应用"
+      back:
       cancel: "取消"
       close: "关闭"
       continue: "继续"
@@ -1194,9 +1307,15 @@ zh:
       date_range: "数据范围"
       done: "完成"
       end_date: "结束日期"
+      last_30_days:
       last_month: "上月"
+      last_week:
+      last_year:
       month_to_date: "月至今"
       next: "下一"
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: "上一"
       specific_date: "具体日期"
       start_date: "开始日期"
@@ -1206,6 +1325,7 @@ zh:
       today: "今天"
       week_to_date: "周至今"
       year_to_date: "年至今"
+      yesterday:
     fileuploader:
       drop_files: "文件拖放此处上传"
       failed: "失败"
@@ -1357,6 +1477,48 @@ zh:
         target_domain: "目标域"
         terminate: "终止"
         title: "打开数据联盟"
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: "添加新精选数据集"
         are_you_sure: "你确定吗？此操作不可撤消。"
@@ -1528,6 +1690,9 @@ zh:
         missing_esri_url: "必需有一个有效的ESRI地图图层的URL。"
         missing_name: "数据集名称为必需。"
         need_description: "请说明&ldquo;%{name}&rdquo;"
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: "你的数据集已创建。"
         subheadline: "单击Finish（完成）查看！"
@@ -1812,6 +1977,9 @@ zh:
             flag: "标志"
             formatted_text: "带格式的文本"
             geospatial: "地理空间"
+            groups:
+              geometry:
+              standard:
             list: "列表"
             location: "位置"
             money: "资金"
@@ -2045,6 +2213,9 @@ zh:
             abbreviated: "缩写"
             currency: "币种"
             format_mask_warning:
+            groups:
+              all:
+              common:
             no_precision: "无"
             precision: "精确度"
             title: "货币格式"
@@ -2107,6 +2278,10 @@ zh:
           validation:
             no_columns: "此视图无列可筛选"
             no_icons: "图标只与地图视图相关"
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: "此操作将永久删除 %{view_type} 。再没有办法恢复！您确信要继续吗？ "
           delete_button: "删除 %{view_type}"
@@ -2311,6 +2486,8 @@ zh:
             title: "列"
           subtitle: "调整在此视图中显示的列"
           title: "显示/隐藏列"
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: "添加分组列"
@@ -2513,6 +2690,7 @@ zh:
       existing_latlng_cols: "现有的纬度和经度列"
       find: "查找"
       find_and_replace: "查找和替换值..."
+      import_from_latlong:
       import_from_multiple: "从<strong>多列</strong>导入"
       import_from_single: "从<strong>单列</strong>导入"
       latitude: "纬度"
@@ -2526,6 +2704,7 @@ zh:
       new_source_col: "添加新源列"
       new_transform: "添加新的转换"
       options: "选项"
+      point_source_col:
       properly_formatted: 导入前，列必须<a href="%{formatting_link}" rel="external">正确格式化</ a>。
       regular_expression: "正则表达式"
       remove: "删除"
@@ -2554,6 +2733,7 @@ zh:
       one_header: "其中一行为页眉。"
       problem_importing: "导入该文件时出现问题。请确保它是有效的。"
       problem_uploading: "上传该文件时出现问题。请确保它是有效的。"
+      replicating:
       rows_imported: "目前已导入%{num} 行。"
       try_again: "请稍后再试。"
       unknown_error: "出现未知错误"
@@ -2745,6 +2925,10 @@ zh:
       comments_created: "已创建注释"
       daily: "每日"
       deleted_application: "已删除的应用"
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: "相关指标"
       download: "下载"
       downloads: "下载"
@@ -2769,6 +2953,7 @@ zh:
       no_data_time_period: "该时间段无数据"
       page_viewed: "查看的页面"
       pages_viewed: "查看的数据"
+      preceding_period:
       referrals: "推荐"
       rows_loaded: "加载的行"
       sdp: SDP

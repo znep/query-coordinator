@@ -46,8 +46,13 @@ it:
         card_on_page: Scheda già sulla pagina
         card_on_page_long: Questa scheda è già sulla pagina
         choose_column: Scegli una colonna...
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: 'Nota: ciò potrebbe avere come risultato un grafico a barre con più di cento barre e potrebbe essere più lento di altri grafici'
+        custom:
         customize_prompt: Personalizza questa scheda
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: Attualmente non supportato
         not_supported_long: Questo tipo di scheda non è al momento supportata
         prompt: Scegli una colonna dal menu a discesa presente sopra per aggiungere una nuova scheda
@@ -93,11 +98,15 @@ it:
         remove_card: Rimuovi questa scheda
       card_layout:
         add_card_here: Aggiungi scheda qui
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average: media di {0}
         number_of: numero di {0}
         sum_of: somma di {0}
       common:
+        by:
         cancel: Annulla
         cards:
           choropleth: Coropletica
@@ -115,6 +124,7 @@ it:
           export_visualization_disabled: Questa visualizzazione non è disponibile<br/>per l'esportazione in formato immagine
           invalid_card: Visualizzazione scheda non valida
           map_render_error: Si è verificato un errore durante il tentativo di rappresentare questa mappa.
+        export: Esporta
         latitude: Latitudine
         longitude: Longitudine
         no_value: Nessun valore
@@ -134,10 +144,23 @@ it:
         customizing_flyout: Adesso stai personalizzando questa pagina
         customizing_flyout_instructions: Puoi fare clic su questo pulsante in qualunque momento per vedere i tuoi cambiamenti in anteprima e salvarli quando desideri
         exit_visualization_export: 'Per entrare nella modalità di personalizzazione: esci dalla modalità "Scarica visualizzazione come immagine" facendo clic sul pulsante "Annulla" presente sul Pannello informativo'
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: Mappa personalizzata
-          standard: Standard
+          simple_blue:
+          simple_grey:
           title: Mappa strato di base
         visualization_options:
           title: Tipo di scheda
@@ -147,8 +170,22 @@ it:
         errors:
           error: Si è verificato un errore nel tentativo di rappresentare questa scheda.
           no_data: Nessun dato da visualizzare.
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: Lo zoom non è attualmente disponibile. Ti preghiamo di riprovare.
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: Qualcosa sembra essersi rotto
         feedback: Feedback
@@ -172,10 +209,13 @@ it:
         clear_filter_long: Questa pagina è attualmente filtrata da questo valore, ti preghiamo di cancellarlo
         clear_range_filter_long: Questa pagina è attualmente filtrata da questa selezione, fai clic per cancellarla
         current_filter: Filtro attuale
+        dense_data:
         details: Fai clic per vedere i dettagli
         expand: Fai clic per espandere
+        filter_prompt:
         filtered_amount: Quantità filtrata
         total: Totale
+        zoom_or_filter_prompt:
       last_updated:
         label: ultimo aggiornamento
       lens_type:
@@ -186,7 +226,44 @@ it:
         dataset_private_page_public: <span class="icon-avviso"></span> L'origine relativa a questa pagina di set di dati è impostata su <b>Privata</b>. Quindi, anche se la pagina viene impostata su "Pubblica", chiunque sia privo dell'accesso all'origine del set di dati non sarà in grado di visualizzarla. Essa continuerà ad apparire all'interno del catalogo pubblico. Dovresti considerare di impostare il set di dati su "Pubblico", oppure imposta questa pagina su "Privata".
         dataset_public_page_private: Questa pagina è impostata su <b>Privata</b>. Quindi, solamente gli utenti con accesso privilegiato possono vederla, ed essa non apparirà all'interno del catalogo pubblico.
         dataset_public_page_public: Questa pagina e la relativa origine del set di dati sono entrambe <b>Pubbliche</b>, quindi chiunque potrà vedere questa pagina ed essa apparirà all'interno del catalogo pubblico.
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: Gestisci
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: Origine dati completi come CSV (Excel)
         edit_description_prompt: Dai alla tua pagina una buona descrizione che aiuti le persone a capire la storia che i tuoi dati cercano di raccontare. (Facoltativo)
@@ -215,6 +292,16 @@ it:
       related_views:
         button: Altre viste di questo dato
         title: Altre viste di questo dato
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: Fai clic per annullare tutte le modifiche fatte dall'ultimo tuo salvataggio
         flyoutNoChanges: Nessuna modifica da ripristinare
@@ -227,6 +314,7 @@ it:
         link_placeholder: Inserisci un URL qui
         underline: Sottolineatura
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: Ti preghiamo di contattare il supporto Socrata
         flyoutFailedTitle: Si è verificato un errore
         flyoutIdle: Fai clic per salvare le tue modifiche come nuova pagina
@@ -236,6 +324,9 @@ it:
         description: Inserisci una descrizione per la tua nuova pagina (facoltativo)
         new_name: Salva la pagina attuale con un nuovo nome
         title: Salva come
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: Non riuscito
         flyoutFailedBody: Ti preghiamo di contattare il supporto Socrata
@@ -245,7 +336,19 @@ it:
         save: Salva
         saved: Salvata!
         saving: Salvataggio...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: Prova a cercare un numero che non contenga lettere.
         loading: Caricamento dei suggerimenti...
         no_results: La tua ricerca non ha restituito alcun risultato. Controlla l'ortografia o prova con un termine diverso.
@@ -256,6 +359,7 @@ it:
         two_examples: 'Esempi: ''{0}'' o ''{1}'''
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -270,6 +374,7 @@ it:
         newest_first: prima il più nuovo
         no_rows: Nessuna riga da visualizzare
         no_sort:
+        non_range_label:
         oldest_first: prima il più vecchio
         range_label: "{0} <strong>{1}-{2} di {3}</strong>"
         range_label_all: Sto mostrando tutto {0} {1}
@@ -352,7 +457,8 @@ it:
           href: Dati esterni
           maps: Mappe
           new_view: Pagine Data Lens
-          new_view_help: Cosa è questo?
+          pulse:
+          pulse_help:
           story: Sorie
           story_help: Informazioni su Storie
           unpublished: Dataset non pubblicati
@@ -364,6 +470,7 @@ it:
         federation_source_html: Fornito da %{source_link}
         no_results: Nessun risultato
         result_count: Mostrati %{this} di %{total}
+        result_count_cetera:
         table_header:
           name: Nome
           popularity: Popolarità
@@ -764,10 +871,14 @@ it:
       flag: Contrassegno
       geospatial: Geospaziale
       html: Testo formattato
+      line:
       link: Link Column
       list: Lista
       location: Posizione
       money: Denaro
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: Tabella nidificata
       number: Numero
       object: Oggetto
@@ -775,6 +886,7 @@ it:
       phone: Telefono
       photo: Foto (Immagine)
       point: Punto
+      polygon:
       stars: Stella
       text: Testo normale
       url: Web URL
@@ -824,6 +936,7 @@ it:
       years_past: "%{time} anni fa"
     dialogs:
       apply: Applica
+      back:
       cancel: Cancella
       close: Chiudi
       continue: Continua
@@ -1194,9 +1307,15 @@ it:
       date_range: Gamma della Data
       done: Fatto
       end_date: Data finale
+      last_30_days:
       last_month: Ultimo Mese
+      last_week:
+      last_year:
       month_to_date: Mesi alla Data
       next: Prossimo
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: Precedente
       specific_date: Data Specifica
       start_date: Data di Inizio
@@ -1206,6 +1325,7 @@ it:
       today: Oggi
       week_to_date: Settimana alla Data
       year_to_date: Anno alla Data
+      yesterday:
     fileuploader:
       drop_files: Trascina i file qui per caricare
       failed: Non riuscito
@@ -1357,6 +1477,48 @@ it:
         target_domain: Dominio target
         terminate: Cessa
         title: Apri i dati della Federazione
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: Aggiungi un nuovo dataset importante
         are_you_sure: Sei sicuro? Questa azione non può essere annullata.
@@ -1530,6 +1692,9 @@ it:
         missing_esri_url: "È necessario inserire un URL di un valido ESRI map layer."
         missing_name: "È obbligatorio inserire il nome del Dataset."
         need_description: Descrivi &ldquo;%{name}&rdquo;
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: Il Tuo set di dati è stato creato.
         subheadline: Clicca su Termina per vederlo!
@@ -1814,6 +1979,9 @@ it:
             flag: contrassegno
             formatted_text: testo formattato
             geospatial: geospaziale
+            groups:
+              geometry:
+              standard:
             list: lista
             location: posizione
             money: denaro
@@ -2047,6 +2215,9 @@ it:
             abbreviated: Abbreviata
             currency: Valuta
             format_mask_warning: Questo può sovrascrivere alcune impostazioni fatte sopra.
+            groups:
+              all:
+              common:
             no_precision: Nessuna
             precision: Precisione
             title: Formattazione Moneta
@@ -2109,6 +2280,10 @@ it:
           validation:
             no_columns: Questa bìvista non ha colonne da filtrare
             no_icons: Le icone sono significative solo per le mappe
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: Questo eliminerà %{view_type} in modo permanente. Non è possibile annullare l'eliminazione! Sei sicuro di voler procedere?
           delete_button: Elimina vista %{view_type}
@@ -2313,6 +2488,8 @@ it:
             title: Colonne
           subtitle: Imposta quali colonne saranno visibili in questa vista
           title: Mostra Colonne Nascoste
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: Aggiungi raggruppamento colonna
@@ -2515,6 +2692,7 @@ it:
       existing_latlng_cols: Colonne di Latitudine e Longitudine Esistenti
       find: trova
       find_and_replace: Trova e Sostituisci valore...
+      import_from_latlong:
       import_from_multiple: Importa da <strong>colonne multiple</strong>
       import_from_single: Importa da <strong>colonna singola</strong>
       latitude: Latitudine
@@ -2528,6 +2706,7 @@ it:
       new_source_col: Aggiungi nuova colonna sorgente
       new_transform: Nuova operazione di trasformazione
       options: Opzioni
+      point_source_col:
       properly_formatted: La colonna deve essere <a href="%{formatting_link}" rel="external">correttamente formattata</a> prima di poter essere importata.
       regular_expression: espressione regolare
       remove: rimuovi
@@ -2556,6 +2735,7 @@ it:
       one_header: Una delle tue colonne è una titolata.
       problem_importing: C'è stato un problema di importazione di tale file. Cortesemente assicurati che sia valido.
       problem_uploading: C'è stato un problema di caricamento di tale file. Cortesemente assicurati che sia valido.
+      replicating:
       rows_imported: "%{num} righe importati finora."
       try_again: Cortesemente riprova fra un pò.
       unknown_error: E' avvenuto un errore sconosciuto
@@ -2747,6 +2927,10 @@ it:
       comments_created: commenti creati
       daily: Giornaliero
       deleted_application: applicazione cancellata
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: Metriche Dipendenti
       download: download
       downloads: scaricati
@@ -2771,6 +2955,7 @@ it:
       no_data_time_period: Nessun dato per questo intervallo di tempo
       page_viewed: pagina vista
       pages_viewed: pagine viste
+      preceding_period:
       referrals: Referenti
       rows_loaded: Righe Caricate
       sdp: SDP

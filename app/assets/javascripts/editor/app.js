@@ -157,7 +157,7 @@ $(document).on('ready', function() {
 
     // If the target of the click event is not the toolbar, unlink
     // the toolbar from the current ext editor (which also dims the
-    // toolbar).
+    // toolbar), and deselect all rich text editors.
     if (!target.is($('#rich-text-editor-toolbar')) &&
       target.parents('#rich-text-editor-toolbar').length === 0) {
 
@@ -167,6 +167,8 @@ $(document).on('ready', function() {
         action: Actions.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
         activeFormats: []
       });
+
+      _.invoke(richTextEditorManager.getAllEditors(), 'deselect');
     }
   });
 

@@ -146,7 +146,7 @@
         });
 
         $scope.$bindObservable('downloadUrl', model$.map(function(model) {
-          return './{0}/{1}.png'.format(model.page.id, model.fieldName);
+          return '/view/{0}/{1}.png'.format(model.page.id, model.fieldName);
         }));
 
         $scope.downloadStateText = function(state) {

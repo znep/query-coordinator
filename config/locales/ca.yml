@@ -123,6 +123,7 @@ ca:
           permissions: Permisos
           private: Privat
           public: Privat
+        row:
         save: Guardar
       customize_bar:
         changes_warning: Heu fet canvis a la pàgina

@@ -123,6 +123,7 @@ ru:
           permissions: "Разрешения"
           private: "Частный"
           public: "Общий"
+        row:
         save: "Сохранить"
       customize_bar:
         changes_warning: "Вы изменили эту страницу."

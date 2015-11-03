@@ -138,6 +138,7 @@ en:
           permissions: Permissions
           private: Private
           public: Public
+        row: row
         save: Save
       customize_bar:
         changes_warning: You have made changes to this page.

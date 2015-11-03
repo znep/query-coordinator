@@ -124,6 +124,7 @@ sl:
           permissions: Dovoljenja
           private: Zasebno
           public: Javno
+        row:
         save: Shrani
       customize_bar:
         changes_warning: Na tej strani ste uveljavili spremembe.

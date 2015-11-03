@@ -123,6 +123,7 @@ ro:
           permissions: Drepturi
           private: Privat
           public: Public
+        row:
         save: Salvare
       customize_bar:
         changes_warning: Ați efectuat schimbări la această pagină

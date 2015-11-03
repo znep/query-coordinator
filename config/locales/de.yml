@@ -123,6 +123,7 @@ de:
           permissions: Berechtigungen
           private: Privat
           public: "Öffentlich"
+        row:
         save: Speichern
       customize_bar:
         changes_warning: SIe haben diese Seite geändert.

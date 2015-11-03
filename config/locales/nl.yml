@@ -123,6 +123,7 @@ nl:
           permissions: Permissies
           private: Privé
           public: Publiek
+        row:
         save: Bewaren
       customize_bar:
         changes_warning: U heeft aanpassingen gemaakt aan deze pagina.

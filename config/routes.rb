@@ -447,20 +447,20 @@ Frontend::Application.routes do
     end
 
     # V1 dataset metadata endpoints
-    scope :controller => 'phidippides_datasets' do
-      match '/metadata/v1/dataset/:id', :to => 'phidippides_datasets#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
-      match '/metadata/v1/dataset/:id', :to => 'phidippides_datasets#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
-      # This endpoint should eventually be routed to the phidippides_pages_controller instead
-      match '/metadata/v1/dataset/:id/pages', :to => 'phidippides_datasets#index', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
+    scope :controller => 'dataset_metadata' do
+      match '/metadata/v1/dataset/:id', :to => 'dataset_metadata#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
+      match '/metadata/v1/dataset/:id', :to => 'dataset_metadata#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
+      # This endpoint should eventually be routed to the page_metadata_controller instead
+      match '/metadata/v1/dataset/:id/pages', :to => 'dataset_metadata#index', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
     end
 
     # V1 page metadata endpoints
-    scope :controller => 'phidippides_pages' do
-      match '/metadata/v1/page/:id', :to => 'phidippides_pages#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
-      match '/metadata/v1/page', :to => 'phidippides_pages#create', :via => [:post]
-      match '/metadata/v1/standalone_viz', :to => 'phidippides_pages#create_standalone_visualization', :via => [:post]
-      match '/metadata/v1/page/:id', :to => 'phidippides_pages#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
-      match '/metadata/v1/page/:id', :to => 'phidippides_pages#destroy', :via => [:delete], :constraints => { :id => Frontend::UID_REGEXP }
+    scope :controller => 'page_metadata' do
+      match '/metadata/v1/page/:id', :to => 'page_metadata#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
+      match '/metadata/v1/page', :to => 'page_metadata#create', :via => [:post]
+      match '/metadata/v1/standalone_viz', :to => 'page_metadata#create_standalone_visualization', :via => [:post]
+      match '/metadata/v1/page/:id', :to => 'page_metadata#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
+      match '/metadata/v1/page/:id', :to => 'page_metadata#destroy', :via => [:delete], :constraints => { :id => Frontend::UID_REGEXP }
     end
 
     scope :controller => 'data_lens' do

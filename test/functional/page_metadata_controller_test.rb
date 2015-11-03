@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PhidippidesPagesControllerTest < ActionController::TestCase
+class PageMetadataControllerTest < ActionController::TestCase
 
   def setup
     init_core_session

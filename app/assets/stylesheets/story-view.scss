@@ -7,6 +7,7 @@
 
     .user-story {
       @include selectable(); /* remove unselectable from edit mode */
+      padding-bottom: $user-story-padding-bottom;
 
       &.presentation-mode {
         font-size: $presentation-mode-font-size;
@@ -27,8 +28,12 @@
     }
   }
 
-  .block.hidden {
-    display: none;
+  .block {
+    margin: 0 2.5rem;
+
+    &.hidden {
+      display: none;
+    }
   }
 
   .btn-presentation-mode,

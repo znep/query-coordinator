@@ -27,6 +27,7 @@ body.story-save-error .user-story-container {
     display: block;
     margin: 0 auto;
     padding: 0;
+    padding-bottom: $user-story-padding-bottom;
   }
 
   .block-edit {

@@ -388,7 +388,7 @@
       if (fixedHeight > layoutHeight) {
         $container.height(fixedHeight);
       } else {
-        $container.height(layoutHeight + padding);
+        $container.height(layoutHeight);
       }
     }
 

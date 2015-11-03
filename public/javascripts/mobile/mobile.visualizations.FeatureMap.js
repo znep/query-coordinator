@@ -563,7 +563,7 @@
 
       if (_flyoutData.count > 0) {
         _map.setView(event.latlng);
-        var bottom = $('#map-container').height() + $('#map-container').offset().top - 120;
+        var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
         
         if (_flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
           inspectorDataQueryConfig = {

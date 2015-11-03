@@ -96,8 +96,8 @@ $(function () {
     }
 
     chartWrapper.
-    find('.bar-group[data-bar-name="{0}"]'.format(barName)).
-    addClass('selected');
+      find('.bar-group[data-bar-name="{0}"]'.format(barName)).
+      addClass('selected');
 
     var titles = $('<div>', {
       'class': 'title-wrapper',

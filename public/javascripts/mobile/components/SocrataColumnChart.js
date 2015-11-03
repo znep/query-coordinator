@@ -394,7 +394,6 @@
     }
 
     function _mergeUnfilteredAndFilteredData(unfiltered, filtered) {
-
       var unfilteredAsHash;
       var filteredAsHash;
 
@@ -409,9 +408,7 @@
       );
 
       return Object.keys(unfilteredAsHash).map(function(name) {
-
         var datumIsSelected = false;
-
         var result = [undefined, undefined, undefined, undefined];
 
         result[NAME_INDEX] = (_.isNull(name) || _.isUndefined(name)) ? '' : name;
@@ -430,8 +427,8 @@
     }
 
     function _selectFirst(error) {
-      var cW = (visualization.element.find('.bar-group').length * 50) + 33;
-      visualization.element.find('.ticks').css('min-width', cW + 'px');
+      var chartWidth = (visualization.element.find('.bar-group').length * 50) + 33;
+      visualization.element.find('.ticks').css('min-width', chartWidth + 'px');
       visualization.element.find('.bar-group').first().click();
     }
 

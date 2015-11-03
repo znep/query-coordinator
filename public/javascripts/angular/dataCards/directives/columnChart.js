@@ -5,6 +5,7 @@
     return {
       restrict: 'E',
       scope: true,
+      controller: 'ColumnChartController',
       templateUrl: '/angular_templates/dataCards/columnChart.html',
       link: function(scope, element) {
         var cardData$ = scope.$observe('cardData');
@@ -233,6 +234,9 @@
             if (!cardData) {
               return undefined;
             }
+
+            element.width(cardVisualizationDimensions.width);
+            element.height(cardVisualizationDimensions.height);
 
             rowDisplayUnit = rowDisplayUnit || I18n.common.row;
 

@@ -224,7 +224,7 @@
     // Given an array of bucketed data and a bucket index that is being
     // filtered on, transform the bucketed data into the tabular format
     // expected by the column chart.
-    function transformDataForColumnChart(unfiltered, filtered, selectedValue) {
+    function transformDataForColumnChart(unfiltered, filtered, selectedValue, isFiltered) {
       if (filtered) {
         filtered = _.indexBy(filtered, 'name');
       }
@@ -239,7 +239,7 @@
       return unfiltered.map(function(bucket) {
         var bucketName = parseInt(bucket.name, 10);
 
-        var filteredValue = _.get(filtered, bucketName + '.value', 0);
+        var filteredValue = _.get(filtered, bucketName + '.value', isFiltered ? 0 : bucket.value);
 
         if (_.isDefined(selectedValue) && bucketName !== selectedValue) {
           filteredValue = 0;

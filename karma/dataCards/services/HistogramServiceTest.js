@@ -431,11 +431,27 @@ describe('HistogramService', function() {
 
   describe('transformDataForColumnChart', function() {
 
-    function run(unfiltered, filtered, selected, output) {
-      expect(HistogramService.transformDataForColumnChart(unfiltered, filtered, selected)).to.deep.equal(output);
+    function run(unfiltered, filtered, selected, isFiltered, output) {
+      expect(HistogramService.transformDataForColumnChart(unfiltered, filtered, selected, isFiltered)).to.deep.equal(output);
     }
 
-    it('should set the filtered values to zero if the filtered data is absent', function() {
+    it('should set the filtered values to the unfiltered values if the filtered data is absent and isFiltered is false', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 1, value: -17 },
+        { name: 2, value: 183483 }
+      ];
+
+      var output = [
+        [ 0, 17, 17, false ],
+        [ 1, -17, -17, false ],
+        [ 2, 183483, 183483, false ]
+      ];
+
+      run(unfiltered, undefined, undefined, undefined, output);
+    });
+
+    it('should set the filtered values to zero if they are absent and value is selected', function() {
       var unfiltered = [
         { name: 0, value: 17 },
         { name: 1, value: -17 },
@@ -448,8 +464,23 @@ describe('HistogramService', function() {
         [ 2, 183483, 0, false ]
       ];
 
-      run(unfiltered, undefined, undefined, output);
-      run(unfiltered, undefined, 100, output);
+      run(unfiltered, undefined, 100, undefined, output);
+    });
+
+    it('should set the filtered values to zero if they are absent and isFiltered is true', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 1, value: -17 },
+        { name: 2, value: 183483 }
+      ];
+
+      var output = [
+        [ 0, 17, 0, false ],
+        [ 1, -17, 0, false ],
+        [ 2, 183483, 0, false ]
+      ];
+
+      run(unfiltered, undefined, 100, true, output);
     });
 
     it('should use the filtered values if they are present if selectedValue is absent', function() {
@@ -471,7 +502,7 @@ describe('HistogramService', function() {
         [ 2, 183483, 5, false ]
       ];
 
-      run(unfiltered, filtered, undefined, output);
+      run(unfiltered, filtered, undefined, undefined, output);
     });
 
     it('should set the filtered values to zero if the bucket name does not equal the selectedValue and the selectedValue is specified', function() {
@@ -493,7 +524,7 @@ describe('HistogramService', function() {
         [ 2, 183483, 0, false ]
       ];
 
-      run(unfiltered, filtered, 1, output);
+      run(unfiltered, filtered, 1, undefined, output);
     });
 
     it('should behave well if the selectedValue is weird', function() {
@@ -515,7 +546,7 @@ describe('HistogramService', function() {
         [ 2, 183483, 0, false ]
       ];
 
-      run(unfiltered, filtered, 0, output);
+      run(unfiltered, filtered, 0, undefined, output);
 
       output = [
         [ 0, 17, 0, false],
@@ -523,7 +554,7 @@ describe('HistogramService', function() {
         [ 2, 183483, 0, false ]
       ];
 
-      run(unfiltered, filtered, NaN, output);
+      run(unfiltered, filtered, NaN, undefined, output);
     });
 
     it('should fill in empty values with zeroes', function() {
@@ -547,7 +578,7 @@ describe('HistogramService', function() {
         [ 4, 183483, 0, false ]
       ];
 
-      run(unfiltered, filtered, 0, output);
+      run(unfiltered, filtered, 0, undefined, output);
 
       output = [
         [ 0, 17, 0, false ],
@@ -557,7 +588,7 @@ describe('HistogramService', function() {
         [ 4, 183483, 0, false ]
       ];
 
-      run(unfiltered, filtered, NaN, output);
+      run(unfiltered, filtered, NaN, undefined, output);
     });
   });
 });

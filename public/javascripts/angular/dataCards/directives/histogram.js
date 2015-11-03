@@ -13,6 +13,7 @@
     return {
       restrict: 'E',
       scope: true,
+      controller: 'HistogramController',
       templateUrl: '/angular_templates/dataCards/histogram.html',
       link: function($scope, element) {
         if ($scope.allowFilterChange) {

@@ -263,30 +263,4 @@ describe('HistogramController', function() {
     expect(logarithmicSpy.callCount).to.equal(2);
     expect(bucketDataSpy.calledWithMatch(testData, {bucketType: 'logarithmic'})).to.equal(true);
   });
-
-  it('should render as a column chart if HistogramService tells it to', function() {
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'column'; });
-
-    var histogram = createHistogram();
-    expect(histogram.$scope.visualizationType).to.equal('column');
-
-    HistogramService.getVisualizationTypeForData.restore();
-  });
-
-  it('should render as a histogram if HistogramService tells it to', function() {
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'histogram'; });
-
-    var histogram = createHistogram();
-    expect(histogram.$scope.visualizationType).to.equal('histogram');
-
-    HistogramService.getVisualizationTypeForData.restore();
-  });
-
-  it('interprets the data from CardDataService.getData correctly', function() {
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'column'; });
-
-    var histogram = createHistogram();
-    expect(histogram.$scope.cardData[0][0]).to.not.eql(NaN);
-    HistogramService.getVisualizationTypeForData.restore();
-  });
 });

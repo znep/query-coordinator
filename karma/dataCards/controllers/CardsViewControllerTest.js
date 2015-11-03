@@ -61,6 +61,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
   beforeEach(module('/angular_templates/dataCards/choropleth.html'));
   beforeEach(module('/angular_templates/dataCards/columnChart.html'));
+  beforeEach(module('/angular_templates/dataCards/distributionChart.html'));
   beforeEach(module('/angular_templates/dataCards/featureMap.html'));
   beforeEach(module('/angular_templates/dataCards/histogram.html'));
   beforeEach(module('/angular_templates/dataCards/invalidCard.html'));

@@ -54,6 +54,7 @@ describe('Customize card dialog', function() {
     // We don't actually care about the contents of this
     $templateCache.put('/angular_templates/dataCards/choropleth.html', '');
     $templateCache.put('/angular_templates/dataCards/columnChart.html', '');
+    $templateCache.put('/angular_templates/dataCards/distributionChart.html', '');
     $templateCache.put('/angular_templates/dataCards/featureMap.html', '');
     $templateCache.put('/angular_templates/dataCards/histogram.html', '');
     $templateCache.put('/angular_templates/dataCards/invalidCard.html', '');

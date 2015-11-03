@@ -10,6 +10,10 @@ describe('histogram', function() {
   beforeEach(module('dataCards/histogram.scss'));
   beforeEach(module('/angular_templates/dataCards/histogram.html'));
 
+  beforeEach(module(function($controllerProvider) {
+    $controllerProvider.register('HistogramController', _.noop);
+  }));
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');
@@ -17,7 +21,7 @@ describe('histogram', function() {
 
   var template = [
     '<div class="card-visualization" id="test-histogram-chart">',
-      '<histogram ng-controler="HistogramController"></histogram>',
+      '<histogram></histogram>',
     '</div>'
   ].join('');
 

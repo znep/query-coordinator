@@ -171,6 +171,7 @@ describe('addCardDialog', function() {
           $templateCache.put('/angular_templates/dataCards/spinner.html', '');
           $templateCache.put('/angular_templates/dataCards/choropleth.html', '');
           $templateCache.put('/angular_templates/dataCards/columnChart.html', '');
+          $templateCache.put('/angular_templates/dataCards/distributionChart.html', '');
           $templateCache.put('/angular_templates/dataCards/featureMap.html', '');
           $templateCache.put('/angular_templates/dataCards/histogram.html', '');
           $templateCache.put('/angular_templates/dataCards/invalidCard.html', '');

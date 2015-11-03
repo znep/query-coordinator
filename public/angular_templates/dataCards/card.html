@@ -27,12 +27,9 @@
 
 <div class="card-visualization" ng-switch="cardType">
   <choropleth ng-switch-when="choropleth"></choropleth>
-  <column-chart ng-switch-when="column" ng-controller="ColumnChartController"></column-chart>
+  <column-chart ng-switch-when="column"></column-chart>
   <feature-map ng-switch-when="feature"></feature-map>
-  <div ng-switch-when="histogram" ng-controller="HistogramController" class="column-chart-container">
-    <histogram ng-if="visualizationType === 'histogram'"></histogram>
-    <column-chart ng-if="visualizationType === 'column'"></column-chart>
-  </div>
+  <distribution-chart ng-switch-when="histogram"></distribution-chart>
   <search-card ng-switch-when="search"></search-card>
   <table-card ng-switch-when="table" model="model" where-clause="whereClause"></table-card>
   <timeline-chart ng-switch-when="timeline"></timeline-chart>

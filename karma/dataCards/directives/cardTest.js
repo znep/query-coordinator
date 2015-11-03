@@ -136,6 +136,7 @@ describe('card directive', function() {
         // Override the templates of the other directives. We don't need to test them.
         _$templateCache.put('/angular_templates/dataCards/choropleth.html', '');
         _$templateCache.put('/angular_templates/dataCards/columnChart.html', '');
+        _$templateCache.put('/angular_templates/dataCards/distributionChart.html', '');
         _$templateCache.put('/angular_templates/dataCards/featureMap.html', '');
         _$templateCache.put('/angular_templates/dataCards/histogram.html', '');
         _$templateCache.put('/angular_templates/dataCards/invalidCard.html', '');

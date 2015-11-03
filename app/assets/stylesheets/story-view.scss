@@ -7,7 +7,7 @@
 
     .user-story {
       @include selectable(); /* remove unselectable from edit mode */
-      padding-bottom: 60px;
+      padding-bottom: $user-story-padding-bottom;
 
       &.presentation-mode {
         font-size: $presentation-mode-font-size;

@@ -24,10 +24,6 @@
     // and will need to be kept in sync.
     THEME_BASE_FONT_SIZE: '16px',
 
-    // A story, in preview and edit mode, should have an equivalent
-    // bottom spacer.
-    STORY_BOTTOM_SPACER: '60px',
-
     // The `name` column of the `lenses` table is defined as:
     //
     //   name character varying(255)

@@ -388,7 +388,7 @@
       if (fixedHeight > layoutHeight) {
         $container.height(fixedHeight);
       } else {
-        $container.height(layoutHeight + parseInt(Constants.STORY_BOTTOM_SPACER, 10));
+        $container.height(layoutHeight);
       }
     }
 

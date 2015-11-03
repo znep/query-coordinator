@@ -470,6 +470,28 @@ class DatasetsController < ApplicationController
       begin
         if parse_attachments() && parse_meta(@view) && parse_external_sources() && parse_image()
           @view = View.update_attributes!(params[:id], params[:view])
+
+          # if this is a data lens or standalone viz, update the inner metadata blob too
+          # so that name/description changes aren't out of sync
+          if @view.data_lens? || @view.new_view? || @view.standalone_visualization?
+            metadata_update_url = "/views/#{params[:id]}.json"
+            payload = {
+              :displayFormat => @view.displayFormat.as_json.with_indifferent_access
+            }
+
+            if @view.standalone_visualization?
+              vif = JSON.parse(payload[:displayFormat][:visualization_interchange_format_v1])
+              vif['title'] = @view.name
+              vif['description'] = @view.description || ''
+              payload[:displayFormat][:visualization_interchange_format_v1] = JSON.dump(vif)
+            elsif @view.data_lens? || @view.new_view?
+              payload[:displayFormat][:data_lens_page_metadata][:name] = @view.name
+              payload[:displayFormat][:data_lens_page_metadata][:description] = @view.description
+            end
+
+            CoreServer::Base.connection.update_request(metadata_update_url, JSON.dump(payload))
+          end
+
           flash.now[:notice] = "The metadata has been updated."
         end
       rescue CoreServer::CoreServerError => e

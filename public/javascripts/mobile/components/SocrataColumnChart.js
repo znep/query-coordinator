@@ -429,6 +429,7 @@
     function _selectFirst(error) {
       var chartWidth = (visualization.element.find('.bar-group').length * 50) + 33;
       visualization.element.find('.ticks').css('min-width', chartWidth + 'px');
+      visualization.element.find('.column-chart-wrapper').css('min-width', chartWidth + 'px');
       visualization.element.find('.bar-group').first().click();
     }
 

@@ -16,12 +16,11 @@
   }
 
   .column-chart {
-    overflow: scroll;
     background-color: #ECEBE9;
 
     .chart-scroll {
       padding-left: 25px;
-      width: initial !important;
+      overflow-x: scroll;
     }
 
     .column-chart-wrapper {
@@ -83,9 +82,13 @@
         font-size: 9px;
         padding-left: 2px;
         border-color: #fff;
-      }
-      .origin {
-        opacity: 0;
+        line-height: 0.75rem;
+        &.below {
+          line-height: 1.25rem;
+        }
+        &.origin {
+          border: 0;
+        }
       }
     }
   }

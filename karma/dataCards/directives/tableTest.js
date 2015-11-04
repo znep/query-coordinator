@@ -184,7 +184,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var pointCell = $(row).find('.cell.point').first();
+        var pointCell = $(row).find('.cell.point .cell-content').first();
         var pointCellSpans = pointCell.children('span');
 
         expect(pointCellSpans).to.have.length(2);
@@ -199,7 +199,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var timestampCell = $(row).find('.cell.timestamp').first();
+        var timestampCell = $(row).find('.cell.timestamp .cell-content').first();
         var cellContent = timestampCell.html();
 
         expect(cellContent).to.match(TIMESTAMP_REGEX);
@@ -210,7 +210,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var timestampCell = $(row).find('.cell.timestamp').eq(1);
+        var timestampCell = $(row).find('.cell.timestamp .cell-content').eq(1);
         var cellContent = timestampCell.html();
 
         expect(cellContent).to.match(TIMESTAMP_WITH_USER_FORMAT_REGEX);
@@ -221,7 +221,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var floatingTimestampCell = $(row).find('.cell.floating_timestamp').first();
+        var floatingTimestampCell = $(row).find('.cell.floating_timestamp .cell-content').first();
         var cellContent = floatingTimestampCell.html();
 
         expect(cellContent).to.match(TIMESTAMP_REGEX);
@@ -232,7 +232,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var idCell = $(row).find('.cell.number').first();
+        var idCell = $(row).find('.cell.number .cell-content').first();
         var cellContent = idCell.html();
 
         expect(cellContent).to.match(NUMBER_REGEX);
@@ -243,7 +243,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var idNoCommasCell = $(row).find('.cell.number').eq(1);
+        var idNoCommasCell = $(row).find('.cell.number .cell-content').eq(1);
         var cellContent = idNoCommasCell.html();
 
         expect(cellContent).to.match(NUMBER_NOCOMMAS_REGEX);
@@ -254,7 +254,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var yearCell = $(row).find('.cell.number').last();
+        var yearCell = $(row).find('.cell.number .cell-content').last();
         var cellContent = yearCell.html();
 
         expect(cellContent).to.match(/\d{4}/);
@@ -265,7 +265,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var percentCell = $(row).find('.cell.number').eq(-2);
+        var percentCell = $(row).find('.cell.number .cell-content').eq(-2);
         var cellContent = percentCell.html();
 
         expect(cellContent).to.match(PERCENT_REGEX);
@@ -277,7 +277,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var percentNoCommasCell = $(row).find('.cell.number').eq(-3);
+        var percentNoCommasCell = $(row).find('.cell.number .cell-content').eq(-3);
         var cellContent = percentNoCommasCell.html();
 
         expect(cellContent).to.match(PERCENT_NOCOMMAS_REGEX);
@@ -289,7 +289,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var booleanCell = $(row).find('.cell.boolean');
+        var booleanCell = $(row).find('.cell.boolean .cell-content');
         var cellContent = booleanCell.html();
 
         if (fixtureData[index].checkbox_test) {
@@ -304,7 +304,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var moneyCell = $(row).find('.cell.money').first();
+        var moneyCell = $(row).find('.cell.money .cell-content').first();
         var cellContent = moneyCell.html();
 
         expect(cellContent).to.match(MONEY_REGEX);
@@ -315,7 +315,7 @@ describe('tableCard', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
-        var moneyCells = $(row).find('.cell.money');
+        var moneyCells = $(row).find('.cell.money .cell-content');
         var cellContentFunky = moneyCells.eq(1).html();
         var cellContentHumane = moneyCells.eq(2).html();
 
@@ -354,7 +354,7 @@ describe('tableCard', function() {
     after(destroyAllTableCards);
 
     it('should render invalid dates as blank cells', function() {
-      var invalidTimestampCell = el.find('.table-row .cell.timestamp').first();
+      var invalidTimestampCell = el.find('.table-row .cell.timestamp .cell-content').first();
       var cellContent = invalidTimestampCell.html();
 
       expect(cellContent).to.equal('');

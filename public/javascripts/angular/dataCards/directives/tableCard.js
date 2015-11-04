@@ -416,13 +416,18 @@
                   var tableCellDiv = $('<div>').
                     addClass('cell {0}'.format(column.physicalDatatype)).
                     attr('data-index', index).
-                    css('width', '{0}px'.format(columnWidths[column.fieldName])).
+                    css('width', '{0}px'.format(columnWidths[column.fieldName]));
+
+                  // CORE-7118: Place cell content inside a second div,
+                  // improves ability to double-click select the cell text
+                  var tableCellDivContent = $('<div class="cell-content">').
                     html(formatCellText(
                       column.physicalDatatype,
                       cellContent,
                       column
                     ));
 
+                  tableCellDiv.append(tableCellDivContent);
                   tableRowDiv.append(tableCellDiv);
                 });
 

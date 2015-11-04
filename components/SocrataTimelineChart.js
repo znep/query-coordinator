@@ -82,7 +82,7 @@
     };
 
     var visualization = new visualizations.TimelineChart($element, vif);
-    var visualizationData = [];
+    var visualizationData = transformChartDataForRendering([]);
     var precision;
     var rerenderOnResizeTimeout;
 
@@ -141,8 +141,8 @@
       meanValue = (maxValue + minValue) / 2;
 
       return {
-        minDate: minDate.toDate(),
-        maxDate: maxDate.toDate(),
+        minDate: minDate ? minDate.toDate() : null,
+        maxDate: maxDate ? maxDate.toDate() : null,
         minValue: minValue,
         meanValue: meanValue,
         maxValue: maxValue,

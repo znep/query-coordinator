@@ -3423,20 +3423,16 @@ var Dataset = ServerModel.extend({
     _loadRelatedViews: function(callback) {
         var ds = this;
         var coreViewsPromise = this._loadRelatedCoreViews();
-        // CORE-7303: We are hiding all lenses from More Views for now.
-        // var dataLensPromise = this._getRelatedDataLenses();
-        var dataLensPromise = $.Deferred().resolve();
+        var dataLensPromise = this._getRelatedDataLenses();
 
         $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
-            // CORE-7303: We are hiding all lenses from More Views for now.
             var coreViews = coreResult ? coreResult[0] : [];
-            coreViews = _.reject(coreViews, function(view) {
-                return /^data_lens/.test(view.displayType);
-            });
+            var dataLensViews = dataLensResult ? dataLensResult : [];
+            var allViews = [].concat(coreViews, dataLensViews);
+            // TODO: what filtering needs to be done here
+            // to prevent duplicate data lenses from appearing?
 
-            ds._relatedViews = ds._processRelatedViews(
-                coreViews.concat(dataLensResult ? dataLensResult : [])
-            );
+            ds._relatedViews = ds._processRelatedViews(allViews);
 
             if (_.isFunction(callback)) {
                 callback();

@@ -14,9 +14,9 @@ This library depends on [frontend-utils](https://github.com/socrata/frontend-uti
 
 To use, add the scripts and stylesheets for the desired functionality via script/link tags or asset pipeline:
 
-* At a minimum, you will need to include `socrata.visualizations.Visualization.js`, upon which all specific instances of visualizations depend, as well as the helper `socrata.utils.js`.
-* For each type of visualization you want to use, you will need to include the corresponding script and stylesheet. For example, creating a column chart will require both `socrata.visualizations.ColumnChart.js` and `socrata.visualizations.columnChart.css` to be loaded.
-* To support dynamic data queries, you will need to include both `socrata.visualizations.DataProvider.js` and `socrata.visualizations.SoqlDataProvider.js`.
+* At a minimum, you will need to include `Visualization.js`, upon which all specific instances of visualizations depend, as well as the helper `socrata.utils.js`.
+* For each type of visualization you want to use, you will need to include the corresponding script and stylesheet. For example, creating a column chart will require both `ColumnChart.js` and `socrata.visualizations.columnChart.css` to be loaded.
+* To support dynamic data queries, you will need to include both `DataProvider.js` and `SoqlDataProvider.js`.
 
 ## Testing
 

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Example Usage: socrata.visualizations.ColumnChart.js</title>
+    <title>Example Usage: ColumnChart.js</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <link rel="stylesheet" media="all" href="../socrata.visualizations.columnChart.css">
-    <link rel="stylesheet" media="all" href="../socrata.visualizations.flyoutRenderer.css">
+    <link rel="stylesheet" media="all" href="../src/views/styles/columnChart.css">
+    <link rel="stylesheet" media="all" href="../src/views/styles/flyoutRenderer.css">
     <style type="text/css">
 
       body {
@@ -48,22 +48,15 @@
   </body>
   <!-- lodash must be loaded before `socrata.utils.js` -->
   <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
-  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
-  <!-- jquery must be loaded before `socrata.visualizations.Visualization.js` -->
   <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
-  <!-- `socrata.visualizations.Visualization.js` must be loaded before `socrata.visualizations.ColumnChart.js` -->
-  <script type="text/javascript" src="../socrata.visualizations.Visualization.js"></script>
-  <!-- d3 must be loaded before `socrata.visualizations.ColumnChart.js` -->
   <script type="text/javascript" src="../bower_components/d3/d3.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.ColumnChart.js"></script>
-  <!-- `socrata.visualizations.DataProvider.js` must be loaded before `socrata.visualizations.SoqlDataProvider.js` -->
-  <script type="text/javascript" src="../socrata.visualizations.DataProvider.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.SoqlDataProvider.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.FlyoutRenderer.js"></script>
-  <script type="text/javascript" src="../components/SocrataColumnChart.js"></script>
+  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
+  <script type="text/javascript" src="../bower_components/chroma-js/chroma.min.js"></script>
+  <script type="text/javascript" src="../bower_components/simple-statistics/src/simple_statistics.js"></script>
+  <script type="text/javascript" src="../dist/frontend-visualizations-jquery-plugins.js"></script>
   <script type="text/javascript">
 
-    var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();
+    var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
     var COLUMN_NAME = 'category';
     var DATASET_UID = 'r6t9-rak2';

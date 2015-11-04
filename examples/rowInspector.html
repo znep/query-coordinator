@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Example Usage: socrata.visualizations.RowInspector.js</title>
+    <title>Example Usage: RowInspector.js</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <link rel="stylesheet" media="all" href="../socrata.visualizations.rowInspector.css">
+    <link rel="stylesheet" media="all" href="../src/views/styles/rowInspector.css">
     <style>
     html, body {
       box-sizing: border-box;
@@ -48,47 +48,46 @@
   <!-- lodash must be loaded before `socrata.utils.js` -->
   <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
   <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
-  <!-- jquery must be loaded before `socrata.visualizations.Visualization.js` -->
   <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.Visualization.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.RowInspector.js"></script>
+  <script type="text/javascript" src="../bower_components/d3/d3.js"></script>
+  <script type="text/javascript" src="../bower_components/chroma-js/chroma.min.js"></script>
+  <script type="text/javascript" src="../bower_components/simple-statistics/src/simple_statistics.js"></script>
+  <script type="text/javascript" src="../dist/frontend-visualizations-jquery-plugins.js"></script>
   <script type="text/javascript">
-    (function(root) {
-      var validData = function(rowCount) {
-        return _.map(_.range(1, parseInt(rowCount) + 1), function(rowIndex) {
-          return _.map(_.range(1, Math.random() * 25 + 1), function(columnIndex) {
-            return {
-              column: 'row {0} col {1}'.format(rowIndex, columnIndex),
-              value: _.uniqueId('row value ')
-            }
-          });
-        });
-      };
-
-      $(document).ready(function() {
-        root.socrata.visualizations.RowInspector.setup();
-
-        $('#click-me').click(function(event) {
-          if ($(event.target).closest('#socrata-row-inspector, #error').length) {
-            return;
+    var validData = function(rowCount) {
+      return _.map(_.range(1, parseInt(rowCount) + 1), function(rowIndex) {
+        return _.map(_.range(1, Math.random() * 25 + 1), function(columnIndex) {
+          return {
+            column: 'row {0} col {1}'.format(rowIndex, columnIndex),
+            value: _.uniqueId('row value ')
           }
-
-          $(document.body).trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', {
-            position: {pageX: event.pageX, pageY: event.pageY},
-            error: $('#error:checked').length === 1,
-            message: 'There was an unexpected error.'
-          });
-
-          setTimeout(function() {
-            $(document.body).trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', {
-              position: {pageX: event.pageX, pageY: event.pageY},
-              error: $('#error:checked').length === 1,
-              message: 'There was an unexpected error.',
-              data: validData($('#row-count').val())
-            });
-          }, 2000)
         });
       });
-    })(window);
+    };
+
+    $(document).ready(function() {
+      socrata.visualizations.views.RowInspector.setup();
+
+      $('#click-me').click(function(event) {
+        if ($(event.target).closest('#socrata-row-inspector, #error').length) {
+          return;
+        }
+
+        $(document.body).trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', {
+          position: {pageX: event.pageX, pageY: event.pageY},
+          error: $('#error:checked').length === 1,
+          message: 'There was an unexpected error.'
+        });
+
+        setTimeout(function() {
+          $(document.body).trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', {
+            position: {pageX: event.pageX, pageY: event.pageY},
+            error: $('#error:checked').length === 1,
+            message: 'There was an unexpected error.',
+            data: validData($('#row-count').val())
+          });
+        }, 2000)
+      });
+    });
   </script>
 </html>

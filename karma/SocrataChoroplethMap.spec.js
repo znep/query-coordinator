@@ -1,3 +1,6 @@
+var rewire = require('rewire');
+var SocrataChoroplethMap = rewire('../src/ChoroplethMap');
+
 describe('SocrataChoroplethMap component', function() {
 
   'use strict';
@@ -112,36 +115,31 @@ describe('SocrataChoroplethMap component', function() {
 
     describe('given valid arguments', function() {
 
-      var actualGeospaceDataProvider;
-      var actualSoqlDataProvider;
+      var revertDataProviders;
 
       beforeEach(function() {
 
-        // Get geojson test data
         GEOJSON_RESPONSE = window.choroplethTestData.multiPolygonData2;
 
-        // Mock geospaceDataProvider
-        actualGeospaceDataProvider = window.socrata.visualizations.GeospaceDataProvider;
-        window.socrata.visualizations.GeospaceDataProvider = function() {
-          this.getShapefile = function() {
-            return new Promise(function(resolve, reject) { return resolve(GEOJSON_RESPONSE); });
-          };
-        };
-
-        // Mock soqlDataProvider
-        actualSoqlDataProvider = window.socrata.visualizations.SoqlDataProvider;
-        window.socrata.visualizations.SoqlDataProvider = function() {
-          this.query = function() {
-            return new Promise(function(resolve, reject) { return resolve(SOQL_RESPONSE); });
-          };
-        };
+        // Mock data providers
+        revertDataProviders = SocrataChoroplethMap.__set__({
+          SoqlDataProvider: function() {
+            this.query = function() {
+              return new Promise(function(resolve, reject) { return resolve(SOQL_RESPONSE); });
+            };
+          },
+          GeospaceDataProvider: function() {
+            this.getShapefile = function() {
+              return new Promise(function(resolve, reject) { return resolve(GEOJSON_RESPONSE); });
+            };
+          }
+        });
       });
 
       afterEach(function() {
 
-        // Restore data providers
-        window.socrata.visualizations.GeospaceDataProvider = actualGeospaceDataProvider;
-        window.socrata.visualizations.SoqlDataProvider = actualSoqlDataProvider;
+        // Restore old data providers
+        revertDataProviders();
 
         // Remove visualizaton
         destroyVisualization($container);
@@ -149,40 +147,33 @@ describe('SocrataChoroplethMap component', function() {
 
       describe('on initialization', function() {
 
-        var actualSocrataVisualizationsChoroplethMap;
+        var revertVisualization;
+        var stubChoroplethMap;
 
         beforeEach(function () {
-
-          // Mock socrata.visualizations.ChoroplethMap
-          actualSocrataVisualizationsChoroplethMap = window.socrata.visualizations.ChoroplethMap;
-
-          var stubSocrataVisualizationsChoroplethMapMethods = sinon.stub({
-            render: function() {},
-            renderError: function() {},
-            destroy: function() {}
+          stubChoroplethMap = sinon.stub().returns({
+            render: _.noop,
+            renderError: _.noop,
+            destroy: _.noop
           });
-          var stubSocrataVisualizationsChoroplethMapConstructor = sinon.stub().returns(stubSocrataVisualizationsChoroplethMapMethods);
 
-          window.socrata.visualizations.ChoroplethMap = stubSocrataVisualizationsChoroplethMapConstructor;
+          revertVisualization = SocrataChoroplethMap.__set__({
+            ChoroplethMap: stubChoroplethMap
+          });
         });
 
         afterEach(function() {
-
-          // Restore socrata.visualizations.ChoroplethMap
-          window.socrata.visualizations.ChoroplethMap = actualSocrataVisualizationsChoroplethMap;
+          revertVisualization();
         });
 
         it('invokes socrata.visualization.ChoroplethMap', function() {
-
           $container.socrataChoroplethMap(choroplethVIF);
-          assert.isTrue(window.socrata.visualizations.ChoroplethMap.called);
+          assert.isTrue(stubChoroplethMap.called);
         });
       });
 
       it('emits a flyout render event when the mouse is moved over the legend', function(done) {
-
         var vif = _.cloneDeep(choroplethVIF);
-
         $container.socrataChoroplethMap(vif);
 
         $container.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', function(event) {

@@ -1384,7 +1384,9 @@
 
                         Therefore we fake a click on document.body :'(
                       */
-                      document.body.click();
+                      if (_.isFunction(document.body.click)) {
+                        document.body.click();
+                      }
                     }
                   });
 

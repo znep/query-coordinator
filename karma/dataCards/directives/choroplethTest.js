@@ -132,6 +132,7 @@ describe('A Choropleth Directive', function() {
   function aggregateDataForValues(values) {
     return cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
       'geometryLabel',
+      Constants.INTERNAL_DATASET_FEATURE_ID,
       createGeoJsonData(values.length),
       values,
       values,

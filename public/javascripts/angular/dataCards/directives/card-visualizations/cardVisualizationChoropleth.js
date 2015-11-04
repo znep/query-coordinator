@@ -23,25 +23,35 @@
       link: function cardVisualizationChoroplethLink(scope, element) {
         var model = scope.$observe('model').filter(_.isPresent);
         var dataset = model.observeOnLatest('page.dataset');
+        var datasetId$ = dataset.pluck('id');
+        var fieldName$ = model.pluck('fieldName');
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
         var aggregation$ = model.observeOnLatest('page.aggregation');
-        var dataRequests$ = new Rx.Subject();
-        var dataResponses$ = new Rx.Subject();
         var unfilteredData$;
         var filteredData$;
         var whereClause$ = scope.$observe('whereClause');
         var computedColumnName$ = model.observeOnLatest('computedColumn').distinctUntilChanged();
         var waiting$ = new Rx.BehaviorSubject(true);
 
+        var inFlightRequestsTracker$ = new Rx.Subject();
+
+        // Keep track of the number of requests that have been made and the number of
+        // responses that have come back.
+        // We use `.scan()` because `.reduce()` only emits a value when the source
+        // stream completes.
+        var inFlightRequestsCount$ = inFlightRequestsTracker$.
+          scan(0, function(acc, value) { return acc + value; });
+        var hasInFlightRequests$ = inFlightRequestsCount$.
+          map(function(count) { return count > 0; }).
+          distinctUntilChanged().
+          startWith(false);
+
         // computedColumnBase contains the computed column blob on the dataset,
         // or undefined if it does not exist.
         var computedColumnBase$ = Rx.Observable.combineLatest(
           dataset.observeOnLatest('columns'),
           computedColumnName$,
-          function(columns, computedColumnName) {
-            return _.get(columns, computedColumnName);
-          }
-        );
+          _.get);
 
         // The computed column is partitioned into the following 2 observables,
         // because we have separate behavior depending on whether or not the
@@ -52,31 +62,30 @@
         // In the add card dialog and the customize dialog, we do not do region
         // coding.
         var regionCodingDisabled = element.closest('.cards-content').length === 0;
+
+        function computedColumnNameToShapefileId(computedColumnName) {
+          if (!_.isString(computedColumnName)) { return; }
+          return computedColumnName.replace(/(\w{4})_(\w{4})$/, '$1-$2');
+        }
+
+        var shapefileId$ = computedColumnName$.map(computedColumnNameToShapefileId);
+
         if (regionCodingDisabled) {
-          computedColumnMissing$.subscribe(function() {
-            scope.$safeApply(function() {
-              scope.isPendingColumnAddition = true;
-            });
-          });
+          computedColumnMissing$.
+            safeApplySubscribe(scope, function() { scope.isPendingColumnAddition = true; });
         } else {
 
           // If the computed column is missing
           computedColumnMissing$.
-            tap(function() {
-
-              // Set up the busy indicator
-              scope.isPendingComputation = true;
-            }).
+            safeApply(function() { scope.isPendingComputation = true; }).
             withLatestFrom(
-              dataset.pluck('id'),
-              computedColumnName$,
-              model.pluck('fieldName'),
-              function(computedColumnIsMissing, datasetId, computedColumnName, sourceColumn) {
-                var matches = /(\w{4})_(\w{4})$/.exec(computedColumnName);
-                var shapefileId = _.slice(matches, 1, 3).join('-');
+              datasetId$,
+              shapefileId$,
+              fieldName$,
+              function(computedColumnIsMissing, datasetId, shapefileId, sourceColumnFieldName) {
 
                 // Request rails to initiate region coding (add the computed column).
-                return CardDataService.initiateRegionCoding(datasetId, shapefileId, sourceColumn);
+                return CardDataService.initiateRegionCoding(datasetId, shapefileId, sourceColumnFieldName);
               }
             ).
             switchLatest(). // Wait for a response from the server
@@ -91,81 +100,48 @@
               }
             }).
             filter(_.isPresent). // Only continue if region coding initiation succeeded.
-            flatMapLatest(dataset.pluck('id')).
+            flatMapLatest(datasetId$).
             combineLatest(
-              computedColumnName$,
-              function(datasetId, computedColumnName) {
-                var matches = /(\w{4})_(\w{4})$/.exec(computedColumnName);
-                var shapefileId = _.slice(matches, 1, 3).join('-');
-
-                // Gather necessary information to poll for region coding completion.
-                return {
-                  datasetId: datasetId,
-                  shapefileId: shapefileId
-                };
-              }
-            ).
-            flatMapLatest(function(datasetAndShapefile) {
-              var poll = _.bind(CardDataService.getRegionCodingStatus, CardDataService, datasetAndShapefile.datasetId, datasetAndShapefile.shapefileId);
+              shapefileId$,
+              _.bind(CardDataService.getRegionCodingStatus, CardDataService, _, _)).
+            flatMapLatest(function(getRegionCodingStatus) {
 
               // Setup a timer that polls for completion of the region coding.
               // This is an observable of observables.
               return Rx.Observable.
                 interval(5000).
-                map(poll).
+                map(getRegionCodingStatus).
                 takeUntil(computedColumn$); // Stop polling if the computed column gets added.
             }).
             switchLatest(). // Grab out the result of the most recent status check.
-            pluck('data').
-            combineLatest(
-              dataset,
-              function(responseData, datasetModel) {
-                return {
-                  responseData: responseData,
-                  dataset: datasetModel
-                };
-              }
-            ).
             safeApplyOnError(scope, function() {
               scope.isPendingComputation = false;
               scope.choroplethRenderError = true;
             }).
-            subscribe(function(responseDataAndDataset) {
-              var responseData = responseDataAndDataset.responseData;
-              var datasetModel = responseDataAndDataset.dataset;
-
-              // If the response from rails says region coding is complete
-              if (responseData.success) {
-                var newColumns = _.get(responseData, 'datasetMetadata.columns');
-                if (newColumns) {
-
-                  // Perform transformations on the datasetMetadata
-                  newColumns = _.mapValues(newColumns, function(column, fieldName) {
-                    return _.extend({
-                      fieldName: fieldName,
-                      isSystemColumn: DatasetColumnsService.isSystemColumn(column)
-                    }, column);
-                  });
-
-                  // Set the dataset columns, which retriggers the computedColumn$
-                  // observable (except it will exist this time), which will
-                  // trigger a render of the choropleth.
-                  datasetModel.set('columns', newColumns);
-                }
-              }
-            });
+            pluck('data').
+            filter(_.property('success')).
+            map(_.property('datasetMetadata.columns')).
+            filter(_.isDefined).
+            map(function(newColumns) {
+              return _.mapValues(newColumns, function(column, fieldName) {
+                return _.extend({
+                  fieldName: fieldName,
+                  isSystemColumn: DatasetColumnsService.isSystemColumn(column)
+                }, column);
+              });
+            }).
+            subscribeLatest(
+              dataset,
+              function(newColumns, datasetModel) {
+                // Set the dataset columns, which retriggers the computedColumn$
+                // observable (except it will exist this time), which will
+                // trigger a render of the choropleth.
+                datasetModel.set('columns', newColumns);
+              });
         }
 
-        // Keep track of the number of requests that have been made and the number of
-        // responses that have come back.
-        // .scan() is necessary because the usual aggregation suspect reduce actually
-        // will not execute over a sequence until it has been completed; scan is happy
-        // to operate on active sequences.
-        var dataRequestCount$ = dataRequests$.scan(0, function(acc) { return acc + 1; });
-        var dataResponseCount$ = dataResponses$.scan(0, function(acc) { return acc + 1; });
-
         var shapefile$;
-        var geometryLabel$;
+        var regionMetadata$;
         var geojsonRegions$;
 
         var shapefileRegionQueryLimit = ServerConfig.getScalarValue(
@@ -184,11 +160,10 @@
         // this code is location-dependent within the file.
         scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
-            dataRequestCount$,
-            dataResponseCount$,
+            hasInFlightRequests$,
             scope.$observe('choroplethRenderError').startWith(null),
             waiting$,
-            function(requests, responses, error, waiting) {
+            function(hasInFlightRequests, error, waiting) {
               if (!_.isEmpty(error)) {
                 return false;
               }
@@ -197,7 +172,7 @@
                 return true;
               }
 
-              return requests === 0 || (requests > responses);
+              return hasInFlightRequests; // requests === 0 || (requests > responses);
             }).startWith(true));
 
 
@@ -245,51 +220,40 @@
             return shapefile;
           });
 
-        geometryLabel$ = shapefile$.map(
-          function(shapefile) {
-            var dataPromise;
+        function trackPromiseFlightStatus(dataPromise) {
+          inFlightRequestsTracker$.onNext(1);
+          dataPromise['finally'](function() { inFlightRequestsTracker$.onNext(-1); });
+        }
 
-            dataRequests$.onNext(1);
+        regionMetadata$ = shapefile$.
+          map(CardDataService.getChoroplethRegionMetadata).
+          tap(trackPromiseFlightStatus).
+          switchLatest().
+          share().
+          safeApplyOnError(scope, function() { scope.choroplethRenderError = true; })
+          ['catch'](Rx.Observable.returnValue({
+            geometryLabel: null,
+            featurePk: Constants.INTERNAL_DATASET_FEATURE_ID
+          }));
 
-            dataPromise = CardDataService.getChoroplethGeometryLabel(shapefile);
-
-            dataPromise.then(
-              function() {
-                dataResponses$.onNext(1);
-              },
-              function() {
-
-                // Still increment the counter to stop the spinner
-                dataResponses$.onNext(1);
-
-                scope.$safeApply(function() {
-                  scope.choroplethRenderError = true;
-                });
-              }
-            );
-
-            return Rx.Observable.fromPromise(dataPromise);
-          }
-        );
+        var geometryLabel$ = regionMetadata$.pluck('geometryLabel');
+        var primaryKey$ = regionMetadata$.pluck('featurePk');
 
         geojsonRegions$ = Rx.Observable.combineLatest(
           dataset,
-          model.pluck('fieldName'),
+          fieldName$,
           shapefile$,
           computedColumn$,
           function(currentDataset, fieldName, shapefile, computedColumn) {
             var sourceColumn = fieldName;
-            var dataPromise;
             var computationStrategy = _.get(computedColumn, 'computationStrategy.strategy_type');
-
-            dataRequests$.onNext(1);
 
             // If we have successfully found a source column and it uses the
             // georegion_match_on_point strategy, make the more specific bounding
             // box query utilizing the source column's extents.
             if (computationStrategy === 'georegion_match_on_point') {
 
-              dataPromise = CardDataService.getChoroplethRegionsUsingSourceColumn(
+              return CardDataService.getChoroplethRegionsUsingSourceColumn(
                 currentDataset.id,
                 sourceColumn,
                 shapefile
@@ -297,42 +261,12 @@
 
             // Otherwise, use the less efficient but more robust request.
             } else {
-              dataPromise = CardDataService.getChoroplethRegions(shapefile);
+              return CardDataService.getChoroplethRegions(shapefile);
             }
-
-            dataPromise.then(
-              function() {
-                // Ok
-                dataResponses$.onNext(1);
-              },
-              function() {
-                // Show geojson regions request error message.
-                dataResponses$.onNext(1);
-
-                scope.$safeApply(function() {
-                  scope.choroplethRenderError = true;
-                });
-              }
-            );
-
-            return Rx.Observable.fromPromise(dataPromise);
-          }
-        );
-
-        function trackPromiseFlightStatus(eventLabel, dataPromise) {
-          dataRequests$.onNext(1);
-          dataPromise.then(
-            function(result) {
-              // Ok
-              dataResponses$.onNext(1);
-              waiting$.onNext(false);
-              scope.$emit(eventLabel, result.headers);
-            },
-            function() {
-              // Still increment the counter to stop the spinner
-              dataResponses$.onNext(1);
-            });
-        }
+          }).
+          tap(trackPromiseFlightStatus).
+          switchLatest().
+          safeApplyOnError(scope, function() { scope.choroplethRenderError = true; });
 
         function requestDataWithWhereClauseSequence(where$, eventLabel) {
 
@@ -345,16 +279,22 @@
               _, _, whereClauseFragment, _, { limit: shapefileRegionQueryLimit });
 
             return Rx.Observable.combineLatest(
-              computedColumnName$,
-              dataset.pluck('id'),
-              aggregation$,
-              computedColumn$,
-              getDataWithWhereClauseAndLimit).
-              tap(_.partial(trackPromiseFlightStatus, eventLabel)).
+                computedColumnName$,
+                datasetId$,
+                aggregation$,
+                computedColumn$,
+                getDataWithWhereClauseAndLimit
+            ).
+              tap(trackPromiseFlightStatus).
               switchLatest().
+              tap(function(result) {
+                waiting$.onNext(false);
+                scope.$emit(eventLabel, result.headers);
+              }).
               incrementalFallbackRetry(6, function() { waiting$.onNext(true); }).
               safeApply(scope, function() { scope.isPendingComputation = false; }).
-              safeApplyOnError(scope, function() { scope.choroplethRenderError = true; });
+              safeApplyOnError(scope, function() { scope.choroplethRenderError = true; }).
+              pluck('data');
           });
         }
 
@@ -371,22 +311,25 @@
         * Bind non-busy-indicating observables. *
         ****************************************/
 
-        scope.$bindObservable('fieldName', model.pluck('fieldName'));
+        scope.$bindObservable('fieldName', fieldName$);
         scope.$bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
         scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
         scope.$bindObservable('isFiltered', whereClause$.map(_.isPresent));
 
+        var geojsonAggregateData$ = Rx.Observable.combineLatest(
+          geometryLabel$,
+          primaryKey$,
+          geojsonRegions$,
+          unfilteredData$,
+          filteredData$,
+          model.observeOnLatest('activeFilters'),
+          fieldName$,
+          dataset.observeOnLatest('columns'),
+          CardVisualizationChoroplethHelpers.aggregateGeoJsonData);
+
         scope.$bindObservable(
           'geojsonAggregateData',
-          Rx.Observable.combineLatest(
-            geometryLabel$.switchLatest(),
-            geojsonRegions$.switchLatest(),
-            unfilteredData$.pluck('data'),
-            filteredData$.pluck('data'),
-            model.observeOnLatest('activeFilters'),
-            model.pluck('fieldName'),
-            dataset.observeOnLatest('columns'),
-            CardVisualizationChoroplethHelpers.aggregateGeoJsonData),
+          geojsonAggregateData$,
           // The second function argument to bindObservable is called when
           // there is an error in one of the argument sequences. This can
           // happen when we reject the regions promise because the extent
@@ -401,25 +344,33 @@
         *********************************************************/
 
         // Handle filter toggle events sent from the choropleth directive.
-        scope.$on('toggle-dataset-filter:choropleth', function(event, feature) {
-          var featureId = feature.properties[Constants.INTERNAL_DATASET_FEATURE_ID];
-          var humanReadableName = feature.properties[Constants.HUMAN_READABLE_PROPERTY_NAME];
+        var datasetFilterToggleFeature$ = scope.$eventToObservable('toggle-dataset-filter:choropleth').
+          map(_.property('additionalArguments[0]'));
 
-          var hasFiltersOnCard = _.any(
-            scope.model.getCurrentValue('activeFilters'),
-            function(currentFilter) {
-              return currentFilter.operand === featureId;
+        Rx.Observable.subscribeLatest(
+          datasetFilterToggleFeature$,
+          primaryKey$,
+          function(feature, primaryKey) {
+            var featureId = feature.properties[primaryKey];
+            var humanReadableName = feature.properties[Constants.HUMAN_READABLE_PROPERTY_NAME];
+            var filters = [];
+
+            var hasFiltersOnCard = _.any(
+              scope.model.getCurrentValue('activeFilters'),
+              'operand',
+              featureId
+            );
+
+            if (!hasFiltersOnCard) {
+              var filter = _.isString(featureId) ?
+                new Filter.BinaryOperatorFilter('=', featureId, humanReadableName) :
+                new Filter.IsNullFilter(true);
+              filters = [filter];
+            }
+            scope.$safeApply(function() {
+              scope.model.set('activeFilters', filters);
             });
-
-          if (hasFiltersOnCard) {
-            scope.model.set('activeFilters', []);
-          } else {
-            var filter = _.isString(featureId) ?
-              new Filter.BinaryOperatorFilter('=', featureId, humanReadableName) :
-              new Filter.IsNullFilter(true);
-            scope.model.set('activeFilters', [filter]);
-          }
-        });
+          });
 
         LeafletVisualizationHelpersService.setObservedExtentOnModel(scope, scope.model);
 

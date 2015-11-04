@@ -91,9 +91,12 @@ describe('A Choropleth Card Visualization', function() {
         deferred.resolve(json);
         return deferred.promise;
       },
-      getChoroplethGeometryLabel: function() {
+      getChoroplethRegionMetadata: function() {
         var deferred = q.defer();
-        deferred.resolve('geometryLabel');
+        deferred.resolve({
+          geometryLabel: 'geometryLabel',
+          featurePk: Constants.INTERNAL_DATASET_FEATURE_ID
+        });
         return deferred.promise;
       },
       getData: function(fieldName, datasetId, whereClause) {
@@ -219,9 +222,6 @@ describe('A Choropleth Card Visualization', function() {
       selectionBoxClearButton = selectionBox.find('.icon-close');
       feature = choropleth.find('.choropleth-container path')[0];
       flyout = $('#uber-flyout').hide();
-      if (typeof document.body.click !== 'function') {
-        document.body.click = function() {};
-      }
 
       // Trigger a 'mouseenter' event on the choroplethContainer in order to
       // register all of our flyouts.
@@ -502,7 +502,7 @@ describe('A Choropleth Card Visualization', function() {
     describe('if the dataset query used to get the shapefile labels fails', function() {
 
       beforeEach(function() {
-        mockCardDataService.getChoroplethGeometryLabel = function() {
+        mockCardDataService.getChoroplethRegionMetadata = function() {
           var deferred = q.defer();
           deferred.reject('Shapefile does not exist.');
           return deferred.promise;

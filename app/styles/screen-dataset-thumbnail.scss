@@ -128,9 +128,6 @@ $cropped_height: 80;
     float: right;
     .saveStatus {
       display: inline-block;
-      .ie7 & {
-        height: 1.8em;
-      }
       margin-right: 0;
       .saving {
         @include throbber-icon;
@@ -145,9 +142,6 @@ $cropped_height: 80;
         position: relative;
         text-align: center;
         top: 0.7em;
-        .ie7 & {
-          top: -0.9em;
-        }
         width: 15em;
         &.error {
           width: auto;

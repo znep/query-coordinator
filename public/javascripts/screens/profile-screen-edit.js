@@ -161,18 +161,16 @@
         contents: $.t('screens.profile.edit.app_tokens.new_app_button')
     });
 
-    var openFunction = $('html').hasClass('ie7') ? 'toggle' : 'slideToggle';
-
     $showFormButton.click(function(){
         $newTokenArea.hide()
             .removeClass('hide')
-            [openFunction]();
+            .slideToggle();
         $showFormButton.addClass('disabled');
     });
 
     $cancelButton.click(function(event){
         event.preventDefault();
-        $newTokenArea[openFunction]();
+        $newTokenArea.slideToggle();
         $showFormButton.removeClass('disabled');
     });
 

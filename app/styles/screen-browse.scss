@@ -192,10 +192,6 @@ $data_lens_icon_color: #80acca;
           margin-left: 0.3em;
           position: relative;
           top: 0.2em;
-          @include ie7-inline-block;
-          .ie7 & {
-            top: 0;
-          }
         }
       }
     }
@@ -235,7 +231,6 @@ $data_lens_icon_color: #80acca;
             position: relative;
             left: 0.5em;
             top: 0.1em;
-            @include ie7-inline-block;
           }
         }
       }
@@ -252,9 +247,6 @@ $data_lens_icon_color: #80acca;
       display: inline-block;
       margin-right: 1em;
       vertical-align: middle;
-      .ie7 & {
-        display: inline;
-      }
       li a {
         @include renderType-toggle-icons;
       }
@@ -262,12 +254,6 @@ $data_lens_icon_color: #80acca;
     .sortOptions {
       display: inline-block;
       vertical-align: middle;
-      .ie7 & {
-        display: inline;
-        .uniform {
-          display: inline;
-        }
-      }
       .sortLabel {
         display: block;
         left: -9999px;
@@ -411,9 +397,6 @@ $data_lens_icon_color: #80acca;
           }
           .rowSearchResults {
             margin-right: -15.2em;
-            .ie7 & {
-              margin-right: -12.5em;
-            }
           }
           .extraInfo {
             background-color: #fafafa;
@@ -423,9 +406,6 @@ $data_lens_icon_color: #80acca;
             padding-right: 22.5em;
             position: relative;
             width: 100%;
-            .ie7 & {
-              z-index: 0;
-            }
             .close {
               @include sprite-menu-icons;
               position: absolute;
@@ -440,9 +420,6 @@ $data_lens_icon_color: #80acca;
                 display: inline-block;
                 font-size: 0.8333em;
                 margin-right: 2em;
-                .ie7 & {
-                  display: inline;
-                }
                 .button, .menuButton {
                   @include button;
                   font-size: 1.1em;
@@ -457,19 +434,9 @@ $data_lens_icon_color: #80acca;
               .menu.share {
                 @include sprite-menu-icons(".menuButton .shareIcon");
                 margin-right: 0.25em;
-                .ie7 & {
-                  display: inline;
-                }
                 .menuButton {
-                  .ie7 & {
-                    padding-right: 1.7em;
-                  }
                   .shareIcon, .icon {
                     display: inline-block;
-                    .ie7 & {
-                      display: block;
-                      float: left;
-                    }
                   }
                   .shareText {
                     bottom: 0.2em;
@@ -478,14 +445,6 @@ $data_lens_icon_color: #80acca;
                       right: 0.2em;
                     };
                     position: relative;
-                    .ie7 & {
-                      bottom: 0;
-                    }
-                  }
-                  .ie7 & .icon {
-                    position: absolute;
-                    right: 0.3em;
-                    top: 0.3em;
                   }
                 }
                 .menuDropdown ul li ul li {
@@ -502,16 +461,9 @@ $data_lens_icon_color: #80acca;
                 display: inline-block;
                 font-size: 0.9167em;
                 margin-right: 1em;
-                .ie7 & {
-                  display: inline;
-                }
                 .icon {
                   display: inline-block;
                   margin-right: 0.4em;
-                  .ie7 & {
-                    display: block;
-                    float: left;
-                  }
                 }
                 .value {
                   display: inline-block;
@@ -521,16 +473,6 @@ $data_lens_icon_color: #80acca;
               }
               .starsControl {
                 display: inline-block;
-                .ie7 & {
-                  display: inline;
-                }
-              }
-            }
-            .ie7 & {
-              margin-left: -5.5em;
-              padding-right: 19em;
-              .infoContent {
-                margin-right: -19em;
               }
             }
             &.federated {
@@ -538,13 +480,6 @@ $data_lens_icon_color: #80acca;
               padding-right: 24.75em;
               .infoContent {
                 margin-right: -24.75em;
-              }
-              .ie7 & {
-                margin-left: -7.75em;
-                padding-right: 22.75em;
-                .infoContent {
-                  margin-right: -22.75em;
-                }
               }
             }
           }
@@ -638,9 +573,6 @@ $data_lens_icon_color: #80acca;
             > span {
               display: inline-block;
               margin-top: 0.6em;
-            }
-            .ie7 & {
-              margin-right: 0;
             }
           }
         }
@@ -744,22 +676,12 @@ $data_lens_icon_color: #80acca;
         @include sprite-menu-icons;
         font-size: 1em;
         padding: 0.3em;
-        .ie7 & {
-          position: relative;
-          top: 0.5em;
-        }
       }
       .prevLink {
         margin-right: 1em;
-        .ie7 & {
-          margin-left: 0.5em;
-        }
       }
       .nextLink {
         margin-left: 1em;
-        .ie7 & {
-          margin-right: 0.5em;
-        }
       }
     }
     .resultCount {

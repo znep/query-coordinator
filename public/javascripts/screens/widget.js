@@ -7,13 +7,6 @@ widgetNS.ready = false;
 blist.widget.resizeViewport = function()
 {
     widgetNS.$resizeContainer.fullScreen().adjustSize();
-
-    if ($.browser.msie && ($.browser.majorVersion == 7))
-    {
-        // IE7 gets really confused when the toolbar is opening or closing.
-        // Jiggering this class seems to help it.
-        $('.mainMenu').toggleClass('open').toggleClass('open');
-    }
 };
 
 blist.widget.searchToolbarShown = false;

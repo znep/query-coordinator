@@ -211,23 +211,6 @@
             });
         }
 
-        // Workaround for IE7 SVG overlay issues
-        if($('html').hasClass('ie7'))
-        {
-            $screen.find('.chartMenu .menuButton').click(function(event)
-            {
-                $(event.target).closest('.chartMenu').siblings('.chartArea')
-                  .find('.chartContent').empty().end()
-                  .find('.emptyHint').fadeIn();
-            });
-
-            $screen.find('.chartContainer .menu ul > li > a').click(function(event)
-            {
-                $(event.target).closest('.chartContainer')
-                    .find('.emptyHint').hide();
-            });
-        }
-
         $screen.find('.topDisplay').append(
             $.renderTemplate('metricsTopList', opts.topListSections, opts.topListDirective))
             .find('table').tablesorter(
@@ -461,7 +444,7 @@
                     datePrevious: function() { return Date.parse('2 months ago').moveToFirstDayOfMonth(); },
                     enabled: true
                 }
-            ], function(preset) { return !!preset.enabled; }), 
+            ], function(preset) { return !!preset.enabled; }),
             presets: _.pick({
               specificDate: $.t('plugins.daterangepicker.specific_date'),
               dateRange: $.t('plugins.daterangepicker.date_range'),

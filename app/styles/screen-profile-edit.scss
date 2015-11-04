@@ -74,7 +74,6 @@
         .uniform.checker {
           position: relative;
           top: 0.2em;
-          @include ie7-inline-block;
         }
         p {
           clear: left;
@@ -134,9 +133,6 @@
         float: left;
         padding-right: 0.5em;
       }
-      .ie7 & {
-        width: 19em;
-      }
     }
   }
   .editAppTokenForm {
@@ -150,7 +146,6 @@
       }
       &.working .uploadIndicator {
         display: inline-block;
-        @include ie7-inline-block;
       }
       .thumbnailError {
         display: none;

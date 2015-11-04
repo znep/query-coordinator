@@ -47,11 +47,6 @@
     }
   }
   .gridList {
-    input.button {
-      .ie7 & {
-        padding: 0.5em;
-      }
-    }
     form {
       display: inline;
     }
@@ -85,11 +80,6 @@
         display: block;
         float: none;
         margin-left: 18em;
-        .radio.uniform {
-          .ie7 & {
-            display: inline;
-          }
-        }
         label {
           padding-left: 0;
         }

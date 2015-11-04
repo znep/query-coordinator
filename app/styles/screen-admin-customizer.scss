@@ -31,9 +31,6 @@
       position: absolute;
       right: 0;
       width: 50em;
-      .ie7 & {
-        width: 55em;
-      }
       #sidebarOptions li a {
         &.metadata {
           background-color: $sidebar_metadata_tab_color_top;
@@ -215,12 +212,6 @@
           right: 1em;
           top: -0.8em;
         };
-        .ie7 & {
-          margin-top: 0;
-        }
-      }
-      .ie7 & label {
-        display: none;
       }
     }
     &.disabled {

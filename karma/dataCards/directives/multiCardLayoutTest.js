@@ -1444,7 +1444,7 @@ describe('multi-card-layout', function() {
 
       $timeout.flush();
 
-      expect(mockDownloadService.calledWith[0]).to.equal('./asdf-fdsa/choropleth_column.png');
+      expect(mockDownloadService.calledWith[0]).to.equal('/view/asdf-fdsa/choropleth_column.png');
       expect(exitExportModeSpy.callCount).to.equal(1);
     });
 

@@ -46,8 +46,13 @@ sl:
         card_on_page: Kartica je že na strani
         card_on_page_long: Ta kartica je že na strani
         choose_column: Izberite stolpec
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: 'Upoštevajte: to bi imelo za posledico palični stolpčni diagram, ki bi vseboval več kot sto stolpcev -- lahko, da bo šlo počasneje kot pri drugih diagramih'
+        custom:
         customize_prompt: Prilagodite si to kartico
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: Trenutno ni podprta
         not_supported_long: Ta kartica trenutno ni podprta
         prompt: Za dodajanje nove kartice na spustnem meniju izberite stolpec
@@ -93,11 +98,15 @@ sl:
         remove_card: Odstrani to kartico
       card_layout:
         add_card_here: Kartico dodajte tukaj
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average: povprečje {0}
         number_of: stevilo {0}
         sum_of: seštevek {0}
       common:
+        by:
         cancel: Prekliči
         cards:
           choropleth: Koropleta
@@ -115,6 +124,7 @@ sl:
           export_visualization_disabled: Ta vizualizacija ni na voljo<br/>za izvoz slike
           invalid_card: Neveljavna vizualizacija kartice
           map_render_error: Pri prikazovanju tega zemljevida smo naleteli na napako.
+        export: Izvozi
         latitude: Višina
         longitude: "Širina"
         no_value: Ni vrednosti
@@ -124,6 +134,7 @@ sl:
           permissions: Dovoljenja
           private: Zasebno
           public: Javno
+        row:
         save: Shrani
       customize_bar:
         changes_warning: Na tej strani ste uveljavili spremembe.
@@ -134,10 +145,23 @@ sl:
         customizing_flyout: Zdaj si prilagajate to stran
         customizing_flyout_instructions: Za predogled sprememb lahko kadarkoli kliknete na ta gumb, pa tudi shranite jih lahko kadarkoli
         exit_visualization_export: Za vstop v način prilagajanja s klikom na gumb za preklic v informacijskem oknu zapustite način "Vizualizacijo prenesi v obliki slike"
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: Zemljevid prilagoditev
-          standard: Običajno
+          simple_blue:
+          simple_grey:
           title: Osnovna plast zemljevida
         visualization_options:
           title: Tip kartice
@@ -147,8 +171,22 @@ sl:
         errors:
           error: Pri poskusu predstavitve te kartice je prišlo do napake.
           no_data: Ni podatkov za prikaz.
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: Približevanje trenutno ni na voljo. Prosimo, poskusite znova kasneje.
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: Zdi se, da se je nekaj sesulo
         feedback: Povratne informacije
@@ -172,10 +210,13 @@ sl:
         clear_filter_long: Ta stran je trenutno filtrirana s to vrednostjo -- kliknite za odstranitev
         clear_range_filter_long: Ta stran je trenutno filtrirana s to izbiro -- kliknite za odstranitev
         current_filter: Trenutni filter
+        dense_data:
         details: Kliknite za prikaz podrobnosti
         expand: 'Kliknite za razširitev '
+        filter_prompt:
         filtered_amount: Količina, ki je bila filtrirana
         total: Skupaj
+        zoom_or_filter_prompt:
       last_updated:
         label: nazadnje posodobljeno
       lens_type:
@@ -186,7 +227,44 @@ sl:
         dataset_private_page_public: <span class="icon-warning"></span> Izvorni niz podatkov za to stran je nastavljen na <b>Zasebno</b>, tako da je tudi, če bo stran nastavljena na Javno, ne bo mogel videti kdorkoli z dostopom do izvornega podatkovnega niza. Kljub temu se bo pojavil v javnem katalogu. Razmislite o nastavitvi na Javno za ta podatkovni niz ali pa na Zasebno za to stran.
         dataset_public_page_private: Ta stran je nastavljena na <b>Zasebno</b>, zato jo bodo lahko videli samo tisti s prednostnim dostopom. V javnem katalogu se ne bo pojavila.
         dataset_public_page_public: Ta stran in njen izvorni podatkovni niz sta <b>Javni</b>, zato bo lahko to stran videl vsakdo, pojavila pa se bo tudi v javnem katalogu.
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: Upravljaj
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: Vsi izvorni podatki na način CSV (Excel)
         edit_description_prompt: Svojo stran dobro opišite, da bodo lahko ljudje razumeli zgodbo, ki jo skušajo povedati vaši podatki. (izbirno)
@@ -215,6 +293,16 @@ sl:
       related_views:
         button: Drugi pogledi na te podatke
         title: Drugi pogledi na te podatke
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: Kliknite za odpravo vseh sprememb od zadnjega shranjevanja
         flyoutNoChanges: Ni sprememb za razveljavitev
@@ -227,6 +315,7 @@ sl:
         link_placeholder: Sem vnesite spletni naslov
         underline: Podčrtano
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: Prosimo, obrnite se na skupino za podporo Socrate
         flyoutFailedTitle: Prišlo je do napake
         flyoutIdle: 'Kliknite, če želite spremembe shraniti kot novo stran '
@@ -236,6 +325,9 @@ sl:
         description: Vnesite opis za svojo novo stran (izbirno)
         new_name: Trenutno stran shranite z drugim imenom
         title: Shrani kot
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: Ni uspelo
         flyoutFailedBody: Prosimo, obrnite se na skupino za podporo Socrate
@@ -245,7 +337,19 @@ sl:
         save: Shrani
         saved: Shranjeno!
         saving: Shranjujem...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: Poskusite z iskanjem številke, ki ne vsebuje črk.
         loading: Nalagam predloge....
         no_results: Vaše iskanje ni prineslo zadetkov. Preverite črkovanje ali poskusite z drugim izrazom.
@@ -256,6 +360,7 @@ sl:
         two_examples: 'Primeri: ''{0}'' ali ''{1}'''
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -270,6 +375,7 @@ sl:
         newest_first: najprej najnovejši
         no_rows: Ni vrstic za prikaz
         no_sort:
+        non_range_label:
         oldest_first: najprej najstarejši
         range_label: "{0} <strong>{1}-{2} izmed {3}</strong>"
         range_label_all: Prikazujem vse {0} {1}
@@ -352,7 +458,8 @@ sl:
           href: Zunanji podatkovni nizi
           maps: Zemljevidi
           new_view: Strani Data Lens
-          new_view_help: Kaj je to?
+          pulse:
+          pulse_help:
           story: Zgodbe
           story_help: Poučite se o zgodbah
           unpublished: Neobjavljeni podatkovni nizi
@@ -364,6 +471,7 @@ sl:
         federation_source_html: Omogoča %{source_link}
         no_results: Ni rezultatov
         result_count: Prikazujem %{this} od %{total}
+        result_count_cetera:
         table_header:
           name: Ime
           popularity: Priljubljenost
@@ -772,10 +880,14 @@ sl:
       flag: Označi
       geospatial: Geoprostorsko
       html: Formatirano besedilo
+      line:
       link: Povezava stolpca
       list: Seznam
       location: Lokacija
       money: Denar
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: Ugnezdena tabela
       number: "Številka"
       object: Predmet
@@ -783,6 +895,7 @@ sl:
       phone: Telefon
       photo: Fotografija (slika)
       point: Točka
+      polygon:
       stars: Zvezdica
       text: Golo besedilo
       url: URL spletne strani
@@ -832,6 +945,7 @@ sl:
       years_past: pred %{time} leti
     dialogs:
       apply: Uveljavi
+      back:
       cancel: Prekliči
       close: Zapri
       continue: Nadaljuj
@@ -1202,9 +1316,15 @@ sl:
       date_range: Razpon podatkov
       done: Končano
       end_date: Datum konca
+      last_30_days:
       last_month: Prejšnji mesec
+      last_week:
+      last_year:
       month_to_date: Mesec do datuma
       next: Naslednji
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: Prejšnji
       specific_date: Določen datum
       start_date: Datum začetka
@@ -1214,6 +1334,7 @@ sl:
       today: Danes
       week_to_date: Teden do datuma
       year_to_date: Leto do datuma
+      yesterday:
     fileuploader:
       drop_files: Spusti datoteke za nalaganje tukaj
       failed: Neuspešno
@@ -1365,6 +1486,48 @@ sl:
         target_domain: Ciljna domena
         terminate: Prekini
         title: Odpri združevanje podatkov
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: Dodaj nov priljubljen podatkovni niz
         are_you_sure: Ali ste prepričani? Tega dejanja ni mogoče razveljaviti.
@@ -1540,6 +1703,9 @@ sl:
         missing_esri_url: Za spletni naslov je zahtevana veljavna plast preslikave ESRI.
         missing_name: Ime podatkovnega niza je obvezno.
         need_description: Prosimo, opišite &ldquo;%{name}&rdquo;
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: Vaš podatkovni niz je bil ustvarjen.
         subheadline: Za ogled kliknite Končaj!
@@ -1824,6 +1990,9 @@ sl:
             flag: oznaka
             formatted_text: formatirano besedilo
             geospatial: geoprostorsko
+            groups:
+              geometry:
+              standard:
             list: seznam
             location: lokacija
             money: denar
@@ -2065,6 +2234,9 @@ sl:
             abbreviated: Okrajšano
             currency: Valuta
             format_mask_warning:
+            groups:
+              all:
+              common:
             no_precision: Brez
             precision: Natančnost
             title: Fomratiranje denarja
@@ -2127,6 +2299,10 @@ sl:
           validation:
             no_columns: V tem pogledu ni stolpcev za filtriranje
             no_icons: Ikone se nanašajo le na pogled z zemljevidi
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: S tem boste trajno izbrisali %{view_type}. Ni mogoče razveljaviti! Ali ste prepričani, da želite nadaljevati?
           delete_button: Izbriši ta %{view_type}
@@ -2331,6 +2507,8 @@ sl:
             title: Stolpci
           subtitle: Prilagodi, kateri stolpci bodo vidni v tem pogledu
           title: Pokaži in skrij stolpce
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: Dodaj stolpec za razvščanje v skupine
@@ -2537,6 +2715,7 @@ sl:
       existing_latlng_cols: Stolpci z obstoječimi zemljepisnimi širinami in dolžinami
       find: najdi
       find_and_replace: Najdi in zamenjaj vrednost ...
+      import_from_latlong:
       import_from_multiple: uvozi iz <strong>več stolpcev</strong>
       import_from_single: Uvozi iz <strong>enega stolpca</strong>
       latitude: Zemljepisna širina
@@ -2550,6 +2729,7 @@ sl:
       new_source_col: Dodaj nov izvorni stolpec
       new_transform: Dodaj novo pretvorbo
       options: Možnosti
+      point_source_col:
       properly_formatted: Stolpec mora biti <a href="%{formatting_link}" rel="external">ustrezno formatiran</a> pred uvozom.
       regular_expression: običajni izraz
       remove: odstrani
@@ -2578,6 +2758,7 @@ sl:
       one_header: Ena izmed vaših vrstic je naslov.
       problem_importing: Pri uvozu te datoteke je prišlo do težave. Prepričajte se, ali je veljavna.
       problem_uploading: Prišlo je do težave pri nalaganju te datoteke. Prepričajte se, ali je veljavna.
+      replicating:
       rows_imported: Do sedaj je bilo uvoženih %{num} vrstic.
       try_again: Prosimo, poskusite znova čez nekaj trenutkov.
       unknown_error: Prišlo je do neznane napake
@@ -2769,6 +2950,10 @@ sl:
       comments_created: komentarji ustvarjeni
       daily: Dnevno
       deleted_application: izbrisana aplikacija
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: Podrejena metrika
       download: prenos
       downloads: prenosi
@@ -2793,6 +2978,7 @@ sl:
       no_data_time_period: Za to časovno obdobje ni imena
       page_viewed: ogledana stran
       pages_viewed: ogledane strani
+      preceding_period:
       referrals: Napotila
       rows_loaded: Naložene vrstice
       sdp: SDP

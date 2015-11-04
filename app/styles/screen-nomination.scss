@@ -38,10 +38,6 @@
         .rateLink {
           display: inline-block;
           margin-left: 0.2em;
-          .ie7 & {
-            display: inline;
-            zoom: 1;
-          }
         }
       }
       .nomModerationContainer {

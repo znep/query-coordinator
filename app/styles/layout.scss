@@ -29,9 +29,6 @@ html, body {
 // Header and Footer
 
 #siteHeader {
-  .ie7 & {
-    padding-bottom: 0.5em;
-  }
   .appLogo {
     float: left;
     margin: 0;
@@ -213,9 +210,6 @@ html, body {
   width: 14em;
   padding: 1.5em;
   position: absolute;
-  .ie7 & {
-    left: $chrome_margin_outer;
-  }
   .navigationList {
     li {
       border-top: 1px solid $color_chrome_box_border;

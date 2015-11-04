@@ -20,10 +20,6 @@ html, body {
     font-style: italic;
     color: #aaa;
   }
-  // IE keeps z-indexes in separate position domains
-  .ie7 & {
-    z-index: 99;
-  }
   &.isEditable, &.sidebar-left {
     padding-bottom: 2.5em;
   }
@@ -85,11 +81,6 @@ html, body {
         position: absolute;
         right: 0.3em;
         top: -0.1em;
-        .ie7 & .icon {
-          font-size: 1000em;
-          overflow: hidden;
-          text-indent: 0;
-        }
       }
     }
     a.toolbarButton {
@@ -170,10 +161,6 @@ html, body {
     position: absolute;
     right: 0;
     top: 0;
-    .ie7 & {
-      max-width: 75em;
-      z-index: 1;
-    }
     #toolbarOptions {
       float: right;
       margin: 0.6em 1.9em 0.3em {
@@ -238,11 +225,6 @@ html, body {
             margin-right: 0.5em;
             &.subscribe {
               margin-right: 1em;
-            }
-            .ie7 & {
-              display: block;
-              float: left;
-              margin-right: 0.9em;
             }
             a {
               @include sprite-social-media-icons;
@@ -328,9 +310,6 @@ html, body {
     li {
       display: inline-block;
       margin: 0 -0.1em;
-      .ie7 & {
-        display: inline;
-      }
       .button {
         @include dataset-edit-icons;
         margin: 0.1em {
@@ -353,21 +332,9 @@ html, body {
     &.disabled {
       display: none;
     }
-    .ie7 & {
-      > ul > li {
-        display: inline;
-      }
-    }
     li {
       display: inline-block;
       margin: 0 -0.1em;
-      .ie7 & {
-        margin: {
-          left: 0.2em;
-          top: 0.1em;
-        };
-        vertical-align: top;
-      }
       .button {
         @include format-icon;
         margin: 0.1em;
@@ -388,9 +355,6 @@ html, body {
       }
       .menu {
         vertical-align: middle;
-        .ie7 & {
-          z-index: 10;
-        }
         &.align {
           @include format-icon(".alignIcon");
         }
@@ -414,10 +378,6 @@ html, body {
           }
           .alignIcon, .colorIcon, .icon {
             display: inline-block;
-            .ie7 & {
-              display: block;
-              float: left;
-            }
           }
         }
         .menuDropdown ul li ul.menuEntries {
@@ -501,9 +461,6 @@ html, body {
       }
       .invalidActions li {
         display: inline-block;
-        .ie7 & {
-          display: inline;
-        }
       }
     }
   }

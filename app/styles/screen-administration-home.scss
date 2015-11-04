@@ -13,9 +13,6 @@
       margin-left: 0.3em;
       position: relative;
       top: 0.2em;
-      .ie7 & {
-        top: -0.1em;
-      }
     }
   }
   h2 {
@@ -105,9 +102,6 @@
     display: inline-block;
     position: relative;
     width: 25%;
-    .ie7 & {
-      float: left;
-    }
     .featureSwapButton {
       @include sprite-menu-icons;
       background-color: #555;

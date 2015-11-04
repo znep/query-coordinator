@@ -252,28 +252,14 @@
                 sidebarObj.$currentOuterPane().find('.headerLink[data-paneName="' +
                     nameParts.secondary + '"]').addClass('selected');
 
-                _.defer(function()
-                {
-                    // IE7 leaves weird debris when closing if we use an
-                    // animation
-                    if ($.browser.msie && $.browser.majorVersion <= 7)
-                    {
-                        sidebarObj.$currentPane().show();
-                        _.defer(function()
-                        {
-                            if (!$.isBlank(config.control)) { config.control.validatePane(); }
+                _.defer(function() {
+                    var $cp = sidebarObj.$currentPane();
+                    if (!$.isBlank($cp)) {
+                        $cp.slideDown(function() {
+                            if (!$.isBlank(config.control)) {
+                                config.control.validatePane();
+                            }
                         });
-                    }
-                    else
-                    {
-                        var $cp = sidebarObj.$currentPane();
-                        if (!$.isBlank($cp))
-                        {
-                            $cp.slideDown(function()
-                            {
-                                if (!$.isBlank(config.control)) { config.control.validatePane(); }
-                            });
-                        }
                     }
                 });
             }
@@ -328,11 +314,7 @@
 
             hidePane(sidebarObj);
 
-            // In non-IE we need to trigger a resize so the grid restores
-            // properly.  In IE7, this will crash; IE8 works either way; IE9 requires it
-            // This is only for the grid; so other types do the resize
-            if (!$.browser.msie || $.browser.majorVersion > 7 || !isTable(sidebarObj))
-            { $(window).resize(); }
+            $(window).resize();
 
             sidebarObj.settings.onSidebarClosed();
         },
@@ -481,10 +463,12 @@
             var $curPane = config.control.$dom();
             _.defer(function()
             {
-                // IE7 still doesn't animate properly, so skip it
-                if ((!$.browser.msie || $.browser.majorVersion > 7) &&
-                    $curPane.is(':visible')) { $curPane.slideUp(); }
-                else { $curPane.hide(); }
+                if ($curPane.is(':visible')) {
+                    $curPane.slideUp();
+                }
+                else {
+                    $curPane.hide();
+                }
             });
         }
 

@@ -2,6 +2,26 @@ require 'test_helper'
 
 class ViewTest < Test::Unit::TestCase
 
+  def test_find_has_valid_custom_headers
+    load_sample_data('test/fixtures/sample-data.json')
+    invalid_cookies_1 = {
+      'test_key' => 'random value'
+    }
+    assert_raise ArgumentError do
+      view = View.find('does-not-matter', 'Cookie' => invalid_cookies_1)
+    end
+
+    invalid_cookies_2 = 234234
+    assert_raise ArgumentError do
+      view = View.find('does-not-matter', 'Cookie' => invalid_cookies_2)
+    end
+
+    valid_cookies = 'key1=value1;key2=value2'
+    assert_nothing_raised do
+      view = View.find('does-not-matter', 'Cookie' => valid_cookies)
+    end
+  end
+
   def test_prefetch
     load_sample_data("test/fixtures/sample-data.json")
     view = View.find("does-not-matter")

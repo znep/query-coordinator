@@ -46,8 +46,13 @@ fr:
         card_on_page: Carte déjà sur la page
         card_on_page_long: Cette carte est déjà sur la page
         choose_column: Choisir une colonne
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: 'Remarque : cela aura pour résultat un diagramme à barres avec plus d''une centaine de barres, ça pourrait être plus lent que d''autres diagrammes'
+        custom:
         customize_prompt: Personnaliser cette carte
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: Pas actuellement prise en charge
         not_supported_long: Ce type de carte n'est pas pris en charge pour le moment
         prompt: Choisir une colonne dans la liste déroulante ci-dessus pour ajouter une nouvelle carte
@@ -58,7 +63,7 @@ fr:
           distribution_chart: Visualiser cette colonne comme graphique de distribution
           feature_map: Visualiser cette colonne comme carte présentée
           search_card: Visualiser cette colonne comme carte de recherche
-          timeline_chart: Visualiser cette colonne en tant que frise chronologique
+          timeline_chart: Visualiser cette colonne comme frise chronologique
       aggregation_chooser:
         by_the_number_of: <span class="information">par le</span> nombre de
         by_the_sum_of: <span class="information">par la</span> somme de
@@ -93,11 +98,15 @@ fr:
         remove_card: Enlever cette carte
       card_layout:
         add_card_here: Ajouter carte ici
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average: moyenne de {0}
         number_of: nombre de {0}
         sum_of: somme de {0}
       common:
+        by:
         cancel: Annuler
         cards:
           choropleth: Choroplèthe
@@ -115,6 +124,7 @@ fr:
           export_visualization_disabled: 'Cette visualisation n''est pas disponible<br/>pour exportation d''image '
           invalid_card: Visualisation de carte non valide
           map_render_error: Une erreur est survenue en essayant d'afficher cette carte.
+        export: Exporter
         latitude: Latitude
         longitude: Longitude
         no_value: Aucune valeur
@@ -123,6 +133,7 @@ fr:
           permissions: Autorisation
           private: Privé
           public: Public
+        row:
         save: Enregistrer
       customize_bar:
         changes_warning: Vous avez apporté des modifications à cette page.
@@ -133,10 +144,23 @@ fr:
         customizing_flyout: Vous êtes actuellement en train de personnaliser cette page
         customizing_flyout_instructions: Vous pouvez cliquer sur ce bouton en tout temps pour un aperçu des modifications, et les sauvegarder en tout temps
         exit_visualization_export: 'Pour entre dans le mode personnalisation : Sortez du mode « Download Visualization en tant que mode », en cliquant le bouton d''annulation dans le panneau de configuration'
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: Carte personnalisée
-          standard: Standard
+          simple_blue:
+          simple_grey:
           title: Couche de carte de base
         visualization_options:
           title: Type de carte
@@ -146,8 +170,22 @@ fr:
         errors:
           error: Une erreur s'est produite en essayant d'afficher cette carde.
           no_data: Il n'y a aucune donnée de dîsponible.
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: Le Zomm est temporairement non disponible.
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: Quelque chose semble cassé
         feedback: Commentaire
@@ -171,10 +209,13 @@ fr:
         clear_filter_long: La page est actuellement filtrée par cette valeur, cliquer pour la supprimer
         clear_range_filter_long: La page est actuellement filtrée par cette valeur, cliquer pour la supprimer
         current_filter: Filtre actuel
+        dense_data:
         details: Cliquer pour afficher les détails
         expand: Cliquer pour étendre
+        filter_prompt:
         filtered_amount: Montant filtré
         total: Total
+        zoom_or_filter_prompt:
       last_updated:
         label: dernière mise à jour
       lens_type:
@@ -185,7 +226,44 @@ fr:
         dataset_private_page_public: '<span class="icon-warning"></span> L''ensemble de données source de cette page est défini sur <b>Privé</b>, alors même si cette page est définie sur Public, quiconque n''a pas accès à l''ensemble de données ne sera pas capable de la voir. Elle apparaîtra dans le catalogue public. Vous devriez considérer le paramétrage de l''ensemble de données sur Public, ou le paramétrage de cette page sur Privé. '
         dataset_public_page_private: Cette page est définie sur <b>Private</b>, ainsi uniquement ceux avec un accès privilégié seront capables de la voir. Elle n'apparaîtra pas dans le catalogue.
         dataset_public_page_public: Cette page et son ensemble de données sources sont à la fois <b>Publics</b>, ainsi n'importe qui sera capable de voir cette page et elle apparaîtra dans le catalogue public.
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: Gérer
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: Données sources complètes sous forme CSV (Excel)
         edit_description_prompt: Offrez à votre page une bonne description qui aide les gens à comprendre l'histoire que vos données tentent de dire. (en option)
@@ -214,6 +292,16 @@ fr:
       related_views:
         button: Autres vues de ces données
         title: Autres vues de ces données
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: Cliquer pour annuler les modifications depuis la dernière sauvegarde
         flyoutNoChanges: Aucune modification n'a été inversée
@@ -226,6 +314,7 @@ fr:
         link_placeholder: Entrer une URL ici
         underline: Souligner
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: Veuillez contacter le support Socrata
         flyoutFailedTitle: Une erreur s'est produite
         flyoutIdle: Cliquer pour sauvegarder vos modifications en tant que nouvelle page
@@ -235,6 +324,9 @@ fr:
         description: Entrer une description pour la page nouvel âge (en option)
         new_name: Sauvegarder les pages actuelles avec un nouveau nom
         title: Enregistrer en tant que
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: "Échec"
         flyoutFailedBody: Veuillez contacter le support de Socrates
@@ -244,7 +336,19 @@ fr:
         save: Enregistrer
         saved: Enregistré!
         saving: Sauvegarde...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: Essayer de chercher un nombre qui n'a pas de lettres.
         loading: Chargement des suggestions..
         no_results: Votre recherche a retourné aucun résultat. Vérifier votre orthographe ou essayer une différente forme.
@@ -255,6 +359,7 @@ fr:
         two_examples: 'Exemples : ''{0}'' ou ''{1}'''
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -269,6 +374,7 @@ fr:
         newest_first: le plus récent en premier
         no_rows: Aucune rangée à afficher
         no_sort:
+        non_range_label:
         oldest_first: le plus vieux en premier
         range_label: "{0} <strong>{1}-{2} sur {3}</strong>"
         range_label_all: Tout afficher {0} {1}
@@ -351,7 +457,8 @@ fr:
           href: Séries de données externes
           maps: Cartes
           new_view: Pages de lentilles de données
-          new_view_help: De quoi s'agit-il ?
+          pulse:
+          pulse_help:
           story: Histoires
           story_help: En apprendre sur les histoires
           unpublished: Séries de données non publiées
@@ -363,6 +470,7 @@ fr:
         federation_source_html: Fourni par  %{source_link}
         no_results: Pas de résultats
         result_count: Affichage de %{this} sur %{total}
+        result_count_cetera:
         table_header:
           name: Nom
           popularity: Popularité
@@ -763,10 +871,14 @@ fr:
       flag: Drapeau
       geospatial: Données géospatiales
       html: Texte formaté
+      line:
       link: Lien
       list: Liste
       location: Lieu
       money: Données monétaires
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: Tableau imbriqué
       number: Nombre
       object: Objet
@@ -774,6 +886,7 @@ fr:
       phone: Téléphone
       photo: Photo (image)
       point: Point
+      polygon:
       stars: "Étoile"
       text: Texte brut
       url: URL de site web
@@ -823,6 +936,7 @@ fr:
       years_past: Il y a %{time} ans
     dialogs:
       apply: Appliquer
+      back:
       cancel: Annuler
       close: Fermer
       continue: Continuer
@@ -1180,9 +1294,15 @@ fr:
       date_range: Plage de Dates
       done: Terminé
       end_date: Date de fin
+      last_30_days:
       last_month: Mois Dernier
+      last_week:
+      last_year:
       month_to_date: "À ce Mois"
       next: Suivant
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: Précédent
       specific_date: Date Spécifique
       start_date: Date de début
@@ -1192,6 +1312,7 @@ fr:
       today: Aujourd'hui
       week_to_date: "À cette Semaine"
       year_to_date: "À cette Année"
+      yesterday:
     fileuploader:
       drop_files: Déposez fichiers ici pour mise en ligne
       failed: "Échec"
@@ -1343,6 +1464,48 @@ fr:
         target_domain: Domaine Cible
         terminate: Mettre fin
         title: Ouvrir Fédération de Données
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: Ajouter un nouveau Set de Données à Présenter
         are_you_sure: En êtes-vous certain ? Cette action est irréversible.
@@ -1516,6 +1679,9 @@ fr:
         missing_esri_url: Un URL de couche de carte ESRI valide est requis.
         missing_name: Le nom de set de données est requis.
         need_description: Veuillez décrire &ldquo;%{name}&rdquo;
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: Votre Set de données a été créé.
         subheadline: Cliquer sur Terminer pour le voir !
@@ -1800,6 +1966,9 @@ fr:
             flag: drapeau
             formatted_text: Texte formaté
             geospatial: géospatial
+            groups:
+              geometry:
+              standard:
             list: Liste
             location: emplacement
             money: Argent
@@ -2033,6 +2202,9 @@ fr:
             abbreviated: Abréviation
             currency: Monnaie
             format_mask_warning:
+            groups:
+              all:
+              common:
             no_precision: Néant
             precision: Précision
             title: Formatage de données monétaires
@@ -2095,6 +2267,10 @@ fr:
           validation:
             no_columns: Cette vue n’a pas de colonnes à filtrer
             no_icons: Les icônes ne s’appliquent qu’à la vue carte
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: Cela va enlever le %{view_type} à titre permanent. Il n’y a pas de fonction Annuler. Êtes-vous sûr de vouloir continuer ?
           delete_button: Enlever ce %{view_type}
@@ -2299,6 +2475,8 @@ fr:
             title: Colonnes
           subtitle: Spécifiez les colonnes à afficher dans cette vue
           title: Afficher et masquer des colonnes
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: Ajouter colonne de regroupement
@@ -2501,6 +2679,7 @@ fr:
       existing_latlng_cols: Colonnes de Latitude et Longitude Existantes
       find: trouver
       find_and_replace: Trouver et Remplacer valeur...
+      import_from_latlong:
       import_from_multiple: Importer de <strong>plusieurs colonnes</strong>
       import_from_single: Importer d'une <strong>colonne unique</strong>
       latitude: Latitude
@@ -2514,6 +2693,7 @@ fr:
       new_source_col: Ajouter nouvelle colonne source
       new_transform: Ajouter nouvelle transformation
       options: Options
+      point_source_col:
       properly_formatted: La colonne doit être <a href="%{formatting_link}" rel="external">correctement formatée</a> avant l'importation.
       regular_expression: expression régulière
       remove: supprimer
@@ -2542,6 +2722,7 @@ fr:
       one_header: Une de vos rangées est une en-tête.
       problem_importing: Il y a eu un problème lors de l'importation de ce fichier. Veuillez vous assurer qu'il soit bien valide.
       problem_uploading: Il y a eu un problème lors de la mise en ligne de ce fichier. Veuillez vous assurer qu'il soit bien valide.
+      replicating:
       rows_imported: "%{num} rangées importées jusqu'à maintenant."
       try_again: Veuillez réessayer dans quelques instants.
       unknown_error: Une erreur inconnue s'est produite
@@ -2733,6 +2914,10 @@ fr:
       comments_created: commentaires créés
       daily: Par jour
       deleted_application: application supprimée
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: Indicateurs métriques dépendants
       download: télécharger
       downloads: téléchargements
@@ -2757,6 +2942,7 @@ fr:
       no_data_time_period: Aucune donnée pour cette période
       page_viewed: page vue
       pages_viewed: pages vues
+      preceding_period:
       referrals: Références
       rows_loaded: Rangées Chargées
       sdp: SDP

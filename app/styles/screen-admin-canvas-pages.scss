@@ -43,7 +43,6 @@
         &.isWorking {
           .loading {
             display: inline-block;
-            @include ie7-inline-block;
           }
         }
       }

@@ -46,8 +46,13 @@ hi:
         card_on_page: "कार्ड पहले से ही पेज पर है"
         card_on_page_long: "यह कार्ड पहले से ही पेज पर है"
         choose_column: "एक कॉलम चुनें..."
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: "नोट: इसके परिणामस्वरूप आपको एक बार-चार्ट मिलेगा जिसमें सौ से भी ज़्यादा बार होंगे। यह चार्ट दूसरे चार्टों की तुलना में धीमा हो सकता है।"
+        custom:
         customize_prompt: "यह कार्ड अनुकूलित करें"
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: "वर्तमान में संभव नहीं"
         not_supported_long: "इस प्रकार के कार्ड का प्रयोग वर्तमान में संभव नहीं है "
         prompt: "नया कार्ड जोड़ने के लिए ऊपर ड्रॉपडाउन से कोई कॉलम चुनें "
@@ -93,11 +98,15 @@ hi:
         remove_card: "यह कार्ड निकालें "
       card_layout:
         add_card_here: "कार्ड यहाँ जोड़ें"
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average:
         number_of:
         sum_of:
       common:
+        by:
         cancel: "रद्द करें"
         cards:
           choropleth: "कोरोप्लेथ"
@@ -115,6 +124,7 @@ hi:
           export_visualization_disabled: "यह दृश्य <br/>इमेज एक्सपोर्ट के लिए उपलब्ध नहीं है"
           invalid_card: "यह कार्ड दृश्य अमान्य है "
           map_render_error: "इस नक्शे को प्रस्तुत करने का प्रयास करते समय कोई त्रुटि सामने आई थी।"
+        export: "निर्यात करें"
         latitude: "अक्षांश"
         longitude: "देशांतर"
         no_value: "कोई मूल्य नहीं"
@@ -123,6 +133,7 @@ hi:
           permissions: "अनुमतियां"
           private: "निजी"
           public: "सार्वजनिक"
+        row:
         save: "सहेजें"
       customize_bar:
         changes_warning: "आपने इस पेज पर परिवर्तन किए हैं।"
@@ -133,10 +144,23 @@ hi:
         customizing_flyout: "अब आप इस पेज को रूचि अनुसार बना रहे रहे हैं"
         customizing_flyout_instructions: "आप अपने परिवर्तनों का पूर्वावलोकन करने के लिए इस बटन को क्लिक कर सकते हैं, और उन्हें कभी भी सेव कर (सहेज) सकते हैं"
         exit_visualization_export: 'अनुकूलन मोड में प्रवेश के लिए: इन्फो पेन पर कैंसिल बटन पर क्लिक कर के आप "दृश्य को छवि के रूप में डाउनलोड करें" मोड से बाहर जा सकते हैं '
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: "कस्टम मैप (मानचित्र)"
-          standard: "मानक "
+          simple_blue:
+          simple_grey:
           title: "मानचित्र आधारित परत "
         visualization_options:
           title: "कार्ड प्रकार"
@@ -146,8 +170,22 @@ hi:
         errors:
           error: "इस कार्ड को प्रस्तुत करने का प्रयास करते समय कोई त्रुटि सामने आई थी।"
           no_data: "प्रदर्शित करने के लिए कोई डाटा नहीं है।"
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: "ज़ूम फ़ंक्शन अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से प्रयास करें।"
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: "कुछ टूट गया लगता है "
         feedback: "प्रतिपुष्टि"
@@ -171,10 +209,13 @@ hi:
         clear_filter_long: "वर्तमान में इस पेज को इस वैल्यू द्वारा फ़िल्टर किया गया है, इसे क्लियर करने के लिए यहाँ क्लिक करें "
         clear_range_filter_long: "वर्तमान में इस पेज को इस सिलेक्शन (चुनाव) द्वारा फ़िल्टर किया गया है, इसे क्लियर करने के लिए यहाँ क्लिक करें "
         current_filter: "मौजूदा फिल्टर "
+        dense_data:
         details: "विवरण देखने के लिए क्लिक करें "
         expand: "विस्तार करने के लिए क्लिक करें "
+        filter_prompt:
         filtered_amount: "फिल्टर्ड राशि"
         total: "कुल योग"
+        zoom_or_filter_prompt:
       last_updated:
         label: "अंतिम बार अपडेटेड"
       lens_type:
@@ -185,7 +226,44 @@ hi:
         dataset_private_page_public: '<span class="icon-warning"></span> इस पेज का सोर्स डेटासेट <b>Private</b> पर सेट किया गया है इसलिए भले ही इस पेज को पब्लिक किया गया है लेकिन इसे वे लोग नहीं देख सकेंगे जिनकी पहुँच सोर्स डेटासेट तक नहीं है। यह फिर भी सार्वजनिक सूची में दिखाई देगा। आप सेटिंग में जा कर इस डेटासेट को पब्लिक या प्राइवेट कर सकते हैं। '
         dataset_public_page_private: "इस पेज को <b>Private</b> पर सेट किया गया है इसलिए इसे वही देख पाएंगे जिनके पास पहुँच का विशेषाधिकार होगा। यह सार्वजनिक सूची में दिखाई नहीं देगा।"
         dataset_public_page_public: "इस पेज का सोर्स डेटासेट <b>Public</b> पर सेट किया गया है इसलिए इसे कोई भी देख सकता है और यह पेज सार्वजनिक सूची में दिखाई देगा। "
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: "प्रबंधित करना"
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: "पूर्ण सोर्स डेटा सीएसवी (एक्सेल) के रूप में "
         edit_description_prompt: "अपने पेज का अच्छा विवरण दें जिससे लोग आपके पेज द्वारा जो कहानी बताने की कोशिश की जा रही है, उसे समझ सकें। (वैकल्पिक) "
@@ -214,6 +292,16 @@ hi:
       related_views:
         button: "इस डेटा के अन्य व्यूज"
         title: "इस डेटा के अन्य व्यूज"
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: "पिछली बार सेव करने के बाद आपने जो भी परिवर्तन किए उन्हें कैंसिल करने के लिए क्लिक करें "
         flyoutNoChanges: "पलटने के लिए कोई परिवर्तन नहीं हैं "
@@ -226,6 +314,7 @@ hi:
         link_placeholder: "यहां एक यूआरएल दर्ज करें"
         underline: "रेखांकित करना"
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: "कृपया सोक्रटा समर्थन से संपर्क करें"
         flyoutFailedTitle: "एक त्रुटि हुई है"
         flyoutIdle: "परिवर्तनों को नए पेज के रूप में सेव करने के लिए क्लिक करें "
@@ -235,6 +324,9 @@ hi:
         description: "अपने नए पेज के लिए विवरण दर्ज करें (वैकल्पिक)"
         new_name: "वर्तमान पेज को नए नाम से सेव करें "
         title: "इस रूप में सहेजें"
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: "विफल"
         flyoutFailedBody: "कृपया सोक्रटा समर्थन से संपर्क करें"
@@ -244,7 +336,19 @@ hi:
         save: "सहेजें"
         saved: "सहेजा गया!"
         saving: "सहेजा जा रहा है..."
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: "ऐसे नंबर को खोजने का प्रयास करें जिसमें कोई अक्षर न हों। "
         loading: "सुझाव लोड हो रहे हैं… "
         no_results: "आपकी खोज का कोई परिणाम नहीं निकला। अपनी वर्तनी की जाँच करें, या कोई अलग शब्द डाल कर प्रयास करें।"
@@ -255,6 +359,7 @@ hi:
         two_examples: "उदाहरण: '{0}' या '{1}'"
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -269,6 +374,7 @@ hi:
         newest_first: "नवीनतम सबसे पहले"
         no_rows: "डिस्प्ले के लिए कोई पंक्ति नहीं है"
         no_sort:
+        non_range_label:
         oldest_first: "सबसे पुराना सबसे पहले"
         range_label: "{0} <strong>{1}-{2} इतने में से {3}</strong>"
         range_label_all: "सभी दिखाया जा रहा है {0} {1}"
@@ -351,7 +457,8 @@ hi:
           href: "बाहरी डेटासेट"
           maps: "नक्‍शे"
           new_view: "डाटा लेंस पृष्ठ"
-          new_view_help: "यह क्या है?"
+          pulse:
+          pulse_help:
           story: "कहानियां"
           story_help: "कहानियों के बारे में जानें "
           unpublished: "अप्रकाशित डेटासेट"
@@ -363,6 +470,7 @@ hi:
         federation_source_html: "%{source_link}द्वारा प्रदान किया गया"
         no_results: "कोई परिणाम नहीं"
         result_count: "%{total} का %{this} दर्शा रहा है"
+        result_count_cetera:
         table_header:
           name: "नाम"
           popularity: "लोकप्रियता"
@@ -763,10 +871,14 @@ hi:
       flag: "फ़्लैग"
       geospatial: "जियोस्‍पाटियल"
       html: "फ़ॉरमेट किया गया टैक्‍स्‍ट"
+      line:
       link: "लिंक कॉलम"
       list: "सूची"
       location: "स्‍थान"
       money: "धन"
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: "समाहित तालिका"
       number: "संख्‍या"
       object: "वस्‍तु"
@@ -774,6 +886,7 @@ hi:
       phone: "फोन"
       photo: "फ़ोटो (चित्र)"
       point: "पॉइंट "
+      polygon:
       stars: "सितारे"
       text: "सादा टैक्‍स्‍ट"
       url: "वेबसाइट यूआरएल"
@@ -823,6 +936,7 @@ hi:
       years_past: " %{time} वर्ष पहले"
     dialogs:
       apply: "लागू करें"
+      back:
       cancel: "रद्द करें"
       close: "बंद करें"
       continue: "जारी रखें"
@@ -1180,9 +1294,15 @@ hi:
       date_range: "तिथि सीमा"
       done: "हो गया"
       end_date: "समापन तिथि"
+      last_30_days:
       last_month: "पिछले महीने"
+      last_week:
+      last_year:
       month_to_date: "चालू माह से आज तक"
       next: "अगला"
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: "पिछला"
       specific_date: "विशिष्ट तिथि"
       start_date: "प्रारंभ तिथि"
@@ -1192,6 +1312,7 @@ hi:
       today: "आज"
       week_to_date: "चालू सप्ताह से आज तक"
       year_to_date: "चालू वर्ष से आज तक"
+      yesterday:
     fileuploader:
       drop_files: "अपलोड करने के लिए फाइलों को यहाँ गिरायें"
       failed: "विफल"
@@ -1343,6 +1464,48 @@ hi:
         target_domain: "लक्ष्य डोमेन"
         terminate: "समाप्त करें"
         title: "डेटा संघ खोलें"
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: "एक नया विशेष रूप से प्रदर्शित डेटासेट जोड़ें"
         are_you_sure: "क्या आपको यकीन है? इस एक्शन को अनडन या पूर्ववत नहीं किया जा सकता है।"
@@ -1516,6 +1679,9 @@ hi:
         missing_esri_url: "एक वैध ईएसआरआई मानचित्र लेयर यूआरएल की आवश्यकता है।"
         missing_name: "डेटासेट नाम आवश्यक है।"
         need_description: "कृपया &ldquo;%{name}&rdquo; का वर्णन करें"
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: "आपका डेटासेट बना दिया गया है।"
         subheadline: "उसे देखने के लिए समाप्त पर क्लिक करें!"
@@ -1800,6 +1966,9 @@ hi:
             flag: "फ़्लैग"
             formatted_text: "फ़ॉर्मेट किया गया पाठ"
             geospatial: "भूस्थानिक"
+            groups:
+              geometry:
+              standard:
             list: "सूची"
             location: "स्थान"
             money: "पैसा"
@@ -2037,6 +2206,9 @@ hi:
             abbreviated: "संक्षिप्‍त किया गया"
             currency: "मुद्रा"
             format_mask_warning: "पाठ / अनुवाद दर्ज करने के लिए क्लिक करें"
+            groups:
+              all:
+              common:
             no_precision: "कोई नहीं"
             precision: "शुद्धता"
             title: "मनी फ़ॉरमेटिंग"
@@ -2099,6 +2271,10 @@ hi:
           validation:
             no_columns: "इस व्‍यू में फिल्‍टर करने के लिए कॉलम नहीं है"
             no_icons: "आईकन केवल मैप व्‍यू के लिए उपयोगी हैं"
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: "इससे %{view_type} स्‍‍थायी रूप से मिटा जाएगा। इसमें कोई अनडू नहीं है। क्‍या आप वाकई आगे बढ़ना चाहते हैं?"
           delete_button: "इसे %{view_type} मिटाएँ"
@@ -2303,6 +2479,8 @@ hi:
             title: "कॉलम"
           subtitle: "समायोजित करें कि कौन सा कॉलम इस व्‍यू में दिखने योग्‍य है"
           title: "&amp दिखाएँ; कॉलम छिपाएँ"
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: "समूहबद्ध कॉलम जोड़ें"
@@ -2505,6 +2683,7 @@ hi:
       existing_latlng_cols: "मौजूदा अक्षांश और देशांतर कॉलम"
       find: "खोजें"
       find_and_replace: "मान को ढूँढें और बदलें..."
+      import_from_latlong:
       import_from_multiple: "<strong>एक से अधिक कॉलमों</strong> में से आयात करें"
       import_from_single: "<strong>एकल कॉलम</strong> में से आयात करें"
       latitude: "अक्षांश"
@@ -2518,6 +2697,7 @@ hi:
       new_source_col: "नया स्रोत कॉलम जोड़ें"
       new_transform: "नया ट्रांसफोर्म जोड़ें"
       options: "विकल्प"
+      point_source_col:
       properly_formatted: आयात से पहले कॉलम <a href="%{formatting_link}" rel="external">उचित रूप से स्वरूपित</a> होना चाहिए।
       regular_expression: "नियमित अभिव्यक्ति"
       remove: "हटाएं"
@@ -2546,6 +2726,7 @@ hi:
       one_header: "आपकी एक पंक्ति हेडर है।"
       problem_importing: "उस फ़ाइल को आयात करने में समस्या आई। कृपया सुनिश्चित करें कि यह मान्य है।"
       problem_uploading: "उस फ़ाइल को अपलोड करने में समस्या आई। कृपया सुनिश्चित करें कि यह मान्य है।"
+      replicating:
       rows_imported: "अभी तक %{num} पंक्तियां आयात कर ली गई हैं।"
       try_again: "कृपया कुछ देर में पुन: प्रयास करें।"
       unknown_error: "एक अज्ञात त्रुटि उत्पन्न हुई है"
@@ -2737,6 +2918,10 @@ hi:
       comments_created: "टिप्पणियां बनाई गईं"
       daily: "प्रतिदिन"
       deleted_application: "हटाई गई एप्लिकेशन"
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: "निर्भर मीट्रिक्स"
       download: "डाउनलोड"
       downloads: "डाउनलोड"
@@ -2761,6 +2946,7 @@ hi:
       no_data_time_period: "इस समय अवधि के लिए कोई डेटा नहीं"
       page_viewed: "पृष्ठ देखा गया"
       pages_viewed: "पृष्ठ देखे गये"
+      preceding_period:
       referrals: "रेफ़रल"
       rows_loaded: "पंक्तियाँ लोड की गईं"
       sdp: "एसडीपी"

@@ -6,13 +6,6 @@ $feed_ui_color: #b3b3b3;
     line-height: 2.5em;
     .text {
       font-size: 1.2em;
-      .ie7 & {
-        position: relative;
-        top: 0.3em;
-      }
-    }
-    .uniform.selector {
-      @include ie7-inline-block;
     }
   }
   .feedNewCommentButton {

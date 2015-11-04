@@ -46,8 +46,13 @@ ro:
         card_on_page: Cardul se află deja pe pagină
         card_on_page_long: Acest card se află deja pe pagină
         choose_column: Alegeți o coloană
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: 'Notă: Asta ar rezulta într-o diagramă tip bară, cu peste 100 de bare, ar putea fi mai mai lentă decât alte diagrame'
+        custom:
         customize_prompt: Personalizați acest card
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: Nu este acceptat momentan
         not_supported_long: Acest tip de card nu este acceptat momentan
         prompt: Alegeți o coloană dintre cele derulante de mai sus pentru a adăuga un card nou
@@ -93,11 +98,15 @@ ro:
         remove_card: Eliminați acest card
       card_layout:
         add_card_here: Adăugați cardul aici
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average: medie de {0}
         number_of: număr de {0}
         sum_of: suma de {0}
       common:
+        by:
         cancel: Anulare
         cards:
           choropleth: Choropleth
@@ -115,6 +124,7 @@ ro:
           export_visualization_disabled: Această vizualizare nu este disponibilă<b>pentru exportarea imaginii
           invalid_card: Vizualizare a cardului nevalidă
           map_render_error: A survenit o eroare în încercarea de a reda această hartă.
+        export: Exportare
         latitude: Latitudine
         longitude: Longitudine
         no_value: Nici o valoare
@@ -123,6 +133,7 @@ ro:
           permissions: Drepturi
           private: Privat
           public: Public
+        row:
         save: Salvare
       customize_bar:
         changes_warning: Ați efectuat schimbări la această pagină
@@ -133,10 +144,23 @@ ro:
         customizing_flyout: Acum se efectuează personalizarea acestei pagini
         customizing_flyout_instructions: Puteți apăsa pe acest buton pentru a previzualiza modificările dvs. și a le salva în orice moment
         exit_visualization_export: 'Pentru a intra în modul personalizare: Ieșiți din modul "Descărcare vizualizare ca imagine" prin apăsarea butonului de Anulare din panoul Info'
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: Hartă personalizată
-          standard: Standard
+          simple_blue:
+          simple_grey:
           title: Suportul de bază al hărții
         visualization_options:
           title: Tip de card
@@ -146,8 +170,22 @@ ro:
         errors:
           error: A survenit o eroare încercând să redăm acest card.
           no_data: Nu există date de afișat.
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: Funcția "Mărire" nu este disponibilă pentru moment. Vă rugăm să încercați mai târziu.
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: Ceva nu pare în regulă
         feedback: Feedback
@@ -171,10 +209,13 @@ ro:
         clear_filter_long: Pagina apare cu filtrul acestei valori, apăsați pentru a-l șterge
         clear_range_filter_long: Pagina apare cu filtrul acestei selecții, apăsați pentru a-l șterge
         current_filter: Filtru curent
+        dense_data:
         details: Apăsați pentru a vedea detalii
         expand: Apăsați pentru a extinde
+        filter_prompt:
         filtered_amount: Cantitate filtrată
         total: Total
+        zoom_or_filter_prompt:
       last_updated:
         label: ultima actualizare
       lens_type:
@@ -185,7 +226,44 @@ ro:
         dataset_private_page_public: <span class="icon-warning"></span> Setul de date sursă al acestei pagini este setat pe <b>Privat<b>, așadar, deși acestă pagină este setată pentru afișaj Public, oricine nu are acces la setul de date sursă, nu va putea vedea pagina. Dar aceasta tot va apărea în catalogul public. Puteți modifica setul de date pentru afișaj Public, sau puteți seta această pagină pentru afișaj Privat.
         dataset_public_page_private: Această pagină este setată pentru afișaj <b>Privat<b>, așadar doar cei cu acces privilegiat o pot vedea. Această pagină nu va apărea în catalogul public.
         dataset_public_page_public: Această pagină și setul de date sursă sunt setate pentru afișaj <b>Public<b>, așadar oricine va putea vedea această pagină și va apărea în catalogul public.
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: Administrare
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: Date sursă complete ca și CSV (Excel)
         edit_description_prompt: Prezentați o scurtă descriere a datelor, pentru a ajuta oamenii să înțeleagă despre ce este vorba de fapt. (Opțional)
@@ -214,6 +292,16 @@ ro:
       related_views:
         button: Alte vizualizări ale acestei informații
         title: Alte vizualizări ale acestei informații
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: Apăsați pentru a anula toate modificările efectuate de la ultima salvare
         flyoutNoChanges: Nu există modificări pentru revocare
@@ -226,6 +314,7 @@ ro:
         link_placeholder: Introduceți un URL aici
         underline: Subliniat
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: Vă rugăm să contactați Serviciul de Asistență Socrata
         flyoutFailedTitle: A survenit o eroare
         flyoutIdle: Apăsați pentru a salva modificările într-o pagină nouă
@@ -235,6 +324,9 @@ ro:
         description: Introduceți o descriere pentru noua dvs. pagină (opțional)
         new_name: Salvați pagina curentă sub un nume nou
         title: Salvare ca
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: Eșuat
         flyoutFailedBody: Vă rugăm să contactați Serviciul de Asistență Socrata
@@ -244,7 +336,19 @@ ro:
         save: Salvare
         saved: Salvat!
         saving: Se salvează...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: "Încercați să căutați un număr care să nu conțină litere"
         loading: Sugestii de încărcare...
         no_results: Căutarea dvs. s-a încheiat fără a găsi rezultate. Verificați ortografia sau căutați un alt termen.
@@ -255,6 +359,7 @@ ro:
         two_examples: 'Exemple: ''{0}'' sau ''{1}'''
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -269,6 +374,7 @@ ro:
         newest_first: cel mai nou primul
         no_rows: Nu există rânduri pentru afișare
         no_sort:
+        non_range_label:
         oldest_first: cel mai vechi primul
         range_label: "{0} <strong>{1}-{2} din {3}</strong>"
         range_label_all: Se afișează toate {0} {1}
@@ -351,7 +457,8 @@ ro:
           href: Seturi de date externe
           maps: Hărţi
           new_view: Paginile Data Lens
-          new_view_help: Ce este asta?
+          pulse:
+          pulse_help:
           story: Povestiri
           story_help: Aflați mai multe despre Povestiri
           unpublished: Seturi de date nepublicate
@@ -363,6 +470,7 @@ ro:
         federation_source_html: Furnizat de %{source_link}
         no_results: Niciun rezultat
         result_count: Se afişează %{this} din %{total}
+        result_count_cetera:
         table_header:
           name: Nume
           popularity: Popularitate
@@ -764,10 +872,14 @@ ro:
       flag: Semnalare
       geospatial: Geospaţial
       html: Text formatat
+      line:
       link: Coloană link
       list: Listă
       location: Localizare
       money: Bani
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: Tabel grupat
       number: Număr
       object: Obiect
@@ -775,6 +887,7 @@ ro:
       phone: Telefon
       photo: Fotografie (imagine)
       point: Punct
+      polygon:
       stars: Stea
       text: Text simplu
       url: URL site web
@@ -824,6 +937,7 @@ ro:
       years_past: "%{time} ani în urmă"
     dialogs:
       apply: Aplicare
+      back:
       cancel: Anulare
       close: "Închidere"
       continue: Continuare
@@ -1194,9 +1308,15 @@ ro:
       date_range: Interval de timp
       done: Gata
       end_date: Dată încheiere
+      last_30_days:
       last_month: Luna trecută
+      last_week:
+      last_year:
       month_to_date: Lună până în prezent
       next: Următor
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: Anterior
       specific_date: Dată specifică
       start_date: Dată început
@@ -1206,6 +1326,7 @@ ro:
       today: Astăzi
       week_to_date: Săptămână până în prezent
       year_to_date: An până în prezent
+      yesterday:
     fileuploader:
       drop_files: Trageţi fişierele aici pentru încărcare
       failed: Eşuat
@@ -1357,6 +1478,48 @@ ro:
         target_domain: Domeniu țintă
         terminate: "Încheiere"
         title: Deschidere federare date
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: Adăugare set de date expus nou
         are_you_sure: Sunteți sigur? Această acțiune nu poate fi refăcută.
@@ -1530,6 +1693,9 @@ ro:
         missing_esri_url: Este necesar un strat de hartă ESRI valabil.
         missing_name: Este necesar numele setului de date.
         need_description: Vă rugăm să descrieți &ldquo;%{name}&rdquo;
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: Setul dvs. de date a fost creat.
         subheadline: Click pe "Încheiere" pentru a-l vizualiza!
@@ -1814,6 +1980,9 @@ ro:
             flag: semnalare
             formatted_text: text formatat
             geospatial: geospaţial
+            groups:
+              geometry:
+              standard:
             list: listă
             location: localizare
             money: bani
@@ -2047,6 +2216,9 @@ ro:
             abbreviated: Abreviat
             currency: Monedă
             format_mask_warning:
+            groups:
+              all:
+              common:
             no_precision: Niciuna
             precision: Precizie
             title: Formatare bani
@@ -2109,6 +2281,10 @@ ro:
           validation:
             no_columns: Această vizualizare nu are coloane de filtrat
             no_icons: Pictogramele sunt relevante doar în vizualizarea ca hartă
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: Aceasta va şterge %{view_type} pentru totdeauna. Această acţiune nu se poate anula! Sunteţi sigur că doriţi să faceţi aceasta?
           delete_button: "Ştergeţi această %{view_type}"
@@ -2313,6 +2489,8 @@ ro:
             title: Coloane
           subtitle: Ajustaţi ce coloane sunt vizibile în această vizualizare
           title: Afişare &amp; Ascundere coloane
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: Adăugare coloane grupare
@@ -2515,6 +2693,7 @@ ro:
       existing_latlng_cols: Coloane de latitudine şi longitudine existente
       find: găsire
       find_and_replace: Găsire şi înlocuire valoare...
+      import_from_latlong:
       import_from_multiple: Importaţi din <strong>coloane multiple</strong>
       import_from_single: Importaţi dintr-o <strong>singură coloană</strong>
       latitude: Latitudine
@@ -2528,6 +2707,7 @@ ro:
       new_source_col: Adăugare coloană sursă nouă
       new_transform: Adăugare reprezentare nouă
       options: Opţiuni
+      point_source_col:
       properly_formatted: Coloana trebuie să fie <a href="%{formatting_link}" rel="external">formatată corespunzător</a> înainte de importare.
       regular_expression: expresie obişnuită
       remove: eliminaţi
@@ -2556,6 +2736,7 @@ ro:
       one_header: Unul dintre rândurile dvs. este antet.
       problem_importing: A survenit o problemă la importarea acelui fişier. Vă rugăm să vă asiguraţi că este valid.
       problem_uploading: A survenit o problemă la importarea acelui fişier. Vă rugăm să vă asiguraţi că este valid.
+      replicating:
       rows_imported: "%{num} rânduri importate până acum."
       try_again: Vă rugăm să încercaţi din nou peste puţin timp.
       unknown_error: A survenit o eroare necunoscută
@@ -2747,6 +2928,10 @@ ro:
       comments_created: comentarii create
       daily: Zilnic
       deleted_application: aplicaţie ştearsă
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: Metrice dependente
       download: descărcare
       downloads: descărcări
@@ -2771,6 +2956,7 @@ ro:
       no_data_time_period: Niciun fel de date pentru această perioadă
       page_viewed: pagină vizitată
       pages_viewed: pagini vizitate
+      preceding_period:
       referrals: Recomandări
       rows_loaded: Rânduri încărcate
       sdp: SDP

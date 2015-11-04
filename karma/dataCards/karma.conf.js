@@ -145,7 +145,6 @@ module.exports = function ( karma ) {
       /* Mock app assets */
       'app/styles/dataCards/testing.css',
       /* Images */
-      { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true },
       { pattern: 'public/images/dataCards/**/*.png', watched: false, included: false, served: true },
 
       /* THE TESTS THEMSELVES */

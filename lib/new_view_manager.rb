@@ -8,7 +8,7 @@ class NewViewManager
   class ViewAccessDenied < Error; end
   class InvalidPermissions < Error; end
 
-  # TODO: consolidate this with the 'dataset' parameter in phidippides_datasets_controller, which
+  # TODO: consolidate this with the 'dataset' parameter in dataset_metadata_controller, which
   # fetches the same url
   def fetch(page_id)
     url = "/views/#{CGI::escape(page_id)}.json"

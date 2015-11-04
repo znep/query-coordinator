@@ -152,9 +152,6 @@
             font-size: 1em;
             margin-left: 0.5em;
             width: 17.5em;
-            .ie7 & {
-              width: 15.5em;
-            }
           }
           &:hover .value {
             border: 1px solid $color_chrome_box_border;

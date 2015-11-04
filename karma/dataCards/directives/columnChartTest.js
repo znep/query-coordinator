@@ -211,6 +211,30 @@ describe('columnChart', function() {
       expect(labelText).to.equal(flyoutTitle);
     });
 
+    it('should use "row" as the default row display unit', function() {
+      chart = createColumnChart(640, false, testDataWithFiltered());
+      var barLabel = $(labelContents).eq(0);
+      var flyoutCell;
+      var flyout = $('#uber-flyout');
+
+      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      flyoutCell = flyout.find('.flyout-cell').text();
+      expect(flyoutCell).to.match(/rows/);
+    });
+
+    it('should use custom row display units when provided', function() {
+      chart = createColumnChart(640, false, testDataWithFiltered());
+      chart.scope.rowDisplayUnit = 'crime';
+      chart.scope.$digest();
+      var barLabel = $(labelContents).eq(0);
+      var flyoutCell;
+      var flyout = $('#uber-flyout');
+
+      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      flyoutCell = flyout.find('.flyout-cell').text();
+      expect(flyoutCell).to.match(/crimes/);
+    });
+
     it('should not fail on numeric titles', function() {
       chart = createColumnChart(640, false, testDataWithNumberAtIndex(0));
       var barLabel = $(labelContents).eq(0);

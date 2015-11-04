@@ -1,4 +1,4 @@
-class PhidippidesPagesController < ApplicationController
+class PageMetadataController < ApplicationController
   include CommonMetadataMethods
   include CommonMetadataTransitionMethods
   include UserAuthMethods

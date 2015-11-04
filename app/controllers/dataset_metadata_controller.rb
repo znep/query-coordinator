@@ -1,4 +1,4 @@
-class PhidippidesDatasetsController < ApplicationController
+class DatasetMetadataController < ApplicationController
   include CommonMetadataMethods
   include CommonMetadataTransitionMethods
   include UserAuthMethods

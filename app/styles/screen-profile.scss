@@ -68,13 +68,6 @@
       font-size: 1.2em;
       .icon {
         display: inline-block;
-        @include ie7-inline-block;
-      }
-      .ie7 &.accountSettings {
-        .icon {
-          position: relative;
-          top: -0.2em;
-        }
       }
     }
     &.appTokens {
@@ -93,16 +86,10 @@
       .ownershipLinks {
         float: left;
         padding-top: 0.2em;
-        .ie7 & {
-          padding-top: 0.6em;
-        }
         li {
           border-right: 1px solid #cacaca;
           display: inline-block;
           padding: 0 0.5em;
-          .ie7 & {
-            display: inline;
-          }
           &:last-child {
             border: none;
           }
@@ -141,7 +128,6 @@
         line-height: 1.2em;
         margin-bottom: 0;
         padding-right: 0.2em;
-        @include ie7-inline-block;
       }
       .editLinkText {
         position: relative;

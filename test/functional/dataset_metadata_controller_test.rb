@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PhidippidesDatasetsControllerTest < ActionController::TestCase
+class DatasetMetadataControllerTest < ActionController::TestCase
 
   def setup
     init_core_session

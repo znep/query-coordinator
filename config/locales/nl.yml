@@ -46,8 +46,13 @@ nl:
         card_on_page: Kaart al op pagina
         card_on_page_long: Deze kaart is al op de pagina
         choose_column: Kies een kolom...
+        choropleth_warning:
+        classic_chart:
         column_chart_warning: 'Let op: dit resulteert in een staafdiagram met meer dan honderd staven, het kan trager zijn dan andere diagrammen'
+        custom:
         customize_prompt: Deze kaart aanpassen
+        generic_prompt:
+        histogram_column_chart_warning:
         not_supported: Momenteel niet ondersteund
         not_supported_long: Deze kaartsoort wordt momenteel niet ondersteund
         prompt: Kies een kolom uit de bovenstaande keuzelijst om een nieuwe kaart toe te voegen
@@ -93,11 +98,15 @@ nl:
         remove_card: Deze kaart verwijderen
       card_layout:
         add_card_here: Kaart hier toevoegen
+        card_group_customize_hint_flyout_text:
+        card_group_customize_hint_text:
+        card_group_placeholder_text:
       card_titles:
         average: gemiddelde van {0}
         number_of: het aantal {0}
         sum_of: som van {0}
       common:
+        by:
         cancel: Annuleren
         cards:
           choropleth: Choropletenkaart
@@ -115,6 +124,7 @@ nl:
           export_visualization_disabled: Deze visualisatie is niet beschikbaar<br/>om te exporteren als afbeelding
           invalid_card: Ongeldige kaartvisualisatie
           map_render_error: Er heeft zich een fout voorgedaan bij het maken van deze kaart.
+        export: Exporteren
         latitude: Breedtegraad
         longitude: Lengtegraad
         no_value: Geen waarde
@@ -123,6 +133,7 @@ nl:
           permissions: Permissies
           private: Privé
           public: Publiek
+        row:
         save: Bewaren
       customize_bar:
         changes_warning: U heeft aanpassingen gemaakt aan deze pagina.
@@ -133,10 +144,23 @@ nl:
         customizing_flyout: U bent nu bezig met het aanpassen van deze pagina
         customizing_flyout_instructions: U kunt op ieder moment op deze knop klikken voor een voorvertoning van uw aanpassingen en ze op een later moment opslaan
         exit_visualization_export: 'Om naar de aanpassingsmodus te gaan: Verlaat de "Download Visualisatie als Afbeelding"-modus door op de annuleerknop in het infopaneel te klikken'
+        unsaved_warning:
       customize_card_dialog:
+        feature_map_flannel:
+          default_option:
+          select_column:
+          title:
+        histogram_bucket_type:
+          linear:
+          linear_desc:
+          logarithmic:
+          logarithmic_desc:
+          title:
+          warning:
         map_layer:
           custom: Aangepaste kaart
-          standard: Standaard
+          simple_blue:
+          simple_grey:
           title: Kaart basislaag
         visualization_options:
           title: Kaartsoort
@@ -146,8 +170,22 @@ nl:
         errors:
           error: Er ging iets mis bij het maken van deze kaart.
           no_data: Er zijn geen gegevens om te tonen.
+      export_menu:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: Zoom is tijdelijk niet beschikbaar. Probeer het later opnieuw.
+      feature_map_flannel:
+        error_message:
+        next:
+        previous:
+        showing:
       feedback_panel:
         broken: Het lijkt er op dat er iets kapot is
         feedback: Feedback
@@ -171,10 +209,13 @@ nl:
         clear_filter_long: De pagina wordt momenteel gefilterd op deze waarde, klik om hem te verwijderen
         clear_range_filter_long: De pagina wordt momenteel gefilterd op deze selectie, klik om hem te verwijderen
         current_filter: Huidige Filter
+        dense_data:
         details: Klik om meer informatie te bekijken
         expand: Klik om te ontvouwen
+        filter_prompt:
         filtered_amount: Gefilterde hoeveelheid
         total: Totaal
+        zoom_or_filter_prompt:
       last_updated:
         label: laatst bijgewerkt
       lens_type:
@@ -185,7 +226,44 @@ nl:
         dataset_private_page_public: <span class="icon-warning"></span> Het gegevensbestand dat ten grondslag ligt aan deze pagina is ingesteld op <b>Privé</b>, dus ook al is deze pagina ingesteld op Openbaar, iemand zonder toegang tot het gegevensbestand zal de pagina niet kunnen zien. Toch zal hij verschijnen in de openbare catalogus. U kunt er voor kiezen het gegevensbestand als Openbaar in te stellen, of deze pagina als Privé.
         dataset_public_page_private: Deze pagina is ingesteld als <b>Privé</b>, dus alleen de personen met de juiste privileges kunnen de pagina zien. Hij zal niet verschijnen in de openbare catalogus.
         dataset_public_page_public: Deze pagina en het gegevensbestand dat er aan ten grondslag ligt zijn allebei <b>Openbaar</b>, dus iedereen kan deze pagina zien en hij zal verschijnen in de openbare catalogus.
+        error:
+          ownership:
+          preamble:
+          sharing:
+          unknown:
+          visibility:
+        ownership:
+          owner_unavailable:
+          title:
+          warning:
+        sharing:
+          add_new:
+          add_new_prompt:
+          contributor:
+          inherited_description:
+          keep:
+          new_share_dialog:
+            add_more:
+            description:
+            email:
+            message:
+            remove:
+            title:
+          owner:
+          remove:
+          title:
+          viewer:
         title: Beheren
+        visibility:
+          dataset_is_private:
+          hidden:
+          shown:
+          title:
+          user_is_unprivileged:
+          view_moderation_approved:
+          view_moderation_pending:
+          view_moderation_rejected:
+          view_moderation_title:
       metadata:
         data_as_csv: Volledige brongegevens als CSV (Excel)
         edit_description_prompt: Geef uw pagina een goede omschrijving die mensen helpt het verhaal te begrijpen wat uw gegevens proberen te vertellen. (Optioneel)
@@ -214,6 +292,16 @@ nl:
       related_views:
         button: Andere visies op deze gegevens
         title: Andere visies op deze gegevens
+      related_visualization_selector:
+        based_on_column:
+        visualization_not_supported:
+      remove_all_cards:
+        button:
+        flyout:
+        flyout_no_cards:
+        flyout_not_edit_mode:
+        prompt:
+        prompt_confirm:
       revert_button:
         flyoutHasChanges: Klik om alle veranderingen sinds de laatste keer dat u heeft opgeslagen ongedaan te maken
         flyoutNoChanges: Er zijn geen veranderingen om ongedaan te maken
@@ -226,6 +314,7 @@ nl:
         link_placeholder: Vul hier een URL in
         underline: Onderstreept
       save_as:
+        flyoutEphemeral:
         flyoutFailedBody: Neem contact op met Socrata Support
         flyoutFailedTitle: Er ging iets mis
         flyoutIdle: Klik om uw veranderingen op te slaan als een nieuwe pagina
@@ -235,6 +324,9 @@ nl:
         description: Vul een omschrijving voor uw nieuwe pagina in (optioneel)
         new_name: Bewaar de huidige pagina met een nieuwe naam
         title: Bewaren als
+        visibility:
+        visibility_disabled:
+        visibility_with_view_moderation:
       save_button:
         failed: Mislukt
         flyoutFailedBody: Neem contact op met Socrata Support
@@ -244,7 +336,19 @@ nl:
         save: Bewaren
         saved: Bewaard!
         saving: Bezig met bewaren...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
+        error_explanation:
         invalid_search: Probeer te zoeken naar een aantal zonder letters.
         loading: Bezig met laden van aanbevelingen...
         no_results: Uw zoekopdracht leverde geen resultaten op. Controleer uw spelling, of probeer een ander zoekwoord.
@@ -255,6 +359,7 @@ nl:
         two_examples: 'Voorbeelden: ''{0}'' of ''{1}'''
       suggestion_tool_panel:
         all_suggestions:
+        loading_suggestions_hint:
         max_suggestions:
         no_suggestions:
         no_suggestions_hint:
@@ -269,6 +374,7 @@ nl:
         newest_first: nieuwste eerst
         no_rows: Geen rijen om te tonen
         no_sort:
+        non_range_label:
         oldest_first: oudste eerst
         range_label: "{0} <strong>{1}-{2} van {3}</strong>"
         range_label_all: Alle {0} {1} worden getoond
@@ -353,7 +459,8 @@ nl:
           href: Externe datasets
           maps: Kaarten
           new_view: Data Lens pagina's
-          new_view_help: Wat is dit?
+          pulse:
+          pulse_help:
           story: Verhalen
           story_help: Lees meer over Verhalen
           unpublished: Ongepubliceerde datasets
@@ -365,6 +472,7 @@ nl:
         federation_source_html: Geleverd door %{source_link}
         no_results: Geen resultaten
         result_count: Toont %{this} van %{total}
+        result_count_cetera:
         table_header:
           name: Naam
           popularity: Populariteit
@@ -777,10 +885,14 @@ nl:
       flag: Aanmerken
       geospatial: Geospatiaal
       html: Geformatteerde tekst
+      line:
       link: Kolom verbinden
       list: Lijst
       location: Locatie
       money: Geld
+      multiline:
+      multipoint:
+      multipolygon:
       nested_table: Geneste tabel
       number: Getal
       object: Onderwerp
@@ -788,6 +900,7 @@ nl:
       phone: Telefoon
       photo: Foto (afbeelding)
       point: Punt
+      polygon:
       stars: Ster
       text: Eenvoudige tekst
       url: Website-URL
@@ -837,6 +950,7 @@ nl:
       years_past: "%{time} jaar geleden"
     dialogs:
       apply: Toepassen
+      back:
       cancel: Annuleren
       close: Sluiten
       continue: Doorgaan
@@ -1204,9 +1318,15 @@ nl:
       date_range: Datumbereik
       done: Klaar
       end_date: Einddatum
+      last_30_days:
       last_month: Vorige maand
+      last_week:
+      last_year:
       month_to_date: Maand naar datum
       next: Volgende
+      preceding_30_days:
+      preceding_month:
+      preceding_week:
       prev: Vorige
       specific_date: Specifieke datum
       start_date: Begindatum
@@ -1216,6 +1336,7 @@ nl:
       today: Vandaag
       week_to_date: Week naar datum
       year_to_date: Jaar naar datum
+      yesterday:
     fileuploader:
       drop_files: |2-
 
@@ -1369,6 +1490,48 @@ nl:
         target_domain: Doeldomein
         terminate: Beëindigen
         title: Open datafederatie
+      georegions:
+        actions:
+        add_new:
+        choose_a_dataset:
+        configure_boundary:
+          boundary_geometry_label_field_error:
+          boundary_geometry_label_page_error:
+          boundary_name:
+          boundary_name_description:
+          boundary_name_required_field_error:
+          boundary_name_required_page_error:
+          choose_a_column:
+          configure_boundary:
+          page_title:
+          primary_key_column:
+          primary_key_column_description:
+          primary_key_column_missing_field_error:
+          save_core_error:
+          save_error:
+          save_success:
+          shape_label:
+          shape_label_description:
+        custom_georegions:
+        default_georegions:
+        delete:
+        description:
+        disable:
+        disable_success:
+        edit:
+        enable:
+        enable_success:
+        enabled?:
+        enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
+        flashes:
+          add_georegion_error:
+        page_subtitle:
+        page_title:
+        region_name:
+        remove:
+        title:
       home:
         add_featured_dataset: Voeg een nieuwe getoonde dataset toe
         are_you_sure: Weet u het zeker? Deze actie kan niet ongedaan worden gemaakt.
@@ -1542,6 +1705,9 @@ nl:
         missing_esri_url: Een URL van een ESRI kaartlaag is verplicht.
         missing_name: Naam van dataset is verplicht.
         need_description: Omschrijf &ldquo;%{name}&rdquo;
+        point:
+          missing_latlong:
+          suboptimal_column:
       finish:
         headline: Uw dataset is aangemaakt.
         subheadline: Klik op Afsluiten om het te zien!
@@ -1828,6 +1994,9 @@ nl:
             flag: aanmerken
             formatted_text: geformatteerde tekst
             geospatial: geospatiale
+            groups:
+              geometry:
+              standard:
             list: lijst
             location: locatie
             money: geld
@@ -2067,6 +2236,9 @@ nl:
             abbreviated: Afgekort
             currency: Valuta
             format_mask_warning: " "
+            groups:
+              all:
+              common:
             no_precision: Geen
             precision: Precisie
             title: Geldformaat
@@ -2129,6 +2301,10 @@ nl:
           validation:
             no_columns: Deze view heeft geen kolommen om te filteren
             no_icons: Iconen zijn alleen relevant voor kaartweergave
+        data_lens:
+          button:
+          subtitle:
+          title:
         delete:
           confirm: Dit zal de %{view_type} definitief verwijderen. En dit kan niet ongedaan worden gemaakt! Weet u zeker dat u wilt doorgaan?
           delete_button: Verwijder deze %{view_type}
@@ -2335,6 +2511,8 @@ nl:
             title: Kolommen
           subtitle: Aanpassen welke kolommen zichtbaar zijn in deze view
           title: Kolommen tonen en verbergen
+          warnings:
+            active_filter:
         sort_rollup:
           rollup:
             add_group_button: Groeperen kolom toevoegen
@@ -2537,6 +2715,7 @@ nl:
       existing_latlng_cols: Bestaande kolommen voor breedte- en lengtegraden
       find: zoeken
       find_and_replace: Zoek en vervang waarde...
+      import_from_latlong:
       import_from_multiple: Uit <strong>meerdere kolommen</strong> importeren
       import_from_single: Uit <strong>één kolom</strong> importeren
       latitude: Breedtegraad
@@ -2550,6 +2729,7 @@ nl:
       new_source_col: Voeg nieuwe bron kolom toe
       new_transform: Voeg nieuwe transformatie toe
       options: Opties
+      point_source_col:
       properly_formatted: Kolom moet in het<a href="%{formatting_link}" rel="external">juiste formaat zijn</a> voordat het geïmporteerd wordt.
       regular_expression: reguliere expressie
       remove: verwijderen
@@ -2578,6 +2758,7 @@ nl:
       one_header: Eén van uw rijen is een koptekst
       problem_importing: Er deed zich een probleem voor bij het importeren van dat bestand. Zorg ervoor dat het een geldig bestand is.
       problem_uploading: Er deed zich een probleem voor bij het uploaden van dit bestand. Zorg ervoor dat het om een geldig bestand gaat.
+      replicating:
       rows_imported: Tot nu toe %{num} rijen geïmporteerd.
       try_again: Probeer het zometeen nog eens.
       unknown_error: Er trad een onbekende fout op
@@ -2769,6 +2950,10 @@ nl:
       comments_created: reacties aangemaakt
       daily: Dagelijks
       deleted_application: applicatie verwijderd
+      delta_decrease:
+      delta_decrease_compared:
+      delta_increase:
+      delta_increase_compared:
       dependent_metrics: Afhankelijke metrische gegevens
       download: downloaden
       downloads: downloads
@@ -2793,6 +2978,7 @@ nl:
       no_data_time_period: Geen data voor deze tijdperiode
       page_viewed: pagina bekeken
       pages_viewed: pagina's bekeken
+      preceding_period:
       referrals: Verwijzingen
       rows_loaded: Geladen rijen
       sdp: SDP

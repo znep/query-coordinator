@@ -165,10 +165,6 @@ body.socrata-page {
         display: inline-block;
         margin-right: 0.5em;
         vertical-align: top;
-        @include ie7-inline-block;
-      }
-      .ie7 & .icon {
-        float: left;
       }
       &.noText .icon {
         margin-right: 0;
@@ -194,10 +190,6 @@ body.socrata-page {
           display: inline-block;
           margin-right: 0.4em;
           vertical-align: top;
-          @include ie7-inline-block;
-        }
-        .ie7 & .icon {
-          float: left;
         }
         &.noText .icon {
           margin-right: 0;
@@ -353,11 +345,6 @@ body.socrata-page {
   ul li {
     display: inline-block;
     margin-right: 0.5em;
-    .ie7 & {
-      display: block;
-      float: left;
-      margin-right: 0.9em;
-    }
     a {
       @include sprite-social-media-icons;
     }

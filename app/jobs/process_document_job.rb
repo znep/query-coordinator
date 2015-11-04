@@ -11,7 +11,18 @@
 class ProcessDocumentJob < ActiveJob::Base
   queue_as :default
 
-  def perform(document)
+  rescue_from(StandardError) do |error|
+    document_id = self.arguments.first
+    document = Document.find_by_id(document_id)
+    story_uid = document.try(:story_uid)
+    user_uid = document.try(:created_by)
+
+    AirbrakeNotifier.report_error(error, "ProcessDocumentJob#perform(document_id: #{document_id}, story_uid: #{story_uid}, user: #{user_uid})")
+    raise error
+  end
+
+  def perform(document_id)
+    document = Document.find(document_id)
     document.upload = URI.parse(document.direct_upload_url)
     document.status = 'processed'
     document.save!

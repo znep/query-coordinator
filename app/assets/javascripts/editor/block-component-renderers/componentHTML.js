@@ -12,6 +12,8 @@
 
     utils.assertHasProperty(componentData, 'value');
 
+    _setupPhantomEditor($element, componentData, theme);
+
     $element.addClass(utils.typeToClassNameForComponentType(componentData.type)).
       attr('data-editor-id', editorId);
 
@@ -20,10 +22,50 @@
       editorId,
       componentData.value
     );
+
     editor.applyThemeClass(theme);
 
     $element.one('destroy', function() {
       storyteller.richTextEditorManager.deleteEditor(editorId);
+    });
+  }
+
+  /**
+   * @function _setupPhantomEditor
+   * @description
+   * A phantom editor is used on first render to determine the height
+   * of the container (roughly) before the actual squire editor is rendered.
+   *
+   * This system avoids flying blocks on render.
+   *
+   * @param $element - The container element for this component.
+   * @param componentData - The block component data used to render the HTML content.
+   * @param theme - The current CSS theme to apply to the HTML content.
+   */
+  function _setupPhantomEditor($element, componentData, theme) {
+    var $phantomContainer = $('<div>', {
+      'class': 'theme-{0} {1}'.
+        format(theme, storyteller.windowSizeBreakpointStore.getWindowSizeClass()),
+      'style': 'font-size: {0}'.format(Constants.THEME_BASE_FONT_SIZE)
+    });
+
+    var $phantomContent = $('<div>', {
+      'class': 'typeset squire-formatted'
+    });
+
+    $phantomContent.css({
+      'visibility': 'hidden',
+      'position': 'absolute'
+    });
+
+    $phantomContent.html(componentData.value);
+    $phantomContainer.append($phantomContent);
+
+    $element.append($phantomContainer);
+
+    // Used as a signifier that the editor has loaded.
+    $element.one('rich-text-editor::height-change', function() {
+      $phantomContainer.remove();
     });
   }
 
@@ -40,7 +82,6 @@
 
     editor.applyThemeClass(theme);
     editor.setContent(componentData.value);
-
   }
 
   /**

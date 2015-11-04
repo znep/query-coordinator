@@ -139,7 +139,7 @@
           xhr.onabort = onFail;
           xhr.onerror = onFail;
 
-          xhr.open('GET', url, true);
+          xhr.open('GET', _withSalt(url), true);
 
           // Set user-defined headers.
           _.each(headers, function(value, key) {
@@ -224,7 +224,7 @@
           xhr.onabort = onFail;
           xhr.onerror = onFail;
 
-          xhr.open('GET', url, true);
+          xhr.open('GET', _withSalt(url), true);
 
           // Set user-defined headers.
           _.each(headers, function(value, key) {
@@ -335,6 +335,23 @@
       }
 
       return table;
+    }
+
+    /**
+     * Transforms a URL to include a salt on the end.
+     *
+     * @param {string} url
+     * @return {string} salted url
+     */
+    function _withSalt(url) {
+      var hasQuery = _.includes(url, '?');
+      var formatVars = { url: url, salt: new Date().getTime() };
+
+      if (hasQuery) {
+        return '{url}&_={salt}'.format(formatVars);
+      } else {
+        return '{url}?_={salt}'.format(formatVars);
+      }
     }
   }
 

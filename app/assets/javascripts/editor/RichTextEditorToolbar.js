@@ -64,6 +64,7 @@
 
     _createToolbar();
     _createLinkPanel();
+    _showToolbar();
 
     storyteller.dispatcher.register(function(payload) {
 
@@ -281,6 +282,10 @@
       _element.append(linkPanelElement);
     }
 
+    function _showToolbar() {
+      _element.addClass('visible');
+    }
+
     function _updateActiveFormats(payload) {
 
       if (!payload.hasOwnProperty('activeFormats')) {
@@ -343,9 +348,15 @@
 
       if (_formatController !== null) {
 
-        if (_formatController.hasLink()) {
+        // TODO: We have not implemented the link button yet.
+        var linkButtonImplemented = _.isFunction(_formatController.hasLink);
+
+        if (linkButtonImplemented && _formatController.hasLink()) {
           _formatController.execute('removeLink');
         } else {
+          if (!linkButtonImplemented) {
+            console.error('The link button has not been implemented.');
+          }
           _toggleLinkPanel();
         }
       }

@@ -9,7 +9,7 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  $.fn.storySaveButton = function(options) {
+  $.fn.storySavingStatus = function(options) {
     var $this = $(this);
     var holdInSavedState = false; // We need to keep displaying 'Saved!' for a bit.
     var clearHoldInSaveStateAfterDebounce;
@@ -65,10 +65,6 @@
       render();
     });
     render();
-
-    $this.on('click', function() {
-      storyteller.StoryDraftCreator.saveDraft(storyteller.userStoryUid);
-    });
 
     return this;
   };

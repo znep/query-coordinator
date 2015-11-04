@@ -230,7 +230,9 @@
         _xhr.onabort = onFail;
         _xhr.onerror = onFail;
 
-        _xhr.send(_file instanceof File ? _file : _file.body);
+        if (!_destroyed) {
+          _xhr.send(_file instanceof File ? _file : _file.body);
+        }
       });
     }
 

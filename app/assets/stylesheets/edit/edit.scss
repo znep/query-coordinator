@@ -4,7 +4,7 @@
 html {
   font-family: "Open Sans", "Helvetica", sans-serif;
   font-size: 10px;
-  overflow-y: auto;
+  overflow-y: scroll;
 
   body#story-edit {
     min-width: 768px;
@@ -81,6 +81,7 @@ body .header-main {
     display: inline-block;
     margin: 0 1em;
     max-width: $header-title-max-width;
+    height: 5.5rem;
     line-height: 5.5rem;
     font-weight: 600;
     color: $header-story-title-color;
@@ -165,13 +166,11 @@ body .header-main {
     }
   }
 
-  #story-publication-status {
-    color: $header-publication-status-color;
+  .panel-btn, .status-indicator {
+    padding: 0.8rem 1.5rem;
   }
 
-  .panel-btn, #story-save-btn {
-    padding: 0.8rem 1.5rem;
-
+  .panel-btn {
     &.active {
       color: $header-text-color;
       background-color: $header-link-hover-bg-color;
@@ -184,6 +183,24 @@ body .header-main {
     &:disabled {
       color: darken($header-text-color, 40%);
     }
+  }
+
+  // Status Indicators
+  .status-indicator {
+    color: $header-text-color;
+    background-color: transparent;
+    font-weight: lighter;
+
+    display: inline-block;
+    cursor: default;
+  }
+
+  #story-publication-status {
+    color: $header-publication-status-color;
+  }
+
+  #story-saving-indicator {
+    color: darken($header-text-color, 40%);
   }
 }
 
@@ -300,3 +317,4 @@ a[role="button"] {
   top: 6rem !important;
   z-index: 10 !important;
 }
+

@@ -6,34 +6,55 @@ shared_examples 'a secure application' do
   describe 'View mode' do
     before do
       visit "/s/magic-thing/#{attack_story_uid}"
+      Capybara.ignore_hidden_elements = false
     end
+
+    after do
+      Capybara.ignore_hidden_elements = true
+    end
+
     it 'should not evaluate JS' do
       expect(page.evaluate_script('window.xssFailure')).to eq(nil)
     end
+
     it 'should successfully load the page' do
-      expect(page.text).to include('positive test')
+      expect(page.html).to include('positive test')
     end
   end
 
   describe 'Preview mode' do
     before do
       visit "/s/magic-thing/#{attack_story_uid}/preview"
+      Capybara.ignore_hidden_elements = false
     end
+
+    after do
+      Capybara.ignore_hidden_elements = true
+    end
+
     it 'should not evaluate JS' do
       expect(page.evaluate_script('window.xssFailure')).to eq(nil)
     end
+
     it 'should successfully load the page' do
-      expect(page.text).to include('positive test')
+      expect(page.html).to include('positive test')
     end
   end
 
   describe 'Edit mode' do
     before do
       visit "/s/magic-thing/#{attack_story_uid}/edit"
+      Capybara.ignore_hidden_elements = false
     end
+
+    after do
+      Capybara.ignore_hidden_elements = true
+    end
+
     it 'should not evaluate JS' do
       expect(page.evaluate_script('window.xssFailure')).to eq(nil)
     end
+
     it 'should successfully load the page' do
       expect(page.html).to include('positive test')
     end

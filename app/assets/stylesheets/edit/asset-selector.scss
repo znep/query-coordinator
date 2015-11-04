@@ -1,4 +1,32 @@
 @import 'lib/variables';
+@import 'bourbon';
+
+@include keyframes(fadeIn) {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+// .component-html already includes its own fade in.
+.component[class^="component-"]:not(.component-html),
+.component[class*=" component-"]:not(.component-html),
+#story-view .component-html {
+  @include animation(fadeIn $component-fade-in-duration);
+}
+
+@mixin centered-busy-button {
+  position: absolute;
+  top: calc(50%  - (#{$btn-padding-top-bottom} * 2 + #{$btn-busy-height} + #{$btn-busy-border-width} * 2) / 2);
+  left: calc(50% - (#{$btn-padding-left-right} * 2 + #{$btn-busy-width} + #{$btn-busy-border-width} * 2) / 2);
+}
 
 .asset-selector-input-group {
 
@@ -50,9 +78,7 @@
     position: relative;
 
     .btn-busy {
-      position: absolute;
-      top: calc(50%  - (#{$btn-padding-top-bottom} * 2 + #{$btn-busy-height} + #{$btn-busy-border-width} * 2) / 2);
-      left: calc(50% - (#{$btn-padding-left-right} * 2 + #{$btn-busy-width} + #{$btn-busy-border-width} * 2) / 2);
+      @include centered-busy-button;
     }
 
     .asset-selector-uploading-message {
@@ -104,9 +130,7 @@
     }
 
     .btn-busy {
-      position: absolute;
-      top: calc(50%  - (#{$btn-padding-top-bottom} * 2 + #{$btn-busy-height} + #{$btn-busy-border-width} * 2) / 2);
-      left: calc(50% - (#{$btn-padding-left-right} * 2 + #{$btn-busy-width} + #{$btn-busy-border-width} * 2) / 2);
+      @include centered-busy-button;
     }
 
     .asset-selector-insecure-html-warning {
@@ -164,4 +188,8 @@
       margin-left: 1rem;
     }
   }
+}
+
+.visualization-busy {
+  @include centered-busy-button;
 }

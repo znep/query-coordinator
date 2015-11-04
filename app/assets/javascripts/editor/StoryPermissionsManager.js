@@ -17,7 +17,14 @@
 
       _setToPublic().
         then(
-          _handleRequestSuccess,
+          function(response) {
+            storyteller.dispatcher.dispatch({
+              action: Actions.STORY_SET_PUBLISHED_STORY,
+              storyUid: storyteller.userStoryUid,
+              publishedStory: response
+            });
+            _handleRequestSuccess(response);
+          },
           function(error) {
             _handleRequestError(error, errorCallback);
           }
@@ -43,14 +50,6 @@
       utils.assertIsOneOfTypes(response, 'object');
       utils.assertHasProperty(response, 'isPublic');
       utils.assertIsOneOfTypes(response.isPublic, 'boolean');
-
-      if (response.uid) {
-        storyteller.dispatcher.dispatch({
-          action: Actions.STORY_SET_PUBLISHED_STORY,
-          storyUid: storyteller.userStoryUid,
-          publishedStory: response
-        });
-      }
 
       var payload = {
         action: Actions.STORY_SET_PERMISSIONS,

@@ -45,6 +45,23 @@
         }
       },
       {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-12a.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_block.content')}",
+                "</div>"
+              ].join('').html_safe %>"
+            }
+          ]
+        }
+      },
+      {
         "imagePreview": "<%= asset_path("editor/iconic-blocks/text-12-mixed-content.svg") %>",
         "blockContent": {
           "layout": "12",

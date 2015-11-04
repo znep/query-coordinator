@@ -39,7 +39,6 @@ function Squire ( doc, config ) {
 
     this._events = {};
 
-    this._sel = win.getSelection();
     this._lastSelection = null;
 
     // IE loses selection state of iframe on blur, so make sure we
@@ -325,17 +324,23 @@ proto.setSelection = function ( range ) {
         if ( isIOS ) {
             this._win.focus();
         }
-        var sel = this._sel;
-        sel.removeAllRanges();
-        sel.addRange( range );
+        var sel = this._getWindowSelection();
+        if ( sel ) {
+            sel.removeAllRanges();
+            sel.addRange( range );
+        }
     }
     return this;
 };
 
+proto._getWindowSelection = function () {
+    return this._win.getSelection() || null;
+};
+
 proto.getSelection = function () {
-    var sel = this._sel,
+    var sel = this._getWindowSelection(),
         selection, startContainer, endContainer;
-    if ( sel.rangeCount ) {
+    if ( sel && sel.rangeCount ) {
         selection  = sel.getRangeAt( 0 ).cloneRange();
         startContainer = selection.startContainer;
         endContainer = selection.endContainer;
@@ -581,7 +586,7 @@ proto._keyUpDetectChange = function ( event ) {
     // 3. The key pressed is not in range 33<=x<=45 (navigation keys)
     if ( !event.ctrlKey && !event.metaKey && !event.altKey &&
             ( code < 16 || code > 20 ) &&
-            ( code < 33 || code > 45 ) )  {
+            ( code < 33 || code > 45 ) ) {
         this._docWasChanged();
     }
 };
@@ -610,7 +615,7 @@ proto._recordUndoState = function ( range ) {
             undoStack = this._undoStack;
 
         // Truncate stack if longer (i.e. if has been previously undone)
-        if ( undoIndex < this._undoStackLength) {
+        if ( undoIndex < this._undoStackLength ) {
             undoStack.length = this._undoStackLength = undoIndex;
         }
 
@@ -679,6 +684,20 @@ proto.hasFormat = function ( tag, attributes, range ) {
         return false;
     }
 
+    // Sanitize range to prevent weird IE artifacts
+    if ( !range.collapsed &&
+            range.startContainer.nodeType === TEXT_NODE &&
+            range.startOffset === range.startContainer.length &&
+            range.startContainer.nextSibling ) {
+        range.setStartBefore( range.startContainer.nextSibling );
+    }
+    if ( !range.collapsed &&
+            range.endContainer.nodeType === TEXT_NODE &&
+            range.endOffset === 0 &&
+            range.endContainer.previousSibling ) {
+        range.setEndAfter( range.endContainer.previousSibling );
+    }
+
     // If the common ancestor is inside the tag we require, we definitely
     // have the format.
     var root = range.commonAncestorContainer,
@@ -710,6 +729,38 @@ proto.hasFormat = function ( tag, attributes, range ) {
     return seenNode;
 };
 
+// Extracts the font-family and font-size (if any) of the element
+// holding the cursor. If there's a selection, returns an empty object.
+proto.getFontInfo = function ( range ) {
+    var fontInfo = {
+            family: undefined,
+            size: undefined
+        },
+        element, style;
+
+    if ( !range && !( range = this.getSelection() ) ) {
+        return fontInfo;
+    }
+
+    element = range.commonAncestorContainer;
+    if ( range.collapsed || element.nodeType === TEXT_NODE ) {
+        if ( element.nodeType === TEXT_NODE ) {
+            element = element.parentNode;
+        }
+        while ( !( fontInfo.family && fontInfo.size ) &&
+                element && ( style = element.style ) ) {
+            if ( !fontInfo.family ) {
+                fontInfo.family = style.fontFamily;
+            }
+            if ( !fontInfo.size ) {
+                fontInfo.size = style.fontSize;
+            }
+            element = element.parentNode;
+        }
+    }
+    return fontInfo;
+ };
+
 proto._addFormat = function ( tag, attributes, range ) {
     // If the range is collapsed we simply insert the node by wrapping
     // it round the range and focus it.
@@ -734,13 +785,17 @@ proto._addFormat = function ( tag, attributes, range ) {
         // Therefore we wrap this in the tag as well, as this will then cause it
         // to apply when the user types something in the block, which is
         // presumably what was intended.
+        //
+        // IMG tags are included because we may want to create a link around them,
+        // and adding other styles is harmless.
         walker = new TreeWalker(
             range.commonAncestorContainer,
             SHOW_TEXT|SHOW_ELEMENT,
             function ( node ) {
                 return ( node.nodeType === TEXT_NODE ||
-                                                    node.nodeName === 'BR' ) &&
-                    isNodeContainedInRange( range, node, true );
+                        node.nodeName === 'BR' ||
+                        node.nodeName === 'IMG'
+                    ) && isNodeContainedInRange( range, node, true );
             },
             false
         );
@@ -1229,8 +1284,12 @@ var decreaseListLevel = function ( frag ) {
 proto._ensureBottomLine = function () {
     var body = this._body,
         last = body.lastElementChild;
-    if ( !last ||
-            last.nodeName !== this._config.blockTag || !isBlock( last ) ) {
+
+    // Socrata Edit:
+    // This used to insert an extra block unless the last element was the same
+    // as the default block. Now it only adds if there is no block level last
+    // element.
+    if ( !last || !isBlock( last ) ) {
         body.appendChild( this.createDefaultBlock() );
     }
 };
@@ -1643,7 +1702,7 @@ function removeFormatting ( self, root, clean ) {
     for ( node = root.firstChild; node; node = next ) {
         next = node.nextSibling;
         if ( isInline( node ) ) {
-            if ( node.nodeType === TEXT_NODE || isLeaf( node ) ) {
+            if ( node.nodeType === TEXT_NODE || node.nodeName === 'BR' || node.nodeName === 'IMG' ) {
                 clean.appendChild( node );
                 continue;
             }

@@ -106,7 +106,7 @@
         _$visibilityButtonText.text(i18n('visibility.make_story_public'));
         _$visibilityButton.removeClass('btn-default').addClass('btn-secondary');
         _$updatePublicButton.prop('disabled', true);
-        _$publishingHelpText.text(i18n('messages.can_be_shared_publically'));
+        _$publishingHelpText.text(i18n('messages.can_be_shared_publicly'));
       }
 
       _$settingsPanelStoryStatus.toggleClass('hidden', !permissions || !permissions.isPublic);

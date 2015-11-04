@@ -37,13 +37,14 @@
     "moment": "~2.10.6"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
-  "_release": "b5de9e6042",
+  "_release": "34435ff44e",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "b5de9e60423d639b67ddfe513b35dea071c41f1f"
+    "commit": "34435ff44e61f6795dbd4534226bb520f99cbcce"
   },
   "_source": "git@github.com:socrata/frontend-visualizations.git",
   "_target": "master",
-  "_originalSource": "git@github.com:socrata/frontend-visualizations.git"
+  "_originalSource": "git@github.com:socrata/frontend-visualizations.git",
+  "_direct": true
 }

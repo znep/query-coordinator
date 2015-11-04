@@ -35,6 +35,13 @@ describe('Sanitizer.sanitizeElement()', function() {
     });
   });
 
+  describe('given a paragraph node', function() {
+    useHtml('<p>');
+    it('should convert the node into a <div> node.', function() {
+      assert.equal(returned.nodeName, 'DIV');
+    });
+  });
+
   describe('given an element node that is not safe to use', function() {
     useHtml('<script>');
     it('should return a document fragment', function() {

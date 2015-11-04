@@ -52,6 +52,9 @@ gem 'sanitize'
 # Use Unicorn as the app server
 gem 'unicorn'
 
+# Semantic versioning
+gem 'semver2'
+
 group :development, :test do
   # Testing framework
   gem 'rspec-rails', '~> 3.2'

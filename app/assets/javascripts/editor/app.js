@@ -157,7 +157,7 @@ $(document).on('ready', function() {
 
     // If the target of the click event is not the toolbar, unlink
     // the toolbar from the current ext editor (which also dims the
-    // toolbar).
+    // toolbar), and deselect all rich text editors.
     if (!target.is($('#rich-text-editor-toolbar')) &&
       target.parents('#rich-text-editor-toolbar').length === 0) {
 
@@ -167,6 +167,8 @@ $(document).on('ready', function() {
         action: Actions.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
         activeFormats: []
       });
+
+      _.invoke(richTextEditorManager.getAllEditors(), 'deselect');
     }
   });
 
@@ -280,26 +282,20 @@ $(document).on('ready', function() {
   dragDrop.setup();
 
   // Story title
-  $('.story-title').storyTitle(storyteller.userStoryUid);
+  $('title, .story-title').storyTitle(storyteller.userStoryUid);
 
   // Draft or Published status
   $('#story-publication-status').storyPublicationStatus(storyteller.userStoryUid);
 
-  // Save button
-  $('#story-save-btn').storySaveButton();
+  // Save status
+  $('#story-saving-indicator').storySavingStatus();
   $('#story-save-error-bar').storySaveErrorBar();
 
   // Preview button
   $('.preview-btn').storyPreviewLink();
 
   // Autosave
-  var autosave = _.debounce(function() {
-    var storySaveIsPossible = storyteller.storySaveStatusStore.isStorySavePossible();
-    if (storySaveIsPossible) {
-      storyteller.StoryDraftCreator.saveDraft(storyteller.userStoryUid);
-    }
-  }, storyteller.config.autosaveDebounceTimeInMilliseconds);
-  storyteller.storySaveStatusStore.addChangeListener(autosave);
+  storyteller.autosave = new storyteller.Autosave(storyteller.userStoryUid);
 
   // Close confirmation
   $(window).on('beforeunload', function() {

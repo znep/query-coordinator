@@ -20,6 +20,10 @@
 
     API_PREFIX_PATH: '/stories/api/v1/',
 
+    // This doesn't set the base font size for the scss
+    // and will need to be kept in sync.
+    THEME_BASE_FONT_SIZE: '16px',
+
     // The `name` column of the `lenses` table is defined as:
     //
     //   name character varying(255)

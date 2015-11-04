@@ -57,16 +57,6 @@ $(document).on('ready', function() {
     { id: 'clearFormatting', tag: null, name: 'Clear Formatting', dropdown: false, group: 4 }
   ];
 
-  // Temporary fix until version is being added/populated
-  if (userStoryData.digest === null) {
-    userStoryData.digest = '';
-  }
-
-  // If we're loading an empty story for the first time, add example content
-  if ((userStoryData.digest === '') && (userStoryData.blocks.length === 0)) {
-    userStoryData.blocks = sampleBlocks;
-  }
-
   /**
    * FLUX
    */

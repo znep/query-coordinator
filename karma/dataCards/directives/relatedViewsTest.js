@@ -1,4 +1,4 @@
-describe('<related-views/>', function() {
+describe('relatedViews', function() {
   'use strict';
 
   var $window;

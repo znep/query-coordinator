@@ -11,8 +11,6 @@ describe('Customize card dialog', function() {
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
   beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
 
   var Card;
@@ -54,13 +52,15 @@ describe('Customize card dialog', function() {
     $q = $injector.get('$q');
 
     // We don't actually care about the contents of this
-    $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
-    $templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
-    $templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
-    $templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
-    $templateCache.put('/angular_templates/dataCards/cardVisualizationFeatureMap.html', '');
-    $templateCache.put('/angular_templates/dataCards/cardVisualizationHistogram.html', '');
-    $templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
+    $templateCache.put('/angular_templates/dataCards/choropleth.html', '');
+    $templateCache.put('/angular_templates/dataCards/columnChart.html', '');
+    $templateCache.put('/angular_templates/dataCards/distributionChart.html', '');
+    $templateCache.put('/angular_templates/dataCards/featureMap.html', '');
+    $templateCache.put('/angular_templates/dataCards/histogram.html', '');
+    $templateCache.put('/angular_templates/dataCards/invalidCard.html', '');
+    $templateCache.put('/angular_templates/dataCards/searchCard.html', '');
+    $templateCache.put('/angular_templates/dataCards/tableCard.html', '');
+    $templateCache.put('/angular_templates/dataCards/timelineChart.html', '');
 
     $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
     $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
@@ -70,6 +70,12 @@ describe('Customize card dialog', function() {
     $httpBackend.whenGET(/\/api\/curated_regions.*/).respond([]);
 
     testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
+    testHelpers.mockDirective(_$provide, 'choropleth');
+    testHelpers.mockDirective(_$provide, 'columnChart');
+    testHelpers.mockDirective(_$provide, 'featureMap');
+    testHelpers.mockDirective(_$provide, 'histogram');
+    testHelpers.mockDirective(_$provide, 'searchCard');
+    testHelpers.mockDirective(_$provide, 'timelineChart');
   }));
 
   beforeEach(function() {

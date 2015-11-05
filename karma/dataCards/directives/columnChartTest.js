@@ -1,13 +1,15 @@
 describe('columnChart', function() {
   'use strict';
 
-  var th;
+  var testHelpers;
   var compile;
   var httpBackend;
   var rootScope;
   var scope;
   var timeout;
   var Constants;
+  var $controllerProvider;
+  var Mockumentary;
 
   var minSmallCardBarWidth = 8;
   var maxSmallCardBarWidth = 30;
@@ -85,23 +87,27 @@ describe('columnChart', function() {
   }
 
   beforeEach(module('dataCards'));
-
   beforeEach(module('dataCards.services'));
-
   beforeEach(module('dataCards.directives'));
+  beforeEach(module('/angular_templates/dataCards/columnChart.html'));
+
+  beforeEach(module(function(_$controllerProvider_) {
+    $controllerProvider = _$controllerProvider_;
+  }));
 
   beforeEach(inject(function($injector) {
-    th = $injector.get('testHelpers');
+    testHelpers = $injector.get('testHelpers');
     compile = $injector.get('$compile');
     httpBackend = $injector.get('$httpBackend');
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
     Constants = $injector.get('Constants');
+    Mockumentary = $injector.get('Mockumentary');
   }));
 
   afterEach(function() {
-    $('.columnChartTest').remove();
+    testHelpers.TestDom.clear();
   });
 
   var createColumnChart = function(width, expanded, data) {
@@ -109,28 +115,28 @@ describe('columnChart', function() {
     if (!expanded) expanded = false;
     if (!data) data = testData;
 
+    $controllerProvider.register('ColumnChartController', function($scope) {
+      $scope.model = Mockumentary.createCard(Mockumentary.createPage(), 'foo');
+    });
+
     var html =
       '<div class="card-visualization" style="width: ' +
         width + 'px; height: ' + CHART_HEIGHT + 'px;">' +
-        '<column-chart class="column-chart">' +
+        '<column-chart class="column-chart" ng-controller="ColumnChartController">' +
         '</column-chart>' +
       '</div>';
 
-    var elem = angular.element(html);
-
-    $('body').append('<div class="columnChartTest"></div>');
-    $('.columnChartTest').append(elem);
-
-    var compiledElem = compile(elem)(scope);
+    var element = testHelpers.TestDom.compileAndAppend(html, scope);
 
     scope.expanded = expanded;
     scope.cardData = data;
     scope.showFiltered = false;
     scope.allowFilterChange = true;
+    scope.rowDisplayUnit = 'row';
     scope.$digest();
 
     return {
-      element: compiledElem,
+      element: element,
       scope: scope
     };
   };
@@ -183,9 +189,9 @@ describe('columnChart', function() {
       var flyout = $('#uber-flyout');
       var barGroup = $('.bar-group').get(0);
 
-      expect(flyout.is(':hidden')).to.equal(true);
-      th.fireMouseEvent(barGroup, 'mousemove');
-      expect(flyout.is(':visible')).to.equal(true);
+      expect(flyout).to.not.be.visible;
+      testHelpers.fireMouseEvent(barGroup, 'mousemove');
+      expect(flyout).to.be.visible;
     });
 
     it('should appear on mouseover of a bar\'s label', function() {
@@ -193,9 +199,9 @@ describe('columnChart', function() {
       var flyout = $('#uber-flyout');
       var barLabel = $(labelContents).eq(0);
 
-      expect(flyout.is(':hidden')).to.equal(true);
-      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
-      expect(flyout.is(':visible')).to.equal(true);
+      expect(flyout).to.not.be.visible;
+      testHelpers.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      expect(flyout).to.be.visible;
     });
 
     it('should have the correct title', function() {
@@ -205,7 +211,7 @@ describe('columnChart', function() {
       var flyoutTitle;
       var flyout = $('#uber-flyout');
 
-      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      testHelpers.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutTitle = flyout.find('.flyout-title').text();
       expect(labelText).to.not.equal('undefined');
       expect(labelText).to.equal(flyoutTitle);
@@ -217,7 +223,7 @@ describe('columnChart', function() {
       var flyoutCell;
       var flyout = $('#uber-flyout');
 
-      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      testHelpers.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutCell = flyout.find('.flyout-cell').text();
       expect(flyoutCell).to.match(/rows/);
     });
@@ -230,7 +236,7 @@ describe('columnChart', function() {
       var flyoutCell;
       var flyout = $('#uber-flyout');
 
-      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      testHelpers.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutCell = flyout.find('.flyout-cell').text();
       expect(flyoutCell).to.match(/crimes/);
     });
@@ -242,7 +248,7 @@ describe('columnChart', function() {
       var flyoutTitle;
       var flyout = $('#uber-flyout');
 
-      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      testHelpers.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutTitle = flyout.find('.flyout-title').text();
       expect(labelText).to.equal(flyoutTitle);
     });
@@ -254,7 +260,7 @@ describe('columnChart', function() {
       var flyoutTitle;
       var flyout = $('#uber-flyout');
 
-      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      testHelpers.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutTitle = flyout.find('.flyout-title').text();
       expect(labelText).to.equal(flyoutTitle);
     });
@@ -266,7 +272,7 @@ describe('columnChart', function() {
       var flyoutTitle;
       var flyout = $('#uber-flyout');
 
-      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      testHelpers.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutTitle = flyout.find('.flyout-title').text();
       expect(labelText).to.not.equal('undefined');
       expect(labelText).to.equal(flyoutTitle);
@@ -279,7 +285,7 @@ describe('columnChart', function() {
       var flyoutTitle;
       var flyout = $('#uber-flyout');
 
-      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      testHelpers.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutTitle = flyout.find('.flyout-title').text();
       expect(labelText).to.not.equal('undefined');
       expect(labelText).to.equal(flyoutTitle);
@@ -290,10 +296,10 @@ describe('columnChart', function() {
       var flyout = $('#uber-flyout');
       var barGroup = $('.bar-group').get(0);
 
-      th.fireMouseEvent(barGroup, 'mousemove');
-      expect(flyout.is(':visible')).to.equal(true);
-      th.fireMouseEvent(flyout.get(0), 'mousemove');
-      expect(flyout.is(':hidden')).to.equal(true);
+      testHelpers.fireMouseEvent(barGroup, 'mousemove');
+      expect(flyout).to.be.visible;
+      testHelpers.fireMouseEvent(flyout.get(0), 'mousemove');
+      expect(flyout).to.not.be.visible;
     });
   });
 });

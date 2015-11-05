@@ -1,4 +1,4 @@
-describe('<soc-select/>', function() {
+describe('socSelect', function() {
   'use strict';
 
   var testHelpers;

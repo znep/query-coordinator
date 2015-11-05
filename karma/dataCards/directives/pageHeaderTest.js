@@ -1,4 +1,4 @@
-describe('<page-header />', function() {
+describe('pageHeader', function() {
   'use strict';
 
   var ServerConfig;

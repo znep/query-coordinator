@@ -9,11 +9,12 @@
     }
   }
 
-  function histogramDirective(FlyoutService, HistogramVisualizationService) {
+  function histogram(FlyoutService, HistogramVisualizationService, Constants, ColumnChartService) {
     return {
       restrict: 'E',
       scope: true,
-      template: '<div class="histogram" ng-class="{\'has-selection\': hasSelection}"></div>',
+      controller: 'HistogramController',
+      templateUrl: '/angular_templates/dataCards/histogram.html',
       link: function($scope, element) {
         if ($scope.allowFilterChange) {
           element.addClass('filterable');
@@ -22,6 +23,36 @@
             evt.stopPropagation();
           }, true);
         }
+
+        var visualizationType$ = $scope.$observe('visualizationType');
+
+        /**
+         * This sucks, but we have to conditionally set a negative horizontal
+         * margin on the outer container because when the chart renders as a
+         * histogram we need the visualization to take up the full width, but
+         * when it renders as a column chart it needs to have padding.
+         */
+        visualizationType$.subscribe(function(visualizationType) {
+          var conditionalStyles = {};
+
+          if (visualizationType === 'column') {
+            conditionalStyles.marginLeft = 0;
+            conditionalStyles.marginRight = 0;
+            ColumnChartService.registerColumnChartEvents($scope, element);
+          } else {
+            conditionalStyles.marginLeft = -Constants.HISTOGRAM_MARGINS.left;
+            conditionalStyles.marginRight = -Constants.HISTOGRAM_MARGINS.right;
+            ColumnChartService.unregisterColumnChartEvents(element);
+          }
+
+          element.closest('.card-visualization').css(conditionalStyles);
+        });
+
+        // Undo all the weird stuff we did above when we're destroyed.
+        $scope.$destroyAsObservable(element).subscribe(function() {
+          ColumnChartService.unregisterColumnChartEvents(element);
+          element.closest('.card-visualization').css({ marginLeft: 0, marginRight: 0 });
+        });
 
         var service = HistogramVisualizationService;
         var container = element.find('.histogram')[0];
@@ -290,6 +321,5 @@
 
   angular.
     module('dataCards.directives').
-    directive('histogram', histogramDirective);
-
+    directive('histogram', histogram);
 })();

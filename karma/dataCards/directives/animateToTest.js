@@ -1,4 +1,4 @@
-describe('animate-to directive', function() {
+describe('animateTo', function() {
   'use strict';
 
   var testHelpers;

@@ -49,7 +49,7 @@ describe('timelineChart', function() {
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
 
   beforeEach(function() {
-    module(function($provide) {
+    module(function($provide, $controllerProvider) {
 
       mockWindowStateService = {};
       mockWindowStateService.scrollPosition$ = new Rx.Subject();
@@ -59,6 +59,8 @@ describe('timelineChart', function() {
       mockWindowStateService.closeDialogEvent$ = new Rx.Subject();
 
       $provide.value('WindowState', mockWindowStateService);
+
+      $controllerProvider.register('TimelineChartController', _.noop);
     });
   });
 
@@ -137,9 +139,7 @@ describe('timelineChart', function() {
     var html = [
       '<div id="{0}">',
         '<div class="card-visualization" style="width: {1}px; height: 300px;">',
-          '<timeline-chart ',
-            'style="display: block; width: {1}px; height: 300px;" ',
-            'class="timeline-chart">',
+          '<timeline-chart style="display: block; width: {1}px; height: 300px;">',
           '</timeline-chart>',
         '</div>',
       '</div>'

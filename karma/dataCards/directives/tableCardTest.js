@@ -38,13 +38,24 @@ describe('tableCard', function() {
     }
     outerScope.$digest();
 
+    $controllerProvider.register('TableCardController', function($scope) {
+      $scope.getRows = outerScope.getRows;
+      $scope.expanded = outerScope.expanded;
+      $scope.rowCount = outerScope.rowCount;
+      $scope.filteredRowCount = outerScope.filteredRowCount;
+      $scope.columnDetails = outerScope.columnDetails;
+      $scope.showCount = outerScope.showCount;
+      $scope.whereClause = outerScope.whereClause;
+      $scope.rowDisplayUnit = outerScope.rowDisplayUnit;
+      $scope.defaultSortColumnName = outerScope.defaultSortColumnName;
+      $scope.whereClause = outerScope.whereClause;
+      outerScope = $scope;
+    });
+
     var html =
       '<div class="card {0}" style="width: 640px; height: 480px; position: relative;">'.
       format(expanded ? 'expanded': '') +
-        '<table-card row-count="rowCount" get-rows="getRows" where-clause="whereClause" ' +
-        'filtered-row-count="filteredRowCount" expanded="expanded" column-details="columnDetails" ' +
-        'show-count="showCount" row-display-unit="rowDisplayUnit" ' +
-        'default-sort-column-name="defaultSortColumnName"></table-card>' +
+        '<table-card where-clause="whereClause"></table-card>' +
       '</div>';
 
     var compiledElem = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -89,6 +100,7 @@ describe('tableCard', function() {
   var $rootScope;
   var outerScope;
   var $q;
+  var $controllerProvider;
   var fixtureData;
   var fixtureNullData;
   var reversedFixtureData;
@@ -117,6 +129,10 @@ describe('tableCard', function() {
   beforeEach(module(testJson));
   beforeEach(module(testNullJson));
   beforeEach(module(testMetaJson));
+
+  beforeEach(module(function(_$controllerProvider_) {
+    $controllerProvider = _$controllerProvider_;
+  }));
 
   beforeEach(inject(function($injector) {
     try {

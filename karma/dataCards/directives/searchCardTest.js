@@ -1,4 +1,4 @@
-describe('A Search Card Visualization', function() {
+describe('searchCard', function() {
   'use strict';
 
   var ROW_COUNT = 250;
@@ -16,8 +16,7 @@ describe('A Search Card Visualization', function() {
   var _$provide;
   var Constants;
 
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
+  beforeEach(module('/angular_templates/dataCards/searchCard.html'));
   beforeEach(module('/angular_templates/dataCards/tableCard.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
 
@@ -115,7 +114,7 @@ describe('A Search Card Visualization', function() {
     outerScope.model = model;
     outerScope.whereClause = 'PRETEND_PAGE_FILTER';
 
-    var html = '<div class="card-visualization"><card-visualization-search model="model" where-clause="whereClause"></card-visualization-search></div>';
+    var html = '<div class="card-visualization"><search-card></search-card></div>';
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
     return {
       pageModel: pageModel,
@@ -192,7 +191,7 @@ describe('A Search Card Visualization', function() {
 
     function setSearchText(text) {
       cardData.scope.$apply(function() {
-        cardData.element.find('card-visualization-search').isolateScope().search = text;
+        cardData.element.find('search-card').scope().search = text;
       });
     }
 
@@ -230,7 +229,7 @@ describe('A Search Card Visualization', function() {
 
           it('should respond with a table WHERE clause which is a logical AND of the page filter and the submitted text', function() {
             function currentSearchWhere() {
-              var innerScope = cardData.element.find('card-visualization-table').scope();
+              var innerScope = cardData.element.find('table-card').scope();
               return innerScope.searchWhere;
             }
 
@@ -255,7 +254,7 @@ describe('A Search Card Visualization', function() {
           });
 
           it('should display the row count', function(done) {
-            cardData.element.find('card-visualization-search').isolateScope().$observe('rowCount').subscribe(function(rowCount) {
+            cardData.element.find('search-card').scope().$observe('rowCount').subscribe(function(rowCount) {
               expect(getRowsStub.called).to.equal(true);
               expect(cardData.element.find('.search-card-info').text()).to.equal('Showing {0} of {1} matching results'.format(rowCount, ROW_COUNT));
               done();

@@ -1,4 +1,4 @@
-describe('<selection-label/>', function() {
+describe('selectionLabel', function() {
   'use strict';
 
   var $window;

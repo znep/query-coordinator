@@ -1,4 +1,4 @@
-describe('HistogramChart', function() {
+describe('histogram', function() {
   'use strict';
 
   var testHelpers;
@@ -8,6 +8,11 @@ describe('HistogramChart', function() {
   beforeEach(module('dataCards.directives'));
   beforeEach(module('dataCards.services'));
   beforeEach(module('dataCards/histogram.scss'));
+  beforeEach(module('/angular_templates/dataCards/histogram.html'));
+
+  beforeEach(module(function($controllerProvider) {
+    $controllerProvider.register('HistogramController', _.noop);
+  }));
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
@@ -16,13 +21,7 @@ describe('HistogramChart', function() {
 
   var template = [
     '<div class="card-visualization" id="test-histogram-chart">',
-      '<histogram ',
-        'card-data="cardData" ',
-        'is-filtered="isFiltered" ',
-        'row-display-unit="rowDisplayUnit" ',
-        'current-range-filter-value="currentRangeFilterValue"',
-        'expanded="expanded">',
-      '</histogram>',
+      '<histogram></histogram>',
     '</div>'
   ].join('');
 

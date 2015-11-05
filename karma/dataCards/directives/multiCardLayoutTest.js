@@ -1,4 +1,4 @@
-describe('multi-card-layout', function() {
+describe('multiCardLayout', function() {
   'use strict';
 
   var NUM_CARDS_IN_DEFAULT_LAYOUT = 6;
@@ -20,7 +20,14 @@ describe('multi-card-layout', function() {
 
   beforeEach(module('/angular_templates/dataCards/multiCardLayout.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
+  beforeEach(module('/angular_templates/dataCards/choropleth.html'));
+  beforeEach(module('/angular_templates/dataCards/columnChart.html'));
+  beforeEach(module('/angular_templates/dataCards/distributionChart.html'));
+  beforeEach(module('/angular_templates/dataCards/featureMap.html'));
+  beforeEach(module('/angular_templates/dataCards/histogram.html'));
+  beforeEach(module('/angular_templates/dataCards/searchCard.html'));
+  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
+  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('dataCards/theme/default.scss'));
   beforeEach(module('dataCards/cards.scss'));
   beforeEach(module('dataCards/card.scss'));
@@ -75,17 +82,17 @@ describe('multi-card-layout', function() {
     testHelpers.mockDirective(_$provide, 'aggregationChooser');
     testHelpers.mockDirective(_$provide, 'clearableInput');
     testHelpers.mockDirective(_$provide, 'addCardDialog');
-    testHelpers.mockDirective(_$provide, 'cardVisualizationTable');
-    testHelpers.mockDirective(_$provide, 'cardVisualizationColumnChart');
-    testHelpers.mockDirective(_$provide, 'cardVisualizationFeatureMap');
-    testHelpers.mockDirective(_$provide, 'cardVisualizationChoropleth');
-    testHelpers.mockDirective(_$provide, 'cardVisualizationTimelineChart');
-    testHelpers.mockDirective(_$provide, 'cardVisualizationSearch');
-    testHelpers.mockDirective(_$provide, 'cardVisualizationHistogram');
-    testHelpers.mockDirective(_$provide, 'cardVisualizationInvalid');
     testHelpers.mockDirective(_$provide, 'spinner');
     testHelpers.mockDirective(_$provide, 'customizeCardDialog');
     testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
+    testHelpers.mockDirective(_$provide, 'choropleth');
+    testHelpers.mockDirective(_$provide, 'columnChart');
+    testHelpers.mockDirective(_$provide, 'featureMap');
+    testHelpers.mockDirective(_$provide, 'histogram');
+    testHelpers.mockDirective(_$provide, 'invalidCard');
+    testHelpers.mockDirective(_$provide, 'searchCard');
+    testHelpers.mockDirective(_$provide, 'tableCard');
+    testHelpers.mockDirective(_$provide, 'timelineChart');
   }));
 
   afterEach(function(){
@@ -1019,7 +1026,7 @@ describe('multi-card-layout', function() {
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
 
-      var choropleth = cl.element.find('card-visualization-choropleth').closest('.card-spot');
+      var choropleth = cl.element.find('choropleth').closest('.card-spot');
       var customize = choropleth.find('.card-control.icon-settings');
 
       expect(eventEmitted).to.equal(false);
@@ -1320,7 +1327,7 @@ describe('multi-card-layout', function() {
         var flyout = $('#uber-flyout');
         expect(flyout.is(':visible')).to.be.false;
 
-        var choropleth = cl.element.find('card-visualization-choropleth').closest('.card-spot');
+        var choropleth = cl.element.find('choropleth').closest('.card-spot');
         expect(choropleth.length).to.equal(1);
         var customize = choropleth.find('.card-control.icon-settings:visible');
 
@@ -1357,7 +1364,7 @@ describe('multi-card-layout', function() {
         expect(flyout.is(':visible')).to.be.false;
 
         var visualizations = cl.element.find('.card-visualization').
-            children('card-visualization-timeline-chart').
+            children('timeline-chart').
             closest('.card-spot');
         expect(visualizations.length).to.equal(1);
         expect(visualizations.find('.card-control.icon-settings:visible').length).to.equal(0);
@@ -1414,11 +1421,11 @@ describe('multi-card-layout', function() {
       cl.scope.chooserMode.show = true;
       cl.scope.$digest();
 
-      var tableButton = cl.element.find('card-visualization-table').
+      var tableButton = cl.element.find('table-card').
           closest('card').children('.card-chooser').find('.action-png-export');
-      var timelineButton = cl.element.find('card-visualization-timeline-chart').
+      var timelineButton = cl.element.find('timeline-chart').
           closest('card').children('.card-chooser').find('.action-png-export');
-      var searchButton = cl.element.find('card-visualization-search').
+      var searchButton = cl.element.find('search-card').
           closest('card').children('.card-chooser').find('.action-png-export');
       var choroplethButton = cl.element.find('card-visualization-choropleth').
           closest('card').children('.card-chooser').find('.action-png-export');
@@ -1472,20 +1479,20 @@ describe('multi-card-layout', function() {
   });
 
   it('should show the table card if no other cards are present', function() {
-    testHelpers.mockDirective(_$provide, 'cardVisualizationTable');
+    testHelpers.mockDirective(_$provide, 'TableCardController');
     var cl = createLayoutWithCards([
       {fieldName: '*'}
     ]);
 
     expect(cl.element.find('card')).to.have.length(1);
-    expect(cl.element.find('card-visualization-table')).to.exist;
+    expect(cl.element.find('table-card')).to.exist;
   });
 
   it('should show the table card if no table card is present', function() {
-    testHelpers.mockDirective(_$provide, 'cardVisualizationTable');
+    testHelpers.mockDirective(_$provide, 'TableCardController');
     var cl = createLayoutWithCards([]);
 
     expect(cl.element.find('card')).to.have.length(1);
-    expect(cl.element.find('card-visualization-table')).to.exist;
+    expect(cl.element.find('table-card')).to.exist;
   });
 });

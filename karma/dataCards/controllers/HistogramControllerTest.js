@@ -1,7 +1,6 @@
-describe('Histogram Visualization', function() {
+describe('HistogramController', function() {
   'use strict';
 
-  var testHelpers;
   var _$provide;
   var $q;
   var $rootScope;
@@ -9,8 +8,8 @@ describe('Histogram Visualization', function() {
   var Model;
   var HistogramService;
   var mockCardDataService;
+  var $controller;
 
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationHistogram.html'));
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
   beforeEach(module('dataCards.services'));
@@ -33,12 +32,12 @@ describe('Histogram Visualization', function() {
   }
 
   beforeEach(inject(function($injector) {
-    testHelpers = $injector.get('testHelpers');
     $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope');
     Constants = $injector.get('Constants');
     Model = $injector.get('Model');
     HistogramService = $injector.get('HistogramService');
+    $controller = $injector.get('$controller');
 
     mockCardDataService = {
       getData: function() {
@@ -68,15 +67,7 @@ describe('Histogram Visualization', function() {
     };
 
     _$provide.value('CardDataService', mockCardDataService);
-
-    testHelpers.mockDirective(_$provide, 'histogram');
   }));
-
-  afterEach(function(){
-    testHelpers.TestDom.clear();
-  });
-
-  var directiveTemplate = '<div class="card-visualization"><card-visualization-histogram model="model" where-clause="whereClause"></card-visualization-histogram></div>';
 
   function stubCardModel() {
     var card = new Model();
@@ -101,17 +92,14 @@ describe('Histogram Visualization', function() {
 
   function createHistogram() {
     var model = stubCardModel();
-    var rootScope = $rootScope.$new();
-    rootScope.model = model;
+    var $scope = $rootScope.$new();
+    $scope.model = model;
 
-    var element = testHelpers.TestDom.compileAndAppend(directiveTemplate, rootScope);
-    var scope = element.find('histogram').scope();
+    $controller('HistogramController', { $scope: $scope });
 
     return {
       model: model,
-      element: element,
-      rootScope: rootScope,
-      scope: scope
+      $scope: $scope
     };
   }
 
@@ -121,7 +109,7 @@ describe('Histogram Visualization', function() {
     };
 
     var histogram = createHistogram();
-    expect(histogram.scope.histogramRenderError).to.exist;
+    expect(histogram.$scope.histogramRenderError).to.exist;
   });
 
   it('should display an error if obtaining the column domain returns an empty object', function() {
@@ -130,7 +118,7 @@ describe('Histogram Visualization', function() {
     };
 
     var histogram = createHistogram();
-    expect(histogram.scope.histogramRenderError).to.equal('noData');
+    expect(histogram.$scope.histogramRenderError).to.equal('noData');
   });
 
   it('should display an error if fetching the data fails', function() {
@@ -139,14 +127,14 @@ describe('Histogram Visualization', function() {
     };
 
     var histogram = createHistogram();
-    expect(histogram.scope.histogramRenderError).to.exist;
+    expect(histogram.$scope.histogramRenderError).to.exist;
   });
 
   it('should display an error if bucketing the data fails', function() {
     sinon.stub(HistogramService, 'bucketData').throws();
 
     var histogram = createHistogram();
-    expect(histogram.scope.histogramRenderError).to.exist;
+    expect(histogram.$scope.histogramRenderError).to.exist;
   });
 
   it('should display an error if no data is returned', function() {
@@ -155,16 +143,16 @@ describe('Histogram Visualization', function() {
     };
 
     var histogram = createHistogram();
-    expect(histogram.scope.histogramRenderError).to.exist;
+    expect(histogram.$scope.histogramRenderError).to.exist;
   });
 
   it('should render with an undefined where clause', function() {
     var histogram = createHistogram();
 
-    histogram.rootScope.whereClause = undefined;
-    histogram.rootScope.$digest();
+    histogram.$scope.whereClause = undefined;
+    histogram.$scope.$digest();
 
-    expect(histogram.scope.histogramRenderError).to.equal(false);
+    expect(histogram.$scope.histogramRenderError).to.equal(false);
   });
 
   it('should render when all the data is zeroes', function() {
@@ -182,7 +170,7 @@ describe('Histogram Visualization', function() {
 
     var histogram = createHistogram();
 
-    expect(histogram.scope.histogramRenderError).to.equal(false);
+    expect(histogram.$scope.histogramRenderError).to.equal(false);
   });
 
   it('should render if the data contains NaN and Infinity values', function() {
@@ -204,7 +192,7 @@ describe('Histogram Visualization', function() {
 
     var histogram = createHistogram();
 
-    expect(histogram.scope.histogramRenderError).to.equal(false);
+    expect(histogram.$scope.histogramRenderError).to.equal(false);
   });
 
   it('should use the linear bucketing method if the absolute value of the min or max is below a threshold', function() {
@@ -224,7 +212,7 @@ describe('Histogram Visualization', function() {
 
     var histogram = createHistogram();
 
-    expect(histogram.scope.histogramRenderError).to.equal(false);
+    expect(histogram.$scope.histogramRenderError).to.equal(false);
     expect(linearSpy.callCount).to.equal(2);
     expect(logarithmicSpy.callCount).to.equal(0);
     expect(bucketDataSpy.calledWithMatch(testData, {bucketType: 'linear'})).to.equal(true);
@@ -246,7 +234,7 @@ describe('Histogram Visualization', function() {
     var testValues = createHistogram();
 
     // Simulate a change in filters that does not impact the filters on the histogram
-    testValues.scope.$apply(function() {
+    testValues.$scope.$apply(function() {
       testValues.model.page.set('activeFilters', [{}]);
     });
 
@@ -270,39 +258,9 @@ describe('Histogram Visualization', function() {
 
     var histogram = createHistogram();
 
-    expect(histogram.scope.histogramRenderError).to.equal(false);
+    expect(histogram.$scope.histogramRenderError).to.equal(false);
     expect(linearSpy.callCount).to.equal(0);
     expect(logarithmicSpy.callCount).to.equal(2);
     expect(bucketDataSpy.calledWithMatch(testData, {bucketType: 'logarithmic'})).to.equal(true);
   });
-
-  it('should render as a column chart if HistogramService tells it to', function() {
-    var histogram;
-
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'column'; });
-
-    histogram = createHistogram();
-    expect(histogram.element.find('column-chart').length).to.equal(1);
-    expect(histogram.element.find('histogram').length).to.equal(0);
-
-    HistogramService.getVisualizationTypeForData.restore();
-
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'histogram'; });
-
-    histogram = createHistogram();
-    expect(histogram.element.find('column-chart').length).to.equal(0);
-    expect(histogram.element.find('histogram').length).to.equal(1);
-
-    HistogramService.getVisualizationTypeForData.restore();
-  });
-
-  it('interprets the data from CardDataService.getData correctly', function() {
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'column'; });
-
-    var histogram = createHistogram();
-    var columnChart = histogram.element.find('column-chart');
-    expect(columnChart.scope().cardData[0][0]).to.not.eql(NaN);
-    HistogramService.getVisualizationTypeForData.restore();
-  });
-
 });

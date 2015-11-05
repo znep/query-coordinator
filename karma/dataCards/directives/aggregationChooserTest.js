@@ -1,4 +1,4 @@
-describe('<aggregation-chooser/>', function() {
+describe('aggregationChooser', function() {
   'use strict';
 
   var DEFAULT_ROW_DISPLAY_UNIT = 'unique row unit';

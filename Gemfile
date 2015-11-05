@@ -91,6 +91,8 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'headless'
+
+  gem 'os'
 end
 
 group :development do

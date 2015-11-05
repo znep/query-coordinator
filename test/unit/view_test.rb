@@ -269,7 +269,16 @@ class ViewTest < Test::Unit::TestCase
     assert_equal [], view.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant id'
   end
 
-  def test_is_official_returns_false_by_default
+  def test_is_official_returns_true_by_default_if_provenance_is_disabled
+    init_current_domain
+    stub_feature_flags_with(:enable_data_lens_provenance, false)
+    view = View.new
+    assert_not_nil(view.is_official?)
+  end
+
+  def test_is_official_returns_false_by_default_if_provenance_is_enabled
+    init_current_domain
+    stub_feature_flags_with(:enable_data_lens_provenance, true)
     view = View.new
     assert_nil(view.is_official?)
   end

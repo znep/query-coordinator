@@ -550,4 +550,8 @@ module DatasetsHelper
     hash
   end
 
+  def row_label
+    view.metadata.try(:rowLabel) || t('screens.edit_metadata.default_row_label')
+  end
+
 end

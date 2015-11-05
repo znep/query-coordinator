@@ -753,8 +753,7 @@ body {
             .browse2-result-type {
               position: relative;
               display: block;
-              float: left;
-              width: 30%;
+              float: right;
               margin: 0.85em 0 0 0;
               font-size: 1.25em;
               text-align: right;
@@ -773,6 +772,33 @@ body {
                 font-size: 1.25em;
                 font-weight: 300;
                 color: #aaa;
+              }
+            }
+
+            .browse2-result-provenance {
+              position: relative;
+              display: block;
+              float: right;
+              margin: 0.85em 1.5em 0 0;
+              font-size: 1.25em;
+              text-align: right;
+              text-transform: capitalize;
+
+              .provenance-title {
+                font-size: 1.25em;
+                font-weight: 300;
+                color: #aaa;
+              }
+
+              .icon-check {
+                position: relative;
+                display: inline-block;
+                @include border-radius(100%);
+                font-size: 1em;
+                padding: 0.15em;
+                margin-right: 0.25em;
+                color: white;
+                background-color: #68b0cc;
               }
             }
           }

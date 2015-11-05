@@ -814,7 +814,9 @@ class View < Model
   end
 
   def is_official?
-    provenance =~ /^official$/i
+    # CORE-7419: If enable_data_lens_provenance is false, assume all data lenses are official
+    FeatureFlags.derive(nil, request)[:enable_data_lens_provenance] ?
+      provenance =~ /^official$/i : true
   end
 
   def is_community?

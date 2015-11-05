@@ -1,13 +1,17 @@
 (function() {
   'use strict';
 
-  function lensType() {
+  function lensType(ServerConfig) {
     return {
       templateUrl: '/angular_templates/dataCards/lensType.html',
       restrict: 'E',
       scope: true,
       link: function($scope) {
-        $scope.$bindObservable('lensType', $scope.page.observe('provenance'));
+
+        // CORE-7419: If enable_data_lens_provenance is false, assume all data lenses are official
+        $scope.$bindObservable('lensType', ServerConfig.get('enableDataLensProvenance') ?
+          $scope.page.observe('provenance') :
+          Rx.Observable.returnValue('official'));
       }
     };
   }

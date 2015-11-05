@@ -201,7 +201,7 @@
     // and whether the necessary service for owner change is available
     $scope.isUserSearchAvailable = true;
     var isUserPermitted$ = UserSessionService.getCurrentUser$().map(function(user) {
-      return _.contains(user.rights, 'edit_others_datasets');
+      return _.contains(user.rights, 'chown_datasets');
     });
     var isUserSearchAvailable$ = $scope.$observe('isUserSearchAvailable');
     var hasPermission$ = Rx.Observable.combineLatest(

@@ -3428,11 +3428,10 @@ var Dataset = ServerModel.extend({
         $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
             var coreViews = coreResult ? coreResult[0] : [];
             var dataLensViews = dataLensResult ? dataLensResult : [];
-            var allViews = [].concat(coreViews, dataLensViews);
-            // TODO: what filtering needs to be done here
-            // to prevent duplicate data lenses from appearing?
 
-            ds._relatedViews = ds._processRelatedViews(allViews);
+            ds._relatedViews = ds._processRelatedViews(
+                _.uniq([].concat(coreViews, dataLensViews), 'id')
+            );
 
             if (_.isFunction(callback)) {
                 callback();

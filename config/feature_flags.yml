@@ -90,6 +90,9 @@ enable_data_lens_other_views:
 enable_data_lens_page_metadata_migrations:
   description: Lazily migrate data lens page metadata schemas on each request.
   defaultValue: true
+enable_data_lens_provenance:
+  description: Set data lens views to "Official" or not.
+  defaultValue: false
 enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false

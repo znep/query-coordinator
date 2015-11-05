@@ -35,6 +35,13 @@
         </div>
       <%- end -%>
 
+      <%- if result_is_official -%>
+        <div class="browse2-result-provenance">
+          <span class='icon-check'></span>
+          <span class='provenance-title'><%= t('lensType.official') %></span>
+        </div>
+      <%- end -%>
+
     </div>
 
     <div class="browse2-result-metadata">

@@ -21,7 +21,7 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
     stub_logged_in_user
     stub_core_view('hasb-lock')
     visit '/s/magic-thing/hasb-lock/edit'
-    @original_story_json = story_json
+    @original_story_json = current_story_json
     @undo_btn = page.find('.undo-btn')
     @redo_btn = page.find('.redo-btn')
   end
@@ -138,7 +138,7 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
 
     context 'when user types a single letter' do
       it 'undoes and redoes' do
-        type_key_into_squire(@squire_frame, 'x')
+        type_key_into_squire(@squire_frame, 's')
         undo_then_verify_story_returns_to_original_content
       end
     end
@@ -147,14 +147,15 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
       it 'undoes and redoes' do
         # Select all contents in the second block. Couldn't get ctrl-a (select all) to work.
         # So bruteforce selection with normal DOM APIs.
+        other_iframe_index = 2
         page.evaluate_multiline_script("
-          var iframeWindow = $('iframe').eq(1)[0].contentWindow; // Select second iframe in page.
+          var iframeWindow = $('iframe').eq(#{other_iframe_index})[0].contentWindow;
           var selection = iframeWindow.getSelection();
           selection.removeAllRanges();
           selection.selectAllChildren(iframeWindow.document.body);
         ")
 
-        copy_current_selection(@blocks[1].all('iframe')[0])
+        copy_current_selection(page.all('iframe')[other_iframe_index])
         paste_clipboard_into_squire(@squire_frame)
 
         undo_then_verify_story_returns_to_original_content
@@ -169,39 +170,39 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
       it 'can redo after multiple edits and redos' do
         copy_html_to_clipboard('<section><div><p><b>complex</b><i>things</i><p></div></section>')
         paste_clipboard_into_squire(@squire_frame)
-        @story_after_paste_json = story_json
+        story_after_paste_json = current_story_json
 
-        type_key_into_squire(@squire_frame, 'x')
-        @story_after_key_press_json = story_json
+        type_key_into_squire(@squire_frame, 's')
+        story_after_key_press_json = current_story_json
 
-        expect(@story_after_paste_json).to_not eq(@original_story_json)
-        expect(@story_after_key_press_json).to_not eq(@story_after_paste_json)
+        expect(story_after_paste_json).to_not eq(@original_story_json)
+        expect(story_after_key_press_json).to_not eq(story_after_paste_json)
 
         @undo_btn.click
-        expect(story_json).to eq(@story_after_paste_json)
+        expect(current_story_json).to eq(story_after_paste_json)
         @undo_btn.click
-        expect(story_json).to eq(@original_story_json)
+        expect(current_story_json).to eq(@original_story_json)
 
         @redo_btn.click
-        expect(story_json).to eq(@story_after_paste_json)
+        expect(current_story_json).to eq(story_after_paste_json)
         @redo_btn.click
-        expect(story_json).to eq(@story_after_key_press_json)
+        expect(current_story_json).to eq(story_after_key_press_json)
       end
     end
 
     def undo_then_verify_story_returns_to_original_content
-      dirty_story_json = story_json
+      dirty_story_json = current_story_json
       expect(dirty_story_json).to_not eq(@original_story_json)
 
       @undo_btn.click
-      expect(story_json).to eq(@original_story_json)
+      expect(current_story_json).to eq(@original_story_json)
 
       @redo_btn.click
-      expect(story_json).to eq(dirty_story_json)
+      expect(current_story_json).to eq(dirty_story_json)
     end
   end
 
-  def story_json
+  def current_story_json
     page.evaluate_script(
       "storyteller.storyStore.serializeStory(storyteller.userStoryUid)"
     )

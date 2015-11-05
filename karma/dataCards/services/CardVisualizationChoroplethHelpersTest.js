@@ -137,4 +137,10 @@ describe('CardVisualizationChoroplethHelpers service', function() {
 
   });
 
+  describe('#computedColumnNameToShapefileId', function() {
+    it('should convert a computed column name to its shapefile ID', function() {
+      expect(cardVisualizationChoroplethHelpers.computedColumnNameToShapefileId(':@computed_region_skmb_8uxu')).to.eq('skmb-8uxu');
+    });
+  });
+
 });

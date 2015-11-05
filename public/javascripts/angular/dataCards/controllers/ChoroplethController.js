@@ -57,12 +57,7 @@
     // coding.
     var regionCodingDisabled = $element.closest('.cards-content').length === 0;
 
-    function computedColumnNameToShapefileId(computedColumnName) {
-      if (!_.isString(computedColumnName)) { return; }
-      return computedColumnName.replace(/(\w{4})_(\w{4})$/, '$1-$2');
-    }
-
-    var shapefileId$ = computedColumnName$.map(computedColumnNameToShapefileId);
+    var shapefileId$ = computedColumnName$.map(CardVisualizationChoroplethHelpers.computedColumnNameToShapefileId);
 
     if (regionCodingDisabled) {
       computedColumnMissing$.

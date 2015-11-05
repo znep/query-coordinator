@@ -213,7 +213,13 @@
       );
     }
 
+    function computedColumnNameToShapefileId(computedColumnName) {
+      if (!_.isString(computedColumnName)) { return; }
+      return computedColumnName.replace(/.*(\w{4})_(\w{4})$/, '$1-$2');
+    }
+
     return {
+      computedColumnNameToShapefileId: computedColumnNameToShapefileId,
       extractShapeFileFromColumn: extractShapeFileFromColumn,
       extractSourceColumnFromColumn: extractSourceColumnFromColumn,
       aggregateGeoJsonData: aggregateGeoJsonData

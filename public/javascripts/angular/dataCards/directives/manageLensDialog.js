@@ -51,7 +51,7 @@
           var promises = _.invoke($scope.components, 'save');
 
           $scope.saveStatus = 'saving';
-          $scope.manageLensState.disableCloseDialog = true;
+          $scope.manageLensState.saveInProgress = true;
 
           $q.all(promises).then(function() {
             $scope.saveStatus = 'saved';
@@ -73,7 +73,7 @@
               _.defer(FlyoutService.refreshFlyout);
             }, 8000);
           })['finally'](function() {
-            $scope.manageLensState.disableCloseDialog = false;
+            $scope.manageLensState.saveInProgress = false;
           });
         };
 

@@ -12,6 +12,7 @@ describe('manage-lens dialog', function() {
 
   beforeEach(module('/angular_templates/common/intractableList.html'));
   beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/saveButton.html'));
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('dataCards/cards.scss'));
   beforeEach(module('dataCards'));
@@ -34,7 +35,6 @@ describe('manage-lens dialog', function() {
     ServerConfig = $injector.get('ServerConfig');
 
     testHelpers.mockDirective(_$provide, 'socSelect');
-    testHelpers.mockDirective(_$provide, 'saveButton');
     testHelpers.mockDirective(_$provide, 'modalDialog');
     testHelpers.mockDirective(_$provide, 'newShareDialog');
   }));
@@ -315,6 +315,56 @@ describe('manage-lens dialog', function() {
 
       expect($scope.saveStatus === 'failed').to.be.true;
       expect($scope.errorType).to.match(/The owner could not be changed./);
+    });
+  });
+
+  describe('add and remove button interactions', function() {
+    var buttonSelectors;
+
+    beforeEach(function() {
+      buttonSelectors = [
+        '.controls button.manage-lens-dialog-cancel',
+        '.manage-lens-dialog-add-shares',
+        '.share-remove-button'
+      ];
+    });
+
+    it('is enabled when not saving', function() {
+      var element = createElement();
+      var $scope = element.children().scope();
+
+      $scope.manageLensState.saveInProgress = false;
+      $scope.shouldShowSharingSection = true;
+      $scope.newShares = {shares: [{}]};
+
+      $scope.$digest();
+
+      buttonSelectors.forEach(function(selector) {
+        var button = element.find(selector);
+        expect(button).not.to.be.disabled;
+      });
+
+      var saveButton = element.find('.controls button.manage-lens-dialog-save');
+      expect(saveButton).not.to.have.class('disabled');
+    });
+
+    it('is disabled when saving', function() {
+      var element = createElement();
+      var $scope = element.children().scope();
+
+      $scope.manageLensState.saveInProgress = true;
+      $scope.shouldShowSharingSection = true;
+      $scope.newShares = {shares: [{}]};
+
+      $scope.$digest();
+
+      buttonSelectors.forEach(function(selector) {
+        var button = element.find(selector);
+        expect(button).to.be.disabled;
+      });
+
+      var saveButton = element.find('.controls button.manage-lens-dialog-save');
+      expect(saveButton).to.have.class('disabled');
     });
   });
 });

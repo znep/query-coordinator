@@ -67,6 +67,7 @@
             <button
               ng-hide="disableRemoveButton(share)"
               class="action-btn dark share-remove-button"
+              ng-disabled="manageLensState.saveInProgress"
               ng-click="toggleSharePendingRemovalStatus(share)"
               ng-bind="share.pendingRemoval ? 'Keep' : 'Remove'"></button>
           </div>
@@ -78,7 +79,10 @@
           {{::'manageLensDialog.sharing.addNewPrompt' | I18n}}
         </span>
       </div>
-      <button class="action-btn dark manage-lens-dialog-add-shares" ng-click="newSharesState.show = true">
+      <button
+        class="action-btn dark manage-lens-dialog-add-shares"
+        ng-disabled="manageLensState.saveInProgress"
+        ng-click="newSharesState.show = true">
         {{::'manageLensDialog.sharing.addNew' | I18n}}
       </button>
     </div>
@@ -132,10 +136,10 @@
   <save-button
     class="dark r-to-l manage-lens-dialog-save"
     ng-click="save()"
-    enabled="!manageLensState.disableCloseDialog && dialogHasChanges && !dialogHasErrors"
+    enabled="!manageLensState.saveInProgress && dialogHasChanges && !dialogHasErrors"
     save-status="saveStatus"></save-button>
   <button
-    ng-disabled="manageLensState.disableCloseDialog"
+    ng-disabled="manageLensState.saveInProgress"
     class="action-btn dark manage-lens-dialog-cancel"
     ng-click="manageLensState.show = false">{{::'common.cancel' | I18n}}</button>
 </div>

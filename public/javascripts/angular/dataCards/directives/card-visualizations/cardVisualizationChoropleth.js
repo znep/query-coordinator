@@ -77,7 +77,7 @@
 
           // If the computed column is missing
           computedColumnMissing$.
-            safeApply(function() { scope.isPendingComputation = true; }).
+            safeApply(scope, function() { scope.isPendingComputation = true; }).
             withLatestFrom(
               datasetId$,
               shapefileId$,

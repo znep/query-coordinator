@@ -183,7 +183,7 @@
       <dd><span class="wrap"><%= @view.tag_display_string %></span></dd>
       <%- if @view.dataset? %>
       <dt><%= t('screens.about.row_label') %></dt>
-      <dd><span class="wrap row_label"><%= @view.metadata.nil? ? '' : @view.metadata.rowLabel %></span></dd>
+      <dd><span class="wrap row_label"><%= row_label %></span></dd>
       <%- end %>
       <%- if @view.is_tabular? %>
       <dt><%= t('screens.about.row_count') %></dt>

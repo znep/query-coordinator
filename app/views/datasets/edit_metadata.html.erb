@@ -41,7 +41,7 @@
     <div class="line clearfix">
       <label for="view_row_label"><%= t('screens.edit_metadata.row_label') %></label>
       <%= text_field_tag("view[metadata][rowLabel]",
-        @view.metadata.nil? ? '' : @view.metadata.rowLabel,
+        row_label,
         :title => t('screens.edit_metadata.row_label_prompt'),
         :class => "textPrompt") %>
       <div class="additionalHelp"><%= t('screens.edit_metadata.row_label_help') %></div>

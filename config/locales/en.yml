@@ -2726,6 +2726,7 @@ en:
       dataset_title_prompt: Enter a title
       dataset_url: Dataset URL
       dataset_url_prompt: Enter the location of your external dataset
+      default_row_label: Row
       delete: Delete
       email_address: Email Address
       email_help: This address will not be displayed publicly. If left blank, it will default to your address

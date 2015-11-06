@@ -5,7 +5,7 @@
     return {
       restrict: 'E',
       scope: {
-        currentUserHasRights: '=',
+        showProvenanceSection: '=',
         hasChanges: '=',
         isEphemeral: '=',
         page: '=',

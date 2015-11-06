@@ -408,7 +408,7 @@ module DatasetsHelper
   def hide_data_lens_create?
     # (Replicating the logic from canUpdateMetadata in dataset-show.js)
     # Always hide if current_user doesn't exist (spooooky)
-    return true unless current_user
+    return true if !current_user || view.is_unpublished? || !view.dataset?
 
     if !FeatureFlags.derive(view, request).create_v2_data_lens
       # for v1 data lenses, hide unless current_user is admin or publisher

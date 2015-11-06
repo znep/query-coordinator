@@ -4148,18 +4148,14 @@ function getType(ds)
 
 function getDisplayName(ds)
 {
-    var retType = ds.type;
-
-    switch (ds.type)
-    {
+    switch (ds.type) {
         case 'blist':
-            retType = ds.isPublished() ? $.t('core.view_types.dataset') : $.t('core.view_types.working_copy');
-            break;
+            return ds.isPublished() ? $.t('core.view_types.dataset') : $.t('core.view_types.working_copy');
+        case 'data_lens':
+            return $.t('core.view_types.new_view');
         default:
-            retType = $.t('core.view_types.' + ds.type);
+            return $.t('core.view_types.' + ds.type);
     }
-
-    return retType;
 };
 
 function cleanViewForSave(ds, allowedKeys)

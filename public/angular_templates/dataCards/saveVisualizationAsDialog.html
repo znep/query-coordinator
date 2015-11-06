@@ -31,7 +31,7 @@
          value="{{category}}">{{category}}</soc-option>
     </soc-select>
   </div>
-  <div class="control-group" ng-show="currentUserHasRights">
+  <div class="control-group" ng-show="showProvenanceSection">
     <input id="dialog-save-as-official-view" type="checkbox" ng-model="isOfficial"/>
     <label for="dialog-save-as-official-view">{{::'saveVisualizationAsDialog.officialViewLabel' | I18n}}</label>
     <p class="save-as-official-view-description">{{::'saveVisualizationAsDialog.officialViewExplanation' | I18n}}</p>

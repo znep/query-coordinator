@@ -414,7 +414,9 @@
                  # Pending a way to determine the result's data types, they will be set to nil and ignored
                 :result_data_types => nil,
                 :result_is_federated => result.federated?,
-                :show_official_badge => result.show_official_badge_in_catalog?,
+                :show_official_badge =>
+                  result.respond_to?(:show_official_badge_in_catalog) &&
+                  result.show_official_badge_in_catalog?, # not implemented for Cetera results
                 :result_federated_origin => result.domainCName,
                 :result_federated_origin_url => result_federated_origin_url,
                 :result_odn_link => result_odn_link,

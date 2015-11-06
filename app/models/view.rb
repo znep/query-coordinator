@@ -813,6 +813,10 @@ class View < Model
     end
   end
 
+  def show_official_badge_in_catalog?
+    FeatureFlags.derive(nil, request)[:enable_data_lens_provenance] && data_lens? && is_official?
+  end
+
   def is_official?
     # CORE-7419: If enable_data_lens_provenance is false, assume all data lenses are official
     FeatureFlags.derive(nil, request)[:enable_data_lens_provenance] ?

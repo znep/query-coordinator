@@ -10,7 +10,7 @@
     return {
       restrict: 'E',
       scope: {
-        currentUserHasRights: '=',
+        showProvenanceSection: '=',
         dialogState: '=',
         domain: '=',
         page: '='

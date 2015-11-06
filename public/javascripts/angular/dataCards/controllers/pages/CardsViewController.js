@@ -326,6 +326,11 @@
     $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
     initManageLens($scope, page);
 
+    // CORE-7419: Hide provenance toggle if user doesn't have rights
+    // or enable_data_lens_provenance feature flag is disabled
+    $scope.showProvenanceSection = $scope.currentUserHasRights &&
+      ServerConfig.get('enableDataLensProvenance');
+
     /*******************************
     * Filters and the where clause *
     *******************************/

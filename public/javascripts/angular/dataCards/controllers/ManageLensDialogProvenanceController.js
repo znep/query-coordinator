@@ -10,9 +10,6 @@ Eventually we want to introduce another value, "COMMUNITY", but for now it is ei
   'use strict';
 
   function ManageLensDialogProvenanceController($scope, http, $q, ServerConfig) {
-    // CORE-7419: Hide provenance section if enable_data_lens_provenance flag is false
-    $scope.shouldShowProvenanceSection = $scope.currentUserHasRights &&
-      ServerConfig.get('enableDataLensProvenance');
 
     var initialProvenance$ = $scope.page.observe('provenance');
 

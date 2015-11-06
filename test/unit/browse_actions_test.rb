@@ -57,13 +57,18 @@ class BrowseActionsTest < Test::Unit::TestCase
       APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api/catalog')
     end
 
-    def test_use_cetera_if_feature_flag_enabled
+    def test_use_cetera_if_feature_flag_enabled_and_host_present
       assert @browse_actions_container.send(:using_cetera?)
     end
 
-    def test_do_not_use_cetera_if_logged_in
+    def test_use_cetera_if_user_is_not_logged_in
+      User.stubs(current_user: nil)
+      assert @browse_actions_container.send(:using_cetera?)
+    end
+
+    def test_use_cetera_if_user_is_logged_in
       User.stubs(current_user: true)
-      assert !@browse_actions_container.send(:using_cetera?)
+      assert @browse_actions_container.send(:using_cetera?)
     end
 
     def test_do_not_use_cetera_if_feature_flag_not_enabled

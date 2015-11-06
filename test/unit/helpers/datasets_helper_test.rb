@@ -160,6 +160,17 @@ class DatasetsHelperTest < Test::Unit::TestCase
     # existing current_user
     @object.stubs(:current_user => User.new)
 
+    # dataset is unpublished
+    @view.stubs(:is_unpublished? => true, :dataset? => true)
+    assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be true'
+
+    # dataset is not table
+    @view.stubs(:is_unpublished? => false, :dataset? => false)
+    assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be true'
+
+    # dataset is published and is a table
+    @view.stubs(:is_unpublished? => false, :dataset? => true)
+
     # create_v2_data_lens feature flag is false
     FeatureFlags.stub :derive, Hashie::Mash.new(:create_v2_data_lens => false) do
       # current_user is an admin or publisher

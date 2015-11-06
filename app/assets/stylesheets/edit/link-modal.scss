@@ -1,0 +1,10 @@
+@import "lib/variables";
+
+.link-test-link-action {
+  float: right;
+  text-decoration: none;
+
+  &:visited {
+    color: $link-color;
+  }
+}

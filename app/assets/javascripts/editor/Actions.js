@@ -189,7 +189,24 @@
     EMBED_CODE_UPLOAD_DONE: 'EMBED_CODE_UPLOAD_DONE',
 
     // No payload
-    EMBED_CODE_UPLOAD_ERROR: 'EMBED_CODE_UPLOAD_ERROR'
+    EMBED_CODE_UPLOAD_ERROR: 'EMBED_CODE_UPLOAD_ERROR',
+
+    /**
+     * Link Modal
+     */
+
+    // {string} editorId
+    LINK_MODAL_SET_EDITOR: 'LINK_MODAL_SET_EDITOR',
+
+    // No Payload
+    LINK_MODAL_CLOSE: 'LINK_MODAL_CLOSE',
+
+    // No Payload
+    LINK_MODAL_OPEN: 'LINK_MODAL_OPEN',
+
+    // {string} text
+    // {string} url
+    LINK_MODAL_FORMAT: 'LINK_MODAL_FORMAT'
   };
 
   root.Actions = Actions;

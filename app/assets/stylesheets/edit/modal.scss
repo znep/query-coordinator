@@ -1,7 +1,6 @@
 @import 'lib/variables';
 
 .modal {
-
   position: fixed;
   width: 100%;
   height: 100%;
@@ -59,12 +58,6 @@
       font-size: $modal-title-font-size;
       line-height: $modal-title-line-height;
       color: $modal-title-color;
-
-      .btn-busy {
-        padding: 0;
-        margin-left: 1rem;
-        vertical-align: middle;
-      }
     }
 
     .modal-close-btn {
@@ -86,65 +79,43 @@
       }
     }
 
-    .back-btn .icon-arrow-left2 {
-      font-size: 0.8em;
-    }
-
-    .button-list li {
-      padding: 1.5rem 1rem;
-      border-bottom: solid 1px $modal-button-list-border-color;
+    .modal-input-group {
+      display: block;
       position: relative;
+      padding: 0.5rem;
+    }
 
-      &:last-child {
-        border-bottom: none;
+    .modal-input {
+      &:invalid {
+        border: solid 1px orange;
       }
+    }
 
-      &::after {
-        font-family: icomoon;
-        content: "\edb9";
-        position: absolute;
-        right: 1rem;
-        top: calc(6.8rem / 2 - 0.75rem);
-        display: inline-block;
-        font-size: 1.5rem;
-        color: $modal-button-list-arrow-color;
+    .modal-input-label {
+      margin: 1rem 0;
+      text-align: left;
+      color: $asset-selector-input-label-color;
+      font-size: 1.5rem;
+      font-weight: normal;
+
+      &.modal-input-label-centered {
+        text-align: center;
       }
+    }
 
-      &:hover {
-        background-color: $modal-button-list-hover-background-color;
-        cursor: pointer;
+    input[type="checkbox"] + .modal-input-label {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 0.25rem;
+    }
 
-        &::after {
-          color: $modal-button-list-hover-arrow-color;
+    .modal-button-group {
+      &.r-to-l {
+        text-align: right;
+
+        [class^="btn-"], [class*=" btn-"] {
+          margin-left: 1rem;
         }
-      }
-
-      h3 {
-        color: $modal-button-list-header-color;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-      }
-
-      p {
-        color: $modal-button-list-description-color;
-        font-size: 1.2rem;
-      }
-    }
-
-    /* Visualization chooser */
-    .asset-selector-full-width-iframe {
-      width: 100%;
-      height: 400px;
-      margin-bottom: 1rem;
-    }
-
-    .asset-selector-preview-image-container {
-      overflow: auto;
-
-      img {
-        height: 100%;
-        margin: 0 auto;
-        display: block;
       }
     }
   }

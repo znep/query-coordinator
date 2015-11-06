@@ -367,7 +367,7 @@
       var embedCodeDescription = $('<p>').
         text(I18n.t('editor.asset_selector.embed_code.description'));
 
-      var providers = $('<ul>', {'class': 'button-list'}).append([
+      var providers = $('<ul>', {'class': 'asset-selector-button-list'}).append([
         $('<li>', {
           'data-action': Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
         }).append(visualizationHeader, visualizationDescription),
@@ -440,7 +440,7 @@
 
       var buttonGroup = $(
         '<div>',
-        { 'class': 'asset-selector-button-group r-to-l' }
+        { 'class': 'modal-button-group r-to-l' }
       ).append([
         backButton,
         insertButton
@@ -521,7 +521,7 @@
 
       var buttonGroup = $(
         '<div>',
-        { 'class': 'asset-selector-button-group r-to-l' }
+        { 'class': 'modal-button-group r-to-l' }
       ).append([
         backButton,
         insertButton
@@ -587,7 +587,7 @@
 
       var buttonGroup = $(
         '<div>',
-        { 'class': 'asset-selector-button-group r-to-l' }
+        { 'class': 'modal-button-group r-to-l' }
       ).append([
         backButton,
         insertButton
@@ -720,7 +720,7 @@
       var buttonGroup = $(
         '<div>',
         {
-          'class': 'asset-selector-button-group r-to-l'
+          'class': 'modal-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
       return [ heading, closeButton, content, buttonGroup ];
@@ -908,7 +908,7 @@
       }).append($('<span>'));
 
       var buttonGroup = $('<div>', {
-        'class': 'asset-selector-button-group r-to-l'
+        'class': 'modal-button-group r-to-l'
       }).append([ backButton ]);
 
       datasetChooserIframe[0].onDatasetSelected = function(datasetObj) {
@@ -957,7 +957,7 @@
       }).append($('<span>'));
 
       var buttonGroup = $('<div>', {
-        'class': 'asset-selector-button-group r-to-l'
+        'class': 'modal-button-group r-to-l'
       }).append([ backButton, insertButton ]);
 
       configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format) {
@@ -1122,7 +1122,7 @@
       var buttonGroup = $(
         '<div>',
         {
-          'class': 'asset-selector-button-group r-to-l'
+          'class': 'modal-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
       return [ heading, closeButton, content, buttonGroup ];

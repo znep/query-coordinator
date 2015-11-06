@@ -14,6 +14,18 @@ en:
     story_save_error_try_again: 'Try again.'
     story_save_error_generic: 'There was an error saving.'
     story_save_error_conflict: 'There was a conflict saving. To continue, you need to reload the page.'
+    modal:
+      buttons:
+        ok: 'OK'
+        insert: 'Insert'
+        cancel: 'Cancel'
+    rich_text_toolbar:
+      link_modal:
+        heading: 'Add a Link'
+        display_label: 'Text to Display'
+        link_label: 'Link Destination'
+        test_link: 'Test Link'
+        open_in_new_window: 'Open in New Window'
     components:
       asset_selector:
         insert_btn: 'Insert'

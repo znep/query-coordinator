@@ -110,7 +110,7 @@ $(document).on('ready', function() {
   };
 
   var assetSelectorRenderer = new storyteller.AssetSelectorRenderer(assetSelectorOptions); //eslint-disable-line no-unused-vars
-  var linkModalRenderer = new storyteller.LinkModalRenderer();
+  var linkModalRenderer = new storyteller.LinkModalRenderer(); //eslint-disable-line no-unused-vars
 
   var userStoryOptions = {
     storyUid: storyteller.userStoryUid,

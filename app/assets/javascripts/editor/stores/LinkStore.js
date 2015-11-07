@@ -17,7 +17,7 @@
     var _accepted = false;
 
     this.register(function(payload) {
-      switch(payload.action) {
+      switch (payload.action) {
         case Actions.LINK_MODAL_OPEN:
           _openModal(payload);
           break;
@@ -47,7 +47,7 @@
 
     this.getInputs = function() {
       return _inputs;
-    }
+    };
 
     this.getValidity = function() {
       return _valid;

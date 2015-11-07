@@ -57,8 +57,6 @@
 
     var _element = element;
     var _formats = formats;
-    var _showLinkPanel = false;
-    var _toolbarLinkButton = null;
     var _formatController = null;
 
     _createToolbar();

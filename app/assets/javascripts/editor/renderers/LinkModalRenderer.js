@@ -3,7 +3,6 @@
 
   var socrata = window.socrata;
   var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
 
   function LinkModalRenderer() {
     var dispatcher = storyteller.dispatcher;
@@ -32,7 +31,7 @@
       $modal.on('click', '[data-action]', function() {
         var action = event.target.getAttribute('data-action');
 
-        switch(action) {
+        switch (action) {
           case Actions.LINK_MODAL_CLOSE:
             dispatcher.dispatch({
               action: Actions.LINK_MODAL_CLOSE
@@ -70,7 +69,7 @@
         $link.val(inputs.link);
         $openInNewWindow.prop('checked', inputs.openInNewWindow);
       }
-    };
+    }
 
     function toggleModal(predicate) {
       $modal[predicate ? 'removeClass' : 'addClass']('hidden');

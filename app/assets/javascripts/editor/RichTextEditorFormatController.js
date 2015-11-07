@@ -401,7 +401,6 @@
 
     function _link() {
       var range;
-      var selection;
       var link;
       var text;
       var parentElement;
@@ -410,7 +409,7 @@
       var selection = _squire.getSelection();
 
       if (_squire.hasFormat('a')) {
-        parentElement = selection.startContainer.parentElement
+        parentElement = selection.startContainer.parentElement;
 
         range = document.createRange();
         range.selectNode(parentElement);

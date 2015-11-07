@@ -63,6 +63,8 @@
       'clearFormatting': function() { _clearFormat(); }
     };
 
+    _attachChangeListeners();
+
     /**
      * Public methods
      */
@@ -192,6 +194,30 @@
     /**
      * Private methods
      */
+
+    function _attachChangeListeners() {
+      storyteller.linkStore.addChangeListener(function() {
+        var editorId = storyteller.linkStore.getEditorId();
+        var inputs = storyteller.linkStore.getInputs();
+        var accepted = storyteller.linkStore.getAccepted();
+
+        if (editorId === _editor.id && accepted) {
+          var selection = _squire.getSelection();
+          var text = selection.toString();
+          var target = inputs.openInNewWindow ? '_blank' : '_self';
+
+          if (text === inputs.text || inputs.text.length === 0) {
+            _squire.makeLink(inputs.link, {
+              target: target,
+              rel: 'nofollow'
+            });
+          } else {
+            var anchor = '<a href="{0}" target="{1}" rel="nofollow">{2}</a>'.format(inputs.link, target, inputs.text);
+            _squire.insertHTML(anchor);
+          }
+        }
+      });
+    }
 
     /**
      * This is a utility method that changes every block-level container
@@ -379,6 +405,7 @@
       var link;
       var text;
       var parentElement;
+      var openInNewWindow;
 
       var selection = _squire.getSelection();
 
@@ -391,43 +418,25 @@
 
         text = range.toString();
         link = parentElement.href;
+        openInNewWindow = parentElement.getAttribute('target') === '_blank' ? true : false;
       } else {
         text = selection.toString();
         link = '';
+        openInNewWindow = false;
       }
 
       storyteller.dispatcher.dispatch({
-        action: Actions.LINK_MODAL_SET_EDITOR,
+        action: Actions.LINK_MODAL_OPEN,
         editorId: editor.id
       });
 
       storyteller.dispatcher.dispatch({
-        action: Actions.LINK_MODAL_OPEN
-      });
-
-      storyteller.dispatcher.dispatch({
-        action: Actions.LINK_MODAL_FORMAT,
+        action: Actions.LINK_MODAL_UPDATE,
         text: text,
-        link: link
+        link: link,
+        openInNewWindow: openInNewWindow
       });
     }
-
-    storyteller.linkStore.addChangeListener(function() {
-      var editorId = storyteller.linkStore.getEditorId();
-      var inputs = storyteller.linkStore.getInputs();
-
-      if (editorId === _editor.id && inputs && inputs.link.length > 0) {
-        var selection = _squire.getSelection();
-        var text = selection.toString();
-
-        if (text === inputs.text || inputs.text.length === 0) {
-          _squire.makeLink(inputs.link)
-        } else {
-          var anchor = '<a href="{0}">{1}</a>'.format(inputs.link, inputs.text);
-          _squire.insertHTML(anchor);
-        }
-      }
-    });
   }
 
   storyteller.RichTextEditorFormatController = RichTextEditorFormatController;

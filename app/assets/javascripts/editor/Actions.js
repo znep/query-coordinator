@@ -195,9 +195,6 @@
      * Link Modal
      */
 
-    // {string} editorId
-    LINK_MODAL_SET_EDITOR: 'LINK_MODAL_SET_EDITOR',
-
     // No Payload
     LINK_MODAL_CLOSE: 'LINK_MODAL_CLOSE',
 
@@ -206,7 +203,11 @@
 
     // {string} text
     // {string} url
-    LINK_MODAL_FORMAT: 'LINK_MODAL_FORMAT'
+    // {boolean} openInNewWindow
+    LINK_MODAL_UPDATE: 'LINK_MODAL_UPDATE',
+
+    // No Payload
+    LINK_MODAL_ACCEPT: 'LINK_MODAL_ACCEPT'
   };
 
   root.Actions = Actions;

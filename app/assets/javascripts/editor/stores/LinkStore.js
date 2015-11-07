@@ -13,20 +13,22 @@
     var _inputs = null;
     var _visible = false;
     var _editorId = null;
+    var _valid = false;
+    var _accepted = false;
 
     this.register(function(payload) {
       switch(payload.action) {
-        case Actions.LINK_MODAL_SET_EDITOR:
-          _setEditor(payload);
+        case Actions.LINK_MODAL_OPEN:
+          _openModal(payload);
           break;
         case Actions.LINK_MODAL_CLOSE:
           _closeModal();
           break;
-        case Actions.LINK_MODAL_OPEN:
-          _openModal();
-          break;
-        case Actions.LINK_MODAL_FORMAT:
+        case Actions.LINK_MODAL_UPDATE:
           _setInputs(payload);
+          break;
+        case Actions.LINK_MODAL_ACCEPT:
+          _setAccepted();
           break;
       }
     });
@@ -39,35 +41,50 @@
       return _visible;
     };
 
+    this.getAccepted = function() {
+      return _accepted;
+    };
+
     this.getInputs = function() {
       return _inputs;
     }
 
-    function _openModal() {
+    this.getValidity = function() {
+      return _valid;
+    };
+
+    function _openModal(payload) {
+      utils.assert(payload, 'editorId');
+
       _visible = true;
+      _editorId = payload.editorId;
+
       _self._emitChange();
     }
 
     function _closeModal() {
-      _visible = false;
-      _inputs = null;
+      _visible = _valid = _accepted = false;
+      _inputs = _editorId = null;
+
       _self._emitChange();
     }
 
-    function _setEditor(payload) {
-      utils.assert(payload, 'editorId');
-
-      _editorId = payload.editorId;
+    function _setAccepted() {
+      _accepted = true;
       _self._emitChange();
     }
 
     function _setInputs(payload) {
-      utils.assertHasProperties(payload, 'text', 'link');
+      utils.assertHasProperties(payload, 'text', 'link', 'openInNewWindow');
 
       _inputs = {
         text: payload.text,
-        link: payload.link
+        link: payload.link,
+        openInNewWindow: payload.openInNewWindow
       };
+
+      _valid = typeof _inputs.text === 'string' &&
+        (typeof _inputs.link === 'string' && _inputs.link.length > 0);
 
       _self._emitChange();
     }

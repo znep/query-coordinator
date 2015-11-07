@@ -6,7 +6,7 @@
   var storyteller = socrata.storyteller;
 
   var _ATTRIBUTE_WHITELIST = {
-    'a': ['href']
+    'a': ['href', 'target', 'rel']
   };
 
   var Sanitizer = {};

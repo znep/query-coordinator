@@ -40,63 +40,56 @@ class StoriesController < ApplicationController
   def create
     view = CoreServer::get_view(params[:uid], core_request_headers)
 
-    if view.present?
-      dirty_title = params[:title] ||= ''
-      updated_metadata = nil
+    return redirect_to '/', :flash => {
+      :error => I18n.t('stories_controller.not_found_error_flash')
+    } unless view.present?
 
-      if should_create_draft_story?(view)
-        clean_uid = params[:uid]
-        clean_title = sanitize_story_title(dirty_title)
+    dirty_title = params[:title] ||= ''
+    updated_metadata = nil
 
-        @story = DraftStory.create(
-          :uid => clean_uid,
-          :block_ids => [generate_example_block.id],
-          :created_by => current_user['id'],
-          :theme => 'classic' #TODO: make this default configurable by domain
-        )
+    return redirect_to '/', :flash => {
+      :error => I18n.t('stories_controller.permissions_error_flash')
+    } unless should_create_draft_story?(view)
 
-        if @story.persisted?
+    clean_uid = params[:uid]
+    clean_title = sanitize_story_title(dirty_title)
 
-          # `sanitize_story_title` will return nil if it is passed an empty
-          # string (attempting to update a view with an empty name is a
-          # validation error). In this case, we fall back to whatever name
-          # the view previously had.
-          if clean_title.present?
-            view['name'] = clean_title
-          end
+    @story = DraftStory.create(
+      :uid => clean_uid,
+      :block_ids => [generate_example_block.id],
+      :created_by => current_user['id'],
+      :theme => 'classic' #TODO: make this default configurable by domain
+    )
 
-          view['metadata']['accessPoints'] ||= {}
-          view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_uid}"
-          view['metadata']['initialized'] = true
+    return redirect_to "/stories/s/#{clean_uid}/create", :flash => {
+      :error => I18n.t('stories_controller.story_creation_error_flash')
+    } unless @story.persisted?
 
-          updated_view = CoreServer::update_view(clean_uid, core_request_headers, view)
-
-          if updated_view.nil?
-            error_message = "Successfully bootstrapped story with uid '#{clean_uid}' " \
-              "but failed to update the title or 'initialized' flag in the view metadata."
-
-            AirbrakeNotifier.report_error(
-              StandardError.new(error_message),
-              "stories_controller#create"
-            )
-          end
-
-          redirect_to "/stories/s/#{clean_uid}/edit"
-        else
-          redirect_to "/stories/s/#{clean_uid}/create", :flash => {
-            :error => I18n.t('stories_controller.story_creation_error_flash')
-          }
-        end
-      else
-        redirect_to '/', :flash => {
-          :error => I18n.t('stories_controller.permissions_error_flash')
-        }
-      end
-    else
-      redirect_to '/', :flash => {
-        :error => I18n.t('stories_controller.not_found_error_flash')
-      }
+    # `sanitize_story_title` will return nil if it is passed an empty
+    # string (attempting to update a view with an empty name is a
+    # validation error). In this case, we fall back to whatever name
+    # the view previously had.
+    if clean_title.present?
+      view['name'] = clean_title
     end
+
+    view['metadata']['accessPoints'] ||= {}
+    view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_uid}"
+    view['metadata']['initialized'] = true
+
+    updated_view = CoreServer::update_view(clean_uid, core_request_headers, view)
+
+    if updated_view.nil?
+      error_message = "Successfully bootstrapped story with uid '#{clean_uid}' " \
+        "but failed to update the title or 'initialized' flag in the view metadata."
+
+      AirbrakeNotifier.report_error(
+        StandardError.new(error_message),
+        "stories_controller#create"
+      )
+    end
+
+    redirect_to "/stories/s/#{clean_uid}/edit"
   end
 
   def edit

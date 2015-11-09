@@ -1,5 +1,5 @@
 <div class="browse2-result-count">
-  <%- if using_cetera -%>
+  <%- if using_cetera? -%>
     <%-
       total = opts[:view_count]
       startIndex = opts[:limit] * (opts[:page] - 1) + 1

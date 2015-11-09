@@ -761,4 +761,12 @@ module ApplicationHelper
     # the share by email dialog box that hits the unauthenticated endpoint.
     FeatureFlags.derive(view, request).show_share_dataset_by_email_button_for_general_users && view.is_public?
   end
+
+  def cetera_search_enabled?
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search]
+  end
+
+  def using_cetera?
+    cetera_search_enabled? && APP_CONFIG.cetera_host.present?
+  end
 end

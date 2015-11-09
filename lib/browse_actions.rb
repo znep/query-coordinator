@@ -8,16 +8,6 @@ module BrowseActions
 
   attr_reader :request_params
 
-  def cetera_search_enabled?
-    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search]
-  end
-
-  def using_cetera?
-    cetera_search_enabled? &&
-      APP_CONFIG.cetera_host.present? &&
-      User.current_user.nil?
-  end
-
   def standard_view_types
     [
       { text: t('controls.browse.facets.view_types.datasets'), value: 'datasets', class: 'typeBlist' },

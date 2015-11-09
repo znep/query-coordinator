@@ -629,8 +629,7 @@
               );
             } else if (!_.has(response, 'data.geometryLabel')) {
               $log.warn(
-                'Could not determine geometry label: dataset metadata does not include geometryLabel ({0}).'.
-                  format(JSON.stringify(response))
+                'Could not determine geometry label: dataset metadata does not include geometryLabel.'
               );
             } else {
               regionMetadata = {

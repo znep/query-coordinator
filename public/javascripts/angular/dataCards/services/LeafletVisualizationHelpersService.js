@@ -5,7 +5,7 @@
   var EXTENT_EVENT_ID = 'set-extent';
   var EXTENT_MODEL_PROPERTY_NAME = 'mapExtent';
 
-  function leafletEventToObservable(map, eventName) {
+  function leafletEventToObservable(map, eventName, Rx) {
     return Rx.Observable.
       fromEventPattern(function addHandler(handler) {
         map.on(eventName, handler);
@@ -50,10 +50,10 @@
 
       var mapResize$ = expandedCard$.
         flatMapLatest(function() {
-          return leafletEventToObservable(map, 'resize').take(1);
+          return leafletEventToObservable(map, 'resize', Rx).take(1);
         });
 
-      var mapZoomDrag$ = leafletEventToObservable(map, 'zoomend dragend');
+      var mapZoomDrag$ = leafletEventToObservable(map, 'zoomend dragend', Rx);
 
       var mapExtents$ = mapZoomDrag$.merge(mapResize$).map(function() {
         return LeafletHelpersService.buildExtents(map.getBounds());

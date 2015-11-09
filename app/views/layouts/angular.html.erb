@@ -30,11 +30,6 @@
   </head>
 
   <body ng-app="<%= angular_app %>">
-    <%- angular_templates.each do |obj| -%>
-      <script type="text/ng-template" id="<%= obj[:id] %>">
-<%== obj[:template] %>
-      </script>
-    <%- end %>
 
     <% if @migration_info %>
       <div id="skip-links">
@@ -45,10 +40,10 @@
 
     <%= include_javascripts 'bower-all' %>
     <%= include_javascripts 'angular-jquery-extensions' %>
-    <%= include_javascripts_unminified 'angular-socrata-common' %>
     <%= render_airbrake_shim %>
     <%= render_airbrake_notifier %>
     <%= angular_javascript_tag %>
+    <%= include_webpack_bundle "angular/data-lens.js" %>
 
     <%= yield %>
   </body>

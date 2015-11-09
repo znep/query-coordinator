@@ -34,7 +34,9 @@
   /**
    * Configure app analytics tracking
    */
-  angular.module('dataCards').run(function($window, $rootScope, Analytics) {
+  angular.module('dataCards').run(function($window, $rootScope, Analytics, rx) {
+    var Rx = rx;
+
     Analytics.measureDomReady();
 
     // The analytics controller can use knowledge of when user interactions happen

@@ -1,3 +1,5 @@
+const Rx = require('rx');
+
 (function() {
   'use strict';
 

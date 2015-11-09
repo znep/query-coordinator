@@ -5,5 +5,9 @@
     "angular/controller-as-vm": 0,
     "angular/angularelement": 0,
     "angular/json-functions": 0
+    "strict": 0
+  },
+  "globals": {
+    "require": true
   }
 }

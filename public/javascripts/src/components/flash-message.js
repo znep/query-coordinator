@@ -1,36 +1,32 @@
-(() => {
+import { classNames } from './utils';
+import React, { PropTypes } from 'react';
 
-  const PropTypes = React.PropTypes;
-  let componentsNS = blist.namespace.fetch('blist.components');
-  const { classNames } = blist.namespace.fetch('blist.components.utils');
+const FlashMessagePropType = PropTypes.shape({
+  message: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['notice', 'error', 'warning']).isRequired
+});
 
-  const FlashMessagePropType = PropTypes.shape({
-    message: PropTypes.string.isRequired,
-    type: PropTypes.oneOf(['notice', 'error', 'warning']).isRequired
-  });
-
-  componentsNS.FlashMessage = React.createClass({
-    displayName: 'FlashMessage',
-    propTypes: {
-      messages: PropTypes.arrayOf(FlashMessagePropType)
-    },
-    getDefaultProps: function() {
-      return {
-        messages: []
-      };
-    },
-    render: function() {
-      const messages = _.map(this.props.messages, ({ message, type }, index) => {
-        const className = classNames('flash', type);
-        const htmlMessage = {__html: message};
-        return (
-          <div key={index} className={className} dangerouslySetInnerHTML={htmlMessage}></div>
-        );
-      });
+const FlashMessage = React.createClass({
+  propTypes: {
+    messages: PropTypes.arrayOf(FlashMessagePropType)
+  },
+  getDefaultProps() {
+    return {
+      messages: []
+    };
+  },
+  render() {
+    const messages = _.map(this.props.messages, ({ message, type }, index) => {
+      const className = classNames('flash', type);
+      const htmlMessage = { __html: message };
       return (
-        <div>{messages}</div>
+        <div key={index} className={className} dangerouslySetInnerHTML={htmlMessage}></div>
       );
-    }
-  });
+    });
+    return (
+      <div>{messages}</div>
+    );
+  }
+});
 
-})();
+export default FlashMessage;

@@ -42,7 +42,7 @@
             value: function $observe(expression) {
               var scope = this;
               var evaluatedExpression = scope.$eval(expression);
-              var observable = new Rx.BehaviorSubject(evaluatedExpression);
+              var observable = new rx.BehaviorSubject(evaluatedExpression);
               scope.$watch(expression, function(value) {
                 if (value !== evaluatedExpression) {
                   evaluatedExpression = value;
@@ -108,7 +108,7 @@
               if (_.isEmpty(propName) || !_.isString(propName)) {
                 throw new Error('Expected non-empty string property name');
               }
-              if (!(observable instanceof Rx.Observable)) {
+              if (!(observable instanceof rx.Observable)) {
                 throw new Error('Expected Rx.Observable instance');
               }
               if (onError && !_.isFunction(onError)) {

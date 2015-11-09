@@ -105,8 +105,6 @@ describe('card directive', function() {
     };
   }
 
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('dataCards/cards.scss'));
   beforeEach(module('dataCards/card.scss'));
   beforeEach(module('test'));
@@ -133,17 +131,17 @@ describe('card directive', function() {
         Mockumentary = _Mockumentary;
         ServerConfig = _ServerConfig;
 
-        // Override the templates of the other directives. We don't need to test them.
-        _$templateCache.put('/angular_templates/dataCards/choropleth.html', '');
-        _$templateCache.put('/angular_templates/dataCards/columnChart.html', '');
-        _$templateCache.put('/angular_templates/dataCards/distributionChart.html', '');
-        _$templateCache.put('/angular_templates/dataCards/featureMap.html', '');
-        _$templateCache.put('/angular_templates/dataCards/histogram.html', '');
-        _$templateCache.put('/angular_templates/dataCards/invalidCard.html', '');
-        _$templateCache.put('/angular_templates/dataCards/searchCard.html', '');
-        _$templateCache.put('/angular_templates/dataCards/tableCard.html', '');
-        _$templateCache.put('/angular_templates/dataCards/timelineChart.html', '');
-        _$templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
+        // Mock other directives. We don't need to test them.
+        testHelpers.mockDirective($provide, 'choropleth');
+        testHelpers.mockDirective($provide, 'columnChart');
+        testHelpers.mockDirective($provide, 'distributionChart');
+        testHelpers.mockDirective($provide, 'featureMap');
+        testHelpers.mockDirective($provide, 'histogram');
+        testHelpers.mockDirective($provide, 'invalidCard');
+        testHelpers.mockDirective($provide, 'searchCard');
+        testHelpers.mockDirective($provide, 'timelineChart');
+
+        testHelpers.mockDirective($provide, 'clearableInput');
         testHelpers.mockDirective($provide, 'cardTitle');
         testHelpers.mockDirective($provide, 'tableCard');
         // The css styles are scoped to the body class

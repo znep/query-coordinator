@@ -19,7 +19,7 @@
     });
   }
 
-  function initDownload($scope, page, obeId$, WindowState, ServerConfig) {
+  function initDownload($scope, page, obeId$, WindowState, ServerConfig, Rx) {
     // The CSV download url
     $scope.$bindObservable(
       'datasetCSVDownloadURL',
@@ -341,7 +341,7 @@
       })
     );
 
-    initDownload($scope, page, obeId$, WindowState, ServerConfig);
+    initDownload($scope, page, obeId$, WindowState, ServerConfig, Rx);
 
     $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
     initManageLens($scope, page);

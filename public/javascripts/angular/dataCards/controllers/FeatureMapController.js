@@ -378,7 +378,7 @@
             defaultBounds = LeafletHelpersService.buildBounds(defaultExtent);
           } catch (error) {
             $log.warn(
-              'Unable to build bounds from defaultExtent: \n{0}'.
+              'Unable to build bounds from defaultExtent:\n{0}'.
                 format(defaultExtent)
             );
             return serverExtent;
@@ -387,7 +387,7 @@
             featureBounds = LeafletHelpersService.buildBounds(serverExtent);
           } catch (error) {
             $log.warn(
-              'Unable to build bounds from serverExtent: \n{0}'.
+              'Unable to build bounds from serverExtent:\n{0}'.
                 format(serverExtent)
             );
             return serverExtent;

@@ -64,10 +64,25 @@ describe AdministrationController do
 
         it 'loads template data into @georegions' do
           allow(CuratedRegion).to receive(:find).and_return([
-                build(:curated_region),
-                build(:curated_region, :enabled),
-                build(:curated_region, :default)
-              ])
+            CuratedRegion.new(
+              'id' => 1,
+              'name' => 'My Curated Region',
+              'enabledFlag' => false,
+              'defaultFlag' => false
+            ),
+            CuratedRegion.new(
+              'id' => 2,
+              'name' => 'My Curated Region',
+              'enabledFlag' => true,
+              'defaultFlag' => false
+            ),
+            CuratedRegion.new(
+              'id' => 3,
+              'name' => 'My Curated Region',
+              'enabledFlag' => false,
+              'defaultFlag' => true
+            )
+          ])
 
           get :georegions
           view_model = assigns(:view_model)

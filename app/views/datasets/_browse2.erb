@@ -149,6 +149,9 @@
               :locals => {
                 :opts => opts,
                 :title_full_width => !opts[:show_catalog_sort_dropdown] || using_cetera?,
+                :results_title =>  opts[:user_params][:q].present? ?
+                  t('controls.browse.browse2.results.summary', :query => opts[:user_params][:q]) :
+                  '',
                 :clear_facet_options => clear_facet_options
               }
             )

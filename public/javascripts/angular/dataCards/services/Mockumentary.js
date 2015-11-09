@@ -41,7 +41,7 @@
         version: 3
       };
 
-      return $.extend(true, minimalPageMetadata, pageOptions);
+      return _.merge(minimalPageMetadata, pageOptions);
     }
 
     function createPage(pageOptions, datasetOptions) {

@@ -725,6 +725,15 @@ describe('CardsViewController', function() {
       expect(harness.$scope.shouldShowManageLens).to.be.false;
     });
 
+    it('should hide the manage lens button when on an ephemeral view', function() {
+      var harness = makeController({}, {
+        rights: ['add', 'write', 'grant'],
+        pageId: null
+      });
+
+      expect(harness.$scope.shouldShowManageLens).to.be.false;
+    });
+
     it('should show the manage lens button when the user has the grant permission', function() {
       var harness = makeController({}, {
         rights: ['add', 'write', 'grant']

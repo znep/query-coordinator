@@ -178,11 +178,16 @@ def mock_valid_lenses_view_title
   'Test Story'
 end
 
+def mock_valid_lenses_view_uid
+  'anew-view'
+end
+
 def mock_valid_uninitialized_lenses_view
   {
     'name' => mock_valid_lenses_view_title,
     'metadata' => mock_valid_lenses_view_metadata(false),
-    'owner' => mock_valid_user
+    'owner' => mock_valid_user,
+    'id' => 'anew-view'
   }
 end
 
@@ -208,6 +213,14 @@ end
 
 def stub_valid_initialized_lenses_view
   allow(CoreServer).to receive(:get_view).and_return(mock_valid_initialized_lenses_view)
+end
+
+def stub_successful_view_creation
+  allow(CoreServer).to receive(:create_view).and_return(mock_valid_uninitialized_lenses_view)
+end
+
+def stub_unsuccessful_view_creation
+  allow(CoreServer).to receive(:create_view).and_return({})
 end
 
 def stub_invalid_lenses_view

@@ -1,0 +1,29 @@
+@import 'lib/variables';
+@import 'bourbon';
+
+.make-a-copy-button-group {
+
+  margin-top: 2rem;
+
+  &.r-to-l {
+    text-align: right;
+
+    [class^="btn-"], [class*=" btn-"] {
+      margin-left: 1rem;
+    }
+  }
+}
+
+.make-a-copy-copy-warning {
+  text-align: center;
+  font-size: 1.2rem;
+  color: $modal-button-list-description-color;
+  width: 80%;
+  margin: 0 auto;
+  line-height: $modal-title-line-height;
+}
+
+.make-a-copy-title-input {
+  width: 100%;
+  background-color: #eeeeee;
+}

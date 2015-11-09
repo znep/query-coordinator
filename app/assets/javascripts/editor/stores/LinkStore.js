@@ -91,7 +91,7 @@
       _valid = typeof _inputs.text === 'string' &&
         (typeof _inputs.link === 'string' && _inputs.link.length > 0);
 
-      _urlValidity = (typeof _inputs.link === 'string' && _inputs.link.length === 0) ||  /https?:\/\/.+/.test(_inputs.link);
+      _urlValidity = (typeof _inputs.link === 'string' && _inputs.link.length === 0) || /https?:\/\/.+/.test(_inputs.link);
 
       _self._emitChange();
     }

@@ -4,6 +4,8 @@ require 'json'
 
 class StoriesController < ApplicationController
 
+  FAKE_DIGEST = 'the contents of the digest do not matter'
+
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
   skip_before_filter :require_logged_in_user, only: [:show]
 
@@ -16,7 +18,7 @@ class StoriesController < ApplicationController
   end
 
   def new
-    view = CoreServer::get_view(params[:uid], core_request_headers)
+    view = CoreServer.get_view(params[:uid], core_request_headers)
 
     if view.present?
       @story_title = view['name']
@@ -38,7 +40,7 @@ class StoriesController < ApplicationController
   end
 
   def create
-    view = CoreServer::get_view(params[:uid], core_request_headers)
+    view = CoreServer.get_view(params[:uid], core_request_headers)
 
     return redirect_to '/', :flash => {
       :error => I18n.t('stories_controller.not_found_error_flash')
@@ -54,42 +56,52 @@ class StoriesController < ApplicationController
     clean_uid = params[:uid]
     clean_title = sanitize_story_title(dirty_title)
 
-    @story = DraftStory.create(
-      :uid => clean_uid,
-      :block_ids => [generate_example_block.id],
-      :created_by => current_user['id'],
-      :theme => 'classic' #TODO: make this default configurable by domain
+    story_draft_creator = StoryDraftCreator.new(
+      user: current_user,
+      uid: clean_uid,
+      digest: FAKE_DIGEST,
+      blocks: [generate_example_block.as_json.symbolize_keys],
+      theme: 'classic' #TODO: make this default configurable by domain
     )
 
-    return redirect_to "/stories/s/#{clean_uid}/create", :flash => {
-      :error => I18n.t('stories_controller.story_creation_error_flash')
-    } unless @story.persisted?
+    @story = story_draft_creator.create
 
-    # `sanitize_story_title` will return nil if it is passed an empty
-    # string (attempting to update a view with an empty name is a
-    # validation error). In this case, we fall back to whatever name
-    # the view previously had.
-    if clean_title.present?
-      view['name'] = clean_title
+    finish_story_creation('create', view, clean_uid, clean_title)
+  end
+
+  def copy
+    view = CoreServer.get_view(params[:uid], core_request_headers)
+    story = DraftStory.find_by_uid(params[:uid])
+
+    return redirect_to '/', :flash => {
+      :error => I18n.t('stories_controller.not_found_error_flash')
+    } unless view.present? && story.present?
+
+    copy_title = params[:title] || "Copy of #{view['name']}"
+    copy_title = sanitize_story_title(copy_title)
+
+    view_copy = CoreServer.create_view(core_request_headers, copy_title)
+
+    return redirect_to '/', :flash => {
+      :error => I18n.t('stories_controller.permissions_error_flash')
+    } unless should_create_draft_story?(view_copy)
+
+    copy_uid = view_copy['id']
+    blocks = story.blocks.map do |block|
+      block.as_json.symbolize_keys
     end
 
-    view['metadata']['accessPoints'] ||= {}
-    view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_uid}"
-    view['metadata']['initialized'] = true
+    story_draft_creator = StoryDraftCreator.new(
+      user: current_user,
+      uid: copy_uid,
+      digest: FAKE_DIGEST,
+      blocks: blocks,
+      theme: story.theme
+    )
 
-    updated_view = CoreServer::update_view(clean_uid, core_request_headers, view)
+    @story = story_draft_creator.create
 
-    if updated_view.nil?
-      error_message = "Successfully bootstrapped story with uid '#{clean_uid}' " \
-        "but failed to update the title or 'initialized' flag in the view metadata."
-
-      AirbrakeNotifier.report_error(
-        StandardError.new(error_message),
-        "stories_controller#create"
-      )
-    end
-
-    redirect_to "/stories/s/#{clean_uid}/edit"
+    finish_story_creation('copy', view_copy, copy_uid, copy_title)
   end
 
   def edit
@@ -177,11 +189,43 @@ class StoriesController < ApplicationController
   end
 
   def core_request_headers
-    CoreServer::headers_from_request(request)
+    CoreServer.headers_from_request(request)
   end
 
   # TODO replace this with the real solution
   def tmp_render_404
     render text: 'Whoops! 404. Probably an invalid 4x4', status: 404
+  end
+
+  def finish_story_creation(original_action, view, uid, title)
+    return redirect_to "/stories/s/#{uid}/create", :flash => {
+      :error => I18n.t('stories_controller.error_creating_story_flash')
+    } unless @story.persisted?
+
+    # `sanitize_story_title` will return nil if it is passed an empty
+    # string (attempting to update a view with an empty name is a
+    # validation error). In this case, we fall back to whatever name
+    # the view previously had.
+    if title.present?
+      view['name'] = title
+    end
+
+    view['metadata']['accessPoints'] ||= {}
+    view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{uid}"
+    view['metadata']['initialized'] = true
+
+    updated_view = CoreServer.update_view(uid, core_request_headers, view)
+
+    if updated_view.nil?
+      error_message = "Successfully bootstrapped story with uid '#{uid}' " \
+        "but failed to update the title or 'initialized' flag in the view metadata."
+
+      AirbrakeNotifier.report_error(
+        StandardError.new(error_message),
+        "stories_controller##{original_action}"
+      )
+    end
+
+    redirect_to "/stories/s/#{uid}/edit"
   end
 end

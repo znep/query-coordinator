@@ -53,6 +53,125 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
+  describe '#copy' do
+    let!(:story_revision) { FactoryGirl.create(:draft_story_with_blocks) }
+    let(:story_copy_title) { "Copy of #{mock_valid_lenses_view_title}" }
+
+    context 'when authenticated' do
+      before do
+        stub_valid_session
+      end
+
+      context 'when there is no story with the given four by four' do
+        before do
+          stub_core_view('notf-ound')
+        end
+
+        # not sure this is what we want. maybe should 404?
+        it 'redirects to root' do
+          get :copy, uid: 'notf-ound'
+          expect(response).to redirect_to '/'
+        end
+      end
+
+      context 'when there is no view with the given four by four' do
+        let!(:story_revision) { FactoryGirl.create(:draft_story) }
+
+        before do
+          stub_invalid_lenses_view
+        end
+
+        # not sure this is what we want. maybe should 404?
+        it 'redirects to root' do
+          get :copy, uid: story_revision.uid
+          expect(response).to redirect_to '/'
+        end
+      end
+
+      context 'when view creation fails' do
+        let!(:story_revision) { FactoryGirl.create(:draft_story) }
+
+        before do
+          stub_core_view(story_revision.uid)
+          stub_unsuccessful_view_creation
+        end
+
+        # not sure this is what we want. maybe should 403?
+        it 'redirects to root' do
+          get :copy, uid: story_revision.uid
+          expect(response).to redirect_to '/'
+        end
+      end
+
+      context 'when copy creation succeeds' do
+        before do
+          stub_core_view(story_revision.uid)
+          stub_successful_view_creation
+
+          allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+            expect(updated_view['name']).to eq(story_copy_title)
+            expect(updated_view['metadata']['initialized']).to eq(true)
+          end
+        end
+
+        it 'creates a new draft story with two blocks' do
+          get :copy, uid: story_revision.uid, title: story_copy_title
+
+          story = assigns(:story)
+
+          expect(story).to be_a(DraftStory)
+          expect(story.block_ids.length).to be(2)
+          expect(story.uid).to eq(mock_valid_lenses_view_uid)
+        end
+
+        it 'redirects to edit experience of the new story' do
+          get :copy, uid: story_revision.uid, title: story_copy_title
+
+          expect(response).to redirect_to "/stories/s/#{mock_valid_lenses_view_uid}/edit"
+        end
+
+        it 'uses the same theme as original' do
+          get :copy, uid: story_revision.uid, title: story_copy_title
+
+          expect(assigns(:story).theme).to eq(story_revision.theme)
+        end
+      end
+    end
+
+    context 'when unauthenticated' do
+      before do
+        stub_invalid_session
+      end
+
+      context 'when there is an uninitialized lenses view with the given four by four' do
+        before do
+          stub_valid_uninitialized_lenses_view
+
+          allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+            expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
+            expect(updated_view['metadata']['initialized']).to eq(true)
+          end
+        end
+
+        it 'redirects' do
+          get :copy, uid: story_revision.uid, title: story_copy_title
+          expect(response).to have_http_status(302)
+        end
+      end
+
+      context 'when there is no lenses view with the given four by four' do
+        before do
+          stub_invalid_lenses_view
+        end
+
+        it 'redirects' do
+          get :copy, uid: 'notf-ound'
+          expect(response).to have_http_status(302)
+        end
+      end
+    end
+  end
+
   describe '#preview' do
 
     context 'when authenticated' do
@@ -235,7 +354,7 @@ RSpec.describe StoriesController, type: :controller do
           end
         end
 
-        let!(:story_uid) { 'test-test' }
+        let!(:story_uid) { 'news-tory' }
 
         it 'creates a new draft story with a single block' do
           post :create, uid: story_uid, title: mock_valid_lenses_view_title

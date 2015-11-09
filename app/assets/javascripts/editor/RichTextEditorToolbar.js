@@ -221,8 +221,6 @@
       );
 
       _element.addClass('dim');
-
-      _toolbarLinkButton = _element.find('.rich-text-editor-toolbar-btn-link');
     }
 
     function _showToolbar() {

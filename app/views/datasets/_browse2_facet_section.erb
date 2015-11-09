@@ -1,9 +1,9 @@
 <%-
+facet_param = facet[:param]
 facet_options = facet[:options]
 truncate_facet_section = false
 truncate_facet_section_at_index = Float::INFINITY
 facet_extra_options = nil
-
 
 if facet[:extra_options].present?
   truncate_facet_section = true
@@ -28,9 +28,8 @@ end
     <%- facet_options.each_with_index do |facet_option, index| -%>
       <li <%== 'class="truncated"' if index >= truncate_facet_section_at_index %>>
         <%-
-          facet_option_url = nil
 
-          facet_param = facet[:param]
+          facet_option_url = nil
           facet_option_is_active = opts[facet_param] == facet_option[:value]
 
           current_params_with_view_type = opts[:user_params].dup
@@ -66,6 +65,56 @@ end
             <span class="browse2-facet-section-option-clear-icon icon-close-2"></span>
           <%- end -%>
         </a>
+        <%-
+          if facet_option[:children].present? &&
+            facet_option[:children].respond_to?(:length) &&
+            facet_option[:children].length > 0
+        -%>
+          <ul class="browse2-facet-section-child-options">
+            <%-
+              facet_option[:children].each do |child_facet_option|
+
+                child_facet_option_url = nil
+                child_facet_option_is_active = opts[facet_param] == child_facet_option[:value]
+
+                child_current_params_with_view_type = opts[:user_params].dup
+
+                if params[:view_type] === 'browse2'
+                  child_current_params_with_view_type[:view_type] = 'browse2'
+                end
+
+                if opts[:strip_params] && opts[:strip_params][facet_param.to_sym]
+                  child_current_params_with_view_type.delete_if do |key, value|
+                    opts[:strip_params][facet_param.to_sym][key.to_sym]
+                  end
+                end
+
+                child_current_params_with_view_type[facet_param.to_sym] = child_facet_option[:value]
+
+                if child_facet_option_is_active
+                  child_current_params_with_view_type_without_facet = child_current_params_with_view_type.dup.reject do |param|
+                    param == facet[:param]
+                  end
+                  child_facet_option_url = "#{opts[:base_url]}?#{child_current_params_with_view_type_without_facet.to_param}"
+                else
+                  child_facet_option_url = "#{opts[:base_url]}?#{child_current_params_with_view_type.to_param}"
+                end
+
+                child_facet_option_class = 'browse2-facet-section-child-option'
+                child_facet_option_class << (" #{child_facet_option[:class]}" || '')
+                child_facet_option_class << (child_facet_option_is_active ? ' active' : '')
+            -%>
+              <li>
+                <a class="<%= child_facet_option_class %>" href="<%= child_facet_option_url %>">
+                  <%= child_facet_option[:text] %>
+                  <%- if child_facet_option_is_active -%>
+                    <span class="browse2-facet-section-option-clear-icon icon-close-2"></span>
+                  <%- end -%>
+                </a>
+              </li>
+            <%- end -%>
+          </ul>
+        <%- end -%>
       </li>
     <%- end -%>
   </ul>

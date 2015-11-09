@@ -416,7 +416,7 @@ module DatasetsHelper
     else
       # otherwise hide if current_user doesn't have any rights
       # (i.e. doesn't have a domain role)
-      current_user.rights.empty?
+      current_user.rights.blank?
     end
   end
 

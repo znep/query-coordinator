@@ -33,6 +33,13 @@
       "physicalDatatype": "number",
       "cardinality": 34
     },
+    "location": {
+      "name": "Point",
+      "description": "What's your point?",
+      "fred": "location",
+      "physicalDatatype": "point",
+      "cardinality": 100
+    },
     ":@computed": {
       "name": "computed column",
       "description": "adjust your lattitude",
@@ -43,7 +50,7 @@
           "region": "_c8h8-ygvf",
           "geometryLabel": "geoid10"
         },
-        "strategyType": "georegion_match_on_point"
+        "strategy_type": "georegion_match_on_point"
       }
     },
     ":@other_computed": {
@@ -57,7 +64,7 @@
           "region": "_c8h8-ygvf",
           "geometryLabel": "geoid11"
         },
-        "strategyType": "georegion_match_on_point"
+        "strategy_type": "georegion_match_on_point"
       }
     },
     "point_city": {

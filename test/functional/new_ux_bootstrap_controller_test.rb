@@ -720,20 +720,17 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             setup do
               @mock_cardinality_metadata = v1_mock_dataset_metadata.deep_dup
-              @mock_cardinality_metadata['columns'][':@computed']['cardinality'] = 1000
-              @mock_cardinality_metadata['columns'][':@computed']['physicalDatatype'] = 'point'
-              @mock_cardinality_metadata['columns'][':@other_computed']['cardinality'] = 1000
-              @mock_cardinality_metadata['columns'][':@other_computed']['physicalDatatype'] = 'point'
+              @mock_cardinality_metadata['columns']['location']['cardinality'] = 1000
+              @mock_cardinality_metadata['columns']['location']['physicalDatatype'] = 'point'
               @phidippides.stubs(
                   update_dataset_metadata: {
                   status: '200', body: v1_mock_dataset_metadata
                 }
               )
-              end
+            end
 
             should 'not create any cards for point columns with insufficient cardinality' do
-              @mock_cardinality_metadata['columns'][':@computed']['cardinality'] = 1
-              @mock_cardinality_metadata['columns'][':@other_computed']['cardinality'] = 1
+              @mock_cardinality_metadata['columns']['location']['cardinality'] = 1
 
               @phidippides.stubs(
                 fetch_dataset_metadata: { status: '200', body: @mock_cardinality_metadata }
@@ -741,10 +738,10 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
               @page_metadata_manager.expects(:create).with do |page, _|
                 assert_equal(10, page['cards'].length, 'Should create 10 cards')
-                point_columns = lambda { |fieldName| fieldName =~ /(other_)?computed/ }
+                is_point_column = lambda { |fieldName| fieldName == 'location' }
 
                 assert(
-                  page['cards'].pluck('fieldName').map(&:downcase).none?(&point_columns),
+                  page['cards'].pluck('fieldName').map(&:downcase).none?(&is_point_column),
                   'should omit point column cards when the location has insufficient cardinality'
                 )
               end.returns(status: '200', body: { pageId: 'neoo-page' })
@@ -759,10 +756,10 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
               @page_metadata_manager.expects(:create).with do |page, _|
                 assert_equal(10, page['cards'].length, 'Should create 10 cards')
-                point_columns = lambda { |fieldName| fieldName =~ /(other_)?computed/ }
+                is_point_column = lambda { |fieldName| fieldName == 'location' }
 
                 assert(
-                  page['cards'].pluck('fieldName').map(&:downcase).any?(&point_columns),
+                  page['cards'].pluck('fieldName').map(&:downcase).any?(&is_point_column),
                   'should include point column cards when the location has sufficient cardinality'
                 )
               end.returns(status: '200', body: { pageId: 'neoo-page' })
@@ -772,6 +769,60 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
           end
 
+          context 'choropleths' do
+            setup do
+              @phidippides.stubs(
+                update_dataset_metadata: {
+                  status: '200', body: v1_mock_dataset_metadata
+                },
+                fetch_dataset_metadata: { status: '200', body: v1_mock_dataset_metadata }
+              )
+            end
+
+            should 'not create cards for computed columns that reference disabled curated regions' do
+              class FakeCuratedRegion
+                def enabled?
+                  false
+                end
+              end
+
+              CuratedRegion.stubs(find_by_view_id: FakeCuratedRegion.new)
+
+              @page_metadata_manager.expects(:create).with do |page, _|
+                assert_equal(10, page['cards'].length, 'Should create 10 cards')
+                is_choropleth = lambda { |fieldName| fieldName =~ /(other_)?computed/ }
+
+                assert(
+                  page['cards'].pluck('fieldName').map(&:downcase).none?(&is_choropleth),
+                  'expected no choropleth cards to be bootstrapped due to curated regions being disabled'
+                )
+              end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+              get :bootstrap, id: 'four-four'
+            end
+
+            should 'create cards for computed columns that reference enabled curated regions' do
+              class FakeCuratedRegion
+                def enabled?
+                  true
+                end
+              end
+
+              CuratedRegion.stubs(find_by_view_id: FakeCuratedRegion.new)
+
+              @page_metadata_manager.expects(:create).with do |page, _|
+                assert_equal(10, page['cards'].length, 'Should create 10 cards')
+                is_choropleth = lambda { |fieldName| fieldName =~ /(other_)?computed/ }
+
+                assert(
+                  page['cards'].pluck('fieldName').map(&:downcase).any?(&is_choropleth),
+                  'expected no choropleth cards to be bootstrapped due to curated regions being disabled'
+                )
+              end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+              get :bootstrap, id: 'four-four'
+            end
+          end
         end
       end
     end

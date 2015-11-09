@@ -359,9 +359,10 @@ class NewUxBootstrapController < ActionController::Base
 
   def curated_region_is_disabled_for_column?(column)
     return false unless has_georegion_computation_strategy?(column)
-    shapefile_id = column['computationStrategy']['parameters']['region'].gsub(/^_/, '')
+
+    shapefile_id = column['computationStrategy']['parameters']['region'][1..-1] # slice off leading underscore
     curated_region = CuratedRegion.find_by_view_id(shapefile_id)
-    return !curated_region.enabled?
+    curated_region.nil? || curated_region.disabled?
   end
 
   # If a point column has no actual values in it, then the computed cardinality

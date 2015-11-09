@@ -29,6 +29,10 @@ class CuratedRegion < Model
     enabledFlag
   end
 
+  def disabled?
+    !enabledFlag
+  end
+
   def disable!
     update_attributes(:enabledFlag => false)
     save!

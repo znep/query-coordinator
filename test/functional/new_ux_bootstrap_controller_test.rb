@@ -718,6 +718,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
           context 'on point columns' do
 
+            is_point_column = lambda { |fieldName| fieldName == 'location' }
+
             setup do
               @mock_cardinality_metadata = v1_mock_dataset_metadata.deep_dup
               @mock_cardinality_metadata['columns']['location']['cardinality'] = 1000
@@ -738,7 +740,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
               @page_metadata_manager.expects(:create).with do |page, _|
                 assert_equal(10, page['cards'].length, 'Should create 10 cards')
-                is_point_column = lambda { |fieldName| fieldName == 'location' }
 
                 assert(
                   page['cards'].pluck('fieldName').map(&:downcase).none?(&is_point_column),
@@ -756,7 +757,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
               @page_metadata_manager.expects(:create).with do |page, _|
                 assert_equal(10, page['cards'].length, 'Should create 10 cards')
-                is_point_column = lambda { |fieldName| fieldName == 'location' }
 
                 assert(
                   page['cards'].pluck('fieldName').map(&:downcase).any?(&is_point_column),
@@ -780,13 +780,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             end
 
             should 'not create cards for computed columns that reference disabled curated regions' do
-              class FakeCuratedRegion
-                def enabled?
-                  false
-                end
-              end
-
-              CuratedRegion.stubs(find_by_view_id: FakeCuratedRegion.new)
+              CuratedRegion.stubs(find_by_view_id: CuratedRegion.new)
+              CuratedRegion.any_instance.stubs(disabled?: true)
 
               @page_metadata_manager.expects(:create).with do |page, _|
                 assert_equal(10, page['cards'].length, 'Should create 10 cards')
@@ -802,13 +797,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             end
 
             should 'create cards for computed columns that reference enabled curated regions' do
-              class FakeCuratedRegion
-                def enabled?
-                  true
-                end
-              end
-
-              CuratedRegion.stubs(find_by_view_id: FakeCuratedRegion.new)
+              CuratedRegion.stubs(find_by_view_id: CuratedRegion.new)
+              CuratedRegion.any_instance.stubs(disabled?: false)
 
               @page_metadata_manager.expects(:create).with do |page, _|
                 assert_equal(10, page['cards'].length, 'Should create 10 cards')

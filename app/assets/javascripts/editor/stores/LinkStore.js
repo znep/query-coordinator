@@ -54,7 +54,7 @@
     };
 
     function _openModal(payload) {
-      utils.assert(payload, 'editorId');
+      utils.assertHasProperty(payload, 'editorId');
 
       _visible = true;
       _editorId = payload.editorId;

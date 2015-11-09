@@ -19,9 +19,12 @@ describe('Sanitizer.sanitizeElement()', function() {
     });
 
     describe('with safe attrs', function() {
-      useHtml('<a href="good" style="color:green">');
+      useHtml('<a href="good" style="color:green" target="good" rel="good">');
+
       it('should preserve the safe attrs', function() {
         assert.equal(returned.getAttribute('href'), 'good');
+        assert.equal(returned.getAttribute('target'), 'good');
+        assert.equal(returned.getAttribute('rel'), 'good');
         assert.isNull(returned.getAttribute('style'));
       });
     });

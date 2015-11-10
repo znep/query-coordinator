@@ -518,6 +518,7 @@ en:
             label: on the Open Data Network
             title: Find more data like this on the Open Data Network
         results:
+          summary: '"%{query}"'
           count: Showing %{this} of %{total} results
           cetera_count: Showing %{start}-%{end} of %{total} results
         search:

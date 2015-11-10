@@ -75,16 +75,17 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
         @squire_frame.native.send_keys([true ? :command : :control, 'a'])
         link_toolbar_to_squire_instance(2)
         open_modal
+        sleep(1)
       end
 
       it 'displays the selected text in the text input' do
-        text_input = page.find('#display-text')
-        expect(text_input.value).to eq('Your Great Story Title')
+        display_text = page.find('#display-text')
+        expect(display_text.value).to eq('Your Great Story Title')
       end
 
       it 'displays an empty link input' do
-        link_input = page.find('#link-text')
-        expect(link_input.value).to eq('')
+        link_text = page.find('#link-text')
+        expect(link_text.value).to eq('')
       end
 
       it 'displays an unchecked "Open In New Window" checkbox' do

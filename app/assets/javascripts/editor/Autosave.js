@@ -16,8 +16,8 @@
     var _autosaveDisabled = false;
     var _debouncedSave;
 
-    var parameters = window.location.search.split('&')
-    var parameters = parameters.map(function(parameter) {
+    var parameters = window.location.search.split('&');
+    parameters = parameters.map(function(parameter) {
       return parameter.split('=');
     });
 

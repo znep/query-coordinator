@@ -1,5 +1,4 @@
 require 'rails_helper'
-# require 'os'
 
 RSpec.describe 'rich text editor link creation', type: :feature, js: true do
   let(:uid) { 'href-bloc' }
@@ -59,7 +58,7 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
     describe 'the text is not already a link' do
       before do
         @squire_frame = page.find('.block-edit:nth-child(2) .component-html iframe')
-        @squire_frame.native.send_keys([true ? :command : :control, 'a'])
+        @squire_frame.native.send_keys([os_control_key, 'a'])
         link_toolbar_to_squire_instance(2)
         open_modal
       end

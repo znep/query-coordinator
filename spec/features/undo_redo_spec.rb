@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'os'
 
 # This test verifies the integration of HistoryStore with the rest of the system.
 # This integration has proven problematic, because the system needs to understand
@@ -237,10 +236,6 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
   # as an argument).
   def copy_current_selection(source_element=page.find('body'))
     source_element.native.send_keys([os_control_key, 'c'])
-  end
-
-  def os_control_key
-    OS.mac? ? :command : :control
   end
 
   def with_squire_body_element(iframe)

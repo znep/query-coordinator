@@ -2,6 +2,7 @@ require 'simplecov'
 require 'simplecov-cobertura'
 require 'webmock/rspec'
 require 'database_cleaner'
+require 'os'
 
 SimpleCov.profiles.define 'filtered' do
   load_profile 'rails'
@@ -296,3 +297,7 @@ def select_text_in_element(selector)
   evaluate_script(select_arbitrary_text_inside_script);
 end
 
+# Selects the correct key modifier based on the current operating system.
+def os_control_key
+  OS.mac? ? :command : :control
+end

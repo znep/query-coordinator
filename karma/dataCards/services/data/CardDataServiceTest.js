@@ -1138,4 +1138,145 @@ describe('CardDataService', function() {
     });
   });
 
+  describe('getChoroplethRegionMetadata', function() {
+    var shapefileId = 'shap-file';
+    var defaultValue = {
+      geometryLabel: null,
+      featurePk: '_feature_id'
+    };
+
+    var curatedRegionMetadata = {
+      geometryLabel: 'newColumn',
+      featurePk: 'newId'
+    };
+
+    var shapefileDatasetMetadata = {
+      geometryLabel: 'legacyColumn',
+      featurePk: 'legacyId'
+    };
+
+    describe('CuratedRegionMetadata', function() {
+
+      it('should request data from the appropriate URL', function() {
+        $httpBackend.expectGET(/api\/curated_regions\?method=getByViewUid&viewUid=shap-file$/).respond(curatedRegionMetadata);
+        CardDataService.getCuratedRegionMetadata(shapefileId);
+        $httpBackend.flush();
+      });
+
+      it('should return a promise of the response data', function(done) {
+        $httpBackend.expectGET(/api\/curated_regions\?method=getByViewUid&viewUid=shap-file$/).respond(curatedRegionMetadata);
+        CardDataService.getCuratedRegionMetadata(shapefileId).then(function(response) {
+          expect(response).to.have.property('geometryLabel', curatedRegionMetadata.geometryLabel);
+          expect(response).to.have.property('featurePk', curatedRegionMetadata.featurePk);
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+      it('should handle failure by returning a successful promise of null', function(done) {
+        $httpBackend.whenGET(/api\/curated_regions\?method=getByViewUid&viewUid=shap-file$/).respond(500, '');
+        CardDataService.getCuratedRegionMetadata(shapefileId).then(function(response) {
+          expect(response).to.eq(null);
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+    });
+
+    describe('getShapefileDatasetMetadata', function() {
+
+      it('should request data from the appropriate URL', function() {
+        $httpBackend.expectGET(/metadata\/v1\/dataset\/shap-file\.json$/).respond(shapefileDatasetMetadata);
+        CardDataService.getShapefileDatasetMetadata(shapefileId);
+        $httpBackend.flush();
+      });
+
+      it('should return a promise of the response data', function(done) {
+        $httpBackend.expectGET(/metadata\/v1\/dataset\/shap-file\.json$/).respond(shapefileDatasetMetadata);
+        CardDataService.getShapefileDatasetMetadata(shapefileId).then(function(response) {
+          expect(response).to.have.property('geometryLabel', shapefileDatasetMetadata.geometryLabel);
+          expect(response).to.have.property('featurePk', shapefileDatasetMetadata.featurePk);
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+      it('should handle failure by returning a successful promise of null', function(done) {
+        $httpBackend.whenGET(/metadata\/v1\/dataset\/shap-file\.json$/).respond(500, '');
+        CardDataService.getShapefileDatasetMetadata(shapefileId).then(function(response) {
+          expect(response).to.eq(null);
+          done();
+        });
+        $httpBackend.flush();
+      });
+    });
+
+    describe('getCuratedRegionMetadata', function() {
+      it('should make requests for both new and legacy region metadata', function() {
+        $httpBackend.expectGET(/api\/curated_regions\?method=getByViewUid&viewUid=shap-file$/).respond(curatedRegionMetadata);
+        $httpBackend.expectGET(/metadata\/v1\/dataset\/shap-file\.json$/).respond(shapefileDatasetMetadata);
+        CardDataService.getChoroplethRegionMetadata(shapefileId);
+        $httpBackend.flush();
+      });
+
+      it('should return new curated region data if it exists', function(done) {
+        $httpBackend.expectGET(/api\/curated_regions\?method=getByViewUid&viewUid=shap-file$/).respond(curatedRegionMetadata);
+        $httpBackend.expectGET(/metadata\/v1\/dataset\/shap-file\.json$/).respond(shapefileDatasetMetadata);
+        CardDataService.getChoroplethRegionMetadata(shapefileId).then(function(response) {
+          expect(response).to.have.property('geometryLabel', curatedRegionMetadata.geometryLabel);
+          expect(response).to.have.property('featurePk', curatedRegionMetadata.featurePk);
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+      it('should return legacy data if it is present and no curated region data is present', function(done) {
+        $httpBackend.expectGET(/api\/curated_regions\?method=getByViewUid&viewUid=shap-file$/).respond(500, '');
+        $httpBackend.expectGET(/metadata\/v1\/dataset\/shap-file\.json$/).respond(shapefileDatasetMetadata);
+        CardDataService.getChoroplethRegionMetadata(shapefileId).then(function(response) {
+          expect(response).to.have.property('geometryLabel', shapefileDatasetMetadata.geometryLabel);
+          expect(response).to.have.property('featurePk', shapefileDatasetMetadata.featurePk);
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+      it('should return default data if neither curated region or legacy data is present', function(done) {
+        $httpBackend.expectGET(/api\/curated_regions\?method=getByViewUid&viewUid=shap-file$/).respond(500, '');
+        $httpBackend.expectGET(/metadata\/v1\/dataset\/shap-file\.json$/).respond(500, '');
+        CardDataService.getChoroplethRegionMetadata(shapefileId).then(function(response) {
+          expect(response).to.have.property('geometryLabel', defaultValue.geometryLabel);
+          expect(response).to.have.property('featurePk', defaultValue.featurePk);
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+      it('should return curated region primary key and legacy label if curated region has no label', function(done) {
+        $httpBackend.expectGET(/api\/curated_regions\?method=getByViewUid&viewUid=shap-file$/).respond({ featurePk: curatedRegionMetadata.featurePk });
+        $httpBackend.expectGET(/metadata\/v1\/dataset\/shap-file\.json$/).respond(shapefileDatasetMetadata);
+        CardDataService.getChoroplethRegionMetadata(shapefileId).then(function(response) {
+          expect(response).to.have.property('geometryLabel', shapefileDatasetMetadata.geometryLabel);
+          expect(response).to.have.property('featurePk', curatedRegionMetadata.featurePk);
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+      it('should return legacy label and default primary key if no curated region or legacy primary key', function(done) {
+        $httpBackend.expectGET(/api\/curated_regions\?method=getByViewUid&viewUid=shap-file$/).respond(500, '');
+        $httpBackend.expectGET(/metadata\/v1\/dataset\/shap-file\.json$/).respond({ geometryLabel: shapefileDatasetMetadata.geometryLabel });
+        CardDataService.getChoroplethRegionMetadata(shapefileId).then(function(response) {
+          expect(response).to.have.property('geometryLabel', shapefileDatasetMetadata.geometryLabel);
+          expect(response).to.have.property('featurePk', defaultValue.featurePk);
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+    });
+
+  });
+
 });

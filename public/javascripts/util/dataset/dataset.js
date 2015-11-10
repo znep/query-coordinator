@@ -3421,22 +3421,43 @@ var Dataset = ServerModel.extend({
     },
 
     _loadRelatedViews: function(callback) {
+        callback = callback || _.noop;
+
         var ds = this;
-        var coreViewsPromise = this._loadRelatedCoreViews();
-        var dataLensPromise = this._getRelatedDataLenses();
 
-        $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
-            var coreViews = coreResult ? coreResult[0] : [];
-            var dataLensViews = dataLensResult ? dataLensResult : [];
+        switch (blist.feature_flags.data_lens_more_views_method) {
+            case 'multi_fetch':
+                // add data lenses to the pane using a second getByTableId call
+                var coreViewsPromise = this._loadRelatedCoreViews();
+                var dataLensPromise = this._getRelatedDataLenses();
 
-            ds._relatedViews = ds._processRelatedViews(
-                _.uniq([].concat(coreViews, dataLensViews), 'id')
-            );
+                $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
+                    var coreViews = coreResult ? coreResult[0] : [];
+                    var dataLensViews = dataLensResult ? dataLensResult : [];
 
-            if (_.isFunction(callback)) {
-                callback();
-            }
-        });
+                    ds._relatedViews = ds._processRelatedViews(
+                        _.uniq([].concat(coreViews, dataLensViews), 'id')
+                    );
+
+                    callback();
+                });
+                break;
+
+            case 'none':
+            default:
+                // don't add any data lenses to the pane
+                this._loadRelatedCoreViews().done(function(coreResult) {
+                    var coreViews = coreResult || [];
+                    coreViews = _.reject(coreViews, function(view) {
+                        return /^data_lens/.test(view.displayType);
+                    });
+
+                    ds._relatedViews = ds._processRelatedViews(coreViews);
+
+                    callback();
+                });
+                break;
+        }
     },
 
     _processRelatedViews: function(views)

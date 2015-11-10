@@ -604,47 +604,66 @@
         });
       },
 
-      getChoroplethRegionMetadata: function(shapefileId) {
+      getCuratedRegionMetadata: function(shapefileId) {
         var url = $.baseUrl('/api/curated_regions');
         url.searchParams.set('method', 'getByViewUid');
         url.searchParams.set('viewUid', shapefileId);
         var config = httpConfig.call(this);
 
-        return http.get(url.href, config)['catch'](function() {
-            var datasetMetadataUrl = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(shapefileId));
-            var datasetMetadataConfig = httpConfig.call(this);
+        // Make request, unwrapping successful response, and handling
+        // error case by still returning a resolved promise of null so
+        // as not to break downstream promises
+        return http.get(url.href, config).then(
+          _.property('data'),
+          _.constant(null)
+        );
+      },
 
-            return http.get(datasetMetadataUrl.href, datasetMetadataConfig);
-          }).
-          then(function(response) {
-            var regionMetadata = {
-              geometryLabel: null,
-              featurePk: Constants.INTERNAL_DATASET_FEATURE_ID
-            };
+      getShapefileDatasetMetadata: function(shapefileId) {
+        var url = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(shapefileId));
+        var config = httpConfig.call(this);
 
-            if (response.status !== 200) {
-              $log.warn(
-                'Could not determine geometry label: request failed with status code {0}'.
-                  format(response.status)
-              );
-            } else if (!_.has(response, 'data.geometryLabel')) {
-              $log.warn(
-                'Could not determine geometry label: dataset metadata does not include geometryLabel.'
-              );
-            } else {
-              regionMetadata = {
-                geometryLabel: _.get(response, 'data.geometryLabel'),
-                featurePk: _.get(response, 'data.featurePk', Constants.INTERNAL_DATASET_FEATURE_ID)
-              };
-            }
+        // Make request, unwrapping successful response, and handling
+        // error case by still returning a resolved promise of null so
+        // as not to break downstream promises
+        return http.get(url.href, config).then(
+          _.property('data'),
+          _.constant(null)
+        );
+      },
 
-            return regionMetadata;
-          },
-        function() {
-          // If the dataset metadata fetch fails, return null (no labels)
+      getChoroplethRegionMetadata: function(shapefileId) {
+
+        // Request both curated region and shapefile metadata, and try to
+        // extract the data first from the new curated region metadata,
+        // falling back to legacy shapefile metadata, and finally to default values
+        return $q.all({
+          curatedRegionMetadata: serviceDefinition.getCuratedRegionMetadata(shapefileId),
+          shapefileDatasetMetadata: serviceDefinition.getShapefileDatasetMetadata(shapefileId)
+        }).then(function(responseHash) {
+          var curatedRegionGeometryLabel = _.get(responseHash,
+            'curatedRegionMetadata.geometryLabel',
+            null
+          );
+          var shapefileGeometryLabel = _.get(responseHash,
+            'shapefileDatasetMetadata.geometryLabel',
+            null
+          );
+          var geometryLabel = curatedRegionGeometryLabel || shapefileGeometryLabel;
+
+          var curatedRegionFeaturePk = _.get(responseHash,
+            'curatedRegionMetadata.featurePk',
+            null
+          );
+          var shapefileFeaturePk = _.get(responseHash,
+            'shapefileDatasetMetadata.featurePk',
+            null
+          );
+
+          var featurePk = curatedRegionFeaturePk || shapefileFeaturePk || Constants.INTERNAL_DATASET_FEATURE_ID;
           return {
-            geometryLabel: null,
-            featurePk: Constants.INTERNAL_DATASET_FEATURE_ID
+            geometryLabel: geometryLabel,
+            featurePk: featurePk
           };
         });
       },

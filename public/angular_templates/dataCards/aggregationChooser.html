@@ -8,11 +8,11 @@
   <a
     class="aggregation-chooser-trigger"
     ng-show="hasAggregableColumns"
-    ng-class="{ disabled: !canChooseAggregation }"
-    ng-click="panelActive = canChooseAggregation && !panelActive">
+    ng-class="{ disabled: !canChooseAggregation || isStandaloneVisualization }"
+    ng-click="togglePanel()">
     <span ng-bind-html="('aggregationChooser.byThe' + aggregationFunction.capitalized + 'Of') | I18n"></span>
     {{activeAggregation.label | pluralize}}
-    <span class="tool-panel-cue"></span>
+    <span class="tool-panel-cue" ng-hide="isStandaloneVisualization"></span>
   </a>
   <div ng-class="{ active: panelActive }" class="tool-panel-main">
     <div class="tool-panel-inner-container">

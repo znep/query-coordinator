@@ -357,6 +357,14 @@ class NewUxBootstrapController < ActionController::Base
     point_column?(column) && dataset_size > 100_000
   end
 
+  def curated_region_is_disabled_for_column?(column)
+    return false unless has_georegion_computation_strategy?(column)
+
+    shapefile_id = column['computationStrategy']['parameters']['region'][1..-1] # slice off leading underscore
+    curated_region = CuratedRegion.find_by_view_id(shapefile_id)
+    curated_region.nil? || curated_region.disabled?
+  end
+
   # If a point column has no actual values in it, then the computed cardinality
   # will be 1 because there is only a single empty value. We use this cardinality
   # as a proxy for emptiness and omit these columns during the bootstrap process.
@@ -380,7 +388,8 @@ class NewUxBootstrapController < ActionController::Base
       point_column_has_insufficient_cardinality?(column) ||
       (feature_map_disabled? && point_column?(column)) ||
       column_is_known_uniform?(column) ||
-      money_column?(column)
+      money_column?(column) ||
+      curated_region_is_disabled_for_column?(column)
   end
 
   def interesting_columns(columns)

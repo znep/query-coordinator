@@ -16,6 +16,16 @@
     var _autosaveDisabled = false;
     var _debouncedSave;
 
+    var parameters = window.location.search.split('&')
+    var parameters = parameters.map(function(parameter) {
+      return parameter.split('=');
+    });
+
+    var _forceDisabled = parameters.some(function(parameter) {
+      return parameter[0].indexOf('autosave') !== -1 &&
+        parameter[1].indexOf('false') !== -1;
+    });
+
     this.enable = function() {
       _autosaveDisabled = false;
     };
@@ -25,7 +35,7 @@
     };
 
     function triggerSave() {
-      if (_autosaveDisabled) {
+      if (_autosaveDisabled || _forceDisabled) {
         return;
       }
 

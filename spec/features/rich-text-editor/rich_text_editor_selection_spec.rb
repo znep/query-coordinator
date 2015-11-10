@@ -18,6 +18,7 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
 
   def link_toolbar_to_first_squire_instance
     link_toolbar_to_first_squire_instance_script = File.read('spec/helpers/link-toolbar-to-first-squire-instance.js')
+    link_toolbar_to_first_squire_instance_script.sub!('{0}', '2')
     execute_script(link_toolbar_to_first_squire_instance_script)
   end
 

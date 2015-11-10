@@ -403,21 +403,29 @@
       var range;
       var link;
       var text;
-      var parentElement;
+      var element;
       var openInNewWindow;
 
       var selection = _squire.getSelection();
 
       if (_squire.hasFormat('a')) {
-        parentElement = selection.startContainer.parentElement;
+        // Browser may not agree on the startContainer.
+        // Here, we try to get to the anchor tag through two paths.
+        // The first path is an Element that is higher in the node hierarchy.
+        // The second path is a TextNode that is a child of the anchor tag.
+        if (selection.startContainer.nodeType === 1) {
+          element = selection.startContainer.querySelector('[href]');
+        } else if (selection.startContainer.nodeType === 3) {
+          element = selection.startContainer.parentElement;
+        }
 
         range = document.createRange();
-        range.selectNode(parentElement);
+        range.selectNode(element);
         _squire.setSelection(range);
 
         text = range.toString();
-        link = parentElement.href;
-        openInNewWindow = parentElement.getAttribute('target') === '_blank' ? true : false;
+        link = element.getAttribute('href');
+        openInNewWindow = element.getAttribute('target') === '_blank' ? true : false;
       } else {
         text = selection.toString();
         link = '';

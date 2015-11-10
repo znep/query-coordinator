@@ -28,7 +28,7 @@
       $link.on('input', _.debounce(update, 350));
       $openInNewWindow.on('change', _.debounce(update, 350));
 
-      $modal.on('click', '[data-action]', function() {
+      $modal.on('click', '[data-action]', function(event) {
         var action = event.target.getAttribute('data-action');
 
         switch (action) {

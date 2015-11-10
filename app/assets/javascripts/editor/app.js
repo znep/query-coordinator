@@ -147,8 +147,8 @@ $(document).on('ready', function() {
 
     var target = $(event.target);
 
-    var isInToolbar = target.is($('#rich-text-editor-toolbar')) || target.parents('#rich-text-editor-toolbar').length === 0;
-    var isInLinkModal = target.is($('#link-modal')) || target.parents('#link-modal').length === 0;
+    var isInToolbar = target.is($('#rich-text-editor-toolbar')) || target.parents('#rich-text-editor-toolbar').length !== 0;
+    var isInLinkModal = target.is($('#link-modal')) || target.parents('#link-modal').length !== 0;
 
     // If the target of the click event is not the toolbar, unlink
     // the toolbar from the current ext editor (which also dims the

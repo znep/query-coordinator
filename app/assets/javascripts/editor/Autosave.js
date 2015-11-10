@@ -16,14 +16,10 @@
     var _autosaveDisabled = false;
     var _debouncedSave;
 
-    var parameters = window.location.search.split('&');
-    parameters = parameters.map(function(parameter) {
-      return parameter.split('=');
-    });
-
-    var _forceDisabled = parameters.some(function(parameter) {
-      return parameter[0].indexOf('autosave') !== -1 &&
-        parameter[1].indexOf('false') !== -1;
+    // Autosave can be disabled from a URL parameter: autosave.
+    // For example: https://example.com?autosave=false
+    var _forceDisabled = utils.queryParameters().some(function(parameter) {
+      return parameter[0] === 'autosave' && parameter[1] === 'false';
     });
 
     this.enable = function() {

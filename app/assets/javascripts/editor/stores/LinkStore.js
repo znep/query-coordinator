@@ -14,6 +14,7 @@
     var _visible = false;
     var _editorId = null;
     var _valid = false;
+    var _urlValidity = false;
     var _accepted = false;
 
     this.register(function(payload) {
@@ -53,6 +54,10 @@
       return _valid;
     };
 
+    this.getURLValidity = function() {
+      return _urlValidity;
+    };
+
     function _openModal(payload) {
       utils.assertHasProperty(payload, 'editorId');
 
@@ -63,7 +68,7 @@
     }
 
     function _closeModal() {
-      _visible = _valid = _accepted = false;
+      _visible = _valid = _urlValidity = _accepted = false;
       _inputs = _editorId = null;
 
       _self._emitChange();
@@ -85,6 +90,8 @@
 
       _valid = typeof _inputs.text === 'string' &&
         (typeof _inputs.link === 'string' && _inputs.link.length > 0);
+
+      _urlValidity = _valid && /https?:\/\/.+/.test(_inputs.link);
 
       _self._emitChange();
     }

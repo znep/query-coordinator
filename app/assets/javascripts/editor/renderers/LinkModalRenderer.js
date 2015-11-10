@@ -11,6 +11,7 @@
     var $link = $('#link-text');
     var $openInNewWindow = $('#open-in-new-window');
     var $testLink = $('.link-test-link-action');
+    var $warning = $('.link-warning');
 
     attachEvents();
     attachStoreListeners();
@@ -58,9 +59,11 @@
         var visibility = storyteller.linkStore.getVisibility();
         var inputs = storyteller.linkStore.getInputs();
         var valid = storyteller.linkStore.getValidity();
+        var urlValidity = storyteller.linkStore.getURLValidity();
 
         toggleModal(visibility);
         toggleModalOK(valid);
+        toggleWarning(urlValidity);
         setInputs(inputs);
       });
     }
@@ -71,6 +74,10 @@
         $link.val(inputs.link);
         $openInNewWindow.prop('checked', inputs.openInNewWindow);
       }
+    }
+
+    function toggleWarning(predicate) {
+      $warning[predicate ? 'addClass' : 'removeClass']('hidden');
     }
 
     function toggleModal(predicate) {

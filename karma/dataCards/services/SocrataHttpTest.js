@@ -98,18 +98,54 @@ describe('Socrata-flavored $http service', function() {
   });
 
   describe('csrf', function() {
-    it('throws an error when the CSRF token is not available', function() {
-      var config = {url: '/test', method: 'put'};
-      var getCookieStub = sinon.stub();
+    describe('when the csrfRequired option is false', function() {
+      it('does not error even if the CSRF token is missing and the HTTP method is a common non-GET method', function() {
+        var config = { url: '/test', method: 'put', csrfRequired: false };
+        var getCookieStub = sinon.stub();
 
-      getCookieStub.returns(undefined);
-      socrata.utils.getCookie = getCookieStub;
+        getCookieStub.returns(undefined);
+        socrata.utils.getCookie = getCookieStub;
 
-      $httpBackend.whenPUT('/test').respond(403, '');
+        $httpBackend.whenPUT('/test').respond(403, '');
 
-      expect(function() {
-        http(config);
-      }).to.throw('Unable to make authenticated "put" request to /test');
+        expect(function() {
+          http(config);
+        }).to.not.throw('Unable to make authenticated "put" request to /test');
+
+        $httpBackend.flush();
+      });
+    });
+
+    describe('if the csrfRequired option is unspecified', function() {
+      it('should error if the the CSRF token is missing and the HTTP method is a common non-GET method', function() {
+        var config = { url: '/test', method: 'put' };
+        var getCookieStub = sinon.stub();
+
+        getCookieStub.returns(undefined);
+        socrata.utils.getCookie = getCookieStub;
+
+        $httpBackend.whenPUT('/test').respond(403, '');
+
+        expect(function() {
+          http(config);
+        }).to.throw('Unable to make authenticated "put" request to /test');
+      });
+
+      it('should not error if the CSRF token is missing and the HTTP method is GET', function() {
+        var config = { url: '/test', method: 'get' };
+        var getCookieStub = sinon.stub();
+
+        getCookieStub.returns(undefined);
+        socrata.utils.getCookie = getCookieStub;
+
+        $httpBackend.whenGET('/test').respond(403, '');
+
+        expect(function() {
+          http(config);
+        }).to.not.throw('Unable to make authenticated "put" request to /test');
+
+        $httpBackend.flush();
+      });
     });
 
     it('configures requests to use our csrf token/header', function() {

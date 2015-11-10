@@ -94,12 +94,38 @@
     .modal-input-label {
       margin: 1rem 0;
       text-align: left;
-      color: $asset-selector-input-label-color;
-      font-size: 1.5rem;
-      font-weight: normal;
+      color: $modal-input-label-color;
+      font-size: 1.6rem;
+      font-weight: 600;
 
       &.modal-input-label-centered {
         text-align: center;
+      }
+    }
+
+    .modal-input[type="checkbox"] {
+      display: none;
+
+      + label span {
+        display: inline-block;
+        width: 19px;
+        height: 19px;
+        background: #f2f2f2;
+        border: solid 1px #c5c5c5;
+        vertical-align: middle;
+        margin: -2px 1rem 0 0;
+        cursor: pointer;
+
+        &:before {
+          visibility: hidden;
+          margin-left: 1px;
+        }
+      }
+
+      &:checked {
+        + label span:before {
+          visibility: visible;
+        }
       }
     }
 

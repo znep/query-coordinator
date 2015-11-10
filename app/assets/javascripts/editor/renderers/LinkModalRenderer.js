@@ -10,6 +10,7 @@
     var $text = $('#display-text');
     var $link = $('#link-text');
     var $openInNewWindow = $('#open-in-new-window');
+    var $testLink = $('.link-test-link-action');
 
     attachEvents();
     attachStoreListeners();
@@ -27,6 +28,7 @@
       $text.on('input', _.debounce(update, 350));
       $link.on('input', _.debounce(update, 350));
       $openInNewWindow.on('change', _.debounce(update, 350));
+      $testLink.on('click', testLink);
 
       $modal.on('click', '[data-action]', function(event) {
         var action = event.target.getAttribute('data-action');
@@ -77,6 +79,20 @@
 
     function toggleModalOK(predicate) {
       $modal.find('.btn-primary').prop('disabled', !predicate);
+    }
+
+    function testLink(event) {
+      event.preventDefault();
+
+      var inputs = storyteller.linkStore.getInputs();
+      var anchor = document.createElement('a');
+
+      anchor.href = inputs.link;
+      anchor.setAttribute('target', '_blank');
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
     }
   }
 

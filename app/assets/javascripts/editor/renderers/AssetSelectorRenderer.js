@@ -401,7 +401,7 @@
 
       var inputLabel = $(
         '<h2>',
-        { 'class': 'asset-selector-input-label asset-selector-input-label-centered input-label' }
+        { 'class': 'modal-input-label modal-input-label-centered input-label' }
       ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
 
       var inputButton = $('<button>', {
@@ -643,7 +643,7 @@
 
       var closeButton = _renderModalCloseButton();
 
-      var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
+      var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.youtube.input_label'));
 
       var inputControl = $(
@@ -1034,7 +1034,7 @@
         disabled: true
       }).append($('<span>'));
 
-      var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
+      var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.embed_code.input_label'));
 
       var inputControl = $(
@@ -1046,7 +1046,7 @@
         }
       );
 
-      var previewLabel = $('<h3>', { 'class': 'asset-selector-input-label input-label' }).
+      var previewLabel = $('<h3>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.embed_code.preview_label'));
 
       var previewInsecureMessage = $(

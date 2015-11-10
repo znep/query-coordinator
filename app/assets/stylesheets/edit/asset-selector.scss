@@ -35,10 +35,12 @@
   margin-bottom: 1rem;
   padding: 1rem;
   background-color: $asset-selector-input-group-bg-color;
+  border-radius: 0.1rem;
 
   &.asset-selector-input-group-fixed-height {
     height: 32rem;
     padding: 1.5rem;
+    border: dashed 1px $asset-selector-input-group-border-color;
   }
 
   .asset-selector-input-subtext {
@@ -47,14 +49,14 @@
     font-weight: 600;
   }
 
-  .asset-selector-input-label {
+  .modal-input-label {
     margin: 1rem 0;
     text-align: left;
-    color: $asset-selector-input-label-color;
+    color: $modal-input-label-color;
     font-size: 1.5rem;
     font-weight: normal;
 
-    &.asset-selector-input-label-centered {
+    &.modal-input-label-centered {
       text-align: center;
     }
   }
@@ -118,7 +120,7 @@
     background-size: 20%;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    border: 1px solid $input-element-border-color;
+    border: 1px dashed $input-element-border-color;
     box-sizing: border-box;
 
     &.invalid {

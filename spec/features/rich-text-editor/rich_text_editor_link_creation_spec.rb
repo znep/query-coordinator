@@ -62,7 +62,8 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
         @squire_frame.native.send_keys([true ? :command : :control, 'a'])
         link_toolbar_to_squire_instance(2)
         open_modal
-        sleep(1)
+
+        sleep(5) # TODO: Find a better way to select dynamically.
       end
 
       it 'displays the selected text in the text input' do

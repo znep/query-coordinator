@@ -62,18 +62,14 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
         @squire_frame.native.send_keys([true ? :command : :control, 'a'])
         link_toolbar_to_squire_instance(2)
         open_modal
-
-        sleep(5) # TODO: Find a better way to select dynamically.
       end
 
       it 'displays the selected text in the text input' do
-        display_text = page.find('#display-text')
-        expect(display_text.value).to eq('Your Great Story Title')
+        expect(page).to have_field('display-text', :with => 'Your Great Story Title')
       end
 
       it 'displays an empty link input' do
-        link_text = page.find('#link-text')
-        expect(link_text.value).to eq('')
+        expect(page).to have_field('link-text', :with => '')
       end
 
       it 'displays an unchecked "Open In New Window" checkbox' do
@@ -90,14 +86,12 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
       end
 
       it 'displays the selected text in the text input' do
-        text_input = page.find('#display-text')
-        expect(text_input.value).to eq('Hello, Link!')
+        expect(page).to have_field('display-text', :with => 'Hello, Link!')
         close_modal
       end
 
       it 'displays the selected link input' do
-        link_input = page.find('#link-text')
-        expect(link_input.value).to eq('https://opendata.socrata.com')
+        expect(page).to have_field('link-text', :with => 'https://opendata.socrata.com')
         close_modal
       end
 

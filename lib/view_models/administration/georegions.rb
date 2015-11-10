@@ -8,9 +8,9 @@ module ViewModels
       attr_reader :site_title
 
       def initialize(curated_georegions, site_title)
-        @curated_regions = curated_georegions
+        @curated_regions = curated_georegions.uniq(&:id)
         @default_regions = []
-        @custom_regions = curated_georegions
+        @custom_regions = curated_georegions.uniq(&:id)
         @maximum_enabled_count = 5 # Move to config?
         @site_title = site_title
       end

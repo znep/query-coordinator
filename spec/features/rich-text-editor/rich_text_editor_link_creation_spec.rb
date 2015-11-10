@@ -77,7 +77,7 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
       end
 
       it 'displays an unchecked "Open In New Window" checkbox' do
-        expect(page).to have_unchecked_field('open-in-new-window')
+        expect(page).to have_unchecked_field('open-in-new-window', :visible => false)
       end
     end
 
@@ -102,7 +102,7 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
       end
 
       it 'displays a checked "Open In New Window"' do
-        expect(page).to have_checked_field('open-in-new-window')
+        expect(page).to have_checked_field('open-in-new-window', :visible => false)
         close_modal
       end
 
@@ -110,7 +110,7 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
         before do
           fill_in('display-text', :with => 'New Text')
           fill_in('link-text', :with => 'https://newurl.com')
-          uncheck('open-in-new-window')
+          find('label[for="open-in-new-window"]').click
           # The modal OK button takes a handful of milliseconds
           # to convert from disabled to enabled.
           sleep(1)

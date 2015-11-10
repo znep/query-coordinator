@@ -125,7 +125,7 @@ class AngularController < ActionController::Base
     @current_user = current_user
 
     # Can't render add card without a dataset
-    if dataset_id_param.empty?
+    if dataset_id_param.blank?
       error_class = 'DatasetMetadataRequestFailure'
       error_message = "Could not serve app: dataset_id is required."
       report_error(error_class, error_message)

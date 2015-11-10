@@ -604,7 +604,7 @@
         });
       },
 
-      getChoroplethGeometryLabel: function(shapefileId) {
+      getChoroplethRegionMetadata: function(shapefileId) {
         var url = $.baseUrl('/api/curated_regions');
         url.searchParams.set('method', 'getByViewUid');
         url.searchParams.set('viewUid', shapefileId);
@@ -617,27 +617,35 @@
             return http.get(datasetMetadataUrl.href, datasetMetadataConfig);
           }).
           then(function(response) {
-            var geometryLabel = null;
+            var regionMetadata = {
+              geometryLabel: null,
+              featurePk: Constants.INTERNAL_DATASET_FEATURE_ID
+            };
 
             if (response.status !== 200) {
               $log.warn(
                 'Could not determine geometry label: request failed with status code {0}'.
                   format(response.status)
               );
-            } else if (!response.data.hasOwnProperty('geometryLabel')) {
+            } else if (!_.has(response, 'data.geometryLabel')) {
               $log.warn(
-                'Could not determine geometry label: dataset metadata does not include property ({0}).'.
-                  format(url)
+                'Could not determine geometry label: dataset metadata does not include geometryLabel.'
               );
             } else {
-              geometryLabel = response.data.geometryLabel;
+              regionMetadata = {
+                geometryLabel: _.get(response, 'data.geometryLabel'),
+                featurePk: _.get(response, 'data.featurePk', Constants.INTERNAL_DATASET_FEATURE_ID)
+              };
             }
 
-            return geometryLabel;
+            return regionMetadata;
           },
         function() {
           // If the dataset metadata fetch fails, return null (no labels)
-          return null;
+          return {
+            geometryLabel: null,
+            featurePk: Constants.INTERNAL_DATASET_FEATURE_ID
+          };
         });
       },
 

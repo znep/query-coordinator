@@ -17,15 +17,12 @@ describe('featureMap', function() {
   beforeEach(module(protocolBufferEndpointResponses));
 
   beforeEach(module('dataCards'));
-
   beforeEach(module('dataCards.directives'));
-
   beforeEach(module('dataCards/feature-map.scss'));
-
   beforeEach(module('/angular_templates/dataCards/featureMap.html'));
 
   beforeEach(function() {
-    module(function($provide) {
+    module(function($provide, $controllerProvider) {
 
       mockWindowStateService = {};
       mockWindowStateService.scrollPosition$ = new Rx.Subject();
@@ -34,6 +31,8 @@ describe('featureMap', function() {
       mockWindowStateService.mousePosition$ = new Rx.Subject();
 
       $provide.value('WindowState', mockWindowStateService);
+
+      $controllerProvider.register('FeatureMapController', _.noop);
     });
   });
 

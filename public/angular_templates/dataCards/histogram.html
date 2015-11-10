@@ -1,7 +1,4 @@
-<div ng-switch="visualizationType" class="column-chart-container">
-  <histogram ng-switch-when="histogram"></histogram>
-  <column-chart ng-switch-when="column"></column-chart>
-</div>
+<div class="histogram" ng-class="{'has-selection': hasSelection}"></div>
 <load-spinner busy="loading"></load-spinner>
 <div class="visualization-render-error" ng-show="histogramRenderError">
   <div class="row">

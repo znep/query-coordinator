@@ -216,7 +216,7 @@
     var pageName$ = page.observe('name').filter(_.isPresent);
     $scope.$bindObservable('pageName', pageName$);
     $scope.$bindObservable('pageDescription', page.observe('description'));
-    $scope.$bindObservable('isEphemeral', page.observe('id').map(_.isUndefined));
+    $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));
 
     $scope.$bindObservable('dataset', page.observe('dataset'));
     $scope.$bindObservable('datasetPages', page.observe('dataset.pages'));
@@ -282,16 +282,13 @@
         return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
       });
 
-    var userCanManageView$;
-    if ($scope.isEphemeral) {
-      userCanManageView$ = currentUser$.pluck('roleName').map(_.isPresent);
-    } else {
-      userCanManageView$ = page.observe('rights').map(function(rights) {
+    var userCanManageView$ = $scope.isEphemeral ?
+      Rx.Observable.returnValue(false) :
+      page.observe('rights').map(function(rights) {
         return _.any(rights, function(right) {
           return right === 'update_view' || right === 'grant';
         });
       });
-    }
 
     var isCurrentUserOwnerOfDataset$ =
       page.
@@ -321,10 +318,13 @@
 
     initDownload($scope, page, obeId$, WindowState, ServerConfig);
 
-    $scope.shouldShowManageLens = false;
-
     $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
     initManageLens($scope, page);
+
+    // CORE-7419: Hide provenance toggle if user doesn't have rights
+    // or enable_data_lens_provenance feature flag is disabled
+    $scope.showProvenanceSection = $scope.currentUserHasRights &&
+      ServerConfig.get('enableDataLensProvenance');
 
     /*******************************
     * Filters and the where clause *

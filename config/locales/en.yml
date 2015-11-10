@@ -518,6 +518,7 @@ en:
             label: on the Open Data Network
             title: Find more data like this on the Open Data Network
         results:
+          summary: '"%{query}"'
           count: Showing %{this} of %{total} results
           cetera_count: Showing %{start}-%{end} of %{total} results
         search:
@@ -2395,6 +2396,7 @@ en:
             no_icons: Icons are only relevant for map view
         data_lens:
           button: New Data Lens
+          button_flyout: 'Your data is currently being processed. Check back in a few minutes and you will be able to create a new Data Lens.'
           subtitle: Data Lens is a visually engaging and interactive experience that includes improved data exploration and better data curation.  Click on <strong>New Data Lens</strong> to create a new one.  From there, you can visually explore the data, customize how it is shown, and manage how it will be presented in the catalog.
           title: Data Lens
         delete:
@@ -2726,6 +2728,7 @@ en:
       dataset_title_prompt: Enter a title
       dataset_url: Dataset URL
       dataset_url_prompt: Enter the location of your external dataset
+      default_row_label: Row
       delete: Delete
       email_address: Email Address
       email_help: This address will not be displayed publicly. If left blank, it will default to your address

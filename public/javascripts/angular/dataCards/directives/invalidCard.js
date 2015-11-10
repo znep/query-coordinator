@@ -1,14 +1,12 @@
 (function() {
   'use strict';
 
-  function cardVisualizationInvalid($log) {
+  function InvalidCard() {
     return {
       restrict: 'E',
-      scope: {
-        'model': '='
-      },
-      templateUrl: '/angular_templates/dataCards/cardVisualizationInvalid.html',
-      link: function($scope) {
+      scope: false,
+      templateUrl: '/angular_templates/dataCards/invalidCard.html',
+      controller: function($scope, $log) {
         $scope.model.observe('fieldName').subscribe(function(fieldName) {
           $log.warn('Invalid cardType for column {0}'.format(fieldName));
         });
@@ -18,6 +16,5 @@
 
   angular.
     module('dataCards.directives').
-    directive('cardVisualizationInvalid', cardVisualizationInvalid);
-
+    directive('invalidCard', InvalidCard);
 })();

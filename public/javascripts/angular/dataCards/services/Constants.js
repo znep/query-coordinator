@@ -132,8 +132,8 @@
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],
 
       // Icon Font
-      'FILTER_ICON_UNICODE_GLYPH': '\ue610',
-      'CLOSE_ICON_UNICODE_GLYPH': '\ue60f',
+      'FILTER_ICON_UNICODE_GLYPH': '\ue62b',
+      'CLOSE_ICON_UNICODE_GLYPH': '\ue62a',
 
       // Flyout parameters
       'FLYOUT_WINDOW_PADDING': 22,

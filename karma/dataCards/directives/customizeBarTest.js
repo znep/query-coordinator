@@ -1,4 +1,4 @@
-describe('<customize-bar/>', function() {
+describe('customizeBar', function() {
   'use strict';
 
   var $provide;

@@ -27,6 +27,10 @@
     });
   };
 
+  Rx.Observable.prototype.subscribeLatest = function() {
+    return Rx.Observable.subscribeLatest.apply(this, [this].concat(_.toArray(arguments)));
+  };
+
   // Maps this observable sequence of objects to a new sequence of observable sequences by invoking
   // observe() on each object, then switches to that sequence.
   Rx.Observable.prototype.observeOnLatest = function(prop) {
@@ -151,11 +155,11 @@
   Rx.Observable.prototype.incrementalFallbackRetry = function(tries, onRetryStart) {
     return this.retryWhen(function(errors) {
       if (_.isFunction(onRetryStart)) {
-        onRetryStart();
+        errors.take(1).subscribe(onRetryStart);
       }
       return Rx.Observable.range(1, tries).
         zip(errors, function(i) { return i; }).
-        flatMap(function(i) { return Rx.Observable.timer(i * 5000); });
+        flatMap(function(i) { return Rx.Observable.timer(i * 5000, Rx.Scheduler.timeout); });
     });
   };
 

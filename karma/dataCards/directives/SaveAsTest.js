@@ -1,4 +1,4 @@
-describe('<save-as/>', function() {
+describe('SaveAs', function() {
   'use strict';
 
   var scope;

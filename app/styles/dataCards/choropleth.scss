@@ -31,9 +31,11 @@ card.expanded .choropleth-container .choropleth-legend.continuous {
   max-height: 15rem;
 }
 
-.choropleth-container {
-  padding: 0;
-  height: 100%;
+choropleth {
+  .choropleth-container {
+    padding: 0;
+    height: 100%;
+  }
   &.filterable .choropleth-map-container path.leaflet-clickable {
     cursor: pointer;
   }

@@ -758,23 +758,10 @@
 
     return {
       restrict: 'E',
-      replace: true,
       scope: true,
-      template: ['<div class="choropleth-container">',
-                    '<div class="choropleth-map-container"></div>',
-                    '<div class="choropleth-legend">',
-                      '<svg class="gradient"></svg>',
-                      '<svg class="legend-ticks">',
-                        '<g class="ticks"></g>',
-                      '</svg>',
-                    '</div>',
-                    '<div class="choropleth-selection-box">',
-                      '<span class="icon-filter"></span>',
-                      '<span class="choropleth-selection-value"></span>',
-                      '<span class="icon-close"></span>',
-                    '</div>',
-                  '</div>'].join(''),
-      link: function choroplethLink(scope, element, attrs) {
+      controller: 'ChoroplethController',
+      templateUrl: '/angular_templates/dataCards/choropleth.html',
+      link: function choroplethLink(scope, element) {
         if (scope.allowFilterChange) {
           element.addClass('filterable');
         }
@@ -788,7 +775,7 @@
           return e.type === 'mousemove';
         }).distinctUntilChanged();
 
-        var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
+        var LegendType = scope.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
         var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
         var savedExtent$ = scope.$observe('savedExtent');
         var defaultExtent$ = scope.$observe('defaultExtent');
@@ -1330,7 +1317,7 @@
         // Now that everything's hooked up, connect the subscription.
         tileLayer.connect();
 
-        var dimensions$ = element.observeDimensions().
+        var dimensions$ = element.closest('.card-visualization').observeDimensions().
           throttle(500, Rx.Scheduler.timeout).
           filter(function(dimensions) {
             return dimensions.width > 0 && dimensions.height > 0;
@@ -1384,7 +1371,9 @@
 
                         Therefore we fake a click on document.body :'(
                       */
-                      document.body.click();
+                      if (_.isFunction(document.body.click)) {
+                        document.body.click();
+                      }
                     }
                   });
 
@@ -1426,6 +1415,5 @@
 
   angular.
     module('dataCards.directives').
-      directive('choropleth', choropleth);
-
+    directive('choropleth', choropleth);
 })();

@@ -13,11 +13,7 @@
         var items = cpObj._viewList;
         if (!$.isBlank(cpObj._currentShow) && cpObj._currentShow != 'all')
         {
-            if (cpObj._currentShow == 'data_lens') {
-                items = _.select(items, function(v) { return v.displayType == 'new_view'; });
-            } else {
-                items = _.select(items, function(v) { return v.type == cpObj._currentShow; });
-            }
+            items = _.select(items, function(v) { return v.type == cpObj._currentShow; });
         }
 
         if (!$.isBlank(cpObj._currentSearch))
@@ -191,37 +187,31 @@
         var $showMenu = cpObj._$section.find('.showMenu');
         if (!$showMenu.hasClass('hide'))
         {
+
+            var typeOptions = _.map(['chart', 'map', 'calendar', 'filter', 'data_lens', 'api', 'grouped', 'form'], function(type) {
+                return {
+                    text: $.t('core.view_types_plural.' + type),
+                    className: type.replace(/^(.)(.+)/, function(_match, firstLetter, remainder) {
+                        return 'type' + firstLetter.toUpperCase() + remainder;
+                    }),
+                    href: '#' + type,
+                    onlyIf: _.any(cpObj._viewList, function(view) {
+                        return view.type === type;
+                    })
+                };
+            });
+
             $showMenu.menu({
                 menuButtonContents: $.t('screens.ds.grid_sidebar.view_list.filter_title'),
                 menuButtonTitle: $.t('screens.ds.grid_sidebar.view_list.filter_title'),
                 contents: [
                     { text: $.t('screens.ds.grid_sidebar.view_list.filter.all'), className: 'none checked', href: '#all' },
-                    { text: $.t('core.view_types_plural.chart'), className: 'typeChart', href: '#chart',
-                        onlyIf: _.any(cpObj._viewList,
-                            function(v) { return v.type == 'chart'; })},
-                    { text: $.t('core.view_types_plural.map'), className: 'typeMap', href: '#map',
-                        onlyIf: _.any(cpObj._viewList,
-                            function(v) { return v.type == 'map'; })},
-                    { text: $.t('core.view_types_plural.calendar'), className: 'typeCalendar', href: '#calendar',
-                        onlyIf: _.any(cpObj._viewList,
-                            function(v) { return v.type == 'calendar'; })},
-                    { text: $.t('core.view_types_plural.filter'), className: 'typeFilter', href: '#filter',
-                        onlyIf: _.any(cpObj._viewList,
-                            function(v) { return v.type == 'filter'; })},
-                    { text: $.t('core.view_types_plural.data_lens'), className: 'typeNew_view', href: '#data_lens',
-                        onlyIf: _.any(cpObj._viewList,
-                            function(v) { return v.displayType == 'new_view'; })},
-                    { text: $.t('core.view_types_plural.api'), className: 'typeApi', href: '#api',
-                        onlyIf: _.any(cpObj._viewList,
-                            function(v) { return v.type == 'api'; })},
-                    { text: $.t('core.view_types_plural.grouped'), className: 'typeGrouped', href: '#grouped',
-                        onlyIf: _.any(cpObj._viewList,
-                            function(v) { return v.type == 'grouped'; })},
-                    { text: $.t('core.view_types_plural.form'), className: 'typeForm', href: '#form',
-                        onlyIf: _.any(cpObj._viewList,
-                            function(v) { return v.type == 'form'; })}
-                ]
+                ].concat(typeOptions)
             });
+
+            // styling for the data lens icon is done differently because our sprite
+            // is out of date and it's not clear that we're going to update it
+            $showMenu.find('.menuDropdown .typeData_lens .icon').addClass('icon-cards');
 
             $showMenu.find('.menuDropdown a').click(function(e)
             {

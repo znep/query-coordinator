@@ -25,12 +25,19 @@
   </div>
 </div>
 
-<div class="card-visualization-wrapper">
-  <card-visualization model="model" allow-filter-change="allowFilterChange" where-clause="whereClause"></card-visualization>
+<div class="card-visualization" ng-switch="cardType">
+  <choropleth ng-switch-when="choropleth"></choropleth>
+  <column-chart ng-switch-when="column"></column-chart>
+  <feature-map ng-switch-when="feature"></feature-map>
+  <distribution-chart ng-switch-when="histogram"></distribution-chart>
+  <search-card ng-switch-when="search"></search-card>
+  <table-card ng-switch-when="table" model="model" where-clause="whereClause"></table-card>
+  <timeline-chart ng-switch-when="timeline"></timeline-chart>
+  <invalid-card ng-switch-when="invalid"></invalid-card>
 </div>
 
- <!--Card controls are only available if card is not a table card, and is customizable-->
- <!--They are hidden on table cards, and visible but disabled on other non-customizable cards-->
+<!--Card controls are only available if card is not a table card, and is customizable-->
+<!--They are hidden on table cards, and visible but disabled on other non-customizable cards-->
 <div class="card-controls" ng-show="!chooserMode.show">
   <div class="card-control icon-table debug-flyout"
     ng-show="debugDataLens">

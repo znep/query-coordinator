@@ -56,19 +56,16 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/mobileWarningDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
+  beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationHistogram.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationInvalid.html'));
+  beforeEach(module('/angular_templates/dataCards/choropleth.html'));
+  beforeEach(module('/angular_templates/dataCards/columnChart.html'));
+  beforeEach(module('/angular_templates/dataCards/distributionChart.html'));
   beforeEach(module('/angular_templates/dataCards/featureMap.html'));
-  beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
+  beforeEach(module('/angular_templates/dataCards/histogram.html'));
+  beforeEach(module('/angular_templates/dataCards/invalidCard.html'));
+  beforeEach(module('/angular_templates/dataCards/searchCard.html'));
   beforeEach(module('/angular_templates/dataCards/tableCard.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
@@ -722,6 +719,15 @@ describe('CardsViewController', function() {
       var harness = makeController({}, {
         rights: ['add', 'write', 'delete']
       });
+      expect(harness.$scope.shouldShowManageLens).to.be.false;
+    });
+
+    it('should hide the manage lens button when on an ephemeral view', function() {
+      var harness = makeController({}, {
+        rights: ['add', 'write', 'grant'],
+        pageId: null
+      });
+
       expect(harness.$scope.shouldShowManageLens).to.be.false;
     });
 

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function Mockumentary(Page, Dataset) {
+  function Mockumentary(Page, Dataset, Card) {
 
     function createCardMetadata(cardOptions) {
       var minimalInitialValues = {
@@ -24,6 +24,10 @@
       return $.extend(true, minimalInitialValues, cardOptions);
     }
 
+    function createCard(page, fieldName, cardOptions) {
+      return new Card(page, fieldName, cardOptions);
+    }
+
     function createPageMetadata(pageOptions) {
 
       var minimalPageMetadata = {
@@ -41,7 +45,7 @@
         version: 3
       };
 
-      return $.extend(true, minimalPageMetadata, pageOptions);
+      return _.merge(minimalPageMetadata, pageOptions);
     }
 
     function createPage(pageOptions, datasetOptions) {
@@ -107,6 +111,7 @@
     return {
       createPageMetadata: createPageMetadata,
       createCardMetadata: createCardMetadata,
+      createCard: createCard,
       createPage: createPage,
       createDatasetMetadata: createDatasetMetadata,
       createDataset: createDataset

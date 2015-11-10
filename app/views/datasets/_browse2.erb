@@ -1,10 +1,4 @@
 <%-
-  using_cetera = (
-    APP_CONFIG.cetera_host.present? &&
-      User.current_user.nil? &&
-      FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search]
-  )
-
   create_asset_enabled = (
     !opts[:embedded_browse_iframe_hack] &&
     (
@@ -60,11 +54,7 @@
     container_classes << " create-asset"
   end
 
-  if using_cetera
-    search_provider = 'cetera'
-  else
-    search_provider = 'clytemnestra'
-  end
+  search_provider = using_cetera? ? 'cetera' : 'clytemnestra'
 -%>
 
 <div class="<%= container_classes %>" data-view-type="<%= opts[:view_type] %>" data-search-provider="<%= search_provider %>">
@@ -158,7 +148,10 @@
               :partial => 'datasets/browse2_results_title',
               :locals => {
                 :opts => opts,
-                :title_full_width => !opts[:show_catalog_sort_dropdown] || using_cetera,
+                :title_full_width => !opts[:show_catalog_sort_dropdown] || using_cetera?,
+                :results_title =>  opts[:user_params][:q].present? ?
+                  t('controls.browse.browse2.results.summary', :query => opts[:user_params][:q]) :
+                  '',
                 :clear_facet_options => clear_facet_options
               }
             )
@@ -167,7 +160,7 @@
 
         <!-- Results Sort Controls -->
 
-        <%- if opts[:show_catalog_sort_dropdown] && !using_cetera -%>
+        <%- if opts[:show_catalog_sort_dropdown] && !using_cetera? -%>
             <%=
               render(
                 :partial => 'datasets/browse2_results_sort_controls',
@@ -340,7 +333,7 @@
 
             # Certain values must be derived differently based on whether this
             # is a result from Cetera or Clytemnestra/Core Server
-            if using_cetera
+            if using_cetera?
               result_link = result.link
               result_categories = (result.categories || []).reject(&:empty?)
               result_topics = (result.tags || []).reject(&:empty?)
@@ -414,6 +407,9 @@
                  # Pending a way to determine the result's data types, they will be set to nil and ignored
                 :result_data_types => nil,
                 :result_is_federated => result.federated?,
+                :show_official_badge =>
+                  result.respond_to?(:show_official_badge_in_catalog) &&
+                  result.show_official_badge_in_catalog?, # not implemented for Cetera results
                 :result_federated_origin => result.domainCName,
                 :result_federated_origin_url => result_federated_origin_url,
                 :result_odn_link => result_odn_link,
@@ -455,7 +451,7 @@
             if (opts[:footer_config].nil? || opts[:footer_config].counter) &&
               !opts[:disable][:counter]
           -%>
-            <%= render :partial => 'datasets/browse2_counter', :locals => { :opts => opts, :using_cetera => using_cetera } %>
+            <%= render :partial => 'datasets/browse2_counter', :locals => { :opts => opts } %>
           <%-
             end
           end

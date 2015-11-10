@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardVisualizationChoroplethHelpers(Constants, ServerConfig, $log) {
+  function CardVisualizationChoroplethHelpers(Constants, $log) {
 
     /**
      * Extracts the shapefile from a dataset metadata column.
@@ -81,6 +81,7 @@
      *
      * @param {String} geometryLabel - The name of the property that should be
      *   used as the 'human-readable' name for a region.
+     * @param {String} primaryKey - Name of the property to be used as the primary key
      * @param {Object} geojsonRegions - The source GeoJSON shape file.
      * @param {Object} unfilteredDataAsHash - The aggregate unfiltered values
      *   associated with each region.
@@ -105,6 +106,7 @@
      */
     function mergeRegionAndAggregateData(
       geometryLabel,
+      primaryKey,
       geojsonRegions,
       unfilteredDataAsHash,
       filteredDataAsHash,
@@ -113,28 +115,14 @@
 
       var newFeatures = _.chain(_.get(geojsonRegions, 'features', [])).
         filter(function(geojsonFeature) {
-          return (
-            geojsonFeature.properties.hasOwnProperty(
-              Constants.INTERNAL_DATASET_FEATURE_ID
-            ) &&
-            geojsonFeature.properties[Constants.INTERNAL_DATASET_FEATURE_ID]
-          );
+          return _.get(geojsonFeature, 'properties.{0}'.format(primaryKey));
         }).
         map(function(geojsonFeature) {
-
-          var name = geojsonFeature.
-            properties[Constants.INTERNAL_DATASET_FEATURE_ID];
-          var humanReadableName = '';
-
-          if (_.isString(geometryLabel) &&
-            geojsonFeature.properties.hasOwnProperty(geometryLabel)) {
-
-            humanReadableName = geojsonFeature.properties[geometryLabel];
-          }
+          var name = _.get(geojsonFeature, 'properties.{0}'.format(primaryKey));
+          var humanReadableName = _.get(geojsonFeature, 'properties.{0}'.format(geometryLabel), '');
 
           var properties = {};
-          properties[Constants.INTERNAL_DATASET_FEATURE_ID] =
-            geojsonFeature.properties[Constants.INTERNAL_DATASET_FEATURE_ID];
+          properties[primaryKey] = name;
 
           properties[Constants.FILTERED_VALUE_PROPERTY_NAME] =
             filteredDataAsHash[name];
@@ -170,6 +158,7 @@
      *
      * @param {String} geometryLabel - The name of the property that should be
      *   used as the 'human-readable' name for a region.
+     * @param {String} primaryKey - Name of the property to be used as the primary key
      * @param {Object} geojsonRegions - A geoJson-formatted object.
      * @param {Object[]} unfilteredData - An array of objects with 'name' and
      *   'value' keys (the unfiltered values of the data).
@@ -186,6 +175,7 @@
      */
     function aggregateGeoJsonData(
       geometryLabel,
+      primaryKey,
       geojsonRegions,
       unfilteredData,
       filteredData,
@@ -207,12 +197,15 @@
 
       // Extract the active column from the columns array by matching against
       // the card's "fieldName".
-      if (!_.isPresent(columns[fieldName])) {
-        throw new Error('Could not match fieldName to human-readable column name.');
+      if (!_.isPresent(_.get(columns, fieldName))) {
+        var errorMessage = 'Could not match fieldName {fieldName} to human-readable column name in {columns}.'.
+          format({ fieldName: fieldName, columns: columns });
+        throw new Error(errorMessage);
       }
 
       return mergeRegionAndAggregateData(
         geometryLabel,
+        primaryKey,
         geojsonRegions,
         unfilteredDataAsHash,
         filteredDataAsHash,
@@ -220,7 +213,13 @@
       );
     }
 
+    function computedColumnNameToShapefileId(computedColumnName) {
+      if (!_.isString(computedColumnName)) { return; }
+      return computedColumnName.replace(/.*(\w{4})_(\w{4})$/, '$1-$2');
+    }
+
     return {
+      computedColumnNameToShapefileId: computedColumnNameToShapefileId,
       extractShapeFileFromColumn: extractShapeFileFromColumn,
       extractSourceColumnFromColumn: extractSourceColumnFromColumn,
       aggregateGeoJsonData: aggregateGeoJsonData

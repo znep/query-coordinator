@@ -1700,21 +1700,6 @@ var Dataset = ServerModel.extend({
                 type: 'POST', success: successCallback, error: errorCallback});
     },
 
-    getRelatedViewCount: function(callback)
-    {
-        var ds = this;
-        var viewCount;
-
-        if ($.isBlank(ds._relatedViews) && $.isBlank(ds._relViewCount)) {
-            ds._loadRelatedViews(function(c) { callback(c); }, true);
-        } else if (!$.isBlank(ds._relViewCount)) {
-            viewCount = ds._relViewCount;
-        } else {
-            viewCount = ds._relatedViews.length;
-        }
-        callback(viewCount);
-    },
-
     getParentDataset: function(callback)
     {
         var ds = this;
@@ -3435,34 +3420,21 @@ var Dataset = ServerModel.extend({
         { delete ds._parent; }
     },
 
-    _loadRelatedViews: function(callback, justCount)
-    {
+    _loadRelatedViews: function(callback) {
         var ds = this;
-        var coreViewsPromise = this._loadRelatedCoreViews(justCount);
-        // CORE-7303: We are hiding all lenses from More Views for now.
-        // var dataLensPromise = this._getRelatedDataLenses(justCount);
-        var dataLensPromise = $.Deferred().resolve();
+        var coreViewsPromise = this._loadRelatedCoreViews();
+        var dataLensPromise = this._getRelatedDataLenses();
 
         $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
-            // CORE-7303: We are hiding all lenses from More Views for now.
             var coreViews = coreResult ? coreResult[0] : [];
-            coreViews = _.reject(coreViews, function(view) {
-                return /^data_lens/.test(view.displayType);
-            });
+            var dataLensViews = dataLensResult ? dataLensResult : [];
 
-            if (justCount) {
-                // Subtract one for dataset
-                ds._relViewCount = (
-                    Math.max(0, coreViews.length - 1) +
-                    (dataLensResult ? Math.max(0, dataLensResult.length - 1) : 0)
-                );
-                if (_.isFunction(callback)) { callback(ds._relViewCount); }
-            } else {
-                ds._relatedViews = ds._processRelatedViews(
-                    coreViews.
-                        concat(dataLensResult ? dataLensResult : [])
-                );
-                if (_.isFunction(callback)) { callback(); }
+            ds._relatedViews = ds._processRelatedViews(
+                _.uniq([].concat(coreViews, dataLensViews), 'id')
+            );
+
+            if (_.isFunction(callback)) {
+                callback();
             }
         });
     },
@@ -3492,27 +3464,27 @@ var Dataset = ServerModel.extend({
         return views;
     },
 
-    _loadRelatedCoreViews: function(justCount) {
+    _loadRelatedCoreViews: function() {
         // Fully cachable
         return this.makeRequestWithPromise({
             url: '/views.json',
             pageCache: true,
             type: 'GET',
             data: {
-                method: justCount ? 'getCountForTableId' : 'getByTableId',
+                method: 'getByTableId',
                 tableId: this.tableId
             }
         });
     },
 
-    _getRelatedDataLenses: function(justCount) {
+    _getRelatedDataLenses: function() {
         var ds = this;
 
         return this.
             getNewBackendId().
             pipe(_.bind(ds._fetchViewJson, ds)).
             pipe(function(result) {
-                return ds._lookUpDataLensesByTableId(result.tableId, justCount);
+                return ds._lookUpDataLensesByTableId(result.tableId);
             }).
             pipe(_.bind(ds._onlyDataLenses, ds));
     },
@@ -3525,7 +3497,7 @@ var Dataset = ServerModel.extend({
         });
     },
 
-    _lookUpDataLensesByTableId: function(nbeTableId, justCount) {
+    _lookUpDataLensesByTableId: function(nbeTableId) {
         if ($.isBlank(nbeTableId)) {
           throw new Error('nbeTableId is blank');
         }
@@ -3535,7 +3507,7 @@ var Dataset = ServerModel.extend({
             pageCache: true,
             type: 'GET',
             data: {
-                method: justCount ? 'getCountForTableId' : 'getByTableId',
+                method: 'getByTableId',
                 tableId: nbeTableId
             }
         });
@@ -4176,18 +4148,14 @@ function getType(ds)
 
 function getDisplayName(ds)
 {
-    var retType = ds.type;
-
-    switch (ds.type)
-    {
+    switch (ds.type) {
         case 'blist':
-            retType = ds.isPublished() ? $.t('core.view_types.dataset') : $.t('core.view_types.working_copy');
-            break;
+            return ds.isPublished() ? $.t('core.view_types.dataset') : $.t('core.view_types.working_copy');
+        case 'data_lens':
+            return $.t('core.view_types.new_view');
         default:
-            retType = $.t('core.view_types.' + ds.type);
+            return $.t('core.view_types.' + ds.type);
     }
-
-    return retType;
 };
 
 function cleanViewForSave(ds, allowedKeys)

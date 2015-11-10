@@ -34,6 +34,47 @@
 
         $scope.$bindObservable('description', model$.observeOnLatest('column.description'));
 
+        $scope.$bindObservable(
+          'cardType',
+          Rx.Observable.combineLatest(
+            model$,
+            model$.observeOnLatest('cardType'),
+            model$.observeOnLatest('column'),
+            function(model, cardType, column) {
+
+              if (!column.hasOwnProperty('defaultCardType')) {
+                throw new Error(
+                  'Failed to assign cardType: could not find property ' +
+                  'defaultCardType on column {0}'.
+                  format(JSON.stringify(column))
+                );
+              }
+
+              if (!column.hasOwnProperty('availableCardTypes')) {
+                throw new Error(
+                  'Failed to assign cardType: could not find property ' +
+                  'availableCardTypes on column {0}'.
+                  format(JSON.stringify(column))
+                );
+              }
+
+              // When the card type changes, clear custom titles.
+              model.set('customTitle', undefined);
+
+              // If the card metadata did not include an explicit cardType,
+              // the Card model will have set it to null as a default. In
+              // this case, we want to fall back to the default card type.
+              if (cardType === null) {
+                cardType = column.defaultCardType;
+              }
+
+              return (column.availableCardTypes.indexOf(cardType) > -1) ?
+                cardType :
+                'invalid';
+            }
+          )
+        );
+
         function registerDebugFlyout() {
           // N.B.: Card models already have unique ids, but they can be shared across card directives.
           var uniqueId = _.uniqueId();
@@ -255,17 +296,12 @@
         }
 
         // Give the visualization all the height that the description isn't using.
-        // Note that we set the height on a wrapper instead of the card-visualization itself.
-        // This is because the card-visualization DOM node itself can be ripped out and replaced
-        // by angular at any time (typically when the card-visualization template finishes loading
-        // asynchronously).
-        // See: https://github.com/angular/angular.js/issues/8877
         var description = element.find('.card-text');
         Rx.Observable.subscribeLatest(
           description.observeDimensions(),
           dimensions$,
           function(descriptionDimensions, elementDimensions) {
-            element.find('.card-visualization-wrapper').height(
+            element.find('.card-visualization').height(
               elementDimensions.height - description.outerHeight(true)
             );
           });

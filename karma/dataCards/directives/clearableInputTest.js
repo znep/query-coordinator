@@ -1,4 +1,4 @@
-describe('<clearable-input/>', function() {
+describe('clearableInput', function() {
   'use strict';
 
   var $document;

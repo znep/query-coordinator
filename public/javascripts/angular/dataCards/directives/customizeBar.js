@@ -5,7 +5,7 @@
     return {
       scope: {
         'cardCount': '=',
-        'currentUserHasRights': '=',
+        'showProvenanceSection': '=',
         'editMode': '=',
         'hasChanges': '=',
         'isEphemeral': '=',

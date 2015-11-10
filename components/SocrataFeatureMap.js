@@ -15,7 +15,7 @@
   var DEFAULT_FEATURES_PER_TILE = 256 * 256;
   // known in data lens as "simple blue"
   var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
-  var DEFAULT_BASE_LAYER_OPACITY = 0.8;
+  var DEFAULT_BASE_LAYER_OPACITY = 0.42;
 
   /**
    * Instantiates a Socrata FeatureMap Visualization from the

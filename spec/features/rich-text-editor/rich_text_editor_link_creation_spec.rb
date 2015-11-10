@@ -4,19 +4,6 @@ require 'rails_helper'
 RSpec.describe 'rich text editor link creation', type: :feature, js: true do
   let(:uid) { 'href-bloc' }
 
-  def select_text_in_element(selector)
-    select_arbitrary_text_inside_script = File.read('spec/helpers/select-text-in-element.js')
-    select_arbitrary_text_inside_script.sub!('{0}', selector)
-
-    evaluate_script(select_arbitrary_text_inside_script);
-  end
-
-  def link_toolbar_to_squire_instance(id)
-    link_toolbar_to_first_squire_instance_script = File.read('spec/helpers/link-toolbar-to-first-squire-instance.js')
-    link_toolbar_to_first_squire_instance_script.sub!('{0}', id.to_s)
-    execute_script(link_toolbar_to_first_squire_instance_script)
-  end
-
   def open_modal
     page.find('.rich-text-editor-toolbar-btn-link').click
   end
@@ -118,7 +105,7 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
         close_modal
       end
 
-      describe 'changing the fields from their original values', :only => true do
+      describe 'changing the fields from their original values' do
         before do
           fill_in('display-text', :with => 'New Text')
           fill_in('link-text', :with => 'https://newurl.com')

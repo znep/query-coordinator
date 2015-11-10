@@ -3,23 +3,13 @@ require 'rails_helper'
 RSpec.describe 'rich text editor selection', type: :feature, js: true do
   let(:uid) { 'h1bl-ocks' }
 
-  def select_text_in_element(selector)
-    select_arbitrary_text_inside_script = File.read('spec/helpers/select-text-in-element.js')
-    select_arbitrary_text_inside_script.sub!('{0}', selector)
-
-    evaluate_script(select_arbitrary_text_inside_script);
-  end
-
   def current_text_selection
-    current_selection_script = File.read('spec/helpers/current-text-selection.js')
-
+    current_selection_script = File.read('spec/scripts/current-text-selection.js')
     evaluate_script(current_selection_script);
   end
 
   def link_toolbar_to_first_squire_instance
-    link_toolbar_to_first_squire_instance_script = File.read('spec/helpers/link-toolbar-to-first-squire-instance.js')
-    link_toolbar_to_first_squire_instance_script.sub!('{0}', '2')
-    execute_script(link_toolbar_to_first_squire_instance_script)
+    link_toolbar_to_squire_instance(2)
   end
 
   before do

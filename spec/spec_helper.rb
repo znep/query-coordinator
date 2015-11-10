@@ -273,3 +273,26 @@ def unload_page_and_dismiss_confirmation_dialog
   rescue Selenium::WebDriver::Error::NoAlertPresentError
   end
 end
+
+# Link the toolbar to the component-html located in the sequential ID for
+# the blocks in the test story.
+# I must stress *sequential*. This only works for full-width rich text editors.
+# To select the correct editor, count *visually* the blocks in the UI.
+# If I have three blocks, the first block is 2, the second block is 3, and so on.
+def link_toolbar_to_squire_instance(id)
+  link_toolbar_to_squire_instance_script = File.read('spec/scripts/link-toolbar-to-squire-instance.js')
+  link_toolbar_to_squire_instance_script.sub!('{0}', id.to_s)
+  execute_script(link_toolbar_to_squire_instance_script)
+end
+
+# Selects text within the specified selector.
+# This is done within the context of the current session.
+# Therefore, if you are within_frame, you can use relative selections
+# such as body > h1.
+def select_text_in_element(selector)
+  select_arbitrary_text_inside_script = File.read('spec/scripts/select-text-in-element.js')
+  select_arbitrary_text_inside_script.sub!('{0}', selector)
+
+  evaluate_script(select_arbitrary_text_inside_script);
+end
+

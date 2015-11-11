@@ -203,26 +203,10 @@
 
         self._emitChange();
       } else if (payload.visualization.format === 'vif') {
-        switch (visualization.type) {
-          case 'columnChart':
-            _state.componentType = 'socrata.visualization.columnChart';
-            _state.componentProperties = {
-              vif: visualization
-            };
-            break;
-          case 'timelineChart':
-            _state.componentType = 'socrata.visualization.timelineChart';
-            _state.componentProperties = {
-              vif: visualization
-            };
-            break;
-          case 'featureMap':
-            _state.componentType = 'socrata.visualization.featureMap';
-            _state.componentProperties = {
-              vif: visualization
-            };
-            break;
-        }
+        _state.componentType = 'socrata.visualization.{0}'.format(visualization.type);
+        _state.componentProperties = {
+          vif: visualization
+        };
 
         self._emitChange();
       }

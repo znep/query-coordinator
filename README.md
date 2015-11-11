@@ -16,8 +16,8 @@ sudo nginx -c ${PWD}/dev-server/nginx.conf
 ## Dependencies
 
 Dependencies are stored in artifactoryonline.com.  A shared username and
-password can be found in LastPass under the user "Socrata-frontend."  
-Instructions on how to use these credentials can be found in the 
+password can be found in LastPass under the user "Socrata-frontend."
+Instructions on how to use these credentials can be found in the
 "Getting Artifacts" section of the [Artifactory Ops Doc](https://drive.google.com/a/socrata.com/folderview?ddrp=1&id=0B8bqh9w-C6AnNDJiNjYwMzgtZjJjNS00NWY0LTllNGEtNDdlNTdkNjhkZGY3#)
 
 ## Tests
@@ -97,7 +97,7 @@ The rake task is
 rake test:karma_sauce [CRITICAL_BROWSERS_ONLY=true|false] [BROWSER_FAMILIES="comma-separated browser names"]
 ```
 
-CRITICAL_BROWSERS_ONLY tells the runner to only run tests on critical browsers. 
+CRITICAL_BROWSERS_ONLY tells the runner to only run tests on critical browsers.
 It defaults to false (run on all browsers).
 
 BROWSER_FAMILIES limits the run to a comma-separated list of browser names (chrome, internet explorer, etc)
@@ -115,24 +115,24 @@ Examples:
   (cd karma/dataCards && karma start karma.conf.js --browsers "saucelabs safari 7 os x 10.9" --singleRun true)
   ```
 
-  See supported_browsers.json for a list of values we support. You can add new 
-  browsers to this file - see https://saucelabs.com/platforms/webdriver for a 
+  See supported_browsers.json for a list of values we support. You can add new
+  browsers to this file - see https://saucelabs.com/platforms/webdriver for a
   list of browsers SauceLabs supports.
 
-When running tests on SauceLabs through a Sauce Connect tunnel that is started 
-manually (through the Sauce OSX App or the Sauce Connect Jenkins Plugin), and a 
-tunnel identifier is specified, you must make sure to provide the same 
-`SAUCE_TUNNEL_IDENTIFIER` as an environment variable so that the Karma sauce 
+When running tests on SauceLabs through a Sauce Connect tunnel that is started
+manually (through the Sauce OSX App or the Sauce Connect Jenkins Plugin), and a
+tunnel identifier is specified, you must make sure to provide the same
+`SAUCE_TUNNEL_IDENTIFIER` as an environment variable so that the Karma sauce
 test runner will use the identified tunnel.
 
-If using a Sauce Connect tunnel without a tunnel identifier, the karma sauce 
+If using a Sauce Connect tunnel without a tunnel identifier, the karma sauce
 test runner will default to using the unnamed tunnel.
 
 #### To exclude groups of tests
 
 NOTE: THIS IS NOT SUPPORTED IN THE RAKE TASKS
-When launching karma directly, you may pass an --exclude-groups flag to not run 
-a certain subset of tests. Groups are defined in karma.conf.js and as of this 
+When launching karma directly, you may pass an --exclude-groups flag to not run
+a certain subset of tests. Groups are defined in karma.conf.js and as of this
 writing are: controllers directives filters integration services models util.
 
 Example:
@@ -151,23 +151,22 @@ This only works for Data Lens/Angular component tests (not old UX).
 
 ## Javascript/other asset package management
 
-The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/) 
+The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/)
 for asset management instead of the standard Rails asset pipeline. All assets
-must be added manually to assets.yml, and the appropriate include_javascripts 
-calls must be included in .erb. If the assets must be loaded on-demand from JS, 
-make sure the new jammit package is added to the "dump" section of assets.yml 
-(the JS asset loader reads this section). Please note that though Jammit allows 
-globs in its package definitions, the JS loader doesn't support globs. This is 
+must be added manually to assets.yml, and the appropriate include_javascripts
+calls must be included in .erb. If the assets must be loaded on-demand from JS,
+make sure the new jammit package is added to the "dump" section of assets.yml
+(the JS asset loader reads this section). Please note that though Jammit allows
+globs in its package definitions, the JS loader doesn't support globs. This is
 only an issue for on-demand loading.
 
 ## Babel transpilation
 
-We have introduced transpilation of ES2015 / JSX source code via
-[Babel](http://babeljs.io).  One-time babel compilation can be done with
+We have introduced transpilation of ES2015 / JSX source code via [Babel](http://babeljs.io). In order to run Babel, first install version 5 of Babel (as specified in the package.json file used by NPM) by `npm install`.
 
-```sh
-bundle exec rake assets:babel
-```
+> Note: If you had already installed a different version of `babel` by other means, you will have to uninstall it before running the above command.
+
+One-time babel compilation can be done by running `bundle exec rake assets:babel` to transpile the ES2015 / JSX assets.
 
 Running the Rails stack with [foreman](https://github.com/ddollar/foreman) allows
 watching of source changes and automatic compilation.
@@ -179,42 +178,23 @@ bundle install
 foreman start
 ```
 
+### YUI Compressor errors
+
+There is a tool to help us troubleshoot YUI / Jammit compressor errors. It is in the `tools` directory and can be invoked with the command below. It currently expects a working directory to exist which is `../../tmp` which you must create beforehand.
+
+```sh
+tools/verify_compression.rb --all
+```
+
 ### Bower packages
 
 In order to allow clearer management of dependencies, Bower was (eventually) integrated into the asset management system. Unfortunately, the "normal" ways of integrating bower packages and Rails won't work:
 - Rails-Assets (a gem source which transparently wraps Bower packages as gems) would result in yet another 3rd-party dependency on deploy. This is too risky, especially as this service is still in beta.
 - bower-rails does not introduce a deploy dependency, but since we've butchered the Rails asset pipeline from the beginning this package turned out to be difficult to integrate.
 
-Instead, we're using a standard bower setup plus a script to install required package files into our pre-existing Jammit asset structure. This script is [bower-installer](https://github.com/blittle/bower-installer). The configuration for this can be found in the frontend's bower.json.
-
-WARNING: running `bower-installer` will replace the contents of all your bower files in public/javascript/bowers with their original content, replacing any changes you may have made. If you made any modifications to the files in public/javascript/bower, move them to another folder!
-
-This gives us a few things:
-- Deploy/build don't have to care at all. All the bower package files are just dropped into /public/javascripts, just like was done manually.
-- Everything needed to run the app is in source control.
-
-A few complications are introduced:
-- When installing/updating bower packages, bower-installer must be run. Otherwise Jammit won't see the changes.
-- Bower and bower-installer (and by extension node and npm) must be installed for development __only__.
-- Bower packages don't always specify their main files (= what bower-installer installs). This can fortunately be overridden or specified in our bower.json.
-
-Bower + Artifactory (8/11/15 update)
-- See "Bower packages" in https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8/edit
-- We have seeded our bower components into Artifactory, which involves using `bower-art` rather than simply `bower`. In order to use Bower with Artifactory you need to run `npm install -g bower-art bower-art-resolver`
-
 #### Setting up bower locally
 1. Install node.js (platform dependent).
 2. Install bower: `# npm install -g bower`
-3. Install bower-installer: `# npm install -g bower-installer@0.7.1`
-4. Install bower-art: `# npm install -g bower-art bower-art-resolver`
-
-#### Installing new bower packages (and save to bower.json):
-1. `frontend# bower-art install --save awesome-package`
-2. `frontend# bower-installer`
-
-#### Updating bower packages
-1. `frontend# bower-art update [awesome-package]`
-2. `frontend# bower-installer`
 
 ## Dev Proxy
 

@@ -10,10 +10,9 @@ $(function () {
   var UNFILTERED_INDEX = 1;
   var FILTERED_INDEX = 2;
   var SELECTED_INDEX = 3;
+  var DOMAIN = location.host;
+  var DATASET_UID = location.pathname.split('/')[2];
   var COLUMN_NAME = 'category';
-  var DATASET_UID = 'r6t9-rak2';
-  var DOMAIN = 'dataspace.demo.socrata.com';
-
   var columnChartVIF = {
     'aggregation': {
       'columnName': null,

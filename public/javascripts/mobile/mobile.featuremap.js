@@ -15,8 +15,8 @@ $(document).ready(function() {
    * Set up the plugin.
    */
 
-  var DOMAIN = 'dataspace.demo.socrata.com';
-  var DATASET_UID = 'r6t9-rak2';
+  var DOMAIN = location.host;
+  var DATASET_UID = location.pathname.split('/')[2];
   var COLUMN_NAME = 'point';
 
   var flyoutRenderer = new socrata.visualizations.FlyoutRenderer();

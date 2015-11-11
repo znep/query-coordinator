@@ -34,15 +34,10 @@
 
     var self = this;
 
-    var _chartContainer;
     var _chartElement;
     var _chartWrapper;
     var _chartScroll;
     var _chartLabels;
-    var _chartTopAxisLabel;
-    var _chartRightAxisLabel;
-    var _chartBottomAxisLabel;
-    var _chartLeftAxisLabel;
 
     var _truncationMarker;
     var _lastRenderOptions;
@@ -137,7 +132,6 @@
       self.renderAxisLabels(chartContainer);
 
       // Cache element selections
-      _chartContainer = chartContainer;
       _chartElement = chartElement;
       _chartWrapper = chartWrapper;
       _chartScroll = chartScroll;

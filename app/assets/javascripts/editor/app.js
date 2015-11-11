@@ -10,52 +10,14 @@ $(document).on('ready', function() {
 
   storyteller.csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-  var airbrakeOptions = {
+  storyteller.airbrake = new storyteller.Airbrake({
+    'environemnt': storyteller.config.getAirbrakeConfig('environment'),
     'projectKey': storyteller.config.getAirbrakeConfig('projectKey'),
     'projectId': storyteller.config.getAirbrakeConfig('projectId')
-  };
-
-  if (airbrakeOptions.projectKey !== null) {
-    storyteller.airbrake = new airbrakeJs.Client(airbrakeOptions);
-    storyteller.airbrake.addFilter(function(notice) {
-      notice.context.environment = storyteller.config.getAirbrakeConfig('environment');
-      return notice;
-    });
-  }
-
-  storyteller.notifyAirbrake = function(error) {
-    if (!_.isUndefined(storyteller.airbrake)) {
-      storyteller.airbrake.notify(error);
-    }
-    console.error(error);
-  };
-
-  $(window).error(function(event) {
-    storyteller.notifyAirbrake(event.originalEvent.error);
   });
 
   storyteller.assetFinder = new storyteller.AssetFinder();
   storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
-
-  var richTextFormats = [
-    { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
-    { id: 'heading2', tag: 'h2', name: 'Heading 2', dropdown: true },
-    { id: 'heading3', tag: 'h3', name: 'Heading 3', dropdown: true },
-    { id: 'heading4', tag: 'h4', name: 'Heading 4', dropdown: true },
-    { id: 'heading5', tag: 'h5', name: 'Heading 5', dropdown: true },
-    { id: 'heading6', tag: 'h6', name: 'Heading 6', dropdown: true },
-    { id: 'text', tag: null, name: 'Paragraph', dropdown: true },
-    { id: 'bold', tag: 'b', name: 'Bold', dropdown: false, group: 0 },
-    { id: 'italic', tag: 'i', name: 'Italic', dropdown: false, group: 0 },
-    { id: 'left', tag: null, name: 'Align Left', dropdown: false, group: 1 },
-    { id: 'center', tag: null, name: 'Align Center', dropdown: false, group: 1 },
-    { id: 'right', tag: null, name: 'Align Right', dropdown: false, group: 1 },
-    { id: 'orderedList', tag: 'ol', name: 'Ordered List', dropdown: false, group: 2 },
-    { id: 'unorderedList', tag: 'ul', name: 'Unordered List', dropdown: false, group: 2 },
-    { id: 'blockquote', tag: 'blockquote', name: 'Block Quote', dropdown: false, group: 2 },
-    { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 },
-    { id: 'clearFormatting', tag: null, name: 'Clear Formatting', dropdown: false, group: 4 }
-  ];
 
   /**
    * FLUX
@@ -92,13 +54,13 @@ $(document).on('ready', function() {
 
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),
-    richTextFormats
+    Constants.RICH_TEXT_FORMATS
   );
 
   var richTextEditorManager = new storyteller.RichTextEditorManager(
     storyteller.assetFinder,
     richTextEditorToolbar,
-    richTextFormats
+    Constants.RICH_TEXT_FORMATS
   );
   storyteller.richTextEditorManager = richTextEditorManager;
 

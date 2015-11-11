@@ -1,5 +1,4 @@
 (function(root) {
-
   'use strict';
 
   var utils = root.socrata.utils;
@@ -47,9 +46,8 @@
     var _truncationMarker;
     var _lastRenderOptions;
 
-    var _barGroupAndLabelContentsSpanSelector = '.bar-group, .labels .label .contents span';
     var _truncationMarkerSelector = '.truncation-marker';
-    var _barGroupAndLabelContentsSpanNotCloseIconSelector = '.bar-group, .labels .label .contents span:not(.icon-close)';
+    var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span:not(.icon-close), .labels .label .callout';
     var _labelsSelector = '.labels .label';
     var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
 
@@ -152,25 +150,25 @@
 
       element.on(
         'mouseenter, mousemove',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         showFlyout
       );
 
       element.on(
         'mouseleave',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         hideFlyout
       );
 
       element.on(
         'mouseenter',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         addHoverClassToBarGroup
       );
 
       element.on(
         'mouseleave',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -183,7 +181,7 @@
 
         element.on(
           'click',
-          _barGroupAndLabelContentsSpanSelector,
+          _barGroupAndLabelsSelector,
           selectDatum
         );
 
@@ -210,25 +208,25 @@
 
       element.off(
         'mouseenter, mousemove',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         showFlyout
       );
 
       element.off(
         'mouseleave',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         hideFlyout
       );
 
       element.off(
         'mouseenter',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         addHoverClassToBarGroup
       );
 
       element.off(
         'mouseleave',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -241,7 +239,7 @@
 
         element.off(
           'click',
-          _barGroupAndLabelContentsSpanSelector,
+          _barGroupAndLabelsSelector,
           selectDatum
         );
 
@@ -352,8 +350,8 @@
     }
 
     function addHoverClassToBarGroup(event) {
-
-      var barName = event.currentTarget.getAttribute('data-bar-name');
+      var datum = d3.select(event.currentTarget).datum();
+      var barName = _escapeQuotesAndBackslashes(datum[NAME_INDEX]);
 
       _chartWrapper.
         find('.bar-group').
@@ -362,7 +360,6 @@
     }
 
     function removeHoverClassFromBarGroup(event) {
-
       _chartWrapper.find('.bar-group').removeClass('highlight');
     }
 

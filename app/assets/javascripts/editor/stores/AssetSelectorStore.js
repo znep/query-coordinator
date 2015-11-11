@@ -243,14 +243,16 @@
       if (payload.visualization.format === 'classic') {
         _state.componentType = 'socrata.visualization.classic';
         _state.componentProperties = {
-          visualization: visualization
+          visualization: visualization,
+          dataset: _state.componentProperties.dataset
         };
 
         self._emitChange();
       } else if (payload.visualization.format === 'vif') {
         _state.componentType = 'socrata.visualization.{0}'.format(visualization.type);
         _state.componentProperties = {
-          vif: visualization
+          vif: visualization,
+          dataset: _state.componentProperties.dataset
         };
 
         self._emitChange();

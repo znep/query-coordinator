@@ -166,10 +166,19 @@ describe('SaveAs', function() {
       expect($saveAs.find('#save-as-name').hasClass('form-error')).to.be.false;
     });
 
-    it('should become inactive if the an area outside of the panel is clicked', function() {
+    it('should become inactive if the area outside of the panel is clicked', function() {
       testHelpers.TestDom.append($saveAs);
       testHelpers.fireMouseEvent($saveAs.find('.tool-panel')[0], 'click');
       expect($toolPanel.hasClass('active')).to.be.false;
+      testHelpers.TestDom.clear();
+    });
+
+    it('should not become inactive if the area outside of the panel is clicked and the save button is not idle', function() {
+      testHelpers.TestDom.append($saveAs);
+      $saveAs.isolateScope().saveStatus = 'saving';
+      $saveAs.isolateScope().$digest();
+      testHelpers.fireMouseEvent($saveAs.find('.tool-panel')[0], 'click');
+      expect($toolPanel.hasClass('active')).to.be.true;
       testHelpers.TestDom.clear();
     });
 

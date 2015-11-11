@@ -19,7 +19,8 @@
         var flyoutSelectors = [
           '.bar-group.active',
           '.bar-group.active .bar',
-          '.labels .label .contents span:not(.icon-close)'
+          '.labels .label .contents span:not(.icon-close)',
+          '.labels .label .callout'
         ];
 
         if (_.isEmpty(element.closest('.card-visualization'))) {

@@ -48,7 +48,7 @@
      * Public methods
      */
 
-    this.buildBaseQuery = function(filters) {
+    this.buildBaseQuery = function() {
       // TODO: Implement mapping of filters array into a query string
       return '';
     };

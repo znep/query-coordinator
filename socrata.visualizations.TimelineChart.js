@@ -454,7 +454,7 @@
           moment(currentDatum.date).format(formatStrings[datasetPrecision]);
         payload.unfilteredValue = renderUnit(currentDatum.unfiltered, unfilteredValueUnit);
         //payload.filteredValue = currentDatum.filtered;
-      };
+      }
 
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
@@ -527,7 +527,7 @@
     // the 'dragging' state so that we can selectively listen for mouseup
     // and apply the 'goalpost' selection area.
     var currentlyDragging = false;
-    
+
     var allChartLabelsShown = true;
 
     var flyoutIntervalPathSelector = '.datum-label';

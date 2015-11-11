@@ -5,3 +5,4 @@ coverage/
 REVISION
 marathon.properties
 *.swp
+npm-debug.log

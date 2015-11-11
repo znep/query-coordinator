@@ -383,8 +383,8 @@
         then(mapQueryToPromises);
 
       Promise.all([ dataPromise, precisionPromise ]).
-        then(renderDataFromPromises).
-        catch(handleError);
+        then(renderDataFromPromises)
+        ['catch'](handleError);
 
       function mapQueryResponseToPrecision(response) {
         var startIndex = _.indexOf(response.columns, SOQL_PRECISION_START_ALIAS);
@@ -462,12 +462,12 @@
 
       function mapQueryToPromises(dataQueryString) {
         var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-          catch(handleError);
+          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+          ['catch'](handleError);
 
         var filteredSoqlQuery = filteredSoqlDataProvider.
-          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-          catch(handleError);
+          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+          ['catch'](handleError);
 
         return Promise.all([unfilteredSoqlQuery, filteredSoqlQuery]);
       }

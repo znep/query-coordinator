@@ -117,6 +117,12 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
           end
         end
 
+        it 'only contains one anchor tag' do
+          within_frame(@squire_frame) do
+            expect(page).to have_selector('body a', :count => 1)
+          end
+        end
+
         it 'replaces the href with a new href' do
           within_frame(@squire_frame) do
             anchor = page.find('body a')

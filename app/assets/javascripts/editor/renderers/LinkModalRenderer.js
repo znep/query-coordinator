@@ -77,7 +77,7 @@
     }
 
     function toggleWarning(predicate) {
-      $warning[predicate ? 'addClass' : 'removeClass']('hidden');
+      $warning[predicate ? 'addClass' : 'removeClass']('invisible');
     }
 
     function toggleModal(predicate) {

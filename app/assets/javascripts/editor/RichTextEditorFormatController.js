@@ -213,6 +213,7 @@
             });
           } else {
             var anchor = '<a href="{0}" target="{1}" rel="nofollow">{2}</a>'.format(inputs.link, target, inputs.text);
+            selection.deleteContents();
             _squire.insertHTML(anchor);
           }
         }

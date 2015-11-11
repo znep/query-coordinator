@@ -66,13 +66,13 @@
     <div class="modal-input-group">
       <label for="link-text" class="modal-input-label">
         <%= t('editor.rich_text_toolbar.link_modal.link_label') %>
-        <span class="link-warning hidden">
-          <span class="icon-warning"></span>
-          <%= t('editor.rich_text_toolbar.link_modal.warning_message') %>
-        </span>
         <a href="" class="link-test-link-action"><%= t('editor.rich_text_toolbar.link_modal.test_link') %></a>
       </label>
       <input type="url" id="link-text" class="modal-input" placeholder="http://helloworld.com">
+      <span class="link-warning invisible">
+        <span class="icon-warning"></span>
+        <%= t('editor.rich_text_toolbar.link_modal.warning_message') %>
+      </span>
     </div>
 
     <div class="modal-input-group">

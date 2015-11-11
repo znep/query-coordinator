@@ -142,7 +142,7 @@
      */
     function _mapComponentTypeToFinalEditStep(type) {
       switch (type) {
-        case 'image': return Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD;
+        case 'image': return Actions.FILE_UPLOAD_DONE;
         case 'youtube.video': return Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE;
         case 'embeddedHtml': return Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE;
       }

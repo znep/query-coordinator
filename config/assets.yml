@@ -765,12 +765,14 @@ javascripts:
     - public/javascripts/util/lodash-mixins.js
 
   mobile:
+    - public/javascripts/mobile/components/SocrataColumnChart.js
     - public/javascripts/mobile/mobile.visualizations.VectorTileManager.js
     - public/javascripts/mobile/mobile.visualizations.rowInspector.js
     - public/javascripts/mobile/mobile.visualizations.FeatureMap.js
     - public/javascripts/mobile/components/SocrataFeatureMap.js
     - public/javascripts/mobile/main.js
     - public/javascripts/mobile/mobile.featuremap.js
+    - public/javascripts/mobile/mobile.columnchart.js
 
 dump:
   javascripts:

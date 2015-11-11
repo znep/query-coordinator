@@ -289,3 +289,4 @@ mobile:
 - mobile/components/meta
 - mobile/components/feature-map
 - mobile/components/row-inspector
+- mobile/components/column-chart

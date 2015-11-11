@@ -37,6 +37,10 @@ body {
   padding: 0;
   font-family: 'Open Sans', sans-serif;
 
+  [class^="icon-"], [class*=" icon-"] {
+    font-family: 'socrata-apps' !important;
+  }
+
   .browse2-create-asset {
     position: relative;
     display: block;

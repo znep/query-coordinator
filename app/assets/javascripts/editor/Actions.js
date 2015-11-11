@@ -198,7 +198,7 @@
     // No Payload
     LINK_MODAL_CLOSE: 'LINK_MODAL_CLOSE',
 
-    // No Payload
+    // {string} editorId
     LINK_MODAL_OPEN: 'LINK_MODAL_OPEN',
 
     // {string} text

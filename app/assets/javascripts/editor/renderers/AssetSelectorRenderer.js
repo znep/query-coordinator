@@ -822,6 +822,11 @@
       var loadingButton = _dialog.find('.btn-busy');
       var insertButton = _dialog.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY));
       var insecureHtmlWarning = _dialog.find('.asset-selector-insecure-html-warning');
+      var textareaElement = _dialog.find('.asset-selector-text-input');
+
+      function textareaIsUnedited() {
+        return textareaElement.val() === '';
+      }
 
       if (_.has(componentProperties, 'url')) {
         htmlFragmentUrl = componentProperties.url;
@@ -841,6 +846,20 @@
 
         if (iframeSrc !== htmlFragmentUrl) {
           iframeElement.attr('src', htmlFragmentUrl);
+
+          // On first load, prepopulate the textarea with whatever
+          // HTML previously entered.
+          if (textareaIsUnedited()) {
+            $.get(htmlFragmentUrl).then(function(htmlFragment) {
+              // DO NOT PUT THIS DIRECTLY INTO THE DOM!
+              // htmlFragment is _arbitrary_ html - we display it
+              // only in other-domain iframes for security.
+              // Here, we're only putting the content into a textarea.
+              if (textareaIsUnedited()) {
+                textareaElement.val(htmlFragment);
+              }
+            });
+          }
         }
 
         iframeContainer.

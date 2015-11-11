@@ -526,7 +526,7 @@
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
       var editor;
       var editorId;
-      var contentHeight;
+      var contentHeight = 0;
       var maxEditorHeight = 0;
       var contentMissingCheck = function(iframe) {
         // If we have a height, then we have a loaded Squire instance.

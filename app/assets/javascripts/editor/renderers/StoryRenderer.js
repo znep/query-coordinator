@@ -524,6 +524,7 @@
     function _updateEditorHeights(blockId, $blockElement) {
 
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
+      var editor;
       var editorId;
       var contentHeight;
       var maxEditorHeight = 0;
@@ -551,9 +552,11 @@
             children(':first').
             attr('data-editor-id');
 
-          contentHeight = storyteller.richTextEditorManager.
-            getEditor(editorId).
-            getContentHeight();
+          editor = storyteller.richTextEditorManager.getEditor(editorId);
+
+          if (editor) {
+            contentHeight = editor.getContentHeight();
+          }
         } else {
 
           contentHeight = $blockElement.

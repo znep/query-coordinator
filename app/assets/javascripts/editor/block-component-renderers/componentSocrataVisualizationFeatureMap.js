@@ -73,7 +73,7 @@
     }
   }
 
-  function componentSocrataVisualizationFeatureMap(componentData) {
+  function componentSocrataVisualizationFeatureMap(componentData, theme, options) {
     var $this = $(this);
 
     utils.assertHasProperty(componentData, 'type');
@@ -87,6 +87,7 @@
     }
 
     _updateVisualization($this, componentData);
+    $this.componentEditButton(componentData, theme, options);
 
     return $this;
   }

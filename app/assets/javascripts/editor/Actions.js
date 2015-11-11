@@ -126,6 +126,11 @@
     // {number} componentIndex
     ASSET_SELECTOR_CHOOSE_PROVIDER: 'ASSET_SELECTOR_CHOOSE_PROVIDER',
 
+    // Edit an existing asset.
+    // {string} blockId
+    // {number} componentIndex
+    ASSET_SELECTOR_EDIT_EXISTING: 'ASSET_SELECTOR_EDIT_EXISTING',
+
     // No payload
     ASSET_SELECTOR_APPLY: 'ASSET_SELECTOR_APPLY',
 

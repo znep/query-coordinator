@@ -70,6 +70,38 @@ body.story-save-error .user-story-container {
       }
     }
 
+    .component {
+      position: relative;
+
+      .component-edit-controls {
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        text-align: center;
+        margin-top: 1rem;
+        margin-right: 1rem;
+
+        .component-edit-controls-edit-btn {
+          color: #fff;
+          background-color: $block-edit-controls-bg-color;
+          padding: 0.75rem 1rem;
+          border: none;
+          outline: none;
+
+          &:hover {
+            background-color: $block-edit-controls-hover-color;
+          }
+        }
+      }
+
+      &:hover {
+        .component-edit-controls {
+          opacity: 1;
+        }
+      }
+    }
+
     &:hover {
       z-index: $active-block-edit-z-index;
 

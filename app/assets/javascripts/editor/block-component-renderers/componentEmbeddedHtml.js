@@ -51,7 +51,7 @@
     }
   }
 
-  function componentEmbeddedHtml(componentData) {
+  function componentEmbeddedHtml(componentData, theme, options) {
 
     var $this = $(this);
 
@@ -69,6 +69,7 @@
 
     _updateSrc($this, componentData);
     _updateIframeHeight($this, componentData);
+    $this.componentEditButton(componentData, theme, options);
 
     return $this;
   }

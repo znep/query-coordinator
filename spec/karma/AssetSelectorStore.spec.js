@@ -347,5 +347,74 @@ describe('AssetSelectorStore', function() {
         });
       });
     });
+
+    describe('Editing an existing', function() {
+      var blockIdBeingEdited;
+      function editComponent(blockId) {
+        blockIdBeingEdited = blockId;
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_EDIT_EXISTING,
+          blockId: blockId,
+          componentIndex: 0
+        });
+      }
+
+      function verifyStepIs(step) {
+        it('should set the step to {0}'.format(step), function() {
+          assert.equal(storyteller.assetSelectorStore.getStep(), Actions[step]);
+        });
+      }
+
+      function verifyComponentDataMatches() {
+        it('should copy componentValue into assetSelectorStore', function() {
+          assert.deepEqual(
+            storyteller.assetSelectorStore.getComponentValue(),
+            storyteller.storyStore.getBlockComponentAtIndex(blockIdBeingEdited, 0).value
+          );
+        });
+        it('should copy componentType into assetSelectorStore', function() {
+          assert.deepEqual(
+            storyteller.assetSelectorStore.getComponentType(),
+            storyteller.storyStore.getBlockComponentAtIndex(blockIdBeingEdited, 0).type
+          );
+        });
+        it('should copy componentIndex into assetSelectorStore', function() {
+          assert.equal(
+            storyteller.assetSelectorStore.getComponentIndex(),
+            0 // All these tests use the first component.
+          );
+        });
+        it('should copy blockId into assetSelectorStore', function() {
+          assert.equal(
+            storyteller.assetSelectorStore.getBlockId(),
+            blockIdBeingEdited
+          );
+        });
+      }
+
+      describe('image', function() {
+        beforeEach(function() { editComponent(standardMocks.imageBlockId); });
+        verifyStepIs('FILE_UPLOAD_DONE');
+        verifyComponentDataMatches();
+      });
+
+      describe('socrata.visualization.classic', function() {
+        beforeEach(function() { editComponent(standardMocks.classicVizBlockId); });
+        verifyStepIs('ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET');
+        verifyComponentDataMatches();
+      });
+
+      describe('socrata.visualization.columnChart', function() {
+        beforeEach(function() { editComponent(standardMocks.vifBlockId); });
+        verifyStepIs('ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET');
+        verifyComponentDataMatches();
+      });
+
+      describe('youtube.video', function() {
+        beforeEach(function() { editComponent(standardMocks.youtubeBlockId); });
+        verifyStepIs('ASSET_SELECTOR_CHOOSE_YOUTUBE');
+        verifyComponentDataMatches();
+      });
+    });
   });
 });

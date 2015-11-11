@@ -616,7 +616,7 @@
       }
 
       // Provide the initial or updated data to the renderer.
-      $componentContent[componentRenderer](componentData, theme);
+      $componentContent[componentRenderer](componentData, theme, { editMode: true });
     }
 
     /**

@@ -54,7 +54,7 @@
     }
   }
 
-  function componentSocrataVisualizationTimelineChart(componentData) {
+  function componentSocrataVisualizationTimelineChart(componentData, theme, options) {
     var $this = $(this);
 
     utils.assertHasProperty(componentData, 'type');
@@ -68,6 +68,7 @@
     }
 
     _updateVisualization($this, componentData);
+    $this.componentEditButton(componentData, theme, options);
 
     return $this;
   }

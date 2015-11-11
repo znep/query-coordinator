@@ -37,6 +37,10 @@
           _chooseProvider(payload);
           break;
 
+        case Actions.ASSET_SELECTOR_EDIT_EXISTING:
+          _editExisting(payload);
+          break;
+
         case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
           _chooseYoutube();
           break;
@@ -131,6 +135,47 @@
     /**
      * Private methods
      */
+
+    /**
+     * Given an asset type (i.e. "socrata.visualization.classic"), returns
+     * the action name for the final step in the wizard.
+     */
+    function _mapComponentTypeToFinalEditStep(type) {
+      switch (type) {
+        case 'image': return Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD;
+        case 'youtube.video': return Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE;
+        case 'embeddedHtml': return Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE;
+      }
+
+      if (type.indexOf('socrata.visualization.') === 0) {
+        return Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET;
+      }
+
+      // Something went wrong and we don't know where to pick up from (new embed type?),
+      // so open the wizard at the very first step.
+      return Actions.ASSET_SELECTOR_CHOOSE_PROVIDER;
+    }
+
+    function _editExisting(payload) {
+      var component;
+
+      utils.assertHasProperties(payload, 'blockId', 'componentIndex');
+
+      component = storyteller.storyStore.getBlockComponentAtIndex(
+        payload.blockId,
+        payload.componentIndex
+      );
+
+      _state = {
+        step: _mapComponentTypeToFinalEditStep(component.type),
+        blockId: payload.blockId,
+        componentIndex: payload.componentIndex,
+        componentType: component.type,
+        componentProperties: component.value
+      };
+
+      self._emitChange();
+    }
 
     function _chooseProvider(payload) {
       utils.assertHasProperties(payload, 'blockId', 'componentIndex');

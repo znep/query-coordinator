@@ -28,10 +28,6 @@
       });
     }
 
-    this.getAirbrakeInstance = function() {
-      return _airbrake;
-    };
-
     this.notify = function(error) {
       if (!_.isUndefined(_airbrake)) {
         _airbrake.notify(error);

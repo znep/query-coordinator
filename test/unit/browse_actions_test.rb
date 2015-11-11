@@ -47,6 +47,46 @@ class BrowseActionsTest < Test::Unit::TestCase
       assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'new_view'},
         'data lens transition state is post_beta but we do not have a data lens link in the catalog')
     end
+
+    # There was a regression around this
+    def test_whitelisting_of_view_types_is_respected
+      whitelisted_view_type_values = %w(datasets charts)
+      CurrentDomain
+        .expects(:property)
+        .with(:view_types_facet, :catalog)
+        .returns(whitelisted_view_type_values)
+
+      view_types_facet = @browse_actions_container.send(:view_types_facet)
+      actual_view_type_values = view_types_facet[:options].collect { |vt| vt[:value] }
+
+      assert_equal whitelisted_view_type_values, actual_view_type_values
+    end
+
+    # Documenting behavior that is possibly not desired
+    def test_defined_but_empty_whitelist_allows_no_view_types
+      CurrentDomain
+        .expects(:property)
+        .with(:view_types_facet, :catalog)
+        .returns([])
+
+      view_types_facet = @browse_actions_container.send(:view_types_facet)
+      actual_view_type_values = view_types_facet[:options].collect { |vt| vt[:value] }
+
+      assert_empty actual_view_type_values
+    end
+
+    # Let's make sure this keeps working
+    def test_standard_view_types_show_up_without_whitelisting
+      standard_view_types = @browse_actions_container.send(:standard_view_types)
+
+      view_types_facet = @browse_actions_container.send(:view_types_facet)
+      actual_view_types = view_types_facet[:options]
+
+      assert standard_view_types.present?
+      standard_view_types.each do |svt|
+        assert actual_view_types.include?(svt)
+      end
+    end
   end
 
   describe 'cetera_feature_flag' do

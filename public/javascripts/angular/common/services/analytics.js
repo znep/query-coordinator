@@ -197,7 +197,8 @@
           },
           'contentType': 'application/json',
           'dataType': 'json',
-          'requester': {}
+          'requester': {},
+          'csrfRequired': false
         };
 
         http.post(analyticsUrl, analyticsPayload, analyticsConfig);

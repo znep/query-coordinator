@@ -12,8 +12,8 @@
   },
   "title": "UFO Sightings Test: plausibility (filtered on BAC)",
   "aggregation": {
-    "function": "count",
-    "field": null
+    "function": "sum",
+    "field": "plausibility"
   },
   "columnName": "plausibility",
   "unit": {

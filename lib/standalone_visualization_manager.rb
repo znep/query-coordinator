@@ -71,7 +71,7 @@ class StandaloneVisualizationManager
       :pageId => vif_lens_id,
       :permissions => permissions,
       :primaryAggregation => vif[:aggregation][:function],
-      :primaryAmountField => vif[:aggregation][:columnName],
+      :primaryAmountField => vif[:aggregation][:field],
       :version => 3
     }.with_indifferent_access
 

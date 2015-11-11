@@ -7,50 +7,44 @@ describe('AssetSelectorStore', function() {
 
     describe('when in an uninitialized state', function() {
 
-      describe('.getCurrentSelectorState()', function() {
+      describe('.getStep()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentSelectorState(), null);
+          assert.equal(storyteller.assetSelectorStore.getStep(), null);
         });
       });
 
-      describe('.getCurrentBlockId()', function() {
+      describe('.getBlockId()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentBlockId(), null);
+          assert.equal(storyteller.assetSelectorStore.getBlockId(), null);
         });
       });
 
-      describe('.getCurrentComponentIndex()', function() {
+      describe('.getComponentIndex()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentComponentIndex(), null);
+          assert.equal(storyteller.assetSelectorStore.getComponentIndex(), null);
         });
       });
 
-      describe('.getCurrentComponentType()', function() {
+      describe('.getComponentType()', function() {
 
-        it('should return "assetSelector"', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentComponentType(), 'assetSelector');
+        it('should return undefined', function() {
+          assert.isUndefined(storyteller.assetSelectorStore.getComponentType());
         });
       });
 
-      describe('.getCurrentComponentValue()', function() {
+      describe('.getComponentValue()', function() {
 
-        it('should return an empty object', function() {
+        it('should return undefined', function() {
 
-          var value = storyteller.assetSelectorStore.getCurrentComponentValue();
+          var value = storyteller.assetSelectorStore.getComponentValue();
 
-          assert.isObject(value, 'object');
+          assert.isUndefined(value);
         });
       });
 
-      describe('.isValid()', function() {
-
-        it('should return false', function() {
-          assert.isFalse(storyteller.assetSelectorStore.isValid());
-        });
-      });
     });
 
     describe('after an `ASSET_SELECTOR_CHOOSE_PROVIDER` action', function() {
@@ -66,33 +60,27 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      describe('.getCurrentSelectorState()', function() {
+      describe('.getStep()', function() {
 
         it('should return the action specified in the action payload', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentSelectorState(), Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
+          assert.equal(storyteller.assetSelectorStore.getStep(), Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
         });
       });
 
-      describe('.getCurrentBlockId()', function() {
+      describe('.getBlockId()', function() {
 
         it('should return the blockId specified in the action payload', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentBlockId(), testBlockId);
+          assert.equal(storyteller.assetSelectorStore.getBlockId(), testBlockId);
         });
       });
 
-      describe('.getCurrentComponentIndex()', function() {
+      describe('.getComponentIndex()', function() {
 
         it('should return the componentIndex specified in the action payload', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentComponentIndex(), testComponentIndex);
+          assert.equal(storyteller.assetSelectorStore.getComponentIndex(), testComponentIndex);
         });
       });
 
-      describe('.isValid()', function() {
-
-        it('should return false', function() {
-          assert.isFalse(storyteller.assetSelectorStore.isValid());
-        });
-      });
     });
 
     describe('after an `ASSET_SELECTOR_CLOSE` action', function() {
@@ -112,33 +100,27 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      describe('.getCurrentSelectorState()', function() {
+      describe('.getStep()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentSelectorState(), null);
+          assert.equal(storyteller.assetSelectorStore.getStep(), null);
         });
       });
 
-      describe('.getCurrentBlockId()', function() {
+      describe('.getBlockId()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentBlockId(), null);
+          assert.equal(storyteller.assetSelectorStore.getBlockId(), null);
         });
       });
 
-      describe('.getCurrentComponentIndex()', function() {
+      describe('.getComponentIndex()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentComponentIndex(), null);
+          assert.equal(storyteller.assetSelectorStore.getComponentIndex(), null);
         });
       });
 
-      describe('.isValid()', function() {
-
-        it('should return false', function() {
-          assert.isFalse(storyteller.assetSelectorStore.isValid());
-        });
-      });
     });
 
     describe('after an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action', function() {
@@ -185,7 +167,7 @@ describe('AssetSelectorStore', function() {
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getCurrentComponentValue().dataset.datasetUid,
+          storyteller.assetSelectorStore.getComponentValue().dataset.datasetUid,
           standardMocks.validStoryUid
         );
       });
@@ -217,7 +199,7 @@ describe('AssetSelectorStore', function() {
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getCurrentComponentType(),
+          storyteller.assetSelectorStore.getComponentType(),
           'socrata.visualization.columnChart'
         );
       })
@@ -233,10 +215,10 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      describe('.getCurrentComponentValue()', function() {
+      describe('.getComponentValue()', function() {
         it('returns object with percentLoaded', function() {
           assert.deepEqual(
-            storyteller.assetSelectorStore.getCurrentComponentValue(),
+            storyteller.assetSelectorStore.getComponentValue(),
             { percentLoaded: 0.245 }
           );
         });
@@ -256,19 +238,19 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      describe('.getCurrentComponentType()', function() {
+      describe('.getComponentType()', function() {
         it('returns `image`', function() {
           assert.equal(
-            storyteller.assetSelectorStore.getCurrentComponentType(),
+            storyteller.assetSelectorStore.getComponentType(),
             'image'
           );
         });
       });
 
-      describe('.getCurrentComponentValue()', function() {
+      describe('.getComponentValue()', function() {
         it('returns payload with url and documentId', function() {
           assert.deepEqual(
-            storyteller.assetSelectorStore.getCurrentComponentValue(),
+            storyteller.assetSelectorStore.getComponentValue(),
             { documentId: payloadDocumentId, url: payloadUrl }
           );
         });
@@ -287,19 +269,19 @@ describe('AssetSelectorStore', function() {
           });
         });
 
-        describe('.getCurrentComponentType()', function() {
+        describe('.getComponentType()', function() {
           it('returns `imageUploadError`', function() {
             assert.equal(
-              storyteller.assetSelectorStore.getCurrentComponentType(),
+              storyteller.assetSelectorStore.getComponentType(),
               'imageUploadError'
             );
           });
         });
 
-        describe('.getCurrentComponentValue()', function() {
+        describe('.getComponentValue()', function() {
           it('returns `validation_file_type`', function() {
             assert.deepEqual(
-              storyteller.assetSelectorStore.getCurrentComponentValue(),
+              storyteller.assetSelectorStore.getComponentValue(),
               { step: 'validation_file_type' }
             );
           });
@@ -316,19 +298,19 @@ describe('AssetSelectorStore', function() {
           });
         });
 
-        describe('.getCurrentComponentType()', function() {
+        describe('.getComponentType()', function() {
           it('returns `imageUploadError`', function() {
             assert.equal(
-              storyteller.assetSelectorStore.getCurrentComponentType(),
+              storyteller.assetSelectorStore.getComponentType(),
               'imageUploadError'
             );
           });
         });
 
-        describe('.getCurrentComponentValue()', function() {
+        describe('.getComponentValue()', function() {
           it('returns `validation_file_size`', function() {
             assert.deepEqual(
-              storyteller.assetSelectorStore.getCurrentComponentValue(),
+              storyteller.assetSelectorStore.getComponentValue(),
               { step: 'validation_file_size' }
             );
           });
@@ -346,19 +328,19 @@ describe('AssetSelectorStore', function() {
           });
         });
 
-        describe('.getCurrentComponentType()', function() {
+        describe('.getComponentType()', function() {
           it('returns `imageUploadError`', function() {
             assert.equal(
-              storyteller.assetSelectorStore.getCurrentComponentType(),
+              storyteller.assetSelectorStore.getComponentType(),
               'imageUploadError'
             );
           });
         });
 
-        describe('.getCurrentComponentValue()', function() {
+        describe('.getComponentValue()', function() {
           it('returns `get_upload_url`', function() {
             assert.deepEqual(
-              storyteller.assetSelectorStore.getCurrentComponentValue(),
+              storyteller.assetSelectorStore.getComponentValue(),
               { step: 'get_upload_url', reason: { status: 500, message: 'Internal Server Error' } }
             );
           });

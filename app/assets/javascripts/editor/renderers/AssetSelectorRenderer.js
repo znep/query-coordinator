@@ -11,7 +11,7 @@
     var _container = options.assetSelectorContainerElement || null;
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });
-    var _lastRenderedState = null;
+    var _lastRenderedStep = null;
     var _warnAboutInsecureHTML = false;
 
     if (!(_container instanceof jQuery)) {
@@ -189,8 +189,8 @@
           case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             storyteller.dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
-              blockId: storyteller.assetSelectorStore.getCurrentBlockId(),
-              componentIndex: storyteller.assetSelectorStore.getCurrentComponentIndex()
+              blockId: storyteller.assetSelectorStore.getBlockId(),
+              componentIndex: storyteller.assetSelectorStore.getComponentIndex()
             });
             break;
 
@@ -221,10 +221,10 @@
           case Actions.ASSET_SELECTOR_APPLY:
             storyteller.dispatcher.dispatch({
               action: Actions.BLOCK_UPDATE_COMPONENT,
-              blockId: storyteller.assetSelectorStore.getCurrentBlockId(),
-              componentIndex: storyteller.assetSelectorStore.getCurrentComponentIndex(),
-              type: storyteller.assetSelectorStore.getCurrentComponentType(),
-              value: storyteller.assetSelectorStore.getCurrentComponentValue()
+              blockId: storyteller.assetSelectorStore.getBlockId(),
+              componentIndex: storyteller.assetSelectorStore.getComponentIndex(),
+              type: storyteller.assetSelectorStore.getComponentType(),
+              value: storyteller.assetSelectorStore.getComponentValue()
             });
             storyteller.dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_CLOSE
@@ -245,19 +245,19 @@
 
     function _renderSelector() {
 
-      var state = storyteller.assetSelectorStore.getCurrentSelectorState();
-      var componentType = storyteller.assetSelectorStore.getCurrentComponentType();
-      var componentValue = storyteller.assetSelectorStore.getCurrentComponentValue();
+      var step = storyteller.assetSelectorStore.getStep();
+      var componentType = storyteller.assetSelectorStore.getComponentType();
+      var componentValue = storyteller.assetSelectorStore.getComponentValue();
       var selectorContent;
 
-      // See if we need to render a new template, then render a media selector state if
+      // See if we need to render a new template, then render a media selector step if
       // necessary.
-      if (state !== _lastRenderedState) {
+      if (step !== _lastRenderedStep) {
 
-        // Remove state-specific modal container classes
+        // Remove step-specific modal container classes
         _resetModalDialogClass();
 
-        switch (state) {
+        switch (step) {
 
           case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             selectorContent = _renderChooseProvider();
@@ -310,7 +310,7 @@
       // This handles updating data when the template does NOT need to be re-rendered
       // Note: Some templates may not have renderData function because they do
       // not update dynamically
-      switch (state) {
+      switch (step) {
 
         case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
           _renderChooseYoutubeData(componentValue);
@@ -336,7 +336,7 @@
           break;
       }
 
-      _lastRenderedState = state;
+      _lastRenderedStep = step;
     }
 
     function _renderChooseProvider() {

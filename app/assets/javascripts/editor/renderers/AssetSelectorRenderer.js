@@ -997,11 +997,15 @@
     }
 
     function _renderConfigureVisualizationData(componentType, componentProperties) {
+      var insertButton = _dialog.find(
+        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
+      );
+
+
       if (componentProperties.dataset) {
         var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
         var currentIframeSrc = iframeElement.attr('src');
         var newIframeSrc = _visualizationChooserUrl(componentProperties.dataset.datasetUid);
-
         if (currentIframeSrc !== newIframeSrc) {
           iframeElement.
             attr('src', newIframeSrc).
@@ -1009,16 +1013,12 @@
               $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
             });
         }
-      } else {
-        var insertButton = _dialog.find(
-          '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
-        );
+      }
 
-        if (componentType) {
-          insertButton.prop('disabled', false);
-        } else {
-          insertButton.prop('disabled', true);
-        }
+      if (componentType) {
+        insertButton.prop('disabled', false);
+      } else {
+        insertButton.prop('disabled', true);
       }
     }
 

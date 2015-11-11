@@ -55,7 +55,8 @@
         ];
 
         this.displayType = pageMetadata.displayType;
-        this.isStandaloneVisualization = this.displayType === 'data_lens_chart' || this.displayType === 'data_lens_map';
+        this.isStandaloneVisualization =
+            this.displayType === 'data_lens_chart' || this.displayType === 'data_lens_map';
 
         var deserializedCards = _.map(pageMetadata.cards, function(serializedCard) {
           return Card.deserialize(self, serializedCard);

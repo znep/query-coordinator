@@ -26,7 +26,7 @@ en:
         link_label: 'Link Destination'
         test_link: 'Test Link'
         open_in_new_window: 'Open in New Window'
-        warning_message: 'Oh no! This needs to be a valid link.'
+        warning_message: 'Oh no! This looks like an invalid link.'
     components:
       asset_selector:
         insert_btn: 'Insert'

@@ -357,15 +357,15 @@
       );
 
       var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-        query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-        catch(function(error) {
+        query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+        ['catch'](function(error) {
           _logError(error);
           visualization.renderError();
         });
 
       var filteredSoqlQuery = filteredSoqlDataProvider.
-        query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-        catch(function(error) {
+        query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+        ['catch'](function(error) {
           _logError(error);
           visualization.renderError();
         });
@@ -386,8 +386,8 @@
             _getRenderOptions()
           );
           _selectFirst();
-        }).
-        catch(function(error) {
+        })
+        ['catch'](function(error) {
           _logError(error);
           visualization.renderError();
         });

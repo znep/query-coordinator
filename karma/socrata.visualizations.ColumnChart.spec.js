@@ -1610,45 +1610,76 @@ describe('socrata.visualizations.ColumnChart', function() {
 
   describe('when highlighting bars', function() {
 
-    var $label;
+    var $hoverTarget;
     var dataBarName;
 
     beforeEach(function() {
       columnChart = createColumnChart();
       columnChart.chart.render(testData, columnChart.renderOptions);
-
-      $label = $('.labels .label').eq(0);
-      dataBarName = $label.attr('data-bar-name');
-
-      $label.trigger('mouseenter');
     });
 
     afterEach(function() {
       removeColumnChart(columnChart);
     });
 
-    it('should highlight the corresponding bar on mouseenter of a label', function() {
+    describe('when hovering over callouts', function() {
+      beforeEach(function() {
+        $hoverTarget = $('.labels .label .callout').eq(0);
+        dataBarName = $hoverTarget.closest('.label').attr('data-bar-name');
 
-      var $highlightedBarGroup = $('.bar-group.highlight');
+        $hoverTarget.trigger('mouseenter');
+      });
 
-      expect($highlightedBarGroup).to.have.length(1);
-      expect($highlightedBarGroup.attr('data-bar-name')).to.equal(dataBarName);
+      it('should highlight the corresponding bar on mouseenter of a label', function() {
+        var $highlightedBarGroup = $('.bar-group.highlight');
+
+        expect($highlightedBarGroup).to.have.length(1);
+        expect($highlightedBarGroup.attr('data-bar-name')).to.equal(dataBarName);
+      });
+
+      it('should un-highlight the corresponding bar on mouseleave of a label', function() {
+        $hoverTarget.trigger('mouseleave');
+
+        expect($('.bar-group.highlight')).to.have.length(0);
+      });
+
+      it('should un-highlight the corresponding bar on mouseleave of the chart element', function() {
+        var $chartElement = $('.column-chart');
+
+        $chartElement.trigger('mouseleave');
+
+        expect($('.bar-group.highlight')).to.have.length(0);
+      });
     });
 
-    it('should un-highlight the corresponding bar on mouseleave of a label', function() {
+    describe('when hovering over label text', function() {
+      beforeEach(function() {
+        $hoverTarget = $('.labels .label .contents span.text').eq(0);
+        dataBarName = $hoverTarget.closest('.label').attr('data-bar-name');
 
-      $label.trigger('mouseleave');
+        $hoverTarget.trigger('mouseenter');
+      });
 
-      expect($('.bar-group.highlight')).to.have.length(0);
-    });
+      it('should highlight the corresponding bar on mouseenter of a label', function() {
+        var $highlightedBarGroup = $('.bar-group.highlight');
 
-    it('should un-highlight the corresponding bar on mouseleave of the chart element', function() {
+        expect($highlightedBarGroup).to.have.length(1);
+        expect($highlightedBarGroup.attr('data-bar-name')).to.equal(dataBarName);
+      });
 
-      var $chartElement = $('.column-chart');
+      it('should un-highlight the corresponding bar on mouseleave of a label', function() {
+        $hoverTarget.trigger('mouseleave');
 
-      $chartElement.trigger('mouseleave');
+        expect($('.bar-group.highlight')).to.have.length(0);
+      });
 
-      expect($('.bar-group.highlight')).to.have.length(0);
+      it('should un-highlight the corresponding bar on mouseleave of the chart element', function() {
+        var $chartElement = $('.column-chart');
+
+        $chartElement.trigger('mouseleave');
+
+        expect($('.bar-group.highlight')).to.have.length(0);
+      });
     });
   });
 

@@ -50,6 +50,46 @@
 
 <div id="asset-selector-container" class="modal hidden"></div>
 
+<div id="link-modal" class="modal hidden">
+  <div class="modal-overlay" data-action="LINK_MODAL_CLOSE"></div>
+  <div class="modal-dialog">
+    <div class="modal-header-group">
+      <h1 class="modal-title"><%= t('editor.rich_text_toolbar.link_modal.heading') %></h1>
+      <button class="modal-close-btn icon-cross2" data-action="LINK_MODAL_CLOSE"></button>
+    </div>
+
+    <div class="modal-input-group">
+      <label for="display-text" class="modal-input-label"><%= t('editor.rich_text_toolbar.link_modal.display_label') %></label>
+      <input type="text" id="display-text" class="modal-input" placeholder="Text to Link">
+    </div>
+
+    <div class="modal-input-group">
+      <label for="link-text" class="modal-input-label">
+        <%= t('editor.rich_text_toolbar.link_modal.link_label') %>
+        <a href="" class="link-test-link-action"><%= t('editor.rich_text_toolbar.link_modal.test_link') %></a>
+      </label>
+      <input type="url" id="link-text" class="modal-input" placeholder="http://helloworld.com">
+      <span class="link-warning invisible">
+        <span class="icon-warning"></span>
+        <%= t('editor.rich_text_toolbar.link_modal.warning_message') %>
+      </span>
+    </div>
+
+    <div class="modal-input-group">
+      <input type="checkbox" id="open-in-new-window" class="modal-input">
+      <label for="open-in-new-window" class="modal-input-label">
+        <span class="icon-checkmark3"></span>
+        <%= t('editor.rich_text_toolbar.link_modal.open_in_new_window') %>
+      </label>
+    </div>
+
+    <div class="modal-button-group r-to-l">
+      <button class="btn-default btn-inverse" data-action="LINK_MODAL_CLOSE"><%= t('editor.modal.buttons.cancel') %></button>
+      <button class="btn-primary" data-action="LINK_MODAL_ACCEPT"><%= t('editor.modal.buttons.ok') %></button>
+    </div>
+  </div>
+</div>
+
 <div id="block-ghost" class="block hidden"></div>
 
 

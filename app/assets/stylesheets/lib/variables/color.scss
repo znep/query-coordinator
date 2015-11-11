@@ -1,5 +1,6 @@
 // body
 $body-bg-color: #fff;
+$link-color: #2295E1;
 
 // header
 $header-bg-color: #4a4747;
@@ -94,14 +95,16 @@ $modal-button-list-header-color: #3498db;
 $modal-button-list-description-color: #9b9b9b;
 
 // Media Selector
-$asset-selector-input-group-bg-color: #eee;
+$asset-selector-input-group-bg-color: #fff;
+$asset-selector-input-group-border-color: #c5c5c5;
 $asset-selector-preview-container-bg-color: #fff;
 $asset-selector-invalid-message-color: #333;
 $asset-selector-input-subtext-color: #4a4a4a;
-$asset-selector-input-label-color: #4a4a4a;
+$modal-input-label-color: #4a4a4a;
 
 // Forms
-$input-element-border-color: #ccc;
+$input-element-background-color: #f2f2f2;
+$input-element-border-color: #c5c5c5;
 
 // Buttons
 $btn-default-color: #757575;

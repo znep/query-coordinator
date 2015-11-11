@@ -1,7 +1,7 @@
 @import 'lib/variables';
+@import 'bourbon';
 
 .modal {
-
   position: fixed;
   width: 100%;
   height: 100%;
@@ -59,12 +59,6 @@
       font-size: $modal-title-font-size;
       line-height: $modal-title-line-height;
       color: $modal-title-color;
-
-      .btn-busy {
-        padding: 0;
-        margin-left: 1rem;
-        vertical-align: middle;
-      }
     }
 
     .modal-close-btn {
@@ -86,65 +80,71 @@
       }
     }
 
-    .back-btn .icon-arrow-left2 {
-      font-size: 0.8em;
+    .modal-input-group {
+      display: block;
+      position: relative;
+      padding: 0.5rem;
     }
 
-    .button-list li {
-      padding: 1.5rem 1rem;
-      border-bottom: solid 1px $modal-button-list-border-color;
-      position: relative;
-
-      &:last-child {
-        border-bottom: none;
+    .modal-input {
+      &:invalid {
+        border: solid 1px orange;
       }
+    }
 
-      &::after {
-        font-family: icomoon;
-        content: "\edb9";
-        position: absolute;
-        right: 1rem;
-        top: calc(6.8rem / 2 - 0.75rem);
+    .modal-input-label {
+      margin: 1rem 0;
+      text-align: left;
+      color: $modal-input-label-color;
+      font-size: 1.6rem;
+      font-weight: 600;
+
+      &.modal-input-label-centered {
+        text-align: center;
+      }
+    }
+
+    .modal-input[type="checkbox"] {
+      display: none;
+
+      + label span {
+        @include user-select(none);
+
         display: inline-block;
-        font-size: 1.5rem;
-        color: $modal-button-list-arrow-color;
-      }
-
-      &:hover {
-        background-color: $modal-button-list-hover-background-color;
+        width: 19px;
+        height: 19px;
+        background: #f2f2f2;
+        border: solid 1px #c5c5c5;
+        vertical-align: middle;
+        margin: -2px 1rem 0 0;
         cursor: pointer;
 
-        &::after {
-          color: $modal-button-list-hover-arrow-color;
+        &:before {
+          visibility: hidden;
+          margin-left: 1px;
         }
       }
 
-      h3 {
-        color: $modal-button-list-header-color;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-      }
-
-      p {
-        color: $modal-button-list-description-color;
-        font-size: 1.2rem;
+      &:checked {
+        + label span:before {
+          visibility: visible;
+        }
       }
     }
 
-    /* Visualization chooser */
-    .asset-selector-full-width-iframe {
-      width: 100%;
-      height: 400px;
-      margin-bottom: 1rem;
+    input[type="checkbox"] + .modal-input-label {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 0.25rem;
     }
 
-    .asset-selector-preview-image-container {
-      overflow: auto;
+    .modal-button-group {
+      &.r-to-l {
+        text-align: right;
 
-      img {
-        height: 100%;
-        margin: 0 auto;
-        display: block;
+        [class^="btn-"], [class*=" btn-"] {
+          margin-left: 1rem;
+        }
       }
     }
   }

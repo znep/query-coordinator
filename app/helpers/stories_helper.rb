@@ -87,5 +87,4 @@ module StoriesHelper
   def core_attributes
     CoreServer::get_view(@story.uid, CoreServer::headers_from_request(request)) || {}
   end
-
 end

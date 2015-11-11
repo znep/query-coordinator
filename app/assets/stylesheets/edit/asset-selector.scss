@@ -35,10 +35,12 @@
   margin-bottom: 1rem;
   padding: 1rem;
   background-color: $asset-selector-input-group-bg-color;
+  border-radius: 0.1rem;
 
   &.asset-selector-input-group-fixed-height {
     height: 32rem;
     padding: 1.5rem;
+    border: dashed 1px $asset-selector-input-group-border-color;
   }
 
   .asset-selector-input-subtext {
@@ -47,14 +49,14 @@
     font-weight: 600;
   }
 
-  .asset-selector-input-label {
+  .modal-input-label {
     margin: 1rem 0;
     text-align: left;
-    color: $asset-selector-input-label-color;
+    color: $modal-input-label-color;
     font-size: 1.5rem;
     font-weight: normal;
 
-    &.asset-selector-input-label-centered {
+    &.modal-input-label-centered {
       text-align: center;
     }
   }
@@ -118,7 +120,7 @@
     background-size: 20%;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    border: 1px solid $input-element-border-color;
+    border: 1px dashed $input-element-border-color;
     box-sizing: border-box;
 
     &.invalid {
@@ -179,14 +181,61 @@
   }
 }
 
-.asset-selector-button-group {
+.asset-selector-button-list li {
+  padding: 1.5rem 1rem;
+  border-bottom: solid 1px $modal-button-list-border-color;
+  position: relative;
 
-  &.r-to-l {
-    text-align: right;
+  &:last-child {
+    border-bottom: none;
+  }
 
-    [class^="btn-"], [class*=" btn-"] {
-      margin-left: 1rem;
+  &::after {
+    font-family: icomoon;
+    content: "\edb9";
+    position: absolute;
+    right: 1rem;
+    top: calc(6.8rem / 2 - 0.75rem);
+    display: inline-block;
+    font-size: 1.5rem;
+    color: $modal-button-list-arrow-color;
+  }
+
+  &:hover {
+    background-color: $modal-button-list-hover-background-color;
+    cursor: pointer;
+
+    &::after {
+      color: $modal-button-list-hover-arrow-color;
     }
+  }
+
+  h3 {
+    color: $modal-button-list-header-color;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: $modal-button-list-description-color;
+    font-size: 1.2rem;
+  }
+}
+
+/* Visualization chooser */
+.asset-selector-full-width-iframe {
+  width: 100%;
+  height: 400px;
+  margin-bottom: 1rem;
+}
+
+.asset-selector-preview-image-container {
+  overflow: auto;
+
+  img {
+    height: 100%;
+    margin: 0 auto;
+    display: block;
   }
 }
 

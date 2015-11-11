@@ -189,7 +189,25 @@
     EMBED_CODE_UPLOAD_DONE: 'EMBED_CODE_UPLOAD_DONE',
 
     // No payload
-    EMBED_CODE_UPLOAD_ERROR: 'EMBED_CODE_UPLOAD_ERROR'
+    EMBED_CODE_UPLOAD_ERROR: 'EMBED_CODE_UPLOAD_ERROR',
+
+    /**
+     * Link Modal
+     */
+
+    // No Payload
+    LINK_MODAL_CLOSE: 'LINK_MODAL_CLOSE',
+
+    // {string} editorId
+    LINK_MODAL_OPEN: 'LINK_MODAL_OPEN',
+
+    // {string} text
+    // {string} url
+    // {boolean} openInNewWindow
+    LINK_MODAL_UPDATE: 'LINK_MODAL_UPDATE',
+
+    // No Payload
+    LINK_MODAL_ACCEPT: 'LINK_MODAL_ACCEPT'
   };
 
   root.Actions = Actions;

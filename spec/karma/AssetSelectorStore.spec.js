@@ -562,7 +562,7 @@ describe('AssetSelectorStore', function() {
 
       describe('image', function() {
         beforeEach(function() { editComponent(standardMocks.imageBlockId); });
-        verifyStepIs('FILE_UPLOAD_DONE');
+        verifyStepIs('ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD');
         verifyComponentDataMatches();
       });
 

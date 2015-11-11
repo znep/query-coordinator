@@ -196,28 +196,46 @@
      */
 
     function _attachChangeListeners() {
-      storyteller.linkStore.addChangeListener(function() {
-        var editorId = storyteller.linkStore.getEditorId();
-        var inputs = storyteller.linkStore.getInputs();
-        var accepted = storyteller.linkStore.getAccepted();
+      storyteller.linkStore.addChangeListener(_insertLink);
+    }
 
-        if (editorId === _editor.id && accepted) {
-          var selection = _squire.getSelection();
-          var text = selection.toString();
-          var target = inputs.openInNewWindow ? '_blank' : '_self';
+    /**
+     * @function _insertLink
+     * @description
+     * Upon accepting edits made within a link modal, this function
+     * figures out the type of placement to make within the corresponding
+     * RichTextEditor.
+     *
+     * There are two code paths. The first is an easy Squire call to
+     * _makeLink, while the second generates an anchor tag, places the
+     * necessary values and then proceeds to replace the existing text
+     * with the new link.
+     *
+     * The two paths exist because the text can be edited within the link
+     * modal, but Squire's API doesn't support swapping text, and only supports
+     * wrapping the selection.
+     */
+    function _insertLink() {
+      var editorId = storyteller.linkStore.getEditorId();
+      var inputs = storyteller.linkStore.getInputs();
+      var accepted = storyteller.linkStore.getAccepted();
 
-          if (text === inputs.text || inputs.text.length === 0) {
-            _squire.makeLink(inputs.link, {
-              target: target,
-              rel: 'nofollow'
-            });
-          } else {
-            var anchor = '<a href="{0}" target="{1}" rel="nofollow">{2}</a>'.format(inputs.link, target, inputs.text);
-            selection.deleteContents();
-            _squire.insertHTML(anchor);
-          }
+      if (editorId === _editor.id && accepted) {
+        var selection = _squire.getSelection();
+        var text = selection.toString();
+        var target = inputs.openInNewWindow ? '_blank' : '_self';
+
+        if (text === inputs.text || inputs.text.length === 0) {
+          _squire.makeLink(inputs.link, {
+            target: target,
+            rel: 'nofollow'
+          });
+        } else {
+          var anchor = '<a href="{0}" target="{1}" rel="nofollow">{2}</a>'.format(inputs.link, target, inputs.text);
+          selection.deleteContents();
+          _squire.insertHTML(anchor);
         }
-      });
+      }
     }
 
     /**

@@ -367,7 +367,7 @@
       var embedCodeDescription = $('<p>').
         text(I18n.t('editor.asset_selector.embed_code.description'));
 
-      var providers = $('<ul>', {'class': 'button-list'}).append([
+      var providers = $('<ul>', {'class': 'asset-selector-button-list'}).append([
         $('<li>', {
           'data-action': Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
         }).append(visualizationHeader, visualizationDescription),
@@ -401,7 +401,7 @@
 
       var inputLabel = $(
         '<h2>',
-        { 'class': 'asset-selector-input-label asset-selector-input-label-centered input-label' }
+        { 'class': 'modal-input-label modal-input-label-centered input-label' }
       ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
 
       var inputButton = $('<button>', {
@@ -440,7 +440,7 @@
 
       var buttonGroup = $(
         '<div>',
-        { 'class': 'asset-selector-button-group r-to-l' }
+        { 'class': 'modal-button-group r-to-l' }
       ).append([
         backButton,
         insertButton
@@ -521,7 +521,7 @@
 
       var buttonGroup = $(
         '<div>',
-        { 'class': 'asset-selector-button-group r-to-l' }
+        { 'class': 'modal-button-group r-to-l' }
       ).append([
         backButton,
         insertButton
@@ -587,7 +587,7 @@
 
       var buttonGroup = $(
         '<div>',
-        { 'class': 'asset-selector-button-group r-to-l' }
+        { 'class': 'modal-button-group r-to-l' }
       ).append([
         backButton,
         insertButton
@@ -643,7 +643,7 @@
 
       var closeButton = _renderModalCloseButton();
 
-      var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
+      var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.youtube.input_label'));
 
       var inputControl = $(
@@ -720,7 +720,7 @@
       var buttonGroup = $(
         '<div>',
         {
-          'class': 'asset-selector-button-group r-to-l'
+          'class': 'modal-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
       return [ heading, closeButton, content, buttonGroup ];
@@ -927,7 +927,7 @@
       }).append($('<span>'));
 
       var buttonGroup = $('<div>', {
-        'class': 'asset-selector-button-group r-to-l'
+        'class': 'modal-button-group r-to-l'
       }).append([ backButton ]);
 
       datasetChooserIframe[0].onDatasetSelected = function(datasetObj) {
@@ -976,7 +976,7 @@
       }).append($('<span>'));
 
       var buttonGroup = $('<div>', {
-        'class': 'asset-selector-button-group r-to-l'
+        'class': 'modal-button-group r-to-l'
       }).append([ backButton, insertButton ]);
 
       configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format) {
@@ -1048,7 +1048,7 @@
         disabled: true
       }).append($('<span>'));
 
-      var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
+      var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.embed_code.input_label'));
 
       var inputControl = $(
@@ -1060,7 +1060,7 @@
         }
       );
 
-      var previewLabel = $('<h3>', { 'class': 'asset-selector-input-label input-label' }).
+      var previewLabel = $('<h3>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.embed_code.preview_label'));
 
       var previewInsecureMessage = $(
@@ -1136,7 +1136,7 @@
       var buttonGroup = $(
         '<div>',
         {
-          'class': 'asset-selector-button-group r-to-l'
+          'class': 'modal-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
       return [ heading, closeButton, content, buttonGroup ];

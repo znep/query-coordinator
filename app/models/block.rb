@@ -39,7 +39,7 @@ class Block < ActiveRecord::Base
     ),
     :attributes => {
       :all => [ 'class', 'style' ],
-      'a' => [ 'href' ]
+      'a' => [ 'href', 'target', 'rel' ]
     },
     :properties => 'text-align'
   }

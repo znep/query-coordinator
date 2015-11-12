@@ -78,16 +78,17 @@
     var _editorBodyElement = null;
     var _formatController = null;
     var _lastContentHeight = 0;
+    var _self = this;
 
     if (typeof contentToPreload !== 'undefined') {
       _contentToPreload = contentToPreload;
     }
 
-    _createEditor();
-
     /**
      * Public methods
      */
+
+    this.id = editorId;
 
     this.getFormatController = function() {
       return _formatController;
@@ -183,6 +184,12 @@
       _editorElement.remove();
     };
 
+    this.getSquireInstance = function() {
+      return _editor;
+    };
+
+    _createEditor();
+
     /**
      * Private methods
      */
@@ -198,7 +205,7 @@
         _editor = new Squire(e.target.contentWindow.document);
         _editorBodyElement = $(e.target.contentWindow.document).find('body');
         _formatController = new storyteller.RichTextEditorFormatController(
-          _editor,
+          _self,
           _formats
         );
 

@@ -112,6 +112,9 @@ $btn-busy-width: 2rem;
 $btn-busy-height: 2rem;
 $btn-busy-border-width: 1px;
 
+// Asset Selector
+$asset-selector-preview-border-radius: 0.3rem;
+
 // Preview button
 $preview-btn-right-margin: 3rem;
 $preview-btn-bottom-margin: 3rem;
@@ -122,7 +125,7 @@ $view-mode-button-width: 4.2rem;
 // Border radii
 $btn-border-radius: 1px;
 $modal-border-radius: 0.3rem;
-$input-element-border-radius: 0.3rem;
+$input-element-border-radius: 0.1rem;
 
 // Durations
 $transition-duration: 0.2s;

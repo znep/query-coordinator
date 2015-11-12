@@ -1,8 +1,9 @@
-(function(root) {
+(function() {
 
   'use strict';
 
-  var socrata = root.socrata;
+  var socrata = window.socrata;
+  var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
   /**
@@ -27,7 +28,7 @@
    */
   function RichTextEditorFormatController(editor, formats) {
 
-    if (!(editor instanceof Squire)) {
+    if (!(editor instanceof storyteller.RichTextEditor)) {
       throw new Error('`editor` argument is not an instance of Squire.');
     }
 
@@ -40,6 +41,7 @@
     }
 
     var _editor = editor;
+    var _squire = editor.getSquireInstance();
     var _formats = formats;
     var _commandDispatcher = {
       'heading1': function() { _setHeading('h1'); },
@@ -57,10 +59,11 @@
       'orderedList': function() { _toggleOrderedList(); },
       'unorderedList': function() { _toggleUnorderedList(); },
       'blockquote': function() { _toggleBlockquote(); },
-      'addLink': function(data) { _addLink(data); },
-      'removeLink': function() { _removeLink(); },
+      'link': function() { _link(); },
       'clearFormatting': function() { _clearFormat(); }
     };
+
+    _attachChangeListeners();
 
     /**
      * Public methods
@@ -164,7 +167,7 @@
 
           thisFormat = _formats[i];
 
-          if (thisFormat.tag !== null && _editor.hasFormat(thisFormat.tag)) {
+          if (thisFormat.tag !== null && _squire.hasFormat(thisFormat.tag)) {
             foundFormats.push(thisFormat);
           }
         }
@@ -181,7 +184,7 @@
         return foundFormats;
       }
 
-      var selection = _editor.getSelection();
+      var selection = _squire.getSelection();
       var foundAlignmentFormats = _recordAlignmentFormats(selection.commonAncestorContainer);
       var foundStyleFormats = _recordStyleFormats(selection.cloneContents());
 
@@ -191,6 +194,54 @@
     /**
      * Private methods
      */
+
+    function _attachChangeListeners() {
+      storyteller.linkStore.addChangeListener(_insertLink);
+    }
+
+    /**
+     * @function _insertLink
+     * @description
+     * Upon accepting edits made within a link modal, this function
+     * figures out the type of placement to make within the corresponding
+     * RichTextEditor.
+     *
+     * There are two code paths. The first is an easy Squire call to
+     * _makeLink, while the second generates an anchor tag, places the
+     * necessary values and then proceeds to replace the existing text
+     * with the new link.
+     *
+     * The two paths exist because the text can be edited within the link
+     * modal, but Squire's API doesn't support swapping text, and only supports
+     * wrapping the selection.
+     */
+    function _insertLink() {
+      var editorId = storyteller.linkStore.getEditorId();
+      var accepted = storyteller.linkStore.getAccepted();
+
+      if (editorId === _editor.id && accepted) {
+        var inputs = storyteller.linkStore.getInputs();
+        var selection = _squire.getSelection();
+        var text = selection.toString();
+        var target = inputs.openInNewWindow ? '_blank' : '_self';
+        var urlValid = storyteller.linkStore.getURLValidity();
+
+        if (!urlValid) {
+          inputs.link = 'http://' + inputs.link;
+        }
+
+        if (text === inputs.text || inputs.text.length === 0) {
+          _squire.makeLink(inputs.link, {
+            target: target,
+            rel: 'nofollow'
+          });
+        } else {
+          var anchor = '<a href="{0}" target="{1}" rel="nofollow">{2}</a>'.format(inputs.link, target, inputs.text);
+          selection.deleteContents();
+          _squire.insertHTML(anchor);
+        }
+      }
+    }
 
     /**
      * This is a utility method that changes every block-level container
@@ -245,7 +296,7 @@
         );
       }
 
-      _editor.modifyBlocks(
+      _squire.modifyBlocks(
         function(blockFragment) {
 
           var newFragment = document.createDocumentFragment();
@@ -311,75 +362,113 @@
 
     function _toggleBold() {
 
-      if (_editor.hasFormat('b')) {
-        _editor.removeBold();
+      if (_squire.hasFormat('b')) {
+        _squire.removeBold();
       } else {
-        _editor.bold();
+        _squire.bold();
       }
     }
 
     function _toggleItalic() {
 
-      if (_editor.hasFormat('i')) {
-        _editor.removeItalic();
+      if (_squire.hasFormat('i')) {
+        _squire.removeItalic();
       } else {
-        _editor.italic();
+        _squire.italic();
       }
     }
 
     function _blockAlignLeft() {
-      _editor.setTextAlignment('left');
+      _squire.setTextAlignment('left');
     }
 
     function _blockAlignCenter() {
-      _editor.setTextAlignment('center');
+      _squire.setTextAlignment('center');
     }
 
     function _blockAlignRight() {
-      _editor.setTextAlignment('right');
+      _squire.setTextAlignment('right');
     }
 
     function _toggleOrderedList() {
 
-      if (_editor.hasFormat('ol')) {
-        _editor.removeList();
-      } else if (_editor.hasFormat('ul')) {
-        _editor.removeList();
-        _editor.makeOrderedList();
+      if (_squire.hasFormat('ol')) {
+        _squire.removeList();
+      } else if (_squire.hasFormat('ul')) {
+        _squire.removeList();
+        _squire.makeOrderedList();
       } else {
-        _editor.makeOrderedList();
+        _squire.makeOrderedList();
       }
     }
 
     function _toggleUnorderedList() {
 
-      if (_editor.hasFormat('ul')) {
-        _editor.removeList();
-      } else if (_editor.hasFormat('ol')) {
-        _editor.removeList();
-        _editor.makeUnorderedList();
+      if (_squire.hasFormat('ul')) {
+        _squire.removeList();
+      } else if (_squire.hasFormat('ol')) {
+        _squire.removeList();
+        _squire.makeUnorderedList();
       } else {
-        _editor.makeUnorderedList();
+        _squire.makeUnorderedList();
       }
     }
 
     function _toggleBlockquote() {
 
-      if (_editor.hasFormat('blockquote')) {
+      if (_squire.hasFormat('blockquote')) {
         _updateBlockType('div');
       } else {
         _updateBlockType('blockquote');
       }
     }
 
-    function _addLink(url) {
-      _editor.makeLink(url);
-    }
+    function _link() {
+      var range;
+      var link;
+      var text;
+      var element;
+      var openInNewWindow;
 
-    function _removeLink() {
-      _editor.removeLink();
+      var selection = _squire.getSelection();
+
+      if (_squire.hasFormat('a')) {
+        // Browser may not agree on the startContainer.
+        // Here, we try to get to the anchor tag through two paths.
+        // The first path is an Element that is higher in the node hierarchy.
+        // The second path is a TextNode that is a child of the anchor tag.
+        if (selection.startContainer.nodeType === 1) {
+          element = selection.startContainer.querySelector('[href]');
+        } else if (selection.startContainer.nodeType === 3) {
+          element = selection.startContainer.parentElement;
+        }
+
+        range = document.createRange();
+        range.selectNode(element);
+        _squire.setSelection(range);
+
+        text = range.toString();
+        link = element.getAttribute('href');
+        openInNewWindow = element.getAttribute('target') === '_blank' ? true : false;
+      } else {
+        text = selection.toString();
+        link = '';
+        openInNewWindow = false;
+      }
+
+      storyteller.dispatcher.dispatch({
+        action: Actions.LINK_MODAL_OPEN,
+        editorId: editor.id
+      });
+
+      storyteller.dispatcher.dispatch({
+        action: Actions.LINK_MODAL_UPDATE,
+        text: text,
+        link: link,
+        openInNewWindow: openInNewWindow
+      });
     }
   }
 
-  root.socrata.storyteller.RichTextEditorFormatController = RichTextEditorFormatController;
-})(window);
+  storyteller.RichTextEditorFormatController = RichTextEditorFormatController;
+})();

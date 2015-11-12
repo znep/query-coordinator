@@ -22,6 +22,28 @@
       return 'component-' + type.replace(/\./g, '-').replace(/[A-Z]/g, '-$&').toLowerCase();
     },
 
+    /**
+     * @function queryParameters
+     * @description
+     * Build URL query parameters into a consumable data structure.
+     * @returns {Array} - A list of key-value pairs: [['key', 'value'], ...]
+     */
+    queryParameters: function() {
+      var search = window.location.search &&
+        window.location.search.length !== 0 &&
+        window.location.search.substring(1);
+
+      if (search) {
+        var parameters = search.split('&');
+
+        return parameters.map(function(parameter) {
+          return parameter.split('=');
+        });
+      } else {
+        return [];
+      }
+    },
+
     mapDOMFragmentDescending: function(element, applyFn, shouldTerminateFn) {
 
       var clonedElement = applyFn(element.cloneNode());

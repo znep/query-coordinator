@@ -11,6 +11,10 @@ class CoreServer
     view_request(uid: uid, verb: :put, headers: headers, data: view_data, query_params: query_params)
   end
 
+  def self.create_view(headers, title, query_params = nil)
+    view_request(verb: :post, headers: headers, data: view_with_title(title), query_params: query_params)
+  end
+
   def self.update_permissions(uid, headers, query_params)
     permissions_request(uid: uid, verb: :put, headers: headers, query_params: query_params)
   end
@@ -111,12 +115,16 @@ class CoreServer
   end
 
   def self.view_request(options)
-    raise ArgumentError("':uid' is required.") unless options.key?(:uid)
+    raise ArgumentError("':uid' is required.") if options[:verb] != :post && options.key?(:uid) == false
     raise ArgumentError("':verb' is required.") unless options.key?(:verb)
     raise ArgumentError("':headers' is required.") unless options.key?(:headers)
 
     verb = options[:verb]
-    path = "/views/#{options[:uid]}.json"
+    path = if verb == :post
+      "/views.json"
+    else
+      "/views/#{options[:uid]}.json"
+    end
 
     query_params = generate_query_params(options[:query_params])
     path << "?#{query_params}" unless query_params.blank?
@@ -234,4 +242,25 @@ class CoreServer
     http.request(core_request)
   end
 
+  def self.view_with_title(title)
+    {
+      name: title,
+      metadata: {
+        renderTypeConfig: {
+          visible: {
+            href: true
+          }
+        },
+        accessPoints: {
+          story: 'https://www.socrata.com/'
+        },
+        availableDisplayTypes: ['story'],
+        jsonQuery: {},
+        initialized: false
+      },
+      displayType: 'story',
+      displayFormat: {},
+      query: {}
+    }
+  end
 end

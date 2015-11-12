@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   scope '/s', constraints: { uid: UNANCHORED_FOUR_BY_FOUR_PATTERN } do
     get '(:vanity_text)/:uid' => 'stories#show'
     get ':uid/create' => 'stories#new'
+    get ':uid/copy' => 'stories#copy'
     post ':uid/create' => 'stories#create'
     get '(:vanity_text)/:uid/edit' => 'stories#edit'
     get '(:vanity_text)/:uid/preview' => 'stories#preview'

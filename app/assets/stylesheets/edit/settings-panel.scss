@@ -119,6 +119,7 @@
 }
 
 .settings-panel-displaying,
+.settings-panel-actions,
 .settings-panel-publishing {
   margin-top: 2rem;
 
@@ -144,11 +145,14 @@
 }
 
 .settings-panel-publishing {
+  margin-top: 1rem;
+
   > div {
     padding-top: 2rem;
   }
 }
 
+.settings-panel-make-a-copy,
 .settings-panel-story-visibility,
 .settings-panel-story-status {
   box-sizing: border-box;

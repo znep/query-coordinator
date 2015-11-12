@@ -20,7 +20,8 @@
     *************************/
 
     $scope.page = page;
-    $scope.$bindObservable('card', card$);
+    $scope.$bindObservable('model', card$);
+    $scope.$bindObservable('cardType', card$.observeOnLatest('cardType'));
     $scope.$bindObservable('windowSize', WindowState.windowSize$);
 
     /*******************************

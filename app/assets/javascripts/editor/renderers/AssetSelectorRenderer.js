@@ -1001,7 +1001,6 @@
         '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
       );
 
-
       if (componentProperties.dataset) {
         var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
         var currentIframeSrc = iframeElement.attr('src');

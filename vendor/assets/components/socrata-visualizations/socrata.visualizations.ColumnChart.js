@@ -34,22 +34,16 @@
 
     var self = this;
 
-    var _chartContainer;
     var _chartElement;
     var _chartWrapper;
     var _chartScroll;
     var _chartLabels;
-    var _chartTopAxisLabel;
-    var _chartRightAxisLabel;
-    var _chartBottomAxisLabel;
-    var _chartLeftAxisLabel;
 
     var _truncationMarker;
     var _lastRenderOptions;
 
-    var _barGroupAndLabelContentsSpanSelector = '.bar-group, .labels .label .contents span';
     var _truncationMarkerSelector = '.truncation-marker';
-    var _barGroupAndLabelContentsSpanNotCloseIconSelector = '.bar-group, .labels .label .contents span:not(.icon-close)';
+    var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span:not(.icon-close), .labels .label .callout';
     var _labelsSelector = '.labels .label';
     var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
 
@@ -80,6 +74,7 @@
 
     this.destroy = function() {
       _detachEvents(this.element);
+      this.element.find('.column-chart-container').remove();
     };
 
     /**
@@ -138,7 +133,6 @@
       self.renderAxisLabels(chartContainer);
 
       // Cache element selections
-      _chartContainer = chartContainer;
       _chartElement = chartElement;
       _chartWrapper = chartWrapper;
       _chartScroll = chartScroll;
@@ -152,25 +146,25 @@
 
       element.on(
         'mouseenter, mousemove',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         showFlyout
       );
 
       element.on(
         'mouseleave',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         hideFlyout
       );
 
       element.on(
         'mouseenter',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         addHoverClassToBarGroup
       );
 
       element.on(
         'mouseleave',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -183,7 +177,7 @@
 
         element.on(
           'click',
-          _barGroupAndLabelContentsSpanSelector,
+          _barGroupAndLabelsSelector,
           selectDatum
         );
 
@@ -210,25 +204,25 @@
 
       element.off(
         'mouseenter, mousemove',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         showFlyout
       );
 
       element.off(
         'mouseleave',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         hideFlyout
       );
 
       element.off(
         'mouseenter',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         addHoverClassToBarGroup
       );
 
       element.off(
         'mouseleave',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -241,7 +235,7 @@
 
         element.off(
           'click',
-          _barGroupAndLabelContentsSpanSelector,
+          _barGroupAndLabelsSelector,
           selectDatum
         );
 
@@ -279,7 +273,7 @@
 
     function showFlyout(event) {
       var datum = d3.select(event.currentTarget).datum();
-      var barGroupName = _escapeQuotesAndBackslashes(datum[NAME_INDEX]);
+      var barGroupName = _toEscapedString(datum[NAME_INDEX]);
       var barGroupElement = _chartWrapper.
         find('.bar-group').
         filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
@@ -352,8 +346,8 @@
     }
 
     function addHoverClassToBarGroup(event) {
-
-      var barName = event.currentTarget.getAttribute('data-bar-name');
+      var datum = d3.select(event.currentTarget).datum();
+      var barName = _toEscapedString(datum[NAME_INDEX]);
 
       _chartWrapper.
         find('.bar-group').
@@ -362,7 +356,6 @@
     }
 
     function removeHoverClassFromBarGroup(event) {
-
       _chartWrapper.find('.bar-group').removeClass('highlight');
     }
 
@@ -574,7 +567,7 @@
           classed('label', true).
           classed('non-default', isOnlyInSelected).
           attr('data-bar-name', function(d) {
-            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
+            return _toEscapedString(_labelValueOrPlaceholder(d[NAME_INDEX]));
           });
 
         // For new labels, add a contents div containing a span for the filter icon,
@@ -795,7 +788,7 @@
         // Update the position of the groups.
         selection.
           attr('data-bar-name', function(d) {
-            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
+            return _toEscapedString(_labelValueOrPlaceholder(d[NAME_INDEX]));
           }).
           style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
           style('width', rangeBand + 'px').
@@ -852,19 +845,11 @@
       });
     }
 
-    function _escapeQuotesAndBackslashes(value) {
-
-      if (_.isString(value)) {
-
-        return value.
-          replace(/\\/g, '\\\\').
-          replace(/"/g, '\\\"');
-
-      } else {
-
-        return String(value);
-
-      }
+    // To string and escape backslashes and quotes
+    function _toEscapedString(value) {
+      return String(value).
+        replace(/\\/g, '\\\\').
+        replace(/"/g, '\\\"');
     }
 
     function _labelValueOrPlaceholder(value, placeholder) {

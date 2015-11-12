@@ -7,13 +7,14 @@
   var utils = socrata.utils;
 
   function _renderTemplate($element, componentData) {
+    var $componentContent = $('<div>', { class: 'component-content' });
+
     utils.assertHasProperty(componentData, 'type');
 
     $element.
       addClass(utils.typeToClassNameForComponentType(componentData.type)).
-      on('destroy', function() {
-        $element.destroySocrataFeatureMap();
-      }).
+      // Pass on the destroy event to SocrataFeatureMap plugin.
+      on('destroy', function() { $componentContent.triggerHandler('destroy'); }).
       on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', function(event) {
         var payload = event.originalEvent.detail;
 
@@ -23,10 +24,13 @@
           storyteller.flyoutRenderer.clear();
         }
       });
+
+    $element.append($componentContent);
   }
 
   function _updateVisualization($element, componentData) {
     var renderedVif = $element.attr('data-rendered-vif');
+    var $componentContent = $element.find('.component-content');
 
     utils.assertHasProperty(componentData, 'value');
 
@@ -67,7 +71,8 @@
       vif.configuration.locateUser = true;
       vif.configuration.panAndZoom = true;
 
-      $element.socrataFeatureMap(vif);
+      $componentContent.trigger('destroy');
+      $componentContent.socrataFeatureMap(vif);
 
       $element.attr('data-rendered-vif', JSON.stringify(vif));
     }

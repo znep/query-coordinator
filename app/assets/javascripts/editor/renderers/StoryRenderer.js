@@ -333,7 +333,7 @@
           forEach(function(componentDatum, i) {
             var componentElement = elementCache.getComponent(blockId, i);
 
-            componentElement.trigger('destroy');
+            componentElement.find('.component').trigger('destroy');
           });
 
         elementCache.getBlock(blockId).remove();
@@ -609,8 +609,9 @@
 
         $componentContent = $('<div>', { 'class': 'component' });
 
+        $componentContainer.find('.component').trigger('destroy');
+
         $componentContainer.
-          trigger('destroy').
           empty().
           append($componentContent);
       }

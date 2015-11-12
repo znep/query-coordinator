@@ -37,14 +37,13 @@
     "moment": "~2.10.6"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
-  "_release": "34435ff44e",
+  "_release": "024bfa8f09",
   "_resolution": {
     "type": "branch",
-    "branch": "master",
-    "commit": "34435ff44e61f6795dbd4534226bb520f99cbcce"
+    "branch": "ferrari/destroy-event",
+    "commit": "024bfa8f0997476a6824693650fbe699569b9a38"
   },
   "_source": "git@github.com:socrata/frontend-visualizations.git",
-  "_target": "master",
-  "_originalSource": "git@github.com:socrata/frontend-visualizations.git",
-  "_direct": true
+  "_target": "ferrari/destroy-event",
+  "_originalSource": "git@github.com:socrata/frontend-visualizations.git"
 }

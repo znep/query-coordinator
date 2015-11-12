@@ -939,7 +939,7 @@
     * Makes points more transparent as map zooms out.
     */
     function _calculatePointColor(zoomLevel) {
-      return 'rgba(0,80,114,' + (0.3 * Math.pow(zoomLevel / 18, 5) + 0.4) + ')';
+      return 'rgba(234,105,0,' + (0.2 * Math.pow(zoomLevel / 18, 5) + 0.6) + ')';
     }
 
     /**

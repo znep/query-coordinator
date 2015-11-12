@@ -15,7 +15,7 @@
   var DEFAULT_FEATURES_PER_TILE = 256 * 256;
   // known in data lens as "simple blue"
   var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
-  var DEFAULT_BASE_LAYER_OPACITY = 0.8;
+  var DEFAULT_BASE_LAYER_OPACITY = 0.42;
 
   /**
    * Instantiates a Socrata FeatureMap Visualization from the
@@ -60,12 +60,6 @@
       'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED',
       'USER_CURRENT_POSITION'
     );
-
-    this.destroySocrataFeatureMap = function() {
-
-      detachEvents();
-      visualization.destroy();
-    };
 
     var $element = $(this);
     var datasetMetadata;
@@ -134,7 +128,7 @@
         then(
           handleDatasetMetadataRequestSuccess,
           handleDatasetMetadataRequestError
-        ).catch(function(e) {
+        )['catch'](function(e) {
           logError(e);
         });
     }
@@ -165,7 +159,7 @@
       then(
         handleFeatureExtentQuerySuccess,
         handleFeatureExtentQueryError
-      ).catch(function(e) {
+      )['catch'](function(e) {
         logError(e);
       });
 
@@ -176,6 +170,11 @@
      */
 
     function attachEvents() {
+
+      $element.one('destroy', function() {
+        detachEvents();
+        visualization.destroy();
+      });
 
       $element.on('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
       $element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
@@ -321,7 +320,7 @@
         then(
           handleRowInspectorQuerySuccess,
           handleRowInspectorQueryError
-        ).catch(function(e) {
+        )['catch'](function(e) {
           logError(e);
         });
 

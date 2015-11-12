@@ -145,6 +145,7 @@
 
     this.destroy = function() {
       _unattachEvents(this.element);
+      this.element.find('.timeline-chart-container').remove();
     };
 
     /**
@@ -2088,7 +2089,8 @@
         // rendering if that's the case.
         utils.assertHasProperty(chartData, 'values.length');
         if (chartData.values.length === 0) {
-          throw new Error('Cannot render timeline chart with zero values.');
+          console.error('Failed to render timeline chart because it was given no values.');
+          return;
         }
 
         // Cache the datum width and half the datum width for use elsewhere

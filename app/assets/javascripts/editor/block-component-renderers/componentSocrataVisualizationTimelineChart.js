@@ -7,13 +7,14 @@
   var utils = socrata.utils;
 
   function _renderTemplate($element, componentData) {
-    var $componentContent = $('<div>');
+    var $componentContent = $('<div>', { class: 'component-content' });
 
     utils.assertHasProperty(componentData, 'type');
 
     $element.
       addClass(utils.typeToClassNameForComponentType(componentData.type)).
-      one('destroy', $element.destroySocrataTimelineChart).
+      // Pass on the destroy event to SocrataTimelineChart plugin.
+      on('destroy', function() { $componentContent.triggerHandler('destroy'); }).
       on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', function(event) {
         var payload = event.originalEvent.detail;
 
@@ -29,6 +30,7 @@
   }
 
   function _updateVisualization($element, componentData) {
+    var $componentContent = $element.find('.component-content');
     var renderedVif = $element.attr('data-rendered-vif');
     var vif;
 
@@ -50,7 +52,10 @@
         other: 'records'
       };
 
-      $element.socrataTimelineChart(vif).attr('data-rendered-vif', JSON.stringify(vif));
+      $componentContent.trigger('destroy');
+      $componentContent.socrataTimelineChart(vif);
+
+      $element.attr('data-rendered-vif', JSON.stringify(vif));
     }
   }
 

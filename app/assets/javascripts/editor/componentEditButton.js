@@ -7,31 +7,32 @@
   var storyteller = socrata.storyteller;
 
   function componentEditButton(componentData, theme, options) {
-
     var $this = $(this);
-    var $editUi = $this.find('.component-edit-controls');
-
+    var $editControls = $this.find('.component-edit-controls');
     var isEditModeEnabled = _.get(options, 'editMode');
+
     if (isEditModeEnabled) {
-      if ($editUi.length === 0) {
-        $editUi = $('<div>', { 'class': 'component-edit-controls' }).
-          append([
+      if ($editControls.length === 0) {
+        $editControls = $('<div>', { 'class': 'component-edit-controls' }).
+          append(
             $('<button>', { 'class': 'component-edit-controls-edit-btn' }).
             click(_handleClick).
             text(I18n.t('editor.components.edit_controls.button'))
-          ]);
+          );
 
-        $this.append($editUi);
+        $this.append($editControls);
       }
     } else {
-      $editUi.remove();
+      $editControls.remove();
     }
     return $this;
   }
 
   function _handleClick() {
     var blockId = utils.findClosestAttribute(this, 'data-block-id');
-    var componentIndex = parseInt(utils.findClosestAttribute(this, 'data-component-index'));
+    var componentIndex = parseInt(
+      utils.findClosestAttribute(this, 'data-component-index'),
+      10);
 
     utils.assertIsOneOfTypes(blockId, 'string');
     utils.assert(_.isFinite(componentIndex));

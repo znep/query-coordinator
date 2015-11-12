@@ -361,7 +361,9 @@ class NewUxBootstrapController < ActionController::Base
     return false unless has_georegion_computation_strategy?(column)
 
     shapefile_id = column['computationStrategy']['parameters']['region'][1..-1] # slice off leading underscore
-    curated_region = CuratedRegion.find_by_view_id(shapefile_id)
+
+    curated_region = CuratedRegion.find_by_view_id(shapefile_id) rescue nil
+
     curated_region.nil? || curated_region.disabled?
   end
 

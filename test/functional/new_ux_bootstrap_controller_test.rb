@@ -806,7 +806,26 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
                 assert(
                   page['cards'].pluck('fieldName').map(&:downcase).any?(&is_choropleth),
-                  'expected no choropleth cards to be bootstrapped due to curated regions being disabled'
+                  'expected choropleths to be bootstrapped'
+                )
+              end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+              get :bootstrap, id: 'four-four'
+            end
+
+            should 'not fail if fetching the curated region errors' do
+              CuratedRegion.
+                expects(:find_by_view_id).
+                at_least_once.
+                raises(CoreServer::ResourceNotFound)
+
+              @page_metadata_manager.expects(:create).with do |page, _|
+                assert_equal(10, page['cards'].length, 'Should create 10 cards')
+                is_choropleth = lambda { |fieldName| fieldName =~ /(other_)?computed/ }
+
+                assert(
+                  page['cards'].pluck('fieldName').map(&:downcase).none?(&is_choropleth),
+                  'expected no choropleth cards to be bootstrapped due to curated region call failing'
                 )
               end.returns(status: '200', body: { pageId: 'neoo-page' })
 

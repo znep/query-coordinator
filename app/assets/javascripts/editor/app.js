@@ -36,6 +36,7 @@ $(document).on('ready', function() {
 
   storyteller.assetFinder = new storyteller.AssetFinder();
   storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
+  storyteller.storyActionsManager = new storyteller.StoryActionsManager();
 
   var richTextFormats = [
     { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
@@ -87,6 +88,7 @@ $(document).on('ready', function() {
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
   storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyteller.userStoryUid);
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
+  storyteller.storyCopierStore = new storyteller.StoryCopierStore();
   storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
 
   socrata.visualizations.RowInspector.setup();
@@ -111,6 +113,13 @@ $(document).on('ready', function() {
 
   var assetSelectorRenderer = new storyteller.AssetSelectorRenderer(assetSelectorOptions); //eslint-disable-line no-unused-vars
   var linkModalRenderer = new storyteller.LinkModalRenderer(); //eslint-disable-line no-unused-vars
+
+  var storyCopierOptions = {
+    storyCopierContainerElement: $('#make-a-copy-container')
+  };
+
+  // Randy says that this API "should be reviewed and maybe changed".
+  var storyCopierRenderer = new storyteller.StoryCopierRenderer(storyCopierOptions); //eslint-disable-line no-unused-vars
 
   var userStoryOptions = {
     storyUid: storyteller.userStoryUid,

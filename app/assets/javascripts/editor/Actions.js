@@ -207,7 +207,20 @@
     LINK_MODAL_UPDATE: 'LINK_MODAL_UPDATE',
 
     // No Payload
-    LINK_MODAL_ACCEPT: 'LINK_MODAL_ACCEPT'
+    LINK_MODAL_ACCEPT: 'LINK_MODAL_ACCEPT',
+
+    /*
+     * Make a Copy flow
+     */
+
+    // No payload
+    STORY_MAKE_COPY_MODAL_OPEN: 'STORY_MAKE_COPY_MODAL_OPEN',
+
+    // No payload
+    STORY_MAKE_COPY_MODAL_SUBMIT: 'STORY_MAKE_COPY_MODAL_SUBMIT',
+
+    // No payload
+    STORY_MAKE_COPY_MODAL_CANCEL: 'STORY_MAKE_COPY_MODAL_CANCEL'
   };
 
   root.Actions = Actions;

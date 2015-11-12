@@ -26,9 +26,11 @@
     }
 
     function attachEvents() {
-      $text.on('input', _.debounce(update, 350));
-      $link.on('input', _.debounce(update, 350));
-      $openInNewWindow.on('change', _.debounce(update, 350));
+      var wait = 750;
+
+      $text.on('input', _.debounce(update, wait));
+      $link.on('input', _.debounce(update, wait));
+      $openInNewWindow.on('change', _.debounce(update, wait));
       $testLink.on('click', testLink);
 
       $modal.on('click', '[data-action]', function(event) {

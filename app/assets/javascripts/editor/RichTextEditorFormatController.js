@@ -217,13 +217,18 @@
      */
     function _insertLink() {
       var editorId = storyteller.linkStore.getEditorId();
-      var inputs = storyteller.linkStore.getInputs();
       var accepted = storyteller.linkStore.getAccepted();
 
       if (editorId === _editor.id && accepted) {
+        var inputs = storyteller.linkStore.getInputs();
         var selection = _squire.getSelection();
         var text = selection.toString();
         var target = inputs.openInNewWindow ? '_blank' : '_self';
+        var urlValid = storyteller.linkStore.getURLValidity();
+
+        if (!urlValid) {
+          inputs.link = 'http://' + inputs.link;
+        }
 
         if (text === inputs.text || inputs.text.length === 0) {
           _squire.makeLink(inputs.link, {

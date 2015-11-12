@@ -116,7 +116,7 @@
         // toggling behavior so it is excluded from this logic.
         WindowState.closeDialogEvent$.
           filter(function(e) {
-            if (!$scope.panelActive) { return false; }
+            if (!$scope.panelActive || $scope.saveStatus !== 'idle') { return false; }
             if (e.type === 'keydown') { return true; }
 
             var $target = $(e.target);

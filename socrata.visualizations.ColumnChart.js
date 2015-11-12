@@ -44,7 +44,6 @@
 
     var _truncationMarkerSelector = '.truncation-marker';
     var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span:not(.icon-close), .labels .label .callout';
-    var _labelsSelector = '.labels .label';
     var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
 
     // TODO: Validate columns
@@ -80,7 +79,7 @@
      * Private methods
      */
 
-    function _renderTemplate(element, axisLabels) {
+    function _renderTemplate(element) {
 
       var truncationMarker = $(
         '<div>',
@@ -261,7 +260,7 @@
       );
     }
 
-    function expandVisualization(event) {
+    function expandVisualization() {
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_EXPANSION',
         {
@@ -336,8 +335,7 @@
       );
     }
 
-    function hideFlyout(event) {
-
+    function hideFlyout() {
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
         null
@@ -354,7 +352,7 @@
         addClass('highlight');
     }
 
-    function removeHoverClassFromBarGroup(event) {
+    function removeHoverClassFromBarGroup() {
       _chartWrapper.find('.bar-group').removeClass('highlight');
     }
 
@@ -436,24 +434,24 @@
       // Clamp the bottom margin to a reasonable maximum since long labels are ellipsified.
       bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
-      var chartHeight = Math.max(0, chartHeight - topMargin - bottomMargin - horizontalScrollbarHeight);
+      var innerHeight = Math.max(0, chartHeight - topMargin - bottomMargin - horizontalScrollbarHeight);
 
       // If not all labels are visible, limit our vert scale computation to what's actually
       // visible. We still render the bars outside the viewport to speed up horizontal resizes.
       var chartDataRelevantForVerticalScale = showAllLabels ?
         data : _.take(data, Math.ceil(chartWidth / rangeBand) + 1);
-      var verticalScale = _computeVerticalScale(chartHeight, chartDataRelevantForVerticalScale, showFiltered);
+      var verticalScale = _computeVerticalScale(innerHeight, chartDataRelevantForVerticalScale, showFiltered);
 
       var chartLeftOffset = horizontalScale.range()[0];
       var chartRightEdge = chartWidth - chartLeftOffset;
 
-      _chartWrapper.css('height', chartHeight + topMargin + 1);
+      _chartWrapper.css('height', innerHeight + topMargin + 1);
       _chartScroll.css({
         'padding-top': 0,
         'padding-bottom': bottomMargin,
         'top': 'initial',
         'width': chartWidth,
-        'height': chartHeight + topMargin + horizontalScrollbarHeight
+        'height': innerHeight + topMargin + horizontalScrollbarHeight
       });
 
       var _renderTicks = function() {
@@ -467,7 +465,7 @@
             text: socrata.utils.formatNumber(tickValue)
           });
 
-          var tickTopOffset = chartHeight - verticalScale(tickValue);
+          var tickTopOffset = innerHeight - verticalScale(tickValue);
           // The `+ 3` term accounts for the border-width.
           var tickHeight = parseInt(element.css('font-size'), 10) + 3;
 
@@ -486,7 +484,7 @@
           css: {
             top: _chartScroll.position().top + topMargin,
             width: chartWidth,
-            height: chartHeight + topMargin
+            height: innerHeight + topMargin
           }
         }).append(tickMarks);
       };
@@ -791,7 +789,7 @@
           }).
           style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
           style('width', rangeBand + 'px').
-          style('height', function() { return chartHeight + 'px'; }).
+          style('height', function() { return innerHeight + 'px'; }).
           classed('unfiltered-on-top', function(d) {
             // This is really confusing. In CSS, we refer to the total bar as the unfiltered bar.
             // If total bar is last in the dom, then apply this class.
@@ -839,7 +837,7 @@
 
       // Set "Click to Expand" truncation marker + its tooltip
       _truncationMarker.css({
-        top: chartHeight,
+        top: innerHeight,
         display: chartTruncated ? 'block' : 'none'
       });
     }
@@ -892,8 +890,8 @@
       return _makeDomainIncludeZero(d3.extent(allData));
     }
 
-    function _computeVerticalScale(chartHeight, chartData, showFiltered) {
-      return d3.scale.linear().domain(_computeDomain(chartData, showFiltered)).range([0, chartHeight]);
+    function _computeVerticalScale(innerHeight, chartData, showFiltered) {
+      return d3.scale.linear().domain(_computeDomain(chartData, showFiltered)).range([0, innerHeight]);
     }
 
     function _computeHorizontalScale(chartWidth, chartData, showAllLabels) {

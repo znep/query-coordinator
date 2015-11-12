@@ -6,7 +6,7 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  function LinkStore() {
+  function LinkModalStore() {
     _.extend(this, new storyteller.Store());
 
     var _self = this;
@@ -29,7 +29,7 @@
           _setInputs(payload);
           break;
         case Actions.LINK_MODAL_ACCEPT:
-          _setAccepted();
+          _setAccepted(payload);
           break;
       }
     });
@@ -58,25 +58,33 @@
       return _urlValidity;
     };
 
+    this.shouldSelectLink = function(editorId) {
+      return editorId === _editorId && _visible;
+    };
+
+    this.shouldInsertLink = function(editorId) {
+      return editorId === _editorId && _accepted;
+    };
+
     function _openModal(payload) {
       utils.assertHasProperty(payload, 'editorId');
 
       _visible = true;
       _editorId = payload.editorId;
 
-      _self._emitChange();
+      _setInputs(payload);
     }
 
     function _closeModal() {
       _visible = _valid = _urlValidity = _accepted = false;
-      _inputs = _editorId = null;
+      _inputs = null;
 
       _self._emitChange();
     }
 
-    function _setAccepted() {
+    function _setAccepted(payload) {
       _accepted = true;
-      _self._emitChange();
+      _setInputs(payload);
     }
 
     function _setInputs(payload) {
@@ -91,11 +99,11 @@
       _valid = typeof _inputs.text === 'string' &&
         (typeof _inputs.link === 'string' && _inputs.link.length > 0);
 
-      _urlValidity = (typeof _inputs.link === 'string' && _inputs.link.length === 0) || /https?:\/\/.+/.test(_inputs.link);
+      _urlValidity = (typeof _inputs.link === 'string' && _inputs.link.length === 0) || /^https?:\/\/.+/.test(_inputs.link);
 
       _self._emitChange();
     }
   }
 
-  storyteller.LinkStore = LinkStore;
+  storyteller.LinkModalStore = LinkModalStore;
 })();

@@ -27,6 +27,9 @@ en:
         test_link: 'Test Link'
         open_in_new_window: 'Open in New Window'
         warning_message: 'This looks like an invalid link. Try adding http:// to the beginning of your link.'
+      link_tip:
+        remove: 'Remove'
+        edit: 'Edit'
     components:
       asset_selector:
         insert_btn: 'Insert'

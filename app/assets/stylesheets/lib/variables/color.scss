@@ -72,6 +72,13 @@ $rich-text-editor-toolbar-bg-color: #EEEEEE;
 $rich-text-editor-toolbar-active-bg-color: rgb(190, 190, 190);
 $rich-text-editor-toolbar-border-color: rgba(73,73,73,0.20);
 
+// Rich text link action tip
+$link-tip-background-color: #fff;
+$link-tip-border-color: #ccc;
+$link-tip-box-shadow-color: #ddd;
+$link-tip-text-color: $link-color;
+$link-tip-border-right-color: $rich-text-editor-toolbar-border-color;
+
 // Embedded media
 $youtube-bg-color: #000;
 

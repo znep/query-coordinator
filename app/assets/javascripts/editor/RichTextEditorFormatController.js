@@ -196,7 +196,70 @@
      */
 
     function _attachChangeListeners() {
-      storyteller.linkStore.addChangeListener(_insertLink);
+      storyteller.linkModalStore.addChangeListener(_handleLinkModalStoreChanges);
+      storyteller.linkTipStore.addChangeListener(_handleLinkTipStoreChanges);
+    }
+
+    /**
+     * @function _selectAnchorTag
+     * @description
+     * Within either editing or removal of a link, we must
+     * select the entire link text prior to running Squire actions.
+     * @param {boolean} inside - when false, the <a> is selected, when true the #text-node is selected.
+     */
+    function _selectAnchorTag(inside) {
+      var anchor;
+      var range = document.createRange();
+      var selection = _squire.getSelection();
+
+      if (_squire.hasFormat('a')) {
+        if (selection.startContainer.nodeType === 1) {
+          anchor = selection.startContainer.childNodes[selection.startOffset];
+          anchor = anchor.nodeName === 'A' ?
+            anchor :
+            selection.startContainer.childNodes[selection.endOffset];
+        } else if (selection.startContainer.nodeType === 3) {
+          anchor = selection.startContainer.parentNode;
+          anchor = anchor.nodeName === 'A' ?
+            anchor :
+            selection.startContainer.previousSibling;
+        }
+
+        if (!anchor || anchor.nodeName !== 'A') {
+          return storyteller.airbrake.notify('An anchor tag could not be selected.');
+        }
+
+        if (inside) {
+          range.setStart(anchor.childNodes[0], 0);
+          range.setEnd(anchor.childNodes[0], anchor.childNodes[0].length);
+        } else {
+          range.selectNode(anchor);
+        }
+
+        _squire.setSelection(range);
+      }
+    }
+
+    function _handleLinkModalStoreChanges() {
+      var activateLinkTip = storyteller.linkModalStore.getEditorId() === _editor.id &&
+        storyteller.linkModalStore.getVisibility() === false;
+      var shouldInsertLink = storyteller.linkModalStore.shouldInsertLink(_editor.id);
+      var shouldSelectLink = storyteller.linkModalStore.shouldSelectLink(_editor.id);
+
+      if (activateLinkTip) {
+        _squire._body.focus();
+        _squire.fireEvent('pathChange');
+      } else if (shouldInsertLink) {
+        _insertLink();
+      } else if (shouldSelectLink) {
+        _selectAnchorTag(true);
+      }
+    }
+
+    function _handleLinkTipStoreChanges() {
+      if (storyteller.linkTipStore.shouldRemoveLink(_editor.id)) {
+        _removeLink();
+      }
     }
 
     /**
@@ -216,31 +279,54 @@
      * wrapping the selection.
      */
     function _insertLink() {
-      var editorId = storyteller.linkStore.getEditorId();
-      var accepted = storyteller.linkStore.getAccepted();
+      var inputs = storyteller.linkModalStore.getInputs();
+      var selection = _squire.getSelection();
+      var text = selection.toString();
+      var target = inputs.openInNewWindow ? '_blank' : '_self';
+      var link = storyteller.linkModalStore.getURLValidity() ?
+        inputs.link :
+        'http://' + inputs.link;
 
-      if (editorId === _editor.id && accepted) {
-        var inputs = storyteller.linkStore.getInputs();
-        var selection = _squire.getSelection();
-        var text = selection.toString();
-        var target = inputs.openInNewWindow ? '_blank' : '_self';
-        var urlValid = storyteller.linkStore.getURLValidity();
+      if (text === inputs.text || inputs.text.length === 0) {
+        _squire.makeLink(link, {
+          target: target,
+          rel: 'nofollow'
+        });
+        _selectAnchorTag(true);
+      } else {
+        var anchor = '<a href="{0}" target="{1}" rel="nofollow">{2}</a>'.
+          format(link, target, inputs.text);
 
-        if (!urlValid) {
-          inputs.link = 'http://' + inputs.link;
-        }
+        _selectAnchorTag();
+        _squire.getSelection().deleteContents();
+        _squire.insertHTML(anchor);
+        _selectAnchorTag(true);
 
-        if (text === inputs.text || inputs.text.length === 0) {
-          _squire.makeLink(inputs.link, {
-            target: target,
-            rel: 'nofollow'
-          });
-        } else {
-          var anchor = '<a href="{0}" target="{1}" rel="nofollow">{2}</a>'.format(inputs.link, target, inputs.text);
-          selection.deleteContents();
-          _squire.insertHTML(anchor);
-        }
+        _squire._body.focus();
+        _squire.fireEvent('pathChange');
       }
+    }
+
+    /**
+     * @function _removeLink
+     * @description
+     * If the LinkTipStore changes and we confirm the
+     * last action should remove the link and we are the
+     * editor in which the link should be removed, then
+     * we remove the link of the current selection.
+     *
+     * Yes, this function assumes the action you'd like to take
+     * is specifically meant for the current selection of text.
+     *
+     * After the removal, close the link tip.
+     */
+    function _removeLink() {
+      _selectAnchorTag();
+      _squire.removeLink();
+
+      storyteller.dispatcher.dispatch({
+        action: Actions.LINK_TIP_CLOSE
+      });
     }
 
     /**
@@ -433,7 +519,6 @@
       var selection = _squire.getSelection();
 
       if (_squire.hasFormat('a')) {
-        // Browser may not agree on the startContainer.
         // Here, we try to get to the anchor tag through two paths.
         // The first path is an Element that is higher in the node hierarchy.
         // The second path is a TextNode that is a child of the anchor tag.
@@ -458,11 +543,7 @@
 
       storyteller.dispatcher.dispatch({
         action: Actions.LINK_MODAL_OPEN,
-        editorId: editor.id
-      });
-
-      storyteller.dispatcher.dispatch({
-        action: Actions.LINK_MODAL_UPDATE,
+        editorId: editor.id,
         text: text,
         link: link,
         openInNewWindow: openInNewWindow

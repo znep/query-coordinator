@@ -100,7 +100,8 @@ function applyStandardMocks() {
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
-  storyteller.linkStore = new storyteller.LinkStore();
+  storyteller.linkModalStore = new storyteller.LinkModalStore();
+  storyteller.linkTipStore = new storyteller.LinkTipStore();
 
   storyteller.dispatcher.dispatch({ action: Actions.STORY_CREATE, data: storyData });
 

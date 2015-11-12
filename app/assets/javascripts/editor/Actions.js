@@ -199,6 +199,9 @@
     LINK_MODAL_CLOSE: 'LINK_MODAL_CLOSE',
 
     // {string} editorId
+    // {string} text
+    // {string} url
+    // {boolean} openInNewWindow
     LINK_MODAL_OPEN: 'LINK_MODAL_OPEN',
 
     // {string} text
@@ -206,7 +209,9 @@
     // {boolean} openInNewWindow
     LINK_MODAL_UPDATE: 'LINK_MODAL_UPDATE',
 
-    // No Payload
+    // {string} text
+    // {string} url
+    // {boolean} openInNewWindow
     LINK_MODAL_ACCEPT: 'LINK_MODAL_ACCEPT',
 
     /*
@@ -220,7 +225,24 @@
     STORY_MAKE_COPY_MODAL_SUBMIT: 'STORY_MAKE_COPY_MODAL_SUBMIT',
 
     // No payload
-    STORY_MAKE_COPY_MODAL_CANCEL: 'STORY_MAKE_COPY_MODAL_CANCEL'
+    STORY_MAKE_COPY_MODAL_CANCEL: 'STORY_MAKE_COPY_MODAL_CANCEL',
+
+    /**
+     * Link Action Tip
+     */
+
+    // {string} text
+    // {string} link
+    // {string} editorId
+    // {boolean} openInNewWindow
+    // {ClientRect} boundingClientRect
+    LINK_TIP_OPEN: 'LINK_TIP_OPEN',
+
+    // No Payload
+    LINK_TIP_CLOSE: 'LINK_TIP_CLOSE',
+
+    // No Payload
+    LINK_TIP_REMOVE: 'LINK_TIP_REMOVE'
   };
 
   root.Actions = Actions;

@@ -76,5 +76,5 @@
     };
   }
 
-  root.socrata.storyteller.RichTextEditorManager = RichTextEditorManager;
+  storyteller.RichTextEditorManager = RichTextEditorManager;
 })(window);

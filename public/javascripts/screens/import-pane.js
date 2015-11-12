@@ -655,11 +655,15 @@ var validateAll = function()
             {
                 var invalidPercentage = Math.round(1000 *
                     (1 - (column.types[importType] / column.processed))) / 10.0;
+
+                var quantityText = _.isNaN(invalidPercentage) ?
+                    'some' : 'roughly <strong>' + invalidPercentage + '%</strong>';
+
                 addValidationError(importColumn, 'warning',
                     'set to import as <strong>' + typesToText(importColumn.dataType) + '</strong>, but ' +
                     'our analysis shows that <strong>' + $.capitalize(column.suggestion) + '</strong> is a better fit. ' +
-                    'Should you choose to import as ' + typesToText(importColumn.dataType) + ', roughly ' +
-                    '<strong>' + invalidPercentage + '%</strong> of your data will import incorrectly.');
+                    'Should you choose to import as ' + typesToText(importColumn.dataType) + ', ' + quantityText +
+                    ' of your data will import incorrectly.');
             }
             else
             {

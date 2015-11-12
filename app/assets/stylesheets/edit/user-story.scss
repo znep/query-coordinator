@@ -51,7 +51,7 @@ body.story-save-error .user-story-container {
       .block-edit-controls-move-up-btn,
       .block-edit-controls-move-down-btn,
       .block-edit-controls-delete-btn {
-        color: #fff;
+        color: $block-edit-controls-fg-color;
         position: relative;
         display: block;
         width: $block-edit-controls-width;
@@ -83,7 +83,7 @@ body.story-save-error .user-story-container {
         margin-right: 1rem;
 
         .component-edit-controls-edit-btn {
-          color: #fff;
+          color: $block-edit-controls-fg-color;
           background-color: $block-edit-controls-bg-color;
           padding: 0.75rem 1rem;
           border: none;

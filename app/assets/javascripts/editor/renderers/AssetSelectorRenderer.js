@@ -186,6 +186,14 @@
 
         switch (action) {
 
+          case Actions.ASSET_SELECTOR_SELECT_NEW:
+            storyteller.dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_SELECT_NEW,
+              blockId: storyteller.assetSelectorStore.getBlockId(),
+              componentIndex: storyteller.assetSelectorStore.getComponentIndex()
+            });
+            break;
+
           case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             storyteller.dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
@@ -426,7 +434,7 @@
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $(
         '<div>',
@@ -510,7 +518,7 @@
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $(
         '<div>',
@@ -583,7 +591,7 @@
           'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var buttonGroup = $(
         '<div>',
@@ -709,7 +717,7 @@
           'class': 'btn btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
         inputLabel,
@@ -968,7 +976,7 @@
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var loadingButton = $('<button>', {
         'class': 'btn-transparent btn-busy visualization-busy',
@@ -1129,7 +1137,7 @@
           'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
         inputLabel,
@@ -1210,6 +1218,16 @@
 
       _dialog.attr('class', newClassList.join(' '));
     }
+  }
+
+  function _insertButtonText() {
+    var isEditingExisting = storyteller.assetSelectorStore.isEditingExisting();
+
+    return I18n.t(
+      isEditingExisting ?
+        'editor.asset_selector.update_button_text' :
+        'editor.asset_selector.insert_button_text'
+    );
   }
 
   root.socrata.storyteller.AssetSelectorRenderer = AssetSelectorRenderer;

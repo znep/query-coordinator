@@ -275,9 +275,9 @@
 
         switch (action) {
 
-          case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          case Actions.ASSET_SELECTOR_SELECT_NEW:
             dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+              action: Actions.ASSET_SELECTOR_SELECT_NEW,
               blockId: utils.findClosestAttribute(this, 'data-block-id'),
               componentIndex: utils.findClosestAttribute(this, 'data-component-index')
             });

@@ -10,7 +10,7 @@
     var $controlsInsertButton;
 
     $element.addClass(utils.typeToClassNameForComponentType(componentData.type));
-    $element.attr('data-action', Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
+    $element.attr('data-action', Actions.ASSET_SELECTOR_SELECT_NEW);
 
     $controlsInsertButton = $(
       '<button>',

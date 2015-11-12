@@ -121,15 +121,20 @@
      * Generic asset selector flow
      */
 
-    // Initial media selector setup
+    // Select an asset for the first time.
     // {string} blockId
     // {number} componentIndex
-    ASSET_SELECTOR_CHOOSE_PROVIDER: 'ASSET_SELECTOR_CHOOSE_PROVIDER',
+    ASSET_SELECTOR_SELECT_NEW: 'ASSET_SELECTOR_SELECT_NEW',
 
     // Edit an existing asset.
     // {string} blockId
     // {number} componentIndex
     ASSET_SELECTOR_EDIT_EXISTING: 'ASSET_SELECTOR_EDIT_EXISTING',
+
+    // Initial media selector setup
+    // {string} blockId
+    // {number} componentIndex
+    ASSET_SELECTOR_CHOOSE_PROVIDER: 'ASSET_SELECTOR_CHOOSE_PROVIDER',
 
     // No payload
     ASSET_SELECTOR_APPLY: 'ASSET_SELECTOR_APPLY',

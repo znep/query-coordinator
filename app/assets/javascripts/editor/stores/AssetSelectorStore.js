@@ -33,12 +33,16 @@
 
       switch (action) {
 
-        case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
-          _chooseProvider(payload);
+        case Actions.ASSET_SELECTOR_SELECT_NEW:
+          _selectNew(payload);
           break;
 
         case Actions.ASSET_SELECTOR_EDIT_EXISTING:
           _editExisting(payload);
+          break;
+
+        case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          _chooseProvider(payload);
           break;
 
         case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
@@ -132,6 +136,10 @@
       return _state.componentProperties;
     };
 
+    this.isEditingExisting = function() {
+      return _state.isEditingExisting === true;
+    };
+
     /**
      * Private methods
      */
@@ -156,6 +164,20 @@
       return Actions.ASSET_SELECTOR_CHOOSE_PROVIDER;
     }
 
+    function _selectNew(payload) {
+      utils.assertHasProperties(payload, 'blockId', 'componentIndex');
+
+      _state = {
+        step: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        blockId: payload.blockId,
+        componentIndex: payload.componentIndex,
+        isEditingExisting: false
+      };
+
+      self._emitChange();
+    }
+
+
     function _editExisting(payload) {
       var component;
 
@@ -171,7 +193,8 @@
         blockId: payload.blockId,
         componentIndex: payload.componentIndex,
         componentType: component.type,
-        componentProperties: component.value
+        componentProperties: component.value,
+        isEditingExisting: true
       };
 
       self._emitChange();

@@ -56,6 +56,7 @@ en:
       choose_provider_heading: 'Select Data or Media Provider'
       back_button_text: 'Back'
       insert_button_text: 'Insert'
+      update_button_text: 'Update'
       cancel_button_text: 'Cancel'
       try_again_button_text: 'Try again'
       youtube:

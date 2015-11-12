@@ -94,7 +94,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       @browse_actions_container = BrowseActionsContainer.new
       init_current_domain
       stub_feature_flags_with(:cetera_search, true)
-      APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api/catalog')
+      APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
     end
 
     def test_use_cetera_if_feature_flag_enabled_and_host_present
@@ -131,27 +131,16 @@ class BrowseActionsTest < Test::Unit::TestCase
           'title' => 'Superhero',
           'param' => :'Dataset-Information_Superhero',
           'options' => [
-            { 'summary' => true,
-              'text' => 'Superman',
-              'value' => 'Superman' },
-            { 'summary' => true,
-              'text' => 'Batman',
-              'value' => 'Batman' },
-            { 'summary' => true,
-              'text' => 'Flash',
-              'value' => 'Flash' },
-            { 'summary' => true,
-              'text' => 'Spiderman',
-              'value' => 'Spiderman' },
-            { 'summary' => true,
-              'text' => 'Hulk',
-              'value' => 'Hulk' }
+            { 'summary' => true, 'text' => 'Superman', 'value' => 'Superman' },
+            { 'summary' => true, 'text' => 'Batman', 'value' => 'Batman' },
+            { 'summary' => true, 'text' => 'Flash', 'value' => 'Flash' },
+            { 'summary' => true, 'text' => 'Spiderman', 'value' => 'Spiderman' },
+            { 'summary' => true, 'text' => 'Hulk', 'value' => 'Hulk' }
           ]
         }.symbolize_keys
       ]
 
       @browse_actions_container.stubs(custom_facets: custom_facets)
-
       @browse_actions_container.stubs(categories_facet: nil)
       @browse_actions_container.stubs(topics_facet: nil)
       @browse_actions_container.stubs(federations_hash: {})
@@ -166,9 +155,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       value = 'Superman'
 
       request = OpenStruct.new
-      request.params = {
-        field => value
-      }
+      request.params = { field => value }
 
       expected = [[field, value].join(':')]
 
@@ -177,87 +164,44 @@ class BrowseActionsTest < Test::Unit::TestCase
   end
 
   describe 'selected_category_and_any_children' do
-
     def setup
       @test_custom_facets = [
         {
-          "singular_description" => "Agencies",
-          "title" => "Agencies & Authorities",
-          "param" => :"Dataset-Information_Agency",
-          "options" => [
-            {
-              "summary" => true,
-              "text" => "Adirondack Park Agency",
-              "value" => "Adirondack Park Agency"
-            },
-            {
-              "summary" => true,
-              "text" => "Aging, Office for",
-              "value" => "Aging, Office for"
-            }
+          'singular_description' => 'Agencies',
+          'title' => 'Agencies & Authorities',
+          'param' => :'Dataset-Information_Agency',
+          'options' => [
+            { 'summary' => true, 'text' => 'Adirondack Park Agency', 'value' => 'Adirondack Park Agency' },
+            { 'summary' => true, 'text' => 'Aging, Office for', 'value' => 'Aging, Office for' }
           ]
         }
       ]
 
       @test_categories = {
-        :title => "Categories",
-        :singular_description => "category",
-        :param => :category,
-        :options => [
-          {
-            :value => "Business",
-            :text => "Business"
-          },
-          {
-            :value => "Education",
-            :text => "Education"
-          },
-          {
-            :value => "Fun",
-            :text => "Fun"
-          },
-          {
-            :children => [
-              {
-                :value => "Test Category 4a",
-                :text => "Test Category 4a"
-              },
-              {
-                :value => "Test Category 4b",
-                :text => "Test Category 4b"
-              }
-            ],
-            :value => "Test Category 4",
-            :text => "Test Category 4"
-          }
+        title: 'Categories',
+        singular_description: 'category',
+        param: :category,
+        options: [
+          { value: 'Business', text: 'Business' },
+          { value: 'Education', text: 'Education' },
+          { value: 'Fun', text: 'Fun' },
+          { value: 'Test Category 4', text: 'Test Category 4', children: [
+            { value: 'Test Category 4a', text: 'Test Category 4a' },
+            { value: 'Test Category 4b', text: 'Test Category 4b' }
+          ] }
         ],
-        :extra_options => [
-          {
-            :value => "Government",
-            :text => "Government"
-          },
-          {
-            :value => "Personal",
-            :text => "Personal"
-          },
-          {
-            :value => "Test Category 1",
-            :text => "Test Category 1"
-          },
-          {
-            :value => "Test Category 2",
-            :text => "Test Category 2"
-          },
-          {
-            :value => "Test Category 3",
-            :text => "Test Category 3"
-          }
+        extra_options: [
+          { value: 'Government', text: 'Government' },
+          { value: 'Personal', text: 'Personal' },
+          { value: 'Test Category 1', text: 'Test Category 1' },
+          { value: 'Test Category 2', text: 'Test Category 2' },
+          { value: 'Test Category 3', text: 'Test Category 3' }
         ]
       }
 
       init_current_domain
       stub_feature_flags_with(:cetera_search, true)
-      APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api/catalog')
+      APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
       CurrentDomain.stubs(configuration: nil)
       CurrentDomain.stubs(default_locale: 'en')
       I18n.stubs(locale: CurrentDomain.default_locale.to_s)
@@ -269,66 +213,101 @@ class BrowseActionsTest < Test::Unit::TestCase
       @browse_actions_container.stubs(federations_hash: {})
     end
 
-    def test_no_effect_if_cetera_is_not_enabled
+    def stub_core_for_category(category)
+      core_views_url = 'http://localhost:8080/search/views.json'
+      core_views_params = {
+        category: category,
+        limit: 10,
+        page: 1
+      }.reject { |_, v| v.blank? }
+      url = core_views_url + '?' + core_views_params.to_query
+      stub_request(:get, url).to_return(status: 200, body: '', headers: {})
+    end
+
+    def stub_cetera_for_categories(categories)
+      cetera_url = 'http://api.us.socrata.com/api/catalog/v1'
+      cetera_params = {
+        categories: categories.join(','),
+        domains: 'localhost',
+        limit: 10,
+        offset: 0,
+        search_context: 'localhost'
+      }.reject { |_, v| v.blank? }
+      url = cetera_url + '?' + cetera_params.to_query
+      stub_request(:get, url).to_return(status: 200, body: '', headers: {})
+    end
+
+    def search_and_return_categories(category)
+      request = OpenStruct.new
+      request.params = { category: category }.reject { |_, v| v.blank? }
+      browse_options = @browse_actions_container.send(:process_browse, request)
+      browse_options[:search_options][:category].to_s.split(',') # NOT REAL CSV FORMAT!
+    end
+
+    def test_no_effect_if_cetera_is_not_enabled_and_category_is_present
       stub_feature_flags_with(:cetera_search, false)
 
-      request = OpenStruct.new
-      request.params = {
-        :category => 'Test Category 4'
-      }
+      expected_category = 'Test Category 4'
+      stub_core_for_category(expected_category)
 
-      stub_request(:get, 'http://localhost:8080/search/views.json?category=Test%20Category%204&limit=10&page=1').
-        with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
-        to_return(:status => 200, :body => "", :headers => {})
-
-      expected_clytemnestra_category_query = 'Test Category 4'
-      assert_equal(expected_clytemnestra_category_query, @browse_actions_container.send(:process_browse, request)[:search_options][:category])
+      assert_equal [expected_category], search_and_return_categories(expected_category)
     end
 
-    def test_selected_category_with_children_results_in_list_of_category_and_all_children
-      request = OpenStruct.new
-      request.params = {
-        :category => 'Test Category 4'
-      }
+    def test_no_effect_if_cetera_is_not_enabled_and_category_is_absent
+      stub_feature_flags_with(:cetera_search, false)
 
-      stub_request(:get, 'http://api.us.socrata.com/api/catalog/catalog/v1?categories=Test%20Category%204,Test%20Category%204a,Test%20Category%204b&domains=localhost&limit=10&offset=0&search_context=localhost').
-      with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
-      to_return(:status => 200, :body => "", :headers => {})
+      stub_core_for_category(nil)
 
-      expected_cetera_category_query = 'Test Category 4,Test Category 4a,Test Category 4b'
-      assert_equal(expected_cetera_category_query, @browse_actions_container.send(:process_browse, request)[:search_options][:category])
+      assert_empty search_and_return_categories(nil)
     end
 
-    def test_selected_child_category_results_in_only_child_category
-      request = OpenStruct.new
-      request.params = {
-        :category => 'Test Category 4a'
-      }
+    def test_parent_category_includes_its_children_in_query_to_cetera
+      parent_category = 'Test Category 4'
+      child_categories = ['Test Category 4a', 'Test Category 4b']
 
-      stub_request(:get, 'http://api.us.socrata.com/api/catalog/catalog/v1?categories=Test%20Category%204a&domains=localhost&limit=10&offset=0&search_context=localhost').
-      with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
-      to_return(:status => 200, :body => "", :headers => {})
+      expected_categories = [parent_category] + child_categories
+      stub_cetera_for_categories(expected_categories)
 
-      expected_cetera_category_query = 'Test Category 4a'
-      assert_equal(expected_cetera_category_query, @browse_actions_container.send(:process_browse, request)[:search_options][:category])
+      assert_equal expected_categories, search_and_return_categories(parent_category)
     end
 
-    def test_non_existent_category_results_in_no_category
-      # NOTE: This test doesn't make any sense, because the existing frontend code will inject any non-existant categories
-      # into the categories that we receive from core server if they appear in the URL query string. This is inexplicable
-      # and is potentially a script injection vector.
+    def test_child_category_includes_only_itself_in_query_to_cetera
+      child_category = 'Test Category 4a'
+
+      expected_categories = [child_category]
+      stub_cetera_for_categories(expected_categories)
+
+      assert_equal expected_categories, search_and_return_categories(child_category)
     end
 
-    def test_no_category_results_in_no_category
-      request = OpenStruct.new
-      request.params = {}
+    def test_categories_with_no_children_query_cetera_only_about_themselves
+      childless_category = 'Business'
 
-      stub_request(:get, 'http://api.us.socrata.com/api/catalog/catalog/v1?domains=localhost&limit=10&offset=0&search_context=localhost').
-      with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
-      to_return(:status => 200, :body => "", :headers => {})
+      expected_categories = [childless_category]
+      stub_cetera_for_categories(expected_categories)
 
-      expected_cetera_category_query = nil
-      assert_equal(expected_cetera_category_query, @browse_actions_container.send(:process_browse, request)[:search_options][:category])
+      assert_equal expected_categories, search_and_return_categories(childless_category)
+    end
+
+    def test_no_category_results_in_no_category_passed_to_cetera
+      expected_categories = []
+      stub_cetera_for_categories(expected_categories)
+
+      assert_equal expected_categories, search_and_return_categories(nil)
+    end
+
+    def test_non_existent_category_gets_magically_injected
+      # WARN: The existing frontend code will inject any non-existant categories
+      # into the categories that we receive from core server if they appear in
+      # the URL query string. This is potentially a script injection vector.
+      # [ed: so far, we get escaped correctly by the time we get rendered]
+
+      imaginary_category = 'Cloud Cucko Land <script>alert("HI!");</script>'
+
+      expected_categories = []
+      stub_cetera_for_categories(expected_categories)
+
+      assert_equal expected_categories, search_and_return_categories(imaginary_category)
     end
   end
 end

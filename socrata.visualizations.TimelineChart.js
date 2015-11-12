@@ -145,6 +145,7 @@
 
     this.destroy = function() {
       _unattachEvents(this.element);
+      this.element.find('.timeline-chart-container').remove();
     };
 
     /**

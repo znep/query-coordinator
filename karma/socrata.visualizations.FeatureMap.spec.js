@@ -181,6 +181,7 @@ describe('socrata.visualizations.FeatureMap', function() {
 
     if (featureMap && featureMap.map && featureMap.map.hasOwnProperty('destroy')) {
       featureMap.map.destroy();
+      assert.lengthOf(featureMap.element.children(), 0);
     }
 
     $('#map').remove();

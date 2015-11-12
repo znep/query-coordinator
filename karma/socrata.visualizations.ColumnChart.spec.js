@@ -206,6 +206,7 @@ describe('socrata.visualizations.ColumnChart', function() {
 
     if (columnChart && columnChart.chart && columnChart.chart.hasOwnProperty('destroy')) {
       columnChart.chart.destroy();
+      assert.lengthOf(columnChart.element.children(), 0);
     }
 
     $('#chart').remove();

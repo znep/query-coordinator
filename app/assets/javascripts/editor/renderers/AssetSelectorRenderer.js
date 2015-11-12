@@ -186,14 +186,6 @@
 
         switch (action) {
 
-          case Actions.ASSET_SELECTOR_SELECT_NEW:
-            storyteller.dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_SELECT_NEW,
-              blockId: storyteller.assetSelectorStore.getBlockId(),
-              componentIndex: storyteller.assetSelectorStore.getComponentIndex()
-            });
-            break;
-
           case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             storyteller.dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,

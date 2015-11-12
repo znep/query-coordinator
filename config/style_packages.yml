@@ -290,3 +290,4 @@ mobile:
 - mobile/components/feature-map
 - mobile/components/row-inspector
 - mobile/components/column-chart
+- mobile/components/timeline-chart

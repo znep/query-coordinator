@@ -190,7 +190,8 @@ describe('AssetSelectorStore', function() {
           'format': 'vif',
           'data': {
             type: 'columnChart'
-          }
+          },
+          originalUid: 'orig-inal'
         };
 
         storyteller.dispatcher.dispatch({
@@ -210,7 +211,8 @@ describe('AssetSelectorStore', function() {
             dataset: {
               datasetUid: 'test-test',
               domain: window.location.host
-            }
+            },
+            originalUid: 'orig-inal'
           }
         );
 
@@ -219,6 +221,7 @@ describe('AssetSelectorStore', function() {
       it('adds visualization configuration to componentValue when there is a classic visualization', function() {
         var payload = {
           'format': 'classic',
+          'originalUid': 'orig-inal',
           'data': {
             // Sample chart view blob from core
             'id' : 'nggb-5hek',
@@ -365,8 +368,9 @@ describe('AssetSelectorStore', function() {
             visualization: payload.data,
             dataset: {
               datasetUid: 'test-test',
-              domain: window.location.host
-            }
+              domain: window.location.host,
+            },
+            originalUid: 'orig-inal'
           }
         );
 

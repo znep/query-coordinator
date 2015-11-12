@@ -986,17 +986,19 @@
         'class': 'modal-button-group r-to-l'
       }).append([ backButton, insertButton ]);
 
-      configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format) {
+      configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format, originalUid) {
         // This function is called by the visualization chooser when:
         //   - The user makes or clears a selection (argument is either null or a visualization).
         //   - The page finishes loading (argument is null).
         // In either case, we should consider the iframe loaded.
+        // originalUid may be null (say if the user created the visualization inline).
         configureVisualizationIframe.
           trigger('visualizationSelected', {
             data: datasetObj,
 
             // format can either be 'classic' or 'vif'.
-            format: format
+            format: format,
+            originalUid: originalUid
           });
       };
 
@@ -1010,15 +1012,7 @@
 
       if (componentProperties.dataset) {
         var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
-        var currentIframeSrc = iframeElement.attr('src');
-        var newIframeSrc = _visualizationChooserUrl(componentProperties.dataset.datasetUid);
-        if (currentIframeSrc !== newIframeSrc) {
-          iframeElement.
-            attr('src', newIframeSrc).
-            one('load', function() {
-              $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
-            });
-        }
+        _updateVisualizationChooserUrl(iframeElement, componentProperties);
       }
 
       insertButton.prop('disabled', !componentType);
@@ -1035,10 +1029,41 @@
       );
     }
 
-    function _visualizationChooserUrl(datasetId) {
+    function _updateVisualizationChooserUrl(iframeElement, componentProperties) {
+      var currentIframeSrc = iframeElement.attr('src');
+      var currentIframeDatasetUidParam =
+        (currentIframeSrc.match(/datasetId=\w\w\w\w-\w\w\w\w/) || [])[0];
+
+      // Update src if the dataset uid search param is different
+      // (we don't care about defaultColumn or defaultRelatedVisualizationUid changing -
+      // these shouldn't cause iframe reloads).
+      if (
+        !currentIframeDatasetUidParam ||
+        currentIframeDatasetUidParam.indexOf(componentProperties.dataset.datasetUid) === -1) {
+        var newIframeSrc = _visualizationChooserUrl(componentProperties);
+        iframeElement.
+          attr('src', newIframeSrc).
+          one('load', function() {
+            $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
+          });
+      }
+    }
+
+    function _visualizationChooserUrl(componentProperties) {
+      var defaultColumn;
+      var defaultRelatedVisualizationUid;
+
+      defaultColumn = _.get(componentProperties, 'vif.columnName', null);
+      defaultRelatedVisualizationUid = _.get(componentProperties, 'originalUid', null);
+
       return encodeURI(
-        '{0}/component/visualization/add?datasetId={1}'.
-          format(window.location.origin, datasetId)
+        '{0}/component/visualization/add?datasetId={1}&defaultColumn={2}&defaultRelatedVisualizationUid={3}'.
+          format(
+            window.location.origin,
+            componentProperties.dataset.datasetUid,
+            defaultColumn,
+            defaultRelatedVisualizationUid
+          )
       );
     }
 

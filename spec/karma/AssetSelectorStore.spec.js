@@ -521,7 +521,7 @@ describe('AssetSelectorStore', function() {
       function editComponent(blockId) {
         blockIdBeingEdited = blockId;
         storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_EDIT_EXISTING,
+          action: Actions.ASSET_SELECTOR_UPDATE_COMPONENT,
           blockId: blockId,
           componentIndex: 0
         });

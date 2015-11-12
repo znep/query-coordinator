@@ -29,9 +29,9 @@ describe('componentEditButton jQuery plugin', function() {
     });
 
     describe('edit button', function() {
-      it('dispatches Actions.ASSET_SELECTOR_EDIT_EXISTING', function(done) {
+      it('dispatches Actions.ASSET_SELECTOR_UPDATE_COMPONENT', function(done) {
         storyteller.dispatcher.register(function(payload) {
-          if (payload.action === Actions.ASSET_SELECTOR_EDIT_EXISTING) {
+          if (payload.action === Actions.ASSET_SELECTOR_UPDATE_COMPONENT) {
             assert.equal(payload.blockId, standardMocks.validBlockId);
             assert.equal(payload.componentIndex, 0);
             done();

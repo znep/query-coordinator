@@ -33,11 +33,11 @@
 
       switch (action) {
 
-        case Actions.ASSET_SELECTOR_SELECT_NEW:
+        case Actions.ASSET_SELECTOR_INSERT_COMPONENT:
           _selectNew(payload);
           break;
 
-        case Actions.ASSET_SELECTOR_EDIT_EXISTING:
+        case Actions.ASSET_SELECTOR_UPDATE_COMPONENT:
           _editExisting(payload);
           break;
 
@@ -146,9 +146,10 @@
 
     /**
      * Given an asset type (i.e. "socrata.visualization.classic"), returns
-     * the action name for the final step in the wizard.
+     * the step the wizard should start from given the user is updating
+     * a component.
      */
-    function _mapComponentTypeToFinalEditStep(type) {
+    function _stepForUpdate(type) {
       switch (type) {
         case 'image': return Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD;
         case 'youtube.video': return Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE;
@@ -189,7 +190,7 @@
       );
 
       _state = {
-        step: _mapComponentTypeToFinalEditStep(component.type),
+        step: _stepForUpdate(component.type),
         blockId: payload.blockId,
         componentIndex: payload.componentIndex,
         componentType: component.type,

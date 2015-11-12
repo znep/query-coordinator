@@ -78,7 +78,7 @@
    *
    * Supported options (default):
    *  - editMode (false): If true, renders an edit button on hover. The edit button
-   *    dispatches Actions.ASSET_SELECTOR_EDIT_EXISTING.
+   *    dispatches Actions.ASSET_SELECTOR_UPDATE_COMPONENT.
    */
   function componentImage(componentData, theme, options) {
 

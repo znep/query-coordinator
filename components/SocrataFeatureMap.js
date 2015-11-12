@@ -61,12 +61,6 @@
       'USER_CURRENT_POSITION'
     );
 
-    this.destroySocrataFeatureMap = function() {
-
-      detachEvents();
-      visualization.destroy();
-    };
-
     var $element = $(this);
     var datasetMetadata;
 
@@ -176,6 +170,11 @@
      */
 
     function attachEvents() {
+
+      $element.one('destroy', function() {
+        detachEvents();
+        visualization.destroy();
+      });
 
       $element.on('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
       $element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);

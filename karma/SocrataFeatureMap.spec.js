@@ -52,7 +52,7 @@ describe('SocrataFeatureMap component', function() {
 
   function destroyVisualization($container) {
 
-    $container.destroySocrataFeatureMap();
+    $container.trigger('destroy');
     $container.remove();
   }
 

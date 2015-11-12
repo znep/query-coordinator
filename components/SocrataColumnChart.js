@@ -131,6 +131,7 @@
 
     function _attachEvents() {
 
+      // Destroy on (only the first) 'destroy' event.
       $element.one('destroy', function() {
         clearTimeout(rerenderOnResizeTimeout);
         visualization.destroy();

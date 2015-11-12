@@ -220,131 +220,131 @@ describe('AssetSelectorStore', function() {
         var payload = {
           'format': 'classic',
           'data': {
-            // Sample view blob from core
-            "id" : "nggb-5hek",
-            "name" : "LOGO",
-            "averageRating" : 0,
-            "createdAt" : 1445297299,
-            "displayType" : "chart",
-            "downloadCount" : 0,
-            "newBackend" : false,
-            "numberOfComments" : 0,
-            "oid" : 1627,
-            "publicationAppendEnabled" : false,
-            "publicationDate" : 1445279717,
-            "publicationGroup" : 1393,
-            "publicationStage" : "published",
-            "rowsUpdatedAt" : 1445279706,
-            "rowsUpdatedBy" : "tugg-ikce",
-            "tableId" : 1393,
-            "totalTimesRated" : 0,
-            "viewCount" : 0,
-            "viewLastModified" : 1445297299,
-            "viewType" : "tabular",
-            "columns" : [ {
-              "id" : 9484,
-              "name" : "Location",
-              "dataTypeName" : "location",
-              "fieldName" : "location",
-              "position" : 1,
-              "renderTypeName" : "location",
-              "tableColumnId" : 6821,
-              "width" : 196,
-              "format" : { },
-              "subColumnTypes" : [ "human_address", "latitude", "longitude", "machine_address", "needs_recoding" ]
+            // Sample chart view blob from core
+            'id' : 'nggb-5hek',
+            'name' : 'LOGO',
+            'averageRating' : 0,
+            'createdAt' : 1445297299,
+            'displayType' : 'chart',
+            'downloadCount' : 0,
+            'newBackend' : false,
+            'numberOfComments' : 0,
+            'oid' : 1627,
+            'publicationAppendEnabled' : false,
+            'publicationDate' : 1445279717,
+            'publicationGroup' : 1393,
+            'publicationStage' : 'published',
+            'rowsUpdatedAt' : 1445279706,
+            'rowsUpdatedBy' : 'tugg-ikce',
+            'tableId' : 1393,
+            'totalTimesRated' : 0,
+            'viewCount' : 0,
+            'viewLastModified' : 1445297299,
+            'viewType' : 'tabular',
+            'columns' : [ {
+              'id' : 9484,
+              'name' : 'Location',
+              'dataTypeName' : 'location',
+              'fieldName' : 'location',
+              'position' : 1,
+              'renderTypeName' : 'location',
+              'tableColumnId' : 6821,
+              'width' : 196,
+              'format' : { },
+              'subColumnTypes' : [ 'human_address', 'latitude', 'longitude', 'machine_address', 'needs_recoding' ]
             }, {
-              "id" : 9485,
-              "name" : "General Offense Number",
-              "dataTypeName" : "number",
-              "fieldName" : "general_offense_number",
-              "position" : 2,
-              "renderTypeName" : "number",
-              "tableColumnId" : 6822,
-              "width" : 364,
-              "format" : { }
+              'id' : 9485,
+              'name' : 'General Offense Number',
+              'dataTypeName' : 'number',
+              'fieldName' : 'general_offense_number',
+              'position' : 2,
+              'renderTypeName' : 'number',
+              'tableColumnId' : 6822,
+              'width' : 364,
+              'format' : { }
             }, {
-              "id" : 9486,
-              "name" : "Date",
-              "dataTypeName" : "calendar_date",
-              "fieldName" : "date",
-              "position" : 3,
-              "renderTypeName" : "calendar_date",
-              "tableColumnId" : 6823,
-              "width" : 148,
-              "format" : { }
+              'id' : 9486,
+              'name' : 'Date',
+              'dataTypeName' : 'calendar_date',
+              'fieldName' : 'date',
+              'position' : 3,
+              'renderTypeName' : 'calendar_date',
+              'tableColumnId' : 6823,
+              'width' : 148,
+              'format' : { }
             }, {
-              "id" : 9487,
-              "name" : "Type",
-              "dataTypeName" : "text",
-              "fieldName" : "type",
-              "position" : 4,
-              "renderTypeName" : "text",
-              "tableColumnId" : 6820,
-              "width" : 148,
-              "format" : { }
+              'id' : 9487,
+              'name' : 'Type',
+              'dataTypeName' : 'text',
+              'fieldName' : 'type',
+              'position' : 4,
+              'renderTypeName' : 'text',
+              'tableColumnId' : 6820,
+              'width' : 148,
+              'format' : { }
             } ],
-            "displayFormat" : {
-              "chartType" : "line",
-              "hideDsgMsg" : false,
-              "dataLabels" : false,
-              "yAxis" : {
-                "formatter" : {
-                  "abbreviate" : true
+            'displayFormat' : {
+              'chartType' : 'line',
+              'hideDsgMsg' : false,
+              'dataLabels' : false,
+              'yAxis' : {
+                'formatter' : {
+                  'abbreviate' : true
                 }
               },
-              "valueColumns" : [ {
-                "color" : "#003366",
-                "fieldName" : "general_offense_number"
+              'valueColumns' : [ {
+                'color' : '#003366',
+                'fieldName' : 'general_offense_number'
               } ],
-              "fixedColumns" : [ "type" ],
-              "seriesColumns" : [ { } ],
-              "legendDetails" : {
-                "showSeries" : true,
-                "showValueMarkers" : true
+              'fixedColumns' : [ 'type' ],
+              'seriesColumns' : [ { } ],
+              'legendDetails' : {
+                'showSeries' : true,
+                'showValueMarkers' : true
               },
-              "pointSize" : "3",
-              "legend" : "bottom",
-              "smoothLine" : false,
-              "descriptionColumns" : [ { } ],
-              "lineSize" : "2",
-              "sortSeries" : false
+              'pointSize' : '3',
+              'legend' : 'bottom',
+              'smoothLine' : false,
+              'descriptionColumns' : [ { } ],
+              'lineSize' : '2',
+              'sortSeries' : false
             },
-            "grants" : [ {
-              "inherited" : true,
-              "type" : "viewer",
-              "flags" : [ "public" ]
+            'grants' : [ {
+              'inherited' : true,
+              'type' : 'viewer',
+              'flags' : [ 'public' ]
             } ],
-            "metadata" : {
-              "renderTypeConfig" : {
-                "visible" : {
-                  "chart" : true,
-                  "table" : true
+            'metadata' : {
+              'renderTypeConfig' : {
+                'visible' : {
+                  'chart' : true,
+                  'table' : true
                 }
               },
-              "availableDisplayTypes" : [ "chart", "table", "fatrow", "page" ],
-              "rowLabel" : "Row"
+              'availableDisplayTypes' : [ 'chart', 'table', 'fatrow', 'page' ],
+              'rowLabel' : 'Row'
             },
-            "owner" : {
-              "id" : "tugg-ikce",
-              "displayName" : "Foo",
-              "emailUnsubscribed" : false,
-              "profileLastModified" : 1364945570,
-              "roleName" : "administrator",
-              "screenName" : "Foo",
-              "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards" ],
-              "flags" : [ "admin" ]
+            'owner' : {
+              'id' : 'tugg-ikce',
+              'displayName' : 'Foo',
+              'emailUnsubscribed' : false,
+              'profileLastModified' : 1364945570,
+              'roleName' : 'administrator',
+              'screenName' : 'Foo',
+              'rights' : [ 'create_datasets', 'edit_others_datasets', 'edit_sdp', 'edit_site_theme', 'moderate_comments', 'manage_users', 'chown_datasets', 'edit_nominations', 'approve_nominations', 'feature_items', 'federations', 'manage_stories', 'manage_approval', 'change_configurations', 'view_domain', 'view_others_datasets', 'edit_pages', 'create_pages', 'view_goals', 'view_dashboards', 'edit_goals', 'edit_dashboards', 'create_dashboards' ],
+              'flags' : [ 'admin' ]
             },
-            "query" : { },
-            "rights" : [ "read", "write", "add", "delete", "grant", "add_column", "remove_column", "update_column", "update_view", "delete_view" ],
-            "tableAuthor" : {
-              "id" : "tugg-ikce",
-              "displayName" : "Foo",
-              "emailUnsubscribed" : false,
-              "profileLastModified" : 1364945570,
-              "roleName" : "administrator",
-              "screenName" : "Foo",
-              "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards" ],
-              "flags" : [ "admin" ]
+            'query' : { },
+            'rights' : [ 'read', 'write', 'add', 'delete', 'grant', 'add_column', 'remove_column', 'update_column', 'update_view', 'delete_view' ],
+            'tableAuthor' : {
+              'id' : 'tugg-ikce',
+              'displayName' : 'Foo',
+              'emailUnsubscribed' : false,
+              'profileLastModified' : 1364945570,
+              'roleName' : 'administrator',
+              'screenName' : 'Foo',
+              'rights' : [ 'create_datasets', 'edit_others_datasets', 'edit_sdp', 'edit_site_theme', 'moderate_comments', 'manage_users', 'chown_datasets', 'edit_nominations', 'approve_nominations', 'feature_items', 'federations', 'manage_stories', 'manage_approval', 'change_configurations', 'view_domain', 'view_others_datasets', 'edit_pages', 'create_pages', 'view_goals', 'view_dashboards', 'edit_goals', 'edit_dashboards', 'create_dashboards' ],
+              'flags' : [ 'admin' ]
             }
           }
         };

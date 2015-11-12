@@ -1014,11 +1014,7 @@
         }
       }
 
-      if (componentType) {
-        insertButton.prop('disabled', false);
-      } else {
-        insertButton.prop('disabled', true);
-      }
+      insertButton.prop('disabled', !componentType);
     }
 
     /**

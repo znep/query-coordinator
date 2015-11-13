@@ -197,7 +197,7 @@
       var headers = {};
 
       if (_.isEmpty(storyteller.config.coreServiceAppToken)) {
-        storyteller.notifyAirbrake({
+        storyteller.airbrake.notify({
           error: {
             message: '`storyteller.config.coreServiceAppToken` not configured.'
           }

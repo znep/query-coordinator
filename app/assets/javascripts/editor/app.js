@@ -10,28 +10,10 @@ $(document).on('ready', function() {
 
   storyteller.csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-  var airbrakeOptions = {
+  storyteller.airbrake = new storyteller.Airbrake({
+    'environment': storyteller.config.getAirbrakeConfig('environment'),
     'projectKey': storyteller.config.getAirbrakeConfig('projectKey'),
     'projectId': storyteller.config.getAirbrakeConfig('projectId')
-  };
-
-  if (airbrakeOptions.projectKey !== null) {
-    storyteller.airbrake = new airbrakeJs.Client(airbrakeOptions);
-    storyteller.airbrake.addFilter(function(notice) {
-      notice.context.environment = storyteller.config.getAirbrakeConfig('environment');
-      return notice;
-    });
-  }
-
-  storyteller.notifyAirbrake = function(error) {
-    if (!_.isUndefined(storyteller.airbrake)) {
-      storyteller.airbrake.notify(error);
-    }
-    console.error(error);
-  };
-
-  $(window).error(function(event) {
-    storyteller.notifyAirbrake(event.originalEvent.error);
   });
 
   storyteller.assetFinder = new storyteller.AssetFinder();

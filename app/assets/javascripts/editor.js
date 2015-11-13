@@ -46,4 +46,5 @@
 //= require editor/storytellerUtils
 //= require editor/SimpleEventEmitter
 //= require editor/stores/Store
+//= require Airbrake
 //= require_tree ./editor

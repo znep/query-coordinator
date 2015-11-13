@@ -111,7 +111,7 @@
           return _waitForResourceToBeProcessed(resource);
         }).
         catch(function(error) {
-          storyteller.notifyAirbrake(error);
+          storyteller.airbrake.notify(error);
           self.destroy();
         });
     };

@@ -663,7 +663,7 @@
 
           _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme);
         } catch (e) {
-          storyteller.notifyAirbrake(e);
+          storyteller.airbrake.notify(e);
         }
       });
     }

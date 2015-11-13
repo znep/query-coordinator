@@ -1,6 +1,6 @@
 @import "dataCards/common/colors";
 
-soc-select {
+soc-select, .soc-select {
   display: inline-block;
   position: relative;
   select {
@@ -38,6 +38,11 @@ soc-select {
       pointer-events: none;
     }
   }
+}
+
+.soc-select {
+  padding: .7rem 1rem 0.7rem 1rem;
+  margin-bottom: 1rem;
 }
 
 input.dark[type="url"] {

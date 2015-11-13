@@ -58,7 +58,8 @@
 
 <div class="curated-region-selector" ng-show="showCuratedRegionSelector">
   <span>{{'common.by' | I18n}}</span>
-  <soc-select ng-model="selectedCuratedRegion">
+  <span class="soc-select" ng-show="hasSingleCuratedRegion">{{curatedRegions[0].name}}</span>
+  <soc-select ng-model="selectedCuratedRegion" ng-show="!hasSingleCuratedRegion">
     <soc-option
       value="{{curatedRegion.view.id}}"
       ng-repeat="curatedRegion in curatedRegions"
@@ -81,4 +82,10 @@
       {{curatedRegion.name}}
     </soc-option>
   </soc-select>
+</div>
+
+<div
+  class="curated-region-info-message"
+  ng-show="informationMessage && showCuratedRegionSelector"
+  ng-bind-html="informationMessage">
 </div>

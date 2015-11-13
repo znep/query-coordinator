@@ -411,11 +411,13 @@
 
     function _updateEmbedCodePreview(payload) {
       var htmlFragmentUrl = payload.url;
+      var documentId = payload.documentId;
 
       _state.componentType = 'embeddedHtml';
 
       _state.componentProperties = {
         url: htmlFragmentUrl,
+        documentId: documentId,
         layout: {
           height: Constants.DEFAULT_VISUALIZATION_HEIGHT
         }

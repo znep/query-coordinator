@@ -88,7 +88,7 @@ class StoryDraftCreator
     json_blocks.map do |json_block|
       Block.from_json(
         json_block.
-          merge(created_by: user).
+          merge(created_by: user['id']).
           except(:id)
       )
     end

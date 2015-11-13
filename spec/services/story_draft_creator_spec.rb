@@ -193,6 +193,10 @@ RSpec.describe StoryDraftCreator do
         )
       end
 
+      it 'saved user uid in created_by' do
+        expect(result.created_by).to eq(user['id'])
+      end
+
       context 'with an empty block list' do
         let(:blocks) { [] }
 
@@ -239,6 +243,10 @@ RSpec.describe StoryDraftCreator do
         it 'creates new blocks' do
           expect(Block.find(result.block_ids.first)).to be_a(Block)
           expect(Block.find(result.block_ids.second)).to be_a(Block)
+        end
+
+        it 'assigns user uid to created_by for blocks' do
+          expect(result.blocks.first.created_by).to eq(user['id'])
         end
 
         it 'creates a new draft story' do

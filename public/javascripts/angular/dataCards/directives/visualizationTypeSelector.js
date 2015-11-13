@@ -116,6 +116,8 @@
           var disableChoropleths = _.isEmpty(scope.curatedRegions) &&
             (!scope.showDisabledCuratedRegionSection || _.isNull(scope.disabledCuratedRegions));
 
+          scope.hasSingleCuratedRegion = _.get(scope , 'curatedRegions.length', 0) === 1;
+
           if (disableChoropleths) {
             scope.showChoroplethWarning = true;
           } else {

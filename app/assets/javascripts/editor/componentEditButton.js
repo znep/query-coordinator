@@ -6,25 +6,21 @@
   var utils = socrata.utils;
   var storyteller = socrata.storyteller;
 
-  function componentEditButton(componentData, theme, options) {
+  function componentEditButton() {
     var $this = $(this);
     var $editControls = $this.find('.component-edit-controls');
-    var isEditModeEnabled = _.get(options, 'editMode');
 
-    if (isEditModeEnabled) {
-      if ($editControls.length === 0) {
-        $editControls = $('<div>', { 'class': 'component-edit-controls' }).
-          append(
-            $('<button>', { 'class': 'component-edit-controls-edit-btn' }).
-            click(_handleClick).
-            text(I18n.t('editor.components.edit_controls.button'))
-          );
+    if ($editControls.length === 0) {
+      $editControls = $('<div>', { 'class': 'component-edit-controls' }).
+        append(
+          $('<button>', { 'class': 'component-edit-controls-edit-btn' }).
+          click(_handleClick).
+          text(I18n.t('editor.components.edit_controls.button'))
+        );
 
-        $this.append($editControls);
-      }
-    } else {
-      $editControls.remove();
+      $this.append($editControls);
     }
+
     return $this;
   }
 

@@ -55,7 +55,8 @@
     }
 
     _updateSrc($this, componentData);
-    $this.componentEditButton(componentData, theme, options);
+    $this.componentEditButton();
+    $this.toggleClass('editing', _.get(options, 'editMode', false));
 
     return $this;
   }

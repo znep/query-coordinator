@@ -40,7 +40,7 @@ describe('SocrataTimelineChart component', function() {
 
   function destroyVisualization($container) {
 
-    $container.destroySocrataTimelineChart();
+    $container.trigger('destroy');
     $container.remove();
   }
 

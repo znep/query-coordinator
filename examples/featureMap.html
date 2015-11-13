@@ -174,15 +174,15 @@
       /**
        * Destroy the plugin.
        *
-       * The plugin (and all internal modules) can be destroyed by calling
-       * `.destroySocrataFeatureMap()` on the element.
+       * The plugin (and all internal modules) can be destroyed by triggering
+       * `destroy` on the element.
        */
 
       // $featureMap1Element.off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', handleFlyout);
-      // $featureMap1Element.destroySocrataFeatureMap();
+      // $featureMap1Element.trigger('destroy');
 
       // $featureMap2Element.off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', handleFlyout);
-      // $featureMap2Element.destroySocrataFeatureMap();
+      // $featureMap2Element.trigger('destroy');
     });
   </script>
 </html>

@@ -39,7 +39,7 @@ describe('SocrataColumnChart component', function() {
 
   function destroyVisualization($container) {
 
-    $container.destroySocrataColumnChart();
+    $container.trigger('destroy');
     $container.remove();
   }
 

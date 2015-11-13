@@ -20,8 +20,8 @@ To use, add the scripts and stylesheets for the desired functionality via script
 
 ## Testing
 
-* `npm test`: Execute the test suite.
-* `npm run watch`: Automatically run the tests when files change.
+* `npm install && bower install && npm test`: Execute the test suite.
+* `npm install && bower install && npm run watch`: Automatically run the tests when files change.
 * To debug the tests in a browser, run `npm run watch` and open http://localhost:9876/debug.html
 
 ## Examples

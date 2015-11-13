@@ -46,12 +46,6 @@
       'FLYOUT_SELECTED_NOTICE'
     );
 
-    this.destroySocrataTimelineChart = function() {
-      clearTimeout(rerenderOnResizeTimeout);
-      visualization.destroy();
-      _detachEvents();
-    };
-
     var $element = $(this);
 
     var soqlDataProviderConfig = {
@@ -155,6 +149,13 @@
      */
 
     function _attachEvents() {
+
+      // Destroy on (only the first) 'destroy' event.
+      $element.one('destroy', function() {
+        clearTimeout(rerenderOnResizeTimeout);
+        visualization.destroy();
+        _detachEvents();
+      });
       $(root).on('resize', _handleWindowResize);
       $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
     }

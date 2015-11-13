@@ -73,6 +73,7 @@
 
     this.destroy = function() {
       _detachEvents(this.element);
+      this.element.find('.column-chart-container').remove();
     };
 
     /**

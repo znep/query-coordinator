@@ -114,15 +114,15 @@ class Phidippides < SocrataHttp
               # these property values should be coerced to the proper type;
               # we'll pass through any non-boolean-string values because that
               # will help diagnose an improperly stored value
-              acc[key] = case val
+              acc[key.to_sym] = case val
                 when 'true' then true
                 when 'false' then false
                 else val
               end
             when 'precision'
-              acc[key] = val.to_i
-            when 'currency'
-              acc[key] = case val
+              acc[key.to_sym] = val.to_i
+            when 'currency', 'currencyStyle'
+              acc[:currency] = case val
                 when 'AFN' then '؋'
                 when 'ALL' then 'Lek'
                 when 'ANG' then 'ƒ'
@@ -264,7 +264,7 @@ class Phidippides < SocrataHttp
                 when 'date_yshortmonth'             then 'YYYY MMM'
               end
             else
-              acc[key] = val
+              acc[key.to_sym] = val
           end
           acc
         end

@@ -234,9 +234,8 @@
         // Thousands less than 10K are commaified.
         var parts = absVal.toString().split('.').concat('');
         var precision = Math.min(parts[1].length, maxLength - parts[0].length);
-        var newValue = val.toFixed(precision).replace('.', formatNumberOptions.decimalCharacter);
 
-        return this.commaify(newValue, _.pick(formatNumberOptions, 'groupCharacter', 'decimalCharacter'));
+        return this.commaify(val.toFixed(precision), formatNumberOptions);
 
       } else if (/e/i.test(val)) {
 
@@ -299,9 +298,8 @@
     },
 
     // Given a number or a string representing a number, returns a string delimited
-    // by the groupCharacter that separates digits into groups of 3. If the input
-    // is a string and uses a non-period character for the decimal, it may be
-    // specified by using the decimalCharacter.
+    // by options.groupCharacter (default ,) that separates digits into groups of 3.
+    // The decimal portion will be separated by options.decimalCharacter (default .).
     commaify: function(value, options) {
 
       value = String(value);
@@ -313,10 +311,12 @@
 
       var commaifyOptions = _.assign({}, defaultOptions, options);
 
-      var pos = value.indexOf(commaifyOptions.decimalCharacter);
+      var pos = value.indexOf(defaultOptions.decimalCharacter);
 
       if (pos === -1) {
         pos = value.length;
+      } else {
+        value = value.replace(defaultOptions.decimalCharacter, commaifyOptions.decimalCharacter);
       }
 
       pos -= 3;

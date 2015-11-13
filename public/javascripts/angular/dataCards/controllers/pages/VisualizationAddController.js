@@ -167,9 +167,8 @@
       // I can't figure out a safe way of fixing this without seriously endangering
       // the already-fragile socSelect. So I'm sidestepping the issue with setTimeout.
       // Computers!
-      setTimeout(function() {
+      $scope.$applyAsync(function() {
         $scope.addCardSelectedColumnFieldName = defaultColumn;
-        $scope.$apply();
       });
     }
   }

@@ -22,9 +22,11 @@ describe('Routes service', function() {
   });
 
   describe('/component/visualization/add', function() {
-    function verifyUrlResultsInParams(url, expectedParams) {
+    function verifySearchParamResults(searchParams, expectedParams) {
       it('should return the expected state and config', function() {
-        expect(Routes.getUIStateAndConfigFromUrl(url)).to.deep.equal({
+        var result = Routes.getUIStateAndConfigFromUrl('/component/visualization/add', searchParams);
+
+        expect(result).to.deep.equal({
           stateName: 'view.visualizationAdd',
           parameters: expectedParams
         });
@@ -32,21 +34,21 @@ describe('Routes service', function() {
     }
 
     describe('no defaultColumn or defaultRelatedVisualizationUid specified', function() {
-      verifyUrlResultsInParams('/component/visualization/add', {
+      verifySearchParamResults('', {
         defaultColumn: undefined,
         defaultRelatedVisualizationUid: undefined
       });
     });
 
     describe('defaultColumn specified', function() {
-      verifyUrlResultsInParams('/component/visualization/add?defaultColumn=foobar', {
+      verifySearchParamResults('defaultColumn=foobar', {
         defaultColumn: 'foobar',
         defaultRelatedVisualizationUid: undefined
       });
     });
 
     describe('defaultRelatedVisualizationUid specified', function() {
-      verifyUrlResultsInParams('/component/visualization/add?defaultRelatedVisualizationUid=fooo-barr', {
+      verifySearchParamResults('defaultRelatedVisualizationUid=fooo-barr', {
         defaultColumn: undefined,
         defaultRelatedVisualizationUid: 'fooo-barr'
       });
@@ -57,8 +59,14 @@ describe('Routes service', function() {
         defaultColumn: 'foo',
         defaultRelatedVisualizationUid: 'fooo-barr'
       };
-      verifyUrlResultsInParams('/component/visualization/add?defaultColumn=foo&defaultRelatedVisualizationUid=fooo-barr', expected);
-      verifyUrlResultsInParams('/component/visualization/add?defaultRelatedVisualizationUid=fooo-barr&defaultColumn=foo', expected);
+      verifySearchParamResults(
+        'defaultColumn=foo&defaultRelatedVisualizationUid=fooo-barr',
+        expected
+      );
+      verifySearchParamResults(
+        'defaultRelatedVisualizationUid=fooo-barr&defaultColumn=foo',
+        expected
+      );
     });
   });
 

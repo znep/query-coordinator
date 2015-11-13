@@ -2,7 +2,7 @@
   'use strict';
 
   var Routes = {
-    getUIStateAndConfigFromUrl: function(urlPathname) {
+    getUIStateAndConfigFromUrl: function(urlPathname, urlSearch) {
       var stateName = '404';
       var params = {};
 
@@ -15,8 +15,7 @@
         fieldName: '([\\w-_:@]+)'
       };
 
-      var search = urlPathname.split('?')[1] || '';
-      var searchParams = _(search.split('&')).
+      var searchParams = _.chain((urlSearch || '').split('&')).
         invoke('split', '=').
         zipObject().
         value();

@@ -141,6 +141,11 @@ function applyStandardMocks() {
   });
 
 
+  sinon.stub(window.socrata.visualizations, 'SoqlDataProvider', function() {
+    return {
+      query: _.constant(new Promise(_.noop)) // Never resolve.
+    };
+  });
 
   // Stub translations
   window.I18n = {
@@ -237,6 +242,9 @@ function removeStandardMocks() {
 
   storyteller.SquireMocker.unmock();
   storyteller.AssetFinderMocker.unmock();
+  if (socrata.visualizations.SoqlDataProvider.restore) {
+    socrata.visualizations.SoqlDataProvider.restore();
+  }
 
   delete storyteller.dispatcher;
   delete storyteller.storyStore;

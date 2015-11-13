@@ -14,7 +14,8 @@
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/aggregationChooser.html',
       scope: {
-        page: '='
+        page: '=',
+        isStandaloneVisualization: '='
       },
       link: function($scope, element) {
         /*
@@ -193,51 +194,59 @@
             });
           });
 
+        $scope.togglePanel = function() {
+          if (!$scope.isStandaloneVisualization && $scope.canChooseAggregation) {
+            $scope.panelActive = !$scope.panelActive;
+          }
+        };
+
         /*
          * Register flyout for disabled aggregation columns
          */
 
-        FlyoutService.register({
-          selector: '.aggregation-option',
-          render: function(flyoutElement) {
-            if ($(flyoutElement).is('.disabled.no-count')) {
-              return '<span class="flyout-cell">{0}</span>'.
-                format(I18n.aggregationChooser.optionDisabled);
-            }
-          },
-          destroySignal: $scope.$destroyAsObservable(element),
-          trackCursor: true
-        });
+        if (!$scope.isStandaloneVisualization) {
+          FlyoutService.register({
+            selector: '.aggregation-option',
+            render: function(flyoutElement) {
+              if ($(flyoutElement).is('.disabled.no-count')) {
+                return '<span class="flyout-cell">{0}</span>'.
+                  format(I18n.aggregationChooser.optionDisabled);
+              }
+            },
+            destroySignal: $scope.$destroyAsObservable(element),
+            trackCursor: true
+          });
 
-        var aggregationChooserSelectors = [
-          '.aggregation-chooser-trigger.disabled',
-          '.aggregation-chooser-trigger.disabled span'
-        ];
+          var aggregationChooserSelectors = [
+            '.aggregation-chooser-trigger.disabled',
+            '.aggregation-chooser-trigger.disabled span'
+          ];
 
-        FlyoutService.register({
-          selector: aggregationChooserSelectors.join(', '),
-          positionOn: function() {
+          FlyoutService.register({
+            selector: aggregationChooserSelectors.join(', '),
+            positionOn: function() {
 
-            // Targets the span element whose ::after pseudoelement we're using
-            // to render the down-arrow "icon".
-            return $('{0} .tool-panel-cue'.format(aggregationChooserSelectors[0]))[0];
-          },
-          render: _.constant(
-            '<span class="icon-warning"></span><span class="flyout-title">{0}</span><p>{1}</p>'.format(
-              I18n.t(
-                'aggregationChooser.tooManyColumns.title',
-                Constants.AGGREGATION_MAX_COLUMN_COUNT
-              ),
-              I18n.t(
-                'aggregationChooser.tooManyColumns.message',
-                Constants.AGGREGATION_MAX_COLUMN_COUNT
+              // Targets the span element whose ::after pseudoelement we're using
+              // to render the down-arrow "icon".
+              return $('{0} .tool-panel-cue'.format(aggregationChooserSelectors[0]))[0];
+            },
+            render: _.constant(
+              '<span class="icon-warning"></span><span class="flyout-title">{0}</span><p>{1}</p>'.format(
+                I18n.t(
+                  'aggregationChooser.tooManyColumns.title',
+                  Constants.AGGREGATION_MAX_COLUMN_COUNT
+                ),
+                I18n.t(
+                  'aggregationChooser.tooManyColumns.message',
+                  Constants.AGGREGATION_MAX_COLUMN_COUNT
+                )
               )
-            )
-          ),
-          belowTarget: true,
-          classes: 'aggregation-chooser',
-          destroySignal: $scope.$destroyAsObservable(element)
-        });
+            ),
+            belowTarget: true,
+            classes: 'aggregation-chooser',
+            destroySignal: $scope.$destroyAsObservable(element)
+          });
+        }
 
         /*
          * Callback functions

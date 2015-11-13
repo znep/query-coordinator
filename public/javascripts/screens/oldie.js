@@ -12,13 +12,9 @@ $(function()
                 'viewed using this software.  To experience the next generation ' +
                 'of data transparency we recommend you upgrade to a newer version ' +
                 'of your Web browser.' },
-            { tagName: 'p', 'class': 'modalParagraph', contents:
-                'If you would like to learn more about the Socrata Social Data ' +
-                'Discovery solution you may browse the, &ldquo;About Socrata&rdquo; ' +
-                'area of our site.' },
             { tagName: 'div', 'class': 'finishButtons', contents: [
-                { tagName: 'a', 'class': 'button', href: '/about',
-                    contents: 'About Socrata' },
+                { tagName: 'a', 'class': 'button default jqmClose', href: '#',
+                    contents: 'Got it' },
                 { tagName: 'a', 'class': 'button', href: 'http://update.microsoft.com',
                     contents: 'Upgrade my browser' }
             ]}

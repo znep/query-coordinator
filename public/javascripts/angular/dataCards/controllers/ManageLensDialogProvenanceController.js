@@ -9,7 +9,7 @@ Eventually we want to introduce another value, "COMMUNITY", but for now it is ei
 (function() {
   'use strict';
 
-  function ManageLensDialogProvenanceController($scope, http, $q, ServerConfig) {
+  function ManageLensDialogProvenanceController($scope, http, $q) {
 
     var initialProvenance$ = $scope.page.observe('provenance');
 

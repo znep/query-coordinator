@@ -44,7 +44,7 @@ module BrowseActions
 
     whitelisted_view_types = CurrentDomain.property(:view_types_facet, :catalog)
     if whitelisted_view_types # WARN: if you leave this an empty array, no view types!
-      view_types.select! { |vt| whitelisted_view_types.include?(vt) }
+      view_types.select! { |vt| whitelisted_view_types.include?(vt[:value]) }
     end
 
     base_view_types_facet.merge(options: view_types)

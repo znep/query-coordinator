@@ -141,11 +141,13 @@
           'line-width: 1;' +
           'line-opacity: 0.5;' +
           'line-color: #000000;' +
+          'line-simplify: 2' +
         '}' +
         '#multilinestring, #linestring {' +
           'line-width: 2.0;' +
           'line-color: #0000ff;' +
-          'line-opacity: 0.5;' +
+          'line-opacity: 0.75;' +
+          'line-simplify: 2' +
         '}'
       );
       var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=50000&$overscan=32&$mondara=true&$style=' + style;

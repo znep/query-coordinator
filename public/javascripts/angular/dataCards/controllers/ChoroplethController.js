@@ -60,8 +60,14 @@
     var shapefileId$ = computedColumnName$.map(CardVisualizationChoroplethHelpers.computedColumnNameToShapefileId);
 
     if (regionCodingDisabled) {
-      computedColumnMissing$.
-        safeApplySubscribe($scope, function() { $scope.isPendingColumnAddition = true; });
+      computedColumnBase$.
+        map(_.isPresent).
+        safeApplySubscribe($scope, function(computedColumnPresent) {
+          $scope.isPendingColumnAddition = !computedColumnPresent;
+          if (!computedColumnPresent) {
+            $scope.geojsonAggregateData = [];
+          }
+        });
     } else {
 
       // If the computed column is missing

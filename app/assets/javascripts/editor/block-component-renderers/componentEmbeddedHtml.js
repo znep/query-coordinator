@@ -13,7 +13,8 @@
       '<iframe>',
       {
         'src': 'about:blank',
-        'frameborder': '0'
+        'frameborder': '0',
+        'data-document-id': null
       }
     );
 
@@ -25,15 +26,23 @@
   function _updateSrc($element, componentData) {
 
     var embeddedHtmlUrl;
+    var documentId;
     var $iframeElement = $element.find('iframe');
 
     utils.assertHasProperty(componentData, 'value');
     utils.assertHasProperty(componentData.value, 'url');
 
-    embeddedHtmlUrl = componentData.value.url;
+    // We want to eventually check for this, but there was a bug where we weren't saving this to the
+    // database for embeddedHtml elements. Moving forward we will, and may choose to migrate old
+    // data to fix the problem. -SR
+    // utils.assertHasProperty(componentData.value, 'documentId');
 
-    if ($iframeElement.attr('src') !== embeddedHtmlUrl) {
+    embeddedHtmlUrl = componentData.value.url;
+    documentId = componentData.value.documentId;
+
+    if ($iframeElement.attr('src') !== embeddedHtmlUrl || $iframeElement.attr('data-document-id') !== String(documentId)) {
       $iframeElement.attr('src', embeddedHtmlUrl);
+      $iframeElement.attr('data-document-id', documentId);
     }
   }
 

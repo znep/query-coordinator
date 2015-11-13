@@ -347,5 +347,41 @@ describe('AssetSelectorStore', function() {
         });
       });
     });
+
+    describe('after a `EMBED_CODE_UPLOAD_DONE` action', function() {
+
+      var payloadUrl = 'https://validurl.com/embeddedHtml.html';
+      var payloadDocumentId = '2345';
+
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.EMBED_CODE_UPLOAD_DONE,
+          url: payloadUrl,
+          documentId: payloadDocumentId
+        });
+      });
+
+      describe('.getComponentType()', function() {
+        it('returns `embeddedHtml`', function() {
+          assert.equal(
+            storyteller.assetSelectorStore.getComponentType(),
+            'embeddedHtml'
+          );
+        });
+      });
+
+      describe('.getComponentValue()', function() {
+        it('returns payload with url and documentId and layout', function() {
+          assert.deepEqual(
+            storyteller.assetSelectorStore.getComponentValue(),
+            {
+              documentId: payloadDocumentId,
+              url: payloadUrl,
+              layout: { height: Constants.DEFAULT_VISUALIZATION_HEIGHT }
+            }
+          );
+        });
+      });
+    });
   });
 });

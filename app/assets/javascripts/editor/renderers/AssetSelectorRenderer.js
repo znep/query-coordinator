@@ -801,7 +801,8 @@
      * {
      *   type: 'embeddedHtml',
      *   value: {
-     *     url: '<html fragment url>'
+     *     url: '<html fragment url>',
+     *     documentId: documentId,
      *     layout: {
      *       height: 300
      *     }
@@ -811,6 +812,7 @@
     function _renderPreviewEmbedCodeData(componentProperties) {
 
       var htmlFragmentUrl = null;
+      var documentId = null;
       var percentLoaded = null;
       var errorStep = null;
       var messageTranslationKey;
@@ -835,12 +837,17 @@
         errorStep = componentProperties.step;
       }
 
+      if (_.has(componentProperties, 'documentId')) {
+        documentId = componentProperties.documentId;
+      }
+
       insecureHtmlWarning.toggle(_warnAboutInsecureHTML);
 
       if (!_.isNull(htmlFragmentUrl)) {
 
         if (iframeSrc !== htmlFragmentUrl) {
           iframeElement.attr('src', htmlFragmentUrl);
+          iframeElement.attr('data-document-id', documentId);
         }
 
         iframeContainer.

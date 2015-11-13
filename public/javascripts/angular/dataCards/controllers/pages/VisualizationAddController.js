@@ -4,19 +4,29 @@
   var socrata = window.socrata;
   var utils = socrata.utils;
 
-  function sendVisualizationToEnclosingWindow(visualizationData, visualizationType) {
+  function sendVisualizationToEnclosingWindow(visualizationData, visualizationType, originalUid) {
 
     // Trigger function attached to the iframe element in the parent
     if (_.isNull(window.frameElement)) {
       throw new Error('Page expects to be in an iframe, passing information to the parent window.');
     } else if (_.isFunction(window.frameElement.onVisualizationSelected)) {
-      window.frameElement.onVisualizationSelected(visualizationData, visualizationType);
+      window.frameElement.onVisualizationSelected(visualizationData, visualizationType, originalUid);
     } else {
       throw new Error('Cannot find onVisualizationSelected on the iframe.');
     }
   }
 
-  function VisualizationAddController($scope, $rootScope, $log, DatasetColumnsService, dataset, WindowState, Page) {
+  function VisualizationAddController(
+    $scope,
+    $rootScope,
+    $log,
+    DatasetColumnsService,
+    dataset,
+    WindowState,
+    Page,
+    defaultColumn,
+    defaultRelatedVisualizationUid
+    ) {
 
     /*************************
     * General metadata stuff *
@@ -29,6 +39,15 @@
     };
 
     var blankPage = new Page(pageBlob, dataset);
+
+    // Coerce the defaults to either valid values or null.
+    defaultRelatedVisualizationUid = _.any(
+      window.relatedVisualizations,
+      'originalUid',
+      defaultRelatedVisualizationUid) ? defaultRelatedVisualizationUid : null;
+
+    defaultColumn = dataset.getCurrentValue('columns')[defaultColumn] ? defaultColumn : null;
+
     $scope.blankPage = blankPage;
 
     $scope.page = blankPage;
@@ -109,11 +128,15 @@
         $scope.addCardSelectedColumnFieldName = visualization.data.sourceVif.columnName;
         $scope.classicVisualization = null;
 
-        sendVisualizationToEnclosingWindow(visualization.data.sourceVif, 'vif');
+        sendVisualizationToEnclosingWindow(visualization.data.sourceVif, 'vif', visualization.originalUid);
       } else if (visualization.format === 'classic') {
+        // Unlike VIF, classic visualization requires originalUid.
+        utils.assertHasProperty(visualization, 'originalUid');
+        utils.assertIsOneOfTypes(visualization.originalUid, 'string');
+
         $scope.addCardSelectedColumnFieldName = null;
         $scope.classicVisualization = visualization;
-        sendVisualizationToEnclosingWindow(visualization.data, 'classic');
+        sendVisualizationToEnclosingWindow(visualization.data, 'classic', visualization.originalUid);
       }
     });
 
@@ -125,8 +148,30 @@
       var vif = selectedCard ? generateVIF(selectedCard) : null;
       $scope.page = $scope.blankPage;
       $scope.classicVisualization = null;
-      sendVisualizationToEnclosingWindow(vif, 'vif');
+      sendVisualizationToEnclosingWindow(vif, 'vif', null);
     });
+
+    // Apply the defaults, if any. defaultRelatedVisualizationUid is
+    // highest priority (i.e. we only apply defaultColumn if no
+    // defaultRelatedVisualizationUid is present).
+    if (defaultRelatedVisualizationUid) {
+      $scope.$emit(
+        'related-visualization-selected',
+        _.find(window.relatedVisualizations, 'originalUid', defaultRelatedVisualizationUid)
+      );
+    } else if (defaultColumn) {
+      // I'm... so sorry about this. There's an odd timing issue in socSelect
+      // (used in columnAndVisualizationSelector) that manifests as the column
+      // dropdown not taking the value of defaultColumn (but the rest of the
+      // UI reflects a selection of defaultColumn).
+      // I can't figure out a safe way of fixing this without seriously endangering
+      // the already-fragile socSelect. So I'm sidestepping the issue with setTimeout.
+      // Computers!
+      setTimeout(function() {
+        $scope.addCardSelectedColumnFieldName = defaultColumn;
+        $scope.$apply();
+      });
+    }
   }
 
   angular.

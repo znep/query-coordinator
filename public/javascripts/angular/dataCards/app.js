@@ -130,9 +130,16 @@
         }
       }).
       state('view.visualizationAdd', {
+        params: ['defaultColumn', 'defaultRelatedVisualizationUid'],
         resolve: {
           dataset: function(Dataset) {
             return new Dataset(datasetMetadata);
+          },
+          defaultColumn: function($stateParams) {
+            return $stateParams.defaultColumn;
+          },
+          defaultRelatedVisualizationUid: function($stateParams) {
+            return $stateParams.defaultRelatedVisualizationUid;
           }
         },
         views: {

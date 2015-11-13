@@ -524,8 +524,9 @@
     function _updateEditorHeights(blockId, $blockElement) {
 
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
+      var editor;
       var editorId;
-      var contentHeight;
+      var contentHeight = 0;
       var maxEditorHeight = 0;
       var contentMissingCheck = function(iframe) {
         // If we have a height, then we have a loaded Squire instance.
@@ -551,9 +552,11 @@
             children(':first').
             attr('data-editor-id');
 
-          contentHeight = storyteller.richTextEditorManager.
-            getEditor(editorId).
-            getContentHeight();
+          editor = storyteller.richTextEditorManager.getEditor(editorId);
+
+          if (editor) {
+            contentHeight = editor.getContentHeight();
+          }
         } else {
 
           contentHeight = $blockElement.

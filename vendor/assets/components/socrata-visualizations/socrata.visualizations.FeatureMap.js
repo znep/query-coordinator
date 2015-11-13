@@ -74,7 +74,6 @@
     var _lastRenderOptions;
     var _featureLayers = {};
     var _flyoutData = {};
-    var _lastPoints = null;
     var _currentLayerId;
 
     _hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
@@ -253,7 +252,7 @@
       element.append(mapContainer);
     }
 
-    function _attachEvents(element) {
+    function _attachEvents() {
 
       // Only attach map events if the map has actually been instantiated.
       if (_map) {

@@ -171,6 +171,7 @@
 
     function attachEvents() {
 
+      // Destroy on (only the first) 'destroy' event.
       $element.one('destroy', function() {
         detachEvents();
         visualization.destroy();

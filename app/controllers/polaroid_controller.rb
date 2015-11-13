@@ -11,14 +11,15 @@ class PolaroidController < ActionController::Base
       }
     end
 
+    parsed_vif = JSON.parse(params[:vif]).with_indifferent_access
     begin
       result = polaroid.fetch_image(
-        params[:page_id],
-        params[:field_id],
+        params[:id],
+        parsed_vif,
         :cookies => forwardable_session_cookies
       )
     rescue => error
-      Rails.logger.error(error_message = "Unable to proxy image service due to error: #{error.to_s}")
+      Rails.logger.error("#{error.message}\n#{error.backtrace.join('\n ')}")
 
       result = {
         status: '500',
@@ -35,7 +36,7 @@ class PolaroidController < ActionController::Base
         result[:body],
         :type => result[:content_type],
         :disposition => params.fetch('disposition', 'attachment'),
-        :filename => "#{params[:page_id]}-#{params[:field_id]}.png"
+        :filename => "#{params[:id]}-#{parsed_vif[:columnName]}-#{parsed_vif[:type]}.png"
       )
     else
       render result.update(:json => result[:body])

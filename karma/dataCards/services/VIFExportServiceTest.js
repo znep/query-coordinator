@@ -16,7 +16,7 @@ describe('VIFExportService', function() {
   var Dataset;
   var DateHelpers;
   var VIFExportService;
-        
+
   function generateCardMetadata(cardType, activeFilters) {
 
     return {

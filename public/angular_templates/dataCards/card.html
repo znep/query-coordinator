@@ -71,9 +71,8 @@
   class="card-chooser overlay"
   ng-class="{ enabled: isExportable }">
   <div ng-switch="isExportable">
-    <a ng-switch-when="true"
+    <button ng-switch-when="true"
       class="action-btn action-png-export"
-      href="{{downloadUrl}}"
       ng-click="exportCard($event)"
       ng-class="{
         disabled: !isExportable,
@@ -83,11 +82,11 @@
       }">
       {{ downloadStateText(downloadState) }}
       <spinner ng-if="downloadState === 'loading'"></spinner>
-    </a>
-    <span ng-switch-default
+    </button>
+    <button ng-switch-default
       class="action-btn action-png-export export-visualization-disabled disabled">
       {{ downloadStateText(downloadState) }}
-    </span>
+    </button>
   </div>
 </div>
 

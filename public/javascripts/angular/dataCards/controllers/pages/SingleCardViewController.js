@@ -1,25 +1,12 @@
 (function() {
   'use strict';
 
-  function SingleCardViewController(
-    $log,
-    $rootScope,
-    $scope,
-    $window,
-    page,
-    fieldName,
-    WindowState
-  ) {
+  function SingleCardViewController($scope, $rootScope, $log, $window, page, WindowState) {
+
     var card$ = page.
       observe('cards').
       map(function(allCards) {
-        var foundCards = _.where(allCards, { fieldName: fieldName });
-        if (foundCards > 0) { throw new Error('Multiple cards with the same fieldName: ' + fieldName); }
-        return _.first(foundCards);
-      }).
-      filter(_.identity).
-      doAction(function(cardModel) {
-        cardModel.set('expanded', true);
+        return allCards[0];
       });
     var globalWhereClauseFragment$ = page.observe('computedWhereClauseFragment');
 
@@ -44,11 +31,11 @@
     // So instead, we wait for all images to finish loading (yeah...).
 
     // Sequence of render:complete events.
-    var renderComplete = $rootScope.$eventToObservable('render:complete');
+    var renderComplete$ = $rootScope.$eventToObservable('render:complete');
 
     // Sequence of true/false representing whether or not all images on
     // the page are complete.
-    var imagesComplete = Rx.Observable.timer(100, 100).map(function() {
+    var imagesComplete$ = Rx.Observable.timer(100, 100).map(function() {
       var allImages = $('img');
       // NOTE! The complete property has bugs in Firefox. Fortunately,
       // this should only be running in PhantomJS, which has no problems
@@ -56,11 +43,11 @@
       return _.all(allImages, _.property('complete'));
     });
 
-    // Sequence like imagesComplete, but only begins after renderComplete emits.
-    var imagesCompleteAfterRenderComplete = renderComplete.first().ignoreElements().concat(imagesComplete);
+    // Sequence like imagesComplete$, but only begins after renderComplete$ emits.
+    var imagesCompleteAfterRenderComplete$ = renderComplete$.first().ignoreElements().concat(imagesComplete$);
 
-    // Tell Phantom we're ready, once we get a renderComplete AND all images are loaded.
-    imagesCompleteAfterRenderComplete.
+    // Tell Phantom we're ready, once we get a renderComplete$ AND all images are loaded.
+    imagesCompleteAfterRenderComplete$.
       first(_.identity).
       subscribe(function() {
         if (_.isFunction($window.callPhantom)) {

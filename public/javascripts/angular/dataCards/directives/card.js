@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardDirective(DownloadService, ServerConfig, FlyoutService, $timeout, I18n) {
+  function CardDirective(DownloadService, ServerConfig, FlyoutService, VIFExportService, $timeout, I18n) {
 
     return {
       restrict: 'E',
@@ -186,10 +186,6 @@
           }
         });
 
-        $scope.$bindObservable('downloadUrl', model$.map(function(model) {
-          return '/view/{0}/{1}.png'.format(model.page.id, model.fieldName);
-        }));
-
         $scope.downloadStateText = function(state) {
 
           // Handle non-default states common to all export modes.
@@ -260,7 +256,9 @@
               break;
             case 'polaroid':
             default:
-              DownloadService.download($scope.downloadUrl).then(
+              var vif = VIFExportService.exportVIF($scope.model.page, $scope.model.uniqueId, 'Polaroid Export', '');
+              var url = '/view/{0}/vif.png'.format($scope.model.page.id);
+              DownloadService.download(url, vif).then(
                 function() {
                   $scope.$safeApply(function() {
                     $scope.downloadState = 'success';

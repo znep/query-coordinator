@@ -60,9 +60,15 @@
         catchException(Rx.Observable.returnValue(null));
     }
 
+    function isAdmin(user) {
+      var roleName = user.roleName;
+      return _.contains(user.flags, 'admin') || roleName === 'administrator';
+    }
+
     return {
       getCurrentUser: getCurrentUser,
       getCurrentUser$: _.once(getCurrentUser$),
+      isAdmin: isAdmin,
       Errors: Errors
     };
   }

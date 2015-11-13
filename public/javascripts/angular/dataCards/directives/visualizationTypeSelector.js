@@ -1,9 +1,19 @@
 (function() {
   'use strict';
 
-  function visualizationTypeSelector(Constants, FlyoutService, $log, I18n, CardDataService, ServerConfig) {
+  function visualizationTypeSelector(
+    Constants,
+    FlyoutService,
+    $log,
+    $window,
+    I18n,
+    CardDataService,
+    ServerConfig,
+    UserSessionService
+  ) {
 
     function initializeCuratedRegionSelector(scope, cardModel$, cardType$) {
+      var currentUser$ = Rx.Observable.returnValue($window.currentUser);
       var dataset$ = cardModel$.observeOnLatest('page.dataset');
       var columns$ = cardModel$.observeOnLatest('page.dataset.columns');
       var computedColumn$ = cardModel$.observeOnLatest('computedColumn');
@@ -21,6 +31,7 @@
             return {
               enabled: false,
               disabledMessage: I18n.addCardDialog.disabledCuratedRegionMessage.permissions,
+              showInfoMessage: true,
               showDisabledSection: true
             };
           }
@@ -44,6 +55,7 @@
           return {
             enabled: true,
             disabledMessage: null,
+            showInfoMessage: true,
             showDisabledSection: false
           };
         }).share();
@@ -51,6 +63,14 @@
       var isRegionCodingEnabled$ = regionCodingDetails$.pluck('enabled');
       scope.$bindObservable('showDisabledCuratedRegionSection', regionCodingDetails$.pluck('showDisabledSection'));
       scope.$bindObservable('disabledCuratedRegionMessage', regionCodingDetails$.pluck('disabledMessage'));
+      var informationMessage$ = regionCodingDetails$.pluck('showInfoMessage').filter(_.identity).combineLatest(
+        currentUser$.map(UserSessionService.isAdmin),
+        function(isRegionCodingEnabled, isAdmin) {
+          return isAdmin ?
+            I18n.addCardDialog.choroplethAdminMessage :
+            I18n.addCardDialog.choroplethMessage;
+        });
+      scope.$bindObservable('informationMessage', informationMessage$);
 
       // Only show the dropdown if the card is a choropleth.
       var isChoropleth = _.partial(_.isEqual, 'choropleth');

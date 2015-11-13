@@ -4,9 +4,9 @@ describe('Routes service', function() {
   var Routes;
 
   beforeEach(module('dataCards.services'));
-  beforeEach(inject([ 'Routes', function(_Routes) {
-    Routes = _Routes;
-  }]));
+  beforeEach(inject(function($injector) {
+    Routes = $injector.get('Routes');
+  }));
 
   describe('Page view routes', function() {
     it('should return a view of view.cards for a valid page URL', inject(function(Routes) {
@@ -30,24 +30,28 @@ describe('Routes service', function() {
         });
       });
     }
+
     describe('no defaultColumn or defaultRelatedVisualizationUid specified', function() {
       verifyUrlResultsInParams('/component/visualization/add', {
         defaultColumn: undefined,
         defaultRelatedVisualizationUid: undefined
       });
     });
+
     describe('defaultColumn specified', function() {
       verifyUrlResultsInParams('/component/visualization/add?defaultColumn=foobar', {
         defaultColumn: 'foobar',
         defaultRelatedVisualizationUid: undefined
       });
     });
+
     describe('defaultRelatedVisualizationUid specified', function() {
       verifyUrlResultsInParams('/component/visualization/add?defaultRelatedVisualizationUid=fooo-barr', {
         defaultColumn: undefined,
         defaultRelatedVisualizationUid: 'fooo-barr'
       });
     });
+
     describe('both defaultColumn and defaultRelatedVisualizationUid specified', function() {
       var expected = {
         defaultColumn: 'foo',

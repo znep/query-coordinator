@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function LeafletHelpersService() {
+  function LeafletHelpersService($window) {
     return {
       /**
        * Given an object specifying northeast and southwest extents, returns a valid
@@ -17,7 +17,7 @@
         southWest = L.latLng(featureExtent.southwest[0], featureExtent.southwest[1]);
         northEast = L.latLng(featureExtent.northeast[0], featureExtent.northeast[1]);
         bounds = L.latLngBounds(southWest, northEast);
-        window.socrata.utils.assert(bounds.isValid(), 'Bounds is not valid.');
+        $window.socrata.utils.assert(bounds.isValid(), 'Bounds is not valid.');
         return bounds;
       },
       /**

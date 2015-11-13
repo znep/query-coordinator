@@ -1,10 +1,16 @@
 (function() {
   'use strict';
 
-  function ManageLensDialogSharingController($scope, $q, I18n, http) {
+  function ManageLensDialogSharingController(
+    $scope,
+    $q,
+    $window,
+    I18n,
+    http
+  ) {
     var self = this;
 
-    $scope.currentUserId = window.currentUser.id;
+    $scope.currentUserId = $window.currentUser.id;
 
     // This function provides a description of the entity making the request to the http() service.
     // The requester object is expected present in the config options passed to http(), and it is expected

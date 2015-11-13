@@ -15,7 +15,7 @@
     return _.isString(value) ? value.trim() : value;
   }
 
-  function VectorTileDataService(RequestId, ServerConfig, $q) {
+  function VectorTileDataService(RequestId, ServerConfig, $q, $window) {
     var VectorTileDataServiceDefinition = {};
     var tileserverHosts = ServerConfig.get('tileserverHosts');
     var originHost = $.baseUrl().host;
@@ -70,7 +70,7 @@
     // use a righteous hack (See: http://stackoverflow.com/a/4330882).
     function xhrHasVBArray(xhr) {
       return _.isUndefined(xhr.response) &&
-        _.isDefined(window.VBArray) &&
+        _.isDefined($window.VBArray) &&
         typeof xhr.responseBody === 'unknown'; // eslint-disable-line valid-typeof
     }
 

@@ -3,6 +3,7 @@
 
   function saveVisualizationAsDialog(
     $http,
+    $window,
     I18n,
     VIFExportService,
     FlyoutService
@@ -57,7 +58,7 @@
                 $http.post('/metadata/v1/standalone_viz.json', payload).
                   then(function(response) {
                     $scope.saveStatus = 'saved';
-                    window.location = I18n.a('/view/{0}'.format(response.data.id));
+                    $window.location = I18n.a('/view/{0}'.format(response.data.id));
                   }, function() {
                     $scope.saveStatus = 'failed';
                   });

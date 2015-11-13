@@ -1,7 +1,15 @@
 (function() {
   'use strict';
 
-  function SingleCardViewController($scope, $rootScope, $log, page, fieldName, WindowState) {
+  function SingleCardViewController(
+    $log,
+    $rootScope,
+    $scope,
+    $window,
+    page,
+    fieldName,
+    WindowState
+  ) {
     var card$ = page.
       observe('cards').
       map(function(allCards) {
@@ -55,8 +63,8 @@
     imagesCompleteAfterRenderComplete.
       first(_.identity).
       subscribe(function() {
-        if (_.isFunction(window.callPhantom)) {
-          window.callPhantom('snapshotReady');
+        if (_.isFunction($window.callPhantom)) {
+          $window.callPhantom('snapshotReady');
         } else {
           $log.error('Snapshot ready, but a PhantomJS instance is not listening.');
         }
@@ -64,7 +72,7 @@
 
     // Disable mouse interaction to prevent flyouts and hover effects if
     // polaroid is taking a picture of us.
-    $scope.interactive = !window._phantom;
+    $scope.interactive = !$window._phantom;
 
   }
 

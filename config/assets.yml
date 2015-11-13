@@ -715,6 +715,8 @@ javascripts:
 
   angular-socrata-common:
     - public/javascripts/plugins/modernizr.js
+    - public/javascripts/lib/RxExtensions.js
+    - public/javascripts/angular/rx/**/*.js
     - public/javascripts/angular/common/services.js
     - public/javascripts/angular/common/**/*.js
 

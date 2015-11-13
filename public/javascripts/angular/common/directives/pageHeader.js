@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function pageHeader(ServerConfig, I18n) {
+  function pageHeader(ServerConfig, I18n, $window) {
     var DEFAULT_LOGO_URL = '/stylesheets/images/common/socrata_logo_white.png';
 
     var DEFAULT_VALUES = {
@@ -38,7 +38,7 @@
         $scope.signIn = signIn;
         $scope.signOut = signOut;
         $scope.pageHeaderStyle = pageHeaderStyle;
-        $scope.currentUser = window.currentUser;
+        $scope.currentUser = $window.currentUser;
       }
     };
   }

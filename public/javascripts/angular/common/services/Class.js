@@ -46,7 +46,7 @@
       // Copy the properties over onto the new prototype
       for (var name in prop) {
         // Check if we're overwriting an existing function
-        var isFunction = typeof prop[name] === 'function' && typeof _super[name] === 'function' && fnTest.test(prop[name]);
+        var isFunction = _.isFunction(prop[name]) && _.isFunction(_super[name]) && fnTest.test(prop[name]);
         prototype[name] = isFunction ? makeMethod(name, prop[name]) : prop[name];
       }
 

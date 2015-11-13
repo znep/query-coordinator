@@ -173,12 +173,12 @@
   }
 
   function CardsViewController(
-    $scope,
     $log,
     $q,
+    $scope,
+    $window,
     Filter,
     PageDataService,
-    UserSessionService,
     FlyoutService,
     WindowOperations,
     page,
@@ -265,7 +265,7 @@
     * User session *
     ***************/
 
-    var currentUser$ = Rx.Observable.returnValue(window.currentUser);
+    var currentUser$ = Rx.Observable.returnValue($window.currentUser);
 
     var isCurrentUserDomainUser$ =
       currentUser$.
@@ -379,8 +379,8 @@
             );
           } else if (filter instanceof Filter.ValueRangeFilter) {
             return I18n.t('filter.valueRange',
-              window.socrata.utils.formatNumber(filter.start),
-              window.socrata.utils.formatNumber(filter.end)
+              $window.socrata.utils.formatNumber(filter.start),
+              $window.socrata.utils.formatNumber(filter.end)
             );
           } else {
             throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
@@ -611,7 +611,8 @@
     $scope.revertPage = function() {
       if ($scope.hasChanges) {
         $scope.revertInitiated = true;
-        document.location.href = document.location.href;
+        // reload the page (TODO: explore `location.reload()`)
+        $window.document.location.href = $window.document.location.href;
       }
     };
 
@@ -660,7 +661,7 @@
       $scope.page.set('cards', _.without($scope.page.getCurrentValue('cards'), cardModel));
     });
 
-    var mobileWarningClosed = (/(^|;)\s*mobileWarningClosed=/).test(document.cookie);
+    var mobileWarningClosed = (/(^|;)\s*mobileWarningClosed=/).test($window.document.cookie);
     var isMobile = DeviceService.isMobile();
 
     $scope.mobileWarningState = {
@@ -669,7 +670,7 @@
 
     $scope.$watch('mobileWarningState.show', function(newValue) {
       if (newValue === false) {
-        document.cookie = 'mobileWarningClosed=1';
+        $window.document.cookie = 'mobileWarningClosed=1';
       }
     });
 

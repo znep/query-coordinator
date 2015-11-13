@@ -1,7 +1,15 @@
 (function() {
   'use strict';
 
-  function TableCardController($scope, Constants, CardDataService, PluralizeService, SortedTileLayout, I18n) {
+  function TableCardController(
+    $scope,
+    $window,
+    Constants,
+    CardDataService,
+    PluralizeService,
+    SortedTileLayout,
+    I18n
+  ) {
 
     var model = $scope.$observe('model');
     var dataset$ = model.observeOnLatest('page.dataset');
@@ -15,7 +23,7 @@
     var columns$ = dataset$.observeOnLatest('columns');
 
     $scope.$watch('isEmbedded', function(newVal, oldVal, scope) {
-      if (!angular.isDefined(newVal)) {
+      if (_.isUndefined(newVal)) {
         scope.isEmbedded = false;
       }
     });
@@ -196,7 +204,7 @@
       function(filteredRowCount, rowCount, rowDisplayUnit) {
         var customTitle;
         var pluralRowDisplayUnit = PluralizeService.pluralize(rowDisplayUnit, filteredRowCount);
-        var rowCountWithCommas = window.socrata.utils.commaify(rowCount);
+        var rowCountWithCommas = $window.socrata.utils.commaify(rowCount);
         pluralRowDisplayUnit = _.escape(pluralRowDisplayUnit);
         if (rowCount === filteredRowCount) {
           customTitle = I18n.t('table.rangeLabelAll',
@@ -205,7 +213,7 @@
           );
         } else {
           customTitle = I18n.t('table.rangeLabelSubtitle',
-            window.socrata.utils.commaify(filteredRowCount),
+            $window.socrata.utils.commaify(filteredRowCount),
             pluralRowDisplayUnit,
             rowCountWithCommas
           );

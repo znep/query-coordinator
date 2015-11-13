@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function I18n($log, ServerConfig) {
+  function I18n($log, ServerConfig, $window) {
 
     // TODO clean this up using _.mapKeys when we upgrade lodash
     function camelCaseKeys(obj) {
@@ -10,7 +10,7 @@
       });
     }
 
-    var i18n = camelCaseKeys(window.translations);
+    var i18n = camelCaseKeys($window.translations);
 
     // Retrieve a translation key
     i18n.t = function(key) {

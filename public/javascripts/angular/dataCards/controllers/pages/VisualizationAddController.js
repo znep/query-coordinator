@@ -1,32 +1,18 @@
 (function() {
   'use strict';
 
-  var socrata = window.socrata;
-  var utils = socrata.utils;
-
-  function sendVisualizationToEnclosingWindow(visualizationData, visualizationType, originalUid) {
-
-    // Trigger function attached to the iframe element in the parent
-    if (_.isNull(window.frameElement)) {
-      throw new Error('Page expects to be in an iframe, passing information to the parent window.');
-    } else if (_.isFunction(window.frameElement.onVisualizationSelected)) {
-      window.frameElement.onVisualizationSelected(visualizationData, visualizationType, originalUid);
-    } else {
-      throw new Error('Cannot find onVisualizationSelected on the iframe.');
-    }
-  }
-
   function VisualizationAddController(
     $scope,
-    $rootScope,
-    $log,
+    $window,
     DatasetColumnsService,
     dataset,
-    WindowState,
     Page,
     defaultColumn,
     defaultRelatedVisualizationUid
     ) {
+
+    var socrata = $window.socrata;
+    var utils = socrata.utils;
 
     /*************************
     * General metadata stuff *
@@ -42,7 +28,7 @@
 
     // Coerce the defaults to either valid values or null.
     defaultRelatedVisualizationUid = _.any(
-      window.relatedVisualizations,
+      $window.relatedVisualizations,
       'originalUid',
       defaultRelatedVisualizationUid) ? defaultRelatedVisualizationUid : null;
 
@@ -81,7 +67,7 @@
       cardTypesToVIFTypes[cardType] = $scope.supportedVIFTypes[index];
     });
 
-    $scope.relatedVisualizations = window.relatedVisualizations;
+    $scope.relatedVisualizations = $window.relatedVisualizations;
 
     function generateVIF(selectedCard) {
       var metadata = dataset.serialize();
@@ -157,7 +143,7 @@
     if (defaultRelatedVisualizationUid) {
       $scope.$emit(
         'related-visualization-selected',
-        _.find(window.relatedVisualizations, 'originalUid', defaultRelatedVisualizationUid)
+        _.find($window.relatedVisualizations, 'originalUid', defaultRelatedVisualizationUid)
       );
     } else if (defaultColumn) {
       // I'm... so sorry about this. There's an odd timing issue in socSelect
@@ -171,6 +157,19 @@
         $scope.addCardSelectedColumnFieldName = defaultColumn;
       });
     }
+
+    function sendVisualizationToEnclosingWindow(visualizationData, visualizationType, originalUid) {
+
+      // Trigger function attached to the iframe element in the parent
+      if (_.isNull($window.frameElement)) {
+        throw new Error('Page expects to be in an iframe, passing information to the parent window.');
+      } else if (_.isFunction($window.frameElement.onVisualizationSelected)) {
+        $window.frameElement.onVisualizationSelected(visualizationData, visualizationType, originalUid);
+      } else {
+        throw new Error('Cannot find onVisualizationSelected on the iframe.');
+      }
+    }
+
   }
 
   angular.

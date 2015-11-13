@@ -4,6 +4,7 @@
   function featureMap(
     $compile,
     $rootScope,
+    $window,
     Constants,
     VectorTileService,
     LeafletHelpersService,
@@ -334,7 +335,7 @@
         var mousemoveHandler = _.noop;
         var clickHandler = _.noop;
         if (ServerConfig.get('oduxEnableFeatureMapHover')) {
-          var windowRef = $(window);
+          var windowRef = $($window);
           var lastPoints = null;
 
           mousemoveHandler = function(e) {
@@ -431,7 +432,7 @@
                       isolateScrollSubscriber = isScrollable$.filter(_.isDefined).subscribe(
                         function(isScrollable) {
                           var flannelScrollingElement = flannel.find('.tool-panel-inner-container');
-                          window.socrata.utils.isolateScrolling(flannelScrollingElement, isScrollable);
+                          $window.socrata.utils.isolateScrolling(flannelScrollingElement, isScrollable);
                         });
                       flannelScope.$on('$destroy', function() {
                         isolateScrollSubscriber.dispose();
@@ -506,7 +507,7 @@
 
                 // Display flannel above clicked point if the point is more than halfway
                 // down the window viewport. Else display flannel below the point.
-                flannelScope.positionFlannelNorth = (yPosition - distanceOutOfView) < (window.innerHeight / 2);
+                flannelScope.positionFlannelNorth = (yPosition - distanceOutOfView) < ($window.innerHeight / 2);
 
                 if (flannelScope.abutsRightEdge) {
                   flannelScope.positionFlannelEast = xPosition + (Constants.FEATURE_MAP_FLANNEL_WIDTH / 2) >
@@ -554,7 +555,6 @@
          * so that there is only ever one active feature layer attached to the
          * map at a time.
          *
-         * @param {Object} map - The Leaflet map object.
          * @param {Function} vectorTileGetter - Function that gets a vector tile
          */
         function createNewFeatureLayer(vectorTileGetter) {
@@ -589,7 +589,7 @@
                     // though it successfully renders the points. For now we
                     // are making an exception to improve the polaroid
                     // experience until we can investigate the cause further.
-                    if (!window._phantom) {
+                    if (!$window._phantom) {
                       scope.$emit('render:error');
                     }
                   });
@@ -611,8 +611,6 @@
         /**
          * Removes existing but out of date feature layers from the map.
          * This is used in conjunction with createNewFeatureLayer.
-         *
-         * @param map - The Leaflet map object.
          */
         function removeOldFeatureLayers() {
           featureLayers.forEach(function(value, key) {

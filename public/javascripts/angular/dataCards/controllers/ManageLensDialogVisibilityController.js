@@ -1,7 +1,13 @@
 (function() {
   'use strict';
 
-  function ManageLensDialogVisibilityController($scope, ServerConfig, I18n, http, $q) {
+  function ManageLensDialogVisibilityController(
+    $q,
+    $scope,
+    ServerConfig,
+    I18n,
+    http
+  ) {
     var self = this;
 
     // This function provides a description of the entity making the request to the http() service.

@@ -1,7 +1,9 @@
 describe('RX Extensions', function() {
   'use strict';
 
+  beforeEach(module('rx'));
   beforeEach(inject(function($injector) {
+    this.rx = $injector.get('rx');
     this.$rootScope = $injector.get('$rootScope');
   }));
 
@@ -79,7 +81,7 @@ describe('RX Extensions', function() {
       observable1$.subscribeLatest(observable2$, function(value1, value2) {
         expect(value1).to.eq('value1');
         expect(value2).to.eq('value2');
-        observable3$.onNext([value1, value2, 'value3'])
+        observable3$.onNext([value1, value2, 'value3']);
       });
       observable2$.onNext('value2');
       observable1$.onNext('value1');
@@ -90,7 +92,7 @@ describe('RX Extensions', function() {
     it('does nothing on a normal stream', function(done) {
       var $scope = this.$rootScope.$new(false);
       $scope.myValue = 'yay';
-      Rx.Observable.returnValue('value').
+      this.rx.Observable.returnValue('value').
         safeApplyOnError($scope, function() {
           $scope.myValue = 'boo!';
         }).
@@ -104,7 +106,7 @@ describe('RX Extensions', function() {
     it('applies safely on a stream that errors', function(done) {
       var $scope = this.$rootScope.$new(false);
       $scope.myValue = 'yay';
-      Rx.Observable.throwError('error').
+      this.rx.Observable.throwError('error').
         safeApplyOnError($scope, function() {
           $scope.myValue = 'boo!';
         }).
@@ -117,7 +119,7 @@ describe('RX Extensions', function() {
     it('does not do anything on a normal completion', function(done) {
       var $scope = this.$rootScope.$new(false);
       $scope.myValue = 'yay';
-      Rx.Observable.empty().
+      this.rx.Observable.empty().
         safeApplyOnError($scope, function() {
           $scope.myValue = 'boo!';
         }).
@@ -133,7 +135,7 @@ describe('RX Extensions', function() {
     it('does nothing on a normal stream', function(done) {
       var $scope = this.$rootScope.$new(false);
       $scope.myValue = 'yay';
-      Rx.Observable.returnValue('value').
+      this.rx.Observable.returnValue('value').
         safeApplyOnCompleted($scope, function() {
           $scope.myValue = 'complete!';
         }).
@@ -146,7 +148,7 @@ describe('RX Extensions', function() {
     it('does nothing on a stream that errors', function(done) {
       var $scope = this.$rootScope.$new(false);
       $scope.myValue = 'yay';
-      Rx.Observable.throwError('error').
+      this.rx.Observable.throwError('error').
         safeApplyOnCompleted($scope, function() {
           $scope.myValue = 'complete!';
         }).
@@ -159,7 +161,7 @@ describe('RX Extensions', function() {
     it('safely applies on a stream that completes normally', function(done) {
       var $scope = this.$rootScope.$new(false);
       $scope.myValue = 'yay';
-      Rx.Observable.empty().
+      this.rx.Observable.empty().
         safeApplyOnCompleted($scope, function() {
           $scope.myValue = 'complete!';
         }).

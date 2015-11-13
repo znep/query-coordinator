@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function VIFExportService(Page, DateHelpers) {
+  function VIFExportService(Page, DateHelpers, $window) {
 
     /**
      * Return a representation of a card as a Visualization Interchange Format (VIF) JSON object.
@@ -131,7 +131,7 @@
             },
             origin: {
               type: 'data_lens_export',
-              url: window.location.href
+              url: $window.location.href
             },
             title: title,
             type: null,

@@ -268,7 +268,8 @@
         _state.componentType = 'socrata.visualization.classic';
         _state.componentProperties = {
           visualization: visualization,
-          dataset: _state.componentProperties.dataset
+          dataset: _state.componentProperties.dataset,
+          originalUid: payload.visualization.originalUid
         };
 
         self._emitChange();
@@ -276,7 +277,8 @@
         _state.componentType = 'socrata.visualization.{0}'.format(visualization.type);
         _state.componentProperties = {
           vif: visualization,
-          dataset: _state.componentProperties.dataset
+          dataset: _state.componentProperties.dataset,
+          originalUid: payload.visualization.originalUid
         };
 
         self._emitChange();

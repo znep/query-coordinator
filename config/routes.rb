@@ -318,12 +318,9 @@ Frontend::Application.routes do
 
     # Dataset SEO URLs (only add here if the action has a view with it;
     # otherwise just add to the :member key in the datasets resource above.)
-    scope :controller => 'datasets', :constraints => {:id => Frontend::UID_REGEXP,
-          :view_name => /(\w|-)+/, :category => /(\w|-)+/} do
-
-      get ':category/:view_name/:id/:row_id', :action => 'show',
-        :constraints => {:id => Frontend::UID_REGEXP, :view_name => /(\w|-)+/,
-          :category => /(\w|-)+/, :row_id => /\d+/}, :as => :view_row
+    scope :controller => 'datasets', :constraints => Constraints::ResourceConstraint.new do
+      get ':category/:view_name/:id/:row_id', :action => 'show', :as => :view_row,
+        :constraints => {:row_id => /\d+/}
       get ':category/:view_name/:id/widget_preview', :action => 'widget_preview', :as => :preview_view_widget
       get ':category/:view_name/:id/edit', :action => 'edit', :as => :edit_view
       get ':category/:view_name/:id/edit_rr', :action => 'edit_rr', :as => :edit_view_rr
@@ -346,7 +343,7 @@ Frontend::Application.routes do
     get ':category/:view_name/:id', :to => 'angular#data_lens', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
     # Fallback: let DatasetsController#show handle it, since it was the original
     # catch-all for SEO-friendly routes (including charts, calendars, etc.).
-    get ':category/:view_name/:id', :to => 'datasets#show', :as => :view, :constraints => Constraints::ResourceConstraint.new
+    get ':category/:view_name/:id', :to => 'datasets#show', :as => :view
 
     get 'proxy/verify_layer_url' => 'datasets#verify_layer_url'
     get 'proxy/wkt_to_wkid' => 'datasets#wkt_to_wkid'
@@ -370,7 +367,7 @@ Frontend::Application.routes do
     end
 
 
-    # Semantic web cannoical URLs
+    # Semantic web canonical URLs
     %w{resource id}.each do |prefix|
       get "#{prefix}/:name(/:row_id)(.:format)" => 'resources#show'
     end

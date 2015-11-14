@@ -426,7 +426,7 @@
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $(
         '<div>',
@@ -510,7 +510,7 @@
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $(
         '<div>',
@@ -583,7 +583,7 @@
           'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var buttonGroup = $(
         '<div>',
@@ -709,7 +709,7 @@
           'class': 'btn btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
         inputLabel,
@@ -824,6 +824,11 @@
       var loadingButton = _dialog.find('.btn-busy');
       var insertButton = _dialog.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY));
       var insecureHtmlWarning = _dialog.find('.asset-selector-insecure-html-warning');
+      var textareaElement = _dialog.find('.asset-selector-text-input');
+
+      function textareaIsUnedited() {
+        return textareaElement.val() === '';
+      }
 
       if (_.has(componentProperties, 'url')) {
         htmlFragmentUrl = componentProperties.url;
@@ -848,6 +853,20 @@
         if (iframeSrc !== htmlFragmentUrl) {
           iframeElement.attr('src', htmlFragmentUrl);
           iframeElement.attr('data-document-id', documentId);
+
+          // On first load, prepopulate the textarea with whatever
+          // HTML previously entered.
+          if (textareaIsUnedited()) {
+            $.get(htmlFragmentUrl).then(function(htmlFragment) {
+              // DO NOT PUT THIS DIRECTLY INTO THE DOM!
+              // htmlFragment is _arbitrary_ html - we display it
+              // only in other-domain iframes for security.
+              // Here, we're only putting the content into a textarea.
+              if (textareaIsUnedited()) {
+                textareaElement.val(htmlFragment);
+              }
+            });
+          }
         }
 
         iframeContainer.
@@ -956,7 +975,7 @@
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var loadingButton = $('<button>', {
         'class': 'btn-transparent btn-busy visualization-busy',
@@ -985,11 +1004,14 @@
     }
 
     function _renderConfigureVisualizationData(componentType, componentProperties) {
+      var insertButton = _dialog.find(
+        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
+      );
+
       if (componentProperties.dataset) {
         var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
         var currentIframeSrc = iframeElement.attr('src');
         var newIframeSrc = _visualizationChooserUrl(componentProperties.dataset.datasetUid);
-
         if (currentIframeSrc !== newIframeSrc) {
           iframeElement.
             attr('src', newIframeSrc).
@@ -997,17 +1019,9 @@
               $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
             });
         }
-      } else {
-        var insertButton = _dialog.find(
-          '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
-        );
-
-        if (componentType) {
-          insertButton.prop('disabled', false);
-        } else {
-          insertButton.prop('disabled', true);
-        }
       }
+
+      insertButton.prop('disabled', !componentType);
     }
 
     /**
@@ -1117,7 +1131,7 @@
           'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
         inputLabel,
@@ -1198,6 +1212,16 @@
 
       _dialog.attr('class', newClassList.join(' '));
     }
+  }
+
+  function _insertButtonText() {
+    var isEditingExisting = storyteller.assetSelectorStore.isEditingExisting();
+
+    return I18n.t(
+      isEditingExisting ?
+        'editor.asset_selector.update_button_text' :
+        'editor.asset_selector.insert_button_text'
+    );
   }
 
   root.socrata.storyteller.AssetSelectorRenderer = AssetSelectorRenderer;

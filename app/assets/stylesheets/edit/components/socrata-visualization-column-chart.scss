@@ -1,6 +1,11 @@
 @import 'lib/variables';
 
 .component-socrata-visualization-column-chart {
+  .component-content {
+    width: 100%;
+    height: 100%;
+  }
+
   /**
    * Temporarily override hover styles in order to not imply interactivity.
    */

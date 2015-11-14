@@ -121,6 +121,16 @@
      * Generic asset selector flow
      */
 
+    // Select an asset for the first time.
+    // {string} blockId
+    // {number} componentIndex
+    ASSET_SELECTOR_INSERT_COMPONENT: 'ASSET_SELECTOR_INSERT_COMPONENT',
+
+    // Edit an existing asset.
+    // {string} blockId
+    // {number} componentIndex
+    ASSET_SELECTOR_UPDATE_COMPONENT: 'ASSET_SELECTOR_UPDATE_COMPONENT',
+
     // Initial media selector setup
     // {string} blockId
     // {number} componentIndex

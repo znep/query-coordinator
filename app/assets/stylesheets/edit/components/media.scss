@@ -61,6 +61,13 @@
     $media-component-large-margin-top,
     $media-component-extra-large-margin-top
   );
+
+  .component-edit-controls {
+    display: none;
+  }
+  &.editing .component-edit-controls {
+    display: initial;
+  }
 }
 
 .component-youtube-video,

@@ -58,7 +58,29 @@
     });
   }
 
-  function componentImage(componentData) {
+  /**
+   * Creates or updates an image component
+   * based on the componentData, theme, and options.
+   *
+   * @param {object} componentData - Data for image block. See below.
+   * @param {string} theme - Theme name. Currently not used.
+   * @param {object} options - Renderer settings. Optional. See below.
+   *
+   *
+   * Sample componentData:
+   *  {
+   *    type: "image",
+   *    value: {
+   *      documentId: "1234",
+   *      url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg"
+   *    }
+   *  }
+   *
+   * Supported options (default):
+   *  - editMode (false): If true, renders an edit button on hover. The edit button
+   *    dispatches Actions.ASSET_SELECTOR_UPDATE_COMPONENT.
+   */
+  function componentImage(componentData, theme, options) {
 
     var $this = $(this);
 
@@ -75,6 +97,8 @@
     }
 
     _updateSrc($this, componentData);
+    $this.componentEditButton();
+    $this.toggleClass('editing', _.get(options, 'editMode', false));
 
     return $this;
   }

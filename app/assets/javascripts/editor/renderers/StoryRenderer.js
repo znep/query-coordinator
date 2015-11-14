@@ -275,9 +275,9 @@
 
         switch (action) {
 
-          case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          case Actions.ASSET_SELECTOR_INSERT_COMPONENT:
             dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+              action: Actions.ASSET_SELECTOR_INSERT_COMPONENT,
               blockId: utils.findClosestAttribute(this, 'data-block-id'),
               componentIndex: utils.findClosestAttribute(this, 'data-component-index')
             });
@@ -333,7 +333,7 @@
           forEach(function(componentDatum, i) {
             var componentElement = elementCache.getComponent(blockId, i);
 
-            componentElement.trigger('destroy');
+            componentElement.find('.component').trigger('destroy');
           });
 
         elementCache.getBlock(blockId).remove();
@@ -612,14 +612,15 @@
 
         $componentContent = $('<div>', { 'class': 'component' });
 
+        $componentContainer.find('.component').trigger('destroy');
+
         $componentContainer.
-          trigger('destroy').
           empty().
           append($componentContent);
       }
 
       // Provide the initial or updated data to the renderer.
-      $componentContent[componentRenderer](componentData, theme);
+      $componentContent[componentRenderer](componentData, theme, { editMode: true });
     }
 
     /**

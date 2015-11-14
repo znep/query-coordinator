@@ -60,7 +60,7 @@
     }
   }
 
-  function componentEmbeddedHtml(componentData) {
+  function componentEmbeddedHtml(componentData, theme, options) {
 
     var $this = $(this);
 
@@ -78,6 +78,8 @@
 
     _updateSrc($this, componentData);
     _updateIframeHeight($this, componentData);
+    $this.componentEditButton();
+    $this.toggleClass('editing', _.get(options, 'editMode', false));
 
     return $this;
   }

@@ -23,6 +23,10 @@ function applyStandardMocks() {
   var assetSelectorBlockId;
   var textBlockId;
   var assetSelectorAndTextBlockId;
+  var imageBlockId;
+  var classicVizBlockId;
+  var vifBlockId;
+  var youtubeBlockId;
   var storyteller = window.socrata.storyteller;
 
   // If you mess with the blocks below, make sure to update
@@ -51,11 +55,97 @@ function applyStandardMocks() {
           { type: 'assetSelector' },
           { type: 'html', value: 'some-text' }
         ]
+      }),
+      generateBlockData({
+        components: [{
+            'type': 'image',
+            'value': {
+              'url': 'https://sa-storyteller-dev-us-west-2-staging.s3.amazonaws.com/documents/uploads/000/000/005/original/q3e87zR.gif?1447210253',
+              'documentId': 5
+            }
+        }]
+      }),
+      generateBlockData({
+        components: [{
+          'type': 'socrata.visualization.classic',
+          'value': {
+            'visualization': { },
+            'dataset': {
+              'datasetUid': 'test-test',
+              'domain': 'localhost'
+            }
+          }
+        }]
+      }),
+      generateBlockData({
+        components: [{
+          'type': 'socrata.visualization.columnChart',
+          'value': {
+            'vif': {
+              'type': 'columnChart',
+              'unit': {
+                'one': 'record',
+                'other': 'records'
+              },
+              'title': 'Type',
+              'domain': 'localhost',
+              'format': {
+                'type': 'visualization_interchange_format',
+                'version': 1
+              },
+              'origin': {
+                'url': 'https://localhost/view/exha-s3yv',
+                'type': 'data_lens_add_visualization_component'
+              },
+              'filters': null,
+              'createdAt': '2015-11-11T22:40:19.866Z',
+              'columnName': 'type',
+              'datasetUid': 'exha-s3yv',
+              'aggregation': {
+                'field': null,
+                'function': 'count'
+              },
+              'description': '',
+              'configuration': {
+                'columns': {
+                  'name': 0,
+                  'unfilteredValue': 1,
+                  'filteredValue': 2,
+                  'selected': 3
+                },
+                'localization': {
+                  'NO_VALUE': '(No value)',
+                  'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total: ',
+                  'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered: ',
+                  'FLYOUT_SELECTED_NOTICE': 'This column is currently selected.'
+                }
+              }
+            },
+            'dataset': {
+              'domain': 'localhost',
+              'datasetUid': 'exha-s3yv'
+            }
+          }
+        }]
+      }),
+      generateBlockData({
+        components: [{
+          'type': 'youtube.video',
+          'value': {
+            'id': 'S7vuwrb2v0M',
+            'url': 'https://www.youtube.com/watch?v=S7vuwrb2v0M'
+          }
+        }]
       })
     ]
   });
 
 
+  sinon.stub(window.socrata.visualizations, 'SoqlDataProvider', function() {
+    return {
+      query: _.constant(new Promise(_.noop)) // Never resolve.
+    };
+  });
 
   // Stub translations
   window.I18n = {
@@ -109,6 +199,10 @@ function applyStandardMocks() {
   assetSelectorBlockId = blockIds[0];
   textBlockId = blockIds[1];
   assetSelectorAndTextBlockId = blockIds[2];
+  imageBlockId = blockIds[3];
+  classicVizBlockId = blockIds[4];
+  vifBlockId = blockIds[5];
+  youtubeBlockId = blockIds[6];
 
   window.standardMocks = {
     remove: removeStandardMocks,
@@ -123,6 +217,10 @@ function applyStandardMocks() {
     assetSelectorBlockId: assetSelectorBlockId,
     textBlockId: textBlockId,
     assetSelectorAndTextBlockId: assetSelectorAndTextBlockId,
+    imageBlockId: imageBlockId,
+    classicVizBlockId: classicVizBlockId,
+    vifBlockId: vifBlockId,
+    youtubeBlockId: youtubeBlockId,
     validBlockId: textBlockId,
 
     firstBlockId: assetSelectorBlockId,
@@ -144,6 +242,9 @@ function removeStandardMocks() {
 
   storyteller.SquireMocker.unmock();
   storyteller.AssetFinderMocker.unmock();
+  if (socrata.visualizations.SoqlDataProvider.restore) {
+    socrata.visualizations.SoqlDataProvider.restore();
+  }
 
   delete storyteller.dispatcher;
   delete storyteller.storyStore;

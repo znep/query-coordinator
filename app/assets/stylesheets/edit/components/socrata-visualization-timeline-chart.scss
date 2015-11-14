@@ -1,0 +1,12 @@
+@import 'lib/variables';
+
+.component-socrata-visualization-timeline-chart {
+  .component-edit-controls {
+    z-index: 10; // TimelineChart makes liberal use of z-indexes >:(
+  }
+
+  .component-content {
+    width: 100%;
+    height: 100%;
+  }
+}

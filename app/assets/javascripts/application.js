@@ -43,6 +43,7 @@
 //= require socrata-visualizations/components/SocrataTimelineChart
 //= require socrata-visualizations/components/SocrataFeatureMap
 
+//= require editor/componentEditButton
 //= require editor/block-component-renderers/componentSocrataVisualizationColumnChart
 //= require editor/block-component-renderers/componentSocrataVisualizationTimelineChart
 //= require editor/block-component-renderers/componentSocrataVisualizationFeatureMap

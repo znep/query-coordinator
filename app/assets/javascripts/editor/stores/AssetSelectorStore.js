@@ -33,6 +33,14 @@
 
       switch (action) {
 
+        case Actions.ASSET_SELECTOR_INSERT_COMPONENT:
+          _selectNew(payload);
+          break;
+
+        case Actions.ASSET_SELECTOR_UPDATE_COMPONENT:
+          _editExisting(payload);
+          break;
+
         case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
           _chooseProvider(payload);
           break;
@@ -128,9 +136,70 @@
       return _state.componentProperties;
     };
 
+    this.isEditingExisting = function() {
+      return _state.isEditingExisting === true;
+    };
+
     /**
      * Private methods
      */
+
+    /**
+     * Given an asset type (i.e. "socrata.visualization.classic"), returns
+     * the step the wizard should start from given the user is updating
+     * a component.
+     */
+    function _stepForUpdate(type) {
+      switch (type) {
+        case 'image': return Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD;
+        case 'youtube.video': return Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE;
+        case 'embeddedHtml': return Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE;
+      }
+
+      if (type.indexOf('socrata.visualization.') === 0) {
+        return Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET;
+      }
+
+      // Something went wrong and we don't know where to pick up from (new embed type?),
+      // so open the wizard at the very first step.
+      return Actions.ASSET_SELECTOR_CHOOSE_PROVIDER;
+    }
+
+    function _selectNew(payload) {
+      utils.assertHasProperties(payload, 'blockId', 'componentIndex');
+
+      _state = {
+        step: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        blockId: payload.blockId,
+        componentIndex: payload.componentIndex,
+        isEditingExisting: false
+      };
+
+      self._emitChange();
+    }
+
+
+    function _editExisting(payload) {
+      var component;
+
+      utils.assertHasProperties(payload, 'blockId', 'componentIndex');
+
+      component = storyteller.storyStore.getBlockComponentAtIndex(
+        payload.blockId,
+        payload.componentIndex
+      );
+
+      _state = {
+        step: _stepForUpdate(component.type),
+        blockId: payload.blockId,
+        componentIndex: payload.componentIndex,
+        componentType: component.type,
+        componentProperties: component.value,
+        isEditingExisting: true
+      };
+
+      self._emitChange();
+    }
 
     function _chooseProvider(payload) {
       utils.assertHasProperties(payload, 'blockId', 'componentIndex');
@@ -198,14 +267,16 @@
       if (payload.visualization.format === 'classic') {
         _state.componentType = 'socrata.visualization.classic';
         _state.componentProperties = {
-          visualization: visualization
+          visualization: visualization,
+          dataset: _state.componentProperties.dataset
         };
 
         self._emitChange();
       } else if (payload.visualization.format === 'vif') {
         _state.componentType = 'socrata.visualization.{0}'.format(visualization.type);
         _state.componentProperties = {
-          vif: visualization
+          vif: visualization,
+          dataset: _state.componentProperties.dataset
         };
 
         self._emitChange();

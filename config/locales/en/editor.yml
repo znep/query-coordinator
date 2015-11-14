@@ -28,6 +28,8 @@ en:
         open_in_new_window: 'Open in New Window'
         warning_message: 'This looks like an invalid link. Try adding http:// to the beginning of your link.'
     components:
+      edit_controls:
+        button: 'Edit'
       asset_selector:
         insert_btn: 'Insert'
     settings_panel:
@@ -75,6 +77,7 @@ en:
       choose_provider_heading: 'Select Data or Media Provider'
       back_button_text: 'Back'
       insert_button_text: 'Insert'
+      update_button_text: 'Update'
       cancel_button_text: 'Cancel'
       try_again_button_text: 'Try again'
       youtube:

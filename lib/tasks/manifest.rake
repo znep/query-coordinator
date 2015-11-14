@@ -1,5 +1,5 @@
 namespace :manifest do
-  %w{staging release}.each do |environment|
+  %w[staging release].each do |environment|
     desc "Create a changelog between the last two #{environment} releases"
     task environment.to_sym do
       tags = `git tag -l #{environment}/*`.split.sort
@@ -27,11 +27,39 @@ def gitlab_tag_url(from, to)
 end
 
 namespace :gitlab do
-  %w|staging release|.each do |env|
+  %w[staging release].each do |env|
     desc "Create a changelog between the last two #{env} releases"
     task env.to_sym do
       tags = `git tag -l #{env}/*`.split.sort
       puts gitlab_tag_url(tags[-2], tags[-1])
+    end
+  end
+end
+
+# output all commit messages that mention a Jira id or pull request id.  this is useful for prepping the Test Matrix for test pods
+# this step gets ran after first running ‘FROM_TAG=<tag> TO_TAG=<tag> rake manifest:release > manifest.txt’
+# TODO: integrate with Jira
+namespace :commits do
+  %w[staging release].each do |env|
+    desc 'output all commit messages that mention an id'
+    task env do
+      abort %Q{USAGE: 'MANIFEST_FILE=<manifest file> rake commits:release'} unless ENV['MANIFEST_FILE']
+
+      ticket_regex = /[A-Z]+\-\d{2,4}/
+
+      commit_list = File.open(ENV['MANIFEST_FILE']).grep(ticket_regex).inject([]) do |list, line|
+        id = line.match(ticket_regex).to_s
+        commit = line.lstrip.chomp
+
+        list << { id => commit }
+        list.sort_by(&:keys)
+      end
+
+      puts "\nIDs:\n\n"
+      commit_list.each { |e| puts e.keys }
+      puts "\n\nCommits:\n\n"
+      commit_list.each { |e| puts e.values }
+      puts
     end
   end
 end

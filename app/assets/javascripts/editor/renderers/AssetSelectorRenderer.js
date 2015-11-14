@@ -1038,8 +1038,7 @@
       // (we don't care about defaultColumn or defaultRelatedVisualizationUid changing -
       // these shouldn't cause iframe reloads).
       if (
-        !currentIframeDatasetUidParam ||
-        currentIframeDatasetUidParam.indexOf(componentProperties.dataset.datasetUid) === -1) {
+        (currentIframeDatasetUidParam || '').indexOf(componentProperties.dataset.datasetUid) === -1) {
         var newIframeSrc = _visualizationChooserUrl(componentProperties);
         iframeElement.
           attr('src', newIframeSrc).
@@ -1050,11 +1049,8 @@
     }
 
     function _visualizationChooserUrl(componentProperties) {
-      var defaultColumn;
-      var defaultRelatedVisualizationUid;
-
-      defaultColumn = _.get(componentProperties, 'vif.columnName', null);
-      defaultRelatedVisualizationUid = _.get(componentProperties, 'originalUid', null);
+      var defaultColumn = _.get(componentProperties, 'vif.columnName', null);
+      var defaultRelatedVisualizationUid = _.get(componentProperties, 'originalUid', null);
 
       return encodeURI(
         '{0}/component/visualization/add?datasetId={1}&defaultColumn={2}&defaultRelatedVisualizationUid={3}'.

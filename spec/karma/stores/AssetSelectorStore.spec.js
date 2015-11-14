@@ -185,7 +185,7 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      it('adds visualization configuration to componentValue when there is vif', function() {
+      it('adds visualization configuration to componentValue when there is vif with originalUid', function() {
         var payload = {
           'format': 'vif',
           'data': {
@@ -218,7 +218,41 @@ describe('AssetSelectorStore', function() {
 
       });
 
-      it('adds visualization configuration to componentValue when there is a classic visualization', function() {
+      it('adds visualization configuration to componentValue when there is vif with no originalUid', function() {
+        var payload = {
+          'format': 'vif',
+          'data': {
+            type: 'columnChart'
+          }
+        };
+
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+          visualization: payload
+        });
+
+        assert.equal(
+          storyteller.assetSelectorStore.getComponentType(),
+          'socrata.visualization.columnChart'
+        );
+
+        assert.deepEqual(
+          storyteller.assetSelectorStore.getComponentValue(),
+          {
+            vif: payload.data,
+            dataset: {
+              datasetUid: 'test-test',
+              domain: window.location.host
+            },
+            originalUid: undefined
+          }
+        );
+
+      });
+
+      // Note that classic viz without originalUid is not supported.
+
+      it('adds visualization configuration to componentValue when there is a classic visualization with originalUid', function() {
         var payload = {
           'format': 'classic',
           'originalUid': 'orig-inal',

@@ -769,10 +769,13 @@ javascripts:
     - public/javascripts/mobile/mobile.visualizations.VectorTileManager.js
     - public/javascripts/mobile/mobile.visualizations.rowInspector.js
     - public/javascripts/mobile/mobile.visualizations.FeatureMap.js
+    - public/javascripts/mobile/mobile.visualizations.TimelineChart.js
     - public/javascripts/mobile/components/SocrataFeatureMap.js
+    - public/javascripts/mobile/components/SocrataTimelineChart.js
     - public/javascripts/mobile/main.js
     - public/javascripts/mobile/mobile.featuremap.js
     - public/javascripts/mobile/mobile.columnchart.js
+    - public/javascripts/mobile/mobile.timelinechart.js
 
 dump:
   javascripts:

@@ -362,7 +362,7 @@ rich-text-editor {
 }
 
 // soc-select
-soc-select {
+soc-select, .soc-select {
   background-color: $soc-select-background-color;
   border: 1px solid $soc-select-border-color;
   select {

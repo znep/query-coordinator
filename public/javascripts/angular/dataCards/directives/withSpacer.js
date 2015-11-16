@@ -1,3 +1,4 @@
+const angular = require('angular');
 /**
  * An attribute you can add to a tag, to create a spacer to reserve space for an element
  * that would otherwise be outside the flow of the document (eg position:fixed/absolute).

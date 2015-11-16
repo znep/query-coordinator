@@ -731,18 +731,8 @@ javascripts:
     - public/javascripts/bower/lodash.js
     - public/javascripts/bower/d3.js
     - public/javascripts/bower/socrata.utils.js
-    - public/javascripts/bower/socrata.visualizations.Visualization.js
     - public/javascripts/bower/leaflet.js
-    - public/javascripts/bower/socrata.visualizations.pbf.js
     - public/javascripts/bower/vectortile.min.js
-    - public/javascripts/bower/socrata.visualizations.FlyoutRenderer.js
-    - public/javascripts/bower/socrata.visualizations.DataProvider.js
-    - public/javascripts/bower/socrata.visualizations.GeospaceDataProvider.js
-    - public/javascripts/bower/socrata.visualizations.TileserverDataProvider.js
-    - public/javascripts/bower/socrata.visualizations.SoqlDataProvider.js
-    - public/javascripts/bower/socrata.visualizations.MetadataProvider.js
-    - public/javascripts/bower/socrata.visualizations.ColumnChart.js
-    - public/javascripts/bower/socrata.visualizations.VectorTileManager.js
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS
 

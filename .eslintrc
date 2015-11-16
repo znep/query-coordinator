@@ -90,6 +90,7 @@
     "moment": true,
     "pageMetadata": true,
     "pbf": true,
+    "require": true,
     "saveAs": true,
     "socrata": true,
     "ss": true,

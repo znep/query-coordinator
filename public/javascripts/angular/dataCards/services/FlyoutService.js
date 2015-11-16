@@ -1,4 +1,6 @@
-angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState, $window) {
+const angular = require('angular');
+angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState, $window, rx) {
+  const Rx = rx;
   'use strict';
 
   var handlers = {};

@@ -1,16 +1,13 @@
-(function() {
-  'use strict';
+var templateUrl = require('angular_templates/dataCards/spinner.html');
+const angular = require('angular');
+function spinner() {
+  return {
+    restrict: 'E',
+    templateUrl: templateUrl
+  };
+}
 
-  function spinner() {
-    return {
-      restrict: 'E',
-      templateUrl: '/angular_templates/dataCards/spinner.html'
-    };
-  }
-
-  angular.
-    module('dataCards.directives').
-    directive('spinner', spinner);
-
-})();
+angular.
+  module('dataCards.directives').
+  directive('spinner', spinner);
 

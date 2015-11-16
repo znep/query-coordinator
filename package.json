@@ -15,7 +15,11 @@
     "webpackDevServerPort": "3030",
     "datalensWebpackExternals": {
       "angular": "angular",
-      "rx": "Rx"
+      "rx": "Rx",
+      "jQuery": "$",
+      "d3": "d3",
+      "_": "_",
+      "socrata.utils": "socrata.utils"
     }
   },
   "scripts": {
@@ -23,7 +27,8 @@
     "prebuild:dev": "npm run webpack-clean",
     "build:prod": "NODE_ENV=production webpack --config ${npm_package_config_webpackConfig}",
     "prebuild:prod": "npm run webpack-clean",
-    "webpack:clean": "rimraf ${npm_package_config_webpackDestination}",
+    "webpack-clean": "rimraf ${npm_package_config_webpackDestination}",
+    "webpack-dev-server": "webpack-dev-server --config ${npm_package_config_webpackConfig} --hot",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint"
   },
@@ -85,6 +90,7 @@
   "dependencies": {
     "lodash": "^3.10.1",
     "react": "^0.14.2",
-    "react-dom": "^0.14.2"
+    "react-dom": "^0.14.2",
+    "socrata-visualizations": "^3.0.1"
   }
 }

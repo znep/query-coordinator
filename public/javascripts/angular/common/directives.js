@@ -1,3 +1,4 @@
+const angular = require('angular');
 /* Directives */
 angular.module('socrataCommon.directives', ['rx']);
 

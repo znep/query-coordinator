@@ -1,3 +1,4 @@
+const angular = require('angular');
 angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateHelpers) {
   'use strict';
 
@@ -128,7 +129,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
     field = SoqlHelpers.formatFieldName(field);
     var encodedStart = SoqlHelpers.encodePrimitive(this.start);
     var encodedEnd = SoqlHelpers.encodePrimitive(this.end);
-    return '{0} >= {1} AND {0} < {2}'.format(field, encodedStart, encodedEnd);
+    return `${field} >= ${encodedStart} AND ${field} < ${encodedEnd}`;
   };
 
   TimeRangeFilter.prototype.serialize = function() {
@@ -160,11 +161,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   }
 
   ValueRangeFilter.prototype.generateSoqlWhereFragment = function(field) {
-    return '{0} >= {1} AND {0} < {2}'.format(
-      SoqlHelpers.formatFieldName(field),
-      SoqlHelpers.encodePrimitive(this.start),
-      SoqlHelpers.encodePrimitive(this.end)
-    );
+    return `${SoqlHelpers.formatFieldName(field)} >= ${SoqlHelpers.encodePrimitive(this.start)} AND ${SoqlHelpers.formatFieldName(field)} < ${SoqlHelpers.encodePrimitive(this.end)}`;
   };
 
   ValueRangeFilter.prototype.serialize = function() {

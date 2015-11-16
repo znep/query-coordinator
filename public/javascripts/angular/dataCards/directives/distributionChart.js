@@ -1,16 +1,14 @@
-(function() {
-  'use strict';
+var templateUrl = require('angular_templates/dataCards/distributionChart.html');
+const angular = require('angular');
+function distributionChart() {
+  return {
+    restrict: 'E',
+    scope: false,
+    controller: 'DistributionChartController',
+    templateUrl: templateUrl
+  };
+}
 
-  function distributionChart() {
-    return {
-      restrict: 'E',
-      scope: false,
-      controller: 'DistributionChartController',
-      templateUrl: '/angular_templates/dataCards/distributionChart.html'
-    };
-  }
-
-  angular.
-    module('dataCards.directives').
-    directive('distributionChart', distributionChart);
-})();
+angular.
+  module('dataCards.directives').
+  directive('distributionChart', distributionChart);

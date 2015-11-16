@@ -139,11 +139,7 @@ module.exports = function ( karma ) {
       'public/angular_templates/**/*.html',
       'app/styles/dataCards/*.scss',
       'app/styles/dataCards/theme/default.scss',
-<<<<<<< HEAD
       { pattern: 'public/stylesheets/images/**/*.+{jpg,png}', watched: false, included: false, served: true }, // See https://github.com/karma-runner/karma/issues/1532
-=======
-      { pattern: 'public/stylesheets/images/**/*.+{jpg,png}', watched: false, included: false, served: true },
->>>>>>> ENG-1615 - Add webpack
 
       /* TEST CONFIGURATION */
       'karma/chai-configuration.js',

@@ -1,3 +1,4 @@
+const angular = require('angular');
 // This model is intended to be an immutable reference to a Dataset.
 angular.module('dataCards.models').factory('Dataset', function(
   ModelHelper,

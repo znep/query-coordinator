@@ -1,3 +1,4 @@
+const angular = require('angular');
 /* Controllers */
 
 angular.module('dataCards.controllers', []);

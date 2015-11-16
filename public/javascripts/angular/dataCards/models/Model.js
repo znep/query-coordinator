@@ -1,3 +1,4 @@
+const angular = require('angular');
 // The Model class provides an implementation of an object having a well-defined set of observable fields,
 // primarily exposed as an RX Sequence of values. This allows our reactive UI to be fully decoupled from
 // the sources of new property values.
@@ -10,7 +11,8 @@
 // * Facilities to define lazy (JIT) defaults for properties.
 // * Automatic serialization, with consideration of ephemeral (non-serialized) properties.
 // * Recursive dirty checking/change tracking.
-angular.module('dataCards.models').factory('Model', function(Class, ModelHelper) {
+angular.module('dataCards.models').factory('Model', function(Class, ModelHelper, rx) {
+  const Rx = rx;
   'use strict';
   var Model = Class.extend({
     init: function Model() {
@@ -79,8 +81,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       }
 
       if (this._propertyObservables.hasOwnProperty(propertyName)) {
-        var errorMessage = 'Object {0} already has property: {1}'.
-          format(JSON.stringify(this.serialize()), propertyName);
+        var errorMessage = `Object ${JSON.stringify(this.serialize())} already has property: ${propertyName}`;
         throw new Error(errorMessage);
       }
 
@@ -221,8 +222,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     set: function(propertyName, value) {
       this._assertProperty(propertyName);
       if (!this._isObservablePropertyWritable(propertyName)) {
-        var errorMessage = 'Property "{0}" is read-only (it is computed).'.
-          format(propertyName);
+        var errorMessage = `Property "${propertyName}" is read-only (it is computed).`;
         throw new TypeError(errorMessage);
       }
       var oldValue = this.getCurrentValue(propertyName);
@@ -523,8 +523,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
      */
     _assertProperty: function(propertyName) {
       if (!this._propertyObservables.hasOwnProperty(propertyName)) {
-        var errorMessage = 'Object {0} has no such property: {1}'.
-          format(JSON.stringify(this.serialize()), propertyName);
+        var errorMessage = `Object ${JSON.stringify(this.serialize())} has no such property: ${propertyName}`;
         throw new TypeError(errorMessage);
       }
     },

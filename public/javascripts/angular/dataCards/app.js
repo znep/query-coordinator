@@ -130,9 +130,16 @@
         }
       }).
       state('view.visualizationAdd', {
+        params: ['defaultColumn', 'defaultRelatedVisualizationUid'],
         resolve: {
           dataset: function(Dataset) {
             return new Dataset(datasetMetadata);
+          },
+          defaultColumn: function($stateParams) {
+            return $stateParams.defaultColumn;
+          },
+          defaultRelatedVisualizationUid: function($stateParams) {
+            return $stateParams.defaultRelatedVisualizationUid;
           }
         },
         views: {
@@ -188,7 +195,7 @@
     // our UX considerations require our URL to not depend on a document
     // fragment. We'd be able to use html5 mode on the router to satisfy this,
     // but we need to support IE9.
-    var initialRoute = Routes.getUIStateAndConfigFromUrl(location.pathname);
+    var initialRoute = Routes.getUIStateAndConfigFromUrl(location.pathname, location.search);
     var initialAppUIState = $state.get(initialRoute.stateName);
 
     // Enable analytics upload iff we're configured to AND the app UI state calls for it.

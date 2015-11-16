@@ -2,7 +2,7 @@
   'use strict';
 
   var Routes = {
-    getUIStateAndConfigFromUrl: function(urlPathname) {
+    getUIStateAndConfigFromUrl: function(urlPathname, urlSearch) {
       var stateName = '404';
       var params = {};
 
@@ -14,6 +14,12 @@
         fourByFour: '(\\w{4}-\\w{4})',
         fieldName: '([\\w-_:@]+)'
       };
+
+      var searchParams = _.chain((urlSearch || '').split('&')).
+        invoke('split', '=').
+        zipObject().
+        value();
+
       var cardsViewUrlMatch = urlPathname.match(
         new RegExp('^{locale}/view{withBootstrap}/{fourByFour}$'.format(regexPieces)));
       var cardsViewSeoUrlMatch = urlPathname.match(
@@ -35,8 +41,9 @@
         stateName = 'view.cards';
         params.id = bootstrapUrlMatch[1];
       } else if (visualizationAddUrlMatch) {
-        // Needs no params, as rails passes in @dataset_metadata
         stateName = 'view.visualizationAdd';
+        params.defaultColumn = searchParams.defaultColumn;
+        params.defaultRelatedVisualizationUid = searchParams.defaultRelatedVisualizationUid;
       } else if (singleCardViewUrlMatch) {
         stateName = 'view.card';
         params.fieldName = singleCardViewUrlMatch[2];

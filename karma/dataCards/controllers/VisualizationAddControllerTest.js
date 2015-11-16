@@ -11,6 +11,7 @@ describe('VisualizationAddController', function() {
   var $scope;
   var validVIF;
   var serializedDataset;
+  var validColumnName = 'foo';
 
   // If the tests aren't running in an iframe, these tests
   // aren't easy to write (as window.frameElement isn't
@@ -76,42 +77,50 @@ describe('VisualizationAddController', function() {
     delete window.relatedVisualizations;
   });
 
-  function makeContext(datasetOverrides) {
-    if (datasetOverrides && datasetOverrides.id) {
-      pageOverrides.datasetId = datasetOverrides.id;
-    }
-
+  function makeContext(overrides) {
     validVIF = {
       aggregation: {
         field: null,
         'function': 'count'
       },
-      columnName: 'foo',
+      columnName: validColumnName,
       datasetUid: 'asdf-fdsa',
       description: 'yar',
       type: 'columnChart'
     };
 
     serializedDataset = { columns: {} };
-    serializedDataset.columns[validVIF.columnName] = {
+    serializedDataset.columns[validColumnName] = {
       availableCardTypes: ['column'],
       description: validVIF.description,
       name: 'name'
     };
 
-    var dataset = Mockumentary.createDataset(datasetOverrides);
+    var columns = {};
+    columns[validColumnName] = {
+      name: validColumnName,
+      physicalDatatype: 'number',
+      defaultCardType: 'column',
+      availableCardTypes: [ 'column' ]
+    };
+
+    var dataset = Mockumentary.createDataset({
+      columns: columns
+    });
     dataset.serialize = _.constant(serializedDataset);
 
     var $scope = $rootScope.$new();
 
     return {
       $scope: $scope,
-      dataset: dataset
+      dataset: dataset,
+      defaultColumn: _.get(overrides, 'defaultColumn', undefined),
+      defaultRelatedVisualizationUid: _.get(overrides, 'defaultRelatedVisualizationUid', undefined)
     };
   }
 
-  function makeController(datasetOverrides) {
-    var context = makeContext(datasetOverrides);
+  function makeController(options) {
+    var context = makeContext(options);
     var controller = $controller('VisualizationAddController', context);
     context.$scope.$apply();
 
@@ -153,25 +162,47 @@ describe('VisualizationAddController', function() {
 
 
     describe('related-visualization-selected scope event', function() {
-      describe('with a valid VIF', function() {
-        var relatedVisualizationVIF = {
-          type: 'test',
-          columnName: 'thisWasPresumablySavedFromADataLens',
-          origin: {
-            type: 'unit tests'
-          },
-          filters: [
-            {
-              'function': 'BinaryOperator',
-              'arguments': {
-                'operand': true,
-                'operator': '='
-              },
-              columnName: 'tinymonster_6'
-            }
-          ]
-        };
+      var relatedVisualizationVIF = {
+        type: 'test',
+        columnName: 'thisWasPresumablySavedFromADataLens',
+        origin: {
+          type: 'unit tests'
+        },
+        filters: [
+          {
+            'function': 'BinaryOperator',
+            'arguments': {
+              'operand': true,
+              'operator': '='
+            },
+            columnName: 'tinymonster_6'
+          }
+        ]
+      };
 
+      describe('with a valid VIF and an originalUid', function() {
+        beforeEach(function() {
+          var relatedVisualizationPageMetadata = Mockumentary.createPageMetadata();
+          relatedVisualizationPageMetadata.sourceVif = relatedVisualizationVIF;
+          emitRelatedVisualizationSelected({
+            format: 'page_metadata',
+            data: relatedVisualizationPageMetadata,
+            originalUid: 'viff-vizz'
+          });
+        });
+
+        it('should call onVisualizationSelected with the original VIF', function() {
+          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
+          sinon.assert.calledWithExactly(
+            window.frameElement.onVisualizationSelected,
+            relatedVisualizationVIF,
+            'vif',
+            'viff-vizz'
+          );
+        });
+      });
+
+      describe('with a valid VIF but no originalUid', function() {
         var resultantWhereClause = '`tinymonster_6`=true';
 
         beforeEach(function() {
@@ -185,7 +216,8 @@ describe('VisualizationAddController', function() {
           sinon.assert.calledWithExactly(
             window.frameElement.onVisualizationSelected,
             relatedVisualizationVIF,
-            'vif'
+            'vif',
+            undefined // no originalUid
           );
         });
 
@@ -213,26 +245,41 @@ describe('VisualizationAddController', function() {
         });
       });
 
-      describe('with a valid classic visualization', function() {
+      describe('with a valid classic visualization with no originalUid', function() {
+        var relatedVisualization = {
+          format: 'classic',
+          data: {}
+        };
+
+        it('should throw', function() {
+          expect(function() {
+            emitRelatedVisualizationSelected(relatedVisualization);
+          }).to.throw();
+        });
+      });
+
+      describe('with a valid classic visualization with an originalUid', function() {
         var relatedVisualizationData = {
           something: 'something'
         };
 
         var relatedVisualization = {
           format: 'classic',
-          data: relatedVisualizationData
+          data: relatedVisualizationData,
+          originalUid: 'oldd-vizz'
         };
 
         beforeEach(function() {
           emitRelatedVisualizationSelected(relatedVisualization);
         });
 
-        it('should call onVisualizationSelected with the original data', function() {
+        it('should call onVisualizationSelected with the original data and originalUid', function() {
           sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
           sinon.assert.calledWithExactly(
             window.frameElement.onVisualizationSelected,
             relatedVisualizationData,
-            'classic'
+            'classic',
+            'oldd-vizz'
           );
         });
 
@@ -247,6 +294,7 @@ describe('VisualizationAddController', function() {
     });
 
     describe('card-model-selected scope event', function() {
+
       describe('with a null payload', function() {
         it('should call onVisualizationSelected with null', function() {
           emitCardModelSelected(null);
@@ -267,6 +315,98 @@ describe('VisualizationAddController', function() {
         it('should call onVisualizationSelected with the results of VIF synthesis in the payload', function() {
           sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
           sinon.assert.calledWithMatch(window.frameElement.onVisualizationSelected, validVIF);
+        });
+      });
+    });
+  });
+
+  possiblyDescribe('default visualization options', function() {
+    function controllerHarnessWithDefaultColumn(column) {
+      return makeController({
+        defaultColumn: column,
+      });
+    }
+    function controllerHarnessWithDefaultRelatedViz(uid) {
+      return makeController({
+        defaultRelatedVisualizationUid: uid
+      });
+    }
+
+    describe('with only defaultColumn specified', function() {
+
+      // To see why these tests are async, see the apologetic comment regarding the setTimeout
+      // in VisualizationAddController.
+      describe('which is valid', function() {
+        it('should set addCardSelectedColumnFieldName to the value of defaultColumn', function(done) {
+          controllerHarnessWithDefaultColumn(validColumnName).
+            $scope.$observe('addCardSelectedColumnFieldName').
+            subscribe(function(fieldName) {
+              if(fieldName) {
+                expect(fieldName).to.equal(validColumnName);
+               done();
+              }
+            });
+        });
+      });
+
+      describe('which is not valid', function() {
+        it('should set addCardSelectedColumnFieldName to null', function(done) {
+          controllerHarnessWithDefaultColumn('notAValidColumn').
+            $scope.$observe('addCardSelectedColumnFieldName').
+            subscribe(function(fieldName) {
+              expect(fieldName).to.equal(null);
+               done();
+            });
+        });
+      });
+    });
+
+    describe('with only defaultRelatedVisualizationUid specified', function() {
+      beforeEach(function() {
+        window.relatedVisualizations = [
+          {
+            originalUid: 'corr-ectt'
+          }
+        ];
+      });
+
+      describe('which is valid', function() {
+        it('should emit related-visualization-selected with the matching related visualization', function(done) {
+          $rootScope.$on('related-visualization-selected', function(event, payload) {
+            expect(payload).to.equal(window.relatedVisualizations[0]);
+            done();
+          });
+          controllerHarnessWithDefaultRelatedViz('corr-ectt');
+        });
+      });
+
+      describe('which is not valid', function() {
+        it('should not emit related-visualization-selected', function() {
+          $rootScope.$on('related-visualization-selected', function() {
+            throw new Error('should not get here');
+          });
+          controllerHarnessWithDefaultRelatedViz('wron-ggg');
+        });
+      });
+    });
+
+    describe('with both defaultColumn and defaultRelatedVisualizationUid specified', function() {
+      beforeEach(function() {
+        window.relatedVisualizations = [
+          {
+            originalUid: 'corr-ectt'
+          }
+        ];
+      });
+
+      it('should emit related-visualization-selected with the matching related visualization', function(done) {
+        $rootScope.$on('related-visualization-selected', function(event, payload) {
+          expect(payload).to.equal(window.relatedVisualizations[0]);
+          done();
+        });
+        makeController({
+          defaultRelatedVisualizationUid: 'corr-ectt',
+          defaultColumn: validColumnName
         });
       });
     });

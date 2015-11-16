@@ -65,11 +65,7 @@ end
             <span class="browse2-facet-section-option-clear-icon icon-close-2"></span>
           <%- end -%>
         </a>
-        <%-
-          if facet_option[:children].present? &&
-            facet_option[:children].respond_to?(:length) &&
-            facet_option[:children].length > 0
-        -%>
+        <%- if facet_option[:children].respond_to?(:each) -%>
           <ul class="browse2-facet-section-child-options">
             <%-
               facet_option[:children].each do |child_facet_option|
@@ -84,25 +80,26 @@ end
                 end
 
                 if opts[:strip_params] && opts[:strip_params][facet_param.to_sym]
-                  child_current_params_with_view_type.delete_if do |key, value|
-                    opts[:strip_params][facet_param.to_sym][key.to_sym]
+                  child_current_params_with_view_type.delete_if do |key, _|
+                    opts[:strip_params][facet_param.to_sym][key.to_sym].present?
                   end
                 end
 
                 child_current_params_with_view_type[facet_param.to_sym] = child_facet_option[:value]
 
                 if child_facet_option_is_active
-                  child_current_params_with_view_type_without_facet = child_current_params_with_view_type.dup.reject do |param|
-                    param == facet[:param]
-                  end
-                  child_facet_option_url = "#{opts[:base_url]}?#{child_current_params_with_view_type_without_facet.to_param}"
+                  child_current_params_with_view_type_without_facet =
+                    child_current_params_with_view_type.reject { |param| param == facet[:param] }
+                  child_facet_option_url =
+                    "#{opts[:base_url]}?#{child_current_params_with_view_type_without_facet.to_param}"
                 else
                   child_facet_option_url = "#{opts[:base_url]}?#{child_current_params_with_view_type.to_param}"
                 end
 
-                child_facet_option_class = 'browse2-facet-section-child-option'
-                child_facet_option_class << (" #{child_facet_option[:class]}" || '')
-                child_facet_option_class << (child_facet_option_is_active ? ' active' : '')
+                classes = ['browse2-facet-section-child-option']
+                classes << child_facet_option[:class] if child_facet_option[:class]
+                classes << 'active' if child_facet_option_is_active
+                child_facet_option_class = classes.join(' ')
             -%>
               <li>
                 <a class="<%= child_facet_option_class %>" href="<%= child_facet_option_url %>">

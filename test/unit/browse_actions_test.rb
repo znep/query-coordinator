@@ -237,7 +237,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       stub_request(:get, url).to_return(status: 200, body: '', headers: {})
     end
 
-    def search_and_return_categories(category)
+    def search_and_return_category_param(category)
       request = OpenStruct.new
       request.params = { category: category }.reject { |_, v| v.blank? }
       browse_options = @browse_actions_container.send(:process_browse, request)
@@ -250,7 +250,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       expected_category = 'Test Category 4'
       stub_core_for_category(expected_category)
 
-      assert_equal [expected_category], search_and_return_categories(expected_category)
+      assert_equal [expected_category], search_and_return_category_param(expected_category)
     end
 
     def test_no_effect_if_cetera_is_not_enabled_and_category_is_absent
@@ -258,7 +258,7 @@ class BrowseActionsTest < Test::Unit::TestCase
 
       stub_core_for_category(nil)
 
-      assert_empty search_and_return_categories(nil)
+      assert_empty search_and_return_category_param(nil)
     end
 
     def test_parent_category_includes_its_children_in_query_to_cetera
@@ -268,7 +268,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       expected_categories = [parent_category] + child_categories
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_categories(parent_category)
+      assert_equal expected_categories, search_and_return_category_param(parent_category)
     end
 
     def test_child_category_includes_only_itself_in_query_to_cetera
@@ -277,7 +277,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       expected_categories = [child_category]
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_categories(child_category)
+      assert_equal expected_categories, search_and_return_category_param(child_category)
     end
 
     def test_categories_with_no_children_query_cetera_only_about_themselves
@@ -286,14 +286,14 @@ class BrowseActionsTest < Test::Unit::TestCase
       expected_categories = [childless_category]
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_categories(childless_category)
+      assert_equal expected_categories, search_and_return_category_param(childless_category)
     end
 
     def test_no_category_results_in_no_category_passed_to_cetera
       expected_categories = []
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_categories(nil)
+      assert_equal expected_categories, search_and_return_category_param(nil)
     end
 
     def test_non_existent_category_gets_magically_injected
@@ -302,12 +302,15 @@ class BrowseActionsTest < Test::Unit::TestCase
       # the URL query string. This is potentially a script injection vector.
       # [ed: so far, we get escaped correctly by the time we get rendered]
 
-      imaginary_category = 'Cloud Cucko Land <script>alert("HI!");</script>'
+      # A user can inject a fake category like so:
+      # http://example.com/browse?category=Cloud Cuckoo Land <script>alert("HI!");</script>
+      imaginary_category = 'Cloud Cuckoo Land <script>alert("HI!");</script>'
 
-      expected_categories = []
+      # And it will show up in the FE's list of displayed categories
+      expected_categories = [imaginary_category]
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_categories(imaginary_category)
+      assert_equal expected_categories, search_and_return_category_param(imaginary_category)
     end
   end
 end

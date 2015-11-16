@@ -603,51 +603,32 @@ module BrowseActions
     end
   end
 
+  # This is only needed by Cetera; Core can add children on the server side
   def selected_category_and_any_children(browse_options)
-    return nil unless browse_options[:search_options].present? && browse_options[:search_options][:category].present?
+    return nil unless browse_options[:search_options].try(:[], :category).present?
 
-    selected_category_and_any_children = nil
     selected_category = browse_options[:search_options][:category]
     categories_facet = browse_options[:facets].detect { |facet| facet[:param] == :category }
-
     categories = categories_facet[:options].concat(categories_facet[:extra_options])
 
-    return nil if categories.empty?
+    return nil unless categories.present?
 
-    categories.each do |category|
+    # Is it a top-level category?
+    category = categories.find { |c| c[:value] == selected_category }
 
-      # First check if one of this root-level category's children is currently selected.
-      # We appear to only support nesting to a depth of one, so there is no need to recurse.
-      if category[:children].present?
-        category[:children].each do |child_category|
+    # If not, let's check the children
+    category ||= begin
+                   children = categories.collect { |c| c[:children] }.flatten.compact
+                   children.find { |c| c[:value] == selected_category }
+                 end
 
-          if child_category[:value] == selected_category
-            selected_category_and_any_children = [ child_category[:value] ]
-            break
-          end
-        end
-      end
+    # If still not found, it's a bogus category but we'll pass it along anyway
+    category ||= { value: selected_category }
 
-      # Quit early if a child is currently selected.
-      if selected_category_and_any_children.present?
-        break
-      end
-
-      # Otherwise check if this root-level category is currently selected, and quit early
-      # if that is the case.
-      if category[:value] == selected_category
-        selected_category_and_any_children = [ category[:value] ]
-        # If the currently selected category has children, include them in the list as well.
-        if category[:children].present?
-          selected_category_and_any_children = selected_category_and_any_children.concat(
-            category[:children].map { |child_category| child_category[:value] }
-          )
-        end
-        break
-      end
-    end
-
-    selected_category_and_any_children.present? ? selected_category_and_any_children.join(',') : nil
+    [
+      category[:value],
+      category[:children] && category[:children].map { |child| child[:value] }
+    ].compact.join(',')
   end
 
   @@default_cutoffs = {

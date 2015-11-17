@@ -19,7 +19,7 @@
       var computedColumn$ = cardModel$.observeOnLatest('computedColumn');
       var datasetRowCount$ = dataset$.
         pluck('id').
-        flatMapLatest(CardDataService.getRowCount.bind(CardDataService)).
+        flatMapLatest(_.ary(CardDataService.getRowCount.bind(CardDataService), 1)).
         share();
 
       scope.showDisabledCuratedRegionSection = false;

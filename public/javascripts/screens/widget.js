@@ -195,6 +195,10 @@ blist.widget.paneHandlers = {
                         }
                     }));
 
+            // since we haven't been updating our image sprite to support the
+            // data lens icon, we add the necessary class to trigger the icon font
+            $('.widgetContent_views td.typeData_lens .icon').addClass('icon-cards');
+
             $('.widgetContent_views .name a').each(function()
             {
                 var $this = $(this);

@@ -1,10 +1,12 @@
 module Constraints
 
-  class DataLensConstraint < ResourceConstraint
+  class DataLensConstraint
 
     def matches?(request)
+      params = request.path_parameters
 
-      return false unless super
+      # Inheriting ResourceConstraint broke when category/viewname constraints added.
+      return false unless ResourceConstraint.new.valid_uid?(params[:id])
 
       # Don't render a data lens if someone specifically asks for
       # the janky admin page.
@@ -13,7 +15,6 @@ module Constraints
       View unless defined?(View) # force this class to exist in dev mode (╯°□°）╯︵ ┻━┻
 
       begin
-        params = request.path_parameters
         # The current user hasn't been initialized at this point,
         # so manually add the cookie header to avoid an auth error.
         cookie_string = request.cookies.kind_of?(Hash) ?

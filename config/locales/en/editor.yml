@@ -8,6 +8,7 @@
 
 en:
   editor:
+    default_page_title: 'Storyteller'
     empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
     remove_block_confirmation: 'Are you sure you want to remove this block?'
     page_close_confirmation: 'You have unsaved changes to this story.'

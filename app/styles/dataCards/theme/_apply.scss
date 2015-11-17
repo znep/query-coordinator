@@ -769,6 +769,10 @@ soc-select, .soc-select {
   .y-tick {
     color: $timeline-chart-tick-color;
     border-bottom: 1px solid $timeline-chart-tick-color;
+    &.top {
+      border-bottom: none;
+      border-top: 1px solid $timeline-chart-tick-color;
+    }
   }
   .zero {
     font-weight: bold;

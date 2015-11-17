@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState) {
+angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState, $window) {
   'use strict';
 
   var handlers = {};
@@ -105,9 +105,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
             // If hint is not horizontal
             } else {
 
-              // Use $(window).width() instead of window.innerWidth because
+              // Use $($window).width() instead of window.innerWidth because
               // the latter includes scrollbars depending on the browser.
-              var windowWidth = $(window).width();
+              var windowWidth = $($window).width();
               var $flyoutHint = $('#uber-flyout').find('.hint');
               var cssHint = {
                 left: '',
@@ -217,7 +217,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
 
     if (!Modernizr.pointerEvents && mouseoverFlyout) {
       hide();
-      target = document.elementFromPoint(mouseX, mouseY);
+      target = $window.document.elementFromPoint(mouseX, mouseY);
       uberFlyout.show();
     }
     return target;
@@ -275,14 +275,14 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
         persistOnMousedown: false
       });
 
-      window.socrata.utils.assert(_.isPresent(options.selector),
+      $window.socrata.utils.assert(_.isPresent(options.selector),
         'selector must be present.');
-      window.socrata.utils.assert(_.isPresent(options.render),
+      $window.socrata.utils.assert(_.isPresent(options.render),
         'render function must be present.');
-      window.socrata.utils.assert(!_.isPresent(options.destroySignal) ||
+      $window.socrata.utils.assert(!_.isPresent(options.destroySignal) ||
         _.isFunction(options.destroySignal.asObservable),
         'destroySignal must be an observable.');
-      window.socrata.utils.assert(options.trackCursor !== true ||
+      $window.socrata.utils.assert(options.trackCursor !== true ||
         options.horizontal !== true,
         'cannot set both trackCursor and horizontal modes on the same flyout.');
 

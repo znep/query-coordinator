@@ -1,13 +1,13 @@
 (function() {
   'use strict';
 
-  function singleCardLayout(WindowState) {
+  function singleCardLayout(WindowState, $window) {
     return {
       restrict: 'E',
       scope: true,
       templateUrl: '/angular_templates/dataCards/singleCardLayout.html',
       link: function($scope, cardContainer) {
-        window.socrata.utils.assertEqual($scope.page.getCurrentValue('cards').length, 1);
+        $window.socrata.utils.assertEqual($scope.page.getCurrentValue('cards').length, 1);
 
         $scope.model = $scope.page.getCurrentValue('cards')[0];
         $scope.cardType = $scope.model.cardType;

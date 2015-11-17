@@ -1,13 +1,13 @@
 (function() {
   'use strict';
 
-  angular.module('socrataCommon.services').factory('WindowOperations', function() {
+  angular.module('socrataCommon.services').factory('WindowOperations', function($window) {
     return {
       setTitle: function(title) {
-        document.title = title;
+        $window.document.title = title;
       },
       navigateTo: function(url) {
-        document.location.href = url;
+        $window.document.location.href = url;
       }
     };
   });

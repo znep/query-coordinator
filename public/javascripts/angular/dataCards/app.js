@@ -17,14 +17,14 @@
     'rx'
   ];
 
-  if (window.socrataConfig.enableAirbrakeJs) {
+  if (window.socrataConfig.enableAirbrakeJs) { // eslint-disable-line angular/window-service
     dependencies.push('exceptionNotifier');
   }
 
-  var dataCards = angular.module('dataCards', dependencies);
+  angular.module('dataCards', dependencies);
 
-  dataCards.config(function(ServerConfig, $httpProvider) {
-    ServerConfig.setup(window.socrataConfig);
+  angular.module('dataCards').config(function(ServerConfig, $httpProvider, $windowProvider) {
+    ServerConfig.setup($windowProvider.$get().socrataConfig);
 
     // Automatically add the app token header to requests done through $http.
     // NOTE: This does not work for requests made through some other means.
@@ -34,7 +34,7 @@
   /**
    * Configure app analytics tracking
    */
-  dataCards.run(function($window, $rootScope, Analytics) {
+  angular.module('dataCards').run(function($window, $rootScope, Analytics) {
     Analytics.measureDomReady();
 
     // The analytics controller can use knowledge of when user interactions happen
@@ -59,13 +59,18 @@
       };
     }
 
+    function listenWithDestroy(name, handler) {
+      var deregister = $rootScope.$on(name, handler);
+      $rootScope.$on('$destroy', deregister);
+    }
+
     // Tell the Analytics service to start a specifically-named measurement
     // whenever these user actions are taken.
-    $rootScope.$on('timeline-chart:filter-changed', onEventStart('timeline-filter'));
-    $rootScope.$on('timeline-chart:filter-cleared', onEventStart('clear-filter'));
-    $rootScope.$on('dataset-filter:choropleth', onEventStart('region-filter'));
-    $rootScope.$on('dataset-filter-clear:choropleth', onEventStart('clear-filter'));
-    $rootScope.$on('column-chart:datum-clicked', function(event, data) {
+    listenWithDestroy('timeline-chart:filter-changed', onEventStart('timeline-filter'));
+    listenWithDestroy('timeline-chart:filter-cleared', onEventStart('clear-filter'));
+    listenWithDestroy('dataset-filter:choropleth', onEventStart('region-filter'));
+    listenWithDestroy('dataset-filter-clear:choropleth', onEventStart('clear-filter'));
+    listenWithDestroy('column-chart:datum-clicked', function(event, data) {
       var label = data.special ? 'clear-filter' : 'bar-filter';
       var eventFn = onEventStart(label);
       eventFn();
@@ -77,19 +82,20 @@
         }
       };
     };
-    $rootScope.$on('http:start', buildHttpRequestFn('startHttpRequest'));
-    $rootScope.$on('http:stop', buildHttpRequestFn('stopHttpRequest'));
-    $rootScope.$on('http:error', buildHttpRequestFn('stopHttpRequest'));
+    listenWithDestroy('http:start', buildHttpRequestFn('startHttpRequest'));
+    listenWithDestroy('http:stop', buildHttpRequestFn('stopHttpRequest'));
+    listenWithDestroy('http:error', buildHttpRequestFn('stopHttpRequest'));
   });
 
-  dataCards.config(function($provide, $stateProvider) {
+  angular.module('dataCards').config(function($provide, $stateProvider) {
     $stateProvider.
       state('404', {
         templateUrl: '/404'
       }).
       state('test', {
         templateUrl: '/angular_templates/dataCards/pages/test-page.html',
-        controller: 'TestPageController'
+        controller: 'TestPageController',
+        controllerAs: 'vm'
       }).
       state('view', {
         template: '<!--Overall chrome--><div ui-view="mainContent"><div>'
@@ -151,7 +157,17 @@
       });
   });
 
-  dataCards.run(function($location, $log, $rootScope, $state, Analytics, Routes, ServerConfig, DeveloperOverrides) {
+  angular.module('dataCards').run(function(
+    $location,
+    $log,
+    $rootScope,
+    $state,
+    $window,
+    Analytics,
+    Routes,
+    ServerConfig,
+    DeveloperOverrides
+  ) {
     // Shamelessly lifted from http://www.joezimjs.com/javascript/3-ways-to-parse-a-query-string-in-a-url/
     var parseQueryString = function( queryString ) {
       var params = {}, queries, temp, i, l;
@@ -168,27 +184,32 @@
       return params;
     };
 
-    var queryObject = parseQueryString(decodeURIComponent(window.location.search.substr(1)));
+    var queryObject = parseQueryString(decodeURIComponent($window.location.search.substr(1)));
     DeveloperOverrides.setOverridesFromString(queryObject.override_dataset_data);
 
-    $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-      $log.error('Error encountered during state transition:', error);
-    });
+    var stateChangeErrorDeregister = $rootScope.$on(
+      '$stateChangeError',
+      function(event, toState, toParams, fromState, fromParams, error) {
+        $log.error('Error encountered during state transition:', error);
+      });
+    $rootScope.$on('$destroy', stateChangeErrorDeregister);
 
     // In order for us to apply page-specific styles to elements outside
     // of the page controller's scope (like page background, global font, etc),
     // we apply state-specific classes to the body.
-    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState) {
-      function classNameFromStateName(stateName) {
-        var dashified = stateName.replace(/\./g, '-');
-        return 'state-' + dashified;
-      }
+    var stateChangeSuccessDeregister = $rootScope.$on(
+      '$stateChangeSuccess',
+      function(event, toState, toParams, fromState) {
+        function classNameFromStateName(stateName) {
+          var dashified = stateName.replace(/\./g, '-');
+          return 'state-' + dashified;
+        }
 
-      var oldClass = classNameFromStateName(fromState.name);
-      var newClass = classNameFromStateName(toState.name);
-      $('body').removeClass(oldClass);
-      $('body').addClass(newClass);
-    });
+        var oldClass = classNameFromStateName(fromState.name);
+        var newClass = classNameFromStateName(toState.name);
+        $('body').removeClass(oldClass).addClass(newClass);
+      });
+    $rootScope.$on('$destroy', stateChangeSuccessDeregister);
 
     // Determine the initial view from the URL.
     // We can't use the UI router's built in URL parsing because

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function DatasetDataService(ServerConfig, http, Schemas, SchemaConverter) {
+  function DatasetDataService(http, Schemas, SchemaConverter, $window) {
 
     var datasetMetadataSchemas = Schemas.regarding('dataset_metadata');
 
@@ -18,7 +18,7 @@
       };
 
       var schemaConversionFunction = SchemaConverter.datasetMetadata['toV{0}'.format(schemaVersion)];
-      window.socrata.utils.assert(
+      $window.socrata.utils.assert(
         _.isFunction(schemaConversionFunction),
         'Don\'t know how to synthesize dataset metadata for v{0} schema'.format(schemaVersion)
       );
@@ -31,8 +31,8 @@
     }
 
     this.getDatasetMetadata = function(schemaVersion, id) {
-      window.socrata.utils.assert(_.isString(id), 'id should be a string');
-      window.socrata.utils.assert(schemaVersion === '1', 'Only schema V1 of dataset metadata is supported.');
+      $window.socrata.utils.assert(_.isString(id), 'id should be a string');
+      $window.socrata.utils.assert(schemaVersion === '1', 'Only schema V1 of dataset metadata is supported.');
 
       return fetch.call(this, schemaVersion, id).then(function(data) {
         datasetMetadataSchemas.assertValidAgainstVersion(schemaVersion, data);
@@ -41,7 +41,7 @@
     };
 
     this.getGeoJsonInfo = function(id, additionalConfig) {
-      window.socrata.utils.assert(_.isString(id), 'id should be a string');
+      $window.socrata.utils.assert(_.isString(id), 'id should be a string');
       var url = $.baseUrl('/resource/{0}.geojson'.format(id));
 
       var config = _.extend({
@@ -62,8 +62,8 @@
     // Get all pages which use this dataset, as JSON blobs.
     // If you want models instead, use the Dataset model's pages property.
     this.getPagesForDataset = function(pageSchemaVersion, datasetId) {
-      window.socrata.utils.assert(pageSchemaVersion === '0', 'only page metadata schema v0 is supported.');
-      window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
+      $window.socrata.utils.assert(pageSchemaVersion === '0', 'only page metadata schema v0 is supported.');
+      $window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
 
       var url = $.baseUrl('/metadata/v1/dataset/{0}/pages.json'.format(datasetId));
 

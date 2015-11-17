@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function modalDialog(WindowState) {
+  function modalDialog(WindowState, $window) {
     return {
       restrict: 'E',
       scope: {
@@ -32,7 +32,7 @@
           // Make sure we're within the dialog
           testPoint.top += 1;
           testPoint.left += 1;
-          var topMostElement = document.elementFromPoint(testPoint.left, testPoint.top);
+          var topMostElement = $window.document.elementFromPoint(testPoint.left, testPoint.top);
           return dialog[0] === topMostElement;
         }).takeUntil(scope.$destroyAsObservable(element)).subscribe(scope.closeDialog);
       }

@@ -1,12 +1,6 @@
 (function() {
   'use strict';
 
-  // The path to the squire.js source, for the iframe to reference
-  // NOTE: this lives in plugins/ and not bower because our js blob doesn't actually need squire.js
-  // in it, and squire.js has default behavior that initializes itself if it finds itself in an
-  // iframe, which makes the whole document contenteditable.
-  var SQUIRE_JS = '/javascripts/plugins/squire.js';
-
   /**
    * A toolbar that controls the iframe, via squire.
    */
@@ -204,8 +198,9 @@
    * A <rich-text-editor /> is meant to replace a <textarea />, and provide limited html formatting.
    */
   angular.module('socrataCommon.directives').directive('richTextEditor', function(
-    $http,
-    I18n
+    $window,
+    I18n,
+    SquireSource
   ) {
     var toolbar;
     /**
@@ -243,7 +238,7 @@
         // Only allow pasting of plaintext
         var text = disemarkup(e.fragment);
         removeChildren(e.fragment);
-        e.fragment.appendChild(document.createTextNode(text));
+        e.fragment.appendChild($window.document.createTextNode(text));
       },
       pathChange: function(element, e) {
         if (toolbar) {
@@ -313,7 +308,7 @@
       }, element.css(['padding', 'color', 'background-color', 'font-family', 'font-size'])));
 
       // Now load squire.js
-      $http.get(SQUIRE_JS).success(function(data) {
+      SquireSource.get().success(function(data) {
         idoc.getElementById('squire-js').innerHTML = data;
         iframe.trigger('squire-loaded');
       });

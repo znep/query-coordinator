@@ -4,7 +4,7 @@
   /**
    * A socrata-styled drop-down selector.
    */
-  angular.module('dataCards.directives').directive('socSelect', function() {
+  angular.module('dataCards.directives').directive('socSelect', function($window) {
 
     /**
      * Apply the given dom attributes to the given element, ignoring angular-specific ones (ie those
@@ -35,7 +35,7 @@
         // https://github.com/angular/angular.js/issues/2809
         _.defer(function() {
 
-          var option = document.createElement('option');
+          var option = $window.document.createElement('option');
           selectElement[0].add(option, null);
           selectElement[0].remove(selectElement[0].options.length - 1);
         });

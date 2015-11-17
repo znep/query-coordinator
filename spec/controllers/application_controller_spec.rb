@@ -11,7 +11,22 @@ RSpec.describe ApplicationController, :type => :controller do
     routes.draw { get 'test_action' => 'anonymous#test_action' }
   end
 
-  describe '#current_user'
+  describe '#current_user' do
+    it 'calls authenticate on stored session' do
+      mock_session = double()
+      expect(controller.env).to receive(:[]).with(SocrataSession::SOCRATA_SESSION_ENV_KEY).and_return(mock_session)
+      expect(mock_session).to receive(:authenticate).with(controller.env)
+
+      controller.current_user
+    end
+
+    it 'is memoized' do
+      expect(controller.env).to receive(:[]).with(SocrataSession::SOCRATA_SESSION_ENV_KEY).once.and_return(double.as_null_object)
+
+      controller.current_user
+      controller.current_user
+    end
+  end
 
   describe 'require_logged_in_user' do
     context 'with a logged in user' do

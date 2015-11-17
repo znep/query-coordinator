@@ -35,6 +35,7 @@ class AdministrationController < ApplicationController
       limit: 30,
       nofederate: true,
       view_type: 'table',
+      a11y_table_description: t('screens.admin.datasets.table_description')
     }.merge(moderation_flag_if_needed))
   end
 

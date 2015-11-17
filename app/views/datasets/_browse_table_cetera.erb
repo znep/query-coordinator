@@ -4,12 +4,12 @@
     <tr itemscope="itemscope" itemtype="http://schema.org/Dataset" class="item collapsed <%= !v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %>" data-view-id="<%= v.id %>">
 
       <%- if opts[:grid_items][:index] -%>
-        <td class="index" scope="row">
+        <th class="index row-header" scope="row">
           <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
             <span class="icon"></span>
           </a>
           <span class="value"><%= start_index + i %>.</span>
-        </td>
+        </th>
       <%- end -%>
       <%- rel_type = view_rel_type(v, CurrentDomain, opts) -%>
       <%- if opts[:grid_items][:domainIcon] -%>

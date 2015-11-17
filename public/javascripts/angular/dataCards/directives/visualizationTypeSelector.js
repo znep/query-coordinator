@@ -156,6 +156,8 @@
               scope.selectedCuratedRegion = defaultCuratedRegion;
             }
           }
+
+          scope.$safeApply();
         }
       );
 

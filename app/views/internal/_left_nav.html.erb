@@ -9,9 +9,5 @@
   </ul>
 </div>
 <% content_for :js_footer do %>
-  <script type="text/javascript">
-    blist.namespace.fetch('blist.internal');
-    blist.internal.domains = <%= safe_json(Domain.all) %>;
-  </script>
   <%= include_javascripts 'screen-internal' %>
 <% end %>

@@ -374,6 +374,7 @@ module BrowseActions
                 # All domains in the federation
                 [CurrentDomain.cname].concat(federations_hash.values.sort).join(',')
               end
+            browse_options[:search_options][:category] = selected_category_and_any_children(browse_options)
             Cetera.search_views(browse_options[:search_options])
           else
             Clytemnestra.search_views(browse_options[:search_options])
@@ -600,6 +601,34 @@ module BrowseActions
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
       view_type_list.insert(datasets_index, stories_view_type)
     end
+  end
+
+  # This is only needed by Cetera; Core can add children on the server side
+  def selected_category_and_any_children(browse_options)
+    return nil unless browse_options[:search_options].try(:[], :category).present?
+
+    selected_category = browse_options[:search_options][:category]
+    categories_facet = browse_options[:facets].detect { |facet| facet[:param] == :category }
+    categories = categories_facet[:options].concat(categories_facet[:extra_options])
+
+    return nil unless categories.present?
+
+    # Is it a top-level category?
+    category = categories.find { |c| c[:value] == selected_category }
+
+    # If not, let's check the children
+    category ||= begin
+                   children = categories.collect { |c| c[:children] }.flatten.compact
+                   children.find { |c| c[:value] == selected_category }
+                 end
+
+    # If still not found, it's a bogus category but we'll pass it along anyway
+    category ||= { value: selected_category }
+
+    [
+      category[:value],
+      category[:children] && category[:children].map { |child| child[:value] }
+    ].compact.join(',')
   end
 
   @@default_cutoffs = {

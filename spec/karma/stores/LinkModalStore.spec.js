@@ -1,4 +1,4 @@
-describe('LinkStore', function() {
+describe('LinkModalStore', function() {
   'use strict';
 
   var storyteller = window.socrata.storyteller;
@@ -20,23 +20,33 @@ describe('LinkStore', function() {
     describe('when given a valid payload', function() {
 
       beforeEach(function() {
-        dispatchAction(Actions.LINK_MODAL_OPEN, {editorId: 'yes'});
+        dispatchAction(Actions.LINK_MODAL_OPEN, {
+          editorId: 'yes',
+          text: 'text',
+          link: 'link',
+          openInNewWindow: 'openInNewWindow'
+        });
       });
 
       it('should update visibility', function() {
-        assert(storyteller.linkStore.getVisibility());
+        assert(storyteller.linkModalStore.getVisibility());
       });
 
       it('should remember the editor ID that opened it', function() {
-        assert.equal(storyteller.linkStore.getEditorId(), 'yes');
+        assert.equal(storyteller.linkModalStore.getEditorId(), 'yes');
       });
 
       it('should emit a change', function(done) {
-        storyteller.linkStore.addChangeListener(function() {
+        storyteller.linkModalStore.addChangeListener(function() {
           done();
         });
 
-        dispatchAction(Actions.LINK_MODAL_OPEN, {editorId: 'yes'});
+        dispatchAction(Actions.LINK_MODAL_OPEN, {
+          editorId: 'yes',
+          text: 'text',
+          link: 'link',
+          openInNewWindow: 'openInNewWindow'
+        });
       });
     });
   });
@@ -48,12 +58,12 @@ describe('LinkStore', function() {
       });
 
       it('should reset all state variables', function() {
-        assert.isNull(storyteller.linkStore.getEditorId());
-        assert.isNull(storyteller.linkStore.getInputs());
+        assert.isNull(storyteller.linkModalStore.getEditorId());
+        assert.isNull(storyteller.linkModalStore.getInputs());
 
-        assert.isFalse(storyteller.linkStore.getVisibility());
-        assert.isFalse(storyteller.linkStore.getValidity());
-        assert.isFalse(storyteller.linkStore.getAccepted());
+        assert.isFalse(storyteller.linkModalStore.getVisibility());
+        assert.isFalse(storyteller.linkModalStore.getValidity());
+        assert.isFalse(storyteller.linkModalStore.getAccepted());
       });
     });
   });
@@ -89,7 +99,7 @@ describe('LinkStore', function() {
       });
 
       it('should set inputs', function() {
-        assert.deepEqual(storyteller.linkStore.getInputs(), {
+        assert.deepEqual(storyteller.linkModalStore.getInputs(), {
           link: 'link',
           text: 'text',
           openInNewWindow: true
@@ -97,11 +107,11 @@ describe('LinkStore', function() {
       });
 
       it('should set validity', function() {
-        assert.equal(storyteller.linkStore.getValidity(), true);
+        assert.equal(storyteller.linkModalStore.getValidity(), true);
       });
 
       it('should emit a change', function(done) {
-        storyteller.linkStore.addChangeListener(function() {
+        storyteller.linkModalStore.addChangeListener(function() {
           done();
         });
 
@@ -112,17 +122,25 @@ describe('LinkStore', function() {
 
   describe('Actions.LINK_MODAL_ACCEPT', function() {
     describe('when given no payload', function() {
+      it('should throw an error', function() {
+        assert.throws(function() {
+          dispatchAction(Actions.LINK_MODAL_ACCEPT);
+        });
+      });
+    });
+
+    describe('when given a valid payload', function() {
       it('should set accepted state', function() {
-        dispatchAction(Actions.LINK_MODAL_ACCEPT);
-        assert(storyteller.linkStore.getAccepted());
+        dispatchAction(Actions.LINK_MODAL_ACCEPT, {text: '', link: '', openInNewWindow: false});
+        assert(storyteller.linkModalStore.getAccepted());
       });
 
       it('should emit a change', function(done) {
-        storyteller.linkStore.addChangeListener(function() {
+        storyteller.linkModalStore.addChangeListener(function() {
           done();
         });
 
-        dispatchAction(Actions.LINK_MODAL_ACCEPT);
+        dispatchAction(Actions.LINK_MODAL_ACCEPT, {text: '', link: '', openInNewWindow: false});
       });
     });
   });

@@ -12,6 +12,7 @@
     var $openInNewWindow = $('#open-in-new-window');
     var $testLink = $('.link-test-link-action');
     var $warning = $('.link-warning');
+    var $submitButton = $modal.find('.btn-primary');
 
     attachEvents();
     attachStoreListeners();
@@ -28,6 +29,7 @@
     function attachEvents() {
       var wait = 750;
 
+      $(window).on('keyup', enterToInsert);
       $text.on('input', _.debounce(update, wait));
       $link.on('input', _.debounce(update, wait));
       $openInNewWindow.on('change', _.debounce(update, wait));
@@ -46,7 +48,8 @@
             dispatcher.dispatch({
               action: Actions.LINK_MODAL_ACCEPT,
               text: $text.val(),
-              link: $link.val()
+              link: $link.val(),
+              openInNewWindow: $openInNewWindow.is(':checked')
             });
             dispatcher.dispatch({
               action: Actions.LINK_MODAL_CLOSE
@@ -57,11 +60,11 @@
     }
 
     function attachStoreListeners() {
-      storyteller.linkStore.addChangeListener(function() {
-        var visibility = storyteller.linkStore.getVisibility();
-        var inputs = storyteller.linkStore.getInputs();
-        var valid = storyteller.linkStore.getValidity();
-        var urlValidity = storyteller.linkStore.getURLValidity();
+      storyteller.linkModalStore.addChangeListener(function() {
+        var visibility = storyteller.linkModalStore.getVisibility();
+        var inputs = storyteller.linkModalStore.getInputs();
+        var valid = storyteller.linkModalStore.getValidity();
+        var urlValidity = storyteller.linkModalStore.getURLValidity();
 
         toggleModal(visibility);
         toggleModalOK(valid);
@@ -87,13 +90,22 @@
     }
 
     function toggleModalOK(predicate) {
-      $modal.find('.btn-primary').prop('disabled', !predicate);
+      $submitButton.prop('disabled', !predicate);
+    }
+
+    function enterToInsert(event) {
+      var visible = storyteller.linkModalStore.getVisibility();
+      var valid = storyteller.linkModalStore.getValidity();
+
+      if (event.keyCode === 13 && valid && visible) {
+        $submitButton.click();
+      }
     }
 
     function testLink(event) {
       event.preventDefault();
 
-      var inputs = storyteller.linkStore.getInputs();
+      var inputs = storyteller.linkModalStore.getInputs();
       var anchor = document.createElement('a');
 
       anchor.href = inputs.link;

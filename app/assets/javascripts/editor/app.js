@@ -60,7 +60,8 @@ $(document).on('ready', function() {
     }
   });
 
-  storyteller.linkStore = new storyteller.LinkStore();
+  storyteller.linkTipStore = new storyteller.LinkTipStore();
+  storyteller.linkModalStore = new storyteller.LinkModalStore();
   storyteller.storyStore = new storyteller.StoryStore();
   storyteller.historyStore = new storyteller.HistoryStore(storyteller.userStoryUid);
   storyteller.dragDropStore = new storyteller.DragDropStore();
@@ -95,6 +96,7 @@ $(document).on('ready', function() {
 
   var assetSelectorRenderer = new storyteller.AssetSelectorRenderer(assetSelectorOptions); //eslint-disable-line no-unused-vars
   var linkModalRenderer = new storyteller.LinkModalRenderer(); //eslint-disable-line no-unused-vars
+  var linkTipRenderer = new storyteller.LinkTipRenderer(); //eslint-disable-line no-unused-vars
 
   var storyCopierOptions = {
     storyCopierContainerElement: $('#make-a-copy-container')
@@ -140,17 +142,22 @@ $(document).on('ready', function() {
 
     var isInToolbar = target.is($('#rich-text-editor-toolbar')) || target.parents('#rich-text-editor-toolbar').length !== 0;
     var isInLinkModal = target.is($('#link-modal')) || target.parents('#link-modal').length !== 0;
+    var isInLinkTip = target.is($('#link-tip')) || target.parents('#link-tip').length !== 0;
 
     // If the target of the click event is not the toolbar, unlink
     // the toolbar from the current ext editor (which also dims the
     // toolbar), and deselect all rich text editors.
-    if (!isInToolbar && !isInLinkModal) {
+    if (!isInToolbar && !isInLinkModal && !isInLinkTip) {
 
       richTextEditorManager.unlinkToolbar();
 
       storyteller.dispatcher.dispatch({
         action: Actions.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
         activeFormats: []
+      });
+
+      storyteller.dispatcher.dispatch({
+        action: Actions.LINK_TIP_CLOSE
       });
 
       _.invoke(richTextEditorManager.getAllEditors(), 'deselect');

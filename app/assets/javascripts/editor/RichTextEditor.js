@@ -209,12 +209,14 @@
           _formats
         );
 
-        _editor.addEventListener('input', _handleContentChangeByUser);
         _editor.addEventListener('focus', _broadcastFocus);
-        _editor.addEventListener('focus', _broadcastFormatChange);
         _editor.addEventListener('blur', _broadcastBlur);
+
+        _editor.addEventListener('focus', _broadcastFormatChange);
         _editor.addEventListener('select', _broadcastFormatChange);
         _editor.addEventListener('pathChange', _broadcastFormatChange);
+
+        _editor.addEventListener('input', _handleContentChangeByUser);
         _editor.addEventListener('willPaste', function(pasteEvent) {
           _sanitizeClipboardInput(pasteEvent);
           _handleContentChangeByUser();
@@ -224,6 +226,9 @@
           _sanitizeCurrentContent();
           _handleContentChangeByUser();
         });
+
+        _editor.addEventListener('mouseup', _linkActionTip);
+        _editor.addEventListener('pathChange', _linkActionTip);
 
         // Pre-load existing content (e.g. if we are editing an
         // existing resource).
@@ -239,6 +244,43 @@
       });
 
       _containerElement.append(_editorElement);
+    }
+
+    /**
+     * @function _linkActionTip
+     * @description
+     * This event-bound function reads the current event that is bound
+     * and decides whether or not the cursor/selection in either has/is
+     * a link. In the case that it is a link, the anchor tag is discovered
+     * through the selection and an action to open the LinkTip is prepared.
+     *
+     * @param {Object} event - A mouseup, or pathChange event object.
+     */
+    function _linkActionTip() {
+      var anchor;
+      var selection = _editor.getSelection();
+
+      if (_editor.hasFormat('a')) {
+        // There are two cases:
+        // - We have a cursor in the link,
+        // - or we have a selection of the link.
+        anchor = selection.startContainer.nodeType === 1 ?
+          selection.startContainer :
+          selection.startContainer.parentNode;
+
+        storyteller.dispatcher.dispatch({
+          action: Actions.LINK_TIP_OPEN,
+          editorId: _self.id,
+          text: anchor.textContent,
+          link: anchor.href,
+          openInNewWindow: anchor.getAttribute('target') === '_blank',
+          boundingClientRect: anchor.getBoundingClientRect()
+        });
+      } else {
+        storyteller.dispatcher.dispatch({
+          action: Actions.LINK_TIP_CLOSE
+        });
+      }
     }
 
     function _applyWindowSizeClass() {

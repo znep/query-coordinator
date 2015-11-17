@@ -814,7 +814,7 @@ class View < Model
   end
 
   def show_official_badge_in_catalog?
-    FeatureFlags.derive(nil, request)[:enable_data_lens_provenance] && data_lens? && is_official?
+    FeatureFlags.derive(nil, request)[:show_provenance_badge_in_catalog] && data_lens? && is_official?
   end
 
   def is_official?

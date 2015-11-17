@@ -9,8 +9,8 @@ describe Constraints::DataLensConstraint do
   describe '#matches?' do
 
     subject(:constraint) { described_class.new }
-    let(:request_with_query) { double('Request', path_parameters: {id: '1234-five', category: 'fun', view_name: 'test'}, query_parameters: {'gridUx' => true}, cookies: 'kooky') }
-    let(:request_without_query) { double('Request', path_parameters: {id: '1234-five', category: 'fun', view_name: 'test'}, query_parameters: {}, cookies: 'kooky') }
+    let(:request_with_query) { double('Request', path_parameters: {id: '1234-five'}, query_parameters: {'gridUx' => true}, cookies: 'kooky') }
+    let(:request_without_query) { double('Request', path_parameters: {id: '1234-five'}, query_parameters: {}, cookies: 'kooky') }
     let(:data_lens) { double('View') }
     let(:marshalled_out) { Marshal.dump({}) }
 

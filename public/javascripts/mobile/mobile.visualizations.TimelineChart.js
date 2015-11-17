@@ -345,48 +345,18 @@
 
     function _attachEvents(element) {
       element.on(
-        'mouseenter, mousemove',
+        'click',
         '.timeline-chart',
         showFlyout
       );
-
-      element.on(
-        'mouseleave',
-        '.timeline-chart',
-        hideFlyout
-      );
-
-    //element.on(
-    //  'mouseenter',
-    //  _labelsSelector,
-    //  addHoverClassToBarGroup
-    //);
-
-    //element.on(
-    //  'mouseleave',
-    //  _labelsSelector,
-    //  removeHoverClassFromBarGroup
-    //);
-
-    //_chartElement.on(
-    //  'mouseleave',
-    //  removeHoverClassFromBarGroup
-    //);
     }
 
     function _unattachEvents(element) {
       element.off(
-        'mouseenter, mousemove',
+        'click',
         '.timeline-chart',
         showFlyout
       );
-
-      element.off(
-        'mouseleave',
-        '.timeline-chart',
-        hideFlyout
-      );
-
     }
 
     /**
@@ -2304,7 +2274,6 @@
       endDate = new Date(moment(currentDatum.date).add(1, currentPrecision).toDate());
 
       // Dim existing labels and add text and attribute information to the datum label.
-      $chartElement.addClass('dimmed');
       $datumLabel.
         text(formatDateLabel(startDate, false, currentPrecision)).
         attr('data-start', startDate).
@@ -2398,7 +2367,6 @@
 
     function hideDatumLabel() {
       $datumLabel.hide();
-      $chartElement.removeClass('dimmed');
     }
 
     /**

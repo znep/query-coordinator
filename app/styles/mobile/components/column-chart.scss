@@ -92,6 +92,10 @@
       }
     }
   }
+}
+
+#column-chart,
+.mobile-flyout {
   .labels {
     &.mobile {
       position: absolute;
@@ -101,6 +105,7 @@
       bottom: 0;
       background-color: #fff;
       height: 40px;
+      z-index: 9;
 
       .title,
       .value {

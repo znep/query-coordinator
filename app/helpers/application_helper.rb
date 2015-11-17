@@ -763,9 +763,11 @@ module ApplicationHelper
   end
 
   def using_cetera?
-    req = Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
-    req ||= request if defined?(request)
+    return false unless APP_CONFIG.cetera_host.present?
 
-    FeatureFlags.derive(nil, req, nil)[:cetera_search] && APP_CONFIG.cetera_host.present?
+    req = request if defined?(request)
+    req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
+    FeatureFlags.derive(nil, req, nil)[:cetera_search]
   end
+
 end

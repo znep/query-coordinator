@@ -428,8 +428,8 @@ describe('socrata-utils.js', function() {
 
     it('should convert integers correctly using a custom separator', function() {
 
-      expect(utils.commaify(20000, { groupCharacter: '?' })).to.equal('20?000');
-      expect(utils.commaify(2000000, { groupCharacter: '?' })).to.equal('2?000?000');
+      expect(utils.commaify(20000, { groupCharacter: '.' })).to.equal('20.000');
+      expect(utils.commaify(2000000, { groupCharacter: '.' })).to.equal('2.000.000');
     });
 
     it('should deal with decimals correctly using the default separator', function() {
@@ -440,7 +440,7 @@ describe('socrata-utils.js', function() {
 
     it('should convert decimals correctly using a custom separator', function() {
 
-      expect(utils.commaify('20000|1234', { groupCharacter: ',', decimalCharacter: '|' })).to.equal('20,000|1234');
+      expect(utils.commaify(20000.1234, { groupCharacter: '.', decimalCharacter: ',' })).to.equal('20.000,1234');
     });
 
     it('should convert string numbers correctly', function() {

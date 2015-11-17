@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   #   current_user  # with invalid cookies
   #   => nil
   def current_user
-    env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
+    @current_user ||= env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
   end
 
   def require_logged_in_user

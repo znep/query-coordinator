@@ -96,7 +96,7 @@ enable_data_lens_page_metadata_migrations:
   description: Lazily migrate data lens page metadata schemas on each request.
   defaultValue: true
 enable_data_lens_provenance:
-  description: Set data lens views to "Official" or not.
+  description: Ability to set data lens views to "Official" or not.
   defaultValue: false
 enable_export_service:
   description: Use the new Export Service on this domain.
@@ -183,6 +183,9 @@ show_newux_page_header:
   description: Show the header logo and sign in/up/out links.
   defaultValue: true
   category: data lens
+show_provenance_badge_in_catalog:
+  description: Show the provenance "Official" badge for official views in the catalog.
+  defaultValue: false
 show_share_dataset_by_email_button_for_general_users:
   description: Toggle the visibility of the "share by email" button on dataset pages for unauthenticated or non-domain-role-holding users (see ONCALL-3032).
   defaultValue: true

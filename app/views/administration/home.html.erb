@@ -111,7 +111,7 @@
   <h2><%= t("#{prefix}.catalog_layout_configuration") %></h2>
   <%= form_tag({:action => 'modify_catalog_config'}, {:method => 'post',
     :class => 'commonForm'}) %>
-    <div class="line">
+    <fieldset class="line">
       <span class="mainLabel"><%= t("#{prefix}.default_catalog_layout") %></span>
       <div class="valueBox">
         <input type="radio" id="catalogViewType_table"
@@ -127,7 +127,7 @@
       </div>
       <span class="saving statusText"><%= t("#{prefix}.saving") %></span>
       <span class="saved statusText"><%= t("#{prefix}.saved") %></span>
-    </div>
+    </fieldset>
     <input type="submit" value="<%= t('core.dialogs.save') %>" />
   </form>
 </div>

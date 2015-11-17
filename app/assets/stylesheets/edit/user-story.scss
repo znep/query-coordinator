@@ -85,7 +85,8 @@ body.story-save-error .user-story-container {
         .component-edit-controls-edit-btn {
           color: $block-edit-controls-fg-color;
           background-color: $block-edit-controls-bg-color;
-          padding: 0.75rem 1rem;
+          padding: $component-edit-controls-btn-padding-vertical $component-edit-controls-btn-padding-horizontal;
+          font-size: $component-edit-controls-font-size;
           border: none;
           outline: none;
 

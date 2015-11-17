@@ -441,7 +441,7 @@ private
       end
     end
 
-    @current_state = {'user' => @user.id, 'domain' => CurrentDomain.cname, 'locale' => I18n.locale}
+    @current_state = {'user' => @user.try(:id), 'domain' => CurrentDomain.cname, 'locale' => I18n.locale}
 
     # Don't make a core server request for friends and followers every time
     unless @friends_rendered = read_fragment(app_helper.cache_key('profile-friends-list', @current_state))

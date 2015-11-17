@@ -55,6 +55,11 @@ $user-story-padding-bottom: 60px;
 $block-edit-controls-width: 2.5rem;
 $block-edit-controls-height: 9.3rem;
 
+// Component edit controls
+$component-edit-controls-font-size: 1.2rem;
+$component-edit-controls-btn-padding-vertical: 0.6rem;
+$component-edit-controls-btn-padding-horizontal: 1.2rem;
+
 // Block component column widths (small)
 $col3-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (1/4);
 $col4-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (1/3);

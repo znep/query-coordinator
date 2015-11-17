@@ -616,32 +616,6 @@ describe('timelineChart', function() {
     expect(wasThenSelected).to.equal(true);
   });
 
-  it('should not create a selection when the mouse is clicked on the third y tick', function() {
-    var chart = createTimelineChart(640, false);
-
-    var wasNotSelected = !$('.timeline-chart-wrapper').hasClass('selected');
-
-    mockWindowStateService.scrollPosition$.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
-    mockWindowStateService.mousePosition$.onNext({
-      clientX: 10,
-      clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top - 5,
-      target: $('.y-tick:last-child')[0]
-    });
-
-    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-    mockWindowStateService.mousePosition$.onNext({
-      clientX: 10,
-      clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top - 5,
-      target: $('.y-tick:last-child')[0]
-    });
-
-    var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
-
-    expect(wasNotSelected).to.equal(true);
-    expect(wasThenSelected).to.equal(false);
-  });
-
   describe('when selecting', function() {
 
     it('should start selecting on mousedown within the chart display and stop selecting on mouse up within the chart display', function() {

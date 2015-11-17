@@ -370,24 +370,9 @@ function ChoroplethController(
 
   LeafletVisualizationHelpersService.setObservedExtentOnModel($scope, $scope.model);
 
-  var savedExtent$ = model.observeOnLatest('cardOptions.mapExtent');
-  var defaultExtent$ = Rx.Observable.
-    returnValue(CardDataService.getDefaultFeatureExtent());
+  $scope.defaultExtent = CardDataService.getDefaultFeatureExtent();
+  $scope.savedExtent = $scope.model.getCurrentValue('cardOptions').getCurrentValue('mapExtent');
 
-  var extent$ = Rx.Observable.combineLatest(
-    savedExtent$,
-    defaultExtent$,
-    function(savedExtent, defaultExtent) {
-      if (_.isPresent(savedExtent)) {
-        return { savedExtent: savedExtent };
-      } else {
-        return { defaultExtent: defaultExtent };
-      }
-    }).
-    take(1);
-
-  $scope.$bindObservable('savedExtent', extent$.pluck('savedExtent'));
-  $scope.$bindObservable('defaultExtent', extent$.pluck('defaultExtent'));
   $scope.$bindObservable('cardSize', model.observeOnLatest('cardSize'));
 }
 

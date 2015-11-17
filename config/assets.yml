@@ -725,7 +725,9 @@ javascripts:
     - public/javascripts/bower/angular-sanitize.js
     - public/javascripts/bower/pbf.min.js
     - public/javascripts/bower/lodash.js
+    - public/javascripts/bower/chroma.js
     - public/javascripts/bower/d3.js
+    - public/javascripts/bower/simple_statistics.js
     - public/javascripts/bower/socrata.utils.js
     - public/javascripts/bower/leaflet.js
     - public/javascripts/bower/vectortile.min.js

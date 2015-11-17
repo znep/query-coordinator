@@ -141,8 +141,11 @@ describe('ChoroplethController', function() {
     var version = options.version || '1';
     var model = new Model();
 
+    var mapExtent = new Model();
+    mapExtent.defineObservableProperty('mapExtent', options.mapExtent);
+
     model.fieldName = 'points';
-    model.defineObservableProperty('cardOptions', {mapExtent: options.mapExtent || {}});
+    model.defineObservableProperty('cardOptions', mapExtent);
     model.defineObservableProperty('cardSize', 1);
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
@@ -612,7 +615,5 @@ describe('ChoroplethController', function() {
       expect(choropleth.$scope.defaultExtent).to.be.undefined;
       expect(choropleth.$scope.savedExtent).to.be.undefined;
     });
-
   });
-
 });

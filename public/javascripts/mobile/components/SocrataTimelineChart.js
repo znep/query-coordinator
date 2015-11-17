@@ -46,12 +46,6 @@
       'FLYOUT_SELECTED_NOTICE'
     );
 
-    this.destroySocrataTimelineChart = function() {
-      clearTimeout(rerenderOnResizeTimeout);
-      visualization.destroy();
-      _detachEvents();
-    };
-
     var $element = $(this);
 
     var soqlDataProviderConfig = {
@@ -82,7 +76,7 @@
     };
 
     var visualization = new visualizations.TimelineChart($element, vif);
-    var visualizationData = transformChartDataForRendering([]);
+    var visualizationData = null;
     var precision;
     var rerenderOnResizeTimeout;
 
@@ -155,8 +149,16 @@
      */
 
     function _attachEvents() {
+
+      // Destroy on (only the first) 'destroy' event.
+      $element.one('destroy', function() {
+        clearTimeout(rerenderOnResizeTimeout);
+        visualization.destroy();
+        _detachEvents();
+      });
       $(root).on('resize', _handleWindowResize);
       $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
+      $element.on('invalidateSize', _render);
     }
 
     function _detachEvents() {
@@ -168,17 +170,21 @@
       clearTimeout(rerenderOnResizeTimeout);
 
       rerenderOnResizeTimeout = setTimeout(
-        function() {
-          visualization.render(
-            visualizationData,
-            _getRenderOptions()
-          );
-        },
+        _render,
         // Add some jitter in order to make sure multiple visualizations are
         // unlikely to all attempt to rerender themselves at the exact same
         // moment.
         WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
       );
+    }
+
+    function _render() {
+      if (visualizationData) {
+        visualization.render(
+          visualizationData,
+          _getRenderOptions()
+        );
+      }
     }
 
     function _handleVisualizationFlyout(event) {
@@ -325,8 +331,7 @@
           element: payload.element,
           content: flyoutContent,
           rightSideHint: false,
-          belowTarget: false,
-          data: payload
+          belowTarget: false
         };
       }
 
@@ -384,9 +389,8 @@
         then(mapQueryToPromises);
 
       Promise.all([ dataPromise, precisionPromise ]).
-        then(renderDataFromPromises)['catch'](function(e) {
-          handleError(e);
-        });
+        then(renderDataFromPromises)
+        ['catch'](handleError);
 
       function mapQueryResponseToPrecision(response) {
         var startIndex = _.indexOf(response.columns, SOQL_PRECISION_START_ALIAS);
@@ -464,14 +468,12 @@
 
       function mapQueryToPromises(dataQueryString) {
         var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)['catch'](function(e) {
-            handleError(e);
-          });
+          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+          ['catch'](handleError);
 
         var filteredSoqlQuery = filteredSoqlDataProvider.
-          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)['catch'](function(e) {
-            handleError(e);
-          });
+          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+          ['catch'](handleError);
 
         return Promise.all([unfilteredSoqlQuery, filteredSoqlQuery]);
       }
@@ -488,10 +490,7 @@
           precision
         );
 
-        visualization.render(
-          visualizationData,
-          _getRenderOptions()
-        );
+        _render();
       }
     }
 

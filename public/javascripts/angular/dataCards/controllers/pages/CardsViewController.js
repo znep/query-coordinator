@@ -326,6 +326,12 @@
     $scope.showProvenanceSection = $scope.currentUserHasRights &&
       ServerConfig.get('enableDataLensProvenance');
 
+    // Hack week disco lens
+    $scope.discoLens = {
+      showDiscoLens: ServerConfig.get('discoLens'),
+      discoMode: false
+    };
+
     /*******************************
     * Filters and the where clause *
     *******************************/

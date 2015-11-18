@@ -65,6 +65,23 @@ button.customize-bar-action-btn {
       }
     }
   }
+
+  &.disco-mode {
+    background-image: url("/images/discoLens/disco_ball.gif");
+    background-size: contain;
+    background-position: center;
+  }
+
+  .disco-button-wrapper {
+    display: inline-block;
+    float: right;
+
+    .disco-button {
+      &:hover {
+        border: 2px solid yellow;
+      }
+    }
+  }
 }
 
 save-as {

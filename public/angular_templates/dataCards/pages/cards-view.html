@@ -2,7 +2,7 @@
   <!-- HEADER -->
   <page-header ng-show="pageHeaderEnabled"></page-header>
   <!-- METADATA BAR -->
-  <div class="cards-metadata" ng-class="{'page-header-enabled': pageHeaderEnabled}">
+  <div class="cards-metadata" ng-class="{'page-header-enabled': pageHeaderEnabled, 'disco-mode': discoLens.discoMode}">
     <div class="row">
       <div class="span6 padded-wrapper">
         <div class="left-pane span12">
@@ -127,11 +127,12 @@
     save-page-as="savePageAs"
     save-status="saveStatus"
     page="page"
+    disco-lens="discoLens"
     ng-show="shouldDisplayCustomizeBar">
   </customize-bar>
   <div class="cards-content">
     <div id="quick-filter-bar-container">
-      <div class="quick-filter-bar" with-spacer>
+      <div class="quick-filter-bar" with-spacer ng-class="{'disco-mode': discoLens.discoMode}">
         <div class="content cf">
           <span
             ng-show="aggregation.unit"
@@ -165,14 +166,15 @@
     <multi-card-layout
       id="card-container"
       class="cards multiple-cards"
-      ng-class="{'edit-mode': editMode}"
+      ng-class="{'edit-mode': editMode, 'disco-mode': discoLens.discoMode}"
       ng-if="!page.isStandaloneVisualization"
       page="page"
       edit-mode="editMode"
       global-where-clause-fragment="globalWhereClauseFragment"
       expanded-card="expandedCard"
       allow-add-card="!allVisualizableColumnsVisualized"
-      chooser-mode="chooserMode">
+      chooser-mode="chooserMode"
+      disco-lens="discoLens">
     </multi-card-layout>
 
     <div ng-if="page.isStandaloneVisualization">

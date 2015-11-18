@@ -77,6 +77,10 @@ disable_obe_redirection:
 disable_nbe_redirection_warning_message:
   description: When clicking to an NBE dataset, you no longer see a "You would be redirected to" message.
   defaultValue: false
+disco_lens:
+  description: When you need a little more funk in your data lens pages.
+  defaultValue: false
+  category: easter egg
 display_catalog_lens_delete_button:
   description: Whether to show the Delete button for data lenses, in the old UX.
   defaultValue: true

@@ -374,11 +374,19 @@ class InternalController < ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_url = "/internal/orgs/#{@domain.organizationId}/domains/#{params[:domain_id]}/feature_flags"
-        redirect_url << "/#{params[:category]}" if params[:category].present?
+        redirect_url =
+          if params[:category].present?
+            feature_flags_config_with_category_path(domain_id: params[:domain_id],
+                                                    category: params[:category])
+          else
+            feature_flags_config_path(domain_id: params[:domain_id])
+          end
         redirect_to redirect_url
       end
-      format.data { render :json => { :success => errors.empty?, :errors => errors, :infos => infos } }
+
+      json_response = { :success => errors.empty?, :errors => errors, :infos => infos }
+      format.data { render :json => json_response }
+      format.json { render :json => json_response }
     end
   end
 

@@ -1,0 +1,71 @@
+/*
+ * This is a manifest file that'll be compiled into admin.css, which will include all the files
+ * listed below.
+ *
+ *= require socrata-styleguide
+ *= require_self
+ */
+
+@import 'bourbon';
+@import 'neat';
+
+.body-wrapper {
+  @include outer-container;
+  @include padding(2rem 0);
+}
+
+.alert {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.border-below {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.btn-link {
+  color: #999;
+}
+
+header {
+  .heading {
+    @include span-columns(10);
+  }
+
+  .actions {
+    @include span-columns(2);
+    text-align: right;
+  }
+}
+
+.form-fields-label-above {
+  label, input {
+    display: block;
+  }
+
+  input {
+    margin-top: 0;
+  }
+}
+
+.form-section {
+  @include outer-container;
+  margin-bottom: 2rem;
+
+  .wide {
+    @include span-columns(12);
+  }
+
+  .form-fields {
+    @include span-columns(4);
+  }
+
+  .help {
+    @include span-columns(8);
+  }
+}
+
+.wide input {
+  @include span-columns(6);
+}

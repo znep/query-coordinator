@@ -2,11 +2,13 @@
 <html>
 <head>
   <title><%= core_attributes['name'] || t('default_page_title') %></title>
-  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
+  <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
   <%= javascript_include_tag 'airbrake-js-client/dist/client' %>
   <%= javascript_include_tag 'application' %>
   <% if needs_view_assets? %>
-    <%= stylesheet_link_tag    'story-view', media: 'all' %>
+    <%= stylesheet_link_tag 'story-view', media: 'all' %>
     <%= javascript_include_tag 'view' %>
   <% end %>
   <%= csrf_meta_tags %>

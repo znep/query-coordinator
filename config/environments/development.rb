@@ -11,7 +11,12 @@ Rails.application.configure do
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
-  config.action_controller.perform_caching = false
+
+  # We turn on caching in development mode so our custom theme SASS generation
+  # is manageable.
+  config.action_controller.perform_caching = ENV['DISABLE_CACHE'] != 'true'
+  config.cache_store = :mem_cache_store, ENV['MEMCACHED_HOST'] || 'localhost', { :namespace => 'storyteller' }
+
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
@@ -49,4 +54,6 @@ Rails.application.configure do
     },
     :s3_protocol => 'https'
   }
+
+  config.action_controller.action_on_unpermitted_parameters = :raise
 end

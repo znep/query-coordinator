@@ -1,0 +1,100 @@
+<% form_action = theme.persisted? ? admin_theme_path : { action: 'create' } -%>
+<%= form_for(theme, url: form_action) do |form| %>
+  <header>
+    <div class="heading">
+      <h2>Customize Style</h2>
+    </div>
+    <div class="actions">
+      <%= link_to 'Cancel', admin_themes_path, class: 'btn btn-link' %>
+      <%= form.submit 'Save', class: 'btn btn-primary' %>
+    </div>
+  </header>
+
+  <div class="form-section">
+    <div class="wide form-fields-label-above">
+      <div class="form-group">
+        <%= form.label :title %>
+        <%= form.text_field :title, class: 'text-input' %>
+      </div>
+    </div>
+    <div class="wide form-fields-label-above">
+      <div class="form-group">
+        <%= form.label :description %>
+        <%= form.text_field :description, class: 'text-input' %>
+      </div>
+    </div>
+  </div>
+
+  <h4 class="border-below">Type Size and Line Height</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                theme: theme,
+                theme_variables: %w( $base-type-size $base-line-height ),
+                help_text: 'Base Typesize is used as a base calculation for the entire typographic scale. This is used
+                            to derive appropriate typesiezes for headings given a breakpoint and base type size. Use
+                            with care. Learn more at <a href="http://www.modularscale.com">http://www.modularscale.com</a>'
+              } %>
+
+  <%= render  partial: 'form_section',
+              locals: {
+                theme: theme,
+                theme_variables: %w( $std-type-size $std-line-height ),
+                help_text: 'Standard Type size is used for tablet, mobile, and small desktop displays. This is your
+                           "mobile-first type size and line height"'
+              } %>
+
+  <%= render  partial: 'form_section',
+              locals: {
+                theme: theme,
+                theme_variables: %w( $lg-type-size $lg-line-height ),
+                help_text: 'Large type size is the type for large displays.'
+              } %>
+
+  <h4 class="border-below">Typeface</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                theme: theme,
+                theme_variables: %w( $heading-font-stack $body-font-stack )
+              } %>
+
+  <h4 class="border-below">Colors</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                theme: theme,
+                theme_variables: %w( $heading-type-color $default-type-color )
+              } %>
+
+  <h4 class="border-below">Hyperlinks</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                theme: theme,
+                theme_variables: %w( $link-color $link-text-decoration $link-hover )
+              } %>
+
+  <h4 class="border-below">Blockquote</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                theme: theme,
+                theme_variables: %w( $blockquote-font-style $blockquote-border-left $blockquote-padding-left $blockquote-margin-left )
+              } %>
+
+  <h4 class="border-below">Lists</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                theme: theme,
+                theme_variables: %w( $list-padding-left $ul-list-style-type $ol-list-style-type )
+              } %>
+
+  <h4 class="border-below">Rule</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                theme: theme,
+                theme_variables: %w( $hr-border-top )
+              } %>
+
+  <div class="form-section">
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+<% end -%>
+
+

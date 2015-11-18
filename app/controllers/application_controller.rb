@@ -23,5 +23,11 @@ class ApplicationController < ActionController::Base
     # If no current_user, send to main login page
     redirect_to "/login?return_to=#{request.path}" unless current_user.present?
   end
+
+  def require_super_admin
+    if current_user.blank? || !current_user['flags'].try(:include?, 'admin')
+      return head :forbidden
+    end
+  end
 end
 

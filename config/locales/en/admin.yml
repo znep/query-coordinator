@@ -1,0 +1,26 @@
+en:
+  admin:
+    themes:
+      form_section:
+        $base-type-size: 'Base Type Size'
+        $base-line-height: 'Base Line Height'
+        $std-type-size: 'Standard Type Size'
+        $std-line-height: 'Standard Line Height'
+        $lg-type-size: 'Large Type Size'
+        $lg-line-height: 'Large Line Height'
+        $body-font-stack: 'Body Font Stack'
+        $heading-font-stack: 'Heading Font Stack'
+        $default-type-color: 'Body Font Color'
+        $heading-type-color: 'Heading Font Color'
+        $quiet-type-color: 'Quiet Font Color'
+        $link-color: 'Link Color'
+        $link-text-decoration: 'Link Text Decoration'
+        $link-hover: 'Link Hover'
+        $blockquote-font-style: 'Font Style'
+        $blockquote-border-left: 'Border Left'
+        $blockquote-padding-left: 'Padding Left'
+        $blockquote-margin-left: 'Margin Left'
+        $list-padding-left: 'Padding Left'
+        $ul-list-style-type: 'Unordered List Style Type'
+        $ol-list-style-type: 'Ordered List Style Type'
+        $hr-border-top: 'Rule Border'

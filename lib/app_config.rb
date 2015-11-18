@@ -19,8 +19,6 @@ class AppConfig < Hashie::Dash
 
   # Tileserver
   property :tileserver_hosts
-  property :tileserver_hostname
-  property :tileserver_port, transform_with: as_int
 
   # Search
   property :cetera_host

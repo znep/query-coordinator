@@ -85,11 +85,6 @@ default: &default
   polaroid_port: {{ POLAROID_PORT }}
   {%- endif %}
 
-  {% if TILESERVER_HOSTNAME is defined and TILESERVER_PORT is defined -%}
-  tileserver_hostname: {{ TILESERVER_HOSTNAME }}
-  tileserver_port: {{ TILESERVER_PORT }}
-  {%- endif %}
-
   {% if TILESERVER_HOSTS is defined -%}
   tileserver_hosts: '{{ TILESERVER_HOSTS }}'
   {%- endif %}

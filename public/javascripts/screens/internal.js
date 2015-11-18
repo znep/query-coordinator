@@ -4,11 +4,12 @@
     var $navContainer = $youCompleteMe.closest('.leftNavBox');
     var navWidth = $navContainer.width();
 
-
-    $youCompleteMe.focus(function() {
+    $youCompleteMe.focus(_.once(function() {
+      $domainCenter.addClass('loading');
       $.ajax({
         url: '/api/domains.json?method=all',
         success: function(domainList) {
+          $domainCenter.removeClass('loading');
           $youCompleteMe.awesomecomplete({
               dontMatch: ['id', 'parentDomainId'],
               highlightMatches: true,
@@ -19,7 +20,7 @@
         }
       });
       $navContainer.animate({width: 250}, 200);
-    });
+    }));
     var unslideNav = function() {
         $navContainer.animate({width: navWidth}, 200);
     };

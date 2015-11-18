@@ -275,9 +275,9 @@
 
         switch (action) {
 
-          case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          case Actions.ASSET_SELECTOR_INSERT_COMPONENT:
             dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+              action: Actions.ASSET_SELECTOR_INSERT_COMPONENT,
               blockId: utils.findClosestAttribute(this, 'data-block-id'),
               componentIndex: utils.findClosestAttribute(this, 'data-component-index')
             });
@@ -333,7 +333,7 @@
           forEach(function(componentDatum, i) {
             var componentElement = elementCache.getComponent(blockId, i);
 
-            componentElement.trigger('destroy');
+            componentElement.find('.component').trigger('destroy');
           });
 
         elementCache.getBlock(blockId).remove();
@@ -524,8 +524,9 @@
     function _updateEditorHeights(blockId, $blockElement) {
 
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
+      var editor;
       var editorId;
-      var contentHeight;
+      var contentHeight = 0;
       var maxEditorHeight = 0;
       var contentMissingCheck = function(iframe) {
         // If we have a height, then we have a loaded Squire instance.
@@ -551,9 +552,11 @@
             children(':first').
             attr('data-editor-id');
 
-          contentHeight = storyteller.richTextEditorManager.
-            getEditor(editorId).
-            getContentHeight();
+          editor = storyteller.richTextEditorManager.getEditor(editorId);
+
+          if (editor) {
+            contentHeight = editor.getContentHeight();
+          }
         } else {
 
           contentHeight = $blockElement.
@@ -609,14 +612,15 @@
 
         $componentContent = $('<div>', { 'class': 'component' });
 
+        $componentContainer.find('.component').trigger('destroy');
+
         $componentContainer.
-          trigger('destroy').
           empty().
           append($componentContent);
       }
 
       // Provide the initial or updated data to the renderer.
-      $componentContent[componentRenderer](componentData, theme);
+      $componentContent[componentRenderer](componentData, theme, { editMode: true });
     }
 
     /**
@@ -660,7 +664,7 @@
 
           _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme);
         } catch (e) {
-          storyteller.notifyAirbrake(e);
+          storyteller.airbrake.notify(e);
         }
       });
     }

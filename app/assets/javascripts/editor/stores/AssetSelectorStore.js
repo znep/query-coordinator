@@ -11,11 +11,17 @@
     _.extend(this, new storyteller.Store());
 
     var self = this;
-    var _currentSelectorState = null;
-    var _currentBlockId = null;
-    var _currentComponentIndex = null;
-    var _currentComponentType = 'assetSelector';
-    var _currentComponentProperties = _getDefaultComponentProperties();
+
+    // Contains the entire state of this store.
+    // Possible properties (all optional):
+    // - step: Name of current embed wizard step. This is ill-defined and needs work.
+    //         Practically speaking, this controls which wizard step AssetSelectorRenderer
+    //         shows in the UI.
+    // - blockId: ID of block being configured.
+    // - componentIndex: Index of component in block being configured.
+    // - componentType: Type of component user has selected.
+    // - componentProperties: Configuration of component user has selected.
+    var _state = {};
 
     this.register(function(payload) {
 
@@ -25,19 +31,21 @@
 
       action = payload.action;
 
-      // Note that we do not assign `_currentSelectorState` the value of action
-      // outside of the case statements because ALL events will pass through
-      // this function and we only want to alter `_currentSelectorState` in
-      // response to actions that are actually relevant.
       switch (action) {
 
+        case Actions.ASSET_SELECTOR_INSERT_COMPONENT:
+          _selectNew(payload);
+          break;
+
+        case Actions.ASSET_SELECTOR_UPDATE_COMPONENT:
+          _editExisting(payload);
+          break;
+
         case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
-          _currentSelectorState = action;
           _chooseProvider(payload);
           break;
 
         case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
-          _currentSelectorState = action;
           _chooseYoutube();
           break;
 
@@ -46,12 +54,10 @@
           break;
 
         case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
-          _currentSelectorState = action;
           _chooseVisualization();
           break;
 
         case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
-          _currentSelectorState = action;
           _chooseVisualizationDataset(payload);
           break;
 
@@ -60,27 +66,22 @@
           break;
 
         case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
-          _currentSelectorState = action;
           _chooseImageUpload();
           break;
 
         case Actions.FILE_UPLOAD_PROGRESS:
-          _currentSelectorState = action;
           _updateImageUploadProgress(payload);
           break;
 
         case Actions.FILE_UPLOAD_DONE:
-          _currentSelectorState = action;
           _updateImagePreview(payload);
           break;
 
         case Actions.FILE_UPLOAD_ERROR:
-          _currentSelectorState = action;
           _updateImageUploadError(payload);
           break;
 
         case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
-          _currentSelectorState = action;
           _chooseEmbedCode();
           break;
 
@@ -106,83 +107,135 @@
      * Public methods
      */
 
-    this.getCurrentSelectorState = function() {
-      return _currentSelectorState;
+    // TODO document which values this can have.
+    // Currently can be a random-ish assortment of
+    // action names that may or may not have any
+    // relation to how this Store entered a given
+    // step.
+    //
+    // We should not be returning Action names here.
+    // Each step should be part of an enum defined
+    // by AssetSelectorStore itself.
+    this.getStep = function() {
+      return _state.step;
     };
 
-    this.getCurrentBlockId = function() {
-      return _currentBlockId;
+    this.getBlockId = function() {
+      return _state.blockId;
     };
 
-    this.getCurrentComponentIndex = function() {
-      return _currentComponentIndex;
+    this.getComponentIndex = function() {
+      return _state.componentIndex;
     };
 
-    this.getCurrentComponentType = function() {
-      return _currentComponentType;
+    this.getComponentType = function() {
+      return _state.componentType;
     };
 
-    this.getCurrentComponentValue = function() {
-      return _currentComponentProperties;
+    this.getComponentValue = function() {
+      return _state.componentProperties;
     };
 
-    this.isValid = function() {
-
-      var valid = false;
-
-      switch (_currentComponentProperties.provider) {
-
-        case 'youtube':
-          if (_currentComponentProperties.id !== null &&
-            _currentComponentProperties.url !== null) {
-
-            valid = true;
-          }
-          break;
-
-        default:
-          break;
-      }
-
-      return valid;
+    this.isEditingExisting = function() {
+      return _state.isEditingExisting === true;
     };
 
     /**
      * Private methods
      */
 
-    function _chooseProvider(payload) {
+    /**
+     * Given an asset type (i.e. "socrata.visualization.classic"), returns
+     * the step the wizard should start from given the user is updating
+     * a component.
+     */
+    function _stepForUpdate(type) {
+      switch (type) {
+        case 'image': return Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD;
+        case 'youtube.video': return Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE;
+        case 'embeddedHtml': return Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE;
+      }
+
+      if (type.indexOf('socrata.visualization.') === 0) {
+        return Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET;
+      }
+
+      // Something went wrong and we don't know where to pick up from (new embed type?),
+      // so open the wizard at the very first step.
+      return Actions.ASSET_SELECTOR_CHOOSE_PROVIDER;
+    }
+
+    function _selectNew(payload) {
+      utils.assertHasProperties(payload, 'blockId', 'componentIndex');
+
+      _state = {
+        step: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        blockId: payload.blockId,
+        componentIndex: payload.componentIndex,
+        isEditingExisting: false
+      };
+
+      self._emitChange();
+    }
+
+
+    function _editExisting(payload) {
+      var component;
 
       utils.assertHasProperties(payload, 'blockId', 'componentIndex');
 
-      _currentBlockId = payload.blockId;
-      _currentComponentIndex = payload.componentIndex;
+      component = storyteller.storyStore.getBlockComponentAtIndex(
+        payload.blockId,
+        payload.componentIndex
+      );
+
+      _state = {
+        step: _stepForUpdate(component.type),
+        blockId: payload.blockId,
+        componentIndex: payload.componentIndex,
+        componentType: component.type,
+        componentProperties: component.value,
+        isEditingExisting: true
+      };
+
+      self._emitChange();
+    }
+
+    function _chooseProvider(payload) {
+      utils.assertHasProperties(payload, 'blockId', 'componentIndex');
+      _state.step = Actions.ASSET_SELECTOR_CHOOSE_PROVIDER;
+
+      _state.blockId = payload.blockId;
+      _state.componentIndex = payload.componentIndex;
 
       self._emitChange();
     }
 
     function _chooseYoutube() {
-
+      _state.step = Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE;
       self._emitChange();
     }
 
     function _chooseVisualization() {
-
+      _state.step = Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION;
       self._emitChange();
     }
 
     function _chooseImageUpload() {
+      _state.step = Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD;
       _cancelFileUploads();
       self._emitChange();
     }
 
     function _chooseEmbedCode() {
-      _currentComponentProperties = {};
+      _state.step = Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE;
+      _state.componentProperties = {};
       _cancelFileUploads();
       self._emitChange();
     }
 
     function _chooseVisualizationDataset(payload) {
+      _state.step = Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET;
       if (payload.isNewBackend) {
         _setVisualizationDatasetUid(payload.datasetUid);
       } else {
@@ -198,7 +251,7 @@
     }
 
     function _setVisualizationDatasetUid(uid) {
-      _currentComponentProperties = {
+      _state.componentProperties = {
         dataset: {
           domain: window.location.host,
           datasetUid: uid
@@ -212,40 +265,29 @@
       var visualization = payload.visualization.data;
 
       if (payload.visualization.format === 'classic') {
-        _currentComponentType = 'socrata.visualization.classic';
-        _currentComponentProperties = {
-          visualization: visualization
+        _state.componentType = 'socrata.visualization.classic';
+        _state.componentProperties = {
+          visualization: visualization,
+          dataset: _state.componentProperties.dataset,
+          originalUid: payload.visualization.originalUid
         };
 
         self._emitChange();
       } else if (payload.visualization.format === 'vif') {
-        switch (visualization.type) {
-          case 'columnChart':
-            _currentComponentType = 'socrata.visualization.columnChart';
-            _currentComponentProperties = {
-              vif: visualization
-            };
-            break;
-          case 'timelineChart':
-            _currentComponentType = 'socrata.visualization.timelineChart';
-            _currentComponentProperties = {
-              vif: visualization
-            };
-            break;
-          case 'featureMap':
-            _currentComponentType = 'socrata.visualization.featureMap';
-            _currentComponentProperties = {
-              vif: visualization
-            };
-            break;
-        }
+        _state.componentType = 'socrata.visualization.{0}'.format(visualization.type);
+        _state.componentProperties = {
+          vif: visualization,
+          dataset: _state.componentProperties.dataset,
+          originalUid: payload.visualization.originalUid
+        };
 
         self._emitChange();
       }
     }
 
     function _updateImageUploadProgress(payload) {
-      _currentComponentProperties = {
+      _state.step = Actions.FILE_UPLOAD_PROGRESS;
+      _state.componentProperties = {
         percentLoaded: payload.percentLoaded
       };
 
@@ -256,9 +298,10 @@
       var imageUrl = payload.url;
       var documentId = payload.documentId;
 
-      _currentComponentType = 'image';
+      _state.step = Actions.FILE_UPLOAD_DONE;
+      _state.componentType = 'image';
 
-      _currentComponentProperties = {
+      _state.componentProperties = {
         documentId: documentId,
         url: imageUrl
       };
@@ -267,14 +310,15 @@
     }
 
     function _updateImageUploadError(payload) {
-      _currentComponentType = 'imageUploadError';
+      _state.step = Actions.FILE_UPLOAD_ERROR;
+      _state.componentType = 'imageUploadError';
 
-      _currentComponentProperties = {
+      _state.componentProperties = {
         step: payload.error.step
       };
 
       if (!_.isUndefined(payload.error.reason)) {
-        _currentComponentProperties.reason = payload.error.reason;
+        _state.componentProperties.reason = payload.error.reason;
       }
 
       self._emitChange();
@@ -289,9 +333,9 @@
         youtubeUrl = payload.url;
       }
 
-      _currentComponentType = 'youtube.video';
+      _state.componentType = 'youtube.video';
 
-      _currentComponentProperties = {
+      _state.componentProperties = {
         id: youtubeId,
         url: youtubeUrl
       };
@@ -301,18 +345,11 @@
 
     function _closeDialog() {
 
-      _currentSelectorState = null;
-      _currentBlockId = null;
-      _currentComponentIndex = null;
-      _currentComponentProperties = _getDefaultComponentProperties();
+      _state = {};
 
       _cancelFileUploads();
 
       self._emitChange();
-    }
-
-    function _getDefaultComponentProperties() {
-      return {};
     }
 
     /**
@@ -352,9 +389,9 @@
     }
 
     function _updateEmbedCodeProgress(payload) {
-      _currentComponentType = 'embeddedHtml';
+      _state.componentType = 'embeddedHtml';
 
-      _currentComponentProperties = {
+      _state.componentProperties = {
         percentLoaded: payload.percentLoaded
       };
 
@@ -362,13 +399,13 @@
     }
 
     function _updateEmbedCodeError(payload) {
-      _currentComponentProperties = {
+      _state.componentProperties = {
         error: true,
         step: payload.error.step
       };
 
       if (!_.isUndefined(payload.error.reason)) {
-        _currentComponentProperties.reason = payload.error.reason;
+        _state.componentProperties.reason = payload.error.reason;
       }
 
       self._emitChange();
@@ -376,11 +413,13 @@
 
     function _updateEmbedCodePreview(payload) {
       var htmlFragmentUrl = payload.url;
+      var documentId = payload.documentId;
 
-      _currentComponentType = 'embeddedHtml';
+      _state.componentType = 'embeddedHtml';
 
-      _currentComponentProperties = {
+      _state.componentProperties = {
         url: htmlFragmentUrl,
+        documentId: documentId,
         layout: {
           height: Constants.DEFAULT_VISUALIZATION_HEIGHT
         }

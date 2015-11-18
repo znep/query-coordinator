@@ -60,6 +60,14 @@ block_6 = Block.create(
   created_by: 'good-doer'
 )
 
+block_7 = Block.create(
+  layout: '12',
+  components: [
+    { type: 'html', value: '<a href="https://opendata.socrata.com" target="_blank" rel="nofollow">Hello, Link!</a>' }
+  ],
+  created_by: 'good-doer'
+)
+
 published_story = PublishedStory.create(
   uid: 'test-test',
   block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
@@ -87,5 +95,11 @@ presentation_story = DraftStory.create(
 draft_story = DraftStory.create(
   uid: 'h1bl-ocks',
   block_ids: [block_6.id],
+  created_by: 'good-doer'
+)
+
+draft_story = DraftStory.create(
+  uid: 'href-bloc',
+  block_ids: [block_6.id, block_7.id],
   created_by: 'good-doer'
 )

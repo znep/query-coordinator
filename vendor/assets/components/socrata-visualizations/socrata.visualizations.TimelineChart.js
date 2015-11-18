@@ -145,6 +145,7 @@
 
     this.destroy = function() {
       _unattachEvents(this.element);
+      this.element.find('.timeline-chart-container').remove();
     };
 
     /**
@@ -454,7 +455,7 @@
           moment(currentDatum.date).format(formatStrings[datasetPrecision]);
         payload.unfilteredValue = renderUnit(currentDatum.unfiltered, unfilteredValueUnit);
         //payload.filteredValue = currentDatum.filtered;
-      };
+      }
 
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
@@ -527,7 +528,7 @@
     // the 'dragging' state so that we can selectively listen for mouseup
     // and apply the 'goalpost' selection area.
     var currentlyDragging = false;
-    
+
     var allChartLabelsShown = true;
 
     var flyoutIntervalPathSelector = '.datum-label';
@@ -2088,7 +2089,8 @@
         // rendering if that's the case.
         utils.assertHasProperty(chartData, 'values.length');
         if (chartData.values.length === 0) {
-          throw new Error('Cannot render timeline chart with zero values.');
+          console.error('Failed to render timeline chart because it was given no values.');
+          return;
         }
 
         // Cache the datum width and half the datum width for use elsewhere

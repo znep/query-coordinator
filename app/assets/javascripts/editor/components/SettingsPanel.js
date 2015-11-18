@@ -43,6 +43,7 @@
     var saveWasInProgress = false;
 
     var storyPermissionsRenderer = new storyteller.StoryPermissionsRenderer(); //eslint-disable-line no-unused-vars
+    var storyActionsRenderer = new storyteller.StoryActionsRenderer(); //eslint-disable-line no-unused-vars
 
     storyteller.coreSavingStore.addChangeListener(function() {
       var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();

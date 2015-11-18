@@ -34,23 +34,16 @@
 
     var self = this;
 
-    var _chartContainer;
     var _chartElement;
     var _chartWrapper;
     var _chartScroll;
     var _chartLabels;
-    var _chartTopAxisLabel;
-    var _chartRightAxisLabel;
-    var _chartBottomAxisLabel;
-    var _chartLeftAxisLabel;
 
     var _truncationMarker;
     var _lastRenderOptions;
 
-    var _barGroupAndLabelContentsSpanSelector = '.bar-group, .labels .label .contents span';
     var _truncationMarkerSelector = '.truncation-marker';
-    var _barGroupAndLabelContentsSpanNotCloseIconSelector = '.bar-group, .labels .label .contents span:not(.icon-close)';
-    var _labelsSelector = '.labels .label';
+    var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span:not(.icon-close), .labels .label .callout';
     var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
 
     // TODO: Validate columns
@@ -80,13 +73,14 @@
 
     this.destroy = function() {
       _detachEvents(this.element);
+      this.element.find('.column-chart-container').remove();
     };
 
     /**
      * Private methods
      */
 
-    function _renderTemplate(element, axisLabels) {
+    function _renderTemplate(element) {
 
       var truncationMarker = $(
         '<div>',
@@ -138,7 +132,6 @@
       self.renderAxisLabels(chartContainer);
 
       // Cache element selections
-      _chartContainer = chartContainer;
       _chartElement = chartElement;
       _chartWrapper = chartWrapper;
       _chartScroll = chartScroll;
@@ -152,25 +145,25 @@
 
       element.on(
         'mouseenter, mousemove',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         showFlyout
       );
 
       element.on(
         'mouseleave',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         hideFlyout
       );
 
       element.on(
         'mouseenter',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         addHoverClassToBarGroup
       );
 
       element.on(
         'mouseleave',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -183,7 +176,7 @@
 
         element.on(
           'click',
-          _barGroupAndLabelContentsSpanSelector,
+          _barGroupAndLabelsSelector,
           selectDatum
         );
 
@@ -210,25 +203,25 @@
 
       element.off(
         'mouseenter, mousemove',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         showFlyout
       );
 
       element.off(
         'mouseleave',
-        _barGroupAndLabelContentsSpanNotCloseIconSelector,
+        _barGroupAndLabelsSelector,
         hideFlyout
       );
 
       element.off(
         'mouseenter',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         addHoverClassToBarGroup
       );
 
       element.off(
         'mouseleave',
-        _labelsSelector,
+        _barGroupAndLabelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -241,7 +234,7 @@
 
         element.off(
           'click',
-          _barGroupAndLabelContentsSpanSelector,
+          _barGroupAndLabelsSelector,
           selectDatum
         );
 
@@ -268,7 +261,7 @@
       );
     }
 
-    function expandVisualization(event) {
+    function expandVisualization() {
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_EXPANSION',
         {
@@ -279,7 +272,7 @@
 
     function showFlyout(event) {
       var datum = d3.select(event.currentTarget).datum();
-      var barGroupName = _escapeQuotesAndBackslashes(datum[NAME_INDEX]);
+      var barGroupName = _toEscapedString(datum[NAME_INDEX]);
       var barGroupElement = _chartWrapper.
         find('.bar-group').
         filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
@@ -343,8 +336,7 @@
       );
     }
 
-    function hideFlyout(event) {
-
+    function hideFlyout() {
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
         null
@@ -352,8 +344,8 @@
     }
 
     function addHoverClassToBarGroup(event) {
-
-      var barName = event.currentTarget.getAttribute('data-bar-name');
+      var datum = d3.select(event.currentTarget).datum();
+      var barName = _toEscapedString(datum[NAME_INDEX]);
 
       _chartWrapper.
         find('.bar-group').
@@ -361,8 +353,7 @@
         addClass('highlight');
     }
 
-    function removeHoverClassFromBarGroup(event) {
-
+    function removeHoverClassFromBarGroup() {
       _chartWrapper.find('.bar-group').removeClass('highlight');
     }
 
@@ -444,24 +435,24 @@
       // Clamp the bottom margin to a reasonable maximum since long labels are ellipsified.
       bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
-      var chartHeight = Math.max(0, chartHeight - topMargin - bottomMargin - horizontalScrollbarHeight);
+      var innerHeight = Math.max(0, chartHeight - topMargin - bottomMargin - horizontalScrollbarHeight);
 
       // If not all labels are visible, limit our vert scale computation to what's actually
       // visible. We still render the bars outside the viewport to speed up horizontal resizes.
       var chartDataRelevantForVerticalScale = showAllLabels ?
         data : _.take(data, Math.ceil(chartWidth / rangeBand) + 1);
-      var verticalScale = _computeVerticalScale(chartHeight, chartDataRelevantForVerticalScale, showFiltered);
+      var verticalScale = _computeVerticalScale(innerHeight, chartDataRelevantForVerticalScale, showFiltered);
 
       var chartLeftOffset = horizontalScale.range()[0];
       var chartRightEdge = chartWidth - chartLeftOffset;
 
-      _chartWrapper.css('height', chartHeight + topMargin + 1);
+      _chartWrapper.css('height', innerHeight + topMargin + 1);
       _chartScroll.css({
         'padding-top': 0,
         'padding-bottom': bottomMargin,
         'top': 'initial',
         'width': chartWidth,
-        'height': chartHeight + topMargin + horizontalScrollbarHeight
+        'height': innerHeight + topMargin + horizontalScrollbarHeight
       });
 
       var _renderTicks = function() {
@@ -475,7 +466,7 @@
             text: socrata.utils.formatNumber(tickValue)
           });
 
-          var tickTopOffset = chartHeight - verticalScale(tickValue);
+          var tickTopOffset = innerHeight - verticalScale(tickValue);
           // The `+ 3` term accounts for the border-width.
           var tickHeight = parseInt(element.css('font-size'), 10) + 3;
 
@@ -494,7 +485,7 @@
           css: {
             top: _chartScroll.position().top + topMargin,
             width: chartWidth,
-            height: chartHeight + topMargin
+            height: innerHeight + topMargin
           }
         }).append(tickMarks);
       };
@@ -574,7 +565,7 @@
           classed('label', true).
           classed('non-default', isOnlyInSelected).
           attr('data-bar-name', function(d) {
-            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
+            return _toEscapedString(_labelValueOrPlaceholder(d[NAME_INDEX]));
           });
 
         // For new labels, add a contents div containing a span for the filter icon,
@@ -795,11 +786,11 @@
         // Update the position of the groups.
         selection.
           attr('data-bar-name', function(d) {
-            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
+            return _toEscapedString(_labelValueOrPlaceholder(d[NAME_INDEX]));
           }).
           style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
           style('width', rangeBand + 'px').
-          style('height', function() { return chartHeight + 'px'; }).
+          style('height', function() { return innerHeight + 'px'; }).
           classed('unfiltered-on-top', function(d) {
             // This is really confusing. In CSS, we refer to the total bar as the unfiltered bar.
             // If total bar is last in the dom, then apply this class.
@@ -847,24 +838,16 @@
 
       // Set "Click to Expand" truncation marker + its tooltip
       _truncationMarker.css({
-        top: chartHeight,
+        top: innerHeight,
         display: chartTruncated ? 'block' : 'none'
       });
     }
 
-    function _escapeQuotesAndBackslashes(value) {
-
-      if (_.isString(value)) {
-
-        return value.
-          replace(/\\/g, '\\\\').
-          replace(/"/g, '\\\"');
-
-      } else {
-
-        return String(value);
-
-      }
+    // To string and escape backslashes and quotes
+    function _toEscapedString(value) {
+      return String(value).
+        replace(/\\/g, '\\\\').
+        replace(/"/g, '\\\"');
     }
 
     function _labelValueOrPlaceholder(value, placeholder) {
@@ -908,8 +891,8 @@
       return _makeDomainIncludeZero(d3.extent(allData));
     }
 
-    function _computeVerticalScale(chartHeight, chartData, showFiltered) {
-      return d3.scale.linear().domain(_computeDomain(chartData, showFiltered)).range([0, chartHeight]);
+    function _computeVerticalScale(innerHeight, chartData, showFiltered) {
+      return d3.scale.linear().domain(_computeDomain(chartData, showFiltered)).range([0, innerHeight]);
     }
 
     function _computeHorizontalScale(chartWidth, chartData, showAllLabels) {

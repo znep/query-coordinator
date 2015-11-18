@@ -2,6 +2,7 @@ require 'simplecov'
 require 'simplecov-cobertura'
 require 'webmock/rspec'
 require 'database_cleaner'
+require 'os'
 
 SimpleCov.profiles.define 'filtered' do
   load_profile 'rails'
@@ -177,11 +178,16 @@ def mock_valid_lenses_view_title
   'Test Story'
 end
 
+def mock_valid_lenses_view_uid
+  'anew-view'
+end
+
 def mock_valid_uninitialized_lenses_view
   {
     'name' => mock_valid_lenses_view_title,
     'metadata' => mock_valid_lenses_view_metadata(false),
-    'owner' => mock_valid_user
+    'owner' => mock_valid_user,
+    'id' => 'anew-view'
   }
 end
 
@@ -207,6 +213,14 @@ end
 
 def stub_valid_initialized_lenses_view
   allow(CoreServer).to receive(:get_view).and_return(mock_valid_initialized_lenses_view)
+end
+
+def stub_successful_view_creation
+  allow(CoreServer).to receive(:create_view).and_return(mock_valid_uninitialized_lenses_view)
+end
+
+def stub_unsuccessful_view_creation
+  allow(CoreServer).to receive(:create_view).and_return({})
 end
 
 def stub_invalid_lenses_view
@@ -272,4 +286,31 @@ def unload_page_and_dismiss_confirmation_dialog
     page.driver.browser.switch_to.alert.accept
   rescue Selenium::WebDriver::Error::NoAlertPresentError
   end
+end
+
+# Link the toolbar to the component-html located in the sequential ID for
+# the blocks in the test story.
+# I must stress *sequential*. This only works for full-width rich text editors.
+# To select the correct editor, count *visually* the blocks in the UI.
+# If I have three blocks, the first block is 2, the second block is 3, and so on.
+def link_toolbar_to_squire_instance(id)
+  link_toolbar_to_squire_instance_script = File.read('spec/scripts/link-toolbar-to-squire-instance.js')
+  link_toolbar_to_squire_instance_script.sub!('{0}', id.to_s)
+  execute_script(link_toolbar_to_squire_instance_script)
+end
+
+# Selects text within the specified selector.
+# This is done within the context of the current session.
+# Therefore, if you are within_frame, you can use relative selections
+# such as body > h1.
+def select_text_in_element(selector)
+  select_arbitrary_text_inside_script = File.read('spec/scripts/select-text-in-element.js')
+  select_arbitrary_text_inside_script.sub!('{0}', selector)
+
+  evaluate_script(select_arbitrary_text_inside_script);
+end
+
+# Selects the correct key modifier based on the current operating system.
+def os_control_key
+  OS.mac? ? :command : :control
 end

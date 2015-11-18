@@ -8,6 +8,7 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
     type: 'embeddedHtml',
     value: {
       url: 'https://imageuploads.com/embedded_fragment.html',
+      documentId: '4567',
       layout: {
         height: 300
       }
@@ -49,6 +50,28 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
       assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
     });
 
+    describe('iframe data-document-id attribute', function() {
+      it('should start off correct', function() {
+        assert.equal(
+          $component.find('iframe').attr('data-document-id'),
+          validComponentData.value.documentId
+        );
+      });
+
+      it('should update', function() {
+        var updatedData = _.cloneDeep(validComponentData);
+        updatedData.value.documentId = '9999';
+
+        $component.componentEmbeddedHtml(updatedData);
+
+        assert.equal(
+          $component.find('iframe').attr('data-document-id'),
+          updatedData.value.documentId
+        );
+      });
+
+    });
+
     describe('iframe src attribute', function() {
       it('should start off correct', function() {
         assert.equal(
@@ -65,7 +88,7 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
 
         assert.equal(
           $component.find('iframe').attr('src'),
-          'https://updated.imageuploads.com/embedded_fragment.html'
+          updatedData.value.url
         );
       });
     });

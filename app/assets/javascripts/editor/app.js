@@ -10,32 +10,15 @@ $(document).on('ready', function() {
 
   storyteller.csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-  var airbrakeOptions = {
+  storyteller.airbrake = new storyteller.Airbrake({
+    'environment': storyteller.config.getAirbrakeConfig('environment'),
     'projectKey': storyteller.config.getAirbrakeConfig('projectKey'),
     'projectId': storyteller.config.getAirbrakeConfig('projectId')
-  };
-
-  if (airbrakeOptions.projectKey !== null) {
-    storyteller.airbrake = new airbrakeJs.Client(airbrakeOptions);
-    storyteller.airbrake.addFilter(function(notice) {
-      notice.context.environment = storyteller.config.getAirbrakeConfig('environment');
-      return notice;
-    });
-  }
-
-  storyteller.notifyAirbrake = function(error) {
-    if (!_.isUndefined(storyteller.airbrake)) {
-      storyteller.airbrake.notify(error);
-    }
-    console.error(error);
-  };
-
-  $(window).error(function(event) {
-    storyteller.notifyAirbrake(event.originalEvent.error);
   });
 
   storyteller.assetFinder = new storyteller.AssetFinder();
   storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
+  storyteller.storyActionsManager = new storyteller.StoryActionsManager();
 
   var richTextFormats = [
     { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
@@ -57,16 +40,6 @@ $(document).on('ready', function() {
     { id: 'clearFormatting', tag: null, name: 'Clear Formatting', dropdown: false, group: 4 }
   ];
 
-  // Temporary fix until version is being added/populated
-  if (userStoryData.digest === null) {
-    userStoryData.digest = '';
-  }
-
-  // If we're loading an empty story for the first time, add example content
-  if ((userStoryData.digest === '') && (userStoryData.blocks.length === 0)) {
-    userStoryData.blocks = sampleBlocks;
-  }
-
   /**
    * FLUX
    */
@@ -87,6 +60,8 @@ $(document).on('ready', function() {
     }
   });
 
+  storyteller.linkTipStore = new storyteller.LinkTipStore();
+  storyteller.linkModalStore = new storyteller.LinkModalStore();
   storyteller.storyStore = new storyteller.StoryStore();
   storyteller.historyStore = new storyteller.HistoryStore(storyteller.userStoryUid);
   storyteller.dragDropStore = new storyteller.DragDropStore();
@@ -96,6 +71,7 @@ $(document).on('ready', function() {
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
   storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyteller.userStoryUid);
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
+  storyteller.storyCopierStore = new storyteller.StoryCopierStore();
   storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
 
   socrata.visualizations.RowInspector.setup();
@@ -119,6 +95,15 @@ $(document).on('ready', function() {
   };
 
   var assetSelectorRenderer = new storyteller.AssetSelectorRenderer(assetSelectorOptions); //eslint-disable-line no-unused-vars
+  var linkModalRenderer = new storyteller.LinkModalRenderer(); //eslint-disable-line no-unused-vars
+  var linkTipRenderer = new storyteller.LinkTipRenderer(); //eslint-disable-line no-unused-vars
+
+  var storyCopierOptions = {
+    storyCopierContainerElement: $('#make-a-copy-container')
+  };
+
+  // Randy says that this API "should be reviewed and maybe changed".
+  var storyCopierRenderer = new storyteller.StoryCopierRenderer(storyCopierOptions); //eslint-disable-line no-unused-vars
 
   var userStoryOptions = {
     storyUid: storyteller.userStoryUid,
@@ -155,17 +140,24 @@ $(document).on('ready', function() {
 
     var target = $(event.target);
 
+    var isInToolbar = target.is($('#rich-text-editor-toolbar')) || target.parents('#rich-text-editor-toolbar').length !== 0;
+    var isInLinkModal = target.is($('#link-modal')) || target.parents('#link-modal').length !== 0;
+    var isInLinkTip = target.is($('#link-tip')) || target.parents('#link-tip').length !== 0;
+
     // If the target of the click event is not the toolbar, unlink
     // the toolbar from the current ext editor (which also dims the
     // toolbar), and deselect all rich text editors.
-    if (!target.is($('#rich-text-editor-toolbar')) &&
-      target.parents('#rich-text-editor-toolbar').length === 0) {
+    if (!isInToolbar && !isInLinkModal && !isInLinkTip) {
 
       richTextEditorManager.unlinkToolbar();
 
       storyteller.dispatcher.dispatch({
         action: Actions.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
         activeFormats: []
+      });
+
+      storyteller.dispatcher.dispatch({
+        action: Actions.LINK_TIP_CLOSE
       });
 
       _.invoke(richTextEditorManager.getAllEditors(), 'deselect');

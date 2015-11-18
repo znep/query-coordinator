@@ -50,8 +50,8 @@ describe('componentAssetSelector jQuery plugin', function() {
     it('adds the correct data-action attribute to the component', function() {
       assert.equal(
         $component.attr('data-action'),
-        Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
-        "Asset Selector component should have the attribute data-action={0}".format(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER)
+        Actions.ASSET_SELECTOR_INSERT_COMPONENT,
+        "Asset Selector component should have the attribute data-action={0}".format(Actions.ASSET_SELECTOR_INSERT_COMPONENT)
       );
     });
   });

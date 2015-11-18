@@ -58,6 +58,27 @@ describe('componentImage jQuery plugin', function() {
       assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
     });
 
+    describe('img data-document-id attribute', function() {
+      it('should start off correct', function() {
+        assert.equal(
+          $component.find('img').attr('data-document-id'),
+          validComponentData.value.documentId
+        );
+      });
+
+      it('should update', function() {
+        var updatedData = _.cloneDeep(validComponentData);
+        updatedData.value.documentId = '4321';
+
+        $component.componentImage(updatedData);
+
+        assert.equal(
+          $component.find('img').attr('data-document-id'),
+          updatedData.value.documentId
+        );
+      });
+    });
+
     describe('img src attribute', function() {
       it('should start off correct', function() {
         assert.equal(
@@ -74,7 +95,7 @@ describe('componentImage jQuery plugin', function() {
 
         assert.equal(
           $component.find('img').attr('src'),
-          'https://imageuploads.com/new-valid-upload-image.png'
+          updatedData.value.url
         );
       });
     });

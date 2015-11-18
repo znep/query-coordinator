@@ -16,6 +16,12 @@
     var _autosaveDisabled = false;
     var _debouncedSave;
 
+    // Autosave can be disabled from a URL parameter: autosave.
+    // For example: https://example.com?autosave=false
+    var _forceDisabled = utils.queryParameters().some(function(parameter) {
+      return parameter[0] === 'autosave' && parameter[1] === 'false';
+    });
+
     this.enable = function() {
       _autosaveDisabled = false;
     };
@@ -25,7 +31,7 @@
     };
 
     function triggerSave() {
-      if (_autosaveDisabled) {
+      if (_autosaveDisabled || _forceDisabled) {
         return;
       }
 

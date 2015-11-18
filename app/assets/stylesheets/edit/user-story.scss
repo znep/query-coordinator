@@ -51,7 +51,7 @@ body.story-save-error .user-story-container {
       .block-edit-controls-move-up-btn,
       .block-edit-controls-move-down-btn,
       .block-edit-controls-delete-btn {
-        color: #fff;
+        color: $block-edit-controls-fg-color;
         position: relative;
         display: block;
         width: $block-edit-controls-width;
@@ -70,6 +70,39 @@ body.story-save-error .user-story-container {
       }
     }
 
+    .component {
+      position: relative;
+
+      .component-edit-controls {
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        text-align: center;
+        margin-top: 1rem;
+        margin-right: 1rem;
+
+        .component-edit-controls-edit-btn {
+          color: $block-edit-controls-fg-color;
+          background-color: $block-edit-controls-bg-color;
+          padding: $component-edit-controls-btn-padding-vertical $component-edit-controls-btn-padding-horizontal;
+          font-size: $component-edit-controls-font-size;
+          border: none;
+          outline: none;
+
+          &:hover {
+            background-color: $block-edit-controls-hover-color;
+          }
+        }
+      }
+
+      &:hover {
+        .component-edit-controls {
+          opacity: 1;
+        }
+      }
+    }
+
     &:hover {
       z-index: $active-block-edit-z-index;
 
@@ -85,6 +118,7 @@ body.story-save-error .user-story-container {
       box-sizing: border-box;
 
       .component-html {
+        position: relative;
 
         iframe {
           width: 100%;

@@ -39,16 +39,19 @@ class Block < ActiveRecord::Base
     ),
     :attributes => {
       :all => [ 'class', 'style' ],
-      'a' => [ 'href' ]
+      'a' => [ 'href', 'target', 'rel' ]
     },
     :properties => 'text-align'
   }
 
   after_initialize do
-    (components || []).each do |component|
-      case component['type']
-      when 'html'
-        component['value'] = Sanitize.fragment(component['value'], SANITIZE_CONFIG['html'])
+    # We had some old code where blocks were not saved properly.
+    # This prevents breakage if loading those blocks' components
+    if components.is_a?(Array)
+      (components || []).each do |component|
+        if component['type'] == 'html' && component.has_key?('value')
+          component['value'] = Sanitize.fragment(component['value'], SANITIZE_CONFIG['html'])
+        end
       end
     end
   end

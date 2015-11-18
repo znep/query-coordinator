@@ -8,13 +8,32 @@
 
 en:
   editor:
+    default_page_title: 'Storyteller'
     empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
     remove_block_confirmation: 'Are you sure you want to remove this block?'
     page_close_confirmation: 'You have unsaved changes to this story.'
     story_save_error_try_again: 'Try again.'
     story_save_error_generic: 'There was an error saving.'
     story_save_error_conflict: 'There was a conflict saving. To continue, you need to reload the page.'
+    modal:
+      buttons:
+        ok: 'OK'
+        insert: 'Insert'
+        cancel: 'Cancel'
+    rich_text_toolbar:
+      link_modal:
+        heading: 'Add a Link'
+        display_label: 'Text to Display'
+        link_label: 'Link Destination'
+        test_link: 'Test Link'
+        open_in_new_window: 'Open in New Window'
+        warning_message: 'This looks like an invalid link. Try adding http:// to the beginning of your link.'
+      link_tip:
+        remove: 'Remove'
+        edit: 'Edit'
     components:
+      edit_controls:
+        button: 'Edit'
       asset_selector:
         insert_btn: 'Insert'
     settings_panel:
@@ -30,6 +49,9 @@ en:
         save_button_label: 'Save Changes'
         errors:
           title_too_long: 'Sorry, the story title is too long. Please shorten it.'
+      actions_section:
+        section_title: 'Actions'
+        make_a_copy: 'Make a Copy...'
       publishing_section:
         section_title: 'Publishing'
         visibility:
@@ -50,10 +72,16 @@ en:
           previously_published: 'There is a previously published version of this story. Updating will make your changes visible to everyone.'
         errors:
           not_published_not_updated: 'Your story has not been published and cannot be updated.'
+    make_a_copy:
+      cancel: 'Cancel'
+      copy_warning: 'When a story is copied, Publishing and Visibility settings are set to private even if the current story is published.'
+      make_copy: 'Make Copy'
+      title: 'Make a Copy of this Story'
     asset_selector:
       choose_provider_heading: 'Select Data or Media Provider'
       back_button_text: 'Back'
       insert_button_text: 'Insert'
+      update_button_text: 'Update'
       cancel_button_text: 'Cancel'
       try_again_button_text: 'Try again'
       youtube:

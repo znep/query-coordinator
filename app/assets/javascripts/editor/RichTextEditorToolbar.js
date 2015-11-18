@@ -57,13 +57,9 @@
 
     var _element = element;
     var _formats = formats;
-    var _showLinkPanel = false;
-    var _linkPanelElement = null;
-    var _toolbarLinkButton = null;
     var _formatController = null;
 
     _createToolbar();
-    _createLinkPanel();
     _showToolbar();
 
     storyteller.dispatcher.register(function(payload) {
@@ -100,7 +96,6 @@
 
     this.destroy = function() {
       _element.remove();
-      _linkPanelElement.remove();
     };
 
     /**
@@ -226,60 +221,6 @@
       );
 
       _element.addClass('dim');
-
-      _toolbarLinkButton = _element.find('.rich-text-editor-toolbar-btn-link');
-    }
-
-    function _createLinkPanel() {
-
-      var linkPanelElement = $(
-        '<div>',
-        { 'class': 'rich-text-editor-create-link-panel' }
-      );
-
-      var linkInputElement = $('<div>').
-        append([
-          $(
-            '<span>',
-            { 'class': 'rich-text-editor-add-link-label' }
-          ),
-          $(
-            '<input>',
-            {
-              'class': 'rich-text-editor-link-panel-input',
-              'placeholder': 'http://www.socrata.com'
-            }
-          )
-        ]);
-
-      var addLinkButtonElement = $(
-        '<button>',
-        {
-          'class': 'rich-text-editor-link-panel-btn add-link-btn',
-          'data-editor-action': 'create-link',
-          'data-editor-command': 'link'
-        }
-      );
-
-      var cancelLinkButtonElement = $(
-        '<button>',
-        {
-          'class': 'rich-text-editor-link-panel-btn cancel-link-btn',
-          'data-editor-action': 'cancel-link'
-        }
-      );
-
-      addLinkButtonElement.on('click', _handleLinkPanelAddClick);
-
-      cancelLinkButtonElement.on('click', _handleLinkPanelCancelClick);
-
-      linkPanelElement.hide();
-      linkPanelElement.append(linkInputElement);
-      linkPanelElement.append(addLinkButtonElement);
-      linkPanelElement.append(cancelLinkButtonElement);
-
-      _linkPanelElement = linkPanelElement;
-      _element.append(linkPanelElement);
     }
 
     function _showToolbar() {
@@ -321,80 +262,18 @@
     }
 
     function _handleToolbarSelectChange(e) {
+      var command = e.target.value;
 
       if (_formatController !== null) {
-
-        var command = e.target.value;
-
         _formatController.execute(command);
       }
     }
 
     function _handleToolbarButtonClick(e) {
+      var command = e.target.getAttribute('data-editor-command');
 
       if (_formatController !== null) {
-
-        var command = e.target.getAttribute('data-editor-command');
-
-        if (command === 'link') {
-          _handleLinkButtonClick();
-        } else {
-          _formatController.execute(command);
-        }
-      }
-    }
-
-    function _handleLinkButtonClick() {
-
-      if (_formatController !== null) {
-
-        // TODO: We have not implemented the link button yet.
-        var linkButtonImplemented = _.isFunction(_formatController.hasLink);
-
-        if (linkButtonImplemented && _formatController.hasLink()) {
-          _formatController.execute('removeLink');
-        } else {
-          if (!linkButtonImplemented) {
-            console.error('The link button has not been implemented.');
-          }
-          _toggleLinkPanel();
-        }
-      }
-    }
-
-    function _handleLinkPanelAddClick() {
-
-      if (_formatController !== null) {
-
-        _formatController.execute('addLink', _getLinkPanelUrl());
-        _linkPanelElement.find('input').val('');
-        _toggleLinkPanel();
-      }
-    }
-
-    function _handleLinkPanelCancelClick() {
-
-      if (_formatController !== null) {
-
-        _linkPanelElement.find('input').val('');
-        _toggleLinkPanel();
-      }
-    }
-
-    function _getLinkPanelUrl() {
-      return _linkPanelElement.find('input').val();
-    }
-
-    function _toggleLinkPanel() {
-
-      if (_showLinkPanel) {
-        _showLinkPanel = false;
-        _toolbarLinkButton.removeClass('active');
-        _linkPanelElement.addClass('hidden');
-      } else {
-        _showLinkPanel = true;
-        _toolbarLinkButton.addClass('active');
-        _linkPanelElement.removeClass('hidden');
+        _formatController.execute(command);
       }
     }
   }

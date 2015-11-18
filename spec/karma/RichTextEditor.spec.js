@@ -272,6 +272,13 @@ describe('RichTextEditor', function() {
       $documentElement = $($textEditor.find('iframe')[0].contentDocument.documentElement);
     });
 
+    describe('squire instance', function() {
+      it('should return the squire instance attached to this RichTextEditor', function() {
+        var instance = editor.getSquireInstance();
+        assert.instanceOf(instance, Squire);
+      });
+    });
+
     describe('window size classes', function() {
       it('should apply the current class break to the iframe documentElement (html node)', function() {
         var currentClassName = storyteller.windowSizeBreakpointStore.getWindowSizeClass();

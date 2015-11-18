@@ -11,7 +11,7 @@
     var _container = options.assetSelectorContainerElement || null;
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });
-    var _lastRenderedState = null;
+    var _lastRenderedStep = null;
     var _warnAboutInsecureHTML = false;
 
     if (!(_container instanceof jQuery)) {
@@ -189,8 +189,8 @@
           case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             storyteller.dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
-              blockId: storyteller.assetSelectorStore.getCurrentBlockId(),
-              componentIndex: storyteller.assetSelectorStore.getCurrentComponentIndex()
+              blockId: storyteller.assetSelectorStore.getBlockId(),
+              componentIndex: storyteller.assetSelectorStore.getComponentIndex()
             });
             break;
 
@@ -221,10 +221,10 @@
           case Actions.ASSET_SELECTOR_APPLY:
             storyteller.dispatcher.dispatch({
               action: Actions.BLOCK_UPDATE_COMPONENT,
-              blockId: storyteller.assetSelectorStore.getCurrentBlockId(),
-              componentIndex: storyteller.assetSelectorStore.getCurrentComponentIndex(),
-              type: storyteller.assetSelectorStore.getCurrentComponentType(),
-              value: storyteller.assetSelectorStore.getCurrentComponentValue()
+              blockId: storyteller.assetSelectorStore.getBlockId(),
+              componentIndex: storyteller.assetSelectorStore.getComponentIndex(),
+              type: storyteller.assetSelectorStore.getComponentType(),
+              value: storyteller.assetSelectorStore.getComponentValue()
             });
             storyteller.dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_CLOSE
@@ -245,19 +245,19 @@
 
     function _renderSelector() {
 
-      var state = storyteller.assetSelectorStore.getCurrentSelectorState();
-      var componentType = storyteller.assetSelectorStore.getCurrentComponentType();
-      var componentValue = storyteller.assetSelectorStore.getCurrentComponentValue();
+      var step = storyteller.assetSelectorStore.getStep();
+      var componentType = storyteller.assetSelectorStore.getComponentType();
+      var componentValue = storyteller.assetSelectorStore.getComponentValue();
       var selectorContent;
 
-      // See if we need to render a new template, then render a media selector state if
+      // See if we need to render a new template, then render a media selector step if
       // necessary.
-      if (state !== _lastRenderedState) {
+      if (step !== _lastRenderedStep) {
 
-        // Remove state-specific modal container classes
+        // Remove step-specific modal container classes
         _resetModalDialogClass();
 
-        switch (state) {
+        switch (step) {
 
           case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             selectorContent = _renderChooseProvider();
@@ -310,7 +310,7 @@
       // This handles updating data when the template does NOT need to be re-rendered
       // Note: Some templates may not have renderData function because they do
       // not update dynamically
-      switch (state) {
+      switch (step) {
 
         case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
           _renderChooseYoutubeData(componentValue);
@@ -336,7 +336,7 @@
           break;
       }
 
-      _lastRenderedState = state;
+      _lastRenderedStep = step;
     }
 
     function _renderChooseProvider() {
@@ -367,7 +367,7 @@
       var embedCodeDescription = $('<p>').
         text(I18n.t('editor.asset_selector.embed_code.description'));
 
-      var providers = $('<ul>', {'class': 'button-list'}).append([
+      var providers = $('<ul>', {'class': 'asset-selector-button-list'}).append([
         $('<li>', {
           'data-action': Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
         }).append(visualizationHeader, visualizationDescription),
@@ -401,7 +401,7 @@
 
       var inputLabel = $(
         '<h2>',
-        { 'class': 'asset-selector-input-label asset-selector-input-label-centered input-label' }
+        { 'class': 'modal-input-label modal-input-label-centered input-label' }
       ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
 
       var inputButton = $('<button>', {
@@ -426,7 +426,7 @@
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $(
         '<div>',
@@ -440,7 +440,7 @@
 
       var buttonGroup = $(
         '<div>',
-        { 'class': 'asset-selector-button-group r-to-l' }
+        { 'class': 'modal-button-group r-to-l' }
       ).append([
         backButton,
         insertButton
@@ -510,7 +510,7 @@
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $(
         '<div>',
@@ -521,7 +521,7 @@
 
       var buttonGroup = $(
         '<div>',
-        { 'class': 'asset-selector-button-group r-to-l' }
+        { 'class': 'modal-button-group r-to-l' }
       ).append([
         backButton,
         insertButton
@@ -583,11 +583,11 @@
           'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var buttonGroup = $(
         '<div>',
-        { 'class': 'asset-selector-button-group r-to-l' }
+        { 'class': 'modal-button-group r-to-l' }
       ).append([
         backButton,
         insertButton
@@ -643,7 +643,7 @@
 
       var closeButton = _renderModalCloseButton();
 
-      var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
+      var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.youtube.input_label'));
 
       var inputControl = $(
@@ -709,7 +709,7 @@
           'class': 'btn btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
         inputLabel,
@@ -720,7 +720,7 @@
       var buttonGroup = $(
         '<div>',
         {
-          'class': 'asset-selector-button-group r-to-l'
+          'class': 'modal-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
       return [ heading, closeButton, content, buttonGroup ];
@@ -801,7 +801,8 @@
      * {
      *   type: 'embeddedHtml',
      *   value: {
-     *     url: '<html fragment url>'
+     *     url: '<html fragment url>',
+     *     documentId: documentId,
      *     layout: {
      *       height: 300
      *     }
@@ -811,6 +812,7 @@
     function _renderPreviewEmbedCodeData(componentProperties) {
 
       var htmlFragmentUrl = null;
+      var documentId = null;
       var percentLoaded = null;
       var errorStep = null;
       var messageTranslationKey;
@@ -822,6 +824,11 @@
       var loadingButton = _dialog.find('.btn-busy');
       var insertButton = _dialog.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY));
       var insecureHtmlWarning = _dialog.find('.asset-selector-insecure-html-warning');
+      var textareaElement = _dialog.find('.asset-selector-text-input');
+
+      function textareaIsUnedited() {
+        return textareaElement.val() === '';
+      }
 
       if (_.has(componentProperties, 'url')) {
         htmlFragmentUrl = componentProperties.url;
@@ -835,12 +842,31 @@
         errorStep = componentProperties.step;
       }
 
+      if (_.has(componentProperties, 'documentId')) {
+        documentId = componentProperties.documentId;
+      }
+
       insecureHtmlWarning.toggle(_warnAboutInsecureHTML);
 
       if (!_.isNull(htmlFragmentUrl)) {
 
         if (iframeSrc !== htmlFragmentUrl) {
           iframeElement.attr('src', htmlFragmentUrl);
+          iframeElement.attr('data-document-id', documentId);
+
+          // On first load, prepopulate the textarea with whatever
+          // HTML previously entered.
+          if (textareaIsUnedited()) {
+            $.get(htmlFragmentUrl).then(function(htmlFragment) {
+              // DO NOT PUT THIS DIRECTLY INTO THE DOM!
+              // htmlFragment is _arbitrary_ html - we display it
+              // only in other-domain iframes for security.
+              // Here, we're only putting the content into a textarea.
+              if (textareaIsUnedited()) {
+                textareaElement.val(htmlFragment);
+              }
+            });
+          }
         }
 
         iframeContainer.
@@ -908,7 +934,7 @@
       }).append($('<span>'));
 
       var buttonGroup = $('<div>', {
-        'class': 'asset-selector-button-group r-to-l'
+        'class': 'modal-button-group r-to-l'
       }).append([ backButton ]);
 
       datasetChooserIframe[0].onDatasetSelected = function(datasetObj) {
@@ -949,7 +975,7 @@
           'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var loadingButton = $('<button>', {
         'class': 'btn-transparent btn-busy visualization-busy',
@@ -957,20 +983,22 @@
       }).append($('<span>'));
 
       var buttonGroup = $('<div>', {
-        'class': 'asset-selector-button-group r-to-l'
+        'class': 'modal-button-group r-to-l'
       }).append([ backButton, insertButton ]);
 
-      configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format) {
+      configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format, originalUid) {
         // This function is called by the visualization chooser when:
         //   - The user makes or clears a selection (argument is either null or a visualization).
         //   - The page finishes loading (argument is null).
         // In either case, we should consider the iframe loaded.
+        // originalUid may be null (say if the user created the visualization inline).
         configureVisualizationIframe.
           trigger('visualizationSelected', {
             data: datasetObj,
 
             // format can either be 'classic' or 'vif'.
-            format: format
+            format: format,
+            originalUid: originalUid
           });
       };
 
@@ -978,29 +1006,16 @@
     }
 
     function _renderConfigureVisualizationData(componentType, componentProperties) {
+      var insertButton = _dialog.find(
+        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
+      );
+
       if (componentProperties.dataset) {
         var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
-        var currentIframeSrc = iframeElement.attr('src');
-        var newIframeSrc = _visualizationChooserUrl(componentProperties.dataset.datasetUid);
-
-        if (currentIframeSrc !== newIframeSrc) {
-          iframeElement.
-            attr('src', newIframeSrc).
-            one('load', function() {
-              $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
-            });
-        }
-      } else {
-        var insertButton = _dialog.find(
-          '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
-        );
-
-        if (componentType) {
-          insertButton.prop('disabled', false);
-        } else {
-          insertButton.prop('disabled', true);
-        }
+        _updateVisualizationChooserUrl(iframeElement, componentProperties);
       }
+
+      insertButton.prop('disabled', !componentType);
     }
 
     /**
@@ -1014,10 +1029,37 @@
       );
     }
 
-    function _visualizationChooserUrl(datasetId) {
+    function _updateVisualizationChooserUrl(iframeElement, componentProperties) {
+      var currentIframeSrc = iframeElement.attr('src');
+      var currentIframeDatasetUidParam =
+        (currentIframeSrc.match(/datasetId=\w\w\w\w-\w\w\w\w/) || [])[0];
+
+      // Update src if the dataset uid search param is different
+      // (we don't care about defaultColumn or defaultRelatedVisualizationUid changing -
+      // these shouldn't cause iframe reloads).
+      if (
+        (currentIframeDatasetUidParam || '').indexOf(componentProperties.dataset.datasetUid) === -1) {
+        var newIframeSrc = _visualizationChooserUrl(componentProperties);
+        iframeElement.
+          attr('src', newIframeSrc).
+          one('load', function() {
+            $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
+          });
+      }
+    }
+
+    function _visualizationChooserUrl(componentProperties) {
+      var defaultColumn = _.get(componentProperties, 'vif.columnName', null);
+      var defaultRelatedVisualizationUid = _.get(componentProperties, 'originalUid', null);
+
       return encodeURI(
-        '{0}/component/visualization/add?datasetId={1}'.
-          format(window.location.origin, datasetId)
+        '{0}/component/visualization/add?datasetId={1}&defaultColumn={2}&defaultRelatedVisualizationUid={3}'.
+          format(
+            window.location.origin,
+            componentProperties.dataset.datasetUid,
+            defaultColumn,
+            defaultRelatedVisualizationUid
+          )
       );
     }
 
@@ -1034,7 +1076,7 @@
         disabled: true
       }).append($('<span>'));
 
-      var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
+      var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.embed_code.input_label'));
 
       var inputControl = $(
@@ -1046,7 +1088,7 @@
         }
       );
 
-      var previewLabel = $('<h3>', { 'class': 'asset-selector-input-label input-label' }).
+      var previewLabel = $('<h3>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.embed_code.preview_label'));
 
       var previewInsecureMessage = $(
@@ -1110,7 +1152,7 @@
           'class': 'btn-primary',
           'data-action': Actions.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(_insertButtonText());
 
       var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
         inputLabel,
@@ -1122,7 +1164,7 @@
       var buttonGroup = $(
         '<div>',
         {
-          'class': 'asset-selector-button-group r-to-l'
+          'class': 'modal-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
       return [ heading, closeButton, content, buttonGroup ];
@@ -1191,6 +1233,16 @@
 
       _dialog.attr('class', newClassList.join(' '));
     }
+  }
+
+  function _insertButtonText() {
+    var isEditingExisting = storyteller.assetSelectorStore.isEditingExisting();
+
+    return I18n.t(
+      isEditingExisting ?
+        'editor.asset_selector.update_button_text' :
+        'editor.asset_selector.insert_button_text'
+    );
   }
 
   root.socrata.storyteller.AssetSelectorRenderer = AssetSelectorRenderer;

@@ -69,6 +69,31 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     end
   end
 
+  # We hide the settings panel when making a copy because the panel z-index is higher
+  # than the modal z-index. This can be removed if fit-and-finish changes that.
+  describe 'make a copy' do
+    before do
+      toggle_pane
+      page.find('.settings-panel-make-a-copy button').click
+    end
+
+    it 'closes settings panel and shows the modal' do
+      expect_settings_panel_to_be_closed
+      expect(page).to have_selector('#make-a-copy-container', visible: true)
+    end
+
+    context 'when you close the modal' do
+      before do
+        page.find('#make-a-copy-container .make-a-copy-button-group button.back-btn').click
+      end
+
+      it 'opens settings panel and hides the modal' do
+        expect_settings_panel_to_be_open
+        expect(page).to have_selector('#make-a-copy-container', visible: false)
+      end
+    end
+  end
+
   def expect_settings_panel_to_be_closed
     expect(page).to have_selector(settings_panel_selector, visible: false)
     expect(page).to have_selector(settings_overlay_selector, visible: false)

@@ -121,6 +121,16 @@
      * Generic asset selector flow
      */
 
+    // Select an asset for the first time.
+    // {string} blockId
+    // {number} componentIndex
+    ASSET_SELECTOR_INSERT_COMPONENT: 'ASSET_SELECTOR_INSERT_COMPONENT',
+
+    // Edit an existing asset.
+    // {string} blockId
+    // {number} componentIndex
+    ASSET_SELECTOR_UPDATE_COMPONENT: 'ASSET_SELECTOR_UPDATE_COMPONENT',
+
     // Initial media selector setup
     // {string} blockId
     // {number} componentIndex
@@ -189,7 +199,60 @@
     EMBED_CODE_UPLOAD_DONE: 'EMBED_CODE_UPLOAD_DONE',
 
     // No payload
-    EMBED_CODE_UPLOAD_ERROR: 'EMBED_CODE_UPLOAD_ERROR'
+    EMBED_CODE_UPLOAD_ERROR: 'EMBED_CODE_UPLOAD_ERROR',
+
+    /**
+     * Link Modal
+     */
+
+    // No Payload
+    LINK_MODAL_CLOSE: 'LINK_MODAL_CLOSE',
+
+    // {string} editorId
+    // {string} text
+    // {string} url
+    // {boolean} openInNewWindow
+    LINK_MODAL_OPEN: 'LINK_MODAL_OPEN',
+
+    // {string} text
+    // {string} url
+    // {boolean} openInNewWindow
+    LINK_MODAL_UPDATE: 'LINK_MODAL_UPDATE',
+
+    // {string} text
+    // {string} url
+    // {boolean} openInNewWindow
+    LINK_MODAL_ACCEPT: 'LINK_MODAL_ACCEPT',
+
+    /*
+     * Make a Copy flow
+     */
+
+    // No payload
+    STORY_MAKE_COPY_MODAL_OPEN: 'STORY_MAKE_COPY_MODAL_OPEN',
+
+    // No payload
+    STORY_MAKE_COPY_MODAL_SUBMIT: 'STORY_MAKE_COPY_MODAL_SUBMIT',
+
+    // No payload
+    STORY_MAKE_COPY_MODAL_CANCEL: 'STORY_MAKE_COPY_MODAL_CANCEL',
+
+    /**
+     * Link Action Tip
+     */
+
+    // {string} text
+    // {string} link
+    // {string} editorId
+    // {boolean} openInNewWindow
+    // {ClientRect} boundingClientRect
+    LINK_TIP_OPEN: 'LINK_TIP_OPEN',
+
+    // No Payload
+    LINK_TIP_CLOSE: 'LINK_TIP_CLOSE',
+
+    // No Payload
+    LINK_TIP_REMOVE: 'LINK_TIP_REMOVE'
   };
 
   root.Actions = Actions;

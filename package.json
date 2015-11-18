@@ -62,7 +62,6 @@
       "Actions": true,
       "jQuery": true,
       "I18n": true,
-      "sampleBlocks": true,
       "socrata": true,
       "Squire": true,
       "Unidragger": true,

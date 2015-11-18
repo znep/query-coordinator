@@ -20,22 +20,13 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  common:
-    close: 'Close'
-  sample_story:
-    title: 'Your Great Story Title'
-  stories_controller:
-    error_creating_story_flash: 'Error creating story.'
-    permissions_error_flash: 'Permissions error.'
-    not_found_error_flash: 'Story not found.'
   add_content_panel:
     title: 'Inspiration Blocks'
     description: 'Choose a layout with text or media!'
     render_error: 'There was an error'
-  style_and_presentation_panel:
-    title: 'Styled Themes'
-    description: 'Themes to make your story look Grrrrrrreat!'
-    render_error: 'There was an error'
+  common:
+    close: 'Close'
+  default_page_title: 'Storyteller'
   preview_mode:
     presentation_mode:
       title: "Presentation Mode"
@@ -43,3 +34,13 @@ en:
       next: "Next"
     linear_mode:
       title: "Linear Mode"
+  sample_story:
+    title: 'Your Great Story Title'
+  stories_controller:
+    error_creating_story_flash: 'Error creating story.'
+    permissions_error_flash: 'Permissions error.'
+    not_found_error_flash: 'Story not found.'
+  style_and_presentation_panel:
+    title: 'Styled Themes'
+    description: 'Themes to make your story look Grrrrrrreat!'
+    render_error: 'There was an error'

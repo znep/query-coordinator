@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= core_attributes['name'] || 'Storyteller' %></title>
+  <title><%= core_attributes['name'] || t('default_page_title') %></title>
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'airbrake-js-client/dist/client' %>
   <%= javascript_include_tag 'application' %>

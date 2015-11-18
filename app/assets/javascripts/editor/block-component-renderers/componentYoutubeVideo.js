@@ -38,7 +38,7 @@
     }
   }
 
-  function componentYoutubeVideo(componentData) {
+  function componentYoutubeVideo(componentData, theme, options) {
 
     var $this = $(this);
 
@@ -55,6 +55,8 @@
     }
 
     _updateSrc($this, componentData);
+    $this.componentEditButton();
+    $this.toggleClass('editing', _.get(options, 'editMode', false));
 
     return $this;
   }

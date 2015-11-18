@@ -79,13 +79,6 @@
       'FLYOUT_SELECTED_NOTICE'
     );
 
-    this.destroySocrataColumnChart = function() {
-
-      clearTimeout(rerenderOnResizeTimeout);
-      visualization.destroy();
-      _detachEvents();
-    };
-
     var $element = $(this);
 
     // SoQL returns row results for display as columns.
@@ -137,6 +130,13 @@
      */
 
     function _attachEvents() {
+
+      // Destroy on (only the first) 'destroy' event.
+      $element.one('destroy', function() {
+        clearTimeout(rerenderOnResizeTimeout);
+        visualization.destroy();
+        _detachEvents();
+      });
 
       $(window).on('resize', _handleWindowResize);
       $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
@@ -356,15 +356,15 @@
       );
 
       var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-        query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-        catch(function(error) {
+        query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+        ['catch'](function(error) {
           _logError(error);
           visualization.renderError();
         });
 
       var filteredSoqlQuery = filteredSoqlDataProvider.
-        query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS).
-        catch(function(error) {
+        query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+        ['catch'](function(error) {
           _logError(error);
           visualization.renderError();
         });
@@ -384,8 +384,8 @@
             visualizationData,
             _getRenderOptions()
           );
-        }).
-        catch(function(error) {
+        })
+        ['catch'](function(error) {
           _logError(error);
           visualization.renderError();
         });

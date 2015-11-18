@@ -50,7 +50,7 @@
     }
   }
 
-  function componentSocrataVisualizationClassic(componentData) {
+  function componentSocrataVisualizationClassic(componentData, theme, options) {
 
     var $this = $(this);
 
@@ -68,6 +68,9 @@
     } else {
       _updateVisualization($this, componentData);
     }
+
+    $this.componentEditButton();
+    $this.toggleClass('editing', _.get(options, 'editMode', false));
 
     return $this;
   }

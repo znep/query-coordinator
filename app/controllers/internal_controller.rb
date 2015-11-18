@@ -277,7 +277,7 @@ class InternalController < ApplicationController
 
     domains << CurrentDomain.domain if domains.empty?
 
-    category = params[:flag_set].try(:sub, '+', ' ')
+    category = params[:flag_set].try(:gsub, '+', ' ')
     @category = category if FeatureFlags.categories.keys.include? category
 
     @flags = (params[:flags].try(:split, ',') || []) + Array(FLAG_SETS[category])
@@ -299,7 +299,7 @@ class InternalController < ApplicationController
     @domain = Domain.find(params[:domain_id])
     @flags = Hashie::Mash.new
     domain_flags = @domain.feature_flags
-    category = params[:category].try(:sub, '+', ' ')
+    category = params[:category].try(:gsub, '+', ' ')
     ExternalConfig.for(:feature_flag).each do |flag, fc|
       next unless category.nil? || category == fc['category']
       @flags[flag] = fc

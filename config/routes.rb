@@ -59,6 +59,9 @@ Frontend::Application.routes do
       match '/analytics', :action => 'analytics'
       post '/orgs', :action => 'create_org'
       match '/orgs', :action => 'index_orgs'
+      get '/feature_flags', :action => 'feature_flags_across_domains'
+      get '/feature_flags/:flag_set', :action => 'feature_flags_across_domains',
+        :as => 'feature_flags_across_domains_with_set'
       match '/orgs/:id', :action => 'show_org'
       match '/orgs/:id/domains', :action => 'create_domain', :via => :post
       match '/orgs/:org_id/domains/:id', :action => 'show_domain',
@@ -83,14 +86,16 @@ Frontend::Application.routes do
         :action => 'add_module_to_domain', :constraints => {:domain_id => /(\w|-|\.)+/}
       match '/domains/:domain_id/flush_cache',
         :action => 'flush_cache', :constraints => {:domain_id => /(\w|-|\.)+/}
-      match '/orgs/:org_id/domains/:domain_id/feature_flags',
+      get '/orgs/:org_id/domains/:domain_id/feature_flags',
         :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
-      match '/domains/:domain_id/feature_flags',
+      get '/domains/:domain_id/feature_flags',
+        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/},
+        :as => 'feature_flags_config'
+      get '/orgs/:org_id/domains/:domain_id/feature_flags/:category',
         :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
-      match '/orgs/:org_id/domains/:domain_id/feature_flags/:category',
-        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
-      match '/domains/:domain_id/feature_flags/:category',
-        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
+      get '/domains/:domain_id/feature_flags/:category',
+        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/},
+        :as => 'feature_flags_config_with_category'
       post '/orgs/:org_id/domains/:domain_id/set_feature_flags',
         :action => 'set_feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
       post '/domains/:domain_id/set_feature_flags',

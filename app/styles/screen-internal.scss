@@ -166,3 +166,41 @@ form.wide {
     }
   }
 }
+
+.featureFlagsAcrossDomains {
+  overflow: scroll;
+
+  .flag_groups {
+    margin-bottom: 0.5em;
+
+    ul {
+      display: none;
+    }
+  }
+
+  table {
+    font-size: 1.3em;
+    border: solid 1px black;
+    padding-right: 0.5em;
+
+    tr:nth-child(even) {
+      background-color: #eee;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #aaa;
+    }
+
+    th {
+      white-space: nowrap;
+    }
+
+    td, th {
+      padding: 1em;
+
+      &.domain_cname {
+        position: absolute;
+      }
+    }
+  }
+}

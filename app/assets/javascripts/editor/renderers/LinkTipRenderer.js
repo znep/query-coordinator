@@ -100,7 +100,7 @@
     }
 
     function placeTip(editorId, boundingClientRect) {
-      var padding = 10;
+      var padding = 5;
       var $container = editorId ? $('[data-editor-id="{0}"]'.format(editorId)) : $('body');
 
       var clientRect = boundingClientRect || $container[0].getBoundingClientRect();

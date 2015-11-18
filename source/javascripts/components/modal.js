@@ -12,7 +12,6 @@ Modal.prototype = {
     }, this);
 
     this.openers.forEach(function (opener) {
-      debugger;
       opener.addEventListener('click', this.open.bind(this));
     }, this);
   },
@@ -20,7 +19,6 @@ Modal.prototype = {
     var modal = event.target.getAttribute('data-modal');
     modal = this.root.querySelector('#' + modal);
     modal.classList.remove('modal-hidden');
-    debugger;
   },
   dismiss: function(event) {
     var target = event.target;

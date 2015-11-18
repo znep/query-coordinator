@@ -1,0 +1,53 @@
+<h3>Default Buttons</h3>
+<p>
+  <%= partial "components/buttons/button_default_lg", locals: { text: "Large Button" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_default", locals: { text: "Default Button" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_default_sm", locals: { text: "Small Button" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_default_xs", locals: { text: "Extra-Small Button" } %>
+</p>
+
+<h3>Button Variations</h3>
+<p>
+  <%= partial "components/buttons/button_primary", locals: { text: "Primary Button" } %>
+  <%= partial "components/buttons/button_primary_inverse", locals: { text: "Primary Inverse Button" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_secondary", locals: { text: "Secondary Button" } %>
+  <%= partial "components/buttons/button_secondary_inverse", locals: { text: "Secondary Inverse Button" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_default_disabled", locals: { text: "Disabled Button" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_block_lg", locals: { text: "Large Block Button" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_success", locals: { text: "Success Button" } %>
+  <%= partial "components/buttons/button_success_inverse", locals: { text: "Success Inverse Button" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_error", locals: { text: "Error Button" } %>
+  <%= partial "components/buttons/button_error_inverse", locals: { text: "Error Inverse Button" } %>
+</p>
+
+<h3>Dark Variations</h3>
+<div class="dark-context">
+  <p>
+    <%= partial "components/buttons/button_default_dark", locals: { text: "Default Button" } %>
+  </p>
+  <p>
+    <%= partial "components/buttons/button_default_dark_disabled", locals: { text: "Disabled Button" } %>
+  </p>
+  <p>
+    <%= partial "components/buttons/button_primary_dark", locals: { text: "Primary Button" } %>
+  </p>
+  <p>
+    <%= partial "components/buttons/button_secondary_dark", locals: { text: "Secondary Button" } %>
+  </p>
+</div>

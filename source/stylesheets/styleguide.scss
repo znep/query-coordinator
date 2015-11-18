@@ -5,12 +5,13 @@
 @import "components/buttons";
 @import "components/loader";
 @import "components/forms";
+@import "components/modal";
 
 .container {
 	@include outer-container();
 }
 
-section {
+section.styleguide-section {
 	@include row();
 	border-top: 1px solid lighten($quiet-text-color, 20%);
 	padding-top: ms(2);
@@ -46,6 +47,16 @@ section {
 .styleguide-header {
 	font-weight: 300;
 	color: $quiet-text-color;
+}
+
+.modal-section {
+  .example {
+    max-width: 250px;
+  }
+
+  .btn-secondary {
+    margin-top: 1rem;
+  }
 }
 
 .usage {

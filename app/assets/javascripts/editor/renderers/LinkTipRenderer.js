@@ -25,8 +25,10 @@
       return (
         '<div id="link-tip">' +
           '<a class="link-text" href target="_blank"></a>' +
+          '<span class="link-tip-divider"></span>' +
           '<span class="link-edit" data-action="{0}">{1}</span>'.
             format(Actions.LINK_MODAL_OPEN, I18n.t('editor.rich_text_toolbar.link_tip.edit')) +
+          '<span class="link-tip-divider"></span>' +
           '<span class="link-remove" data-action="{0}">{1}</span>'.
             format(Actions.LINK_TIP_REMOVE, I18n.t('editor.rich_text_toolbar.link_tip.remove')) +
         '</div>'

@@ -2,12 +2,10 @@
 
 #link-tip {
   position: absolute;
-  z-index: 100;
   background-color: $link-tip-background-color;
   font-size: 1.5rem;
   border: 1px solid $link-tip-border-color;
-  box-shadow: 0px 0px 7px 2px $link-tip-box-shadow-color;
-  padding: .5rem 0;
+  box-shadow: 0px 0px 7px -2px $link-tip-box-shadow-color;
   border-radius: 0.1rem;
   visibility: hidden;
   white-space: nowrap;
@@ -17,20 +15,23 @@
   }
 
   .link-text, span {
-    padding: 1rem;
+    padding: 1.4rem;
     color: $link-tip-text-color;
     display: inline-block;
     cursor: pointer;
     vertical-align: middle;
   }
 
-  .link-text, .link-text + span {
-    border-right: 1px solid $link-tip-border-right-color;
-  }
-
   .link-text {
     max-width: 320px;
     overflow: hidden;
     text-overflow: ellipsis;
+    outline: none;
+  }
+
+  .link-tip-divider {
+    border-left: solid 1px $link-tip-divider-border-color;
+    padding: 0;
+    height: 2.7rem;
   }
 }

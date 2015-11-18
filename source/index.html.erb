@@ -3,11 +3,8 @@ title: UXISFUN
 layout: styleguide
 ---
 
-
-
 <div class="container">
-
-	<h1 class="styleguide-title">UXISFUN Stylez</h1> 
+  <h1 class="styleguide-title">UXISFUN Stylez</h1>
 
   <section class="modal-section">
     <h2>Modal</h2>
@@ -15,236 +12,71 @@ layout: styleguide
     <button class="btn-default" data-modal="generic-modal-2">Open Modal 2</button>
     <%= partial "components/modal" %>
   </section>
-	<section class="styleguide-section">	
 
-		<div class="meta">
-			<h2 class="styleguide-header">Typography</h2>
-			<p class="small">
-
-				Type is set in <i>Open Sans</i> 15px/1.618 using a modular type scale. The scale is composed using two scale ratios to provide more incremental typesetting steps. 
-
-			</p>
-
-			<p class="small">
-				The full scale can be viewed at <%= link_to 'http://www.modularscale.com/?15&px&1.618,1.25','http://www.modularscale.com/?15&px&1.618,1.25' %>
-			</p>
-		</div>
-
-
-		<div class="example">
-
-
-
-			<h1>h1. Heading</h1>
-			<h2>h2. Heading</h2>
-			<h3>h3. Heading</h3>
-			<h4>h4. Heading</h4>
-			<h5>h5. Heading</h5>
-			<h6>h6. Heading</h6>
-
-
-			<p class="intro">Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.</p>
-
-
-			<p>Tail tongue swine alcatra meatloaf meatball. Pork swine fatback cupim andouille shoulder sirloin turkey. Turducken cow prosciutto strip steak leberkas pastrami kevin salami biltong shankle ham alcatra doner. Picanha pork loin shankle pork belly corned beef meatloaf venison tongue. Ribeye pork cupim cow boudin bresaola pork loin. Spare ribs short ribs pork chop ham hock leberkas sirloin, bacon sausage beef corned beef jerky alcatra landjaeger ground round.</p>
-
-			<p>Cow alcatra beef ribs short loin, sausage landjaeger jerky sirloin rump turducken. Pork loin ball tip kielbasa prosciutto, jowl meatloaf turkey ham doner filet mignon short ribs porchetta fatback tongue. Meatball rump pork prosciutto ham filet mignon porchetta shankle. Swine corned beef kielbasa shoulder capicola sirloin pork chop sausage brisket. Frankfurter landjaeger capicola tenderloin. Hamburger pork belly leberkas, salami doner ball tip turducken swine tri-tip.</p>
-
-			<p class="small">Tail tongue swine alcatra meatloaf meatball. Pork swine fatback cupim andouille shoulder sirloin turkey. Turducken cow prosciutto strip steak leberkas pastrami kevin salami biltong shankle ham alcatra doner. Picanha pork loin shankle pork belly corned beef meatloaf venison tongue. Ribeye pork cupim cow boudin bresaola pork loin. Spare ribs short ribs pork chop ham hock leberkas sirloin, bacon sausage beef corned beef jerky alcatra landjaeger ground round.</p>
-
-
-		</div> <!-- /.example -->
-
-	</section>
-
-	<section>
-		<div class="meta">
-			<h2 class="styleguide-header">Lists</h2>
-			<p class="small">A list is a list, a list, a list, of course.</p>
-		</div>
-		<div class="example">
-
-			<ul>
-				<li>This is</li>
-				<li>an absolutely fantastic</li>
-				<li>list!</li>
-			</ul>
-
-			<ol>
-				<li>This is one more</li>
-				<li>simply, absolutely fantastic</li>
-				<li>list!</li>
-			</ol>
-		</div><!-- /.example -->
-
-	</section>
-
-	
-	<section class="styleguide-section">
-		<div class="meta">
-			<h2 class="styleguide-header">Colors</h2>
-			<p class="small">
-				colors colors colors 
-			</p>
-		</div>
-
-		<div class="example">
-
-			<div class="container">			
-				<div class="row sample-grid">
-					<div class="col-4 color-group">
-						<%= partial "components/swatch" , :locals => { :color => 'blue' } %>
-					</div>
-					<div class="col-4 color-group">
-						<%= partial "components/swatch" , :locals => { :color => 'yellow' } %>
-					</div>
-					<div class="col-4 color-group">
-						<%= partial "components/swatch" , :locals => { :color => 'green' } %>
-					</div>
-					<div class="col-4 color-group">
-						<%= partial "components/swatch" , :locals => { :color => 'gray' } %>
-					</div>
-				</div>
-			</div>				
-
-		</div><!-- /.example -->
-	</section>	
-
-
-	<section class="styleguide-section">
-		<div class="meta">
-			<h2 class="styleguide-header">Buttons</h2>
-			<p class="small">Yay, buttonz!</p>
-		</div>
-		<div class="example">
-
-			
-			<h3>Default Buttons</h3>
-				<p>
-					<a href="#" class="btn btn-default btn-lg">Large Button</a>
-				</p>
-				<p>
-					<a href="#" class="btn btn-default">Default Button</a>
- 				</p>
- 				<p>
- 					<a href="#" class="btn btn-default btn-sm">Small Button</a> <br />
-				</p>
-				<p>
-					<a href="#" class="btn btn-default btn-xs">Extra-Small Button</a>
-				</p>
-			
-			<h3>Button Variations</h3>
-
-				<p>
-					<a href="#" class="btn btn-primary">Primary Button</a>
-					<a href="#" class="btn btn-primary btn-inverse">Inverse Button</a>
-				</p>
-
-				<p>
-					<a href="#" class="btn btn-secondary">Secondary Button</a>
-					<a href="#" class="btn btn-secondary btn-inverse">Secondary Inverse</a>
-				</p>
-
-				<p>
-					<a href="#" class="btn btn-default disabled">Disabled Button</a>
- 				</p>
-
-				<p>
-					<a href="#" class="btn btn-primary btn-lg btn-block">Large Block Button</a>
-				</p>
-
-				<p>
-					<a href="#" class="btn btn-success">Success Button</a>
-					<a href="#" class="btn btn-success btn-inverse">Success Button</a>
-				</p>
-
-				<p>
-					<a href="#" class="btn btn-error">Error Button</a>
-					<a href="#" class="btn btn-error btn-inverse">Error Button</a>
-				</p>
-
-		<h3>Dark Variations</h3>
-		
-		<div class="dark-context">
-
-				<p>
-					<a href="#" class="btn btn-alternate">Default Button</a>
- 				</p>
-
- 				<p>
-					<a href="#" class="btn btn-alternate disabled">Disabled Button</a>
- 				</p>
-
-				<p>
-					<a href="#" class="btn btn-primary">Primary Button</a>
-				</p>
-
-				<p>
-					<a href="#" class="btn btn-secondary">Secondary Button</a>
-				</p>
-
-			
-			
-
-
-			</div>
-
-		</div><!-- /.example -->
-
-	</section>
-
-	<section class="styleguide-section">
-		<div class="meta">
-			<h2 class="styleguide-header">Form Controls</h2>
-			<p class="small">dropdowns and text fields and stuff</p>
-		</div>
-		<div class="example">
-			
-			<h3>Dropdowns</h3>
-			<div>
-				<div id="dd" class="wrapper-dropdown">
-					<span>Gender</span>
-				    <ul class="dropdown">
-				        <li><a href="#">An option!</a></li>
-				        <li><a href="#">Another option!!</a></li>
-				        <li><a href="#">A really really really long option!!!</a></li>
-				    </ul>
-				</div>
-			</div>
-		</div><!-- /.example -->
-	</section>
-
-
-
-	<section class="styleguide-section">
-		<div class="meta">
-			<h2 class="styleguide-header">Misc. Componets</h2>
-			<p class="small">Spinning things and other things that don't yet have a logical place.</p>
-		</div>
-
-		<div class="example">
-			
-			<h3>Basic Spinning Loader</h3>
-			<p class="usage">Used in the context of loading screens where the spinner is placed in-line with a heading, centered in a staging area, or within a button.</p>
-
-			
-			<h4 class="h6">Default</h4>
-
-			<span class="spinner-default"></span>
-
-
-
-			<h4 class="h6">In a Button</h4>
-
-				<a href="#" class="btn btn-primary btn-block"><span class="spinner-default spinner-btn-primary"></span></a>
-
-
-
-
-		</div><!-- /.example -->
-	</section>
-
-
-
-
+  <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Typography</h2>
+      <p class="small">
+        Type is set in <i>Open Sans</i> 15px/1.618 using a modular type scale. The scale is composed using two scale ratios to provide more incremental typesetting steps.
+      </p>
+      <p class="small">
+        The full scale can be viewed at <%= link_to 'http://www.modularscale.com/?15&px&1.618,1.25','http://www.modularscale.com/?15&px&1.618,1.25' %>
+      </p>
+    </div>
+    <div class="example">
+      <%= partial "examples/typography" %>
+    </div> <!-- /.example -->
+  </section>
+
+  <section>
+    <div class="meta">
+      <h2 class="styleguide-header">Lists</h2>
+      <p class="small">A list is a list, a list, a list, of course.</p>
+    </div>
+    <div class="example">
+      <%= partial "examples/lists" %>
+    </div><!-- /.example -->
+  </section>
+
+  <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Colors</h2>
+      <p class="small">
+        colors colors colors
+      </p>
+    </div>
+    <div class="example">
+      <%= partial "examples/colors" %>
+    </div><!-- /.example -->
+  </section>
+
+  <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Buttons</h2>
+      <p class="small">Yay, buttonz!</p>
+    </div>
+    <div class="example">
+      <%= partial "examples/button_options" %>
+    </div><!-- /.example -->
+  </section>
+
+  <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Form Controls</h2>
+      <p class="small">dropdowns and text fields and stuff</p>
+    </div>
+    <div class="example">
+      <%= partial "examples/dropdown" %>
+    </div><!-- /.example -->
+  </section>
+
+  <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Misc. Components</h2>
+      <p class="small">Spinning things and other things that don't yet have a logical place.</p>
+    </div>
+    <div class="example">
+      <%= partial "examples/spinners" %>
+    </div><!-- /.example -->
+  </section>
 </div>

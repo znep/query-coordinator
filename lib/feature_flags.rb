@@ -51,8 +51,16 @@ module FeatureFlags
     ExternalConfig.for(:feature_flag).keys
   end
 
+  def self.has?(key)
+    list.include? key
+  end
+
   def self.categories
     ExternalConfig.for(:feature_flag).categories
+  end
+
+  def self.config_for(flag)
+    ExternalConfig.for(:feature_flag)[flag]
   end
 
   def self.default_for(flag)

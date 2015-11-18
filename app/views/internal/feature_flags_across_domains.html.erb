@@ -1,0 +1,68 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title>Feature Flags for <%= @domains.keys.collect(&:cname).join(', ') %>
+    | Internal Panel | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation featureFlagsAcrossDomains">
+  <div class="flag_groups">
+    <button>Specify flag groups</button>
+    <ul>
+    <%- @sets.keys.each do |set|  %>
+      <li><%= link_to set,
+        feature_flags_across_domains_with_set_path(params.merge(flag_set: set.gsub(/ /, '+'))) %></li>
+    <%- end %>
+    </ul>
+  </div>
+  <table>
+    <tr>
+      <th class="domain_cname">Domain CNAME</th>
+      <th class="extra_padding">&nbsp;</th>
+      <th>Link</th>
+      <%- @flags.each do |flag|
+        flag_description = FeatureFlags.config_for(flag)['description']
+      %>
+        <th title="<%= flag_description %>"><%= flag %></th>
+      <%- end %>
+    </tr>
+    <%- @domains.each do |domain, flags|
+      modify_link =
+        if @category.present?
+          feature_flags_config_with_category_path(domain_id: domain.id, category: @category.gsub(/ /, '+'))
+        else
+          feature_flags_config_path(domain_id: domain.id)
+        end
+    %>
+      <tr>
+        <td class="domain_cname"><%= link_to domain.cname,
+          show_domain_path(org_id: domain.organizationId, id: domain.cname) %></td>
+        <td class="extra_padding">&nbsp;</td>
+        <td><%= link_to '(modify)', modify_link %></td>
+        <%- @flags.each do |flag| %>
+          <td>
+            <%= flags[flag] %>
+          </td>
+        <%- end%>
+      </tr>
+    <%- end %>
+  </table>
+</div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+      $('.flag_groups button').click(function() { $('.flag_groups ul').slideToggle(); });
+      $('th[title]').each(function() {
+        var $this = $(this);
+        $this.socrataTip({
+          isSolo: true,
+          message: $this.attr('title'),
+          'parent': 'body'
+        });
+      });
+      $('.extra_padding').css('padding-left', $('.domain_cname').width() + 'px');
+    });
+  </script>
+<% end %>

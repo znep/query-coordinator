@@ -260,6 +260,41 @@ class InternalController < ApplicationController
     end
   end
 
+  FLAG_SETS = {
+    'data lens' => ['data_lens_transition_state'] # just an example
+  }.merge(FeatureFlags.categories)
+
+  DOMAIN_SETS = {
+    'yeah i dunno' => [ 'localhost' ] # just an example
+  }
+
+  def feature_flags_across_domains
+    domains = (params[:domains].try(:split, ',') || []).
+      collect { |domain| DOMAIN_SETS[domain] || domain }.
+      flatten.
+      collect { |domain| Domain.find(domain) rescue nil }.
+      compact
+
+    domains << CurrentDomain.domain if domains.empty?
+
+    category = params[:flag_set].try(:sub, '+', ' ')
+    @category = category if FeatureFlags.categories.keys.include? category
+
+    @flags = (params[:flags].try(:split, ',') || []) + Array(FLAG_SETS[category])
+    @flags.select! { |flag| FeatureFlags.has? flag }
+
+    @sets = FLAG_SETS
+    if @flags.empty?
+      @category = 'easter egg' # because easter eggs are important!
+      @flags = @sets[@category]
+    end
+
+    @domains = domains.inject({}) do |memo, domain|
+      memo[domain] = domain.feature_flags.keep_if { |k, _| @flags.include? k }
+      memo
+    end
+  end
+
   def feature_flags
     @domain = Domain.find(params[:domain_id])
     @flags = Hashie::Mash.new

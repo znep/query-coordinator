@@ -6,11 +6,14 @@ layout: styleguide
 <div class="container">
   <h1 class="styleguide-title">UXISFUN Stylez</h1>
 
-  <section class="modal-section">
-    <h2>Modal</h2>
-    <button class="btn-default" data-modal="generic-modal">Open Modal</button>
-    <button class="btn-default" data-modal="generic-modal-2">Open Modal 2</button>
-    <%= partial "components/modal" %>
+  <section class="styleguide-section modal-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Modal</h2>
+      <p class="small">Modals can be opened and dismissed using data-* attributes, data-modal="modal-id", and data-modal-dismiss</p>
+    </div>
+    <div class="example">
+      <%= partial "components/modal" %>
+    </div>
   </section>
 
   <section class="styleguide-section">

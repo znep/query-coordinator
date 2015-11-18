@@ -48,6 +48,16 @@ section.styleguide-section {
 	color: $quiet-text-color;
 }
 
+.modal-section {
+  .example {
+    max-width: 250px;
+  }
+
+  .btn-secondary {
+    margin-top: 1rem;
+  }
+}
+
 .usage {
 	background-color: $almost-white-bg;
 	border: 1px solid $extra-light-gray;

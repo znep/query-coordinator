@@ -1464,6 +1464,10 @@
             tickElement.addClass('zero');
           }
 
+          if (index === ticks.length - 1) {
+            tickElement.addClass('top');
+          }
+
           jqueryAxisContainer.append(tickElement);
 
         });

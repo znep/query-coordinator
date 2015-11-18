@@ -4,10 +4,23 @@
     var $navContainer = $youCompleteMe.closest('.leftNavBox');
     var navWidth = $navContainer.width();
 
-
-    $youCompleteMe.focus(function() {
-        $navContainer.animate({width: 250}, 200);
-    });
+    $youCompleteMe.focus(_.once(function() {
+      $domainCenter.addClass('loading');
+      $.ajax({
+        url: '/api/domains.json?method=all',
+        success: function(domainList) {
+          $domainCenter.removeClass('loading');
+          $youCompleteMe.awesomecomplete({
+              dontMatch: ['id', 'parentDomainId'],
+              highlightMatches: true,
+              ignoreCase: true,
+              onComplete: completelyAwesome,
+              staticData: domainList
+          });
+        }
+      });
+      $navContainer.animate({width: 250}, 200);
+    }));
     var unslideNav = function() {
         $navContainer.animate({width: navWidth}, 200);
     };
@@ -19,14 +32,6 @@
                       domain.cname;
         window.location = url;
     };
-
-    $youCompleteMe.awesomecomplete({
-        dontMatch: ['id', 'parentDomainId'],
-        highlightMatches: true,
-        ignoreCase: true,
-        onComplete: completelyAwesome,
-        staticData: blist.internal.domains
-    });
 
     $domainCenter.find('ul').css('width', '90%');
 })(jQuery);

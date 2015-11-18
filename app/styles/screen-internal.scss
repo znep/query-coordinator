@@ -115,6 +115,14 @@ form.wide {
     margin-bottom: 8px;
     width: 95%;
   }
+  &.loading {
+    .domainAwesomeComplete {
+      background: url(/stylesheets/images/content/snuffleupasnake.gif) no-repeat center right;
+    }
+    &:after {
+      content: 'Please wait for a moment before typing..'
+    }
+  }
 }
 
 .featureFlags form {

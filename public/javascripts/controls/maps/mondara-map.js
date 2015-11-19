@@ -150,7 +150,7 @@
           'line-simplify: 2' +
         '}'
       );
-      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=50000&$overscan=32&$mondara=true&$style=' + style;
+      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=200000&$overscan=32&$mondara=true&$style=' + style;
       return new OpenLayers.Layer.XYZ(layerName, tileUrl, layerOpts);
     },
 

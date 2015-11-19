@@ -29,7 +29,7 @@ describe 'FeatureFlags' do
       expect(processed_value).to respond_to(:to_int)
     end
   end
-  
+
   describe '.iframe_parameters' do
     it 'should suss out query parameters correctly' do
       params = FeatureFlags.iframe_parameters('http://www.example.com/?foo=bar&bar=1')

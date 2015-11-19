@@ -8,7 +8,7 @@
 
 <div class="contentBox withLeftNavigation featureFlagsAcrossDomains">
   <div class="flag_groups">
-    <button>Specify flag groups</button>
+    <button>Specify flag group</button>
     <ul>
     <%- @sets.keys.each do |set|  %>
       <li><%= link_to set,
@@ -48,6 +48,18 @@
       </tr>
     <%- end %>
   </table>
+
+  <div class="add_parameter">
+    <div class="add_domain">
+      <h4>Additional domain:</h4>
+      <input type="text" />
+    </div>
+
+    <div class="add_feature_flag">
+      <h4>Additional feature flag:</h4>
+      <input type="text" />
+    </div>
+  </div>
 </div>
 
 <% content_for :js_footer do %>
@@ -63,6 +75,55 @@
         });
       });
       $('.extra_padding').css('padding-left', $('.domain_cname').width() + 'px');
+
+      function addParameter(type, datum) {
+        var currentParams = {
+          flags: $.urlParam(window.location.search, 'flags'),
+          domains: $.urlParam(window.location.search, 'domains')
+        };
+
+        var datumProp, otherType;
+        switch(type) {
+          case 'flags':
+            datumProp = 'name';
+            otherType = 'domains';
+            break;
+          case 'domains':
+            datumProp = 'cname';
+            otherType = 'flags';
+            break;
+        }
+
+        if (currentParams[type]) {
+          currentParams[type] = _.uniq(currentParams[type].split(',').concat(datum[datumProp]));
+        } else {
+          currentParams[type] = [ datum[datumProp] ];
+        }
+
+        var urlParams = [];
+        if (currentParams[otherType]) {
+          urlParams.push('{0}={1}'.format(otherType, currentParams[otherType]));
+        }
+        urlParams.push('{0}={1}'.format(type, currentParams[type].join(',')));
+
+        window.location = window.location.href.replace(/\?.*/, '') + '?' + urlParams.join('&');
+      }
+
+      var addDomain = _.curry(addParameter)('domains');
+      var addFeatureFlag = _.curry(addParameter)('flags');
+
+      $('.add_domain input').focus(function() {
+        blist.internal.fetchDomainList($('.add_domain'), { onComplete: addDomain });
+      });
+
+      $('.add_feature_flag input').focus(_.once(function() {
+        $(this).awesomecomplete({
+          highlightMatches: true,
+          ignoreCase: true,
+          onComplete: addFeatureFlag,
+          staticData: _.map(_.keys(blist.feature_flags), function(x) { return { name: x }; })
+        });
+      }));
     });
   </script>
 <% end %>

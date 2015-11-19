@@ -1,37 +1,50 @@
 ;(function($) {
-    var $domainCenter = $('.domainCompletion');
-    var $youCompleteMe = $domainCenter.find('.domainAwesomeComplete');
-    var $navContainer = $youCompleteMe.closest('.leftNavBox');
-    var navWidth = $navContainer.width();
+  blist.namespace.fetch('blist.internal');
 
-    $youCompleteMe.focus(_.once(function() {
-      $domainCenter.addClass('loading');
+  blist.internal.fetchDomainList = function($element, options) {
+    var staticOptions = {
+      dontMatch: ['id', 'parentDomainId'],
+      highlightMatches: true,
+      ignoreCase: true,
+      onComplete: options.onComplete,
+      staticData: blist.internal.domains
+    };
+
+    if (_.isUndefined(staticOptions.staticData)) {
+      $element.addClass('loading');
       $.ajax({
         url: '/api/domains.json?method=all',
         success: function(domainList) {
-          $domainCenter.removeClass('loading');
-          $youCompleteMe.awesomecomplete({
-              dontMatch: ['id', 'parentDomainId'],
-              highlightMatches: true,
-              ignoreCase: true,
-              onComplete: completelyAwesome,
-              staticData: domainList
-          });
+          blist.internal.domains = domainList;
+          $.extend(staticOptions, { staticData: blist.internal.domains });
+          $element.removeClass('loading');
+          $element.find('input').awesomecomplete(staticOptions);
         }
       });
-      $navContainer.animate({width: 250}, 200);
-    }));
-    var unslideNav = function() {
-        $navContainer.animate({width: navWidth}, 200);
-    };
-    $youCompleteMe.blur(unslideNav);
+    } else {
+      $element.find('input').awesomecomplete(staticOptions);
+    }
+  }
 
-    var completelyAwesome = function(domain) {
-        unslideNav();
-        var url = '/internal/orgs/' + domain.organizationId + '/domains/' +
-                      domain.cname;
-        window.location = url;
-    };
+  var $domainCenter = $('.domainCompletion');
+  var $youCompleteMe = $domainCenter.find('.domainAwesomeComplete');
+  var $navContainer = $youCompleteMe.closest('.leftNavBox');
+  var navWidth = $navContainer.width();
 
-    $domainCenter.find('ul').css('width', '90%');
+  $youCompleteMe.focus(function() {
+    blist.internal.fetchDomainList($domainCenter, { onComplete: completelyAwesome });
+    $navContainer.animate({width: 250}, 200);
+  });
+  var unslideNav = function() {
+    $navContainer.animate({width: navWidth}, 200);
+  };
+  $youCompleteMe.blur(unslideNav);
+
+  var completelyAwesome = function(domain) {
+    unslideNav();
+    var url = '/internal/orgs/{0}/domains/{1}'.format(domain.organizationId, domain.cname);
+    window.location = url;
+  };
+
+  $domainCenter.find('ul').css('width', '90%');
 })(jQuery);

@@ -4,7 +4,7 @@
 - Make it possible to quickly prototpye a design using styles and design patterns.
 - Collaboration and sharing of UI componets and patterns.
 
-## My Account
+## Setup
 This libarary uses the Middleman static site generator to to provide an asset pipeline, build tools, and a quick way to run a local environment.
 
 1. Clone the repo

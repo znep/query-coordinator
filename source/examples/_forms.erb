@@ -6,4 +6,8 @@
 	<div>
 		<%= partial "components/forms/textarea", locals: { placeholder_text: "Example Paragraph"} %>
 	</div>
+	<div>
+		<%= partial "components/forms/checkbox", locals: { label: "Checked Checkbox", id: "1", checked: "checked" } %>
+		<%= partial "components/forms/checkbox", locals: { label: "Unchecked Checkbox", id: "2", checked: "" } %>
+	</div>
 </form>

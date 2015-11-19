@@ -1,11 +1,11 @@
-function Modal(element) {
+function ModalFactory(element) {
   this.root = element;
   this.dismissals = Array.prototype.slice.apply(element.querySelectorAll('[data-modal-dismiss]'));
   this.openers = Array.prototype.slice.apply(element.querySelectorAll('[data-modal]'));
   this.attachEvents();
 }
 
-Modal.prototype = {
+ModalFactory.prototype = {
   attachEvents: function() {
     this.dismissals.forEach(function (dismissal) {
       dismissal.addEventListener('click', this.dismiss.bind(this));
@@ -22,14 +22,18 @@ Modal.prototype = {
   },
   dismiss: function(event) {
     var target = event.target;
-    var targetIsCurrentTarget = event.target === event.currentTarget;
+    var closeable = target === event.currentTarget &&
+      target.classList.contains('modal-overlay');
 
-    if (targetIsCurrentTarget) {
-      do {
-        if (target.classList.contains('modal')) {
-          return target.classList.add('modal-hidden');
-        }
-      } while((target = target.parentNode) !== this.root);
-    }
+    do {
+      if (target.hasAttribute('data-modal-dismiss') &&
+          !target.classList.contains('modal')) {
+        closeable = true;
+      } else if (target.classList.contains('modal') && closeable) {
+        return target.classList.add('modal-hidden');
+      } else if (target.classList.contains('modal')){
+        return;
+      }
+    } while((target = target.parentNode) !== this.root);
   }
 };

@@ -47,6 +47,10 @@
   top: 0;
   right: 0;
   padding: 0;
+
+  &:hover {
+    color: red;
+  }
 }
 
 .modal-dismiss {

@@ -14,11 +14,12 @@
 
 .flannel-header-title {
   font-size: 1.25rem;
+  line-height: 1;
 }
 
 .flannel-header-dismiss {
   position: absolute;
-  top: 0.75rem;
+  top: 0.25rem;
   right: 0;
 
   &:hover {

@@ -16,4 +16,4 @@ This libarary uses the Middleman static site generator to to provide an asset pi
 1. Middleman
 2. Modular Scale
 3. Bourbon and Neat (for layout grids)
-
+4. Prism (for syntax highlighting)

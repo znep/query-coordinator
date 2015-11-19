@@ -71,21 +71,25 @@ section.styleguide-section {
 	border-radius: 1px;
 	color: $medium-gray;
 
-} 
-
-ul.blockgrid li {
-	@include span-columns(3);
-  	@include omega(5n);
-  	margin-bottom: ms(5);
-  	padding-left: 0;
-
-  	&.icon-sample {
-  		height: 80px;
-  		width: 80px;
-  		background-color: #eee;
-  		font-size: ms(7);
-  		text-align: center;
-  		padding-top: ms(0);
-  	}
 }
 
+.blockgrid {
+  @include outer-container;
+  padding: 0;
+
+  li {
+    @include span-columns(1);
+    @include omega(8n);
+    margin-bottom: ms(5);
+    padding-left: 0;
+
+    &.icon-sample {
+      height: 40px;
+      width: 40px;
+      background-color: #eee;
+      font-size: ms(3);
+      text-align: center;
+      padding-top: ms(-3);
+    }
+  }
+}

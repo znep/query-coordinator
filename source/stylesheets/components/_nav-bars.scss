@@ -1,0 +1,217 @@
+@import "components/mixins";
+
+// Header
+$header-height: ms(13);
+$header-box-shadow-size: 0.15rem;
+$site-header-z-index: 6;
+
+.header-main {
+  @include unselectable();
+  @include clearfix();
+
+  position: fixed;
+  width: 100%;
+  height: $header-height;
+  left: 0;
+  top: 0;
+  font-size: ms(0);
+  color: $header-text-color;
+  background-color: $header-bg-color;
+  box-shadow: 0 $header-box-shadow-size $header-box-shadow-size $header-box-shadow-color;
+  box-sizing: content-box;
+  z-index: $site-header-z-index;
+  min-width: 73rem; // current point where header would bump to line 2
+
+  &:after {
+    position: absolute;
+    top: $header-height;
+    left: 0px;
+    width: 100%;
+    height: 75px;
+    pointer-events: none;
+    // Gradient from white, start transitioning to transparent at 25%
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,rgba(255,255,255,1)), color-stop(25%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* W3C */
+  }
+
+  .header-right {
+    display: inline-block;
+    float: right;
+    line-height: $header-height;
+    font-size: 1.5rem;
+    font-weight: 100;
+    padding-right: 1rem;
+  }
+
+  .menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+
+    li, ul {
+      display: inline-block;
+      height: $header-height;
+    }
+
+    button {
+      font-size: ms(0);
+    }
+  }
+
+  li.menu-divider, div.menu-divider {  // line divider
+    height: $header-height / 2;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    border-left: 1px solid #6B6B6B;
+  }
+
+  .story-title {
+    display: inline-block;
+    margin: 0 1.5em;
+    max-width: ms(30);
+    height: $header-height;
+    line-height: ms(0);
+    font-weight: 600;
+    font-size: 15px;
+    color: $header-story-title-color;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border: none;
+    background-color: transparent;
+
+    &:hover,
+    &:active {
+      color: $header-story-title-hover-color;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  // Buttons
+  .btn-transparent {
+    color: $header-text-color;
+    background-color: transparent;
+    font-weight: lighter;
+
+    &:hover,
+    &:active {
+      color: $header-link-hover-color;
+      background-color: transparent;
+    }
+
+    &:disabled {
+      color: $header-btn-disabled-color;
+    }
+  }
+
+  .undo-btn,
+  .redo-btn {
+    padding: 0 ms(-25);
+    font-size: ms(1);
+    position: relative;
+    top: 3px;
+  }
+
+  .redo-btn {
+    margin-right: 0.5rem;
+  }
+
+  .preview-btn {
+    &.disabled {
+      color: $header-btn-disabled-color;
+    }
+
+    span {
+      margin-left: 3px;
+    }
+  }
+
+  .settings-panel-btn {
+    display: block;
+    float: left;
+    width: $header-height;
+    height: 100%;
+    color: $settings-panel-btn-color;
+    font-size: ms(8);
+    line-height: $header-height;
+    text-align: center;
+    background-color: $header-accent-color;
+    border: none;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      outline: none;
+      color: lighten($header-bg-color, 10%);
+    }
+
+    &:before {
+      text-align: center;
+    }
+  }
+
+  .panel-btn, .status-indicator {
+    padding: 0.8rem 1.5rem;
+  }
+
+  .panel-btn {
+    &.active {
+      color: $header-text-color;
+      background-color: $header-link-hover-bg-color;
+    }
+
+    span {
+      font-size: 11px;
+    }
+
+    &:disabled {
+      color: darken($header-text-color, 40%);
+    }
+  }
+
+  // Status Indicators
+  .status-indicator {
+    color: $header-text-color;
+    background-color: transparent;
+    font-weight: lighter;
+
+    display: inline-block;
+    cursor: default;
+  }
+
+  #story-publication-status {
+    color: $header-publication-status-color;
+  }
+
+  #story-saving-indicator {
+    color: darken($header-text-color, 40%);
+  }
+}
+
+// Display nav bar in section instead of at the top of the page
+.example {
+  .header-main {
+    position: relative;
+    max-width: 100%;
+  }
+
+  .mobile-example {
+    .header-main {
+      min-width: 0;
+      overflow: hidden;
+      box-shadow: none;
+    }
+  }
+}

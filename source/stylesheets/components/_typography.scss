@@ -99,6 +99,10 @@ h6, .h6 {
 	font-size: ms(-1);
 }
 
+.quiet {
+	color: $quiet-text-color;
+}
+
 //ellipsify long stuff
 @mixin ellipsis() {
   overflow: hidden;

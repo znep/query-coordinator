@@ -40,14 +40,26 @@ layout: styleguide
     <div class="meta">
       <h2 class="styleguide-header">Typography</h2>
       <p class="small">
-        Type is set in <i>Open Sans</i> 15px/1.618 using a modular type scale. The scale is composed using two scale ratios to provide more incremental typesetting steps.
+        Type is set in <i>Open Sans</i> 15px/1.618 using a modular type scale. The scale is composed using three scale ratios to provide more incremental typesetting steps.
       </p>
       <p class="small">
-        The full scale can be viewed at <%= link_to 'http://www.modularscale.com/?15&px&1.618,1.25','http://www.modularscale.com/?15&px&1.618,1.25' %>
+        The full scale can be viewed at <%= link_to 'http://www.modularscale.com/?15&px&1.618,1.25,1.33','http://www.modularscale.com/?15&px&1.618,1.25,1.33' %>
       </p>
     </div>
     <div class="example">
       <%= partial "examples/typography" %>
+    </div> <!-- /.example -->
+  </section>
+
+    <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Dividers</h2>
+      <p class="small">
+        Dividers for your content. 
+      </p>
+    </div>
+    <div class="example">
+      <%= partial "examples/dividers" %>
     </div> <!-- /.example -->
   </section>
 
@@ -114,6 +126,16 @@ layout: styleguide
     <div class="example">
       <%= partial "examples/dropdown" %>
       <%= partial "examples/forms" %>
+    </div><!-- /.example -->
+  </section>
+
+  <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Nav Bars</h2>
+      <p class="small">It's how you know what's up</p>
+    </div>
+    <div class="example">
+      <%= partial "examples/nav_bars" %>
     </div><!-- /.example -->
   </section>
 

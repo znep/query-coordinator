@@ -1,0 +1,8 @@
+<div class="radiobutton">
+	 <% labels.each do |label| %>
+		<div>
+		    <input type="radio" id="<%= label %>" name="radio" />
+		    <label for="<%= label %>"><span></span><%= label %></label>
+		</div>     
+     <% end %>
+</div>

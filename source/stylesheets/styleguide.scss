@@ -10,10 +10,12 @@
 @import "components/modal";
 @import "components/tags";
 @import "components/dividers";
-
+@import "components/flyout";
+@import "components/flannel";
+@import "components/nav-bars";
 
 // Icon Font
-@import "fonts/fonts";
+@import "fonts";
 
 .container {
 	@include outer-container();

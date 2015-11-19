@@ -1,0 +1,58 @@
+.flyout {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 0 8px -2px #666;
+  border: solid 1px #ddd;
+  border-radius: 0.3rem;
+  border-top-left-radius: 0;
+  max-width: 250px;
+
+  &.flyout-hidden {
+    visibility: hidden;
+  }
+
+  &:before {
+    border-color: transparent;
+    border-bottom-color: #ddd;
+    border-width: 12px;
+    border-style: solid;
+    margin-top: -5px;
+    margin-left: -3px;
+    content: "";
+    top: -7px;
+    left: -10px;
+    display: block;
+    position: absolute;
+    transform: rotateZ(-135deg);
+  }
+
+  &:after {
+    border-color: transparent;
+    border-bottom-color: white;
+    border-width: 10px;
+    border-style: solid;
+    margin-top: -5px;
+    margin-left: -3px;
+    content: "";
+    top: -5px;
+    left: -7px;
+    display: block;
+    position: absolute;
+    transform: rotateZ(-135deg);
+  }
+}
+
+.flyout-content {
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 150px;
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+

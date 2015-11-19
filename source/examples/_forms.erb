@@ -1,6 +1,7 @@
 <h3 class="styleguide-subheader">Form Fields </h3>
 
 <form>
+
   <h4 class="h6 styleguide-subheader">Text Field</h4>
   <%= partial "components/code_sample", locals: {
     component: "components/forms/textfield",
@@ -16,4 +17,19 @@
       placeholder_text: "Example Paragraph"
     }
   } %>
+
+  <h4 class="h6 styleguide-subheader">Checkboxes</h4>
+  <%= partial "components/code_sample", locals: {
+	component: "components/forms/checkbox",
+    partial_locals: {
+      label: "Checked Checkbox", id: "1", checked: "checked=\"checked\"" 
+  	} 
+  } %>
+  <%= partial "components/code_sample", locals: {
+	component: "components/forms/checkbox",
+    partial_locals: {
+      label: "Unchecked Checkbox", id: "2", checked: "" 
+  	} 
+  } %>
+
 </form>

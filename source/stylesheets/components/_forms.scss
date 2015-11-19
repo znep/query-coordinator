@@ -81,8 +81,38 @@ form {
 		margin: ms(-5) 0;
 		padding: ms(-5);
 	}
-	.area{
+	.area {
 		min-width: 350px;
 	}
+    .checkbox{
+        input[type=checkbox] {
+            display: none;
+        }
+        label {
+            display: inline-block;
+            cursor: pointer;
+            position: relative;
+        }
+        .fake-checkbox{
+            border: solid 1px #E2E2E2;
+            border-radius: 1px;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+            margin-right: ms(-5);
+            display:inline-block;
+            width:19px;
+            height:19px;
+            cursor:pointer; 
+            vertical-align: text-bottom;
+        }
+        input[type=checkbox] + label .fake-checkbox span{
+            display: none;
+        }
+        input[type=checkbox]:checked + label .fake-checkbox span{
+            display: inline-block;
+            vertical-align: text-top;
+            padding-left: 1px;
+        }
+    }
+
 }
 

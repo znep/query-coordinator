@@ -10,7 +10,7 @@
     <!-- Use title if it's in the page YAML frontmatter -->
     <title><%= current_page.data.title || "Socrata's Styleguide" %></title>
 
-    <%= stylesheet_link_tag "reset", "all", "styleguide" %>
+    <%= stylesheet_link_tag "reset", "all", "styleguide", "vendor/prism" %>
     <%= javascript_include_tag  "all" %>
   </head>
 

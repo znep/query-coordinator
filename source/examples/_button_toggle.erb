@@ -1,2 +1,7 @@
 <h3 class="styleguide-subheader">Button Toggles</h3>
-<button class="btn btn-primary btn-toggle" data-toggle>Toggle me!</button>
+<%= partial "components/code_sample", locals: {
+  component: "components/button_primary_toggle",
+  partial_locals: {
+    text: "Toggle me!"
+  }
+} %>

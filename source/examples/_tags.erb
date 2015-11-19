@@ -1,0 +1,19 @@
+<h3 class="styleguide-subheader">Catalog Tags</h3>
+
+<h4 class="h6 styleguide-subheader">Category Tags</h4>
+<%= partial "components/tag_category", locals: { text: "Dinosaurs" } %>
+<%= partial "components/tag_category", locals: { text: "From" } %>
+<%= partial "components/code_sample", locals: {
+  component: "components/tag_category",
+  partial_locals: {
+    text: "Space"
+  }
+} %>
+
+<h4 class="h6 styleguide-subheader">Primary Tags</h4>
+<%= partial "components/code_sample", locals: {
+  component: "components/tag_official",
+  partial_locals: {
+    text: "Official View"
+  }
+} %>

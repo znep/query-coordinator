@@ -1,2 +1,8 @@
-<h3>Dropdowns</h3>
-<%= partial "components/forms/dropdown", locals: { title: "Gender", options: ["An option!", "Another option!!", "A really, really, really long option!!!"] } %>
+<h3 class="styleguide-subheader">Dropdowns</h3>
+<%= partial "components/code_sample", locals: {
+  component: "components/forms/dropdown",
+  partial_locals: {
+    title: "Gender",
+    options: ["An option!", "Another option!!", "A really, really, really long option!!!"]
+  }
+} %>

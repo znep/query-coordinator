@@ -1,0 +1,18 @@
+//Tags
+
+// Colors
+@import 'color';
+
+.tag-category {
+  display: inline-block;
+  margin: 0 ms(-1) 0 0;
+  padding: ms(-6);
+  font-size: ms(-1);
+  font-weight: 300;
+  color: $tag-color;
+  background-color: $tag-background-color;
+}
+
+.tag-official {
+  color: $secondary-green;
+}

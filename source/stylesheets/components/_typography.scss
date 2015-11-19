@@ -6,15 +6,22 @@
 //Modular Scale 
 @import "modular-scale";
 $ms-base: 15px;
-$ms-ratio: 1.618, 1.25;
+$ms-ratio: 1.618, 1.25, 1.333;
 
+
+$default-font-stack: "Open Sans", "Helvetica", Arial, sans-serif;
 
 body {
-	font-family: "Open Sans", "Helvetica", Arial, sans-serif;
+	font-family: $default-font-stack;
 	font-size: ms(0);
 	line-height: 1.618;
 	color: $default-text-color;
 
+}
+
+input, textarea, keygen, select, button {
+  font-family: $default-font-stack;
+  line-height: 1.25;
 }
 
 

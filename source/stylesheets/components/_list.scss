@@ -1,0 +1,14 @@
+ul, ol {
+  ul, ol {
+    margin: 0.5rem 0;
+  }
+}
+
+ol {
+  > li ol {
+    list-style-type: lower-alpha;
+    > li ol {
+      list-style-type: lower-roman;
+    }
+  }
+}

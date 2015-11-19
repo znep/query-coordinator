@@ -5,6 +5,7 @@
 @import "components/button-group";
 @import "components/buttons";
 @import "components/loader";
+@import "components/forms";
 @import "components/modal";
 
 // Icon Font
@@ -71,3 +72,20 @@ section.styleguide-section {
 	color: $medium-gray;
 
 } 
+
+ul.blockgrid li {
+	@include span-columns(3);
+  	@include omega(5n);
+  	margin-bottom: ms(5);
+  	padding-left: 0;
+
+  	&.icon-sample {
+  		height: 80px;
+  		width: 80px;
+  		background-color: #eee;
+  		font-size: ms(7);
+  		text-align: center;
+  		padding-top: ms(0);
+  	}
+}
+

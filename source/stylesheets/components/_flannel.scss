@@ -1,0 +1,45 @@
+.flannel {
+  position: absolute;
+  background: white;
+  max-width: 300px;
+  box-shadow: 0 0 8px -2px #666;
+  border: solix 1px #ddd;
+  border-radius: 0.3rem;
+  padding: 1rem;
+
+  &.flannel-hidden {
+    visibility: hidden;
+  }
+}
+
+.flannel-header-title {
+  font-size: 1.25rem;
+}
+
+.flannel-header-dismiss {
+  position: absolute;
+  top: 0.75rem;
+  right: 0;
+
+  &:hover {
+    color: red;
+  }
+}
+
+.flannel-content {
+  max-height: 250px;
+  margin-top: 1rem;
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.flannel-actions {
+  margin-top: 1rem;
+  text-align: right;
+}

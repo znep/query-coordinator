@@ -113,6 +113,38 @@ form {
             padding-left: 1px;
         }
     }
+    .radiobutton{
+        input[type=radio] {
+            display: none;
+        }
+        label {
+            display: inline-block;
+            cursor: pointer;
+            position: relative;
+        }
+        input[type=radio] + label span{
+            border: solid 1px #E2E2E2;
+            border-radius: 10px;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+            margin-right: ms(-5);
+            display:inline-block;
+            width:19px;
+            height:19px;
+            cursor:pointer; 
+            vertical-align: text-bottom;
+        }
+
+        input[type=radio]:checked + label span{
+            display:inline-block;
+            width:19px;
+            height:19px;
+            background-color: #b7b7b7;
+            border: solid 5px #e2e2e2; 
+            border-radius: 10px;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+            vertical-align: text-bottom; 
+        }
+    }
 
 }
 

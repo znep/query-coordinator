@@ -1,9 +1,19 @@
 <h3 class="styleguide-subheader">Form Fields </h3>
+
 <form>
-	<div>
-		<%= partial "components/forms/textfield", locals: { placeholder_text: "Example Text"} %>	
-	</div>
-	<div>
-		<%= partial "components/forms/textarea", locals: { placeholder_text: "Example Paragraph"} %>
-	</div>
+  <h4 class="h6 styleguide-subheader">Text Field</h4>
+  <%= partial "components/code_sample", locals: {
+    component: "components/forms/textfield",
+    partial_locals: {
+      placeholder_text: "Example Text"
+    }
+  } %>
+
+  <h4 class="h6 styleguide-subheader">Text Area</h4>
+  <%= partial "components/code_sample", locals: {
+    component: "components/forms/textarea",
+    partial_locals: {
+      placeholder_text: "Example Paragraph"
+    }
+  } %>
 </form>

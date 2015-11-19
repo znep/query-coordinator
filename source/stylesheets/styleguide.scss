@@ -9,6 +9,8 @@
 @import "components/forms";
 @import "components/modal";
 @import "components/tags";
+@import "components/dividers";
+
 
 // Icon Font
 @import "fonts/fonts";
@@ -31,6 +33,10 @@ section.styleguide-section {
 .example {
 	@include span-columns(8);
 	@include shift(1);
+
+	.usage.language-markup {
+		margin-bottom: ms(12);
+	}
 }
 
 
@@ -84,6 +90,25 @@ section.styleguide-section {
 
 }
 
+// Sample Grids for Styleguide
+.inline-container {
+	@include outer-container();
+}
+
+.one {
+	@include span-columns(1);
+}
+
+.third {
+	@include span-columns(4);
+}
+
+.half {
+	@include span-columns(6);
+}
+
+
+
 .blockgrid {
   @include outer-container;
   padding: 0;
@@ -104,3 +129,5 @@ section.styleguide-section {
     }
   }
 }
+
+

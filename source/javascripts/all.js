@@ -2,7 +2,7 @@
 
 $(function() {
 	var dd = new DropDown( $('#dd') );
-  var modal = new Modal( document );
+  var modalFactory = new ModalFactory( document );
 
 	$(document).click(function() {
 		// all dropdowns

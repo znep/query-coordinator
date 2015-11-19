@@ -105,20 +105,27 @@ h6, .h6 {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-@mixin triangle-down() {
+
+@mixin triangle() {
 	content: "";
-    width: 0;
-    height: 0;
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    margin-top: -2px;
-    border-width: 6px 6px 0 6px;
-    border-style: solid;
-    border-color: $gray transparent; 
+  width: 0;
+  height: 0;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  border-style: solid;
+	border-color: $gray transparent;
+}
+
+@mixin triangle-down() {
+  @include triangle;
+
+  border-width: 6px 6px 0 6px;
+  margin-top: -2px;
 }
 @mixin triangle-up() {
-	border-color: $gray transparent;
-    border-width: 0 6px 6px 6px ;
-    margin-top: -3px;
+  @include triangle;
+
+  border-width: 0 6px 6px 6px;
+  margin-top: -3px;
 }

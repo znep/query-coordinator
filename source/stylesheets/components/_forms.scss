@@ -1,71 +1,78 @@
 //Dropdowns
-.wrapper-dropdown {
-    /* Size and position */
-    display: inline-block;
-    position: relative; /* Enable absolute positioning for children and pseudo elements */
-	padding: ms(-5) ms(7) ms(-5) ms(0);
+.dropdown {
+  /* Size and position */
+  display: inline-block;
+  position: relative; /* Enable absolute positioning for children and pseudo elements */
+  padding: ms(-5) ms(7) ms(-5) ms(0);
 
-    /* Styles */
-    color: $gray;
-    border: 1px solid $gray;
-    border-radius: 1px;
-    cursor: pointer;
-
+  /* Styles */
+  color: $gray;
+  border: 1px solid $gray;
+  border-radius: 1px;
+  cursor: pointer;
 }
 
-.wrapper-dropdown:after {
-    @include triangle-down;   
+.dropdown::after {
+  @include triangle-down;
 }
 
-.wrapper-dropdown .dropdown {
-    /* Size & position */
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: inherit;
-
-    /* Styles */
-    background: $almost-white-bg;
-    border-radius: 1px;
-    list-style: none;
-    padding: 0;
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 15px;
-
-    /* Hiding */
-    opacity: 0;
-    pointer-events: none;
+.dropdown.dropdown-orientation-top::after {
+  @include triangle-up;
 }
 
-.wrapper-dropdown .dropdown li a {
-    @include ellipsis;
-    display: block;
-    text-decoration: none;
-    color: $gray;
+.dropdown .dropdown-options {
+  /* Size & position */
+  position: absolute;
+  left: 0;
+  right: inherit;
+
+  /* Styles */
+  background: $almost-white-bg;
+  border-radius: 1px;
+  list-style: none;
+  padding: 0;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 15px;
+
+  /* Hiding */
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dropdown.dropdown-orientation-top .dropdown-options {
+  bottom: 100%;
+}
+
+.dropdown.dropdown-orientation-bottom .dropdown-options {
+  top: 100%;
+}
+
+.dropdown .dropdown-options li a {
+  @include ellipsis;
+  display: block;
+  text-decoration: none;
+  color: $gray;
 	padding: ms(-5) ms(0);
-
 }
 
 /* Hover state */
-.wrapper-dropdown .dropdown li:hover a {
-    background: $extra-light-gray;
+.dropdown .dropdown-options li:hover a {
+  background: $extra-light-gray;
 }
 
 /* Active state */
-.wrapper-dropdown.active .dropdown {
-    opacity: 1;
-    pointer-events: auto;
-    margin: 5px 0;
+.dropdown.active .dropdown-options {
+  opacity: 1;
+  pointer-events: auto;
+  margin: 5px 0;
 }
 
-.wrapper-dropdown.active:after {
-    @include triangle-up;
+.dropdown.active::after {
+  @include triangle-up;
 }
 
-.wrapper-dropdown.active {
-  //background: $light-gray;
-  }
-
-
+.dropdown.active.dropdown-orientation-top::after {
+  @include triangle-down;
+}
 
 /////Forms
 form {

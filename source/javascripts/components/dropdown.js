@@ -1,32 +1,39 @@
 function DropDown(element) {
-    this.dd = element;
-    this.placeholder = this.dd.children('span');
-    this.opts = this.dd.find('ul.dropdown > li');
-    this.val = '';
-    this.index = -1;
-    this.initEvents();
+  this.dd = element;
+  this.placeholder = this.dd.querySelector('span');
+  this.opts = Array.prototype.slice.call(this.dd.querySelectorAll('ul.dropdown > li'));
+  this.val = '';
+  this.index = -1;
+  this.initEvents();
 }
 
 DropDown.prototype = {
-    initEvents : function() {
-        var obj = this;
+  initEvents: function() {
+    var obj = this;
 
-        obj.dd.on('click', function(event){
-            $(this).toggleClass('active');
-            return false;
-        });
+    obj.dd.addEventListener('click', function(event) {
+      event.stopPropagation();
+      obj.dd.classList.toggle('active');
+      return false;
+    });
 
-        obj.opts.on('click',function(){
-            var opt = $(this);
-            obj.val = opt.text();
-            obj.index = opt.index();
-            obj.placeholder.text('Gender: ' + obj.val);
-        });
-    },
-    getValue : function() {
-        return this.val;
-    },
-    getIndex : function() {
-        return this.index;
-    }
+    obj.opts.forEach(function(opt) {
+      opt.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        var node = opt;
+        var index = 0;
+
+        while ((node = node.previousElementSibling) !== null) {
+          index++;
+        }
+
+        obj.val = opt.textContent;
+        obj.index = index;
+        obj.placeholder.textContent = 'Gender: ' + obj.val;
+
+        return false;
+      });
+    });
+  }
 }

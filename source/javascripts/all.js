@@ -1,14 +1,17 @@
 //= require_tree .
 
-$(function() {
-	var dd = new DropDown( $('#dd') );
+document.addEventListener('DOMContentLoaded', function() {
+	var dd = new DropDown( document.querySelector('#dd') );
   var modalFactory = new ModalFactory( document );
   var toggleFactory = new ToggleFactory( document );
   var flyoutFactory = new FlyoutFactory( document );
   var flannelFactory = new FlannelFactory( document );
 
-	$(document).click(function() {
+  document.addEventListener('click', function() {
 		// all dropdowns
-		$('.wrapper-dropdown').removeClass('active');
+    var dropdowns = document.querySelectorAll('.wrapper-dropdown')
+    for (var i = 0; i < dropdowns.length; i++) {
+      dropdowns[i].classList.remove('active');
+    }
 	});
 });

@@ -53,6 +53,15 @@ section.styleguide-section {
 	color: $quiet-text-color;
 }
 
+.styleguide-subheader {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
 .modal-section {
   .example {
     max-width: 250px;

@@ -45,6 +45,11 @@
     font-size: ms(-2);
     padding: ms(-8) ms(-1);
   }
+
+  [class*="icon-"] {
+    position: relative;
+    top: 1px;
+  }
 }
 
 // Makes btn full width.

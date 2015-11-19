@@ -1,0 +1,33 @@
+//Dividers
+
+hr {
+	border-style: none;
+	border-top: 1px solid $light-gray;
+	margin: ms(4) 0 ms(4);
+}
+
+.vertical-rule {
+	height: 300px;
+	//margin-left: 70px;
+
+	.divider {
+		position: relative;
+		height: 100%;
+		width: 1px;
+		background-color: $medium-gray;
+
+	}
+	.or {
+		position: absolute;
+	    top: 40%;
+	    background-color: #aaa;
+	    height: ms(7);
+	    width: ms(7);
+	    border-radius: 20px;
+	    text-align: center;
+	    line-height: 2.5;
+	    color: #fff;
+	    left: -18px;
+	}
+
+}

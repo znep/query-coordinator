@@ -12,6 +12,7 @@ if [[ -z $(git status -s) ]]; then
     git add -A
     git commit -am "Automated Deployment $(date -u)"
     git push origin gh-pages
+    git checkout -
   else
     echo >&2 "There are no changes to deploy."
     exit 1

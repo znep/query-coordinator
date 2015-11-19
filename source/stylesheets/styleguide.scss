@@ -7,6 +7,9 @@
 @import "components/loader";
 @import "components/modal";
 
+// Icon Font
+@import "fonts/fonts";
+
 .container {
 	@include outer-container();
 }

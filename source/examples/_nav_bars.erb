@@ -1,0 +1,21 @@
+<h3 class="styleguide-subheader">App Bar</h3>
+<h4 class="h6 styleguide-subheader">Narrow Viewport</h4>
+<div class="mobile-example">
+  <%= partial "components/app_bar", locals: {
+    preview_link: "#",
+    publication_status: "Published",
+    save_status: "",
+    title: "Blue Dinosaurs in the Ocean"
+  }  %>
+</div>
+
+<h4 class="h6 styleguide-subheader">Wide Viewport</h4>
+<%= partial "components/code_sample", locals: {
+  component: "components/app_bar",
+  partial_locals: {
+    preview_link: "#",
+    publication_status: "Published",
+    save_status: "",
+    title: "Purple Penguins on the Moon"
+  }
+}  %>

@@ -7,13 +7,24 @@
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
 
     <!-- Use title if it's in the page YAML frontmatter -->
-    <title><%= current_page.data.title || "The Middleman" %></title>
+    <title><%= current_page.data.title || "Socrata's Styleguide" %></title>
 
-    <%= stylesheet_link_tag "reset", "all" %>
+    <%= stylesheet_link_tag "all" %>
     <%= javascript_include_tag  "all" %>
   </head>
 
   <body class="<%= page_classes %>">
+    <div class="responsive-navbar responsive-navbar-fixed">
+      <a class="home" href="/">
+        <img src="images/socrata.png" alt="Socrata">
+        <span>Styleguide</span>
+      </a>
+      <div class="responsive-navbar-nav">
+        <a href="https://github.com/socrata/styleguide" class="btn btn-default btn-inverse">View on Github</a>
+        <button class="btn btn-default btn-inverse" data-menu-toggle="pagemap" data-toggle>Menu</button>
+      </div>
+    </div>
+
     <%= yield %>
   </body>
 </html>

@@ -63,7 +63,7 @@
     }
 
     .stu {
-      margin-top: ms(20);
+      margin-top: ms(22);
     }
 
   }
@@ -99,6 +99,11 @@ body > .responsive-navbar {
   .btn {
     @include transition(width 0.15s);
   }
+}
+
+.responsive-navbar .home {
+  text-decoration: none;
+  color: $white;
 }
 
 .page-header {

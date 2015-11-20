@@ -1,0 +1,31 @@
+//Tags
+
+.alert {
+	background-color: $almost-white-bg;
+	border: 1px solid $extra-light-gray;
+	font-size: ms(0);
+	padding: ms(-2);
+	border-radius: 1px;
+	color: $medium-gray;
+
+	&.info {
+		background-color: lightblue;
+		border-color: $primary-blue;
+		color: $primary-blue;
+	}	
+	&.success {
+		background-color: lightblue;
+		border-color: $primary-blue;
+		color: $primary-blue;
+	}	
+	&.warning {
+		background-color: lightblue;
+		border-color: $primary-blue;
+		color: $primary-blue;
+	}	
+	&.info {
+		background-color: lightblue;
+		border-color: $primary-blue;
+		color: $primary-blue;
+	}
+}

@@ -287,18 +287,6 @@ Frontend::Application.routes do
       match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
     end
 
-    # TODO Remove this route. It is (or should be) no longer used as of 9/2015
-    # Temporary proxy for tileserver, while ops finishes the work to expose AWS services to the 'net directly.
-    scope :controller => 'tile_server', :constraints => {
-        :page_id => Frontend::UID_REGEXP,
-        :field_id => Phidippides::COLUMN_ID_REGEX,
-        :zoom => Frontend::INTEGER_REGEXP,
-        :x_coord => Frontend::INTEGER_REGEXP,
-        :y_coord => Frontend::INTEGER_REGEXP
-      } do
-      match '/tiles/:page_id/:field_id/:zoom/:x_coord/:y_coord.pbf', :via => :get, :action => 'proxy_request'
-    end
-
     scope :controller => 'angular', :constraints => Constraints::DataLensConstraint.new do
       # NOTE: The dataCards angular app is capable of rendering multiple views (Pages and Dataset Metadata, for instance).
       # As of 9/24/2014, the angular app itself figures out what particular view to render.

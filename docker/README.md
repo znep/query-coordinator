@@ -13,7 +13,6 @@ Optional ENV vars:
 - `MIXPANEL_TOKEN`
 - `POLAROID_HOSTNAME` and `POLAROID_PORT`
 - `STATSD_ENABLED` and `STATSD_SERVER`
-- `TILESERVER_HOSTNAME` and `TILESERVER_PORT`
 - `TILESERVER_HOSTS` - A comma-separated list of public tileserver API hosts
 
 _Note: An IP can be provided with `EXTERNAL_IP` that will be used for the `ZOOKEEPER_HOSTS`,

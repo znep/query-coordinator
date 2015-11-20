@@ -47,24 +47,31 @@ $(function () {
 
   // Handle flyout events
   $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+  $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_CLEAR', clearFlyout);
+
+  function clearFlyout() {
+    $timelineChartElement.removeClass('expanded');
+    $timelineChartContainer.find('.mobile-flyout').html('');
+  }
 
   function handleFlyout(event) {
     var payload = event.originalEvent.detail;
-    $timelineChartElement.addClass('expanded');
-
+    
     // Render mobile flyout
     if (payload !== null) {
       mobileFlyoutRender(payload);
+      $timelineChartElement.addClass('expanded');
     }
   }
 
   function mobileFlyoutRender(payload) {
     var flyoutBounds = payload.element.getBoundingClientRect();
+    var highlightedBarWidth = $('.timeline-chart-highlight-container').width();
     var flyoutData = $('<div>', {
       'class': 'title-wrapper',
       html:
       '<div class="labels mobile">' +
-      '<div class="arrow" style="left: ' + (flyoutBounds.left - 20)+ 'px"></div>' +
+      '<div class="arrow" style="left: ' + ((flyoutBounds.left-28) + (highlightedBarWidth/2)) + 'px"></div>' +
       '<h4 class="title pull-left">' + payload.data.title + '</h4>' +
       '<h4 class="value pull-right text-right">' + payload.data.unfilteredValue.split(' ')[0] +
       '<span> ' + payload.data.unfilteredValue.split(' ')[1] + '</span>' +

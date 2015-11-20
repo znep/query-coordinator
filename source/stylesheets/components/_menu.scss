@@ -73,7 +73,6 @@
   margin-right: 0;
 
   li {
-    padding: 1rem;
     background-color: #333;
     border-bottom: solid 1px #2A2A2A;
 
@@ -85,6 +84,13 @@
 
     &:last-child {
       border-bottom: none;
+    }
+
+    a {
+      display: block;
+      padding: 1rem;
+      text-decoration: none;
+      color: inherit;
     }
   }
 }

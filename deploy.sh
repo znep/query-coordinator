@@ -18,6 +18,6 @@ if [[ -z $(git status -s) ]]; then
     exit 1
   fi
 else
-  echo >&2 "Please commit of stash your changes."
+  echo >&2 "Please commit or stash your changes."
   exit 1
 fi

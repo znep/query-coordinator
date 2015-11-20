@@ -16,7 +16,7 @@
 
     &.menu-anchor-left {
       left: -100%;
-      box-shadow: 8px 0 30px #333;
+      box-shadow: 8px 0 30px $dark-grey-1;
       border-right: solid 2px #333;
 
       &.active {
@@ -72,15 +72,36 @@
   margin-left: 0;
   margin-right: 0;
 
+  .menu-section-title > a {
+    font-weight: 200;
+    text-transform: uppercase;
+    font-size: ms(1);
+    border-bottom: solid 1px #2A2A2A;
+    
+    &:hover {
+      color: $white;
+    }
+  }
+
   li {
     background-color: #333;
     border-bottom: solid 1px #2A2A2A;
 
-    &:hover {
-      color: white;
-      cursor: pointer;
-      background-color: #3A3A3A;
+    & > ul {
+      list-style-type: none;      
+      padding: 0;
+      
+      li {
+        padding-left: ms(2);
+        &:hover {
+          color: white;
+          cursor: pointer;
+          background-color: #3A3A3A;
+         }
+      } 
     }
+
+
 
     &:last-child {
       border-bottom: none;
@@ -92,5 +113,6 @@
       text-decoration: none;
       color: inherit;
     }
+
   }
 }

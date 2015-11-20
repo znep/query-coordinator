@@ -1,15 +1,58 @@
-<div class="color-group">
-  <%= partial "components/swatch" , locals: { color: 'primary', label: "Primary" } %>
+<div class="inline-container">
+  <div class="color-group">
+    <%= partial "components/swatch" , locals: { color: 'primary', label: "Primary" } %>
+  </div>
+  <div class="color-group">
+    <%= partial "components/swatch" , locals: { color: 'secondary', label: "Secondary" } %>
+  </div>
 </div>
-<div class="color-group">
-  <%= partial "components/swatch" , locals: { color: 'secondary', label: "Secondary" } %>
+<div class="inline-container">
+  <div class="color-group">
+    <%= partial "components/swatch" , locals: { color: 'warning', label: "Warning" } %>
+  </div>
+  <div class="color-group">
+    <%= partial "components/swatch" , locals: { color: 'error', label: "Error" } %>
+  </div>
+  <div class="color-group">
+    <%= partial "components/swatch" , locals: { color: 'success', label: "Success" } %>
+  </div>
 </div>
-<div class="color-group">
-  <%= partial "components/swatch" , locals: { color: 'warning', label: "Warning" } %>
+
+<div class="inline-container">
+  <h6> Grey Black White</h6>
+  <div class="swatch-container">
+    <div class="grey box"></div>
+    <div class="subcontainer">
+      <div class="black small-box light"></div>
+      <div class="white small-box dark"></div>
+    </div>
+  </div>
 </div>
-<div class="color-group">
-  <%= partial "components/swatch" , locals: { color: 'error', label: "Error" } %>
-</div>
-<div class="color-group">
-  <%= partial "components/swatch" , locals: { color: 'success', label: "Success" } %>
+
+<div class="inline-container">
+  <h6> Greys (not grays)</h6>
+  <div class="swatch-container">
+    <div class="box grey light-5"></div>
+  </div>
+  <div class="swatch-container">
+    <div class="box grey light-4"></div>
+  </div>
+  <div class="swatch-container">
+    <div class="box grey light-3"></div>
+  </div>
+  <div class="swatch-container">
+    <div class="box grey light-2"></div>
+  </div>
+  <div class="swatch-container">
+    <div class="box grey light-1"></div>
+  </div>  
+  <div class="swatch-container">
+    <div class="box grey dark-1"></div>
+  </div>
+  <div class="swatch-container">
+    <div class="box grey dark-2"></div>
+  </div>
+  <div class="swatch-container">
+    <div class="box grey dark-3"></div>
+  </div>
 </div>

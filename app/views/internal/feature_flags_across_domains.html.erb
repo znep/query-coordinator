@@ -12,7 +12,7 @@
     <ul>
     <%- @sets.keys.each do |set|  %>
       <li><%= link_to set,
-        feature_flags_across_domains_with_set_path(params.merge(flag_set: set.gsub(/ /, '+'))) %></li>
+        feature_flags_across_domains_path(params.merge(flag_set: set.try(:gsub, / /, '+'))) %></li>
     <%- end %>
     </ul>
   </div>
@@ -29,15 +29,11 @@
     </tr>
     <%- @domains.each do |domain, flags|
       modify_link =
-        if @category.present?
-          feature_flags_config_with_category_path(domain_id: domain.id, category: @category.gsub(/ /, '+'))
-        else
-          feature_flags_config_path(domain_id: domain.id)
-        end
+        feature_flags_config_path(domain_id: domain.cname, category: @category.try(:gsub, / /, '+'))
     %>
       <tr>
         <td class="domain_cname"><%= link_to domain.cname,
-          show_domain_path(org_id: domain.organizationId, id: domain.cname) %></td>
+          show_domain_path(org_id: domain.organizationId, domain_id: domain.cname) %></td>
         <td class="extra_padding">&nbsp;</td>
         <td><%= link_to '(modify)', modify_link %></td>
         <%- @flags.each do |flag| %>

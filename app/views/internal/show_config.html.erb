@@ -18,7 +18,7 @@
       <h1><%= @config.name %> for
         <%= link_to "#{@domain.name} (#{@domain.cname})",
                     show_domain_path(org_id: @domain.organizationId,
-                                     id: @domain.cname) %>
+                                     domain_id: @domain.cname) %>
         (<%= 'not ' unless @config.default %>default for <%= @config.type %>)
       </h1>
 

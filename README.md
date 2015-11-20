@@ -11,7 +11,7 @@ This libarary uses the Middleman static site generator to to provide an asset pi
 1. Clone the repo somewhere appropriate, e.g. `git clone https://github.com/socrata/styleguide`.
 3. `bundle install`
 4. `bundle exec middleman`
-5. Open your favorite browser to look at [](http://localhost:4567).
+5. Open your favorite browser to look at http://localhost:4567.
 
 ## Contributions
 Anyone and everyone is welcome to submit a pull request with code and documentation. Fork the repository and work through the Setup section.

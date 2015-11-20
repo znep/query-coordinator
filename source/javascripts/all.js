@@ -1,8 +1,8 @@
 //= require_tree .
 
 document.addEventListener('DOMContentLoaded', function() {
-	var dd = new DropDown( document.querySelector('#dd') );
-  var du = new DropDown( document.querySelector('#du') );
+	//var dd = new DropDown( document.querySelector('#dd') );
+  //var du = new DropDown( document.querySelector('#du') );
 
   var modalFactory = new ModalFactory( document );
   var toggleFactory = new ToggleFactory( document );

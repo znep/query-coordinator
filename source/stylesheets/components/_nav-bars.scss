@@ -238,8 +238,15 @@ $site-header-z-index: 6;
     vertical-align: middle;
   }
 
-  .btn-default {
+  .responsive-navbar-nav {
     float: right;
-    margin-top: 10px;
+
+    .btn-default {
+      margin-right: 0.5rem;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
   }
 }

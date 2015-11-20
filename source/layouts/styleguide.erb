@@ -17,7 +17,10 @@
     <div class="responsive-navbar responsive-navbar-fixed">
       <img src="images/socrata.png" alt="Socrata">
       <span>Styleguide</span>
-      <button class="btn btn-default btn-inverse">Github</button>
+      <div class="responsive-navbar-nav">
+        <button class="btn btn-default btn-inverse">Github</button>
+        <button class="btn btn-default btn-inverse" data-menu-toggle="pagemap" data-toggle>Menu</button>
+      </div>
     </div>
 
     <%= yield %>

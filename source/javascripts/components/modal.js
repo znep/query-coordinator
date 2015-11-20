@@ -14,6 +14,18 @@ ModalFactory.prototype = {
     this.openers.forEach(function (opener) {
       opener.addEventListener('click', this.open.bind(this));
     }, this);
+
+    document.addEventListener('keyup', function(event) {
+      var key = event.which || event.keyCode;
+
+      // ESC
+      if (key === 27) {
+        var modals = Array.prototype.slice.call(document.querySelectorAll('.modal:not(.modal-hidden)'));
+        modals.forEach(function(modal) {
+          modal.classList.add('modal-hidden');
+        });
+      }
+    });
   },
   open: function(event) {
     var modal = event.target.getAttribute('data-modal');

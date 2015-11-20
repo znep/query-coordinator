@@ -96,6 +96,40 @@ section.styleguide-section {
   }
 }
 
+.specimen,
+.speciment-meta {
+  display: block;
+} 
+
+.specimen {
+  font-size: ms(3);
+
+  &.italic {
+      font-style: italic;
+  }
+
+  &.light {
+    font-weight: 200;
+
+  }
+
+  &.semibold {
+    font-weight: 600;
+  }
+
+  &.bold {
+    font-weight: 700;
+  }
+
+
+
+}
+
+.specimen-meta {
+  font-size: ms(-1);
+  margin-bottom: ms(2);
+}
+
 .usage {
 	background-color: $almost-white-bg;
 	border: 1px solid $light-grey-5;

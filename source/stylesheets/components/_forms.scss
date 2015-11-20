@@ -7,7 +7,7 @@
 
   /* Styles */
   color: $grey;
-  border: 1px solid $grey;
+  border: 1px solid $btn-default-border-color;
   border-radius: 1px;
   cursor: pointer;
 }
@@ -27,11 +27,11 @@
   right: inherit;
 
   /* Styles */
-  background: $almost-white-bg;
+  background: $white;
   border-radius: 1px;
   list-style: none;
   padding: 0;
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 15px;
+  box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 15px;
 
   /* Hiding */
   opacity: 0;
@@ -63,7 +63,7 @@
 .dropdown.active .dropdown-options {
   opacity: 1;
   pointer-events: auto;
-  margin: 5px 0;
+  margin: 1px 0;
 }
 
 .dropdown.active::after {

@@ -19,7 +19,7 @@
   margin: 125px auto 50px auto;
   max-width: 500px;
   background-color: #fff;
-  border-radius: 3px;
+  border-radius: 1px;
   padding: 1rem;
   box-shadow: 0 0 10px -4px #555;
   z-index: 1000;
@@ -39,7 +39,7 @@
 
 .modal-header-title,
 .modal-header-dismiss {
-  font-size: 1.25rem;
+  //font-size: 1.25rem;
 }
 
 .modal-header-dismiss {
@@ -47,9 +47,11 @@
   top: 0;
   right: 0;
   padding: 0;
+  font-size: ms(-1);
+  color: $light-grey-1; 
 
   &:hover {
-    color: red;
+    color: $dark-grey-1;
   }
 }
 

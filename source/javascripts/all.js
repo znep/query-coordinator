@@ -46,7 +46,16 @@ document.addEventListener('DOMContentLoaded', function() {
   var navbar = document.querySelector('body > .responsive-navbar');
   var buttons = Array.prototype.slice.call(navbar.querySelectorAll('.btn'));
   var menu = document.querySelector('#pagemap');
+  var anchors = Array.prototype.slice.call(document.querySelectorAll('.menu a'));
 
   document.addEventListener('wheel', collapse);
+  anchors.forEach(function(anchor) {
+    anchor.addEventListener('click', function() {
+      setTimeout(function() {
+        collapse({pageY: document.scrollingElement.scrollTop});
+      });
+    });
+  });
+
   collapse({pageY: document.scrollingElement.scrollTop});
 });

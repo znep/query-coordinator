@@ -32,12 +32,6 @@ module DataLensHelper
     javascript_tag("var relatedVisualizations = #{json_escape(@related_visualizations.to_json)};")
   end
 
-  def tileserver_hosts
-    APP_CONFIG.tileserver_hosts.present? ?
-      APP_CONFIG.tileserver_hosts.split(',').map { |value| value.strip } :
-      []
-  end
-
   def angular_config
     # Keys from APP_CONFIG that we want to include in FeatureFlags for use in the JS
     app_config_whitelist = %w(

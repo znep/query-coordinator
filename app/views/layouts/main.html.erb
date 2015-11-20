@@ -126,7 +126,7 @@ http://www.socrata.com
 
       <%- end -%>
 
-      <a name="content"  tabindex="-1"></a>
+      <%- if content_for?(:relocated_content) -%><%- yield :relocated_content -%><%- else -%><a name="content"  tabindex="-1"></a><%- end -%>
       <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !module_enabled?(:govStat) || suppress_govstat? %>
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>

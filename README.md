@@ -12,6 +12,16 @@ This libarary uses the Middleman static site generator to to provide an asset pi
 3. `bundle install`
 4. `bundle exec middleman`
 
+## Contributions
+Anyone and everyone is welcome to submit a pull request with code and documentation. Fork the repository and work through the Setup section.
+
+Once your bug fixes or component is ready, open a PR, and get we'll get to it as soon as possible.
+
+### Deploying to socrata.github.io/styleguide
+When a PR is successfully merged, an admin must run – from `master` – the deploy script at the base of the project.
+
+`git checkout master && ./deploy.sh`
+
 ## Resources Used
 1. Middleman
 2. Modular Scale

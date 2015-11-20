@@ -24,7 +24,7 @@ function FlannelFactory(element) {
         top += node.offsetTop;
       } while ((node = node.offsetParent) !== null);
 
-      left = left;
+      left = left + hoverable.offsetWidth / 2;
       top = top + hoverable.offsetHeight + padding;
 
       flannel.style.left = left + 'px';

@@ -7,13 +7,24 @@
 ## Setup
 This libarary uses the Middleman static site generator to to provide an asset pipeline, build tools, and a quick way to run a local environment.
 
-1. Clone the repo
-2. Ensure you have `rbenv` installed with ruby 2.2.2.
+2. Ensure you have `rbenv` ([installation](https://github.com/sstephenson/rbenv#installation)) installed with ruby 2.2.2.
+1. Clone the repo somewhere appropriate, e.g. `git clone https://github.com/socrata/styleguide`.
 3. `bundle install`
 4. `bundle exec middleman`
+5. Open your favorite browser to look at [http://localhost:4567](http://localhost:4567).
+
+## Contributions
+Anyone and everyone is welcome to submit a pull request with code and documentation. Fork the repository and work through the Setup section.
+
+Once your bug fixes or component is ready, open a PR, and get we'll get to it as soon as possible.
+
+### Deploying to socrata.github.io/styleguide
+When a PR is successfully merged, an admin must run – from `master` – the deploy script at the base of the project.
+
+`git checkout master && ./deploy.sh`
 
 ## Resources Used
-1. Middleman
-2. Modular Scale
-3. Bourbon and Neat (for layout grids)
-4. Prism (for syntax highlighting)
+1. [Middleman](https://middlemanapp.com/)
+2. [Modular Scale](https://github.com/modularscale/modularscale-sass)
+3. [Bourbon](http://bourbon.io/) and [Neat](http://neat.bourbon.io) (for layout grids)
+4. [Prism](http://prismjs.com/) (for syntax highlighting)

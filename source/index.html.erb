@@ -4,7 +4,9 @@ layout: styleguide
 ---
 
 <div class="container">
-  <h1 class="styleguide-title">Socrata's Styleguide</h1>
+  <h1 class="styleguide-title">
+    <img src="images/socrata-logo-horizontal.png" alt="Socrata">Styleguide
+  </h1>
 
   <section class="styleguide-section modal-section">
     <div class="meta">
@@ -36,18 +38,40 @@ layout: styleguide
     </div>
   </section>
 
+  <section class="styleguide-section menu-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Menu</h2>
+      <p class="small"></p>
+    </div>
+    <div class="example">
+      <%= partial "examples/menus" %>
+    </div>
+  </section>
+
   <section class="styleguide-section">
     <div class="meta">
       <h2 class="styleguide-header">Typography</h2>
       <p class="small">
-        Type is set in <i>Open Sans</i> 15px/1.618 using a modular type scale. The scale is composed using two scale ratios to provide more incremental typesetting steps.
+        Type is set in <i>Open Sans</i> 15px/1.618 using a modular type scale. The scale is composed using three scale ratios to provide more incremental typesetting steps.
       </p>
       <p class="small">
-        The full scale can be viewed at <%= link_to 'http://www.modularscale.com/?15&px&1.618,1.25','http://www.modularscale.com/?15&px&1.618,1.25' %>
+        The full scale can be viewed at <%= link_to 'http://www.modularscale.com/?15&px&1.618,1.25,1.33','http://www.modularscale.com/?15&px&1.618,1.25,1.33' %>
       </p>
     </div>
     <div class="example">
       <%= partial "examples/typography" %>
+    </div> <!-- /.example -->
+  </section>
+
+    <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Dividers</h2>
+      <p class="small">
+        Dividers for your content.
+      </p>
+    </div>
+    <div class="example">
+      <%= partial "examples/dividers" %>
     </div> <!-- /.example -->
   </section>
 
@@ -58,6 +82,16 @@ layout: styleguide
     </div>
     <div class="example">
       <%= partial "examples/lists" %>
+    </div><!-- /.example -->
+  </section>
+
+  <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Tables</h2>
+      <p class="small">Four legs and holds cups, plates, etc.</p>
+    </div>
+    <div class="example">
+      <%= partial "examples/tables" %>
     </div><!-- /.example -->
   </section>
 
@@ -124,6 +158,16 @@ layout: styleguide
     </div>
     <div class="example">
       <%= partial "examples/nav_bars" %>
+    </div><!-- /.example -->
+  </section>
+
+  <section class="styleguide-section">
+    <div class="meta">
+      <h2 class="styleguide-header">Pagination</h2>
+      <p class="small">We have all of the things!</p>
+    </div>
+    <div class="example">
+      <%= partial "examples/pagination" %>
     </div><!-- /.example -->
   </section>
 

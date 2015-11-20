@@ -1,0 +1,92 @@
+//Tables
+
+// Borderd Table
+table {
+  border-spacing: 0;
+  margin: ms(2) 0;
+  min-width: 100%;
+
+  thead {
+    tr {
+      background-color: $extra-light-gray;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 700;
+    }
+  }
+
+  th, td {
+    border: 1px solid $medium-gray;
+    padding: 1.5rem;
+  }
+}
+
+//Borderless Table
+.table-borderless {
+  thead {
+    tr {
+      background-color: transparent;
+
+      th {
+        border-top: 0;
+        font-weight: 700;
+      }
+    }
+  }
+
+  th, td {
+    border: {
+      left: 0;
+      right: 0;
+    }
+  }
+}
+
+// Striped Table
+// Zebra-striping
+//
+// Default zebra-stripe styles (alternating gray and transparent backgrounds)
+
+.table-striped {
+  > tbody > tr:nth-of-type(odd) {
+    background-color: $extra-light-gray;
+  }
+}
+
+
+// Responsive Table
+.table-responsive {
+	min-height: 0.1%;
+	overflow-x: auto;
+
+		width: 100%;
+		overflow-y: hidden;
+		-ms-overflow-style: -ms-autohiding-scrollbar;
+		border: 1px solid $extra-light-gray;
+
+	    // Tighten up spacing
+	    > .table {
+	    	margin-bottom: 0;
+
+	      // Ensure the content doesn't wrap
+	      > thead,
+	      > tbody,
+	      > tfoot {
+	      	> tr {
+	      		> th,
+	      		> td {
+	      			white-space: nowrap;
+	      		}
+	      	}
+	      }
+	  	}
+		
+		@include breakpoint($small) { 
+			border: none;
+
+		}	
+
+	}
+

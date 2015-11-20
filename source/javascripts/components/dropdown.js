@@ -1,9 +1,13 @@
 function DropDown(element) {
   this.dd = element;
+  this.orientation = element.getAttribute('data-orientation') || 'bottom';
+  this.dd.classList.add('dropdown-orientation-' + this.orientation);
+
   this.placeholder = this.dd.querySelector('span');
-  this.opts = Array.prototype.slice.call(this.dd.querySelectorAll('ul.dropdown > li'));
+  this.opts = Array.prototype.slice.call(this.dd.querySelectorAll('.dropdown-options > li'));
   this.val = '';
   this.index = -1;
+
   this.initEvents();
 }
 

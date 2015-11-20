@@ -5,7 +5,7 @@ $header-height: ms(13);
 $header-box-shadow-size: 0.15rem;
 $site-header-z-index: 6;
 
-.header-main {
+.app-navbar {
   @include unselectable();
   @include clearfix();
 
@@ -15,9 +15,9 @@ $site-header-z-index: 6;
   left: 0;
   top: 0;
   font-size: ms(0);
-  color: $header-text-color;
   background-color: $header-bg-color;
   box-shadow: 0 $header-box-shadow-size $header-box-shadow-size $header-box-shadow-color;
+  color: $header-text-color;
   box-sizing: content-box;
   z-index: $site-header-z-index;
   min-width: 73rem; // current point where header would bump to line 2
@@ -46,7 +46,7 @@ $site-header-z-index: 6;
     padding-right: 1rem;
   }
 
-  .menu {
+  .app-bar-menu, .navbar-nav {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -60,6 +60,8 @@ $site-header-z-index: 6;
 
     button {
       font-size: ms(0);
+      padding-top: 0;
+      padding-bottom: 0;
     }
   }
 
@@ -202,16 +204,34 @@ $site-header-z-index: 6;
 
 // Display nav bar in section instead of at the top of the page
 .example {
-  .header-main {
+  .app-navbar {
     position: relative;
     max-width: 100%;
   }
 
   .mobile-example {
-    .header-main {
+    .app-navbar {
       min-width: 0;
       overflow: hidden;
       box-shadow: none;
     }
+  }
+}
+
+.responsive-navbar {
+  background-color: #22B479;
+  line-height: 60px;
+  padding: 0 1rem;
+  color: white;
+  font-size: 18px;
+
+  img {
+    height: 28px;
+    vertical-align: middle;
+  }
+
+  .btn-default {
+    float: right;
+    margin-top: 10px;
   }
 }

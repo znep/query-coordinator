@@ -99,26 +99,37 @@ h6, .h6 {
 	font-size: ms(-1);
 }
 
+.quiet {
+	color: $quiet-text-color;
+}
+
 //ellipsify long stuff
 @mixin ellipsis() {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+@mixin triangle() {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  border-style: solid;
+  border-color: $grey transparent;
+}
+
 @mixin triangle-down() {
-	content: "";
-    width: 0;
-    height: 0;
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    margin-top: -2px;
-    border-width: 6px 6px 0 6px;
-    border-style: solid;
-    border-color: $grey transparent; 
+  @include triangle;
+
+  border-width: 6px 6px 0 6px;
+  margin-top: -2px;
 }
 @mixin triangle-up() {
-	border-color: $grey transparent;
-    border-width: 0 6px 6px 6px ;
-    margin-top: -3px;
+  @include triangle;
+
+  border-width: 0 6px 6px 6px;
+  margin-top: -3px;
 }

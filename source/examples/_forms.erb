@@ -36,8 +36,8 @@
   <%= partial "components/code_sample", locals: {
 	component: "components/forms/radiobutton",
     partial_locals: {
-      labels: ["Radiobutton 1", "Radiobutton 2"]
-  	} 
+      labels: [{:id => "Radiobutton 1", :checked => true}, {:id => "Radiobutton 2"}]
+  	}
   } %>
 
 

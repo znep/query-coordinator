@@ -10,9 +10,13 @@
 @import "components/forms";
 @import "components/modal";
 @import "components/tags";
+@import "components/dividers";
 @import "components/flyout";
 @import "components/flannel";
 @import "components/nav-bars";
+@import "components/tables";
+@import "components/menu";
+@import "components/pagination";
 
 // Icon Font
 @import "fonts";
@@ -35,6 +39,10 @@ section.styleguide-section {
 .example {
 	@include span-columns(8);
 	@include shift(1);
+
+	.usage.language-markup {
+		margin-bottom: ms(12);
+	}
 }
 
 
@@ -51,7 +59,16 @@ section.styleguide-section {
 }
 
 .styleguide-title {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
 	font-weight: 300;
+
+  img {
+    width: 100px;
+    vertical-align: sub;
+    margin-right: 0.5rem;
+  }
 }
 
 .styleguide-header {
@@ -88,6 +105,25 @@ section.styleguide-section {
 
 }
 
+// Sample Grids for Styleguide
+.inline-container {
+	@include outer-container();
+}
+
+.one {
+	@include span-columns(1);
+}
+
+.third {
+	@include span-columns(4);
+}
+
+.half {
+	@include span-columns(6);
+}
+
+
+
 .blockgrid {
   @include outer-container;
   padding: 0;
@@ -108,3 +144,5 @@ section.styleguide-section {
     }
   }
 }
+
+

@@ -2,7 +2,7 @@
 
 hr {
 	border-style: none;
-	border-top: 1px solid $light-gray;
+	border-top: 1px solid $light-grey-1;
 	margin: ms(4) 0 ms(4);
 }
 
@@ -14,7 +14,7 @@ hr {
 		position: relative;
 		height: 100%;
 		width: 1px;
-		background-color: $medium-gray;
+		background-color: $grey;
 
 	}
 	.or {

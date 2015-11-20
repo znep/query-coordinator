@@ -33,4 +33,45 @@ module AdminHelper
   def user_can?(user, action, current_domain = CurrentDomain)
     current_domain.user_can?(user, action)
   end
+
+  def a11y_metadata_category_summary(categories, columns)
+    a11y_summary(
+      :columns => columns,
+      :rows => categories.map(&:first),
+      :a11y_table_description => t('screens.admin.metadata.category_table_description')
+    )
+  end
+
+  def a11y_metadata_fieldset_summary(metadata_fields, columns)
+    a11y_summary(
+      :columns => columns,
+      :rows => metadata_fields['fields'].map { |field| field['name'] },
+      :a11y_table_description => t('screens.admin.metadata.metadata_field_table_description', :name => metadata_fields['name'])
+    )
+  end
+
+  private
+
+  def a11y_summary(opts)
+    if opts[:columns].blank? || opts[:rows].blank?
+      return t('table.no_summary_available')
+    end
+    columns = opts[:columns].map { |value| %("#{value}") }
+    rows = opts[:rows].map { |row| %("#{row}") }
+    row_headings = ''
+    if rows.size < 5
+      row_headings = rows.join(', ')
+    end
+
+    template_opts = {
+      :data_description => opts[:a11y_table_description],
+      :column_heading_count => columns.size,
+      :column_headings => columns.join(', '),
+      :row_heading_count => rows.size,
+      :row_headings => row_headings
+    }
+
+    t('table.summary', template_opts)
+  end
+
 end

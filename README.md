@@ -7,10 +7,11 @@
 ## Setup
 This libarary uses the Middleman static site generator to to provide an asset pipeline, build tools, and a quick way to run a local environment.
 
-1. Clone the repo
-2. Ensure you have `rbenv` installed with ruby 2.2.2.
+2. Ensure you have `rbenv` ([installation](https://github.com/sstephenson/rbenv#installation)) installed with ruby 2.2.2.
+1. Clone the repo somewhere appropriate, e.g. `git clone https://github.com/socrata/styleguide`.
 3. `bundle install`
 4. `bundle exec middleman`
+5. Open your favorite browser to look at `http://localhost:4567`.
 
 ## Contributions
 Anyone and everyone is welcome to submit a pull request with code and documentation. Fork the repository and work through the Setup section.

@@ -8,7 +8,7 @@ table {
 
   thead {
     tr {
-      background-color: $extra-light-gray;
+      background-color: $light-grey-4;
     }
 
     th {
@@ -18,7 +18,7 @@ table {
   }
 
   th, td {
-    border: 1px solid $medium-gray;
+    border: 1px solid $grey;
     padding: 1.5rem;
   }
 }
@@ -47,11 +47,11 @@ table {
 // Striped Table
 // Zebra-striping
 //
-// Default zebra-stripe styles (alternating gray and transparent backgrounds)
+// Default zebra-stripe styles (alternating grey and transparent backgrounds)
 
 .table-striped {
   > tbody > tr:nth-of-type(odd) {
-    background-color: $extra-light-gray;
+    background-color: $light-grey-4;
   }
 }
 
@@ -64,7 +64,7 @@ table {
 		width: 100%;
 		overflow-y: hidden;
 		-ms-overflow-style: -ms-autohiding-scrollbar;
-		border: 1px solid $extra-light-gray;
+		border: 1px solid $light-grey-4;
 
 	    // Tighten up spacing
 	    > .table {

@@ -24,7 +24,7 @@ When a PR is successfully merged, an admin must run – from `master` – the d
 `git checkout master && ./deploy.sh`
 
 ## Resources Used
-1. Middleman
-2. Modular Scale
-3. Bourbon and Neat (for layout grids)
-4. Prism (for syntax highlighting)
+1. [Middleman](https://middlemanapp.com/)
+2. [Modular Scale](https://github.com/modularscale/modularscale-sass)
+3. [Bourbon](http://bourbon.io/) and [Neat](http://neat.bourbon.io) (for layout grids)
+4. [Prism](http://prismjs.com/) (for syntax highlighting)

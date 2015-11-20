@@ -345,48 +345,30 @@
 
     function _attachEvents(element) {
       element.on(
-        'mouseenter, mousemove',
+        'click',
         '.timeline-chart',
         showFlyout
       );
 
       element.on(
-        'mouseleave',
+        'touchmove',
         '.timeline-chart',
-        hideFlyout
+        showFlyout
       );
-
-    //element.on(
-    //  'mouseenter',
-    //  _labelsSelector,
-    //  addHoverClassToBarGroup
-    //);
-
-    //element.on(
-    //  'mouseleave',
-    //  _labelsSelector,
-    //  removeHoverClassFromBarGroup
-    //);
-
-    //_chartElement.on(
-    //  'mouseleave',
-    //  removeHoverClassFromBarGroup
-    //);
     }
 
     function _unattachEvents(element) {
       element.off(
-        'mouseenter, mousemove',
+        'click',
         '.timeline-chart',
         showFlyout
       );
 
       element.off(
-        'mouseleave',
+        'touchmove',
         '.timeline-chart',
-        hideFlyout
+        showFlyout
       );
-
     }
 
     /**
@@ -2134,6 +2116,15 @@
       // TODO: React to active filters being cleared.
     }
 
+    function clearHiglightedLabel() {
+      _chartElement.find('.x-tick-label').removeClass('highlight');
+    }
+
+    function highlightLabel(target) {
+      clearHiglightedLabel();
+      $(target).addClass('highlight');
+    }
+
     /**
      * @param {DOM Element} target - A DOM element with data attributes
      *                               describing an interval's start date,
@@ -2141,12 +2132,18 @@
      *                               values and the formatted flyout label.
      */
     function highlightChartByInterval(target) {
+      if (!$(target).hasClass('x-tick-label')) {
+        clearChartHighlight();
+        return
+      }
+
       var startDate;
       var endDate;
       startDate = new Date(target.getAttribute('data-start'));
       endDate = new Date(target.getAttribute('data-end'));
       hideDatumLabel();
       highlightChart(startDate, endDate);
+      highlightLabel(target);
     }
 
     /**
@@ -2244,6 +2241,10 @@
       element.find('.timeline-chart-highlight-container > g > path').remove();
       element.find('.timeline-chart-highlight-container').
         css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
+      
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_TIMELINE_CHART_CLEAR'
+      );
     }
 
     /**
@@ -2252,6 +2253,7 @@
      */
     function highlightChart(startDate, endDate) {
       var highlightData;
+      clearHiglightedLabel();
       setCurrentDatumByDate(startDate);
       highlightData = filterChartDataByInterval(
         startDate,
@@ -2304,7 +2306,6 @@
       endDate = new Date(moment(currentDatum.date).add(1, currentPrecision).toDate());
 
       // Dim existing labels and add text and attribute information to the datum label.
-      $chartElement.addClass('dimmed');
       $datumLabel.
         text(formatDateLabel(startDate, false, currentPrecision)).
         attr('data-start', startDate).
@@ -2398,7 +2399,6 @@
 
     function hideDatumLabel() {
       $datumLabel.hide();
-      $chartElement.removeClass('dimmed');
     }
 
     /**
@@ -2582,12 +2582,21 @@
         return;
       }
 
-      offsetX = mousePosition.clientX - element.offset().left;
+      if (mousePosition.clientX) {
+        offsetX = mousePosition.clientX - element.offset().left;
+      } else {
+        offsetX = mousePosition.originalEvent.touches[0].clientX - element.offset().left;
+      }
 
       // The method 'getBoundingClientRect().top' must be used here
       // because the offset of expanded cards changes as the window
       // scrolls.
-      offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
+      if (mousePosition.clientX) {
+        offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
+      } else {
+        offsetY = mousePosition.originalEvent.touches[0].clientY - element.get(0).getBoundingClientRect().top;
+      }
+      
 
       // mousePositionWithinChartElement is a global variable that is
       // used elsewhere as well
@@ -2636,7 +2645,7 @@
           // the label that is currently under the mouse.
           } else {
             if (!allChartLabelsShown && !mousePositionIsSelectionLabel) {
-              highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePositionTarget);
+              highlightChartByInterval(mousePosition.target);
             } else {
               highlightChartByInterval(mousePosition.target);
             }

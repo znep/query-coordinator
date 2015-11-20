@@ -325,7 +325,8 @@
           element: payload.element,
           content: flyoutContent,
           rightSideHint: false,
-          belowTarget: false
+          belowTarget: false,
+          data: payload
         };
       }
 

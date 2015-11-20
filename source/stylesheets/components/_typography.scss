@@ -1,7 +1,7 @@
 //Typography
 
 // Colors
-@import 'color';
+@import 'colors';
 
 //Modular Scale 
 @import "modular-scale";
@@ -111,14 +111,14 @@ h6, .h6 {
 }
 
 @mixin triangle() {
-	content: "";
+  content: "";
   width: 0;
   height: 0;
   position: absolute;
   right: 16px;
   top: 50%;
   border-style: solid;
-	border-color: $gray transparent;
+  border-color: $grey transparent;
 }
 
 @mixin triangle-down() {

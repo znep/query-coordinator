@@ -7,8 +7,8 @@
 }
 
 .spinner-default {
-  border: 3px solid $extra-light-gray;;
-  border-right-color: lighten($gray, 10%);
+  border: 3px solid $light-grey-5;
+  border-right-color: lighten($grey, 10%);
   border-radius: 60%;
   display: inline-block;
   width: ms(1);
@@ -18,6 +18,6 @@
 
 .spinner-btn-primary {
 	border-color: $white;
-	border-right-color: shade($primary-blue, 20%);
+	border-right-color: shade($primary, 20%);
 
 }

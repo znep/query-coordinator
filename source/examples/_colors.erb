@@ -1,16 +1,15 @@
-<div class="container">
-  <div class="row sample-grid">
-    <div class="col-4 color-group">
-      <%= partial "components/swatch" , :locals => { :color => 'blue' } %>
-    </div>
-    <div class="col-4 color-group">
-      <%= partial "components/swatch" , :locals => { :color => 'yellow' } %>
-    </div>
-    <div class="col-4 color-group">
-      <%= partial "components/swatch" , :locals => { :color => 'green' } %>
-    </div>
-    <div class="col-4 color-group">
-      <%= partial "components/swatch" , :locals => { :color => 'gray' } %>
-    </div>
-  </div>
+<div class="color-group">
+  <%= partial "components/swatch" , locals: { color: 'primary', label: "Primary" } %>
+</div>
+<div class="color-group">
+  <%= partial "components/swatch" , locals: { color: 'secondary', label: "Secondary" } %>
+</div>
+<div class="color-group">
+  <%= partial "components/swatch" , locals: { color: 'warning', label: "Warning" } %>
+</div>
+<div class="color-group">
+  <%= partial "components/swatch" , locals: { color: 'error', label: "Error" } %>
+</div>
+<div class="color-group">
+  <%= partial "components/swatch" , locals: { color: 'success', label: "Success" } %>
 </div>

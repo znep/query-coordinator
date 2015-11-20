@@ -1,5 +1,5 @@
 @import 'bourbon';
-@import 'color';
+@import 'colors';
 @import 'layout';
 
 @include keyframes(spin) {
@@ -102,6 +102,12 @@
 
   &.active {
     box-shadow: inset 0 0 10px -2px #888;
+  }
+
+  &.btn-inverse {
+    color: $btn-default-inverse-color;
+    background-color: $btn-default-inverse-background-color;
+    border-color: $btn-default-inverse-border-color;
   }
 
   &.btn-dark {

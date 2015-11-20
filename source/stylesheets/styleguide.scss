@@ -28,12 +28,12 @@
   margin-top: 80px;
 
   > .menu {
-    @include span-columns(4);
+    @include span-columns(3);
     margin-top: 60px;
   }
 
   > .content {
-    @include shift(4);
+    @include shift(3);
     @include span-columns(8);
   }
 }

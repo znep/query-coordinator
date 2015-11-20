@@ -26,6 +26,6 @@
 	&.error {
 		background-color: lighten($error-light, 20%);
 		border-color: $error;
-		color: $error;
+		color: $error-dark;
 	}
 }

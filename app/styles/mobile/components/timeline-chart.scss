@@ -242,7 +242,7 @@ svg:not(:root).timeline-chart-highlight-container {
 
 /* rgba version used for manipulating font color while card description is expanded */
 .timeline-chart-highlight-container .timeline-chart-highlight {
-  fill: rgba(255, 255, 255, 0.75);
+  fill: rgba(0, 120, 98, 0.75);
   stroke: transparent;
 }
 
@@ -293,6 +293,10 @@ svg:not(:root).timeline-chart-highlight-container {
 }
 .x-ticks .x-tick-label {
   color: #929292;
+
+  &.highlight {
+    font-weight: 900;
+  }
 }
 
 .y-ticks .y-tick {

@@ -1,7 +1,7 @@
 <div class="results-pagination-controls">
   <div class="pagination">
     <% pages.each_with_index do |page, i| %>
-      <a href="<%= page %>" class="pageLink <%= 'active' if i == 0 %>" title="Page <% i + 1 %>"><span class="accessible"><%= i == 0 ? 'Current Page' : 'page' %></span> <%= i + 1 %></a>
+      <a href="<%= page %>" class="pageLink<%= ' active' if i == 0 %>" title="Page <%= i + 1 %>"><span class="accessible"><%= i == 0 ? 'Current Page' : 'page' %></span><%= i + 1 %></a>
     <% end %>
     <span class="ellipses">...</span>
     <a href="<%= next_link %>" class="next nextLink pagination-button" title="Next Page"><span class="icon">Next</span><span class="accessible">page</span></a>

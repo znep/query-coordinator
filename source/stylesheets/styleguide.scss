@@ -69,6 +69,11 @@ body > .responsive-navbar {
   }
 }
 
+.responsive-navbar .home {
+  text-decoration: none;
+  color: $white;
+}
+
 .page-header {
   font-weight: 200;
 }

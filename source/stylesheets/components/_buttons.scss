@@ -104,6 +104,12 @@
     box-shadow: inset 0 0 10px -2px #888;
   }
 
+  &.btn-inverse {
+    color: $btn-default-inverse-color;
+    background-color: $btn-default-inverse-background-color;
+    border-color: $btn-default-inverse-border-color;
+  }
+
   &.btn-dark {
     color: $btn-default-dark-color;
     background-color: $btn-default-dark-background-color;

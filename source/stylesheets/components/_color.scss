@@ -10,6 +10,9 @@ $btn-default-dark-border-color: #b7b7b7;
 $btn-default-dark-hover-background-color: #757575;
 $btn-default-busy-border-color: #fff;
 $btn-default-busy-border-right-color: #d2d2d2;
+$btn-default-inverse-color: white;
+$btn-default-inverse-background-color: transparent;
+$btn-default-inverse-border-color: white;
 
 $btn-primary-color: #fff;
 $btn-primary-background-color: #2c97de;
@@ -122,15 +125,15 @@ $colors: (
 
 
 //Swatches styling for the color palette
-.box { 
+.box {
 	width: 20em;
-	padding: 1em 2em; 
+	padding: 1em 2em;
 	display: block;
 	margin: 0em 1em;
 }
 .large {
 	padding: 2em 2em;
-	margin-bottom: 1em; 
+	margin-bottom: 1em;
 }
 .color-group {
 	float: left;
@@ -145,14 +148,14 @@ $range: 5;
 //Loop that generates classes for each base color
 //apply .[basecolor] and .[basecolor] .light(1-4) to change the color
 @each $color-name, $base-color in $colors{
-	.#{$color-name} { 
+	.#{$color-name} {
         background-color: $base-color;
         color: $light-text-color;
         &:after {
           content: "#{$base-color}";
           float: right;
         }
-    
+
 	    @for $i from 1 through $range {
 			$percent: ($i*20);
 		    $color: tint($base-color, $percent);
@@ -174,7 +177,7 @@ $range: 5;
         		}
 			}
 		}
-	}	
+	}
 }
 
 

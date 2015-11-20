@@ -212,3 +212,6 @@ form.wide {
     }
   }
 }
+dl.internalPanel {
+  @include dl-section-content;
+}

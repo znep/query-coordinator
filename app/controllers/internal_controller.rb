@@ -48,6 +48,15 @@ class InternalController < ApplicationController
     end
   end
 
+  def config_info
+    # Include subset of ENV list, as most of it is useless. Add more as you need them
+    env_variable_list = %w{ RBENV_VERSION RAILS_ENV LANG }
+    @config_variables_to_output = ENV.select { | key, value | env_variable_list.include?(key) }
+
+    # Filter secret auth things
+    @app_config_variables = APP_CONFIG.reject { | key, value | key.to_s.match(/auth/) }
+  end
+
   def show_config
     @domain = Domain.find(params[:domain_id])
     @config = ::Configuration.find_unmerged(params[:id])

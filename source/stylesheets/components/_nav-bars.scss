@@ -46,7 +46,7 @@ $site-header-z-index: 6;
     padding-right: 1rem;
   }
 
-  .menu {
+  .app-bar-menu {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -60,6 +60,8 @@ $site-header-z-index: 6;
 
     button {
       font-size: ms(0);
+      padding-top: 0;
+      padding-bottom: 0;
     }
   }
 

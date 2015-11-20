@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var toggleFactory = new ToggleFactory( document );
   var flyoutFactory = new FlyoutFactory( document );
   var flannelFactory = new FlannelFactory( document );
+  var menuFactory = new MenuFactory( document );
 
   document.addEventListener('click', function() {
 		// all dropdowns

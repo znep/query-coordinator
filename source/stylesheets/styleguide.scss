@@ -1,4 +1,5 @@
 //Styleguide Styles
+@import "bourbon";
 @import "components/grid";
 @import "components/typography";
 @import "components/colors";
@@ -24,6 +25,25 @@
 
 .container {
 	@include outer-container();
+  margin-top: 80px;
+
+  > .menu {
+    @include span-columns(4);
+    margin-top: 60px;
+  }
+
+  > .content {
+    @include shift(4);
+    @include span-columns(8);
+  }
+}
+
+body > .responsive-navbar {
+  background-color: $primary;
+
+  img {
+    margin-top: -4px;
+  }
 }
 
 section.styleguide-section {

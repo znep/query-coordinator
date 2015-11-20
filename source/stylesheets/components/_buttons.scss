@@ -87,6 +87,13 @@
     color: $btn-default-hover-color;
     background-color: $btn-default-hover-background-color;
 
+    &.btn-inverse {
+      border-color: $btn-default-inverse-hover-border-color;
+      background-color: $btn-default-inverse-hover-background-color;
+      color: $btn-default-inverse-hover-color;
+      transition: border-color .35s;
+    }
+
     &.btn-dark {
       background-color: $btn-default-dark-hover-background-color;
     }

@@ -99,8 +99,11 @@
     }
   }
 
-  &:active {
-    border-color: transparent;
+  &:active,
+  &.active {
+    border-color: $btn-default-active-border-color;
+    background-color: $btn-default-hover-background-color;
+    box-shadow: inset 0 0 10px -2px $btn-active-box-shadow-color;
   }
 
   &:disabled {
@@ -147,7 +150,7 @@
   &.active {
     border-color: $btn-primary-active-border-color;
     background-color: $btn-primary-hover-background-color;
-    box-shadow: inset 0 0 10px -2px $btn-primary-active-box-shadow-color;
+    box-shadow: inset 0 0 10px -2px $btn-active-box-shadow-color;
   }
 
   &:disabled {
@@ -180,8 +183,11 @@
     }
   }
 
-  &:active {
+  &:active,
+  &.active {
     border-color: $btn-secondary-active-border-color;
+    background-color: $btn-secondary-hover-background-color;
+    box-shadow: inset 0 0 10px -2px $btn-active-box-shadow-color;
   }
 
   &:disabled {
@@ -215,8 +221,11 @@
     }
   }
 
-  &:active {
-    border-color: $btn-success-hover-border-color;
+  &:active ,
+  &.active {
+    border-color: $btn-success-active-border-color;
+    background-color: $btn-success-hover-background-color;
+    box-shadow: inset 0 0 10px -2px $btn-active-box-shadow-color;
   }
 
   &:disabled {
@@ -247,8 +256,11 @@
     }
   }
 
-  &:active {
+  &:active ,
+  &.active {
     border-color: $btn-error-active-border-color;
+    background-color: $btn-error-hover-background-color;
+    box-shadow: inset 0 0 10px -2px $btn-active-box-shadow-color;
   }
 
   &:disabled {

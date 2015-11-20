@@ -1,5 +1,11 @@
 <h3 class="styleguide-subheader">Alerts</h3>
 
+<h4 class="h6 styleguide-subheader">Default</h4>
+<%= partial "components/alert", locals: { 
+	type: "",
+	text: "<b>Hi.</b> I'm a nice little message for you." } 
+%>
+
 <h4 class="h6 styleguide-subheader">Info</h4>
 <%= partial "components/alert", locals: { 
 	type: "info",

@@ -8,11 +8,11 @@ $error: #CE6565;
 $warning: #F7A700;
 
 //Colors light version
-$primary-light: tint($primary, 40%);
-$secondary-light: tint($secondary, 50%);
-$success-light: tint($success, 40%);
-$error-light: tint($error, 50%);
-$warning-light: tint($warning, 60%);
+$primary-light: tint($primary, 80%);
+$secondary-light: tint($secondary, 80%);
+$success-light: tint($success, 80%);
+$error-light: tint($error, 80%);
+$warning-light: tint($warning, 80%);
 
 //Colors dark version
 $primary-dark: shade($primary, 30%);
@@ -41,7 +41,7 @@ $dark-grey-3: shade($grey, 60%);
 
 
 // Color Vars
-$default-text-color: $grey;
+$default-text-color: $dark-grey-1;
 $quiet-text-color: $light-grey-1;
 $light-text-color: $white;
 $light-grey-bg: $light-grey-5;

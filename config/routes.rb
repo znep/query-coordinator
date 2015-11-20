@@ -110,6 +110,7 @@ Frontend::Application.routes do
       match '/tiers', :action => 'index_tiers'
       match '/tiers/:name', :action => 'show_tier'
       match '/modules', :action => 'index_modules'
+      match '/config_info', :action => 'config_info'
     end
 
     scope :path => '/admin', :controller => 'administration' do

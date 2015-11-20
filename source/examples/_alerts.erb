@@ -1,0 +1,32 @@
+<h3 class="styleguide-subheader">Alerts</h3>
+
+<h4 class="h6 styleguide-subheader">Info</h4>
+<%= partial "components/alert", locals: { 
+	type: "info",
+	text: "<b>Info.</b> Here's some great info for you!" } 
+%>
+
+<h4 class="h6 styleguide-subheader">Success</h4>
+<%= partial "components/alert", locals: { 
+	type: "success",
+	text: "<b>Yay!</b> Here's the great thing you just did!" } 
+%>
+
+
+<h4 class="h6 styleguide-subheader">Warning</h4>
+<%= partial "components/alert", locals: { 
+	type: "warning",
+	text: "<b>Caution!</b> Watch yourself, amigo!" } 
+%>
+
+
+<h4 class="h6 styleguide-subheader">Error</h4>
+<%= partial "components/code_sample", locals: {
+  component: "components/alert",
+  partial_locals: {
+    type: "error",
+    text: "<b>Oh no!</b> Here's some bad news for you!"
+  }
+} %>
+
+

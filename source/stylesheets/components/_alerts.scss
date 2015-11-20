@@ -1,0 +1,31 @@
+//Tags
+
+.alert {
+	background-color: $almost-white-bg;
+	border: 1px solid $extra-light-gray;
+	font-size: ms(0);
+	padding: ms(-2);
+	border-radius: 1px;
+	color: $medium-gray;
+
+	&.info {
+		background-color: lighten($primary-light, 30%);
+		border-color: $primary;
+		color: $primary-dark;
+	}	
+	&.success {
+		background-color: lighten($success-light, 20%);
+		border-color: $success;
+		color: $success-dark;
+	}	
+	&.warning {
+		background-color: lighten($warning-light, 10%);
+		border-color: $warning;
+		color: $warning-dark;
+	}	
+	&.error {
+		background-color: lighten($error-light, 20%);
+		border-color: $error;
+		color: $error;
+	}
+}

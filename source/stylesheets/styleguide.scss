@@ -10,6 +10,7 @@
 @import "components/forms";
 @import "components/modal";
 @import "components/tags";
+@import "components/alerts";
 @import "components/dividers";
 @import "components/flyout";
 @import "components/flannel";
@@ -121,7 +122,6 @@ section.styleguide-section {
 .half {
 	@include span-columns(6);
 }
-
 
 
 .blockgrid {

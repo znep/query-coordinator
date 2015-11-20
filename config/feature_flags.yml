@@ -18,7 +18,7 @@ allow_data_lens_owner_change:
   defaultValue: false
   category: data lens
 asteroids:
-  description: 'Unlocked on datasets by the Konami code: ↑↑↓↓←→←→BA[ENTER].'
+  description: 'Unlocked on datasets by the Konami code: ↑↑↓↓←→←→BA↵.
   defaultValue: false
   category: easter egg
 bubble:

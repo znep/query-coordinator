@@ -6,8 +6,8 @@
 	padding: ms(-5) ms(7) ms(-5) ms(0);
 
     /* Styles */
-    color: $gray;
-    border: 1px solid $gray;
+    color: $grey;
+    border: 1px solid $grey;
     border-radius: 1px;
     cursor: pointer;
 
@@ -40,14 +40,14 @@
     @include ellipsis;
     display: block;
     text-decoration: none;
-    color: $gray;
+    color: $grey;
 	padding: ms(-5) ms(0);
 
 }
 
 /* Hover state */
 .wrapper-dropdown .dropdown li:hover a {
-    background: $extra-light-gray;
+    background: $light-grey-5;
 }
 
 /* Active state */

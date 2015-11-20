@@ -1,7 +1,8 @@
 //Styleguide Styles
 @import "components/grid";
 @import "components/typography";
-@import "components/color";
+@import "components/colors";
+@import "components/color-swatches";
 @import "components/button-group";
 @import "components/buttons";
 @import "components/list";
@@ -42,7 +43,7 @@ section.styleguide-section {
 	padding: ms(-3);
 }
 .medium-dark-context {
-	background-color: $light-gray-bg;
+	background-color: $light-grey-bg;
 	padding-top: ms(-3);
 	padding-bottom: 200px;
 	padding-left: ms(-3);
@@ -79,11 +80,11 @@ section.styleguide-section {
 
 .usage {
 	background-color: $almost-white-bg;
-	border: 1px solid $extra-light-gray;
+	border: 1px solid $light-grey-5;
 	font-size: ms(-1);
 	padding: ms(-2);
 	border-radius: 1px;
-	color: $medium-gray;
+	color: $grey;
 
 }
 

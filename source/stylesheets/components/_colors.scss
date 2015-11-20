@@ -1,3 +1,56 @@
+//Color Palette
+
+//Base Palette Colors
+$primary: #2C97DE;
+$secondary: #00BE9B;
+$success: #64CF6C;
+$error: #CE6565;
+$warning: #F7A700;
+
+//Colors light version
+$primary-light: tint($primary, 30%);
+$secondary-light: tint($secondary, 30%);
+$success-light: tint($success, 30%);
+$error-light: tint($error, 30%);
+$warning-light: tint($warning, 50%);
+
+//Colors dark version
+$primary-dark: shade($primary, 30%);
+$secondary-dark: shade($secondary, 30%);
+$success-dark: shade($success, 30%);
+$error-dark: shade($error, 30%);
+$warning-dark: shade($warning, 30%);
+
+//Greys
+$white: #fff;
+$grey: #999;
+$black: #2C2C2C; //as black as it will ever be at least
+
+//Shades of Grey
+$light-grey-1: tint($grey, 20%);
+$light-grey-2: tint($grey, 40%);
+$light-grey-3: tint($grey, 60%);
+$light-grey-4: tint($grey, 80%);
+$light-grey-5: tint($grey, 90%);
+
+$dark-grey-1: shade($grey, 20%);
+$dark-grey-2: shade($grey, 40%);
+$dark-grey-3: shade($grey, 60%);
+
+
+
+
+// Color Vars
+$default-text-color: $grey;
+$quiet-text-color: $light-grey-1;
+$light-text-color: $white;
+$light-grey-bg: $light-grey-5;
+
+
+
+
+
+
 // Button Colors
 $btn-default-color: #757575;
 $btn-default-background-color: #fff;
@@ -83,95 +136,13 @@ $header-publication-status-color: #e0e0e0;
 // Settings Panel
 $settings-panel-btn-color: #929292;
 
-//Colors
-$gray: #4A4A4A;
-$gray2: #757575;
-$medium-gray: #929292;
-$light-gray: #b7b7b7; //Actually, light gray 3
-$extra-light-gray: #dbdbdb;
-$white: #fff;
-
-
-// Color Vars
-$default-text-color: $gray;
-$quiet-text-color: $light-gray;
-$light-text-color: $white;
-
-$primary-blue: #2C97DE;
-$secondary-green: #00BE9B;
-
-$success: #64CF6C;
-$error: #CE6565;
-
 //backgrounds
 $light-gray-bg: #d3d2ce;
 $almost-white-bg: #f2f2f2;
 
-//List of base colors
-//Probably want to turn these into variables..
-$colors: (
-	'blue': $primary-blue,
-	'gray': #4a4a4a,
-	'yellow': #debb1e,
-	'green': $secondary-green
-
-);
 
 
-//Swatches styling for the color palette
-.box { 
-	width: 20em;
-	padding: 1em 2em; 
-	display: block;
-	margin: 0em 1em;
-}
-.large {
-	padding: 2em 2em;
-	margin-bottom: 1em; 
-}
-.color-group {
-	float: left;
-	display: block;
-	margin-bottom: 2em;
-}
 
 
-//Number of light and dark shades
-$range: 5;
-
-//Loop that generates classes for each base color
-//apply .[basecolor] and .[basecolor] .light(1-4) to change the color
-@each $color-name, $base-color in $colors{
-	.#{$color-name} { 
-        background-color: $base-color;
-        color: $light-text-color;
-        &:after {
-          content: "#{$base-color}";
-          float: right;
-        }
-    
-	    @for $i from 1 through $range {
-			$percent: ($i*20);
-		    $color: tint($base-color, $percent);
-			&.light-#{$i} {
-				background-color: $color;
-		        color: $default-text-color;
-				&:after {
-		        	content: "#{$color}";
-		        	float: right;
-        		}
-			}
-		    $color: shade($base-color, $percent);
-			&.dark-#{$i} {
-				background-color: $color;
-		        color: $light-text-color;
-				&:after {
-		        	content: "#{$color}";
-		         	float: right;
-        		}
-			}
-		}
-	}	
-}
 
 

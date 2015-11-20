@@ -134,6 +134,16 @@
   <%- end -%>
   <%- end -%>
 
+  <% if current_user && current_user.is_admin? -%>
+    <div class="formSection">
+      <a class="expander expanded formHeader" href="#expand">
+        <span class="icon"></span>
+        <%= t('screens.about.admin_debugging') %>
+      </a>
+      <%= render :partial => 'admin_debugging' %>
+    </div>
+  <%- end -%>
+
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
@@ -366,5 +376,16 @@
     </dl>
   </div>
 <%- end -%>
+
+  <% #For now datasync is gated to superadmins, hopefully will be added for publisher and above soon  %>
+  <%- if current_user && current_user.is_admin? && @view.dataset? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+       <%= t('screens.about.datasync_status') %>
+    </a>
+    <%= render :partial => 'datasync_links' %>
+  </div>
+  <%- end -%>
 
 </div>

@@ -1511,6 +1511,7 @@ en:
     about:
       actions: Actions
       activity: Activity
+      admin_debugging: Superadmin Debugging
       attachments: Attachments
       category: Category
       comments: Comments
@@ -1519,6 +1520,7 @@ en:
       contributors: Contributors
       created: created
       data_provided_by: Data Provided By
+      datasync_status: Datasync Status
       description: Description
       downloads: Downloads
       edit_metadata: Edit Metadata

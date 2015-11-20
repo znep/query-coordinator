@@ -1,14 +1,13 @@
 //= require_tree .
 
 document.addEventListener('DOMContentLoaded', function() {
-	//var dd = new DropDown( document.querySelector('#dd') );
-  //var du = new DropDown( document.querySelector('#du') );
+  if (document.querySelector('#dd')) {
+    var dd = new DropDown( document.querySelector('#dd') );
+  }
 
-  var modalFactory = new ModalFactory( document );
-  var toggleFactory = new ToggleFactory( document );
-  var flyoutFactory = new FlyoutFactory( document );
-  var flannelFactory = new FlannelFactory( document );
-  var menuFactory = new MenuFactory( document );
+  if (document.querySelector('#du')) {
+    var du = new DropDown( document.querySelector('#du') );
+  }
 
   document.addEventListener('click', function() {
 		// all dropdowns
@@ -18,6 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 	});
 
+  var modalFactory = new ModalFactory( document );
+  var toggleFactory = new ToggleFactory( document );
+  var flyoutFactory = new FlyoutFactory( document );
+  var flannelFactory = new FlannelFactory( document );
+  var menuFactory = new MenuFactory( document );
 
   /**
    * Fancy demo stuff.

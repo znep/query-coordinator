@@ -23,11 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
    * Fancy demo stuff.
    * Make the responsive navbar collapse to a smaller version.
    */
-  var navbar = document.querySelector('body > .responsive-navbar');
-  var buttons = Array.prototype.slice.call(navbar.querySelectorAll('.btn'));
-  var menu = document.querySelector('#pagemap');
-
-  document.addEventListener('wheel', function() {
+  function collapse(event) {
     if (event.pageY > 500) {
       navbar.classList.add('responsive-navbar-collapsed');
       buttons.forEach(function(button) {
@@ -41,5 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     menu.style.marginTop = navbar.offsetHeight + 'px';
-  });
+  }
+
+  var navbar = document.querySelector('body > .responsive-navbar');
+  var buttons = Array.prototype.slice.call(navbar.querySelectorAll('.btn'));
+  var menu = document.querySelector('#pagemap');
+
+  document.addEventListener('wheel', collapse);
+  collapse({pageY: document.scrollingElement.scrollTop});
 });

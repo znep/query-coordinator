@@ -38,6 +38,38 @@
   }
 }
 
+
+// Guidehome 
+.jumbotron {
+  min-height: 400px;
+  background-color: $primary-light;
+
+  .container {
+    margin-top: 30px;
+
+    
+    body.index & {
+      padding: 80px 0;
+    } 
+
+    .page-header {
+      font-size: ms(12);
+    }
+
+    p.intro {
+      font-weight: 200;
+      font-size: ms(4);
+      color: $dark-grey-2;
+    }
+
+    .stu {
+      margin-top: ms(20);
+    }
+
+  }
+
+}
+
 body > .responsive-navbar {
   @include transition(all 0.15s);
 
@@ -202,6 +234,10 @@ section.styleguide-section {
 
 .half {
 	@include span-columns(6);
+}
+
+.two-thirds {
+  @include span-columns(8);
 }
 
 

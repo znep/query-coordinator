@@ -8,6 +8,7 @@
   left: 0;
   background-color: #4a4a4a;
   color: rgb(170, 170, 170);
+  overflow: auto;
   z-index: 2000;
 
   &.menu-offscreen {

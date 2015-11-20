@@ -1,0 +1,48 @@
+<dl class="sectionContent">
+
+  <% ## Dataset-specific debugging information %>
+  <% if @view.dataset? -%>
+    <dt>Column list (from core)</dt>
+    <dd><%= link_to nil, "/api/views/#{@view.id}/columns.json" %></dd>
+
+    <dt>Dataset Metadata</dt>
+    <dd><%= link_to nil, "/metadata/v1/dataset/#{@view.id}" %></dd>
+
+    <dt>Geocoding queue (for entire domain)</dt>
+    <dd><%= link_to nil, "/api/geocoding/#{@view.id}?method=pending" %></dd>
+
+    <dt>Indexing queue</dt>
+    <dd><%= link_to nil, "/api/indexing/#{@view.id}?method=indexingBacklog" %></dd>
+
+    <dt>Migrations</dt>
+    <dd><%= link_to nil, "/api/migrations/#{@view.id}" %></dd>
+
+    <dt>Rows last updated by</dt> <%# Dataset only, so cannot be added to lenses %>
+    <dd><%= link_to nil, "/profile/#{@view.rowsUpdatedBy}" %></dd>
+
+    <dt>Storage Shard</dt>
+    <dd><%= link_to nil, "/api/views/#{view.id}?method=getShard" %></dd>
+
+    <dt>OBE/NBE sync log</dt>
+    <dd><%= link_to nil, "/datasync/id/#{@view.id}/log/index.json" %></dd>
+  <% end -%>
+
+  <% ## Data Lens-specific debugging information %>
+  <% if @view.data_lens? -%>
+
+    <dt>Dataset Metadata</dt>
+    <dd><%= link_to nil, "/metadata/v1/dataset/#{@view.id}" %></dd>
+
+    <dt>Page Metadata</dt>
+    <dd><%= link_to nil, "/metadata/v1/page/#{@view.id}" %></dd>
+
+    <dt title="Hover on the grid icon to see if rollups are being used">View with data_lens_debug</dt>
+    <dd><%= link_to nil, "#{view_url(@view)}?debug_data_lens=true" %></dd>
+  <% end -%>
+
+  <% ## Appears for all views %>
+  <dt>View Metadata</dt>
+  <dd><%= link_to nil, "/api/views/#{view.id}" %></dd>
+
+</dl>
+

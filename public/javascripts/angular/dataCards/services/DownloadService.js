@@ -14,7 +14,7 @@
    * Content-Disposition:attachment) without risking navigating away from the page if the server
    * responds incorrectly.
    */
-  angular.module('dataCards.services').factory('DownloadService', function($q) {
+  angular.module('dataCards.services').factory('DownloadService', function($q, $window) {
     /**
      * Have the user's browser download the specified path.
      *
@@ -60,7 +60,7 @@
       var success$ = Rx.Observable.timer(POLL_INTERVAL, POLL_INTERVAL, Rx.Scheduler.timeout).
         takeUntil(timeout$).
         map(function() {
-          return document.cookie;
+          return $window.document.cookie;
         }).
         filter(function(cookie) {
           return cookie.indexOf(cookieName + '=') >= 0;
@@ -69,7 +69,7 @@
 
       success$.
         subscribe(function() {
-          document.cookie = cookieName + '=;path=/;expires=' + (new Date(0).toUTCString());
+          $window.document.cookie = cookieName + '=;path=/;expires=' + (new Date(0).toUTCString());
         });
 
       // Create an observable to terminate our event streams, that is triggered when the success,

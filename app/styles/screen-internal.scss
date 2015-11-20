@@ -115,6 +115,14 @@ form.wide {
     margin-bottom: 8px;
     width: 95%;
   }
+  &.loading {
+    .domainAwesomeComplete {
+      background: url(/stylesheets/images/content/snuffleupasnake.gif) no-repeat center right;
+    }
+    &:after {
+      content: 'Please wait for a moment before typing..'
+    }
+  }
 }
 
 .featureFlags form {
@@ -155,6 +163,52 @@ form.wide {
       float: right;
       font-size: 1em;
       cursor: pointer;
+    }
+  }
+}
+
+.featureFlagsAcrossDomains {
+  overflow: scroll;
+
+  .flag_groups {
+    margin-bottom: 0.5em;
+
+    ul {
+      display: none;
+    }
+  }
+
+  table {
+    font-size: 1.3em;
+    border: solid 1px black;
+    padding-right: 0.5em;
+
+    tr:nth-child(even) {
+      background-color: #eee;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #aaa;
+    }
+
+    th {
+      white-space: nowrap;
+    }
+
+    td, th {
+      padding: 1em;
+
+      &.domain_cname {
+        position: absolute;
+      }
+    }
+  }
+
+  .add_parameter {
+    margin-top: 1em;
+
+    div {
+      display: inline-block;
     }
   }
 }

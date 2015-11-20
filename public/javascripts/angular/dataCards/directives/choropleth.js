@@ -6,8 +6,10 @@
   // 'selected' is what happens when you are filtering by a feature (this is currently a yellow stroke).
   // 'highlighted' is what happens when you mouseover a feature (this is currently a white stroke).
 
-  function choropleth(Constants,
+  function choropleth(
+    Constants,
     $timeout,
+    $window,
     ChoroplethVisualizationService,
     LeafletHelpersService,
     LeafletVisualizationHelpersService,
@@ -1024,7 +1026,7 @@
 
           currentFeature = e.target.feature;
 
-          var evt = document.createEvent('HTMLEvents');
+          var evt = $window.document.createEvent('HTMLEvents');
           evt.initEvent('surrogate-mousemove', true, true);
           evt.clientX = e.originalEvent.clientX;
           evt.clientY = e.originalEvent.clientY;
@@ -1076,7 +1078,7 @@
           }
 
           var rowDisplayUnit = PluralizeService.pluralize(scope.rowDisplayUnit, value);
-          return '{0} {1}'.format(window.socrata.utils.formatNumber(value), rowDisplayUnit);
+          return '{0} {1}'.format($window.socrata.utils.formatNumber(value), rowDisplayUnit);
         }
 
         function renderFlyout(ignored, flyoutElement) {
@@ -1371,8 +1373,8 @@
 
                         Therefore we fake a click on document.body :'(
                       */
-                      if (_.isFunction(document.body.click)) {
-                        document.body.click();
+                      if (_.isFunction($window.document.body.click)) {
+                        $window.document.body.click();
                       }
                     }
                   });

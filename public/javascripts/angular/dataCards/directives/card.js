@@ -161,7 +161,7 @@
 
           $scope.$safeApply(function() {
             $scope.descriptionClamped = isClamped;
-            $scope.animationsOn = true;
+            $scope.animationsOn = element.closest('.customize-card-preview').length === 0;
           });
 
         }, 250, {leading: true, trailing: true});

@@ -12,6 +12,10 @@ class FeatureFlagConfig < ExternalConfig
     Rails.logger.info("Config Update [#{uniqId}] from #{filename}")
 
     @feature_flags = YAML.load_file(filename) || {}
-    @categories = @feature_flags.collect { |_, fc| fc['category'] }.compact.uniq
+    category_list = @feature_flags.collect { |_, fc| fc['category'] }.compact.uniq
+    @categories = category_list.inject({}) do |memo, category|
+      memo[category] = @feature_flags.dup.keep_if { |_, fc| category == fc['category'] }.keys
+      memo
+    end
   end
 end

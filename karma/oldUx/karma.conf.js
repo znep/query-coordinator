@@ -89,7 +89,7 @@ module.exports = function ( karma ) {
 
       // Test Files
       'karma/oldUx/**/*.js',
-      { pattern: 'public/stylesheets/images/**/*.{gif,jpg,png}', watched: false, included: false, served: true }
+      { pattern: 'public/stylesheets/images/**/*.{gif,jpg,png}', watched: false, included: false, served: true } // https://github.com/karma-runner/karma/issues/1532
 
     ],
 

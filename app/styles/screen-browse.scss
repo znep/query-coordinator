@@ -51,6 +51,7 @@ $data_lens_icon_color: #80acca;
       left: 2.8em;
       right: 0.6em;
     };
+    overflow: hidden;
     .icon {
       @include dataset-toolbar-icon-search;
       cursor: pointer;

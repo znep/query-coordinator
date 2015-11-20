@@ -1,0 +1,129 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title>Feature Flags for <%= @domains.keys.collect(&:cname).join(', ') %>
+    | Internal Panel | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation featureFlagsAcrossDomains">
+  <div class="flag_groups">
+    <button>Specify flag group</button>
+    <ul>
+    <%- @sets.keys.each do |set|  %>
+      <li><%= link_to set,
+        feature_flags_across_domains_with_set_path(params.merge(flag_set: set.gsub(/ /, '+'))) %></li>
+    <%- end %>
+    </ul>
+  </div>
+  <table>
+    <tr>
+      <th class="domain_cname">Domain CNAME</th>
+      <th class="extra_padding">&nbsp;</th>
+      <th>Link</th>
+      <%- @flags.each do |flag|
+        flag_description = FeatureFlags.config_for(flag)['description']
+      %>
+        <th title="<%= flag_description %>"><%= flag %></th>
+      <%- end %>
+    </tr>
+    <%- @domains.each do |domain, flags|
+      modify_link =
+        if @category.present?
+          feature_flags_config_with_category_path(domain_id: domain.id, category: @category.gsub(/ /, '+'))
+        else
+          feature_flags_config_path(domain_id: domain.id)
+        end
+    %>
+      <tr>
+        <td class="domain_cname"><%= link_to domain.cname,
+          show_domain_path(org_id: domain.organizationId, id: domain.cname) %></td>
+        <td class="extra_padding">&nbsp;</td>
+        <td><%= link_to '(modify)', modify_link %></td>
+        <%- @flags.each do |flag| %>
+          <td>
+            <%= flags[flag] %>
+          </td>
+        <%- end%>
+      </tr>
+    <%- end %>
+  </table>
+
+  <div class="add_parameter">
+    <div class="add_domain">
+      <h4>Additional domain:</h4>
+      <input type="text" />
+    </div>
+
+    <div class="add_feature_flag">
+      <h4>Additional feature flag:</h4>
+      <input type="text" />
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+      $('.flag_groups button').click(function() { $('.flag_groups ul').slideToggle(); });
+      $('th[title]').each(function() {
+        var $this = $(this);
+        $this.socrataTip({
+          isSolo: true,
+          message: $this.attr('title'),
+          'parent': 'body'
+        });
+      });
+      $('.extra_padding').css('padding-left', $('.domain_cname').width() + 'px');
+
+      function addParameter(type, datum) {
+        var currentParams = {
+          flags: $.urlParam(window.location.search, 'flags'),
+          domains: $.urlParam(window.location.search, 'domains')
+        };
+
+        var datumProp, otherType;
+        switch(type) {
+          case 'flags':
+            datumProp = 'name';
+            otherType = 'domains';
+            break;
+          case 'domains':
+            datumProp = 'cname';
+            otherType = 'flags';
+            break;
+        }
+
+        if (currentParams[type]) {
+          currentParams[type] = _.uniq(currentParams[type].split(',').concat(datum[datumProp]));
+        } else {
+          currentParams[type] = [ datum[datumProp] ];
+        }
+
+        var urlParams = [];
+        if (currentParams[otherType]) {
+          urlParams.push('{0}={1}'.format(otherType, currentParams[otherType]));
+        }
+        urlParams.push('{0}={1}'.format(type, currentParams[type].join(',')));
+
+        window.location = window.location.href.replace(/\?.*/, '') + '?' + urlParams.join('&');
+      }
+
+      var addDomain = _.curry(addParameter)('domains');
+      var addFeatureFlag = _.curry(addParameter)('flags');
+
+      $('.add_domain input').focus(function() {
+        blist.internal.fetchDomainList($('.add_domain'), { onComplete: addDomain });
+      });
+
+      $('.add_feature_flag input').focus(_.once(function() {
+        $(this).awesomecomplete({
+          highlightMatches: true,
+          ignoreCase: true,
+          onComplete: addFeatureFlag,
+          staticData: _.map(_.keys(blist.feature_flags), function(x) { return { name: x }; })
+        });
+      }));
+    });
+  </script>
+<% end %>

@@ -7,7 +7,7 @@ module Cetera
     cetera_url = "#{APP_CONFIG.cetera_host}/catalog/v1"
     query = cetera_soql_params(opts)
 
-    Rails.logger.info("Cetera request with params: #{query.inspect}")
+    Rails.logger.info("Cetera request to #{cetera_url} with params: #{query.inspect}")
 
     result = HTTParty.get(cetera_url, query: query)
     CeteraSearchResult.from_result(result.body)

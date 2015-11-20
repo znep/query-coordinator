@@ -41,7 +41,7 @@ end
 # TODO: integrate with Jira
 namespace :commits do
   %w[staging release].each do |env|
-    desc 'output all commit messages that mention an id'
+    desc 'Output a distinct list of commit messages that mention a Jira ticket'
     task env do
       abort %Q{USAGE: 'MANIFEST_FILE=<manifest file> rake commits:release'} unless ENV['MANIFEST_FILE']
 
@@ -52,13 +52,11 @@ namespace :commits do
         commit = line.lstrip.chomp
 
         list << { id => commit }
-        list.sort_by(&:keys)
+        list.uniq.sort_by(&:keys)
       end
 
-      puts "\nIDs:\n\n"
-      commit_list.each { |e| puts e.keys }
-      puts "\n\nCommits:\n\n"
-      commit_list.each { |e| puts e.values }
+      puts
+      commit_list.map(&:values).each(&method(:puts))
       puts
     end
   end

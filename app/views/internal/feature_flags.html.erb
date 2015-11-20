@@ -8,6 +8,11 @@
 
 <div class="contentBox withLeftNavigation featureFlags">
   <%= render :partial => 'production_warning' %>
+  <h1>Feature Flags for
+    <%= link_to "#{@domain.name} (#{@domain.cname})",
+                show_domain_path(org_id: @domain.organizationId,
+                                 id: @domain.cname) %>
+  </h1>
   <%= display_standard_flashes %>
   <%- @flags.each do |flag, flag_config| %>
   <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +

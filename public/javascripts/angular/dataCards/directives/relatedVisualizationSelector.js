@@ -1,9 +1,6 @@
 (function() {
   'use strict';
 
-  var socrata = window.socrata;
-  var utils = socrata.utils;
-
   /**
    * Lets user select from a list of a dataset's related visualizations.
    *
@@ -15,12 +12,14 @@
    *
    * Emits related-visualization when the user selects. The payload is the page metadata blob.
    */
-  function relatedVisualizationSelector(FlyoutService, I18n) {
+  function relatedVisualizationSelector(FlyoutService, I18n, $window) {
     return {
       restrict: 'E',
       scope: true,
       templateUrl: '/angular_templates/dataCards/relatedVisualizationSelector.html',
       link: function(scope) {
+        var socrata = $window.socrata;
+        var utils = socrata.utils;
 
         utils.assert(
           _.isFunction(scope.columnNameToReadableNameFn),

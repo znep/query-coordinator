@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, DateHelpers) {
+angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, DateHelpers, $window) {
   'use strict';
 
   var timeIntervalToDateTrunc = {
@@ -40,7 +40,7 @@ angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, 
 
   // Wrap fieldName in backticks and replace hyphens with underscores
   function formatFieldName(fieldName) {
-    if (typeof fieldName !== 'string') {
+    if (!_.isString(fieldName)) {
       throw new Error('Cannot format fieldName for non-string arguments.');
     }
     return '`{0}`'.format(fieldName.replace(/\-/g, '_'));
@@ -71,8 +71,8 @@ angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, 
       return;
     }
 
-    window.socrata.utils.assert(_.isPresent(fieldName), 'fieldName cannot be blank');
-    window.socrata.utils.assert(_.isArray(activeFilters), 'activeFilters must be an array');
+    $window.socrata.utils.assert(_.isPresent(fieldName), 'fieldName cannot be blank');
+    $window.socrata.utils.assert(_.isArray(activeFilters), 'activeFilters must be an array');
     var myWhereClauseFragments = _.invoke(activeFilters, 'generateSoqlWhereFragment', fieldName);
 
     _.each(myWhereClauseFragments, function(fragment) {

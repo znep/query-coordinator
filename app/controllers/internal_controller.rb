@@ -260,11 +260,46 @@ class InternalController < ApplicationController
     end
   end
 
+  FLAG_SETS = {
+    'data lens' => ['data_lens_transition_state'] # just an example
+  }.merge(FeatureFlags.categories)
+
+  DOMAIN_SETS = {
+    'yeah i dunno' => [ 'localhost' ] # just an example
+  }
+
+  def feature_flags_across_domains
+    domains = (params[:domains].try(:split, ',') || []).
+      collect { |domain| DOMAIN_SETS[domain] || domain }.
+      flatten.
+      collect { |domain| Domain.find(domain) rescue nil }.
+      compact
+
+    domains << CurrentDomain.domain if domains.empty?
+
+    category = params[:flag_set].try(:gsub, '+', ' ')
+    @category = category if FeatureFlags.categories.keys.include? category
+
+    @flags = (params[:flags].try(:split, ',') || []) + Array(FLAG_SETS[category])
+    @flags.select! { |flag| FeatureFlags.has? flag }
+
+    @sets = FLAG_SETS
+    if @flags.empty?
+      @category = 'easter egg' # because easter eggs are important!
+      @flags = @sets[@category]
+    end
+
+    @domains = domains.inject({}) do |memo, domain|
+      memo[domain] = domain.feature_flags.keep_if { |k, _| @flags.include? k }
+      memo
+    end
+  end
+
   def feature_flags
     @domain = Domain.find(params[:domain_id])
     @flags = Hashie::Mash.new
     domain_flags = @domain.feature_flags
-    category = params[:category].try(:sub, '+', ' ')
+    category = params[:category].try(:gsub, '+', ' ')
     ExternalConfig.for(:feature_flag).each do |flag, fc|
       next unless category.nil? || category == fc['category']
       @flags[flag] = fc
@@ -339,11 +374,19 @@ class InternalController < ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_url = "/internal/orgs/#{@domain.organizationId}/domains/#{params[:domain_id]}/feature_flags"
-        redirect_url << "/#{params[:category]}" if params[:category].present?
+        redirect_url =
+          if params[:category].present?
+            feature_flags_config_with_category_path(domain_id: params[:domain_id],
+                                                    category: params[:category])
+          else
+            feature_flags_config_path(domain_id: params[:domain_id])
+          end
         redirect_to redirect_url
       end
-      format.data { render :json => { :success => errors.empty?, :errors => errors, :infos => infos } }
+
+      json_response = { :success => errors.empty?, :errors => errors, :infos => infos }
+      format.data { render :json => json_response }
+      format.json { render :json => json_response }
     end
   end
 

@@ -762,11 +762,12 @@ module ApplicationHelper
     FeatureFlags.derive(view, request).show_share_dataset_by_email_button_for_general_users && view.is_public?
   end
 
-  def cetera_search_enabled?
-    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search]
+  def using_cetera?
+    return false unless APP_CONFIG.cetera_host.present?
+
+    req = request if defined?(request)
+    req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
+    FeatureFlags.derive(nil, req, nil)[:cetera_search]
   end
 
-  def using_cetera?
-    cetera_search_enabled? && APP_CONFIG.cetera_host.present?
-  end
 end

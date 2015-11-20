@@ -89,6 +89,7 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/dist/rx.binding.js',
       'bower_components/rxjs/dist/rx.virtualtime.js',
       'bower_components/rxjs/dist/rx.testing.js',
+      'public/javascripts/lib/RxExtensions.js',
       'bower_components/leaflet/dist/leaflet-src.js',
       'app/styles/leaflet.css',
       'bower_components/chroma-js/chroma.js',
@@ -115,6 +116,8 @@ module.exports = function ( karma ) {
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
 
+      'public/javascripts/angular/rx/**/*.js',
+
       /* dataCards ITSELF */
       'public/javascripts/angular/common/decorators.js',
       'public/javascripts/angular/common/*.js',
@@ -133,7 +136,7 @@ module.exports = function ( karma ) {
       'public/angular_templates/**/*.html',
       'app/styles/dataCards/*.scss',
       'app/styles/dataCards/theme/default.scss',
-      { pattern: 'public/stylesheets/images/**/*.{jpg,png}', watched: false, included: false, served: true },
+      { pattern: 'public/stylesheets/images/**/*.+{jpg,png}', watched: false, included: false, served: true }, // See https://github.com/karma-runner/karma/issues/1532
 
       /* TEST CONFIGURATION */
       'karma/chai-configuration.js',

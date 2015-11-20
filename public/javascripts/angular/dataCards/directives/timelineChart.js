@@ -20,9 +20,9 @@
     DateHelpers,
     FlyoutService,
     Constants,
-    ServerConfig,
     I18n,
-    PluralizeService
+    PluralizeService,
+    $window
   ) {
 
     return {
@@ -1246,10 +1246,14 @@
             tickElement = $('<div>').
               addClass('y-tick').
               css('bottom', Math.floor(chartHeight * tick)).
-              text(window.socrata.utils.formatNumber(labels[index]));
+              text($window.socrata.utils.formatNumber(labels[index]));
 
             if (labels[index] === 0) {
               tickElement.addClass('zero');
+            }
+
+            if (index === ticks.length - 1) {
+              tickElement.addClass('top');
             }
 
             jqueryAxisContainer.append(tickElement);
@@ -1438,7 +1442,7 @@
 
             formattedValue = (_.isFinite(value)) ?
               '{0} {1}'.format(
-                window.socrata.utils.formatNumber(value),
+                $window.socrata.utils.formatNumber(value),
                 unit
               ) :
               I18n.common.noValue;

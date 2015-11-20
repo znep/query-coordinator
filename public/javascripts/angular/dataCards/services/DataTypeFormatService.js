@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function DataTypeFormatService(I18n) {
+  function DataTypeFormatService(I18n, $window) {
 
     /**
     * Renders a boolean value in checkbox format
@@ -57,7 +57,7 @@
         shouldCommaify = false;
       }
       if (shouldCommaify) {
-        cellContent = window.socrata.utils.commaify(cellContent);
+        cellContent = $window.socrata.utils.commaify(cellContent);
       }
 
       // Add percent sign after commaify because it affects length
@@ -146,7 +146,7 @@
             // For instance, "12,345,678" will become an array of three
             // substrings, and the first two will combine into "12.345"
             // so that our toFixed call can work its magic.
-            var scaleGroupedVal = window.socrata.utils.commaify(Math.floor(absVal)).split(',');
+            var scaleGroupedVal = $window.socrata.utils.commaify(Math.floor(absVal)).split(',');
             var symbols = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
             var symbolIndex = scaleGroupedVal.length - 2;
 
@@ -171,7 +171,7 @@
             decimalCharacter: format.decimalSeparator
           };
 
-          cellContent = window.socrata.utils.commaify(
+          cellContent = $window.socrata.utils.commaify(
             Math.abs(amount).toFixed(format.precision).
               replace('.', format.decimalSeparator),
             commaifyOptions

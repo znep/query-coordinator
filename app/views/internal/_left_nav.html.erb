@@ -2,6 +2,7 @@
   <div class="domainCompletion"><input type="text" id="domainSelect" class="domainAwesomeComplete" /></div>
   <ul class="navigationList">
     <li><a href='/internal'>Internal Panel Home</a></li>
+    <li><a href='/internal/feature_flags'>Feature Flags</a></li>
     <li><a href='/internal/orgs'>Organizations</a></li>
     <li><a href='/internal/analytics'>Analytics</a></li>
     <li><a href='/internal/tiers'>Account Tiers</a></li>
@@ -9,9 +10,5 @@
   </ul>
 </div>
 <% content_for :js_footer do %>
-  <script type="text/javascript">
-    blist.namespace.fetch('blist.internal');
-    blist.internal.domains = <%= safe_json(Domain.all) %>;
-  </script>
   <%= include_javascripts 'screen-internal' %>
 <% end %>

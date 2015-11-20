@@ -10,6 +10,7 @@
     SoqlHelpers,
     $q,
     $timeout,
+    $window,
     DataTypeFormatService,
     I18n,
     PluralizeService
@@ -74,7 +75,7 @@
           };
 
           scope.$watch('showCount', function(newVal) {
-            if (!angular.isDefined(newVal)) {
+            if (_.isUndefined(newVal)) {
               scope.showCount = true;
             }
           });
@@ -310,7 +311,7 @@
 
               // Get the jquery width of the widest elements
               _.each(columnWidths, function(v, k) {
-                var width = parseInt(window.getComputedStyle(maxCells[k]).width, 10);
+                var width = parseInt($window.getComputedStyle(maxCells[k]).width, 10);
                 // Apply a min/max
                 if (width > 300) {
                   columnWidths[k] = 300;
@@ -498,16 +499,16 @@
               if (scope.filteredRowCount <= 1) {
                 scope.tableLabel = I18n.t('table.nonRangeLabel',
                   _.escape(_.capitalize(scope.rowDisplayUnit)),
-                  window.socrata.utils.commaify(topRow),
-                  window.socrata.utils.commaify(scope.filteredRowCount)
+                  $window.socrata.utils.commaify(topRow),
+                  $window.socrata.utils.commaify(scope.filteredRowCount)
                 );
               } else {
                 var rowDisplayUnit = PluralizeService.pluralize(scope.rowDisplayUnit);
                 scope.tableLabel = I18n.t('table.rangeLabel',
                   _.escape(_.capitalize(rowDisplayUnit)),
-                  window.socrata.utils.commaify(topRow),
-                  window.socrata.utils.commaify(bottomRow),
-                  window.socrata.utils.commaify(scope.filteredRowCount)
+                  $window.socrata.utils.commaify(topRow),
+                  $window.socrata.utils.commaify(bottomRow),
+                  $window.socrata.utils.commaify(scope.filteredRowCount)
                 );
               }
             });
@@ -548,12 +549,12 @@
           // should disable scrolling.  Otherwise, false.
           disableScrollingOnMouseScroll$ = tableMouseScroll$.
             map(function(e) {
+              var jqueryWindow = $($window);
               var scrollingDown = e.originalEvent.wheelDelta < 0 || e.originalEvent.detail > 0;
-              var $window = $(window);
-              var scrollBottom = $window.scrollTop() + $window.height();
+              var scrollBottom = jqueryWindow.scrollTop() + jqueryWindow.height();
 
               // CORE-6419: Use a fuzzy test because window scrollTop can be a float.
-              var onBottom = Math.abs(scrollBottom - $(document).height()) <= 1;
+              var onBottom = Math.abs(scrollBottom - $($window.document).height()) <= 1;
 
               return scrollingDown && !onBottom;
             }).
@@ -589,7 +590,7 @@
             interact: true,
             style: 'table',
             direction: 'horizontal',
-            parent: document.body,
+            parent: $window.document.body,
 
             html: function($target) {
               if ($target[0].clientWidth < $target[0].scrollWidth) {
@@ -602,7 +603,7 @@
             selector: '.th',
             direction: 'top',
             style: 'table',
-            parent: document.body,
+            parent: $window.document.body,
             interact: true,
 
             title: function($target) {

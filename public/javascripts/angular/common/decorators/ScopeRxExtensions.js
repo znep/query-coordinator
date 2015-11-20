@@ -3,7 +3,7 @@
 
   angular.
     module('socrataCommon.decorators').
-    config(['$provide', function($provide) {
+    config(function($provide) {
       $provide.decorator('$rootScope', ['$delegate', '$log', 'rx', function($delegate, $log, rx) {
         Object.defineProperties($delegate.constructor.prototype, {
           '$destroyAsObservable': {
@@ -84,9 +84,9 @@
             // angular-related Observables.
             value: function $safeApply(fn) {
               var scope = this;
-              var phase = scope.$root.$$phase;
+              var phase = scope.$root.$$phase; // eslint-disable-line angular/no-private-call
               if (phase === '$apply' || phase === '$digest') {
-                if (fn && (typeof (fn) === 'function')) {
+                if (fn && _.isFunction(fn)) {
                   fn();
                 }
               } else {
@@ -170,6 +170,6 @@
 
         return $delegate;
       }]);
-    }]);
+    });
 
 })();

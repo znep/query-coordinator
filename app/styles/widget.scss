@@ -337,7 +337,23 @@ html, body {
     tbody {
       .type {
         @include sprite-menu-icons;
+
+        // these icons include plain text which is normally text-indented
+        // so it doesn't appear on screen... but that only works when we
+        // have the icon as part of the sprite and use a background image.
+        // data lenses use a pseudo-element and custom font, so the icon
+        // gets shifted out of the viewport along with the text. Setting
+        // this property appears to only affect the text, allowing the
+        // icon to appear as normal.
+        &.typeData_lens {
+          font-size: 0;
+
+          .icon::before {
+            padding-left: 1em;
+          }
+        }
       }
+
     }
   }
   .widgetContent_feed,

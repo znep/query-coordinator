@@ -47,8 +47,8 @@ en:
         card_on_page_long: This card is already on the page
         choose_column: Choose a column...
         choropleth_warning: No boundaries are available for this column to be plotted against.
-        choropleth_admin_message: 'To add custom regions: ask your site administrator to configure the available set through the <a href="/admin/geo">Spatial Lens section</a> in the admin panel. Or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
-        choropleth_message: 'To add custom regions: ask your site administrator to configure the available set through the Spatial Lens section in the admin panel. Or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
+        choropleth_admin_message: 'To add custom regions: ask your site administrator to configure the available set through the <a href="/admin/geo">Spatial Lens section</a> in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
+        choropleth_message: 'To add custom regions: ask your site administrator to configure the available set through the Spatial Lens section in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
         classic_chart: If you'd like to customize this Socrata visualization, locate it in the catalog, edit it, and then add it to your story.
         column_chart_warning: 'Note: This would result in a bar chart with over a hundred bars, it might be slower than other charts'
         custom: (Custom...)

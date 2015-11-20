@@ -63,8 +63,8 @@
     <soc-option
       value="{{curatedRegion.view.id}}"
       ng-repeat="curatedRegion in curatedRegions"
-      ng-selected="curatedRegion.view.id === selectedCuratedRegion">
-        {{curatedRegion.name}}
+      ng-selected="curatedRegion.view.id === selectedCuratedRegion"
+      ng-bind="curatedRegion.name">
     </soc-option>
     <soc-option
       ng-if="showDisabledCuratedRegionSection"
@@ -78,8 +78,8 @@
     <soc-option
       ng-if="showDisabledCuratedRegionSection"
       ng-repeat="curatedRegion in disabledCuratedRegions"
-      disabled="disabled">
-      {{curatedRegion.name}}
+      disabled="disabled"
+      ng-bind="curatedRegion.name">
     </soc-option>
   </soc-select>
 </div>

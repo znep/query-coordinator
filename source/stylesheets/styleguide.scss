@@ -39,10 +39,33 @@
 }
 
 body > .responsive-navbar {
+  @include transition(all 0.15s);
+
   background-color: $primary;
+
+  &.responsive-navbar-collapsed {
+    height: 40px;
+    line-height: 36px;
+
+    img {
+      margin-top: 0;
+    }
+
+    span {
+      opacity: 0;
+    }
+  }
 
   img {
     margin-top: -4px;
+  }
+
+  span {
+    opacity: 1;
+  }
+
+  .btn {
+    @include transition(width 0.15s);
   }
 }
 

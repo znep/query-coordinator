@@ -17,4 +17,29 @@ document.addEventListener('DOMContentLoaded', function() {
       dropdowns[i].classList.remove('active');
     }
 	});
+
+
+  /**
+   * Fancy demo stuff.
+   * Make the responsive navbar collapse to a smaller version.
+   */
+  var navbar = document.querySelector('body > .responsive-navbar');
+  var buttons = Array.prototype.slice.call(navbar.querySelectorAll('.btn'));
+  var menu = document.querySelector('#pagemap');
+
+  document.addEventListener('wheel', function() {
+    if (event.pageY > 500) {
+      navbar.classList.add('responsive-navbar-collapsed');
+      buttons.forEach(function(button) {
+        button.classList.add('btn-xs');
+      });
+    } else {
+      navbar.classList.remove('responsive-navbar-collapsed');
+      buttons.forEach(function(button) {
+        button.classList.remove('btn-xs');
+      });
+    }
+
+    menu.style.marginTop = navbar.offsetHeight + 'px';
+  });
 });

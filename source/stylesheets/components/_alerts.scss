@@ -9,23 +9,23 @@
 	color: $medium-gray;
 
 	&.info {
-		background-color: lightblue;
-		border-color: $primary-blue;
-		color: $primary-blue;
+		background-color: lighten($primary-light, 30%);
+		border-color: $primary;
+		color: $primary-dark;
 	}	
 	&.success {
-		background-color: lightblue;
-		border-color: $primary-blue;
-		color: $primary-blue;
+		background-color: lighten($success-light, 20%);
+		border-color: $success;
+		color: $success-dark;
 	}	
 	&.warning {
-		background-color: lightblue;
-		border-color: $primary-blue;
-		color: $primary-blue;
+		background-color: lighten($warning-light, 10%);
+		border-color: $warning;
+		color: $warning-dark;
 	}	
-	&.info {
-		background-color: lightblue;
-		border-color: $primary-blue;
-		color: $primary-blue;
+	&.error {
+		background-color: lighten($error-light, 20%);
+		border-color: $error;
+		color: $error;
 	}
 }

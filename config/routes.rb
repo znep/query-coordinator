@@ -55,62 +55,39 @@ Frontend::Application.routes do
     end
 
     scope :path => '/internal', :controller => 'internal' do
-      match '/', :action => 'index'
-      match '/analytics', :action => 'analytics'
+      get '/', :action => 'index'
+      get '/analytics', :action => 'analytics'
+      get '/feature_flags(/:flag_set)',
+        :action => 'feature_flags_across_domains', :as => 'feature_flags_across_domains'
+      get '/tiers', :action => 'index_tiers'
+      get '/tiers/:name', :action => 'show_tier'
+      get '/modules', :action => 'index_modules'
+      get :config_info
+
       post '/orgs', :action => 'create_org'
-      match '/orgs', :action => 'index_orgs'
-      get '/feature_flags', :action => 'feature_flags_across_domains'
-      get '/feature_flags/:flag_set', :action => 'feature_flags_across_domains',
-        :as => 'feature_flags_across_domains_with_set'
-      match '/orgs/:id', :action => 'show_org'
-      match '/orgs/:id/domains', :action => 'create_domain', :via => :post
-      match '/orgs/:org_id/domains/:id', :action => 'show_domain',
-        :constraints => {:id => /(\w|-|\.)+/},
-        :as => 'show_domain'
-      match '/orgs/:org_id/domains/:domain_id/site_config',
-        :action => 'create_site_config', :constraints => {:domain_id => /(\w|-|\.)+/},
-        :conditions => { :method => :post }
-      match '/orgs/:org_id/domains/:domain_id/default_site_config',
-        :action => 'set_default_site_config', :constraints => {:domain_id => /(\w|-|\.)+/},
-        :conditions => { :method => :post }
-      match '/orgs/:org_id/domains/:domain_id/delete_config/:id',
-        :action => 'delete_site_config', :constraints => {:domain_id => /(\w|-|\.)+/},
-        :conditions => { :method => :post }
-      match '/orgs/:org_id/domains/:domain_id/feature',
-        :action => 'set_features', :constraints => {:domain_id => /(\w|-|\.)+/},
-        :conditions => { :method => :post }
-      match '/orgs/:org_id/domains/:domain_id/aliases',
-        :action => 'update_aliases', :constraints => {:domain_id => /(\w|-|\.)+/},
-        :conditions => { :method => :post }
-      post '/orgs/:org_id/domains/:domain_id/account_modules',
-        :action => 'add_module_to_domain', :constraints => {:domain_id => /(\w|-|\.)+/}
-      match '/domains/:domain_id/flush_cache',
-        :action => 'flush_cache', :constraints => {:domain_id => /(\w|-|\.)+/}
-      get '/orgs/:org_id/domains/:domain_id/feature_flags',
-        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
-      get '/domains/:domain_id/feature_flags',
-        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/},
-        :as => 'feature_flags_config'
-      get '/orgs/:org_id/domains/:domain_id/feature_flags/:category',
-        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
-      get '/domains/:domain_id/feature_flags/:category',
-        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/},
-        :as => 'feature_flags_config_with_category'
-      post '/orgs/:org_id/domains/:domain_id/set_feature_flags',
-        :action => 'set_feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
-      post '/domains/:domain_id/set_feature_flags',
-        :action => 'set_feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
-      match '/orgs/:org_id/domains/:domain_id/site_config/:id',
-        :action => 'show_config', :constraints => {:domain_id => /(\w|-|\.)+/},
-        :as => :show_config
-      post '/orgs/:org_id/domains/:domain_id/site_config/:id/property',
-        :action => 'set_property', :constraints => {:domain_id => /(\w|-|\.)+/}
-      match '/orgs/:org_id/domains/:domain_id/site_config/:config_id/edit_property',
-        :action => 'show_property', :constraints => {:domain_id => /(\w|-|\.)+/}
-      match '/tiers', :action => 'index_tiers'
-      match '/tiers/:name', :action => 'show_tier'
-      match '/modules', :action => 'index_modules'
-      match '/config_info', :action => 'config_info'
+      get '/orgs', :action => 'index_orgs'
+      get '/orgs/:id', :action => 'show_org'
+      post '/orgs/:id/domains', :action => 'create_domain'
+
+      scope :path => '(/orgs/:org_id)/domains/:domain_id',
+        :constraints => {:domain_id => /(\w|-|\.)+/} do
+        get '', :action => 'show_domain', :as => 'show_domain'
+        post '/default_site_config', :action => 'set_default_site_config'
+        post '/delete_config/:id', :action => 'delete_site_config'
+        post '/feature', :action => 'set_features'
+        post '/aliases', :action => 'update_aliases'
+        post '/account_modules', :action => 'add_module_to_domain'
+        match '/flush_cache', :action => 'flush_cache'
+        get '/feature_flags(/:category)', :action => 'feature_flags', :as => 'feature_flags_config'
+        post '/set_feature_flags', :action => 'set_feature_flags'
+
+        scope :path => '/site_config' do
+          post '', :action => 'create_site_config'
+          get '/:id', :action => 'show_config', :as => :show_config
+          post '/:id/property', :action => 'set_property'
+          get '/:config_id/edit_property', :action => 'show_property'
+        end
+      end
     end
 
     scope :path => '/admin', :controller => 'administration' do

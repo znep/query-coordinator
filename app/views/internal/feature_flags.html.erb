@@ -11,7 +11,7 @@
   <h1>Feature Flags for
     <%= link_to "#{@domain.name} (#{@domain.cname})",
                 show_domain_path(org_id: @domain.organizationId,
-                                 id: @domain.cname) %>
+                                 domain_id: @domain.cname) %>
   </h1>
   <%= display_standard_flashes %>
   <%- @flags.each do |flag, flag_config| %>

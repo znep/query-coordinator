@@ -19,25 +19,29 @@
    * Temporary polyfills until we can come up with a better implementation and include it somewhere else.
    */
 
-  String.prototype.visualSize = function(fontSize) {
+  String.prototype.visualSize = _.memoize(
+    function(fontSize) {
+      var $ruler = $('#ruler');
+      var dimensions;
 
-    var $ruler = $('#ruler');
-    var dimensions;
+      if ($ruler.length < 1) {
+        $('body').append('<span class="ruler" id="ruler"></span>');
+        $ruler = $('#ruler');
+      }
+      if (!fontSize) {
+        fontSize = '';
+      }
+      $ruler.css('font-size', fontSize);
+      $ruler.text(this + '');
+      dimensions = {width: $ruler.width(), height: $ruler.height()};
+      $ruler.remove();
 
-    if ($ruler.length < 1) {
-      $('body').append('<span class="ruler" id="ruler"></span>');
-      $ruler = $('#ruler');
+      return dimensions;
+    },
+    function(fontSize) { // memoization key
+      return this + '|' + fontSize;
     }
-    if (!fontSize) {
-      fontSize = '';
-    }
-    $ruler.css('font-size', fontSize);
-    $ruler.text(this + '');
-    dimensions = {width: $ruler.width(), height: $ruler.height()};
-    $ruler.remove();
-
-    return dimensions;
-  };
+  );;
 
   String.prototype.visualLength = function(fontSize) {
     return this.visualSize(fontSize).width;

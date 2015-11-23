@@ -73,7 +73,7 @@
 
           // Filter out the current user's email (they can't share it with themselves)
           var currentUserEmail = _.get($window.currentUser, 'email', '');
-          cleanNewShares.shares = _.reject($scope.newShares.shares, 'name', currentUserEmail);
+          cleanNewShares.shares = _.reject(cleanNewShares.shares, 'name', currentUserEmail);
 
           // Sanitize optional message
           cleanNewShares.message = _.escape($scope.newShares.message);

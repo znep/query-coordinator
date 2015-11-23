@@ -5,6 +5,7 @@ describe('newShareDialog', function() {
   var $rootScope;
   var $httpBackend;
   var _$provide;
+  var $scope;
 
   beforeEach(module('/angular_templates/dataCards/new-share-dialog.html'));
   beforeEach(module('dataCards/cards.scss'));
@@ -34,7 +35,7 @@ describe('newShareDialog', function() {
   });
 
   function createElement(pageMetadata, datasetMetadata) {
-    var $scope = $rootScope.$new();
+    $scope = $rootScope.$new();
     $scope.$parent.newShares = [];
     $scope.dialogState = {show: true};
     $scope.saveNewShares = function(newShares) {
@@ -45,7 +46,7 @@ describe('newShareDialog', function() {
     var datasetOverrides = _.extend({}, datasetMetadata);
 
     return testHelpers.TestDom.compileAndAppend(
-      '<new-share-dialog dialog-state="dialogState" save-new-shares="saveNewShares" />',
+      '<new-share-dialog dialog-state="dialogState" save-new-shares="saveNewShares"/>',
       $scope
     );
   }
@@ -96,6 +97,31 @@ describe('newShareDialog', function() {
       expect(element.find('button.remove-button').hasClass('disabled')).to.be.false;
       element.find('button.remove-button').click();
       expect(element.find('button.remove-button').hasClass('disabled')).to.be.true;
+    });
+  });
+
+  describe('donions', function() {
+    it('filters out share emails that are empty strings', function() {
+      var element = createElement();
+      var isolateScope = element.isolateScope();
+      isolateScope.newShares.shares = [{name: ''}, {name: 'snu@socrata.com'}];
+      isolateScope.donions();
+      expect($scope.newShares.shares).to.have.length(1);
+      expect($scope.newShares.shares[0].name).to.equal('snu@socrata.com');
+    });
+
+    it('filters out share emails that are identical to the email of the current user', function() {
+      window.currentUser = {
+        email: 'snu@socrata.com'
+      };
+
+      var element = createElement();
+      var isolateScope = element.isolateScope();
+      isolateScope.newShares.shares = [{name: ''}, {name: 'snu@socrata.com'}];
+      isolateScope.donions();
+      expect($scope.newShares.shares).to.have.length(0);
+
+      delete window.currentUser;
     });
   });
 });

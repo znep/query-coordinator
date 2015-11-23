@@ -1,17 +1,18 @@
 module AdminHelper
-  def select_for_role(id, name='role', currentRole = nil, cssClass='', includeNone = true)
+  def select_for_role(id, name = 'role', current_role = nil, css_class = '', include_none = true)
     roles = User.roles_list
 
-    out = "<select class='#{cssClass}' name='#{name}' id='#{id}'>"
-    out << "<option value='0'>#{t('screens.admin.users.roles.none')}</option>" if includeNone
+    out = %Q(<label style="display: none;" for="#{id}">#{I18n.t('screens.admin.users.role')}</label>)
+    out << %Q(<select class="#{css_class}" name="#{name}" id="#{id}">)
+    out << %Q(<option value="0">#{t('screens.admin.users.roles.none')}</option>) if include_none
 
     roles.each do |role|
-      out << "<option value=\"#{role}\""
-      out << ' selected="selected"' if currentRole && role == currentRole
+      out << %Q(<option value="#{role}")
+      out << ' selected="selected"' if current_role && role == current_role
       # Use default to allow user-translated role names.
-      out << ">" + I18n.t(key: role, scope: 'screens.admin.users.roles', default: role).titleize + "</option>"
+      out << %Q(>#{I18n.t(key: role, scope: 'screens.admin.users.roles', default: role).titleize}</option>)
     end
-    out << "</select>"
+    out << '</select>'
   end
 
   def form_button(url_opts, button_text, opts = {}, button_opts = {})

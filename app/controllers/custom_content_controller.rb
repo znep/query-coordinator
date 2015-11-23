@@ -2,7 +2,6 @@ require 'digest/md5'
 
 class CustomContentController < ApplicationController
   include CustomContentHelper
-  include GovstatHelper
 
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
@@ -29,20 +28,6 @@ class CustomContentController < ApplicationController
     end
 
     render :action => 'show'
-  end
-
-  def govstat_homepage
-    # this is a public-facing page, so always suppress govstat here.
-    @suppress_govstat = true
-
-    @cache_key = app_helper.cache_key("govstat-homepage", cache_hash(params))
-    @cached_fragment = read_fragment(@cache_key)
-    if @cached_fragment.nil?
-      @page = get_page(govstat_homepage_config(), '/', CurrentDomain.strings.site_title, params)
-    end
-
-    render 'generic_page', :locals => { :custom_styles => 'screen-govstat-homepage',
-      :custom_javascript => 'screen-govstat-dashboard' }
   end
 
   def show_page

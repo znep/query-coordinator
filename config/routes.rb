@@ -425,16 +425,8 @@ Frontend::Application.routes do
 
     # Govstat pages
     scope :controller => 'govstat' do
-      match '/goals-new', :action => 'goals'
-
-      match '/goal/:id', :action => 'goal_page', :constraints => { :id => Frontend::UID_REGEXP }
-
-      match '/manage', :action => 'manage'
-      match '/manage/data', :action => 'manage_data'
       match '/manage/reports', :action => 'manage_reports'
       match '/manage/site_config', :action => 'manage_config'
-      get '/manage/template', :action => 'manage_template'
-      post '/manage/template', :action => 'manage_template_update'
     end
 
     # V1 dataset metadata endpoints

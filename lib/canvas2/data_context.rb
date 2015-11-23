@@ -189,34 +189,6 @@ module Canvas2
           available_contexts[id] = { id: id, type: config['type'], dashboard: dashboard }
           log_timing(start_time, config)
 
-        when 'goalList'
-          goals = Goal.find(config['search'])
-          if goals.length > 0
-            goals.reject!{ |goal| goal.category.blank? } if config['draftGoals'] == false
-
-            available_contexts[id] = {id: id, type: config['type'],
-              count: goals.length,
-              goalList: goals.map do |g|
-                c = {type: 'goal', goal: g, id: id + '_' + g.id}
-                available_contexts[c[:id]] = c
-              end}
-          elsif config['required']
-            errors.push(DataContextError.new(config, "No goals found for goalList '" + id + "'"))
-            ret_val = false
-          end
-          log_timing(start_time, config)
-
-        when 'goal'
-          goal = Goal.find(config['goalId'])
-          if goal.nil?
-            errors.push(DataContextError.new(config, "No goal found for '" + id + "'"))
-            log_timing(start_time, config)
-            return !config['required']
-          end
-
-          available_contexts[id] = { id: id, type: config['type'], goal: goal }
-          log_timing(start_time, config)
-
         when 'goal2'
           goal = Canvas2::Util.odysseus_request('/stat/objects/goal/' + config['goalId'], {},
                                                !Canvas2::Util.is_private)
@@ -228,32 +200,6 @@ module Canvas2
 
           available_contexts[id] = { id: id, type: config['type'], goal: goal }
           log_timing(start_time, config)
-
-        when 'govstatCategoryList'
-          categories = GovstatCategory.find
-          if categories.length > 0
-            available_contexts[id] = {id: id, type: config['type'],
-              count: categories.length,
-              categoryList: categories.map do |c|
-                dc = {type: 'govstatCategory', category: c, id: id + '_' + c.id}
-                available_contexts[dc[:id]] = dc
-              end}
-          elsif config['required']
-            errors.push(DataContextError.new(config, "No categories found for govstatCategoryList '" + id + "'"))
-            ret_val = false
-          end
-          log_timing(start_time, config)
-
-        when 'govstatCategory'
-          category = GovstatCategory.find(config['categoryId'])
-          if category.nil?
-            errors.push(DataContextError.new(config, "No category found for '" + id + "'"))
-            log_timing(start_time, config)
-            ret_val = !config['required']
-          else
-            available_contexts[id] = { id: id, type: config['type'], category: category }
-            log_timing(start_time, config)
-          end
 
         end
       rescue CoreServer::CoreServerError => e

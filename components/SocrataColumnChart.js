@@ -47,6 +47,9 @@
    * Instantiates a Socrata ColumnChart Visualization from the
    * `socrata-visualizations` package.
    *
+   * Supported event triggers:
+   * - invalidateSize: Forces a rerender, useful if the hosting page has resized the container.
+   *
    * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
    */
   $.fn.socrataColumnChart = function(vif) {
@@ -142,6 +145,7 @@
       $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
       $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
       $element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
+      $element.on('invalidateSize', _render);
     }
 
     function _detachEvents() {
@@ -157,16 +161,18 @@
       clearTimeout(rerenderOnResizeTimeout);
 
       rerenderOnResizeTimeout = setTimeout(
-        function() {
-          visualization.render(
-            visualizationData,
-            _getRenderOptions()
-          );
-        },
+        _render,
         // Add some jitter in order to make sure multiple visualizations are
         // unlikely to all attempt to rerender themselves at the exact same
         // moment.
         WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+      );
+    }
+
+    function _render() {
+      visualization.render(
+        visualizationData,
+        _getRenderOptions()
       );
     }
 
@@ -380,10 +386,7 @@
             filteredQueryResponse
           );
 
-          visualization.render(
-            visualizationData,
-            _getRenderOptions()
-          );
+          _render();
         })
         ['catch'](function(error) {
           _logError(error);

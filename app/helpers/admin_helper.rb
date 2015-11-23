@@ -51,6 +51,22 @@ module AdminHelper
     )
   end
 
+  def a11y_users_summary(users, columns)
+    a11y_summary(
+      :columns => columns,
+      :rows => users.map(&:displayName),
+      :a11y_table_description => t('screens.admin.users.users_table_description')
+    )
+  end
+
+  def a11y_pending_users_summary(users, columns)
+    a11y_summary(
+      :columns => columns,
+      :rows => users.map(&:email),
+      :a11y_table_description => t('screens.admin.users.pending_users_table_description')
+    )
+  end
+
   private
 
   def a11y_summary(opts)

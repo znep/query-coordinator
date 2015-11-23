@@ -78,7 +78,18 @@
   <%- unless @users_list.nil? -%>
     <div class="flash notice userNotice"></div>
     <div class="gridListWrapper">
-      <table class="gridList adminUsersTable" cellspacing="0">
+      <table
+        class="gridList adminUsersTable"
+        cellspacing="0"
+        summary="<%= a11y_users_summary(
+                 @users_list,
+                 [
+                   t("#{prefix}.name"),
+                   t("#{prefix}.email"),
+                   t("#{prefix}.role"),
+                   @existing_user_actions ? t("#{prefix}.actions") : nil
+                 ]) %>"
+      >
         <colgroup>
           <%# Enable once we have bulk ops %>
           <%- if @existing_user_actions && false-%>
@@ -174,7 +185,18 @@
         <%= t("#{prefix}.pending_users") %>
       </p>
       <div class="gridListWrapper">
-        <table class="gridList futureUsersTable" cellspacing="0">
+        <table
+          class="gridList futureUsersTable"
+          cellspacing="0"
+          summary="<%= a11y_pending_users_summary(
+                         @futures,
+                         [
+                           t("#{prefix}.email"),
+                           t("#{prefix}.role"),
+                           t("#{prefix}.invited"),
+                           t("#{prefix}.actions")
+                         ]) %>"
+        >
           <colgroup>
             <col class="email" />
             <col class="role" />

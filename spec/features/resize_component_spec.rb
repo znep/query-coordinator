@@ -7,6 +7,7 @@ RSpec.describe 'add content panel', type: :feature, js: true do
 
   before do
     stub_logged_in_user
+    stub_sufficient_rights
     stub_core_view('embd-html')
     visit '/s/magic-thing/embd-html/edit?autosave=false'
   end

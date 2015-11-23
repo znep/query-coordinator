@@ -17,6 +17,7 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
 
   before do
     stub_logged_in_user
+    stub_sufficient_rights
     stub_core_view(uid)
     visit "/s/magic-thing/#{uid}/edit?autosave=false"
     @blocks = page.all('.user-story .block-edit')

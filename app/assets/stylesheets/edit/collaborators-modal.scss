@@ -1,0 +1,241 @@
+@import 'lib/variables';
+@import 'lib/icon-font';
+@import 'edit/button';
+
+#collaborators-modal {
+  z-index: 15;
+
+  .modal-header-group {
+    .errors {
+      display: block;
+      width: 100%;
+      font-size: 1.5rem;
+      border: solid 1px;
+      border-radius: 1px;
+      padding: 0.9rem;
+      background-color: $collaborators-content-error-background-color;
+      border-color: $collaborators-content-error-border-color;
+      color: $collaborators-content-error-color;
+    }
+  }
+
+  .modal-dialog {
+    $collaborators-content-width-small: 40rem;
+    $collaborators-content-width-medium: 70rem;
+    $collaborators-content-width-large: 96rem;
+    $collaborators-content-width-extra-large: 114rem;
+
+    @include media-query-property(
+      'width',
+      $collaborators-content-width-small / 1.25,
+      $collaborators-content-width-medium / 1.25,
+      $collaborators-content-width-large / 1.25,
+      $collaborators-content-width-extra-large / 1.25
+    );
+    @include media-query-property(
+      'left',
+      calc((100vw - (#{$collaborators-content-width-small} / 1.25)) / 2),
+      calc((100vw - (#{$collaborators-content-width-medium} / 1.25)) / 2),
+      calc((100vw - (#{$collaborators-content-width-large} / 1.25)) / 2),
+      calc((100vw - (#{$collaborators-content-width-extra-large} / 1.25)) / 2)
+    );
+  }
+
+  .modal-input-group {
+    background-color: $collaborators-input-group-background-color;
+    padding: 1rem;
+    box-sizing: border-box;
+    vertical-align: middle;
+    margin-bottom: 2rem;
+
+    &::after {
+      content: '';
+      display: table;
+      clear: both;
+    }
+
+    .btn-default {
+      padding: 0.75rem 1.5rem;
+    }
+  }
+
+  .modal-left-panel,
+  .modal-right-panel {
+    float: left;
+  }
+
+  .modal-left-panel {
+    width: 70%;
+    margin-right: 2%;
+
+    .modal-input[type="email"] {
+      width: 65%;
+      margin-right: 2%;
+    }
+
+    .modal-select {
+      width: 33%;
+
+      select {
+        width: 100%;
+      }
+    }
+  }
+
+  .modal-right-panel {
+    width: 28%;
+    text-align: right;
+  }
+
+  input[type="email"] {
+    width: 45%;
+    margin-right: 2%;
+    margin-bottom: 0;
+    display: inline-block;
+    padding: 0.75rem;
+    font-size: 1.5rem;
+    background-color: $collaborators-input-email-background-color;
+  }
+
+  .modal-select {
+    position: relative;
+    display: inline-block;
+    font-size: 1.5rem;
+
+    &::after {
+      @extend .icon-arrow-down2:before;
+
+      display: block;
+      position: absolute;
+      font-family: 'icomoon';
+      color: $collaborators-select-arrow-color;
+      right: 1rem;
+      top: calc(2.5rem / 2);
+      pointer-events: none;
+    }
+  }
+
+  select {
+    padding: 0.75rem;
+    padding-right: 3.5rem;
+    -webkit-appearance: none;
+    font-size: 1.5rem;
+    border-radius: 0.1rem;
+    background-color: $collaborators-select-background-color;
+    border: 1px solid $collaborators-select-border-color;
+    color: $collaborators-select-color;
+
+    &:disabled {
+      color: $collaborators-select-disabled-color;
+      background-color: $collaborators-select-disabled-background-color;
+    }
+  }
+
+  .modal-button-group {
+    button {
+      vertical-align: middle;
+    }
+
+    .btn-primary.btn-busy:disabled {
+      background-color: $btn-primary-background-color;
+      border-color: $btn-primary-border-color;
+
+      span {
+        border-color: white;
+        border-right-color: $btn-primary-busy-border-right-color;
+      }
+    }
+
+    .btn-success:disabled {
+      color: $btn-success-color;
+      border-color: $btn-success-border-color;
+      background-color: $btn-success-background-color;
+    }
+  }
+
+  table.table-borderless {
+    color: $collaborators-table-color;
+    border-spacing: 0;
+    margin: 2rem 0;
+    min-width: 100%;
+    font-size: 1.5rem;
+
+    thead {
+      tr {
+        background-color: transparent;
+
+        th {
+          text-align: left;
+          font-weight: 600;
+          border-top: 0;
+          border-bottom: 0;
+        }
+      }
+    }
+
+    tbody tr:last-child td {
+      border-bottom-color: transparent;
+    }
+
+    th, td {
+      border: 1px solid $collaborators-cell-border-color;
+      border-left: 0;
+      border-right: 0;
+      padding: 1rem;
+    }
+
+    tr {
+      &.marked {
+        td {
+          background-color: $collaborators-marked-background-color;
+          border-color: $collaborators-marked-border-color;
+          color: $collaborators-marked-color;
+          opacity: 0.7;
+
+          &:first-child {
+            text-decoration: line-through;
+          }
+        }
+      }
+
+      &.added td {
+        background-color: $collaborators-added-background-color;
+        border-color: $collaborators-added-border-color;
+        color: $collaborators-added-color;
+      }
+
+      &.changed td {
+        background-color: $collaborators-changed-background-color;
+        border-color: $collaborators-changed-border-color;
+        color: $collaborators-changed-color;
+      }
+    }
+
+    td {
+      position: relative;
+
+      select {
+        background-color: $collaborators-dark-select-background-color;
+        border-color: $collaborators-dark-select-border-color;
+      }
+
+      &.static {
+        height: 6rem;
+        vertical-align: middle;
+      }
+
+      &:first-child {
+        width: 80%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &.collaborators-empty {
+        text-align: center;
+        background-color: $collabroators-table-empty-background-color;
+        color: $collaborators-table-empty-color;
+      }
+    }
+  }
+}

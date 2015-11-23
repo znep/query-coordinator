@@ -154,6 +154,10 @@ function applyStandardMocks() {
     })
   };
 
+  // Stub currentUser and currentUserAuthorization
+  window.currentUser = {email: 'rawr@socrata.com'};
+  window.currentUserAuthorization = {role: 'owner', primary: true, rights: ['update_view']};
+
   window.socrata.storyteller.AssetFinderMocker.mock();
   window.socrata.storyteller.assetFinder = new storyteller.AssetFinder();
 
@@ -192,6 +196,7 @@ function applyStandardMocks() {
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
   storyteller.linkModalStore = new storyteller.LinkModalStore();
   storyteller.linkTipStore = new storyteller.LinkTipStore();
+  storyteller.collaboratorsStore = new storyteller.CollaboratorsStore();
 
   storyteller.dispatcher.dispatch({ action: Actions.STORY_CREATE, data: storyData });
 

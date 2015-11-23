@@ -13,6 +13,7 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
 
   before do
     stub_logged_in_user
+    stub_sufficient_rights
     stub_core_view('pres-ents')
     visit '/s/magic-thing/pres-ents/preview'
   end

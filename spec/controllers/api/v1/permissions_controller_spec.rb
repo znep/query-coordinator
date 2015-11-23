@@ -39,6 +39,7 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
       it 'initializes PermissionsUpdater with params' do
         expect(PermissionsUpdater).to receive(:new).with(
           mock_valid_user,
+          mock_user_authorization,
           story_uid
         )
         put :update, params

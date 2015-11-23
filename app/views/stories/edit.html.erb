@@ -96,6 +96,8 @@
 
 <script>
   // Pass setup data from ruby to javascript
+  currentUser = <%== current_user.to_json %>;
+  currentUserAuthorization = <%== current_user_authorization.to_json %>;
   userStoryData = <%== user_story_json %>;
   publishedStory = <%== @published_story.to_json %>;
 </script>

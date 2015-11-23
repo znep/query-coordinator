@@ -10,8 +10,9 @@ class StoryPublisher
 
   attr_reader :story
 
-  def initialize(user, params)
+  def initialize(user, user_authorization, params)
     @user = user
+    @user_authorization = user_authorization
     @story_uid = params[:uid]
 
     creating_user_id = (user || {})['id']
@@ -33,7 +34,7 @@ class StoryPublisher
     saved = story.save
 
     if saved
-      permissions_updater = PermissionsUpdater.new(user, story_uid)
+      permissions_updater = PermissionsUpdater.new(user, user_authorization, story_uid)
       permissions_response = nil
 
       begin
@@ -46,7 +47,7 @@ class StoryPublisher
       end
 
       # roll back
-      if permissions_response.nil?
+      unless permissions_response.present?
         story.destroy
         saved = false
       end
@@ -57,6 +58,6 @@ class StoryPublisher
 
   private
 
-  attr_reader :user, :story_uid
+  attr_reader :user, :user_authorization, :story_uid
 
 end

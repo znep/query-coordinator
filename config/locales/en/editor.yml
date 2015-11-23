@@ -17,9 +17,29 @@ en:
     story_save_error_conflict: 'There was a conflict saving. To continue, you need to reload the page.'
     modal:
       buttons:
-        ok: 'OK'
-        insert: 'Insert'
         cancel: 'Cancel'
+        insert: 'Insert'
+        ok: 'OK'
+        save: 'Save'
+        saved: 'Saved!'
+        done: 'Done'
+    collaborators:
+      modal:
+        heading: 'Manage Collaborators'
+        email_placeholder: 'Enter email address'
+        add_contributor: 'Add Contributor'
+        collaborator: 'Collaborator'
+        access_level: 'Access Level'
+        keep: 'Keep'
+        remove: 'Remove'
+        invite_collaborators: 'Invite Collaborators'
+        owner: 'Co-Owner'
+        contributor: 'Contributor'
+        viewer: 'Viewer'
+        no_collaborators: 'There are no collaborators for this story.'
+        errors:
+          invalid_email: 'Please use a valid email address.'
+          unknown_error: 'Looks like an unknown error occurred. Our engineers have been notified.'
     rich_text_toolbar:
       link_modal:
         heading: 'Add a Link'
@@ -42,6 +62,12 @@ en:
       errors:
         generic_error: 'There was an unexpected error.'
         generic_save_failure_message: 'Oh no! There was a problem saving. Please try again.'
+        cannot_edit_title_and_description: 'Sorry, you need to be a story owner to edit the "Title" and "Description".'
+        cannot_invite_and_manage_collaborators: 'Sorry, you need to be a story owner to "Invite and Manage Collaborators".'
+        cannot_change_visibility: 'Sorry, you need to be a story owner to toggle "Visibility".'
+        cannot_change_visibility_or_update_public_version: 'Sorry, you need to be a story owner to toggle "Visibility" or "Update Public Version".'
+      warnings:
+        unsaved_collaborators_changes: 'You have unsaved changes. Are you sure you want to close this window?'
       displaying_section:
         section_title: 'Title and Description'
         title_label: 'Title'
@@ -52,6 +78,7 @@ en:
       actions_section:
         section_title: 'Actions'
         make_a_copy: 'Make a Copy...'
+        invite_and_manage_collaborators: 'Invite and Manage Collaborators...'
       publishing_section:
         section_title: 'Publishing'
         visibility:

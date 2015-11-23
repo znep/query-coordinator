@@ -38,6 +38,7 @@
 
       var vif = componentData.value.vif;
 
+      $element.attr('data-rendered-vif', JSON.stringify(vif));
       vif.configuration.localization = {
         'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
@@ -50,7 +51,7 @@
         other: 'records'
       };
 
-      $componentContent.trigger('destroy');
+      $componentContent.triggerHandler('destroy');
       $componentContent.socrataColumnChart(vif);
 
       $element.attr('data-rendered-vif', JSON.stringify(vif));

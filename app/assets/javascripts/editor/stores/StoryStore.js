@@ -136,20 +136,20 @@
     this.getStoryPermissions = function(storyUid) {
       var story = _getStory(storyUid);
 
-      return story.permissions;
+      return _.cloneDeep(story.permissions);
     };
 
     this.getStoryPublishedStory = function(storyUid) {
       var story = _getStory(storyUid);
 
-      return story.publishedStory;
+      return _.cloneDeep(story.publishedStory);
     };
 
     this.getStoryBlockIds = function(storyUid) {
 
       var story = _getStory(storyUid);
 
-      return story.blockIds;
+      return _.cloneDeep(story.blockIds);
     };
 
     this.getStoryBlockAtIndex = function(storyUid, index) {
@@ -161,7 +161,7 @@
         throw new Error('`index` argument is out of bounds.');
       }
 
-      return _blocks[blockIds[index]];
+      return _.cloneDeep(_blocks[blockIds[index]]);
     };
 
     this.getStoryBlockIdAtIndex = function(storyUid, index) {
@@ -173,7 +173,7 @@
         throw new Error('`index` argument is out of bounds.');
       }
 
-      return blockIds[index];
+      return _.cloneDeep(blockIds[index]);
     };
 
     this.getBlockLayout = function(blockId) {
@@ -187,7 +187,7 @@
 
       var block = _getBlock(blockId);
 
-      return block.components;
+      return _.cloneDeep(block.components);
     };
 
     this.getBlockComponentAtIndex = function(blockId, index) {
@@ -198,7 +198,7 @@
         throw new Error('`index` argument is out of bounds.');
       }
 
-      return components[index];
+      return _.cloneDeep(components[index]);
     };
 
     this.serializeStory = function(storyUid) {

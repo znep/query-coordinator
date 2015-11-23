@@ -115,7 +115,10 @@
   </tbody>
 </table>
 <% end %>
-<%= render_translations LocalePart.controls.nominate %>
+
+<%- content_for :translations do -%>
+  <%= render_translations LocalePart.controls.nominate %>
+<%- end -%>
 
 <% content_for :js_footer do %>
   <script type='text/javascript'>

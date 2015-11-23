@@ -3,9 +3,9 @@
         _init: function()
         {
             this._super.apply(this, arguments);
-            if ($('#templates > .componentPaletteContainer').length < 1)
+            if ($.getTemplate('componentPaletteContainer').length < 1)
             {
-                $('#templates').append($.tag2({ _: 'div', className: 'componentPaletteContainer',
+                $('#js-appended-templates').append($.tag2({ _: 'div', className: 'componentPaletteContainer',
                     contents: { _: 'div', className: ['componentBlock', 'clearfix'],
                         contents: [
                             { _: 'span', className: 'title' },

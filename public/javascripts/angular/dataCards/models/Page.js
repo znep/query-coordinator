@@ -41,7 +41,6 @@
           getDefaultPageMetadataVersion();
 
         var fields = [
-          'ownerId',
           'datasetId',
           'description',
           'name',
@@ -49,9 +48,7 @@
           'primaryAggregation',
           'baseSoqlFilter',
           'defaultDateTruncFunction',
-          'moderationStatus',
-          'rights',
-          'provenance'
+          'rights'
         ];
 
         this.displayType = pageMetadata.displayType;
@@ -71,6 +68,9 @@
         self.defineObservableProperty('dataset', dataset);
         self.defineEphemeralObservableProperty('hasExpandedCard', null);
         self.defineEphemeralObservableProperty('shares', pageMetadata.shares);
+        self.defineEphemeralObservableProperty('provenance', pageMetadata.provenance);
+        self.defineEphemeralObservableProperty('moderationStatus', pageMetadata.moderationStatus);
+        self.defineEphemeralObservableProperty('ownerId', pageMetadata.ownerId);
 
         var primaryAmountField$ = self.observe('primaryAmountField');
 

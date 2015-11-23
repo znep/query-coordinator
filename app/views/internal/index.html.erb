@@ -16,7 +16,7 @@
     <h2>Go to:</h2>
     <ul>
       <li><%= link_to 'Current Organization', "/internal/orgs/#{CurrentDomain.organizationId}" %></li>
-      <li><%= link_to 'Current Domain', "/internal/orgs/#{CurrentDomain.organizationId}/domains/#{CurrentDomain.cname}" %></li>
+      <li><%= link_to 'Current Domain', show_domain_path(domain_id: CurrentDomain.cname) %></li>
     </ul>
   </div>
 </div>

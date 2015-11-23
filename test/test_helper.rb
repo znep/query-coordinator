@@ -129,6 +129,25 @@ class ActionController::TestCase
   include ActionView::Helpers
   include ActionDispatch::Routing
   include Rails.application.routes.url_helpers
+
+  protected
+
+  # Returns a helper lambda that, when passed a route-like string will substitute
+  # route parameters into the string.
+  #
+  # Example:
+  # route_params = { foo: 'bar' }
+  # routelike_builder(route_params).call('/namespace/action/:foo/extra')
+  # #=> '/namespace/action/bar/extra'
+  def routelike_builder(route_params)
+    lambda do |routelike_url, method = :get|
+      {
+        method: method,
+        path: routelike_url.gsub(/:[^\/]+/) { |match| route_params[match[1..-1].to_sym] }
+      }
+    end
+  end
+
 end
 
 # assert_select doesn't like the formatting of our HTML... this adds a quieter version

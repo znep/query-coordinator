@@ -5,7 +5,7 @@ $(function () {
   var COLUMN_NAME = 'updated';
   var DATASET_UID = 'r6t9-rak2';
   var DOMAIN = 'dataspace.demo.socrata.com';
-  var timelineChart1VIF = {
+  var timelineChartVIF = {
     'aggregation': {
       'columnName': null,
       'function': 'count'
@@ -39,20 +39,46 @@ $(function () {
     }
   };
 
-  var $timelineChart1Element = $('#timeline-chart');
-  $timelineChart1Element.socrataTimelineChart(timelineChart1VIF);
+  var $timelineChartElement = $('#timeline-chart');
+  var $timelineChartContainer = $('.timeline-chart-container');
+  
+  $timelineChartElement.socrataTimelineChart(timelineChartVIF);
+  $timelineChartContainer.append('<div class="mobile-flyout"></div>');
 
   // Handle flyout events
-  $timelineChart1Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+  $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+  $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_CLEAR', clearFlyout);
+
+  function clearFlyout() {
+    $timelineChartElement.removeClass('expanded');
+    $timelineChartContainer.find('.mobile-flyout').html('');
+  }
 
   function handleFlyout(event) {
     var payload = event.originalEvent.detail;
-
-    // Render/hide a flyout
+    
+    // Render mobile flyout
     if (payload !== null) {
-      flyoutRenderer.render(payload);
-    } else {
-      flyoutRenderer.clear();
+      mobileFlyoutRender(payload);
+      $timelineChartElement.addClass('expanded');
     }
+  }
+
+  function mobileFlyoutRender(payload) {
+    var flyoutBounds = payload.element.getBoundingClientRect();
+    var highlightedBarWidth = $('.timeline-chart-highlight-container').width();
+    var flyoutData = $('<div>', {
+      'class': 'title-wrapper',
+      html:
+      '<div class="labels mobile">' +
+      '<div class="arrow" style="left: ' + ((flyoutBounds.left-28) + (highlightedBarWidth/2)) + 'px"></div>' +
+      '<h4 class="title pull-left">' + payload.data.title + '</h4>' +
+      '<h4 class="value pull-right text-right">' + payload.data.unfilteredValue.split(' ')[0] +
+      '<span> ' + payload.data.unfilteredValue.split(' ')[1] + '</span>' +
+      '</h4>' +
+      '</div>'
+    });
+
+    $timelineChartContainer.find('.mobile-flyout').html(flyoutData);
   }
 });

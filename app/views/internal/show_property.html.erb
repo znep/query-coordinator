@@ -19,7 +19,7 @@
                                                 id: @config.id) %>
       for
       <%= link_to "#{@domain.name} (#{@domain.cname})",
-        show_domain_path(org_id: @domain.organizationId, id: @domain.cname) %>
+        show_domain_path(org_id: @domain.organizationId, domain_id: @domain.cname) %>
     </h1>
 
     <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +

@@ -25,9 +25,9 @@ class InternalController < ApplicationController
   end
 
   def show_domain
-    @domain = Domain.find(params[:id])
+    @domain = Domain.find(params[:domain_id])
     @modules = AccountModule.find().sort {|a,b| a.name <=> b.name}
-    @configs = ::Configuration.find_by_type(nil, false, params[:id], false)
+    @configs = ::Configuration.find_by_type(nil, false, params[:domain_id], false)
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
     # lazily create it when you make a change anyways.
     unless @configs.detect { |config| config.type == 'feature_flags' }
@@ -46,6 +46,15 @@ class InternalController < ApplicationController
       sort_delta = a.name.downcase <=> b.name.downcase if sort_delta.zero?
       sort_delta
     end
+  end
+
+  def config_info
+    # Include subset of ENV list, as most of it is useless. Add more as you need them
+    env_variable_list = %w{ RBENV_VERSION RAILS_ENV LANG }
+    @config_variables_to_output = ENV.select { | key, value | env_variable_list.include?(key) }
+
+    # Filter secret auth things
+    @app_config_variables = APP_CONFIG.reject { | key, value | key.to_s.match(/auth/) }
   end
 
   def show_config
@@ -126,7 +135,7 @@ class InternalController < ApplicationController
       flash.now[:error] = e.error_message
       return (render 'shared/error', :status => :internal_server_error)
     end
-    redirect_to show_domain_path(org_id: params[:id], id: domain.cname)
+    redirect_to show_domain_path(org_id: params[:id], domain_id: domain.cname)
   end
 
   def create_site_config
@@ -148,8 +157,7 @@ class InternalController < ApplicationController
       return (render 'shared/error', :status => :internal_server_error)
     end
 
-    redirect_to show_config_path(org_id: params[:org_id],
-                                 domain_id: params[:domain_id],
+    redirect_to show_config_path(domain_id: params[:domain_id],
                                  id: config.id)
   end
 
@@ -159,7 +167,7 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
-    redirect_to show_domain_path(org_id: params[:org_id], id: params[:domain_id])
+    redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
   def delete_site_config
@@ -167,7 +175,7 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
-    redirect_to show_domain_path(org_id: params[:org_id], id: params[:domain_id])
+    redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
   def set_features
@@ -186,7 +194,7 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
-    redirect_to show_domain_path(org_id: params[:org_id], id: params[:domain_id])
+    redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
   def add_module_to_domain
@@ -194,7 +202,7 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
-    redirect_to show_domain_path(org_id: params[:org_id], id: params[:domain_id])
+    redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
   def update_aliases
@@ -212,7 +220,7 @@ class InternalController < ApplicationController
       return render 'shared/error', :status => :internal_server_error
     end
     CurrentDomain.flag_out_of_date!(params[:domain_id])
-    redirect_to show_domain_path(org_id: params[:org_id], id: new_cname)
+    redirect_to show_domain_path(domain_id: new_cname)
   end
 
 
@@ -253,8 +261,7 @@ class InternalController < ApplicationController
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
     respond_to do |format|
-      format.html { redirect_to show_config_path(org_id: params[:org_id],
-                                                 domain_id: params[:domain_id],
+      format.html { redirect_to show_config_path(domain_id: params[:domain_id],
                                                  id: params[:id]) }
       format.data { render :json => { :success => true } }
     end
@@ -374,14 +381,8 @@ class InternalController < ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_url =
-          if params[:category].present?
-            feature_flags_config_with_category_path(domain_id: params[:domain_id],
-                                                    category: params[:category])
-          else
-            feature_flags_config_path(domain_id: params[:domain_id])
-          end
-        redirect_to redirect_url
+        redirect_to feature_flags_config_path(domain_id: params[:domain_id],
+                                              category: params[:category])
       end
 
       json_response = { :success => errors.empty?, :errors => errors, :infos => infos }

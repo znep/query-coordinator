@@ -1,0 +1,33 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title>Site Debug | Internal Panel | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <div class='content'>
+    <h1>Configuration Information</h1>
+
+    <%#  APP_CONFIG debugging %>
+    <h2>Values from APP_CONFIG</h2>
+    <dl class="internalPanel">
+      <% @app_config_variables.each do |key, value| -%>
+        <dt><%= key %></dt>
+        <dd><%= value %></dd>
+      <% end -%>
+    </dl>
+
+    <h2>Other</h2>
+    <dl class="internalPanel">
+      <dt>Site Config</dt>
+      <dd><%= link_to nil, '/api/configurations.json' %></dd>
+
+      <% @config_variables_to_output.each do |key, value| -%>
+        <dt><%= key %></dt>
+        <dd><%= value %></dd>
+      <% end -%>
+    </dl>
+
+  </div>
+</div>

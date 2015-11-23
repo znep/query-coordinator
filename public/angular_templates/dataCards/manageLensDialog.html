@@ -93,13 +93,13 @@
       </div>
       <div ng-repeat="share in inheritedShares" class="inherited-share">
         <div ng-show="share.link" class="row">
-          <div class="span4">
+          <div class="span4 share-user">
             <a href="{{share.link}}" target="_blank">{{share.name}}</a>
           </div>
           <div class="span8">{{share.label}}</div>
         </div>
         <div ng-hide="share.link" class="row">
-          <div class="span4">{{share.name}}</div>
+          <div class="span4 share-user">{{share.name}}</div>
           <div class="span8">{{share.label}}</div>
         </div>
       </div>

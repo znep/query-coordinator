@@ -4,26 +4,28 @@ describe('newShareDialog', function() {
   var testHelpers;
   var $rootScope;
   var $httpBackend;
-  var _$provide;
+  var $provide;
   var $scope;
+  var $window;
 
   beforeEach(module('/angular_templates/dataCards/new-share-dialog.html'));
   beforeEach(module('dataCards/cards.scss'));
   beforeEach(module('dataCards'));
 
-  beforeEach(module(function($provide) {
-    _$provide = $provide;
+  beforeEach(module(function(_$provide_) {
+    $provide = _$provide_;
   }));
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');
     $httpBackend = $injector.get('$httpBackend');
+    $window = $injector.get('$window');
 
-    testHelpers.mockDirective(_$provide, 'socSelect');
-    testHelpers.mockDirective(_$provide, 'saveButton');
-    testHelpers.mockDirective(_$provide, 'modalDialog');
-    testHelpers.mockDirective(_$provide, 'manageLensDialog');
+    testHelpers.mockDirective($provide, 'socSelect');
+    testHelpers.mockDirective($provide, 'saveButton');
+    testHelpers.mockDirective($provide, 'modalDialog');
+    testHelpers.mockDirective($provide, 'manageLensDialog');
   }));
 
   afterEach(function(){
@@ -46,7 +48,7 @@ describe('newShareDialog', function() {
     var datasetOverrides = _.extend({}, datasetMetadata);
 
     return testHelpers.TestDom.compileAndAppend(
-      '<new-share-dialog dialog-state="dialogState" save-new-shares="saveNewShares"/>',
+      '<new-share-dialog dialog-state="dialogState" save-new-shares="saveNewShares" />',
       $scope
     );
   }
@@ -111,17 +113,12 @@ describe('newShareDialog', function() {
     });
 
     it('filters out share emails that are identical to the email of the current user', function() {
-      window.currentUser = {
-        email: 'snu@socrata.com'
-      };
-
+      $window.currentUser = { email: 'snu@socrata.com' };
       var element = createElement();
       var isolateScope = element.isolateScope();
       isolateScope.newShares.shares = [{name: ''}, {name: 'snu@socrata.com'}];
       isolateScope.donions();
       expect($scope.newShares.shares).to.have.length(0);
-
-      delete window.currentUser;
     });
   });
 });

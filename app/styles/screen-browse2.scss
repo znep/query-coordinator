@@ -39,6 +39,9 @@ body {
 
   [class^="icon-"], [class*=" icon-"] {
     font-family: 'socrata-apps' !important;
+    &:before, &:after {
+      font-family: 'socrata-apps' !important;
+    }
   }
 
   .browse2-create-asset {

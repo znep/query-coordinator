@@ -5,11 +5,24 @@ describe('ManageLensDialogController', function() {
 
   var $scope;
 
-  beforeEach(inject(function($rootScope, $controller, Mockumentary) {
+  beforeEach(inject(function($rootScope, $controller, ServerConfig, Mockumentary) {
+    // TODO: remove override when owner change is fully enabled and flag is removed
+    ServerConfig.override('allowDataLensOwnerChange', true);
+
     $scope = $rootScope.$new();
     $scope.page = Mockumentary.createPage();
     $controller('ManageLensDialogController', {$scope: $scope});
   }));
+
+  it('should set shouldShowOwnershipSection to false if the user does not have chown_datasets right', function() {
+    $scope.page.set('rights', []);
+    $scope.$digest();
+    expect($scope.shouldShowOwnershipSection).to.equal(false);
+
+    $scope.page.set('rights', ['chown_datasets']);
+    $scope.$digest();
+    expect($scope.shouldShowOwnershipSection).to.equal(true);
+  });
 
   it('should set shouldShowSharingSection to false if the user does not have grants right', function() {
     $scope.page.set('rights', []);

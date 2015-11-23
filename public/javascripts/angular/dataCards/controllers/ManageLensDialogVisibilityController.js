@@ -4,6 +4,7 @@
   function ManageLensDialogVisibilityController(
     $q,
     $scope,
+    $window,
     ServerConfig,
     I18n,
     http
@@ -22,9 +23,7 @@
       map(_.negate(_.property('isPublic')));
 
     var userCanApproveNominations$ = Rx.Observable.returnValue(
-      typeof currentUser !== 'undefined' &&
-        typeof currentUser.rights !== 'undefined' &&
-        currentUser.rights.indexOf('approve_nominations') >= 0
+      _.get($window.currentUser || {}, 'rights', []).indexOf('approve_nominations') >= 0
     );
 
     var moderationStatus$ = $scope.page.observe('moderationStatus');

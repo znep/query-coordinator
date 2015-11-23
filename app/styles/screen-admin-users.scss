@@ -40,6 +40,9 @@
         opacity: 0.3;
         @include transition-duration(0.2s);
         @include transition-property(opacity);
+        &:focus {
+          opacity: 1.0;
+        }
       }
       &:hover .button {
         opacity: 1;

@@ -127,7 +127,7 @@
                   <%- end -%>
                 </td>
               <%- end -%>
-              <td class="user" scope="row">
+              <th class="user row-header" scope="row">
                 <a href="<%= profile_path(user) %>">
                   <img class="userIcon" src="<%= user.profile_image_path('small')%>"
                     alt="<%= user.displayName %>" />
@@ -135,7 +135,7 @@
                     <%= user.displayName %>
                   </span>
                 </a>
-              </td>
+              </th>
               <td class="email warning">
                 <span class="icon"></span>
                 <span class="cellInner">
@@ -214,11 +214,11 @@
           <tbody>
             <%- @futures.each do |user| -%>
               <tr class="item" data-userrole="<%= user.role %>">
-                <td class="email">
+                <th class="email row-header" scope="row">
                   <span class="cellInner">
                     <%= user.email %>
                   </span>
-                </td>
+                </th>
                 <td class="role">
                   <span class="cellInner">
                     <%= user.role.titleize %>

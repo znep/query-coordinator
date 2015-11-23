@@ -409,6 +409,7 @@
       var horizontalScale = horizontalScaleDetails.scale;
       chartTruncated = horizontalScaleDetails.truncated;
       var rangeBand = Math.ceil(horizontalScale.rangeBand());
+      var chartScrollTop = _chartScroll.offset().top - element.offset().top;
 
       // Compute chart margins
       if (showAllLabels) {
@@ -457,6 +458,9 @@
 
       var _renderTicks = function() {
 
+        // The `+ 3` term accounts for the border-width.
+        var tickHeight = parseInt(element.css('font-size'), 10) + 3;
+
         var numberOfTicks = 3;
 
         var tickMarks = _.uniq([0].concat(verticalScale.ticks(numberOfTicks))).map(function(tickValue) {
@@ -467,26 +471,25 @@
           });
 
           var tickTopOffset = innerHeight - verticalScale(tickValue);
-          // The `+ 3` term accounts for the border-width.
-          var tickHeight = parseInt(element.css('font-size'), 10) + 3;
-
           if (tickTopOffset <= tickHeight) {
             tick.addClass('below');
             tickTopOffset += tickHeight;
           }
 
-          tick.css('top', tickTopOffset);
+          tick.attr('style', 'top: {0}px'.format(tickTopOffset));
 
           return tick;
         });
 
+
+        var ticksStyle = "top: {0}px; width: {1}px; height: {2}px;".format(
+          chartScrollTop + topMargin,
+          chartWidth,
+          innerHeight + topMargin
+        );
         return $('<div>', {
           'class': 'ticks',
-          css: {
-            top: _chartScroll.position().top + topMargin,
-            width: chartWidth,
-            height: innerHeight + topMargin
-          }
+          'style': ticksStyle
         }).append(tickMarks);
       };
 
@@ -646,6 +649,7 @@
           each(function(d) {
 
             // Save references to all d3 selections.
+            var $this = $(this);
             var labelSelection = d3.select(this);
             var labelContentSelection = labelSelection.select('.contents');
             var labelTextSelection = labelContentSelection.select('.text');
@@ -657,10 +661,21 @@
             var isSelected = d[SELECTED_INDEX];
             var scaleOffset = horizontalScale(d[NAME_INDEX]) - centering - 1;
             var noRoomForCallout = scaleOffset >= chartWidth && isSelected && !showAllLabels;
-            var leftOriented = $(this).hasClass('orientation-left');
+            var leftOriented = $this.hasClass('orientation-left');
             var labelIconPadding = 30;
-            var halfWidthOfCloseIcon = ($(this).find('.icon-close').width() / 2) - 1;
+            var widthOfCloseIcon = 0;
+            var halfWidthOfCloseIcon;
             var textMaxWidth;
+            var labelSelectionStyle;
+            var desiredLabelContentLeft = '';
+            var desiredLabelContentRight = '';
+            var labelTextSelectionStyle;
+
+            if (isSelected) { // Close icons are only shown when selected.
+              widthOfCloseIcon = $this.find('.icon-close').width();
+            }
+
+            halfWidthOfCloseIcon = (widthOfCloseIcon / 2) - 1;
 
             // Logic for setting label and content offsets and text max widths.
             if (showAllLabels || !isSelected) {
@@ -688,22 +703,38 @@
             }
 
             // Apply styles
-            labelSelection.style('left', '{0}px'.format(labelLeftOffset));
-            labelSelection.style('right', '{0}px'.format(labelRightOffset));
+            labelSelectionStyle = 'left: {0}px; right: {1}px;'.format(labelLeftOffset, labelRightOffset);
+            if (labelSelection.attr('style') !== labelSelectionStyle) {
+              labelSelection.attr('style', labelSelectionStyle);
+            }
 
             if (!_.isUndefined(labelContentLeftOffset)) {
-              labelContentSelection.style('left', '{0}rem'.format(labelContentLeftOffset));
-            } else {
-              labelContentSelection.style('left', '');
+              desiredLabelContentLeft = '{0}rem'.format(labelContentLeftOffset);
             }
 
             if (!_.isUndefined(labelContentRightOffset)) {
-              labelContentSelection.style('right', '{0}px'.format(labelContentRightOffset));
-            } else {
-              labelContentSelection.style('right', '');
+              desiredLabelContentRight = '{0}px'.format(labelContentRightOffset);
             }
 
-            labelTextSelection.style('max-width', '{0}px'.format(textMaxWidth));
+            // Calls to .style() in this section were costing about 150ms per render,
+            // even if nothing changed about the style.
+            // We need to avoid even calling .style() if nothing changed. We accomplish
+            // this by storing details of the last-rendered style in data attributes,
+            // which are fast to read.
+            if (labelContentSelection.attr('data-left') !== desiredLabelContentLeft) {
+              labelContentSelection.style('left', desiredLabelContentLeft);
+              labelContentSelection.attr('data-left', desiredLabelContentLeft);
+            }
+            if (labelContentSelection.attr('data-right') !== desiredLabelContentRight) {
+              labelContentSelection.style('right', desiredLabelContentRight);
+              labelContentSelection.attr('data-right', desiredLabelContentRight);
+            }
+
+            labelTextSelectionStyle = 'max-width: {0}px;'.format(textMaxWidth);
+
+            if(labelTextSelection.attr('style') !== labelTextSelectionStyle) {
+              labelTextSelection.attr('style', labelTextSelectionStyle);
+            }
           });
 
         labelDivSelection.exit().remove();

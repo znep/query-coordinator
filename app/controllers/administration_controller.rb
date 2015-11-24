@@ -420,7 +420,8 @@ class AdministrationController < ApplicationController
       moderation: 'any',
       nofederate: 'true',
       suppress_dataset_creation: true,
-      view_type: 'table'
+      view_type: 'table',
+      a11y_table_description: t('screens.admin.view_moderation.table_description')
     })
   end
 

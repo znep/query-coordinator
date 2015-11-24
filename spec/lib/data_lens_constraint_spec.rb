@@ -10,7 +10,6 @@ describe Constraints::DataLensConstraint do
 
     subject(:constraint) { described_class.new }
     let(:request_data_slate) { double('Request', path_parameters: {category: 'countystat', view_name: 'objective', id: 'housing'}, query_parameters: {}, cookies: 'kooky') }
-    let(:request_with_query) { double('Request', path_parameters: {id: '1234-five'}, query_parameters: {'gridUx' => true}, cookies: 'kooky') }
     let(:request_without_query) { double('Request', path_parameters: {id: '1234-five'}, query_parameters: {}, cookies: 'kooky') }
     let(:data_lens) { double('View') }
     let(:marshalled_out) { Marshal.dump({}) }
@@ -63,10 +62,6 @@ describe Constraints::DataLensConstraint do
         allow(data_lens).to receive(:new_view?).and_return(false)
         allow(data_lens).to receive(:standalone_visualization?).and_return(true)
         expect(constraint.matches?(request_without_query)).to be_falsy
-      end
-
-      it 'is not accepted if the janky admin UI is requested' do
-        expect(constraint.matches?(request_with_query)).to be_falsy
       end
 
     end

@@ -275,26 +275,26 @@
               <h2><%= t("#{prefix}.privacy_security") %></h2>
 
               <div class="line clearfix">
-                <label><%= t("#{prefix}.privacy_settings") %></label>
-                <div class="radioblock">
+                <label for="privacy-settings"><%= t("#{prefix}.privacy_settings") %></label>
+                <fieldset id="privacy-settings" class="radioblock">
                   <div>
-                    <%= radio_button_tag("privacy", "public") %>
+                    <%= radio_button_tag('privacy', 'public', :id => 'privacy_public') %>
                     <label for="privacy_public">
                       <%= raw t("#{prefix}.public_explain") %>
                     </label>
                   </div>
                   <div>
-                    <%= radio_button_tag("privacy", "private", :checked => true) %>
+                    <%= radio_button_tag('privacy', 'private', :checked => true, :id => 'privacy_private') %>
                     <label for="privacy_private">
                       <%= raw t("#{prefix}.private_explain") %>
                     </label>
                   </div>
-                </div>
+                </fieldset>
               </div>
 
               <%- prefix = 'screens.edit_metadata' -%>
               <div class="line clearfix">
-                <label><%= t("#{prefix}.contact_email") %></label>
+                <label for="<%= sanitize_to_id('view[privateMetadata][contactEmail]') %>"><%= t("#{prefix}.contact_email") %></label>
                 <%= text_field_tag('view[privateMetadata][contactEmail]', '',
                       :title => t("#{prefix}.email_address"), :class => 'textPrompt email') %>
                 <div class="additionalHelp"><%= t("#{prefix}.email_help") %></div>

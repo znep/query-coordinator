@@ -43,4 +43,26 @@ module BrowseHelper
     sanitize raw(auto_link(h(raw(description)), :all, {'rel' => 'nofollow external' }))
   end
 
+  def a11y_browse_summary(browse_opts)
+    if browse_opts[:grid_items].empty? || browse_opts[:view_results].empty?
+      return t('table.no_summary_available')
+    end
+    columns = browse_opts[:grid_items].select { |_, val| val }.map { |key, _| %("#{key.to_s}") }
+    rows = browse_opts[:view_results].map { |row| %("#{row.name}") }
+    row_headings = ''
+    if rows.size < 5
+      row_headings = rows.join(', ')
+    end
+
+    template_opts = {
+      :data_description => browse_opts[:a11y_table_description],
+      :column_heading_count => columns.size,
+      :column_headings => columns.join(', '),
+      :row_heading_count => rows.size,
+      :row_headings => row_headings
+    }
+
+    t('table.summary', template_opts)
+  end
+
 end

@@ -332,9 +332,11 @@ end
                   :rel_type => view_rel_type(v, CurrentDomain, opts)
                 } %>
           <%- end -%>
-
-      <%- else -%>
-          <table class="gridList<%= ' hasFederations' if opts[:use_federations] %>">
+        <%- else -%>
+          <table
+            class="gridList<%= ' hasFederations' if opts[:use_federations] %>"
+            summary="<%= a11y_browse_summary(opts) %>"
+          >
             <colgroup>
               <%- if opts[:grid_items][:index] -%>
                 <col class="index" />

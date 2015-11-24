@@ -1563,6 +1563,7 @@ en:
         saved: Saved
         saving: Saving
         sidebar_position: Sidebar Position
+        table_description: Datasets
         title: Datasets
         unpublished_datasets: Unpublished Datasets
       federation:
@@ -3117,6 +3118,9 @@ en:
       finish: Finish
       next: Next
       previous: Previous
+  table:
+    summary: This table of %{data_description} has %{column_heading_count} column heading(s) %{column_headings} for each of %{row_heading_count} description row headings %{row_headings}
+    no_summary_available: No Summary Available
   support:
     array:
       last_word_connector: ", and "

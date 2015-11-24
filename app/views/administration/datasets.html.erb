@@ -31,7 +31,7 @@
     <h2><%= t("#{prefix}.layout_config") %></h2>
     <%= form_tag({:action => 'modify_sidebar_config'}, {:method => 'post',
       :class => 'commonForm'}) %>
-      <div class="line">
+      <fieldset class="line">
         <span class="mainLabel"><%= t("#{prefix}.sidebar_position") %></span>
         <div class="valueBox">
           <input type="radio" id="sidebarPosition_right"
@@ -47,7 +47,7 @@
         </div>
         <span class="saving statusText"><%= t("#{prefix}.saving") %></span>
         <span class="saved statusText"><%= t("#{prefix}.saved") %></span>
-      </div>
+      </fieldset>
       <input type="submit" value="<%= t('core.dialogs.save') %>" />
     </form>
   </div>

@@ -205,6 +205,11 @@ $data_lens_icon_color: #80acca;
       color: $data_lens_icon_color;
     }
   }
+  .gridList {
+    th {
+      font-weight: bold;
+    }
+  }
   .browseList {
     background-color: $browse_background_color;
     border: 1px solid $color_chrome_box_border;
@@ -286,9 +291,6 @@ $data_lens_icon_color: #80acca;
         }
       }
       .gridList {
-        th {
-          font-weight: bold;
-        }
         tbody {
           tr {
             border-top: none;

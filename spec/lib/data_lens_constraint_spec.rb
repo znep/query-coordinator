@@ -9,6 +9,7 @@ describe Constraints::DataLensConstraint do
   describe '#matches?' do
 
     subject(:constraint) { described_class.new }
+    let(:request_data_slate) { double('Request', path_parameters: {category: 'countystat', view_name: 'objective', id: 'housing'}, query_parameters: {}, cookies: 'kooky') }
     let(:request_with_query) { double('Request', path_parameters: {id: '1234-five'}, query_parameters: {'gridUx' => true}, cookies: 'kooky') }
     let(:request_without_query) { double('Request', path_parameters: {id: '1234-five'}, query_parameters: {}, cookies: 'kooky') }
     let(:data_lens) { double('View') }
@@ -23,6 +24,12 @@ describe Constraints::DataLensConstraint do
       allow(Marshal).to receive(:dump).and_return(marshalled_out)
 
       init_current_domain
+    end
+
+    context 'when the given path is meant for data slate' do
+      it 'is rejected' do
+        expect(constraint.matches?(request_data_slate)).to be_falsy
+      end
     end
 
     # the missing/invalid ID cases are covered by resource_constraint_spec.rb

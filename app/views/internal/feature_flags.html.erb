@@ -1,7 +1,7 @@
 <% content_for :head do %>
 <%= rendered_stylesheet_tag 'internal' %>
 <title>Feature Flags for Domain <%= @domain.try(:name) %>
-    | Internal Panel | <%= CurrentDomain.strings.site_title %></title>
+  | Internal Panel | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
@@ -10,27 +10,29 @@
   <%= render :partial => 'production_warning' %>
   <h1>Feature Flags for
     <%= link_to "#{@domain.name} (#{@domain.cname})",
-                show_domain_path(org_id: @domain.organizationId,
-                                 domain_id: @domain.cname) %>
+      show_domain_path(org_id: @domain.organizationId, domain_id: @domain.cname) %>
   </h1>
   <%= display_standard_flashes %>
+  <div class="feature-flag-filter">
+    <span class="icon-search"></span>
+    <input class="feature-flag-filter-input" type="text" placeholder="Filter" />
+  </div>
   <%- @flags.each do |flag, flag_config| %>
-  <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +
-    '/domains/' + @domain.cname + '/set_feature_flags') do %>
-    <div class="clearfix" style="clear: both">
+    <%= form_tag("/internal/orgs/#{@domain.organizationId.to_s}/domains/#{@domain.cname}/set_feature_flags") do %>
+      <div class="clearfix" style="clear: both">
         <div class="flagBox">
-            <div><%= flag %></div>
-            <p><%= flag_config.description %></p>
+          <div class="title"><%= flag %></div>
+          <p class="description"><%= flag_config.description %></p>
         </div>
         <div class="valueBox">
-            <p>Default Value: <%= flag_config.defaultValue %></p>
-            <%= feature_flag_input flag, flag_config, flag_config.value %>
-            <br>
-            <input type="submit" name="reset_to_default[<%= flag %>]" value="Reset to Default" />
-            <input type="submit" value="Update" />
+          <p>Default Value: <%= flag_config.defaultValue %></p>
+          <%= feature_flag_input flag, flag_config, flag_config.value %>
+          <br>
+          <input type="submit" name="reset_to_default[<%= flag %>]" value="Reset to Default" />
+          <input type="submit" value="Update" />
         </div>
-    </div>
-    <%= hidden_field_tag 'category', params[:category] if params[:category].present? %>
+      </div>
+      <%= hidden_field_tag 'category', params[:category] if params[:category].present? %>
     <%- end %>
   <%- end %>
 </div>
@@ -38,23 +40,39 @@
 <% content_for :js_footer do %>
   <script type="text/javascript">
     $(function() {
-        var $form = $('.featureFlags form');
-        $('input:text, select', $form).bind('focus change', function()
-        {
-            $(this).siblings('input.other').click();
+      var $form = $('.featureFlags form');
+      $('input:text, select', $form).on('focus change', function() {
+        $(this).siblings('input.other').click();
+      });
+      $form.submit(function(e) {
+        $('.valueBox').each(function() {
+          var $this = $(this);
+          var otherNotSelected = $this.find('.other').not(':checked');
+          var otherPresent = $this.find('.other').exists();
+          if (otherNotSelected && otherPresent) {
+            $this.find('input:text, select').prop('disabled', true);
+          }
         });
-        $form.submit(function(e)
-        {
-            $('.valueBox').each(function()
-            {
-                var $this = $(this);
-                var otherNotSelected = $this.find('.other').not(':checked');
-                var otherPresent = $this.find('.other').exists();
-                if (otherNotSelected && otherPresent) {
-                  $this.find('input:text, select').prop('disabled', true);
-                }
-            });
+      });
+
+      var normalizeString = function(str) {
+        if (str === null || str === undefined) {
+          return str;
+        }
+        return String(str).replace(/[^a-z0-9]/gi, '').toLowerCase();
+      }
+
+      // Filter functionality
+      $('.feature-flag-filter-input').keyup(function() {
+        var $forms = $('.featureFlags > form');
+        var $filteredResults = $forms.filter(function() {
+          var inputValue = normalizeString($('.feature-flag-filter-input').value());
+          var formTitle = normalizeString($(this).find('.flagBox > .title').html());
+          return inputValue && formTitle.indexOf(inputValue) === -1;
         });
+        $forms.removeClass('hidden');
+        $filteredResults.addClass('hidden');
+      });
     });
   </script>
 <% end %>

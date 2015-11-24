@@ -49,11 +49,6 @@ Frontend::Application.routes do
       match '/stat/data', :as => 'govstat_data'
     end
 
-    # TEMPORARY HACK for edmonton
-    scope :controller => 'odysseus', :action => 'index' do
-      match '/edmonton-dash'
-    end
-
     scope :path => '/internal', :controller => 'internal' do
       get '/', :action => 'index'
       get '/analytics', :action => 'analytics'

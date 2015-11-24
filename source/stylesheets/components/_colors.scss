@@ -100,6 +100,15 @@ $btn-secondary-inverse-hover-background-color: $secondary;
 $btn-secondary-busy-border-color: $white;
 $btn-secondary-busy-border-right-color: tint($secondary, 20%);
 
+$btn-warning-color: $white;
+$btn-warning-background-color: $warning;
+$btn-warning-border-color: $warning;
+$btn-warning-hover-background-color: shade($warning, 20%);
+$btn-warning-active-border-color: shade($warning, 10%);
+$btn-warning-inverse-color: $warning;
+$btn-warning-inverse-background-color: $white;
+$btn-warning-inverse-hover-color: $white;
+$btn-warning-inverse-hover-background-color: $warning;
 
 $btn-success-color: $white;
 $btn-success-background-color: $success;

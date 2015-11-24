@@ -133,6 +133,37 @@ class AngularControllerTest < ActionController::TestCase
     end
   end
 
+  test 'generic & seo datalens paths route here' do
+    base_path_params = {controller: 'angular', action: 'data_lens', app: 'dataCards'}
+    View.any_instance.stubs(
+      :data_lens? => true
+    )
+
+    test_paths = %w(
+      view/1234-five
+      cats/dogs/1234-five
+    )
+
+    test_paths.each do |path|
+      segments = path.split('/')
+      flunk('invalid url') unless !segments.empty?
+      if segments.length >= 3
+        add_path_params = {category: segments[0], view_name: segments[1], id: segments[2]}
+      elsif segments.length == 2
+        add_path_params = {id: segments[1]}
+      else
+        add_path_params = {id: segments[0]}
+      end
+
+      # rails skips automatic params parsing sometimes https://github.com/rspec/rspec-rails/issues/172
+      ActionDispatch::Request.any_instance.stubs(
+        :path_parameters => base_path_params.merge(add_path_params).with_indifferent_access
+      )
+
+      assert_routing(path, base_path_params.merge(add_path_params))
+    end
+  end
+
   context 'accessibility' do
     setup do
       NewViewManager.any_instance.stubs(:fetch).returns({})

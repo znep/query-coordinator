@@ -59,6 +59,16 @@ class CustomContentControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test 'known dataslate pages route here' do
+    test_paths = %w(
+      countystat/objective/housing
+    )
+
+    test_paths.each do |path|
+      assert_routing(path, { controller: 'custom_content', action: 'page', path: path })
+    end
+  end
+
   test 'simple page render and manifest write' do
     simple_render_with_user
   end

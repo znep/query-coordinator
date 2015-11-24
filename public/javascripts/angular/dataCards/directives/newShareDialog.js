@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function newShareDialog() {
+  function newShareDialog($window) {
     return {
       restrict: 'E',
       scope: {
@@ -67,8 +67,14 @@
         //           /  /    \
         $scope.donions = function() {
           var cleanNewShares = {};
+
           // Filter newShares.shares that don't have a valid email
           cleanNewShares.shares = _.filter($scope.newShares.shares, _.property('name'));
+
+          // Filter out the current user's email (they can't share it with themselves)
+          var currentUserEmail = _.get($window.currentUser, 'email', '');
+          cleanNewShares.shares = _.reject(cleanNewShares.shares, 'name', currentUserEmail);
+
           // Sanitize optional message
           cleanNewShares.message = _.escape($scope.newShares.message);
           $scope.saveNewShares(cleanNewShares);

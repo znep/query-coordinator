@@ -11,6 +11,7 @@
     "socrata.visualizations.pbf.js",
     "socrata.visualizations.VectorTileManager.js",
     "socrata.visualizations.Visualization.js",
+    "socrata.visualizations.ChoroplethMap.js",
     "socrata.visualizations.ColumnChart.js",
     "socrata.visualizations.columnChart.css",
     "socrata.visualizations.FeatureMap.js",
@@ -35,6 +36,8 @@
     "lodash": "~3.10.0",
     "jquery": "~2.1.1",
     "vector-tile": "0.1.1",
-    "moment": "~2.10.6"
+    "moment": "~2.10.6",
+    "chroma-js": "0.5.6",
+    "simple-statistics": "0.8.1"
   }
 }

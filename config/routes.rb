@@ -79,7 +79,7 @@ Frontend::Application.routes do
         post '/account_modules', :action => 'add_module_to_domain'
         match '/flush_cache', :action => 'flush_cache'
         get '/feature_flags(/:category)', :action => 'feature_flags', :as => 'feature_flags_config'
-        post '/set_feature_flags', :action => 'set_feature_flags'
+        post '/set_feature_flags', :action => 'set_feature_flags', :as => 'update_feature_flags'
 
         scope :path => '/site_config' do
           post '', :action => 'create_site_config'

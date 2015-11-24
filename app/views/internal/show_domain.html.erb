@@ -123,6 +123,12 @@
         </div>
         <input type="submit" value="Add"/>
       <% end %>
+
+      <%= render :partial => 'bulk_feature_flag_update', :locals => {
+        flags: @bulk_updates[:enable_nbe],
+        enable_text: 'Enable NBE',
+        disable_text: 'Reset from NBE',
+      } %>
     <% end %>
 
   </div>

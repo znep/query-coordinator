@@ -52,7 +52,7 @@ module FeatureFlags
   end
 
   def self.has?(key)
-    list.include? key
+    ExternalConfig.for(:feature_flag).key? key
   end
 
   def self.categories

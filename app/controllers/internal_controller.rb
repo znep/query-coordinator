@@ -46,6 +46,19 @@ class InternalController < ApplicationController
       sort_delta = a.name.downcase <=> b.name.downcase if sort_delta.zero?
       sort_delta
     end
+
+    @bulk_updates = {
+      :enable_nbe => {
+        disable_legacy_types: true,
+        enable_export_service: true,
+        reenable_ui_for_nbe: true,
+        disable_obe_redirection: true,
+        disable_nbe_redirection_warning_message: true,
+        enable_ingress_geometry_types: true,
+        geo_imports_to_nbe_enabled: true,
+        ingress_strategy: 'delta-importer'
+      }
+    }
   end
 
   def config_info
@@ -376,8 +389,8 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
-    flash[:error] = errors unless errors.empty?
-    flash[:notice] = infos unless infos.empty?
+    flash[:error] = errors.join('|') unless errors.empty?
+    flash[:notice] = infos.join('|') unless infos.empty?
 
     respond_to do |format|
       format.html do

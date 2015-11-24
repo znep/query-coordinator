@@ -1,0 +1,16 @@
+<div class="bulk_feature_flag_update">
+<%= form_tag update_feature_flags_path(domain_id: @domain.cname) do %>
+  <%-
+    flags = local_assigns[:flags].keep_if { |k, _| FeatureFlags.has? k }
+    domain_flags = @domain.feature_flags
+    enabling = flags.any? { |flag, value| domain_flags[flag] != value }
+    button_text = enabling ? local_assigns[:enable_text] : local_assigns[:disable_text]
+    button_warning = 'Warning! Enabling will override any existing values, and resetting will not remember the previous values.'
+  %>
+  <%- flags.each do |flag, value| %>
+    <%= prefix = enabling ? 'feature_flags' : 'reset_to_default'
+        hidden_field_tag("#{prefix}[#{flag}]", value) %>
+  <%- end %>
+  <button type="submit" onclick="return confirm('<%= button_warning.gsub(/'/) { "\\'" } %>');"><%= button_text %></button>
+<% end %>
+</div>

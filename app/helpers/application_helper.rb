@@ -782,4 +782,13 @@ module ApplicationHelper
       []
   end
 
+  def sprite_icon(opts)
+    content_tag(:div, :class => opts[:class_name] || 'icon') do
+      if opts[:alt_text].present?
+        image_tag('/images/empty.gif', :size => '0x0', :alt => opts[:alt_text])
+      end
+    end
+
+  end
+
 end

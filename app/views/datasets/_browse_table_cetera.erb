@@ -6,7 +6,7 @@
       <%- if opts[:grid_items][:index] -%>
         <th class="index row-header" scope="row">
           <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
-            <span class="icon"></span>
+            <%= sprite_icon(:alt_text => t('controls.browse.actions.expand_section')) %>
           </a>
           <span class="value"><%= start_index + i %>.</span>
         </th>
@@ -46,7 +46,9 @@
             <div class="description"><%= view_format_description_text(v.description) %></div>
             <div class="extraInfo <%= opts[:use_federations] ? 'federated' : '' %>">
               <div class="infoContent"></div>
-              <a class="close" href="#Close"><span class="icon"></span></a>
+              <a class="close" href="#Close">
+                <%= sprite_icon(:alt_text => t('core.dialogs.close')) %>
+              </a>
             </div>
           </div>
         </td>
@@ -77,7 +79,7 @@
           <div class="expandBlock">
             <div class="description collapsed"><%= view_format_description_text(v.description) %></div>
             <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
-              <span class="icon"></span>
+              <%= sprite_icon(:alt_text => t('controls.browse.actions.expand_section')) %>
             </a>
           </div>
         </td>
@@ -85,7 +87,9 @@
 
       <%- if opts[:grid_items][:type] -%>
         <td class="type type<%= v.display_class %>" title="<%= v.display_title %>">
-          <a href="<%= v.link %>" rel="<%= rel_type %>"><div class="<%= v.icon_class %>"></div></a>
+          <a href="<%= v.link %>" rel="<%= rel_type %>">
+            <%= sprite_icon(:class_name => v.display.icon_class, :alt_text => v.display.title) %>
+          </a>
         </td>
       <%- end -%>
     </tr>

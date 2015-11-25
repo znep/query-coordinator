@@ -41,7 +41,7 @@
     function(fontSize) { // memoization key
       return this + '|' + fontSize;
     }
-  );;
+  );
 
   String.prototype.visualLength = function(fontSize) {
     return this.visualSize(fontSize).width;

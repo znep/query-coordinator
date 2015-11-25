@@ -481,7 +481,7 @@
           return tick;
         });
 
-        var ticksStyle = "top: {0}px; width: {1}px; height: {2}px;".format(
+        var ticksStyle = 'top: {0}px; width: {1}px; height: {2}px;'.format(
           chartScrollTop + topMargin,
           chartWidth,
           innerHeight + topMargin
@@ -732,7 +732,7 @@
 
             labelTextSelectionStyle = 'max-width: {0}px;'.format(textMaxWidth);
 
-            if(labelTextSelection.attr('style') !== labelTextSelectionStyle) {
+            if (labelTextSelection.attr('style') !== labelTextSelectionStyle) {
               labelTextSelection.attr('style', labelTextSelectionStyle);
             }
           });

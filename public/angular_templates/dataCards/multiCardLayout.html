@@ -68,7 +68,8 @@
     is-standalone-visualization="page.isStandaloneVisualization"
     ng-class="{
       expanded: cardState.model.getCurrentValue('expanded'),
-      dragged: cardState.model === grabbedCard.model
+      dragged: cardState.model === grabbedCard.model,
+      'disco-mode': discoLens.discoMode
     }"></card>
   <div
     class="card-drop-placeholder"

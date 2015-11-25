@@ -10,6 +10,53 @@
 @import "dataCards/related-views";
 @import "dataCards/histogram";
 
+@keyframes dance {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(1deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-1deg); }
+  100% { transform: rotate(0deg); }
+}
+@-moz-keyframes dance {
+  0% { -moz-transform: rotate(0deg); }
+  25% { -moz-transform: rotate(1deg); }
+  50% { -moz-transform: rotate(0deg); }
+  75% { -moz-transform: rotate(-1deg); }
+  100% { -moz-transform: rotate(0deg); }
+}
+@-webkit-keyframes dance {
+  0% { -webkit-transform: rotate(0deg); }
+  25% { -webkit-transform: rotate(1deg); }
+  50% { -webkit-transform: rotate(0deg); }
+  75% { -webkit-transform: rotate(-1deg); }
+  100% { -webkit-transform: rotate(0deg); }
+}
+
+@keyframes pulse {
+  0% { background-color: #ff99ff; }
+  20% { background-color: #b399ff; }
+  40% { background-color: #99e6ff; }
+  60% { background-color: #99ffb3; }
+  80% { background-color: #e6ff99; }
+  100% { background-color: #ff9999; }
+}
+@-moz-keyframes pulse {
+  0% { background-color: #ff99ff; }
+  20% { background-color: #b399ff; }
+  40% { background-color: #99e6ff; }
+  60% { background-color: #99ffb3; }
+  80% { background-color: #e6ff99; }
+  100% { background-color: #ff9999; }
+}
+@-webkit-keyframes pulse {
+  0% { background-color: #ff99ff; }
+  20% { background-color: #b399ff; }
+  40% { background-color: #99e6ff; }
+  60% { background-color: #99ffb3; }
+  80% { background-color: #e6ff99; }
+  100% { background-color: #ff9999; }
+}
+
 $metadata-top-padding: 7px;
 $metadata-side-padding: 30px;
 $filter-height: 58px;
@@ -217,6 +264,18 @@ body.state-view-cards {
         }
       }
     }
+
+    &.disco-mode {
+      background-image: url("/images/discoLens/soul_dance.gif"),
+                        url("/images/discoLens/disco_ball_1.gif");
+      background-size: contain, contain;
+      background-position: center, center;
+      background-repeat: no-repeat, repeat-x;
+      border: none;
+      .content, .label {
+        color: white;
+      }
+    }
   }
   .cards-content {
     position: relative;
@@ -249,6 +308,15 @@ body.state-view-cards {
             }
           }
         }
+        &.disco-mode .content {
+          background-image: url("/images/discoLens/disco_ball.gif");
+          background-size: contain;
+          background-position: center;
+          background-color: #ff99ff;
+          animation: pulse 4s infinite reverse;
+          -moz-animation: pulse 4s infinite reverse; /* Firefox */
+          -webkit-animation: pulse 4s infinite reverse; /* Safari and Chrome */
+        }
         .action-btn {
           line-height: normal;
         }
@@ -280,6 +348,13 @@ body.state-view-cards {
 
       &.multiple-cards {
         margin: 0 0 ($customize-bar-height + 10px);
+      }
+
+      &.disco-mode {
+        background-color: #ff99ff;
+        animation: pulse 4s infinite reverse;
+        -moz-animation: pulse 4s infinite reverse; /* Firefox */
+        -webkit-animation: pulse 4s infinite reverse; /* Safari and Chrome */
       }
 
       &.single-card {
@@ -342,6 +417,12 @@ body.state-view-cards {
             left: inherit;
             width: inherit;
             height: inherit;
+          }
+
+          &.disco-mode {
+            animation: dance 1s infinite reverse;
+            -moz-animation: dance 1s infinite reverse; /* Firefox */
+            -webkit-animation: dance 1s infinite reverse; /* Safari and Chrome */
           }
         }
       }

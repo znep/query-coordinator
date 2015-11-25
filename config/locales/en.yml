@@ -171,6 +171,10 @@ en:
           title: Map base layer
         visualization_options:
           title: Card Type
+      disco_lens:
+        disco_lens: Disco Lens
+        turn_down: Turn down the funk
+        re_funk: Re-funk
       distribution_chart:
         drag_clear_help: Clear filter range
         drag_help: Drag to change filter range

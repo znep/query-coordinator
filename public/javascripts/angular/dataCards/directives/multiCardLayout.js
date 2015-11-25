@@ -53,7 +53,8 @@
         expandedCard: '=',
         editMode: '=',
         chooserMode: '=',
-        globalWhereClauseFragment: '='
+        globalWhereClauseFragment: '=',
+        discoLens: '='
       },
       templateUrl: '/angular_templates/dataCards/multiCardLayout.html',
       link: function(scope, cardContainer) {

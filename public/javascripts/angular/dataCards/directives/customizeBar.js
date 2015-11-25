@@ -16,7 +16,8 @@
         'savePage': '=',
         'saveStatus': '=',
         'savePageAs': '=',
-        'page': '='
+        'page': '=',
+        'discoLens': '='
       },
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/customizeBar.html',

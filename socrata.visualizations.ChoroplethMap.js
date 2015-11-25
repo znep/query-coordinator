@@ -100,6 +100,9 @@
       vif.configuration.mapOptions
     );
 
+    var _lastElementWidth;
+    var _lastElementHeight;
+
     var _map;
     var _baseTileLayer;
     var _minLng;
@@ -471,8 +474,8 @@
 
       // Determine dimensions
       var dimensions = {
-        width: _choroplethContainer.width(),
-        height: _choroplethContainer.height()
+        width: _lastElementWidth,
+        height: _lastElementHeight
       };
 
       // Add legend and get color scale
@@ -663,6 +666,9 @@
         _map.invalidateSize();
         _updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
         _firstRender = false;
+
+        _lastElementWidth = mapWidth;
+        _lastElementHeight = mapHeight;
       }
 
       // Update base layer with any changes
@@ -676,8 +682,11 @@
       }
 
       // Recenter map if container's dimensions have changed
-      if (!_.isUndefined(options.dimensions)) {
+      if (_lastElementWidth !== mapWidth || _lastElementHeight !== mapHeight) {
         _map.invalidateSize();
+
+        _lastElementWidth = mapWidth;
+        _lastElementHeight = mapHeight;
       }
     }
 

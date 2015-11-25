@@ -30,6 +30,8 @@
   function _updateVisualization($element, componentData) {
 
     var $iframe = $element.find('iframe');
+    var oldValue = $iframe.data('classic-visualization');
+    var newValue = componentData.value.visualization;
 
     utils.assertInstanceOf($iframe, jQuery);
 
@@ -38,7 +40,7 @@
     if (_.isFunction($iframe[0].contentWindow.renderVisualization)) {
 
       // Don't re-render if we've already rendered this visualization.
-      if ($iframe.data('classic-visualization') !== componentData.value.visualization) {
+      if (!_.isEqual(oldValue, newValue)) {
         $iframe.data('classic-visualization', componentData.value.visualization);
 
         // The iframe we're using goes to a frontend endpoint: /component/visualization/v0/show.
@@ -69,8 +71,15 @@
       _updateVisualization($this, componentData);
     }
 
-    $this.componentEditButton();
-    $this.toggleClass('editing', _.get(options, 'editMode', false));
+    $this.componentBase(componentData, theme, _.extend(
+      {
+        resizeSupported: true,
+        resizeOptions: {
+          minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.visualization
+        }
+      },
+      options
+    ));
 
     return $this;
   }

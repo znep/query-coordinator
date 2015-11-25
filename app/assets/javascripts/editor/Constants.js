@@ -11,6 +11,11 @@
       /\/v\/([^#\&\?]{11})/         // /v/<id>
     ],
 
+    MINIMUM_COMPONENT_HEIGHTS_PX: {
+      visualization: 200,
+      htmlEmbed: 30
+    },
+
     HISTORY_MAX_UNDO_COUNT: 99,
 
     SOQL_DATA_PROVIDER_NAME_ALIAS: 'COLUMN_ALIAS_GUARD_NAME',

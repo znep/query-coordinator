@@ -7,7 +7,7 @@
         <% block.components.each_with_index do |component, index| %>
           <div class="<%= component_container_classes(layout_columns[index]) %>">
 
-            <div class="<%= component_classes(component['type']) %>">
+            <div class="<%= component_classes(component['type']) %>" data-component-data="<%= component.to_json %>" >
 
               <%= render partial: component_partial_name(component['type']),
                     locals: { component: component } %>

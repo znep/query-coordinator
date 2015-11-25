@@ -1,0 +1,24 @@
+@import 'lib/variables';
+
+//TODO obviously this isn't done, working on it.
+.component-resizable {
+  padding-bottom: $resize-bar-height;
+
+  .component-resize-handle {
+    z-index: $component-resize-handle-z-index;
+    height: 15px;
+    background-color: red;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+  }
+}
+
+.block-edit.is-resizing {
+  z-index: $resizing-block;
+}
+
+body.is-resizing iframe {
+  pointer-events: none; // workaround for iframes eating mouse events
+}

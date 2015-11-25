@@ -78,8 +78,15 @@
 
     _updateSrc($this, componentData);
     _updateIframeHeight($this, componentData);
-    $this.componentEditButton();
-    $this.toggleClass('editing', _.get(options, 'editMode', false));
+    $this.componentBase(componentData, theme, _.extend(
+      {
+        resizeSupported: true,
+        resizeOptions: {
+          minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.htmlEmbed
+        }
+      },
+      options
+    ));
 
     return $this;
   }

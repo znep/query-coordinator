@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'ostruct'
 
 class BrowseActionsTest < Test::Unit::TestCase
   class BrowseActionsContainer
@@ -119,6 +120,31 @@ class BrowseActionsTest < Test::Unit::TestCase
     def test_do_not_use_cetera_if_cetera_host_not_present
       APP_CONFIG.stubs(cetera_host: nil)
       assert !@browse_actions_container.send(:using_cetera?)
+    end
+
+    def test_do_not_use_cetera_on_admin_datasets
+      BrowseActionsContainer.any_instance.stubs(:request => OpenStruct.new(path: '/admin/datasets') )
+      refute @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = false when path /admin/datasets'
+    end
+
+    def test_do_not_use_cetera_on_admin_views
+      BrowseActionsContainer.any_instance.stubs(:request => OpenStruct.new(path: '/admin/views') )
+      refute @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = false when path /admin/views'
+    end
+
+    def test_do_not_use_cetera_on_profile
+      BrowseActionsContainer.any_instance.stubs(:request => OpenStruct.new(path: '/profile') )
+      refute @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = false when path /profile'
+    end
+
+    def test_use_cetera_on_browse
+      BrowseActionsContainer.any_instance.stubs(:request => OpenStruct.new(path: '/browse') )
+      assert @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = true when path /browse'
+    end
+
+    def test_use_cetera_on_dataslated_home_browse
+      BrowseActionsContainer.any_instance.stubs(:request => OpenStruct.new(path: '/') )
+      assert @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = true when path /'
     end
 
     # This is an emergency fix and appropriately heinous

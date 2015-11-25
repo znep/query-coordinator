@@ -9,8 +9,8 @@ require 'decima'
 module Aws
   class DatabaseMaintainer
     # Acceptable AWS environments
-    KNOWN_ENVS = %w( staging rc prod )
-    KNOWN_REGIONS = %w( us-west-2 )
+    KNOWN_ENVS = %w( staging rc prod fedramp-prod )
+    KNOWN_REGIONS = %w( us-west-2 us-east-1 )
     RAILS_ENV_FOR_MIGRATIONS = 'aws_migrations'
 
     # Initializes lots of things for running db tasks against AWS. Dynamically
@@ -29,7 +29,7 @@ module Aws
       Rails.env = RAILS_ENV_FOR_MIGRATIONS
 
       validate_args
-      ensure_local_matches_deployed_code
+      ensure_local_matches_deployed_code unless environment == 'fedramp-prod'
       update_aws_config
       set_environment_vars_from_marathon_config
       set_secret_db_password
@@ -111,7 +111,7 @@ module Aws
 
     def marathon_config_url
       # Pull config from marathon for the storyteller app
-      "http://marathon.aws-us-west-2-#{environment}.socrata.net/v2/apps/#{environment}/storyteller"
+      "http://marathon.aws-#{region}-#{environment}.socrata.net/v2/apps/#{environment}/storyteller"
     end
 
     def rake

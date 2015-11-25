@@ -5,7 +5,7 @@ ca:
         confirm_password: Confirmeu la Contrasenya
         display_name: Mostrar Nom
         email: Adreça de Correu Electrònic
-        forgot_password: Ha oblidat la Contrasenya?
+        forgot_password: Oblit de contrasenya
         lockout_warning: Per seguretat, tres intents fallits d'inici de sessió en 15 minuts comportaran el tancament del compte durant 30 minuts.
         no_account: No té un compte?
         password: Contrasenya
@@ -561,7 +561,7 @@ ca:
           filter: Filtre
           manage: Gestionar
           moreViews: Més Vistes
-          visualize: Visulaitzar
+          visualize: Visualitzar
       stars:
         tooltip: "%{number} estrelles"
       visualization:
@@ -2901,7 +2901,7 @@ ca:
       failed: Impossible iniciar sessió amb aquest correu electrònic i contrasenya; si us plau, provi una altra vegada
       form:
         sign_in_button: Iniciar Sessió
-      headline: Iniciar Sessió en %{site}
+      headline: Iniciar Sessió %{site}
       mismatch: Les contrasenyes no coincideixen; si  us plau, provi una altra vegada
       prompt_html: Iniciar Sessió amb la seva <strong>Socrata ID</strong>
       sign_in_with: "<strong>Registreu-vos</strong> amb %{provider}"

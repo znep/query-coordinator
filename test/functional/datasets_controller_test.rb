@@ -36,6 +36,42 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_redirected_to resource_url({:id => @view.id, :format => 'json'}.merge(@params.except('controller')))
   end
 
+  test 'generic dataset paths route here' do
+    test_paths = %w(
+      datasets/four-four
+    )
+
+    test_paths.each do |path|
+      assert_routing(path, { controller: 'datasets', action: 'show', id: 'four-four' })
+    end
+  end
+
+  test 'seo dataset paths route here' do
+    base_path_params = {controller: 'datasets', action: 'show'}
+    test_paths = %w(
+      cats/dogs/four-four
+    )
+
+    test_paths.each do |path|
+      segments = path.split('/')
+      flunk('invalid url') unless !segments.empty?
+      if segments.length >= 3
+        add_path_params = {category: segments[0], view_name: segments[1], id: segments[2]}
+      elsif segments.length == 2
+        add_path_params = {id: segments[1]}
+      else
+        add_path_params = {id: segments[0]}
+      end
+
+      # rails skips automatic params parsing sometimes https://github.com/rspec/rspec-rails/issues/172
+      ActionDispatch::Request.any_instance.stubs(
+        :path_parameters => base_path_params.merge(add_path_params).with_indifferent_access
+      )
+
+      assert_routing(path, base_path_params.merge(add_path_params))
+    end
+  end
+
   test 'returns 304 if no changes have occurred for unsigned user' do
     dsmtime = 12345
     VersionAuthority.stubs(:get_core_dataset_mtime => { 'four-four' => dsmtime })

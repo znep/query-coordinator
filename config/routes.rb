@@ -264,7 +264,7 @@ Frontend::Application.routes do
       match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
     end
 
-    scope :controller => 'angular', :constraints => Constraints::DataLensConstraint.new do
+    scope :controller => 'angular', :constraints => { :id => Frontend::UID_REGEXP } do
       # NOTE: The dataCards angular app is capable of rendering multiple views (Pages and Dataset Metadata, for instance).
       # As of 9/24/2014, the angular app itself figures out what particular view to render.
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
@@ -289,32 +289,30 @@ Frontend::Application.routes do
 
     # Dataset SEO URLs (only add here if the action has a view with it;
     # otherwise just add to the :member key in the datasets resource above.)
-    scope :controller => 'datasets', :constraints => Constraints::ResourceConstraint.new do
-      get ':category/:view_name/:id/:row_id', :action => 'show', :as => :view_row,
+    scope '/:category/:view_name/:id', :controller => 'datasets', :constraints => Constraints::ResourceConstraint.new do
+      get '/:row_id', :action => 'show', :as => :view_row,
         :constraints => {:row_id => /\d+/}
-      get ':category/:view_name/:id/widget_preview', :action => 'widget_preview', :as => :preview_view_widget
-      get ':category/:view_name/:id/edit', :action => 'edit', :as => :edit_view
-      get ':category/:view_name/:id/edit_rr', :action => 'edit_rr', :as => :edit_view_rr
-      get ':category/:view_name/:id/thumbnail', :action => 'thumbnail', :as => :view_thumbnail
-      get ':category/:view_name/:id/stats', :action => 'stats', :as => :view_stats
-      get ':category/:view_name/:id/form_success', :action => 'form_success', :as => :view_form_success
-      get ':category/:view_name/:id/form_error', :action => 'form_error', :as => :view_form_error
-      get ':category/:view_name/:id/about', :action => 'about', :as => :about_view
-      match ':category/:view_name/:id/alt', :action => 'alt',
-        :via => [:get, :post], :as => :alt_view
-      match ':category/:view_name/:id/flags', :action => 'flag_check',
-        :via => [:get, :post], :as => :flag_check
-      match ':category/:view_name/:id/edit_metadata', :action => 'edit_metadata',
-        :via => [:get, :post], :as => :edit_view_metadata
-    end
+      get '/widget_preview', :action => 'widget_preview', :as => :preview_view_widget
+      get '/edit', :action => 'edit', :as => :edit_view
+      get '/edit_rr', :action => 'edit_rr', :as => :edit_view_rr
+      get '/thumbnail', :action => 'thumbnail', :as => :view_thumbnail
+      get '/stats', :action => 'stats', :as => :view_stats
+      get '/form_success', :action => 'form_success', :as => :view_form_success
+      get '/form_error', :action => 'form_error', :as => :view_form_error
+      get '/about', :action => 'about', :as => :about_view
+      match '/alt', :action => 'alt', :via => [:get, :post], :as => :alt_view
+      match '/flags', :action => 'flag_check', :via => [:get, :post], :as => :flag_check
+      match '/edit_metadata', :action => 'edit_metadata', :via => [:get, :post], :as => :edit_view_metadata
 
-    # Overloaded route matcher for SEO purposes.
-    # The route structure is identical in each case; the handler for the route
-    # is determined by the constraint that is satisfied.
-    get ':category/:view_name/:id', :to => 'angular#data_lens', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
-    # Fallback: let DatasetsController#show handle it, since it was the original
-    # catch-all for SEO-friendly routes (including charts, calendars, etc.).
-    get ':category/:view_name/:id', :to => 'datasets#show', :as => :view
+      # Overloaded route matcher for SEO purposes.
+      # The route structure is identical in each case; the handler for the route
+      # is determined by the constraint that is satisfied.
+      get '', :to => 'angular#data_lens', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
+
+      # Fallback: let DatasetsController#show handle it, since it was the original
+      # catch-all for SEO-friendly routes (including charts, calendars, etc.).
+      get '', :action => 'show', :as => :view
+    end
 
     get 'proxy/verify_layer_url' => 'datasets#verify_layer_url'
     get 'proxy/wkt_to_wkid' => 'datasets#wkt_to_wkid'

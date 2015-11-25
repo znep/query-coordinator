@@ -481,12 +481,12 @@
           return tick;
         });
 
-
         var ticksStyle = "top: {0}px; width: {1}px; height: {2}px;".format(
           chartScrollTop + topMargin,
           chartWidth,
           innerHeight + topMargin
         );
+
         return $('<div>', {
           'class': 'ticks',
           'style': ticksStyle

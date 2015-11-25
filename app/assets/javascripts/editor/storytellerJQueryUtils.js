@@ -14,7 +14,7 @@
    * @callback {function(string, string)} callback: Invoked if the value needed to be updated.
    *   Arguments: (value, attributeName). `this` is the current selection.
    */
-  $.fn.updateAttrAndCallbackIfWasChanged = function(attributeName, value, callback) {
+  $.fn.updateAttributeWithCallbackIfChanged = function(attributeName, value, callback) {
     utils.assertIsOneOfTypes(attributeName, 'string');
     utils.assertIsOneOfTypes(value, 'string');
     utils.assertIsOneOfTypes(callback, 'function');

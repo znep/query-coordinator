@@ -4,6 +4,7 @@
 
   var socrata = root.socrata;
   var utils = socrata.utils;
+  var COMPONENT_VALUE_CACHE_ATTR_NAME = 'classic-visualization-component-value';
 
   function _renderVisualization($element, componentData) {
 
@@ -30,7 +31,7 @@
   function _updateVisualization($element, componentData) {
 
     var $iframe = $element.find('iframe');
-    var oldValue = $iframe.data('classic-visualization');
+    var oldValue = $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME);
     var newValue = componentData.value.visualization;
 
     utils.assertInstanceOf($iframe, jQuery);
@@ -41,7 +42,7 @@
 
       // Don't re-render if we've already rendered this visualization.
       if (!_.isEqual(oldValue, newValue)) {
-        $iframe.data('classic-visualization', componentData.value.visualization);
+        $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME, componentData.value.visualization);
 
         // The iframe we're using goes to a frontend endpoint: /component/visualization/v0/show.
         // This endpoint contains a function on window called renderVisualization.

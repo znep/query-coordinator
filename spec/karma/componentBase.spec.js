@@ -2,8 +2,8 @@ describe('componentBase jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
   var componentData;
+
   function callWithOptions(options) {
     beforeEach(function() {
       componentData = {};
@@ -39,21 +39,21 @@ describe('componentBase jQuery plugin', function() {
 
   describe('editMode not specified', function() {
     callWithOptions({});
-    it('should not add editing class', function() {
+    it('should not have editing class', function() {
       assert.isFalse($component.hasClass('editing'));
     });
   });
 
   describe('editMode = false', function() {
     callWithOptions({editMode: false});
-    it('should not add editing class', function() {
+    it('should not have editing class', function() {
       assert.isFalse($component.hasClass('editing'));
     });
   });
 
   describe('editMode = true', function() {
     callWithOptions({editMode: true});
-    it('should add editing class', function() {
+    it('should have editing class', function() {
       assert.isTrue($component.hasClass('editing'));
     });
   });

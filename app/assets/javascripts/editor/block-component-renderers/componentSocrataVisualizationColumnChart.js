@@ -36,7 +36,7 @@
     utils.assertHasProperty(componentData, 'value');
     vif = componentData.value.vif;
 
-    if (!_.isEqual(JSON.parse(renderedVif), componentData.value.vif)) {
+    if (!_.isEqual(JSON.parse(renderedVif), vif)) {
       $element.attr('data-rendered-vif', JSON.stringify(vif));
       vif.configuration.localization = {
         'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
@@ -50,7 +50,7 @@
         other: 'records'
       };
 
-      $componentContent.triggerHandler('destroy');
+      $componentContent.triggerHandler('destroy'); // use triggerHandler since we don't want this to bubble
       $componentContent.socrataColumnChart(vif);
     }
   }

@@ -16,7 +16,7 @@
     var self = this;
     var height = _.get(componentData, 'value.layout.height', '');
 
-    this.updateAttrAndCallbackIfWasChanged(
+    this.updateAttributeWithCallbackIfChanged(
       CACHE_ATTRIBUTE_NAME,
       String(height),
       function() {

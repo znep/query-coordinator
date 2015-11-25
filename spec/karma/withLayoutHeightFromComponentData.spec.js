@@ -2,7 +2,6 @@ describe('withLayoutHeightFromComponentData jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
     testDom.append('<div><div class="component-content"></div><div class="not-component-content"></div></div>');

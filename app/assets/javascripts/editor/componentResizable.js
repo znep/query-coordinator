@@ -11,15 +11,15 @@
 
   function DragResizer($elementToResize, $resizeHandle) {
     var self = this;
-    this.handles = $resizeHandle;
+    self.handles = $resizeHandle; // Unidragger's bindHandles reads this.
 
-    this.dragStart = function() {
+    self.dragStart = function() {
       $elementToResize.closest('.block-edit').add(document.body).addClass('is-resizing');
       self.heightAtDragStart = $elementToResize.height();
       self.minHeight = parseInt($elementToResize.attr(MIN_HEIGHT_DATA_ATTR_NAME), 10);
     };
 
-    this.dragMove = function(event, pointer, moveVector) {
+    self.dragMove = function(event, pointer, moveVector) {
       var component;
       var newHeight = Math.max(
         self.minHeight,
@@ -46,7 +46,7 @@
       });
     };
 
-    this.dragEnd = function() {
+    self.dragEnd = function() {
       $elementToResize.closest('.block-edit').add(document.body).removeClass('is-resizing');
     };
   }

@@ -2,7 +2,6 @@ describe('componentResizable jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
   var componentData;
   var bindHandlesStub;
 
@@ -30,7 +29,6 @@ describe('componentResizable jQuery plugin', function() {
   });
 
   it('on multiple calls should only bind handles once', function() {
-    var $handle;
     $component.componentResizable();
     $component.componentResizable();
 

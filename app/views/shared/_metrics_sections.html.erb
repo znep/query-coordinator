@@ -74,15 +74,15 @@
 <div class="metricsChartsV1">
   <div class="chartContainer">
     <div class="chartMenuContainer sliceDepthMenuContainer">
-      <span class="chartMenuLabel">View Granularity:</span>
+      <label for="sliceDepth" class="chartMenuLabel">View Granularity:</label>
       <select class="sliceDepth" id="sliceDepth">
         <%= options_for_select(['hourly', 'daily', 'weekly', 'monthly'].
           map { |slice| [ t("screens.stats.#{slice}"), slice.capitalize ] }) %>
       </select>
     </div>
     <div class="chartMenuContainer chartSeriesMenuContainer">
-      <span class="chartMenuLabel">View:</span>
-      <select class="chartSeries"></select>
+      <label class="chartMenuLabel" for="chartSeries">View:</label>
+      <select class="chartSeries" id="chartSeries"></select>
     </div>
     <div class="chartArea">
       <div class="chartContent"></div>

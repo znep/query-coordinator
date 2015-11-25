@@ -766,7 +766,13 @@ module ApplicationHelper
     return false unless APP_CONFIG.cetera_host.present?
 
     req = request if defined?(request)
+
+    # TODO: the profile and admin pages need clytemnestra; only until cetera honors private datasets and other things
+    return false if req.try(:path) =~ /^\/(profile|admin)/
+
+    # all dataslate pages are free to use cetera, by consideration after the blacklist is applied
     req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
+
     FeatureFlags.derive(nil, req, nil)[:cetera_search]
   end
 

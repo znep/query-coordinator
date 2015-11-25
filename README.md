@@ -190,3 +190,18 @@ lint the javascript codebase:
 ```
 rake lint:js
 ```
+
+## Dependencies
+
+Ruby dependencies are via bundler.
+Javascript dependencies are via bower.
+
+### Updating frontend-visualizations and/or frontend-utils
+
+This is weird at the moment because neither of these packages are version-tagged. For now there are two hack scripts that force bower to re-pull from the respective packages' master branch:
+
+
+```
+bin/update_socrata_visualizations.sh
+bin/update_socrata_utils.sh
+```

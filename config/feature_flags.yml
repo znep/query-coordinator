@@ -119,8 +119,12 @@ enable_spatial_lens_region_coding:
   description: Lets an admin kick off region coding for curated regions in the Data Lens interface.
   category: data lens
   defaultValue: false
-enable_stories:
-  description: Enable the Storyteller appliation, including catalog link.
+stories_enabled:
+  description: Enable the Storyteller application.
+  category: storyteller
+  defaultValue: false
+stories_show_facet_in_catalog:
+  description: Show the Stories facet in the catalog.
   category: storyteller
   defaultValue: false
 enable_xls_download_type:

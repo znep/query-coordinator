@@ -28,14 +28,14 @@ class BrowseActionsTest < Test::Unit::TestCase
     end
 
     def test_does_not_add_stories_if_feature_flag_false
-      stub_feature_flags_with(:enable_stories, false)
+      stub_feature_flags_with(:stories_show_facet_in_catalog, false)
       view_types_list = @browse_actions_container.send(:view_types_facet)
       refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'story'},
           'enable stories feature flag is false, but we have a stories link in the catalog')
     end
 
     def test_does_add_stories_if_feature_flag_true
-      stub_feature_flags_with(:enable_stories, true)
+      stub_feature_flags_with(:stories_show_facet_in_catalog, true)
       view_types_list = @browse_actions_container.send(:view_types_facet)
       assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'story'},
         'enable stories feature flag is true, but we do not have a stories link in the catalog')

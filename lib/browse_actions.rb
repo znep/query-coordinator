@@ -583,7 +583,7 @@ module BrowseActions
   end
 
   def stories_catalog_entries_enabled?
-    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_stories]
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:stories_show_facet_in_catalog]
   end
 
   def add_stories_view_type_if_enabled!(view_type_list)

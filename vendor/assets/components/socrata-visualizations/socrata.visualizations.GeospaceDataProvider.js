@@ -108,6 +108,75 @@
         })
       );
     };
+
+    this.getShapefile = function() {
+       var url = 'https://{0}/resource/{1}.geojson'.format(
+        this.getConfigurationProperty('domain'),
+        this.getConfigurationProperty('datasetUid')
+      );
+      var headers = {
+        'Accept': 'application/json'
+      };
+
+      return (
+        new Promise(function(resolve, reject) {
+
+          var xhr = new XMLHttpRequest();
+
+          function onFail() {
+
+            var error;
+
+            try {
+              error = JSON.parse(xhr.responseText);
+            } catch (e) {
+              console.log(e);
+              error = xhr.statusText;
+            }
+
+            return reject({
+              status: parseInt(xhr.status, 10),
+              message: xhr.statusText,
+              soqlError: error
+            });
+          }
+
+          xhr.onload = function() {
+
+            var status = parseInt(xhr.status, 10);
+
+            if (status === 200) {
+
+              try {
+
+                var responseTextWithoutNewlines = xhr.
+                  responseText.
+                  replace(/\n/g, '');
+
+                resolve(JSON.parse(responseTextWithoutNewlines));
+
+              } catch (e) {
+                // Let this fall through to the `onFail()` below.
+              }
+            }
+
+            onFail();
+          };
+
+          xhr.onabort = onFail;
+          xhr.onerror = onFail;
+
+          xhr.open('GET', url, true);
+
+          // Set user-defined headers.
+          _.each(headers, function(value, key) {
+            xhr.setRequestHeader(key, value);
+          });
+
+          xhr.send();
+        })
+      );
+    };
   }
 
   root.socrata.visualizations.GeospaceDataProvider = GeospaceDataProvider;

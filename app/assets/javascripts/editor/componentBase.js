@@ -2,10 +2,6 @@
 
   'use strict';
 
-  var socrata = root.socrata;
-  var utils = socrata.utils;
-  var storyteller = socrata.storyteller;
-
   //TODO gferrari(11/24/2015): We should consider factoring the
   //endemic if(data is different) { update() } logic into here.
   //Right now each component implements this in special snowflake

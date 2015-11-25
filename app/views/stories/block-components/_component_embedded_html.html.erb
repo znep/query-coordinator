@@ -10,7 +10,7 @@
 %>
 <iframe
   src="<%= component['value']['url'] %>"
-  height="<%= component['value'].fetch('layout', {}).fetch('height', '') %>"
+  height="<%= component['value']['layout'].try(:[], 'height') %>"
   frameborder="0">
 </iframe>
 

@@ -648,8 +648,9 @@
           classed('selected', function(d) { return d[SELECTED_INDEX]; }).
           each(function(d) {
 
-            // Save references to all d3 selections.
             var $this = $(this);
+
+            // Save references to all d3 selections.
             var labelSelection = d3.select(this);
             var labelContentSelection = labelSelection.select('.contents');
             var labelTextSelection = labelContentSelection.select('.text');
@@ -663,7 +664,6 @@
             var noRoomForCallout = scaleOffset >= chartWidth && isSelected && !showAllLabels;
             var leftOriented = $this.hasClass('orientation-left');
             var labelIconPadding = 30;
-            var widthOfCloseIcon = 0;
             var halfWidthOfCloseIcon;
             var textMaxWidth;
             var labelSelectionStyle;
@@ -671,17 +671,12 @@
             var desiredLabelContentRight = '';
             var labelTextSelectionStyle;
 
-            if (isSelected) { // Close icons are only shown when selected.
-              widthOfCloseIcon = $this.find('.icon-close').width();
-            }
-
-            halfWidthOfCloseIcon = (widthOfCloseIcon / 2) - 1;
-
             // Logic for setting label and content offsets and text max widths.
             if (showAllLabels || !isSelected) {
               labelLeftOffset = scaleOffset;
               labelContentLeftOffset = labelMargin;
             } else if (leftOriented) {
+              halfWidthOfCloseIcon = ($this.find('.icon-close').width() / 2) - 1;
               labelRightOffset = chartRightEdge - scaleOffset;
               labelContentRightOffset = -halfWidthOfCloseIcon;
               textMaxWidth = scaleOffset - labelIconPadding;

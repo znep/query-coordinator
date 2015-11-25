@@ -281,8 +281,10 @@ $(function() {
 
     if (currentDisplay === 'show') {
       sectionContainer.attr('data-description-display', 'truncate');
+      sectionContainer.children('.browse2-result-description').dotdotdot();
     } else {
       sectionContainer.attr('data-description-display', 'show');
+      sectionContainer.children('.browse2-result-description').trigger('destroy');
     }
   }
 
@@ -584,8 +586,8 @@ $(function() {
   $('.browse2-facet-section-expand-button, .browse2-facet-section-contract-button').on('click', toggleBrowse2FacetTruncation);
   $('.browse2-result-description-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
   $('.browse2-result-description').each(function(index, element) {
-    // 3x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
-    var truncationThreshold = 82;
+    // 2x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
+    var truncationThreshold = 58;
     var descriptionHeight = 0;
 
     $(element).
@@ -598,6 +600,7 @@ $(function() {
       $(element).
         parent('.browse2-result-description-container').
         attr('data-description-display', 'truncate');
+      $(element).dotdotdot();
     }
   });
   $('.browse2-result-make-public-button').on('click', makeResultPublic);

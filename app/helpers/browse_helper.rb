@@ -38,9 +38,30 @@ module BrowseHelper
     end
   end
 
+  def description_contains_html?(display_type)
+    # These types have preformatted descriptions.
+    # Attempting to wrap them in <p> tags causes invalid html
+    %w(data_lens data_lens_chart data_lens_map new_view).include?(display_type)
+  end
+
+  def sanitize_string(string)
+    sanitize(raw(auto_link(h(raw(string)), :all, {'rel' => 'nofollow external' })))
+  end
+
+  def view_formatted_description(result)
+    description = result.description
+
+    if description_contains_html?(result.display.type)
+      sanitize_string(description)
+    else
+      view_format_description_text(description)
+    end
+  end
+
   def view_format_description_text(description, preserve_newlines = true)
+    return unless description.present?
     description = simple_format(description) if preserve_newlines
-    sanitize raw(auto_link(h(raw(description)), :all, {'rel' => 'nofollow external' }))
+    sanitize_string(description)
   end
 
   def a11y_browse_summary(browse_opts)

@@ -79,7 +79,7 @@
     utils.assertIsOneOfTypes(options.minHeight, 'number');
 
     if (!$this.hasClass(RESIZABLE_CLASS_NAME)) {
-      $this.append('<div class="component-resize-handle"></div>');
+      $this.append('<div class="component-resize-handle"><div></div></div>');
       $resizeHandle = $this.find('.component-resize-handle');
       $this.addClass(RESIZABLE_CLASS_NAME);
       initResizer($this, $resizeHandle);

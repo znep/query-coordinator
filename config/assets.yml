@@ -661,6 +661,8 @@ javascripts:
     - public/javascripts/plugins/vis/d3.v3.js
   d3-iecompat:
     - public/javascripts/plugins/vis/r2d3.v3.js
+  dotdotdot:
+    - public/javascripts/bower/jquery.dotdotdot.js
   excanvas:
     - public/javascripts/plugins/excanvas.compiled.js
   oldie:

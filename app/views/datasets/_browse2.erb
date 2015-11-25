@@ -413,7 +413,7 @@
                 :result_display_title => result_display_title,
                 :result_link => result_link,
                 :result_link_rel_type => view_rel_type(result, CurrentDomain, opts),
-                :result_description => result.description.present? ? view_format_description_text(result.description) : nil,
+                :result_description => view_formatted_description(result),
                 :result_categories => result_categories,
                 :result_last_updated => result_last_updated,
                 :result_view_count => result_view_count,
@@ -569,4 +569,5 @@
     });
   </script>
   <%= include_javascripts 'browse2-control' %>
+  <%= include_javascripts 'dotdotdot' %>
 <% end %>

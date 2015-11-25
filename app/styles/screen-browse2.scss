@@ -1,5 +1,7 @@
 $panel-border-color: #e0e0e0;
 $panel-internal-border-color: #eee;
+$result-description-preview-height: 48px;
+$official-badge-color: #00BE9B;
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
 
@@ -95,7 +97,7 @@ body {
         font-size: 15px;
         line-height: 42px;
         color: #888;
-        border-left: 10px solid #eee;
+        border-left: 10px solid $panel-internal-border-color;
 
         &:hover {
           background-color: $panel-internal-border-color;
@@ -195,7 +197,7 @@ body {
   .browse2-search {
     position: relative;
     width: 70%;
-    margin: 2em auto 0 auto;
+    margin: 1em auto 0 auto;
     background-color: #fff;
     border: 1px solid $panel-border-color;
 
@@ -263,13 +265,13 @@ body {
     .browse2-search {
       width: auto;
       margin-top: 4em;
-      margin-left: 25em;
+      margin-left: 23em;
     }
   }
 
   .browse2-section-separator {
     width: 100%;
-    margin: 4em 0 4em 0;
+    margin: 3em 0 2em;
     border: none;
     height: 1px;
     background: #ddd;
@@ -302,7 +304,7 @@ body {
     .browse2-results-header {
       position: relative;
       display: block;
-      margin-left: 25em;
+      margin-left: 23em;
 
       .browse2-results-title-container,
       .browse2-results-sort-controls-container {
@@ -685,7 +687,7 @@ body {
   .browse2-results-pane {
     position: relative;
     display: block;
-    margin-left: 25em;
+    margin-left: 23em;
     background-color: transparent;
     border: none;
 
@@ -708,7 +710,8 @@ body {
       .browse2-result {
         position: relative;
         display: block;
-        margin-bottom: 3em;
+        margin-bottom: 1.5em;
+        overflow: hidden;
 
         .browse2-result-content {
           position: relative;
@@ -716,6 +719,7 @@ body {
           padding: 1.25em 1.25em 0 1.25em;
           background-color: white;
           border: 1px solid $panel-border-color;
+          border-bottom-width: 2px;
 
           .browse2-result-header,
           .browse2-result-metadata,
@@ -740,7 +744,7 @@ body {
               .browse2-result-name {
                 display: inline;
                 float: none;
-                margin: 0 1em 0 0;
+                margin: 0 0.5em 0 0;
                 padding: 0;
                 font-size: 23px;
                 font-weight: 300;
@@ -767,6 +771,10 @@ body {
                 font-weight: 300;
                 color: #888;
                 background-color: #eee;
+                -webkit-transform: translate(0, -0.3em);
+                -moz-transform: translate(0, -0.3em);
+                -ms-transform: translate(0, -0.3em);
+                transform: translate(0, -0.3em);
               }
 
               .browse2-result-federated-link {
@@ -825,18 +833,19 @@ body {
             }
 
             .browse2-result-provenance {
-              position: relative;
-              display: block;
-              float: right;
-              margin: 0.85em 1.5em 0 0;
+              display: inline-block;
+              margin: 0 1.5em 0 0;
               font-size: 1.25em;
-              text-align: right;
               text-transform: capitalize;
+              -webkit-transform: translate(0, -0.1em);
+              -moz-transform: translate(0, -0.1em);
+              -ms-transform: translate(0, -0.1em);
+              transform: translate(0, -0.1em);
 
               .provenance-title {
                 font-size: 1.25em;
                 font-weight: 300;
-                color: #aaa;
+                color: $official-badge-color;
               }
 
               .icon-check {
@@ -847,7 +856,7 @@ body {
                 padding: 0.15em;
                 margin-right: 0.25em;
                 color: white;
-                background-color: #68b0cc;
+                background-color: $official-badge-color;
               }
             }
           }
@@ -859,6 +868,9 @@ body {
             border-right: 1px solid $panel-internal-border-color;
 
             .browse2-result-description-container {
+              overflow: hidden;
+              margin-right: 1.25em;
+              border-bottom: 1px solid #eee;
 
               .browse2-result-description {
                 margin: 0.5em 0;
@@ -869,6 +881,9 @@ body {
                   font-size: 15px;
                   font-weight: 400;
                   line-height: 24px;
+                  &:last-child {
+                    margin-bottom: 0;
+                  }
                 }
               }
 
@@ -885,10 +900,10 @@ body {
                   position: absolute;
                   display: none;
                   width: 100%;
-                  height: 72px;
+                  height: $result-description-preview-height;
                   left: 0;
-                  top: -72px;
-                  background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+                  top: -$result-description-preview-height;
+                  background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,0.5) 100%);
                   .ie & {
                     top: -66px;
                     background: url("/images/description-truncation-ie.png") repeat-x;
@@ -897,6 +912,8 @@ body {
 
                 .browse2-result-description-show-more-label,
                 .browse2-result-description-show-less-label {
+                  position: relative;
+                  top: -0.5em;
 
                   .browse2-result-description-show-more-icon {
                     margin-right: 0.5em;
@@ -915,7 +932,7 @@ body {
               &[data-description-display="truncate"] {
 
                 .browse2-result-description {
-                  height: 72px;
+                  height: $result-description-preview-height;
                   overflow: hidden;
                 }
 
@@ -961,73 +978,103 @@ body {
             .browse2-result-topics-and-data-types {
               display: block;
               position: relative;
+              width: 80%;
               margin: 1.5em 0 1em 0;
-            }
-
-            .browse2-result-topics,
-            .browse2-result-data-types {
-              position: relative;
-              display: block;
               float: left;
-              width: 50%;
-              min-height: 1px;
+
+              .browse2-result-topics {
+                position: relative;
+                display: block;
+                min-height: 1px;
+              }
+
+              .browse2-result-topics {
+
+                .browse2-result-topics-icon {
+                  margin-right: 0.25em;
+                  font-size: 1.5em;
+                  color: #888;
+                }
+
+                .browse2-result-topics-label,
+                .browse2-result-topics-content,
+                .browse2-result-no-topics-content {
+                  display: inline-block;
+                  font-size: 12px;
+                  // Translate "Topics" text to line up with label
+                  -webkit-transform: translate(0, -0.2em);
+                  -moz-transform: translate(0, -0.2em);
+                  -ms-transform: translate(0, -0.2em);
+                  transform: translate(0, -0.2em);
+                }
+
+                .browse2-result-topics-label {
+                  font-weight: 600;
+                  color: #888;
+                }
+
+                .browse2-result-topics-content,
+                .browse2-result-no-topics-content {
+                  padding: 0 0 0 1em;
+                  color: #666;
+                }
+
+                .browse2-result-no-topics-content {
+                  color: #ccc;
+                  font-style: oblique;
+                }
+              }
+
+              .browse2-result-data-types {
+
+                .browse2-result-data-types-icon {
+                  margin-right: 0.25em;
+                  font-size: 1.5em;
+                  color: #888;
+                }
+
+                .browse2-result-data-types-label {
+                  display: inline-block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #888;
+                  -webkit-transform: translate(0, -0.2em);
+                  -moz-transform: translate(0, -0.2em);
+                  -ms-transform: translate(0, -0.2em);
+                  transform: translate(0, -0.2em);
+                }
+
+                .browse2-result-data-types-content {
+                  padding: 0.25em 1em 0 0;
+                  font-size: 12px;
+                  color: #666;
+                }
+              }
             }
 
-            .browse2-result-topics {
+            .browse2-result-explore {
+              float: right;
+              font-size: 12px;
+              max-width: 20%;
+              margin: 1.5em 0 1em 0;
+              padding-right: 1.25em;
+              text-align: right;
 
-              .browse2-result-topics-icon {
-                margin-right: 0.25em;
-                font-size: 1.5em;
-                color: #888;
-              }
+              .browse2-result-api-link {
+                color: #2c97de;
 
-              .browse2-result-topics-label {
-                display: inline-block;
-                font-size: 12px;
-                font-weight: 600;
-                color: #888;
-                -webkit-transform: translate(0, -0.2em);
-                -moz-transform: translate(0, -0.2em);
-                -ms-transform: translate(0, -0.2em);
-                transform: translate(0, -0.2em);
-              }
+                &:hover {
+                  text-decoration: underline;
+                }
 
-              .browse2-result-topics-content,
-              .browse2-result-no-topics-content {
-                padding: 0.25em 1em 0 0;
-                font-size: 12px;
-                color: #666;
-              }
+                &:focus,
+                &:active {
+                  text-decoration: none;
+                }
 
-              .browse2-result-no-topics-content {
-                color: #ccc;
-                font-style: oblique;
-              }
-            }
-
-            .browse2-result-data-types {
-
-              .browse2-result-data-types-icon {
-                margin-right: 0.25em;
-                font-size: 1.5em;
-                color: #888;
-              }
-
-              .browse2-result-data-types-label {
-                display: inline-block;
-                font-size: 12px;
-                font-weight: 600;
-                color: #888;
-                -webkit-transform: translate(0, -0.2em);
-                -moz-transform: translate(0, -0.2em);
-                -ms-transform: translate(0, -0.2em);
-                transform: translate(0, -0.2em);
-              }
-
-              .browse2-result-data-types-content {
-                padding: 0.25em 1em 0 0;
-                font-size: 12px;
-                color: #666;
+                &:visited {
+                  color: #46a;
+                }
               }
             }
           }
@@ -1069,75 +1116,6 @@ body {
               .browse2-result-view-count-value {
                 font-size: 1.1em;
                 color: #666;
-              }
-            }
-          }
-
-          .browse2-result-footer {
-            position: relative;
-            display: block;
-            float: left;
-            width: 100%;
-            border-top: 1px solid $panel-internal-border-color;
-
-            .browse2-result-odn,
-            .browse2-result-explore {
-              position: relative;
-              display: block;
-              float: left;
-              width: 50%;
-              font-size: 12px;
-              line-height: 42px
-            }
-
-            .browse2-result-odn {
-
-              .browse2-result-odn-prompt {
-                color: #4a4a4a;
-              }
-
-              .browse2-result-odn-link {
-
-                .browse2-result-odn-link-label {
-                  color: #aaa;
-                }
-
-                .browse2-result-odn-link-icon {
-                  margin-left: 0.25em;
-                  color: #888;
-                }
-
-                &:hover {
-                  .browse2-result-odn-link-label {
-                    text-decoration: underline;
-                  }
-                }
-
-                &:active,
-                &:focus {
-                  text-decoration: none;
-                }
-              }
-            }
-
-            .browse2-result-explore {
-              text-align: right;
-
-              .browse2-result-api-link {
-                color: #2c97de;
-
-                &:hover {
-                  text-decoration: underline;
-                }
-
-                &:focus,
-                &:active {
-                  text-decoration: none;
-                }
-
-                &:visited {
-                  color: #46a;
-                }
               }
             }
           }

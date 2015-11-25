@@ -609,7 +609,7 @@ module BrowseActions
 
     selected_category = browse_options[:search_options][:category]
     categories_facet = browse_options[:facets].detect { |facet| facet[:param] == :category }
-    categories = categories_facet[:options].concat(categories_facet[:extra_options])
+    categories = categories_facet[:options] + categories_facet[:extra_options]
 
     return nil unless categories.present?
 

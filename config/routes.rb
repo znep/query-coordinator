@@ -281,7 +281,6 @@ Frontend::Application.routes do
       match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
     end
 
-<<<<<<< HEAD
     # TODO Remove this route. It is (or should be) no longer used as of 9/2015
     # Temporary proxy for tileserver, while ops finishes the work to expose AWS services to the 'net directly.
     scope :controller => 'tile_server', :constraints => {

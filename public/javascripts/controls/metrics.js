@@ -492,7 +492,8 @@
           '.sectionTitle': 'topList.displayName',
           'th.value .valueHeading': 'topList.heading',
           '@id': 'topList.id',
-          '@class+': 'topList.className'
+          '@class+': 'topList.className',
+          'table.metricsList@summary': 'topList.displayName'
         }
       }
     },

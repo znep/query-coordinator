@@ -313,4 +313,106 @@ class BrowseActionsTest < Test::Unit::TestCase
       assert_equal expected_categories, search_and_return_category_param(imaginary_category)
     end
   end
+
+  describe 'facets' do
+    def facet(name)
+      {
+        title: name.titleize,
+        singular_description: name.downcase.singularize,
+        param: name.downcase.to_sym,
+        options: [
+          { value: 'One', text: 'One' },
+          { value: 'Two', text: 'Two' },
+          { value: 'Three', text: 'Three', children: [
+            { value: 'Three point One', text: 'Three point One' },
+            { value: 'Three point Two', text: 'Three point Two' }
+          ] }
+        ],
+        extra_options: [
+          { value: 'Four', text: 'Four' },
+          { value: 'Five', text: 'Five' },
+          { value: 'Six', text: 'Six' }
+        ]
+      }
+    end
+
+    def setup
+      @browse_actions_container = BrowseActionsContainer.new
+      init_current_domain
+
+      CurrentDomain.stubs(configuration: nil)
+      CurrentDomain.stubs(default_locale: 'en')
+      I18n.stubs(locale: CurrentDomain.default_locale.to_s)
+
+      Clytemnestra.stubs(search_views: [])
+
+      @browse_actions_container.stubs(federations_hash: {})
+
+      # It's important to have multiple custom facets so we can test that
+      # we aren't hardcoding to the 3rd slot regardless
+      @browse_actions_container.stubs(
+        custom_facets: [
+          facet('custom superheroes'),
+          facet('custom tomatoes'),
+          facet('custom follies')
+        ]
+      )
+
+      %w(
+        categories_facet
+        federated_facet
+        moderation_facet
+        topics_facet
+        view_types_facet
+      ).each do |type_of_facet|
+        name = type_of_facet.split('_').first
+        @browse_actions_container.stubs(type_of_facet.to_sym => facet(name))
+      end
+    end
+
+    def test_categories_come_third_in_old_view_types
+      request = OpenStruct.new(
+        params: { view_type: 'browse2' }.with_indifferent_access
+      )
+      request.params = { view_type: 'browse2' }
+      browse_options = @browse_actions_container.send(:process_browse, request)
+      facet_titles = browse_options[:facets].map { |f| f[:title] }
+      expected_titles = [
+        'Categories',
+        'View',
+        'Custom Superheroes',
+        'Custom Tomatoes',
+        'Custom Follies',
+        'Topics',
+        'Federated'
+      ]
+
+      expected_titles.each_with_index do |expected, index|
+        actual = facet_titles[index]
+        assert_equal expected, actual
+      end
+    end
+
+    def test_categories_come_first_in_browse2
+      request = OpenStruct.new(
+        params: {}.with_indifferent_access
+      )
+      browse_options = @browse_actions_container.send(:process_browse, request)
+      facet_titles = browse_options[:facets].map { |f| f[:title] }
+      expected_titles = [
+        'View',
+        'Custom Superheroes',
+        'Custom Tomatoes',
+        'Custom Follies',
+        'Categories',
+        'Topics',
+        'Federated'
+      ]
+
+      expected_titles.each_with_index do |expected, index|
+        actual = facet_titles[index]
+        assert_equal expected, actual
+      end
+    end
+  end
 end

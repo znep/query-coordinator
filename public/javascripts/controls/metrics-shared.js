@@ -476,6 +476,8 @@ metricsNS.topListItemDirective = {
 metricsNS.summaryDataDirective = {
     '.deltaValue' : 'delta',
     '.deltaBox@title' : 'deltaText',
+    '.deltaBox@aria-label' : 'deltaText',
+    '.deltaValue@aria-label' : 'deltaText',
     '.totalValue' : 'total',
     '.totalValue@title' : 'totalText',
     '.deltaBox@class+': 'deltaClass'

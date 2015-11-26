@@ -289,7 +289,7 @@ def block_count
   )
 end
 
-def block_at_index(block_index)
+def block_component_at_index(block_index)
   block_id = page.evaluate_script(
     "storyteller.storyStore.getStoryBlockIds(storyteller.userStoryUid)[#{block_index}]"
   )

@@ -23,7 +23,7 @@ RSpec.describe 'add content panel', type: :feature, js: true do
   context 'on resize handle drag' do
     it 'updates the correct component layout.height' do
       def height_from_store()
-        block_at_index(0)[:components][0]['value']['layout']['height']
+        block_component_at_index(0)[:components][0]['value']['layout']['height']
       end
 
       component = page.find(component_selector)

@@ -68,6 +68,23 @@ block_7 = Block.create(
   created_by: 'good-doer'
 )
 
+block_8 = Block.create(
+  layout: '12',
+  components: [
+    {
+      'type': 'embeddedHtml',
+      'value': {
+        'url': 'https://sa-storyteller-dev-us-west-2-staging.s3.amazonaws.com/documents/uploads/000/000/043/original/embedded_fragment.html?1448491145',
+        'documentId': 43,
+        'layout': {
+          'height': 123
+        }
+      }
+    }
+  ],
+  created_by: 'good-doer'
+)
+
 published_story = PublishedStory.create(
   uid: 'test-test',
   block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
@@ -101,5 +118,11 @@ draft_story = DraftStory.create(
 draft_story = DraftStory.create(
   uid: 'href-bloc',
   block_ids: [block_6.id, block_7.id],
+  created_by: 'good-doer'
+)
+
+embedded_html_story = DraftStory.create(
+  uid: 'embd-html',
+  block_ids: [block_8.id],
   created_by: 'good-doer'
 )

@@ -276,6 +276,39 @@ END
   end
 end
 
+def current_story_json
+  page.evaluate_script(
+    "storyteller.storyStore.serializeStory(storyteller.userStoryUid)"
+  )
+end
+
+# Get number of blocks in the current story
+def block_count
+  page.evaluate_script(
+    'storyteller.storyStore.getStoryBlockIds(storyteller.userStoryUid).length'
+  )
+end
+
+def block_at_index(block_index)
+  block_id = page.evaluate_script(
+    "storyteller.storyStore.getStoryBlockIds(storyteller.userStoryUid)[#{block_index}]"
+  )
+
+  {
+    id: block_id,
+    components: page.evaluate_script(
+      "storyteller.storyStore.getBlockComponents('#{block_id}')"
+    )
+  }
+
+end
+
+def block_content_at_index(block_id, component_index)
+  page.evaluate_script(
+    "storyteller.storyStore.getBlockComponentAtIndex('#{block_id}', #{component_index}).value"
+  )
+end
+
 # Force the "are you sure you want to discard your unsaved changes"
 # modal to come up at a deterministic time. If we don't, the next test
 # to interact with the browser will fail (Selenium will complain of an

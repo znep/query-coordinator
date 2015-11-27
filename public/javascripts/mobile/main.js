@@ -1,40 +1,49 @@
 (function(root) {
   'use strict';
 
-  //var DOMAIN = window.location.hostname;
-  var DOMAIN = 'dataspace.demo.socrata.com';
-  //var DATASET_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
-  var DATASET_UID = 'rewx-rnbf';
+  var DOMAIN = window.location.hostname;
+  // var DOMAIN = 'dataspace.demo.socrata.com'; // For local development
+  var DATASET_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
+  var cardsData;
+  var cardsMetaData = ''
 
   function getPageData() {
     return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/page/' + DATASET_UID);
   }
 
+  function getPageDataSet() {
+    return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/dataset/' + DATASET_UID);
+  }
+
   function setupPage() { 
     getPageData().success(function(data) {
       document.title = data.name;
-      renderCards(data.cards);
+      cardsData = data.cards;
+      getPageDataSet().success(function(data) {
+        cardsMetaData = data.columns;
+        renderCards(cardsData, cardsMetaData);
+      });
     });
   }
 
-  function getTemplate(containerID) {
+  function getTemplate(options) {
     return $(
       [
-        '<div class="component-container">',
+        '<div class="component-container ' + options.containerClass + '">',
         '<article class="intro-text">',
-        '<h5>Column Chart</h5>',
+        '<h5>' + options.metaData.name + '</h5>',
         '<p class="intro padding hidden">',
         '<span class="desc"></span>',
         '<span class="text-link">more</span>',
         '</p>',
         '<div class="all hidden">',
         '<p class="padding">',
-        '<span class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis magni dolor veritatis saepe quis cum assumenda. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis magni dolor veritatis saepe quis cum assumenda. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis magni dolor veritatis saepe quis cum</span>',
+        '<span class="desc">' + options.metaData.description + '</span>',
         '<span class="text-link">less</span>',
         '</p>',
         '</div>',
         '</article>',
-        '<div id="' + containerID + '"></div>',
+        '<div id="' + options.id + '"></div>',
         '</div>'
       ].join('')
     );
@@ -42,9 +51,17 @@
 
   function renderCards(cards) {
     $.each(cards, function(i, card) {
+      var cardOptions = {
+        id: '',
+        metaData: cardsMetaData[card.fieldName],
+        containerClass: ''
+      }
+
       switch (card.cardType) {
         case 'timeline':
-          var $cardContainer = getTemplate('timeline-chart').appendTo('#mobile-components');
+          cardOptions.id = 'timeline-chart';
+          cardOptions.containerClass = 'timeline-chart-container';
+          var $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           var values = {
             domain: DOMAIN,
             uid: DATASET_UID,
@@ -54,7 +71,9 @@
           socrata.visualizations.MobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
           break;
         case 'feature':
-          var $cardContainer = getTemplate('feature-map').appendTo('#mobile-components');
+          cardOptions.id = 'feature-map';
+          cardOptions.containerClass = 'map-container';
+          var $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           var values = {
             domain: DOMAIN,
             uid: DATASET_UID,
@@ -64,7 +83,8 @@
           socrata.visualizations.TestMobileFeatureMap(values, $cardContainer.find('#feature-map'));
           break;
         case 'column':
-          var $cardContainer = getTemplate('column-chart').appendTo('#mobile-components');
+          cardOptions.id = 'column-chart';
+          var $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           var values = {
             domain: DOMAIN,
             uid: DATASET_UID,
@@ -77,7 +97,64 @@
           break
       }
     });
+    socrata.MobileCardViewer()
   }
 
   $(setupPage);
 })(window);
+
+socrata.MobileCardViewer = function() {
+  'use strict';
+
+  var $article = $('article');
+  var $intro = $('.intro');
+  var $all = $('.all');
+  var description = $('.all').find('.desc').html();
+  var introText = description.substring(0, 85);
+
+  $intro.find('.desc').html(introText);
+  $intro.removeClass('hidden');
+
+  $intro.find('.text-link').on('click', function() {
+    // show all desc
+    $(this).parents('.intro-text').find('.all').removeClass('hidden');
+    $(this).parent('.intro').addClass('hidden');
+  });
+
+  $all.find('.text-link').on('click', function() {
+    // show intro desc
+    $(this).parents('.intro-text').find('.intro').removeClass('hidden');
+    $(this).parents('.all').addClass('hidden');
+  });
+
+  var $window = $(window);
+  var $navbar = $('.navbar');
+  var lastScrollTop = 0;
+  var wasScrollingDown = false;
+
+  $window.scroll(function() {
+    var stp = $window.scrollTop();
+
+    if (stp > lastScrollTop) {
+      if (!wasScrollingDown) {
+        $navbar.
+          removeClass('navbar-visible').
+          addClass('navbar-hidden');
+        $('#navbar').
+          removeClass('in').
+          attr('aria-expanded','false');
+
+        wasScrollingDown = true;
+      }
+    } else {
+      if (wasScrollingDown) {
+        $navbar.
+          removeClass('navbar-hidden').
+          addClass('navbar-visible');
+
+        wasScrollingDown = false;
+      }
+    }
+    lastScrollTop = stp;
+  });
+};

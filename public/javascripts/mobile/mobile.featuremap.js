@@ -1,5 +1,4 @@
-$(document).ready(function() {
-
+socrata.visualizations.TestMobileFeatureMap = function(values, $target) {
   var scrolling = false;
   var endScrolling;
 
@@ -15,9 +14,9 @@ $(document).ready(function() {
    * Set up the plugin.
    */
 
-  var DOMAIN = location.host;
-  var DATASET_UID = location.pathname.split('/')[2];
-  var COLUMN_NAME = 'point';
+  var DOMAIN = values.domain;
+  var DATASET_UID = values.uid;
+  var COLUMN_NAME = values.columnName;
 
   var flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
   socrata.visualizations.RowInspector.setup();
@@ -85,11 +84,11 @@ $(document).ready(function() {
     }
   };
 
-  var $featureMapElement = $('#feature-map');
+  var $featureMapElement = $target;
   $featureMapElement.socrataMobileFeatureMap(featureMap1VIF);
 
   mapHeight = (60 * $(window).height()) / 100 // Map should be 60% of device height
-  $featureMapElement.height(mapHeight)
+  $featureMapElement.height(mapHeight);
 
   /**
    * Handle flyout events.
@@ -109,4 +108,4 @@ $(document).ready(function() {
       flyoutRenderer.clear();
     }
   }
-});
+};

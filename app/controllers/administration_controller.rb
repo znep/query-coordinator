@@ -421,6 +421,7 @@ class AdministrationController < ApplicationController
       nofederate: 'true',
       suppress_dataset_creation: true,
       view_type: 'table',
+      a11y_skip_to_content: true,
       a11y_table_description: t('screens.admin.view_moderation.table_description')
     })
   end

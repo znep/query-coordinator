@@ -166,6 +166,9 @@ end
     <%- end -%>
 
     <%- show_catalog_sort_dropdown = opts[:show_catalog_sort_dropdown] -%>
+    <%- if opts[:a11y_skip_to_content] -%>
+      <% content_for(:relocated_content) do %><a name="above-content"></a><% end %>
+    <%- end -%>
     <div class="browseList <%= show_catalog_sort_dropdown ? 'hasSort' : '' %>">
       <%- unless opts[:browse_in_container] -%>
         <div class="titleContainer">
@@ -222,7 +225,7 @@ end
         <%- end -%>
       </div>
 
-      <div class="results">
+      <div class="results" <%- if opts[:a11y_skip_to_content] -%>id="content"<%- end -%>>
         <%- if opts[:view_request_error] -%>
           <div class="noResults">
             <span class="message"><%= opts[:timeout_text] %></span>

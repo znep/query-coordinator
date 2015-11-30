@@ -776,4 +776,10 @@ module ApplicationHelper
     FeatureFlags.derive(nil, req, nil)[:cetera_search]
   end
 
+  def tileserver_hosts
+    APP_CONFIG.tileserver_hosts.present? ?
+      APP_CONFIG.tileserver_hosts.split(',').map { |value| value.strip } :
+      []
+  end
+
 end

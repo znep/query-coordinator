@@ -649,6 +649,27 @@ module ApplicationHelper
     @suppress_govstat || CurrentDomain.member?(current_user) == false
   end
 
+  def on_browse_page?
+    controller_name == 'browse'
+  end
+
+  def is_mobile?
+    # We don't want to be mobile if we're on the browse page
+    return false if on_browse_page?
+
+    param_mobile = params[:mobile].to_s
+    param_no_mobile = params[:no_mobile].to_s
+
+    # If "no_mobile=true" or "mobile=false" is on the URL, don't add the viewport meta tag
+    return false if param_no_mobile.match(/true/i) || param_mobile.match(/false/i)
+
+    # If "mobile=true" or "no_mobile=false" is on the URL, force the addition of the viewport meta tag
+    return true if param_mobile.match(/true/i) || param_no_mobile.match(/false/i)
+
+    # The regular expression below is not all inclusive.
+    !!request.env['HTTP_USER_AGENT'].to_s.match(/(iPhone|iPod|iPad|Android|Windows Phone|BlackBerry)/i)
+  end
+
   # Returns true unless the opendata_ga_tracking_code feature flag is set to false
   def use_ga_tracking_code?
     FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking] != false

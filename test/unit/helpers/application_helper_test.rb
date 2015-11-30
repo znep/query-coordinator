@@ -158,6 +158,61 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_not_match(/fonts.googleapis.com/, output)
   end
 
+  def test_is_mobile_http_user_agent_on_mobile_device_returns_true_without_overriding_params
+    init_current_domain_mobile_device
+    application_helper.stubs(:params => {})
+    assert(application_helper.is_mobile?, 'Expected is_mobile? to be true')
+  end
+
+  def test_is_mobile_http_user_agent_on_mobile_device_returns_false_when_visting_browse_page
+    init_current_domain_mobile_device
+    application_helper.stubs(:controller_name => 'browse')
+    application_helper.stubs(:params => {})
+    refute(application_helper.is_mobile?, 'Expected is_mobile? to be false')
+  end
+
+  def test_is_mobile_http_user_agent_on_mobile_device_returns_true_with_mobile_paramter_set_to_true
+    init_current_domain_mobile_device
+    application_helper.stubs(:params => { 'mobile' => 'trUE' }.with_indifferent_access)
+    assert(application_helper.is_mobile?, 'Expected is_mobile? to be true')
+  end
+
+  def test_is_mobile_http_user_agent_on_mobile_device_returns_false_with_mobile_paramter_set_to_false
+    init_current_domain_mobile_device
+    application_helper.stubs(:params => { 'mobile' => 'FALse' }.with_indifferent_access)
+    refute(application_helper.is_mobile?, 'Expected is_mobile? to be false')
+  end
+
+  def test_is_mobile_http_user_agent_on_mobile_device_returns_true_with_no_mobile_paramter_set_to_false
+    init_current_domain_mobile_device
+    application_helper.stubs(:params => { 'no_mobile' => 'FALse' }.with_indifferent_access)
+    assert(application_helper.is_mobile?, 'Expected is_mobile? to be true')
+  end
+
+  def test_is_mobile_http_user_agent_on_mobile_device_returns_false_with_no_mobile_paramter_set_to_true
+    init_current_domain_mobile_device
+    application_helper.stubs(:params => { 'no_mobile' => 'trUE' }.with_indifferent_access)
+    refute(application_helper.is_mobile?, 'Expected is_mobile? to be false')
+  end
+
+  def test_is_mobile_http_user_agent_on_non_mobile_device_returns_false_without_overriding_parameter
+    init_current_domain_non_mobile_device
+    application_helper.stubs(:params => {})
+    refute(application_helper.is_mobile?, 'Expected is_mobile? to be false')
+  end
+
+  def test_is_mobile_http_user_agent_on_non_mobile_device_returns_true_when_mobile_parameter_is_true
+    init_current_domain_non_mobile_device
+    application_helper.stubs(:params => { 'mobile' => 'tRUe' }.with_indifferent_access)
+    assert(application_helper.is_mobile?, 'Expected is_mobile? to be true')
+  end
+
+  def test_is_mobile_http_user_agent_on_non_mobile_device_returns_false_when_mobile_parameter_is_false
+    init_current_domain_non_mobile_device
+    application_helper.stubs(:params => { 'mobile' => 'falSE' }.with_indifferent_access)
+    refute(application_helper.is_mobile?, 'Expected is_mobile? to be false')
+  end
+
   def test_get_alt_dataset_link
     assert(application_helper.get_alt_dataset_link('test-name') =~ /\/d\/test-name\/alt/)
   end
@@ -388,5 +443,17 @@ class ApplicationHelperTest < ActionView::TestCase
     @object = Object.new.tap { |object| object.extend(ApplicationHelper) }
     @view = View.new.tap { |view| view.stubs(default_view_state) }
     @object.stubs(:view => @view, :request => nil, :current_user => Object.new)
+  end
+
+  def init_current_domain_mobile_device
+    init_current_domain
+    application_helper.stubs(:controller_name => 'test')
+    CurrentDomain.stubs(:configuration => OpenStruct.new(:properties => OpenStruct.new(:view_type => 'table')))
+    application_helper.stubs(:request => OpenStruct.new(:env => { 'HTTP_USER_AGENT' => 'IPHone'}))
+  end
+
+  def init_current_domain_non_mobile_device
+    init_current_domain_mobile_device
+    application_helper.stubs(:request => OpenStruct.new(:env => { 'HTTP_USER_AGENT' => 'MaCiNtOsH'}))
   end
 end

@@ -3,45 +3,47 @@
   <div class="<%= result_classes %>">
 
     <div class="browse2-result-header clearfix">
-      <div class="browse2-result-title">
+      <div class="browse2-result-header-content">
+        <div class="browse2-result-title">
 
-        <h2 class="browse2-result-name">
-          <a class="browse2-result-name-link" href="<%= result_link %>" rel="<%= result_link_rel_type %>" itemprop="url" data-search="highlight">
-            <%= result_name %>
-          </a>
-        </h2>
+          <h2 class="browse2-result-name">
+            <a class="browse2-result-name-link" href="<%= result_link %>" rel="<%= result_link_rel_type %>" itemprop="url" data-search="highlight"><%= result_name %></a>
+          </h2>
 
-        <%- if show_official_badge -%>
-          <div class="browse2-result-provenance">
-            <span class='icon-check'></span>
-            <span class='provenance-title'><%= t('angular.dataCards.lens_type.official') %></span>
+          <%- if show_official_badge -%>
+            <div class="browse2-result-provenance browse2-result-header-section">
+              <span class='icon-check'></span>
+              <span class='provenance-title'><%= t('angular.dataCards.lens_type.official') %></span>
+            </div>
+          <%- end -%>
+
+          <%- if result_is_federated -%>
+            <a class="browse2-result-federated-link browse2-result-header-section"
+              href="<%= result_federated_origin_url %>"
+              rel="<%= result_link_rel_type %>"
+              title="<%= t('controls.browse.browse2.federation.label_with_source', :source => result_federated_origin) %>">
+              <img class="browse2-result-federated-image"
+                src="<%= result_domain_icon_href %>"
+                onerror="this.src='images/federated.svg'; this.onerror=null; this.className = this.className + ' default_icon';"
+                alt="<%= result_federated_origin %>" />
+              <%= t('controls.browse.browse2.federation.label') %>
+              <span class="browse2-result-federated-source"><%= result_federated_origin %></span>
+            </a>
+          <%- end -%>
+
+          <%- result_categories.each do |category| -%>
+            <span class="browse2-result-category browse2-result-header-section" itemprop="keywords" data-search="highlight"><%= category %></span>
+          <%- end -%>
+
+        </div>
+
+        <%- if result_display_title.present? -%>
+          <div class="browse2-result-type">
+            <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
+            <span class="browse2-result-type-name"><%= result_display_title %></span>
           </div>
         <%- end -%>
-
-        <%- result_categories.each do |category| -%>
-          <span class="browse2-result-category" itemprop="keywords" data-search="highlight">
-            <%= category %>
-          </span>
-        <%- end -%>
-
-        <%- if result_is_federated -%>
-          <a class="browse2-result-federated-link" href="<%= result_federated_origin_url %>" rel="<%= result_link_rel_type %>" title="<%= t('controls.browse.browse2.federation.source', :source => result_federated_origin) %>">
-            <span class="browse2-result-federated-icon icon-linked"></span>
-            <%= t('controls.browse.browse2.federation.label') %>
-          </a>
-        <%- end -%>
-
       </div>
-
-      <%- if result_display_title.present? -%>
-        <div class="browse2-result-type">
-          <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
-          <span class="browse2-result-type-name">
-            <%= result_display_title %>
-          </span>
-        </div>
-      <%- end -%>
-
     </div>
 
     <div class="browse2-result-metadata">

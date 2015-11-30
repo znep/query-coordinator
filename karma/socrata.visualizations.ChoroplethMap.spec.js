@@ -102,7 +102,9 @@ describe('socrata.visualizations.ChoroplethMap', function() {
     };
 
     var visualization = new socrata.visualizations.ChoroplethMap($element, choroplethVIF);
-    visualization.render(data, visualizationRenderOptions);
+
+    visualization.updateTileLayer(visualizationRenderOptions);
+    visualization.render(data);
 
     // Choropleth has "interesting" double-click detection, so we need to
     // manipulate time to get it to register clicks correctly
@@ -339,6 +341,31 @@ describe('socrata.visualizations.ChoroplethMap', function() {
 
       expect(el.find('.choropleth-map-container').length).to.equal(1);
       expect(el.find('.leaflet-map-pane').length).to.equal(1);
+    });
+
+    describe('base layer', function() {
+
+      it('should update tiles', function() {
+
+        var geojsonAggregateData = testData.lineStringData2;
+
+        var choroplethObject = createChoroplethMap(geojsonAggregateData);
+        var el = choroplethObject.element;
+        var visualization = choroplethObject.visualization;
+
+        var originalBaseLayerUrl = el.find('.leaflet-tile')[0].src;
+
+        var renderOptions = {
+          baseLayer: {
+            url: 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
+            opacity: DEFAULT_BASE_LAYER_OPACITY
+          }
+        };
+
+        visualization.updateTileLayer(renderOptions);
+
+        expect(el.find('.leaflet-tile')[0].src).to.not.equal(originalBaseLayerUrl);
+      });
     });
 
     describe('shapes', function() {
@@ -1199,6 +1226,46 @@ describe('socrata.visualizations.ChoroplethMap', function() {
 
         testHelpers.fireEvent(feature, 'mousemove');
         testHelpers.fireEvent(feature, 'mouseout');
+      });
+    });
+
+    describe('dimension changes', function() {
+
+      var invalidateSizeSpy;
+
+      beforeEach(function() {
+        invalidateSizeSpy = sinon.spy(L.Map.prototype, 'invalidateSize');
+      });
+
+      afterEach(function() {
+        L.Map.prototype.invalidateSize.restore();
+      });
+
+      it('should re-center map if dimensions have changed', function() {
+
+        var geojsonAggregateData = testData.lineStringData2;
+
+        var choroplethObject = createChoroplethMap(geojsonAggregateData);
+        var el = choroplethObject.element;
+        var visualization = choroplethObject.visualization;
+
+        el.find('.choropleth-container').width(10);
+        visualization.updateDimensions();
+
+        expect(invalidateSizeSpy).to.have.been.called;
+      });
+
+      it('should not re-center map if dimensions have not changed', function() {
+
+        var geojsonAggregateData = testData.lineStringData2;
+
+        var choroplethObject = createChoroplethMap(geojsonAggregateData);
+        var el = choroplethObject.element;
+        var visualization = choroplethObject.visualization;
+
+        visualization.updateDimensions();
+
+        expect(invalidateSizeSpy).to.not.have.been.called;
       });
     });
 

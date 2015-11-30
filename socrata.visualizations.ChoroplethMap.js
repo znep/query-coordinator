@@ -132,6 +132,21 @@
     // Render layout
     _renderTemplate(self.element);
 
+    // Construct leaflet map
+    _map = L.map(_choroplethMapContainer[0], _mapOptions);
+
+    // Attach Miscellaneous Events
+    _attachEvents();
+
+    // Initialize map's bounds if provided with that data
+    var _extentsDefined = (!_.isEmpty(vif.configuration.defaultExtent) || !_.isEmpty(vif.configuration.savedExtent));
+
+    // If bounds are not defined, this will get handled when render is first
+    // called, as the fallback bounds calculation requires the geoJSON data.
+    if (_firstRender && _extentsDefined) {
+      _initializeMap(_choroplethContainer);
+    }
+
     // Setup legend
     var _LegendType = _LegendContinuous;
 
@@ -173,8 +188,32 @@
      */
 
     this.render = function(data, options) {
-      _lastRenderOptions = options;
-      _renderData(_choroplethContainer, data, options);
+      // Stop rendering if element has no width or height
+      if (_choroplethContainer.width() <= 0 || _choroplethContainer.height() <= 0) {
+        if (window.console && window.console.warn) {
+          console.warn('Aborted rendering choropleth map: map width or height is zero.');
+        }
+        return;
+      }
+
+      _.merge(_lastRenderOptions, options);
+
+      // Calling _initializeMap should only occur here if bounds were not specified in the VIF.
+      // We call it here because the fallback bounds calculation requires geoJSON.
+      if (_firstRender) {
+        _initializeMap(_choroplethContainer, data);
+      }
+
+      _updateFeatureLayer(data);
+    };
+
+    this.updateDimensions = function() {
+      _updateDimensions(_choroplethContainer);
+    };
+
+    this.updateTileLayer = function(options) {
+      _.merge(_lastRenderOptions, options);
+      _updateTileLayer(options.baseLayer.url, options.baseLayer.opacity);
     };
 
     this.renderError = function() {
@@ -257,6 +296,20 @@
       _choroplethLegend = choroplethLegend;
 
       el.append(choroplethContainer);
+    }
+
+    function _initializeMap(el, data) {
+      // Only update bounds on the first render so we can persist
+      // users' panning and zooming.
+      // It is critical to invalidate size prior to updating bounds
+      // Otherwise, Leaflet will fit the bounds to an incorrectly sized viewport.
+      // This manifests itself as the map being zoomed all of the way out.
+      _map.invalidateSize();
+      _updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
+      _firstRender = false;
+
+      _lastElementWidth = el.width();
+      _lastElementHeight = el.height();
     }
 
     /**
@@ -613,9 +666,9 @@
       ]);
       var initialBounds = computedBounds;
 
-      if (!_.isUndefined(savedExtent)) {
+      if (!_.isEmpty(savedExtent)) {
         initialBounds = _buildBounds(savedExtent);
-      } else if (!_.isUndefined(defaultExtent)) {
+      } else if (!_.isEmpty(defaultExtent)) {
         var defaultBounds = _buildBounds(defaultExtent);
 
         if (!defaultBounds.contains(computedBounds)) {
@@ -637,49 +690,9 @@
       );
     }
 
-    function _renderData(el, data, options) {
+    function _updateDimensions(el) {
       var mapWidth = el.width();
       var mapHeight = el.height();
-
-      if (mapWidth <= 0 || mapHeight <= 0) {
-        if (window.console && window.console.warn) {
-          console.warn('Aborted rendering choropleth map: map width or height is zero.');
-        }
-        return;
-      }
-
-      if (!_map) {
-
-        // Construct leaflet map
-        _map = L.map(_choroplethMapContainer[0], _mapOptions);
-
-        // Attach Miscellaneous Events
-        _attachEvents();
-      }
-
-      // Only update bounds on the first render so we can persist
-      // users' panning and zooming.
-      if (_firstRender) {
-        // It is critical to invalidate size prior to updating bounds
-        // Otherwise, Leaflet will fit the bounds to an incorrectly sized viewport.
-        // This manifests itself as the map being zoomed all of the way out.
-        _map.invalidateSize();
-        _updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
-        _firstRender = false;
-
-        _lastElementWidth = mapWidth;
-        _lastElementHeight = mapHeight;
-      }
-
-      // Update base layer with any changes
-      if (!_.isUndefined(options.baseLayer)) {
-        _updateTileLayer(options.baseLayer.url, options.baseLayer.opacity);
-      }
-
-      // Update feature layer
-      if (!_.isUndefined(data)) {
-        _updateFeatureLayer(data);
-      }
 
       // Recenter map if container's dimensions have changed
       if (_lastElementWidth !== mapWidth || _lastElementHeight !== mapHeight) {

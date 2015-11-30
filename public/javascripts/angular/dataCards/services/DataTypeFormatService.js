@@ -11,70 +11,51 @@
     };
 
     /**
-    * Render a number based on column specified formatting. Will respect
-    * percentage or commaified formatting.
+    * Render a number based on column specified formatting.
+    * This has lots of possible options, so we delegate to helpers.
     */
-    var renderNumberCell = function(cellContent, column) {
-      // CORE-4533: Preserve behavior of old UX - truncate precision
-      if (cellContent && !_.isNumber(cellContent)) {
-        var number = parseFloat(cellContent);
-        // Just in case, default to the given cell content if parsing fails
-        if (!_.isNaN(number)) {
-          cellContent = number.toString();
-        }
+    var renderNumberCell = function(input, column) {
+      if (_.isNull(input) || _.isUndefined(input) || input.toString().length === 0) {
+        return '';
       }
+
+      var amount = parseFloat(input);
+
+      var format = _.extend({
+        precisionStyle: 'standard',
+        precision: undefined,
+        noCommas: false,
+        currency: '$',
+        decimalSeparator: '.',
+        groupSeparator: ',',
+        mask: null
+      }, column.format || {});
+
+      format.commaifyOptions = {
+        decimalCharacter: format.decimalSeparator,
+        groupCharacter: format.groupSeparator
+      };
 
       if (column.dataTypeName === 'percent') {
-        var parts = cellContent.split('.');
-        if (parts.length === 1) {
-          // non-zero integers are multiples of 100%
-          if (cellContent !== '0') {
-            cellContent += '00';
-          }
-        } else {
-          // shift the decimal point two places right string-wise
-          // because we can't trust multiplying floats by 100
-          var decimalValues = parts[1].split('');
-          while (decimalValues.length < 2) {
-            decimalValues.push('0');
-          }
-          cellContent = parts[0] + decimalValues.splice(0, 2).join('');
-          if (decimalValues.length) {
-            cellContent += '.' + decimalValues.join('');
-          }
-          // strip leading zeroes except just before decimal point
-          cellContent = cellContent.replace(/^(-?)0*(\d+(?:\.\d+)?)/, '$1$2');
+        return _renderPercentageNumber(amount, format);
+      } else if (format.mask) {
+        return _renderMaskedNumber(amount, format);
+      } else {
+        switch (format.precisionStyle) {
+          case 'percentage':
+            return _renderPercentageNumber(amount, format);
+          case 'scientific':
+            return _renderScientificNumber(amount, format);
+          case 'currency':
+            return _renderCurrencyNumber(amount, format);
+          case 'financial':
+            return _renderFinancialNumber(amount, format);
+          case 'standard':
+          default:
+            return _renderStandardNumber(amount, format);
         }
       }
-
-      var shouldCommaify = !(column.format || {}).noCommas;
-      // Special case for thousands-place numbers.
-      // The primary justification is that it makes year columns
-      // look bad; awaiting further feedback from customers.
-      // This check should be removed or reworked once the API for
-      // logical type detection is in place.
-      if (/^-?\d{4}\b/.test(cellContent)) {
-        shouldCommaify = false;
-      }
-      if (shouldCommaify) {
-        cellContent = $window.socrata.utils.commaify(cellContent);
-      }
-
-      // Add percent sign after commaify because it affects length
-      if (column.dataTypeName === 'percent') {
-        cellContent += '%';
-      }
-
-      return cellContent;
-    };
-
-    // Helper for retrieving the geoCell cellContent coordinates
-    var cellCoordinates = function(cellContent) {
-      var coordinates = _.has(cellContent, 'value.coordinates') ?
-        cellContent.value.coordinates :
-        cellContent.coordinates;
-      return _.isArray(coordinates) ? coordinates : null;
-    };
+    }
 
     /**
     * Renders a Point in plain text as a lat/lng pair.
@@ -82,7 +63,7 @@
     var renderGeoCell = function(cellContent) {
       var latitudeIndex = 1;
       var longitudeIndex = 0;
-      var coordinates = cellCoordinates(cellContent);
+      var coordinates = _cellCoordinates(cellContent);
       if (coordinates) {
         var latitude = coordinates[latitudeIndex];
         var longitude = coordinates[longitudeIndex];
@@ -98,7 +79,7 @@
     var renderGeoCellHTML = function(cellContent) {
       var latitudeIndex = 1;
       var longitudeIndex = 0;
-      var coordinates = cellCoordinates(cellContent);
+      var coordinates = _cellCoordinates(cellContent);
       if (coordinates) {
         var template = '<span title="{0}">{1}°</span>';
         var latitude = template.format(I18n.common.latitude, coordinates[latitudeIndex]);
@@ -172,8 +153,7 @@
           };
 
           cellContent = $window.socrata.utils.commaify(
-            Math.abs(amount).toFixed(format.precision).
-              replace('.', format.decimalSeparator),
+            Math.abs(amount).toFixed(format.precision),
             commaifyOptions
           );
         }
@@ -216,7 +196,113 @@
       renderMoneyCell: renderMoneyCell,
       renderTimestampCell: renderTimestampCell
     };
+
+    /**
+     * hoisted helper methods below
+     * (must belong to this scope in order to access $window)
+     */
+
+    function _renderCurrencyNumber(amount, format) {
+      var isNegative = amount < 0;
+
+      var value = Math.abs(amount);
+      if (format.precision >= 0) {
+        value = value.toFixed(format.precision);
+      }
+
+      value = $window.socrata.utils.commaify(value, format.commaifyOptions);
+      if (format.noCommas) {
+        value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+      }
+
+      return '{neg}{sym}{value}'.format({
+        neg: (isNegative ? '-' : ''),
+        sym: format.currency,
+        value: value
+      });
+    }
+
+    function _renderFinancialNumber(amount, format) {
+      var isNegative = amount < 0;
+
+      var value = Math.abs(amount);
+      if (format.precision >= 0) {
+        value = value.toFixed(format.precision);
+      }
+
+      value = $window.socrata.utils.commaify(value, format.commaifyOptions);
+      if (format.noCommas) {
+        value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+      }
+
+      if (isNegative) {
+        return '({0})'.format(value);
+      } else {
+        return '{0}'.format(value);
+      }
+    }
+
+    function _renderScientificNumber(amount, format) {
+      var value =  amount.toExponential(format.precision);
+
+      // no groups, so we can skip groupSeparator and commaify and noCommas
+      return value.replace('.', format.decimalSeparator);
+    }
+
+    function _renderPercentageNumber(amount, format) {
+      var value = amount;
+      if (format.precision >= 0) {
+        value = value.toFixed(format.precision);
+      }
+
+      value = $window.socrata.utils.commaify(value, format.commaifyOptions);
+      if (format.noCommas) {
+        value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+      }
+
+      return value + '%';
+    }
+
+    function _renderStandardNumber(amount, format) {
+      var value = amount;
+      if (format.precision >= 0) {
+        value = value.toFixed(format.precision);
+      }
+
+      if (/^-?\d{4}$/.test(value)) {
+        return value;
+      }
+
+      value = $window.socrata.utils.commaify(value, format.commaifyOptions);
+      // Force commaify off for four-digit numbers (workaround for year columns)
+      if (format.noCommas) {
+        value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+      }
+
+      return value;
+    }
+
+    // NOTE: In the dataset view, a mask can lead to some really strange output.
+    // We're going to start with a simple approach and refine as we go on.
+    function _renderMaskedNumber(amount, format) {
+      var maskChar = '#';
+      var amountChars = String(amount).split('');
+      var output = format.mask.slice(0, amountChars.length);
+
+      while (output.indexOf(maskChar) > -1) {
+        output = output.replace(maskChar, amountChars.shift());
+      }
+      output += amountChars.join('');
+
+      return output;
+    }
+
+    function _cellCoordinates(cellContent) {
+      var coordinates = _.get(cellContent, 'value.coordinates', cellContent.coordinates);
+      return _.isArray(coordinates) ? coordinates : null;
+    }
   }
+
 
   angular.
     module('dataCards.services').

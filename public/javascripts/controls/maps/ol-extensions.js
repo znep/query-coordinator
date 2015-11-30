@@ -741,7 +741,7 @@
 
             $layerSet.append($layer = $.tag2({ _: 'li', 'data-layerid': layer.id, contents: [
                 $.extend({ _: 'input', id: lId }, buttonType),
-                { _: 'label', 'for': lId, contents: layerName }
+                { _: 'label', 'for': lId, contents: $.htmlEscape(layerName) }
             ] }) );
 
             $layer.find(':radio').uniform();

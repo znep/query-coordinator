@@ -40,7 +40,10 @@
              {:method => :delete}, {:class => 'button removeFieldsetButton remove'}) %>
         <h3 class="fieldsetTitle"><%= fieldset['name'] %></h3>
         <div class="gridListWrapper">
-            <table class="gridList metadataFieldTable" cellspacing="0">
+            <table
+              class="gridList metadataFieldTable"
+              cellspacing="0"
+              summary="<%= a11y_metadata_fieldset_summary(fieldset, ['required', t("#{prefix}.field_name"), t("#{prefix}.allowed_values"), 'actions']) %>">
               <colgroup>
                 <col class="required" />
                 <col class="name" />
@@ -64,11 +67,11 @@
                       <td class="required">
                           <span class="requiredField"></span>
                       </td>
-                      <td class="name" scope="row">
+                      <th class="name row-header" scope="row">
                         <span class="cellInner">
                           <%= field.displayName || field.name %>
                         </span>
-                      </td>
+                      </th>
                       <td class="options <%= field['type'] %>">
                         <ul class="fixedOptions editableList">
                           <%- if field['options'].present? -%>
@@ -170,7 +173,17 @@
     <h2><%= t("#{prefix}.define_categories") %></h2>
 
     <div class="gridListWrapper">
-      <table class="gridList categoriesTable" cellspacing="0">
+      <table
+        class="gridList categoriesTable"
+        cellspacing="0"
+        summary="<%= a11y_metadata_category_summary(@categories, [
+            t("#{prefix}.category_name"),
+            (@locales.length > 1 ? t("#{prefix}.locales") : nil),
+            t("#{prefix}.parent"),
+            t("#{prefix}.shown"),
+            'actions',
+            'delete action'
+        ].compact) %>">
         <colgroup>
           <col class="name" />
           <%- if @locales.length > 1 -%>
@@ -197,12 +210,12 @@
           <%- @categories.each do |category, value| -%>
             <tr class="item">
               <%= form_tag({:action => 'update_category'}, {:class => 'updateCategoryForm'}) %>
-              <td class="name">
+              <th scope="row" class="name row-header">
                 <span class="cellInner">
                   <%= category.titleize_if_necessary %>
                   <input type="hidden" name="category[name]" value="<%= category %>" />
                 </span>
-              </td>
+              </th>
               <%- if @locales.length > 1 -%>
                 <td class="locales">
                   <div class="cellInner">

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ManageLensDialogController($scope, ServerConfig) {
+  function ManageLensDialogController($scope, $window, ServerConfig) {
 
     // Show sharing section for users who have 'grant' right
     $scope.$bindObservable('shouldShowSharingSection',
@@ -12,11 +12,8 @@
 
     // Show ownership section if the feature flag is enabled
     var changeOwnerEnabled = ServerConfig.get('allowDataLensOwnerChange');
-    $scope.$bindObservable('shouldShowOwnershipSection',
-      $scope.page.observe('rights').map(function(rights) {
-        return _.includes(rights, 'chown_datasets') && changeOwnerEnabled;
-      })
-    );
+    var changeOwnerAllowed = _.includes(_.get($window.currentUser, 'rights', []), 'chown_datasets');
+    $scope.shouldShowOwnershipSection = changeOwnerEnabled && changeOwnerAllowed;
 
     // Decorate the $scope of the permissions with a components object. Each
     // component should be placed in this object with a save function that

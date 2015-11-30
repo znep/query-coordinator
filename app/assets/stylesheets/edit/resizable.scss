@@ -20,6 +20,11 @@
     &:hover {
       cursor: ns-resize;
       background-color: $resize-bar-hover-color;
+
+      div {
+        border-top-color: $resize-bar-hint-hover-color;
+        border-bottom-color: $resize-bar-hint-hover-color;
+      }
     }
 
     div {

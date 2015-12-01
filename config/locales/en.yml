@@ -3058,6 +3058,7 @@ en:
       comments: Comments
       comments_created: comments created
       daily: Daily
+      date_range: Date Range
       deleted_application: deleted application
       delta_decrease: The number of {0} decreased by {1} during {2}
       delta_decrease_compared: The number of {0} decreased by {1} during {2} compared to {3}

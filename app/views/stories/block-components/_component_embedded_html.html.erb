@@ -10,6 +10,7 @@
 %>
 <iframe
   src="<%= component['value']['url'] %>"
+  height="<%= component['value']['layout'].try(:[], 'height') %>"
   frameborder="0">
 </iframe>
 

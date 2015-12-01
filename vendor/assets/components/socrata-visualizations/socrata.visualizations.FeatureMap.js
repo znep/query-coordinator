@@ -140,7 +140,9 @@
     };
 
     this.invalidateSize = function() {
-      _map.invalidateSize();
+      if (_map) {
+        _map.invalidateSize();
+      }
     };
 
     this.destroy = function() {

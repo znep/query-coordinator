@@ -33,7 +33,6 @@
     utils.assertHasProperty(componentData.value, 'url');
     utils.assertHasProperty(componentData.value, 'documentId');
 
-    // youtubeSource = utils.generateYoutubeIframeSrc(componentData.value.id);
     imgSrc = componentData.value.url;
     documentId = componentData.value.documentId;
 
@@ -97,8 +96,7 @@
     }
 
     _updateSrc($this, componentData);
-    $this.componentEditButton();
-    $this.toggleClass('editing', _.get(options, 'editMode', false));
+    $this.componentBase(componentData, theme, options);
 
     return $this;
   }

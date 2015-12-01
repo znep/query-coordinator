@@ -169,20 +169,23 @@
      * Events
      */
 
-    function attachEvents() {
+    function _attachEvents() {
 
       // Destroy on (only the first) 'destroy' event.
       $element.one('destroy', function() {
-        detachEvents();
+        _detachEvents();
         visualization.destroy();
       });
 
       $element.on('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
       $element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
       $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+      $element.on('invalidateSize', function() {
+        visualization.invalidateSize();
+      });
     }
 
-    function detachEvents() {
+    function _detachEvents() {
 
       $element.off('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
       $element.off('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
@@ -368,7 +371,7 @@
 
     function initializeVisualization() {
 
-      attachEvents();
+      _attachEvents();
 
       // For now, we don't need to use any where clause but the default
       // one, so we just inline the call to

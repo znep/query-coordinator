@@ -52,6 +52,8 @@ $(document).on('ready', function() {
           break;
 
         default:
+          $element.
+            componentBase(componentData);
           break;
       }
     }

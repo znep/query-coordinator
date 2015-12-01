@@ -55,7 +55,10 @@
     var onRenderError = options.onRenderError || function() {};
     var elementCache = new storyteller.StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
-    var resizeRerenderTimeout;
+    var destroyed = false;
+
+    var _throttledRender = _.debounce(_renderStory, Constants.WINDOW_RESIZE_RERENDER_DELAY);
+
 
     if (options.hasOwnProperty('onRenderError') &&
       ((typeof options.onRenderError) !== 'function')) {
@@ -143,7 +146,7 @@
      * cleanup that may become necessary in the future.
      */
     this.destroy = function() {
-      clearTimeout(resizeRerenderTimeout);
+      destroyed = true;
       _detachEvents();
     };
 
@@ -302,23 +305,12 @@
         addClass(windowSizeClass);
     }
 
-    function _throttledRender() {
-
-      clearTimeout(resizeRerenderTimeout);
-
-      resizeRerenderTimeout = setTimeout(
-        function() {
-          _renderStory();
-        },
-        Constants.WINDOW_RESIZE_RERENDER_DELAY
-      );
-    }
-
     /**
      * Story-level rendering operations
      */
 
     function _renderStory() {
+      if (destroyed) { return; }
 
       var blockIds = storyteller.storyStore.getStoryBlockIds(storyUid);
       var blockIdsToRemove = elementCache.getUnusedBlockIds(blockIds);
@@ -559,6 +551,7 @@
           }
         } else {
 
+          // TODO: Only recompute height if that specific component changes.
           contentHeight = $blockElement.
             find('.component-container').
             eq(i).

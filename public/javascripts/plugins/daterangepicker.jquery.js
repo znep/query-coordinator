@@ -23,6 +23,14 @@
 jQuery.fn.daterangepicker = function(settings) {
   var rangeInput = jQuery(this);
 
+  var KEY_CODES = {
+    TAB_KEY: 9,
+    ENTER_KEY: 13,
+    ESCAPE_KEY: 27,
+    UP_ARROW: 38,
+    DOWN_ARROW: 40
+  };
+
   //defaults
   var options = jQuery.extend({
     presetRanges: [
@@ -421,6 +429,86 @@ jQuery.fn.daterangepicker = function(settings) {
     toggleRP();
     return false;
   });
+
+  /* On tabbing into the input, change to a keyboard accessible range picker
+     of two text inputs with keyboard accessible jQuery UI datepickers attached
+
+     Clicking outside of the datepickers, or tabbing out of them, will use the
+     currently selected values, and revert back to the drop-down style range
+     picker.
+   */
+  var $input = jQuery(this);
+  var $tabbableItems = jQuery(':tabbable');
+  var inputTabIndex = $tabbableItems.index($input);
+  var $elementBeforeInputInTabOrder = $tabbableItems.eq(inputTabIndex - 1);
+  var $elementAfterInputInTabOrder = $tabbableItems.eq(inputTabIndex + 1);
+  var $accessibleInputs = jQuery([
+    '<div>',
+      '<label for="start-date">Start Date</label><input id="start-date" type="text">',
+      '<label for="end-date">End Date</label><input id="end-date" type="text">',
+    '</div>'
+  ].join('')).hide().insertAfter($input);
+  var $startDate = $accessibleInputs.find('#start-date').
+    on('keydown', function(event) {
+      if (event.shiftKey && event.which === KEY_CODES.TAB_KEY) {
+        event.preventDefault();
+        hideAccessibleInputs();
+        $elementBeforeInputInTabOrder.focus();
+      }
+    }).
+    datepicker($.extend({}, options.datepickerOptions, {
+      onSelect: function(newValue) {
+        rpPickers.find('.range-start').datepicker('setDate', newValue);
+        updateInput();
+      }
+    }));
+
+  var $endDate = $accessibleInputs.find('#end-date').
+    on('keydown', function(event) {
+      if (event.which === KEY_CODES.TAB_KEY && !event.shiftKey) {
+        event.preventDefault();
+        hideAccessibleInputs();
+        $elementAfterInputInTabOrder.focus();
+      }
+    }).
+  datepicker($.extend({}, options.datepickerOptions, {
+    onSelect: function(newValue) {
+      rpPickers.find('.range-end').datepicker('setDate', newValue);
+      updateInput();
+    }
+  }));
+
+  var onDocumentClick = function(event) {
+    if ($(event.target).closest($accessibleInputs).length > 0) {
+      return;
+    }
+    hideAccessibleInputs();
+  };
+
+  var showAccessibleInputs = function() {
+    hideRP();
+    $input.hide();
+    $startDate.datepicker('setDate', rpPickers.find('.range-start').datepicker('getDate'));
+    $endDate.datepicker('setDate', rpPickers.find('.range-end').datepicker('getDate'));
+    $accessibleInputs.show();
+    $startDate.focus();
+    jQuery(document).on('click', onDocumentClick);
+  };
+
+  var hideAccessibleInputs = function() {
+    jQuery(document).off('click', onDocumentClick);
+    $input.show();
+    $accessibleInputs.hide();
+    options.onClose(); // because that's what the metrics page listens for :facepalm:
+  };
+
+
+  $input.on('keyup', function(event) {
+    if (event.which === KEY_CODES.TAB_KEY && $input.is(':focus')) {
+      showAccessibleInputs();
+    }
+  });
+
   //hide em all
   rpPickers.css('display', 'none').find('.range-start, .range-end, .btnDone').css('display', 'none');
 

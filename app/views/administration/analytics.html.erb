@@ -61,5 +61,8 @@
     <%= include_javascripts 'admin-metrics' %>
   <%- end -%>
 <% end %>
-<%= render_translations LocalePart.screens.stats %>
-<%= render_translations LocalePart.plugins.daterangepicker %>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.stats %>
+  <%= render_translations LocalePart.plugins.daterangepicker %>
+<% end %>

@@ -106,28 +106,15 @@
 
     generateChartMenu = function($chart, section)
     {
-        if (blist.feature_flags.embetter_analytics_page) {
-            $chart.data(metricsNS.SERIES_KEY, section.children[0].series);
-            $chart.data(metricsNS.TRANSFORM, section.children[0].transform);
-            var $menu = $chart.closest('.chartContainer').find('select.chartSeries').empty();
-            $.each(section.children, function() {
-                var $option = $('<option>').text(this.text).appendTo($menu);
-                $option.data(metricsNS.SERIES_KEY, this.series);
-                $option.data(metricsNS.TRANSFORM, this.transform);
-            });
-            $menu.uniform();
-        } else {
-            $chart
-                .data(metricsNS.SERIES_KEY, section.children[0].series)
-                .parent().siblings('.menu').empty().menu({
-                    additionalDataKeys: ['transform'],
-                    additionalJsonKeys: ['series'],
-                    menuButtonContents: '<span class="contents">' +
-                        section.children[0].text + '</span>',
-                    menuButtonTitle: section.children[0].text,
-                    contents: section.children
-            });
-        }
+      $chart.data(metricsNS.SERIES_KEY, section.children[0].series);
+      $chart.data(metricsNS.TRANSFORM, section.children[0].transform);
+      var $menu = $chart.closest('.chartContainer').find('select.chartSeries').empty();
+      $.each(section.children, function() {
+          var $option = $('<option>').text(this.text).appendTo($menu);
+          $option.data(metricsNS.SERIES_KEY, this.series);
+          $option.data(metricsNS.TRANSFORM, this.transform);
+      });
+      $menu.uniform();
     },
 
     equiWidth = function($container)
@@ -177,7 +164,7 @@
         equiWidth($detailDisplay);
 
         // Load each of the charts and create their menus
-        var chartTemplate = blist.feature_flags.embetter_analytics_page ? 'metricsChartsV1' : 'metricsCharts';
+        var chartTemplate = 'metricsChartsV1';
         var chartDisplay =  $.renderTemplate(chartTemplate,
             chartSections, opts.chartDirective);
 

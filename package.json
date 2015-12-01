@@ -64,7 +64,8 @@
       "dot-notation": [
         1,
         {
-          "allowKeywords": false
+          "allowKeywords": false,
+          "allowPattern": "^[a-z]+(_[a-z]+)+$"
         }
       ],
       "eol-last": 1,
@@ -124,6 +125,7 @@
       "d3": true,
       "datasetMetadata": true,
       "domainMetadata": true,
+      "Highcharts": true,
       "jQuery": true,
       "L": true,
       "Modernizr": true,

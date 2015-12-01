@@ -177,26 +177,16 @@
 
         $screen.find('.chartsDisplay').append(chartDisplay);
 
-        if (blist.feature_flags.embetter_analytics_page) {
-            $screen.find('select.chartSeries').change(function(event) {
-                var $option = $(event.target).find(':selected');
-                var $chart = $(event.target).closest('.chartContainer').find('.chartContent');
+        $screen.find('select.chartSeries').change(function(event) {
+            var $option = $(event.target).find(':selected');
+            var $chart = $(event.target).closest('.chartContainer').find('.chartContent');
 
-                $chart.data(metricsNS.SERIES_KEY, $option.data(metricsNS.SERIES_KEY));
-                $chart.data(metricsNS.TRANSFORM, $option.data(metricsNS.TRANSFORM));
+            $chart.data(metricsNS.SERIES_KEY, $option.data(metricsNS.SERIES_KEY));
+            $chart.data(metricsNS.TRANSFORM, $option.data(metricsNS.TRANSFORM));
 
-                // Re-draw chart via callback
-                redrawChart($chart, currentSlice);
-            });
-        } else {
-            $screen.find('.chartContainer .menu ul > li > a').live('click', function(event)
-            {
-                event.preventDefault();
-                subChartTypeChanged($(event.target).closest('a')
-                    .closest('.chartMenu').siblings('.chartArea')
-                        .end().end(), currentSlice);
-            });
-        }
+            // Re-draw chart via callback
+            redrawChart($chart, currentSlice);
+        });
 
         $screen.find('.topDisplay').append(
             $.renderTemplate('metricsTopList', opts.topListSections, opts.topListDirective))

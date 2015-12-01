@@ -1,10 +1,11 @@
-$(function () {
+socrata.visualizations.MobileTimelineChart = function(values, $target) {
   'use strict';
 
   var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();
-  var COLUMN_NAME = 'updated';
-  var DATASET_UID = 'r6t9-rak2';
-  var DOMAIN = 'dataspace.demo.socrata.com';
+
+  var DOMAIN = values.domain;
+  var DATASET_UID = values.uid;
+  var COLUMN_NAME = values.columnName;
   var timelineChartVIF = {
     'aggregation': {
       'columnName': null,
@@ -17,7 +18,7 @@ $(function () {
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
         'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
         'FLYOUT_SELECTED_NOTICE': 'This column is selected'
-      },
+      }
     },
     'createdAt': '2014-01-01T00:00:00',
     'datasetUid': DATASET_UID,
@@ -39,9 +40,9 @@ $(function () {
     }
   };
 
-  var $timelineChartElement = $('#timeline-chart');
+  var $timelineChartElement = $target;
   var $timelineChartContainer = $('.timeline-chart-container');
-  
+
   $timelineChartElement.socrataTimelineChart(timelineChartVIF);
   $timelineChartContainer.append('<div class="mobile-flyout"></div>');
 
@@ -56,7 +57,7 @@ $(function () {
 
   function handleFlyout(event) {
     var payload = event.originalEvent.detail;
-    
+
     // Render mobile flyout
     if (payload !== null) {
       mobileFlyoutRender(payload);
@@ -81,4 +82,4 @@ $(function () {
 
     $timelineChartContainer.find('.mobile-flyout').html(flyoutData);
   }
-});
+};

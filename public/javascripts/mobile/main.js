@@ -1,4 +1,109 @@
-$(function () {
+(function(root) {
+  'use strict';
+
+  var DOMAIN = window.location.hostname;
+  // var DOMAIN = 'dataspace.demo.socrata.com'; // For local development
+  var DATASET_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
+  var cardsData;
+  var cardsMetaData = ''
+
+  function getPageData() {
+    return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/page/' + DATASET_UID);
+  }
+
+  function getPageDataSet() {
+    return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/dataset/' + DATASET_UID);
+  }
+
+  function setupPage() { 
+    getPageData().success(function(data) {
+      document.title = data.name;
+      cardsData = data.cards;
+      getPageDataSet().success(function(data) {
+        cardsMetaData = data.columns;
+        renderCards(cardsData, cardsMetaData);
+      });
+    });
+  }
+
+  function getTemplate(options) {
+    return $(
+      [
+        '<div class="component-container ' + options.containerClass + '">',
+        '<article class="intro-text">',
+        '<h5>' + options.metaData.name + '</h5>',
+        '<p class="intro padding hidden">',
+        '<span class="desc"></span>',
+        '<span class="text-link">more</span>',
+        '</p>',
+        '<div class="all hidden">',
+        '<p class="padding">',
+        '<span class="desc">' + options.metaData.description + '</span>',
+        '<span class="text-link">less</span>',
+        '</p>',
+        '</div>',
+        '</article>',
+        '<div id="' + options.id + '"></div>',
+        '</div>'
+      ].join('')
+    );
+  }
+
+  function renderCards(cards) {
+    $.each(cards, function(i, card) {
+      var cardOptions = {
+        id: '',
+        metaData: cardsMetaData[card.fieldName],
+        containerClass: ''
+      }
+
+      switch (card.cardType) {
+        case 'timeline':
+          cardOptions.id = 'timeline-chart';
+          cardOptions.containerClass = 'timeline-chart-container';
+          var $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+          var values = {
+            domain: DOMAIN,
+            uid: DATASET_UID,
+            columnName: card.fieldName
+          };
+
+          socrata.visualizations.MobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
+          break;
+        case 'feature':
+          cardOptions.id = 'feature-map';
+          cardOptions.containerClass = 'map-container';
+          var $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+          var values = {
+            domain: DOMAIN,
+            uid: DATASET_UID,
+            columnName: card.fieldName
+          };
+
+          socrata.visualizations.TestMobileFeatureMap(values, $cardContainer.find('#feature-map'));
+          break;
+        case 'column':
+          cardOptions.id = 'column-chart';
+          var $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+          var values = {
+            domain: DOMAIN,
+            uid: DATASET_UID,
+            columnName: card.fieldName
+          };
+
+          socrata.visualizations.MobileColumnChart(values, $cardContainer.find('#column-chart'));
+          break;
+        default:
+          break
+      }
+    });
+    socrata.MobileCardViewer()
+  }
+
+  $(setupPage);
+})(window);
+
+socrata.MobileCardViewer = function() {
   'use strict';
 
   var $article = $('article');
@@ -52,4 +157,4 @@ $(function () {
     }
     lastScrollTop = stp;
   });
-});
+};

@@ -1,18 +1,13 @@
-$(function () {
-
-  if ($('#column-chart').length == 0) {
-    return;
-  }
-
+socrata.visualizations.MobileColumnChart = function(values, $target) {
   var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();
 
   var NAME_INDEX = 0;
   var UNFILTERED_INDEX = 1;
   var FILTERED_INDEX = 2;
   var SELECTED_INDEX = 3;
-  var DOMAIN = location.host;
-  var DATASET_UID = location.pathname.split('/')[2];
-  var COLUMN_NAME = 'category';
+  var DOMAIN = values.domain;
+  var DATASET_UID = values.uid;
+  var COLUMN_NAME = values.columnName;
   var columnChartVIF = {
     'aggregation': {
       'columnName': null,
@@ -50,7 +45,7 @@ $(function () {
     }
   };
 
-  var $columnChartElement = $('#column-chart');
+  var $columnChartElement = $target;
   $columnChartElement.socrataColumnChart(columnChartVIF);
 
   var chartWrapper = $columnChartElement.find('.column-chart-wrapper');
@@ -67,9 +62,9 @@ $(function () {
   );
 
   chartWidth = $columnChartElement.find('.bar-group').length * 50;
-  $columnChartElement.addClass('responsive')
+  $columnChartElement.addClass('responsive');
   $columnChartElement.find('.chart-scroll').width(chartWidth);
-  
+
   function selectDatum(event) {
     chartWrapper.find('.bar-group').removeClass('selected');
     $columnChartElement.selectedData = {
@@ -95,8 +90,8 @@ $(function () {
     }
 
     chartWrapper.
-      find('.bar-group[data-bar-name="{0}"]'.format(barName)).
-      addClass('selected');
+    find('.bar-group[data-bar-name="{0}"]'.format(barName)).
+    addClass('selected');
 
     var titles = $('<div>', {
       'class': 'title-wrapper',
@@ -114,4 +109,4 @@ $(function () {
 
     labelWrapper.html(titles);
   }
-})
+};

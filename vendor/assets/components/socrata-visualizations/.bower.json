@@ -40,13 +40,13 @@
     "simple-statistics": "0.8.1"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
-  "_release": "f6c0ea03d0",
+  "_release": "1ebbf79a78",
   "_resolution": {
     "type": "branch",
-    "branch": "ferrari/invalidateSize_and_perf",
-    "commit": "f6c0ea03d02a1fc208fbb5c3387ba31bd1723d42"
+    "branch": "master",
+    "commit": "1ebbf79a78ab8bbdddb1bf3c3c5ac432bae9ca04"
   },
   "_source": "git@github.com:socrata/frontend-visualizations.git",
-  "_target": "ferrari/invalidateSize_and_perf",
+  "_target": "master",
   "_originalSource": "git@github.com:socrata/frontend-visualizations.git"
 }

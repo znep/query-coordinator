@@ -42,6 +42,12 @@ html, body {
         position: absolute;
         top: 0;
       }
+      &.typeData_lens .icon.icon-cards {
+        font-size: 0;
+        &::before {
+          font-size: 30px;
+        }
+      }
     }
     #datasetName, .unsavedLine, #description, .basedOnTemp, .basedOnParent, .unpublished, #publishedLink {
       margin: 0 {

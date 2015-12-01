@@ -1693,10 +1693,12 @@ en:
         allowed_values: Allowed Values
         are_you_sure: Are you sure you want to delete this fieldset and all associated fields?
         category_name: Category Name
+        category_table_description: Metadata Categories
         create: Create
         create_new_fieldset: Create a New Field Set
         define_categories: Define Dataset Categories
         define_custom_fields: Define Custom Fields
+        metadata_field_table_description: Metadata Fields for '%{name}'
         down: Down
         enter_a_name: Enter a name
         'false': false

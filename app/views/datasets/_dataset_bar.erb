@@ -9,7 +9,7 @@
   <%- end -%>
   <div id="infoBox">
     <div id="datasetIcon" class="type<%= @view.display.type.capitalize %>">
-      <span class="icon currentViewName"><%= @view.display.name %></span>
+      <span class="icon <%= 'icon-cards' if @view.data_lens? %> currentViewName"><%= @view.display.name %></span>
       <span class="alertIcon"></span>
     </div>
     <div class="unsavedLine">

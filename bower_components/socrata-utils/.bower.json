@@ -18,11 +18,11 @@
     "jquery": "~2.1.1"
   },
   "homepage": "https://github.com/socrata/frontend-utils",
-  "_release": "643d372a10",
+  "_release": "a83925434c",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "643d372a1024d82690200b0c35450f8be8cf14ce"
+    "commit": "a83925434c9a75ddaa8e35bd8644df67634fcf1f"
   },
   "_source": "git@github.com:socrata/frontend-utils.git",
   "_target": "master",

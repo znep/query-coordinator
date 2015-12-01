@@ -323,13 +323,14 @@ module BrowseActions
         end
     end
 
+    # Categories should be at the top in browse2, otherwise in the 3rd slot
+    categories_index = browse_options[:view_type] == 'browse2' ? 0 : 2
     browse_options[:facets] ||= [
       view_types_facet,
       cfs,
-      categories_facet,
       topics_facet,
       federated_facet
-    ]
+    ].insert(categories_index, categories_facet)
 
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject { |f| f[:hidden] }
 

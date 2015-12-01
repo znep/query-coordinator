@@ -60,6 +60,9 @@ class PageMetadataManager
     # Inherit the permissions from the catalog entry that points to this page.
     permissions = fetch_permissions(id)
 
+    # Emit the stupid troublesome metrics.
+    log_datalens_access(id)
+
     begin
       result = new_view_manager.fetch(id)
     rescue
@@ -587,4 +590,23 @@ class PageMetadataManager
   def enable_data_lens_page_metadata_migrations?
     FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_data_lens_page_metadata_migrations]
   end
+
+  # NOTE; Current method of tracking view counts for catalog search and site analytics page.
+  def log_datalens_access(fxf_id)
+      # DataLens pages are unusual in that the metadata is not requested
+      # from core on load; which bypasses the common ViewService metrics accounting. We need to track
+      # several things in balboa for DataLens.
+      #  1. Access by domain and 4x4
+      #  2. Total access for domain for all views, datalens included
+      #  3. Access by 4x4
+      # These are used in different ways to populate and sort catalog entries. The following corresponds to
+      # the logAction method within core server. We add a new metric, "datalens-loaded" to make these requests
+      # distinct w/in the domain entity
+      domainId = CurrentDomain.domain.id.to_s
+      MetricQueue.instance.push_metric(fxf_id.to_s, "view-loaded", 1)
+      MetricQueue.instance.push_metric(domainId, "view-loaded", 1)
+      MetricQueue.instance.push_metric(domainId, "datalens-loaded", 1)
+      MetricQueue.instance.push_metric("views-loaded-" + domainId, "view-" + fxf_id.to_s, 1)
+  end
+
 end

@@ -323,7 +323,10 @@
                     if(checkHeaderMetadata(this) || checkHeaderOptions(table,index)) this.sortDisabled = true;
 
                     if(!this.sortDisabled) {
-                        $(this).addClass(table.config.cssHeader);
+                        $(this)
+                          .addClass(table.config.cssHeader)
+                          .prop('tabIndex', 0)
+                          .attr('role', 'button');
                     }
 
                     // add cell to headerList
@@ -543,7 +546,11 @@
 
                     // apply event handling to headers
                     // this is to big, perhaps break it out?
-                    $headers.click(function(e) {
+                    $headers.on( 'keypress click', function(e) {
+                        if ( e.type === 'keypress' && e.which !== 13 ) {
+                          // Only handle keypresses on the "Enter" key
+                          return true;
+                        }
 
                         $this.trigger("sortStart");
 

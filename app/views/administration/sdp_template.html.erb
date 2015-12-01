@@ -98,6 +98,36 @@
     </div>
   </div>
 </div>
+
+<div class="sidebarPaneWithFieldset">
+  <div class="subtitleBlock">
+    <p class="subtitle"></p>
+  </div>
+
+  <div class="readOnlyBlock">
+    <p class="readOnlyMessage"></p>
+  </div>
+
+  <div class="paneContent">
+    <fieldset class="formSection">
+      <input type="checkbox" class="sectionSelect" />
+      <label class="formHeader">
+        <span class="formHeaderIcon"></span>
+      </label>
+      <div class="sectionDisabledMessage"></div>
+      <div class="sectionWarningMessage"></div>
+      <div class="sectionContent"></div>
+    </fieldset>
+
+    <div class="mainError"></div>
+
+    <div class="required hide"><%= t('core.forms.required_field') %></div>
+    <ul class="finishButtons actionButtons clearfix">
+      <li></li>
+    </ul>
+  </div>
+</div>
+
 <% end %>
 
 <% content_for :js_footer do %>

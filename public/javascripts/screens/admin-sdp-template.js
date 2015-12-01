@@ -241,6 +241,10 @@ $.Control.extend('pane_sdpTmplMetadata', {
     getTitle: function()
     { return 'Template Metadata'; },
 
+    getTemplateName: function() {
+        return 'sidebarPaneWithFieldset';
+    },
+
     getSubtitle: function()
     { return 'Edit basic information about this Social Data Player Template'; },
 
@@ -275,6 +279,10 @@ $.gridSidebar.registerConfig('metadata', 'pane_sdpTmplMetadata');
 $.Control.extend('pane_sdpTmplAppearance', {
     getTitle: function()
     { return 'Template Appearance'; },
+
+    getTemplateName: function() {
+        return 'sidebarPaneWithFieldset';
+    },
 
     getSubtitle: function()
     { return 'Edit the appearance of this Social Data Player Template'; },
@@ -376,6 +384,10 @@ $.Control.extend('pane_sdpTmplBehavior', {
     getTitle: function()
     { return 'Behavior'; },
 
+    getTemplateName: function() {
+        return 'sidebarPaneWithFieldset';
+    },
+
     getSubtitle: function()
     { return 'Edit the behavior of this Social Data Player Template'; },
 
@@ -431,6 +443,10 @@ $.gridSidebar.registerConfig('behavior', 'pane_sdpTmplBehavior');
 $.Control.extend('pane_sdpTmplAdvanced', {
     getTitle: function()
     { return 'Advanced'; },
+
+    getTemplateName: function() {
+        return 'sidebarPaneWithFieldset';
+    },
 
     getSubtitle: function()
     { return 'Edit some advanced features of this Social Data Player Template'; },

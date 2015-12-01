@@ -1,11 +1,11 @@
 (function($)
 {
     var uniformEnabled = function() { return !$.browser.msie || $.browser.majorVersion > 7; };
-    
+
     //Flag for new visualize tab
     var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
     var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
-    
+
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {
         if (this.optional(element)) { return true; }
@@ -145,13 +145,13 @@
         [
           {
             + title: section title
-            
+
             + type: optional, 'selectable' makes the field collapseable.
                 By default it will be collapsed; when collapsed, nothing is
                 validated.  'hidden' hides the section completely
-            + initShow: boolean indicating whether a 'selectable' typed section should be 
+            + initShow: boolean indicating whether a 'selectable' typed section should be
                 expanded by default
-            + validateCollapsed: boolean indicating whether a 'selectable' typed section 
+            + validateCollapsed: boolean indicating whether a 'selectable' typed section
                 should have form values processed when collapsed
 
             + name: internal name for field; required if it is of type selectable.
@@ -226,7 +226,7 @@
                              through edits
                       - 'radioGroup'
                           + sectionSelector: A boolean flag that, when set, renders all
-                              options in the group as static inputs that will work with 
+                              options in the group as static inputs that will work with
                               section showing and hiding. Options should be passed
                               with a only a value and text.
                       - 'static'
@@ -285,7 +285,7 @@
                   + extraClass: extra class(es) to be applied to the input;
                       should be a single string, could have multiple
                       space-separated classes
-                  + lineClass: extra class(es) to be applied the the line itelf rather than 
+                  + lineClass: extra class(es) to be applied the the line itelf rather than
                       the input. Same format as extraClass, above
                   + onlyIf: only display the field if these criteria are true.
                     Currently accepts a boolean, or an object:
@@ -512,7 +512,7 @@
                                 curSectId = _.uniqueId();
                                 return _.compact([arg.item.type, arg.item.name,
                                 (arg.item.initShow ? 'initShow' : ''),
-                                (arg.item.validateCollapsed ? 'validateCollapsed' : ''),  
+                                (arg.item.validateCollapsed ? 'validateCollapsed' : ''),
                                 (!$.isBlank(arg.item.onlyIf) ||
                                     arg.item.type == 'hidden' ? 'hide' : ''),
                                 (!$.isBlank(arg.item.customContent)) ? 'custom' : '' ].concat(
@@ -585,7 +585,7 @@
                     }
                 };
 
-                $pane.append($.renderTemplate('sidebarPane', rData, directive));
+                $pane.append($.renderTemplate(cpObj.getTemplateName(), rData, directive));
                 $pane.toggleClass('readOnly', cpObj._isReadOnly());
 
                 if ($pane.find('label.required').length > 0)
@@ -717,6 +717,10 @@
             { cpObj._view.getQueryBase(doRender); }
             else
             { doRender(); }
+        },
+
+        getTemplateName: function() {
+            return 'sidebarPane';
         },
 
         reset: function(isSoft)
@@ -940,13 +944,13 @@
             }
 
             if (!$.isBlank(parArray) && !_.isEmpty(parObj))
-            { 
+            {
                 var keys = _.keys(parObj);
-                if (keys.length == 1 && $.isBlank(keys[0])) 
+                if (keys.length == 1 && $.isBlank(keys[0]))
                 {
                     parObj = parObj[""];
                 }
-                parArray[parIndex] = parObj; 
+                parArray[parIndex] = parObj;
             }
 
 
@@ -971,7 +975,7 @@
             // the selected radio button in the group and manually getting
             // the associated input)
             var $validHideSects = cpObj.$dom().find('.formSection.validateCollapsed').find('.sectionContent:hidden');
-            
+
             $validHideSects.show();
 
             var inputs = cpObj.$dom().find('form :input, form .colorControl, form .customWrapper')
@@ -1114,7 +1118,7 @@
             parObj = parObj[p[0]];
             p.shift();
         }
-        
+
         var ret;
         if (_.isArray(parObj))
         {
@@ -1142,7 +1146,7 @@
             { parObj[p[0]] = value; }
             //Merge values if similarly formed
             else if (_.isArray(value) && _.isArray(parObj[p[0]]))
-            { 
+            {
               parObj[p[0]] = $.extend(true, _.compact(parObj[p[0]]), _.compact(value));
             }
             ret = parObj[p[0]];
@@ -1201,10 +1205,10 @@
                   $input.parents().hasClass('fileChooser'))
         {
             value = $input.closest('.fileChooser').data('ajaxupload');
-        } 
-        else if ($input.hasClass('radioSectionSelector')) 
-        { 
-            value = $input.attr('value'); 
+        }
+        else if ($input.hasClass('radioSectionSelector'))
+        {
+            value = $input.attr('value');
         }
 
         return value;
@@ -1274,7 +1278,7 @@
             var tcId = c.tableColumnId;
             var fName = c.fieldName;
             var selected;
-            //in new Visualize do not autopopulate coloumns with only one valid column 
+            //in new Visualize do not autopopulate coloumns with only one valid column
             if (isNewVisualize)
             { selected = curVal == fName || curVal == tcId || curVal == cId; }
             else
@@ -1396,7 +1400,7 @@
             while (nParts.length > 0 && !$.isBlank(base))
             {
                 var firstShift = nParts.shift();
-                if (!$.isBlank(firstShift)) 
+                if (!$.isBlank(firstShift))
                 {
                     base = base[firstShift];
                 }
@@ -1605,15 +1609,15 @@
             var id = itemAttrs.id + '-' + i;
             var subline;
 
-            if (args.item.sectionSelector) 
+            if (args.item.sectionSelector)
             {
                 subLine = renderLine(cpObj, {context: $.extend({}, args.context,
                         {noTag: true, inputOnly: true}), item: $.extend({}, opt,
-                        {type: 'static', isInput: true, extraClass: 'radioSectionSelector', 
+                        {type: 'static', isInput: true, extraClass: 'radioSectionSelector',
                         name: args.item.origName, items: args.item.options, pos: i})
                     });
-            } 
-            else 
+            }
+            else
             {
                 subLine = renderLine(cpObj, {context: $.extend({}, args.context,
                       {noTag: true, inputOnly: true}), item: opt, items: args.item.options, pos: i});
@@ -1631,7 +1635,7 @@
             var checkSubData;
             checkSubData = function(item)
             {
-                if (args.item.sectionSelector) 
+                if (args.item.sectionSelector)
                 { return opt.value == curValue }
 
                 if ($.isPlainObject(item))
@@ -1645,7 +1649,7 @@
             { valChecked = radioItem; }
 
             var optionLabel = {tagName: 'label', 'for': id, contents: subLine}
-            
+
             return {tagName: 'div', 'class': ['radioLine', opt.type, (opt.lineClass || '')],
                 contents: [radioItem, optionLabel]};
         });
@@ -1898,7 +1902,7 @@
         }
         if (attrs.disabled || attrs.readonly)
         { delete attrs.title; }
-        
+
         if (args.item.minimum != null)
         {
           attrs['data-min'] = args.item.minimum;
@@ -1907,7 +1911,7 @@
         {
           attrs['data-max'] = args.item.maximum;
         }
-        
+
         wrapper.contents = $.extend(attrs, {tagName: 'input', type: 'text',
             value: $.htmlEscape(curValue || defValue)});
     };
@@ -2097,7 +2101,7 @@
                   });
                   vals[$this.attr('data-origName')] = inputVals;
                 }
-                else 
+                else
                 {
                   vals[$this.attr('data-origName')]
                       = isCheckbox ? $this.filter(':checked').length > 0 : $(this).val();
@@ -2162,7 +2166,7 @@
           $parRepeater.delegate('.inputItem', 'change', defAdjField )
                       .delegate('.removeLink', 'click', function() { _.defer(defAdjField) } );
         }
-        else 
+        else
         {
         $linkedItems.bind('change.linkedField-' + custId, defAdjField)
             .bind('blur.linkedField-' + custId, defAdjField);
@@ -2376,7 +2380,7 @@
                 }
             }));
         });
-        
+
 
         //*** Repeater
         $container.find('.line.repeater').each(function()
@@ -2394,7 +2398,7 @@
                 $line.remove();
             }
             else { $line.addClass('hide'); }
-            
+
             var $addButton = $repeater.find('.addValue');
             var count = $addButton.data('count');
             $addButton.attr('data-count',  count - 1);

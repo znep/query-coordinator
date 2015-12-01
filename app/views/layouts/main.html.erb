@@ -126,7 +126,7 @@ http://www.socrata.com
 
       <%- end -%>
 
-      <a name="content"  tabindex="-1"></a>
+      <%- if content_for?(:relocated_content) -%><%- yield :relocated_content -%><%- else -%><a name="content"  tabindex="-1"></a><%- end -%>
       <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !module_enabled?(:govStat) || suppress_govstat? %>
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
@@ -153,10 +153,11 @@ http://www.socrata.com
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
 
-  <div id="templates" style="display:none">
+  <script type="text/template" id="templates" style="display:none">
     <%= render :partial => 'shared/control_templates' %>
     <%= yield :templates %>
-  </div>
+  </script>
+  <div id="js-appended-templates"></div>
   <%= render_translations %>
   <%= yield :translations %>
 

@@ -1,39 +1,51 @@
-$(function(){
+$(function() {
+  'use strict';
 
-  var startSessionCheck = function(){
+  var startSessionCheck = function() {
 
     //do nothing if the user is not logged in.
-    if (!blist.currentUserId){
-      return;
-    }
+    if (!blist.currentUserId) { return; }
 
-    //create the modal
-    $('body').append(
-      $.tag2({
-        _:'div',
-        className:'modalDialog',
-        id:'sessionTimeoutModal',
-        contents:[
-          { _:'h2', contents: $.t('core.dialogs.session_timeout.warning.title') },
-          { _:'p', contents: $.t('core.dialogs.session_timeout.warning.body_html') },
-          {
-            _:'div', 
-            className:'buttonWrapper',
-            contents:[{_:'a', id:'keepSessionButton', className:'button', contents: $.t('core.dialogs.session_timeout.warning.belay_button')}]
-          }
-        ]
-      })
-    );
-    var $m = $('#sessionTimeoutModal');
-    $m.jqm();
-    $("#keepSessionButton").click(
-      function(event)
-      {
+    var $m;
+
+    var createModal = function() {
+      //create the modal
+      $('body').append(
+        $.tag2({
+          _: 'div',
+          className: 'modalDialog',
+          id: 'sessionTimeoutModal',
+          contents: [
+            {
+              _: 'h2',
+              contents: $.t('core.dialogs.session_timeout.warning.title')
+            },
+            {
+              _: 'p',
+              contents: $.t('core.dialogs.session_timeout.warning.body_html')
+            },
+            {
+              _: 'div',
+              className: 'buttonWrapper',
+              contents: [{
+                _: 'a',
+                id: 'keepSessionButton',
+                className: 'button',
+                contents: $.t('core.dialogs.session_timeout.warning.belay_button')
+              }]
+            }
+          ]
+        })
+      );
+      $m = $('#sessionTimeoutModal');
+      $m.jqm();
+      $('#keepSessionButton').click(function(event) {
         event.preventDefault();
         $m.jqmHide();
         delayExpiration();
-      }
-    );
+      });
+
+    };
 
     var secondsUntilTimeout,
       modalTimer,
@@ -42,86 +54,74 @@ $(function(){
       updateTimer;
 
     //determine how much time is left in the session
-    function checkTime(){
+    function checkTime() {
       $.socrataServer.makeRequest({
         url: '/logout/expire_if_idle',
-        success: function(response)
-        {
-          if (response.expired)
-          {
+        success: function(response) {
+          if (response.expired) {
             blist.util.railsFlash($.t('core.dialogs.session_timeout.notice'));
-            window.document.location = "/login";
-          }
-          else 
-          {
+            window.document.location = '/login';
+          } else {
             secondsUntilTimeout = parseFloat(response.seconds);
-            if (secondsUntilTimeout > countdownSeconds)
-            {
-              $m.jqmHide();
+            if (secondsUntilTimeout > countdownSeconds) {
+              if ($m) { $m.jqmHide(); }
               scheduleCheckTime();
-            } 
-            else 
-            {
+            } else {
+              if (!$m) { createModal(); }
               showModal();
             }
           }
         },
         anonymous: true,
-        error: function(err)
-        {
+        error: function() {
           setTimeout(checkTime, 10 * 1000);
         }
       });
     }
     checkTime();
 
-    function scheduleCheckTime(){
-      if (modalTimer){clearTimeout(modalTimer);}
-      if (updateTimer){clearTimeout(updateTimer);}
+    function scheduleCheckTime() {
+      if (modalTimer) { clearTimeout(modalTimer); }
+      if (updateTimer) { clearTimeout(updateTimer); }
       modalTimer = setTimeout(checkTime, (secondsUntilTimeout - countdownSeconds) * 1000);
     }
 
-    function showModal(){
+    function showModal() {
       secondsRemaining = secondsUntilTimeout;
-      if (updateTimer) {clearInterval(updateTimer);}
+      if (updateTimer) { clearInterval(updateTimer); }
       updateTimer = setInterval(countdown, 1000);
       countdown();
       $m.jqmShow();
     }
 
-    function countdown(){
-      $("#secondsRemaining").text(secondsRemaining);
-      if (secondsRemaining <= 0)
-      {
-        if (updateTimer) {clearInterval(updateTimer);}
+    function countdown() {
+      $('#secondsRemaining').text(secondsRemaining);
+      if (secondsRemaining <= 0) {
+        if (updateTimer) { clearInterval(updateTimer); }
         setTimeout(checkTime, 1000);
         return;
       }
-      if (secondsRemaining > 0) {secondsRemaining--;}
+      if (secondsRemaining > 0) { secondsRemaining--; }
     }
 
-    function delayExpiration()
-    {
+    function delayExpiration() {
       $.socrataServer.makeRequest({
         url: '/login/extend',
-        success: function(response)
-        {
+        success: function(response) {
           secondsUntilTimeout = parseFloat(response.seconds);
           scheduleCheckTime();
           $m.jqmHide();
         },
         anonymous: false,
-        error: function(err)
-        {
+        error: function() {
           secondsUntilTimeout = 1000 * 20;
           scheduleCheckTime();
         }
       });
     }
-  }
+  };
 
-  if (blist.configuration.onCurrentUser)
-  {
+  if (blist.configuration.onCurrentUser) {
     blist.configuration.onCurrentUser(startSessionCheck);
   }
 

@@ -465,9 +465,20 @@ $.unwrapHtml = function(html)
     return html.replace(/^\s*<[^<>]+>/i, '').replace(/<\/[^<>]+>\s*$/i, '');
 };
 
+// Get a template DOM fragment, checking first in the JS appended templates,
+// then in the page-injected templates
+$.getTemplate = function(template) {
+    var templateSelector = '.' + template;
+    var $jsAppendedTemplates = $('#js-appended-templates').children();
+    if ($jsAppendedTemplates.is(templateSelector)) {
+        return $jsAppendedTemplates.filter(templateSelector);
+    }
+    return $($('#templates').contents().text()).filter(templateSelector);
+};
+
 $.renderTemplate = function(template, data, directive, keepText)
 {
-    var $template = $('#templates > .' + template);
+    var $template = $.getTemplate(template);
 
     if ($template.length < 1) { throw 'No template found: ' + template; }
 
@@ -495,7 +506,7 @@ $.renderTemplate = function(template, data, directive, keepText)
 
 $.compileTemplate = function(template, directive)
 {
-    var $templateCopy = $('#templates > .' + template).clone();
+    var $templateCopy = $.getTemplate(template).clone();
 
     if ($templateCopy.length < 1) { throw 'No template found: ' + template; }
 

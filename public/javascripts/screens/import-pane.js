@@ -1499,15 +1499,15 @@ importNS.crossloadFilePaneConfig = {
 
 var buildDetailsTemplate = function (type, $columnDropdown) {
   // clone locations template and replace dropdowns
-  $('#templates > .' + type + 'Details').remove();
-  var $typeTemplate = $('#templates > .' + type + 'DetailsOriginal').clone();
+  // append back to the '#js-appended-templates' section
+  var $typeTemplate = $.getTemplate(type + 'DetailsOriginal').clone();
   $typeTemplate.find('.columnSourcePlaceholder').each(function() {
     var $this = $(this);
     var $dropdown = $columnDropdown.clone();
     $this.replaceWith($dropdown);
     $dropdown.addClass($this.attr('data-class'));
   });
-  $typeTemplate.removeClass().addClass(type + 'Details').appendTo('#templates');
+  $typeTemplate.removeClass().addClass(type + 'Details').appendTo('#js-appended-templates');
 };
 
 ////////////////////////////////////////////////////
@@ -1572,7 +1572,9 @@ var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
     });
 
     // add dropdowns to main template
-    $('#templates > .columnsListLine .columnSourceCell').empty().append($sourceDropDown);
+    var $columnsListLine = $.getTemplate('columnsListLine').clone();
+    $columnsListLine.find('.columnSourceCell').empty().append($sourceDropDown);
+    $columnsListLine.appendTo('#js-appended-templates');
 
     // build location and point templates
     buildDetailsTemplate('location', $columnDropDown);

@@ -69,10 +69,10 @@ http://www.socrata.com
 <body>
   <%= yield :layout %>
 
-  <div id="templates">
+  <script type="text/template" id="templates">
     <%= render :partial => 'shared/control_templates' %>
     <%= yield :templates %>
-  </div>
+  </script>
   <%= render_translations %>
 
   <%# Libraries for use with BeautyTip %>

@@ -1,3 +1,4 @@
+<% content_for(:relocated_content) do %><a name="above-content"></a><% end %>
 <div class="leftNavBox adminNavBox">
   <div class="hideButtonBox">
     <a href="#toggle" class="hideButton close">
@@ -96,6 +97,9 @@
     <%- end -%>
   </ul>
 </div>
+
+<a name="content"  tabindex="-1"></a>
+
 <%- content_for :js_footer do -%>
   <%= include_javascripts 'admin-collapse-nav' %>
 <%- end -%>

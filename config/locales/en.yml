@@ -1778,6 +1778,8 @@ en:
         search_results: Search Results for '%{term}'
         title: Manage Users
         user_saved: User saved
+        users_table_description: Users
+        pending_users_table_description: Pending Users
     dataset_edit:
       append: Append
       append_and_replace: Append and Replace data

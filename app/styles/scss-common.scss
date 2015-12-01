@@ -230,7 +230,7 @@ $new-ux-link-button-color: #fafafa;
   height: 14px;
   line-height: 14px;
   padding: 0.3em 0.7em;
-  &:hover {
+  &:hover, &:focus {
     @include box-shadow(0, 0, 0.3em, $color_buttons_active_shadow);
   }
   &.disabled {

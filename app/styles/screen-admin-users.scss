@@ -40,13 +40,16 @@
         opacity: 0.3;
         @include transition-duration(0.2s);
         @include transition-property(opacity);
+        &:focus {
+          opacity: 1.0;
+        }
       }
       &:hover .button {
         opacity: 1;
       }
     }
     tbody {
-      td {
+      td, .row-header {
         height: 2.5em;
         padding: 0;
         vertical-align: middle;
@@ -85,24 +88,26 @@
         }
       }
       tr.disabled {
-        td.user, td.email {
-          color: #aaa;
-          font-style: italic;
-        }
-        td.email {
-          @include warning-icon-medium;
-          .icon {
-            float: left;
-            margin-right: 1em;
+        td, .row-header {
+          &.user, &.email {
+            color: #aaa;
+            font-style: italic;
           }
-          .cellInner {
-            position: relative;
-            top: 3px;
+          &.email {
+            @include warning-icon-medium;
+            .icon {
+              float: left;
+              margin-right: 1em;
+            }
+            .cellInner {
+              position: relative;
+              top: 3px;
+            }
           }
-        }
-        td.actions {
-          .enableAccount {
-            display: inline;
+          &.actions {
+            .enableAccount {
+              display: inline;
+            }
           }
         }
       }
@@ -131,8 +136,10 @@
       padding: 1em 0;
     }
     .futureUsersTable {
-      td.email {
-        padding-left: 1em;
+      td, .row-header {
+        &.email {
+          padding-left: 1em;
+        }
       }
     }
   }

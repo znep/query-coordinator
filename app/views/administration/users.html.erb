@@ -78,7 +78,18 @@
   <%- unless @users_list.nil? -%>
     <div class="flash notice userNotice"></div>
     <div class="gridListWrapper">
-      <table class="gridList adminUsersTable" cellspacing="0">
+      <table
+        class="gridList adminUsersTable"
+        cellspacing="0"
+        summary="<%= a11y_users_summary(
+                 @users_list,
+                 [
+                   t("#{prefix}.name"),
+                   t("#{prefix}.email"),
+                   t("#{prefix}.role"),
+                   @existing_user_actions ? t("#{prefix}.actions") : nil
+                 ]) %>"
+      >
         <colgroup>
           <%# Enable once we have bulk ops %>
           <%- if @existing_user_actions && false-%>
@@ -116,7 +127,7 @@
                   <%- end -%>
                 </td>
               <%- end -%>
-              <td class="user" scope="row">
+              <th class="user row-header" scope="row">
                 <a href="<%= profile_path(user) %>">
                   <img class="userIcon" src="<%= user.profile_image_path('small')%>"
                     alt="<%= user.displayName %>" />
@@ -124,7 +135,7 @@
                     <%= user.displayName %>
                   </span>
                 </a>
-              </td>
+              </th>
               <td class="email warning">
                 <span class="icon"></span>
                 <span class="cellInner">
@@ -174,7 +185,18 @@
         <%= t("#{prefix}.pending_users") %>
       </p>
       <div class="gridListWrapper">
-        <table class="gridList futureUsersTable" cellspacing="0">
+        <table
+          class="gridList futureUsersTable"
+          cellspacing="0"
+          summary="<%= a11y_pending_users_summary(
+                         @futures,
+                         [
+                           t("#{prefix}.email"),
+                           t("#{prefix}.role"),
+                           t("#{prefix}.invited"),
+                           t("#{prefix}.actions")
+                         ]) %>"
+        >
           <colgroup>
             <col class="email" />
             <col class="role" />
@@ -192,11 +214,11 @@
           <tbody>
             <%- @futures.each do |user| -%>
               <tr class="item" data-userrole="<%= user.role %>">
-                <td class="email">
+                <th class="email row-header" scope="row">
                   <span class="cellInner">
                     <%= user.email %>
                   </span>
-                </td>
+                </th>
                 <td class="role">
                   <span class="cellInner">
                     <%= user.role.titleize %>

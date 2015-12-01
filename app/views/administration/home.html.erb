@@ -105,32 +105,33 @@
 <%- end -%>
 
 <%- if CurrentDomain.user_can?(current_user, 'edit_site_theme') -%>
-<%- view_type = (!@catalog_config.nil? ?
-  @catalog_config.properties.view_type : nil) || 'table' -%>
-<div class="contentBox withLeftNavigation layoutConfig">
-  <h2><%= t("#{prefix}.catalog_layout_configuration") %></h2>
-  <%= form_tag({:action => 'modify_catalog_config'}, {:method => 'post',
-    :class => 'commonForm'}) %>
-    <fieldset class="line">
-      <span class="mainLabel"><%= t("#{prefix}.default_catalog_layout") %></span>
-      <div class="valueBox">
-        <input type="radio" id="catalogViewType_table"
-          name="catalog[view_type]" value="table"
-          <%= view_type == 'table' ? 'checked="checked"' : '' %> />
-        <label for="catalogViewType_table"><%= t("#{prefix}.compact_list") %></label>
-      </div>
-      <div class="valueBox">
-        <input type="radio" id="catalogViewType_rich"
-          name="catalog[view_type]" value="rich"
-          <%= view_type == 'rich' ? 'checked="checked"' : '' %> />
-        <label for="catalogViewType_rich"><%= t("#{prefix}.rich_list") %></label>
-      </div>
-      <span class="saving statusText"><%= t("#{prefix}.saving") %></span>
-      <span class="saved statusText"><%= t("#{prefix}.saved") %></span>
-    </fieldset>
-    <input type="submit" value="<%= t('core.dialogs.save') %>" />
-  </form>
-</div>
+  <%- view_type = @catalog_config.try(:properties).try(:view_type) || 'table' -%>
+  <%- # Disable these options for browse2 because they over-write the view_type -%>
+  <%- unless view_type == 'browse2' -%>
+    <div class="contentBox withLeftNavigation layoutConfig">
+      <h2><%= t("#{prefix}.catalog_layout_configuration") %></h2>
+      <%= form_tag({:action => 'modify_catalog_config'}, {:method => 'post', :class => 'commonForm'}) %>
+        <fieldset class="line">
+          <span class="mainLabel"><%= t("#{prefix}.default_catalog_layout") %></span>
+          <div class="valueBox">
+            <input type="radio" id="catalogViewType_table"
+                                name="catalog[view_type]" value="table"
+                                <%= view_type == 'table' ? 'checked="checked"' : '' %> />
+            <label for="catalogViewType_table"><%= t("#{prefix}.compact_list") %></label>
+          </div>
+          <div class="valueBox">
+            <input type="radio" id="catalogViewType_rich"
+                                name="catalog[view_type]" value="rich"
+                                <%= view_type == 'rich' ? 'checked="checked"' : '' %> />
+            <label for="catalogViewType_rich"><%= t("#{prefix}.rich_list") %></label>
+          </div>
+          <span class="saving statusText"><%= t("#{prefix}.saving") %></span>
+          <span class="saved statusText"><%= t("#{prefix}.saved") %></span>
+        </fieldset>
+        <input type="submit" value="<%= t('core.dialogs.save') %>" />
+      </form>
+    </div>
+  <%- end -%>
 <%- end -%>
 
 <%- content_for :templates do -%>

@@ -331,7 +331,7 @@ Frontend::Application.routes do
     end
 
 
-    # Semantic web canonical URLs
+    # Semantic web cannoical URLs
     %w{resource id}.each do |prefix|
       get "#{prefix}/:name(/:row_id)(.:format)" => 'resources#show'
     end

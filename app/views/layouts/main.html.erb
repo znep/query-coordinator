@@ -193,9 +193,7 @@ http://www.socrata.com
 
   <script type="text/javascript">//<![CDATA[
     blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request).to_json) %>;
-    blist.feature_set = <%= raw json_escape(CurrentDomain.features.to_json) %>;
     blist.namespace.fetch('blist.configuration');
-    blist.configuration.tileserver_hosts = <%= raw json_escape(tileserver_hosts.to_json) %>;
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;
     blist.configuration.maintenance_messages = _.map(<%== Downtime.map(&:to_json) %>,

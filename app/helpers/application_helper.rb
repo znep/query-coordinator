@@ -778,12 +778,6 @@ module ApplicationHelper
     FeatureFlags.derive(nil, req, nil)[:cetera_search]
   end
 
-  def tileserver_hosts
-    APP_CONFIG.tileserver_hosts.present? ?
-      APP_CONFIG.tileserver_hosts.split(',').map { |value| value.strip } :
-      []
-  end
-
   def sprite_icon(opts)
     content_tag(:div, :class => opts[:class_name] || 'icon') do
       if opts[:alt_text].present?

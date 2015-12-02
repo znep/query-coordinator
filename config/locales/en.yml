@@ -596,6 +596,7 @@ en:
           rss: RSS
           type: Type
         timeout: We're sorry. Results could not be retrieved at this time. Please try again later.
+      ordered_topics: Ordered Topics
       row_results:
         less_link: Less
         matching_rows: Searching dataset for matching rows

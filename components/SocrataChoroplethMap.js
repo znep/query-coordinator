@@ -109,12 +109,8 @@
           // First cache the shapefile so that we only need to request it once
           // on page load.
           cachedShapefile = shapefile;
-          // Next do an initial render to set up the base layer tiles (with the
-          // correct map extents, since we have those available to us in the vif).
-          visualization.render(
-            undefined,
-            _getRenderOptions()
-          );
+          // Next, render base layer
+          visualization.updateTileLayer(_getRenderOptions());
           // Finally, make the data queries and prepare to draw the choropleth
           // regions.
           _updateData();

@@ -124,8 +124,6 @@
 
   NBEMapProvider.prototype = _.extend({}, MapProvider.prototype, {
     getLayer: function(layerName, layerOpts) {
-      blist.namespace.fetch('blist.configuration');
-
       var style = encodeURIComponent(
         '#main, #multipoint, #point {' +
           'line-width: 2.0;' +
@@ -152,34 +150,7 @@
           'line-simplify: 2' +
         '}'
       );
-
-      var tileUrlTemplate = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=200000&$overscan=32&$mondara=true&$style=' + style;
-      var tileserverHosts = blist.configuration.tileserver_hosts;
-
-      var stagingLockdown = _.get(blist.feature_set, 'staging_lockdown', false);
-      var stagingApiLockdown = _.get(blist.feature_set, 'staging_api_lockdown', false);
-
-      // blist.dataset.grants = [{flags: []}, {flags: []}, ...];
-      // We want to know if any of the flag arrays contains 'public', which means the dataset is public.
-      // Sharding only works if the dataset is public because auth cookies are per-domain.
-      var includesPublic = _.partial(_.includes, _, 'public');
-      var flagsIncludesPublic = _.flow(_.property('flags'), includesPublic);
-      var datasetIsPublic = _.any(blist.dataset.grants, flagsIncludesPublic);
-
-      // Because cookies are per-domain, we can not shard requests in situations where auth is
-      // required, such as if the dataset is private or staging api lockdown is active.
-      var useSharding = !_.isEmpty(tileserverHosts) && datasetIsPublic && !stagingLockdown && !stagingApiLockdown;
-
-      var tileUrl;
-
-      if (useSharding) {
-        tileUrl = _.map(tileserverHosts, function(host) {
-          return host + tileUrlTemplate;
-        });
-      } else {
-        tileUrl = tileUrlTemplate;
-      }
-
+      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=200000&$overscan=32&$mondara=true&$style=' + style;
       return new OpenLayers.Layer.XYZ(layerName, tileUrl, layerOpts);
     },
 

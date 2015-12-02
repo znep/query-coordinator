@@ -85,10 +85,17 @@ form {
 		line-height: 1.616;
 		font-size: ms(0);
 		font-family: "Open Sans", "Helvetica", Arial, sans-serif;
-		margin: ms(-5) 0;
 		padding: ms(-5);
 	}
-	.area {
+  .block-label {
+    display: block;
+    margin-bottom: 0.2em;
+  }
+  .inline-label {
+    display: inline;
+    margin-right: 0.5em;
+  }
+	.text-area {
 		min-width: 350px;
 	}
     .checkbox{

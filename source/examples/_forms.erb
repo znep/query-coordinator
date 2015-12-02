@@ -6,7 +6,17 @@
   <%= partial "components/code_sample", locals: {
     component: "components/forms/textfield",
     partial_locals: {
-      placeholder_text: "Example Text"
+      placeholder_text: "Example Text",
+      label_text: "An input field:",
+      label_position: "inline-label"
+    }
+  } %>
+  <%= partial "components/code_sample", locals: {
+    component: "components/forms/textfield",
+    partial_locals: {
+      placeholder_text: "Example Text",
+      label_text: "Another input field:",
+      label_position: "block-label"
     }
   } %>
 
@@ -14,7 +24,9 @@
   <%= partial "components/code_sample", locals: {
     component: "components/forms/textarea",
     partial_locals: {
-      placeholder_text: "Example Paragraph"
+      placeholder_text: "Example Paragraph",
+      label_text: "A longer input field:",
+      label_position: "block-label"
     }
   } %>
 

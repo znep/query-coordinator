@@ -78,6 +78,20 @@ end
                 <a class="cloudLink" href="#More <%= facet[:title] %>" rel="<%= facet[:param] %>">
                   <%= t('controls.browse.actions.all_options') %>
                 </a>
+                <div style="display: none" aria-hidden="false">
+                  <h5>Ordered Topics</h5>
+                  <ol>
+                    <%- facet[:extra_options].sort_by { |item| item[:count] }.each do |facet_option| -%>
+                      <li>
+                        <%- cp = opts[:user_params].dup -%>
+                        <%- cp[facet[:param]] = facet_option[:value] -%>
+                        <a href="<%= opts[:base_url] %>?<%= cp.to_param %>" rel="<%= facet_option[:count] %>">
+                          <%= facet_option[:text] %>
+                        </a>
+                      </li>
+                    <%- end -%>
+                  </ol>
+                </div>
               <%- else -%>
                 <div class="moreOptions list hide">
                   <%- facet[:extra_options].each do |facet_option| -%>
@@ -166,6 +180,9 @@ end
     <%- end -%>
 
     <%- show_catalog_sort_dropdown = opts[:show_catalog_sort_dropdown] -%>
+    <%- if opts[:a11y_skip_to_content] -%>
+      <% content_for(:relocated_content) do %><a name="above-content"></a><% end %>
+    <%- end -%>
     <div class="browseList <%= show_catalog_sort_dropdown ? 'hasSort' : '' %>">
       <%- unless opts[:browse_in_container] -%>
         <div class="titleContainer">
@@ -222,7 +239,7 @@ end
         <%- end -%>
       </div>
 
-      <div class="results">
+      <div class="results" <%- if opts[:a11y_skip_to_content] -%>id="content"<%- end -%>>
         <%- if opts[:view_request_error] -%>
           <div class="noResults">
             <span class="message"><%= opts[:timeout_text] %></span>

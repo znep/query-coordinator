@@ -1780,6 +1780,8 @@ en:
         user_saved: User saved
         users_table_description: Users
         pending_users_table_description: Pending Users
+      view_moderation:
+        table_description: Moderated Datasets
     dataset_edit:
       append: Append
       append_and_replace: Append and Replace data

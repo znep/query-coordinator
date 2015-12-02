@@ -62,6 +62,17 @@
 </p>
 
 <p>
+  <%= partial "components/buttons/button_warning", locals: { text: "Warning Button" } %>
+  <%= partial "components/buttons/button_warning_inverse", locals: { text: "Warning Inverse Button" } %>
+</p>
+<pre class="usage">
+<code class="language-markup">
+<%= escape_html(partial "components/buttons/button_warning", locals: { text: "Warning Button" }) %>
+<%= escape_html(partial "components/buttons/button_warning_inverse", locals: { text: "Warning Inverse Button" }) %>
+</code>
+</pre>
+
+<p>
   <%= partial "components/buttons/button_success", locals: { text: "Success Button" } %>
   <%= partial "components/buttons/button_success_inverse", locals: { text: "Success Inverse Button" } %>
 </p>

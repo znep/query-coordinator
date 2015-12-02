@@ -6,6 +6,7 @@
 
 .swatch-container {
 	display: block;
+	margin-top: 0.2em;
 	
 	.subcontainer {
 		display: block;
@@ -30,6 +31,11 @@
 		display: block;
 		margin-bottom: 2em;
 	}
+}
+
+.color-label {
+	font-size: ms(-2);
+	margin: 0;
 }
 
 

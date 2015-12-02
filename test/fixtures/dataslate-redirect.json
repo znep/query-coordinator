@@ -1,0 +1,6 @@
+{
+    "name": "Should redirect",
+    "path": "/not-here",
+    "status": "published",
+    "metadata": { "redirect": "/here-instead" }
+}

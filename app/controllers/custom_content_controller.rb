@@ -153,6 +153,13 @@ class CustomContentController < ApplicationController
       @vars = {}
     end
 
+    # check for redirects:
+    if (defined? @page) && @page.present? && @page.metadata.has_key?('redirect')
+      redirect_to(@page.metadata['redirect'], :status => (@page.metadata['redirectCode'] || 301))
+      return true # dunno why! but if i don't do this the canvas env is horked for the next req.
+    end
+
+    # suppress govstat toolbar chrome and styling if requested:
     if CurrentDomain.module_enabled?(:govStat)
       # suppress govstat chrome on homepage
       @suppress_govstat = true if full_path == '/'

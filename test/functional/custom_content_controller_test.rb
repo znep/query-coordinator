@@ -73,6 +73,20 @@ class CustomContentControllerTest < ActionController::TestCase
     simple_render_with_user
   end
 
+  test 'simple redirect' do
+    prepare_page(fixture='test/fixtures/dataslate-redirect.json', anonymous=true)
+    get :page, :path => 'not-here'
+    assert_response 301
+    assert_redirected_to '/here-instead'
+  end
+
+  test 'redirect with response code' do
+    prepare_page(fixture='test/fixtures/dataslate-redirect-with-code.json', anonymous=true)
+    get :page, :path => 'not-here'
+    assert_response 302
+    assert_redirected_to '/here-instead'
+  end
+
   test '304 for etag' do
     simple_render_with_user
     assert_etag_request(@response.headers['ETag'], PAGE_PATH)

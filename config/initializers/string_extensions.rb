@@ -3,15 +3,7 @@
 class String
   def convert_to_url
     output = self.gsub(/\s+/, '-').gsub(/[^a-zA-Z0-9_\-]/, '-').gsub(/\-+/, '-')
-    if output.nil? || output.blank?
-      output = '-'
-    end
-    output.slice(0, 50)
-  end
-
-  def convert_to_unicode_url
-    output = self.gsub(/[^\p{L}\p{N}_]+/u, '-')
-    if output.nil? || output.blank?
+    if output.nil? || output.length < 1
       output = '-'
     end
     output.slice(0, 50)

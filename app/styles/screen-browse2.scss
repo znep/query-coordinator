@@ -1,6 +1,7 @@
 $panel-border-color: #e0e0e0;
 $panel-internal-border-color: #eee;
 $result-description-preview-height: 48px;
+$result-inner-padding: 1em;
 $official-badge-color: #00BE9B;
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
@@ -319,7 +320,6 @@ body {
 
         .browse2-results-title {
           position: relative;
-          display: inline;
           font-size: 2.5em;
           font-weight: 300;
           color: #555;
@@ -716,10 +716,14 @@ body {
         .browse2-result-content {
           position: relative;
           display: block;
-          padding: 1.25em 1.25em 0 1.25em;
           background-color: white;
           border: 1px solid $panel-border-color;
           border-bottom-width: 2px;
+
+          .browse2-result-header-content {
+            padding: $result-inner-padding;
+            overflow: hidden;
+          }
 
           .browse2-result-header,
           .browse2-result-metadata,
@@ -730,16 +734,24 @@ body {
             box-sizing: border-box;
           }
 
+          &.federated {
+            border-top-color: #c2c2c2;
+
+            .browse2-result-header {
+              background-color: #fafafa;
+            }
+          }
+
           .browse2-result-header {
             width: 100%;
-            padding: 0 0 1em 0;
             border-bottom: 1px solid $panel-internal-border-color;
 
             .browse2-result-title {
               position: relative;
               display: block;
               float: left;
-              width: 70%;
+              width: 80%;
+              max-width: calc(100% - 125px);
 
               .browse2-result-name {
                 display: inline;
@@ -763,44 +775,58 @@ body {
                 }
               }
 
-              .browse2-result-category {
+              .browse2-result-header-section {
+                margin: 0 $result-inner-padding 0 0;
                 display: inline-block;
-                margin: 0 1em 0 0;
-                padding: 0.5em;
+                position: relative;
+              }
+
+              .browse2-result-category {
+                padding: 0.3em 0.4em;
+                margin-top: 0.5em;
                 font-size: 12px;
                 font-weight: 300;
                 color: #888;
                 background-color: #eee;
-                -webkit-transform: translate(0, -0.3em);
-                -moz-transform: translate(0, -0.3em);
-                -ms-transform: translate(0, -0.3em);
-                transform: translate(0, -0.3em);
+                -webkit-transform: translate(0, -0.1em);
+                -moz-transform: translate(0, -0.1em);
+                -ms-transform: translate(0, -0.1em);
+                transform: translate(0, -0.1em);
               }
 
               .browse2-result-federated-link {
-                position: relative;
-                display: inline-block;
-                font-size: 12px;
-                color: #aaa;
-                text-transform: uppercase;
+                font-size: 1.25em;
+                margin-top: 0.5em;
+                bottom: 1px;
+                color: #4a4a4a;
                 text-decoration: none;
 
-                .browse2-result-federated-icon {
+                .browse2-result-federated-source {
+                  text-transform: uppercase;
+                }
+
+                .browse2-result-federated-image {
                   position: relative;
                   display: inline-block;
-                  font-size: 1.5em;
+                  height: 1.35em;
+                  top: 1px;
+                  min-width: 1.35em;
                   color: #4a4a4a;
                   -webkit-transform: translate(0, 0.2em);
                   -moz-transform: translate(0, 0.2em);
                   -ms-transform: translate(0, 0.2em);
                   transform: translate(0, 0.2em);
+
+                  &.default_icon {
+                    width: 1.35em;
+                  }
                 }
 
                 &:hover,
                 &:active {
                   text-decoration: underline;
 
-                  .browse2-result-federated-icon {
+                  .browse2-result-federated-image {
                     text-decoration: none;
                   }
                 }
@@ -833,14 +859,8 @@ body {
             }
 
             .browse2-result-provenance {
-              display: inline-block;
-              margin: 0 1.5em 0 0;
               font-size: 1.25em;
               text-transform: capitalize;
-              -webkit-transform: translate(0, -0.1em);
-              -moz-transform: translate(0, -0.1em);
-              -ms-transform: translate(0, -0.1em);
-              transform: translate(0, -0.1em);
 
               .provenance-title {
                 font-size: 1.25em;
@@ -863,18 +883,17 @@ body {
 
           .browse2-result-metadata {
             width: 80%;
-            min-height: 8.3em;
+            min-height: 8em;
             color: #4a4a4a;
             border-right: 1px solid $panel-internal-border-color;
+            padding: 0 $result-inner-padding;
 
             .browse2-result-description-container {
               overflow: hidden;
-              margin-right: 1.25em;
               border-bottom: 1px solid #eee;
 
               .browse2-result-description {
-                margin: 0.5em 0;
-                padding: 0.5em 1em 0.5em 0;
+                padding: 0.3rem 0;
 
                 div > div, div > p {
                   margin-bottom: 24px;
@@ -979,7 +998,7 @@ body {
               display: block;
               position: relative;
               width: 80%;
-              margin: 1.5em 0 1em 0;
+              margin: $result-inner-padding 0;
               float: left;
 
               .browse2-result-topics {
@@ -1056,7 +1075,7 @@ body {
               float: right;
               font-size: 12px;
               max-width: 20%;
-              margin: 1.5em 0 1em 0;
+              margin: $result-inner-padding 0;
               padding-right: 1.25em;
               text-align: right;
 
@@ -1080,7 +1099,7 @@ body {
           }
 
           .browse2-result-metrics {
-            padding-top: 1em;
+            padding-top: 0.8rem;
             width: 20%;
 
             .browse2-result-last-updated,

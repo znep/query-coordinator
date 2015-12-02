@@ -514,8 +514,8 @@ en:
             title: Click to show all options
           hint: Filter or Browse Results
         federation:
-          label: Federated
-          source: Federated from %{source}
+          label: Data Provided by
+          label_with_source: Data Provided by %{source}
         last_updated:
           label: Last Updated
         odn:

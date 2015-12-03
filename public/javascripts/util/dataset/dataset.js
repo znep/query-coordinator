@@ -228,16 +228,9 @@ var Dataset = ServerModel.extend({
      //checks for layers from a separate dataset (derived views)
      if (this.displayFormat && this.displayFormat.viewDefinitions)
      {
-       var l = this.displayFormat.viewDefinitions.length
-       for ( var i = 0; i < l; i++ )
-       {
-         if (this.displayFormat.viewDefinitions[i].uid != 'self')
-         {
-           return true
-         }
-       }
+       return _.any(this.displayFormat.viewDefinitions, function(viewDef) { return viewDef.uid != 'self' });
      }
-     return false;
+     return false
     },
 
     isGeoDataset: function()

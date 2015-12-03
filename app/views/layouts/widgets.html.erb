@@ -48,10 +48,10 @@ http://www.socrata.com
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
 
-  <script type="text/template" id="templates" style="display:none">
+  <div id="templates" style="display:none">
     <%= render :partial => 'shared/control_templates' %>
     <%= yield :templates %>
-  </script>
+  </div>
   <%= render_translations %>
 
   <%# Libraries for use with BeautyTip %>

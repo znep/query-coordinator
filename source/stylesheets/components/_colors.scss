@@ -28,6 +28,7 @@ $grey: #999;
 $black: #2C2C2C; //as black as it will ever be at least
 
 //Shades of Grey
+$light-grey-0: tint($grey, 10%);
 $light-grey-1: tint($grey, 20%);
 $light-grey-2: tint($grey, 40%);
 $light-grey-3: tint($grey, 60%);
@@ -36,6 +37,7 @@ $light-grey-5: tint($grey, 90%);
 $light-grey-6: tint($grey, 93.3%);
 $light-grey-7: tint($grey, 95%);
 
+$dark-grey-0: shade($grey, 10%);
 $dark-grey-1: shade($grey, 20%);
 $dark-grey-2: shade($grey, 40%);
 $dark-grey-3: shade($grey, 60%);

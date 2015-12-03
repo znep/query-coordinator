@@ -317,6 +317,12 @@ class InternalController < ApplicationController
 
   def feature_flags
     @domain = Domain.find(params[:domain_id])
+    if @domain.shortName == 'default'
+      flash[:error] = 'You may not modify feature flags on the default domain.'
+      redirect_to show_domain_path(domain_id: params[:domain_id])
+      return
+    end
+
     @flags = Hashie::Mash.new
     domain_flags = @domain.feature_flags
     category = params[:category].try(:gsub, '+', ' ')
@@ -334,8 +340,7 @@ class InternalController < ApplicationController
   end
 
   def set_feature_flags
-    @domain = Domain.find(params[:domain_id])
-    config = @domain.default_configuration('feature_flags')
+    config = ::Configuration.find_by_type('feature_flags', true, params[:domain_id], false)[0]
 
     if config.nil?
       begin

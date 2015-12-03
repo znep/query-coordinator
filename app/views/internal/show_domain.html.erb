@@ -9,6 +9,7 @@
 
 <div class="contentBox withLeftNavigation">
   <div class='content'>
+    <%= display_standard_flashes %>
 
     <% if @domain.nil? %>
       <p>Domain could not be found</p>
@@ -44,9 +45,11 @@
         <%- @configs.each do |conf|
           case conf.type
           when 'feature_flags'
+            unless @domain.shortName == 'default'
         -%>
         <li><a href="/internal/orgs/<%= @domain.organizationId %>/domains/<%= @domain.cname %>/feature_flags">Feature Flags</a></li>
         <%-
+            end
           else
         -%>
         <li<%== ' class="isDefault"' if conf.default %>>

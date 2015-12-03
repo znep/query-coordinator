@@ -15,6 +15,8 @@ describe('ManageLensDialogOwnershipController', function() {
   var $dialogScope;
   var $scope;
 
+  var currentUserStub;
+
   var changeOwnerUrl = /^\/views\/page-page/;
 
   var USERS = [
@@ -54,6 +56,7 @@ describe('ManageLensDialogOwnershipController', function() {
   afterEach(function() {
     Rx.Scheduler.timeout = timeoutScheduler;
     testHelpers.TestDom.clear();
+    currentUserStub.restore();
   });
 
   beforeEach(function() {
@@ -61,9 +64,9 @@ describe('ManageLensDialogOwnershipController', function() {
 
     testHelpers.TestDom.append('<input class="ownership-input">');
 
-    sinon.stub(UserSessionService, 'getCurrentUser$', _.constant(
+    currentUserStub = sinon.stub(UserSessionService, 'getCurrentUser$', _.constant(
       Rx.Observable.of({
-        rights: ['edit_others_datasets']
+        rights: ['chown_datasets']
       })
     ));
 
@@ -96,10 +99,27 @@ describe('ManageLensDialogOwnershipController', function() {
     testScheduler.advanceTo(300);
   }
 
-  it('prepopulates the input with the current user', function(done) {
+  it('disables the control if the user lacks the chown_datasets right', function(done) {
+    currentUserStub.restore();
+    currentUserStub = sinon.stub(UserSessionService, 'getCurrentUser$', _.constant(
+      Rx.Observable.of({
+        rights: ['foo', 'bar']
+      })
+    ));
+
     createController();
     $scope.$apply();
     _.defer(function() {
+      expect($scope.hasPermission).to.be.false;
+      done();
+    })
+  });
+
+  it('enables the control and prepopulates the input with the current user', function(done) {
+    createController();
+    $scope.$apply();
+    _.defer(function() {
+      expect($scope.hasPermission).to.be.true;
       expect($scope.ownerInput).to.equal('Faker McGee');
       done();
     });

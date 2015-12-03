@@ -11,9 +11,7 @@
     );
 
     // Show ownership section if the feature flag is enabled
-    var changeOwnerEnabled = ServerConfig.get('allowDataLensOwnerChange');
-    var changeOwnerAllowed = _.includes(_.get($window.currentUser, 'rights', []), 'chown_datasets');
-    $scope.shouldShowOwnershipSection = changeOwnerEnabled && changeOwnerAllowed;
+    $scope.shouldShowOwnershipSection = ServerConfig.get('allowDataLensOwnerChange');
 
     // Decorate the $scope of the permissions with a components object. Each
     // component should be placed in this object with a save function that

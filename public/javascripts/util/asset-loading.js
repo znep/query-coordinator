@@ -47,7 +47,7 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
     }
 
     if (loadTemplates)
-    { assetNS.loadPartials(translateUrls('/templates/', assets.templates, 'templates'), 'templates', finished); }
+    { assetNS.loadPartials(translateUrls('/templates/', assets.templates, 'js-appended-templates'), 'js-appended-templates', finished); }
     if (loadModals)
     { assetNS.loadPartials(translateUrls('/modals/', assets.modals, 'modals'), 'modals',
             function($newItems)

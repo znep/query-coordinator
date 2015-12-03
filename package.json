@@ -131,8 +131,9 @@
       "pageMetadata": true,
       "pbf": true,
       "Rx": true,
-      "ss": true,
+      "saveAs": true,
       "socrata": true,
+      "ss": true,
       "VBArray": true,
       "VectorTile": true
     }

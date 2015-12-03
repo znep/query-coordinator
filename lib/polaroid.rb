@@ -1,15 +1,21 @@
 class Polaroid < SocrataHttp
 
-  def path(page_id, field_id)
-    "domain/#{cname}/view/#{page_id}/#{field_id}.png"
+  def path(page_id)
+    "domain/#{cname}/view/#{page_id}/vif.png"
   end
 
-  def fetch_image(page_id, field_id, options = {})
+  def fetch_image(page_id, vif, options)
     issue_request(
-      :verb => :get,
+      :verb => :post,
+      :data => {
+        :vif => vif
+      },
+      :headers => {
+        'Content-Type' => 'application/json'
+      },
       :request_id => options[:request_id],
       :cookies => options[:cookies],
-      :path => path(page_id, field_id)
+      :path => path(page_id)
     )
   end
 

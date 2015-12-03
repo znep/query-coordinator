@@ -115,6 +115,41 @@ class AngularController < ActionController::Base
     @domain_metadata = domain_metadata
   end
 
+  def view_vif
+    parsed_vif = params[:vif].with_indifferent_access
+
+    @page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(
+        parsed_vif, params[:id], nil)
+
+    # Then ensure that there is a dataset id.
+    unless @page_metadata[:datasetId].present?
+      error_class = 'NoDatasetId'
+      error_message = "Could not serve app: page metadata does not include " \
+        "a dataset id: #{@page_metadata.inspect}"
+      report_error(error_class, error_message)
+      return render_500
+    end
+
+    begin
+      @dataset_metadata = fetch_dataset_metadata(@page_metadata[:datasetId])
+    rescue AuthenticationRequired
+      return redirect_to_login
+    rescue UnauthorizedDatasetMetadataRequest, UnauthorizedPageMetadataRequest
+      return render_403
+    rescue DatasetMetadataNotFound
+      return render_404
+    rescue UnknownRequestError => error
+      error_class = 'DatasetMetadataRequestFailure'
+      error_message = "Could not serve app: encountered unknown error " \
+        "fetching dataset metadata for dataset id " \
+        "#{@page_metadata[:datasetId]}: #{error.to_s}"
+      report_error(error_class, error_message)
+      return render_500
+    end
+
+    @domain_metadata = domain_metadata
+  end
+
   def visualization_add
     dataset_id_param = params['datasetId']
 

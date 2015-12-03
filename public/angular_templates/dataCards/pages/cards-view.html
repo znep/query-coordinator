@@ -91,11 +91,8 @@
           <dropdown-menu ng-if="downloadOpened">
             <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
             <a href='#'
-              ng-class="{'download-menu-item-disabled': hasChanges}"
-              ng-click="chooserMode.show = !hasChanges">
-              <span ng-class="{'download-menu-item-disabled-text': hasChanges}">
-                {{::'metadata.visualizationAsImage' | I18n}}
-              </span>
+              ng-click="chooserMode.show = true">
+              {{::'metadata.visualizationAsImage' | I18n}}
             </a>
           </dropdown-menu>
         </div>

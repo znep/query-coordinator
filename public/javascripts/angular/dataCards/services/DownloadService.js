@@ -5,27 +5,29 @@
   var POLL_INTERVAL = 1000;
   var TIMEOUT = 30000;
 
-  function cleanupIframe(iframe) {
-    iframe.remove();
-  }
+  var httpRequester = {
+    requesterLabel: function() {
+      return 'download-service';
+    }
+  };
 
   /**
    * A service that lets you download files (assuming the server sets
    * Content-Disposition:attachment) without risking navigating away from the page if the server
    * responds incorrectly.
    */
-  angular.module('dataCards.services').factory('DownloadService', function($q, $window) {
+  angular.module('dataCards.services').factory('DownloadService', function($q, $window, http) {
     /**
      * Have the user's browser download the specified path.
      *
      * @param {String} path The path to the resource to download. The server must respond with
      * Content-Disposition:attachment, and the path must be on the same domain.
-     * @param {jQuery=} _iframe For testing, a mock iframe element.
+     * @param vif For testing, a mock iframe element.
      *
      * @return {Promise} an object with a 'then' function that takes two parameters: the success
      * function callback, and the error function callback.
      */
-    function download(path, _iframe) {
+    function download(path, vif) {
       var deferred = $q.defer();
 
       // Give the server a tracking id for this request, so it can let us know when a request is
@@ -39,21 +41,10 @@
       }
       path += TRACKING_ID_PARAM + '=' + encodeURIComponent(trackingId);
 
-      // Add the iframe that does the actual work
-      var iframe = (_iframe || $('<iframe/>')).
-        css('display', 'none').appendTo('body');
-
       var timeout$ = Rx.Observable.timer(TIMEOUT, Rx.Scheduler.timeout);
       var timeoutError$ = timeout$.
         flatMap(function() {
           return Rx.Observable['throw'](new Error('timeout'));
-        });
-
-      // downloads that have the Content-Disposition: attachment set do not fire the 'load' event
-      // (except in FireFox < 3) So if the load event fires, assume it's a 500 or some such
-      var error$ = Rx.Observable.fromEvent(iframe, 'load').
-        flatMap(function(e) {
-          return Rx.Observable['throw'](new Error(_.get(e, 'target.contentDocument.body.innerHTML', true)));
         });
 
       // Poll for the existence of the cookie that confirms that this request has connected.
@@ -76,22 +67,58 @@
       // error, or timeout observables emit
       var complete$ = Rx.Observable.merge(
         success$,
-        timeoutError$,
-        error$
+        timeoutError$
       );
 
       complete$.
         // Chrome doesn't like it when you remove the iframe while it's downloading. So only do the
         // cleanup if it's not successful
-        finallyAction(_.bind(cleanupIframe, this, iframe)).
         subscribe(function() {
           deferred.resolve();
         }, function(e) {
           deferred.reject({ error: e.message });
         });
 
-      // Trigger the actual load
-      iframe.prop('src', path);
+      // In IE9, submit a form with a "post" method and poll for the appropriate cookie.  In real
+      // browsers, request a blob from polaroid and use FileSaver.js to download the response.
+      // TODO once we stop supporting IE9 delete everything in this function except for the "else"
+      // block below.
+      if (typeof navigator !== 'undefined' && /MSIE [1-9]\./.test(navigator.userAgent)) {
+        var form = $(
+          '<form style="display: none;" action="' + path + '" method="post">' +
+            '<input type="text" name="vif"/>' +
+          '</form>'
+        );
+        form.find('input').attr('value', JSON.stringify(vif));
+        $($window.document.body).append(form);
+        form[0].submit();
+        form.remove();
+      } else {
+        var payload = {
+          vif: JSON.stringify(vif)
+        };
+
+        var httpConfig = {
+          timeout: TIMEOUT,
+          requester: httpRequester,
+          responseType: 'blob'
+        };
+
+        http.post(path, payload, httpConfig).then(function(response) {
+          var contentDisposition = response.headers('Content-Disposition');
+          var filename = '{0}.png'.format(vif.columnName);
+
+          if (_.isString(contentDisposition)) {
+            var matches = contentDisposition.match(/filename=\"([^\"]+)\"/);
+            filename = _.isPresent(matches[1]) ? matches[1] : filename;
+          }
+
+          saveAs(response.data, filename);
+          deferred.resolve();
+        }, function(error) {
+          deferred.reject({ error: error });
+        });
+      }
 
       return deferred.promise;
     }

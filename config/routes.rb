@@ -256,8 +256,8 @@ Frontend::Application.routes do
       get '/dataset/:id/lens/new', :action => 'bootstrap'
     end
 
-    scope :controller => 'polaroid', :constraints => { :page_id => Frontend::UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
-      match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
+    scope :controller => 'polaroid', :constraints => Constraints::DataLensConstraint.new do
+      post '/view/:id/vif.png', :action => 'proxy_request'
     end
 
     scope :controller => 'angular', :constraints => { :id => Frontend::UID_REGEXP } do
@@ -266,7 +266,9 @@ Frontend::Application.routes do
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
       # reflect the changes.
       match '/view/:id', :action => 'data_lens', :app => 'dataCards', :as => :opendata_cards_view
-      match '/view/:id/:field_id', :action => 'data_lens', :app => 'dataCards'
+      post '/view/:id/vif', :controller => 'angular', :action => 'view_vif', :app => 'dataCards'
+      # vv the old polaroid route
+      # match '/view/:id/:field_id', :action => 'data_lens', :app => 'dataCards'
       match '/view/*angularRoute', :action => 'data_lens', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 

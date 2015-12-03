@@ -683,15 +683,6 @@
     // Set up flyout handlers.
 
     FlyoutService.register({
-      selector: '.download-menu-item-disabled-text',
-      render: _.constant(
-        '<div class="flyout-title">{0}</div>'.
-          format(I18n.metadata.visualizationAsImageDisabledFlyout)
-      ),
-      destroySignal: destroy$
-    });
-
-    FlyoutService.register({
       selector: '.save-this-page .save-button',
       render: function() {
         var buttonStatus = currentPageSaveEvents$.value.status;

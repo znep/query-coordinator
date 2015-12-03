@@ -131,6 +131,7 @@ describe('multiCardLayout', function() {
     datasetModel.version = '1';
     datasetModel.id = 'bana-nas1';
     datasetModel.fieldName = 'ward';
+    datasetModel.defineObservableProperty('domain', 'example.com');
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
     datasetModel.defineObservableProperty('rowCount', options.rowCount);
     datasetModel.defineObservableProperty('columns', {
@@ -221,7 +222,7 @@ describe('multiCardLayout', function() {
       pageId: 'asdf-fdsa',
       primaryAmountField: null,
       primaryAggregation: null,
-      version: 1
+      version: 3
     };
     var pageModel = new Page(minimalPageMetadata, datasetModel);
     pageModel.set('dataset', datasetModel);
@@ -311,7 +312,7 @@ describe('multiCardLayout', function() {
 
     var cardGenerator = function(pageModel, datasetModel) {
       return _.map(cards, function(card, i) {
-        var c = new Card(pageModel, card.fieldName || 'fieldname' + i);
+        var c = new Card(pageModel, card.fieldName || 'fieldname' + i, card);
         c.set('expanded', !!card.expanded);
         // Add required fields so this will validate
         c.set('cardSize', 1);
@@ -1404,7 +1405,7 @@ describe('multiCardLayout', function() {
         {fieldName: '*'},
         {fieldName: 'timeline_column'},
         {fieldName: 'search_column'},
-        {fieldName: 'choropleth_column'}
+        {fieldName: 'choropleth_column', computedColumn: 'some_column'}
       ]);
     });
 
@@ -1451,7 +1452,7 @@ describe('multiCardLayout', function() {
 
       $timeout.flush();
 
-      expect(mockDownloadService.calledWith[0]).to.equal('/view/asdf-fdsa/choropleth_column.png');
+      expect(mockDownloadService.calledWith[0]).to.equal('/view/asdf-fdsa/vif.png');
       expect(exitExportModeSpy.callCount).to.equal(1);
     });
 

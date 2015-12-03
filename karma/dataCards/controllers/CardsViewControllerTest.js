@@ -1219,25 +1219,6 @@ describe('CardsViewController', function() {
       }
     }));
 
-    it('disables png download (and displays help text) if the page isn\'t saved', function() {
-      ServerConfig.override('enablePngDownloadUi', true);
-      var context = renderCardsView();
-      var downloadButton = context.element.find('.download-menu');
-      testHelpers.fireMouseEvent(downloadButton[0], 'click');
-      var menuItem = downloadButton.find('a:contains("Visualization")');
-      expect(menuItem.hasClass('download-menu-item-disabled')).to.equal(false);
-
-      context.$scope.hasChanges = true;
-      context.$scope.$digest();
-
-      expect(menuItem.hasClass('download-menu-item-disabled')).to.equal(true);
-
-      // Now check the flyout
-      testHelpers.fireMouseEvent(menuItem.find('.download-menu-item-disabled-text').get(0), 'mousemove');
-      var flyout = $('#uber-flyout');
-      expect(flyout.text()).to.match(/Please save the page/);
-    });
-
     it('triggers chooser mode when selecting png download', function() {
       ServerConfig.override('enablePngDownloadUi', true);
       var context = renderCardsView();

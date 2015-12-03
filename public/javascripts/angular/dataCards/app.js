@@ -124,8 +124,7 @@
         resolve: {
           page: function(Page, Dataset) {
             return new Page(pageMetadata, new Dataset(datasetMetadata));
-          },
-          fieldName: function($stateParams) { return $stateParams.fieldName; }
+          }
         },
         views: {
           'mainContent': {

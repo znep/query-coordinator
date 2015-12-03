@@ -27,7 +27,7 @@
       var bootstrapUrlMatch = urlPathname.match(
         new RegExp('^{locale}/dataset/{fourByFour}/lens/new$'.format(regexPieces)));
       var singleCardViewUrlMatch = urlPathname.match(
-        new RegExp('^{locale}/view/{fourByFour}/{fieldName}$'.format(regexPieces)));
+        new RegExp('^{locale}/view/{fourByFour}/vif$'.format(regexPieces)));
       var visualizationAddUrlMatch = urlPathname.match(
         new RegExp('^{locale}/component/visualization/add'.format(regexPieces)));
 
@@ -46,7 +46,7 @@
         params.defaultRelatedVisualizationUid = searchParams.defaultRelatedVisualizationUid;
       } else if (singleCardViewUrlMatch) {
         stateName = 'view.card';
-        params.fieldName = singleCardViewUrlMatch[2];
+        params.id = singleCardViewUrlMatch[2];
       }
 
       return {

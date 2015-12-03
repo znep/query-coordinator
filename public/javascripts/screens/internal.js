@@ -14,7 +14,6 @@
       $element.addClass('loading');
       $.ajax({
         url: '/internal/domains_summary.json',
-        contentType: 'application/json',
         dataType: 'json',
         success: function(domainList) {
           blist.internal.domains = domainList;

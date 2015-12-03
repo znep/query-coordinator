@@ -58,6 +58,7 @@ Frontend::Application.routes do
       get '/tiers/:name', :action => 'show_tier'
       get '/modules', :action => 'index_modules'
       get :config_info
+      get :domains_summary
 
       post '/orgs', :action => 'create_org'
       get '/orgs', :action => 'index_orgs'

@@ -41,9 +41,12 @@ class Domain < Model
   end
 
   def self.all
-    return @@all_domains if defined? @@all_domains
+    # cache in memory locally for 10 minutes:
+    return @@all_domains if (defined? @@all_domains) && @@all_domains_fetched.since(600) > DateTime.current
     path = "/domains.json?method=all"
     @@all_domains = parse(CoreServer::Base.connection.get_request(path))
+    @@all_domains_fetched = DateTime.current
+    @@all_domains
   end
 
   def protocol

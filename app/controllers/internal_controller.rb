@@ -412,6 +412,15 @@ class InternalController < ApplicationController
     end
   end
 
+  def domains_summary
+    summary = Domain.all.map{ |domain| { :id => domain.id, :name => domain.name, :cname => domain.cname, :shortName => domain.shortName } }
+
+    respond_to do |format|
+      format.data { render :json => summary }
+      format.json { render :json => summary }
+    end
+  end
+
 private
   def check_auth
     if current_user.nil?

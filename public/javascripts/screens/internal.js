@@ -13,7 +13,9 @@
     if (_.isUndefined(staticOptions.staticData)) {
       $element.addClass('loading');
       $.ajax({
-        url: '/api/domains.json?method=all',
+        url: '/internal/domains_summary.json',
+        contentType: 'application/json',
+        dataType: 'json',
         success: function(domainList) {
           blist.internal.domains = domainList;
           $.extend(staticOptions, { staticData: blist.internal.domains });

@@ -51,12 +51,24 @@
 
     var chartD3 = $chart.data('metrics-chart');
     if (!chartD3) {
-      raphael = new Raphael($chart.get(0), $chart.width(), $chart.height());
-      chartD3 = d3.raphael(raphael);
-      chartD3.setWidth = function(width) {
-        raphael.setSize(width, false);
-      };
-      $chart.data('metrics-chart', chartD3);
+        raphael = new Raphael($chart.get(0), $chart.width(), $chart.height());
+        chartD3 = d3.raphael(raphael);
+
+        _.each(chartD3, function(paperArray) {
+          _.each(paperArray, function(paper) {
+            if (_.isObject(options.svgOptions)) {
+              if (_.isString(options.svgOptions.title)) {
+                paper.title.innerHtml = options.svgOptions.title;
+              }
+              if (_.isString(options.svgOptions.desc)) {
+                paper.desc.innerHTML = options.svgOptions.desc;
+              }
+            }
+          });
+        });
+
+        chartD3.setWidth = function(width) { raphael.setSize(width, false); }
+        $chart.data('metrics-chart', chartD3);
 
       $chart.prepend($.tag2({_: 'div', 'class': 'tickContainer'}));
       $chart.append($.tag2({_: 'div', 'class': 'legendContainer'}));

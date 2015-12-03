@@ -55,7 +55,18 @@
 
     redrawChart = function(chart, sliceDepth, animate) {
       chart.data('data-callback')(chart, sliceDepth,
-        $.extend({}, {plotOptions: {area: {animation: animate}}},
+        $.extend({},
+          {
+            plotOptions: {
+              area: {
+                animation: animate
+              }
+            },
+            svgOptions: {
+              title: 'Hello',
+              desc: 'Goodbye'
+            }
+          },
           chart.data('options')
         ));
     },

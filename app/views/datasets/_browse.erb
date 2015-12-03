@@ -79,7 +79,7 @@ end
                   <%= t('controls.browse.actions.all_options') %>
                 </a>
                 <div style="display: none" aria-hidden="false">
-                  <h5>Ordered Topics</h5>
+                  <h5><%= t('controls.browse.ordered_topics') %></h5>
                   <ol>
                     <%- facet[:extra_options].sort_by { |item| item[:count] }.each do |facet_option| -%>
                       <li>

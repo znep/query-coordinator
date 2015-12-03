@@ -144,7 +144,7 @@ module ApplicationHelper
 
 # js
   def jquery_include(version = '1.7.1')
-    if use_discrete_assets?
+    if Rails.env.development?
       return ("<script src=\"/javascripts/jquery-#{version}.js\" type=\"text/javascript\" " +
         'charset="utf-8"></script>').html_safe
     else
@@ -248,7 +248,7 @@ module ApplicationHelper
 
 # styles
   def rendered_stylesheet_tag(stylesheet, media='all')
-    if use_discrete_assets?
+    if Rails.env == 'development'
       STYLE_PACKAGES[stylesheet].map do |stylesheet|
         %Q{<link type="text/css" rel="stylesheet" media="#{media}" href="/styles/individual/#{stylesheet}.css?#{asset_revision_key}"/>}
       end.join("\n").html_safe
@@ -260,7 +260,7 @@ module ApplicationHelper
   def stylesheet_assets
     sheet_map = {}
     STYLE_PACKAGES.each do |name, sheets|
-      sheet_map[name] = if use_discrete_assets?
+      sheet_map[name] = if Rails.env == 'development'
         (sheets || []).map { |req| "/styles/individual/#{req}.css" }
       else
         "/styles/merged/#{name.to_s}.css?#{asset_revision_key}"
@@ -773,10 +773,6 @@ module ApplicationHelper
     req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
 
     FeatureFlags.derive(nil, req, nil)[:cetera_search]
-  end
-
-  def use_discrete_assets?
-    Rails.env == 'development' || !Rails.configuration.assets.compress
   end
 
   def sprite_icon(opts)

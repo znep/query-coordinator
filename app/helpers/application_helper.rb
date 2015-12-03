@@ -162,8 +162,7 @@ module ApplicationHelper
   end
 
   def javascript_error_helper_tag
-    return ('<script type="text/javascript">blistEnv = "' + Rails.env +
-      '";</script>').html_safe + include_javascripts('errors')
+    %Q{<script type="text/javascript">blistEnv = "#{Rails.env}";</script>}.html_safe + include_javascripts('errors')
   end
 
   def needs_view_js(uid, view)
@@ -250,13 +249,11 @@ module ApplicationHelper
 # styles
   def rendered_stylesheet_tag(stylesheet, media='all')
     if Rails.env == 'development'
-      return STYLE_PACKAGES[stylesheet.to_s].
-        map{ |req| "<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
-                   " href=\"/styles/individual/#{req}.css?#{asset_revision_key}\"/>" }.
-        join("\n").html_safe
+      STYLE_PACKAGES[stylesheet].map do |stylesheet|
+        %Q{<link type="text/css" rel="stylesheet" media="#{media}" href="/styles/individual/#{stylesheet}.css?#{asset_revision_key}"/>}
+      end.join("\n").html_safe
     else
-      return ("<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
-             " href=\"/styles/merged/#{stylesheet.to_s}.css?#{asset_revision_key}\"/>").html_safe
+      %Q{<link type="text/css" rel="stylesheet" media="#{media}" href="/styles/merged/#{stylesheet.to_s}.css?#{asset_revision_key}"/>}.html_safe
     end
   end
 
@@ -784,7 +781,6 @@ module ApplicationHelper
         image_tag('/images/empty.gif', :size => '0x0', :alt => opts[:alt_text])
       end
     end
-
   end
 
 end

@@ -37,7 +37,12 @@ class Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    result = CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon)
+    begin
+      result = CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon)
+    rescue => e
+      Rails.logger.debug("CoreServer::Base.connection.get_request ERROR: #{e.inspect}")
+      raise e
+    end
     batch ? nil : parse(result)
   end
 

@@ -73,7 +73,8 @@ module BrowseActions
       end
     end
 
-    return { :title => t('controls.browse.facets.categories_title'),
+    {
+      :title => t('controls.browse.facets.categories_title'),
       :singular_description => t('controls.browse.facets.categories_singular_title'),
       :param => :category,
       :options => cats,
@@ -97,7 +98,8 @@ module BrowseActions
         map {|t| {:text => t.name, :value => t.name, :count => t.frequency}}
     end
 
-    { :title => t('controls.browse.facets.topics_title'),
+    {
+      :title => t('controls.browse.facets.topics_title'),
       :singular_description => t('controls.browse.facets.topics_singular_title'),
       :param => :tags,
       :options => top_tags,
@@ -154,7 +156,8 @@ module BrowseActions
   end
 
   def moderation_facet
-    { :title => t('controls.browse.facets.moderation_status_title'),
+    {
+      :title => t('controls.browse.facets.moderation_status_title'),
       :singular_description => t('controls.browse.facets.moderation_status_singular_title'),
       :param => :moderation,
       :options => [
@@ -167,14 +170,14 @@ module BrowseActions
 
   def custom_facets
     facets = CurrentDomain.property(:custom_facets, :catalog)
-
     return if facets.nil?
+
     custom_chop = get_facet_cutoff(:custom)
     facets.map do |facet|
       facet.param = facet.param.to_sym
 
       if facet.options && facet.options.length > custom_chop
-        facet.options, facet.extra_options = facet.options.partition{ |opt| opt.summary }
+        facet.options, facet.extra_options = facet.options.partition { |opt| opt.summary }
         if facet.options.empty?
           facet.options = facet.extra_options.slice!(0..(custom_chop - 1))
         end
@@ -239,11 +242,11 @@ module BrowseActions
     configured_options = catalog_config.to_hash.deep_symbolize_keys
     configured_options.delete(:default_params)
 
-    browse_options = default_options
-                       .merge(configured_options) # whatever they configured is somewhat important
-                       .merge(options)            # whatever the call configures is more important
-                       .merge(configured_params)  # gives the domain a chance to override the call
-                       .merge(user_params)        # anything from the queryparam is most important
+    browse_options = default_options.
+      merge(configured_options). # whatever they configured is somewhat important
+      merge(options).            # whatever the call configures is more important
+      merge(configured_params).  # gives the domain a chance to override the call
+      merge(user_params)         # anything from the queryparam is most important
 
     # munge params to types we expect
     @@numeric_options.each do |option|
@@ -251,10 +254,12 @@ module BrowseActions
       user_params[option] = user_params[option].to_i if user_params[option].present?
     end
     @@boolean_options.each do |option|
-      browse_options[option] = (browse_options[option] == 'true') ||
-                               (browse_options[option] == true) if browse_options[option].present?
-      user_params[option] = (user_params[option] == 'true') ||
-                            (user_params[option] == true) if user_params[option].present?
+      if browse_options[option].present?
+        browse_options[option] = (browse_options[option] == 'true') || (browse_options[option] == true)
+      end
+      if user_params[option].present?
+        user_params[option] = (user_params[option] == 'true') || (user_params[option] == true)
+      end
     end
 
     # for core server quirks
@@ -296,30 +301,30 @@ module BrowseActions
 
     if browse_options[:limitTo].present?
       case browse_options[:limitTo]
-      when 'unpublished'
-        search_options[:limitTo] = 'tables'
-        search_options[:datasetView] = 'dataset'
-        search_options[:publication_stage] = 'unpublished'
-      when 'datasets'
-        search_options[:limitTo] = 'tables'
-        search_options[:datasetView] = 'dataset'
-      when 'filters'
-        search_options[:limitTo] = 'tables'
-        search_options[:datasetView] = 'view'
+        when 'unpublished'
+          search_options[:limitTo] = 'tables'
+          search_options[:datasetView] = 'dataset'
+          search_options[:publication_stage] = 'unpublished'
+        when 'datasets'
+          search_options[:limitTo] = 'tables'
+          search_options[:datasetView] = 'dataset'
+        when 'filters'
+          search_options[:limitTo] = 'tables'
+          search_options[:datasetView] = 'view'
       end
     end
 
     if browse_options[:sortPeriod].present?
       search_options[:sortPeriod] =
         case browse_options[:sortPeriod]
-        when 'week'
-          'WEEKLY'
-        when 'month'
-          'MONTHLY'
-        when 'year'
-          'YEARLY'
-        else
-          browse_options[:sortPeriod]
+          when 'week'
+            'WEEKLY'
+          when 'month'
+            'MONTHLY'
+          when 'year'
+            'YEARLY'
+          else
+            browse_options[:sortPeriod]
         end
     end
 
@@ -385,7 +390,7 @@ module BrowseActions
         browse_options[:view_results] = view_results.results
 
       rescue CoreServer::TimeoutError
-        Rails.logger.warn("Timeout on Clytemnestra request for #{browse_options.to_json}")
+        Rails.logger.warn("Timeout on CoreServer request for #{browse_options.to_json}")
         browse_options[:view_request_error] = true
         browse_options[:view_results] = []
 
@@ -407,23 +412,23 @@ module BrowseActions
     # set up which grid columns to display if we don't have one already
     browse_options[:grid_items] ||=
       case browse_options[:view_type]
-      when 'rich'
-        {
-          largeImage: true,
-          richSection: true,
-          popularity: true,
-          type: true,
-          rss: true
-        }
-      else
-        {
-          index: true,
-          domainIcon: browse_options[:use_federations],
-          nameDesc: true,
-          datasetActions: browse_options[:dataset_actions],
-          popularity: true,
-          type: true
-        }
+        when 'rich'
+          {
+            largeImage: true,
+            richSection: true,
+            popularity: true,
+            type: true,
+            rss: true
+          }
+        else
+          {
+            index: true,
+            domainIcon: browse_options[:use_federations],
+            nameDesc: true,
+            datasetActions: browse_options[:dataset_actions],
+            popularity: true,
+            type: true
+          }
       end
 
     # In Cetera search, hide sort_dropdown, popularity, and rss links
@@ -524,8 +529,7 @@ module BrowseActions
   end
 
   def current_user_can_edit_others_datasets?
-    (defined?(current_user) &&
-      CurrentDomain.user_can?(current_user, :edit_others_datasets))
+    defined?(current_user) && CurrentDomain.user_can?(current_user, :edit_others_datasets)
   end
 
   def add_data_lens_view_type?
@@ -544,7 +548,6 @@ module BrowseActions
 
   def add_data_lens_view_type_if_enabled!(view_type_list)
     if add_data_lens_view_type?
-
       new_view_option = {
         :text => ::I18n.t('controls.browse.facets.view_types.new_view'),
         :value => 'new_view',
@@ -564,7 +567,6 @@ module BrowseActions
 
   def add_pulse_view_type_if_enabled!(view_type_list)
     if pulse_catalog_entries_enabled?
-
       pulse_view_type = {
         :text => ::I18n.t('controls.browse.facets.view_types.pulse'),
         :value => 'pulse',
@@ -589,7 +591,6 @@ module BrowseActions
 
   def add_stories_view_type_if_enabled!(view_type_list)
     if stories_catalog_entries_enabled?
-
       stories_view_type = {
         :text => ::I18n.t('controls.browse.facets.view_types.story'),
         :value => 'story',
@@ -619,9 +620,9 @@ module BrowseActions
 
     # If not, let's check the children
     category ||= begin
-                   children = categories.collect { |c| c[:children] }.flatten.compact
-                   children.find { |c| c[:value] == selected_category }
-                 end
+      children = categories.collect { |c| c[:children] }.flatten.compact
+      children.find { |c| c[:value] == selected_category }
+    end
 
     # If still not found, it's a bogus category but we'll pass it along anyway
     category ||= { value: selected_category }
@@ -645,6 +646,12 @@ module BrowseActions
 
   @@moderatable_types = [ 'new_view', 'filters', 'charts', 'maps', 'calendars', 'forms' ]
 
-  @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields, :local_data_hack ]
-  @@querystring_options = [  ]
+  @@search_options = [
+    :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView,
+    :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver,
+    :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields,
+    :local_data_hack
+  ]
+  @@querystring_options = []
+
 end

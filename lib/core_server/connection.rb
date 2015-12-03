@@ -228,6 +228,7 @@ module CoreServer
       end
 
       raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
+
       if env.present?
         set_cookie = result["set-cookie"]
         if set_cookie.present?
@@ -237,19 +238,20 @@ module CoreServer
           end
         end
       end
-      if !result.is_a?(Net::HTTPSuccess)
+
+      unless result.is_a?(Net::HTTPSuccess)
         parsed_body = JSON.parse(result.body, {:max_nesting => 25})
-        Rails.logger.info("Error: " +
-                      "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}: " +
-                      (parsed_body.nil? ? 'No response' :
-                        (parsed_body['code'] || '')) + " : " +
-                      (parsed_body.nil? ? 'No response' :
-                        (parsed_body['message'] || '')))
+        Rails.logger.info(
+          "Error: #{request.method} #{CORESERVICE_URI.to_s}#{request.path}: " +
+          (parsed_body.nil? ? 'No response' : (parsed_body['code'] || '')) + " : " +
+          (parsed_body.nil? ? 'No response' : (parsed_body['message'] || ''))
+        )
         raise CoreServer::CoreServerError.new(
           "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}",
           parsed_body['code'],
           parsed_body['message'],
-          json)
+          json
+        )
       end
 
       result

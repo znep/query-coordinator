@@ -20,6 +20,8 @@ module ProfileHelper
       # Call the original implementation, presumably in ApplicationHelper.
       # If this is throwing, a base module with a view_url implementation
       # hasn't been loaded before this module.
+      # Note: This should never happen since `view_url` is a built-in method provided by the routes url helpers.
+      # See: Rails.application.routes.url_helpers.methods.grep(/view_url/)
       super
     end
   end

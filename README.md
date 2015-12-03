@@ -2,9 +2,16 @@
 
 ## Starting up
 
-The command to run the server is:
+The command to run the Rails application server is:
 
-    bundle exec unicorn_rails -c config/unicorn.rb
+```sh
+bundle exec unicorn_rails -c config/unicorn.rb
+```
+
+The command to run the HTTP server is:
+```sh
+sudo nginx -c ${PWD}/dev-server/nginx.conf
+```
 
 ## Dependencies
 
@@ -16,7 +23,8 @@ Instructions on how to use these credentials can be found in the
 ## Tests
 
 tl;dr: Run the Setup steps below, then
-```
+
+```sh
 bundle exec rake test
 ```
 This will run all Ruby and Javascript tests.
@@ -36,13 +44,13 @@ Ensure that you are using Ruby version 1.9.3 or greater.
 
 Make sure you've installed karma-cli and phantomjs globally:
 
-```
+```sh
 npm install -g karma-cli phantomjs karma-phantomjs-launcher grunt
 ```
 
 #### Karma Test Rake Tasks
 
-```
+```sh
 bundle exec rake test:js
 bundle exec rake test:js:dataCards
 bundle exec rake test:js:oldUx
@@ -60,7 +68,7 @@ Each rake task accepts three arguments:
 Example invocation that watches file changes, runs the dataCards tests in chrome,
 and uses the mocha reporter:
 
-```
+```sh
 bundle exec rake test:js:dataCards[true,chrome,mocha]
 ```
 
@@ -84,7 +92,8 @@ the SauceLabs dashboard using the creds in LastPass to see how much we have
 remaining for the month).
 
 The rake task is
-```
+
+```sh
 rake test:karma_sauce [CRITICAL_BROWSERS_ONLY=true|false] [BROWSER_FAMILIES="comma-separated browser names"]
 ```
 
@@ -102,7 +111,7 @@ Examples:
 
   So for instance to run tests on Safari 7 on Mavericks, do:
 
-  ```
+  ```sh
   (cd karma/dataCards && karma start karma.conf.js --browsers "saucelabs safari 7 os x 10.9" --singleRun true)
   ```
 
@@ -128,7 +137,7 @@ writing are: controllers directives filters integration services models util.
 
 Example:
 
-```
+```sh
 (cd karma/dataCards && karma start karma.conf.js --browsers PhantomJS --singleRun false --exclude-groups "directives integration")
 ```
 
@@ -156,7 +165,7 @@ only an issue for on-demand loading.
 We have introduced transpilation of ES2015 / JSX source code via
 [Babel](http://babeljs.io).  One-time babel compilation can be done with
 
-```
+```sh
 bundle exec rake assets:babel
 ```
 
@@ -165,7 +174,7 @@ watching of source changes and automatic compilation.
 
 To enable the workflow:
 
-```
+```sh
 bundle install
 foreman start
 ```
@@ -211,7 +220,7 @@ Bower + Artifactory (8/11/15 update)
 
 The dev proxy allows NewUX frontend developers to load data from staging or production while still using a local copy of the NewUX. To use just run:
 
-```
+```sh
 dev-server/dev-proxy.js
 ```
 
@@ -228,7 +237,7 @@ Although the codebase is automatically linted by Jenkins for each build, you can
 run linters for different parts of the codebase using the following
 rake tasks:
 
-```
+```sh
 rake lint:js:all       # Lint the whole javascript codebase
 rake lint:js:oldUx     # Lint the old ux
 rake lint:js:dataCards # Lint data lens
@@ -242,7 +251,7 @@ The default for the `js` flavors is 'stylish' and the default for the `ruby` fla
 'text'. See the [eslint documentation](http://eslint.org/docs/user-guide/command-line-interface#f-format) and the
 [reek documentation](https://github.com/troessner/reek#output-formats) for more formats. Example:
 
-```
+```sh
 rake "lint:js:all[junit]"
 ```
 

@@ -20,10 +20,8 @@
 # At the time of this writing, the following metachef environment files are
 # germane to this application and where it is deployed:
 #
-#  azure-eastus-production.json
 #  azure-westeurope-production.json
 #  production.json
-#  production-ord1.json
 #  azure-staging.json
 #  azure-rc.json
 #
@@ -59,11 +57,11 @@ default: &default
   kafka_rest_uri: 'http://localhost:8082'
 
 # Local development
-development:
+development: &development
+  <<: *default
   ssl_port: 443
   http_port: 9292
   metrics_dir: tmp/metriclogs
-  <<: *default
   mixpanel_token: 59b0b54697603105463834afdf20accf
   polaroid_hostname: localhost
   polaroid_port: 1337

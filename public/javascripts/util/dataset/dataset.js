@@ -211,7 +211,33 @@ var Dataset = ServerModel.extend({
 
     getDownloadType: function()
     {
-        return this.isGeoDataset() ? 'geo' : this.newBackend ? 'nbe' : 'normal'
+        var backendPrefix = this.newBackend ? 'nbe_' : 'obe_'
+        var downloadType = !this.isGeoDataset() ? 'normal' : this.isLayered() ? 'multilayer_geo' : 'monolayer_geo';
+        return backendPrefix + downloadType
+    },
+
+    isLayered: function()
+    {
+     //checks for layers as direct children
+     if (this.isGeoDataset() &&
+         typeof(this.metadata.geo.layers) === 'string' &&
+         this.metadata.geo.layers.split(',').length > 1)
+     {
+       return true;
+     }
+     //checks for layers from a separate dataset (derived views)
+     if (this.displayFormat && this.displayFormat.viewDefinitions)
+     {
+       var l = this.displayFormat.viewDefinitions.length
+       for ( var i = 0; i < l; i++ )
+       {
+         if (this.displayFormat.viewDefinitions[i].uid != 'self')
+         {
+           return true
+         }
+       }
+     }
+     return false;
     },
 
     isGeoDataset: function()
@@ -1532,7 +1558,7 @@ var Dataset = ServerModel.extend({
         var ext = type.toLowerCase().split(' ')[0];
 
         if (this._isGeoExport(ext)) {
-            return this.metadata.geo.owsUrl + '?method=export&format=' + type;
+            return '/api/geospatial/{0}?method=export&format={1}'.format(this.id, type);
         }
 
         if (this.newBackend && blist.feature_flags.enable_export_service) {

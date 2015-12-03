@@ -81,6 +81,21 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.get_request(path)).with_indifferent_access
   end
 
+  def is_layered?
+    # checks for layers as direct child lenses
+    if metadata.present? &&
+       metadata.data['geo'].present? &&
+       metadata.data['geo']['layers'].respond_to?(:split) &&
+       metadata.data['geo']['layers'].split(",").length > 1
+        return true
+    end
+    # checks for layers that come from a separate dataset (derived views)
+    if displayFormat.present? && displayFormat.viewDefinitions.present?
+      return displayFormat.viewDefinitions.any? { |v| v["uid"] != "self" }
+    end
+    false
+  end
+
   # This method addresses the fact that NBE geospatial datasets no longer have an OBE component, so this
   # method answers the question of whether or not an NBE dataset is geospatial.
   def is_geospatial?

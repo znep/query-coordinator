@@ -31,19 +31,35 @@
     );
     $.templates.downloadsTable = {
         downloadTypes: {
-            'normal': normalDownloadTypes,
-            'geo_attributes': [ 'CSV', 'JSON' ],
-            'nbe': [ 'CSV', 'JSON' ],
-            'geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ]
+            'obe_normal': normalDownloadTypes,
+            'nbe_normal': [ 'CSV', 'JSON' ],
+            'obe_layer_attributes': [ 'CSV', 'JSON' ],
+            'nbe_layer_attributes': [ 'CSV', 'JSON', 'GeoJSON' ],
+            'obe_monolayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'CSV', 'JSON' ],
+            'nbe_monolayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'CSV', 'JSON', 'GeoJSON' ],
+            'obe_multilayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ],
+            'nbe_multilayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON' ]
         },
         directive: {
-            'normal': {
+            'obe_normal': {
                 '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
             },
-            'nbe': {
+            'nbe_normal': {
                 '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
             },
-            'geo': {
+            'obe_monolayer_geo': {
+                '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
+            },
+            'nbe_monolayer_geo': {
+                '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
+            },
+            'obe_multilayer_geo': {
+                '.downloadsTable .downloadsList tbody .item':
+                    downloadTypesDirective('downloadTypes'),
+                '.layerDownloadsContent .downloadsList tbody .item':
+                    downloadTypesDirective('layerDownloadTypes', true)
+            },
+            'nbe_multilayer_geo': {
                 '.downloadsTable .downloadsList tbody .item':
                     downloadTypesDirective('downloadTypes'),
                 '.layerDownloadsContent .downloadsList tbody .item':

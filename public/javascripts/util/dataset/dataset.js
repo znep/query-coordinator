@@ -1706,7 +1706,7 @@ var Dataset = ServerModel.extend({
         if (($.isBlank(ds._parent) || $.isBlank(ds._parent.columns)) &&
             $.isBlank(ds.noParentAvailable))
         {
-            ds.makeRequest({url: '/views/' + this.id + '.json',
+            ds.makeRequest({url: '/views/{0}.json'.format(this.id),
                 params: {method: 'getDefaultView'},
                 success: function(parDS)
                 {

@@ -317,4 +317,9 @@ private
   def poll_external_configs
     ExternalConfig.update_all!
   end
+
+  def use_discrete_assets?
+    Rails.env.development? || !Rails.configuration.assets.compress
+  end
+
 end

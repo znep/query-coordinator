@@ -144,7 +144,7 @@ module ApplicationHelper
 
 # js
   def jquery_include(version = '1.7.1')
-    if Rails.env.development?
+    if use_discrete_assets?
       return ("<script src=\"/javascripts/jquery-#{version}.js\" type=\"text/javascript\" " +
         'charset="utf-8"></script>').html_safe
     else
@@ -162,8 +162,7 @@ module ApplicationHelper
   end
 
   def javascript_error_helper_tag
-    return ('<script type="text/javascript">blistEnv = "' + Rails.env +
-      '";</script>').html_safe + include_javascripts('errors')
+    %Q{<script type="text/javascript">blistEnv = "#{Rails.env}";</script>}.html_safe + include_javascripts('errors')
   end
 
   def needs_view_js(uid, view)
@@ -249,21 +248,19 @@ module ApplicationHelper
 
 # styles
   def rendered_stylesheet_tag(stylesheet, media='all')
-    if Rails.env == 'development'
-      return STYLE_PACKAGES[stylesheet.to_s].
-        map{ |req| "<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
-                   " href=\"/styles/individual/#{req}.css?#{asset_revision_key}\"/>" }.
-        join("\n").html_safe
+    if use_discrete_assets?
+      STYLE_PACKAGES[stylesheet].map do |stylesheet|
+        %Q{<link type="text/css" rel="stylesheet" media="#{media}" href="/styles/individual/#{stylesheet}.css?#{asset_revision_key}"/>}
+      end.join("\n").html_safe
     else
-      return ("<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
-             " href=\"/styles/merged/#{stylesheet.to_s}.css?#{asset_revision_key}\"/>").html_safe
+      %Q{<link type="text/css" rel="stylesheet" media="#{media}" href="/styles/merged/#{stylesheet.to_s}.css?#{asset_revision_key}"/>}.html_safe
     end
   end
 
   def stylesheet_assets
     sheet_map = {}
     STYLE_PACKAGES.each do |name, sheets|
-      sheet_map[name] = if Rails.env == 'development'
+      sheet_map[name] = if use_discrete_assets?
         (sheets || []).map { |req| "/styles/individual/#{req}.css" }
       else
         "/styles/merged/#{name.to_s}.css?#{asset_revision_key}"
@@ -778,13 +775,16 @@ module ApplicationHelper
     FeatureFlags.derive(nil, req, nil)[:cetera_search]
   end
 
+  def use_discrete_assets?
+    Rails.env == 'development' || !Rails.configuration.assets.compress
+  end
+
   def sprite_icon(opts)
     content_tag(:div, :class => opts[:class_name] || 'icon') do
       if opts[:alt_text].present?
         image_tag('/images/empty.gif', :size => '0x0', :alt => opts[:alt_text])
       end
     end
-
   end
 
 end

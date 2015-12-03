@@ -21,8 +21,8 @@ module CustomContentHelper
   end
 
   # Widget-specific helpers
-  def maybe_link_to(text, url, maeby)
-    if maeby
+  def maybe_link_to(text, url, should_link_to)
+    if should_link_to
       link_to(h(text), h(url))
     else
       h(text)

@@ -9,7 +9,7 @@ module UnminifiedAssetsHelper
 
   def include_javascripts_unminified(*packages)
     # This is adapted from Jammit's Jammit::Helper.include_javascripts
-    if Rails.env.development? || !Jammit.package_assets
+    if use_discrete_assets?
       include_javascripts(*packages);
     else
       tags = packages.map do |pack|
@@ -25,6 +25,10 @@ module UnminifiedAssetsHelper
     # This is adapted from Jammit's Jammit::Jammit.asset_url
     timestamp = mtime ? "?#{mtime.to_i}" : ''
     "/#{Jammit.package_path}/unminified/#{Jammit.filename(package, extension, suffix)}#{timestamp}"
+  end
+
+  def use_discrete_assets?
+    !Rails.configuration.assets.compress || !Jammit.package_assets
   end
 
 end

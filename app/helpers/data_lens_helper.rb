@@ -33,9 +33,8 @@ module DataLensHelper
   end
 
   def tileserver_hosts
-    APP_CONFIG.tileserver_hosts.present? ?
-      APP_CONFIG.tileserver_hosts.split(',').map { |value| value.strip } :
-      []
+    hosts = ENV['TILESERVER_HOSTS'] || APP_CONFIG.tileserver_hosts
+    hosts.present? ? hosts.split(',').map { |value| value.strip } : []
   end
 
   def angular_config
@@ -74,8 +73,7 @@ module DataLensHelper
 
   def angular_theme_tag
     theme = CurrentDomain.property('theme', 'theme_v3') || 'default'
-    return ("<link type=\"text/css\" rel=\"stylesheet\" media=\"all\" " +
-            "href=\"/styles/individual/dataCards/theme/#{theme}.css?#{asset_revision_key}\"/>").html_safe
+    %Q{<link type="text/css" rel="stylesheet" media="all" href="/styles/individual/dataCards/theme/#{theme}.css?#{asset_revision_key}"/>}.html_safe
   end
 
   def features

@@ -5,11 +5,11 @@ class AssetMapper
       @asset_map = {}
       to_map.each do |type, package_list|
         @asset_map[type] = {}
-        @asset_map['debug_' + type] = {}
+        @asset_map["debug_#{type}"] = {}
         package_list.each do |package_name|
-          @asset_map[type][package_name] = "/#{config['package_path']}/#{package_name}.js?#{Time.now().to_i.to_s}"
-          @asset_map['debug_' + type][package_name] = config[type][package_name].map do
-            |item| "#{item.sub(STRIP_PREFIX, '')}?#{Time.now().to_i.to_s}"
+          @asset_map[type][package_name] = "/#{config['package_path']}/#{package_name}.js?#{Time.now.to_i}"
+          @asset_map["debug_#{type}"][package_name] = config[type][package_name].map do
+            |item| "#{item.sub(STRIP_PREFIX, '')}?#{Time.now.to_i}"
           end
         end
       end
@@ -17,7 +17,7 @@ class AssetMapper
   end
 
   def javascripts
-    return debug_javascripts if Rails.env.development? || FeatureFlags.derive.debug_assets
+    return debug_javascripts if use_discrete_assets?
     @_javascripts ||= @asset_map['javascripts'].to_json
   end
 
@@ -28,4 +28,11 @@ class AssetMapper
 # Jammit needs the path relative to Rails root, but that's
 # not part of the publicly accessible URL
   STRIP_PREFIX = 'public'
+
+  private
+
+  def use_discrete_assets?
+    Rails.env.development? || FeatureFlags.derive.debug_assets || !Rails.configuration.assets.compress
+  end
+
 end

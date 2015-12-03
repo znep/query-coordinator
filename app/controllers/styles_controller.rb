@@ -105,12 +105,12 @@ class StylesController < ApplicationController
     headers['Content-Type'] = 'text/css'
 
     cache_key = generate_cache_key("widget.#{params[:customization_id]}.#{updated_at || 0}")
-    cached = Rails.cache.read(cache_key) unless Rails.env == 'development'
+    cached = Rails.cache.read(cache_key) unless use_discrete_assets?
 
     if cached.nil?
       # get sitewide includes
       includes_cache_key = generate_cache_key('_includes')
-      includes = Rails.cache.read(includes_cache_key) unless Rails.env == 'development'
+      includes = Rails.cache.read(includes_cache_key) unless use_discrete_assets?
       if includes.nil?
         includes = get_includes
         Rails.cache.write(includes_cache_key, includes)
@@ -154,7 +154,7 @@ class StylesController < ApplicationController
   end
 
   def with_development_cache(stylesheet_filename)
-    if Rails.env.development?
+    if use_discrete_assets?
       tmpdir_path = File.join(Dir.tmpdir, 'blist_style_cache')
       Dir.mkdir(tmpdir_path) unless Dir.exist? tmpdir_path
 

@@ -31,8 +31,8 @@ module.exports = function(config) {
       'bower_components/vector-tile/dist/vectortile.js',
       'bower_components/simple-statistics/src/simple_statistics.js',
       'bower_components/chroma-js/chroma.js',
-      'src/views/styles/!(choroplethMap)*.css',
-      'dist/frontend-visualizations-jquery-plugins.js',
+      'dist/socrata-visualizations.css',
+      'dist/socrata-visualizations.js',
       'karma/**/*spec.js',
       'karma/choroplethTestData/*.js',
       'karma/timelineTestData/*.js'
@@ -47,7 +47,6 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/TimelineChart.js': ['webpack'],
       'karma/**/*spec.js': ['webpack']
     },
 

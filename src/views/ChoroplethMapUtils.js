@@ -1,7 +1,7 @@
 var $ = require('jquery');
 var _ = require('lodash');
 var ss = require('simple-statistics');
-var chroma = require('chroma');
+var chroma = require('chroma-js');
 
 /**
  * Dynamic choropleth styles based on the individual dataset.

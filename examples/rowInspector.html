@@ -3,7 +3,7 @@
   <head>
     <title>Example Usage: RowInspector.js</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <link rel="stylesheet" media="all" href="../src/views/styles/rowInspector.css">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
     <style>
     html, body {
       box-sizing: border-box;
@@ -45,14 +45,16 @@
     </div>
     <div id="click-me">CLICK ANYWHERE HERE!</div>
   </body>
-  <!-- lodash must be loaded before `socrata.utils.js` -->
+
+  <!-- Include external dependencies -->
   <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
-  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
   <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="../bower_components/d3/d3.js"></script>
-  <script type="text/javascript" src="../bower_components/chroma-js/chroma.min.js"></script>
-  <script type="text/javascript" src="../bower_components/simple-statistics/src/simple_statistics.js"></script>
-  <script type="text/javascript" src="../dist/frontend-visualizations-jquery-plugins.js"></script>
+  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
   <script type="text/javascript">
     var validData = function(rowCount) {
       return _.map(_.range(1, parseInt(rowCount) + 1), function(rowIndex) {

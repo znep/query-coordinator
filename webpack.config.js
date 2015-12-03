@@ -7,14 +7,12 @@ module.exports = {
     'socrata-utils': 'socrata.utils',
     'd3': 'd3',
     'lodash': '_',
-    'moment': 'moment',
-    'simple-statistics': 'ss',
-    'chroma': 'chroma',
+    'moment': 'moment'
   },
   output: {
     path: __dirname + '/dist',
     filename: 'socrata-visualizations.js',
-    libraryTarget: 'var',
+    libraryTarget: 'umd',
     library: ['socrata', 'visualizations']
   },
   resolve: {

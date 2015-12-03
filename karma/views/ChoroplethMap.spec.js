@@ -94,6 +94,9 @@ describe('ChoroplethMap', function() {
       }
     );
 
+    $element.height(480);
+    $element.find('.choropleth-container').height(480);
+
     $('body').append($element);
 
     var visualizationRenderOptions = {

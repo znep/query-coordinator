@@ -1,6 +1,10 @@
 (function() {
   'use strict';
 
+  function stringifySuggestionObject(suggestion) {
+    return '{displayName} ({email})'.format(suggestion);
+  }
+
   function ManageLensDialogOwnershipController(
     $scope,
     $document,
@@ -52,9 +56,7 @@
 
     // Generate the list of user names and emails for autocomplete.
     var suggestions$ = suggestionObjects$.map(function(suggestions) {
-      return _.map(suggestions, function(suggestion) {
-        return '{0} ({1})'.format(suggestion.displayName, suggestion.email);
-      });
+      return _.map(suggestions, stringifySuggestionObject);
     });
 
     // Count the number of results returned.
@@ -158,7 +160,9 @@
       var suggestions = eventWithSuggestions[1];
 
       if (suggestions.length) {
-        var nextOwner = suggestions[selectionEvent.additionalArguments[1]];
+        var nextOwner = _.find(suggestions, function(suggestion) {
+          return stringifySuggestionObject(suggestion) === selectionEvent.additionalArguments[0];
+        });
 
         $scope.ownerInput = nextOwner.displayName;
         $scope.showWarning = false;

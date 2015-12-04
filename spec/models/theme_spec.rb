@@ -22,7 +22,7 @@ RSpec.describe Theme, type: :model do
 
   let(:theme_config) do
     {
-      'cssVars' => theme_css_vars,
+      'css_variables' => theme_css_vars,
       'description' => description,
       'id' => id,
       'title' => title,
@@ -84,21 +84,21 @@ RSpec.describe Theme, type: :model do
     context 'when story is new' do
       let(:theme_config) do
         {
-          'cssVars' => theme_css_vars,
+          'css_variables' => theme_css_vars,
           'description' => description,
           'title' => title,
           'domain_cname' => domain_cname
         }
       end
 
-      it 'calls create_configuration with core' do
-        expect(CoreServer).to receive(:create_configuration).and_return(sample_core_config)
+      it 'calls create_or_update_configuration with core' do
+        expect(CoreServer).to receive(:create_or_update_configuration).and_return(sample_core_config)
         subject.save(headers)
       end
 
       context 'when successfull' do
         before do
-          allow(CoreServer).to receive(:create_configuration).and_return(sample_core_config)
+          allow(CoreServer).to receive(:create_or_update_configuration).and_return(sample_core_config)
           subject.save(headers)
         end
 
@@ -125,7 +125,7 @@ RSpec.describe Theme, type: :model do
         end
 
         before do
-          allow(CoreServer).to receive(:create_configuration).and_return(error_response)
+          allow(CoreServer).to receive(:create_or_update_configuration).and_return(error_response)
           subject.save(headers)
         end
 
@@ -142,7 +142,7 @@ RSpec.describe Theme, type: :model do
     context 'when story exists' do
       let(:theme_config) do
         {
-          'cssVars' => theme_css_vars,
+          'css_variables' => theme_css_vars,
           'description' => description,
           'id' => id,
           'title' => title,
@@ -152,8 +152,8 @@ RSpec.describe Theme, type: :model do
         }
       end
 
-      it 'calls update_configuration with core' do
-        expect(CoreServer).to receive(:update_configuration).and_return(sample_core_config)
+      it 'calls create_or_update_configuration with core' do
+        expect(CoreServer).to receive(:create_or_update_configuration).and_return(sample_core_config)
         subject.save(headers)
       end
     end
@@ -267,7 +267,7 @@ RSpec.describe Theme, type: :model do
         'properties' => [
           { 'name' => 'title', 'value' => title },
           { 'name' => 'description', 'value' => description },
-          { 'name' => 'cssVars', 'value' => theme_css_vars }
+          { 'name' => 'css_variables', 'value' => theme_css_vars }
         ],
         'type' => 'story_theme'
       }

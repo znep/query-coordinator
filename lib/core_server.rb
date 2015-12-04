@@ -29,16 +29,14 @@ class CoreServer
     core_server_request_with_retries(core_server_request_options)
   end
 
+  # Gets the configuration based on id. Since configurations are a public endpoint,
+  # no headers are needed.
   def self.get_configuration(id)
     configuration_request(id: id, verb: :get)
   end
 
-  def self.create_configuration(headers, configuration_data)
-    configuration_request(verb: :post, headers: headers, data: configuration_data)
-  end
-
-  def self.update_configuration(id, headers, configuration_data)
-    configuration_request(id: id, verb: :put, headers: headers, data: configuration_data)
+  def self.create_or_update_configuration(id, headers, configuration_data)
+    configuration_request(id: id, verb: :post, headers: headers, data: configuration_data)
   end
 
   def self.delete_configuration(id, headers)
@@ -189,10 +187,16 @@ class CoreServer
 
     headers = (options[:headers] || {}).merge('Content-type' => 'application/json')
     verb = options[:verb]
+    config_id = options[:id]
     path = '/configurations.json'
 
-    if options[:id].present?
-      path << "/#{options[:id]}"
+    if config_id.present?
+      path << "/#{config_id}"
+
+      # since we have an ID, we will need to PUT
+      if verb == :post
+        verb = :put
+      end
     end
 
     core_server_request_options = {
@@ -209,13 +213,13 @@ class CoreServer
     response = core_server_request_with_retries(core_server_request_options)
 
     unless verb == :delete
-      id = response['id']
+      config_id ||= response['id']
 
-      if [:put, :post].include?(verb) && id.present? && options[:data].key?('properties')
-        configuration_properties_request(config_id: id, verb: verb, headers: headers, data: options[:data]['properties'], return_errors: true)
+      if [:put, :post].include?(verb) && config_id.present? && options[:data].key?('properties')
+        configuration_properties_request(config_id: config_id, verb: verb, headers: headers, data: options[:data]['properties'], return_errors: true)
       end
 
-      response = core_server_request_with_retries(verb: :get, path: "/configurations/#{id}")
+      response = core_server_request_with_retries(verb: :get, path: "/configurations/#{config_id}")
     end
 
     response
@@ -240,7 +244,7 @@ class CoreServer
       core_server_request_options = {
         verb: verb,
         path: path,
-        headers: options[:headers].merge(
+        headers: headers.merge(
           'Content-type' => 'application/json'
         ),
         body: property,
@@ -256,14 +260,13 @@ class CoreServer
     raise ArgumentError.new("':type' is required.") unless options.key?(:type)
 
     verb = options[:verb] || :get
-    path = '/configurations.json'
 
     query_params = generate_query_params(
       type: options[:type],
       defaultOnly: options.fetch(:default_only, true),
       merge: options.fetch(:merge, true)
     )
-    path << "?#{query_params}"
+    path = "/configurations.json?#{query_params}"
 
     core_server_request_options = {
       verb: verb,

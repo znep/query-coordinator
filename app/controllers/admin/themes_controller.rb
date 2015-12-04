@@ -38,7 +38,9 @@ class Admin::ThemesController < ApplicationController
   end
 
   def destroy
-    Theme.find(params[:id]).destroy(CoreServer.headers_from_request(request))
+    theme = Theme.find(params[:id])
+    theme.destroy(CoreServer.headers_from_request(request))
+    flash[:success] = "Successfully deleted theme, #{theme.title}."
     redirect_to action: 'index'
   end
 

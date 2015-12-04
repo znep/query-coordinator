@@ -28,7 +28,7 @@ RSpec.describe ThemesHelper, type: :helper do
         allow(Rails.env).to receive(:development?).and_return(false)
       end
 
-      it 'sets style to :nested' do
+      it 'sets style to :compressed' do
         expect(subject[:style]).to eq(:compressed)
       end
     end
@@ -63,7 +63,8 @@ RSpec.describe ThemesHelper, type: :helper do
       end
 
       it 'is based on updated_at and domain' do
-        expect(cache_key).to eq('thedomain.gov/themes/custom-66666')
+        expected_cache_key_updated_at_part = 54321 + 12345
+        expect(cache_key).to eq("thedomain.gov/themes/custom-#{expected_cache_key_updated_at_part}")
       end
     end
   end

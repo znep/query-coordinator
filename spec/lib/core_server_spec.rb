@@ -114,7 +114,7 @@ describe CoreServer do
     end
 
     it 'raises without options' do
-      expect { CoreServer.view_request() }.to raise_error(ArgumentError, /0 for 1/)
+      expect { CoreServer.view_request() }.to raise_error(ArgumentError, /0 for \d/)
     end
 
     it 'raises without uid' do
@@ -208,7 +208,7 @@ describe CoreServer do
     end
 
     it 'raises when no options do' do
-      expect { CoreServer.configurations_request() }.to raise_error(ArgumentError, /0 for 1/)
+      expect { CoreServer.configurations_request() }.to raise_error(ArgumentError, /0 for \d/)
     end
 
     it 'raises when no type in options' do
@@ -304,16 +304,17 @@ describe CoreServer do
       end
     end
 
-    # context 'when two story configs' do
-    #   before do
-    #     stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
-    #       to_return(status: 200, body: fixture('story_theme.json'))
-    #   end
+    context 'when two story configs' do
+      before do
+        theme_json = JSON.parse(fixture('story_theme.json').read) # this is an array of one theme
+        two_themes = theme_json + theme_json
+        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
+          to_return(status: 200, body: two_themes.to_json)
+      end
 
-    #   it 'returns story config' do
-    #     expect(CoreServer.story_themes.length).to eq(1)
-    #     expect(CoreServer.story_themes.first['name']).to eq('Story Theme 1')
-    #   end
-    # end
+      it 'returns all story configs' do
+        expect(CoreServer.story_themes.length).to eq(2)
+      end
+    end
   end
 end

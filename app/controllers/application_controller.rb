@@ -25,8 +25,8 @@ class ApplicationController < ActionController::Base
   end
 
   def require_super_admin
-    if current_user.blank? || !current_user['flags'].try(:include?, 'admin')
-      return head :forbidden
+    unless current_user.try(:[], 'flags').try(:include?, 'admin')
+      redirect_to "/login?return_to=#{request.path}"
     end
   end
 end

@@ -4,11 +4,11 @@ class Theme
 
   attr_reader :id, :title, :description, :css_variables, :updated_at, :domain_cname, :errors
 
-  def initialize(config_hash={})
+  def initialize(config_hash = {})
     @id = config_hash['id']
     @title = config_hash['title']
     @description = config_hash['description']
-    @css_variables = config_hash['cssVars'] || {}
+    @css_variables = config_hash['css_variables'] || {}
     @updated_at = config_hash['updated_at'] || 0
     @domain_cname = config_hash['domain_cname']
     @persisted = config_hash['persisted'] || false
@@ -28,13 +28,7 @@ class Theme
   end
 
   def save(headers)
-    result = nil
-
-    if id.blank?
-      result = CoreServer.create_configuration(headers, to_core_config)
-    else
-      result = CoreServer.update_configuration(id, headers, to_core_config)
-    end
+    result = CoreServer.create_or_update_configuration(id, headers, to_core_config)
 
     if result['error'].present?
       @errors = result['message']
@@ -49,7 +43,7 @@ class Theme
   def update_attributes(attributes, headers)
     @title = attributes['title']
     @description = attributes['description']
-    @css_variables.merge!(attributes['css_variables'])
+    @css_variables = attributes['css_variables']
 
     save(headers)
   end
@@ -59,7 +53,7 @@ class Theme
   end
 
   def persisted?
-    @persisted
+    !!@persisted
   end
 
   def self.find(id)
@@ -87,7 +81,7 @@ class Theme
   #       "value": "Drab Theme"
   #     },
   #     {
-  #       "name": "cssVars",
+  #       "name": "css_variables",
   #       "value": {
   #         "$medium": "768px",
   #         "$large": "1200px",
@@ -165,7 +159,7 @@ class Theme
           'value' => description
         },
         {
-          'name' => 'cssVars',
+          'name' => 'css_variables',
           'value' => css_variables
         }
       ]

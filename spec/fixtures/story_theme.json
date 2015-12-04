@@ -18,7 +18,7 @@
         "value": "Drab Theme"
       },
       {
-        "name": "cssVars",
+        "name": "css_variables",
         "value": {
           "$medium": "768px",
           "$large": "1200px",

@@ -123,7 +123,6 @@ class PageMetadataControllerTest < ActionController::TestCase
   end
 
   test 'create fails when neither save-as nor ephemeral-bootstrap is enabled' do
-    stub_feature_flags_with(:enable_data_lens_other_views, false)
     @controller.stubs(can_create_metadata?: true, save_as_enabled?: false, ephemeral_bootstrap_enabled?: false)
 
     post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :json

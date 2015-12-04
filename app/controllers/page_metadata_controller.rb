@@ -189,7 +189,7 @@ class PageMetadataController < ApplicationController
   end
 
   def save_as_enabled?
-    FeatureFlags.derive(nil, request)[:enable_data_lens_other_views]
+    FeatureFlags.derive(nil, request)[:enable_data_lens_save_as]
   end
 
   def ephemeral_bootstrap_enabled?

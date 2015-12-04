@@ -80,7 +80,7 @@
           }
         };
 
-        $scope.showSaveAsButton = ServerConfig.get('enableDataLensOtherViews');
+        $scope.showSaveAsButton = ServerConfig.get('enableDataLensSaveAs');
 
         var canCustomize$ = Rx.Observable.combineLatest(
           expandedCard$,

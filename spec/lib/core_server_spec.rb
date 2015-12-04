@@ -1,10 +1,29 @@
 require 'spec_helper'
 
 describe CoreServer do
+  let(:core_service_uri) { 'http://123.45.67.89:8081' }
+  let(:app_token) { 'the_app_token' }
   let(:csrf_token) { 'the_csrf_token' }
   let(:http_cookie) { "_core_session_id=bobloblaw; socrata-csrf-token=#{csrf_token}" }
   let(:request_host) { 'data.monkeybusiness.gov' }
   let(:request_uuid) { 'mock request uuid' }
+  let(:headers) do
+    {
+      'Cookie' => http_cookie,
+      'X-CSRF-Token' => csrf_token,
+      'X-Socrata-Host' => request_host
+    }
+  end
+  let(:injected_headers) do
+    {
+      'Content-type' => 'application/json'
+    }
+  end
+
+  before do
+    allow(Rails.application.config).to receive(:core_service_uri).and_return(core_service_uri)
+    allow(Rails.application.config).to receive(:core_service_app_token).and_return(app_token)
+  end
 
   describe '#headers_from_request' do
     let(:env) do
@@ -94,13 +113,33 @@ describe CoreServer do
       allow(CoreServer).to receive(:core_server_request_with_retries) { false }
     end
 
+    it 'raises without options' do
+      expect { CoreServer.view_request() }.to raise_error(ArgumentError, /0 for \d/)
+    end
+
+    it 'raises without uid' do
+      expect { CoreServer.view_request(verb: :get) }.to raise_error(ArgumentError, /':uid' is required/)
+    end
+
+    it 'does not raise for post without uid' do
+      expect { CoreServer.view_request(verb: :post, headers: {}) }.to_not raise_error
+    end
+
+    it 'raises when no verb is supplied' do
+      expect { CoreServer.view_request(uid: 'four-four') }.to raise_error(ArgumentError, /':verb' is required/)
+    end
+
+    it 'raises when no headers are supplied' do
+      expect { CoreServer.view_request(uid: 'four-four', verb: :put) }.to raise_error(ArgumentError, /':headers' is required/)
+    end
+
     it 'should make a request with GET query parameters' do
-      CoreServer.view_request({
+      CoreServer.view_request(
         uid: 'four-four',
         verb: :get,
         headers: {},
         query_params: {hello: 'world'}
-      })
+      )
 
       expect(CoreServer).to have_received(:core_server_request_with_retries).with(
         hash_including(:path => '/views/four-four.json?hello=world')
@@ -108,11 +147,11 @@ describe CoreServer do
     end
 
     it 'should make a request without query parameters' do
-      CoreServer.view_request({
+      CoreServer.view_request(
         uid: 'four-four',
         verb: :put,
         headers: {}
-      })
+      )
 
       expect(CoreServer).to have_received(:core_server_request_with_retries).with(
         hash_including(:path => '/views/four-four.json')
@@ -121,24 +160,9 @@ describe CoreServer do
   end
 
   describe '#current_user' do
-
-    let(:app_token) { 'the_app_token' }
-    let(:headers) do
-      {
-        'Cookie' => http_cookie,
-        'X-CSRF-Token' => csrf_token,
-        'X-Socrata-Host' => request_host
-      }
-    end
-
-    before do
-      expect(Rails.application.config).to receive(:core_service_uri).and_return('http://123.45.67.89:8081')
-      allow(Rails.application.config).to receive(:core_service_app_token).and_return(app_token)
-    end
-
     context 'when user is logged in' do
       before do
-        stub_request(:get, "http://123.45.67.89:8081/users/current.json").
+        stub_request(:get, "#{core_service_uri}/users/current.json").
           with(headers: headers.merge(injected_headers)).
           to_return(status: 200, body: fixture('current_user.json'))
       end
@@ -151,7 +175,7 @@ describe CoreServer do
 
     context 'when user is not logged in' do
       before do
-        stub_request(:get, "http://123.45.67.89:8081/users/current.json").
+        stub_request(:get, "#{core_service_uri}/users/current.json").
           with(headers: headers.merge(injected_headers)).
           to_return(status: 404)
       end
@@ -164,7 +188,7 @@ describe CoreServer do
 
     context 'when core server error' do
       before do
-        stub_request(:get, "http://123.45.67.89:8081/users/current.json").
+        stub_request(:get, "#{core_service_uri}/users/current.json").
           with(headers: headers.merge(injected_headers)).
           to_return(status: 500, body: fixture('error.html'), headers: { 'Content-Type' => 'text/html; charset=utf-8' })
       end
@@ -174,14 +198,123 @@ describe CoreServer do
         expect(result).to be_nil
       end
     end
-
   end
 
-  def injected_headers
-    {
-      'X-App-Token' => app_token,
-      'X-CSRF-Token' => csrf_token,
-      'Content-type' => 'application/json'
-    }
+  describe '#configurations_request' do
+    before do
+      stub_request(:get, /#{core_service_uri}\/configurations.json.*/).
+        with(headers: headers.merge(injected_headers)).
+        to_return(status: 200, body: fixture('configurations.json'))
+    end
+
+    it 'raises when no options do' do
+      expect { CoreServer.configurations_request() }.to raise_error(ArgumentError, /0 for \d/)
+    end
+
+    it 'raises when no type in options' do
+      expect { CoreServer.configurations_request({}) }.to raise_error(ArgumentError, /':type' is required/)
+    end
+
+    it 'makes a request with default options' do
+      expect(CoreServer).to receive(:core_server_request_with_retries).with(
+        hash_including(:path => '/configurations.json?defaultOnly=true&merge=true&type=test_config')
+      )
+      CoreServer.configurations_request(verb: :get, type: 'test_config')
+    end
+
+    it 'does not set body' do
+      expect(CoreServer).to receive(:core_server_request_with_retries).with(
+        hash_including(:path => '/configurations.json?defaultOnly=true&merge=true&type=test_config')
+      )
+      CoreServer.configurations_request(verb: :get, type: 'test_config')
+    end
+
+    it 'should make a request with default_only set to false' do
+      expect(CoreServer).to receive(:core_server_request_with_retries).with(
+        hash_including(:path => '/configurations.json?defaultOnly=false&merge=true&type=test_config')
+      )
+      CoreServer.configurations_request(verb: :get, type: 'test_config', default_only: false)
+    end
+
+    it 'should make a request with merge set to false' do
+      expect(CoreServer).to receive(:core_server_request_with_retries).with(
+        hash_including(:path => '/configurations.json?defaultOnly=true&merge=false&type=test_config')
+      )
+      CoreServer.configurations_request(verb: :get, type: 'test_config', merge: false)
+    end
+
+    it 'should make a request with both merge and default_only set to false' do
+      expect(CoreServer).to receive(:core_server_request_with_retries).with(
+        hash_including(:path => '/configurations.json?defaultOnly=false&merge=false&type=test_config')
+      )
+      CoreServer.configurations_request(verb: :get, type: 'test_config', merge: false, default_only: false)
+    end
+  end
+
+  describe '#permissions_request' do
+    it 'raises when no options' do
+      expect { CoreServer.permissions_request() }.to raise_error(ArgumentError, /0 for 1/)
+    end
+
+    it 'raises when no uid in options' do
+      expect { CoreServer.permissions_request(verb: :get, headers: headers, query_params: {}) }.to raise_error(ArgumentError, /':uid' is required/)
+    end
+
+    it 'raises when no verb in options' do
+      expect {
+        CoreServer.permissions_request(uid: 'four-four', headers: headers, query_params: {})
+      }.to raise_error(ArgumentError, /':verb' is required/)
+    end
+
+    it 'raises when no headers in options' do
+      expect {
+        CoreServer.permissions_request(verb: :get, uid: 'four-four', query_params: {})
+      }.to raise_error(ArgumentError, /':headers' is required/)
+    end
+
+    it 'raises when no query_params in options' do
+      expect {
+        CoreServer.permissions_request(verb: :get, uid: 'four-four', headers: {})
+      }.to raise_error(ArgumentError, /':query_params' is required/)
+    end
+  end
+
+  describe '#story_themes' do
+    context 'when no configurations exist' do
+      before do
+        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
+          to_return(status: 200, body: '[]')
+      end
+
+      it 'is empty' do
+        expect(CoreServer.story_themes).to be_an(Array)
+        expect(CoreServer.story_themes).to be_empty
+      end
+    end
+
+    context 'when one story config' do
+      before do
+        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
+          to_return(status: 200, body: fixture('story_theme.json'))
+      end
+
+      it 'returns story config' do
+        expect(CoreServer.story_themes.length).to eq(1)
+        expect(CoreServer.story_themes.first['name']).to eq('Story Theme 1')
+      end
+    end
+
+    context 'when two story configs' do
+      before do
+        theme_json = JSON.parse(fixture('story_theme.json').read) # this is an array of one theme
+        two_themes = theme_json + theme_json
+        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
+          to_return(status: 200, body: two_themes.to_json)
+      end
+
+      it 'returns all story configs' do
+        expect(CoreServer.story_themes.length).to eq(2)
+      end
+    end
   end
 end

@@ -4,6 +4,8 @@ RSpec.describe StoriesController, type: :controller do
 
   before do
     stub_core_view('test-test')
+    # stub custom themes
+    allow(CoreServer).to receive(:story_themes).and_return([])
   end
 
   describe '#show' do

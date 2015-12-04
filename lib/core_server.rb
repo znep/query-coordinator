@@ -29,6 +29,24 @@ class CoreServer
     core_server_request_with_retries(core_server_request_options)
   end
 
+  # Gets the configuration based on id. Since configurations are a public endpoint,
+  # no headers are needed.
+  def self.get_configuration(id)
+    configuration_request(id: id, verb: :get)
+  end
+
+  def self.create_or_update_configuration(id, headers, configuration_data)
+    configuration_request(id: id, verb: :post, headers: headers, data: configuration_data)
+  end
+
+  def self.delete_configuration(id, headers)
+    configuration_request(id: id, verb: :delete, headers: headers)
+  end
+
+  def self.story_themes
+    configurations_request(verb: :get, type: 'story_theme', default_only: false, merge: false)
+  end
+
   # Generate Cookie, X-CSRF-Token, X-Socrata-RequestId, and X-Socrata-Host
   # headers from the given request.
   #
@@ -115,9 +133,9 @@ class CoreServer
   end
 
   def self.view_request(options)
-    raise ArgumentError("':uid' is required.") if options[:verb] != :post && options.key?(:uid) == false
-    raise ArgumentError("':verb' is required.") unless options.key?(:verb)
-    raise ArgumentError("':headers' is required.") unless options.key?(:headers)
+    raise ArgumentError.new("':uid' is required.") if options[:verb] != :post && options.key?(:uid) == false
+    raise ArgumentError.new("':verb' is required.") unless options.key?(:verb)
+    raise ArgumentError.new("':headers' is required.") unless options.key?(:headers)
 
     verb = options[:verb]
     path = if verb == :post
@@ -145,10 +163,10 @@ class CoreServer
   end
 
   def self.permissions_request(options)
-    raise ArgumentError("':uid' is required.") unless options.key?(:uid)
-    raise ArgumentError("':verb' is required.") unless options.key?(:verb)
-    raise ArgumentError("':headers' is required.") unless options.key?(:headers)
-    raise ArgumentError("':query_params' is required.") unless options.key?(:query_params)
+    raise ArgumentError.new("':uid' is required.") unless options.key?(:uid)
+    raise ArgumentError.new("':verb' is required.") unless options.key?(:verb)
+    raise ArgumentError.new("':headers' is required.") unless options.key?(:headers)
+    raise ArgumentError.new("':query_params' is required.") unless options.key?(:query_params)
 
     verb = options[:verb]
     path = "/views/#{options[:uid]}.json?#{generate_query_params(options[:query_params])}"
@@ -164,6 +182,107 @@ class CoreServer
     core_server_permissions_request_with_retries(core_server_request_options)
   end
 
+  def self.configuration_request(options)
+    raise ArgumentError.new("':verb' is required.") unless options.key?(:verb)
+
+    headers = (options[:headers] || {}).merge('Content-type' => 'application/json')
+    verb = options[:verb]
+    config_id = options[:id]
+    path = '/configurations.json'
+
+    if config_id.present?
+      path << "/#{config_id}"
+
+      # since we have an ID, we will need to PUT
+      if verb == :post
+        verb = :put
+      end
+    end
+
+    core_server_request_options = {
+      verb: verb,
+      path: path,
+      headers: headers,
+      return_errors: true
+    }
+
+    if options[:data].present?
+      core_server_request_options[:body] = options[:data]
+    end
+
+    response = core_server_request_with_retries(core_server_request_options)
+
+    unless verb == :delete
+      config_id ||= response['id']
+
+      if [:put, :post].include?(verb) && config_id.present? && options[:data].key?('properties')
+        configuration_properties_request(config_id: config_id, verb: verb, headers: headers, data: options[:data]['properties'], return_errors: true)
+      end
+
+      response = core_server_request_with_retries(verb: :get, path: "/configurations/#{config_id}")
+    end
+
+    response
+  end
+
+  def self.configuration_properties_request(options)
+    configuration_id = options[:config_id]
+    verb = options[:verb]
+    headers = options[:headers]
+    properties = options[:data]
+    path = nil
+
+    base_path = "/configurations/#{configuration_id}/properties"
+
+    properties.each do |property|
+      if verb == :post
+        path = "#{base_path}.json"
+      else
+        path = "#{base_path}/#{CGI.escape(property['name'])}"
+      end
+
+      core_server_request_options = {
+        verb: verb,
+        path: path,
+        headers: headers.merge(
+          'Content-type' => 'application/json'
+        ),
+        body: property,
+        return_errors: true
+      }
+
+      result = core_server_request_with_retries(core_server_request_options)
+      raise result['message'] if result['error'].present?
+    end
+  end
+
+  def self.configurations_request(options)
+    raise ArgumentError.new("':type' is required.") unless options.key?(:type)
+
+    verb = options[:verb] || :get
+
+    query_params = generate_query_params(
+      type: options[:type],
+      defaultOnly: options.fetch(:default_only, true),
+      merge: options.fetch(:merge, true)
+    )
+    path = "/configurations.json?#{query_params}"
+
+    core_server_request_options = {
+      verb: verb,
+      path: path,
+      headers: (options[:headers] || {}).merge(
+        'Content-type' => 'application/json'
+      )
+    }
+
+    if options[:data].present?
+      core_server_request_options[:body] = options[:data]
+    end
+
+    core_server_request_with_retries(core_server_request_options)
+  end
+
   def self.core_server_request_with_retries(request_options)
     core_server_response = nil
     json_response = nil
@@ -177,7 +296,7 @@ class CoreServer
       status_code = core_server_response.code.to_i
       response_body = core_server_response.body
 
-      if status_code == 200
+      if status_code == 200 || (request_options[:return_errors] && response_body.present?)
         json_response = JSON.parse(response_body)
       end
 

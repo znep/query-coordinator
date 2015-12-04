@@ -100,6 +100,12 @@ RSpec.configure do |config|
     WebMock.allow_net_connect!
   end
 
+  config.before(:each, type: :feature) do
+    allow(CoreServer).to receive(:story_themes).and_return([])
+    stub_request(:get, /.*custom\.css.*/)
+      .and_return(status: 200, body: '', headers: {})
+  end
+
   config.after(:all, type: :feature) do
     WebMock.disable_net_connect!
   end
@@ -201,6 +207,12 @@ end
 
 def stub_valid_session
   allow(@controller).to receive(:current_user).and_return(mock_valid_user)
+end
+
+def stub_super_admin_session
+  allow(@controller).to receive(:current_user).and_return(
+    mock_valid_user.merge('flags' => ['admin'])
+  )
 end
 
 def stub_invalid_session

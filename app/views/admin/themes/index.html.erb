@@ -1,0 +1,28 @@
+<h1>Custom Style</h1>
+
+<table class="table-borderless">
+  <thead>
+    <tr>
+      <th scope="col">Style Name</th>
+      <th scope="col">Last Updated</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @custom_themes.each do |custom_theme| -%>
+    <tr>
+      <td scope="row"><%= custom_theme.title %></td>
+      <td><%= custom_theme.updated_at %></td>
+      <td>
+        <%= link_to 'Edit', edit_admin_theme_path(custom_theme) %>
+        <%#= link_to(custom_theme, :clone) %>
+        <%= link_to 'Delete', admin_theme_path(custom_theme), data: { confirm: 'Are you sure?' }, method: :delete %>
+      </td>
+    </tr>
+  <% end -%>
+  </tbody>
+</table>
+
+<div>
+  <%= link_to 'Create New', new_admin_theme_path, class: 'btn btn-default' %>
+</div>

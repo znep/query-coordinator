@@ -175,7 +175,7 @@ $th-headings: (
 
   // Default horizontal rule
   hr {
-    border-top: 1px solid $quiet-type-color;
+    border-top: $hr-border-top;
     border-bottom: 0;
     height: 1px;
   }

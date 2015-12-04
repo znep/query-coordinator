@@ -11,6 +11,7 @@ REVISION
 marathon.properties
 /coverage
 *.log
+.sass-cache
 
 # Ignore local database settings
 config/database.yml

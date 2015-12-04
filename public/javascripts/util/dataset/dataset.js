@@ -54,6 +54,8 @@ var Dataset = ServerModel.extend({
                 selfUrl + '.json', selfUrl + '/columns'), $.extend({}, this));
 
         if (ds.nbe_view_id && blist.feature_flags.swap_in_nbe_view) {
+          // NOTE: this feature flag should not be enabled except for NBE Go testing!
+          // See CORE-7559 for a failure case that the flag can cause here.
           ds.nbeView = blist.viewCache[ds.nbe_view_id];
           ds._parent = new Dataset(blist.viewCache[ds.default_ds_id]);
           ds.newBackend = true;

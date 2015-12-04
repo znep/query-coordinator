@@ -207,7 +207,7 @@ standalone_lens_chart:
   defaultValue: false
   category: data lens
 swap_in_nbe_view:
-  description: Utility flag to make frontend views use their NBE counterparts.
+  description: "Utility flag to make frontend views use their NBE counterparts. NOTE: This is intended to be used for NBE Go testing; it may cause errors if enabled for general use."
   defaultValue: false
   category: obe deprecation
 timeline:

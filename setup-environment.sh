@@ -33,7 +33,7 @@ echo "" > "${HOME}/.gemrc"
 sudo chown -R $(whoami) ~/.npm
 sudo chown -R $(whoami) /usr/local/lib/node_modules
 
-npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-remote
+npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-virtual
 curl -u"${ARTIFACTORY_ONLINE_USER}":"${ARTIFACTORY_ONLINE_PASSWORD}" "https://socrata.artifactoryonline.com/socrata/api/npm/auth" >> ~/.npmrc
 
 # 4. Bower

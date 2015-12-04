@@ -4,7 +4,12 @@ module.exports = {
   entry: './src/index.js',
   externals: {
     'jquery': 'jQuery',
-    'socrata-utils': 'socrata.utils',
+    'socrata-utils': {
+      root: ['socrata', 'utils'],
+      commonjs2: 'socrata.utils',
+      commonjs: 'socrata.utils',
+      amd: 'socrata.utils'
+    },
     'd3': 'd3',
     'lodash': '_',
     'moment': 'moment'

@@ -35,7 +35,7 @@ class Document < ActiveRecord::Base
   DIRECT_UPLOAD_URL_FORMAT = %r{
     \A
     https:\/\/
-    #{Rails.application.secrets.aws['s3_bucket_name']}\.s3\.amazonaws\.com\/
+    #{Rails.application.secrets.aws['s3_bucket_name']}\.s3.*\.amazonaws\.com\/
     (?<path>uploads\/.+\/(?<filename>.+))
     \z
   }x.freeze

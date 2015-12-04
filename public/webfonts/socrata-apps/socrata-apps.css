@@ -1,16 +1,17 @@
 @font-face {
 	font-family: 'socrata-apps';
-	src:url('socrata-apps.eot?66e453');
-	src:url('socrata-apps.eot?66e453#iefix') format('embedded-opentype'),
-		url('socrata-apps.ttf?66e453') format('truetype'),
-		url('socrata-apps.woff?66e453') format('woff'),
-		url('socrata-apps.svg?66e453#icomoon') format('svg');
+	src:	url('socrata-apps.eot?civ1a8');
+	src:	url('socrata-apps.eot?civ1a8#iefix') format('embedded-opentype'),
+		url('socrata-apps.ttf?civ1a8') format('truetype'),
+		url('socrata-apps.woff?civ1a8') format('woff'),
+		url('socrata-apps.svg?civ1a8#socrata-apps') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 
 [class^="icon-"], [class*=" icon-"] {
-	font-family: 'socrata-apps';
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'socrata-apps' !important;
 	speak: none;
 	font-style: normal;
 	font-weight: normal;
@@ -23,14 +24,20 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.icon-delete:before {
-	content: "\e80e";
+.icon-clear-formatting:before {
+	content: "\e600";
 }
-.icon-public:before {
-	content: "\e800";
+.icon-move:before {
+	content: "\e601";
 }
-.icon-private:before {
-	content: "\e80d";
+.icon-stories-icon:before {
+	content: "\e602";
+}
+.icon-stories-menu:before {
+	content: "\e603";
+}
+.icon-warning:before {
+	content: "\e604";
 }
 .icon-number:before {
 	content: "\e61b";
@@ -83,20 +90,14 @@
 .icon-filter:before {
 	content: "\e62b";
 }
-.icon-warning:before {
+.icon-warning2:before {
 	content: "\e62c";
 }
 .icon-geo:before {
 	content: "\e62d";
 }
-.icon-link:before {
+.icon-link2:before {
 	content: "\e62e";
-}
-.icon-italic:before {
-	content: "\e62f";
-}
-.icon-bold:before {
-	content: "\e630";
 }
 .icon-edit:before {
 	content: "\e631";
@@ -149,6 +150,91 @@
 .icon-puzzle:before {
 	content: "\e80c";
 }
-.icon-clipboard:before {
-  content: "\1F4CB";
+.icon-check-2:before {
+	content: "\e900";
 }
+.icon-close-circle:before {
+	content: "\e901";
+}
+.icon-pause:before {
+	content: "\e906";
+}
+.icon-play:before {
+	content: "\e907";
+}
+.icon-waiting:before {
+	content: "\e908";
+}
+.icon-eye:before {
+	content: "\e902";
+}
+.icon-eye-blocked:before {
+	content: "\e903";
+}
+.icon-presentation:before {
+	content: "\e95c";
+}
+.icon-undo:before {
+	content: "\eaa2";
+}
+.icon-redo:before {
+	content: "\eaa3";
+}
+.icon-quotes-left:before {
+	content: "\eb18";
+}
+.icon-cog:before {
+	content: "\eb5c";
+}
+.icon-list-numbered:before {
+	content: "\ec55";
+}
+.icon-list2:before {
+	content: "\ec57";
+}
+.icon-link:before {
+	content: "\ec96";
+}
+.icon-plus2:before {
+	content: "\ed58";
+}
+.icon-plus3:before {
+	content: "\ed5a";
+}
+.icon-cross2:before {
+	content: "\ed6a";
+}
+.icon-checkmark3:before {
+	content: "\ed6e";
+}
+.icon-arrow-next:before {
+	content: "\eddb";
+}
+.icon-arrow-prev:before {
+	content: "\eddf";
+}
+.icon-bold2:before {
+	content: "\ee9a";
+}
+.icon-italic2:before {
+	content: "\ee9c";
+}
+.icon-paragraph-left3:before {
+	content: "\eebe";
+}
+.icon-paragraph-center3:before {
+	content: "\eebf";
+}
+.icon-paragraph-right3:before {
+	content: "\eec0";
+}
+.icon-preview:before {
+	content: "\eec5";
+}
+.icon-failed:before {
+	content: "\e904";
+}
+.icon-processing:before {
+	content: "\e905";
+}
+

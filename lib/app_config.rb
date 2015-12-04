@@ -27,6 +27,10 @@ class AppConfig < Hashie::Dash
   property :polaroid_hostname
   property :polaroid_port, transform_with: as_int
 
+  # Import Status Service
+  property :import_status_service_hostname
+  property :import_status_service_port
+
   # Metrics
   property :metrics_dir
   property :statsd_enabled

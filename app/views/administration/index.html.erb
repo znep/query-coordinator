@@ -108,6 +108,15 @@
         </span>
       </li>
     <%- end -%>
+    <%- if FeatureFlags.derive(nil, request).show_admin_processes &&
+            CurrentDomain.user_can?(current_user, :view_all_dataset_status_logs) %>
+      <li class="jobs">
+        <%= admin_nav_link_to 'Jobs', :action => 'jobs' %>
+        <span class="description">
+          See all current and recent long-running data processing jobs happening on your platform
+        </span>
+      </li>
+    <%- end %>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
         <%= admin_nav_link_to 'Internal', :controller => 'internal', :action => 'index' %>

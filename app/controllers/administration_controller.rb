@@ -3,6 +3,7 @@ require 'csv'
 class AdministrationController < ApplicationController
   include BrowseActions
   include GeoregionsHelper
+  include JobsHelper
 
   # To learn why we include AdministrationHelper manually, see
   # the comment at the top of AdministrationHelper's implementation.
@@ -872,6 +873,27 @@ class AdministrationController < ApplicationController
 
     flash[:notice] = "Category successfully removed"
     redirect_to metadata_administration_path
+  end
+
+  before_filter :only => [:jobs, :show_job] do |c|
+    c.check_feature_flag(:show_admin_processes) && c.check_auth_level(:view_all_dataset_status_logs)
+  end
+
+  #
+  # Jobs log
+  #
+  def jobs
+    @activities = ImportActivity.find_all_by_created_at_descending
+  end
+
+  def show_job
+    begin
+      @activity = ImportActivity.find(params[:id])
+    rescue ImportStatusService::ResourceNotFound
+      return render_404
+    rescue ImportStatusService::ServerError
+      return render_500
+    end
   end
 
   #

@@ -1,0 +1,83 @@
+<%- jobs_prefix = 'screens.admin.jobs' %>
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-jobs' %>
+  <title><%= t("#{jobs_prefix}.index_page.title") %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.started-time').each(function(i, el) {
+      var $el = $(el);
+      $el.text(moment.unix($el.data('epoch-seconds')).format('HH:mm:ss'));
+    });
+  });
+</script>
+
+<div class="contentBox withLeftNavigation jobsScreen">
+  <div class="adminHeader floating jobs">
+    <span class="icon"></span>
+    <h1><%= t("#{jobs_prefix}.index_page.page_title") %></h1>
+  </div>
+</div>
+
+<div class="contentBox withLeftNavigation jobsScreen">
+  <%= display_standard_flashes %>
+
+  <table class="gridList">
+    <thead>
+      <tr>
+        <th><%= t("#{jobs_prefix}.index_page.action") %></th>
+        <th><%= t("#{jobs_prefix}.index_page.dataset") %></th>
+        <th><%= t("#{jobs_prefix}.index_page.initiated_by") %></th>
+        <th><%= t("#{jobs_prefix}.index_page.started") %></th>
+        <th><%= t("#{jobs_prefix}.index_page.status") %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%- @activities.each do |activity| %>
+        <tr class="job-row">
+          <td><%= t("#{jobs_prefix}.actions.#{activity.activity_type}") %></td>
+          <td>
+            <%= link_to activity.dataset.name, view_path(activity.dataset) %>
+          </td>
+          <td>
+            <%= link_to activity.initiated_by.displayName, profile_path(activity.initiated_by) %>
+          </td>
+          <td>
+            <span class="started-time" data-epoch-seconds="<%= activity.created_at.to_i %>">
+              <%= activity.created_at.strftime('%H:%M:%S') %>
+            </span>
+            <span class="started-time-relative-day">
+              <%= relative_day(activity.created_at) %>
+            </span>
+          </td>
+          <td class="import-status-label">
+            <span class="import-status-icon import-status-icon-<%= activity.status %> icon-<%= icon_for_status(activity.status) %>"></span>
+            <% if activity.status == 'failure' %>
+              <%= link_to t("#{jobs_prefix}.statuses.#{activity.status}"),
+                          :action => 'show_job', :id => activity.id %>
+            <% else %>
+              <%= t("#{jobs_prefix}.statuses.#{activity.status}") %>
+            <% end %>
+          </td>
+        </tr>
+      <%- end %>
+    </tbody>
+  </table>
+  <% if @activities.blank? %>
+    <p class="end-message">
+      <%= t("#{jobs_prefix}.index_page.no_jobs") %>
+    </p>
+  <% elsif @activities.length == ImportActivity::FEED_ITEMS_LIMIT %>
+    <p class="end-message">
+      <%= t("#{jobs_prefix}.index_page.showing_most_recent", :limit => ImportActivity::FEED_ITEMS_LIMIT) %>
+    </p>
+  <% end %>
+</div>

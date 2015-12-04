@@ -1707,6 +1707,135 @@ en:
         thumbnail: Thumbnail
         title: Manage Home Page
         up: Up
+      jobs:
+        actions:
+          import: Import
+          replace: Replace
+          working_copy: Working Copy
+          geocoding: Geocoding
+          upsert: Upsert
+        index_page:
+          action: Action
+          dataset: Dataset
+          export_as_csv: Export As CSV
+          initiated_by: Initiated by
+          no_jobs: No jobs yet.
+          page_title: Data Jobs
+          started: Started
+          status: Status
+          showing_most_recent: Showing the most recent %{limit} jobs
+          title: Data Jobs
+        show_page:
+          back: Back to jobs list
+          error_details_heading: Error details
+          page_title: Data Job Detail
+          title: Data Job Detail
+          fallback_event_title: "Error: %{error_code}"
+          file_name_unknown: file name unknown
+          import: Import
+          import_failures:
+            # As of 1/21, all keys are derived from the tags specified in the codec in DI2's FailureDetails.scala
+            # https://github.com/socrata/delta-importer-2/blob/master/di2-common/src/main/scala/com/socrata/deltaimporter/messaging/details/FailureDetails.scala
+            # with -'s replaced with _'s.
+            # Interpolation arguments in the messages come directly from the fields of case classes
+            # in that Scala file (via an AutomaticJsonCodecBuilder for each class).
+            invalid_encoding:
+              title: Invalid file encoding
+              description: We could not read your file because it was encoded with %{encoding}, and we only support UTF-8. For best results, please ensure that your file is a valid UTF-8 file.
+            record_too_large:
+              title: Single record too large
+              description: We aborted reading your file because we found a single record that was too large on line %{record} (it exceeded the limit of %{limit}). This is usually due to incorrect CSV escaping leading to many rows’ worth of data being read into a single cell. Please check that your file is valid.
+            malformed_upsert:
+              title: Malformed upsert
+              description: Your upsert payload was not parseable as JSON, near record %{record}. Please verify that it is valid JSON.
+            bad_timezone:
+              title: Bad timezone
+              description: We don't understand the timezone "%{name}". Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
+            bad_timestamp_format:
+              title: Bad date/time value
+              description: The date value "%{pattern}" was formatted in a way that we don’t understand. Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
+            control_file_malformed:
+              title: Malformed control file
+              description: Your control file was valid JSON, but it did not match the format we expect. Please make sure your control file matches <a href="https://socrata.github.io/datasync/resources/control-config.html">this specification</a>.
+            control_file_invalid_json:
+              title: Malformed control file
+              description: "Your control file was not parseable as JSON. Error message: \"%{message}\". Please verify that it is valid JSON."
+            control_file_too_large:
+              title: Control file too large
+              description: Your control file was too large. Please reduce its size to %{limit} characters or less and try again.
+            delete_without_user_pk:
+              title: Cannot delete without row identifier
+              description: We cannot successfully process delete operations unless a row identifier field is declared.
+            corrupt_gzip:
+              title: Unable to extract compressed file
+              description: "The GZip-compressed file you provided could not be successfully extracted. Error message: \"%{message}\". Please verify that it is a valid GZip file."
+            corrupt_xz:
+              title: Unable to extract compressed file
+              description: "The XZ-compressed file you provided could not be successfully extracted. Error message: \"%{message}\". Please verify that it is a valid XZ file."
+            unknown_file_type:
+              title: Unknown file type
+              description: "We do not recognize the type of the file you have provided to us (extension: %{extension}). Please ensure you are using a supported file type, and that it is valid."
+            no_field_names_in_input:
+              title: Could not find CSV header
+              description: Usually this is because the CSV file we have been given is completely empty. Please ensure your file contains data, and try again.
+            field_not_in_dataset:
+              title: Could not find field in dataset
+              description: The field name(s) %{fieldNames} could not be found in the dataset you are trying to import into. If you intend to import this column, please double-check your spelling and try again.
+            field_not_in_input:
+              title: Could not find field in file
+              description: A column we expected (%{fieldNames}) could not be found in the data file you provided, and you have not specified a row identifier column. Please double-check the provided columns and try again.
+            no_identity_column:
+              title: Row identifier column not found
+              description: This dataset has a row identifier column provided ("%{fieldName}"), but we couldn’t find that column in the data file you provided. Please ensure it exists, and try again.
+            synthetic_location_in_input:
+              title: Cannot import into synthetic column
+              description: A column (%{fieldNames}) was found in your data file matching a synthetic column on this dataset. Synthetic columns are computed automatically and may not be manually imported into.
+            geocoding_source_invalid_type:
+              title: Could not geocode from given columns
+              description: We could not use the columns %{fieldNames} as the source to geocode location information. Please double-check that they are valid text or numeric columns.
+            geocoding_source_ignored:
+              title: Could not ignore specified columns
+              description: Because the columns %{fieldNames.join(", ")} are a part of the geocoding source feeding into a point column, we could not ignore them as requested.
+            field_wrong_format:
+              title: Illegal field name given
+              description: The field name "%{fieldName}" provided in your data file is not legal. Valid field names must contain only ascii characters and begin with an underscore or letter.
+            unknown_domain:
+              title: Domain not recognized
+              description: We do not recognize the provided target domain of your job (%{domain}). Please ensure it is a valid Socrata target domain, and try again.
+            too_many_errors_in_input:
+              title: Too many input errors found
+              description: The job is being aborted because too many errors were found in your input data.
+            invalid_row_length:
+              title: Unexpected number of fields in row
+              description: Row #%{record} in your CSV file contained %{actual} fields, whereas your other rows contained %{expected} fields. Please ensure that your file has a consistent number of fields per row.
+            uninterpretable_value:
+              title: Uninterpretable record value
+              description: The value "%{value}" in row %{record}, column "%{column}" could not be read as a %{expectedType}. Please ensure that all values are formatted correctly for their target columns.
+            duplicated_fields_in_input:
+              title: Duplicate field names specified
+              description: The field name(s) %{fieldNames} is used multiple times in your data file. Please ensure that the field names are unique.
+            too_many_records_in_input:
+              title: Too many records
+              description: Your data file exceeded the maximum number of records we can import at once (you have %{recordCount}; max is %{maxRecordCount}). Please reduce the record count per-file and try again.
+            ignored_synthetic_location_column_inputs_in_nbe_dataset:
+              title: Could not ignore specified columns
+              description: Because the columns are a part of the geocoding source feeding into a location column, we could not ignore them as requested.
+            geocoding_failure:
+              title: Unknown geocoding failure
+              description: We could not geocode the given source data for an unknown reason. Please try again later, and contact <a href="https://support.socrata.com">Socrata Support</a> if the problem persists.
+            permission_denied:
+              title: Permission denied
+              description: The user that initiated this operation (%{user}) does not appear to have the rights needed to perform it. Please ensure your permissions have been correctly set, and try again.
+            upsert_already_in_progress_by_someone_else:
+              title: Upsert already in progress
+              description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
+          no_events: No progress events have been recorded yet for this job.
+          to: to
+        statuses:
+          success: Completed
+          notstarted: Not yet started
+          failure: Failed
+          inprogress: In Progress
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field

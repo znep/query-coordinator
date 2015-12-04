@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 # Write REVISION file
 git rev-parse HEAD > "$WORKSPACE/REVISION"
 

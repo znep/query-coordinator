@@ -19,11 +19,13 @@ class ApplicationController < ActionController::Base
     @current_user ||= env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
   end
 
+  # +before_filter+
   def require_logged_in_user
     # If no current_user, send to main login page
     redirect_to "/login?return_to=#{request.path}" unless current_user.present?
   end
 
+  # +before_filter+
   def require_super_admin
     unless current_user.try(:[], 'flags').try(:include?, 'admin')
       redirect_to "/login?return_to=#{request.path}"

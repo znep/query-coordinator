@@ -322,8 +322,17 @@ def run_main(output_type)
   # We presume that config/licenses.yml is truth.
   LicenseTruth.licenses = YAML::load_file(File.join(rails_root, '/config/licenses.yml'))
 
+  # You can pipe in correctly-formatted psql output as well.
+  # ssh metadba_host "psql -c 'select * from licenses;' -t -A -F," | ruby tools/license_parity.rb
+  raw_sql_input =
+    if STDIN.tty?
+      `psql blist_dev -c 'select #{DB_COLUMNS.collect(&:to_sql).join(', ')} from licenses;' -t -A -F,`
+    else
+      STDIN.read
+    end
+
   # Make sure you've run the latest core migrations!
-  db_data = `psql blist_dev -c 'select #{DB_COLUMNS.collect(&:to_sql).join(', ')} from licenses;' -t -A -F,`.split($/).collect do |line|
+  db_data = raw_sql_input.split($/).collect do |line|
     Hash[DB_COLUMNS.zip(line.split(','))]
   end
 

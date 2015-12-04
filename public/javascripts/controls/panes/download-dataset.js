@@ -24,6 +24,7 @@
             var cObj = this;
             var _view = this._view;
             var type = this._view.getDownloadType();
+            var layerDownloadType = this._view.newBackend ? 'nbe_layer_attributes' : 'obe_layer_attributes'
             var catchForm = !this._view.isGeoDataset();
             return [
                 {
@@ -31,7 +32,7 @@
                         template: 'downloadsSectionContent',
                         directive: $.templates.downloadsTable.directive[type],
                         data: { downloadTypes: $.templates.downloadsTable.downloadTypes[type],
-                                layerDownloadTypes: $.templates.downloadsTable.downloadTypes['geo_attributes'],
+                                layerDownloadTypes: $.templates.downloadsTable.downloadTypes[layerDownloadType],
                                 view: this._view },
                         callback: function($sect)
                         {

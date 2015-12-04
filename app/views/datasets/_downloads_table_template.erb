@@ -7,7 +7,7 @@
       <%= render :partial => 'datasets/downloads_table_inner' %>
     </div>
   </div>
-  <%- if @view.is_geo? -%>
+  <%- if @view.is_layered? -%>
   <div class="layerTableDownloads">
     <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.layers_header') %></label>
     <select id="layerChooserForTabular" class="layerChooser"></select>

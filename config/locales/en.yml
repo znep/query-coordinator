@@ -2440,7 +2440,7 @@ en:
           download_as: Download As
           download_dataset: Please download the dataset from which this view is derived.
           geo_header: Download Geospatial Data
-          layers_header: Download without Geospatial Data
+          layers_header: Download a specific layer's data
           subtitle: Download a copy of this dataset in a static format
           title: Download
         feed:

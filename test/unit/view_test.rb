@@ -627,6 +627,28 @@ class ViewTest < Test::Unit::TestCase
     )
   end
 
+  def test_is_layered?
+    view_without_keys = View.new
+    assert_equal(false, view_without_keys.is_layered?)
+
+    json = {'metadata' => {'geo' => {'layers' => '4444-4444'}}}
+    view_with_single_layer = View.new(json)
+    assert_equal(false, view_with_single_layer.is_layered?)
+
+    json = {'metadata' => {'geo' => {'layers' => '4444-4444,5555-5555'}}}
+    view_with_multiple_layers = View.new(json)
+    assert(view_with_multiple_layers.is_layered?)
+
+    json = {'displayFormat' => {'viewDefinitions' => [{'uid' => 'self'}]}}
+    derived_view_from_single_dataset = View.new(json)
+    assert_equal(false, derived_view_from_single_dataset.is_layered?)
+
+    json = {'displayFormat' => {'viewDefinitions' =>
+       [ {'uid' => 'self'}, {'uid' => '4444-4444'} ]}}
+    derived_view_from_multiple_datasets = View.new(json)
+    assert(derived_view_from_multiple_datasets.is_layered?)
+  end
+
   private
 
   def stub_core_server_connection

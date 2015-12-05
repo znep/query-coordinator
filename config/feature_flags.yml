@@ -94,13 +94,16 @@ enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
   defaultValue: false
 enable_data_lens_other_views:
-  description: Show the "other views of this data" button in the upper left of Data Lens pages (only for admins and publishers for now). Will also enable the "Save As" button on the Customize bar of the Data Lens pages.
+  description: Show the "other views of this data" button in the upper left of Data Lens pages.
   defaultValue: false
 enable_data_lens_page_metadata_migrations:
   description: Lazily migrate data lens page metadata schemas on each request.
   defaultValue: true
 enable_data_lens_provenance:
   description: Ability to set data lens views to "Official" or not.
+  defaultValue: false
+enable_data_lens_save_as:
+  description: Enables the "Save As" button in the data lens Customize bar.
   defaultValue: false
 enable_export_service:
   description: Use the new Export Service on this domain.

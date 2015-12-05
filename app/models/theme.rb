@@ -108,7 +108,7 @@ class Theme
   end
 
   def self.all_custom_for_current_domain
-    CoreServer.story_themes.map do |theme_config|
+    (CoreServer.story_themes || []).map do |theme_config|
       self.from_core_config(theme_config)
     end.compact
   end

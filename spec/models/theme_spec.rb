@@ -325,9 +325,10 @@ RSpec.describe Theme, type: :model do
     end
 
     context 'when no custom themes' do
-      let(:custom_themes) { [] }
+      let(:custom_themes) { nil }
 
       it 'returns empty array' do
+        expect(subject).to be_a(Array)
         expect(subject).to be_empty
       end
     end

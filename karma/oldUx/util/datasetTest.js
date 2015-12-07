@@ -190,39 +190,21 @@ describe('blist.dataset', function () {
       });
     });
 
-    describe('if the dataset is in the old backend and is geospatial, with no layers', function() {
+    describe('if the dataset is in the old backend and is geospatial', function() {
 
-      it('should have a download type of obe_monolayer_geo', function() {
+      it('should have a download type of obe_geo', function() {
         dataset.newBackend = false;
         dataset.metadata = { geo: {} };
-        expect(dataset.getDownloadType()).to.equal('obe_monolayer_geo');
+        expect(dataset.getDownloadType()).to.equal('obe_geo');
       });
     });
 
-    describe('if the dataset is in the new backend and is geospatial, with no layers', function() {
+    describe('if the dataset is in the new backend and is geospatial', function() {
 
-      it('should have a download type of nbe_monolayer_geo', function() {
+      it('should have a download type of nbe_geo', function() {
         dataset.newBackend = true;
         dataset.metadata = { geo: {} };
-        expect(dataset.getDownloadType()).to.equal('nbe_monolayer_geo');
-      });
-    });
-
-    describe('if the dataset is in the old backend and is geospatial, with some layers', function() {
-
-      it('should have a download type of obe_multilayer_geo', function() {
-        dataset.newBackend = false;
-        dataset.metadata = { geo: { layers: 'test-test,meow-meow' } };
-        expect(dataset.getDownloadType()).to.equal('obe_multilayer_geo');
-      });
-    });
-
-    describe('if the dataset is in the new backend and is geospatial, with some layers', function() {
-
-      it('should have a download type of nbe_multilayer_geo', function() {
-        dataset.newBackend = true;
-        dataset.metadata = { geo: { layers: 'test-test,meow-meow' } };
-        expect(dataset.getDownloadType()).to.equal('nbe_multilayer_geo');
+        expect(dataset.getDownloadType()).to.equal('nbe_geo');
       });
     });
   });

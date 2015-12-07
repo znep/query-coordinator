@@ -214,7 +214,7 @@ var Dataset = ServerModel.extend({
     getDownloadType: function()
     {
         var backendPrefix = this.newBackend ? 'nbe_' : 'obe_'
-        var downloadType = !this.isGeoDataset() ? 'normal' : this.isLayered() ? 'multilayer_geo' : 'monolayer_geo';
+        var downloadType = this.isGeoDataset() ? 'geo' : 'normal';
         return backendPrefix + downloadType
     },
 

@@ -7,9 +7,13 @@
       <%= render :partial => 'datasets/downloads_table_inner' %>
     </div>
   </div>
-  <%- if @view.is_layered? -%>
+  <%- if @view.is_geo? -%>
   <div class="layerTableDownloads">
-    <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.layers_header') %></label>
+    <%- if @view.is_layered? -%>
+      <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.multilayer_header') %></label>
+    <%- else -%>
+      <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.monolayer_header') %></label>
+    <% end %>
     <select id="layerChooserForTabular" class="layerChooser"></select>
     <div class="layerDownloadsContent gridListWrapper">
       <%= render :partial => 'datasets/downloads_table_inner' %>

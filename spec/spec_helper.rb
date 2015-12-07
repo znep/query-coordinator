@@ -100,6 +100,8 @@ RSpec.configure do |config|
     WebMock.allow_net_connect!
   end
 
+  # We stub the custom theme css because it's costly to build and we want tests to
+  # stay fast-ish
   config.before(:each, type: :feature) do
     allow(CoreServer).to receive(:story_themes).and_return([])
     stub_request(:get, /.*custom\.css.*/)

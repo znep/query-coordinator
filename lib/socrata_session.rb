@@ -9,6 +9,8 @@
 # `authenticate` will return `nil`. Otherwise, the current user hash
 # is returned.
 
+require 'request_store'
+
 class SocrataSession
   SOCRATA_SESSION_ENV_KEY = 'socrata.session'
 
@@ -18,6 +20,9 @@ class SocrataSession
 
   def call(env)
     env[SOCRATA_SESSION_ENV_KEY] = self
+
+    session_headers = CoreServer.headers_from_request(Rack::Request.new(env))
+    ::RequestStore.store[:socrata_session_headers] = session_headers
 
     @app.call(env)
   end
@@ -54,7 +59,7 @@ class SocrataSession
     request = Rack::Request.new(env)
 
     if has_session_cookie?(request)
-      current_user(request)
+      current_user
     else
       nil
     end
@@ -70,10 +75,7 @@ class SocrataSession
     request.cookies.has_key?('_core_session_id')
   end
 
-  def current_user(request)
-    CoreServer.current_user(
-      CoreServer.headers_from_request(request)
-    )
+  def current_user
+    CoreServer.current_user
   end
 end
-

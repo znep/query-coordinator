@@ -18,7 +18,7 @@ class StoriesController < ApplicationController
   end
 
   def new
-    view = CoreServer.get_view(params[:uid], core_request_headers)
+    view = CoreServer.get_view(params[:uid])
 
     if view.present?
       @story_title = view['name']
@@ -40,7 +40,7 @@ class StoriesController < ApplicationController
   end
 
   def create
-    view = CoreServer.get_view(params[:uid], core_request_headers)
+    view = CoreServer.get_view(params[:uid])
 
     return redirect_to '/', :flash => {
       :error => I18n.t('stories_controller.not_found_error_flash')
@@ -70,7 +70,7 @@ class StoriesController < ApplicationController
   end
 
   def copy
-    view = CoreServer.get_view(params[:uid], core_request_headers)
+    view = CoreServer.get_view(params[:uid])
     story = DraftStory.find_by_uid(params[:uid])
 
     return redirect_to '/', :flash => {
@@ -80,7 +80,7 @@ class StoriesController < ApplicationController
     copy_title = params[:title] || "Copy of #{view['name']}"
     copy_title = sanitize_story_title(copy_title)
 
-    view_copy = CoreServer.create_view(core_request_headers, copy_title)
+    view_copy = CoreServer.create_view(copy_title)
 
     return redirect_to '/', :flash => {
       :error => I18n.t('stories_controller.permissions_error_flash')
@@ -188,10 +188,6 @@ class StoriesController < ApplicationController
     Block.create(example_block.except('id'))
   end
 
-  def core_request_headers
-    CoreServer.headers_from_request(request)
-  end
-
   # TODO replace this with the real solution
   def tmp_render_404
     render text: 'Whoops! 404. Probably an invalid 4x4', status: 404
@@ -214,7 +210,7 @@ class StoriesController < ApplicationController
     view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{uid}"
     view['metadata']['initialized'] = true
 
-    updated_view = CoreServer.update_view(uid, core_request_headers, view)
+    updated_view = CoreServer.update_view(uid, view)
 
     if updated_view.nil?
       error_message = "Successfully bootstrapped story with uid '#{uid}' " \

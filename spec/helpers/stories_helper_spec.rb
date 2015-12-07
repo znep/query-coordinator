@@ -13,8 +13,7 @@ RSpec.describe StoriesHelper, type: :helper do
 
     context 'given a valid story' do
       before do
-        # We expect the call to #core_attributes to be memoized, and only call core once
-        expect(CoreServer).to receive(:headers_from_request).once
+        # We expect the call to #get_view to be memoized
         expect(CoreServer).to receive(:get_view).once.and_return(mock_core_response)
       end
 

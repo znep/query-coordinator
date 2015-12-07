@@ -10,51 +10,32 @@ RSpec.describe StoryPublisher do
       digest: draft_story.digest
     }
   end
-  let(:core_request_headers) do
-    {
-      'X-Socrata-Host' => 'test-domain.com',
-      'X-CSRF-Token' => 'a-token-of-our-appreciation',
-      'Cookie' => 'cookies are sometimes food'
-    }
-  end
 
-  subject { StoryPublisher.new(user, params, core_request_headers) }
+  subject { StoryPublisher.new(user, params) }
 
   describe '#initialize' do
 
     it 'initializes with user, story params, and headers for core' do
       expect {
-        StoryPublisher.new(mock_valid_user, params, core_request_headers)
-      }.to_not raise_error
-    end
-
-    it 'raises without core_request_headers' do
-      expect {
         StoryPublisher.new(mock_valid_user, params)
-      }.to raise_error(ArgumentError, /2 for 3/)
-    end
-
-    it 'raises with empty core_request_headers' do
-      expect {
-        StoryPublisher.new(mock_valid_user, params, {})
-      }.to raise_error(ArgumentError, /Missing core request headers/)
+      }.to_not raise_error
     end
 
     it 'raises without params' do
       expect {
         StoryPublisher.new(mock_valid_user)
-      }.to raise_error(ArgumentError, /1 for 3/)
+      }.to raise_error(ArgumentError, /1 for \d/)
     end
 
     it 'raises without user' do
       expect {
         StoryPublisher.new
-      }.to raise_error(ArgumentError, /0 for 3/)
+      }.to raise_error(ArgumentError, /0 for \d/)
     end
 
     it 'raises without user id' do
       expect {
-        StoryPublisher.new(mock_valid_user.except('id'), params, core_request_headers)
+        StoryPublisher.new(mock_valid_user.except('id'), params)
       }.to raise_error(ArgumentError, /User is not valid/)
     end
 
@@ -75,7 +56,7 @@ RSpec.describe StoryPublisher do
 
       it 'raises without existing draft story' do
         expect {
-          StoryPublisher.new(mock_valid_user, params, core_request_headers)
+          StoryPublisher.new(mock_valid_user, params)
         }.to raise_error(/Could not find a draft story with matching uid and digest./)
       end
     end
@@ -100,7 +81,7 @@ RSpec.describe StoryPublisher do
       end
 
       it 'calls PermissionsUpdater service object' do
-        expect(PermissionsUpdater).to receive(:new).with(user, draft_story.uid, core_request_headers)
+        expect(PermissionsUpdater).to receive(:new).with(user, draft_story.uid)
         expect(mock_permissions_updater).to receive(:update_permissions).with(is_public: true)
         subject.publish
       end

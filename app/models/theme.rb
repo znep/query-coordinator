@@ -27,8 +27,8 @@ class Theme
     }
   end
 
-  def save(headers)
-    result = CoreServer.create_or_update_configuration(id, headers, to_core_config)
+  def save
+    result = CoreServer.create_or_update_configuration(id, to_core_config)
 
     if result['error'].present?
       @errors = result['message']
@@ -40,16 +40,16 @@ class Theme
     @persisted
   end
 
-  def update_attributes(attributes, headers)
+  def update_attributes(attributes)
     @title = attributes['title']
     @description = attributes['description']
     @css_variables = attributes['css_variables']
 
-    save(headers)
+    save
   end
 
-  def destroy(headers)
-    CoreServer.delete_configuration(id, headers)
+  def destroy
+    CoreServer.delete_configuration(id)
   end
 
   def persisted?
@@ -57,7 +57,6 @@ class Theme
   end
 
   def self.find(id)
-    # No headers needed for configurations 'get' - it's public!
     core_config = CoreServer.get_configuration(id)
     raise "Could not find theme configuration with id, #{id}." if core_config.blank?
     self.from_core_config(core_config)

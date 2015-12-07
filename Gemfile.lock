@@ -219,6 +219,7 @@ GEM
     rake-compiler (0.9.5)
       rake
     rdoc (4.2.0)
+    request_store (1.2.1)
     retries (0.0.5)
     rspec (3.3.0)
       rspec-core (~> 3.3.0)
@@ -342,6 +343,7 @@ DEPENDENCIES
   pry-stack_explorer
   rack-mini-profiler
   rails (= 4.2.4)
+  request_store
   retries
   rspec-rails (~> 3.2)
   sanitize

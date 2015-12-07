@@ -25,13 +25,6 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
     context 'when authenticated' do
       let(:user) { mock_valid_user }
       let(:mock_story_publisher) { double('StoryPublisher') }
-      let(:core_request_headers) do
-        {
-          'X-Socrata-Host' => 'test-domain.com',
-          'X-CSRF-Token' => 'a-token-of-our-appreciation',
-          'Cookie' => 'cookies are sometimes food'
-        }
-      end
       let(:success) { nil }
       let(:published_story) { FactoryGirl.create(:published_story) }
 
@@ -39,12 +32,11 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
         allow(StoryPublisher).to receive(:new).and_return(mock_story_publisher)
         allow(mock_story_publisher).to receive(:publish) { success }
         allow(mock_story_publisher).to receive(:story).and_return(published_story)
-        allow(CoreServer).to receive(:headers_from_request).with(request).and_return(core_request_headers)
         stub_valid_session
       end
 
       it 'calls StoryPublisher#publish' do
-        expect(StoryPublisher).to receive(:new).with(user, params, core_request_headers).and_return(mock_story_publisher)
+        expect(StoryPublisher).to receive(:new).with(user, params).and_return(mock_story_publisher)
         expect(mock_story_publisher).to receive(:publish)
         post :create, params
       end

@@ -275,6 +275,13 @@
 
     $scope.$bindObservable('currentUserHasRights', isCurrentUserDomainUser$);
 
+    var isCurrentUserAdminOrPublisher$ =
+      currentUser$.
+      map(function(user) {
+        var roleName = user.roleName;
+        return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
+      });
+
     var userCanManageView$ = $scope.isEphemeral ?
       Rx.Observable.returnValue(false) :
       page.observe('rights').map(function(rights) {
@@ -282,6 +289,33 @@
           return right === 'update_view' || right === 'grant';
         });
       });
+
+    var isCurrentUserOwnerOfDataset$ =
+      page.
+      observe('dataset').
+      observeOnLatest('ownerId').
+      combineLatest(
+        currentUser$.pluck('id'),
+        function(ownerId, userId) {
+          return ownerId === userId;
+        });
+
+    var currentUserHasSaveRight$ = userCanManageView$.
+      combineLatest(
+        isCurrentUserOwnerOfDataset$,
+        isCurrentUserAdminOrPublisher$,
+        function(a, b, c) { return a || b || c; }).
+      catchException(Rx.Observable.returnValue(false));
+
+    $scope.$bindObservable('currentUserHasSaveRight', currentUserHasSaveRight$);
+
+    var currentUserHasProvenanceRight$ =
+      currentUser$.
+      map(function(user) {
+        return _.includes(_.get(user, 'rights', []), 'manage_provenance');
+      });
+
+    $scope.$bindObservable('currentUserHasProvenanceRight', currentUserHasProvenanceRight$);
 
     // We're checking the displayType as well as the user to account for
     // standalone visualizations
@@ -299,7 +333,7 @@
 
     // CORE-7419: Hide provenance toggle if user doesn't have rights
     // or enable_data_lens_provenance feature flag is disabled
-    $scope.showProvenanceSection = $scope.currentUserHasRights &&
+    $scope.showProvenanceSection = $scope.currentUserHasProvenanceRight &&
       ServerConfig.get('enableDataLensProvenance');
 
     // Hack week disco lens

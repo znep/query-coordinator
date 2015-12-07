@@ -158,6 +158,22 @@ class PhidippidesTest < Test::Unit::TestCase
     )
   end
 
+  def test_set_default_and_available_card_types_to_columns_passes_federation_header_to_core
+    connection_stub = mock
+    connection_stub.expects(:get_request).times(1).with do |url, options|
+      assert_equal({ 'X-Socrata-Federation' => 'Honey Badger' }, options)
+    end.returns('[{ "count_0": 10 }]')
+
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    v1_dataset_metadata_response = {
+      status: '200',
+      body: v1_dataset_metadata
+    }
+
+    phidippides.set_default_and_available_card_types_to_columns!(v1_dataset_metadata_response)
+  end
+
   def test_fetch_pages_for_dataset_with_invalid_dataset_object_raises
     assert_raises(ArgumentError) do
       phidippides.fetch_pages_for_dataset(OpenStruct.new(id: nil))

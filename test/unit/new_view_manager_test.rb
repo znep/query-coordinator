@@ -160,6 +160,17 @@ class NewViewManagerTest < Test::Unit::TestCase
     assert_equal(response, {'body' => 1})
   end
 
+  def test_fetch_provides_federation_header_to_core
+    connection_stub = mock
+    connection_stub.expects(:get_request).times(1).with do |url, options|
+      assert_equal({ 'X-Socrata-Federation' => 'Honey Badger' }, options)
+    end.returns('{"body": 1}')
+
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    new_view_manager.fetch('asdf-asdf')
+  end
+
   def test_fetch_raises_authn
     connection_stub = mock
     connection_stub.expects(:get_request).times(1).with do |url|

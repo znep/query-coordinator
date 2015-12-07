@@ -14,7 +14,10 @@ class NewViewManager
     url = "/views/#{CGI::escape(page_id)}.json"
 
     begin
-      response = CoreServer::Base.connection.get_request(url)
+      response = CoreServer::Base.connection.get_request(
+        url,
+        View.federation_headers
+      )
     rescue CoreServer::ResourceNotFound => error
       raise ViewNotFound.new(error.to_s)
     rescue CoreServer::CoreServerError => error

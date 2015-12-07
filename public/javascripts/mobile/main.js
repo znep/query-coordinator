@@ -3,12 +3,13 @@
 
   var DOMAIN = window.location.hostname;
   // var DOMAIN = 'dataspace.demo.socrata.com'; // For local development
-  var DATASET_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
+  var PAGE_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
+  var DATASET_UID;
   var cardsData;
-  var cardsMetaData = ''
+  var cardsMetaData = '';
 
   function getPageData() {
-    return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/page/' + DATASET_UID);
+    return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/page/' + PAGE_UID);
   }
 
   function getPageDataSet() {
@@ -18,6 +19,7 @@
   function setupPage() { 
     getPageData().success(function(data) {
       document.title = data.name;
+      DATASET_UID = data.datasetId;
       cardsData = data.cards;
       getPageDataSet().success(function(data) {
         cardsMetaData = data.columns;
@@ -50,19 +52,22 @@
   }
 
   function renderCards(cards) {
+    var $cardContainer;
+    var values;
+
     $.each(cards, function(i, card) {
       var cardOptions = {
         id: '',
         metaData: cardsMetaData[card.fieldName],
         containerClass: ''
-      }
+      };
 
       switch (card.cardType) {
         case 'timeline':
           cardOptions.id = 'timeline-chart';
           cardOptions.containerClass = 'timeline-chart-container';
-          var $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          var values = {
+          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+          values = {
             domain: DOMAIN,
             uid: DATASET_UID,
             columnName: card.fieldName
@@ -73,8 +78,8 @@
         case 'feature':
           cardOptions.id = 'feature-map';
           cardOptions.containerClass = 'map-container';
-          var $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          var values = {
+          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+          values = {
             domain: DOMAIN,
             uid: DATASET_UID,
             columnName: card.fieldName
@@ -84,8 +89,8 @@
           break;
         case 'column':
           cardOptions.id = 'column-chart';
-          var $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          var values = {
+          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+          values = {
             domain: DOMAIN,
             uid: DATASET_UID,
             columnName: card.fieldName
@@ -94,10 +99,10 @@
           socrata.visualizations.MobileColumnChart(values, $cardContainer.find('#column-chart'));
           break;
         default:
-          break
+          break;
       }
     });
-    socrata.MobileCardViewer()
+    socrata.MobileCardViewer();
   }
 
   $(setupPage);

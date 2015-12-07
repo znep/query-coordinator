@@ -58,9 +58,11 @@
               <span class="loading"></span>
               <%= form_button({ :action => 'sdp_set_default_template', :id => template.uid}, 'Make Default',
                    {:method => :put}, {:class => 'button makeDefaultButton'}) %>
+              <!-- The disabled class makes the button grey. The disabled attribute takes the button out of tab order. -->
               <%= form_button({ :action => 'sdp_delete_template', :id => template.uid}, 'Delete',
                              {:method => :delete}, {:class => 'button deleteTemplateButton' +
-                               (template.uid == @default_template_id ? ' disabled' : '')}) %>
+                                                    (template.uid == @default_template_id ? ' disabled' : '')}
+                                                   .merge(template.uid == @default_template_id ? {disabled: ''} : {})) %>
               <a href="sdp_templates/<%= template.uid %>" class="button">
                 <span class="icon"></span>Edit
               </a>

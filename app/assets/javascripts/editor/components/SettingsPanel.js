@@ -135,6 +135,25 @@
       });
     }
 
+    function dispatchActions(event) {
+      var action = event.target.getAttribute('data-action') ?
+        event.target.getAttribute('data-action') :
+        $(event.target).parent('[data-action]').attr('data-action');
+
+      switch (action) {
+        case Actions.COLLABORATORS_OPEN:
+          storyteller.dispatcher.dispatch({
+            action: Actions.COLLABORATORS_LOAD,
+            collaborators: storyteller.storyCollaborators
+          });
+
+          storyteller.dispatcher.dispatch({
+            action: Actions.COLLABORATORS_OPEN
+          });
+          break;
+      }
+    }
+
     // Set up some input events.
 
     toggleButton.on('click', function() {
@@ -142,11 +161,20 @@
     });
 
     $(document).on('keydown', function(e) {
+      var isCollaboratorsModalOpen = storyteller.collaboratorsStore.isOpen();
+
       if (e.ctrlKey && e.keyCode === 188) { // ',' because it's settings
         settingsPanel.trigger('sidebar:toggle');
       }
+
       if (e.keyCode === 27) { // esc
-        settingsPanel.trigger('sidebar:close');
+        if (isCollaboratorsModalOpen) {
+          storyteller.dispatcher.dispatch({
+            action: Actions.COLLABORATORS_CANCEL
+          });
+        } else {
+          settingsPanel.trigger('sidebar:close');
+        }
       }
     });
 
@@ -217,7 +245,8 @@
           return false;
         }
       }).
-      on('click', '.settings-save-btn', saveMetadata);
+      on('click', '.settings-save-btn', saveMetadata).
+      on('click', '[data-action]', dispatchActions);
 
     return this;
   };

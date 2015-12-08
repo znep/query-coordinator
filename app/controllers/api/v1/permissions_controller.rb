@@ -1,7 +1,7 @@
 class Api::V1::PermissionsController < ApplicationController
 
   def update
-    permissions = PermissionsUpdater.new(current_user, params[:uid])
+    permissions = PermissionsUpdater.new(current_user, current_user_authorization, params[:uid])
     permissions_response = nil
 
     begin

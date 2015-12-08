@@ -252,7 +252,52 @@
     LINK_TIP_CLOSE: 'LINK_TIP_CLOSE',
 
     // No Payload
-    LINK_TIP_REMOVE: 'LINK_TIP_REMOVE'
+    LINK_TIP_REMOVE: 'LINK_TIP_REMOVE',
+
+    /**
+     * Collaborators Modal
+     */
+
+    // {Array} collaborators
+    //   {collaborator}
+    COLLABORATORS_LOAD: 'COLLABORATORS_LOAD',
+
+    // No payload
+    COLLABORATORS_OPEN: 'COLLABORATORS_OPEN',
+
+    // {Object} collaborator
+    //   {string} email
+    //   {string} accessLevel
+    COLLABORATORS_ADD: 'COLLABORATORS_ADD',
+
+    // {Object} collaborator
+    //   {string} email
+    //   {string} accessLevel
+    COLLABORATORS_REMOVE: 'COLLABORATORS_REMOVE',
+
+    // {Object} collaborator
+    //   {string} email
+    //   {string} accessLevel
+    COLLABORATORS_MARK_REMOVAL: 'COLLABORATORS_MARK_REMOVAL',
+
+    // {Object} collaborator
+    //   {string} email
+    //   {string} accessLevel
+    COLLABORATORS_UNMARK_REMOVAL: 'COLLABORATORS_UNMARK_REMOVAL',
+
+    // {Object} collaborator
+    //   {string} email
+    //   {string} accessLevel
+    COLLABORATORS_CHANGE: 'COLLABORATORS_CHANGE',
+
+    // No payload
+    COLLABORATORS_SAVE: 'COLLABORATORS_SAVE',
+
+    // No payload
+    COLLABORATORS_CANCEL: 'COLLABORATORS_CANCEL',
+
+    // No payload
+    COLLABORATORS_ERROR: 'COLLABORATORS_ERROR'
   };
 
   root.Actions = Actions;

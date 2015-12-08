@@ -2,9 +2,13 @@
 //= require jquery_ujs
 //= require_self
 
-$(function() {
-  function flashCallback() {
-    $('.alert').fadeOut();
-  }
-  setTimeout(flashCallback, 3000);
-});
+(function() {
+  'use strict';
+
+  $(function() {
+    function flashCallback() {
+      $('.alert').fadeOut();
+    }
+    setTimeout(flashCallback, 3000);
+  });
+})();

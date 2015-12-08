@@ -178,6 +178,13 @@ def mock_valid_user
   }
 end
 
+def mock_user_authorization
+  {
+    'role' => 'owner',
+    'rights' => ['read', 'write', 'delete', 'update_view']
+  }
+end
+
 def mock_valid_lenses_view_metadata(initialized)
   { 'initialized' => initialized }
 end
@@ -209,6 +216,7 @@ end
 
 def stub_valid_session
   allow(@controller).to receive(:current_user).and_return(mock_valid_user)
+  allow(@controller).to receive(:current_user_authorization).and_return(mock_user_authorization)
 end
 
 def stub_super_admin_session
@@ -251,11 +259,18 @@ end
 
 def stub_logged_in_user
   allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
+  allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(mock_valid_user)
+  allow_any_instance_of(ApplicationController).to receive(:current_user_authorization).and_return(mock_user_authorization)
+end
+
+def stub_sufficient_rights
+  allow_any_instance_of(StoriesController).to receive(:require_sufficient_rights).and_return(true)
 end
 
 def stub_core_view(uid, options={})
   view = {
-    name: 'test story'
+    name: 'test story',
+    owner: {id: 'tugg-xxx'}
   }.merge(options)
 
   stub_request(:get, /\/views\/#{uid}.json/).
@@ -265,28 +280,6 @@ end
 class Capybara::Session
   def evaluate_multiline_script javascript
     evaluate_script "(function(){ #{javascript} })()"
-  end
-
-  # This method is intended to port over Webmock's `stub_request` method.
-  # It's useful when the request that needs stubbing is fired from Javascript,
-  # but the feature test is written in Ruby, making it inaccessible.
-  #
-  # I'd like the code to be patterned after `stub_request` such that it's otherwise
-  # indistinguishable, but that will take a lot of work.
-  #
-  # TODO: This is the seed for something ridiculously complicated.
-  # It should be fleshed out eventually, but it's probably not worth doing immediately.
-  def stub_ajax_request opts
-    evaluate_multiline_script <<END
-      $.ajax = function(url, opts) {
-        // TODO: Test that opts matches opts[:request].
-        // TODO: Make response match opts[:response].
-        var body = '';
-        var status = 200;
-        var response = { getResponseHeader: function() { return 'abc'; } };
-        return jQuery.when(body, status, response);
-      };
-END
   end
 end
 

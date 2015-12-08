@@ -9,6 +9,10 @@ class StoriesController < ApplicationController
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
   skip_before_filter :require_logged_in_user, only: [:show]
 
+  before_filter :require_sufficient_rights
+
+  helper_method :needs_view_assets?, :can_update_view?
+
   def show
     respond_with_story(PublishedStory.find_by_uid(params[:uid]))
   end
@@ -105,12 +109,13 @@ class StoriesController < ApplicationController
   end
 
   def edit
-    @inspiration_category_list = InspirationCategoryList.new.to_parsed_json
-    @theme_list = ThemeList.new.themes
     @story = DraftStory.find_by_uid(params[:uid])
-    @published_story = PublishedStory.find_by_uid(params[:uid])
 
     if @story
+      @inspiration_category_list = InspirationCategoryList.new.to_parsed_json
+      @theme_list = ThemeList.new.themes
+      @published_story = PublishedStory.find_by_uid(params[:uid])
+
       respond_to do |format|
         format.html { render 'stories/edit', layout: 'editor' }
       end
@@ -123,7 +128,10 @@ class StoriesController < ApplicationController
     %w{ show preview }.include?(action_name)
   end
 
-  helper_method :needs_view_assets?
+  def can_update_view?
+    current_user_authorization.present? &&
+    current_user_authorization['rights'].include?('update_view')
+  end
 
   private
 
@@ -147,7 +155,7 @@ class StoriesController < ApplicationController
     current_user_created_story = false
     owner_id = nil
 
-    if view['owner'].present?
+    if view.present? && view['owner'].present?
       owner_id = view['owner']['id']
     end
 
@@ -223,5 +231,24 @@ class StoriesController < ApplicationController
     end
 
     redirect_to "/stories/s/#{uid}/edit"
+  end
+
+  def require_sufficient_rights
+    return tmp_render_404 unless params.present? && params[:uid].present?
+
+    action = params[:action]
+    view = CoreServer.get_view(
+      params[:uid]
+    )
+    published_story = PublishedStory.find_by_uid(params[:uid])
+
+    return tmp_render_404 unless view.present? && view['rights'].present?
+
+    if action == 'edit'
+      tmp_render_404 unless view['rights'].include?('write')
+    elsif action == 'show' || action == 'preview'
+      tmp_render_404 unless view['rights'].include?('read')
+    elsif action == 'show' && view
+    end
   end
 end

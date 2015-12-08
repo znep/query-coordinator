@@ -46,6 +46,31 @@ class CoreServer
     configurations_request(verb: :get, type: 'story_theme', default_only: false, merge: false)
   end
 
+  def self.current_user_authorization(user, uid)
+    if user.present? && uid.present?
+      view = CoreServer.get_view(uid)
+
+      if view.present?
+        corresponding_grant = lambda { |grant| grant['userId'] == user['id'] }
+        is_primary_owner = view['owner']['id'] == user['id']
+        has_user_grant = view['grants'].present? && view['grants'].one?(&corresponding_grant)
+
+        if is_primary_owner
+          {
+            'role' => 'owner',
+            'rights' => view['rights'],
+            'primary' => true
+          }
+        elsif has_user_grant
+          {
+            'role' => view['grants'].find(&corresponding_grant)['type'],
+            'rights' => view['rights']
+          }
+        end
+      end
+    end
+  end
+
   # Generate Cookie, X-CSRF-Token, X-Socrata-RequestId, and X-Socrata-Host
   # headers from the given request.
   #

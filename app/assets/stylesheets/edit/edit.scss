@@ -243,6 +243,14 @@ body .header-main {
   }
 } //end .header-main
 
+input[type="text"], textarea {
+  &:disabled {
+    background-color: $input-disabled-background-color;
+    color: $input-disabled-color;
+    cursor: not-allowed;
+  }
+}
+
 #create-story-title-input {
   width: 100%;
   font-size: 2rem;
@@ -287,6 +295,7 @@ a[role="button"] {
   font-size: 1.25rem;
   color: $warning-bar-color;
   font-weight: lighter;
+  line-height: 1.25;
 
   &::after {
     content: '';
@@ -306,7 +315,6 @@ a[role="button"] {
 
     &:last-child {
       width: $warning-bar-message-width;
-      padding-top: .25rem;
     }
   }
 }

@@ -2,6 +2,10 @@
 $body-bg-color: #fff;
 $link-color: #2295E1;
 
+// Input
+$input-disabled-background-color: #c5c5c5;
+$input-disabled-color: #666;
+
 // header
 $header-bg-color: #4a4747;
 $header-text-color: #fff;
@@ -144,6 +148,7 @@ $btn-primary-inverse-background-color: #fff;
 $btn-primary-inverse-hover-color: #fff;
 $btn-primary-inverse-hover-background-color: #2c97de;
 $btn-primary-busy-border-right-color: #8ad0ff;
+$btn-primary-disabled-busy-border-right-color: #949494;
 
 $btn-secondary-color: #fff;
 $btn-secondary-background-color: #00be9b;
@@ -198,3 +203,32 @@ $view-mode-button-navigation-hover-background-color: darken($view-mode-button-di
 $flyout-color: #8a8686;
 $flyout-bg-color: #f1eeee;
 $flyout-border-color: #ccc;
+
+// Collaborators Modal
+$collaborators-input-group-background-color: #f2f2f2;
+$collaborators-input-email-background-color: white;
+$collaborators-select-arrow-color: #757575;
+$collaborators-select-background-color: white;
+$collaborators-select-border-color: #c5c5c5;
+$collaborators-select-color: #757575;
+$collaborators-select-disabled-color: #aaa;
+$collaborators-select-disabled-background-color: #f2f2f2;
+$collaborators-table-color: #4a4a4a;
+$collaborators-cell-border-color: #f2f2f2;
+$collaborators-marked-background-color: #fdedcc;
+$collaborators-marked-border-color: #F7A700;
+$collaborators-marked-color: #ad7500;
+$collaborators-added-background-color: #d5eaf8;
+$collaborators-added-border-color: #2C97DE;
+$collaborators-added-color: #1f6a9b;
+$collaborators-changed-background-color: rgb(213, 234, 248);
+$collaborators-changed-border-color: rgb(44, 151, 222);
+$collaborators-changed-color: rgb(31, 106, 155);
+$collaborators-dark-select-background-color: #f2f2f2;
+$collaborators-dark-select-border-color: white;
+$collabroators-table-empty-background-color: #f2f2f2;
+$collaborators-table-empty-color: #555;
+$collaborators-content-error-background-color: #f5e0e0;
+$collaborators-content-error-border-color: #CE6565;
+$collaborators-content-error-color: #904747;
+

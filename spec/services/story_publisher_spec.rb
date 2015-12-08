@@ -4,6 +4,7 @@ RSpec.describe StoryPublisher do
 
   let(:draft_story) { FactoryGirl.create(:draft_story) }
   let(:user) { mock_valid_user }
+  let(:user_authorization) { mock_user_authorization }
   let(:params) do
     {
       uid: draft_story.uid,
@@ -11,31 +12,37 @@ RSpec.describe StoryPublisher do
     }
   end
 
-  subject { StoryPublisher.new(user, params) }
+  subject { StoryPublisher.new(user, user_authorization, params) }
 
   describe '#initialize' do
 
     it 'initializes with user, story params, and headers for core' do
       expect {
-        StoryPublisher.new(mock_valid_user, params)
+        StoryPublisher.new(user, user_authorization, params)
       }.to_not raise_error
     end
 
     it 'raises without params' do
       expect {
-        StoryPublisher.new(mock_valid_user)
-      }.to raise_error(ArgumentError, /1 for \d/)
+        StoryPublisher.new(user, user_authorization)
+      }.to raise_error(ArgumentError, /2 for 3/)
+    end
+
+    it 'raises without user_authorization' do
+      expect {
+        StoryPublisher.new(user)
+      }.to raise_error(ArgumentError, /1 for 3/)
     end
 
     it 'raises without user' do
       expect {
         StoryPublisher.new
-      }.to raise_error(ArgumentError, /0 for \d/)
+      }.to raise_error(ArgumentError, /0 for 3/)
     end
 
     it 'raises without user id' do
       expect {
-        StoryPublisher.new(mock_valid_user.except('id'), params)
+        StoryPublisher.new(user.except('id'), user_authorization, params)
       }.to raise_error(ArgumentError, /User is not valid/)
     end
 
@@ -56,7 +63,7 @@ RSpec.describe StoryPublisher do
 
       it 'raises without existing draft story' do
         expect {
-          StoryPublisher.new(mock_valid_user, params)
+          StoryPublisher.new(user, user_authorization, params)
         }.to raise_error(/Could not find a draft story with matching uid and digest./)
       end
     end
@@ -68,6 +75,7 @@ RSpec.describe StoryPublisher do
     let(:mock_permissions_updater) { spy('permissions_updater') }
 
     before do
+      allow(mock_permissions_updater).to receive(:update_permissions).and_return(true)
       allow(PermissionsUpdater).to receive(:new).and_return(mock_permissions_updater)
     end
 
@@ -81,7 +89,7 @@ RSpec.describe StoryPublisher do
       end
 
       it 'calls PermissionsUpdater service object' do
-        expect(PermissionsUpdater).to receive(:new).with(user, draft_story.uid)
+        expect(PermissionsUpdater).to receive(:new).with(user, user_authorization, draft_story.uid)
         expect(mock_permissions_updater).to receive(:update_permissions).with(is_public: true)
         subject.publish
       end
@@ -125,6 +133,5 @@ RSpec.describe StoryPublisher do
         subject.publish
       end
     end
-
   end
 end

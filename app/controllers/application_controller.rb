@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   # Expose helper_methods for use in all views
-  helper_method :current_user
+  helper_method :current_user, :current_user_authorization
 
   prepend_before_filter :require_logged_in_user
 
@@ -17,6 +17,10 @@ class ApplicationController < ActionController::Base
   #   => nil
   def current_user
     @current_user ||= env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
+  end
+
+  def current_user_authorization
+    @current_user_authorization ||= CoreServer.current_user_authorization(current_user, params[:uid])
   end
 
   # +before_filter+

@@ -78,7 +78,7 @@ module BrowseActions
       :singular_description => t('controls.browse.facets.categories_singular_title'),
       :param => :category,
       :options => cats,
-      :extra_options => hidden_cats
+      :extra_options => hidden_cats # WARN: I could be nil
     }
   end
 
@@ -611,7 +611,9 @@ module BrowseActions
 
     selected_category = browse_options[:search_options][:category]
     categories_facet = browse_options[:facets].detect { |facet| facet[:param] == :category }
-    categories = categories_facet[:options] + categories_facet[:extra_options]
+
+    # extra_options could potentially be nil (see EN-760 and categories_facet method)
+    categories = categories_facet[:options] + categories_facet[:extra_options].to_a
 
     return nil unless categories.present?
 

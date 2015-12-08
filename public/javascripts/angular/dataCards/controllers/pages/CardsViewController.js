@@ -275,13 +275,6 @@
 
     $scope.$bindObservable('currentUserHasRights', isCurrentUserDomainUser$);
 
-    var isCurrentUserAdminOrPublisher$ =
-      currentUser$.
-      map(function(user) {
-        var roleName = user.roleName;
-        return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
-      });
-
     var userCanManageView$ = $scope.isEphemeral ?
       Rx.Observable.returnValue(false) :
       page.observe('rights').map(function(rights) {
@@ -290,29 +283,12 @@
         });
       });
 
-    var isCurrentUserOwnerOfDataset$ =
-      page.
-      observe('dataset').
-      observeOnLatest('ownerId').
-      combineLatest(
-        currentUser$.pluck('id'),
-        function(ownerId, userId) {
-          return ownerId === userId;
-        });
-
-    var currentUserHasSaveRight$ = userCanManageView$.
-      combineLatest(
-        isCurrentUserOwnerOfDataset$,
-        isCurrentUserAdminOrPublisher$,
-        function(a, b, c) { return a || b || c; }).
-      catchException(Rx.Observable.returnValue(false));
-
-    $scope.$bindObservable('currentUserHasSaveRight', currentUserHasSaveRight$);
-
+    // We're checking the displayType as well as the user to account for
+    // standalone visualizations
     $scope.$bindObservable(
       'shouldDisplayCustomizeBar',
-      currentUserHasSaveRight$.combineLatest(currentUser$, function(hasSaveRight) {
-        return hasSaveRight && page.displayType == 'data_lens';
+      currentUser$.map(function(user) {
+        return user && page.displayType == 'data_lens';
       })
     );
 
@@ -450,6 +426,14 @@
       subscribe(_.bind(page.resetDirtied, page));
     $scope.$bindObservable('hasChanges', page.observeDirtied());
 
+    var shouldEnableSave$ = Rx.Observable.combineLatest(
+      userCanManageView$,
+      page.observeDirtied(),
+      function(hasRight, hasChanges) {
+        return hasRight && hasChanges;
+      });
+    $scope.$bindObservable('shouldEnableSave', shouldEnableSave$);
+
     $scope.$emitEventsFromObservable('page:dirtied', page.observeDirtied().filter(_.identity));
 
     function notifyUserOfSaveProgress(savePromise, publishTo) {
@@ -545,6 +529,8 @@
         if (!_.isUndefined(moderationStatus)) {
           newPageSerializedBlob.moderationStatus = moderationStatus;
         }
+
+        newPageSerializedBlob.parentLensId = newPageSerializedBlob.pageId;
 
         // PageDataService looks at whether or not pageId is set on the blob.
         // If it's set, it will do a regular save. We want it to save a new page.
@@ -691,7 +677,11 @@
         if ($scope.isEphemeral) {
           idleTitle = I18n.saveAs.flyoutIdle;
         } else if ($scope.hasChanges) {
-          idleTitle = I18n.saveButton.flyoutIdle;
+          if (!$scope.shouldEnableSave) {
+            idleTitle = I18n.saveButton.flyoutNoEditPermission;
+          } else {
+            idleTitle = I18n.saveButton.flyoutIdle;
+          }
         } else {
           idleTitle = I18n.saveButton.flyoutNoChanges;
         }

@@ -125,7 +125,72 @@ class PageMetadataControllerTest < ActionController::TestCase
   test 'create fails when neither save-as nor ephemeral-bootstrap is enabled' do
     @controller.stubs(can_create_metadata?: true, save_as_enabled?: false, ephemeral_bootstrap_enabled?: false)
 
-    post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :json
+    json = { datasetId: 'four-four' }.to_json
+    set_up_json_request(json)
+
+    post :create, format: :json
+    assert_response(401)
+  end
+
+  test 'create succeeds when a logged-in user (regardless of domain role) creates a derived lens and the save-as flag is enabled' do
+    user_stub = stub(is_owner?: false, is_admin?: false, roleName: 'editor')
+    @controller.stubs(save_as_enabled?: true, current_user: user_stub)
+    view_stub = stub(can_read?: true, data_lens?: true)
+    View.stubs(find: view_stub)
+
+    json = { datasetId: 'four-four', parentLensId: 'page-lens' }.to_json
+    set_up_json_request(json)
+
+    @page_metadata_manager.expects(:create).with do |blob|
+      assert_equal(blob['datasetId'], 'four-four')
+    end.then.returns({ body: nil, status: '200' })
+
+    post :create, format: :json
+    assert_response(200)
+  end
+
+  test 'create fails when a logged-in user tries to create a derived lens without the save-as flag enabled' do
+    user_stub = stub(is_owner?: false, is_admin?: false)
+    @controller.stubs(can_create_metadata?: false, save_as_enabled?: false, current_user: user_stub)
+
+    json = { datasetId: 'four-four', parentLensId: 'page-lens' }.to_json
+    set_up_json_request(json)
+
+    post :create, format: :json
+    assert_response(401)
+  end
+
+  test 'create fails when a user without a domain role tries to create a (non-derived) data lens from a dataset' do
+    user_stub = stub(is_owner?: false, is_admin?: false)
+    @controller.stubs(can_create_metadata?: false, save_as_enabled?: true, current_user: user_stub)
+
+    json = { datasetId: 'four-four' }.to_json
+    set_up_json_request(json)
+
+    post :create, format: :json
+    assert_response(401)
+  end
+
+  test 'create fails when a logged-in user tries to create a derived lens from a private data lens owned by another user' do
+    user_stub = stub(is_owner?: false, is_admin?: false, roleName: 'publisher')
+    view_stub = stub(can_read?: false)
+    @controller.stubs(save_as_enabled?: true, current_user: user_stub)
+    View.stubs(find: view_stub)
+
+    json = { datasetId: 'four-four', parentLensId: 'page-lens' }.to_json
+    set_up_json_request(json)
+
+    post :create, format: :json
+    assert_response(401)
+  end
+
+  test 'create fails when there is no logged-in user' do
+    @controller.stubs(save_as_enabled?: false, current_user: nil)
+
+    json = { datasetId: 'four-four', parentLensId: 'page-lens' }.to_json
+    set_up_json_request(json)
+
+    post :create, format: :json
     assert_response(401)
   end
 

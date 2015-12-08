@@ -347,6 +347,7 @@ en:
         flyoutFailedTitle: An error occurred
         flyoutIdle: Click to save your changes
         flyoutNoChanges: No changes to be saved
+        flyoutNoEditPermission: You do not have permissions to save changes to this Lens
         save: Save
         saved: Saved!
         saving: Saving...

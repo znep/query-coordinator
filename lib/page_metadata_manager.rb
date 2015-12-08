@@ -292,7 +292,7 @@ class PageMetadataManager
 
   # Page metadata keys we don't want in the inner page_metadata
   def self.keys_to_skip
-    %w(permissions moderationStatus shares rights displayType provenance ownerId)
+    %w(permissions moderationStatus shares rights displayType provenance ownerId parentLensId)
   end
 
   private

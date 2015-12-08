@@ -46,20 +46,7 @@ module ApplicationHelper
         "#{locale_part}/view/#{view.id}"
       end
     elsif view.story?
-      begin
-        # Use the direct link stored in the metadata for 'story' display types.
-        # Don't autogenerate a link - storyteller supports vanity SEO-compatible
-        # URLs (though the UI for this feature isn't implemented yet).
-        view.metadata.accessPoints['story']
-      rescue NoMethodError => error
-        error_message = "Failed to find access point 'story' for view with " \
-          "id '#{view.id}; falling back to url '/stories/s/#{view.id}/edit'"
-        Airbrake.notify(
-          :error_class => 'StoriesAccessPointUrlError',
-          :error_message => error_message
-        )
-        "/stories/s/#{view.id}/edit"
-      end
+      "/stories/s/#{view.id}"
     else
       super
     end

@@ -2,6 +2,12 @@ class AdministrationController < ApplicationController
   include BrowseActions
   include GeoregionsHelper
 
+  # To learn why we include AdministrationHelper manually, see
+  # the comment at the top of AdministrationHelper's implementation.
+  # tl;dr "helper :all" in ApplicationController.
+  # NOTE: AdministrationHelper is distinct from AdminHelper.
+  include AdministrationHelper
+
   before_filter :check_member, :only => :index
   def index
     redirect_to '/manage/site_config' if CurrentDomain.module_enabled?(:govStat)

@@ -2,7 +2,9 @@
 <html>
 <head>
   <title><%= t('editor.default_page_title') %></title>
-  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
+  <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
   <%= javascript_include_tag 'airbrake-js-client/dist/client' %>
   <%= javascript_include_tag 'AssetFinder' %>
   <%= javascript_include_tag 'editor' %>

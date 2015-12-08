@@ -345,7 +345,8 @@ class BrowseActionsTest < Test::Unit::TestCase
       {
         title: name.titleize,
         singular_description: name.downcase.singularize,
-        param: name.downcase.to_sym,
+        # param is quite wrong for the view_types_facet and possibly others
+        param: name == 'categories' ? :category : name.downcase.to_sym,
         options: [
           { value: 'One', text: 'One' },
           { value: 'Two', text: 'Two' },
@@ -391,7 +392,7 @@ class BrowseActionsTest < Test::Unit::TestCase
         topics_facet
         view_types_facet
       ).each do |type_of_facet|
-        name = type_of_facet.split('_').first
+        name = type_of_facet.gsub('_facet', '')
         @browse_actions_container.stubs(type_of_facet.to_sym => facet(name))
       end
     end
@@ -405,7 +406,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       facet_titles = browse_options[:facets].map { |f| f[:title] }
       expected_titles = [
         'Categories',
-        'View',
+        'View Types',
         'Custom Superheroes',
         'Custom Tomatoes',
         'Custom Follies',
@@ -426,7 +427,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       browse_options = @browse_actions_container.send(:process_browse, request)
       facet_titles = browse_options[:facets].map { |f| f[:title] }
       expected_titles = [
-        'View',
+        'View Types',
         'Custom Superheroes',
         'Custom Tomatoes',
         'Custom Follies',
@@ -439,6 +440,22 @@ class BrowseActionsTest < Test::Unit::TestCase
         actual = facet_titles[index]
         assert_equal expected, actual
       end
+    end
+
+    def test_categories_facet_works_nil_extra_options
+      request = OpenStruct.new(
+        params: { category: 'Some Random Category' }.with_indifferent_access
+      )
+
+      # Let's have nil for extra options
+      @browse_actions_container.stubs(categories_facet: facet('categories').merge(extra_options: nil))
+      browse_options = @browse_actions_container.send(:process_browse, request)
+      cat_facet = browse_options[:facets].find { |f| f[:title] == 'Categories' }
+      assert_equal nil, cat_facet[:extra_options] # make sure the test setup worked
+
+      # This used to raise a TypeError as per EN-760
+      res = @browse_actions_container.send(:selected_category_and_any_children, browse_options)
+      assert_equal 'Some Random Category', res
     end
   end
 end

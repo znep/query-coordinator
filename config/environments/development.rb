@@ -55,5 +55,5 @@ Rails.application.configure do
     :s3_protocol => 'https'
   }
 
-  config.action_controller.action_on_unpermitted_parameters = :raise
+  config.action_controller.action_on_unpermitted_parameters = :log
 end

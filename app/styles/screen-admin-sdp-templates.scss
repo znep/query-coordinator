@@ -4,16 +4,17 @@
   }
 }
 
+.button:focus, .button:active {
+  outline: 1px double;
+}
+
 .templatesList {
   tbody {
     tr {
       .button {
-        opacity: 0.3;
+        opacity: 1;
         @include transition-duration(0.2s);
         @include transition-property(opacity);
-      }
-      &:hover .button {
-        opacity: 1;
       }
     }
     .preview {

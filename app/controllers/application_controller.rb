@@ -110,15 +110,12 @@ class ApplicationController < ActionController::Base
       !feature_flags.disable_nbe_redirection_warning_message
   end
 
-protected
+  protected
+
   # v4 chrome style error messages
   def render_forbidden(message = I18n.t('core.auth.need_permission'))
     flash.now[:error] = message
     return render('shared/error', :status => :forbidden)
-  end
-
-  def is_mobile?
-    return request.env['HTTP_USER_AGENT'] && request.env['HTTP_USER_AGENT'][/(iPhone|iPod|Android)/i]
   end
 
   # We use a custom page_cache_directory based on the theme of the site.
@@ -146,7 +143,7 @@ protected
     end
   end
 
-private
+  private
 
   # create the connection that can be used by all core server calls
   # made by this request

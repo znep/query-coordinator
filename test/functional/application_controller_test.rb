@@ -1,7 +1,9 @@
 require 'test_helper'
 
 class ApplicationControllerTest < ActionController::TestCase
+
   context '#is_admin?' do
+
     setup do
       init_core_session
       init_current_domain
@@ -31,6 +33,7 @@ class ApplicationControllerTest < ActionController::TestCase
   end
 
   context '#show_nbe_redirection_warning?' do
+
     setup do
       init_core_session
       init_current_domain
@@ -76,6 +79,7 @@ class ApplicationControllerTest < ActionController::TestCase
     end
 
     context 'when disable_nbe_redirection_warning_message is false' do
+
       setup do
         stub_feature_flags_with(:disable_nbe_redirection_warning_message, false)
       end

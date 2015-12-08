@@ -52,7 +52,6 @@ class WidgetsController < ApplicationController
     end
 
     @display = @view.display
-    @is_mobile = is_mobile?
 
     needs_view_js @view.id, @view
     if @view.is_form?

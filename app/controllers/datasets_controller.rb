@@ -1,5 +1,6 @@
 class DatasetsController < ApplicationController
 
+  include ApplicationHelper
   include DatasetsHelper
   include CommonMetadataMethods
 
@@ -31,7 +32,7 @@ class DatasetsController < ApplicationController
     @page_custom_chrome = ''
     @suppress_content_wrapper = true
 
-    if is_mobile? && (params[:no_mobile] != 'true')
+    if is_mobile?
       return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
     end
 

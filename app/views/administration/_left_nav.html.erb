@@ -95,6 +95,11 @@
             {:controller => 'internal', :action => 'index'} %>
       </li>
     <%- end -%>
+    <%- if current_user.try(:is_admin?) && feature_flag?('stories_enabled', request) -%>
+      <li class="contentmgmt">
+        <a href="/stories/admin/themes"><span class="icon"></span>Stories</a>
+      </li>
+    <%- end -%>
   </ul>
 </div>
 

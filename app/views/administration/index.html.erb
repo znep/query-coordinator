@@ -126,7 +126,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if current_user && current_user.is_admin? && feature_flag?('stories_enabled', request) -%>
+    <%- if current_user.try(:is_admin?) && feature_flag?('stories_enabled', request) -%>
       <li class="contentmgmt">
         <a href="/stories/admin/themes"><span class="icon"></span>Stories</a>
         <span class="description">

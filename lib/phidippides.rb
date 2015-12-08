@@ -452,7 +452,8 @@ class Phidippides < SocrataHttp
     # when creating cards.
     begin
       core_server_response = CoreServer::Base.connection.get_request(
-        "/id/#{dataset_id}?%24query=select+count(0)"
+        "/id/#{dataset_id}?%24query=select+count(0)",
+        View.federation_headers
       )
       dataset_size = JSON.parse(core_server_response)[0]['count_0'].to_i
     rescue CoreServer::Error => error

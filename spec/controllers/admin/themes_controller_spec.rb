@@ -240,7 +240,7 @@ RSpec.describe Admin::ThemesController, type: :controller do
       it 'merges request host into params' do
         request.host = 'somehostname.com'
         expected = theme_attrs.merge('domain_cname' => 'somehostname.com')
-        expect(theme).to receive(:update_attributes).with(expected, instance_of(Hash))
+        expect(theme).to receive(:update_attributes).with(expected)
         put :update, id: theme.id, theme: theme_attrs
       end
 

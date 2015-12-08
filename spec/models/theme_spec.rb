@@ -75,9 +75,6 @@ RSpec.describe Theme, type: :model do
   end
 
   describe '#save' do
-    let(:headers) do
-      {}
-    end
     let(:sample_core_config) { JSON.parse(fixture('story_theme.json').read).first }
 
 
@@ -93,13 +90,13 @@ RSpec.describe Theme, type: :model do
 
       it 'calls create_or_update_configuration with core' do
         expect(CoreServer).to receive(:create_or_update_configuration).and_return(sample_core_config)
-        subject.save(headers)
+        subject.save
       end
 
       context 'when successfull' do
         before do
           allow(CoreServer).to receive(:create_or_update_configuration).and_return(sample_core_config)
-          subject.save(headers)
+          subject.save
         end
 
         it 'sets id from response' do
@@ -126,7 +123,7 @@ RSpec.describe Theme, type: :model do
 
         before do
           allow(CoreServer).to receive(:create_or_update_configuration).and_return(error_response)
-          subject.save(headers)
+          subject.save
         end
 
         it 'sets errors attribute' do
@@ -154,18 +151,12 @@ RSpec.describe Theme, type: :model do
 
       it 'calls create_or_update_configuration with core' do
         expect(CoreServer).to receive(:create_or_update_configuration).and_return(sample_core_config)
-        subject.save(headers)
+        subject.save
       end
     end
   end
 
   describe '#update_attributes' do
-    let(:headers) do
-      {
-        'some-header' => 'value'
-      }
-    end
-
     let(:attributes) do
       {
         'css_variables' => theme_css_vars.merge('$newCssVar' => '1px'),
@@ -179,38 +170,34 @@ RSpec.describe Theme, type: :model do
     end
 
     it 'calls save' do
-      expect(subject).to receive(:save).with(headers)
-      subject.update_attributes(attributes, headers)
+      expect(subject).to receive(:save)
+      subject.update_attributes(attributes)
     end
 
     it 'returns result of save' do
-      expect(subject.update_attributes(attributes, headers)).to eq(:saved)
+      expect(subject.update_attributes(attributes)).to eq(:saved)
     end
 
     it 'updates title' do
-      subject.update_attributes(attributes, headers)
+      subject.update_attributes(attributes)
       expect(subject.title).to eq('updated title')
     end
 
     it 'updates description' do
-      subject.update_attributes(attributes, headers)
+      subject.update_attributes(attributes)
       expect(subject.description).to eq('updated description')
     end
 
     it 'updates css_variables' do
-      subject.update_attributes(attributes, headers)
+      subject.update_attributes(attributes)
       expect(subject.css_variables).to eq(theme_css_vars.merge('$newCssVar' => '1px'))
     end
   end
 
   describe '#destroy' do
-    let(:headers) do
-      { 'some-header' => 'value' }
-    end
-
     it 'calls delete_configuration on core server' do
-      expect(CoreServer).to receive(:delete_configuration).with(subject.id, headers)
-      subject.destroy(headers)
+      expect(CoreServer).to receive(:delete_configuration).with(subject.id)
+      subject.destroy
     end
   end
 

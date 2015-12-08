@@ -60,6 +60,9 @@ gem 'semver2'
 # Memcache library
 gem 'dalli'
 
+# Stores the request for use later
+gem 'request_store'
+
 group :development, :test do
   # Testing framework
   gem 'rspec-rails', '~> 3.2'

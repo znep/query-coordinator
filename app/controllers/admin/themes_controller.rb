@@ -17,7 +17,7 @@ class Admin::ThemesController < ApplicationController
 
   def create
     @theme = Theme.new(theme_params)
-    if @theme.save(CoreServer.headers_from_request(request))
+    if @theme.save
       flash[:success] = "Successfully created theme, #{@theme.title}"
       redirect_to action: 'index'
     else
@@ -28,7 +28,7 @@ class Admin::ThemesController < ApplicationController
 
   def update
     @theme = Theme.find(params[:id])
-    if @theme.update_attributes(theme_params, CoreServer.headers_from_request(request))
+    if @theme.update_attributes(theme_params)
       flash[:success] = 'Successfully updated theme config'
     else
       flash[:error] = @theme.errors
@@ -39,7 +39,7 @@ class Admin::ThemesController < ApplicationController
 
   def destroy
     theme = Theme.find(params[:id])
-    theme.destroy(CoreServer.headers_from_request(request))
+    theme.destroy
     flash[:success] = "Successfully deleted theme, #{theme.title}."
     redirect_to action: 'index'
   end

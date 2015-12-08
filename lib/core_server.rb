@@ -1,46 +1,45 @@
 require 'retries'
 require 'addressable/uri'
+require 'request_store'
 
 class CoreServer
 
-  def self.get_view(uid, headers)
-    view_request(uid: uid, verb: :get, headers: headers)
+  def self.get_view(uid)
+    view_request(uid: uid, verb: :get)
   end
 
-  def self.update_view(uid, headers, view_data, query_params = nil)
-    view_request(uid: uid, verb: :put, headers: headers, data: view_data, query_params: query_params)
+  def self.update_view(uid, view_data, query_params = nil)
+    view_request(uid: uid, verb: :put, data: view_data, query_params: query_params)
   end
 
-  def self.create_view(headers, title, query_params = nil)
-    view_request(verb: :post, headers: headers, data: view_with_title(title), query_params: query_params)
+  def self.create_view(title, query_params = nil)
+    view_request(verb: :post, data: view_with_title(title), query_params: query_params)
   end
 
-  def self.update_permissions(uid, headers, query_params)
-    permissions_request(uid: uid, verb: :put, headers: headers, query_params: query_params)
+  def self.update_permissions(uid, query_params)
+    permissions_request(uid: uid, verb: :put, query_params: query_params)
   end
 
-  def self.current_user(headers)
+  def self.current_user
     core_server_request_options = {
       verb: :get,
-      path: '/users/current.json',
-      headers: headers.merge('Content-type' => 'application/json')
+      path: '/users/current.json'
     }
 
     core_server_request_with_retries(core_server_request_options)
   end
 
-  # Gets the configuration based on id. Since configurations are a public endpoint,
-  # no headers are needed.
+  # Gets the configuration based on id
   def self.get_configuration(id)
     configuration_request(id: id, verb: :get)
   end
 
-  def self.create_or_update_configuration(id, headers, configuration_data)
-    configuration_request(id: id, verb: :post, headers: headers, data: configuration_data)
+  def self.create_or_update_configuration(id, configuration_data)
+    configuration_request(id: id, verb: :post, data: configuration_data)
   end
 
-  def self.delete_configuration(id, headers)
-    configuration_request(id: id, verb: :delete, headers: headers)
+  def self.delete_configuration(id)
+    configuration_request(id: id, verb: :delete)
   end
 
   def self.story_themes
@@ -53,7 +52,7 @@ class CoreServer
   # If X-Socrata-RequestId is present on the incoming request, its value
   # is passed through to the return value. Otherwise, the request's uuid is
   # used.
-  def self.headers_from_request(request)
+  def self.headers_from_request(request = nil)
     headers = {}
 
     authentication_cookie = request.env['HTTP_COOKIE']
@@ -135,7 +134,6 @@ class CoreServer
   def self.view_request(options)
     raise ArgumentError.new("':uid' is required.") if options[:verb] != :post && options.key?(:uid) == false
     raise ArgumentError.new("':verb' is required.") unless options.key?(:verb)
-    raise ArgumentError.new("':headers' is required.") unless options.key?(:headers)
 
     verb = options[:verb]
     path = if verb == :post
@@ -149,10 +147,7 @@ class CoreServer
 
     core_server_request_options = {
       verb: verb,
-      path: path,
-      headers: options[:headers].merge(
-        'Content-type' => 'application/json'
-      )
+      path: path
     }
 
     if options[:data].present?
@@ -165,7 +160,6 @@ class CoreServer
   def self.permissions_request(options)
     raise ArgumentError.new("':uid' is required.") unless options.key?(:uid)
     raise ArgumentError.new("':verb' is required.") unless options.key?(:verb)
-    raise ArgumentError.new("':headers' is required.") unless options.key?(:headers)
     raise ArgumentError.new("':query_params' is required.") unless options.key?(:query_params)
 
     verb = options[:verb]
@@ -173,10 +167,7 @@ class CoreServer
 
     core_server_request_options = {
       verb: verb,
-      path: path,
-      headers: options[:headers].merge(
-        'Content-type' => 'application/json'
-      )
+      path: path
     }
 
     core_server_permissions_request_with_retries(core_server_request_options)
@@ -185,7 +176,6 @@ class CoreServer
   def self.configuration_request(options)
     raise ArgumentError.new("':verb' is required.") unless options.key?(:verb)
 
-    headers = (options[:headers] || {}).merge('Content-type' => 'application/json')
     verb = options[:verb]
     config_id = options[:id]
     path = '/configurations.json'
@@ -202,7 +192,6 @@ class CoreServer
     core_server_request_options = {
       verb: verb,
       path: path,
-      headers: headers,
       return_errors: true
     }
 
@@ -216,7 +205,7 @@ class CoreServer
       config_id ||= response['id']
 
       if [:put, :post].include?(verb) && config_id.present? && options[:data].key?('properties')
-        configuration_properties_request(config_id: config_id, verb: verb, headers: headers, data: options[:data]['properties'], return_errors: true)
+        configuration_properties_request(config_id: config_id, verb: verb, data: options[:data]['properties'], return_errors: true)
       end
 
       response = core_server_request_with_retries(verb: :get, path: "/configurations/#{config_id}")
@@ -228,7 +217,6 @@ class CoreServer
   def self.configuration_properties_request(options)
     configuration_id = options[:config_id]
     verb = options[:verb]
-    headers = options[:headers]
     properties = options[:data]
     path = nil
 
@@ -244,9 +232,6 @@ class CoreServer
       core_server_request_options = {
         verb: verb,
         path: path,
-        headers: headers.merge(
-          'Content-type' => 'application/json'
-        ),
         body: property,
         return_errors: true
       }
@@ -270,10 +255,7 @@ class CoreServer
 
     core_server_request_options = {
       verb: verb,
-      path: path,
-      headers: (options[:headers] || {}).merge(
-        'Content-type' => 'application/json'
-      )
+      path: path
     }
 
     if options[:data].present?
@@ -334,10 +316,10 @@ class CoreServer
     raise ArgumentError.new("':verb' is required.") unless options[:verb].present?
     raise ArgumentError.new("':path' is required.") unless options[:path].present?
 
-    options[:headers] = {} unless options.has_key?(:headers)
+    headers = session_headers.merge('Content-type' => 'application/json')
 
     unless Rails.application.config.core_service_app_token.blank?
-      options[:headers]['X-App-Token'] = Rails.application.config.core_service_app_token
+      headers['X-App-Token'] = Rails.application.config.core_service_app_token
     end
 
     core_server_address = Rails.application.config.core_service_uri
@@ -348,9 +330,10 @@ class CoreServer
     http.open_timeout = Rails.application.config.core_service_request_open_timeout
     http.read_timeout = Rails.application.config.core_service_request_read_timeout
 
+    # instantiates a class of Net:HTTP::Get (or insert other verb)
     core_request = "Net::HTTP::#{options[:verb].to_s.capitalize}".constantize.new(uri.request_uri)
 
-    options[:headers].each { |key, value| core_request[key] = value }
+    headers.each { |key, value| core_request[key] = value }
 
     body = options.fetch(:body, nil)
 
@@ -381,5 +364,9 @@ class CoreServer
       displayFormat: {},
       query: {}
     }
+  end
+
+  def self.session_headers
+    ::RequestStore.store[:socrata_session_headers] || {}
   end
 end

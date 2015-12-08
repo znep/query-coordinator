@@ -90,6 +90,50 @@ describe CoreServer do
     end
   end
 
+  describe '#core_server_http_request' do
+    let(:mock_headers) do
+      {
+        'Cookie' => 'Yummy',
+        'Lucky' => 'You'
+      }
+    end
+    let(:options) do
+      {
+        verb: :get,
+        path: '/blah.json'
+      }
+    end
+    let(:mock_http) { double('net_http').as_null_object }
+    let(:mock_get) { spy('net_http_get') }
+
+    before do
+      allow(RequestStore.store).to receive(:[]).with(:socrata_session_headers).and_return(mock_headers)
+      allow(Net::HTTP).to receive(:new).and_return(mock_http)
+      allow(Net::HTTP::Get).to receive(:new).with("#{options[:path]}").and_return(mock_get)
+      expect(mock_http).to receive(:request).with(mock_get)
+
+      allow(mock_get).to receive(:[]=)
+    end
+
+    let(:make_request) { CoreServer.core_server_http_request(options) }
+
+    it 'sets headers from request store' do
+      make_request
+      expect(mock_get).to have_received(:[]=).with('Cookie', 'Yummy')
+      expect(mock_get).to have_received(:[]=).with('Lucky', 'You')
+    end
+
+    it 'merges Content-type into request headers' do
+      make_request
+      expect(mock_get).to have_received(:[]=).with('Content-type', 'application/json')
+    end
+
+    it 'merges X-App-Token into request headers' do
+      make_request
+      expect(mock_get).to have_received(:[]=).with('X-App-Token', 'the_app_token')
+    end
+  end
+
   describe '#generate_query_params' do
     it 'should return a string containing a URL-safe parameterized string when given a Hash' do
       result = CoreServer.generate_query_params({param1: 'rawr', param2: 'something'})
@@ -122,22 +166,17 @@ describe CoreServer do
     end
 
     it 'does not raise for post without uid' do
-      expect { CoreServer.view_request(verb: :post, headers: {}) }.to_not raise_error
+      expect { CoreServer.view_request(verb: :post) }.to_not raise_error
     end
 
     it 'raises when no verb is supplied' do
       expect { CoreServer.view_request(uid: 'four-four') }.to raise_error(ArgumentError, /':verb' is required/)
     end
 
-    it 'raises when no headers are supplied' do
-      expect { CoreServer.view_request(uid: 'four-four', verb: :put) }.to raise_error(ArgumentError, /':headers' is required/)
-    end
-
     it 'should make a request with GET query parameters' do
       CoreServer.view_request(
         uid: 'four-four',
         verb: :get,
-        headers: {},
         query_params: {hello: 'world'}
       )
 
@@ -149,8 +188,7 @@ describe CoreServer do
     it 'should make a request without query parameters' do
       CoreServer.view_request(
         uid: 'four-four',
-        verb: :put,
-        headers: {}
+        verb: :put
       )
 
       expect(CoreServer).to have_received(:core_server_request_with_retries).with(
@@ -163,12 +201,11 @@ describe CoreServer do
     context 'when user is logged in' do
       before do
         stub_request(:get, "#{core_service_uri}/users/current.json").
-          with(headers: headers.merge(injected_headers)).
           to_return(status: 200, body: fixture('current_user.json'))
       end
 
       it 'returns user json' do
-        result = CoreServer.current_user(headers)
+        result = CoreServer.current_user
         expect(result['id']).to eq('vkji-3zrf')
       end
     end
@@ -176,12 +213,11 @@ describe CoreServer do
     context 'when user is not logged in' do
       before do
         stub_request(:get, "#{core_service_uri}/users/current.json").
-          with(headers: headers.merge(injected_headers)).
           to_return(status: 404)
       end
 
       it 'returns nil' do
-        result = CoreServer.current_user(headers)
+        result = CoreServer.current_user
         expect(result).to be_nil
       end
     end
@@ -189,12 +225,11 @@ describe CoreServer do
     context 'when core server error' do
       before do
         stub_request(:get, "#{core_service_uri}/users/current.json").
-          with(headers: headers.merge(injected_headers)).
           to_return(status: 500, body: fixture('error.html'), headers: { 'Content-Type' => 'text/html; charset=utf-8' })
       end
 
       it 'returns nil' do
-        result = CoreServer.current_user(headers)
+        result = CoreServer.current_user
         expect(result).to be_nil
       end
     end
@@ -203,7 +238,6 @@ describe CoreServer do
   describe '#configurations_request' do
     before do
       stub_request(:get, /#{core_service_uri}\/configurations.json.*/).
-        with(headers: headers.merge(injected_headers)).
         to_return(status: 200, body: fixture('configurations.json'))
     end
 
@@ -253,28 +287,22 @@ describe CoreServer do
 
   describe '#permissions_request' do
     it 'raises when no options' do
-      expect { CoreServer.permissions_request() }.to raise_error(ArgumentError, /0 for 1/)
+      expect { CoreServer.permissions_request() }.to raise_error(ArgumentError, /0 for \d/)
     end
 
     it 'raises when no uid in options' do
-      expect { CoreServer.permissions_request(verb: :get, headers: headers, query_params: {}) }.to raise_error(ArgumentError, /':uid' is required/)
+      expect { CoreServer.permissions_request(verb: :get, query_params: {}) }.to raise_error(ArgumentError, /':uid' is required/)
     end
 
     it 'raises when no verb in options' do
       expect {
-        CoreServer.permissions_request(uid: 'four-four', headers: headers, query_params: {})
+        CoreServer.permissions_request(uid: 'four-four', query_params: {})
       }.to raise_error(ArgumentError, /':verb' is required/)
-    end
-
-    it 'raises when no headers in options' do
-      expect {
-        CoreServer.permissions_request(verb: :get, uid: 'four-four', query_params: {})
-      }.to raise_error(ArgumentError, /':headers' is required/)
     end
 
     it 'raises when no query_params in options' do
       expect {
-        CoreServer.permissions_request(verb: :get, uid: 'four-four', headers: {})
+        CoreServer.permissions_request(verb: :get, uid: 'four-four')
       }.to raise_error(ArgumentError, /':query_params' is required/)
     end
   end

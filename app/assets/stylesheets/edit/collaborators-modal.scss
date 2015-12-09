@@ -46,7 +46,7 @@
     padding: 1rem;
     box-sizing: border-box;
     vertical-align: middle;
-    margin-bottom: 2rem;
+    margin-bottom: 4.25rem;
 
     &::after {
       content: '';
@@ -65,16 +65,30 @@
   }
 
   .modal-left-panel {
-    width: 70%;
-    margin-right: 2%;
+    @include media-query-property(
+      'width',
+      100%,
+      100%,
+      calc(78% - 1rem),
+      calc(78% - 1rem)
+    );
+
+    @include media-query-property(
+      'margin-bottom',
+      1rem,
+      1rem,
+      0,
+      0
+    );
+    margin-right: 1rem;
 
     .modal-input[type="email"] {
-      width: 65%;
-      margin-right: 2%;
+      width: calc(66% - 1rem);
+      margin-right: 1rem;
     }
 
     .modal-select {
-      width: 33%;
+      width: 34%;
 
       select {
         width: 100%;
@@ -83,8 +97,18 @@
   }
 
   .modal-right-panel {
-    width: 28%;
+    @include media-query-property(
+      'width',
+      100%,
+      100%,
+      22%,
+      22%
+    );
     text-align: right;
+
+    .btn-default {
+      width: 100%;
+    }
   }
 
   input[type="email"] {
@@ -119,6 +143,7 @@
     padding: 0.75rem;
     padding-right: 3.5rem;
     -webkit-appearance: none;
+    -moz-appearance: none;
     font-size: 1.5rem;
     border-radius: 0.1rem;
     background-color: $collaborators-select-background-color;

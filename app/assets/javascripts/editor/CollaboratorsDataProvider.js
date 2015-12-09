@@ -205,6 +205,9 @@
 
         request.open(method, url);
         request.setRequestHeader('Content-Type', 'application/json');
+        request.setRequestHeader('X-App-Token', storyteller.config.coreServiceAppToken);
+        request.setRequestHeader('X-CSRF-Token', storyteller.csrfToken);
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
         request.send(json);
       });

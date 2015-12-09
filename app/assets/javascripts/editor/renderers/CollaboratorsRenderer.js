@@ -441,12 +441,11 @@
 
       $saveButton.removeClass('btn-busy');
 
-      if (/email/i.test(response.getResponseHeader('X-Error-Message')) &&
-        /invalid/i.test(response.getResponseHeader('X-Error-Message'))) {
+      if (/email/i.test(message) && /invalid/i.test(message)) {
         message = t('editor.collaborators.modal.errors.invalid_email');
       } else {
+        storyteller.airbrake.notify(response.responseText);
         message = t('editor.collaborators.modal.errors.unknown_error');
-        storyteller.airbrake.notify(response);
       }
 
       storyteller.dispatcher.dispatch({

@@ -160,8 +160,8 @@
         _renderStory();
       });
 
-      storyteller.dragDropStore.addChangeListener(function() {
-        var hintPosition = storyteller.dragDropStore.getReorderHintPosition();
+      storyteller.dropHintStore.addChangeListener(function() {
+        var hintPosition = storyteller.dropHintStore.getDropHintPosition();
 
         if (hintPosition && hintPosition.storyUid === storyUid) {
           _showInsertionHintAtIndex(hintPosition.dropIndex);

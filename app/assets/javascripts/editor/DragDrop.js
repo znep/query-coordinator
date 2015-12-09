@@ -110,8 +110,8 @@
       ghostElement.addClass('hidden');
 
       if (storyUidOver) {
-        if (storyteller.dragDropStore.isDraggingOverStory(storyUidOver)) {
-          var hintPosition = storyteller.dragDropStore.getReorderHintPosition();
+        if (storyteller.dropHintStore.isDraggingOverStory(storyUidOver)) {
+          var hintPosition = storyteller.dropHintStore.getDropHintPosition();
 
           storyteller.dispatcher.dispatch({
             action: Actions.STORY_INSERT_BLOCK,

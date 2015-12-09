@@ -1,4 +1,4 @@
-describe('DragDropStore', function() {
+describe('DropHintStore', function() {
   'use strict';
 
   var blockContent = 'testBlockContent';
@@ -32,8 +32,8 @@ describe('DragDropStore', function() {
   describe('given STORY_DRAG_OVER action', function() {
     describe('with a valid storyUid and blockId', function() {
       it('should update its hint position', function(done) {
-        storyteller.dragDropStore.addChangeListener(function() {
-          var hint = storyteller.dragDropStore.getReorderHintPosition();
+        storyteller.dropHintStore.addChangeListener(function() {
+          var hint = storyteller.dropHintStore.getDropHintPosition();
           assert.equal(hint.storyUid, standardMocks.validStoryUid);
           assert.equal(hint.dropIndex, 0);
           done();
@@ -46,8 +46,8 @@ describe('DragDropStore', function() {
         it('should clear its hint position', function(done) {
           dragOver(standardMocks.validStoryUid, blockContent);
 
-          storyteller.dragDropStore.addChangeListener(function() {
-            var hint = storyteller.dragDropStore.getReorderHintPosition();
+          storyteller.dropHintStore.addChangeListener(function() {
+            var hint = storyteller.dropHintStore.getDropHintPosition();
             assert.isNull(hint);
             done();
           });
@@ -60,16 +60,16 @@ describe('DragDropStore', function() {
         describe('over some other story', function() {
           it('should preserve the existing hint', function() {
             dragOver(standardMocks.validStoryUid, blockContent);
-            var originalHint = storyteller.dragDropStore.getReorderHintPosition();
+            var originalHint = storyteller.dropHintStore.getDropHintPosition();
             assert.isNotNull(originalHint);
 
-            storyteller.dragDropStore.addChangeListener(function() {
+            storyteller.dropHintStore.addChangeListener(function() {
               throw new Error('expected no change');
             });
 
             dragLeave(standardMocks.invalidStoryUid);
 
-            var hint = storyteller.dragDropStore.getReorderHintPosition();
+            var hint = storyteller.dropHintStore.getDropHintPosition();
             assert.equal(hint, originalHint);
 
           });
@@ -77,11 +77,11 @@ describe('DragDropStore', function() {
         describe('over the dragged story', function() {
           it('should clear the hint', function(done) {
             dragOver(standardMocks.validStoryUid, blockContent);
-            var originalHint = storyteller.dragDropStore.getReorderHintPosition();
+            var originalHint = storyteller.dropHintStore.getDropHintPosition();
             assert.isNotNull(originalHint);
 
-            storyteller.dragDropStore.addChangeListener(function() {
-              var hint = storyteller.dragDropStore.getReorderHintPosition();
+            storyteller.dropHintStore.addChangeListener(function() {
+              var hint = storyteller.dropHintStore.getDropHintPosition();
               assert.isNull(hint);
               done();
             });
@@ -98,16 +98,16 @@ describe('DragDropStore', function() {
       it('should clear the reorder hint position', function(done) {
         dragOver(standardMocks.validStoryUid, blockContent);
         assert.deepEqual(
-          storyteller.dragDropStore.getReorderHintPosition(standardMocks.validStoryUid),
+          storyteller.dropHintStore.getDropHintPosition(standardMocks.validStoryUid),
           {
             storyUid: standardMocks.validStoryUid,
             dropIndex: 0
           }
         );
 
-        storyteller.dragDropStore.register(function() {
+        storyteller.dropHintStore.register(function() {
           assert.isNull(
-            storyteller.dragDropStore.getReorderHintPosition(standardMocks.validStoryUid)
+            storyteller.dropHintStore.getDropHintPosition(standardMocks.validStoryUid)
           );
           done();
         });
@@ -130,7 +130,7 @@ describe('DragDropStore', function() {
   describe('isDraggingOverStory', function() {
     describe('while not dragging', function() {
       it('should return false', function() {
-        assert.isFalse(storyteller.dragDropStore.isDraggingOverStory(standardMocks.validStoryUid));
+        assert.isFalse(storyteller.dropHintStore.isDraggingOverStory(standardMocks.validStoryUid));
       });
     });
 
@@ -140,12 +140,12 @@ describe('DragDropStore', function() {
       });
       describe('over the story in the argument', function() {
         it('should return true', function() {
-          assert.isTrue(storyteller.dragDropStore.isDraggingOverStory(standardMocks.validStoryUid));
+          assert.isTrue(storyteller.dropHintStore.isDraggingOverStory(standardMocks.validStoryUid));
         });
       });
       describe('over a story other than the one in the argument', function() {
         it('should return false', function() {
-          assert.isFalse(storyteller.dragDropStore.isDraggingOverStory(standardMocks.invalidStoryUid));
+          assert.isFalse(storyteller.dropHintStore.isDraggingOverStory(standardMocks.invalidStoryUid));
         });
       });
     });

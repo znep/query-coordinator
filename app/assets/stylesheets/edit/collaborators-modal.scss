@@ -17,6 +17,10 @@
       border-color: $collaborators-content-error-border-color;
       color: $collaborators-content-error-color;
     }
+
+    + div {
+      overflow: auto;
+    }
   }
 
   .modal-dialog {

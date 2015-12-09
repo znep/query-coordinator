@@ -1,10 +1,9 @@
 namespace :tag do
 
   desc 'Tag the current SHA with a label and timestamp'
-  task :release do
-    label = 'release'
-    timestamp = Time.now.strftime("%Y/%m/%d/%H%M")
-    tag = "#{label}/#{timestamp}"
+  task :release => :environment do
+    tag = Rails.application.config.version
+    puts "Tagging release '#{tag}'"
     system "git tag -a #{tag} -m #{tag}"
   end
 

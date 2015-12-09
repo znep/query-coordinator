@@ -3,18 +3,9 @@ require 'rails_helper'
 RSpec.describe 'autosave', type: :feature, js: true do
   before do
     stub_logged_in_user
+    stub_sufficient_rights
     stub_core_view('hasb-lock')
     visit '/s/magic-thing/hasb-lock/edit'
-    page.stub_ajax_request({
-      request: {
-        # TODO
-        # url: /stories/api/v1/stories/[a-z0-9-]{0}/drafts
-      },
-      response: {
-        # TODO
-        # response header: 'X-Story-Digest' => 'abc'
-      }
-    })
 
     @preview_btn = page.find('.preview-btn')
   end

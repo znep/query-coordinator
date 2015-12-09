@@ -324,6 +324,17 @@
         _assetFinder.getStyleAssetPath('themes')
       );
 
+      var customThemesEl = document.createElement('link');
+      customThemesEl.setAttribute('rel', 'stylesheet');
+      customThemesEl.setAttribute('type', 'text/css');
+      customThemesEl.setAttribute(
+        'href',
+        [
+          _assetFinder.getRelativeUrlRoot(),
+          '/themes/custom.css'
+        ].join('')
+      );
+
       // There seems to be a race condition in Firefox whereby the onload
       // event triggers before all styles have been applied to the DOM.
       // This manifests itself as the bottom padding on elements not always
@@ -345,6 +356,7 @@
       };
 
       document.head.appendChild(styleEl);
+      document.head.appendChild(customThemesEl);
     }
 
     /**

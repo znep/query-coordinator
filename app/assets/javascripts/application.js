@@ -43,7 +43,11 @@
 //= require socrata-visualizations/components/SocrataTimelineChart
 //= require socrata-visualizations/components/SocrataFeatureMap
 
-//= require editor/componentEditButton
+//TODO We really need to pull these files out of editor/ and into some
+//common directory.
+//= require editor/componentBase
+//= require editor/withLayoutHeightFromComponentData
+//= require editor/storytellerJQueryUtils
 //= require editor/block-component-renderers/componentSocrataVisualizationColumnChart
 //= require editor/block-component-renderers/componentSocrataVisualizationTimelineChart
 //= require editor/block-component-renderers/componentSocrataVisualizationFeatureMap

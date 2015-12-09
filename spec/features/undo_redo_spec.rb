@@ -18,6 +18,7 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
 
   before do
     stub_logged_in_user
+    stub_sufficient_rights
     stub_core_view('hasb-lock')
     visit '/s/magic-thing/hasb-lock/edit'
     @original_story_json = current_story_json
@@ -44,20 +45,6 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
       expect(button[:disabled]).to be_nil
     end
 
-    # Get number of blocks in the current story
-    def block_count
-      page.evaluate_script(
-        'storyteller.storyStore.getStoryBlockIds(storyteller.userStoryUid).length'
-      )
-    end
-
-    def block_content(block_id)
-      # Ideally we'd dive into the iframe etc
-      page.evaluate_script(
-        "storyteller.storyStore.getBlockComponentAtIndex('#{block_id}', 0).value"
-      )
-    end
-
     initial_block_count = block_count
 
     expect_button_disabled(@undo_btn)
@@ -76,7 +63,7 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
 
     # Grab some details from the block.
     first_block_id = page.evaluate_script('$(".user-story .block").attr("data-block-id")')
-    first_block_content = block_content(first_block_id)
+    first_block_content = block_content_at_index(first_block_id, 0)
 
     # Undo should enable.
     expect_button_enabled(@undo_btn)
@@ -88,7 +75,7 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
 
     # Grab block details.
     second_block_id = page.evaluate_script('$(".user-story .block").eq(1).attr("data-block-id")')
-    second_block_content = block_content(second_block_id)
+    second_block_content = block_content_at_index(second_block_id, 0)
     expect(second_block_id).to_not eq(first_block_id);
     expect(second_block_content).to_not eq(first_block_content); # Test sanity
 
@@ -99,7 +86,7 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
     # Hit undo
     @undo_btn.click
     expect(block_count).to eq(initial_block_count + 1)
-    expect(block_content(first_block_id)).to eq(first_block_content)
+    expect(block_content_at_index(first_block_id, 0)).to eq(first_block_content)
 
     # Both buttons should be enabled.
     expect_button_enabled(@undo_btn)
@@ -110,15 +97,15 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
     # Hit redo
     @redo_btn.click
     expect(block_count).to eq(initial_block_count + 2)
-    expect(block_content(first_block_id)).to eq(first_block_content)
-    expect(block_content(second_block_id)).to eq(second_block_content)
+    expect(block_content_at_index(first_block_id, 0)).to eq(first_block_content)
+    expect(block_content_at_index(second_block_id, 0)).to eq(second_block_content)
     expect_button_enabled(@undo_btn)
     expect_button_disabled(@redo_btn)
 
     # Undo all the way to the beginning.
     @undo_btn.click
     expect(block_count).to eq(initial_block_count + 1)
-    expect(block_content(first_block_id)).to eq(first_block_content)
+    expect(block_content_at_index(first_block_id, 0)).to eq(first_block_content)
     expect_button_enabled(@undo_btn)
     expect_button_enabled(@redo_btn)
     @undo_btn.click
@@ -199,12 +186,6 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
       @redo_btn.click
       expect(current_story_json).to eq(dirty_story_json)
     end
-  end
-
-  def current_story_json
-    page.evaluate_script(
-      "storyteller.storyStore.serializeStory(storyteller.userStoryUid)"
-    )
   end
 
   def copy_html_to_clipboard(html)

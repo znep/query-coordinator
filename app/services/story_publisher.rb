@@ -10,15 +10,14 @@ class StoryPublisher
 
   attr_reader :story
 
-  def initialize(user, params, core_request_headers)
+  def initialize(user, user_authorization, params)
     @user = user
-    @core_request_headers = core_request_headers
+    @user_authorization = user_authorization
     @story_uid = params[:uid]
 
     creating_user_id = (user || {})['id']
 
     raise ArgumentError.new('User is not valid') unless creating_user_id.present?
-    raise ArgumentError.new('Missing core request headers') unless core_request_headers.present?
 
     @draft_story = DraftStory.find_by_uid_and_digest(@story_uid, params[:digest])
 
@@ -35,7 +34,7 @@ class StoryPublisher
     saved = story.save
 
     if saved
-      permissions_updater = PermissionsUpdater.new(user, story_uid, core_request_headers)
+      permissions_updater = PermissionsUpdater.new(user, user_authorization, story_uid)
       permissions_response = nil
 
       begin
@@ -48,7 +47,7 @@ class StoryPublisher
       end
 
       # roll back
-      if permissions_response.nil?
+      unless permissions_response.present?
         story.destroy
         saved = false
       end
@@ -59,6 +58,6 @@ class StoryPublisher
 
   private
 
-  attr_reader :user, :core_request_headers, :story_uid
+  attr_reader :user, :user_authorization, :story_uid
 
 end

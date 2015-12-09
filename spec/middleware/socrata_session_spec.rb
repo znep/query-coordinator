@@ -15,6 +15,14 @@ describe SocrataSession do
     subject.call(env)
   end
 
+  it 'sets session store from headers from request' do
+    allow(app).to receive(:call)
+    mock_headers = { 'Haha' => 'You are a clown' }
+    expect(CoreServer).to receive(:headers_from_request).and_return(mock_headers)
+    subject.call(env)
+    expect(::RequestStore.store[:socrata_session_headers]).to eq(mock_headers)
+  end
+
   describe '#authenticate' do
 
     context 'without any core session present in the cookies' do
@@ -38,12 +46,7 @@ describe SocrataSession do
       let(:env) { env_with_session }
 
       it 'returns the current user hash' do
-        expect(CoreServer).to receive(:current_user).with(
-          hash_including(
-            'Cookie' => '_core_session_id=core321',
-            'X-Socrata-Host' => 'domain.in.host.header.example.com'
-          )
-        ).and_return(mock_current_user)
+        expect(CoreServer).to receive(:current_user).and_return(mock_current_user)
 
         expect(app).to receive(:call).with(
           hash_including(SocrataSession::SOCRATA_SESSION_ENV_KEY => respond_to(:authenticate))

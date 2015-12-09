@@ -4,6 +4,9 @@ RSpec.describe StoriesController, type: :controller do
 
   before do
     stub_core_view('test-test')
+    stub_sufficient_rights
+    # stub custom themes
+    allow(CoreServer).to receive(:story_themes).and_return([])
   end
 
   describe '#show' do
@@ -108,7 +111,7 @@ RSpec.describe StoriesController, type: :controller do
           stub_core_view(story_revision.uid)
           stub_successful_view_creation
 
-          allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          allow(CoreServer).to receive(:update_view) do |story_uid, updated_view|
             expect(updated_view['name']).to eq(story_copy_title)
             expect(updated_view['metadata']['initialized']).to eq(true)
           end
@@ -147,7 +150,7 @@ RSpec.describe StoriesController, type: :controller do
         before do
           stub_valid_uninitialized_lenses_view
 
-          allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          allow(CoreServer).to receive(:update_view) do |story_uid, updated_view|
             expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
             expect(updated_view['metadata']['initialized']).to eq(true)
           end
@@ -348,7 +351,7 @@ RSpec.describe StoriesController, type: :controller do
         before do
           stub_valid_uninitialized_lenses_view
 
-          allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          allow(CoreServer).to receive(:update_view) do |story_uid, updated_view|
             expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
             expect(updated_view['metadata']['initialized']).to eq(true)
           end
@@ -415,7 +418,7 @@ RSpec.describe StoriesController, type: :controller do
         before do
           stub_valid_uninitialized_lenses_view
 
-          allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          allow(CoreServer).to receive(:update_view) do |story_uid, updated_view|
             expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
             expect(updated_view['metadata']['initialized']).to eq(true)
           end

@@ -19,6 +19,7 @@ $(document).on('ready', function() {
   storyteller.assetFinder = new storyteller.AssetFinder();
   storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
   storyteller.storyActionsManager = new storyteller.StoryActionsManager();
+  storyteller.collaboratorsDataProvider = new storyteller.CollaboratorsDataProvider(userStoryData.uid);
 
   var richTextFormats = [
     { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
@@ -46,6 +47,11 @@ $(document).on('ready', function() {
 
   storyteller.userStoryUid = userStoryData.uid;
 
+  storyteller.collaboratorsDataProvider.getCollaborators().
+    then(function(collaborators) {
+      storyteller.storyCollaborators = collaborators;
+    });
+
   storyteller.dispatcher = new storyteller.Dispatcher();
   storyteller.dispatcher.register(function(payload) {
 
@@ -72,6 +78,7 @@ $(document).on('ready', function() {
   storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyteller.userStoryUid);
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
   storyteller.storyCopierStore = new storyteller.StoryCopierStore();
+  storyteller.collaboratorsStore = new storyteller.CollaboratorsStore();
   storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
 
   socrata.visualizations.RowInspector.setup();
@@ -94,9 +101,12 @@ $(document).on('ready', function() {
     assetSelectorContainerElement: $('#asset-selector-container')
   };
 
-  var assetSelectorRenderer = new storyteller.AssetSelectorRenderer(assetSelectorOptions); //eslint-disable-line no-unused-vars
-  var linkModalRenderer = new storyteller.LinkModalRenderer(); //eslint-disable-line no-unused-vars
-  var linkTipRenderer = new storyteller.LinkTipRenderer(); //eslint-disable-line no-unused-vars
+  /*eslint-disable no-unused-vars */
+  var assetSelectorRenderer = new storyteller.AssetSelectorRenderer(assetSelectorOptions);
+  var linkModalRenderer = new storyteller.LinkModalRenderer();
+  var linkTipRenderer = new storyteller.LinkTipRenderer();
+  var collaboratorsRenderer = new storyteller.CollaboratorsRenderer();
+  /*eslint-enable no-unused-vars */
 
   var storyCopierOptions = {
     storyCopierContainerElement: $('#make-a-copy-container')

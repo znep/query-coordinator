@@ -30,26 +30,17 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
     end
 
     context 'when authenticated' do
-      let(:core_request_headers) do
-        {
-          'X-Socrata-Host' => 'test-domain.com',
-          'X-CSRF-Token' => 'a-token-of-our-appreciation',
-          'Cookie' => 'cookies are sometimes food'
-        }
-      end
-
       before do
         allow(PermissionsUpdater).to receive(:new).and_return(mock_permissions_updater)
         allow(mock_permissions_updater).to receive(:update_permissions).and_return(true)
-        allow(CoreServer).to receive(:headers_from_request).with(request).and_return(core_request_headers)
         stub_valid_session
       end
 
       it 'initializes PermissionsUpdater with params' do
         expect(PermissionsUpdater).to receive(:new).with(
           mock_valid_user,
-          story_uid,
-          core_request_headers
+          mock_user_authorization,
+          story_uid
         )
         put :update, params
       end

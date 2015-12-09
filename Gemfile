@@ -9,6 +9,8 @@ gem 'rails', '4.2.4'
 # Use postgres as the database for Active Record
 gem 'pg'
 
+gem 'jquery-rails'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 gem 'bourbon'
@@ -54,6 +56,12 @@ gem 'unicorn'
 
 # Semantic versioning
 gem 'semver2'
+
+# Memcache library
+gem 'dalli'
+
+# Stores the request for use later
+gem 'request_store'
 
 group :development, :test do
   # Testing framework

@@ -69,6 +69,7 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
 
   before do
     stub_logged_in_user
+    stub_sufficient_rights
 
     story = FactoryGirl.build(:draft_story, uid: attack_story_uid) do |story|
       story.block_ids = story_blocks.map(&:id)

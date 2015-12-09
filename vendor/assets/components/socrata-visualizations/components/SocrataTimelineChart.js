@@ -76,7 +76,7 @@
     };
 
     var visualization = new visualizations.TimelineChart($element, vif);
-    var visualizationData = transformChartDataForRendering([]);
+    var visualizationData = null;
     var precision;
     var rerenderOnResizeTimeout;
 
@@ -158,6 +158,7 @@
       });
       $(root).on('resize', _handleWindowResize);
       $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
+      $element.on('invalidateSize', _render);
     }
 
     function _detachEvents() {
@@ -169,17 +170,21 @@
       clearTimeout(rerenderOnResizeTimeout);
 
       rerenderOnResizeTimeout = setTimeout(
-        function() {
-          visualization.render(
-            visualizationData,
-            _getRenderOptions()
-          );
-        },
+        _render,
         // Add some jitter in order to make sure multiple visualizations are
         // unlikely to all attempt to rerender themselves at the exact same
         // moment.
         WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
       );
+    }
+
+    function _render() {
+      if (visualizationData) {
+        visualization.render(
+          visualizationData,
+          _getRenderOptions()
+        );
+      }
     }
 
     function _handleVisualizationFlyout(event) {
@@ -485,10 +490,7 @@
           precision
         );
 
-        visualization.render(
-          visualizationData,
-          _getRenderOptions()
-        );
+        _render();
       }
     }
 

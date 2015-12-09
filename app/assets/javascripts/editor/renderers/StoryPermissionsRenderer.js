@@ -81,6 +81,7 @@
 
     function _render() {
       var havePublishedAndDraftDiverged;
+      var canUpdateView = window.currentUserAuthorization && _.include(window.currentUserAuthorization.rights, 'update_view');
       var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
       var i18n = function(key) {
         return I18n.t('editor.settings_panel.publishing_section.{0}'.format(key));
@@ -96,7 +97,7 @@
         _$updatePublicLabel.text(i18n('status.published'));
         _$publishingHelpText.text(i18n('messages.has_been_published'));
 
-        if (havePublishedAndDraftDiverged) {
+        if (havePublishedAndDraftDiverged && canUpdateView) {
           _$updatePublicButton.prop('disabled', false);
           _$publishingHelpText.text(i18n('messages.previously_published'));
           _$updatePublicLabel.text(i18n('status.draft'));

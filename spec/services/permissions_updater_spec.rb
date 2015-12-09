@@ -3,14 +3,8 @@ require 'rails_helper'
 RSpec.describe PermissionsUpdater do
 
   let(:user) { mock_valid_user }
+  let(:user_authorization) { mock_user_authorization }
   let(:story_uid) { 'abcd-efgh' }
-  let(:core_request_headers) do
-    {
-      'X-Socrata-Host' => 'test-domain.com',
-      'X-CSRF-Token' => 'a-token-of-our-appreciation',
-      'Cookie' => 'cookies are sometimes food'
-    }
-  end
   let(:core_view_response) do
     {
       'id' => story_uid,
@@ -22,23 +16,23 @@ RSpec.describe PermissionsUpdater do
     allow(CoreServer).to receive(:get_view).and_return(core_view_response)
   end
 
-  subject { PermissionsUpdater.new(user, story_uid, core_request_headers) }
+  subject { PermissionsUpdater.new(user, user_authorization, story_uid) }
 
   describe '#initialize' do
 
     it 'initializes with user, story uid, and headers for core' do
       expect {
-        PermissionsUpdater.new(user, story_uid, core_request_headers)
+        PermissionsUpdater.new(user, user_authorization, story_uid)
       }.to_not raise_error
     end
 
-    it 'raises without core_request_headers' do
+    it 'raises without story_uid' do
       expect {
-        PermissionsUpdater.new(user, story_uid)
+        PermissionsUpdater.new(user, user_authorization)
       }.to raise_error(ArgumentError, /2 for 3/)
     end
 
-    it 'raises without story_uid' do
+    it 'raises without user_authorization' do
       expect {
         PermissionsUpdater.new(user)
       }.to raise_error(ArgumentError, /1 for 3/)
@@ -50,7 +44,6 @@ RSpec.describe PermissionsUpdater do
     it 'marks story as public' do
       expect(CoreServer).to receive(:update_permissions).with(
         story_uid,
-        core_request_headers,
         {
           accessType: 'WEBSITE',
           method: 'setPermission',
@@ -64,7 +57,6 @@ RSpec.describe PermissionsUpdater do
     it 'marks story as private' do
       expect(CoreServer).to receive(:update_permissions).with(
         story_uid,
-        core_request_headers,
         {
           accessType: 'WEBSITE',
           method: 'setPermission',
@@ -86,28 +78,13 @@ RSpec.describe PermissionsUpdater do
       end
     end
 
-    context 'when core_request_headers are empty' do
-      let(:core_request_headers) { nil }
-
-      it 'raises error' do
-        expect { subject.update_permissions(is_public: true) }.to raise_error(
-          ArgumentError,
-          /Must initialize PermissionsUpdater service object with valid core_request_headers./
-        )
-      end
-    end
-
-    context 'when view has owner different than current user' do
+    context 'when view has owner different than current user and user does not have the update_view right.' do
       let(:user) { mock_valid_user.tap{ |user| user['id'] = 'bugs-bnny' } }
+      let(:user_authorization) { mock_user_authorization.tap{ |user_authorization| user_authorization['rights'] = [] } }
 
-      it 'raises error' do
-        expect { subject.update_permissions(is_public: true) }.to raise_error(
-          ArgumentError,
-          /Must initialize PermissionsUpdater service object with valid uid./
-        )
+      it 'returns false' do
+        expect(subject.update_permissions(is_public: true)).to be false
       end
     end
-
   end
-
 end

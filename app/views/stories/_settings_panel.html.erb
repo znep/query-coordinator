@@ -25,11 +25,18 @@
       <hr>
       <h2><%= t('editor.settings_panel.displaying_section.section_title') %></h2>
 
+      <%- unless can_update_view? -%>
+        <section class="warning-bar">
+          <p><span class="icon-warning"></span></p>
+          <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_edit_title_and_description') %></p>
+        </section>
+      <%- end %>
+
       <form>
         <label><%= t('editor.settings_panel.displaying_section.title_label') %></label>
-        <input name="title" type="text" maxlength="254" />
+        <input name="title" type="text" maxlength="254"<%= can_update_view? ? '' : ' disabled' %>>
         <label><%= t('editor.settings_panel.displaying_section.description_label') %></label>
-        <textarea></textarea>
+        <textarea <%= can_update_view? ? '' : ' disabled' %>></textarea>
       </form>
 
       <div class="settings-save-failure-message">
@@ -44,12 +51,26 @@
     <section class="settings-panel-actions">
       <hr>
       <h2><%= t('editor.settings_panel.actions_section.section_title') %></h2>
+
+      <%- unless can_update_view? -%>
+        <section class="warning-bar">
+          <p><span class="icon-warning"></span></p>
+          <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_invite_and_manage_collaborators') %></p>
+        </section>
+      <%- end %>
+
       <div>
         <div class="settings-panel-make-a-copy">
-          <div>&nbsp;</div>
           <div>
             <button class="btn-dark btn-default">
               <span><%= t('editor.settings_panel.actions_section.make_a_copy') %></span>
+            </button>
+          </div>
+        </div>
+        <div class="settings-panel-invite-and-manage-collaborators">
+          <div>
+            <button class="btn-dark btn-default" data-action="COLLABORATORS_OPEN"<%= can_update_view? ? '' : ' disabled' %>>
+              <span><%= t('editor.settings_panel.actions_section.invite_and_manage_collaborators') %></span>
             </button>
           </div>
         </div>
@@ -59,6 +80,18 @@
     <section class="settings-panel-publishing">
       <hr>
       <h2><%= t('editor.settings_panel.publishing_section.section_title') %></h2>
+
+      <%- unless can_update_view? -%>
+        <section class="warning-bar">
+          <p><span class="icon-warning"></span></p>
+          <%- if determine_permissions_from_core_attributes[:isPublic] -%>
+            <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility_or_update_public_version') %></p>
+          <%- else -%>
+            <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility') %></p>
+          <%- end -%>
+        </section>
+      <%- end %>
+
       <div>
         <div class="settings-panel-story-visibility">
           <div>
@@ -66,7 +99,7 @@
             <h3><%= t('editor.settings_panel.publishing_section.visibility.private') %></h3>
           </div>
           <div>
-            <button class="btn-secondary btn-dark">
+            <button class="btn-secondary btn-dark" <%= can_update_view? ? '' : ' disabled' %>>
               <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
             </button>
           </div>

@@ -3,8 +3,7 @@ class Api::V1::PublishedController < ApplicationController
   # Takes a draft story and creates a published version of it, then sets the published story
   # as publicly visible in core.
   def create
-    core_request_headers = CoreServer::headers_from_request(request)
-    story_publisher = StoryPublisher.new(current_user, story_params, core_request_headers)
+    story_publisher = StoryPublisher.new(current_user, current_user_authorization, story_params)
     success = story_publisher.publish
 
     if success

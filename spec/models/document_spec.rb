@@ -29,6 +29,13 @@ RSpec.describe Document, type: :model do
       expect(document.errors[:direct_upload_url]).to_not be_empty
     end
 
+    it 'allows direct_upload_url format for EU buckets' do
+      # buckets in EU have s3-eu-west-1.amazonaws.com domain
+      bucket_name = Rails.application.secrets.aws['s3_bucket_name']
+      document = FactoryGirl.build(:document, direct_upload_url: "https://#{bucket_name}.s3-eu-west-1.amazonaws.com/uploads/0c49763b-701c-40e4-b604-6b9478bd7ac8/IMG_3409.JPG")
+      expect(document).to be_valid
+    end
+
     it 'validates created_by is not empty' do
       document = FactoryGirl.build(:document, created_by: nil)
       expect(document).to be_invalid

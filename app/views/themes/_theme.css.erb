@@ -1,0 +1,74 @@
+.theme-<%= theme.class_name %> {
+  // Default Values
+
+  // Basic media queries for typeset regions.
+  $medium:  768px !default;
+  $large:   1200px !default;
+  $xlarge:  1400px !default;
+  $xxlarge: 1600px !default;
+
+  // Modular Scale Ratios --
+  // Used for grid and typography. Setting type dimensions using these scales improves balance of the typographic design.
+  $ms-ratio-1: 1.333 !default;
+  $ms-ratio-2: 1.44 !default;
+  $ms-ratio-3: 1.54 !default;
+  $ms-ratio-4: 1.618 !default;
+
+  // Base Typesize. Used as base calculation for modular scale. No need to change unless you want to change the entire scale.
+  $base-type-size: 1em !default;
+  $base-line-height: $ms-ratio-3 !default;
+
+  // Standard (mobile, tablet, and small device) type size.
+  $std-type-size: 1.1em !default;
+  $std-line-height: $ms-ratio-2 !default;
+
+  // Large Screeen Typesize.
+  $lg-type-size: 1.18em !default;
+  $lg-line-height: $ms-ratio-3 !default;
+
+  // Colors // Need to scrub and rework
+  $default-type-color: #252525 !default;
+  $heading-type-color: #333 !default;
+  $quiet-type-color: #ccc !default;
+
+  // Font Stacks
+  $body-font-stack: Georgia, sans-serif !default;
+  $body-font-weight: normal !default;
+  $heading-font-stack: Helvetica, serif !default;
+  $heading-font-weight: bold !default;
+
+  // Hyperlinks
+  $link-color: blue !default;
+  $link-text-decoration: underline !default;
+  $link-hover: darken($link-color, 12%) !default;
+
+  // Blockquote
+  $blockquote-font-style: italic !default;
+  $blockquote-border-left: 2px solid $quiet-type-color !default;
+  $blockquote-padding-left: 1rem !default;
+  $blockquote-margin-left: 1.3rem !default;
+
+  // Lists
+  $list-padding-left: 2.1em !default;
+  $ul-list-style-type: disc !default;
+  $ol-list-style-type: decimal !default;
+
+  // Rule
+  $hr-border-top: 1px solid $quiet-type-color !default;
+
+  // Styled Elements (implemented in the future)
+
+  // - Title (Nice big heading for your story)
+  $title-font-family: $heading-font-stack !default;
+
+  // - Subtititle
+  $subtitle-font-color: lighten($default-type-color, 30%) !default;
+  $subtitle-font-family: $body-font-stack !default;
+
+  // Custom theme overrides
+<% theme.css_variables.each do |key, value| -%>
+  <%= raw key %>: <%= raw value %>;
+<% end -%>
+
+  @import "includes/typography";
+}

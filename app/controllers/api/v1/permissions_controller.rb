@@ -1,8 +1,7 @@
 class Api::V1::PermissionsController < ApplicationController
 
   def update
-    core_request_headers = CoreServer::headers_from_request(request)
-    permissions = PermissionsUpdater.new(current_user, params[:uid], core_request_headers)
+    permissions = PermissionsUpdater.new(current_user, current_user_authorization, params[:uid])
     permissions_response = nil
 
     begin

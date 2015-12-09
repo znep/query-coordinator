@@ -1,0 +1,5 @@
+<% cache(cache_key_for_custom_themes(@custom_themes)) do %>
+  <% @custom_themes.each do |custom_theme| -%>
+    <%=raw Sass::Engine.new(render(custom_theme), sass_engine_options).render %>
+  <% end -%>
+<% end %>

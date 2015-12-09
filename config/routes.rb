@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     get '(:vanity_text)/:uid/preview' => 'stories#preview'
   end
 
+  get 'themes/custom' => 'themes#custom', defaults: { format: 'css' }
+
   namespace :api do
     namespace :v1, defaults: { format: 'json' } do
       resources :documents, only: [:create, :show]
@@ -21,6 +23,10 @@ Rails.application.routes.draw do
       post 'stories/:uid/published' => 'published#create'
       put 'stories/:uid/permissions' => 'permissions#update'
     end
+  end
+
+  namespace :admin do
+    resources :themes
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

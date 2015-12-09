@@ -46,4 +46,6 @@ Rails.application.configure do
   # Test environment does not run config.ru, where we spin up the app under
   # relative_url_root, so all assets will not be under /stories
   config.relative_url_root = ''
+
+  config.action_controller.action_on_unpermitted_parameters = :raise
 end

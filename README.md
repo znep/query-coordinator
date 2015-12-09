@@ -3,7 +3,7 @@
 ## Setup
 
 ### Requirements
-* Ruby 2.2.2
+* Ruby 2.2.3
 * Postgresql 9.3+
 
 ### System dependencies
@@ -22,7 +22,7 @@ Install rbenv and ruby:
 
 ```
 brew install rbenv ruby-build
-rbenv install 2.2.2
+rbenv install 2.2.3
 ```
 
 To run unit tests, install node and npm: https://nodejs.org/download/,
@@ -118,7 +118,7 @@ As we add services (job queues, cache servers, search engines, etc.), document t
 Deployment is done via marathon to AWS. Staging deployment is continuous from
 the master branch.
 
-https://docs.google.com/a/socrata.com/document/d/1LVjxsNdhd6V5XI4nfFb_9B0NJjWSadimaSh98FtaUy0/edit?usp=sharing
+See [Storyteller AWS Setup Instructions](https://docs.google.com/document/d/1ZTsUNw3JxbQozdjq69NdnOD1dLYMpzDfQsoolGV-Wb8/edit#heading=h.w14ab4sv58p0) for deploying to a brand new environment.
 
 If a deployment has any migrations that need to be run, they must be run
 manually against the production databases. See below for example commands.
@@ -127,6 +127,14 @@ Migrations are not run as part of the automatic deployment scripts because
 they are high risk, need to be supervised, and typically are run once.
 
 There is a task for checking whether migrations need to be run. See `rake aws:migrate:status` below.
+
+### Deploy to RC, Prod, FedRAMP, EU
+
+See the [Storyteller OpsDoc](https://docs.google.com/document/d/1ZTsUNw3JxbQozdjq69NdnOD1dLYMpzDfQsoolGV-Wb8/edit#heading=h.dgeqv4t1n2bi) for deployment instructions.
+
+In order to deploy to the `fedramp-prod` environment, you need to get FedRAMP VPN setup and be able to [access bastions](https://docs.google.com/document/d/1BNjUz3Q_DU2q1iDLeY5vk84GwXBDGj5vQQJdeBXpQ-Y/edit#) (jump boxes).
+
+See [Storyteller OpsDoc](https://docs.google.com/document/d/1ZTsUNw3JxbQozdjq69NdnOD1dLYMpzDfQsoolGV-Wb8/edit#heading=h.l0gnqlmtrqxj) for additional FedRAMP deployment instructions.
 
 ### Migrations
 
@@ -189,4 +197,19 @@ lint the javascript codebase:
 
 ```
 rake lint:js
+```
+
+## Dependencies
+
+Ruby dependencies are via bundler.
+Javascript dependencies are via bower.
+
+### Updating frontend-visualizations and/or frontend-utils
+
+This is weird at the moment because neither of these packages are version-tagged. For now there are two hack scripts that force bower to re-pull from the respective packages' master branch:
+
+
+```
+bin/update_socrata_visualizations.sh
+bin/update_socrata_utils.sh
 ```

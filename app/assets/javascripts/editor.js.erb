@@ -48,3 +48,6 @@
 //= require editor/stores/Store
 //= require Airbrake
 //= require_tree ./editor
+
+//= <% require_asset "sinon-1.17.2" if Rails.env.test? %>
+//= <% require_asset "ajax-interceptor" if Rails.env.test? %>

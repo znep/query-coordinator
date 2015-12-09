@@ -2,13 +2,22 @@ require 'rails_helper'
 
 RSpec.describe ApplicationController, :type => :controller do
   controller do
+    prepend_before_filter :require_super_admin, only: [:test_super_action]
+
     def test_action
+      render :text => 'content text', :status => 200
+    end
+
+    def test_super_action
       render :text => 'content text', :status => 200
     end
   end
 
   before do
-    routes.draw { get 'test_action' => 'anonymous#test_action' }
+    routes.draw {
+      get 'test_action' => 'anonymous#test_action'
+      get 'test_super_action' => 'anonymous#test_super_action'
+    }
   end
 
   describe '#current_user' do
@@ -28,7 +37,7 @@ RSpec.describe ApplicationController, :type => :controller do
     end
   end
 
-  describe 'require_logged_in_user' do
+  describe '#require_logged_in_user' do
     context 'with a logged in user' do
       it 'should render the page' do
         stub_valid_session
@@ -44,7 +53,31 @@ RSpec.describe ApplicationController, :type => :controller do
         expect(response).to redirect_to('/login?return_to=/test_action')
       end
     end
-
   end
 
+  describe '#require_super_admin' do
+    context 'with no logged-in user' do
+      it 'is forbidden' do
+        stub_invalid_session
+        get :test_super_action
+        expect(response).to redirect_to('/login?return_to=/test_super_action')
+      end
+    end
+
+    context 'with a logged-in user' do
+      it 'is forbidden' do
+        stub_valid_session
+        get :test_super_action
+        expect(response).to redirect_to('/login?return_to=/test_super_action')
+      end
+    end
+
+    context 'with a super admin' do
+      it 'is success' do
+        stub_super_admin_session
+        get :test_super_action
+        expect(response).to be_success
+      end
+    end
+  end
 end

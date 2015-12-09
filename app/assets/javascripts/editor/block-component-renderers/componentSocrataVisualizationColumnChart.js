@@ -30,14 +30,14 @@
 
   function _updateVisualization($element, componentData) {
     var $componentContent = $element.find('.component-content');
-    var renderedVif = $element.attr('data-rendered-vif');
+    var renderedVif = $element.attr('data-rendered-vif') || '{}';
+    var vif;
 
     utils.assertHasProperty(componentData, 'value');
+    vif = componentData.value.vif;
 
-    if (renderedVif !== JSON.stringify(componentData.value.vif)) {
-
-      var vif = componentData.value.vif;
-
+    if (!_.isEqual(JSON.parse(renderedVif), vif)) {
+      $element.attr('data-rendered-vif', JSON.stringify(vif));
       vif.configuration.localization = {
         'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
@@ -50,10 +50,8 @@
         other: 'records'
       };
 
-      $componentContent.trigger('destroy');
+      $componentContent.triggerHandler('destroy'); // use triggerHandler since we don't want this to bubble
       $componentContent.socrataColumnChart(vif);
-
-      $element.attr('data-rendered-vif', JSON.stringify(vif));
     }
   }
 
@@ -71,8 +69,15 @@
     }
 
     _updateVisualization($this, componentData);
-    $this.componentEditButton();
-    $this.toggleClass('editing', _.get(options, 'editMode', false));
+    $this.componentBase(componentData, theme, _.extend(
+      {
+        resizeSupported: true,
+        resizeOptions: {
+          minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.visualization
+        }
+      },
+      options
+    ));
 
     return $this;
   }

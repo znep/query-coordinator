@@ -32,7 +32,7 @@ module.exports = function(config) {
 
     sprocketsBundles: [
       'application.js',
-      'editor.js'
+      'editor.js.erb'
     ],
 
     // list of files to exclude

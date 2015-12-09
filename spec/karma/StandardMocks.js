@@ -172,7 +172,7 @@ function applyStandardMocks() {
 
   window.socrata.storyteller.SquireMocker.mock();
 
-  window.socrata.storyteller.dispatcher = new storyteller.Dispatcher();
+  window.socrata.storyteller.dispatcher = new Flux.Dispatcher();
 
 
   window.socrata.storyteller.dispatcher.register(function(payload) {

@@ -52,7 +52,7 @@ $(document).on('ready', function() {
       storyteller.storyCollaborators = collaborators;
     });
 
-  storyteller.dispatcher = new storyteller.Dispatcher();
+  storyteller.dispatcher = new Flux.Dispatcher();
   storyteller.dispatcher.register(function(payload) {
 
     if (storyteller.config.environment === 'development' && window.console) {

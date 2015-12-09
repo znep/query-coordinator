@@ -228,12 +228,20 @@
         }
       });
 
-      $container.on('rich-text-editor::format-change', function(event) {
-
+      // Update the toolbar's formats, but only once things have settled down.
+      // Also, since sometimes this event is triggered by action handlers (updating
+      // Squire's contents, etc), we need to make sure we defer, as otherwise the Flux
+      // dispatcher will complain that we're attempting to dispatch within a dispatch.
+      // debounce() will always at least defer.
+      var deferredAndDebouncedFormatChangeHandler = _.debounce(function(content) {
         dispatcher.dispatch({
           action: Actions.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
-          activeFormats: event.originalEvent.detail.content
+          activeFormats: content
         });
+      });
+
+      $container.on('rich-text-editor::format-change', function(event) {
+        deferredAndDebouncedFormatChangeHandler(event.originalEvent.detail.content);
       });
 
       // Handle updates to block content.

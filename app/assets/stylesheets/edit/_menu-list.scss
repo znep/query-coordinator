@@ -1,0 +1,48 @@
+.menu-list {
+  /** Temporary **/
+  margin: 4rem -1.5rem;
+
+  .menu-list-item {
+    &:first-child {
+      .menu-list-item-header {
+        border-top: solid 1px #666;
+      }
+    }
+
+    .menu-list-item-header {
+      padding: 2rem 1.5rem;
+      font-weight: normal;
+      color: #EEE;
+      font-size: 1.5rem;
+      border-bottom: solid 1px #666;
+      border-left: solid 7px #666;
+      position: relative;
+      transition: all 0.15s;
+      cursor: pointer;
+
+      &:hover {
+        background: #555;
+        cursor: pointer;
+        border-left: solid 7px #888;
+
+        span + span {
+          color: #bbb;
+        }
+      }
+
+      &::after {
+        font-family: 'icomoon';
+        font-size: 1.25rem;
+        content: "\edbd";
+        display: block;
+        float: right;
+        color: white;
+      }
+
+      span {
+        display: inline-block;
+        margin-right: 2rem;
+      }
+    }
+  }
+}

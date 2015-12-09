@@ -226,7 +226,8 @@ class CoreServer
 
     response = core_server_request_with_retries(core_server_request_options)
 
-    unless verb == :delete
+    # For any update actions, we need to add/update properties.
+    unless [:delete, :get].include?(verb)
       config_id ||= response['id']
 
       if [:put, :post].include?(verb) && config_id.present? && options[:data].key?('properties')
@@ -303,7 +304,8 @@ class CoreServer
       status_code = core_server_response.code.to_i
       response_body = core_server_response.body
 
-      if status_code == 200 || (request_options[:return_errors] && response_body.present?)
+      if (status_code == 200 && request_options[:verb] != :delete) ||
+          (response_body.present? && request_options[:return_errors])
         json_response = JSON.parse(response_body)
       end
 

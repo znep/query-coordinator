@@ -24,8 +24,7 @@ describe('DragDropStore', function() {
   function dragDrop(storyUid, blockContent) {
     storyteller.dispatcher.dispatch({
       action: Actions.STORY_DROP,
-      storyUid: storyUid,
-      blockContent: blockContent
+      storyUid: storyUid
     });
   }
 
@@ -96,18 +95,22 @@ describe('DragDropStore', function() {
 
   describe('given STORY_DROP action', function() {
     describe('while dragging over the story', function() {
-      it('should invoke a correct STORY_INSERT_BLOCK', function(done) {
+      it('should clear the reorder hint position', function(done) {
         dragOver(standardMocks.validStoryUid, blockContent);
-
-        storyteller.dispatcher.register(function(payload) {
-          if(payload.action === Actions.STORY_INSERT_BLOCK) {
-            assert.propertyVal(payload, 'blockContent', standardMocks.validBlockData1);
-            assert.propertyVal(payload, 'storyUid', standardMocks.validStoryUid);
-            assert.propertyVal(payload, 'insertAt', 0);
-            done();
+        assert.deepEqual(
+          storyteller.dragDropStore.getReorderHintPosition(standardMocks.validStoryUid),
+          {
+            storyUid: standardMocks.validStoryUid,
+            dropIndex: 0
           }
-        });
+        );
 
+        storyteller.dragDropStore.register(function() {
+          assert.isNull(
+            storyteller.dragDropStore.getReorderHintPosition(standardMocks.validStoryUid)
+          );
+          done();
+        });
         dragDrop(standardMocks.validStoryUid, standardMocks.validBlockData1);
 
       });

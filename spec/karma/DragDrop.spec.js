@@ -133,14 +133,8 @@ describe('DragDrop', function() {
           dragDrop.dragMove(fakeDragMoveEvent, fakeDragMovePointer, fakeMoveVector);
         });
 
-        it('should dispatch STORY_DRAG_ENTER and STORY_DRAG_OVER', function() {
-          // 1 for STORY_DRAG_ENTER, one for STORY_DRAG_OVER, and one for STORY_DRAG_LEAVE
-          assert.equal(dispatchedEvents.length, 2);
-
-          assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DRAG_ENTER'}), {
-            action: Actions.STORY_DRAG_ENTER,
-            storyUid: standardMocks.validStoryUid
-          });
+        it('should dispatch STORY_DRAG_OVER', function() {
+          assert.equal(dispatchedEvents.length, 1);
 
           assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DRAG_OVER'}), {
             action: Actions.STORY_DRAG_OVER,
@@ -183,8 +177,7 @@ describe('DragDrop', function() {
           it('should invoke STORY_DROP', function() {
             assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DROP'}), {
               action: Actions.STORY_DROP,
-              storyUid: standardMocks.validStoryUid,
-              blockContent: standardMocks.validBlockData1
+              storyUid: standardMocks.validStoryUid
             });
 
           });

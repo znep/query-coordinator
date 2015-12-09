@@ -21,7 +21,7 @@
     var self = this;
     var uid = storyUid;
     var urls = {
-      read: '/api/views/{0}/grants'.format(uid),
+      read: '/api/views/{0}.json'.format(uid),
       add: '/api/views/{0}/grants?accessType=WEBSITE'.format(uid),
       remove: '/api/views/{0}/grants/i?accessType=WEBSITE&method=delete'.format(uid)
     };
@@ -39,19 +39,23 @@
     this.getCollaborators = function() {
       return new Promise(function(resolve, reject) {
         $.getJSON(urls.read).
-          then(function(grants) {
-            var promises = _.chain(grants).
-              filter(function(grant) {
-                return grant.hasOwnProperty('userEmail') || grant.hasOwnProperty('userId');
-              }).
-              map(getEmailAddress).
-              value();
+          then(function(view) {
+            if (_.isPlainObject(view)) {
+              var promises = _.chain(view.grants).
+                filter(function(grant) {
+                  return grant.hasOwnProperty('userEmail') || grant.hasOwnProperty('userId');
+                }).
+                map(getEmailAddress).
+                value();
 
-            Promise.all(promises).
-              then(function(collaborators) {
-                collaborators = _.map(collaborators, grantToStoreFormat);
-                resolve(collaborators);
-              }, reject);
+              Promise.all(promises).
+                then(function(collaborators) {
+                  collaborators = _.map(collaborators, grantToStoreFormat);
+                  resolve(collaborators);
+                }, reject);
+            } else {
+              reject();
+            }
           }, reject);
       });
     };

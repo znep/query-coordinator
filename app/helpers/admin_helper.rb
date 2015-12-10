@@ -46,7 +46,7 @@ module AdminHelper
   def a11y_metadata_fieldset_summary(metadata_fields, columns)
     a11y_summary(
       :columns => columns,
-      :rows => metadata_fields['fields'].map { |field| field['name'] },
+      :rows => metadata_fields.fetch('fields', []).pluck('name'),
       :a11y_table_description => t('screens.admin.metadata.metadata_field_table_description', :name => metadata_fields['name'])
     )
   end

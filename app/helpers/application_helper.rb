@@ -13,11 +13,12 @@ module ApplicationHelper
     }.with_indifferent_access
   end
 
-  def default_meta_tags
-    [
+  def default_meta_tags(tags = [])
+    defaults = [
       tag('meta', :charset => 'utf-8'),
-      tag('meta', 'http-equiv' => 'x-ua-compatible', :content => 'ie=edge'),
-      tag('meta', :name => 'viewport', :content => 'width=device-width, initial-scale=1')
-    ].join("\n").html_safe
+      tag('meta', 'http-equiv' => 'x-ua-compatible', :content => 'ie=edge')
+    ]
+
+    (defaults + tags).uniq.join("\n").html_safe
   end
 end

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <%= default_meta_tags %>
+  <%= default_meta_tags() %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <%= csrf_meta_tags %>
   <title><%= core_attributes['name'] || t('default_page_title') %></title>
   <%= stylesheet_link_tag 'application', media: 'all' %>

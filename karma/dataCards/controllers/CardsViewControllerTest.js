@@ -788,6 +788,36 @@ describe('CardsViewController', function() {
     });
   });
 
+  describe('user has provenance rights', function() {
+    function mockUser(hasProvenanceRight) {
+      return {
+        rights: hasProvenanceRight ? ['manage_provenance'] : []
+      };
+    }
+
+    function runCase(hasProvenanceRight) {
+      window.currentUser = mockUser(hasProvenanceRight);
+      var controllerHarness = makeController();
+      var $scope = controllerHarness.$scope;
+
+      $scope.$digest();
+
+      return {
+        expect: function(expectation) {
+          expect($scope.currentUserHasProvenanceRight).to.equal(expectation);
+        }
+      };
+    }
+
+    it('should be true if user has manage_provenance right', function() {
+      runCase(true).expect(true);
+    });
+
+    it('should be false if user does not have manage_provenance right', function() {
+      runCase(false).expect(false);
+    });
+  });
+
   describe('page unsaved state', function() {
 
     beforeEach(function() {

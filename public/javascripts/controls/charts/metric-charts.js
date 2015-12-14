@@ -15,7 +15,7 @@
    Base chart visualization colors.
    Reference: http://www.mulinblog.com/a-color-palette-optimized-for-data-visualization/
 
-   Colors are evenly distributed over color space.  Prioritizing nuetral colors
+   Colors are evenly distributed over color space.  Prioritizing neutral colors
    first.
    */
   var _colors = [
@@ -51,27 +51,21 @@
 
     var chartD3 = $chart.data('metrics-chart');
     if (!chartD3) {
-        raphael = new Raphael($chart.get(0), $chart.width(), $chart.height());
-        chartD3 = d3.raphael(raphael);
+      raphael = new Raphael($chart.get(0), $chart.width(), $chart.height());
+      chartD3 = d3.raphael(raphael);
 
-        _.each(chartD3, function(paperArray) {
-          _.each(paperArray, function(paper) {
-            if (_.isObject(options.svgOptions)) {
-              if (_.isString(options.svgOptions.title)) {
-                paper.title.innerHtml = options.svgOptions.title;
-              }
-              if (_.isString(options.svgOptions.desc)) {
-                paper.desc.innerHTML = options.svgOptions.desc;
-              }
-            }
-          });
-        });
-
-        chartD3.setWidth = function(width) { raphael.setSize(width, false); }
-        $chart.data('metrics-chart', chartD3);
+      chartD3.setWidth = function(width) { raphael.setSize(width, false); };
+      $chart.data('metrics-chart', chartD3);
 
       $chart.prepend($.tag2({_: 'div', 'class': 'tickContainer'}));
       $chart.append($.tag2({_: 'div', 'class': 'legendContainer'}));
+    }
+
+    // Find the metric options via the user selection, or in the case of first
+    // load, use the option in the array
+    var selectedMetric = _.find(options.children, { text: $chart.data('selection') });
+    if (_.isUndefined(selectedMetric)) {
+      selectedMetric = options.children[0];
     }
 
     // Basic configs
@@ -80,7 +74,6 @@
       marginBottom: 30,
       height: $chart.height()
     };
-
 
     var color = d3.scale.ordinal().range(_colors);
 
@@ -114,8 +107,8 @@
 
     // Define scales.
     var combinedData = _.pluck(_.reduce(series,
-      function(memo, serie) {
-        return memo.concat(byMetric(serie.method));
+      function(memo, item) {
+        return memo.concat(byMetric(item.method));
       }, []), 'value');
 
     // yScale stuff, like ticks, are static.
@@ -332,6 +325,29 @@
           ]));
         });
     }
+
+    var dateFormatString = 'dddd, MMMM Do YYYY';
+    var startingDate = moment(startDate).format(dateFormatString);
+    var endingDate = moment(endDate).format(dateFormatString);
+    var minValue = _.min(combinedData);
+    var maxValue = _.max(combinedData);
+    var chartTitle = _.get(selectedMetric, 'title', 'Title Unavailable');
+    var chartDescription = 'Metrics for dates {0} to {1}'.format(startingDate, endingDate);
+    if (_.isFinite(minValue) && _.isFinite(maxValue) && minValue !== maxValue) {
+      chartDescription = [
+        chartDescription, 'with minimum value {0} and maximum value {1}'.
+        format(minValue, maxValue)
+      ].join(' ');
+    }
+    _.each(chartD3, function(paperArray) {
+      _.each(paperArray, function(paper) {
+        paper.title.textContent = chartTitle;
+        paper.title.setAttribute('xml:lang', 'en');
+        paper.desc.textContent = chartDescription;
+        paper.desc.setAttribute('xml:lang', 'en');
+      });
+    });
+
   };
 
 // How to format the tooltips, based on how deep they slice

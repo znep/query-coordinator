@@ -7,6 +7,7 @@
   if (blist.feature_flags['embetter_analytics_page']) {
     pageViewsSection = {
       text: 'Browser Page Views',
+      title: 'Browser Page Views',
       series: [{
         method: 'js-page-view',
         label: 'Browser Page Views',
@@ -16,6 +17,7 @@
   } else {
     pageViewsSection = {
       text: 'Page Views',
+      title: 'Page Views',
       series: [{
         method: 'page-views',
         label: 'Page Requests',
@@ -42,6 +44,7 @@
                 pageViewsSection,
                 {
                   text: 'Browsers',
+                  title: 'Browsers',
                   series: [{
                     method: 'browser-chrome',
                     label: 'Chrome',
@@ -70,6 +73,7 @@
                 },
                 {
                   text: 'Page Types',
+                  title: 'Page Types',
                   series: [
                     {
                       method: 'js-page-view-homepage',
@@ -120,6 +124,7 @@
                 },
                 {
                   text: 'Dashboard Views',
+                  title: 'Dashboard Views',
                   series: [{
                     method: 'govstat-dash-gets',
                     label: 'Dashboard Requests'
@@ -128,6 +133,7 @@
                 },
                 {
                   text: 'Goal Views',
+                  title: 'Goal Views',
                   series: [{
                     method: 'govstat-goal-gets',
                     label: 'Goal Requests'
@@ -136,12 +142,22 @@
                 },
                 {
                   text: 'Disk Usage', series: [{method: 'disk-usage'}],
+                  title: 'Disk Usage',
                   transform: 'smooth'
                 },
-                {text: 'Bytes Out', series: [{method: 'bytes-out'}]},
-                {text: 'Views Loaded', series: [{method: 'view-loaded'}]},
+                {
+                  text: 'Bytes Out',
+                  title: 'Bytes Out',
+                  series: [{method: 'bytes-out'}]
+                },
+                {
+                  text: 'Views Loaded',
+                  title: 'Views Loaded',
+                  series: [{method: 'view-loaded'}]
+                },
                 {
                   text: 'Rows Loaded',
+                  title: 'Rows Loaded',
                   series: [{method: 'rows-loaded-api', label: 'API'},
                     {method: 'rows-loaded-website', label: 'Website'},
                     {method: 'rows-loaded-widget', label: 'SDP'}]

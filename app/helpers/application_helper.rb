@@ -2,6 +2,7 @@
 module ApplicationHelper
 
   include BrowseHelper
+  include Browse2Helper
 
 # RAILS OVERRIDE
   # if you provide a locale of nyan, we will nyan nyan nyan nyan nyan
@@ -641,14 +642,7 @@ module ApplicationHelper
     @suppress_govstat || CurrentDomain.member?(current_user) == false
   end
 
-  def on_browse_page?
-    controller_name == 'browse'
-  end
-
   def is_mobile?
-    # We don't want to be mobile if we're on the browse page
-    return false if on_browse_page?
-
     param_mobile = params[:mobile].to_s
     param_no_mobile = params[:no_mobile].to_s
 

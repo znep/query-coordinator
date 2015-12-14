@@ -164,13 +164,6 @@ class ApplicationHelperTest < ActionView::TestCase
     assert(application_helper.is_mobile?, 'Expected is_mobile? to be true')
   end
 
-  def test_is_mobile_http_user_agent_on_mobile_device_returns_false_when_visting_browse_page
-    init_current_domain_mobile_device
-    application_helper.stubs(:controller_name => 'browse')
-    application_helper.stubs(:params => {})
-    refute(application_helper.is_mobile?, 'Expected is_mobile? to be false')
-  end
-
   def test_is_mobile_http_user_agent_on_mobile_device_returns_true_with_mobile_paramter_set_to_true
     init_current_domain_mobile_device
     application_helper.stubs(:params => { 'mobile' => 'trUE' }.with_indifferent_access)

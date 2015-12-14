@@ -1,11 +1,21 @@
-<div class="browse2-results-title-container clearfix<%= title_full_width ? ' browse2-results-title-container-full-width' : '' %><%= results_title.present? ? 'browse2-results-title-summary' : '' %>">
-  <h2 class="browse2-results-title" title="<%= results_title %>"><%= results_title %></h2>
+<div class="browse2-results-clear-controls-container clearfix<%= title_full_width ? ' browse2-results-clear-controls-container-full-width' : '' %>">
+
+  <div class="browse2-results-title">
+    <%= pluralize(opts[:view_count], t('controls.browse.browse2.facets.header.result')) %>
+    <%= opts[:facets].any? { |facet| opts[:user_params][facet[:param]].present? } ?
+      t('controls.browse.browse2.facets.header.filtered_by') : '' -%>
+  </div>
 
   <span class="browse2-results-clear-controls">
     <%- clear_facet_options.each do |clear_facet_option| -%>
       <a class="browse2-results-clear-control" href="<%= clear_facet_option[:url] %>">
         <%= clear_facet_option[:label] %>
-        <span class="browse2-clear-all-icon icon-close-2"></span>
+        <span class="browse2-results-clear-icon icon-close-2"></span>
+      </a>
+    <%- end -%>
+    <%- if clear_facet_options.present? -%>
+      <a class="browse2-results-clear-all-button" href="<%= opts[:base_url] %>">
+        <%= t('controls.browse.browse2.facets.clear_all') %>
       </a>
     <%- end -%>
   </span>

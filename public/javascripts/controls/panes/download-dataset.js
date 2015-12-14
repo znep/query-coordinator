@@ -24,7 +24,7 @@
             var cObj = this;
             var _view = this._view;
             var type = this._view.getDownloadType();
-            var layerDownloadType = this._view.newBackend ? 'nbe_layer_attributes' : 'obe_layer_attributes'
+            var layerDownloadType = ( _view.newBackend && _view.isLayered() ) ? 'layer_geojson_attributes' : 'layer_attributes'
             var catchForm = !this._view.isGeoDataset();
             return [
                 {

@@ -33,12 +33,10 @@
         downloadTypes: {
             'obe_normal': normalDownloadTypes,
             'nbe_normal': [ 'CSV', 'JSON' ],
-            'obe_layer_attributes': [ 'CSV', 'JSON' ],
-            'nbe_layer_attributes': [ 'CSV', 'JSON', 'GeoJSON' ],
-            'obe_monolayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'CSV', 'JSON' ],
-            'nbe_monolayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'CSV', 'JSON', 'GeoJSON' ],
-            'obe_multilayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ],
-            'nbe_multilayer_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON' ]
+            'layer_attributes': [ 'CSV', 'JSON' ], // for obe and nbe monolayer datasets
+            'layer_geojson_attributes': [ 'CSV', 'JSON', 'GeoJSON' ],
+            'obe_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ],
+            'nbe_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON' ]
         },
         directive: {
             'obe_normal': {
@@ -47,19 +45,13 @@
             'nbe_normal': {
                 '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
             },
-            'obe_monolayer_geo': {
-                '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
-            },
-            'nbe_monolayer_geo': {
-                '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
-            },
-            'obe_multilayer_geo': {
+            'obe_geo': {
                 '.downloadsTable .downloadsList tbody .item':
                     downloadTypesDirective('downloadTypes'),
                 '.layerDownloadsContent .downloadsList tbody .item':
                     downloadTypesDirective('layerDownloadTypes', true)
             },
-            'nbe_multilayer_geo': {
+            'nbe_geo': {
                 '.downloadsTable .downloadsList tbody .item':
                     downloadTypesDirective('downloadTypes'),
                 '.layerDownloadsContent .downloadsList tbody .item':

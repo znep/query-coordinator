@@ -1878,6 +1878,8 @@ en:
         name: Name
         pending: Please wait while we load your layers...
         subheadline: This shapefile contains <span class="featureCount"></span> features in <span class="layerCount"></span> layers.
+        abbreviatedSummary: Map layers in &ldquo;<span class="fileName"></span>&rdquo; will be created upon import.
+        abbreviatedSubheadline: Summarizing this dataset may take a long time. You may edit it after import.
       import_warnings:
         headline: Warnings during import
         see_docs: <strong>Confused?</strong> Please check out our <a href="%{publisher_link}" rel="external">publisher documentation</a> on importing data for a detailed explanation on how the importer handles data. You may also want to refer to our <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.

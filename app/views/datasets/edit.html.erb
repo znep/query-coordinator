@@ -51,19 +51,26 @@
         <%- prefix = 'screens.dataset_new.import_shapefile' -%>
         <li class="importShapefilePane" data-wizardpanename="importShapefile">
           <div class="flash"></div>
-          <p class="headline"><%= raw t("#{prefix}.headline") %></p>
-          <p class="subheadline"><%= raw t("#{prefix}.subheadline") %></p>
 
-          <h2><%= t("#{prefix}.layers_list") %></h2>
-          <div class="layersListHeader importListHeader clearfix">
-            <div class="layerHandleCell importHandleCell"></div>
-            <div class="layerNameCell"><%= t("#{prefix}.name") %></div>
-            <div class="layerReferenceSystemCell"><%= t("#{prefix}.crs") %></div>
-            <div class="layerReplacingCell"><%= t('screens.dataset_edit.replace_layer') %></div>
+          <div class="shapeSummary">
+            <p class="headline"><%= raw t("#{prefix}.headline") %></p>
+            <p class="subheadline"><%= raw t("#{prefix}.subheadline") %></p>
+
+            <h2><%= t("#{prefix}.layers_list") %></h2>
+            <div class="layersListHeader importListHeader clearfix">
+              <div class="layerHandleCell importHandleCell"></div>
+              <div class="layerNameCell"><%= t("#{prefix}.name") %></div>
+              <div class="layerReferenceSystemCell"><%= t("#{prefix}.crs") %></div>
+              <div class="layerReplacingCell"><%= t('screens.dataset_edit.replace_layer') %></div>
+            </div>
+            <p class="subheadline pendingLayersMessage"><%= t("#{prefix}.pending") %></p>
+            <ul class="layersList importList">
+            </ul>
           </div>
-          <p class="subheadline pendingLayersMessage"><%= t("#{prefix}.pending") %></p>
-          <ul class="layersList importList">
-          </ul>
+          <div class="abbreviatedShapeSummary">
+            <p class="headline"><%= raw t("#{prefix}.abbreviatedSummary") %></p>
+            <p class="subheadline"><%= raw t("#{prefix}.abbreviatedSubheadline") %></p>
+          </div>
           <hr />
         </li>
         <%- prefix = 'screens.dataset_new.import_columns' -%>

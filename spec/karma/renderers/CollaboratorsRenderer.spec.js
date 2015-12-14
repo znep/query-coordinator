@@ -47,7 +47,7 @@ describe('CollaboratorsRenderer', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
           action: Actions.COLLABORATORS_LOAD,
-          collaborators: [{email: 'hello@socrata.com', accessLevel: 'accessLevel'}]
+          collaborators: [{email: 'hello@socrata.com', accessLevel: 'accessLevel', uid: 'four-four', displayName: 'Hello'}]
         });
 
         storyteller.dispatcher.dispatch({

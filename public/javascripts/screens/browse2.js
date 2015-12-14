@@ -378,10 +378,10 @@ $(function() {
 
     dataset = blist.browse.datasets[id];
 
-    if (dataset.isNewView() || dataset.isDataLens()) {
+    if (dataset.isDataLens()) {
       // Send a DELETE request to the NFE endpoint, which should propagate the delete to the
       // OBE representation.
-      url = '/metadata/v1/page/{0}'.format(id); 
+      url = '/metadata/v1/page/{0}'.format(id);
     } else {
       url = '/api/views/{0}.json'.format(id);
     }

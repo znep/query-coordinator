@@ -9,7 +9,7 @@ class AngularControllerTest < ActionController::TestCase
 
     @phidippides = Phidippides.new('localhost', 2401)
     @controller.stubs(:phidippides => @phidippides)
-    @new_view_manager = NewViewManager.new
+    @data_lens_manager = DataLensManager.new
     @page_metadata_manager = PageMetadataManager.new
     load_sample_data('test/fixtures/sample-data.json')
 
@@ -28,7 +28,7 @@ class AngularControllerTest < ActionController::TestCase
   end
 
   test 'should successfully get data_lens' do
-    NewViewManager.any_instance.stubs(:fetch).returns({})
+    DataLensManager.any_instance.stubs(:fetch).returns({})
     PageMetadataManager.any_instance.stubs(
       :show => data_lens_page_metadata
     )
@@ -52,7 +52,7 @@ class AngularControllerTest < ActionController::TestCase
   end
 
   test 'should successfully get data_lens for single card view' do
-    NewViewManager.any_instance.stubs(:fetch).returns({})
+    DataLensManager.any_instance.stubs(:fetch).returns({})
     PageMetadataManager.any_instance.stubs(
       :show => data_lens_page_metadata
     )
@@ -76,7 +76,7 @@ class AngularControllerTest < ActionController::TestCase
   end
 
   test 'should successfully get data_lens with empty Phidippides page data' do
-    NewViewManager.any_instance.stubs(:fetch).returns({})
+    DataLensManager.any_instance.stubs(:fetch).returns({})
     PageMetadataManager.any_instance.stubs(
       :show => data_lens_page_metadata
     )
@@ -100,7 +100,7 @@ class AngularControllerTest < ActionController::TestCase
   end
 
   test 'should successfully get data_lens with empty metadb page data' do
-    NewViewManager.any_instance.stubs(:fetch).returns({})
+    DataLensManager.any_instance.stubs(:fetch).returns({})
     View.any_instance.stubs(:find_related).returns({})
     PageMetadataManager.any_instance.stubs(
       :show => data_lens_page_metadata
@@ -166,7 +166,7 @@ class AngularControllerTest < ActionController::TestCase
 
   context 'accessibility' do
     setup do
-      NewViewManager.any_instance.stubs(:fetch).returns({})
+      DataLensManager.any_instance.stubs(:fetch).returns({})
       PageMetadataManager.any_instance.stubs(
         :show => data_lens_page_metadata
       )
@@ -211,7 +211,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the login page if the page is private' do
-      PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewAuthenticationRequired)
+      PageMetadataManager.any_instance.stubs(:show).raises(DataLensManager::ViewAuthenticationRequired)
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
@@ -220,7 +220,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the 404 page if the page is not found' do
-      PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewNotFound)
+      PageMetadataManager.any_instance.stubs(:show).raises(DataLensManager::ViewNotFound)
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
@@ -228,7 +228,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the login page if the dataset is private' do
-      NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewAuthenticationRequired)
+      DataLensManager.any_instance.stubs(:fetch).raises(DataLensManager::ViewAuthenticationRequired)
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
@@ -237,7 +237,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the 404 page if the dataset is not found' do
-      NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewNotFound)
+      DataLensManager.any_instance.stubs(:fetch).raises(DataLensManager::ViewNotFound)
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
@@ -245,7 +245,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the 500 page if it encounters an upstream error' do
-      NewViewManager.any_instance.stubs(:fetch).raises(RuntimeError)
+      DataLensManager.any_instance.stubs(:fetch).raises(RuntimeError)
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
@@ -298,7 +298,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the 403 page if the page is private' do
-      PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewAccessDenied)
+      PageMetadataManager.any_instance.stubs(:show).raises(DataLensManager::ViewAccessDenied)
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
@@ -306,7 +306,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the 404 page if the page is not found' do
-      PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewNotFound)
+      PageMetadataManager.any_instance.stubs(:show).raises(DataLensManager::ViewNotFound)
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
@@ -316,7 +316,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the 403 page if the dataset is private' do
       PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
       Phidippides.any_instance.stubs(:fetch_dataset_metadata => { status: '403' })
-      NewViewManager.any_instance.stubs(:fetch).returns({})
+      DataLensManager.any_instance.stubs(:fetch).returns({})
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(403)
@@ -328,7 +328,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the 403 page if the dataset is private case two' do
       PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
       @controller.stubs(:fetch_permissions_and_normalize_exceptions).raises(CommonMetadataMethods::UnauthorizedPageMetadataRequest)
-      NewViewManager.any_instance.stubs(:fetch).returns({})
+      DataLensManager.any_instance.stubs(:fetch).returns({})
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(403)
@@ -340,7 +340,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'redirect to the 404 page if the dataset is not found' do
       PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
       AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::DatasetMetadataNotFound)
-      NewViewManager.any_instance.stubs(:fetch).returns({})
+      DataLensManager.any_instance.stubs(:fetch).returns({})
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(404)
@@ -350,7 +350,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'redirect to the 500 page if it encounters an upstream error' do
-      NewViewManager.any_instance.stubs(:fetch).raises(RuntimeError)
+      DataLensManager.any_instance.stubs(:fetch).raises(RuntimeError)
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(500)
@@ -497,7 +497,7 @@ class AngularControllerTest < ActionController::TestCase
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
-      NewViewManager.any_instance.stubs(:fetch).returns({})
+      DataLensManager.any_instance.stubs(:fetch).returns({})
     end
 
     should 'not render google analytics JS if feature flag is not set' do

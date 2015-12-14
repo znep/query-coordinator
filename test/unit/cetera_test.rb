@@ -37,7 +37,6 @@ class CeteraTest < Test::Unit::TestCase
     def test_cetera_limit_type_translator
       frontend_to_cetera = {
         'data_lens' => 'datalenses',
-        'new_view' => 'datalenses',
         'story' => 'stories',
         'pulse' => 'pulses',
         'tables' => 'datasets',
@@ -113,7 +112,6 @@ class CeteraTest < Test::Unit::TestCase
         assert_equal 'data.cityofchicago.org', row.domainCName
         assert_equal true, row.federated?
         assert_equal 'icon', row.icon_class
-        assert_equal false, row.new_view?
         assert_equal false, row.story?
       end
     end

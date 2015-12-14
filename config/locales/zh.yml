@@ -451,12 +451,12 @@ zh:
           blob: "文件及文档"
           calendars: "日历"
           charts: "图表"
+          data_lens: "数据透镜页面"
           datasets: "数据集"
           filters: "筛选视图"
           forms: "表格"
           href: "外部数据集"
           maps: "地图"
-          new_view: "数据透镜页面"
           pulse:
           pulse_help:
           story: "故事"
@@ -1075,6 +1075,7 @@ zh:
       blob: "非表格文件或文档"
       calendar: "日历"
       chart: "图表"
+      data_lens: "数据透镜页面"
       dataset: "数据集"
       filter: "筛选视图"
       form: "表格"
@@ -1082,7 +1083,6 @@ zh:
       grouped: "分组视图"
       href: "外部数据集"
       map: "地图"
-      new_view: "数据透镜页面"
       table: "表"
       working_copy: "工作副本"
     view_types_plural:

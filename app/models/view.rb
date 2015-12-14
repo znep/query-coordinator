@@ -1172,13 +1172,6 @@ class View < Model
     ].flatten.compact.uniq
   end
 
-  # DEPRECATED
-  # remove this function (and pull the thread to remove whatever uses it) once
-  # we finish migrating page metadata to metadb
-  def new_view?
-    viewType == 'href' && displayType == 'new_view'
-  end
-
   def story?
     # 12/8/2015 - We are changing the viewType of a storyteller asset from 'href'
     # to 'story'. As such, for the duration of our migration we will have to
@@ -1264,8 +1257,6 @@ class View < Model
     if !display_class
       if is_blobby?
         display_class = Displays::Blob
-      elsif new_view?
-        display_class = Displays::NewView
       elsif is_href?
         display_class = Displays::Href
       elsif is_api?
@@ -1320,7 +1311,10 @@ class View < Model
     # class to use, as well as the logic within Displays::Table to determine
     # if it's a table, since we can't rely on the display_name being "table"
     # when we throw localization into the mix.
-    !(is_blobby? || new_view || is_href? || is_api?) && is_blist?
+
+    # If it looks like a blist and quacks like a blist, it still might not be a blist...
+    is_not_dataset = [is_blobby?, standalone_visualization?, data_lens?, is_href?, is_api?].any?
+    is_blist? && !is_not_dataset
   end
 
   def owned_by?(user)

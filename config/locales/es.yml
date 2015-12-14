@@ -451,12 +451,12 @@ es:
           blob: Archivos y documentos
           calendars: Calendarios
           charts: Gráficos
+          data_lens: páginas de Data Lens
           datasets: Conjuntos de datos
           filters: Vistas filtradas
           forms: Formularios
           href: Conjuntos de datos externos
           maps: Mapas
-          new_view: páginas de Data Lens
           pulse:
           pulse_help:
           story: Historias
@@ -1079,6 +1079,7 @@ es:
       blob: 'documento o archivo no tabular '
       calendar: calendario
       chart: gráfico
+      data_lens: página de Data Lens
       dataset: conjunto de datos
       filter: vista filtrada
       form: formulario
@@ -1086,7 +1087,6 @@ es:
       grouped: vista agrupada
       href: conjunto de datos externo
       map: mapa
-      new_view: página de Data Lens
       table: tabla
       working_copy: copia de trabajo
     view_types_plural:

@@ -43,11 +43,11 @@ class DatasetMetadataController < ApplicationController
     # Grab permissions from core
     begin
       permissions = fetch_permissions(params[:id])
-    rescue NewViewManager::ViewNotFound
+    rescue DataLensManager::ViewNotFound
       return render :nothing => true, :status => '404'
-    rescue NewViewManager::ViewAuthenticationRequired => e
+    rescue DataLensManager::ViewAuthenticationRequired => e
       return render :json => { error: e.message }, :status => '401'
-    rescue NewViewManager::ViewAccessDenied => e
+    rescue DataLensManager::ViewAccessDenied => e
       return render :json => { error: e.message }, :status => '403'
     rescue
       return render :nothing => true, :status => '500'

@@ -449,6 +449,7 @@ de:
         view_types:
           apis: APIs
           blob: Dateien und Dokumente
+          data_lens: Data Lens Seiten
           calendars: Kalender
           charts: Diagramme
           datasets: Datensätze
@@ -456,7 +457,6 @@ de:
           forms: Formulare
           href: Externe Datensätze
           maps: Karten
-          new_view: Data Lens Seiten
           pulse:
           pulse_help:
           story: Geschichten
@@ -1075,6 +1075,7 @@ de:
       blob: nicht tabellarische Dateien oder Dokumente
       calendar: 'Kalender '
       chart: Diagramm
+      data_lens: Lata Lens Seite
       dataset: Datensatz
       filter: Gefilterte Ansicht
       form: Formular
@@ -1082,7 +1083,6 @@ de:
       grouped: Gruppierte Ansicht
       href: Externer Datensatz
       map: Karte
-      new_view: Lata Lens Seite
       table: Tabelle
       working_copy: Arbeitskopie
     view_types_plural:

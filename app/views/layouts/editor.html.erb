@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <%= default_meta_tags %>
+  <%= csrf_meta_tags %>
   <title><%= t('editor.default_page_title') %></title>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
@@ -8,7 +10,6 @@
   <%= javascript_include_tag 'airbrake-js-client/dist/client' %>
   <%= javascript_include_tag 'AssetFinder' %>
   <%= javascript_include_tag 'editor' %>
-  <%= csrf_meta_tags %>
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body id="story-edit">

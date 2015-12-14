@@ -33,8 +33,8 @@
         downloadTypes: {
             'obe_normal': normalDownloadTypes,
             'nbe_normal': [ 'CSV', 'JSON' ],
-            'layer_attributes_v1': [ 'CSV', 'JSON' ], // for obe and nbe monolayer datasets
-            'layer_attributes_v2': [ 'CSV', 'JSON', 'GeoJSON' ],
+            'layer_attributes': [ 'CSV', 'JSON' ], // for obe and nbe monolayer datasets
+            'layer_geojson_attributes': [ 'CSV', 'JSON', 'GeoJSON' ],
             'obe_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ],
             'nbe_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON' ]
         },

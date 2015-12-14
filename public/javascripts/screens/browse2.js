@@ -180,37 +180,35 @@ $(function() {
     if (window.hasOwnProperty('blist') &&
       window.blist.hasOwnProperty('configuration') &&
       window.blist.configuration.hasOwnProperty('appToken')) {
-      var newStoryName = 'Untitled Story - {0}'.format(new Date().format('m-d-Y'));
 
+      var newStoryName = 'Untitled Story - {0}'.format(new Date().format('m-d-Y'));
       var newStoryData = {
-        name: newStoryName,
+        displayFormat: {},
+        displayType: 'story',
         metadata: {
-          renderTypeConfig: {
-            visible: {
-              href: true
-            }
-          },
-          accessPoints: {
-            // This will be replaced with the actual resource
-            // url when the view metadata is updated by the Stories
-            // application.
-            story: 'https://www.socrata.com/'
-          },
           availableDisplayTypes: ['story'],
-          jsonQuery: {},
           // Since Storyteller has its own datastore, we will
           // need to treat this asynchonously. Tagging the
           // metadata with '"initialized": false' should at least
           // allow us to understand how many of the two-phase
           // story creation actions fail, and should also allow
           // us to do some garbage collection down the road.
-          initialized: false
+          initialized: false,
+          // Because of an unfortunate legacy in Core Server,
+          // the way that we ensure that the newly-created asset
+          // is of viewType 'story' is by putting a property
+          // called 'isStorytellerAsset' on the metadata object.
+          isStorytellerAsset: true,
+          jsonQuery: {},
+          renderTypeConfig: {
+            visible: {
+              story: true
+            }
+          }
         },
-        displayType: 'story',
-        displayFormat: {},
+        name: newStoryName,
         query: {}
       };
-
       var url = '/api/views.json';
       var settings = {
         contentType: false,

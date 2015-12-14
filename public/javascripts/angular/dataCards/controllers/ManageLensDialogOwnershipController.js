@@ -188,12 +188,14 @@
 
     // write ownership info via plagiarize endpoint
     var save = function() {
-      var url = $.baseUrl('/views/{0}'.format($scope.page.id));
-      url.searchParams.set('method', 'plagiarize');
-      url.searchParams.set('userId', nextOwnerId);
-      url.searchParams.set('accessType', 'WEBSITE');
+      if ($scope.components.ownership.hasChanges) {
+        var url = $.baseUrl('/views/{0}'.format($scope.page.id));
+        url.searchParams.set('method', 'plagiarize');
+        url.searchParams.set('userId', nextOwnerId);
+        url.searchParams.set('accessType', 'WEBSITE');
 
-      return http.put(url, null, { requester: self });
+        return http.put(url, null, { requester: self });
+      }
     };
 
     // update lens owner on success

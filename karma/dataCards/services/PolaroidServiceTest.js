@@ -1,7 +1,7 @@
-describe('Download Service', function() {
+describe('Polaroid Service', function() {
   'use strict';
 
-  var DownloadService;
+  var PolaroidService;
   var testHelpers;
   var $rootScope;
   var $httpBackend;
@@ -9,7 +9,7 @@ describe('Download Service', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.services'));
   beforeEach(inject(function($injector) {
-    DownloadService = $injector.get('DownloadService');
+    PolaroidService = $injector.get('PolaroidService');
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');
     $httpBackend = $injector.get('$httpBackend');
@@ -50,15 +50,15 @@ describe('Download Service', function() {
 
     it('adds a tracking id (correctly) as a query string parameter', function() {
       $httpBackend.whenPOST(/\/foo\?renderTrackingId=[0-9]/).respond('');
-      DownloadService.download('/foo?', fakeVif);
+      PolaroidService.download('/foo?', fakeVif);
       $httpBackend.flush();
 
       $httpBackend.whenPOST(/\/foo\?a=b&renderTrackingId=[0-9]/).respond('');
-      DownloadService.download('/foo?a=b', fakeVif);
+      PolaroidService.download('/foo?a=b', fakeVif);
       $httpBackend.flush();
 
       $httpBackend.whenPOST(/\/foo\?a=b&&renderTrackingId=[0-9]/).respond('');
-      DownloadService.download('/foo?a=b&', fakeVif);
+      PolaroidService.download('/foo?a=b&', fakeVif);
       $httpBackend.flush();
     });
 
@@ -68,7 +68,7 @@ describe('Download Service', function() {
 
       $httpBackend.whenPOST(/\/foo/).respond('');
 
-      DownloadService.download('/foo', fakeVif).then(successCallback, errorCallback);
+      PolaroidService.download('/foo', fakeVif).then(successCallback, errorCallback);
       testScheduler.advanceTo(60000);
 
       $httpBackend.flush();
@@ -83,7 +83,7 @@ describe('Download Service', function() {
       var errorCallback = sinon.spy();
 
       $httpBackend.whenPOST(/\/foo/).respond('');
-      DownloadService.download('/foo', fakeVif).then(successCallback, errorCallback);
+      PolaroidService.download('/foo', fakeVif).then(successCallback, errorCallback);
       $httpBackend.flush();
 
       expect(successCallback).to.have.been.called;
@@ -92,7 +92,7 @@ describe('Download Service', function() {
 
     it('can take just an error callback', function() {
       $httpBackend.whenPOST(/\/foo/).respond('');
-      DownloadService.download('/foo', fakeVif).then(null, function() {
+      PolaroidService.download('/foo', fakeVif).then(null, function() {
         //
       });
 
@@ -101,7 +101,7 @@ describe('Download Service', function() {
 
     it('can take just a success callback', function() {
       $httpBackend.whenPOST(/\/foo/).respond('');
-      DownloadService.download('/foo', fakeVif).then(function() {
+      PolaroidService.download('/foo', fakeVif).then(function() {
         //
       });
 

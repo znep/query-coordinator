@@ -50,12 +50,11 @@ class PolaroidTest < Test::Unit::TestCase
   end
 
   def test_fetch_image_success
-    page_id = 'test-page'
     field_id = 'test_field'
     test_body = 'insert image here'
 
-    prepare_stubs(verb: :post, page_id: page_id, field_id: field_id, body: test_body)
-    result = polaroid.fetch_image(page_id, {}, :cookies => 'oatmeal', :request_id => '')
+    prepare_stubs(verb: :post, field_id: field_id, body: test_body)
+    result = polaroid.fetch_image({}, :cookies => 'oatmeal', :request_id => '')
     assert_equal({
       'status' => '200',
       'body' => 'insert image here',
@@ -64,19 +63,17 @@ class PolaroidTest < Test::Unit::TestCase
   end
 
   def test_failure_json_response
-    page_id = 'test-page'
     field_id = 'test_field'
 
     prepare_stubs(
       verb: :post,
       code: '500',
-      page_id: page_id,
       field_id: field_id,
       response_class: Net::HTTPInternalServerError,
       content_type: 'application/json',
       body: '{"error":true,"reason":"Error"}'
     )
-    result = polaroid.fetch_image(page_id, {}, :cookies => 'snickerdoodle', :request_id => '')
+    result = polaroid.fetch_image({}, :cookies => 'snickerdoodle', :request_id => '')
     assert_equal({
       'status' => '500',
       'content_type' => 'application/json',
@@ -88,17 +85,15 @@ class PolaroidTest < Test::Unit::TestCase
   end
 
   def test_failure_nonjson_response
-    page_id = 'test-page'
     field_id = 'test_field'
 
     prepare_stubs(
       code: '500',
       verb: :post,
-      page_id: page_id,
       field_id: field_id,
       response_class: Net::HTTPInternalServerError
     )
-    result = polaroid.fetch_image(page_id, {}, :cookies => 'chocolate-chip', :request_id => '')
+    result = polaroid.fetch_image({}, :cookies => 'chocolate-chip', :request_id => '')
     assert_equal({
       'status' => '500',
       'content_type' => 'application/json',
@@ -134,7 +129,7 @@ class PolaroidTest < Test::Unit::TestCase
     @mock_request.stubs(:body=)
 
     "Net::HTTP::#{options[:verb].capitalize}".constantize.expects(:new).
-      with("#{polaroid.end_point}/domain/#{polaroid.cname}/view/#{options[:page_id]}/vif.png").
+      with("#{polaroid.end_point}/vif.png").
       returns(@mock_request)
 
     @mock_http = stub

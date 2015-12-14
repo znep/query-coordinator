@@ -256,17 +256,16 @@ Frontend::Application.routes do
       get '/dataset/:id/lens/new', :action => 'bootstrap'
     end
 
-    scope :controller => 'polaroid', :constraints => Constraints::DataLensConstraint.new do
-      post '/view/:id/vif.png', :action => 'proxy_request'
-    end
+    # don't change the order of these two
+    post '/view/vif.png', :controller => 'polaroid', :action => 'proxy_request'
+    post '/view/vif', :controller => 'angular', :action => 'view_vif', :app => 'dataCards'
 
-    scope :controller => 'angular', :constraints => { :id => Frontend::UID_REGEXP } do
+    scope :controller => 'angular', :constraints => Constraints::DataLensConstraint.new do
       # NOTE: The dataCards angular app is capable of rendering multiple views (Pages and Dataset Metadata, for instance).
       # As of 9/24/2014, the angular app itself figures out what particular view to render.
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
       # reflect the changes.
       match '/view/:id', :action => 'data_lens', :app => 'dataCards', :as => :opendata_cards_view
-      post '/view/:id/vif', :controller => 'angular', :action => 'view_vif', :app => 'dataCards'
       # vv the old polaroid route
       # match '/view/:id/:field_id', :action => 'data_lens', :app => 'dataCards'
       match '/view/*angularRoute', :action => 'data_lens', :app => 'dataCards' # See angular-app-{:app} in assets.yml.

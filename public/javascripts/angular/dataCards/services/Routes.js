@@ -27,7 +27,7 @@
       var bootstrapUrlMatch = urlPathname.match(
         new RegExp('^{locale}/dataset/{fourByFour}/lens/new$'.format(regexPieces)));
       var singleCardViewUrlMatch = urlPathname.match(
-        new RegExp('^{locale}/view/{fourByFour}/vif$'.format(regexPieces)));
+        new RegExp('^{locale}/view/vif$'.format(regexPieces)));
       var visualizationAddUrlMatch = urlPathname.match(
         new RegExp('^{locale}/component/visualization/add'.format(regexPieces)));
 

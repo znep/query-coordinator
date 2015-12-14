@@ -7,9 +7,8 @@ class PolaroidControllerTest < ActionController::TestCase
     init_current_domain
     @polaroid = Polaroid.new
     @controller.stubs(:polaroid => @polaroid)
-    @id = '1234-1234'
-    @vif = '{}'
-    @request_params = { :id => @id, :vif => @vif }
+    @vif = {}
+    @request_params = { :vif => @vif }
     @mock_result = {
       :status => '200',
       :body => '',
@@ -17,7 +16,7 @@ class PolaroidControllerTest < ActionController::TestCase
     }
   end
 
-  test 'should successfully post proxy_request with a valid page id' do
+  test 'should successfully post proxy_request' do
     @polaroid.stubs(:fetch_image).returns(@mock_result)
     post :proxy_request, @request_params
     assert_response(:success)
@@ -36,12 +35,13 @@ class PolaroidControllerTest < ActionController::TestCase
     @polaroid.stubs(:fetch_image).returns(@mock_result)
     post :proxy_request, @request_params
     assert_response(:success)
-    assert_equal("attachment; filename=\"#{@id}--.png\"", @response.headers['Content-Disposition'])
+    # vif fields are blank so the filename will just be "--"
+    assert_equal("attachment; filename=\"--.png\"", @response.headers['Content-Disposition'])
   end
 
   test 'should call Polaroid#fetch_image with appropriate parameters (with no cookies)' do
     Polaroid.any_instance.expects(:fetch_image).
-      with(@id, {}, anything).
+      with({}, anything).
       returns({:status => '200', :body => '', :content_type => ''})
     post :proxy_request, @request_params
   end
@@ -54,7 +54,7 @@ class PolaroidControllerTest < ActionController::TestCase
     cookies_hash = { :cookies => '_socrata_session_id=some_id' }
 
     Polaroid.any_instance.expects(:fetch_image).
-      with(@id, {}, cookies_hash).
+      with({}, cookies_hash).
       returns(:status => '200', :body => '', :content_type => '')
     post :proxy_request, @request_params
   end

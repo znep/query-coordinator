@@ -1,10 +1,6 @@
 class Polaroid < SocrataHttp
 
-  def path(page_id)
-    "domain/#{cname}/view/#{page_id}/vif.png"
-  end
-
-  def fetch_image(page_id, vif, options)
+  def fetch_image(vif, options)
     issue_request(
       :verb => :post,
       :data => {
@@ -15,7 +11,7 @@ class Polaroid < SocrataHttp
       },
       :request_id => options[:request_id],
       :cookies => options[:cookies],
-      :path => path(page_id)
+      :path => 'vif.png'
     )
   end
 

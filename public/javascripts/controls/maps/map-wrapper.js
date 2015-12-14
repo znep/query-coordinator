@@ -539,8 +539,28 @@
             else if (mapObj._displayFormat.overrideWithLayerSet)
             { config = layerOptions; }
             else
-            { config = _.detect(Dataset.map.backgroundLayers, function(config)
-                { return config.key == layerOptions.layerKey; }); }
+            {
+              if ($.isBlank(layerOptions.layerKey)) {
+                if (window.console && _.isFunction(console.error)) {
+                  console.error(
+                    'background layer definition invalid and ignored: {0}'.format(
+                    JSON.stringify(layerOptions))
+                  );
+                }
+                return;
+              }
+              if (_.include(layerOptions.layerKey, 'Bing')) {
+                if (window.console && _.isFunction(console.error)) {
+                  console.error(
+                    'bing background layer; ignored: {0}'.format(
+                    JSON.stringify(layerOptions))
+                  );
+                }
+                return;
+              }
+              config = _.detect(Dataset.map.backgroundLayers, function(config)
+                { return config.key == layerOptions.layerKey; });
+            }
 
             var options = config.options;
             if (!$.isBlank($.trim(layerOptions.alias)))

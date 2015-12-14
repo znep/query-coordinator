@@ -113,8 +113,8 @@
 
           var getFormattedSort = function() {
             return (_.isPresent(sortColumnId) && _.isPresent(sortOrdering)) ?
-              '{0} {1}'.format(SoqlHelpers.formatFieldName(sortColumnId), sortOrdering) :
-              '';
+              '{0} {1}, :id'.format(SoqlHelpers.formatFieldName(sortColumnId), sortOrdering) :
+              ':id';
           };
 
           var shouldApplyDefaultSort = function() {

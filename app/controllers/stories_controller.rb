@@ -51,7 +51,6 @@ class StoriesController < ApplicationController
     } unless view.present?
 
     dirty_title = params[:title] ||= ''
-    updated_metadata = nil
 
     return redirect_to '/', :flash => {
       :error => I18n.t('stories_controller.permissions_error_flash')
@@ -148,7 +147,8 @@ class StoriesController < ApplicationController
   end
 
   def should_create_draft_story?(view)
-    story_belongs_to_current_user?(view) && story_is_uninitialized?(view['metadata'])
+    story_belongs_to_current_user?(view) &&
+      story_is_uninitialized?(view['metadata'])
   end
 
   def story_belongs_to_current_user?(view)
@@ -167,7 +167,9 @@ class StoriesController < ApplicationController
   end
 
   def story_is_uninitialized?(view_metadata)
-    view_metadata.present? && view_metadata.key?('initialized') && view_metadata['initialized'] == false
+    view_metadata.present? &&
+      view_metadata.key?('initialized') &&
+      view_metadata['initialized'] == false
   end
 
   def sanitize_story_title(dirty_title)
@@ -214,15 +216,14 @@ class StoriesController < ApplicationController
       view['name'] = title
     end
 
-    view['metadata']['accessPoints'] ||= {}
-    view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{uid}"
     view['metadata']['initialized'] = true
 
     updated_view = CoreServer.update_view(uid, view)
 
     if updated_view.nil?
       error_message = "Successfully bootstrapped story with uid '#{uid}' " \
-        "but failed to update the title or 'initialized' flag in the view metadata."
+        "but failed to update the title or 'initialized' flag in the view " \
+        "metadata."
 
       AirbrakeNotifier.report_error(
         StandardError.new(error_message),

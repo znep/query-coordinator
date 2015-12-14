@@ -6,12 +6,6 @@
   var metricsNS = blist.namespace.fetch('blist.metrics');
 
   /*
-   * This takes series data returned from the metrics service
-   * and turns it into a properly styled time series area chart
-   * @param series: a comma-separated list of series to plot
-   */
-
-  /*
    Base chart visualization colors.
    Reference: http://www.mulinblog.com/a-color-palette-optimized-for-data-visualization/
 
@@ -30,14 +24,11 @@
     '#4D4D4D'  // Grey
   ];
 
-// The old range of colors.
-//var _old_colors = [
-//    '#0071bc',
-//    '#990503',
-//    '#0A8C24',
-//    '#E05D0B',
-//    '#920BE0'
-//];
+  /*
+   * This takes series data returned from the metrics service
+   * and turns it into a properly styled time series area chart
+   * @param series: a comma-separated list of series to plot
+   */
 
   metricsNS.renderMetricsChart = function(
     data, $chart, startDate, endDate, sliceType, series, options
@@ -45,9 +36,7 @@
     var raphael;
 
     $chart.show();
-    if ((typeof moment) !== 'undefined') {
-      moment.lang(blist.locale);
-    }
+    moment.lang(blist.locale);
 
     var chartD3 = $chart.data('metrics-chart');
     if (!chartD3) {
@@ -334,10 +323,8 @@
     var chartTitle = _.get(selectedMetric, 'title', 'Title Unavailable');
     var chartDescription = 'Metrics for dates {0} to {1}'.format(startingDate, endingDate);
     if (_.isFinite(minValue) && _.isFinite(maxValue) && minValue !== maxValue) {
-      chartDescription = [
-        chartDescription, 'with minimum value {0} and maximum value {1}'.
-        format(minValue, maxValue)
-      ].join(' ');
+      chartDescription = '{0} with minimum value {1} and maximum value {2}'.
+        format(chartDescription, minValue, maxValue);
     }
     _.each(chartD3, function(paperArray) {
       _.each(paperArray, function(paper) {

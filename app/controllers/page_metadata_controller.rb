@@ -50,16 +50,34 @@ class PageMetadataController < ApplicationController
   end
 
   def create
-    unless can_create_metadata? && (save_as_enabled? || ephemeral_bootstrap_enabled?)
-      return render :nothing => true, :status => '401'
-    end
-
     begin
       page_metadata = json_parameter(:pageMetadata)
     rescue CommonMetadataTransitionMethods::UserError => error
       return render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue CommonMetadataTransitionMethods::UnacceptableError => error
       return render :json => { :body => "Error: #{error}" }, :status => '406'
+    end
+
+    # permission checks
+    parent_lens_id = page_metadata['parentLensId']
+    can_create_from_dataset = can_create_metadata? && ephemeral_bootstrap_enabled?
+    can_derive_from_existing_lens = current_user && save_as_enabled? && parent_lens_id.present?
+    unless can_create_from_dataset || can_derive_from_existing_lens
+      return render :nothing => true, :status => '401'
+    end
+
+    # can only create derived lenses from data lenses we can view, otherwise
+    # it would be the same as creating a lens from an arbitrary data lens
+    if parent_lens_id.present?
+      begin
+        parent_lens = View.find(parent_lens_id)
+
+        unless parent_lens.can_read? && parent_lens.data_lens?
+          return render :nothing => true, :status => '401'
+        end
+      rescue CoreServer::ResourceNotFound => error
+        return render :json => { :body => "Error: #{error}" }, :status => '401'
+      end
     end
 
     begin

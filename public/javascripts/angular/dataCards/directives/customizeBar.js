@@ -13,6 +13,7 @@
         'exportingVisualization': '=',
         'revertPage': '=',
         'revertInitiated': '=',
+        'shouldEnableSave': '=',
         'savePage': '=',
         'saveStatus': '=',
         'savePageAs': '=',

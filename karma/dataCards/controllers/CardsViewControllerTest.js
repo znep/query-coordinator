@@ -703,13 +703,6 @@ describe('CardsViewController', function() {
   });
 
   describe('manage lens dialog', function() {
-
-    function mockUser(rights) {
-      return {
-        rights: rights
-      };
-    }
-
     it('should be initialized', function() {
       var harness = makeController();
       expect(harness.$scope.manageLensState).to.not.be.undefined;
@@ -744,77 +737,53 @@ describe('CardsViewController', function() {
       });
       expect(harness.$scope.shouldShowManageLens).to.be.true;
     });
-
   });
 
   describe('user save rights', function() {
-    describe('currentUserHasSaveRight on scope', function() {
-      function mockUser(isAdmin, id, roleName) {
-        return {
-          flags: isAdmin ? [ 'admin' ] : [],
-          roleName: roleName,
-          id: id
-        };
-      }
+    describe('shouldEnableSave on scope', function() {
+      function runCase(hasCurrentUser, isDirty, hasEditRight) {
+        if (hasCurrentUser) {
+          window.currentUser = {
+            id: 'asdf-asdf'
+          };
+        }
 
-      function runCase(isAdmin, isOwner, userRole) {
-        // false, true, 'editor'
-        window.currentUser = mockUser(
-          isAdmin,
-          isOwner ? datasetOwnerId : 'xnot-ownr',
-          userRole
-        );
-        var controllerHarness = makeController();
+        var controllerHarness = makeController({}, {
+          rights: hasEditRight ? ['update_view'] : []
+        });
         var $scope = controllerHarness.$scope;
 
         $scope.$digest();
 
+        $scope.$safeApply(function() {
+          if (isDirty) {
+            $scope.writablePage.name = 'Something Different';
+          } else {
+            $scope.page.resetDirtied();
+          }
+        });
+
         return {
           expect: function(expectation) {
-            expect($scope.currentUserHasSaveRight).to.equal(expectation);
+            expect($scope.shouldEnableSave).to.equal(expectation);
           }
         };
       }
 
       it('should be false if no user is logged in', function() {
-        window.currentUser = null;
-        var controllerHarness = makeController();
-        var $scope = controllerHarness.$scope;
-
-        $scope.$digest();
-        expect($scope.currentUserHasSaveRight).to.be.false;
+        runCase(false, false, false).expect(false);
       });
 
-      it('should be true if a superadmin is logged in and is not owner', function() {
-        runCase(true, false, 'administrator').expect(true);
+      it('should be false if page is not dirty and user has update_view right', function() {
+        runCase(true, false, true).expect(false);
       });
 
-      it('should be true if a superadmin is logged in and is owner', function() {
-        runCase(true, true, 'administrator').expect(true);
+      it('should be false if page is dirty and if user does not have update_view right', function() {
+        runCase(true, true, false).expect(false);
       });
 
-      describe('with a dataset owned by somebody else', function() {
-        it('should be true if a publisher is logged in', function() {
-          runCase(false, false, 'publisher').expect(true);
-        });
-        it('should be true if an (non-super) administrator is logged in', function() {
-          runCase(false, false, 'administrator').expect(true);
-        });
-        it('should be false if an editor is logged in', function() {
-          runCase(false, false, 'editor').expect(false);
-        });
-      });
-
-      describe('with a dataset owned by the user', function() {
-        it('should be true if a publisher is logged in', function() {
-          runCase(false, true, 'publisher').expect(true);
-        });
-        it('should be true if an (non-super) administrator is logged in', function() {
-          runCase(false, true, 'administrator').expect(true);
-        });
-        it('should be true if an editor is logged in', function() {
-          runCase(false, true, 'editor').expect(true);
-        });
+      it('should be true if page is dirty and user has update_view right', function() {
+        runCase(true, true, true).expect(true);
       });
     });
   });

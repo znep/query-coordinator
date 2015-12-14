@@ -1174,7 +1174,16 @@ class View < Model
   end
 
   def story?
-    viewType == 'href' && displayType == 'story'
+    # 12/8/2015 - We are changing the viewType of a storyteller asset from 'href'
+    # to 'story'. As such, for the duration of our migration we will have to
+    # support two definitions for what constitutes a story:
+    #
+    #   1. viewType == 'href' && displayType == 'story'
+    #   2. viewType == 'story' && displayType == 'story'
+    #
+    # Once our migration is complete, we will cease to support the first case,
+    # relying only on viewType == 'story'.
+    (viewType == 'href' && displayType == 'story') || viewType == 'story'
   end
 
   def is_href?

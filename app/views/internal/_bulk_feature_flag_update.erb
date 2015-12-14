@@ -11,6 +11,10 @@
     <%= prefix = enabling ? 'feature_flags' : 'reset_to_default'
         hidden_field_tag("#{prefix}[#{flag}]", value) %>
   <%- end %>
+  <br><br>
   <button type="submit" onclick="return confirm('<%= button_warning.gsub(/'/) { "\\'" } %>');"><%= button_text %></button>
+  <%- if feature_description.present? -%>
+    <p><%= feature_description %></p>
+  <%- end -%>
 <% end %>
 </div>

@@ -129,8 +129,9 @@
 
       <%= render :partial => 'bulk_feature_flag_update', :locals => {
         flags: @bulk_updates[:enable_nbe],
-        enable_text: 'Enable NBE',
-        disable_text: 'Reset from NBE',
+        enable_text: 'Enable NBE-only',
+        disable_text: 'Reset from NBE-only',
+        feature_description: 'This will bulk-change feature flags to turn on and off NBE-only, effecting imports, redirects, and enabled features. Be careful.'
       } %>
     <% end %>
 

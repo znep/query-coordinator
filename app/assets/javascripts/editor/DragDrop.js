@@ -4,7 +4,7 @@
 
   /*
    * Responsible for:
-   *  - Providing STORY_DRAG_ENTER, STORY_DRAG_OVER, STORY_DRAG_LEAVE, and STORY_DROP
+   *  - Providing STORY_DRAG_OVER, STORY_DRAG_LEAVE, and STORY_DROP
    *    actions.
    *  - Providing a ghost visual that follows the pointer.
    *
@@ -78,10 +78,6 @@
         }
 
         if (storyUidOver) {
-          dispatcher.dispatch({
-            action: Actions.STORY_DRAG_ENTER,
-            storyUid: storyUidOver
-          });
           _storyUidDraggedOver = storyUidOver;
         }
       }
@@ -114,9 +110,19 @@
       ghostElement.addClass('hidden');
 
       if (storyUidOver) {
+        if (storyteller.dropHintStore.isDraggingOverStory(storyUidOver)) {
+          var hintPosition = storyteller.dropHintStore.getDropHintPosition();
+
+          storyteller.dispatcher.dispatch({
+            action: Actions.STORY_INSERT_BLOCK,
+            blockContent: blockContent,
+            storyUid: storyUidOver,
+            insertAt: hintPosition.dropIndex
+          });
+        }
+
         dispatcher.dispatch({
           action: Actions.STORY_DROP,
-          blockContent: blockContent,
           storyUid: storyUidOver
         });
       }

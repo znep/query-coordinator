@@ -349,7 +349,7 @@ describe('StoryRenderer', function() {
 
     function hintAtStoryAndBlock(storyUid, blockId) {
 
-      // Cause DragDropStore to indicate we're dragging over
+      // Cause DropHintStore to indicate we're dragging over
       // the given story and block.
       storyteller.dispatcher.dispatch({
         action: Actions.STORY_DRAG_OVER,
@@ -362,7 +362,7 @@ describe('StoryRenderer', function() {
 
     function noHint() {
 
-      // Cause DragDropStore to indicate we're dragging over
+      // Cause DropHintStore to indicate we're dragging over
       // nothing at all.
       storyteller.dispatcher.dispatch({
         action: Actions.STORY_DRAG_LEAVE,

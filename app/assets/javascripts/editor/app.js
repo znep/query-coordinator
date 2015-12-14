@@ -52,7 +52,7 @@ $(document).on('ready', function() {
       storyteller.storyCollaborators = collaborators;
     });
 
-  storyteller.dispatcher = new storyteller.Dispatcher();
+  storyteller.dispatcher = new Flux.Dispatcher();
   storyteller.dispatcher.register(function(payload) {
 
     if (storyteller.config.environment === 'development' && window.console) {
@@ -70,7 +70,7 @@ $(document).on('ready', function() {
   storyteller.linkModalStore = new storyteller.LinkModalStore();
   storyteller.storyStore = new storyteller.StoryStore();
   storyteller.historyStore = new storyteller.HistoryStore(storyteller.userStoryUid);
-  storyteller.dragDropStore = new storyteller.DragDropStore();
+  storyteller.dropHintStore = new storyteller.DropHintStore();
   storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
@@ -213,8 +213,8 @@ $(document).on('ready', function() {
    * Drag and drop events
    */
 
-  storyteller.dragDropStore.addChangeListener(function() {
-    if (storyteller.dragDropStore.isDraggingOverStory(storyteller.userStoryUid)) {
+  storyteller.dropHintStore.addChangeListener(function() {
+    if (storyteller.dropHintStore.isDraggingOverStory(storyteller.userStoryUid)) {
       ghostElement.addClass('full-size');
     } else {
       ghostElement.removeClass('full-size');

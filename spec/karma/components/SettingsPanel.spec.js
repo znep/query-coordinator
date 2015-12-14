@@ -32,7 +32,7 @@ describe('SettingsPanel jQuery plugin', function() {
     // We'll just provide our own implementations of what we care about.
     standardMocks.remove();
 
-    window.socrata.storyteller.dispatcher = new storyteller.Dispatcher();
+    window.socrata.storyteller.dispatcher = new Flux.Dispatcher();
 
     storyteller.storySaveStatusStore = {
       addChangeListener: _.noop,

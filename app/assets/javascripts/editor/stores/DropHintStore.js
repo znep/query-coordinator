@@ -5,7 +5,7 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  function DragDropStore() {
+  function DropHintStore() {
 
     _.extend(this, new storyteller.Store());
 
@@ -28,7 +28,7 @@
     });
 
     /**
-     * Returns where the reorder hint should be.
+     * Returns where the drop hint should be.
      *
      * Returns null, or:
      * {
@@ -36,12 +36,12 @@
      *   dropIndex: Index to hint.
      * }
      */
-    this.getReorderHintPosition = function() {
+    this.getDropHintPosition = function() {
       return _reorderHintPosition;
     };
 
     this.isDraggingOverStory = function(storyUid) {
-      var position = this.getReorderHintPosition();
+      var position = this.getDropHintPosition();
 
       return !!(position && position.storyUid === storyUid);
     };
@@ -111,24 +111,14 @@
 
     function _storyDrop(payload) {
 
-      utils.assertHasProperties(payload, 'storyUid', 'blockContent');
+      utils.assertHasProperties(payload, 'storyUid');
 
       if (self.isDraggingOverStory(payload.storyUid)) {
-        var hintPosition = self.getReorderHintPosition();
-
         _setReorderHintPosition(null);
-
-        storyteller.dispatcher.dispatch({
-          action: Actions.STORY_INSERT_BLOCK,
-          blockContent: payload.blockContent,
-          storyUid: payload.storyUid,
-          insertAt: hintPosition.dropIndex
-        });
-        self._emitChange();
       }
     }
 
   }
 
-  storyteller.DragDropStore = DragDropStore;
+  storyteller.DropHintStore = DropHintStore;
 }(window.socrata));

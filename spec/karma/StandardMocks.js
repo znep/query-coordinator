@@ -172,7 +172,7 @@ function applyStandardMocks() {
 
   window.socrata.storyteller.SquireMocker.mock();
 
-  window.socrata.storyteller.dispatcher = new storyteller.Dispatcher();
+  window.socrata.storyteller.dispatcher = new Flux.Dispatcher();
 
 
   window.socrata.storyteller.dispatcher.register(function(payload) {
@@ -188,7 +188,7 @@ function applyStandardMocks() {
   storyteller.storyStore = new storyteller.StoryStore();
   storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyUid);
   storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();
-  storyteller.dragDropStore = new storyteller.DragDropStore();
+  storyteller.dropHintStore = new storyteller.DropHintStore();
   storyteller.historyStore = new storyteller.HistoryStore(storyUid);
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
@@ -255,7 +255,7 @@ function removeStandardMocks() {
   delete storyteller.dispatcher;
   delete storyteller.storyStore;
   delete storyteller.storySaveStatusStore;
-  delete storyteller.dragDropStore;
+  delete storyteller.dropHintStore;
   delete storyteller.historyStore;
   delete storyteller.blockRemovalConfirmationStore;
   delete storyteller.coreSavingStore;

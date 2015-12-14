@@ -1,27 +1,27 @@
 (function() {
-  this.a11y = {
-    top_list_summary: function() {
+  'use strict';
 
-    },
-
-    table_summary: function(options) {
-      if(_.isEmpty(options['columns']) || _.is_Empty(options['rows'])) {
+  window.a11y = {
+    tableSummary: function(options) {
+      if (_.isEmpty(options.columns) || _.isEmpty(options.rows)) {
         return $.t('table.no_summary_available');
       }
 
-      var row_headings = '';
+      var rowHeadings = '';
 
-      if(options['rows'].length < 5) {
-        row_headings = rows.join(', ');
+      if (_.size(options, 'rows') < 5) {
+        rowHeadings = _.get(options, 'rows', []).join(', ');
       }
 
-      template_opts = {
-        data_description: options['table_description'],
-        column_heading_count: options['columns'].size,
-        column_headings: options['columns'].join(', '),
-        row_heading_count : options['rows'].length,
-        row_headings: row_headings
-      }
+      var templateOptions = {
+        'data_description': _.get(options, 'tableDescription', ''),
+        'column_heading_count': options.columns.length,
+        'column_headings': _.get(options, 'columns', []).join(', '),
+        'row_heading_count': options.rows.length,
+        'row_headings': rowHeadings
+      };
+
+      return $.t('table.summary', templateOptions);
     }
   };
 })();

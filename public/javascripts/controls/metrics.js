@@ -1,7 +1,7 @@
-;var metricsNS = blist.namespace.fetch('blist.metrics'); // eslint-disable-line no-extra-semi
-
 (function($) {
   'use strict';
+
+  var metricsNS = blist.namespace.fetch('blist.metrics'); // eslint-disable-line no-extra-semi
   /*
    * Helper Functions
    */
@@ -492,8 +492,7 @@
           '.sectionTitle': 'topList.displayName',
           'th.value .valueHeading': 'topList.heading',
           '@id': 'topList.id',
-          '@class+': 'topList.className',
-          'table.metricsList@summary': 'topList.displayName'
+          '@class+': 'topList.className'
         }
       }
     },

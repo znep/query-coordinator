@@ -24,6 +24,9 @@ namespace :assets do
 
   desc 'Transpile javascript with babel'
   task :babel do
+    unless File.exist?('./node_modules/.bin/babel')
+      raise RuntimeError.new('Unable to find babel binary. Install babel with "npm install"')
+    end
     cmd = './node_modules/.bin/babel public/javascripts/src -d public/javascripts/dist'
     puts cmd
     fail($?.exitstatus) unless system(cmd)

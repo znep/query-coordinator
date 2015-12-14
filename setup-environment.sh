@@ -38,5 +38,5 @@ curl -u"${ARTIFACTORY_ONLINE_USER}":"${ARTIFACTORY_ONLINE_PASSWORD}" "https://so
 
 # 4. Bower
 echo "{\"registry\": \"https://${ARTIFACTORY_ONLINE_USER}:${ARTIFACTORY_ONLINE_PASSWORD}@socrata.artifactoryonline.com/socrata/api/bower/bower-remote-github\" }" > "${HOME}/.bowerrc"
-npm install -g karma-cli phantomjs karma-phantomjs-launcher bower-art-resolver
+npm install -g karma-cli phantomjs karma-phantomjs-launcher
 npm install

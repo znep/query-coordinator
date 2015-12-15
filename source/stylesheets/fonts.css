@@ -23,6 +23,12 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-add-collaborator:before {
+	content: "\e904";
+}
+.icon-copy-document:before {
+	content: "\e905";
+}
 .icon-eye:before {
 	content: "\e902";
 }

@@ -47,7 +47,7 @@
       $form.submit(function(e) {
         $('.valueBox').each(function() {
           var $this = $(this);
-          var otherNotSelected = $this.find('.other').not(':checked');
+          var otherNotSelected = $this.find('.other').not(':checked').exists();
           var otherPresent = $this.find('.other').exists();
           if (otherNotSelected && otherPresent) {
             $this.find('input:text, select').prop('disabled', true);

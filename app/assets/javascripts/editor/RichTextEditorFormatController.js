@@ -13,7 +13,7 @@
    * should be taken when they are executed.
    *
    * @constructor
-   * @param {Squire} editor
+   * @param {RichTextEditor} editor
    * @param {object[]} formats
    *   @property {string} id - The internal name of the operation that is
    *     associated with this format.
@@ -438,7 +438,7 @@
       // have selected the text of a heading the closing tag is not included and
       // so the heading is not removed.
       // So call removeAllFormatting() AND update the block type.
-      editor.removeAllFormatting();
+      _squire.removeAllFormatting();
       _updateBlockType('div');
     }
 
@@ -543,7 +543,7 @@
 
       storyteller.dispatcher.dispatch({
         action: Actions.LINK_MODAL_OPEN,
-        editorId: editor.id,
+        editorId: _editor.id,
         text: text,
         link: link,
         openInNewWindow: openInNewWindow

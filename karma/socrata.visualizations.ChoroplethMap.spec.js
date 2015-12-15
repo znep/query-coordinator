@@ -1229,6 +1229,28 @@ describe('socrata.visualizations.ChoroplethMap', function() {
       });
     });
 
+    describe('map zoom and drag events', function() {
+
+      it('should emit an event on map zoomend/dragend', function(done) {
+
+        var geojsonAggregateData = testData.polygonData2ValueUndefined;
+
+        var choroplethObject = createChoroplethMap(geojsonAggregateData);
+        var el = choroplethObject.element;
+
+        el.on('SOCRATA_VISUALIZATION_CHOROPLETH_EXTENT_CHANGE', function(e) {
+
+          var payload = e.originalEvent.detail;
+
+          expect(payload.hasOwnProperty('southwest')).to.be.true;
+          expect(payload.hasOwnProperty('northeast')).to.be.true;
+          done();
+        });
+
+        testHelpers.fireEvent(el.find('.leaflet-tile')[0], 'dblclick');
+      });
+    });
+
     describe('dimension changes', function() {
 
       var invalidateSizeSpy;

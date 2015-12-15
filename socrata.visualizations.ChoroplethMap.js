@@ -205,6 +205,8 @@
       }
 
       _updateFeatureLayer(data);
+
+      // TODO: React to active filters being cleared.
     };
 
     this.updateDimensions = function() {
@@ -321,6 +323,7 @@
       _choroplethLegend.on('mouseout', '.choropleth-legend-color', _hideFlyout);
 
       _map.on('mouseout', _hideFlyout);
+      _map.on('zoomend dragend', _emitExtentEventsFromMap);
     }
 
     /**
@@ -332,6 +335,7 @@
       _choroplethLegend.off('mouseout', '.choropleth-legend-color', _hideFlyout);
 
       _map.off('mouseout', _hideFlyout);
+      _map.off('zoomend dragend', _emitExtentEventsFromMap);
     }
 
     /**
@@ -475,6 +479,28 @@
       self.emitEvent(
         'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE',
         null
+      );
+    }
+
+    function _emitExtentEventsFromMap() {
+      var leafletBounds = _map.getBounds();
+
+      utils.assert(leafletBounds.isValid(), 'Bounds object is not valid.');
+
+      var updatedBounds = {
+        southwest: {
+          lat: leafletBounds.getSouth(),
+          lng: leafletBounds.getWest()
+        },
+        northeast: {
+          lat: leafletBounds.getNorth(),
+          lng: leafletBounds.getEast()
+        }
+      };
+
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_CHOROPLETH_EXTENT_CHANGE',
+        updatedBounds
       );
     }
 

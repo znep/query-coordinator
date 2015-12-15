@@ -30,6 +30,7 @@ describe CoreServer do
     let(:rights) { [] }
     let(:user) { {'id' => 'here-iams'} }
     let(:view) { {'owner' => {'id' => 'here-iams'}, 'grants' => grants, 'rights' => rights} }
+    let(:subject) { CoreServer.current_user_authorization(user, 'four-four') }
 
     before do
       allow(CoreServer).to receive(:get_view) { view }
@@ -37,7 +38,7 @@ describe CoreServer do
 
     describe 'when primary owner' do
       it 'returns role, rights, and a key indicating primary owner' do
-        expect(CoreServer.current_user_authorization(user, 'four-four')).to eql({
+        expect(subject).to eql({
           'role' => 'owner',
           'rights' => rights,
           'primary' => true
@@ -50,7 +51,7 @@ describe CoreServer do
       let(:grants) { [{'userId' => 'share-user', 'type' => 'contributor'}] }
 
       it 'returns role, rights' do
-        expect(CoreServer.current_user_authorization(user, 'four-four')).to eql({
+        expect(subject).to eql({
           'role' => 'contributor',
           'rights' => rights
         })
@@ -61,7 +62,7 @@ describe CoreServer do
       let(:user) { {'id' => 'supe-radm'} }
 
       it 'returns role, rights' do
-        expect(CoreServer.current_user_authorization(user, 'four-four')).to eql({
+        expect(subject).to eql({
           'role' => 'unknown',
           'rights' => rights
         })

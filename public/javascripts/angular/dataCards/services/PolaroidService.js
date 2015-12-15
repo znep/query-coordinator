@@ -16,7 +16,7 @@
    * Content-Disposition:attachment) without risking navigating away from the page if the server
    * responds incorrectly.
    */
-  angular.module('dataCards.services').factory('DownloadService', function($q, $window, http) {
+  angular.module('dataCards.services').factory('PolaroidService', function($q, $window, http) {
     /**
      * Have the user's browser download the specified path.
      *
@@ -95,7 +95,7 @@
         form.remove();
       } else {
         var payload = {
-          vif: JSON.stringify(vif)
+          vif: vif
         };
 
         var httpConfig = {

@@ -11,11 +11,10 @@ class PolaroidController < ActionController::Base
       }
     end
 
-    parsed_vif = JSON.parse(params[:vif]).with_indifferent_access
+    vif = params[:vif].with_indifferent_access
     begin
       result = polaroid.fetch_image(
-        params[:id],
-        parsed_vif,
+        vif,
         :cookies => forwardable_session_cookies
       )
     rescue => error
@@ -36,7 +35,7 @@ class PolaroidController < ActionController::Base
         result[:body],
         :type => result[:content_type],
         :disposition => params.fetch('disposition', 'attachment'),
-        :filename => "#{params[:id]}-#{parsed_vif[:columnName]}-#{parsed_vif[:type]}.png"
+        :filename => "#{vif[:datasetUid]}-#{vif[:columnName]}-#{vif[:type]}.png"
       )
     else
       render result.update(:json => result[:body])

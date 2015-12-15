@@ -7,7 +7,7 @@ describe('multiCardLayout', function() {
 
   var Card;
   var mockWindowStateService = null;
-  var mockDownloadService;
+  var mockPolaroidService;
   var Model;
   var Page;
   var _$provide;
@@ -56,14 +56,14 @@ describe('multiCardLayout', function() {
 
       $provide.value('WindowState', mockWindowStateService);
 
-      mockDownloadService = {
+      mockPolaroidService = {
         download: function() {
-          mockDownloadService.calledWith = arguments;
+          mockPolaroidService.calledWith = arguments;
           return $q.when(undefined);
         }
       };
 
-      $provide.value('DownloadService', mockDownloadService);
+      $provide.value('PolaroidService', mockPolaroidService);
     });
   });
 
@@ -1452,7 +1452,7 @@ describe('multiCardLayout', function() {
 
       $timeout.flush();
 
-      expect(mockDownloadService.calledWith[0]).to.equal('/view/asdf-fdsa/vif.png');
+      expect(mockPolaroidService.calledWith[0]).to.equal('/view/vif.png');
       expect(exitExportModeSpy.callCount).to.equal(1);
     });
 

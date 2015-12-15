@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardDirective(DownloadService, ServerConfig, FlyoutService, VIFExportService, $timeout, I18n) {
+  function CardDirective(PolaroidService, ServerConfig, FlyoutService, VIFExportService, $timeout, I18n) {
 
     return {
       restrict: 'E',
@@ -257,8 +257,8 @@
             case 'polaroid':
             default:
               var vif = VIFExportService.exportVIF($scope.model.page, $scope.model.uniqueId, 'Polaroid Export', '');
-              var url = '/view/{0}/vif.png'.format($scope.model.page.id);
-              DownloadService.download(url, vif).then(
+              var url = '/view/vif.png';
+              PolaroidService.download(url, vif).then(
                 function() {
                   $scope.$safeApply(function() {
                     $scope.downloadState = 'success';

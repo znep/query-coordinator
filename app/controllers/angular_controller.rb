@@ -119,7 +119,7 @@ class AngularController < ActionController::Base
     parsed_vif = params[:vif].with_indifferent_access
 
     @page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(
-        parsed_vif, params[:id], nil)
+        parsed_vif, nil, nil)
 
     # Then ensure that there is a dataset id.
     unless @page_metadata[:datasetId].present?

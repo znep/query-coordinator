@@ -1113,7 +1113,7 @@ class AdministrationController < ApplicationController
     @approval_template = Approval.find()[0]
 
     @users = {}
-    if !@approval_template.nil?
+    unless @approval_template.nil?
       (CoreServer::Base.connection.batch_request do |batch_id|
         (@approval_template.stages || []).each do |s|
           (s['approverUids'] || []).each do |userId|
@@ -1129,22 +1129,29 @@ class AdministrationController < ApplicationController
 
   def routing_approval_manage_save
     if params[:template][:name].empty?
-      flash[:error] = "Please fill in all required fields"
+      flash[:error] = 'Please fill in all required fields'
       return(redirect_to :action => 'routing_approval_manage')
     end
 
     app = Approval.find()[0]
     max_ii = params[:template][:maxInactivityInterval].to_i
     max_ii = 5 if (max_ii < 1)
-    attrs = {:name => params[:template][:name],
+
+    approve_only_new = params[:template][:approveOnlyNew] == true ||
+      params[:template][:approveOnlyNew] =~ (/^(true|t|yes|y|1)$/i)
+    attrs = {
+      :name => params[:template][:name],
       :requireApproval => true,
+      :reapproveOnPublish => !approve_only_new,
       :maxInactivityInterval => max_ii,
-      :stages => []}
-    if !app.nil?
+      :stages => []
+    }
+
+    unless app.nil?
       app.stages.each do |s|
         sp = params[:template][:stages][s['id'].to_s]
         next if sp.nil? || sp[:name].blank?
-        sp[:approverUids].map! {|u| (u.match(/\w{4}-\w{4}$/) || [])[0]}.compact!
+        sp[:approverUids].map! { |u| (u.match(/\w{4}-\w{4}$/) || [])[0] }.compact!
         attrs[:stages] << s.merge(sp)
       end
     end

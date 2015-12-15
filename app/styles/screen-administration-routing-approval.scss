@@ -290,6 +290,21 @@
       display: block;
       margin-left: 2em;
     }
+    .checkbox-line {
+      input {
+        margin-left: 12px;
+      }
+
+      label {
+        margin-top: 0.05em;
+        padding-left: 0.15em;
+      }
+
+      .info {
+        margin-left: 3em;
+        font-size: 1em;
+      }
+    }
     .stageList {
       border-bottom: 1px solid $color_chrome_box_border;
     }

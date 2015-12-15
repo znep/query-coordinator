@@ -66,6 +66,7 @@
             dataType: 'json',
             success: function(json) {
               collaborator.userEmail = json.email;
+              collaborator.displayName = json.displayName;
               resolve(collaborator);
             },
             error: reject
@@ -156,11 +157,13 @@
         return {
           uid: grant.userId,
           email: grant.userEmail,
+          displayName: grant.displayName,
           accessLevel: grant.type
         };
       } else {
         return {
           email: grant.userEmail,
+          displayName: grant.displayName,
           accessLevel: grant.type
         };
       }

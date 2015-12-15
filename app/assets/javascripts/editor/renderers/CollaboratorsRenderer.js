@@ -95,22 +95,49 @@
       );
     }
 
+    function templateRemove() {
+      return (
+        '<button ' +
+          'class="btn-default btn-inverse"' +
+          'data-action="{0}"'.format(Actions.COLLABORATORS_REMOVE) +
+        '>{0}</button>'.format(t('editor.collaborators.modal.remove'))
+      );
+    }
+
     function templateContributor() {
+      return (
+        '<td>{displayName}</td>' +
+        '<td>{0}</td>'.format(templateAccessLevel) +
+        '<td>{0}</td>'.format(templateRemove)
+      );
+    }
+
+    function templateContributorOnlyEmail() {
       return (
         '<td>{email}</td>' +
         '<td>{0}</td>'.format(templateAccessLevel) +
-        '<td>' +
-          '<button ' +
-            'class="btn-default btn-inverse"' +
-            'data-action="{0}"'.format(Actions.COLLABORATORS_REMOVE) +
-          '>{0}</button>'.format(t('editor.collaborators.modal.remove')) +
-        '</td>'
+        '<td>{0}</td>'.format(templateRemove)
+      );
+    }
+
+    function templateContributorAndEmail() {
+      return (
+        '<td>{displayName}, &lt;{email}&gt;</td>' +
+        '<td>{0}</td>'.format(templateAccessLevel) +
+        '<td>{0}</td>'.format(templateRemove)
       );
     }
 
     function templateStaticContributor() {
       return (
-        '<td class="static">{email}</td>' +
+        '<td class="static">{displayName}</td>' +
+        '<td class="static" colspan="2">{accessLevel}</td>'
+      );
+    }
+
+    function templateStaticContributorAndEmail() {
+      return (
+        '<td class="static">{displayName}, &lt;{email}&gt;</td>' +
         '<td class="static" colspan="2">{accessLevel}</td>'
       );
     }
@@ -169,6 +196,7 @@
 
     function dispatchActions(event) {
       var $tr;
+      var collaborator;
       var email;
       var accessLevel;
       var isModalOverlay;
@@ -178,6 +206,22 @@
       var $target = $(event.target);
       var action = $target.attr('data-action');
       var shouldClose = true;
+
+      if (Actions.COLLABORATORS_MARK_REMOVAL || Actions.COLLABORATORS_UNMARK_REMOVAL ||
+        Actions.COLLABORATORS_REMOVE || Actions.COLLABORATORS_CHANGE) {
+
+        $tr = $target.closest('tr');
+        collaborator = {accessLevel: $tr.attr('data-access-level')};
+
+        if ($tr.attr('data-email')) {
+          collaborator.email = $tr.attr('data-email');
+        }
+
+        if ($tr.attr('data-uid')) {
+          collaborator.uid = $tr.attr('data-uid');
+        }
+      }
+
 
       switch (action) {
         case Actions.COLLABORATORS_CANCEL:
@@ -209,14 +253,9 @@
         case Actions.COLLABORATORS_MARK_REMOVAL:
         case Actions.COLLABORATORS_UNMARK_REMOVAL:
         case Actions.COLLABORATORS_REMOVE:
-          $tr = $target.closest('tr');
-
           dispatcher.dispatch({
             action: action,
-            collaborator: {
-              email: $tr.attr('data-email'),
-              accessLevel: $tr.attr('data-access-level')
-            }
+            collaborator: collaborator
           });
           break;
         case Actions.COLLABORATORS_ADD:
@@ -232,20 +271,16 @@
           });
           break;
         case Actions.COLLABORATORS_CHANGE:
-          $tr = $target.closest('tr');
-          email = $tr.attr('data-email');
           accessLevel = $tr.attr('data-access-level');
-
           var newAccessLevel = $tr.find('option:selected').val();
           var hasChanged = accessLevel !== newAccessLevel;
 
           if (hasChanged || $target.is('button')) {
+            collaborator.accessLevel = newAccessLevel;
+
             dispatcher.dispatch({
               action: Actions.COLLABORATORS_CHANGE,
-              collaborator: {
-                email: email,
-                accessLevel: newAccessLevel
-              }
+              collaborator: collaborator
             });
           }
           break;
@@ -280,12 +315,20 @@
     function renderCollaborator(collaborator) {
       var buttonText;
       var buttonAction;
-      var selectDisabled = false;
+      var subtemplate;
       var $collaborator = $('<tr>', {
         'class': collaborator.state.current,
-        'data-email': collaborator.email,
         'data-access-level': collaborator.accessLevel
       });
+      var selectDisabled = false;
+
+      if (collaborator.email) {
+        $collaborator.attr('data-email', collaborator.email);
+      }
+
+      if (collaborator.uid) {
+        $collaborator.attr('data-uid', collaborator.uid);
+      }
 
       switch (collaborator.state.current) {
         case 'added':
@@ -304,9 +347,20 @@
           break;
       }
 
-      var subtemplate = templateContributor().format({
-        email: collaborator.email
-      });
+      if (collaborator.email && collaborator.displayName) {
+        subtemplate = templateContributorAndEmail().format({
+          email: collaborator.email,
+          displayName: collaborator.displayName
+        });
+      } else if (collaborator.email) {
+        subtemplate = templateContributorOnlyEmail().format({
+          email: collaborator.email
+        });
+      } else {
+        subtemplate = templateContributor().format({
+          displayName: collaborator.displayName
+        });
+      }
 
       var $subtemplate = $(subtemplate);
 
@@ -327,19 +381,29 @@
     }
 
     function renderStaticCollaborator(collaborator) {
+      var subtemplate;
       var $collaborator = $('<tr>', {
         'class': collaborator.state.current
       });
-      var subtemplate = templateStaticContributor().format({
-        email: collaborator.email,
-        accessLevel: t('editor.collaborators.modal.{0}'.format(collaborator.accessLevel))
-      });
+
+      if (collaborator.email) {
+        subtemplate = templateStaticContributorAndEmail().format({
+          displayName: collaborator.displayName,
+          email: collaborator.email,
+          accessLevel: t('editor.collaborators.modal.{0}'.format(collaborator.accessLevel))
+        });
+      } else {
+        subtemplate = templateStaticContributor().format({
+          displayName: collaborator.displayName,
+          accessLevel: t('editor.collaborators.modal.{0}'.format(collaborator.accessLevel))
+        });
+      }
 
       return $collaborator.append($(subtemplate));
     }
 
     function renderCollaborators(collaborators) {
-      var staticCollaborators = _.filter(collaborators, {email: window.currentUser.email});
+      var staticCollaborators = _.filter(collaborators, {uid: window.currentUser.id});
       var editableCollaborators = _.difference(collaborators, staticCollaborators);
 
       $collaborators.find('tbody').

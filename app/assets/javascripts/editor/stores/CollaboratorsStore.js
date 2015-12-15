@@ -170,7 +170,7 @@
      */
     function isValidCollaborator(collaborator) {
       return _.isPlainObject(collaborator) &&
-        _.isString(collaborator.email) &&
+        (_.isString(collaborator.email) || _.isString(collaborator.uid)) &&
         _.isString(collaborator.accessLevel);
     }
 
@@ -216,8 +216,10 @@
     function pushCollaboratorState(state) {
       return function(collaborator) {
         return {
+          uid: collaborator.uid,
           email: collaborator.email,
           accessLevel: collaborator.accessLevel,
+          displayName: collaborator.displayName,
           state: {
             previous: (collaborator.state && collaborator.state.current) || null,
             current: state
@@ -338,12 +340,12 @@
 
       collaborators = _.chain(collaborators).
         map(function(collaborator) {
-          var emailsMatch = collaborator.email === payload.collaborator.email;
+          var matches = matchesCollaborator(collaborator, payload.collaborator);
           var isNewlyAdded = collaborator.state.current === states.ADDED;
 
-          if (emailsMatch && !isNewlyAdded) {
+          if (matches && !isNewlyAdded) {
             return pushCollaboratorState(states.REMOVED)(collaborator);
-          } else if (emailsMatch && isNewlyAdded) {
+          } else if (matches && isNewlyAdded) {
             return undefined;
           } else {
             return collaborator;
@@ -353,6 +355,18 @@
         value();
 
       self._emitChange();
+    }
+
+    /**
+     * @function matchesCollaborator
+     * @description
+     * Considered a match if emails are equals or display names
+     */
+    function matchesCollaborator(collaborator, potentialMatch) {
+      return (
+        collaborator.email === potentialMatch.email ||
+        collaborator.uid === potentialMatch.uid
+      );
     }
 
     /**
@@ -371,11 +385,11 @@
       utils.assert(hasCollaborator(payload.collaborator));
 
       collaborators = _.map(collaborators, function(collaborator) {
-        var emailsMatch = collaborator.email === payload.collaborator.email;
+        var matches = matchesCollaborator(collaborator, payload.collaborator);
         var accessLevelChanged = collaborator.accessLevel !== payload.collaborator.accessLevel;
         var isNotNewlyAdded = collaborator.state.current !== states.ADDED;
 
-        if (emailsMatch && accessLevelChanged) {
+        if (matches && accessLevelChanged) {
           collaborator.accessLevel = payload.collaborator.accessLevel;
 
           if (isNotNewlyAdded) {

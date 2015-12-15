@@ -1,7 +1,7 @@
-;var metricsNS = blist.namespace.fetch('blist.metrics'); // eslint-disable-line no-extra-semi
-
 (function($) {
   'use strict';
+
+  var metricsNS = blist.namespace.fetch('blist.metrics'); // eslint-disable-line no-extra-semi
   /*
    * Helper Functions
    */

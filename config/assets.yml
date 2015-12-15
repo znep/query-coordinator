@@ -51,6 +51,7 @@ javascripts:
     - public/javascripts/util/templates.js
     - public/javascripts/util/filter.js
     - public/javascripts/util/datatypes.js
+    - public/javascripts/util/a11y.js
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/controls/socrata-messaging.js

@@ -1,4 +1,4 @@
-/*global Dataset, Highcharts, ServerModel, User */
+/*global Dataset, Highcharts, ServerModel, User, a11y */
 
 (function() {
   'use strict';
@@ -23,6 +23,12 @@
 // Common render function to take a list of data and make table
   metricsNS.renderTopList = function(data, $target) {
     var table = $target.find('.metricsList');
+
+    table.attr('summary', a11y.tableSummary({
+      columns: $.map(table.find('thead th'), function(element) { return $(element).text().trim(); }),
+      rows: _.pluck(data, 'linkText'),
+      tableDescription: $target.find('.sectionTitle').text()
+    }));
 
     // Clear out the table if we're loading the first set of rows
     if ($target.data('count') <= metricsNS.SHOW_COUNT) {

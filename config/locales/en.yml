@@ -667,6 +667,7 @@ en:
           facebook: Facebook
           twitter: Twitter
         share_text: 'Check out the %{name}, dataset on %{site}: '
+        share_story_text: 'Check out %{name} on %{site}: '
       sidebar:
         tabs:
           about: About This Dataset

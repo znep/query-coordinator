@@ -209,18 +209,6 @@ $(document).on('ready', function() {
     }
   });
 
-  /**
-   * Drag and drop events
-   */
-
-  storyteller.dropHintStore.addChangeListener(function() {
-    if (storyteller.dropHintStore.isDraggingOverStory(storyteller.userStoryUid)) {
-      ghostElement.addClass('full-size');
-    } else {
-      ghostElement.removeClass('full-size');
-    }
-  });
-
   // Respond to changes in the user story's block ordering by scrolling the
   // window to always show the top of the moved block.
   storyteller.dispatcher.register(function(payload) {

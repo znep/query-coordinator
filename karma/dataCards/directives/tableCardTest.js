@@ -489,7 +489,7 @@ describe('tableCard', function() {
         $rootScope.$digest();
 
         //NOTE: this assumes the column defaults to a DESC sort. Not always true, see story 5.04 for details.
-        expect(lastSort).to.equal(SoqlHelpers.formatFieldName(columnMeta.fieldName) + ' DESC');
+        expect(lastSort).to.equal(SoqlHelpers.formatFieldName(columnMeta.fieldName) + ' DESC, :id');
         expect(el.find('.th').length).to.equal(columnCount);
         expect(el.find('.row-block .table-row').length).to.equal(rowCount);
         expect(el.find('.row-block .cell').length).to.equal(columnCount * rowCount);
@@ -502,7 +502,7 @@ describe('tableCard', function() {
         applicatorFunction(el);
         $rootScope.$digest();
 
-        expect(lastSort).to.equal(SoqlHelpers.formatFieldName(columnMeta.fieldName) + ' ASC');
+        expect(lastSort).to.equal(SoqlHelpers.formatFieldName(columnMeta.fieldName) + ' ASC, :id');
         expect(el.find('.th').length).to.equal(columnCount);
         expect(el.find('.row-block .table-row').length).to.equal(rowCount);
         expect(el.find('.row-block .cell').length).to.equal(columnCount * rowCount);
@@ -514,11 +514,11 @@ describe('tableCard', function() {
       it('should only reflect the first value of the default sort', function() {
         var el = getSortableTable();
         var defaultSortColumnName = SoqlHelpers.formatFieldName(el.scope().defaultSortColumnName);
-        expect(lastSort).to.equal(defaultSortColumnName + ' ASC');
+        expect(lastSort).to.equal(defaultSortColumnName + ' ASC, :id');
 
         el.scope().defaultSortColumnName = SoqlHelpers.formatFieldName('bad');
         $rootScope.$digest();
-        expect(lastSort).to.equal(defaultSortColumnName + ' ASC'); // shouldn't change
+        expect(lastSort).to.equal(defaultSortColumnName + ' ASC, :id'); // shouldn't change
       });
 
       it('should be able to sort using the header', function() {
@@ -607,7 +607,7 @@ describe('tableCard', function() {
         it('should be correct for numbers', function() {
           getSortableTable().find('.th').eq(idColumnIndex).click();
           $rootScope.$digest();
-          expect(lastSort).to.match(/ DESC$/);
+          expect(lastSort).to.match(/ DESC/);
         });
 
         it('should be correct for text', function() {
@@ -619,7 +619,7 @@ describe('tableCard', function() {
         it('should be correct for dates', function() {
           getSortableTable().find('.th').eq(dateColumnIndex).click();
           $rootScope.$digest();
-          expect(lastSort).to.match(/ DESC$/);
+          expect(lastSort).to.match(/ DESC/);
         });
 
       });

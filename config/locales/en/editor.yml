@@ -68,11 +68,12 @@ en:
         cannot_change_visibility_or_update_public_version: 'Sorry, you need to be a story owner to toggle "Visibility" or "Update Public Version".'
       warnings:
         unsaved_collaborators_changes: 'You have unsaved changes. Are you sure you want to close this window?'
+        permissions: 'You must be a story owner to perform this action'
       displaying_section:
         section_title: 'Title and Description'
         title_label: 'Title'
         description_label: 'Description'
-        save_button_label: 'Save Changes'
+        save_button_label: 'Update Title & Description'
         errors:
           title_too_long: 'Sorry, the story title is too long. Please shorten it.'
       actions_section:

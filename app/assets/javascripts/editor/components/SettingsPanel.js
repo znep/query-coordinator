@@ -151,6 +151,11 @@
             action: Actions.COLLABORATORS_OPEN
           });
           break;
+        case Actions.STORY_MAKE_COPY_MODAL_OPEN:
+          storyteller.dispatcher.dispatch({
+            action: Actions.STORY_MAKE_COPY_MODAL_OPEN
+          });
+          break;
       }
     }
 
@@ -160,8 +165,16 @@
       settingsPanel.trigger('sidebar:toggle');
     });
 
+    $('.settings-panel .menu-list-item-header.expandable').click(function(event) {
+      var $currentTarget = $(event.currentTarget);
+
+      $currentTarget.toggleClass('active');
+      $currentTarget.siblings('.menu-list-item-content').toggleClass('collapsed');
+    });
+
     $(document).on('keydown', function(e) {
       var isCollaboratorsModalOpen = storyteller.collaboratorsStore.isOpen();
+      var isCopyModalOpen = storyteller.storyCopierStore.getCurrentOpenState();
 
       if (e.ctrlKey && e.keyCode === 188) { // ',' because it's settings
         settingsPanel.trigger('sidebar:toggle');
@@ -171,6 +184,10 @@
         if (isCollaboratorsModalOpen) {
           storyteller.dispatcher.dispatch({
             action: Actions.COLLABORATORS_CANCEL
+          });
+        } else if (isCopyModalOpen) {
+          storyteller.dispatcher.dispatch({
+            action: Actions.STORY_MAKE_COPY_MODAL_CANCEL
           });
         } else {
           settingsPanel.trigger('sidebar:close');

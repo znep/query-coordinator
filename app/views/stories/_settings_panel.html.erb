@@ -16,151 +16,111 @@
       <h4 class="settings-main-title text-center"><%= t('editor.settings_panel.panel_title') %></h4>
     </header>
 
-    <ul class="menu-list">
-      <li class="menu-list-item">
-        <h2 class="menu-list-item-header">
-          <span class="icon-pen6"></span>
-          <span>Edit Title and Description</span>
-        </h2>
-        <div class="menu-list-item-content hidden">
-          <p>Hello, Title and Description!</p>
-        </div>
-      </li>
-      <li class="menu-list-item">
-        <h2 class="menu-list-item-header">
-          <span class="icon-plus2"></span>
-          <span>Make a Copy...</span>
-        </h2>
-        <div class="menu-list-item-content hidden">
-          <p>Hello, Makin' a Copy!</p>
-        </div>
-      </li>
-      <li class="menu-list-item">
-        <h2 class="menu-list-item-header">
-          <span class="icon-plus2"></span>
-          <span>Manage Publishing and Visibility</span>
-        </h2>
-        <div class="menu-list-item-content hidden">
-          <p>Hello, Manage Publishing and Visibility!</p>
-        </div>
-      </li>
-      <li class="menu-list-item">
-        <h2 class="menu-list-item-header">
-          <span class="icon-plus2"></span>
-          <span>Invite and Manage Collaborators...</span>
-        </h2>
-        <div class="menu-list-item-content hidden">
-          <p>Hello, Invite and Manage Collaborators!</p>
-        </div>
-      </li>
-    </ul>
-
     <section class="settings-panel-errors warning-bar hidden">
       <p><span class="icon-warning"></span></p>
       <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.generic_error') %></p>
     </section>
 
-    <section class="settings-panel-displaying hidden">
-      <hr>
-      <h2><%= t('editor.settings_panel.displaying_section.section_title') %></h2>
+    <ul class="menu-list">
 
-      <%- unless can_update_view? -%>
-        <section class="warning-bar">
-          <p><span class="icon-warning"></span></p>
-          <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_edit_title_and_description') %></p>
-        </section>
-      <%- end %>
-
-      <form>
-        <label><%= t('editor.settings_panel.displaying_section.title_label') %></label>
-        <input name="title" type="text" maxlength="254"<%= can_update_view? ? '' : ' disabled' %>>
-        <label><%= t('editor.settings_panel.displaying_section.description_label') %></label>
-        <textarea <%= can_update_view? ? '' : ' disabled' %>></textarea>
-      </form>
-
-      <div class="settings-save-failure-message">
-        <div><%= t('editor.settings_panel.errors.generic_save_failure_message') %></div>
-        <div class="settings-save-failure-message-details"></div>
-      </div>
-      <button class="settings-save-btn btn-default btn-dark">
-        <span><%= t('editor.settings_panel.displaying_section.save_button_label') %></span>
-      </button>
-    </section>
-
-    <section class="settings-panel-actions hidden">
-      <hr>
-      <h2><%= t('editor.settings_panel.actions_section.section_title') %></h2>
-
-      <%- unless can_update_view? -%>
-        <section class="warning-bar">
-          <p><span class="icon-warning"></span></p>
-          <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_invite_and_manage_collaborators') %></p>
-        </section>
-      <%- end %>
-
-      <div>
-        <div class="settings-panel-make-a-copy">
+      <li class="menu-list-item">
+        <button class="menu-list-item-header expandable">
+          <span class="icon-pen6"></span>
+          <span>Edit Title and Description</span>
+        </button>
+        <div class="menu-list-item-content settings-panel-displaying collapsed">
           <div>
-            <button class="btn-dark btn-default">
-              <span><%= t('editor.settings_panel.actions_section.make_a_copy') %></span>
+            <%- unless can_update_view? -%>
+              <section class="warning-bar">
+                <p><span class="icon-warning"></span></p>
+                <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_edit_title_and_description') %></p>
+              </section>
+            <%- end %>
+
+            <form>
+              <label><%= t('editor.settings_panel.displaying_section.title_label') %></label>
+              <input name="title" type="text" maxlength="254"<%= can_update_view? ? '' : ' disabled' %>>
+              <label><%= t('editor.settings_panel.displaying_section.description_label') %></label>
+              <textarea <%= can_update_view? ? '' : ' disabled' %>></textarea>
+            </form>
+
+            <div class="settings-save-failure-message">
+              <div><%= t('editor.settings_panel.errors.generic_save_failure_message') %></div>
+              <div class="settings-save-failure-message-details"></div>
+            </div>
+            <button class="settings-save-btn btn-default btn-dark">
+              <span><%= t('editor.settings_panel.displaying_section.save_button_label') %></span>
             </button>
           </div>
         </div>
-        <div class="settings-panel-invite-and-manage-collaborators">
+      </li>
+
+      <li class="menu-list-item">
+        <button class="menu-list-item-header" data-action="STORY_MAKE_COPY_MODAL_OPEN">
+          <span class="icon-plus2"></span>
+          <span>Make a Copy...</span>
+        </button>
+      </li>
+
+      <li class="menu-list-item">
+        <button class="menu-list-item-header expandable">
+          <span class="icon-plus2"></span>
+          <span>Manage Publishing and Visibility</span>
+        </button>
+        <div class="menu-list-item-content settings-panel-publishing collapsed">
           <div>
-            <button class="btn-dark btn-default" data-action="COLLABORATORS_OPEN"<%= can_update_view? ? '' : ' disabled' %>>
-              <span><%= t('editor.settings_panel.actions_section.invite_and_manage_collaborators') %></span>
-            </button>
+            <%- unless can_update_view? -%>
+              <section class="warning-bar">
+                <p><span class="icon-warning"></span></p>
+                <%- if determine_permissions_from_core_attributes[:isPublic] -%>
+                  <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility_or_update_public_version') %></p>
+                <%- else -%>
+                  <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility') %></p>
+                <%- end -%>
+              </section>
+            <%- end %>
+
+            <div class="settings-panel-story-visibility">
+              <div>
+                <h2><%= t('editor.settings_panel.publishing_section.visibility.title') %></h2>
+                <h3><%= t('editor.settings_panel.publishing_section.visibility.private') %></h3>
+              </div>
+              <div>
+                <button class="btn-secondary btn-dark" <%= can_update_view? ? '' : ' disabled' %>>
+                  <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
+                </button>
+              </div>
+            </div>
+            <hr>
+            <div class="settings-panel-story-status hidden">
+              <div>
+                <h2><%= t('editor.settings_panel.publishing_section.status.title') %></h2>
+                <h3><%= t('editor.settings_panel.publishing_section.status.draft') %></h3>
+              </div>
+              <div>
+                <button class="btn-primary btn-dark" disabled>
+                  <span><%= t('editor.settings_panel.publishing_section.status.update_public_version') %></span>
+                </button>
+              </div>
+            </div>
+            <p class="settings-panel-story-publishing-help-text">
+              <%= t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly') %>
+            </p>
           </div>
         </div>
-      </div>
-    </section>
+      </li>
 
-    <section class="settings-panel-publishing hidden">
-      <hr>
-      <h2><%= t('editor.settings_panel.publishing_section.section_title') %></h2>
-
-      <%- unless can_update_view? -%>
-        <section class="warning-bar">
-          <p><span class="icon-warning"></span></p>
-          <%- if determine_permissions_from_core_attributes[:isPublic] -%>
-            <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility_or_update_public_version') %></p>
-          <%- else -%>
-            <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility') %></p>
-          <%- end -%>
-        </section>
-      <%- end %>
-
-      <div>
-        <div class="settings-panel-story-visibility">
-          <div>
-            <h2><%= t('editor.settings_panel.publishing_section.visibility.title') %></h2>
-            <h3><%= t('editor.settings_panel.publishing_section.visibility.private') %></h3>
-          </div>
-          <div>
-            <button class="btn-secondary btn-dark" <%= can_update_view? ? '' : ' disabled' %>>
-              <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
-            </button>
-          </div>
-        </div>
-        <hr>
-        <div class="settings-panel-story-status hidden">
-          <div>
-            <h2><%= t('editor.settings_panel.publishing_section.status.title') %></h2>
-            <h3><%= t('editor.settings_panel.publishing_section.status.draft') %></h3>
-          </div>
-          <div>
-            <button class="btn-primary btn-dark" disabled>
-              <span><%= t('editor.settings_panel.publishing_section.status.update_public_version') %></span>
-            </button>
-          </div>
-        </div>
-        <p class="settings-panel-story-publishing-help-text">
-          <%= t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly') %>
-        </p>
-      </div>
-    </section>
-
+      <li class="menu-list-item">
+        <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= can_update_view? ? '' : ' disabled'%>>
+          <span class="icon-plus2"></span>
+          <span>Invite and Manage Collaborators...</span>
+          <%- unless can_update_view? -%>
+            <br>
+            <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
+          <%- end %>
+        </button>
+      </li>
+    </ul>
   </div>
   <div id="settings-panel-overlay" data-panel-toggle="settings-panel"></div>
 </div>

@@ -1,3 +1,5 @@
+@import 'bourbon';
+
 .menu-list {
   /** Temporary **/
   margin: 4rem -1.5rem;
@@ -10,17 +12,22 @@
     }
 
     .menu-list-item-header {
+      text-align: left;
+      display: block;
+      width: 100%;
       padding: 2rem 1.5rem;
       font-weight: normal;
-      color: #EEE;
+      color: #eee;
       font-size: 1.5rem;
+      background: transparent;
+      border: none;
       border-bottom: solid 1px #666;
       border-left: solid 7px #666;
       position: relative;
       transition: all 0.15s;
       cursor: pointer;
 
-      &:hover {
+      &:hover, &.active {
         background: #555;
         cursor: pointer;
         border-left: solid 7px #888;
@@ -30,18 +37,55 @@
         }
       }
 
-      &::after {
-        font-family: 'icomoon';
-        font-size: 1.25rem;
-        content: "\edbd";
-        display: block;
-        float: right;
-        color: white;
+      &:focus {
+        outline: 0;
+      }
+
+      &:disabled {
+        background: transparent;
+        border-left: solid 7px #666;
+        color: #bbb;
+        cursor: not-allowed;
+
+        span + span {
+          color: #bbb;
+        }
+      }
+
+      &.expandable {
+        &::after {
+          font-family: 'icomoon';
+          font-size: 1.25rem;
+          content: "\edbd";
+          display: block;
+          float: right;
+          color: white;
+        }
       }
 
       span {
         display: inline-block;
         margin-right: 2rem;
+      }
+    }
+
+    .menu-list-item-content {
+      @include transition(max-height .3s ease-in-out, border .3s ease-in-out);
+
+      border-left: solid 7px #666;
+      border-bottom: solid 1px #666;
+      max-height: 500px;
+      overflow: hidden;
+
+      &.collapsed {
+        max-height: 0;
+        border-top: solid 0px transparent;
+        border-bottom: solid 0px transparent;
+      }
+
+      > div {
+        padding: 2rem;
+        background: #555;
       }
     }
   }

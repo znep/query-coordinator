@@ -7,7 +7,9 @@
   position: relative;
   z-index: $settings-panel-z-index;
 
-  button {
+  .btn-default,
+  .btn-primary,
+  .btn-secondary {
     padding: 1rem;
   }
 
@@ -116,13 +118,17 @@
       opacity: 1;
     }
   }
+
+  .settings-panel-subtitle {
+    margin-left: calc(20px + 2rem);
+    font-style: italic;
+    font-size: 1.25rem;
+  }
 }
 
 .settings-panel-displaying,
 .settings-panel-actions,
 .settings-panel-publishing {
-  margin-top: 2rem;
-
   > h2 {
     font-size: 1.3rem;
     font-weight: lighter;
@@ -130,28 +136,20 @@
     color: $settings-panel-light-gray-color;
   }
 
-  > .warning-bar {
-    margin-top: 1rem;
+  > div > .warning-bar {
+    margin-bottom: 2rem;
   }
 }
 
 .settings-panel-displaying {
-  margin-bottom: 4rem;
-
   form {
-    margin-top: 2rem;
+    *:first-child {
+      margin-top: 0;
+    }
   }
 
   textarea {
     resize: vertical;
-  }
-}
-
-.settings-panel-publishing {
-  margin-top: 1rem;
-
-  > div {
-    padding-top: 2rem;
   }
 }
 

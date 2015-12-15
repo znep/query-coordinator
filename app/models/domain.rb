@@ -79,12 +79,12 @@ class Domain < Model
     return @configs[type]
   end
 
-  def default_configuration(type, merge = true)
+  def default_configuration(type)
     @default_configs ||= Hash.new
 
     if @default_configs[type].nil?
       @default_configs[type] =
-        Configuration.find_by_type(type, true, cname, merge)[0]
+        Configuration.find_by_type(type, true, cname)[0]
     end
 
     return @default_configs[type]
@@ -104,7 +104,7 @@ class Domain < Model
   end
 
   def feature_flags
-    conf = default_configuration('feature_flags', false)
+    conf = default_configuration('feature_flags')
     FeatureFlags.merge({}, conf.try(:properties) || {})
   end
 

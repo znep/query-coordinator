@@ -39,6 +39,39 @@ RSpec.describe 'rich text editor content', type: :feature, js: true do
         expect(all('div').length).to eq(0)
       end
     end
+  end
 
+  describe 'clear formatting' do
+
+    before do
+      @heading_block = @blocks.first
+      @squire_frame = @heading_block.find('iframe')
+    end
+
+    it 'clears the formatting of the selection' do
+      within_frame(@squire_frame) do
+        expect(all('h1').length).to eq(1)
+        selection = select_text_in_element('body > h1')
+      end
+
+      editor_id = find('.component-html')['data-editor-id']
+      # Simulate a focus event on the iframe, since Capybara's `.click` method
+      # does not seem to trigger it, and the editor toolbar is only linked to
+      # the editor when a focus event happens.
+      trigger_focus_event = "$('iframe')[0].dispatchEvent(" \
+        "new storyteller.CustomEvent(" \
+          "'rich-text-editor::focus-change'," \
+          "{ detail: { id: #{editor_id}, content: true }, bubbles: true }" \
+        ")" \
+      ");"
+
+      page.execute_script(trigger_focus_event)
+
+      find('.rich-text-editor-toolbar-btn-clearFormatting').click
+
+      within_frame(@squire_frame) do
+        expect(all('h1').length).to eq(0)
+      end
+    end
   end
 end

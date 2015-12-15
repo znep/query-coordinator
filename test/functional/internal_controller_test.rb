@@ -87,8 +87,7 @@ class InternalControllerTest < ActionController::TestCase
   private
   def init_for_feature_flags
     init_current_domain
-    configuration_model = Configuration.new({ 'properties' => [ ] })
-    Configuration.stubs(:find_by_type => [configuration_model])
+    Domain.stubs(:find => @domain)
     pretend_to_be_superadmin
 
     stub_request(:post, "http://localhost:8080/batches").

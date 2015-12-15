@@ -1,0 +1,21 @@
+.input-group {
+  position: relative;
+  display: table;
+  .text-input {
+    display: table-cell;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    width: 100%;  
+  }
+  .input-group-btn {
+    display: table-cell;
+    position: relative;
+    width: 1%;
+    .btn {
+      border-left: none;
+      margin-left: 0px;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}

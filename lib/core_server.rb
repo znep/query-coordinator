@@ -66,6 +66,11 @@ class CoreServer
             'role' => view['grants'].find(&corresponding_grant)['type'],
             'rights' => view['rights']
           }
+        else
+          {
+            'role' => 'unknown',
+            'rights' => view['rights']
+          }
         end
       end
     end

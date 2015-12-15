@@ -81,9 +81,6 @@
      */
 
     // {string} storyUid
-    STORY_DRAG_ENTER: 'STORY_DRAG_ENTER',
-
-    // {string} storyUid
     STORY_DRAG_LEAVE: 'STORY_DRAG_LEAVE',
 
     // {string} storyUid
@@ -93,7 +90,6 @@
     STORY_DRAG_OVER: 'STORY_DRAG_OVER',
 
     // {string} storyUid
-    // {object} blockContent: Data of block being dragged over story.
     STORY_DROP: 'STORY_DROP',
 
     // {string} storyUid

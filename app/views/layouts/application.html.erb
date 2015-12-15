@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <%= default_meta_tags() %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= csrf_meta_tags %>
   <title><%= core_attributes['name'] || t('default_page_title') %></title>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
@@ -11,7 +14,6 @@
     <%= stylesheet_link_tag 'story-view', media: 'all' %>
     <%= javascript_include_tag 'view' %>
   <% end %>
-  <%= csrf_meta_tags %>
 
   <!-- Twitter Sharing Metadata -->
   <meta name="twitter:card" content="summary_large_image">

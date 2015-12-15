@@ -117,11 +117,15 @@ describe('CollaboratorsStore', function() {
       var collaborators;
       var collaboratorOne = {
         email: 'hello@socrata.com',
-        accessLevel: 'accessLevel'
+        accessLevel: 'accessLevel',
+        displayName: 'Hello',
+        uid: 'four-four'
       };
       var collaboratorTwo = {
         email: 'helloTwo@socrata.com',
-        accessLevel: 'accessLevel'
+        accessLevel: 'accessLevel',
+        displayName: 'Hello Two',
+        uid: 'four-four'
       };
 
       beforeEach(function() {
@@ -169,7 +173,9 @@ describe('CollaboratorsStore', function() {
         var collaborators;
         var collaborator = {
           email: 'hello@socrata.com',
-          accessLevel: 'accessLevel'
+          accessLevel: 'accessLevel',
+          uid: 'four-four',
+          displayName: 'Hello'
         };
 
         dispatchAction(Actions.COLLABORATORS_LOAD, {
@@ -249,9 +255,9 @@ describe('CollaboratorsStore', function() {
     describe('when given a correct payload', function() {
       it('should change one collaborator in the store', function() {
         var collaborators;
-        var collaboratorOne = {email: 'hello@socrata.com', accessLevel: 'accessLevel'};
-        var collaboratorTwo = {email: 'helloTwo@socrata.com', accessLevel: 'accessLevel'};
-        var updatedCollaboratorOne = {email: 'hello@socrata.com', accessLevel: 'newAccessLevel'};
+        var collaboratorOne = {email: 'hello@socrata.com', accessLevel: 'accessLevel', uid: 'four-four', displayName: 'Hello'};
+        var collaboratorTwo = {email: 'helloTwo@socrata.com', accessLevel: 'accessLevel', uid: 'four-four', displayName: 'Hello Two'};
+        var updatedCollaboratorOne = {email: 'hello@socrata.com', accessLevel: 'newAccessLevel', uid: 'four-four', displayName: 'Hello'};
 
         dispatchAction(Actions.COLLABORATORS_LOAD, {
           collaborators: [collaboratorOne, collaboratorTwo]

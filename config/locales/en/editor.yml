@@ -27,7 +27,7 @@ en:
       modal:
         heading: 'Manage Collaborators'
         email_placeholder: 'Enter email address'
-        add_contributor: 'Add Contributor'
+        add_contributor: 'Add Collaborator'
         collaborator: 'Collaborator'
         access_level: 'Access Level'
         keep: 'Keep'

@@ -25,6 +25,51 @@ describe CoreServer do
     allow(Rails.application.config).to receive(:core_service_app_token).and_return(app_token)
   end
 
+  describe '#current_user_authorization' do
+    let(:grants) { [] }
+    let(:rights) { [] }
+    let(:user) { {'id' => 'here-iams'} }
+    let(:view) { {'owner' => {'id' => 'here-iams'}, 'grants' => grants, 'rights' => rights} }
+    let(:subject) { CoreServer.current_user_authorization(user, 'four-four') }
+
+    before do
+      allow(CoreServer).to receive(:get_view) { view }
+    end
+
+    describe 'when primary owner' do
+      it 'returns role, rights, and a key indicating primary owner' do
+        expect(subject).to eql({
+          'role' => 'owner',
+          'rights' => rights,
+          'primary' => true
+        })
+      end
+    end
+
+    describe 'when a shared contributor' do
+      let(:user) { {'id' => 'share-user'} }
+      let(:grants) { [{'userId' => 'share-user', 'type' => 'contributor'}] }
+
+      it 'returns role, rights' do
+        expect(subject).to eql({
+          'role' => 'contributor',
+          'rights' => rights
+        })
+      end
+    end
+
+    describe 'when unknown (usually super admin)' do
+      let(:user) { {'id' => 'supe-radm'} }
+
+      it 'returns role, rights' do
+        expect(subject).to eql({
+          'role' => 'unknown',
+          'rights' => rights
+        })
+      end
+    end
+  end
+
   describe '#headers_from_request' do
     let(:env) do
       {

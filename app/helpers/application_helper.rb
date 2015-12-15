@@ -12,4 +12,13 @@ module ApplicationHelper
       editor: @translations[I18n.locale][:editor].with_indifferent_access
     }.with_indifferent_access
   end
+
+  def default_meta_tags(tags = [])
+    defaults = [
+      tag('meta', :charset => 'utf-8'),
+      tag('meta', 'http-equiv' => 'x-ua-compatible', :content => 'ie=edge')
+    ]
+
+    (defaults + tags).uniq.join("\n").html_safe
+  end
 end

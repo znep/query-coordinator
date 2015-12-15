@@ -55,7 +55,14 @@
 
     redrawChart = function(chart, sliceDepth, animate) {
       chart.data('data-callback')(chart, sliceDepth,
-        $.extend({}, {plotOptions: {area: {animation: animate}}},
+        $.extend({},
+          {
+            plotOptions: {
+              area: {
+                animation: animate
+              }
+            }
+          },
           chart.data('options')
         ));
     },
@@ -155,6 +162,9 @@
 
       $chart.data(metricsNS.SERIES_KEY, $option.data(metricsNS.SERIES_KEY));
       $chart.data(metricsNS.TRANSFORM, $option.data(metricsNS.TRANSFORM));
+
+      // Store the selected option name for use in looking up option data
+      $chart.data('selection', $option.text());
 
       // Re-draw chart via callback
       redrawChart($chart, currentSlice);

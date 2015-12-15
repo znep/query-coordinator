@@ -4837,7 +4837,9 @@ window.Raphael.svg && function (R) {
             c.removeChild(c.firstChild);
         }
         this.bottom = this.top = null;
+        (this.title = $("title")).appendChild(R._g.doc.createTextNode("Raphael Graph"));
         (this.desc = $("desc")).appendChild(R._g.doc.createTextNode("Created with Rapha\xebl " + R.version));
+        c.appendChild(this.title)
         c.appendChild(this.desc);
         c.appendChild(this.defs = $("defs"));
     };

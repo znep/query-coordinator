@@ -32,6 +32,16 @@
           value="<%= @approval_template.nil? ? 5 : @approval_template.maxInactivityInterval %>" />
         <label for="template_maxInactivityInterval">day(s)</label>
       </div>
+      <div class="line checkbox-line">
+        <%= check_box_tag(
+                'template[approveOnlyNew]',
+                'true',
+                !(@approval_template.nil? || @approval_template.reapproveOnPublish),
+                :id => 'template_approveOnlyNew'
+            ) %>
+        <label for="template_approveOnlyNew">Approve only new datasets</label>
+        <span class="info">Check this option to allow new versions of an approved dataset through automatically</span>
+      </div>
 
       <h3>Stages</h3>
       <p class="info deleteInfo">Clear a stage name to delete that stage</p>

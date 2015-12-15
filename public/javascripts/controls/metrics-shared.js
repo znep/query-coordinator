@@ -441,7 +441,7 @@
         '@class+': 'topItem.extraClass',
         '.thumbnail@src': 'topItem.thumbnail',
         '.titleText': 'topItem.name',
-        '.titleLink': 'topItem.linkText',
+        '.titleLink .titleText': 'topItem.linkText',
         '.titleLink@href': 'topItem.href',
         '.titleLink@class+': 'topItem.linkClass',
         '.value .primaryValue': 'topItem.value',

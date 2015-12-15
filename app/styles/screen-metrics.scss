@@ -215,6 +215,9 @@
         }
         .gridList thead tr th {
           background-color: #dedede;
+          &:focus, &:active {
+            outline: 1px double;
+          }
         }
         .value {
           text-align: right;

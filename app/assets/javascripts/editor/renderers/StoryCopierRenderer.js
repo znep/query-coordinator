@@ -10,7 +10,6 @@
     var _container = options.storyCopierContainerElement || null;
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });
-    var _settingsPanel = $('#settings-panel-container .settings-panel');
     var _rendered = false;
 
     if (!(_container instanceof jQuery)) {

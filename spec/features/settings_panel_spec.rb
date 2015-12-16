@@ -4,6 +4,8 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   let(:data_toggle_selector) { '[data-panel-toggle="settings-panel"]' }
   let(:settings_panel_selector) { '.settings-panel' }
   let(:settings_overlay_selector) { '#settings-panel-overlay' }
+  let(:settings_title_description) { '.settings-panel .menu-list-item:first-child .menu-list-item-header' }
+  let(:settings_make_copy) { '.settings-panel .menu-list-item:nth-child(2) .menu-list-item-header' }
 
   before do
     stub_logged_in_user
@@ -51,6 +53,9 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   describe 'title' do
     before do
       toggle_pane
+
+      title_description = page.all(settings_title_description).first()
+      title_description.click()
     end
 
     it 'loads the current title into the input box' do
@@ -80,11 +85,12 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   describe 'make a copy' do
     before do
       toggle_pane
-      page.find('.settings-panel-make-a-copy button').click
+
+      title_description = page.all(settings_make_copy).first()
+      title_description.click()
     end
 
     it 'closes settings panel and shows the modal' do
-      expect_settings_panel_to_be_closed
       expect(page).to have_selector('#make-a-copy-container', visible: true)
     end
 

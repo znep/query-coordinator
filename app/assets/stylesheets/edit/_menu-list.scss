@@ -2,9 +2,6 @@
 @import 'lib/icon-font';
 
 .menu-list {
-  /** Temporary **/
-  margin: 2rem -1.5rem;
-
   .menu-list-item {
     &:first-child {
       .menu-list-item-header {
@@ -23,18 +20,32 @@
       background: transparent;
       border: none;
       border-bottom: solid 1px #666;
-      border-left: solid 7px #666;
       position: relative;
       transition: all 0.15s;
       cursor: pointer;
 
+      &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 7px;
+        background-color: #666;
+        left: 0;
+        top: -1px;
+        bottom: -1px;
+      }
+
       &:hover, &.active {
         background: #555;
         cursor: pointer;
-        border-left: solid 7px #888;
+        z-index: 1;
 
         span + span {
           color: #bbb;
+        }
+
+        &::before {
+          background-color: #888;
         }
       }
 
@@ -44,7 +55,6 @@
 
       &:disabled {
         background: transparent;
-        border-left: solid 7px #666;
         color: #bbb;
         cursor: not-allowed;
 
@@ -73,7 +83,7 @@
     }
 
     .menu-list-item-content {
-      @include transition(max-height .3s ease-in-out, border .3s ease-in-out);
+      @include transition(max-height .3s ease-in-out);
 
       border-left: solid 7px #666;
       border-bottom: solid 1px #666;
@@ -82,8 +92,8 @@
 
       &.collapsed {
         max-height: 0;
-        border-top: solid 0px transparent;
-        border-bottom: solid 0px transparent;
+        border-top: none;
+        border-bottom: none;
       }
 
       > div {

@@ -18,7 +18,6 @@ $(document).on('ready', function() {
 
   storyteller.assetFinder = new storyteller.AssetFinder();
   storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
-  storyteller.storyActionsManager = new storyteller.StoryActionsManager();
   storyteller.collaboratorsDataProvider = new storyteller.CollaboratorsDataProvider(userStoryData.uid);
 
   var richTextFormats = [

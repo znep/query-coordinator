@@ -1,8 +1,9 @@
 @import 'bourbon';
+@import 'lib/icon-font';
 
 .menu-list {
   /** Temporary **/
-  margin: 4rem -1.5rem;
+  margin: 2rem -1.5rem;
 
   .menu-list-item {
     &:first-child {
@@ -54,11 +55,13 @@
 
       &.expandable {
         &::after {
+          @extend .icon-arrow-down:before;
+
           font-family: 'icomoon';
           font-size: 1.25rem;
-          content: "\edbd";
           display: block;
           float: right;
+          margin-top: 3px;
           color: white;
         }
       }

@@ -75,7 +75,7 @@
     }
 
     .settings-main-title {
-      padding-top: $settings-panel-close-bar-height;
+      padding-top: 4rem;
       line-height: 4rem;
       font-size: 2em;
       font-weight: lighter;
@@ -206,11 +206,15 @@
 }
 
 .settings-panel-story-publishing-help-text {
-  padding: 1rem 0;
+  padding-top: 1rem;
   font-size: 1.15rem;
   color: $settings-panel-light-gray-color;
   line-height: 1.5rem;
   text-align: center;
+}
+
+.settings-panel-errors {
+  margin: 2rem 1rem;
 }
 
 .settings-panel-error-message {

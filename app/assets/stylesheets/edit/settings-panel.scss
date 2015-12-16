@@ -154,8 +154,7 @@
 }
 
 .settings-panel-story-visibility,
-.settings-panel-story-status,
-.settings-panel-invite-and-manage-collaborators {
+.settings-panel-story-status {
   box-sizing: border-box;
   padding: 1rem 0;
 
@@ -176,13 +175,6 @@
 
   button {
     width: 100%;
-  }
-}
-
-.settings-panel-invite-and-manage-collaborators {
-  > div {
-    margin-left: $settings-panel-publishing-label-width;
-    width: 100% - $settings-panel-publishing-label-width;
   }
 }
 

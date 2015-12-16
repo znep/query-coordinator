@@ -165,10 +165,10 @@
     });
 
     $('.settings-panel .menu-list-item-header.expandable').click(function(event) {
-      var $currentTarget = $(event.currentTarget);
-
-      $currentTarget.toggleClass('active');
-      $currentTarget.siblings('.menu-list-item-content').toggleClass('collapsed');
+      $(event.currentTarget).
+        toggleClass('active').
+        siblings('.menu-list-item-content').
+          toggleClass('collapsed');
     });
 
     $(document).on('keydown', function(e) {

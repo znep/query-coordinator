@@ -17,6 +17,9 @@ class AngularController < ActionController::Base
   def data_lens
     raise 'The "app" parameter is required.' unless request[:app]
 
+    # First fetch the current user's profile.
+    @current_user = current_user
+
     # If we're reaching the data lens page via an SEO-friendly URL,
     # ensure that we end up on the canonical (SEO-friendly) URL.
     # Uses the same basic technique as DatasetsController#show.
@@ -37,9 +40,6 @@ class AngularController < ActionController::Base
         # the existence of an appropriate view; this is an abundance of caution.
       end
     end
-
-    # First fetch the current user's profile.
-    @current_user = current_user
 
     # Then fetch the page metadata.
     begin

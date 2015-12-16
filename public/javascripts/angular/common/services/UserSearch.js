@@ -9,6 +9,12 @@
   }
 
   function UserSearchService($http, $q) {
+
+    // Helper for rejection branches.
+    function reject() {
+      return $q.reject(null);
+    }
+
     // Get a promise for user search results.
     // Will be rejected with an appropriate error
     // if nobody is logged in or there's another
@@ -19,6 +25,13 @@
         limit: 25
       });
 
+      // To work around deficiencies in the backend service,
+      // we can escape characters that can be interpreted specially by Lucene.
+      // Some of the characters are correctly escaped already, but not all.
+      // The character group below should be adjusted as problem cases arise.
+      // (Or, if the backend service improves, we can remove characters!)
+      query = query.replace(/([?])/g, '\\$1');
+
       var config = httpConfig.call(this, {
         headers: {'Cache-Control': 'nocache'},
         airbrakeShouldIgnore404Errors: true
@@ -28,23 +41,32 @@
       url.searchParams.set('q', query + '*');
       url.searchParams.set('limit', options.limit);
 
-      return $http.get(url.href, config).then(function(response) {
+      return $http.get(url.href, config).then(function(fuzzySearchResponse) {
 
         // If we got a flawed success response,
-        // reject with null.
-        if (_.isEmpty(response.data) && !_.isArray(response.data)) {
-          return $q.reject(null);
+        // something in the backend service is likely to have generated an error.
+        if (_.isEmpty(fuzzySearchResponse.data) && !_.isArray(fuzzySearchResponse.data)) {
+          return reject();
         }
 
-        // Otherwise, just pass the data along.
-        return response.data.results || [];
+        // Otherwise, store the fuzzy search results and fire an exact search.
+        var fuzzyResults = fuzzySearchResponse.data.results || [];
+        url.searchParams.set('q', query);
 
-      }, function() {
+        return $http.get(url.href, config).then(function(exactSearchResponse) {
+          // If we got a flawed success response,
+          // something in the backend service is likely to have generated an error.
+          if (_.isEmpty(exactSearchResponse.data) && !_.isArray(exactSearchResponse.data)) {
+            return reject();
+          }
 
-        // Always reject with null.
-        return $q.reject(null);
+          // Otherwise, combine these results with the fuzzy search results
+          // and resolve the promise chain.
+          var exactResults = exactSearchResponse.data.results || [];
 
-      });
+          return _.uniq([].concat(fuzzyResults, exactResults), 'id');
+        }, reject);
+      }, reject);
     }
 
     function results$(query, options) {

@@ -1,11 +1,13 @@
 @import 'bourbon';
 @import 'lib/icon-font';
+@import 'lib/variables/color';
+@import 'lib/variables/layout';
 
 .menu-list {
   .menu-list-item {
     &:first-child {
       .menu-list-item-header {
-        border-top: solid 1px #666;
+        border-top: solid 1px $menu-list-item-header-border-top-color;
       }
     }
 
@@ -15,11 +17,11 @@
       width: 100%;
       padding: 2rem 1.5rem;
       font-weight: normal;
-      color: #eee;
+      color: $menu-list-item-header-color;
       font-size: 1.5rem;
-      background: transparent;
+      background: $menu-list-item-header-background-color;
       border: none;
-      border-bottom: solid 1px #666;
+      border-bottom: solid 1px $menu-list-item-header-border-bottom-color;
       position: relative;
       transition: all 0.15s;
       cursor: pointer;
@@ -28,24 +30,24 @@
         content: "";
         display: block;
         position: absolute;
-        width: 7px;
-        background-color: #666;
+        width: $menu-list-border-left-width;
+        background-color: $menu-list-item-header-before-background-color;
         left: 0;
         top: -1px;
         bottom: -1px;
       }
 
       &:hover, &.active {
-        background: #555;
+        background: $menu-list-item-header-hover-background-color;
         cursor: pointer;
         z-index: 1;
 
         span + span {
-          color: #bbb;
+          color: $menu-list-item-header-hover-span-color;
         }
 
         &::before {
-          background-color: #888;
+          background-color: $menu-list-item-header-hover-before-background-color;
         }
       }
 
@@ -54,12 +56,12 @@
       }
 
       &:disabled {
-        background: transparent;
-        color: #bbb;
+        background: $menu-list-item-header-disabled-background-color;
+        color: $menu-list-item-header-disabled-color;
         cursor: not-allowed;
 
         span + span {
-          color: #bbb;
+          color: $menu-list-item-header-disabled-span-color;
         }
       }
 
@@ -72,7 +74,7 @@
           display: block;
           float: right;
           margin-top: 3px;
-          color: white;
+          color: $menu-list-item-header-expandable-after-color;
         }
       }
 
@@ -85,8 +87,8 @@
     .menu-list-item-content {
       @include transition(max-height .3s ease-in-out);
 
-      border-left: solid 7px #666;
-      border-bottom: solid 1px #666;
+      border-left: solid $menu-list-border-left-width $menu-list-item-content-border-color;
+      border-bottom: solid 1px $menu-list-item-content-border-color;
       max-height: 500px;
       overflow: hidden;
 
@@ -98,7 +100,7 @@
 
       > div {
         padding: 2rem;
-        background: #555;
+        background: $menu-list-item-content-div-background-color;
       }
     }
   }

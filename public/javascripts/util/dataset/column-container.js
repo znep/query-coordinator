@@ -393,6 +393,20 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
 
       this[oldCapSet] = _.map(this[colSet], function(col) { return $.extend({}, col); });
 
+      var columnMatcher = function(columnSet, newColumn) {
+        var oldColumn;
+
+        // Hack to guess at the matching column
+        _.any([ 'fieldName', 'name', 'description' ], function(propertyTesting) {
+          oldColumn = _.detect(columnSet, function(oc) {
+            return oc[propertyTesting] === newColumn[propertyTesting];
+          });
+          return !!oldColumn; // Break if we've found something.
+        });
+
+        return oldColumn;
+      };
+
       // Setting this.columns based on the passed in nbe columns.
       this[colSet] = _.map(nbeCols, function(c, i) {
 
@@ -404,12 +418,10 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
           c.setParent(cont);
         }
 
-        var oldC = _.detect(cont[oldCapSet],
-          function(oc) { return oc.fieldName === c.fieldName; });
+        var oldC = columnMatcher(cont[oldCapSet], c);
 
         if (!oldC && cont._parent) {
-          oldC = _.detect(cont._parent[colSet],
-            function(oc) { return oc.fieldName === c.fieldName; });
+          oldC = columnMatcher(cont._parent[colSet], c);
         }
 
         // Make it so that you can look up the column by its id.

@@ -45,13 +45,20 @@
 
       sourceBlockElement = $(pointer.target).closest('[data-block-content]');
 
-      _blockContent = JSON.parse(sourceBlockElement.attr('data-block-content'));
+      // In certain cases, sourceBlockElement can be an empty selection (such as
+      // when the pointer.target is not a sample block). We guard against trying
+      // to JSON.parse undefined here mainly because the behavior of pointer.target
+      // sometimes not being what we expect seems to be related to the library's
+      // implementation and silencing the error won't have any real negative effect
+      // on the user (hopefully).
+      if (sourceBlockElement.length === 1) {
+        _blockContent = JSON.parse(sourceBlockElement.attr('data-block-content'));
 
-      ghostElement.
-        removeClass('hidden').
-        empty().
-        append(sourceBlockElement.clone());
-
+        ghostElement.
+          removeClass('hidden').
+          empty().
+          append(sourceBlockElement.clone());
+      }
     };
 
     this.dragMove = function(event, pointer, moveVector) {

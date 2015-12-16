@@ -26,7 +26,7 @@
       <li class="menu-list-item">
         <button class="menu-list-item-header expandable">
           <span class="icon-edit"></span>
-          <span>Edit Title and Description</span>
+          <span><%= t('editor.settings_panel.displaying_section.section_title') %></span>
         </button>
         <div class="menu-list-item-content settings-panel-displaying collapsed">
           <div>
@@ -58,14 +58,14 @@
       <li class="menu-list-item">
         <button class="menu-list-item-header" data-action="STORY_MAKE_COPY_MODAL_OPEN">
           <span class="icon-copy-document"></span>
-          <span>Make a Copy...</span>
+          <span><%= t('editor.settings_panel.copy_section.section_title') %></span>
         </button>
       </li>
 
       <li class="menu-list-item">
         <button class="menu-list-item-header expandable">
           <span class="icon-eye"></span>
-          <span>Manage Publishing and Visibility</span>
+          <span><%= t('editor.settings_panel.publishing_section.section_title') %></span>
         </button>
         <div class="menu-list-item-content settings-panel-publishing collapsed">
           <div>
@@ -91,7 +91,9 @@
                 </button>
               </div>
             </div>
+
             <hr>
+
             <div class="settings-panel-story-status hidden">
               <div>
                 <h2><%= t('editor.settings_panel.publishing_section.status.title') %></h2>
@@ -103,6 +105,7 @@
                 </button>
               </div>
             </div>
+
             <p class="settings-panel-story-publishing-help-text">
               <%= t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly') %>
             </p>
@@ -113,7 +116,7 @@
       <li class="menu-list-item">
         <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= can_update_view? ? '' : ' disabled'%>>
           <span class="icon-add-collaborator"></span>
-          <span>Invite and Manage Collaborators...</span>
+          <span><%= t('editor.settings_panel.collaborators_section.section_title') %></span>
           <%- unless can_update_view? -%>
             <br>
             <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>

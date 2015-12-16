@@ -49,17 +49,28 @@ describe('DragDrop', function() {
 
   describe('when a drag has been started', function() {
     var dragDrop;
+    var fakePointerDownEvent;
+    var fakePointerDownPointer;
     var fakeDragStartEvent;
     var fakeDragStartPointer;
+
     beforeEach(function() {
       dragDrop = new storyteller.DragDrop(blocks, ghost);
       dragDrop.setup();
 
-      // Manually invoke dragStart - usually UniDragger does this for us.
+      // Manually invoke pointerDown and dragStart - in an actual browser UniDragger does this for us.
+      fakePointerDownEvent = {
+        target: testDom.find('[data-block-content]').first(),
+        type: 'mousedown'
+      };
+      fakePointerDownPointer = fakePointerDownEvent;
+
       fakeDragStartEvent = {
         target: testDom.find('[data-block-content]').first()
       };
       fakeDragStartPointer = fakeDragStartEvent;
+
+      dragDrop.pointerDown(fakePointerDownEvent, fakePointerDownPointer);
       dragDrop.dragStart(fakeDragStartEvent, fakeDragStartPointer);
     });
 
@@ -110,6 +121,7 @@ describe('DragDrop', function() {
         assert.equal(ghost.css('top'), fakeDragStartPoint.y + fakeMoveVector.y + 'px');
 
         dragDrop.dragMove(fakeDragMoveEvent, fakeDragMovePointer, { x: 1, y: 1});
+
         assert.equal(ghost.css('left'), fakeDragStartPoint.x + 1 + 'px');
         assert.equal(ghost.css('top'), fakeDragStartPoint.y + 1 + 'px');
       });
@@ -164,6 +176,7 @@ describe('DragDrop', function() {
         xdescribe('and the user has dropped', function() {
           var fakeDragEndEvent;
           var fakeDragEndPointer;
+
           beforeEach(function() {
             // Manually invoke dragEnd - usually UniDragger does this for us.
             // Drop our inspiration block on the first block element
@@ -188,6 +201,7 @@ describe('DragDrop', function() {
       xdescribe('and the user has dropped', function() {
         var fakeDragEndEvent;
         var fakeDragEndPointer;
+
         beforeEach(function() {
           // Manually invoke dragEnd - usually UniDragger does this for us.
           // Drop our inspiration block on the first block element

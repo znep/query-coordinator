@@ -52,13 +52,14 @@
       Unidragger.prototype.pointerDown.apply(this, arguments);
     };
 
-    this.pointerUp = function(event, pointer) {
+    this.pointerUp = function() {
       _actualDragStartTarget = null;
       // Call the 'super', since we are overriding this method.
       Unidragger.prototype.pointerUp.apply(this, arguments);
     };
 
-    this.dragStart = function(event, pointer) {
+    this.dragStart = function() {
+
       var sourceBlockElement;
 
       _storyUidDraggedOver = undefined;

@@ -131,7 +131,6 @@
 }
 
 .settings-panel-displaying,
-.settings-panel-actions,
 .settings-panel-publishing {
   > h2 {
     font-size: 1.3rem;
@@ -140,7 +139,7 @@
     color: $settings-panel-light-gray-color;
   }
 
-  > div > .warning-bar {
+  .warning-bar {
     margin-bottom: 2rem;
   }
 }

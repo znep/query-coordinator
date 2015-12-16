@@ -1,0 +1,114 @@
+@import 'bourbon';
+@import 'lib/icon-font';
+@import 'lib/variables/color';
+@import 'lib/variables/layout';
+
+.menu-list {
+  .menu-list-item {
+    &:first-child {
+      .menu-list-item-header {
+        border-top: solid 1px $menu-list-item-header-border-top-color;
+      }
+    }
+
+    .menu-list-item-header {
+      text-align: left;
+      display: block;
+      width: 100%;
+      padding: 2rem 1.5rem;
+      font-weight: normal;
+      color: $menu-list-item-header-color;
+      font-size: 1.5rem;
+      background: $menu-list-item-header-background-color;
+      border: none;
+      border-bottom: solid 1px $menu-list-item-header-border-bottom-color;
+      position: relative;
+      transition: all 0.15s;
+      cursor: pointer;
+
+      &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: $menu-list-border-left-width;
+        background-color: $menu-list-item-header-before-background-color;
+        left: 0;
+        top: -1px;
+        bottom: -1px;
+      }
+
+      &:hover, &.active {
+        background: $menu-list-item-header-hover-background-color;
+        cursor: pointer;
+        z-index: 1;
+
+        span + span {
+          color: $menu-list-item-header-hover-span-color;
+        }
+
+        &::before {
+          background-color: $menu-list-item-header-hover-before-background-color;
+        }
+      }
+
+      &:focus {
+        outline: 0;
+      }
+
+      &:disabled {
+        background: $menu-list-item-header-disabled-background-color;
+        color: $menu-list-item-header-disabled-color;
+        cursor: not-allowed;
+
+        span + span {
+          color: $menu-list-item-header-disabled-span-color;
+        }
+      }
+
+      &.expandable {
+        &::after {
+          @include transition(transform 0.15s ease-in-out);
+          @extend .icon-arrow-down:before;
+
+          font-family: 'icomoon';
+          font-size: 1.25rem;
+          display: block;
+          float: right;
+          margin-top: 3px;
+          color: $menu-list-item-header-expandable-after-color;
+        }
+
+        &.active {
+          &::after {
+            @include transform(rotateZ(180deg));
+          }
+        }
+      }
+
+      span {
+        display: inline-block;
+        margin-right: 2rem;
+      }
+    }
+
+    .menu-list-item-content {
+      @include transition(max-height .3s ease-in-out);
+
+      border-left: solid $menu-list-border-left-width $menu-list-item-content-border-color;
+      border-bottom: solid 1px $menu-list-item-content-border-color;
+      max-height: 500px;
+      overflow: hidden;
+
+      &.collapsed {
+        max-height: 0;
+        border-top: none;
+        border-bottom: none;
+      }
+
+      > div {
+        padding: 2rem;
+        background: $menu-list-item-content-div-background-color;
+      }
+    }
+  }
+}

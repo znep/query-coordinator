@@ -485,7 +485,7 @@
         $(
           '<span>',
           {
-            'class': 'block-edit-controls-move-up-btn btn-secondary icon-arrow-up2',
+            'class': 'block-edit-controls-move-up-btn btn-secondary icon-arrow-up',
             'data-block-id': blockId,
             'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
           }
@@ -494,7 +494,7 @@
         $(
           '<span>',
           {
-            'class': 'block-edit-controls-move-down-btn btn-secondary icon-arrow-down2',
+            'class': 'block-edit-controls-move-down-btn btn-secondary icon-arrow-down',
             'data-block-id': blockId,
             'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
           }

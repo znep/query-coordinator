@@ -60,6 +60,7 @@
       "airbrakeJs": true,
       "Constants": true,
       "Actions": true,
+      "Flux": true,
       "jQuery": true,
       "I18n": true,
       "socrata": true,

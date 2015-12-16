@@ -10,7 +10,6 @@
     var _container = options.storyCopierContainerElement || null;
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });
-    var _settingsPanel = $('#settings-panel-container .settings-panel');
     var _rendered = false;
 
     if (!(_container instanceof jQuery)) {
@@ -99,7 +98,6 @@
     }
 
     function _showModal() {
-      _settingsPanel.trigger('sidebar:close');
       _container.removeClass('hidden');
 
       var storyTitle = storyteller.storyStore.getStoryTitle(storyteller.userStoryUid);
@@ -108,9 +106,6 @@
     }
 
     function _hideModal() {
-      if (_container.is(':not(.hidden)')) {
-        _settingsPanel.trigger('sidebar:open');
-      }
       _container.addClass('hidden');
     }
 

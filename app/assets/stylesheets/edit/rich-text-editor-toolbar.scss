@@ -1,4 +1,5 @@
 @import 'lib/variables';
+@import 'lib/icon-font';
 @import 'bourbon';
 
 body.story-save-error #rich-text-editor-toolbar-wrapper {
@@ -145,7 +146,7 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
       font-size: 1.2rem;
 
       &:before {
-        content: '\edbd';
+        @extend .icon-arrow-down:before;
       }
     }
   }

@@ -7,7 +7,9 @@
   position: relative;
   z-index: $settings-panel-z-index;
 
-  button {
+  .btn-default,
+  .btn-primary,
+  .btn-secondary {
     padding: 1rem;
   }
 
@@ -73,7 +75,7 @@
     }
 
     .settings-main-title {
-      padding-top: $settings-panel-close-bar-height;
+      padding-top: 4rem;
       line-height: 4rem;
       font-size: 2em;
       font-weight: lighter;
@@ -116,13 +118,20 @@
       opacity: 1;
     }
   }
+
+  .settings-panel-subtitle {
+    margin-left: calc(20px + 2rem);
+    font-style: italic;
+    font-size: 1.25rem;
+  }
+
+  .menu-list {
+    margin: 2rem -1.5rem;
+  }
 }
 
 .settings-panel-displaying,
-.settings-panel-actions,
 .settings-panel-publishing {
-  margin-top: 2rem;
-
   > h2 {
     font-size: 1.3rem;
     font-weight: lighter;
@@ -130,16 +139,16 @@
     color: $settings-panel-light-gray-color;
   }
 
-  > .warning-bar {
-    margin-top: 1rem;
+  .warning-bar {
+    margin-bottom: 2rem;
   }
 }
 
 .settings-panel-displaying {
-  margin-bottom: 4rem;
-
   form {
-    margin-top: 2rem;
+    *:first-child {
+      margin-top: 0;
+    }
   }
 
   textarea {
@@ -147,18 +156,8 @@
   }
 }
 
-.settings-panel-publishing {
-  margin-top: 1rem;
-
-  > div {
-    padding-top: 2rem;
-  }
-}
-
 .settings-panel-story-visibility,
-.settings-panel-story-status,
-.settings-panel-make-a-copy,
-.settings-panel-invite-and-manage-collaborators {
+.settings-panel-story-status {
   box-sizing: border-box;
   padding: 1rem 0;
 
@@ -182,14 +181,6 @@
   }
 }
 
-.settings-panel-make-a-copy,
-.settings-panel-invite-and-manage-collaborators {
-  > div {
-    margin-left: $settings-panel-publishing-label-width;
-    width: 100% - $settings-panel-publishing-label-width;
-  }
-}
-
 .settings-panel-story-visibility,
 .settings-panel-story-status {
   > div {
@@ -208,11 +199,15 @@
 }
 
 .settings-panel-story-publishing-help-text {
-  padding: 1rem 0;
+  padding-top: 1rem;
   font-size: 1.15rem;
   color: $settings-panel-light-gray-color;
   line-height: 1.5rem;
   text-align: center;
+}
+
+.settings-panel-errors {
+  margin: 2rem 1rem;
 }
 
 .settings-panel-error-message {

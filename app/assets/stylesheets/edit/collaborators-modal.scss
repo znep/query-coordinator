@@ -131,7 +131,7 @@
     font-size: 1.5rem;
 
     &::after {
-      @extend .icon-arrow-down2:before;
+      @extend .icon-arrow-down:before;
 
       display: block;
       position: absolute;

@@ -213,6 +213,7 @@ http://www.socrata.com
   <%- end -%>
 
   <script type="text/javascript">//<![CDATA[
+    blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };
     blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request).to_json) %>;
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;

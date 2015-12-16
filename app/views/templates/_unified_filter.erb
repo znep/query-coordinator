@@ -49,7 +49,7 @@
     <p><%= t 'controls.filter.main.tutorial_html' %></p>
   </div>
 
-  <%- if @view.present? && @view.has_rights?('update_view') -%>
+  <%- if @view.present? && @view.has_rights?(ViewRights::UPDATE_VIEW) -%>
     <div class="editFilterBlock">
       <div class="normalModeMessage">
         <p><%= t 'controls.filter.edit_default.mode_message' %></p>

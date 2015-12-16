@@ -33,7 +33,7 @@ function columnAndVisualizationSelector(
       classicVisualization: '='
     },
     templateUrl: templateUrl,
-    link: function(scope, element, attr) {
+    link: function(scope) {
 
       /************************
       * Add new card behavior *

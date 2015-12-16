@@ -8,6 +8,7 @@ describe('CardsViewController', function() {
   var Card;
   var Page;
   var Domain;
+  var ViewRights;
   var Mockumentary;
   var testHelpers;
   var $q;
@@ -51,6 +52,7 @@ describe('CardsViewController', function() {
         'Card',
         'Page',
         'Domain',
+        'ViewRights',
         'Mockumentary',
         '$rootScope',
         '$controller',
@@ -65,6 +67,7 @@ describe('CardsViewController', function() {
           _Card,
           _Page,
           _Domain,
+          _ViewRights,
           _Mockumentary,
           _$rootScope,
           _$controller,
@@ -78,6 +81,7 @@ describe('CardsViewController', function() {
       Card = _Card;
       Page = _Page;
       Domain = _Domain;
+      ViewRights = _ViewRights;
       Mockumentary = _Mockumentary;
       $q = _$q;
       $rootScope = _$rootScope;
@@ -657,14 +661,14 @@ describe('CardsViewController', function() {
 
     it('should hide the manage lens button when the user lacks any sufficient permissions', function() {
       var harness = makeController({}, {
-        rights: ['add', 'write', 'delete']
+        rights: [ViewRights.ADD, ViewRights.WRITE, ViewRights.DELETE]
       });
       expect(harness.$scope.shouldShowManageLens).to.be.false;
     });
 
     it('should hide the manage lens button when on an ephemeral view', function() {
       var harness = makeController({}, {
-        rights: ['add', 'write', 'grant'],
+        rights: [ViewRights.ADD, ViewRights.WRITE, ViewRights.GRANT],
         pageId: null
       });
 
@@ -673,14 +677,14 @@ describe('CardsViewController', function() {
 
     it('should show the manage lens button when the user has the grant permission', function() {
       var harness = makeController({}, {
-        rights: ['add', 'write', 'grant']
+        rights: [ViewRights.ADD, ViewRights.WRITE, ViewRights.GRANT]
       });
       expect(harness.$scope.shouldShowManageLens).to.be.true;
     });
 
     it('should show the manage lens button when the user has the update_view permission', function() {
       var harness = makeController({}, {
-        rights: ['add', 'write', 'update_view']
+        rights: [ViewRights.ADD, ViewRights.WRITE, ViewRights.UPDATE_VIEW]
       });
       expect(harness.$scope.shouldShowManageLens).to.be.true;
     });
@@ -696,7 +700,7 @@ describe('CardsViewController', function() {
         }
 
         var controllerHarness = makeController({}, {
-          rights: hasEditRight ? ['update_view'] : []
+          rights: hasEditRight ? [ViewRights.UPDATE_VIEW] : []
         });
         var $scope = controllerHarness.$scope;
 

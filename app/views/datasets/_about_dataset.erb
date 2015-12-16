@@ -13,7 +13,7 @@
     <%- end -%>
   </div>
 
-  <%- if @view.has_rights?('update_view') && !@view.is_api? -%>
+  <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) && !@view.is_api? -%>
     <a href="<%= edit_view_metadata_path(@view) %>" class="fullButton editMetadataButton"><%= t('screens.about.edit_metadata') %></a>
   <%- end -%>
 
@@ -40,7 +40,7 @@
   </div>
 
   <%- if module_enabled?(:routing_approval) && current_user.present? && @view.flag?('default') &&
-    (current_user.can_approve? || @view.has_rights?('update_view')) -%>
+    (current_user.can_approve? || @view.has_rights?(ViewRights::UPDATE_VIEW)) -%>
   <%- approval = Approval.find()[0] -%>
   <%- if approval.present? -%>
   <%- next_stage = @view.next_approval_stage(approval) -%>
@@ -72,9 +72,9 @@
         <span class="name"><%= approval.stage((last_app || {})['approvalStageId'])['name'] %></span>
       </dd>
       <%- if !next_stage.nil? -%>
-      <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||
+      <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_APPROVAL) ||
         (next_stage['approverUids'] || []).include?(current_user.id) ||
-        @view.has_rights?('update_view') &&
+        @view.has_rights?(ViewRights::UPDATE_VIEW) &&
         last_app_rej.present? && last_app_rej['approvalTypeName'] == 'R' -%>
       <dt>Actions</dt>
       <dd class="actions">
@@ -170,7 +170,7 @@
       <dd class="numberOfComments"><%= @view.numberOfComments %></dd>
       <dt><%= t('screens.about.contributors') %></dt>
       <dd><%= @view.contributor_users.length %></dd>
-      <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
+      <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) -%>
         <dt class="widenedItem">
           <%= link_to t('screens.about.view_statistics'), view_stats_path(@view) %>
         </dt>

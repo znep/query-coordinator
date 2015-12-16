@@ -21,7 +21,7 @@ class Displays::Form < Displays::Base
   end
 
   def public_perm_type
-    'add'
+    ViewRights::ADD
   end
 
   def type

@@ -9,22 +9,22 @@
       <li class="analytics">
         <%= admin_nav_link_to 'Site Analytics', :action => 'analytics' %>
       </li>
-    <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
+    <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_USERS) -%>
       <li class="users">
         <%= admin_nav_link_to 'Users', :action => 'users' %>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :federations) && module_available?(:federations) -%>
+    <%- if CurrentDomain.user_can?(current_user, UserRights::FEDERATIONS) && module_available?(:federations) -%>
       <li class="federation">
         <%= admin_nav_link_to 'Federation', :action => 'federations' %>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :moderate_comments) && module_enabled?(:publisher_comment_moderation) -%>
+    <%- if CurrentDomain.user_can?(current_user, UserRights::MODERATE_COMMENTS) && module_enabled?(:publisher_comment_moderation) -%>
       <li class="comments">
         <%= admin_nav_link_to 'Comments', :action => 'comment_moderation' %>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :approve_nominations) && feature?(:view_moderation) -%>
+    <%- if CurrentDomain.user_can?(current_user, UserRights::APPROVE_NOMINATIONS) && feature?(:view_moderation) -%>
       <li class="viewmoderation">
         <%= admin_nav_link_to 'Views', :action => 'views' %>
       </li>
@@ -35,14 +35,14 @@
       </li>
     <%- end -%>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
-      <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_enabled?(:canvas_designer) -%>
+      <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_PAGES) && module_enabled?(:canvas_designer) -%>
         <li class="contentmgmt">
           <%= admin_nav_link_to 'DataSlate Pages', :action => 'canvas_pages' %>
         </li>
       <%- end -%>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :edit_others_datasets) ||
-           CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
+    <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) ||
+           CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
       <li class="datasets">
         <%= admin_nav_link_to 'Datasets', :action => 'datasets' %>
       </li>
@@ -53,15 +53,15 @@
       </li>
     <%- end -%>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
-      <%- if CurrentDomain.user_can?(current_user, :manage_stories) ||
-              CurrentDomain.user_can?(current_user, :feature_items) ||
-              CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
+      <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_STORIES) ||
+              CurrentDomain.user_can?(current_user, UserRights::FEATURE_ITEMS) ||
+              CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
         <li class="homemgmt">
           <%= admin_nav_link_to 'Home Page', :action => 'home' %>
         </li>
       <%- end -%>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
+    <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
       <li class="metadata">
         <%= admin_nav_link_to 'Metadata', :action => 'metadata' %>
       </li>

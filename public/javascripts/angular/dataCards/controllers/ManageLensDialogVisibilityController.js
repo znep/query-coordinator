@@ -1,5 +1,5 @@
 const angular = require('angular');
-function ManageLensDialogVisibilityController($q, $scope, $window, ServerConfig, I18n, http, rx) {
+function ManageLensDialogVisibilityController($q, $scope, $window, ServerConfig, UserRights, I18n, http, rx) {
   const Rx = rx;
   var self = this;
 
@@ -15,7 +15,7 @@ function ManageLensDialogVisibilityController($q, $scope, $window, ServerConfig,
     map(_.negate(_.property('isPublic')));
 
   var userCanApproveNominations$ = Rx.Observable.returnValue(
-    _.get($window.currentUser || {}, 'rights', []).indexOf('approve_nominations') >= 0
+    _.get($window.currentUser || {}, 'rights', []).indexOf(UserRights.APPROVE_NOMINATIONS) >= 0
   );
 
   var moderationStatus$ = $scope.page.observe('moderationStatus');

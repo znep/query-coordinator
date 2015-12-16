@@ -1,4 +1,4 @@
-<%- grantable = @view.has_rights?('grant') -%>
+<%- grantable = @view.has_rights?(ViewRights::GRANT) -%>
 <div class="sharingForm commonForm">
   <div class="formSection">
     <%- if grantable -%>

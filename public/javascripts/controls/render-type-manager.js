@@ -55,7 +55,7 @@
                 $dom.fatrowRenderType($.extend({view: settings.view,
                         columnDeleteEnabled: settings.editEnabled &&
                             settings.view.type == 'blist' &&
-                            settings.view.hasRight('remove_column'),
+                            settings.view.hasRight(blist.rights.view.REMOVE_COLUMN),
                         columnPropertiesEnabled: settings.editEnabled},
                         settings.common,
                         settings.fatrow));
@@ -101,15 +101,15 @@
                 $dom.datasetGrid($.extend({view: settings.view,
                         columnDeleteEnabled: settings.editEnabled &&
                             settings.view.type == 'blist' &&
-                            settings.view.hasRight('remove_column'),
+                            settings.view.hasRight(blist.rights.view.REMOVE_COLUMN),
                         columnPropertiesEnabled: settings.columnEditEnabled,
                         columnNameEdit: settings.columnEditEnabled &&
                             (settings.view.isDefault() ||
                              settings.view.type == 'grouped') &&
-                            settings.view.hasRight('update_column'),
+                            settings.view.hasRight(blist.rights.view.UPDATE_COLUMN),
                         showAddColumns: settings.editEnabled &&
                             settings.view.type == 'blist' &&
-                            settings.view.hasRight('add_column'),
+                            settings.view.hasRight(blist.rights.view.ADD_COLUMN),
                         editEnabled: settings.editEnabled},
                         settings.common,
                         settings.table));

@@ -96,7 +96,7 @@ class BrowseControllerTest < ActionController::TestCase
           :profile_name => @user.screen_name,
           :id => @user.uid
         },
-        :rights => ['edit_others_datasets']
+        :rights => [UserRights::EDIT_OTHERS_DATASETS]
       )
       @controller.stubs(
         :current_user => @user,
@@ -142,7 +142,7 @@ class BrowseControllerTest < ActionController::TestCase
           :profile_name => @user.screen_name,
           :id => @user.uid
         },
-        :rights => ['edit_others_datasets']
+        :rights => [UserRights::EDIT_OTHERS_DATASETS]
       )
       @controller.stubs(
         :current_user => @user,
@@ -188,7 +188,7 @@ class BrowseControllerTest < ActionController::TestCase
           :profile_name => @user.screen_name,
           :id => @user.uid
         },
-        :rights => ['edit_others_datasets']
+        :rights => [UserRights::EDIT_OTHERS_DATASETS]
       )
       @controller.stubs(
         :current_user => @user,

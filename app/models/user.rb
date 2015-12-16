@@ -190,7 +190,7 @@ class User < Model
   end
 
   def can_approve?
-    has_right?('manage_approval') || (Approval.find()[0] || Approval.new).is_approver?(self)
+    has_right?(UserRights::MANAGE_APPROVAL) || (Approval.find()[0] || Approval.new).is_approver?(self)
   end
 
   @@states = {

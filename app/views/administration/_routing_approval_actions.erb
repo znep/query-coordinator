@@ -1,6 +1,6 @@
 <%- last_app_rej = view.last_approval(true) -%>
 <%- if view.next_approval_stage(approval_template).present? &&
-  (CurrentDomain.user_can?(current_user, 'manage_approval') ||
+  (CurrentDomain.user_can?(current_user, UserRights::MANAGE_APPROVAL) ||
   (view.next_approval_stage(approval_template)['approverUids'] || []).include?(current_user.id)) -%>
   <div>
     <%= form_button({:action => 'approve_view', :controller => 'administration', :id => view.id,
@@ -14,7 +14,7 @@
       <% end %>
     <%- end -%>
   </div>
-<%- elsif view.has_rights?('update_view') &&
+<%- elsif view.has_rights?(ViewRights::UPDATE_VIEW) &&
   last_app_rej.present? && last_app_rej['approvalTypeName'] == 'R' -%>
   <div>
     <%= form_button({:action => 'approve_view', :controller => 'administration', :id => view.id,

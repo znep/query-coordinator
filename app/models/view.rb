@@ -959,7 +959,7 @@ class View < Model
   end
 
   def can_see_private_meta?
-    rights_include?('update_view')
+    rights_include?(ViewRights::UPDATE_VIEW)
   end
 
   def can_edit?
@@ -971,15 +971,20 @@ class View < Model
   end
 
   def mutation_rights?
-    %w(add delete write update_view).any? { |right| rights_include?(right) }
+    [
+      ViewRights::ADD,
+      ViewRights::DELETE,
+      ViewRights::WRITE,
+      ViewRights::UPDATE_VIEW
+    ].any? { |right| rights_include?(right) }
   end
 
   def can_read?
-    rights_include?('read')
+    rights_include?(ViewRights::READ)
   end
 
   def can_add?
-    rights_include?('add') && !new_backend?
+    rights_include?(ViewRights::ADD) && !new_backend?
   end
 
   def has_rights?(*rights)

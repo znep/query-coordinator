@@ -38,7 +38,7 @@
                             $publicText.text( cpObj._view.isPublic() ? $.t('core.visibility.public').capitalize() : $.t('core.visibility.private').capitalize() );
 
                             // Only owned, parent-public datasets can be toggled
-                            if (cpObj._view.hasRight('update_view') &&
+                            if (cpObj._view.hasRight(blist.rights.view.UPDATE_VIEW) &&
                                 ($.isBlank(publicGrant) || (publicGrant.inherited || false) == false))
                             {
                                 $toggleRadios.change(function(event)

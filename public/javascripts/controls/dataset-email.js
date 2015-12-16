@@ -54,7 +54,7 @@
         dataset = dataset || blist.dataset;
         $form.data('dataset', dataset);
 
-        $emailDialog.toggleClass('ownerDialog', dataset.hasRight('grant'));
+        $emailDialog.toggleClass('ownerDialog', dataset.hasRight(blist.rights.view.GRANT));
 
         $form.attr('action', '/api/views/' + dataset.id + '.json?method=sendAsEmail');
         $form.validate().resetForm();

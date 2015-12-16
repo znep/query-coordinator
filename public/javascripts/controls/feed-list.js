@@ -18,7 +18,7 @@
         '.commentActions@class+':
             function(a) { return _.compact([(a.context.user.id == blist.currentUserId) ? 'ownItem' : null,
                                             ((!_.isUndefined(blist.currentUser) &&
-                                             _.include(blist.currentUser.rights, 'moderate_comments')) ? 'isModerator' : null)]).join(' '); }
+                                             _.include(blist.currentUser.rights, blist.rights.user.MODERATE_COMMENTS)) ? 'isModerator' : null)]).join(' '); }
     };
     var customDirectives = {
         comment: commentDirective,

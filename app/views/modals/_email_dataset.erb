@@ -1,4 +1,4 @@
-<%= modal :class => "emailDatasetDialog#{' ownerDialog' if !@view.nil? && @view.has_rights?('grant')}" do %>
+<%= modal :class => "emailDatasetDialog#{' ownerDialog' if !@view.nil? && @view.has_rights?(ViewRights::GRANT)}" do %>
   <h2><%= t('screens.ds.email.title_html', name: h(@view.nil? ? '' : @view.name)) %></h2>
   <div class="emailSuccess">
     <div class="flash notice">
@@ -24,7 +24,7 @@
           <div class="textWrapper">
             <input id="emailRecipient" type="text" class="emailRecipient email" name="emailRecipient0" />
           </div>
-          <%- if !@view.nil? && @view.has_rights?('grant') -%>
+          <%- if !@view.nil? && @view.has_rights?(ViewRights::GRANT) -%>
             <%= select_tag 'role', options_for_select(@view.share_types.map{ |type| [ t('core.share_types.' + type.downcase), type ] }),
                   :class => 'recipientRole', :id => nil %>
           <%- end -%>

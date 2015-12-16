@@ -6,6 +6,7 @@ describe('Customize card dialog', function() {
   var I18n;
   var Model;
   var Page;
+  var ViewRights;
   var Mockumentary;
   var ServerConfig;
   var $httpBackend;
@@ -31,6 +32,7 @@ describe('Customize card dialog', function() {
     I18n = $injector.get('I18n');
     Model = $injector.get('Model');
     Page = $injector.get('Page');
+    ViewRights = $injector.get('ViewRights');
     Mockumentary = $injector.get('Mockumentary');
     ServerConfig = $injector.get('ServerConfig');
     $httpBackend = $injector.get('$httpBackend');
@@ -182,7 +184,7 @@ describe('Customize card dialog', function() {
       id: 'rook-king',
       rowDisplayUnit: 'row',
       columns: COLUMNS,
-      permissions: { rights: ['write'] }
+      permissions: { rights: [ViewRights.WRITE] }
     }, options.datasetOverrides);
 
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
@@ -1016,7 +1018,7 @@ describe('Customize card dialog', function() {
 
         var dialog = createDialog({
           card: choroplethCard,
-          datasetOverrides: { permissions: { rights: ['read'] } }
+          datasetOverrides: { permissions: { rights: [ViewRights.READ] } }
         });
         var options = dialog.element.find('.curated-region-selector option');
 

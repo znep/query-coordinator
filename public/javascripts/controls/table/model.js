@@ -135,24 +135,24 @@ blist.namespace.fetch('blist.data');
          */
         this.canRead = function()
         {
-            return this.view && this.view.hasRight('read');
+            return this.view && this.view.hasRight(blist.rights.view.READ);
         };
 
         this.canWrite = function()
         {
-            return this.view && this.view.hasRight('write') &&
+            return this.view && this.view.hasRight(blist.rights.view.WRITE) &&
                 !this.view.isGrouped();
         };
 
         this.canAdd = function()
         {
-            return this.view && this.view.hasRight('add') &&
+            return this.view && this.view.hasRight(blist.rights.view.ADD) &&
                 !this.view.isGrouped();
         };
 
         this.canDelete = function()
         {
-            return this.view && this.view.hasRight('delete') &&
+            return this.view && this.view.hasRight(blist.rights.view.DELETE) &&
                 !this.view.isGrouped();
         };
 

@@ -9,6 +9,7 @@ function visualizationTypeSelector(
   CardDataService,
   ServerConfig,
   UserSessionService,
+  ViewRights,
   rx) {
   const Rx = rx;
 
@@ -19,7 +20,7 @@ function visualizationTypeSelector(
     var computedColumn$ = cardModel$.observeOnLatest('computedColumn');
 
     var regionCodingDetails$ = dataset$.map(function(dataset) {
-      if (!_.includes(dataset.getCurrentValue('permissions').rights, 'write')) {
+      if (!_.includes(dataset.getCurrentValue('permissions').rights, ViewRights.WRITE)) {
         return {
           enabled: false,
           showInfoMessage: true,

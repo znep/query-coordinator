@@ -2,7 +2,7 @@
   create_asset_enabled = (
     !opts[:embedded_browse_iframe_hack] &&
     (
-      ((CurrentDomain.user_can?(current_user, :create_datasets) ||
+      ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation]
     )
   )

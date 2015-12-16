@@ -28,7 +28,7 @@ RSpec.describe ProfileHelper, type: :helper do
       end
 
       describe 'when the user has "write" view rights' do
-        let(:rights) { ['write'] }
+        let(:rights) { [ViewRights::WRITE] }
 
         it 'returns a url with /edit at the end' do
           expect(view_url(view)).to eq('/stories/s/four-four/edit')
@@ -36,7 +36,7 @@ RSpec.describe ProfileHelper, type: :helper do
       end
 
       describe 'when the user has "read" view rights only' do
-        let(:rights) { ['read'] }
+        let(:rights) { [ViewRights::READ] }
 
         it 'returns a url with /preview at the end' do
           expect(view_url(view)).to eq('/stories/s/four-four/preview')

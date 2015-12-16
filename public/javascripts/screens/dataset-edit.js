@@ -21,7 +21,7 @@ $wizard.wizard({
                     isGeo = blist.importer.dataset.isGeoDataset();
 
                 // permissions
-                if (!_.include(blist.importer.dataset.rights, 'delete'))
+                if (!_.include(blist.importer.dataset.rights, blist.rights.view.DELETE))
                 {
                     $pane.find('.importTypeList a.replace')
                         .addClass('disabled')

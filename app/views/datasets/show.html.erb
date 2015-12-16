@@ -18,7 +18,7 @@
     <%= link_to 'Go to an accessible version of this page', alt_view_path(@view) %>
   <%- end -%>
 
-  <%- if @view.has_rights?('update_view') -%>
+  <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) -%>
     <%= link_to 'Edit the metadata of this dataset', edit_view_metadata_path(@view) %>
   <%- end -%>
 <% end %>
@@ -159,13 +159,13 @@
       <%- end -%>
     </div>
     <div class="viewErrorContainer">
-      <%- if @view.has_rights?('update_view') -%>
+      <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) -%>
       <div class="viewError"><%= @view.display.invalid_message %></div>
       <ul class="invalidActions">
         <li>
           <a href="#Edit" class="editView button">Edit View</a>
         </li>
-        <%- if @view.has_rights?('delete_view') -%>
+        <%- if @view.has_rights?(ViewRights::DELETE_VIEW) -%>
         <li>
           <a href="#Remove" class="removeView button">Delete View</a>
         </li>
@@ -197,7 +197,7 @@
 <%= render :partial => 'column_order_template' %>
 <div class="embedForm">
   <%= render :partial => 'embed_form', :locals => { :view => @view, :cur => 'root',
-             :customization_id => (CurrentDomain.user_can?(current_user, :edit_sdp) ? nil : CurrentDomain.default_widget_customization_id) } %>
+             :customization_id => (CurrentDomain.user_can?(current_user, UserRights::EDIT_SDP) ? nil : CurrentDomain.default_widget_customization_id) } %>
 </div>
 <div class="printForm">
   <%= render :partial => 'print_form', :locals => { :view => @view } %>

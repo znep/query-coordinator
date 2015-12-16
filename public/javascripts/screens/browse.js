@@ -129,7 +129,7 @@ $(function() {
           return '/api_foundry/manage/' + v.context.id;
         },
         '.manageApi.button@class+': function(v) {
-          return v.context.isAPI() && v.context.hasRight('update_view') &&
+          return v.context.isAPI() && v.context.hasRight(blist.rights.view.UPDATE_VIEW) &&
             !v.context.isFederated() ? '' : 'hide';
         },
         '.permissions.button': function(v) {
@@ -139,11 +139,11 @@ $(function() {
             var publicGrant = _.detect(v.context.grants || [], function(grant) {
               return _.include(grant.flags || [], 'public');
             });
-            return v.context.hasRight('update_view') && !v.context.isFederated() &&
+            return v.context.hasRight(blist.rights.view.UPDATE_VIEW) && !v.context.isFederated() &&
               (!publicGrant || !publicGrant.inherited) ? '' : 'hide';
           },
         '.delete.button@class+': function(v) {
-            return v.context.hasRight('delete_view') &&
+            return v.context.hasRight(blist.rights.view.DELETE_VIEW) &&
               !v.context.isFederated() ? '' : 'hide';
           },
         '.comments .value': 'numberOfComments'
@@ -256,7 +256,7 @@ $(function() {
     //   - refactor of controlPermissionsButton and controlDeleteButton and existing code
     //   - Figure out how to access view type instead of hard coding it (line 245 above)
 
-    var canDelete = ds.hasRight('delete_view') && !ds.isFederated();
+    var canDelete = ds.hasRight(blist.rights.view.DELETE_VIEW) && !ds.isFederated();
 
     var deleteMenuItem = {
       text: $.t('controls.browse.actions.delete.button'),
@@ -271,7 +271,7 @@ $(function() {
           return _.include(grant.flags || [], 'public');
         }
       );
-      return context.hasRight('update_view') &&
+      return context.hasRight(blist.rights.view.UPDATE_VIEW) &&
         !context.isFederated()
         && (!publicGrant || !publicGrant.inherited);
     })(ds);

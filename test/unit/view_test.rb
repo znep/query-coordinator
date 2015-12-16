@@ -97,9 +97,9 @@ class ViewTest < Test::Unit::TestCase
     stub_core_server_connection
     View.any_instance.stubs(:data => {'rights' => %w(add delete write)})
     view = View.new
-    assert view.rights_include?('add'), 'Should return true when rights include "add"'
-    assert view.rights_include?('delete'), 'Should return true when rights include "delete"'
-    assert view.rights_include?('write'), 'Should return true when rights include "write"'
+    assert view.rights_include?(ViewRights::ADD), 'Should return true when rights include "add"'
+    assert view.rights_include?(ViewRights::DELETE), 'Should return true when rights include "delete"'
+    assert view.rights_include?(ViewRights::WRITE), 'Should return true when rights include "write"'
     refute view.rights_include?('nonce'), 'Should return false when non-matching right requested'
   end
 
@@ -110,9 +110,9 @@ class ViewTest < Test::Unit::TestCase
     View.any_instance.stubs(:data => {})
     view = View.new
     refute view.rights_include?('nonce'), 'Should return false when non-matching right requested'
-    refute view.rights_include?('add'), 'Should return false when non-matching right requested'
-    refute view.rights_include?('delete'), 'Should return false when non-matching right requested'
-    refute view.rights_include?('write'), 'Should return false when non-matching right requested'
+    refute view.rights_include?(ViewRights::ADD), 'Should return false when non-matching right requested'
+    refute view.rights_include?(ViewRights::DELETE), 'Should return false when non-matching right requested'
+    refute view.rights_include?(ViewRights::WRITE), 'Should return false when non-matching right requested'
   end
 
   def test_has_mutation_rights_returns_false
@@ -135,14 +135,14 @@ class ViewTest < Test::Unit::TestCase
 
   def test_can_add_returns_true_if_new_backend_is_false
     stub_core_server_connection
-    mock_data = mock.tap { |mock| mock.stubs(:[]).with('rights').returns('add') }
+    mock_data = mock.tap { |mock| mock.stubs(:[]).with('rights').returns(ViewRights::ADD) }
     View.any_instance.stubs(:data => mock_data, :new_backend? => false, :rights_include? => true)
     assert View.new.can_add?, 'Should be able to add if newBackend is false'
   end
 
   def test_can_add_returns_false_if_new_backend_is_true
     stub_core_server_connection
-    mock_data = mock.tap { |mock| mock.stubs(:[]).with('rights').returns('add') }
+    mock_data = mock.tap { |mock| mock.stubs(:[]).with('rights').returns(ViewRights::ADD) }
     View.any_instance.stubs(:data => mock_data, :new_backend? => true, :rights_include? => true)
     refute View.new.can_add?, 'Should not be able to add if newBackend is true'
   end
@@ -304,10 +304,10 @@ class ViewTest < Test::Unit::TestCase
     stub_core_server_connection
     View.any_instance.stubs(:data => {'rights' => %w(read write)})
     view = View.new
-    assert view.has_rights?('read'), 'Should have right to read'
-    assert view.has_rights?('write'), 'Should have right to write'
-    assert view.has_rights?('read', 'write'), 'Should have both read/write rights'
-    assert view.has_rights?(['read', 'write']), 'should have both read/write rights'
+    assert view.has_rights?(ViewRights::READ), 'Should have right to read'
+    assert view.has_rights?(ViewRights::WRITE), 'Should have right to write'
+    assert view.has_rights?(ViewRights::READ, ViewRights::WRITE), 'Should have both read/write rights'
+    assert view.has_rights?([ViewRights::READ, ViewRights::WRITE]), 'should have both read/write rights'
   end
 
   def test_has_rights_returns_false
@@ -345,9 +345,9 @@ class ViewTest < Test::Unit::TestCase
 
   def test_can_see_private_meta
     view = View.new
-    view.stubs(:data => {'rights' => %w(read write update_view)})
+    view.stubs(:data => {'rights' => [ViewRights::READ, ViewRights::WRITE, ViewRights::UPDATE_VIEW]})
     assert view.can_see_private_meta?, 'can_see_private_meta? should return true if you have update_view right'
-    view.stubs(:data => {'rights' => %w(read write)})
+    view.stubs(:data => {'rights' => [ViewRights::READ, ViewRights::WRITE]})
     refute view.can_see_private_meta?, 'can_see_private_meta? should return false if you don\'t have update_view right'
   end
 

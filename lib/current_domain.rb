@@ -295,7 +295,7 @@ class CurrentDomain
     if user.nil?
       false
     else
-      user.has_right?(action.to_s)
+      user.has_right?(action)
     end
   end
 

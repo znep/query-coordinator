@@ -314,7 +314,7 @@ a[role="button"] {
     }
 
     &:last-child {
-      width: $warning-bar-message-width;
+      width: calc(100% - #{$warning-bar-icon-width});
     }
   }
 }

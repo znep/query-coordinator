@@ -22,3 +22,7 @@ config/database.yml
 
 # Local ENV vars
 .env
+
+# Zeus configs
+custom_plan.rb
+zeus.json

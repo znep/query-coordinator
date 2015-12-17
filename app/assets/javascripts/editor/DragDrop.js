@@ -28,7 +28,7 @@
 
     // TODO calculate from mouse down location.
     var _ghostCursorOffset = 0;
-
+    var _actualDragStartTarget;
     var _storyUidDraggedOver;
 
     this.handles = handles; // Needed for unidragger integration.
@@ -37,21 +37,46 @@
       this.bindHandles(); //function from unidragger
     };
 
-    this.dragStart = function(event, pointer) {
+    this.pointerDown = function(event, pointer) {
+      // Since the Unidragger library does not track the element that was under
+      // the mouse when the drag began, but rather reports the element under the
+      // mouse when the distance threshold to initiate the drag action is exceeded,
+      // we can sometimes end up with no idea which sample block the user actually
+      // clicked on as by the time Unidragger recognizes the drag event the cursor
+      // is over the panel containing the inspiration blocks instead.
+      //
+      // Our solution here is to track what element was under the pointer when the
+      // mouse was clicked or the screen was touched.
+      _actualDragStartTarget = pointer.target;
+      // Call the 'super', since we are overriding this method.
+      Unidragger.prototype.pointerDown.apply(this, arguments);
+    };
+
+    this.pointerUp = function() {
+      _actualDragStartTarget = null;
+      // Call the 'super', since we are overriding this method.
+      Unidragger.prototype.pointerUp.apply(this, arguments);
+    };
+
+    this.dragStart = function() {
+
       var sourceBlockElement;
 
       _storyUidDraggedOver = undefined;
-      $('body').addClass('dragging');
 
-      sourceBlockElement = $(pointer.target).closest('[data-block-content]');
+      if (_actualDragStartTarget) {
 
-      _blockContent = JSON.parse(sourceBlockElement.attr('data-block-content'));
+        $('body').addClass('dragging');
 
-      ghostElement.
-        removeClass('hidden').
-        empty().
-        append(sourceBlockElement.clone());
+        sourceBlockElement = $(_actualDragStartTarget).closest('[data-block-content]');
 
+        _blockContent = JSON.parse(sourceBlockElement.attr('data-block-content'));
+
+        ghostElement.
+          removeClass('hidden').
+          empty().
+          append(sourceBlockElement.clone());
+      }
     };
 
     this.dragMove = function(event, pointer, moveVector) {

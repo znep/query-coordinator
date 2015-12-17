@@ -60,13 +60,15 @@
       "airbrakeJs": true,
       "Constants": true,
       "Actions": true,
+      "Flux": true,
       "jQuery": true,
       "I18n": true,
       "socrata": true,
       "Squire": true,
       "Unidragger": true,
       "Unipointer": true,
-      "userStoryData": true
+      "userStoryData": true,
+      "Flux": true
     }
   }
 }

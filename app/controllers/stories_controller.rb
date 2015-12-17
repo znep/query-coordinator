@@ -234,6 +234,7 @@ class StoriesController < ApplicationController
     redirect_to "/stories/s/#{uid}/edit"
   end
 
+  # This logic is duplicated in Frontend/Browse as story_url
   def require_sufficient_rights
     return tmp_render_404 unless params.present? && params[:uid].present?
 

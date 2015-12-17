@@ -9,13 +9,9 @@
 # in app/helpers, the override would take place for _all_ views.
 module ProfileHelper
 
-  # Implement special-case behavior:
-  # Stories should load in the editor if
-  #   * opened from a profile page AND
-  #   * the user is looking at their own profile page.
   def view_url(view)
-    if view.story? && @user.id == current_user.id
-      "/stories/s/#{view.id}/edit"
+    if view.story? && viewing_self?
+      story_url(view)
     else
       # Call the original implementation, presumably in ApplicationHelper.
       # If this is throwing, a base module with a view_url implementation
@@ -50,5 +46,26 @@ module ProfileHelper
         end
       end
     end
+  end
+
+  private
+
+  def story_url(view)
+    base_relative_url = "/stories/s/#{view.id}"
+
+    # This logic is duplicated in Storyteller as require_sufficient_rights
+    if view.rights.present?
+      if view.rights.include?('write')
+        base_relative_url << '/edit'
+      elsif view.rights.include?('read')
+        base_relative_url << '/preview'
+      end
+    end
+
+    base_relative_url
+  end
+
+  def viewing_self?
+    @user.id == current_user.id
   end
 end

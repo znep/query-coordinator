@@ -36,7 +36,6 @@
         case Actions.STORY_SAVED:
           // Let StoryStore deal with this action, then remember the initial or updated story state.
           storyteller.dispatcher.waitFor([ storyteller.storyStore.getDispatcherToken() ]);
-          _lastSavedSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
           _saveInProgress = false;
           _lastSaveError = null;
           self._emitChange();
@@ -55,6 +54,7 @@
           if (_saveInProgress) {
             throw new Error('Can only have one pending save at a time.');
           }
+          _lastSavedSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
           _saveInProgress = true;
           _lastSaveError = null;
           self._emitChange();

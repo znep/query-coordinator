@@ -316,7 +316,7 @@ class ApplicationController < ActionController::Base
   end
 
   def use_discrete_assets?
-    Rails.env.development? || !Rails.configuration.assets.compress
+    Rails.env.development?
   end
 
 end

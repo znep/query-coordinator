@@ -32,7 +32,7 @@ class AssetMapper
   private
 
   def use_discrete_assets?
-    Rails.env.development? || FeatureFlags.derive.debug_assets || !Rails.configuration.assets.compress
+    Rails.env.development? || FeatureFlags.derive.debug_assets
   end
 
 end

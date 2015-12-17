@@ -486,9 +486,6 @@
                 options.controls.push(new blist.openLayers.ZoomBar());
             }
 
-            if (window.location.href.indexOf('watercolor') > -1)
-            { options.controls.push(new blist.openLayers.StamenControl()); }
-
             // call the default constructor but with no theme or controls; we'll add our own
             OpenLayers.Map.prototype.initialize.apply(this, [div, options]);
         },
@@ -1873,62 +1870,5 @@
         },
 
         CLASS_NAME: 'blist.openLayers.Flyout'
-    });
-
-    // STAMEN
-
-    blist.openLayers.Stamen = OpenLayers.Class(OpenLayers.Layer.OSM, {
-        initialize: function(name, options) {
-            var hosts = _.map(["", "a.", "b.", "c.", "d."], function(subdomain)
-            { return "http://" + subdomain + "tile.stamen.com/"
-                + ((options || {}).stamenType || 'watercolor') + "/${z}/${x}/${y}.jpg"; });
-            options = OpenLayers.Util.extend({
-                "availableZoomLevels": 16,
-                "numZoomLevels":       16,
-                "buffer":              0,
-                "transitionEffect":    "resize"
-            }, options);
-            return OpenLayers.Layer.OSM.prototype.initialize.call(this, name, hosts, options);
-        }
-    });
-
-    blist.openLayers.StamenControl = OpenLayers.Class(OpenLayers.Control, {
-
-        initialize: function()
-        {
-            this._layers = {};
-            this.autoActivate = true;
-            OpenLayers.Control.prototype.initialize.apply(this, arguments);
-        },
-
-        draw: function()
-        {
-            this.handler = new OpenLayers.Handler.Keyboard( this, {
-                'keyup': this.toggleOff,
-                'keydown': this.watercolor });
-        },
-
-        toggleOff: function()
-        {
-            if (this._activated)
-            {
-                this.map.setBaseLayer(this._baseLayer);
-                this._activated = false;
-            }
-        },
-
-        watercolor: function(evt)
-        {
-            if (!this._activated && evt.keyCode && evt.keyCode == 87) // 'w'
-            {
-                this._activated = true;
-                if (!this._layer)
-                { this.map.addLayer(this._layer = new blist.openLayers.Stamen()); }
-                this._baseLayer = this.map.baseLayer;
-                this.map.setBaseLayer(this._layer);
-            }
-        },
-
-        CLASS_NAME: 'blist.openLayers.StamenControl'
     });
 })(jQuery);

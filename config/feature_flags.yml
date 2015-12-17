@@ -17,10 +17,6 @@ allow_data_lens_owner_change:
   description: Controls whether ownership of data lenses can be transferred away from the creator.
   defaultValue: false
   category: data lens
-asteroids:
-  description: 'Unlocked on datasets by the Konami code: ↑↑↓↓←→←→ⒷⒶ↵'
-  defaultValue: false
-  category: easter egg
 bubble:
   description: D3 Bubble Charts
   defaultValue: old
@@ -77,10 +73,6 @@ disable_obe_redirection:
 disable_nbe_redirection_warning_message:
   description: When clicking to an NBE dataset, you no longer see a "You would be redirected to" message.
   defaultValue: false
-disco_lens:
-  description: When you need a little more funk in your data lens pages.
-  defaultValue: false
-  category: easter egg
 display_catalog_lens_delete_button:
   description: Whether to show the Delete button for data lenses, in the old UX.
   defaultValue: true
@@ -200,11 +192,6 @@ show_provenance_badge_in_catalog:
 show_share_dataset_by_email_button_for_general_users:
   description: Toggle the visibility of the "share by email" button on dataset pages for unauthenticated or non-domain-role-holding users (see ONCALL-3032).
   defaultValue: true
-stamen:
-  description: Easter egg of map backgrounds. Set false to turn it off. Choose one of the available values to select this base layer for ALL maps on the domain.
-  defaultValue: false
-  expectedValues: watercolor toner terrain
-  category: easter egg
 standalone_lens_chart:
   description: When enabled, allows individual visualizations from a data lens page to be saved as standalone catalog entries.
   defaultValue: false

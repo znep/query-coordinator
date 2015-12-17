@@ -601,21 +601,6 @@ $(function()
         });
     }
 
-    // Massage search params
-    $('#searchForm').submit(function() { if ($(this).find(
-        '.searchField').val() == 'snuffleupadata') {
-        _.times(20, function() {
-            setTimeout(function() {
-                $('<img src="/images/snuffleupadata.gif"/>')
-                    .appendTo($('body'))
-                    .css('position', 'absolute')
-                    .css('zindex', '9999')
-                    .css('left', '-48px')
-                    .css('top', Math.random() * $(window).height())
-                    .animate({left: $(window).width() + 48}, 'slow',
-                        function() { $(this).remove(); }
-        )}, Math.random() * 4000)})}});
-
     $('.invalidActions .removeView').click(function(e)
     {
         e.preventDefault();
@@ -729,19 +714,6 @@ $(function()
         {
             event.originalEvent.preventDefault();
         });
-    }
-
-    // up up down down left right left right b a start
-    if (blist.feature_flags.asteroids) {
-      var konami = new Konami();
-      konami.code = function()
-      {
-          var elem = document.createElement('script');
-          elem.type = 'text/javascript';
-          document.body.appendChild(elem);
-          elem.src = '/javascripts/util/asteroids.min.js';
-      };
-      konami.load();
     }
 
     var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;

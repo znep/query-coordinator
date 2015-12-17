@@ -79,7 +79,6 @@ class InternalControllerTest < ActionController::TestCase
     init_for_feature_flags
 
     post(:set_feature_flags, domain_id: 'localhost',
-                             feature_flags: { 'asteroids' => true },
                              format: 'data')
     assert(JSON.parse(@response.body)['errors'].empty?)
   end

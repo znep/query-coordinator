@@ -304,8 +304,13 @@ class InternalController < ApplicationController
     @flags.select! { |flag| FeatureFlags.has? flag }
 
     @sets = FLAG_SETS
+
+    # Defaulting this to 'data lens' is artbitrary. We include it because
+    # the UI looks funky without it, but ideally we should have a default category
+    # already set in feature_flags.yml that we could use instead.
+    # TODO: Add a 'default' or 'uncategorized' category to feature_flags.yml to use here
     if @flags.empty?
-      @category = 'easter egg' # because easter eggs are important!
+      @category = 'data lens'
       @flags = @sets[@category]
     end
 

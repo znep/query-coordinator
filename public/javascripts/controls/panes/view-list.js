@@ -94,7 +94,42 @@
                     '.description': function(a)
                     {
                         if ($.isBlank(a.context.view.description)){ return ''; }
-                        return $.htmlEscape(a.context.view.description).linkify("rel='nofollow external'");
+
+                        // We have an HTML-string problem. The about/edit-metadata page
+                        // accepts HTML strings (and expects some tags to be rendered),
+                        // and the rich-text editor also does the same. However, they
+                        // are encoded in different ways. The net effect is that we
+                        // are forced to jump through some serious hoops in order to
+                        // render a description safely; it may not be trivially possible
+                        // to ensure that same content is rendered in both contexts.
+                        // Fortunately, according to current AC, all we want to do here
+                        // is keep links — no other formatting needs to be preserved.
+                        var sanitizeSettings = {
+                            ALLOWED_TAGS: ['a'],
+                            ALLOWED_ATTR: ['href', 'rel', 'target']
+                        };
+                        var strippedContent = DOMPurify.sanitize(a.context.view.description, sanitizeSettings);
+
+                        // Because of the above issue, we need to try a little harder
+                        // to ensure that things we want to be links are, in fact, links.
+                        var nodeText = [];
+                        var linkifyNodeText = function() {
+                            if (this.nodeType === 3) {
+                                nodeText.push(this.textContent.linkify('rel="nofollow external"'));
+                            } else {
+                                var $node = $(this);
+                                if ($node.is(':not(a)')) {
+                                    $node.contents().each(linkifyNodeText);
+                                } else {
+                                    nodeText.push(this.outerHTML);
+                                }
+                            }
+                        }
+
+                        // In effect, we sanitize twice and only linkify when we're not
+                        // already inside a link.
+                        $('<p>' + strippedContent + '</p>').contents().each(linkifyNodeText);
+                        return DOMPurify.sanitize(nodeText.join(''), sanitizeSettings);
                     },
                     '.deleteViewLink@class+': function(a)
                     {

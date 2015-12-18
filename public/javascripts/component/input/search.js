@@ -51,28 +51,6 @@ $.component.Component.extend('Search', 'none', {//'input', {
                 cObj.$input.focus().val('').blur();
                 handleSearch(cObj);
             });
-
-            // massage search params
-            cObj.$contents.find('form').submit(function()
-            {
-                if (cObj.$input.val() == 'snuffleupadata')
-                {
-                    _.times(20, function()
-                    {
-                        setTimeout(function()
-                        {
-                            $('<img src="/images/snuffleupadata.gif"/>')
-                                .appendTo($('body'))
-                                .css('position', 'absolute')
-                                .css('zindex', '9999')
-                                .css('left', '-48px')
-                                .css('top', Math.random() * $(window).height())
-                                .animate({left: $(window).width() + 48}, 'slow',
-                                    function() { $(this).remove(); });
-                        }, Math.random() * 4000);
-                    });
-                }
-            });
         }
     },
 

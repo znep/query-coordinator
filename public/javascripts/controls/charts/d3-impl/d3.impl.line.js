@@ -379,13 +379,8 @@ $.Control.registerMixin('d3_impl_line', {
             line.y0(vizObj._yDatumPosition(col.lookup, yScale)(zeroPoint) - 1);
         }
 
-        // Easter eggs
-        var interpolation = $.urlParam(window.location.href, 'interpolate')
-                            || $.urlParam(window.location.href, 'i')
-                            || (vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear');
-        var tension = $.urlParam(window.location.href, 'tension')
-                      || $.urlParam(window.location.href, 't')
-                      || 0.9;
+        var interpolation = vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear';
+        var tension = 0.9;
         line.interpolate(interpolation).tension(tension);
 
         return line;

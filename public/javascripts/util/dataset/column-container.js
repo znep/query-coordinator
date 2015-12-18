@@ -22,6 +22,28 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
     var realSet = function(item) { return item['real' + capSet]; };
     var visibleSet = function(item) { return item['visible' + capSet]; };
 
+    var findOldColumnFromSet = function(columnSet, newColumn) {
+      var oldColumn;
+
+      // Hack to guess at the matching column
+      // If the fieldName doesn't match, we have no way of reliably determining the
+      // analogous OBE column. We use `name` and `description` as fingers-crossed
+      // guesstimations that rely on the user neglecting to change them when changing
+      // the fieldName.
+      //
+      // Another proposed solution has been to compare row-sets as signatures, but
+      // this would require at least two trips to the server and is also not guaranteed
+      // to be 100% certain.
+      _.any([ 'fieldName', 'name', 'description' ], function(propertyTesting) {
+        oldColumn = _.detect(columnSet, function(oc) {
+          return oc[propertyTesting] === newColumn[propertyTesting];
+        });
+        return !!oldColumn; // Break if we've found something.
+      });
+
+      return oldColumn;
+    };
+
     var props = {};
 
     // defines: columnForID, childColumnForID
@@ -344,8 +366,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                 _columnFieldNameLookup[c.fieldName] = c;
 
                 if (cont[oldCapSet]) {
-                  var oldC = _.detect(cont[oldCapSet],
-                    function(oc) { return oc.fieldName == c.fieldName; });
+                  var oldC = findOldColumnFromSet(cont[oldCapSet], c);
                   if (oldC) {
                     _columnIDLookup[oldC.id] = c;
                     if (oldC.lookup != c.id)
@@ -393,20 +414,6 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
 
       this[oldCapSet] = _.map(this[colSet], function(col) { return $.extend({}, col); });
 
-      var columnMatcher = function(columnSet, newColumn) {
-        var oldColumn;
-
-        // Hack to guess at the matching column
-        _.any([ 'fieldName', 'name', 'description' ], function(propertyTesting) {
-          oldColumn = _.detect(columnSet, function(oc) {
-            return oc[propertyTesting] === newColumn[propertyTesting];
-          });
-          return !!oldColumn; // Break if we've found something.
-        });
-
-        return oldColumn;
-      };
-
       // Setting this.columns based on the passed in nbe columns.
       this[colSet] = _.map(nbeCols, function(c, i) {
 
@@ -418,10 +425,10 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
           c.setParent(cont);
         }
 
-        var oldC = columnMatcher(cont[oldCapSet], c);
+        var oldC = findOldColumnFromSet(cont[oldCapSet], c);
 
         if (!oldC && cont._parent) {
-          oldC = columnMatcher(cont._parent[colSet], c);
+          oldC = findOldColumnFromSet(cont._parent[colSet], c);
         }
 
         // Make it so that you can look up the column by its id.
@@ -468,7 +475,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
 
           var keysToCopy = _.keys(oldC);
 
-          keysToCopy = _.without(keysToCopy, blacklist);
+          keysToCopy = _.difference(keysToCopy, blacklist);
 
           _.each(keysToCopy, function(key) {
             if ($.isPlainObject(oldC[key])) {

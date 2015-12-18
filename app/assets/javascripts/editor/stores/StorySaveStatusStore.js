@@ -34,13 +34,10 @@
 
         case Actions.STORY_CREATE:
           _lastSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
-        case Actions.STORY_CREATE:
+          _storySavedSuccessfully();
+          break;
         case Actions.STORY_SAVED:
-          // Let StoryStore deal with this action, then remember the initial or updated story state.
-          storyteller.dispatcher.waitFor([ storyteller.storyStore.getDispatcherToken() ]);
-          _saveInProgress = false;
-          _lastSaveError = null;
-          self._emitChange();
+          _storySavedSuccessfully();
           break;
 
         case Actions.STORY_SAVE_FAILED:
@@ -69,6 +66,14 @@
       storyteller.dispatcher.waitFor([ storyteller.historyStore.getDispatcherToken() ]);
       self._emitChange();
     });
+
+    function _storySavedSuccessfully() {
+      // Let StoryStore deal with this action, then remember the initial or updated story state.
+      storyteller.dispatcher.waitFor([ storyteller.storyStore.getDispatcherToken() ]);
+      _saveInProgress = false;
+      _lastSaveError = null;
+      self._emitChange();
+    }
 
     /**
      * Public methods

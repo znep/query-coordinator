@@ -5,6 +5,20 @@
   var MIGRATION_ENDPOINT = '/api/migrations/{0}';
   var OBE_DATASET_PAGE = '/d/{0}';
 
+  function sanitizeUserHtml(htmlString) {
+    if (!_.isString(htmlString) || htmlString.length === 0) {
+      return htmlString;
+    }
+
+    var allowedTags = ['a', 'b', 'br', 'div', 'em', 'hr', 'i', 'p', 'span', 'strong', 'sub', 'sup', 'u'];
+    var allowedAttr = ['href', 'target', 'rel'];
+
+    return DOMPurify.sanitize(htmlString, {
+      ALLOWED_TAGS: allowedTags,
+      ALLOWED_ATTR: allowedAttr
+    });
+  }
+
   function initDownload($scope, page, obeId$, WindowState, ServerConfig) {
     // The CSV download url
     $scope.$bindObservable(
@@ -213,9 +227,10 @@
     $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
     $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
 
-    var pageName$ = page.observe('name').filter(_.isPresent);
+    var pageName$ = page.observe('name').filter(_.isPresent).map(sanitizeUserHtml);
+    var pageDescription$ = page.observe('description').map(sanitizeUserHtml);
     $scope.$bindObservable('pageName', pageName$);
-    $scope.$bindObservable('pageDescription', page.observe('description'));
+    $scope.$bindObservable('pageDescription', pageDescription$);
     $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));
 
     $scope.$bindObservable('dataset', page.observe('dataset'));

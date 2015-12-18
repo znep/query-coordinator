@@ -125,6 +125,7 @@
       "d3": true,
       "datasetMetadata": true,
       "domainMetadata": true,
+      "DOMPurify": true,
       "Highcharts": true,
       "jQuery": true,
       "L": true,

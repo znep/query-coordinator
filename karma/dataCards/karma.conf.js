@@ -98,6 +98,7 @@ module.exports = function ( karma ) {
       'public/javascripts/bower/pbf.min.js',
       'public/javascripts/bower/vectortile.min.js',
       'public/javascripts/bower/filesaver.js',
+      'public/javascripts/bower/purify.min.js',
 
       /* Angular itself */
       'bower_components/angular/angular.js',

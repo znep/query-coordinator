@@ -363,10 +363,12 @@
      * Considered a match if emails are equals or display names
      */
     function matchesCollaborator(collaborator, potentialMatch) {
-      return (
-        collaborator.email === potentialMatch.email ||
-        collaborator.uid === potentialMatch.uid
-      );
+      var matchingEmails = _.isString(collaborator.email) && _.isString(potentialMatch.email) &&
+        collaborator.email === potentialMatch.email;
+      var matchingUIDs = _.isString(collaborator.uid) && _.isString(potentialMatch.uid) &&
+        collaborator.uid === potentialMatch.uid;
+
+      return matchingEmails || matchingUIDs;
     }
 
     /**

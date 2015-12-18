@@ -6,6 +6,7 @@ class AngularController < ActionController::Base
   include UnminifiedAssetsHelper
 
   before_filter :hook_auth_controller
+  before_filter :set_locale
 
   helper_method :current_user
   helper_method :current_user_session_or_basic_auth
@@ -237,5 +238,10 @@ class AngularController < ActionController::Base
       :error_message => error_message
     )
     Rails.logger.error(error_message)
+  end
+
+  # EN-1111: Force Data Lens to always use English
+  def set_locale
+    I18n.locale = 'en'
   end
 end

@@ -15,7 +15,7 @@
 
     var self = this;
 
-    var _lastSavedSerializedStory = null;
+    var _lastSerializedStory = null;
     var _saveInProgress = false;
     // If a conflict ever happens, disable save for the entire life of this page :(
     var _poisonedWithSaveConflictForever = false;
@@ -32,6 +32,8 @@
 
       switch (action) {
 
+        case Actions.STORY_CREATE:
+          _lastSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
         case Actions.STORY_CREATE:
         case Actions.STORY_SAVED:
           // Let StoryStore deal with this action, then remember the initial or updated story state.
@@ -54,7 +56,7 @@
           if (_saveInProgress) {
             throw new Error('Can only have one pending save at a time.');
           }
-          _lastSavedSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
+          _lastSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
           _saveInProgress = true;
           _lastSaveError = null;
           self._emitChange();
@@ -77,9 +79,9 @@
       // should not light up for changes _only_ to the metadata.
       var metadataProperties = [ 'title', 'description' ];
       var currentSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
-      return !_.isEqual(
+      return self.isStorySaveInProgress() || !!_lastSaveError || !_.isEqual(
         _.omit(currentSerializedStory, metadataProperties),
-        _.omit(_lastSavedSerializedStory, metadataProperties)
+        _.omit(_lastSerializedStory, metadataProperties)
       );
     };
 

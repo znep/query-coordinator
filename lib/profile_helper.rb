@@ -53,16 +53,16 @@ module ProfileHelper
   def story_url(view)
     base_relative_url = "/stories/s/#{view.id}"
 
-    # This logic is duplicated in Storyteller as require_sufficient_rights
-    if view.rights.present?
-      if view.rights.include?('write')
-        base_relative_url << '/edit'
-      elsif view.rights.include?('read')
-        base_relative_url << '/preview'
-      end
-    end
+    return base_relative_url unless view.rights.present?
 
-    base_relative_url
+    # This logic is duplicated in Storyteller as require_sufficient_rights
+    if view.rights.include?('write')
+      base_relative_url << '/edit'
+    elsif view.rights.include?('read')
+      base_relative_url << '/preview'
+    else
+      base_relative_url
+    end
   end
 
   def viewing_self?

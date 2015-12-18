@@ -1,5 +1,4 @@
 require 'rails_helper'
-require_relative '../../test/test_helper'
 require_relative '../../lib/standalone_visualization_manager'
 
 describe StandaloneVisualizationManager do

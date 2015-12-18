@@ -248,7 +248,8 @@ en:
           title: Owner
           warning: You must select an Owner for this Data Lens in order to proceed.
         provenance:
-          title: Official View
+          title: View Status
+          label: Official View
           description: Selecting this option will give the view a special demarcation indicating that it is an Official View
         sharing:
           add_new: Add New

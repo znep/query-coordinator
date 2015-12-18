@@ -260,7 +260,11 @@ manage-lens-dialog {
   section.provenance {
     margin-bottom: 2rem;
     input.view-provenance-checkbox {
-      height: 29px;
+      height: 0.8rem;
+    }
+
+    label.view-provenance-label {
+      font-weight: bold;
     }
   }
 

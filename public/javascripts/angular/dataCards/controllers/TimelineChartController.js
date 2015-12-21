@@ -4,7 +4,7 @@ function TimelineChartController(
   CardDataService,
   ServerConfig,
   Filter,
-  TimelineChartVisualizationHelpers,
+  TimelineChartService,
   $log,
   DateHelpers,
   SoqlHelpers,
@@ -266,7 +266,7 @@ function TimelineChartController(
       if (_.isEmpty(unfilteredData) || _.isEmpty(filteredData)) {
         return null;
       } else {
-        return TimelineChartVisualizationHelpers.transformChartDataForRendering(
+        return TimelineChartService.transformChartDataForRendering(
           aggregateData(unfilteredData, filteredData)
         );
       }

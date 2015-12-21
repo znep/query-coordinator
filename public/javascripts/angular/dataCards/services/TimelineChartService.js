@@ -1,5 +1,6 @@
 const angular = require('angular');
-function TimelineChartVisualizationHelpers() {
+
+function TimelineChartService(I18n, PluralizeService) {
 
   /**
    * Precompute a bunch of things that are useful for rendering the timeline chart.
@@ -65,12 +66,70 @@ function TimelineChartVisualizationHelpers() {
     };
   }
 
-  return {
-    transformChartDataForRendering: transformChartDataForRendering
-  };
+  function getVisualizationConfig(rowDisplayUnit, allowFilterChange) {
+    return {
+      configuration: {
+        interactive: allowFilterChange,
+        localization: {
+          'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.flyout.total,
+          'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.flyout.filteredAmount
+        }
+      },
+      unit: getUnitConfiguration(rowDisplayUnit)
+    };
+  }
 
+  function getUnitConfiguration(rowDisplayUnit) {
+    rowDisplayUnit = rowDisplayUnit || I18n.common.row;
+
+    return {
+      one: rowDisplayUnit,
+      other: PluralizeService.pluralize(rowDisplayUnit)
+    };
+  }
+
+  function renderFlyout(payload) {
+    if (!_.isObject(payload)) {
+      return;
+    }
+
+    let flyoutContent = [
+      `<div class="flyout-title">${payload.title}</div>`
+    ];
+
+    if (payload.unfilteredValue) {
+      flyoutContent = flyoutContent.concat([
+        '<div class="flyout-row">',
+          `<span class="flyout-cell">${payload.unfilteredLabel}</span>`,
+          `<span class="flyout-cell">${payload.unfilteredValue}</span>`,
+        '</div>'
+      ]);
+    }
+
+    if (payload.filteredValue) {
+      let cellClass = payload.filteredBySelection ? 'is-selected' : 'emphasis';
+
+      flyoutContent = flyoutContent.concat([
+        '<div class="flyout-row">',
+          `<span class="flyout-cell ${cellClass}">${payload.filteredLabel}</span>`,
+          `<span class="flyout-cell ${cellClass}">${payload.filteredValue}</span>`,
+        '</div>'
+      ]);
+    }
+
+    flyoutContent = flyoutContent.join('');
+
+    return flyoutContent;
+  }
+
+  return {
+    transformChartDataForRendering,
+    getVisualizationConfig,
+    getUnitConfiguration,
+    renderFlyout
+  };
 }
 
 angular.
   module('dataCards.services').
-    factory('TimelineChartVisualizationHelpers', TimelineChartVisualizationHelpers);
+  factory('TimelineChartService', TimelineChartService);

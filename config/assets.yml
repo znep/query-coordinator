@@ -662,6 +662,8 @@ javascripts:
     - public/javascripts/plugins/vis/r2d3.v3.js
   dotdotdot:
     - public/javascripts/bower/jquery.dotdotdot.js
+  dompurify:
+    - public/javascripts/bower/purify.min.js
   excanvas:
     - public/javascripts/plugins/excanvas.compiled.js
   oldie:

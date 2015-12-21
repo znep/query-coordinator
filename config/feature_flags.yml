@@ -15,7 +15,7 @@
 
 allow_data_lens_owner_change:
   description: Controls whether ownership of data lenses can be transferred away from the creator.
-  defaultValue: false
+  defaultValue: true
   category: data lens
 bubble:
   description: D3 Bubble Charts
@@ -93,10 +93,10 @@ enable_data_lens_page_metadata_migrations:
   defaultValue: true
 enable_data_lens_provenance:
   description: Ability to set data lens views to "Official" or not.
-  defaultValue: false
+  defaultValue: true
 enable_data_lens_save_as:
   description: Enables the "Save As" button in the data lens Customize bar.
-  defaultValue: false
+  defaultValue: true
 enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false

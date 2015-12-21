@@ -4,7 +4,6 @@ const angular = require('angular');
  */
 angular.module('dataCards.directives').directive('dropdownMenu', function(WindowState, rx) {
   const Rx = rx;
-  'use strict';
 
   return {
     restrict: 'E',

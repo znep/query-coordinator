@@ -13,7 +13,6 @@ const angular = require('angular');
 // * Recursive dirty checking/change tracking.
 angular.module('dataCards.models').factory('Model', function(Class, ModelHelper, rx) {
   const Rx = rx;
-  'use strict';
   var Model = Class.extend({
     init: function Model() {
       var self = this;

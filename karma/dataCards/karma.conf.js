@@ -50,6 +50,7 @@ module.exports = function ( karma ) {
      */
     preprocessors: {
       'public/javascripts/angular/**/!(angular-leaflet-directives.js)': ['webpack', 'coverage'],
+      'public/javascripts/lib/**/*.js': ['webpack', 'coverage'],
       '**/*.html': ['ng-html2js'],
       '**/*.json': ['ng-html2js'],
       '**/*.scss': ['scss']
@@ -94,7 +95,6 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/dist/rx.binding.js',
       'bower_components/rxjs/dist/rx.virtualtime.js',
       'bower_components/rxjs/dist/rx.testing.js',
-      'public/javascripts/lib/RxExtensions.js',
       'bower_components/leaflet/dist/leaflet-src.js',
       'app/styles/leaflet.css',
       'bower_components/chroma-js/chroma.js',

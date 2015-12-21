@@ -9,7 +9,6 @@ const angular = require('angular');
  */
 angular.module('dataCards.directives').directive('disableNewline', function(rx) {
   const Rx = rx;
-  'use strict';
 
   return {
     require: 'ngModel',

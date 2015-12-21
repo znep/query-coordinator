@@ -116,7 +116,7 @@ function FeatureMapController(
       var offset = 0;
       var order = `distance_in_meters(${rowQueryComponents.fieldName}, "POINT(${mousePosition.lng} ${mousePosition.lat})")`;
 
-      var withinBox = `within_box(${rowQueryComponents.fieldName}, ${`${bounds.northeast.lat}, ${bounds.northeast.lng}`}, ${`${bounds.southwest.lat}, ${bounds.southwest.lng}`})`;
+      var withinBox = `within_box(${rowQueryComponents.fieldName}, ${bounds.northeast.lat}, ${bounds.northeast.lng}, ${bounds.southwest.lat}, ${bounds.southwest.lng})`;
 
       var whereClause;
       if (_.isPresent(rowQueryComponents.whereClause)) {
@@ -365,19 +365,13 @@ function FeatureMapController(
         try {
           defaultBounds = LeafletHelpersService.buildBounds(defaultExtent);
         } catch (error) {
-          $log.warn(
-            `Unable to build bounds from defaultExtent:
-            ${defaultExtent}`
-          );
+          $log.warn(`Unable to build bounds from defaultExtent: ${defaultExtent}`);
           return serverExtent;
         }
         try {
           featureBounds = LeafletHelpersService.buildBounds(serverExtent);
         } catch (error) {
-          $log.warn(
-            `Unable to build bounds from serverExtent:
-            ${serverExtent}`
-          );
+          $log.warn(`Unable to build bounds from serverExtent: ${serverExtent}`);
           return serverExtent;
         }
         if (defaultBounds.contains(featureBounds)) {

@@ -277,7 +277,7 @@ angular.module('socrataCommon.directives').directive('richTextEditor', function(
   function showPlaceholderIfEmpty(element, editor) {
     if ($(editor.getHTML()).text() === '' && element.attr('placeholder') !== typeof undefined) {
       editor.setHTML(
-        `<div class="placeholder" style="color:${'rgba(0,0,0,0.4)'}">${element.attr('placeholder')}</div>`
+        `<div class="placeholder" style="color: rgba(0,0,0,0.4);">${element.attr('placeholder')}</div>`
       );
     }
   }

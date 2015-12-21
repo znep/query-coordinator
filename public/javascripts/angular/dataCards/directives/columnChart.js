@@ -1,11 +1,10 @@
 const angular = require('angular');
 var templateUrl = require('angular_templates/dataCards/columnChart.html');
-var ColumnChart = require('socrata-visualizations').views.ColumnChart;
+const ColumnChart = require('socrata-visualizations').views.ColumnChart;
 
 function columnChart(
   $parse,
   $timeout,
-  $window,
   FlyoutService,
   I18n,
   PluralizeService,

@@ -1,6 +1,5 @@
 const angular = require('angular');
 angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateHelpers) {
-  'use strict';
 
   function BinaryOperatorFilter(operator, operand, humanReadableOperand) {
     if (!_.isString(operator)) { throw new Error('BinaryOperatorFilter passed invalid operator'); }

@@ -65,7 +65,7 @@ function getPlugins() {
       new webpack.optimize.UglifyJsPlugin({
         mangle: true,
         compress: {
-          'drop_console': true,
+          drop_console: true,
           warnings: false
         },
         output: {

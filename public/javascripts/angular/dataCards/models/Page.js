@@ -151,17 +151,30 @@
         var allCardsFilters;
 
         if (pageMetadata.sourceVif) {
-          allCardsFilters = Rx.Observable.returnValue(_.map(pageMetadata.sourceVif.filters, function(filter) {
-            return {
-              filters: [
-                Filter.deserialize(filter)
-              ],
-              fieldName: filter.columnName,
-              filteredColumn: filter.columnName,
-              uniqueId: _.uniqueId()
-            };
-          }));
+
+          allCardsFilters = Rx.Observable.returnValue(
+            _.map(pageMetadata.sourceVif.filters, function(filter) {
+              var filteredColumn;
+
+              if (filter.function === 'BinaryComputedGeoregionOperator') {
+                filteredColumn = filter.computedColumnName;
+              } else {
+                filteredColumn = filter.columnName;
+              }
+
+              return {
+                filters: [
+                  Filter.deserialize(filter)
+                ],
+                fieldName: filter.columnName,
+                filteredColumn: filteredColumn,
+                uniqueId: _.uniqueId()
+              };
+            })
+          );
+
         } else {
+
           allCardsFilters = self.observe('cards').flatMap(function(cards) {
             if (!cards) {
               return Rx.Observable.never();
@@ -179,6 +192,7 @@
               });
             });
           });
+
         }
 
         self.defineEphemeralObservablePropertyFromSequence('activeFilters',

@@ -82,15 +82,27 @@ class StandaloneVisualizationManager
   private
 
   def card_from_vif(vif)
-    {
+    card = {
       :activeFilters => [],
       :cardOptions => {},
       :cardSize => 1,
       :cardType => card_type_from_vif(vif),
       :expanded => true,
       :fieldName => vif[:columnName],
-      :computedColumn => vif[:computedColumn]
+      :computedColumn => nil
     }.with_indifferent_access
+
+    # Not all VIFs will have a :computedColumn property, which
+    # lives in the :configuration hash.
+    #
+    # The frontend may still assume this property is always present
+    # and that it can be null, so we override nil to ensure that we
+    # always output a value even if we don't have one on the input.
+    if vif[:configuration].present? && vif[:configuration][:computedColumn].present?
+      card[:computedColumn] = vif[:configuration][:computedColumn]
+    end
+
+    card
   end
 
   def display_type_from_vif(vif)

@@ -345,7 +345,8 @@
     Rx.Observable.subscribeLatest(
       datasetFilterToggleFeature$,
       primaryKey$,
-      function(feature, primaryKey) {
+      computedColumnName$.filter(_.isDefined),
+      function(feature, primaryKey, computedColumnName) {
         var featureId = feature.properties[primaryKey];
         var humanReadableName = feature.properties[Constants.HUMAN_READABLE_PROPERTY_NAME];
         var filters = [];
@@ -358,10 +359,11 @@
 
         if (!hasFiltersOnCard) {
           var filter = _.isString(featureId) ?
-            new Filter.BinaryOperatorFilter('=', featureId, humanReadableName) :
+            new Filter.BinaryComputedGeoregionOperatorFilter('=', featureId, computedColumnName, humanReadableName) :
             new Filter.IsNullFilter(true);
           filters = [filter];
         }
+
         $scope.$safeApply(function() {
           $scope.model.set('activeFilters', filters);
         });

@@ -1,6 +1,11 @@
 // Karma configuration
 // Generated on Wed Jul 29 2015 12:58:51 GMT-0700 (PDT)
 
+var webpackConfig = require('./webpack.config');
+delete webpackConfig.entry;
+delete webpackConfig.output;
+webpackConfig.output = { pathinfo: true };
+
 module.exports = function(config) {
   config.set({
 
@@ -10,7 +15,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'chai', 'sinon', 'phantomjs-shim'],
 
 
     // list of files / patterns to load in the browser
@@ -25,31 +30,9 @@ module.exports = function(config) {
       'bower_components/socrata-utils/socrata.utils.js',
       'bower_components/vector-tile/dist/vectortile.js',
       'bower_components/simple-statistics/src/simple_statistics.js',
-      'bower_components/chroma-js/chroma.js',      
-      'socrata.visualizations.DataProvider.js',
-      'socrata.visualizations.MetadataProvider.js',
-      'socrata.visualizations.SoqlDataProvider.js',
-      'socrata.visualizations.GeospaceDataProvider.js',
-      'socrata.visualizations.TileserverDataProvider.js',
-      'socrata.visualizations.pbf.js',
-      'socrata.visualizations.VectorTileManager.js',
-      'socrata.visualizations.Visualization.js',
-      'socrata.visualizations.ColumnChart.js',
-      'socrata.visualizations.ChoroplethMapUtils.js',
-      'socrata.visualizations.ChoroplethMap.js',
-      'socrata.visualizations.FeatureMap.js',
-      'socrata.visualizations.FlyoutRenderer.js',
-      'socrata.visualizations.RowInspector.js',
-      'socrata.visualizations.rowInspector.css',
-      'socrata.visualizations.columnChart.css',
-      'socrata.visualizations.timelineChart.css',
-      'socrata.visualizations.featureMap.css',
-      'socrata.visualizations.flyoutRenderer.css',
-      'socrata.visualizations.TimelineChart.js',
-      'components/SocrataColumnChart.js',
-      'components/SocrataFeatureMap.js',
-      'components/SocrataTimelineChart.js',
-      'components/SocrataChoroplethMap.js',
+      'bower_components/chroma-js/chroma.js',
+      'dist/socrata-visualizations.css',
+      'dist/socrata-visualizations.js',
       'karma/**/*spec.js',
       'karma/choroplethTestData/*.js',
       'karma/timelineTestData/*.js'
@@ -64,7 +47,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'socrata.visualizations*.js': ['coverage']
+      'karma/**/*spec.js': ['webpack']
     },
 
     // test results reporter to use
@@ -111,7 +94,12 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: false,
+
+    webpack: webpackConfig, // TODO: make a dev version of this confic with source maps; specify that one
+    webpackMiddleware: {
+      noInfo: true
+    }
   })
-}
+};
 

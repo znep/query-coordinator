@@ -6,3 +6,5 @@ REVISION
 marathon.properties
 *.swp
 npm-debug.log
+dist
+.idea

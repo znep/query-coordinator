@@ -5,8 +5,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <!-- `leaflet.css` must be included or the map will render incorrectly -->
     <link rel="stylesheet" media="all" href="../bower_components/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" media="all" href="../socrata.visualizations.choroplethMap.css">
-    <link rel="stylesheet" media="all" href="../socrata.visualizations.flyoutRenderer.css">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
     <style type="text/css">
 
       body {
@@ -29,28 +28,16 @@
     <div id="choropleth1"></div>
     <div id="choropleth2"></div>
   </body>
-  <!-- lodash must be loaded before `socrata.utils.js` -->
+
+  <!-- Include external dependencies -->
   <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
-  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
-  <!-- jquery must be loaded before `socrata.visualizations.Visualization.js` -->
   <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
-  <!-- `socrata.visualizations.Visualization.js` must be loaded before `socrata.visualizations.Choropleth.js` -->
-  <script type="text/javascript" src="../socrata.visualizations.Visualization.js"></script>
-  <!-- leaflet must be loaded before `socrata.visualizations.Choropleth.js` -->
-  <script type="text/javascript" src="../bower_components/leaflet/dist/leaflet.js"></script>
-  <!-- d3 must be loaded before `socrata.visualizations.Choropleth.js` -->
   <script type="text/javascript" src="../bower_components/d3/d3.js"></script>
-  <script type="text/javascript" src="../bower_components/simple-statistics/src/simple_statistics.js"></script>
-  <script type="text/javascript" src="../bower_components/chroma-js/chroma.js"></script>
-  <!-- `socrata.visualizations.ChoroplethUtils.js` must be loaded before `socrata.visualizations.Choropleth.js` -->
-  <script type="text/javascript" src="../socrata.visualizations.ChoroplethMapUtils.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.ChoroplethMap.js"></script>
-  <!-- `socrata.visualizations.DataProvider.js` must be loaded before `socrata.visualizations.SoqlDataProvider.js` -->
-  <script type="text/javascript" src="../socrata.visualizations.DataProvider.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.SoqlDataProvider.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.GeospaceDataProvider.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.FlyoutRenderer.js"></script>
-  <script type="text/javascript" src="../components/SocrataChoroplethMap.js"></script>
+  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
   <script type="text/javascript">
 
     $(document).ready(function() {
@@ -67,7 +54,7 @@
        * Render things!
        */
 
-      var flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
       var choroplethVIF = {
         'aggregation': {

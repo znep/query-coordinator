@@ -156,7 +156,7 @@
             _.map(pageMetadata.sourceVif.filters, function(filter) {
               var filteredColumn;
 
-              if (filter.function === 'BinaryComputedGeoregionOperator') {
+              if (filter['function'] === 'BinaryComputedGeoregionOperator') {
                 filteredColumn = filter.computedColumnName;
               } else {
                 filteredColumn = filter.columnName;

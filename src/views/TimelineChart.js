@@ -1607,150 +1607,6 @@ function TimelineChart(element, vif) {
       renderChartFilteredValues();
     }
 
-    /**
-     * @param {DOM Element} target - The DOM element which triggered the
-     *                               flyout.
-     * @return {String} The HTML representation of the flyout content.
-     */
-    function renderFlyout(target) {
-
-      var label;
-      var unfilteredValue;
-      var unfilteredUnit;
-      var filteredValue;
-      var filteredUnit;
-      var flyoutContent;
-      var flyoutSpanClass;
-      var shouldDisplayFlyout;
-      var withinSelection;
-      var showBlueFiltered;
-      var $target = $(target);
-      var date;
-      var isInterval = $target.
-        is(flyoutIntervalTopSelectors.concat([flyoutIntervalPathSelector]).join(', '));
-      var definedDatum = !_.isUndefined(currentDatum) && !_.isNull(currentDatum);
-      var formatStrings = {
-        DECADE: 'YYYYs',
-        YEAR: 'YYYY',
-        MONTH: 'MMMM YYYY',
-        DAY: 'D MMMM YYYY'
-      };
-      var formatFlyoutValue = function(unit, value) {
-        var formattedValue;
-
-        unit = (value === 1) ?
-          cachedRowDisplayUnit :
-          cachedRowDisplayUnit.pluralize();
-
-        formattedValue = (_.isFinite(value)) ?
-          '{0} {1}'.format(
-            window.socrata.utils.formatNumber(value),
-            unit
-          ) :
-          I18n.common.noValue;
-
-        return formattedValue;
-      };
-
-      if (isInterval) {
-
-        label = $target.attr('data-flyout-label');
-        date = $target.attr('data-start');
-        unfilteredValue = $target.attr('data-aggregate-unfiltered');
-        unfilteredValue = _.isUndefined(unfilteredValue) ? null : parseFloat(unfilteredValue);
-        filteredValue = $target.attr('data-aggregate-filtered');
-        filteredValue = _.isUndefined(filteredValue) ? null : parseFloat(filteredValue);
-
-      } else if (definedDatum) {
-
-        label = currentDatum.hasOwnProperty('flyoutLabel') ?
-          currentDatum.flyoutLabel :
-          moment(currentDatum.date).format(formatStrings[datasetPrecision]);
-        date = currentDatum.date;
-        unfilteredValue = currentDatum.unfiltered;
-        filteredValue = currentDatum.filtered;
-      }
-
-      shouldDisplayFlyout = (mousePositionWithinChartLabels ||
-        mousePositionWithinChartDisplay) &&
-        !_.isNull(datasetPrecision) &&
-        !currentlyDragging;
-
-      if (shouldDisplayFlyout) {
-
-        withinSelection = !_.isNull(selectionStartDate) &&
-          !_.isNull(selectionEndDate) &&
-          selectionIsCurrentlyRendered;
-
-        withinSelection = isInterval ?
-          withinSelection && (date === selectionStartDate) :
-          withinSelection && (date >= selectionStartDate) && (date <= selectionEndDate);
-
-        showBlueFiltered = !selectionIsCurrentlyRendered &&
-          filteredValue !== unfilteredValue;
-
-        unfilteredValue = formatFlyoutValue(unfilteredUnit, unfilteredValue);
-        filteredValue = formatFlyoutValue(filteredUnit, filteredValue);
-
-        flyoutContent = [
-           '<div class="flyout-title">{0}</div>',
-           '<div class="flyout-row">',
-             '<span class="flyout-cell">{1}</span>',
-             '<span class="flyout-cell">{2}</span>',
-           '</div>'
-        ];
-
-        if (withinSelection || showBlueFiltered) {
-
-          flyoutSpanClass = (withinSelection) ? 'is-selected' : 'emphasis';
-          flyoutContent.push(
-            '<div class="flyout-row">',
-              '<span class="flyout-cell {3}">{4}</span>',
-              '<span class="flyout-cell {3}">{5}</span>',
-            '</div>');
-        }
-
-        if (withinSelection && isInterval) {
-
-          flyoutContent.push(
-            '<div class="flyout-row">',
-              '<span class="flyout-cell">&#8203;</span>',
-              '<span class="flyout-cell">&#8203;</span>',
-            '</div>',
-            '<div class="flyout-row">',
-              '<span class="flyout-cell">{6}</span>',
-              '<span class="flyout-cell"></span>',
-            '</div>');
-        }
-
-        flyoutContent = flyoutContent.
-          join('').
-          format(
-            _.escape(label),
-            I18n.flyout.total,
-            _.escape(unfilteredValue),
-            flyoutSpanClass,
-            I18n.flyout.filteredAmount,
-            _.escape(filteredValue),
-            I18n.flyout.clearFilterLong
-          );
-      }
-
-      return flyoutContent;
-    }
-
-    function renderSelectionMarkerFlyout() {
-      if (!currentlyDragging) {
-        return '<div class="flyout-title">{0}</div>'.format(I18n.timelineChart.dragHelp);
-      }
-    }
-
-    function renderClearSelectionMarkerFlyout() {
-      if (mousePositionWithinChartLabels) {
-        return '<div class="flyout-title">{0}</div>'.format(I18n.timelineChart.dragClearHelp);
-      }
-    }
-
     function enterDraggingState() {
       currentlyDragging = true;
       selectionIsCurrentlyRendered = false;
@@ -1786,17 +1642,14 @@ function TimelineChart(element, vif) {
     }
 
     function requestChartFilterByCurrentSelection() {
-      scope.$emit(
-        'filter-timeline-chart',
-        {
-          start: selectionStartDate,
-          end: selectionEndDate
-        }
-      );
+      self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_SELECTION', {
+        start: selectionStartDate,
+        end: selectionEndDate
+      });
     }
 
     function requestChartFilterReset() {
-      scope.$emit('filter-timeline-chart', null);
+      self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_SELECTION', null);
     }
 
     /**

@@ -182,7 +182,14 @@
       function conditionallyMigrateChoroplethBinaryOperatorFilter(blob) {
         var migratedBlob = _.cloneDeep(blob);
 
-        if (migratedBlob.hasOwnProperty('computedColumn')) {
+        if (
+          migratedBlob.hasOwnProperty('computedColumn') &&
+          // If `computedColumn` is null, that means that this is not a card based
+          // on a computed column. We should therefore not attmept to migrate any
+          // BinaryOperator filters attached to it.
+          migratedBlob.computedColumn !== null &&
+          migratedBlob.hasOwnProperty('activeFilters')
+        ) {
 
           migratedBlob.activeFilters = migratedBlob.activeFilters.map(function(filterBlob) {
             // The purpose of this is to migrate old 'BinaryOperator' filters on

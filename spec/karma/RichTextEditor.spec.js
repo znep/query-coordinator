@@ -343,6 +343,94 @@ describe('RichTextEditor', function() {
       });
     });
 
+    describe('Link Tip actions', function() {
+      var hasFormatA;
+
+      beforeEach(function() {
+        // This function is how RichTextEditor determines if the path is in an
+        // anchor.
+        Squire.prototype.hasFormat = function(formatName) {
+          if (formatName === 'a') {
+            return hasFormatA;
+          } else {
+            throw new Error('unexpected hasFormat call');
+          }
+        };
+      });
+
+      function invokeSquireHandlersFor(eventName) {
+        // Look at addEventListener calls on the Squire stub to pull out
+        // RichTextEditor's event handlers.
+
+        // Array of arguments to addEventListener. Form:
+        // [
+        //   [ eventName, handler ],
+        //   [ eventName, handler ],
+        //   ...
+        // ]
+        var allAddEventListenerArgs = Squire.stubs.addEventListener.args;
+
+        _.chain(allAddEventListenerArgs).
+          filter(function(singleCallArgs) { // Grab only addEventListener calls for eventName.
+            return singleCallArgs[0] === eventName;
+          }).
+          pluck(1). // Grab the actual handler functions.
+          invoke(_.call).value(); // Call 'em all (value() is needed to actually realize the chain).
+      }
+
+      describe('when a user changes path (focus position)', function() {
+        describe('to a link (anchor tag)', function() {
+          beforeEach(function() { hasFormatA = true; });
+          it('should dispatch LINK_TIP_OPEN', function(done) {
+            storyteller.dispatcher.register(function(action) {
+              if (action.action === 'LINK_TIP_OPEN') {
+                assert.deepEqual(
+                  action,
+                  {
+                    action: 'LINK_TIP_OPEN',
+                    editorId: '1',
+                    text: 'some text',
+                    link: 'an href',
+                    openInNewWindow: false,
+                    boundingClientRect: { foo: 'bar' }
+                  }
+                );
+                done();
+              }
+            });
+
+            // The getSelection stub needs a little more
+            // functionality.
+            Squire.prototype.getSelection = _.wrap(
+              Squire.prototype.getSelection,
+              function(func, args) {
+                var returnValue = func(args);
+                returnValue.startContainer = {
+                  textContent: 'some text',
+                  href: 'an href',
+                  getAttribute: _.constant('attribute value'),
+                  getBoundingClientRect: _.constant({ foo: 'bar' }),
+                  nodeType: 1
+                };
+                return returnValue;
+              });
+            invokeSquireHandlersFor('pathChange');
+          });
+        });
+        describe('to anything other than a link', function() {
+          beforeEach(function() { hasFormatA = false; });
+          it('should dispatch LINK_TIP_CLOSE', function(done) {
+            storyteller.dispatcher.register(function(action) {
+              if (action.action === 'LINK_TIP_CLOSE') {
+                done();
+              }
+            });
+            invokeSquireHandlersFor('pathChange');
+          });
+        });
+      });
+    });
+
   });
 
   describe('.deselect()', function() {

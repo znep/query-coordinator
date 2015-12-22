@@ -1,9 +1,10 @@
 window.socrata.storyteller.SquireMocker = {
 
   mock: function() {
+    var addEventListenerStub = sinon.stub();
     var Squire = function() {}
     Squire.prototype = {
-      addEventListener: function() {},
+      addEventListener: addEventListenerStub,
       getDocument: function() {
         return document.createDocumentFragment();
       },
@@ -22,6 +23,9 @@ window.socrata.storyteller.SquireMocker = {
       setHTML: function() {}
     };
     window.Squire = Squire;
+    window.Squire.stubs = {
+      addEventListener: addEventListenerStub
+    };
   },
 
   unmock: function() {

@@ -366,7 +366,10 @@
       combineLatest(datasetColumns$, function(pageFilters, columns) {
 
         function humanReadableOperator(filter) {
-          if (filter instanceof Filter.BinaryOperatorFilter) {
+          if (
+            filter instanceof Filter.BinaryOperatorFilter ||
+            filter instanceof Filter.BinaryComputedGeoregionOperatorFilter
+          ) {
             if (filter.operator === '=') {
               return I18n.filter.is;
             } else {
@@ -388,7 +391,10 @@
         }
 
         function humanReadableOperand(filter) {
-          if (filter instanceof Filter.BinaryOperatorFilter) {
+          if (
+            filter instanceof Filter.BinaryOperatorFilter ||
+            filter instanceof Filter.BinaryComputedGeoregionOperatorFilter
+          ) {
             if (_.isPresent(filter.operand.toString().trim())) {
               return filter.humanReadableOperand || filter.operand;
             } else {

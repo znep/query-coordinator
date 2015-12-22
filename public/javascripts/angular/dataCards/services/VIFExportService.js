@@ -86,7 +86,7 @@
       }
 
       function addChoroplethComputedColumn(vif, cardModel) {
-        vif.computedColumn = cardModel.getCurrentValue('computedColumn');
+        vif.configuration.computedColumn = cardModel.getCurrentValue('computedColumn');
       }
 
       socrata.utils.assertIsOneOfTypes(pageModel, 'object');

@@ -156,6 +156,8 @@
           blob.cardType = null;
         }
 
+        blob = conditionallyMigrateChoroplethBinaryOperatorFilter(blob);
+
         var instance = new Card(page, blob.fieldName, blob);
         _.each(_.keys(schemas.getSchemaDefinition(instance.version).properties), function(field) {
           if (field === 'fieldName' || field === 'cardOptions') {
@@ -175,6 +177,44 @@
 
       function validateCardBlobSchema(schemaVersion, blob) {
         schemas.assertValidAgainstVersion(schemaVersion, blob, 'Card deserialization failed.');
+      }
+
+      function conditionallyMigrateChoroplethBinaryOperatorFilter(blob) {
+        var migratedBlob = _.cloneDeep(blob);
+
+        if (
+          migratedBlob.hasOwnProperty('computedColumn') &&
+          // If `computedColumn` is null, that means that this is not a card based
+          // on a computed column. We should therefore not attmept to migrate any
+          // BinaryOperator filters attached to it.
+          migratedBlob.computedColumn !== null &&
+          migratedBlob.hasOwnProperty('activeFilters')
+        ) {
+
+          migratedBlob.activeFilters = migratedBlob.activeFilters.map(function(filterBlob) {
+            // The purpose of this is to migrate old 'BinaryOperator' filters on
+            // Choropleth cards to use the new 'BinaryComputedGeoregionOperator'
+            // filter instead. If we deserialize from 'BinaryOperator' into a
+            // 'BinaryComputedGeoregionOperator', then the next time the page is
+            // saved or a VIF is exported it will have the new, correct filter type.
+            if (filterBlob['function'] === 'BinaryOperator') {
+
+              return _.extend(
+                {},
+                filterBlob,
+                {
+                  'function': 'BinaryComputedGeoregionOperator',
+                  'computedColumnName': migratedBlob.computedColumn
+                }
+              );
+
+            } else {
+              return filterBlob;
+            }
+          });
+        }
+
+        return migratedBlob;
       }
 
       return Card;

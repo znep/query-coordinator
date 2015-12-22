@@ -268,17 +268,43 @@
           selection.startContainer :
           selection.startContainer.parentNode;
 
-        storyteller.dispatcher.dispatch({
-          action: Actions.LINK_TIP_OPEN,
-          editorId: _self.id,
-          text: anchor.textContent,
-          link: anchor.href,
-          openInNewWindow: anchor.getAttribute('target') === '_blank',
-          boundingClientRect: anchor.getBoundingClientRect()
+        // TODO gferrari (12/21/2015): Architectural issue:
+        // The 'pathChange' event triggers '_linkActionTip', which dispatches
+        // LINK_TIP_OPEN and LINK_TIP_CLOSE.
+        // Creating a new RichTextEditor triggers 'pathChange' (through the initial call to
+        // setHTML). RichTextEditors are created during STORY_INSERT_BLOCK actions.
+        //
+        // This means LINK_TIP_OPEN and LINK_TIP_CLOSE actions will be dispatched during STORY_INSERT_BLOCK.
+        // This double dispatch is not allowed in the Flux paradigm. As a dirty hack, we're deferring
+        // the dispatch of the LINK_TIP_* actions, but this is only justified because the architecturally
+        // preferable refactor requires additional deliberation and costing.
+        //
+        // The root of the issue stems from the fact that RichTextEditor simultaneously implements
+        // store behavior (in this case, is the source of truth for app state and app state changes, note 1),
+        // and view behavior (deals with presentation and user input, including dispatching actions).
+        //
+        // A possible improvement to the current RichTextEditor architecture would be to implement
+        // a TextEditorStore or maybe a StoryEditStore that exposes enough information for the
+        // LinkTipRenderer to determine if it should show itself or not. In this specific case,
+        // StoryEditStore could expose a path() getter, to be consumed by LinkTipRenderer.
+        //
+        // Note 1: getContent, getContentHeight, select, deselect, ....
+        _.defer(function() {
+          storyteller.dispatcher.dispatch({
+            action: Actions.LINK_TIP_OPEN,
+            editorId: _self.id,
+            text: anchor.textContent,
+            link: anchor.href,
+            openInNewWindow: anchor.getAttribute('target') === '_blank',
+            boundingClientRect: anchor.getBoundingClientRect()
+          });
         });
       } else {
-        storyteller.dispatcher.dispatch({
-          action: Actions.LINK_TIP_CLOSE
+        // regarding the defer(), see giant comment above.
+        _.defer(function() {
+          storyteller.dispatcher.dispatch({
+            action: Actions.LINK_TIP_CLOSE
+          });
         });
       }
     }

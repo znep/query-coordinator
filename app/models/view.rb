@@ -1315,7 +1315,12 @@ class View < Model
 
   def dataset?
     # 'filtered view' is anything that uses sorting / roll-up / filter / conditional formatting
-    display_name == 'table'
+    #
+    # This duplicates the logic used in #display to determine which Displays
+    # class to use, as well as the logic within Displays::Table to determine
+    # if it's a table, since we can't rely on the display_name being "table"
+    # when we throw localization into the mix.
+    !(is_blobby? || new_view || is_href? || is_api?) && is_blist?
   end
 
   def owned_by?(user)

@@ -9,6 +9,7 @@ class NewUxBootstrapController < ActionController::Base
   include CardTypeMapping
 
   before_filter :hook_auth_controller
+  before_filter :set_locale
 
   # Keep track of the types of cards we added, so we can give a spread
   attr_accessor :skipped_cards_by_type, :added_card_types, :page_metadata_manager
@@ -506,4 +507,8 @@ class NewUxBootstrapController < ActionController::Base
     dataset.query.present? && dataset.query.groupBys.present?
   end
 
+  # EN-1111: Force Data Lens to always use English
+  def set_locale
+    I18n.locale = 'en'
+  end
 end

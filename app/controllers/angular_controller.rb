@@ -119,6 +119,9 @@ class AngularController < ActionController::Base
   def view_vif
     parsed_vif = params[:vif].with_indifferent_access
 
+    # First fetch the current user's profile.
+    @current_user = current_user
+
     @page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(
         parsed_vif, nil, nil)
 

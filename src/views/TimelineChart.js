@@ -445,14 +445,14 @@ function TimelineChart(element, vif) {
     }
 
     self.emitEvent(
-      'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+      'SOCRATA_VISUALIZATION_TIMELINE_FLYOUT',
       payload
     );
   }
 
   function hideFlyout(event) {
     self.emitEvent(
-      'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+      'SOCRATA_VISUALIZATION_TIMELINE_FLYOUT',
       null
     );
   }
@@ -1642,14 +1642,14 @@ function TimelineChart(element, vif) {
     }
 
     function requestChartFilterByCurrentSelection() {
-      self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_SELECTION', {
+      self.emitEvent('SOCRATA_VISUALIZATION_TIMELINE_SELECTION', {
         start: selectionStartDate,
         end: selectionEndDate
       });
     }
 
     function requestChartFilterReset() {
-      self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_SELECTION', null);
+      self.emitEvent('SOCRATA_VISUALIZATION_TIMELINE_SELECTION', null);
     }
 
     /**

@@ -358,26 +358,6 @@ describe('RichTextEditor', function() {
         };
       });
 
-      function invokeSquireHandlersFor(eventName) {
-        // Look at addEventListener calls on the Squire stub to pull out
-        // RichTextEditor's event handlers.
-
-        // Array of arguments to addEventListener. Form:
-        // [
-        //   [ eventName, handler ],
-        //   [ eventName, handler ],
-        //   ...
-        // ]
-        var allAddEventListenerArgs = Squire.stubs.addEventListener.args;
-
-        _.chain(allAddEventListenerArgs).
-          filter(function(singleCallArgs) { // Grab only addEventListener calls for eventName.
-            return singleCallArgs[0] === eventName;
-          }).
-          pluck(1). // Grab the actual handler functions.
-          invoke(_.call).value(); // Call 'em all (value() is needed to actually realize the chain).
-      }
-
       describe('when a user changes path (focus position)', function() {
         describe('to a link (anchor tag)', function() {
           beforeEach(function() { hasFormatA = true; });
@@ -414,7 +394,7 @@ describe('RichTextEditor', function() {
                 };
                 return returnValue;
               });
-            invokeSquireHandlersFor('pathChange');
+            socrata.storyteller.SquireMocker.invokeStubEvent('pathChange');
           });
         });
         describe('to anything other than a link', function() {
@@ -425,7 +405,7 @@ describe('RichTextEditor', function() {
                 done();
               }
             });
-            invokeSquireHandlersFor('pathChange');
+            socrata.storyteller.SquireMocker.invokeStubEvent('pathChange');
           });
         });
       });

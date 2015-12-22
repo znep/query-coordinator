@@ -48,7 +48,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
       throw new Error('BinaryComputedGeoregionOperatorFilter passed invalid operand');
     }
 
-    if (_.isUndefined(computedColumnName) || _.isNull(computedColumnName)) {
+    if (!_.isString(computedColumnName)) {
       throw new Error('BinaryComputedGeoregionOperatorFilter passed invalid computedColumnName');
     }
 
@@ -58,6 +58,10 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
     this.humanReadableOperand = humanReadableOperand;
   }
 
+  // Note that unlike all the other filter types, the BinaryComputedGeoregionOperator
+  // will use the `computedColumnName` that it stores internally to generate a SoQL
+  // where clause fragment, as opposed to taking the column name (a.k.a. fieldname)
+  // as an argument.
   BinaryComputedGeoregionOperatorFilter.prototype.generateSoqlWhereFragment = function() {
 
     return SoqlHelpers.formatFieldName(this.computedColumnName) +

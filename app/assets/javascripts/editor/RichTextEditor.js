@@ -135,6 +135,11 @@
       return _lastContentHeight;
     };
 
+    this.applyThemeFont = function(theme) {
+      var headElement = _editorElement[0].contentDocument.querySelector('head');
+      $(headElement).append($(theme));
+    };
+
     // Add a `themeName` class to the html root of the iframe
     this.applyThemeClass = function(theme) {
       var htmlElement = _editorElement[0].contentDocument.documentElement;

@@ -5,6 +5,7 @@ RSpec.describe Theme, type: :model do
   let(:id) { 8383 }
   let(:title) { 'Custom Configuration for Example.com' }
   let(:description) { 'Description for custom theme.' }
+  let(:google_font_code) { "<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>" }
   let(:updated_at) { '123546789' }
   let(:domain_cname) { 'data.bobloblawslawblog.com' }
   let(:persisted) { nil }
@@ -26,6 +27,7 @@ RSpec.describe Theme, type: :model do
       'description' => description,
       'id' => id,
       'title' => title,
+      'google_font_code' => google_font_code,
       'updated_at' => updated_at,
       'domain_cname' => domain_cname,
       'persisted' => persisted
@@ -44,6 +46,10 @@ RSpec.describe Theme, type: :model do
 
   it 'sets title from properties' do
     expect(subject.title).to eq(title)
+  end
+
+  it 'sets google_font_code from properties' do
+    expect(subject.google_font_code).to eq(google_font_code)
   end
 
   it 'sets description from properties' do
@@ -74,16 +80,36 @@ RSpec.describe Theme, type: :model do
     end
   end
 
+  describe '#valid?' do
+    context 'when google_font_code is valid' do
+
+      it 'does not set error message' do
+        expect(subject).to be_valid
+        expect(subject.errors[:google_font_code]).to be_blank
+      end
+    end
+
+    context 'when google_font_code error' do
+      let(:google_font_code) { 'Wrong' }
+
+      it 'sets error message' do
+        expect(subject).to_not be_valid
+        expect(subject.errors[:google_font_code]).to eq(['is invalid'])
+      end
+
+    end
+  end
+
   describe '#save' do
     let(:sample_core_config) { JSON.parse(fixture('story_theme.json').read).first }
 
-
-    context 'when story is new' do
+    context 'when theme is new' do
       let(:theme_config) do
         {
           'css_variables' => theme_css_vars,
           'description' => description,
           'title' => title,
+          'google_font_code' => google_font_code,
           'domain_cname' => domain_cname
         }
       end
@@ -93,7 +119,7 @@ RSpec.describe Theme, type: :model do
         subject.save
       end
 
-      context 'when successfull' do
+      context 'when successful' do
         before do
           allow(CoreServer).to receive(:create_or_update_configuration).and_return(sample_core_config)
           subject.save
@@ -112,7 +138,7 @@ RSpec.describe Theme, type: :model do
         end
       end
 
-      context 'when error' do
+      context 'when CoreServer error' do
         let(:error_message) { 'This is an error message' }
         let(:error_response) do
           {
@@ -127,7 +153,7 @@ RSpec.describe Theme, type: :model do
         end
 
         it 'sets errors attribute' do
-          expect(subject.errors).to eq(error_message)
+          expect(subject.errors[:base]).to eq([error_message])
         end
 
         it 'leaves persisted as false' do
@@ -136,13 +162,14 @@ RSpec.describe Theme, type: :model do
       end
     end
 
-    context 'when story exists' do
+    context 'when theme exists' do
       let(:theme_config) do
         {
           'css_variables' => theme_css_vars,
           'description' => description,
           'id' => id,
           'title' => title,
+          'google_font_code' => google_font_code,
           'updated_at' => updated_at,
           'domain_cname' => domain_cname,
           'persisted' => persisted
@@ -154,6 +181,20 @@ RSpec.describe Theme, type: :model do
         subject.save
       end
     end
+
+    context 'when theme is invalid' do
+      before do
+        allow(subject).to receive(:valid?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(subject.save).to eq(false)
+      end
+
+      it 'leaves persisted as false' do
+        expect(subject).to_not be_persisted
+      end
+    end
   end
 
   describe '#update_attributes' do
@@ -161,7 +202,8 @@ RSpec.describe Theme, type: :model do
       {
         'css_variables' => theme_css_vars.merge('$newCssVar' => '1px'),
         'description' => 'updated description',
-        'title' => 'updated title'
+        'title' => 'updated title',
+        'google_font_code' => "<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>"
       }
     end
 
@@ -191,6 +233,11 @@ RSpec.describe Theme, type: :model do
     it 'updates css_variables' do
       subject.update_attributes(attributes)
       expect(subject.css_variables).to eq(theme_css_vars.merge('$newCssVar' => '1px'))
+    end
+
+    it 'updates google_font_code' do
+      subject.update_attributes(attributes)
+      expect(subject.google_font_code).to eq("<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>")
     end
   end
 
@@ -254,7 +301,8 @@ RSpec.describe Theme, type: :model do
         'properties' => [
           { 'name' => 'title', 'value' => title },
           { 'name' => 'description', 'value' => description },
-          { 'name' => 'css_variables', 'value' => theme_css_vars }
+          { 'name' => 'css_variables', 'value' => theme_css_vars },
+          { 'name' => 'google_font_code', 'value' => google_font_code }
         ],
         'type' => 'story_theme'
       }
@@ -272,6 +320,10 @@ RSpec.describe Theme, type: :model do
 
     it 'sets description from properties' do
       expect(subject.description).to eq(description)
+    end
+
+    it 'sets google_font_code from properties' do
+      expect(subject.google_font_code).to eq(google_font_code)
     end
 
     it 'sets updated_at from properties' do

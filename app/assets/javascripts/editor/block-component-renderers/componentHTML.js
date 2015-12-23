@@ -23,11 +23,28 @@
       componentData.value
     );
 
+    _applyThemeFontIfPresent(editor, theme);
     editor.applyThemeClass(theme);
 
     $element.one('destroy', function() {
       storyteller.richTextEditorManager.deleteEditor(editorId);
     });
+  }
+
+  /**
+  * @function _applyThemeFontIfPresent
+  * @description
+  * Applies the Google font code as the admin clicks through present custom themes in editor view.
+  *
+  * @param editor - The editor element
+  * @param {Object} theme - The current CSS theme to apply to the HTML content
+  */
+  function _applyThemeFontIfPresent(editor, theme) {
+    var customTheme = _.find(window.customThemes, { 'id': parseInt(theme.replace('custom-', ''), 10) });
+
+    if (_.has(customTheme, 'google_font_code')) {
+      editor.applyThemeFont(customTheme.google_font_code);
+    }
   }
 
   /**
@@ -73,6 +90,7 @@
     var editorId = $element.attr('data-editor-id');
     var editor = storyteller.richTextEditorManager.getEditor(editorId);
 
+    utils.assertIsOneOfTypes(theme, 'string');
     utils.assertHasProperty(componentData, 'value');
 
     utils.assert(
@@ -80,6 +98,7 @@
       'Cannot find the rich text editor associated with {0}.'.format(editorId)
     );
 
+    _applyThemeFontIfPresent(editor, theme);
     editor.applyThemeClass(theme);
     editor.setContent(componentData.value);
   }

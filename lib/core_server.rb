@@ -228,7 +228,6 @@ class CoreServer
     if options[:data].present?
       core_server_request_options[:body] = options[:data]
     end
-
     response = core_server_request_with_retries(core_server_request_options)
 
     # For any update actions, we need to add/update properties.
@@ -267,7 +266,25 @@ class CoreServer
         return_errors: true
       }
 
+      # Older custom themes that existed prior to the ability to add a google font code
+      # were causing errors because the google_font_code property was missing from their
+      # theme configurations. The following code adds the google_font_code property to
+      # the previously created themes so that this error no longer happens.
       result = core_server_request_with_retries(core_server_request_options)
+      
+      if result.try(:[], 'code') == 'not_found'
+        core_server_request_with_retries(
+        {
+          verb: :post,
+          path: "#{base_path}.json",
+          body: property,
+          return_errors: true
+        }
+      )
+
+      result
+      end
+
       raise result['message'] if result['error'].present?
     end
   end

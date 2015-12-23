@@ -75,7 +75,7 @@ describe('componentHTML jQuery plugin', function() {
       it('calls setContent on the correct editor instance', function () {
         var newValue = 'something';
 
-        $component.componentHTML({type: 'html', value: newValue});
+        $component.componentHTML({type: 'html', value: newValue}, theme);
         sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.getEditorSpy, editorId);
         sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.setContentSpy, newValue);
       });

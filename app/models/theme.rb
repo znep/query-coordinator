@@ -1,18 +1,23 @@
 class Theme
   include ActiveModel::Conversion
+  include ActiveModel::Validations
   extend ActiveModel::Naming
 
-  attr_reader :id, :title, :description, :css_variables, :updated_at, :domain_cname, :errors
+  VALID_GOOGLE_FONT_CODE_REGEX = /\A(<link href='https:\/\/fonts.googleapis.com\/css\?family=)[a-z0-9\|\+\:\,]{1,}*(' rel='stylesheet' type='text\/css'>)\z/i
+
+  attr_reader :id, :title, :description, :css_variables, :google_font_code, :updated_at, :domain_cname
+
+  validates :google_font_code, format: { with: VALID_GOOGLE_FONT_CODE_REGEX }, allow_blank: true
 
   def initialize(config_hash = {})
     @id = config_hash['id']
     @title = config_hash['title']
     @description = config_hash['description']
     @css_variables = config_hash['css_variables'] || {}
+    @google_font_code = config_hash['google_font_code'] || ''
     @updated_at = config_hash['updated_at'] || 0
     @domain_cname = config_hash['domain_cname']
     @persisted = config_hash['persisted'] || false
-    @errors = nil
   end
 
   def class_name
@@ -28,15 +33,18 @@ class Theme
   end
 
   def save
+    return false unless valid?
+
     result = CoreServer.create_or_update_configuration(id, to_core_config)
 
     if result['error'].present?
-      @errors = result['message']
+      errors[:base] << result['message']
     else
       @id = result['id']
       @updated_at = result['updatedAt']
       @persisted = true
     end
+
     @persisted
   end
 
@@ -44,6 +52,7 @@ class Theme
     @title = attributes['title']
     @description = attributes['description']
     @css_variables = attributes['css_variables']
+    @google_font_code = attributes['google_font_code']
 
     save
   end
@@ -78,6 +87,10 @@ class Theme
   #     {
   #       "name": "description",
   #       "value": "Drab Theme"
+  #     },
+  #     {
+  #       "name": "google_font_code",
+  #       "value": "<link href="https://www...>"
   #     },
   #     {
   #       "name": "css_variables",
@@ -115,7 +128,7 @@ class Theme
   # We are using these defaults in the theme admin form. They are used to whitelist
   # variables when saving as well. When adding fields to the form, make sure to add
   # a default to this list as well.
-  def self.defaults
+  def self.default_css_variables
     {
       '$base-type-size' => '1em',
       '$base-line-height' => '1.54',
@@ -160,6 +173,10 @@ class Theme
         {
           'name' => 'css_variables',
           'value' => css_variables
+        },
+        {
+          'name' => 'google_font_code',
+          'value' => google_font_code
         }
       ]
     }

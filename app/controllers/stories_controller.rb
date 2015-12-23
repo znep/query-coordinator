@@ -113,6 +113,9 @@ class StoriesController < ApplicationController
     if @story
       @inspiration_category_list = InspirationCategoryList.new.to_parsed_json
       @theme_list = ThemeList.new.themes
+      @custom_theme_list = @theme_list.
+        select { |theme| theme['id'].include?('custom-') }.
+        map { |theme| Theme.find(theme['id'].gsub('custom-', '')) }
       @published_story = PublishedStory.find_by_uid(params[:uid])
 
       respond_to do |format|

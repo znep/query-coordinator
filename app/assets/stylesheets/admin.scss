@@ -8,6 +8,7 @@
 
 @import 'bourbon';
 @import 'neat';
+@import 'lib/icon-font';
 
 .body-wrapper {
   @include outer-container;
@@ -68,4 +69,21 @@ header {
 
 .wide input {
   @include span-columns(6);
+}
+
+.checkbox {
+  margin: 1rem 0;
+}
+
+label[for="theme_google_font_code"], 
+#theme_google_font_code, 
+#google_font_code_help_text {
+  display: none;
+  &.visible {
+    display: block;
+  }
+}
+
+div.form-section.typeface {
+  margin-bottom: 0;
 }

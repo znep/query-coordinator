@@ -8,6 +8,7 @@ RSpec.describe Admin::ThemesController, type: :controller do
     {
       'title' => 'Some title',
       'description' => 'A description',
+      'google_font_code' => "<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>",
       'css_variables' => {
         '$base-type-size' => 'foo',
         '$base-line-height' => 'bar'
@@ -180,7 +181,7 @@ RSpec.describe Admin::ThemesController, type: :controller do
 
         # We have set `config.action_controller.action_on_unpermitted_parameters = :raise`
         # in development and test mode to catch potential coding errors when adding
-        # css variables to the custom theme config. See Theme.defaults for more info
+        # css variables to the custom theme config. See Theme.default_css_variables for more info
         it 'filters raises with unknown css_variables' do
           request.host = 'sillydomain.com'
           theme_attrs['css_variables'].merge!('$blah' => 'foo')

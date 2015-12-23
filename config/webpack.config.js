@@ -92,9 +92,16 @@ var baseConfig = {
     publicPath: '/javascripts/webpack',
     stats: { colors: true }
   },
+  eslint: {
+    formatter: require('eslint/lib/formatters/compact')
+  },
   module: {
     preLoaders: [
-      { test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/ }
+      {
+        test: /\.js$/,
+        loader: 'eslint-loader',
+        exclude: /node_modules/
+      }
     ]
   },
   output: {

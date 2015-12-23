@@ -15,6 +15,9 @@ en:
     story_save_error_try_again: 'Try again.'
     story_save_error_generic: 'There was an error saving.'
     story_save_error_conflict: 'There was a conflict saving. To continue, you need to reload the page.'
+    user_session_timeout: 'Your session has timed out.'
+    login_phrase_1_good_manners: 'Please '
+    login_phrase_2_link_text: 'log in again.'
     modal:
       buttons:
         cancel: 'Cancel'

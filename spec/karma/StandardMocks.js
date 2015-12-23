@@ -197,6 +197,7 @@ function applyStandardMocks() {
   storyteller.linkModalStore = new storyteller.LinkModalStore();
   storyteller.linkTipStore = new storyteller.LinkTipStore();
   storyteller.collaboratorsStore = new storyteller.CollaboratorsStore();
+  storyteller.userSessionStore = new storyteller.UserSessionStore();
 
   storyteller.dispatcher.dispatch({ action: Actions.STORY_CREATE, data: storyData });
 
@@ -261,6 +262,8 @@ function removeStandardMocks() {
   delete storyteller.coreSavingStore;
   delete storyteller.assetSelectorStore;
   delete storyteller.fileUploadStore;
+  delete storyteller.collaboratorsStore;
+  delete storyteller.userSessionStore;
   delete storyteller.I18n;
   delete storyteller.config;
   delete storyteller.standardMocks;

@@ -195,7 +195,14 @@
           },
           data: requestData
         })
-      );
+      ).catch(function(reason) {
+        if (reason.status === 401) {
+          storyteller.dispatcher.dispatch({
+            action: Actions.SESSION_TIMED_OUT
+          });
+        }
+        return Promise.reject(reason);
+      });
     }
   };
 

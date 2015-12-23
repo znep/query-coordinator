@@ -47,10 +47,20 @@ RSpec.describe ApplicationController, :type => :controller do
     end
 
     context 'with no logged in user' do
-      it 'should redirect to a login page with the correct return_to query param' do
-        stub_invalid_session
-        get :test_action
-        expect(response).to redirect_to('/login?return_to=/test_action')
+      context 'for a json request' do
+        it 'should respond with 401' do
+          stub_invalid_session
+          get :test_action, format: :json
+          expect(response).to have_http_status(401)
+        end
+      end
+
+      context 'for an html request' do
+        it 'should redirect to a login page with the correct return_to query param' do
+          stub_invalid_session
+          get :test_action
+          expect(response).to redirect_to('/login?return_to=/test_action')
+        end
       end
     end
   end

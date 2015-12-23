@@ -70,6 +70,12 @@
               resolve(collaborator);
             },
             error: reject
+          }).fail(function(data) {
+            if (data.status === 401) {
+              storyteller.dispatcher.dispatch({
+                action: Actions.SESSION_TIMED_OUT
+              });
+            }
           });
         } else {
           reject();

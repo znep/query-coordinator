@@ -75,7 +75,7 @@ Ensure that you are using Ruby version 1.9.3 or greater.
 Make sure you've installed karma-cli and phantomjs globally:
 
 ```sh
-npm install -g karma-cli phantomjs karma-phantomjs-launcher grunt
+npm install -g karma-cli karma-phantomjs-launcher phantomjs
 ```
 
 #### Karma Test Rake Tasks
@@ -228,7 +228,7 @@ bundle exec foreman start
 
 - `babel-loader` for ES2015 and JSX transpilation
 - `eslint-loader` for linting and reporting issues to the browser
-- `react-hot-loader` for reloading React components in place without a page 
+- `react-hot-loader` for reloading React components in place without a page
   reload, preserving their state
 - `ng-annotate-loader` for converting the function syntax of angular's dependency
   injection into something that can be uglified
@@ -242,7 +242,7 @@ bundle exec foreman start
 transformations of JS code.  It is helpful for making changes across a codebase
 that are more complicated than just a search and replace.
 
-Under the `tools/jscodeshift-transforms` are a few 
+Under the `tools/jscodeshift-transforms` are a few
 transformations for modifying our code in an AST-to-AST manner.
 
 To run a transform, follow the instructions on the jscodeshift project page, but

@@ -1,20 +1,9 @@
-require 'simplecov'
-require 'simplecov-cobertura'
 require 'webmock/rspec'
-
-SimpleCov.profiles.define 'filtered' do
-  load_profile 'rails'
-  add_filter 'vendor' # Don't include vendored stuff
-  coverage_dir 'coverage/ruby'
-end
-SimpleCov.formatters = [
-  SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::CoberturaFormatter
-]
+require 'simplecov_custom_profile'
 
 SimpleCov.start 'filtered'
 
-Dir["./spec/support/**/*.rb"].sort.each {|f| require f}
+Dir['./spec/support/**/*.rb'].sort.each {|f| require f}
 
 # Disable all net connections during testing
 WebMock.disable_net_connect!
@@ -108,7 +97,11 @@ RSpec.configure do |config|
 end
 
 def stub_logged_in
-  good_user_object = {"id"=>"tugg-xxxx", "createdAt"=>1425577015, "displayName"=>"testuser"}
+  good_user_object = {
+    'id' => 'tugg-xxxx',
+    'createdAt' => 1425577015,
+    'displayName' => 'testuser'
+  }
   allow(@controller).to receive(:current_user).and_return(good_user_object)
 end
 

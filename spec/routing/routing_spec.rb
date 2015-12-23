@@ -1,5 +1,4 @@
 require 'rails_helper'
-require_relative '../../test/test_helper'
 require_relative '../../lib/constraints/data_lens_constraint'
 
 RSpec.describe 'routes for Data Lens' do

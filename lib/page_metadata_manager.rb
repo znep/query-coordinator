@@ -77,7 +77,7 @@ class PageMetadataManager
       when 'data_lens'
         page_metadata = result[:displayFormat][:data_lens_page_metadata].with_indifferent_access
       else
-        raise "data lens #{id} is backed by metadb but is not of display type data_lens_chart, data_lens_map, or data_lens"
+        raise "data lens #{id} is backed by metadb but is not of display type data_lens_chart, data_lens_map, or data_lens. DisplayType: #{result[:displayType]}"
     end
     page_metadata = ensure_page_metadata_properties(page_metadata)
 

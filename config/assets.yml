@@ -703,10 +703,6 @@ javascripts:
 
   angular-socrata-common:
     - public/javascripts/plugins/modernizr.js
-    - public/javascripts/lib/RxExtensions.js
-    - public/javascripts/angular/rx/**/*.js
-    - public/javascripts/angular/common/services.js
-    - public/javascripts/angular/common/**/*.js
 
   # Angular apps served from the Angular controller.
   # These packages are referenced via the :app parameter to data_lens.

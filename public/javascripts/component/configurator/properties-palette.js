@@ -5,9 +5,9 @@
         _init: function()
         {
             this._super.apply(this, arguments);
-            if ($.getTemplate('propertiesPaletteContainer').length < 1)
+            if ($('#templates > .propertiesPaletteContainer').length < 1)
             {
-                $('#js-appended-templates').append($.tag({ tagName: 'div', 'class': 'propertiesPaletteContainer',
+                $('#templates').append($.tag({ tagName: 'div', 'class': 'propertiesPaletteContainer',
                     contents: { tagName: 'span', 'class': 'cf-property', draggable: true } }));
             }
         },

@@ -158,11 +158,10 @@ http://www.socrata.com
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
 
-  <script type="text/template" id="templates">
+  <div id="templates" style="display:none">
     <%= render :partial => 'shared/control_templates' %>
     <%= yield :templates %>
-  </script>
-  <div id="js-appended-templates" style="display: none" aria-hidden="true"></div>
+  </div>
   <%= render_translations %>
   <%= yield :translations %>
 

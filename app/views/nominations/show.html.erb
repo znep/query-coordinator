@@ -74,10 +74,7 @@
     </div>
   </div>
 </div>
-
-<%- content_for :translations do -%>
-  <%= render_translations LocalePart.controls.nominate %>
-<%- end -%>
+<%= render_translations LocalePart.controls.nominate %>
 
 <%- content_for :modals do -%>
   <%- if current_user && current_user.has_right?('edit_nominations') -%>

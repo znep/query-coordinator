@@ -98,7 +98,4 @@
 <% content_for :js_footer do %>
   <%= include_javascripts 'screen-govstat-manage' %>
 <% end %>
-
-<% content_for :translations do %>
-  <%= render_translations LocalePart.controls.global_indicator %>
-<% end %>
+<%= render_translations LocalePart.controls.global_indicator %>

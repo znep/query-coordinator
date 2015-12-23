@@ -49,7 +49,5 @@
     <%= include_javascripts 'internal-metrics' %>
   <%- end -%>
 <% end %>
-<%- content_for :translations do -%>
-  <%= render_translations LocalePart.screens.stats %>
-  <%= render_translations LocalePart.plugins.daterangepicker %>
-<%- end -%>
+<%= render_translations LocalePart.screens.stats %>
+<%= render_translations LocalePart.plugins.daterangepicker %>

@@ -22,21 +22,18 @@ namespace :assets do
     config_without_compression.unlink
   end
 
-  desc 'Transpile javascript with babel'
-  task :babel do
+  desc 'Compile bundles with webpack for production'
+  task :webpack do
     unless File.exist?('./node_modules/.bin/babel')
       raise RuntimeError.new('Unable to find babel binary. Install babel with "npm install"')
     end
-    cmd = './node_modules/.bin/babel public/javascripts/src -d public/javascripts/dist'
+    cmd = 'npm run build:prod'
     puts cmd
     fail($?.exitstatus) unless system(cmd)
   end
 end
 
 Rake::Task[:default].enhance do
-  Rake::Task['assets:babel'].invoke
+  Rake::Task['assets:webpack'].invoke
   Rake::Task['assets:unminified'].invoke
 end
-
-# compile assets before running tests
-task 'test:js:oldUx' => 'assets:babel'

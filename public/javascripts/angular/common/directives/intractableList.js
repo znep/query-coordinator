@@ -1,189 +1,188 @@
-(function() {
-  'use strict';
+var templateUrl = require('angular_templates/common/intractableList.html');
+const angular = require('angular');
+angular.module('socrataCommon.directives').directive('intractableList', function($document, rx) {
+  const Rx = rx;
 
-  angular.module('socrataCommon.directives').directive('intractableList', function($document) {
+  var DEFAULT_MAX_RESULTS = 10;
+  var VIEWPORT_BOTTOM_PADDING = 10;
+  var COUNT_MESSAGES_CONTAINER_HEIGHT = 20;
 
-    var DEFAULT_MAX_RESULTS = 10;
-    var VIEWPORT_BOTTOM_PADDING = 10;
-    var COUNT_MESSAGES_CONTAINER_HEIGHT = 20;
+  return {
+    restrict: 'E',
+    templateUrl: templateUrl,
+    scope: {
+      listData: '=',
+      resultTipsyContent: '=',
+      emptySelection: '=',
+      search: '=',
+      showCountMessage: '=?',
+      showType: '=?',
+      subTotalKey: '=?',
+      listenToKeyboard: '=',
+      hideEmptySelection: '=',
+      totalAmount: '=',
+      datumLength: '='
+    },
+    link: function(scope, element, attrs) {
+      var firstEntryIndex = 0;
+      scope.pageNumber = 0;
+      scope.maxResults = (attrs.maxResults || DEFAULT_MAX_RESULTS);
+      scope.setActive = function(index) {
+        if (!_.isUndefined(index)) {
+          scope.activeEntryIndex = index;
+        }
+      };
 
-    return {
-      restrict: 'E',
-      templateUrl: '/angular_templates/common/intractableList.html',
-      scope: {
-        listData: '=',
-        resultTipsyContent: '=',
-        emptySelection: '=',
-        search: '=',
-        showCountMessage: '=?',
-        showType: '=?',
-        subTotalKey: '=?',
-        listenToKeyboard: '=',
-        hideEmptySelection: '=',
-        totalAmount: '=',
-        datumLength: '='
-      },
-      link: function(scope, element, attrs) {
-        var firstEntryIndex = 0;
-        scope.pageNumber = 0;
-        scope.maxResults = (attrs.maxResults || DEFAULT_MAX_RESULTS);
-        scope.setActive = function(index) {
-          if (!_.isUndefined(index)) {
-            scope.activeEntryIndex = index;
-          }
-        };
+      var listElem = element.find('.animated-list');
 
-        var listElem = element.find('.animated-list');
+      // Select match say it to fancy Search.
+      scope.selectMatch = function(index) {
+        scope.$emit('intractableList:selectedItem', scope.listData[index + scope.pageNumber * scope.maxResults], index);
+      };
 
-        // Select match say it to fancy Search.
-        scope.selectMatch = function(index) {
-          scope.$emit('intractableList:selectedItem', scope.listData[index + scope.pageNumber * scope.maxResults], index);
-        };
+      scope.$watchCollection('[emptySelection, hideEmptySelection]', function(newVals) {
+        var emptySelection = newVals[0], hideEmptySelection = newVals[1];
+        if (_.isUndefined(emptySelection) || hideEmptySelection) {
+          firstEntryIndex = 0;
+          scope.activeEntryIndex = 0;
+        } else {
+          firstEntryIndex = -1;
+          scope.activeEntryIndex = -1;
+        }
+      });
 
-        scope.$watchCollection('[emptySelection, hideEmptySelection]', function(newVals) {
-          var emptySelection = newVals[0], hideEmptySelection = newVals[1];
-          if (_.isUndefined(emptySelection) || hideEmptySelection) {
-            firstEntryIndex = 0;
-            scope.activeEntryIndex = 0;
-          } else {
-            firstEntryIndex = -1;
-            scope.activeEntryIndex = -1;
-          }
-        });
+      scope.$on('intractableList:resetActiveIndex', function() {
+        scope.activeEntryIndex = firstEntryIndex;
+      });
 
-        scope.$on('intractableList:resetActiveIndex', function() {
-          scope.activeEntryIndex = firstEntryIndex;
-        });
+      scope.$on('intractableList:selectCurrentItem', function() {
+        scope.selectMatch(scope.activeEntryIndex);
+      });
 
-        scope.$on('intractableList:selectCurrentItem', function() {
-          scope.selectMatch(scope.activeEntryIndex);
-        });
-
-        //bind keyboard events: arrows up(38) / down(40), enter(13), and tab(9)
-        var UP_KEYCODE = 38;
-        var DOWN_KEYCODE = 40;
-        var ENTER_KEYCODE = 13;
-        var TAB_KEYCODE = 9;
-        Rx.Observable.fromEvent($document, 'keydown').takeUntil(scope.$destroyAsObservable(element)).
-          subscribe(function(evt) {
-            scope.$safeApply(function() {
-              if (evt.which === UP_KEYCODE) {
-                gotoPreviousItem();
-              } else if (evt.which === DOWN_KEYCODE) {
-                gotoNextItem();
-              } else if (evt.which === ENTER_KEYCODE || evt.which === TAB_KEYCODE) {
-                scope.selectMatch(scope.activeEntryIndex);
-              }
-            });
-          }
-        );
-
-        var lastItemIndex = function() {
-          var listItemCount = scope.maxResults;
-          if ((scope.pageNumber * scope.maxResults + scope.maxResults) > scope.listData.length) {
-            listItemCount = scope.listData.length % scope.maxResults;
-          }
-          return Math.min(scope.listData.length, listItemCount) - 1;
-        };
-        var gotoNextItem = function() {
-          var isLastItem = (scope.activeEntryIndex === lastItemIndex());
-          if (!isLastItem) {
-            scope.setActive(scope.activeEntryIndex + 1);
-          }else if (scope.canPage('next')) {
-            scope.changePage('next');
-            scope.setActive(0);
-          }
-        };
-        var gotoPreviousItem = function() {
-          var isFirstItem = (scope.activeEntryIndex === firstEntryIndex);
-
-          if (!isFirstItem) {
-            scope.setActive(scope.activeEntryIndex - 1);
-          } else if (scope.canPage('previous')) {
-            scope.changePage('previous');
-            scope.setActive(lastItemIndex());
-          }
-        };
-
-        scope.$watch('listData', function() {
-          scope.pageNumber = 0;
-          setActiveIndex();
-        });
-
-        scope.$watch('pageNumber', function(newVal) {
-          scope.listStartIndex = (newVal * scope.maxResults) + 1;
-          scope.listEndIndex = scope.maxResults;
-          setActiveIndex();
-          if (scope.listData.length > 0) {
-            if (((newVal + 1) * scope.maxResults) > scope.listData.length) {
-              scope.listEndIndex = scope.listData.length;
-            } else {
-              scope.listEndIndex = (newVal + 1) * scope.maxResults;
+      //bind keyboard events: arrows up(38) / down(40), enter(13), and tab(9)
+      var UP_KEYCODE = 38;
+      var DOWN_KEYCODE = 40;
+      var ENTER_KEYCODE = 13;
+      var TAB_KEYCODE = 9;
+      Rx.Observable.fromEvent($document, 'keydown').takeUntil(scope.$destroyAsObservable(element)).
+        subscribe(function(evt) {
+          scope.$safeApply(function() {
+            if (evt.which === UP_KEYCODE) {
+              gotoPreviousItem();
+            } else if (evt.which === DOWN_KEYCODE) {
+              gotoNextItem();
+            } else if (evt.which === ENTER_KEYCODE || evt.which === TAB_KEYCODE) {
+              scope.selectMatch(scope.activeEntryIndex);
             }
-          }
-        });
+          });
+        }
+      );
 
-        var setActiveIndex = function() {
-          if (scope.activeEntryIndex >= scope.listData.length % scope.maxResults && ((scope.pageNumber + 1) * scope.maxResults) > scope.listData.length) {
-            scope.activeEntryIndex = Math.max(0, scope.listData.length % scope.maxResults - 1);
-          }
-        };
+      var lastItemIndex = function() {
+        var listItemCount = scope.maxResults;
+        if ((scope.pageNumber * scope.maxResults + scope.maxResults) > scope.listData.length) {
+          listItemCount = scope.listData.length % scope.maxResults;
+        }
+        return Math.min(scope.listData.length, listItemCount) - 1;
+      };
+      var gotoNextItem = function() {
+        var isLastItem = (scope.activeEntryIndex === lastItemIndex());
+        if (!isLastItem) {
+          scope.setActive(scope.activeEntryIndex + 1);
+        }else if (scope.canPage('next')) {
+          scope.changePage('next');
+          scope.setActive(0);
+        }
+      };
+      var gotoPreviousItem = function() {
+        var isFirstItem = (scope.activeEntryIndex === firstEntryIndex);
 
-        scope.changePage = function(transition) {
-          if (!scope.canPage(transition)) {
-            return;
-          }
-          listElem.addClass('paging');
-          if (transition === 'next') {
-            scope.pageNumber += 1;
-            listElem.addClass('next');
-          } else if (transition === 'previous') {
-            scope.pageNumber -= 1;
-            listElem.addClass('previous');
-          }
-        };
+        if (!isFirstItem) {
+          scope.setActive(scope.activeEntryIndex - 1);
+        } else if (scope.canPage('previous')) {
+          scope.changePage('previous');
+          scope.setActive(lastItemIndex());
+        }
+      };
 
-        scope.canPage = function(direction) {
-          var totalPages = Math.ceil(scope.listData.length / scope.maxResults) - 1;
-          if (direction === 'next' && scope.pageNumber < totalPages) {
-            return true;
-          } else if (direction === 'previous' && scope.pageNumber > 0) {
-            return true;
-          }
-          return false;
-        };
+      scope.$watch('listData', function() {
+        scope.pageNumber = 0;
+        setActiveIndex();
+      });
 
-        scope.$on('condenseListIfRequired', function() {
-          condenseListIfRequired();
-        });
-
-        var condenseListIfRequired = function() {
-          var availableVPHeight = $document.height() - VIEWPORT_BOTTOM_PADDING;
-          if (scope.showCountMessage) {
-            availableVPHeight = availableVPHeight - COUNT_MESSAGES_CONTAINER_HEIGHT;
-          }
-          var searchResultsContainer = element.find('.animated-list');
-          var searchResultsContainerBottom = searchResultsContainer.height() + searchResultsContainer.offset().top;
-
-          var nonEmptyResultItems = searchResultsContainer.find('.search-result');
-          var emptyResultItems = element.find('.empty-selection');
-          if (searchResultsContainerBottom > availableVPHeight) {
-            nonEmptyResultItems.each(function(index, elem) {
-              var elemBottom = $(elem).offset().top + $(elem).height();
-              if (elemBottom > availableVPHeight ) {
-                scope.maxResults = index - emptyResultItems.length; //-1 for the empty result items "any category".
-                return false;
-              }
-            });
+      scope.$watch('pageNumber', function(newVal) {
+        scope.listStartIndex = (newVal * scope.maxResults) + 1;
+        scope.listEndIndex = scope.maxResults;
+        setActiveIndex();
+        if (scope.listData.length > 0) {
+          if (((newVal + 1) * scope.maxResults) > scope.listData.length) {
+            scope.listEndIndex = scope.listData.length;
           } else {
-            var searchResultHeight = nonEmptyResultItems.last().height();
-            var extraSpaceCount = Math.floor(
-              (availableVPHeight - searchResultsContainerBottom) / searchResultHeight
-            );
-            scope.maxResults = Math.min(DEFAULT_MAX_RESULTS, scope.maxResults + extraSpaceCount);
+            scope.listEndIndex = (newVal + 1) * scope.maxResults;
           }
-        };
-      }
-    };
-  });
-})();
+        }
+      });
+
+      var setActiveIndex = function() {
+        if (scope.activeEntryIndex >= scope.listData.length % scope.maxResults && ((scope.pageNumber + 1) * scope.maxResults) > scope.listData.length) {
+          scope.activeEntryIndex = Math.max(0, scope.listData.length % scope.maxResults - 1);
+        }
+      };
+
+      scope.changePage = function(transition) {
+        if (!scope.canPage(transition)) {
+          return;
+        }
+        listElem.addClass('paging');
+        if (transition === 'next') {
+          scope.pageNumber += 1;
+          listElem.addClass('next');
+        } else if (transition === 'previous') {
+          scope.pageNumber -= 1;
+          listElem.addClass('previous');
+        }
+      };
+
+      scope.canPage = function(direction) {
+        var totalPages = Math.ceil(scope.listData.length / scope.maxResults) - 1;
+        if (direction === 'next' && scope.pageNumber < totalPages) {
+          return true;
+        } else if (direction === 'previous' && scope.pageNumber > 0) {
+          return true;
+        }
+        return false;
+      };
+
+      scope.$on('condenseListIfRequired', function() {
+        condenseListIfRequired();
+      });
+
+      var condenseListIfRequired = function() {
+        var availableVPHeight = $document.height() - VIEWPORT_BOTTOM_PADDING;
+        if (scope.showCountMessage) {
+          availableVPHeight = availableVPHeight - COUNT_MESSAGES_CONTAINER_HEIGHT;
+        }
+        var searchResultsContainer = element.find('.animated-list');
+        var searchResultsContainerBottom = searchResultsContainer.height() + searchResultsContainer.offset().top;
+
+        var nonEmptyResultItems = searchResultsContainer.find('.search-result');
+        var emptyResultItems = element.find('.empty-selection');
+        if (searchResultsContainerBottom > availableVPHeight) {
+          nonEmptyResultItems.each(function(index, elem) {
+            var elemBottom = $(elem).offset().top + $(elem).height();
+            if (elemBottom > availableVPHeight ) {
+              scope.maxResults = index - emptyResultItems.length; //-1 for the empty result items "any category".
+              return false;
+            }
+          });
+        } else {
+          var searchResultHeight = nonEmptyResultItems.last().height();
+          var extraSpaceCount = Math.floor(
+            (availableVPHeight - searchResultsContainerBottom) / searchResultHeight
+          );
+          scope.maxResults = Math.min(DEFAULT_MAX_RESULTS, scope.maxResults + extraSpaceCount);
+        }
+      };
+    }
+  };
+});

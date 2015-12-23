@@ -1,3 +1,4 @@
+const angular = require('angular');
 angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, DateHelpers, $window) {
   'use strict';
 
@@ -17,7 +18,7 @@ angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, 
   };
 
   function encodeSoqlString(string) {
-    return "'{0}'".format(string.replace(/'/g, "''")); //eslint-disable-line quotes
+    return `'${string.replace(/'/g, "''")}'`; //eslint-disable-line quotes
   }
 
   function encodeSoqlDate(date) {
@@ -43,7 +44,7 @@ angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, 
     if (!_.isString(fieldName)) {
       throw new Error('Cannot format fieldName for non-string arguments.');
     }
-    return '`{0}`'.format(fieldName.replace(/\-/g, '_'));
+    return `\`${fieldName.replace(/\-/g, '_')}\``;
   }
 
   // Returns an alias for a field that is very unlikely to cause a circular alias error.

@@ -1,819 +1,811 @@
-(function() {
-  'use strict';
+const angular = require('angular');
+// Endpoints for the link back to the dataset page for the source dataset
+var MIGRATION_ENDPOINT = '/api/migrations/{0}';
+var OBE_DATASET_PAGE = '/d/{0}';
 
-  // Endpoints for the link back to the dataset page for the source dataset
-  var MIGRATION_ENDPOINT = '/api/migrations/{0}';
-  var OBE_DATASET_PAGE = '/d/{0}';
-
-  function sanitizeUserHtml(htmlString) {
-    if (!_.isString(htmlString) || htmlString.length === 0) {
-      return htmlString;
-    }
-
-    var allowedTags = ['a', 'b', 'br', 'div', 'em', 'hr', 'i', 'p', 'span', 'strong', 'sub', 'sup', 'u'];
-    var allowedAttr = ['href', 'target', 'rel'];
-
-    return DOMPurify.sanitize(htmlString, {
-      ALLOWED_TAGS: allowedTags,
-      ALLOWED_ATTR: allowedAttr
-    });
+function sanitizeUserHtml(htmlString) {
+  if (!_.isString(htmlString) || htmlString.length === 0) {
+    return htmlString;
   }
 
-  function initDownload($scope, page, obeId$, WindowState, ServerConfig) {
-    // The CSV download url
-    $scope.$bindObservable(
-      'datasetCSVDownloadURL',
-      Rx.Observable.combineLatest(
-        obeId$.startWith(null),
-        page.observe('dataset').filter(_.isObject),
-        function(obeId, dataset) {
-          var downloadOverride = dataset.getCurrentValue('downloadOverride');
-          if (downloadOverride) {
-            return downloadOverride;
+  var allowedTags = ['a', 'b', 'br', 'div', 'em', 'hr', 'i', 'p', 'span', 'strong', 'sub', 'sup', 'u'];
+  var allowedAttr = ['href', 'target', 'rel'];
+
+  return DOMPurify.sanitize(htmlString, {
+    ALLOWED_TAGS: allowedTags,
+    ALLOWED_ATTR: allowedAttr
+  });
+}
+
+function initDownload($scope, page, obeId$, WindowState, ServerConfig, Rx) {
+  // The CSV download url
+  $scope.$bindObservable(
+    'datasetCSVDownloadURL',
+    Rx.Observable.combineLatest(
+      obeId$.startWith(null),
+      page.observe('dataset').filter(_.isObject),
+      function(obeId, dataset) {
+        var downloadOverride = dataset.getCurrentValue('downloadOverride');
+        if (downloadOverride) {
+          return downloadOverride;
+        } else {
+          var url = $.baseUrl();
+          url.searchParams.set('accessType', 'DOWNLOAD');
+
+          if (obeId) {
+            url.pathname = `/api/views/${obeId}/rows.csv`;
+            url.searchParams.set('bom', true);
+          } else if (dataset.hasOwnProperty('id')) {
+            url.pathname = `/api/views/${dataset.id}/rows.csv`;
           } else {
-            var url = $.baseUrl();
-            url.searchParams.set('accessType', 'DOWNLOAD');
-
-            if (obeId) {
-              url.pathname = '/api/views/{0}/rows.csv'.format(obeId);
-              url.searchParams.set('bom', true);
-            } else if (dataset.hasOwnProperty('id')) {
-              url.pathname = '/api/views/{0}/rows.csv'.format(dataset.id);
-            } else {
-              return '#';
-            }
-            return url.href;
+            return '#';
           }
-
+          return url.href;
         }
-      )
-    );
 
-    // Download menu
-    $scope.standaloneLensChartEnabled = ServerConfig.get('standaloneLensChart');
-    $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
-    WindowState.closeDialogEvent$.filter(function(e) {
-      return $scope.downloadOpened &&
-        // Don't double-handle toggling downloadOpened
-        !$(e.target).closest('.download-menu').length;
-    }).
+      }
+    )
+  );
+
+  // Download menu
+  $scope.standaloneLensChartEnabled = ServerConfig.get('standaloneLensChart');
+  $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
+  WindowState.closeDialogEvent$.filter(function(e) {
+    return $scope.downloadOpened &&
+      // Don't double-handle toggling downloadOpened
+      !$(e.target).closest('.download-menu').length;
+  }).
+  takeUntil($scope.$destroyAsObservable()).
+  subscribe(function() {
+    $scope.$apply(function() {
+      $scope.downloadOpened = false;
+    });
+  });
+
+  // Close png export with escape
+  WindowState.escapeKey$.filter(function() {
+    return $scope.chooserMode.show === true;
+  }).
     takeUntil($scope.$destroyAsObservable()).
     subscribe(function() {
       $scope.$apply(function() {
-        $scope.downloadOpened = false;
+        $scope.chooserMode.show = false;
       });
     });
 
-    // Close png export with escape
-    WindowState.escapeKey$.filter(function() {
-      return $scope.chooserMode.show === true;
-    }).
-      takeUntil($scope.$destroyAsObservable()).
-      subscribe(function() {
-        $scope.$apply(function() {
-          $scope.chooserMode.show = false;
-        });
-      });
-
-    // Unsets chooser mode on init and whenever completion is signaled.
-    var clearChooserMode = function() {
-      $scope.chooserMode = {
-        show: false,
-        action: null
-      };
-
-      // NOTE: I don't really like having this event, but I feel like it's
-      // preferable to plumbing the chooserMode object itself. Once the original
-      // Download dropdown is gone, we should reevaluate the way that such
-      // communication happens between components.
-      $scope.$broadcast('exit-chooser-mode');
+  // Unsets chooser mode on init and whenever completion is signaled.
+  var clearChooserMode = function() {
+    $scope.chooserMode = {
+      show: false,
+      action: null
     };
-    $scope.$on('exit-export-card-visualization-mode', clearChooserMode);
-    clearChooserMode();
 
-    // Activates chooser mode in an event-based manner, allowing this mode to be
-    // triggered by child directives.
-    $scope.$on('enter-export-card-visualization-mode', function(e, action) {
-      $scope.chooserMode = {
-        show: true,
-        action: action
-      };
-    });
+    // NOTE: I don't really like having this event, but I feel like it's
+    // preferable to plumbing the chooserMode object itself. Once the original
+    // Download dropdown is gone, we should reevaluate the way that such
+    // communication happens between components.
+    $scope.$broadcast('exit-chooser-mode');
+  };
+  $scope.$on('exit-export-card-visualization-mode', clearChooserMode);
+  clearChooserMode();
 
-    // Activates the old "Download" dropdown for CSV and Polaroid functionality.
-    $scope.onDownloadClick = function(event) {
-      if (!$scope.editMode) {
-        // Clicking the 'Cancel' button
-        if ($(event.target).hasClass('download-menu') && $scope.chooserMode.show) {
-          clearChooserMode();
-        } else {
-          // Otherwise, toggle the dialog
-          $scope.downloadOpened = !$scope.downloadOpened;
-        }
+  // Activates chooser mode in an event-based manner, allowing this mode to be
+  // triggered by child directives.
+  $scope.$on('enter-export-card-visualization-mode', function(e, action) {
+    $scope.chooserMode = {
+      show: true,
+      action: action
+    };
+  });
+
+  // Activates the old "Download" dropdown for CSV and Polaroid functionality.
+  $scope.onDownloadClick = function(event) {
+    if (!$scope.editMode) {
+      // Clicking the 'Cancel' button
+      if ($(event.target).hasClass('download-menu') && $scope.chooserMode.show) {
+        clearChooserMode();
+      } else {
+        // Otherwise, toggle the dialog
+        $scope.downloadOpened = !$scope.downloadOpened;
       }
-    };
-  }
+    }
+  };
+}
 
-  function initManageLens($scope, page) {
+function initManageLens($scope, page) {
 
-    var pageIsPublic$ = page.observe('permissions').
-      filter(_.isObject).
-      map(_.property('isPublic'));
+  var pageIsPublic$ = page.observe('permissions').
+    filter(_.isObject).
+    map(_.property('isPublic'));
 
-    var datasetIsPublic$ = page.observe('dataset.permissions').
-      filter(_.isObject).
-      map(_.property('isPublic')).
-      // Default to true, so the warning icon doesn't appear before the actual metadata is fetched
-      startWith(true);
+  var datasetIsPublic$ = page.observe('dataset.permissions').
+    filter(_.isObject).
+    map(_.property('isPublic')).
+    // Default to true, so the warning icon doesn't appear before the actual metadata is fetched
+    startWith(true);
 
-    var pagePermissions$ = pageIsPublic$.
-      map(
-        function(isPublic) {
-          return isPublic ? 'public' : 'private';
-        }
-      );
-
-    $scope.$bindObservable('pageIsPublic', pageIsPublic$);
-    $scope.$bindObservable('datasetIsPublic', datasetIsPublic$);
-    $scope.$bindObservable('pagePermissions', pagePermissions$);
-
-    $scope.manageLensState = {
-      show: false
-    };
-  }
-
-  var VALIDATION_ERROR_STRINGS;
-
-  /**
-   * Binds the writable properties of page to the scope, such that changes to the scope will
-   * propagate to the page model.
-   *
-   * @param {angular.scope} $scope - the angular scope.
-   * @param {Page} page - the page Model.
-   */
-  function bindWritableProperties($scope, page) {
-    $scope.writablePage = {
-      warnings: {}
-    };
-
-    page.observe('name').filter(_.isString).subscribe(function(name) {
-      $scope.$safeApply(function() {
-        $scope.writablePage.name = name;
-
-        // If the trimmed name is greater than 255, display a max length warning.
-        if ($.trim(name).length > 255) {
-          $scope.writablePage.warnings.name = [VALIDATION_ERROR_STRINGS.name.maxLength];
-
-        // Else, if a warning exists and our name isn't empty, remove the warning.
-        } else if ($scope.writablePage.warnings.name && !_.isEmpty(name)) {
-          delete $scope.writablePage.warnings.name;
-        }
-      });
-    });
-
-    $scope.$observe('writablePage.name').filter(_.isString).subscribe(function(name) {
-      page.set('name', name);
-    });
-
-    page.observe('description').filter(_.isString).subscribe(function(description) {
-      $scope.$safeApply(function() {
-        $scope.writablePage.description = $.trim(description);
-      });
-    });
-
-    $scope.$observe('writablePage.description').filter(_.isString).subscribe(function(description) {
-      page.set('description', $.trim(description));
-    });
-  }
-
-  function CardsViewController(
-    $log,
-    $q,
-    $scope,
-    $window,
-    Filter,
-    PageDataService,
-    FlyoutService,
-    WindowOperations,
-    page,
-    WindowState,
-    ServerConfig,
-    $http,
-    Schemas,
-    PageHelpersService,
-    DeviceService,
-    I18n,
-    Constants,
-    domain
-  ) {
-
-    VALIDATION_ERROR_STRINGS = {
-      name: {
-        minLength: I18n.metadata.validationErrorMinLength,
-        maxLength: I18n.metadata.validationErrorMaxLength,
-        required: I18n.metadata.validationErrorRequired
+  var pagePermissions$ = pageIsPublic$.
+    map(
+      function(isPublic) {
+        return isPublic ? 'public' : 'private';
       }
-    };
-
-    bindWritableProperties($scope, page, I18n);
-
-    /*************************
-    * General metadata stuff *
-    *************************/
-
-    $scope.page = page;
-    $scope.domain = domain;
-    $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
-    $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
-    $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
-
-    var pageName$ = page.observe('name').filter(_.isPresent).map(sanitizeUserHtml);
-    var pageDescription$ = page.observe('description').map(sanitizeUserHtml);
-    $scope.$bindObservable('pageName', pageName$);
-    $scope.$bindObservable('pageDescription', pageDescription$);
-    $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));
-
-    $scope.$bindObservable('dataset', page.observe('dataset'));
-    $scope.$bindObservable('datasetPages', page.observe('dataset.pages'));
-    $scope.$bindObservable('aggregation', page.observe('aggregation'));
-    $scope.$bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(Rx.Observable.returnValue(page)));
-    $scope.$bindObservable('sourceDatasetName', page.observe('dataset.name'));
-
-    var cardModelsObservable = page.observe('cards');
-    var cardCountObservable = cardModelsObservable.map(function(models) {
-      return _.reject(models, function(model) {
-        return model.fieldName === '*';
-      }).length;
-    });
-    $scope.$bindObservable('cardModels', cardModelsObservable);
-    $scope.$bindObservable('cardCount', cardCountObservable);
-    $scope.$bindObservable('expandedCard', page.observe('hasExpandedCard').map(function() {
-      var cards = page.getCurrentValue('cards');
-      return _.find(cards, function(card) {
-        return card.getCurrentValue('expanded');
-      });
-    }));
-
-    pageName$.subscribe(function(pageName) {
-      WindowOperations.setTitle('{0} | Socrata'.format(pageName));
-    });
-
-    // Map the nbe id to the obe id
-    var obeId$ = page.observe('datasetId').
-      filter(_.isPresent).
-      // send the nbe datasetId to the migrations endpoint, to translate it into an obe id
-      map(encodeURIComponent).
-      map(_.bind(MIGRATION_ENDPOINT.format, MIGRATION_ENDPOINT)).
-      flatMap(function(url) {
-        return Rx.Observable.fromPromise($http.get(url));
-      }).map(function(response) {
-        return response.data.obeId;
-      }).
-      // Error means this isn't a migrated dataset. Just don't surface any obeId.
-      catchException(Rx.Observable.never());
-
-    $scope.$bindObservable('sourceDatasetURL', obeId$.map(function(obeId) {
-      return I18n.a(OBE_DATASET_PAGE.format(obeId));
-    }));
-
-    /***************
-    * User session *
-    ***************/
-
-    var currentUser$ = Rx.Observable.returnValue($window.currentUser);
-
-    var isCurrentUserDomainUser$ =
-      currentUser$.
-      map(function(user) {
-        return _.get(user, 'rights.length', 0) > 0;
-      });
-
-    $scope.$bindObservable('currentUserHasRights', isCurrentUserDomainUser$);
-
-    var isCurrentUserAdminOrPublisher$ =
-      currentUser$.
-      map(function(user) {
-        var roleName = user.roleName;
-        return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
-      });
-
-    var userCanManageView$ = $scope.isEphemeral ?
-      Rx.Observable.returnValue(false) :
-      page.observe('rights').map(function(rights) {
-        return _.any(rights, function(right) {
-          return right === 'update_view' || right === 'grant';
-        });
-      });
-
-    var isCurrentUserOwnerOfDataset$ =
-      page.
-      observe('dataset').
-      observeOnLatest('ownerId').
-      combineLatest(
-        currentUser$.pluck('id'),
-        function(ownerId, userId) {
-          return ownerId === userId;
-        });
-
-    var currentUserHasSaveRight$ = userCanManageView$.
-      combineLatest(
-        isCurrentUserOwnerOfDataset$,
-        isCurrentUserAdminOrPublisher$,
-        function(a, b, c) { return a || b || c; }).
-      catchException(Rx.Observable.returnValue(false));
-
-    $scope.$bindObservable('currentUserHasSaveRight', currentUserHasSaveRight$);
-
-    var currentUserHasProvenanceRight$ =
-      currentUser$.
-      map(function(user) {
-        return _.includes(_.get(user, 'rights', []), 'manage_provenance');
-      });
-
-    $scope.$bindObservable('currentUserHasProvenanceRight', currentUserHasProvenanceRight$);
-
-    // We're checking the displayType as well as the user to account for
-    // standalone visualizations
-    $scope.$bindObservable(
-      'shouldDisplayCustomizeBar',
-      currentUser$.map(function(user) {
-        return user && page.displayType == 'data_lens';
-      })
     );
 
-    initDownload($scope, page, obeId$, WindowState, ServerConfig);
+  $scope.$bindObservable('pageIsPublic', pageIsPublic$);
+  $scope.$bindObservable('datasetIsPublic', datasetIsPublic$);
+  $scope.$bindObservable('pagePermissions', pagePermissions$);
 
-    $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
-    initManageLens($scope, page);
+  $scope.manageLensState = {
+    show: false
+  };
+}
 
-    // CORE-7419: Hide provenance toggle if user doesn't have rights
-    // or enable_data_lens_provenance feature flag is disabled
-    $scope.showProvenanceSection = $scope.currentUserHasProvenanceRight &&
-      ServerConfig.get('enableDataLensProvenance');
+var VALIDATION_ERROR_STRINGS;
 
-    /*******************************
-    * Filters and the where clause *
-    *******************************/
+/**
+ * Binds the writable properties of page to the scope, such that changes to the scope will
+ * propagate to the page model.
+ *
+ * @param {angular.scope} $scope - the angular scope.
+ * @param {Page} page - the page Model.
+ */
+function bindWritableProperties($scope, page) {
+  $scope.writablePage = {
+    warnings: {}
+  };
 
-    var allCardsFilters = page.observe('activeFilters');
+  page.observe('name').filter(_.isString).subscribe(function(name) {
+    $scope.$safeApply(function() {
+      $scope.writablePage.name = name;
 
-    $scope.maxOperandLength = Constants.MAX_OPERAND_LENGTH;
-    $scope.$bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
+      // If the trimmed name is greater than 255, display a max length warning.
+      if ($.trim(name).length > 255) {
+        $scope.writablePage.warnings.name = [VALIDATION_ERROR_STRINGS.name.maxLength];
 
-    var datasetColumns$ = page.observe('dataset.columns');
+      // Else, if a warning exists and our name isn't empty, remove the warning.
+      } else if ($scope.writablePage.warnings.name && !_.isEmpty(name)) {
+        delete $scope.writablePage.warnings.name;
+      }
+    });
+  });
 
-    var appliedFiltersForDisplay$ = allCardsFilters.
-      combineLatest(datasetColumns$, function(pageFilters, columns) {
+  $scope.$observe('writablePage.name').filter(_.isString).subscribe(function(name) {
+    page.set('name', name);
+  });
 
-        function humanReadableOperator(filter) {
-          if (
-            filter instanceof Filter.BinaryOperatorFilter ||
-            filter instanceof Filter.BinaryComputedGeoregionOperatorFilter
-          ) {
-            if (filter.operator === '=') {
-              return I18n.filter.is;
-            } else {
-              throw new Error('Only the "=" filter is currently supported.');
-            }
-          } else if (filter instanceof Filter.TimeRangeFilter) {
-            return I18n.filter.is;
-          } else if (filter instanceof Filter.ValueRangeFilter) {
-            return I18n.filter.is;
-          } else if (filter instanceof Filter.IsNullFilter) {
-            if (filter.isNull) {
-              return I18n.filter.is;
-            } else {
-              return I18n.filter.isNot;
-            }
-          } else {
-            throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
-          }
-        }
+  page.observe('description').filter(_.isString).subscribe(function(description) {
+    $scope.$safeApply(function() {
+      $scope.writablePage.description = $.trim(description);
+    });
+  });
 
-        function humanReadableOperand(filter) {
-          if (
-            filter instanceof Filter.BinaryOperatorFilter ||
-            filter instanceof Filter.BinaryComputedGeoregionOperatorFilter
-          ) {
-            if (_.isPresent(filter.operand.toString().trim())) {
-              return filter.humanReadableOperand || filter.operand;
-            } else {
-              return I18n.filter.blank;
-            }
-          } else if (filter instanceof Filter.IsNullFilter) {
-            return I18n.filter.blank;
-          } else if (filter instanceof Filter.TimeRangeFilter) {
-            var format = 'YYYY MMMM DD';
-            return I18n.t('filter.dateRange',
-              moment(filter.start).format(format),
-              moment(filter.end).format(format)
-            );
-          } else if (filter instanceof Filter.ValueRangeFilter) {
-            return I18n.t('filter.valueRange',
-              $window.socrata.utils.formatNumber(filter.start),
-              $window.socrata.utils.formatNumber(filter.end)
-            );
-          } else {
-            throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
-          }
-        }
+  $scope.$observe('writablePage.description').filter(_.isString).subscribe(function(description) {
+    page.set('description', $.trim(description));
+  });
+}
 
-        return _.reduce(pageFilters, function(accumulator, cardFilterInfo) {
-          if ($.isPresent(cardFilterInfo.filters)) {
-            if (cardFilterInfo.filters.length > 1) {
-              $log.warn('Cannot apply multiple filters to a single card.');
-            }
-            var filter = _.first(cardFilterInfo.filters);
-            accumulator.push({
-              column: columns[cardFilterInfo.fieldName],
-              operator: humanReadableOperator(filter),
-              operand: humanReadableOperand(filter)
-            });
-          }
-          return accumulator;
-        }, []);
+function CardsViewController(
+  $log,
+  $q,
+  $scope,
+  $window,
+  Filter,
+  PageDataService,
+  FlyoutService,
+  WindowOperations,
+  page,
+  WindowState,
+  ServerConfig,
+  $http,
+  Schemas,
+  PageHelpersService,
+  DeviceService,
+  I18n,
+  Constants,
+  domain,
+  rx) {
+  const Rx = rx;
 
-      });
-    $scope.$bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplay$);
+  VALIDATION_ERROR_STRINGS = {
+    name: {
+      minLength: I18n.metadata.validationErrorMinLength,
+      maxLength: I18n.metadata.validationErrorMaxLength,
+      required: I18n.metadata.validationErrorRequired
+    }
+  };
 
-    $scope.clearAllFilters = function() {
-      _.each($scope.page.getCurrentValue('cards'), function(card) {
-        if (!_.isEmpty(card.getCurrentValue('activeFilters'))) {
-          card.set('activeFilters', []);
-        }
-      });
-    };
+  bindWritableProperties($scope, page, I18n);
 
-    /***************************
-    * View/edit cards behavior *
-    ***************************/
+  /*************************
+  * General metadata stuff *
+  *************************/
 
-    $scope.editMode = false;
-    $scope.$watch('editMode', function() {
-      // Ephemeral mode doesn't change, but it has an effect on certain
-      // subsets of UI behavior in combination with edit mode.
-      $scope.nonEphemeralEditMode = $scope.editMode && !$scope.isEphemeral;
+  $scope.page = page;
+  $scope.domain = domain;
+  $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
+  $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
+  $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
+
+  var pageName$ = page.observe('name').filter(_.isPresent).map(sanitizeUserHtml);
+  var pageDescription$ = page.observe('description').map(sanitizeUserHtml);
+  $scope.$bindObservable('pageName', pageName$);
+  $scope.$bindObservable('pageDescription', pageDescription$);
+  $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));
+
+  $scope.$bindObservable('dataset', page.observe('dataset'));
+  $scope.$bindObservable('datasetPages', page.observe('dataset.pages'));
+  $scope.$bindObservable('aggregation', page.observe('aggregation'));
+  $scope.$bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(Rx.Observable.returnValue(page)));
+  $scope.$bindObservable('sourceDatasetName', page.observe('dataset.name'));
+
+  var cardModelsObservable = page.observe('cards');
+  var cardCountObservable = cardModelsObservable.map(function(models) {
+    return _.reject(models, function(model) {
+      return model.fieldName === '*';
+    }).length;
+  });
+  $scope.$bindObservable('cardModels', cardModelsObservable);
+  $scope.$bindObservable('cardCount', cardCountObservable);
+  $scope.$bindObservable('expandedCard', page.observe('hasExpandedCard').map(function() {
+    var cards = page.getCurrentValue('cards');
+    return _.find(cards, function(card) {
+      return card.getCurrentValue('expanded');
+    });
+  }));
+
+  pageName$.subscribe(function(pageName) {
+    WindowOperations.setTitle(`${pageName} | Socrata`);
+  });
+
+  // Map the nbe id to the obe id
+  var obeId$ = page.observe('datasetId').
+    filter(_.isPresent).
+    // send the nbe datasetId to the migrations endpoint, to translate it into an obe id
+    map(encodeURIComponent).
+    map(_.bind(MIGRATION_ENDPOINT.format, MIGRATION_ENDPOINT)).
+    flatMap(function(url) {
+      return Rx.Observable.fromPromise($http.get(url));
+    }).map(function(response) {
+      return response.data.obeId;
+    }).
+    // Error means this isn't a migrated dataset. Just don't surface any obeId.
+    catchException(Rx.Observable.never());
+
+  $scope.$bindObservable('sourceDatasetURL', obeId$.map(function(obeId) {
+    return I18n.a(OBE_DATASET_PAGE.format(obeId));
+  }));
+
+  /***************
+  * User session *
+  ***************/
+
+  var currentUser$ = Rx.Observable.returnValue($window.currentUser);
+
+  var isCurrentUserDomainUser$ =
+    currentUser$.
+    map(function(user) {
+      return _.get(user, 'rights.length', 0) > 0;
     });
 
-    // Global save events. Elements in this stream are objects
-    // with a status key set to one of only:
-    // * 'idle': Initial and resting state.
-    // * 'saving': A save was started.
-    // * 'saved': A save was successfully completed.
-    // * 'failed': A save failed to complete.
-    //
-    // If the status is 'saved', there must be an additional
-    // key of 'id' set to the saved page's ID.
-    var currentPageSaveEvents$ = new Rx.BehaviorSubject({ status: 'idle' });
+  $scope.$bindObservable('currentUserHasRights', isCurrentUserDomainUser$);
 
-    // Bind save status related things so the UI reflects them.
-    $scope.$bindObservable('saveStatus', currentPageSaveEvents$.pluck('status'));
+  var isCurrentUserAdminOrPublisher$ =
+    currentUser$.
+    map(function(user) {
+      var roleName = user.roleName;
+      return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
+    });
 
-    // Track whether there've been changes to the page.
-    // If we save the page, reset the dirtiness of the model.
-    currentPageSaveEvents$.filter(function(event) { return event.status === 'saved'; }).
-      subscribe(_.bind(page.resetDirtied, page));
-    $scope.$bindObservable('hasChanges', page.observeDirtied());
-
-    var shouldEnableSave$ = Rx.Observable.combineLatest(
-      userCanManageView$,
-      page.observeDirtied(),
-      function(hasRight, hasChanges) {
-        return hasRight && hasChanges;
+  var userCanManageView$ = $scope.isEphemeral ?
+    Rx.Observable.returnValue(false) :
+    page.observe('rights').map(function(rights) {
+      return _.any(rights, function(right) {
+        return right === 'update_view' || right === 'grant';
       });
-    $scope.$bindObservable('shouldEnableSave', shouldEnableSave$);
+    });
 
-    $scope.$emitEventsFromObservable('page:dirtied', page.observeDirtied().filter(_.identity));
+  var isCurrentUserOwnerOfDataset$ =
+    page.
+    observe('dataset').
+    observeOnLatest('ownerId').
+    combineLatest(
+      currentUser$.pluck('id'),
+      function(ownerId, userId) {
+        return ownerId === userId;
+      });
 
-    function notifyUserOfSaveProgress(savePromise, publishTo) {
-      var savedMessagePersistenceMsec = 3000;
-      var failureMessagePersistenceMsec = 8000;
-      var pretendSaveTakesAtLeastThisLongMsec = 300;
+  var currentUserHasSaveRight$ = userCanManageView$.
+    combineLatest(
+      isCurrentUserOwnerOfDataset$,
+      isCurrentUserAdminOrPublisher$,
+      function(a, b, c) { return a || b || c; }).
+    catchException(Rx.Observable.returnValue(false));
 
-      publishTo.onNext({ status: 'saving' });
+  $scope.$bindObservable('currentUserHasSaveRight', currentUserHasSaveRight$);
 
-      // Desired behavior is to jump out of edit mode immediately upon hitting save.
-      $scope.editMode = false;
+  var currentUserHasProvenanceRight$ =
+    currentUser$.
+    map(function(user) {
+      return _.includes(_.get(user, 'rights', []), 'manage_provenance');
+    });
 
-      var saveResponseData = Rx.Observable.fromPromise(savePromise).pluck('data');
+  $scope.$bindObservable('currentUserHasProvenanceRight', currentUserHasProvenanceRight$);
 
-      // Convenience.
-      var savedId = saveResponseData.pluck('pageId').ignoreErrors();
-      var failures = saveResponseData.errors();
+  // We're checking the displayType as well as the user to account for
+  // standalone visualizations
+  $scope.$bindObservable(
+    'shouldDisplayCustomizeBar',
+    currentUser$.map(function(user) {
+      return user && page.displayType == 'data_lens';
+    })
+  );
 
-      // We want to pretend that the save always takes at least
-      // a few ms, otherwise the action taken isn't clear.
-      var successesDelayedForUsersBenefit = savedId.imposeMinimumDelay(pretendSaveTakesAtLeastThisLongMsec);
+  initDownload($scope, page, obeId$, WindowState, ServerConfig, Rx);
 
-      // Ultimately, we need to return to idle after showing a message for a few seconds.
-      // So, delay the success or failure message appropriately depending on success or failure.
-      var saveComplete = Rx.Observable.firstToReact(
-        successesDelayedForUsersBenefit,
-        failures
-      ).
-      map(function(sequence) {
-        return Rx.Observable.timer(
-          sequence === successesDelayedForUsersBenefit ? savedMessagePersistenceMsec : failureMessagePersistenceMsec
-        );
-      }).
-      switchLatest();
+  $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
+  initManageLens($scope, page);
 
-      // Translate these sequences into global page event nomenclature, and pipe to publishTo
-      Rx.Observable.merge(
-        successesDelayedForUsersBenefit.map(function(id) { return { status: 'saved', id: id }; }),
-        failures.map(_.constant({ status: 'failed' })),
-        saveComplete.map(_.constant({ status: 'idle' })), // Ultimate time-shifted failure or success always causes us to revert to idle.
-        Rx.Observable.never() // Make this sequence never complete, otherwise we'll cause publishTo to complete too.
-      ).
-      subscribe(publishTo);
-    }
+  // CORE-7419: Hide provenance toggle if user doesn't have rights
+  // or enable_data_lens_provenance feature flag is disabled
+  $scope.showProvenanceSection = $scope.currentUserHasProvenanceRight &&
+    ServerConfig.get('enableDataLensProvenance');
 
-    $scope.savePage = function() {
-      var savePromise;
-      if ($scope.hasChanges) {
-        try {
+  /*******************************
+  * Filters and the where clause *
+  *******************************/
 
-          // Trim the name only on save.
-          var trimmedPageName = $.trim(page.getCurrentValue('name'));
-          page.set('name', trimmedPageName);
+  var allCardsFilters = page.observe('activeFilters');
 
-          var serializedBlob = $.extend(
-            page.serialize(),
-            {
-              pageId: page.id
-            }
-          );
-          savePromise = PageDataService.save(serializedBlob, page.id);
-        } catch (exception) {
-          if (exception.validation) {
-            $log.error('Validation errors', exception.validation);
-            // There were validation errors. Display them, and don't do any progress things.
-            $scope.writablePage.warnings = Schemas.getStringsForErrors(
-              exception.validation,
-              VALIDATION_ERROR_STRINGS
-            );
-            return false;
+  $scope.maxOperandLength = Constants.MAX_OPERAND_LENGTH;
+  $scope.$bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
+
+  var datasetColumns$ = page.observe('dataset.columns');
+
+  var appliedFiltersForDisplay$ = allCardsFilters.
+    combineLatest(datasetColumns$, function(pageFilters, columns) {
+
+      function humanReadableOperator(filter) {
+        if (
+          filter instanceof Filter.BinaryOperatorFilter ||
+          filter instanceof Filter.BinaryComputedGeoregionOperatorFilter
+        ) {
+          if (filter.operator === '=') {
+            return I18n.filter.is;
+          } else {
+            throw new Error('Only the "=" filter is currently supported.');
           }
-
-          // If the serialization failed, reject the promise.
-          // Don't just error out immediately, because we still
-          // want to notify the user below.
-          $log.error('Serialization failed on save', exception);
-          savePromise = $q.reject(exception);
+        } else if (filter instanceof Filter.TimeRangeFilter) {
+          return I18n.filter.is;
+        } else if (filter instanceof Filter.ValueRangeFilter) {
+          return I18n.filter.is;
+        } else if (filter instanceof Filter.IsNullFilter) {
+          if (filter.isNull) {
+            return I18n.filter.is;
+          } else {
+            return I18n.filter.isNot;
+          }
+        } else {
+          throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
         }
-        notifyUserOfSaveProgress(savePromise, currentPageSaveEvents$);
       }
-    };
 
-    $scope.savePageAs = function(name, description, moderationStatus, provenance) {
-      var saveStatus$ = new Rx.BehaviorSubject();
-      var savePromise;
+      function humanReadableOperand(filter) {
+        if (
+          filter instanceof Filter.BinaryOperatorFilter ||
+          filter instanceof Filter.BinaryComputedGeoregionOperatorFilter
+        ) {
+          if (_.isPresent(filter.operand.toString().trim())) {
+            return filter.humanReadableOperand || filter.operand;
+          } else {
+            return I18n.filter.blank;
+          }
+        } else if (filter instanceof Filter.IsNullFilter) {
+          return I18n.filter.blank;
+        } else if (filter instanceof Filter.TimeRangeFilter) {
+          var format = 'YYYY MMMM DD';
+          return I18n.t('filter.dateRange',
+            moment(filter.start).format(format),
+            moment(filter.end).format(format)
+          );
+        } else if (filter instanceof Filter.ValueRangeFilter) {
+          return I18n.t('filter.valueRange',
+            $window.socrata.utils.formatNumber(filter.start),
+            $window.socrata.utils.formatNumber(filter.end)
+          );
+        } else {
+          throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
+        }
+      }
 
+      return _.reduce(pageFilters, function(accumulator, cardFilterInfo) {
+        if ($.isPresent(cardFilterInfo.filters)) {
+          if (cardFilterInfo.filters.length > 1) {
+            $log.warn('Cannot apply multiple filters to a single card.');
+          }
+          var filter = _.first(cardFilterInfo.filters);
+          accumulator.push({
+            column: columns[cardFilterInfo.fieldName],
+            operator: humanReadableOperator(filter),
+            operand: humanReadableOperand(filter)
+          });
+        }
+        return accumulator;
+      }, []);
+
+    });
+  $scope.$bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplay$);
+
+  $scope.clearAllFilters = function() {
+    _.each($scope.page.getCurrentValue('cards'), function(card) {
+      if (!_.isEmpty(card.getCurrentValue('activeFilters'))) {
+        card.set('activeFilters', []);
+      }
+    });
+  };
+
+  /***************************
+  * View/edit cards behavior *
+  ***************************/
+
+  $scope.editMode = false;
+  $scope.$watch('editMode', function() {
+    // Ephemeral mode doesn't change, but it has an effect on certain
+    // subsets of UI behavior in combination with edit mode.
+    $scope.nonEphemeralEditMode = $scope.editMode && !$scope.isEphemeral;
+  });
+
+  // Global save events. Elements in this stream are objects
+  // with a status key set to one of only:
+  // * 'idle': Initial and resting state.
+  // * 'saving': A save was started.
+  // * 'saved': A save was successfully completed.
+  // * 'failed': A save failed to complete.
+  //
+  // If the status is 'saved', there must be an additional
+  // key of 'id' set to the saved page's ID.
+  var currentPageSaveEvents$ = new Rx.BehaviorSubject({ status: 'idle' });
+
+  // Bind save status related things so the UI reflects them.
+  $scope.$bindObservable('saveStatus', currentPageSaveEvents$.pluck('status'));
+
+  // Track whether there've been changes to the page.
+  // If we save the page, reset the dirtiness of the model.
+  currentPageSaveEvents$.filter(function(event) { return event.status === 'saved'; }).
+    subscribe(_.bind(page.resetDirtied, page));
+  $scope.$bindObservable('hasChanges', page.observeDirtied());
+
+  var shouldEnableSave$ = Rx.Observable.combineLatest(
+    userCanManageView$,
+    page.observeDirtied(),
+    function(hasRight, hasChanges) {
+      return hasRight && hasChanges;
+    });
+  $scope.$bindObservable('shouldEnableSave', shouldEnableSave$);
+
+  $scope.$emitEventsFromObservable('page:dirtied', page.observeDirtied().filter(_.identity));
+
+  function notifyUserOfSaveProgress(savePromise, publishTo) {
+    var savedMessagePersistenceMsec = 3000;
+    var failureMessagePersistenceMsec = 8000;
+    var pretendSaveTakesAtLeastThisLongMsec = 300;
+
+    publishTo.onNext({ status: 'saving' });
+
+    // Desired behavior is to jump out of edit mode immediately upon hitting save.
+    $scope.editMode = false;
+
+    var saveResponseData = Rx.Observable.fromPromise(savePromise).pluck('data');
+
+    // Convenience.
+    var savedId = saveResponseData.pluck('pageId').ignoreErrors();
+    var failures = saveResponseData.errors();
+
+    // We want to pretend that the save always takes at least
+    // a few ms, otherwise the action taken isn't clear.
+    var successesDelayedForUsersBenefit = savedId.imposeMinimumDelay(pretendSaveTakesAtLeastThisLongMsec);
+
+    // Ultimately, we need to return to idle after showing a message for a few seconds.
+    // So, delay the success or failure message appropriately depending on success or failure.
+    var saveComplete = Rx.Observable.firstToReact(
+      successesDelayedForUsersBenefit,
+      failures
+    ).
+    map(function(sequence) {
+      return Rx.Observable.timer(
+        sequence === successesDelayedForUsersBenefit ? savedMessagePersistenceMsec : failureMessagePersistenceMsec
+      );
+    }).
+    switchLatest();
+
+    // Translate these sequences into global page event nomenclature, and pipe to publishTo
+    Rx.Observable.merge(
+      successesDelayedForUsersBenefit.map(function(id) { return { status: 'saved', id: id }; }),
+      failures.map(_.constant({ status: 'failed' })),
+      saveComplete.map(_.constant({ status: 'idle' })), // Ultimate time-shifted failure or success always causes us to revert to idle.
+      Rx.Observable.never() // Make this sequence never complete, otherwise we'll cause publishTo to complete too.
+    ).
+    subscribe(publishTo);
+  }
+
+  $scope.savePage = function() {
+    var savePromise;
+    if ($scope.hasChanges) {
       try {
-        var newPageSerializedBlob = _.extend(page.serialize(), {
-          name: $.trim(name),
-          description: description,
-          provenance: provenance
-        });
-        if (!_.isUndefined(moderationStatus)) {
-          newPageSerializedBlob.moderationStatus = moderationStatus;
+
+        // Trim the name only on save.
+        var trimmedPageName = $.trim(page.getCurrentValue('name'));
+        page.set('name', trimmedPageName);
+
+        var serializedBlob = $.extend(
+          page.serialize(),
+          {
+            pageId: page.id
+          }
+        );
+        savePromise = PageDataService.save(serializedBlob, page.id);
+      } catch (exception) {
+        if (exception.validation) {
+          $log.error('Validation errors', exception.validation);
+          // There were validation errors. Display them, and don't do any progress things.
+          $scope.writablePage.warnings = Schemas.getStringsForErrors(
+            exception.validation,
+            VALIDATION_ERROR_STRINGS
+          );
+          return false;
         }
 
-        newPageSerializedBlob.parentLensId = newPageSerializedBlob.pageId;
-
-        // PageDataService looks at whether or not pageId is set on the blob.
-        // If it's set, it will do a regular save. We want it to save a new page.
-        delete newPageSerializedBlob.pageId;
-        savePromise = PageDataService.save(newPageSerializedBlob);
-      } catch (exception) {
         // If the serialization failed, reject the promise.
         // Don't just error out immediately, because we still
         // want to notify the user below.
-        $log.error('Serialization failed on save as', exception);
+        $log.error('Serialization failed on save', exception);
         savePromise = $q.reject(exception);
       }
+      notifyUserOfSaveProgress(savePromise, currentPageSaveEvents$);
+    }
+  };
 
-      notifyUserOfSaveProgress(savePromise, saveStatus$);
+  $scope.savePageAs = function(name, description, moderationStatus, provenance) {
+    var saveStatus$ = new Rx.BehaviorSubject();
+    var savePromise;
 
-      // Redirect to a new page once Save As completed (plus a small delay).
-      saveStatus$.filter(
-          function(event) {
-            return event.status === 'saved';
-          }
-        ).
-        pluck('id').
-        delay(150). // Extra delay so the user can visually register the 'saved' message.
-        subscribe(function(newSavedPageId) {
-          var url = $.baseUrl('/view/{0}'.format(newSavedPageId));
-          WindowOperations.navigateTo(url.href);
-        });
+    try {
+      var newPageSerializedBlob = _.extend(page.serialize(), {
+        name: $.trim(name),
+        description: description,
+        provenance: provenance
+      });
+      if (!_.isUndefined(moderationStatus)) {
+        newPageSerializedBlob.moderationStatus = moderationStatus;
+      }
 
-      return saveStatus$.
-        bufferWithCount(2, 1). // Buffers of 2 in length, but overlapping by 1.
-        filter(
-          function(lastTwoEvents) {
-            var previousEvent = lastTwoEvents[0];
-            var currentEvent = lastTwoEvents[1];
-            // UX wants the page to remain stuck in "Saved"
-            // until the redirect kicks in. However we also want the user
-            // to be able to retry on failure. So, filter out only
-            // idle states that were not immediately preceded by failed
-            // states.
-            if (currentEvent.status === 'idle') {
-              return previousEvent.status === 'failed';
-            } else {
-              return true;
-            }
-          }
-        ).
-        pluck(1); // We're done with the buffer - only care about the current event.
-    };
+      newPageSerializedBlob.parentLensId = newPageSerializedBlob.pageId;
 
-    var destroy$ = $scope.$destroyAsObservable();
+      // PageDataService looks at whether or not pageId is set on the blob.
+      // If it's set, it will do a regular save. We want it to save a new page.
+      delete newPageSerializedBlob.pageId;
+      savePromise = PageDataService.save(newPageSerializedBlob);
+    } catch (exception) {
+      // If the serialization failed, reject the promise.
+      // Don't just error out immediately, because we still
+      // want to notify the user below.
+      $log.error('Serialization failed on save as', exception);
+      savePromise = $q.reject(exception);
+    }
 
-    FlyoutService.register({
-      selector: '.edit-page-warning',
-      render: function() {
-        if ($scope.writablePage.warnings && $scope.writablePage.warnings.name) {
-          return $scope.writablePage.warnings.name.join('\n');
-        } else {
-          return '';
+    notifyUserOfSaveProgress(savePromise, saveStatus$);
+
+    // Redirect to a new page once Save As completed (plus a small delay).
+    saveStatus$.filter(
+        function(event) {
+          return event.status === 'saved';
         }
-      },
-      destroySignal: destroy$
-    });
+      ).
+      pluck('id').
+      delay(150). // Extra delay so the user can visually register the 'saved' message.
+      subscribe(function(newSavedPageId) {
+        var url = $.baseUrl(`/view/${newSavedPageId}`);
+        WindowOperations.navigateTo(url.href);
+      });
 
-
-    /**
-     * Revert changes behavior.
-     */
-    $scope.revertInitiated = false;
-
-    $scope.revertPage = function() {
-      if ($scope.hasChanges) {
-        $scope.revertInitiated = true;
-        // reload the page (TODO: explore `location.reload()`)
-        $window.document.location.href = $window.document.location.href;
-      }
-    };
-
-
-    /**
-     * Some modal dialogs.
-     */
-
-    // This is an object, so that we can pass it to child scopes, and they can control the
-    // visibility of the customize modal.
-    $scope.addCardState = {
-      cardSize: null,
-      show: false
-    };
-
-    $scope.$on('add-card-with-size', function(e, cardSize) {
-      $scope.addCardState.cardSize = cardSize;
-      $scope.addCardState.show = true;
-    });
-
-    $scope.customizeState = {
-      cardModel: null,
-      show: false
-    };
-    $scope.$on('customize-card-with-model', function(e, cardModel) {
-      $scope.customizeState.cardModel = cardModel;
-      $scope.customizeState.show = true;
-    });
-
-    $scope.saveVisualizationAsState = {
-      cardModel: null,
-      show: false
-    };
-    $scope.$on('save-visualization-as', function(e, cardModel) {
-      $scope.saveVisualizationAsState.cardModel = cardModel;
-      $scope.saveVisualizationAsState.show = true;
-    });
-
-    // Handle the event emitted by the Remove All Cards button and delegate
-    // to each card so that we exercise the existing card deletion path.
-    $scope.$on('delete-all-cards', function() {
-      $scope.$broadcast('delete-card-with-model-delegate');
-    });
-
-    $scope.$on('delete-card-with-model', function(e, cardModel) {
-      $scope.page.set('cards', _.without($scope.page.getCurrentValue('cards'), cardModel));
-    });
-
-    var mobileWarningClosed = (/(^|;)\s*mobileWarningClosed=/).test($window.document.cookie);
-    var isMobile = DeviceService.isMobile();
-
-    $scope.mobileWarningState = {
-      'show': isMobile && !mobileWarningClosed
-    };
-
-    $scope.$watch('mobileWarningState.show', function(newValue) {
-      if (newValue === false) {
-        $window.document.cookie = 'mobileWarningClosed=1';
-      }
-    });
-
-    // Set up flyout handlers.
-
-    FlyoutService.register({
-      selector: '.save-this-page .save-button',
-      render: function() {
-        var buttonStatus = currentPageSaveEvents$.value.status;
-
-        var idleTitle;
-        if ($scope.isEphemeral) {
-          idleTitle = I18n.saveAs.flyoutIdle;
-        } else if ($scope.hasChanges) {
-          if (!$scope.shouldEnableSave) {
-            idleTitle = I18n.saveButton.flyoutNoEditPermission;
+    return saveStatus$.
+      bufferWithCount(2, 1). // Buffers of 2 in length, but overlapping by 1.
+      filter(
+        function(lastTwoEvents) {
+          var previousEvent = lastTwoEvents[0];
+          var currentEvent = lastTwoEvents[1];
+          // UX wants the page to remain stuck in "Saved"
+          // until the redirect kicks in. However we also want the user
+          // to be able to retry on failure. So, filter out only
+          // idle states that were not immediately preceded by failed
+          // states.
+          if (currentEvent.status === 'idle') {
+            return previousEvent.status === 'failed';
           } else {
-            idleTitle = I18n.saveButton.flyoutIdle;
+            return true;
           }
+        }
+      ).
+      pluck(1); // We're done with the buffer - only care about the current event.
+  };
+
+  var destroy$ = $scope.$destroyAsObservable();
+
+  FlyoutService.register({
+    selector: '.edit-page-warning',
+    render: function() {
+      if ($scope.writablePage.warnings && $scope.writablePage.warnings.name) {
+        return $scope.writablePage.warnings.name.join('\n');
+      } else {
+        return '';
+      }
+    },
+    destroySignal: destroy$
+  });
+
+
+  /**
+   * Revert changes behavior.
+   */
+  $scope.revertInitiated = false;
+
+  $scope.revertPage = function() {
+    if ($scope.hasChanges) {
+      $scope.revertInitiated = true;
+      // reload the page (TODO: explore `location.reload()`)
+      $window.document.location.href = $window.document.location.href;
+    }
+  };
+
+
+  /**
+   * Some modal dialogs.
+   */
+
+  // This is an object, so that we can pass it to child scopes, and they can control the
+  // visibility of the customize modal.
+  $scope.addCardState = {
+    cardSize: null,
+    show: false
+  };
+
+  $scope.$on('add-card-with-size', function(e, cardSize) {
+    $scope.addCardState.cardSize = cardSize;
+    $scope.addCardState.show = true;
+  });
+
+  $scope.customizeState = {
+    cardModel: null,
+    show: false
+  };
+  $scope.$on('customize-card-with-model', function(e, cardModel) {
+    $scope.customizeState.cardModel = cardModel;
+    $scope.customizeState.show = true;
+  });
+
+  $scope.saveVisualizationAsState = {
+    cardModel: null,
+    show: false
+  };
+  $scope.$on('save-visualization-as', function(e, cardModel) {
+    $scope.saveVisualizationAsState.cardModel = cardModel;
+    $scope.saveVisualizationAsState.show = true;
+  });
+
+  // Handle the event emitted by the Remove All Cards button and delegate
+  // to each card so that we exercise the existing card deletion path.
+  $scope.$on('delete-all-cards', function() {
+    $scope.$broadcast('delete-card-with-model-delegate');
+  });
+
+  $scope.$on('delete-card-with-model', function(e, cardModel) {
+    $scope.page.set('cards', _.without($scope.page.getCurrentValue('cards'), cardModel));
+  });
+
+  var mobileWarningClosed = (/(^|;)\s*mobileWarningClosed=/).test($window.document.cookie);
+  var isMobile = DeviceService.isMobile();
+
+  $scope.mobileWarningState = {
+    'show': isMobile && !mobileWarningClosed
+  };
+
+  $scope.$watch('mobileWarningState.show', function(newValue) {
+    if (newValue === false) {
+      $window.document.cookie = 'mobileWarningClosed=1';
+    }
+  });
+
+  // Set up flyout handlers.
+
+  FlyoutService.register({
+    selector: '.save-this-page .save-button',
+    render: function() {
+      var buttonStatus = currentPageSaveEvents$.value.status;
+
+      var idleTitle;
+      if ($scope.isEphemeral) {
+        idleTitle = I18n.saveAs.flyoutIdle;
+      } else if ($scope.hasChanges) {
+        if (!$scope.shouldEnableSave) {
+          idleTitle = I18n.saveButton.flyoutNoEditPermission;
         } else {
-          idleTitle = I18n.saveButton.flyoutNoChanges;
+          idleTitle = I18n.saveButton.flyoutIdle;
         }
+      } else {
+        idleTitle = I18n.saveButton.flyoutNoChanges;
+      }
 
-        var flyoutContent = {
-          title: {
-            failed: I18n.saveButton.flyoutFailedTitle,
-            idle: idleTitle,
-            saving: I18n.saveButton.saving,
-            saved: I18n.saveButton.saved
-          },
-          body: {
-            failed: I18n.saveButton.flyoutFailedBody,
-            idle: '',
-            saving: '',
-            saved: ''
-          }
-        };
-
-        return '<div class="flyout-title">{0}</div><div>{1}</div>'.format(
-          flyoutContent.title[buttonStatus],
-          flyoutContent.body[buttonStatus]
-        );
-      },
-      destroySignal: destroy$
-    });
-
-    FlyoutService.register({
-      selector: '.customize-bar .save-as-button',
-      render: function() {
-        var flyoutTitle = I18n.saveAs.flyoutNoChanges;
-        if ($scope.isEphemeral) {
-          flyoutTitle = I18n.saveAs.flyoutEphemeral;
-        } else if ($scope.hasChanges) {
-          flyoutTitle = I18n.saveAs.flyoutIdle;
+      var flyoutContent = {
+        title: {
+          failed: I18n.saveButton.flyoutFailedTitle,
+          idle: idleTitle,
+          saving: I18n.saveButton.saving,
+          saved: I18n.saveButton.saved
+        },
+        body: {
+          failed: I18n.saveButton.flyoutFailedBody,
+          idle: '',
+          saving: '',
+          saved: ''
         }
+      };
 
-        return '<div class="flyout-title">{0}</div>'.format(flyoutTitle);
-      },
-      destroySignal: destroy$
-    });
+      return `<div class="flyout-title">${flyoutContent.title[buttonStatus]}</div><div>${flyoutContent.body[buttonStatus]}</div>`;
+    },
+    destroySignal: destroy$
+  });
 
-    var clearAllFiltersSelectors = [
-      '.clear-all-filters-button',
-      '.clear-all-filters-button .icon-close'
-    ];
+  FlyoutService.register({
+    selector: '.customize-bar .save-as-button',
+    render: function() {
+      var flyoutTitle = I18n.saveAs.flyoutNoChanges;
+      if ($scope.isEphemeral) {
+        flyoutTitle = I18n.saveAs.flyoutEphemeral;
+      } else if ($scope.hasChanges) {
+        flyoutTitle = I18n.saveAs.flyoutIdle;
+      }
 
-    FlyoutService.register({
-      selector: clearAllFiltersSelectors.join(', '),
-      render: function() {
-        return '<div class="flyout-title">{0}</div>'.
-          format(I18n.quickFilterBar.clearAllFlyout);
-      },
-      positionOn: function() {
-        return $(clearAllFiltersSelectors[0])[0];
-      },
-      destroySignal: destroy$
-    });
+      return `<div class="flyout-title">${flyoutTitle}</div>`;
+    },
+    destroySignal: destroy$
+  });
 
-    // Since we have a flyout handler whose output depends on currentPageSaveEvents$ and $scope.hasChanges,
-    // we need to poke the FlyoutService. We want the flyout to update immediately.
-    currentPageSaveEvents$.merge($scope.$observe('hasChanges')).subscribe(function() {
-      FlyoutService.refreshFlyout();
-    });
+  var clearAllFiltersSelectors = [
+    '.clear-all-filters-button',
+    '.clear-all-filters-button .icon-close'
+  ];
 
-    /******************************************
-    * Clean up if/when the scope is destroyed *
-    ******************************************/
+  FlyoutService.register({
+    selector: clearAllFiltersSelectors.join(', '),
+    render: function() {
+      return `<div class="flyout-title">${I18n.quickFilterBar.clearAllFlyout}</div>`;
+    },
+    positionOn: function() {
+      return $(clearAllFiltersSelectors[0])[0];
+    },
+    destroySignal: destroy$
+  });
 
-    destroy$.subscribe(function() {
-      $('#api-panel-toggle-btn').off('click');
-      var $apiUrlDisplay = $('#api-url-display');
-      $apiUrlDisplay.off('mousedown');
-      $apiUrlDisplay.off('mousemove');
-      $apiUrlDisplay.off('scroll');
-      $apiUrlDisplay.off('mouseup');
-      $apiUrlDisplay.off('blur');
-    });
+  // Since we have a flyout handler whose output depends on currentPageSaveEvents$ and $scope.hasChanges,
+  // we need to poke the FlyoutService. We want the flyout to update immediately.
+  currentPageSaveEvents$.merge($scope.$observe('hasChanges')).subscribe(function() {
+    FlyoutService.refreshFlyout();
+  });
 
-  }
+  /******************************************
+  * Clean up if/when the scope is destroyed *
+  ******************************************/
 
-  angular.
-    module('dataCards.controllers').
-      controller('CardsViewController', CardsViewController);
+  destroy$.subscribe(function() {
+    $('#api-panel-toggle-btn').off('click');
+    var $apiUrlDisplay = $('#api-url-display');
+    $apiUrlDisplay.off('mousedown');
+    $apiUrlDisplay.off('mousemove');
+    $apiUrlDisplay.off('scroll');
+    $apiUrlDisplay.off('mouseup');
+    $apiUrlDisplay.off('blur');
+  });
+}
 
-})();
+angular.
+  module('dataCards.controllers').
+    controller('CardsViewController', CardsViewController);

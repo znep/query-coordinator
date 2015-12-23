@@ -285,21 +285,6 @@ javascripts:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-users-screen.js
-  admin-georegions:
-    - public/javascripts/dist/components/utils.js
-    - public/javascripts/dist/components/flash-message.js
-    - public/javascripts/dist/components/socrata-title-tip-wrapper.js
-    - public/javascripts/dist/components/loading-button.js
-    - public/javascripts/dist/components/form-button.js
-    - public/javascripts/dist/components/form-controls.js
-    - public/javascripts/dist/components/form-input.js
-    - public/javascripts/dist/components/form-select-input.js
-    - public/javascripts/dist/components/form-text-input.js
-    - public/javascripts/dist/components/georegions/configure-boundary-form.js
-    - public/javascripts/dist/components/georegions/enabled-widget.js
-    - public/javascripts/dist/components/georegions/georegion-admin-row.js
-    - public/javascripts/dist/components/georegions/georegion-admin-table.js
-    - public/javascripts/dist/screens/admin-georegions-screen.js
   admin-home:
     - public/javascripts/util/serialize.js
     - public/javascripts/controls/admin-buttons.js
@@ -729,10 +714,6 @@ javascripts:
     - public/javascripts/util/typed-arrays.js
     - public/javascripts/util/polyfills.js
     - public/javascripts/plugins/ieee754.js
-    - public/javascripts/angular/dataCards/app.js
-    - public/javascripts/angular/dataCards/controllers.js
-    - public/javascripts/angular/dataCards/services.js
-    - public/javascripts/angular/dataCards/**/*.js
 
   # BEGIN BOWER-MANAGED ASSETS
   # NOTE this mega-package of all bower assets is not ideal.
@@ -750,18 +731,8 @@ javascripts:
     - public/javascripts/bower/lodash.js
     - public/javascripts/bower/d3.js
     - public/javascripts/bower/socrata.utils.js
-    - public/javascripts/bower/socrata.visualizations.Visualization.js
     - public/javascripts/bower/leaflet.js
-    - public/javascripts/bower/socrata.visualizations.pbf.js
     - public/javascripts/bower/vectortile.min.js
-    - public/javascripts/bower/socrata.visualizations.FlyoutRenderer.js
-    - public/javascripts/bower/socrata.visualizations.DataProvider.js
-    - public/javascripts/bower/socrata.visualizations.GeospaceDataProvider.js
-    - public/javascripts/bower/socrata.visualizations.TileserverDataProvider.js
-    - public/javascripts/bower/socrata.visualizations.SoqlDataProvider.js
-    - public/javascripts/bower/socrata.visualizations.MetadataProvider.js
-    - public/javascripts/bower/socrata.visualizations.ColumnChart.js
-    - public/javascripts/bower/socrata.visualizations.VectorTileManager.js
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS
 

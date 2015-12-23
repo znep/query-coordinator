@@ -1,3 +1,4 @@
+const angular = require('angular');
 /**
  * This is an attribute you add to a textarea that will disallow any
  * newlines or linebreaks.  It will also both keep the caret in the proper
@@ -6,8 +7,8 @@
  * newlines on the 'input' event. Consequently, an 'ng-model' is required
  * on the textarea for this directive to work.
  */
-angular.module('dataCards.directives').directive('disableNewline', function() {
-  'use strict';
+angular.module('dataCards.directives').directive('disableNewline', function(rx) {
+  const Rx = rx;
 
   return {
     require: 'ngModel',

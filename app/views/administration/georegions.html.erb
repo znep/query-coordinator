@@ -60,12 +60,8 @@
       blist.namespace.fetch('blist.georegions').maximumEnabledCount = <%== @view_model.maximum_enabled_count.to_json %>;
       blist.namespace.fetch('blist.georegions').flash = <%== flash.map { |type, message| { :type => type, :message => message } }.to_json %>;
     </script>
-    <%- if Rails.env.production? -%>
-      <%= include_javascripts 'react-prod' %>
-    <%- else -%>
-      <%= include_javascripts 'react-dev' %>
-    <%- end -%>
-    <%= include_javascripts 'admin-georegions' %>
+
+    <%= include_webpack_bundle 'admin-georegions-screen.js' %>
   <%- end -%>
 <% end %>
 <%= render_translations @view_model.translations %>

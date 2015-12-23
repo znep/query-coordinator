@@ -1,15 +1,19 @@
+import React from 'react';
+import TestUtils, {
+  findRenderedDOMComponentWithTag as findByTag,
+  findRenderedDOMComponentWithClass as findByClass
+} from 'react-addons-test-utils';
+
+import ConfigureBoundaryForm from 'components/georegions/configure-boundary-form';
+
 describe('ConfigureBoundaryForm', function() {
-  var TestUtils = React.addons.TestUtils;
-  var findByClass = TestUtils.findRenderedDOMComponentWithClass;
-  var findByTag = TestUtils.findRenderedDOMComponentWithTag;
-  var georegionComponents = blist.namespace.fetch('blist.georegions.components');
-  var ConfigureBoundaryForm = georegionComponents.ConfigureBoundaryForm;
 
   beforeEach(function() {
     this.target = $('<div/>').appendTo(document.body).get(0);
     this.shallowRenderer = TestUtils.createRenderer();
     this.props = {
       authenticityToken: 'authy',
+      cancelLabel: 'Cancel',
       id: 12,
       onClose: sinon.stub(),
       onSave: sinon.stub(),
@@ -17,6 +21,7 @@ describe('ConfigureBoundaryForm', function() {
         complete();
         success();
       },
+      saveLabel: 'Save',
       title: 'my title'
     };
     sinon.stub($, 't', function(key) {

@@ -1,10 +1,12 @@
-describe('FormControls', function() {
+import React from 'react';
+import TestUtils, {
+  findRenderedDOMComponentWithTag as findByTag,
+  scryRenderedDOMComponentsWithTag as findAllByTag
+} from 'react-addons-test-utils';
 
-  var components = blist.namespace.fetch('blist.components');
-  var FormControls = components.FormControls;
-  var TestUtils = React.addons.TestUtils;
-  var findByTag = TestUtils.findRenderedDOMComponentWithTag;
-  var findAllByTag = TestUtils.scryRenderedDOMComponentsWithTag;
+import FormControls from 'components/form-controls';
+
+describe('FormControls', function() {
 
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();

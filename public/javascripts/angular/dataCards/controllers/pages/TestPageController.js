@@ -1,11 +1,7 @@
-(function() {
-  'use strict';
+const angular = require('angular');
+function TestPageController() {
+}
 
-  function TestPageController() {
-  }
-
-  angular.
-  module('dataCards.controllers').
-  controller('TestPageController', TestPageController);
-
-})();
+angular.
+module('dataCards.controllers').
+controller('TestPageController', TestPageController);

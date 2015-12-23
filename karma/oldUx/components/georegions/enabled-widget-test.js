@@ -1,8 +1,11 @@
+import React from 'react';
+import TestUtils, {
+  findRenderedDOMComponentWithClass as findByClass
+} from 'react-addons-test-utils';
+
+import EnabledWidget from 'components/georegions/enabled-widget';
+
 describe('EnabledWidget', function() {
-  var TestUtils = React.addons.TestUtils;
-  var findByClass = TestUtils.findRenderedDOMComponentWithClass;
-  var georegionComponents = blist.namespace.fetch('blist.georegions.components');
-  var EnabledWidget = georegionComponents.EnabledWidget;
 
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();

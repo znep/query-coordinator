@@ -1,0 +1,100 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": "eslint:recommended",
+  "parser": "babel-eslint",
+  "rules": {
+    "brace-style": [
+      2,
+      "1tbs",
+      {
+        "allowSingleLine": true
+      }
+    ],
+    "camelcase": 1,
+    "consistent-return": 0,
+    "dot-location": [
+      1,
+      "object"
+    ],
+    "dot-notation": [
+      1,
+      {
+        "allowKeywords": false,
+        "allowPattern": "^[a-z]+(_[a-z]+)+$"
+      }
+    ],
+    "eol-last": 1,
+    "indent": 0,
+    "new-cap": [
+      1,
+      {
+        "newIsCapExceptions": [
+          "pbf"
+        ]
+      }
+    ],
+    "no-console": 0,
+    "no-extend-native": 2,
+    "no-extra-semi": 1,
+    "no-shadow": [
+      2,
+      {
+        "hoist": "all"
+      }
+    ],
+    "no-spaced-func": 2,
+    "no-trailing-spaces": 2,
+    "no-underscore-dangle": 0,
+    "no-unused-vars": 1,
+    "no-use-before-define": 0,
+    "quotes": [
+      1,
+      "single"
+    ],
+    "semi": [
+      2,
+      "always"
+    ],
+    "space-after-keywords": [
+      2,
+      "always"
+    ],
+    "space-before-blocks": [
+      2,
+      "always"
+    ],
+    "space-before-function-paren": [
+      2,
+      "never"
+    ],
+    "space-infix-ops": 2,
+    "strict": 2
+  },
+  "globals": {
+    "$": true,
+    "_": true,
+    "angular": true,
+    "blist": true,
+    "chroma": true,
+    "currentUser": true,
+    "d3": true,
+    "datasetMetadata": true,
+    "domainMetadata": true,
+    "DOMPurify": true,
+    "Highcharts": true,
+    "jQuery": true,
+    "L": true,
+    "Modernizr": true,
+    "moment": true,
+    "pageMetadata": true,
+    "pbf": true,
+    "require": true,
+    "saveAs": true,
+    "socrata": true,
+    "ss": true,
+    "VBArray": true,
+    "VectorTile": true
+  }
+}

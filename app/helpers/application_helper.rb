@@ -268,6 +268,27 @@ module ApplicationHelper
     REVISION_NUMBER || Rails.env
   end
 
+  def include_webpack_bundle(entrypoint)
+    if Rails.configuration.webpack[:use_dev_server]
+      src = "/javascripts/webpack/#{entrypoint}"
+    else
+      # use compiled asset
+      src =
+        if Rails.configuration.webpack[:use_manifest]
+          manifest = Rails.configuration.webpack[:asset_manifest]
+          # Look for the basename as the key
+          # Note: this means that two bundle files can't have the same name
+          # TODO: see if there's a way to rectify this
+          filename = manifest[File.basename(entrypoint)]
+
+          "build/#{filename}"
+        else
+          "build/#{entrypoint}"
+        end
+    end
+    javascript_include_tag src
+  end
+
 # TOP OF PAGE
 
   # Display a standardized flash error message.

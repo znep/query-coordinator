@@ -7,7 +7,7 @@ git rev-parse HEAD > "$WORKSPACE/REVISION"
 # Install dependencies
 bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
 bundle install --without=development --deployment
-npm install
+npm install --depth 0
 bundle exec rake assets:webpack
 
 # Dammit Jammit

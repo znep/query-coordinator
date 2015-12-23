@@ -57,30 +57,20 @@
     };
 
     function getEmailAddress(collaborator) {
-      return new Promise(function(resolve, reject) {
-        if (collaborator.userEmail) {
-          resolve(collaborator);
-        } else if (collaborator.userId) {
-          $.ajax({
-            url: '/api/users/{0}.json'.format(collaborator.userId),
-            dataType: 'json',
-            success: function(json) {
-              collaborator.userEmail = json.email;
-              collaborator.displayName = json.displayName;
-              resolve(collaborator);
-            },
-            error: reject
-          }).fail(function(data) {
-            if (data.status === 401) {
-              storyteller.dispatcher.dispatch({
-                action: Actions.SESSION_TIMED_OUT
-              });
-            }
-          });
-        } else {
-          reject();
-        }
-      });
+      if (collaborator.userEmail) {
+        return Promise.resolve(collaborator);
+      } else if (collaborator.userId) {
+        return Promise.resolve($.ajax({
+          url: '/api/users/{0}.json'.format(collaborator.userId),
+          dataType: 'json'})
+        ).then(function(json) {
+          collaborator.userEmail = json.email;
+          collaborator.displayName = json.displayName;
+          return collaborator;
+        });
+      } else {
+        return Promise.reject();
+      }
     }
 
     /**

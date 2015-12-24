@@ -8,8 +8,10 @@ echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
 
 export RUBYOPT="-E utf-8"
 
+bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
+
 bundle install
-npm install
+npm install --depth 0
 bundle exec rake test --trace
 EXIT_CODE=$?
 echo "The exit code was ${EXIT_CODE}"

@@ -1612,7 +1612,7 @@ function timelineChart(
             date.setMonth(0);
           case 'MONTH': // eslint-disable-line no-fallthrough
             date.setDate(1);
-          default:
+          default: // eslint-disable-line no-fallthrough
             date.setMilliseconds(0);
             date.setSeconds(0);
             date.setMinutes(0);

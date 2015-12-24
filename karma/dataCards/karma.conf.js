@@ -95,8 +95,6 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/dist/rx.testing.js',
       'bower_components/leaflet/dist/leaflet-src.js',
       'app/styles/leaflet.css',
-      'bower_components/chroma-js/chroma.js',
-      'bower_components/simple-statistics/src/simple_statistics.js',
       'public/javascripts/util/typed-arrays.js',
       'public/javascripts/bower/pbf.min.js',
       'public/javascripts/bower/vectortile.min.js',

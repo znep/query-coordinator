@@ -1,5 +1,15 @@
 class Api::V1::DraftsController < ApplicationController
 
+  def latest
+    @story = DraftStory.find_by_uid(params[:uid])
+
+    if @story
+      render json: @story
+    else
+      render_404
+    end
+  end
+
   def create
     digest = request.env['HTTP_IF_MATCH']
 

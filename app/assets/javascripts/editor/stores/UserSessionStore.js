@@ -15,7 +15,7 @@
     this.register(function(payload) {
 
       switch (payload.action) {
-        case Actions.SESSION_TIMED_OUT:
+        case Actions.API_REQUEST_RETURNED_401_UNAUTHORIZED:
           if (_hasValidSession) {
             _hasValidSession = false;
             self._emitChange();

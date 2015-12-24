@@ -198,7 +198,7 @@
         // by this deferred.
         if (data.status === 401) {
           storyteller.dispatcher.dispatch({
-            action: Actions.SESSION_TIMED_OUT
+            action: Actions.API_REQUEST_RETURNED_401_UNAUTHORIZED
           });
         }
       });

@@ -49,6 +49,13 @@ class BrowseActionsTest < Test::Unit::TestCase
         'data lens transition state is post_beta but we do not have a data lens link in the catalog')
     end
 
+    def test_does_not_add_api_if_using_cetera_search
+      stub_feature_flags_with(:cetera_search, true)
+      view_types_list = @browse_actions_container.send(:view_types_facet)
+      refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'api'},
+        'cetera search feature flag is true, but we have an api link in the catalog')
+    end
+
     # There was a regression around this
     def test_whitelisting_of_view_types_is_respected
       whitelisted_view_type_values = %w(datasets charts)

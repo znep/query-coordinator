@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/apiExplorer.html');
 const angular = require('angular');
-function ApiExplorer(DatasetDataService, WindowState, rx) {
+function ApiExplorer($window, http, WindowState, rx) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -73,7 +73,25 @@ function ApiExplorer(DatasetDataService, WindowState, rx) {
       var geoJsonAvailable$ = datasetId$.
         filter(function(value) { return !_.isNull(value); }).
         flatMapLatest(function(id) {
-          return Rx.Observable.fromPromise(DatasetDataService.getGeoJsonInfo(id, {params: {'$limit': 1}}));
+          $window.socrata.utils.assert(_.isString(id), 'id should be a string');
+          var url = $.baseUrl(`/resource/${id}.geojson`);
+
+          var config = {
+            headers: {
+              'Accept': 'application/vnd.geo+json'
+            },
+            cache: true,
+            requester: {
+              requesterLabel: function() {
+                return 'api-explorer';
+              }
+            },
+            params: {
+              '$limit': 1
+            }
+          };
+
+          return Rx.Observable.fromPromise(http.get(url.href, config));
         }).
         filter(function(response) {
           // Currently requests to the GeoJson endpoint for datasets that don't have geo data return a 200

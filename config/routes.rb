@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   get 'version' => 'version#show'
+  get 'post_login' => 'post_login#show'
 
   scope '/s', constraints: { uid: UNANCHORED_FOUR_BY_FOUR_PATTERN } do
     get '(:vanity_text)/:uid' => 'stories#show'

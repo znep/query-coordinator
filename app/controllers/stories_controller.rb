@@ -28,7 +28,7 @@ class StoriesController < ApplicationController
       @story_title = view['name']
 
       if story_is_uninitialized?(view['metadata']) && @story_title.present?
-        render 'stories/new', layout: 'new'
+        render 'stories/new', layout: 'modal'
       elsif !@story_title.nil?
         redirect_to "/stories/s/#{params[:uid]}/edit"
       else

@@ -7,7 +7,7 @@
 
   'use strict';
 
-  var LOGIN_PATH = '/login';
+  var LOGIN_PATH = '/login?return_to=/stories/post_login';
 
   var socrata = root.socrata;
   var storyteller = socrata.storyteller;

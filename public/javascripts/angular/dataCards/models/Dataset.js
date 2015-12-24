@@ -4,7 +4,6 @@ angular.module('dataCards.models').factory('Dataset', function(
   ModelHelper,
   Model,
   CardDataService,
-  DatasetDataService,
   Schemas) {
 
   var datasetMetadataSchemas = Schemas.regarding('dataset_metadata');

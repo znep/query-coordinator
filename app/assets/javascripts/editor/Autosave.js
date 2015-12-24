@@ -67,6 +67,17 @@
         options.debouncePeriod * 1000
       );
       storyteller.storyStore.addChangeListener(_debouncedSave);
+      storyteller.userSessionStore.addChangeListener(function() {
+        // When the session is re-established, trigger autosave
+        // and re-enable (the autosave was likely disabled due
+        // to persistent errors caused by expired sessions).
+        if (storyteller.userSessionStore.hasValidSession()) {
+          if (options.disableOnFail) {
+            self.enable();
+          }
+          triggerSave();
+        }
+      });
     };
 
     this.setDebouncePeriod(options.debouncePeriod);

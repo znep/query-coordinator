@@ -2,27 +2,20 @@
 set -ex
 
 npm install
-NEW_PROBLEMS=`node_modules/.bin/eslint --ignore-path .eslintignore -f compact public/javascripts/angular | sort | tail -n +3`
-NEW_PROBLEMS_COUNT=`wc -l <(echo "$NEW_PROBLEMS") | awk '{print $1}'`
+MERGE_BASE=$(git merge-base HEAD origin/master)
 
-git checkout `git merge-base HEAD origin/master`
-OLD_PROBLEMS=`node_modules/.bin/eslint --ignore-path .eslintignore -f compact public/javascripts/angular | sort | tail -n +3`
-OLD_PROBLEMS_COUNT=`wc -l <(echo "$OLD_PROBLEMS") | awk '{print $1}'`
+NEW_PROBLEMS=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\).*\.jsx\?$' | cut -c3- | xargs node_modules/.bin/eslint --ignore-path .eslintignore -f compact)
+DELTA=$(echo ${NEW_PROBLEMS} | sed -e :a -e '$d;N;2,2ba' -e 'P;D')
+DELTA_COUNT=$(echo ${NEW_PROBLEMS} | tail -n1 | cut -d ' ' -f 1)
 
-DELTA=`diff  <(echo "$OLD_PROBLEMS" ) <(echo "$NEW_PROBLEMS") | grep '^> '`
-DELTA_COUNT=`expr $NEW_PROBLEMS_COUNT - $OLD_PROBLEMS_COUNT`
-
-if [ -n "$DELTA" ]; then
+if [ -n "${DELTA}" ]; then
   echo
   echo "New errors:"
-  echo "$DELTA"
+  echo "${NEW_PROBLEMS}"
   echo
 fi
 
-echo "Old problems: $OLD_PROBLEMS_COUNT"
-echo "New problems: $NEW_PROBLEMS_COUNT"
-
-if [ "$DELTA_COUNT" -gt 0 ]; then
+if [ "${DELTA_COUNT:0}" -gt 0 ]; then
   false
 else
   true

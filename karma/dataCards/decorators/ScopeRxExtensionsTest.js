@@ -4,11 +4,7 @@ describe('Scope RX Extensions', function() {
   var $rootScope;
   var testHelpers;
 
-  beforeEach(function() {
-    module('socrataCommon.decorators');
-    module('rx');
-    module('test');
-  });
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function(_$rootScope_, _testHelpers_) {
     $rootScope = _$rootScope_;

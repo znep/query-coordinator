@@ -30,26 +30,13 @@ describe('timelineChart', function() {
   var noDataData;
   var allDataAtSameTimestampData;
 
-  beforeEach(module(testJson));
-  beforeEach(module(allLabelsTestJson));
-  beforeEach(module(hiddenLabelTestJson));
-  beforeEach(module(negativeTestJson));
-  beforeEach(module(nonContinuousTestJson));
-  beforeEach(module(noDataTestJson));
-  beforeEach(module(allDataAtSameTimestampTestJson));
-
-  beforeEach(module('dataCards'));
-
-  beforeEach(module('dataCards.directives'));
-
-  beforeEach(module('dataCards/timeline-chart.scss'));
-  beforeEach(module('dataCards/flyout.scss'));
-  beforeEach(module('dataCards/theme/default.scss'));
-
-  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/timeline-chart.scss'));
+  beforeEach(angular.mock.module('dataCards/flyout.scss'));
+  beforeEach(angular.mock.module('dataCards/theme/default.scss'));
 
   beforeEach(function() {
-    module(function($provide, $controllerProvider) {
+    angular.mock.module(function($provide, $controllerProvider) {
 
       mockWindowStateService = {};
       mockWindowStateService.scrollPosition$ = new Rx.Subject();

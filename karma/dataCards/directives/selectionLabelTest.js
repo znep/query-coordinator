@@ -5,12 +5,9 @@ describe('selectionLabel', function() {
   var testHelpers;
   var $rootScope;
 
+  beforeEach(angular.mock.module('dataCards'));
+
   beforeEach(function() {
-    module('/angular_templates/dataCards/selectionLabel.html');
-    module('socrataCommon.services');
-    module('dataCards.directives');
-    module('dataCards.services');
-    module('test');
     inject(['$rootScope', '$window', 'testHelpers', function(_$rootScope, _$window, _testHelpers) {
       $rootScope = _$rootScope;
       $window = _$window;

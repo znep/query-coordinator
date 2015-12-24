@@ -6,12 +6,7 @@ describe('Export Menu', function() {
   var ServerConfig;
   var $rootScope;
 
-  beforeEach(module('/angular_templates/dataCards/exportMenu.html'));
-  beforeEach(module('socrataCommon.services'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
-  beforeEach(module('dataCards.filters'));
-  beforeEach(module('test'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
     inject(function($injector) {

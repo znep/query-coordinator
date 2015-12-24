@@ -36,11 +36,8 @@ describe('CardDataService', function() {
     });
   }
 
-  beforeEach(function () {
-    module('dataCards');
-    module('karma/dataCards/test-data/cardDataServiceTest/sampleData.json');
-    module('karma/dataCards/test-data/cardDataServiceTest/extentData.json');
-  });
+  beforeEach(angular.mock.module('dataCards'));
+
   function normalizeUrl(url) {
     return url.replace(/\s/g, '+').toLowerCase();
   }

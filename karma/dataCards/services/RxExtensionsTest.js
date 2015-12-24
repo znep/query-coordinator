@@ -1,7 +1,7 @@
 describe('RX Extensions', function() {
   'use strict';
 
-  beforeEach(module('rx'));
+  beforeEach(angular.mock.module('rx'));
   beforeEach(inject(function($injector) {
     this.rx = $injector.get('rx');
     this.$rootScope = $injector.get('$rootScope');

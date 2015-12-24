@@ -12,10 +12,7 @@ describe('SuggestionService', function() {
   var testJsonPath = 'karma/dataCards/test-data/suggestionServiceTest/suggestions.json';
   var TEST_RESPONSE;
 
-  beforeEach(function() {
-    module('dataCards');
-    module(testJsonPath);
-  });
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     SuggestionService = $injector.get('SuggestionService');

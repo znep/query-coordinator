@@ -23,16 +23,11 @@ describe('ChoroplethController', function() {
   var testWards = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var testAggregates = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
   var testAggregatesWhere = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values_where.json';
-  beforeEach(module(testWards));
-  beforeEach(module(testAggregates));
-  beforeEach(module(testAggregatesWhere));
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       provide = $provide;
 
       setMockCardDataServiceToDefault();

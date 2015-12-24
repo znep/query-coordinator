@@ -3,7 +3,7 @@ describe('pluralize', function() {
 
   var PluralizeService;
 
-  beforeEach(module('socrataCommon.services'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     PluralizeService = $injector.get('PluralizeService');
   }));

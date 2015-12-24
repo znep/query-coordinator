@@ -18,24 +18,14 @@ describe('multiCardLayout', function() {
   var Constants;
   var I18n;
 
-  beforeEach(module('/angular_templates/dataCards/multiCardLayout.html'));
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/choropleth.html'));
-  beforeEach(module('/angular_templates/dataCards/columnChart.html'));
-  beforeEach(module('/angular_templates/dataCards/distributionChart.html'));
-  beforeEach(module('/angular_templates/dataCards/featureMap.html'));
-  beforeEach(module('/angular_templates/dataCards/histogram.html'));
-  beforeEach(module('/angular_templates/dataCards/searchCard.html'));
-  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
-  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
-  beforeEach(module('dataCards/theme/default.scss'));
-  beforeEach(module('dataCards/cards.scss'));
-  beforeEach(module('dataCards/card.scss'));
-  beforeEach(module('dataCards/flyout.scss'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/theme/default.scss'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
+  beforeEach(angular.mock.module('dataCards/card.scss'));
+  beforeEach(angular.mock.module('dataCards/flyout.scss'));
 
-  beforeEach(module('dataCards'));
   beforeEach(function() {
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       _$provide = $provide;
 
       var mockCardDataService = {

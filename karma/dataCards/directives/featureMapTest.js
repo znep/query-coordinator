@@ -13,16 +13,11 @@ describe('featureMap', function() {
   var protocolBufferEndpointResponses = 'karma/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
   var VectorTileDataService;
 
-  beforeEach(module(testJson));
-  beforeEach(module(protocolBufferEndpointResponses));
-
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards/feature-map.scss'));
-  beforeEach(module('/angular_templates/dataCards/featureMap.html'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/feature-map.scss'));
 
   beforeEach(function() {
-    module(function($provide, $controllerProvider) {
+    angular.mock.module(function($provide, $controllerProvider) {
 
       mockWindowStateService = {};
       mockWindowStateService.scrollPosition$ = new Rx.Subject();

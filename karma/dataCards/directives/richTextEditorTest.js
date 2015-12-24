@@ -21,12 +21,10 @@ describe('Rich text editor', function() {
     }
   });
 
+  beforeEach(angular.mock.module('dataCards'));
+
   var jqueryFx;
   beforeEach(function() {
-    module('dataCards');
-    module('socrataCommon.directives');
-    module('test');
-
     inject([
       '$rootScope',
       'testHelpers',

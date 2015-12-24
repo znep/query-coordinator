@@ -4,7 +4,7 @@ describe('Model', function() {
   var Model;
 
   beforeEach(function() {
-    module('dataCards');
+    angular.mock.module('dataCards');
   });
 
   beforeEach(inject(['Model', function(_Model) {

@@ -1,9 +1,7 @@
 describe('DatasetColumnsService', function() {
   'use strict';
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
 
   var $rootScope;
   var Mockumentary;

@@ -10,10 +10,9 @@ describe('DistributionChartController', function() {
   var mockCardDataService;
   var $controller;
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
-  beforeEach(module(function($provide) {
+  beforeEach(angular.mock.module('dataCards'));
+
+  beforeEach(angular.mock.module(function($provide) {
     _$provide = $provide;
   }));
 

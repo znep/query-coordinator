@@ -1,7 +1,7 @@
 describe('Developer overrides', function() {
   'use strict';
 
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
 
   describe('setup from string', function() {
     it('should accept an empty set of overrides', inject(function(DeveloperOverrides) {

@@ -118,19 +118,12 @@ describe('tableCard', function() {
   var descriptionColumnIndex;
   var idColumnIndex;
 
-  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/card.scss'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
+  beforeEach(angular.mock.module('dataCards/table.scss'));
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards/card.scss'));
-  beforeEach(module('dataCards/cards.scss'));
-  beforeEach(module('dataCards/table.scss'));
-
-  beforeEach(module(testJson));
-  beforeEach(module(testNullJson));
-  beforeEach(module(testMetaJson));
-
-  beforeEach(module(function(_$controllerProvider_) {
+  beforeEach(angular.mock.module(function(_$controllerProvider_) {
     $controllerProvider = _$controllerProvider_;
   }));
 

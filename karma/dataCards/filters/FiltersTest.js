@@ -2,7 +2,7 @@ describe('Filter', function() {
   'use strict';
 
   beforeEach(function() {
-    module('socrataCommon.filters');
+    angular.mock.module('socrataCommon.filters');
   });
 
   xdescribe('pageLimitTo', function() {

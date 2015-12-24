@@ -7,14 +7,9 @@ describe('SaveAs', function() {
   var Mockumentary;
   var saveAsEventSubject;
 
+  beforeEach(angular.mock.module('dataCards'));
+
   beforeEach(function() {
-    module('/angular_templates/dataCards/saveAs.html');
-    module('/angular_templates/dataCards/saveButton.html');
-    module('/angular_templates/dataCards/spinner.html');
-    module('/angular_templates/dataCards/socSelect.html');
-    module('socrataCommon.services');
-    module('dataCards');
-    module('test');
     inject([
       '$window',
       'testHelpers',

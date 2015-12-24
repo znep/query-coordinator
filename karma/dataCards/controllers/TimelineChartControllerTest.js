@@ -27,11 +27,12 @@ describe('TimelineChartController', function() {
     });
   }
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module(function($provide) {
+  beforeEach(angular.mock.module('dataCards'));
+
+  beforeEach(angular.mock.module(function($provide) {
     _$provide = $provide;
   }));
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $q = $injector.get('$q');

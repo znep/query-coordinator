@@ -5,7 +5,7 @@ describe('CardVisualizationChoroplethHelpers service', function() {
   var $log;
 
   beforeEach(function() {
-    module('dataCards');
+    angular.mock.module('dataCards');
     inject(function($injector) {
 
       cardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');

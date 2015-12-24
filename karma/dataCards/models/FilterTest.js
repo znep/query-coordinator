@@ -3,7 +3,7 @@ describe('Filter models', function() {
 
   var SoqlHelpers;
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     SoqlHelpers = $injector.get('SoqlHelpers');
   }));

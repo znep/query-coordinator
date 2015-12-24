@@ -12,9 +12,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
     register: function() {}
   };
 
-  beforeEach(module('test'));
-
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
     testTimeoutScheduler = new Rx.TestScheduler();
@@ -29,7 +27,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
 
   // Overriding providers must occur _after_ the dataCards module has been loaded because load order...
   beforeEach(function() {
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       $provide.value('FlyoutService', mockFlyoutService);
     });
   });

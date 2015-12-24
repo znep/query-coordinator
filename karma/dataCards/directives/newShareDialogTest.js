@@ -8,11 +8,10 @@ describe('newShareDialog', function() {
   var $scope;
   var $window;
 
-  beforeEach(module('/angular_templates/dataCards/new-share-dialog.html'));
-  beforeEach(module('dataCards/cards.scss'));
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
 
-  beforeEach(module(function(_$provide_) {
+  beforeEach(angular.mock.module(function(_$provide_) {
     $provide = _$provide_;
   }));
 

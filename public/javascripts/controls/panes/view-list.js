@@ -133,13 +133,9 @@
                     },
                     '.deleteViewLink@class+': function(a)
                     {
-                        if (blist.feature_flags.display_catalog_lens_delete_button) {
-                            return _.include(a.context.view.rights, 'delete_view') ? '' : 'hide';
-                        } else if (a.context.view.displayType === 'new_view' ||
-                                   !_.include(a.context.view.rights, 'delete_view')) {
-                            return 'hide';
-                        }
-                        return '';
+                        var hasDeleteRight = _.include(a.context.view.rights, 'delete_view');
+                        var shouldShowDeleteButton = blist.feature_flags.display_catalog_lens_delete_button;
+                        return (hasDeleteRight && shouldShowDeleteButton) ? '' : 'hide';
                     },
                     '.viewItem@class+': 'typeClass'
                 });

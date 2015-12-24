@@ -25,26 +25,6 @@ module ApplicationHelper
       else
         "#{locale_part}/view/#{view.id}"
       end
-    elsif view.new_view?
-      begin
-        # use the direct link stored in the metadata for 'new_view' display types
-        # NOTE: This entire elsif block ought to be obsolete once page metadata
-        # has been migrated out of phidippides.
-        if view.metadata && view.metadata.accessPoints && view.metadata.accessPoints['new_view']
-          locale_part + view.metadata.accessPoints['new_view']
-        else
-          "#{locale_part}/view/#{view.id}"
-        end
-      rescue NoMethodError => error
-        error_message = "Failed to find access point 'new_view' for view with " \
-          "id '#{view.id}; falling back to url '/view/#{view.id}'"
-        Airbrake.notify(
-          :error_class => 'NewUXViewURLFailure',
-          :error_message => error_message
-        )
-        Rails.logger.error(error_message)
-        "#{locale_part}/view/#{view.id}"
-      end
     elsif view.story?
       "/stories/s/#{view.id}"
     else

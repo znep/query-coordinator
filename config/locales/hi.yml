@@ -451,12 +451,12 @@ hi:
           blob: "फाइल व दस्‍तावेज"
           calendars: "कैलेंडर"
           charts: "चार्ट"
+          data_lens: "डाटा लेंस पृष्ठ"
           datasets: "डेटासेट"
           filters: "फिल्‍टर किये गये अवलोकन"
           forms: "प्रपत्र"
           href: "बाहरी डेटासेट"
           maps: "नक्‍शे"
-          new_view: "डाटा लेंस पृष्ठ"
           pulse:
           pulse_help:
           story: "कहानियां"
@@ -1075,6 +1075,7 @@ hi:
       blob: "गैर-तालिका युक्‍त फाइल या दस्‍तावेज"
       calendar: "कैलेंडर"
       chart: "चार्ट"
+      data_lens: "डाटा लेंस पृष्ठ"
       dataset: "डेटासेट"
       filter: "फिल्‍टर किये गये व्‍यू"
       form: "फ़ॉर्म"
@@ -1082,7 +1083,6 @@ hi:
       grouped: "समूहबद्ध व्‍यू"
       href: "बाहरी डेटासेट"
       map: "नक्‍शा"
-      new_view: "डाटा लेंस पृष्ठ"
       table: "तालिका"
       working_copy: "कामकाजी प्रति"
     view_types_plural:

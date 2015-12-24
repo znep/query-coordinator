@@ -172,7 +172,7 @@ class DatasetsControllerTest < ActionController::TestCase
   #     fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } },
   #     fetch_page_metadata: { status: '404' }
   #   )
-  #   NewViewManager.any_instance.expects(:fetch).raises(NewViewManager::ViewAccessDenied)
+  #   DataLensManager.any_instance.expects(:fetch).raises(DataLensManager::ViewAccessDenied)
   #   get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
   #   assert_redirected_to '/'
   # end

@@ -6,8 +6,6 @@ class BrowseControllerTest < ActionController::TestCase
     init_core_session
     init_current_domain
     @user = login
-    @new_view_id = 'knew-view'
-    @new_view_url = 'https://example.com/view/cool-view'
     init_stubs
   end
 
@@ -48,7 +46,7 @@ class BrowseControllerTest < ActionController::TestCase
     get :show, { 'data_lens_transition_state' => 'post_beta' }
 
     assert_response :success
-    assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
+    assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 1
   end
 
   context 'when the data_lens_state feature flag is set to "pre_beta"' do
@@ -73,7 +71,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 0
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 0
     end
 
     should 'not show any new view facet for users able to edit the datasets of others' do
@@ -93,7 +91,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 0
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 0
     end
   end
 
@@ -119,7 +117,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 0
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 0
     end
 
     should 'show new view facets for users able to edit the datasets of others' do
@@ -139,7 +137,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 1
     end
   end
 
@@ -165,7 +163,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 1
     end
 
     should 'show new view facets for users able to edit the datasets of others' do
@@ -185,7 +183,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 1
     end
   end
 

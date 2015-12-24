@@ -29,11 +29,11 @@ class PageMetadataController < ApplicationController
         :cookies => forwardable_session_cookies
       )
       render :json => page_metadata, :status => '200'
-    rescue NewViewManager::ViewNotFound
+    rescue DataLensManager::ViewNotFound
       return render :nothing => true, :status => '404'
-    rescue NewViewManager::ViewAuthenticationRequired => error
+    rescue DataLensManager::ViewAuthenticationRequired => error
       return render :json => { error: error.message }, :status => '401'
-    rescue NewViewManager::ViewAccessDenied => error
+    rescue DataLensManager::ViewAccessDenied => error
       return render :json => { error: error.message }, :status => '403'
     rescue Phidippides::ConnectionError
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
@@ -93,12 +93,12 @@ class PageMetadataController < ApplicationController
       render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue Phidippides::NoCardsException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
-    rescue NewViewManager::NewViewNotCreatedError => error
+    rescue DataLensManager::DataLensNotCreatedError => error
       message = "Core error creating catalog lens request ID #{request_id}: #{error}"
       Rails.logger.error(message)
       Airbrake.notify(
         error,
-        :error_class => 'NewViewCreation',
+        :error_class => 'DataLensCreation',
         :error_message => message
       )
       render :nothing => true, :status => '500'
@@ -126,7 +126,7 @@ class PageMetadataController < ApplicationController
       render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue Phidippides::NoCardsException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
-    rescue NewViewManager::NewViewNotCreatedError => error
+    rescue DataLensManager::DataLensNotCreatedError => error
       message = "Core error creating standalone viz request ID #{request_id}: #{error}"
       Rails.logger.error(message)
       Airbrake.notify(

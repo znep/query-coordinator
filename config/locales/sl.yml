@@ -452,12 +452,12 @@ sl:
           blob: Datoteke in dokumenti
           calendars: Koledarji
           charts: Diagrami
+          data_lens: Strani Data Lens
           datasets: Podatkovni nizi
           filters: Filtrirani pogledi
           forms: Oblike
           href: Zunanji podatkovni nizi
           maps: Zemljevidi
-          new_view: Strani Data Lens
           pulse:
           pulse_help:
           story: Zgodbe
@@ -1084,6 +1084,7 @@ sl:
       blob: netabelarna datoteka ali dokument
       calendar: koledar
       chart: grafikon
+      data_lens: Stran Data Lens
       dataset: podatkovni niz
       filter: filtriran pogled
       form: oblika
@@ -1091,7 +1092,6 @@ sl:
       grouped: združen pogled
       href: zunanji podatkovni niz
       map: zemljevid
-      new_view: Stran Data Lens
       table: tabela
       working_copy: delovna kopija
     view_types_plural:

@@ -1,8 +1,8 @@
-# Manages creating new_view HREF views in Core
+# Manages creation, deletion, and fetching of data lens views in Core
 
-class NewViewManager
+class DataLensManager
   class Error < RuntimeError; end
-  class NewViewNotCreatedError < Error; end
+  class DataLensNotCreatedError < Error; end
   class ViewNotFound < Error; end
   class ViewAuthenticationRequired < Error; end
   class ViewAccessDenied < Error; end
@@ -39,24 +39,24 @@ class NewViewManager
   # 4x4 as itself. Note that it will not create the requisite page_metadata for
   # that url to serve anything meaningful.
   def create(category=nil, page_metadata={})
-    new_view = persist_v2_data_lens_to_metadb(category, page_metadata)
+    data_lens = persist_data_lens(category, page_metadata)
 
-    unless new_view.try(:[], :id)
-      raise NewViewNotCreatedError.new('Error while creating view in core')
+    unless data_lens.try(:[], :id)
+      raise DataLensNotCreatedError.new('Error while creating view in core')
     end
 
-    new_page_id = new_view[:id]
+    data_lens_id = data_lens[:id]
 
     # Create the proper HREF pointing to the page with the same 4x4 as the view
     # lens, that we're going to create Real Soon Now.
     page_url = Rails.application.routes.url_helpers.opendata_cards_view_url(
-      :id => new_page_id,
+      :id => data_lens_id,
       :host => CurrentDomain.cname,
       :port => APP_CONFIG.ssl_port,
       :protocol => 'https'
     )
 
-    new_page_id
+    data_lens_id
   end
 
   def delete(page_id)
@@ -67,7 +67,7 @@ class NewViewManager
     rescue CoreServer::Error, CoreServer::ResourceNotFound => error
 
       report_error(
-        "Error deleting new_view lens for page #{page_id}: #{error}",
+        "Error deleting data lens with uid #{page_id}: #{error}",
         error,
         :url => url
       )
@@ -84,7 +84,7 @@ class NewViewManager
       response = CoreServer::Base.connection.update_request(url, JSON.dump(payload))
     rescue CoreServer::Error, CoreServer::ResourceNotFound => error
       report_error(
-        "Error updating new_view lens for page: #{error}",
+        "Error updating data lens with uid #{page_id}: #{error}",
         error,
         :url => url,
         :payload => payload
@@ -97,8 +97,8 @@ class NewViewManager
 
   private
 
-  # Creates metadata in MetaDB with page metadata, rather than in Phidippides.
-  def persist_v2_data_lens_to_metadb(category, page_metadata)
+  # Saves page metadata.
+  def persist_data_lens(category, page_metadata)
     # NOTE: Category is not validated. If category is not present in the
     # domain's defined categories, the category will be ignored by core.
     url = '/views.json?accessType=WEBSITE'
@@ -145,36 +145,6 @@ class NewViewManager
     end
 
     update(new_page_id, payload_with_id)
-  end
-
-  def update_page_url(page_id, page_url)
-    url = "/views/#{CGI::escape(page_id)}.json"
-    payload = {
-      :metadata => {
-        :renderTypeConfig => {
-          :visible => {
-            :href => true
-          }
-        },
-        :accessPoints => {
-          :new_view => page_url
-        },
-        :availableDisplayTypes => ['new_view'],
-        :jsonQuery => {}
-      }
-    }
-
-    begin
-      response = CoreServer::Base.connection.update_request(url, JSON.dump(payload))
-    rescue CoreServer::Error => error
-      report_error(
-        "Error updating page_url (#{page_url}) for new_view lens for page #{page_id}",
-        error
-      )
-      return
-    end
-
-    parse_core_response(response)
   end
 
   def parse_core_response(response)

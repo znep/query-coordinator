@@ -59,7 +59,7 @@ class PageMetadataControllerTest < ActionController::TestCase
 
   test 'show returns 401 if the Core view requires authn' do
     @controller.stubs(can_create_metadata?: true)
-    @page_metadata_manager.stubs(:show).raises(NewViewManager::ViewAuthenticationRequired)
+    @page_metadata_manager.stubs(:show).raises(DataLensManager::ViewAuthenticationRequired)
 
     get :show, id: 'four-four', format: 'json'
     assert_response(401)
@@ -67,7 +67,7 @@ class PageMetadataControllerTest < ActionController::TestCase
 
   test 'show returns 403 if the Core view requires authz' do
     @controller.stubs(can_create_metadata?: true)
-    @page_metadata_manager.stubs(:show).raises(NewViewManager::ViewAccessDenied)
+    @page_metadata_manager.stubs(:show).raises(DataLensManager::ViewAccessDenied)
 
     get :show, id: 'four-four', format: 'json'
     assert_response(403)

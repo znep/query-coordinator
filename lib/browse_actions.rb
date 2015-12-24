@@ -548,16 +548,16 @@ module BrowseActions
 
   def add_data_lens_view_type_if_enabled!(view_type_list)
     if add_data_lens_view_type?
-      new_view_option = {
-        :text => ::I18n.t('controls.browse.facets.view_types.new_view'),
+      data_lens_option = {
+        :text => ::I18n.t('controls.browse.facets.view_types.data_lens'),
         :value => 'new_view',
-        :class => 'typeNewView',
+        :class => 'typeDataLens',
         :icon_font_class => 'icon-cards'
       }
 
       # Data lens pages are the new way to look at datasets, so insert above datasets
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
-      view_type_list.insert(datasets_index, new_view_option)
+      view_type_list.insert(datasets_index, data_lens_option)
     end
   end
 

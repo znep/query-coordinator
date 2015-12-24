@@ -1,5 +1,4 @@
-# Display properties for a metadb-backed data lens
-# (migrating away from new_view)
+# Display properties for a data lens
 class Displays::DataLens < Displays::Base
 
   def type
@@ -7,8 +6,7 @@ class Displays::DataLens < Displays::Base
   end
 
   def name
-    # keep this for now, saves us a dupe translation key
-    I18n.t('core.view_types.new_view')
+    I18n.t('core.view_types.data_lens')
   end
 
   def title

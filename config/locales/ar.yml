@@ -5,19 +5,19 @@ ar:
         about:
           button: عن
           title: حول هذه البيانات
-        all_options: مشاهدة الكل 
+        all_options: مشاهدة الكل
         clear_all: إمسح كل الخيارات
         clear_facet: "(الكل)"
-        compact_list: إظهر البيانات كقائمة مدمجة 
+        compact_list: إظهر البيانات كقائمة مدمجة
         create_dataset: إنشاء أو تحميل مجموعة البيانات الخاصة بك
         create_dataset_short: إنشاء مجموعة بيانات جديدة
-        create_dataset_shorter: مجموعة البيانات 
-        create_dataset_verb: إنشاء 
+        create_dataset_shorter: مجموعة البيانات
+        create_dataset_verb: إنشاء
         create_resource: إنشاء جديد بإستعمال مصادر سكراتا
         create_resource_short: إنشاء جديد
         create_resource_verb: إنشاء
         create_story_short: قصة
-        dataset_subscribe: إشترك لتتمكن من تغيير نتيجة العرض هذه 
+        dataset_subscribe: إشترك لتتمكن من تغيير نتيجة العرض هذه
         delete:
           button: إمسح
           confirm: هل أنت متأكد أنك تريد مسح مجموعة هذه %{dataset}?
@@ -35,13 +35,13 @@ ar:
             private_html: إجعلها عامة
             public_html: إجعلها خاصة
           title: غيّ طريقة المشاهدة العامة
-        rich_list: أعرض البيانات مثل قائمة غنية 
+        rich_list: أعرض البيانات مثل قائمة غنية
         share_button: ساهِم
         subscribe: إشترك
         suggest_dataset: لم تجد عن الذى تبحث عنه؛ إقتراح مجموعة البيانات هذه
         suggest_dataset_short: إقتراح مجموعة البيانات
         suggest_dataset_verb: إقتراح
-      back_to_dataset: الرجوع الى مجموعة البيانات 
+      back_to_dataset: الرجوع الى مجموعة البيانات
       facets:
         categories_singular_title: فئة
         categories_title: الفئات
@@ -60,13 +60,12 @@ ar:
           blob: الملفات والوثائق
           calendars: التقويمات
           charts: الرسوم البيانية
+          data_lens: صفحات <<دايتا لانس>>
           datasets: مجموعة البيانات
           filters: المشاهدات المصنفة
-          forms: إستمارات 
+          forms: إستمارات
           href: مجموعة البيانات الخارجية
           maps: الخرائط
-          new_view: صفحات <<دايتا لانس>>
-          new_view_help: ما هذا؟
           pulse: نبض
           pulse_help: تعلم عن <<نبض>>
           story: قصص
@@ -78,7 +77,7 @@ ar:
         comment_count: عدد التعليقات
         federation_source: ميكرونيزيا من %{source}
         federation_source_html: التى تقدمها %{source_link}
-        no_results: لا توجد نتائج 
+        no_results: لا توجد نتائج
         result_count: عرض %{this} من %{total}
         result_count_cetera: عرض %{start}-%{end} من %{total}
         table_header:
@@ -110,7 +109,7 @@ ar:
         rating: الأعلى تصنيفاً
         relevance: الأكثر صلة
       title:
-        default: إبحث وتصفح عر ض مجموعة البيانات 
+        default: إبحث وتصفح عر ض مجموعة البيانات
         result:
           facet: "ل%{facet_type} %{facet_value}"
           facet_main: مطابقة %{body}
@@ -118,7 +117,7 @@ ar:
           term: ل "%{term}"
     common:
       share:
-        button_prompt: إجمع البيانات مع بعضها 
+        button_prompt: إجمع البيانات مع بعضها
         button_tooltip: مشاركة هذه البيانات
         networks:
           email: إميل

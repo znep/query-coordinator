@@ -41,7 +41,7 @@ module BrowseHelper
   def description_contains_html?(display_type)
     # These types have preformatted descriptions.
     # Attempting to wrap them in <p> tags causes invalid html
-    %w(data_lens data_lens_chart data_lens_map new_view).include?(display_type)
+    %w(data_lens data_lens_chart data_lens_map).include?(display_type)
   end
 
   # NOTE: This function is currently *ONLY* used to render descriptions safely.

@@ -20,7 +20,6 @@ module Cetera
     else
       {
         'data_lens' => 'datalenses',
-        'new_view' => 'datalenses',
         'story' => 'stories',
         'pulse' => 'pulses',
         'tables' => 'datasets',
@@ -135,10 +134,6 @@ module Cetera
     # Cetera only returns public objects as of 2015/10/19
     def is_public?
       true
-    end
-
-    def new_view?
-      type == 'page'
     end
 
     def story?

@@ -219,11 +219,11 @@ class AngularController < ActionController::Base
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )
-    rescue NewViewManager::ViewAuthenticationRequired
+    rescue DataLensManager::ViewAuthenticationRequired
       raise AuthenticationRequired.new
-    rescue NewViewManager::ViewAccessDenied
+    rescue DataLensManager::ViewAccessDenied
       raise UnauthorizedPageMetadataRequest.new
-    rescue NewViewManager::ViewNotFound
+    rescue DataLensManager::ViewNotFound
       raise PageMetadataNotFound.new
     rescue => error
       raise UnknownRequestError.new error.to_s

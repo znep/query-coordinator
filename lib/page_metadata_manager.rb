@@ -64,7 +64,7 @@ class PageMetadataManager
     log_datalens_access(id)
 
     begin
-      result = new_view_manager.fetch(id)
+      result = data_lens_manager.fetch(id)
     rescue
       result = nil
     end
@@ -122,7 +122,7 @@ class PageMetadataManager
     page_metadata['cards'] << table_card unless has_table_card
 
     # The core lens id for this page is the same one we use to refer to it in phidippides
-    new_page_id = new_view_manager.create(
+    new_page_id = data_lens_manager.create(
       dataset_category(page_metadata['datasetId']),
       page_metadata
     )
@@ -147,7 +147,7 @@ class PageMetadataManager
     initialize_metadata_key_names
 
     begin
-      metadb_metadata = new_view_manager.fetch(page_metadata['pageId'])
+      metadb_metadata = data_lens_manager.fetch(page_metadata['pageId'])
     rescue
       metadb_metadata = nil
     end
@@ -158,7 +158,7 @@ class PageMetadataManager
     # Update the name and description of the lens in metadb.
     # Note that this *only* affects the lenses name and description, *not*
     # the page_metadata in displayFormat.
-    new_view_manager.update(page_metadata['pageId'],
+    data_lens_manager.update(page_metadata['pageId'],
       :name => page_metadata['name'],
       :description => page_metadata['description']
     )
@@ -169,7 +169,7 @@ class PageMetadataManager
   def delete(id, options = {})
 
     begin
-      metadb_metadata = new_view_manager.fetch(id)
+      metadb_metadata = data_lens_manager.fetch(id)
     rescue CoreServer::TimeoutError => error
       report_error('Core server timeout error', error)
       return { body: {
@@ -555,8 +555,8 @@ class PageMetadataManager
     @phidippides ||= Phidippides.new
   end
 
-  def new_view_manager
-    @new_view_manager ||= NewViewManager.new
+  def data_lens_manager
+    @data_lens_manager ||= DataLensManager.new
   end
 
   # Attempt to determine the category for a given dataset. First look in the OBE

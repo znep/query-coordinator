@@ -451,12 +451,12 @@ ca:
           blob: Arxius i Documents
           calendars: Calendaris
           charts: Gràfics
+          data_lens: Pàgines de visió de dades
           datasets: Conjunts de Dades
           filters: Vistes amb Filtres
           forms: Formulari
           href: Conjunts de Dades Externs
           maps: Mapes
-          new_view: Pàgines de visió de dades
           pulse:
           pulse_help:
           story: Històries
@@ -1077,6 +1077,7 @@ ca:
       blob: Arxiu no tabulat o documentat
       calendar: calendari
       chart: Gràfica
+      data_lens: Pàgina de visió de dades
       dataset: Conjunt de Dades
       filter: vista filtrada
       form: formulari
@@ -1084,7 +1085,6 @@ ca:
       grouped: vista agrupada
       href: conjunt de dades extern
       map: mapa
-      new_view: Pàgina de visió de dades
       table: taules
       working_copy: còpia de treball
     view_types_plural:

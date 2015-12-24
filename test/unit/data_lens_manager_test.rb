@@ -1,9 +1,9 @@
 require 'test_helper'
 
-class NewViewManagerTest < Test::Unit::TestCase
+class DataLensManagerTest < Test::Unit::TestCase
 
-  def new_view_manager
-    @new_view_manager ||= NewViewManager.new
+  def data_lens_manager
+    @data_lens_manager ||= DataLensManager.new
   end
 
   def setup
@@ -31,7 +31,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    result = new_view_manager.create(category = nil, {:name =>'my title', :description=>'my description'})
+    result = data_lens_manager.create(category = nil, {:name =>'my title', :description=>'my description'})
     assert_equal('mjcb-9cxc', result)
     assert(created)
   end
@@ -51,7 +51,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     connection_stub.expects(:update_request).returns(v2_page_metadata.to_json)
     CoreServer::Base.stubs(connection: connection_stub)
 
-    result = new_view_manager.create(given_category, {:name =>'my title', :description=>'my description'})
+    result = data_lens_manager.create(given_category, {:name =>'my title', :description=>'my description'})
     assert(created)
   end
 
@@ -68,7 +68,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     connection_stub.expects(:update_request).returns(v2_page_metadata.to_json)
     CoreServer::Base.stubs(connection: connection_stub)
 
-    result = new_view_manager.create(category = nil, {:name =>'my title', :description=>'my description'})
+    result = data_lens_manager.create(category = nil, {:name =>'my title', :description=>'my description'})
     assert(created)
   end
 
@@ -97,7 +97,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    result = new_view_manager.create(category = nil, {:name=>'my title', :description=>'my description'})
+    result = data_lens_manager.create(category = nil, {:name=>'my title', :description=>'my description'})
     assert_equal('mjcb-9cxc', result)
     assert(created)
   end
@@ -113,7 +113,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    new_view_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
+    data_lens_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
   end
 
   def test_update_does_not_raise_when_reporting_core_errors
@@ -128,7 +128,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: connection_stub)
 
     assert_nothing_raised do
-      new_view_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
+      data_lens_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
     end
   end
 
@@ -144,7 +144,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: connection_stub)
 
     assert_nothing_raised do
-      new_view_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
+      data_lens_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
     end
   end
 
@@ -156,7 +156,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    response = new_view_manager.fetch('asdf-asdf')
+    response = data_lens_manager.fetch('asdf-asdf')
     assert_equal(response, {'body' => 1})
   end
 
@@ -168,7 +168,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    new_view_manager.fetch('asdf-asdf')
+    data_lens_manager.fetch('asdf-asdf')
   end
 
   def test_fetch_raises_authn
@@ -179,8 +179,8 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    assert_raises(NewViewManager::ViewAuthenticationRequired) do
-      new_view_manager.fetch('asdf-asdf')
+    assert_raises(DataLensManager::ViewAuthenticationRequired) do
+      data_lens_manager.fetch('asdf-asdf')
     end
   end
 
@@ -192,8 +192,8 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    assert_raises(NewViewManager::ViewAccessDenied) do
-      new_view_manager.fetch('asdf-asdf')
+    assert_raises(DataLensManager::ViewAccessDenied) do
+      data_lens_manager.fetch('asdf-asdf')
     end
   end
 
@@ -205,8 +205,8 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    assert_raises(NewViewManager::ViewNotFound) do
-      new_view_manager.fetch('asdf-asdf')
+    assert_raises(DataLensManager::ViewNotFound) do
+      data_lens_manager.fetch('asdf-asdf')
     end
   end
 
@@ -218,7 +218,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    new_view_manager.delete('asdf-asdf')
+    data_lens_manager.delete('asdf-asdf')
   end
 
   def test_delete_does_not_raise_when_core_raises
@@ -230,7 +230,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: connection_stub)
 
     assert_nothing_raised do
-      new_view_manager.delete('asdf-asdf')
+      data_lens_manager.delete('asdf-asdf')
     end
   end
 
@@ -243,7 +243,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: connection_stub)
 
     assert_nothing_raised do
-      new_view_manager.delete('asdf-asdf')
+      data_lens_manager.delete('asdf-asdf')
     end
   end
 

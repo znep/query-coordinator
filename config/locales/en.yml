@@ -568,12 +568,12 @@ en:
           blob: Files and Documents
           calendars: Calendars
           charts: Charts
+          data_lens: Data Lens pages
           datasets: Datasets
           filters: Filtered Views
           forms: Forms
           href: External Datasets
           maps: Maps
-          new_view: Data Lens pages
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
@@ -1194,6 +1194,7 @@ en:
       blob: non-tabular file or document
       calendar: calendar
       chart: chart
+      data_lens: Data Lens page
       dataset: dataset
       filter: filtered view
       form: form
@@ -1201,7 +1202,6 @@ en:
       grouped: grouped view
       href: external dataset
       map: map
-      new_view: Data Lens page
       table: table
       working_copy: working copy
     view_types_plural:

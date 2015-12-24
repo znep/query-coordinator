@@ -9,7 +9,7 @@
       "averageRating" : 0,
       "createdAt" : 1423270763,
       "description" : "This is my description adding stuff here",
-      "displayType" : "new_view",
+      "displayType" : "data_lens",
       "downloadCount" : 0,
       "newBackend" : false,
       "numberOfComments" : 0,
@@ -22,7 +22,7 @@
       "totalTimesRated" : 0,
       "viewCount" : 0,
       "viewLastModified" : 1423271590,
-      "viewType" : "href",
+      "viewType" : "tabular",
       "columns" : [ ],
       "grants" : [ {
         "inherited" : false,
@@ -30,15 +30,7 @@
         "flags" : [ "public" ]
       } ],
       "metadata" : {
-        "renderTypeConfig" : {
-          "visible" : {
-            "href" : true
-          }
-        },
-        "availableDisplayTypes" : [ "new_view" ],
-        "accessPoints" : {
-          "new_view" : "https://example.com/view/cool-view"
-        }
+        "availableDisplayTypes" : [ "data_lens" ]
       },
       "owner" : {
         "id" : "tugg-ikce",

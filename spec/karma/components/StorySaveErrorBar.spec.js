@@ -136,9 +136,12 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
     describe('with an invalid session', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
-          action: Actions.API_REQUEST_RETURNED_401_UNAUTHORIZED
-        });
+        sinon.stub(storyteller.userSessionStore, 'hasValidSession', _.constant(false));
+        storyteller.userSessionStore._emitChange();
+      });
+
+      afterEach(function() {
+        storyteller.userSessionStore.hasValidSession.restore();
       });
 
       it('should place the story-save-error class on body', function() {

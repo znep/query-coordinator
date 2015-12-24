@@ -16,10 +16,10 @@
 
       switch (payload.action) {
         case Actions.API_REQUEST_RETURNED_401_UNAUTHORIZED:
-          if (_hasValidSession) {
-            _hasValidSession = false;
-            self._emitChange();
-          }
+          // A 401 from an API request is a good (but not sufficient) indication that
+          // the user's session has timed out. So, after a 401, check the user session
+          // explicitly.
+          _checkUserSession();
           break;
       }
     });

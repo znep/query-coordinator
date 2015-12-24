@@ -76,8 +76,6 @@ module.exports = function ( karma ) {
       'public/javascripts/util/lodash-mixins.js',
       'bower_components/d3/d3.min.js',
       'public/javascripts/bower/socrata.utils.js',
-      'public/javascripts/bower/socrata.visualizations.Visualization.js',
-      'public/javascripts/bower/socrata.visualizations.ColumnChart.js',
       'public/javascripts/util/jquery-extensions.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
       'bower_components/showdown/src/showdown.js',
@@ -133,8 +131,6 @@ module.exports = function ( karma ) {
       'karma/dataCards/mockTranslations.js',
 
       'public/javascripts/angular/dataCards/index.js',
-
-      'app/styles/socrata.visualizations.columnChart.css',
 
       'public/angular_templates/**/*.html',
       'app/styles/dataCards/*.scss',

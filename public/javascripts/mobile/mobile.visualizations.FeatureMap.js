@@ -41,7 +41,6 @@
     _.extend(this, new root.socrata.visualizations.Visualization(element, vif));
 
     var self = this;
-    var $body = $(root.document.body);
 
     var _mapContainer;
     var _mapElement;
@@ -75,7 +74,6 @@
     var _lastRenderOptions;
     var _featureLayers = {};
     var _flyoutData = {};
-    var _lastPoints = null;
     var _currentLayerId;
 
     _hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
@@ -142,7 +140,9 @@
     };
 
     this.invalidateSize = function() {
-      _map.invalidateSize();
+      if (_map) {
+        _map.invalidateSize();
+      }
     };
 
     this.destroy = function() {
@@ -254,7 +254,7 @@
       element.append(mapContainer);
     }
 
-    function _attachEvents(element) {
+    function _attachEvents() {
 
       // Only attach map events if the map has actually been instantiated.
       if (_map) {
@@ -310,10 +310,12 @@
         // the check for map existence anyway.
         if (_locateUser) {
           _mapLocateUserButton.on('click', _handleLocateUserButtonClick);
+          _mapLocateUserButton.on('mousemove', _handleLocateUserButtonMousemove);
+          _mapLocateUserButton.on('mouseout', _hideFlyout);
         }
       }
 
-      $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_RENDERED', _handleZoomInButtonClick);
+      $(window).on('resize', _hideRowInspector);
     }
 
     function _detachEvents(element) {
@@ -338,10 +340,12 @@
         // the check for map existence anyway.
         if (_locateUser) {
           _mapLocateUserButton.off('click', _handleLocateUserButtonClick);
+          _mapLocateUserButton.off('mousemove', _handleLocateUserButtonMousemove);
+          _mapLocateUserButton.off('mouseout', _hideFlyout);
         }
       }
 
-      $body.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_RENDERED', _handleZoomInButtonClick);
+      $(window).off('resize', _hideRowInspector);
     }
 
     function _handleMapResize() {
@@ -370,7 +374,6 @@
 
       _hideFlyout();
       _hideRowInspector();
-      _updateLocateUserButtonStatus('ready');
     }
 
     function _handleMousemove(event) {
@@ -484,7 +487,7 @@
         }
       );
 
-      _updateLocateUserButtonStatus('success');
+      _updateLocateUserButtonStatus('ready');
     }
 
     function _handleLocateUserError(error) {
@@ -497,7 +500,6 @@
 
       utils.assert(
         status === 'ready' ||
-        status === 'success' ||
         status === 'busy' ||
         status === 'error',
         'Unrecognized locate user button status: {0}'.format(status)
@@ -507,10 +509,6 @@
 
         case 'ready':
           _mapLocateUserButton.attr('data-locate-user-status', 'ready');
-          break;
-
-        case 'success':
-          _mapLocateUserButton.attr('data-locate-user-status', 'success');
           break;
 
         case 'busy':
@@ -552,43 +550,23 @@
 
     function _handleVectorTileClick(event) {
 
-      _flyoutData.offset = {
-        x: event.originalEvent.clientX,
-        y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
-      };
-      _flyoutData.count = _.sum(event.points, 'count');
-      _flyoutData.latlng = event.latlng;
-
       var inspectorDataQueryConfig;
 
-      if (_flyoutData.count > 0) {
-        _map.setView(event.latlng);
-        var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
-        
-        if (_flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
-          inspectorDataQueryConfig = {
-            data: null,
-            latLng: event.latlng,
-            position: {
-              pageX: 0,
-              pageY: bottom
-            },
-            rowCount: _.sum(event.points, 'count'),
-            queryBounds: _getQueryBounds(event.containerPoint)
-          };
-        } else {
-          inspectorDataQueryConfig = {
-            data: [[{column: _.sum(event.points, 'count') + " "+
-              vif.unit.other, value: ""}, {column: "", value: "<a class='zoom-in-button'>Zoom in</a> first to select fewer "+
-              vif.unit.other + " and see their details."}]],
-            position: {
-              pageX: 0,
-              pageY: bottom
-            },
-            rowCount: _.sum(event.points, 'count'),
-          };
-        }
+      if (_flyoutData.count > 0 &&
+        _flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
+
+        inspectorDataQueryConfig = {
+          latLng: event.latlng,
+          position: {
+            pageX: event.originalEvent.pageX,
+            pageY: event.originalEvent.pageY
+          },
+          rowCount: _.sum(event.points, 'count'),
+          queryBounds: _getQueryBounds(event.containerPoint)
+        };
+
         _showRowInspector(inspectorDataQueryConfig);
+
       }
     }
 
@@ -601,12 +579,6 @@
     function _handleVectorTileRenderComplete() {
 
       _removeOldFeatureLayers();
-    }
-
-    function _handleZoomInButtonClick() {
-      $('.zoom-in-button').on('click', function(e){
-        _map.setView(_flyoutData.latlng, _map._zoom + 1);
-      });
     }
 
     function _showFeatureFlyout(event) {
@@ -675,18 +647,36 @@
       var locateUserStatus = _mapLocateUserButton.attr('data-locate-user-status');
       var payload;
 
-      if (locateUserStatus === 'error') {
+      if (locateUserStatus === 'ready') {
+
+        payload = {
+          element: _mapLocateUserButton[0],
+          title: self.getLocalization('FLYOUT_CLICK_TO_LOCATE_USER_TITLE'),
+          notice: self.getLocalization('FLYOUT_CLICK_TO_LOCATE_USER_NOTICE')
+        };
+
+      } else if (locateUserStatus === 'busy') {
+
+        payload = {
+          element: _mapLocateUserButton[0],
+          title: self.getLocalization('FLYOUT_LOCATING_USER_TITLE'),
+          notice: null
+        };
+
+      } else {
 
         payload = {
           element: _mapLocateUserButton[0],
           title: self.getLocalization('FLYOUT_LOCATE_USER_ERROR_TITLE'),
           notice: self.getLocalization('FLYOUT_LOCATE_USER_ERROR_NOTICE')
         };
-        self.emitEvent(
-          'SOCRATA_VISUALIZATION_FLYOUT_SHOW',
-          payload
-        );  
+
       }
+
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_FLYOUT_SHOW',
+        payload
+      );
     }
 
     function _hideFlyout() {
@@ -700,7 +690,7 @@
     function _showRowInspector(inspectorDataQueryConfig) {
 
       var payload = {
-        data: inspectorDataQueryConfig.data,
+        data: null,
         position: inspectorDataQueryConfig.position,
         error: false,
         message: null
@@ -714,12 +704,10 @@
 
       // Emit a second event to initiate a query for the row
       // data which we intend to inspect.
-      if (inspectorDataQueryConfig.queryBounds) {
-        self.emitEvent(
-          'SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY',
-          inspectorDataQueryConfig
-        );
-      };
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY',
+        inspectorDataQueryConfig
+      );
     }
 
     function _hideRowInspector() {
@@ -940,10 +928,10 @@
 
       return {
         color: _calculatePointColor,
-        highlightColor: 'rgba(131, 231, 209 , 1.0)',
+        highlightColor: 'rgba(255, 255, 255, .5)',
         radius: _scalePointFeatureRadiusByZoomLevel,
         lineWidth: 1,
-        strokeStyle: 'rgba(115, 153, 145 , .5)'
+        strokeStyle: _calculateStrokeStyleColor
       };
     }
 
@@ -952,7 +940,15 @@
     * Makes points more transparent as map zooms out.
     */
     function _calculatePointColor(zoomLevel) {
-      return 'rgba(115, 153, 145,' + (0.3 * Math.pow(zoomLevel / 18, 5) + 0.4) + ')';
+      return 'rgba(234,105,0,' + (0.2 * Math.pow(zoomLevel / 18, 5) + 0.6) + ')';
+    }
+
+    /**
+    * Determine stroke style (point outline) at given zoom level.
+    * Dims point outline color as map zooms out.
+    */
+    function _calculateStrokeStyleColor(zoomLevel) {
+      return 'rgba(255,255,255,' + (0.8 * Math.pow(zoomLevel / 18, 8) + 0.1) + ')';
     }
 
     /**
@@ -986,7 +982,7 @@
     function _getPolygonStyle() {
 
       return {
-        color: 'rgba(255,0,0,.5)',
+        color: 'rgba(149,139,255,0.4)',
         outline: {
           color: 'rgb(20,20,20)',
           size: 2
@@ -1019,5 +1015,5 @@
     }
   }
 
-  root.socrata.visualizations.MobileFeatureMap = FeatureMap;
+  root.socrata.visualizations.FeatureMap = FeatureMap;
 })(window);

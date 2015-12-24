@@ -237,6 +237,12 @@ svg:not(:root).timeline-chart-highlight-container {
   text-align: right;
   padding-right: 10px;
   font-size: 12px;
+}
+.y-ticks .y-tick.top {
+  margin-top: 0;
+  top: 0;
+}
+.y-ticks .zero {
   font-weight: bold;
 }
 
@@ -301,6 +307,10 @@ svg:not(:root).timeline-chart-highlight-container {
 
 .y-ticks .y-tick {
   color: #929292;
+}
+.y-ticks .y-tick.top {
+  border-bottom: none;
+  border-top: 1px solid #bbb;
 }
 .y-ticks .zero {
   font-weight: bold;

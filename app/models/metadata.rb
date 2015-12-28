@@ -16,4 +16,8 @@ class Metadata < Model
   def feature_flags
     data['feature_flags']
   end
+
+  def json_query
+    data['jsonQuery']
+  end
 end

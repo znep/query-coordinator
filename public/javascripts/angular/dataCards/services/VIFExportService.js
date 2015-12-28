@@ -83,8 +83,8 @@ function VIFExportService(Page, DateHelpers, $window) {
       }
     }
 
-    function addChoroplethComputedColumn(vif, cardModel) {
-      vif.configuration.computedColumn = cardModel.getCurrentValue('computedColumn');
+    function addChoroplethComputedColumnName(vif, cardModel) {
+      vif.configuration.computedColumnName = cardModel.getCurrentValue('computedColumn');
     }
 
     socrata.utils.assertIsOneOfTypes(pageModel, 'object');
@@ -141,7 +141,7 @@ function VIFExportService(Page, DateHelpers, $window) {
           case 'choropleth':
             conditionallyDecorateBaseLayerUrl(vif, cardModel);
             conditionallyDecorateMapExtent(vif, cardModel);
-            addChoroplethComputedColumn(vif, cardModel);
+            addChoroplethComputedColumnName(vif, cardModel);
             vif.type = 'choroplethMap';
             break;
 

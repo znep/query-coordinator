@@ -12,8 +12,12 @@
 # more will usually help for _short_ waits on databases/caches.
 if ENV['RAILS_ENV'] == 'development'
   worker_processes 1
+  # nuke workers after 60 seconds (the default)
+  timeout 60
 else
   worker_processes Integer(ENV['WORKER_PROCESSES'] || 4)
+  # nuke workers after 15 seconds instead of 60 seconds (the default)
+  timeout Integer(ENV['WEB_REQUEST_TIMEOUT'] || 15)
 end
 
 # Since Unicorn is never exposed to outside clients, it does not need to
@@ -28,8 +32,7 @@ end
 # listen "/path/to/.unicorn.sock", :backlog => 64
 listen Integer(ENV['PORT'] || 3010)# , :tcp_nopush => true
 
-# nuke workers after 15 seconds instead of 60 seconds (the default)
-timeout Integer(ENV['WEB_REQUEST_TIMEOUT'] || 15)
+
 
 # feel free to point this anywhere accessible on the filesystem
 # pid "/path/to/app/shared/pids/unicorn.pid"

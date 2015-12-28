@@ -26,7 +26,6 @@
     "lodash-compat": "3.7",
     "moment": "2.7.0",
     "pbf": "0.0.3",
-    "react": "0.14.1",
     "requestAnimationFrame-polyfill": "*",
     "rxjs": "2.5",
     "socrata-utils": "git@github.com:socrata/frontend-utils.git#master",

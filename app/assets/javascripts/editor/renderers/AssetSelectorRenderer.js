@@ -281,8 +281,8 @@
             break;
 
           default:
-            selectorContent = null;
             selectorTitle = null;
+            selectorContent = null;
             break;
         }
 
@@ -898,8 +898,7 @@
         loadingButton.addClass('hidden');
       });
 
-      //return loadingButton.add(datasetChooserIframe).add(buttonGroup);
-      return $('<div>').append(loadingButton).append(datasetChooserIframe).append(buttonGroup);
+      return [ loadingButton, datasetChooserIframe, buttonGroup ];
     }
 
     function _renderConfigureVisualizationTemplate() {

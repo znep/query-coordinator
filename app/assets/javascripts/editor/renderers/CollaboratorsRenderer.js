@@ -214,30 +214,21 @@
     }
 
     function dispatchActions(event) {
-      var $tr;
-      var collaborator;
       var email;
       var accessLevel;
       var dispatcher = storyteller.dispatcher;
       var $target = $(event.target);
       var action = $target.attr('data-action');
+      var $tr = $target.closest('tr');
+      var collaborator = {accessLevel: $tr.attr('data-access-level')};
 
-      // TODO wait what?
-      if (Actions.COLLABORATORS_MARK_REMOVAL || Actions.COLLABORATORS_UNMARK_REMOVAL ||
-        Actions.COLLABORATORS_REMOVE || Actions.COLLABORATORS_CHANGE) {
-
-        $tr = $target.closest('tr');
-        collaborator = {accessLevel: $tr.attr('data-access-level')};
-
-        if ($tr.attr('data-email')) {
-          collaborator.email = $tr.attr('data-email');
-        }
-
-        if ($tr.attr('data-uid')) {
-          collaborator.uid = $tr.attr('data-uid');
-        }
+      if ($tr.attr('data-email')) {
+        collaborator.email = $tr.attr('data-email');
       }
 
+      if ($tr.attr('data-uid')) {
+        collaborator.uid = $tr.attr('data-uid');
+      }
 
       switch (action) {
         case Actions.COLLABORATORS_CANCEL:

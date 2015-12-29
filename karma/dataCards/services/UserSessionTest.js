@@ -5,7 +5,7 @@ describe('UserSessionService', function() {
   var UserSession;
   var CURRENT_USER_URL_MATCHER = new RegExp('/api/users/current\\.json$');
 
-  beforeEach(module('socrataCommon.services'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
     UserSession = $injector.get('UserSessionService');

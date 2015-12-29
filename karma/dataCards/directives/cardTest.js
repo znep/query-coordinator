@@ -105,11 +105,10 @@ describe('card directive', function() {
     };
   }
 
-  beforeEach(module('dataCards/cards.scss'));
-  beforeEach(module('dataCards/card.scss'));
-  beforeEach(module('test'));
-  beforeEach(module('dataCards'));
-  beforeEach(module(['$provide', function(_$provide_) {
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
+  beforeEach(angular.mock.module('dataCards/card.scss'));
+  beforeEach(angular.mock.module(['$provide', function(_$provide_) {
     $provide = _$provide_;
   }]));
 

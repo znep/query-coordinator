@@ -29,19 +29,12 @@ describe('API Explorer', function() {
     return element;
   }
 
-  beforeEach(function() {
-    module('/angular_templates/dataCards/apiExplorer.html');
-    module('/angular_templates/dataCards/selectionLabel.html');
-    module('socrataCommon.services');
-    module('dataCards.directives');
-    module('dataCards.services');
-    module('dataCards.models');
-    module('dataCards');
-    module('test');
-    module('dataCards/cards.scss');
-    module('dataCards/action-button.scss');
-    module('dataCards/flyout.scss');
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
+  beforeEach(angular.mock.module('dataCards/action-button.scss'));
+  beforeEach(angular.mock.module('dataCards/flyout.scss'));
 
+  beforeEach(function() {
     $('body').addClass('state-view-cards');
 
     inject([

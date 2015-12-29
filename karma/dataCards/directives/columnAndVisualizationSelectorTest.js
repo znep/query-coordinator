@@ -105,14 +105,10 @@ describe('columnAndVisualizationSelectorTest', function() {
     };
   }
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
-  beforeEach(module('/angular_templates/dataCards/socSelect.html'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    module(['$provide', function(_$provide) {
+    angular.mock.module(['$provide', function(_$provide) {
       $provide = _$provide;
     }]);
   });
@@ -150,6 +146,7 @@ describe('columnAndVisualizationSelectorTest', function() {
           $httpBackend.whenGET(/\/api\/id\/rook-king.json\?%24query=select\+count\(0\).*/).respond([]);
 
           testHelpers.mockDirective($provide, 'card');
+          testHelpers.mockDirective($provide, 'classicVisualizationPreviewer');
       }
     ])
   );

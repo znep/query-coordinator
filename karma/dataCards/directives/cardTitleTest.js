@@ -8,13 +8,10 @@ describe('cardTitle', function() {
   var Card;
   var Mockumentary;
 
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/spinner.html'));
-  beforeEach(module('dataCards/cards.scss'));
-  beforeEach(module('dataCards/card.scss'));
-  beforeEach(module('test'));
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
+  beforeEach(angular.mock.module('dataCards/card.scss'));
+
   beforeEach(inject(function($injector) {
     $rootScope = $injector.get('$rootScope');
     testHelpers = $injector.get('testHelpers');

@@ -32,12 +32,10 @@ describe('relatedVisualizationSelector', function() {
     };
   }
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('/angular_templates/dataCards/relatedVisualizationSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/relatedVisualization.html'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    module(['$provide', function(_$provide) {
+    angular.mock.module(['$provide', function(_$provide) {
       $provide = _$provide;
     }]);
   });

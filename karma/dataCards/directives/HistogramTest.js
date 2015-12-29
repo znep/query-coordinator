@@ -4,13 +4,10 @@ describe('histogram', function() {
   var testHelpers;
   var $rootScope;
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
-  beforeEach(module('dataCards/histogram.scss'));
-  beforeEach(module('/angular_templates/dataCards/histogram.html'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/histogram.scss'));
 
-  beforeEach(module(function($controllerProvider) {
+  beforeEach(angular.mock.module(function($controllerProvider) {
     $controllerProvider.register('HistogramController', _.noop);
   }));
 

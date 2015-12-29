@@ -30,10 +30,10 @@ describe('Analytics service', function() {
     }
   };
 
-  beforeEach(module('socrataCommon.services'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       $provide.value('$window', mockWindowService);
     });
   });

@@ -46,12 +46,10 @@ describe('aggregationChooser', function() {
   var ServerConfig;
   var Constants;
 
+  beforeEach(angular.mock.module('dataCards'));
+
   beforeEach(function() {
-    module('/angular_templates/dataCards/aggregationChooser.html');
-    module('socrataCommon.services');
-    module('dataCards');
-    module('test');
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       var mockCardDataService = {
         getData: function(){ return $q.when([]);},
         getChoroplethRegions: function() { return {then: _.noop}; },

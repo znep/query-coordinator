@@ -39,7 +39,7 @@ describe('VisualizationAddController', function() {
     $scope.$apply();
   }
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(
     inject(

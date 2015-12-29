@@ -1,7 +1,7 @@
 describe('ManageLensDialogController', function() {
   'use strict';
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   var $scope;
   var $controller;

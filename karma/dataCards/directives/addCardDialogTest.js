@@ -128,15 +128,16 @@ describe('addCardDialog', function() {
     };
   }
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
-  beforeEach(module('/angular_templates/dataCards/socSelect.html'));
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('dataCards/cards.scss'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
+
+  var $provide;
+
+  beforeEach(function() {
+    angular.mock.module(function(_$provide_) {
+      $provide = _$provide_;
+    });
+  });
 
   beforeEach(
     inject([
@@ -185,6 +186,8 @@ describe('addCardDialog', function() {
           $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
           $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
           $httpBackend.whenGET(/\/api\/curated_regions.*/).respond([]);
+
+          testHelpers.mockDirective($provide, 'classicVisualizationPreviewer');
         }
     ])
   );

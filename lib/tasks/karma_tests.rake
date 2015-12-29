@@ -22,7 +22,7 @@ namespace :test do
         browser = 'Firefox'
       end
 
-      cmd = "./node_modules/karma/bin/karma start karma/#{dir}/karma.conf.js --singleRun #{!watch} --browsers #{browser} --reporters #{reporter} --reportSlowerThan 500"
+      cmd = "./node_modules/karma/bin/karma start karma/#{dir}/karma.conf.js --singleRun #{!watch} --browsers #{browser} --reporters #{reporter}"
       puts cmd
       fail($?.exitstatus) unless system(cmd)
     end

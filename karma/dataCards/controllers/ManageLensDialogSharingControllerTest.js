@@ -26,7 +26,7 @@ describe('ManageLensDialogSharingController', function() {
     pendingRemoval: false
   };
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     $rootScope = $injector.get('$rootScope');

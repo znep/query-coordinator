@@ -29,7 +29,7 @@
 }
 
 .table-body {
-    overflow: auto;
+  overflow: auto;
 }
 
 #test-root #container .cell {

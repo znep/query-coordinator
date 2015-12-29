@@ -4,12 +4,7 @@ describe('removeAllCards', function() {
   var testHelpers;
   var $rootScope;
 
-  beforeEach(module('/angular_templates/dataCards/removeAllCards.html'));
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
-  beforeEach(module('dataCards.filters'));
-  beforeEach(module('test'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
     inject([

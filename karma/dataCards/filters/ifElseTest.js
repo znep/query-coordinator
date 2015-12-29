@@ -6,8 +6,9 @@ describe('ifElse filter', function() {
 
   var ifElse;
 
+  beforeEach(angular.mock.module('dataCards'));
+
   beforeEach(function() {
-    module('socrataCommon.filters');
     inject(function(ifElseFilter) {
       ifElse = ifElseFilter;
     });

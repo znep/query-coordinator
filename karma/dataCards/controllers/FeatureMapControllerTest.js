@@ -137,11 +137,12 @@ describe('FeatureMapController', function() {
   var Constants;
   var $controller;
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.controllers'));
-  beforeEach(module(function($provide) {
+  beforeEach(angular.mock.module('dataCards'));
+
+  beforeEach(angular.mock.module(function($provide) {
     _$provide = $provide;
   }));
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');

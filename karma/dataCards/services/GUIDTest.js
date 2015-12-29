@@ -3,8 +3,9 @@ describe('Request ID service', function() {
 
   var RequestId;
 
+  beforeEach(angular.mock.module('socrataCommon.services'));
+
   beforeEach(function() {
-    module('socrataCommon.services')
     inject(function($injector) {
       RequestId = $injector.get('RequestId');
     });

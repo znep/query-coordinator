@@ -70,13 +70,10 @@ describe('TableCardController', function() {
   var $q;
   var $controller;
 
-  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
-
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       var mockCardDataService = {
         getRowCount: function(id, whereClause) {
           var returnValue = 42;

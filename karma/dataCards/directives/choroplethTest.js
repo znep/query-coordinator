@@ -13,12 +13,10 @@ describe('Choropleth', function() {
   var testTimeoutScheduler;
   var normalTimeoutScheduler;
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards/choropleth.scss'));
-  beforeEach(module('/angular_templates/dataCards/choropleth.html'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/choropleth.scss'));
 
-  beforeEach(module(function($controllerProvider) {
+  beforeEach(angular.mock.module(function($controllerProvider) {
     $controllerProvider.register('ChoroplethController', _.noop);
   }));
 

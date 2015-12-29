@@ -29,10 +29,8 @@ describe('relatedViews', function() {
     user: []
   };
 
-  beforeEach(module('/angular_templates/dataCards/relatedViews.html'));
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('test'));
+  beforeEach(angular.mock.module('dataCards'));
+
   beforeEach(function() {
     inject([
       '$window',

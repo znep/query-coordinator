@@ -13,7 +13,7 @@ describe('Card model', function() {
     'activeFilters': []
   };
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     Model = $injector.get('Model');

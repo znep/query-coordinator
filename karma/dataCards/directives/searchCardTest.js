@@ -16,16 +16,10 @@ describe('searchCard', function() {
   var _$provide;
   var Constants;
 
-  beforeEach(module('/angular_templates/dataCards/searchCard.html'));
-  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
-  beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
-
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.services'));
-  beforeEach(module('dataCards.directives'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       _$provide = $provide;
     });
   });

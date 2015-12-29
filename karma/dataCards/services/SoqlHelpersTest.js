@@ -4,7 +4,7 @@ describe('SoqlHelpers service', function() {
   var DateHelpers;
   var Constants;
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     DateHelpers = $injector.get('DateHelpers');
     Constants = $injector.get('Constants');

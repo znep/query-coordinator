@@ -49,11 +49,12 @@ module.exports = function ( karma ) {
      * Configure which files should be preproccessed.
      */
     preprocessors: {
+      'karma/dataCards/**/*Test.js': ['webpack'],
       'public/javascripts/angular/**/!(angular-leaflet-directives.js)': ['webpack', 'coverage'],
       'public/javascripts/lib/**/*.js': ['webpack', 'coverage'],
-      '**/*.html': ['ng-html2js'],
-      '**/*.json': ['ng-html2js'],
-      '**/*.scss': ['scss']
+      'public/angular_templates/**/*.html': ['ng-html2js'],
+      'karma/dataCards/test-data/**/*.json': ['ng-html2js'],
+      'app/styles/dataCards/**/*.scss': ['scss']
     },
 
     /**
@@ -119,13 +120,11 @@ module.exports = function ( karma ) {
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
 
-      'public/javascripts/angular/rx/**/*.js',
-
       /* dataCards ITSELF */
       'public/javascripts/angular/common/index.js',
 
       'karma/helpers/TestHelpers.js', // Requirement for mockModuleDefinitions.
-      'karma/dataCards/mockModuleDefinitions.js', // Mock out module('dataCards').
+      'karma/dataCards/mockModuleDefinitions.js', // Mock out angular.mock.module('dataCards').
       'karma/dataCards/mockTranslations.js',
 
       'public/javascripts/angular/dataCards/index.js',
@@ -133,7 +132,7 @@ module.exports = function ( karma ) {
       'public/angular_templates/**/*.html',
       'app/styles/dataCards/*.scss',
       'app/styles/dataCards/theme/default.scss',
-      { pattern: 'public/stylesheets/images/**/*.+{jpg,png}', watched: false, included: false, served: true }, // See https://github.com/karma-runner/karma/issues/1532
+      { pattern: 'public/stylesheets/images/**/*.+(jpg|png)', watched: false, included: false, served: true }, // See https://github.com/karma-runner/karma/issues/1532
 
       /* TEST CONFIGURATION */
       'karma/chai-configuration.js',
@@ -296,8 +295,10 @@ module.exports = function ( karma ) {
      */
     ngHtml2JsPreprocessor: {
       // strip this from the file path
-      stripPrefix: 'public'
+      stripPrefix: 'public',
+      moduleName: 'dataCards.templates'
     },
+
     webpack: {
       externals: datalensWebpackExternals,
       module: {
@@ -324,6 +325,7 @@ module.exports = function ( karma ) {
         modulesDirectories: [ 'node_modules', 'bower_components' ]
       }
     },
+
     webpackMiddleware: {
       noInfo: true
     }

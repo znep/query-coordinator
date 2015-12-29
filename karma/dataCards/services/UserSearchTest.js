@@ -32,7 +32,7 @@ describe('UserSearchService', function() {
     };
   }
 
-  beforeEach(module('socrataCommon.services'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
     UserSearch = $injector.get('UserSearchService');

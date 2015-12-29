@@ -45,7 +45,7 @@ describe('VIFExportService', function() {
       })[0];
   }
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     Mockumentary = $injector.get('Mockumentary');
     Page = $injector.get('Page');

@@ -50,6 +50,12 @@ password can be found in LastPass under the user "Socrata-frontend."
 Instructions on how to use these credentials can be found in the
 "Getting Artifacts" section of the [Artifactory Ops Doc](https://drive.google.com/a/socrata.com/folderview?ddrp=1&id=0B8bqh9w-C6AnNDJiNjYwMzgtZjJjNS00NWY0LTllNGEtNDdlNTdkNjhkZGY3#)
 
+To install dependencies, run:
+
+```sh
+npm install
+```
+
 ## Tests
 
 tl;dr: Run the Setup steps below, then
@@ -327,6 +333,7 @@ under the `eslintConfig` key. Currently we use no configuration options for
 * [RxJS](https://github.com/Reactive-Extensions/RxJS/tree/master/doc)
 * [Sinon](http://sinonjs.org/docs/)
 * [Squire](https://github.com/neilj/Squire/blob/master/README.md)
+* [Webpack](http://webpack.github.io/docs/)
 
 ### Ruby
 

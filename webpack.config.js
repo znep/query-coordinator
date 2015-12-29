@@ -1,4 +1,5 @@
-var Rewire = require('rewire-webpack')
+var Rewire = require('rewire-webpack');
+
 module.exports = {
   context: __dirname,
   entry: './src/index.js',

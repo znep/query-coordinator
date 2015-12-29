@@ -4,7 +4,12 @@
 var webpackConfig = require('./webpack.config');
 delete webpackConfig.entry;
 delete webpackConfig.output;
-webpackConfig.output = { pathinfo: true };
+webpackConfig.output = {
+  libraryTarget: 'var',
+  pathinfo: true
+};
+
+webpackConfig.externals['socrata-utils'] = 'socrata.utils';
 
 module.exports = function(config) {
   config.set({
@@ -31,8 +36,7 @@ module.exports = function(config) {
       'bower_components/vector-tile/dist/vectortile.js',
       'bower_components/simple-statistics/src/simple_statistics.js',
       'bower_components/chroma-js/chroma.js',
-      'dist/socrata-visualizations.css',
-      'dist/socrata-visualizations.js',
+      'src/views/styles/*.scss',
       'karma/**/*spec.js',
       'karma/choroplethTestData/*.js',
       'karma/timelineTestData/*.js'
@@ -47,6 +51,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'src/views/styles/*.scss': ['scss'],
       'karma/**/*spec.js': ['webpack']
     },
 
@@ -91,6 +96,14 @@ module.exports = function(config) {
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['PhantomJS'],
 
+    scssPreprocessor: {
+      options: {
+        sourceMap: true,
+        includePaths: [
+          'bower_components'
+        ]
+      }
+    },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

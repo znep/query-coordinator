@@ -1,5 +1,4 @@
 var Rewire = require('rewire-webpack');
-var path = require('path');
 
 module.exports = {
   context: __dirname,

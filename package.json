@@ -28,7 +28,7 @@
     "build:prod": "NODE_ENV=production webpack --config ${npm_package_config_webpackConfig}",
     "prebuild:prod": "npm run webpack-clean",
     "webpack-clean": "rimraf ${npm_package_config_webpackDestination}",
-    "webpack-dev-server": "webpack-dev-server --config ${npm_package_config_webpackConfig} --hot",
+    "webpack-dev-server": "webpack-dev-server --config ${npm_package_config_webpackConfig} --https --cert dev-server/ssl/host.crt --cacert dev-server/ssl/ca.crt --key dev-server/ssl/host.key",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint"
   },

@@ -239,6 +239,15 @@
             }
           });
 
+          // If there are no unexpanded cards, make the expanded card bigger to avoid a large awkward
+          // empty space.
+          if (_.isEmpty(unexpandedCards)) {
+            expandedColumnWidth = containerContentWidth - Constants.LAYOUT_CARD_MARGIN;
+            expandedColumnLeft = Constants.LAYOUT_HORIZONTAL_PADDING;
+            unexpandedColumnWidth = 0;
+            unexpandedColumnLeft = 0;
+          }
+
           var dataCardIsExpanded = expandedCardPos === cardsBySize.dataCard[0];
 
           // Set the styles for the left-column cards

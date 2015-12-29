@@ -69,11 +69,6 @@
         // Downstream code needs to handle this case specially, so it is called out as a separate field.
         conflict: data.status === 412
       });
-      if (data.status === 401) {
-        storyteller.dispatcher.dispatch({
-          action: Actions.API_REQUEST_RETURNED_401_UNAUTHORIZED
-        });
-      }
     });
   }
 

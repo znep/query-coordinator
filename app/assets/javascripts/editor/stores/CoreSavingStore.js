@@ -190,17 +190,6 @@
           name: metadata.storyTitle,
           description: metadata.storyDescription
         })
-      }).fail(function(data) {
-        // Note that unlike promise.catch(), deferred.fail()
-        // does not cause errors to stop propagating up the
-        // async chain. So adding this fail() handler will not
-        // deprive downstream consumers of errors generated
-        // by this deferred.
-        if (data.status === 401) {
-          storyteller.dispatcher.dispatch({
-            action: Actions.API_REQUEST_RETURNED_401_UNAUTHORIZED
-          });
-        }
       });
     }
 

@@ -3,6 +3,7 @@ describe('UserSessionStore', function() {
   var storyteller = window.socrata.storyteller;
   var store;
   var server;
+  var ajaxErrorStub;
 
   beforeEach(function() {
     server = sinon.fakeServer.create();
@@ -15,7 +16,12 @@ describe('UserSessionStore', function() {
 
   describe('instance', function() {
     beforeEach(function() {
-      store = storyteller.userSessionStore;
+      ajaxErrorStub = sinon.stub($.fn, 'ajaxError', _.noop);
+      store = new storyteller.UserSessionStore();
+    });
+
+    afterEach(function() {
+      ajaxErrorStub.restore();
     });
 
     describe('on story loaded', function() {
@@ -46,11 +52,13 @@ describe('UserSessionStore', function() {
       });
     });
 
-    describe('after API_REQUEST_RETURNED_401_UNAUTHORIZED', function() {
+    describe('after any $.ajax fails with a 401', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
-          action: Actions.API_REQUEST_RETURNED_401_UNAUTHORIZED
-        });
+        var fakeJqXhr = {
+          status: 401
+        };
+        // Call all handlers on $.ajaxError.
+        _.chain(ajaxErrorStub.getCalls()).pluck('args').flatten().invoke(_.call, '', {}, fakeJqXhr).value();
       });
 
       it('if /api/users/current.json responds 404 should indicate the session is invalid', function(done) {

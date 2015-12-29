@@ -3,7 +3,6 @@
   'use strict';
 
   var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
 
   function UserSessionStore() {
 
@@ -12,15 +11,17 @@
     var self = this;
     var _hasValidSession = true;
 
-    this.register(function(payload) {
-
-      switch (payload.action) {
-        case Actions.API_REQUEST_RETURNED_401_UNAUTHORIZED:
-          // A 401 from an API request is a good (but not sufficient) indication that
-          // the user's session has timed out. So, after a 401, check the user session
-          // explicitly.
-          _checkUserSession();
-          break;
+    // On all XHR errors, check the status code. If the
+    // error code suggests an expired session, recheck
+    // the session.
+    $(document).ajaxError(function(event, jqXhr) {
+      // See: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_Client_Error
+      // 401: Unauthorized.
+      // 403: Forbidden. This _should_ mean that the current user simply does not have
+      // the proper permissions (but the session is valid), but unfortunately core will
+      // sometimes return 403 for expired sessions instead of the more correct 401.
+      if (jqXhr.status === 401 || jqXhr.status === 403) {
+        _checkUserSession();
       }
     });
 
@@ -38,7 +39,7 @@
       });
     }
 
-    function _checkUserSession() {
+    var _checkUserSession = _.debounce(function() {
       $.get('/api/users/current.json').then(
         function() {
           // success
@@ -55,9 +56,9 @@
           }
         }
       );
-    }
+    }, 250);
 
-    _onCookieChange(_.debounce(_checkUserSession, 250));
+    _onCookieChange(_checkUserSession);
   }
 
   storyteller.UserSessionStore = UserSessionStore;

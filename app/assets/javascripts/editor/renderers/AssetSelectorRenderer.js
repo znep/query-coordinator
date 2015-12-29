@@ -1125,8 +1125,8 @@
       );
     }
 
-    function _showSelectorWith(options) {
-      _container.modal(options).trigger('modal-open');
+    function _showSelectorWith(modalOptions) {
+      _container.modal(modalOptions).trigger('modal-open');
     }
 
     function _hideSelector() {

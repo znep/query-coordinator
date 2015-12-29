@@ -218,13 +218,9 @@
       var collaborator;
       var email;
       var accessLevel;
-      var isModalOverlay;
-      var isCollaboratorsModalOpen;
-      var isCollaboratorsModalDirty;
       var dispatcher = storyteller.dispatcher;
       var $target = $(event.target);
       var action = $target.attr('data-action');
-      var shouldClose = true;
 
       // TODO wait what?
       if (Actions.COLLABORATORS_MARK_REMOVAL || Actions.COLLABORATORS_UNMARK_REMOVAL ||

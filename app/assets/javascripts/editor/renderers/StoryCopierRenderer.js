@@ -4,7 +4,6 @@
 
   var socrata = root.socrata;
   var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
 
   function StoryCopierRenderer(options) {
     var _container = options.storyCopierContainerElement || null;

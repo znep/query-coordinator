@@ -14,6 +14,13 @@
     var $warning = $('.link-warning');
     var $submitButton = $modal.find('.btn-primary');
 
+    $modal.modal({
+      title: I18n.t('editor.rich_text_toolbar.link_modal.heading'),
+      // The LinkModal content is pre-rendered in edit.html.erb, so just
+      // grab the existing children.
+      content: $modal.children()
+    });
+
     attachEvents();
     attachStoreListeners();
 
@@ -34,6 +41,12 @@
       $link.on('input', _.debounce(update, wait));
       $openInNewWindow.on('change', _.debounce(update, wait));
       $testLink.on('click', testLink);
+
+      $modal.on('modal-dismissed', function() {
+        dispatcher.dispatch({
+          action: Actions.LINK_MODAL_CLOSE
+        });
+      });
 
       $modal.on('click', '[data-action]', function(event) {
         var action = event.target.getAttribute('data-action');

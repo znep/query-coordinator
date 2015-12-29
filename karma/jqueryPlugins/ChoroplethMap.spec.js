@@ -1,7 +1,7 @@
 var rewire = require('rewire');
-var SocrataChoroplethMap = rewire('../src/ChoroplethMap');
+var SocrataChoroplethMap = rewire('../../src/ChoroplethMap');
 
-describe('SocrataChoroplethMap component', function() {
+describe('ChoroplethMap jQuery component', function() {
 
   'use strict';
 
@@ -16,12 +16,12 @@ describe('SocrataChoroplethMap component', function() {
 
   var $container;
   var choroplethVIF = {
-    domain: 'dataspace.demo.socrata.com',
-    datasetUid: 'snuk-a5kv',
     columnName: 'ward',
     configuration: {
-      columns: {
-        'ward': 'something'
+      computedColumnName: ':@wards',
+      defaultExtent : {
+        southwest: [41.45919537950706, -90.24169921875],
+        northeast: [42.20817645934742, -85.242919921875]
       },
       legend: {
         type: 'discrete'
@@ -33,12 +33,19 @@ describe('SocrataChoroplethMap component', function() {
         FLYOUT_SELECTED_NOTICE: 'This column is selected',
       },
       shapefile: {
-        columns: {},
+        columns: {
+          name: '__SOCRATA_HUMAN_READABLE_NAME__',
+          unfiltered: '__SOCRATA_UNFILTERED_VALUE__',
+          filtered: '__SOCRATA_FILTERED_VALUE__',
+          selected: '__SOCRATA_FEATURE_SELECTED__'
+        },
         geometryLabel: 'ward',
         primaryKey: '_feature_id',
         uid: 'snuk-a5kv'
       }
     },
+    datasetUid: 'snuk-a5kv',
+    domain: 'dataspace.demo.socrata.com',
     filters: [],
     unit: {
       one: 'crime',

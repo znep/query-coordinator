@@ -1,7 +1,7 @@
 var rewire = require('rewire');
 var SocrataColumnChart = rewire('../../src/ColumnChart');
 
-describe('SocrataColumnChart component', function() {
+describe('ColumnChart jQuery component', function() {
 
   var NAME_ALIAS = '__NAME_ALIAS__';
   var VALUE_ALIAS = '__VALUE_ALIAS__';

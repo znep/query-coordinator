@@ -1,7 +1,7 @@
 var rewire = require('rewire');
 var SocrataFeatureMap = rewire('../../src/FeatureMap');
 
-describe('SocrataFeatureMap component', function() {
+describe('FeatureMap jQuery component', function() {
 
   'use strict';
 

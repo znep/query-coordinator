@@ -1,7 +1,7 @@
 var rewire = require('rewire');
 var socrataTimelineChart = rewire('../../src/TimelineChart');
 
-describe('SocrataTimelineChart component', function() {
+describe('TimelineChart jQuery component', function() {
 
   'use strict';
 

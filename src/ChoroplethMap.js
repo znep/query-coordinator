@@ -39,6 +39,7 @@ $.fn.socrataChoroplethMap = function(vif) {
 
   utils.assertHasProperties(
     vif.configuration,
+    'computedColumnName',
     'localization',
     'shapefile'
   );

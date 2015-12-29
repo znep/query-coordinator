@@ -46,7 +46,7 @@
        * Sample data!
        */
 
-      var DATASET_UID = 'hsns-kwdt';
+      var DATASET_UID = '52my-2pak';
       var DOMAIN = 'dataspace.demo.socrata.com';
       var GEOJSON_UID = 'snuk-a5kv';
 
@@ -60,10 +60,11 @@
         'aggregation': {
           // TODO: implement this!
         },
-        'columnName': 'ward',
+        'columnName': 'location_point',
         'configuration': {
           'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
           'baseLayerOpacity': 0.8,
+          'computedColumnName': ':@wards',
           'defaultExtent' : {
             'southwest': [41.45919537950706, -90.24169921875],
             'northeast': [42.20817645934742, -85.242919921875]
@@ -113,8 +114,8 @@
       };
 
       var choroplethVIF1 = _.cloneDeep(choroplethVIF);
-
       var choroplethVIF2 = _.cloneDeep(choroplethVIF);
+
       choroplethVIF2.configuration.legend = {
         'type': 'discrete'
       };

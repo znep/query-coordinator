@@ -10,6 +10,11 @@ describe('Modal jQuery plugin', function() {
     assert.equal(node.modal(), node);
   });
 
+  it('should add the .modal class', function() {
+    node.modal();
+    assert.isTrue(node.hasClass('modal'));
+  });
+
   it('should start off hidden', function() {
     node.modal();
     assert.isTrue(node.hasClass('hidden'));

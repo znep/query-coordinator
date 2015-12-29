@@ -70,14 +70,18 @@
         $('<div>', { 'class': 'modal-overlay' }).on('click', _emitDismissed),
         $('<div>', { 'class': 'modal-dialog' }).
           append(
-            $('<h1>', { 'class': 'modal-title' }),
-            _renderModalCloseButton().on('click', _emitDismissed),
+            $('<div>', { 'class': 'modal-header-group' }).
+              append(
+                $('<h1>', { 'class': 'modal-title' }),
+                _renderModalCloseButton().on('click', _emitDismissed)
+              ),
             $('<div>', { 'class': 'modal-content' })
           )
       );
 
       this.
         data('modal-rendered', true).
+        addClass('modal').
         on('modal-open', function() { self.removeClass('hidden'); }).
         on('modal-close', function() { self.addClass('hidden'); }).
         // Do not scroll page if the container is scrolled

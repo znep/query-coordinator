@@ -135,7 +135,7 @@ $.fn.socrataChoroplethMap = function(vif) {
    */
   function _updateData() {
     var queryString = BASE_QUERY.format(
-      vif.columnName,
+      vif.configuration.computedColumnName,
       NAME_ALIAS,
       VALUE_ALIAS
     );

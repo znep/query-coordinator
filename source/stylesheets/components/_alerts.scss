@@ -1,31 +1,31 @@
 //Tags
 
 .alert {
-	background-color: $light-grey-4;
-	border: 1px solid $light-grey-1;
-	font-size: ms(0);
-	padding: ms(-2);
-	border-radius: 1px;
-	color: $default-text-color;
+  background-color: $light-grey-4;
+  border: 1px solid $light-grey-1;
+  font-size: ms(0);
+  padding: ms(-2);
+  border-radius: 1px;
+  color: $default-text-color;
 
-	&.info {
-		background-color: $primary-light;
-		border-color: $primary;
-		color: $primary-dark;
-	}	
-	&.success {
-		background-color: $success-light;
-		border-color: $success;
-		color: $success-dark;
-	}	
-	&.warning {
-		background-color: $warning-light;
-		border-color: $warning;
-		color: $warning-dark;
-	}	
-	&.error {
-		background-color: $error-light;
-		border-color: $error;
-		color: $error-dark;
-	}
+  &.info {
+    background-color: $primary-light;
+    border-color: $primary;
+    color: $primary-dark;
+  } 
+  &.success {
+    background-color: $success-light;
+    border-color: $success;
+    color: $success-dark;
+  } 
+  &.warning {
+    background-color: $warning-light;
+    border-color: $warning;
+    color: $warning-dark;
+  } 
+  &.error {
+    background-color: $error-light;
+    border-color: $error;
+    color: $error-dark;
+  }
 }

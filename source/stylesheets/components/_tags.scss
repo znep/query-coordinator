@@ -22,19 +22,19 @@
 }
 
 .tag-federated {
-	color: $black;
-	font-size: ms(-1);
+  color: $black;
+  font-size: ms(-1);
   margin: 0 ms(-1) 0 0;
-	white-space: nowrap;
+  white-space: nowrap;
 
-	a {
-		color: $black;
+  a {
+    color: $black;
     text-decoration: none;
     &:hover{
       text-decoration: underline;
     }
-	}
-	.domain {
-		text-transform: uppercase;
-	}
+  }
+  .domain {
+    text-transform: uppercase;
+  }
 }

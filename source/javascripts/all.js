@@ -10,12 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   document.addEventListener('click', function() {
-		// all dropdowns
+    // all dropdowns
     var dropdowns = document.querySelectorAll('.dropdown')
     for (var i = 0; i < dropdowns.length; i++) {
       dropdowns[i].classList.remove('active');
     }
-	});
+  });
 
   var modalFactory = new ModalFactory( document );
   var toggleFactory = new ToggleFactory( document );

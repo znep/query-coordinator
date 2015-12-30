@@ -1,125 +1,125 @@
 //Swatches styling for the color palette
 .color-group {
-	float: left;
-	margin-right: 2em;
+  float: left;
+  margin-right: 2em;
 }
 
 .swatch-container {
-	display: block;
-	margin-top: 0.2em;
-	
-	.subcontainer {
-		display: block;
-		float: left;
-		width: 2.5em;
-	}
-	.box { 
-		width: 5em;
-		height: 5em;
-		float: left;
-		display: block;
-		margin-bottom: 2em;
-	}
-	.small-box {
-		height: 2.5em;
-		width: 2.5em;
-		float: left;
-	}
+  display: block;
+  margin-top: 0.2em;
+  
+  .subcontainer {
+    display: block;
+    float: left;
+    width: 2.5em;
+  }
+  .box { 
+    width: 5em;
+    height: 5em;
+    float: left;
+    display: block;
+    margin-bottom: 2em;
+  }
+  .small-box {
+    height: 2.5em;
+    width: 2.5em;
+    float: left;
+  }
 
-	.color-group {
-		float: left;
-		display: block;
-		margin-bottom: 2em;
-	}
+  .color-group {
+    float: left;
+    display: block;
+    margin-bottom: 2em;
+  }
 }
 
 .color-label {
-	font-size: ms(-2);
-	margin: 0;
+  font-size: ms(-2);
+  margin: 0;
 }
 
 
 .primary {
-	background-color: $primary;
-	&.light {
-		background-color: $primary-light;
-	}
-	&.dark {
-		background-color: $primary-dark;
-	}
+  background-color: $primary;
+  &.light {
+    background-color: $primary-light;
+  }
+  &.dark {
+    background-color: $primary-dark;
+  }
 }
 
 .secondary {
-	background-color: $secondary;
-	&.light {
-		background-color: $secondary-light;
-	}
-	&.dark {
-		background-color: $secondary-dark;
-	}
+  background-color: $secondary;
+  &.light {
+    background-color: $secondary-light;
+  }
+  &.dark {
+    background-color: $secondary-dark;
+  }
 }
 
 .success {
-	background-color: $success;
-	&.light {
-		background-color: $success-light;
-	}
-	&.dark {
-		background-color: $success-dark;
-	}
+  background-color: $success;
+  &.light {
+    background-color: $success-light;
+  }
+  &.dark {
+    background-color: $success-dark;
+  }
 }
 
 .error {
-	background-color: $error;
-	&.light {
-		background-color: $error-light;
-	}
-	&.dark {
-		background-color: $error-dark;
-	}
+  background-color: $error;
+  &.light {
+    background-color: $error-light;
+  }
+  &.dark {
+    background-color: $error-dark;
+  }
 }
 
 .warning {
-	background-color: $warning;
-	&.light {
-		background-color: $warning-light;
-	}
-	&.dark {
-		background-color: $warning-dark;
-	}
+  background-color: $warning;
+  &.light {
+    background-color: $warning-light;
+  }
+  &.dark {
+    background-color: $warning-dark;
+  }
 }
 
 .white {
-	background-color: $white;
-	border: 1px solid $light-grey-3;
+  background-color: $white;
+  border: 1px solid $light-grey-3;
 }
 .black {
-	background-color: $black;
+  background-color: $black;
 }
 .grey {
-	background-color: $grey;
-	&.light-1 {
-		background-color: $light-grey-1;
-	}
-	&.light-2 {
-		background-color: $light-grey-2;
-	}
-	&.light-3 {
-		background-color: $light-grey-3;
-	}
-	&.light-4 {
-		background-color: $light-grey-4;
-	}
-	&.light-5 {
-		background-color: $light-grey-5;
-	}
-	&.dark-1 {
-		background-color: $dark-grey-1;
-	}
-	&.dark-2 {
-		background-color: $dark-grey-2;
-	}
-	&.dark-3 {
-		background-color: $dark-grey-3;
-	}
+  background-color: $grey;
+  &.light-1 {
+    background-color: $light-grey-1;
+  }
+  &.light-2 {
+    background-color: $light-grey-2;
+  }
+  &.light-3 {
+    background-color: $light-grey-3;
+  }
+  &.light-4 {
+    background-color: $light-grey-4;
+  }
+  &.light-5 {
+    background-color: $light-grey-5;
+  }
+  &.dark-1 {
+    background-color: $dark-grey-1;
+  }
+  &.dark-2 {
+    background-color: $dark-grey-2;
+  }
+  &.dark-3 {
+    background-color: $dark-grey-3;
+  }
 }

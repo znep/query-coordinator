@@ -58,35 +58,35 @@ table {
 
 // Responsive Table
 .table-responsive {
-	min-height: 0.1%;
-	overflow-x: auto;
+  min-height: 0.1%;
+  overflow-x: auto;
 
-		width: 100%;
-		overflow-y: hidden;
-		-ms-overflow-style: -ms-autohiding-scrollbar;
-		border: 1px solid $light-grey-4;
+    width: 100%;
+    overflow-y: hidden;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    border: 1px solid $light-grey-4;
 
-	    // Tighten up spacing
-	    > .table {
-	    	margin-bottom: 0;
+      // Tighten up spacing
+      > .table {
+        margin-bottom: 0;
 
-	      // Ensure the content doesn't wrap
-	      > thead,
-	      > tbody,
-	      > tfoot {
-	      	> tr {
-	      		> th,
-	      		> td {
-	      			white-space: nowrap;
-	      		}
-	      	}
-	      }
-	  	}
-		
-		@include breakpoint($small) { 
-			border: none;
+        // Ensure the content doesn't wrap
+        > thead,
+        > tbody,
+        > tfoot {
+          > tr {
+            > th,
+            > td {
+              white-space: nowrap;
+            }
+          }
+        }
+      }
+    
+    @include breakpoint($small) { 
+      border: none;
 
-		}	
+    } 
 
-	}
+  }
 

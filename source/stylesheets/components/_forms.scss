@@ -51,7 +51,7 @@
   display: block;
   text-decoration: none;
   color: $grey;
-	padding: ms(-5) ms(0);
+  padding: ms(-5) ms(0);
 }
 
 /* Hover state */
@@ -79,15 +79,15 @@ form {
 
   margin-bottom: ms(0);
 
-	.text-input {
-		border: solid 1px $light-grey-2;
-		border-radius: 1px;
+  .text-input {
+    border: solid 1px $light-grey-2;
+    border-radius: 1px;
     box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
-		line-height: 1.53;
-		font-size: ms(0);
-		font-family: "Open Sans", "Helvetica", Arial, sans-serif;
-		padding: ms(-6);
-	}
+    line-height: 1.53;
+    font-size: ms(0);
+    font-family: "Open Sans", "Helvetica", Arial, sans-serif;
+    padding: ms(-6);
+  }
   .block-label {
     display: block;
     margin-bottom: 0.2em;
@@ -96,9 +96,9 @@ form {
     display: inline;
     margin-right: 0.5em;
   }
-	.text-area {
-		min-width: 350px;
-	}
+  .text-area {
+    min-width: 350px;
+  }
     .checkbox{
         input[type=checkbox] {
             display: none;

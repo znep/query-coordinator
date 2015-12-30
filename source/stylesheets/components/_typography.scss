@@ -12,10 +12,10 @@ $ms-ratio: 1.618, 1.25, 1.333;
 $default-font-stack: "Open Sans", "Helvetica", Arial, sans-serif;
 
 body {
-	font-family: $default-font-stack;
-	font-size: ms(0);
-	line-height: 1.618;
-	color: $dark-grey-2;
+  font-family: $default-font-stack;
+  font-size: ms(0);
+  line-height: 1.618;
+  color: $dark-grey-2;
 
 }
 
@@ -28,79 +28,79 @@ input, textarea, keygen, select, button {
 //Bring back the defaults
 
 h1, h2, h3, h4, h5, h6, p, ul, ol, {
-	//margin-bottom: 1.618em;
+  //margin-bottom: 1.618em;
 }
 
 p, ol, ul {
-	// Space above and below paragraphs should be related
-	// to the line height. So, 15px * 1.618 = 24.27px.
-	margin-bottom: 24.27px;
-	margin-top: 24.27px;	
+  // Space above and below paragraphs should be related
+  // to the line height. So, 15px * 1.618 = 24.27px.
+  margin-bottom: 24.27px;
+  margin-top: 24.27px;  
 }
 
 i {
-	font-style: italic;
+  font-style: italic;
 }
 
 b {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 ul {
-	list-style-type: disc;	
-	padding-left: ms(2);	
+  list-style-type: disc;  
+  padding-left: ms(2);  
 }
 
 ol {
-	list-style: decimal;
-	padding-left: ms(2);
+  list-style: decimal;
+  padding-left: ms(2);
 }
 
 // All of the headings. Additional "heaing classes" are used to style 
 // type in contexts where the heading style and semantics don't align.
 
 h1, .h1 {
-	font-size: ms(5);
-	font-weight: 600;	
+  font-size: ms(5);
+  font-weight: 600; 
 }
 
 h2, .h2 {
-	font-size: ms(4);
-	font-weight: 600;
+  font-size: ms(4);
+  font-weight: 600;
 }
 
 h3, .h3 {
-	font-size: ms(3);
-	font-weight: 600;
+  font-size: ms(3);
+  font-weight: 600;
 }
 
 h4, .h4 {
-	font-size: ms(2);
-	font-weight: 600;
+  font-size: ms(2);
+  font-weight: 600;
 }
 
 h5, .h5 {
-	font-size: ms(1);
-	font-weight: 600;
+  font-size: ms(1);
+  font-weight: 600;
 }
 
 h6, .h6 {
-	font-size: ms(0);
-	text-transform: uppercase;
-	font-weight: 600;
+  font-size: ms(0);
+  text-transform: uppercase;
+  font-weight: 600;
 }
 
 .intro {
-	font-size: ms(1);
-	color: $quiet-text-color;
+  font-size: ms(1);
+  color: $quiet-text-color;
 }
 
 .small {
-	font-size: ms(-1);
+  font-size: ms(-1);
 }
 
 .quiet {
-	color: $quiet-text-color;
+  color: $quiet-text-color;
 }
 
 //ellipsify long stuff

@@ -15,7 +15,7 @@
             if (this._pickerHooked) { return; }
             var $friendSelect = cpObj.$dom().find('.friendSelect');
             $friendSelect.userPicker({
-                attachTo: $('#templates'),
+                attachTo: $('#js-appended-templates'),
                 chooseCallback: function(user) { cpObj._thief = user; },
                 filterCallback: function(user)
                 { return user.id !== cpObj._view.owner.id; },

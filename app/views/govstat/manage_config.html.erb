@@ -91,4 +91,6 @@
   </div>
 </div>
 
-<%= render_translations LocalePart.controls.global_indicator %>
+<% content_for :translations do %>
+  <%= render_translations LocalePart.controls.global_indicator %>
+<% end %>

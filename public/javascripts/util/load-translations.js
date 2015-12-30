@@ -1,7 +1,7 @@
 (function()
 {
     blist.translations = {};
-    if (blistTranslations)
+    if (!_.isUndefined(window.blistTranslations))
     {
         _.each(blistTranslations, function(translation)
         {

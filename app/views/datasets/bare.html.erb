@@ -22,9 +22,10 @@
       </div>
     </div>
 
-    <div id="templates">
+    <script type="text/template" id="templates">
       <%= render :partial => 'templates/fatrow_header' %>
-    </div>
+    </script>
+    <div id="js-appended-templates" style="display: none;" aria-hidden="true"></div>
     <%= render_translations %>
 
     <%= include_javascripts 'base' %>

@@ -229,13 +229,11 @@
       var componentValue = storyteller.assetSelectorStore.getComponentValue();
       var selectorTitle;
       var selectorContent;
+      var selectorWideDisplay = false;
 
       // See if we need to render a new template, then render a media selector step if
       // necessary.
       if (step !== _lastRenderedStep) {
-
-        // Remove step-specific modal container classes
-        _resetModalDialogClass();
 
         switch (step) {
 
@@ -252,11 +250,13 @@
           case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
             selectorTitle = I18n.t('editor.asset_selector.visualization.choose_dataset_heading');
             selectorContent = _renderChooseDatasetTemplate();
+            selectorWideDisplay = true;
             break;
 
           case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
             selectorTitle = I18n.t('editor.asset_selector.visualization.configure_vizualization_heading');
             selectorContent = _renderConfigureVisualizationTemplate();
+            selectorWideDisplay = true;
             break;
 
           case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
@@ -289,7 +289,8 @@
         if (selectorContent) {
           _showSelectorWith({
             title: selectorTitle,
-            content: selectorContent
+            content: selectorContent,
+            wide: selectorWideDisplay
           });
         } else {
           _hideSelector();
@@ -869,8 +870,6 @@
     }
 
     function _renderChooseDatasetTemplate() {
-      _addModalDialogClass('modal-dialog-wide');
-
       var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
       var datasetChooserIframe = $(
@@ -902,9 +901,6 @@
     }
 
     function _renderConfigureVisualizationTemplate() {
-
-      _addModalDialogClass('modal-dialog-wide');
-
       var configureVisualizationIframe = $(
         '<iframe>',
         {
@@ -1133,28 +1129,6 @@
         content: null // We never re-show the modal with old content, so save
                       // a bit of resources by removing the content.
       }).trigger('modal-close');
-    }
-
-    function _addModalDialogClass(className) {
-      _container.find('.modal-dialog').addClass(className);
-    }
-
-    /**
-     * Responsible for:
-     *  - Removing all classes starting with `modal-dialog-` from the modal dialog
-     * Usage:
-     * - Call when state changes to clear out state-specific classes
-     */
-    function _resetModalDialogClass() {
-      var dialog = _container.find('.modal-dialog');
-      var newClassList = _.reject(
-        dialog.attr('class').split(' '),
-        function(className) {
-          return _.startsWith(className, 'modal-dialog-');
-        }
-      );
-
-      dialog.attr('class', newClassList.join(' '));
     }
   }
 

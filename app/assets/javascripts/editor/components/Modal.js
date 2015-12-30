@@ -14,6 +14,7 @@
  *     {
  *       title: 'optional',
  *       content: $('<div>')...,
+ *       wide: true // Make the modal wider. Defaults to false.
  *     }
  *   ).
  *   trigger('modal-open').
@@ -97,6 +98,7 @@
     }
 
     this.find('.modal-title').text(options.title);
+    this.find('.modal-dialog').toggleClass('modal-dialog-wide', !!options.wide);
 
     if (this.data('modal-rendered-content') !== options.content) {
       this.data('modal-rendered-content', options.content);

@@ -27,6 +27,17 @@ describe('Modal jQuery plugin', function() {
     assert.include(node.text(), 'foobar');
   });
 
+  it('should add modal-dialog-wide iff `wide` is set', function() {
+    node.modal();
+    assert.lengthOf(node.find('.modal-dialog-wide'), 0);
+
+    node.modal({ wide: true });
+    assert.lengthOf(node.find('.modal-dialog-wide'), 1);
+
+    node.modal({ wide: false });
+    assert.lengthOf(node.find('.modal-dialog-wide'), 0);
+  });
+
   it('should incorporate the contents', function() {
     var content = $('<div>', { 'class': 'foo' }).text('foobar');
     node.modal({

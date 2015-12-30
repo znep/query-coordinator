@@ -642,37 +642,4 @@ describe('AssetSelectorRenderer', function() {
     });
 
   });
-
-  describe('helper functions:', function() {
-    var renderer;
-
-    beforeEach(function() {
-      renderer = new AssetSelectorRenderer(options);
-    });
-
-    describe('when the state changes and _resetModalDialogClass is called', function() {
-      it('should not have any classes starting with `modal-dialog-`', function() {
-        // trigger any action
-        storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
-        });
-
-        // mess with classes
-        var dialog = container.find('.modal-dialog');
-        dialog.addClass('modal-dialog-should-disappear modal-dialog-STATE should-persistent')
-
-        // trigger any other action
-        storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
-        });
-
-        // ensure state-specific classes are removed
-        var dialogClasses = dialog.attr('class');
-        assert.notInclude(dialogClasses, 'modal-dialog-');
-        assert.include(dialogClasses, 'should-persistent');
-        assert.include(dialogClasses, 'modal-dialog');
-      });
-    });
-
-  })
 });

@@ -107,11 +107,9 @@ describe('CollaboratorsRenderer', function() {
         });
       });
 
-      describe('when clicking the "X" button', function() {
+      describe('when the modal indicates it is dismissed', function() {
         it('should add a "hidden" class', function() {
-          $collaborators.
-            find('.icon-cross2[data-action="COLLABORATORS_CANCEL"]').
-            click();
+          $collaborators.trigger('modal-dismissed');
 
           assert.isTrue($collaborators.hasClass('hidden'));
         });

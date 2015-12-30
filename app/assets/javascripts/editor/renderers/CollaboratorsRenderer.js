@@ -37,13 +37,7 @@
 
     function template() {
       return (
-        '<div id="collaborators-modal" class="modal hidden">' +
-          '<div class="modal-overlay" data-action="{0}"></div>'.format(Actions.COLLABORATORS_CANCEL) +
-          '<div class="modal-dialog">' +
-            '<div class="modal-header-group">' +
-              '<h1 class="modal-title">{0}</h1>'.format(t('editor.collaborators.modal.heading')) +
-              '<button class="modal-close-btn icon-cross2" data-action="{0}"></button>'.format(Actions.COLLABORATORS_CANCEL) +
-            '</div>' +
+          '<div>' +
             '<div>' +
               '<table class="table-borderless">' +
                 '<thead>' +
@@ -78,8 +72,7 @@
               '<button class="btn-default btn-inverse" data-action="{0}">{1}</button>'.format(Actions.COLLABORATORS_CANCEL, t('editor.modal.buttons.cancel')) +
               '<button class="btn-primary" data-action="{0}" disabled><span>{1}</span></button>'.format(Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')) +
             '</div>' +
-          '</div>' +
-        '</div>'
+          '</div>'
       );
     }
 
@@ -155,7 +148,11 @@
     }
 
     function compileDOM() {
-      $collaborators = $(template());
+      $collaborators = $('<div>', { id: 'collaborators-modal' }).modal({
+        title: t('editor.collaborators.modal.heading'),
+        content: $(template())
+      });
+
       $saveButton = $collaborators.find('[data-action="{0}"]'.format(Actions.COLLABORATORS_SAVE));
 
       $(document.body).append($collaborators);
@@ -164,12 +161,14 @@
     function attachEvents() {
       storyteller.collaboratorsStore.addChangeListener(render);
       $collaborators.on('click', '[data-action]', dispatchActions);
+      $collaborators.on('modal-dismissed', handleModalDismissed);
       $collaborators.on('change', 'td select', dispatchActions);
       $collaborators.on('keyup', 'input[type="email"]', handleKeys);
     }
 
     function detachEvents() {
       $collaborators.off('click', '[data-action]', dispatchActions);
+      $collaborators.off('modal-dismissed', handleModalDismissed);
       $collaborators.off('change', 'td select', dispatchActions);
       $collaborators.off('keyup', 'input[type="email"]', handleKeys);
       storyteller.collaboratorsStore.removeChangeListener(render);
@@ -194,57 +193,45 @@
         prop('disabled', disabled);
     }
 
+    function handleModalDismissed() {
+      var shouldCancel = true;
+      var isCollaboratorsModalOpen = storyteller.collaboratorsStore.isOpen();
+      var isCollaboratorsModalDirty = storyteller.collaboratorsStore.isDirty();
+
+      if (isCollaboratorsModalOpen && isCollaboratorsModalDirty) {
+        /* eslint-disable no-alert */
+        shouldCancel = confirm(
+          I18n.t('editor.settings_panel.warnings.unsaved_collaborators_changes')
+        );
+        /* eslint-enable no-alert */
+      }
+
+      if (shouldCancel) {
+        storyteller.dispatcher.dispatch({
+          action: Actions.COLLABORATORS_CANCEL
+        });
+      }
+    }
+
     function dispatchActions(event) {
-      var $tr;
-      var collaborator;
       var email;
       var accessLevel;
-      var isModalOverlay;
-      var isCollaboratorsModalOpen;
-      var isCollaboratorsModalDirty;
       var dispatcher = storyteller.dispatcher;
       var $target = $(event.target);
       var action = $target.attr('data-action');
-      var shouldClose = true;
+      var $tr = $target.closest('tr');
+      var collaborator = {accessLevel: $tr.attr('data-access-level')};
 
-      if (Actions.COLLABORATORS_MARK_REMOVAL || Actions.COLLABORATORS_UNMARK_REMOVAL ||
-        Actions.COLLABORATORS_REMOVE || Actions.COLLABORATORS_CHANGE) {
-
-        $tr = $target.closest('tr');
-        collaborator = {accessLevel: $tr.attr('data-access-level')};
-
-        if ($tr.attr('data-email')) {
-          collaborator.email = $tr.attr('data-email');
-        }
-
-        if ($tr.attr('data-uid')) {
-          collaborator.uid = $tr.attr('data-uid');
-        }
+      if ($tr.attr('data-email')) {
+        collaborator.email = $tr.attr('data-email');
       }
 
+      if ($tr.attr('data-uid')) {
+        collaborator.uid = $tr.attr('data-uid');
+      }
 
       switch (action) {
         case Actions.COLLABORATORS_CANCEL:
-          shouldClose = true;
-          isModalOverlay = $target.hasClass('modal-overlay');
-          isCollaboratorsModalOpen = storyteller.collaboratorsStore.isOpen();
-          isCollaboratorsModalDirty = storyteller.collaboratorsStore.isDirty();
-
-          if (isCollaboratorsModalOpen && isCollaboratorsModalDirty && isModalOverlay) {
-            /* eslint-disable no-alert */
-            shouldClose = confirm(
-              I18n.t('editor.settings_panel.warnings.unsaved_collaborators_changes')
-            );
-            /* eslint-enable no-alert */
-          }
-
-          if (shouldClose) {
-            dispatcher.dispatch({
-              action: action
-            });
-          }
-
-          break;
         case Actions.COLLABORATORS_SAVE:
           dispatcher.dispatch({
             action: action
@@ -438,7 +425,9 @@
     }
 
     function toggleModal(show) {
-      $collaborators[show ? 'removeClass' : 'addClass']('hidden');
+      $collaborators.trigger(
+        show ? 'modal-open' : 'modal-close'
+      );
     }
 
     function toggleSaveButton(enable) {

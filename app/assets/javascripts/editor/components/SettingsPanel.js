@@ -180,15 +180,7 @@
       }
 
       if (e.keyCode === 27) { // esc
-        if (isCollaboratorsModalOpen) {
-          storyteller.dispatcher.dispatch({
-            action: Actions.COLLABORATORS_CANCEL
-          });
-        } else if (isCopyModalOpen) {
-          storyteller.dispatcher.dispatch({
-            action: Actions.STORY_MAKE_COPY_MODAL_CANCEL
-          });
-        } else {
+        if (!isCollaboratorsModalOpen && !isCopyModalOpen) {
           settingsPanel.trigger('sidebar:close');
         }
       }

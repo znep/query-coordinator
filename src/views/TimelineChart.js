@@ -208,7 +208,10 @@ function TimelineChart(element, vif) {
     );
 
     var leftSelectionGroup = $svg(
-      'g'
+      'g',
+      {
+        'transform': 'translate(24, 0)'
+      }
     ).append([
       leftSelectionLine,
       leftSelectionTriangle,
@@ -2394,6 +2397,7 @@ function TimelineChart(element, vif) {
     };
 
     handleChartSelectionEvents(payload);
+    mouseHasMoved(payload.position, payload.leftButtonPressed);
   }
 
   function mouseHasMoved(mousePosition, mouseLeftButtonNowPressed) {

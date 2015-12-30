@@ -20,6 +20,7 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  login_successful: 'Login Successful'
   add_content_panel:
     title: 'Inspiration Blocks'
     description: 'Choose a layout with text or media!'

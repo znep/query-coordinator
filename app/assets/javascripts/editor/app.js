@@ -78,6 +78,7 @@ $(document).on('ready', function() {
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
   storyteller.storyCopierStore = new storyteller.StoryCopierStore();
   storyteller.collaboratorsStore = new storyteller.CollaboratorsStore();
+  storyteller.userSessionStore = new storyteller.UserSessionStore();
   storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
 
   socrata.visualizations.RowInspector.setup();

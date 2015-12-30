@@ -36,6 +36,7 @@
           _lastSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
           _storySavedSuccessfully();
           break;
+
         case Actions.STORY_SAVED:
           _storySavedSuccessfully();
           break;

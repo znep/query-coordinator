@@ -644,6 +644,7 @@ en:
         rendering_progress_seconds: "%{rows_remaining} rows remain, about %{time_remaining} seconds."
         resume_rendering: Resume
       zero_only_data: No values greater than zero
+      missing_column: A data column is no longer available for this visualization. Please inform the administration of this domain.
     common:
       auth_required: You must be logged in to %{action_phrase}
       dataset_picker:

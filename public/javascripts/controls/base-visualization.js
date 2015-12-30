@@ -10,6 +10,14 @@
             $mainDom.addClass('visualization');
 
             currentObj._primaryView = currentObj.settings.view;
+
+            if (currentObj._primaryView.hasMissingColumns) {
+              currentObj._handleColumnsMissingError(currentObj._primaryView.hasMissingColumns);
+            }
+
+            currentObj._primaryView.bind('columns_missing_error', function() {
+              currentObj._handleColumnsMissingError(currentObj._primaryView.hasMissingColumns);
+            });
             currentObj._displayFormat = currentObj.settings.displayFormat ||
                 (currentObj._primaryView || {}).displayFormat;
             $mainDom.resize(function(e, source, forceUpdate) {
@@ -390,6 +398,19 @@
                     });
                 }
             };
+        },
+
+        _handleColumnsMissingError: function(message) {
+          var $missingColumns = $(this.currentDom).find('.missing-columns-message');
+
+          if ($missingColumns.length === 0) {
+            this._$missingColumns = $('<div>', {'class': 'missing-columns-warning'});
+            this._$missingColumns.append(
+              $('<div class="missing-columns-warning-message flash notice"><p>' + $.t('controls.charts.missing_column') + '</p><p><small>(' + message + ')</small></p></div>')
+            );
+
+            $(this.currentDom).append(this._$missingColumns);
+          }
         },
 
         setView: function(newView)

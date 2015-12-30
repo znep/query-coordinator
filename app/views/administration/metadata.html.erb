@@ -75,13 +75,14 @@
                       <td class="options <%= field['type'] %>">
                         <ul class="fixedOptions editableList">
                           <%- if field['options'].present? -%>
-                            <%- field['options'].each do |option| -%>
+                            <%- field['options'].each_with_index do |option, option_index| -%>
                               <li>
                                 <a href="#Delete" class="remove optionAction deleteItem">
                                   <span class="icon fadeIcon"></span>
                                 </a>
                                 <span class="grabHandle fadeIcon"></span>
-                                <input type="text" class="value" value="<%= option %>" />
+                                <label for="<%= "option_#{index}_#{option_index}" %>" style="display: none;">Allowed Value</label>
+                                <input type="text" id="<%= "option_#{index}_#{option_index}" %>" class="value" value="<%= option %>" />
                               </li>
                             <%- end -%>
                           <%- end-%>
@@ -89,14 +90,18 @@
                             <a href="#Add" class="add optionAction newItemButton">
                               <span class="icon fadeIcon"></span>
                             </a>
-                            <input type="text" class="value"/>
+                            <label><span style="display: none;">Allowed Value</span>
+                              <input type="text" class="value"/>
+                            </label>
                           </li>
                           <li class="templateLine">
                              <a href="#Delete" class="remove optionAction deleteItem">
                                 <span class="icon fadeIcon"></span>
                               </a>
                               <span class="grabHandle fadeIcon"></span>
-                              <input type="text" class="value" />
+                              <label><span style="display: none;">Allowed Value</span>
+                                <input type="text" class="value" />
+                              </label>
                           </li>
                         </ul>
                         <div class="errorText"></div>
@@ -145,7 +150,8 @@
                     <td class="required">
                     </td>
                     <td class="name">
-                      <input type="text" class="newFieldName" name="newFieldName" />
+                      <label for="newFieldName" style="display: none;">New Field Name</label>
+                      <input type="text" class="newFieldName" name="newFieldName" id="newFieldName" />
                     </td>
                     <td class="options"></td>
                     <td class="actions">
@@ -161,7 +167,8 @@
     <div class="newFieldsetArea">
       <h2><%= t("#{prefix}.create_new_fieldset") %></h2>
       <%= form_tag({ :action => 'create_metadata_fieldset' }, { :class => 'newFieldsetForm' }) %>
-        <input type="text" name="newFieldsetName" class="newFieldsetName" title="<%= t("#{prefix}.enter_a_name") %>"/>
+        <label for="newFieldsetName" style="display: none;">New Fieldset Name</label>
+        <input type="text" id="newFieldsetName" name="newFieldsetName" class="newFieldsetName" title="<%= t("#{prefix}.enter_a_name") %>"/>
         <input class="button newFieldsetButton" type="submit" value="<%= t("#{prefix}.create") %>" />
       </form>
     </div>
@@ -261,7 +268,8 @@
           <tr>
             <%= form_tag({:action => 'create_category'}, {:class => 'createCategoryForm'}) %>
               <td class="name">
-                <input type="text" class="newCategory" name="new_category" />
+                <label for="new_category" style="display: none;">New Category</label>
+                <input type="text" class="newCategory" name="new_category" id="new_category" />
               </td>
               <%- if @locales.length > 1 -%>
                 <td class="locales">
@@ -276,12 +284,14 @@
                 </td>
               <%- end -%>
               <td class="parent">
-                <select name="new_category_parent" class="newCategorySelect">
+                <label for="new_category_parent" style="display: none;">New Category Parent</label>
+                <select name="new_category_parent" class="newCategorySelect" id="new_category_parent">
                   <%= options_for_select(@categories.map{|k,v| k}.unshift('')) %>
                 </select>
               </td>
               <td class="shown">
-                <%= check_box_tag("new_category_displayed", 1, true) %>
+                <%= label_tag('new_category_displayed', 'New Category Displayed?', :style => 'display: none;') %>
+                <%= check_box_tag('new_category_displayed', 1, true) %>
               </td>
               <td class="actions">
                 <input class="button newCategoryButton" type="submit" value="<%= t("#{prefix}.add_new_category") %>" />

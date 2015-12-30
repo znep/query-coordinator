@@ -39,8 +39,7 @@
 
                 if (rsObj.settings.usingTemplate)
                 {
-                    $domObj.append($('#templates')
-                        .find(rsObj.settings.usingTemplate).clone());
+                    $domObj.append($.getTemplate(rsObj.settings.usingTemplate).clone());
                 }
 
                 rsObj.richRenderer = rsObj.$template().richRenderer({

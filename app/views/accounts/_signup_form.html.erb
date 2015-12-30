@@ -21,5 +21,6 @@
   <% end %>
 </div>
 
-<%= render_translations LocalePart.screens.sign_up %>
-
+<%- content_for :translations do -%>
+  <%= render_translations LocalePart.screens.sign_up %>
+<%- end -%>

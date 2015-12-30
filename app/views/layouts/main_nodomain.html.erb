@@ -61,10 +61,10 @@ http://www.socrata.com
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
 
-  <div id="templates" style="display:none">
+  <script type="text/template" id="templates" style="display:none">
     <%= render :partial => 'shared/control_templates' %>
     <%= yield :templates %>
-  </div>
+  </script>
 
   <%= include_javascripts 'base' %>
 

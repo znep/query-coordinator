@@ -70,4 +70,6 @@
   </div>
 </div>
 
-<%= render_translations LocalePart.controls.feed %>
+<%- content_for :translations do -%>
+  <%= render_translations LocalePart.controls.feed %>
+<%- end -%>

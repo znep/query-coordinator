@@ -149,9 +149,11 @@
   </ul>
 <%- end -%>
 
-<%= render_translations LocalePart.controls.browse %>
-<%= render_translations LocalePart.controls.grid %>
-<%= render_translations LocalePart.controls.embed %>
+<%- content_for :translations do -%>
+  <%= render_translations LocalePart.controls.browse %>
+  <%= render_translations LocalePart.controls.grid %>
+  <%= render_translations LocalePart.controls.embed %>
+<%- end -%>
 
 <% content_for :templates do %>
   <%= render :partial => 'filters_table_template' %>

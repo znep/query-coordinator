@@ -5,6 +5,7 @@
 <% end %>
 
 <% content_for :skip_links do %>
+  <%= link_to t("#{prefix}.skip_to_dataset_listing"), '#dataset-listing' %>
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 

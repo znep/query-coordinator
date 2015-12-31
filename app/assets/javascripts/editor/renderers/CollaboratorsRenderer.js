@@ -448,7 +448,7 @@
       var promises = [];
 
       var add = collaborators.filter(findByState('added'));
-      var addCollaborators = storyteller.collaboratorsDataProvider.addCollaborators;
+      var addCollaborators = storyteller.collaboratorsDataProvider.addCollaborators.bind(storyteller.collaboratorsDataProvider);
       promises = promises.concat(addCollaborators(add));
 
       var remove = collaborators.filter(findByState('marked'));

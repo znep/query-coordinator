@@ -129,10 +129,12 @@
     };
 
     /**
-     * @function addCollaborator
+     * @function addCollaborators
      * @description
-     * Adds a collaborator to the current story's grant list with the specified access level.
-     * @param {Array[Collaborators]} collaborators - A list of collaborators.
+     * Adds collaborators to the current story's grant list with the specified access level.
+     * These requests are sequential -- due to Core server's requirements and locking mechanism.
+     *
+     * @param {Array[Collaborator]} collaborators - A list of collaborators.
      * @param {Object} collaborator - A collaborator Object.
      * @param {String} collaborator.email - A valid email address.
      * @param {String} collaborator.accessLevel - A valid access level.
@@ -140,24 +142,20 @@
      */
     this.addCollaborators = function(collaborators) {
       return new Promise(function(resolve, reject) {
-        if (!collaborators || collaborators.length === 0) {
-          return resolve(collaborators);
-        }
-
-        utils.syncLoop(collaborators.length, function(loop) {
-          ajax('post', urls.add, collaborators[loop.iteration()]).
-            then(function() {
-              loop.next();
-            }, function() {
-              loop.break();
-            });
-        }, function(error) {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(collaborators);
+        var index = 0;
+        var next = function() {
+          if (!collaborators[index]) {
+            return resolve(collaborators);
           }
-        });
+
+          self.addCollaborator(collaborators[index++]).then(function() {
+            next();
+          }, function() {
+            reject('Failed to save collaborator.');
+          });
+        };
+
+        next();
       });
     };
 

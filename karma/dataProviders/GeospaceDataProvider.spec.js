@@ -396,7 +396,7 @@ describe('GeospaceDataProvider', function() {
       it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
           then(
             function(data) {
 
@@ -428,7 +428,7 @@ describe('GeospaceDataProvider', function() {
       it('should include the correct request error status', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
           then(
             function(data) {
 
@@ -458,7 +458,7 @@ describe('GeospaceDataProvider', function() {
       it('should include the correct request error message', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
           then(
             function(data) {
 
@@ -488,7 +488,7 @@ describe('GeospaceDataProvider', function() {
       it('should include the correct soqlError object', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
           then(
             function(data) {
 
@@ -542,7 +542,7 @@ describe('GeospaceDataProvider', function() {
       it('should return the parsed GeoJson', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
           then(
             function(data) {
 

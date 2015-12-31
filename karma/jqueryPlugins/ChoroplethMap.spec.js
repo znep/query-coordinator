@@ -6,14 +6,14 @@ describe('ChoroplethMap jQuery component', function() {
   'use strict';
 
   var GEOJSON_RESPONSE;
-
+  var SHAPEFILE_METADATA_RESPONSE;
+  var FEATURE_EXTENT_RESPONSE;
   var SOQL_RESPONSE = {
     rows: [
       ['TEST NAME 1', 100],
       ['TEST NAME 2', 200]
     ]
   };
-
   var $container;
   var choroplethVIF = {
     columnName: 'ward',
@@ -121,23 +121,32 @@ describe('ChoroplethMap jQuery component', function() {
     });
 
     describe('given valid arguments', function() {
-
       var revertDataProviders;
 
       beforeEach(function() {
 
         GEOJSON_RESPONSE = window.choroplethTestData.multiPolygonData2;
+        SHAPEFILE_METADATA_RESPONSE = window.choroplethTestData.shapefileMetadataResponse;
+        FEATURE_EXTENT_RESPONSE = window.choroplethTestData.featureExtentResponse;
 
         // Mock data providers
         revertDataProviders = SocrataChoroplethMap.__set__({
-          SoqlDataProvider: function() {
-            this.query = function() {
-              return new Promise(function(resolve, reject) { return resolve(SOQL_RESPONSE); });
+          MetadataProvider: function() {
+            this.getDatasetMetadata = function() {
+              return new Promise(function(resolve, reject) { return resolve(SHAPEFILE_METADATA_RESPONSE); });
             };
           },
           GeospaceDataProvider: function() {
             this.getShapefile = function() {
               return new Promise(function(resolve, reject) { return resolve(GEOJSON_RESPONSE); });
+            };
+            this.getFeatureExtent = function() {
+              return new Promise(function(resolve, reject) { return resolve(FEATURE_EXTENT_RESPONSE); });
+            };
+          },
+          SoqlDataProvider: function() {
+            this.query = function() {
+              return new Promise(function(resolve, reject) { return resolve(SOQL_RESPONSE); });
             };
           }
         });
@@ -178,22 +187,64 @@ describe('ChoroplethMap jQuery component', function() {
           assert.isTrue(stubChoroplethMap.called);
         });
       });
+    });
+  });
 
-      it('emits a flyout render event when the mouse is moved over the legend', function(done) {
-        var vif = _.cloneDeep(choroplethVIF);
-        $container.socrataChoroplethMap(vif);
+  describe('ChoroplethMap component', function() {
+    var revertDataProviders;
 
-        $container.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', function(event) {
-          if (event.originalEvent.detail !== null) {
-            assert.isTrue(true, 'Flyout was rendered.');
-            done();
-          }
-        });
+    beforeEach(function() {
 
-        setTimeout(function() {
-          $container.find('.choropleth-legend-color').trigger('mousemove');
-        }, 0);
+      GEOJSON_RESPONSE = window.choroplethTestData.multiPolygonData2;
+      SHAPEFILE_METADATA_RESPONSE = window.choroplethTestData.shapefileMetadataResponse;
+      FEATURE_EXTENT_RESPONSE = window.choroplethTestData.featureExtentResponse;
+
+      // Mock data providers
+      revertDataProviders = SocrataChoroplethMap.__set__({
+        MetadataProvider: function() {
+          this.getDatasetMetadata = function() {
+            return new Promise(function(resolve, reject) { return resolve(SHAPEFILE_METADATA_RESPONSE); });
+          };
+        },
+        GeospaceDataProvider: function() {
+          this.getShapefile = function() {
+            return new Promise(function(resolve, reject) { return resolve(GEOJSON_RESPONSE); });
+          };
+          this.getFeatureExtent = function() {
+            return new Promise(function(resolve, reject) { return resolve(FEATURE_EXTENT_RESPONSE); });
+          };
+        },
+        SoqlDataProvider: function() {
+          this.query = function() {
+            return new Promise(function(resolve, reject) { return resolve(SOQL_RESPONSE); });
+          };
+        }
       });
+    });
+
+    afterEach(function() {
+
+      // Restore old data providers
+      revertDataProviders();
+
+      // Remove visualizaton
+      destroyVisualization($container);
+    });
+
+    it('emits a flyout render event when the mouse is moved over the legend', function(done) {
+      var vif = _.cloneDeep(choroplethVIF);
+
+      $container.socrataChoroplethMap(vif);
+      $container.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', function(event) {
+        if (event.originalEvent.detail !== null) {
+          assert.isTrue(true, 'Flyout was rendered.');
+          done();
+        }
+      });
+
+      setTimeout(function() {
+        $container.find('.choropleth-legend-color').trigger('mousemove');
+      }, 0);
     });
   });
 });

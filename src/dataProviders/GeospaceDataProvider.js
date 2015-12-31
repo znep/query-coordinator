@@ -97,14 +97,21 @@ function GeospaceDataProvider(config) {
     );
   };
 
-  this.getShapefile = function() {
+  this.getShapefile = function(extent) {
      var url = 'https://{0}/resource/{1}.geojson'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid')
     );
+
     var headers = {
       'Accept': 'application/json'
     };
+
+    if (extent) {
+      url += "?$select=*&$where=intersects(the_geom, 'MULTIPOLYGON((({0})))')&$limit=5000".format(
+        mapExtentToMultipolygon(extent)
+      );
+    }
 
     return (
       new Promise(function(resolve, reject) {
@@ -165,6 +172,35 @@ function GeospaceDataProvider(config) {
       })
     );
   };
+
+  /**
+   * Multipolygon queries expect a polygon in clockwise order,
+   * starting from the bottom left. Polygons are closed, meaning
+   * that the start and end points must be identical.
+   *
+   * Example:
+   *
+   * 2----3
+   * |    |
+   * 1,5--4
+   *
+   * Where each pair is: longitude latitude
+   */
+  function mapExtentToMultipolygon(extent) {
+
+    return '{0} {1},{2} {3},{4} {5},{6} {7}, {8} {9}'.format(
+      extent.southwest[1],
+      extent.southwest[0],
+      extent.southwest[1],
+      extent.northeast[0],
+      extent.northeast[1],
+      extent.northeast[0],
+      extent.northeast[1],
+      extent.southwest[0],
+      extent.southwest[1],
+      extent.southwest[0]
+    );
+  }
 }
 
 module.exports = GeospaceDataProvider;

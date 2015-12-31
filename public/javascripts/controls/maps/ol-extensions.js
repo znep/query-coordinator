@@ -1673,7 +1673,11 @@
                 $.t('controls.map.loading'), null, true,
                 function(evt) { new jQuery.Event(evt).stopPropagation(); control.close(); });
             control.map.addPopup(control._popup);
-            // TODO: Decide if this is a good thing.
+
+            // If there are multiple layers, we clear out the previous loading timeout
+            // in order to prevent other layers' timeouts from completing and closing
+            // the flyout unexpectedly.
+            if (control._loading) { clearTimeout(control._loading); }
             control._loading = setTimeout(function() { control.close(); }, 500);
         },
 

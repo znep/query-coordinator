@@ -46,7 +46,7 @@ $.fn.socrataChoroplethMap = function(vif) {
 
   utils.assertHasProperties(
     vif.configuration.localization,
-    'NULL_VALUE_LABEL',
+    'NO_VALUE',
     'FLYOUT_UNFILTERED_AMOUNT_LABEL',
     'FLYOUT_FILTERED_AMOUNT_LABEL',
     'FLYOUT_SELECTED_NOTICE'

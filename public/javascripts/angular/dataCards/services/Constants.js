@@ -40,7 +40,6 @@ function Constants() {
     'CUSTOMIZATION_DISABLED_DATA_TYPES': ['boolean'],
 
     // Visualization
-    'NULL_VALUE_LABEL': '(No Value)',
     'MAPBOX_SIMPLE_GREY_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
     'MAPBOX_SIMPLE_BLUE_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
     'ESRI_BASE_LAYER_URL': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',

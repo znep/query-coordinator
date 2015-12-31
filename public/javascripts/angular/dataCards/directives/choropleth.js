@@ -69,10 +69,10 @@ function choropleth(
             type: scope.stops
           },
           localization: {
+            NO_VALUE: `(${I18n.common.noValue})`,
             FLYOUT_SELECTED_NOTICE: scope.allowFilterChange ? I18n.flyout.clearFilterLong : '',
             FLYOUT_UNFILTERED_AMOUNT_LABEL: I18n.flyout.total,
             FLYOUT_FILTERED_AMOUNT_LABEL: I18n.flyout.filteredAmount,
-            NULL_VALUE_LABEL: `(${I18n.common.noValue})`,
             CLEAR_FILTER_LABEL: I18n.flyout.clear_filter
           },
           savedExtent: scope.savedExtent,
@@ -283,7 +283,7 @@ function choropleth(
 
       function formatValue(value) {
         if (!_.isFinite(value)) {
-          return Constants.NULL_VALUE_LABEL;
+          return `(${I18n.common.noValue})`;
         }
 
         var rowDisplayUnit = PluralizeService.pluralize(scope.rowDisplayUnit, value);

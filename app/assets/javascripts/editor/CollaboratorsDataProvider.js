@@ -128,6 +128,30 @@
       return ajax('post', urls.add, collaborator);
     };
 
+
+    this.addCollaborators = function(collaborators) {
+      return new Promise(function(resolve, reject) {
+        if (!collaborators || collaborators.length === 0) {
+          return resolve(collaborators);
+        }
+
+        utils.syncLoop(collaborators.length, function(loop) {
+          ajax('post', urls.add, collaborators[loop.iteration()]).
+            then(function() {
+              loop.next();
+            }, function() {
+              loop.break();
+            });
+        }, function(error) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(collaborators);
+          }
+        });
+      });
+    }
+
     /**
      * @function removeCollaborator
      * @description
@@ -181,7 +205,7 @@
 
     function ajax(method, url, data) {
       return new Promise(function(resolve, reject) {
-        var json = storeToGrantFormat(data);
+        var json = Array.isArray(data) ? data.map(storeToGrantFormat) : storeToGrantFormat(data);
         var request = new XMLHttpRequest();
 
         json = JSON.stringify(json);

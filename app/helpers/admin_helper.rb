@@ -2,7 +2,7 @@ module AdminHelper
   def select_for_role(id, name = 'role', current_role = nil, css_class = '', include_none = true)
     roles = User.roles_list
 
-    out = %Q(<label style="display: none;" for="#{id}">#{I18n.t('screens.admin.users.role')}</label>)
+    out = %Q(<label for="#{id}">#{I18n.t('screens.admin.users.role')}</label>)
     out << %Q(<select class="#{css_class}" name="#{name}" id="#{id}">)
     out << %Q(<option value="0">#{t('screens.admin.users.roles.none')}</option>) if include_none
 

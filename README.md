@@ -48,7 +48,7 @@ builds, see the [webpack](#webpack) section.
 Dependencies are stored in artifactoryonline.com.  A shared username and
 password can be found in LastPass under the user "Socrata-frontend."
 Instructions on how to use these credentials can be found in the
-"Getting Artifacts" section of the [Artifactory Ops Doc](https://drive.google.com/a/socrata.com/folderview?ddrp=1&id=0B8bqh9w-C6AnNDJiNjYwMzgtZjJjNS00NWY0LTllNGEtNDdlNTdkNjhkZGY3#)
+"Getting Artifacts" section of the [Artifactory Ops Doc](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8)
 
 To install dependencies, run:
 

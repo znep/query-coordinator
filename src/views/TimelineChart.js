@@ -336,7 +336,7 @@ function TimelineChart(element, vif) {
 
   function _attachEvents(element) {
     element.on(
-      'mouseenter, mousemove',
+      'mouseenter mousemove',
       '.timeline-chart',
       showFlyout
     );
@@ -352,11 +352,23 @@ function TimelineChart(element, vif) {
       '.timeline-chart',
       leftMouseButtonStateHasChanged
     );
+
+    element.on(
+      'mousedown',
+      '.timeline-chart-clear-selection-label',
+      handleClearSelectionLabelMousedownEvent
+    );
+
+    element.on(
+      'mousemove',
+      '.timeline-chart-clear-selection-label',
+      showFlyout
+    );
   }
 
   function _unattachEvents(element) {
     element.off(
-      'mouseenter, mousemove',
+      'mouseenter mousemove',
       '.timeline-chart',
       showFlyout
     );
@@ -366,39 +378,44 @@ function TimelineChart(element, vif) {
       '.timeline-chart',
       hideFlyout
     );
+
+    element.off(
+      'mousedown mouseup',
+      '.timeline-chart',
+      leftMouseButtonStateHasChanged
+    );
+
+    element.off(
+      'mousedown',
+      '.timeline-chart-clear-selection-label',
+      handleClearSelectionLabelMousedownEvent
+    );
+
+    element.off(
+      'mousemove',
+      '.timeline-chart-clear-selection-label',
+      showFlyout
+    );
   }
 
   /**
    * Visualization renderer and helper functions
    */
 
+  function emitFlyoutEvent(payload) {
+    self.emitEvent('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', payload);
+  }
+
   function showFlyout(event) {
     mouseHasMoved(event, false);
-    var flyoutTarget = _chartElement.find('.timeline-chart-flyout-target');
 
-    if (flyoutTarget.length === 0) {
-      return;
-    }
+    function formatValue(value) {
+      var rules = (_.has(_lastRenderOptions, 'unit')) ?
+        _lastRenderOptions.unit :
+        vif.unit;
 
-    var $target = $(event.target);
-    var isInterval = $target.
-      is(flyoutIntervalTopSelectors.concat([flyoutIntervalPathSelector]).join(', '));
-    var datumIsDefined = !(_.isUndefined(currentDatum) || _.isNull(currentDatum));
-
-    var payload = {
-      element: flyoutTarget.get(0),
-      unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL')
-    };
-
-    var formatStrings = {
-      DECADE: 'YYYYs',
-      YEAR: 'YYYY',
-      MONTH: 'MMMM YYYY',
-      DAY: 'D MMMM YYYY'
-    };
-
-    var renderUnit = function(value, rules) {
       utils.assertHasProperty(rules, 'other');
+
       if (_.isNull(value)) {
         return 'No value';
       }
@@ -417,28 +434,100 @@ function TimelineChart(element, vif) {
       }
     };
 
-    var unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit')) ?
-      _lastRenderOptions.unit :
-      vif.unit;
+    var payload = {
+      title: null,
+      unfilteredLabel: null,
+      unfilteredValue: null,
+      filteredLabel: null,
+      filteredValue: null,
+      filteredClass: null
+    };
 
-    if (isInterval) {
-      payload.title = $target.attr('data-flyout-label');
-      var unfilteredValue = $target.attr('data-aggregate-unfiltered');
-      payload.unfilteredValue = renderUnit(unfilteredValue, unfilteredValueUnit);
-      //var filteredValue = $target.attr('data-aggregate-filtered');
-      //payload.filteredValue = _.isUndefined(filteredValue) ? null : parseFloat(filteredValue);
-    } else if (datumIsDefined) {
-      payload.title = currentDatum.hasOwnProperty('flyoutLabel') ?
-        currentDatum.flyoutLabel :
-        moment(currentDatum.date).format(formatStrings[datasetPrecision]);
-      payload.unfilteredValue = renderUnit(currentDatum.unfiltered, unfilteredValueUnit);
-      //payload.filteredValue = currentDatum.filtered;
+    var $target = $(event.target);
+
+    if ($target.is('.timeline-chart-clear-selection-button')) {
+      payload.title = 'Clear filter range';
+      payload.element = $target.get(0);
+      return emitFlyoutEvent(payload);
+    } else if($target.is('.selection-marker')) {
+      payload.title = 'Drag to change filter range';
+      payload.element = $target.get(0);
+      return emitFlyoutEvent(payload);
     }
 
-    self.emitEvent(
-      'SOCRATA_VISUALIZATION_TIMELINE_FLYOUT',
-      payload
-    );
+    var flyoutTarget = _chartElement.find('.timeline-chart-flyout-target');
+
+    if (flyoutTarget.length === 0) {
+      return;
+    }
+
+    payload.element = flyoutTarget.get(0);
+
+    var isIntervalFlyout = $target.
+      is(flyoutIntervalTopSelectors.concat([flyoutIntervalPathSelector]).join(', '));
+    var isSelectionRendered = !_.isNull(selectionStartDate) &&
+      !_.isNull(selectionEndDate) &&
+      selectionIsCurrentlyRendered;
+
+    var datumIsDefined = !(_.isUndefined(currentDatum) || _.isNull(currentDatum));
+
+    if (isIntervalFlyout) {
+      return renderIntervalFlyout();
+    } else if (datumIsDefined) {
+      return renderDatumFlyout();
+    } else {
+      return;
+    }
+
+    function renderIntervalFlyout() {
+      payload.title = $target.attr('data-flyout-label');
+      payload.unfilteredValue = formatValue($target.attr('data-aggregate-unfiltered'));
+      payload.unfilteredLabel = self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL');
+
+      var filteredValue = $target.attr('data-aggregate-filtered');
+      if (!_.isUndefined(filteredValue)) {
+        payload.filteredValue = formatValue(parseFloat(filteredValue));
+        payload.filteredLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
+      }
+
+      if (isSelectionRendered) {
+        var date = $target.attr('data-start');
+        payload.filteredBySelection = (date >= selectionStartDate) && (date <= selectionEndDate);
+      }
+
+      emitFlyoutEvent(payload);
+    }
+
+    function renderDatumFlyout() {
+      if (currentDatum.hasOwnProperty('flyoutLabel')) {
+        payload.title = currentDatum.flyoutLabel;
+      } else {
+        var formatStrings = {
+          DECADE: 'YYYYs',
+          YEAR: 'YYYY',
+          MONTH: 'MMMM YYYY',
+          DAY: 'D MMMM YYYY'
+        };
+
+        payload.title = moment(currentDatum.date).format(formatStrings[datasetPrecision]);
+      }
+
+      payload.unfilteredValue = formatValue(currentDatum.unfiltered);
+      payload.unfilteredLabel = self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL');
+
+      var isWithinSelection = currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
+
+      if (isWithinSelection || currentDatum.unfiltered !== currentDatum.filtered) {
+        payload.filteredValue = formatValue(currentDatum.filtered);
+        payload.filteredLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
+      }
+
+      if (isSelectionRendered) {
+        payload.filteredBySelection = isWithinSelection;
+      }
+
+      emitFlyoutEvent(payload);
+    }
   }
 
   function hideFlyout(event) {
@@ -664,9 +753,16 @@ function TimelineChart(element, vif) {
         renderChartSelection();
       }
 
-      // Yield execution to the browser to render, then notify that
-      // render is complete
-      // TODO: Unclear if this is needed.
+      if (_.isArray(options.activeFilters) && options.activeFilters.length > 0) {
+        var filter = _.first(options.activeFilters);
+
+        selectionStartDate = filter.start;
+        selectionEndDate = filter.end;
+        renderChartSelection();
+        enterSelectedState();
+      } else {
+        enterDefaultState();
+      }
     }
 
     var dimensions = { width: chartWidth, height: chartHeight };
@@ -1680,14 +1776,14 @@ function TimelineChart(element, vif) {
   }
 
   function requestChartFilterByCurrentSelection() {
-    self.emitEvent('SOCRATA_VISUALIZATIONS_TIMELINE_FILTER', {
+    self.emitEvent('SOCRATA_VISUALIZATION_TIMELINE_FILTER', {
       start: selectionStartDate,
       end: selectionEndDate
     });
   }
 
   function requestChartFilterReset() {
-    self.emitEvent('SOCRATA_VISUALIZATIONS_TIMELINE_FILTER', null);
+    self.emitEvent('SOCRATA_VISUALIZATION_TIMELINE_FILTER', null);
   }
 
   /**

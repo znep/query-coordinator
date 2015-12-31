@@ -230,7 +230,7 @@
           } else {
             done = true; // Make sure we say we're done
 
-            if(exit) {
+            if (exit) {
               exit();
             }
           }

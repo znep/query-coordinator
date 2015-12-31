@@ -128,7 +128,16 @@
       return ajax('post', urls.add, collaborator);
     };
 
-
+    /**
+     * @function addCollaborator
+     * @description
+     * Adds a collaborator to the current story's grant list with the specified access level.
+     * @param {Array[Collaborators]} collaborators - A list of collaborators.
+     * @param {Object} collaborator - A collaborator Object.
+     * @param {String} collaborator.email - A valid email address.
+     * @param {String} collaborator.accessLevel - A valid access level.
+     * @returns {Promise} - A promise that resolves when an addition succeeds.
+     */
     this.addCollaborators = function(collaborators) {
       return new Promise(function(resolve, reject) {
         if (!collaborators || collaborators.length === 0) {
@@ -150,7 +159,7 @@
           }
         });
       });
-    }
+    };
 
     /**
      * @function removeCollaborator

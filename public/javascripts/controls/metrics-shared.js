@@ -352,8 +352,10 @@
       if (mappedData.delta < 0) {
         mappedData.delta *= -1;
         mappedData.deltaClass = 'minus';
+        mappedData.deltaCharacter = '-';
       } else {
         mappedData.deltaClass = 'plus';
+        mappedData.deltaCharacter = '+';
       }
     }
 
@@ -468,7 +470,8 @@
     '.deltaValue@aria-label': 'deltaText',
     '.totalValue': 'total',
     '.totalValue@title': 'totalText',
-    '.deltaBox@class+': 'deltaClass'
+    '.deltaBox@class+': 'deltaClass',
+    '.deltaCharacter': 'deltaCharacter'
   };
 
   metricsNS.summaryDataDirectiveV1 = {

@@ -24,7 +24,7 @@ describe('ChoroplethMap', function() {
         'FLYOUT_SELECTED_NOTICE': 'The page is currently filtered by this value, click to clear it',
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
         'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-        'NULL_VALUE_LABEL': '(No Value)'
+        'NO_VALUE': '(No Value)'
       },
       shapefile: {
         columns: {

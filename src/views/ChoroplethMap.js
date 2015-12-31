@@ -407,7 +407,7 @@ function ChoroplethMap(element, vif) {
 
     } else {
 
-      payload.unfilteredValue = self.getLocalization('NULL_VALUE_LABEL');
+      payload.unfilteredValue = self.getLocalization('NO_VALUE');
     }
 
     if (_lastRenderOptions.showFiltered) {
@@ -421,7 +421,7 @@ function ChoroplethMap(element, vif) {
 
       } else {
 
-        payload.filteredValue = self.getLocalization('NULL_VALUE_LABEL');
+        payload.filteredValue = self.getLocalization('NO_VALUE');
       }
     }
 

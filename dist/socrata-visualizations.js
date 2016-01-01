@@ -5056,6 +5056,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        addClass('left-axis-label').
 	        append(leftAxisLabel);
 	    }
+
 	  };
 
 	  this.getLocalization = function(key) {
@@ -19857,7 +19858,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  this.getFeatureExtent = function(columnName) {
-
 	    var url = 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
 	      this.getConfigurationProperty('domain'),
 	      this.getConfigurationProperty('datasetUid'),
@@ -19938,19 +19938,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  this.getShapefile = function(extent) {
-	     var url = 'https://{0}/resource/{1}.geojson'.format(
+	    var url = 'https://{0}/resource/{1}.geojson'.format(
 	      this.getConfigurationProperty('domain'),
 	      this.getConfigurationProperty('datasetUid')
 	    );
-
 	    var headers = {
 	      'Accept': 'application/json'
 	    };
+	    var extentQuery = "?$select=*&$where=intersects(the_geom, " +
+	      "'MULTIPOLYGON((({0})))')&$limit=5000";
+	    var extentValidationErrorMessage = 'Argument `extent` must be an object ' +
+	      'with two keys: `southwest` and `northeast`; the value assigned to ' +
+	      'each key must be an array of two numbers in the following format: `[' +
+	      'latitude, longitude]`.'
 
-	    if (extent) {
-	      url += "?$select=*&$where=intersects(the_geom, 'MULTIPOLYGON((({0})))')&$limit=5000".format(
-	        mapExtentToMultipolygon(extent)
-	      );
+	    // Do not use a looser test for falsiness because if an invalid extent is
+	    // provided in any form we want to kick an error up to help with debugging.
+	    if (!_.isUndefined(extent)) {
+
+	      if (extentIsValid(extent)) {
+
+	        url += extentQuery.format(
+	          mapExtentToMultipolygon(extent)
+	        );
+
+	      } else {
+
+	        return (
+	          new Promise(function(resolve, reject) {
+	            return reject({
+	              status: -1,
+	              message: extentValidationErrorMessage,
+	              soqlError: null
+	            });
+	          })
+	        )
+	      }
 	    }
 
 	    return (
@@ -20013,10 +20036,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  };
 
+	  function extentIsValid(extent) {
+	    return (
+	      // Validate that it is an object with northeast and
+	      // southwest properties.
+	      _.isObject(extent) &&
+	      extent.hasOwnProperty('northeast') &&
+	      extent.hasOwnProperty('southwest') &&
+	      // Next validate the northeast property.
+	      _.isArray(extent.northeast) &&
+	      extent.northeast.length === 2 &&
+	      _.isNumber(extent.northeast[0]) &&
+	      _.isNumber(extent.northeast[1]) &&
+	      // Then validate the southwest property.
+	      _.isArray(extent.southwest) &&
+	      extent.southwest.length === 2 &&
+	      _.isNumber(extent.southwest[0]) &&
+	      _.isNumber(extent.southwest[1])
+	    );
+	  }
+
 	  /**
-	   * Multipolygon queries expect a polygon in clockwise order,
-	   * starting from the bottom left. Polygons are closed, meaning
-	   * that the start and end points must be identical.
+	   * Multipolygon queries expect a polygon in clockwise order, starting from
+	   * the bottom left. Polygons are closed, meaning that the start and end
+	   * points must be identical.
 	   *
 	   * Example:
 	   *
@@ -25112,7 +25155,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _logError(error);
 	      }
 	    );
-
+	window.shapefileGeospaceDataProvider = shapefileGeospaceDataProvider;
 	  Promise.
 	    all([shapefileMetadataRequest, featureExtentRequest]).
 	    then(function(values) {

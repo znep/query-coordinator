@@ -1,4 +1,5 @@
-//= require_tree .
+//= require vendor/prism
+//= require_tree ../../src/js
 
 document.addEventListener('DOMContentLoaded', function() {
   if (document.querySelector('#dd')) {

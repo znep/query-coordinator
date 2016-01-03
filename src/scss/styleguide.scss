@@ -1,5 +1,5 @@
-//Styleguide Styles
 @import "bourbon";
+@import "fonts";
 @import "components/grid";
 @import "components/typography";
 @import "components/colors";
@@ -21,10 +21,6 @@
 @import "components/pagination";
 @import "components/input-groups";
 
-
-// Icon Font
-@import "fonts";
-
 .container {
   @include outer-container();
   margin-top: 80px;
@@ -42,7 +38,6 @@
     @include span-columns(12);
   }
 }
-
 
 // Guidehome
 .jumbotron {
@@ -71,7 +66,6 @@
     }
 
   }
-
 }
 
 body > .responsive-navbar {
@@ -133,7 +127,6 @@ section.styleguide-section {
     margin-bottom: ms(12);
   }
 }
-
 
 .dark-context {
   background-color: #4A4A4A;
@@ -208,9 +201,6 @@ section.styleguide-section {
   &.bold {
     font-weight: 700;
   }
-
-
-
 }
 
 .specimen-meta {
@@ -225,7 +215,6 @@ section.styleguide-section {
   padding: ms(-2);
   border-radius: 1px;
   color: $grey;
-
 }
 
 // Sample Grids for Styleguide
@@ -249,7 +238,6 @@ section.styleguide-section {
   @include span-columns(8);
 }
 
-
 .blockgrid {
   @include outer-container;
   padding: 0;
@@ -270,5 +258,3 @@ section.styleguide-section {
     }
   }
 }
-
-

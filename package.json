@@ -1,0 +1,51 @@
+{
+  "name": "socrata-styleguide",
+  "version": "0.0.1",
+  "description": "Socrata's guide to good UX.",
+  "main": "dist/js/styleguide.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/socrata/styleguide.git"
+  },
+  "keywords": [
+    "Socrata",
+    "Styleguide",
+    "sass",
+    "scss",
+    "prototype",
+    "style"
+  ],
+  "author": "Socrata, Inc.",
+  "maintainers": [
+    "Karin Hellman <karin.hellman@socrata.com",
+    "Kristina Hjertberg <kristina.hjertberg@socrata.com>",
+    "Ryan Collier <ryan.collier@socrata.com>",
+    "Trey Cordova <trey.cordova@socrata.com>"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 5.3"
+  },
+  "bugs": {
+    "url": "https://github.com/socrata/styleguide/issues"
+  },
+  "homepage": "https://socrata.github.io/styleguide",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-sass": "^2.1.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "modularscale-sass": "^2.1.1",
+    "node-bourbon": "^4.2.3",
+    "node-neat": "^1.7.2",
+    "rimraf": "^2.5.0"
+  }
+}

@@ -1,3 +1,9 @@
+/*!
+ * Socrata Styleguide v0.0.1
+ * Copyright 2015-2016 Socrata, Inc.
+ * Licensed under MIT
+ */
+
 function DropDown(element) {
   this.dd = element;
   this.orientation = element.getAttribute('data-orientation') || 'bottom';

@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Socrata's guide to good UX.",
   "main": "dist/js/styleguide.js",
   "directories": {

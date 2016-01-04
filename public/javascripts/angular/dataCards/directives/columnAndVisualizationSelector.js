@@ -182,6 +182,17 @@ function columnAndVisualizationSelector(Card, DatasetColumnsService, $log, rx) {
         selectedCardModel$.sample(scope.$eventToObservable('soc-select-change'))
       );
 
+      // No idea why this one has to be structured like it is, but using
+      // the same .sample() pattern as above ended up with it not triggering
+      // in all cases. Giacomo suspects some misunderstood behavior in the
+      // third-party angular rx extensions' .safeApply().
+      scope.$emitEventsFromObservable(
+        'card-model-selected',
+        selectedCardModel$.observeOnLatest('cardType').map(function() {
+          return scope.selectedCardModel;
+        })
+      );
+
       scope.onCustomizeCard = function(selectedCardModel) {
         scope.$emit('customize-card-with-model', selectedCardModel);
       };

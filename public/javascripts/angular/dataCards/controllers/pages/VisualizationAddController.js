@@ -18,7 +18,8 @@ function VisualizationAddController(
   // Cards always expect to have a page, too painful to remove for now
   var pageBlob = {
     'cards': [],
-    'datasetId': dataset.id
+    'datasetId': dataset.id,
+    'version': 3
   };
 
   var blankPage = new Page(pageBlob, dataset);
@@ -56,8 +57,8 @@ function VisualizationAddController(
   );
 
   // Right now we only support embedding a subset of visualization types.
-  $scope.supportedCardTypes = ['column', 'feature', 'timeline'];
-  $scope.supportedVIFTypes = ['columnChart', 'featureMap', 'timelineChart'];
+  $scope.supportedCardTypes = ['choropleth', 'column', 'feature', 'timeline'];
+  $scope.supportedVIFTypes = ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart'];
 
   var cardTypesToVIFTypes = {};
   $scope.supportedCardTypes.forEach(function(cardType, index) {
@@ -67,21 +68,21 @@ function VisualizationAddController(
   $scope.relatedVisualizations = $window.relatedVisualizations;
 
   function generateVIF(selectedCard) {
+    var card = selectedCard.serialize();
     var metadata = dataset.serialize();
     var column = metadata.columns[selectedCard.fieldName];
-    var type = _.first(_.intersection($scope.supportedCardTypes, column.availableCardTypes));
-
-    return {
+    var computedColumnName;
+    var computedColumn;
+    var defaultExtentFeatureFlagValue;
+    var defaultExtent;
+    var vif = {
       'aggregation': {
         'field': null,
         'function': 'count'
       },
-      'columnName': selectedCard.fieldName,
+      'columnName': card.fieldName,
       'configuration': {
-        'localization': {
-          'UNIT_ONE': 'record',
-          'UNIT_OTHER': 'records'
-        }
+        'localization': {}
       },
       'createdAt': (new Date()).toISOString(),
       'datasetUid': dataset.id,
@@ -97,8 +98,45 @@ function VisualizationAddController(
         'url': `https://${metadata.domain}/view/${dataset.id}`
       },
       'title': column.name,
-      'type': cardTypesToVIFTypes[type]
+      'type': cardTypesToVIFTypes[card.cardType],
+      'unit': {
+        'one': 'record',
+        'other': 'records'
+      }
     };
+
+    if (card.cardType === 'choropleth') {
+      computedColumnName = selectedCard.getCurrentValue('computedColumn');
+      computedColumn = dataset.getCurrentValue('columns')[computedColumnName];
+      defaultExtentFeatureFlagValue = $window.socrataConfig.featureMapDefaultExtent;
+
+      // If the domain default extent is not set, it will manifest in the
+      // feature flag output as an empty string. If this is the case, we
+      // need to default to an empty object.
+      try {
+        defaultExtent = JSON.parse(defaultExtentFeatureFlagValue);
+      } catch (e) {
+        defaultExtent = {};
+      }
+
+      vif.configuration.computedColumnName = card.computedColumn;
+      vif.configuration.defaultExtent = defaultExtent;
+      vif.configuration.savedExtent = card.cardOptions.mapExtent;
+      vif.configuration.shapefile = {
+        'columns': {
+          'name': 'NAME',
+          'unfiltered': 'UNFILTERED',
+          'filtered': 'FILTERED',
+          'selected': 'SELECTED'
+        },
+        'primaryKey': _.get(computedColumn, 'computationStrategy.parameters.primary_key'),
+        'uid':  _.get(computedColumn, 'computationStrategy.parameters.region').replace(/_/g, ''),
+        'geometryLabel': null
+      };
+    }
+
+
+    return vif;
   }
 
   // Emitted by relatedVisualizationSelector. This page metadata contains a
@@ -129,6 +167,7 @@ function VisualizationAddController(
   // Possible: 'visualization-selected', arg = VIF? (or selectedCard?)
   $scope.$on('card-model-selected', function(event, selectedCard) {
     var vif = selectedCard ? generateVIF(selectedCard) : null;
+
     $scope.page = $scope.blankPage;
     $scope.classicVisualization = null;
     sendVisualizationToEnclosingWindow(vif, 'vif', null);

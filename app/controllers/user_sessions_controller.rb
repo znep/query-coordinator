@@ -13,10 +13,16 @@ class UserSessionsController < ApplicationController
       controller.action_name == 'create' && (request.format.json? || request.format.data?)
     }
 
+  before_filter :set_no_cache_store_headers
+
+  def set_no_cache_store_headers
+    response.headers['Cache-Control'] = 'no-cache, no-store'
+  end
+
   def index
     Airbrake.notify(
-      :error_class => "Deprecation",
-      :error_message => "Called UserSessionsController#index - deprecated function",
+      :error_class => 'Deprecation',
+      :error_message => 'Called UserSessionsController#index - deprecated function',
       :request => { :params => params }
     )
     respond_to do |format|
@@ -45,14 +51,14 @@ class UserSessionsController < ApplicationController
   def extend
     # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
     # purpose; but phusion passenger requires "".
-    response.headers['ETag'] = ""
-    session_response = current_user.nil? ? {:expired => "expired"} : current_user_session.extend
-    render :json => session_response, :callback => params[:callback], :content_type => "application/json"
+    response.headers['ETag'] = ''
+    session_response = current_user.nil? ? {:expired => 'expired' } : current_user_session.extend
+    render :json => session_response, :callback => params[:callback], :content_type => 'application/json'
   end
 
   def expire_if_idle
-    session_response = current_user.nil? ? {:expired => "expired"} : UserSession.find_seconds_until_timeout
-    render :json => session_response, :callback => params[:callback], :content_type => "application/json"
+    session_response = current_user.nil? ? {:expired => 'expired' } : UserSession.find_seconds_until_timeout
+    render :json => session_response, :callback => params[:callback], :content_type => 'application/json'
   end
 
   def create
@@ -64,7 +70,7 @@ class UserSessionsController < ApplicationController
     end
     # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
     # purpose; but phusion passenger requires "".
-    response.headers['ETag'] = ""
+    response.headers['ETag'] = ''
     @user_session = UserSession.new(params[:user_session])
     session_response = @user_session.save(true)
     if session_response.is_a?(Net::HTTPSuccess)
@@ -137,7 +143,7 @@ class UserSessionsController < ApplicationController
         error = "A non-working connection string, #{connection}, has been specified in Auth0 configuration."
 
         Rails.logger.error(error)
-        Airbrake.notify(:error_class => "UnexpectedInput", :error_message => error)
+        Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
       end
 
       connection_is_present && connection_is_valid && is_fresh_login && !has_redirect_param
@@ -191,7 +197,7 @@ class UserSessionsController < ApplicationController
           error = "auth0_connections, #{connections}, has been specified incorrectly in the Auth0 configuration."
 
           Rails.logger.error(error)
-          Airbrake.notify(:error_class => "UnexpectedInput", :error_message => error)
+          Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
         end
       end
     end

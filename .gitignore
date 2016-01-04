@@ -25,3 +25,4 @@ coverage
 frontend.iml
 manifest*.txt
 public/javascripts/dist
+.npmrc

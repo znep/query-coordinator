@@ -19869,11 +19869,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return (
 	      new Promise(function(resolve, reject) {
-
 	        var xhr = new XMLHttpRequest();
 
 	        function onFail() {
-
 	          var error;
 
 	          try {
@@ -19891,17 +19889,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        xhr.onload = function() {
-
 	          var status = parseInt(xhr.status, 10);
 
 	          if (status === 200) {
 
 	            try {
-
 	              var responseTextWithoutNewlines = xhr.
 	                responseText.
 	                replace(/\n/g, '');
-
 	              var coordinates = _.get(
 	                JSON.parse(responseTextWithoutNewlines),
 	                '[0].extent_{0}.coordinates[0][0]'.format(columnName)
@@ -19955,7 +19950,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Do not use a looser test for falsiness because if an invalid extent is
 	    // provided in any form we want to kick an error up to help with debugging.
 	    if (!_.isUndefined(extent)) {
-
 	      if (extentIsValid(extent)) {
 
 	        url += extentQuery.format(
@@ -19972,17 +19966,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	              soqlError: null
 	            });
 	          })
-	        )
+	        );
 	      }
 	    }
 
 	    return (
 	      new Promise(function(resolve, reject) {
-
 	        var xhr = new XMLHttpRequest();
 
 	        function onFail() {
-
 	          var error;
 
 	          try {
@@ -20000,13 +19992,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        xhr.onload = function() {
-
 	          var status = parseInt(xhr.status, 10);
 
 	          if (status === 200) {
 
 	            try {
-
 	              var responseTextWithoutNewlines = xhr.
 	                responseText.
 	                replace(/\n/g, '');
@@ -20014,6 +20004,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              resolve(JSON.parse(responseTextWithoutNewlines));
 
 	            } catch (e) {
+	              console.log(e);
 	              // Let this fall through to the `onFail()` below.
 	            }
 	          }
@@ -20037,22 +20028,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  function extentIsValid(extent) {
+
 	    return (
 	      // Validate that it is an object with northeast and
 	      // southwest properties.
 	      _.isObject(extent) &&
-	      extent.hasOwnProperty('northeast') &&
-	      extent.hasOwnProperty('southwest') &&
 	      // Next validate the northeast property.
 	      _.isArray(extent.northeast) &&
 	      extent.northeast.length === 2 &&
-	      _.isNumber(extent.northeast[0]) &&
-	      _.isNumber(extent.northeast[1]) &&
+	      _.every(extent.northeast, _.isNumber) &&
 	      // Then validate the southwest property.
 	      _.isArray(extent.southwest) &&
 	      extent.southwest.length === 2 &&
-	      _.isNumber(extent.southwest[0]) &&
-	      _.isNumber(extent.southwest[1])
+	      _.every(extent.southwest, _.isNumber)
 	    );
 	  }
 
@@ -25102,18 +25090,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var cachedGeometryLabel;
 
 	  if (_.isString(vif.configuration.shapefile.geometryLabel)) {
-
-	    shapefileMetadataRequest = Promise.resolve(
-
-	      // This fake shapefile dataset metadata response is used
-	      // so that we can conform to the promise chain all the
-	      // way down to visualization render, rather than
-	      // conditionally requiring one or two requests to complete
-	      // before proceeding.
-	      {
-	        geometryLabel: vif.configuration.shapefile.geometryLabel
-	      }
-	    );
+	    // This fake shapefile dataset metadata response is used so that we can
+	    // conform to the promise chain all the way down to visualization render,
+	    // rather than conditionally requiring one or two requests to complete
+	    // before proceeding.
+	    shapefileMetadataRequest = Promise.resolve({
+	      geometryLabel: vif.configuration.shapefile.geometryLabel
+	    });
 
 	  } else {
 
@@ -25126,20 +25109,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        function(error) {
 	          _logError(error);
 
-	          // If the shapefile metadata request fails, we can still
-	          // proceed, albeit with degraded flyout behavior. This is
-	          // because the only thing we're trying to get from the
-	          // shapefile metadata is the geometryLabel (the column in
-	          // the shapefile that corresponds to a human-readable name
-	          // for each region) and, if it is not present, the
-	          // visualization will simply not show the human-readable
-	          // name in the flyout at all (it will still show values).
+	          // If the shapefile metadata request fails, we can still proceed,
+	          // albeit with degraded flyout behavior. This is because the only
+	          // thing we're trying to get from the shapefile metadata is the
+	          // geometryLabel (the column in the shapefile that corresponds to a
+	          // human-readable name for each region) and, if it is not present,
+	          // the visualization will simply not show the human-readable name in
+	          // the flyout at all (it will still show values).
 	          //
-	          // Accordingly, we still want to resolve this promise in
-	          // its error state.
+	          // Accordingly, we still want to resolve this promise in its error
+	          // state.
 	          return {
 	            geometryLabel: null
-	          }
+	          };
 	        }
 	      );
 
@@ -25147,15 +25129,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  featureExtentRequest = datasetGeospaceDataProvider.
 	    getFeatureExtent(vif.columnName).
+	    // If the request has succeeded, return the response (using _.identity());
+	    // if it failed then log the resulting error.
 	    then(
-	      function(featureExtent) {
-	        return featureExtent;
-	      },
-	      function(error) {
-	        _logError(error);
-	      }
+	      _.identity,
+	      _.logError
 	    );
-	window.shapefileGeospaceDataProvider = shapefileGeospaceDataProvider;
+
 	  Promise.
 	    all([shapefileMetadataRequest, featureExtentRequest]).
 	    then(function(values) {

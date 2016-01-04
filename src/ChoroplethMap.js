@@ -130,18 +130,13 @@ $.fn.socrataChoroplethMap = function(vif) {
   var cachedGeometryLabel;
 
   if (_.isString(vif.configuration.shapefile.geometryLabel)) {
-
-    shapefileMetadataRequest = Promise.resolve(
-
-      // This fake shapefile dataset metadata response is used
-      // so that we can conform to the promise chain all the
-      // way down to visualization render, rather than
-      // conditionally requiring one or two requests to complete
-      // before proceeding.
-      {
-        geometryLabel: vif.configuration.shapefile.geometryLabel
-      }
-    );
+    // This fake shapefile dataset metadata response is used so that we can
+    // conform to the promise chain all the way down to visualization render,
+    // rather than conditionally requiring one or two requests to complete
+    // before proceeding.
+    shapefileMetadataRequest = Promise.resolve({
+      geometryLabel: vif.configuration.shapefile.geometryLabel
+    });
 
   } else {
 
@@ -154,20 +149,19 @@ $.fn.socrataChoroplethMap = function(vif) {
         function(error) {
           _logError(error);
 
-          // If the shapefile metadata request fails, we can still
-          // proceed, albeit with degraded flyout behavior. This is
-          // because the only thing we're trying to get from the
-          // shapefile metadata is the geometryLabel (the column in
-          // the shapefile that corresponds to a human-readable name
-          // for each region) and, if it is not present, the
-          // visualization will simply not show the human-readable
-          // name in the flyout at all (it will still show values).
+          // If the shapefile metadata request fails, we can still proceed,
+          // albeit with degraded flyout behavior. This is because the only
+          // thing we're trying to get from the shapefile metadata is the
+          // geometryLabel (the column in the shapefile that corresponds to a
+          // human-readable name for each region) and, if it is not present,
+          // the visualization will simply not show the human-readable name in
+          // the flyout at all (it will still show values).
           //
-          // Accordingly, we still want to resolve this promise in
-          // its error state.
+          // Accordingly, we still want to resolve this promise in its error
+          // state.
           return {
             geometryLabel: null
-          }
+          };
         }
       );
 
@@ -175,13 +169,11 @@ $.fn.socrataChoroplethMap = function(vif) {
 
   featureExtentRequest = datasetGeospaceDataProvider.
     getFeatureExtent(vif.columnName).
+    // If the request has succeeded, return the response (using _.identity());
+    // if it failed then log the resulting error.
     then(
-      function(featureExtent) {
-        return featureExtent;
-      },
-      function(error) {
-        _logError(error);
-      }
+      _.identity,
+      _.logError
     );
 
   Promise.

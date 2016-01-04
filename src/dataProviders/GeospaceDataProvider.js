@@ -28,11 +28,9 @@ function GeospaceDataProvider(config) {
 
     return (
       new Promise(function(resolve, reject) {
-
         var xhr = new XMLHttpRequest();
 
         function onFail() {
-
           var error;
 
           try {
@@ -50,17 +48,14 @@ function GeospaceDataProvider(config) {
         }
 
         xhr.onload = function() {
-
           var status = parseInt(xhr.status, 10);
 
           if (status === 200) {
 
             try {
-
               var responseTextWithoutNewlines = xhr.
                 responseText.
                 replace(/\n/g, '');
-
               var coordinates = _.get(
                 JSON.parse(responseTextWithoutNewlines),
                 '[0].extent_{0}.coordinates[0][0]'.format(columnName)
@@ -114,7 +109,6 @@ function GeospaceDataProvider(config) {
     // Do not use a looser test for falsiness because if an invalid extent is
     // provided in any form we want to kick an error up to help with debugging.
     if (!_.isUndefined(extent)) {
-
       if (extentIsValid(extent)) {
 
         url += extentQuery.format(
@@ -131,17 +125,15 @@ function GeospaceDataProvider(config) {
               soqlError: null
             });
           })
-        )
+        );
       }
     }
 
     return (
       new Promise(function(resolve, reject) {
-
         var xhr = new XMLHttpRequest();
 
         function onFail() {
-
           var error;
 
           try {
@@ -159,13 +151,11 @@ function GeospaceDataProvider(config) {
         }
 
         xhr.onload = function() {
-
           var status = parseInt(xhr.status, 10);
 
           if (status === 200) {
 
             try {
-
               var responseTextWithoutNewlines = xhr.
                 responseText.
                 replace(/\n/g, '');
@@ -173,6 +163,7 @@ function GeospaceDataProvider(config) {
               resolve(JSON.parse(responseTextWithoutNewlines));
 
             } catch (e) {
+              console.log(e);
               // Let this fall through to the `onFail()` below.
             }
           }
@@ -196,22 +187,19 @@ function GeospaceDataProvider(config) {
   };
 
   function extentIsValid(extent) {
+
     return (
       // Validate that it is an object with northeast and
       // southwest properties.
       _.isObject(extent) &&
-      extent.hasOwnProperty('northeast') &&
-      extent.hasOwnProperty('southwest') &&
       // Next validate the northeast property.
       _.isArray(extent.northeast) &&
       extent.northeast.length === 2 &&
-      _.isNumber(extent.northeast[0]) &&
-      _.isNumber(extent.northeast[1]) &&
+      _.every(extent.northeast, _.isNumber) &&
       // Then validate the southwest property.
       _.isArray(extent.southwest) &&
       extent.southwest.length === 2 &&
-      _.isNumber(extent.southwest[0]) &&
-      _.isNumber(extent.southwest[1])
+      _.every(extent.southwest, _.isNumber)
     );
   }
 

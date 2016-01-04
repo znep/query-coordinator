@@ -414,12 +414,12 @@
             this._$missingColumns = $('<div>', {'class': 'missing-columns-warning'});
             this._$missingColumns.append(
               $('<div>', {'class': 'missing-columns-warning-message flash notice'}).
-                append([
-                  $('<p>').text($.t('controls.charts.missing_column')),
+                append(
+                  $('<p>' + $.t('controls.charts.missing_column') + '</p>'),
                   $('<p>').append(
-                    $('<small>').text('(' + message + ')')
+                    $('<small>' + message + '</small>')
                   )
-                ])
+                )
               );
 
             $(this.currentDom).append(this._$missingColumns);

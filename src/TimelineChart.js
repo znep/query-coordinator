@@ -153,12 +153,12 @@ $.fn.socrataTimelineChart = function(vif) {
       _detachEvents();
     });
     $(window).on('resize', _handleWindowResize);
-    $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
+    $element.on('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
   }
 
   function _detachEvents() {
     $(window).off('resize', _handleWindowResize);
-    $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
+    $element.off('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
   }
 
   function _handleWindowResize() {
@@ -217,7 +217,7 @@ $.fn.socrataTimelineChart = function(vif) {
         {
           'class': 'socrata-flyout-cell'
         }
-      ).text(payload.unfilteredValueLabel);
+      ).text(payload.unfilteredLabel);
 
       flyoutUnfilteredValueCell = $(
         '<td>',
@@ -242,7 +242,7 @@ $.fn.socrataTimelineChart = function(vif) {
       // show the filtered data on the flyout.
       if (payload.hasOwnProperty('filteredValue')) {
 
-        filteredRowClass = (payload.selected) ?
+        filteredRowClass = (payload.filteredBySelection) ?
           'socrata-flyout-cell is-selected' :
           'socrata-flyout-cell emphasis';
 
@@ -252,7 +252,7 @@ $.fn.socrataTimelineChart = function(vif) {
           {
             'class': filteredRowClass
           }
-        ).text(payload.filteredValueLabel);
+        ).text(payload.filteredLabel);
 
         flyoutFilteredValueCell = $(
           '<td>',

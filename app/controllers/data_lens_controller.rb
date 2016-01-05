@@ -54,6 +54,10 @@ class DataLensController < ApplicationController
     render :json => result, :status => status
   end
 
+  def show_mobile
+    render 'mobile/datalens/show', :layout => 'layouts/mobile'
+  end
+
   private
 
   def region_coding_initiator

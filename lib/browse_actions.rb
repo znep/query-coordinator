@@ -382,7 +382,7 @@ module BrowseActions
                 # All domains in the federation
                 [CurrentDomain.cname].concat(federations_hash.values.sort).join(',')
               end
-            browse_options[:search_options][:category] = selected_category_and_any_children(browse_options)
+            browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
             Cetera.search_views(browse_options[:search_options])
           else
             Clytemnestra.search_views(browse_options[:search_options])
@@ -608,6 +608,8 @@ module BrowseActions
   end
 
   # This is only needed by Cetera; Core can add children on the server side
+  # we're operating as though there's only one category, even though cetera
+  # will expect an array of the parent and children categories[].
   def selected_category_and_any_children(browse_options)
     return nil unless browse_options[:search_options].try(:[], :category).present?
 
@@ -634,7 +636,7 @@ module BrowseActions
     [
       category[:value],
       category[:children] && category[:children].map { |child| child[:value] }
-    ].compact.join(',')
+    ].compact.flatten
   end
 
   @@default_cutoffs = {

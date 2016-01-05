@@ -1,6 +1,10 @@
 .choropleth-container {
-  padding: 0;
+  position: relative;
+  width: 100%;
   height: 100%;
+  font-size: 14px;
+  background-color: #ccc;
+  box-sizing: border-box;
 }
 
 .choropleth-container.filterable .choropleth-map-container path.leaflet-clickable {

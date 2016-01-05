@@ -3,8 +3,9 @@ var _ = require('lodash');
 var utils = require('socrata-utils');
 
 var ChoroplethMap = require('./views/ChoroplethMap');
-var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+var MetadataProvider = require('./dataProviders/MetadataProvider');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
+var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 
 var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -76,6 +77,33 @@ $.fn.socrataChoroplethMap = function(vif) {
   var visualization = new ChoroplethMap($element, vif);
 
   // Setup Data Providers
+  var shapefileMetadataProviderConfig = {
+    domain: vif.domain,
+    datasetUid: vif.configuration.shapefile.uid
+  };
+
+  var shapefileMetadataProvider = new MetadataProvider(
+    shapefileMetadataProviderConfig
+  );
+
+  var datasetGeospaceDataProviderConfig = {
+    domain: vif.domain,
+    datasetUid: vif.datasetUid
+  };
+
+  var datasetGeospaceDataProvider = new GeospaceDataProvider(
+    datasetGeospaceDataProviderConfig
+  );
+
+  var shapefileGeospaceDataProviderConfig = {
+    domain: vif.domain,
+    datasetUid: vif.configuration.shapefile.uid
+  };
+
+  var shapefileGeospaceDataProvider = new GeospaceDataProvider(
+    shapefileGeospaceDataProviderConfig
+  );
+
   var soqlDataProviderConfig = {
     domain: vif.domain,
     datasetUid: vif.datasetUid
@@ -89,35 +117,94 @@ $.fn.socrataChoroplethMap = function(vif) {
     soqlDataProviderConfig
   );
 
-  var geospaceDataProviderConfig = {
-    domain: vif.domain,
-    datasetUid: vif.configuration.shapefile.uid
-  };
-
-  var geospaceDataProvider = new GeospaceDataProvider(
-    geospaceDataProviderConfig
-  );
-
   var cachedShapefile;
 
   _attachEvents();
 
-  // Get Data and Render
-  geospaceDataProvider.
-    getShapefile().
+  var datasetColumnExtentDataProvider = new SoqlDataProvider(
+    soqlDataProviderConfig
+  );
+
+  var shapefileMetadataRequest;
+  var featureExtentRequest;
+  var cachedGeometryLabel;
+
+  if (_.isString(vif.configuration.shapefile.geometryLabel)) {
+    // This fake shapefile dataset metadata response is used so that we can
+    // conform to the promise chain all the way down to visualization render,
+    // rather than conditionally requiring one or two requests to complete
+    // before proceeding.
+    shapefileMetadataRequest = Promise.resolve({
+      geometryLabel: vif.configuration.shapefile.geometryLabel
+    });
+
+  } else {
+
+    shapefileMetadataRequest = shapefileMetadataProvider.
+      getDatasetMetadata().
+      then(
+        function(shapefileMetadata) {
+          return shapefileMetadata;
+        },
+        function(error) {
+          _logError(error);
+
+          // If the shapefile metadata request fails, we can still proceed,
+          // albeit with degraded flyout behavior. This is because the only
+          // thing we're trying to get from the shapefile metadata is the
+          // geometryLabel (the column in the shapefile that corresponds to a
+          // human-readable name for each region) and, if it is not present,
+          // the visualization will simply not show the human-readable name in
+          // the flyout at all (it will still show values).
+          //
+          // Accordingly, we still want to resolve this promise in its error
+          // state.
+          return {
+            geometryLabel: null
+          };
+        }
+      );
+
+  }
+
+  featureExtentRequest = datasetGeospaceDataProvider.
+    getFeatureExtent(vif.columnName).
+    // If the request has succeeded, return the response (using _.identity());
+    // if it failed then log the resulting error.
     then(
-      function(shapefile) {
-        // First cache the shapefile so that we only need to request it once
-        // on page load.
-        cachedShapefile = shapefile;
-        // Next, render base layer
-        visualization.updateTileLayer(_getRenderOptions());
-        // Finally, make the data queries and prepare to draw the choropleth
-        // regions.
-        _updateData();
-      },
-      function(error) {
-        _logError(error);
+      _.identity,
+      _logError
+    );
+
+  Promise.
+    all([shapefileMetadataRequest, featureExtentRequest]).
+    then(function(values) {
+      var shapefileMetadata = values[0];
+      var featureExtent = values[1];
+
+      shapefileGeospaceDataProvider.
+        getShapefile(featureExtent).
+        then(
+          function(shapefile) {
+
+            // First cache the geometryLabel and shapefile so that we only need
+            // to request them once per page load.
+            //
+            // Downstream users of geometryLabel expect null, but will probably
+            // behave ok with undefined; regardless, default to null if the
+            // property does not exist.
+            cachedGeometryLabel = shapefileMetadata.geometryLabel || null;
+            cachedShapefile = shapefile;
+            // Next, render base layer.
+            visualization.updateTileLayer(_getRenderOptions());
+            // Finally, make the data queries and prepare to draw the choropleth
+            // regions.
+            _updateData();
+          },
+          function(error) {
+            _logError(error);
+          }
+        );
       }
     );
 
@@ -174,7 +261,7 @@ $.fn.socrataChoroplethMap = function(vif) {
 
         // Consolidate configuration and data into one object
         var aggregatedData = _aggregateGeoJsonData(
-          vif.configuration.shapefile.geometryLabel,
+          cachedGeometryLabel,
           vif.configuration.shapefile.primaryKey,
           cachedShapefile,
           unfilteredQueryResponse,

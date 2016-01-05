@@ -1,20 +1,23 @@
 var GeospaceDataProvider = require('../../src/dataProviders/GeospaceDataProvider');
 
 describe('GeospaceDataProvider', function() {
-
+  var SOUTHWEST_EXTENT_LNG = -122.513300926011;
+  var SOUTHWEST_EXTENT_LAT = 37.707360625;
+  var NORTHEAST_EXTENT_LNG = -122.361277017;
+  var NORTHEAST_EXTENT_LAT = 37.829992142;
   var VALID_DOMAIN = 'localhost:9443';
   var VALID_DATASET_UID = 'test-test';
   var VALID_COLUMN_NAME = 'point';
-
+  var VALID_EXTENT = {
+    northeast: [NORTHEAST_EXTENT_LAT, NORTHEAST_EXTENT_LNG],
+    southwest: [SOUTHWEST_EXTENT_LAT, SOUTHWEST_EXTENT_LNG]
+  };
   var INVALID_DOMAIN = null;
   var INVALID_DATASET_UID = null;
   var INVALID_COLUMN_NAME = 'npoint';
-
   var ERROR_STATUS = 400;
   var ERROR_MESSAGE = 'Bad request';
-
   var SUCCESS_STATUS = 200;
-
   var SAMPLE_EXTENT_REQUEST_ERROR = JSON.stringify({
     "message": "query.soql.no-such-column",
     "errorCode": "query.soql.no-such-column",
@@ -30,13 +33,6 @@ describe('GeospaceDataProvider', function() {
       }
     }
   });
-
-  var SOUTHWEST_EXTENT_LNG = -122.513300926011;
-  var SOUTHWEST_EXTENT_LAT = 37.707360625;
-
-  var NORTHEAST_EXTENT_LNG = -122.361277017;
-  var NORTHEAST_EXTENT_LAT = 37.829992142;
-
   var SAMPLE_EXTENT_REQUEST_RESPONSE = JSON.stringify([
     {
       "extent_point": {
@@ -55,7 +51,6 @@ describe('GeospaceDataProvider', function() {
       }
     }
   ]);
-
   var SAMPLE_GEOJSON_REQUEST_ERROR = JSON.stringify({
     "message": "query.soql.no-such-column",
     "errorCode": "query.soql.no-such-column",
@@ -71,9 +66,7 @@ describe('GeospaceDataProvider', function() {
       }
     }
   });
-
   var SAMPLE_GEOJSON_COORDINATES = [[[[-87.7051,41.8463],[-87.7054,41.8463]]]];
-
   var SAMPLE_GEOJSON_REQUEST_RESPONSE = JSON.stringify([
     {
       "geometry": {
@@ -84,13 +77,11 @@ describe('GeospaceDataProvider', function() {
   ]);
 
   describe('constructor', function() {
-
     describe('when called with invalid configuration options', function() {
 
       it('should throw', function() {
 
         assert.throw(function() {
-
           var geospaceDataProvider = new GeospaceDataProvider({
             domain: INVALID_DOMAIN,
             datasetUid: VALID_DATASET_UID
@@ -98,7 +89,6 @@ describe('GeospaceDataProvider', function() {
         });
 
         assert.throw(function() {
-
           var geospaceDataProvider = new GeospaceDataProvider({
             domain: VALID_DOMAIN,
             datasetUid: INVALID_DATASET_UID
@@ -109,9 +99,7 @@ describe('GeospaceDataProvider', function() {
   });
 
   describe('`.getFeatureExtent()`', function() {
-
     describe('on request error', function() {
-
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,
@@ -126,7 +114,6 @@ describe('GeospaceDataProvider', function() {
       });
 
       afterEach(function() {
-
         server.restore();
       });
 
@@ -254,7 +241,6 @@ describe('GeospaceDataProvider', function() {
     });
 
     describe('on request success', function(done) {
-
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,
@@ -269,7 +255,6 @@ describe('GeospaceDataProvider', function() {
       });
 
       afterEach(function() {
-
         server.restore();
       });
 
@@ -369,9 +354,7 @@ describe('GeospaceDataProvider', function() {
   });
 
   describe('`.getShapefile()`', function() {
-
     describe('on request error', function() {
-
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,
@@ -389,14 +372,13 @@ describe('GeospaceDataProvider', function() {
       });
 
       afterEach(function() {
-
         server.restore();
       });
 
       it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
           then(
             function(data) {
 
@@ -428,7 +410,7 @@ describe('GeospaceDataProvider', function() {
       it('should include the correct request error status', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
           then(
             function(data) {
 
@@ -458,7 +440,7 @@ describe('GeospaceDataProvider', function() {
       it('should include the correct request error message', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
           then(
             function(data) {
 
@@ -488,7 +470,7 @@ describe('GeospaceDataProvider', function() {
       it('should include the correct soqlError object', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
           then(
             function(data) {
 
@@ -517,7 +499,6 @@ describe('GeospaceDataProvider', function() {
     });
 
     describe('on request success', function(done) {
-
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,
@@ -535,14 +516,134 @@ describe('GeospaceDataProvider', function() {
       });
 
       afterEach(function() {
-
         server.restore();
       });
 
       it('should return the parsed GeoJson', function(done) {
 
         geospaceDataProvider.
-          getShapefile(VALID_COLUMN_NAME).
+          getShapefile().
+          then(
+            function(data) {
+
+              assert.equal(data.length, 1);
+              assert.equal(data[0].geometry.type, 'MultiPolygon');
+              assert.deepEqual(data[0].geometry.coordinates, SAMPLE_GEOJSON_COORDINATES);
+              done();
+            },
+            function(error) {
+
+              // Fail the test since we expected a success response.
+              assert.isTrue(undefined);
+              done();
+            }
+          )['catch'](
+            function(e) {
+
+              // Fail the test since we shouldn't be encountering an
+              // exception in any case.
+              console.log(e.message);
+              assert.isFalse(e);
+              done();
+            }
+          );
+
+        server.respond();
+      });
+    });
+
+    describe('when called with an invalid extent argument', function() {
+      var geospaceDataProviderOptions = {
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID
+      };
+      var fakeXhr;
+      var xhrs = [];
+      var geospaceDataProvider;
+
+      beforeEach(function() {
+        fakeXhr = sinon.useFakeXMLHttpRequest();
+        fakeXhr.onCreate = function(xhr) {
+          xhrs.push(xhr);
+        };
+        geospaceDataProvider = new GeospaceDataProvider(geospaceDataProviderOptions);
+      });
+
+      afterEach(function() {
+        fakeXhr.restore();
+      });
+
+      it('should fail before making a request', function() {
+        var invalidExtentArguments = [
+          null,
+          false,
+          'extent',
+          [],
+          {},
+          {northwest: null, southeast: null},
+          {northeast: null, southwest: null},
+          {northeast: [], southwest: []},
+          {northeast: [1], southwest: [1]},
+          {northeast: [1, 2, 3], southwest: [1, 2, 3]}
+        ];
+
+        invalidExtentArguments.forEach(function(invalidExtentArgument) {
+          geospaceDataProvider.
+            getShapefile(invalidExtentArgument).
+            then(
+              function(data) {
+
+                // Fail the test since we expected an error response.
+                assert.isTrue(undefined);
+              },
+              function(error) {
+
+                assert.equal(xhrs.length, 0);
+                assert.equal(error.status, -1);
+                assert.match(error.message, /extent/);
+                assert.equal(error.soqlError, null);
+              }
+            )['catch'](
+              function(e) {
+
+                // Fail the test since we shouldn't be encountering an
+                // exception in any case.
+                console.log(e.message);
+                assert.isFalse(e);
+              }
+            );
+        });
+      });
+    });
+
+    describe('when called with a valid extent argument', function() {
+      var server;
+      var geospaceDataProviderOptions = {
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID
+      };
+      var geospaceDataProvider;
+
+      beforeEach(function() {
+
+        server = sinon.fakeServer.create();
+        geospaceDataProvider = new GeospaceDataProvider(geospaceDataProviderOptions);
+
+        // Ensure requesting the geojson endpoint with a MULTIPOLYGON query argument
+        server.respondWith(/geojson(.*)MULTIPOLYGON/,[SUCCESS_STATUS, {}, SAMPLE_GEOJSON_REQUEST_RESPONSE]);
+        // Still respond to non-MULTIPOLYGON requests so that the test doesn't stall,
+        // but fake an error status to trigger the test failure.
+        server.respondWith(/geojson$/,[ERROR_STATUS, {}, '{}']);
+      });
+
+      afterEach(function() {
+        server.restore();
+      });
+
+      it('should return the parsed GeoJson', function(done) {
+
+        geospaceDataProvider.
+          getShapefile(VALID_EXTENT).
           then(
             function(data) {
 

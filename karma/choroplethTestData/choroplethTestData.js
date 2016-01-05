@@ -283,5 +283,11 @@ window.choroplethTestData = {
         "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
       }
     }
+  },
+
+  "featureExtentResponse": [{"extent_location_point":{"type":"MultiPolygon","coordinates":[[[[-87.934325,41.64458],[-87.934325,42.023025],[-87.524389,42.023025],[-87.524389,41.64458],[-87.934325,41.64458]]]]}}],
+
+  "shapefileMetadataResponse": {
+    "geometryLabel": "test"
   }
 }

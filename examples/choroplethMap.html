@@ -62,7 +62,7 @@
         },
         'columnName': 'location_point',
         'configuration': {
-          'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+          'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
           'baseLayerOpacity': 0.8,
           'computedColumnName': ':@wards',
           'defaultExtent' : {
@@ -78,7 +78,7 @@
             'FLYOUT_SELECTED_NOTICE': 'The page is currently filtered by this value, click to clear it',
             'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
             'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-            'NULL_VALUE_LABEL': '(No Value)',
+            'NO_VALUE': '(No Value)',
             'CLEAR_FILTER_LABEL': 'Clear filter'
           },
           'savedExtent': {
@@ -92,7 +92,7 @@
               'filtered': '__SOCRATA_FILTERED_VALUE__',
               'selected': '__SOCRATA_FEATURE_SELECTED__'
             },
-            'geometryLabel': 'ward',
+            'geometryLabel': null,
             'primaryKey': '_feature_id',
             'uid': GEOJSON_UID
           }

@@ -39,6 +39,7 @@ class Theme
 
     if result['error'].present?
       errors[:base] << result['message']
+      @persisted = false
     else
       @id = result['id']
       @updated_at = result['updatedAt']

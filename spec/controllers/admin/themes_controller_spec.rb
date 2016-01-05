@@ -192,19 +192,26 @@ RSpec.describe Admin::ThemesController, type: :controller do
       end
 
       context 'with invalid attributes' do
-        before do
-          expect_any_instance_of(Theme).to receive(:save).and_return(false)
+        let(:invalid_theme_attrs) do
+          {
+            'title' => 'Some title',
+            'description' => 'A description',
+            'google_font_code' => "INVALID",
+            'css_variables' => {
+              '$base-type-size' => 'foo',
+              '$base-line-height' => 'bar'
+            }
+          }
         end
 
         it 'renders new with theme' do
-          post :create, theme: theme_attrs
+          post :create, theme: invalid_theme_attrs
           expect(response).to render_template('new')
         end
 
         it 'sets flash message' do
-          allow_any_instance_of(Theme).to receive(:errors).and_return(:errors_message)
-          post :create, theme: theme_attrs
-          expect(flash[:error]).to eq(:errors_message)
+          post :create, theme: invalid_theme_attrs
+          expect(flash[:error]).to_not be_blank
         end
       end
     end
@@ -230,7 +237,7 @@ RSpec.describe Admin::ThemesController, type: :controller do
 
     describe '#update' do
       before do
-        allow(theme).to receive(:update_attributes).and_return(true)
+        allow(CoreServer).to receive(:create_or_update_configuration).and_return({})
       end
 
       it 'renders edit template' do
@@ -245,26 +252,19 @@ RSpec.describe Admin::ThemesController, type: :controller do
         put :update, id: theme.id, theme: theme_attrs
       end
 
-      context 'when successful update' do
-        before do
-          allow(theme).to receive(:update_attributes).and_return(true)
-        end
-
-        it 'sets flash success' do
-          put :update, id: theme.id, theme: theme_attrs
-          expect(flash[:success]).to eq('Successfully updated theme config')
-        end
+      it 'sets flash success' do
+        put :update, id: theme.id, theme: theme_attrs
+        expect(flash[:success]).to eq('Successfully updated theme config')
       end
 
-      context 'when unsuccessful update' do
+      context 'with invalid attributes' do
         before do
-          allow(theme).to receive(:update_attributes).and_return(false)
-          allow(theme).to receive(:errors).and_return(:errors_message)
+          allow(CoreServer).to receive(:create_or_update_configuration).and_return({ 'error' => 'true', 'message' => 'error' })
         end
 
         it 'sets flash error' do
           put :update, id: theme.id, theme: theme_attrs
-          expect(flash[:error]).to eq(:errors_message)
+          expect(flash[:error]).to_not be_blank
         end
       end
     end

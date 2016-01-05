@@ -159,6 +159,14 @@ RSpec.describe Theme, type: :model do
         it 'leaves persisted as false' do
           expect(subject).to_not be_persisted
         end
+
+        context 'when previously persisted' do
+          let(:persisted) { true }
+
+          it 'sets persisted to false' do
+            expect(subject).to_not be_persisted
+          end
+        end
       end
     end
 

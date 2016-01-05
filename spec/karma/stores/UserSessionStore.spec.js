@@ -85,15 +85,19 @@ describe('UserSessionStore', function() {
 
     describe('for no valid session after LOGIN_BUTTON_CLICK action', function() {
       beforeEach(function(done) {
+        var onInvalidSession = _.once(function() {
+          _.defer(function() {
+            // Must defer, we're simulating user interactions here.
+            // Otherwise " Cannot dispatch in the middle of a dispatch." error.
+            storyteller.dispatcher.dispatch({ action: 'LOGIN_BUTTON_CLICK' });
+            done();
+          });
+        });
+
         store.addChangeListener(function() {
           // Wait for invalid session.
           if (!store.hasValidSession()) {
-            _.defer(function() {
-              // Must defer, we're simulating user interactions here.
-              // Otherwise " Cannot dispatch in the middle of a dispatch." error.
-              storyteller.dispatcher.dispatch({ action: 'LOGIN_BUTTON_CLICK' });
-              done();
-            });
+            onInvalidSession();
           }
         });
 

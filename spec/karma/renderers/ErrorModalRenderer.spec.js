@@ -60,7 +60,17 @@ describe('ErrorModalRenderer', function() {
       reestablishSession();
     });
 
-    it('should include a login link'); // TODO this functionality is not implemented yet.
+    it('should include a login link that dispatches LOGIN_BUTTON_CLICK', function(done) {
+      causeSessionExpiry();
+
+      storyteller.dispatcher.register(function(action) {
+        if (action.action === Actions.LOGIN_BUTTON_CLICK) {
+          done();
+        }
+      });
+
+      $modal.find('.error-warning-message button').click();
+    });
   });
 
   describe('on conflict', function() {

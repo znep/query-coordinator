@@ -113,6 +113,8 @@ function TimelineChart(element, vif) {
 
   var _lastRenderOptions;
 
+  var _interactive = vif.configuration.interactive;
+
   _renderTemplate(this.element);
 
   _attachEvents(this.element);
@@ -347,17 +349,19 @@ function TimelineChart(element, vif) {
       hideFlyout
     );
 
-    element.on(
-      'mousedown mouseup',
-      '.timeline-chart',
-      leftMouseButtonStateHasChanged
-    );
+    if (_interactive) {
+      element.on(
+        'mousedown mouseup',
+        '.timeline-chart',
+        leftMouseButtonStateHasChanged
+      );
 
-    element.on(
-      'mousedown',
-      '.timeline-chart-clear-selection-label',
-      handleClearSelectionLabelMousedownEvent
-    );
+      element.on(
+        'mousedown',
+        '.timeline-chart-clear-selection-label',
+        handleClearSelectionLabelMousedownEvent
+      );
+    }
 
     element.on(
       'mousemove',
@@ -379,17 +383,19 @@ function TimelineChart(element, vif) {
       hideFlyout
     );
 
-    element.off(
-      'mousedown mouseup',
-      '.timeline-chart',
-      leftMouseButtonStateHasChanged
-    );
+    if (_interactive) {
+      element.off(
+        'mousedown mouseup',
+        '.timeline-chart',
+        leftMouseButtonStateHasChanged
+      );
 
-    element.off(
-      'mousedown',
-      '.timeline-chart-clear-selection-label',
-      handleClearSelectionLabelMousedownEvent
-    );
+      element.off(
+        'mousedown',
+        '.timeline-chart-clear-selection-label',
+        handleClearSelectionLabelMousedownEvent
+      );
+    }
 
     element.off(
       'mousemove',

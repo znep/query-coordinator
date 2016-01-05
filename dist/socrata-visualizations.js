@@ -25133,7 +25133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // if it failed then log the resulting error.
 	    then(
 	      _.identity,
-	      _.logError
+	      _logError
 	    );
 
 	  Promise.

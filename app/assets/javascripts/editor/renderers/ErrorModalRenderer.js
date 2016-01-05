@@ -38,6 +38,13 @@
       window.document.location.reload();
     });
 
+    // The only button in the warning message is a login button.
+    $warningMessage.on('click', 'button', function() {
+      storyteller.dispatcher.dispatch({
+        action: Actions.LOGIN_BUTTON_CLICK
+      });
+    });
+
     function render() {
       var reason = reasonForBeingOpen();
       var userCausingConflict = storyteller.storySaveStatusStore.userCausingConflict();

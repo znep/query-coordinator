@@ -415,6 +415,10 @@ function TimelineChart(element, vif) {
   function showFlyout(event) {
     mouseHasMoved(event, false);
 
+    if (currentlyDragging) {
+      return emitFlyoutEvent(null);
+    }
+
     function formatValue(value) {
       var rules = (_.has(_lastRenderOptions, 'unit')) ?
         _lastRenderOptions.unit :
@@ -624,6 +628,9 @@ function TimelineChart(element, vif) {
   ];
 
   function _renderData(element, data, options) {
+
+    _chartElement.width(options.width);
+    _chartElement.height(options.height);
 
     // Cache dimensions and options
     var chartWidth = element.width();

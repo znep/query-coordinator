@@ -61,7 +61,8 @@
       // Always update, regardless of whether or not the modal needs to be opened.
       if (reason === 'EXPIRED_SESSION') {
         $warningMessage.empty().append(
-          I18n.t('editor.user_session_timeout') + ' ',
+          I18n.t('editor.user_session_timeout'),
+          ' ',
           I18n.t('editor.login_phrase_1_good_manners'),
           $('<button>').text(I18n.t('editor.login_phrase_2_link_text'))
         );
@@ -71,7 +72,7 @@
         if (userCausingConflict) {
           userLinkOrPlaceholder =
             $('<a>', {
-              target: 'blank',
+              target: '_blank',
               href: '/profile/{0}'.format(userCausingConflict.id)
             }).text(userCausingConflict.displayName);
         } else {
@@ -79,9 +80,11 @@
         }
 
         $warningMessage.empty().append(
-          I18n.t('editor.story_save_error_conflict_detail_1') + ' ',
+          I18n.t('editor.story_save_error_conflict_detail_1'),
+          ' ',
           userLinkOrPlaceholder,
-          ' ' + I18n.t('editor.story_save_error_conflict_detail_2')
+          ' ',
+          I18n.t('editor.story_save_error_conflict_detail_2')
         );
         $reloadButton.show();
       }

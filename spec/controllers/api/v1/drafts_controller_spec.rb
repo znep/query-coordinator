@@ -81,10 +81,11 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
         expect(response.code).to eq('412')
       end
 
-      it 'does not render json' do
+      it 'returns json' do
         post :create, params
-        expect(response.body).to be_blank
+        expect(response.content_type).to eq('application/json')
       end
+
     end
 
     context 'when IF_MATCH is missing' do

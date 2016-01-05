@@ -19,6 +19,7 @@
     var _saveInProgress = false;
     // If a conflict ever happens, disable save for the entire life of this page :(
     var _poisonedWithSaveConflictForever = false;
+    var _userCausingConflict = null;
     var _lastSaveError = null;
 
     _.extend(this, new storyteller.Store());
@@ -48,6 +49,13 @@
             conflict: payload.conflict
           };
           self._emitChange();
+
+          if (payload.conflict) {
+            $.get('/api/users/{0}.json'.format(payload.conflictingUserId)).then(function(userData) {
+              _userCausingConflict = userData;
+              self._emitChange();
+            });
+          }
           break;
 
         case Actions.STORY_SAVE_STARTED:
@@ -97,6 +105,16 @@
 
     self.isSaveImpossibleDueToConflict = function() {
       return _poisonedWithSaveConflictForever;
+    };
+
+    // Return details of the user causing the conflict.
+    // Note that this is not guaranteed to return
+    // non-null even if isSaveImpossibleDueToConflict() returns
+    // true, as fetching this info is an async operation and may
+    // take a while to complete.
+    // The format is a coreserver user blob.
+    self.userCausingConflict = function() {
+      return _userCausingConflict;
     };
 
     self.isStorySavePossible = function() {

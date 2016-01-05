@@ -253,6 +253,10 @@ function removeStandardMocks() {
     socrata.visualizations.SoqlDataProvider.restore();
   }
 
+  if (storyteller.userSessionStore) {
+    storyteller.userSessionStore._destroy();
+  }
+
   delete storyteller.dispatcher;
   delete storyteller.storyStore;
   delete storyteller.storySaveStatusStore;

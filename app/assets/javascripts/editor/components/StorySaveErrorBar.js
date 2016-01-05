@@ -7,15 +7,12 @@
 
   'use strict';
 
-  var LOGIN_PATH = '/login?return_to=/stories/post_login';
-
   var socrata = root.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
   $.fn.storySaveErrorBar = function() {
     var $this = $(this);
-    var loginWindow;
 
     utils.assert(storyteller.storySaveStatusStore, 'storySaveStatusStore must be instantiated');
 
@@ -57,10 +54,6 @@
       $loginMessage.toggle(!hasValidUserSession);
       $(document.body).toggleClass('story-save-error', hasError);
 
-      if (hasValidUserSession) {
-        closeLoginWindow();
-      }
-
       if (hasError) {
         if (!hasValidUserSession) {
           text = I18n.t('editor.user_session_timeout');
@@ -76,20 +69,14 @@
       $this.toggleClass('visible', hasError);
     }
 
-    function closeLoginWindow() {
-      if (loginWindow) {
-        loginWindow.close();
-        loginWindow = null;
-      }
-    }
-
     $tryAgainButton.on('click', function() {
       storyteller.StoryDraftCreator.saveDraft(storyteller.userStoryUid);
     });
 
     $loginMessage.find('button').on('click', function() {
-      closeLoginWindow(); // Just in case the user already has the window open.
-      loginWindow = window.open(LOGIN_PATH);
+      storyteller.dispatcher.dispatch({
+        action: Actions.LOGIN_BUTTON_CLICK
+      });
     });
 
     storyteller.storySaveStatusStore.addChangeListener(render);

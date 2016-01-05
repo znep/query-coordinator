@@ -21,6 +21,7 @@
 
 en:
   login_successful: 'Login Successful'
+  taking_you_back_to_your_story: 'Taking you back to your story...'
   add_content_panel:
     title: 'Inspiration Blocks'
     description: 'Choose a layout with text or media!'

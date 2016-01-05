@@ -1,5 +1,15 @@
 class Api::V1::DraftsController < ApplicationController
 
+  def latest
+    @story = DraftStory.find_by_uid(params[:uid])
+
+    if @story
+      render json: @story
+    else
+      render_404
+    end
+  end
+
   def create
     digest = request.env['HTTP_IF_MATCH']
 
@@ -18,7 +28,14 @@ class Api::V1::DraftsController < ApplicationController
     begin
       @new_draft_story = story_draft_creator.create
     rescue StoryDraftCreator::DigestMismatchError
-      return render nothing: true, status: 412
+      draft = DraftStory.find_by_uid(params[:uid])
+      return render ({
+        json: {
+          error: 'X-Story-Digest did not match the latest draft digest.',
+          conflictingUserId: draft.try(:created_by)
+        },
+        status: 412
+      })
     end
 
     headers['X-Story-Digest'] = @new_draft_story.digest

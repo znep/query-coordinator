@@ -50,6 +50,16 @@
 
 <div id="asset-selector-container"></div>
 <div id="make-a-copy-container"></div>
+<div id="error-modal-container" class="hidden">
+  <div class="modal-warning">
+    <span class="icon-warning"></span>
+    <span class="error-warning-message"></span>
+  </div>
+  <div class="modal-button-group r-to-l">
+    <button class="btn-reload btn-inverse"><%= t('editor.modal.buttons.reload') %></button>
+    <button class="btn-ok btn-primary"><%= t('editor.modal.buttons.ok') %></button>
+  </div>
+</div>
 
 <div id="link-modal" class="hidden">
   <div class="modal-input-group">

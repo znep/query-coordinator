@@ -104,8 +104,10 @@ $(document).on('ready', function() {
   /*eslint-disable no-unused-vars */
   var assetSelectorRenderer = new storyteller.AssetSelectorRenderer(assetSelectorOptions);
   var linkModalRenderer = new storyteller.LinkModalRenderer();
+  var errorModalRenderer = new storyteller.ErrorModalRenderer();
   var linkTipRenderer = new storyteller.LinkTipRenderer();
   var collaboratorsRenderer = new storyteller.CollaboratorsRenderer();
+  var loginWindowRenderer = new storyteller.LoginWindowRenderer();
   /*eslint-enable no-unused-vars */
 
   var storyCopierOptions = {

@@ -468,7 +468,7 @@ function TimelineChart(element, vif) {
     var flyoutTarget = _chartElement.find('.timeline-chart-flyout-target');
 
     if (flyoutTarget.length === 0) {
-      return;
+      return emitFlyoutEvent(null);
     }
 
     payload.element = flyoutTarget.get(0);

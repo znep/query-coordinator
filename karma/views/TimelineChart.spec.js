@@ -30,55 +30,54 @@ describe('socrata.visualizations.views.TimelineChart', function() {
   var noDataData;
   var allDataAtSameTimestampData;
 
-    function transformChartDataForRendering(chartData) {
+  function transformChartDataForRendering(chartData) {
+    var minDate = null;
+    var maxDate = null;
+    var minValue = Number.POSITIVE_INFINITY;
+    var maxValue = Number.NEGATIVE_INFINITY;
+    var meanValue;
+    var allValues = chartData.map(function(datum) {
 
-      var minDate = null;
-      var maxDate = null;
-      var minValue = Number.POSITIVE_INFINITY;
-      var maxValue = Number.NEGATIVE_INFINITY;
-      var meanValue;
-      var allValues = chartData.map(function(datum) {
+      if (minDate === null) {
+        minDate = datum.date;
+      } else if (datum.date < minDate) {
+        minDate = datum.date;
+      }
 
-        if (minDate === null) {
-          minDate = datum.date;
-        } else if (datum.date < minDate) {
-          minDate = datum.date;
-        }
+      if (maxDate === null) {
+        maxDate = datum.date;
+      } else if (datum.date > maxDate) {
+        maxDate = datum.date;
+      }
 
-        if (maxDate === null) {
-          maxDate = datum.date;
-        } else if (datum.date > maxDate) {
-          maxDate = datum.date;
-        }
+      if (datum.total < minValue) {
+        minValue = datum.total;
+      }
 
-        if (datum.total < minValue) {
-          minValue = datum.total;
-        }
-
-        if (datum.total > maxValue) {
-          maxValue = datum.total;
-        }
-
-        return {
-          date: datum.date.toDate(),
-          filtered: datum.filtered,
-          unfiltered: datum.total
-        };
-      });
-
-      minValue = (minValue > 0) ? 0 : minValue;
-      maxValue = (maxValue < 0) ? 0 : maxValue;
-      meanValue = (maxValue + minValue) / 2;
+      if (datum.total > maxValue) {
+        maxValue = datum.total;
+      }
 
       return {
-        minDate: minDate.toDate(),
-        maxDate: maxDate.toDate(),
-        minValue: minValue,
-        meanValue: meanValue,
-        maxValue: maxValue,
-        values: allValues
+        date: datum.date.toDate(),
+        filtered: datum.filtered,
+        unfiltered: datum.total
       };
-    }
+    });
+
+    minValue = (minValue > 0) ? 0 : minValue;
+    maxValue = (maxValue < 0) ? 0 : maxValue;
+    meanValue = (maxValue + minValue) / 2;
+
+    return {
+      minDate: minDate.toDate(),
+      maxDate: maxDate.toDate(),
+      minValue: minValue,
+      meanValue: meanValue,
+      maxValue: maxValue,
+      values: allValues
+    };
+  }
 
   beforeEach(function() {
     unfilteredTestData = unpickleTestData(window.timelineChartTestData.testData, false);
@@ -99,7 +98,6 @@ describe('socrata.visualizations.views.TimelineChart', function() {
 
     var incorrectDate;
     var datumDate;
-
 
     // We need to make sure that JavaScript won't try to apply
     // the system's timezone settings to dates. For example, a datum
@@ -137,7 +135,6 @@ describe('socrata.visualizations.views.TimelineChart', function() {
     );
 
     return testData;
-
   }
 
   function createTimelineChart(width, expanded, data, precision) {
@@ -172,7 +169,8 @@ describe('socrata.visualizations.views.TimelineChart', function() {
           'FLYOUT_FILTERED_AMOUNT_LABEL': 'FILTERED VALUE',
           'FLYOUT_SELECTED_NOTICE': 'THIS COLUMN IS CURRENTLY SELECTED'
         },
-        precision: precision
+        precision: precision,
+        interactive: true
       },
       unit: {
         one: 'case',
@@ -207,12 +205,9 @@ describe('socrata.visualizations.views.TimelineChart', function() {
     $('#uber-flyout').hide();
   }
 
-
-
   afterEach(function() {
     $('#chart').remove();
   });
-
 
   it("should create 1 grey ('.context') and 1 blue ('.shaded') path", function() {
 
@@ -488,14 +483,11 @@ describe('socrata.visualizations.views.TimelineChart', function() {
     });
   });
 
-  xit('should react to filtered values', function() {
-    var chart = createTimelineChart(640, false);
+  it('should react to filtered values', function() {
+    var chart = createTimelineChart(640, false, filteredTestData);
 
-    var unfilteredPath = $('.shaded').attr('d');
-
-    scope.chartData = filteredTestData;
-
-    var filteredPath = $('.shaded').attr('d');
+    var unfilteredPath = $('path.context').attr('d');
+    var filteredPath = $('path.shaded').attr('d');
 
     expect(unfilteredPath).to.not.be.empty;
     expect(filteredPath).to.not.be.empty;
@@ -519,26 +511,26 @@ describe('socrata.visualizations.views.TimelineChart', function() {
     expect(wasThenHighlighted).to.equal(true);
   });
 
-  xit('should create a selection when the mouse is clicked on the chart display', function() {
+  it('should create a selection when the mouse is clicked on the chart display', function() {
     var chart = createTimelineChart(640, false);
 
     var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-    mockWindowStateService.scrollPosition$.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
-    mockWindowStateService.mousePosition$.onNext({
+    testHelpers.fireMouseEvent($('.timeline-chart').get(0), 'mousemove', {
       clientX: 320,
-      clientY: 100,
-      target: $('.timeline-chart-highlight-target')[0]
+      clientY: 100
+    });
+
+    testHelpers.fireMouseEvent($('.timeline-chart').get(0), 'mousedown', {
+      clientX: 320,
+      clientY: 100
     });
 
     var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length !== 0;
 
-    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-    mockWindowStateService.mousePosition$.onNext({
+    testHelpers.fireMouseEvent($('.timeline-chart').get(0), 'mouseup', {
       clientX: 320,
-      clientY: 100,
-      target: $('.timeline-chart-highlight-target')[0]
+      clientY: 100
     });
 
     var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
@@ -548,17 +540,14 @@ describe('socrata.visualizations.views.TimelineChart', function() {
     expect(wasThenSelected).to.equal(true);
   });
 
-  xit('should highlight the chart when the mouse is moved over the chart labels', function() {
+  it('should highlight the chart when the mouse is moved over the chart labels', function() {
     var chart = createTimelineChart(640, false);
 
     var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-    mockWindowStateService.scrollPosition$.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-    mockWindowStateService.mousePosition$.onNext({
+    testHelpers.fireMouseEvent($('.timeline-chart').get(0), 'mousemove', {
       clientX: 10,
-      clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
-      target: $('.x-tick-label')[0]
+      clientY: chart.element.offset().top + chart.element.height() - 15
     });
 
     var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length !== 0;
@@ -567,25 +556,19 @@ describe('socrata.visualizations.views.TimelineChart', function() {
     expect(wasThenHighlighted).to.equal(true);
   });
 
-  xit('should create a selection when the mouse is clicked on a chart label', function() {
+  it('should create a selection when the mouse is clicked on a chart label', function() {
     var chart = createTimelineChart(640, false);
+    var mouseTarget = document.querySelector('.x-tick-label');
+    var mousePosition = {
+      clientX: 10,
+      clientY: chart.element.offset().top + chart.element.height() - 15
+    };
 
     var wasNotSelected = !$('.timeline-chart-wrapper').hasClass('selected');
 
-    mockWindowStateService.scrollPosition$.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
-    mockWindowStateService.mousePosition$.onNext({
-      clientX: 10,
-      clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
-      target: $('.x-tick-label')[0]
-    });
-
-    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-    mockWindowStateService.mousePosition$.onNext({
-      clientX: 10,
-      clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
-      target: $('.x-tick-label')[0]
-    });
+    testHelpers.fireMouseEvent(mouseTarget, 'mousemove', mousePosition);
+    testHelpers.fireMouseEvent(mouseTarget, 'mousedown', mousePosition);
+    testHelpers.fireMouseEvent(mouseTarget, 'mouseup', mousePosition);
 
     var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
 
@@ -593,27 +576,24 @@ describe('socrata.visualizations.views.TimelineChart', function() {
     expect(wasThenSelected).to.equal(true);
   });
 
-  xdescribe('when selecting', function() {
+  describe('when selecting', function() {
 
     it('should start selecting on mousedown within the chart display and stop selecting on mouse up within the chart display', function() {
       var chart = createTimelineChart(640, false);
-
-      mockWindowStateService.scrollPosition$.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
-      mockWindowStateService.mousePosition$.onNext({
+      var mouseTarget = document.querySelector('.timeline-chart-highlight-target');
+      var mousePosition = {
         clientX: 320,
-        clientY: 100,
-        target: $('.timeline-chart-highlight-target')[0]
-      });
+        clientY: 100
+      };
+
+      testHelpers.fireMouseEvent(mouseTarget, 'mousemove', mousePosition);
+      testHelpers.fireMouseEvent(mouseTarget, 'mousedown', mousePosition);
 
       var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
 
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-      mockWindowStateService.mousePosition$.onNext({
-        clientX: 370,
-        clientY: 100,
-        target: $('.timeline-chart-highlight-target')[0]
-      });
+      mousePosition.clientX += 50;
+      testHelpers.fireMouseEvent(mouseTarget, 'mousemove', mousePosition);
+      testHelpers.fireMouseEvent(mouseTarget, 'mouseup', mousePosition);
 
       var wasThenNotSelecting = !$('.timeline-chart-wrapper').hasClass('selecting');
       var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
@@ -623,25 +603,26 @@ describe('socrata.visualizations.views.TimelineChart', function() {
       expect(wasThenSelected).to.equal(true);
     });
 
-    it('should start selecting on mousedown within the chart display and stop selecting on mouse up within the chart labels', function() {
+    it('should start selecting on mousedown within the chart display and stop selecting on mouseup within the chart labels', function() {
       var chart = createTimelineChart(640, false);
-
-      mockWindowStateService.scrollPosition$.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
-      mockWindowStateService.mousePosition$.onNext({
+      var mouseTarget = document.querySelector('.timeline-chart-highlight-target');
+      var mousePosition = {
         clientX: 320,
-        clientY: 100,
-        target: $('.timeline-chart-highlight-target')[0]
-      });
+        clientY: 100
+      };
+
+      testHelpers.fireMouseEvent(mouseTarget, 'mousemove', mousePosition);
+      testHelpers.fireMouseEvent(mouseTarget, 'mousedown', mousePosition);
 
       var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
 
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-      mockWindowStateService.mousePosition$.onNext({
-        clientX: 370,
-        clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
-        target: $('.x-tick-label')[0]
-      });
+      // Stop selecting over labels.
+      mousePosition.clientX += 50;
+      mousePosition.clientY = chart.element.offset().top + chart.element.height() - 15;
+      mouseTarget = document.querySelector('.x-tick-label');
+
+      testHelpers.fireMouseEvent(mouseTarget, 'mousemove', mousePosition);
+      testHelpers.fireMouseEvent(mouseTarget, 'mouseup', mousePosition);
 
       var wasThenNotSelecting = !$('.timeline-chart-wrapper').hasClass('selecting');
       var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
@@ -651,25 +632,25 @@ describe('socrata.visualizations.views.TimelineChart', function() {
       expect(wasThenSelected).to.equal(true);
     });
 
-    it('should start selecting on mousedown within the chart display and stop selecting on mouse up outside the chart display and labels', function() {
+    xit('should start selecting on mousedown within the chart display and stop selecting on mouse up outside the chart display and labels', function() {
       var chart = createTimelineChart(640, false);
-
-      mockWindowStateService.scrollPosition$.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
-      mockWindowStateService.mousePosition$.onNext({
+      var mouseTarget = document.querySelector('.timeline-chart-highlight-target');
+      var mousePosition = {
         clientX: 320,
-        clientY: 100,
-        target: $('.timeline-chart-highlight-target')[0]
-      });
+        clientY: 100
+      };
+
+      testHelpers.fireMouseEvent(mouseTarget, 'mousemove', mousePosition);
+      testHelpers.fireMouseEvent(mouseTarget, 'mousedown', mousePosition);
 
       var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
 
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
-      mockWindowStateService.mousePosition$.onNext({
-        clientX: 1000,
-        clientY: 1000,
-        target: $('body')[0]
-      });
+      mousePosition.clientX = 1000;
+      mousePosition.clientY = 1000;
+      mouseTarget = document.querySelector('body');
+
+      testHelpers.fireMouseEvent(mouseTarget, 'mousemove', mousePosition);
+      testHelpers.fireMouseEvent(mouseTarget, 'mouseup', mousePosition);
 
       var wasThenNotSelecting = !$('.timeline-chart-wrapper').hasClass('selecting');
       var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
@@ -681,22 +662,18 @@ describe('socrata.visualizations.views.TimelineChart', function() {
 
     it('should display a selection range label', function() {
       var chart = createTimelineChart(640, false);
+      var mouseTarget = document.querySelector('.timeline-chart-highlight-target');
+      var mousePosition = {
+        clientX: 320,
+        clientY: 100
+      };
 
       var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
 
-      mockWindowStateService.scrollPosition$.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
-      mockWindowStateService.mousePosition$.onNext({
-        clientX: 320,
-        clientY: 100,
-        target: $('.timeline-chart-highlight-target')[0]
-      });
+      testHelpers.fireMouseEvent(mouseTarget, 'mousemove', mousePosition);
+      testHelpers.fireMouseEvent(mouseTarget, 'mousedown', mousePosition);
 
-      mockWindowStateService.mousePosition$.onNext({
-        clientX: 370,
-        clientY: 100,
-        target: $('.timeline-chart-highlight-target')[0]
-      });
+      mousePosition.clientX += 50;
 
       var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
 
@@ -1148,6 +1125,7 @@ describe('socrata.visualizations.views.TimelineChart', function() {
 
   describe('when on a page with multiple timeline charts', function() {
 
+    // TODO implement the logic in createTimelineChart for handling multiple timeline charts.
     xit('should not respond to selection events on other timeline charts', function() {
 
       var chart1 = createTimelineChart(640, false);
@@ -1177,7 +1155,8 @@ describe('socrata.visualizations.views.TimelineChart', function() {
 
   // TODO: load a filtered timeline chart correctly
 
-  describe('flyouts', function() {
+  // These should test for the event; the timeline chart view will never create a flyout element.
+  xdescribe('flyouts', function() {
 
     var chart;
     var chartHeight;
@@ -1199,10 +1178,9 @@ describe('socrata.visualizations.views.TimelineChart', function() {
     });
 
     function simulateMouseover(x, y, target) {
-      testHelpers.fireMouseEvent(chart.element.get(0), 'mousemove', {
+      testHelpers.fireMouseEvent(target, 'mousemove', {
         clientX: x,
-        clientY: y,
-        target: target
+        clientY: y
       });
     }
 

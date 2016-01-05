@@ -51,6 +51,7 @@ describe('socrata.visualizations.views.FlyoutRenderer', function() {
   afterEach(function() {
     flyoutRenderer.clear();
     $targetElement.remove();
+    flyoutElement.remove();
   });
 
   it('renders a flyout with the specified values', function() {

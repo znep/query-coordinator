@@ -486,19 +486,25 @@ function TimelineChart(element, vif) {
     }
 
     function renderIntervalFlyout() {
+      var unfilteredValue = $target.attr('data-aggregate-unfiltered');
+      var filteredValue = $target.attr('data-aggregate-filtered');
+
       payload.title = $target.attr('data-flyout-label');
-      payload.unfilteredValue = formatValue($target.attr('data-aggregate-unfiltered'));
+      payload.unfilteredValue = formatValue(unfilteredValue);
       payload.unfilteredLabel = self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL');
 
-      var filteredValue = $target.attr('data-aggregate-filtered');
-      if (!_.isUndefined(filteredValue)) {
-        payload.filteredValue = formatValue(parseFloat(filteredValue));
+      var date = $target.attr('data-start');
+
+      // Using == for correct date comparison here.
+      var isWithinSelection = (date == selectionStartDate); // eslint-disable-line
+
+      if (!_.isUndefined(filteredValue) && (unfilteredValue !== filteredValue || isWithinSelection)) {
+        payload.filteredValue = formatValue(filteredValue);
         payload.filteredLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
       }
 
       if (isSelectionRendered) {
-        var date = $target.attr('data-start');
-        payload.filteredBySelection = (date >= selectionStartDate) && (date <= selectionEndDate);
+        payload.filteredBySelection = isWithinSelection;
       }
 
       emitFlyoutEvent(payload);

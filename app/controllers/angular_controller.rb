@@ -185,11 +185,15 @@ class AngularController < ActionController::Base
       # Grab related views for both potential copies of dataset (nbe and obe).
       related_views = all_backend_views.map do |view|
         view.find_related(1, 1000)
+      # Filter out data lenses, data lense charts and data lens maps.
       end.flatten
 
-      # Select only those related views that are visualizations.
-      # Also dedup.
-      related_visualizations = related_views.select(&:visualization?).uniq(&:id)
+      # Select only those related views that are visualizations and not
+      # data lens visualizations (we do not currently allow the selecton
+      # of these in the 'add visualization' workflow). Also deduplicate.
+      related_visualizations = related_views.select do |related_view|
+        related_view.visualization? && !related_view.standalone_visualization?
+      end.uniq(&:id)
 
       # Finally, convert each related visualization to a format that the JS can consume.
       @related_visualizations = related_visualizations.map(&:to_visualization_embed_blob)

@@ -20,10 +20,9 @@ function columnAndVisualizationSelector(Card, DatasetColumnsService, $log, rx) {
       // Array of card types.
       // Optional, if set will limit available card types to the given list.
       supportedCardTypes: '=?',
+      defaultCardTypeByColumn: '=?',
       // Override the DataLens-specific message about adding a new card
       addVisualizationPrompt: '=?',
-      // Optional whereClause to pass to card.
-      whereClause: '=?',
       addCardSelectedColumnFieldName: '=',
       classicVisualization: '='
     },
@@ -54,7 +53,8 @@ function columnAndVisualizationSelector(Card, DatasetColumnsService, $log, rx) {
       var datasetColumnsInfo$ = Rx.Observable.combineLatest(
         sortedDatasetColumns$,
         scope.$observe('supportedCardTypes'),
-        function(sortedColumns, supportedCardTypes) {
+        scope.$observe('defaultCardTypeByColumn'),
+        function(sortedColumns, supportedCardTypes, defaultCardTypeByColumn) {
 
           // Split into available and unsupported columns.
           var availableColumns = [];
@@ -64,6 +64,7 @@ function columnAndVisualizationSelector(Card, DatasetColumnsService, $log, rx) {
           _.forEach(sortedColumns, function(column) {
             var defaultCardType = column.columnInfo.defaultCardType;
             var supportedAndAvailableCardTypes;
+            var defaultColumnCardType = _.get(defaultCardTypeByColumn, column.fieldName);
 
             if (_.isDefined(supportedCardTypes)) {
               supportedAndAvailableCardTypes = _.intersection(
@@ -71,7 +72,11 @@ function columnAndVisualizationSelector(Card, DatasetColumnsService, $log, rx) {
                 supportedCardTypes
               );
 
-              if (!_.includes(supportedAndAvailableCardTypes, defaultCardType)) {
+              if (_.include(supportedAndAvailableCardTypes, defaultColumnCardType)) {
+                defaultCardType = defaultColumnCardType;
+              }
+
+              if (!_.include(supportedAndAvailableCardTypes, defaultCardType)) {
                 defaultCardType = supportedAndAvailableCardTypes[0] || 'invalid';
               }
             }

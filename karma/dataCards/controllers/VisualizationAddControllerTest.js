@@ -3,6 +3,7 @@ describe('VisualizationAddController', function() {
 
   var Page;
   var Dataset;
+  var Card;
   var Mockumentary;
   var testHelpers;
   var $rootScope;
@@ -12,7 +13,13 @@ describe('VisualizationAddController', function() {
   var validVIF;
   var serializedDataset;
   var validColumnName = 'foo';
-
+  var validVifType = 'choroplethMap';
+  var vifTypesToCardTypes = {
+    'choroplethMap': 'choropleth',
+    'columnChart': 'column',
+    'featureMap': 'feature',
+    'timelineChart': 'timeline'
+  };
   // If the tests aren't running in an iframe, these tests
   // aren't easy to write (as window.frameElement isn't
   // writeable in all browsers).
@@ -24,9 +31,6 @@ describe('VisualizationAddController', function() {
   // conditionally xdescribe'd tests, simply change the possiblyDescribe
   // declaration and assignment a few lines below.
   var canRunParentWindowTests = !!(window.frameElement);
-  if (!canRunParentWindowTests) {
-    console.warn('WARNING: disabling some VisualizationAddController tests because test run is not in an iframe');
-  }
   var possiblyDescribe = canRunParentWindowTests ? describe : xdescribe;
 
   function emitCardModelSelected(payload) {
@@ -39,6 +43,11 @@ describe('VisualizationAddController', function() {
     $scope.$apply();
   }
 
+  // See comment on canRunParentWindowTests above.
+  if (!canRunParentWindowTests) {
+    console.warn('WARNING: disabling some VisualizationAddController tests because test run is not in an iframe');
+  }
+
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(
@@ -46,6 +55,7 @@ describe('VisualizationAddController', function() {
       [
         'Page',
         'Dataset',
+        'Card',
         'Mockumentary',
         '$rootScope',
         '$controller',
@@ -53,6 +63,7 @@ describe('VisualizationAddController', function() {
         function(
           _Page,
           _Dataset,
+          _Card,
           _Mockumentary,
           _$rootScope,
           _$controller,
@@ -60,6 +71,7 @@ describe('VisualizationAddController', function() {
 
           Page = _Page;
           Dataset = _Dataset;
+          Card = _Card;
           Mockumentary = _Mockumentary;
           $rootScope = _$rootScope;
           $controller = _$controller;
@@ -115,6 +127,7 @@ describe('VisualizationAddController', function() {
       $scope: $scope,
       dataset: dataset,
       defaultColumn: _.get(overrides, 'defaultColumn', undefined),
+      defaultVifType: _.get(overrides, 'defaultVifType', undefined),
       defaultRelatedVisualizationUid: _.get(overrides, 'defaultRelatedVisualizationUid', undefined)
     };
   }
@@ -162,89 +175,6 @@ describe('VisualizationAddController', function() {
 
 
     describe('related-visualization-selected scope event', function() {
-      var relatedVisualizationVIF = {
-        type: 'test',
-        columnName: 'thisWasPresumablySavedFromADataLens',
-        origin: {
-          type: 'unit tests'
-        },
-        filters: [
-          {
-            'function': 'BinaryOperator',
-            'arguments': {
-              'operand': true,
-              'operator': '='
-            },
-            columnName: 'tinymonster_6'
-          }
-        ]
-      };
-
-      describe('with a valid VIF and an originalUid', function() {
-        beforeEach(function() {
-          var relatedVisualizationPageMetadata = Mockumentary.createPageMetadata();
-          relatedVisualizationPageMetadata.sourceVif = relatedVisualizationVIF;
-          emitRelatedVisualizationSelected({
-            format: 'page_metadata',
-            data: relatedVisualizationPageMetadata,
-            originalUid: 'viff-vizz'
-          });
-        });
-
-        it('should call onVisualizationSelected with the original VIF', function() {
-          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
-          sinon.assert.calledWithExactly(
-            window.frameElement.onVisualizationSelected,
-            relatedVisualizationVIF,
-            'vif',
-            'viff-vizz'
-          );
-        });
-      });
-
-      describe('with a valid VIF but no originalUid', function() {
-        var resultantWhereClause = '`tinymonster_6`=true';
-
-        beforeEach(function() {
-          var relatedVisualizationPageMetadata = Mockumentary.createPageMetadata();
-          relatedVisualizationPageMetadata.sourceVif = relatedVisualizationVIF;
-          emitRelatedVisualizationSelected({format: 'page_metadata', data: relatedVisualizationPageMetadata});
-        });
-
-        it('should call onVisualizationSelected with the original VIF', function() {
-          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
-          sinon.assert.calledWithExactly(
-            window.frameElement.onVisualizationSelected,
-            relatedVisualizationVIF,
-            'vif',
-            undefined // no originalUid
-          );
-        });
-
-        it('should set addCardSelectedColumnFieldName to the VIF\'s columnName', function() {
-          expect($scope.addCardSelectedColumnFieldName).to.equal(relatedVisualizationVIF.columnName);
-        });
-
-        it('should set scope.page to a Page instance with the VIF set', function(done) {
-          // We have no direct way of querying a Page for its source VIF, but we can test
-          // computedWhereClauseFragment, which is computed from the VIF.
-          $scope.page.observe('computedWhereClauseFragment').subscribe(function(fragment) {
-            expect(fragment).to.equal(resultantWhereClause);
-            done();
-          });
-        });
-
-        it('should set scope.whereClause to match the VIF filters key', function(done) {
-          $scope.$observe('whereClause').subscribe(function(whereClause) {
-            // whereClause starts out blank; the next digest brings it to the correct value.
-            if (whereClause.length > 0) {
-              expect(whereClause).to.equal(resultantWhereClause);
-              done();
-            }
-          });
-        });
-      });
-
       describe('with a valid classic visualization with no originalUid', function() {
         var relatedVisualization = {
           format: 'classic',
@@ -305,9 +235,15 @@ describe('VisualizationAddController', function() {
 
       describe('with a non-null payload', function() {
         beforeEach(function() {
-          var cardSelected = {
-            fieldName: validVIF.columnName
-          };
+          var cardSelected = Card.deserialize(
+            $scope.page,
+            {
+              fieldName: validVIF.columnName,
+              cardSize: 1,
+              expanded: false,
+              cardType: 'column'
+            }
+          );
 
           emitCardModelSelected(cardSelected);
         });
@@ -323,7 +259,13 @@ describe('VisualizationAddController', function() {
   possiblyDescribe('default visualization options', function() {
     function controllerHarnessWithDefaultColumn(column) {
       return makeController({
+        defaultColumn: column
+      });
+    }
+    function controllerHarnessWithDefaultColumnAndVifType(column, vifType) {
+      return makeController({
         defaultColumn: column,
+        defaultVifType: vifType
       });
     }
     function controllerHarnessWithDefaultRelatedViz(uid) {
@@ -346,6 +288,42 @@ describe('VisualizationAddController', function() {
                done();
               }
             });
+        });
+      });
+
+      describe('which is not valid', function() {
+        it('should set addCardSelectedColumnFieldName to null', function(done) {
+          controllerHarnessWithDefaultColumn('notAValidColumn').
+            $scope.$observe('addCardSelectedColumnFieldName').
+            subscribe(function(fieldName) {
+              expect(fieldName).to.equal(null);
+               done();
+            });
+        });
+      });
+    });
+
+
+    describe('with defaultColumn and defaultVifType specified', function() {
+
+      // To see why these tests are async, see the apologetic comment regarding the setTimeout
+      // in VisualizationAddController.
+      describe('when both are valid', function() {
+        it('should set addCardSelectedColumnFieldName to the value of defaultColumn and the appropriate defaultCardTypeForColumn property', function(done) {
+          var controller = controllerHarnessWithDefaultColumnAndVifType(validColumnName, validVifType);
+
+          Rx.Observable.combineLatest(
+            controller.$scope.$observe('addCardSelectedColumnFieldName'),
+            controller.$scope.$observe('defaultCardTypeByColumn'),
+            function(fieldName, defaultCardTypeByColumn) {
+
+              if (fieldName && defaultCardTypeByColumn) {
+                expect(fieldName).to.equal(validColumnName);
+                expect(defaultCardTypeByColumn[fieldName]).to.equal(vifTypesToCardTypes[validVifType]);
+                done();
+              }
+            }
+          ).subscribe();
         });
       });
 

@@ -346,7 +346,7 @@ function TimelineChart(element, vif) {
     element.on(
       'mouseleave',
       '.timeline-chart',
-      hideFlyout
+      mouseHasLeftChart
     );
 
     if (_interactive) {
@@ -2599,6 +2599,11 @@ function TimelineChart(element, vif) {
         clearChartHighlight();
       }
     }
+  }
+
+  function mouseHasLeftChart() {
+    hideFlyout();
+    clearChartHighlight();
   }
 }
 

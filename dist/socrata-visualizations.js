@@ -6738,7 +6738,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    element.on(
 	      'mouseleave',
 	      '.timeline-chart',
-	      hideFlyout
+	      mouseHasLeftChart
 	    );
 
 	    if (_interactive) {
@@ -8991,6 +8991,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        clearChartHighlight();
 	      }
 	    }
+	  }
+
+	  function mouseHasLeftChart() {
+	    hideFlyout();
+	    clearChartHighlight();
 	  }
 	}
 

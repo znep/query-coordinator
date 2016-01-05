@@ -224,6 +224,11 @@
       "name" : "RedHerring",
       "physicalDatatype" : "text",
       "description": "This tests to make sure that columns with names like 'OtherColumn (parenthetical)' - where 'OtherColumn' exists - are not filtered out, unless their fieldName ALSO conforms to the subcolumn naming convention. In this case, it doesn't."
+    },
+    "wacko_card_type": {
+      "name": "BlueHerring",
+      "physicalDatatype": "completely-invalid-datatype",
+      "description": "You think we wouldn't make a card for this evil card type?  Think again.  Well, we used to.  But now we don't because I fixed it."
     }
   }
 }

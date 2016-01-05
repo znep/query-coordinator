@@ -12,13 +12,6 @@
  * Behaviors
  */
 
-// TODO - Use .busy-spinner instead of this branded spinner where possible
-.bg-loading-spinner {
-  background-image: asset-url('shared/branded-spinner.gif');
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-}
-
 @mixin spinner {
   @include animation(spin 0.6s linear infinite);
 

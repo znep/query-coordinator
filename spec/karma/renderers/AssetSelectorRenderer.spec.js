@@ -570,10 +570,6 @@ describe('AssetSelectorRenderer', function() {
         });
       });
 
-      it('removes spinner', function() {
-        assert.notInclude(container.find('.asset-selector-image-upload-progress').attr('class'), 'bg-loading-spinner');
-      });
-
       it('removes cancel button, replaces with try again', function() {
         var buttonSelector = container.find('.asset-selector-image-upload-progress [data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD));
         assert.equal(buttonSelector.length, 1);
@@ -616,10 +612,6 @@ describe('AssetSelectorRenderer', function() {
 
       it('renders a preview image from the payload URL', function() {
         assert.equal(imgEl.attr('src'), imageUrl);
-      });
-
-      it('removes background spinner', function() {
-        assert.notInclude(container.find('.asset-selector-preview-image-container').attr('class'), 'bg-loading-spinner');
       });
 
       describe('the modal', function() {

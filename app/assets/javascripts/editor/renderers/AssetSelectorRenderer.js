@@ -534,7 +534,7 @@
 
       var previewContainer = $(
         '<div>',
-        { 'class': 'asset-selector-preview-image-container bg-loading-spinner' }
+        { 'class': 'asset-selector-preview-image-container' }
       ).append([
         previewImage
       ]);
@@ -592,7 +592,6 @@
           imageElement.attr('src', imageUrl);
         }
 
-        imageContainer.removeClass('bg-loading-spinner');
         insertButton.prop('disabled', false);
       } else {
         insertButton.prop('disabled', true);

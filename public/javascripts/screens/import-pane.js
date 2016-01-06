@@ -10,6 +10,8 @@
 //      objects are going to be the final product. An importColumn can be composed
 //      of zero, one, or more sourceColumns.
 
+// TODO: fix the linting errors in this file and re-enable linting in the .eslintignore file
+
 ;(function($){
 
 var importNS = blist.namespace.fetch('blist.importer');
@@ -563,7 +565,6 @@ var validateAll = function()
 
                 // warn if the column is nonoptimally used
                 if (!$.isBlank(originalColumn) && (originalColumn.type != 'static') &&
-                    !_.isUndefined(locationTypes[field]) &&
                     !_.contains(locationTypes[field], originalColumn.suggestion))
                 {
                     addValidationError(importColumn, 'warning', 'set to import its <strong>' +

@@ -22,6 +22,10 @@ const Rx = require('rx');
     var args = _.toArray(arguments);
     var resultSubscription = args.pop();
 
+    if (_.isArray(args[0])) {
+      args = args[0];
+    }
+
     return Rx.Observable.combineLatest(args, function() {
       return arguments;
     }).subscribe(function(vals) {

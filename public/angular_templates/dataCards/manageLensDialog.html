@@ -74,12 +74,6 @@
           </div>
         </div>
       </div>
-      <div ng-show="newShares.shares.length > 0" class="add-new-shares-prompt">
-        <span class="icon-info"></span>
-        <span class="message">
-          {{::'manageLensDialog.sharing.addNewPrompt' | I18n}}
-        </span>
-      </div>
       <button
         class="action-btn dark manage-lens-dialog-add-shares"
         ng-disabled="manageLensState.saveInProgress"
@@ -134,6 +128,10 @@
 </section>
 
 <div class="controls">
+  <div ng-show="dialogHasChanges" class="unsaved-changes-message">
+    <span class="icon-warning"></span>
+    You have unsaved changes
+  </div>
   <save-button
     class="dark r-to-l manage-lens-dialog-save"
     ng-click="save()"

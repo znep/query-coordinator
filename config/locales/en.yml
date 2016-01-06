@@ -249,7 +249,6 @@ en:
           description: Selecting this option will give the view a special demarcation indicating that it is an Official View
         sharing:
           add_new: Add New
-          add_new_prompt: Save your changes below to invite these new users to this Data Lens
           contributor: Contributor
           inherited_description: 'Inherited from the source dataset:'
           keep: Keep

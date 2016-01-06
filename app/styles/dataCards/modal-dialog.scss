@@ -352,6 +352,13 @@ manage-lens-dialog {
 
   .controls {
     margin-top: 0;
+    text-align: right;
+
+    .unsaved-changes-message {
+      display: inline-block;
+      line-height: 35px;
+      margin-right: 1em;
+    }
   }
 }
 

@@ -16,12 +16,12 @@ function VisualizationAddController(
   var socrata = $window.socrata;
   var utils = socrata.utils;
   // Cards always expect to have a page, too painful to remove for now.
-  var pageBlob = {
+  var pageMetadata = {
     'cards': [],
     'datasetId': dataset.id,
     'version': 3
   };
-  var blankPage = new Page(pageBlob, dataset);
+  var blankPage = new Page(pageMetadata, dataset);
   var cardTypesToVIFTypes = {};
   var vifTypesToCardTypes = {
     'choroplethMap': 'choropleth',

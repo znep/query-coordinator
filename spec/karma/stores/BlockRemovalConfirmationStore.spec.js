@@ -13,7 +13,6 @@ describe('BlockRemovalConfirmationStore', function() {
     });
 
     describe('when a new block has been added', function() {
-      var blockToCopyId;
       var newlyAddedBlockId;
 
       beforeEach(function() {
@@ -54,4 +53,4 @@ describe('BlockRemovalConfirmationStore', function() {
 
     });
   });
-})
+});

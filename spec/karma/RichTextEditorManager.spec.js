@@ -1,4 +1,5 @@
 describe('RichTextEditorManager', function() {
+  'use strict';
 
   var validElement;
   var validFormats = [];
@@ -18,7 +19,7 @@ describe('RichTextEditorManager', function() {
       it('throws an error', function() {
 
         assert.throw(function() {
-          var manager = new storyteller.RichTextEditorManager(
+          new storyteller.RichTextEditorManager( //eslint-disable-line no-new
             null,
             validToolbar,
             validFormats
@@ -46,7 +47,7 @@ describe('RichTextEditorManager', function() {
       it('throws an error', function() {
 
         assert.throw(function() {
-          var manager = new storyteller.RichTextEditorManager(
+          new storyteller.RichTextEditorManager( //eslint-disable-line no-new
             window.socrata.storyteller.assetFinder,
             null,
             validFormats
@@ -74,7 +75,7 @@ describe('RichTextEditorManager', function() {
       it('throws an error', function() {
 
         assert.throw(function() {
-          var manager = new storyteller.RichTextEditorManager(
+          new storyteller.RichTextEditorManager( //eslint-disable-line no-new
             window.socrata.storyteller.assetFinder,
             validToolbar,
             null

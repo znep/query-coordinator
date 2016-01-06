@@ -1,14 +1,11 @@
 describe('CollaboratorsRenderer', function() {
   'use strict';
 
-  var $body;
   var $collaborators;
   var renderer;
   var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
-    $body = $('body');
-
     renderer = new storyteller.CollaboratorsRenderer();
 
     storyteller.dispatcher.dispatch({
@@ -62,7 +59,7 @@ describe('CollaboratorsRenderer', function() {
       });
 
       it('should have one, valid entry in the table', function() {
-        var $tr = $collaborators.find('tbody tr');
+        $tr = $collaborators.find('tbody tr');
 
         assert.lengthOf($tr, 1);
         assert.lengthOf($tr.find('select'), 1);
@@ -107,11 +104,9 @@ describe('CollaboratorsRenderer', function() {
         });
       });
 
-      describe('when clicking the "X" button', function() {
+      describe('when the modal indicates it is dismissed', function() {
         it('should add a "hidden" class', function() {
-          $collaborators.
-            find('.icon-cross2[data-action="COLLABORATORS_CANCEL"]').
-            click();
+          $collaborators.trigger('modal-dismissed');
 
           assert.isTrue($collaborators.hasClass('hidden'));
         });
@@ -190,31 +185,42 @@ describe('CollaboratorsRenderer', function() {
     });
 
     describe('when manipulating a newly-added collaborator', function() {
-      var $tr;
+      var newCollaborator = 'new@socrata.com';
+      var newestCollaborator = 'newest@socrata.com';
+
+      function getCollaborator(email) {
+        return $collaborators.find('tbody tr[data-email="' + email + '"]');
+      }
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
           action: Actions.COLLABORATORS_ADD,
-          collaborator: {email: 'new@socrata.com', accessLevel: 'viewer'}
+          collaborator: {email: newCollaborator, accessLevel: 'viewer'}
         });
 
-        $tr = $collaborators.find('tbody tr[data-email="new@socrata.com"]');
+        storyteller.dispatcher.dispatch({
+          action: Actions.COLLABORATORS_ADD,
+          collaborator: {email: newestCollaborator, accessLevel: 'viewer'}
+        });
       });
 
       describe('removing a newly-added collaborator', function() {
         it('should immediately remove the collaborator from the table', function() {
+          var $tr = getCollaborator(newCollaborator);
           assert.lengthOf($tr, 1);
 
           $tr.find('button').click();
-          $tr = $collaborators.find('tr[data-email="new@socrata.com"]');
 
+          $tr = getCollaborator(newCollaborator);
           assert.lengthOf($tr, 0);
         });
       });
 
       describe('changing a newly-added collaborator', function() {
         it('should not change the collaborator\'s "added" state.', function() {
+          var $tr = getCollaborator(newCollaborator);
           var $selected = $tr.find('option:selected');
+
           assert.equal($selected.val(), 'viewer');
 
           $selected.
@@ -225,10 +231,35 @@ describe('CollaboratorsRenderer', function() {
           $tr.
             find('select').
             trigger('change');
-          $tr = $collaborators.find('tbody tr[data-email="new@socrata.com"]');
+
+          $tr = getCollaborator(newCollaborator);
+          $selected = $tr.find('option:selected');
 
           assert.equal($selected.val(), 'contributor');
           assert.isTrue($tr.hasClass('added'));
+        });
+
+        it('should only change the targeted, new collaborator', function() {
+          var $trNewest;
+          var $tr = getCollaborator(newCollaborator);
+          var $selected = $tr.find('option:selected');
+
+          $selected.
+            prop('selected', false);
+          $selected = $tr.
+            find('option[value="contributor"]').
+            prop('selected', true);
+          $tr.
+            find('select').
+            trigger('change');
+
+          $tr = getCollaborator(newCollaborator);
+          $trNewest = getCollaborator(newestCollaborator);
+
+          assert.notEqual(
+            $tr.find('option:selected').val(),
+            $trNewest.find('option:selected').val()
+          );
         });
       });
     });

@@ -68,7 +68,19 @@
       "Unidragger": true,
       "Unipointer": true,
       "userStoryData": true,
-      "Flux": true
+      "Flux": true,
+
+      "assert": true,
+      "describe": true,
+      "xdescribe": true,
+      "it": true,
+      "beforeEach": true,
+      "afterEach": true,
+      "sinon": true,
+      "standardMocks": true,
+      "testDom": true,
+      "generateStoryData": true,
+      "generateBlockData": true
     }
   }
 }

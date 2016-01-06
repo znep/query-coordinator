@@ -3,7 +3,6 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   var validComponentData = {
     type: 'socrata.visualization.timelineChart',
@@ -28,8 +27,8 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
     assert.throws(function() { $component.componentSocrataVisualizationTimelineChart([]); });
   });
 
-  describe('given a type that is not supported', function () {
-    it('should throw when instantiated', function () {
+  describe('given a type that is not supported', function() {
+    it('should throw when instantiated', function() {
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notSocrata.notVisualization.notTimelineChart';
       assert.throws(function() {
@@ -39,17 +38,14 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
   });
 
   describe('given a valid component type and value', function() {
-    var socrataTimelineChartStub = sinon.stub($.fn, 'socrataTimelineChart', function() { return this; });
+    var socrataTimelineChartStub;
 
     beforeEach(function() {
+      socrataTimelineChartStub = sinon.stub($.fn, 'socrataTimelineChart', function() { return this; });
       $component = $component.componentSocrataVisualizationTimelineChart(validComponentData);
     });
 
     afterEach(function() {
-      socrataTimelineChartStub.reset();
-    });
-
-    after(function() {
       socrataTimelineChartStub.restore();
     });
 

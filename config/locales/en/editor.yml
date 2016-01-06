@@ -12,9 +12,16 @@ en:
     empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
     remove_block_confirmation: 'Are you sure you want to remove this block?'
     page_close_confirmation: 'You have unsaved changes to this story.'
+    generic_error: 'Error'
     story_save_error_try_again: 'Try again.'
     story_save_error_generic: 'There was an error saving.'
     story_save_error_conflict: 'There was a conflict saving. To continue, you need to reload the page.'
+    story_save_error_conflict_detail_1: 'Your story is currently being edited by'
+    story_save_error_conflict_generic_user_name: 'another user'
+    story_save_error_conflict_detail_2: 'in another window. Any changes you make here will not be saved. Reload this page to see the latest version of the story.'
+    user_session_timeout: 'Your session has timed out.'
+    login_phrase_1_good_manners: 'Please'
+    login_phrase_2_link_text: 'log in again.'
     modal:
       buttons:
         cancel: 'Cancel'
@@ -23,6 +30,7 @@ en:
         save: 'Save'
         saved: 'Saved!'
         done: 'Done'
+        reload: 'Reload'
     collaborators:
       modal:
         heading: 'Manage Collaborators'

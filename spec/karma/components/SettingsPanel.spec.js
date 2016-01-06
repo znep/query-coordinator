@@ -1,4 +1,6 @@
 describe('SettingsPanel jQuery plugin', function() {
+  'use strict';
+
   var node;
   var handle;
   var storyteller = window.socrata.storyteller;
@@ -50,7 +52,7 @@ describe('SettingsPanel jQuery plugin', function() {
 
     storyteller.coreSavingStore = {
       addChangeListener: function(listener) {
-        storyteller.coreSavingStore.listeners.push(listener)
+        storyteller.coreSavingStore.listeners.push(listener);
       },
       triggerChange: function() {
         _.each(this.listeners, function(listener) { listener(); });
@@ -136,7 +138,7 @@ describe('SettingsPanel jQuery plugin', function() {
 
           describe('then saved', function() {
             describe('by hitting enter', function() {
-              it('should case a STORY_SET_TITLE action, then a STORY_SAVE_METADATA action', function () {
+              it('should case a STORY_SET_TITLE action, then a STORY_SAVE_METADATA action', function() {
                 var actions = [];
 
                 storyteller.dispatcher.register(function(payload) {

@@ -1,4 +1,6 @@
 describe('Polyfills', function() {
+  'use strict';
+
   var storyteller = window.socrata.storyteller;
 
   describe('CustomEvent', function() {

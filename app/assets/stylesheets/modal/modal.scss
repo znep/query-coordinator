@@ -1,14 +1,14 @@
 @import 'lib/variables';
 
-#create-story-modal {
+#modal {
   .modal-dialog {
     padding: 6rem 2rem;
+    text-align: center;
   }
 
   .modal-title {
     color: $create-story-modal-title-color;
     font-size: 3.62rem;
-    text-align: center;
     margin: 2rem 0;
     padding: 0;
   }

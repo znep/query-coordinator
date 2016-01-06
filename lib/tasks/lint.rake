@@ -11,5 +11,6 @@ end
 namespace :lint do
   task :js do
     run_eslint('app/assets/javascripts')
+    run_eslint('spec/karma')
   end
 end

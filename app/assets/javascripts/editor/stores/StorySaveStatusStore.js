@@ -15,10 +15,11 @@
 
     var self = this;
 
-    var _lastSavedSerializedStory = null;
+    var _lastSerializedStory = null;
     var _saveInProgress = false;
     // If a conflict ever happens, disable save for the entire life of this page :(
     var _poisonedWithSaveConflictForever = false;
+    var _userCausingConflict = null;
     var _lastSaveError = null;
 
     _.extend(this, new storyteller.Store());
@@ -33,13 +34,12 @@
       switch (action) {
 
         case Actions.STORY_CREATE:
+          _lastSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
+          _storySavedSuccessfully();
+          break;
+
         case Actions.STORY_SAVED:
-          // Let StoryStore deal with this action, then remember the initial or updated story state.
-          storyteller.dispatcher.waitFor([ storyteller.storyStore.getDispatcherToken() ]);
-          _lastSavedSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
-          _saveInProgress = false;
-          _lastSaveError = null;
-          self._emitChange();
+          _storySavedSuccessfully();
           break;
 
         case Actions.STORY_SAVE_FAILED:
@@ -49,12 +49,20 @@
             conflict: payload.conflict
           };
           self._emitChange();
+
+          if (payload.conflict) {
+            $.get('/api/users/{0}.json'.format(payload.conflictingUserId)).then(function(userData) {
+              _userCausingConflict = userData;
+              self._emitChange();
+            });
+          }
           break;
 
         case Actions.STORY_SAVE_STARTED:
           if (_saveInProgress) {
             throw new Error('Can only have one pending save at a time.');
           }
+          _lastSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
           _saveInProgress = true;
           _lastSaveError = null;
           self._emitChange();
@@ -68,6 +76,14 @@
       self._emitChange();
     });
 
+    function _storySavedSuccessfully() {
+      // Let StoryStore deal with this action, then remember the initial or updated story state.
+      storyteller.dispatcher.waitFor([ storyteller.storyStore.getDispatcherToken() ]);
+      _saveInProgress = false;
+      _lastSaveError = null;
+      self._emitChange();
+    }
+
     /**
      * Public methods
      */
@@ -77,9 +93,9 @@
       // should not light up for changes _only_ to the metadata.
       var metadataProperties = [ 'title', 'description' ];
       var currentSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
-      return !_.isEqual(
+      return self.isStorySaveInProgress() || !!_lastSaveError || !_.isEqual(
         _.omit(currentSerializedStory, metadataProperties),
-        _.omit(_lastSavedSerializedStory, metadataProperties)
+        _.omit(_lastSerializedStory, metadataProperties)
       );
     };
 
@@ -89,6 +105,16 @@
 
     self.isSaveImpossibleDueToConflict = function() {
       return _poisonedWithSaveConflictForever;
+    };
+
+    // Return details of the user causing the conflict.
+    // Note that this is not guaranteed to return
+    // non-null even if isSaveImpossibleDueToConflict() returns
+    // true, as fetching this info is an async operation and may
+    // take a while to complete.
+    // The format is a coreserver user blob.
+    self.userCausingConflict = function() {
+      return _userCausingConflict;
     };
 
     self.isStorySavePossible = function() {

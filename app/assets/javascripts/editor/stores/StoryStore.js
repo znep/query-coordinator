@@ -121,7 +121,6 @@
     };
 
     this.getStoryTheme = function(storyUid) {
-
       var story = _getStory(storyUid);
 
       return story.theme || 'classic';

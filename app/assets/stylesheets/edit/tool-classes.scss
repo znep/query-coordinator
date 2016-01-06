@@ -1,3 +1,6 @@
+@import 'bourbon';
+@import 'lib/variables';
+
 /**
  * Text
  */
@@ -8,10 +11,22 @@
 /**
  * Behaviors
  */
-.bg-loading-spinner {
-  background-image: asset-url('shared/branded-spinner.gif');
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
+
+@mixin spinner {
+  @include animation(spin 0.6s linear infinite);
+
+  border: 3px solid;
+  border-radius: 60%;
+  display: inline-block;
+
+  border-color: $spinner-border-color;
+  border-right-color: $spinner-border-right-color;
+}
+
+.busy-spinner {
+  @include spinner;
+  width: 1.6rem;
+  height: 1.6rem;
 }
 
 .hidden {

@@ -18,6 +18,10 @@
         "value": "Drab Theme"
       },
       {
+        "name": "google_font_code",
+        "value": "<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>"
+      },
+      {
         "name": "css_variables",
         "value": {
           "$medium": "768px",

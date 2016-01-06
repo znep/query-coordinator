@@ -1,8 +1,10 @@
 describe('CollaboratorsStore', function() {
   'use strict';
 
+  var storyteller = window.socrata.storyteller;
+
   function dispatchAction(action, payload) {
-    var payload = _.extend({action: action}, payload);
+    payload = _.extend({action: action}, payload);
     storyteller.dispatcher.dispatch(payload);
   }
 
@@ -42,7 +44,7 @@ describe('CollaboratorsStore', function() {
             }
           });
         });
-      })
+      });
 
       if (action === Actions.COLLABORATORS_ADD) {
         it('throws when the collaborator exists', function() {
@@ -171,7 +173,7 @@ describe('CollaboratorsStore', function() {
     describe('when given a correct payload', function() {
       it('should add one collaborator to the store', function() {
         var collaborators;
-        var collaborator = {
+        var collaboratorStub = {
           email: 'hello@socrata.com',
           accessLevel: 'accessLevel',
           uid: 'four-four',
@@ -179,7 +181,7 @@ describe('CollaboratorsStore', function() {
         };
 
         dispatchAction(Actions.COLLABORATORS_LOAD, {
-          collaborators: [collaborator]
+          collaborators: [collaboratorStub]
         });
 
         collaborators = _.map(
@@ -191,7 +193,7 @@ describe('CollaboratorsStore', function() {
 
         assert.sameDeepMembers(
           collaborators,
-          [collaborator]
+          [collaboratorStub]
         );
       });
     });
@@ -227,7 +229,6 @@ describe('CollaboratorsStore', function() {
       });
 
       it('should remove a newly added collaborator from the store', function() {
-        var collaborators;
         var collaboratorOne = {
           email: 'hello@socrata.com',
           accessLevel: 'accessLevel'

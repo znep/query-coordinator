@@ -28,7 +28,7 @@
 
       expectedBreakpointClasses[expectedClass] = true;
 
-      windowSizeBreakpointStore.addChangeListener(function () {
+      windowSizeBreakpointStore.addChangeListener(function() {
         assert.deepEqual(windowSizeBreakpointStore.getAllWindowSizeClasses(), expectedBreakpointClasses);
         callbackCalled = true;
       });
@@ -43,7 +43,7 @@
     }
 
     beforeEach(function() {
-      sinon.stub($.fn, 'resize', function (windowResizeCallback) {
+      sinon.stub($.fn, 'resize', function(windowResizeCallback) {
         if (typeof windowResizeCallback === 'function') {
           resizeCallback = windowResizeCallback;
         }
@@ -54,7 +54,7 @@
       $.fn.resize.restore();
     });
 
-    it('makes the right blob when given a window size', function () {
+    it('makes the right blob when given a window size', function() {
       verifyOutput(0, 'small');
       verifyOutput(1, 'small');
 

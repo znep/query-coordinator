@@ -4,7 +4,7 @@ describe('LinkModalStore', function() {
   var storyteller = window.socrata.storyteller;
 
   function dispatchAction(action, payload) {
-    var payload = _.extend({action: action}, payload);
+    payload = _.extend({action: action}, payload);
     storyteller.dispatcher.dispatch(payload);
   }
 

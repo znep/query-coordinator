@@ -80,6 +80,26 @@
       }
     }
 
+    .modal-warning {
+      color: $warning-bar-color;
+      font-size: 1.5rem;
+      font-weight: normal;
+      opacity: 1;
+
+      .icon-warning {
+        margin-right: 0.5rem;
+        color: $warning-bar-icon-color;
+      }
+
+      button {
+        border: none;
+        outline: none;
+        color: $warning-bar-color;
+        background-color: transparent;
+        text-decoration: underline;
+        font-weight: bold;
+      }
+    }
     .modal-input-group {
       display: block;
       position: relative;
@@ -130,6 +150,10 @@
           visibility: visible;
         }
       }
+    }
+
+    .modal-large-text {
+      font-size: 1.75rem;
     }
 
     input[type="checkbox"] + .modal-input-label {

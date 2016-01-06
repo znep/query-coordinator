@@ -2,7 +2,6 @@ describe('componentAssetSelector jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   var validComponentData = {
     type: 'assetSelector'
@@ -22,8 +21,8 @@ describe('componentAssetSelector jQuery plugin', function() {
     assert.throws(function() { $component.componentAssetSelector([]); });
   });
 
-  describe('given a type that is not supported', function () {
-    it('should throw when instantiated', function () {
+  describe('given a type that is not supported', function() {
+    it('should throw when instantiated', function() {
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notAssetSelector';
       assert.throws(function() {
@@ -51,7 +50,8 @@ describe('componentAssetSelector jQuery plugin', function() {
       assert.equal(
         $component.attr('data-action'),
         Actions.ASSET_SELECTOR_INSERT_COMPONENT,
-        "Asset Selector component should have the attribute data-action={0}".format(Actions.ASSET_SELECTOR_INSERT_COMPONENT)
+        'Asset Selector component should have the attribute data-action={0}'.
+          format(Actions.ASSET_SELECTOR_INSERT_COMPONENT)
       );
     });
   });

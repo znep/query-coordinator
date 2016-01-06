@@ -25,8 +25,16 @@ class ApplicationController < ActionController::Base
 
   # +before_filter+
   def require_logged_in_user
-    # If no current_user, send to main login page
-    redirect_to "/login?return_to=#{request.path}" unless current_user.present?
+    # If no current_user:
+    # - for JSON requests, respond with 401.
+    # - for other requests, redirect to login.
+    unless current_user.present?
+      if params[:format] == 'json'
+        head :unauthorized
+      else
+        redirect_to "/login?return_to=#{request.path}"
+      end
+    end
   end
 
   # +before_filter+

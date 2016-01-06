@@ -28,6 +28,7 @@
   <h4 class="border-below">Type Size and Line Height</h4>
   <%= render  partial: 'form_section',
               locals: {
+                section_name: "type-size-and-line-height",
                 theme: theme,
                 theme_variables: %w( $base-type-size $base-line-height ),
                 help_text: 'Base Typesize is used as a base calculation for the entire typographic scale. This is used
@@ -37,6 +38,7 @@
 
   <%= render  partial: 'form_section',
               locals: {
+                section_name: "type-size-and-line-height",
                 theme: theme,
                 theme_variables: %w( $std-type-size $std-line-height ),
                 help_text: 'Standard Type size is used for tablet, mobile, and small desktop displays. This is your
@@ -45,6 +47,7 @@
 
   <%= render  partial: 'form_section',
               locals: {
+                section_name: "type-size-line-height",
                 theme: theme,
                 theme_variables: %w( $lg-type-size $lg-line-height ),
                 help_text: 'Large type size is the type for large displays.'
@@ -53,13 +56,36 @@
   <h4 class="border-below">Typeface</h4>
   <%= render  partial: 'form_section',
               locals: {
+                section_name: "typeface",
                 theme: theme,
-                theme_variables: %w( $heading-font-stack $body-font-stack )
-              } %>
+                theme_variables: %w( $heading-font-stack $body-font-stack ),
+                help_text: '<p><a href="https://developer.mozilla.org/en-US/Learn/CSS/Howto/style_text#Web_safe_fonts">Click here</a> for a list of web-safe fonts and additional guidance. <br><b>Example Heading Font Stack</b>: Georgia, serif <br><b>Example Body Font Stack</b>: "Trebuchet MS", Helvetica, sans-serif</p>'
+              } -%>
+
+  <div class="checkbox google-font-checkbox">
+    <input id="google_font_checkbox" type="checkbox"/>
+      <label for="google_font_checkbox">
+        <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>Use Google fonts
+      </label>
+  </div>
+  <div class="form-section typeface">
+    <div class="form-fields form-fields-label-above">
+      <div class="form-group">
+        <%= form.label :google_font_code, "Google Font Code" %>
+        <%= form.text_field :google_font_code, class: 'text-input' %>
+      </div>
+    </div>
+
+    <div class="help" id="google_font_code_help_text">
+      <p>Visit <a href="https://www.google.com/fonts">Google Fonts</a> and follow the on-screen prompts to add fonts to a collection. Note: as more fonts are added to a collection, the slower the page will load. Select Normal, Normal Italic, Bold, and Bold Italic for each font.  Paste the generated code into the Google Font textbox to the left, and paste the generated font families into the header and body font stack text boxes above.</p>
+      <b>Example Google Font Code</b>: &lt;link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'&gt;
+    </div>
+  </div>
 
   <h4 class="border-below">Colors</h4>
   <%= render  partial: 'form_section',
               locals: {
+                section_name: "colors",
                 theme: theme,
                 theme_variables: %w( $heading-type-color $default-type-color )
               } %>
@@ -67,6 +93,7 @@
   <h4 class="border-below">Hyperlinks</h4>
   <%= render  partial: 'form_section',
               locals: {
+                section_name: "hyperlinks",
                 theme: theme,
                 theme_variables: %w( $link-color $link-text-decoration $link-hover )
               } %>
@@ -74,6 +101,7 @@
   <h4 class="border-below">Blockquote</h4>
   <%= render  partial: 'form_section',
               locals: {
+                section_name: "blockquote",
                 theme: theme,
                 theme_variables: %w( $blockquote-font-style $blockquote-border-left $blockquote-padding-left $blockquote-margin-left )
               } %>
@@ -81,6 +109,7 @@
   <h4 class="border-below">Lists</h4>
   <%= render  partial: 'form_section',
               locals: {
+                section_name: "lists",
                 theme: theme,
                 theme_variables: %w( $list-padding-left $ul-list-style-type $ol-list-style-type )
               } %>
@@ -88,6 +117,7 @@
   <h4 class="border-below">Rule</h4>
   <%= render  partial: 'form_section',
               locals: {
+                section_name: "rule",
                 theme: theme,
                 theme_variables: %w( $hr-border-top )
               } %>

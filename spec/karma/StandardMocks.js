@@ -1,5 +1,3 @@
-'use strict';
-
 /* Responsible for:
  * Setting up window state and test data for karma tests
  *   - Attaching all stores to the window
@@ -16,6 +14,8 @@
  */
 
 function applyStandardMocks() {
+  'use strict';
+
   var storyUid = 'test-test';
   var storyTitle = 'Standard Mock Story Title';
   var storyDescription = 'Standard Mock Story Description';
@@ -168,7 +168,7 @@ function applyStandardMocks() {
       checkDocumentProcessedMaxRetrySeconds: 1,
       maxFileSizeBytes: 5 * 1024
     }
-  }
+  };
 
   window.socrata.storyteller.SquireMocker.mock();
 
@@ -197,6 +197,7 @@ function applyStandardMocks() {
   storyteller.linkModalStore = new storyteller.LinkModalStore();
   storyteller.linkTipStore = new storyteller.LinkTipStore();
   storyteller.collaboratorsStore = new storyteller.CollaboratorsStore();
+  storyteller.userSessionStore = new storyteller.UserSessionStore();
 
   storyteller.dispatcher.dispatch({ action: Actions.STORY_CREATE, data: storyData });
 
@@ -243,6 +244,7 @@ function applyStandardMocks() {
 }
 
 function removeStandardMocks() {
+  'use strict';
 
   var storyteller = window.socrata.storyteller;
 
@@ -250,6 +252,10 @@ function removeStandardMocks() {
   storyteller.AssetFinderMocker.unmock();
   if (socrata.visualizations.SoqlDataProvider.restore) {
     socrata.visualizations.SoqlDataProvider.restore();
+  }
+
+  if (storyteller.userSessionStore) {
+    storyteller.userSessionStore._destroy();
   }
 
   delete storyteller.dispatcher;
@@ -261,6 +267,8 @@ function removeStandardMocks() {
   delete storyteller.coreSavingStore;
   delete storyteller.assetSelectorStore;
   delete storyteller.fileUploadStore;
+  delete storyteller.collaboratorsStore;
+  delete storyteller.userSessionStore;
   delete storyteller.I18n;
   delete storyteller.config;
   delete storyteller.standardMocks;

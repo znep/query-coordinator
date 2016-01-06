@@ -9,8 +9,6 @@
   function AssetSelectorRenderer(options) {
 
     var _container = options.assetSelectorContainerElement || null;
-    var _overlay = $('<div>', { 'class': 'modal-overlay' });
-    var _dialog = $('<div>', { 'class': 'modal-dialog' });
     var _lastRenderedStep = null;
     var _warnAboutInsecureHTML = false;
 
@@ -24,7 +22,7 @@
       );
     }
 
-    _container.append([ _overlay, _dialog ]);
+    _container.modal();
 
     _listenForChanges();
     _attachEvents();
@@ -46,32 +44,13 @@
 
     function _attachEvents() {
 
-      $(document).on('keyup', function(event) {
-
-        switch (event.keyCode) {
-
-          // `ESC`
-          case 27:
-            storyteller.dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CLOSE
-            });
-            break;
-
-          default:
-            break;
-        }
-      });
-
-      // Do not scroll page if the container is scrolled
-      _container.on('mousewheel', utils.preventScrolling);
-
-      _overlay.on('click', function() {
+      _container.on('modal-dismissed', function() {
         storyteller.dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CLOSE
         });
       });
 
-      _dialog.on(
+      _container.on(
         'change',
         '[data-asset-selector-validate-field="imageUpload"]',
         function(event) {
@@ -87,7 +66,7 @@
         }
       );
 
-      _dialog.on(
+      _container.on(
         'keyup',
         '[data-asset-selector-validate-field="youtubeId"]',
         function(event) {
@@ -99,7 +78,7 @@
         }
       );
 
-      _dialog.on(
+      _container.on(
         'cut paste',
         '[data-asset-selector-validate-field="youtubeId"]',
         function(event) {
@@ -123,7 +102,7 @@
         }
       );
 
-      _dialog.on(
+      _container.on(
         'datasetSelected',
         function(event, datasetObj) {
           storyteller.dispatcher.dispatch({
@@ -134,7 +113,7 @@
         }
       );
 
-      _dialog.on(
+      _container.on(
         'visualizationSelected',
         function(event, selectedVisualization) {
           storyteller.dispatcher.dispatch({
@@ -174,13 +153,13 @@
         currentHtmlFragment = htmlFragment;
       }, Constants.EMBED_CODE_DEBOUNCE_DELAY);
 
-      _dialog.on(
+      _container.on(
         'keyup',
         '[data-asset-selector-field="embedHtml"]',
         debounceForOneSecondThenUploadHtmlFragment
       );
 
-      _dialog.on('click', '[data-action]', function() {
+      _container.on('click', '[data-action]', function() {
 
         var action = this.getAttribute('data-action');
 
@@ -248,60 +227,72 @@
       var step = storyteller.assetSelectorStore.getStep();
       var componentType = storyteller.assetSelectorStore.getComponentType();
       var componentValue = storyteller.assetSelectorStore.getComponentValue();
+      var selectorTitle;
       var selectorContent;
+      var selectorWideDisplay = false;
 
       // See if we need to render a new template, then render a media selector step if
       // necessary.
       if (step !== _lastRenderedStep) {
 
-        // Remove step-specific modal container classes
-        _resetModalDialogClass();
-
         switch (step) {
 
           case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
+            selectorTitle = I18n.t('editor.asset_selector.choose_provider_heading');
             selectorContent = _renderChooseProvider();
             break;
 
           case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+            selectorTitle = I18n.t('editor.asset_selector.youtube.heading');
             selectorContent = _renderChooseYoutubeTemplate(componentValue);
             break;
 
           case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
+            selectorTitle = I18n.t('editor.asset_selector.visualization.choose_dataset_heading');
             selectorContent = _renderChooseDatasetTemplate();
+            selectorWideDisplay = true;
             break;
 
           case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+            selectorTitle = I18n.t('editor.asset_selector.visualization.configure_vizualization_heading');
             selectorContent = _renderConfigureVisualizationTemplate();
+            selectorWideDisplay = true;
             break;
 
           case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
+            selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
             selectorContent = _renderChooseImageUploadTemplate();
             break;
 
           case Actions.FILE_UPLOAD_PROGRESS:
           case Actions.FILE_UPLOAD_ERROR:
+            selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
             selectorContent = _renderFileUploadProgressTemplate();
             break;
 
           case Actions.FILE_UPLOAD_DONE:
+            selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
             selectorContent = _renderImagePreviewTemplate();
             break;
 
           case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
+            selectorTitle = I18n.t('editor.asset_selector.embed_code.heading');
             selectorContent = _renderChooseEmbedCodeTemplate(componentValue);
             break;
 
           default:
+            selectorTitle = null;
             selectorContent = null;
             break;
         }
 
         if (selectorContent) {
-          _dialog.html(selectorContent);
-          _showSelector();
+          _showSelectorWith({
+            title: selectorTitle,
+            content: selectorContent,
+            wide: selectorWideDisplay
+          });
         } else {
-          _dialog.html('');
           _hideSelector();
         }
       }
@@ -341,12 +332,6 @@
 
     function _renderChooseProvider() {
 
-      var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.choose_provider_heading')
-      );
-
-      var closeButton = _renderModalCloseButton();
-
       var youtubeHeader = $('<h3>').
         text(I18n.t('editor.asset_selector.youtube.name'));
       var youtubeDescription = $('<p>').
@@ -382,18 +367,10 @@
         }).append(embedCodeHeader, embedCodeDescription)
       ]);
 
-      var content = $('<div>', { 'class': 'modal-content' }).append(providers);
-
-      return [ heading, closeButton, content ];
+      return providers;
     }
 
     function _renderChooseImageUploadTemplate() {
-
-      var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.image_upload.name')
-      );
-
-      var closeButton = _renderModalCloseButton();
 
       var inputSubtext = $('<h3>', {
         'class': 'asset-selector-input-subtext'
@@ -453,16 +430,10 @@
         inputControl.click();
       });
 
-      return [ heading, closeButton, content, buttonGroup ];
+      return [ content, buttonGroup ];
     }
 
     function _renderFileUploadProgressTemplate() {
-      var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.image_upload.name')
-      );
-
-      var closeButton = _renderModalCloseButton();
-
       var progress = $(
         '<div>',
         { 'class': 'asset-selector-image-upload-progress' }
@@ -527,12 +498,12 @@
         insertButton
       ]);
 
-      return [ heading, closeButton, content, buttonGroup ];
+      return [ content, buttonGroup ];
     }
 
 
     function _renderImageUploadErrorData(componentProperties) {
-      var progressContainer = _dialog.find('.asset-selector-image-upload-progress');
+      var progressContainer = _container.find('.asset-selector-image-upload-progress');
       var progressSpinner = progressContainer.find('.btn-busy');
       var progressMessage = progressContainer.find('.asset-selector-uploading-message');
       var cancelButton = progressContainer.find('.asset-selector-cancel-upload');
@@ -556,13 +527,6 @@
     }
 
     function _renderImagePreviewTemplate() {
-
-      var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.image_upload.name')
-      );
-
-      var closeButton = _renderModalCloseButton();
-
       var previewImage = $(
         '<img>',
         { 'class': 'asset-selector-preview-image' }
@@ -570,7 +534,7 @@
 
       var previewContainer = $(
         '<div>',
-        { 'class': 'asset-selector-preview-image-container bg-loading-spinner' }
+        { 'class': 'asset-selector-preview-image-container' }
       ).append([
         previewImage
       ]);
@@ -600,17 +564,17 @@
         previewContainer
       ]);
 
-      return [ heading, closeButton, content, buttonGroup ];
+      return [ content, buttonGroup ];
     }
 
     function _renderImagePreviewData(componentProperties) {
 
       var documentId = null;
       var imageUrl = null;
-      var imageContainer = _dialog.find('.asset-selector-preview-image-container');
+      var imageContainer = _container.find('.asset-selector-preview-image-container');
       var imageElement = imageContainer.find('.asset-selector-preview-image');
       var imageSrc = imageElement.attr('src');
-      var insertButton = _dialog.find(
+      var insertButton = _container.find(
         '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
       );
 
@@ -628,7 +592,6 @@
           imageElement.attr('src', imageUrl);
         }
 
-        imageContainer.removeClass('bg-loading-spinner');
         insertButton.prop('disabled', false);
       } else {
         insertButton.prop('disabled', true);
@@ -636,12 +599,6 @@
     }
 
     function _renderChooseYoutubeTemplate() {
-
-      var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.youtube.heading')
-      );
-
-      var closeButton = _renderModalCloseButton();
 
       var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
         text(I18n.t('editor.asset_selector.youtube.input_label'));
@@ -723,7 +680,7 @@
           'class': 'modal-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
-      return [ heading, closeButton, content, buttonGroup ];
+      return [ content, buttonGroup ];
     }
 
     /**
@@ -743,11 +700,11 @@
       var youtubeId = null;
       var youtubeUrl = null;
       var youtubeEmbedUrl;
-      var iframeElement = _dialog.find('.asset-selector-preview-iframe');
+      var iframeElement = _container.find('.asset-selector-preview-iframe');
       var iframeSrc = iframeElement.attr('src');
-      var inputControl = _dialog.find('[data-asset-selector-validate-field="youtubeId"]');
+      var inputControl = _container.find('[data-asset-selector-validate-field="youtubeId"]');
       var iframeContainer;
-      var insertButton = _dialog.find(
+      var insertButton = _container.find(
         '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
       );
 
@@ -775,7 +732,7 @@
 
       } else {
 
-        iframeContainer = _dialog.find('.asset-selector-preview-container');
+        iframeContainer = _container.find('.asset-selector-preview-container');
 
         // Do not show the 'invalid url' icon if the user has not input
         // any text, or if they have deleted what text they did input.
@@ -816,15 +773,15 @@
       var percentLoaded = null;
       var errorStep = null;
       var messageTranslationKey;
-      var iframeContainer = _dialog.find('.asset-selector-preview-container');
-      var iframeElement = _dialog.find('.asset-selector-preview-iframe');
-      var invalidMessageContainer = _dialog.find('.asset-selector-invalid-message');
-      var invalidMessageElement = _dialog.find('.asset-selector-invalid-description');
+      var iframeContainer = _container.find('.asset-selector-preview-container');
+      var iframeElement = _container.find('.asset-selector-preview-iframe');
+      var invalidMessageContainer = _container.find('.asset-selector-invalid-message');
+      var invalidMessageElement = _container.find('.asset-selector-invalid-description');
       var iframeSrc = iframeElement.attr('src');
-      var loadingButton = _dialog.find('.btn-busy');
-      var insertButton = _dialog.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY));
-      var insecureHtmlWarning = _dialog.find('.asset-selector-insecure-html-warning');
-      var textareaElement = _dialog.find('.asset-selector-text-input');
+      var loadingButton = _container.find('.btn-busy');
+      var insertButton = _container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY));
+      var insecureHtmlWarning = _container.find('.asset-selector-insecure-html-warning');
+      var textareaElement = _container.find('.asset-selector-text-input');
 
       function textareaIsUnedited() {
         return textareaElement.val() === '';
@@ -912,12 +869,6 @@
     }
 
     function _renderChooseDatasetTemplate() {
-      _addModalDialogClass('modal-dialog-wide');
-
-      var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.visualization.choose_dataset_heading')
-      );
-      var closeButton = _renderModalCloseButton();
       var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
       var datasetChooserIframe = $(
@@ -945,13 +896,10 @@
         loadingButton.addClass('hidden');
       });
 
-      return [ heading, closeButton, loadingButton, datasetChooserIframe, buttonGroup ];
+      return [ loadingButton, datasetChooserIframe, buttonGroup ];
     }
 
     function _renderConfigureVisualizationTemplate() {
-
-      _addModalDialogClass('modal-dialog-wide');
-
       var configureVisualizationIframe = $(
         '<iframe>',
         {
@@ -960,10 +908,6 @@
         }
       );
 
-      var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.visualization.configure_vizualization_heading')
-      );
-      var closeButton = _renderModalCloseButton();
       var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION);
 
       // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
@@ -1002,16 +946,16 @@
           });
       };
 
-      return [ heading, closeButton, loadingButton, configureVisualizationIframe, buttonGroup ];
+      return [ loadingButton, configureVisualizationIframe, buttonGroup ];
     }
 
     function _renderConfigureVisualizationData(componentType, componentProperties) {
-      var insertButton = _dialog.find(
+      var insertButton = _container.find(
         '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
       );
 
       if (componentProperties.dataset) {
-        var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
+        var iframeElement = _container.find('.asset-selector-configure-visualization-iframe');
         _updateVisualizationChooserUrl(iframeElement, componentProperties);
       }
 
@@ -1064,13 +1008,6 @@
     }
 
     function _renderChooseEmbedCodeTemplate() {
-
-      var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.embed_code.heading')
-      );
-
-      var closeButton = _renderModalCloseButton();
-
       var loadingButton = $('<button>', {
         'class': 'btn-transparent btn-busy hidden',
         disabled: true
@@ -1167,30 +1104,7 @@
           'class': 'modal-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
-      return [ heading, closeButton, content, buttonGroup ];
-    }
-
-    function _renderModalTitle(titleText) {
-      return $('<h1>', { 'class': 'modal-title' }).text(titleText);
-    }
-
-    function _renderModalCloseButton() {
-
-      return $(
-        '<button>',
-        {
-          'class': 'modal-close-btn',
-          'data-action': Actions.ASSET_SELECTOR_CLOSE
-        }
-      ).append(
-        $(
-          '<span>',
-          {
-            'class': 'icon-cross2',
-            'data-action': Actions.ASSET_SELECTOR_CLOSE
-          }
-        )
-      );
+      return [ content, buttonGroup ];
     }
 
     function _renderModalBackButton(backAction) {
@@ -1205,33 +1119,15 @@
       );
     }
 
-    function _showSelector() {
-      _container.removeClass('hidden');
+    function _showSelectorWith(modalOptions) {
+      _container.modal(modalOptions).trigger('modal-open');
     }
 
     function _hideSelector() {
-      _container.addClass('hidden');
-    }
-
-    function _addModalDialogClass(className) {
-      _dialog.addClass(className);
-    }
-
-    /**
-     * Responsible for:
-     *  - Removing all classes starting with `modal-dialog-` from the modal dialog
-     * Usage:
-     * - Call when state changes to clear out state-specific classes
-     */
-    function _resetModalDialogClass() {
-      var newClassList = _.reject(
-        _dialog.attr('class').split(' '),
-        function(className) {
-          return _.startsWith(className, 'modal-dialog-');
-        }
-      );
-
-      _dialog.attr('class', newClassList.join(' '));
+      _container.modal({
+        content: null // We never re-show the modal with old content, so save
+                      // a bit of resources by removing the content.
+      }).trigger('modal-close');
     }
   }
 

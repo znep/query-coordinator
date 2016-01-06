@@ -86,16 +86,13 @@ describe('Sanitizer.sanitizeElement()', function() {
 
   describe('given something that will cause an exception', function() {
     var evilNode = {};
-    var evilNodeDidEvil;
     Object.defineProperty(evilNode, 'nodeType', {
       get: function() {
-        evilNodeDidEvil = true;
         throw new Error('MUAHAHA');
       }
     });
 
     beforeEach(function() {
-      evilNodeDidEvil = false;
       sinon.stub(window.console, 'warn');
     });
     afterEach(function() {

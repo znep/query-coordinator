@@ -57,24 +57,20 @@
     };
 
     function getEmailAddress(collaborator) {
-      return new Promise(function(resolve, reject) {
-        if (collaborator.userEmail) {
-          resolve(collaborator);
-        } else if (collaborator.userId) {
-          $.ajax({
-            url: '/api/users/{0}.json'.format(collaborator.userId),
-            dataType: 'json',
-            success: function(json) {
-              collaborator.userEmail = json.email;
-              collaborator.displayName = json.displayName;
-              resolve(collaborator);
-            },
-            error: reject
-          });
-        } else {
-          reject();
-        }
-      });
+      if (collaborator.userEmail) {
+        return Promise.resolve(collaborator);
+      } else if (collaborator.userId) {
+        return Promise.resolve($.ajax({
+          url: '/api/users/{0}.json'.format(collaborator.userId),
+          dataType: 'json'})
+        ).then(function(json) {
+          collaborator.userEmail = json.email;
+          collaborator.displayName = json.displayName;
+          return collaborator;
+        });
+      } else {
+        return Promise.reject();
+      }
     }
 
     /**
@@ -133,6 +129,37 @@
     };
 
     /**
+     * @function addCollaborators
+     * @description
+     * Adds collaborators to the current story's grant list with the specified access level.
+     * These requests are sequential -- due to Core server's requirements and locking mechanism.
+     *
+     * @param {Array[Collaborator]} collaborators - A list of collaborators.
+     * @param {Object} collaborator - A collaborator Object.
+     * @param {String} collaborator.email - A valid email address.
+     * @param {String} collaborator.accessLevel - A valid access level.
+     * @returns {Promise} - A promise that resolves when an addition succeeds.
+     */
+    this.addCollaborators = function(collaborators) {
+      return new Promise(function(resolve, reject) {
+        var index = 0;
+        var next = function() {
+          if (!collaborators[index]) {
+            return resolve(collaborators);
+          }
+
+          self.addCollaborator(collaborators[index++]).then(function() {
+            next();
+          }, function() {
+            reject('Failed to save collaborator.');
+          });
+        };
+
+        next();
+      });
+    };
+
+    /**
      * @function removeCollaborator
      * @description
      * Removes a collaborator from the current story's grant list.
@@ -185,7 +212,7 @@
 
     function ajax(method, url, data) {
       return new Promise(function(resolve, reject) {
-        var json = storeToGrantFormat(data);
+        var json = Array.isArray(data) ? data.map(storeToGrantFormat) : storeToGrantFormat(data);
         var request = new XMLHttpRequest();
 
         json = JSON.stringify(json);

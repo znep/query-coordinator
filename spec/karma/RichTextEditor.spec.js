@@ -1,9 +1,11 @@
 describe('RichTextEditor', function() {
+  'use strict';
 
   var validEditorId = '1';
   var validFormats = [];
   var validPreloadContent = 'Hello, world!';
   var storyteller = window.socrata.storyteller;
+  var RichTextEditor = storyteller.RichTextEditor;
 
   // Squire does not attach itself to the window if it detects that
   // it is inside an iFrame.
@@ -16,13 +18,16 @@ describe('RichTextEditor', function() {
   });
 
   describe('constructor', function() {
+    it('exists', function() {
+      assert.isDefined(RichTextEditor);
+    });
 
     describe('when called with an element that is not a jQuery object', function() {
 
       it('raises an exception', function() {
 
         assert.throws(function() {
-          var editor = new RichTextEditor(
+          new RichTextEditor( //eslint-disable-line no-new
             null,
             validEditorId,
             window.socrata.storyteller.assetFinder,
@@ -39,7 +44,7 @@ describe('RichTextEditor', function() {
 
         var jqueryObject = $('.does-not-match-any-elements');
         assert.throws(function() {
-          var editor = new RichTextEditor(
+          new RichTextEditor( //eslint-disable-line no-new
             jqueryObject,
             validEditorId,
             window.socrata.storyteller.assetFinder,
@@ -68,7 +73,7 @@ describe('RichTextEditor', function() {
         var jqueryObject = $('.text-editor');
 
         assert.throws(function() {
-          var editor = new RichTextEditor(
+          new RichTextEditor( //eslint-disable-line no-new
             jqueryObject,
             validEditorId,
             window.socrata.storyteller.assetFinder,
@@ -87,7 +92,7 @@ describe('RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            var editor = new RichTextEditor(
+            new RichTextEditor( //eslint-disable-line no-new
               jqueryObject,
               false,
               window.socrata.storyteller.assetFinder,
@@ -138,7 +143,7 @@ describe('RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            var editor = new storyteller.RichTextEditor(
+            new storyteller.RichTextEditor( //eslint-disable-line no-new
               jqueryObject,
               '12',
               null,
@@ -172,7 +177,7 @@ describe('RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            var editor = new RichTextEditor(
+            new RichTextEditor( //eslint-disable-line no-new
               jqueryObject,
               '12',
               window.socrata.storyteller.assetFinder,
@@ -222,7 +227,7 @@ describe('RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            var editor = new storyteller.RichTextEditor(
+            new storyteller.RichTextEditor( //eslint-disable-line no-new
               jqueryObject,
               validEditorId,
               window.socrata.storyteller.assetFinder,
@@ -343,6 +348,74 @@ describe('RichTextEditor', function() {
       });
     });
 
+    describe('Link Tip actions', function() {
+      var hasFormatA;
+
+      beforeEach(function() {
+        // This function is how RichTextEditor determines if the path is in an
+        // anchor.
+        Squire.prototype.hasFormat = function(formatName) {
+          if (formatName === 'a') {
+            return hasFormatA;
+          } else {
+            throw new Error('unexpected hasFormat call');
+          }
+        };
+      });
+
+      describe('when a user changes path (focus position)', function() {
+        describe('to a link (anchor tag)', function() {
+          beforeEach(function() { hasFormatA = true; });
+          it('should dispatch LINK_TIP_OPEN', function(done) {
+            storyteller.dispatcher.register(function(action) {
+              if (action.action === 'LINK_TIP_OPEN') {
+                assert.deepEqual(
+                  action,
+                  {
+                    action: 'LINK_TIP_OPEN',
+                    editorId: '1',
+                    text: 'some text',
+                    link: 'an href',
+                    openInNewWindow: false,
+                    boundingClientRect: { foo: 'bar' }
+                  }
+                );
+                done();
+              }
+            });
+
+            // The getSelection stub needs a little more
+            // functionality.
+            Squire.prototype.getSelection = _.wrap(
+              Squire.prototype.getSelection,
+              function(func, args) {
+                var returnValue = func(args);
+                returnValue.startContainer = {
+                  textContent: 'some text',
+                  href: 'an href',
+                  getAttribute: _.constant('attribute value'),
+                  getBoundingClientRect: _.constant({ foo: 'bar' }),
+                  nodeType: 1
+                };
+                return returnValue;
+              });
+            socrata.storyteller.SquireMocker.invokeStubEvent('pathChange');
+          });
+        });
+        describe('to anything other than a link', function() {
+          beforeEach(function() { hasFormatA = false; });
+          it('should dispatch LINK_TIP_CLOSE', function(done) {
+            storyteller.dispatcher.register(function(action) {
+              if (action.action === 'LINK_TIP_CLOSE') {
+                done();
+              }
+            });
+            socrata.storyteller.SquireMocker.invokeStubEvent('pathChange');
+          });
+        });
+      });
+    });
+
   });
 
   describe('.deselect()', function() {
@@ -351,7 +424,7 @@ describe('RichTextEditor', function() {
     var editor;
 
     beforeEach(function() {
-     $textEditor = $('.text-editor');
+      $textEditor = $('.text-editor');
       editor = new storyteller.RichTextEditor(
         $textEditor,
         validEditorId,

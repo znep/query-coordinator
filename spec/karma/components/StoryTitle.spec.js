@@ -1,6 +1,7 @@
 describe('StoryTitle jQuery plugin', function() {
+  'use strict';
+
   var node;
-  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
     node = testDom.append('<div>');
@@ -20,7 +21,7 @@ describe('StoryTitle jQuery plugin', function() {
     // valid approach would be to wait for the story
     // to exist.
     it('should throw', function() {
-      assert.throws(function() { node.storyTitle('badd-guyz') });
+      assert.throws(function() { node.storyTitle('badd-guyz'); });
     });
   });
 

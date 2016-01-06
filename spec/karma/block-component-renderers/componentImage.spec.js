@@ -2,7 +2,6 @@ describe('componentImage jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   var validComponentData = {
     type: 'image',
@@ -26,8 +25,8 @@ describe('componentImage jQuery plugin', function() {
     assert.throws(function() { $component.componentImage([]); });
   });
 
-  describe('given a value that does not contain a documentId', function () {
-    it('should throw when setting the img source', function () {
+  describe('given a value that does not contain a documentId', function() {
+    it('should throw when setting the img source', function() {
       var badData = _.cloneDeep(validComponentData);
       delete badData.value.documentId;
 
@@ -37,8 +36,8 @@ describe('componentImage jQuery plugin', function() {
     });
   });
 
-  describe('given a value that does not contain a url', function () {
-    it('should throw when setting the img source', function () {
+  describe('given a value that does not contain a url', function() {
+    it('should throw when setting the img source', function() {
       var badData = _.cloneDeep(validComponentData);
       delete badData.value.url;
 

@@ -59,9 +59,7 @@ describe('LinkTipRenderer', function() {
       var text;
       var dispatch;
 
-      beforeEach(function () {
-        var range = document.createRange();
-
+      beforeEach(function() {
         dispatch = sinon.spy(storyteller.dispatcher, 'dispatch');
         manager = storyteller.richTextEditorManager;
         text = document.createTextNode('Hello, World!');
@@ -70,7 +68,7 @@ describe('LinkTipRenderer', function() {
 
         // Intense mock of richTextEditorManager
         storyteller.richTextEditorManager = {
-          getEditor: function () {
+          getEditor: function() {
             return {
               getSquireInstance: function() {
                 return {
@@ -85,7 +83,7 @@ describe('LinkTipRenderer', function() {
         };
       });
 
-      afterEach(function () {
+      afterEach(function() {
         dispatch.restore();
         storyteller.richTextEditorManager = manager;
         $body[0].removeChild(text);

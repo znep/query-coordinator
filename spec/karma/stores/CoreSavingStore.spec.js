@@ -37,13 +37,13 @@ describe('CoreSavingStore', function() {
     waitFor(function() {
       return storyteller.coreSavingStore.isSaveInProgress() === true;
     }, done);
-  };
+  }
 
   function expectNoSaveInProgress(done) {
     waitFor(function() {
       return storyteller.coreSavingStore.isSaveInProgress() === false;
     }, done);
-  };
+  }
 
   describe('upon initialization', function() {
     it('should indicate no save in progress', expectNoSaveInProgress);
@@ -58,7 +58,7 @@ describe('CoreSavingStore', function() {
         storyteller.dispatcher.dispatch({
           action: Actions.STORY_SET_TITLE,
           storyUid: standardMocks.validStoryUid,
-          title: _.range(0,1000).join()
+          title: _.range(0, 1000).join()
         });
 
         storyteller.dispatcher.dispatch({
@@ -106,7 +106,7 @@ describe('CoreSavingStore', function() {
 
       afterEach(function() {
         // delete cookie
-        document.cookie = cookie + 'expires=Thu, 01 Jan 1970 00:00:01 GMT'
+        document.cookie = cookie + 'expires=Thu, 01 Jan 1970 00:00:01 GMT';
       });
 
 

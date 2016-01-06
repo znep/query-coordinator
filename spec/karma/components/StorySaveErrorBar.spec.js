@@ -1,4 +1,6 @@
 describe('storySaveErrorBar jQuery plugin', function() {
+  'use strict';
+
   var $errorBar;
   var storyteller = window.socrata.storyteller;
   var mockStore;
@@ -6,19 +8,19 @@ describe('storySaveErrorBar jQuery plugin', function() {
   beforeEach(function() {
     $errorBar = $('<div>');
 
-    function MockStore(forStoryUid) {
+    function MockStore() {
       var self = this;
       var _isSaveInProgress = false;
       var _lastSaveError = null;
 
       _.extend(this, new storyteller.Store());
 
-      this.mockIsSaveInProgress= function(isSaveInProgress) {
+      this.mockIsSaveInProgress = function(isSaveInProgress) {
         _isSaveInProgress = isSaveInProgress;
         self._emitChange();
       };
 
-      this.mockLastError= function(error) {
+      this.mockLastError = function(error) {
         _lastSaveError = error;
         self._emitChange();
       };
@@ -86,21 +88,21 @@ describe('storySaveErrorBar jQuery plugin', function() {
         });
 
         it('should call StoryDraftCreator.saveDraft when clicked', function() {
-          $errorBar.find('button').click();
+          $errorBar.find('button.try-again').click();
           sinon.assert.calledWithExactly(saveDraftStub, standardMocks.validStoryUid);
         });
 
         it('try again button should be visible only when save is not in progress', function() {
           mockStore.mockIsSaveInProgress(true);
-          assert.equal($errorBar.find('button').css('display'), 'none');
+          assert.equal($errorBar.find('button.try-again').css('display'), 'none');
 
           mockStore.mockIsSaveInProgress(false);
-          assert.equal($errorBar.find('button').css('display'), 'inline-block');
+          assert.equal($errorBar.find('button.try-again').css('display'), 'inline-block');
         });
       });
 
       it('should place the correct text in the message', function() {
-        assert.equal($errorBar.find('.message').text(), 'Translation for: editor.story_save_error_generic');
+        assert.include($errorBar.find('.message').text(), 'Translation for: editor.story_save_error_generic');
       });
     });
 
@@ -123,15 +125,49 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
       it('try again button should be hidden', function() {
         mockStore.mockIsSaveInProgress(true);
-        assert.equal($errorBar.find('button').css('display'), 'none');
+        assert.equal($errorBar.find('button.try-again').css('display'), 'none');
 
         mockStore.mockIsSaveInProgress(false);
-        assert.equal($errorBar.find('button').css('display'), 'none');
+        assert.equal($errorBar.find('button.try-again').css('display'), 'none');
       });
 
       it('should place the correct text in the message', function() {
-        assert.equal($errorBar.find('.message').text(), 'Translation for: editor.story_save_error_conflict');
+        assert.include($errorBar.find('.message').text(), 'Translation for: editor.story_save_error_conflict');
       });
+    });
+
+    describe('with an invalid session', function() {
+      beforeEach(function() {
+        sinon.stub(storyteller.userSessionStore, 'hasValidSession', _.constant(false));
+        storyteller.userSessionStore._emitChange();
+      });
+
+      afterEach(function() {
+        storyteller.userSessionStore.hasValidSession.restore();
+      });
+
+      it('should place the story-save-error class on body', function() {
+        assert.isTrue($(document.body).hasClass('story-save-error'));
+      });
+
+      it('bar should be visible', function() {
+        mockStore.mockIsSaveInProgress(true);
+        assert.isTrue($errorBar.hasClass('visible'));
+
+        mockStore.mockIsSaveInProgress(false);
+        assert.isTrue($errorBar.hasClass('visible'));
+      });
+
+      it('login message should be visible', function() {
+        assert.equal($errorBar.find('.login.message').css('display'), 'inline');
+      });
+
+      it('should place the correct text in the message', function() {
+        assert.include($errorBar.find('.message').text(), 'Translation for: editor.user_session_timeout');
+        assert.include($errorBar.find('.message').text(), 'Translation for: editor.login_phrase_1_good_manners');
+        assert.include($errorBar.find('.message').text(), 'Translation for: editor.login_phrase_2_link_text');
+      });
+
     });
   });
 });

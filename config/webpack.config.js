@@ -186,7 +186,7 @@ function generateDataLensConfig() {
           exclude: /(node_modules|bower_components)/,
           loaders: [
             'ngtemplate?relativeTo=' + templateDir,
-            'html'
+            'html?minimize=false'
           ]
         },
         {

@@ -41,6 +41,7 @@ var Routes = {
     } else if (visualizationAddUrlMatch) {
       stateName = 'view.visualizationAdd';
       params.defaultColumn = searchParams.defaultColumn;
+      params.defaultVifType = searchParams.defaultVifType;
       params.defaultRelatedVisualizationUid = searchParams.defaultRelatedVisualizationUid;
     } else if (singleCardViewUrlMatch) {
       stateName = 'view.card';

@@ -139,13 +139,16 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
       }
     }).
     state('view.visualizationAdd', {
-      params: ['defaultColumn', 'defaultRelatedVisualizationUid'],
+      params: ['defaultColumn', 'defaultVifType', 'defaultRelatedVisualizationUid'],
       resolve: {
         dataset: function(Dataset) {
           return new Dataset(datasetMetadata);
         },
         defaultColumn: function($stateParams) {
           return $stateParams.defaultColumn;
+        },
+        defaultVifType: function($stateParams) {
+          return $stateParams.defaultVifType;
         },
         defaultRelatedVisualizationUid: function($stateParams) {
           return $stateParams.defaultRelatedVisualizationUid;

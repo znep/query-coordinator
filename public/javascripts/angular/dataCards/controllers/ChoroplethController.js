@@ -64,7 +64,7 @@ function ChoroplethController(
       safeApplySubscribe($scope, function(computedColumnPresent) {
         $scope.isPendingColumnAddition = !computedColumnPresent;
         if (!computedColumnPresent) {
-          $scope.geojsonAggregateData = [];
+          $scope.geojsonAggregateData = undefined;
         }
       });
   } else {

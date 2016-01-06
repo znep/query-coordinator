@@ -383,6 +383,10 @@ class NewUxBootstrapController < ActionController::Base
     column['cardinality'].to_i == 1
   end
 
+  def column_has_no_valid_cards?(column)
+    default_card_type_for(column, dataset_size) == 'invalid'
+  end
+
   def non_bootstrappable_column?(field_name, column)
     field_name_ignored_for_bootstrap?(field_name) ||
       system_column?(field_name) ||
@@ -392,7 +396,8 @@ class NewUxBootstrapController < ActionController::Base
       (feature_map_disabled? && point_column?(column)) ||
       column_is_known_uniform?(column) ||
       money_column?(column) ||
-      curated_region_is_disabled_for_column?(column)
+      curated_region_is_disabled_for_column?(column) ||
+      column_has_no_valid_cards?(column)
   end
 
   def interesting_columns(columns)

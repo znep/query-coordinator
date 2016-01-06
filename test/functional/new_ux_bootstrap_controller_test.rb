@@ -832,6 +832,24 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               get :bootstrap, id: 'four-four'
             end
           end
+
+          should 'not create a card for columns with no valid card types' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              },
+              update_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              }
+            )
+
+            @page_metadata_manager.expects(:create).with do |page, _|
+              is_invalid_card = lambda { |fieldName| fieldName =~ /wacko_card_type/ }
+              assert(page['cards'].pluck('fieldName').map(&:downcase).none?(&is_invalid_card))
+            end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+            get :bootstrap, id: 'four-four'
+          end
         end
       end
     end

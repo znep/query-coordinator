@@ -54,21 +54,21 @@ describe('ChoroplethMap jQuery component', function() {
   };
 
   function destroyVisualization($container) {
-
     $container.destroySocrataChoroplethMap();
-    $container.remove();
   }
 
   beforeEach(function() {
-
     $container = $('<div>').attr('id', 'test-choropleth').css({ width: 640, height: 480 });
     $('body').append($container);
+  });
+
+  afterEach(function() {
+    $('#test-choropleth').remove();
   });
 
   describe('constructor', function() {
 
     describe('given invalid arguments', function() {
-
       it('should throw an error', function() {
 
         assert.throws(function() { $container.socrataChoroplethMap(); });

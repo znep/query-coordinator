@@ -54,15 +54,16 @@ describe('FeatureMap jQuery component', function() {
   };
 
   function destroyVisualization($container) {
-
     $container.trigger('destroy');
-    $container.remove();
   }
 
   beforeEach(function() {
-
     $container = $('<div>').attr('id', 'test-feature-map').css({ width: 640, height: 480 });
     $('body').append($container);
+  });
+
+  afterEach(function() {
+    $('#test-feature-map').remove();
   });
 
   describe('constructor', function() {

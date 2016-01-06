@@ -60,12 +60,12 @@ var importTypes = {
     dataset_link: 'text'
 };
 var locationTypes = {
-    address: 'text',
-    city: 'text',
-    state: 'text',
-    zip: 'number',
-    latitude: 'number',
-    longitude: 'number'
+    address: [ 'text' ],
+    city: [ 'text' ],
+    state: [ 'text' ],
+    zip: [ 'number', 'text' ],
+    latitude: [ 'number' ],
+    longitude: [ 'number' ]
 };
 var forbiddenTypes = [
     'document', 'document_obsolete',
@@ -563,12 +563,13 @@ var validateAll = function()
 
                 // warn if the column is nonoptimally used
                 if (!$.isBlank(originalColumn) && (originalColumn.type != 'static') &&
-                    (originalColumn.suggestion != locationTypes[field]))
+                    !_.isUndefined(locationTypes[field]) &&
+                    (locationTypes[field].indexOf(originalColumn.suggestion) < 0))
                 {
                     addValidationError(importColumn, 'warning', 'set to import its <strong>' +
                         field + '</strong> from the source column <strong>' + $.htmlEscape(originalColumn.name) +
                         '</strong>, but our analysis shows that the source column is a ' + originalColumn.suggestion +
-                        ' column, while ' + field + ' expects a column of type ' + locationTypes[field] +
+                        ' column, while ' + field + ' expects a column of type ' + locationTypes[field].join(' or ') +
                         '. Should you choose to proceed with these import settings, import ' +
                         'or geocoding errors are likely to occur.');
                 }

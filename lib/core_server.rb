@@ -266,10 +266,11 @@ class CoreServer
         return_errors: true
       }
 
-      # Older custom themes that existed prior to the ability to add a google font code
-      # were causing errors because the google_font_code property was missing from their
-      # theme configurations. The following code adds the google_font_code property to
-      # the previously created themes so that this error no longer happens.
+      # When attempting to update an existing configuration where the configuration has new properties
+      # we will get errors when trying to update a property that does not exist 
+      # so we need to add the property in the case where it doesn't currently exist in 
+      # the configuration. This is due to the way the configurations API is defined where properties are
+      # managed separate from their configurations.
       result = core_server_request_with_retries(core_server_request_options)
       
       if result.try(:[], 'code') == 'not_found'

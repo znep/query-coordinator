@@ -47,7 +47,12 @@ class Admin::ThemesController < ApplicationController
   private
 
   def theme_params
-    params.require(:theme).permit(:title, :description, :google_font_code, :css_variables => Theme.default_css_variables.keys).tap do |whitelisted|
+    params.require(:theme).permit(
+      :title,
+      :description,
+      :google_font_code,
+      :css_variables => Theme.default_css_variables.keys
+    ).tap do |whitelisted|
       whitelisted['domain_cname'] = request.host
     end
   end

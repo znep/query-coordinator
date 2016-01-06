@@ -8,8 +8,8 @@
           <% field_name = "theme[css_variables][#{var_name}]" -%>
           <% value = theme.css_variables[var_name] -%>
           <% value = Theme.default_css_variables[var_name] if value.blank? -%>
-          <%= label_tag field_name, t(".#{var_name}"), "data-var_name": var_name %>
-          <%= text_field_tag field_name, value, class: "text-input", "data-var_name": var_name %>
+          <%= label_tag field_name, t(".#{var_name}") %>
+          <%= text_field_tag field_name, value, class: "text-input" %>
         </div>
       <% end %>  
     </div>

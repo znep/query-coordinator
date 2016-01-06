@@ -1,7 +1,9 @@
 // Karma configuration
 // Generated on Thu Jun 04 2015 16:49:30 GMT-0700 (PDT)
 
-module.exports = function(config) {
+module.exports = function(config) { //eslint-disable-line no-undef
+  'use strict';
+
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)

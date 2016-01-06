@@ -1,4 +1,5 @@
-function generateBlockData(options) {
+window.generateBlockData = function(options) {
+  'use strict';
 
   var blockData = {
     layout: '12',
@@ -11,15 +12,16 @@ function generateBlockData(options) {
   };
 
   for (var prop in options) {
-    if (options.hasOwnProperty(prop) && blockData.hasOwnProperty(prop)){
+    if (options.hasOwnProperty(prop) && blockData.hasOwnProperty(prop)) {
       blockData[prop] = options[prop];
     }
   }
 
   return blockData;
-}
+};
 
-function generateStoryData(storyData) {
+window.generateStoryData = function(storyData) {
+  'use strict';
 
   var defaults = {
     uid: 'test-test',
@@ -35,4 +37,4 @@ function generateStoryData(storyData) {
   storyData = _.extend({}, defaults, storyData);
 
   return storyData;
-}
+};

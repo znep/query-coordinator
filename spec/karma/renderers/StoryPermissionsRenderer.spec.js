@@ -3,16 +3,11 @@ describe('StoryPermissionsRenderer', function() {
 
   var storyteller = window.socrata.storyteller;
 
-  var container;
-  var options;
-  var testBlockId = 'testBlock1';
-  var testComponentIndex = 1;
   var StoryPermissionsRenderer;
   var uniqueId = 1000;
 
   // Template Variables
   var $settingsPanelPublishing;
-  var $settingsPanelStoryStatus;
   var $visibilityLabel;
   var $visibilityButton;
   var $visibilityButtonText;
@@ -56,6 +51,8 @@ describe('StoryPermissionsRenderer', function() {
 
   function buildAndCleanTemplate() {
     beforeEach(function() {
+      var $settingsPanelStoryStatus;
+
       $settingsPanelPublishing = $('<div>', {'class': 'settings-panel-publishing'});
       $settingsPanelStoryStatus = $('<div>', {'class': 'settings-panel-story-status'});
 
@@ -69,7 +66,7 @@ describe('StoryPermissionsRenderer', function() {
       $settingsPanelStoryVisibility.append($visibilityLabel);
       $settingsPanelStoryVisibility.append($visibilityButton);
 
-      var $settingsPanelStoryStatus = $('<div>', {'class': 'settings-panel-story-status'});
+      $settingsPanelStoryStatus = $('<div>', {'class': 'settings-panel-story-status'});
 
       $updatePublicLabel = $('<h3>');
       $updatePublicButton = $('<button>');
@@ -123,7 +120,7 @@ describe('StoryPermissionsRenderer', function() {
       describe('with no arguments and a missing publishing DOM element', function() {
         it('raises an exception', function() {
           assert.throws(function() {
-            var instance = new StoryPermissionsRenderer();
+            new StoryPermissionsRenderer(); //eslint-disable-line no-new
           });
         });
       });
@@ -137,7 +134,7 @@ describe('StoryPermissionsRenderer', function() {
           });
 
           it('renders', function() {
-            var instance = new StoryPermissionsRenderer();
+            new StoryPermissionsRenderer(); //eslint-disable-line no-new
 
             assert.equal($visibilityLabel.text(), I18n.t('editor.settings_panel.publishing_section.visibility.public'));
             assert.equal($visibilityButtonText.text(), I18n.t('editor.settings_panel.publishing_section.visibility.make_story_private'));
@@ -158,7 +155,7 @@ describe('StoryPermissionsRenderer', function() {
             });
 
             it('renders', function() {
-              var instance = new StoryPermissionsRenderer();
+              new StoryPermissionsRenderer(); //eslint-disable-line no-new
 
               assert.equal($updatePublicButton.prop('disabled'), false);
               assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.previously_published'));
@@ -173,7 +170,7 @@ describe('StoryPermissionsRenderer', function() {
           });
 
           it('renders', function() {
-            var instance = new StoryPermissionsRenderer();
+            new StoryPermissionsRenderer(); //eslint-disable-line no-new
 
             assert.equal($visibilityLabel.text(), I18n.t('editor.settings_panel.publishing_section.visibility.private'));
             assert.equal($visibilityButtonText.text(), I18n.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
@@ -182,7 +179,7 @@ describe('StoryPermissionsRenderer', function() {
             assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly'));
           });
         });
-      })
+      });
     });
   });
 
@@ -193,7 +190,7 @@ describe('StoryPermissionsRenderer', function() {
     describe('when the story is public', function() {
       beforeEach(function() {
         newStory(false);
-        var instance = new StoryPermissionsRenderer();
+        new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
 
       it('attempts to make a call to StoryPermissionsManager to make the story public', function() {
@@ -208,7 +205,7 @@ describe('StoryPermissionsRenderer', function() {
     describe('when the story is private', function() {
       beforeEach(function() {
         newStory(true);
-        var instance = new StoryPermissionsRenderer();
+        new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
 
       it('attempts to make a call to StoryPermissionsManager to make the story private', function() {
@@ -226,8 +223,6 @@ describe('StoryPermissionsRenderer', function() {
     stubStoryPermissionsManager();
 
     describe('when the story is public', function() {
-      var instance;
-
       beforeEach(function() {
         newStory(true);
 
@@ -237,7 +232,7 @@ describe('StoryPermissionsRenderer', function() {
           storyUid: storyteller.userStoryUid
         });
 
-        instance = new StoryPermissionsRenderer();
+        new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
 
       it('attempts to update the published story', function() {
@@ -252,11 +247,9 @@ describe('StoryPermissionsRenderer', function() {
     });
 
     describe('when the story is private', function() {
-      var instance;
-
       beforeEach(function() {
         newStory(false);
-        instance = new StoryPermissionsRenderer();
+        new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
 
       it('renders the update button in a disabled state', function() {

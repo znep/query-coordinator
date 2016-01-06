@@ -1,6 +1,7 @@
 describe('Modal jQuery plugin', function() {
+  'use strict';
+
   var node;
-  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
     node = testDom.append('<div>');
@@ -93,7 +94,7 @@ describe('Modal jQuery plugin', function() {
 
     it('should emit modal-dismissed on ESC', function(done) {
       node.on('modal-dismissed', function() { done(); });
-      $(document).triggerHandler($.Event('keyup', { keyCode: 27 }));
+      $(document).triggerHandler($.Event('keyup', { keyCode: 27 })); //eslint-disable-line new-cap
     });
 
     it('after modal-close event should become invisible', function() {

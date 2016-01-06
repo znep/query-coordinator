@@ -2,7 +2,6 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
   var validComponentData;
 
   beforeEach(function() {
@@ -20,8 +19,8 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
     assert.throws(function() { $component.componentSocrataVisualizationClassic([]); });
   });
 
-  describe('given a value that does not contain a visualization', function () {
-    it('should throw when updating the visualization', function () {
+  describe('given a value that does not contain a visualization', function() {
+    it('should throw when updating the visualization', function() {
       var badData = _.cloneDeep(validComponentData);
       delete badData.value.visualization;
 

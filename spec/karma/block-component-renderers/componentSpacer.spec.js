@@ -2,7 +2,6 @@ describe('componentSpacer jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
     testDom.append('<div>');
@@ -18,8 +17,8 @@ describe('componentSpacer jQuery plugin', function() {
     assert.throws(function() { $component.componentSpacer([]); });
   });
 
-  describe('given a type that is not supported', function () {
-    it('should throw when instantiated', function () {
+  describe('given a type that is not supported', function() {
+    it('should throw when instantiated', function() {
       assert.throws(function() { $component.componentSpacer({type: 'notSpacer'}); });
     });
   });
@@ -35,7 +34,7 @@ describe('componentSpacer jQuery plugin', function() {
       assert.instanceOf($component, $);
     });
 
-    it('should render a <div class="component-spacer"> DOM element', function () {
+    it('should render a <div class="component-spacer"> DOM element', function() {
       assert.lengthOf($component.find('div.component-spacer'), 1);
     });
   });

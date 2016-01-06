@@ -1,14 +1,11 @@
 describe('CollaboratorsRenderer', function() {
   'use strict';
 
-  var $body;
   var $collaborators;
   var renderer;
   var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
-    $body = $('body');
-
     renderer = new storyteller.CollaboratorsRenderer();
 
     storyteller.dispatcher.dispatch({
@@ -62,7 +59,7 @@ describe('CollaboratorsRenderer', function() {
       });
 
       it('should have one, valid entry in the table', function() {
-        var $tr = $collaborators.find('tbody tr');
+        $tr = $collaborators.find('tbody tr');
 
         assert.lengthOf($tr, 1);
         assert.lengthOf($tr.find('select'), 1);
@@ -254,7 +251,7 @@ describe('CollaboratorsRenderer', function() {
             prop('selected', true);
           $tr.
             find('select').
-            trigger('change')
+            trigger('change');
 
           $tr = getCollaborator(newCollaborator);
           $trNewest = getCollaborator(newestCollaborator);

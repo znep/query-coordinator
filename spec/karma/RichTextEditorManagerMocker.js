@@ -1,15 +1,14 @@
-(function (root) {
-
+(function(root) {
   'use strict';
 
   var socrata = root.socrata;
   var storyteller = socrata.storyteller;
-  var createMockEditor = function(callback) {
+  var createMockEditor = function() {
     return {
       setContent: storyteller.RichTextEditorManagerMocker.setContentSpy,
       applyThemeClass: storyteller.RichTextEditorManagerMocker.applyThemeClassSpy
     };
-  }
+  };
 
   storyteller.RichTextEditorManagerMocker = {
 
@@ -24,7 +23,7 @@
     // Auxillary
 
     reset: function() {
-      for(var key in storyteller.RichTextEditorManagerMocker) {
+      for (var key in storyteller.RichTextEditorManagerMocker) {
         if (/Spy/.test(key)) {
           storyteller.RichTextEditorManagerMocker[key].reset();
         }

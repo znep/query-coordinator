@@ -51,16 +51,16 @@ describe('componentHTML jQuery plugin', function() {
       assert.isTrue($component.is('[data-editor-id]'));
     });
 
-    it('calls createEditor on richTextEditorManager', function () {
+    it('calls createEditor on richTextEditorManager', function() {
       sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.createEditorSpy, $component, editorId, initialValue);
     });
 
-    it('calls applyThemeClass during editor creation', function () {
+    it('calls applyThemeClass during editor creation', function() {
       sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.applyThemeClassSpy, theme);
     });
 
-    describe('that is then destroyed', function () {
-      it('should call deleteEditor on richTextEditorManager', function () {
+    describe('that is then destroyed', function() {
+      it('should call deleteEditor on richTextEditorManager', function() {
         sinon.assert.notCalled(storyteller.RichTextEditorManagerMocker.deleteEditorSpy);
 
         // It should be safe to destroy multiple times.
@@ -71,8 +71,8 @@ describe('componentHTML jQuery plugin', function() {
       });
     });
 
-    describe('that is then updated', function () {
-      it('calls setContent on the correct editor instance', function () {
+    describe('that is then updated', function() {
+      it('calls setContent on the correct editor instance', function() {
         var newValue = 'something';
 
         $component.componentHTML({type: 'html', value: newValue});

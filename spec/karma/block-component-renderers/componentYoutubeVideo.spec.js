@@ -2,7 +2,6 @@ describe('componentYoutubeVideo jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   var validComponentData = {
     type: 'youtube.video',
@@ -25,8 +24,8 @@ describe('componentYoutubeVideo jQuery plugin', function() {
     assert.throws(function() { $component.componentYoutubeVideo([]); });
   });
 
-  describe('given a value that does not contain an id', function () {
-    it('should throw when setting the iframe source', function () {
+  describe('given a value that does not contain an id', function() {
+    it('should throw when setting the iframe source', function() {
       var badData = _.cloneDeep(validComponentData);
       delete badData.value.id;
 

@@ -1,4 +1,6 @@
 describe('storySavingStatus jQuery plugin', function() {
+  'use strict';
+
   var $button;
   var storyteller = window.socrata.storyteller;
   var mockStore;
@@ -6,7 +8,7 @@ describe('storySavingStatus jQuery plugin', function() {
   beforeEach(function() {
     $button = $('<button>');
 
-    function MockStore(forStoryUid) {
+    function MockStore() {
       var self = this;
       var _isDirty = false;
       var _isSaveInProgress = false;
@@ -18,7 +20,7 @@ describe('storySavingStatus jQuery plugin', function() {
         self._emitChange();
       };
 
-      this.mockIsSaveInProgress= function(isSaveInProgress) {
+      this.mockIsSaveInProgress = function(isSaveInProgress) {
         _isSaveInProgress = isSaveInProgress;
         self._emitChange();
       };

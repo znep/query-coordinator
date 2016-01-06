@@ -7,7 +7,7 @@ describe('storytellerUtils', function() {
   describe('.typeToClassNameForComponentType()', function() {
 
     it('should throw when provided a value that is not a string', function() {
-      assert.throws(function () {
+      assert.throws(function() {
         utils.typeToClassNameForComponentType({});
       });
     });
@@ -48,7 +48,7 @@ describe('storytellerUtils', function() {
     describe('mapDOMFragmentDescending()', function() {
 
       var validApplyFn = function(el) { return el; };
-      var validShouldTerminateFn = function(el) { return false; };
+      var validShouldTerminateFn = function() { return false; };
       var convertNonDivsToDivs = function(el) {
         if (el.nodeName.toLowerCase() === 'div') {
           return el;
@@ -68,7 +68,7 @@ describe('storytellerUtils', function() {
             utils.mapDOMFragmentDescending(
               null,
               validApplyFn,
-              validShouldTerminateFun
+              validShouldTerminateFn
             );
           });
         });
@@ -82,7 +82,7 @@ describe('storytellerUtils', function() {
             utils.mapDOMFragmentDescending(
               validElement,
               null,
-              validShouldTerminateFun
+              validShouldTerminateFn
             );
           });
         });
@@ -137,7 +137,7 @@ describe('storytellerUtils', function() {
     describe('reduceDOMFragmentAscending()', function() {
 
       var validApplyFn = function(el, acc) { acc.push(el.nodeName.toLowerCase()); };
-      var validShouldTerminateFn = function(el) { return false; };
+      var validShouldTerminateFn = function() { return false; };
       var validAccumulator = [];
       var collectElementNodes = function(el, acc) {
         if (el.nodeType === 1) {
@@ -158,7 +158,7 @@ describe('storytellerUtils', function() {
             utils.reduceDOMFragmentAscending(
               null,
               validApplyFn,
-              validShouldTerminateFun,
+              validShouldTerminateFn,
               validAccumulator
             );
           });
@@ -173,7 +173,7 @@ describe('storytellerUtils', function() {
             utils.reduceDOMFragmentAscending(
               validChild5,
               null,
-              validShouldTerminateFun,
+              validShouldTerminateFn,
               validAccumulator
             );
           });
@@ -259,7 +259,7 @@ describe('storytellerUtils', function() {
     describe('reduceDOMFragmentDescending()', function() {
 
       var validApplyFn = function(el, acc) { acc.push(el.nodeName.toLowerCase()); };
-      var validShouldTerminateFn = function(el) { return false; };
+      var validShouldTerminateFn = function() { return false; };
       var validAccumulator = [];
       var collectElementNodes = function(el, acc) {
         if (el.nodeType === 1) {
@@ -280,7 +280,7 @@ describe('storytellerUtils', function() {
             utils.reduceDOMFragmentDescending(
               null,
               validApplyFn,
-              validShouldTerminateFun,
+              validShouldTerminateFn,
               validAccumulator
             );
           });
@@ -295,7 +295,7 @@ describe('storytellerUtils', function() {
             utils.reduceDOMFragmentDescending(
               validElement,
               null,
-              validShouldTerminateFun,
+              validShouldTerminateFn,
               validAccumulator
             );
           });
@@ -466,7 +466,6 @@ describe('storytellerUtils', function() {
 
     describe('when given an attribute', function() {
       var element;
-      var storyteller = window.socrata.storyteller;
 
       beforeEach(function() {
         var html = [
@@ -484,22 +483,22 @@ describe('storytellerUtils', function() {
 
       describe('that does not exist in the DOM', function() {
         it('should return undefined', function() {
-           assert.equal(utils.findClosestAttribute(element, 'not-there'), undefined);
+          assert.equal(utils.findClosestAttribute(element, 'not-there'), undefined);
         });
       });
       describe('that exists on the given element itself', function() {
         it('should return the value of the attribute', function() {
-           assert.equal(utils.findClosestAttribute(element, 'data-on-self'), '4');
+          assert.equal(utils.findClosestAttribute(element, 'data-on-self'), '4');
         });
       });
       describe('that exists on one ancestor of the given element', function() {
         it('should return the value of the attribute on that ancestor', function() {
-           assert.equal(utils.findClosestAttribute(element, 'data-on-one-ancestor'), '1');
+          assert.equal(utils.findClosestAttribute(element, 'data-on-one-ancestor'), '1');
         });
       });
       describe('that exists on multiple ancestors of the given element', function() {
         it('should return the value of the attribute on the closest ancestor', function() {
-           assert.equal(utils.findClosestAttribute(element, 'data-on-multiple-ancestors'), '3');
+          assert.equal(utils.findClosestAttribute(element, 'data-on-multiple-ancestors'), '3');
         });
       });
     });

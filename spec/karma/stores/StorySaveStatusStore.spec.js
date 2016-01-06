@@ -7,7 +7,7 @@ describe('StorySaveStatusStore', function() {
     standardMocks.remove();
     assert.isUndefined(storyteller.storyStore); // sanity for test
     assert.throws(function() {
-      new storyteller.StorySaveStatusStore();
+      new storyteller.StorySaveStatusStore(); //eslint-disable-line no-new
     });
   });
 

@@ -18,10 +18,10 @@ class Admin::ThemesController < ApplicationController
   def create
     @theme = Theme.new(theme_params)
     if @theme.save
-      flash[:success] = "Successfully created theme, #{@theme.title}"
+      flash.now[:success] = "Successfully created theme, #{@theme.title}"
       redirect_to action: 'index'
     else
-      flash[:error] = @theme.errors
+      flash.now[:error] = @theme.errors.full_messages.to_sentence
       render 'new'
     end
   end
@@ -29,9 +29,9 @@ class Admin::ThemesController < ApplicationController
   def update
     @theme = Theme.find(params[:id])
     if @theme.update_attributes(theme_params)
-      flash[:success] = 'Successfully updated theme config'
+      flash.now[:success] = 'Successfully updated theme config'
     else
-      flash[:error] = @theme.errors
+      flash.now[:error] = @theme.errors.full_messages.to_sentence
     end
 
     render 'edit'
@@ -47,7 +47,12 @@ class Admin::ThemesController < ApplicationController
   private
 
   def theme_params
-    params.require(:theme).permit(:title, :description, :css_variables => Theme.defaults.keys).tap do |whitelisted|
+    params.require(:theme).permit(
+      :title,
+      :description,
+      :google_font_code,
+      :css_variables => Theme.default_css_variables.keys
+    ).tap do |whitelisted|
       whitelisted['domain_cname'] = request.host
     end
   end

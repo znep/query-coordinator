@@ -70,7 +70,6 @@
         var theme = event.currentTarget.getAttribute('data-theme');
 
         if (theme) {
-
           styleAndPresentationPanel.find('.theme').removeClass('active');
           $(event.currentTarget).addClass('active');
 

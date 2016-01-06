@@ -228,7 +228,6 @@ class CoreServer
     if options[:data].present?
       core_server_request_options[:body] = options[:data]
     end
-
     response = core_server_request_with_retries(core_server_request_options)
 
     # For any update actions, we need to add/update properties.
@@ -267,7 +266,26 @@ class CoreServer
         return_errors: true
       }
 
+      # When attempting to update an existing configuration where the configuration has new properties
+      # we will get errors when trying to update a property that does not exist 
+      # so we need to add the property in the case where it doesn't currently exist in 
+      # the configuration. This is due to the way the configurations API is defined where properties are
+      # managed separate from their configurations.
       result = core_server_request_with_retries(core_server_request_options)
+      
+      if result.try(:[], 'code') == 'not_found'
+        core_server_request_with_retries(
+        {
+          verb: :post,
+          path: "#{base_path}.json",
+          body: property,
+          return_errors: true
+        }
+      )
+
+      result
+      end
+
       raise result['message'] if result['error'].present?
     end
   end

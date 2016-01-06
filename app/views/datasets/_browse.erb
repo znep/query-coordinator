@@ -92,7 +92,6 @@ end
                     <%- end -%>
                   </ol>
                 </div>
-                <a name="dataset-listing" tabindex="-1"></a>
               <%- else -%>
                 <div class="moreOptions list hide">
                   <%- facet[:extra_options].each do |facet_option| -%>
@@ -184,6 +183,7 @@ end
     <%- if opts[:a11y_skip_to_content] -%>
       <% content_for(:relocated_content) do %><a name="above-content"></a><% end %>
     <%- end -%>
+    <a name="dataset-listing" tabindex="-1"></a>
     <div class="browseList <%= show_catalog_sort_dropdown ? 'hasSort' : '' %>">
       <%- unless opts[:browse_in_container] -%>
         <div class="titleContainer">

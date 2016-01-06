@@ -12,8 +12,7 @@ xdescribe('ColumnChartController', function() {
   var Filter;
   var $controller;
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
+  beforeEach(angular.mock.module('dataCards'));
 
   afterEach(function(){
     testHelpers.TestDom.clear();
@@ -65,7 +64,7 @@ xdescribe('ColumnChartController', function() {
 
   function createMockDataService(fakeData) {
     beforeEach(function() {
-      module(function($provide) {
+      angular.mock.module(function($provide) {
         var mockCardDataService = {
           getData: function(){ return q.when(fakeData);}
         };

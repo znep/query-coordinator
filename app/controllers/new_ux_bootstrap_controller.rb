@@ -9,6 +9,7 @@ class NewUxBootstrapController < ActionController::Base
   include CardTypeMapping
 
   before_filter :hook_auth_controller
+  before_filter :set_locale
 
   # Keep track of the types of cards we added, so we can give a spread
   attr_accessor :skipped_cards_by_type, :added_card_types, :page_metadata_manager
@@ -382,6 +383,10 @@ class NewUxBootstrapController < ActionController::Base
     column['cardinality'].to_i == 1
   end
 
+  def column_has_no_valid_cards?(column)
+    default_card_type_for(column, dataset_size) == 'invalid'
+  end
+
   def non_bootstrappable_column?(field_name, column)
     field_name_ignored_for_bootstrap?(field_name) ||
       system_column?(field_name) ||
@@ -391,7 +396,8 @@ class NewUxBootstrapController < ActionController::Base
       (feature_map_disabled? && point_column?(column)) ||
       column_is_known_uniform?(column) ||
       money_column?(column) ||
-      curated_region_is_disabled_for_column?(column)
+      curated_region_is_disabled_for_column?(column) ||
+      column_has_no_valid_cards?(column)
   end
 
   def interesting_columns(columns)
@@ -506,4 +512,8 @@ class NewUxBootstrapController < ActionController::Base
     dataset.query.present? && dataset.query.groupBys.present?
   end
 
+  # EN-1111: Force Data Lens to always use English
+  def set_locale
+    I18n.locale = 'en'
+  end
 end

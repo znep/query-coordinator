@@ -1,4 +1,3 @@
-var grunt = require('grunt');
 var path = require('path');
 var fs = require('fs');
 var sprintf = require('sprintf');
@@ -23,6 +22,8 @@ _.forIn(supportedBrowsers, function(browserInstances, browserName) {
 var startSauceConnect = _.contains(['true', '1', 1], process.env.SAUCE_START_SAUCE_CONNECT);
 var tunnelIdentifier = process.env.SAUCE_TUNNEL_IDENTIFIER || undefined;
 
+var projectRoot = path.resolve(__dirname, '../..');
+
 module.exports = function ( karma ) {
   karma.set({
     /**
@@ -31,7 +32,9 @@ module.exports = function ( karma ) {
     basePath: '../../',
 
      preprocessors: {
-      'public/javascripts/**/!(jquery-1.7.1.js)': ['coverage']
+       'public/javascripts/**/!(jquery-1.7.1.js)': ['coverage'],
+       'karma/oldUx/**/*-test.js': ['webpack'],
+       'karma/helpers/chai-dom-assertions.js': ['webpack']
     },
 
     /**
@@ -44,8 +47,6 @@ module.exports = function ( karma ) {
       'public/javascripts/jquery-1.7.1.js',
       'public/javascripts/plugins/lodash.js',
       'bower_components/sinon-browser-only/sinon.js',
-      'bower_components/react/react-with-addons.js',
-      'bower_components/react/react-dom.js',
 
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
@@ -71,12 +72,6 @@ module.exports = function ( karma ) {
       // 'public/javascripts/controls/render-type-manager.js',
       // 'public/javascripts/controls/grid-sidebar.js',
       // 'public/javascripts/screens/dataset-show.js',
-      'public/javascripts/dist/components/utils.js',
-      'public/javascripts/dist/components/socrata-title-tip-wrapper.js',
-      'public/javascripts/dist/components/loading-button.js',
-      'public/javascripts/dist/components/*.js',
-      'public/javascripts/dist/components/georegions/*.js',
-      'public/javascripts/dist/**/*.js',
 
       // Utilities/Libraries
       'public/javascripts/plugins/html4-defs.js',
@@ -89,8 +84,7 @@ module.exports = function ( karma ) {
 
       // Test Files
       'karma/oldUx/**/*.js',
-      { pattern: 'public/stylesheets/images/**/*.{gif,jpg,png}', watched: false, included: false, served: true } // https://github.com/karma-runner/karma/issues/1532
-
+      { pattern: 'public/stylesheets/images/**/*.+{gif,jpg,png}', watched: false, included: false, served: true } // https://github.com/karma-runner/karma/issues/1532
     ],
 
     proxies: {
@@ -127,7 +121,8 @@ module.exports = function ( karma ) {
       'karma-phantomjs-launcher',
       'karma-sauce-launcher',
       'karma-coverage',
-      'karma-mocha-reporter'
+      'karma-mocha-reporter',
+      'karma-webpack'
     ],
 
     logLevel:  'WARN',
@@ -204,6 +199,23 @@ module.exports = function ( karma ) {
     browserDisconnectTimeout: 1000 * 10,
     browserDisconnectTolerance: 5,
     captureTimeout: 1000 * 80,
+    webpack: {
+      module: {
+        loaders: [
+          {
+            test: /\.jsx?$/,
+            exclude: /(node_modules|bower_components)/,
+            loader: 'babel'
+          }
+        ]
+      },
+      resolve: {
+        modulesDirectories: [ 'node_modules', 'bower_components', projectRoot + '/public/javascripts/src' ]
+      }
 
+    },
+    webpackMiddleware: {
+      noInfo: true
+    }
   });
 };

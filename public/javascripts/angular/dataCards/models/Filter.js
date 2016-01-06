@@ -1,5 +1,5 @@
+const angular = require('angular');
 angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateHelpers) {
-  'use strict';
 
   function BinaryOperatorFilter(operator, operand, humanReadableOperand) {
     if (!_.isString(operator)) { throw new Error('BinaryOperatorFilter passed invalid operator'); }
@@ -29,6 +29,68 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   BinaryOperatorFilter.deserialize = function(blob) {
     var args = blob.arguments;
     return new BinaryOperatorFilter(args.operator, args.operand, args.humanReadableOperand);
+  };
+
+  // This filter captures the relationship between a source column,
+  // a computed column, and the state of filtering source column
+  // values by computed region.
+  function BinaryComputedGeoregionOperatorFilter(operator, operand, computedColumnName, humanReadableOperand) {
+
+    if (!_.isString(operator)) {
+      throw new Error('BinaryComputedGeoregionOperatorFilter passed invalid operator');
+    }
+
+    if (operator === '') {
+      throw new Error('BinaryComputedGeoregionOperatorFilter passed empty operator');
+    }
+
+    if (_.isUndefined(operand) || _.isNull(operand)) {
+      throw new Error('BinaryComputedGeoregionOperatorFilter passed invalid operand');
+    }
+
+    if (!_.isString(computedColumnName)) {
+      throw new Error('BinaryComputedGeoregionOperatorFilter passed invalid computedColumnName');
+    }
+
+    this.operator = operator;
+    this.operand = operand;
+    this.computedColumnName = computedColumnName;
+    this.humanReadableOperand = humanReadableOperand;
+  }
+
+  // Note that unlike all the other filter types, the BinaryComputedGeoregionOperator
+  // will use the `computedColumnName` that it stores internally to generate a SoQL
+  // where clause fragment, as opposed to taking the column name (a.k.a. fieldname)
+  // as an argument.
+  BinaryComputedGeoregionOperatorFilter.prototype.generateSoqlWhereFragment = function() {
+
+    return SoqlHelpers.formatFieldName(this.computedColumnName) +
+      this.operator +
+      SoqlHelpers.encodePrimitive(this.operand);
+  };
+
+  BinaryComputedGeoregionOperatorFilter.prototype.serialize = function() {
+
+    return {
+      'function': 'BinaryComputedGeoregionOperator',
+      'computedColumnName': this.computedColumnName,
+      'arguments': {
+        'operator': this.operator,
+        'operand': this.operand,
+        'humanReadableOperand': this.humanReadableOperand
+      }
+    };
+  };
+
+  BinaryComputedGeoregionOperatorFilter.deserialize = function(blob) {
+    var args = blob.arguments;
+
+    return new BinaryComputedGeoregionOperatorFilter(
+      args.operator,
+      args.operand,
+      blob.computedColumnName,
+      args.humanReadableOperand
+    );
   };
 
   function TimeRangeFilter(start, end) {
@@ -66,7 +128,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
     field = SoqlHelpers.formatFieldName(field);
     var encodedStart = SoqlHelpers.encodePrimitive(this.start);
     var encodedEnd = SoqlHelpers.encodePrimitive(this.end);
-    return '{0} >= {1} AND {0} < {2}'.format(field, encodedStart, encodedEnd);
+    return `${field} >= ${encodedStart} AND ${field} < ${encodedEnd}`;
   };
 
   TimeRangeFilter.prototype.serialize = function() {
@@ -98,11 +160,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   }
 
   ValueRangeFilter.prototype.generateSoqlWhereFragment = function(field) {
-    return '{0} >= {1} AND {0} < {2}'.format(
-      SoqlHelpers.formatFieldName(field),
-      SoqlHelpers.encodePrimitive(this.start),
-      SoqlHelpers.encodePrimitive(this.end)
-    );
+    return `${SoqlHelpers.formatFieldName(field)} >= ${SoqlHelpers.encodePrimitive(this.start)} AND ${SoqlHelpers.formatFieldName(field)} < ${SoqlHelpers.encodePrimitive(this.end)}`;
   };
 
   ValueRangeFilter.prototype.serialize = function() {
@@ -135,6 +193,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
     switch (blob['function']) {
       case 'IsNull': filterClass = IsNullFilter; break;
       case 'BinaryOperator': filterClass = BinaryOperatorFilter; break;
+      case 'BinaryComputedGeoregionOperator': filterClass = BinaryComputedGeoregionOperatorFilter; break;
       case 'TimeRange': filterClass = TimeRangeFilter; break;
       case 'ValueRange': filterClass = ValueRangeFilter; break;
       default: throw new Error('Unsupported serialized filter function: ' + blob['function']);
@@ -146,6 +205,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   return {
     IsNullFilter: IsNullFilter,
     BinaryOperatorFilter: BinaryOperatorFilter,
+    BinaryComputedGeoregionOperatorFilter: BinaryComputedGeoregionOperatorFilter,
     TimeRangeFilter: TimeRangeFilter,
     ValueRangeFilter: ValueRangeFilter,
     deserialize: deserialize

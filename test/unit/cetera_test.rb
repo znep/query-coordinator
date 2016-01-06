@@ -11,18 +11,21 @@ class CeteraTest < Test::Unit::TestCase
         q: 'giraffes are whack!&@*!',
         limit: 10,
         page: 4,
+        categories: ['Traffic, Parking, and Transportation', 'And another thing'],
         metadata_tag: { 'Dataset-Information_Superhero' => 'Superman' }
       }
     end
 
+    # CGI.escape happens in search_views params.to_query
     def expected_cetera_params
       {
         domains: 'data.cityofchicago.org',
         # search_context (CurrentDomain.cname) changes with test context so is not tested
         only: 'datasets',
-        q: 'giraffes are whack!&@*!', # CGI.escape happens in search_views params.to_query
+        q: 'giraffes are whack!&@*!',
         limit: 10,
         offset: 30,
+        categories: ['Traffic, Parking, and Transportation', 'And another thing'],
         'Dataset-Information_Superhero' => 'Superman'
       }
     end
@@ -30,14 +33,13 @@ class CeteraTest < Test::Unit::TestCase
     def test_cetera_soql_params_as_query
       params = Cetera.cetera_soql_params(sample_search_options)
       expected_cetera_params.each do |k, v|
-        assert_equal(v, params[k], "Field: #{k}")
+        assert_equal(v, params[k], "Field: #{k} expected #{v} but was #{params[k].inspect}")
       end
     end
 
     def test_cetera_limit_type_translator
       frontend_to_cetera = {
         'data_lens' => 'datalenses',
-        'new_view' => 'datalenses',
         'story' => 'stories',
         'pulse' => 'pulses',
         'tables' => 'datasets',
@@ -113,7 +115,6 @@ class CeteraTest < Test::Unit::TestCase
         assert_equal 'data.cityofchicago.org', row.domainCName
         assert_equal true, row.federated?
         assert_equal 'icon', row.icon_class
-        assert_equal false, row.new_view?
         assert_equal false, row.story?
       end
     end

@@ -32,10 +32,13 @@
     };
 
     var compiledCustomDirectives = {};
-    _.each(['comment', 'view', 'reply'], function(itemType)
+    $(function()
     {
-        compiledCustomDirectives[itemType] = $.compileTemplate('feedItem_' + itemType,
-            customDirectives[itemType]);
+        _.each(['comment', 'view', 'reply'], function(itemType)
+        {
+            compiledCustomDirectives[itemType] = $.compileTemplate('feedItem_' + itemType,
+                customDirectives[itemType]);
+        });
     });
 
     var getView = function(viewId, opts)

@@ -451,12 +451,12 @@ it:
           blob: File e Documenti
           calendars: Calendari
           charts: Grafici
+          data_lens: Pagine Data Lens
           datasets: Dataset
           filters: Viste filtrate
           forms: Moduli
           href: Dati esterni
           maps: Mappe
-          new_view: Pagine Data Lens
           pulse:
           pulse_help:
           story: Sorie
@@ -1075,6 +1075,7 @@ it:
       blob: file scaricabile
       calendar: calendario
       chart: grafico
+      data_lens: Pagina Data Lens
       dataset: dataset
       filter: visualizzazione filtrata
       form: modulo
@@ -1082,7 +1083,6 @@ it:
       grouped: visualizzazione in gruppi
       href: external dataset
       map: mappa
-      new_view: Pagina Data Lens
       table: tabella
       working_copy: copia di lavoro
     view_types_plural:

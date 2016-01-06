@@ -1,21 +1,18 @@
-(function() {
-  'use strict';
+var templateUrl = require('angular_templates/dataCards/relatedVisualization.html');
+const angular = require('angular');
+function relatedVisualization() {
+  return {
+    restrict: 'E',
+    scope: true,
+    templateUrl: templateUrl,
+    link: function(scope) {
+      scope.humanReadableColumnList = scope.visualization.columns.map(
+        scope.columnNameToReadableNameFn
+      ).join(', ');
+    }
+  };
+}
 
-  function relatedVisualization() {
-    return {
-      restrict: 'E',
-      scope: true,
-      templateUrl: '/angular_templates/dataCards/relatedVisualization.html',
-      link: function(scope) {
-        scope.humanReadableColumnList = scope.visualization.columns.map(
-          scope.columnNameToReadableNameFn
-        ).join(', ');
-      }
-    };
-  }
-
-  angular.
-    module('dataCards.directives').
-      directive('relatedVisualization', relatedVisualization);
-
-})();
+angular.
+  module('dataCards.directives').
+    directive('relatedVisualization', relatedVisualization);

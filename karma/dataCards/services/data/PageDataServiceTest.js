@@ -38,7 +38,7 @@ describe('PageDataService', function() {
     });
   }
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     PageDataService = $injector.get('PageDataService');

@@ -7,10 +7,9 @@ describe('kitten directive', function() {
   var DEFAULT_HEIGHT = 200;
   var SRC_STRING = 'http://placekitten.com/g/{0}/{1}';
 
-  beforeEach(function() {
-    module('socrataCommon.directives');
-    module('test');
+  beforeEach(angular.mock.module('dataCards'));
 
+  beforeEach(function() {
     inject(['$rootScope', 'testHelpers', function(_$rootScope, _testHelpers) {
       $rootScope = _$rootScope;
       testHelpers = _testHelpers;

@@ -1,9 +1,11 @@
-describe('FormButton', function() {
+import React from 'react';
+import TestUtils, {
+  findRenderedDOMComponentWithTag as findByTag
+} from 'react-addons-test-utils';
 
-  var components = blist.namespace.fetch('blist.components');
-  var FormButton = components.FormButton;
-  var TestUtils = React.addons.TestUtils;
-  var findByTag = TestUtils.findRenderedDOMComponentWithTag;
+import FormButton from 'components/form-button';
+
+describe('FormButton', function() {
 
   beforeEach(function() {
     this.target = $('<div/>').appendTo(document.body).get(0);

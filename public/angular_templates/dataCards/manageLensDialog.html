@@ -3,7 +3,8 @@
 <section class="row provenance" ng-controller="ManageLensDialogProvenanceController" ng-show="showProvenanceSection">
   <label class="span2">{{::'manageLensDialog.provenance.title' | I18n}}</label>
   <div class="contents span10">
-    <input type="checkbox" name="view-provenance-checkbox" class="view-provenance-checkbox" ng-model="isOfficial" />
+    <input type="checkbox" id="view-provenance-checkbox" class="view-provenance-checkbox" ng-model="isOfficial"/>
+    <label for="view-provenance-checkbox" class="view-provenance-label">{{::'manageLensDialog.provenance.label' | I18n}}</label>
     <div class="view-provenance-description">{{::'manageLensDialog.provenance.description' | I18n}}</div>
   </div>
 </section>

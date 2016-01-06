@@ -451,12 +451,12 @@ fr:
           blob: Fichiers et documents
           calendars: Calendriers
           charts: Graphiques
+          data_lens: Pages de lentilles de données
           datasets: Séries de données
           filters: Vues filtrées
           forms: Formulaires
           href: Séries de données externes
           maps: Cartes
-          new_view: Pages de lentilles de données
           pulse:
           pulse_help:
           story: Histoires
@@ -1075,6 +1075,7 @@ fr:
       blob: Fichier ou document non tabulaire
       calendar: Calendrier
       chart: Graphique
+      data_lens: Page de données de lentilles
       dataset: Jeu de données
       filter: Vue filtrée
       form: Formulaire
@@ -1082,7 +1083,6 @@ fr:
       grouped: Vue groupée
       href: Série de données externe
       map: Carte
-      new_view: Page de données de lentilles
       table: Tableau
       working_copy: Copie de travail
     view_types_plural:

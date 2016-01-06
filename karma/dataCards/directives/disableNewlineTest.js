@@ -4,8 +4,7 @@ describe('disableNewline directive', function() {
   var testHelpers;
   var $rootScope;
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');

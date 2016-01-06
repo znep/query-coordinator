@@ -9,6 +9,8 @@ describe('VectorTileDataService', function() {
   var tileserverHosts;
   var protocolBufferEndpointResponses = 'karma/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
 
+  beforeEach(angular.mock.module('dataCards'));
+
   beforeEach(function() {
     sinon.stub($, 'baseUrl', function(pathname) {
       var url = new URL(TEST_URL);
@@ -18,8 +20,7 @@ describe('VectorTileDataService', function() {
 
       return url;
     });
-    module('socrataCommon.services');
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       tileserverHosts = TILESERVER_HOSTS.slice();
       $provide.constant('ServerConfig', {
         setup: _.noop,
@@ -27,8 +28,6 @@ describe('VectorTileDataService', function() {
         get: _.constant(tileserverHosts)
       });
     });
-    module('test');
-    module('dataCards.services');
     inject(function($injector) {
       testHelpers = $injector.get('testHelpers');
       $rootScope = $injector.get('$rootScope');

@@ -451,12 +451,12 @@ ro:
           blob: Fişiere şi documente
           calendars: Calendare
           charts: Diagrame
+          data_lens: Paginile Data Lens
           datasets: Seturi de date
           filters: Vizualizări filtrate
           forms: Formulare
           href: Seturi de date externe
           maps: Hărţi
-          new_view: Paginile Data Lens
           pulse:
           pulse_help:
           story: Povestiri
@@ -1076,6 +1076,7 @@ ro:
       blob: fişier sau document netabelat
       calendar: calendar
       chart: diagramă
+      data_lens: Pagina Data Lens
       dataset: set de date
       filter: vizualizare filtrată
       form: formular
@@ -1083,7 +1084,6 @@ ro:
       grouped: vizualizare grupată
       href: set de date extern
       map: hartă
-      new_view: Pagina Data Lens
       table: tabel
       working_copy: copie funcţională
     view_types_plural:

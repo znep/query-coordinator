@@ -1,5 +1,6 @@
-angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState, $window) {
-  'use strict';
+const angular = require('angular');
+angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState, $window, rx) {
+  const Rx = rx;
 
   var handlers = {};
   var uberFlyout;

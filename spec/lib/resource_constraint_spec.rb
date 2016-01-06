@@ -1,5 +1,4 @@
 require 'rails_helper'
-require_relative '../../test/test_helper'
 require_relative '../../lib/constraints/resource_constraint'
 
 describe Constraints::ResourceConstraint do

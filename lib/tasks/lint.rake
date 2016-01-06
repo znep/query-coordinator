@@ -2,7 +2,7 @@ namespace :lint do
   namespace :js do
     def run_eslint(dirs, format)
       format = 'stylish' if format.nil?
-      system("npm run -s lint -- --ignore-path .eslintignore -c package.json -f #{format} #{dirs}")
+      system("npm run -s lint -- --ignore-path .eslintignore -f #{format} #{dirs}")
     end
 
     task :all, :format do |task, args|

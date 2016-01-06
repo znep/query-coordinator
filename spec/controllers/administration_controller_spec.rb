@@ -1,5 +1,4 @@
 require 'rails_helper'
-require_relative '../../test/test_helper'
 
 describe AdministrationController do
   include TestHelperMethods

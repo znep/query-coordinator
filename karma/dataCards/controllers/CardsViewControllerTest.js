@@ -34,49 +34,10 @@ describe('CardsViewController', function() {
   var datasetOwnerId = 'fdsa-asdf';
   var mockUserSessionService = {};
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('socrataCommon.filters'));
-  beforeEach(module('socrataCommon.directives'));
-  beforeEach(module('socrataCommon.services'));
-  beforeEach(module('/angular_templates/common/intractableList.html'));
-  beforeEach(module('/angular_templates/dataCards/pages/cards-view.html'));
-  beforeEach(module('/angular_templates/dataCards/multiCardLayout.html'));
-  beforeEach(module('/angular_templates/dataCards/singleCardLayout.html'));
-  beforeEach(module('/angular_templates/dataCards/saveVisualizationAsDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/saveAs.html'));
-  beforeEach(module('/angular_templates/dataCards/saveButton.html'));
-  beforeEach(module('/angular_templates/dataCards/revertButton.html'));
-  beforeEach(module('/angular_templates/dataCards/selectionLabel.html'));
-  beforeEach(module('/angular_templates/dataCards/spinner.html'));
-  beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
-  beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/mobileWarningDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/socSelect.html'));
-  beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/choropleth.html'));
-  beforeEach(module('/angular_templates/dataCards/columnChart.html'));
-  beforeEach(module('/angular_templates/dataCards/distributionChart.html'));
-  beforeEach(module('/angular_templates/dataCards/featureMap.html'));
-  beforeEach(module('/angular_templates/dataCards/histogram.html'));
-  beforeEach(module('/angular_templates/dataCards/invalidCard.html'));
-  beforeEach(module('/angular_templates/dataCards/searchCard.html'));
-  beforeEach(module('/angular_templates/dataCards/tableCard.html'));
-  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
-  beforeEach(module('/angular_templates/dataCards/customizeBar.html'));
-  beforeEach(module('/angular_templates/dataCards/removeAllCards.html'));
-  beforeEach(module('/angular_templates/dataCards/relatedViews.html'));
-  beforeEach(module('/angular_templates/dataCards/exportMenu.html'));
-  beforeEach(module('/angular_templates/dataCards/lensType.html'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       _$provide = $provide;
       $provide.value('UserSessionService', mockUserSessionService);
       $provide.value('WindowOperations', mockWindowOperations);

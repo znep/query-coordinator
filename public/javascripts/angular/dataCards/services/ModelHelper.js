@@ -1,132 +1,130 @@
-(function() {
-  'use strict';
+const angular = require('angular');
+// Service to build rich models.
+// REVISIT possibly start exposing a Model superclass?
+angular.module('dataCards.services').factory('ModelHelper', function(rx) {
+  const Rx = rx;
+  // For a hack - see currentValueOfProperty.
+  var currentValuePropertyNamePrefix = '__current_value_';
 
-  // Service to build rich models.
-  // REVISIT possibly start exposing a Model superclass?
-  angular.module('dataCards.services').factory('ModelHelper', function() {
-    // For a hack - see currentValueOfProperty.
-    var currentValuePropertyNamePrefix = '__current_value_';
-
-    // Adds a (RxJS) observable of the given name to the object provided. The default value
-    // is specified.
-    // Returns a sequence of values set to this property (including the initial value).
-    function addProperty(propertyName, model, initialValue) {
-      var subject = new Rx.BehaviorSubject(_.isArray(initialValue) ?
-                                           Object.freeze(_.clone(initialValue)) :
-                                           initialValue);
-      Object.defineProperty(model, propertyName, {
-        get: _.constant(subject),
-        set: function(val) {
-          subject.onNext(_.isArray(val) ? Object.freeze(_.clone(val)) : val);
-        },
-        enumerable: true
-      });
-
-      Object.defineProperty(model, currentValuePropertyNamePrefix + propertyName, {
-        get: function() {
-          return subject.value;
-        }
-      });
-
-      return subject;
-    }
-
-    // Adds an (RxJS) observable of the given name to the object provided. The default value
-    // is specified as a function which returns a sequence or promise. If a sequence is used, the first value
-    // is used.
-    // This allows us to skip requesting the default value until something subscribes to the property.
-    // Until the default value is fetched, the property will have a value given by `initialValue`.
-    //
-    // Returns a sequence of values set to this property (including the initial and lazy values, if used).
-    function addPropertyWithLazyDefault(propertyName, model, initialValue, defaultValueGenerator) {
-      // These two sequences represent values from the lazy default promise and this property's
-      // setter, respectively.
-      var fromDefault = new Rx.AsyncSubject();
-      var fromSetter = new Rx.Subject();
-
-      // This sequence is the first value from either the lazy default or the setter.
-      var firstValue = Rx.Observable.merge(fromDefault, fromSetter).take(1);
-
-      // This is the actual subject exposed to the property consumer.
-      // The first value comes from either the lazy default if required, or the property setter.
-      // Future values always come from the property setter.
-      var outer = new Rx.BehaviorSubject(_.isArray(initialValue) ?
+  // Adds a (RxJS) observable of the given name to the object provided. The default value
+  // is specified.
+  // Returns a sequence of values set to this property (including the initial value).
+  function addProperty(propertyName, model, initialValue) {
+    var subject = new Rx.BehaviorSubject(_.isArray(initialValue) ?
                                          Object.freeze(_.clone(initialValue)) :
                                          initialValue);
-      Rx.Observable.concat(firstValue, fromSetter).subscribe(outer);
+    Object.defineProperty(model, propertyName, {
+      get: _.constant(subject),
+      set: function(val) {
+        subject.onNext(_.isArray(val) ? Object.freeze(_.clone(val)) : val);
+      },
+      enumerable: true
+    });
 
-      // Track whether or not we need to fetch the default value.
-      var needsDefaultValueHit = true;
-      firstValue.any().subscribe(function(any) {
-        needsDefaultValueHit = !any;
-      });
+    Object.defineProperty(model, currentValuePropertyNamePrefix + propertyName, {
+      get: function() {
+        return subject.value;
+      }
+    });
 
-      var seq = Rx.Observable.create(function(observer) {
-        if (needsDefaultValueHit) {
-          needsDefaultValueHit = false;
-          var defaultValueResult = defaultValueGenerator(model);
-          var useAsPromise = _.isFunction(defaultValueResult.then) && !_.isFunction(defaultValueResult.subscribe);
-          var defaultValueSeq = useAsPromise ?
-            Rx.Observable.fromPromise(defaultValueResult) :
-            defaultValueResult.first();
+    return subject;
+  }
 
-          defaultValueSeq.subscribe(fromDefault);
-        }
-        outer.subscribe(observer);
-      });
+  // Adds an (RxJS) observable of the given name to the object provided. The default value
+  // is specified as a function which returns a sequence or promise. If a sequence is used, the first value
+  // is used.
+  // This allows us to skip requesting the default value until something subscribes to the property.
+  // Until the default value is fetched, the property will have a value given by `initialValue`.
+  //
+  // Returns a sequence of values set to this property (including the initial and lazy values, if used).
+  function addPropertyWithLazyDefault(propertyName, model, initialValue, defaultValueGenerator) {
+    // These two sequences represent values from the lazy default promise and this property's
+    // setter, respectively.
+    var fromDefault = new Rx.AsyncSubject();
+    var fromSetter = new Rx.Subject();
 
-      Object.defineProperty(model, propertyName, {
-        get: function() {
-          return seq;
-        },
-        set: function(n) {
-          fromSetter.onNext(_.isArray(n) ? Object.freeze(n) : n);
-        },
-        enumerable: true
-      });
+    // This sequence is the first value from either the lazy default or the setter.
+    var firstValue = Rx.Observable.merge(fromDefault, fromSetter).take(1);
 
-      Object.defineProperty(model, currentValuePropertyNamePrefix + propertyName, {
-        get: function() {
-          return outer.value;
-        }
-      });
+    // This is the actual subject exposed to the property consumer.
+    // The first value comes from either the lazy default if required, or the property setter.
+    // Future values always come from the property setter.
+    var outer = new Rx.BehaviorSubject(_.isArray(initialValue) ?
+                                       Object.freeze(_.clone(initialValue)) :
+                                       initialValue);
+    Rx.Observable.concat(firstValue, fromSetter).subscribe(outer);
 
-      return outer;
-    }
+    // Track whether or not we need to fetch the default value.
+    var needsDefaultValueHit = true;
+    firstValue.any().subscribe(function(any) {
+      needsDefaultValueHit = !any;
+    });
 
-    // Add a read-only property whose value comes from the given sequence.
-    // Returns a sequence of values written while observers were listening.
-    function addReadOnlyProperty(propertyName, model, value$) {
-      var lastSeenValue = new Rx.BehaviorSubject(undefined);
-      var sideEffected$ = value$.doAction(function(value) {
-        lastSeenValue.onNext(value);
-      });
+    var seq = Rx.Observable.create(function(observer) {
+      if (needsDefaultValueHit) {
+        needsDefaultValueHit = false;
+        var defaultValueResult = defaultValueGenerator(model);
+        var useAsPromise = _.isFunction(defaultValueResult.then) && !_.isFunction(defaultValueResult.subscribe);
+        var defaultValueSeq = useAsPromise ?
+          Rx.Observable.fromPromise(defaultValueResult) :
+          defaultValueResult.first();
 
-      Object.defineProperty(model, propertyName, {
-        get: _.constant(sideEffected$),
-        enumerable: true
-      });
+        defaultValueSeq.subscribe(fromDefault);
+      }
+      outer.subscribe(observer);
+    });
 
-      Object.defineProperty(model, currentValuePropertyNamePrefix + propertyName, {
-        get: function() {
-          return lastSeenValue.value;
-        }
-      });
+    Object.defineProperty(model, propertyName, {
+      get: function() {
+        return seq;
+      },
+      set: function(n) {
+        fromSetter.onNext(_.isArray(n) ? Object.freeze(n) : n);
+      },
+      enumerable: true
+    });
 
-      return lastSeenValue.skip(1); // Skip first, as it's going to be the initial undefined value from the BehaviorSubject.
-    }
+    Object.defineProperty(model, currentValuePropertyNamePrefix + propertyName, {
+      get: function() {
+        return outer.value;
+      }
+    });
 
-    // A hack to expose a property's instantaneous value. When ModelHelper is moved back
-    // into Model, this should go away (and its spirit moved into Model.getCurrentValue).
-    function currentValueOfProperty(model, propertyName) {
-      return model[currentValuePropertyNamePrefix + propertyName];
-    }
+    return outer;
+  }
 
-    return {
-      addProperty: addProperty,
-      addPropertyWithLazyDefault: addPropertyWithLazyDefault,
-      addReadOnlyProperty: addReadOnlyProperty,
-      currentValueOfProperty: currentValueOfProperty
-    };
-  });
-})();
+  // Add a read-only property whose value comes from the given sequence.
+  // Returns a sequence of values written while observers were listening.
+  function addReadOnlyProperty(propertyName, model, value$) {
+    var lastSeenValue = new Rx.BehaviorSubject(undefined);
+    var sideEffected$ = value$.doAction(function(value) {
+      lastSeenValue.onNext(value);
+    });
+
+    Object.defineProperty(model, propertyName, {
+      get: _.constant(sideEffected$),
+      enumerable: true
+    });
+
+    Object.defineProperty(model, currentValuePropertyNamePrefix + propertyName, {
+      get: function() {
+        return lastSeenValue.value;
+      }
+    });
+
+    return lastSeenValue.skip(1); // Skip first, as it's going to be the initial undefined value from the BehaviorSubject.
+  }
+
+  // A hack to expose a property's instantaneous value. When ModelHelper is moved back
+  // into Model, this should go away (and its spirit moved into Model.getCurrentValue).
+  function currentValueOfProperty(model, propertyName) {
+    return model[currentValuePropertyNamePrefix + propertyName];
+  }
+
+  return {
+    addProperty: addProperty,
+    addPropertyWithLazyDefault: addPropertyWithLazyDefault,
+    addReadOnlyProperty: addReadOnlyProperty,
+    currentValueOfProperty: currentValueOfProperty
+  };
+});

@@ -3,7 +3,7 @@ describe('Domain model', function() {
 
   var Domain;
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     Domain = $injector.get('Domain');

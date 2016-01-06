@@ -49,6 +49,13 @@ class BrowseActionsTest < Test::Unit::TestCase
         'data lens transition state is post_beta but we do not have a data lens link in the catalog')
     end
 
+    def test_does_not_add_api_if_using_cetera_search
+      stub_feature_flags_with(:cetera_search, true)
+      view_types_list = @browse_actions_container.send(:view_types_facet)
+      refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'api'},
+        'cetera search feature flag is true, but we have an api link in the catalog')
+    end
+
     # There was a regression around this
     def test_whitelisting_of_view_types_is_respected
       whitelisted_view_type_values = %w(datasets charts)
@@ -253,7 +260,7 @@ class BrowseActionsTest < Test::Unit::TestCase
     def stub_cetera_for_categories(categories)
       cetera_url = 'http://api.us.socrata.com/api/catalog/v1'
       cetera_params = {
-        categories: categories.join(','),
+        categories: categories,
         domains: 'localhost',
         limit: 10,
         offset: 0,
@@ -263,6 +270,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       stub_request(:get, url).to_return(status: 200, body: '', headers: {})
     end
 
+    # backward compatibility with core/clytemnestra
     def search_and_return_category_param(category)
       request = OpenStruct.new
       request.params = { category: category }.reject { |_, v| v.blank? }
@@ -270,13 +278,22 @@ class BrowseActionsTest < Test::Unit::TestCase
       browse_options[:search_options][:category].to_s.split(',') # NOT REAL CSV FORMAT!
     end
 
+    # cetera catalog api
+    def search_and_return_cetera_categories_param(category)
+      request = OpenStruct.new
+      request.params = { category: category }
+      browse_options = @browse_actions_container.send(:process_browse, request)
+      browse_options[:search_options][:categories]
+    end
+
     def test_no_effect_if_cetera_is_not_enabled_and_category_is_present
       stub_feature_flags_with(:cetera_search, false)
+      cly_unaffected_category = 'Test Category 4'
 
       expected_category = 'Test Category 4'
       stub_core_for_category(expected_category)
 
-      assert_equal [expected_category], search_and_return_category_param(expected_category)
+      assert_equal [expected_category], search_and_return_category_param(cly_unaffected_category)
     end
 
     def test_no_effect_if_cetera_is_not_enabled_and_category_is_absent
@@ -291,10 +308,10 @@ class BrowseActionsTest < Test::Unit::TestCase
       parent_category = 'Test Category 4'
       child_categories = ['Test Category 4a', 'Test Category 4b']
 
-      expected_categories = [parent_category] + child_categories
+      expected_categories = [parent_category] | child_categories
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_category_param(parent_category)
+      assert_equal expected_categories, search_and_return_cetera_categories_param(parent_category)
     end
 
     def test_child_category_includes_only_itself_in_query_to_cetera
@@ -303,7 +320,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       expected_categories = [child_category]
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_category_param(child_category)
+      assert_equal expected_categories, search_and_return_cetera_categories_param(child_category)
     end
 
     def test_categories_with_no_children_query_cetera_only_about_themselves
@@ -312,14 +329,16 @@ class BrowseActionsTest < Test::Unit::TestCase
       expected_categories = [childless_category]
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_category_param(childless_category)
+      assert_equal expected_categories, search_and_return_cetera_categories_param(childless_category)
     end
 
     def test_no_category_results_in_no_category_passed_to_cetera
-      expected_categories = []
+      no_category = nil
+
+      expected_categories = nil
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_category_param(nil)
+      assert_equal expected_categories, search_and_return_cetera_categories_param(no_category)
     end
 
     def test_non_existent_category_gets_magically_injected
@@ -336,7 +355,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       expected_categories = [imaginary_category]
       stub_cetera_for_categories(expected_categories)
 
-      assert_equal expected_categories, search_and_return_category_param(imaginary_category)
+      assert_equal expected_categories, search_and_return_cetera_categories_param(imaginary_category)
     end
   end
 
@@ -455,7 +474,7 @@ class BrowseActionsTest < Test::Unit::TestCase
 
       # This used to raise a TypeError as per EN-760
       res = @browse_actions_container.send(:selected_category_and_any_children, browse_options)
-      assert_equal 'Some Random Category', res
+      assert_equal ['Some Random Category'], res
     end
   end
 end

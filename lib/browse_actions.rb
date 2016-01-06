@@ -37,7 +37,9 @@ module BrowseActions
     add_stories_view_type_if_enabled!(view_types)
     add_pulse_view_type_if_enabled!(view_types)
 
-    if module_enabled?(:api_foundry)
+    # EN-879: Hide API facet when using Cetera search because Cetera does not index API objects
+    # because API foundry v1 is deprecated
+    if module_enabled?(:api_foundry) && !using_cetera?
       view_types <<
         { text: t('controls.browse.facets.view_types.apis'), value: 'apis', class: 'typeApi' }
     end
@@ -380,7 +382,7 @@ module BrowseActions
                 # All domains in the federation
                 [CurrentDomain.cname].concat(federations_hash.values.sort).join(',')
               end
-            browse_options[:search_options][:category] = selected_category_and_any_children(browse_options)
+            browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
             Cetera.search_views(browse_options[:search_options])
           else
             Clytemnestra.search_views(browse_options[:search_options])
@@ -548,16 +550,16 @@ module BrowseActions
 
   def add_data_lens_view_type_if_enabled!(view_type_list)
     if add_data_lens_view_type?
-      new_view_option = {
-        :text => ::I18n.t('controls.browse.facets.view_types.new_view'),
+      data_lens_option = {
+        :text => ::I18n.t('controls.browse.facets.view_types.data_lens'),
         :value => 'new_view',
-        :class => 'typeNewView',
+        :class => 'typeDataLens',
         :icon_font_class => 'icon-cards'
       }
 
       # Data lens pages are the new way to look at datasets, so insert above datasets
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
-      view_type_list.insert(datasets_index, new_view_option)
+      view_type_list.insert(datasets_index, data_lens_option)
     end
   end
 
@@ -606,6 +608,8 @@ module BrowseActions
   end
 
   # This is only needed by Cetera; Core can add children on the server side
+  # we're operating as though there's only one category, even though cetera
+  # will expect an array of the parent and children categories[].
   def selected_category_and_any_children(browse_options)
     return nil unless browse_options[:search_options].try(:[], :category).present?
 
@@ -632,7 +636,7 @@ module BrowseActions
     [
       category[:value],
       category[:children] && category[:children].map { |child| child[:value] }
-    ].compact.join(',')
+    ].compact.flatten
   end
 
   @@default_cutoffs = {

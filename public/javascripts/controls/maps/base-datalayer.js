@@ -977,22 +977,6 @@
                 if (segment) { return segment.size; }
             }
             return 0;
-        },
-
-        // Easter egg for some later time.
-        heatmapBackground: function()
-        {
-            var layerObj = this;
-
-            var df = $.extend(true, {}, layerObj._displayFormat, { plotStyle: 'rastermap' });
-
-            layerObj.$dom().append('<div id="' + layerObj.$dom().attr('id') + '-heatBkg"></div>');
-            layerObj._heatmapBkg
-                = layerObj.$dom().find('div').socrataDataLayer({ view: layerObj._view,
-                    index: layerObj._index + 0.5, parentViz: layerObj._parent, displayFormat: df });
-
-            layerObj._heatmapBkg.bindDatasetEvents();
-            layerObj._heatmapBkg.getData();
         }
     }, { showRowLink: true, numSegments: 6, basePointSize: 5 },
     'socrataDataLayer');

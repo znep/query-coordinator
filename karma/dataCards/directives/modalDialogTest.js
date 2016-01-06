@@ -4,10 +4,8 @@ describe('modalDialog', function() {
   var testHelpers;
   var rootScope;
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
-  beforeEach(module('dataCards/modal-dialog.scss'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/modal-dialog.scss'));
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');

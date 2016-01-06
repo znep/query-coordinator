@@ -4,12 +4,10 @@ describe('socSelect', function() {
   var testHelpers;
   var $rootScope;
 
-  beforeEach(function() {
-    module('dataCards');
-    module('dataCards.directives');
-    module('/angular_templates/dataCards/socSelect.html');
-    module('dataCards/cards.scss');
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
 
+  beforeEach(function() {
     inject(function($injector) {
       testHelpers = $injector.get('testHelpers');
       $rootScope = $injector.get('$rootScope');

@@ -41,11 +41,21 @@ module BrowseHelper
   def description_contains_html?(display_type)
     # These types have preformatted descriptions.
     # Attempting to wrap them in <p> tags causes invalid html
-    %w(data_lens data_lens_chart data_lens_map new_view).include?(display_type)
+    %w(data_lens data_lens_chart data_lens_map).include?(display_type)
   end
 
-  def sanitize_string(string)
-    sanitize(raw(auto_link(h(raw(string)), :all, {'rel' => 'nofollow external' })))
+  # NOTE: This function is currently *ONLY* used to render descriptions safely.
+  # It is not currently endorsed for use against other fields.
+  # Please bear these facts in mind when making modifications!
+  # The tags/attr list should be kept in parity with DOMPurify settings in JS.
+  def sanitize_string(input)
+    input = h(raw(input))
+    # autolinking - uses a deprecated function, and further-deprecated syntax for that function
+    input = auto_link(input, :all, {'rel' => 'nofollow external' })
+    # sanitize to eliminate risky html tags and attributes
+    allowed_tags = %w(a b br div em hr i p span strong sub sup u)
+    allowed_attr = %w(href rel target)
+    sanitize(raw(input), tags: allowed_tags, attributes: allowed_attr)
   end
 
   def view_formatted_description(result)

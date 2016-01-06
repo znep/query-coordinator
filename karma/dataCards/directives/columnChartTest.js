@@ -86,12 +86,9 @@ describe('columnChart', function() {
     return modifiedData;
   }
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.services'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('/angular_templates/dataCards/columnChart.html'));
+  beforeEach(angular.mock.module('dataCards'));
 
-  beforeEach(module(function(_$controllerProvider_) {
+  beforeEach(angular.mock.module(function(_$controllerProvider_) {
     $controllerProvider = _$controllerProvider_;
   }));
 

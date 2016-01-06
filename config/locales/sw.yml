@@ -453,12 +453,12 @@ sw:
           blob: Mafaili na Nyaraka
           calendars: Kalenda
           charts: Chati
+          data_lens:
           datasets: Setidata
           filters: Mitazamo Iliyochujwa
           forms: Fomu
           href: Setidata za Nje
           maps: Ramani
-          new_view:
           pulse:
           pulse_help:
           story:
@@ -1102,6 +1102,7 @@ sw:
       blob: faili au waraka usioorodheshwa
       calendar: kalenda
       chart: chati
+      data_lens:
       dataset: Setidata
       filter: mwonekano uliochujwa
       form: fomu
@@ -1110,7 +1111,6 @@ sw:
       href: |
         Setidata ya nje
       map: ramani
-      new_view:
       table: jedwali
       working_copy: Nakala ya kazi
     view_types_plural:

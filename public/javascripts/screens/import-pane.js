@@ -1363,7 +1363,7 @@ importNS.uploadFilePaneConfig = {
                 }
                 else if (state.type == 'shapefile')
                 {
-                    if (!(ext && /^(zip|kml|kmz)$/i.test(ext)))
+                    if (!(ext && /^(zip|kml|kmz|json|geojson)$/i.test(ext)))
                     {
                         // Only accept ZIP and KML for shapefile.
                         $pane.find('.uploadFileName')
@@ -1702,6 +1702,8 @@ importNS.importShapefilePaneConfig = {
         wizardCommand = command;
         layers = scan.summary.layers
         $pane = $paneLocal;
+        $summary = $paneLocal.find('.shapeSummary');
+        $abbreviatedSummary = $paneLocal.find('.abbreviatedShapeSummary');
         $layersList = $pane.find('.layersList');
         $featureCount = $pane.find('.featureCount');
         $layerCount = $pane.find('.layerCount');
@@ -1711,30 +1713,36 @@ importNS.importShapefilePaneConfig = {
         // populate the dataset name field
         $pane.find('.headline .fileName').text($.htmlEscape(state.fileName));
 
-        // populate the summary data
-        $featureCount.text(featureCount);
-        $layerCount.text(layerCount);
+        if(layerCount === 0) {
+            $summary.hide();
+        } else {
+            $abbreviatedSummary.hide();
+            // populate the summary data
+            $featureCount.text(featureCount);
+            $layerCount.text(layerCount);
 
-        _.each(layers, function(layer, i)
-        {
-            layer.id = i
-            layer.type = 'layer';
+            _.each(layers, function(layer, i)
+            {
+                layer.id = i
+                layer.type = 'layer';
 
-            newLayerLine(layer);
-        });
+                newLayerLine(layer);
+            });
 
-        $pane.delegate('.layersList li input', 'change', function()
-        {
-            updateLayerLines($(this).closest('li.importLayer'));
-        });
+            $pane.delegate('.layersList li input', 'change', function()
+            {
+                updateLayerLines($(this).closest('li.importLayer'));
+            });
 
-        $layersList.awesomereorder({
-            uiDraggableDefaults: {
-                handle: '.importHandleCell'
-            }
-        });
+            $layersList.awesomereorder({
+                uiDraggableDefaults: {
+                    handle: '.importHandleCell'
+                }
+            });
 
-        $layersList.show();
+            $layersList.show();
+        }
+
         $pane.find('.pendingLayersMessage').hide();
 
         // we are now past the first init, so start animating things
@@ -1840,14 +1848,12 @@ importNS.importingPaneConfig = {
         if (state.type == 'shapefile')
         {
             blueprint = {};
-
             blueprint.layers = _.map(importer.importLayers, function(importLayer)
             {
                 return {
-                    layerId: importLayer.layerId,
+                    uid: importLayer.layerId,
                     name: importLayer.name,
-                    referenceSystem: importLayer.referenceSystem,
-                    replacingUid: importLayer.replacingUid
+                    replaceUid: importLayer.replacingUid
                 }
             });
         }

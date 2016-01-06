@@ -2,22 +2,21 @@ describe('Socrata config service', function() {
   'use strict';
 
   var configService;
+  var originalConfigBlob;
+
+  beforeEach(function() {
+    angular.mock.module('dataCards');
+    inject(function($injector) {
+      originalConfigBlob = {
+        testKey: 'testValue'
+      };
+
+      configService = $injector.get('ServerConfig');
+      configService.setup(originalConfigBlob);
+    });
+  });
 
   describe('socrataConfig object present', function() {
-    var originalConfigBlob;
-
-    beforeEach(function() {
-      module('socrataCommon.services');
-      inject(function($injector) {
-        originalConfigBlob = {
-          testKey: 'testValue'
-        };
-
-        configService = $injector.get('ServerConfig');
-        configService.setup(originalConfigBlob);
-      });
-    });
-
     it('should allow for fetching a value by key', function() {
       expect(configService.get('testKey')).to.exist.and.to.equal('testValue');
     });
@@ -120,13 +119,10 @@ describe('Socrata config service', function() {
   });
 
   it('should not fail if not setup', function() {
-    module('socrataCommon.services');
-    inject(function($injector) {
-      configService = $injector.get('ServerConfig');
-    });
     expect(function() {
       configService.get('key');
     }).to.not.throw();
+
     expect(configService.get('key')).to.be.undefined;
   });
 

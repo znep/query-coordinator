@@ -470,7 +470,7 @@ class DatasetsController < ApplicationController
 
           # if this is a data lens or standalone viz, update the inner metadata blob too
           # so that name/description changes aren't out of sync
-          if @view.data_lens? || @view.new_view? || @view.standalone_visualization?
+          if @view.data_lens? || @view.standalone_visualization?
             metadata_update_url = "/views/#{params[:id]}.json"
             payload = {
               :displayFormat => @view.displayFormat.as_json.with_indifferent_access
@@ -481,7 +481,7 @@ class DatasetsController < ApplicationController
               vif['title'] = @view.name
               vif['description'] = @view.description || ''
               payload[:displayFormat][:visualization_interchange_format_v1] = JSON.dump(vif)
-            elsif @view.data_lens? || @view.new_view?
+            elsif @view.data_lens?
               payload[:displayFormat][:data_lens_page_metadata][:name] = @view.name
               payload[:displayFormat][:data_lens_page_metadata][:description] = @view.description
             end
@@ -893,8 +893,8 @@ protected
 
   def default_page_accessible?(default_page)
     begin
-      NewViewManager.new.fetch(default_page)
-    rescue NewViewManager::ViewAccessDenied
+      DataLensManager.new.fetch(default_page)
+    rescue DataLensManager::ViewAccessDenied
       return false
     end
 

@@ -3,9 +3,9 @@ describe('ellipsify filter', function() {
 
   var ellipsify;
 
-  beforeEach(function() {
-    module('dataCards.filters');
+  beforeEach(angular.mock.module('dataCards'));
 
+  beforeEach(function() {
     inject(function(ellipsifyFilter) {
       ellipsify = ellipsifyFilter;
     });

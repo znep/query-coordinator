@@ -10,7 +10,7 @@ describe('CardOptions', function() {
     mapFlannelTitleColumn: 'hello_world'
   };
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     Model = $injector.get('Model');

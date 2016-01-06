@@ -1,54 +1,52 @@
-(() => {
+import { classNames } from './utils';
+import React, { PropTypes } from 'react';
 
-  const PropTypes = React.PropTypes;
-  let componentsNS = blist.namespace.fetch('blist.components');
-  const { classNames } = blist.namespace.fetch('blist.components.utils');
+const FormInput = React.createClass({
+  propTypes: {
+    children: PropTypes.any.isRequired,
+    description: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    required: PropTypes.bool,
+    showValidationError: PropTypes.bool,
+    validationError: PropTypes.string
+  },
+  getDefaultProps() {
+    return {
+      required: false,
+      showValidationError: false
+    };
+  },
+  render() {
+    const {
+      children,
+      description,
+      id,
+      label,
+      required,
+      showValidationError,
+      validationError
+    } = this.props;
 
-  componentsNS.FormInput = React.createClass({
-    propTypes: {
-      description: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-      required: PropTypes.bool,
-      showValidationError: PropTypes.bool,
-      validationError: PropTypes.string
-    },
-    getDefaultProps: function() {
-      return {
-        required: false,
-        showValidationError: false
-      }
-    },
-    render: function() {
-      const {
-        children,
-        description,
-        id,
-        label,
-        required,
-        showValidationError,
-        validationError
-      } = this.props;
+    const className = classNames({ required });
 
-      const className = classNames({ required });
-
-      return (
-        <div className="line">
-          <label htmlFor={id} className={className}>{label}</label>
-          <div>
-            {children}
-            <p>{description}</p>
-            <label
-              className="error"
-              htmlFor={id}
-              generated="true"
-              >
-              {showValidationError ? validationError : ''}
-            </label>
-          </div>
+    return (
+      <div className="line">
+        <label htmlFor={id} className={className}>{label}</label>
+        <div>
+          {children}
+          <p>{description}</p>
+          <label
+            className="error"
+            htmlFor={id}
+            generated="true"
+            >
+            {showValidationError ? validationError : ''}
+          </label>
         </div>
-      );
-    }
-  });
+      </div>
+    );
+  }
+});
 
-})();
+export default FormInput;

@@ -1,3 +1,4 @@
+const angular = require('angular');
 // A simple directive which broadcasts a scope event when its element is resized.
 //
 // Example:

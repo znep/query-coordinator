@@ -259,7 +259,8 @@ blist.namespace.fetch('blist.filter');
         { v = _.map(v, function(vv) { return _.isString(vv) ? "'" + vv + "'" : vv; }); }
         else if (_.isString(v)) { v = "'" + v + "'"; }
 
-        var fieldName = fc.columnFieldName;
+        // Should be == to fc.columnFieldName unless fieldname changed since jsonQuery creation. \o/
+        var fieldName = c.fieldName;
         if (!$.isBlank(fc.subColumn)) { fieldName += '.' + fc.subColumn; }
         if ($.subKeyDefined(c, 'renderType.soqlFieldWrapper'))
         { fieldName = c.renderType.soqlFieldWrapper(fieldName, op); }

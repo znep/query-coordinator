@@ -1,4 +1,4 @@
-describe('manage-lens dialog', function() {
+describe('manageLensDialog', function() {
   'use strict';
 
   var testHelpers;
@@ -10,14 +10,10 @@ describe('manage-lens dialog', function() {
   var $timeout;
   var $q;
 
-  beforeEach(module('/angular_templates/common/intractableList.html'));
-  beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/saveButton.html'));
-  beforeEach(module('/angular_templates/dataCards/spinner.html'));
-  beforeEach(module('dataCards/cards.scss'));
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
 
-  beforeEach(module(function($provide) {
+  beforeEach(angular.mock.module(function($provide) {
     _$provide = $provide;
   }));
 

@@ -105,14 +105,10 @@ describe('columnAndVisualizationSelectorTest', function() {
     };
   }
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
-  beforeEach(module('/angular_templates/dataCards/socSelect.html'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    module(['$provide', function(_$provide) {
+    angular.mock.module(['$provide', function(_$provide) {
       $provide = _$provide;
     }]);
   });
@@ -150,6 +146,7 @@ describe('columnAndVisualizationSelectorTest', function() {
           $httpBackend.whenGET(/\/api\/id\/rook-king.json\?%24query=select\+count\(0\).*/).respond([]);
 
           testHelpers.mockDirective($provide, 'card');
+          testHelpers.mockDirective($provide, 'classicVisualizationPreviewer');
       }
     ])
   );
@@ -286,14 +283,6 @@ describe('columnAndVisualizationSelectorTest', function() {
       setFieldName('point');
       expect(selectedDropdownOption()).to.eq('point');
     });
-
-    it('should not emit card-model-selected', function() {
-      directive.outerScope.$on('card-model-selected', function() {
-        throw new Error('card-model-selected should not be emitted');
-      });
-
-      setFieldName('point');
-    });
   });
 
   describe('when an enabled column is selected', function() {
@@ -318,6 +307,7 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     describe('card-model-selected scope event', function() {
       var seenEventPayloads;
+
       beforeEach(function() {
         seenEventPayloads = [];
         directive.outerScope.$on('card-model-selected', function(event, payload) {
@@ -342,11 +332,6 @@ describe('columnAndVisualizationSelectorTest', function() {
           expect(seenEventPayloads[0].fieldName).to.equal(selectedColumnFieldName);
 
         });
-      });
-
-      afterEach(function() {
-        // For now all these tests emit only one card-model-selected.
-        expect(seenEventPayloads).to.have.length(1);
       });
     });
 

@@ -17,12 +17,7 @@ describe('LeafletVisualizationHelpersService', function() {
     'northeast': [42.12980284036179, -86.97738647460938]
   };
 
-  beforeEach(function() {
-    module('dataCards.services');
-    module('socrataCommon.services');
-    module('dataCards.models');
-    module('test');
-  });
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     LeafletVisualizationHelpersService = $injector.get('LeafletVisualizationHelpersService');

@@ -1,7 +1,11 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-addons-test-utils';
+
+import GeoregionAdminTable from 'components/georegions/georegion-admin-table';
+import GeoregionAdminRow from 'components/georegions/georegion-admin-row';
+
 describe('GeoregionAdminTable', function() {
-  var TestUtils = React.addons.TestUtils;
-  var georegionComponents = blist.namespace.fetch('blist.georegions.components');
-  var GeoregionAdminTable = georegionComponents.GeoregionAdminTable;
 
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();
@@ -47,7 +51,7 @@ describe('GeoregionAdminTable', function() {
     });
 
     it('renders the rows', function() {
-      var rows = TestUtils.scryRenderedComponentsWithType(this.node, georegionComponents.GeoregionAdminRow);
+      var rows = TestUtils.scryRenderedComponentsWithType(this.node, GeoregionAdminRow);
       expect(rows).to.have.length(3);
       expect(rows[0]).to.have.deep.property('props.isEnabled', true);
       expect(rows[0]).to.have.deep.property('props.renderActions', true);

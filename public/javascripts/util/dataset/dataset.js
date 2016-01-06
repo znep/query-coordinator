@@ -250,11 +250,6 @@ var Dataset = ServerModel.extend({
         return (this.type == 'href');
     },
 
-    isNewView: function()
-    {
-        return (this.displayType === 'new_view');
-    },
-
     isDataLens: function()
     {
         return (this.displayType === 'data_lens');
@@ -1515,7 +1510,7 @@ var Dataset = ServerModel.extend({
             if (_.isFunction(successCallback)) { successCallback(); }
         };
 
-        if (ds.isNewView() || ds.isDataLens()) {
+        if (ds.isDataLens()) {
             // Send a DELETE request to the NFE endpoint, which should propagate the delete to the
             // OBE representation.
             ds.makeRequestWithPromise({
@@ -2431,8 +2426,6 @@ var Dataset = ServerModel.extend({
         { ds.styleClass = 'Unpublished'; }
         else if (ds.type == 'blist' && ds.isSnapshot())
         { ds.styleClass = 'Snapshotted'; }
-        else if (ds.isNewView())
-        { ds.styleClass = 'New_view'; }
         else
         { ds.styleClass = ds.type.capitalize(); }
 
@@ -3382,10 +3375,6 @@ var Dataset = ServerModel.extend({
         var ds = this;
         var base = '';
 
-        if (ds.isNewView() && ds.metadata.hasOwnProperty('accessPoints')) {
-          return ds.metadata.accessPoints['new_view'];
-        }
-
         // federated dataset has nonblank domain cname
         if (includeDomain || !$.isBlank(ds.domainCName))
         { base = ds._generateBaseUrl(ds.domainCName); }
@@ -3414,10 +3403,6 @@ var Dataset = ServerModel.extend({
     {
         var ds = this;
         var base = '';
-
-        if (ds.isNewView() && ds.metadata.hasOwnProperty('accessPoints')) {
-          return ds.metadata.accessPoints['new_view'];
-        }
 
         // federated dataset has nonblank domain cname
         if (includeDomain || !$.isBlank(ds.domainCName))
@@ -4193,8 +4178,6 @@ function getDisplayName(ds)
     switch (ds.type) {
         case 'blist':
             return ds.isPublished() ? $.t('core.view_types.dataset') : $.t('core.view_types.working_copy');
-        case 'data_lens':
-            return $.t('core.view_types.new_view');
         default:
             return $.t('core.view_types.' + ds.type);
     }

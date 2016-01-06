@@ -1,6 +1,9 @@
-describe('admin-georegions-screen', function() {
-  var components = blist.namespace.fetch('blist.components');
-  var TestUtils = React.addons.TestUtils;
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
+
+xdescribe('admin-georegions-screen', function() {
+  // File doesn't export any functionality, so it can't be tested as-is
+  // TODO: break into smaller units to test individually
 
   beforeEach(function() {
     this.target = $('<div id="react-modal"/>').appendTo(document.body).get(0);

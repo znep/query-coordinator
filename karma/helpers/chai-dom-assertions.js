@@ -1,6 +1,7 @@
+import TestUtils from 'react-addons-test-utils';
+
 chai.use(function(_chai, utils) {
   var Assertion = _chai.Assertion;
-  var TestUtils = React.addons.TestUtils;
 
   Assertion.addMethod('className', function(className) {
     var obj = this._obj;

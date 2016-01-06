@@ -133,7 +133,7 @@ describe('SortedTileLayout', function() {
     }
   ];
 
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function(_SortedTileLayout_) {
     SortedTileLayout = _SortedTileLayout_;
   }));

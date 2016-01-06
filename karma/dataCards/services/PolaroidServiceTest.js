@@ -6,8 +6,7 @@ describe('Polaroid Service', function() {
   var $rootScope;
   var $httpBackend;
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     PolaroidService = $injector.get('PolaroidService');
     testHelpers = $injector.get('testHelpers');

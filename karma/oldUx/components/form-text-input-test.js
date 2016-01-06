@@ -1,11 +1,12 @@
-describe('FormTextInput', function() {
+import React from 'react';
+import TestUtils, {
+  findRenderedDOMComponentWithTag as findByTag
+} from 'react-addons-test-utils';
 
-  var components = blist.namespace.fetch('blist.components');
-  var FormTextInput = components.FormTextInput;
-  var FormInput = components.FormInput;
-  var TestUtils = React.addons.TestUtils;
-  var findByTag = TestUtils.findRenderedDOMComponentWithTag;
-  var findAllByTag = TestUtils.scryRenderedDOMComponentsWithTag;
+import FormTextInput from 'components/form-text-input';
+import FormInput from 'components/form-input';
+
+describe('FormTextInput', function() {
 
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();

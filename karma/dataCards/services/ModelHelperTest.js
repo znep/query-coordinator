@@ -3,7 +3,7 @@ describe('ModelHelper', function() {
 
   var _mh, _$q, _$rootScope;
 
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function(ModelHelper, $q, $rootScope) {
     _mh = ModelHelper;
     _$q = $q;

@@ -564,7 +564,7 @@ var validateAll = function()
                 // warn if the column is nonoptimally used
                 if (!$.isBlank(originalColumn) && (originalColumn.type != 'static') &&
                     !_.isUndefined(locationTypes[field]) &&
-                    (locationTypes[field].indexOf(originalColumn.suggestion) < 0))
+                    !_.contains(locationTypes[field], originalColumn.suggestion))
                 {
                     addValidationError(importColumn, 'warning', 'set to import its <strong>' +
                         field + '</strong> from the source column <strong>' + $.htmlEscape(originalColumn.name) +

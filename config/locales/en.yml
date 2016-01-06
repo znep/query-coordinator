@@ -264,6 +264,7 @@ en:
           title: Shared with
           viewer: Viewer
         title: Manage
+        unsaved_changes_message: You have unsaved changes
         visibility:
           dataset_is_private: The source dataset is set to Private, so this Data Lens may not be shown in the catalog. Note that this page will appear in the catalog if the dataset is made public.
           hidden: Hidden from catalog

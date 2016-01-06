@@ -130,7 +130,7 @@
 <div class="controls">
   <div ng-show="dialogHasChanges" class="unsaved-changes-message">
     <span class="icon-warning"></span>
-    You have unsaved changes
+    {{::'manageLensDialog.unsavedChangesMessage' | I18n}}
   </div>
   <save-button
     class="dark r-to-l manage-lens-dialog-save"

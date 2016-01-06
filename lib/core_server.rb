@@ -272,18 +272,16 @@ class CoreServer
       # the configuration. This is due to the way the configurations API is defined where properties are
       # managed separate from their configurations.
       result = core_server_request_with_retries(core_server_request_options)
-      
-      if result.try(:[], 'code') == 'not_found'
-        core_server_request_with_retries(
-        {
-          verb: :post,
-          path: "#{base_path}.json",
-          body: property,
-          return_errors: true
-        }
-      )
 
-      result
+      if result.try(:[], 'code') == 'not_found'
+        result = core_server_request_with_retries(
+          {
+            verb: :post,
+            path: "#{base_path}.json",
+            body: property,
+            return_errors: true
+          }
+        )
       end
 
       raise result['message'] if result['error'].present?

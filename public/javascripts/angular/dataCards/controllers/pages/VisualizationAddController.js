@@ -161,7 +161,6 @@ function VisualizationAddController(
     defaultRelatedVisualizationUid) ? defaultRelatedVisualizationUid : null;
 
   defaultColumn = dataset.getCurrentValue('columns')[defaultColumn] ? defaultColumn : null;
-  // defaultVifType = defaultVifType ? defaultVifType : null;
 
   $scope.supportedCardTypes.forEach(function(cardType, index) {
     cardTypesToVIFTypes[cardType] = $scope.supportedVIFTypes[index];

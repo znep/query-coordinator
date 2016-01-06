@@ -1,7 +1,7 @@
 describe('DropHintStore', function() {
   'use strict';
 
-  var blockContent = 'testBlockContent';
+  var testBlockContent = 'testBlockContent';
   var storyteller = window.socrata.storyteller;
 
   function dragOver(storyUid, blockContent) {
@@ -21,7 +21,7 @@ describe('DropHintStore', function() {
     });
   }
 
-  function dragDrop(storyUid, blockContent) {
+  function dragDrop(storyUid) {
     storyteller.dispatcher.dispatch({
       action: Actions.STORY_DROP,
       storyUid: storyUid
@@ -39,12 +39,12 @@ describe('DropHintStore', function() {
           done();
         });
 
-        dragOver(standardMocks.validStoryUid, blockContent);
+        dragOver(standardMocks.validStoryUid, testBlockContent);
       });
 
       describe('but then an invalid storyId', function() {
         it('should clear its hint position', function(done) {
-          dragOver(standardMocks.validStoryUid, blockContent);
+          dragOver(standardMocks.validStoryUid, testBlockContent);
 
           storyteller.dropHintStore.addChangeListener(function() {
             var hint = storyteller.dropHintStore.getDropHintPosition();
@@ -59,7 +59,7 @@ describe('DropHintStore', function() {
       describe('but then a STORY_DRAG_LEAVE event', function() {
         describe('over some other story', function() {
           it('should preserve the existing hint', function() {
-            dragOver(standardMocks.validStoryUid, blockContent);
+            dragOver(standardMocks.validStoryUid, testBlockContent);
             var originalHint = storyteller.dropHintStore.getDropHintPosition();
             assert.isNotNull(originalHint);
 
@@ -76,7 +76,7 @@ describe('DropHintStore', function() {
         });
         describe('over the dragged story', function() {
           it('should clear the hint', function(done) {
-            dragOver(standardMocks.validStoryUid, blockContent);
+            dragOver(standardMocks.validStoryUid, testBlockContent);
             var originalHint = storyteller.dropHintStore.getDropHintPosition();
             assert.isNotNull(originalHint);
 
@@ -96,7 +96,7 @@ describe('DropHintStore', function() {
   describe('given STORY_DROP action', function() {
     describe('while dragging over the story', function() {
       it('should clear the reorder hint position', function(done) {
-        dragOver(standardMocks.validStoryUid, blockContent);
+        dragOver(standardMocks.validStoryUid, testBlockContent);
         assert.deepEqual(
           storyteller.dropHintStore.getDropHintPosition(standardMocks.validStoryUid),
           {
@@ -136,7 +136,7 @@ describe('DropHintStore', function() {
 
     describe('while dragging', function() {
       beforeEach(function() {
-        dragOver(standardMocks.validStoryUid, blockContent);
+        dragOver(standardMocks.validStoryUid, testBlockContent);
       });
       describe('over the story in the argument', function() {
         it('should return true', function() {

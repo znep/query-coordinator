@@ -24,7 +24,7 @@ describe('componentBase jQuery plugin', function() {
   });
 
   it('should pass `componentData` to `withLayoutHeightFromComponentData`', function() {
-    var componentData = {};
+    componentData = {};
 
     sinon.stub($component, 'withLayoutHeightFromComponentData');
 

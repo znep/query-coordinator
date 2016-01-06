@@ -1,4 +1,6 @@
 describe('storySaveErrorBar jQuery plugin', function() {
+  'use strict';
+
   var $errorBar;
   var storyteller = window.socrata.storyteller;
   var mockStore;
@@ -6,19 +8,19 @@ describe('storySaveErrorBar jQuery plugin', function() {
   beforeEach(function() {
     $errorBar = $('<div>');
 
-    function MockStore(forStoryUid) {
+    function MockStore() {
       var self = this;
       var _isSaveInProgress = false;
       var _lastSaveError = null;
 
       _.extend(this, new storyteller.Store());
 
-      this.mockIsSaveInProgress= function(isSaveInProgress) {
+      this.mockIsSaveInProgress = function(isSaveInProgress) {
         _isSaveInProgress = isSaveInProgress;
         self._emitChange();
       };
 
-      this.mockLastError= function(error) {
+      this.mockLastError = function(error) {
         _lastSaveError = error;
         self._emitChange();
       };

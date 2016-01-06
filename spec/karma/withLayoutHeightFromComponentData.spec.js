@@ -32,13 +32,13 @@ describe('withLayoutHeightFromComponentData jQuery plugin', function() {
       $componentContent.on('invalidateSize', invalidateSizeStubOnComponentContent);
       $notComponentContent.on('invalidateSize', invalidateSizeStubOnNotComponentContent);
 
-      $component.withLayoutHeightFromComponentData({ value:{ layout: { height: 100 } } });
-      $component.withLayoutHeightFromComponentData({ value:{ layout: { height: 100 } } });
-      $component.withLayoutHeightFromComponentData({ value:{ layout: { height: 100 } } });
+      $component.withLayoutHeightFromComponentData({ value: { layout: { height: 100 } } });
+      $component.withLayoutHeightFromComponentData({ value: { layout: { height: 100 } } });
+      $component.withLayoutHeightFromComponentData({ value: { layout: { height: 100 } } });
 
-      $component.withLayoutHeightFromComponentData({ value:{ layout: { height: 200 } } });
+      $component.withLayoutHeightFromComponentData({ value: { layout: { height: 200 } } });
 
-      $component.withLayoutHeightFromComponentData({ value:{ layout: { height: 100 } } });
+      $component.withLayoutHeightFromComponentData({ value: { layout: { height: 100 } } });
     });
 
     it('should call self.height() with correct args only if the height changed', function() {

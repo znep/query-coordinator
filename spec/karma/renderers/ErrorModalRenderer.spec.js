@@ -3,9 +3,7 @@ describe('ErrorModalRenderer', function() {
 
   var $body;
   var $modal;
-  var renderer;
   var storyteller = window.socrata.storyteller;
-  var lastModalOptions;
 
   beforeEach(function() {
     $body = $('body');
@@ -13,11 +11,9 @@ describe('ErrorModalRenderer', function() {
       append($('<div>', { 'class': 'error-warning-message' }));
     $body.append($modal);
 
-    sinon.stub($.fn, 'modal', function(options) {
-      lastModalOptions = options;
-    });
+    sinon.stub($.fn, 'modal', _.noop);
 
-    renderer = new storyteller.ErrorModalRenderer();
+    new storyteller.ErrorModalRenderer(); //eslint-disable-line no-new
   });
 
   afterEach(function() {

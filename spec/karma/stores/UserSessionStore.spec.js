@@ -75,7 +75,7 @@ describe('UserSessionStore', function() {
 
       it('if /api/users/current.json responds 404 should indicate the session is invalid', function(done) {
         store.addChangeListener(function() {
-          if(!store.hasValidSession()) {
+          if (!store.hasValidSession()) {
             done();
           }
         });
@@ -117,7 +117,7 @@ describe('UserSessionStore', function() {
 
         it('should return false for loginInProgress', function(done) {
           store.addChangeListener(function() {
-            if(!store.loginInProgress()) {
+            if (!store.loginInProgress()) {
               done();
             }
           });
@@ -130,7 +130,7 @@ describe('UserSessionStore', function() {
 
       it('if /api/users/current.json responds 404 should indicate the session is invalid', function(done) {
         store.addChangeListener(function() {
-          if(!store.hasValidSession()) {
+          if (!store.hasValidSession()) {
             done();
           }
         });

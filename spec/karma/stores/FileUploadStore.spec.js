@@ -42,7 +42,7 @@ describe('FileUploadStore', function() {
         it('returns null', function() {
           assert.equal(storyteller.fileUploadStore.getFileUploadProgress(), null);
         });
-      })
+      });
     });
   });
 });

@@ -4,7 +4,7 @@ describe('LinkTipStore', function() {
   var storyteller = window.socrata.storyteller;
 
   function dispatchAction(action, payload) {
-    var payload = _.extend({action: action}, payload);
+    payload = _.extend({action: action}, payload);
     storyteller.dispatcher.dispatch(payload);
   }
 
@@ -54,9 +54,9 @@ describe('LinkTipStore', function() {
         assert.deepEqual(storyteller.linkTipStore.getBoundingClientRect(), 'boundingClientRect');
       });
 
-      it('should update editor ID', function () {
+      it('should update editor ID', function() {
         assert.equal(storyteller.linkTipStore.getEditorId(), 'id');
-      })
+      });
     });
   });
 
@@ -65,7 +65,7 @@ describe('LinkTipStore', function() {
       it('should throw', function() {
         assert.throws(function() {
           dispatchAction(Actions.LINK_MODAL_ACCEPT);
-        })
+        });
       });
     });
 
@@ -94,7 +94,7 @@ describe('LinkTipStore', function() {
           link: 'link',
           openInNewWindow: false
         });
-      })
+      });
     });
   });
 

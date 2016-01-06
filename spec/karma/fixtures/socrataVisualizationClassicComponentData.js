@@ -1,5 +1,9 @@
 beforeEach(function() {
+  'use strict';
+
   window.fixtures = window.fixtures || {};
+
+  /* eslint-disable quotes */ // Double quotes for copy-pastability to/from JSON.
   window.fixtures.socrataVisualizationClassicComponentData = {
     "type": "socrata.visualization.classic",
     "value": {
@@ -194,4 +198,6 @@ beforeEach(function() {
       }
     }
   };
+
+  /* eslint-enable quotes */
 });

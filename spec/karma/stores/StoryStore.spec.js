@@ -25,7 +25,7 @@ describe('StoryStore', function() {
     'id': block1Id,
     'layout': block1Layout,
     'components': block1Components
-  }
+  };
 
   var block2Id = 'block2';
   var block2Layout = '12';
@@ -642,7 +642,7 @@ describe('StoryStore', function() {
 
           it('raises an exception', function() {
 
-            delete storyData['uid'];
+            delete storyData.uid;
 
             assert.throw(function() {
               dispatch({ action: Actions.STORY_CREATE, data: storyData });
@@ -654,7 +654,7 @@ describe('StoryStore', function() {
 
           it('raises an exception', function() {
 
-            storyData['uid'] = 'testtest';
+            storyData.uid = 'testtest';
 
             assert.throw(function() {
               dispatch({ action: Actions.STORY_CREATE, data: storyData });
@@ -666,7 +666,7 @@ describe('StoryStore', function() {
 
           it('raises an exception', function() {
 
-            delete storyData['title'];
+            delete storyData.title;
 
             assert.throw(function() {
               dispatch({ action: Actions.STORY_CREATE, data: storyData });
@@ -678,7 +678,7 @@ describe('StoryStore', function() {
 
           it('raises an exception', function() {
 
-            delete storyData['blocks'];
+            delete storyData.blocks;
 
             assert.throw(function() {
               dispatch({ action: Actions.STORY_CREATE, data: storyData });

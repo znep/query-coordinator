@@ -2,7 +2,6 @@ describe('componentHorizontalRule jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
     testDom.append('<div>');
@@ -18,8 +17,8 @@ describe('componentHorizontalRule jQuery plugin', function() {
     assert.throws(function() { $component.componentHorizontalRule([]); });
   });
 
-  describe('given a type that is not supported', function () {
-    it('should throw when instantiated', function () {
+  describe('given a type that is not supported', function() {
+    it('should throw when instantiated', function() {
       assert.throws(function() { $component.componentHorizontalRule({type: 'notHorizontalRule'}); });
     });
   });

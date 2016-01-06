@@ -2,7 +2,6 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   var validComponentData = {
     type: 'embeddedHtml',
@@ -29,8 +28,8 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
     assert.throws(function() { $component.componentEmbeddedHtml([]); });
   });
 
-  describe('given a value that does not contain a url', function () {
-    it('should throw when setting the iframe source', function () {
+  describe('given a value that does not contain a url', function() {
+    it('should throw when setting the iframe source', function() {
       var badData = _.cloneDeep(validComponentData);
       delete badData.value.url;
 

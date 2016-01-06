@@ -3,7 +3,6 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   var validComponentData = {
     type: 'socrata.visualization.featureMap',
@@ -31,8 +30,8 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
     assert.throws(function() { $component.componentSocrataVisualizationFeatureMap([]); });
   });
 
-  describe('given a type that is not supported', function () {
-    it('should throw when instantiated', function () {
+  describe('given a type that is not supported', function() {
+    it('should throw when instantiated', function() {
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notSocrata.notVisualization.notFeatureMap';
       assert.throws(function() {
@@ -42,17 +41,14 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
   });
 
   describe('given a valid component type and value', function() {
-    var socrataFeatureMapStub = sinon.stub($.fn, 'socrataFeatureMap');
+    var socrataFeatureMapStub;
 
     beforeEach(function() {
+      socrataFeatureMapStub = sinon.stub($.fn, 'socrataFeatureMap');
       $component = $component.componentSocrataVisualizationFeatureMap(validComponentData);
     });
 
     afterEach(function() {
-      socrataFeatureMapStub.reset();
-    });
-
-    after(function() {
       socrataFeatureMapStub.restore();
     });
 

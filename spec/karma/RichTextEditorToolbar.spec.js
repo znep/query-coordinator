@@ -2,7 +2,6 @@
 
   'use strict';
 
-  var socrata = root.socrata;
   var storyteller = root.socrata.storyteller;
 
   describe('instantiation', function() {
@@ -10,13 +9,13 @@
     describe('should throw when', function() {
       it('should throw when providing an element that is not a jQuery object', function() {
         assert.throws(function() {
-          var toolbar = new storyteller.RichTextEditorToolbar({});
+          new storyteller.RichTextEditorToolbar({}); //eslint-disable-line no-new
         });
       });
 
       it('should throw when providing an empty jQuery object', function() {
         assert.throws(function() {
-          var toolbar = new storyteller.RichTextEditorToolbar($('.nothing'));
+          new storyteller.RichTextEditorToolbar($('.nothing')); //eslint-disable-line no-new
         });
       });
 
@@ -27,13 +26,13 @@
         $container.append($('<div>'));
 
         assert.throws(function() {
-          var toolbar = new storyteller.RichTextEditorToolbar($container.find('div'));
+          new storyteller.RichTextEditorToolbar($container.find('div')); //eslint-disable-line no-new
         });
       });
 
       it('should throw when providing a non-Array format', function() {
         assert.throws(function() {
-          var toolbar = new storyteller.RichTextEditorToolbar($('<div>'), null);
+          new storyteller.RichTextEditorToolbar($('<div>'), null); //eslint-disable-line no-new
         });
       });
     });

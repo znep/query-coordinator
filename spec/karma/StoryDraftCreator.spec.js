@@ -8,7 +8,7 @@ describe('StoryDraftCreator', function() {
     var server;
     var fakeTokenMeta;
     beforeEach(function() {
-      fakeTokenMeta = $('<meta>', { name:'csrf-token', content: 'faketoken' });
+      fakeTokenMeta = $('<meta>', { name: 'csrf-token', content: 'faketoken' });
 
       $('head').append(fakeTokenMeta);
 
@@ -79,7 +79,7 @@ describe('StoryDraftCreator', function() {
       it('should dispatch STORY_SAVED with the new digest', function(done) {
         storyteller.dispatcher.register(function(payload) {
           assert.notEqual(payload.action, Actions.STORY_SAVE_FAILED);
-          if(payload.action === Actions.STORY_SAVED) {
+          if (payload.action === Actions.STORY_SAVED) {
             assert.equal(payload.storyUid, standardMocks.validStoryUid);
             assert.equal(payload.digest, newDigest);
             done();
@@ -115,7 +115,7 @@ describe('StoryDraftCreator', function() {
       it('should dispatch STORY_SAVE_FAILED', function(done) {
         storyteller.dispatcher.register(function(payload) {
           assert.notEqual(payload.action, Actions.STORY_SAVED);
-          if(payload.action === Actions.STORY_SAVE_FAILED) {
+          if (payload.action === Actions.STORY_SAVE_FAILED) {
             assert.equal(payload.storyUid, standardMocks.validStoryUid);
             done();
           }
@@ -148,7 +148,7 @@ describe('StoryDraftCreator', function() {
       it('should dispatch STORY_SAVE_FAILED', function(done) {
         storyteller.dispatcher.register(function(payload) {
           assert.notEqual(payload.action, Actions.STORY_SAVED);
-          if(payload.action === Actions.STORY_SAVE_FAILED) {
+          if (payload.action === Actions.STORY_SAVE_FAILED) {
             assert.equal(payload.storyUid, standardMocks.validStoryUid);
             done();
           }

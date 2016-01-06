@@ -100,7 +100,7 @@ describe('FileUploader', function() {
           [
             200,
             { 'Content-Type': 'application/json' },
-            JSON.stringify({ upload: { url: uploadUrl, content_type: 'image/jpeg' } })
+            JSON.stringify({ upload: { url: uploadUrl, content_type: 'image/jpeg' } }) //eslint-disable-line camelcase
           ]
         );
 
@@ -156,7 +156,7 @@ describe('FileUploader', function() {
           });
 
           done();
-        }, storyteller.config.fileUploader.checkDocumentProcessedRetryInterval * 5)
+        }, storyteller.config.fileUploader.checkDocumentProcessedRetryInterval * 5);
       });
     });
 
@@ -195,14 +195,12 @@ describe('FileUploader', function() {
           assert.equal(server.requests.length, 1);
 
           done();
-        }, 50)
+        }, 50);
       });
     });
 
     describe('fails to upload file', function() {
       var uploadUrl = 'http://somestore.com/uploads/file.png';
-      var documentUrl = 'http://somesotre.com/documents/1/file.png';
-      var documentId = 1;
 
       beforeEach(function() {
         server.respondWith(
@@ -210,7 +208,7 @@ describe('FileUploader', function() {
           [
             200,
             { 'Content-Type': 'application/json' },
-            JSON.stringify({ upload: { url: uploadUrl, content_type: 'image/jpeg' } })
+            JSON.stringify({ upload: { url: uploadUrl, content_type: 'image/jpeg' } })  //eslint-disable-line camelcase
           ]
         );
 
@@ -241,14 +239,12 @@ describe('FileUploader', function() {
           assert.equal(server.requests.length, 2);
 
           done();
-        }, storyteller.config.fileUploader.checkDocumentProcessedRetryInterval * 2)
+        }, storyteller.config.fileUploader.checkDocumentProcessedRetryInterval * 2);
       });
     });
 
     describe('fails to save resource', function() {
       var uploadUrl = 'http://somestore.com/uploads/file.png';
-      var documentUrl = 'http://somesotre.com/documents/1/file.png';
-      var documentId = 1;
 
       beforeEach(function() {
         server.respondWith(
@@ -256,7 +252,12 @@ describe('FileUploader', function() {
           [
             200,
             { 'Content-Type': 'application/json' },
-            JSON.stringify({ upload: { url: uploadUrl, content_type: 'image/jpeg' } })
+            JSON.stringify({
+              upload: {
+                url: uploadUrl,
+                content_type: 'image/jpeg' //eslint-disable-line camelcase
+              }
+            })
           ]
         );
 
@@ -296,13 +297,12 @@ describe('FileUploader', function() {
           assert.equal(server.requests.length, 3);
 
           done();
-        }, storyteller.config.fileUploader.checkDocumentProcessedRetryInterval * 2)
+        }, storyteller.config.fileUploader.checkDocumentProcessedRetryInterval * 2);
       });
     });
 
     describe('fails to get processed resource', function() {
       var uploadUrl = 'http://somestore.com/uploads/file.png';
-      var documentUrl = 'http://somesotre.com/documents/1/file.png';
       var documentId = 1;
 
       beforeEach(function() {
@@ -311,7 +311,12 @@ describe('FileUploader', function() {
           [
             200,
             { 'Content-Type': 'application/json' },
-            JSON.stringify({ upload: { url: uploadUrl, content_type: 'image/jpeg' } })
+            JSON.stringify({
+              upload: {
+                url: uploadUrl,
+                content_type: 'image/jpeg' //eslint-disable-line camelcase
+              }
+            })
           ]
         );
 
@@ -361,7 +366,7 @@ describe('FileUploader', function() {
           assert.equal(server.requests.length, 6);
 
           done();
-        }, storyteller.config.fileUploader.checkDocumentProcessedRetryInterval * 4)
+        }, storyteller.config.fileUploader.checkDocumentProcessedRetryInterval * 4);
       });
     });
   });

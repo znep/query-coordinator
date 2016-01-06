@@ -39,10 +39,12 @@ describe('DragDrop', function() {
   describe('constructor', function() {
     describe('given bad arguments', function() {
       it('should throw', function() {
+        /* eslint-disable no-new */
         assert.throws(function() { new storyteller.DragDrop(); });
         assert.throws(function() { new storyteller.DragDrop([]); });
         assert.throws(function() { new storyteller.DragDrop(3, ghost); });
         assert.throws(function() { new storyteller.DragDrop(blocks, $('nothing')); });
+        /* eslint-enable no-new */
       });
     });
   });
@@ -132,8 +134,6 @@ describe('DragDrop', function() {
       });
 
       describe('and the pointer has moved from the block list into a story', function() {
-        var inspirationBlockList;
-
         beforeEach(function() {
           // drag over an actual story block
           fakeDragMoveEvent = {

@@ -1,4 +1,6 @@
 describe('AssetSelectorRenderer', function() {
+  'use strict';
+
   var storyteller = window.socrata.storyteller;
 
   var container;
@@ -15,7 +17,7 @@ describe('AssetSelectorRenderer', function() {
     testDom.append(container);
 
     options = {
-      assetSelectorContainerElement: testDom.find('.asset-selector-container'),
+      assetSelectorContainerElement: testDom.find('.asset-selector-container')
     };
   });
 
@@ -30,7 +32,7 @@ describe('AssetSelectorRenderer', function() {
           delete options.assetSelectorContainerElement;
 
           assert.throws(function() {
-            var renderer = new AssetSelectorRenderer(options);
+            new AssetSelectorRenderer(options); //eslint-disable-line no-new
           });
         });
       });
@@ -42,7 +44,7 @@ describe('AssetSelectorRenderer', function() {
           options.assetSelectorContainerElement = {};
 
           assert.throws(function() {
-            var renderer = new AssetSelectorRenderer(options);
+            new AssetSelectorRenderer(options); //eslint-disable-line no-new
           });
         });
       });
@@ -51,7 +53,7 @@ describe('AssetSelectorRenderer', function() {
 
         it('appends a `.modal-overlay` and a `.modal-dialog` to the `assetSelectorContainerElement`', function() {
 
-          var renderer = new AssetSelectorRenderer(options);
+          new AssetSelectorRenderer(options); //eslint-disable-line no-new
 
           assert.equal(container.find('.modal-overlay').length, 1);
           assert.equal(container.find('.modal-dialog').length, 1);
@@ -63,7 +65,7 @@ describe('AssetSelectorRenderer', function() {
   describe('event handlers', function() {
 
     beforeEach(function() {
-      var renderer = new AssetSelectorRenderer(options);
+      new AssetSelectorRenderer(options); //eslint-disable-line no-new
     });
 
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the escape key is pressed', function(done) {
@@ -80,7 +82,7 @@ describe('AssetSelectorRenderer', function() {
         done();
       });
 
-      var event = $.Event('keyup');
+      var event = $.Event('keyup'); //eslint-disable-line new-cap
       // `ESC`
       event.keyCode = 27;
       $(document).trigger(event);
@@ -133,7 +135,7 @@ describe('AssetSelectorRenderer', function() {
         done();
       });
 
-      var event = $.Event('keyup');
+      var event = $.Event('keyup'); //eslint-disable-line new-cap
       // `a`
       event.keyCode = 65;
       container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
@@ -152,7 +154,7 @@ describe('AssetSelectorRenderer', function() {
         done();
       });
 
-      var event = $.Event('keyup');
+      var event = $.Event('keyup'); //eslint-disable-line new-cap
       // `BACKSPACE`
       event.keyCode = 8;
       container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
@@ -260,7 +262,7 @@ describe('AssetSelectorRenderer', function() {
           delete storyteller.fileUploader;
         });
 
-        it('cancels previous uploads in progress', function(done) {
+        it('cancels previous uploads in progress', function() {
           container.find('[data-asset-selector-validate-field="imageUpload"]').trigger('change', { target: { files: [mockFile] }});
           assert.isTrue(storyteller.fileUploader.destroy.calledOnce);
         });
@@ -269,10 +271,8 @@ describe('AssetSelectorRenderer', function() {
   });
 
   describe('when rendering', function() {
-    var renderer;
-
     beforeEach(function() {
-      renderer = new AssetSelectorRenderer(options);
+      new AssetSelectorRenderer(options); //eslint-disable-line no-new
     });
 
     it('renders the "choose provider" content on an `ASSET_SELECTOR_CHOOSE_PROVIDER` event', function() {
@@ -599,7 +599,7 @@ describe('AssetSelectorRenderer', function() {
     describe('when a `FILE_UPLOAD_DONE` action is fired', function() {
       var imageUrl = 'https://media.giphy.com/media/I8BOASC4LS0rS/giphy.gif';
       var documentId = 9876;
-      var ImgEl;
+      var imgEl;
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({

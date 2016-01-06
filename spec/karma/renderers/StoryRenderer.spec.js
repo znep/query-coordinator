@@ -6,7 +6,6 @@ describe('StoryRenderer', function() {
   var assetSelectorBlockId;
   var textBlockId;
   var options;
-  var dispatcher;
   var validToolbar;
   var validFormats;
 
@@ -86,7 +85,7 @@ describe('StoryRenderer', function() {
 
         it('creates a new storyteller.StoryRenderer', function() {
 
-          delete options['onRenderError'];
+          delete options.onRenderError;
 
           storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           assert.instanceOf(storyteller.storyRenderer, storyteller.StoryRenderer, 'renderer is instance of StoryRenderer');
@@ -177,7 +176,7 @@ describe('StoryRenderer', function() {
             options.onRenderError = function() {
               assert.isTrue(true);
               done();
-            }
+            };
 
             assert.throws(function() {
               storyteller.storyRenderer = new storyteller.StoryRenderer(options);
@@ -188,7 +187,7 @@ describe('StoryRenderer', function() {
     });
   });
 
-  describe('when rendering a story', function()  {
+  describe('when rendering a story', function() {
 
     afterEach(function() {
 
@@ -292,7 +291,7 @@ describe('StoryRenderer', function() {
       it('should throw', function() {
         var optionsWithoutInsertionHintElement = _.omit(options, 'insertionHintElement');
         assert.throws(function() {
-          new storyteller.StoryRenderer(optionsWithoutInsertionHintElement);
+          new storyteller.StoryRenderer(optionsWithoutInsertionHintElement); //eslint-disable-line no-new
         });
       });
     });
@@ -317,9 +316,6 @@ describe('StoryRenderer', function() {
   });
 
   describe('drag-and-drop insertion hint', function() {
-
-    var validToolbar;
-    var validFormats;
 
     beforeEach(function() {
 
@@ -347,18 +343,18 @@ describe('StoryRenderer', function() {
       $('#rich-text-editor-toolbar').remove();
     });
 
-    function hintAtStoryAndBlock(storyUid, blockId) {
+    function hintAtStoryAndBlock(storyUidToHint, blockIdToHint) {
 
       // Cause DropHintStore to indicate we're dragging over
       // the given story and block.
       storyteller.dispatcher.dispatch({
         action: Actions.STORY_DRAG_OVER,
-        storyUid: storyUid,
-        blockId: blockId,
+        storyUid: storyUidToHint,
+        blockId: blockIdToHint,
         pointer: {},
         storyElement: {}
       });
-    };
+    }
 
     function noHint() {
 
@@ -368,7 +364,7 @@ describe('StoryRenderer', function() {
         action: Actions.STORY_DRAG_LEAVE,
         storyUid: storyUid
       });
-    };
+    }
 
     describe('with a drag hint not on this story', function() {
       beforeEach(function() {

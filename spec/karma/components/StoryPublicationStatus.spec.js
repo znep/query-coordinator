@@ -1,4 +1,6 @@
 describe('storyPublicationStatus jQuery plugin', function() {
+  'use strict';
+
   var $button;
   var storyteller = window.socrata.storyteller;
   var mockStore;
@@ -6,7 +8,7 @@ describe('storyPublicationStatus jQuery plugin', function() {
   beforeEach(function() {
     $button = $('<button>');
 
-    function MockStore(forStoryUid) {
+    function MockStore() {
       var self = this;
       var _isDirty = false;
       var _isPublic = false;

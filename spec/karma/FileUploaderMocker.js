@@ -1,20 +1,24 @@
-window.socrata.storyteller.FileUploaderMocker = {
+(function() {
+  'use strict';
 
-  mock: function() {
-    var FileUploader = function() {}
-    FileUploader.prototype = {
-      upload: function(file) {
-        return '';
-      },
-      destroy: function() {
-        return 'destroy';
-      }
-    };
-    window.socrata.storyteller.FileUploader = FileUploader;
-  },
+  window.socrata.storyteller.FileUploaderMocker = {
 
-  unmock: function() {
-    delete window.socrata.storyteller['FileUploader'];
-  }
+    mock: function() {
+      var FileUploader = function() {};
+      FileUploader.prototype = {
+        upload: function() {
+          return '';
+        },
+        destroy: function() {
+          return 'destroy';
+        }
+      };
+      window.socrata.storyteller.FileUploader = FileUploader;
+    },
 
-};
+    unmock: function() {
+      delete window.socrata.storyteller.FileUploader;
+    }
+
+  };
+})();

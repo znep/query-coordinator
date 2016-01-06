@@ -3,7 +3,6 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var storyteller = window.socrata.storyteller;
 
   var validComponentData = {
     type: 'socrata.visualization.columnChart',
@@ -31,8 +30,8 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
     assert.throws(function() { $component.componentSocrataVisualizationColumnChart([]); });
   });
 
-  describe('given a type that is not supported', function () {
-    it('should throw when instantiated', function () {
+  describe('given a type that is not supported', function() {
+    it('should throw when instantiated', function() {
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notSocrata.notVisualization.notColumnChart';
       assert.throws(function() {
@@ -42,17 +41,14 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
   });
 
   describe('given a valid component type and value', function() {
-    var socrataColumnChartStub = sinon.stub($.fn, 'socrataColumnChart');
+    var socrataColumnChartStub;
 
     beforeEach(function() {
+      socrataColumnChartStub = sinon.stub($.fn, 'socrataColumnChart');
       $component = $component.componentSocrataVisualizationColumnChart(validComponentData);
     });
 
     afterEach(function() {
-      socrataColumnChartStub.reset();
-    });
-
-    after(function() {
       socrataColumnChartStub.restore();
     });
 

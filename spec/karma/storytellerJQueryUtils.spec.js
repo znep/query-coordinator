@@ -35,7 +35,7 @@ describe('storytellerJQueryUtils', function() {
       // We only care about calls to .attr(attribute, value), not
       // .attr(attribute).
       var onlySetCallArgs = _.chain(attrSpy.getCalls()).pluck('args').
-        filter(function(args) { return args.length !== 1 }).
+        filter(function(args) { return args.length !== 1; }).
         value();
 
       assert.deepEqual(
@@ -48,7 +48,7 @@ describe('storytellerJQueryUtils', function() {
       sinon.assert.alwaysCalledOn(callbackStub, $node);
 
       assert.deepEqual(
-        _.pluck(callbackStub.getCalls(), 'args')
+        _.pluck(callbackStub.getCalls(), 'args'),
         [
           [ 'foo', 'data-test' ],
           [ 'bar', 'data-test' ],

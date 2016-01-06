@@ -2,7 +2,6 @@ describe('componentResizable jQuery plugin', function() {
   'use strict';
 
   var $component;
-  var componentData;
   var bindHandlesStub;
 
   beforeEach(function() {

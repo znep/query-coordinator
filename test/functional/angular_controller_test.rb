@@ -470,11 +470,13 @@ class AngularControllerTest < ActionController::TestCase
       related_visualizations = JSON.parse(
         @response.body.match(related_visualizations_json_pattern)[1]
       )
+      # Note that we are testing that the data lens chart and data lens map are
+      # not included in the related visualizations. The setup above is included
+      # to ensure this is the case (in other words the input includes them but
+      # the output does not).
       assert_equal(
         related_visualizations.pluck('id'),
         [
-          'relt-chrt',
-          'relt-mapp',
           'sooo-oldd'
         ]
       )

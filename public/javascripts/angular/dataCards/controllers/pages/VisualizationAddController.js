@@ -137,17 +137,23 @@ function VisualizationAddController(
    * Bind observables to the scope.
    */
 
-  $scope.$bindObservable('columnNameToReadableNameFn', DatasetColumnsService.getReadableColumnNameFn$($scope));
+  $scope.$bindObservable(
+    'columnNameToReadableNameFn',
+    DatasetColumnsService.getReadableColumnNameFn$($scope)
+  );
   $scope.$bindObservable(
     'highlightedColumns',
     $scope.$observe('addCardSelectedColumnFieldName').
-      combineLatest($scope.$observe('classicVisualization'), function(fieldName, classicVisualization) {
-        if (fieldName) {
-          return [fieldName];
-        } else if (classicVisualization) {
-          return classicVisualization.columns;
+      combineLatest(
+        $scope.$observe('classicVisualization'),
+        function(fieldName, classicVisualization) {
+          if (fieldName) {
+            return [fieldName];
+          } else if (classicVisualization) {
+            return classicVisualization.columns;
+          }
         }
-      })
+      )
   );
 
   /**

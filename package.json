@@ -9,6 +9,7 @@
     "registry":"https://socrata.artifactoryonline.com/socrata/api/npm/npm-local"
   },
   "scripts": {
+    "postinstall": "npm rebuild node-sass",
     "build": "webpack && node tools/compile-css.js",
     "prebuild": "rimraf dist",
     "prepublish": "webpack && node tools/compile-css.js",

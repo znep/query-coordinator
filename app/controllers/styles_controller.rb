@@ -62,24 +62,8 @@ class StylesController < ApplicationController
           Rails.cache.write(includes_cache_key, includes)
         end
 
-        scss_sheets = []
-        css_sheets = []
-        STYLE_PACKAGES[params[:stylesheet]].each do |sheet|
-          fname = "#{Rails.root}/app/styles/#{sheet}.scss"
-          if File.exist?(fname)
-            scss_sheets.push(File.read(fname))
-          else
-            fname = "#{Rails.root}/app/styles/#{sheet}.css"
-            css_sheets.push(File.read(fname))
-          end
-        end
+        rendered_styles = render_merged_stylesheets(includes)
 
-        rendered_styles = css_sheets.join("\n")
-        rendered_styles += Sass::Engine.new(includes + scss_sheets.join("\n"),
-                                           :style => :compressed,
-                                           :syntax => :scss,
-                                           :cache => false,
-                                           :load_paths => ["#{Rails.root}/app/styles"]).render
         Rails.cache.write(cache_key, rendered_styles)
         render :text => rendered_styles
       else
@@ -146,6 +130,41 @@ class StylesController < ApplicationController
   end
 
   protected
+
+  def render_merged_stylesheets(includes)
+    scss_sheets = []
+    css_sheets = []
+    STYLE_PACKAGES[params[:stylesheet]].each do |sheet|
+      fname = "#{Rails.root}/app/styles/#{sheet}.scss"
+      if File.exist?(fname)
+        scss_sheets.push(File.read(fname))
+      else
+        fname = "#{Rails.root}/app/styles/#{sheet}.css"
+        css_sheets.push(File.read(fname))
+      end
+    end
+
+    rendered_styles = css_sheets.join("\n")
+    rendered_styles << Sass::Engine.new(
+      includes + scss_sheets.join("\n"),
+      :style => :compressed,
+      :syntax => :scss,
+      :cache => false,
+      :load_paths => ["#{Rails.root}/app/styles"]
+    ).render
+
+    # Wow, this is super important. Since stylesheets come from heterogenous
+    # sources, and some of them might be utf-8, something (Ruby?) is going way
+    # overboard adding BOMs willy nilly when we concatenate the contents of
+    # each stylesheet. Accordingly, we need to use strip_byte_order_mark! to
+    # search and destroy BOMs throughout the file (remember, there might be
+    # many since we're concatenating a bunch of files together). Yuck!
+    strip_byte_order_marks!(rendered_styles)
+  end
+
+  def strip_byte_order_marks!(string)
+    string.gsub!("\xEF\xBB\xBF".force_encoding('utf-8'), '')
+  end
 
   def get_includes
     STYLE_PACKAGES['includes'].map do |incl|

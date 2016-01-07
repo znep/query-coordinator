@@ -6,7 +6,6 @@ function saveAs($window, WindowState, FlyoutService, ServerConfig, rx) {
     restrict: 'E',
     scope: {
       showProvenanceSection: '=',
-      hasChanges: '=',
       isEphemeral: '=',
       page: '=',
       savePageAs: '='
@@ -48,7 +47,7 @@ function saveAs($window, WindowState, FlyoutService, ServerConfig, rx) {
 
       $scope.$bindObservable('saveStatus', saveEvents$.pluck('status'));
 
-      // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
+      // Since we have a flyout handler whose output depends on currentPageSaveEvents,
       // we need to poke the FlyoutService. We want the flyout to update immediately.
       saveEvents$.subscribe(function() {
         FlyoutService.refreshFlyout();

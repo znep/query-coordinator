@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("socrata.utils"), require("d3"), require("jQuery"), require("_"));
+		module.exports = factory(require("socrata.utils"), require("d3"), require("jQuery"), require("_"), require("moment"));
 	else if(typeof define === 'function' && define.amd)
-		define(["socrata.utils", "d3", "jQuery", "_"], factory);
+		define(["socrata.utils", "d3", "jQuery", "_", "moment"], factory);
 	else if(typeof exports === 'object')
-		exports["visualizations"] = factory(require("socrata.utils"), require("d3"), require("jQuery"), require("_"));
+		exports["visualizations"] = factory(require("socrata.utils"), require("d3"), require("jQuery"), require("_"), require("moment"));
 	else
-		root["socrata"] = root["socrata"] || {}, root["socrata"]["visualizations"] = factory(root["socrata"]["utils"], root["d3"], root["jQuery"], root["_"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_8__, __WEBPACK_EXTERNAL_MODULE_9__) {
+		root["socrata"] = root["socrata"] || {}, root["socrata"]["visualizations"] = factory(root["socrata"]["utils"], root["d3"], root["jQuery"], root["_"], root["moment"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_8__, __WEBPACK_EXTERNAL_MODULE_9__, __WEBPACK_EXTERNAL_MODULE_41__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -23031,6 +23031,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	/* eslint-disable no-proto */
 
+	'use strict'
+
 	var base64 = __webpack_require__(33)
 	var ieee754 = __webpack_require__(34)
 	var isArray = __webpack_require__(35)
@@ -23113,8 +23115,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new Buffer(arg)
 	  }
 
-	  this.length = 0
-	  this.parent = undefined
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+	    this.length = 0
+	    this.parent = undefined
+	  }
 
 	  // Common case.
 	  if (typeof arg === 'number') {
@@ -23245,6 +23249,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	if (Buffer.TYPED_ARRAY_SUPPORT) {
 	  Buffer.prototype.__proto__ = Uint8Array.prototype
 	  Buffer.__proto__ = Uint8Array
+	} else {
+	  // pre-set for values that may exist in the future
+	  Buffer.prototype.length = undefined
+	  Buffer.prototype.parent = undefined
 	}
 
 	function allocate (that, length) {
@@ -23394,10 +23402,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	Buffer.byteLength = byteLength
-
-	// pre-set for values that may exist in the future
-	Buffer.prototype.length = undefined
-	Buffer.prototype.parent = undefined
 
 	function slowToString (encoding, start, end) {
 	  var loweredCase = false
@@ -24490,7 +24494,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      // valid surrogate pair
-	      codePoint = leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00 | 0x10000
+	      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
 	    } else if (leadSurrogate) {
 	      // valid bmp char, but last char was a lead
 	      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
@@ -24794,38 +24798,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 35 */
 /***/ function(module, exports) {
 
-	
-	/**
-	 * isArray
-	 */
+	var toString = {}.toString;
 
-	var isArray = Array.isArray;
-
-	/**
-	 * toString
-	 */
-
-	var str = Object.prototype.toString;
-
-	/**
-	 * Whether or not the given `val`
-	 * is an array.
-	 *
-	 * example:
-	 *
-	 *        isArray([]);
-	 *        // > true
-	 *        isArray(arguments);
-	 *        // > false
-	 *        isArray('');
-	 *        // > false
-	 *
-	 * @param {mixed} val
-	 * @return {bool}
-	 */
-
-	module.exports = isArray || function (val) {
-	  return !! val && '[object Array]' == str.call(val);
+	module.exports = Array.isArray || function (arr) {
+	  return toString.call(arr) == '[object Array]';
 	};
 
 
@@ -26570,6 +26546,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var $ = __webpack_require__(8);
+	var _ = __webpack_require__(9);
+	var moment = __webpack_require__(41);
 	var utils = __webpack_require__(3);
 	var TimelineChart = __webpack_require__(13);
 	var SoqlDataProvider = __webpack_require__(22);
@@ -27126,6 +27105,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = $.fn.socrataTimelineChart;
 
+
+/***/ },
+/* 41 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_41__;
 
 /***/ }
 /******/ ])

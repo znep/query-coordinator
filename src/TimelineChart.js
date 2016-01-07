@@ -1,3 +1,6 @@
+var $ = require('jquery');
+var _ = require('lodash');
+var moment = require('moment');
 var utils = require('socrata-utils');
 var TimelineChart = require('./views/TimelineChart');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');

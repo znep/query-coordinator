@@ -49,12 +49,14 @@
           </span>
       </li>
     <%- end -%>
+    <%- if user_can?(current_user, :edit_sdp) -%>
       <li class="appearance">
         <%= admin_nav_link_to 'SDP Templates', :action => 'sdp_templates' %>
         <span class="description">
           Manage and customize the templates used for publishing your data via Socrata Data Players
         </span>
       </li>
+    <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_enabled?(:canvas_designer) -%>
       <li class="contentmgmt">
         <%= admin_nav_link_to 'DataSlate Pages', :action => 'canvas_pages' %>

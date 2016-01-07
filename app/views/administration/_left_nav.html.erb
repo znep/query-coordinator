@@ -29,9 +29,11 @@
         <%= admin_nav_link_to 'Views', :action => 'views' %>
       </li>
     <%- end -%>
+    <%- if user_can?(current_user, :edit_sdp) -%>
       <li class="appearance">
         <%= admin_nav_link_to 'SDP Templates', :action => 'sdp_templates' %>
       </li>
+    <%- end -%>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
       <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_enabled?(:canvas_designer) -%>
         <li class="contentmgmt">

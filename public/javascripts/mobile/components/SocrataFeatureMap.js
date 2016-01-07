@@ -1,3 +1,4 @@
+/*global socrataConfig */
 (function($, root) {
 
   'use strict';
@@ -6,12 +7,13 @@
   var utils = socrata.utils;
   var visualizations = socrata.visualizations;
 
-  var DEFAULT_TILESERVER_HOSTS = [
-    'https://tileserver1.api.us.socrata.com',
-    'https://tileserver2.api.us.socrata.com',
-    'https://tileserver3.api.us.socrata.com',
-    'https://tileserver4.api.us.socrata.com'
-  ];
+  var DEFAULT_TILESERVER_HOSTS = socrataConfig.tileserverHosts.length > 0 ?
+    socrataConfig.tileserverHosts : [
+      'https://tileserver1.api.us.socrata.com',
+      'https://tileserver2.api.us.socrata.com',
+      'https://tileserver3.api.us.socrata.com',
+      'https://tileserver4.api.us.socrata.com'
+    ];
   var DEFAULT_FEATURES_PER_TILE = 256 * 256;
   var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
   var DEFAULT_BASE_LAYER_OPACITY = 0.5;

@@ -170,20 +170,43 @@ module BrowseActions
     }
   end
 
-  def custom_facets
-    facets = CurrentDomain.property(:custom_facets, :catalog)
+  # Unlike other facets with normal hashes, I use Hashie::Mash
+  def custom_facets(params = nil)
+    params = params || request_params || {}
+    facets = CurrentDomain.property(:custom_facets, :catalog) # Array of Hashie::Mash
+
     return if facets.nil?
+
+    # NOTE: Dupping because high mutability going on here!
+    facets = facets.map(&:dup)
 
     custom_chop = get_facet_cutoff(:custom)
     facets.map do |facet|
       facet.param = facet.param.to_sym
 
       if facet.options && facet.options.length > custom_chop
+
+        # NOTE: Anything marked as 'summary' is guaranteed visible; if there
+        # are no 'summary' facets, then remaining facets are eligible for
+        # visibility up to the cutoff threshold. "summary":true in
+        # custom_facets will override "custom":number in facet_cutoffs
         facet.options, facet.extra_options = facet.options.partition { |opt| opt.summary }
+
         if facet.options.empty?
           facet.options = facet.extra_options.slice!(0..(custom_chop - 1))
+
+          # If an option below the "fold" is active (filtered on), move it from
+          # extra_options to options to force it to appear above the fold.
+          active_option = params[facet.param]
+          found_option = (facet.extra_options || []).find { |option| option[:value] == active_option }
+
+          if found_option
+            facet.options.push(found_option)
+            facet.extra_options.delete(found_option)
+          end
         end
       end
+
       facet.with_indifferent_access
     end
   end
@@ -473,7 +496,8 @@ module BrowseActions
       if !options[f[:param]].blank?
         if !f[:singular_description].blank?
           facet_item = nil
-          f[:options].each do |o|
+          facet_options = f[:options] + f[:extra_options].to_a
+          facet_options.each do |o|
             if o[:value] == options[f[:param]]
               facet_item = o
             elsif !o[:children].nil?

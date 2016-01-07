@@ -38,6 +38,19 @@ module BrowseHelper
     end
   end
 
+  def link_for_facet(facet, facet_option, options, params)
+    link_options = {}
+    link_options[:class] = 'active' if facet_option[:value] == options[facet[:param]]
+    link_to("#{options[:base_url]}?#{params.to_param}", link_options) do
+      if facet_option[:icon]
+        concat(image_tag(theme_image_url(facet_option[:icon]), :alt => 'icon', :class => 'customIcon'))
+      end
+      if facet_option[:text]
+        concat(facet_option[:text])
+      end
+    end
+  end
+
   def description_contains_html?(display_type)
     # These types have preformatted descriptions.
     # Attempting to wrap them in <p> tags causes invalid html

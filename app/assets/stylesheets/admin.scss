@@ -54,6 +54,11 @@ header {
   @include outer-container;
   margin-bottom: 2rem;
 
+  &.google-fonts {
+    margin-top: 1rem;
+    margin-bottom: 0;
+  }
+
   .wide {
     @include span-columns(12);
   }
@@ -72,11 +77,11 @@ header {
 }
 
 .checkbox {
-  margin: 1rem 0;
+  margin: 0 0 1rem 0;
 }
 
-label[for="theme_google_font_code"], 
-#theme_google_font_code, 
+label[for="theme_google_font_code"],
+#theme_google_font_code,
 #google_font_code_help_text {
   display: none;
   &.visible {

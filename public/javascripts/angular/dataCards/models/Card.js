@@ -181,10 +181,12 @@ angular.module('dataCards.models').
       var migratedBlob = _.cloneDeep(blob);
 
       if (
+        // Contrary to what we previously believed, the non-null presence of a
+        // `computedColumn` does not indicate that a card is a choropleth;
+        // rather, we must check that the cardType is 'choropleth' AND it has a
+        // computed column.
+        migratedBlob.cardType === 'choropleth' &&
         migratedBlob.hasOwnProperty('computedColumn') &&
-        // If `computedColumn` is null, that means that this is not a card based
-        // on a computed column. We should therefore not attmept to migrate any
-        // BinaryOperator filters attached to it.
         migratedBlob.computedColumn !== null &&
         migratedBlob.hasOwnProperty('activeFilters')
       ) {

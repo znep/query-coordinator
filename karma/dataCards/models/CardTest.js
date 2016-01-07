@@ -100,6 +100,32 @@ describe('Card model', function() {
     expect(activeFilters[0]).to.have.property('operand').that.equals('90210');
   }));
 
+  it('deserialization should not migrate BinaryOperator filters on non-Choroplehts to use BinaryComputedGeoregionOperator filters even if there is a computed column', inject(function(Schemas, Filter) {
+    var blob = {
+      'fieldName': 'crime_location',
+      'cardSize': 2,
+      'cardType': 'columnChart',
+      'expanded': false,
+      'computedColumn': ':@computed_crime_location',
+      'activeFilters': [
+        {
+          'function': 'BinaryOperator',
+          'arguments': {
+            'operator': '=',
+            'operand': 'test'
+          }
+        }
+      ]
+    };
+    var instance = makeCard(blob);
+    var activeFilters = instance.getCurrentValue('activeFilters');
+
+    expect(activeFilters.length).to.equal(1);
+    expect(activeFilters[0]).to.be.instanceof(Filter.BinaryOperatorFilter);
+    expect(activeFilters[0]).to.have.property('operator').that.equals('=');
+    expect(activeFilters[0]).to.have.property('operand').that.equals('test');
+  }));
+
   // TODO this test and the associated product behavior is just to work around
   // Models handling exceptions badly. Instead of breaking on serialization we need
   // to break on property set. Right now the models will break badly if we do that.

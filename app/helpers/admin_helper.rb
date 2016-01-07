@@ -27,8 +27,8 @@ module AdminHelper
       a.last.to_i - b.last.to_i }, (selected_option || '').to_s)
   end
 
-  def admin_nav_link_to(title, action)
-    link_to_unless_current raw(%Q(<span class="icon"></span>#{title})), { :action => action }
+  def admin_nav_link_to(title, options)
+    link_to_unless_current raw(%Q(<span class="icon"></span>#{title})), options
   end
 
   def user_can?(user, action, current_domain = CurrentDomain)

@@ -93,6 +93,8 @@ Coverage results are in ```coverage/```
 
 `bin/rake spec`
 
+To run just one rspec test: `bundle exec rspec <path-to-file>`
+
 ### Javascript tests
 
 We use Karma to test our Javascript.

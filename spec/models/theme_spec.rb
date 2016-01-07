@@ -287,6 +287,34 @@ RSpec.describe Theme, type: :model do
     end
   end
 
+  describe '#find_by_class_name' do
+    let(:story_json) { JSON.parse(fixture('story_theme.json').read).first }
+    let(:id) { story_json['id'] }
+
+    before do
+      allow(CoreServer).to receive(:get_configuration).with(id).and_return(story_json)
+    end
+
+    context 'custom theme class_name does not exist' do
+      it 'returns nil' do
+        expect(Theme.find_by_class_name('')).to be_nil
+        expect(Theme.find_by_class_name(nil)).to be_nil
+      end
+    end
+
+    context 'when custom theme class_name exists' do
+      let (:subject) { Theme.find_by_class_name('custom-' + id.to_s) }
+
+      it 'returns theme object' do
+        expect(subject).to be_a(Theme)
+      end
+
+      it 'finds the correct theme' do
+        expect(subject.id).to eq(id)
+      end
+    end
+  end
+
   describe '#for_theme_list_config' do
     it 'returns a hash with properties' do
       expected = {

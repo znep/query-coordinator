@@ -59,6 +59,10 @@ debug_data_lens:
 disable_dataset_search_box:
   description: Disable the search box in dataset pages.
   defaultValue: false
+enable_data_lens_card_level_aggregation:
+  description: Allow configuration of the aggregation at the card level instead of the page level.
+  defaultValue: false
+  category: data lens
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false

@@ -7,63 +7,49 @@
   </div>
   <ul class="navigationList adminNav">
       <li class="analytics">
-        <%= link_to_unless_current \
-            raw('<span class="icon"></span>Site Analytics'),
-            {:action => 'analytics'} %>
+        <%= admin_nav_link_to 'Site Analytics', :action => 'analytics' %>
       </li>
     <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
       <li class="users">
-        <%= link_to_unless_current \
-            raw('<span class="icon"></span>Users'),
-            {:action => 'users'} %>
+        <%= admin_nav_link_to 'Users', :action => 'users' %>
       </li>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :federations) && module_available?(:federations) -%>
       <li class="federation">
-        <%= link_to_unless_current \
-            raw('<span class="icon"></span>Federation'),
-            {:action => 'federations'} %>
+        <%= admin_nav_link_to 'Federation', :action => 'federations' %>
       </li>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :moderate_comments) && module_enabled?(:publisher_comment_moderation) -%>
       <li class="comments">
-        <%= link_to_unless_current \
-            raw('<span class="icon"></span>Comments'),
-            {:action => 'comment_moderation'} %>
+        <%= admin_nav_link_to 'Comments', :action => 'comment_moderation' %>
       </li>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :approve_nominations) && feature?(:view_moderation) -%>
       <li class="viewmoderation">
-        <%= link_to_unless_current \
-            raw('<span class="icon"></span>Views'),
-            {:action => 'views'} %>
+        <%= admin_nav_link_to 'Views', :action => 'views' %>
       </li>
     <%- end -%>
+    <%- if user_can?(current_user, :edit_sdp) -%>
       <li class="appearance">
-        <%= link_to_unless_current \
-            raw('<span class="icon"></span>SDP Templates'),
-            {:action => 'sdp_templates'} %>
+        <%= admin_nav_link_to 'SDP Templates', :action => 'sdp_templates' %>
       </li>
+    <%- end -%>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
       <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_enabled?(:canvas_designer) -%>
         <li class="contentmgmt">
-          <%= link_to_unless_current \
-              raw('<span class="icon"></span>DataSlate Pages'),
-              {:action => 'canvas_pages'} %>
+          <%= admin_nav_link_to 'DataSlate Pages', :action => 'canvas_pages' %>
         </li>
       <%- end -%>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_others_datasets) ||
            CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="datasets">
-        <%= link_to_unless_current \
-            raw('<span class="icon"></span>Datasets'),
-            {:action => 'datasets'} %>
+        <%= admin_nav_link_to 'Datasets', :action => 'datasets' %>
       </li>
     <%- end -%>
     <%- if can_view_georegions_admin?(current_user) -%>
       <li class="georegions">
-        <%= admin_nav_link_to t('screens.admin.georegions.title'), 'georegions' %>
+        <%= admin_nav_link_to t('screens.admin.georegions.title'), :action => 'georegions' %>
       </li>
     <%- end -%>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
@@ -71,33 +57,28 @@
               CurrentDomain.user_can?(current_user, :feature_items) ||
               CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
         <li class="homemgmt">
-          <%= link_to_unless_current raw('<span class="icon"></span>Home Page'),
-              {:action => 'home'} %>
+          <%= admin_nav_link_to 'Home Page', :action => 'home' %>
         </li>
       <%- end -%>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="metadata">
-        <%= link_to_unless_current raw('<span class="icon"></span>Metadata'),
-            {:action => 'metadata'} %>
+        <%= admin_nav_link_to 'Metadata', :action => 'metadata' %>
       </li>
     <%- end -%>
     <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
       <li class="routingApproval">
-        <%= link_to_unless_current raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
-            {:action => 'routing_approval'} %>
+        <%= admin_nav_link_to 'Dataset Routing &amp; Approval', :action => 'routing_approval' %>
       </li>
     <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
-        <%= link_to_unless_current \
-            raw('<span class="icon"></span>Internal'),
-            {:controller => 'internal', :action => 'index'} %>
+        <%= admin_nav_link_to 'Internal', :controller => 'internal', :action => 'index' %>
       </li>
     <%- end -%>
     <%- if current_user.try(:is_admin?) && feature_flag?('stories_enabled', request) -%>
       <li class="contentmgmt">
-        <a href="/stories/admin/themes"><span class="icon"></span>Stories</a>
+        <%= admin_nav_link_to 'Stories', '/stories/admin/themes' %>
       </li>
     <%- end -%>
   </ul>

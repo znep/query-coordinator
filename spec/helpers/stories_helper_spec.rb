@@ -54,6 +54,39 @@ RSpec.describe StoriesHelper, type: :helper do
     end
   end
 
+  describe '#google_font_code_embed' do
+    let(:story_json) { JSON.parse(fixture('story_theme.json').read).first }
+    let(:id) { story_json['id'] }
+
+    before do
+      allow(CoreServer).to receive(:get_configuration).with(id).and_return(story_json)
+    end
+
+    context 'when story is nil' do
+      it 'returns nil' do
+        @story = nil
+
+        expect(google_font_code_embed).to be_nil
+      end
+    end
+
+    context 'given a story with a custom theme' do
+      it 'returns the raw google font code' do
+        @story = FactoryGirl.create(:draft_story, theme: 'custom-234')
+
+        expect(google_font_code_embed).to eq("<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>")
+      end
+    end
+
+    context 'given a story with a non-custom theme' do
+      it 'returns an empty string' do
+        @story = FactoryGirl.create(:draft_story)
+
+        expect(google_font_code_embed).to be_blank
+      end
+    end
+  end
+
   describe '#component_partial_name' do
     it 'returns a mapping for valid component types' do
       valid_component_types = [

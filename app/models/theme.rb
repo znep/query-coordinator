@@ -3,6 +3,7 @@ class Theme
   include ActiveModel::Validations
   extend ActiveModel::Naming
 
+  CLASS_NAME_PREFIX = 'custom-'
   VALID_GOOGLE_FONT_CODE_REGEX = /\A(<link href='https:\/\/fonts.googleapis.com\/css\?family=)[a-z0-9\|\+\:\,]{1,}*(' rel='stylesheet' type='text\/css'>)\z/i
 
   attr_reader :id, :title, :description, :css_variables, :google_font_code, :updated_at, :domain_cname
@@ -21,7 +22,7 @@ class Theme
   end
 
   def class_name
-    @class_name ||= "custom-#{id}"
+    @class_name ||= "#{CLASS_NAME_PREFIX}#{id}"
   end
 
   def for_theme_list_config
@@ -70,6 +71,12 @@ class Theme
     core_config = CoreServer.get_configuration(id)
     raise "Could not find theme configuration with id, #{id}." if core_config.blank?
     self.from_core_config(core_config)
+  end
+
+  def self.find_by_class_name(class_name)
+    return nil unless class_name.present? && class_name.start_with?(CLASS_NAME_PREFIX)
+
+    Theme.find(class_name.gsub(CLASS_NAME_PREFIX, '').to_i)
   end
 
   # Reads from a core configuration that looks like the following:

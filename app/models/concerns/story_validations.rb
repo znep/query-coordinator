@@ -8,5 +8,6 @@ module StoryValidations
     # that simply verifies that the container is an array.
     validates :block_ids, is_array: true
     validates :created_by, presence: true
+    validates :theme, presence: true
   end
 end

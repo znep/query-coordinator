@@ -88,41 +88,48 @@ block_8 = Block.create(
 published_story = PublishedStory.create(
   uid: 'test-test',
   block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
-  created_by: 'good-doer'
+  created_by: 'good-doer',
+  theme: 'serif'
 )
 
 draft_story = DraftStory.create(
   uid: 'test-test',
   block_ids: [],
-  created_by: 'good-doer'
+  created_by: 'good-doer',
+  theme: 'serif'
 )
 
 draft_story = DraftStory.create(
   uid: 'hasb-lock',
   block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
-  created_by: 'good-doer'
+  created_by: 'good-doer',
+  theme: 'serif'
 )
 
 presentation_story = DraftStory.create(
   uid: 'pres-ents',
   block_ids: [block_1.id, block_2.id, block_3.id, block_5.id, block_4.id],
-  created_by: 'good-doer'
+  created_by: 'good-doer',
+  theme: 'serif'
 )
 
 draft_story = DraftStory.create(
   uid: 'h1bl-ocks',
   block_ids: [block_6.id],
-  created_by: 'good-doer'
+  created_by: 'good-doer',
+  theme: 'serif'
 )
 
 draft_story = DraftStory.create(
   uid: 'href-bloc',
   block_ids: [block_6.id, block_7.id],
-  created_by: 'good-doer'
+  created_by: 'good-doer',
+  theme: 'serif'
 )
 
 embedded_html_story = DraftStory.create(
   uid: 'embd-html',
   block_ids: [block_8.id],
-  created_by: 'good-doer'
+  created_by: 'good-doer',
+  theme: 'serif'
 )

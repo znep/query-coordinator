@@ -10,6 +10,21 @@
             $mainDom.addClass('visualization');
 
             currentObj._primaryView = currentObj.settings.view;
+
+            // If the event error, columns_missing_error, has already been called
+            // we'll need to handle it immediately.
+            if (currentObj._primaryView.hasMissingColumns) {
+              currentObj._handleColumnsMissingError(currentObj._primaryView.hasMissingColumns);
+            } else {
+
+              // Otherwise, we need to bind to the view to
+              // ensure that we don't miss columns_missing_error,
+              // and then handle it in the same way as above.
+              currentObj._primaryView.bind('columns_missing_error', function() {
+                currentObj._handleColumnsMissingError(currentObj._primaryView.hasMissingColumns);
+              });
+            }
+
             currentObj._displayFormat = currentObj.settings.displayFormat ||
                 (currentObj._primaryView || {}).displayFormat;
             $mainDom.resize(function(e, source, forceUpdate) {
@@ -390,6 +405,25 @@
                     });
                 }
             };
+        },
+
+        _handleColumnsMissingError: function(message) {
+          var $missingColumns = $(this.currentDom).find('.missing-columns-message');
+
+          if ($missingColumns.length === 0) {
+            this._$missingColumns = $('<div>', {'class': 'missing-columns-warning'});
+            this._$missingColumns.append(
+              $('<div>', {'class': 'missing-columns-warning-message flash notice'}).
+                append(
+                  $('<p>' + $.t('controls.charts.missing_column_html') + '</p>'),
+                  $('<p>').append(
+                    $('<small>(' + message + ')</small>')
+                  )
+                )
+              );
+
+            $(this.currentDom).append(this._$missingColumns);
+          }
         },
 
         setView: function(newView)

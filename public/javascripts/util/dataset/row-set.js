@@ -840,28 +840,6 @@ var RowSet = ServerModel.extend({
           args.params['$search'] = adjSearchString;
         }
 
-        if (!_.isEmpty(rs._jsonQuery.order))
-        {
-            var selectCols = _.reject((args.params['$select'] || '').split(','), _.isEmpty).map($.trim),
-                selectingAllCols = _.isEmpty(selectCols) || _.include(selectCols, '*');
-            // Just apply all orderBys, because they can safely be applied on top without harm
-            args.params['$order'] = _.compact(_.map(rs._jsonQuery.order, function(ob)
-            {
-                if (!(selectingAllCols || _.include(selectCols, ob.columnFieldName))) {
-                  return null;
-                }
-                var orderByColumn = rs._dataset.columnForIdentifier(ob.columnFieldName);
-                if ($.isBlank(orderByColumn)) { return null; }
-                var qbC = Dataset.translateColumnToQueryBase(orderByColumn, rs._dataset);
-                if ($.isBlank(qbC)) { return null; }
-                return qbC.fieldNameForRollup(
-                    Dataset.aggregateForColumn(qbC.fieldName, rs._jsonQuery)
-                ) + (ob.ascending ? '' : ' desc');
-            })).join(',');
-            if ($.isBlank(args.params['$order']))
-            { delete args.params['$order']; }
-        }
-
         if (!_.isEmpty(rs._jsonQuery.where)) {
 
           // Can't apply a where on top of a true base query group by
@@ -969,6 +947,28 @@ var RowSet = ServerModel.extend({
 
           args.params['$select'] = !$.isBlank(sel) ?
             (sel + ',' + groupSelect) : groupSelect;
+        }
+
+        if (!_.isEmpty(rs._jsonQuery.order))
+        {
+            var selectCols = _.reject((args.params['$select'] || '').split(','), _.isEmpty).map($.trim),
+                selectingAllCols = _.isEmpty(selectCols) || _.include(selectCols, '*');
+            // Just apply all orderBys, because they can safely be applied on top without harm
+            args.params['$order'] = _.compact(_.map(rs._jsonQuery.order, function(ob)
+            {
+                if (!(selectingAllCols || _.include(selectCols, ob.columnFieldName))) {
+                  return null;
+                }
+                var orderByColumn = rs._dataset.columnForIdentifier(ob.columnFieldName);
+                if ($.isBlank(orderByColumn)) { return null; }
+                var qbC = Dataset.translateColumnToQueryBase(orderByColumn, rs._dataset);
+                if ($.isBlank(qbC)) { return null; }
+                return qbC.fieldNameForRollup(
+                    Dataset.aggregateForColumn(qbC.fieldName, rs._jsonQuery)
+                ) + (ob.ascending ? '' : ' desc');
+            })).join(',');
+            if ($.isBlank(args.params['$order']))
+            { delete args.params['$order']; }
         }
 
         rs._dataset.makeRequest(args);

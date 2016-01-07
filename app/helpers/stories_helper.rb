@@ -10,6 +10,11 @@ module StoriesHelper
     ).to_json
   end
 
+  def google_font_code_embed
+    return unless @story.present?
+    raw(Theme.find_by_class_name(@story.theme).try(:google_font_code))
+  end
+
   # Maps the component type stored in the database to the partial used to render it
   def component_partial_name(component_type)
     component_type_mapping = {

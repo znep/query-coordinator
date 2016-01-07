@@ -73,7 +73,7 @@ describe('Card model', function() {
     expect(readBackProperties).to.have.property('cardType').that.equals('column');
   }));
 
-  it('deserialization should migrate BinaryOperator filters on Choropleths to use BinaryComputedGeoregionOperator filters', inject(function(Schemas, Filter) {
+  it('deserialization should migrate BinaryOperator filters on Choropleths to use BinaryComputedGeoregionOperator filters', inject(function(Filter) {
     var blob = {
       'fieldName': 'crime_location',
       'cardSize': 2,
@@ -100,7 +100,7 @@ describe('Card model', function() {
     expect(activeFilters[0]).to.have.property('operand').that.equals('90210');
   }));
 
-  it('deserialization should not migrate BinaryOperator filters on non-Choroplehts to use BinaryComputedGeoregionOperator filters even if there is a computed column', inject(function(Schemas, Filter) {
+  it('deserialization should not migrate BinaryOperator filters on non-Choroplehts to use BinaryComputedGeoregionOperator filters even if there is a computed column', inject(function(Filter) {
     var blob = {
       'fieldName': 'crime_location',
       'cardSize': 2,

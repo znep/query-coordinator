@@ -7,7 +7,7 @@ timeout 300
 # (http://unicorn.bogomips.org/Unicorn/Configurator.html)
 # One way to fix this is by setting the following for logger: logger Logger.new($stdout)
 # Here we format the logs produced
-  def get_logger()
+  def get_logger
     logger = Logger.new(STDERR)
     logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'INFO').upcase)
     logger.formatter = proc do |severity, datetime, progname, msg|
@@ -17,6 +17,6 @@ timeout 300
     logger
   end
 
-logger get_logger()
+logger get_logger
 
 

@@ -14,13 +14,13 @@ class RequestLoggerMiddleware
   #
   #   %{%s - %s [%s] "%s %s%s %s" %d %s\n} %
   FORMAT = %{%s - %s [%s] "%s %s%s %s" %d %s %0.4f\n} 
-  DATE_TIME_FORMAT = " %Y-%m-%d %H:%M:%S,%L "
+  DATETIME_FORMAT = " %Y-%m-%d %H:%M:%S,%L "
   CONTENT_LENGTH = "Content-Length"
 
   def initialize(app, datetime_format = nil)
     @app = app
     @logger = Logger.new(STDERR)
-    @datetime_format =  datetime_format == nil ? DATE_TIME_FORMAT : datetime_format
+    @datetime_format = datetime_format || DATETIME_FORMAT
   end
 
   def call(env)
@@ -36,13 +36,13 @@ class RequestLoggerMiddleware
     length = extract_content_length(header)
 
     msg = FORMAT % [
-      env['HTTP_X_FORWARDED_FOR'] || env["REMOTE_ADDR"] || "-",
-      env["REMOTE_USER"] || "-",
+      env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_ADDR'] || '-',
+      env['REMOTE_USER'] || '-',
       now.strftime(@datetime_format),
-      env["REQUEST_METHOD"],
-      env["PATH_INFO"],
-      env["QUERY_STRING"].empty? ? "" : "?"+env["QUERY_STRING"],
-      env["HTTP_VERSION"],
+      env['REQUEST_METHOD'],
+      env['PATH_INFO'],
+      env['QUERY_STRING'].empty? ? '' : "?#{env['QUERY_STRING']}",
+      env['HTTP_VERSION'],
       status.to_s[0..3],
       length,
       now - began_at ]
@@ -57,8 +57,7 @@ class RequestLoggerMiddleware
   end
 
   def extract_content_length(headers)
-    value = headers[CONTENT_LENGTH] or return '-'
-    value.to_s == '0' ? '-' : value
+    (value = headers[CONTENT_LENGTH].to_i) == 0 ? '-' : value
   end
 
 end

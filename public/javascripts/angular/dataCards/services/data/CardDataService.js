@@ -491,8 +491,16 @@ ${JSON.stringify(errors)}`
       config = httpConfig.call(this);
 
       return http.get(url.href, config).then(function(response) {
-
         try {
+
+          // The extent will be empty in the event that the dataset has only one row. Return
+          // undefined here instead of erroring below. In this case the default extent will be
+          // used by FeatureMapController.
+          var datum = _.get(response, 'data[0]');
+          if (_.isObject(datum) && _.isEmpty(datum)) {
+            return undefined;
+          }
+
           var coordinates = _.get(response, 'data[0].extent.coordinates[0][0]'.format(fieldName));
           if (_.isDefined(coordinates)) {
             return {

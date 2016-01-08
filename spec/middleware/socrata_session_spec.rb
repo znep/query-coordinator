@@ -3,7 +3,7 @@ require 'socrata_session'
 describe SocrataSession do
 
   let(:app) { double(:app) }
-  let(:env) { Hash.new }
+  let(:env) { default_env }
   let(:mock_current_user) do
     { id: 'four-four' }
   end
@@ -42,7 +42,6 @@ describe SocrataSession do
     end
 
     context 'with a core session present in the cookies' do
-
       let(:env) { env_with_session }
 
       it 'returns the current user hash' do
@@ -60,8 +59,12 @@ describe SocrataSession do
     end
   end
 
+  def default_env
+    { "HTTP_X_SOCRATA_REQUESTID"=>"domain.in.host.header.example.com" }
+  end
+
   def env_without_session
-    {
+    default_env.merge(
       "REQUEST_METHOD"=>"GET",
       "REQUEST_URI"=>"http://domain.in.host.header.example.com/some_path?query=value",
       "SCRIPT_NAME"=>"/some_path",
@@ -69,7 +72,7 @@ describe SocrataSession do
       "SERVER_PORT"=>"80",
       "HTTP_HOST"=>"domain.in.host.header.example.com",
       "REQUEST_PATH"=>"/stories/admin",
-    }
+    )
   end
 
   def env_with_session

@@ -323,7 +323,6 @@ Frontend::Application.routes do
       # Short URLs
       get 'blob/:id', :action => 'blob'
       get 'dataset/:id', :action => 'show'
-      get 'dataset/:id/mobile', :action => 'show_mobile'
       # The ":as" option, provides the short_view_url helper method
       get 'd/:id', :action => 'show', :as => :short_view
       get 'd/:id/alt', :action => 'alt'
@@ -425,6 +424,7 @@ Frontend::Application.routes do
       match '/geo/status',
         :to => 'data_lens#region_coding_status',
         :via => [:get]
+      get 'view/:id/mobile', :action => 'show_mobile'
     end
 
     # Custom pages, catalogs, facets

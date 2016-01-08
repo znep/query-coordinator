@@ -18,7 +18,7 @@ describe('Dataset model', function() {
     }
   };
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     Dataset = $injector.get('Dataset');

@@ -1,3 +1,5 @@
+const Rx = require('rx');
+
 (function() {
   'use strict';
 
@@ -19,6 +21,10 @@
   Rx.Observable.subscribeLatest = function() {
     var args = _.toArray(arguments);
     var resultSubscription = args.pop();
+
+    if (_.isArray(args[0])) {
+      args = args[0];
+    }
 
     return Rx.Observable.combineLatest(args, function() {
       return arguments;

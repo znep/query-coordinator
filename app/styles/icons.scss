@@ -60,7 +60,7 @@
 }
 
 // icons/menu_icons.png
-$new-view-color: #80acca;
+$data-lens-color: #80acca;
 
 @mixin sprite-menu-icons($subselector: ".icon", $defaultDown: true) {
   #{$subselector} {
@@ -239,14 +239,13 @@ $new-view-color: #80acca;
   &.typeHref #{$subselector} {
     background-position: 0 -585px;
   }
-  &.typeNew_view #{$subselector},
   &.typeData_lens #{$subselector} {
     background: none;
     text-indent: 0;
     &::before {
       @include icon-font;
       font-size: 13px;
-      color: $new-view-color;
+      color: $data-lens-color;
     }
   }
   &.error #{$subselector} {
@@ -267,11 +266,10 @@ $new-view-color: #80acca;
       font-size: 13px;
     }
   }
-  &[data-display-type="new_view"],
   &[data-display-type="data_lens"] {
     &::before {
       content: "";
-      color: $new-view-color;
+      color: $data-lens-color;
     }
   }
   &[data-display-type="calendar"] {
@@ -417,12 +415,11 @@ $new-view-color: #80acca;
   &.typeHref #{$subselector} {
     background-position: 0 -450px;
   }
-  &.typeNew_view #{$subselector},
   &.typeData_lens #{$subselector} {
     background: none;
     text-indent: 0;
     font-size: 30px;
-    color: $new-view-color;
+    color: $data-lens-color;
   }
   &.typeData_lens {
     .icon-cards {
@@ -499,7 +496,6 @@ $new-view-color: #80acca;
   &.typeHref #{$subselector} {
     background-position: 0 -750px;
   }
-  &.typeNew_view #{$subselector},
   &.typeData_lens #{$subselector} {
     background: none;
     text-indent: 0;
@@ -507,7 +503,7 @@ $new-view-color: #80acca;
       content: "";
       font-family: "socrata-apps";
       font-size: 50px;
-      color: $new-view-color;
+      color: $data-lens-color;
     }
   }
   &.typeUnpublished #{$subselector} {

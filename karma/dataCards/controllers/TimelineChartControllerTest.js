@@ -5,7 +5,7 @@ describe('TimelineChartController', function() {
   var $q;
   var $rootScope;
   var Model;
-  var timelineChartVisualizationHelpers;
+  var timelineChartService;
   var _$provide;
   var mockCardDataService;
   var $controller;
@@ -27,17 +27,18 @@ describe('TimelineChartController', function() {
     });
   }
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module(function($provide) {
+  beforeEach(angular.mock.module('dataCards'));
+
+  beforeEach(angular.mock.module(function($provide) {
     _$provide = $provide;
   }));
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
-    timelineChartVisualizationHelpers = $injector.get('TimelineChartVisualizationHelpers');
+    timelineChartService = $injector.get('TimelineChartService');
     $controller = $injector.get('$controller');
 
     mockCardDataService = {
@@ -91,38 +92,6 @@ describe('TimelineChartController', function() {
     $scope.model = stubCardModel();
     $controller('TimelineChartController', { $scope: $scope });
   }
-
-  describe('transformChartDataForRendering', function() {
-    it('should add min/max for dates and values, and mean for value', function() {
-      var numValues = 30;
-      var datumCount = _.range(numValues);
-      var dates = _.map(datumCount, function(i) { return moment(new Date(2014, 0, i + 1)); });
-      var unfilteredValues = _.map(datumCount, function(i) { return 100 * i; });
-      var filteredValues = _.map(unfilteredValues, function(val) { return val / 2; });
-
-      var transformed = timelineChartVisualizationHelpers.transformChartDataForRendering(
-        _.map(datumCount, function(i) {
-          return {
-            date: dates[i],
-            total: unfilteredValues[i],
-            filtered: filteredValues[i]
-          }
-        })
-      );
-
-      expect(1 * transformed.minDate).to.equal(1 * new Date(2014, 0, 1));
-      expect(1 * transformed.maxDate).to.equal(1 * new Date(2014, 0, 30));
-      expect(transformed.minValue).to.equal(0);
-      expect(transformed.maxValue).to.equal(100 * (numValues - 1));
-      expect(transformed.meanValue).to.equal(100 * (numValues - 1) / 2);
-      expect(transformed.values.length).to.equal(numValues);
-      for (var i = 0; i < numValues; i++) {
-        expect(1 * transformed.values[i].date).to.equal(1 * dates[i]);
-        expect(transformed.values[i].filtered).to.equal(filteredValues[i]);
-        expect(transformed.values[i].unfiltered).to.equal(unfilteredValues[i]);
-      }
-    });
-  });
 
   it('should successfully render when given an undefined dataset binding, and then also successfully render when that dataset is populated', function() {
     var $scope = $rootScope.$new();

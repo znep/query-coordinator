@@ -2,23 +2,59 @@
 
 ## Starting up
 
-The command to run the Rails application server is:
-
-```sh
-bundle exec unicorn_rails -c config/unicorn.rb
-```
-
 The command to run the HTTP server is:
+
 ```sh
 sudo nginx -c ${PWD}/dev-server/nginx.conf
 ```
+
+The command to run the Rails application server is:
+
+```sh
+bundle exec foreman start
+```
+
+Running the Rails stack in development should be done with [foreman](https://github.com/ddollar/foreman).
+It will spawn a sidecar process running the [webpack dev server](#webpack),
+which allows for re-bundling and automatic reloading on code change.
+
+### Development Stack Setup
+
+
+```
+-------------------------------------------------------------------------------
+|                                 browser                                     |
+-------------------------------------------------------------------------------
+              (*)                 (/javascripts/webpack/*)           |
+-------------------------------------------------------------        |
+|                          nginx                            |   (websocket)
+-------------------------------------------------------------        |
+         (port 3000)                  (port 3030)                    |
+---------------------------  --------------------------------------------------
+| Rails via Unicorn (web) |  |          Webpack Dev Server (webpack)          |
+---------------------------  --------------------------------------------------
+```
+
+We proxy the webpack dev server through nginx to avoid cross-domain / SSL issues.
+The websocket connection is used by the dev server to notify the page of code
+changes, where it will either refresh the page, or reload specific assets (CSS,
+React components).
+
+The webpack dev server serves its packaged assets from memory.  For production
+builds, see the [webpack](#webpack) section.
 
 ## Dependencies
 
 Dependencies are stored in artifactoryonline.com.  A shared username and
 password can be found in LastPass under the user "Socrata-frontend."
 Instructions on how to use these credentials can be found in the
-"Getting Artifacts" section of the [Artifactory Ops Doc](https://drive.google.com/a/socrata.com/folderview?ddrp=1&id=0B8bqh9w-C6AnNDJiNjYwMzgtZjJjNS00NWY0LTllNGEtNDdlNTdkNjhkZGY3#)
+"Getting Artifacts" section of the [Artifactory Ops Doc](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8)
+
+To install dependencies, run:
+
+```sh
+npm install
+```
 
 ## Tests
 
@@ -45,7 +81,7 @@ Ensure that you are using Ruby version 1.9.3 or greater.
 Make sure you've installed karma-cli and phantomjs globally:
 
 ```sh
-npm install -g karma-cli phantomjs karma-phantomjs-launcher grunt
+npm install -g karma-cli karma-phantomjs-launcher phantomjs
 ```
 
 #### Karma Test Rake Tasks
@@ -160,31 +196,65 @@ make sure the new jammit package is added to the "dump" section of assets.yml
 globs in its package definitions, the JS loader doesn't support globs. This is
 only an issue for on-demand loading.
 
-## Babel transpilation
+### Webpack
 
-We have introduced transpilation of ES2015 / JSX source code via [Babel](http://babeljs.io). In order to run Babel, first install version 5 of Babel (as specified in the package.json file used by NPM) by `npm install`.
+Assets for data lens and some old UX pages are packaged using [webpack](http://webpack.io).
 
-> Note: If you had already installed a different version of `babel` by other means, you will have to uninstall it before running the above command.
+Webpack provides ES2015 w/ JSX transpilation through [Babel](http://babeljs.io),
+source map generation, hot module reloading for Babel, angular module annotation
+and template in-lining, uglification, and other modern front-end developer niceties.
+Its configuration is located in `config/webpack.config.js`.  It currently builds
+two sets of bundles, one for data-lens and one for oldUx.  At some point in the
+future, these configurations could probably be fully combined.
 
-One-time babel compilation can be done by running `bundle exec rake assets:babel` to transpile the ES2015 / JSX assets.
+For production, webpack can generate bundles with a fingerprint hash in their
+filenames, as well as a manifest file mapping the entry name to its hashed
+name.  The Rails initializer in `config/initializers/webpack.rb` holds configuration
+for this, and the `include_webpack_bundle` helper in `application_helper.rb` allows
+for seamless inclusion of webpack bundles during development and in production.
 
-Running the Rails stack with [foreman](https://github.com/ddollar/foreman) allows
-watching of source changes and automatic compilation.
+One-time webpack bundle generation can be done with
+
+```
+bundle exec rake assets:webpack
+```
+
+Running the Rails stack with [foreman](https://github.com/ddollar/foreman) will
+spawn a sidecar process running the webpack dev server, which allows for re-bundling
+and automatic reloading on code change.
 
 To enable the workflow:
 
 ```sh
 bundle install
-foreman start
+bundle exec foreman start
 ```
 
-### YUI Compressor errors
+#### Webpack Loaders
 
-There is a tool to help us troubleshoot YUI / Jammit compressor errors. It is in the `tools` directory and can be invoked with the command below. It currently expects a working directory to exist which is `../../tmp` which you must create beforehand.
+- `babel-loader` for ES2015 and JSX transpilation
+- `eslint-loader` for linting and reporting issues to the browser
+- `react-hot-loader` for reloading React components in place without a page
+  reload, preserving their state
+- `ng-annotate-loader` for converting the function syntax of angular's dependency
+  injection into something that can be uglified
+- `ngtemplate-loader` for allowing `require`ing angular templates and priming the
+  template cache
 
-```sh
-tools/verify_compression.rb --all
-```
+
+### JSCodeShift
+
+[jscodeshift](https://github.com/facebook/jscodeshift) is a tool for doing AST-to-AST
+transformations of JS code.  It is helpful for making changes across a codebase
+that are more complicated than just a search and replace.
+
+Under the `tools/jscodeshift-transforms` are a few
+transformations for modifying our code in an AST-to-AST manner.
+
+To run a transform, follow the instructions on the jscodeshift project page, but
+setting and environment variable of `BABEL_ENV="jscodeshift"` - this ensures
+that a clean babel configuration is used for the transforms, alleviating an issue
+with babel versions.
 
 ### Bower packages
 
@@ -196,6 +266,13 @@ In order to allow clearer management of dependencies, Bower was (eventually) int
 1. Install node.js (platform dependent).
 2. Install bower: `# npm install -g bower`
 
+### YUI Compressor errors
+
+There is a tool to help us troubleshoot YUI / Jammit compressor errors. It is in the `tools` directory and can be invoked with the command below. It currently expects a working directory to exist which is `../../tmp` which you must create beforehand.
+
+```sh
+tools/verify_compression.rb --all
+```
 ## Dev Proxy
 
 The dev proxy allows NewUX frontend developers to load data from staging or production while still using a local copy of the NewUX. To use just run:
@@ -256,6 +333,7 @@ under the `eslintConfig` key. Currently we use no configuration options for
 * [RxJS](https://github.com/Reactive-Extensions/RxJS/tree/master/doc)
 * [Sinon](http://sinonjs.org/docs/)
 * [Squire](https://github.com/neilj/Squire/blob/master/README.md)
+* [Webpack](http://webpack.github.io/docs/)
 
 ### Ruby
 

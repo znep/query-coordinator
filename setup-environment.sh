@@ -35,8 +35,8 @@ sudo chown -R $(whoami) /usr/local/lib/node_modules
 
 npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-virtual
 curl -u"${ARTIFACTORY_ONLINE_USER}":"${ARTIFACTORY_ONLINE_PASSWORD}" "https://socrata.artifactoryonline.com/socrata/api/npm/auth" >> ~/.npmrc
+npm install -g karma-cli phantomjs karma-phantomjs-launcher
+npm install
 
 # 4. Bower
 echo "{\"registry\": \"https://${ARTIFACTORY_ONLINE_USER}:${ARTIFACTORY_ONLINE_PASSWORD}@socrata.artifactoryonline.com/socrata/api/bower/bower-remote-github\" }" > "${HOME}/.bowerrc"
-npm install -g karma-cli phantomjs karma-phantomjs-launcher
-npm install

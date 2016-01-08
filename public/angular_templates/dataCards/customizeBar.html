@@ -1,6 +1,6 @@
 <div
   class="customize-bar"
-  ng-class="{ 'has-changes': hasChanges, 'is-customizing': editMode, 'disco-mode': discoLens.discoMode }">
+  ng-class="{ 'has-changes': hasChanges, 'is-customizing': editMode }">
   <div class="customize-button-wrapper">
     <button
       type="button"
@@ -46,22 +46,5 @@
       ng-show="editMode"
       enabled="editMode && hasCards">
     </remove-all-cards>
-  </div>
-  <div class="disco-button-wrapper" ng-controller="DiscoController">
-    <button
-      type="button"
-      class="action-btn customize-bar-action-btn l-to-r disco-button"
-      ng-show="discoLens.discoMode"
-      ng-click="songChange()">
-        {{::'discoLens.reFunk' | I18n}}
-    </button>
-    <button
-      type="button"
-      class="action-btn customize-bar-action-btn l-to-r disco-button"
-      ng-show="discoLens.showDiscoLens"
-      ng-click="toggleDisco()">
-      {{!discoLens.discoMode | ifElse:'discoLens.discoLens' : 'discoLens.turnDown' | I18n}}
-    </button>
-    <audio ng-if="discoLens.showDiscoLens" id="discoTunes" />
   </div>
 </div>

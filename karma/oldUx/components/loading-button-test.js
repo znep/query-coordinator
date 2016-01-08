@@ -1,10 +1,13 @@
-describe('LoadingButton', function() {
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils, {
+  findRenderedDOMComponentWithTag as findByTag,
+  findRenderedDOMComponentWithClass as findByClass
+} from 'react-addons-test-utils';
 
-  var components = blist.namespace.fetch('blist.components');
-  var LoadingButton = components.LoadingButton;
-  var TestUtils = React.addons.TestUtils;
-  var findByTag = TestUtils.findRenderedDOMComponentWithTag;
-  var findByClass = TestUtils.findRenderedDOMComponentWithClass;
+import LoadingButton from 'components/loading-button';
+
+describe('LoadingButton', function() {
 
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();

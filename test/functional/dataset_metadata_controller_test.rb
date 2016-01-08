@@ -12,11 +12,11 @@ class DatasetMetadataControllerTest < ActionController::TestCase
     User.stubs(current_user: User.new(some_user))
 
     @phidippides = Phidippides.new('localhost', 2401)
-    @new_view_manager = NewViewManager.new
-    @new_view_manager.stubs(fetch: { grants: [{ flags: ['public'] }] })
+    @data_lens_manager = DataLensManager.new
+    @data_lens_manager.stubs(fetch: { grants: [{ flags: ['public'] }] })
     @controller.stubs(
       :phidippides => @phidippides,
-      :new_view_manager => @new_view_manager
+      :data_lens_manager => @data_lens_manager
     )
     stub_feature_flags_with(:create_v2_data_lens, false)
   end

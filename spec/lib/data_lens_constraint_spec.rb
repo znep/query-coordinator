@@ -1,5 +1,4 @@
 require 'rails_helper'
-require_relative '../../test/test_helper'
 require_relative '../../lib/constraints/data_lens_constraint'
 
 describe Constraints::DataLensConstraint do
@@ -36,14 +35,6 @@ describe Constraints::DataLensConstraint do
 
       it 'is accepted (data_lens version)' do
         allow(data_lens).to receive(:data_lens?).and_return(true)
-        allow(data_lens).to receive(:new_view?).and_return(false)
-        allow(data_lens).to receive(:standalone_visualization?).and_return(false)
-        expect(constraint.matches?(request_without_query)).to be_truthy
-      end
-
-      it 'is accepted (new_view version)' do
-        allow(data_lens).to receive(:data_lens?).and_return(false)
-        allow(data_lens).to receive(:new_view?).and_return(true)
         allow(data_lens).to receive(:standalone_visualization?).and_return(false)
         expect(constraint.matches?(request_without_query)).to be_truthy
       end
@@ -51,7 +42,6 @@ describe Constraints::DataLensConstraint do
       it 'is accepted (standalone_visualization version, with flag)' do
         allow(FeatureFlags).to receive(:derive).and_return(standalone_lens_chart: true)
         allow(data_lens).to receive(:data_lens?).and_return(false)
-        allow(data_lens).to receive(:new_view?).and_return(false)
         allow(data_lens).to receive(:standalone_visualization?).and_return(true)
         expect(constraint.matches?(request_without_query)).to be_truthy
       end
@@ -59,7 +49,6 @@ describe Constraints::DataLensConstraint do
       it 'is not accepted (standalone_visualization version, without flag)' do
         allow(FeatureFlags).to receive(:derive).and_return(standalone_lens_chart: false)
         allow(data_lens).to receive(:data_lens?).and_return(false)
-        allow(data_lens).to receive(:new_view?).and_return(false)
         allow(data_lens).to receive(:standalone_visualization?).and_return(true)
         expect(constraint.matches?(request_without_query)).to be_falsy
       end
@@ -70,7 +59,6 @@ describe Constraints::DataLensConstraint do
 
       it 'is not accepted' do
         allow(data_lens).to receive(:data_lens?).and_return(false)
-        allow(data_lens).to receive(:new_view?).and_return(false)
         allow(data_lens).to receive(:standalone_visualization?).and_return(false)
         expect(constraint.matches?(request_without_query)).to be_falsy
       end

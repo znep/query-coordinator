@@ -12,17 +12,18 @@ describe('Socrata-flavored $http service', function() {
   var fakeClock;
   var http, $httpBackend, $rootScope;
 
+  beforeEach(angular.mock.module('dataCards'));
+
   beforeEach(function() {
     fakeClock = sinon.useFakeTimers(INITIAL_TIME);
 
-    module('socrataCommon.services', function($provide) {
+    angular.mock.module('socrataCommon.services', function($provide) {
       $provide.value('RequestId', {
         generate: function() {
           return MOCK_GUID;
         }
       });
     });
-    module('socrataCommon.services');
     inject(function($injector) {
       $rootScope = $injector.get('$rootScope');
       // Set up the mock http service responses

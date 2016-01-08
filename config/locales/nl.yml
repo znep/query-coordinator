@@ -453,12 +453,12 @@ nl:
           blob: Bestanden en documenten
           calendars: Kalenders
           charts: Grafieken
+          data_lens: Data Lens pagina's
           datasets: Datasets
           filters: Gefilterde views
           forms: Formulieren
           href: Externe datasets
           maps: Kaarten
-          new_view: Data Lens pagina's
           pulse:
           pulse_help:
           story: Verhalen
@@ -1097,6 +1097,7 @@ nl:
       blob: non-tabulair bestand of document
       calendar: Kalender
       chart: grafiek
+      data_lens: Data Lens pagina
       dataset: dataset
       filter: gefilterde view
       form: formulier
@@ -1104,7 +1105,6 @@ nl:
       grouped: gegroepeerde view
       href: externe dataset
       map: kaart
-      new_view: Data Lens pagina
       table: tabel
       working_copy: werkende kopie
     view_types_plural:

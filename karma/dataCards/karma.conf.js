@@ -1,8 +1,13 @@
-var grunt = require('grunt');
 var path = require('path');
 var fs = require('fs');
 var sprintf = require('sprintf');
 var _ = require('lodash');
+
+var projectRootDir = path.resolve(__dirname, '../..');
+var templateDir = path.resolve(projectRootDir, 'public/angular_templates');
+
+var packageJson = require(path.resolve(projectRootDir, 'package.json'));
+var datalensWebpackExternals = packageJson.config.datalensWebpackExternals;
 
 // Parse supported_browsers.json to generate SauceLabs launcher definitions.
 var supportedBrowsers = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../supported_browsers.json'), {encoding: 'utf8'}));
@@ -44,10 +49,12 @@ module.exports = function ( karma ) {
      * Configure which files should be preproccessed.
      */
     preprocessors: {
-      'public/javascripts/angular/**/!(angular-leaflet-directives.js)': ['coverage'],
-      '**/*.html': ['ng-html2js'],
-      '**/*.json': ['ng-html2js'],
-      '**/*.scss': ['scss']
+      'karma/dataCards/**/*Test.js': ['webpack'],
+      'public/javascripts/angular/**/!(angular-leaflet-directives.js)': ['webpack', 'coverage'],
+      'public/javascripts/lib/**/*.js': ['webpack', 'coverage'],
+      'public/angular_templates/**/*.html': ['ng-html2js'],
+      'karma/dataCards/test-data/**/*.json': ['ng-html2js'],
+      'app/styles/dataCards/**/*.scss': ['scss']
     },
 
     /**
@@ -70,8 +77,6 @@ module.exports = function ( karma ) {
       'public/javascripts/util/lodash-mixins.js',
       'bower_components/d3/d3.min.js',
       'public/javascripts/bower/socrata.utils.js',
-      'public/javascripts/bower/socrata.visualizations.Visualization.js',
-      'public/javascripts/bower/socrata.visualizations.ColumnChart.js',
       'public/javascripts/util/jquery-extensions.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
       'bower_components/showdown/src/showdown.js',
@@ -89,15 +94,13 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/dist/rx.binding.js',
       'bower_components/rxjs/dist/rx.virtualtime.js',
       'bower_components/rxjs/dist/rx.testing.js',
-      'public/javascripts/lib/RxExtensions.js',
       'bower_components/leaflet/dist/leaflet-src.js',
       'app/styles/leaflet.css',
-      'bower_components/chroma-js/chroma.js',
-      'bower_components/simple-statistics/src/simple_statistics.js',
       'public/javascripts/util/typed-arrays.js',
       'public/javascripts/bower/pbf.min.js',
       'public/javascripts/bower/vectortile.min.js',
       'public/javascripts/bower/filesaver.js',
+      'public/javascripts/bower/purify.min.js',
 
       /* Angular itself */
       'bower_components/angular/angular.js',
@@ -117,27 +120,19 @@ module.exports = function ( karma ) {
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
 
-      'public/javascripts/angular/rx/**/*.js',
-
       /* dataCards ITSELF */
-      'public/javascripts/angular/common/decorators.js',
-      'public/javascripts/angular/common/*.js',
-      'public/javascripts/angular/common/**/*.js',
+      'public/javascripts/angular/common/index.js',
 
       'karma/helpers/TestHelpers.js', // Requirement for mockModuleDefinitions.
-      'karma/dataCards/mockModuleDefinitions.js', // Mock out module('dataCards').
+      'karma/dataCards/mockModuleDefinitions.js', // Mock out angular.mock.module('dataCards').
       'karma/dataCards/mockTranslations.js',
 
-      'public/javascripts/angular/dataCards/controllers.js',
-      'public/javascripts/angular/dataCards/models.js',
-      'public/javascripts/angular/dataCards/**/*.js',
-
-      'app/styles/socrata.visualizations.columnChart.css',
+      'public/javascripts/angular/dataCards/index.js',
 
       'public/angular_templates/**/*.html',
       'app/styles/dataCards/*.scss',
       'app/styles/dataCards/theme/default.scss',
-      { pattern: 'public/stylesheets/images/**/*.+{jpg,png}', watched: false, included: false, served: true }, // See https://github.com/karma-runner/karma/issues/1532
+      { pattern: 'public/stylesheets/images/**/*.+(jpg|png)', watched: false, included: false, served: true }, // See https://github.com/karma-runner/karma/issues/1532
 
       /* TEST CONFIGURATION */
       'karma/chai-configuration.js',
@@ -215,7 +210,8 @@ module.exports = function ( karma ) {
       'karma-coverage',
       'karma-mocha-reporter',
       'karma-ng-html2js-preprocessor',
-      require('../karma-scss-preprocessor.js')
+      require('../karma-scss-preprocessor.js'),
+      'karma-webpack'
     ],
 
     logLevel:  'WARN',
@@ -299,7 +295,39 @@ module.exports = function ( karma ) {
      */
     ngHtml2JsPreprocessor: {
       // strip this from the file path
-      stripPrefix: 'public'
+      stripPrefix: 'public',
+      moduleName: 'dataCards.templates'
+    },
+
+    webpack: {
+      externals: datalensWebpackExternals,
+      module: {
+        loaders: [
+          {
+            test: /\.jsx?$/,
+            exclude: /(node_modules|bower_components)/,
+            loader: 'babel'
+          },
+          {
+            test: /\.html$/,
+            loaders: [
+              'ngtemplate?relativeTo=' + templateDir,
+              'html'
+            ]
+          }
+
+        ]
+      },
+      resolve: {
+        alias: {
+          angular_templates: templateDir
+        },
+        modulesDirectories: [ 'node_modules', 'bower_components' ]
+      }
+    },
+
+    webpackMiddleware: {
+      noInfo: true
     }
   });
 };

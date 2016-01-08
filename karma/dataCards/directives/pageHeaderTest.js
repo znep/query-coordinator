@@ -12,14 +12,7 @@ describe('pageHeader', function() {
     'logo_url': 'http://placekitten.com/g/500/200'
   };
 
-  beforeEach(module('/angular_templates/common/pageHeader.html'));
-
-  beforeEach(module('test'));
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.services'));
-  beforeEach(module('dataCards.filters'));
-  beforeEach(module('socrataCommon.services'));
-  beforeEach(module('socrataCommon.directives'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');

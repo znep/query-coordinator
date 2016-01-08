@@ -3,7 +3,7 @@ describe('Filter models', function() {
 
   var SoqlHelpers;
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     SoqlHelpers = $injector.get('SoqlHelpers');
   }));
@@ -70,6 +70,39 @@ describe('Filter models', function() {
     it('should serialize and deserialize properly', inject(function(Filter) {
       var filter = new Filter.BinaryOperatorFilter('<', 'some_field');
       var filterWithHumanName = new Filter.BinaryOperatorFilter('<', 'some_field', 'some human-readable text');
+
+      var deserializedFilter = Filter.deserialize(parseAsJson(filter.serialize()));
+      var deserializedFilterWithHumanName = Filter.deserialize(parseAsJson(filterWithHumanName.serialize()));
+
+      expect(deserializedFilter).to.deep.equal(filter);
+      expect(deserializedFilterWithHumanName).to.deep.equal(filterWithHumanName);
+    }));
+  });
+
+  describe('BinaryComputedGeoregionOperatorFilter', function() {
+    it('should generate correct SOQL for the given operator and string operand', inject(function(Filter) {
+      var filter = new Filter.BinaryComputedGeoregionOperatorFilter('>', 'CKAN', ':@computed_field');
+      expect(filter.generateSoqlWhereFragment()).to.equal(SoqlHelpers.formatFieldName(':@computed_field') + ">'CKAN'");
+    }));
+
+    it('should throw if the constructor is passed bad or unsupported arguments', inject(function(Filter) {
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter(); }).to.throw();
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter(null); }).to.throw();
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter(0); }).to.throw();
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter(3); }).to.throw();
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter('foo'); }).to.throw();
+
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter('', '', ':@computed_field'); }).to.throw();
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter('=', null, ':@computed_field'); }).to.throw();
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter(null, 'asd', ':@computed_field'); }).to.throw();
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter(undefined, 'dsa', ':@computed_field'); }).to.throw();
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter('=', 'test'); }).to.throw();
+      expect(function() { new Filter.BinaryComputedGeoregionOperatorFilter('=', 'test', null); }).to.throw();
+    }));
+
+    it('should serialize and deserialize properly', inject(function(Filter) {
+      var filter = new Filter.BinaryComputedGeoregionOperatorFilter('<', 'some_field', ':@computed_field');
+      var filterWithHumanName = new Filter.BinaryComputedGeoregionOperatorFilter('<', 'some_field', ':@computed_field', 'some human-readable text');
 
       var deserializedFilter = Filter.deserialize(parseAsJson(filter.serialize()));
       var deserializedFilterWithHumanName = Filter.deserialize(parseAsJson(filterWithHumanName.serialize()));

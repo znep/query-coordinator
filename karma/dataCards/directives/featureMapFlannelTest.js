@@ -94,9 +94,7 @@ describe('feature map flannel', function() {
   }
 
   // Complete set up
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('/angular_templates/dataCards/featureMapFlannel.html'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     compile = $injector.get('$compile');

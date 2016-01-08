@@ -9,8 +9,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def setup
     init_current_domain
-    NewViewManager.any_instance.stubs(create: 'niew-veww')
-    NewViewManager.any_instance.stubs(update: nil)
+    DataLensManager.any_instance.stubs(create: 'niew-veww')
+    DataLensManager.any_instance.stubs(update: nil)
     PageMetadataManager.any_instance.stubs(:phidippides => Phidippides.new('localhost', 2401))
     Phidippides.any_instance.stubs(connection_details: {
       'address' => 'localhost',
@@ -75,7 +75,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end.then.raises(CoreServer::CoreServerError.new(nil, 'authentication_required', nil))
     CoreServer::Base.stubs(connection: core_stub)
 
-    assert_raises(NewViewManager::ViewAuthenticationRequired) do
+    assert_raises(DataLensManager::ViewAuthenticationRequired) do
       manager.show('four-four')
     end
   end
@@ -88,7 +88,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end.then.raises(CoreServer::CoreServerError.new(nil, 'permission_denied', nil))
     CoreServer::Base.stubs(connection: core_stub)
 
-    assert_raises(NewViewManager::ViewAccessDenied) do
+    assert_raises(DataLensManager::ViewAccessDenied) do
       manager.show('four-four')
     end
   end
@@ -132,7 +132,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
     View.expects(:find).with(OBE_DATASET_ID).returns(mock_obe_dataset)
 
-    NewViewManager.any_instance.expects(:create).times(1).with do |category, _|
+    DataLensManager.any_instance.expects(:create).times(1).with do |category, _|
       assert_equal(OBE_CATEGORY_NAME, category)
     end.returns('fdsa-fdsa')
 
@@ -153,7 +153,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
     View.expects(:find).with(OBE_DATASET_ID).raises(CoreServer::ResourceNotFound.new(nil))
 
-    NewViewManager.any_instance.expects(:create).times(1).with do |category, _|
+    DataLensManager.any_instance.expects(:create).times(1).with do |category, _|
       assert_equal(NBE_CATEGORY_NAME, category)
     end.returns('fdsa-fdsa')
 
@@ -169,7 +169,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     PageMetadataManager.any_instance.expects(:request_soda_fountain_secondary_index).with do |args|
       assert_equal('thw2-8btq', args)
     end.then.returns({ status: '200' })
-    NewViewManager.any_instance.expects(:create).times(1).with do |category, metadata|
+    DataLensManager.any_instance.expects(:create).times(1).with do |category, metadata|
       assert_equal(metadata['name'], data_lens_page_metadata['name'])
       assert_equal(metadata['description'], data_lens_page_metadata['description'])
     end.returns('data-lens')
@@ -205,7 +205,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_update_v2_page_metadata_success
-    NewViewManager.any_instance.stubs(
+    DataLensManager.any_instance.stubs(
       fetch: v2_page_metadata
     )
     core_stub = mock
@@ -221,7 +221,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_delete_deletes_core_and_rollup_representation
-    NewViewManager.any_instance.stubs(
+    DataLensManager.any_instance.stubs(
       fetch: v2_page_metadata
     )
 
@@ -490,7 +490,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       update_page_metadata: { status: '200', body: nil },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
-    NewViewManager.any_instance.expects(:create).returns('data-lens')
+    DataLensManager.any_instance.expects(:create).returns('data-lens')
     manager.create(data_lens_page_metadata)
     assert_not_requested @dataset_copy_stub
   end
@@ -508,7 +508,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       update_page_metadata: { status: '200', body: nil },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
-    NewViewManager.any_instance.expects(:create).returns('data-lens')
+    DataLensManager.any_instance.expects(:create).returns('data-lens')
     manager.create(data_lens_page_metadata)
     assert_not_requested @dataset_copy_stub
   end

@@ -9,7 +9,7 @@ module Cetera
 
     Rails.logger.info("Cetera request to #{cetera_url} with params: #{query.inspect}")
 
-    result = HTTParty.get(cetera_url, query: query)
+    result = HTTParty.get(cetera_url, query: query.to_query)
     CeteraSearchResult.from_result(result.body)
   end
 
@@ -20,7 +20,6 @@ module Cetera
     else
       {
         'data_lens' => 'datalenses',
-        'new_view' => 'datalenses',
         'story' => 'stories',
         'pulse' => 'pulses',
         'tables' => 'datasets',
@@ -35,7 +34,7 @@ module Cetera
       domains: opts[:domains],
       search_context: CurrentDomain.cname,
       only: translate_display_type(opts[:limitTo], opts[:datasetView]),
-      categories: opts[:category],
+      categories: opts[:categories],
       tags: opts[:tags],
       q: opts[:q],
       offset: opts[:page] ? (opts[:page] - 1) * opts[:limit] : 0,
@@ -135,10 +134,6 @@ module Cetera
     # Cetera only returns public objects as of 2015/10/19
     def is_public?
       true
-    end
-
-    def new_view?
-      type == 'page'
     end
 
     def story?

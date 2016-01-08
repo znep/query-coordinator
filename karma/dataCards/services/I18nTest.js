@@ -6,7 +6,7 @@ describe('I18n', function() {
   var localeStub;
 
   beforeEach(function() {
-    module('dataCards');
+    angular.mock.module('dataCards');
     inject(function($injector) {
       ServerConfig = $injector.get('ServerConfig');
       localeStub = sinon.stub(ServerConfig, 'get');

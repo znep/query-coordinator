@@ -145,9 +145,6 @@ $(function()
                     { return $.t('controls.browse.actions.permissions.change_button.' + (v.context.isPublic() ? 'public' : 'private') + '_html'); },
                 '.permissions.button@class+': function(v)
                     {
-                        if (v.context.isNewView()) {
-                          return 'hide';
-                        }
                         var publicGrant = _.detect(v.context.grants || [], function(grant)
                             { return _.include(grant.flags || [], 'public'); });
                         return v.context.hasRight('update_view') && !v.context.isFederated() &&
@@ -155,26 +152,10 @@ $(function()
                     },
                 '.delete.button@class+': function(v)
                     {
-                        if (!blist.feature_flags.display_catalog_lens_delete_button &&
-                            v.context.isNewView()) {
-                            return 'hide';
-                        }
                         return v.context.hasRight('delete_view') &&
                             !v.context.isFederated() ? '' : 'hide';
                     },
-                '.comments .value': 'numberOfComments',
-                '.about@class+': function(v)
-                    {
-                        return v.context.isNewView() ? 'hide' : '';
-                    },
-                '.comments@class+': function(v)
-                    {
-                        return v.context.isNewView() ? 'hide' : '';
-                    },
-                '.starsControl@class+': function(v)
-                    {
-                        return v.context.isNewView() ? 'hide' : '';
-                    }
+                '.comments .value': 'numberOfComments'
             }));
 
         blist.datasetControls.hookUpShareMenu(
@@ -292,9 +273,6 @@ $(function()
         };
 
         var canChangePermissions = (function(context) {
-            if (context.isNewView()) {
-                return false;
-            }
             var publicGrant = _.detect(
                 context.grants || [],
                 function(grant) {

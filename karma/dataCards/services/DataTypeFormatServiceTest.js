@@ -3,7 +3,7 @@ describe('test DataTypeFormatService output', function() {
 
   var columnMetadata;
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
 
   var DataTypeFormatService;
   beforeEach(inject(function($injector) {

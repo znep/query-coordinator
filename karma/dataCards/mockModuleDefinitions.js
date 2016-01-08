@@ -9,10 +9,12 @@ var dataCards = angular.module('dataCards', [
   'socrataCommon.filters',
   'socrataCommon.directives',
   'socrataCommon.decorators',
+  'dataCards.templates',
   'dataCards.controllers',
   'dataCards.models',
   'dataCards.directives',
-  'dataCards.filters'
+  'dataCards.filters',
+  'dataCards.services'
 ]);
 
 dataCards.run(function(ServerConfig, testHelpers) {

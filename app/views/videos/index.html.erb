@@ -67,7 +67,7 @@
   </ul>
 </div>
 
-<textarea id="embedTemplate"><iframe src="https://fast.wistia.com/embed/iframe/%embedid%?videoWidth=640&amp;videoHeight=360&amp;playButton=false&amp;playerColor=274066&amp;autoPlay=true" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" width="640" height="360"></iframe></textarea>
+<textarea id="embedTemplate"><script charset="ISO-8859-1" src="//fast.wistia.com/assets/external/E-v1.js" async></script><div class="wistia_embed wistia_async_%embedid% autoPlay=true playerColor=274066" style="width:640px;height:360px">&nbsp;</div></textarea>
 
 <%- content_for :modals do -%>
   <%= modal :class => 'videoPopupModal' do %>

@@ -171,10 +171,6 @@ en:
           title: Map base layer
         visualization_options:
           title: Card Type
-      disco_lens:
-        disco_lens: Disco Lens
-        turn_down: Turn down the funk
-        re_funk: Re-funk
       distribution_chart:
         drag_clear_help: Clear filter range
         drag_help: Drag to change filter range
@@ -248,11 +244,11 @@ en:
           title: Owner
           warning: You must select an Owner for this Data Lens in order to proceed.
         provenance:
-          title: Official View
+          title: View Status
+          label: Official View
           description: Selecting this option will give the view a special demarcation indicating that it is an Official View
         sharing:
           add_new: Add New
-          add_new_prompt: Save your changes below to invite these new users to this Data Lens
           contributor: Contributor
           inherited_description: 'Inherited from the source dataset:'
           keep: Keep
@@ -268,6 +264,7 @@ en:
           title: Shared with
           viewer: Viewer
         title: Manage
+        unsaved_changes_message: You have unsaved changes
         visibility:
           dataset_is_private: The source dataset is set to Private, so this Data Lens may not be shown in the catalog. Note that this page will appear in the catalog if the dataset is made public.
           hidden: Hidden from catalog
@@ -571,12 +568,12 @@ en:
           blob: Files and Documents
           calendars: Calendars
           charts: Charts
+          data_lens: Data Lens pages
           datasets: Datasets
           filters: Filtered Views
           forms: Forms
           href: External Datasets
           maps: Maps
-          new_view: Data Lens pages
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
@@ -647,6 +644,7 @@ en:
         rendering_progress_seconds: "%{rows_remaining} rows remain, about %{time_remaining} seconds."
         resume_rendering: Resume
       zero_only_data: No values greater than zero
+      missing_column_html: 'Oops... looks like a configuration change was made to the dataset powering this chart. If you are the owner of this page, please see <a href="https://support.socrata.com/hc/en-us/articles/216102847" title="Classic Visualization Chart Configuration Changes">this support article</a> or contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.'
     common:
       auth_required: You must be logged in to %{action_phrase}
       dataset_picker:
@@ -1197,6 +1195,7 @@ en:
       blob: non-tabular file or document
       calendar: calendar
       chart: chart
+      data_lens: Data Lens page
       dataset: dataset
       filter: filtered view
       form: form
@@ -1204,7 +1203,6 @@ en:
       grouped: grouped view
       href: external dataset
       map: map
-      new_view: Data Lens page
       table: table
       working_copy: working copy
     view_types_plural:
@@ -1570,6 +1568,7 @@ en:
         saved: Saved
         saving: Saving
         sidebar_position: Sidebar Position
+        skip_to_dataset_listing: Skip to dataset listing
         table_description: Datasets
         title: Datasets
         unpublished_datasets: Unpublished Datasets
@@ -1881,6 +1880,8 @@ en:
         name: Name
         pending: Please wait while we load your layers...
         subheadline: This shapefile contains <span class="featureCount"></span> features in <span class="layerCount"></span> layers.
+        abbreviatedSummary: Map layers in &ldquo;<span class="fileName"></span>&rdquo; will be created upon import.
+        abbreviatedSubheadline: Summarizing this dataset may take a long time. You may edit it after import.
       import_warnings:
         headline: Warnings during import
         see_docs: <strong>Confused?</strong> Please check out our <a href="%{publisher_link}" rel="external">publisher documentation</a> on importing data for a detailed explanation on how the importer handles data. You may also want to refer to our <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.

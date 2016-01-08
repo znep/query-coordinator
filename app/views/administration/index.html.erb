@@ -11,15 +11,14 @@
 
   <ul class="adminList">
       <li class="analytics">
-        <%= link_to raw('<span class="icon"></span>Site Analytics'),
-            {:action => 'analytics'} %>
+        <%= admin_nav_link_to 'Site Analytics', :action => 'analytics' %>
         <span class="description">
           View sitewide statistics for datasets, views, visitors and more
         </span>
       </li>
     <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
       <li class="users">
-        <%= link_to raw('<span class="icon"></span>Users'), {:action => 'users'} %>
+        <%= admin_nav_link_to 'Users', :action => 'users' %>
         <span class="description">
           Manage users on your site and what permissions and abilities they have
         </span>
@@ -27,8 +26,7 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :federations) && module_available?(:federations) -%>
       <li class="federation">
-        <%= link_to raw('<span class="icon"></span>Federation'),
-            {:action => 'federations'} %>
+        <%= admin_nav_link_to 'Federation', :action => 'federations' %>
         <span class="description">
           Manage connections and data sharing with other sites via Open Data
           Federation Services
@@ -37,8 +35,7 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :moderate_comments) && module_enabled?(:publisher_comment_moderation) -%>
       <li class="comments">
-        <%= link_to raw('<span class="icon"></span>Comment Moderation'),
-            {:action => 'comment_moderation'} %>
+        <%= admin_nav_link_to 'Comment Moderation', :action => 'comment_moderation' %>
         <span class="description">
           Review and moderate comments for datasets on your site
         </span>
@@ -46,25 +43,23 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :approve_nominations) && feature?(:view_moderation) -%>
       <li class="viewmoderation">
-        <%= link_to \
-            raw('<span class="icon"></span>View Moderation'),
-            {:action => 'views'} %>
+        <%= admin_nav_link_to 'View Moderation', :action => 'views' %>
           <span class="description">
             View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
           </span>
       </li>
     <%- end -%>
+    <%- if user_can?(current_user, :edit_sdp) -%>
       <li class="appearance">
-        <%= link_to raw('<span class="icon"></span>SDP Templates'),
-            {:action => 'sdp_templates'} %>
+        <%= admin_nav_link_to 'SDP Templates', :action => 'sdp_templates' %>
         <span class="description">
           Manage and customize the templates used for publishing your data via Socrata Data Players
         </span>
       </li>
+    <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_enabled?(:canvas_designer) -%>
       <li class="contentmgmt">
-        <%= link_to raw('<span class="icon"></span>DataSlate Pages'),
-            {:action => 'canvas_pages'} %>
+        <%= admin_nav_link_to 'DataSlate Pages', :action => 'canvas_pages' %>
         <span class="description">
           List and manage the DataSlate pages on this domain
         </span>
@@ -73,8 +68,7 @@
     <%- if CurrentDomain.user_can?(current_user, :edit_others_datasets) ||
             CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="datasets">
-        <%= link_to raw('<span class="icon"></span>Datasets'),
-            {:action => 'datasets'} %>
+        <%= admin_nav_link_to 'Datasets', :action => 'datasets' %>
         <span class="description">
           List the datasets on this domain and configure the layout of the dataset page
         </span>
@@ -82,7 +76,7 @@
     <%- end -%>
     <%- if can_view_georegions_admin?(current_user) -%>
       <li class="georegions">
-        <%= admin_nav_link_to t('screens.admin.georegions.title'), 'georegions' %>
+        <%= admin_nav_link_to t('screens.admin.georegions.title'), :action => 'georegions' %>
         <span class="description">
           <%= t('screens.admin.georegions.description') %>
         </span>
@@ -92,8 +86,7 @@
             CurrentDomain.user_can?(current_user, :feature_items) ||
             CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="homemgmt">
-        <%= link_to raw('<span class="icon"></span>Home Page'),
-            {:action => 'home'} %>
+        <%= admin_nav_link_to 'Home Page', :action => 'home' %>
         <span class="description">
           Configure what content is featured on the home page
         </span>
@@ -101,8 +94,7 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="metadata">
-        <%= link_to raw('<span class="icon"></span>Metadata'),
-            {:action => 'metadata'} %>
+        <%= admin_nav_link_to 'Metadata', :action => 'metadata' %>
         <span class="description">
           Manage the dataset metadata fields, including categories and custom fields
         </span>
@@ -110,8 +102,7 @@
     <%- end -%>
     <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
       <li class="routingApproval">
-        <%= link_to raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
-            {:action => 'routing_approval'} %>
+        <%= admin_nav_link_to 'Dataset Routing &amp; Approval', :action => 'routing_approval' %>
         <span class="description">
           Review datasets that are in the approval process, and manage the steps of the approval process
         </span>
@@ -119,8 +110,7 @@
     <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
-        <%= link_to raw('<span class="icon"></span>Internal'),
-            {:controller => 'internal', :action => 'index'} %>
+        <%= admin_nav_link_to 'Internal', :controller => 'internal', :action => 'index' %>
         <span class="description">
           Change and add modules, sites, and more
         </span>
@@ -128,7 +118,7 @@
     <%- end -%>
     <%- if current_user.try(:is_admin?) && feature_flag?('stories_enabled', request) -%>
       <li class="contentmgmt">
-        <a href="/stories/admin/themes"><span class="icon"></span>Stories</a>
+        <%= admin_nav_link_to 'Stories', '/stories/admin/themes' %>
         <span class="description">
           Edit custom story themes
         </span>

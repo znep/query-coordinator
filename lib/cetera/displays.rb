@@ -41,7 +41,7 @@ module Cetera
 
     class DataLens < Base
       def self.name
-        I18n.t('core.view_types.new_view')
+        I18n.t('core.view_types.data_lens')
       end
 
       def self.front_end_type

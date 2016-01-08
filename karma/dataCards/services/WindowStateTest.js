@@ -1,7 +1,7 @@
 describe('WindowState service', function() {
   'use strict';
 
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
 
   var WindowState;
   beforeEach(function() {

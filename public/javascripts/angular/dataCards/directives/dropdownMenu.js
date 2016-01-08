@@ -1,10 +1,9 @@
+const angular = require('angular');
 /**
  * A dropdown menu that positions itself underneath its parent.
  */
-angular.module('dataCards.directives').directive('dropdownMenu', function(
-  WindowState
-) {
-  'use strict';
+angular.module('dataCards.directives').directive('dropdownMenu', function(WindowState, rx) {
+  const Rx = rx;
 
   return {
     restrict: 'E',

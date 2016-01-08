@@ -66,7 +66,6 @@ javascripts:
     - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/plugins/backbone.js
     - public/javascripts/util/backbone-exts.js
-    - public/javascripts/util/konami.js
     - public/javascripts/plugins/backbone.orderable.js
     - public/javascripts/screens/govstat/goals/models.js
   shared-editors:
@@ -256,12 +255,6 @@ javascripts:
     - public/javascripts/controls/page-render-type.js
   shared-blob:
     - public/javascripts/controls/blob-dataset.js
-  react-dev:
-    - public/javascripts/react.js
-    - public/javascripts/react-dom.js
-  react-prod:
-    - public/javascripts/react.min.js
-    - public/javascripts/react-dom.min.js
   browse-select-dataset:
     - public/javascripts/screens/browse-select-dataset.js
   browse-select-georegion:
@@ -286,21 +279,6 @@ javascripts:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-users-screen.js
-  admin-georegions:
-    - public/javascripts/dist/components/utils.js
-    - public/javascripts/dist/components/flash-message.js
-    - public/javascripts/dist/components/socrata-title-tip-wrapper.js
-    - public/javascripts/dist/components/loading-button.js
-    - public/javascripts/dist/components/form-button.js
-    - public/javascripts/dist/components/form-controls.js
-    - public/javascripts/dist/components/form-input.js
-    - public/javascripts/dist/components/form-select-input.js
-    - public/javascripts/dist/components/form-text-input.js
-    - public/javascripts/dist/components/georegions/configure-boundary-form.js
-    - public/javascripts/dist/components/georegions/enabled-widget.js
-    - public/javascripts/dist/components/georegions/georegion-admin-row.js
-    - public/javascripts/dist/components/georegions/georegion-admin-table.js
-    - public/javascripts/dist/screens/admin-georegions-screen.js
   admin-home:
     - public/javascripts/util/serialize.js
     - public/javascripts/controls/admin-buttons.js
@@ -455,7 +433,6 @@ javascripts:
     - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/util/inline-login.js
-    - public/javascripts/util/konami.js
     - public/javascripts/controls/wizard-prompt.js
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/form-inliner.js
@@ -664,6 +641,8 @@ javascripts:
     - public/javascripts/plugins/vis/r2d3.v3.js
   dotdotdot:
     - public/javascripts/bower/jquery.dotdotdot.js
+  dompurify:
+    - public/javascripts/bower/purify.min.js
   excanvas:
     - public/javascripts/plugins/excanvas.compiled.js
   oldie:
@@ -718,10 +697,6 @@ javascripts:
 
   angular-socrata-common:
     - public/javascripts/plugins/modernizr.js
-    - public/javascripts/lib/RxExtensions.js
-    - public/javascripts/angular/rx/**/*.js
-    - public/javascripts/angular/common/services.js
-    - public/javascripts/angular/common/**/*.js
 
   # Angular apps served from the Angular controller.
   # These packages are referenced via the :app parameter to data_lens.
@@ -729,10 +704,6 @@ javascripts:
     - public/javascripts/util/typed-arrays.js
     - public/javascripts/util/polyfills.js
     - public/javascripts/plugins/ieee754.js
-    - public/javascripts/angular/dataCards/app.js
-    - public/javascripts/angular/dataCards/controllers.js
-    - public/javascripts/angular/dataCards/services.js
-    - public/javascripts/angular/dataCards/**/*.js
 
   # BEGIN BOWER-MANAGED ASSETS
   # NOTE this mega-package of all bower assets is not ideal.
@@ -750,18 +721,8 @@ javascripts:
     - public/javascripts/bower/lodash.js
     - public/javascripts/bower/d3.js
     - public/javascripts/bower/socrata.utils.js
-    - public/javascripts/bower/socrata.visualizations.Visualization.js
     - public/javascripts/bower/leaflet.js
-    - public/javascripts/bower/socrata.visualizations.pbf.js
     - public/javascripts/bower/vectortile.min.js
-    - public/javascripts/bower/socrata.visualizations.FlyoutRenderer.js
-    - public/javascripts/bower/socrata.visualizations.DataProvider.js
-    - public/javascripts/bower/socrata.visualizations.GeospaceDataProvider.js
-    - public/javascripts/bower/socrata.visualizations.TileserverDataProvider.js
-    - public/javascripts/bower/socrata.visualizations.SoqlDataProvider.js
-    - public/javascripts/bower/socrata.visualizations.MetadataProvider.js
-    - public/javascripts/bower/socrata.visualizations.ColumnChart.js
-    - public/javascripts/bower/socrata.visualizations.VectorTileManager.js
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS
 

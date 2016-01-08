@@ -284,7 +284,7 @@ blist.datasetControls.datasetContact = function($sect)
             .find('#contactBody')
                 .focus().end().end()
             .find('.contactOwnerLinks')
-                slideToggle().end();
+                .slideToggle().end();
     };
 
     $sect.delegate('.contactButton', 'click', function(event)

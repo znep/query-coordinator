@@ -388,6 +388,10 @@ class Column < Model
     return Money::Currency::TABLE[currency.downcase.to_sym][:html_entity]
   end
 
+  def is_text?
+    %w(text html).include?(dataTypeName.downcase)
+  end
+
   def is_nested_table
     dataTypeName.downcase == 'nested_table'
   end
@@ -406,6 +410,10 @@ class Column < Model
 
   def is_group_aggregate?
     !self.format.nil? && !self.format.grouping_aggregate.nil?
+  end
+
+  def has_group_function?
+    self.format.try(:group_function).present?
   end
 
   def is_linked?

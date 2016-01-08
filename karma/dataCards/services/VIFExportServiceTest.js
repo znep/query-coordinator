@@ -6,6 +6,7 @@ describe('VIFExportService', function() {
   var VALID_DESCRIPTION = 'Visualization description';
 
   var VALID_COLUMN_NAME = 'test_column';
+  var VALID_COMPUTED_COLUMN_NAME = ':@test_computed_column';
   var VALID_DATASET_UID = 'test-test';
   var VALID_DOMAIN = 'test.example.com';
   var VALID_ROW_DISPLAY_UNIT = 'record';
@@ -17,9 +18,8 @@ describe('VIFExportService', function() {
   var DateHelpers;
   var VIFExportService;
 
-  function generateCardMetadata(cardType, activeFilters) {
-
-    return {
+  function generateCardMetadata(cardType, activeFilters, computedColumn) {
+    var card = {
       'description': VALID_DESCRIPTION,
       'fieldName': VALID_COLUMN_NAME,
       'cardSize': 1,
@@ -27,6 +27,12 @@ describe('VIFExportService', function() {
       'expanded': false,
       'activeFilters': activeFilters
     };
+
+    if (computedColumn) {
+      card.computedColumn = computedColumn;
+    }
+
+    return card;
   }
 
   function getUniqueIdOfCardWithType(pageModel, cardType) {
@@ -39,7 +45,7 @@ describe('VIFExportService', function() {
       })[0];
   }
 
-  beforeEach(module('dataCards'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     Mockumentary = $injector.get('Mockumentary');
     Page = $injector.get('Page');
@@ -67,7 +73,7 @@ describe('VIFExportService', function() {
         new Card(validPage, VALID_COLUMN_NAME, generateCardMetadata('column', [])),
         new Card(validPage, VALID_COLUMN_NAME, generateCardMetadata('histogram', [])),
         new Card(validPage, VALID_COLUMN_NAME, generateCardMetadata('timeline', [])),
-        new Card(validPage, VALID_COLUMN_NAME, generateCardMetadata('choropleth', [])),
+        new Card(validPage, VALID_COLUMN_NAME, generateCardMetadata('choropleth', [], VALID_COMPUTED_COLUMN_NAME)),
         new Card(validPage, VALID_COLUMN_NAME, generateCardMetadata('feature', []))
       ];
 
@@ -182,6 +188,7 @@ describe('VIFExportService', function() {
           var vif = VIFExportService.exportVIF(validPage, cardUniqueId, VALID_TITLE, VALID_DESCRIPTION);
 
           expect(vif.columnName).to.equal(VALID_COLUMN_NAME);
+          expect(vif.configuration.computedColumnName).to.equal(VALID_COMPUTED_COLUMN_NAME);
           expect(vif.datasetUid).to.equal(VALID_DATASET_UID);
           expect(vif.domain).to.equal(VALID_DOMAIN);
           expect(vif.description).to.equal(VALID_DESCRIPTION);

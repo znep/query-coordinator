@@ -4,8 +4,8 @@ describe('HistogramVisualizationService', function() {
   var HistogramVisualizationService;
   var Constants;
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
+
   beforeEach(inject(function($injector) {
     HistogramVisualizationService = $injector.get('HistogramVisualizationService');
     Constants = $injector.get('Constants');

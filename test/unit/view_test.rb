@@ -337,10 +337,10 @@ class ViewTest < Test::Unit::TestCase
   def test_dataset_predicate_method
     stub_core_server_connection
     view = View.new
-    view.stubs(:display_name => 'table')
+    view.stubs(:is_blist? => true)
     assert view.dataset?, 'dataset? should return true when dataset is a "table"'
-    view.stubs(:display_name => 'viltered view')
-    refute view.dataset?, 'dataset? should return false when dataset is a "filtered view" or any other non-table'
+    view.stubs(:is_api? => true)
+    refute view.dataset?, 'dataset? should return false when dataset is any other non-table'
   end
 
   def test_can_see_private_meta

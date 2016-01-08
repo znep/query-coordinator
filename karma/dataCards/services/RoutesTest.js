@@ -3,7 +3,7 @@ describe('Routes service', function() {
 
   var Routes;
 
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     Routes = $injector.get('Routes');
   }));
@@ -36,13 +36,23 @@ describe('Routes service', function() {
     describe('no defaultColumn or defaultRelatedVisualizationUid specified', function() {
       verifySearchParamResults('', {
         defaultColumn: undefined,
+        defaultVifType: undefined,
         defaultRelatedVisualizationUid: undefined
       });
     });
 
     describe('defaultColumn specified', function() {
-      verifySearchParamResults('defaultColumn=foobar', {
-        defaultColumn: 'foobar',
+      verifySearchParamResults('defaultColumn=foo', {
+        defaultColumn: 'foo',
+        defaultVifType: undefined,
+        defaultRelatedVisualizationUid: undefined
+      });
+    });
+
+    describe('defaultViftype specified', function() {
+      verifySearchParamResults('defaultVifType=bar', {
+        defaultColumn: undefined,
+        defaultVifType: 'bar',
         defaultRelatedVisualizationUid: undefined
       });
     });
@@ -50,13 +60,31 @@ describe('Routes service', function() {
     describe('defaultRelatedVisualizationUid specified', function() {
       verifySearchParamResults('defaultRelatedVisualizationUid=fooo-barr', {
         defaultColumn: undefined,
+        defaultVifType: undefined,
         defaultRelatedVisualizationUid: 'fooo-barr'
       });
     });
 
-    describe('both defaultColumn and defaultRelatedVisualizationUid specified', function() {
+    describe('defaultColumn and defaultVifType specified', function() {
       var expected = {
         defaultColumn: 'foo',
+        defaultVifType: 'bar',
+        defaultRelatedVisualizationUid: undefined
+      };
+      verifySearchParamResults(
+        'defaultColumn=foo&defaultVifType=bar',
+        expected
+      );
+      verifySearchParamResults(
+        'defaultVifType=bar&defaultColumn=foo',
+        expected
+      );
+    });
+
+    describe('defaultColumn and defaultRelatedVisualizationUid specified', function() {
+      var expected = {
+        defaultColumn: 'foo',
+        defaultVifType: undefined,
         defaultRelatedVisualizationUid: 'fooo-barr'
       };
       verifySearchParamResults(
@@ -65,6 +93,22 @@ describe('Routes service', function() {
       );
       verifySearchParamResults(
         'defaultRelatedVisualizationUid=fooo-barr&defaultColumn=foo',
+        expected
+      );
+    });
+
+    describe('defaultColumn, defaultVifType and defaultRelatedVisualizationUid specified', function() {
+      var expected = {
+        defaultColumn: 'foo',
+        defaultVifType: 'bar',
+        defaultRelatedVisualizationUid: 'fooo-barr'
+      };
+      verifySearchParamResults(
+        'defaultColumn=foo&defaultVifType=bar&defaultRelatedVisualizationUid=fooo-barr',
+        expected
+      );
+      verifySearchParamResults(
+        'defaultRelatedVisualizationUid=fooo-barr&defaultVifType=bar&defaultColumn=foo',
         expected
       );
     });

@@ -7,18 +7,12 @@ describe('customizeBar', function() {
   var $rootScope;
   var ServerConfig;
 
-  beforeEach(module('/angular_templates/dataCards/customizeBar.html'));
-  beforeEach(module('/angular_templates/dataCards/removeAllCards.html'));
-  beforeEach(module('dataCards'));
-  beforeEach(module('socrataCommon.filters'));
-  beforeEach(module('socrataCommon.directives'));
-  beforeEach(module('socrataCommon.services'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
-  beforeEach(module('test'));
-  beforeEach(module(['$provide', function(_$provide) {
+  beforeEach(angular.mock.module('dataCards'));
+
+  beforeEach(angular.mock.module(['$provide', function(_$provide) {
     $provide = _$provide;
   }]));
+
   beforeEach(function() {
     inject([
       '$window',

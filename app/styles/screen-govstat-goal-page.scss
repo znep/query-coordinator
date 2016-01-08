@@ -764,6 +764,9 @@ $chartHeight: 210px;
   &.collapsed {
     height: 0;
     .content-wrapper {
+      .calloutContainer {
+        z-index: 0;
+      }
       .labelPart {
         @include opacity(0);
       }

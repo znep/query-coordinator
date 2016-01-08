@@ -4,6 +4,21 @@ describe('classicVisualizationPreviewer', function() {
   var testHelpers;
   var $rootScope;
 
+  beforeEach(angular.mock.module('dataCards'));
+
+  beforeEach(
+    inject([
+      'testHelpers',
+      '$rootScope',
+      function(
+        _testHelpers,
+        _$rootScope) {
+          testHelpers = _testHelpers;
+          $rootScope = _$rootScope;
+      }
+    ])
+  );
+
   function createDirective(scopeProperties) {
     var scope = $rootScope.$new();
 
@@ -19,22 +34,6 @@ describe('classicVisualizationPreviewer', function() {
       scope: scope
     };
   }
-
-  beforeEach(module('dataCards'));
-  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
-
-  beforeEach(
-    inject([
-      'testHelpers',
-      '$rootScope',
-      function(
-        _testHelpers,
-        _$rootScope) {
-          testHelpers = _testHelpers;
-          $rootScope = _$rootScope;
-      }
-    ])
-  );
 
   afterEach(function() {
     testHelpers.TestDom.clear();

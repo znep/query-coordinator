@@ -72,12 +72,9 @@
       text-align: right;
       input.button {
         font-size: 0.8em;
-        opacity: 0.3;
+        opacity: 1;
         @include transition-duration(0.5s);
         @include transition-property(opacity);
-      }
-      &:hover .button {
-        opacity: 1;
       }
       .loading {
         @include throbber-icon;

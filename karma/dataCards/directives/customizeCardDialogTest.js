@@ -1,18 +1,6 @@
 describe('Customize card dialog', function() {
   'use strict';
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
-
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/spinner.html'));
-  beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
-  beforeEach(module('/angular_templates/dataCards/classicVisualizationPreviewer.html'));
-  beforeEach(module('/angular_templates/dataCards/socSelect.html'));
-  beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
-
   var Card;
   var Constants;
   var I18n;
@@ -29,8 +17,10 @@ describe('Customize card dialog', function() {
   var CardDataService;
   var $q;
 
+  beforeEach(angular.mock.module('dataCards'));
+
   beforeEach(function() {
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       _$provide = $provide;
     });
   });

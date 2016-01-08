@@ -1,4 +1,4 @@
-describe('Suggestion Tool Panel', function() {
+describe('suggestionToolPanel', function() {
   'use strict';
 
   var I18n;
@@ -17,21 +17,15 @@ describe('Suggestion Tool Panel', function() {
   var timeoutScheduler;
   var testScheduler;
 
-  beforeEach(module('/angular_templates/dataCards/suggestionToolPanel.html'));
-  beforeEach(module('/angular_templates/common/intractableList.html'));
-
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.services'));
-  beforeEach(module('dataCards.directives'));
-
-  beforeEach(module('dataCards/cards.scss'));
-  beforeEach(module('dataCards/search.scss'));
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/cards.scss'));
+  beforeEach(angular.mock.module('dataCards/search.scss'));
 
   beforeEach(function() {
     timeoutScheduler = Rx.Scheduler.timeout;
     testScheduler = new Rx.TestScheduler();
     Rx.Scheduler.timeout = testScheduler;
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       _$provide = $provide;
     })
   });

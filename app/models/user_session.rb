@@ -124,7 +124,7 @@ class UserSession
         user = User.parse(response.body)
         create_core_session_credentials(user, expiration) if expiration > 0
         self.new_session = false
-        cookies[:logged_in] = true
+        cookies[:logged_in] = { value: true, secure: true }
         UserSession.update_current_user(user, core_session)
       end
     end
@@ -195,7 +195,7 @@ class UserSession
       create_core_session_credentials(user)
       self.new_session = false
       UserSession.update_current_user(user, core_session)
-      cookies[:logged_in] = true
+      cookies[:logged_in] = { value: true, secure: true }
       result = self
     end
 
@@ -225,7 +225,7 @@ class UserSession
 
       self.new_session = false
       UserSession.update_current_user(user, core_session)
-      cookies[:logged_in] = true
+      cookies[:logged_in] = { value: true, secure: true }
       result = self
     end
 

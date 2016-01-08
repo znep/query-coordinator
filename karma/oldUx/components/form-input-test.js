@@ -1,10 +1,12 @@
-describe('FormInput', function() {
+import React from 'react';
+import TestUtils, {
+  findRenderedDOMComponentWithTag as findByTag,
+  scryRenderedDOMComponentsWithTag as findAllByTag
+} from 'react-addons-test-utils';
 
-  var components = blist.namespace.fetch('blist.components');
-  var FormInput = components.FormInput;
-  var TestUtils = React.addons.TestUtils;
-  var findByTag = TestUtils.findRenderedDOMComponentWithTag;
-  var findAllByTag = TestUtils.scryRenderedDOMComponentsWithTag;
+import FormInput from 'components/form-input';
+
+describe('FormInput', function() {
 
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();
@@ -19,7 +21,7 @@ describe('FormInput', function() {
     };
     this.createElement = function(addProps) {
       var props = _.extend({}, this.props, addProps);
-      return React.createElement(FormInput, props);
+      return React.createElement(FormInput, props, React.createElement('h1', null, 'Hello, world!'));
     };
     this.renderIntoDocument = function(props) {
       return TestUtils.renderIntoDocument(this.createElement(props));

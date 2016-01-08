@@ -21,13 +21,10 @@ describe('clearableInput', function() {
     return element;
   }
 
-  beforeEach(function() {
-    module('/angular_templates/dataCards/clearableInput.html');
-    module('dataCards/clearable-input.scss');
-    module('dataCards.directives');
-    module('dataCards');
-    module('test');
+  beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards/clearable-input.scss'));
 
+  beforeEach(function() {
     inject(['$document', '$rootScope', '$window', 'testHelpers', function(_$document, _$rootScope, _$window, _testHelpers) {
       $document = _$document;
       $rootScope = _$rootScope;

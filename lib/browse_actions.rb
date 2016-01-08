@@ -37,7 +37,9 @@ module BrowseActions
     add_stories_view_type_if_enabled!(view_types)
     add_pulse_view_type_if_enabled!(view_types)
 
-    if module_enabled?(:api_foundry)
+    # EN-879: Hide API facet when using Cetera search because Cetera does not index API objects
+    # because API foundry v1 is deprecated
+    if module_enabled?(:api_foundry) && !using_cetera?
       view_types <<
         { text: t('controls.browse.facets.view_types.apis'), value: 'apis', class: 'typeApi' }
     end
@@ -168,20 +170,43 @@ module BrowseActions
     }
   end
 
-  def custom_facets
-    facets = CurrentDomain.property(:custom_facets, :catalog)
+  # Unlike other facets with normal hashes, I use Hashie::Mash
+  def custom_facets(params = nil)
+    params = params || request_params || {}
+    facets = CurrentDomain.property(:custom_facets, :catalog) # Array of Hashie::Mash
+
     return if facets.nil?
+
+    # NOTE: Dupping because high mutability going on here!
+    facets = facets.map(&:dup)
 
     custom_chop = get_facet_cutoff(:custom)
     facets.map do |facet|
       facet.param = facet.param.to_sym
 
       if facet.options && facet.options.length > custom_chop
+
+        # NOTE: Anything marked as 'summary' is guaranteed visible; if there
+        # are no 'summary' facets, then remaining facets are eligible for
+        # visibility up to the cutoff threshold. "summary":true in
+        # custom_facets will override "custom":number in facet_cutoffs
         facet.options, facet.extra_options = facet.options.partition { |opt| opt.summary }
+
         if facet.options.empty?
           facet.options = facet.extra_options.slice!(0..(custom_chop - 1))
+
+          # If an option below the "fold" is active (filtered on), move it from
+          # extra_options to options to force it to appear above the fold.
+          active_option = params[facet.param]
+          found_option = (facet.extra_options || []).find { |option| option[:value] == active_option }
+
+          if found_option
+            facet.options.push(found_option)
+            facet.extra_options.delete(found_option)
+          end
         end
       end
+
       facet.with_indifferent_access
     end
   end
@@ -380,7 +405,7 @@ module BrowseActions
                 # All domains in the federation
                 [CurrentDomain.cname].concat(federations_hash.values.sort).join(',')
               end
-            browse_options[:search_options][:category] = selected_category_and_any_children(browse_options)
+            browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
             Cetera.search_views(browse_options[:search_options])
           else
             Clytemnestra.search_views(browse_options[:search_options])
@@ -471,7 +496,8 @@ module BrowseActions
       if !options[f[:param]].blank?
         if !f[:singular_description].blank?
           facet_item = nil
-          f[:options].each do |o|
+          facet_options = f[:options] + f[:extra_options].to_a
+          facet_options.each do |o|
             if o[:value] == options[f[:param]]
               facet_item = o
             elsif !o[:children].nil?
@@ -548,16 +574,16 @@ module BrowseActions
 
   def add_data_lens_view_type_if_enabled!(view_type_list)
     if add_data_lens_view_type?
-      new_view_option = {
-        :text => ::I18n.t('controls.browse.facets.view_types.new_view'),
+      data_lens_option = {
+        :text => ::I18n.t('controls.browse.facets.view_types.data_lens'),
         :value => 'new_view',
-        :class => 'typeNewView',
+        :class => 'typeDataLens',
         :icon_font_class => 'icon-cards'
       }
 
       # Data lens pages are the new way to look at datasets, so insert above datasets
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
-      view_type_list.insert(datasets_index, new_view_option)
+      view_type_list.insert(datasets_index, data_lens_option)
     end
   end
 
@@ -606,6 +632,8 @@ module BrowseActions
   end
 
   # This is only needed by Cetera; Core can add children on the server side
+  # we're operating as though there's only one category, even though cetera
+  # will expect an array of the parent and children categories[].
   def selected_category_and_any_children(browse_options)
     return nil unless browse_options[:search_options].try(:[], :category).present?
 
@@ -632,7 +660,7 @@ module BrowseActions
     [
       category[:value],
       category[:children] && category[:children].map { |child| child[:value] }
-    ].compact.join(',')
+    ].compact.flatten
   end
 
   @@default_cutoffs = {

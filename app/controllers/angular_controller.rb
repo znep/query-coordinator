@@ -6,6 +6,7 @@ class AngularController < ActionController::Base
   include UnminifiedAssetsHelper
 
   before_filter :hook_auth_controller
+  before_filter :set_locale
 
   helper_method :current_user
   helper_method :current_user_session_or_basic_auth
@@ -118,6 +119,9 @@ class AngularController < ActionController::Base
   def view_vif
     parsed_vif = params[:vif].with_indifferent_access
 
+    # First fetch the current user's profile.
+    @current_user = current_user
+
     @page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(
         parsed_vif, nil, nil)
 
@@ -181,11 +185,15 @@ class AngularController < ActionController::Base
       # Grab related views for both potential copies of dataset (nbe and obe).
       related_views = all_backend_views.map do |view|
         view.find_related(1, 1000)
+      # Filter out data lenses, data lense charts and data lens maps.
       end.flatten
 
-      # Select only those related views that are visualizations.
-      # Also dedup.
-      related_visualizations = related_views.select(&:visualization?).uniq(&:id)
+      # Select only those related views that are visualizations and not
+      # data lens visualizations (we do not currently allow the selecton
+      # of these in the 'add visualization' workflow). Also deduplicate.
+      related_visualizations = related_views.select do |related_view|
+        related_view.visualization? && !related_view.standalone_visualization?
+      end.uniq(&:id)
 
       # Finally, convert each related visualization to a format that the JS can consume.
       @related_visualizations = related_visualizations.map(&:to_visualization_embed_blob)
@@ -215,11 +223,11 @@ class AngularController < ActionController::Base
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )
-    rescue NewViewManager::ViewAuthenticationRequired
+    rescue DataLensManager::ViewAuthenticationRequired
       raise AuthenticationRequired.new
-    rescue NewViewManager::ViewAccessDenied
+    rescue DataLensManager::ViewAccessDenied
       raise UnauthorizedPageMetadataRequest.new
-    rescue NewViewManager::ViewNotFound
+    rescue DataLensManager::ViewNotFound
       raise PageMetadataNotFound.new
     rescue => error
       raise UnknownRequestError.new error.to_s
@@ -237,5 +245,10 @@ class AngularController < ActionController::Base
       :error_message => error_message
     )
     Rails.logger.error(error_message)
+  end
+
+  # EN-1111: Force Data Lens to always use English
+  def set_locale
+    I18n.locale = 'en'
   end
 end

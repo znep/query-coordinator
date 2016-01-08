@@ -23,16 +23,11 @@ describe('ChoroplethController', function() {
   var testWards = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var testAggregates = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
   var testAggregatesWhere = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values_where.json';
-  beforeEach(module(testWards));
-  beforeEach(module(testAggregates));
-  beforeEach(module(testAggregatesWhere));
 
-  beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    module(function($provide) {
+    angular.mock.module(function($provide) {
       provide = $provide;
 
       setMockCardDataServiceToDefault();
@@ -141,8 +136,11 @@ describe('ChoroplethController', function() {
     var version = options.version || '1';
     var model = new Model();
 
+    var mapExtent = new Model();
+    mapExtent.defineObservableProperty('mapExtent', options.mapExtent);
+
     model.fieldName = 'points';
-    model.defineObservableProperty('cardOptions', {mapExtent: options.mapExtent || {}});
+    model.defineObservableProperty('cardOptions', mapExtent);
     model.defineObservableProperty('cardSize', 1);
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
@@ -612,7 +610,5 @@ describe('ChoroplethController', function() {
       expect(choropleth.$scope.defaultExtent).to.be.undefined;
       expect(choropleth.$scope.savedExtent).to.be.undefined;
     });
-
   });
-
 });

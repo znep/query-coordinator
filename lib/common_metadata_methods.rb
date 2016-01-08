@@ -88,7 +88,7 @@ module CommonMetadataMethods
   end
 
   def fetch_permissions(id)
-    catalog_response = new_view_manager.fetch(id)
+    catalog_response = data_lens_manager.fetch(id)
     {
       isPublic: catalog_response.fetch(:grants, []).any? do |grant|
         grant.fetch(:flags, []).include?('public')
@@ -97,8 +97,8 @@ module CommonMetadataMethods
     }
   end
 
-  def new_view_manager
-    @new_view_manager ||= NewViewManager.new
+  def data_lens_manager
+    @data_lens_manager ||= DataLensManager.new
   end
 
   def fetch_dataset_metadata(dataset_id)
@@ -143,11 +143,11 @@ module CommonMetadataMethods
   def fetch_permissions_and_normalize_exceptions(resource_id)
     begin
       fetch_permissions(resource_id)
-    rescue NewViewManager::ViewAuthenticationRequired
+    rescue DataLensManager::ViewAuthenticationRequired
       raise AuthenticationRequired.new
-    rescue NewViewManager::ViewAccessDenied
+    rescue DataLensManager::ViewAccessDenied
       raise UnauthorizedPageMetadataRequest.new
-    rescue NewViewManager::ViewNotFound
+    rescue DataLensManager::ViewNotFound
       raise PageMetadataNotFound.new
     rescue => error
       raise UnknownRequestError.new error.to_s

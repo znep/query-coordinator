@@ -25,26 +25,6 @@ module ApplicationHelper
       else
         "#{locale_part}/view/#{view.id}"
       end
-    elsif view.new_view?
-      begin
-        # use the direct link stored in the metadata for 'new_view' display types
-        # NOTE: This entire elsif block ought to be obsolete once page metadata
-        # has been migrated out of phidippides.
-        if view.metadata && view.metadata.accessPoints && view.metadata.accessPoints['new_view']
-          locale_part + view.metadata.accessPoints['new_view']
-        else
-          "#{locale_part}/view/#{view.id}"
-        end
-      rescue NoMethodError => error
-        error_message = "Failed to find access point 'new_view' for view with " \
-          "id '#{view.id}; falling back to url '/view/#{view.id}'"
-        Airbrake.notify(
-          :error_class => 'NewUXViewURLFailure',
-          :error_message => error_message
-        )
-        Rails.logger.error(error_message)
-        "#{locale_part}/view/#{view.id}"
-      end
     elsif view.story?
       "/stories/s/#{view.id}"
     else
@@ -234,8 +214,12 @@ module ApplicationHelper
   end
 
 # styles
+  def should_render_individual_styles?
+    Rails.env.development? && FeatureFlags.derive(@view, request).use_merged_styles != true
+  end
+
   def rendered_stylesheet_tag(stylesheet, media='all')
-    if Rails.env == 'development'
+    if should_render_individual_styles?
       STYLE_PACKAGES[stylesheet].map do |stylesheet|
         %Q{<link type="text/css" rel="stylesheet" media="#{media}" href="/styles/individual/#{stylesheet}.css?#{asset_revision_key}"/>}
       end.join("\n").html_safe
@@ -247,7 +231,7 @@ module ApplicationHelper
   def stylesheet_assets
     sheet_map = {}
     STYLE_PACKAGES.each do |name, sheets|
-      sheet_map[name] = if Rails.env == 'development'
+      sheet_map[name] = if should_render_individual_styles?
         (sheets || []).map { |req| "/styles/individual/#{req}.css" }
       else
         "/styles/merged/#{name.to_s}.css?#{asset_revision_key}"
@@ -266,6 +250,27 @@ module ApplicationHelper
 
   def get_revision
     REVISION_NUMBER || Rails.env
+  end
+
+  def include_webpack_bundle(entrypoint)
+    if Rails.configuration.webpack[:use_dev_server]
+      src = "/javascripts/webpack/#{entrypoint}"
+    else
+      # use compiled asset
+      src =
+        if Rails.configuration.webpack[:use_manifest]
+          manifest = Rails.configuration.webpack[:asset_manifest]
+          # Look for the basename as the key
+          # Note: this means that two bundle files can't have the same name
+          # TODO: see if there's a way to rectify this
+          filename = manifest[File.basename(entrypoint)]
+
+          "build/#{filename}"
+        else
+          "build/#{entrypoint}"
+        end
+    end
+    javascript_include_tag src
   end
 
 # TOP OF PAGE

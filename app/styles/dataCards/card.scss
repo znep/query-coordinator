@@ -300,6 +300,7 @@ card-visualization-invalid {
   top: 50%;
   left: 50%;
   background: #fff;
+  z-index: 1;
   @include border-radius($rounded-corners-border-radius);
   @include prefixer("transform", "translate(-50%, -50%)");
 

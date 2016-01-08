@@ -6,7 +6,7 @@ describe CoreServer do
   let(:csrf_token) { 'the_csrf_token' }
   let(:http_cookie) { "_core_session_id=bobloblaw; socrata-csrf-token=#{csrf_token}" }
   let(:request_host) { 'data.monkeybusiness.gov' }
-  let(:request_uuid) { 'mock request uuid' }
+  let(:request_uuid) { '54d11372-ce94-4468-8aa5-bb9614a9e82c' }
   let(:headers) do
     {
       'Cookie' => http_cookie,
@@ -111,8 +111,9 @@ describe CoreServer do
     context 'with no incoming X-Socrata-RequestId' do
       it 'returns the request uuid as X-Socrata-RequestId' do
         result = CoreServer.headers_from_request(request)
+        expected_uuid = '54d11372ce9444688aa5bb9614a9e82c' # dashes removed from request_uuid
         expect(result).to include(
-          'X-Socrata-RequestId' => request_uuid
+          'X-Socrata-RequestId' => expected_uuid
         )
       end
     end

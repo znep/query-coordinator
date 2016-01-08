@@ -96,7 +96,7 @@ class CoreServer
     headers['Cookie'] = authentication_cookie
     headers['X-Socrata-Host'] = request.host
     headers['X-Socrata-RequestId'] = request.env['HTTP_X_SOCRATA_REQUESTID'] ||
-      request.env['action_dispatch.request_id']
+      request.env['action_dispatch.request_id'].gsub('-', '')
     headers['X-CSRF-Token'] = csrf_token unless csrf_token.blank?
 
     headers

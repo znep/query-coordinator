@@ -11,6 +11,7 @@ var DEFAULT_BASE_LAYER_OPACITY = 0.8;
 var NAME_ALIAS = '__NAME_ALIAS__';
 var VALUE_ALIAS = '__VALUE_ALIAS__';
 var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
  * Instantiates a Socrata Choropleth Visualization from the

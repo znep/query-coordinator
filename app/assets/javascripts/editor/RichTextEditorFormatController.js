@@ -323,10 +323,6 @@
     function _removeLink() {
       _selectAnchorTag();
       _squire.removeLink();
-
-      storyteller.dispatcher.dispatch({
-        action: Actions.LINK_TIP_CLOSE
-      });
     }
 
     /**

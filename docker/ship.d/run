@@ -10,6 +10,4 @@ export CORESERVICE_URI=${CORESERVICE_URI:-"$EXTERNAL_IP:8080"}
 cd ${APP_DIR}
 # Using exec to replace the current bash script running with PID1 with Unicorn
 # This allows docker to send signals to unicorn, allowing for graceful shutdown
-# The unicorn -N option ignores unicorn specific middleware to mute redundant logs.
-# RequestLoggerMiddleware will take its place instead and pipe logs to stderr.
-exec su socrata -c "HOME=${APP_DIR} bundle exec unicorn -c config/unicorn.rb -N"
+exec su socrata -c "HOME=${APP_DIR} bundle exec unicorn -c config/unicorn.rb"

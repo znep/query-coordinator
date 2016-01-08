@@ -1,12 +1,11 @@
-var $ = require('jquery');
 var _ = require('lodash');
-var moment = require('moment');
+var $ = require('jquery');
 var utils = require('socrata-utils');
+var moment = require('moment');
 var TimelineChart = require('./views/TimelineChart');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 
 var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
-
 var DATE_INDEX = 0;
 var UNFILTERED_INDEX = 1;
 var FILTERED_INDEX = 2;
@@ -149,19 +148,25 @@ $.fn.socrataTimelineChart = function(vif) {
 
   function _attachEvents() {
 
-    // Destroy on (only the first) 'destroy' event.
-    $element.one('destroy', function() {
+    // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
+    $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
       clearTimeout(rerenderOnResizeTimeout);
       visualization.destroy();
       _detachEvents();
     });
+
     $(window).on('resize', _handleWindowResize);
+
     $element.on('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
   }
 
   function _detachEvents() {
+
     $(window).off('resize', _handleWindowResize);
+
     $element.off('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
   }
 
   function _handleWindowResize() {

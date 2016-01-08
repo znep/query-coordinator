@@ -110,13 +110,12 @@ function TimelineChart(element, vif) {
   var _chartRightAxisLabel;
   var _chartBottomAxisLabel;
   var _chartLeftAxisLabel;
-
+  var _lastRenderData;
   var _lastRenderOptions;
 
   var _interactive = vif.configuration.interactive;
 
   _renderTemplate(this.element);
-
   _attachEvents(this.element);
 
   /**
@@ -124,12 +123,19 @@ function TimelineChart(element, vif) {
    */
 
   this.render = function(data, options) {
+    _lastRenderData = data;
     _lastRenderOptions = options;
     _renderData(_chartElement, data, options);
   };
 
   this.renderError = function() {
     // TODO: Some helpful error message.
+  };
+
+  this.invalidateSize = function() {
+    if (_lastRenderData && _lastRenderOptions) {
+      _renderData(_chartElement, _lastRenderData, _lastRenderOptions);
+    }
   };
 
   this.destroy = function() {
@@ -2179,9 +2185,21 @@ function TimelineChart(element, vif) {
   }
 
   function clearChartHighlight() {
-    element.find('.timeline-chart-highlight-container > g > path').remove();
-    element.find('.timeline-chart-highlight-container').
-      css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
+    // Since we attach event handlers before the visualization has rendered for
+    // the first time, it is possible that we have never cached the chart
+    // dimensions (cachedChartDimensions, below). As such, attempting to clear
+    // the chart highlight (which is triggered by moving the mouse over the
+    // container) will attempt to read the `.height` property of `null` and
+    // report an uncaught TypeError.
+    //
+    // To avoid this, we only actually attempt to clear the chart highlight if
+    // we have cached the chart dimensions.
+    if (cachedChartDimensions) {
+
+      element.find('.timeline-chart-highlight-container > g > path').remove();
+      element.find('.timeline-chart-highlight-container').
+        css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
+    }
   }
 
   /**

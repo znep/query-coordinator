@@ -26,6 +26,7 @@ function ColumnChart(element, vif) {
   var _chartLabels;
 
   var _truncationMarker;
+  var _lastRenderData;
   var _lastRenderOptions;
 
   var _truncationMarkerSelector = '.truncation-marker';
@@ -41,7 +42,6 @@ function ColumnChart(element, vif) {
   var _interactive = vif.configuration.interactive;
 
   _renderTemplate(this.element);
-
   _attachEvents(this.element);
 
   /**
@@ -49,12 +49,19 @@ function ColumnChart(element, vif) {
    */
 
   this.render = function(data, options) {
+    _lastRenderData = data;
     _lastRenderOptions = options;
     _renderData(_chartElement, data, options);
   };
 
   this.renderError = function() {
     // TODO: Some helpful error message.
+  };
+
+  this.invalidateSize = function() {
+    if (_lastRenderData && _lastRenderOptions) {
+      _renderData(_chartElement, _lastRenderData, _lastRenderOptions);
+    }
   };
 
   this.destroy = function() {

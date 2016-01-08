@@ -1,7 +1,6 @@
-var utils = require('socrata-utils');
-var $ = require('jquery');
 var _ = require('lodash');
-
+var $ = require('jquery');
+var utils = require('socrata-utils');
 var ColumnChart = require('./views/ColumnChart');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 
@@ -137,26 +136,29 @@ $.fn.socrataColumnChart = function(vif) {
 
   function _attachEvents() {
 
-    // Destroy on (only the first) 'destroy' event.
-    $element.one('destroy', function() {
+    // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
+    $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
       clearTimeout(rerenderOnResizeTimeout);
       visualization.destroy();
       _detachEvents();
     });
 
     $(window).on('resize', _handleWindowResize);
+
     $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
     $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
     $element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
-    $element.on('invalidateSize', _render);
+    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
   }
 
   function _detachEvents() {
 
     $(window).off('resize', _handleWindowResize);
+
     $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
     $element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
     $element.off('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
+    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
   }
 
   function _handleWindowResize() {

@@ -382,6 +382,22 @@ describe('Customize card dialog', function() {
 
       expect(card.getCurrentValue('cardType')).to.equal('search');
     });
+
+    describe('shouldShowAggregationSelector scope variable', function() {
+      it('should not show cardAggregationSelector if feature flag is disabled', function() {
+        ServerConfig.override('enableDataLensCardLevelAggregation', false);
+        var dialog = createDialog();
+
+        expect(dialog.element.find('card-aggregation-selector')).to.not.exist;
+      });
+
+      it('should show cardAggregationSelector if feature flag is enabled', function() {
+        ServerConfig.override('enableDataLensCardLevelAggregation', true);
+        var dialog = createDialog();
+
+        expect(dialog.element.find('card-aggregation-selector')).to.exist;
+      });
+    });
   });
 
   describe('histogram bucketing settings', function() {

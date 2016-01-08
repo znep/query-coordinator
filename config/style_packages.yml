@@ -26,6 +26,10 @@ angular-app-dataCards:
 - dataCards/card
 - dataCards/multiline-ellipsis
 - dataCards/modal-dialog
+- dataCards/add-customize-card-dialog
+- dataCards/manage-dialog
+- dataCards/new-share-dialog
+- dataCards/save-as-dialog
 - dataCards/feature-map
 - dataCards/feedback-panel
 - dataCards/lens-type

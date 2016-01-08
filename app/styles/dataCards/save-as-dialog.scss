@@ -1,0 +1,58 @@
+#save-visualization-as-dialog .modal-dialog {
+  width: 40rem;
+
+  .control-group {
+    margin-bottom: 1rem;
+
+    /**
+     * For modern browsers
+     * 1. The space content is one way to avoid an Opera bug when the
+     *    contenteditable attribute is included anywhere else in the document.
+     *    Otherwise it causes space to appear at the top and bottom of elements
+     *    that are clearfixed.
+     * 2. The use of `table` rather than `block` is only necessary if using
+     *    `:before` to contain the top-margins of child elements.
+     */
+    &:before,
+    &:after {
+      content: " "; /* 1 */
+      display: table; /* 2 */
+    }
+
+    &:after {
+      clear: both;
+    }
+
+    label {
+      display: inline-block;
+      margin: 0.25em 0;
+      font-weight: bold;
+    }
+
+    textarea {
+      float: left;
+      width: 19rem;
+    }
+
+    .save-as-official-view-description {
+      margin-top: 0;
+      margin-left: 1.66em;
+    }
+  }
+
+  .form-control {
+    width: 95%;
+    display: inline;
+  }
+
+}
+
+#save-as-description-guidelines {
+  margin-left: 20rem;
+  margin-top: 1rem;
+
+  ul {
+    margin-top: 0.5rem;
+    padding-left: 1.5rem;
+  }
+}

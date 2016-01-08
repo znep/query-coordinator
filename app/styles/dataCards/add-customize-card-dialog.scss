@@ -1,0 +1,159 @@
+@import "dataCards/common/layout";
+
+add-card-dialog,
+customize-card-dialog {
+  .customize-card-preview {
+    border-radius: $rounded-corners-border-radius;
+    margin: 1em 0;
+    text-align: center;
+    padding: 1px;
+    position: relative;
+    .card-spot {
+      card {
+        z-index: 1;
+      }
+    }
+  }
+  .customize-card-options {
+    margin: 1rem 0;
+    padding-left: 2rem;
+    h3 {
+      margin: 0 0 1rem 0;
+    }
+  }
+}
+
+// Add card dialog
+add-card-dialog {
+  .add-card-select-column {
+    .add-card-select-input-group {
+      display: inline-block;
+      .column-selector {
+        margin: 0 1em 0.4em 0;
+      }
+      label {
+        display: block;
+        font-size: 0.75rem;
+        padding: 0.2rem;
+      }
+    }
+  }
+  .customize-card-preview {
+    .add-card-preview-placeholder {
+      height: 300px;
+      width: 100%;
+      display: table;
+      .placeholder-inner-text {
+        display: table-cell;
+        vertical-align: middle;
+        margin: 0 auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+    .card-spot {
+      .add-card-controls {
+        position: absolute;
+        right: 0.5rem;
+        top: 0.5rem;
+        z-index: 2;
+        .card-control {
+          font-size: $icon-size;
+          font-weight: 400;
+          cursor: pointer;
+          white-space: nowrap;
+          padding: 0.5rem;
+          border-radius: $rounded-corners-border-radius;
+          display: block;
+          .icon-settings {
+            margin-right: 0.2rem;
+          }
+        }
+      }
+    }
+  }
+  .customize-card-options {
+    padding-top: 2.75rem;
+  }
+}
+
+// Customize card dialog
+customize-card-dialog {
+  .customize-card-options {
+    .configure-map-base-layer,
+    .configure-histogram-bucket-type,
+    .configure-flannel-title {
+      margin-bottom: 1rem;
+      .dropdown-container {
+        soc-select {
+          display: block;
+        }
+        .icon-warning {
+          display: none;
+        }
+      }
+      .dropdown-container.warning-dropdown {
+        soc-select,
+        .icon-warning {
+          display: inline-block;
+          vertical-align: top;
+        }
+        soc-select {
+          width: 85%;
+        }
+        .icon-warning {
+          width: 13%;
+          line-height: 35px;
+          font-size: 1.2rem;
+          text-align: center;
+        }
+      }
+      .option-help-text {
+        font-size: 0.8rem;
+        line-height: 1.1rem;
+        margin-top: 1rem;
+      }
+      input {
+        display: block;
+        margin-top: 1rem;
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Card aggregation
+card-aggregation-selector {
+  .card-aggregation-input-group {
+    display: inline-block;
+    vertical-align: bottom;
+    label {
+      font-size: 0.75rem;
+      padding: 0.2rem;
+    }
+    soc-select {
+      display: block;
+      margin: 0 1rem 0.3rem 0;
+      &.disabled .arrow-container {
+        display: none;
+      }
+      select {
+        padding: 0.5rem 1rem;
+      }
+    }
+    input {
+      display: block;
+      width: 3.5rem;
+      margin: 0 1rem 0.3rem 0;
+      padding: 0.5rem 1rem;
+      outline: none;
+    }
+  }
+}
+
+// Manage lens dialog
+.manage-lens-dialogs {
+  .modal-dialog {
+    max-width: 45rem;
+  }
+}

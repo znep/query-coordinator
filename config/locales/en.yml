@@ -42,6 +42,7 @@ en:
     dataCards:
       add_card_dialog:
         add_card: Add card
+        add_card_title: Add a card
         add_this_card: Add this card
         card_on_page: Card already on page
         card_on_page_long: This card is already on the page
@@ -51,6 +52,7 @@ en:
         choropleth_message: 'To add custom regions: ask your site administrator to configure the available set through the Spatial Lens section in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
         classic_chart: If you'd like to customize this Socrata visualization, locate it in the catalog, edit it, and then add it to your story.
         column_chart_warning: 'Note: This would result in a bar chart with over a hundred bars, it might be slower than other charts'
+        column_label: Column
         custom: (Custom...)
         customize_prompt: Customize this card
         disabled_curated_region_message:
@@ -95,6 +97,12 @@ en:
         json: JSON
         title: API
         url: 'You can access this data via the Socrata Open Data API at this URL:'
+      card_aggregation_selector:
+        add_this_aggregation: Add this aggregation
+        choose_count: Count
+        choose_sum: Choose a column
+        function_label: Function
+        value_label: Value
       card_controls:
         collapse_card: Collapse this card
         customize_disabled: There are no customization options for this card yet
@@ -169,6 +177,7 @@ en:
           simple_blue: Simple Blue
           simple_grey: Simple Grey
           title: Map base layer
+        title: Settings
         visualization_options:
           title: Card Type
       distribution_chart:

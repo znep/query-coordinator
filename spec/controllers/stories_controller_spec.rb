@@ -13,7 +13,7 @@ RSpec.describe StoriesController, type: :controller do
 
     context 'when there is a story with the given four by four' do
 
-      let!(:story_revision) { FactoryGirl.create(:published_story) }
+      let(:story_revision) { FactoryGirl.create(:published_story) }
 
       it 'renders show template' do
         get :show, uid: story_revision.uid
@@ -44,6 +44,28 @@ RSpec.describe StoriesController, type: :controller do
         stub_invalid_session
         get :show, uid: story_revision.uid
         expect(response).to render_template(:show)
+      end
+
+      describe 'google analytics' do
+        render_views
+
+        context 'when not configured' do
+          it 'does not render google analytics partial' do
+            get :show, uid: story_revision.uid
+            expect(response.body).to_not have_content(@google_analytics_tracking_id)
+          end
+        end
+
+        context 'when configured' do
+          before do
+            stub_google_analytics
+          end
+
+          it 'renders google analytics partial' do
+            get :show, uid: story_revision.uid
+            expect(response.body).to have_content(@google_analytics_tracking_id)
+          end
+        end
       end
     end
 
@@ -182,9 +204,9 @@ RSpec.describe StoriesController, type: :controller do
         stub_valid_session
       end
 
-      context 'when there is a story with the given four by four' do
+      let(:story_revision) { FactoryGirl.create(:draft_story) }
 
-        let!(:story_revision) { FactoryGirl.create(:draft_story) }
+      context 'when there is a story with the given four by four' do
 
         it 'renders show template' do
           get :preview, uid: story_revision.uid
@@ -218,6 +240,28 @@ RSpec.describe StoriesController, type: :controller do
         it 'renders 404' do
           get :preview, uid: 'notf-ound'
           expect(response).to have_http_status(404)
+        end
+      end
+
+      describe 'google analytics' do
+        render_views
+
+        context 'when not configured' do
+          it 'does not render google analytics partial' do
+            get :preview, uid: story_revision.uid
+            expect(response.body).to_not have_content(@google_analytics_tracking_id)
+          end
+        end
+
+        context 'when configured' do
+          before do
+            stub_google_analytics
+          end
+
+          it 'renders google analytics partial' do
+            get :preview, uid: story_revision.uid
+            expect(response.body).to have_content(@google_analytics_tracking_id)
+          end
         end
       end
     end
@@ -256,11 +300,11 @@ RSpec.describe StoriesController, type: :controller do
 
       context 'when there is an uninitialized lenses view with the given four by four' do
 
+        let(:story_uid) { 'test-test' }
+
         before do
           stub_valid_uninitialized_lenses_view
         end
-
-        let!(:story_uid) { 'test-test' }
 
         it 'assigns the story title' do
           get :new, uid: story_uid
@@ -274,6 +318,28 @@ RSpec.describe StoriesController, type: :controller do
 
           expect(assigns(:story_title)).to eq(mock_valid_lenses_view_title)
           expect(response).to render_template(:new)
+        end
+
+        describe 'google analytics' do
+          render_views
+
+          context 'when not configured' do
+            it 'does not render google analytics partial' do
+              get :new, uid: story_uid
+              expect(response.body).to_not have_content(@google_analytics_tracking_id)
+            end
+          end
+
+          context 'when configured' do
+            before do
+              stub_google_analytics
+            end
+
+            it 'renders google analytics partial' do
+              get :new, uid: story_uid
+              expect(response.body).to have_content(@google_analytics_tracking_id)
+            end
+          end
         end
       end
 
@@ -452,9 +518,9 @@ RSpec.describe StoriesController, type: :controller do
         stub_valid_session
       end
 
-      context 'when there is a matching story' do
+      let(:draft_story) { FactoryGirl.create(:draft_story) }
 
-        let!(:draft_story) { FactoryGirl.create(:draft_story) }
+      context 'when there is a matching story' do
 
         it 'calls find_by_uid' do
           expect(DraftStory).to receive(:find_by_uid)
@@ -489,29 +555,53 @@ RSpec.describe StoriesController, type: :controller do
           expect(response).to have_http_status(404)
         end
       end
-    end
-  end
 
-  context 'when unauthenticated' do
-    before do
-      stub_invalid_session
-    end
+      describe 'google analytics' do
+        render_views
 
-    context 'when there is a matching story' do
+        context 'when not configured' do
+          it 'does not render google analytics partial' do
+            get :edit, uid: draft_story.uid
+            expect(response.body).to_not have_content(@google_analytics_tracking_id)
+          end
+        end
 
-      let!(:draft_story) { FactoryGirl.create(:draft_story) }
+        context 'when configured' do
+          before do
+            stub_google_analytics
+          end
 
-      it 'redirects' do
-        get :edit, uid: draft_story.uid
-        expect(response).to have_http_status(302)
+          it 'renders google analytics partial' do
+            get :edit, uid: draft_story.uid
+            expect(response.body).to have_content(@google_analytics_tracking_id)
+          end
+        end
       end
     end
 
-    context 'when there is no matching story' do
+    context 'when unauthenticated' do
+      before do
+        stub_invalid_session
+      end
+
+      context 'when there is a matching story' do
+
+        let!(:draft_story) { FactoryGirl.create(:draft_story) }
+
         it 'redirects' do
-          get :edit, uid: 'notf-ound'
+          get :edit, uid: draft_story.uid
           expect(response).to have_http_status(302)
         end
+      end
+
+      context 'when there is no matching story' do
+          it 'redirects' do
+            get :edit, uid: 'notf-ound'
+            expect(response).to have_http_status(302)
+          end
+      end
     end
   end
+
+
 end

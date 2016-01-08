@@ -181,7 +181,13 @@ function ChoroplethMap(element, vif) {
     // TODO: React to active filters being cleared.
   };
 
+  // TODO: Remove this once Data Lens is using the new (correct)
+  // `.invalidateSize()` method instead of `.updateDimensions()`.
   this.updateDimensions = function() {
+    _updateDimensions(_choroplethContainer);
+  };
+
+  this.invalidateSize = function() {
     _updateDimensions(_choroplethContainer);
   };
 

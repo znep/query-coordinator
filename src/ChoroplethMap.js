@@ -1,7 +1,6 @@
-var $ = require('jquery');
 var _ = require('lodash');
+var $ = require('jquery');
 var utils = require('socrata-utils');
-
 var ChoroplethMap = require('./views/ChoroplethMap');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
@@ -9,7 +8,6 @@ var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 
 var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 var DEFAULT_BASE_LAYER_OPACITY = 0.8;
-
 var NAME_ALIAS = '__NAME_ALIAS__';
 var VALUE_ALIAS = '__VALUE_ALIAS__';
 var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
@@ -61,15 +59,6 @@ $.fn.socrataChoroplethMap = function(vif) {
   );
 
   /**
-   * Destroy visualization
-   */
-  this.destroySocrataChoroplethMap = function() {
-
-    visualization.destroy();
-    _detachEvents();
-  };
-
-  /**
    * Setup visualization
    */
   var $element = $(this);
@@ -119,8 +108,6 @@ $.fn.socrataChoroplethMap = function(vif) {
 
   var cachedShapefile;
 
-  _attachEvents();
-
   var datasetColumnExtentDataProvider = new SoqlDataProvider(
     soqlDataProviderConfig
   );
@@ -128,6 +115,9 @@ $.fn.socrataChoroplethMap = function(vif) {
   var shapefileMetadataRequest;
   var featureExtentRequest;
   var cachedGeometryLabel;
+  var rerenderOnResizeTimeout;
+
+  _attachEvents();
 
   if (_.isString(vif.configuration.shapefile.geometryLabel)) {
     // This fake shapefile dataset metadata response is used so that we can
@@ -398,20 +388,44 @@ $.fn.socrataChoroplethMap = function(vif) {
    */
   function _attachEvents() {
 
+    // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
+    $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
+      clearTimeout(rerenderOnResizeTimeout);
+      visualization.destroy();
+      _detachEvents();
+    });
+
+    $(window).on('resize', _handleWindowResize);
+
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
-
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleRegionSelect);
+    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
   }
 
   function _detachEvents() {
 
+    $(window).off('resize', _handleWindowResize);
+
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
-
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleRegionSelect);
+    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+  }
+
+  function _handleWindowResize() {
+
+    clearTimeout(rerenderOnResizeTimeout);
+
+    rerenderOnResizeTimeout = setTimeout(
+      visualization.invalidateSize,
+      // Add some jitter in order to make sure multiple visualizations are
+      // unlikely to all attempt to rerender themselves at the exact same
+      // moment.
+      WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+    );
   }
 
   function _handleFeatureFlyout(event) {

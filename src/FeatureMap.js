@@ -1,7 +1,6 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var utils = require('socrata-utils');
-
 var FeatureMap = require('./views/FeatureMap');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 var TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
@@ -139,7 +138,6 @@ $.fn.socrataFeatureMap = function(vif) {
 		$element,
 		vif
 	);
-
 	// The visualizationRenderOptions may change in response to user actions
 	// and are passed as an argument to every render call.
 	var visualizationRenderOptions = {
@@ -148,6 +146,7 @@ $.fn.socrataFeatureMap = function(vif) {
 			opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
 		}
 	};
+	var rerenderOnResizeTimeout;
 
 	/**
 	 * Initial data requests to set up visualization state
@@ -173,15 +172,17 @@ $.fn.socrataFeatureMap = function(vif) {
 
 	function attachEvents() {
 
-		// Destroy on (only the first) 'destroy' event.
-		$element.one('destroy', function() {
-			detachEvents();
+		// Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
+		$element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
+			clearTimeout(rerenderOnResizeTimeout);
 			visualization.destroy();
+			detachEvents();
 		});
 
 		$element.on('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
 		$element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
 		$element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+		$element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	}
 
 	function detachEvents() {
@@ -189,11 +190,25 @@ $.fn.socrataFeatureMap = function(vif) {
 		$element.off('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
 		$element.off('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
 		$element.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+		$element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	}
 
 	/**
 	 * Event handlers
 	 */
+
+  function _handleWindowResize() {
+
+    clearTimeout(rerenderOnResizeTimeout);
+
+    rerenderOnResizeTimeout = setTimeout(
+      renderIfReady,
+      // Add some jitter in order to make sure multiple visualizations are
+      // unlikely to all attempt to rerender themselves at the exact same
+      // moment.
+      WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+    );
+  }
 
 	function handleDatasetMetadataRequestSuccess(data) {
 

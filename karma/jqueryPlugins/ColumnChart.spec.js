@@ -39,7 +39,7 @@ describe('ColumnChart jQuery component', function() {
   };
 
   function destroyVisualization($container) {
-    $container.trigger('destroy');
+    $container.trigger('SOCRATA_VISUALIZATION_DESTROY');
     $container.remove();
   }
 

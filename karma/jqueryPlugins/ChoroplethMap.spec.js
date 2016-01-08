@@ -54,7 +54,8 @@ describe('ChoroplethMap jQuery component', function() {
   };
 
   function destroyVisualization($container) {
-    $container.destroySocrataChoroplethMap();
+    $container.trigger('SOCRATA_VISUALIZATION_DESTROY');
+    $container.remove();
   }
 
   beforeEach(function() {

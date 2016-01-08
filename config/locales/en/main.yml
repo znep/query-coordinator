@@ -43,6 +43,9 @@ en:
     permissions_error_flash: 'Permissions error.'
     not_found_error_flash: 'Story not found.'
   style_and_presentation_panel:
-    title: 'Styled Themes'
-    description: 'Themes to make your story look Grrrrrrreat!'
+    custom_themes_title: 'Custom Themes'
+    custom_themes_description: 'Made-to-order themes make you stand out'
+    standard_themes_title: 'Standard Themes'
+    standard_themes_description: 'Themes to make your story look Grrrrrrreat!'
+    heading_font_sample: 'Abc'
     render_error: 'There was an error'

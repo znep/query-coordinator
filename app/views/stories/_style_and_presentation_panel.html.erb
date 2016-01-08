@@ -7,19 +7,25 @@
 
   <section>
     <div class="scrollable">
-      <h1 class="content-panel-title"><%= I18n.t('style_and_presentation_panel.title') %></h1>
-      <h2 class="content-panel-description"><%= I18n.t('style_and_presentation_panel.description') %></h2>
-      <div class="theme-list">
-        <% @theme_list.each do |theme| %>
-          <div class="theme" data-theme="<%= theme['id'] %>">
-            <h4 class="theme-title"><%= theme['title'] %></h4>
-            <div class="theme-sample">
-              <img src="<%= asset_path(theme['imagePreview']) %>" alt="<%= theme['description'] %>" draggable="false">
-            </div>
-          </div>
-        <% end %>
-      </div>
+      <% if @custom_themes.present? -%>
+        <%= render  partial: 'stories/partials/theme_list',
+                    locals: {
+                      class_name: 'custom-themes',
+                      title: 'style_and_presentation_panel.custom_themes_title',
+                      description: 'style_and_presentation_panel.custom_themes_description',
+                      themes: @custom_themes
+                    } -%>
+      <% end -%>
+
+      <%= render  partial: 'stories/partials/theme_list',
+                  locals: {
+                    class_name: 'standard-themes',
+                    title: 'style_and_presentation_panel.standard_themes_title',
+                    description: 'style_and_presentation_panel.standard_themes_description',
+                    themes: @standard_themes
+                  } -%>
     </div>
   </section>
+
   <div class="styled-theme-list-error hidden"><%= I18n.t('style_and_presentation_panel.render_error') %></div>
 </div>

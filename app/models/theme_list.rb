@@ -15,6 +15,14 @@ class ThemeList
     parsed_json['themes'] + custom_themes.map(&:for_theme_list_config)
   end
 
+  def standard_theme_list
+    parsed_json['themes']
+  end
+
+  def custom_theme_list
+    custom_themes.map(&:for_theme_list_config)
+  end
+
   private
   attr_reader :parsed_json, :custom_themes
 

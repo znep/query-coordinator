@@ -1,0 +1,26 @@
+  <div class=<%= class_name %>>
+    <h1 class="content-panel-title">
+      <%= I18n.t(title) %>
+    </h1>
+    <h2 class="content-panel-description">
+      <%= I18n.t(description) %>
+    </h2>
+    <div class="theme-list">
+      <% themes.each do |theme| %>
+      <%= raw(theme['google_font_code']) %>
+        <div class="theme" data-theme="<%= theme['id'] %>">
+          <h4 class="theme-title"><%= theme['title'] %></h4>
+          <div class="theme-sample">
+            <div class="theme-colors" style="background-color: <%= theme['css_variables']['$default-type-color'] %>;"></div>
+            <div class="theme-colors" style="background-color: <%= theme['css_variables']['$heading-type-color'] %>;"></div>
+            <h1 style="color: <%= theme['css_variables']['$heading-type-color'] %>; font-family: <%= theme['css_variables']['$heading-font-stack'] %>;">
+              <%= I18n.t('style_and_presentation_panel.heading_font_sample') %>
+            </h1>
+            <p style="color: <%= theme['css_variables']['$default-type-color'] %>; font-family: <%= theme['css_variables']['$body-font-stack'] %>;">
+              <%= theme['description'] %>
+            </p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>

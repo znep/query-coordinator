@@ -7,9 +7,8 @@
   z-index: $style-and-presentation-panel-z-index;
 
   .theme-list {
-
     margin: 0 4%;
-    margin-bottom: 4%;
+    margin-bottom: 13%;
 
     .theme {
       @include unselectable();
@@ -45,10 +44,22 @@
       }
 
       .theme-sample {
+        h1 {
+          font-size: 5.75rem;
+          margin: 1rem 0;
+        }
 
-        img {
-          width: 100%;
-          height: auto;
+        p {
+          font-size: 1.75rem;
+          line-height: 2.75rem;
+          margin: 1rem 0;
+        }
+
+        .theme-colors {
+          float: right;
+          width: 35px;
+          height: 35px;
+          margin: 0.65rem;
         }
       }
     }

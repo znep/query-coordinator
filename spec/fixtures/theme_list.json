@@ -3,25 +3,49 @@
     {
       "description": "Classic Theme. This one is a true classic; a throw back to the past.",
       "id": "classic",
-      "imagePreview": "editor/theme-samples/theme-sample-classic.svg",
+      "css_variables": {
+        "$body-font-stack": "'Georgia', sans-serif",
+        "$heading-font-stack": "'Helvetica', serif",
+        "$default-type-color": "#252525",
+        "$heading-type-color": "#333"
+        },
+      "google_font_code": "",
       "title": "Classic"
     },
     {
-      "description": "Sans Theme.",
+      "description": "Simple and modern style. It's the cat's meow.",
       "id": "sans",
-      "imagePreview": "editor/theme-samples/theme-sample-sans.svg",
+      "css_variables": {
+        "$body-font-stack": "'PT Sans', sans-serif",
+        "$heading-font-stack": "'Titillium Web', serif",
+        "$default-type-color": "#444",
+        "$heading-type-color": "#5d950f"
+        },
+      "google_font_code": "",
       "title": "Sans"
     },
     {
-      "description": "Serif Theme",
+      "description": "A refined contemporary look for your official brief.",
       "id": "serif",
-      "imagePreview": "editor/theme-samples/theme-sample-serif.svg",
+      "css_variables": {
+        "$body-font-stack": "'Merriweather', sans-serif",
+        "$heading-font-stack": "'Lusitana', serif",
+        "$default-type-color": "#252525",
+        "$heading-type-color": "#5590ba"
+        },
+      "google_font_code": "",
       "title": "Serif"
     },
     {
-      "description": "Slab Theme",
+      "description": "Bold and strong headlines make for easy reading.",
       "id": "slab",
-      "imagePreview": "editor/theme-samples/theme-sample-slab.svg",
+      "css_variables": {
+        "$body-font-stack": "'Open Sans', sans-serif",
+        "$heading-font-stack": "'Roboto Slab', serif",
+        "$default-type-color": "#252525",
+        "$heading-type-color": "#E24816"
+        },
+      "google_font_code": "",
       "title": "Slab"
     }
   ]

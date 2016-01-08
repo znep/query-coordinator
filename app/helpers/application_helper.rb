@@ -214,8 +214,12 @@ module ApplicationHelper
   end
 
 # styles
+  def should_render_individual_styles?
+    Rails.env.development? && FeatureFlags.derive(@view, request).use_merged_styles != true
+  end
+
   def rendered_stylesheet_tag(stylesheet, media='all')
-    if Rails.env == 'development'
+    if should_render_individual_styles?
       STYLE_PACKAGES[stylesheet].map do |stylesheet|
         %Q{<link type="text/css" rel="stylesheet" media="#{media}" href="/styles/individual/#{stylesheet}.css?#{asset_revision_key}"/>}
       end.join("\n").html_safe
@@ -227,7 +231,7 @@ module ApplicationHelper
   def stylesheet_assets
     sheet_map = {}
     STYLE_PACKAGES.each do |name, sheets|
-      sheet_map[name] = if Rails.env == 'development'
+      sheet_map[name] = if should_render_individual_styles?
         (sheets || []).map { |req| "/styles/individual/#{req}.css" }
       else
         "/styles/merged/#{name.to_s}.css?#{asset_revision_key}"

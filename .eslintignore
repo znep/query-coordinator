@@ -2,3 +2,6 @@ karma
 public/javascripts/plugins
 public/javascripts/bower
 public/javascripts/tiny_mce
+public/javascripts/screens/import-pane.js
+public/javascripts/controls
+public/javascripts/util

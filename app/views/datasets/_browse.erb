@@ -92,18 +92,12 @@ end
                     <%- end -%>
                   </ol>
                 </div>
-                <a name="dataset-listing" tabindex="-1"></a>
               <%- else -%>
                 <div class="moreOptions list hide">
                   <%- facet[:extra_options].each do |facet_option| -%>
                     <%- cp = opts[:user_params].dup -%>
                     <%- cp[facet[:param]] = facet_option[:value] -%>
-                    <a href="<%= opts[:base_url] + '?' + cp.to_param %>">
-                      <%- if facet_option[:icon] -%>
-                        <img class="customIcon" src="<%= theme_image_url(facet_option[:icon]) %>" alt="icon" />
-                      <%- end -%>
-                      <%= facet_option[:text] %>
-                    </a>
+                    <%= link_for_facet(facet, facet_option, opts, cp) %>
                   <%- end -%>
                 </div>
                 <a class="moreLink" href="#More <%= facet[:title] %>"><%= t('controls.browse.actions.all_options') %></a>
@@ -184,6 +178,7 @@ end
     <%- if opts[:a11y_skip_to_content] -%>
       <% content_for(:relocated_content) do %><a name="above-content"></a><% end %>
     <%- end -%>
+    <a name="dataset-listing" tabindex="-1"></a>
     <div class="browseList <%= show_catalog_sort_dropdown ? 'hasSort' : '' %>">
       <%- unless opts[:browse_in_container] -%>
         <div class="titleContainer">

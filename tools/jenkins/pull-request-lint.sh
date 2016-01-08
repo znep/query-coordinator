@@ -15,7 +15,7 @@ if [ -n "${DELTA}" ]; then
   echo
 fi
 
-if [ "${DELTA_COUNT:0}" -gt 0 ]; then
+if [ "${DELTA_COUNT:=0}" -gt 0 ]; then
   false
 else
   true

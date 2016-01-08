@@ -249,7 +249,6 @@ en:
           description: Selecting this option will give the view a special demarcation indicating that it is an Official View
         sharing:
           add_new: Add New
-          add_new_prompt: Save your changes below to invite these new users to this Data Lens
           contributor: Contributor
           inherited_description: 'Inherited from the source dataset:'
           keep: Keep
@@ -265,6 +264,7 @@ en:
           title: Shared with
           viewer: Viewer
         title: Manage
+        unsaved_changes_message: You have unsaved changes
         visibility:
           dataset_is_private: The source dataset is set to Private, so this Data Lens may not be shown in the catalog. Note that this page will appear in the catalog if the dataset is made public.
           hidden: Hidden from catalog
@@ -644,6 +644,7 @@ en:
         rendering_progress_seconds: "%{rows_remaining} rows remain, about %{time_remaining} seconds."
         resume_rendering: Resume
       zero_only_data: No values greater than zero
+      missing_column_html: 'Oops... looks like a configuration change was made to the dataset powering this chart. If you are the owner of this page, please see <a href="https://support.socrata.com/hc/en-us/articles/216102847" title="Classic Visualization Chart Configuration Changes">this support article</a> or contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.'
     common:
       auth_required: You must be logged in to %{action_phrase}
       dataset_picker:

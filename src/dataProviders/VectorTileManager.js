@@ -1,8 +1,9 @@
-var pbf = require('pbf');
-var d3 = require('d3');
-var utils = require('socrata-utils');
-var L = require('leaflet');
 var _ = require('lodash');
+var utils = require('socrata-utils');
+var d3 = require('d3');
+var L = require('leaflet');
+var VectorTile = require('vector-tile').VectorTile;
+var pbf = require('pbf');
 
 /**
  *
@@ -1016,6 +1017,10 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       },
       function() {
         self.tileLoaded(tileId);
+      }
+    )['catch'](
+      function(error) {
+        throw error;
       }
     );
   },

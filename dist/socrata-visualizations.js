@@ -20798,58 +20798,65 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  function _getArrayBuffer(url, config) {
 
-	    return new Promise(function(resolve, reject) {
+	    return (
+	      new Promise(
+	        function(resolve, reject) {
+	          var xhr = new XMLHttpRequest();
 
-	      var xhr = new XMLHttpRequest();
+	          function onFail() {
 
-	      function onFail() {
-
-	        return reject({
-	          status: parseInt(xhr.status, 10),
-	          headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-	          config: config,
-	          statusText: xhr.statusText
-	        });
-	      }
-
-	      xhr.onload = function() {
-
-	        var arrayBuffer;
-	        var status = parseInt(xhr.status, 10);
-
-	        if (status === 200) {
-
-	          arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
-
-	          if (!_.isUndefined(arrayBuffer)) {
-
-	            return resolve({
-	              data: arrayBuffer,
-	              status: status,
+	            return reject({
+	              status: parseInt(xhr.status, 10),
 	              headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
 	              config: config,
 	              statusText: xhr.statusText
 	            });
 	          }
+
+	          xhr.onload = function() {
+
+	            var arrayBuffer;
+	            var status = parseInt(xhr.status, 10);
+
+	            if (status === 200) {
+
+	              arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
+
+	              if (!_.isUndefined(arrayBuffer)) {
+
+	                return resolve({
+	                  data: arrayBuffer,
+	                  status: status,
+	                  headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+	                  config: config,
+	                  statusText: xhr.statusText
+	                });
+	              }
+	            }
+
+	            onFail();
+	          };
+
+	          xhr.onabort = onFail;
+	          xhr.onerror = onFail;
+
+	          xhr.open('GET', url, true);
+
+	          // Set user-defined headers.
+	          _.each(config.headers, function(value, key) {
+	            xhr.setRequestHeader(key, value);
+	          });
+
+	          xhr.responseType = 'arraybuffer';
+
+	          xhr.send();
 	        }
-
-	        onFail();
-	      };
-
-	      xhr.onabort = onFail;
-	      xhr.onerror = onFail;
-
-	      xhr.open('GET', url, true);
-
-	      // Set user-defined headers.
-	      _.each(config.headers, function(value, key) {
-	        xhr.setRequestHeader(key, value);
-	      });
-
-	      xhr.responseType = 'arraybuffer';
-
-	      xhr.send();
-	    });
+	      )['catch'](
+	        function(error) {
+	          throw error;
+	        }
+	      )
+	    );
 	  }
 	}
 
@@ -21288,11 +21295,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var pbf = __webpack_require__(30);
-	var d3 = __webpack_require__(4);
-	var utils = __webpack_require__(3);
-	var L = __webpack_require__(15);
 	var _ = __webpack_require__(9);
+	var utils = __webpack_require__(3);
+	var d3 = __webpack_require__(4);
+	var L = __webpack_require__(15);
+	var VectorTile = __webpack_require__(24).VectorTile;
+	var pbf = __webpack_require__(30);
 
 	/**
 	 *
@@ -22306,6 +22314,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      function() {
 	        self.tileLoaded(tileId);
+	      }
+	    )['catch'](
+	      function(error) {
+	        throw error;
 	      }
 	    );
 	  },

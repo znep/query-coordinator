@@ -163,6 +163,21 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_redirected_to '/'
   end
 
+  test 'renders page meta content over https and not http' do
+    setup_nbe_dataset_test(true)
+    @request.env['HTTPS'] = 'on'
+    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
+    assert_select_quiet 'meta' do |elements|
+      elements.each do |element|
+        element.attributes.values.each do |value|
+          value.to_s.scan(/http.?:\/\//).each do |match|
+            assert_equal(match, 'https://')
+          end
+        end
+      end
+    end
+  end
+
   #
   # See comment at the beginning of `view_redirection_url` in `datasets_controller.rb`
   #

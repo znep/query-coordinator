@@ -285,7 +285,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // TODO: React to active filters being cleared.
 	  };
 
+	  // TODO: Remove this once Data Lens is using the new (correct)
+	  // `.invalidateSize()` method instead of `.updateDimensions()`.
 	  this.updateDimensions = function() {
+	    _updateDimensions(_choroplethContainer);
+	  };
+
+	  this.invalidateSize = function() {
 	    _updateDimensions(_choroplethContainer);
 	  };
 
@@ -5440,6 +5446,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _chartLabels;
 
 	  var _truncationMarker;
+	  var _lastRenderData;
 	  var _lastRenderOptions;
 
 	  var _truncationMarkerSelector = '.truncation-marker';
@@ -5455,7 +5462,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _interactive = vif.configuration.interactive;
 
 	  _renderTemplate(this.element);
-
 	  _attachEvents(this.element);
 
 	  /**
@@ -5463,12 +5469,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  this.render = function(data, options) {
+	    _lastRenderData = data;
 	    _lastRenderOptions = options;
 	    _renderData(_chartElement, data, options);
 	  };
 
 	  this.renderError = function() {
 	    // TODO: Some helpful error message.
+	  };
+
+	  this.invalidateSize = function() {
+	    if (_lastRenderData && _lastRenderOptions) {
+	      _renderData(_chartElement, _lastRenderData, _lastRenderOptions);
+	    }
 	  };
 
 	  this.destroy = function() {
@@ -6506,13 +6519,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _chartRightAxisLabel;
 	  var _chartBottomAxisLabel;
 	  var _chartLeftAxisLabel;
-
+	  var _lastRenderData;
 	  var _lastRenderOptions;
 
 	  var _interactive = vif.configuration.interactive;
 
 	  _renderTemplate(this.element);
-
 	  _attachEvents(this.element);
 
 	  /**
@@ -6520,12 +6532,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  this.render = function(data, options) {
+	    _lastRenderData = data;
 	    _lastRenderOptions = options;
 	    _renderData(_chartElement, data, options);
 	  };
 
 	  this.renderError = function() {
 	    // TODO: Some helpful error message.
+	  };
+
+	  this.invalidateSize = function() {
+	    if (_lastRenderData && _lastRenderOptions) {
+	      _renderData(_chartElement, _lastRenderData, _lastRenderOptions);
+	    }
 	  };
 
 	  this.destroy = function() {
@@ -8575,9 +8594,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function clearChartHighlight() {
-	    element.find('.timeline-chart-highlight-container > g > path').remove();
-	    element.find('.timeline-chart-highlight-container').
-	      css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
+	    // Since we attach event handlers before the visualization has rendered for
+	    // the first time, it is possible that we have never cached the chart
+	    // dimensions (cachedChartDimensions, below). As such, attempting to clear
+	    // the chart highlight (which is triggered by moving the mouse over the
+	    // container) will attempt to read the `.height` property of `null` and
+	    // report an uncaught TypeError.
+	    //
+	    // To avoid this, we only actually attempt to clear the chart highlight if
+	    // we have cached the chart dimensions.
+	    if (cachedChartDimensions) {
+
+	      element.find('.timeline-chart-highlight-container > g > path').remove();
+	      element.find('.timeline-chart-highlight-container').
+	        css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
+	    }
 	  }
 
 	  /**
@@ -24923,10 +24954,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-
 	var ChoroplethMap = __webpack_require__(2);
 	var MetadataProvider = __webpack_require__(21);
 	var GeospaceDataProvider = __webpack_require__(19);
@@ -24934,10 +24964,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
-
 	var NAME_ALIAS = '__NAME_ALIAS__';
 	var VALUE_ALIAS = '__VALUE_ALIAS__';
 	var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+	var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 	/**
 	 * Instantiates a Socrata Choropleth Visualization from the
@@ -24984,15 +25014,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'primaryKey',
 	    'uid'
 	  );
-
-	  /**
-	   * Destroy visualization
-	   */
-	  this.destroySocrataChoroplethMap = function() {
-
-	    visualization.destroy();
-	    _detachEvents();
-	  };
 
 	  /**
 	   * Setup visualization
@@ -25044,8 +25065,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var cachedShapefile;
 
-	  _attachEvents();
-
 	  var datasetColumnExtentDataProvider = new SoqlDataProvider(
 	    soqlDataProviderConfig
 	  );
@@ -25053,6 +25072,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var shapefileMetadataRequest;
 	  var featureExtentRequest;
 	  var cachedGeometryLabel;
+	  var rerenderOnResizeTimeout;
+
+	  _attachEvents();
 
 	  if (_.isString(vif.configuration.shapefile.geometryLabel)) {
 	    // This fake shapefile dataset metadata response is used so that we can
@@ -25323,20 +25345,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  function _attachEvents() {
 
+	    // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
+	    $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
+	      clearTimeout(rerenderOnResizeTimeout);
+	      visualization.destroy();
+	      _detachEvents();
+	    });
+
+	    $(window).on('resize', _handleWindowResize);
+
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
-
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleRegionSelect);
+	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	  }
 
 	  function _detachEvents() {
 
+	    $(window).off('resize', _handleWindowResize);
+
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
-
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleRegionSelect);
+	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+	  }
+
+	  function _handleWindowResize() {
+
+	    clearTimeout(rerenderOnResizeTimeout);
+
+	    rerenderOnResizeTimeout = setTimeout(
+	      visualization.invalidateSize,
+	      // Add some jitter in order to make sure multiple visualizations are
+	      // unlikely to all attempt to rerender themselves at the exact same
+	      // moment.
+	      WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+	    );
 	  }
 
 	  function _handleFeatureFlyout(event) {
@@ -25551,10 +25597,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var utils = __webpack_require__(3);
-	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
-
+	var $ = __webpack_require__(8);
+	var utils = __webpack_require__(3);
 	var ColumnChart = __webpack_require__(12);
 	var SoqlDataProvider = __webpack_require__(22);
 
@@ -25690,26 +25735,29 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function _attachEvents() {
 
-	    // Destroy on (only the first) 'destroy' event.
-	    $element.one('destroy', function() {
+	    // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
+	    $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
 	      clearTimeout(rerenderOnResizeTimeout);
 	      visualization.destroy();
 	      _detachEvents();
 	    });
 
 	    $(window).on('resize', _handleWindowResize);
+
 	    $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
 	    $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
 	    $element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
-	    $element.on('invalidateSize', _render);
+	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	  }
 
 	  function _detachEvents() {
 
 	    $(window).off('resize', _handleWindowResize);
+
 	    $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
 	    $element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
 	    $element.off('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
+	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	  }
 
 	  function _handleWindowResize() {
@@ -25999,7 +26047,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-
 	var FeatureMap = __webpack_require__(14);
 	var GeospaceDataProvider = __webpack_require__(19);
 	var TileserverDataProvider = __webpack_require__(23);
@@ -26016,6 +26063,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// known in data lens as "simple blue"
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.42;
+	var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 	/**
 	 * Instantiates a Socrata FeatureMap Visualization from the
@@ -26137,7 +26185,6 @@ return /******/ (function(modules) { // webpackBootstrap
 			$element,
 			vif
 		);
-
 		// The visualizationRenderOptions may change in response to user actions
 		// and are passed as an argument to every render call.
 		var visualizationRenderOptions = {
@@ -26146,6 +26193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
 			}
 		};
+		var rerenderOnResizeTimeout;
 
 		/**
 		 * Initial data requests to set up visualization state
@@ -26171,15 +26219,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		function attachEvents() {
 
-			// Destroy on (only the first) 'destroy' event.
-			$element.one('destroy', function() {
-				detachEvents();
+			// Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
+			$element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
+				clearTimeout(rerenderOnResizeTimeout);
 				visualization.destroy();
+				detachEvents();
 			});
 
 			$element.on('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
 			$element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
 			$element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+			$element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 		}
 
 		function detachEvents() {
@@ -26187,11 +26237,25 @@ return /******/ (function(modules) { // webpackBootstrap
 			$element.off('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
 			$element.off('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
 			$element.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+			$element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 		}
 
 		/**
 		 * Event handlers
 		 */
+
+	  function _handleWindowResize() {
+
+	    clearTimeout(rerenderOnResizeTimeout);
+
+	    rerenderOnResizeTimeout = setTimeout(
+	      renderIfReady,
+	      // Add some jitter in order to make sure multiple visualizations are
+	      // unlikely to all attempt to rerender themselves at the exact same
+	      // moment.
+	      WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+	    );
+	  }
 
 		function handleDatasetMetadataRequestSuccess(data) {
 
@@ -26570,15 +26634,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
-	var moment = __webpack_require__(41);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
+	var moment = __webpack_require__(41);
 	var TimelineChart = __webpack_require__(13);
 	var SoqlDataProvider = __webpack_require__(22);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
-
 	var DATE_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
 	var FILTERED_INDEX = 2;
@@ -26721,19 +26784,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function _attachEvents() {
 
-	    // Destroy on (only the first) 'destroy' event.
-	    $element.one('destroy', function() {
+	    // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
+	    $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
 	      clearTimeout(rerenderOnResizeTimeout);
 	      visualization.destroy();
 	      _detachEvents();
 	    });
+
 	    $(window).on('resize', _handleWindowResize);
+
 	    $element.on('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	  }
 
 	  function _detachEvents() {
+
 	    $(window).off('resize', _handleWindowResize);
+
 	    $element.off('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	  }
 
 	  function _handleWindowResize() {

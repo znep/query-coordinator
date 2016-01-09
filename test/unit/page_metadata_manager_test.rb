@@ -9,6 +9,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def setup
     init_current_domain
+
     DataLensManager.any_instance.stubs(create: 'niew-veww')
     DataLensManager.any_instance.stubs(update: nil)
     PageMetadataManager.any_instance.stubs(:phidippides => Phidippides.new('localhost', 2401))
@@ -285,7 +286,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_match(/date_trunc/, soql)
   end
 
-  def test_build_rollup_soql_has_aggregation
+  def test_build_rollup_soql_has_default_aggregation
     manager.stubs(
       dataset_metadata: { body: v1_dataset_metadata },
       column_field_name: 'some_number_column',
@@ -302,6 +303,173 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     soql = manager.build_rollup_soql(page_metadata, columns, cards)
     assert_match(/sum\([^\)]+\) as value/, soql)
+  end
+
+  #card has aggregation field
+  def test_build_rollup_soql_for_page_with_card_and_default_aggregation 
+    manager.stubs(
+      dataset_metadata: {body: v1_dataset_metadata }, 
+      column_field_name: 'some_number_column', 
+      logical_datatype_name: 'fred', 
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
+
+    columns = v1_dataset_metadata.fetch('columns')
+    page_metadata = data_lens_page_metadata
+    page_metadata['primaryAmountField'] = 'default_column'
+    page_metadata['primaryAggregation'] = 'default_function'
+    page_metadata[:cards][0]['aggregationField'] = 'column'
+    page_metadata[:cards][0]['aggregationFunction'] = 'count'
+    cards = page_metadata.fetch('cards')
+
+    soql = manager.build_rollup_soql(page_metadata, columns, cards)
+    assert_match(/count\(column\), default_function\(default_column\) as value/, soql)
+  end
+
+  def test_build_rollup_soql_for_page_with_multiple_cards_aggregations
+    manager.stubs(
+      dataset_metadata: {body: v1_dataset_metadata }, 
+      column_field_name: 'some_number_column', 
+      logical_datatype_name: 'fred', 
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
+
+    columns = v1_dataset_metadata.fetch('columns')
+    page_metadata = data_lens_page_metadata
+    page_metadata[:cards][0]['aggregationField'] = 'column'
+    page_metadata[:cards][0]['aggregationFunction'] = 'count'
+    page_metadata[:cards][1]['aggregationField'] = 'other_column'
+    page_metadata[:cards][1]['aggregationFunction'] = 'sum'
+    cards = page_metadata.fetch('cards')
+
+    soql = manager.build_rollup_soql(page_metadata, columns, cards)
+    assert_match(/count\(column\), sum\(other_column\)/, soql)
+  end
+ 
+  def test_build_rollup_soql_for_page_with_multiple_cards_with_same_aggregation 
+    manager.stubs(
+      dataset_metadata: {body: v1_dataset_metadata }, 
+      column_field_name: 'some_number_column', 
+      logical_datatype_name: 'fred', 
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
+
+    columns = v1_dataset_metadata.fetch('columns')
+    page_metadata = data_lens_page_metadata
+    page_metadata[:cards][0]['aggregationField'] = 'column'
+    page_metadata[:cards][0]['aggregationFunction'] = 'count'
+    page_metadata[:cards][1]['aggregationField'] = 'column'
+    page_metadata[:cards][1]['aggregationFunction'] = 'count'
+    cards = page_metadata.fetch('cards')
+
+    soql = manager.build_rollup_soql(page_metadata, columns, cards)
+    assert(soql.scan(/count\(column\)/).length == 1)
+  end
+
+  def test_build_rollup_soql_for_page_with_card_with_nil_aggregation_field 
+    manager.stubs(
+      dataset_metadata: {body: v1_dataset_metadata }, 
+      column_field_name: 'some_number_column', 
+      logical_datatype_name: 'fred', 
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
+
+    columns = v1_dataset_metadata.fetch('columns')
+    page_metadata = data_lens_page_metadata
+    page_metadata[:cards][0]['aggregationField'] = 'column'
+    page_metadata[:cards][0]['aggregationFunction'] = 'sum'
+    page_metadata[:cards][1]['aggregationField'] = nil
+    page_metadata[:cards][1]['aggregationFunction'] = 'count'
+    cards = page_metadata.fetch('cards')
+
+    soql = manager.build_rollup_soql(page_metadata, columns, cards)
+    assert_match(/sum\(column\)/, soql)
+  end
+
+  def test_build_rollup_soql_for_page_with_card_with_nil_aggregation_function
+    manager.stubs(
+      dataset_metadata: {body: v1_dataset_metadata }, 
+      column_field_name: 'some_number_column', 
+      logical_datatype_name: 'fred', 
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
+
+    columns = v1_dataset_metadata.fetch('columns')
+    page_metadata = data_lens_page_metadata
+    page_metadata[:cards][0]['aggregationField'] = 'column'
+    page_metadata[:cards][0]['aggregationFunction'] = 'sum'
+    page_metadata[:cards][1]['aggregationField'] = 'other_column'
+    page_metadata[:cards][1]['aggregationFunction'] = nil
+    cards = page_metadata.fetch('cards')
+
+    soql = manager.build_rollup_soql(page_metadata, columns, cards)
+    assert_match(/sum\(column\)/, soql)
+  end
+
+  def test_build_rollup_soql_for_page_with_multiple_nil_card_aggregation_metadata
+    manager.stubs(
+      dataset_metadata: {body: v1_dataset_metadata }, 
+      column_field_name: 'some_number_column', 
+      logical_datatype_name: 'fred', 
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
+
+    columns = v1_dataset_metadata.fetch('columns')
+    page_metadata = data_lens_page_metadata
+    page_metadata['primaryAmountField'] = 'column_to_be_defaulted_to'
+    page_metadata['primaryAggregation'] = 'function_to_be_defaulted_to'
+    page_metadata[:cards][0]['aggregationField'] = nil
+    page_metadata[:cards][0]['aggregationFunction'] = 'sum'
+    page_metadata[:cards][1]['aggregationField'] = 'other_column'
+    page_metadata[:cards][1]['aggregationFunction'] = nil
+    cards = page_metadata.fetch('cards')
+
+    soql = manager.build_rollup_soql(page_metadata, columns, cards)
+    assert_match(/function_to_be_defaulted_to\(column_to_be_defaulted_to\) as value/, soql)
+  end
+
+  def test_build_rollup_soql_for_page_with_nil_default_amount_field
+    manager.stubs(
+      dataset_metadata: {body: v1_dataset_metadata }, 
+      column_field_name: 'some_number_column', 
+      logical_datatype_name: 'fred', 
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
+
+    columns = v1_dataset_metadata.fetch('columns')
+    page_metadata = data_lens_page_metadata
+    page_metadata['primaryAmountField'] = nil
+    page_metadata['primaryAggregation'] = 'sum'
+    page_metadata[:cards][0]['aggregationField'] = nil
+    page_metadata[:cards][0]['aggregationFunction'] = 'count'
+    page_metadata[:cards][1]['aggregationField'] = 'other_column'
+    page_metadata[:cards][1]['aggregationFunction'] = nil
+    cards = page_metadata.fetch('cards')
+
+    soql = manager.build_rollup_soql(page_metadata, columns, cards)
+    assert_match(/count\(\*\) as value/, soql)
+  end
+
+  def test_build_rollup_soql_page_with_nil_default_aggregation
+    manager.stubs(
+      dataset_metadata: {body: v1_dataset_metadata }, 
+      column_field_name: 'some_number_column', 
+      logical_datatype_name: 'fred', 
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
+
+    columns = v1_dataset_metadata.fetch('columns')
+    page_metadata = data_lens_page_metadata
+    page_metadata['primaryAmountField'] = 'some_column'
+    page_metadata['primaryAggregation'] = nil
+    page_metadata[:cards][0]['aggregationField'] = nil
+    page_metadata[:cards][0]['aggregationFunction'] = 'sum'
+    page_metadata[:cards][1]['aggregationField'] = 'other_column'
+    page_metadata[:cards][1]['aggregationFunction'] = nil
+    cards = page_metadata.fetch('cards')
+
+    soql = manager.build_rollup_soql(page_metadata, columns, cards)
+    assert_match(/count\(\*\) as value/, soql)
   end
 
   def test_fills_in_missing_default_date_trunc_function

@@ -275,6 +275,8 @@ function CardsViewController(
     return I18n.a(OBE_DATASET_PAGE.format(obeId));
   }));
 
+  $scope.shouldShowAggregationChooser = page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation');
+
   /***************
   * User session *
   ***************/

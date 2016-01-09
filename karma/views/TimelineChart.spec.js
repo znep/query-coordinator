@@ -932,7 +932,7 @@ describe('socrata.visualizations.views.TimelineChart', function() {
         var datumLabel = $('.datum-label');
         var middleOfHighlightTarget;
         var middleOfDatumLabel;
-        var TOLERANCE = 2;
+        var TOLERANCE = 3;
 
         testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
           clientX: 360,
@@ -951,7 +951,7 @@ describe('socrata.visualizations.views.TimelineChart', function() {
         var highlightTarget = $('.timeline-chart-highlight-target');
         var datumLabel = $('.datum-label');
         var datumLabelRightEdge;
-        var TOLERANCE = 2;
+        var TOLERANCE = 3;
         var chartOffset = chart.element.offset().left;
 
         testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {
@@ -969,7 +969,7 @@ describe('socrata.visualizations.views.TimelineChart', function() {
         var chart = createTimelineChart(640, false, hiddenLabelTestData, 'DAY');
         var highlightTarget = $('.timeline-chart-highlight-target');
         var datumLabel = $('.datum-label');
-        var TOLERANCE = 2;
+        var TOLERANCE = 3;
         var chartOffset = chart.element.offset().left;
 
         testHelpers.fireMouseEvent(chart.element.find('.timeline-chart').get(0), 'mousemove', {

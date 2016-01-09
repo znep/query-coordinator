@@ -96,9 +96,11 @@ svg:not(:root).timeline-chart-highlight-container {
   position: absolute;
   margin-top: 1px;
   height: 100%;
+  font-size: 12px;
   font-weight: bold;
   line-height: 30px;
   text-align: center;
+  color: #bbb;
   z-index: 5;
 }
 
@@ -107,6 +109,7 @@ svg:not(:root).timeline-chart-highlight-container {
   position: absolute;
   height: 30px;
   bottom: 0;
+  font-size: 12px;
   font-weight: bold;
   line-height: 30px;
   text-align: center;
@@ -164,13 +167,16 @@ svg:not(:root).timeline-chart-highlight-container {
   top: -3px;
   width: 3px;
   height: 4px;
+  background-color: #999;
 }
 .x-ticks .x-tick-label {
   position: absolute;
   height: 100%;
+  font-size: 12px;
   line-height: 30px;
   text-align: center;
   white-space: nowrap;
+  color: #bbb;
 }
 .x-ticks .x-tick-label.emphasis {
   font-weight: bold;
@@ -201,14 +207,20 @@ svg:not(:root).timeline-chart-highlight-container {
   height: 1rem;
   margin-top: -1rem;
   text-align: right;
-  font-size: 0.75rem;
+  font-size: 12px;
+  color: #bbb;
+  border-bottom: 1px solid #bbb;
 }
-.y-ticks .y-tick.top {
+.y-ticks .y-tick.below {
   margin-top: 0;
   top: 0;
+  border-bottom: none;
+  border-top: 1px solid #bbb;
 }
-.y-ticks .zero {
+.y-ticks .origin {
   font-weight: bold;
+  color: #666;
+  border-bottom: 1px solid #666;
 }
 
 /* rgba version used for manipulating font color while card description is expanded */
@@ -239,7 +251,7 @@ svg:not(:root).timeline-chart-highlight-container {
 }
 
 .datum-label {
-  color: #d6d4d5;
+  color: #bbb;
 }
 
 .timeline-chart-unfiltered-visualization .context,
@@ -257,24 +269,4 @@ svg:not(:root).timeline-chart-highlight-container {
 .timeline-chart-unfiltered-visualization .shaded-trace,
 .timeline-chart-filtered-visualization .shaded-trace {
   stroke: #68b0cc;
-}
-
-.x-ticks .x-tick {
-  background-color: #bbb;
-}
-.x-ticks .x-tick-label {
-  color: #bbb;
-}
-
-.y-ticks .y-tick {
-  color: #bbb;
-  border-bottom: 1px solid #bbb;
-}
-.y-ticks .y-tick.top {
-  border-bottom: none;
-  border-top: 1px solid #bbb;
-}
-.y-ticks .zero {
-  font-weight: bold;
-  color: #888;
 }

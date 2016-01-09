@@ -7719,11 +7719,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        text(window.socrata.utils.formatNumber(labels[index]));
 
 	      if (labels[index] === 0) {
-	        tickElement.addClass('zero');
+	        tickElement.addClass('origin');
 	      }
 
 	      if (index === ticks.length - 1) {
-	        tickElement.addClass('top');
+	        tickElement.addClass('below');
 	      }
 
 	      jqueryAxisContainer.append(tickElement);
@@ -8147,7 +8147,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        css({
 	          left: labelLeftOffset,
 	          width: labelWidth,
-	          height: Constants.TIMELINE_CHART_MARGIN.BOTTOM,
+	          // The '- 1' term accounts for the 1 pixel y-axis.
+	          height: Constants.TIMELINE_CHART_MARGIN.BOTTOM - 1,
 	          textAlign: labelTextAlign,
 	          top: cachedChartDimensions.height -
 	            Constants.TIMELINE_CHART_MARGIN.TOP -
@@ -8533,7 +8534,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var width = highlightData.width + (targetMargin * 2);
 	    var leftPos = highlightData.left - targetMargin;
 	    width = Math.min(width, cardWidth + gutter - leftPos);
-	    leftPos = Math.max(leftPos, -gutter);
+	    // Previously, the line below read:
+	    //
+	    // leftPos = Math.max(leftPos, -gutter);
+	    //
+	    // Presumably this was to allow selection of the timeline chart to occur
+	    // outside the rendered chart in Data Lens: the cards have extra margins
+	    // around the periphery and it made sense to enable people to start the
+	    // selection to the left of the left edge of the visualization, or to the
+	    // right of the right edge (if selecting from right to left).
+	    //
+	    // Unfortunately, this breaks the visualization in other contexts (it leaks
+	    // out of its container, potentially covering other elements in the DOM
+	    // where it clearly should not) so we will need to figure out a better
+	    // solution for that. In the meantime, selection behavior may be impaired.
+	    leftPos = Math.max(0, Math.min(leftPos, cardWidth - width));
 
 	    $highlightTargetElement.css({
 	      left: leftPos,
@@ -9029,6 +9044,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function mouseHasLeftChart() {
+	    hideDatumLabel();
 	    hideFlyout();
 	    clearChartHighlight();
 	  }

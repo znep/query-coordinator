@@ -56,7 +56,7 @@ function HistogramController(
   var cardModel$ = $scope.$observe('model').filter(_.isPresent);
   var dataset$ = cardModel$.observeOnLatest('page.dataset');
   var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
-  var aggregation$ = cardModel$.observeOnLatest('page.aggregation');
+  var aggregation$ = cardModel$.observeOnLatest('aggregation');
   var activeFilters$ = cardModel$.observeOnLatest('activeFilters');
   var fieldName$ = cardModel$.pluck('fieldName');
   var cardId$ = cardModel$.pluck('uniqueId');

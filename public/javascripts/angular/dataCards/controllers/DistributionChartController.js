@@ -15,11 +15,11 @@ function DistributionChartController(
   var isFiltered$ = whereClause$.map(_.isPresent);
   var cardModel$ = $scope.$observe('model').filter(_.isPresent);
   var dataset$ = cardModel$.observeOnLatest('page.dataset');
-  var aggregation$ = cardModel$.observeOnLatest('page.aggregation');
+  var aggregation$ = cardModel$.observeOnLatest('aggregation');
   var activeFilters$ = cardModel$.observeOnLatest('activeFilters');
   var fieldName$ = cardModel$.pluck('fieldName');
   var expanded$ = cardModel$.observeOnLatest('expanded');
-  var rowDisplayUnit$ = cardModel$.observeOnLatest('page.aggregation.unit');
+  var rowDisplayUnit$ = cardModel$.observeOnLatest('aggregation.unit');
 
   /** This function returns an observable that produces the data required to render the histogram
    * as a column chart. If the decision is made to render as a column chart, then we can reuse the

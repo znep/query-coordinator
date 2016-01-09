@@ -83,6 +83,7 @@ describe('TimelineChartController', function() {
     card.page = page;
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);
+    card.defineObservableProperty('aggregation', {});
 
     return card;
   }

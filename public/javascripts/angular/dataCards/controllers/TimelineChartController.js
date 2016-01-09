@@ -14,7 +14,7 @@ function TimelineChartController(
   var cardModel$ = $scope.$observe('model').filter(_.isPresent);
   var dataset$ = cardModel$.observeOnLatest('page.dataset').filter(_.isPresent);
   var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
-  var aggregation$ = cardModel$.observeOnLatest('page.aggregation');
+  var aggregation$ = cardModel$.observeOnLatest('aggregation');
   var dataRequests$ = new Rx.Subject();
   var dataResponses$ = new Rx.Subject();
   var unfilteredData$ = new Rx.Subject();
@@ -303,7 +303,7 @@ function TimelineChartController(
   $scope.$bindObservable('expanded', cardModel$.observeOnLatest('expanded'));
   $scope.$bindObservable('precision', datasetPrecision$);
   $scope.$bindObservable('activeFilters', cardModel$.observeOnLatest('activeFilters'));
-  $scope.$bindObservable('rowDisplayUnit', cardModel$.observeOnLatest('page.aggregation.unit'));
+  $scope.$bindObservable('rowDisplayUnit', cardModel$.observeOnLatest('aggregation.unit'));
   $scope.$bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
 
   // Handle filtering

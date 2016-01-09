@@ -162,6 +162,12 @@ describe('TableCardController', function() {
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('customTitle', null);
     model.defineObservableProperty('showDescription', true);
+    model.defineObservableProperty('aggregation', {
+      'function': options.primaryAggregation,
+      fieldName: options.primaryAmountField,
+      unit: 'row',
+      rowDisplayUnit: 'row'
+    });
 
     var pageOverrides = {
       id: 'test-page',

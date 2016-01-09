@@ -20,6 +20,7 @@ module Cetera
     else
       {
         'data_lens' => 'datalenses',
+        'new_view' => 'datalenses',
         'story' => 'stories',
         'pulse' => 'pulses',
         'tables' => 'datasets',

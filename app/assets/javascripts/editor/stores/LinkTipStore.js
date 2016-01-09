@@ -44,6 +44,7 @@
           break;
         case Actions.LINK_TIP_REMOVE:
           _removeLink();
+          _closeTip();
           break;
       }
     });

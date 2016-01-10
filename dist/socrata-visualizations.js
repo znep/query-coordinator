@@ -5870,30 +5870,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 
 	    var _renderTicks = function() {
-
 	      // The `+ 3` term accounts for the border-width.
 	      var tickHeight = parseInt(element.css('font-size'), 10) + 3;
-
 	      var numberOfTicks = 3;
-
-	      var tickMarks = _.uniq([0].concat(verticalScale.ticks(numberOfTicks))).map(function(tickValue) {
-
-	        var tick = $('<div>', {
-	          'class': tickValue === 0 ? 'tick origin' : 'tick',
-	          text: socrata.utils.formatNumber(tickValue)
-	        });
-
-	        var tickTopOffset = innerHeight - verticalScale(tickValue);
-	        if (tickTopOffset <= tickHeight) {
-	          tick.addClass('below');
-	          tickTopOffset += tickHeight;
+	      // We need to ensure that there is always a '0' tick mark, so we concat
+	      // the calculated ticks with '0' and then take the unique values. This
+	      // could potentially give us 4 overall tick marks, since the way that d3
+	      // decides which ticks to draw is a little opaque.
+	      var uniqueTickMarks = _.uniq(
+	        [0].concat(verticalScale.ticks(numberOfTicks))
+	      ).sort(
+	        function(a, b) {
+	          return a >= b;
 	        }
+	      );
 
-	        tick.attr('style', 'top: {0}px'.format(tickTopOffset));
+	      var tickMarks = uniqueTickMarks.map(
+	        function(tickValue, index) {
 
-	        return tick;
-	      });
+	          var tick = $('<div>', {
+	            'class': tickValue === 0 ? 'tick origin' : 'tick',
+	            text: socrata.utils.formatNumber(tickValue)
+	          });
+	          var tickTopOffset = innerHeight - verticalScale(tickValue);
 
+	          // If this is the 'top' tick (which will be the last one since they
+	          // are sorted ascendingly, then we want to draw the label beneath the
+	          // tick instead of above it. This is mainly to match the behavior of
+	          // the timeline chart, which is a little less flexible in how it
+	          // chooses and renders y-scale ticks.
+	          if (index === uniqueTickMarks.length - 1) {
+	            tickTopOffset += tickHeight;
+	            tick.addClass('below');
+	          }
+
+	          tick.attr('style', 'top: {0}px'.format(tickTopOffset));
+
+	          return tick;
+	        }
+	      );
 	      var ticksStyle = 'top: {0}px; width: {1}px; height: {2}px;'.format(
 	        chartScrollTop + topMargin,
 	        chartWidth,

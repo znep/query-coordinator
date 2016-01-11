@@ -5870,30 +5870,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 
 	    var _renderTicks = function() {
-
 	      // The `+ 3` term accounts for the border-width.
 	      var tickHeight = parseInt(element.css('font-size'), 10) + 3;
-
 	      var numberOfTicks = 3;
-
-	      var tickMarks = _.uniq([0].concat(verticalScale.ticks(numberOfTicks))).map(function(tickValue) {
-
-	        var tick = $('<div>', {
-	          'class': tickValue === 0 ? 'tick origin' : 'tick',
-	          text: socrata.utils.formatNumber(tickValue)
-	        });
-
-	        var tickTopOffset = innerHeight - verticalScale(tickValue);
-	        if (tickTopOffset <= tickHeight) {
-	          tick.addClass('below');
-	          tickTopOffset += tickHeight;
+	      // We need to ensure that there is always a '0' tick mark, so we concat
+	      // the calculated ticks with '0' and then take the unique values. This
+	      // could potentially give us 4 overall tick marks, since the way that d3
+	      // decides which ticks to draw is a little opaque.
+	      var uniqueTickMarks = _.uniq(
+	        [0].concat(verticalScale.ticks(numberOfTicks))
+	      ).sort(
+	        function(a, b) {
+	          return a >= b;
 	        }
+	      );
 
-	        tick.attr('style', 'top: {0}px'.format(tickTopOffset));
+	      var tickMarks = uniqueTickMarks.map(
+	        function(tickValue, index) {
 
-	        return tick;
-	      });
+	          var tick = $('<div>', {
+	            'class': tickValue === 0 ? 'tick origin' : 'tick',
+	            text: socrata.utils.formatNumber(tickValue)
+	          });
+	          var tickTopOffset = innerHeight - verticalScale(tickValue);
 
+	          // If this is the 'top' tick (which will be the last one since they
+	          // are sorted ascendingly, then we want to draw the label beneath the
+	          // tick instead of above it. This is mainly to match the behavior of
+	          // the timeline chart, which is a little less flexible in how it
+	          // chooses and renders y-scale ticks.
+	          if (index === uniqueTickMarks.length - 1) {
+	            tickTopOffset += tickHeight;
+	            tick.addClass('below');
+	          }
+
+	          tick.attr('style', 'top: {0}px'.format(tickTopOffset));
+
+	          return tick;
+	        }
+	      );
 	      var ticksStyle = 'top: {0}px; width: {1}px; height: {2}px;'.format(
 	        chartScrollTop + topMargin,
 	        chartWidth,
@@ -7719,11 +7734,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        text(window.socrata.utils.formatNumber(labels[index]));
 
 	      if (labels[index] === 0) {
-	        tickElement.addClass('zero');
+	        tickElement.addClass('origin');
 	      }
 
 	      if (index === ticks.length - 1) {
-	        tickElement.addClass('top');
+	        tickElement.addClass('below');
 	      }
 
 	      jqueryAxisContainer.append(tickElement);
@@ -8147,7 +8162,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        css({
 	          left: labelLeftOffset,
 	          width: labelWidth,
-	          height: Constants.TIMELINE_CHART_MARGIN.BOTTOM,
+	          // The '- 1' term accounts for the 1 pixel y-axis.
+	          height: Constants.TIMELINE_CHART_MARGIN.BOTTOM - 1,
 	          textAlign: labelTextAlign,
 	          top: cachedChartDimensions.height -
 	            Constants.TIMELINE_CHART_MARGIN.TOP -
@@ -8533,7 +8549,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var width = highlightData.width + (targetMargin * 2);
 	    var leftPos = highlightData.left - targetMargin;
 	    width = Math.min(width, cardWidth + gutter - leftPos);
-	    leftPos = Math.max(leftPos, -gutter);
+	    // Previously, the line below read:
+	    //
+	    // leftPos = Math.max(leftPos, -gutter);
+	    //
+	    // Presumably this was to allow selection of the timeline chart to occur
+	    // outside the rendered chart in Data Lens: the cards have extra margins
+	    // around the periphery and it made sense to enable people to start the
+	    // selection to the left of the left edge of the visualization, or to the
+	    // right of the right edge (if selecting from right to left).
+	    //
+	    // Unfortunately, this breaks the visualization in other contexts (it leaks
+	    // out of its container, potentially covering other elements in the DOM
+	    // where it clearly should not) so we will need to figure out a better
+	    // solution for that. In the meantime, selection behavior may be impaired.
+	    leftPos = Math.max(0, Math.min(leftPos, cardWidth - width));
 
 	    $highlightTargetElement.css({
 	      left: leftPos,
@@ -9029,6 +9059,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function mouseHasLeftChart() {
+	    hideDatumLabel();
 	    hideFlyout();
 	    clearChartHighlight();
 	  }

@@ -8,7 +8,7 @@ configure :development do
    activate :livereload
 end
 
-sprockets.append_path '/src/js'
+sprockets.append_path '../src'
 set :source, 'docs'
 
 set :css_dir, 'stylesheets'

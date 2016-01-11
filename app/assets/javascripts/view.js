@@ -8,4 +8,5 @@
 // about supported directives.
 //
 
+//= require vifUtils
 //= require_tree ./view

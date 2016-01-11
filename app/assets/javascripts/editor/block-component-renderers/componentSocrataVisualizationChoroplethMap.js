@@ -13,9 +13,10 @@
 
     $element.
       addClass(utils.typeToClassNameForComponentType(componentData.type)).
-      // Pass on the destroy event to SocrataTimelineChart plugin.
+      // Pass on the destroy event to SocrataColumnChart plugin.
       on('destroy', function() { $componentContent.triggerHandler('destroy'); }).
-      on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', function(event) {
+      on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', function(event) {
+      //on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', function(event) {
         var payload = event.originalEvent.detail;
 
         if (payload !== null) {
@@ -24,7 +25,6 @@
           storyteller.flyoutRenderer.clear();
         }
       });
-
 
     $element.append($componentContent);
   }
@@ -55,17 +55,17 @@
 
       // Use triggerHandler since we don't want this to bubble
       $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-      $componentContent.socrataTimelineChart(vif);
+      $componentContent.socrataChoroplethMap(vif);
     }
   }
 
-  function componentSocrataVisualizationTimelineChart(componentData, theme, options) {
+  function componentSocrataVisualizationChoroplethMap(componentData, theme, options) {
     var $this = $(this);
 
     utils.assertHasProperty(componentData, 'type');
     utils.assert(
-      componentData.type === 'socrata.visualization.timelineChart',
-      'componentSocrataVisualizationTimelineChart: Tried to render type: {0}'.format(componentData.type)
+      componentData.type === 'socrata.visualization.choroplethMap',
+      'componentSocrataVisualizationChoroplethMap: Tried to render type: {0}'.format(componentData.type)
     );
 
     if ($this.children().length === 0) {
@@ -86,5 +86,5 @@
     return $this;
   }
 
-  $.fn.componentSocrataVisualizationTimelineChart = componentSocrataVisualizationTimelineChart;
+  $.fn.componentSocrataVisualizationChoroplethMap = componentSocrataVisualizationChoroplethMap;
 })(window, jQuery);

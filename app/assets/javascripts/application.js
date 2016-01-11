@@ -30,10 +30,11 @@
 //= require editor/componentBase
 //= require editor/withLayoutHeightFromComponentData
 //= require editor/storytellerJQueryUtils
+//= require editor/block-component-renderers/componentSocrataVisualizationClassic
+//= require editor/block-component-renderers/componentSocrataVisualizationChoroplethMap
 //= require editor/block-component-renderers/componentSocrataVisualizationColumnChart
 //= require editor/block-component-renderers/componentSocrataVisualizationTimelineChart
 //= require editor/block-component-renderers/componentSocrataVisualizationFeatureMap
-//= require editor/block-component-renderers/componentSocrataVisualizationClassic
 
 // Store setup
 //= require editor/SimpleEventEmitter.js

@@ -97,19 +97,31 @@
     end
   -%>
 
+  <!-- Mobile filter section -->
+  <div class="browse2-mobile-filter">
+    <div class="browse2-mobile-filter-header">
+      <div class="browse2-mobile-filter-result-count">
+        <%= pluralize(opts[:view_count], t('controls.browse.browse2.facets.header.result')) %>
+        <span class="browse2-mobile-filter-result-subtitle">
+          <%= opts[:facets].any? { |facet| opts[:user_params][facet[:param]].present? } ?
+            t('controls.browse.browse2.facets.header.filtered_by') + '...' : '' -%>
+        </span>
+      </div>
+      <div class="browse2-mobile-filter-link">
+        <%= t('controls.browse.browse2.facets.header.filter') %>
+        <span class="browse2-mobile-filter-icon icon-arrow-right"></span>
+      </div>
+    </div>
+
+    <div class="browse2-mobile-filter-content">
+    </div>
+  </div>
+
   <hr class="browse2-section-separator" />
 
   <div class="browse2-content">
 
     <div class="browse2-facet-and-results-header">
-
-      <!-- Facets Header -->
-
-      <div class="browse2-facets-header">
-        <%- if opts[:facets].length > 0 -%>
-          <h3 class="browse2-facets-hint"><%= t('controls.browse.browse2.facets.hint') %></h3>
-        <%- end-%>
-      </div>
 
       <!-- Results Header -->
 
@@ -164,9 +176,6 @@
               :locals => {
                 :opts => opts,
                 :title_full_width => !opts[:show_catalog_sort_dropdown] || using_cetera?,
-                :results_title =>  opts[:user_params][:q].present? ?
-                  t('controls.browse.browse2.results.summary', :query => opts[:user_params][:q]) :
-                  '',
                 :clear_facet_options => clear_facet_options
               }
             )
@@ -406,6 +415,8 @@
             render(
               :partial => 'datasets/browse2_result',
               :locals => {
+                :base_url => opts[:base_url],
+                :user_params => opts[:user_params].dup,
                 :result_id => result.id,
                 :result_name => result.name,
                 :result_classes => result_classes,
@@ -418,7 +429,7 @@
                 :result_categories => result_categories,
                 :result_last_updated => result_last_updated,
                 :result_view_count => result_view_count,
-                :result_topics => join_and_truncate_array(result_topics),
+                :result_topics => result_topics,
                  # Pending a way to determine the result's data types, they will be set to nil and ignored
                 :result_data_types => nil,
                 :result_is_federated => result.federated?,

@@ -1,22 +1,72 @@
 <div class="browse2-facets-pane <%= facets_pane_classes %>">
   <%= raw opts[:sidebar_config].header if opts[:sidebar_config] && opts[:sidebar_config].header %>
 
-  <div class="browse2-facets">
+  <div class="browse2-facets-pane-mobile-header">
+    <div class="browse2-facets-pane-mobile-back-button">
+      <span class="browse2-mobile-filter-icon icon-arrow-left"></span>
+      <%= t('controls.browse.browse2.facets.mobile.back') %>
+    </div>
+  </div>
 
+  <div class="browse2-facets-pane-mobile-body">
+    <div class="browse2-facets-pane-mobile-clear-all-div">
+      <div class="browse2-facets-pane-mobile-clear-all-button">
+        <%= t('controls.browse.browse2.facets.mobile.clear_all') %>
+      </div>
+    </div>
+
+    <div class="browse2-facets-mobile-active-filters">
+      <%-
+      facets = opts[:facets].
+        reject { |facet| facet[:options].blank? && facet[:custom_content].blank? }
+
+      facets.each do |facet|
+        active_option = opts[facet[:param]]
+        active_filter = active_facet_option(active_option, facet)
+
+        if active_filter.present? -%>
+          <%= render(
+            :partial => 'datasets/browse2_mobile_facet_active_filters',
+            :locals => {
+              :title => facet[:title],
+              :facet_param => facet[:param],
+              :facet_option => active_filter
+            }
+          ) %>
     <%-
-      opts[:facets].
-        reject { |facet| (facet[:options].nil? || facet[:options].length < 1) && facet[:custom_content].nil? }.
-        each do |facet|
-    -%>
-      <%=
-        render(
-          :partial => 'datasets/browse2_facet_section',
-          :locals => {
-            :opts => opts,
-            :facet => facet
-          }
-        )
-      %>
-    <%- end -%>
+        end
+      end
+      -%>
+    </div>
+
+    <div class="browse2-facets">
+      <div class="browse2-mobile-facets-header">
+        <%= t('controls.browse.browse2.facets.mobile.all_filters') %>
+      </div>
+      <%-
+      facets.each do |facet| -%>
+        <%=
+          render(
+            :partial => 'datasets/browse2_facet_section',
+            :locals => {
+              :opts => opts,
+              :facet => facet
+            }
+          )
+        %>
+      <%- end -%>
+    </div>
+
+    <div class="browse2-mobile-facets-filter-button-spacing"></div>
+
+    <div class="browse2-mobile-facets-filter-button-container">
+      <div class="browse2-mobile-facets-filter-button">
+        <%= t('controls.browse.browse2.facets.mobile.filter') %>
+      </div>
+    </div>
+  </div>
+
+  <div class="browse2-loading-spinner-container">
+    <span class="browse2-loading-spinner"></span>
   </div>
 </div>

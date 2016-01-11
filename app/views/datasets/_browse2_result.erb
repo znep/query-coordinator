@@ -4,8 +4,15 @@
 
     <div class="browse2-result-header clearfix">
       <div class="browse2-result-header-content">
-        <div class="browse2-result-title">
 
+        <%- if result_display_title.present? -%>
+          <div class="browse2-result-type">
+            <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
+            <span class="browse2-result-type-name"><%= result_display_title %></span>
+          </div>
+        <%- end -%>
+
+        <div class="browse2-result-title">
           <h2 class="browse2-result-name">
             <a class="browse2-result-name-link" href="<%= result_link %>" rel="<%= result_link_rel_type %>" itemprop="url" data-search="highlight"><%= result_name %></a>
           </h2>
@@ -17,7 +24,19 @@
             </div>
           <%- end -%>
 
+          <%-
+          result_categories.each do |category|
+            params_for_url = user_params.merge(category: category)
+            category_url = "#{base_url}?#{params_for_url.to_param}"
+          -%>
+            <a class="browse2-result-category browse2-result-header-section"
+              href="<%= category_url %>"
+              itemprop="keywords"
+              data-search="highlight"><%= category %></a>
+          <%- end -%>
+
           <%- if result_is_federated -%>
+            <br>
             <a class="browse2-result-federated-link browse2-result-header-section"
               href="<%= result_federated_origin_url %>"
               rel="<%= result_link_rel_type %>"
@@ -30,19 +49,7 @@
               <span class="browse2-result-federated-source"><%= result_federated_origin %></span>
             </a>
           <%- end -%>
-
-          <%- result_categories.each do |category| -%>
-            <span class="browse2-result-category browse2-result-header-section" itemprop="keywords" data-search="highlight"><%= category %></span>
-          <%- end -%>
-
         </div>
-
-        <%- if result_display_title.present? -%>
-          <div class="browse2-result-type">
-            <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
-            <span class="browse2-result-type-name"><%= result_display_title %></span>
-          </div>
-        <%- end -%>
       </div>
     </div>
 
@@ -53,13 +60,10 @@
             <div data-search="highlight"><%= result_description %></div>
           </div>
           <div class="browse2-result-description-truncation-toggle-control">
-            <div class="browse2-result-description-truncation-hint"></div>
             <span class="browse2-result-description-show-more-label">
-              <span class="browse2-result-description-show-more-icon icon-arrow-down"></span>
               <%= t('controls.browse.browse2.description.show_more_label') %>
             </span>
             <span class="browse2-result-description-show-less-label">
-              <span class="browse2-result-description-show-more-icon icon-arrow-up"></span>
               <%= t('controls.browse.browse2.description.show_less_label') %>
             </span>
           </div>
@@ -68,20 +72,24 @@
 
       <div class="browse2-result-topics-and-data-types clearfix">
         <div class="browse2-result-topics" data-search="highlight">
-          <span class="browse2-result-topics-icon icon-tag" data-display-type="<%= result_display_type %>"></span>
-          <span class="browse2-result-topics-label">
+          <span class="browse2-result-topic-label">
             <%= t('controls.browse.browse2.topics.label') %>
           </span>
 
-          <%- if result_topics.present? -%>
+          <%-
+          if result_topics.present?
+            result_topics.each do |result_topic|
+              params_for_url = user_params.merge(tags: result_topic)
+              result_topic_url = "#{base_url}?#{params_for_url.to_param}"
+          -%>
 
-            <span class="browse2-result-topics-content">
-              <%= result_topics %>
-            </span>
+              <a class="browse2-result-topic" href="<%= result_topic_url %>"><%= result_topic %></a>
+
+            <%- end -%>
 
           <%- else -%>
 
-            <span class="browse2-result-no-topics-content">
+            <span class="browse2-result-no-topic-content">
               <%= t('controls.browse.browse2.topics.empty') %>
             </span>
 
@@ -111,6 +119,8 @@
       </div>
 
     </div>
+
+    <div class="browse2-result-divider"></div>
 
     <div class="browse2-result-metrics">
 

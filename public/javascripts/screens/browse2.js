@@ -1,6 +1,10 @@
 $(function() {
   'use strict';
 
+  var MIN_DESKTOP_WIDTH = 885;
+  // 2x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
+  var DESCRIPTION_TRUNCATION_THRESHOLD = 58;
+
   function doBrowse(newOpts) {
     // Reset page
     delete newOpts.page;
@@ -69,7 +73,7 @@ $(function() {
       } else {
         $.mixpanelMeta();
         mixpanel.track(
-          "Used Search Field",
+          'Used Search Field',
           {},
           function() {
             doBrowse(newOpts);
@@ -95,11 +99,11 @@ $(function() {
 
     //URLs starting with http://, https://, or ftp://
     replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
-    replacedText = this.replace(replacePattern1, '<a href="$1" '+extra+'>$1</a>');
+    replacedText = this.replace(replacePattern1, '<a href="$1" ' + extra + '>$1</a>');
 
     //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
     replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
-    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" '+extra+'>$2</a>');
+    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" ' + extra + '>$2</a>');
 
     //Change email addresses to mailto:: links.
     replacePattern3 = /(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
@@ -112,7 +116,7 @@ $(function() {
 
     var $button = $(this);
 
-    function onError(xhr, textStatus, error) {
+    function onError() {
 
       $button.attr('data-status', 'ready');
 
@@ -132,9 +136,9 @@ $(function() {
         return valid;
       }
 
-      function onPublishSuccess(data, textStatus, xhr) {
+      function onPublishSuccess(publishData) {
 
-        if (data.hasOwnProperty('id') && validate4x4(data.id)) {
+        if (publishData.hasOwnProperty('id') && validate4x4(publishData.id)) {
 
           // This is the second phase of the creation action,
           // and this endpoint is responsible for removing the
@@ -145,7 +149,7 @@ $(function() {
           // This isn't perfect but it should (hopefully) be
           // reliable enough that users will not totally fail to
           // create stories when they intend to do so.
-          window.location.href = '/stories/s/{0}/create'.format(data.id);
+          window.location.href = '/stories/s/{0}/create'.format(publishData.id);
 
         } else {
           onError();
@@ -228,41 +232,141 @@ $(function() {
     }
   }
 
-  function toggleBrowse2CreateAssetDisplay(event) {
-    var sectionContainer = $(this).parent('.browse2-create-asset');
-    var currentDisplay = sectionContainer.attr('data-panel-display');
+  function toggleBrowse2CreateAssetDisplay() {
+    var $sectionContainer = $(this).parent('.browse2-create-asset');
+    var currentDisplay = $sectionContainer.attr('data-panel-display');
 
     if (currentDisplay === 'show') {
-      sectionContainer.attr('data-panel-display', 'hide');
+      $sectionContainer.attr('data-panel-display', 'hide');
       $(this).blur();
     } else {
-      sectionContainer.attr('data-panel-display', 'show');
+      $sectionContainer.attr('data-panel-display', 'show');
     }
   }
 
-  function toggleBrowse2FacetDisplay(event) {
-    var sectionContainer = $(this).parent('.browse2-facet-section');
-    var currentDisplay = sectionContainer.attr('data-facet-display');
+  function toggleBrowse2FacetDisplay(event, element) {
+    element = element || this;
+    var $sectionContainer = $(element).parent('.browse2-facet-section');
+    var currentDisplay = $sectionContainer.attr('data-facet-display');
 
     if (currentDisplay === 'show') {
-      sectionContainer.attr('data-facet-display', 'hide');
+      $sectionContainer.attr('data-facet-display', 'hide');
     } else {
-      sectionContainer.attr('data-facet-display', 'show');
+      $sectionContainer.attr('data-facet-display', 'show');
+    }
+
+    $sectionContainer.children('ul.browse2-facet-section-options').slideToggle('fast');
+  }
+
+  function toggleBrowse2FacetChildOptionDropdown(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    $(this).closest('li').find('.browse2-facet-section-child-options').slideToggle('fast');
+  }
+
+  function toggleBrowse2MobileFacetsSlideout() {
+    var $facetPaneSection = $('.browse2-facets-pane, .browse2-mobile-facets-filter-button');
+    // Hide other containing elements on page when mobile facet section is shown
+    var $otherContainers = $('.browse2-search, .browse2-mobile-filter, .browse2-results-pane');
+
+    var action = 'slide';
+    var time = 200;
+    if ($facetPaneSection.is(':visible')) {
+      $otherContainers.show(action, { direction: 'right' }, time);
+      $facetPaneSection.hide(action, { direction: 'left' }, time);
+    } else {
+      $facetPaneSection.show(action, { direction: 'left' }, time);
+      $otherContainers.hide(action, { direction: 'right' }, time);
     }
   }
 
-  function toggleBrowse2FacetDisplay(event) {
-    var sectionContainer = $(this).parent('.browse2-facet-section');
-    var currentDisplay = sectionContainer.attr('data-facet-display');
+  // When the user clicks a filter option in the active filter section, it means they are
+  // clearing the filter. This finds the clicked option in the facet dropdown section below
+  // and removes the "active" class, then removes the option from the active filter section.
+  function browse2MobileActiveFilterClick() {
+    var $facetOption = $('.browse2-facet-section[{0}="{1}"]'.
+      format('data-facet-option-type', $(this).data('facetOptionType'))).
+      find('.browse2-facet-section-option[{0}="{1}"], .browse2-facet-section-child-option[{0}="{1}"]'.
+        format('data-facet-option-value', $(this).data('facetOptionValue')));
+    $facetOption.removeClass('active');
+    // Remove option from active filter section
+    $(this).fadeOut('fast');
+  }
 
-    if (currentDisplay === 'show') {
-      sectionContainer.attr('data-facet-display', 'hide');
-    } else {
-      sectionContainer.attr('data-facet-display', 'show');
+  function browse2MobileFacetClick(event) {
+    // Non-mobile: return and let the facet follow its href.
+    if (!mobileScreenWidth()) {
+      return;
+    }
+
+    // In mobile mode: prevent the link href and toggle the 'active' class
+    event.preventDefault();
+    var facetOptionIsCurrentlyActive = $(this).hasClass('active');
+
+    // There can only be one active facet per section. Remove other active facet if any.
+    $(this).closest('.browse2-facet-section').
+      find('.active').
+      removeClass('active');
+
+    if (!facetOptionIsCurrentlyActive) {
+      $(this).addClass('active');
     }
   }
 
-  function toggleBrowse2FacetTruncation(event) {
+  function browse2MobileFacetClearAll() {
+    $('.browse2-facet-section-option.active, .browse2-facet-section-child-option.active').
+      removeClass('active');
+    filterBrowse2MobileFacets();
+  }
+
+  function filterBrowse2MobileFacets() {
+    var facetFilters = {};
+    var urlParams = {};
+
+    // Get all filter facet options that are currently active and store them in facetFilters
+    $('.browse2-facet-section-option.active, .browse2-facet-section-child-option.active').each(function() {
+      var paramKey = $(this).closest('.browse2-facet-section').data('facetOptionType');
+      var paramValue = $(this).data('facetOptionValue');
+      facetFilters[paramKey] = paramValue;
+    });
+
+    // Get all params present in the url currently
+    var oldUrlParamString = location.search.substring(1);
+    if (oldUrlParamString) {
+      urlParams = JSON.parse('{"{0}"}'.format(
+        decodeURI(oldUrlParamString).
+          replace(/"/g, '\\"').
+          replace(/&/g, '","').
+          replace(/=/g,'":"')
+      ));
+    }
+
+    // Remove all existing filter facets from url params
+    $('.browse2-facet-section').each(function() {
+      var facetType = $(this).data('facetOptionType');
+      delete urlParams[facetType];
+    });
+
+    // Also delete the "page" offset parameter if it is present
+    delete urlParams.page;
+
+    // Add the current active facetFilters into the urlParams
+    urlParams = $.param(_.merge(urlParams, facetFilters));
+
+    // Render a loading spinner and open the new url.
+    showBrowse2MobileLoadingSpinner();
+
+    window.addEventListener('pagehide', function() {
+      hideBrowse2MobileLoadingSpinner();
+    });
+
+    // Safari needs an extra frame before loading the new page to render the loading spinner
+    window.setTimeout(function() {
+      location.href = '/browse?{0}'.format(urlParams);
+    }, 0);
+  }
+
+  function toggleBrowse2FacetTruncation() {
     var sectionContainer = $(this).parent('.browse2-facet-section');
     var currentDisplay = sectionContainer.attr('data-facet-truncation');
 
@@ -273,13 +377,24 @@ $(function() {
     }
   }
 
-  function toggleBrowse2DescriptionTruncation(event) {
+  function truncateDescription(element) {
+    $(element).dotdotdot({
+      height: DESCRIPTION_TRUNCATION_THRESHOLD,
+      callback: function(isTruncated) {
+        if (isTruncated) {
+          $(this).parent('.browse2-result-description-container').
+            attr('data-description-display', 'truncate');
+        }
+      }
+    });
+  }
+
+  function toggleBrowse2DescriptionTruncation() {
     var sectionContainer = $(this).parent('.browse2-result-description-container');
     var currentDisplay = sectionContainer.attr('data-description-display');
 
     if (currentDisplay === 'show') {
-      sectionContainer.attr('data-description-display', 'truncate');
-      sectionContainer.children('.browse2-result-description').dotdotdot();
+      truncateDescription(sectionContainer.children('.browse2-result-description'));
     } else {
       sectionContainer.attr('data-description-display', 'show');
       sectionContainer.children('.browse2-result-description').trigger('destroy');
@@ -401,9 +516,21 @@ $(function() {
     }
   }
 
+  function showBrowse2MobileLoadingSpinner() {
+    $('.browse2-loading-spinner-container').show();
+  }
+
+  function hideBrowse2MobileLoadingSpinner() {
+    $('.browse2-loading-spinner-container').hide();
+  }
+
+  function mobileScreenWidth() {
+    return ($(window).width() < MIN_DESKTOP_WIDTH);
+  }
+
   var $browse = $('.browse2');
   // alias this method so external scripts can get at it
-  var getDS = blist.browse.getDS = function($item, browseType) {
+  var getDS = blist.browse.getDS = function($item) {
     var id = $item.closest('.browse2-result').attr('data-view-id');
 
     if (!(blist.browse.datasets[id] instanceof Dataset)) {
@@ -431,7 +558,7 @@ $(function() {
             opts[s[0]] = [];
           }
 
-          opts[s[0]].push(s[1])
+          opts[s[0]].push(s[1]);
         } else {
           opts[s[0]] = s[1];
         }
@@ -457,31 +584,31 @@ $(function() {
   if (!$.isBlank(searchRegex)) {
     // Assuming that dataset names do not have any html inside them.
     // Assuming that dataset descriptions only have A tags inside them.
-    $("table tbody tr").
-      find("a.name, span.name, div.description, span.category, span.tags").
+    $('table tbody tr').
+      find('a.name, span.name, div.description, span.category, span.tags').
       each(function() {
         var $this = $(this);
-        var a_links = $this.
+        var aLinks = $this.
           children().
           map(function() {
             var $child = $(this);
 
             $child.html(
               $child.
-                html()
-                .replace(searchRegex, '<span class="highlight">$&</span>')
+                html().
+                replace(searchRegex, '<span class="highlight">$&</span>')
             );
 
             return $child[0].outerHTML;
           });
-        var text_bits = _.map(
+        var textBits = _.map(
           $this.html().split(/<a.*\/a>/),
           function(text) {
             return text.replace(searchRegex, '<span class="highlight">$&</span>');
           }
         );
 
-        $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
+        $this.html(_.flatten(_.zip(textBits, aLinks)).join(''));
       });
 
     $('.browse-list-item').
@@ -500,7 +627,8 @@ $(function() {
   }
 
   if ($searchSection.length > 0) {
-    $searchSection.submit(hookSearch).children('.icon').click(hookSearch);
+    $searchSection.submit(hookSearch);
+    $searchSection.children('.browse2-search-mobile-search-button').click(hookSearch);
   }
 
   $sortType.on('change', doSort);
@@ -579,28 +707,39 @@ $(function() {
     createNewStory
   );
 
-  $('.browse2-create-asset-button').on('click', toggleBrowse2CreateAssetDisplay);
-  $('.browse2-facet-section-title').on('click', toggleBrowse2FacetDisplay);
-  $('.browse2-facet-section-expand-button, .browse2-facet-section-contract-button').on('click', toggleBrowse2FacetTruncation);
-  $('.browse2-result-description-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
-  $('.browse2-result-description').each(function(index, element) {
-    // 2x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
-    var truncationThreshold = 58;
-    var descriptionHeight = 0;
+  // Expand facet child options list by default if it contains an "active" option
+  $('.browse2-facet-section-child-option.active').closest('.browse2-facet-section-child-options').show();
 
-    $(element).
-      children().
-      each(function(index, childElement) {
+  // Collapse facet options by default on mobile
+  if (mobileScreenWidth()) {
+    toggleBrowse2FacetDisplay(null, $('.browse2-facet-section-title'));
+    $('ul.browse2-facet-section-options').hide();
+  }
+
+  // Result description truncation
+  $('.browse2-result-description').each(function(index, element) {
+    var descriptionHeight = 0;
+    $(element).children().
+      each(function(i, childElement) {
         descriptionHeight += $(childElement).outerHeight(true);
       });
 
-    if (descriptionHeight >= truncationThreshold) {
-      $(element).
-        parent('.browse2-result-description-container').
-        attr('data-description-display', 'truncate');
-      $(element).dotdotdot();
+    if (descriptionHeight >= DESCRIPTION_TRUNCATION_THRESHOLD) {
+      truncateDescription(element);
     }
   });
+
+  // Click listeners
+  $('.browse2-create-asset-button').on('click', toggleBrowse2CreateAssetDisplay);
+  $('.browse2-facet-section-title').on('click', toggleBrowse2FacetDisplay);
+  $('.browse2-mobile-filter, .browse2-facets-pane-mobile-header').on('click', toggleBrowse2MobileFacetsSlideout);
+  $('.browse2-facets-mobile-active-filter').on('click', browse2MobileActiveFilterClick);
+  $('.browse2-facet-section-option .browse2-facet-section-expand-contract-icon').on('click', toggleBrowse2FacetChildOptionDropdown);
+  $('.browse2-facet-section-option, .browse2-facet-section-child-option').on('click', browse2MobileFacetClick);
+  $('.browse2-mobile-facets-filter-button').on('click', filterBrowse2MobileFacets);
+  $('.browse2-facets-pane-mobile-clear-all-button').on('click', browse2MobileFacetClearAll);
+  $('.browse2-facet-section-expand-button, .browse2-facet-section-contract-button').on('click', toggleBrowse2FacetTruncation);
+  $('.browse2-result-description-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
   $('.browse2-result-make-public-button').on('click', makeResultPublic);
   $('.browse2-result-make-private-button').on('click', makeResultPrivate);
   $('.browse2-result-delete-button').on('click', deleteResult);

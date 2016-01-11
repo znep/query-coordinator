@@ -21,7 +21,17 @@ table {
     border: 1px solid $grey;
     padding: 1.5rem;
   }
+
+  //Condensed Table
+  &.table-condensed {
+      th, td {
+        padding: ms(-3);
+    }
+  }
+
 }
+
+
 
 //Borderless Table
 .table-borderless {

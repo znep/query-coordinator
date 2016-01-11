@@ -109,7 +109,7 @@ describe('tableCard', function() {
   var testJson = 'karma/dataCards/test-data/tableTest/test-rows.json';
   var testNullJson = 'karma/dataCards/test-data/tableTest/test-null-rows.json';
   var testMetaJson = 'karma/dataCards/test-data/tableTest/test-meta.json';
-  var blockSize = 50; // The table loads chunks of this size. The tests shouldn't really know, but they do for now.
+  var blockSize = 150; // The table loads chunks of this size. The tests shouldn't really know, but they do for now.
   var columnCount;
   var rowCount = 5;
   var lastSort = null;

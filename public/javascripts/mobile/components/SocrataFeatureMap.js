@@ -415,7 +415,7 @@
       visualization.renderError();
     }
 
-    function formatRowInspectorData(datasetMetadata, data) {
+    function formatRowInspectorData(dsMetadata, data) {
 
       // Each of our rows will be mapped to 'formattedRowData', an array of
       // objects.  Each row corresponds to a single page in the flannel.
@@ -426,10 +426,10 @@
           // be undefined. In this case, we should fall back to sorting
           // alphabetically instead of sorting by the order in which the
           // columns have been arranged in the dataset view.
-          if (datasetMetadata) {
+          if (dsMetadata) {
 
             return orderRowDataByColumnIndex(
-              datasetMetadata.columns,
+              dsMetadata.columns,
               data.columns,
               row
             );

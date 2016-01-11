@@ -1,3 +1,4 @@
+/*global socrataConfig */
 (function($, root) {
 
   'use strict';
@@ -6,12 +7,13 @@
   var utils = socrata.utils;
   var visualizations = socrata.visualizations;
 
-  var DEFAULT_TILESERVER_HOSTS = [
-    'https://tileserver1.api.us.socrata.com',
-    'https://tileserver2.api.us.socrata.com',
-    'https://tileserver3.api.us.socrata.com',
-    'https://tileserver4.api.us.socrata.com'
-  ];
+  var DEFAULT_TILESERVER_HOSTS = socrataConfig.tileserverHosts.length > 0 ?
+    socrataConfig.tileserverHosts : [
+      'https://tileserver1.api.us.socrata.com',
+      'https://tileserver2.api.us.socrata.com',
+      'https://tileserver3.api.us.socrata.com',
+      'https://tileserver4.api.us.socrata.com'
+    ];
   var DEFAULT_FEATURES_PER_TILE = 256 * 256;
   // known in data lens as "simple blue"
   var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
@@ -413,7 +415,7 @@
       visualization.renderError();
     }
 
-    function formatRowInspectorData(datasetMetadata, data) {
+    function formatRowInspectorData(dsMetadata, data) {
 
       // Each of our rows will be mapped to 'formattedRowData', an array of
       // objects.  Each row corresponds to a single page in the flannel.
@@ -424,10 +426,10 @@
           // be undefined. In this case, we should fall back to sorting
           // alphabetically instead of sorting by the order in which the
           // columns have been arranged in the dataset view.
-          if (datasetMetadata) {
+          if (dsMetadata) {
 
             return orderRowDataByColumnIndex(
-              datasetMetadata.columns,
+              dsMetadata.columns,
               data.columns,
               row
             );

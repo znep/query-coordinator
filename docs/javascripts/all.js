@@ -1,5 +1,11 @@
 //= require vendor/prism
-//= require_tree ../../src/js
+
+//= require js/dropdown
+//= require js/flannel
+//= require js/flyout
+//= require js/menu
+//= require js/modal
+//= require js/toggle
 
 document.addEventListener('DOMContentLoaded', function() {
   if (document.querySelector('#dd')) {

@@ -5,6 +5,7 @@
     <%= rendered_stylesheet_tag 'dataset-show' %>
     <%= rendered_stylesheet_tag 'dataset-bare' %> <!-- TODO make own package? -->
     <%= rendered_stylesheet_tag 'screen-classic-visualization' %>
+    <%= csrf_meta_tags %>
   </head>
   <body data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
     <div class="outerContainer">
@@ -29,6 +30,16 @@
       blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;
       blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
       blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
+      blist.configuration.appToken = 'U29jcmF0YS0td2VraWNrYXNz0';
+
+      var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+      $.ajaxSetup({
+        beforeSend: function(xhrObj) {
+          xhrObj.setRequestHeader('X-App-Token', blist.configuration.appToken);
+          xhrObj.setRequestHeader('X-CSRF-Token', csrfToken);
+        }
+      });
 
       <%= raw render_inline_setup_js('renderTypeContainer', self) %>
     </script>

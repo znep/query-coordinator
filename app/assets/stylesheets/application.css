@@ -11,12 +11,8 @@
  * file per style scope.
  *
  *= require lib/normalize
- *= require socrata-visualizations/socrata.visualizations.columnChart
- *= require socrata-visualizations/socrata.visualizations.timelineChart
- *= require socrata-visualizations/socrata.visualizations.featureMap
- *= require socrata-visualizations/socrata.visualizations.flyoutRenderer
- *= require socrata-visualizations/socrata.visualizations.rowInspector
  *= require leaflet/dist/leaflet
+ *= require socrata-visualizations/dist/socrata-visualizations
  *= require_tree ./lib
  *= require_tree ./edit
  *= require_tree ./modal

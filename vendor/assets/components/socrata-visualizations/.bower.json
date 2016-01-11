@@ -1,20 +1,7 @@
 {
   "name": "socrata-visualizations",
   "main": [
-    "components/SocrataFeatureMap.js",
-    "socrata.visualizations.DataProvider.js",
-    "socrata.visualizations.MetadataProvider.js",
-    "socrata.visualizations.SoqlDataProvider.js",
-    "socrata.visualizations.GeospaceDataProvider.js",
-    "socrata.visualizations.TileserverDataProvider.js",
-    "socrata.visualizations.pbf.js",
-    "socrata.visualizations.VectorTileManager.js",
-    "socrata.visualizations.Visualization.js",
-    "socrata.visualizations.ChoroplethMap.js",
-    "socrata.visualizations.ColumnChart.js",
-    "socrata.visualizations.columnChart.css",
-    "socrata.visualizations.FeatureMap.js",
-    "socrata.visualizations.featureMap.css"
+    "dist/socrata-visualizations.js"
   ],
   "ignore": [
     "bower_components/",
@@ -40,13 +27,14 @@
     "simple-statistics": "0.8.1"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
-  "_release": "1ebbf79a78",
+  "_release": "07d3905aaf",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "1ebbf79a78ab8bbdddb1bf3c3c5ac432bae9ca04"
+    "commit": "07d3905aafadb9636a493d796ba2727d3b458c59"
   },
   "_source": "git@github.com:socrata/frontend-visualizations.git",
   "_target": "master",
-  "_originalSource": "git@github.com:socrata/frontend-visualizations.git"
+  "_originalSource": "git@github.com:socrata/frontend-visualizations.git",
+  "_direct": true
 }

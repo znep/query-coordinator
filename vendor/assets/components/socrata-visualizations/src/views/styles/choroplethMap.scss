@@ -1,30 +1,10 @@
-.card {
-  position: relative;
-}
-
-.choropleth-container.card-size-1 .choropleth-legend.continuous {
-  max-height: 9rem;
-}
-
-.choropleth-container.card-size-2 .choropleth-legend.continuous {
-  max-height: 6rem;
-}
-
-.choropleth-container.card-size-3 .choropleth-legend.continuous {
-  max-height: 4rem;
-}
-
-.card.expanded .choropleth-container .choropleth-legend.continuous {
-  max-height: 15rem;
-}
-
-.state-view-card .choropleth-container .choropleth-legend.continuous {
-  max-height: 15rem;
-}
-
 .choropleth-container {
-  padding: 0;
+  position: relative;
+  width: 100%;
   height: 100%;
+  font-size: 14px;
+  background-color: #ccc;
+  box-sizing: border-box;
 }
 
 .choropleth-container.filterable .choropleth-map-container path.leaflet-clickable {
@@ -97,40 +77,6 @@
 
 .choropleth-container .choropleth-legend.continuous svg path.domain {
   display: none;
-}
-
-.choropleth-container .choropleth-selection-box {
-  border-radius: 3px;
-  bottom: 10px;
-  cursor: pointer;
-  display: none;
-  left: 10px;
-  opacity: 0.9;
-  padding: 10px;
-  position: absolute;
-  z-index: 100;
-  background: #fff;
-}
-
-.choropleth-container .choropleth-selection-box .icon-filter {
-  vertical-align: middle;
-}
-
-.choropleth-container .choropleth-selection-box .choropleth-selection-value {
-  display: inline-block;
-  font-weight: bold;
-  margin: 0 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: middle;
-}
-
-.choropleth-container .choropleth-selection-box .icon-close {
-  cursor: pointer;
-  font-size: 0.5rem;
-  padding: 5px;
-  vertical-align: middle;
 }
 
 .card.dragged .choropleth-container .choropleth-map-container path {

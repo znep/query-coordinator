@@ -324,27 +324,36 @@ $(function()
             replace(' ', '|'), 'gi');
     }
 
-    if (!$.isBlank(searchRegex))
-    {
-        // Assuming that dataset names do not have any html inside them.
-        // Assuming that dataset descriptions only have A tags inside them.
-        $("table tbody tr").find("a.name, span.name, div.description, span.category, span.tags").each(function() {
-            var $this = $(this),
-                a_links = $this.children().map(function() {
-                    var $child = $(this);
-                    $child.html($child.html()
-                        .replace(searchRegex, '<span class="highlight">$&</span>'));
-                    return $child[0].outerHTML;
-                }),
-                text_bits = _.map($this.html().split(/<a.*\/a>/), function(text)
-                    { return text.replace(searchRegex, '<span class="highlight">$&</span>'); });
-            $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
-        });
+    if (!$.isBlank(searchRegex)) {
+        $('table tbody tr').
+            find('a.name, span.name, div.description, span.category, span.tags').
+            each(function() {
+                var $this = $(this);
+                // For anchor tags, ensure we only modify the outerHTML.
+                var aLinks = $this.find('a').map(function() {
+                    var $aLink = $(this);
+                    $aLink.html(
+                        $aLink.html().
+                            replace(searchRegex, '<span class="highlight">$&</span>')
+                    );
+                    return $aLink[0].outerHTML;
+                });
+                // For non-anchor tags, do a general text replace
+                var textBits = _.map(
+                    $this.html().split(/<a.*\/a>/), function(text) {
+                        return text.replace(searchRegex, '<span class="highlight">$&</span>');
+                    }
+                );
+
+                $this.html(_.flatten(_.zip(textBits, aLinks)).join(''));
+            });
 
         $('.browse-list-item').
             find('[data-search="highlight"]').
-            find('*').addBack().
-            contents().filter(function() {
+            find('*').
+            addBack().
+            contents().
+            filter(function() {
                 return this.nodeType === 3;
             }).
             each(function() {

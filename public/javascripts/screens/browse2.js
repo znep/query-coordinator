@@ -570,40 +570,31 @@ $(function() {
   // Also remove special characters because they can break the regex.
   if ($.subKeyDefined(blist, 'browse.searchOptions.q')) {
     searchRegex = new RegExp(
-      blist.
-        browse.
-        searchOptions.
-        q.
-        trim().
+      blist.browse.searchOptions.q.trim().
         replace(/[^\w\s]/gi, '').
-        replace(' ', '|'),
-      'gi'
+        replace(' ', '|'), 'gi'
     );
   }
 
   if (!$.isBlank(searchRegex)) {
     // Assuming that dataset names do not have any html inside them.
     // Assuming that dataset descriptions only have A tags inside them.
-    $('table tbody tr').
-      find('a.name, span.name, div.description, span.category, span.tags').
+    $('.browse2-result').
+      find('.browse2-result-title, .browse2-result-description, .browse2-result-topics').
       each(function() {
         var $this = $(this);
-        var aLinks = $this.
-          children().
-          map(function() {
-            var $child = $(this);
-
-            $child.html(
-              $child.
-                html().
-                replace(searchRegex, '<span class="highlight">$&</span>')
-            );
-
-            return $child[0].outerHTML;
-          });
+        // For anchor tags, ensure we only modify the outerHTML.
+        var aLinks = $this.find('a').map(function() {
+          var $aLink = $(this);
+          $aLink.html(
+            $aLink.html().
+              replace(searchRegex, '<span class="highlight">$&</span>')
+          );
+          return $aLink[0].outerHTML;
+        });
+        // For non-anchor tags, do a general text replace
         var textBits = _.map(
-          $this.html().split(/<a.*\/a>/),
-          function(text) {
+          $this.html().split(/<a.*\/a>/), function(text) {
             return text.replace(searchRegex, '<span class="highlight">$&</span>');
           }
         );
@@ -621,7 +612,6 @@ $(function() {
       }).
       each(function() {
         var newContent = $(this).text().replace(searchRegex,'<span class="highlight">$&</span>');
-
         $(this).replaceWith(newContent);
       });
   }

@@ -16,7 +16,7 @@ module ThemesHelper
 
   # For inline styling of theme sample in the style panel
   # Ex: "color: #FF9933;"
-  def theme_variable(theme, property, var_name)
-    style = property + ": "  + theme['css_variables'][var_name] + ";"
+  def theme_style_property(theme, property, var_name)
+    "#{property}: #{theme['css_variables'][var_name]};"
   end
 end

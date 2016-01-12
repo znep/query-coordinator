@@ -115,9 +115,8 @@ class StoriesController < ApplicationController
       theme_list = ThemeList.new
       @standard_themes = theme_list.standard_theme_list.sort_by { |key| key["title"] }
       @custom_themes = theme_list.custom_theme_list.sort_by { |key| key["title"] }
-      @custom_theme_configs = theme_list.themes.
-        select { |theme| theme['id'].start_with?('custom-') }.
-        map { |theme| Theme.find(theme['id'].gsub('custom-', '')) }
+      @custom_theme_configs = theme_list.custom_theme_list.
+        map { |theme| Theme.find_by_class_name(theme['id']) }
       @published_story = PublishedStory.find_by_uid(params[:uid])
 
       respond_to do |format|

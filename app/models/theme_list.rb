@@ -11,10 +11,6 @@ class ThemeList
     parsed_json.to_json
   end
 
-  def themes
-    parsed_json['themes'] + custom_themes.map(&:for_theme_list_config)
-  end
-
   def standard_theme_list
     parsed_json['themes']
   end

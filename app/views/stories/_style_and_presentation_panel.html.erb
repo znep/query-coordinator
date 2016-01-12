@@ -11,8 +11,8 @@
         <%= render  partial: 'stories/partials/theme_list',
                     locals: {
                       class_name: 'custom-themes',
-                      title: 'style_and_presentation_panel.custom_themes_title',
-                      description: 'style_and_presentation_panel.custom_themes_description',
+                      title_key: 'style_and_presentation_panel.custom_themes_title',
+                      description_key: 'style_and_presentation_panel.custom_themes_description',
                       themes: @custom_themes
                     } -%>
       <% end -%>
@@ -20,8 +20,8 @@
       <%= render  partial: 'stories/partials/theme_list',
                   locals: {
                     class_name: 'standard-themes',
-                    title: 'style_and_presentation_panel.standard_themes_title',
-                    description: 'style_and_presentation_panel.standard_themes_description',
+                    title_key: 'style_and_presentation_panel.standard_themes_title',
+                    description_key: 'style_and_presentation_panel.standard_themes_description',
                     themes: @standard_themes
                   } -%>
     </div>

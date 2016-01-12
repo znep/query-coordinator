@@ -1,22 +1,22 @@
   <div class=<%= class_name %>>
     <h1 class="content-panel-title">
-      <%= I18n.t(title) %>
+      <%= I18n.t(title_key) %>
     </h1>
     <h2 class="content-panel-description">
-      <%= I18n.t(description) %>
+      <%= I18n.t(description_key) %>
     </h2>
     <div class="theme-list">
       <% themes.each do |theme| %>
-        <%= raw(theme['google_font_code']) %>
+        <%== theme['google_font_code'] %>
         <div class="theme" data-theme="<%= theme['id'] %>">
           <h4 class="theme-title"><%= theme['title'].html_safe %></h4>
           <div class="theme-sample">
-            <div class="theme-color-block" style="<%= theme_variable(theme, 'background-color', '$default-type-color') %>"></div>
-            <div class="theme-color-block" style="<%= theme_variable(theme, 'background-color', '$heading-type-color') %>"></div>
-            <h1 style="<%= theme_variable(theme, 'color', '$heading-type-color') %> <%= theme_variable(theme, 'font-family', '$heading-font-stack') %>" >
+            <div class="theme-color-block" style="<%= theme_style_property(theme, 'background-color', '$default-type-color') %>"></div>
+            <div class="theme-color-block" style="<%= theme_style_property(theme, 'background-color', '$heading-type-color') %>"></div>
+            <h1 style="<%= theme_style_property(theme, 'color', '$heading-type-color') %> <%= theme_style_property(theme, 'font-family', '$heading-font-stack') %>" >
               <%= I18n.t('style_and_presentation_panel.heading_font_sample') %>
             </h1>
-            <p style="<%= theme_variable(theme, 'color', '$default-type-color') %> <%= theme_variable(theme, 'font-family', '$body-font-stack') %>">
+            <p style="<%= theme_style_property(theme, 'color', '$default-type-color') %> <%= theme_style_property(theme, 'font-family', '$body-font-stack') %>">
               <%= theme['description'].html_safe %>
             </p>
           </div>

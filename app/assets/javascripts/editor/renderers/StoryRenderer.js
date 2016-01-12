@@ -28,6 +28,8 @@
         return 'componentYoutubeVideo';
       case 'socrata.visualization.classic':
         return 'componentSocrataVisualizationClassic';
+      case 'socrata.visualization.choroplethMap':
+        return 'componentSocrataVisualizationChoroplethMap';
       case 'socrata.visualization.columnChart':
         return 'componentSocrataVisualizationColumnChart';
       case 'socrata.visualization.timelineChart':

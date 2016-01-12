@@ -994,14 +994,16 @@
 
     function _visualizationChooserUrl(componentProperties) {
       var defaultColumn = _.get(componentProperties, 'vif.columnName', null);
+      var defaultVifType = _.get(componentProperties, 'vif.type', null);
       var defaultRelatedVisualizationUid = _.get(componentProperties, 'originalUid', null);
 
       return encodeURI(
-        '{0}/component/visualization/add?datasetId={1}&defaultColumn={2}&defaultRelatedVisualizationUid={3}'.
+        '{0}/component/visualization/add?datasetId={1}&defaultColumn={2}&defaultVifType={3}&defaultRelatedVisualizationUid={4}'.
           format(
             window.location.origin,
             componentProperties.dataset.datasetUid,
             defaultColumn,
+            defaultVifType,
             defaultRelatedVisualizationUid
           )
       );

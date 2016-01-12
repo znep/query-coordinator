@@ -23,35 +23,18 @@
 //= require editor/Actions
 //= require editor/init
 
-//= require socrata-visualizations/socrata.visualizations.DataProvider
-//= require socrata-visualizations/socrata.visualizations.SoqlDataProvider
-//= require socrata-visualizations/socrata.visualizations.GeospaceDataProvider
-//= require socrata-visualizations/socrata.visualizations.MetadataProvider
-//= require socrata-visualizations/socrata.visualizations.TileserverDataProvider
-
-//= require socrata-visualizations/socrata.visualizations.Visualization
-//= require socrata-visualizations/socrata.visualizations.pbf
-//= require socrata-visualizations/socrata.visualizations.VectorTileManager
-//= require socrata-visualizations/socrata.visualizations.ColumnChart
-//= require socrata-visualizations/socrata.visualizations.TimelineChart
-//= require socrata-visualizations/socrata.visualizations.FeatureMap
-
-//= require socrata-visualizations/socrata.visualizations.FlyoutRenderer
-//= require socrata-visualizations/socrata.visualizations.RowInspector
-
-//= require socrata-visualizations/components/SocrataColumnChart
-//= require socrata-visualizations/components/SocrataTimelineChart
-//= require socrata-visualizations/components/SocrataFeatureMap
+//= require socrata-visualizations/dist/socrata-visualizations
 
 //TODO We really need to pull these files out of editor/ and into some
 //common directory.
 //= require editor/componentBase
 //= require editor/withLayoutHeightFromComponentData
 //= require editor/storytellerJQueryUtils
+//= require editor/block-component-renderers/componentSocrataVisualizationClassic
+//= require editor/block-component-renderers/componentSocrataVisualizationChoroplethMap
 //= require editor/block-component-renderers/componentSocrataVisualizationColumnChart
 //= require editor/block-component-renderers/componentSocrataVisualizationTimelineChart
 //= require editor/block-component-renderers/componentSocrataVisualizationFeatureMap
-//= require editor/block-component-renderers/componentSocrataVisualizationClassic
 
 // Store setup
 //= require editor/SimpleEventEmitter.js

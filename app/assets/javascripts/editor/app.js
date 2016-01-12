@@ -79,9 +79,9 @@ $(document).on('ready', function() {
   storyteller.storyCopierStore = new storyteller.StoryCopierStore();
   storyteller.collaboratorsStore = new storyteller.CollaboratorsStore();
   storyteller.userSessionStore = new storyteller.UserSessionStore();
-  storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
+  storyteller.flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
-  socrata.visualizations.RowInspector.setup();
+  socrata.visualizations.views.RowInspector.setup();
 
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),

@@ -8,6 +8,11 @@ describe('FileUploader', function() {
   var mockFile;
 
   beforeEach(function() {
+    // Since these tests actually expect to use AJAX, we need to disable the
+    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
+    // and re-enble it after each.
+    window.mockedXMLHttpRequest.restore();
+
     fileUploader = new storyteller.FileUploader();
 
     dispatchedEvents = [];
@@ -24,6 +29,8 @@ describe('FileUploader', function() {
       dispatchedEvents.push(payload);
     });
 
+;
+
     server = sinon.fakeServer.create();
     server.respondImmediately = true;
   });
@@ -31,6 +38,9 @@ describe('FileUploader', function() {
   afterEach(function() {
     server.restore();
     fileUploader.destroy();
+
+    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
+    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
   });
 
   describe('.upload()', function() {

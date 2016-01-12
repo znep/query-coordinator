@@ -1,0 +1,487 @@
+/**
+ * Note that the .column-chart-container element is actually
+ * a child of the element on which the visualization will be
+ * instantiated.
+ */
+.column-chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  box-sizing: border-box;
+
+  /**
+   * Axis labels
+   */
+  .top-axis-label,
+  .right-axis-label,
+  .bottom-axis-label,
+  .left-axis-label {
+    position: absolute;
+    font-size: 1em;
+    visibility: hidden;
+  }
+
+  .top-axis-label {
+    left: 50%;
+    top: 1.5em;
+    transform: translate(-50%, -0.75em);
+  }
+
+  .right-axis-label {
+    right: -1.75em;
+    top: 50%;
+    transform: rotate(-90deg) translate(50%, 0);
+  }
+
+  .bottom-axis-label {
+    left: 50%;
+    bottom: 1.5em;
+    transform: translate(-50%, 0.75em);
+  }
+
+  .left-axis-label {
+    left: -1.5em;
+    top: 50%;
+    transform: rotate(-90deg) translate(50%, 0);
+  }
+
+  &.top-axis-label {
+    padding-top: 3em;
+
+    .top-axis-label {
+      visibility: visible;
+    }
+  }
+
+  &.right-axis-label {
+    padding-right: 3em;
+
+    .right-axis-label {
+      visibility: visible;
+    }
+  }
+
+  &.bottom-axis-label {
+    padding-bottom: 3em;
+
+    .bottom-axis-label {
+      visibility: visible;
+    }
+  }
+
+  &.left-axis-label {
+    padding-left: 3em;
+
+    .left-axis-label {
+      visibility: visible;
+    }
+  }
+
+  /**
+   * Column chart
+   */
+  .column-chart {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    /**
+     * Chart y-axis ticks (these are a separate element from
+     * the rest of the visualization because they need to be
+     * rendered behind the actual columns.
+     */
+    .ticks {
+      position: absolute;
+
+      .tick {
+        position: absolute;
+        width: 100%;
+        height: 14px;
+        text-align: right;
+        margin-top: -14px;
+        font-size: 12px;
+        line-height: 14px;
+        color: #bbb;
+        border-bottom: 1px solid #bbb;
+
+        &.origin {
+          font-weight: bold;
+          color: #666;
+          border-bottom: 1px solid #666;
+        }
+
+        &.below {
+          border-top: 1px solid #bbb;
+          border-bottom: none;
+        }
+      }
+
+    }
+
+    /**
+     * The chart-scroll is the (potentially) horizontally-scrollable
+     * element containing the actual chart. It contains the columns
+     * and their labels.
+     */
+    .chart-scroll {
+      position: absolute;
+      left: 0;
+      top: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      box-sizing: content-box; /* javascript adds height and padding that should stack */
+
+      .column-chart-wrapper {
+
+        .truncation-marker {
+          position: absolute;
+          width: auto;
+          right: 0;
+          font-family: sans-serif;
+          font-size: 1.2em;
+          color: #bbb;
+          z-index: 2;
+
+          &:hover {
+            display: block;
+            opacity: 0.75;
+          }
+
+          &:hover + .tooltip {
+            display: block;
+
+            .tip {
+              display: block;
+            }
+          }
+        }
+
+        .bar-group {
+          position: absolute;
+          display: none;
+
+          .bar {
+            position: absolute;
+          }
+
+          &.active {
+            display: block;
+
+            .bar {
+
+              &.unfiltered {
+                background-color: #67aecc;
+              }
+
+              &.filtered {
+                background-color: #68b0cc;
+              }
+            }
+          }
+
+          &.active:hover,
+          &.active.highlight {
+
+            .bar {
+
+              &.unfiltered {
+                background-color: #b1d7e8;
+              }
+
+              &.filtered {
+                background-color: #bbb;
+              }
+            }
+          }
+
+          &.unfiltered-on-top {
+
+            .unfiltered {
+              opacity: 0.5;
+            }
+          }
+        }
+
+        &.s508 {
+          position: static;
+          opacity: 0;
+        }
+
+        &.filtered {
+
+          .bar-group {
+
+            &.active {
+
+              .bar {
+
+                &.unfiltered {
+                  background-color: #d6d4d5;
+                }
+              }
+            }
+
+            &.active.selected {
+
+              .bar {
+
+                &.unfiltered {
+                  background-color: rgba(222, 187, 30, 0.2);
+                }
+
+                &.filtered {
+                  background-color: #debb1e;
+                }
+              }
+            }
+
+            &.active:hover,
+            &.active.highlight {
+
+              .bar {
+
+                &.unfiltered {
+                  background-color: #bbb;
+                }
+
+                &.filtered {
+                  background-color: #b1d7e8;
+                }
+              }
+            }
+
+            &.active.selected:hover,
+            &.active.selected.highlight {
+
+              .bar {
+
+                &.unfiltered {
+                  background-color: rgba(222, 187, 30, 0.4);
+                }
+
+                &.filtered {
+                  background-color: #e0b700;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /**
+       * Column labels
+       */
+      .labels {
+        position: absolute;
+        height: 55px;
+        right: 0;
+        left: 0;
+
+        .label {
+          position: absolute;
+          top: 2px;
+
+          .callout {
+            position: absolute;
+            width: 0.5rem;
+            border-bottom: 1px solid #bbb;
+            cursor: pointer;
+          }
+
+          .contents {
+            position: absolute;
+            font-size: 12px;
+            line-height: 1em;
+            color: #bbb;
+            cursor: default;
+
+            .text {
+              cursor: pointer;
+            }
+
+            &.undefined {
+              font-style: oblique;
+            }
+          }
+
+          .icon-filter,
+          .icon-close {
+            display: none;
+          }
+
+          .icon-close {
+            font-size: 0.5em;
+          }
+
+          .text {
+            display: inline-block;
+            max-width: 10rem;
+            vertical-align: top;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: visible;
+          }
+
+          &.dim {
+            opacity: 0.1;
+          }
+
+          &.selected {
+
+            .callout {
+              border-bottom: none;
+            }
+
+            .contents {
+
+              .icon-filter,
+              .icon-close {
+                display: inline-block;
+              }
+
+              .icon-filter {
+                color: #debb1e;
+              }
+
+              .text {
+                padding: 0 0.25rem;
+                font-weight: bold;
+                line-height: 1rem;
+                color: #8f8f8f;
+              }
+            }
+          }
+
+          &.orientation-left {
+            left: auto;
+
+            .callout {
+              right: 0;
+              border-right: 1px solid #bbb;
+            }
+          }
+
+          &.orientation-right {
+            .callout {
+              border-left: 1px solid #bbb;
+            }
+          }
+        }
+      }
+    }
+
+    /**
+     * In show-all-labels mode the chart will scroll
+     * horizontally and labels will be rotated 45 degrees
+     * clockwise from the x-axis.
+     */
+    &.show-all-labels {
+
+      .labels {
+        bottom: auto;
+
+        .label {
+
+          .callout {
+            display: none;
+          }
+
+          .contents {
+            left: auto;
+            -webkit-transform-origin: top left;
+            -moz-transform-origin: top left;
+            -ms-transform-origin: top left;
+            transform-origin: top left;
+            -webkit-transform: rotate(45deg);
+            -moz-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+            overflow: hidden;
+
+            .icon-filter,
+            .icon-close {
+              display: none;
+            }
+
+            .text {
+              padding: 0;
+            }
+          }
+        }
+      }
+    }
+
+    &.show-all-labels.selected {
+
+      .labels {
+        bottom: auto;
+
+        .label {
+
+          .callout {
+            display: none;
+          }
+
+          .contents {
+            left: auto;
+            -webkit-transform-origin: top left;
+            -moz-transform-origin: top left;
+            -ms-transform-origin: top left;
+            transform-origin: top left;
+            -webkit-transform: rotate(45deg);
+            -moz-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+            overflow: hidden;
+
+            .icon-filter,
+            .icon-close {
+              display: none;
+            }
+
+            .text {
+              padding: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Styles for filterable charts add the cursor: pointer behavior
+ * to elements that, when clicked, cause a filter action.
+ */
+.filterable {
+
+  .column-chart-container {
+
+    .column-chart {
+
+      .chart-scroll {
+
+        .column-chart-wrapper {
+
+          .bar-group {
+            cursor: pointer;
+          }
+        }
+      }
+
+      .labels {
+
+        .label {
+
+          .contents {
+
+            .text {
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+  }
+}

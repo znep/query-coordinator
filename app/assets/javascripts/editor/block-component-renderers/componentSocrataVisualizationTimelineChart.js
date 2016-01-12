@@ -35,10 +35,10 @@
     var vif;
 
     utils.assertHasProperty(componentData, 'value.vif');
-
     vif = componentData.value.vif;
 
-    if (!_.isEqual(JSON.parse(renderedVif), vif)) {
+    if (!storyteller.vifsAreEquivalent(JSON.parse(renderedVif), vif)) {
+
       $element.attr('data-rendered-vif', JSON.stringify(vif));
 
       vif.configuration.localization = {
@@ -53,7 +53,8 @@
         other: 'records'
       };
 
-      $componentContent.triggerHandler('destroy');
+      // Use triggerHandler since we don't want this to bubble
+      $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
       $componentContent.socrataTimelineChart(vif);
     }
   }

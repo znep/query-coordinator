@@ -33,11 +33,13 @@
     var renderedVif = $element.attr('data-rendered-vif') || '{}';
     var vif;
 
-    utils.assertHasProperty(componentData, 'value');
+    utils.assertHasProperty(componentData, 'value.vif');
     vif = componentData.value.vif;
 
-    if (!_.isEqual(JSON.parse(renderedVif), vif)) {
+    if (!storyteller.vifsAreEquivalent(JSON.parse(renderedVif), vif)) {
+
       $element.attr('data-rendered-vif', JSON.stringify(vif));
+
       vif.configuration.localization = {
         'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
@@ -50,7 +52,8 @@
         other: 'records'
       };
 
-      $componentContent.triggerHandler('destroy'); // use triggerHandler since we don't want this to bubble
+      // Use triggerHandler since we don't want this to bubble
+      $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
       $componentContent.socrataColumnChart(vif);
     }
   }

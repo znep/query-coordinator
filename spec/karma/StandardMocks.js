@@ -140,12 +140,11 @@ function applyStandardMocks() {
     ]
   });
 
-
-  sinon.stub(window.socrata.visualizations, 'SoqlDataProvider', function() {
-    return {
-      query: _.constant(new Promise(_.noop)) // Never resolve.
-    };
-  });
+  // Fake all ajax requests since we can no longer simply stub out
+  // the SoqlDataProvider-- it is provided to the visualization
+  // implemenations from within a closue created by webpack, instead
+  // of it being provided on the window as it used to be.
+  window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
 
   // Stub translations
   window.I18n = {
@@ -248,11 +247,13 @@ function removeStandardMocks() {
 
   var storyteller = window.socrata.storyteller;
 
+  if (window.mockedXMLHttpRequest) {
+    window.mockedXMLHttpRequest.restore();
+    delete window.mockedXMLHttpRequest;
+  }
+
   storyteller.SquireMocker.unmock();
   storyteller.AssetFinderMocker.unmock();
-  if (socrata.visualizations.SoqlDataProvider.restore) {
-    socrata.visualizations.SoqlDataProvider.restore();
-  }
 
   if (storyteller.userSessionStore) {
     storyteller.userSessionStore._destroy();

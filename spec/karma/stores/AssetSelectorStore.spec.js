@@ -128,12 +128,20 @@ describe('AssetSelectorStore', function() {
       var migrationUrl;
 
       beforeEach(function() {
+        // Since these tests actually expect to use AJAX, we need to disable the
+        // mocked XMLHttpRequest (which happens in StandardMocks) before each,
+        // and re-enble it after each.
+        window.mockedXMLHttpRequest.restore();
+
         server = sinon.fakeServer.create();
         migrationUrl = '/api/migrations/{0}.json'.format(standardMocks.validStoryUid);
       });
 
       afterEach(function() {
         server.restore();
+
+        // See comment above re: temporarily disabling the mocked XMLHttpRequest.
+        window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
       });
 
       it('should attempt to fetch the NBE datasetUid if dataset is OBE', function() {

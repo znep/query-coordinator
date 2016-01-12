@@ -7,7 +7,13 @@ describe('StoryDraftCreator', function() {
   describe('.saveDraft()', function() {
     var server;
     var fakeTokenMeta;
+
     beforeEach(function() {
+      // Since these tests actually expect to use AJAX, we need to disable the
+      // mocked XMLHttpRequest (which happens in StandardMocks) before each,
+      // and re-enble it after each.
+      window.mockedXMLHttpRequest.restore();
+
       fakeTokenMeta = $('<meta>', { name: 'csrf-token', content: 'faketoken' });
 
       $('head').append(fakeTokenMeta);
@@ -18,6 +24,9 @@ describe('StoryDraftCreator', function() {
     afterEach(function() {
       server.restore();
       fakeTokenMeta.remove();
+
+      // See comment above re: temporarily disabling the mocked XMLHttpRequest.
+      window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
     });
 
     it('should throw when passed invalid arguments', function() {

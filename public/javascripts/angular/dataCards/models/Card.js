@@ -129,7 +129,7 @@ angular.module('dataCards.models').
               var unit = rowDisplayUnit || I18n.common.row;
               if (_.has(columns, aggregationField)) {
                 unit = Dataset.extractHumanReadableColumnName(columns[aggregationField]);
-              } else if (aggregationFunction !== 'count') {
+              } else if (aggregationFunction !== 'count' || aggregationField !== null) {
                 aggregationFunction = 'count';
                 aggregationField = null;
               }
@@ -138,7 +138,7 @@ angular.module('dataCards.models').
                 'function': aggregationFunction || 'count',
                 fieldName: aggregationField,
                 unit: unit,
-                rowDisplayUnit: rowDisplayUnit
+                rowDisplayUnit: rowDisplayUnit || I18n.common.row
               };
             }
           );

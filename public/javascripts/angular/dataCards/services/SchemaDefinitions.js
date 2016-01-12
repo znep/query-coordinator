@@ -224,13 +224,13 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
       })
     );
 
-    // Added aggregationField and aggregationFunction
+    // Added aggregationField and aggregationFunction, both can be null.
     cardMetadataSchemas.addSchemaWithVersion(
       '4',
       _.merge(cardMetadataSchemas.getSchemaDefinition(3), {
         properties: {
-          aggregationField: {type: 'string'},
-          aggregationFunction: {type: 'string'}
+          aggregationField: {},
+          aggregationFunction: {}
         }
       })
     );

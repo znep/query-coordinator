@@ -44,7 +44,10 @@ function choropleth(
       var selectionBoxFilterIcon = selectionBox.find('.icon-filter');
       var selectionBoxValue = selectionBox.find('.choropleth-selection-value');
       var clearSelectionButton = selectionBox.find('.icon-close');
-
+      var lastRenderedDimensions = {
+        width: 0,
+        height: 0
+      };
       var lastTileLayer;
 
       // Keep track of the currently-hovered-over and currently-selected features
@@ -498,8 +501,18 @@ function choropleth(
           hideSelectionBox();
 
           // Update dimensions
-          // Note: The visualization checks if its dimensions have changed
-          visualization.updateDimensions();
+          if (
+            dimensions.width !== lastRenderedDimensions.width ||
+            dimensions.height !== lastRenderedDimensions.height
+          ) {
+
+            lastRenderedDimensions = {
+              width: dimensions.width,
+              height: dimensions.height
+            };
+
+            visualization.invalidateSize();
+          }
 
           // Render features layer
           // Note: Need to call render whenever dimensions change, too, so the legend

@@ -410,6 +410,20 @@ class ApplicationHelperTest < ActionView::TestCase
     refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
+  def test_meta_keywords
+    assert application_helper.meta_keywords(nil) == nil
+
+    view = Hashie::Mash.new.tap { |hashie| hashie.tags = nil }
+    keywords = application_helper.meta_keywords(view)
+    assert keywords.length == 4
+    assert (keywords - ApplicationHelper.class_variable_get(:@@default_meta_tags)) == []
+
+    view = Hashie::Mash.new.tap { |hashie| hashie.tags = %w(a b c d) }
+    keywords = application_helper.meta_keywords(view)
+    assert keywords.length == 8
+    assert (keywords - ApplicationHelper.class_variable_get(:@@default_meta_tags)).sort == %w(a b c d)
+  end
+
   private
 
   def asset_revision_key_regex

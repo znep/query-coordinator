@@ -107,7 +107,7 @@ module ApplicationHelper
   # Returns the meta keyword tags for this view that we'll use in headers
   @@default_meta_tags = ["public", "data", "statistics", "dataset"]
   def meta_keywords(view)
-    view.nil? ? nil : (view.tags.nil? ? @@default_meta_tags : view.tags + @@default_meta_tags).sort_by {rand}
+    ((view.tags || []) + @@default_meta_tags).sort_by { rand } if view.present?
   end
 
 # js

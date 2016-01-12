@@ -1049,6 +1049,11 @@ html {
         margin-bottom: 1.5em;
         overflow: hidden;
 
+        span.highlight {
+          /* UX decided not to highlight search matches in browse2.
+          This may change someday, so leaving this selector. */
+        }
+
         .browse2-result-content {
           position: relative;
           display: block;

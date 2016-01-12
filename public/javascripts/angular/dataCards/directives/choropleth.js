@@ -527,7 +527,9 @@ function choropleth(
       // Visualization needs to be told to clean up after itself.
       destroy$.subscribe(function() {
         detachEvents();
-        visualization.destroy();
+        if (visualization) {
+          visualization.destroy();
+        }
       });
     }
   };

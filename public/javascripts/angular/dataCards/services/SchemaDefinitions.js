@@ -1,4 +1,5 @@
 const angular = require('angular');
+
 /**
  * This file holds all of our js schema definitions, to keep them organizationally separate from the
  * validation logic, etc. It is not intended to be consumed by anything except for the Schemas
@@ -162,80 +163,6 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
       }
     );
 
-    var datasetPagesMetadataSchemas = schemasService.regarding('pages_for_dataset_metadata');
-    datasetPagesMetadataSchemas.addSchemaWithVersion(
-      '0',
-      {
-        'type': 'object',
-        'patternProperties': {
-          '^(user|publisher)$': {
-            'type': 'array',
-            'items': {
-              'type': 'object',
-              // NOTE: not full validation here. Page blob is properly checked during Page deserialization.
-              'required': ['pageId']
-            }
-          }
-        },
-        'required': ['user', 'publisher']
-      }
-    );
-
-    datasetPagesMetadataSchemas.addSchemaWithVersion(
-      '1',
-      {
-        'type': 'object',
-        'patternProperties': {
-          '^\\w{4}-\\w{4}$': {
-            'type': 'object',
-            // NOTE: not full validation here. Page blob is properly checked during Page deserialization.
-            'required': ['pageId']
-          }
-        },
-        'not': {
-          'type': 'object',
-          'required': ['user', 'publisher']
-        }
-      }
-    );
-
-    datasetPagesMetadataSchemas.addSchemaWithVersion(
-      '2',
-      {
-        'type': 'object',
-        'patternProperties': {
-          '^\\w{4}-\\w{4}$': {
-            'type': 'object',
-            // NOTE: not full validation here. Page blob is properly checked during Page deserialization.
-            'required': ['pageId']
-          }
-        },
-        'not': {
-          'type': 'object',
-          'required': ['user', 'publisher']
-        }
-      }
-    );
-
-    datasetPagesMetadataSchemas.addSchemaWithVersion(
-      '3',
-      {
-        'type': 'object',
-        'patternProperties': {
-          '^\\w{4}-\\w{4}$': {
-            'type': 'object',
-            // NOTE: not full validation here. Page blob is properly checked during Page deserialization.
-            'required': ['pageId']
-          }
-        },
-        'not': {
-          'type': 'object',
-          'required': ['user', 'publisher']
-        }
-      }
-    );
-
-
     var cardMetadataSchemas = schemasService.regarding('card_metadata');
     cardMetadataSchemas.addSchemaWithVersion(
       '0',
@@ -244,7 +171,6 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         'properties': {
           'activeFilters': {'type': 'array'},
           'baseLayerUrl': {},
-          'bucketType': {'type': 'string'},
           'cardCustomStyle': {'type': 'object'},
           'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 4},
           'cardType': {'type': 'string'},
@@ -268,7 +194,6 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         'properties': {
           'activeFilters': {'type': 'array'},
           'baseLayerUrl': {},
-          'bucketType': {'type': 'string'},
           'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 3},
           'cardType': {'type': 'string'},
           'expanded': {'type': 'boolean'},
@@ -278,57 +203,40 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
       }
     );
 
+    // Added cardOptions and bucketType
     cardMetadataSchemas.addSchemaWithVersion(
       '2',
-      {
-        'type': 'object',
-        'properties': {
-          'activeFilters': {'type': 'array'},
-          'baseLayerUrl': {},
-          'bucketType': {'type': 'string'},
-          'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 3},
-          'cardType': {'type': 'string'},
-          'expanded': {'type': 'boolean'},
-          'fieldName': {'type': 'string', 'minLength': 1},
-          'cardOptions': {'type': 'object'}
-        },
-        'required': ['fieldName', 'cardSize', 'expanded']
-      }
+      _.merge(cardMetadataSchemas.getSchemaDefinition(1), {
+        properties: {
+          bucketType: {type: 'string'},
+          cardOptions: {type: 'object'}
+        }
+      })
     );
 
+    // Added computedColumn
     cardMetadataSchemas.addSchemaWithVersion(
       '3',
-      {
-        'type': 'object',
-        'properties': {
-          'activeFilters': {'type': 'array'},
-          'baseLayerUrl': {},
-          'bucketType': {'type': 'string'},
-          'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 3},
-          'cardType': {'type': 'string'},
-          'expanded': {'type': 'boolean'},
-          'fieldName': {'type': 'string', 'minLength': 1},
-          'cardOptions': {'type': 'object'},
-          'computedColumn': {}
-        },
-        'required': ['fieldName', 'cardSize', 'expanded']
-      }
+      _.merge(cardMetadataSchemas.getSchemaDefinition(2), {
+        properties: {
+          computedColumn: {}
+        }
+      })
     );
 
-    var cardOptionsMetadataSchemas = schemasService.regarding('card_options');
-    cardOptionsMetadataSchemas.addSchemaWithVersion(
-      '2', // This is the same version as the card schema
-      {
-        'type': 'object',
-        'properties': {
-          'mapExtent': {'type': 'object'},
-          'bucketSize': {'type': 'integer'},
-          'mapFlannelTitleColumn': {'type': 'string'}
-        },
-        'required': []
-      }
+    // Added aggregationField and aggregationFunction
+    cardMetadataSchemas.addSchemaWithVersion(
+      '4',
+      _.merge(cardMetadataSchemas.getSchemaDefinition(3), {
+        properties: {
+          aggregationField: {type: 'string'},
+          aggregationFunction: {type: 'string'}
+        }
+      })
     );
 
+    // Only used by PageDataService to validate that pages have titles on save.
+    // We should either expand this to include all page metadata versions or remove this completely.
     schemasService.regarding('page_metadata').addSchemaWithVersion('0', {
       type: 'object',
       properties: {
@@ -342,5 +250,4 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
     registerWith: registerWith,
     uidRegexp: UID_REGEXP
   };
-
 });

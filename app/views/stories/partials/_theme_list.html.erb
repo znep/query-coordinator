@@ -11,12 +11,12 @@
         <div class="theme" data-theme="<%= theme['id'] %>">
           <h4 class="theme-title"><%= theme['title'] %></h4>
           <div class="theme-sample">
-            <div class="theme-colors" style="background-color: <%= theme['css_variables']['$default-type-color'] %>;"></div>
-            <div class="theme-colors" style="background-color: <%= theme['css_variables']['$heading-type-color'] %>;"></div>
-            <h1 style="color: <%= theme['css_variables']['$heading-type-color'] %>; font-family: <%= theme['css_variables']['$heading-font-stack'] %>;">
+            <div class="theme-color-block" style="<%= theme_variable(theme, 'background-color', '$default-type-color') %>"></div>
+            <div class="theme-color-block" style="<%= theme_variable(theme, 'background-color', '$heading-type-color') %>"></div>
+            <h1 style="<%= theme_variable(theme, 'color', '$heading-type-color') %> <%= theme_variable(theme, 'font-family', '$heading-font-stack') %>" >
               <%= I18n.t('style_and_presentation_panel.heading_font_sample') %>
             </h1>
-            <p style="color: <%= theme['css_variables']['$default-type-color'] %>; font-family: <%= theme['css_variables']['$body-font-stack'] %>;">
+            <p style="<%= theme_variable(theme, 'color', '$default-type-color') %> <%= theme_variable(theme, 'font-family', '$body-font-stack') %>">
               <%= theme['description'] %>
             </p>
           </div>

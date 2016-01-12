@@ -13,4 +13,10 @@ module ThemesHelper
     domain = themes.first.try(:domain_cname) || 'no-domain'
     "#{domain}/themes/custom-#{themes.map(&:updated_at).reduce(:+)}"
   end
+
+  # For inline styling of theme sample in the style panel
+  # Ex: "color: #FF9933;"
+  def theme_variable(theme, property, var_name)
+    style = property + ": "  + theme['css_variables'][var_name] + ";"
+  end
 end

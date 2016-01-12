@@ -1,0 +1,13 @@
+// NOTE: Even though comments aren't valid in JSON, eslint allows them.
+{
+  "extends": [
+    "./.eslintrc.json"
+  ],
+  "rules": {
+    // Never complain about the use of common debugging techniques.
+    "angular/log": 0,
+    "no-alert": 0,
+    "no-console": 0,
+    "no-debugger": 0
+  }
+}

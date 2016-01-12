@@ -216,9 +216,11 @@ class PageMetadataManager
   end
 
   def build_rollup_soql(page_metadata, columns, cards, options = {})
+
     non_date_card_types_for_rollup = %w{column choropleth}
     normalized_columns = transformed_columns(columns)
 
+    #get cards info, specifically the field names
     columns_to_roll_up = cards.
       select { |card| non_date_card_types_for_rollup.include?(card['cardType']) }.
       pluck(column_field_name)
@@ -241,10 +243,7 @@ class PageMetadataManager
       bucketed_column_queries(page_metadata['datasetId'], cards)
     ).compact.join(', ')
 
-    aggregation_function = page_metadata['primaryAggregation'] || 'count'
-    aggregation_field = page_metadata['primaryAmountField'] || '*'
-    aggregation_clause = "#{aggregation_function}(#{aggregation_field}) as value"
-
+    aggregation_clause = cards_aggregation_clause(page_metadata)
     "select #{rolled_up_columns_soql}, #{aggregation_clause} group by #{rolled_up_columns_soql}"
   end
 
@@ -506,6 +505,33 @@ class PageMetadataManager
       end
     end.compact.max
   end
+
+  def cards_aggregation_clause(page_metadata)
+  
+    result = page_metadata[:cards].map do |card| 
+      func = card['aggregationFunction']
+      field = card['aggregationField']
+      if func && field
+        "#{func}(#{field})"
+      else 
+        nil
+      end 
+    end
+
+    #if no card aggregation, use the default page metadata aggregation
+    #if no page aggregation metadata, then default to count(*)
+
+    if page_metadata['primaryAggregation'].present? && page_metadata['primaryAmountField'].present?
+      page_aggregation = "#{page_metadata['primaryAggregation']}(#{page_metadata['primaryAmountField']}) as value"
+      result << page_aggregation 
+    end
+    result = result.compact.uniq.join(', ')
+
+    if result.blank?
+      result = "count(*) as value"
+    end 
+    result
+  end 
 
   def time_range_in_column(dataset_id, field_name)
     result = fetch_min_max_in_column(dataset_id, field_name)

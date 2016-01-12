@@ -93,6 +93,7 @@ var baseConfig = {
     stats: { colors: true }
   },
   eslint: {
+    configFile: isProduction() ? '.eslintrc.json' : '.eslintrc-dev.json',
     formatter: require('eslint/lib/formatters/compact')
   },
   module: {

@@ -7,9 +7,9 @@
     </h2>
     <div class="theme-list">
       <% themes.each do |theme| %>
-      <%= raw(theme['google_font_code']) %>
+        <%= raw(theme['google_font_code']) %>
         <div class="theme" data-theme="<%= theme['id'] %>">
-          <h4 class="theme-title"><%= theme['title'] %></h4>
+          <h4 class="theme-title"><%= theme['title'].html_safe %></h4>
           <div class="theme-sample">
             <div class="theme-color-block" style="<%= theme_variable(theme, 'background-color', '$default-type-color') %>"></div>
             <div class="theme-color-block" style="<%= theme_variable(theme, 'background-color', '$heading-type-color') %>"></div>
@@ -17,7 +17,7 @@
               <%= I18n.t('style_and_presentation_panel.heading_font_sample') %>
             </h1>
             <p style="<%= theme_variable(theme, 'color', '$default-type-color') %> <%= theme_variable(theme, 'font-family', '$body-font-stack') %>">
-              <%= theme['description'] %>
+              <%= theme['description'].html_safe %>
             </p>
           </div>
         </div>

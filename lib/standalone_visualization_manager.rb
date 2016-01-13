@@ -72,7 +72,7 @@ class StandaloneVisualizationManager
       :permissions => permissions,
       :primaryAggregation => vif[:aggregation][:function],
       :primaryAmountField => vif[:aggregation][:field],
-      :version => 3
+      :version => 4
     }.with_indifferent_access
 
     # update_metadata_date_trunc(page_metadata)
@@ -95,7 +95,9 @@ class StandaloneVisualizationManager
       # The frontend may still assume this property is always present
       # and that it can be null, so we override nil to ensure that we
       # always output a value even if we don't have one on the input.
-      :computedColumn => vif.try(:[], :configuration).try(:[], :computedColumnName)
+      :computedColumn => vif.try(:[], :configuration).try(:[], :computedColumnName),
+      :aggregationFunction => vif[:aggregation][:function],
+      :aggregationField => vif[:aggregation][:field]
     }.with_indifferent_access
   end
 

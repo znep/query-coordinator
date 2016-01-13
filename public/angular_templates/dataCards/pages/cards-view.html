@@ -131,9 +131,7 @@
     <div id="quick-filter-bar-container">
       <div class="quick-filter-bar" with-spacer>
         <div class="content cf">
-          <span
-            ng-show="aggregation.unit"
-            ng-bind-html="'quickFilterBar.filterTitle' | I18n:dynamicTitle">
+          <span ng-bind-html="quickFilterBarTitle"></span>
           </span>
           <div class="filters">
             <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">

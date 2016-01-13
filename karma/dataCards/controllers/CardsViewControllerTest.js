@@ -429,8 +429,8 @@ describe('CardsViewController', function() {
 
   describe('filtering', function() {
 
-    function makeMinimalController() {
-      var controllerHarness = makeController();
+    function makeMinimalController(datasetOverrides, pageOverrides) {
+      var controllerHarness = makeController(datasetOverrides, pageOverrides);
 
       // This array will create a mixture of unique and non-unique field names.
       // For example: 'testFieldName_0', 'testFieldName_1', 'testFieldName_1'.
@@ -660,6 +660,34 @@ describe('CardsViewController', function() {
               ));
         }));
       });
+    });
+
+    describe('quickFilterBarTitle', function() {
+      it('should use the aggregation-based title if the page metadata is v3 or lower', function() {
+        ServerConfig.override('enableDataLensCardLevelAggregation', true);
+        var harness = makeMinimalController({}, { version: 3 });
+        expect(harness.$scope.quickFilterBarTitle).to.equal('Showing <span class="light">the number of rows</span>');
+      });
+
+      it('should use the aggregation-based title if the card-level aggregation feature flag is disabled', function() {
+        ServerConfig.override('enableDataLensCardLevelAggregation', false);
+        var harness = makeMinimalController();
+        expect(harness.$scope.quickFilterBarTitle).to.equal('Showing <span class="light">the number of rows</span>');
+      });
+
+      it('should use the rowDisplayUnit-based title if the page is version 4 and the card-level aggregation feature flag is enabled', function() {
+        ServerConfig.override('enableDataLensCardLevelAggregation', true);
+        var harness = makeMinimalController({}, { version: 4 });
+        expect(harness.$scope.quickFilterBarTitle).to.equal('Showing <span class="light">all rows</span>');
+      });
+
+      it('should change the new title if the page is filtered', inject(function(Filter) {
+        ServerConfig.override('enableDataLensCardLevelAggregation', true);
+        var harness = makeMinimalController({}, { version: 4 });
+        var cards = harness.page.getCurrentValue('cards');
+        cards[0].set('activeFilters', [new Filter.IsNullFilter(true)]);
+        expect(harness.$scope.quickFilterBarTitle).to.equal('Showing <span class="light">rows</span>');
+      }));
     });
   });
 

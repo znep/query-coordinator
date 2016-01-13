@@ -661,6 +661,7 @@ protected
       sorts = []
       params[:sort].each do |idx, sort|
         next if sort[:field].blank?
+        next unless sort[:direction].respond_to? :to_str
         sorts.push({
           'ascending' => (sort[:direction].downcase == 'ascending'),
           'expression' => {

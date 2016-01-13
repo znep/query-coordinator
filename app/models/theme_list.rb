@@ -1,5 +1,7 @@
 class ThemeList
 
+  attr_reader :custom_themes
+
   def initialize
     @parsed_json = JSON.parse(
       ActionView::Base.new.render(file: "#{Rails.root}/app/views/stories/theme_list.json.erb")
@@ -20,6 +22,7 @@ class ThemeList
   end
 
   private
-  attr_reader :parsed_json, :custom_themes
+
+  attr_reader :parsed_json
 
 end

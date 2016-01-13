@@ -34,6 +34,10 @@ angular.module('dataCards.models').
         this.fieldName = fieldName;
         this.uniqueId = initialValues.id || _.uniqueId();
 
+        if (_.isNumber(this.version) && this.version >= schemas.getLatestSchemaVersion()) {
+          this.version = schemas.getLatestSchemaVersion();
+        }
+
         var cardOptions = CardOptions.deserialize(self, initialValues.cardOptions);
         this.defineObservableProperty('cardOptions', cardOptions);
 

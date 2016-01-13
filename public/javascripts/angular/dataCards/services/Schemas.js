@@ -191,6 +191,11 @@ angular.module('dataCards.services').factory('Schemas', function(JJV, SchemaDefi
         return schemaCollection[schemaVersion];
       },
 
+      getLatestSchemaVersion: function() {
+        var schemaCollection = fetchSchemaCollectionForSubject(schemaSubjectName);
+        return _.chain(schemaCollection).keys().max().value();
+      },
+
       addSchemaWithVersion: function(schemaVersion, schema) {
         fetchSchemaCollectionForSubject(schemaSubjectName)[schemaVersion] = schema;
       }

@@ -1,6 +1,8 @@
 describe('Card model', function() {
   'use strict';
 
+  var CURRENT_PAGE_METADATA_VERSION = 4;
+
   var Model;
   var Page;
   var Card;
@@ -186,6 +188,21 @@ describe('Card model', function() {
       var testValue = {foo: 'bar'};
       instance.setOption('mapExtent', testValue);
       expect(instance.getCurrentValue('cardOptions').getCurrentValue('mapExtent')).to.eql(testValue);
+    });
+  });
+
+  // Using Number() here because we define our schema versions as strings and JS doesn't care
+  // if a numeric key of an object is a string or a number but chai's equal() assertion uses
+  // strict equality.
+  describe('version', function() {
+    it('inherits its version from the page', function() {
+      var card = makeCard(TEST_CARD_BLOB, { version: CURRENT_PAGE_METADATA_VERSION - 1 });
+      expect(Number(card.version)).to.equal(CURRENT_PAGE_METADATA_VERSION - 1);
+    });
+
+    it('uses the latest card schema if the page metadata version is newer than the latest card schema', function() {
+      var card = makeCard(TEST_CARD_BLOB, { version: CURRENT_PAGE_METADATA_VERSION + 1 });
+      expect(Number(card.version)).to.equal(CURRENT_PAGE_METADATA_VERSION);
     });
   });
 

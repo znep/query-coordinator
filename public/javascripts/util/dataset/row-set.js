@@ -96,7 +96,53 @@ var RowSet = ServerModel.extend({
     totalRows: function()
     { return this._totalCount; },
 
-    getRows: function(startOrIds, len, successCallback, errorCallback)
+    potentialBuckets: function() {
+      if (_.isUndefined(this._potentialBuckets)) {
+        this._potentialBuckets = _.range(0, this._totalCount, this._dataset.bucketSize);
+      }
+      return this._potentialBuckets;
+    },
+
+    // This function guarantees a valid return value. It *should* be impossible to
+    // request a numerical index and fail to return a bucket.
+    getRowBucket: function(index) {
+      var rs = this;
+      var bucketSize = rs._dataset.bucketSize;
+
+      if (!rs._dataset.usingBuckets()) {
+        return { start: 0, finish: rs._totalCount };
+      }
+
+      // If this is the first load, then assume start is 0 because I don't know any better.
+      if (!_.isNumber(rs._totalCount)) {
+        return { start: 0, finish: bucketSize };
+      }
+
+      // Requesting an index before the first row yields the first bucket.
+      if (index <= 0) {
+        return { start: 0, finish: bucketSize };
+      }
+
+      // Memoize all potential buckets.
+      // Requesting an index beyond the last row yields the last bucket.
+      var bucketStart = _.findLast(rs.potentialBuckets(), function(bucketStart) {
+        return bucketStart <= index;
+      });
+
+      return { start: bucketStart, finish: bucketStart + bucketSize };
+    },
+
+    bucketIndex: function(bucketStart) {
+      if (!_.isNumber(this._totalCount)) { return; }
+      return _.indexOf(this.potentialBuckets(), bucketStart);
+    },
+
+    totalBuckets: function() {
+      if (!_.isNumber(this._totalCount)) { return; }
+      return this.potentialBuckets().length;
+    },
+
+    getRows: function(startOrIds, len, successCallback, errorCallback, sortOrderForRequest)
     {
         var rs = this;
 
@@ -191,7 +237,7 @@ var RowSet = ServerModel.extend({
             // This code block ignores things like "rowsLoading" because there's not an
             // apparent need for it.
             if (rs._dataset.newBackend && false !== blist.feature_flags.nbe_bucket_size) {
-              var bucketSize = parseInt(blist.feature_flags.nbe_bucket_size, 10) || 1000;
+              var bucketSize = rs._dataset.bucketSize;
               var bucket = {
                 start: Math.floor(finish/bucketSize) * bucketSize,
                 finish: (Math.ceil(finish/bucketSize) * bucketSize) - 1
@@ -201,6 +247,8 @@ var RowSet = ServerModel.extend({
                 rs._rowBuckets = [];
               }
 
+              // Note: _rowBuckets should *only* contain bucket indices that we've already
+              // fetched. Building this out is a bad idea.
               if (!_.contains(rs._rowBuckets, bucket.start) && bucket.start < bucket.finish) {
                 reqs.push(bucket);
 
@@ -331,6 +379,9 @@ var RowSet = ServerModel.extend({
 
         if (reqs.length > 0)
         {
+            if (sortOrderForRequest) {
+              _.each(reqs, function(req) { req.sortOrderForRequest = sortOrderForRequest; });
+            }
             var loadAllRows = function()
             {
                 // If we got here, and totalRows is still blank, bail, because something
@@ -342,7 +393,7 @@ var RowSet = ServerModel.extend({
                 }
                 _.each(reqs, function(req)
                 {
-                    var reqLen;
+                    var reqLen, options = { sortOrderForRequest: req.sortOrderForRequest };
                     if (req.finish && !$.isBlank(req.start))
                     {
                         if (req.start >= rs._totalCount) { return; }
@@ -350,7 +401,7 @@ var RowSet = ServerModel.extend({
                         { req.finish = rs._totalCount - 1; }
                         reqLen = req.finish - req.start + 1;
                     }
-                    rs._loadRows(req.ids || req.start, reqLen, successCallback, errorCallback);
+                    rs._loadRows(req.ids || req.start, reqLen, options, successCallback, errorCallback);
                 });
             };
 
@@ -361,12 +412,13 @@ var RowSet = ServerModel.extend({
                 var initReqLen;
                 if (!$.isBlank(initReq.finish) && !$.isBlank(initReq.start))
                 { initReqLen = initReq.finish - initReq.start + 1; }
-                rs._loadRows(initReq.ids || initReq.start, initReqLen,
+                var options = { includeMeta: true, sortOrderForRequest: initReq.sortOrderForRequest };
+                rs._loadRows(initReq.ids || initReq.start, initReqLen, options,
                     function(rows)
                     {
                         if (_.isFunction(successCallback)) { successCallback(rows); }
                         loadAllRows();
-                    }, errorCallback, true);
+                    }, errorCallback);
                 delete rs._rerequestMeta;
             }
             else
@@ -513,7 +565,7 @@ var RowSet = ServerModel.extend({
         delete rs._rows;
         delete rs._rowIDLookup;
         delete rs._aggCache;
-        rs._loadRows(0, 1, successCallback, errorCallback, true, true);
+        rs._loadRows(0, 1, { includeMeta: true, fullLoad: true }, successCallback, errorCallback);
     },
 
     getAggregates: function(callback, customAggs)
@@ -963,8 +1015,16 @@ var RowSet = ServerModel.extend({
                     Dataset.aggregateForColumn(qbC.fieldName, rs._jsonQuery)
                 ) + (ob.ascending ? '' : ' desc');
             })).join(',');
-            if ($.isBlank(args.params['$order']))
-            { delete args.params['$order']; }
+        }
+        if (args.sortOrderForRequest === 'reversed') {
+          var orderBys = args.params['$order'].split(',');
+          args.params['$order'] = orderBys.map(function(orderBy) {
+            if (_.endsWith(orderBy, ' desc')) {
+              return orderBy.split(' ')[0]; // desc -> asc
+            } else {
+              return orderBy + ' desc'; // asc -> desc
+            }
+          }).join(',');
         }
 
         rs._dataset.makeRequest(args);
@@ -976,9 +1036,13 @@ var RowSet = ServerModel.extend({
     },
 
 
-    _loadRows: function(startOrIds, len, successCallback, errorCallback, includeMeta, fullLoad)
+    _loadRows: function(startOrIds, len, options, successCallback, errorCallback)
     {
         var rs = this;
+        options = options || {};
+        var includeMeta = options.includeMeta;
+        var fullLoad = options.fullLoad;
+        var sortOrderForRequest = options.sortOrderForRequest;
 
         var params = rs._dataset.newBackend ? { '$select': ':*,*' } :
             rs._dataset._useSODA2 ? { '$$exclude_system_fields': false } :
@@ -990,6 +1054,9 @@ var RowSet = ServerModel.extend({
             start = startOrIds;
             $.extend(params, rs._dataset._useSODA2 ? { '$offset': start, '$limit': len } :
                     { start: start, length: len });
+            if (sortOrderForRequest === 'reversed' && _.isNumber(rs._totalCount)) {
+              params['$offset'] = rs._totalCount - (start + len);
+            }
         }
         else if (_.isArray(startOrIds))
         {
@@ -1023,6 +1090,9 @@ var RowSet = ServerModel.extend({
         var reqId = _.uniqueId();
         var rowsLoaded = function(result, ___, xhr)
         {
+            if (sortOrderForRequest === 'reversed') {
+              result.reverse();
+            }
             if (len && !$.isBlank(start))
             {
                 // Mark all rows as not in-process
@@ -1209,6 +1279,11 @@ var RowSet = ServerModel.extend({
             { rs._rowsLoading[i + start] = true; }
         }
 
+        // Always be sorting by something to provide a stable row order.
+        if ($.isBlank(params['$order'])) {
+          params['$order'] = ':id';
+        }
+
         // TODO: CORE-1794: The correct fix is changing the ETag in the backend, but
         // that won't happen anytime soon and a customer wants this and the only impact
         // should be client-side repeated fetches for the same set of rows.
@@ -1226,6 +1301,7 @@ var RowSet = ServerModel.extend({
         if (rs._dataset._useSODA2 && $.parseParams().$$store) {
             req.params['$$store'] = $.parseParams().$$store;
         }
+        req.sortOrderForRequest = sortOrderForRequest;
 
         rs.makeRequest(req);
     },

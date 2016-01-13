@@ -1,13 +1,23 @@
 describe('CoreSavingStore', function() {
   'use strict';
-  var storyteller = window.socrata.storyteller;
 
+  var storyteller = window.socrata.storyteller;
   var server;
+
   beforeEach(function() {
+    // Since these tests actually expect to use AJAX, we need to disable the
+    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
+    // and re-enble it after each.
+    window.mockedXMLHttpRequest.restore();
+
     server = sinon.fakeServer.create();
   });
+
   afterEach(function() {
     server.restore();
+
+    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
+    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
   });
 
   function waitFor(condition, done) {

@@ -45,12 +45,44 @@ class Block < ActiveRecord::Base
   }
 
   after_initialize do
-    # We had some old code where blocks were not saved properly.
-    # This prevents breakage if loading those blocks' components
     if components.is_a?(Array)
       (components || []).each do |component|
+
+        # Because Rails will automatically convert empty arrays to nils in JSON
+        # objects accessed from the `param` hash (see:
+        # https://github.com/rails/rails/pull/8862), we need to go back and
+        # unmunge the `filters` property of any vif found in a component back
+        # to an empty array (VIF specifies that `filters` is always an array,
+        # and we run the risk of breaking things downstream that actually
+        # conform to the spec if we start persisting invalid VIFs).
+        #
+        # This code is also run when returning results from the database,
+        # ensuring that even old vifs that were saved with the incorrect null
+        # value for the `filters` key will be 'migrated' to the correct format
+        # on page load, and therefore on the next save (all blocks are saved
+        # every time regardless of whether they have changed).
+        #
+        # In practice, we determine if this 'migration' is necessary by
+        # asserting that the 'vif' property of the value exists and has a
+        # 'filters' key, but the value of the 'filters' key value is nil.
+        vif_or_nil = component.try(:[], 'value').try(:[], 'vif')
+
+        if (
+          vif_or_nil.present? &&
+          vif_or_nil.is_a?(Hash) &&
+          vif_or_nil.has_key?('filters') &&
+          vif_or_nil['filters'].nil?
+        )
+          component['value']['vif']['filters'] = []
+        end
+
+        # We had some old code where blocks were not saved properly.
+        # This prevents breakage if loading those blocks' components
         if component['type'] == 'html' && component.has_key?('value')
-          component['value'] = Sanitize.fragment(component['value'], SANITIZE_CONFIG['html'])
+          component['value'] = Sanitize.fragment(
+            component['value'],
+            SANITIZE_CONFIG['html']
+          )
         end
       end
     end

@@ -47,13 +47,14 @@
 }
 
 .component-asset-selector,
-.component-youtube-video,
+.component-embedded-html,
 .component-image,
-.component-socrata-visualization-column-chart,
-.component-socrata-visualization-timeline-chart,
-.component-socrata-visualization-feature-map,
+.component-socrata-visualization-choropleth-map,
 .component-socrata-visualization-classic,
-.component-embedded-html {
+.component-socrata-visualization-column-chart,
+.component-socrata-visualization-feature-map,
+.component-socrata-visualization-timeline-chart,
+.component-youtube-video {
   @include media-query-property(
     'margin-top',
     $media-component-small-margin-top,
@@ -70,8 +71,8 @@
   }
 }
 
-.component-youtube-video,
-.component-socrata-visualization-classic {
+.component-socrata-visualization-classic,
+.component-youtube-video {
   iframe {
     width: 100%;
     height: 100%;
@@ -92,12 +93,13 @@
 
 .col3 {
   .component-asset-selector,
-  .component-youtube-video,
-  .component-socrata-visualization-column-chart,
-  .component-socrata-visualization-timeline-chart,
-  .component-socrata-visualization-feature-map,
+  .component-embedded-html,
+  .component-socrata-visualizaiton-choropleth-map,
   .component-socrata-visualization-classic,
-  .component-embedded-html {
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-timeline-chart
+  .component-youtube-video {
     $small-height: $col3-block-edit-content-width-small * (4/5);
     $medium-height: $col3-block-edit-content-width-medium * (3/4);
     $large-height: $col3-block-edit-content-width-large * (3/4);
@@ -115,12 +117,13 @@
 
 .col4 {
   .component-asset-selector,
-  .component-youtube-video,
-  .component-socrata-visualization-column-chart,
-  .component-socrata-visualization-timeline-chart,
-  .component-socrata-visualization-feature-map,
+  .component-embedded-html,
+  .component-socrata-visualization-choropleth-map,
   .component-socrata-visualization-classic,
-  .component-embedded-html {
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-timeline-chart,
+  .component-youtube-video {
     $small-height: $col4-block-edit-content-width-small * (4/5);
     $medium-height: $col4-block-edit-content-width-medium * (3/4);
     $large-height: $col4-block-edit-content-width-large * (3/4);
@@ -143,11 +146,12 @@
   $extra-large-height: $col6-block-edit-content-width-extra-large * (3/5);
 
   .component-asset-selector,
-  .component-youtube-video,
-  .component-socrata-visualization-column-chart,
-  .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-choropleth-map,
   .component-socrata-visualization-classic,
-  .component-socrata-visualization-feature-map {
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-timeline-chart,
+  .component-youtube-video {
     @include media-query-property(
       'height',
       $small-height,
@@ -175,11 +179,12 @@
   $extra-large-height: $col8-block-edit-content-width-extra-large * (3/5);
 
   .component-asset-selector,
-  .component-youtube-video,
-  .component-socrata-visualization-column-chart,
-  .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-choropleth-map,
   .component-socrata-visualization-classic,
-  .component-socrata-visualization-feature-map {
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-timeline-chart,
+  .component-youtube-video {
     @include media-query-property(
       'height',
       $small-height,
@@ -209,11 +214,12 @@
   $extra-large-height: $col12-block-edit-content-width-extra-large * (3/5);
 
   .component-asset-selector,
-  .component-youtube-video,
-  .component-socrata-visualization-column-chart,
-  .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-choropleth-map,
   .component-socrata-visualization-classic,
-  .component-socrata-visualization-feature-map {
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-timeline-chart,
+  .component-youtube-video {
     @include media-query-property(
       'height',
       $small-height,

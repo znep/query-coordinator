@@ -100,10 +100,6 @@ describe('LinkTipStore', function() {
 
   describe('Actions.LINK_TIP_REMOVE', function() {
     describe('when given no payload', function() {
-      beforeEach(function() {
-        dispatchAction(Actions.LINK_TIP_REMOVE);
-      });
-
       it('should emit a change', function(done) {
         storyteller.linkTipStore.addChangeListener(function() {
           done();
@@ -112,9 +108,23 @@ describe('LinkTipStore', function() {
         dispatchAction(Actions.LINK_TIP_REMOVE);
       });
 
-      it('should update the removal boolean value', function() {
+      it('should temporarily cause shouldRemoveLink to return true for the specific editor', function() {
         var id = storyteller.linkTipStore.getEditorId();
-        assert.isTrue(storyteller.linkTipStore.shouldRemoveLink(id));
+        var shouldRemoveLinkReturnedTrue = false;
+        // shouldRemoveLink is only true momentarily.
+        // This is because RichTextEditorFormatController is
+        // eagerly waiting for shouldRemoveLink() to return
+        // true for its editor, ready to remove the link
+        // immediately.
+        storyteller.linkTipStore.addChangeListener(function() {
+          if (storyteller.linkTipStore.shouldRemoveLink(id)) {
+            shouldRemoveLinkReturnedTrue = true;
+          }
+          assert.isFalse(storyteller.linkTipStore.shouldRemoveLink('some random ID'));
+        });
+        dispatchAction(Actions.LINK_TIP_REMOVE);
+        assert.isTrue(shouldRemoveLinkReturnedTrue);
+        assert.isFalse(storyteller.linkTipStore.shouldRemoveLink(id));
       });
     });
   });

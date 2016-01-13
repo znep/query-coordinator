@@ -11,9 +11,6 @@ describe('StoryRenderer', function() {
 
   beforeEach(function() {
 
-    storyteller.dispatcher = storyteller.dispatcher;
-    storyteller.StoryRenderer = storyteller.StoryRenderer;
-
     testDom.append([
       $('<div>', { 'class': 'insertion-hint hidden' }),
       $('<div>', { 'id': 'rich-text-editor-toolbar' })
@@ -27,7 +24,6 @@ describe('StoryRenderer', function() {
       validToolbar,
       validFormats
     );
-
 
     storyUid = standardMocks.validStoryUid;
     assetSelectorBlockId = standardMocks.assetSelectorBlockId;

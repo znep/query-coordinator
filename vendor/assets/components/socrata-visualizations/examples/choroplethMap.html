@@ -5,8 +5,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <!-- `leaflet.css` must be included or the map will render incorrectly -->
     <link rel="stylesheet" media="all" href="../bower_components/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" media="all" href="../socrata.visualizations.choroplethMap.css">
-    <link rel="stylesheet" media="all" href="../socrata.visualizations.flyoutRenderer.css">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
     <style type="text/css">
 
       body {
@@ -29,28 +28,16 @@
     <div id="choropleth1"></div>
     <div id="choropleth2"></div>
   </body>
-  <!-- lodash must be loaded before `socrata.utils.js` -->
+
+  <!-- Include external dependencies -->
   <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
-  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
-  <!-- jquery must be loaded before `socrata.visualizations.Visualization.js` -->
   <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
-  <!-- `socrata.visualizations.Visualization.js` must be loaded before `socrata.visualizations.Choropleth.js` -->
-  <script type="text/javascript" src="../socrata.visualizations.Visualization.js"></script>
-  <!-- leaflet must be loaded before `socrata.visualizations.Choropleth.js` -->
-  <script type="text/javascript" src="../bower_components/leaflet/dist/leaflet.js"></script>
-  <!-- d3 must be loaded before `socrata.visualizations.Choropleth.js` -->
   <script type="text/javascript" src="../bower_components/d3/d3.js"></script>
-  <script type="text/javascript" src="../bower_components/simple-statistics/src/simple_statistics.js"></script>
-  <script type="text/javascript" src="../bower_components/chroma-js/chroma.js"></script>
-  <!-- `socrata.visualizations.ChoroplethUtils.js` must be loaded before `socrata.visualizations.Choropleth.js` -->
-  <script type="text/javascript" src="../socrata.visualizations.ChoroplethMapUtils.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.ChoroplethMap.js"></script>
-  <!-- `socrata.visualizations.DataProvider.js` must be loaded before `socrata.visualizations.SoqlDataProvider.js` -->
-  <script type="text/javascript" src="../socrata.visualizations.DataProvider.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.SoqlDataProvider.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.GeospaceDataProvider.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.FlyoutRenderer.js"></script>
-  <script type="text/javascript" src="../components/SocrataChoroplethMap.js"></script>
+  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
   <script type="text/javascript">
 
     $(document).ready(function() {
@@ -59,7 +46,7 @@
        * Sample data!
        */
 
-      var DATASET_UID = 'hsns-kwdt';
+      var DATASET_UID = '52my-2pak';
       var DOMAIN = 'dataspace.demo.socrata.com';
       var GEOJSON_UID = 'snuk-a5kv';
 
@@ -67,16 +54,17 @@
        * Render things!
        */
 
-      var flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
       var choroplethVIF = {
         'aggregation': {
           // TODO: implement this!
         },
-        'columnName': 'ward',
+        'columnName': 'location_point',
         'configuration': {
-          'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+          'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
           'baseLayerOpacity': 0.8,
+          'computedColumnName': ':@wards',
           'defaultExtent' : {
             'southwest': [41.45919537950706, -90.24169921875],
             'northeast': [42.20817645934742, -85.242919921875]
@@ -90,7 +78,7 @@
             'FLYOUT_SELECTED_NOTICE': 'The page is currently filtered by this value, click to clear it',
             'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
             'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-            'NULL_VALUE_LABEL': '(No Value)',
+            'NO_VALUE': '(No Value)',
             'CLEAR_FILTER_LABEL': 'Clear filter'
           },
           'savedExtent': {
@@ -104,7 +92,7 @@
               'filtered': '__SOCRATA_FILTERED_VALUE__',
               'selected': '__SOCRATA_FEATURE_SELECTED__'
             },
-            'geometryLabel': 'ward',
+            'geometryLabel': null,
             'primaryKey': '_feature_id',
             'uid': GEOJSON_UID
           }
@@ -126,8 +114,8 @@
       };
 
       var choroplethVIF1 = _.cloneDeep(choroplethVIF);
-
       var choroplethVIF2 = _.cloneDeep(choroplethVIF);
+
       choroplethVIF2.configuration.legend = {
         'type': 'discrete'
       };

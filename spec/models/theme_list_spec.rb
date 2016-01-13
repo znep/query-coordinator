@@ -11,6 +11,12 @@ RSpec.describe ThemeList, type: :model do
     allow(Theme).to receive(:all_custom_for_current_domain).and_return([])
   end
 
+  describe '#standard_theme_list' do
+    it 'returns the standard themes' do
+      expect(subject.standard_theme_list.length).to eq(4)
+    end
+  end
+
   context 'with no custom themes' do
     describe '#to_json' do
       it 'renders theme_list.json.erb' do
@@ -18,9 +24,9 @@ RSpec.describe ThemeList, type: :model do
       end
     end
 
-    describe '#themes' do
-      it 'returns themes from theme_list' do
-        expect(subject.themes).to eq(theme_list['themes'])
+    describe '#custom_theme_list' do
+      it 'returns an empty array' do
+        expect(subject.custom_theme_list.length).to eq(0)
       end
     end
   end
@@ -33,10 +39,14 @@ RSpec.describe ThemeList, type: :model do
       allow(custom_theme).to receive(:for_theme_list_config).and_return({ 'id' => custom_theme.id })
     end
 
-    describe '#themes' do
-      it 'includes custom theme' do
-        custom_theme = subject.themes.detect{ |theme| theme['id'] == 'custom-theme-1' }
-        expect(custom_theme).to_not be_nil
+    it 'sets custom themes' do
+      expect(subject.custom_themes.length).to eq(1)
+    end
+
+    describe '#custom_theme_list' do
+      it 'returns custom themes from theme_list' do
+        expect(subject.custom_theme_list.length).to eq(1)
+        expect(subject.custom_theme_list.first['id']).to eq('custom-theme-1')
       end
     end
   end

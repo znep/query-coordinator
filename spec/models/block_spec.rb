@@ -4,6 +4,61 @@ RSpec.describe Block, type: :model do
 
   let(:subject) { FactoryGirl.build(:block) }
 
+  describe 'when initialized' do
+
+    context 'when Rails has deeply munged a VIF filters value from an empty array to nil' do
+
+      it 'correctly resets the value to an empty array' do
+        test_components = [
+          {
+            type: 'socrata.visualizations.choroplethMap',
+            value: {
+              dataset: {
+                datasetUid: 'test-test',
+                domain: 'example.com'
+              },
+              originalUid: nil,
+              vif: {
+                aggregation: {
+                  field: nil,
+                  function: 'count'
+                },
+                columnName: 'incident_location',
+                configuration: {
+                  computedColumn: ':@computed_region_mash_apes',
+                  localization: {}
+                },
+                createdAt: '2016-01-07T22:40:46.968Z',
+                datasetUid: 'test-test',
+                description: '',
+                domain: 'example.com',
+                filters: nil,
+                format: {
+                  type: 'visualization_interchange_format',
+                  version: 1
+                },
+                origin: {
+                  type: 'data_lens_add_visualization_component',
+                  url: 'https://example.com/view/test-test'
+                },
+                title: 'Incident Location',
+                type: 'choroplethMap',
+                unit: {
+                  one: 'row',
+                  other: 'rows'
+                }
+              }
+            }
+          }
+        ]
+
+        new_block = Block.new(layout: 12, components: test_components, created_by: 'test@example.com')
+
+        expect(new_block.components[0]['value']['vif']['filters'].is_a?(Array)).to eq(true)
+      end
+    end
+  end
+
   describe 'immutability' do
 
     context 'when it has not been saved' do

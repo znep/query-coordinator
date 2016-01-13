@@ -28,8 +28,7 @@
   <% @story.block_images.each do |image| %>
     <meta property="og:image" content="<%= image %>">
   <% end %>
-
-  <link rel="shortcut icon" href="/favicon.ico">
+  <%= render 'shared/google_analytics_script' %>
 </head>
 <body id="story-view">
 

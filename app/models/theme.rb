@@ -29,6 +29,8 @@ class Theme
     {
       'description' => description,
       'id' => class_name,
+      'css_variables' => css_variables,
+      'google_font_code' => google_font_code,
       'title' => title
     }
   end

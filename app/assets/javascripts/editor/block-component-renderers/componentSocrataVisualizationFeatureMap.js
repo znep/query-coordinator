@@ -33,10 +33,10 @@
     var $componentContent = $element.find('.component-content');
     var vif;
 
-    utils.assertHasProperty(componentData, 'value');
+    utils.assertHasProperty(componentData, 'value.vif');
     vif = componentData.value.vif;
 
-    if (!_.isEqual(JSON.parse(renderedVif), vif)) {
+    if (!storyteller.vifsAreEquivalent(JSON.parse(renderedVif), vif)) {
 
       $element.attr('data-rendered-vif', JSON.stringify(vif));
 
@@ -74,7 +74,8 @@
       vif.configuration.locateUser = true;
       vif.configuration.panAndZoom = true;
 
-      $componentContent.triggerHandler('destroy');
+      // Use triggerHandler since we don't want this to bubble
+      $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
       $componentContent.socrataFeatureMap(vif);
     }
   }

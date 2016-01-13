@@ -18,17 +18,18 @@ module StoriesHelper
   # Maps the component type stored in the database to the partial used to render it
   def component_partial_name(component_type)
     component_type_mapping = {
+      'assetSelector' => 'component_asset_selector',
+      'embeddedHtml' => 'component_embedded_html',
       'html' => 'component_html',
-      'youtube.video' => 'component_youtube_video',
+      'horizontalRule' => 'component_horizontal_rule',
+      'image' => 'component_image',
+      'socrata.visualization.classic' => 'component_socrata_visualization_classic',
+      'socrata.visualization.choroplethMap' => 'component_socrata_visualization_choropleth_map',
       'socrata.visualization.columnChart' => 'component_socrata_visualization_column_chart',
       'socrata.visualization.timelineChart' => 'component_socrata_visualization_timeline_chart',
       'socrata.visualization.featureMap' => 'component_socrata_visualization_feature_map',
-      'socrata.visualization.classic' => 'component_socrata_visualization_classic',
-      'assetSelector' => 'component_asset_selector',
-      'horizontalRule' => 'component_horizontal_rule',
       'spacer' => 'component_spacer',
-      'image' => 'component_image',
-      'embeddedHtml' => 'component_embedded_html'
+      'youtube.video' => 'component_youtube_video'
     }
 
     if component_type_mapping[component_type].nil?

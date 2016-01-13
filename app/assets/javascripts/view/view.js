@@ -4,8 +4,8 @@ $(document).on('ready', function() {
   var $userStory = $('.user-story');
   var storyteller = window.socrata.storyteller;
   storyteller.presentationMode = new storyteller.PresentationMode();
-  storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
-  socrata.visualizations.RowInspector.setup();
+  storyteller.flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+  socrata.visualizations.views.RowInspector.setup();
 
   // Init window size classes
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
@@ -25,20 +25,25 @@ $(document).on('ready', function() {
     var serializedComponentData = element.getAttribute('data-component-data');
     var componentData;
 
-    if (componentData !== null) {
+    if (serializedComponentData !== null) {
 
       componentData = JSON.parse(serializedComponentData);
 
       switch (componentData.type) {
 
+        case 'socrata.visualization.classic':
+          $element.
+            componentSocrataVisualizationClassic(componentData);
+          break;
+
+        case 'socrata.visualization.choroplethMap':
+          $element.
+            componentSocrataVisualizationChoroplethMap(componentData);
+          break;
+
         case 'socrata.visualization.columnChart':
           $element.
             componentSocrataVisualizationColumnChart(componentData);
-          break;
-
-        case 'socrata.visualization.timelineChart':
-          $element.
-            componentSocrataVisualizationTimelineChart(componentData);
           break;
 
         case 'socrata.visualization.featureMap':
@@ -46,9 +51,9 @@ $(document).on('ready', function() {
             componentSocrataVisualizationFeatureMap(componentData);
           break;
 
-        case 'socrata.visualization.classic':
+        case 'socrata.visualization.timelineChart':
           $element.
-            componentSocrataVisualizationClassic(componentData);
+            componentSocrataVisualizationTimelineChart(componentData);
           break;
 
         default:

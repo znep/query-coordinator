@@ -22,32 +22,14 @@
 //= require socrata-utils/socrata.utils
 //= require vector-tile/dist/vectortile
 //= require leaflet/dist/leaflet
-
-//= require socrata-visualizations/socrata.visualizations.DataProvider
-//= require socrata-visualizations/socrata.visualizations.SoqlDataProvider
-//= require socrata-visualizations/socrata.visualizations.GeospaceDataProvider
-//= require socrata-visualizations/socrata.visualizations.MetadataProvider
-//= require socrata-visualizations/socrata.visualizations.TileserverDataProvider
-
-//= require socrata-visualizations/socrata.visualizations.Visualization
-//= require socrata-visualizations/socrata.visualizations.pbf
-//= require socrata-visualizations/socrata.visualizations.VectorTileManager
-//= require socrata-visualizations/socrata.visualizations.ColumnChart
-//= require socrata-visualizations/socrata.visualizations.TimelineChart
-//= require socrata-visualizations/socrata.visualizations.FeatureMap
-
-//= require socrata-visualizations/socrata.visualizations.FlyoutRenderer
-//= require socrata-visualizations/socrata.visualizations.RowInspector
-
-//= require socrata-visualizations/components/SocrataColumnChart
-//= require socrata-visualizations/components/SocrataTimelineChart
-//= require socrata-visualizations/components/SocrataFeatureMap
+//= require socrata-visualizations/dist/socrata-visualizations
 
 //= require editor/init
 //= require editor/storytellerUtils
 //= require editor/SimpleEventEmitter
 //= require editor/stores/Store
 //= require Airbrake
+//= require vifUtils
 //= require_tree ./editor
 
 //= <% require_asset "sinon-1.17.2" if Rails.env.test? %>

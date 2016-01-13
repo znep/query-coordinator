@@ -112,6 +112,10 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!
   end
 
+  config.before(:each) do
+    @google_analytics_tracking_id = 'money-in-banana-stand'
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
@@ -275,6 +279,10 @@ def stub_core_view(uid, options={})
 
   stub_request(:get, /\/views\/#{uid}.json/).
     to_return(:status => 200, :body => view.to_json)
+end
+
+def stub_google_analytics
+  allow(Rails.application.config).to receive(:google_analytics_tracking_id).and_return(@google_analytics_tracking_id)
 end
 
 class Capybara::Session

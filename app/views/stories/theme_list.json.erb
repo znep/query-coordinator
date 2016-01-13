@@ -8,27 +8,51 @@
 {
   "themes": [
     {
-      "description": "Classic Theme. This one is a true classic; a throw back to the past.",
+      "description": "<%= I18n.t('style_and_presentation_panel.classic_theme_description') %>",
       "id": "classic",
-      "imagePreview": "<%= asset_path("editor/theme-samples/theme-sample-classic.svg") %>",
+      "css_variables": {
+        "$body-font-stack": "'Georgia', sans-serif",
+        "$heading-font-stack": "'Helvetica', serif",
+        "$default-type-color": "#252525",
+        "$heading-type-color": "#333"
+        },
+      "google_font_code": "",
       "title": "Classic"
     },
     {
-      "description": "Classic Theme. This one is a true classic; a throw back to the past.",
+      "description": "<%= I18n.t('style_and_presentation_panel.sans_theme_description') %>",
       "id": "sans",
-      "imagePreview": "<%= asset_path("editor/theme-samples/theme-sample-sans.svg") %>",
+      "css_variables": {
+        "$body-font-stack": "'PT Sans', sans-serif",
+        "$heading-font-stack": "'Titillium Web', serif",
+        "$default-type-color": "#444",
+        "$heading-type-color": "#5d950f"
+        },
+      "google_font_code": "",
       "title": "Sans"
     },
     {
-      "description": "Classic Theme. This one is a true classic; a throw back to the past.",
+      "description": "<%= I18n.t('style_and_presentation_panel.serif_theme_description') %>",
       "id": "serif",
-      "imagePreview": "<%= asset_path("editor/theme-samples/theme-sample-serif.svg") %>",
+      "css_variables": {
+        "$body-font-stack": "'Merriweather', sans-serif",
+        "$heading-font-stack": "'Lusitana', serif",
+        "$default-type-color": "#252525",
+        "$heading-type-color": "#5590ba"
+        },
+      "google_font_code": "",
       "title": "Serif"
     },
     {
-      "description": "Classic Theme. This one is a true classic; a throw back to the past.",
+      "description": "<%= I18n.t('style_and_presentation_panel.slab_theme_description') %>",
       "id": "slab",
-      "imagePreview": "<%= asset_path("editor/theme-samples/theme-sample-slab.svg") %>",
+      "css_variables": {
+        "$body-font-stack": "'Open Sans', sans-serif",
+        "$heading-font-stack": "'Roboto Slab', serif",
+        "$default-type-color": "#252525",
+        "$heading-type-color": "#E24816"
+        },
+      "google_font_code": "",
       "title": "Slab"
     }
   ]

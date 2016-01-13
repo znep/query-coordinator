@@ -320,8 +320,11 @@ RSpec.describe Theme, type: :model do
       expected = {
         'description' => description,
         'id' => "custom-#{id}",
+        'css_variables' => theme_config['css_variables'],
+        'google_font_code' => google_font_code,
         'title' => title
       }
+
       expect(subject.for_theme_list_config).to eq(expected)
     end
   end

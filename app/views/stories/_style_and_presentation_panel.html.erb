@@ -7,13 +7,13 @@
 
   <section>
     <div class="scrollable">
-      <% if @custom_themes.present? -%>
+      <% if @custom_theme_configs.present? -%>
         <%= render  partial: 'stories/partials/theme_list',
                     locals: {
                       class_name: 'custom-themes',
                       title_key: 'style_and_presentation_panel.custom_themes_title',
                       description_key: 'style_and_presentation_panel.custom_themes_description',
-                      themes: @custom_themes
+                      themes: @custom_theme_configs
                     } -%>
       <% end -%>
 
@@ -22,7 +22,7 @@
                     class_name: 'standard-themes',
                     title_key: 'style_and_presentation_panel.standard_themes_title',
                     description_key: 'style_and_presentation_panel.standard_themes_description',
-                    themes: @standard_themes
+                    themes: @standard_theme_configs
                   } -%>
     </div>
   </section>

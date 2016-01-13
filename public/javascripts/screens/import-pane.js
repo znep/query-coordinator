@@ -37,10 +37,8 @@ var scan,
     nextButtonTip,
     isShown,
     submitError,
-    $featureCount,
     $layerCount,
     referenceSystem,
-    featureCount,
     $layersList,
     layers;
 
@@ -1708,9 +1706,7 @@ importNS.importShapefilePaneConfig = {
         $summary = $paneLocal.find('.shapeSummary');
         $abbreviatedSummary = $paneLocal.find('.abbreviatedShapeSummary');
         $layersList = $pane.find('.layersList');
-        $featureCount = $pane.find('.featureCount');
         $layerCount = $pane.find('.layerCount');
-        featureCount = scan.summary.totalFeatureCount;
         layerCount = scan.summary.layers.length;
 
         // populate the dataset name field
@@ -1721,7 +1717,6 @@ importNS.importShapefilePaneConfig = {
         } else {
             $abbreviatedSummary.hide();
             // populate the summary data
-            $featureCount.text(featureCount);
             $layerCount.text(layerCount);
 
             _.each(layers, function(layer, i)

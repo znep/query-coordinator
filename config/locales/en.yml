@@ -1886,9 +1886,9 @@ en:
         layers_list: Layers to import
         name: Name
         pending: Please wait while we load your layers...
-        subheadline: This shapefile contains <span class="featureCount"></span> features in <span class="layerCount"></span> layers.
+        subheadline: This shapefile contains <span class="layerCount"></span> layers.
         abbreviatedSummary: Map layers in &ldquo;<span class="fileName"></span>&rdquo; will be created upon import.
-        abbreviatedSubheadline: Summarizing this dataset may take a long time. You may edit it after import.
+        abbreviatedSubheadline: Summarizing this dataset may take a long time. Click next to import it.
       import_warnings:
         headline: Warnings during import
         see_docs: <strong>Confused?</strong> Please check out our <a href="%{publisher_link}" rel="external">publisher documentation</a> on importing data for a detailed explanation on how the importer handles data. You may also want to refer to our <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
@@ -1910,7 +1910,7 @@ en:
         choose_a_file: Choose a File
         no_file_selected: No file selected yet.
         supported_blist: Supported formats are .csv, .tsv, .xls, and .xlsx.
-        supported_shapefile: Supported formats are .kml, .kmz, and .zip (ESRI Shapefile).
+        supported_shapefile: Supported formats are .kml, .kmz, .json (GeoJSON), and .zip (ESRI Shapefile).
         uploading: Uploading your file...
       why_choose_now:
         close: Close

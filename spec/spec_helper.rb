@@ -272,6 +272,7 @@ def stub_sufficient_rights
 end
 
 def stub_core_view(uid, options={})
+  allow(StoryAccessLogger).to receive(:log_story_view_access)
   view = {
     name: 'test story',
     owner: {id: 'tugg-xxx'}

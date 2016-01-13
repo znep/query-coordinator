@@ -21,12 +21,11 @@ class CoreServer
   end
 
   def self.current_user
-    core_server_request_options = {
-      verb: :get,
-      path: '/users/current.json'
-    }
+    core_server_request_with_retries(verb: :get, path: '/users/current.json')
+  end
 
-    core_server_request_with_retries(core_server_request_options)
+  def self.current_domain
+    core_server_request_with_retries(verb: :get, path: '/domains')
   end
 
   # Gets the configuration based on id

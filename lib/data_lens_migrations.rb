@@ -51,20 +51,6 @@ class DataLensMigrations
         }
 
         page_metadata
-      },
-
-      4 => lambda { |page_metadata, options|
-        return page_metadata if page_metadata.blank?
-        return page_metadata if page_metadata[:cards].blank?
-
-        page_metadata[:cards] = page_metadata[:cards].map { |card|
-          card.reverse_merge({
-            :aggregationField => page_metadata[:primaryAmountField],
-            :aggregationFunction => page_metadata[:primaryAggregation]
-          })
-        }
-        
-        page_metadata
       }
     }
   end

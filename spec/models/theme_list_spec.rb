@@ -39,6 +39,10 @@ RSpec.describe ThemeList, type: :model do
       allow(custom_theme).to receive(:for_theme_list_config).and_return({ 'id' => custom_theme.id })
     end
 
+    it 'sets custom themes' do
+      expect(subject.custom_themes.length).to eq(1)
+    end
+
     describe '#custom_theme_list' do
       it 'returns custom themes from theme_list' do
         expect(subject.custom_theme_list.length).to eq(1)

@@ -68,4 +68,13 @@ RSpec.describe ThemesHelper, type: :helper do
       end
     end
   end
+
+  describe '#theme_style_property' do
+    let(:story_theme_json) { JSON.parse(fixture('story_theme.json').read).first }
+    let(:theme) { Theme.from_core_config(story_theme_json).as_json }
+
+    it 'create the theme property for inline styling' do
+      expect(theme_style_property(theme, 'font-size', '$medium')).to eq('font-size: 768px;')
+    end
+  end
 end

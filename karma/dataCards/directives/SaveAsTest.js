@@ -55,12 +55,7 @@ describe('SaveAs', function() {
 
   describe('"Save As" button', function() {
     var elementTemplate = '<save-as has-changes="{0}" page="page"></save-as>';
-    it('should be disabled if pageHasChanges is false', function() {
-      var $saveAs = createElement(elementTemplate.format('false'));
-      var $saveAsButton = $saveAs.find('.tool-panel-toggle-btn');
-      expect($saveAsButton.hasClass('disabled')).to.be.true;
-    });
-    it('should be enabled if pageHasChanges is true', function() {
+    it('should be enabled', function() {
       var $saveAs = createElement(elementTemplate.format('true'));
       var $saveAsButton = $saveAs.find('.tool-panel-toggle-btn');
       expect($saveAsButton.hasClass('disabled')).to.be.false;

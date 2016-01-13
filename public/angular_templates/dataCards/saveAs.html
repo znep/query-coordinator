@@ -1,6 +1,6 @@
 <div class="tool-panel upwards">
 
-  <button type="button" ng-class="{touched: panelActive, disabled: !hasChanges && !isEphemeral}" class="save-as-button tool-panel-toggle-btn action-btn customize-bar-action-btn r-to-l" ng-click="conditionallyShowPanel()">{{(isEphemeral ? 'saveButton.save' : 'saveAs.text') | I18n}}</button>
+  <button type="button" ng-class="{touched: panelActive}" class="save-as-button tool-panel-toggle-btn action-btn customize-bar-action-btn r-to-l" ng-click="conditionallyShowPanel()">{{(isEphemeral ? 'saveButton.save' : 'saveAs.text') | I18n}}</button>
   <div id="save-as-panel" ng-class="{active: panelActive}" class="tool-panel-main">
     <div id="save-as-panel-inner-container" class="tool-panel-inner-container">
       <div class="tool-panel-hint"></div>
@@ -41,7 +41,7 @@
       <div class="tool-panel-input-group">
         <save-button
           ng-click="save()"
-          enabled="hasChanges || isEphemeral"
+          enabled="true"
           class="l-to-r"
           button-class="customize-bar-action-btn"
           save-status="saveStatus">

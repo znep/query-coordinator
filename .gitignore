@@ -9,10 +9,6 @@ vendor/bundle
 socrata-node/DEPEND
 socrata-node/node_modules
 nbproject
-ui-tests/*.log
-ui-tests/selenium-server-*.jar
-ui-tests/failures
-ui-tests/node_modules
 karma/coverage-reports
 karma/dataCards/mockTranslations.js
 /.idea/

@@ -242,12 +242,8 @@ manage-lens-dialog {
         margin: 1rem 0;
         line-height: 1.5em;
         position: relative;
-        .icon-warning {
-          position: absolute;
-          right: 100%;
-          top: 0;
-          line-height: inherit;
-          margin-right: 1.5rem;
+        .icon-info {
+          font-size: 1.1rem;
         }
       }
     }
@@ -334,15 +330,6 @@ manage-lens-dialog {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-  }
-
-  section.visibility {
-    .invisible {
-      visibility: hidden;
-    }
-    .with-private-dataset {
-      margin-top: 0.25rem;
     }
   }
 

@@ -266,10 +266,10 @@ en:
         title: Manage
         unsaved_changes_message: You have unsaved changes
         visibility:
-          dataset_is_private: The source dataset is set to Private, so this Data Lens may not be shown in the catalog. Note that this page will appear in the catalog if the dataset is made public.
           hidden: Hidden from catalog
           shown: Shown in catalog
           title: Visibility
+          dataset_is_private: This Data Lens is based on the private dataset - {0}.  The Data Lens can only be shown in the catalog if the source dataset is made public.
           user_is_unprivileged: You must be an administrator or a publisher to modify Data Lens visibility. Please contact the site administrator to change this setting.
           view_moderation_approved: Approved
           view_moderation_pending: Pending

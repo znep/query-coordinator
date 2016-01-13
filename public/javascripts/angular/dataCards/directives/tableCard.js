@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/tableCard.html');
 const angular = require('angular');
-var rowsPerBlock = 50;
+var rowsPerBlock = 150;
 var rowHeight = $.relativeToPx('2rem');
 
 function tableCard(

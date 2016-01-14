@@ -4,6 +4,14 @@
     "./.eslintrc.json"
   ],
   "rules": {
+    // Don't complain about the strict pragma anywhere.
+    // This is a temporary workaround while Eslint's support for globs in
+    // rule definitions is in progress.
+    // See https://github.com/eslint/eslint/issues/3611 for details.
+    // We should still get failures as appropriate when running the linter
+    // for PRs and at the command line.
+    "strict": 0,
+
     // Never complain about the use of common debugging techniques.
     "angular/log": 0,
     "no-alert": 0,

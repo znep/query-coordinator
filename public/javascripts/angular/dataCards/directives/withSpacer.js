@@ -4,8 +4,6 @@ const angular = require('angular');
  * that would otherwise be outside the flow of the document (eg position:fixed/absolute).
  */
 angular.module('dataCards.directives').directive('withSpacer', function() {
-  'use strict';
-
   return {
     restrict: 'A',
     link: function($scope, element) {

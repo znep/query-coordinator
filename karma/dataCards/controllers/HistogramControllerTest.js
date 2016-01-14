@@ -84,6 +84,7 @@ describe('HistogramController', function() {
     card.defineObservableProperty('activeFilters', []);
     card.defineObservableProperty('bucketType', undefined);
     card.defineObservableProperty('visualizationType', 'histogram');
+    card.defineObservableProperty('aggregation', {});
     card.setOption = _.noop;
 
     return card;

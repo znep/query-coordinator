@@ -17,7 +17,7 @@ function ChoroplethController(
   var datasetId$ = dataset.pluck('id');
   var fieldName$ = model.pluck('fieldName');
   var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
-  var aggregation$ = model.observeOnLatest('page.aggregation');
+  var aggregation$ = model.observeOnLatest('aggregation');
   var unfilteredData$;
   var filteredData$;
   var whereClause$ = $scope.$observe('whereClause');

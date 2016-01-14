@@ -8,7 +8,7 @@ function ColumnChartController($scope, CardDataService, rx) {
   var model = $scope.$observe('model').filter(_.isPresent);
   var dataset = model.observeOnLatest('page.dataset');
   var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
-  var aggregation$ = model.observeOnLatest('page.aggregation');
+  var aggregation$ = model.observeOnLatest('aggregation');
   var dataRequests$ = new Rx.Subject();
   var dataResponses$ = new Rx.Subject();
   var unfilteredData$ = new Rx.Subject();
@@ -99,7 +99,7 @@ function ColumnChartController($scope, CardDataService, rx) {
       return Rx.Observable.fromPromise(dataPromise);
     });
 
-  $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+  $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('aggregation.unit'));
 
   $scope.$bindObservable('cardData', Rx.Observable.combineLatest(
       unfilteredData$.switchLatest().pluck('data'),

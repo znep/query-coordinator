@@ -101,6 +101,7 @@ describe('searchCard', function() {
     model.defineObservableProperty('customTitle', null);
     model.defineObservableProperty('showDescription', true);
     model.defineObservableProperty('column', fakeDatasetColumns[model.fieldName]);
+    model.defineObservableProperty('aggregation', {});
     model.page = pageModel;
 
     var outerScope = rootScope.$new();

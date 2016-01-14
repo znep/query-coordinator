@@ -1,6 +1,7 @@
 const angular = require('angular');
 angular.module('dataCards.models').
-  factory('Card', function(ServerConfig, CardOptions, Model, Schemas, Filter, Constants) {
+  factory('Card', function(ServerConfig, CardOptions, Model, Schemas, Filter, Constants, I18n, rx, Dataset) {
+    const Rx = rx;
 
     var schemas = Schemas.regarding('card_metadata');
 
@@ -32,6 +33,10 @@ angular.module('dataCards.models').
         this.page = parentPageModel;
         this.fieldName = fieldName;
         this.uniqueId = initialValues.id || _.uniqueId();
+
+        if (_.isNumber(this.version) && this.version >= schemas.getLatestSchemaVersion()) {
+          this.version = schemas.getLatestSchemaVersion();
+        }
 
         var cardOptions = CardOptions.deserialize(self, initialValues.cardOptions);
         this.defineObservableProperty('cardOptions', cardOptions);
@@ -109,6 +114,41 @@ angular.module('dataCards.models').
           'visualizationType',
           self.getCurrentValue('cardType')
         );
+
+        var aggregation$;
+
+        if (self.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation')) {
+          aggregation$ = self.observe('page.aggregation');
+        } else {
+          aggregation$ = Rx.Observable.combineLatest(
+            self.observe('aggregationField'),
+            self.observe('aggregationFunction'),
+            self.observe('page.dataset.rowDisplayUnit'),
+            self.observe('page.dataset.columns'),
+            function(aggregationField, aggregationFunction, rowDisplayUnit, columns) {
+              if (aggregationField === '*') {
+                aggregationField = null;
+              }
+
+              var unit = rowDisplayUnit || I18n.common.row;
+              if (_.has(columns, aggregationField)) {
+                unit = Dataset.extractHumanReadableColumnName(columns[aggregationField]);
+              } else if (aggregationFunction !== 'count' || aggregationField !== null) {
+                aggregationFunction = 'count';
+                aggregationField = null;
+              }
+
+              return {
+                'function': aggregationFunction || 'count',
+                fieldName: aggregationField,
+                unit: unit,
+                rowDisplayUnit: rowDisplayUnit || I18n.common.row
+              };
+            }
+          );
+        }
+
+        self.defineEphemeralObservablePropertyFromSequence('aggregation', aggregation$);
       },
 
       /**

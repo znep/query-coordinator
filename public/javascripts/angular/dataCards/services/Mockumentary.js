@@ -8,6 +8,8 @@ function Mockumentary(Page, Dataset, Card) {
       cardType: 'column',
       expanded: false,
       computedColumn: null,
+      aggregationField: null,
+      aggregationFunction: null,
       activeFilters: [
         {
           'function': 'BinaryOperator',
@@ -40,7 +42,7 @@ function Mockumentary(Page, Dataset, Card) {
       },
       primaryAmountField: null,
       primaryAggregation: null,
-      version: 3
+      version: 4
     };
 
     return _.merge(minimalPageMetadata, pageOptions);

@@ -18,7 +18,7 @@ function TableCardController(
   var firstColumn$ = $scope.$observe('firstColumn');
   var rowDisplayUnit$ = model.observeOnLatest('page.rowDisplayUnit');
   var cards$ = model.observeOnLatest('page.cards');
-  var aggregation$ = model.observeOnLatest('page.aggregation');
+  var aggregation$ = model.observeOnLatest('aggregation');
   var columns$ = dataset$.observeOnLatest('columns');
 
   $scope.$watch('isEmbedded', function(newVal, oldVal, scope) {

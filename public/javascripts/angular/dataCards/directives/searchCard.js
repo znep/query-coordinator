@@ -13,12 +13,12 @@ function searchCard(CardDataService, ServerConfig, SoqlHelpers, Constants, ellip
       dataset$.pluck('id'),
       model.observeOnLatest('column.physicalDatatype'),
       model.observeOnLatest('page.baseSoqlFilter'),
-      model.observeOnLatest('page.aggregation'),
-      function(fieldName, datasetId, physicalDatatype, pageBaseSoqlFilter, pageAggregation) {
+      model.observeOnLatest('aggregation'),
+      function(fieldName, datasetId, physicalDatatype, pageBaseSoqlFilter, aggregation) {
         if (_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype)) {
           return Rx.Observable.returnValue([]);
         } else {
-          return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation));
+          return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, aggregation));
         }
       }
     ).switchLatest();

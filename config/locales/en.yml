@@ -299,7 +299,10 @@ en:
       quick_filter_bar:
         clear_all: Clear All
         clear_all_flyout: Click to reset all filters
-        filter_title: Showing <span class="light">the {0}</span>
+        old_filter_title: Showing <span class="light">the {0}</span>
+        filter_title:
+          unfiltered: Showing <span class="light">all {0}</span>
+          filtered: Showing <span class="light">{0}</span>
       related_views:
         button: Other views of this data
         title: Other views of this data

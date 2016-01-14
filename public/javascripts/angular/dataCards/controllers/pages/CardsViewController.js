@@ -201,6 +201,7 @@ function CardsViewController(
   PageHelpersService,
   DeviceService,
   I18n,
+  PluralizeService,
   Constants,
   domain,
   rx) {
@@ -234,8 +235,6 @@ function CardsViewController(
 
   $scope.$bindObservable('dataset', page.observe('dataset'));
   $scope.$bindObservable('datasetPages', page.observe('dataset.pages'));
-  $scope.$bindObservable('aggregation', page.observe('aggregation'));
-  $scope.$bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(Rx.Observable.returnValue(page)));
   $scope.$bindObservable('sourceDatasetName', page.observe('dataset.name'));
 
   var cardModelsObservable = page.observe('cards');
@@ -274,6 +273,8 @@ function CardsViewController(
   $scope.$bindObservable('sourceDatasetURL', obeId$.map(function(obeId) {
     return I18n.a(OBE_DATASET_PAGE.format(obeId));
   }));
+
+  $scope.shouldShowAggregationChooser = page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation');
 
   /***************
   * User session *
@@ -442,6 +443,31 @@ function CardsViewController(
       }
     });
   };
+
+  var quickFilterBarTitle$;
+
+  if (page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation')) {
+    var dynamicTitle$ = PageHelpersService.dynamicAggregationTitle(Rx.Observable.returnValue(page));
+    quickFilterBarTitle$ = dynamicTitle$.map(function(dynamicTitle) {
+      return I18n.t('quickFilterBar.oldFilterTitle', dynamicTitle);
+    });
+  } else {
+    quickFilterBarTitle$ = Rx.Observable.combineLatest(
+      appliedFiltersForDisplay$,
+      page.observe('dataset.rowDisplayUnit'),
+      function(appliedFiltersForDisplay, rowDisplayUnit) {
+        rowDisplayUnit = PluralizeService.pluralize(rowDisplayUnit || I18n.common.row);
+
+        if (_.isEmpty(appliedFiltersForDisplay)) {
+          return I18n.t('quickFilterBar.filterTitle.unfiltered', rowDisplayUnit);
+        } else {
+          return I18n.t('quickFilterBar.filterTitle.filtered', rowDisplayUnit);
+        }
+      }
+    );
+  }
+
+  $scope.$bindObservable('quickFilterBarTitle', quickFilterBarTitle$);
 
   /***************************
   * View/edit cards behavior *

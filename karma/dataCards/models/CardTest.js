@@ -1,16 +1,22 @@
 describe('Card model', function() {
   'use strict';
 
+  var CURRENT_PAGE_METADATA_VERSION = 4;
+
   var Model;
   var Page;
   var Card;
   var Mockumentary;
+  var ServerConfig;
+  var page;
   var TEST_CARD_BLOB = {
-    'fieldName': 'testField',
-    'cardSize': 2,
-    'cardType': 'column',
-    'expanded': false,
-    'activeFilters': []
+    fieldName: 'testField',
+    cardSize: 2,
+    cardType: 'column',
+    expanded: false,
+    aggregationField: 'wabbit',
+    aggregationFunction: 'sum',
+    activeFilters: []
   };
 
   beforeEach(angular.mock.module('dataCards'));
@@ -20,10 +26,11 @@ describe('Card model', function() {
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     Mockumentary = $injector.get('Mockumentary');
+    ServerConfig = $injector.get('ServerConfig');
   }));
 
-  function makeCard(cardBlob) {
-    var page = Mockumentary.createPage();
+  function makeCard(cardBlob, pageOverrides, datasetOverrides) {
+    page = Mockumentary.createPage(pageOverrides, datasetOverrides);
     return Card.deserialize(page, cardBlob);
   }
 
@@ -182,6 +189,126 @@ describe('Card model', function() {
       instance.setOption('mapExtent', testValue);
       expect(instance.getCurrentValue('cardOptions').getCurrentValue('mapExtent')).to.eql(testValue);
     });
+  });
 
+  // Using Number() here because we define our schema versions as strings and JS doesn't care
+  // if a numeric key of an object is a string or a number but chai's equal() assertion uses
+  // strict equality.
+  describe('version', function() {
+    it('inherits its version from the page', function() {
+      var card = makeCard(TEST_CARD_BLOB, { version: CURRENT_PAGE_METADATA_VERSION - 1 });
+      expect(Number(card.version)).to.equal(CURRENT_PAGE_METADATA_VERSION - 1);
+    });
+
+    it('uses the latest card schema if the page metadata version is newer than the latest card schema', function() {
+      var card = makeCard(TEST_CARD_BLOB, { version: CURRENT_PAGE_METADATA_VERSION + 1 });
+      expect(Number(card.version)).to.equal(CURRENT_PAGE_METADATA_VERSION);
+    });
+  });
+
+  describe('aggregation', function() {
+    it('defaults to the page aggregation if the page is version 3 or lower', function(done) {
+      var card = makeCard(TEST_CARD_BLOB, { version: 3 });
+      Rx.Observable.subscribeLatest(
+        card.observe('aggregation').first(),
+        page.observe('aggregation').first(),
+        function(cardAggregation, pageAggregation) {
+          expect(cardAggregation).to.deep.equal(pageAggregation);
+          done();
+        }
+      );
+    });
+
+    it('defaults to the page aggregation if the appropriate feature flag is disabled', function(done) {
+      sinon.stub(ServerConfig, 'get').withArgs('enableDataLensCardLevelAggregation').returns(false);
+      var card = makeCard(TEST_CARD_BLOB, { version: 4 });
+      Rx.Observable.subscribeLatest(
+        card.observe('aggregation').first(),
+        page.observe('aggregation').first(),
+        function(cardAggregation, pageAggregation) {
+          expect(cardAggregation).to.deep.equal(pageAggregation);
+          ServerConfig.get.restore();
+          done();
+        }
+      );
+    });
+
+    describe('when using the card aggregation', function() {
+
+      // Required so aggregation gets correctly generated.
+      var datasetOverrides = {
+        columns: {
+          wabbit: {
+            name: 'wabbit',
+            physicalDatatype: 'rodent',
+            defaultCardType: 'invalid',
+            availableCardTypes: []
+          }
+        }
+      };
+
+      beforeEach(function() {
+        sinon.stub(ServerConfig, 'get').withArgs('enableDataLensCardLevelAggregation').returns(true);
+      });
+
+      afterEach(function() {
+        ServerConfig.get.restore();
+      });
+
+      it('uses the aggregation fields from the card blob', function(done) {
+        var card = makeCard(TEST_CARD_BLOB, { version: 4 }, datasetOverrides);
+        card.observe('aggregation').subscribe(function(aggregation) {
+          expect(aggregation['function']).to.equal('sum');
+          expect(aggregation.fieldName).to.equal('wabbit');
+          done();
+        });
+      });
+
+      it('defaults to count(*) if the aggregation fields are not present', function(done) {
+        var cardBlob = _.clone(TEST_CARD_BLOB);
+        delete cardBlob.aggregationFunction;
+        delete cardBlob.aggregationField;
+
+        var card = makeCard(cardBlob, { version: 4 }, datasetOverrides);
+        card.observe('aggregation').subscribe(function(aggregation) {
+          expect(aggregation['function']).to.equal('count');
+          expect(aggregation.fieldName).to.equal(null);
+          done();
+        });
+      });
+
+      it('defaults to count(*) if the aggregation fields are null', function(done) {
+        var cardBlob = _.clone(TEST_CARD_BLOB);
+        cardBlob.aggregationFunction = null;
+        cardBlob.aggregationField = null;
+
+        var card = makeCard(cardBlob, { version: 4 }, datasetOverrides);
+        card.observe('aggregation').subscribe(function(aggregation) {
+          expect(aggregation['function']).to.equal('count');
+          expect(aggregation.fieldName).to.equal(null);
+          done();
+        });
+      });
+
+      it('defaults to count(*) if the aggregationField is not a valid column', function(done) {
+        var cardBlob = _.clone(TEST_CARD_BLOB);
+        var card = makeCard(cardBlob, { version: 4 });
+        card.observe('aggregation').subscribe(function(aggregation) {
+          expect(aggregation['function']).to.equal('count');
+          expect(aggregation.fieldName).to.equal(null);
+          done();
+        });
+      });
+
+      it('uses the name of the column as the unit if a valid column is provided for aggregationField', function(done) {
+        var cardBlob = _.clone(TEST_CARD_BLOB);
+        var card = makeCard(cardBlob, { version: 4 }, datasetOverrides);
+        card.observe('aggregation').subscribe(function(aggregation) {
+          expect(aggregation.unit).to.equal('wabbit');
+          expect(aggregation.rowDisplayUnit).to.equal('row');
+          done();
+        });
+      });
+    });
   });
 });

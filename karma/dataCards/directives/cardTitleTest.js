@@ -7,6 +7,7 @@ describe('cardTitle', function() {
   var testHelpers;
   var Card;
   var Mockumentary;
+  var ServerConfig;
 
   beforeEach(angular.mock.module('dataCards'));
   beforeEach(angular.mock.module('dataCards/cards.scss'));
@@ -17,6 +18,7 @@ describe('cardTitle', function() {
     testHelpers = $injector.get('testHelpers');
     Card = $injector.get('Card');
     Mockumentary = $injector.get('Mockumentary');
+    ServerConfig = $injector.get('ServerConfig');
   }));
 
   /**
@@ -32,7 +34,7 @@ describe('cardTitle', function() {
       cardType: null
     });
 
-    var cardModel = new Card(pageModel, options.fieldName);
+    var cardModel = new Card(pageModel, options.fieldName, options);
 
     cardModel.set('expanded', false);
     cardModel.set('cardSize', 1);
@@ -63,6 +65,8 @@ describe('cardTitle', function() {
       fieldName: 'myFieldName',
       primaryAggregation: null,
       primaryAmountField: null,
+      aggregationField: null,
+      aggregationFunction: null,
       rowDisplayUnit: 'row',
       columns: {
         'myAggregationField': {
@@ -146,6 +150,40 @@ describe('cardTitle', function() {
         primaryAmountField: 'myAggregationField'
       }).element;
       expect(element.find('.dynamic-title')).to.have.text('Average My Version 1 Aggregation Field by');
+    });
+
+    describe('for card level aggregation', function() {
+      beforeEach(function() {
+        ServerConfig.override('enableDataLensCardLevelAggregation', true);
+      });
+
+      afterEach(function() {
+        ServerConfig.override('enableDataLensCardLevelAggregation', false);
+      });
+
+      it('should display the "count" dynamic title when "count" aggregation is selected', function() {
+        var element = createDirective({
+          rowDisplayUnit: 'my row unit',
+          aggregationFunction: 'count'
+        }).element;
+        expect(element.find('.dynamic-title')).to.have.text('Number of my row units by');
+      });
+
+      it('should display the "sum" dynamic title when "sum" aggregation is selected', function() {
+        var element = createDirective({
+          aggregationFunction: 'sum',
+          aggregationField: 'myAggregationField'
+        }).element;
+        expect(element.find('.dynamic-title')).to.have.text('Sum of My Version 1 Aggregation Fields by');
+      });
+
+      it('should display the "mean" dynamic title when "mean" aggregation is selected', function() {
+        var element = createDirective({
+          aggregationFunction: 'mean',
+          aggregationField: 'myAggregationField'
+        }).element;
+        expect(element.find('.dynamic-title')).to.have.text('Average My Version 1 Aggregation Field by');
+      });
     });
 
     it('should not display the dynamic title for a table card', function() {

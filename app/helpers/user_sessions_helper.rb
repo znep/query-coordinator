@@ -15,9 +15,9 @@ module UserSessionsHelper
   ##
   # Check to see if auth0 is available.
   def use_auth0?
-    return false if params.present? &&
+    return false if (params.present? &&
       params['use_auth0'].present? &&
-      params['use_auth0'] == 'false'
+      params['use_auth0'] == 'false')
 
     AUTH0_CONFIGURED && FeatureFlags.derive.use_auth0
   end

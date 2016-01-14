@@ -169,19 +169,12 @@ function TimelineChartController(
 
         dataRequests$.onNext(1);
 
-        // We expect the values in here to be set in the call to getTimelineData
-        // based on what date_trunc function to be used by the card
-        var soqlMetadata = {
-          dateTruncFunctionUsed: null
-        };
-
         var dataPromise = CardDataService.getTimelineData(
           fieldName,
           dataset.id,
           whereClauseFragment,
           datasetPrecision,
-          aggregationData,
-          soqlMetadata
+          aggregationData
         );
 
         dataPromise.then(
@@ -220,12 +213,6 @@ function TimelineChartController(
 
         dataRequests$.onNext(1);
 
-        // We expect the values in here to be set in the call to getTimelineData
-        // based on what date_trunc function to be used by the card
-        var soqlMetadata = {
-          dateTruncFunctionUsed: null
-        };
-
         var currentActiveFilters = cardModel.getCurrentValue('activeFilters');
 
         // Since we need to be able to render the unfiltered values outside
@@ -240,8 +227,7 @@ function TimelineChartController(
           dataset.id,
           SoqlHelpers.stripWhereClauseFragmentForFieldName(fieldName, whereClause, currentActiveFilters),
           datasetPrecision,
-          aggregationData,
-          soqlMetadata
+          aggregationData
         );
 
         dataPromise.then(

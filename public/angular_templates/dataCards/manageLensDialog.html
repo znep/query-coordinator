@@ -103,26 +103,20 @@
 </section>
 
 <section class="row visibility" ng-controller="ManageLensDialogVisibilityController">
-  <label class="span2" ng-class="{invisible: datasetIsPrivate}">{{(usingViewModeration ?
-    'manageLensDialog.visibility.viewModerationTitle' : 'manageLensDialog.visibility.title') | I18n}}
+  <label class="span2">
+    {{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationTitle' : 'manageLensDialog.visibility.title') | I18n}}
   </label>
   <div class="contents span10">
-    <soc-select ng-model="visibilityDropdownSelection"
-      ng-disabled="visibilityDropdownDisabled"
-      ng-hide="datasetIsPrivate">
+    <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled">
       <soc-option value="approved">{{visibilityDropdownStrings.approved}}</soc-option>
       <soc-option value="rejected">{{visibilityDropdownStrings.rejected}}</soc-option>
       <soc-option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">
         {{visibilityDropdownStrings.pending}}
       </soc-option>
     </soc-select>
-    <div class="flavor-text" ng-class="{'with-private-dataset': datasetIsPrivate}">
-      <div ng-show="datasetIsPrivate"
-        ng-bind-html="'manageLensDialog.visibility.datasetIsPrivate' | I18n">
-      </div>
-      <div ng-show="!datasetIsPrivate && !userCanApproveNominations"
-        ng-bind-html="'manageLensDialog.visibility.userIsUnprivileged' | I18n">
-      </div>
+    <div class="flavor-text" ng-show="visibilityDropdownError">
+      <span class="icon-info"></span>
+      <span ng-bind-html="visibilityDropdownError"></span>
     </div>
   </div>
 </section>

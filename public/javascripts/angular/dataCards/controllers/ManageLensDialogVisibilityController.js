@@ -53,16 +53,34 @@ function ManageLensDialogVisibilityController($q, $scope, $window, ServerConfig,
     )
   );
 
-  $scope.visibilityDropdownStrings = $scope.usingViewModeration ?
-    {
-      'approved': I18n.t('manageLensDialog.visibility.viewModerationApproved'),
-      'rejected': I18n.t('manageLensDialog.visibility.viewModerationRejected'),
-      'pending': I18n.t('manageLensDialog.visibility.viewModerationPending')
-    } :
-    {
-      'approved': I18n.t('manageLensDialog.visibility.shown'),
-      'rejected': I18n.t('manageLensDialog.visibility.hidden')
+  Rx.Observable.subscribeLatest(
+    datasetIsPrivate$,
+    userCanApproveNominations$,
+    $scope.page.observe('dataset'),
+    function(datasetIsPrivate, userCanApproveNominations, dataset) {
+      if (datasetIsPrivate) {
+        var datasetName = dataset.getCurrentValue('name');
+        var sourceDatasetURL = I18n.a(`/dataset/${dataset.id}`);
+        var sourceDatasetLink = `<a href="${sourceDatasetURL}" target="_blank">${datasetName}</a>`;
+        $scope.visibilityDropdownError = I18n.t('manageLensDialog.visibility.datasetIsPrivate', sourceDatasetLink);
+      } else if (!userCanApproveNominations) {
+        $scope.visibilityDropdownError = I18n.manageLensDialog.visibility.userIsUnprivileged;
+      }
+    }
+  );
+
+  if ($scope.usingViewModeration) {
+    $scope.visibilityDropdownStrings = {
+      approved: I18n.manageLensDialog.visibility.viewModerationApproved,
+      rejected: I18n.manageLensDialog.visibility.viewModerationRejected,
+      pending: I18n.manageLensDialog.visibility.viewModerationPending
     };
+  } else {
+    $scope.visibilityDropdownStrings = {
+      approved: I18n.manageLensDialog.visibility.shown,
+      rejected: I18n.manageLensDialog.visibility.hidden
+    };
+  }
 
   var save = function() {
     if (!$scope.components.visibility.hasChanges) {

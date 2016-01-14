@@ -332,7 +332,6 @@ en:
         flyoutFailedBody: Please contact Socrata Support
         flyoutFailedTitle: An error occurred
         flyoutIdle: Click to save your changes as a new page
-        flyoutNoChanges: No changes to be saved
         text: Save As
       save_as_panel:
         description: Enter a description for your new page (optional)

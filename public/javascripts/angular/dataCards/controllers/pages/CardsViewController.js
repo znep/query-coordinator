@@ -783,13 +783,7 @@ function CardsViewController(
   FlyoutService.register({
     selector: '.customize-bar .save-as-button',
     render: function() {
-      var flyoutTitle = I18n.saveAs.flyoutNoChanges;
-      if ($scope.isEphemeral) {
-        flyoutTitle = I18n.saveAs.flyoutEphemeral;
-      } else if ($scope.hasChanges) {
-        flyoutTitle = I18n.saveAs.flyoutIdle;
-      }
-
+      var flyoutTitle = $scope.isEphemeral ? I18n.saveAs.flyoutEphemeral : I18n.saveAs.flyoutIdle;
       return `<div class="flyout-title">${flyoutTitle}</div>`;
     },
     destroySignal: destroy$

@@ -34,7 +34,7 @@ var Dataset = ServerModel.extend({
             'displaytype_change', 'column_totals_changed', 'removed',
             'permissions_changed', 'new_comment', 'reloaded',
             'conditionalformatting_change', 'saved', 'dataset_last_modified',
-            'grid_error_message', 'columns_missing_error']);
+            'grid_error_message']);
 
         var ds = this;
         // Avoid overwriting functions with static values from Rails (e.g., totalRows)
@@ -2512,7 +2512,7 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(ds._activeRowSet))
         {
             ds._activeRowSet.deactivate();
-            _.each(['row_change', 'row_count_change', 'metadata_update', 'columns_missing_error'], function(evName)
+            _.each(['row_change', 'row_count_change', 'metadata_update'], function(evName)
                     { ds._activeRowSet.unbind(evName, null, ds); });
         }
 
@@ -2527,10 +2527,6 @@ var Dataset = ServerModel.extend({
             _.each(['row_change', 'row_count_change'], function(evName)
             {
                 ds._activeRowSet.bind(evName, function() { ds.trigger(evName, arguments); }, ds);
-            });
-            ds._activeRowSet.bind('columns_missing_error', function(payload) {
-              ds.hasMissingColumns = payload;
-              ds.trigger('columns_missing_error', [payload]);
             });
             ds._activeRowSet.bind('metadata_update', function()
                     { ds._update.apply(ds, arguments); });

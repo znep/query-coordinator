@@ -7,7 +7,7 @@ var RowSet = ServerModel.extend({
 
         this._dataset = ds;
 
-        this.registerEvent(['row_change', 'row_count_change', 'metadata_update', 'columns_missing_error']);
+        this.registerEvent(['row_change', 'row_count_change', 'metadata_update']);
 
         this._rows = {};
         this._rowIDLookup = {};
@@ -594,11 +594,7 @@ var RowSet = ServerModel.extend({
                         var req = $.extend({}, args, {data: v, batch: true});
                         rs.makeRequest(req);
                     });
-                    ServerModel.sendBatch(callResults, function(payload) {
-                      if (/Cannot find column/i.test(payload)) {
-                        rs.trigger('columns_missing_error', [payload]);
-                      }
-                    });
+                    ServerModel.sendBatch(callResults);
                 }
                 else
                 { callResults(); }

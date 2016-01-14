@@ -249,6 +249,14 @@
 .auth0login {
   text-align: center;
   margin-top: 0.5em;
+
+  // Auth0 is forcing text-align-last to start, which
+  // causes the login layout to look horrible.
+  // We're forcing it back to center as intended.
+  h1, button[type="submit"] {
+    text-align-last: center !important;
+  }
+
   p {
     text-align: left;
     padding: 0 0 1em 0.75em;

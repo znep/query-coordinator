@@ -22,7 +22,6 @@ describe('Export Menu', function() {
     _.extend(
       scope,
       {
-        hasChanges: false,
         editMode: false,
         currentUserHasSaveRight: true
       },
@@ -30,7 +29,7 @@ describe('Export Menu', function() {
     );
 
     var html = [
-      '<export-menu edit-mode="editMode" has-changes="hasChanges" page="page"></export-menu>'
+      '<export-menu edit-mode="editMode" page="page"></export-menu>'
     ].join('');
 
     var element = testHelpers.TestDom.compileAndAppend(html, scope);
@@ -60,15 +59,6 @@ describe('Export Menu', function() {
         testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
         expect(context.element.find('.tool-panel-main')).to.have.class('active');
         expect(context.element.find('.tool-panel-btn:visible')).to.have.length(3);
-      });
-
-      it('should be disabled if the page is in a dirty state', function() {
-        ServerConfig.override('enablePngDownloadUi', true);
-        context = createElement({hasChanges: true});
-
-        testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
-        expect(context.element.find('.tool-panel-main')).to.have.class('active');
-        expect(context.element.find('.export-to-polaroid-disabled')).to.have.length(1);
       });
 
       it('should trigger card selection mode on click', function(done) {

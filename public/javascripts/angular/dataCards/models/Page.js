@@ -45,7 +45,6 @@ function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) 
         'primaryAmountField',
         'primaryAggregation',
         'baseSoqlFilter',
-        'defaultDateTruncFunction',
         'rights'
       ];
 

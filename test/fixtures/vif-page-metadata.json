@@ -27,8 +27,6 @@
   "primaryAggregation": "sum",
   "primaryAmountField": "plausibility",
   "version": 4,
-  "largestTimeSpanDays": null,
-  "defaultDateTruncFunction": null,
   "sourceVif": {
     "origin": {
       "url": "https://localhost/view/r8n6-3khp",

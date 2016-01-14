@@ -53,7 +53,7 @@ class PageMetadataControllerTest < ActionController::TestCase
     assert_response(:success)
     result = JSON.parse(@response.body)
     assert((%w(
-      cards datasetId description name pageId version defaultDateTruncFunction permissions
+      cards datasetId description name pageId version permissions
     ) - result.keys).empty?)
   end
 

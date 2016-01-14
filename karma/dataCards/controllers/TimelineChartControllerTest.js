@@ -79,7 +79,6 @@ describe('TimelineChartController', function() {
     page.defineObservableProperty('dataset', dataset);
     page.defineObservableProperty('baseSoqlFilter', '');
     page.defineObservableProperty('aggregation', {});
-    page.defineObservableProperty('defaultDateTruncFunction', 'date_trunc_y');
     card.page = page;
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);

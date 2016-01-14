@@ -17,4 +17,25 @@ $(function() {
       editEnabled: false
     });
   };
+
+  $(document).ajaxError(function(event, xhr) {
+    var missingColumnsError = /Cannot find column/.test(xhr.responseText);
+    var notInDOM = $('.missing-columns-warning').length === 0;
+
+    if (missingColumnsError && notInDOM) {
+      var _$missingColumns = $('<div>', {'class': 'missing-columns-warning'});
+
+      _$missingColumns.append(
+        $('<div>', {'class': 'missing-columns-warning-message flash notice'}).
+          append(
+            $('<p>' + $.t('controls.charts.missing_column_html') + '</p>'),
+            $('<p>').append(
+              $('<small>(' + xhr.responseText + ')</small>')
+            )
+          )
+        );
+
+      $('body').append(_$missingColumns);
+    }
+  });
 });

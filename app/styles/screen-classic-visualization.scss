@@ -1,3 +1,30 @@
 .outerContainer {
   border: none;
 }
+
+.missing-columns-warning {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 11;
+  background: white;
+
+  .missing-columns-warning-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 350px;
+    height: 100px;
+    text-align: center;
+    padding: 1rem;
+    margin-left: calc((350px + 2rem)/-2);
+    margin-top: calc((100px + 2rem)/-2);
+    overflow: auto;
+
+    p + p {
+      margin-top: 1rem;
+    }
+  }
+}

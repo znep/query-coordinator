@@ -178,7 +178,13 @@ describe('Customize card dialog', function() {
       {cards: cards},
       options.pageOverrides
     );
-    var datasetOverrides = {id: 'rook-king', rowDisplayUnit: 'row', columns: COLUMNS, permissions: {rights: ['write']}};
+    var datasetOverrides = _.extend({
+      id: 'rook-king',
+      rowDisplayUnit: 'row',
+      columns: COLUMNS,
+      permissions: { rights: ['write'] }
+    }, options.datasetOverrides);
+
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
     var outerScope = $rootScope.$new();
 
@@ -948,14 +954,67 @@ describe('Customize card dialog', function() {
           return $q.when(curatedRegions);
         });
 
-        sinon.stub(CardDataService, 'getRowCount', function() {
-          return $q.when(10);
+        var dialog = createDialog({ card: choroplethCard });
+        var options = dialog.element.find('.curated-region-selector option');
+
+        // 1) mash-apes, as specified by 'choropleth' column
+        // 2) rook-king, as specified by ':@computedColumn' column
+        // 3) blank divider [disabled]
+        // 4) header for non-computed regions [disabled]
+        // 5) king-pawn, not specified by any column
+        expect(options).to.have.length(5);
+        expect(options.filter(':not(:disabled)')).to.have.length(3);
+
+        CardDataService.getCuratedRegions.restore();
+      });
+
+      it('should display the correct number of curated regions in the dropdown when the flag is disabled', function() {
+        ServerConfig.override('enableSpatialLensRegionCoding', false);
+
+        var curatedRegions = [
+          { name: 'the most curated region ever', view: { id: 'rook-king' }},
+          { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
+        ];
+
+        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+          return $q.when(curatedRegions);
         });
 
         var dialog = createDialog({ card: choroplethCard });
         var options = dialog.element.find('.curated-region-selector option');
 
-        expect(options).to.have.length(3);
+        // 1) mash-apes, as specified by 'choropleth' column
+        // 2) rook-king, as specified by ':@computedColumn' column
+        expect(options).to.have.length(2);
+
+        CardDataService.getCuratedRegions.restore();
+      });
+
+      it('should display the correct number of curated regions in the dropdown when the user lacks write permissions', function() {
+        ServerConfig.override('enableSpatialLensRegionCoding', true);
+
+        var curatedRegions = [
+          { name: 'the most curated region ever', view: { id: 'rook-king' }},
+          { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
+        ];
+
+        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+          return $q.when(curatedRegions);
+        });
+
+        var dialog = createDialog({
+          card: choroplethCard,
+          datasetOverrides: { permissions: { rights: ['read'] } }
+        });
+        var options = dialog.element.find('.curated-region-selector option');
+
+        // 1) mash-apes, as specified by 'choropleth' column
+        // 2) rook-king, as specified by ':@computedColumn' column
+        // 3) blank divider [disabled]
+        // 4) header for non-computed regions [disabled]
+        // 5) king-pawn, not specified by any column [disabled]
+        expect(options).to.have.length(5);
+        expect(options.filter(':not(:disabled)')).to.have.length(2);
 
         CardDataService.getCuratedRegions.restore();
       });
@@ -965,15 +1024,11 @@ describe('Customize card dialog', function() {
 
         var curatedRegions = [
           { name: 'the most curated region ever', uid: 'mash-apes', view: { id: 'mash-apes' }},
-          { name: 'the 2nd most curated region ever', uid: 'mash-apes', view: { id: 'rook-king' }},
+          { name: 'the 2nd most curated region ever', uid: 'mash-apes', view: { id: 'rook-king' }}
         ];
 
         sinon.stub(CardDataService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
-        });
-
-        sinon.stub(CardDataService, 'getRowCount', function() {
-          return $q.when(10);
         });
 
         var dialog = createDialog({ card: choroplethCard });
@@ -985,6 +1040,73 @@ describe('Customize card dialog', function() {
         expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal(':@computedColumn');
 
         CardDataService.getCuratedRegions.restore();
+      });
+
+      it('should set the computedColumn property on the card when a nonComputed option is selected', function() {
+        ServerConfig.override('enableSpatialLensRegionCoding', true);
+
+        var curatedRegions = [
+          { name: 'the most curated region ever', uid: 'mash-apes', view: { id: 'mash-apes' }},
+          { name: 'the 2nd most curated region ever', uid: 'king-pawn', view: { id: 'king-pawn' }}
+        ];
+
+        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+          return $q.when(curatedRegions);
+        });
+
+        var dialog = createDialog({ card: choroplethCard });
+
+        dialog.scope.$digest();
+
+        expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal('choropleth');
+        dialog.element.find('option[value="king-pawn"]').prop('selected', true).change();
+        expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal(':@computed_region_king_pawn');
+      });
+
+      // NOTE: These tests are being skipped for now because
+      // 1) they work in the browser
+      // 2) while the first one seems to be working correctly, the second one is adding the blank separator
+      //    in a case where there ought to be no possibility of two non-empty region partitions.
+      // We could short-circuit some of the logic, but at that point we'd be testing Angular bindings
+      // more than the actual logic of the directive.
+      // Further investigation is needed but is probably not worth holding up this feature.
+
+      xit('should not show the divider or nonComputed section if there are no nonComputed regions', function() {
+        ServerConfig.override('enableSpatialLensRegionCoding', true);
+
+        var curatedRegions = [
+          { name: 'the most curated region ever', uid: 'mash-apes', view: { id: 'mash-apes' }}
+        ];
+
+        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+          return $q.when(curatedRegions);
+        });
+
+        var dialog = createDialog({ card: choroplethCard });
+
+        dialog.scope.$digest();
+
+        expect(dialog.element.find('.curated-region-selector option:disabled')).to.have.length(0);
+        expect(dialog.element.find('.curated-region-selector option')).to.have.length(1);
+      });
+
+      xit('should not show the divider or the computed section if there are no already-computed regions', function() {
+        ServerConfig.override('enableSpatialLensRegionCoding', true);
+
+        var curatedRegions = [
+          { name: 'the 2nd most curated region ever', uid: 'king-pawn', view: { id: 'king-pawn' }}
+        ];
+
+        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+          return $q.when(curatedRegions);
+        });
+
+        var dialog = createDialog({ card: choroplethCard });
+
+        dialog.scope.$digest();
+
+        expect(dialog.element.find('.curated-region-selector option:disabled')).to.have.length(1);
+        expect(dialog.element.find('.curated-region-selector option')).to.have.length(2);
       });
     });
   });

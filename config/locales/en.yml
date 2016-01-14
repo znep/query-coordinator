@@ -53,11 +53,11 @@ en:
         classic_chart: If you'd like to customize this Socrata visualization, locate it in the catalog, edit it, and then add it to your story.
         column_chart_warning: 'Note: This would result in a bar chart with over a hundred bars, it might be slower than other charts'
         column_label: Column
+        curated_region_messages:
+          not_yet_computed: New boundaries (require extra computation)
+          permissions: 'Boundaries not yet enabled by site admin:'
         custom: (Custom...)
         customize_prompt: Customize this card
-        disabled_curated_region_message:
-          dataset_too_big: 'Boundaries not yet supported for datasets with &gt; 1,000,000 rows:'
-          permissions: 'Boundaries not yet enabled by site admin:'
         generic_prompt: Choose a column from the dropdown above to add a new visualization
         histogram_column_chart_warning: 'Note: Because of the distribution of values of this column, it will be presented as a histogram of bars instead of a distribution curve'
         not_supported: Not currently supported
@@ -118,6 +118,9 @@ en:
         average: average {0}
         number_of: number of {0}
         sum_of: sum of {0}
+      choropleth:
+        pending_computation: <p>This is the first time this boundary is being used for this dataset.</p><p>It can take a few minutes (more for large datasets) for the map to render once you add it to the page.</p>
+        computation_in_progress: This visualization is being computed. Check back in a few minutes.
       common:
         by: by
         cancel: Cancel
@@ -142,8 +145,6 @@ en:
         longitude: Longitude
         no_value: No value
         ok: OK
-        pending_adding_column: Add this card to the page to begin computing this visualization.
-        pending_computation: This visualization is being computed. Check back in a few minutes.
         permissions:
           permissions: Permissions
           private: Private

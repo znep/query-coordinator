@@ -33,11 +33,6 @@ current_dataset_metadata_version:
 current_page_metadata_version:
   description: The current version of page metadata that the app should read and write.
   defaultValue: 1
-data_lens_more_views_method:
-  description: Determines how the More Views pane should try to populate data lenses. "none" will show no data lenses; "multi_fetch" will use getByTableId on the NBE dataset to include data lenses (which may be broken until a Core update, see discussion on CORE-7307).
-  defaultValue: none
-  disableTrueFalse: true
-  expectedValues: none multi_fetch
 data_lens_transition_state:
   description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
   defaultValue: post_beta

@@ -372,7 +372,7 @@ function FeatureMapController(
           featureBounds = LeafletHelpersService.buildBounds(serverExtent);
         } catch (error) {
           $log.warn(`Unable to build bounds from serverExtent: ${serverExtent}`);
-          return serverExtent;
+          return defaultExtent;
         }
         if (defaultBounds.contains(featureBounds)) {
           return serverExtent;

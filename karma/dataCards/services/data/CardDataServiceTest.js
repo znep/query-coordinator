@@ -1072,10 +1072,11 @@ describe('CardDataService', function() {
       $httpBackend.flush();
     });
 
-    it('should resolve for an incorrectly formatted extent', function(done) {
+    it('should resolve with undefined for an empty extent', function(done) {
       getExpectation.respond('[{}]');
       featureExtentPromise.
-        then(function() {
+        then(function(value) {
+          expect(value).to.be.undefined;
           done();
         }, function() {
           throw new Error('Should not be rejected');
@@ -1083,6 +1084,16 @@ describe('CardDataService', function() {
       $httpBackend.flush();
     });
 
+    it('should resolve with an incorrectly formatted extent', function(done) {
+      getExpectation.respond('BET YOU WERENT EXPECTING THIS');
+      featureExtentPromise.
+        then(function(value) {
+          done();
+        }, function() {
+          throw new Error('Should not be rejected');
+        });
+      $httpBackend.flush();
+    });
   });
 
   describe('getSampleData', function() {

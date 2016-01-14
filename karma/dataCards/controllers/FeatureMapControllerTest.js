@@ -536,9 +536,11 @@ describe('FeatureMapController', function() {
       dataset.defineObservableProperty('permissions', { isPublic: true });
     });
 
-    it('should not cause an issue if the server request fails', function() {
+    it('should use the default extent if the server request fails', function() {
       var deferred = $q.defer();
+      var defaultExtent = ZOOMED_IN_EXTENT;
       CardDataService.getFeatureExtent.returns(deferred.promise);
+      CardDataService.getDefaultFeatureExtent.returns(defaultExtent);
       var elementInfo = buildElement({
         dataset: dataset
       });
@@ -546,9 +548,23 @@ describe('FeatureMapController', function() {
       $scope.$apply(function() {
         deferred.reject();
       });
-      expect($scope.busy).to.equal(true);
+      expect(elementInfo.scope.featureExtent).to.equal(defaultExtent);
     });
 
+    it('should use the default extent if the server request resolves to undefined', function() {
+      var deferred = $q.defer();
+      var defaultExtent = ZOOMED_IN_EXTENT;
+      CardDataService.getFeatureExtent.returns(deferred.promise);
+      CardDataService.getDefaultFeatureExtent.returns(defaultExtent);
+      var elementInfo = buildElement({
+        dataset: dataset
+      });
+      var $scope = elementInfo.scope;
+      $scope.$apply(function() {
+        deferred.resolve(undefined);
+      });
+      expect(elementInfo.scope.featureExtent).to.equal(defaultExtent);
+    });
   });
 
   describe('explicit extent', function() {

@@ -38,13 +38,6 @@ function ExportMenu(WindowState, ServerConfig, FlyoutService, I18n, $sce) {
 
       // Enter card selection mode if possible
       $scope.initiateCardSelectionMode = function(type) {
-
-        // Because polaroid needs to load a clean page to work with,
-        // we require the page to be saved before using it.
-        if (type === 'polaroid' && $scope.hasChanges) {
-          return;
-        }
-
         $scope.panelActive = false;
         $scope.allowChooserModeCancel = true;
         $scope.$emit('enter-export-card-visualization-mode', type);

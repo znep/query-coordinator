@@ -55,7 +55,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(1);
+	var Analytics = __webpack_require__(7);
 
+	utils.Analytics = Analytics;
 	module.exports = utils;
 
 
@@ -463,7 +465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var name = cookieName + '=';
 	    var cookies = document.cookie.split(/;\s*/);
 
-	    for(var i = 0; i < cookies.length; i++) {
+	    for (var i = 0; i < cookies.length; i++) {
 	      var cookie = cookies[i];
 
 	      if (cookie.indexOf(name) === 0) {
@@ -1081,6 +1083,114 @@ return /******/ (function(modules) { // webpackBootstrap
 	    throw new Error('process.chdir is not supported');
 	};
 	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(2);
+	var $ = __webpack_require__(3);
+
+	var Analytics = function(logger) {
+
+	  // support attaching arbitrary logger
+	  logger = logger || console;
+
+	  var analyticsUrl = '/analytics/add';
+	  var defaultEntity = 'domain-intern';
+
+	  // Default buffer size for
+	  var queueCapacity = 20;
+
+	  // Queue of metrics for consolidation and minimizing outgoing PUT request.
+	  var queue = [];
+
+	  // true for IE9+, Chrome, Firefox (as of 8/12/14)
+	  var hasPerformanceTiming = !(_.isUndefined(window.performance) || _.isUndefined(window.performance.timing));
+
+	  // Whether or not we should send computed metrics to the analytics service backend.
+	  var serverUploadEnabled = true;
+
+	  var httpRequests = [];
+
+	  var currentTime = function() {
+	    return Date.now();
+	  };
+
+	  var navigationStartTime = function() {
+	    var startTime;
+	    if (hasPerformanceTiming) {
+	      startTime = window.performance.timing.navigationStart || window.performance.timing.fetchStart || undefined;
+	    }
+	    return startTime;
+	  };
+
+	  // Controls whether or not to send computed metrics up to
+	  // the backend. Defaults to enabled.
+	  this.setServerUploadEnabled = function(isEnabled) {
+	    serverUploadEnabled = isEnabled;
+	  };
+
+	  /**
+	   * Set the size of the metrics buffer.
+	   *
+	   * @param size Desired size of the metrics buffer.
+	   */
+	  this.setMetricsQueueCapacity = function(size) {
+	    if (size > 0) {
+	      queueCapacity = size;
+	    }
+	  };
+
+	  /**
+	   * Posts an analytics metric to the analytics endpoint
+	   * Analytics endpoint performs checking to determine if it is a valid metric.
+	   *
+	   * @param {string} entityName
+	   * @param {string} metricName
+	   * @param {string} metricValue
+	   */
+	  this.sendMetric = function(entityName, metricName, metricValue) {
+	    queue.push({entity: entityName, metric: metricName, increment: metricValue});
+	    if (queue.length >= queueCapacity) {
+	      this.flushMetrics();
+	    }
+	  };
+
+	  /**
+	   * Sends any queued metrics
+	   */
+	  this.flushMetrics = function() {
+	    var analyticsPayload;
+	    var analyticsConfig;
+
+	    if (serverUploadEnabled) {
+	      if (queue.length === 0) {
+	        return;
+	      }
+	      // create the batched payload and reset the queue
+	      analyticsPayload = JSON.stringify({'metrics': queue});
+	      queue = [];
+
+	      $.ajax({
+	        url: analyticsUrl,
+	        type: 'post',
+	        contentType: 'application/text',
+	        headers: {
+	          'X-Socrata-Auth': 'unauthenticated'
+	        },
+	        data: analyticsPayload,
+	        dataType: 'json'
+	      });
+	    }
+	  };
+
+	  // We want to flush metrics on unload in case we've queued up some metrics and haven't explicitly flushed.
+	  window.onbeforeunload = this.flushMetrics;
+	};
+
+	module.exports = Analytics;
 
 
 /***/ }

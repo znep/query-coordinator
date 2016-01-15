@@ -1,7 +1,7 @@
-var utils = require('socrata-utils');
+var utils = require('../src/utils');
 var $ = jQuery = require('jquery');
 
-describe('socrata-utils.js', function() {
+describe('utils.js', function() {
 
   'use strict';
 

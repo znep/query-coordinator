@@ -14,9 +14,6 @@ module.exports = {
     library: ['socrata', 'utils']
   },
   resolve: {
-    alias: {
-      'socrata-utils': path.resolve('./src/utils.js')
-    },
     modulesDirectories: ['node_modules', 'bower_components']
   },
   devtool: 'cheap-source-map'

@@ -112,8 +112,6 @@ class PageMetadataManager
 
     initialize_metadata_key_names
 
-    update_metadata_date_trunc(page_metadata, options)
-
     # Make sure that there is a table card
     has_table_card = page_metadata['cards'].any? do |card|
       card['fieldName'] == '*' || card['cardType'] == 'table'
@@ -230,16 +228,9 @@ class PageMetadataManager
       columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank? &&
       cards.select { |card| card['cardType'] == 'histogram' }.empty?
 
-    if columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
-      page_metadata['defaultDateTruncFunction'].blank?
-        update_date_trunc_function(page_metadata, columns, cards, options)
-    end
-
     rolled_up_columns_soql = (
       columns_to_roll_up +
-      columns_to_roll_up_by_date_trunc(normalized_columns, cards).map do |field_name|
-        "#{page_metadata['defaultDateTruncFunction']}(#{field_name})"
-      end +
+      date_trunc_column_queries(page_metadata['datasetId'], cards) +
       bucketed_column_queries(page_metadata['datasetId'], cards)
     ).compact.join(', ')
 
@@ -304,7 +295,6 @@ class PageMetadataManager
   def ensure_page_metadata_properties(metadata)
     metadata[:primaryAggregation] ||= nil
     metadata[:primaryAmountField] ||= nil
-    metadata[:largestTimeSpanDays] ||= nil
     metadata
   end
 
@@ -366,15 +356,6 @@ class PageMetadataManager
     result
   end
 
-  def update_metadata_date_trunc(page_metadata, options = {})
-    page_id = page_metadata['pageId']
-    dataset_id = page_metadata.fetch('datasetId')
-    cards = page_metadata['cards']
-    columns = fetch_dataset_columns(dataset_id, options)
-
-    update_date_trunc_function(page_metadata, columns, cards, options)
-  end
-
   def update_metadata_rollup_table(page_metadata, options = {})
     page_id = page_metadata['pageId']
     dataset_id = page_metadata.fetch('datasetId')
@@ -393,20 +374,6 @@ class PageMetadataManager
       args.reverse_merge!(options)
       update_rollup_table(args)
     end
-  end
-
-  def update_date_trunc_function(page_metadata, columns, cards, options)
-    # Need to find the largest time nugget for rollups because rollups are not magic
-    # We will only be able to roll-up dates on the largest time span. For example,
-    # if we have a 3 columns on the page with different date granularities, i.e.
-    # one is best displayed by 'y', another by 'ym', and another by 'ymd', we will
-    # only be able to show time rolled-up by 'y', the largest time span.
-    largest_time_span_days = largest_time_span_in_days_being_used_in_columns(
-      columns_to_roll_up_by_date_trunc(transformed_columns(columns), cards),
-      page_metadata['datasetId']
-    )
-    page_metadata['largestTimeSpanDays'] = largest_time_span_days
-    page_metadata['defaultDateTruncFunction'] = date_trunc_function(largest_time_span_days)
   end
 
   def transformed_columns(columns)
@@ -433,11 +400,11 @@ class PageMetadataManager
     end
   end
 
-  # This is pulled from datasetPrecision calculation in cardVisualizationTimelineChart
+  # This is pulled from datasetPrecision calculation in TimelineChartController
   # If the max date is > 20 years after the start date: YEAR
   # If the max date is > 1 year after the start date: MONTH
   # Else: DAY
-  def date_trunc_function(days)
+  def date_trunc_function_for_time_range(days)
     # Default to the largest granularity if we don't have
     # a time range (possibly because all timestamp columns
     # have no data).
@@ -448,6 +415,20 @@ class PageMetadataManager
     prec << 'm' if years <= 20
     prec << 'd' if years <= 1
     "date_trunc_#{prec}"
+  end
+
+  # Collects all timeline charts, uses a heuristic to determine the optimal
+  # date trunc function for each, creates a rollup query clause, and
+  # dedupes the resulting array.
+  def date_trunc_column_queries(dataset_id, cards)
+    cards.select { |card| card['cardType'] == 'timeline' }.
+      map do |card|
+        field_name = card['fieldName']
+        days = time_range_in_column(dataset_id, field_name)
+        date_trunc_function = date_trunc_function_for_time_range(days)
+        "#{date_trunc_function}(#{field_name})"
+      end.
+      uniq
   end
 
   # Returns an array of strings containing fragments of SoQL queries for
@@ -495,27 +476,16 @@ class PageMetadataManager
     phidippides.fetch_dataset_metadata(dataset_id, options)
   end
 
-  def largest_time_span_in_days_being_used_in_columns(time_column_names, dataset_id)
-    time_column_names.map do |column_name|
-      begin
-        time_range_in_column(dataset_id, column_name)
-      rescue Phidippides::NoMinMaxInColumnException => error
-        report_error("No min and max available for date column: #{column_name}", error)
-        nil
-      end
-    end.compact.max
-  end
-
   def cards_aggregation_clause(page_metadata)
-  
-    result = page_metadata[:cards].map do |card| 
+
+    result = page_metadata[:cards].map do |card|
       func = card['aggregationFunction']
       field = card['aggregationField']
       if func && field
         "#{func}(#{field})"
-      else 
+      else
         nil
-      end 
+      end
     end
 
     #if no card aggregation, use the default page metadata aggregation
@@ -523,15 +493,15 @@ class PageMetadataManager
 
     if page_metadata['primaryAggregation'].present? && page_metadata['primaryAmountField'].present?
       page_aggregation = "#{page_metadata['primaryAggregation']}(#{page_metadata['primaryAmountField']}) as value"
-      result << page_aggregation 
+      result << page_aggregation
     end
     result = result.compact.uniq.join(', ')
 
     if result.blank?
       result = "count(*) as value"
-    end 
+    end
     result
-  end 
+  end
 
   def time_range_in_column(dataset_id, field_name)
     result = fetch_min_max_in_column(dataset_id, field_name)
@@ -634,5 +604,4 @@ class PageMetadataManager
       MetricQueue.instance.push_metric(domainId, "datalens-loaded", 1)
       MetricQueue.instance.push_metric("views-loaded-" + domainId, "view-" + fxf_id.to_s, 1)
   end
-
 end

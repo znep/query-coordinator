@@ -1,5 +1,6 @@
 $(function() {
-  var $outerContainer = $('.outerContainer');
+  'use strict';
+
   var $innerContainer = $('#renderTypeContainer');
 
   window.renderVisualization = function(viewObject) {

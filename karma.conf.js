@@ -11,6 +11,8 @@ webpackConfig[1].output = {
 webpackConfig[1].devtool = 'inline-source-map';
 
 webpackConfig[1].externals['socrata-utils'] = 'socrata.utils';
+delete webpackConfig[1].externals['react'];
+delete webpackConfig[1].externals['react-dom'];
 
 module.exports = function(config) {
   config.set({

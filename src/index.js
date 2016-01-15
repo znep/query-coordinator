@@ -3,6 +3,7 @@ var dataProviders = require('./dataProviders');
 // vv these requires have the side effect of registering jQuery plugins vv
 var ChoroplethMap = require('./ChoroplethMap');
 var ColumnChart = require('./ColumnChart');
+var DistributionChart = require('./DistributionChart');
 var FeatureMap = require('./FeatureMap');
 var Table = require('./Table');
 var TimelineChart = require('./TimelineChart');
@@ -15,6 +16,7 @@ module.exports = {
   dataProviders: dataProviders,
   ChoroplethMap: ChoroplethMap,
   ColumnChart: ColumnChart,
+  DistributionChart: DistributionChart,
   FeatureMap: FeatureMap,
   Table: Table,
   TimelineChart: TimelineChart

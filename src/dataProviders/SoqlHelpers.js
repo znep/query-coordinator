@@ -11,7 +11,6 @@ var VALID_BINARY_OPERATORS = ['=', '!=', '<', '<=', '>', '>='];
  * @param {Object} vif
  */
 function aggregationClause(vif) {
-
   switch (_.get(vif, 'aggregation.function')) {
 
     case 'sum':

@@ -32,7 +32,9 @@ module.exports = [
       'd3': 'd3',
       'lodash': '_',
       'moment': 'moment',
-      'leaflet': 'L'
+      'leaflet': 'L',
+      'react': 'react',
+      'react-dom': 'react-dom'
     },
     output: {
       path: __dirname + '/dist',

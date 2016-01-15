@@ -1,6 +1,7 @@
 var ChoroplethMap = require('./ChoroplethMap');
 var ChoroplethMapUtils = require('./ChoroplethMapUtils');
 var ColumnChart = require('./ColumnChart');
+var DistributionChart = require('./DistributionChart');
 var Pager = require('./Pager');
 var TimelineChart = require('./TimelineChart');
 var Table = require('./Table');
@@ -12,6 +13,7 @@ module.exports = {
   ChoroplethMap: ChoroplethMap,
   ChoroplethMapUtils: ChoroplethMapUtils,
   ColumnChart: ColumnChart,
+  DistributionChart: DistributionChart,
   Pager: Pager,
   Table: Table,
   TimelineChart: TimelineChart,

@@ -8,6 +8,7 @@ webpackConfig.output = {
   libraryTarget: 'var',
   pathinfo: true
 };
+webpackConfig.devtool = 'inline-source-map';
 
 webpackConfig.externals['socrata-utils'] = 'socrata.utils';
 
@@ -32,7 +33,7 @@ module.exports = function(config) {
       'bower_components/leaflet/dist/leaflet.css',
       'bower_components/lodash/lodash.js',
       'bower_components/moment/moment.js',
-      'bower_components/socrata-utils/socrata.utils.js',
+      'bower_components/socrata-utils/dist/socrata.utils.js',
       'bower_components/vector-tile/dist/vectortile.js',
       'bower_components/simple-statistics/src/simple_statistics.js',
       'bower_components/chroma-js/chroma.js',
@@ -52,7 +53,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'src/views/styles/*.scss': ['scss'],
-      'karma/**/*spec.js': ['webpack']
+      'karma/**/*spec.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use

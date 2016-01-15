@@ -1033,6 +1033,9 @@ body.state-view-cards {
 }
 
 .add-card-select-column {
+  label {
+    color: $card-aggregation-selector-label-text-color;
+  }
   soc-select {
     background-color: $add-card-select-column-soc-select-background-color;
   }
@@ -1055,6 +1058,18 @@ body.state-view-cards {
   > .add-card-settings:hover {
     color: $add-card-controls-add-card-settings-hover-color;
     background-color: $add-card-controls-add-card-settings-hover-background-color;
+  }
+}
+
+// Card aggregation
+.card-aggregation-input-group {
+  label {
+    color: $card-aggregation-selector-label-text-color;
+  }
+  input {
+    background-color: $soc-select-background-color;
+    border: 1px solid $soc-select-border-color;
+    color: $soc-select-disabled-text-color;
   }
 }
 

@@ -9,7 +9,12 @@ const angular = require('angular');
  * to decide when the user has finished editing
  * (for example, an OK button).
  */
-function columnAndVisualizationSelector(Card, DatasetColumnsService, $log, rx) {
+function columnAndVisualizationSelector(
+  Card,
+  DatasetColumnsService,
+  $log,
+  rx,
+  ServerConfig) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -153,6 +158,9 @@ function columnAndVisualizationSelector(Card, DatasetColumnsService, $log, rx) {
       scope.selectedCardModel = null;
       scope.availableCardTypes = [];
       scope.addVisualizationPrompt = scope.addVisualizationPrompt || 'addCardDialog.prompt';
+
+      var shouldShowAggregationSelector$ = ServerConfig.get('enableDataLensCardLevelAggregation') ? selectedCardModel$ : Rx.Observable.returnValue(false);
+      scope.$bindObservable('shouldShowAggregationSelector', shouldShowAggregationSelector$);
 
       scope.$bindObservable(
         'availableCardTypes',

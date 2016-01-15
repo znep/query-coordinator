@@ -1,0 +1,32 @@
+<div class="card-aggregation-input-group">
+  <label>{{::'cardAggregationSelector.valueLabel' | I18n}}</label>
+  <soc-select
+    ng-disabled="hasNoAggregableColumns"
+    ng-class="{disabled: hasNoAggregableColumns}"
+    ng-model="aggregationField">
+    <soc-option
+      value="null"
+      disabled="disabled">{{::'cardAggregationSelector.chooseCount' | I18n}}</soc-option>
+    <soc-option
+      value="*"
+      ng-selected="aggregationField === '*'"
+      title="{{::'cardAggregationSelector.addThisAggregation' | I18n}}">{{pluralRowDisplayUnit}}</soc-option>
+    <soc-option value="null" disabled="disabled"></soc-option>
+    <soc-option
+      value="null"
+      disabled="disabled">{{::'cardAggregationSelector.chooseSum' | I18n}}</soc-option>
+    <soc-option
+      ng-repeat="column in aggregationColumns"
+      value="{{column.id}}"
+      ng-selected="aggregationField === column.id"
+      title="{{::'cardAggregationSelector.addThisAggregation' | I18n}}">{{column.label}}</soc-option>
+  </soc-select>
+</div>
+<div class="card-aggregation-input-group">
+  <label for="aggregation-function">{{::'cardAggregationSelector.functionLabel' | I18n}}</label>
+  <input
+    id="aggregation-function"
+    type="text"
+    ng-model="aggregationFunction"
+    disabled="disabled" />
+</div>

@@ -1,6 +1,10 @@
-<h2><span class="icon-settings"></span> Settings</h2>
+<h2><span class="icon-settings"></span> {{::'customizeCardDialog.title' | I18n}}</h2>
 <div class="row">
   <div class="span7">
+    <card-aggregation-selector
+      page="page"
+      card-model="customizedCard"
+      ng-if="shouldShowAggregationSelector"></card-aggregation-selector>
     <div class="customize-card-preview">
       <card ng-if="customizedCard"
         model="customizedCard"

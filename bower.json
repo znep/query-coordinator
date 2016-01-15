@@ -1,8 +1,8 @@
 {
   "name": "socrata-utils",
-  "version": "0.0.13",
+  "version": "1.0.0",
   "main": [
-    "socrata.utils.js"
+    "dist/socrata.utils.js"
   ],
   "ignore": [
     "bower_components/",

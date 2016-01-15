@@ -1,18 +1,26 @@
 # Socrata Utils
 
-Utilities that we can share between frontend projects.
+Useful utility functions and modules that we can share between frontend projects.
 
 ## Installation and usage
 
-If you are contributing to this library, run `npm install && bower install` to set up your environment.
+`socrata-utils` is available in the artifactory npm registry.  To configure npm to use the
+appropriate registry:
 
-To install this library as dependency in another project, run `bower install git@github.com:socrata/frontend-utils.git#master --save`. To update, run the same command.
+```sh
+npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-virtual
+```
 
-> **NOTE:** Because we are not yet using Git tags in this project, we can't specify semver ranges in the dependencies hash. This also means that a plain `bower install` will not work for this project; the path to this repo's master branch must be explicitly provided! For similar reasons, `bower update` also doesn't work.
+Then install using npm:
+
+```sh
+npm install --save socrata-utils
+```
+
+The npm distribution includes a `dist` folder with `socrata.utils.js`. It should be included on the page using `script` tag or using your favorite
+client-side build system.
 
 This library depends on [Lodash](https://lodash.com). When using this library as a dependency in another project, you must also include Lodash in your dependencies because it will not be automatically installed by Bower.
-
-To use, add `socrata.utils.js` via script tag or asset pipeline. This library expects Lodash to be loaded already.
 
 This library exposes new capabilities in three ways:
 
@@ -22,9 +30,18 @@ This library exposes new capabilities in three ways:
 
 > **NOTE:** When contributing to this library, exercise caution when using either of the first two techniques! The namespace approach should be preferred in almost all cases.
 
-## Testing
+## Contributing
 
-Run `npm test` to execute the test suite.
+If you are contributing to this library, run `npm install` to set up your environment.
+
+Useful commands:
+
+- `npm test` to run the tests.
+- `npm run watch` to automatically run the tests when files change.  The tests can be debugged in
+  a browser by visiting http://localhost:9876/debug.html.
+- `npm run build` to run webpack and generate output files in `dist`.
+- `npm publish` to publish a new version to the npm registry (after bumping the version in
+  `package.json`).
 
 ## Reference
 

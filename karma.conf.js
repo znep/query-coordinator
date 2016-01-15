@@ -1,6 +1,14 @@
 // Karma configuration
 // Generated on Wed Jul 29 2015 12:58:51 GMT-0700 (PDT)
 
+var webpackConfig = require('./webpack.config');
+delete webpackConfig.entry;
+delete webpackConfig.output;
+webpackConfig.output = {
+  libraryTarget: 'var',
+  pathinfo: true
+};
+
 module.exports = function(config) {
   config.set({
 
@@ -15,9 +23,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'bower_components/lodash/lodash.js',
-      'bower_components/jquery/dist/jquery.js',
-      'socrata.utils.js',
+      'node_modules/lodash/index.js',
+      'node_modules/jquery/dist/jquery.js',
       'karma/**/*spec.js'
     ],
 
@@ -30,6 +37,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'karma/**/*spec.js': ['webpack'],
       'socrata-utils.js': ['coverage']
     },
 
@@ -78,6 +86,11 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: false,
+
+    webpack: webpackConfig, // TODO: make a dev version of this confic with source maps; specify that one
+    webpackMiddleware: {
+      noInfo: true
+    }
   })
 }

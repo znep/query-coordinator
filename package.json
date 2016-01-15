@@ -1,41 +1,133 @@
 {
   "name": "socrata-utils",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/socrata/frontend-utils.git"
   },
+  "publishConfig": {
+    "registry": "https://socrata.artifactoryonline.com/socrata/api/npm/npm-local"
+  },
   "scripts": {
-    "lint": "eslint",
-    "test": "karma start karma.conf.js --singleRun true --reporters=dots,coverage"
+    "build": "webpack",
+    "prebuild": "rimraf dist",
+    "prepublish": "webpack",
+    "lint": "eslint -c package.json  --ignore-path .eslintignore *.js components/*.js",
+    "test": "karma start karma.conf.js --singleRun true",
+    "watch": "karma start karma.conf.js -v --singleRun false"
   },
   "homepage": "https://github.com/socrata/frontend-utils",
+  "dependencies": {
+    "es6-promise-polyfill": "^1.2.0"
+  },
   "devDependencies": {
     "chai": "^3.0.0",
-    "eslint": "^0.24.0",
-    "karma": "^0.12.36",
+    "eslint": "^1.5.1",
+    "jquery": "^2.1.1",
+    "karma": "^0.13.14",
     "karma-chai": "^0.1.0",
-    "karma-coverage": "^0.3.1",
-    "karma-mocha": "^0.1.10",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-coverage": "^0.5.3",
+    "karma-mocha": "^0.2.1",
     "karma-phantomjs-launcher": "^0.2.0",
+    "karma-phantomjs-shim": "^1.1.2",
     "karma-sinon": "^1.0.4",
+    "karma-webpack": "^1.7.0",
+    "lodash": "^3.10.0",
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.17",
-    "sinon": "^1.15.3"
+    "rimraf": "^2.4.3",
+    "sinon": "^1.15.3",
+    "webpack": "^1.12.2"
   },
   "eslintConfig": {
     "env": {
       "browser": true
     },
+    "extends": "eslint:recommended",
     "rules": {
+      "brace-style": [
+        2,
+        "1tbs",
+        {
+          "allowSingleLine": true
+        }
+      ],
+      "camelcase": 1,
+      "consistent-return": 0,
+      "dot-location": [
+        1,
+        "object"
+      ],
+      "dot-notation": [
+        1,
+        {
+          "allowKeywords": false
+        }
+      ],
+      "eol-last": 1,
+      "indent": 0,
+      "new-cap": [
+        1,
+        {
+          "newIsCapExceptions": [
+            "pbf"
+          ]
+        }
+      ],
+      "no-console": 0,
+      "no-extend-native": 2,
+      "no-extra-semi": 1,
+      "no-shadow": [
+        2,
+        {
+          "hoist": "all"
+        }
+      ],
+      "no-spaced-func": 2,
+      "no-trailing-spaces": 2,
+      "no-underscore-dangle": 0,
+      "no-unused-vars": 1,
+      "no-use-before-define": 0,
       "quotes": [
         1,
         "single"
       ],
-      "no-underscore-dangle": 0
+      "semi": [
+        2,
+        "always"
+      ],
+      "space-after-keywords": [
+        2,
+        "always"
+      ],
+      "space-before-blocks": [
+        2,
+        "always"
+      ],
+      "space-before-function-paren": [
+        2,
+        "never"
+      ],
+      "space-infix-ops": 2,
+      "strict": 2
     },
     "globals": {
       "$": true,
-      "_": true
+      "_": true,
+      "chroma": true,
+      "d3": true,
+      "jQuery": true,
+      "L": true,
+      "moment": true,
+      "pbf": true,
+      "socrata": true,
+      "ss": true,
+      "VBArray": true,
+      "VectorTile": true
     }
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

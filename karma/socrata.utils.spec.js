@@ -1,8 +1,9 @@
+var utils = require('socrata-utils');
+var $ = jQuery = require('jquery');
+
 describe('socrata-utils.js', function() {
 
   'use strict';
-
-  var utils = window.socrata.utils;
 
   describe('String.prototype.format', function() {
 
@@ -524,7 +525,7 @@ describe('socrata-utils.js', function() {
 
       var propertyName = (eventName === 'mousewheel') ? 'wheelDelta' : 'detail';
 
-      var originalEventData = {};
+      var originalEventData = { preventDefault: _.noop };
       originalEventData[propertyName] = testDeltaY;
 
       return jQuery.Event(eventName, {originalEvent: originalEventData});

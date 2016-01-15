@@ -15,6 +15,6 @@ module UserSessionsHelper
   ##
   # Check to see if auth0 is available.
   def use_auth0?
-    AUTH0_CONFIGURED && FeatureFlags.derive.use_auth0
+    AUTH0_CONFIGURED && FeatureFlags.derive(nil, request).use_auth0
   end
 end

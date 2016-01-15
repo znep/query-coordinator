@@ -174,7 +174,10 @@ describe('Customize card dialog', function() {
 
     var cards = options.cards || [];
 
-    var pageOverrides = {cards: cards};
+    var pageOverrides = _.merge(
+      {cards: cards},
+      options.pageOverrides
+    );
     var datasetOverrides = {id: 'rook-king', rowDisplayUnit: 'row', columns: COLUMNS, permissions: {rights: ['write']}};
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
     var outerScope = $rootScope.$new();
@@ -391,11 +394,22 @@ describe('Customize card dialog', function() {
         expect(dialog.element.find('card-aggregation-selector')).to.not.exist;
       });
 
-      it('should show cardAggregationSelector if feature flag is enabled', function() {
-        ServerConfig.override('enableDataLensCardLevelAggregation', true);
-        var dialog = createDialog();
+      describe('when enable_data_lens_card_level_aggregation feature flag is enabled', function() {
+        beforeEach(function() {
+          ServerConfig.override('enableDataLensCardLevelAggregation', true);
+        });
 
-        expect(dialog.element.find('card-aggregation-selector')).to.exist;
+        it('should not show cardAggregationSelector when version is less than 4', function() {
+          var dialog = createDialog({pageOverrides: {version: 3}});
+
+          expect(dialog.element.find('card-aggregation-selector')).to.not.exist;
+        });
+
+        it('should show cardAggregationSelector if feature flag is enabled', function() {
+          var dialog = createDialog();
+
+          expect(dialog.element.find('card-aggregation-selector')).to.exist;
+        });
       });
     });
   });

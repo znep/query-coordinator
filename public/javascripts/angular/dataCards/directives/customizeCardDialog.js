@@ -175,7 +175,7 @@ function customizeCardDialog(
       $scope.customizedCard = $scope.dialogState.cardModel.clone();
       $scope.showBucketTypeWarning = false;
 
-      $scope.shouldShowAggregationSelector = ServerConfig.get('enableDataLensCardLevelAggregation');
+      $scope.shouldShowAggregationSelector = $scope.page.version >= 4 && ServerConfig.get('enableDataLensCardLevelAggregation');
 
       $scope.$bindObservable('availableCardTypes',
         $scope.customizedCard.observe('column.availableCardTypes'));

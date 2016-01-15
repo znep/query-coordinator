@@ -159,7 +159,10 @@ function columnAndVisualizationSelector(
       scope.availableCardTypes = [];
       scope.addVisualizationPrompt = scope.addVisualizationPrompt || 'addCardDialog.prompt';
 
-      var shouldShowAggregationSelector$ = ServerConfig.get('enableDataLensCardLevelAggregation') ? selectedCardModel$ : Rx.Observable.returnValue(false);
+      var shouldShowAggregationSelector$ = Rx.Observable.returnValue(false);
+      if (scope.page.version >= 4 && ServerConfig.get('enableDataLensCardLevelAggregation')) {
+        shouldShowAggregationSelector$ = selectedCardModel$;
+      }
       scope.$bindObservable('shouldShowAggregationSelector', shouldShowAggregationSelector$);
 
       scope.$bindObservable(

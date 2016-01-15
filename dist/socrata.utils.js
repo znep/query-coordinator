@@ -67,7 +67,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var $ = __webpack_require__(3);
 
 	if (typeof window.Promise !== 'function') {
-	  __webpack_require__(4);
+	  window.Promise = __webpack_require__(4).Promise;
 	}
 
 	if (String.prototype.format) {

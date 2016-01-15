@@ -8,6 +8,7 @@ webpackConfig.output = {
   libraryTarget: 'var',
   pathinfo: true
 };
+webpackConfig.devtool = 'inline-source-map';
 
 webpackConfig.externals['socrata-utils'] = 'socrata.utils';
 
@@ -52,7 +53,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'src/views/styles/*.scss': ['scss'],
-      'karma/**/*spec.js': ['webpack']
+      'karma/**/*spec.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use

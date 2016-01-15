@@ -164,6 +164,10 @@
             var activatePane = function($pane, state)
             {
                 var paneConfig = opts.paneConfig[$pane.data('wizardpanename')] || {};
+                // track step in wizard as a pageview
+                if (typeof _gaSocrata !== 'undefined') {
+                    _gaSocrata('socrata.send', 'pageview', '{0}#{1}'.format(window.location.href, $pane.data('wizardpanename')));
+                }
 
                 // init command obj for consumers to trigger pane actions
                 var commandObj = {

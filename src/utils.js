@@ -2,7 +2,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 
 if (typeof window.Promise !== 'function') {
-  require('es6-promise-polyfill');
+  window.Promise = require('es6-promise-polyfill').Promise;
 }
 
 if (String.prototype.format) {

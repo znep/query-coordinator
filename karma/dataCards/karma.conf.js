@@ -49,7 +49,6 @@ module.exports = function ( karma ) {
      * Configure which files should be preproccessed.
      */
     preprocessors: {
-      'karma/dataCards/**/*Test.js': ['webpack'],
       'public/javascripts/angular/**/!(angular-leaflet-directives.js)': ['webpack', 'coverage'],
       'public/javascripts/lib/**/*.js': ['webpack', 'coverage'],
       'public/angular_templates/**/*.html': ['ng-html2js'],

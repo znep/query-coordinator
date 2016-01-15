@@ -8,6 +8,7 @@ webpackConfig.output = {
   libraryTarget: 'var',
   pathinfo: true
 };
+webpackConfig.devtool = 'inline-source-map';
 
 module.exports = function(config) {
   config.set({
@@ -37,7 +38,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'karma/**/*spec.js': ['webpack'],
+      'karma/**/*spec.js': ['webpack', 'sourcemap'],
       'socrata-utils.js': ['coverage']
     },
 

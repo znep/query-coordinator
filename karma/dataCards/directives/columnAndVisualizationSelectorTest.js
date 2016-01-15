@@ -12,7 +12,7 @@ describe('columnAndVisualizationSelectorTest', function() {
   var $provide;
   var $httpBackend;
 
-  function createDirective() {
+  function createDirective(pageOverrides) {
 
     var columns = {
       'bar': {
@@ -64,10 +64,13 @@ describe('columnAndVisualizationSelectorTest', function() {
       }
     };
 
-    var pageOverrides = {
-      pageId: 'asdf-fdsa',
-      datasetId: 'rook-king'
-    };
+    var pageOverrides = _.merge(
+      {
+        pageId: 'asdf-fdsa',
+        datasetId: 'rook-king'
+      },
+      pageOverrides
+    );
     var datasetOverrides = {
       id: 'rook-king',
       columns: columns
@@ -588,20 +591,27 @@ describe('columnAndVisualizationSelectorTest', function() {
     });
 
     describe('when enable_data_lens_card_level_aggregation feature flag is enabled', function() {
-      var directive;
-
       beforeEach(function() {
         ServerConfig.override('enableDataLensCardLevelAggregation', true);
-        directive = createDirective();
+      });
+
+      it('should not show card aggregation when version is less than 4', function() {
+        var directive = createDirective({version: 3});
+        directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+        var cardAggregationSelector = directive.element.find('card-aggregation-selector');
+
+        expect(cardAggregationSelector).to.not.exist;
       });
 
       it('should not show card aggregation when no column is selected', function() {
+        var directive = createDirective();
         var cardAggregationSelector = directive.element.find('card-aggregation-selector');
 
         expect(cardAggregationSelector).to.not.exist;
       });
 
       it('should show card aggregation when column is selected', function() {
+        var directive = createDirective();
         directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
         var cardAggregationSelector = directive.element.find('card-aggregation-selector');
 

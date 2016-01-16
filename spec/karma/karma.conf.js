@@ -17,6 +17,7 @@ module.exports = function(config) { //eslint-disable-line no-undef
     // list of files / patterns to load in the browser
     files: [
       'app/javascripts/editor/init.js',
+      'vendor/assets/components/socrata-utils/dist/socrata.utils.js',
       'spec/karma/chai.js',
       'spec/karma/StandardMocks.js',
       'spec/karma/TestDom.js',

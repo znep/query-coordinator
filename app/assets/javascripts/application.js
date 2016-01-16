@@ -15,7 +15,7 @@
 //= require lodash
 //= require moment/moment
 //= require d3/d3
-//= require socrata-utils/socrata.utils
+//= require socrata-utils/dist/socrata.utils
 //= require vector-tile/dist/vectortile
 //= require leaflet/dist/leaflet
 //= require editor/storytellerUtils

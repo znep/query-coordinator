@@ -2,7 +2,10 @@ $(document).on('ready', function() {
   'use strict';
 
   var $userStory = $('.user-story');
-  var storyteller = window.socrata.storyteller;
+  var socrata = window.socrata;
+  var storyteller = socrata.storyteller;
+
+  storyteller.analytics = new socrata.utils.Analytics();
   storyteller.presentationMode = new storyteller.PresentationMode();
   storyteller.flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
   socrata.visualizations.views.RowInspector.setup();
@@ -66,4 +69,9 @@ $(document).on('ready', function() {
 
   // Init window size
   _applyWindowSizeClass();
+
+  if (isStoryPublished) {
+    storyteller.analytics.sendMetric('domain', 'js-page-view', 1);
+    storyteller.analytics.flushMetrics();
+  }
 });

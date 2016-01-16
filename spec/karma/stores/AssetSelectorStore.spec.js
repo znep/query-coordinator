@@ -2,6 +2,7 @@ describe('AssetSelectorStore', function() {
 
   'use strict';
   var storyteller = window.socrata.storyteller;
+  var WIZARD_STEP = storyteller.AssetSelectorStore.WIZARD_STEP;
 
   describe('asset selector data accessors', function() {
 
@@ -62,8 +63,8 @@ describe('AssetSelectorStore', function() {
 
       describe('.getStep()', function() {
 
-        it('should return the action specified in the action payload', function() {
-          assert.equal(storyteller.assetSelectorStore.getStep(), Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
+        it('should return SELECT_ASSET_PROVIDER', function() {
+          assert.equal(storyteller.assetSelectorStore.getStep(), WIZARD_STEP.SELECT_ASSET_PROVIDER);
         });
       });
 
@@ -575,7 +576,7 @@ describe('AssetSelectorStore', function() {
 
       function verifyStepIs(step) {
         it('should set the step to {0}'.format(step), function() {
-          assert.equal(storyteller.assetSelectorStore.getStep(), Actions[step]);
+          assert.equal(storyteller.assetSelectorStore.getStep(), WIZARD_STEP[step]);
         });
       }
 
@@ -608,25 +609,25 @@ describe('AssetSelectorStore', function() {
 
       describe('image', function() {
         beforeEach(function() { editComponent(standardMocks.imageBlockId); });
-        verifyStepIs('ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD');
+        verifyStepIs('SELECT_IMAGE_TO_UPLOAD');
         verifyComponentDataMatches();
       });
 
       describe('socrata.visualization.classic', function() {
         beforeEach(function() { editComponent(standardMocks.classicVizBlockId); });
-        verifyStepIs('ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET');
+        verifyStepIs('CONFIGURE_VISUALIZATION');
         verifyComponentDataMatches();
       });
 
       describe('socrata.visualization.columnChart', function() {
         beforeEach(function() { editComponent(standardMocks.vifBlockId); });
-        verifyStepIs('ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET');
+        verifyStepIs('CONFIGURE_VISUALIZATION');
         verifyComponentDataMatches();
       });
 
       describe('youtube.video', function() {
         beforeEach(function() { editComponent(standardMocks.youtubeBlockId); });
-        verifyStepIs('ASSET_SELECTOR_CHOOSE_YOUTUBE');
+        verifyStepIs('ENTER_YOUTUBE_URL');
         verifyComponentDataMatches();
       });
     });

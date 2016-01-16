@@ -6,6 +6,23 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
+  // The step in the asset selection flow the user is in.
+  var WIZARD_STEP = {
+    SELECT_ASSET_PROVIDER: 'SELECT_ASSET_PROVIDER',
+
+    ENTER_YOUTUBE_URL: 'ENTER_YOUTUBE_URL',
+
+    ENTER_EMBED_CODE: 'ENTER_EMBED_CODE',
+
+    SELECT_DATASET_FOR_VISUALIZATION: 'SELECT_DATASET_FOR_VISUALIZATION',
+    CONFIGURE_VISUALIZATION: 'CONFIGURE_VISUALIZATION',
+
+    SELECT_IMAGE_TO_UPLOAD: 'SELECT_IMAGE_TO_UPLOAD',
+    IMAGE_UPLOADING: 'IMAGE_UPLOADING',
+    IMAGE_PREVIEW: 'IMAGE_PREVIEW',
+    IMAGE_UPLOAD_ERROR: 'IMAGE_UPLOAD_ERROR'
+  };
+
   function AssetSelectorStore() {
 
     _.extend(this, new storyteller.Store());
@@ -151,25 +168,25 @@
      */
     function _stepForUpdate(type) {
       switch (type) {
-        case 'image': return Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD;
-        case 'youtube.video': return Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE;
-        case 'embeddedHtml': return Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE;
+        case 'image': return WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
+        case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
+        case 'embeddedHtml': return WIZARD_STEP.ENTER_EMBED_CODE;
       }
 
       if (type.indexOf('socrata.visualization.') === 0) {
-        return Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET;
+        return WIZARD_STEP.CONFIGURE_VISUALIZATION;
       }
 
       // Something went wrong and we don't know where to pick up from (new embed type?),
       // so open the wizard at the very first step.
-      return Actions.ASSET_SELECTOR_CHOOSE_PROVIDER;
+      return WIZARD_STEP.SELECT_ASSET_PROVIDER;
     }
 
     function _selectNew(payload) {
       utils.assertHasProperties(payload, 'blockId', 'componentIndex');
 
       _state = {
-        step: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        step: WIZARD_STEP.SELECT_ASSET_PROVIDER,
         blockId: payload.blockId,
         componentIndex: payload.componentIndex,
         isEditingExisting: false
@@ -203,7 +220,7 @@
 
     function _chooseProvider(payload) {
       utils.assertHasProperties(payload, 'blockId', 'componentIndex');
-      _state.step = Actions.ASSET_SELECTOR_CHOOSE_PROVIDER;
+      _state.step = WIZARD_STEP.SELECT_ASSET_PROVIDER;
 
       _state.blockId = payload.blockId;
       _state.componentIndex = payload.componentIndex;
@@ -212,30 +229,30 @@
     }
 
     function _chooseYoutube() {
-      _state.step = Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE;
+      _state.step = WIZARD_STEP.ENTER_YOUTUBE_URL;
       self._emitChange();
     }
 
     function _chooseVisualization() {
-      _state.step = Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION;
+      _state.step = WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION;
       self._emitChange();
     }
 
     function _chooseImageUpload() {
-      _state.step = Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD;
+      _state.step = WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
       _cancelFileUploads();
       self._emitChange();
     }
 
     function _chooseEmbedCode() {
-      _state.step = Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE;
+      _state.step = WIZARD_STEP.ENTER_EMBED_CODE;
       _state.componentProperties = {};
       _cancelFileUploads();
       self._emitChange();
     }
 
     function _chooseVisualizationDataset(payload) {
-      _state.step = Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET;
+      _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
       if (payload.isNewBackend) {
         _setVisualizationDatasetUid(payload.datasetUid);
       } else {
@@ -286,7 +303,7 @@
     }
 
     function _updateImageUploadProgress(payload) {
-      _state.step = Actions.FILE_UPLOAD_PROGRESS;
+      _state.step = WIZARD_STEP.IMAGE_UPLOADING;
       _state.componentProperties = {
         percentLoaded: payload.percentLoaded
       };
@@ -298,7 +315,7 @@
       var imageUrl = payload.url;
       var documentId = payload.documentId;
 
-      _state.step = Actions.FILE_UPLOAD_DONE;
+      _state.step = WIZARD_STEP.IMAGE_PREVIEW;
       _state.componentType = 'image';
 
       _state.componentProperties = {
@@ -310,7 +327,7 @@
     }
 
     function _updateImageUploadError(payload) {
-      _state.step = Actions.FILE_UPLOAD_ERROR;
+      _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
       _state.componentType = 'imageUploadError';
 
       _state.componentProperties = {
@@ -435,6 +452,8 @@
       }
     }
   }
+
+  AssetSelectorStore.WIZARD_STEP = WIZARD_STEP;
 
   root.socrata.storyteller.AssetSelectorStore = AssetSelectorStore;
 })(window);

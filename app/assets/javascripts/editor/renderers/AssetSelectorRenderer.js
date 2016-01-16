@@ -8,6 +8,7 @@
 
   function AssetSelectorRenderer(options) {
 
+    var WIZARD_STEP = storyteller.AssetSelectorStore.WIZARD_STEP;
     var _container = options.assetSelectorContainerElement || null;
     var _lastRenderedStep = null;
     var _warnAboutInsecureHTML = false;
@@ -237,45 +238,45 @@
 
         switch (step) {
 
-          case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          case WIZARD_STEP.SELECT_ASSET_PROVIDER:
             selectorTitle = I18n.t('editor.asset_selector.choose_provider_heading');
             selectorContent = _renderChooseProvider();
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+          case WIZARD_STEP.ENTER_YOUTUBE_URL:
             selectorTitle = I18n.t('editor.asset_selector.youtube.heading');
             selectorContent = _renderChooseYoutubeTemplate(componentValue);
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
+          case WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION:
             selectorTitle = I18n.t('editor.asset_selector.visualization.choose_dataset_heading');
             selectorContent = _renderChooseDatasetTemplate();
             selectorWideDisplay = true;
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+          case WIZARD_STEP.CONFIGURE_VISUALIZATION:
             selectorTitle = I18n.t('editor.asset_selector.visualization.configure_vizualization_heading');
             selectorContent = _renderConfigureVisualizationTemplate();
             selectorWideDisplay = true;
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
+          case WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD:
             selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
             selectorContent = _renderChooseImageUploadTemplate();
             break;
 
-          case Actions.FILE_UPLOAD_PROGRESS:
-          case Actions.FILE_UPLOAD_ERROR:
+          case WIZARD_STEP.IMAGE_UPLOADING:
+          case WIZARD_STEP.IMAGE_UPLOAD_ERROR:
             selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
             selectorContent = _renderFileUploadProgressTemplate();
             break;
 
-          case Actions.FILE_UPLOAD_DONE:
+          case WIZARD_STEP.IMAGE_PREVIEW:
             selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
             selectorContent = _renderImagePreviewTemplate();
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
+          case WIZARD_STEP.ENTER_EMBED_CODE:
             selectorTitle = I18n.t('editor.asset_selector.embed_code.heading');
             selectorContent = _renderChooseEmbedCodeTemplate(componentValue);
             break;
@@ -303,23 +304,23 @@
       // not update dynamically
       switch (step) {
 
-        case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+        case WIZARD_STEP.ENTER_YOUTUBE_URL:
           _renderChooseYoutubeData(componentValue);
           break;
 
-        case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+        case WIZARD_STEP.CONFIGURE_VISUALIZATION:
           _renderConfigureVisualizationData(componentType, componentValue);
           break;
 
-        case Actions.FILE_UPLOAD_DONE:
+        case WIZARD_STEP.IMAGE_PREVIEW:
           _renderImagePreviewData(componentValue);
           break;
 
-        case Actions.FILE_UPLOAD_ERROR:
+        case WIZARD_STEP.IMAGE_UPLOAD_ERROR:
           _renderImageUploadErrorData(componentValue);
           break;
 
-        case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
+        case WIZARD_STEP.ENTER_EMBED_CODE:
           _renderPreviewEmbedCodeData(componentValue);
           break;
 

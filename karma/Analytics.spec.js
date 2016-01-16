@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var $ = require('jquery');
 var Analytics = require('../src/Analytics');
 
 describe('Anatlyics.js', function() {
@@ -68,10 +69,6 @@ describe('Anatlyics.js', function() {
     });
   });
 
-  describe('sendPerformanceMetric()', function() {
-
-  });
-
   describe('flushMetrics', function() {
     beforeEach(function(){
       analytics.setMetricsQueueCapacity(100);
@@ -104,6 +101,22 @@ describe('Anatlyics.js', function() {
       it('sends metrics data', function() {
         expect(analytics_request.requestBody).to.equal('{"metrics":[{"entity":"booyah","metric":"things","increment":666}]}');
       });
+    });
+  });
+
+  describe('window.onbeforeunload', function() {
+    beforeEach(function() {
+      analytics.setMetricsQueueCapacity(100);
+    });
+
+    it('calls flushMetrics()', function() {
+      analytics.sendMetric('waiting', 'forunload', 123);
+
+      $(window).trigger('onbeforeunload');
+
+      setTimeout(function() {
+        expect(server.requests.length).to.equal(1);
+      }, 10);
     });
   });
 });

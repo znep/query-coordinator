@@ -65,6 +65,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var _ = __webpack_require__(2);
 	var $ = __webpack_require__(3);
 
@@ -465,7 +467,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var name = cookieName + '=';
 	    var cookies = document.cookie.split(/;\s*/);
 
-	    for (var i = 0; i < cookies.length; i++) {
+	    for(var i = 0; i < cookies.length; i++) {
 	      var cookie = cookies[i];
 
 	      if (cookie.indexOf(name) === 0) {
@@ -1089,16 +1091,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _ = __webpack_require__(2);
+	'use strict';
+
 	var $ = __webpack_require__(3);
 
-	var Analytics = function(logger) {
-
-	  // support attaching arbitrary logger
-	  logger = logger || console;
+	var Analytics = function() {
 
 	  var analyticsUrl = '/analytics/add';
-	  var defaultEntity = 'domain-intern';
 
 	  // Default buffer size for
 	  var queueCapacity = 20;
@@ -1106,25 +1105,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // Queue of metrics for consolidation and minimizing outgoing PUT request.
 	  var queue = [];
 
-	  // true for IE9+, Chrome, Firefox (as of 8/12/14)
-	  var hasPerformanceTiming = !(_.isUndefined(window.performance) || _.isUndefined(window.performance.timing));
-
 	  // Whether or not we should send computed metrics to the analytics service backend.
 	  var serverUploadEnabled = true;
-
-	  var httpRequests = [];
-
-	  var currentTime = function() {
-	    return Date.now();
-	  };
-
-	  var navigationStartTime = function() {
-	    var startTime;
-	    if (hasPerformanceTiming) {
-	      startTime = window.performance.timing.navigationStart || window.performance.timing.fetchStart || undefined;
-	    }
-	    return startTime;
-	  };
 
 	  // Controls whether or not to send computed metrics up to
 	  // the backend. Defaults to enabled.
@@ -1163,7 +1145,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  this.flushMetrics = function() {
 	    var analyticsPayload;
-	    var analyticsConfig;
 
 	    if (serverUploadEnabled) {
 	      if (queue.length === 0) {

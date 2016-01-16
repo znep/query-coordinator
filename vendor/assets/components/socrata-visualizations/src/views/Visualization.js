@@ -18,6 +18,7 @@ function Visualization(element, vif) {
   };
   var _vif = _.merge(_defaultVIF, vif);
 
+  utils.assertInstanceOf(element, jQuery);
   utils.assertIsOneOfTypes(_vif.configuration.axisLabels.top, 'boolean', 'string');
   utils.assertIsOneOfTypes(_vif.configuration.axisLabels.right, 'boolean', 'string');
   utils.assertIsOneOfTypes(_vif.configuration.axisLabels.bottom, 'boolean', 'string');

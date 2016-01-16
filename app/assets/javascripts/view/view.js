@@ -49,6 +49,11 @@ $(document).on('ready', function() {
             componentSocrataVisualizationColumnChart(componentData);
           break;
 
+        case 'socrata.visualization.table':
+          $element.
+            componentSocrataVisualizationTable(componentData);
+          break;
+
         case 'socrata.visualization.featureMap':
           $element.
             componentSocrataVisualizationFeatureMap(componentData);

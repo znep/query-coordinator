@@ -17,13 +17,17 @@
         editButtonSupported: true,
 
         resizeSupported: false,
-        resizeOptions: {}
+        resizeOptions: {},
+
+        // If not blank, establishes a default height for the component.
+        // It is used if value.layout.height is not defined in componentData.
+        defaultHeight: undefined
       },
       options
     );
 
     this.toggleClass('editing', options.editMode);
-    this.withLayoutHeightFromComponentData(componentData);
+    this.withLayoutHeightFromComponentData(componentData, options.defaultHeight);
 
     if (options.editMode && options.editButtonSupported) {
       this.componentEditButton();

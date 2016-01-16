@@ -8,8 +8,16 @@ describe('AssetSelectorRenderer', function() {
   var testBlockId = 'testBlock1';
   var testComponentIndex = 1;
   var AssetSelectorRenderer;
+  var server;
 
   beforeEach(function() {
+    // Since these tests actually expect to use AJAX, we need to disable the
+    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
+    // and re-enble it after each.
+    window.mockedXMLHttpRequest.restore();
+
+    server = sinon.fakeServer.create();
+
     AssetSelectorRenderer = storyteller.AssetSelectorRenderer;
 
     container = $('<div>', { 'class': 'asset-selector-container' });
@@ -19,6 +27,13 @@ describe('AssetSelectorRenderer', function() {
     options = {
       assetSelectorContainerElement: testDom.find('.asset-selector-container')
     };
+  });
+
+  afterEach(function() {
+    server.restore();
+
+    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
+    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
   });
 
   describe('constructor', function() {
@@ -71,7 +86,7 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the escape key is pressed', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -91,7 +106,7 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the overlay is clicked', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -108,7 +123,7 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the modal dialog close button is clicked', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -125,7 +140,8 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+        provider: 'YOUTUBE'
       });
 
       storyteller.dispatcher.register(function(payload) {
@@ -144,7 +160,8 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a delete key', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+        provider: 'YOUTUBE'
       });
 
       storyteller.dispatcher.register(function(payload) {
@@ -163,7 +180,8 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a cut event from the youtube url input control', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+        provider: 'YOUTUBE'
       });
 
       storyteller.dispatcher.register(function(payload) {
@@ -179,7 +197,8 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a paste event from the youtube url input control', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+        provider: 'YOUTUBE'
       });
 
       storyteller.dispatcher.register(function(payload) {
@@ -207,12 +226,20 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('dispatches `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
+      storyteller.assetSelectorStore.addChangeListener(function() {
+        _.defer(function() {
+          container.find('.modal-dialog').trigger('visualizationSelected', {format: 'vif', data: {}});
+        });
+      });
+
       // add dataset so the proper component values are there for updating
       storyteller.dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
         datasetUid: standardMocks.validStoryUid,
         isNewBackend: true
       });
+      server.respond([200, {}, '{}']);
+
 
       storyteller.dispatcher.register(function(payload) {
         assert.equal(payload.action, Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION);
@@ -221,8 +248,6 @@ describe('AssetSelectorRenderer', function() {
         assert.property(payload.visualization, 'format');
         done();
       });
-
-      container.find('.modal-dialog').trigger('visualizationSelected', {format: 'vif', data: {}});
     });
 
     describe('select file in image upload', function() {
@@ -275,27 +300,29 @@ describe('AssetSelectorRenderer', function() {
       new AssetSelectorRenderer(options); //eslint-disable-line no-new
     });
 
-    it('renders the "choose provider" content on an `ASSET_SELECTOR_CHOOSE_PROVIDER` event', function() {
+    it('renders the "choose provider" content on an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` event', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
       assert.equal(container.find('.modal-title').length, 1);
       assert.equal(container.find('.modal-close-btn').length, 1);
-      assert.isTrue(container.find('[data-action="ASSET_SELECTOR_CHOOSE_YOUTUBE"]').length > 0);
-      assert.isTrue(container.find('[data-action="ASSET_SELECTOR_CHOOSE_VISUALIZATION"]').length > 0);
-      assert.isTrue(container.find('[data-action="ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD"]').length > 0);
+      assert.isTrue(container.find('[data-provider="YOUTUBE"]').length > 0);
+      assert.isTrue(container.find('[data-provider="SOCRATA_VISUALIZATION"]').length > 0);
+      assert.isTrue(container.find('[data-provider="EMBED_CODE"]').length > 0);
+      assert.isTrue(container.find('[data-provider="IMAGE"]').length > 0);
     });
 
-    it('renders the "choose YouTube" content on an `ASSET_SELECTOR_CHOOSE_YOUTUBE` event', function() {
+    it('renders the "choose YouTube" content on an appropriate `ASSET_SELECTOR_PROVIDER_CHOSEN` event', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
-        componentIndex: testComponentIndex
+        componentIndex: testComponentIndex,
+        provider: 'YOUTUBE'
       });
 
       assert.equal(container.find('.modal-title').length, 1);
@@ -306,9 +333,10 @@ describe('AssetSelectorRenderer', function() {
     it('renders the YouTube preview in the default state when no url has been supplied', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
-        componentIndex: testComponentIndex
+        componentIndex: testComponentIndex,
+        provider: 'YOUTUBE'
       });
 
       assert.isFalse(container.find('.asset-selector-preview-container').hasClass('invalid'));
@@ -318,9 +346,10 @@ describe('AssetSelectorRenderer', function() {
     it('renders the YouTube preview in the invalid state when an invalid YouTube url has been supplied', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
-        componentIndex: testComponentIndex
+        componentIndex: testComponentIndex,
+        provider: 'YOUTUBE'
       });
 
       container.find('[data-asset-selector-validate-field="youtubeId"]').val('invalid');
@@ -340,9 +369,10 @@ describe('AssetSelectorRenderer', function() {
       var rickRoll = 'https://youtu.be/dQw4w9WgXcQ';
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
-        componentIndex: testComponentIndex
+        componentIndex: testComponentIndex,
+        provider: 'YOUTUBE'
       });
 
       container.find('[data-asset-selector-validate-field="youtubeId"]').val(rickRoll);
@@ -361,9 +391,10 @@ describe('AssetSelectorRenderer', function() {
       var rickRoll = '<iframe width="420" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
-        componentIndex: testComponentIndex
+        componentIndex: testComponentIndex,
+        provider: 'YOUTUBE'
       });
 
       container.find('[data-asset-selector-validate-field="youtubeId"]').val(rickRoll);
@@ -380,7 +411,7 @@ describe('AssetSelectorRenderer', function() {
     it('closes the modal on an `ASSET_SELECTOR_CLOSE` event', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -394,11 +425,12 @@ describe('AssetSelectorRenderer', function() {
       assert.isTrue(container.hasClass('hidden'));
     });
 
-    describe('when a `ASSET_SELECTOR_CHOOSE_VISUALIZATION` action is fired', function() {
+    describe('when a `ASSET_SELECTOR_PROVIDER_CHOSEN` action with provider = SOCRATA_VISUALIZATION is fired', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: 'SOCRATA_VISUALIZATION'
         });
       });
 
@@ -429,9 +461,10 @@ describe('AssetSelectorRenderer', function() {
         });
 
         it('has a button that goes back to the provider list', function() {
-          assert.equal(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER)
-          ).length, 1);
+          assert.lengthOf(
+            container.find('[data-resume-from-step="SELECT_ASSET_PROVIDER"]'),
+            1
+          );
         });
 
       });
@@ -440,54 +473,105 @@ describe('AssetSelectorRenderer', function() {
     describe('when a `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
+          storyUid: standardMocks.validStoryUid,
+          blockId: standardMocks.validBlockId,
+          componentIndex: 0
+        });
+        storyteller.dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
+        server.respond([
+          200,
+          { 'Content-Type': 'application/json' },
+          JSON.stringify({
+            newBackend: true,
+            columns: [{
+              'fieldName': 'foo'
+            }]
+          })
+        ]);
       });
 
-      it('renders an iframe', function() {
-        assert.equal(container.find('.asset-selector-configure-visualization-iframe').length, 1);
-      });
-
-      it('disables the insert button on render', function() {
+      it('has a button that goes to the chart visualization page', function() {
+        container.find('.btn-visualize-chart').click();
         assert.equal(
-          container.find('.btn-primary').attr('disabled'),
-          'disabled'
+          storyteller.assetSelectorStore.getStep(),
+          storyteller.AssetSelectorStore.WIZARD_STEP.CONFIGURE_VISUALIZATION
         );
       });
 
-      describe('the iframe', function() {
-        it('has the correct src', function() {
-          var iframeSrc = container.find('iframe').attr('src');
-          assert.include(iframeSrc, 'component/visualization/add?datasetId');
+      it('has a button that inserts a table', function(done) {
+        storyteller.dispatcher.register(function(payload) {
+          if (payload.action === Actions.BLOCK_UPDATE_COMPONENT) {
+            assert.equal(
+              payload.value.vif.type,
+              'table'
+            );
+            done();
+          }
         });
 
-        it('has a modal title loading spinner', function() {
-          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
-        });
+        container.find('.btn-visualize-table').click();
       });
 
-      describe('the modal', function() {
-        it('has a close button', function() {
-          assert.equal(container.find('.modal-close-btn').length, 1);
+      describe('then `ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP` is fired', function() {
+        beforeEach(function() {
+          storyteller.dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP
+          });
         });
 
-        it('has the wide class to display the iframe', function() {
-          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+        it('renders an iframe', function() {
+          assert.equal(container.find('.asset-selector-configure-visualization-iframe').length, 1);
         });
 
-        it('has a button that goes back to the choose dataset list', function() {
+        it('disables the insert button on render', function() {
           assert.equal(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION)
-          ).length, 1);
+            container.find('.btn-primary').attr('disabled'),
+            'disabled'
+          );
         });
 
+        describe('the iframe', function() {
+          it('has the correct src', function() {
+            var iframeSrc = container.find('iframe').attr('src');
+            assert.include(iframeSrc, 'component/visualization/add?datasetId');
+          });
+
+          it('has a modal title loading spinner', function() {
+            assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
+          });
+        });
+
+        describe('the modal', function() {
+          it('has a close button', function() {
+            assert.equal(container.find('.modal-close-btn').length, 1);
+          });
+
+          it('has the wide class to display the iframe', function() {
+            assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+          });
+
+          it('has a button that goes back to the choose table/chart page', function() {
+            assert.lengthOf(
+              container.find('[data-resume-from-step="SELECT_TABLE_OR_CHART"]'),
+              1
+            );
+          });
+
+        });
       });
     });
 
     describe('when a `ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD` action is fired', function() {
       beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: 'IMAGE'
+        });
         storyteller.dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         });
@@ -506,14 +590,15 @@ describe('AssetSelectorRenderer', function() {
         });
 
         it('has a button that goes back to the provider list', function() {
-          assert.equal(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER)
-          ).length, 1);
+          assert.lengthOf(
+            container.find('[data-resume-from-step="SELECT_ASSET_PROVIDER"]'),
+            1
+          );
         });
 
         it('has a disabled insert button', function() {
           assert.isTrue(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY)).prop('disabled')
+            container.find('.btn-apply').prop('disabled')
           );
         });
       });
@@ -521,6 +606,10 @@ describe('AssetSelectorRenderer', function() {
 
     describe('when a `FILE_UPLOAD_PROGRESS` action is fired', function() {
       beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: 'IMAGE'
+        });
         storyteller.dispatcher.dispatch({
           action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: 0
@@ -534,8 +623,8 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('has a cancel button in the progress pane', function() {
-        assert.equal(
-          container.find('.asset-selector-cancel-upload[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)).length,
+        assert.lengthOf(
+          container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
           1
         );
       });
@@ -546,14 +635,15 @@ describe('AssetSelectorRenderer', function() {
         });
 
         it('has a button that goes back to the choose image upload step', function() {
-          assert.isAbove(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
-          ).length, 0);
+          assert.lengthOf(
+            container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
+            1
+          );
         });
 
         it('has a disabled insert button', function() {
           assert.isTrue(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY)).prop('disabled')
+            container.find('.btn-apply').prop('disabled')
           );
         });
       });
@@ -561,6 +651,10 @@ describe('AssetSelectorRenderer', function() {
 
     describe('when a `FILE_UPLOAD_ERROR` action is fired', function() {
       beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: 'IMAGE'
+        });
         storyteller.dispatcher.dispatch({
           action: Actions.FILE_UPLOAD_ERROR,
           error: {
@@ -571,26 +665,28 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('removes cancel button, replaces with try again', function() {
-        var buttonSelector = container.find('.asset-selector-image-upload-progress [data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD));
-        assert.equal(buttonSelector.length, 1);
-        assert.include(buttonSelector.attr('class'), 'asset-selector-try-again');
-        assert.equal(container.find('.asset-selector-cancel-upload').length, 0);
+        var buttonSelector =
+          container.find('.asset-selector-try-again');
+        assert.lengthOf(buttonSelector, 1);
+        assert.isFalse(buttonSelector.hasClass('hidden'));
+        assert.lengthOf(container.find('.asset-selector-cancel-upload'), 0);
       });
 
       describe('the modal', function() {
         it('has a close button', function() {
-          assert.equal(container.find('.modal-close-btn').length, 1);
+          assert.lengthOf(container.find('.modal-close-btn'), 1);
         });
 
         it('has a button that goes back to the choose image upload step', function() {
-          assert.isAbove(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
-          ).length, 0);
+          assert.lengthOf(
+            container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
+            1
+          );
         });
 
         it('has a disabled insert button', function() {
           assert.isTrue(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY)).prop('disabled')
+            container.find('.btn-apply').prop('disabled')
           );
         });
       });
@@ -620,18 +716,18 @@ describe('AssetSelectorRenderer', function() {
         });
 
         it('has a button that goes back to the choose image upload step', function() {
-          assert.equal(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
-          ).length, 1);
+          assert.lengthOf(
+            container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
+            1
+          );
         });
 
         it('has an enabled insert button', function() {
           assert.isFalse(
-            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY)).prop('disabled')
+            container.find('.btn-apply').prop('disabled')
           );
         });
       });
     });
-
   });
 });

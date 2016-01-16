@@ -23,7 +23,7 @@ describe('componentBase jQuery plugin', function() {
       'Returned value is not a jQuery collection');
   });
 
-  it('should pass `componentData` to `withLayoutHeightFromComponentData`', function() {
+  it('should pass `componentData` and `defaultHeight` to `withLayoutHeightFromComponentData`', function() {
     componentData = {};
 
     sinon.stub($component, 'withLayoutHeightFromComponentData');
@@ -33,8 +33,15 @@ describe('componentBase jQuery plugin', function() {
       'theme',
       {}
     );
+    sinon.assert.calledWithExactly($component.withLayoutHeightFromComponentData, componentData, undefined);
 
-    sinon.assert.calledWithExactly($component.withLayoutHeightFromComponentData, componentData);
+    $component.componentBase(
+      componentData,
+      'theme',
+      { defaultHeight: 1337 }
+    );
+
+    sinon.assert.calledWithExactly($component.withLayoutHeightFromComponentData, componentData, 1337);
   });
 
   describe('editMode not specified', function() {

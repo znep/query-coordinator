@@ -16,7 +16,26 @@ function MetadataProvider(config) {
    * Public methods
    */
 
+  /**
+   * NOTE:
+   * Columns are structured in an Array.
+   * (See: https://localhost/api/docs/types#View)
+   */
   this.getDatasetMetadata = function() {
+    var url = 'https://{0}/api/views/{1}.json'.format(
+      this.getConfigurationProperty('domain'),
+      this.getConfigurationProperty('datasetUid')
+    );
+
+    return Promise.resolve($.get(url));
+  };
+
+  /**
+   * NOTE:
+   * Columns are structured in an object, where the key is the
+   * API field name and the value is column metadata.
+   */
+  this.getPhidippidesAugmentedDatasetMetadata = function() {
 
     var url = 'https://{0}/metadata/v1/dataset/{1}.json'.format(
       this.getConfigurationProperty('domain'),

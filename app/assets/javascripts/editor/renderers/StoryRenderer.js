@@ -34,6 +34,8 @@
         return 'componentSocrataVisualizationColumnChart';
       case 'socrata.visualization.timelineChart':
         return 'componentSocrataVisualizationTimelineChart';
+      case 'socrata.visualization.table':
+        return 'componentSocrataVisualizationTable';
       case 'socrata.visualization.featureMap':
         return 'componentSocrataVisualizationFeatureMap';
       case 'embeddedHtml':
@@ -288,9 +290,9 @@
 
         switch (action) {
 
-          case Actions.ASSET_SELECTOR_INSERT_COMPONENT:
+          case Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT:
             dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_INSERT_COMPONENT,
+              action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
               blockId: utils.findClosestAttribute(this, 'data-block-id'),
               componentIndex: utils.findClosestAttribute(this, 'data-component-index')
             });

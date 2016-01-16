@@ -4,6 +4,7 @@ var dataProviders = require('./dataProviders');
 var ChoroplethMap = require('./ChoroplethMap');
 var ColumnChart = require('./ColumnChart');
 var FeatureMap = require('./FeatureMap');
+var Table = require('./Table');
 var TimelineChart = require('./TimelineChart');
 
 // TODO: add exported function here called `init` which takes a VIF and instantiates the
@@ -15,5 +16,6 @@ module.exports = {
   ChoroplethMap: ChoroplethMap,
   ColumnChart: ColumnChart,
   FeatureMap: FeatureMap,
+  Table: Table,
   TimelineChart: TimelineChart
 };

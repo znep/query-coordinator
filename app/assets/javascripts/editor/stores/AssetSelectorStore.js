@@ -8,13 +8,18 @@
 
   // The step in the asset selection flow the user is in.
   var WIZARD_STEP = {
+    // Do you want a Socrata visualization, Youtube, an image, etc?
     SELECT_ASSET_PROVIDER: 'SELECT_ASSET_PROVIDER',
 
     ENTER_YOUTUBE_URL: 'ENTER_YOUTUBE_URL',
 
     ENTER_EMBED_CODE: 'ENTER_EMBED_CODE',
 
+    // You want a Socrata visualization, so please choose your dataset.
     SELECT_DATASET_FOR_VISUALIZATION: 'SELECT_DATASET_FOR_VISUALIZATION',
+    // You chose a dataset. Will it be displayed as a table or some other visualization?
+    SELECT_TABLE_OR_CHART: 'SELECT_TABLE_OR_CHART',
+    // You chose some other visualization. Please edit it to your liking.
     CONFIGURE_VISUALIZATION: 'CONFIGURE_VISUALIZATION',
 
     SELECT_IMAGE_TO_UPLOAD: 'SELECT_IMAGE_TO_UPLOAD',
@@ -50,40 +55,51 @@
 
       switch (action) {
 
-        case Actions.ASSET_SELECTOR_INSERT_COMPONENT:
+        case Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT:
           _selectNew(payload);
           break;
 
-        case Actions.ASSET_SELECTOR_UPDATE_COMPONENT:
+        case Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED:
           _editExisting(payload);
-          break;
-
-        case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
-          _chooseProvider(payload);
-          break;
-
-        case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
-          _chooseYoutube();
           break;
 
         case Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL:
           _updateYoutubeUrl(payload);
           break;
 
-        case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
-          _chooseVisualization();
+        case Actions.ASSET_SELECTOR_PROVIDER_CHOSEN:
+          switch (payload.provider) {
+            case 'SOCRATA_VISUALIZATION':
+              _chooseVisualization();
+              break;
+            case 'YOUTUBE':
+              _chooseYoutube();
+              break;
+            case 'IMAGE':
+              _chooseImageUpload();
+              break;
+            case 'EMBED_CODE':
+              _chooseEmbedCode();
+              break;
+            default:
+              throw new Error('Unsupported provider: {0}'.format(payload.provider));
+          }
           break;
 
         case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
           _chooseVisualizationDataset(payload);
           break;
 
-        case Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION:
-          _updateVisualizationConfiguration(payload);
+        case Actions.ASSET_SELECTOR_VISUALIZE_AS_TABLE:
+          _visualizeAsTable(payload);
           break;
 
-        case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
-          _chooseImageUpload();
+        case Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP:
+          _visualizeAsChart(payload);
+          break;
+
+        case Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION:
+          _updateVisualizationConfiguration(payload);
           break;
 
         case Actions.FILE_UPLOAD_PROGRESS:
@@ -96,10 +112,6 @@
 
         case Actions.FILE_UPLOAD_ERROR:
           _updateImageUploadError(payload);
-          break;
-
-        case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
-          _chooseEmbedCode();
           break;
 
         case Actions.EMBED_CODE_UPLOAD_PROGRESS:
@@ -117,6 +129,10 @@
         case Actions.ASSET_SELECTOR_CLOSE:
           _closeDialog();
           break;
+
+        case Actions.ASSET_SELECTOR_RESUME_FROM_STEP:
+          _resumeFromStep(payload);
+          break;
       }
     });
 
@@ -124,15 +140,11 @@
      * Public methods
      */
 
-    // TODO document which values this can have.
-    // Currently can be a random-ish assortment of
-    // action names that may or may not have any
-    // relation to how this Store entered a given
-    // step.
+    // Asset selection takes the form of a wizard, each user action
+    // causing a transition to one of a number of distinct "steps".
+    // This returns the specific step the user is in right now.
     //
-    // We should not be returning Action names here.
-    // Each step should be part of an enum defined
-    // by AssetSelectorStore itself.
+    // Returns one of WIZARD_STEP.
     this.getStep = function() {
       return _state.step;
     };
@@ -162,7 +174,7 @@
      */
 
     /**
-     * Given an asset type (i.e. "socrata.visualization.classic"), returns
+     * Given an asset type (i.e. 'socrata.visualization.classic'), returns
      * the step the wizard should start from given the user is updating
      * a component.
      */
@@ -171,6 +183,10 @@
         case 'image': return WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
         case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
         case 'embeddedHtml': return WIZARD_STEP.ENTER_EMBED_CODE;
+      }
+
+      if (type === 'socrata.visualization.table') {
+        return WIZARD_STEP.SELECT_TABLE_OR_CHART;
       }
 
       if (type.indexOf('socrata.visualization.') === 0) {
@@ -206,8 +222,22 @@
         payload.componentIndex
       );
 
+      _resumeFromStep(_.extend({}, payload, { step: _stepForUpdate(component.type) }));
+    }
+
+    function _resumeFromStep(payload) {
+      var component;
+      var datasetUid;
+
+      utils.assertHasProperties(payload, 'blockId', 'componentIndex', 'step');
+
+      component = storyteller.storyStore.getBlockComponentAtIndex(
+        payload.blockId,
+        payload.componentIndex
+      );
+
       _state = {
-        step: _stepForUpdate(component.type),
+        step: payload.step,
         blockId: payload.blockId,
         componentIndex: payload.componentIndex,
         componentType: component.type,
@@ -215,17 +245,12 @@
         isEditingExisting: true
       };
 
-      self._emitChange();
-    }
-
-    function _chooseProvider(payload) {
-      utils.assertHasProperties(payload, 'blockId', 'componentIndex');
-      _state.step = WIZARD_STEP.SELECT_ASSET_PROVIDER;
-
-      _state.blockId = payload.blockId;
-      _state.componentIndex = payload.componentIndex;
-
-      self._emitChange();
+      datasetUid = _.get(component, 'value.dataset.datasetUid');
+      if (datasetUid) {
+        _setVisualizationDataset(datasetUid); // Fetch additional data needed for UI.
+      } else {
+        self._emitChange();
+      }
     }
 
     function _chooseYoutube() {
@@ -252,30 +277,116 @@
     }
 
     function _chooseVisualizationDataset(payload) {
-      _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
+      _state.step = WIZARD_STEP.SELECT_TABLE_OR_CHART;
       if (payload.isNewBackend) {
-        _setVisualizationDatasetUid(payload.datasetUid);
+        _setVisualizationDataset(payload.datasetUid);
       } else {
         // We have an OBE datasetId, go fetch the NBE datasetId
         $.get('/api/migrations/{0}.json'.format(payload.datasetUid)).
-          done(function(data) {
-            _setVisualizationDatasetUid(data.nbeId);
-          }).
-          fail(function() {
+        then(
+          function(migrationData) {
+            _setVisualizationDataset(migrationData.nbeId);
+          },
+          function(error) {
             alert('This dataset cannot be chosen at this time.'); //eslint-disable-line no-alert
-          });
+            storyteller.airbrake.notify(error);
+          }
+        );
       }
     }
 
-    function _setVisualizationDatasetUid(uid) {
-      _state.componentProperties = {
-        dataset: {
-          domain: window.location.host,
-          datasetUid: uid
+    function _visualizeAsTable() {
+      var visualization;
+      // TODO We need an official story for handling row unit.
+      // view.rowLabel exists, but does not provide the pluralized form.
+      // Also, we don't sync this information to the NBE today.
+      // This record/records hardcoding is also done by VisualizationAddController
+      // in Data Lens.
+      var unit = I18n.t('editor.visualizations.default_unit');
+      var defaultSortColumn;
+      utils.assertHasProperties(
+        _state,
+        'componentProperties.dataset.domain',
+        'componentProperties.dataset.datasetUid',
+        'dataset.columns'
+      );
+
+      utils.assert(_state.dataset.columns.length > 0, 'dataset must have at least one column');
+      defaultSortColumn = _state.dataset.columns[0];
+
+      visualization = {
+        'type': 'table',
+        'unit': unit,
+        'title': _.get(_state, 'dataset.name', ''),
+        'domain': _state.componentProperties.dataset.domain,
+        'format': {
+          'type': 'visualization_interchange_format',
+          'version': 1
+        },
+        'origin': {
+          'url': window.location.toString().replace(/\/edit$/, ''),
+          'type': 'storyteller_asset_selector'
+        },
+        'filters': [],
+        'createdAt': (new Date()).toISOString(),
+        'datasetUid': _state.componentProperties.dataset.datasetUid,
+        'aggregation': {
+          'field': null,
+          'function': 'count'
+        },
+        'description': _.get(_state, 'dataset.description', ''),
+        'configuration': {
+          'order': [
+            {
+              'ascending': true,
+              'columnName': defaultSortColumn.fieldName
+            }
+          ],
+          'localization': {}
         }
       };
 
+      _state.componentType = 'socrata.visualization.table';
+      _state.componentProperties = {
+        vif: visualization,
+        dataset: _state.componentProperties.dataset,
+        originalUid: null
+      };
+
       self._emitChange();
+    }
+
+    function _visualizeAsChart() {
+      _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
+      self._emitChange();
+    }
+
+    function _setVisualizationDataset(uid) {
+      // Fetch the view info.
+      // NOTE: Beware that view.metadata is not sync'd across to the NBE
+      // as of this writing. If you need to get info out of view.metadata
+      // (like rowLabel), you'll need to fetch the OBE view separately.
+      $.get('/api/views/{0}.json'.format(uid)).then(
+        function(data) {
+          _state.componentProperties = {
+            dataset: {
+              domain: window.location.host,
+              datasetUid: uid
+            }
+          };
+
+          // Not going into _state.componentProperties, as we don't want this blob
+          // to end up stored in the story component data.
+          _state.dataset = _.cloneDeep(data);
+
+          self._emitChange();
+        },
+        function(error) {
+          storyteller.airbrake.notify(error);
+          // TODO
+          alert('This dataset cannot be chosen at this time.'); //eslint-disable-line no-alert
+        }
+      );
     }
 
     function _updateVisualizationConfiguration(payload) {
@@ -291,6 +402,11 @@
 
         self._emitChange();
       } else if (payload.visualization.format === 'vif') {
+        utils.assertHasProperty(
+          _state,
+          'componentProperties.dataset'
+        );
+
         _state.componentType = 'socrata.visualization.{0}'.format(visualization.type);
         _state.componentProperties = {
           vif: visualization,

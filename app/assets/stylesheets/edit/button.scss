@@ -32,6 +32,10 @@
   transition: color $transition-duration, background-color $transition-duration;
   cursor: pointer;
 
+  &:focus {
+    border-color: $btn-focus-border-color;
+  }
+
   * {
     pointer-events: none;
   }

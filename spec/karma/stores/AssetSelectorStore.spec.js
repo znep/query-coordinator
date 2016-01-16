@@ -3,6 +3,23 @@ describe('AssetSelectorStore', function() {
   'use strict';
   var storyteller = window.socrata.storyteller;
   var WIZARD_STEP = storyteller.AssetSelectorStore.WIZARD_STEP;
+  var server;
+
+  beforeEach(function() {
+    // Since these tests actually expect to use AJAX, we need to disable the
+    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
+    // and re-enble it after each.
+    window.mockedXMLHttpRequest.restore();
+
+    server = sinon.fakeServer.create();
+  });
+
+  afterEach(function() {
+    server.restore();
+
+    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
+    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
+  });
 
   describe('asset selector data accessors', function() {
 
@@ -48,14 +65,14 @@ describe('AssetSelectorStore', function() {
 
     });
 
-    describe('after an `ASSET_SELECTOR_CHOOSE_PROVIDER` action', function() {
+    describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action', function() {
 
       var testBlockId = 'testBlock1';
       var testComponentIndex = '1';
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+          action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
           blockId: testBlockId,
           componentIndex: testComponentIndex
         });
@@ -84,6 +101,51 @@ describe('AssetSelectorStore', function() {
 
     });
 
+    describe('after an `ASSET_SELECTOR_PROVIDER_CHOSEN` actino', function() {
+      function withProvider(provider) {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: provider
+        });
+      }
+
+      describe('with a bad provider', function() {
+        it('should throw', function() {
+          assert.throws(function() {
+            withProvider('not valid');
+          });
+        });
+      });
+
+      [
+        'SOCRATA_VISUALIZATION',
+        'IMAGE',
+        'YOUTUBE',
+        'EMBED_CODE'
+      ].map(function(validProvider) {
+        describe('with provider: {0}'.format(validProvider), function() {
+          beforeEach(function() {
+            withProvider(validProvider);
+          });
+
+          describe('.getStep()', function() {
+            var EXPECTED_STEPS = {
+              'SOCRATA_VISUALIZATION': 'SELECT_DATASET_FOR_VISUALIZATION',
+              'IMAGE': 'SELECT_IMAGE_TO_UPLOAD',
+              'YOUTUBE': 'ENTER_YOUTUBE_URL',
+              'EMBED_CODE': 'ENTER_EMBED_CODE'
+            };
+            var expectedStep = EXPECTED_STEPS[validProvider];
+
+            it('should return {0}'.format(expectedStep), function() {
+              assert.equal(storyteller.assetSelectorStore.getStep(), expectedStep);
+            });
+          });
+        });
+      });
+
+    });
+
     describe('after an `ASSET_SELECTOR_CLOSE` action', function() {
 
       var testBlockId = 'testBlock1';
@@ -91,7 +153,7 @@ describe('AssetSelectorStore', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+          action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
           blockId: testBlockId,
           componentIndex: testComponentIndex
         });
@@ -125,24 +187,10 @@ describe('AssetSelectorStore', function() {
     });
 
     describe('after an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action', function() {
-      var server;
       var migrationUrl;
 
       beforeEach(function() {
-        // Since these tests actually expect to use AJAX, we need to disable the
-        // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-        // and re-enble it after each.
-        window.mockedXMLHttpRequest.restore();
-
-        server = sinon.fakeServer.create();
         migrationUrl = '/api/migrations/{0}.json'.format(standardMocks.validStoryUid);
-      });
-
-      afterEach(function() {
-        server.restore();
-
-        // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-        window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
       });
 
       it('should attempt to fetch the NBE datasetUid if dataset is OBE', function() {
@@ -152,6 +200,7 @@ describe('AssetSelectorStore', function() {
           isNewBackend: false
         });
 
+        assert.lengthOf(server.requests, 1);
         var request = server.requests[0];
         assert.equal(request.method, 'GET');
         assert.equal(request.url, migrationUrl);
@@ -165,7 +214,9 @@ describe('AssetSelectorStore', function() {
         });
 
         assert.isDefined(server);
-        assert.isUndefined(server.requests[0]);
+        assert.isFalse(_.any(server.requests, function(request) {
+          return request.url === migrationUrl;
+        }));
       });
 
       it('should add datasetUid to _currentComponentProperities', function() {
@@ -174,6 +225,8 @@ describe('AssetSelectorStore', function() {
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
+
+        server.respond([200, {}, '{}']);
 
         assert.equal(
           storyteller.assetSelectorStore.getComponentValue().dataset.datasetUid,
@@ -192,6 +245,8 @@ describe('AssetSelectorStore', function() {
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
+
+        server.respond([200, {}, '{}']);
       });
 
       it('adds visualization configuration to componentValue when there is vif with originalUid', function() {
@@ -568,7 +623,7 @@ describe('AssetSelectorStore', function() {
       function editComponent(blockId) {
         blockIdBeingEdited = blockId;
         storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_UPDATE_COMPONENT,
+          action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
           blockId: blockId,
           componentIndex: 0
         });

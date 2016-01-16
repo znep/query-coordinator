@@ -30,7 +30,7 @@ function ColumnChart(element, vif) {
   var _lastRenderOptions;
 
   var _truncationMarkerSelector = '.truncation-marker';
-  var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span:not(.icon-close), .labels .label .callout';
+  var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';
   var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
 
   // TODO: Validate columns

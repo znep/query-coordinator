@@ -1695,6 +1695,7 @@ en:
           add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
         page_title: Manage Spatial Lens
         page_subtitle: You have enabled %{enabled_count} of %{available_count} available boundaries.
+        learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
         region_name: Boundary Name
         remove: Remove
         title: Spatial Lens

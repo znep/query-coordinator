@@ -161,7 +161,7 @@ class PageMetadataManager
       :description => page_metadata['description']
     )
 
-    update_metadb_page_metadata(page_metadata, metadb_metadata)
+    update_metadb_page_metadata(page_metadata, metadb_metadata, options)
   end
 
   def delete(id, options = {})
@@ -213,7 +213,7 @@ class PageMetadataManager
     { body: '', status: '200' }
   end
 
-  def build_rollup_soql(page_metadata, columns, cards, options = {})
+  def build_rollup_soql(page_metadata, columns, cards)
 
     non_date_card_types_for_rollup = %w{column choropleth}
     normalized_columns = transformed_columns(columns)
@@ -314,8 +314,10 @@ class PageMetadataManager
   # NOTE - currently this is "last write wins", meaning that if multiple users are editing the
   # metadata at the same time, the last one to save will obliterate any changes other users
   # may have made. This should be fixed with versioning within the metadata.
-  def update_metadb_page_metadata(page_metadata, metadb_metadata)
+  def update_metadb_page_metadata(page_metadata, metadb_metadata, options)
     strip_page_metadata_properties!(page_metadata)
+
+    update_metadata_rollup_table(page_metadata, options)
 
     url = "/views/#{CGI::escape(metadb_metadata['id'])}.json"
     payload = {
@@ -335,33 +337,12 @@ class PageMetadataManager
 
   end
 
-  # Creates or updates a Phidippides backed page. This takes care of updating phidippides, as well
-  # as rollup tables in soda fountain and the core datalens link.
-  def update_phidippides_page_metadata(page_metadata, options = {})
-    unless page_metadata['pageId'].present?
-      raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
-    end
-
-    # Since we provision the page id beforehand, a create is the same as an
-    # update.
-    result = phidippides.update_page_metadata(page_metadata, options)
-
-    update_metadata_rollup_table(page_metadata, options)
-
-    # Replace the page metadata in the result, since FlexPhidippides
-    # actually will not return the metadata blob that we just posted
-    # to it.
-    result[:body] = page_metadata
-
-    result
-  end
-
   def update_metadata_rollup_table(page_metadata, options = {})
     page_id = page_metadata['pageId']
     dataset_id = page_metadata.fetch('datasetId')
     cards = page_metadata['cards']
     columns = fetch_dataset_columns(dataset_id, options)
-    rollup_soql = build_rollup_soql(page_metadata, columns, cards, options)
+    rollup_soql = build_rollup_soql(page_metadata, columns, cards)
 
     # if we can roll up anything for this query, do so
     if rollup_soql

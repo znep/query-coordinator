@@ -222,6 +222,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     DataLensManager.any_instance.stubs(
       fetch: v2_page_metadata
     )
+    PageMetadataManager.any_instance.expects(:update_metadata_rollup_table).times(1).returns(nil)
     core_stub = mock
     core_stub.expects(:update_request).with do |url, payload|
       assert_equal('/views/mjcb-9cxc.json', url)

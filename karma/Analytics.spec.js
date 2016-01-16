@@ -65,18 +65,26 @@ describe('Anatlyics.js', function() {
     it('sends metric to analytics endpoint', function() {
       analytics.sendMetric('some_fake_metric', 'fake_as_hell', 1);
       analytics.flushMetrics();
-      analytics_request = server.requests[0];
+      expect(server.requests.length).to.equal(1);
     });
   });
 
   describe('flushMetrics', function() {
     beforeEach(function(){
-      analytics.setMetricsQueueCapacity(100);
+      analytics.setMetricsQueueCapacity(3);
+    });
+
+    it('does not send metrics until queue capacity is reached', function() {
+      analytics.sendMetric('first_metrics', 'not_ready_to_send', 1);
+      expect(server.requests.length).to.equal(0);
+      analytics.sendMetric('hold', 'HOLD!', 1);
+      expect(server.requests.length).to.equal(0);
+      analytics.sendMetric('the_straw', 'that_broke_the_camels_queue', 1);
+      expect(server.requests.length).to.equal(1);
     });
 
     it('sends queued metrics', function() {
       analytics.sendMetric('some_fake_metric', 'fake_as_hell', 1);
-      expect(server.requests).to.be.empty;
       analytics.flushMetrics();
       expect(server.requests.length).to.equal(1);
     });
@@ -106,7 +114,7 @@ describe('Anatlyics.js', function() {
 
   describe('window.onbeforeunload', function() {
     beforeEach(function() {
-      analytics.setMetricsQueueCapacity(100);
+      analytics.setMetricsQueueCapacity(3);
     });
 
     it('calls flushMetrics()', function() {

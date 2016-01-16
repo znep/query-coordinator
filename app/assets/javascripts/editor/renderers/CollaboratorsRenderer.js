@@ -491,6 +491,7 @@
 
     function saveCollaboratorsError(response) {
       var message = response.getResponseHeader('X-Error-Message');
+      var errorReportingLabel = 'CollaboratorsRenderer#_saveCollaboratorsError';
 
       $saveButton.removeClass('btn-busy');
 
@@ -503,7 +504,12 @@
 
       storyteller.dispatcher.dispatch({
         action: Actions.COLLABORATORS_ERROR,
-        error: message
+        error: message,
+        errorReporting: {
+          message: '{0}: {1} (story: {2}, status: {3})'.
+            format(errorReportingLabel, message, storyteller.userStoryUid, message.status),
+          label: errorReportingLabel
+        }
       });
     }
   }

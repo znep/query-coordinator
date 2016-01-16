@@ -46,6 +46,7 @@
      * Exposes an error through Airbrake, if it is available.
      * In either case, it will `console.error` the argument passed
      * into this function.
+     * Additionally, an exception is sent to Google Analytics for tracking.
      * @param {Any} error - Anything that should be logged in Airbrake/console.
      */
     this.notify = function(error) {
@@ -54,9 +55,13 @@
       }
 
       console.error(error);
+
+      ga('send', 'exception', {
+        'exDescription': 'Airbrake notification: {0}'.format(error.message),
+        'exFatal': false
+      });
     };
   }
-
 
   storyteller.Airbrake = Airbrake;
 })();

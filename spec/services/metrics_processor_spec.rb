@@ -10,7 +10,7 @@ RSpec.describe MetricsProcessor do
   end
 
   describe '#process' do
-    let(:metrics_path) { 'tmp/cheechaa' }
+    let(:metrics_path) { '/tmp/cheechaa' }
 
     before do
       allow(Rails.application.config).to receive(:metrics_path).and_return(metrics_path)
@@ -21,13 +21,13 @@ RSpec.describe MetricsProcessor do
     end
 
     it 'reads metrics path from config' do
-      expect(FileUtils).to receive(:mkdir_p).with(metrics_path)
+      expect(FileUtils).to receive(:mkdir_p).with(metrics_path).and_call_original
       MetricsProcessor.process(metrics)
     end
 
     it 'writes metrics to file' do
       buffer = StringIO.new()
-      filename = "somefile.txt"
+      filename = 'somefile.txt'
       allow(MetricsProcessor).to receive(:metrics_file_path).and_return(filename)
       allow(File).to receive(:open).with(filename, 'ab').and_yield(buffer)
 

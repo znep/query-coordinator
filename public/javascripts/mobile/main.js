@@ -6,25 +6,19 @@
   var PAGE_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
   var DATASET_UID;
   var cardsData;
-  var cardsMetaData = '';
+  var cardsMetaData;
 
   function getPageData() {
-    return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/page/' + PAGE_UID);
-  }
-
-  function getPageDataSet() {
-    return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/dataset/' + DATASET_UID);
+    return $.get(window.location.protocol + '//' + DOMAIN + '/views/' + PAGE_UID);
   }
 
   function setupPage() { 
     getPageData().success(function(data) {
       document.title = data.name;
-      DATASET_UID = data.datasetId;
-      cardsData = data.cards;
-      getPageDataSet().success(function(data) {
-        cardsMetaData = data.columns;
-        renderCards(cardsData, cardsMetaData);
-      });
+      DATASET_UID = data.displayFormat.data_lens_page_metadata.datasetId;
+      cardsData = data.displayFormat.data_lens_page_metadata.cards;
+      cardsMetaData = data.columns;
+      renderCards(cardsData, cardsMetaData);
     });
   }
 
@@ -58,7 +52,7 @@
     $.each(cards, function(i, card) {
       var cardOptions = {
         id: '',
-        metaData: cardsMetaData[card.fieldName],
+        metaData: _.find(cardsMetaData, { fieldName: card.fieldName }),
         containerClass: ''
       };
 

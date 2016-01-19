@@ -1849,9 +1849,9 @@ importNS.importingPaneConfig = {
             blueprint.layers = _.map(importer.importLayers, function(importLayer)
             {
                 return {
-                    uid: importLayer.layerId,
+                    layerId: importLayer.layerId,
                     name: importLayer.name,
-                    replaceUid: importLayer.replacingUid
+                    replacingUid: importLayer.replacingUid
                 }
             });
         }

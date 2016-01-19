@@ -12,3 +12,7 @@ $flyout-z-index: 5;
 $active-block-edit-z-index: 3;
 $settings-panel-overlay-z-index: 1;
 $user-story-container-z-index: 1;
+
+// The following z-indexes apply inside block components
+$component-content-z-index: 1;
+$component-edit-controls-z-index: 2;

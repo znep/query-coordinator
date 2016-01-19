@@ -82,6 +82,7 @@ body.story-save-error .user-story-container {
         text-align: center;
         margin-top: 1rem;
         margin-right: 1rem;
+        z-index: $component-edit-controls-z-index;
 
         .component-edit-controls-edit-btn {
           color: $block-edit-controls-fg-color;

@@ -29,10 +29,7 @@ $(function() {
       _$missingColumns.append(
         $('<div>', {'class': 'missing-columns-warning-message flash notice'}).
           append(
-            $('<p>' + $.t('controls.charts.missing_column_html') + '</p>'),
-            $('<p>').append(
-              $('<small>(' + xhr.responseText + ')</small>')
-            )
+            $('<p>' + $.t('controls.charts.missing_column_html') + '</p>')
           )
         );
 

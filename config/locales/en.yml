@@ -662,7 +662,7 @@ en:
         rendering_progress_seconds: "%{rows_remaining} rows remain, about %{time_remaining} seconds."
         resume_rendering: Resume
       zero_only_data: No values greater than zero
-      missing_column_html: 'Oops... looks like a configuration change was made to the dataset powering this chart. If you are the owner of this page, please see <a href="https://support.socrata.com/hc/en-us/articles/216102847" title="Classic Visualization Chart Configuration Changes">this support article</a> or contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.'
+      missing_column_html: 'Oops... looks like a configuration change was made to the dataset powering this chart. If you are the owner of this page, please see <a href="https://support.socrata.com/hc/en-us/articles/216102847" title="Classic Visualization Chart Configuration Changes" target="_blank">this support article</a> or contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.'
     common:
       auth_required: You must be logged in to %{action_phrase}
       dataset_picker:

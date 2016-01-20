@@ -105,7 +105,7 @@ function HistogramService(Constants, $log) {
 
     // If we have a defined bucket type, use that.  Otherwise, determine the
     // bucket type based upon the data.
-    if (_.isDefined(bucketType)) {
+    if (_.hasValue(bucketType)) {
       input.bucketType = bucketType;
     } else {
       input.bucketType = (absMax >= threshold) ? 'logarithmic' : 'linear';

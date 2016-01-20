@@ -60,12 +60,22 @@ html {
   -webkit-text-size-adjust: none; /* Prevent font scaling in landscape */
 }
 
+/* Override custom_css forcing the page to have a set width, which screws up mobile styling */
 @include mobile {
-  .siteOuterWrapper {
-    min-width: 100%;
+  html, body, .siteOuterWrapper, .siteInnerWrapper, .siteContentWrapper, #siteHeader, #siteFooter {
+    width: auto !important;
+    min-width: auto !important;
   }
+
   .siteContentWrapper {
-    padding: 0em;
+    padding: 0 !important;
+    // Rally template currently sets the .siteContentWrapper position 'relative' which messes
+    // with the mobile sidebar absolute positioning.
+    position: static !important;
+  }
+
+  #siteHeader {
+    overflow: hidden; // prevent content leaking out of header on small screens
   }
 }
 
@@ -372,6 +382,7 @@ html {
       display: none !important;
     }
     cursor: pointer;
+    position: relative;
 
     .browse2-mobile-filter-header {
       overflow: hidden;
@@ -414,6 +425,7 @@ html {
     border: none;
     height: 1px;
     background: #ddd;
+    position: relative;
   }
 
   &.inContainer .browse2-section-separator {
@@ -621,7 +633,7 @@ html {
       bottom: 0;
       width: 100%;
       background-color: #fafafa;
-      z-index: 3;
+      z-index: 2147483647; // max int to cover potential custom_css z-indexes
       -webkit-overflow-scrolling: touch;
 
       .browse2-facets-pane-mobile-header {
@@ -978,7 +990,7 @@ html {
       @include mobile {
         display: block;
         height: 75px;
-        background: #fff;
+        background: #fafafa;
       }
     }
 
@@ -1164,6 +1176,7 @@ html {
 
               .browse2-result-federated-link {
                 font-size: 1.25em;
+                line-height: 1.4em;
                 margin-top: 0.5em;
                 bottom: 1px;
                 color: #4a4a4a;

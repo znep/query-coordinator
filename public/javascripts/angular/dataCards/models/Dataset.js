@@ -16,7 +16,7 @@ angular.module('dataCards.models').factory('Dataset', function(
 
   //TODO cache instances or share cache.
   var Dataset = Model.extend({
-    init: function(datasetMetadata) {
+    init: function(datasetMetadata, migrationMetadata) {
 
       datasetMetadataSchemas.assertValidAgainstVersion(1, datasetMetadata);
 
@@ -60,6 +60,8 @@ angular.module('dataCards.models').factory('Dataset', function(
       });
 
       self.defineEphemeralObservableProperty('permissions', datasetMetadata.permissions || null);
+
+      self.obeId = _.get(migrationMetadata, 'obeId');
     }
   });
 

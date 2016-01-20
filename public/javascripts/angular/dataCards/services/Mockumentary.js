@@ -101,11 +101,25 @@ function Mockumentary(Page, Dataset, Card) {
     return $.extend(true, minimalDatasetMetadata, datasetOptions);
   }
 
-  function createDataset(datasetOptions) {
+  function createDataset(datasetOptions, migrationOptions) {
 
     var datasetMetadata = createDatasetMetadata(datasetOptions);
 
-    return new Dataset(datasetMetadata);
+    // We allow the migration metadata to be injected either
+    //
+    // 1) with the default values below,
+    // 2) via the datasetOptions themselves [for old tests that would require tedious plumbing to accept another argument], or
+    // 3) via the migrationOptions here [for new tests that are written with the knowledge of this argument].
+    //
+    // Components should exhibit the intended behaviors for *not* having an OBE counterpart
+    // if you assign `obeId: null` on either datasetOptions or migrationOptions.
+    // If you discover otherwise, it may be time to pay down some testing tech debt.
+    var migrationMetadata = _.extend({
+      nbeId: 'four-four',
+      obeId: 'asdf-fdsa'
+    }, datasetOptions, migrationOptions);
+
+    return new Dataset(datasetMetadata, migrationMetadata);
   }
 
   return {

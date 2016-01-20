@@ -1,8 +1,4 @@
 const angular = require('angular');
-// Endpoints for the link back to the dataset page for the source dataset
-var MIGRATION_ENDPOINT = '/api/migrations/{0}';
-var OBE_DATASET_PAGE = '/d/{0}';
-
 function sanitizeUserHtml(htmlString) {
   if (!_.isString(htmlString) || htmlString.length === 0) {
     return htmlString;
@@ -17,35 +13,30 @@ function sanitizeUserHtml(htmlString) {
   });
 }
 
-function initDownload($scope, page, obeId$, WindowState, ServerConfig, Rx) {
-  // The CSV download url
-  $scope.$bindObservable(
-    'datasetCSVDownloadURL',
-    Rx.Observable.combineLatest(
-      obeId$.startWith(null),
-      page.observe('dataset').filter(_.isObject),
-      function(obeId, dataset) {
-        var downloadOverride = dataset.getCurrentValue('downloadOverride');
-        if (downloadOverride) {
-          return downloadOverride;
-        } else {
-          var url = $.baseUrl();
-          url.searchParams.set('accessType', 'DOWNLOAD');
+function initDownload($scope, page, WindowState, ServerConfig) {
+  var dataset$ = page.observe('dataset').filter(_.isObject);
+  var datasetCSVDownloadURL$ = dataset$.map(function(dataset) {
+    var downloadOverride = dataset.getCurrentValue('downloadOverride');
+    if (downloadOverride) {
+      return downloadOverride;
+    } else {
+      var url = $.baseUrl();
+      url.searchParams.set('accessType', 'DOWNLOAD');
 
-          if (obeId) {
-            url.pathname = `/api/views/${obeId}/rows.csv`;
-            url.searchParams.set('bom', true);
-          } else if (dataset.hasOwnProperty('id')) {
-            url.pathname = `/api/views/${dataset.id}/rows.csv`;
-          } else {
-            return '#';
-          }
-          return url.href;
-        }
-
+      if (dataset.obeId) {
+        url.pathname = `/api/views/${dataset.obeId}/rows.csv`;
+        url.searchParams.set('bom', true);
+      } else if (dataset.id) {
+        url.pathname = `/api/views/${dataset.id}/rows.csv`;
+      } else {
+        return '#';
       }
-    )
-  );
+      return url.href;
+    }
+  });
+
+  // The CSV download url
+  $scope.$bindObservable('datasetCSVDownloadURL', datasetCSVDownloadURL$);
 
   // Download menu
   $scope.standaloneLensChartEnabled = ServerConfig.get('standaloneLensChart');
@@ -256,23 +247,12 @@ function CardsViewController(
     WindowOperations.setTitle(`${pageName} | Socrata`);
   });
 
-  // Map the nbe id to the obe id
-  var obeId$ = page.observe('datasetId').
-    filter(_.isPresent).
-    // send the nbe datasetId to the migrations endpoint, to translate it into an obe id
-    map(encodeURIComponent).
-    map(_.bind(MIGRATION_ENDPOINT.format, MIGRATION_ENDPOINT)).
-    flatMap(function(url) {
-      return Rx.Observable.fromPromise($http.get(url));
-    }).map(function(response) {
-      return response.data.obeId;
-    }).
-    // Error means this isn't a migrated dataset. Just don't surface any obeId.
-    catchException(Rx.Observable.never());
-
-  $scope.$bindObservable('sourceDatasetURL', obeId$.map(function(obeId) {
-    return I18n.a(OBE_DATASET_PAGE.format(obeId));
-  }));
+  $scope.$bindObservable(
+    'sourceDatasetURL',
+    page.observe('dataset').pluck('obeId').filter(_.isPresent).map(function(obeId) {
+      return I18n.a(`/d/${obeId}`);
+    })
+  );
 
   $scope.shouldShowAggregationChooser = page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation');
 
@@ -341,7 +321,7 @@ function CardsViewController(
     })
   );
 
-  initDownload($scope, page, obeId$, WindowState, ServerConfig, Rx);
+  initDownload($scope, page, WindowState, ServerConfig);
 
   $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
   initManageLens($scope, page);

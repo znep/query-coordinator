@@ -1,4 +1,4 @@
-socrata.visualizations.MobileTimelineChart = function(values, $target) {
+socrata.visualizations.mobileTimelineChart = function(values, $target) {
   'use strict';
 
   var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();

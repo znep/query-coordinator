@@ -1,4 +1,4 @@
-(function(root) {
+(function() {
   'use strict';
 
   var DOMAIN = window.location.hostname;
@@ -12,7 +12,7 @@
     return $.get(window.location.protocol + '//' + DOMAIN + '/views/' + PAGE_UID);
   }
 
-  function setupPage() { 
+  function setupPage() {
     getPageData().success(function(data) {
       document.title = data.name;
       DATASET_UID = data.displayFormat.data_lens_page_metadata.datasetId;
@@ -67,7 +67,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.MobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
+          socrata.visualizations.mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
           break;
         case 'feature':
           cardOptions.id = 'feature-map';
@@ -79,7 +79,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.TestMobileFeatureMap(values, $cardContainer.find('#feature-map'));
+          socrata.visualizations.mobileFeatureMap(values, $cardContainer.find('#feature-map'));
           break;
         case 'column':
           cardOptions.id = 'column-chart';
@@ -90,22 +90,21 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.MobileColumnChart(values, $cardContainer.find('#column-chart'));
+          socrata.visualizations.mobileColumnChart(values, $cardContainer.find('#column-chart'));
           break;
         default:
           break;
       }
     });
-    socrata.MobileCardViewer();
+    socrata.mobileCardViewer();
   }
 
   $(setupPage);
 })(window);
 
-socrata.MobileCardViewer = function() {
+socrata.mobileCardViewer = function() {
   'use strict';
 
-  var $article = $('article');
   var $intro = $('.intro');
   var $all = $('.all');
   var description = $('.all').find('.desc').html();

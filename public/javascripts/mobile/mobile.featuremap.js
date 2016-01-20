@@ -1,4 +1,4 @@
-socrata.visualizations.TestMobileFeatureMap = function(values, $target) {
+socrata.visualizations.mobileFeatureMap = function(values, $target) {
   var scrolling = false;
   var endScrolling;
 

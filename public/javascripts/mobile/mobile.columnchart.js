@@ -1,4 +1,4 @@
-socrata.visualizations.MobileColumnChart = function(values, $target) {
+socrata.visualizations.mobileColumnChart = function(values, $target) {
   var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();
 
   var NAME_INDEX = 0;

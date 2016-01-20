@@ -877,14 +877,14 @@ class View < Model
   end
 
   def resource_url
-    "https://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{id}.json"
+    "//#{CurrentDomain.cname}/resource/#{id}.json"
   end
 
   def tweet
     # Stories do not use the `short_view_url` helper method, which hard-codes the `/d/` prefix.
     if self.story?
       story_domain = self.federated? ? self.domainCName : CurrentDomain.cname
-      I18n.t('controls.common.share.share_story_text', :name => name, :site => CurrentDomain.strings.company) + "https://#{story_domain}/stories/s/#{self.id}"
+      I18n.t('controls.common.share.share_story_text', :name => name, :site => CurrentDomain.strings.company) + "//#{story_domain}/stories/s/#{self.id}"
     else
       I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
     end

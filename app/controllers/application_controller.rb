@@ -213,7 +213,7 @@ class ApplicationController < ActionController::Base
         "/assets/#{logo_square[:href]}"
       end
       # This is mostly because I don't trust FB to handle it correctly otherwise.
-      @meta['og:image'] = "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{@link_image_src}"
+      @meta['og:image'] = "//#{CurrentDomain.cname}#{@link_image_src}"
     end
   end
 

@@ -565,6 +565,23 @@ describe('FeatureMapController', function() {
       });
       expect(elementInfo.scope.featureExtent).to.equal(defaultExtent);
     });
+
+    it('should use the bounds of the world if both the default and server extent are missing', function() {
+      var deferred = $q.defer();
+      CardDataService.getFeatureExtent.returns(deferred.promise);
+      CardDataService.getDefaultFeatureExtent.returns(undefined);
+      var elementInfo = buildElement({
+        dataset: dataset
+      });
+      var $scope = elementInfo.scope;
+      $scope.$apply(function() {
+        deferred.resolve(undefined);
+      });
+      expect(elementInfo.scope.featureExtent).to.deep.equal({
+        southwest: [ -85, -180 ],
+        northeast: [ 85, 180 ]
+      });
+    });
   });
 
   describe('explicit extent', function() {

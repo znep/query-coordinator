@@ -1,0 +1,72 @@
+<div class="user-story-header"<%== render_site_chrome_header_styles(@site_chrome.styles) %>>
+
+  <div class="user-story-header-left">
+    <%- if site_chrome_should_show_header_logo?(@site_chrome.content) %>
+      <a href="/" title="<%= @site_chrome.content['logoAltText'] %>">
+        <img class="user-story-header-logo" src="<%= @site_chrome.content['logoUrl'] %>" alt="<%= @site_chrome.content['logoAltText'] %>" />
+      </a>
+    <%- end %>
+    <a href="/" title="<%= @site_chrome.content['friendlySiteName'] %>">
+      <h1 class="user-story-header-name" style="color: <%= @site_chrome.styles['$font-color'] %>">
+        <%= @site_chrome.content['friendlySiteName'] %>
+      </h1>
+    </a>
+  </div>
+
+  <div class="user-story-header-right">
+    <ul class="user-story-header-menu">
+      <%- if site_chrome_should_show_link_1?(@site_chrome.content) %>
+        <li class="user-story-header-menu-item">
+          <a href="<%= @site_chrome.content['link1Url'] %>" title="<%= @site_chrome.content['link1Label'] %>" style="color: <%= @site_chrome.styles['$font-color'] %>">
+            <%= @site_chrome.content['link1Label'] %>
+          </a>
+        </li>
+      <%- end %>
+      <%- if site_chrome_should_show_link_2?(@site_chrome.content) %>
+        <li class="user-story-header-menu-item">
+          <a href="<%= @site_chrome.content['link2Url'] %>" title="<%= @site_chrome.content['link2Label'] %>" style="color: <%= @site_chrome.styles['$font-color'] %>">
+            <%= @site_chrome.content['link2Label'] %>
+          </a>
+        </li>
+      <%- end %>
+      <%- if site_chrome_should_show_link_3?(@site_chrome.content) %>
+        <li class="user-story-header-menu-item">
+          <a href="<%= @site_chrome.content['link3Url'] %>" title="<%= @site_chrome.content['link3Label'] %>" style="color: <%= @site_chrome.styles['$font-color'] %>">
+            <%= @site_chrome.content['link3Label'] %>
+          </a>
+        </li>
+      <%- end %>
+    </ul>
+    <%- if site_chrome_should_show_header_menu?(@site_chrome.content) %>
+      <button class="user-story-header-menu-button btn-default btn-bordered-transparent" <%== render_site_chrome_menu_button_styles(@site_chrome.styles) %>>
+        MENU
+      </button>
+    <%- end %>
+  </div>
+</div>
+
+<div class="user-story-responsive-menu-container withdrawn">
+  <ul class="user-story-responsive-menu">
+    <%- if site_chrome_should_show_link_1?(@site_chrome.content) %>
+      <li class="user-story-responsive-menu-item">
+        <a href="<%= @site_chrome.content['link1Url'] %>" title="<%= @site_chrome.content['link1Label'] %>">
+          <%= @site_chrome.content['link1Label'] %>
+        </a>
+      </li>
+    <%- end %>      
+    <%- if site_chrome_should_show_link_2?(@site_chrome.content) %>
+      <li class="user-story-responsive-menu-item">
+        <a href="<%= @site_chrome.content['link2Url'] %>" title="<%= @site_chrome.content['link2Label'] %>">
+          <%= @site_chrome.content['link2Label'] %>
+        </a>
+      </li>
+    <%- end %>
+    <%- if site_chrome_should_show_link_3?(@site_chrome.content) %>
+      <li class="user-story-responsive-menu-item">
+        <a href="<%= @site_chrome.content['link3Url'] %>" title="<%= @site_chrome.content['link3Label'] %>">
+          <%= @site_chrome.content['link3Label'] %>
+        </a>
+      </li>
+    <%- end %>
+  </ul>
+</div>

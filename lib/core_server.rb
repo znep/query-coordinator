@@ -45,6 +45,10 @@ class CoreServer
     configurations_request(verb: :get, type: 'story_theme', default_only: false, merge: false)
   end
 
+  def self.site_chrome
+    configurations_request(verb: :get, type: 'site_chrome', default_only: false, merge: false)
+  end
+
   def self.current_user_authorization(user, uid)
     if user.present? && uid.present?
       view = CoreServer.get_view(uid)

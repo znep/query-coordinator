@@ -1,12 +1,185 @@
 @import 'lib/variables';
 
 #story-view {
+
   .user-story-container {
     font-size: 16px; //adjust back from 10px font-size, to match text iframes
-    padding-top: 0;
+    padding-top: $user-story-header-height;
+    z-index: $user-story-container-z-index;
+
+    .user-story-header {
+      position: fixed;
+      display: block;
+      width: 100%;
+      top: 0;
+      left: 0;
+      height: $user-story-header-height;
+      color: #fff;
+      background-color: #3398DC;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.15);
+      -webkit-transform: translateY(0);
+      -moz-transform: translateY(0);
+      -ms-transform: translateY(0);
+      transform: translateY(0);
+      transition: transform $transition-duration;
+      z-index: $user-story-header-z-index;
+
+      .user-story-header-left,
+      .user-story-header-right {
+        position: relative;
+        display: block;
+        height: $user-story-header-height;
+      }
+
+      .user-story-header-left {
+        float: left;
+
+        .user-story-header-logo,
+        .user-story-header-name {
+          position: relative;
+          display: block;
+          float: left;
+        }
+
+        .user-story-header-logo {
+          height: $user-story-header-height - 3rem;
+          margin: 1.5rem 1rem 1.5rem 1rem;
+        }
+
+        .user-story-header-name {
+          margin-left: 1rem;
+          color: #fff;
+          font-size: 2rem;
+          line-height: $user-story-header-height;
+          font-weight: normal;
+        }
+      }
+
+      .user-story-header-right {
+        float: right;
+
+        .user-story-header-menu-button {
+          position: relative;
+          display: none;
+          margin: 0.5em 1em;
+        }
+
+        .user-story-header-menu {
+          @include clearfix();
+
+          display: block;
+          position: relative;
+          padding-right: 1rem;
+
+          .user-story-header-menu-item {
+            position: relative;
+            display: block;
+            float: left;
+            margin-left: 3rem;
+            line-height: $user-story-header-height;
+
+            a {
+              color: #fff;
+              text-decoration: none;
+            }
+          }
+        }
+      }
+
+
+
+      // Fun fact: this originally used the class '.hidden' to signify that the
+      // panel should be translated up beyond the top edge of the viewport, and
+      // caused much consternation as to why the transition animation was not
+      // being applied. It turns out that the '.hidden' class is defined
+      // elsewhere with 'display: none' and so the bar was never shown at all,
+      // but since it was supposed to be hidden above the screen and the more
+      // general '.hidden' class was being applied way down the specificity
+      // stack, it was not obvious that the header bar was in fact literally
+      // hidden and not just translated out of view. D'oh!
+      &.withdrawn {
+        -webkit-transform: translateY(-$user-story-header-height);
+        -moz-transform: translateY(-$user-story-header-height);
+        -ms-transform: translateY(-$user-story-header-height);
+        transform: translateY(-$user-story-header-height);
+      }
+    }
+
+    .user-story-responsive-menu-container {
+      display: none;
+      z-index: $user-story-header-menu-z-index;
+    }
+
+    &.small {
+
+      .user-story-header {
+
+        .user-story-header-menu-button {
+          display: block;
+        }
+
+        .user-story-header-menu {
+          display: none;
+        }
+      }
+
+      .user-story-responsive-menu-container {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        color: #aaa;
+        background-color: #333;
+        box-shadow: 0 3px 0 rgba(0,0,0,0.15);
+        -webkit-transform: translateY($user-story-header-height);
+        -moz-transform: translateY($user-story-header-height);
+        -ms-transform: translateY($user-story-header-height);
+        transform: translateY($user-story-header-height);
+        transition: transform $transition-duration;
+
+        .user-story-responsive-menu {
+
+          .user-story-responsive-menu-item {
+            height: $user-story-max-menu-height / 3;
+            font-size: 16px;
+            line-height: 6rem;
+            border-bottom: 1px solid #2A2A2A;
+            box-sizing: border-box;
+
+            a {
+              position: relative;
+              display: block;
+              width: 100%;
+              height: 100%;
+              padding: 0 2rem;
+              color: #aaa;
+              text-decoration: none;
+            }
+
+            &:hover {
+              background-color: #3A3A3A;
+
+              a {
+                color: #fff;
+              }
+            }
+          }
+        }
+
+        &.withdrawn {
+          -webkit-transform: translateY(-($user-story-header-height + $user-story-max-menu-height));
+          -moz-transform: translateY(-($user-story-header-height + $user-story-max-menu-height));
+          -ms-transform: translateY(-($user-story-header-height + $user-story-max-menu-height));
+          transform: translateY(-($user-story-header-height + $user-story-max-menu-height));
+        }
+      }
+    }
 
     .user-story {
-      @include selectable(); /* remove unselectable from edit mode */
+      @include selectable(); // remove unselectable from edit mode
+
+      min-height: calc(96vh - #{$user-story-header-height});
       padding-bottom: $user-story-padding-bottom;
 
       &.presentation-mode {
@@ -25,6 +198,13 @@
           width: $presentation-mode-small-width;
         }
       }
+    }
+
+    .user-story-footer {
+      padding: 1rem 1rem;
+      font-size: 1.5rem;
+      color: #aaa;
+      border-top: 1px solid #ccc;
     }
   }
 
@@ -108,6 +288,7 @@
   }
 
   .profiler-results {
+    display: none;
     top: 0 !important;
   }
 }

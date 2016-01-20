@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 shared_examples 'a secure application' do
+
+  before do
+    allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
+  end
+
   self.use_transactional_fixtures = false
 
   describe 'View mode' do

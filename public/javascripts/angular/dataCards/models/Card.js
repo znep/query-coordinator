@@ -71,32 +71,40 @@ angular.module('dataCards.models').
           )
         );
 
-        self.defineEphemeralObservablePropertyFromSequence(
-          'isCustomizableCard',
-          self.observe('cardType').map(
-            function(cardType) {
-              return !_.contains(Constants.CUSTOMIZATION_DISABLED_CARD_TYPES, cardType);
-            }
-          )
-        );
+        if (ServerConfig.get('enableDataLensCardLevelAggregation') && self.version >= 4) {
+          self.defineEphemeralObservablePropertyFromSequence(
+            'isCustomizable',
+            // TODO leads to a lot of dead code that can be unravelled once we are officially on v4.
+            Rx.Observable.returnValue(true)
+          );
+        } else {
+          self.defineEphemeralObservablePropertyFromSequence(
+            'isCustomizableCard',
+            self.observe('cardType').map(
+              function(cardType) {
+                return !_.contains(Constants.CUSTOMIZATION_DISABLED_CARD_TYPES, cardType);
+              }
+            )
+          );
 
-        self.defineEphemeralObservablePropertyFromSequence(
-          'isCustomizableDataType',
-          self.observe('column').map(
-            function(column) {
-              return !_.contains(Constants.CUSTOMIZATION_DISABLED_DATA_TYPES, column.physicalDatatype);
-            }
-          )
-        );
+          self.defineEphemeralObservablePropertyFromSequence(
+            'isCustomizableDataType',
+            self.observe('column').map(
+              function(column) {
+                return !_.contains(Constants.CUSTOMIZATION_DISABLED_DATA_TYPES, column.physicalDatatype);
+              }
+            )
+          );
 
-        self.defineEphemeralObservablePropertyFromSequence(
-          'isCustomizable',
-          self.observe('isCustomizableCard').combineLatest(self.observe('isCustomizableDataType'),
-            function(isCustomizableCard, isCustomizableDataType) {
-              return isCustomizableCard && isCustomizableDataType;
-            }
-          )
-        );
+          self.defineEphemeralObservablePropertyFromSequence(
+            'isCustomizable',
+            self.observe('isCustomizableCard').combineLatest(self.observe('isCustomizableDataType'),
+              function(isCustomizableCard, isCustomizableDataType) {
+                return isCustomizableCard && isCustomizableDataType;
+              }
+            )
+          );
+        }
 
         self.defineEphemeralObservablePropertyFromSequence(
           'isExportable',

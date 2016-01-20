@@ -11,6 +11,7 @@ const angular = require('angular');
  */
 function columnAndVisualizationSelector(
   Card,
+  Constants,
   DatasetColumnsService,
   $log,
   rx,
@@ -159,11 +160,13 @@ function columnAndVisualizationSelector(
       scope.availableCardTypes = [];
       scope.addVisualizationPrompt = scope.addVisualizationPrompt || 'addCardDialog.prompt';
 
-      var shouldShowAggregationSelector$ = Rx.Observable.returnValue(false);
-      if (scope.page.version >= 4 && ServerConfig.get('enableDataLensCardLevelAggregation')) {
-        shouldShowAggregationSelector$ = selectedCardModel$;
-      }
-      scope.$bindObservable('shouldShowAggregationSelector', shouldShowAggregationSelector$);
+      scope.$bindObservable('shouldShowAggregationSelector', selectedCardModel$.
+        observeOnLatest('cardType').
+        map(function(cardType) {
+          return scope.page.version >= 4 &&
+            ServerConfig.get('enableDataLensCardLevelAggregation') &&
+            !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
+        }));
 
       scope.$bindObservable(
         'availableCardTypes',

@@ -175,7 +175,12 @@ function customizeCardDialog(
       $scope.customizedCard = $scope.dialogState.cardModel.clone();
       $scope.showBucketTypeWarning = false;
 
-      $scope.shouldShowAggregationSelector = $scope.page.version >= 4 && ServerConfig.get('enableDataLensCardLevelAggregation');
+      $scope.$bindObservable('shouldShowAggregationSelector',
+        $scope.customizedCard.observe('cardType').map(function(cardType) {
+          return $scope.page.version >= 4 &&
+            ServerConfig.get('enableDataLensCardLevelAggregation') &&
+            !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
+        }));
 
       $scope.$bindObservable('availableCardTypes',
         $scope.customizedCard.observe('column.availableCardTypes'));

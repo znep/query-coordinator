@@ -18,6 +18,9 @@ sinon.useFakeXMLHttpRequest().onCreate = function(xhr) {
       xhr.respond(200, {
         'Content-Type': 'application/json'
       }, '[{"userEmail": "test@socrata.com", "type": "viewer"}]');
+    } else if (/\/analytics\/add/.test(url)) {
+      console.log('analytics add');
+      xhr.respond(200, { 'Content-Type': 'text/plain' }, 'OK');
     } else if (/\/stories\/api\/v1\/stories\/\w{4}-\w{4}\/drafts/.test(url)) {
       console.log('drafts');
       xhr.respond(200, {

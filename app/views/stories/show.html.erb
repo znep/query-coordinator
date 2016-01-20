@@ -24,3 +24,6 @@
 </div>
 
 <%= render partial: 'stories/partials/presentation_mode' %>
+<script>
+  isStoryPublished = <%= @story.is_a?(PublishedStory) %>
+</script>

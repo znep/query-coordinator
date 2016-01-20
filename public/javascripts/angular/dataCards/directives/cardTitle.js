@@ -1,7 +1,6 @@
 const angular = require('angular');
-var DYNAMIC_TITLE_CARDTYPE_BLACKLIST = ['table', 'feature', 'search'];
 
-function CardTitleDirective(Dataset, PageHelpersService, ServerConfig) {
+function CardTitleDirective(Constants, Dataset, PageHelpersService, ServerConfig) {
   return {
     restrict: 'E',
     scope: {
@@ -40,7 +39,7 @@ function CardTitleDirective(Dataset, PageHelpersService, ServerConfig) {
       var displayDynamicTitle$ = model$.
         observeOnLatest('cardType').
         map(function(cardType) {
-          return !_(DYNAMIC_TITLE_CARDTYPE_BLACKLIST).contains(cardType);
+          return !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
         });
 
       $scope.$bindObservable('customTitle', customTitle$);

@@ -157,6 +157,9 @@ function Constants() {
       'y'
     ],
 
+    // Card Aggregation Selector
+    'AGGREGATION_CARDTYPE_BLACKLIST': ['search', 'feature', 'table'],
+
     // This is a filter we use to exclude dates outside the maximum legal date value
     // as a string in Javascript.  We set it to 01/01 so we can still use rollups
     // aggregated at the yearly level if possible.

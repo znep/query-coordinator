@@ -610,9 +610,19 @@ describe('columnAndVisualizationSelectorTest', function() {
         expect(cardAggregationSelector).to.not.exist;
       });
 
+      it('should not show card aggregation when card type is blacklisted', function() {
+        var directive = createDirective();
+        directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+        directive.element.find('.icon-search').trigger('click');
+        var cardAggregationSelector = directive.element.find('card-aggregation-selector');
+
+        expect(cardAggregationSelector).to.not.exist;
+      });
+
       it('should show card aggregation when column is selected', function() {
         var directive = createDirective();
         directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+        directive.element.find('.icon-bar-chart').trigger('click');
         var cardAggregationSelector = directive.element.find('card-aggregation-selector');
 
         expect(cardAggregationSelector).to.exist;

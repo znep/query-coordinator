@@ -542,7 +542,6 @@ $(function() {
   var opts = {};
   var $sortType = $('#browse2-sort-type');
   var $sortPeriod = $('#browse2-sort-period');
-  var searchRegex = '';
   var $searchSection = $browse.find('.browse2-search');
 
   if (!$.isBlank(window.location.search)) {
@@ -564,56 +563,6 @@ $(function() {
         }
       }
     );
-  }
-
-  // Sad hack: we don't have the stemmed version, so just highlight the words they typed.
-  // Also remove special characters because they can break the regex.
-  if ($.subKeyDefined(blist, 'browse.searchOptions.q')) {
-    searchRegex = new RegExp(
-      blist.browse.searchOptions.q.trim().
-        replace(/[^\w\s]/gi, '').
-        replace(' ', '|'), 'gi'
-    );
-  }
-
-  if (!$.isBlank(searchRegex)) {
-    // Assuming that dataset names do not have any html inside them.
-    // Assuming that dataset descriptions only have A tags inside them.
-    $('.browse2-result').
-      find('.browse2-result-title, .browse2-result-description, .browse2-result-topics').
-      each(function() {
-        var $this = $(this);
-        // For anchor tags, ensure we only modify the outerHTML.
-        var aLinks = $this.find('a').map(function() {
-          var $aLink = $(this);
-          $aLink.html(
-            $aLink.html().
-              replace(searchRegex, '<span class="highlight">$&</span>')
-          );
-          return $aLink[0].outerHTML;
-        });
-        // For non-anchor tags, do a general text replace
-        var textBits = _.map(
-          $this.html().split(/<a.*\/a>/), function(text) {
-            return text.replace(searchRegex, '<span class="highlight">$&</span>');
-          }
-        );
-
-        $this.html(_.flatten(_.zip(textBits, aLinks)).join(''));
-      });
-
-    $('.browse-list-item').
-      find('[data-search="highlight"]').
-      find('*').
-      addBack().
-      contents().
-      filter(function() {
-        return this.nodeType === 3;
-      }).
-      each(function() {
-        var newContent = $(this).text().replace(searchRegex,'<span class="highlight">$&</span>');
-        $(this).replaceWith(newContent);
-      });
   }
 
   if ($searchSection.length > 0) {

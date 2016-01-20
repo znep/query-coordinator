@@ -14,7 +14,7 @@
 
         <div class="browse2-result-title">
           <h2 class="browse2-result-name">
-            <a class="browse2-result-name-link" href="<%= result_link %>" rel="<%= result_link_rel_type %>" itemprop="url" data-search="highlight"><%= result_name %></a>
+            <a class="browse2-result-name-link" href="<%= result_link %>" rel="<%= result_link_rel_type %>" itemprop="url"><%= result_name %></a>
           </h2>
 
           <%- if show_official_badge -%>
@@ -31,8 +31,7 @@
           -%>
             <a class="browse2-result-category browse2-result-header-section"
               href="<%= category_url %>"
-              itemprop="keywords"
-              data-search="highlight"><%= category %></a>
+              itemprop="keywords"><%= category %></a>
           <%- end -%>
 
           <%- if result_is_federated -%>
@@ -56,9 +55,7 @@
     <div class="browse2-result-metadata">
       <%- if result_description.present? -%>
         <div class="browse2-result-description-container">
-          <div class="browse2-result-description">
-            <div data-search="highlight"><%= result_description %></div>
-          </div>
+          <div class="browse2-result-description"><%= result_description %></div>
           <div class="browse2-result-description-truncation-toggle-control">
             <span class="browse2-result-description-show-more-label">
               <%= t('controls.browse.browse2.description.show_more_label') %>
@@ -71,7 +68,7 @@
       <%- end -%>
 
       <div class="browse2-result-topics-and-data-types clearfix">
-        <div class="browse2-result-topics" data-search="highlight">
+        <div class="browse2-result-topics">
           <span class="browse2-result-topic-label">
             <%= t('controls.browse.browse2.topics.label') %>
           </span>
@@ -95,19 +92,6 @@
 
           <%- end -%>
         </div>
-
-        <!-- TODO - UX decision of where to place this once we have result data types
-        <div class="browse2-result-data-types" data-search="highlight">
-          <%- if result_data_types.present? -%>
-            <span class="browse2-result-data-types-icon icon-data" data-display-type="<%= result_display_type %>"></span>
-            <span class="browse2-result-data-types-label">
-              <%= t('controls.browse.browse2.data_types.label') %>
-            </span>
-            <div class="browse2-result-data-types-content">
-              <%= result_data_types %>
-            </div>
-          <%- end -%>
-        </div> -->
       </div>
 
       <div class="browse2-result-explore">

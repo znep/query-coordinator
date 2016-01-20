@@ -139,7 +139,9 @@ class StoriesController < ApplicationController
 
   def respond_with_story(story)
     @story = story
+
     if @story
+      StoryAccessLogger.log_story_view_access(story)
       respond_to do |format|
         format.html { render 'stories/show' }
         format.json { render json: @story }

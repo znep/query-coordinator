@@ -391,4 +391,18 @@ describe CoreServer do
       end
     end
   end
+
+  describe '#current_domain' do
+    let(:domain_json) { fixture('domain.json').read }
+
+    before do
+      stub_request(:get, "#{core_service_uri}/domains").
+        to_return(status: 200, body: domain_json)
+    end
+
+    it 'returns domain json' do
+      result = CoreServer.current_domain
+      expect(result).to eq(JSON.parse(domain_json))
+    end
+  end
 end

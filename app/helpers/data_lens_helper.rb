@@ -24,7 +24,8 @@ module DataLensHelper
     javascript_tag(
       "var pageMetadata = #{json_escape(@page_metadata.to_json)};\n" \
       "var datasetMetadata = #{json_escape(@dataset_metadata.to_json)};\n" \
-      "var domainMetadata = #{json_escape(@domain_metadata.to_json)};"
+      "var domainMetadata = #{json_escape(@domain_metadata.to_json)};\n" \
+      "var migrationMetadata = #{json_escape(@migration_metadata.slice(:nbeId, :obeId).to_json)};"
     )
   end
 

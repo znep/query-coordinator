@@ -483,9 +483,9 @@ class NewUxBootstrapController < ActionController::Base
 
     # Fetch migration info to get mapping from nbe to obe for skipLinks
     begin
-      @migration_info = View.migrations(page_metadata[:datasetId])
+      @migration_metadata = View.migrations(page_metadata[:datasetId])
     rescue
-      @migration_info = {}
+      @migration_metadata = {}
     end
 
     @domain_metadata = domain_metadata

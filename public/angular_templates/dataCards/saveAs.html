@@ -28,7 +28,8 @@
           {{::'saveAsPanel.visibilityDisabled' | I18n}}
         </p>
         <p class="visibility-alert" ng-if="datasetIsPrivate">
-          {{::'manageLensDialog.visibility.datasetIsPrivate' | I18n}}
+          <span class="icon-info"></span>
+          <span ng-bind-html="privateDatasetMessage"></span>
         </p>
       </div>
 

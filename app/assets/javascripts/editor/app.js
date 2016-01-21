@@ -3,7 +3,6 @@ $(document).on('ready', function() {
   'use strict';
 
   var storyteller = window.socrata.storyteller;
-
   /**
    * Setup
    */
@@ -65,6 +64,7 @@ $(document).on('ready', function() {
     }
   });
 
+  storyteller.errorReporter = new storyteller.ErrorReporter();
   storyteller.linkTipStore = new storyteller.LinkTipStore();
   storyteller.linkModalStore = new storyteller.LinkModalStore();
   storyteller.storyStore = new storyteller.StoryStore();

@@ -88,13 +88,13 @@
       _file = file;
 
       if (_file.size > maxFileSizeBytes) {
-        _emitError('validation_file_size');
+        _emitError('validation_file_size', { message: 'File size too large' });
         return;
       }
 
       var isValidFileType = _.any(_.invoke(validFileTypes, 'test', _file.type));
       if (!isValidFileType) {
-        _emitError('validation_file_type');
+        _emitError('validation_file_type', { message: 'Invalid file type.' });
         return;
       }
 
@@ -149,11 +149,24 @@
     }
 
     function _emitError(errorStep, reason) {
+      var errorReportingLabel = 'FileUploader#_emitError';
+
       storyteller.dispatcher.dispatch({
         action: options.errorAction || Actions.FILE_UPLOAD_ERROR,
         error: {
           step: errorStep,
           reason: reason
+        },
+        errorReporting: {
+          message: '{0}: {1} - {2} (story: {3}, status: {4})'.
+            format(
+              errorReportingLabel,
+              errorStep,
+              reason.message,
+              storyteller.userStoryUid,
+              reason.status || ''
+            ),
+          label: errorReportingLabel
         }
       });
     }

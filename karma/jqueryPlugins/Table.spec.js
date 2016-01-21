@@ -153,14 +153,17 @@ describe('Table', function() {
     });
 
     describe('on SOCRATA_VISUALIZATION_COLUMN_CLICKED for a currently unsorted column', function() {
+      var vifUpdatedSpy;
       beforeEach(function(done) {
         var calls = getRowsSpy.getCalls();
         assert.lengthOf(calls, 1); // Just test sanity.
 
+        vifUpdatedSpy = sinon.spy();
+        $container.on('SOCRATA_VISUALIZATION_VIF_UPDATED', vifUpdatedSpy);
+
         emitEvent($container, 'SOCRATA_VISUALIZATION_COLUMN_CLICKED', 'district');
         // Allow the mock data providers to resolve.
         _.defer(done);
-
       });
 
       it('makes a data request that sorts ASC on the column', function() {
@@ -169,6 +172,20 @@ describe('Table', function() {
 
         assert.equal(calls[0].args[0], '$order=`ward`+ASC&$limit=6&$offset=0')
         assert.equal(calls[1].args[0], '$order=`district`+ASC&$limit=6&$offset=0')
+      });
+
+      it('emits SOCRATA_VISUALIZATION_VIF_UPDATED', function() {
+        var calls = vifUpdatedSpy.getCalls();
+        assert.lengthOf(calls, 1);
+
+        var newVIF = calls[0].args[0].originalEvent.detail;
+        var expectedVIF = _.cloneDeep(tableVIF);
+        _.set(expectedVIF, 'configuration.order[0].columnName', 'district');
+
+        assert.deepEqual(
+          newVIF,
+          expectedVIF
+        );
       });
 
       describe('then another SOCRATA_VISUALIZATION_COLUMN_CLICKED on the same column', function() {

@@ -186,7 +186,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'render skip-links in html' do
-      assert_match(/<div id=\"skip-links\">/, @response.body)
+      assert_match(/<div class=\"skip-links\">/, @response.body)
       assert_match(/Go to an accessible version of this page/, @response.body)
     end
 

@@ -107,10 +107,10 @@
             t('controls.browse.browse2.facets.header.filtered_by') + '...' : '' -%>
         </span>
       </div>
-      <div class="browse2-mobile-filter-link">
+      <a class="browse2-mobile-filter-link" href="#">
         <%= t('controls.browse.browse2.facets.header.filter') %>
         <span class="browse2-mobile-filter-icon icon-arrow-right"></span>
-      </div>
+      </a>
     </div>
 
     <div class="browse2-mobile-filter-content">
@@ -165,6 +165,10 @@
       </div>
     </div>
 
+    <div class="skip-links">
+      <a href="#browse2-results"><%= t('controls.browse.browse2.skiplinks.results') %></a>
+    </div>
+
     <%=
       if opts[:facets].length > 0
         render(
@@ -191,6 +195,8 @@
       <!-- Results -->
 
       <div class="browse2-results">
+
+        <a name="browse2-results" tabindex="-1"></a>
 
       <%-
         if opts[:view_request_timed_out]
@@ -472,11 +478,13 @@
       <%= t('core.interstitial.leaving_explanation_html') %>
     </p>
     <div class="nameDescription">
-      <h3 class="browse2-external-link-title"></h3>
+      <p class="browse2-external-link-title"></p>
       <p class="browse2-external-link-description"></p>
     </div>
     <div class="leavingLinkWrapper">
-      <a class="leavingLink noInterstitial" href="#" rel="external"></a>
+      <a class="leavingLink noInterstitial" href="#" rel="external">
+        <%= t('core.interstitial.leaving_explanation_html') %>
+      </a>
     </div>
     <ul class="actions clearfix">
       <li>

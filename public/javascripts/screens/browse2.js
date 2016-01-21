@@ -261,10 +261,14 @@ $(function() {
   function toggleBrowse2FacetChildOptionDropdown(event) {
     event.preventDefault();
     event.stopPropagation();
+    var childOptionsAlreadyVisible = $(this).closest('li').find('.browse2-facet-section-child-options').is(':visible');
     $(this).closest('li').find('.browse2-facet-section-child-options').slideToggle('fast');
+    this.title = childOptionsAlreadyVisible ?
+      $.t('controls.browse.browse2.facets.expand.title') : $.t('controls.browse.browse2.facets.contract.title');
   }
 
-  function toggleBrowse2MobileFacetsSlideout() {
+  function toggleBrowse2MobileFacetsSlideout(event) {
+    event.preventDefault();
     var $facetPaneSection = $('.browse2-facets-pane, .browse2-mobile-facets-filter-button');
     // Hide other containing elements on page when mobile facet section is shown
     var $otherContainers = $('.browse2-search, .browse2-mobile-filter, .browse2-results-pane');
@@ -313,7 +317,8 @@ $(function() {
     }
   }
 
-  function browse2MobileFacetClearAll() {
+  function browse2MobileFacetClearAll(event) {
+    event.preventDefault();
     $('.browse2-facet-section-option.active, .browse2-facet-section-child-option.active').
       removeClass('active');
     filterBrowse2MobileFacets();
@@ -366,7 +371,8 @@ $(function() {
     }, 0);
   }
 
-  function toggleBrowse2FacetTruncation() {
+  function toggleBrowse2FacetTruncation(event) {
+    event.preventDefault();
     var sectionContainer = $(this).parent('.browse2-facet-section');
     var currentDisplay = sectionContainer.attr('data-facet-truncation');
 
@@ -389,7 +395,8 @@ $(function() {
     });
   }
 
-  function toggleBrowse2DescriptionTruncation() {
+  function toggleBrowse2DescriptionTruncation(event) {
+    event.preventDefault();
     var sectionContainer = $(this).parent('.browse2-result-description-container');
     var currentDisplay = sectionContainer.attr('data-description-display');
 
@@ -673,7 +680,7 @@ $(function() {
   $('.browse2-facet-section-title').on('click', toggleBrowse2FacetDisplay);
   $('.browse2-mobile-filter, .browse2-facets-pane-mobile-header').on('click', toggleBrowse2MobileFacetsSlideout);
   $('.browse2-facets-mobile-active-filter').on('click', browse2MobileActiveFilterClick);
-  $('.browse2-facet-section-option .browse2-facet-section-expand-contract-icon').on('click', toggleBrowse2FacetChildOptionDropdown);
+  $('.browse2-facet-section-child-option-toggle').on('click', toggleBrowse2FacetChildOptionDropdown);
   $('.browse2-facet-section-option, .browse2-facet-section-child-option').on('click', browse2MobileFacetClick);
   $('.browse2-mobile-facets-filter-button').on('click', filterBrowse2MobileFacets);
   $('.browse2-facets-pane-mobile-clear-all-button').on('click', browse2MobileFacetClearAll);

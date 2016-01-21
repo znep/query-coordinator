@@ -20,10 +20,10 @@ end
 <div class="browse2-facet-section"
   data-facet-display="show"<%== ' data-facet-truncation="truncate"' if truncate_facet_section %>
   data-facet-option-type="<%= facet_param.to_s %>">
-  <h4 class="browse2-facet-section-title">
+  <h3 class="browse2-facet-section-title" title="<%= facet[:title] %>">
     <%= facet[:title] %>
     <span class="browse2-facet-section-expand-contract-icon icon-arrow-down"></span>
-  </h4>
+  </h3>
 
   <ul class="browse2-facet-section-options">
   <%-
@@ -35,13 +35,16 @@ end
   -%>
       <li <%== 'class="truncated"' if index >= truncate_facet_section_at_index %>>
         <a class="<%= facet_link_classnames %>" href="<%= facet_link_href %>"
-          data-facet-option-value="<%= facet_option[:value] %>">
+          data-facet-option-value="<%= facet_option[:value] %>"
+          title="<%= facet_option[:text] %>">
           <span class="browse2-facet-option-clear-icon icon-close-2"></span>
           <%= facet_option[:text] %>
-          <%- if has_child_options -%>
-            <span class="browse2-facet-section-expand-contract-icon icon-arrow-down"></span>
-          <%- end -%>
         </a>
+        <%- if has_child_options -%>
+          <a class="browse2-facet-section-child-option-toggle" href="#" title="<%= t('controls.browse.browse2.facets.expand.title') %>">
+            <span class="browse2-facet-section-expand-contract-icon icon-arrow-down" href="#"></span>
+          </a>
+        <%- end -%>
 
         <!-- Child facet options -->
         <%- if has_child_options -%>
@@ -53,7 +56,8 @@ end
             -%>
               <li>
                 <a class="<%= child_facet_link_classnames %>" href="<%= child_facet_link_href %>"
-                  data-facet-option-value="<%= child_facet_option[:value] %>">
+                  data-facet-option-value="<%= child_facet_option[:value] %>"
+                  title="<%= child_facet_option[:text] %>">
                   <span class="browse2-facet-option-clear-icon icon-close-2"></span>
                   <%= child_facet_option[:text] %>
                 </a>
@@ -67,14 +71,14 @@ end
 
   <!-- "Show All" and "Show Less" toggle at the bottom of facet sections -->
   <%- if truncate_facet_section && facet_extra_options.present? -%>
-    <button class="browse2-facet-section-expand-button" title="<%= t('controls.browse.browse2.facets.expand.title') %>">
+    <a class="browse2-facet-section-expand-button" href="#" title="<%= t('controls.browse.browse2.facets.expand.title') %>">
       <span class="browse2-facet-section-expand-label"><%= t('controls.browse.browse2.facets.expand.label') %></span>
       <span class="browse2-facet-section-expand-icon icon-arrow-down"></span>
-    </button>
-    <button class="browse2-facet-section-contract-button" title="<%= t('controls.browse.browse2.facets.contract.title') %>">
+    </a>
+    <a class="browse2-facet-section-contract-button" href="#" title="<%= t('controls.browse.browse2.facets.contract.title') %>">
       <span class="browse2-facet-section-contract-label"><%= t('controls.browse.browse2.facets.contract.label') %></span>
       <span class="browse2-facet-section-contract-icon icon-arrow-up"></span>
-    </button>
+    </a>
   <%- end -%>
 
 </div>

@@ -82,11 +82,13 @@
           dataset-pages="datasetPages"
           ng-show="showOtherViewsButton && currentUserHasSaveRight">
         </related-views>
+
+        <!-- Old export dropdown -->
         <div
           ng-click="onDownloadClick($event)"
           class="action-btn l-to-r download-menu"
           ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
-          ng-if="showDownloadButton && !standaloneLensChartEnabled"
+          ng-if="showDownloadButton && !shouldShowExportMenu"
           >{{ (chooserMode.show ? 'common.cancel' : 'common.download') | I18n }}
           <dropdown-menu ng-if="downloadOpened">
             <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
@@ -96,10 +98,13 @@
             </a>
           </dropdown-menu>
         </div>
-        <a ng-if="!showDownloadButton && !standaloneLensChartEnabled"
+        <a ng-if="!showDownloadButton && !shouldShowExportMenu"
            class="action-btn l-to-r"
            href="{{datasetCSVDownloadURL}}">{{::'common.download' | I18n}}</a>
-        <export-menu ng-if="standaloneLensChartEnabled"></export-menu>
+
+        <!-- New export menu -->
+        <export-menu ng-if="shouldShowExportMenu"></export-menu>
+
         <api-explorer></api-explorer>
         <div class="manage-section">
           <div class="action-btn r-to-l manage-button" ng-if="shouldShowManageLens" ng-click="manageLensState.show = true">

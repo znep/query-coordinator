@@ -39,7 +39,6 @@ function initDownload($scope, page, WindowState, ServerConfig) {
   $scope.$bindObservable('datasetCSVDownloadURL', datasetCSVDownloadURL$);
 
   // Download menu
-  $scope.standaloneLensChartEnabled = ServerConfig.get('standaloneLensChart');
   $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
   WindowState.closeDialogEvent$.filter(function(e) {
     return $scope.downloadOpened &&
@@ -255,6 +254,7 @@ function CardsViewController(
   );
 
   $scope.shouldShowAggregationChooser = page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation');
+  $scope.shouldShowExportMenu = ServerConfig.get('enableDataLensExportMenu');
 
   /***************
   * User session *

@@ -1,5 +1,6 @@
 var utils = require('socrata-utils');
 var DataProvider = require('./DataProvider');
+var MetadataProvider = require('./MetadataProvider');
 var _ = require('lodash');
 
 /**
@@ -21,6 +22,7 @@ var _ = require('lodash');
  * callbacks, respectively.
  */
 function SoqlDataProvider(config) {
+  'use strict';
 
   _.extend(this, new DataProvider(config));
 
@@ -31,6 +33,7 @@ function SoqlDataProvider(config) {
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
   var _self = this;
+  var metadataProvider = new MetadataProvider(config);
 
   /**
    * Public methods
@@ -65,79 +68,33 @@ function SoqlDataProvider(config) {
    */
   this.query = function(queryString, nameAlias, valueAlias) {
 
-    var url = 'https://{0}/api/id/{1}.json?$query={2}'.format(
-      _self.getConfigurationProperty('domain'),
-      _self.getConfigurationProperty('datasetUid'),
-      queryString
-    );
-    var headers = {
-      'Accept': 'application/json',
-      'Content-type': 'application/json'
-    };
+    var url = _withSalt(_queryUrl('$query={0}'.format(queryString)));
 
-    return (
-      new Promise(function(resolve, reject) {
-
-        var xhr = new XMLHttpRequest();
-
-        function onFail() {
-
-          var error;
-
-          try {
-            error = JSON.parse(xhr.responseText);
-          } catch (e) {
-            error = xhr.statusText;
-          }
-
-          return reject({
-            status: parseInt(xhr.status, 10),
-            message: xhr.statusText,
-            soqlError: error
-          });
-        }
-
-        xhr.onload = function() {
-
-          var status = parseInt(xhr.status, 10);
-          var data;
-
-          if (status === 200) {
-
-            try {
-
-              data = JSON.parse(xhr.responseText);
-
-              return resolve(
-                _mapQueryResponseToTable(data, nameAlias, valueAlias)
-              );
-            } catch (e) {
-
-              // If we cannot parse the response body as JSON,
-              // then we should assume the request has failed
-              // in an unexpected way and resolve the promise
-              // accordingly. This will simply fall through to
-              // the call to `onFail()` below.
-            }
-          }
-
-          onFail();
-        };
-
-        xhr.onabort = onFail;
-        xhr.onerror = onFail;
-
-        xhr.open('GET', _withSalt(url), true);
-
-        // Set user-defined headers.
-        _.each(headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
+    return Promise.resolve(
+      $.get(url)
+    ).then(
+      function(data) {
+        return _mapQueryResponseToTable(data, nameAlias, valueAlias)
+      },
+      function(error) {
+        return Promise.reject({
+          status: parseInt(error.status, 10),
+          message: error.statusText,
+          soqlError: error.responseJSON || error.responseText
         });
-
-        xhr.send();
-      })
+      }
     );
   };
+
+  this.getRowCount = function() {
+    return Promise.resolve(
+      $.get(_queryUrl('$select=count(*)'))
+    ).then(
+      function(data) {
+        return parseInt(_.get(data, '[0].count'), 10);
+      }
+    );
+  }
 
   /**
    * `.getRows()` executes a SoQL query against the current domain that
@@ -149,84 +106,35 @@ function SoqlDataProvider(config) {
    * @return {Promise}
    */
   this.getRows = function(queryString) {
-
-    var url = 'https://{0}/api/id/{1}.json?{2}'.format(
-      _self.getConfigurationProperty('domain'),
-      _self.getConfigurationProperty('datasetUid'),
-      queryString
-    );
-    var headers = {
-      'Accept': 'application/json',
-      'Content-type': 'application/json'
-    };
-
-    return (
-      new Promise(function(resolve, reject) {
-
-        var xhr = new XMLHttpRequest();
-
-        function onFail() {
-
-          var error;
-
-          try {
-            error = JSON.parse(xhr.responseText);
-          } catch (e) {
-            error = xhr.statusText;
-          }
-
-          return reject({
-            status: parseInt(xhr.status, 10),
-            message: xhr.statusText,
-            soqlError: error
-          });
-        }
-
-        xhr.onload = function() {
-
-          var status = parseInt(xhr.status, 10);
-          var data;
-
-          if (status === 200) {
-
-            try {
-
-              data = JSON.parse(xhr.responseText);
-
-              return resolve(
-                _mapRowsResponseToTable(data)
-              );
-            } catch (e) {
-
-              // If we cannot parse the response body as JSON,
-              // then we should assume the request has failed
-              // in an unexpected way and resolve the promise
-              // accordingly. This will simply fall through to
-              // the call to `onFail()` below.
-            }
-          }
-
-          onFail();
-        };
-
-        xhr.onabort = onFail;
-        xhr.onerror = onFail;
-
-        xhr.open('GET', _withSalt(url), true);
-
-        // Set user-defined headers.
-        _.each(headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
+    var url = _withSalt(_queryUrl(queryString));
+    return Promise.all([
+      metadataProvider.getDatasetMetadata(),
+      Promise.resolve($.get(url))
+    ]).then(
+      function(responses) {
+        return _mapRowsResponseToTable(responses[0].columns, responses[1]);
+      },
+      function(error) {
+        return Promise.reject({
+          status: parseInt(error.status, 10),
+          message: error.statusText,
+          soqlError: error.responseJSON || error.responseText
         });
-
-        xhr.send();
-      })
+      }
     );
   };
 
   /**
    * Private methods
    */
+
+  function _queryUrl(queryString) {
+    return 'https://{0}/api/id/{1}.json?{2}'.format(
+      _self.getConfigurationProperty('domain'),
+      _self.getConfigurationProperty('datasetUid'),
+      queryString
+    );
+  }
 
   /**
    * Transforms a raw SoQL query result into a 'table' object.
@@ -293,23 +201,24 @@ function SoqlDataProvider(config) {
    *     ...
    *   ]
    */
-  function _mapRowsResponseToTable(data) {
+  function _mapRowsResponseToTable(columnInformation, data) {
+
+    columnInformation = _.sortBy(columnInformation, 'position');
 
     var table = {
-      columns: [],
-      rows: []
+      columns: _.pluck(columnInformation, 'fieldName'),
+      rows: [],
     };
 
     if (data.length > 0) {
 
-      var columns = Object.keys(data[0]);
       var rows = data.map(function(datum) {
 
         var row = [];
 
-        for (var i = 0; i < columns.length; i++) {
+        for (var i = 0; i < table.columns.length; i++) {
 
-          var column = columns[i];
+          var column = table.columns[i];
           var value = datum.hasOwnProperty(column) ? datum[column] : undefined;
 
           row.push(value);
@@ -318,7 +227,6 @@ function SoqlDataProvider(config) {
         return row;
       });
 
-      table.columns = columns;
       table.rows = rows;
     }
 

@@ -384,7 +384,6 @@ describe('ColumnChart', function() {
       });
 
       it('renders the chart at a reduced width to accommodate the left axis label', function() {
-        debugger;
         expect($('.column-chart').width()).to.be.lt(640);
       });
     });

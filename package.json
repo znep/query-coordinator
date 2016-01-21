@@ -41,6 +41,7 @@
     "rewire-webpack": "^1.0.1",
     "rimraf": "^2.4.3",
     "sinon": "^1.15.3",
+    "styleguide": "socrata/styleguide.git#0.1.0",
     "webpack": "^1.12.2"
   },
   "eslintConfig": {

@@ -38,6 +38,7 @@ module.exports = function(config) {
       'bower_components/simple-statistics/src/simple_statistics.js',
       'bower_components/chroma-js/chroma.js',
       'src/views/styles/*.scss',
+      'karma/testData.js',
       'karma/**/*spec.js',
       'karma/choroplethTestData/*.js',
       'karma/timelineTestData/*.js'

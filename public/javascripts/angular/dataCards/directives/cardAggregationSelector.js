@@ -45,9 +45,8 @@ function cardAggregationSelector(Constants, I18n, PluralizeService, rx) {
           var validColumnFilter = function(column, fieldName) {
             var isValidType = column.physicalDatatype === 'number' || column.physicalDatatype === 'money';
             var isReservedColumn = column.isSystemColumn || fieldName === '*' || _.contains(Constants.FIELD_NAMES_THAT_CANNOT_BE_AGGREGATED, fieldName);
-            var isSelf = fieldName === cardModel.fieldName;
 
-            return isValidType && !(isReservedColumn || isSelf);
+            return isValidType && !isReservedColumn;
           };
 
           return _.chain(columns).

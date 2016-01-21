@@ -79,19 +79,28 @@ describe('MetadataProvider', function() {
     },
   ]);
 
-  var SAMPLE_DATASET_METADATA = {
-    "columns":
-      Object.keys(JSON.parse(SAMPLE_ROW_REQUEST_RESPONSE)[0]).map(function(columnName) {
-        return {
-          fieldName: columnName
-        };
-      })
-  };
+  var SAMPLE_DATASET_METADATA = window.testData.CHICAGO_CRIMES_DATASET_METADATA;
 
   var SAMPLE_METADATA_ERROR = JSON.stringify({
     "code" : "not_found",
     "error" : true,
     "message" : "Cannot find view with id 56p4-vdcc.jso"
+  });
+
+  var server;
+  var metadataProviderOptions = {
+    domain: VALID_DOMAIN,
+    datasetUid: VALID_DATASET_UID
+  };
+  var metadataProvider;
+
+  beforeEach(function() {
+    server = sinon.fakeServer.create();
+    metadataProvider = new MetadataProvider(metadataProviderOptions);
+  });
+
+  afterEach(function() {
+    server.restore();
   });
 
   describe('constructor', function() {
@@ -119,23 +128,6 @@ describe('MetadataProvider', function() {
   describe('`.getPhidippidesAugmentedDatasetMetadata`', function() {
 
     describe('on request error', function() {
-
-      var server;
-      var metadataProviderOptions = {
-        domain: VALID_DOMAIN,
-        datasetUid: VALID_DATASET_UID
-      };
-      var metadataProvider;
-
-      beforeEach(function() {
-
-        server = sinon.fakeServer.create();
-        metadataProvider = new MetadataProvider(metadataProviderOptions);
-      });
-
-      afterEach(function() {
-        server.restore();
-      });
 
       it('should return an object containing "code" and "message" properties', function(done) {
 
@@ -231,24 +223,6 @@ describe('MetadataProvider', function() {
 
     describe('on request success', function(done) {
 
-      var server;
-      var metadataProviderOptions = {
-        domain: VALID_DOMAIN,
-        datasetUid: VALID_DATASET_UID
-      };
-      var metadataProvider;
-
-      beforeEach(function() {
-
-        server = sinon.fakeServer.create();
-        metadataProvider = new MetadataProvider(metadataProviderOptions);
-      });
-
-      afterEach(function() {
-
-        server.restore();
-      });
-
       it('should return the expected metadata', function(done) {
 
         metadataProvider.
@@ -282,21 +256,6 @@ describe('MetadataProvider', function() {
   });
 
   describe('getDatasetMetadata()', function() {
-    var metadataProvider;
-    var metadataProviderOptions = {
-      domain: VALID_DOMAIN,
-      datasetUid: VALID_DATASET_UID
-    };
-
-    beforeEach(function() {
-      server = sinon.fakeServer.create();
-      metadataProvider = new MetadataProvider(metadataProviderOptions);
-    });
-
-    afterEach(function() {
-      server.restore();
-    });
-
     describe('on request error', function() {
       it('should return an Object containing "code", "error", and "message"', function(done) {
         metadataProvider.getDatasetMetadata().then(
@@ -326,6 +285,49 @@ describe('MetadataProvider', function() {
 
         server.respond([SUCCESS_STATUS, {'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_DATASET_METADATA)]);
       });
+    });
+  });
+
+  describe('isSubcolumn()', function() {
+    it('returns true when there is a suffix', function() {
+      var sampleDatasetMetadataWithExtraSimilarlyNamedColumns = _.cloneDeep(SAMPLE_DATASET_METADATA);
+
+      sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
+        "id" : _.uniqueId(),
+        "name" : "Location 1",
+        "dataTypeName" : "point",
+        "fieldName" : "location_1",
+        "position" : d3.max(_.pluck(SAMPLE_DATASET_METADATA.columns, 'position')) + 1,
+        "renderTypeName" : "point",
+        "tableColumnId" : _.uniqueId(),
+        "format" : { }
+      });
+
+      sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
+        "id" : _.uniqueId(),
+        "name" : "Location 1 (city)",
+        "dataTypeName" : "point",
+        "fieldName" : "location_1_city",
+        "position" : d3.max(_.pluck(SAMPLE_DATASET_METADATA.columns, 'position')) + 2,
+        "renderTypeName" : "point",
+        "tableColumnId" : _.uniqueId(),
+        "format" : { }
+      });
+
+      assert.isFalse(metadataProvider.isSubcolumn(
+        'location_1',
+        sampleDatasetMetadataWithExtraSimilarlyNamedColumns
+      ));
+
+      assert.isTrue(metadataProvider.isSubcolumn(
+        'location_1_city',
+        sampleDatasetMetadataWithExtraSimilarlyNamedColumns
+      ));
+    });
+
+    it('flags subcolumns when there is not a suffix', function() {
+      assert.isFalse(metadataProvider.isSubcolumn('location', SAMPLE_DATASET_METADATA));
+      assert.isTrue(metadataProvider.isSubcolumn('location_city', SAMPLE_DATASET_METADATA));
     });
   });
 });

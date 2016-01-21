@@ -633,7 +633,7 @@ protected
     unless params[:filter].nil?
       filters = []
       params[:filter].each do |column_id, filter|
-        next if filter[:operator].blank?
+        next if filter.try(:[], :operator).blank?
         filter_condition = {
           'type' => 'operator',
           'value' => filter[:operator],

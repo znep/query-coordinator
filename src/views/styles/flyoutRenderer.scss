@@ -94,14 +94,15 @@
 }
 
 #socrata-flyout.northwest .socrata-flyout-hint:after {
-  right: -1px;
+  right: 0;
   top: 2px;
   border-width: 10px 0 0 10px;
   border-color: transparent transparent transparent #f1eeee;
 }
 
 #socrata-flyout.northwest .socrata-flyout-hint:before {
-  border-width: 11px 0 0 11px;
+  left: -1px;
+  border-width: 10px 0 0 12px;
   border-color: transparent transparent transparent #ccc;
 }
 

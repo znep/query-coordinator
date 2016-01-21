@@ -57,6 +57,43 @@ describe('MetadataProvider', function() {
     }
   });
 
+  var SAMPLE_ROW_REQUEST_RESPONSE = JSON.stringify([
+    {
+      "address": "Intersection of TREASURE ISLAND RD and",
+      "case_id": "501753",
+      "category": "General Requests",
+      "closed": "2009-12-30T09:13:10.000",
+      "neighborhood": "Treasure Island/YBI",
+      "opened": "2009-09-09T06:50:28.000",
+      "point": {
+        "type": "Point",
+        "coordinates": [-122.36357929,37.808938925]
+      },
+      "request_details": "tida - tida - request_for_service",
+      "request_type": "tida - tida - request_for_service",
+      "responsible_agency": "PUC - Electric/Power - G - Hold",
+      "source": "Voice In",
+      "status": "Closed",
+      "supervisor_district": "6",
+      "updated": "2009-12-30T09:13:10.000"
+    },
+  ]);
+
+  var SAMPLE_DATASET_METADATA = {
+    "columns":
+      Object.keys(JSON.parse(SAMPLE_ROW_REQUEST_RESPONSE)[0]).map(function(columnName) {
+        return {
+          fieldName: columnName
+        };
+      })
+  };
+
+  var SAMPLE_METADATA_ERROR = JSON.stringify({
+    "code" : "not_found",
+    "error" : true,
+    "message" : "Cannot find view with id 56p4-vdcc.jso"
+  });
+
   describe('constructor', function() {
 
     it('should throw with invalid configuration values', function() {
@@ -79,7 +116,7 @@ describe('MetadataProvider', function() {
     });
   });
 
-  describe('`.getDatasetMetadata()`', function() {
+  describe('`.getPhidippidesAugmentedDatasetMetadata`', function() {
 
     describe('on request error', function() {
 
@@ -103,7 +140,7 @@ describe('MetadataProvider', function() {
       it('should return an object containing "code" and "message" properties', function(done) {
 
         metadataProvider.
-          getDatasetMetadata().
+          getPhidippidesAugmentedDatasetMetadata().
           then(
             function() {
 
@@ -134,7 +171,7 @@ describe('MetadataProvider', function() {
       it('should include the correct request error code', function(done) {
 
         metadataProvider.
-          getDatasetMetadata().
+          getPhidippidesAugmentedDatasetMetadata().
           then(
             function() {
 
@@ -164,7 +201,7 @@ describe('MetadataProvider', function() {
       it('should include the correct request error message', function(done) {
 
         metadataProvider.
-          getDatasetMetadata().
+          getPhidippidesAugmentedDatasetMetadata().
           then(
             function() {
 
@@ -215,7 +252,7 @@ describe('MetadataProvider', function() {
       it('should return the expected metadata', function(done) {
 
         metadataProvider.
-          getDatasetMetadata().
+          getPhidippidesAugmentedDatasetMetadata().
           then(
             function(data) {
 
@@ -240,6 +277,54 @@ describe('MetadataProvider', function() {
           );
 
         server.respond([SUCCESS_STATUS, {}, SAMPLE_DATASET_METADATA_REQUEST_RESPONSE]);
+      });
+    });
+  });
+
+  describe('getDatasetMetadata()', function() {
+    var metadataProvider;
+    var metadataProviderOptions = {
+      domain: VALID_DOMAIN,
+      datasetUid: VALID_DATASET_UID
+    };
+
+    beforeEach(function() {
+      server = sinon.fakeServer.create();
+      metadataProvider = new MetadataProvider(metadataProviderOptions);
+    });
+
+    afterEach(function() {
+      server.restore();
+    });
+
+    describe('on request error', function() {
+      it('should return an Object containing "code", "error", and "message"', function(done) {
+        metadataProvider.getDatasetMetadata().then(
+          done,
+          function(error) {
+            assert.property(error, 'status');
+            assert.equal(error.status, ERROR_STATUS);
+            done();
+          }
+        ).catch(done);
+
+        server.respond([ERROR_STATUS, {}, SAMPLE_METADATA_ERROR]);
+      });
+    });
+
+    describe('on request success', function() {
+      it('should return an Object of metadata', function(done) {
+        metadataProvider.getDatasetMetadata().then(
+          function(data) {
+            assert.isObject(data);
+            assert.property(data, 'columns');
+            assert.isArray(data.columns);
+            done();
+          },
+          done
+        ).catch(done);
+
+        server.respond([SUCCESS_STATUS, {'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_DATASET_METADATA)]);
       });
     });
   });

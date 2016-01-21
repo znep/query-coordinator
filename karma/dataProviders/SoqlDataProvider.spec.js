@@ -1,4 +1,5 @@
-var SoqlDataProvider = require('../../src/dataProviders/SoqlDataProvider');
+var rewire = require('rewire');
+var SoqlDataProvider = rewire('../../src/dataProviders/SoqlDataProvider');
 
 describe('SoqlDataProvider', function() {
 
@@ -92,6 +93,25 @@ describe('SoqlDataProvider', function() {
     },
   ]);
 
+  var SAMPLE_DATASET_METADATA = {
+    "columns":
+      Object.keys(JSON.parse(SAMPLE_ROW_REQUEST_RESPONSE)[0]).map(function(columnName) {
+        return {
+          fieldName: columnName
+        };
+      })
+  };
+
+  var SAMPLE_METADATA_ERROR = JSON.stringify({
+    "code" : "not_found",
+    "error" : true,
+    "message" : "Cannot find view with id 56p4-vdcc.jso"
+  });
+
+  var EXPECTED_ROW_COUNT = 100;
+
+  var SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{count: EXPECTED_ROW_COUNT}]);
+
   var EXPECTED_ROW_REQUEST_COLUMNS = Object.keys(JSON.parse(SAMPLE_ROW_REQUEST_RESPONSE)[0]);
 
   var EXPECTED_ROW_REQUEST_ROWS = [
@@ -115,6 +135,24 @@ describe('SoqlDataProvider', function() {
       "2009-12-30T09:13:10.000"
     ]
   ];
+
+  var server;
+
+  function _respondWithError(payload) {
+    server.respond([ERROR_STATUS, { 'Content-Type': 'application/json' }, payload]);
+  }
+
+  function _respondWithSuccess(payload) {
+    server.respond([SUCCESS_STATUS, { 'Content-Type': 'application/json' }, payload]);
+  }
+
+  beforeEach(function() {
+    SoqlDataProvider.__set__({
+      MetadataProvider: function() {
+        this.getDatasetMetadata = _.constant(Promise.resolve(SAMPLE_DATASET_METADATA));
+      }
+    });
+  });
 
   describe('constructor', function() {
 
@@ -145,7 +183,6 @@ describe('SoqlDataProvider', function() {
 
     describe('on request error', function() {
 
-      var server;
       var soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
@@ -182,17 +219,10 @@ describe('SoqlDataProvider', function() {
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([ERROR_STATUS, {}, SAMPLE_QUERY_REQUEST_ERROR]);
+        _respondWithError(SAMPLE_QUERY_REQUEST_ERROR);
       });
 
       it('should include the correct request error status', function(done) {
@@ -212,17 +242,10 @@ describe('SoqlDataProvider', function() {
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([ERROR_STATUS, {}, SAMPLE_QUERY_REQUEST_ERROR]);
+        _respondWithError(SAMPLE_QUERY_REQUEST_ERROR);
       });
 
       it('should include the correct request error message', function(done) {
@@ -231,10 +254,8 @@ describe('SoqlDataProvider', function() {
           query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS).
           then(
             function(data) {
-
               // Fail the test since we expected an error response.
-              assert.isTrue(undefined);
-              done();
+              done('Request succeeded, we did not expect it to.');
             },
             function(error) {
 
@@ -242,17 +263,10 @@ describe('SoqlDataProvider', function() {
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([ERROR_STATUS, {}, SAMPLE_QUERY_REQUEST_ERROR]);
+        _respondWithError(SAMPLE_QUERY_REQUEST_ERROR);
       });
 
       it('should include the correct soqlError object', function(done) {
@@ -261,10 +275,8 @@ describe('SoqlDataProvider', function() {
           query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS).
           then(
             function(data) {
-
               // Fail the test since we expected an error response.
-              assert.isTrue(undefined);
-              done();
+              done('Request succeeded, we did not expect it to.');
             },
             function(error) {
 
@@ -272,23 +284,15 @@ describe('SoqlDataProvider', function() {
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([ERROR_STATUS, {}, SAMPLE_QUERY_REQUEST_ERROR]);
+        _respondWithError(SAMPLE_QUERY_REQUEST_ERROR);
       });
     });
 
     describe('on request success', function(done) {
 
-      var server;
       var soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
@@ -324,17 +328,10 @@ describe('SoqlDataProvider', function() {
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([SUCCESS_STATUS, {}, SAMPLE_QUERY_REQUEST_RESPONSE]);
+        _respondWithSuccess(SAMPLE_QUERY_REQUEST_RESPONSE);
       });
 
       it('should return the expected columns', function(done) {
@@ -354,17 +351,10 @@ describe('SoqlDataProvider', function() {
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([SUCCESS_STATUS, {}, SAMPLE_QUERY_REQUEST_RESPONSE]);
+        _respondWithSuccess(SAMPLE_QUERY_REQUEST_RESPONSE);
       });
 
       it('should return the expected rows', function(done) {
@@ -384,17 +374,10 @@ describe('SoqlDataProvider', function() {
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([SUCCESS_STATUS, {}, SAMPLE_QUERY_REQUEST_RESPONSE]);
+        _respondWithSuccess(SAMPLE_QUERY_REQUEST_RESPONSE);
       });
     });
   });
@@ -403,7 +386,6 @@ describe('SoqlDataProvider', function() {
 
     describe('on request error', function() {
 
-      var server;
       var soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
@@ -427,10 +409,8 @@ describe('SoqlDataProvider', function() {
           getRows(QUERY_STRING).
           then(
             function(data) {
-
               // Fail the test since we expected an error response.
-              assert.isTrue(undefined);
-              done();
+              done('Request succeeded, we did not expect it to.');
             },
             function(error) {
 
@@ -440,17 +420,10 @@ describe('SoqlDataProvider', function() {
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([ERROR_STATUS, {}, SAMPLE_ROW_REQUEST_ERROR]);
+        _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
 
       it('should include the correct request error status', function(done) {
@@ -459,10 +432,7 @@ describe('SoqlDataProvider', function() {
           getRows(QUERY_STRING).
           then(
             function(data) {
-
-              // Fail the test since we expected an error response.
-              assert.isTrue(undefined);
-              done();
+              done('Request succeeded, we did not expect it to.');
             },
             function(error) {
 
@@ -470,17 +440,10 @@ describe('SoqlDataProvider', function() {
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([ERROR_STATUS, {}, SAMPLE_ROW_REQUEST_ERROR]);
+        _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
 
       it('should include the correct request error message', function(done) {
@@ -489,28 +452,18 @@ describe('SoqlDataProvider', function() {
           getRows(QUERY_STRING).
           then(
             function(data) {
-
               // Fail the test since we expected an error response.
-              assert.isTrue(undefined);
-              done();
+              done('Request succeeded, we did not expect it to.');
             },
             function(error) {
-
               assert.equal(error.message.toLowerCase(), ERROR_MESSAGE.toLowerCase());
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([ERROR_STATUS, {}, SAMPLE_ROW_REQUEST_ERROR]);
+        _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
 
       it('should include the correct soqlError object', function(done) {
@@ -519,34 +472,23 @@ describe('SoqlDataProvider', function() {
           getRows(QUERY_STRING).
           then(
             function(data) {
-
               // Fail the test since we expected an error response.
-              assert.isTrue(undefined);
-              done();
+              done('Request succeeded, we did not expect it to.');
             },
             function(error) {
-
               assert.deepEqual(error.soqlError, JSON.parse(SAMPLE_ROW_REQUEST_ERROR));
               done();
             }
           ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
+            done
           );
 
-        server.respond([ERROR_STATUS, {}, SAMPLE_ROW_REQUEST_ERROR]);
+        _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
     });
 
     describe('on request success', function(done) {
 
-      var server;
       var soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
@@ -575,24 +517,10 @@ describe('SoqlDataProvider', function() {
               assert.property(data, 'rows');
               done();
             },
-            function(error) {
+            done
+          ).catch(done);
 
-              // Fail the test since we expected a success response.
-              assert.isTrue(undefined);
-              done();
-            }
-          ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
-          );
-
-        server.respond([SUCCESS_STATUS, {}, SAMPLE_ROW_REQUEST_RESPONSE]);
+        _respondWithSuccess(SAMPLE_ROW_REQUEST_RESPONSE);
       });
 
       it('should return the expected columns', function(done) {
@@ -605,24 +533,10 @@ describe('SoqlDataProvider', function() {
               assert.deepEqual(data.columns, EXPECTED_ROW_REQUEST_COLUMNS);
               done();
             },
-            function(error) {
+            done
+          ).catch(done);
 
-              // Fail the test since we expected a success response.
-              assert.isTrue(undefined);
-              done();
-            }
-          ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
-          );
-
-        server.respond([SUCCESS_STATUS, {}, SAMPLE_ROW_REQUEST_RESPONSE]);
+        _respondWithSuccess(SAMPLE_ROW_REQUEST_RESPONSE);
       });
 
       it('should return the expected rows', function(done) {
@@ -635,24 +549,56 @@ describe('SoqlDataProvider', function() {
               assert.deepEqual(data.rows, EXPECTED_ROW_REQUEST_ROWS);
               done();
             },
-            function(error) {
+            done
+          ).catch(done);
 
-              // Fail the test since we expected a success response.
-              assert.isTrue(undefined);
-              done();
-            }
-          ).catch(
-            function(e) {
+        _respondWithSuccess(SAMPLE_ROW_REQUEST_RESPONSE);
+      });
+    });
+  });
 
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
-          );
+  describe('getRowCount()', function() {
+    var soqlDataProvider;
+    var soqlDataProviderOptions = {
+      domain: VALID_DOMAIN,
+      datasetUid: VALID_DATASET_UID
+    };
 
-        server.respond([SUCCESS_STATUS, {}, SAMPLE_ROW_REQUEST_RESPONSE]);
+    beforeEach(function() {
+      server = sinon.fakeServer.create();
+      soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
+    });
+
+    afterEach(function() {
+      server.restore();
+    });
+
+    describe('on request error', function() {
+      it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
+        soqlDataProvider.getRowCount().then(
+          done,
+          function(error) {
+            assert.property(error, 'status');
+            assert.equal(error.status, ERROR_STATUS);
+            done();
+          }
+        ).catch(done);
+
+        _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
+      });
+    });
+
+    describe('on request success', function() {
+      it('should return an Array containing an Object with key `count`.', function(done) {
+        soqlDataProvider.getRowCount().then(
+          function(count) {
+            assert.equal(count, EXPECTED_ROW_COUNT);
+            done();
+          },
+          done
+        ).catch(done);
+
+        _respondWithSuccess(SAMPLE_ROW_COUNT_RESPONSE);
       });
     });
   });

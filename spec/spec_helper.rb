@@ -112,3 +112,7 @@ end
 def fixture(file)
   File.new(File.join(fixture_path, file))
 end
+
+def json_fixture(file)
+  JSON.parse(fixture(file).read).with_indifferent_access
+end

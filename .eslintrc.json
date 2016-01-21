@@ -87,6 +87,7 @@
     "Highcharts": true,
     "jQuery": true,
     "L": true,
+    "migrationMetadata": true,
     "mixpanel": true,
     "Modernizr": true,
     "moment": true,

@@ -5,6 +5,7 @@ describe('SaveAs', function() {
   var $window;
   var testHelpers;
   var Mockumentary;
+  var ServerConfig;
   var saveAsEventSubject;
 
   beforeEach(angular.mock.module('dataCards'));
@@ -14,12 +15,18 @@ describe('SaveAs', function() {
       '$window',
       'testHelpers',
       'Mockumentary',
-      function(_$window, _testHelpers, _Mockumentary) {
+      'ServerConfig',
+      function(_$window, _testHelpers, _Mockumentary, _ServerConfig) {
         $window = _$window;
         testHelpers = _testHelpers;
         Mockumentary = _Mockumentary;
+        ServerConfig = _ServerConfig;
       }
     ]);
+  });
+
+  beforeEach(function() {
+    ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
   });
 
   function createElement(html) {

@@ -93,6 +93,7 @@ describe('CardsViewController', function() {
   }]));
 
   beforeEach(function() {
+    ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
     window.currentUser = {};
   });
 
@@ -201,14 +202,6 @@ describe('CardsViewController', function() {
   }
 
   beforeEach(function() {
-    $httpBackend.when('GET', '/api/migrations/asdf-fdsa').
-      respond({
-        'controlMapping': '{"destinationDomain":"steve-copy-1.test-socrata.com"}',
-        'nbeId': 'fake-fbfr',
-        'obeId': 'sooo-oold',
-        'syncedAt': 1415907664
-      });
-
     mockWindowServiceLocationSeq = new Rx.BehaviorSubject(undefined);
   });
 
@@ -295,7 +288,6 @@ describe('CardsViewController', function() {
   describe('page header', function() {
     it('should not display if a feature flag is set', function() {
       ServerConfig.override('showNewuxPageHeader', false);
-      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       var context = renderCardsView();
       var pageHeader = context.element.find('page-header');
       var metadata = context.element.find('.cards-metadata');
@@ -305,48 +297,17 @@ describe('CardsViewController', function() {
   });
 
   describe('source dataset link', function() {
-    afterEach(function() {
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
-    });
-
-    it('grabs the obe 4x4 from the migrations endpoint', function() {
-      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
-      $httpBackend.expectGET('/api/migrations/asdf-fdsa');
-
-      var controllerHarness = makeController();
+    it('sets the sourceDatasetURL if the migration info is available', function() {
+      var controllerHarness = makeController({ id: 'nach-oids', obeId: 'asdf-fdsa' });
       var $scope = controllerHarness.$scope;
 
-      expect($scope.sourceDatasetURL).not.to.be.ok;
-      $httpBackend.flush();
-      $rootScope.$digest();
-      expect($scope.sourceDatasetURL).to.equal('/d/sooo-oold');
-
-      $httpBackend.when('GET', '/api/migrations/four-four').
-        respond({
-          'controlMapping': '{"destinationDomain":"steve-copy-1.test-socrata.com"}',
-          'nbeId': 'four-four',
-          'obeId': 'sooo-old2',
-          'syncedAt': 1415907664
-        });
-      $httpBackend.expectGET('/api/migrations/four-four');
-      $scope.page.set('datasetId', 'four-four');
-
-      expect($scope.sourceDatasetURL).to.equal('/d/sooo-oold');
-      $httpBackend.flush();
-      expect($scope.sourceDatasetURL).to.equal('/d/sooo-old2');
+      expect($scope.sourceDatasetURL).to.be.ok;
     });
 
-    it("doesn't set the sourceDatasetURL if the migration endpoint returns non-200", function() {
-      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
-      $httpBackend.when('GET', '/api/migrations/nach-oids').respond(404);
-
-      var controllerHarness = makeController({ id: 'nach-oids' });
+    it('does not set the sourceDatasetURL if the migration info is not available', function() {
+      var controllerHarness = makeController({ id: 'nach-oids', obeId: null });
       var $scope = controllerHarness.$scope;
 
-      expect($scope.sourceDatasetURL).not.to.be.ok;
-      $httpBackend.flush();
-      $rootScope.$digest();
       expect($scope.sourceDatasetURL).not.to.be.ok;
     });
   });
@@ -354,7 +315,6 @@ describe('CardsViewController', function() {
   describe('related views', function() {
     it('shows the related views area if feature flag enable_data_lens_other_views is true and currentUserHasSaveRight is true', function() {
       ServerConfig.override('enableDataLensOtherViews', true);
-      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       var context = renderCardsView();
       $scope = context.element.scope();
       $scope.currentUserHasSaveRight = true;
@@ -365,7 +325,6 @@ describe('CardsViewController', function() {
 
     it('does not show related views area if feature flag enable_data_lens_other_views is false', function() {
       ServerConfig.override('enableDataLensOtherViews', false);
-      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       var context = renderCardsView();
       var relatedViews = context.element.find('related-views');
       expect(relatedViews).to.have.class('ng-hide');
@@ -373,7 +332,6 @@ describe('CardsViewController', function() {
 
     it('does not show related views area if currentUserHasSaveRight is false', function() {
       ServerConfig.override('enableDataLensOtherViews', true);
-      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       var context = renderCardsView();
       var relatedViews = context.element.find('related-views');
       $scope = context.$scope;
@@ -1006,8 +964,6 @@ describe('CardsViewController', function() {
       // Helper function to render the modal and click an element.
       // Ensures the modal closes and the appropriate cookie is set.
       var runCaseWithSelector = function(selector) {
-        ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
-
         var context = renderCardsView();
         var $scope = context.cardLayout.$scope.$parent;
 
@@ -1120,12 +1076,8 @@ describe('CardsViewController', function() {
   });
 
   describe('download button', function() {
-    beforeEach(function() {
-      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
-    });
-
     it('should provide a default download link for the CSV', function() {
-      var controllerHarness = makeController();
+      var controllerHarness = makeController({obeId: null}); // simulate missing obeId
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
         to.match(new RegExp('/api/views/asdf-fdsa/rows\\.csv\\?accessType=DOWNLOAD$'));
@@ -1142,13 +1094,7 @@ describe('CardsViewController', function() {
       var controllerHarness = makeController();
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.match(new RegExp('/api/views/asdf-fdsa/rows\\.csv\\?accessType=DOWNLOAD$'));
-
-      $httpBackend.flush();
-      controllerHarness.$scope.$digest();
-
-      expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.match(new RegExp('/api/views/sooo-oold/rows\\.csv\\?accessType=DOWNLOAD&bom=true$'));
+        to.match(new RegExp('/api/views/asdf-fdsa/rows\\.csv\\?accessType=DOWNLOAD&bom=true$'));
     });
 
     it('closes the dialog when clicking (or hitting esc) outside it', function() {
@@ -1257,8 +1203,6 @@ describe('CardsViewController', function() {
   describe('layout modes', function() {
 
     it('loads single-card-layout if the page has a display type of data_lens_*', function() {
-      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
-
       var context = makeContext(null, {
         displayType: 'data_lens_chart',
         cards: [Mockumentary.createCardMetadata()]
@@ -1270,8 +1214,6 @@ describe('CardsViewController', function() {
     });
 
     it('loads multi-card-layout if the page does not have a display type of data_lens_*', function() {
-      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
-
       var context = makeContext(null, {
         displayType: 'data_lens',
         cards: [Mockumentary.createCardMetadata()]

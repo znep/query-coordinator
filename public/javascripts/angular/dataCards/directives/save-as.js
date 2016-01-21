@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/saveAs.html');
 const angular = require('angular');
-function saveAs($window, WindowState, FlyoutService, ServerConfig, rx) {
+function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, rx) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -68,6 +68,15 @@ function saveAs($window, WindowState, FlyoutService, ServerConfig, rx) {
           $scope.panelActive = !$scope.panelActive;
         }
       };
+
+      var privateDatasetMessage$ = $scope.page.observe('dataset').map(function(dataset) {
+        var url = I18n.a(`/d/${dataset.obeId}`);
+        return I18n.t(
+          'manageLensDialog.visibility.datasetIsPrivate',
+          `<a href="${url}">${dataset.getCurrentValue('name')}</a>`
+        );
+      });
+      $scope.$bindObservable('privateDatasetMessage', privateDatasetMessage$);
 
       $scope.save = function save() {
 

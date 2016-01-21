@@ -1200,6 +1200,13 @@ button.customize-bar-action-btn {
   }
 }
 
+// save-as panel
+save-as {
+  a {
+    color: $modal-dialog-link-text-color;
+  }
+}
+
 // feedback-panel
 feedback-panel {
   .feedback-panel-button {

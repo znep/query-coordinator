@@ -172,13 +172,18 @@ sl:
           error: Pri poskusu predstavitve te kartice je prišlo do napake.
           no_data: Ni podatkov za prikaz.
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: Približevanje trenutno ni na voljo. Prosimo, poskusite znova kasneje.
@@ -274,7 +279,6 @@ sl:
         validation_error_min_length: Prosimo, vnesite naslov
         validation_error_required: Prosimo, vnesite naslov
         visualization_as_image: Vizualizacija v obliki slike
-        visualization_as_image_disabled_flyout: Prosimo, shranite stran, da boste lahko prenesli vizualizacijo v obliki slike
       mobile_warning_dialog:
         acknowledgement: Prav, razumem!
         description: Delamo na tem, da se bo vaša mobilna izkušnja na tej strani izboljšala

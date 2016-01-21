@@ -171,13 +171,18 @@ es:
           error: Ha ocurrido un error al intentar mostrar esta tarjeta.
           no_data: No hay datos que mostrar.
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: El zoom no está disponible temporalmente. Por favor, inténtelo de nuevo más tarde.
@@ -273,7 +278,6 @@ es:
         validation_error_min_length: Por favor, introduzca un título
         validation_error_required: Por favor, introduzca un título
         visualization_as_image: Visualización como imagen
-        visualization_as_image_disabled_flyout: Por favor, guarde la página para descargar una visualización como imagen
       mobile_warning_dialog:
         acknowledgement: De acuerdo, ¡ya está¡
         description: Estamos trabajando para mejorar la experiencia móvil de este sitio.

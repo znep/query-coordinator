@@ -171,13 +171,18 @@ nl:
           error: Er ging iets mis bij het maken van deze kaart.
           no_data: Er zijn geen gegevens om te tonen.
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: Zoom is tijdelijk niet beschikbaar. Probeer het later opnieuw.
@@ -273,7 +278,6 @@ nl:
         validation_error_min_length: Vul alstublieft een titel in
         validation_error_required: Vul alstublieft een titel in
         visualization_as_image: Visualisatie als afbeelding
-        visualization_as_image_disabled_flyout: Bewaar de pagina om een visualisatie als een afbeelding te downloaden
       mobile_warning_dialog:
         acknowledgement: Oké, ik begrijp het!
         description: We werken aan het verbeteren van de mobiele ervaring op deze site.

@@ -83,7 +83,7 @@
           ng-show="showOtherViewsButton && currentUserHasSaveRight">
         </related-views>
 
-        <!-- Old export dropdown -->
+        <!-- Export dropdown -->
         <div
           ng-click="onDownloadClick($event)"
           class="action-btn l-to-r download-menu"
@@ -102,7 +102,7 @@
            class="action-btn l-to-r"
            href="{{datasetCSVDownloadURL}}">{{::'common.download' | I18n}}</a>
 
-        <!-- New export menu -->
+        <!-- Export menu -->
         <export-menu ng-if="shouldShowExportMenu"></export-menu>
 
         <api-explorer></api-explorer>

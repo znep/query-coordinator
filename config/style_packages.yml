@@ -35,6 +35,7 @@ angular-app-dataCards:
 - dataCards/lens-type
 - dataCards/visualization-type-selector
 - dataCards/classic-visualization-previewer
+- dataCards/export-menu
 
 ie9:
 - dataCards/ie9

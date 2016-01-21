@@ -171,13 +171,18 @@ ca:
           error: Hem trobat un error mentre intentàvem de proveir aquesta targeta
           no_data: No hi ha cap dada per mostrar
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: El zoom no és disponible temporalment. Si us plau, proveu-ho més tard.
@@ -273,7 +278,6 @@ ca:
         validation_error_min_length: Si us plau, entreu un títol
         validation_error_required: Si us plau, entreu un títol
         visualization_as_image: Visualització com a imatge
-        visualization_as_image_disabled_flyout: Si us plau, guardeu la pàgina per tal de descarregar la visualització com a imatge
       mobile_warning_dialog:
         acknowledgement: D'acord, ja ho tinc!
         description: 'Estem treballant per millorar el servei per mòbil d''aquesta pàgina. '

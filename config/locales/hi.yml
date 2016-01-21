@@ -171,13 +171,18 @@ hi:
           error: "इस कार्ड को प्रस्तुत करने का प्रयास करते समय कोई त्रुटि सामने आई थी।"
           no_data: "प्रदर्शित करने के लिए कोई डाटा नहीं है।"
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: "ज़ूम फ़ंक्शन अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से प्रयास करें।"
@@ -273,7 +278,6 @@ hi:
         validation_error_min_length: "कृपया शीर्षक दर्ज करें"
         validation_error_required: "कृपया शीर्षक दर्ज करें"
         visualization_as_image: "छवि के रूप में दृश्य "
-        visualization_as_image_disabled_flyout: "दृश्य को छवि के रूप में डाउनलोड करने के लिए कृपया इस पेज को सेव करें "
       mobile_warning_dialog:
         acknowledgement: "ठीक है, समझ आ गया!"
         description: "हम इस साइट पर मोबाइल अनुभव में सुधार लाने पर काम कर रहे हैं। "

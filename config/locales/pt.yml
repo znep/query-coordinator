@@ -171,13 +171,18 @@ pt:
           error: Foi encontrado um erro ao tentar apresentar este cartão.
           no_data: Não existem dados para apresentar.
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: A ampliação está temporariamente indisponível. Queira tentar novamente mais tarde.
@@ -273,7 +278,6 @@ pt:
         validation_error_min_length: Queira introduzir um título
         validation_error_required: Queira introduzir um título
         visualization_as_image: Visualização como imagem
-        visualization_as_image_disabled_flyout: Queira guardar a página para descarregar uma visualização como uma imagem
       mobile_warning_dialog:
         acknowledgement: Ok, consegui!
         description: Estamos a trabalhar para melhorar a experi

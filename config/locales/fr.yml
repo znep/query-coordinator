@@ -171,13 +171,18 @@ fr:
           error: Une erreur s'est produite en essayant d'afficher cette carde.
           no_data: Il n'y a aucune donnée de dîsponible.
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: Le Zomm est temporairement non disponible.
@@ -273,7 +278,6 @@ fr:
         validation_error_min_length: Veuillez entrer un titre
         validation_error_required: Veuillez entrer un titre
         visualization_as_image: Visualisation en tant qu'image
-        visualization_as_image_disabled_flyout: Veuillez sauvegarder cette page afin de télécharger une visualisation en tant qu'image
       mobile_warning_dialog:
         acknowledgement: D'accord, compris !
         description: Nous travaillons sur l'amélioration de l'expérience mobile sur ce site.

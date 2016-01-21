@@ -171,13 +171,18 @@ ru:
           error: "Произошла ошибка при попытке отрисовать эту карту."
           no_data: "Нет данных для показа"
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: "Масштабирование временно недоступно. Пожалуйста, повторите попытку позже."
@@ -273,7 +278,6 @@ ru:
         validation_error_min_length: "Пожалуйста, введите заголовок"
         validation_error_required: "Пожалуйста, введите заголовок"
         visualization_as_image: "Визуализация в виде изображения"
-        visualization_as_image_disabled_flyout: "Пожалуйста, сохраните страницу, чтобы загрузить визуализацию в виде изображения"
       mobile_warning_dialog:
         acknowledgement: OK, понятно!
         description: "Мы работаем над улучшением использования этого сайта для мобильных устройств."

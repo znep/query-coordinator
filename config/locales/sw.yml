@@ -173,13 +173,18 @@ sw:
           error:
           no_data:
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled:
@@ -275,7 +280,6 @@ sw:
         validation_error_min_length:
         validation_error_required:
         visualization_as_image:
-        visualization_as_image_disabled_flyout:
       mobile_warning_dialog:
         acknowledgement:
         description:

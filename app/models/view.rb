@@ -354,7 +354,7 @@ class View < Model
     # grab viewable columns; this is inline rather than a separate method to
     # mitigate the need for another core server request
     viewable_columns =
-      meta_and_data['meta']['view']['columns'].
+      (meta_and_data.try(:[], 'meta').try(:[], 'view').try(:[], 'columns') || []).
         map{ |column_hash| Column.set_up_model(column_hash) }.
         each_with_index{ |column, i| column.data_position = i }.
         find_all{ |column| column.dataTypeName != 'meta_data' &&

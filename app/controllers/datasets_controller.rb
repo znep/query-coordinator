@@ -232,6 +232,7 @@ class DatasetsController < ApplicationController
         # get rows
         @per_page = 50
         @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
+        @viewable_columns ||= []
       rescue CoreServer::CoreServerError => e
         case e.error_code
         when 'invalid_request'

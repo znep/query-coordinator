@@ -8,6 +8,7 @@
 
   function AssetSelectorRenderer(options) {
 
+    var WIZARD_STEP = storyteller.AssetSelectorStore.WIZARD_STEP;
     var _container = options.assetSelectorContainerElement || null;
     var _lastRenderedStep = null;
     var _warnAboutInsecureHTML = false;
@@ -159,66 +160,54 @@
         debounceForOneSecondThenUploadHtmlFragment
       );
 
-      _container.on('click', '[data-action]', function() {
+      _container.on('click', '[data-provider]', function() {
+        var provider = this.getAttribute('data-provider');
+        utils.assert(provider, 'provider must be defined');
 
-        var action = this.getAttribute('data-action');
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          blockId: storyteller.assetSelectorStore.getBlockId(),
+          componentIndex: storyteller.assetSelectorStore.getComponentIndex(),
+          provider: provider
+        });
+      });
 
-        switch (action) {
+      _container.on('click', '[data-resume-from-step]', function() {
+        var step = this.getAttribute('data-resume-from-step');
+        utils.assert(step, 'step must be provided');
 
-          case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
-            storyteller.dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
-              blockId: storyteller.assetSelectorStore.getBlockId(),
-              componentIndex: storyteller.assetSelectorStore.getComponentIndex()
-            });
-            break;
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_RESUME_FROM_STEP,
+          blockId: storyteller.assetSelectorStore.getBlockId(),
+          componentIndex: storyteller.assetSelectorStore.getComponentIndex(),
+          step: step
+        });
+      });
 
-          case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
-            storyteller.dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
-            });
-            break;
+      _container.on('click', '.btn-apply', function() {
+        _saveAndClose();
+      });
 
-          case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
-            storyteller.dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
-            });
-            break;
+      _container.on('click', '.btn-close', function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CLOSE
+        });
+      });
+    }
 
-          case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
-            storyteller.dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
-            });
-            break;
+    function _saveAndClose() {
+      // TODO this sequence of steps should likely be its own single action,
+      // which both AssetSelectorStore and StoryStore handle.
+      storyteller.dispatcher.dispatch({
+        action: Actions.BLOCK_UPDATE_COMPONENT,
+        blockId: storyteller.assetSelectorStore.getBlockId(),
+        componentIndex: storyteller.assetSelectorStore.getComponentIndex(),
+        type: storyteller.assetSelectorStore.getComponentType(),
+        value: storyteller.assetSelectorStore.getComponentValue()
+      });
 
-          case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
-            storyteller.dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE
-            });
-            break;
-
-          case Actions.ASSET_SELECTOR_APPLY:
-            storyteller.dispatcher.dispatch({
-              action: Actions.BLOCK_UPDATE_COMPONENT,
-              blockId: storyteller.assetSelectorStore.getBlockId(),
-              componentIndex: storyteller.assetSelectorStore.getComponentIndex(),
-              type: storyteller.assetSelectorStore.getComponentType(),
-              value: storyteller.assetSelectorStore.getComponentValue()
-            });
-            storyteller.dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CLOSE
-            });
-            break;
-
-          case Actions.ASSET_SELECTOR_CLOSE:
-            storyteller.dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CLOSE
-            });
-            break;
-
-          default:
-            break;
-        }
+      storyteller.dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_CLOSE
       });
     }
 
@@ -237,45 +226,50 @@
 
         switch (step) {
 
-          case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          case WIZARD_STEP.SELECT_ASSET_PROVIDER:
             selectorTitle = I18n.t('editor.asset_selector.choose_provider_heading');
             selectorContent = _renderChooseProvider();
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+          case WIZARD_STEP.ENTER_YOUTUBE_URL:
             selectorTitle = I18n.t('editor.asset_selector.youtube.heading');
             selectorContent = _renderChooseYoutubeTemplate(componentValue);
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
+          case WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION:
             selectorTitle = I18n.t('editor.asset_selector.visualization.choose_dataset_heading');
             selectorContent = _renderChooseDatasetTemplate();
             selectorWideDisplay = true;
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+          case WIZARD_STEP.SELECT_TABLE_OR_CHART:
+            selectorTitle = I18n.t('editor.asset_selector.visualization.choose_visualization_mode');
+            selectorContent = _renderChooseTableOrChartTemplate();
+            break;
+
+          case WIZARD_STEP.CONFIGURE_VISUALIZATION:
             selectorTitle = I18n.t('editor.asset_selector.visualization.configure_vizualization_heading');
             selectorContent = _renderConfigureVisualizationTemplate();
             selectorWideDisplay = true;
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
+          case WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD:
             selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
             selectorContent = _renderChooseImageUploadTemplate();
             break;
 
-          case Actions.FILE_UPLOAD_PROGRESS:
-          case Actions.FILE_UPLOAD_ERROR:
+          case WIZARD_STEP.IMAGE_UPLOADING:
+          case WIZARD_STEP.IMAGE_UPLOAD_ERROR:
             selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
             selectorContent = _renderFileUploadProgressTemplate();
             break;
 
-          case Actions.FILE_UPLOAD_DONE:
+          case WIZARD_STEP.IMAGE_PREVIEW:
             selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
             selectorContent = _renderImagePreviewTemplate();
             break;
 
-          case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
+          case WIZARD_STEP.ENTER_EMBED_CODE:
             selectorTitle = I18n.t('editor.asset_selector.embed_code.heading');
             selectorContent = _renderChooseEmbedCodeTemplate(componentValue);
             break;
@@ -303,23 +297,23 @@
       // not update dynamically
       switch (step) {
 
-        case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+        case WIZARD_STEP.ENTER_YOUTUBE_URL:
           _renderChooseYoutubeData(componentValue);
           break;
 
-        case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+        case WIZARD_STEP.CONFIGURE_VISUALIZATION:
           _renderConfigureVisualizationData(componentType, componentValue);
           break;
 
-        case Actions.FILE_UPLOAD_DONE:
+        case WIZARD_STEP.IMAGE_PREVIEW:
           _renderImagePreviewData(componentValue);
           break;
 
-        case Actions.FILE_UPLOAD_ERROR:
+        case WIZARD_STEP.IMAGE_UPLOAD_ERROR:
           _renderImageUploadErrorData(componentValue);
           break;
 
-        case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
+        case WIZARD_STEP.ENTER_EMBED_CODE:
           _renderPreviewEmbedCodeData(componentValue);
           break;
 
@@ -354,16 +348,16 @@
 
       var providers = $('<ul>', {'class': 'asset-selector-button-list'}).append([
         $('<li>', {
-          'data-action': Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
+          'data-provider': 'SOCRATA_VISUALIZATION'
         }).append(visualizationHeader, visualizationDescription),
         $('<li>', {
-          'data-action': Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
+          'data-provider': 'YOUTUBE'
         }).append(youtubeHeader, youtubeDescription),
         $('<li>', {
-          'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+          'data-provider': 'IMAGE'
         }).append(imageUploadHeader, imageUploadDescription),
         $('<li>', {
-          'data-action': Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE
+          'data-provider': 'EMBED_CODE'
         }).append(embedCodeHeader, embedCodeDescription)
       ]);
 
@@ -394,13 +388,12 @@
         }
       );
 
-      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn btn-primary',
-          'data-action': Actions.ASSET_SELECTOR_APPLY,
+          'class': 'btn btn-primary btn-apply',
           'disabled': 'disabled'
         }
       ).text(_insertButtonText());
@@ -453,7 +446,7 @@
         '<button>',
         {
           'class': 'btn-default btn-inverse asset-selector-cancel-upload',
-          'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+          'data-provider': 'IMAGE'
         }
       ).text(I18n.t('editor.asset_selector.cancel_button_text'));
 
@@ -461,7 +454,7 @@
         '<button>',
         {
           'class': 'hidden btn-default btn-inverse asset-selector-try-again',
-          'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+          'data-provider': 'IMAGE'
         }
       ).text(I18n.t('editor.asset_selector.try_again_button_text'));
 
@@ -472,13 +465,12 @@
         tryAgainButton
       ]);
 
-      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD);
+      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
 
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn-primary',
-          'data-action': Actions.ASSET_SELECTOR_APPLY,
+          'class': 'btn-primary btn-apply',
           'disabled': 'disabled'
         }
       ).text(_insertButtonText());
@@ -539,13 +531,12 @@
         previewImage
       ]);
 
-      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD);
+      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
 
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn-primary',
-          'data-action': Actions.ASSET_SELECTOR_APPLY
+          'class': 'btn-primary btn-apply'
         }
       ).text(_insertButtonText());
 
@@ -574,9 +565,7 @@
       var imageContainer = _container.find('.asset-selector-preview-image-container');
       var imageElement = imageContainer.find('.asset-selector-preview-image');
       var imageSrc = imageElement.attr('src');
-      var insertButton = _container.find(
-        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
-      );
+      var insertButton = _container.find('.btn-apply');
 
       if (componentProperties !== null &&
         _.has(componentProperties, 'documentId') &&
@@ -658,13 +647,12 @@
         previewIframe
       ]);
 
-      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn btn-primary',
-          'data-action': Actions.ASSET_SELECTOR_APPLY
+          'class': 'btn btn-primary btn-apply'
         }
       ).text(_insertButtonText());
 
@@ -704,9 +692,7 @@
       var iframeSrc = iframeElement.attr('src');
       var inputControl = _container.find('[data-asset-selector-validate-field="youtubeId"]');
       var iframeContainer;
-      var insertButton = _container.find(
-        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
-      );
+      var insertButton = _container.find('.btn-apply');
 
       if (componentProperties !== null &&
         _.has(componentProperties, 'id') &&
@@ -779,7 +765,7 @@
       var invalidMessageElement = _container.find('.asset-selector-invalid-description');
       var iframeSrc = iframeElement.attr('src');
       var loadingButton = _container.find('.btn-busy');
-      var insertButton = _container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY));
+      var insertButton = _container.find('.btn-apply');
       var insecureHtmlWarning = _container.find('.asset-selector-insecure-html-warning');
       var textareaElement = _container.find('.asset-selector-text-input');
 
@@ -869,7 +855,7 @@
     }
 
     function _renderChooseDatasetTemplate() {
-      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
       var datasetChooserIframe = $(
         '<iframe>',
@@ -899,6 +885,43 @@
       return [ loadingButton, datasetChooserIframe, buttonGroup ];
     }
 
+    function _renderChooseTableOrChartTemplate() {
+      var $backButton = _renderModalBackButton(WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION);
+
+      var $chartButton = $('<button>', { 'class': 'default-focus btn-visualize-chart' }).
+        append($('<span>', { 'class': 'icon-chart' })).
+        append($('<div>').text(I18n.t('editor.asset_selector.visualization.choose_chart')));
+
+      var $tableButton = $('<button>', { 'class': 'btn-visualize-table' }).
+        append($('<span>', { 'class': 'icon-table' })).
+        append($('<div>').text(I18n.t('editor.asset_selector.visualization.choose_table')));
+
+      var $visualizationChoiceGroup = $('<div>', {
+        'class': 'visualization-choice'
+      }).append([ $chartButton, $tableButton ]);
+
+      var $buttonGroup = $('<div>', {
+        'class': 'modal-button-group r-to-l'
+      }).append([ $backButton ]);
+
+      $chartButton.on('click', function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP
+        });
+      });
+
+      $tableButton.on('click', function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_VISUALIZE_AS_TABLE
+        });
+        // TODO this should likely be handled automatically as part of ASSET_SELECTOR_VISUALIZE_AS_TABLE.
+        // See TODO in _saveAndClose().
+        _saveAndClose();
+      });
+
+      return [ $visualizationChoiceGroup, $buttonGroup ];
+    }
+
     function _renderConfigureVisualizationTemplate() {
       var configureVisualizationIframe = $(
         '<iframe>',
@@ -908,15 +931,14 @@
         }
       );
 
-      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION);
+      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_TABLE_OR_CHART);
 
       // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
       // into shared function
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn-primary',
-          'data-action': Actions.ASSET_SELECTOR_APPLY,
+          'class': 'btn-primary btn-apply',
           'disabled': 'disabled'
         }
       ).text(_insertButtonText());
@@ -950,9 +972,7 @@
     }
 
     function _renderConfigureVisualizationData(componentType, componentProperties) {
-      var insertButton = _container.find(
-        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
-      );
+      var insertButton = _container.find('.btn-apply');
 
       if (componentProperties.dataset) {
         var iframeElement = _container.find('.asset-selector-configure-visualization-iframe');
@@ -1083,13 +1103,12 @@
         previewIframe
       ]);
 
-      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
       var insertButton = $(
         '<button>',
         {
-          'class': 'btn-primary',
-          'data-action': Actions.ASSET_SELECTOR_APPLY
+          'class': 'btn-primary btn-apply'
         }
       ).text(_insertButtonText());
 
@@ -1109,12 +1128,12 @@
       return [ content, buttonGroup ];
     }
 
-    function _renderModalBackButton(backAction) {
+    function _renderModalBackButton(fromStep) {
       return $(
         '<button>',
         {
           'class': 'btn-default btn-inverse back-btn',
-          'data-action': backAction
+          'data-resume-from-step': fromStep
         }
       ).text(
         I18n.t('editor.asset_selector.back_button_text')
@@ -1123,6 +1142,7 @@
 
     function _showSelectorWith(modalOptions) {
       _container.modal(modalOptions).trigger('modal-open');
+      _container.find('.default-focus').focus();
     }
 
     function _hideSelector() {

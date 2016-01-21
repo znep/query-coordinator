@@ -91,6 +91,12 @@
   }
 }
 
+.component-socrata-visualization-table {
+  .socrata-paginated-table {
+    height: 100%;
+  }
+}
+
 .col3 {
   .component-asset-selector,
   .component-embedded-html,

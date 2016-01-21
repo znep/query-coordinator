@@ -17,9 +17,9 @@ describe('componentEditButton jQuery plugin', function() {
     assert.instanceOf($component.componentEditButton(), $, 'Returned value is not a jQuery collection');
   });
 
-  it('dispatches Actions.ASSET_SELECTOR_UPDATE_COMPONENT', function(done) {
+  it('dispatches Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED', function(done) {
     storyteller.dispatcher.register(function(payload) {
-      if (payload.action === Actions.ASSET_SELECTOR_UPDATE_COMPONENT) {
+      if (payload.action === Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED) {
         assert.equal(payload.blockId, standardMocks.validBlockId);
         assert.equal(payload.componentIndex, 0);
         done();

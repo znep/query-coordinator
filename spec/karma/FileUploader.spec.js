@@ -29,8 +29,6 @@ describe('FileUploader', function() {
       dispatchedEvents.push(payload);
     });
 
-;
-
     server = sinon.fakeServer.create();
     server.respondImmediately = true;
   });

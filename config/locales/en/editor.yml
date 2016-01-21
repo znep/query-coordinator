@@ -132,7 +132,10 @@ en:
         name: 'Socrata Visualization'
         description: 'Create or insert a chart, map, or table.'
         choose_dataset_heading: 'Choose a Dataset to Visualize'
+        choose_visualization_mode: 'How would you like to visualize this data?'
         configure_vizualization_heading: 'Choose Data to Visualize'
+        choose_chart: 'Chart, Graph, or Map'
+        choose_table: 'Data Table'
       image_upload:
         name: 'Image Upload'
         description: 'Upload an image from your computer up to 5MB.'
@@ -163,6 +166,9 @@ en:
       idle: 'Save'
     visualizations:
       no_value_placeholder: '(No value)'
+      default_unit:
+        one: 'record'
+        other: 'records'
       flyout:
         unfiltered_amount_label: 'Total: '
         filtered_amount_label: 'Filtered: '

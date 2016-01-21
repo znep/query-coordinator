@@ -7,7 +7,7 @@
 		exports["visualizations"] = factory(require("socrata.utils"), require("d3"), require("jQuery"), require("_"), require("moment"));
 	else
 		root["socrata"] = root["socrata"] || {}, root["socrata"]["visualizations"] = factory(root["socrata"]["utils"], root["d3"], root["jQuery"], root["_"], root["moment"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_8__, __WEBPACK_EXTERNAL_MODULE_9__, __WEBPACK_EXTERNAL_MODULE_41__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_8__, __WEBPACK_EXTERNAL_MODULE_9__, __WEBPACK_EXTERNAL_MODULE_15__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -55,12 +55,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var views = __webpack_require__(1);
-	var dataProviders = __webpack_require__(18);
+	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(37);
-	var ColumnChart = __webpack_require__(38);
-	var FeatureMap = __webpack_require__(39);
-	var TimelineChart = __webpack_require__(40);
+	var ChoroplethMap = __webpack_require__(41);
+	var ColumnChart = __webpack_require__(42);
+	var FeatureMap = __webpack_require__(43);
+	var Table = __webpack_require__(44);
+	var TimelineChart = __webpack_require__(45);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -71,6 +72,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  ChoroplethMap: ChoroplethMap,
 	  ColumnChart: ColumnChart,
 	  FeatureMap: FeatureMap,
+	  Table: Table,
 	  TimelineChart: TimelineChart
 	};
 
@@ -82,10 +84,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ChoroplethMap = __webpack_require__(2);
 	var ChoroplethMapUtils = __webpack_require__(11);
 	var ColumnChart = __webpack_require__(12);
-	var TimelineChart = __webpack_require__(13);
-	var FeatureMap = __webpack_require__(14);
-	var FlyoutRenderer = __webpack_require__(16);
-	var RowInspector = __webpack_require__(17);
+	var Pager = __webpack_require__(13);
+	var TimelineChart = __webpack_require__(16);
+	var Table = __webpack_require__(17);
+	var FeatureMap = __webpack_require__(18);
+	var FlyoutRenderer = __webpack_require__(20);
+	var RowInspector = __webpack_require__(21);
 
 	module.exports = {
 	  ChoroplethMap: ChoroplethMap,
@@ -4976,6 +4980,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  var _vif = _.merge(_defaultVIF, vif);
 
+	  utils.assertInstanceOf(element, jQuery);
 	  utils.assertIsOneOfTypes(_vif.configuration.axisLabels.top, 'boolean', 'string');
 	  utils.assertIsOneOfTypes(_vif.configuration.axisLabels.right, 'boolean', 'string');
 	  utils.assertIsOneOfTypes(_vif.configuration.axisLabels.bottom, 'boolean', 'string');
@@ -5450,7 +5455,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _lastRenderOptions;
 
 	  var _truncationMarkerSelector = '.truncation-marker';
-	  var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span:not(.icon-close), .labels .label .callout';
+	  var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';
 	  var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
 
 	  // TODO: Validate columns
@@ -6420,6 +6425,497 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $ = __webpack_require__(8);
+	var utils = __webpack_require__(3);
+	var Visualization = __webpack_require__(10);
+	var renderNumberCell = __webpack_require__(14).renderNumberCell;
+	var _ = __webpack_require__(9);
+
+	module.exports = function Pager(element, vif) {
+	  _.extend(this, new Visualization(element, vif));
+
+	  var self = this;
+	  var _lastRenderOptions;
+
+	  utils.assertHasProperties(vif,
+	    'configuration.localization.PREVIOUS',
+	    'configuration.localization.NEXT',
+	    'configuration.localization.NO_ROWS',
+	    'configuration.localization.ONLY_ROW',
+	    'configuration.localization.MANY_ROWS',
+	    'unit.one',
+	    'unit.other'
+	  );
+
+	  _attachEvents(this.element);
+
+	  /**
+	   * Public Methods
+	   */
+
+	  this.render = function(options) {
+	    if (_.isEqual(options, _lastRenderOptions)) {
+	      return;
+	    }
+
+	    _lastRenderOptions = options;
+
+	    _render(options);
+	  };
+
+	  this.destroy = function() {
+	    _detachEvents(this.element);
+	    this.element.find('.socrata-pager').remove();
+	  };
+
+	  /**
+	   * Private Methods
+	   */
+
+	  function _templatePagerLabel(options) {
+	    var message;
+
+	    if (options.datasetRowCount === 0) {
+	      message = vif.configuration.localization.NO_ROWS;
+	    } else if (options.endIndex === options.startIndex) {
+	      message = vif.configuration.localization.ONLY_ROW;
+	    } else {
+	      message = vif.configuration.localization.MANY_ROWS;
+	    }
+
+	    message = message.format({
+	      unitOne: vif.unit.one,
+	      unitOther: vif.unit.other,
+	      firstRowOrdinal: options.datasetRowCount ? utils.commaify(options.startIndex + 1) : undefined,
+	      lastRowOrdinal: options.datasetRowCount ? utils.commaify(options.endIndex + 1) : undefined,
+	      datasetRowCount: utils.commaify(options.datasetRowCount)
+	    });
+
+	    return '<span class="pager-label">{0}</span>'.format(message);
+	  }
+
+	  function _templatePagerButtons(options) {
+	    var template = [
+	      '<span class="pager-buttons">',
+	        '<button{previousDisabled} class="pager-button-previous"><span class="icon-arrow-left"></span> {previous}</button>',
+	        '<button{nextDisabled} class="pager-button-next">{next} <span class="icon-arrow-right"></span></button>',
+	      '</span>'
+	    ].join('\n');
+
+	    return template.format({
+	      previous: vif.configuration.localization.PREVIOUS,
+	      next: vif.configuration.localization.NEXT,
+	      previousDisabled: (options.disabled || options.startIndex === 0) ? ' disabled' : '',
+	      nextDisabled: (options.disabled || options.endIndex >= options.datasetRowCount - 1) ? ' disabled' : ''
+	    });
+	  }
+
+	  function _templatePager(options) {
+	    return [
+	      '<div class="socrata-pager">',
+	        _templatePagerButtons(options),
+	        _templatePagerLabel(options),
+	      '</div>'
+	    ].join('\n');
+	  }
+
+	  function _render(options) {
+	    var $template = $(_templatePager(options));
+	    self.element.find('.socrata-pager').remove(); // Enhancement: Incremental updates (vs. rerender every time).
+	    self.element.append($template);
+	  }
+
+	  function _attachEvents(element) {
+	    self.element.on('click', '.pager-buttons .pager-button-previous', _handlePrevious);
+	    self.element.on('click', '.pager-buttons .pager-button-next', _handleNext);
+	  }
+
+	  function _detachEvents(element) {
+	    self.element.off('click', '.pager-buttons .pager-button-previous', _handlePrevious);
+	    self.element.off('click', '.pager-buttons .pager-button-next', _handleNext);
+	  }
+
+	  function _handleNext() {
+	    self.emitEvent('SOCRATA_VISUALIZATION_PAGINATION_NEXT');
+	  }
+
+	  function _handlePrevious() {
+	    self.emitEvent('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS');
+	  }
+	};
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var utils = __webpack_require__(3);
+	var moment = __webpack_require__(15);
+
+	module.exports = {
+	  renderCell: renderCell,
+	  renderBooleanCell: renderBooleanCell,
+	  renderNumberCell: renderNumberCell,
+	  renderGeoCell: renderGeoCell,
+	  renderGeoCellHTML: renderGeoCellHTML,
+	  renderMoneyCell: renderMoneyCell,
+	  renderTimestampCell: renderTimestampCell
+	};
+
+	function renderCell(cellContent, column, i18n) {
+	  var cellText;
+
+	  utils.assertHasProperty(column, 'renderTypeName');
+
+	  if (_.isUndefined(cellContent)) {
+	    return '';
+	  }
+
+	  switch (column.renderTypeName) {
+	    case 'checkbox':
+	      cellText = _.escape(renderBooleanCell(cellContent, column));
+	      break;
+	    case 'number':
+	      cellText = _.escape(renderNumberCell(cellContent, column));
+	      break;
+
+	    // Avoid escaping because cell content is HTML.
+	    case 'geo_entity':
+	    case 'point':
+	      cellText = renderGeoCellHTML(cellContent, column, i18n);
+	      break;
+	    case 'calendar_date':
+	      cellText = _.escape(renderTimestampCell(cellContent, column));
+	      break;
+	    case 'money':
+	      cellText = _.escape(renderMoneyCell(cellContent, column));
+	      break;
+	    default:
+	      cellText = _.escape(cellContent);
+	      break;
+	  }
+	  return cellText;
+	}
+
+
+
+	/**
+	* Renders a boolean value in checkbox format
+	*/
+	function renderBooleanCell(cellContent) {
+	  return _.isBoolean(cellContent) && cellContent ? '✓' : '';
+	};
+
+	/**
+	* Render a number based on column specified formatting.
+	* This has lots of possible options, so we delegate to helpers.
+	*/
+	function renderNumberCell(input, column) {
+	  if (_.isNull(input) || _.isUndefined(input) || input.toString().length === 0) {
+	    return '';
+	  }
+
+	  var amount = parseFloat(input);
+
+	  var format = _.extend({
+	    precisionStyle: 'standard',
+	    precision: undefined,
+	    noCommas: false,
+	    currency: '$',
+	    decimalSeparator: '.',
+	    groupSeparator: ',',
+	    mask: null
+	  }, column.format || {});
+
+	  format.commaifyOptions = {
+	    decimalCharacter: format.decimalSeparator,
+	    groupCharacter: format.groupSeparator
+	  };
+
+	  if (column.dataTypeName === 'percent') {
+	    return _renderPercentageNumber(amount, format);
+	  } else if (format.mask) {
+	    return _renderMaskedNumber(amount, format);
+	  } else {
+	    switch (format.precisionStyle) {
+	      case 'percentage':
+	        return _renderPercentageNumber(amount, format);
+	      case 'scientific':
+	        return _renderScientificNumber(amount, format);
+	      case 'currency':
+	        return _renderCurrencyNumber(amount, format);
+	      case 'financial':
+	        return _renderFinancialNumber(amount, format);
+	      case 'standard':
+	      default:
+	        return _renderStandardNumber(amount, format);
+	    }
+	  }
+	};
+
+	/**
+	* Renders a Point in plain text as a lat/lng pair.
+	*/
+	function renderGeoCell(cellContent) {
+	  var latitudeIndex = 1;
+	  var longitudeIndex = 0;
+	  var coordinates = _cellCoordinates(cellContent);
+	  if (coordinates) {
+	    return '({latitude}°, {longitude}°)'.format({
+	      latitude: coordinates[latitudeIndex],
+	      longitude: coordinates[longitudeIndex]
+	    });
+	  } else {
+	    return '';
+	  }
+	};
+
+	/**
+	* Renders a Point wrapped in an HTML span element
+	*
+	* Parameters:
+	* - cellContent: data for the cell (from soda fountain).
+	* - i18n: Object containing localized strings for latitude and longitude. Example:
+	*   {
+	*     latitude: 'Latitude',
+	*     longitude: 'Longitude'
+	*   }
+	*/
+	function renderGeoCellHTML(cellContent, columnMetadata, i18n) {
+	  var latitudeIndex = 1;
+	  var longitudeIndex = 0;
+	  var coordinates = _cellCoordinates(cellContent);
+
+	  utils.assertHasProperties(i18n, 'latitude', 'longitude');
+	  if (coordinates) {
+	    var template = '<span title="{0}">{1}°</span>';
+	    var latitude = template.format(i18n.latitude, coordinates[latitudeIndex]);
+	    var longitude = template.format(i18n.longitude, coordinates[longitudeIndex]);
+	    return '({latitude}, {longitude})'.format({
+	      latitude: latitude,
+	      longitude: longitude
+	    });
+	  } else {
+	    return '';
+	  }
+	};
+
+	/**
+	* Render a numeric value as currency
+	*/
+	function renderMoneyCell(cellContent, column) {
+	  var format = _.extend({
+	    currency: '$',
+	    decimalSeparator: '.',
+	    groupSeparator: ',',
+	    humane: false,
+	    precision: 2
+	  }, column.format || {});
+	  var amount = parseFloat(cellContent);
+
+	  if (_.isFinite(amount)) {
+	    if (format.humane) {
+	      // We can't use formatNumber here because this use case is
+	      // slightly different — we want to enforce a certain precision,
+	      // whereas the normal humane numbers want to use the fewest
+	      // digits possible at all times.
+	      // The handling on thousands-scale numbers is also different,
+	      // because humane currency will always be expressed with the K
+	      // scale suffix, whereas our normal humane numbers allow four-
+	      // digit thousands output.
+	      var absVal = Math.abs(amount);
+	      if (absVal < 1000) {
+	        cellContent = absVal.toFixed(format.precision).
+	          replace('.', format.decimalSeparator);
+	      } else {
+	        // At this point, we know that we're going to use a suffix for
+	        // scale, so we lean on commaify to split up the scale groups.
+	        // The number of groups can be used to select the correct
+	        // scale suffix, and we can do precision-related formatting
+	        // by taking the first two scale groups and treating them
+	        // as a float.
+	        // For instance, "12,345,678" will become an array of three
+	        // substrings, and the first two will combine into "12.345"
+	        // so that our toFixed call can work its magic.
+	        var scaleGroupedVal = utils.commaify(Math.floor(absVal)).split(',');
+	        var symbols = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
+	        var symbolIndex = scaleGroupedVal.length - 2;
+
+	        var value = parseFloat(scaleGroupedVal[0] + '.' + scaleGroupedVal[1]);
+	        value = value.toFixed(format.precision);
+	        if (parseFloat(value) === 1000) {
+	          // The only edge case is when rounding takes us into the
+	          // next scale group: 999,999 should be 1M not 1000K.
+	          value = '1';
+	          if (format.precision > 0) {
+	            value += '.' + _.repeat('0', format.precision);
+	          }
+	          symbolIndex++;
+	        }
+
+	        cellContent = value.replace('.', format.decimalSeparator) + symbols[symbolIndex];
+	      }
+	    } else {
+	      // Normal formatting without abbreviation.
+	      var commaifyOptions = {
+	        groupCharacter: format.groupSeparator,
+	        decimalCharacter: format.decimalSeparator
+	      };
+
+	      cellContent = utils.commaify(
+	        Math.abs(amount).toFixed(format.precision),
+	        commaifyOptions
+	      );
+	    }
+	    cellContent = '{sign}{currency}{cellContent}'.format({
+	      sign: amount < 0 ? '-' : '',
+	      currency: format.currency,
+	      cellContent: cellContent
+	    });
+	  }
+	  return cellContent;
+	};
+
+	/**
+	* Render a date or timestamp following column formatting, otherwise following defaults.
+	*/
+	function renderTimestampCell(cellContent, column) {
+	  if (!_.isEmpty(cellContent)) {
+	    var time = moment(new Date(cellContent));
+	    if (time.isValid()) {
+	      if (column.format && column.format.formatString) {
+	        // Option A: format using user-specified format string
+	        return time.format(column.format.formatString);
+	      } else if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
+	        // Option B: infer date-only string format
+	        return time.format('YYYY MMM DD');
+	      } else {
+	        // Option C: use date-with-time format
+	        return time.format('YYYY MMM DD hh:mm:ss A');
+	      }
+	    }
+	  }
+	  return '';
+	};
+
+	/**
+	 * hoisted helper methods below
+	 * (must belong to this scope in order to access $window)
+	 */
+
+	function _renderCurrencyNumber(amount, format) {
+	  var isNegative = amount < 0;
+
+	  var value = Math.abs(amount);
+	  if (format.precision >= 0) {
+	    value = value.toFixed(format.precision);
+	  }
+
+	  value = utils.commaify(value, format.commaifyOptions);
+	  if (format.noCommas) {
+	    value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+	  }
+
+	  return '{sign}{currency}{value}'.format({
+	    sign: isNegative ? '-' : '',
+	    currency: format.currency,
+	    value: value
+	  });
+	}
+
+	function _renderFinancialNumber(amount, format) {
+	  var isNegative = amount < 0;
+
+	  var value = Math.abs(amount);
+	  if (format.precision >= 0) {
+	    value = value.toFixed(format.precision);
+	  }
+
+	  value = utils.commaify(value, format.commaifyOptions);
+	  if (format.noCommas) {
+	    value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+	  }
+
+	  if (isNegative) {
+	    return '({0})'.format(value);
+	  } else {
+	    return String(value);
+	  }
+	}
+
+	function _renderScientificNumber(amount, format) {
+	  var value =  amount.toExponential(format.precision);
+
+	  // no groups, so we can skip groupSeparator and commaify and noCommas
+	  return value.replace('.', format.decimalSeparator);
+	}
+
+	function _renderPercentageNumber(amount, format) {
+	  var value = amount;
+	  if (format.precision >= 0) {
+	    value = value.toFixed(format.precision);
+	  }
+
+	  value = utils.commaify(value, format.commaifyOptions);
+	  if (format.noCommas) {
+	    value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+	  }
+
+	  return value + '%';
+	}
+
+	function _renderStandardNumber(amount, format) {
+	  var value = amount;
+	  if (format.precision >= 0) {
+	    value = value.toFixed(format.precision);
+	  }
+
+	  if (/^-?\d{4}$/.test(value)) {
+	    return value;
+	  }
+
+	  value = utils.commaify(value, format.commaifyOptions);
+	  // Force commaify off for four-digit numbers (workaround for year columns)
+	  if (format.noCommas) {
+	    value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+	  }
+
+	  return value;
+	}
+
+	// NOTE: In the dataset view, a mask can lead to some really strange output.
+	// We're going to start with a simple approach and refine as we go on.
+	function _renderMaskedNumber(amount, format) {
+	  var maskChar = '#';
+	  var amountChars = String(amount).split('');
+	  var output = format.mask.slice(0, amountChars.length);
+
+	  while (output.indexOf(maskChar) > -1) {
+	    output = output.replace(maskChar, amountChars.shift());
+	  }
+	  output += amountChars.join('');
+
+	  return output;
+	}
+
+	function _cellCoordinates(cellContent) {
+	  var coordinates = _.get(cellContent, 'value.coordinates', cellContent.coordinates);
+	  return _.isArray(coordinates) ? coordinates : null;
+	}
+
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_15__;
+
+/***/ },
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(3);
@@ -9069,12 +9565,333 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 14 */
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $ = __webpack_require__(8);
+	var utils = __webpack_require__(3);
+	var Visualization = __webpack_require__(10);
+	var _ = __webpack_require__(9);
+	var DataTypeFormatter = __webpack_require__(14);
+
+	module.exports = function Table(element, vif) {
+	  _.extend(this, new Visualization(element, vif));
+
+	  var SORT_ICON_WIDTH = 32;
+
+	  var self = this;
+	  var _lastRenderData;
+	  var _lastRenderOptions;
+	  var _scrollbarHeightPx;
+
+	  // If defined, this is an object that maps column name to pixel widths.
+	  // See freezeColumnWidths().
+	  var _columnWidths;
+
+	  utils.assertHasProperties(
+	    vif,
+	    'configuration.localization.LATITUDE',
+	    'configuration.localization.LONGITUDE'
+	  );
+
+	  _attachEvents(this.element);
+
+	  /**
+	   * Public Methods
+	   */
+
+	  this.render = function(data, options) {
+	    utils.assertHasProperties(data, 'rows', 'columns', 'datasetMetadata');
+	    if (_.isEqual(_lastRenderData, data) && _.isEqual(_lastRenderOptions, options)) {
+	      return;
+	    }
+
+	    _lastRenderData = data;
+	    _lastRenderOptions = options;
+
+	    _render(data, options);
+	  };
+
+	  /**
+	   * Compute how many rows can fit into the given pixel height (taking into account header
+	   * size).
+	   * NOTE: This assumes each row is the same vertical height, no matter the content.
+	   * Currently this is true due to how the table is styled. Caveat emptor.
+	   */
+	  this.howManyRowsCanFitInHeight = function(overallHeightPx) {
+	    if (!_.isFinite(overallHeightPx)) {
+	      return 0;
+	    }
+
+	    var currentRenderData = _lastRenderData;
+	    var currentRenderOptions = _lastRenderOptions;
+	    var headerHeightPx;
+	    var rowHeightPx;
+	    var heightLeftAfterHeaderPx;
+	    var maxRowCount;
+	    var alreadyHasData = _lastRenderData && _lastRenderOptions && _lastRenderData.rows.length > 0;
+
+	    // We need some data in the table to do the measurements.
+	    // If there is none there, render a placeholder.
+	    if (!alreadyHasData) {
+	      // Render sample data into the table. Used for UI element measurement.
+	      self.render(
+	        {
+	          columns: [ 'placeholder' ],
+	          rows: [ [ 'placeholder' ] ],
+	          datasetMetadata: { columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ] }
+	        },
+	        [ {} ]
+	      );
+	    }
+
+	    utils.assertInstanceOf(element.find('thead')[0], HTMLElement);
+	    utils.assertInstanceOf(element.find('tbody tr')[0], HTMLElement);
+
+	    // Measure.
+	    headerHeightPx = element.find('thead')[0].getBoundingClientRect().height;
+	    rowHeightPx = element.find('tbody tr')[0].getBoundingClientRect().height;
+
+	    // Compute
+	    heightLeftAfterHeaderPx = overallHeightPx - headerHeightPx - _scrollbarHeightPx;
+	    numberOfRows = heightLeftAfterHeaderPx / rowHeightPx;
+
+	    if (_.isFinite(numberOfRows)) {
+	      maxRowCount = Math.max(0, Math.floor(numberOfRows));
+	    } else {
+	      maxRowCount = 0;
+	    }
+
+	    // If we rendered placeholder data, remove it.
+	    if (!alreadyHasData) {
+	      element.find('.table-container').remove();
+	    }
+
+	    return maxRowCount;
+	  };
+
+	  this.destroy = function() {
+	    _detachEvents(this.element);
+	    this.element.find('.socrata-table').remove();
+	  };
+
+	  // Causes all columns to maintain their absolute widths, regardless of any new content.
+	  // If a column is added after this function is called, the new column will get a default
+	  // width of 150px.
+	  this.freezeColumnWidthsAndRender = function() {
+	    // TODO If we implement persistent column resizing, this function
+	    // should be modified to simply return columnWidths for later use
+	    // as a render option.
+	    var headerWidths = element.find('thead th').map(function() {
+	      return this.getBoundingClientRect().width;
+	    });
+
+	    _columnWidths = _.zipObject(
+	      _lastRenderData.columns,
+	      headerWidths
+	    );
+
+	    _render(_lastRenderData, _lastRenderOptions);
+	  };
+
+	  /**
+	   * Private Methods
+	   */
+
+	  function _templateTableCell(column, cell) {
+	    return [
+	      '<td>',
+	        '<div>',
+	          DataTypeFormatter.renderCell(cell, column, {
+	            latitude: vif.configuration.localization.LATITUDE,
+	            longitude: vif.configuration.localization.LONGITUDE
+	          }),
+	        '</div>',
+	      '</td>'
+	    ].join('');
+	  }
+
+	  function _templateTableSortedHeader() {
+	    return [
+	      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-sort>',
+	        '{columnTitle}<span class="icon-{sortDirection}"></span>',
+	      '</th>'
+	    ].join('');
+	  }
+
+	  function _templateTableHeader() {
+	    return [
+	      '<th data-column-name="{columnName}" data-column-description="{columnDescription}">',
+	        '{columnTitle}',
+	      '</th>'
+	    ].join('');
+	  }
+
+	  function _templateTable(data, options) {
+	    var activeSort = options[0];
+
+	    return _.flatten([
+	      '<div class="socrata-table">',
+	        '<table>',
+	          '<thead>',
+	            '<tr>',
+	              data.columns.map(function(columnName) {
+	                var template = activeSort.columnName === columnName ?
+	                  _templateTableSortedHeader() :
+	                  _templateTableHeader();
+
+	                var column = _.find(data.datasetMetadata.columns, function(column) {
+	                  return column.fieldName === columnName;
+	                });
+
+	                return template.format({
+	                  columnName: columnName,
+	                  columnTitle: column && column.name || columnName,
+	                  columnDescription: column && column.description || '',
+	                  sortDirection: activeSort.ascending ? 'arrow-down' : 'arrow-up' //TODO
+	                });
+	              }),
+	            '</tr>',
+	          '</thead>',
+	          '<tbody>',
+	            _.map(data.rows, function(row) {
+	              if (!row) {
+	                return '<tr class="null-row"></tr>';
+	              }
+
+	              return '<tr>' + data.columns.map(function(columnName, columnIndex) {
+	                var column = _.find(
+	                  data.datasetMetadata.columns,
+	                  {
+	                    fieldName: columnName
+	                  }
+	                );
+	                return _templateTableCell(column, row[columnIndex])
+	              }).join('\n') + '</tr>';
+	            }),
+	          '</tbody>',
+	        '</table>',
+	      '</div>'
+	    ]).join('\n');
+	  }
+
+	  function _render(data, options) {
+	    var $existingTable = self.element.find('.socrata-table');
+	    var $template = $(_templateTable(data, options));
+	    var scrollLeft = _.get($existingTable, '[0].scrollLeft') || 0;
+	    var $newTable;
+
+	    _applyFrozenColumns($template);
+	    if ($existingTable.length) {
+	      $existingTable.replaceWith($template);
+	    } else {
+	      self.element.append($template);
+	    }
+
+	    $newTable = self.element.find('.socrata-table');
+	    $newTable[0].scrollLeft = scrollLeft;
+
+	    // Cache the scrollbar height for later use.
+	    _scrollbarHeightPx = _scrollbarHeightPx || $newTable[0].offsetHeight - $newTable[0].clientHeight;
+	  }
+
+	  function _attachEvents(element) {
+	    self.element.on('click', '.socrata-table thead th', _handleRowHeaderClick);
+
+	    self.element.on('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
+	    self.element.on('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
+
+	    self.element.on('mouseenter mousemove', '.socrata-table tbody td', _showCellFlyout);
+	    self.element.on('mouseleave', '.socrata-table tbody td', _hideCellFlyout);
+	  }
+
+	  function _detachEvents(element) {
+	    self.element.off('click', '.socrata-table thead th', _handleRowHeaderClick);
+
+	    self.element.off('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
+	    self.element.off('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
+
+	    self.element.off('mouseenter mousemove', '.socrata-table tbody td', _showCellFlyout);
+	    self.element.off('mouseleave', '.socrata-table tbody td', _hideCellFlyout);
+	  }
+
+	  function _showDescriptionFlyout(event) {
+	    var $target = $(event.currentTarget);
+	    var description = $target.data('column-description');
+
+	    if (description && description.length > 0) {
+	      self.emitEvent(
+	        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+	        {
+	          element: $target[0],
+	          content: description,
+	          belowTarget: true,
+	          rightSideHint: false
+	        }
+	      );
+	    }
+	  }
+
+	  function _hideDescriptionFlyout(event) {
+	    var $target = $(event.currentTarget);
+
+	    self.emitEvent(
+	      'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+	      null
+	    );
+	  }
+
+	  function _showCellFlyout(event) {
+	    var $target = $(event.currentTarget).find('div');
+	    var data = $target.text();
+	    var overflowing = $target[0].clientWidth < $target[0].scrollWidth;
+
+	    if (overflowing) {
+	      self.emitEvent(
+	        'SOCRATA_VISUALIZATION_CELL_FLYOUT',
+	        {
+	          element: $target[0],
+	          content: data,
+	          belowTarget: true,
+	          rightSideHint: false
+	        }
+	      );
+	    }
+	  }
+
+	  function _hideCellFlyout() {
+	    self.emitEvent(
+	      'SOCRATA_VISUALIZATION_CELL_FLYOUT',
+	      null
+	    );
+	  }
+
+	  function _handleRowHeaderClick() {
+	    var columnName = this.getAttribute('data-column-name');
+	    if (columnName) {
+	      self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_CLICKED', columnName);
+	    }
+	  }
+
+	  function _applyFrozenColumns($template) {
+	    $template.toggleClass('frozen-columns', !!_columnWidths);
+	    $template.find('thead th').each(function() {
+	      var $th = $(this);
+	      var columnName = $th.attr('data-column-name');
+	      var frozenWidth = _.get(_columnWidths, columnName, 150);
+	      $th.width(frozenWidth + SORT_ICON_WIDTH);
+	    });
+	  }
+	};
+
+
+/***/ },
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
-	var L = __webpack_require__(15);
+	var L = __webpack_require__(19);
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 
@@ -10073,7 +10890,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -19246,7 +20063,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(window, document));
 
 /***/ },
-/* 16 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(8);
@@ -19444,7 +20261,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Visualization = __webpack_require__(10);
@@ -19845,14 +20662,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var GeospaceDataProvider = __webpack_require__(19);
-	var MetadataProvider = __webpack_require__(21);
-	var SoqlDataProvider = __webpack_require__(22);
-	var TileserverDataProvider = __webpack_require__(23);
-	var VectorTileManager = __webpack_require__(29);
+	var GeospaceDataProvider = __webpack_require__(23);
+	var MetadataProvider = __webpack_require__(25);
+	var SoqlDataProvider = __webpack_require__(26);
+	var TileserverDataProvider = __webpack_require__(27);
+	var VectorTileManager = __webpack_require__(33);
 
 	module.exports = {
 	  GeospaceDataProvider: GeospaceDataProvider,
@@ -19863,11 +20680,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 19 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(3);
-	var DataProvider = __webpack_require__(20);
+	var DataProvider = __webpack_require__(24);
 	var _ = __webpack_require__(9);
 
 	function GeospaceDataProvider(config) {
@@ -20105,7 +20922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 20 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -20191,11 +21008,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 21 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(3);
-	var DataProvider = __webpack_require__(20);
+	var DataProvider = __webpack_require__(24);
 	var _ = __webpack_require__(9);
 
 	function MetadataProvider(config) {
@@ -20212,7 +21029,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Public methods
 	   */
 
+	  /**
+	   * NOTE:
+	   * Columns are structured in an Array.
+	   * (See: https://localhost/api/docs/types#View)
+	   */
 	  this.getDatasetMetadata = function() {
+	    var url = 'https://{0}/api/views/{1}.json'.format(
+	      this.getConfigurationProperty('domain'),
+	      this.getConfigurationProperty('datasetUid')
+	    );
+
+	    return Promise.resolve($.get(url));
+	  };
+
+	  /**
+	   * NOTE:
+	   * Columns are structured in an object, where the key is the
+	   * API field name and the value is column metadata.
+	   */
+	  this.getPhidippidesAugmentedDatasetMetadata = function() {
 
 	    var url = 'https://{0}/metadata/v1/dataset/{1}.json'.format(
 	      this.getConfigurationProperty('domain'),
@@ -20272,11 +21108,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 22 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(3);
-	var DataProvider = __webpack_require__(20);
+	var DataProvider = __webpack_require__(24);
+	var MetadataProvider = __webpack_require__(25);
 	var _ = __webpack_require__(9);
 
 	/**
@@ -20298,6 +21135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * callbacks, respectively.
 	 */
 	function SoqlDataProvider(config) {
+	  'use strict';
 
 	  _.extend(this, new DataProvider(config));
 
@@ -20308,6 +21146,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
 	  var _self = this;
+	  var metadataProvider = new MetadataProvider(config);
 
 	  /**
 	   * Public methods
@@ -20342,79 +21181,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  this.query = function(queryString, nameAlias, valueAlias) {
 
-	    var url = 'https://{0}/api/id/{1}.json?$query={2}'.format(
-	      _self.getConfigurationProperty('domain'),
-	      _self.getConfigurationProperty('datasetUid'),
-	      queryString
-	    );
-	    var headers = {
-	      'Accept': 'application/json',
-	      'Content-type': 'application/json'
-	    };
+	    var url = _withSalt(_queryUrl('$query={0}'.format(queryString)));
 
-	    return (
-	      new Promise(function(resolve, reject) {
-
-	        var xhr = new XMLHttpRequest();
-
-	        function onFail() {
-
-	          var error;
-
-	          try {
-	            error = JSON.parse(xhr.responseText);
-	          } catch (e) {
-	            error = xhr.statusText;
-	          }
-
-	          return reject({
-	            status: parseInt(xhr.status, 10),
-	            message: xhr.statusText,
-	            soqlError: error
-	          });
-	        }
-
-	        xhr.onload = function() {
-
-	          var status = parseInt(xhr.status, 10);
-	          var data;
-
-	          if (status === 200) {
-
-	            try {
-
-	              data = JSON.parse(xhr.responseText);
-
-	              return resolve(
-	                _mapQueryResponseToTable(data, nameAlias, valueAlias)
-	              );
-	            } catch (e) {
-
-	              // If we cannot parse the response body as JSON,
-	              // then we should assume the request has failed
-	              // in an unexpected way and resolve the promise
-	              // accordingly. This will simply fall through to
-	              // the call to `onFail()` below.
-	            }
-	          }
-
-	          onFail();
-	        };
-
-	        xhr.onabort = onFail;
-	        xhr.onerror = onFail;
-
-	        xhr.open('GET', _withSalt(url), true);
-
-	        // Set user-defined headers.
-	        _.each(headers, function(value, key) {
-	          xhr.setRequestHeader(key, value);
+	    return Promise.resolve(
+	      $.get(url)
+	    ).then(
+	      function(data) {
+	        return _mapQueryResponseToTable(data, nameAlias, valueAlias)
+	      },
+	      function(error) {
+	        return Promise.reject({
+	          status: parseInt(error.status, 10),
+	          message: error.statusText,
+	          soqlError: error.responseJSON || error.responseText
 	        });
-
-	        xhr.send();
-	      })
+	      }
 	    );
 	  };
+
+	  this.getRowCount = function() {
+	    return Promise.resolve(
+	      $.get(_queryUrl('$select=count(*)'))
+	    ).then(
+	      function(data) {
+	        return parseInt(_.get(data, '[0].count'), 10);
+	      }
+	    );
+	  }
 
 	  /**
 	   * `.getRows()` executes a SoQL query against the current domain that
@@ -20426,84 +21219,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Promise}
 	   */
 	  this.getRows = function(queryString) {
-
-	    var url = 'https://{0}/api/id/{1}.json?{2}'.format(
-	      _self.getConfigurationProperty('domain'),
-	      _self.getConfigurationProperty('datasetUid'),
-	      queryString
-	    );
-	    var headers = {
-	      'Accept': 'application/json',
-	      'Content-type': 'application/json'
-	    };
-
-	    return (
-	      new Promise(function(resolve, reject) {
-
-	        var xhr = new XMLHttpRequest();
-
-	        function onFail() {
-
-	          var error;
-
-	          try {
-	            error = JSON.parse(xhr.responseText);
-	          } catch (e) {
-	            error = xhr.statusText;
-	          }
-
-	          return reject({
-	            status: parseInt(xhr.status, 10),
-	            message: xhr.statusText,
-	            soqlError: error
-	          });
-	        }
-
-	        xhr.onload = function() {
-
-	          var status = parseInt(xhr.status, 10);
-	          var data;
-
-	          if (status === 200) {
-
-	            try {
-
-	              data = JSON.parse(xhr.responseText);
-
-	              return resolve(
-	                _mapRowsResponseToTable(data)
-	              );
-	            } catch (e) {
-
-	              // If we cannot parse the response body as JSON,
-	              // then we should assume the request has failed
-	              // in an unexpected way and resolve the promise
-	              // accordingly. This will simply fall through to
-	              // the call to `onFail()` below.
-	            }
-	          }
-
-	          onFail();
-	        };
-
-	        xhr.onabort = onFail;
-	        xhr.onerror = onFail;
-
-	        xhr.open('GET', _withSalt(url), true);
-
-	        // Set user-defined headers.
-	        _.each(headers, function(value, key) {
-	          xhr.setRequestHeader(key, value);
+	    var url = _withSalt(_queryUrl(queryString));
+	    return Promise.all([
+	      metadataProvider.getDatasetMetadata(),
+	      Promise.resolve($.get(url))
+	    ]).then(
+	      function(responses) {
+	        return _mapRowsResponseToTable(responses[0].columns, responses[1]);
+	      },
+	      function(error) {
+	        return Promise.reject({
+	          status: parseInt(error.status, 10),
+	          message: error.statusText,
+	          soqlError: error.responseJSON || error.responseText
 	        });
-
-	        xhr.send();
-	      })
+	      }
 	    );
 	  };
 
 	  /**
 	   * Private methods
 	   */
+
+	  function _queryUrl(queryString) {
+	    return 'https://{0}/api/id/{1}.json?{2}'.format(
+	      _self.getConfigurationProperty('domain'),
+	      _self.getConfigurationProperty('datasetUid'),
+	      queryString
+	    );
+	  }
 
 	  /**
 	   * Transforms a raw SoQL query result into a 'table' object.
@@ -20570,23 +21314,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *     ...
 	   *   ]
 	   */
-	  function _mapRowsResponseToTable(data) {
+	  function _mapRowsResponseToTable(columnInformation, data) {
+
+	    columnInformation = _.sortBy(columnInformation, 'position');
 
 	    var table = {
-	      columns: [],
-	      rows: []
+	      columns: _.pluck(columnInformation, 'fieldName'),
+	      rows: [],
 	    };
 
 	    if (data.length > 0) {
 
-	      var columns = Object.keys(data[0]);
 	      var rows = data.map(function(datum) {
 
 	        var row = [];
 
-	        for (var i = 0; i < columns.length; i++) {
+	        for (var i = 0; i < table.columns.length; i++) {
 
-	          var column = columns[i];
+	          var column = table.columns[i];
 	          var value = datum.hasOwnProperty(column) ? datum[column] : undefined;
 
 	          row.push(value);
@@ -20595,7 +21340,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return row;
 	      });
 
-	      table.columns = columns;
 	      table.rows = rows;
 	    }
 
@@ -20624,13 +21368,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 23 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(3);
-	var DataProvider = __webpack_require__(20);
+	var DataProvider = __webpack_require__(24);
 	var _ = __webpack_require__(9);
-	var VectorTile = __webpack_require__(24).VectorTile;
+	var VectorTile = __webpack_require__(28).VectorTile;
 
 	var MAX_FEATURES_PER_TILE = 256 * 256;
 	var DEFAULT_FEATURES_PER_TILE = 50000;
@@ -20895,21 +21639,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 24 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports.VectorTile = __webpack_require__(25);
-	module.exports.VectorTileFeature = __webpack_require__(27);
-	module.exports.VectorTileLayer = __webpack_require__(26);
+	module.exports.VectorTile = __webpack_require__(29);
+	module.exports.VectorTileFeature = __webpack_require__(31);
+	module.exports.VectorTileLayer = __webpack_require__(30);
 
 
 /***/ },
-/* 25 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var VectorTileLayer = __webpack_require__(26);
+	var VectorTileLayer = __webpack_require__(30);
 
 	module.exports = VectorTile;
 
@@ -20946,12 +21690,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 26 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var VectorTileFeature = __webpack_require__(27);
+	var VectorTileFeature = __webpack_require__(31);
 
 	module.exports = VectorTileLayer;
 	function VectorTileLayer(buffer, end) {
@@ -21041,12 +21785,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 27 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Point = __webpack_require__(28);
+	var Point = __webpack_require__(32);
 
 	module.exports = VectorTileFeature;
 
@@ -21186,7 +21930,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 28 */
+/* 32 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -21323,15 +22067,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 29 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
 	var utils = __webpack_require__(3);
 	var d3 = __webpack_require__(4);
-	var L = __webpack_require__(15);
-	var VectorTile = __webpack_require__(24).VectorTile;
-	var pbf = __webpack_require__(30);
+	var L = __webpack_require__(19);
+	var VectorTile = __webpack_require__(28).VectorTile;
+	var pbf = __webpack_require__(34);
 
 	/**
 	 *
@@ -22495,14 +23239,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 30 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
 	module.exports = Pbf;
 
-	var Buffer = global.Buffer || __webpack_require__(31);
+	var Buffer = global.Buffer || __webpack_require__(35);
 
 	function Pbf(buf) {
 	    this.buf = !Buffer.isBuffer(buf) ? new Buffer(buf || 0) : buf;
@@ -22928,7 +23672,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 31 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
@@ -22938,7 +23682,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(36);
+	var ieee754 = __webpack_require__(40);
 
 	var BufferMethods;
 
@@ -23091,10 +23835,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return bytes;
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36).Buffer))
 
 /***/ },
-/* 32 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -23105,9 +23849,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	/* eslint-disable no-proto */
 
-	var base64 = __webpack_require__(33)
-	var ieee754 = __webpack_require__(34)
-	var isArray = __webpack_require__(35)
+	'use strict'
+
+	var base64 = __webpack_require__(37)
+	var ieee754 = __webpack_require__(38)
+	var isArray = __webpack_require__(39)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -23187,8 +23933,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new Buffer(arg)
 	  }
 
-	  this.length = 0
-	  this.parent = undefined
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+	    this.length = 0
+	    this.parent = undefined
+	  }
 
 	  // Common case.
 	  if (typeof arg === 'number') {
@@ -23319,6 +24067,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	if (Buffer.TYPED_ARRAY_SUPPORT) {
 	  Buffer.prototype.__proto__ = Uint8Array.prototype
 	  Buffer.__proto__ = Uint8Array
+	} else {
+	  // pre-set for values that may exist in the future
+	  Buffer.prototype.length = undefined
+	  Buffer.prototype.parent = undefined
 	}
 
 	function allocate (that, length) {
@@ -23468,10 +24220,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	Buffer.byteLength = byteLength
-
-	// pre-set for values that may exist in the future
-	Buffer.prototype.length = undefined
-	Buffer.prototype.parent = undefined
 
 	function slowToString (encoding, start, end) {
 	  var loweredCase = false
@@ -24642,10 +25390,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return i
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 33 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -24775,7 +25523,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 34 */
+/* 38 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -24865,46 +25613,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 35 */
+/* 39 */
 /***/ function(module, exports) {
 
-	
-	/**
-	 * isArray
-	 */
+	var toString = {}.toString;
 
-	var isArray = Array.isArray;
-
-	/**
-	 * toString
-	 */
-
-	var str = Object.prototype.toString;
-
-	/**
-	 * Whether or not the given `val`
-	 * is an array.
-	 *
-	 * example:
-	 *
-	 *        isArray([]);
-	 *        // > true
-	 *        isArray(arguments);
-	 *        // > false
-	 *        isArray('');
-	 *        // > false
-	 *
-	 * @param {mixed} val
-	 * @return {bool}
-	 */
-
-	module.exports = isArray || function (val) {
-	  return !! val && '[object Array]' == str.call(val);
+	module.exports = Array.isArray || function (arr) {
+	  return toString.call(arr) == '[object Array]';
 	};
 
 
 /***/ },
-/* 36 */
+/* 40 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -24994,16 +25714,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 37 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var ChoroplethMap = __webpack_require__(2);
-	var MetadataProvider = __webpack_require__(21);
-	var GeospaceDataProvider = __webpack_require__(19);
-	var SoqlDataProvider = __webpack_require__(22);
+	var MetadataProvider = __webpack_require__(25);
+	var GeospaceDataProvider = __webpack_require__(23);
+	var SoqlDataProvider = __webpack_require__(26);
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -25131,7 +25851,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  } else {
 
 	    shapefileMetadataRequest = shapefileMetadataProvider.
-	      getDatasetMetadata().
+	      getPhidippidesAugmentedDatasetMetadata().
 	      then(
 	        function(shapefileMetadata) {
 	          return shapefileMetadata;
@@ -25637,14 +26357,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 38 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var ColumnChart = __webpack_require__(12);
-	var SoqlDataProvider = __webpack_require__(22);
+	var SoqlDataProvider = __webpack_require__(26);
 
 	var NAME_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
@@ -26084,17 +26804,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 39 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var FeatureMap = __webpack_require__(14);
-	var GeospaceDataProvider = __webpack_require__(19);
-	var TileserverDataProvider = __webpack_require__(23);
-	var SoqlDataProvider = __webpack_require__(22);
-	var MetadataProvider = __webpack_require__(21);
+	var FeatureMap = __webpack_require__(18);
+	var GeospaceDataProvider = __webpack_require__(23);
+	var TileserverDataProvider = __webpack_require__(27);
+	var SoqlDataProvider = __webpack_require__(26);
+	var MetadataProvider = __webpack_require__(25);
 
 	var DEFAULT_TILESERVER_HOSTS = [
 		'https://tileserver1.api.us.socrata.com',
@@ -26674,15 +27394,360 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 40 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var moment = __webpack_require__(41);
-	var TimelineChart = __webpack_require__(13);
-	var SoqlDataProvider = __webpack_require__(22);
+	var Table = __webpack_require__(17);
+	var Pager = __webpack_require__(13);
+	var SoqlDataProvider = __webpack_require__(26);
+	var MetadataProvider = __webpack_require__(25);
+
+	var ROW_HEIGHT_PX = 39;
+
+	$.fn.socrataTable = function(vif) {
+	  'use strict';
+
+	  utils.assertHasProperties(
+	    vif,
+	    'configuration',
+	    'datasetUid',
+	    'domain',
+	    'unit.one',
+	    'unit.other',
+	    'configuration.order'
+	  );
+
+	  utils.assert(
+	    Array.isArray(vif.configuration.order),
+	    'jQuery.fn.socrataTable: VIF configuration must include an "order" key whose is an Array.'
+	  );
+
+	  utils.assertEqual(
+	    vif.configuration.order.length,
+	    1
+	  );
+
+	  utils.assertHasProperties(
+	    vif.configuration.order[0],
+	    'ascending',
+	    'columnName'
+	  );
+
+	  var $element = $(this);
+
+	  var soqlDataProvider = new SoqlDataProvider(
+	    _.pick(vif, 'datasetUid', 'domain')
+	  );
+
+	  var metadataProvider = new MetadataProvider(
+	    _.pick(vif, 'datasetUid', 'domain')
+	  );
+
+	  var visualization = new Table($element, vif);
+	  var pager = new Pager($element, vif);
+
+	  // Holds all state regarding the table's visual presentation.
+	  // Do _NOT_ update this directly, use _setState() or _updateState().
+	  // This is to ensure all state changes are reflected in the UI.
+	  var _renderState = {
+	    // Is the table busy?
+	    busy: false,
+
+	    // Holds result of last successful data fetch, plus
+	    // the metadata regarding that request (start index,
+	    // order, etc).
+	    // {
+	    //   rows: <data from SoqlDataProvider>,
+	    //   columns: <data from SoqlDataProvider>,
+	    //   datasetMetadata: <data from SoqlDataProvider>,
+	    //   startIndex: index of first row (offset),
+	    //   pageSize: number of items in page (not necessarily in rows[]).
+	    //   order: {
+	    //     [ // only one element supported.
+	    //       {
+	    //         columnName: <name of column to sort by>,
+	    //         ascending: boolean
+	    //       }
+	    //     ]
+	    //   }
+	    // }
+	    fetchedData: null,
+
+	    datasetRowCount: null
+	  };
+
+	  _attachEvents();
+
+	  $element.addClass('socrata-paginated-table');
+
+	  soqlDataProvider.getRowCount().then(function(rowCount) {
+	    _updateState({ datasetRowCount: rowCount });
+	  });
+
+	  _render();
+
+	  _setDataQuery(
+	    0, // Offset
+	    _computePageSize(),
+	    _.get(vif, 'configuration.order')
+	  ).then(function() {
+	    visualization.freezeColumnWidthsAndRender();
+	  });
+
+	  /**
+	   * Configuration
+	   */
+
+	  function _getRenderOptions() {
+	    return _.get(vif, 'configuration.order');
+	  }
+
+	  /**
+	   * Event Handling
+	   */
+	  function _attachEvents() {
+	    $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
+	      visualization.destroy();
+	      _detachEvents();
+	    });
+
+	    $element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', _handleColumnClicked);
+	    $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleColumnFlyout);
+	    $element.on('SOCRATA_VISUALIZATION_CELL_FLYOUT', _handleCellFlyout);
+	    $element.on('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
+	    $element.on('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
+	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
+	  }
+
+	  function _detachEvents() {
+	    $element.off('SOCRATA_VISUALIZATION_COLUMN_CLICKED', _handleColumnClicked);
+	    $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleColumnFlyout);
+	    $element.off('SOCRATA_VISUALIZATION_CELL_FLYOUT', _handleCellFlyout);
+	    $element.off('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
+	    $element.off('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
+	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
+	  }
+
+	  function _render() {
+	    if (_renderState.fetchedData) {
+	      visualization.render(
+	        _renderState.fetchedData,
+	        _renderState.fetchedData.order
+	      );
+
+	      pager.render({
+	        unit: vif.unit,
+	        startIndex: _renderState.fetchedData.startIndex,
+	        endIndex: _renderState.fetchedData.startIndex + _renderState.fetchedData.rows.length - 1,
+	        datasetRowCount: _renderState.datasetRowCount,
+	        disabled: _renderState.busy || !_.isFinite(_renderState.datasetRowCount)
+	      });
+
+	      $element.addClass('loaded');
+	    } else {
+	      // No fetched data. Render placeholders, so we can determine pager heights.
+	      $element.removeClass('loaded');
+	      pager.render({
+	        unit: vif.unit,
+	        startIndex: 0,
+	        endIndex: 0,
+	        datasetRowCount: 0,
+	        disabled: true
+	      });
+
+	    }
+	  }
+
+	  function _handleColumnClicked(event) {
+	    var alreadySorted;
+	    var newOrder;
+	    var columnName = event.originalEvent.detail;
+
+	    if (_renderState.busy) { return; }
+
+	    utils.assert(
+	      _.include(_renderState.fetchedData.columns, columnName),
+	      'column name not found to sort by: {0}'.format(columnName)
+	    );
+
+	    alreadySorted = _renderState.fetchedData.order[0].columnName === columnName;
+
+	    if (alreadySorted) {
+
+	      // Toggle sort direction;
+	      newOrder = _.cloneDeep(_renderState.fetchedData.order);
+	      newOrder[0].ascending = !newOrder[0].ascending;
+	    } else {
+	      newOrder = [{
+	        columnName: columnName,
+	        ascending: true
+	      }]
+	    }
+
+	    _setDataQuery(
+	      0,
+	      _renderState.fetchedData.pageSize,
+	      newOrder
+	    );
+	  }
+
+	  function _handleColumnFlyout(event) {
+	    var payload = event.originalEvent.detail;
+
+	    $element[0].dispatchEvent(
+	      new window.CustomEvent(
+	        'SOCRATA_VISUALIZATION_TABLE_FLYOUT',
+	        {
+	          detail: payload,
+	          bubbles: true
+	        }
+	      )
+	    );
+	  }
+
+	  function _handleCellFlyout(event) {
+	    var payload = event.originalEvent.detail;
+
+	    $element[0].dispatchEvent(
+	      new window.CustomEvent(
+	        'SOCRATA_VISUALIZATION_TABLE_FLYOUT',
+	        {
+	          detail: payload,
+	          bubbles: true
+	        }
+	      )
+	    );
+	  }
+
+	  function _handleNext() {
+	    _setDataQuery(
+	      _renderState.fetchedData.startIndex + _renderState.fetchedData.pageSize,
+	      _renderState.fetchedData.pageSize, //TODO get from size
+	      _renderState.fetchedData.order
+	    );
+	  }
+	  function _handlePrevious() {
+	    _setDataQuery(
+	      Math.max(0, _renderState.fetchedData.startIndex - _renderState.fetchedData.pageSize),
+	      _renderState.fetchedData.pageSize, //TODO get from size
+	      _renderState.fetchedData.order
+	    );
+	  }
+
+	  function _handleSizeChange() {
+	    var pageSize = _computePageSize();
+	    var oldPageSize = _.get(_renderState, 'fetchedData.pageSize');
+	    // Canceling inflight requests is hard.
+	    // If we're currently fetching data, ignore the size change.
+	    // The size will be rechecked once the current request
+	    // is complete.
+	    if (!_renderState.busy && oldPageSize !== pageSize) {
+	      _setDataQuery(
+	        _renderState.fetchedData.startIndex,
+	        pageSize,
+	        _renderState.fetchedData.order
+	      );
+	    }
+	  }
+
+	  function _computePageSize() {
+	    var overallHeight = $element.height();
+	    var pagerHeight = $element.find('.socrata-pager').outerHeight();
+	    var heightRemaining = overallHeight - pagerHeight;
+	    return visualization.howManyRowsCanFitInHeight(heightRemaining);
+	  }
+
+	  /**
+	   * Data Requests
+	   */
+	  function _setDataQuery(startIndex, pageSize, order) {
+	    utils.assert(order.length === 1, 'order parameter must be an array with exactly one element.');
+
+	    var query = '$order=`{0}`+{1}&$limit={2}&$offset={3}'.format(
+	      order[0].columnName,
+	      (order[0].ascending ? 'ASC' : 'DESC'),
+	      pageSize,
+	      startIndex
+	    );
+
+	    if (_renderState.busy) {
+	      throw new Error('Called _makeDataRequest while a request already in progress - not allowed.');
+	    }
+
+	    _updateState({ busy: true });
+
+	    return Promise.all([
+	        soqlDataProvider.getRows(query),
+	        metadataProvider.getDatasetMetadata()
+	      ]).then(function(resolutions) {
+	        var soqlData = resolutions[0];
+	        var datasetMetadata = resolutions[1];
+	        soqlData.rows.length = pageSize; // Pad/trim row count to fit display.
+	        _updateState({
+	          fetchedData: {
+	            rows: soqlData.rows,
+	            columns: _removeUndisplayableColumns(soqlData.columns, datasetMetadata),
+	            datasetMetadata: datasetMetadata,
+	            startIndex: startIndex,
+	            pageSize: pageSize,
+	            order: order
+	          },
+	          busy: false
+	        });
+	      }).catch(function(error) {
+	        _updateState({ busy: false });
+	        throw error;
+	      }
+	    );
+	  }
+
+	  function _removeUndisplayableColumns(columns, datasetMetadata) {
+	    return _.filter(columns, function(columnName) {
+	      var column = _.find(datasetMetadata.columns, { fieldName: columnName });
+	      /* TODO
+	        !column.isSubcolumn
+	      */
+	      return columnName.indexOf(':') === -1;
+	    });
+	  }
+
+	  // Updates only specified UI state.
+	  function _updateState(newPartialState) {
+	    _setState(_.extend(
+	      {},
+	      _renderState,
+	      newPartialState
+	    ));
+	  }
+
+	  // Replaces entire UI state.
+	  function _setState(newState) {
+	    var becameIdle;
+	    if (!_.isEqual(_renderState, newState)) {
+	      becameIdle = !newState.busy && _renderState.busy;
+	      _renderState = newState;
+	      if (becameIdle) {
+	        _handleSizeChange();
+	      }
+	      _render();
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
+	var utils = __webpack_require__(3);
+	var moment = __webpack_require__(15);
+	var TimelineChart = __webpack_require__(16);
+	var SoqlDataProvider = __webpack_require__(26);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 	var DATE_INDEX = 0;
@@ -27241,12 +28306,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = $.fn.socrataTimelineChart;
 
-
-/***/ },
-/* 41 */
-/***/ function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_41__;
 
 /***/ }
 /******/ ])

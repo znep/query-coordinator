@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: ColumnChart.js</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <link rel="stylesheet" media="all" href="../node_modules/socrata-styleguide/dist/css/styleguide.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+        margin: 0;
+      }
+
+      #table-1 {
+        height: 100vh;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="table-1"></div>
+  </body>
+
+  <!-- Include external dependencies -->
+  <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
+  <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="../bower_components/d3/d3.js"></script>
+  <script type="text/javascript" src="../bower_components/moment/moment.js"></script>
+  <script type="text/javascript" src="../bower_components/socrata-utils/dist/socrata.utils.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript">
+
+    var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+    var COLUMN_NAME = 'block';
+    var DATASET_UID = '6zsd-86xi';
+    var DOMAIN = 'data.cityofchicago.org';
+
+    var tableVIF = {
+      'aggregation': {
+        'columnName': null,
+        'function': 'count'
+      },
+      'configuration': {
+        'localization': {
+          'PREVIOUS': 'Previous',
+          'NEXT': 'Next',
+          'NO_ROWS': 'No {unitOther}',
+          'ONLY_ROW': 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
+          'MANY_ROWS': 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
+          'LATITUDE': 'Latitude',
+          'LONGITUDE': 'Longitude'
+        },
+        'order': [{
+          ascending: true,
+          columnName: COLUMN_NAME
+        }]
+      },
+      'createdAt': '2014-01-01T00:00:00',
+      'datasetUid': DATASET_UID,
+      'domain': DOMAIN,
+      'filters': [],
+      'format': {
+        'type': 'visualization_interchange_format',
+        'version': 1
+      },
+      'origin': {
+        'type': 'test_data',
+        'url': 'localhost'
+      },
+      'title': COLUMN_NAME,
+      'type': 'table',
+      'unit': {
+        'one': 'case',
+        'other': 'cases'
+      }
+    };
+
+    var $tableElement = $('#table-1');
+    $tableElement.socrataTable(tableVIF);
+
+    $(window).resize(function() {
+      $tableElement.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
+    });
+
+    $tableElement.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+      if (event.originalEvent.detail) {
+        flyoutRenderer.render(event.originalEvent.detail);
+      } else {
+        flyoutRenderer.clear();
+      }
+    });
+
+    /**
+     * Destroy the plugin.
+     *
+     * The plugin (and all internal modules) can be destroyed by triggering
+     * `destroy` on the element.
+     */
+    // $columnChart1Element.trigger('destroy');
+    // $columnChart2Element.trigger('destroy');
+  </script>
+</html>

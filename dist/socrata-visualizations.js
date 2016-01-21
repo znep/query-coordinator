@@ -27791,6 +27791,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  }
 
+	  function _getVif() {
+	    var newVif = _.cloneDeep(vif);
+	    _.set(
+	      newVif,
+	      'configuration.order',
+	      _.cloneDeep(
+	        _.get(_renderState, 'fetchedData.order', vif.configuration.order)
+	      )
+	    );
+
+	    return newVif;
+	  }
+
 	  // Updates only specified UI state.
 	  function _updateState(newPartialState) {
 	    _setState(_.extend(
@@ -27803,12 +27816,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // Replaces entire UI state.
 	  function _setState(newState) {
 	    var becameIdle;
+	    var changedOrder;
 	    if (!_.isEqual(_renderState, newState)) {
 	      becameIdle = !newState.busy && _renderState.busy;
+	      changedOrder = !_.isEqual(
+	          _.get(_renderState, 'fetchedData.order'),
+	          _.get(newState, 'fetchedData.order')
+	        );
+
 	      _renderState = newState;
+
 	      if (becameIdle) {
 	        _handleSizeChange();
 	      }
+
+	      if (changedOrder) {
+	        $element[0].dispatchEvent(
+	          new window.CustomEvent(
+	            'SOCRATA_VISUALIZATION_VIF_UPDATED',
+	            { detail: _getVif(), bubbles: true }
+	          )
+	        );
+	      }
+
 	      _render();
 	    }
 	  }

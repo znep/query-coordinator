@@ -6,7 +6,7 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  function _renderTemplate($element, componentData) {
+  function _renderTemplate($element, componentData, options) {
     var $componentContent = $('<div>', { class: 'component-content' });
 
     utils.assertHasProperty(componentData, 'type');
@@ -25,6 +25,33 @@
         }
       });
 
+    if (_.get(options, 'editMode')) {
+      $element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
+        var newVif = event.originalEvent.detail;
+        var blockId = utils.findClosestAttribute(this, 'data-block-id');
+        var componentIndex = parseInt(
+          utils.findClosestAttribute(this, 'data-component-index'),
+          10);
+        var newValue;
+
+        utils.assertIsOneOfTypes(blockId, 'string');
+        utils.assert(_.isFinite(componentIndex));
+
+        newValue = _.cloneDeep(componentData.value);
+        newValue.vif = newVif;
+
+        if (!_.isEqual(newValue, componentData.value)) {
+          storyteller.dispatcher.dispatch({
+            action: Actions.BLOCK_UPDATE_COMPONENT,
+            blockId: blockId,
+            componentIndex: componentIndex,
+            type: componentData.type,
+            value: newValue
+          });
+        }
+      });
+    }
+
     $element.append($componentContent);
   }
 
@@ -33,10 +60,20 @@
     var renderedVif = $element.attr('data-rendered-vif') || '{}';
     var vif;
 
+    // Today, socrata visualizations can't be updated by providing a new VIF
+    // (to use a new vif, the old vis must be destroyed first). VIF.configuration
+    // changes when the user changes the sort on the table. We don't want to
+    // blow away the table when that happens. So, ignore changes to configuration
+    // for now (until socrata visualizations can accept changing VIFs).
+    var propertiesOmittedForVifComparison = [ 'configuration' ];
+
     utils.assertHasProperty(componentData, 'value.vif');
     vif = componentData.value.vif;
 
-    if (!storyteller.vifsAreEquivalent(JSON.parse(renderedVif), vif)) {
+    if (!storyteller.vifsAreEquivalent(
+      _.omit(JSON.parse(renderedVif), propertiesOmittedForVifComparison),
+      _.omit(vif, propertiesOmittedForVifComparison))
+    ) {
 
       $element.attr('data-rendered-vif', JSON.stringify(vif));
 
@@ -72,7 +109,7 @@
     );
 
     if ($this.children().length === 0) {
-      _renderTemplate($this, componentData);
+      _renderTemplate($this, componentData, options);
     }
 
     _updateVisualization($this, componentData);

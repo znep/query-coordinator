@@ -177,9 +177,7 @@
         utils.assert(step, 'step must be provided');
 
         storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_RESUME_FROM_STEP,
-          blockId: storyteller.assetSelectorStore.getBlockId(),
-          componentIndex: storyteller.assetSelectorStore.getComponentIndex(),
+          action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
           step: step
         });
       });

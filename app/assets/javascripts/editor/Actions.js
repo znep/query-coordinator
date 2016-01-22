@@ -133,10 +133,9 @@
     //  - 'EMBED_CODE'
     ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED: 'ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED',
 
-    // Resume editing an existing asset from the given step.
-    // {string} blockId
-    // {number} componentIndex
-    ASSET_SELECTOR_RESUME_FROM_STEP: 'ASSET_SELECTOR_RESUME_FROM_STEP',
+    // In the current workflow, jump (usually back) to a specific step.
+    // {string} Step. One of AssetSelectorStore.WIZARD_STEP.
+    ASSET_SELECTOR_JUMP_TO_STEP: 'ASSET_SELECTOR_JUMP_TO_STEP',
 
     // No payload
     ASSET_SELECTOR_CLOSE: 'ASSET_SELECTOR_CLOSE',

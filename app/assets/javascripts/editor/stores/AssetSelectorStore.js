@@ -130,8 +130,8 @@
           _closeDialog();
           break;
 
-        case Actions.ASSET_SELECTOR_RESUME_FROM_STEP:
-          _resumeFromStep(payload);
+        case Actions.ASSET_SELECTOR_JUMP_TO_STEP:
+          _jumpToStep(payload);
           break;
       }
     });
@@ -214,6 +214,7 @@
 
     function _editExisting(payload) {
       var component;
+      var datasetUid;
 
       utils.assertHasProperties(payload, 'blockId', 'componentIndex');
 
@@ -222,22 +223,8 @@
         payload.componentIndex
       );
 
-      _resumeFromStep(_.extend({}, payload, { step: _stepForUpdate(component.type) }));
-    }
-
-    function _resumeFromStep(payload) {
-      var component;
-      var datasetUid;
-
-      utils.assertHasProperties(payload, 'blockId', 'componentIndex', 'step');
-
-      component = storyteller.storyStore.getBlockComponentAtIndex(
-        payload.blockId,
-        payload.componentIndex
-      );
-
       _state = {
-        step: payload.step,
+        step: _stepForUpdate(component.type),
         blockId: payload.blockId,
         componentIndex: payload.componentIndex,
         componentType: component.type,
@@ -246,9 +233,20 @@
       };
 
       datasetUid = _.get(component, 'value.dataset.datasetUid');
+
       if (datasetUid) {
         _setVisualizationDataset(datasetUid); // Fetch additional data needed for UI.
       } else {
+        self._emitChange();
+      }
+    }
+
+    function _jumpToStep(payload) {
+      utils.assertHasProperties(payload, 'step');
+      utils.assertHasProperty(WIZARD_STEP, payload.step);
+
+      if (_state.step !== payload.step) {
+        _state.step = payload.step;
         self._emitChange();
       }
     }
@@ -368,12 +366,13 @@
       // (like rowLabel), you'll need to fetch the OBE view separately.
       $.get('/api/views/{0}.json'.format(uid)).then(
         function(data) {
-          _state.componentProperties = {
+          _state.componentProperties = _state.componentProperties || {};
+          _.extend(_state.componentProperties, {
             dataset: {
-              domain: window.location.host,
+              domain: window.location.hostname,
               datasetUid: uid
             }
-          };
+          });
 
           // Not going into _state.componentProperties, as we don't want this blob
           // to end up stored in the story component data.

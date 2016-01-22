@@ -1,0 +1,5 @@
+<%- if site_chrome_should_show_footer?(@site_chrome.content) %>
+  <div class="user-story-footer">
+    <%== @site_chrome.content['footerText'] %>
+  </div>
+<%- end %>

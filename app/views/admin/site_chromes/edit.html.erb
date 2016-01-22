@@ -1,0 +1,118 @@
+<% styles_field_name_prefix = 'site_chrome[styles]' -%>
+<% content_field_name_prefix = 'site_chrome[content]' -%>
+<%= form_for(@site_chrome, url: admin_site_chrome_path, method: :put) do |form| %>
+  <header>
+    <div class="heading">
+      <h2>Customize the header and footer for the stories on this domain</h2>
+    </div>
+    <div class="actions">
+      <%= link_to 'Cancel', '/admin', class: 'btn btn-link' %>
+      <%= form.submit 'Save', class: 'btn btn-primary' %>
+    </div>
+  </header>
+
+  <h4 class="border-below">Colors</h4>
+
+  <div class="form-section">
+    <div class="form-fields form-fields-label-above">
+      <div class="form-group">
+        <% field_name = "#{styles_field_name_prefix}[$bg-color]" -%>
+        <%= label_tag field_name, "Background Color" %>
+        <%= text_field_tag field_name, @site_chrome.styles['$bg-color'], class: 'text-input' %>
+      </div>
+      <div class="form-group">
+        <% field_name = "#{styles_field_name_prefix}[$font-color]" -%>
+        <%= label_tag field_name, "Font Color" %>
+        <%= text_field_tag field_name, @site_chrome.styles['$font-color'], class: 'text-input' %>
+      </div>
+    </div>
+  </div>
+
+  <h4 class="border-below">Logo</h4>
+
+  <div class="form-section">
+    <div class="form-fields form-fields-label-above">
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[friendlySiteName]" -%>
+        <%= label_tag field_name, "Domain Name" %>
+        <%= text_field_tag field_name, @site_chrome.content['friendlySiteName'], class: 'text-input' %>
+      </div>
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[logoUrl]" -%>
+        <%= label_tag field_name, "Logo URL" %>
+        <%= text_field_tag field_name, @site_chrome.content['logoUrl'], class: 'text-input' %>
+      </div>
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[logoAltText]" -%>
+        <%= label_tag field_name, "Logo Alt Text" %>
+        <%= text_field_tag field_name, @site_chrome.content['logoAltText'], class: 'text-input' %>
+      </div>
+    </div>
+
+    <div class="help">
+      <p>For instance, "City of Evergreen".</p>
+    </div>
+  </div>
+
+  <h4 class="border-below">Links</h4>
+
+  <div class="form-section">
+    <div class="form-fields form-fields-label-above">
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[link1Label]" -%>
+        <%= label_tag field_name, "Link 1 text" %>
+        <%= text_field_tag field_name, @site_chrome.content['link1Label'], class: 'text-input' %>
+      </div>
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[link1Url]" -%>
+        <%= label_tag field_name, "Link 1 URL" %>
+        <%= text_field_tag field_name, @site_chrome.content['link1Url'], class: 'text-input' %>
+      </div>
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[link2Label]" -%>
+        <%= label_tag field_name, "Link 2 text" %>
+        <%= text_field_tag field_name, @site_chrome.content['link2Label'], class: 'text-input' %>
+      </div>
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[link2Url]" -%>
+        <%= label_tag field_name, "Link 2 URL" %>
+        <%= text_field_tag field_name, @site_chrome.content['link2Url'], class: 'text-input' %>
+      </div>
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[link3Label]" -%>
+        <%= label_tag field_name, "Link 3 text" %>
+        <%= text_field_tag field_name, @site_chrome.content['link3Label'], class: 'text-input' %>
+      </div>
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[link3Url]" -%>
+        <%= label_tag field_name, "Link 3 URL" %>
+        <%= text_field_tag field_name, @site_chrome.content['link3Url'], class: 'text-input' %>
+      </div>
+    </div>
+
+    <div class="help">
+      <p>Include up to three links to display in your header.</p>
+    </div>
+  </div>
+
+  <h4 class="border-below">Footer</h4>
+
+  <div class="form-section">
+    <div class="form-fields form-fields-label-above">
+      <div class="form-group">
+        <% field_name = "#{content_field_name_prefix}[footerText]" -%>
+        <%= label_tag field_name, "Footer text" %>
+        <%= text_field_tag field_name, @site_chrome.content['footerText'], class: 'text-input' %>
+      </div>
+    </div>
+
+    <div class="help">
+      <p>Enter the text you'd like to show at the bottom of each story page, such as copyright messaging.</p>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+
+<% end -%>

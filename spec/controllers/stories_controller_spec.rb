@@ -8,6 +8,7 @@ RSpec.describe StoriesController, type: :controller do
     # stub custom themes
     allow(CoreServer).to receive(:story_themes).and_return([])
     allow(StoryAccessLogger).to receive(:log_story_view_access)
+    allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
   end
 
   describe '#show' do

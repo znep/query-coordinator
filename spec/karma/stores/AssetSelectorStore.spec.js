@@ -274,7 +274,7 @@ describe('AssetSelectorStore', function() {
             vif: payload.data,
             dataset: {
               datasetUid: 'test-test',
-              domain: window.location.host
+              domain: window.location.hostname
             },
             originalUid: 'orig-inal'
           }
@@ -306,7 +306,7 @@ describe('AssetSelectorStore', function() {
             vif: payload.data,
             dataset: {
               datasetUid: 'test-test',
-              domain: window.location.host
+              domain: window.location.hostname
             },
             originalUid: undefined
           }
@@ -466,7 +466,7 @@ describe('AssetSelectorStore', function() {
             visualization: payload.data,
             dataset: {
               datasetUid: 'test-test',
-              domain: window.location.host
+              domain: window.location.hostname
             },
             originalUid: 'orig-inal'
           }
@@ -618,7 +618,7 @@ describe('AssetSelectorStore', function() {
       });
     });
 
-    describe('Editing an existing', function() {
+    describe('non-linear workflows', function() {
       var blockIdBeingEdited;
       function editComponent(blockId) {
         blockIdBeingEdited = blockId;
@@ -626,6 +626,16 @@ describe('AssetSelectorStore', function() {
           action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
           blockId: blockId,
           componentIndex: 0
+        });
+        server.respond([200, {}, '{}']);
+      }
+
+      function jumpToStep(step) {
+        beforeEach(function() {
+          storyteller.dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+            step: step
+          });
         });
       }
 
@@ -635,7 +645,7 @@ describe('AssetSelectorStore', function() {
         });
       }
 
-      function verifyComponentDataMatches() {
+      function verifyComponentDataInAssetSelectorStoreMatchesStoryStore() {
         it('should copy componentValue into assetSelectorStore', function() {
           assert.deepEqual(
             storyteller.assetSelectorStore.getComponentValue(),
@@ -662,28 +672,78 @@ describe('AssetSelectorStore', function() {
         });
       }
 
-      describe('image', function() {
-        beforeEach(function() { editComponent(standardMocks.imageBlockId); });
-        verifyStepIs('SELECT_IMAGE_TO_UPLOAD');
-        verifyComponentDataMatches();
-      });
 
-      describe('socrata.visualization.classic', function() {
-        beforeEach(function() { editComponent(standardMocks.classicVizBlockId); });
-        verifyStepIs('CONFIGURE_VISUALIZATION');
-        verifyComponentDataMatches();
-      });
+      describe('Editing an existing', function() {
+        describe('image', function() {
+          beforeEach(function() { editComponent(standardMocks.imageBlockId); });
+          verifyStepIs('SELECT_IMAGE_TO_UPLOAD');
+          verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
 
-      describe('socrata.visualization.columnChart', function() {
-        beforeEach(function() { editComponent(standardMocks.vifBlockId); });
-        verifyStepIs('CONFIGURE_VISUALIZATION');
-        verifyComponentDataMatches();
-      });
+          describe('then jump to SELECT_ASSET_PROVIDER', function() {
+            jumpToStep('SELECT_ASSET_PROVIDER');
+            verifyStepIs('SELECT_ASSET_PROVIDER');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+        });
 
-      describe('youtube.video', function() {
-        beforeEach(function() { editComponent(standardMocks.youtubeBlockId); });
-        verifyStepIs('ENTER_YOUTUBE_URL');
-        verifyComponentDataMatches();
+        describe('socrata.visualization.classic', function() {
+          beforeEach(function() { editComponent(standardMocks.classicVizBlockId); });
+          verifyStepIs('CONFIGURE_VISUALIZATION');
+          verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+
+          describe('then jump to SELECT_TABLE_OR_CHART', function() {
+            jumpToStep('SELECT_TABLE_OR_CHART');
+            verifyStepIs('SELECT_TABLE_OR_CHART');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+
+          describe('then jump to SELECT_DATASET_FOR_VISUALIZATION', function() {
+            jumpToStep('SELECT_DATASET_FOR_VISUALIZATION');
+            verifyStepIs('SELECT_DATASET_FOR_VISUALIZATION');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+
+          describe('then jump to an invalid step', function() {
+            it('should raise', function() {
+              assert.throws(function() {
+                storyteller.dispatcher.dispatch({
+                  action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+                  step: 'NOT_VALID_YO'
+                });
+              });
+            });
+          });
+        });
+
+        describe('socrata.visualization.columnChart', function() {
+          beforeEach(function() { editComponent(standardMocks.vifBlockId); });
+          verifyStepIs('CONFIGURE_VISUALIZATION');
+          verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+
+          describe('then jump to SELECT_TABLE_OR_CHART', function() {
+            jumpToStep('SELECT_TABLE_OR_CHART');
+            verifyStepIs('SELECT_TABLE_OR_CHART');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+
+          describe('then jump to SELECT_DATASET_FOR_VISUALIZATION', function() {
+            jumpToStep('SELECT_DATASET_FOR_VISUALIZATION');
+            verifyStepIs('SELECT_DATASET_FOR_VISUALIZATION');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+        });
+
+        describe('youtube.video', function() {
+          beforeEach(function() { editComponent(standardMocks.youtubeBlockId); });
+          verifyStepIs('ENTER_YOUTUBE_URL');
+          verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+
+          describe('then jump to SELECT_ASSET_PROVIDER', function() {
+            jumpToStep('SELECT_ASSET_PROVIDER');
+            verifyStepIs('SELECT_ASSET_PROVIDER');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+        });
       });
     });
 

@@ -2,6 +2,8 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
 
   'use strict';
 
+  var storyteller = window.socrata.storyteller;
+
   var $component;
 
   var validComponentData = {

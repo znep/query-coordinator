@@ -58,9 +58,9 @@ RSpec.describe Admin::SiteChromesController, type: :controller do
               'font-color' => '#012345'
             },
             'content' => {
-              'logo_url' => 'http://s3.bucket.com/images/001/logo.png',
-              'logo_alt_text' => 'Bob Loblaw\'s Law Blog',
-              'friendly_site_name' => 'Bob Loblaw\'s Law Blog'
+              'logoUrl' => 'http://s3.bucket.com/images/001/logo.png',
+              'logoAltText' => 'Bob Loblaw\'s Law Blog',
+              'friendlySiteName' => 'Bob Loblaw\'s Law Blog'
             },
             'updated_at' => '9827349872',
             'domain_cname' => 'hothamwater.com',
@@ -83,9 +83,9 @@ RSpec.describe Admin::SiteChromesController, type: :controller do
             '$font-color' => '#bar'
           },
           'content' => {
-            'logo_url' => 'http://bukk.it/effthis.gif',
-            'logo_alt_text' => 'Nuh uh',
-            'friendly_site_name' => 'We\'ve done the impossible, and that makes us mighty.'
+            'logoUrl' => 'http://bukk.it/effthis.gif',
+            'logoAltText' => 'Nuh uh',
+            'friendlySiteName' => 'We\'ve done the impossible, and that makes us mighty.'
           }
         }
       end

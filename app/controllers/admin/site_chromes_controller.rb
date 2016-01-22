@@ -24,9 +24,9 @@ class Admin::SiteChromesController < ApplicationController
     params.require(:site_chrome).permit(
       :styles => [ '$bg-color', '$font-color' ],
       :content => [
-        'logo_url', 'logo_alt_text', 'friendly_site_name',
-        'link_1_label', 'link_1_url', 'link_2_label', 'link_2_url', 'link_3_label', 'link_3_url',
-        'footer_text'
+        'logoUrl', 'logoAltText', 'friendlySiteName',
+        'link1Label', 'link1Url', 'link2Label', 'link2Url', 'link3Label', 'link3Url',
+        'footerText'
       ]
     ).tap do |whitelisted|
       whitelisted['domain_cname'] = request.host

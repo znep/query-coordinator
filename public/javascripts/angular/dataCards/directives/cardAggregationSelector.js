@@ -3,7 +3,7 @@ const angular = require('angular');
 /**
  * UI for configuring card-level aggregation.
  */
-function cardAggregationSelector(Constants, I18n, PluralizeService, rx) {
+function cardAggregationSelector(Constants, I18n, PluralizeService) {
   return {
     restrict: 'E',
     scope: {

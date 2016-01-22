@@ -1,5 +1,5 @@
 class User < Model
-  cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts
+  cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts, :csv_columns
   attr_accessor :session_token
 
   non_serializable :displayName
@@ -69,6 +69,12 @@ class User < Model
     dhash["profile_image"] = profile_image_path
 
     dhash.to_json(options)
+  end
+
+  def to_csv_row(options = nil)
+    User.csv_columns.keys.map { |column|
+      @data[column] 
+    }
   end
 
   def route_params
@@ -505,5 +511,12 @@ class User < Model
     ["OLDEST", "Oldest"],
     ["LAST_LOGIN", "Last Login Date"]
   ]
+
+  @@csv_columns = {
+    "id" => "UID",
+    "displayName" => "Display Name",
+    "email" => "Email Address",
+    "roleName" => "Role"
+  }
 
 end

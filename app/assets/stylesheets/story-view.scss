@@ -14,8 +14,8 @@
       top: 0;
       left: 0;
       height: $user-story-header-height;
-      color: #fff;
-      background-color: #3398DC;
+      color: $user-story-header-color;
+      background-color: $user-story-background-color;
       box-shadow: 0 3px 0 rgba(0,0,0,0.15);
       -webkit-transform: translateY(0);
       -moz-transform: translateY(0);

@@ -1,7 +1,6 @@
 $(document).on('ready', function() {
   'use strict';
 
-  var $userStory = $('.user-story');
   var socrata = window.socrata;
   var storyteller = socrata.storyteller;
 
@@ -116,7 +115,7 @@ $(document).on('ready', function() {
   // Init window size
   _applyWindowSizeClass();
 
-  if (isStoryPublished) {
+  if (window.isStoryPublished) {
     storyteller.analytics.sendMetric('domain', 'js-page-view', 1);
     storyteller.analytics.flushMetrics();
   }

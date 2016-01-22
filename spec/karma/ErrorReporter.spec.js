@@ -25,7 +25,7 @@ describe('ErrorReporter', function() {
   }
 
   beforeEach(function() {
-    storyteller.ErrorReporter();
+    new storyteller.ErrorReporter(); // eslint-disable-line no-new
   });
 
   describe('FILE_UPLOAD_ERROR', function() {

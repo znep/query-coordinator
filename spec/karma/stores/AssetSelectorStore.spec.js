@@ -62,7 +62,6 @@ describe('AssetSelectorStore', function() {
           assert.isUndefined(value);
         });
       });
-
     });
 
     describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action', function() {
@@ -98,10 +97,63 @@ describe('AssetSelectorStore', function() {
           assert.equal(storyteller.assetSelectorStore.getComponentIndex(), testComponentIndex);
         });
       });
-
     });
 
-    describe('after an `ASSET_SELECTOR_PROVIDER_CHOSEN` actino', function() {
+    describe('after an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action', function() {
+
+      var payloadUrl = 'https://validurl.com/image.png';
+      var payloadDocumentId = '12345';
+      var payloadAlt = 'So alt';
+
+      describe('.getComponentValue()', function() {
+        beforeEach(function() {
+          storyteller.dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+            provider: 'IMAGE'
+          });
+
+          storyteller.dispatcher.dispatch({
+            action: Actions.FILE_UPLOAD_DONE,
+            url: payloadUrl,
+            documentId: payloadDocumentId
+          });
+
+          storyteller.dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
+            altAttribute: payloadAlt
+          });
+        });
+
+        it('returns object with alt', function() {
+          assert.deepEqual(
+            storyteller.assetSelectorStore.getComponentValue(),
+            { documentId: payloadDocumentId, url: payloadUrl, alt: payloadAlt }
+          );
+        });
+      });
+
+      describe('with a bad provider', function() {
+        function badProvider() {
+          storyteller.dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+            provider: 'YOUTUBE'
+          });
+
+          storyteller.dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
+            altAttribute: payloadAlt
+          });
+        }
+
+        it('throws an error', function() {
+          assert.throws(function() {
+            badProvider();
+          });
+        });
+      });
+    });
+
+    describe('after an `ASSET_SELECTOR_PROVIDER_CHOSEN` action', function() {
       function withProvider(provider) {
         storyteller.dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -143,7 +195,6 @@ describe('AssetSelectorStore', function() {
           });
         });
       });
-
     });
 
     describe('after an `ASSET_SELECTOR_CLOSE` action', function() {
@@ -183,7 +234,6 @@ describe('AssetSelectorStore', function() {
           assert.equal(storyteller.assetSelectorStore.getComponentIndex(), null);
         });
       });
-
     });
 
     describe('after an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action', function() {
@@ -233,7 +283,6 @@ describe('AssetSelectorStore', function() {
           standardMocks.validStoryUid
         );
       });
-
     });
 
     describe('after an `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` action', function() {
@@ -475,7 +524,6 @@ describe('AssetSelectorStore', function() {
       });
     });
 
-
     describe('after a `FILE_UPLOAD_PROGRESS` action', function() {
 
       beforeEach(function() {
@@ -672,11 +720,10 @@ describe('AssetSelectorStore', function() {
         });
       }
 
-
       describe('Editing an existing', function() {
         describe('image', function() {
           beforeEach(function() { editComponent(standardMocks.imageBlockId); });
-          verifyStepIs('SELECT_IMAGE_TO_UPLOAD');
+          verifyStepIs('IMAGE_PREVIEW');
           verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
 
           describe('then jump to SELECT_ASSET_PROVIDER', function() {

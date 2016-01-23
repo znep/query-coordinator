@@ -63,6 +63,10 @@
           _editExisting(payload);
           break;
 
+        case Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE:
+          _updateImageAltAttribute(payload);
+          break;
+
         case Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL:
           _updateYoutubeUrl(payload);
           break;
@@ -180,7 +184,7 @@
      */
     function _stepForUpdate(type) {
       switch (type) {
-        case 'image': return WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
+        case 'image': return WIZARD_STEP.IMAGE_PREVIEW;
         case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
         case 'embeddedHtml': return WIZARD_STEP.ENTER_EMBED_CODE;
       }
@@ -210,7 +214,6 @@
 
       self._emitChange();
     }
-
 
     function _editExisting(payload) {
       var component;
@@ -451,6 +454,18 @@
 
       if (!_.isUndefined(payload.error.reason)) {
         _state.componentProperties.reason = payload.error.reason;
+      }
+
+      self._emitChange();
+    }
+
+    function _updateImageAltAttribute(payload) {
+      var altAttribute = payload.altAttribute;
+
+      if (_state.componentType === 'image') {
+        _state.componentProperties.alt = altAttribute;
+      } else {
+        throw new Error('Component type is {0}. Cannot update alt attribute.'.format(_state.componentType));
       }
 
       self._emitChange();

@@ -63,9 +63,14 @@ function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, rx) {
       $scope.name = '';
       $scope.description = '';
 
-      $scope.conditionallyShowPanel = function conditionallyShowPanel() {
-        if (!$saveAsButton.hasClass('disabled')) {
-          $scope.panelActive = !$scope.panelActive;
+      $scope.togglePanel = function togglePanel() {
+        $scope.panelActive = !$scope.panelActive;
+
+        // If opening panel, wait for it to appear, then focus name input.
+        if ($scope.panelActive) {
+          _.defer(function() {
+            element.find('#save-as-name').focus();
+          });
         }
       };
 

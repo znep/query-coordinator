@@ -22,4 +22,45 @@ describe AdminHelper do
     end
   end
 
+  describe '#select_for_role' do
+    let(:stories_enabled) { true }
+
+    before do
+      allow(User).
+        to receive(:roles_list).
+        and_return(['test_role', 'publisher_stories', 'editor_stories'])
+
+      feature_flag_mock = double('feature_flag_mock')
+
+      allow(FeatureFlags).
+        to receive(:derive).
+        and_return(feature_flag_mock)
+
+      allow(feature_flag_mock).
+        to receive(:stories_enabled).
+        and_return(stories_enabled)
+    end
+
+    describe 'when stories_enabled is true' do
+      it 'returns a <select> with Storyteller roles' do
+        select = helper.select_for_role 'id'
+
+        expect(select).to include('<option value="publisher_stories">')
+        expect(select).to include('<option value="editor_stories">')
+        expect(select).to include('test_role')
+      end
+    end
+
+    describe 'when stories_enabled is false' do
+      let(:stories_enabled) { false }
+
+      it 'returns a <select> with Storyteller roles disabled' do
+        select = helper.select_for_role 'id'
+
+        expect(select).to include('<option value="publisher_stories" disabled>')
+        expect(select).to include('<option value="editor_stories" disabled>')
+        expect(select).to include('test_role')
+      end
+    end
+  end
 end

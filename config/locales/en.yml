@@ -1794,6 +1794,8 @@ en:
           none: none
           publisher: publisher
           viewer: viewer
+          publisher_stories: publisher + perspectives
+          editor_stories: editor + perspectives
         search: Search
         search_for_users: Search for Users to Add
         search_results: Search Results for '%{term}'

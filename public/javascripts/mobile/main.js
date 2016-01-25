@@ -1,4 +1,4 @@
-(function(root) {
+(function() {
   'use strict';
 
   var DOMAIN = window.location.hostname;
@@ -6,25 +6,19 @@
   var PAGE_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
   var DATASET_UID;
   var cardsData;
-  var cardsMetaData = '';
+  var cardsMetaData;
 
   function getPageData() {
-    return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/page/' + PAGE_UID);
+    return $.get(window.location.protocol + '//' + DOMAIN + '/views/' + PAGE_UID);
   }
 
-  function getPageDataSet() {
-    return $.get(window.location.protocol + '//' + DOMAIN + '/metadata/v1/dataset/' + DATASET_UID);
-  }
-
-  function setupPage() { 
+  function setupPage() {
     getPageData().success(function(data) {
       document.title = data.name;
-      DATASET_UID = data.datasetId;
-      cardsData = data.cards;
-      getPageDataSet().success(function(data) {
-        cardsMetaData = data.columns;
-        renderCards(cardsData, cardsMetaData);
-      });
+      DATASET_UID = data.displayFormat.data_lens_page_metadata.datasetId;
+      cardsData = data.displayFormat.data_lens_page_metadata.cards;
+      cardsMetaData = data.columns;
+      renderCards(cardsData, cardsMetaData);
     });
   }
 
@@ -58,7 +52,7 @@
     $.each(cards, function(i, card) {
       var cardOptions = {
         id: '',
-        metaData: cardsMetaData[card.fieldName],
+        metaData: _.find(cardsMetaData, { fieldName: card.fieldName }),
         containerClass: ''
       };
 
@@ -73,7 +67,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.MobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
+          socrata.visualizations.mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
           break;
         case 'feature':
           cardOptions.id = 'feature-map';
@@ -85,7 +79,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.TestMobileFeatureMap(values, $cardContainer.find('#feature-map'));
+          socrata.visualizations.mobileFeatureMap(values, $cardContainer.find('#feature-map'));
           break;
         case 'column':
           cardOptions.id = 'column-chart';
@@ -96,22 +90,21 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.MobileColumnChart(values, $cardContainer.find('#column-chart'));
+          socrata.visualizations.mobileColumnChart(values, $cardContainer.find('#column-chart'));
           break;
         default:
           break;
       }
     });
-    socrata.MobileCardViewer();
+    socrata.mobileCardViewer();
   }
 
   $(setupPage);
 })(window);
 
-socrata.MobileCardViewer = function() {
+socrata.mobileCardViewer = function() {
   'use strict';
 
-  var $article = $('article');
   var $intro = $('.intro');
   var $all = $('.all');
   var description = $('.all').find('.desc').html();

@@ -1,5 +1,5 @@
-socrata.visualizations.MobileColumnChart = function(values, $target) {
-  var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();
+socrata.visualizations.mobileColumnChart = function(values, $target) {
+  'use strict';
 
   var NAME_INDEX = 0;
   var UNFILTERED_INDEX = 1;
@@ -9,7 +9,7 @@ socrata.visualizations.MobileColumnChart = function(values, $target) {
   var DATASET_UID = values.uid;
   var COLUMN_NAME = values.columnName;
   var columnChartVIF = {
-    'aggregation': {
+    aggregation: {
       'columnName': null,
       'function': 'count'
     },
@@ -50,7 +50,7 @@ socrata.visualizations.MobileColumnChart = function(values, $target) {
 
   var chartWrapper = $columnChartElement.find('.column-chart-wrapper');
   var labelWrapper = $('<div>', {
-    'class': 'labels mobile',
+    'class': 'labels mobile'
   });
 
   $columnChartElement.append(labelWrapper);
@@ -61,7 +61,7 @@ socrata.visualizations.MobileColumnChart = function(values, $target) {
     selectDatum
   );
 
-  chartWidth = $columnChartElement.find('.bar-group').length * 50;
+  var chartWidth = $columnChartElement.find('.bar-group').length * 50;
   $columnChartElement.addClass('responsive');
   $columnChartElement.find('.chart-scroll').width(chartWidth);
 
@@ -74,7 +74,7 @@ socrata.visualizations.MobileColumnChart = function(values, $target) {
       selected: d3.select(event.currentTarget).datum()[SELECTED_INDEX]
     };
     selectBar(event);
-  };
+  }
 
   function selectBar(event) {
     var barName = event.currentTarget.getAttribute('data-bar-name');
@@ -82,11 +82,11 @@ socrata.visualizations.MobileColumnChart = function(values, $target) {
     var labelUnit = columnChartVIF.unit.other;
 
     if ($columnChartElement.selectedData.filteredValue === 1) {
-      labelUnit = columnChartVIF.unit.one
+      labelUnit = columnChartVIF.unit.one;
     }
 
     if (filteredValue > 999) {
-      filteredValue = (filteredValue/1000).toFixed(1) + 'K';
+      filteredValue = (filteredValue / 1000).toFixed(1) + 'K';
     }
 
     chartWrapper.

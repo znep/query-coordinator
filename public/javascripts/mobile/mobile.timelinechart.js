@@ -1,7 +1,5 @@
-socrata.visualizations.MobileTimelineChart = function(values, $target) {
+socrata.visualizations.mobileTimelineChart = function(values, $target) {
   'use strict';
-
-  var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();
 
   var DOMAIN = values.domain;
   var DATASET_UID = values.uid;
@@ -72,7 +70,7 @@ socrata.visualizations.MobileTimelineChart = function(values, $target) {
       'class': 'title-wrapper',
       html:
       '<div class="labels mobile">' +
-      '<div class="arrow" style="left: ' + ((flyoutBounds.left-28) + (highlightedBarWidth/2)) + 'px"></div>' +
+      '<div class="arrow" style="left: ' + ((flyoutBounds.left - 28) + (highlightedBarWidth / 2)) + 'px"></div>' +
       '<h4 class="title pull-left">' + payload.data.title + '</h4>' +
       '<h4 class="value pull-right text-right">' + payload.data.unfilteredValue.split(' ')[0] +
       '<span> ' + payload.data.unfilteredValue.split(' ')[1] + '</span>' +

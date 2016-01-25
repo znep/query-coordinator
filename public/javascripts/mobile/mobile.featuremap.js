@@ -1,11 +1,12 @@
+/* global socrata, $ */
+
 socrata.visualizations.mobileFeatureMap = function(values, $target) {
-  var scrolling = false;
+  'use strict';
+
   var endScrolling;
 
-  $(window).on("scroll", function() {
-    scrolling = true;
+  $(window).on('scroll', function() {
     endScrolling = window.setTimeout(function() {
-      scrolling = false;
       window.clearTimeout(endScrolling);
     }, 100);
   });
@@ -43,7 +44,7 @@ socrata.visualizations.mobileFeatureMap = function(values, $target) {
         'tapTolerance': 15,
         'trackResize': true,
         'maxZoom': 300,
-        'zoomControl': false,
+        'zoomControl': false
       },
       // The localization values should be set by the application but are set to string literals
       // for the purposes of this example.
@@ -87,7 +88,7 @@ socrata.visualizations.mobileFeatureMap = function(values, $target) {
   var $featureMapElement = $target;
   $featureMapElement.socrataMobileFeatureMap(featureMap1VIF);
 
-  mapHeight = (60 * $(window).height()) / 100 // Map should be 60% of device height
+  var mapHeight = (60 * $(window).height()) / 100;// Map should be 60% of device height
   $featureMapElement.height(mapHeight);
 
   /**

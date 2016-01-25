@@ -21,7 +21,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       'address' => 'localhost',
       'port' => '6010'
     })
-    manager.stubs(:largest_time_span_in_days_being_used_in_columns).returns(1000)
     View.stubs(
       :find => stub(
         :category => OBE_CATEGORY_NAME,
@@ -44,8 +43,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('mjcb-9cxc')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
-      largestTimeSpanDays defaultDateTruncFunction permissions displayType moderationStatus shares
-      rights provenance ownerId
+      permissions displayType moderationStatus shares rights provenance ownerId
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -62,8 +60,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('mjcb-9cxc')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
-      largestTimeSpanDays defaultDateTruncFunction permissions displayType moderationStatus shares
-      rights provenance ownerId
+      permissions displayType moderationStatus shares rights provenance ownerId
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -125,6 +122,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_create_creates_data_lens_with_category_from_obe_dataset
+    manager.expects(:fetch_min_max_in_column).returns(
+      'min' => '1987-08-15T00:00:00.000',
+      'max' => '1987-08-15T00:00:00.000'
+    )
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns}
     )
@@ -147,6 +148,14 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns}
     )
+    manager.stubs(
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
+    )
+    columns = v1_dataset_metadata.fetch('columns')
+
     mock_nbe_dataset = stub(
       :migrations => stub_migrations,
       :category => NBE_CATEGORY_NAME
@@ -166,6 +175,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_create_ignores_provided_pageId_with_v2_page_metadata
     stub_feature_flags_with(:create_v2_data_lens, true)
+    PageMetadataManager.any_instance.expects(:fetch_min_max_in_column).returns(
+      'min' => '1987-08-15T00:00:00.000',
+      'max' => '1987-08-15T00:00:00.000'
+    )
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
     PageMetadataManager.any_instance.expects(:request_soda_fountain_secondary_index).with do |args|
       assert_equal('thw2-8btq', args)
@@ -209,6 +222,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     DataLensManager.any_instance.stubs(
       fetch: v2_page_metadata
     )
+    PageMetadataManager.any_instance.expects(:update_metadata_rollup_table).times(1).returns(nil)
     core_stub = mock
     core_stub.expects(:update_request).with do |url, payload|
       assert_equal('/views/mjcb-9cxc.json', url)
@@ -255,15 +269,18 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       ),
       column_field_name: 'fieldName',
       logical_datatype_name: 'fred',
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
     columns = v1_dataset_metadata.fetch('columns')
 
     cards = data_lens_page_metadata.fetch('cards')
 
-    expected_soql = 'select some_column, some_other_column, date_trunc_ymd(time_column_fine_granularity), ' <<
+    expected_soql = 'select some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
       'signed_magnitude_10(some_number_column), signed_magnitude_linear(some_other_number_column, 500), ' <<
-      'count(*) as value group by some_column, some_other_column, date_trunc_ymd(time_column_fine_granularity), ' <<
+      'count(*) as value group by some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
       'signed_magnitude_10(some_number_column), signed_magnitude_linear(some_other_number_column, 500)'
 
     soql = manager.build_rollup_soql(data_lens_page_metadata, columns, cards)
@@ -275,7 +292,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       dataset_metadata: { body: v1_dataset_metadata },
       column_field_name: 'fieldName',
       logical_datatype_name: 'fred',
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -291,7 +311,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       dataset_metadata: { body: v1_dataset_metadata },
       column_field_name: 'some_number_column',
       logical_datatype_name: 'fred',
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -305,13 +328,16 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_match(/sum\([^\)]+\) as value/, soql)
   end
 
-  #card has aggregation field
-  def test_build_rollup_soql_for_page_with_card_and_default_aggregation 
+  # card has aggregation field
+  def test_build_rollup_soql_for_page_with_card_and_default_aggregation
     manager.stubs(
-      dataset_metadata: {body: v1_dataset_metadata }, 
-      column_field_name: 'some_number_column', 
-      logical_datatype_name: 'fred', 
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      dataset_metadata: { body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -328,10 +354,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_build_rollup_soql_for_page_with_multiple_cards_aggregations
     manager.stubs(
-      dataset_metadata: {body: v1_dataset_metadata }, 
-      column_field_name: 'some_number_column', 
-      logical_datatype_name: 'fred', 
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      dataset_metadata: {body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -345,13 +374,16 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     soql = manager.build_rollup_soql(page_metadata, columns, cards)
     assert_match(/count\(column\), sum\(other_column\)/, soql)
   end
- 
-  def test_build_rollup_soql_for_page_with_multiple_cards_with_same_aggregation 
+
+  def test_build_rollup_soql_for_page_with_multiple_cards_with_same_aggregation
     manager.stubs(
-      dataset_metadata: {body: v1_dataset_metadata }, 
-      column_field_name: 'some_number_column', 
-      logical_datatype_name: 'fred', 
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      dataset_metadata: {body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -366,12 +398,15 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert(soql.scan(/count\(column\)/).length == 1)
   end
 
-  def test_build_rollup_soql_for_page_with_card_with_nil_aggregation_field 
+  def test_build_rollup_soql_for_page_with_card_with_nil_aggregation_field
     manager.stubs(
-      dataset_metadata: {body: v1_dataset_metadata }, 
-      column_field_name: 'some_number_column', 
-      logical_datatype_name: 'fred', 
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      dataset_metadata: {body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -388,10 +423,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_build_rollup_soql_for_page_with_card_with_nil_aggregation_function
     manager.stubs(
-      dataset_metadata: {body: v1_dataset_metadata }, 
-      column_field_name: 'some_number_column', 
-      logical_datatype_name: 'fred', 
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      dataset_metadata: {body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -408,10 +446,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_build_rollup_soql_for_page_with_multiple_nil_card_aggregation_metadata
     manager.stubs(
-      dataset_metadata: {body: v1_dataset_metadata }, 
-      column_field_name: 'some_number_column', 
-      logical_datatype_name: 'fred', 
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      dataset_metadata: {body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -430,10 +471,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_build_rollup_soql_for_page_with_nil_default_amount_field
     manager.stubs(
-      dataset_metadata: {body: v1_dataset_metadata }, 
-      column_field_name: 'some_number_column', 
-      logical_datatype_name: 'fred', 
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      dataset_metadata: {body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -452,10 +496,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_build_rollup_soql_page_with_nil_default_aggregation
     manager.stubs(
-      dataset_metadata: {body: v1_dataset_metadata }, 
-      column_field_name: 'some_number_column', 
-      logical_datatype_name: 'fred', 
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      dataset_metadata: {body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     columns = v1_dataset_metadata.fetch('columns')
@@ -472,51 +519,36 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_match(/count\(\*\) as value/, soql)
   end
 
-  def test_fills_in_missing_default_date_trunc_function
-    manager.stubs(
-      phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }),
-      date_trunc_function: nil,
-      column_field_name: 'fieldName',
-      logical_datatype_name: 'fred'
-    )
-    columns = v1_dataset_metadata.fetch('columns')
-
-    cards = data_lens_page_metadata.fetch('cards')
-
-    manager.build_rollup_soql(data_lens_page_metadata.except('defaultDateTruncFunction'), columns, cards)
-    assert_includes(data_lens_page_metadata, 'defaultDateTruncFunction')
+  def test_date_trunc_function_for_time_range_with_decades_of_days
+    assert_equal('date_trunc_y', manager.send(:date_trunc_function_for_time_range, (40 * 365.25).to_i))
   end
 
-  def test_date_trunc_function_with_decades_of_days
-    assert_equal('date_trunc_y', manager.send(:date_trunc_function, (40 * 365.25).to_i))
+  def test_date_trunc_function_for_time_range_with_exactly_20_years_of_days
+    assert_equal('date_trunc_ym', manager.send(:date_trunc_function_for_time_range, (20 * 365.25).to_i))
   end
 
-  def test_date_trunc_function_with_exactly_20_years_of_days
-    assert_equal('date_trunc_ym', manager.send(:date_trunc_function, (20 * 365.25).to_i))
+  def test_date_trunc_function_for_time_range_with_more_than_year_of_days_less_than_20
+    assert_equal('date_trunc_ym', manager.send(:date_trunc_function_for_time_range, (15 * 365.25).to_i))
   end
 
-  def test_date_trunc_function_with_more_than_year_of_days_less_than_20
-    assert_equal('date_trunc_ym', manager.send(:date_trunc_function, (15 * 365.25).to_i))
+  def test_date_trunc_function_for_time_range_with_between_1_and_2_years_of_days
+    assert_equal('date_trunc_ym', manager.send(:date_trunc_function_for_time_range, 517))
   end
 
-  def test_date_trunc_function_with_between_1_and_2_years_of_days
-    assert_equal('date_trunc_ym', manager.send(:date_trunc_function, 517))
+  def test_date_trunc_function_for_time_range_with_exactly_1_year_of_days
+    assert_equal('date_trunc_ymd', manager.send(:date_trunc_function_for_time_range, (1 * 365.25).to_i))
   end
 
-  def test_date_trunc_function_with_exactly_1_year_of_days
-    assert_equal('date_trunc_ymd', manager.send(:date_trunc_function, (1 * 365.25).to_i))
+  def test_date_trunc_function_for_time_range_with_less_than_a_year_of_days
+    assert_equal('date_trunc_ymd', manager.send(:date_trunc_function_for_time_range, 20))
   end
 
-  def test_date_trunc_function_with_less_than_a_year_of_days
-    assert_equal('date_trunc_ymd', manager.send(:date_trunc_function, 20))
+  def test_date_trunc_function_for_time_range_with_nil_days_returns_year_aggregation
+    assert_equal('date_trunc_y', manager.send(:date_trunc_function_for_time_range, nil))
   end
 
-  def test_date_trunc_function_with_nil_days_returns_year_aggregation
-    assert_equal('date_trunc_y', manager.send(:date_trunc_function, nil))
-  end
-
-  def test_date_trunc_function_with_0_days_returns_year_aggregation
-    assert_equal('date_trunc_y', manager.send(:date_trunc_function, 0))
+  def test_date_trunc_function_for_time_range_with_0_days_returns_year_aggregation
+    assert_equal('date_trunc_y', manager.send(:date_trunc_function_for_time_range, 0))
   end
 
   def test_dataset_metadata
@@ -527,34 +559,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     result = manager.send(:dataset_metadata, NBE_DATASET_ID, {})
     assert_equal(result.fetch(:body), v1_dataset_metadata)
-  end
-
-  def test_largest_time_span_in_days_being_used_in_columns
-    manager.stubs(column_field_name: 'fieldName', logical_datatype_name: 'fred')
-    fake_dataset_id = 'four-four'
-    manager.unstub(:largest_time_span_in_days_being_used_in_columns)
-    time_columns = v1_dataset_metadata.fetch('columns').select do |_, values|
-      values['physicalDatatype'] == 'floating_timestamp'
-    end
-    assert(time_columns.any?, 'Expected time columns in dataset')
-    manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_large_granularity').returns(300)
-    manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_fine_granularity').returns(3)
-    result = manager.send(:largest_time_span_in_days_being_used_in_columns, time_columns.keys, fake_dataset_id)
-    assert_equal(300, result)
-  end
-
-  def test_largest_time_span_in_days_being_used_in_columns_equal
-    manager.stubs(column_field_name: 'fieldName', logical_datatype_name: 'fred')
-    fake_dataset_id = 'four-four'
-    manager.unstub(:largest_time_span_in_days_being_used_in_columns)
-    time_columns = v1_dataset_metadata.fetch('columns').select do |_, values|
-      values['physicalDatatype'] == 'floating_timestamp'
-    end
-    assert(time_columns.any?, 'Expected time columns in dataset')
-    manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_large_granularity').returns(300)
-    manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_fine_granularity').returns(300)
-    result = manager.send(:largest_time_span_in_days_being_used_in_columns, time_columns.keys, fake_dataset_id)
-    assert_equal(300, result)
   end
 
   def test_time_range_in_column_dates_equal
@@ -631,25 +635,14 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.send(:fetch_min_max_in_column, 'dead-beef', 'human')
   end
 
-  def test_update_date_trunc_function
-    manager.stubs(
-      largest_time_span_in_days_being_used_in_columns: 12345678,
-      date_trunc_function: 'my_date_trunc_func',
-      columns_to_roll_up_by_date_trunc: [],
-      column_field_name: 'fieldName',
-      logical_datatype_name: 'fred'
-    )
-    page_metadata = {}
-    manager.send(:update_date_trunc_function, page_metadata, [], [], {})
-    assert_equal(12345678, page_metadata['largestTimeSpanDays'])
-    assert_equal('my_date_trunc_func', page_metadata['defaultDateTruncFunction'])
-  end
-
   def test_no_dataset_copy_when_feature_flag_not_set
     APP_CONFIG.secondary_group_identifier = false
 
     manager.stubs(
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     PageMetadataManager.any_instance.expects(:update_rollup_table)
@@ -667,7 +660,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     APP_CONFIG.secondary_group_identifier = ''
 
     manager.stubs(
-      fetch_min_max_in_column: { min: 0, max: 0 }
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
     )
 
     PageMetadataManager.any_instance.expects(:update_rollup_table)

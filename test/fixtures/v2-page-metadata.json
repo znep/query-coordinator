@@ -23,7 +23,6 @@
   "columns" : [ ],
   "displayFormat" : {
     "data_lens_page_metadata" : {
-      "defaultDateTruncFunction" : "date_trunc_ymd",
       "description" : "My page has a fun description",
       "pageId" : "mjcb-9cxc",
       "datasetId" : "thw2-8btq",

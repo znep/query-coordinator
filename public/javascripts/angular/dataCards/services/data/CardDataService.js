@@ -271,8 +271,7 @@ function CardDataService(
       datasetId,
       whereClauseFragment,
       precision,
-      aggregationClauseData,
-      soqlMetadata
+      aggregationClauseData
     ) {
       $window.socrata.utils.assert(_.isString(fieldName), 'fieldName should be a string');
       $window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
@@ -297,9 +296,6 @@ function CardDataService(
 
       var aggregationClause = buildAggregationClause(aggregationClauseData);
       var dateTruncFunction = `date_trunc_${dateTrunc}`;
-      if (_.isObject(soqlMetadata)) {
-        soqlMetadata.dateTruncFunctionUsed = dateTruncFunction;
-      }
 
       fieldName = SoqlHelpers.formatFieldName(fieldName);
 

@@ -805,19 +805,6 @@ describe('CardDataService', function() {
       assertReject(response, done);
       $httpBackend.flush();
     });
-
-    it('should set dateTruncFunctionUsed on soqlMetadata', function(done) {
-      var fakeData = [];
-      var ourSoqlMetadata = { dateTruncFunctionUsed: null };
-      var response = CardDataService.getTimelineData('fakeTimestampColumn', fake4x4, '', 'DAY', countAggregation, ourSoqlMetadata)
-
-      fakeDataRequestHandler.respond(fakeData);
-      response.then(function() {
-        expect(ourSoqlMetadata.dateTruncFunctionUsed).to.equal('date_trunc_ymd');
-        done();
-      });
-      $httpBackend.flush();
-    });
   });
 
   describe('getRowCount', function() {

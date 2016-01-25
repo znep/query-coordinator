@@ -41,10 +41,8 @@
         "fieldName": "_3_am"
       }
     ],
-    "defaultDateTruncFunction": null,
     "description": "A description to test this shiz",
     "displayType": "data_lens_chart",
-    "largestTimeSpanDays": null,
     "name": "Something Something Bikes",
     "pageId": "6aev-i3rm",
     "permissions": {},

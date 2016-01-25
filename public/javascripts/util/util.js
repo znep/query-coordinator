@@ -303,6 +303,12 @@ $.unescapeObject = function(obj)
 
 $.htmlStrip = function(text)
 {
+    // NOTE: This regex is an imperfect filter:
+    //
+    //  <img src="foo" alt="2 > 1">
+    //
+    // I would like to replace this with DOMPurify, but its sanitize method will also
+    // perform HTML escaping, which is not part of the current contract for this method.
     try
     { return text.replace(/<[^>]*>/g, ''); }
     catch (ex)

@@ -266,17 +266,20 @@ $(function() {
 
   function toggleBrowse2MobileFacetsSlideout() {
     var $facetPaneSection = $('.browse2-facets-pane, .browse2-mobile-facets-filter-button');
-    // Hide other containing elements on page when mobile facet section is shown
-    var $otherContainers = $('.browse2-search, .browse2-mobile-filter, .browse2-results-pane');
+    // Slide out other main elements on page when the mobile facet section slides in
+    var $mainPageElements = $(
+      ['.browse2-search', '.browse2-mobile-filter', '.browse2-results-pane', '#siteHeader',
+        '#siteFooter'].join(', ')
+    );
 
     var action = 'slide';
     var time = 200;
     if ($facetPaneSection.is(':visible')) {
-      $otherContainers.show(action, { direction: 'right' }, time);
+      $mainPageElements.show(action, { direction: 'right' }, time);
       $facetPaneSection.hide(action, { direction: 'left' }, time);
     } else {
       $facetPaneSection.show(action, { direction: 'left' }, time);
-      $otherContainers.hide(action, { direction: 'right' }, time);
+      $mainPageElements.hide(action, { direction: 'right' }, time);
     }
   }
 

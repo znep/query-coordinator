@@ -405,6 +405,18 @@ describe('Customize card dialog', function() {
           expect(dialog.element.find('card-aggregation-selector')).to.not.exist;
         });
 
+        it('should not show cardAggregationSelector when card type is blacklisted', function() {
+          var card = {
+            fieldName: 'search',
+            cardSize: 2,
+            cardType: 'search',
+            expanded: false
+          }
+          var dialog = createDialog({card: card});
+
+          expect(dialog.element.find('card-aggregation-selector')).to.not.exist;
+        });
+
         it('should show cardAggregationSelector if feature flag is enabled', function() {
           var dialog = createDialog();
 

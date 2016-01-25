@@ -49,24 +49,6 @@ class Domain < Model
     @@all_domains
   end
 
-  def protocol
-    self.httpsEnforced ? 'https' : 'http'
-  end
-
-  def port
-    if self.httpsEnforced
-      port = Rails.env.development? ? APP_CONFIG.ssl_port : 443
-    else
-      port = Rails.env.development? ? APP_CONFIG.http_port : 80
-    end
-
-    if (port == 80 || port == 443)
-      ''
-    else
-      ":#{port}"
-    end
-  end
-
   def configurations(type)
     if @configs.nil?
       @configs = Hash.new

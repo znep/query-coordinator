@@ -17,6 +17,10 @@ describe('Dataset model', function() {
       user: []
     }
   };
+  var minimalMigrationMetadata = {
+    nbeId: 'four-four',
+    obeId: 'asdf-fdsa'
+  };
 
   beforeEach(angular.mock.module('dataCards'));
 
@@ -25,7 +29,7 @@ describe('Dataset model', function() {
   }));
 
   it('should correctly deserialize serialized dataset metadata passed into the constructor', function() {
-    var instance = new Dataset(minimalDatasetMetadata);
+    var instance = new Dataset(minimalDatasetMetadata, minimalMigrationMetadata);
     expect(instance.id).to.equal(minimalDatasetMetadata.id);
   });
 
@@ -49,12 +53,12 @@ describe('Dataset model', function() {
     };
 
     expect(function() {
-      var instance = new Dataset(minimalV0Blob);
+      var instance = new Dataset(minimalV0Blob, minimalMigrationMetadata);
     }).to.throw();
   });
 
   it('should eventually return a value from an arbitrarily-chosen property (rowDisplayUnit)', function(done) {
-    var instance = new Dataset(minimalDatasetMetadata);
+    var instance = new Dataset(minimalDatasetMetadata, minimalMigrationMetadata);
     instance.observe('rowDisplayUnit').subscribe(function(val) {
       if (val) {
         expect(val).to.equal(minimalDatasetMetadata.rowDisplayUnit);
@@ -64,13 +68,18 @@ describe('Dataset model', function() {
   });
 
   it('should eventually return a page from the pages property', function(done) {
-    var instance = new Dataset(minimalDatasetMetadata);
+    var instance = new Dataset(minimalDatasetMetadata, minimalMigrationMetadata);
     instance.observe('pages').subscribe(function(pagesBySource) {
       if (!_.isEmpty(pagesBySource)) {
         expect(pagesBySource.publisher[0]).to.equal(pageForDataset);
         done();
       }
     });
+  });
+
+  it('should have an undefined obeId property if migrationMetadata is not available', function() {
+    var instance = new Dataset(minimalDatasetMetadata);
+    expect(instance.obeId).to.be.undefined;
   });
 
   describe('column metadata', function() {
@@ -115,7 +124,7 @@ describe('Dataset model', function() {
       };
 
       var serializedBlob = $.extend({}, minimalDatasetMetadata, { "columns": fakeColumns });
-      var instance = new Dataset(serializedBlob);
+      var instance = new Dataset(serializedBlob, minimalMigrationMetadata);
 
       instance.observe('columns').subscribe(function(columns) {
         if (!_.isEmpty(columns)) {
@@ -143,7 +152,7 @@ describe('Dataset model', function() {
       };
 
       var serializedBlob = $.extend({}, minimalDatasetMetadata, { "columns": fakeColumns });
-      expect(function() { var instance = new Dataset(serializedBlob); }).to.not.throw();
+      expect(function() { var instance = new Dataset(serializedBlob, minimalMigrationMetadata); }).to.not.throw();
     });
 
     it('should not throw a validation error with a column with numbers in its name that does not include a fred', function() {
@@ -158,7 +167,7 @@ describe('Dataset model', function() {
       };
 
       var serializedBlob = $.extend({}, minimalDatasetMetadata, { "columns": fakeColumns });
-      expect(function() { var instance = new Dataset(serializedBlob); }).to.not.throw();
+      expect(function() { var instance = new Dataset(serializedBlob, minimalMigrationMetadata); }).to.not.throw();
     });
 
     it('should throw a validation error with a computed column that does not include a computation strategy', function() {
@@ -174,7 +183,7 @@ describe('Dataset model', function() {
       };
 
       var serializedBlob = $.extend({}, minimalDatasetMetadata, { "columns": fakeColumns });
-      expect(function() { var instance = new Dataset(serializedBlob); }).to.throw();
+      expect(function() { var instance = new Dataset(serializedBlob, minimalMigrationMetadata); }).to.throw();
     });
 
     it('should include an injected reference back to the Dataset instance.', function(done) {
@@ -190,7 +199,7 @@ describe('Dataset model', function() {
       };
 
       var serializedBlob = $.extend({}, minimalDatasetMetadata, { "columns": fakeColumns });
-      var instance = new Dataset(serializedBlob);
+      var instance = new Dataset(serializedBlob, minimalMigrationMetadata);
 
       instance.observe('columns').subscribe(function(columns) {
         if (!_.isEmpty(columns)) {

@@ -1,6 +1,13 @@
 <div class="tool-panel upwards">
 
-  <button type="button" ng-class="{touched: panelActive}" class="save-as-button tool-panel-toggle-btn action-btn customize-bar-action-btn r-to-l" ng-click="conditionallyShowPanel()">{{(isEphemeral ? 'saveButton.save' : 'saveAs.text') | I18n}}</button>
+  <button
+    type="button"
+    class="save-as-button tool-panel-toggle-btn action-btn customize-bar-action-btn r-to-l"
+    ng-class="{ touched: panelActive }"
+    ng-click="togglePanel()"
+    >
+    {{(isEphemeral ? 'saveButton.save' : 'saveAs.text') | I18n}}
+  </button>
   <div id="save-as-panel" ng-class="{active: panelActive}" class="tool-panel-main">
     <div id="save-as-panel-inner-container" class="tool-panel-inner-container">
       <div class="tool-panel-hint"></div>
@@ -28,7 +35,8 @@
           {{::'saveAsPanel.visibilityDisabled' | I18n}}
         </p>
         <p class="visibility-alert" ng-if="datasetIsPrivate">
-          {{::'manageLensDialog.visibility.datasetIsPrivate' | I18n}}
+          <span class="icon-info"></span>
+          <span ng-bind-html="privateDatasetMessage"></span>
         </p>
       </div>
 

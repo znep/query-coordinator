@@ -119,17 +119,17 @@ describe('cardAggregationSelector', function() {
       var models = createModels();
       var element = createElement(models);
 
-      expect(element.find('option:not([value=null])')).to.have.length(3);
+      expect(element.find('option:not([value=null])')).to.have.length(4);
       expect(element.find('option[value="*"]')).to.exist;
       expect(element.find('option[value="column2_number"]')).to.exist;
       expect(element.find('option[value="column3_money"]')).to.exist;
     });
 
-    it('should not populate with column selected for card', function() {
+    it('should populate with column selected for card', function() {
       var models = createModels({ fieldName: 'column2_number' });
       var element = createElement(models);
 
-      expect(element.find('option[value="column2_number"]')).to.not.exist;
+      expect(element.find('option[value="column2_number"]')).to.exist;
     });
 
     it('should default to rows label', function() {

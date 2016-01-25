@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/saveAs.html');
 const angular = require('angular');
-function saveAs($window, WindowState, FlyoutService, ServerConfig, rx) {
+function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, rx) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -63,11 +63,25 @@ function saveAs($window, WindowState, FlyoutService, ServerConfig, rx) {
       $scope.name = '';
       $scope.description = '';
 
-      $scope.conditionallyShowPanel = function conditionallyShowPanel() {
-        if (!$saveAsButton.hasClass('disabled')) {
-          $scope.panelActive = !$scope.panelActive;
+      $scope.togglePanel = function togglePanel() {
+        $scope.panelActive = !$scope.panelActive;
+
+        // If opening panel, wait for it to appear, then focus name input.
+        if ($scope.panelActive) {
+          _.defer(function() {
+            element.find('#save-as-name').focus();
+          });
         }
       };
+
+      var privateDatasetMessage$ = $scope.page.observe('dataset').map(function(dataset) {
+        var url = I18n.a(`/d/${dataset.obeId}`);
+        return I18n.t(
+          'manageLensDialog.visibility.datasetIsPrivate',
+          `<a href="${url}">${dataset.getCurrentValue('name')}</a>`
+        );
+      });
+      $scope.$bindObservable('privateDatasetMessage', privateDatasetMessage$);
 
       $scope.save = function save() {
 

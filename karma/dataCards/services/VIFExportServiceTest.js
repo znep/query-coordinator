@@ -18,6 +18,11 @@ describe('VIFExportService', function() {
   var DateHelpers;
   var VIFExportService;
 
+  var minimalMigrationMetadata = {
+    nbeId: 'four-four',
+    obeId: 'asdf-fdsa'
+  };
+
   function generateCardMetadata(cardType, activeFilters, computedColumn) {
     var card = {
       'description': VALID_DESCRIPTION,
@@ -234,7 +239,7 @@ describe('VIFExportService', function() {
 
             delete datasetMetadataWithNoRowDisplayUnit.rowDisplayUnit;
 
-            var pageWithNoDatasetMetadataRowDisplayUnit = new Page(pageMetadata, new Dataset(datasetMetadataWithNoRowDisplayUnit));
+            var pageWithNoDatasetMetadataRowDisplayUnit = new Page(pageMetadata, new Dataset(datasetMetadataWithNoRowDisplayUnit, minimalMigrationMetadata));
 
             var cards = [
               new Card(pageWithNoDatasetMetadataRowDisplayUnit, VALID_COLUMN_NAME, generateCardMetadata('column', []))

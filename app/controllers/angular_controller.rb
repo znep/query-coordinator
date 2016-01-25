@@ -105,9 +105,9 @@ class AngularController < ActionController::Base
     end
 
     # Fetch migration info to get mapping from nbe to obe for skipLinks
-    @migration_info = {}
+    @migration_metadata = {}
     begin
-      @migration_info = View.migrations(@page_metadata[:datasetId])
+      @migration_metadata = View.migrations(@page_metadata[:datasetId])
     rescue CoreServer::CoreServerError => error
       return render_403 if error.error_code == 'permission_denied'
     rescue
@@ -169,6 +169,14 @@ class AngularController < ActionController::Base
       error_message = "Could not serve app: dataset_id is required."
       report_error(error_class, error_message)
       return render_500
+    end
+
+    @migration_metadata = {}
+    begin
+      @migration_metadata = View.migrations(dataset_id_param)
+    rescue CoreServer::CoreServerError => error
+      return render_403 if error.error_code == 'permission_denied'
+    rescue
     end
 
     # Fetch dataset metadata

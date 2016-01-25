@@ -232,6 +232,7 @@ class DatasetsController < ApplicationController
         # get rows
         @per_page = 50
         @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
+        @viewable_columns ||= []
       rescue CoreServer::CoreServerError => e
         case e.error_code
         when 'invalid_request'
@@ -633,7 +634,7 @@ protected
     unless params[:filter].nil?
       filters = []
       params[:filter].each do |column_id, filter|
-        next if filter[:operator].blank?
+        next if filter.try(:[], :operator).blank?
         filter_condition = {
           'type' => 'operator',
           'value' => filter[:operator],

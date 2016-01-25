@@ -108,7 +108,7 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
       params: ['id'],
       resolve: {
         page: function(Page, Dataset) {
-          return new Page(pageMetadata, new Dataset(datasetMetadata));
+          return new Page(pageMetadata, new Dataset(datasetMetadata, migrationMetadata));
         },
         domain: function(Domain) {
           return new Domain(domainMetadata);
@@ -127,7 +127,7 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
       params: ['pageId', 'fieldName'],
       resolve: {
         page: function(Page, Dataset) {
-          return new Page(pageMetadata, new Dataset(datasetMetadata));
+          return new Page(pageMetadata, new Dataset(datasetMetadata, migrationMetadata));
         }
       },
       views: {
@@ -142,7 +142,7 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
       params: ['defaultColumn', 'defaultVifType', 'defaultRelatedVisualizationUid'],
       resolve: {
         dataset: function(Dataset) {
-          return new Dataset(datasetMetadata);
+          return new Dataset(datasetMetadata, migrationMetadata);
         },
         defaultColumn: function($stateParams) {
           return $stateParams.defaultColumn;

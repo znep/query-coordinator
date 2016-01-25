@@ -3,7 +3,7 @@ const angular = require('angular');
 /**
  * UI for configuring card-level aggregation.
  */
-function cardAggregationSelector(Constants, I18n, PluralizeService, rx) {
+function cardAggregationSelector(Constants, I18n, PluralizeService) {
   return {
     restrict: 'E',
     scope: {
@@ -38,29 +38,24 @@ function cardAggregationSelector(Constants, I18n, PluralizeService, rx) {
       });
 
       // Find aggregation columns, make them human-readable
-      var aggregationColumns$ = rx.Observable.combineLatest(
-        columns$,
-        cardModel$,
-        function(columns, cardModel) {
-          var validColumnFilter = function(column, fieldName) {
-            var isValidType = column.physicalDatatype === 'number' || column.physicalDatatype === 'money';
-            var isReservedColumn = column.isSystemColumn || fieldName === '*' || _.contains(Constants.FIELD_NAMES_THAT_CANNOT_BE_AGGREGATED, fieldName);
-            var isSelf = fieldName === cardModel.fieldName;
+      var aggregationColumns$ = columns$.map(function(columns) {
+        var validColumnFilter = function(column, fieldName) {
+          var isValidType = column.physicalDatatype === 'number' || column.physicalDatatype === 'money';
+          var isReservedColumn = column.isSystemColumn || fieldName === '*' || _.contains(Constants.FIELD_NAMES_THAT_CANNOT_BE_AGGREGATED, fieldName);
 
-            return isValidType && !(isReservedColumn || isSelf);
-          };
+          return isValidType && !isReservedColumn;
+        };
 
-          return _.chain(columns).
-            pick(validColumnFilter).
-            map(function(column, fieldName) {
-              return {
-                id: fieldName,
-                label: column.name
-              };
-            }).
-            value();
-        }
-      );
+        return _.chain(columns).
+          pick(validColumnFilter).
+          map(function(column, fieldName) {
+            return {
+              id: fieldName,
+              label: column.name
+            };
+          }).
+          value();
+      });
 
       // Persist aggregation selection to model
       $scope.$observe('aggregationField').skip(1).subscribe(function(aggregationField) {

@@ -21,10 +21,15 @@ module DataLensHelper
   end
 
   def render_metadata
+    # this may not be needed for all routes,
+    # and the data lens code should gracefully handle its omission
+    @migration_metadata ||= {}
+
     javascript_tag(
       "var pageMetadata = #{json_escape(@page_metadata.to_json)};\n" \
       "var datasetMetadata = #{json_escape(@dataset_metadata.to_json)};\n" \
-      "var domainMetadata = #{json_escape(@domain_metadata.to_json)};"
+      "var domainMetadata = #{json_escape(@domain_metadata.to_json)};\n" \
+      "var migrationMetadata = #{json_escape(@migration_metadata.slice(:nbeId, :obeId).to_json)};"
     )
   end
 

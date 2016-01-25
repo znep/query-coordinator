@@ -5,6 +5,7 @@ describe('SaveAs', function() {
   var $window;
   var testHelpers;
   var Mockumentary;
+  var ServerConfig;
   var saveAsEventSubject;
 
   beforeEach(angular.mock.module('dataCards'));
@@ -14,12 +15,18 @@ describe('SaveAs', function() {
       '$window',
       'testHelpers',
       'Mockumentary',
-      function(_$window, _testHelpers, _Mockumentary) {
+      'ServerConfig',
+      function(_$window, _testHelpers, _Mockumentary, _ServerConfig) {
         $window = _$window;
         testHelpers = _testHelpers;
         Mockumentary = _Mockumentary;
+        ServerConfig = _ServerConfig;
       }
     ]);
+  });
+
+  beforeEach(function() {
+    ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
   });
 
   function createElement(html) {
@@ -55,17 +62,25 @@ describe('SaveAs', function() {
 
   describe('"Save As" button', function() {
     var elementTemplate = '<save-as has-changes="{0}" page="page"></save-as>';
-    it('should be enabled', function() {
-      var $saveAs = createElement(elementTemplate.format('true'));
-      var $saveAsButton = $saveAs.find('.tool-panel-toggle-btn');
-      expect($saveAsButton.hasClass('disabled')).to.be.false;
-    });
+
     it('should make the tool panel active when clicked', function() {
       var $saveAs = createElement(elementTemplate.format('true'));
       var $toolPanel = $saveAs.find('.tool-panel-main');
       expect($toolPanel.hasClass('active')).to.be.false;
       $saveAs.find('.tool-panel-toggle-btn').click();
       expect($toolPanel.hasClass('active')).to.be.true;
+    });
+
+    // https://github.com/ariya/phantomjs/issues/10427
+    xit('should focus the name input when clicked', function(done) {
+      var $saveAs = createElement(elementTemplate.format('true'));
+      var $toolPanel = $saveAs.find('.tool-panel-main');
+      expect($toolPanel.hasClass('active')).to.be.false;
+      $saveAs.find('.tool-panel-toggle-btn').click();
+      _.defer(function() {
+        expect($toolPanel.find('#save-as-name:focus')).to.exist;
+        done();
+      });
     });
   });
 

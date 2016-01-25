@@ -49,6 +49,20 @@ class BrowseControllerTest < ActionController::TestCase
     assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 1
   end
 
+  test 'it should render page meta content over https and not http' do
+    @request.env['HTTPS'] = 'on'
+    get :show
+    assert_select_quiet 'meta' do |elements|
+      elements.each do |element|
+        element.attributes.values.each do |value|
+          value.to_s.scan(/http.?:\/\//).each do |match|
+            assert_equal(match, 'https://')
+          end
+        end
+      end
+    end
+  end
+
   context 'when the data_lens_state feature flag is set to "pre_beta"' do
     setup do
       stub_feature_flags_with(:data_lens_transition_state, 'pre_beta')

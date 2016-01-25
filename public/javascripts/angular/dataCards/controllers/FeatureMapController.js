@@ -379,8 +379,16 @@ function FeatureMapController(
         } else {
           return defaultExtent;
         }
-      } else {
+      } else if (serverExtent) {
         return serverExtent;
+      } else {
+
+        // If the saved extent, default extent, and server extent are all missing,
+        // fall back to using the bounds of the world.
+        return LeafletHelpersService.buildExtents(L.latLngBounds(
+          L.latLng(85, -180),
+          L.latLng(-85, 180)
+        ));
       }
     });
 

@@ -354,7 +354,7 @@ class View < Model
     # grab viewable columns; this is inline rather than a separate method to
     # mitigate the need for another core server request
     viewable_columns =
-      meta_and_data['meta']['view']['columns'].
+      (meta_and_data.try(:[], 'meta').try(:[], 'view').try(:[], 'columns') || []).
         map{ |column_hash| Column.set_up_model(column_hash) }.
         each_with_index{ |column, i| column.data_position = i }.
         find_all{ |column| column.dataTypeName != 'meta_data' &&
@@ -877,14 +877,14 @@ class View < Model
   end
 
   def resource_url
-    "https://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{id}.json"
+    "//#{CurrentDomain.cname}/resource/#{id}.json"
   end
 
   def tweet
     # Stories do not use the `short_view_url` helper method, which hard-codes the `/d/` prefix.
     if self.story?
       story_domain = self.federated? ? self.domainCName : CurrentDomain.cname
-      I18n.t('controls.common.share.share_story_text', :name => name, :site => CurrentDomain.strings.company) + "https://#{story_domain}/stories/s/#{self.id}"
+      I18n.t('controls.common.share.share_story_text', :name => name, :site => CurrentDomain.strings.company) + "//#{story_domain}/stories/s/#{self.id}"
     else
       I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
     end

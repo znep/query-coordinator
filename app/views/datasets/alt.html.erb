@@ -201,11 +201,12 @@
     </ul>
 
     <% @view.comments.each do |comment| %>
+      <% user_name = comment.user.try(:displayName) || 'deleted user' %>
       <div class="comment">
         <h3><%= comment.title %></h3>
         <ul class="metaDataList">
           <li><em>Rating:</em> <%= comment.viewRating.nil? ? "No rating" : "#{comment.viewRating.to_i} out of 5" %></li>
-          <li><em>Author:</em> <%= comment.user.displayName %></li>
+          <li><em>Author:</em> <%= user_name %></li>
           <li><em>Posted:</em> <%= HumaneDateHelper.humane_date(comment.createdAt) %></li>
         </ul>
         <p><%= comment.body %></p>

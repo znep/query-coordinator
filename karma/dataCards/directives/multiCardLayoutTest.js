@@ -17,6 +17,7 @@ describe('multiCardLayout', function() {
   var testHelpers;
   var Constants;
   var I18n;
+  var ServerConfig;
 
   beforeEach(angular.mock.module('dataCards'));
   beforeEach(angular.mock.module('dataCards/theme/default.scss'));
@@ -67,6 +68,7 @@ describe('multiCardLayout', function() {
     $timeout = $injector.get('$timeout');
     Constants = $injector.get('Constants');
     I18n = $injector.get('I18n');
+    ServerConfig = $injector.get('ServerConfig');
 
     testHelpers.overrideTransitions(true);
     testHelpers.mockDirective(_$provide, 'aggregationChooser');
@@ -212,7 +214,7 @@ describe('multiCardLayout', function() {
       pageId: 'asdf-fdsa',
       primaryAmountField: null,
       primaryAggregation: null,
-      version: 3
+      version: 4
     };
     var pageModel = new Page(minimalPageMetadata, datasetModel);
     pageModel.set('dataset', datasetModel);
@@ -1343,6 +1345,8 @@ describe('multiCardLayout', function() {
       });
 
       it('should display a different message over the customize button of non-customizable cards', function() {
+        ServerConfig.override('enableDataLensCardLevelAggregation', false);
+
         var cl = createLayoutWithCards([
           {fieldName: '*'},
           {fieldName: 'timeline_column'}
@@ -1380,6 +1384,50 @@ describe('multiCardLayout', function() {
         expectFlyoutPosition(disabled.eq(0), flyout);
         expect(flyout.is(':visible')).to.be.true;
         expect(flyout.text()).to.equal(I18n.cardControls.customizeDisabled);
+      });
+
+      it('should display "Customize this card" over the customize button of non-customizable cards if card-level aggregation is enabled', function() {
+        ServerConfig.override('enableDataLensCardLevelAggregation', true);
+
+        var cl = createLayoutWithCards([
+          {fieldName: '*'},
+          {fieldName: 'timeline_column'}
+        ]);
+
+        cl.outerScope.interactive = true;
+        cl.outerScope.$apply();
+
+        var flyout = $('#uber-flyout');
+        expect(flyout.is(':visible')).to.be.false;
+
+        var visualizations = cl.element.find('.card-visualization').
+            children('timeline-chart').
+            closest('.card-spot');
+        expect(visualizations.length).to.equal(1);
+        expect(visualizations.find('.card-control.icon-settings:visible').length).to.equal(0);
+
+        var disabled = visualizations.find('.card-control.disabled:visible');
+
+        // Shouldn't show up unless you're in edit mode
+        expect(disabled.length).to.equal(0);
+
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        var customize = visualizations.find('.card-control.icon-settings:visible');
+        expect(customize.length).to.equal(visualizations.length);
+
+        mockWindowStateService.mousePosition$.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: customize[0]
+        });
+
+        expectFlyoutPosition(customize.eq(0), flyout);
+        expect(flyout.is(':visible')).to.be.true;
+        expect(flyout.text()).to.equal(I18n.cardControls.customizeEnabled);
+
+        ServerConfig.override('enableDataLensCardLevelAggregation', false);
       });
     });
   });

@@ -89,15 +89,24 @@ module BrowseActions
 
     topic_chop = get_facet_cutoff(:topic)
     all_tags = Tag.find({:method => "viewsTags"})
-    top_tags = all_tags.slice(0, topic_chop).map {|t| t.name}
-    if params[:tags].present? && !top_tags.include?(params[:tags])
-      top_tags.push(params[:tags])
+
+    # top_tags appear above the fold and contain the first "topic_chop" number of tags + the selected tag
+    top_tags = all_tags.slice(0, topic_chop).map do |tag|
+      {:text => tag.name, :value => tag.name, :count => tag.frequency}
     end
-    top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
+    if params[:tags].present? && top_tags.none? { |tag| tag[:text] == params[:tags] }
+      top_tags.push(
+        :text => params[:tags],
+        :value => params[:tags],
+        :count => all_tags.select{ |tag| tag.name == params[:tags] }.first.try(:frequency) || 0
+      )
+    end
+    top_tags.sort_by! { |tag| tag[:text] }
+
     tag_cloud = nil
     if all_tags.length > topic_chop
-      tag_cloud = all_tags.sort_by {|t| t.name}.
-        map {|t| {:text => t.name, :value => t.name, :count => t.frequency}}
+      tag_cloud = all_tags.sort_by(&:name).
+        map { |tag| { :text => tag.name, :value => tag.name, :count => tag.frequency } }
     end
 
     {

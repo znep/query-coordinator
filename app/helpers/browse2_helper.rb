@@ -47,4 +47,43 @@ module Browse2Helper
     end
   end
 
+  def get_clear_facet_options(opts)
+    clear_facet_options = []
+
+    if opts[:facets].any? { |facet| opts[:user_params][facet[:param]].present? }
+
+      opts[:facets].each do |facet_section|
+        facet_param = facet_section[:param]
+        facet_options = (facet_section[:options] + facet_section[:extra_options].to_a).
+          uniq { |option| [option[:value]] }
+
+        if opts[:user_params].include?(facet_param)
+          clear_facet_url_params = opts[:user_params].reject { |param| param == facet_param }
+
+          selected_facet_option = facet_options.each do |facet_option|
+
+            # First add any child options that match the current url params
+            selected_child_option = (facet_option[:children] || []).each do |child_facet_option|
+              if child_facet_option[:value] == opts[:user_params][facet_param]
+                clear_facet_options.push(
+                  :label => "#{facet_section[:title]} > #{child_facet_option[:text]}",
+                  :url => "#{opts[:base_url]}?#{clear_facet_url_params.to_param}"
+                )
+              end
+            end
+
+            # Then add the parent if it matches
+            if facet_option[:value] == opts[:user_params][facet_param]
+              clear_facet_options.push(
+                :label => "#{facet_section[:title]} > #{facet_option[:text]}",
+                :url => "#{opts[:base_url]}?#{clear_facet_url_params.to_param}"
+              )
+            end
+          end
+        end
+      end
+    end
+    clear_facet_options
+  end
+
 end

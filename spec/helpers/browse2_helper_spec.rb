@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'spec_helper'
 
 describe Browse2Helper do
 
@@ -180,6 +181,57 @@ describe Browse2Helper do
         :value => 'Beer',
         :text => 'Beer'
       })
+    end
+  end
+
+  describe '#get_clear_facet_options' do
+    before(:each) do
+      @opts = json_fixture('browse_options.json')
+    end
+
+    it 'returns an empty array if there are no active facet options' do
+      expect(helper.get_clear_facet_options(@opts)).to match_array([])
+    end
+
+    it 'returns an array containing an object with the active facet option label and a url that clears the option' do
+      opts = @opts.dup
+      opts[:user_params][:category] = 'fun'
+      result = helper.get_clear_facet_options(opts)
+      expect(result).to match_array([
+        {
+          :label => 'Categories > fun',
+          :url => '/browse?'
+        }
+      ])
+    end
+
+    it 'returns an array containing multiple objects that clear each other' do
+      opts = @opts.dup
+      opts[:user_params][:category] = 'business'
+      opts[:user_params][:tags] = 'arnold'
+      result = helper.get_clear_facet_options(opts)
+      expect(result).to match_array([
+        {
+          :label => 'Categories > business',
+          :url => '/browse?tags=arnold'
+        },
+        {
+          :label => 'Topics > arnold',
+          :url => '/browse?category=business'
+        }
+      ])
+    end
+
+    it 'does not duplicate any active values that are below the fold (in extra_options)' do
+      opts = @opts.dup
+      opts[:user_params][:tags] = 'shake weights'
+      result = helper.get_clear_facet_options(opts)
+      expect(result).to match_array([
+        {
+          :label => 'Topics > shake weights',
+          :url => '/browse?'
+        }
+      ])
     end
   end
 end

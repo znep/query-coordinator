@@ -203,7 +203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Apply all arguments (minus `object`)
 	    // to assertHasProperty(object, argument).
 	    _.each(
-	      _.rest(arguments),
+	      _.tail(arguments),
 	      function(argument) {
 	        assertHasProperty(object, argument);
 	      }
@@ -218,8 +218,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  assertIsOneOfTypes: function(value) {
 
-	    var types = _.rest(arguments);
-	    var valid = _.contains(types, typeof value);
+	    var types = _.tail(arguments);
+	    var valid = _.includes(types, typeof value);
 
 	    if (!valid) {
 	      throw new Error(
@@ -246,8 +246,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {...function} <arguments> - List of acceptable instantiators
 	   */
 	  assertInstanceOfAny: function(instance) {
-	    var instantiators = _.rest(arguments);
-	    var valid = _.any(instantiators, function(instantiator) {
+	    var instantiators = _.tail(arguments);
+	    var valid = _.some(instantiators, function(instantiator) {
 	      return instance instanceof instantiator;
 	    });
 

@@ -3380,35 +3380,35 @@ var Dataset = ServerModel.extend({
         { base = ds._generateBaseUrl(ds.domainCName); }
 
         var urlParts;
-        if (ds.displayType === 'api-predeploy')
-        {
+        if (ds.displayType === 'api-predeploy') {
           urlParts = ['api_foundry/forge', ds.id];
-        }
-        else if (ds.displayType === 'api')
-        {
+        } else if (ds.displayType === 'api') {
           urlParts = ['developers/docs', ds.resourceName];
-        }
-        else if (_.isUndefined(ds.name))
-        {
+        } else if (ds.displayType === 'story') {
+          urlParts = ['stories/s', ds.id];
+        } else if (_.isUndefined(ds.name)) {
           urlParts = ['d', ds.id]
-        }
-        else
-        {
+        } else {
           urlParts = [$.urlSafe(ds.category || "dataset"), $.urlSafe(ds.name), ds.id];
         }
+
         return base + $.path('/' + urlParts.join('/'));
     },
 
-    _generateShortUrl: function(includeDomain)
-    {
-        var ds = this;
-        var base = '';
+    _generateShortUrl: function(includeDomain) {
+      var ds = this;
+      var base = '';
 
-        // federated dataset has nonblank domain cname
-        if (includeDomain || !$.isBlank(ds.domainCName))
-        { base = ds._generateBaseUrl(ds.domainCName, true); }
+      // federated dataset has nonblank domain cname
+      if (includeDomain || !$.isBlank(ds.domainCName)) {
+        base = ds._generateBaseUrl(ds.domainCName, true);
+      }
 
+      if (ds.displayType === 'story') {
+        return base + $.path('/stories/s/' + ds.id);
+      } else {
         return base + $.path('/d/' + ds.id);
+      }
     },
 
     _generateApiUrl: function()

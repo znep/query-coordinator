@@ -1762,6 +1762,7 @@ en:
         email_prompt: Enter email addresses for the accounts you wish to create
         emails: Emails
         error_permission_request: There was an error processing your permission request
+        export_as_csv: Export as CSV
         filter_by: Filter by
         flashes:
           accounts_created:

@@ -1,3 +1,5 @@
+require 'csv'
+
 class AdministrationController < ApplicationController
   include BrowseActions
   include GeoregionsHelper
@@ -334,6 +336,16 @@ class AdministrationController < ApplicationController
       @table_title = t('screens.admin.users.search_results', :term => @search)
       @users_list = @user_search_results
       @existing_user_actions = false
+    end
+
+    respond_to do |format|
+      format.html { render :action => 'users' }
+      format.csv do
+        render :text => CSV.generate { |csv|
+          csv << User.csv_columns.values
+          @users_list.each { |user| csv << user.to_csv_row }
+        }
+      end
     end
   end
 

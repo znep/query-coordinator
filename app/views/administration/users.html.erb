@@ -13,12 +13,13 @@
 <%- no_js = params[:no_js].present? -%>
 
 <div class="contentBox withLeftNavigation usersScreen">
-   <div class="adminHeader floating users">
-    <%- unless no_js -%>
-      <div class="bulkCreateButtonArea">
-        <a href="#BulkCreate" class="button showBulkCreateForm"><%= t("#{prefix}.bulk_create") %></a>
-      </div>
-    <%- end -%>
+  <div class="adminHeader floating users">
+    <div class="usersTopPageButtonArea">
+      <%= link_to t("#{prefix}.export_as_csv"), {:action => 'users', :format => :csv}, {:class => 'button'} %>
+      <%- unless no_js -%>
+        <%= link_to t("#{prefix}.bulk_create"), {:anchor => 'BulkCreate'}, {:class => ['button','showBulkCreateForm']} =%>
+      <%- end -%>
+    </div>
     <span class="icon"></span>
     <h1><%= t("#{prefix}.title") %></h1>
   </div>

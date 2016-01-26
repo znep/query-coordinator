@@ -32,8 +32,3 @@ namespace :assets do
     fail($?.exitstatus) unless system(cmd)
   end
 end
-
-Rake::Task[:default].enhance do
-  Rake::Task['assets:webpack'].invoke
-  Rake::Task['assets:unminified'].invoke
-end

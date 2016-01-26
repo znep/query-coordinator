@@ -142,6 +142,7 @@
           font-size: 1.2em;
           color: #bbb;
           z-index: 2;
+          cursor: pointer;
 
           &:hover {
             display: block;
@@ -457,15 +458,10 @@
  * to elements that, when clicked, cause a filter action.
  */
 .filterable {
-
   .column-chart-container {
-
     .column-chart {
-
       .chart-scroll {
-
         .column-chart-wrapper {
-
           .bar-group {
             cursor: pointer;
           }
@@ -473,11 +469,8 @@
       }
 
       .labels {
-
         .label {
-
           .contents {
-
             .text {
               cursor: pointer;
             }

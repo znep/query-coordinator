@@ -57,11 +57,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(40);
-	var ColumnChart = __webpack_require__(41);
-	var FeatureMap = __webpack_require__(42);
-	var Table = __webpack_require__(43);
-	var TimelineChart = __webpack_require__(44);
+	var ChoroplethMap = __webpack_require__(41);
+	var ColumnChart = __webpack_require__(42);
+	var FeatureMap = __webpack_require__(43);
+	var Table = __webpack_require__(44);
+	var TimelineChart = __webpack_require__(45);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -6568,6 +6568,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function renderCell(cellContent, column, i18n) {
 	  var cellText;
 
+	  utils.assertIsOneOfTypes(column, 'object');
 	  utils.assertHasProperty(column, 'renderTypeName');
 
 	  if (_.isUndefined(cellContent)) {
@@ -9601,7 +9602,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  this.render = function(data, options) {
-	    utils.assertHasProperties(data, 'rows', 'columns', 'datasetMetadata');
+	    utils.assertHasProperties(data, 'rows', 'columns');
 	    if (_.isEqual(_lastRenderData, data) && _.isEqual(_lastRenderOptions, options)) {
 	      return;
 	    }
@@ -9637,9 +9638,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Render sample data into the table. Used for UI element measurement.
 	      self.render(
 	        {
-	          columns: [ 'placeholder' ],
+	          columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ],
 	          rows: [ [ 'placeholder' ] ],
-	          datasetMetadata: { columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ] }
 	        },
 	        [ {} ]
 	      );
@@ -9735,20 +9735,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        '<table>',
 	          '<thead>',
 	            '<tr>',
-	              data.columns.map(function(columnName) {
-	                var template = activeSort.columnName === columnName ?
+	              data.columns.map(function(column) {
+	                var template = activeSort.columnName === column.fieldName ?
 	                  _templateTableSortedHeader() :
 	                  _templateTableHeader();
 
-	                var column = _.find(data.datasetMetadata.columns, function(column) {
-	                  return column.fieldName === columnName;
-	                });
-
 	                return template.format({
-	                  columnName: columnName,
-	                  columnTitle: column && column.name || columnName,
-	                  columnDescription: column && column.description || '',
-	                  sortDirection: activeSort.ascending ? 'arrow-down' : 'arrow-up' //TODO
+	                  columnName: column.fieldName,
+	                  columnTitle: (column && column.name) || column.fieldName,
+	                  columnDescription: (column && column.description) || '',
+	                  sortDirection: activeSort.ascending ? 'arrow-down' : 'arrow-up'
 	                });
 	              }),
 	            '</tr>',
@@ -9759,13 +9755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return '<tr class="null-row"></tr>';
 	              }
 
-	              return '<tr>' + data.columns.map(function(columnName, columnIndex) {
-	                var column = _.find(
-	                  data.datasetMetadata.columns,
-	                  {
-	                    fieldName: columnName
-	                  }
-	                );
+	              return '<tr>' + data.columns.map(function(column, columnIndex) {
 	                return _templateTableCell(column, row[columnIndex])
 	              }).join('\n') + '</tr>';
 	            }),
@@ -21103,6 +21093,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  };
 
+	  this.isSystemColumn = function(fieldName) {
+	    return fieldName[0] === ':';
+	  };
+
 	  /*
 	   * CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
 	   * sub-columns become their own columns. This function uses heuristics to figure out if a
@@ -21257,20 +21251,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  this.query = function(queryString, nameAlias, valueAlias) {
 
-	    var url = _withSalt(_queryUrl('$query={0}'.format(queryString)));
+	    var url = _queryUrl('$query={0}'.format(queryString));
 
-	    return Promise.resolve(
-	      $.get(url)
-	    ).then(
+	    return _makeSoqlGetRequestWithSalt(url).then(
 	      function(data) {
 	        return _mapQueryResponseToTable(data, nameAlias, valueAlias)
-	      },
-	      function(error) {
-	        return Promise.reject({
-	          status: parseInt(error.status, 10),
-	          message: error.statusText,
-	          soqlError: error.responseJSON || error.responseText
-	        });
 	      }
 	    );
 	  };
@@ -21295,27 +21280,90 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Promise}
 	   */
 	  this.getRows = function(queryString) {
-	    var url = _withSalt(_queryUrl(queryString));
 	    return Promise.all([
 	      metadataProvider.getDatasetMetadata(),
-	      Promise.resolve($.get(url))
+	      _makeSoqlGetRequestWithSalt(_queryUrl(queryString))
 	    ]).then(
 	      function(responses) {
-	        return _mapRowsResponseToTable(responses[0].columns, responses[1]);
-	      },
-	      function(error) {
+	        var columnNames = _.chain(responses[0].columns).
+	          sortBy('position').
+	          pluck('fieldName').
+	          value();
+
+	        return _mapRowsResponseToTable(columnNames, responses[1]);
+	      }
+	    );
+	  };
+
+	  // Returns a Promise for a GET against the given SOQL url.
+	  // Adds salt to the end of the URL for cache bust.
+	  // On error, rejects with an object: {
+	  //   status: HTTP code,
+	  //   message: status text,
+	  //   soqlError: response JSON
+	  // }
+	  function _makeSoqlGetRequestWithSalt(url) {
+	    return Promise.resolve($.get(_withSalt(url))).
+	      catch(function(error) {
 	        return Promise.reject({
 	          status: parseInt(error.status, 10),
 	          message: error.statusText,
 	          soqlError: error.responseJSON || error.responseText
 	        });
-	      }
+	      });
+	  }
+
+	  /**
+	   * `.getTableData()`
+	   *
+	   * Gets a page of data from the dataset. In addition to an offset
+	   * and limit, you must specify an ordering and a list of columns.
+	   *
+	   * @param {String[]} columnNames - Columns to grab data from.
+	   * @param {Object[]} order - An array of order clauses. For the moment, there must always
+	   *                           be exactly one order clause. A clause looks like:
+	   *                           {
+	   *                             columnName: {String} - a column,
+	   *                             ascending: {Boolean} - ascending or descending
+	   *                           }
+	   * @param {Number} offset - Skip this many rows.
+	   * @param {Number} limit - Fetch this many rows, starting from offset.
+	   *
+	   * @return {Promise}
+	   */
+	  this.getTableData = function(columnNames, order, offset, limit) {
+	    utils.assertInstanceOf(columnNames, Array);
+	    utils.assertIsOneOfTypes(offset, 'number');
+	    utils.assertIsOneOfTypes(limit, 'number');
+
+	    // We only support one order for the moment.
+	    utils.assert(order.length === 1, 'order parameter must be an array with exactly one element.');
+
+	    utils.assertHasProperties(order,
+	      '[0].ascending',
+	      '[0].columnName'
 	    );
+
+	    var queryString = '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}'.format(
+	      columnNames.map(_escapeColumnName).join(','),
+	      order[0].columnName,
+	      (order[0].ascending ? 'ASC' : 'DESC'),
+	      limit,
+	      offset
+	    );
+
+	    return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(function(data) {
+	      return _mapRowsResponseToTable(columnNames, data);
+	    });
 	  };
 
 	  /**
 	   * Private methods
 	   */
+
+	  function _escapeColumnName(columnName) {
+	    return '`{0}`'.format(columnName);
+	  }
 
 	  function _queryUrl(queryString) {
 	    return 'https://{0}/api/id/{1}.json?{2}'.format(
@@ -21369,6 +21417,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Transforms a raw row request result into a 'table' object.
 	   *
+	   * @param {String[]} columnNames - The list of columns to process.
 	   * @param {Object[]} data - The row request result, which is an array of
 	   *    objects with keys equal to the column name and values equal to the
 	   *    row value for each respective column.
@@ -21390,12 +21439,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *     ...
 	   *   ]
 	   */
-	  function _mapRowsResponseToTable(columnInformation, data) {
-
-	    columnInformation = _.sortBy(columnInformation, 'position');
+	  function _mapRowsResponseToTable(columnNames, data) {
 
 	    var table = {
-	      columns: _.pluck(columnInformation, 'fieldName'),
+	      columns: columnNames,
 	      rows: [],
 	    };
 
@@ -21424,6 +21471,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  /**
 	   * Transforms a URL to include a salt on the end.
+	   * https://socrata.atlassian.net/browse/CHART-204
 	   *
 	   * @param {string} url
 	   * @return {string} salted url
@@ -23758,7 +23806,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(38);
+	var ieee754 = __webpack_require__(40);
 
 	var BufferMethods;
 
@@ -25701,6 +25749,96 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 40 */
+/***/ function(module, exports) {
+
+	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var nBits = -7
+	  var i = isLE ? (nBytes - 1) : 0
+	  var d = isLE ? -1 : 1
+	  var s = buffer[offset + i]
+
+	  i += d
+
+	  e = s & ((1 << (-nBits)) - 1)
+	  s >>= (-nBits)
+	  nBits += eLen
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  m = e & ((1 << (-nBits)) - 1)
+	  e >>= (-nBits)
+	  nBits += mLen
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  if (e === 0) {
+	    e = 1 - eBias
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen)
+	    e = e - eBias
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	}
+
+	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+	  var i = isLE ? 0 : (nBytes - 1)
+	  var d = isLE ? 1 : -1
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+	  value = Math.abs(value)
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0
+	    e = eMax
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2)
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--
+	      c *= 2
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias)
+	    }
+	    if (value * c >= 2) {
+	      e++
+	      c /= 2
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0
+	      e = eMax
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen)
+	      e = e + eBias
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+	      e = 0
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+	  e = (e << mLen) | m
+	  eLen += mLen
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+	  buffer[offset + i - d] |= s * 128
+	}
+
+
+/***/ },
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -26343,7 +26481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -26790,7 +26928,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27380,7 +27518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27431,6 +27569,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var metadataProvider = new MetadataProvider(
 	    _.pick(vif, 'datasetUid', 'domain')
 	  );
+
+	  // Returns a promise for the dataset metadata.
+	  // The response is cached for the duration of this
+	  // table component's existence.
+	  var _getDatasetMetadata = _.once(function() {
+	    return metadataProvider.getDatasetMetadata();
+	  });
 
 	  var visualization = new Table($element, vif);
 	  var pager = new Pager($element, vif);
@@ -27552,10 +27697,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var newOrder;
 	    var columnName = event.originalEvent.detail;
 
+	    utils.assertIsOneOfTypes(event.originalEvent.detail, 'string');
+
 	    if (_renderState.busy) { return; }
 
 	    utils.assert(
-	      _.include(_renderState.fetchedData.columns, columnName),
+	      _.include(_.pluck(_renderState.fetchedData.columns, 'fieldName'), columnName),
 	      'column name not found to sort by: {0}'.format(columnName)
 	    );
 
@@ -27649,15 +27796,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Data Requests
 	   */
+
 	  function _setDataQuery(startIndex, pageSize, order) {
 	    utils.assert(order.length === 1, 'order parameter must be an array with exactly one element.');
-
-	    var query = '$order=`{0}`+{1}&$limit={2}&$offset={3}'.format(
-	      order[0].columnName,
-	      (order[0].ascending ? 'ASC' : 'DESC'),
-	      pageSize,
-	      startIndex
-	    );
 
 	    if (_renderState.busy) {
 	      throw new Error('Called _makeDataRequest while a request already in progress - not allowed.');
@@ -27665,26 +27806,46 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _updateState({ busy: true });
 
+	    var displayableColumns = _getDisplayableColumns();
+	    var soqlData = displayableColumns.then(function(displayableColumns) {
+	      return soqlDataProvider.getTableData(
+	        _.pluck(displayableColumns, 'fieldName'),
+	        order,
+	        startIndex,
+	        pageSize
+	      );
+	    });
+
 	    return Promise.all([
-	      soqlDataProvider.getRows(query),
-	      metadataProvider.getDatasetMetadata()
+	      _getDatasetMetadata(),
+	      displayableColumns,
+	      soqlData
 	    ]).then(function(resolutions) {
-	      var soqlData = resolutions[0];
-	      var datasetMetadata = resolutions[1];
+	      var datasetMetadata = resolutions[0];
+	      var displayableColumns = resolutions[1];
+	      var soqlData = resolutions[2];
+
+	      // Rows can either be undefined OR of the exact length of the
+	      // displayableColumns.
+	      utils.assert(_.all(soqlData.rows, function(row) {
+	        return !row || displayableColumns.length === row.length;
+	      }));
+
 	      soqlData.rows.length = pageSize; // Pad/trim row count to fit display.
 	      _updateState({
 	        fetchedData: {
 	          rows: soqlData.rows,
-	          columns: _removeUndisplayableColumns(soqlData.columns, datasetMetadata),
-	          datasetMetadata: datasetMetadata,
+	          columns: displayableColumns,
 	          startIndex: startIndex,
 	          pageSize: pageSize,
 	          order: order
 	        },
 	        busy: false
 	      });
+
 	    }).catch(function(error) {
 	      try {
+	        console.error('Error while fulfilling table data request: {0}'.format(error));
 	        _updateState({ busy: false });
 	      } catch (updateStateError) {
 	        console.error('Error while processing failed SODA request (reported separately)', updateStateError);
@@ -27693,11 +27854,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  }
 
-	  function _removeUndisplayableColumns(columns, datasetMetadata) {
-	    return _.reject(columns, function(columnName) {
-	      var column = _.find(datasetMetadata.columns, { fieldName: columnName });
-	      var isSubcolumn = metadataProvider.isSubcolumn(column.fieldName, datasetMetadata);
-	      return columnName[0] === ':' || isSubcolumn;
+	  function _getDisplayableColumns() {
+	    return _getDatasetMetadata().then(function(datasetMetadata) {
+	      var columns = _.pluck(datasetMetadata.columns, 'fieldName');
+
+	      return _.reject(datasetMetadata.columns, function(column) {
+	        return metadataProvider.isSystemColumn(column.fieldName) ||
+	          metadataProvider.isSubcolumn(column.fieldName, datasetMetadata);
+	      });
 	    });
 	  }
 
@@ -27756,7 +27920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);

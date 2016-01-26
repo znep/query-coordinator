@@ -47,6 +47,13 @@ $.fn.socrataTable = function(vif) {
     _.pick(vif, 'datasetUid', 'domain')
   );
 
+  // Returns a promise for the dataset metadata.
+  // The response is cached for the duration of this
+  // table component's existence.
+  var _getDatasetMetadata = _.once(function() {
+    return metadataProvider.getDatasetMetadata();
+  });
+
   var visualization = new Table($element, vif);
   var pager = new Pager($element, vif);
 
@@ -167,10 +174,12 @@ $.fn.socrataTable = function(vif) {
     var newOrder;
     var columnName = event.originalEvent.detail;
 
+    utils.assertIsOneOfTypes(event.originalEvent.detail, 'string');
+
     if (_renderState.busy) { return; }
 
     utils.assert(
-      _.include(_renderState.fetchedData.columns, columnName),
+      _.include(_.pluck(_renderState.fetchedData.columns, 'fieldName'), columnName),
       'column name not found to sort by: {0}'.format(columnName)
     );
 
@@ -264,15 +273,9 @@ $.fn.socrataTable = function(vif) {
   /**
    * Data Requests
    */
+
   function _setDataQuery(startIndex, pageSize, order) {
     utils.assert(order.length === 1, 'order parameter must be an array with exactly one element.');
-
-    var query = '$order=`{0}`+{1}&$limit={2}&$offset={3}'.format(
-      order[0].columnName,
-      (order[0].ascending ? 'ASC' : 'DESC'),
-      pageSize,
-      startIndex
-    );
 
     if (_renderState.busy) {
       throw new Error('Called _makeDataRequest while a request already in progress - not allowed.');
@@ -280,26 +283,46 @@ $.fn.socrataTable = function(vif) {
 
     _updateState({ busy: true });
 
+    var displayableColumns = _getDisplayableColumns();
+    var soqlData = displayableColumns.then(function(displayableColumns) {
+      return soqlDataProvider.getTableData(
+        _.pluck(displayableColumns, 'fieldName'),
+        order,
+        startIndex,
+        pageSize
+      );
+    });
+
     return Promise.all([
-      soqlDataProvider.getRows(query),
-      metadataProvider.getDatasetMetadata()
+      _getDatasetMetadata(),
+      displayableColumns,
+      soqlData
     ]).then(function(resolutions) {
-      var soqlData = resolutions[0];
-      var datasetMetadata = resolutions[1];
+      var datasetMetadata = resolutions[0];
+      var displayableColumns = resolutions[1];
+      var soqlData = resolutions[2];
+
+      // Rows can either be undefined OR of the exact length of the
+      // displayableColumns.
+      utils.assert(_.all(soqlData.rows, function(row) {
+        return !row || displayableColumns.length === row.length;
+      }));
+
       soqlData.rows.length = pageSize; // Pad/trim row count to fit display.
       _updateState({
         fetchedData: {
           rows: soqlData.rows,
-          columns: _removeUndisplayableColumns(soqlData.columns, datasetMetadata),
-          datasetMetadata: datasetMetadata,
+          columns: displayableColumns,
           startIndex: startIndex,
           pageSize: pageSize,
           order: order
         },
         busy: false
       });
+
     }).catch(function(error) {
       try {
+        console.error('Error while fulfilling table data request: {0}'.format(error));
         _updateState({ busy: false });
       } catch (updateStateError) {
         console.error('Error while processing failed SODA request (reported separately)', updateStateError);
@@ -308,11 +331,14 @@ $.fn.socrataTable = function(vif) {
     });
   }
 
-  function _removeUndisplayableColumns(columns, datasetMetadata) {
-    return _.reject(columns, function(columnName) {
-      var column = _.find(datasetMetadata.columns, { fieldName: columnName });
-      var isSubcolumn = metadataProvider.isSubcolumn(column.fieldName, datasetMetadata);
-      return columnName[0] === ':' || isSubcolumn;
+  function _getDisplayableColumns() {
+    return _getDatasetMetadata().then(function(datasetMetadata) {
+      var columns = _.pluck(datasetMetadata.columns, 'fieldName');
+
+      return _.reject(datasetMetadata.columns, function(column) {
+        return metadataProvider.isSystemColumn(column.fieldName) ||
+          metadataProvider.isSubcolumn(column.fieldName, datasetMetadata);
+      });
     });
   }
 

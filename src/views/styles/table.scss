@@ -112,7 +112,7 @@
       &:disabled {
         color: #777;
         cursor: not-allowed;
-        border-bottom: none;
+        border-bottom: solid 1px transparent;
       }
 
       [class*="icon"] {

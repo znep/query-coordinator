@@ -391,4 +391,45 @@ describe CoreServer do
       end
     end
   end
+
+  describe '#current_domain' do
+    let(:domain_json) { fixture('domain.json').read }
+
+    before do
+      stub_request(:get, "#{core_service_uri}/domains").
+        to_return(status: 200, body: domain_json)
+    end
+
+    it 'returns domain json' do
+      result = CoreServer.current_domain
+      expect(result).to eq(JSON.parse(domain_json))
+    end
+  end
+
+  describe '#site_chrome' do
+    context 'when no configurations exist' do
+      before do
+        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=site_chrome").
+          to_return(status: 200, body: '[]')
+      end
+
+      it 'is empty' do
+        expect(CoreServer.site_chrome).to be_an(Array)
+        expect(CoreServer.site_chrome).to be_empty
+      end
+    end
+
+    context 'when one config exists' do
+      before do
+        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=site_chrome").
+          to_return(status: 200, body: fixture('site_chrome_config.json'))
+      end
+
+      it 'returns site_chrome config' do
+        expect(CoreServer.site_chrome.length).to eq(1)
+        expect(CoreServer.site_chrome.first['name']).to eq('Site Chrome')
+      end
+    end
+
+  end
 end

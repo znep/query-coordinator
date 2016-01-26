@@ -2,8 +2,10 @@
 
 .component-socrata-visualization-column-chart {
   .component-content {
+    position: relative;
     width: 100%;
     height: 100%;
+    z-index: $component-content-z-index;
   }
 
   /**

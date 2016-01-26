@@ -69,6 +69,7 @@
       "Unipointer": true,
       "userStoryData": true,
       "Flux": true,
+      "ga": true,
 
       "assert": true,
       "describe": true,

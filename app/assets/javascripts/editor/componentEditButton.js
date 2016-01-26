@@ -34,7 +34,7 @@
     utils.assert(_.isFinite(componentIndex));
 
     storyteller.dispatcher.dispatch({
-      action: Actions.ASSET_SELECTOR_UPDATE_COMPONENT,
+      action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
       blockId: blockId,
       componentIndex: componentIndex
     });

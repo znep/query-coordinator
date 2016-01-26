@@ -1,0 +1,31 @@
+[
+  {
+    "default": true,
+    "domainCName": "bobloblawslawblog.com",
+    "id": 345,
+    "name": "Site Chrome",
+    "properties": [
+      {
+        "name": "siteChromeConfigVars",
+        "value": {
+          "styles": {
+            "$bg-color": "#abcdef",
+            "$font-color": "#012345"
+          },
+          "content": {
+            "logoUrl": "http://s3.bucket.com/images/001/logo.png",
+            "logoAltText": "Bob Loblaw's Law Blog",
+            "friendlySiteName": "Bob Loblaw's Law Blog",
+            "link1Label": "OpenData Portal",
+            "link1Url": "http://data.bobloblawslawblog.com/browse",
+            "link2Label": "Budget",
+            "link2Url": "http://budget.data.bobloblawslawblog.com",
+            "link3Label": "Spending",
+            "link3Url": "http://expenditures.data.bobloblawslawblog.com"
+          }
+        }
+      }
+    ],
+    "type": "site_chrome"
+  }
+]

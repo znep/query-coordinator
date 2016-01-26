@@ -15,6 +15,7 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('pres-ents')
+    allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
     visit '/s/magic-thing/pres-ents/preview'
   end
 

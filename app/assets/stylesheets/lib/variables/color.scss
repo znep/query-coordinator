@@ -18,6 +18,10 @@ $header-story-title-hover-color: #fff;
 $header-btn-disabled-color: #777;
 $header-publication-status-color: #e0e0e0;
 
+// View Story
+$user-story-header-color: #fff;
+$user-story-background-color: #3398DC;
+
 // Create A Story
 $create-story-modal-title-color: #4a4a4a;
 $create-story-modal-input-label-color: #9b9b9b;
@@ -122,6 +126,8 @@ $asset-selector-input-group-border-color: #c5c5c5;
 $asset-selector-preview-container-bg-color: #fff;
 $asset-selector-invalid-message-color: #333;
 $asset-selector-input-subtext-color: #4a4a4a;
+$asset-selector-icon-color: #9b9b9b;
+$asset-selector-visualization-btn-background-color: #f7f7f7;
 $modal-input-label-color: #4a4a4a;
 
 // Forms
@@ -140,6 +146,7 @@ $btn-default-dark-border-color: #b7b7b7;
 $btn-default-dark-hover-background-color: #757575;
 $btn-default-busy-border-color: #fff;
 $btn-default-busy-border-right-color: #d2d2d2;
+$btn-focus-border-color: #9b9b9b;
 
 $btn-primary-color: #fff;
 $btn-primary-background-color: #2c97de;
@@ -187,6 +194,10 @@ $btn-error-inverse-hover-background-color: #ce6565;
 
 $btn-transparent-busy-border-color: #9b9b9b;
 $btn-transparent-busy-border-right-color: #c9c9c9;
+
+$btn-bordered-transparent-color: #fff;
+$btn-bordered-transparent-border-color: #fff;
+$btn-bordered-transparent-active-color: #666;
 
 $btn-disabled-color: dimgray;
 $btn-disabled-border-color: #929292;

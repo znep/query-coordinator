@@ -13,9 +13,9 @@
     // story, but if everything else is the same the two visualizations are
     // equivalent anyway. We can therefore delete this key from the two cloned
     // vifs and measure functional equality using _.isEqual().
-    delete vif1Clone['createdAt'];
-    delete vif2Clone['createdAt'];
+    delete vif1Clone.createdAt;
+    delete vif2Clone.createdAt;
 
     return _.isEqual(vif1Clone, vif2Clone);
-  }
+  };
 })(window);

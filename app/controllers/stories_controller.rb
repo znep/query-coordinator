@@ -14,10 +14,12 @@ class StoriesController < ApplicationController
   helper_method :needs_view_assets?, :can_update_view?
 
   def show
+    @site_chrome = SiteChrome.for_current_domain
     respond_with_story(PublishedStory.find_by_uid(params[:uid]))
   end
 
   def preview
+    @site_chrome = SiteChrome.for_current_domain
     respond_with_story(DraftStory.find_by_uid(params[:uid]))
   end
 
@@ -139,7 +141,9 @@ class StoriesController < ApplicationController
 
   def respond_with_story(story)
     @story = story
+
     if @story
+      StoryAccessLogger.log_story_view_access(story)
       respond_to do |format|
         format.html { render 'stories/show' }
         format.json { render json: @story }

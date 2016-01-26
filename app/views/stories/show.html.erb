@@ -1,4 +1,7 @@
 <div class="user-story-container">
+
+  <%= render(partial: 'stories/partials/header') %>
+
   <div class="user-story large theme-<%= @story.theme %>">
     <% @story.blocks.each do |block| -%>
       <% layout_columns = block.layout.split('-') %>
@@ -7,10 +10,14 @@
         <% block.components.each_with_index do |component, index| %>
           <div class="<%= component_container_classes(layout_columns[index]) %>">
 
-            <div class="<%= component_classes(component['type']) %>" data-component-data="<%= component.to_json %>" >
+            <div class="<%= component_classes(component['type']) %>" data-component-data="<%= component.to_json %>">
 
-              <%= render partial: component_partial_name(component['type']),
-                    locals: { component: component } %>
+              <%=
+                render(
+                  partial: component_partial_name(component['type']),
+                  locals: { component: component }
+                )
+              %>
 
             </div>
 
@@ -21,6 +28,13 @@
     <% end -%>
 
   </div>
+
+  <%= render(partial: 'stories/partials/footer') %>
+
 </div>
 
-<%= render partial: 'stories/partials/presentation_mode' %>
+<%= render(partial: 'stories/partials/presentation_mode') %>
+
+<script>
+  isStoryPublished = <%= @story.is_a?(PublishedStory) %>
+</script>

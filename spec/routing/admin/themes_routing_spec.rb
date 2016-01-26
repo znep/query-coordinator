@@ -30,4 +30,33 @@ RSpec.describe 'admin/themes routing', type: :routing do
     end
   end
 
+  describe '#create' do
+    it 'routes to admin themes controller' do
+      expect(post: 'admin/themes').to route_to(
+        controller: 'admin/themes',
+        action: 'create'
+      )
+    end
+  end
+
+  describe '#update' do
+    it 'routes to admin themes controller' do
+      expect(put: 'admin/themes/234').to route_to(
+        controller: 'admin/themes',
+        action: 'update',
+        id: '234'
+      )
+    end
+  end
+
+  describe '#destroy' do
+    it 'routes to admin themes controller' do
+      expect(delete: 'admin/themes/234').to route_to(
+        controller: 'admin/themes',
+        action: 'destroy',
+        id: '234'
+      )
+    end
+  end
+
 end

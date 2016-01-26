@@ -2,6 +2,24 @@ describe('AssetSelectorStore', function() {
 
   'use strict';
   var storyteller = window.socrata.storyteller;
+  var WIZARD_STEP = storyteller.AssetSelectorStore.WIZARD_STEP;
+  var server;
+
+  beforeEach(function() {
+    // Since these tests actually expect to use AJAX, we need to disable the
+    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
+    // and re-enble it after each.
+    window.mockedXMLHttpRequest.restore();
+
+    server = sinon.fakeServer.create();
+  });
+
+  afterEach(function() {
+    server.restore();
+
+    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
+    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
+  });
 
   describe('asset selector data accessors', function() {
 
@@ -47,14 +65,14 @@ describe('AssetSelectorStore', function() {
 
     });
 
-    describe('after an `ASSET_SELECTOR_CHOOSE_PROVIDER` action', function() {
+    describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action', function() {
 
       var testBlockId = 'testBlock1';
       var testComponentIndex = '1';
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+          action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
           blockId: testBlockId,
           componentIndex: testComponentIndex
         });
@@ -62,8 +80,8 @@ describe('AssetSelectorStore', function() {
 
       describe('.getStep()', function() {
 
-        it('should return the action specified in the action payload', function() {
-          assert.equal(storyteller.assetSelectorStore.getStep(), Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
+        it('should return SELECT_ASSET_PROVIDER', function() {
+          assert.equal(storyteller.assetSelectorStore.getStep(), WIZARD_STEP.SELECT_ASSET_PROVIDER);
         });
       });
 
@@ -83,6 +101,51 @@ describe('AssetSelectorStore', function() {
 
     });
 
+    describe('after an `ASSET_SELECTOR_PROVIDER_CHOSEN` actino', function() {
+      function withProvider(provider) {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: provider
+        });
+      }
+
+      describe('with a bad provider', function() {
+        it('should throw', function() {
+          assert.throws(function() {
+            withProvider('not valid');
+          });
+        });
+      });
+
+      [
+        'SOCRATA_VISUALIZATION',
+        'IMAGE',
+        'YOUTUBE',
+        'EMBED_CODE'
+      ].map(function(validProvider) {
+        describe('with provider: {0}'.format(validProvider), function() {
+          beforeEach(function() {
+            withProvider(validProvider);
+          });
+
+          describe('.getStep()', function() {
+            var EXPECTED_STEPS = {
+              'SOCRATA_VISUALIZATION': 'SELECT_DATASET_FOR_VISUALIZATION',
+              'IMAGE': 'SELECT_IMAGE_TO_UPLOAD',
+              'YOUTUBE': 'ENTER_YOUTUBE_URL',
+              'EMBED_CODE': 'ENTER_EMBED_CODE'
+            };
+            var expectedStep = EXPECTED_STEPS[validProvider];
+
+            it('should return {0}'.format(expectedStep), function() {
+              assert.equal(storyteller.assetSelectorStore.getStep(), expectedStep);
+            });
+          });
+        });
+      });
+
+    });
+
     describe('after an `ASSET_SELECTOR_CLOSE` action', function() {
 
       var testBlockId = 'testBlock1';
@@ -90,7 +153,7 @@ describe('AssetSelectorStore', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
+          action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
           blockId: testBlockId,
           componentIndex: testComponentIndex
         });
@@ -124,24 +187,10 @@ describe('AssetSelectorStore', function() {
     });
 
     describe('after an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action', function() {
-      var server;
       var migrationUrl;
 
       beforeEach(function() {
-        // Since these tests actually expect to use AJAX, we need to disable the
-        // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-        // and re-enble it after each.
-        window.mockedXMLHttpRequest.restore();
-
-        server = sinon.fakeServer.create();
         migrationUrl = '/api/migrations/{0}.json'.format(standardMocks.validStoryUid);
-      });
-
-      afterEach(function() {
-        server.restore();
-
-        // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-        window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
       });
 
       it('should attempt to fetch the NBE datasetUid if dataset is OBE', function() {
@@ -151,6 +200,7 @@ describe('AssetSelectorStore', function() {
           isNewBackend: false
         });
 
+        assert.lengthOf(server.requests, 1);
         var request = server.requests[0];
         assert.equal(request.method, 'GET');
         assert.equal(request.url, migrationUrl);
@@ -164,7 +214,9 @@ describe('AssetSelectorStore', function() {
         });
 
         assert.isDefined(server);
-        assert.isUndefined(server.requests[0]);
+        assert.isFalse(_.any(server.requests, function(request) {
+          return request.url === migrationUrl;
+        }));
       });
 
       it('should add datasetUid to _currentComponentProperities', function() {
@@ -173,6 +225,8 @@ describe('AssetSelectorStore', function() {
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
+
+        server.respond([200, {}, '{}']);
 
         assert.equal(
           storyteller.assetSelectorStore.getComponentValue().dataset.datasetUid,
@@ -191,6 +245,8 @@ describe('AssetSelectorStore', function() {
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
+
+        server.respond([200, {}, '{}']);
       });
 
       it('adds visualization configuration to componentValue when there is vif with originalUid', function() {
@@ -218,7 +274,7 @@ describe('AssetSelectorStore', function() {
             vif: payload.data,
             dataset: {
               datasetUid: 'test-test',
-              domain: window.location.host
+              domain: window.location.hostname
             },
             originalUid: 'orig-inal'
           }
@@ -250,7 +306,7 @@ describe('AssetSelectorStore', function() {
             vif: payload.data,
             dataset: {
               datasetUid: 'test-test',
-              domain: window.location.host
+              domain: window.location.hostname
             },
             originalUid: undefined
           }
@@ -410,7 +466,7 @@ describe('AssetSelectorStore', function() {
             visualization: payload.data,
             dataset: {
               datasetUid: 'test-test',
-              domain: window.location.host
+              domain: window.location.hostname
             },
             originalUid: 'orig-inal'
           }
@@ -562,24 +618,34 @@ describe('AssetSelectorStore', function() {
       });
     });
 
-    describe('Editing an existing', function() {
+    describe('non-linear workflows', function() {
       var blockIdBeingEdited;
       function editComponent(blockId) {
         blockIdBeingEdited = blockId;
         storyteller.dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_UPDATE_COMPONENT,
+          action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
           blockId: blockId,
           componentIndex: 0
+        });
+        server.respond([200, {}, '{}']);
+      }
+
+      function jumpToStep(step) {
+        beforeEach(function() {
+          storyteller.dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+            step: step
+          });
         });
       }
 
       function verifyStepIs(step) {
         it('should set the step to {0}'.format(step), function() {
-          assert.equal(storyteller.assetSelectorStore.getStep(), Actions[step]);
+          assert.equal(storyteller.assetSelectorStore.getStep(), WIZARD_STEP[step]);
         });
       }
 
-      function verifyComponentDataMatches() {
+      function verifyComponentDataInAssetSelectorStoreMatchesStoryStore() {
         it('should copy componentValue into assetSelectorStore', function() {
           assert.deepEqual(
             storyteller.assetSelectorStore.getComponentValue(),
@@ -606,28 +672,78 @@ describe('AssetSelectorStore', function() {
         });
       }
 
-      describe('image', function() {
-        beforeEach(function() { editComponent(standardMocks.imageBlockId); });
-        verifyStepIs('ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD');
-        verifyComponentDataMatches();
-      });
 
-      describe('socrata.visualization.classic', function() {
-        beforeEach(function() { editComponent(standardMocks.classicVizBlockId); });
-        verifyStepIs('ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET');
-        verifyComponentDataMatches();
-      });
+      describe('Editing an existing', function() {
+        describe('image', function() {
+          beforeEach(function() { editComponent(standardMocks.imageBlockId); });
+          verifyStepIs('SELECT_IMAGE_TO_UPLOAD');
+          verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
 
-      describe('socrata.visualization.columnChart', function() {
-        beforeEach(function() { editComponent(standardMocks.vifBlockId); });
-        verifyStepIs('ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET');
-        verifyComponentDataMatches();
-      });
+          describe('then jump to SELECT_ASSET_PROVIDER', function() {
+            jumpToStep('SELECT_ASSET_PROVIDER');
+            verifyStepIs('SELECT_ASSET_PROVIDER');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+        });
 
-      describe('youtube.video', function() {
-        beforeEach(function() { editComponent(standardMocks.youtubeBlockId); });
-        verifyStepIs('ASSET_SELECTOR_CHOOSE_YOUTUBE');
-        verifyComponentDataMatches();
+        describe('socrata.visualization.classic', function() {
+          beforeEach(function() { editComponent(standardMocks.classicVizBlockId); });
+          verifyStepIs('CONFIGURE_VISUALIZATION');
+          verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+
+          describe('then jump to SELECT_TABLE_OR_CHART', function() {
+            jumpToStep('SELECT_TABLE_OR_CHART');
+            verifyStepIs('SELECT_TABLE_OR_CHART');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+
+          describe('then jump to SELECT_DATASET_FOR_VISUALIZATION', function() {
+            jumpToStep('SELECT_DATASET_FOR_VISUALIZATION');
+            verifyStepIs('SELECT_DATASET_FOR_VISUALIZATION');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+
+          describe('then jump to an invalid step', function() {
+            it('should raise', function() {
+              assert.throws(function() {
+                storyteller.dispatcher.dispatch({
+                  action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+                  step: 'NOT_VALID_YO'
+                });
+              });
+            });
+          });
+        });
+
+        describe('socrata.visualization.columnChart', function() {
+          beforeEach(function() { editComponent(standardMocks.vifBlockId); });
+          verifyStepIs('CONFIGURE_VISUALIZATION');
+          verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+
+          describe('then jump to SELECT_TABLE_OR_CHART', function() {
+            jumpToStep('SELECT_TABLE_OR_CHART');
+            verifyStepIs('SELECT_TABLE_OR_CHART');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+
+          describe('then jump to SELECT_DATASET_FOR_VISUALIZATION', function() {
+            jumpToStep('SELECT_DATASET_FOR_VISUALIZATION');
+            verifyStepIs('SELECT_DATASET_FOR_VISUALIZATION');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+        });
+
+        describe('youtube.video', function() {
+          beforeEach(function() { editComponent(standardMocks.youtubeBlockId); });
+          verifyStepIs('ENTER_YOUTUBE_URL');
+          verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+
+          describe('then jump to SELECT_ASSET_PROVIDER', function() {
+            jumpToStep('SELECT_ASSET_PROVIDER');
+            verifyStepIs('SELECT_ASSET_PROVIDER');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
+        });
       });
     });
 

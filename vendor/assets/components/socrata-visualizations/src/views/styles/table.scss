@@ -1,0 +1,130 @@
+.socrata-paginated-table {
+  font-family: "Open Sans", sans-serif;
+  opacity: 0;
+
+  &.loaded {
+    transition: opacity 0.25s;
+    opacity: 1;
+  }
+}
+
+/**
+ * NOTE: The javascript implementation of the table DEPENDS ON
+ * constant-height headers and rows. If this expectation is violated,
+ * the table will break (specifically, .howManyRowsCanFitInHeight()).
+ */
+.socrata-table {
+  $row-height: 55px;
+
+  width: 100%;
+  overflow-x: scroll;
+
+  &.frozen-columns {
+    table {
+      table-layout: fixed;
+    }
+  }
+
+  table {
+    width: 100%;
+    margin: 0;
+    font-size: 15px;
+    border-collapse: collapse;
+
+    tr {
+      height: $row-height;
+    }
+
+    th, td {
+      box-sizing: border-box;
+      height: 15px;
+      padding: 15px;
+      border: solid 1px #c0c0c0;
+      text-align: left;
+    }
+
+    td {
+      div {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    th {
+      position: relative;
+      background-color: #e8e8e8;
+      color: #555;
+      cursor: pointer;
+      white-space: nowrap;
+
+      span {
+        position: absolute;
+        right: 15px;
+        top: calc(38px / 2);
+        background: #e8e8e8;
+        box-shadow: -10px 0 7px #e8e8e8;
+      }
+    }
+  }
+}
+
+.socrata-pager {
+  display: flex;
+  background: #f2f2f2;
+  padding: 15px 7.5px;
+  border: solid 1px #e4e4e4;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .pager-buttons,
+  .pager-label {
+    display: block;
+  }
+
+  .pager-buttons {
+    button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+
+      background: transparent;
+      border: solid 1px transparent;
+      color: #2c98e1;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.15s, border 0.15s, color 0.15s;
+
+      &:first-child {
+        margin-right: 15px;
+      }
+
+      &:hover {
+        background: transparent;
+        border-bottom: solid 1px #2c98e1;
+      }
+
+      &:active {
+        background: #ddd;
+        outline: 0;
+      }
+
+      &:disabled {
+        color: #777;
+        cursor: not-allowed;
+        border-bottom: solid 1px transparent;
+      }
+
+      [class*="icon"] {
+        font-size: 15px;
+        vertical-align: top;
+      }
+    }
+  }
+
+  .pager-label {
+    padding: 4px;
+    font-size: 15px;
+    color: #555;
+  }
+}

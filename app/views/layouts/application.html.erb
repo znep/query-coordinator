@@ -15,6 +15,7 @@
     <%= stylesheet_link_tag 'story-view', media: 'all' %>
     <%= javascript_include_tag 'view' %>
   <% end %>
+  <%= javascript_include_tag('test') if Rails.env.test? %>
 
   <!-- Twitter Sharing Metadata -->
   <meta name="twitter:card" content="summary_large_image">

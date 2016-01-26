@@ -296,7 +296,9 @@
             color: #bbb;
             cursor: default;
 
-            .text {
+            .text,
+            .icon-filter,
+            .icon-close {
               cursor: pointer;
             }
 

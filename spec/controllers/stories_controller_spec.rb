@@ -7,6 +7,8 @@ RSpec.describe StoriesController, type: :controller do
     stub_sufficient_rights
     # stub custom themes
     allow(CoreServer).to receive(:story_themes).and_return([])
+    allow(StoryAccessLogger).to receive(:log_story_view_access)
+    allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
   end
 
   describe '#show' do
@@ -65,6 +67,22 @@ RSpec.describe StoriesController, type: :controller do
             get :show, uid: story_revision.uid
             expect(response.body).to have_content(@google_analytics_tracking_id)
           end
+        end
+      end
+
+      describe 'log view access' do
+        it 'logs view access when story exists' do
+          expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+          get :show, uid: story_revision.uid
+        end
+
+        it 'logs view access for json requests' do
+          expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+          get :show, uid: story_revision.uid, format: :json
+        end
+        it 'does not log view access when story does not exist' do
+          expect(StoryAccessLogger).to_not receive(:log_story_view_access)
+          get :show, uid: 'notf-ound'
         end
       end
     end

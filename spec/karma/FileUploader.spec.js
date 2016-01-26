@@ -29,8 +29,6 @@ describe('FileUploader', function() {
       dispatchedEvents.push(payload);
     });
 
-;
-
     server = sinon.fakeServer.create();
     server.respondImmediately = true;
   });
@@ -80,8 +78,8 @@ describe('FileUploader', function() {
 
       it('is an image', function() {
         mockFile.type = 'application/json';
-        fileUploader.upload(mockFile);
 
+        fileUploader.upload(mockFile);
         assert.equal(dispatchedEvents.length, 1);
         var dispatchedEvent = dispatchedEvents[0];
         assert.equal(dispatchedEvent.action, Actions.FILE_UPLOAD_ERROR);
@@ -199,7 +197,11 @@ describe('FileUploader', function() {
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_ERROR' }), {
             action: Actions.FILE_UPLOAD_ERROR,
-            error: { step: 'get_upload_url', reason: {status: 422, message: 'Unprocessable Entity'} }
+            error: { step: 'get_upload_url', reason: {status: 422, message: 'Unprocessable Entity'} },
+            errorReporting: {
+              label: 'FileUploader#_emitError',
+              message: 'FileUploader#_emitError: get_upload_url - Unprocessable Entity (story: four-four, status: 422)'
+            }
           });
 
           assert.equal(server.requests.length, 1);
@@ -243,6 +245,10 @@ describe('FileUploader', function() {
             error: {
               step: 'upload_file',
               reason: { status: 403, message: 'Forbidden' }
+            },
+            errorReporting: {
+              label: 'FileUploader#_emitError',
+              message: 'FileUploader#_emitError: upload_file - Forbidden (story: four-four, status: 403)'
             }
           });
 
@@ -301,6 +307,10 @@ describe('FileUploader', function() {
             error: {
               step: 'save_resource',
               reason: { status: 500, message: 'Internal Server Error' }
+            },
+            errorReporting: {
+              label: 'FileUploader#_emitError',
+              message: 'FileUploader#_emitError: save_resource - Internal Server Error (story: four-four, status: 500)'
             }
           });
 
@@ -369,6 +379,10 @@ describe('FileUploader', function() {
             error: {
               step: 'get_resource',
               reason: { status: 400, message: 'Bad Request' }
+            },
+            errorReporting: {
+              label: 'FileUploader#_emitError',
+              message: 'FileUploader#_emitError: get_resource - Bad Request (story: four-four, status: 400)'
             }
           });
 

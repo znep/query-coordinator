@@ -9,12 +9,20 @@
    * If the height was changed, trigger `invalidateSize` on any children
    * of class `component-content`.
    *
-   * If `value.layout.height` is not defined, the height is removed and
+   * If `value.layout.height` is not defined, defaultHeight is used. If
+   * defaultHeight is not provided or is blank, the height is removed and
    * the component will be allowed to layout normally.
+   *
+   * @param {object} componentData - The component's data blob from the database.
+   * @param {number} defaultHeight - Optional. The default height.
    */
-  function withLayoutHeightFromComponentData(componentData) {
+  function withLayoutHeightFromComponentData(componentData, defaultHeight) {
     var self = this;
-    var height = _.get(componentData, 'value.layout.height', '');
+    var height = _.get(
+      componentData,
+      'value.layout.height',
+      _.isFinite(defaultHeight) ? defaultHeight : ''
+    );
 
     this.updateAttributeWithCallbackIfChanged(
       CACHE_ATTRIBUTE_NAME,

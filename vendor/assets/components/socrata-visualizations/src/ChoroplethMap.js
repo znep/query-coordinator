@@ -132,7 +132,7 @@ $.fn.socrataChoroplethMap = function(vif) {
   } else {
 
     shapefileMetadataRequest = shapefileMetadataProvider.
-      getDatasetMetadata().
+      getPhidippidesAugmentedDatasetMetadata().
       then(
         function(shapefileMetadata) {
           return shapefileMetadata;

@@ -117,33 +117,40 @@
      * Generic asset selector flow
      */
 
-    // Select an asset for the first time.
+    // Have the user select an asset, then insert it into
+    // the given block and component.
     // {string} blockId
     // {number} componentIndex
-    ASSET_SELECTOR_INSERT_COMPONENT: 'ASSET_SELECTOR_INSERT_COMPONENT',
+    ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT: 'ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT',
 
     // Edit an existing asset.
     // {string} blockId
     // {number} componentIndex
-    ASSET_SELECTOR_UPDATE_COMPONENT: 'ASSET_SELECTOR_UPDATE_COMPONENT',
+    // {string} provider. One of:
+    //  - 'SOCRATA_VISUALIZATION'
+    //  - 'YOUTUBE'
+    //  - 'IMAGE'
+    //  - 'EMBED_CODE'
+    ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED: 'ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED',
 
-    // Initial media selector setup
-    // {string} blockId
-    // {number} componentIndex
-    ASSET_SELECTOR_CHOOSE_PROVIDER: 'ASSET_SELECTOR_CHOOSE_PROVIDER',
-
-    // No payload
-    ASSET_SELECTOR_APPLY: 'ASSET_SELECTOR_APPLY',
+    // In the current workflow, jump (usually back) to a specific step.
+    // {string} Step. One of AssetSelectorStore.WIZARD_STEP.
+    ASSET_SELECTOR_JUMP_TO_STEP: 'ASSET_SELECTOR_JUMP_TO_STEP',
 
     // No payload
     ASSET_SELECTOR_CLOSE: 'ASSET_SELECTOR_CLOSE',
 
+    // The user chose an asset provider.
+    // {string} provider. One of:
+    //  - 'SOCRATA_VISUALIZATION'
+    //  - 'YOUTUBE'
+    //  - 'IMAGE'
+    //  - 'EMBED_CODE'
+    ASSET_SELECTOR_PROVIDER_CHOSEN: 'ASSET_SELECTOR_PROVIDER_CHOSEN',
+
     /**
      * YouTube embed flow
      */
-
-    // No payload
-    ASSET_SELECTOR_CHOOSE_YOUTUBE: 'ASSET_SELECTOR_CHOOSE_YOUTUBE',
 
     // {string} url
     ASSET_SELECTOR_UPDATE_YOUTUBE_URL: 'ASSET_SELECTOR_UPDATE_YOUTUBE_URL',
@@ -158,6 +165,14 @@
     // {string} datasetUid
     // {boolean} isNewBackend
     ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET',
+
+    // User chose to visualize the dataset as a table.
+    // No payload.
+    ASSET_SELECTOR_VISUALIZE_AS_TABLE: 'ASSET_SELECTOR_VISUALIZE_AS_TABLE',
+
+    // User chose to visualize the dataset as a chart.
+    // No payload.
+    ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP: 'ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP',
 
     // {object} cardData
     ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION: 'ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION',

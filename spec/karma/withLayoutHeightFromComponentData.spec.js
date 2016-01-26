@@ -54,4 +54,34 @@ describe('withLayoutHeightFromComponentData jQuery plugin', function() {
       sinon.assert.calledThrice(invalidateSizeStubOnComponentContent);
     });
   });
+
+  describe('when called with no height', function() {
+    var heightFunctionSpy;
+    var invalidateSizeStubOnComponentContent;
+    var invalidateSizeStubOnNotComponentContent;
+    var defaultHeight = 1234;
+    beforeEach(function() {
+      var $componentContent = $component.find('.component-content');
+      var $notComponentContent = $component.find('.not-component-content');
+      assert.lengthOf($componentContent, 1);
+      assert.lengthOf($notComponentContent, 1);
+
+      heightFunctionSpy = sinon.spy($component, 'height');
+      invalidateSizeStubOnComponentContent = sinon.stub();
+      invalidateSizeStubOnNotComponentContent = sinon.stub();
+
+      $componentContent.on('invalidateSize', invalidateSizeStubOnComponentContent);
+      $notComponentContent.on('invalidateSize', invalidateSizeStubOnNotComponentContent);
+
+      $component.withLayoutHeightFromComponentData({ value: {} }, defaultHeight);
+      $component.withLayoutHeightFromComponentData({ value: { layout: { height: 123 } } }, defaultHeight);
+    });
+
+    it('should call self.height() with correct args only if the height changed', function() {
+      assert.deepEqual(
+        _.pluck(heightFunctionSpy.getCalls(), 'args'),
+        [ [defaultHeight], [123] ]
+      );
+    });
+  });
 });

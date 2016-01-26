@@ -5,8 +5,11 @@ class User < Model
   non_serializable :displayName
 
   def self.find_profile(id)
-    path = "/users/#{id}.json?method=getProfile"
-    parse(CoreServer::Base.connection.get_request(path))
+    parse(CoreServer::Base.connection.get_request("/users/#{id}.json?method=getProfile"))
+  end
+
+  def self.find_multiple(ids)
+    parse(CoreServer::Base.connection.get_request("/users.json?#{{'ids' => ids}.to_param}"))
   end
 
   def self.create(attributes, inviteToken = nil, authToken = nil)

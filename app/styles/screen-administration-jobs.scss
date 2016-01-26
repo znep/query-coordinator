@@ -1,0 +1,137 @@
+$grey: #646565;
+
+.import-status-label span {
+  vertical-align: text-top;
+}
+
+.import-status-icon-notstarted:before {
+  color: $grey;
+}
+
+.import-status-icon-inprogress:before {
+  color: #646565;
+}
+
+.import-status-icon-failure:before {
+  color: darkred;
+}
+
+.import-status-icon-success:before {
+  color: green;
+}
+
+.import-status-label {
+  font-weight: bold;
+  vertical-align: top;
+}
+
+.showJobScreen {
+
+  .back-to-jobs-list {
+    float: right;
+    font-size: 1.2em;
+    padding-top: 13px;
+  }
+
+  &.mainContent h1 {
+    font-size: 2em;
+    margin-bottom: .2em;
+  }
+
+  .file-name-to {
+    color: #888;
+  }
+
+  .import-status-icon:before {
+    font-size: 1em;
+  }
+
+  .import-status-label {
+    margin-top: 0;
+    text-align: right;
+    font-size: 2em;
+  }
+
+  .result-time-stamp {
+    color: #888888;
+    font-size: 1.4em;
+    padding-top: 8px;
+  }
+
+  .file-name {
+    font-size: 1.6em;
+  }
+
+  .event-time-stamp {
+    color: $grey;
+  }
+
+  .import-job-events {
+    border-top: 1px solid lightgrey;
+    margin-top: 20px;
+    padding-bottom: 5px;
+
+    p {
+      padding-top: 2px;
+      font-size: 1.3em;
+    }
+  }
+
+  .import-job-event {
+    h2 {
+      font-size: 1.2rem;
+    }
+
+    .event-description-container {
+      padding-top: 12px;
+      font-size: 1.3em;
+
+      p {
+        padding-bottom: 7px;
+      }
+
+    }
+
+    .event-description-json {
+      font-size: 1.5em;
+      white-space: pre-wrap;
+    }
+  }
+
+  .error-details-heading {
+    font-style: italic;
+  }
+
+}
+
+.jobsScreen {
+
+  .import-status-icon:before {
+    padding-right: 3px;
+  }
+
+  .job-status {
+    font-weight: bold;
+  }
+
+  .job-row td {
+    font-size: 1rem;
+  }
+
+  .started-time {
+    font-size: 1rem;
+  }
+
+  .started-time-relative-day {
+    color: grey;
+    font-size: .8rem;
+  }
+
+  .end-message {
+    padding: 10px;
+    font-style: italic;
+    text-align: center;
+    font-size: 1.5em;
+  }
+
+}

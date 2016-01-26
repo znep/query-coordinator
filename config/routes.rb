@@ -108,6 +108,8 @@ Frontend::Application.routes do
       delete 'geo/:id', :action => :remove_georegion
       get :home, :as => 'home_administration'
       get :metadata, :as => 'metadata_administration'
+      get :jobs
+      get 'jobs/:id', :action => 'show_job'
       get :views
       put :save_featured_views
       get :catalog_widget

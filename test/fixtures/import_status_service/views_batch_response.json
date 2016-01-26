@@ -1,0 +1,1204 @@
+[ {
+  "id" : "dzuq-scr8",
+  "name" : "UFO Test 9",
+  "averageRating" : 0,
+  "createdAt" : 1445461188,
+  "description" : "Crazy things are sometimes seen at night in Mississippi...",
+  "downloadCount" : 0,
+  "newBackend" : false,
+  "numberOfComments" : 0,
+  "oid" : 231,
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1452904133,
+  "publicationGroup" : 41,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1452903836,
+  "rowsUpdatedBy" : "tugg-ikce",
+  "tableId" : 61,
+  "totalTimesRated" : 0,
+  "viewCount" : 0,
+  "viewLastModified" : 1452904133,
+  "viewType" : "tabular",
+  "columns" : [ {
+    "id" : 2354,
+    "name" : "ID",
+    "dataTypeName" : "number",
+    "fieldName" : "id",
+    "position" : 2,
+    "renderTypeName" : "number",
+    "tableColumnId" : 274,
+    "width" : 124,
+    "cachedContents" : {
+      "non_null" : 1000,
+      "smallest" : "10000",
+      "sum" : "10499500",
+      "null" : 0,
+      "average" : "10499.5",
+      "largest" : "10999",
+      "top" : [ {
+        "count" : 20,
+        "item" : "10984"
+      }, {
+        "count" : 19,
+        "item" : "10985"
+      }, {
+        "count" : 18,
+        "item" : "10986"
+      }, {
+        "count" : 17,
+        "item" : "10987"
+      }, {
+        "count" : 16,
+        "item" : "10988"
+      }, {
+        "count" : 15,
+        "item" : "10989"
+      }, {
+        "count" : 14,
+        "item" : "10990"
+      }, {
+        "count" : 13,
+        "item" : "10991"
+      }, {
+        "count" : 12,
+        "item" : "10992"
+      }, {
+        "count" : 11,
+        "item" : "10993"
+      }, {
+        "count" : 10,
+        "item" : "10994"
+      }, {
+        "count" : 9,
+        "item" : "10995"
+      }, {
+        "count" : 8,
+        "item" : "10996"
+      }, {
+        "count" : 7,
+        "item" : "10997"
+      }, {
+        "count" : 6,
+        "item" : "10998"
+      }, {
+        "count" : 5,
+        "item" : "10999"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 2355,
+    "name" : "Plausibility",
+    "dataTypeName" : "number",
+    "fieldName" : "plausibility",
+    "position" : 3,
+    "renderTypeName" : "number",
+    "tableColumnId" : 275,
+    "width" : 244,
+    "cachedContents" : {
+      "non_null" : 1000,
+      "smallest" : "1",
+      "sum" : "5430",
+      "null" : 0,
+      "average" : "5.43",
+      "largest" : "10",
+      "top" : [ {
+        "count" : 20,
+        "item" : "9"
+      }, {
+        "count" : 19,
+        "item" : "10"
+      }, {
+        "count" : 18,
+        "item" : "6"
+      }, {
+        "count" : 17,
+        "item" : "2"
+      }, {
+        "count" : 16,
+        "item" : "5"
+      }, {
+        "count" : 15,
+        "item" : "3"
+      }, {
+        "count" : 14,
+        "item" : "8"
+      }, {
+        "count" : 13,
+        "item" : "7"
+      }, {
+        "count" : 12,
+        "item" : "1"
+      }, {
+        "count" : 11,
+        "item" : "4"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 2356,
+    "name" : "Incident Occurrence",
+    "dataTypeName" : "calendar_date",
+    "fieldName" : "incident_occurrence",
+    "position" : 4,
+    "renderTypeName" : "calendar_date",
+    "tableColumnId" : 276,
+    "width" : 328,
+    "cachedContents" : {
+      "non_null" : 1000,
+      "smallest" : "2001-01-01T00:00:00",
+      "null" : 0,
+      "largest" : "2001-12-31T00:00:00",
+      "top" : [ {
+        "count" : 20,
+        "item" : "2001-04-02T00:00:00"
+      }, {
+        "count" : 19,
+        "item" : "2001-03-24T00:00:00"
+      }, {
+        "count" : 18,
+        "item" : "2001-01-30T00:00:00"
+      }, {
+        "count" : 17,
+        "item" : "2001-05-25T00:00:00"
+      }, {
+        "count" : 16,
+        "item" : "2001-11-09T00:00:00"
+      }, {
+        "count" : 15,
+        "item" : "2001-11-06T00:00:00"
+      }, {
+        "count" : 14,
+        "item" : "2001-02-19T00:00:00"
+      }, {
+        "count" : 13,
+        "item" : "2001-02-20T00:00:00"
+      }, {
+        "count" : 12,
+        "item" : "2001-03-14T00:00:00"
+      }, {
+        "count" : 11,
+        "item" : "2001-08-16T00:00:00"
+      }, {
+        "count" : 10,
+        "item" : "2001-04-23T00:00:00"
+      }, {
+        "count" : 9,
+        "item" : "2001-12-19T00:00:00"
+      }, {
+        "count" : 8,
+        "item" : "2001-08-30T00:00:00"
+      }, {
+        "count" : 7,
+        "item" : "2001-12-12T00:00:00"
+      }, {
+        "count" : 6,
+        "item" : "2001-05-16T00:00:00"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 2357,
+    "name" : "Incident Location",
+    "dataTypeName" : "location",
+    "fieldName" : "incident_location",
+    "position" : 5,
+    "renderTypeName" : "location",
+    "tableColumnId" : 277,
+    "width" : 304,
+    "cachedContents" : {
+      "non_null" : 1000,
+      "smallest" : {
+        "longitude" : "-88.271379",
+        "latitude" : "33.814166",
+        "human_address" : "{\"address\":\"1035 Walker Valleys\",\"city\":\"Armstrongburgh\",\"state\":\"RI\",\"zip\":\"15149-3806\"}"
+      },
+      "null" : 0,
+      "largest" : {
+        "longitude" : "-89.913803",
+        "latitude" : "31.782537",
+        "human_address" : "{\"address\":\"99907 Emory Crossing\",\"city\":\"East Robyn\",\"state\":\"MI\",\"zip\":\"68008\"}"
+      },
+      "top" : [ {
+        "count" : 20,
+        "item" : {
+          "longitude" : "-88.855179",
+          "latitude" : "31.995552",
+          "human_address" : "{\"address\":\"4631 Schimmel Court\",\"city\":\"South Alicia\",\"state\":\"NJ\",\"zip\":\"22266\"}"
+        }
+      }, {
+        "count" : 19,
+        "item" : {
+          "longitude" : "-90.130332",
+          "latitude" : "34.731408",
+          "human_address" : "{\"address\":\"140 Cronin Groves\",\"city\":\"Port Bernie\",\"state\":\"ME\",\"zip\":\"49557-1621\"}"
+        }
+      }, {
+        "count" : 18,
+        "item" : {
+          "longitude" : "-89.36633",
+          "latitude" : "32.351392",
+          "human_address" : "{\"address\":\"876 Will Harbors\",\"city\":\"Freddystad\",\"state\":\"WV\",\"zip\":\"37831\"}"
+        }
+      }, {
+        "count" : 17,
+        "item" : {
+          "longitude" : "-88.367523",
+          "latitude" : "33.031715",
+          "human_address" : "{\"address\":\"70785 Wisozk Fords\",\"city\":\"North Estella\",\"state\":\"OR\",\"zip\":\"89811-9777\"}"
+        }
+      }, {
+        "count" : 16,
+        "item" : {
+          "longitude" : "-89.915349",
+          "latitude" : "34.913389",
+          "human_address" : "{\"address\":\"87381 Veum Park\",\"city\":\"Vitofurt\",\"state\":\"CA\",\"zip\":\"46931-5053\"}"
+        }
+      }, {
+        "count" : 15,
+        "item" : {
+          "longitude" : "-90.971788",
+          "latitude" : "31.346626",
+          "human_address" : "{\"address\":\"641 Drake Parkways\",\"city\":\"New Mikel\",\"state\":\"ND\",\"zip\":\"47389\"}"
+        }
+      }, {
+        "count" : 14,
+        "item" : {
+          "longitude" : "-88.863951",
+          "latitude" : "33.268923",
+          "human_address" : "{\"address\":\"94046 Santino Ridges\",\"city\":\"North Micheal\",\"state\":\"SC\",\"zip\":\"74557-1035\"}"
+        }
+      }, {
+        "count" : 13,
+        "item" : {
+          "longitude" : "-90.552136",
+          "latitude" : "33.635775",
+          "human_address" : "{\"address\":\"226 Linnie Falls\",\"city\":\"Gislasonmouth\",\"state\":\"LA\",\"zip\":\"71093\"}"
+        }
+      }, {
+        "count" : 12,
+        "item" : {
+          "longitude" : "-88.795451",
+          "latitude" : "32.654505",
+          "human_address" : "{\"address\":\"44970 Rowe Hill\",\"city\":\"Lake Rhett\",\"state\":\"PA\",\"zip\":\"90364-7684\"}"
+        }
+      }, {
+        "count" : 11,
+        "item" : {
+          "longitude" : "-90.266268",
+          "latitude" : "34.704073",
+          "human_address" : "{\"address\":\"4231 Rath Corner\",\"city\":\"East Nolanstad\",\"state\":\"NH\",\"zip\":\"50048-9544\"}"
+        }
+      }, {
+        "count" : 10,
+        "item" : {
+          "longitude" : "-90.406633",
+          "latitude" : "31.553977",
+          "human_address" : "{\"address\":\"39142 Barrows Islands\",\"city\":\"Thompsonmouth\",\"state\":\"MI\",\"zip\":\"10407\"}"
+        }
+      }, {
+        "count" : 9,
+        "item" : {
+          "longitude" : "-89.790106",
+          "latitude" : "34.700133",
+          "human_address" : "{\"address\":\"6518 Marvin Curve\",\"city\":\"Lake Alanis\",\"state\":\"NJ\",\"zip\":\"88408\"}"
+        }
+      }, {
+        "count" : 8,
+        "item" : {
+          "longitude" : "-89.647471",
+          "latitude" : "34.308095",
+          "human_address" : "{\"address\":\"2571 Boyer Shores\",\"city\":\"North Earnestinechester\",\"state\":\"VA\",\"zip\":\"22535\"}"
+        }
+      }, {
+        "count" : 7,
+        "item" : {
+          "longitude" : "-89.756535",
+          "latitude" : "33.055586",
+          "human_address" : "{\"address\":\"468 Brigitte Fork\",\"city\":\"Koeppchester\",\"state\":\"RI\",\"zip\":\"74730\"}"
+        }
+      }, {
+        "count" : 6,
+        "item" : {
+          "longitude" : "-90.547708",
+          "latitude" : "32.686696",
+          "human_address" : "{\"address\":\"8447 Ora Loop\",\"city\":\"New Trevaport\",\"state\":\"SD\",\"zip\":\"53222-3290\"}"
+        }
+      }, {
+        "count" : 5,
+        "item" : {
+          "longitude" : "-88.988498",
+          "latitude" : "30.541901",
+          "human_address" : "{\"address\":\"755 Stehr Valley\",\"city\":\"East Alfside\",\"state\":\"MI\",\"zip\":\"20552-7643\"}"
+        }
+      } ]
+    },
+    "format" : { },
+    "subColumnTypes" : [ "human_address", "latitude", "longitude", "machine_address", "needs_recoding" ]
+  }, {
+    "id" : 2358,
+    "name" : "Witness Gibberish",
+    "dataTypeName" : "text",
+    "fieldName" : "witness_gibberish",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 278,
+    "width" : 304,
+    "cachedContents" : {
+      "non_null" : 193,
+      "smallest" : "About us gobblers fork spiced beans down their gullets.",
+      "null" : 807,
+      "largest" : "You are walking through it howsomever.",
+      "top" : [ {
+        "count" : 20,
+        "item" : "But life is the great teacher."
+      }, {
+        "count" : 19,
+        "item" : "I hear."
+      }, {
+        "count" : 18,
+        "item" : "And me now."
+      }, {
+        "count" : 17,
+        "item" : "No."
+      }, {
+        "count" : 16,
+        "item" : "A lifetime in a night."
+      }, {
+        "count" : 15,
+        "item" : "If I open and am for ever in the black adiaphane."
+      }, {
+        "count" : 14,
+        "item" : "Five, six: the nacheinander."
+      }, {
+        "count" : 13,
+        "item" : "One moment."
+      }, {
+        "count" : 12,
+        "item" : "I will."
+      }, {
+        "count" : 11,
+        "item" : "Me."
+      }, {
+        "count" : 10,
+        "item" : "It is as painful perhaps to be awakened from a vision as to be born."
+      }, {
+        "count" : 9,
+        "item" : "What else were they invented for?"
+      }, {
+        "count" : 8,
+        "item" : "My ash sword hangs at my side."
+      }, {
+        "count" : 7,
+        "item" : "God made food; the devil the cooks."
+      }, {
+        "count" : 6,
+        "item" : "But always meeting ourselves."
+      }, {
+        "count" : 5,
+        "item" : "Her antiquity in preceding and surviving succeeding tellurian generations: her nocturnal predominance: her satellitic dependence: her luminary reflection: her constancy under all her phases, rising and setting by her appointed times, waxing and waning: the forced invariability of her aspect: her indeterminate response to inaffirmative interrogation: her potency over effluent and refluent waters: her power to enamour, to mortify, to invest with beauty, to render insane, to incite to and aid delinquency: the tranquil inscrutability of her visage: the terribility of her isolated dominant resplendent propinquity: her omens of tempest and of calm: the stimulation of her light, her motion and her presence: the admonition of her craters, her arid seas, her silence: her splendour, when visible: her attraction, when invisible."
+      }, {
+        "count" : 4,
+        "item" : "I fear those big words, Stephen said, which make us so unhappy."
+      }, {
+        "count" : 3,
+        "item" : "INELUCTABLE MODALITY OF THE VISIBLE: AT LEAST THAT IF NO MORE, thought through my eyes."
+      }, {
+        "count" : 2,
+        "item" : "Shut your eyes and see."
+      }, {
+        "count" : 1,
+        "item" : "I am, a stride at a time."
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 2359,
+    "name" : "Blood Alcohol Level",
+    "dataTypeName" : "number",
+    "fieldName" : "blood_alcohol_level",
+    "position" : 7,
+    "renderTypeName" : "number",
+    "tableColumnId" : 279,
+    "width" : 328,
+    "cachedContents" : {
+      "non_null" : 732,
+      "smallest" : "0.01",
+      "sum" : "187.61",
+      "null" : 268,
+      "average" : "0.2562978142076503",
+      "largest" : "0.5",
+      "top" : [ {
+        "count" : 20,
+        "item" : "0.07"
+      }, {
+        "count" : 19,
+        "item" : "0.48"
+      }, {
+        "count" : 18,
+        "item" : "0.44"
+      }, {
+        "count" : 17,
+        "item" : "0.37"
+      }, {
+        "count" : 16,
+        "item" : "0.19"
+      }, {
+        "count" : 15,
+        "item" : "0.23"
+      }, {
+        "count" : 14,
+        "item" : "0.36"
+      }, {
+        "count" : 13,
+        "item" : "0.38"
+      }, {
+        "count" : 12,
+        "item" : "0.14"
+      }, {
+        "count" : 11,
+        "item" : "0.29"
+      }, {
+        "count" : 10,
+        "item" : "0.09"
+      }, {
+        "count" : 9,
+        "item" : "0.22"
+      }, {
+        "count" : 8,
+        "item" : "0.13"
+      }, {
+        "count" : 7,
+        "item" : "0.11"
+      }, {
+        "count" : 6,
+        "item" : "0.08"
+      }, {
+        "count" : 5,
+        "item" : "0.45"
+      }, {
+        "count" : 4,
+        "item" : "0.27"
+      }, {
+        "count" : 3,
+        "item" : "0.24"
+      }, {
+        "count" : 2,
+        "item" : "0.39"
+      }, {
+        "count" : 1,
+        "item" : "0.21"
+      } ]
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "owner" : {
+    "id" : "tugg-ikce",
+    "displayName" : "Pete Vilter",
+    "screenName" : "Pete Vilter",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs" ],
+    "flags" : [ "admin" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "tugg-ikce",
+    "displayName" : "Pete Vilter",
+    "screenName" : "Pete Vilter",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs" ],
+    "flags" : [ "admin" ]
+  },
+  "flags" : [ "default" ]
+}, {
+  "id" : "d9fh-q64b",
+  "name" : "UFO Test 8",
+  "averageRating" : 0,
+  "createdAt" : 1444940049,
+  "description" : "Crazy things are sometimes seen at night in Mississippi...",
+  "downloadCount" : 0,
+  "newBackend" : false,
+  "numberOfComments" : 0,
+  "oid" : 205,
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1447111712,
+  "publicationGroup" : 36,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1447111691,
+  "rowsUpdatedBy" : "tugg-ikce",
+  "tableId" : 48,
+  "totalTimesRated" : 0,
+  "viewCount" : 0,
+  "viewLastModified" : 1447111712,
+  "viewType" : "tabular",
+  "columns" : [ {
+    "id" : 1884,
+    "name" : "ID",
+    "dataTypeName" : "number",
+    "fieldName" : "id",
+    "position" : 2,
+    "renderTypeName" : "number",
+    "tableColumnId" : 234,
+    "width" : 124,
+    "cachedContents" : {
+      "non_null" : 1000,
+      "smallest" : "10000",
+      "sum" : "10499500",
+      "null" : 0,
+      "average" : "10499.5",
+      "largest" : "10999",
+      "top" : [ {
+        "count" : 20,
+        "item" : "10984"
+      }, {
+        "count" : 19,
+        "item" : "10985"
+      }, {
+        "count" : 18,
+        "item" : "10986"
+      }, {
+        "count" : 17,
+        "item" : "10987"
+      }, {
+        "count" : 16,
+        "item" : "10988"
+      }, {
+        "count" : 15,
+        "item" : "10989"
+      }, {
+        "count" : 14,
+        "item" : "10990"
+      }, {
+        "count" : 13,
+        "item" : "10991"
+      }, {
+        "count" : 12,
+        "item" : "10992"
+      }, {
+        "count" : 11,
+        "item" : "10993"
+      }, {
+        "count" : 10,
+        "item" : "10994"
+      }, {
+        "count" : 9,
+        "item" : "10995"
+      }, {
+        "count" : 8,
+        "item" : "10996"
+      }, {
+        "count" : 7,
+        "item" : "10997"
+      }, {
+        "count" : 6,
+        "item" : "10998"
+      }, {
+        "count" : 5,
+        "item" : "10999"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 1885,
+    "name" : "Plausibility",
+    "dataTypeName" : "number",
+    "fieldName" : "plausibility",
+    "position" : 3,
+    "renderTypeName" : "number",
+    "tableColumnId" : 235,
+    "width" : 244,
+    "cachedContents" : {
+      "non_null" : 1000,
+      "smallest" : "1",
+      "sum" : "5348",
+      "null" : 0,
+      "average" : "5.348",
+      "largest" : "10",
+      "top" : [ {
+        "count" : 20,
+        "item" : "7"
+      }, {
+        "count" : 19,
+        "item" : "4"
+      }, {
+        "count" : 18,
+        "item" : "5"
+      }, {
+        "count" : 17,
+        "item" : "9"
+      }, {
+        "count" : 16,
+        "item" : "2"
+      }, {
+        "count" : 15,
+        "item" : "3"
+      }, {
+        "count" : 14,
+        "item" : "1"
+      }, {
+        "count" : 13,
+        "item" : "10"
+      }, {
+        "count" : 12,
+        "item" : "6"
+      }, {
+        "count" : 11,
+        "item" : "8"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 1886,
+    "name" : "Incident Occurrence",
+    "dataTypeName" : "calendar_date",
+    "fieldName" : "incident_occurrence",
+    "position" : 4,
+    "renderTypeName" : "calendar_date",
+    "tableColumnId" : 236,
+    "width" : 328,
+    "cachedContents" : {
+      "non_null" : 1000,
+      "smallest" : "2001-01-01T00:00:00",
+      "null" : 0,
+      "largest" : "2001-12-31T00:00:00",
+      "top" : [ {
+        "count" : 20,
+        "item" : "2001-03-06T00:00:00"
+      }, {
+        "count" : 19,
+        "item" : "2001-11-11T00:00:00"
+      }, {
+        "count" : 18,
+        "item" : "2001-03-15T00:00:00"
+      }, {
+        "count" : 17,
+        "item" : "2001-02-01T00:00:00"
+      }, {
+        "count" : 16,
+        "item" : "2001-05-04T00:00:00"
+      }, {
+        "count" : 15,
+        "item" : "2001-07-06T00:00:00"
+      }, {
+        "count" : 14,
+        "item" : "2001-03-04T00:00:00"
+      }, {
+        "count" : 13,
+        "item" : "2001-09-18T00:00:00"
+      }, {
+        "count" : 12,
+        "item" : "2001-05-14T00:00:00"
+      }, {
+        "count" : 11,
+        "item" : "2001-06-16T00:00:00"
+      }, {
+        "count" : 10,
+        "item" : "2001-10-01T00:00:00"
+      }, {
+        "count" : 9,
+        "item" : "2001-06-15T00:00:00"
+      }, {
+        "count" : 8,
+        "item" : "2001-12-18T00:00:00"
+      }, {
+        "count" : 7,
+        "item" : "2001-03-16T00:00:00"
+      }, {
+        "count" : 6,
+        "item" : "2001-08-19T00:00:00"
+      }, {
+        "count" : 5,
+        "item" : "2001-08-20T00:00:00"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 1887,
+    "name" : "Incident Location",
+    "dataTypeName" : "location",
+    "fieldName" : "incident_location",
+    "position" : 5,
+    "renderTypeName" : "location",
+    "tableColumnId" : 237,
+    "width" : 304,
+    "cachedContents" : {
+      "non_null" : 1000,
+      "smallest" : {
+        "longitude" : "-89.581275",
+        "latitude" : "34.203035",
+        "human_address" : "{\"address\":\"1005 Stephon Via\",\"city\":\"New Elenor\",\"state\":\"MD\",\"zip\":\"93602-8915\"}"
+      },
+      "null" : 0,
+      "largest" : {
+        "longitude" : "-89.581462",
+        "latitude" : "32.249512",
+        "human_address" : "{\"address\":\"9995 Kurt Mountains\",\"city\":\"North Matteo\",\"state\":\"SD\",\"zip\":\"44440-6480\"}"
+      },
+      "top" : [ {
+        "count" : 20,
+        "item" : {
+          "longitude" : "-90.124594",
+          "latitude" : "32.557738",
+          "human_address" : "{\"address\":\"47556 Hilario Trace\",\"city\":\"Nikolasview\",\"state\":\"GA\",\"zip\":\"92754\"}"
+        }
+      }, {
+        "count" : 19,
+        "item" : {
+          "longitude" : "-88.495736",
+          "latitude" : "34.790659",
+          "human_address" : "{\"address\":\"320 Reilly Cove\",\"city\":\"Jenniferville\",\"state\":\"NC\",\"zip\":\"23079-4625\"}"
+        }
+      }, {
+        "count" : 18,
+        "item" : {
+          "longitude" : "-89.549287",
+          "latitude" : "34.288251",
+          "human_address" : "{\"address\":\"50055 Abshire Key\",\"city\":\"Elliotborough\",\"state\":\"SD\",\"zip\":\"17079\"}"
+        }
+      }, {
+        "count" : 17,
+        "item" : {
+          "longitude" : "-89.453034",
+          "latitude" : "31.938058",
+          "human_address" : "{\"address\":\"6651 Borer Mount\",\"city\":\"New Rhoda\",\"state\":\"NC\",\"zip\":\"51221\"}"
+        }
+      }, {
+        "count" : 16,
+        "item" : {
+          "longitude" : "-89.938655",
+          "latitude" : "33.533908",
+          "human_address" : "{\"address\":\"962 Cleora Turnpike\",\"city\":\"Billfurt\",\"state\":\"OR\",\"zip\":\"16591\"}"
+        }
+      }, {
+        "count" : 15,
+        "item" : {
+          "longitude" : "-89.162847",
+          "latitude" : "32.993171",
+          "human_address" : "{\"address\":\"1124 Barrows Island\",\"city\":\"Rogahnburgh\",\"state\":\"MT\",\"zip\":\"65078-5807\"}"
+        }
+      }, {
+        "count" : 14,
+        "item" : {
+          "longitude" : "-88.84951",
+          "latitude" : "31.21271",
+          "human_address" : "{\"address\":\"154 Torp Orchard\",\"city\":\"Justicestad\",\"state\":\"MO\",\"zip\":\"17067\"}"
+        }
+      }, {
+        "count" : 13,
+        "item" : {
+          "longitude" : "-89.085259",
+          "latitude" : "31.536777",
+          "human_address" : "{\"address\":\"31930 Larue Manor\",\"city\":\"South Conniechester\",\"state\":\"AZ\",\"zip\":\"86636-9069\"}"
+        }
+      }, {
+        "count" : 12,
+        "item" : {
+          "longitude" : "-88.978616",
+          "latitude" : "34.280798",
+          "human_address" : "{\"address\":\"2834 Kunde Port\",\"city\":\"Lake Tiffany\",\"state\":\"FL\",\"zip\":\"10810\"}"
+        }
+      }, {
+        "count" : 11,
+        "item" : {
+          "longitude" : "-89.205278",
+          "latitude" : "32.91087",
+          "human_address" : "{\"address\":\"2151 Cale Row\",\"city\":\"Lake Electabury\",\"state\":\"OK\",\"zip\":\"50934\"}"
+        }
+      }, {
+        "count" : 10,
+        "item" : {
+          "longitude" : "-88.949781",
+          "latitude" : "31.060195",
+          "human_address" : "{\"address\":\"560 Zoe Plaza\",\"city\":\"West Wilburnstad\",\"state\":\"LA\",\"zip\":\"96550\"}"
+        }
+      }, {
+        "count" : 9,
+        "item" : {
+          "longitude" : "-88.679877",
+          "latitude" : "32.931795",
+          "human_address" : "{\"address\":\"6016 Macie Wells\",\"city\":\"North Lavinia\",\"state\":\"WV\",\"zip\":\"57413-9774\"}"
+        }
+      }, {
+        "count" : 8,
+        "item" : {
+          "longitude" : "-90.724646",
+          "latitude" : "33.431023",
+          "human_address" : "{\"address\":\"2728 Neha Knoll\",\"city\":\"Piperburgh\",\"state\":\"IN\",\"zip\":\"52977\"}"
+        }
+      }, {
+        "count" : 7,
+        "item" : {
+          "longitude" : "-89.363737",
+          "latitude" : "31.203492",
+          "human_address" : "{\"address\":\"2092 Auer Club\",\"city\":\"Kirlinberg\",\"state\":\"TN\",\"zip\":\"74557-0510\"}"
+        }
+      }, {
+        "count" : 6,
+        "item" : {
+          "longitude" : "-90.018607",
+          "latitude" : "31.987243",
+          "human_address" : "{\"address\":\"8984 Stephen Grove\",\"city\":\"New Melvina\",\"state\":\"RI\",\"zip\":\"57478-7899\"}"
+        }
+      }, {
+        "count" : 5,
+        "item" : {
+          "longitude" : "-89.677215",
+          "latitude" : "33.071375",
+          "human_address" : "{\"address\":\"226 Rebekah Cape\",\"city\":\"Ahmadborough\",\"state\":\"HI\",\"zip\":\"52254\"}"
+        }
+      } ]
+    },
+    "format" : { },
+    "subColumnTypes" : [ "human_address", "latitude", "longitude", "machine_address", "needs_recoding" ]
+  }, {
+    "id" : 1888,
+    "name" : "Witness Gibberish",
+    "dataTypeName" : "text",
+    "fieldName" : "witness_gibberish",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 238,
+    "width" : 304,
+    "cachedContents" : {
+      "non_null" : 219,
+      "smallest" : "About us gobblers fork spiced beans down their gullets.",
+      "null" : 781,
+      "largest" : "You are walking through it howsomever.",
+      "top" : [ {
+        "count" : 20,
+        "item" : "If I open and am for ever in the black adiaphane."
+      }, {
+        "count" : 19,
+        "item" : "One moment."
+      }, {
+        "count" : 18,
+        "item" : "But always meeting ourselves."
+      }, {
+        "count" : 17,
+        "item" : "Every life is many days, day after day."
+      }, {
+        "count" : 16,
+        "item" : "When one reads these strange pages of one long gone one feels that one is at one with one who onceâ¦"
+      }, {
+        "count" : 15,
+        "item" : "Dominie Deasy kens them a'."
+      }, {
+        "count" : 14,
+        "item" : "Pinned up, I bet."
+      }, {
+        "count" : 13,
+        "item" : "I was a Flower of the mountain yes when I put the rose in my hair like the Andalusian girls used or shall I wear a red yes and how he kissed me under the Moorish wall and I thought well as well him as another and then I asked him with my eyes to ask again yes and then he asked me would I yes to say yes my mountain flower and first I put my arms around him yes and drew him down to me so he could feel my breasts all perfume yes and his heart was going like mad and yes I said yes I will Yes."
+      }, {
+        "count" : 12,
+        "item" : "There all the time without you: and ever shall be, world without end."
+      }, {
+        "count" : 11,
+        "item" : "I will."
+      }, {
+        "count" : 10,
+        "item" : "How?"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 1889,
+    "name" : "Blood Alcohol Level",
+    "dataTypeName" : "number",
+    "fieldName" : "blood_alcohol_level",
+    "position" : 7,
+    "renderTypeName" : "number",
+    "tableColumnId" : 239,
+    "width" : 328,
+    "cachedContents" : {
+      "non_null" : 753,
+      "smallest" : "0.01",
+      "sum" : "194.15",
+      "null" : 247,
+      "average" : "0.2578353253652058",
+      "largest" : "0.5",
+      "top" : [ {
+        "count" : 20,
+        "item" : "0.27"
+      }, {
+        "count" : 19,
+        "item" : "0.07"
+      }, {
+        "count" : 18,
+        "item" : "0.32"
+      }, {
+        "count" : 17,
+        "item" : "0.13"
+      }, {
+        "count" : 16,
+        "item" : "0.17"
+      }, {
+        "count" : 15,
+        "item" : "0.04"
+      }, {
+        "count" : 14,
+        "item" : "0.36"
+      }, {
+        "count" : 13,
+        "item" : "0.43"
+      }, {
+        "count" : 12,
+        "item" : "0.35"
+      }, {
+        "count" : 11,
+        "item" : "0.21"
+      }, {
+        "count" : 10,
+        "item" : "0.34"
+      }, {
+        "count" : 9,
+        "item" : "0.31"
+      }, {
+        "count" : 8,
+        "item" : "0.05"
+      }, {
+        "count" : 7,
+        "item" : "0.11"
+      }, {
+        "count" : 6,
+        "item" : "0.22"
+      }, {
+        "count" : 5,
+        "item" : "0.18"
+      }, {
+        "count" : 4,
+        "item" : "0.24"
+      }, {
+        "count" : 3,
+        "item" : "0.45"
+      }, {
+        "count" : 2,
+        "item" : "0.3"
+      }, {
+        "count" : 1,
+        "item" : "0.46"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 1890,
+    "name" : "Num1",
+    "dataTypeName" : "number",
+    "fieldName" : "num1",
+    "position" : 8,
+    "renderTypeName" : "number",
+    "tableColumnId" : 304,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1891,
+    "name" : "Num2",
+    "dataTypeName" : "number",
+    "fieldName" : "num2",
+    "position" : 9,
+    "renderTypeName" : "number",
+    "tableColumnId" : 305,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1892,
+    "name" : "Num3",
+    "dataTypeName" : "number",
+    "fieldName" : "num3",
+    "position" : 10,
+    "renderTypeName" : "number",
+    "tableColumnId" : 306,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1893,
+    "name" : "Num4",
+    "dataTypeName" : "number",
+    "fieldName" : "num4",
+    "position" : 11,
+    "renderTypeName" : "number",
+    "tableColumnId" : 307,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1894,
+    "name" : "Num5",
+    "dataTypeName" : "number",
+    "fieldName" : "num5",
+    "position" : 12,
+    "renderTypeName" : "number",
+    "tableColumnId" : 308,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1895,
+    "name" : "Num6",
+    "dataTypeName" : "number",
+    "fieldName" : "num6",
+    "position" : 13,
+    "renderTypeName" : "number",
+    "tableColumnId" : 309,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1896,
+    "name" : "Num7",
+    "dataTypeName" : "number",
+    "fieldName" : "num7",
+    "position" : 14,
+    "renderTypeName" : "number",
+    "tableColumnId" : 310,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1897,
+    "name" : "Num8",
+    "dataTypeName" : "number",
+    "fieldName" : "num8",
+    "position" : 15,
+    "renderTypeName" : "number",
+    "tableColumnId" : 311,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1898,
+    "name" : "Num9",
+    "dataTypeName" : "number",
+    "fieldName" : "num9",
+    "position" : 16,
+    "renderTypeName" : "number",
+    "tableColumnId" : 312,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1899,
+    "name" : "Num10",
+    "dataTypeName" : "number",
+    "fieldName" : "num10",
+    "position" : 17,
+    "renderTypeName" : "number",
+    "tableColumnId" : 313,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1900,
+    "name" : "Num11",
+    "dataTypeName" : "number",
+    "fieldName" : "num11",
+    "position" : 18,
+    "renderTypeName" : "number",
+    "tableColumnId" : 314,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1901,
+    "name" : "Num12",
+    "dataTypeName" : "number",
+    "fieldName" : "num12",
+    "position" : 19,
+    "renderTypeName" : "number",
+    "tableColumnId" : 315,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  }, {
+    "id" : 1902,
+    "name" : "Num13",
+    "dataTypeName" : "number",
+    "fieldName" : "num13",
+    "position" : 20,
+    "renderTypeName" : "number",
+    "tableColumnId" : 316,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 0,
+      "sum" : "0",
+      "null" : 1000
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "owner" : {
+    "id" : "tugg-ikce",
+    "displayName" : "Pete Vilter",
+    "screenName" : "Pete Vilter",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs" ],
+    "flags" : [ "admin" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "tugg-ikce",
+    "displayName" : "Pete Vilter",
+    "screenName" : "Pete Vilter",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs" ],
+    "flags" : [ "admin" ]
+  },
+  "flags" : [ "default" ]
+} ]

@@ -111,6 +111,8 @@ administration-federation:
 - screen-administration-federation
 administration-home:
 - screen-administration-home
+administration-jobs:
+- screen-administration-jobs
 administration-index-screen:
 - screen-admin-index
 administration-analytics-screen:

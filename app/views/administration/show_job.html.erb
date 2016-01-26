@@ -1,0 +1,89 @@
+<%- jobs_prefix = 'screens.admin.jobs' %>
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-jobs' %>
+  <title><%= t("#{jobs_prefix}.show_page.title") %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
+<% end %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.time-stamp').each(function(i, el) {
+      var $el = $(el);
+      var seconds = $el.data('epoch-seconds');
+      var theMoment = moment.unix(seconds);
+      $el.find('span').text(theMoment.format('D MMM YYYY [at] HH:mm:ss Z'));
+    });
+  });
+</script>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation showJobScreen">
+  <div class="adminHeader floating jobs">
+    <span class="icon"></span>
+    <span class="back-to-jobs-list">
+      <%= link_to t("#{jobs_prefix}.show_page.back"), {:action => 'jobs'} %>
+    </span>
+    <h1><%= t("#{jobs_prefix}.show_page.page_title") %></h1>
+  </div>
+</div>
+
+<div class="contentBox withLeftNavigation showJobScreen mainContent">
+  <%= display_standard_flashes %>
+
+  <div style="position: relative;">
+    <div>
+      <h1><%= t("#{jobs_prefix}.actions.#{@activity.activity_type.downcase}") %></h1>
+      <p class="file-name">
+        <% if @activity.file_name.blank? %>
+          (<%= t("#{jobs_prefix}.show_page.file_name_unknown") %>
+        <% else %>
+          <%= @activity.file_name %>
+        <% end %>
+        <span class="file-name-to"><%= t("#{jobs_prefix}.show_page.to") %></span>
+        <%= link_to @activity.dataset.name, view_path(@activity.dataset) %>
+      </p>
+    </div>
+    <div style="position: absolute; right: 0; top: 2px;">
+      <p class="import-status-label">
+        <span class="import-status-icon import-status-icon-<%= @activity.status %> icon-<%= icon_for_status(@activity.status) %>"></span>
+        <%= t("#{jobs_prefix}.statuses.#{@activity.status}") %>
+      </p>
+      <p class="result-time-stamp time-stamp" data-epoch-seconds="<%= @activity.created_at.to_i %>">
+        <span><%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
+        (<%= HumaneDateHelper.humane_date(@activity.created_at) %>)
+      </p>
+    </div>
+  </div>
+
+  <div class="import-job-events">
+    <% failure_events = @activity.events.keep_if { |event| event.status == 'Failure'} %>
+    <% if failure_events.empty? %>
+      <p><%= t("#{jobs_prefix}.show_page.no_events") %></p>
+    <% else %>
+      <% last_event = failure_events.last %>
+      <div class="import-job-event">
+        <h2><%= event_title(last_event) %></h2>
+        <p class="event-time-stamp time-stamp" data-epoch-seconds="<%= @activity.created_at.to_i %>">
+          <span><%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
+          (<%= HumaneDateHelper.humane_date(@activity.created_at) %>)
+        </p>
+        <div class="event-description-container">
+          <% description = event_description(last_event) %>
+          <% unless description.blank? %>
+            <p class="event-description event-description-human-readable"><%= html_safe(description) %></p>
+          <% else %>
+            <p class="error-details-heading">
+              <%= t("#{jobs_prefix}.show_page.error_details_heading") %>:
+            </p>
+            <pre class="event-description event-description-json"><%= JSON.pretty_generate(last_event.info) %></pre>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

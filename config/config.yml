@@ -65,6 +65,8 @@ development: &development
   mixpanel_token: 59b0b54697603105463834afdf20accf
   polaroid_hostname: localhost
   polaroid_port: 1337
+  import_status_service_hostname: localhost
+  import_status_service_port: 8082
   auth0_uri: socrata.auth0.com
   auth0_id: w59XZV0YDqx7us3GFHnHncXrAzFWkCnG
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI

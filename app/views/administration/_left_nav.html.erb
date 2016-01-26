@@ -66,6 +66,12 @@
         <%= admin_nav_link_to 'Metadata', :action => 'metadata' %>
       </li>
     <%- end -%>
+    <%- if FeatureFlags.derive(nil, request).show_admin_processes &&
+            CurrentDomain.user_can?(current_user, :view_all_dataset_status_logs) %>
+      <li class="jobs">
+        <%= admin_nav_link_to 'Jobs', :action => 'jobs' %>
+      </li>
+    <% end %>
     <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
       <li class="routingApproval">
         <%= admin_nav_link_to 'Dataset Routing &amp; Approval', :action => 'routing_approval' %>

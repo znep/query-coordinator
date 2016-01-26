@@ -15,6 +15,7 @@ module.exports = {
 function renderCell(cellContent, column, i18n) {
   var cellText;
 
+  utils.assertIsOneOfTypes(column, 'object');
   utils.assertHasProperty(column, 'renderTypeName');
 
   if (_.isUndefined(cellContent)) {

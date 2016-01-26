@@ -1,8 +1,10 @@
+@import "dataCards/common/colors";
 @import "dataCards/common/open-sans-font";
 
 // Styles for the standalone component/visualization/add page. Added for storyteller
 
 $visualization-add-color: #777;
+$visualization-add-warning-color: $yellow-warning-color;
 $visualization-add-column-and-vis-selector-width: 60%;
 $visualization-add-column-and-vis-selector-width: 60%;
 $visualization-add-column-padding: 20px;
@@ -144,6 +146,10 @@ body.state-view-visualizationAdd {
             &.selected:hover {
               color: #fff;
               background-color: #2379b2;
+            }
+
+            .icon-warning {
+              color: $visualization-add-warning-color;
             }
           }
         }

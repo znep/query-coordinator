@@ -21,6 +21,14 @@
     $element.
       addClass(utils.typeToClassNameForComponentType(componentData.type)).
       append($iframeElement);
+
+    $iframeElement.
+      mouseenter(function() {
+        $element.addClass('active');
+      }).
+      mouseleave(function() {
+        $element.removeClass('active');
+      });
   }
 
   function _updateSrc($element, componentData) {

@@ -99,7 +99,8 @@ body.story-save-error .user-story-container {
         }
       }
 
-      &:hover {
+      &:hover,
+      &.active {
         .component-edit-controls {
           opacity: 1;
         }

@@ -35,8 +35,6 @@ function columnAndVisualizationSelector(
     templateUrl: templateUrl,
     link: function(scope, element, attr) {
 
-      scope.disableVisualizationTypeSelector = attr.hasOwnProperty('disableVisualizationTypeSelector');
-
       /************************
       * Add new card behavior *
       ************************/
@@ -176,6 +174,16 @@ function columnAndVisualizationSelector(
           } else {
             return [];
           }
+        })
+      );
+
+      scope.$bindObservable('availableAndSupportedCardTypes', Rx.Observable.combineLatest(
+        scope.$observe('availableCardTypes'),
+        scope.$observe('supportedCardTypes'),
+        function(availableCardTypes, supportedCardTypes) {
+          // if supportedCardTypes is null, that means we support all card types.
+          // Yes, I know, sorry :(
+          return supportedCardTypes ? _.intersection(availableCardTypes, supportedCardTypes) : availableCardTypes;
         })
       );
 

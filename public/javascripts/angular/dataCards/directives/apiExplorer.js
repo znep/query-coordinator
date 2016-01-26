@@ -68,7 +68,7 @@ function ApiExplorer($window, http, WindowState, rx) {
       var datasetDocumentationUrl$ = Rx.Observable.combineLatest(
         datasetId$,
         domain$,
-        safeUrlFormatFn('http://dev.socrata.com/foundry/#/{0}/{1}'));
+        safeUrlFormatFn('https://dev.socrata.com/foundry/{0}/{1}'));
       var jsonAvailable$ = Rx.Observable.returnValue(true);
       var geoJsonAvailable$ = datasetId$.
         filter(function(value) { return !_.isNull(value); }).

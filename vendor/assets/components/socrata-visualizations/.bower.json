@@ -27,11 +27,11 @@
     "simple-statistics": "0.8.1"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
-  "_release": "720f3b2404",
+  "_release": "492a9abd1d",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "720f3b2404ce2f02210e92afdad3fc5eceeb676a"
+    "commit": "492a9abd1d130dd421cc92e6ff001a673511b6ff"
   },
   "_source": "git@github.com:socrata/frontend-visualizations.git",
   "_target": "master",

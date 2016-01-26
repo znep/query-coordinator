@@ -31,7 +31,7 @@ module.exports = function Table(element, vif) {
    */
 
   this.render = function(data, options) {
-    utils.assertHasProperties(data, 'rows', 'columns', 'datasetMetadata');
+    utils.assertHasProperties(data, 'rows', 'columns');
     if (_.isEqual(_lastRenderData, data) && _.isEqual(_lastRenderOptions, options)) {
       return;
     }
@@ -67,9 +67,8 @@ module.exports = function Table(element, vif) {
       // Render sample data into the table. Used for UI element measurement.
       self.render(
         {
-          columns: [ 'placeholder' ],
+          columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ],
           rows: [ [ 'placeholder' ] ],
-          datasetMetadata: { columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ] }
         },
         [ {} ]
       );
@@ -165,20 +164,16 @@ module.exports = function Table(element, vif) {
         '<table>',
           '<thead>',
             '<tr>',
-              data.columns.map(function(columnName) {
-                var template = activeSort.columnName === columnName ?
+              data.columns.map(function(column) {
+                var template = activeSort.columnName === column.fieldName ?
                   _templateTableSortedHeader() :
                   _templateTableHeader();
 
-                var column = _.find(data.datasetMetadata.columns, function(column) {
-                  return column.fieldName === columnName;
-                });
-
                 return template.format({
-                  columnName: columnName,
-                  columnTitle: column && column.name || columnName,
-                  columnDescription: column && column.description || '',
-                  sortDirection: activeSort.ascending ? 'arrow-down' : 'arrow-up' //TODO
+                  columnName: column.fieldName,
+                  columnTitle: (column && column.name) || column.fieldName,
+                  columnDescription: (column && column.description) || '',
+                  sortDirection: activeSort.ascending ? 'arrow-down' : 'arrow-up'
                 });
               }),
             '</tr>',
@@ -189,13 +184,7 @@ module.exports = function Table(element, vif) {
                 return '<tr class="null-row"></tr>';
               }
 
-              return '<tr>' + data.columns.map(function(columnName, columnIndex) {
-                var column = _.find(
-                  data.datasetMetadata.columns,
-                  {
-                    fieldName: columnName
-                  }
-                );
+              return '<tr>' + data.columns.map(function(column, columnIndex) {
                 return _templateTableCell(column, row[columnIndex])
               }).join('\n') + '</tr>';
             }),

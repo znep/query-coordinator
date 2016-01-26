@@ -24,8 +24,7 @@ describe('Table', function() {
 
     var renderOptions = {
       rows: [],
-      columns: [],
-      datasetMetadata: {}
+      columns: []
     };
 
     return {
@@ -72,24 +71,14 @@ describe('Table', function() {
     numberOfColumns = isFinite(numberOfColumns) ? numberOfColumns : 2;
 
     for (var index = 0; index < numberOfColumns; index++) {
-      columns[index] = 'header:' + index;
+      columns[index] = {
+        fieldName: 'header:' + index,
+        name: 'header:' + index,
+        renderTypeName: 'text'
+      }
     }
 
     return columns;
-  }
-
-  function datasetMetadata(columns, override) {
-    if (override) {
-      return override;
-    }
-
-    generatedColumns = columns.map(function(column) {
-       return {fieldName: column, renderTypeName: ''};
-    });
-
-    return {
-      columns: generatedColumns
-    };
   }
 
   function renderOptions(columns, override) {
@@ -108,8 +97,7 @@ describe('Table', function() {
 
     table.table.render({
       columns: generatedColumns,
-      rows: generatedRows,
-      datasetMetadata: datasetMetadata(generatedColumns, argv.datasetMetadata)
+      rows: generatedRows
     }, renderOptions(generatedColumns, argv.renderOptions));
   }
 
@@ -189,7 +177,12 @@ describe('Table', function() {
 
     describe('table headers', function() {
       it('renders the correct table headers', function() {
-        render(table, {columns: ['hello', 'world']});
+        render(table, {columns:
+          [
+            { fieldName: 'hello', name: 'hello', renderTypeName: 'text' },
+            { fieldName: 'world', name: 'world', renderTypeName: 'text' }
+          ]
+        });
 
         assert.lengthOf(table.element.find('th'), 2);
         assert.match(table.element.find('th:first-child').text(), /hello/);
@@ -198,7 +191,7 @@ describe('Table', function() {
 
       it('chooses the specified sort column', function() {
         render(table, {
-          columns: ['hello'],
+          columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ],
           renderOptions: [{ascending: true, columnName: 'hello'}]
         });
 
@@ -209,7 +202,7 @@ describe('Table', function() {
     describe('table data rows', function() {
       it('renders the correct number of table data rows', function() {
         render(table, {
-          columns: ['hello'],
+          columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ],
           rows: [['something']]
         });
 
@@ -235,7 +228,7 @@ describe('Table', function() {
         cellWidth = table.element.find('.socrata-table').width();
 
         render(table, {
-          columns: ['hello'],
+          columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ],
           rows: [['something']]
         });
         cellWidthAfter = table.element.find('.socrata-table').width();
@@ -246,7 +239,10 @@ describe('Table', function() {
       it('persists scrollLeft', function() {
         var scrollLeft;
         var scrollLeftAfter;
-        var columns = _.fill(Array(100), 'placeholder');
+        var columns = _.fill(
+          Array(100),
+          { fieldName: 'placeholder', field: 'placeholder', renderTypeName: 'text' }
+        );
 
         render(table, { columns: columns });
 
@@ -296,7 +292,7 @@ describe('Table', function() {
         var rows = _.fill(Array(amountOfRows), ['']);
 
         table.element.height(height);
-        render(table, {columns: ['hello'], rows: rows});
+        render(table, {columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ], rows: rows});
 
         var totalHeight = _.sum(
           table.element.find('.socrata-table tr').map(function() {
@@ -321,7 +317,7 @@ describe('Table', function() {
 
     describe('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function() {
       it('emits event when clicking a column header', function(done) {
-        render(table, {columns: ['hello']});
+        render(table, {columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ]});
 
         table.element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(event) {
           var payload = event.originalEvent.detail;
@@ -339,19 +335,12 @@ describe('Table', function() {
 
       beforeEach(function() {
         data = {
-          columns: ['hello'],
-          datasetMetadata: {
-            columns: [{
-              fieldName: 'hello',
-              description: 'world',
-              renderTypeName: ''
-            }]
-          }
+          columns: [ { description: 'world', fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ]
         }
       });
 
       it('does not emit event when column does not have description', function(done) {
-        delete data.datasetMetadata.columns[0].description;
+        delete data.columns[0].description;
 
         render(table, data);
 

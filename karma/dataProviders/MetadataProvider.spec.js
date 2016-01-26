@@ -288,6 +288,15 @@ describe('MetadataProvider', function() {
     });
   });
 
+  describe('isSystemColumn()', function() {
+    it('returns true if and only if the column starts with :', function() {
+      assert.isFalse(metadataProvider.isSystemColumn('foo', SAMPLE_DATASET_METADATA));
+      assert.isFalse(metadataProvider.isSystemColumn('foo:', SAMPLE_DATASET_METADATA));
+      assert.isFalse(metadataProvider.isSystemColumn('fo:o', SAMPLE_DATASET_METADATA));
+      assert.isFalse(metadataProvider.isSystemColumn('@foo', SAMPLE_DATASET_METADATA));
+      assert.isTrue(metadataProvider.isSystemColumn(':foo', SAMPLE_DATASET_METADATA));
+    });
+  });
   describe('isSubcolumn()', function() {
     it('returns true when there is a suffix', function() {
       var sampleDatasetMetadataWithExtraSimilarlyNamedColumns = _.cloneDeep(SAMPLE_DATASET_METADATA);

@@ -90,6 +90,10 @@ function MetadataProvider(config) {
     });
   };
 
+  this.isSystemColumn = function(fieldName) {
+    return fieldName[0] === ':';
+  };
+
   /*
    * CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
    * sub-columns become their own columns. This function uses heuristics to figure out if a

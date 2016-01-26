@@ -557,6 +557,230 @@ describe('SoqlDataProvider', function() {
     });
   });
 
+  describe('.getTableData()', function() {
+    var soqlDataProviderOptions = {
+      domain: VALID_DOMAIN,
+      datasetUid: VALID_DATASET_UID
+    };
+
+    // These tests don't resolve any data requests -
+    // we only care about what query gets generated.
+    describe('resultant query', function() {
+      var soqlDataProvider;
+      var $getStub;
+
+      before(function() {
+        soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
+        $getStub = sinon.stub($, 'get', _.constant(new Promise(_.noop))); // Stub $.get to never resolve.
+      });
+
+      beforeEach(function() {
+        $.get.reset(); // reset stub between tests.
+      });
+
+      after(function() {
+        $.get.restore();
+      });
+
+      // function getTableData (columnNames, order, offset, limit) { ... }
+      var argumentsAndExpectedQueryPairs = [
+        {
+          args: [ [ 'foo', 'bar' ], [ { columnName: 'foo', ascending: true } ], 0, 10 ],
+          resultantQueryParts: [ '$select=`foo`,`bar`', '$order=`foo`+ASC', '$offset=0', '$limit=10' ]
+        },
+        {
+          args: [ [ 'bar', 'foo' ], [ { columnName: 'foo', ascending: false } ], 100, 88 ],
+          resultantQueryParts: [ '$select=`bar`,`foo`', '$order=`foo`+DESC', '$offset=100', '$limit=88' ]
+        },
+        {
+          args: [ [ 'baz' ], [ { columnName: 'what', ascending: false } ], 10, 2 ],
+          resultantQueryParts: [ '$select=`baz`', '$order=`what`+DESC', '$offset=10', '$limit=2' ]
+        }
+      ];
+
+      argumentsAndExpectedQueryPairs.map(function(pair) {
+        var args = pair.args;
+        var resultantQueryParts = pair.resultantQueryParts;
+
+        resultantQueryParts.map(function(queryPart) {
+          it('given arguments {0} should produce query part {1}'.format(args.join(), queryPart), function() {
+            soqlDataProvider.getTableData.apply(soqlDataProvider, args);
+
+            assert.lengthOf($getStub.getCalls(), 1);
+            assert.include($getStub.getCalls()[0].args[0], queryPart);
+          });
+        });
+      });
+    });
+
+    describe('on request error', function() {
+
+      var soqlDataProvider;
+
+      beforeEach(function() {
+
+        server = sinon.fakeServer.create();
+        soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
+      });
+
+      afterEach(function() {
+        server.restore();
+      });
+
+      it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
+
+        soqlDataProvider.
+          getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
+          then(
+            function(data) {
+              // Fail the test since we expected an error response.
+              done('Request succeeded, we did not expect it to.');
+            },
+            function(error) {
+
+              assert.property(error, 'status');
+              assert.property(error, 'message');
+              assert.property(error, 'soqlError');
+              done();
+            }
+          ).catch(
+            done
+          );
+
+        _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
+      });
+
+      it('should include the correct request error status', function(done) {
+
+        soqlDataProvider.
+          getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
+          then(
+            function(data) {
+              done('Request succeeded, we did not expect it to.');
+            },
+            function(error) {
+
+              assert.equal(error.status, ERROR_STATUS);
+              done();
+            }
+          ).catch(
+            done
+          );
+
+        _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
+      });
+
+      it('should include the correct request error message', function(done) {
+
+        soqlDataProvider.
+          getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
+          then(
+            function(data) {
+              // Fail the test since we expected an error response.
+              done('Request succeeded, we did not expect it to.');
+            },
+            function(error) {
+              assert.equal(error.message.toLowerCase(), ERROR_MESSAGE.toLowerCase());
+              done();
+            }
+          ).catch(
+            done
+          );
+
+        _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
+      });
+
+      it('should include the correct soqlError object', function(done) {
+
+        soqlDataProvider.
+          getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
+          then(
+            function(data) {
+              // Fail the test since we expected an error response.
+              done('Request succeeded, we did not expect it to.');
+            },
+            function(error) {
+              assert.deepEqual(error.soqlError, JSON.parse(SAMPLE_ROW_REQUEST_ERROR));
+              done();
+            }
+          ).catch(
+            done
+          );
+
+        _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
+      });
+    });
+
+    describe('on request success', function(done) {
+
+      var soqlDataProviderOptions = {
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID
+      };
+      var soqlDataProvider;
+
+      beforeEach(function() {
+
+        server = sinon.fakeServer.create();
+        soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
+      });
+
+      afterEach(function() {
+
+        server.restore();
+      });
+
+      it('should return the expected columns', function(done) {
+
+        soqlDataProvider.
+          getTableData(['columnA', 'columnB'], [ { columnName: 'columnA', ascending: true } ], 0, 10).
+          then(
+            function(data) {
+
+              assert.deepEqual(data.columns, [ 'columnA', 'columnB' ]);
+              done();
+            },
+            done
+          ).catch(done);
+
+        _respondWithSuccess(SAMPLE_ROW_REQUEST_RESPONSE);
+      });
+
+      it('should return the expected rows', function(done) {
+
+        soqlDataProvider.
+          getTableData(['columnA', 'columnB'], [ { columnName: 'columnA', ascending: true } ], 0, 10).
+          then(
+            function(data) {
+
+              assert.deepEqual(data.rows, [
+                [ 'column A value 1', 'column B value 1' ],
+                [ 'column A value 2', 'column B value 2' ]
+              ]);
+              done();
+            },
+            done
+          ).catch(done);
+
+        _respondWithSuccess(
+          JSON.stringify([
+            {
+              "columnA": "column A value 1",
+              "columnB": "column B value 1",
+              "someOtherColumn": "some other value 1"
+            },
+            {
+              "columnA": "column A value 2",
+              "columnB": "column B value 2",
+              "someOtherColumn": "some other value 2"
+            }
+          ])
+        );
+      });
+    });
+
+  });
+
   describe('getRowCount()', function() {
     var soqlDataProvider;
     var soqlDataProviderOptions = {

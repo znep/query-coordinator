@@ -270,8 +270,8 @@ $(document).on('ready', function() {
 
   // Drag-drop
   var ghostElement = $('#block-ghost');
-  var dragDrop = new storyteller.DragDrop(addContentPanelElement.find('.inspiration-block'), ghostElement);
-  dragDrop.setup();
+  storyteller.dragDrop = new storyteller.DragDrop(addContentPanelElement.find('.inspiration-block'), ghostElement);
+  storyteller.dragDrop.setup();
 
   // Story title
   $('title, .story-title').storyTitle(storyteller.userStoryUid);

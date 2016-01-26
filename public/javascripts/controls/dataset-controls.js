@@ -2,7 +2,13 @@ datasetControlsNS = blist.namespace.fetch('blist.datasetControls');
 
 blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEmail)
 {
-    var tweet = escape($.t('controls.common.share.share_text', { name: view.name, site: blist.configuration.strings.company }));
+    var shareText = view.displayType === 'story' ? 'share_story_text' : 'share_text';
+    var tweet = escape(
+      $.t('controls.common.share.' + shareText, {
+        name: view.name,
+        site: blist.configuration.strings.company
+      })
+    );
     var seoPath = view.fullUrl;
     var shortPath = view.shortUrl;
     var opts = {

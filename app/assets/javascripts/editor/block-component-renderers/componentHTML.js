@@ -14,6 +14,10 @@
 
     _setupPhantomEditor($element, componentData, theme);
 
+    $element.append(
+      $('<div>', {'class': 'component-blinder hidden'})
+    );
+
     $element.addClass(utils.typeToClassNameForComponentType(componentData.type)).
       attr('data-editor-id', editorId);
 
@@ -25,6 +29,12 @@
 
     _applyThemeFontIfPresent(editor, theme);
     editor.applyThemeClass(theme);
+
+    $element.find('iframe').mouseenter(function() {
+      $element.closest('.block-edit').addClass('active');
+    }).mouseleave(function() {
+      $element.closest('.block-edit').removeClass('active');
+    });
 
     $element.one('destroy', function() {
       storyteller.richTextEditorManager.deleteEditor(editorId);

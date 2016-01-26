@@ -35,6 +35,7 @@ body.story-save-error .user-story-container {
     border: 1px solid transparent;
 
     &:hover,
+    &.active,
     &.is-resizing {
       border: 1px dashed $block-edit-hover-border-color;
     }
@@ -105,7 +106,8 @@ body.story-save-error .user-story-container {
       }
     }
 
-    &:hover {
+    &:hover,
+    &.active {
       z-index: $active-block-edit-z-index;
 
       .block-edit-controls {
@@ -118,6 +120,14 @@ body.story-save-error .user-story-container {
       margin: 0 $block-edit-controls-width;
       transition: none;
       box-sizing: border-box;
+
+      .component-blinder {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
 
       .component-html {
         position: relative;

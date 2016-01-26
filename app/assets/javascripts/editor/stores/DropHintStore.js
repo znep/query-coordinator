@@ -64,7 +64,7 @@
       if (storyteller.storyStore.storyExists(payload.storyUid)) {
         var dropIndex;
 
-        var pointerY = Unipointer.getPointerPoint(payload.pointer).y - window.scrollY;
+        var pointerY = Unipointer.getPointerPoint(payload.pointer).y - window.pageYOffset;
 
         // _.chain allows you to chain lodash calls together, vs. having to nest individual
         // calls.

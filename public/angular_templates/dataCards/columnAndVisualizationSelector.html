@@ -1,5 +1,5 @@
 <div class="row">
-  <div ng-class="disableVisualizationTypeSelector ? 'span12' : 'span7'">
+  <div class="span7">
     <div class="add-card-select-column">
       <div class="add-card-select-input-group">
         <label ng-if="selectedCardModel">{{::'addCardDialog.columnLabel' | I18n}}</label>
@@ -61,11 +61,11 @@
       </div>
     </div>
   </div>
-  <div class="span5 customize-card-options" ng-if="!disableVisualizationTypeSelector">
+  <div class="span5 customize-card-options">
     <visualization-type-selector
       card-model="selectedCardModel"
       supported-card-types="supportedCardTypes"
-      ng-show="availableCardTypes.length > 1">
+      ng-show="availableAndSupportedCardTypes.length > 1">
     </visualization-type-selector>
   </div>
 </div>

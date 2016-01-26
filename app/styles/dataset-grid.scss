@@ -491,6 +491,51 @@ div.blist-tr-pending {
   }
 }
 
+.blist-table-pagination {
+  background-color: white;
+  color: #333;
+  border: solid 1px #cacaca;
+
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 3em;
+  z-index: 22;
+
+  .navigation {
+    bottom: 0;
+    height: 3em;
+    left: 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    li {
+      display: inline-block;
+      vertical-align: middle;
+      &.rowCount {
+        float: left;
+        padding-top: 0.7em;
+      }
+      &.bucketSize {
+        float: right;
+        padding-top: 0.7em;
+      }
+      &.info, &.rowCount, &.bucketSize {
+        font-size: 1.2em;
+        line-height: 1.2em;
+        margin: 0 0.5em;
+      }
+      &.active a {
+        color: #999999;
+        cursor: auto;
+      }
+      .button {
+        padding: 0.3em;
+      }
+    }
+  }
+}
+
 .blist-table .blist-tr .blist-table-row-numbers {
   border-left-width: 0;
   color: #999999;

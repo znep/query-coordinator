@@ -72,6 +72,8 @@
 
         _blockContent = JSON.parse(sourceBlockElement.attr('data-block-content'));
 
+        $('.component-blinder').removeClass('hidden');
+
         ghostElement.
           removeClass('hidden').
           empty().
@@ -119,8 +121,8 @@
 
       ghostElement.
         css({
-          left: this.dragStartPoint.x + moveVector.x - _ghostCursorOffset - window.scrollX,
-          top: this.dragStartPoint.y + moveVector.y - _ghostCursorOffset - window.scrollY
+          left: this.dragStartPoint.x + moveVector.x - _ghostCursorOffset - window.pageXOffset,
+          top: this.dragStartPoint.y + moveVector.y - _ghostCursorOffset - window.pageYOffset
         });
     };
 
@@ -132,6 +134,8 @@
 
       $('body').removeClass('dragging');
       _blockContent = null;
+
+      $('.component-blinder').addClass('hidden');
       ghostElement.addClass('hidden');
 
       if (storyUidOver) {

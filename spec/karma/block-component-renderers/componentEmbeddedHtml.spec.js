@@ -92,6 +92,20 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
       });
     });
 
+    describe('internet explorer hovering', function() {
+      beforeEach(function() {
+        $component.find('iframe').mouseenter();
+      });
+
+      it('should add a .active class to the base element when hovering', function() {
+        assert.isTrue($component.hasClass('active'));
+      });
+
+      it('removes the .active class from the base element when leaving', function() {
+        $component.find('iframe').mouseleave();
+        assert.isFalse($component.hasClass('active'));
+      });
+    });
   });
 });
 

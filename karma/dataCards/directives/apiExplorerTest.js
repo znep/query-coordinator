@@ -3,7 +3,7 @@ describe('API Explorer', function() {
 
   var FAKE4x4 = 'fake-data';
   var TEST_DOMAIN = 'config.ru';
-  var DOCUMENTATION_URL = 'http://dev.socrata.com/foundry/#/{0}/{1}'.format(TEST_DOMAIN, FAKE4x4);
+  var DOCUMENTATION_URL = 'https://dev.socrata.com/foundry/{0}/{1}'.format(TEST_DOMAIN, FAKE4x4);
   var JSON_URL = 'https://{0}/resource/{1}.json'.format(TEST_DOMAIN, FAKE4x4);
   var GEOJSON_URL = 'https://{0}/resource/{1}.geojson'.format(TEST_DOMAIN, FAKE4x4);
 

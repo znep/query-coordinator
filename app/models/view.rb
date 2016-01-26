@@ -873,7 +873,7 @@ class View < Model
 
   def api_foundry_url
     domain = self.federated? ? self.domainCName : CurrentDomain.cname
-    "http://dev.socrata.com/foundry/#/#{domain}/#{id}"
+    "https://dev.socrata.com/foundry/#{domain}/#{id}"
   end
 
   def resource_url

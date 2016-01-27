@@ -1,5 +1,8 @@
 module AdminHelper
   def select_for_role(id, name = 'role', current_role = nil, css_class = '', include_none = true)
+    stories_roles = ['editor_stories', 'publisher_stories']
+    stories_disabled = !FeatureFlags.derive(nil, request).stories_enabled
+
     roles = User.roles_list
 
     out = %Q(<label for="#{id}">#{I18n.t('screens.admin.users.role')}</label>)
@@ -9,8 +12,9 @@ module AdminHelper
     roles.each do |role|
       out << %Q(<option value="#{role}")
       out << ' selected="selected"' if current_role && role == current_role
+      out << ' disabled' if stories_disabled && stories_roles.include?(role)
       # Use default to allow user-translated role names.
-      out << %Q(>#{I18n.t(key: role, scope: 'screens.admin.users.roles', default: role).titleize}</option>)
+      out << %Q(>#{I18n.t(role, scope: 'screens.admin.users.roles', default: role).titleize}</option>)
     end
     out << '</select>'
   end

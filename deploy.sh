@@ -3,6 +3,7 @@
 if [[ -z $(git status -s) ]]; then
   bundle exec middleman build
   git checkout gh-pages
+  git pull --rebase origin gh-pages
 
   ls | grep -v "build" | xargs -o rm -rf
   mv build/* .

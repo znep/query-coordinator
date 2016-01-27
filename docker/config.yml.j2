@@ -88,7 +88,7 @@ default: &default
   {% if IMPORT_STATUS_SERVICE_HOSTNAME -%}
   import_status_service_hostname: {{ IMPORT_STATUS_SERVICE_HOSTNAME }}
   import_status_service_port: {{ IMPORT_STATUS_SERVICE_PORT }}
-  {%- %}
+  {%- endif %}
 
   {% if TILESERVER_HOSTS is defined -%}
   tileserver_hosts: '{{ TILESERVER_HOSTS }}'

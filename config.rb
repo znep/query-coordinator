@@ -25,5 +25,5 @@ configure :build do
 end
 
 after_configuration do
-  FileUtils.cp_r('./src/fonts', './docs/fonts')
+  FileUtils.cp_r('./src/fonts', './docs')
 end

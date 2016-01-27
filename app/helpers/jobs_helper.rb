@@ -4,17 +4,6 @@ module JobsHelper
     "#{time.strftime('%d %b %Y at %H:%M:%S %Z')} (#{HumaneDateHelper.humane_date(time)})"
   end
 
-  def relative_day(time)
-    diff = Time.now - time
-    if diff < 1.day
-      t('core.date_time.current_day_past').capitalize
-    elsif diff < 2.days
-      t('core.date_time.single_day_past').capitalize
-    else
-      time.strftime('%d %b %Y')
-    end
-  end
-
   def icon_for_status(status)
     case status
       when 'notstarted'

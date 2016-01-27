@@ -2,22 +2,6 @@ require 'rails_helper'
 
 describe JobsHelper do
 
-  describe '#relative_day' do
-
-    it 'returns Today if passed a time today' do
-      expect(relative_day(Time.now - 2.hours)).to eq('Today')
-    end
-
-    it 'returns Yesterday if passed a time yesterday' do
-      expect(relative_day(Time.now - 1.day - 2.hours)).to eq('Yesterday')
-    end
-
-    it 'returns the full date if passed a time before yesterday' do
-      expect(relative_day(Time.new(2002, 10, 21))).to eq('21 Oct 2002')
-    end
-
-  end
-
   describe '#event_description' do
 
     it 'returns a localized description if the translation exists' do

@@ -9,16 +9,7 @@
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('.time-stamp').each(function(i, el) {
-      var $el = $(el);
-      var seconds = $el.data('epoch-seconds');
-      var theMoment = moment.unix(seconds);
-      $el.find('span').text(theMoment.format('D MMM YYYY [at] HH:mm:ss Z'));
-    });
-  });
-</script>
+<%= include_webpack_bundle 'admin-show-job.js' %>
 
 <%= render :partial => 'left_nav' %>
 

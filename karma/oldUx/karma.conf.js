@@ -47,6 +47,7 @@ module.exports = function ( karma ) {
       'public/javascripts/jquery-1.7.1.js',
       'public/javascripts/plugins/lodash.js',
       'bower_components/sinon-browser-only/sinon.js',
+      'bower_components/moment/moment.js',
 
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
@@ -72,6 +73,8 @@ module.exports = function ( karma ) {
       // 'public/javascripts/controls/render-type-manager.js',
       // 'public/javascripts/controls/grid-sidebar.js',
       // 'public/javascripts/screens/dataset-show.js',
+      'public/javascripts/screens/admin-jobs.js',
+      'public/javascripts/screens/admin-show-job.js',
 
       // Utilities/Libraries
       'public/javascripts/plugins/html4-defs.js',

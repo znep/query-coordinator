@@ -484,11 +484,12 @@ $.fn.socrataFeatureMap = function(vif) {
 
 		columnNames.forEach(
 			function(columnName) {
+				var columnMetadata = _.find(datasetMetadataColumns, {fieldName: columnName});
 
-				if (datasetMetadataColumns.hasOwnProperty(columnName)) {
+				if (_.isPlainObject(columnMetadata)) {
 
-					var columnMetadata = datasetMetadataColumns[columnName];
 					var columnValue = row[columnNames.indexOf(columnName)];
+					columnValue = _.isUndefined(columnValue) ? '' : columnValue;
 
 					// If we're formatting a sub-column, first find the parent
 					// column name and position, and then format accordingly.
@@ -502,10 +503,11 @@ $.fn.socrataFeatureMap = function(vif) {
 						// or 'crime_location_zip', the parentColumnName would be
 						// 'crime_location'.
 						var parentColumnName = columnName.slice(0, columnName.lastIndexOf('_'));
+						var parentColumnMetadata = _.find(datasetMetadataColumns, {fieldName: parentColumnName});
 
-						if (datasetMetadataColumns.hasOwnProperty(parentColumnName)) {
+						if (_.isPlainObject(parentColumnMetadata)) {
 
-							var parentPosition = datasetMetadataColumns[parentColumnName].position;
+							var parentPosition = parentColumnMetadata.position;
 							var subColumnName = extractSubColumnName(columnName, parentColumnName);
 							var subColumnDatum = {
 								column: subColumnName,

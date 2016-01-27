@@ -214,6 +214,10 @@
             // Address did change, so parse & submit that
             var address = {};
 
+            // Perform HTML escapes to keep parity with the cell renderer!
+            newStreet = $.htmlEscape(newStreet);
+            newCSZ = $.htmlEscape(newCSZ);
+
             if (newStreet !== '') { address.address = newStreet; }
 
             var zipResult = newCSZ.match(/(?:^|\s+)(\d{5}(\-\d{4})?)\s*$/);

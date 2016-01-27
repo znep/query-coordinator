@@ -15,6 +15,7 @@ blist.namespace.fetch('blist.datatypes');
     };
 
     // HTML
+    // TODO: Address potential XSS vector, tracked by EN-1959.
     var renderHtml = function(value, col, plainText, inMenu)
     {
         if ($.isBlank(value)) { return ''; }

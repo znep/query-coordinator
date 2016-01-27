@@ -782,7 +782,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       });
     }
 
-    function clearClickedPointHighlights() {
+    self.clearClickedPointHighlights = function clearClickedPointHighlights() {
 
       if (!_.isEmpty(self.currentClickedPoints)) {
 
@@ -791,7 +791,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       }
     }
 
-    function clearHoverPointHighlights() {
+    self.clearHoverPointHighlights = function clearHoverPointHighlights() {
 
       if (!_.isEmpty(self.currentHoverPoints)) {
 
@@ -873,21 +873,21 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
     }
 
     mapMouseoutCallback = function(e) {
-      clearHoverPointHighlights();
+      self.clearHoverPointHighlights();
     };
 
     map.on('mouseout', mapMouseoutCallback);
 
     mapDragstartCallback = function(e) {
-      clearHoverPointHighlights();
-      clearClickedPointHighlights();
+      self.clearHoverPointHighlights();
+      self.clearClickedPointHighlights();
     };
 
     map.on('dragstart', mapDragstartCallback);
 
     mapZoomstartCallback = function(e) {
-      clearHoverPointHighlights();
-      clearClickedPointHighlights();
+      self.clearHoverPointHighlights();
+      self.clearClickedPointHighlights();
     };
 
     map.on('zoomstart', mapZoomstartCallback);
@@ -1148,8 +1148,8 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       this.options.interactive = true;
 
       // Clear all related highlights.
-      clearClickedPointHighlights();
-      clearHoverPointHighlights();
+      this.clearClickedPointHighlights();
+      this.clearHoverPointHighlights();
 
       // Inform the caller that the layer has completed rendering.
       this.options.onRenderComplete();

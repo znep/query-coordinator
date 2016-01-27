@@ -165,58 +165,34 @@ String.prototype.linkify = function(extra)
 // When the Old UX is upgraded to ≥ 1.8, we can remove this line.
 $.fn.addBack = $.fn.andSelf;
 
-$.mixpanelMeta = function()
-{
-    var userId = 'Not Logged In',
-        isSocrata = 'Not Logged In',
-        userRoleName = 'n/a',
-        datasetOwner = 'n/a',
-        viewType = 'n/a',
-        viewId = 'n/a',
-        userOwnsDataset = 'n/a';
+$.updateMixpanelProperties = function() {
+  var userId = _.get(blist, 'currentUserId', 'Not Logged In');
+  var isSocrata = _.includes(_.get(blist, 'currentUser.flags'), 'admin');
+  var userRoleName = _.get(blist, 'currentUser.roleName', 'N/A');
+  var datasetOwner = _.get(blist, 'dataset.owner.id', 'N/A');
+  var viewType = _.get(blist, 'dataset.displayName', 'N/A');
+  var viewId = _.get(blist, 'dataset.id', 'N/A');
+  var userOwnsDataset = _.get(blist, 'dataset.owner.id') === userId;
+  var domain = window.location.hostname;
+  var pathName = window.location.pathname;
+  var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
 
-    //things that can be undefined if user is not logged in
-    if(!_.isUndefined(blist.currentUser)){
-        userId = blist.currentUserId;
-        isSocrata = _.any(blist.currentUser.flags, function(flag){return flag == 'admin'});
-        if(!_.isUndefined(blist.currentUser.roleName))
-        {
-            userRoleName = blist.currentUser.roleName;
-        }
-    }
-
-    //things that can be undefined if we're loging things outside of a dataset
-    if(!_.isUndefined(blist.dataset)){
-        viewType = blist.dataset.displayName;
-        viewId = blist.dataset.id;
-        datasetOwner = blist.dataset.owner.id;
-        if(!_.isUndefined(blist.currentUser)){
-            userOwnsDataset = blist.dataset.owner.id == blist.currentUserId;
-        }
-    }
-
-    var domain = window.location.hostname;
-    var pathName = window.location.pathname;
-    var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
-
-    if (blist.mixpanelLoaded) {
-        mixpanel.register({
-            'User Id': userId,
-            'Socrata Employee': isSocrata,
-            'User Role Name': userRoleName,
-            'Dataset Owner': datasetOwner,
-            'User Owns Dataset': userOwnsDataset,
-            'View Id': viewId,
-            'View Type': viewType,
-            'Domain': domain,
-            'On Page': pathName,
-            'Time Since Page Opened (sec)': time
-        });
-
-        //set user ID to mixpanels user ID if not logged in
-        userId = _.isUndefined(blist.currentUser) ? mixpanel.get_distinct_id() : userId;
-        mixpanel.identify(userId);
-    }
+  if (blist.mixpanelLoaded) {
+    mixpanel.register({
+      'User Id': userId,
+      'Socrata Employee': isSocrata,
+      'User Role Name': userRoleName,
+      'Dataset Owner': datasetOwner,
+      'User Owns Dataset': userOwnsDataset,
+      'View Id': viewId,
+      'View Type': viewType,
+      'Domain': domain,
+      'On Page': pathName,
+      'Time Since Page Opened (sec)': time
+    });
+    //set user ID to mixpanels user ID if not logged in
+    mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
+  }
 }
 
 $.hashHref = function(href)
@@ -1003,6 +979,7 @@ $.fn.exists = function()
     return this.length !== 0;
 };
 
+// TODO Used only in d3.impl.pie.js - replace with _.constant()
 $.thunk = function(val) { return function() { return val; } };
 
 /**

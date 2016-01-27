@@ -2,6 +2,7 @@ class PageMetadataController < ApplicationController
   include CommonMetadataMethods
   include CommonMetadataTransitionMethods
   include UserAuthMethods
+  include ApplicationHelper
 
   # TODO: We need to plumb our code through to support csrf token verification
   skip_before_filter :verify_authenticity_token

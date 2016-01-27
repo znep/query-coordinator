@@ -18,6 +18,7 @@ end
 module Frontend
   UID_REGEXP = /\w{4}-\w{4}/
   INTEGER_REGEXP = /-?\d+/
+  SESSION_SALT = 'g[+WtxX#j45-Dy#t9[c28hlDUIp0texy'
 
   class << self
     attr_accessor :statsd

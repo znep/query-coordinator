@@ -5,6 +5,7 @@ if RUBY_VERSION =~ /1.9/
   Encoding.default_internal = Encoding::UTF_8
 end
 
+gem 'mixpanel-ruby', '~> 1.6.0'
 gem 'addressable'
 gem 'airbrake', '4.3.0'
 gem 'axlsx', '~> 1.3.4'

@@ -47,19 +47,43 @@ $(function() {
     });
   }
 
+  function trackClearSearch(event) {
+    event.preventDefault();
+
+    _.defer(function() {
+      var newOpts = $.extend({}, opts, {
+        'q': encodeURIComponent(
+          $searchSection.find('.browse2-search-control').val()
+        ),
+        'Type': {
+          'Name': 'Cleared Search Field'
+        }
+      });
+
+      if (!blist.mixpanelLoaded) {
+        document.location = event.target.href;
+      } else {
+        $.updateMixpanelProperties();
+        var properties = _.extend(window._genericMixpanelPayload(), newOpts);
+        mixpanel.track('Cleared Search Field', properties, function() {
+          document.location = event.target.href;
+        });
+      }
+    });
+  }
+
   function hookSearch(event) {
     event.preventDefault();
 
     _.defer(function() {
-      var newOpts = $.extend(
-        {},
-        opts,
-        {
-          q: encodeURIComponent(
-            $searchSection.find('.browse2-search-control').val()
-          )
+      var newOpts = $.extend({}, opts, {
+        'q': encodeURIComponent(
+          $searchSection.find('.browse2-search-control').val()
+        ),
+        'Type': {
+          'Name': 'Cleared Search Field'
         }
-      );
+      });
 
       if ($.isBlank(newOpts.q)) {
         delete newOpts.q;
@@ -71,14 +95,11 @@ $(function() {
       if (!blist.mixpanelLoaded) {
         doBrowse(newOpts);
       } else {
-        $.mixpanelMeta();
-        mixpanel.track(
-          'Used Search Field',
-          {},
-          function() {
-            doBrowse(newOpts);
-          }
-        );
+        $.updateMixpanelProperties();
+        var properties = _.extend(window._genericMixpanelPayload(), newOpts);
+        mixpanel.track('Used Search Field', properties, function() {
+          doBrowse(newOpts);
+        });
       }
     });
   }
@@ -598,6 +619,7 @@ $(function() {
   if ($searchSection.length > 0) {
     $searchSection.submit(hookSearch);
     $searchSection.children('.browse2-search-mobile-search-button').click(hookSearch);
+    $searchSection.children('.browse2-clear-search-icon').click(trackClearSearch);
   }
 
   $sortType.on('change', doSort);

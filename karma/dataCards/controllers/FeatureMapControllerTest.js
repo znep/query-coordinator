@@ -609,7 +609,7 @@ describe('FeatureMapController', function() {
 
     it('uses the saved extent if one is set', function() {
       var customExtent = ZOOMED_IN_EXTENT;
-      var visualization = buildElement({ mapExtent: customExtent });
+      var visualization = buildElement({ dataset: dataset, mapExtent: customExtent });
       expect(visualization.scope.featureExtent).to.eql(customExtent);
     });
   });

@@ -348,11 +348,10 @@ function FeatureMapController(
       return Rx.Observable.
         fromPromise(CardDataService.getFeatureExtent(fieldName, currentDataset.id));
     }).
-    onErrorResumeNext(Rx.Observable.empty());// Promise error becomes empty observable
+    onErrorResumeNext(Rx.Observable.returnValue(undefined)); // Promise error returns undefined
 
   // TODO - Fix synchronization here - not getting saved value
   var synchronizedFeatureExtentData$ = serverExtent$.
-    startWith(undefined).
     combineLatest(
     defaultExtent$,
     savedExtent$,

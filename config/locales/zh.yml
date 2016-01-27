@@ -171,13 +171,18 @@ zh:
           error: "尝试解析此卡片时遇到错误。"
           no_data: "没有可显示的数据。"
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: "缩放功能暂不可用。请稍后再试。"
@@ -273,7 +278,6 @@ zh:
         validation_error_min_length: "请输入标题"
         validation_error_required: "请输入标题"
         visualization_as_image: "可视化此图片"
-        visualization_as_image_disabled_flyout: "请保存此页面以下载可视化图片"
       mobile_warning_dialog:
         acknowledgement: "好，明白了！"
         description: "我们正在努力改善此网站的移动体验。"

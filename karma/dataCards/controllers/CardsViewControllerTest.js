@@ -1185,7 +1185,7 @@ describe('CardsViewController', function() {
       xit :
       it)('does not trigger when the the user is in customize edit mode', function() {
         ServerConfig.override('enablePngDownloadUi', true);
-        ServerConfig.override('standaloneLensChart', false);
+        ServerConfig.override('enableDataLensExportMenu', false);
         var context = renderCardsView();
         var cardLayout = context.cardLayout;
         var $scope = cardLayout.$scope;
@@ -1198,6 +1198,18 @@ describe('CardsViewController', function() {
         $scope.$apply();
         expect(downloadButton.find('dropdown-menu').length).to.equal(0);
       });
+  });
+
+  describe('shouldShowExportMenu', function() {
+    it('is true if dataLensEnableExportMenu is true', function() {
+      ServerConfig.override('enableDataLensExportMenu', true);
+      expect(makeController().$scope.shouldShowExportMenu).to.equal(true);
+    });
+
+    it('is false if dataLensEnableExportMenu is false', function() {
+      ServerConfig.override('enableDataLensExportMenu', false);
+      expect(makeController().$scope.shouldShowExportMenu).to.equal(false);
+    });
   });
 
   describe('layout modes', function() {

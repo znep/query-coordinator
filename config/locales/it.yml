@@ -171,13 +171,18 @@ it:
           error: Si è verificato un errore nel tentativo di rappresentare questa scheda.
           no_data: Nessun dato da visualizzare.
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: Lo zoom non è attualmente disponibile. Ti preghiamo di riprovare.
@@ -273,7 +278,6 @@ it:
         validation_error_min_length: Inserisci un titolo
         validation_error_required: Inserisci un titolo
         visualization_as_image: Visualizzazione come immagine
-        visualization_as_image_disabled_flyout: Ti preghiamo di salvare la pagina per poter scaricare una visualizzazione come immagine
       mobile_warning_dialog:
         acknowledgement: Va bene, ho capito!
         description: Stiamo laviorando per migliorare l'esperienza mobile su questo sito.

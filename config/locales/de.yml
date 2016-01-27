@@ -171,13 +171,18 @@ de:
           error: EIn Fehler ist beim Erstellen der Card unterlaufen.
           no_data: Keine Informationen zum Anzeigen gefunden.
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: Zoom ist momentan nicht verfügbar. BItte versuchen SIe es später erneut.
@@ -273,7 +278,6 @@ de:
         validation_error_min_length: Bitte geben Sie einen Titel ein
         validation_error_required: Bitte geben Sie einen Titel ein
         visualization_as_image: Als Bild visualisieren
-        visualization_as_image_disabled_flyout: Bitte die Seite zunächst abspeichern, bevor Sie die Visualisierung als BIld herunterladen
       mobile_warning_dialog:
         acknowledgement: OK, ich habe verstanden!
         description: Wir arbeiten an der Verbesserung der Mobil-Nutzererfahrung dieser Webseite.

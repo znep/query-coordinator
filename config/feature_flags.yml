@@ -58,6 +58,10 @@ enable_data_lens_card_level_aggregation:
   description: Allow configuration of the aggregation at the card level instead of the page level.
   defaultValue: false
   category: data lens
+enable_data_lens_export_menu:
+  description: Toggles visibility of the export menu, which also allows export of the current filter.
+  defaultValue: false
+  category: data lens
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false

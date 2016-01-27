@@ -171,13 +171,18 @@ ro:
           error: A survenit o eroare încercând să redăm acest card.
           no_data: Nu există date de afișat.
       export_menu:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
+        csv:
+          header:
+          current_filter:
+          all_rows:
+          not_available:
+        image:
+          header:
+          description:
+        standalone_visualization:
+          header:
+          description:
+        choose_card:
       feature_map:
         feature_map_disabled:
         zoom_disabled: Funcția "Mărire" nu este disponibilă pentru moment. Vă rugăm să încercați mai târziu.
@@ -273,7 +278,6 @@ ro:
         validation_error_min_length: Vă rugăm să introduceți un titlu
         validation_error_required: Vă rugăm să introduceți un titlu
         visualization_as_image: Vizualizare ca imagine
-        visualization_as_image_disabled_flyout: Vă rugăm să salvați pagina pentru a putea descărca o vizualizare ca și imagine
       mobile_warning_dialog:
         acknowledgement: Ok, am înțeles!
         description: Lucrăm la îmbunătățirea experienței dvs. pe acest site de pe dispozitivele mobile.

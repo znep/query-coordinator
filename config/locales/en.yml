@@ -187,13 +187,18 @@ en:
           error: An error was encountered when trying to render this card.
           no_data: There is no data to display.
       export_menu:
-        download_button_for_image: Visualization as Image
-        download_button_for_rows: Rows as CSV (Excel)
-        download_explanation: Export the currently filtered view as a file on your computer. See the <u>Source Dataset</u> to download the full source data.
-        download_title: Download
-        save_to_catalog_button: Standalone Visualization
-        save_to_catalog_explanation: Save a part of this Data Lens directly to the site Catalog.
-        save_to_catalog_title: Save to Catalog
+        csv:
+          header: Rows as CSV (Excel)
+          current_filter: Current Filter
+          all_rows: All Rows
+          not_available: N/A
+        image:
+          header: Visualization as Image
+          description: Save a PNG-image file of a visualization
+        standalone_visualization:
+          header: Visualization to Catalog
+          description: Save one of the cards as a standalone interactive visualization in the catalog
+        choose_card: Choose Card
       feature_map:
         feature_map_disabled: Feature maps are unavailable.
         zoom_disabled: Zoom is temporarily unavailable. Please try again later.
@@ -293,7 +298,6 @@ en:
         validation_error_min_length: Please enter a title
         validation_error_required: Please enter a title
         visualization_as_image: Visualization as image
-        visualization_as_image_disabled_flyout: Please save the page in order to download a visualization as an image
       mobile_warning_dialog:
         acknowledgement: Okay, got it!
         description: We're working on improving the mobile experience on this site.

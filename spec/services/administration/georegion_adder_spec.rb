@@ -48,6 +48,11 @@ describe ::Services::Administration::GeoregionAdder do
       expect(actual).to be_an_instance_of(CuratedRegion)
     end
 
+    # TODO: Update this to test using synthetic spatial lens shape ids
+    it 'does not return the curated region if synthetic id flag is true' do
+      expect(subject.add(view_id, nil, geometry_label, name, nil, true)).to_not be_an_instance_of(CuratedRegion)
+    end
+
   end
 
   describe '#validate_view' do

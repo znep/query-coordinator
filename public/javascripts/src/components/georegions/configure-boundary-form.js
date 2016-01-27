@@ -15,7 +15,9 @@ const ConfigureBoundaryForm = React.createClass({
     authenticityToken: PropTypes.string.isRequired,
     cancelLabel: PropTypes.string.isRequired,
     fetchInitialState: PropTypes.func.isRequired,
-    id: PropTypes.number.isRequired,
+    id: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number]).isRequired,
     initialState: PropTypes.object,
     onBack: PropTypes.func,
     onCancel: PropTypes.func,
@@ -99,6 +101,8 @@ const ConfigureBoundaryForm = React.createClass({
     return !_.any(requiredFields, (fieldName) => (_.isEmpty(this.state[fieldName])));
   },
 
+  // TODO: Remove renderKeySelector and allowPrimaryKeySelection option once
+  // we're using synthetic spatial lens shape ids exclusively
   renderKeySelector() {
     const { allowPrimaryKeySelection } = this.props;
     const {

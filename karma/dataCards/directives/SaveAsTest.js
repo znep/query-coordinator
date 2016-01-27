@@ -2,7 +2,6 @@ describe('SaveAs', function() {
   'use strict';
 
   var scope;
-  var $window;
   var testHelpers;
   var Mockumentary;
   var ServerConfig;
@@ -12,12 +11,10 @@ describe('SaveAs', function() {
 
   beforeEach(function() {
     inject([
-      '$window',
       'testHelpers',
       'Mockumentary',
       'ServerConfig',
-      function(_$window, _testHelpers, _Mockumentary, _ServerConfig) {
-        $window = _$window;
+      function(_testHelpers, _Mockumentary, _ServerConfig) {
         testHelpers = _testHelpers;
         Mockumentary = _Mockumentary;
         ServerConfig = _ServerConfig;
@@ -29,22 +26,25 @@ describe('SaveAs', function() {
     ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
   });
 
-  function createElement(html) {
+  function createElement(html, datasetOverrides) {
     var saveAs;
     var element = angular.element(html);
 
     inject(function($compile, $rootScope) {
-      window.currentUser = {};
-
       saveAsEventSubject = new Rx.Subject();
       scope = $rootScope.$new();
-      scope.page = Mockumentary.createPage();
+      scope.page = Mockumentary.createPage(null, datasetOverrides);
       scope.savePageAs = sinon.spy(_.constant(saveAsEventSubject));
       saveAs = $compile(element)(scope);
       scope.$digest();
     });
+
     return saveAs;
   }
+
+  afterEach(function() {
+    testHelpers.TestDom.clear();
+  });
 
   it('should clean up after itself when the scope is destroyed', inject(function(WindowState) {
     var element = createElement('<save-as page="page"></save-as>');
@@ -87,6 +87,7 @@ describe('SaveAs', function() {
   describe('active tool panel', function() {
     var $saveAs;
     var $toolPanel;
+
     beforeEach(function() {
       $saveAs = createElement('<save-as has-changes="true" save-page-as="savePageAs" page="page"></save-as>');
       $saveAs.isolateScope().panelActive = true;
@@ -175,7 +176,6 @@ describe('SaveAs', function() {
       testHelpers.TestDom.append($saveAs);
       testHelpers.fireMouseEvent($saveAs.find('.tool-panel')[0], 'click');
       expect($toolPanel.hasClass('active')).to.be.false;
-      testHelpers.TestDom.clear();
     });
 
     it('should not become inactive if the area outside of the panel is clicked and the save button is not idle', function() {
@@ -184,9 +184,53 @@ describe('SaveAs', function() {
       $saveAs.isolateScope().$digest();
       testHelpers.fireMouseEvent($saveAs.find('.tool-panel')[0], 'click');
       expect($toolPanel.hasClass('active')).to.be.true;
-      testHelpers.TestDom.clear();
     });
-
   });
 
+  describe('visibility alert', function() {
+    var element;
+
+    function setup(userCanApproveNominations, datasetIsPrivate, obeId) {
+      var datasetOverrides = {
+        obeId: obeId,
+        permissions: {
+          isPublic: !datasetIsPrivate
+        }
+      };
+
+      window.currentUser = {
+        rights: userCanApproveNominations ? ['approve_nominations'] : []
+      };
+
+      element = createElement('<save-as has-changes="true" save-page-as="savePageAs" page="page"></save-as>', datasetOverrides);
+      element.isolateScope().panelActive = true;
+      testHelpers.TestDom.append(element);
+    }
+
+    it('should show a message if the user cannot approve nominations and the dataset is not private', function() {
+      setup(false, false, 'asdf-fdsa');
+      expect(element.find('.visibility-alert').html()).to.match(/You don\'t have permissions/);
+    });
+
+    it('should not show a message if the user can approve nominations and the dataset is not private', function() {
+      setup(true, false, 'asdf-fdsa');
+      expect(element.find('.visibility-alert')).to.not.exist;
+    });
+
+    it('should show a message if the user can approve nominations and the dataset is private', function() {
+      setup(true, true, 'asdf-fdsa');
+      expect(element.find('.visibility-alert').html()).to.match(/This Data Lens is based on the private dataset/);
+    });
+
+    it('should show a message if the user cannot approve nominations and the dataset is private', function() {
+      setup(false, true, 'asdf-fdsa');
+      expect(element.find('.visibility-alert').html()).to.match(/This Data Lens is based on the private dataset/);
+    });
+
+    it('should show a message without a link if the user can approve nominations and the dataset is private and the obeId does not exist', function() {
+      setup(true, true, null);
+      expect(element.find('.visibility-alert').html()).to.match(/This Data Lens is based on the private dataset/);
+      expect(element.find('.visibility-alert').html()).to.not.match(/\<a/);
+    });
+  });
 });

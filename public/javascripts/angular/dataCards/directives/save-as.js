@@ -17,8 +17,8 @@ function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, rx) {
         map(_.negate(_.property('isPublic')));
 
       var userCanApproveNominations$ = Rx.Observable.returnValue(
-        (currentUser || {}).hasOwnProperty('rights') &&
-          currentUser.rights.indexOf('approve_nominations') >= 0
+        ($window.currentUser || {}).hasOwnProperty('rights') &&
+          $window.currentUser.rights.indexOf('approve_nominations') >= 0
       );
 
       $scope.usingViewModeration = ServerConfig.getFeatureSet().view_moderation;
@@ -75,11 +75,13 @@ function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, rx) {
       };
 
       var privateDatasetMessage$ = $scope.page.observe('dataset').map(function(dataset) {
-        var url = I18n.a(`/d/${dataset.obeId}`);
-        return I18n.t(
-          'manageLensDialog.visibility.datasetIsPrivate',
-          `<a href="${url}">${dataset.getCurrentValue('name')}</a>`
-        );
+        var datasetName = dataset.getCurrentValue('name');
+        var sourceDatasetLink = I18n.a(`/d/${dataset.obeId}`);
+        var sourceDatasetText = _.isPresent(dataset.obeId) ?
+          `<a href="${sourceDatasetLink}" target="_blank">${datasetName}</a>` :
+          datasetName;
+
+        return I18n.t('manageLensDialog.visibility.datasetIsPrivate', sourceDatasetText);
       });
       $scope.$bindObservable('privateDatasetMessage', privateDatasetMessage$);
 

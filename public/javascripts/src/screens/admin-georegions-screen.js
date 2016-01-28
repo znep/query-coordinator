@@ -184,7 +184,16 @@ function showInitialConfigureModal(uid) {
   const onSave = (boundary, completeCallback, errorCallback) => {
     const onSuccess = ({ error, message, success }) => {
       if (success) {
-        addGeoregion(message);
+        if (enableSyntheticSpatialLensId) {
+          // add new georegion object to table, along with its jobId for polling
+          addGeoregion({
+            name: boundary.name,
+            jobId: message.jobId
+          });
+        } else {
+          addGeoregion(message);
+        }
+
         setFlashMessage(t('configure_boundary.save_success'), 'notice');
         closeConfigureModal();
       } else if (error) {

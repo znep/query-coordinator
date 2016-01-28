@@ -67,6 +67,8 @@ development: &development
   polaroid_port: 1337
   import_status_service_hostname: localhost
   import_status_service_port: 8082
+  curated_region_job_queue_hostname: localhost
+  curated_region_job_queue_port: 2030
   auth0_uri: socrata.auth0.com
   auth0_id: w59XZV0YDqx7us3GFHnHncXrAzFWkCnG
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI

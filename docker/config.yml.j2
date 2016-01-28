@@ -85,6 +85,11 @@ default: &default
   polaroid_port: {{ POLAROID_PORT }}
   {%- endif %}
 
+  {% if CURATED_REGION_JOB_QUEUE_HOSTNAME is defined and CURATED_REGION_JOB_QUEUE_PORT is defined -%}
+  curated_region_job_queue_hostname: {{ CURATED_REGION_JOB_QUEUE_HOSTNAME }}
+  curated_region_job_queue_port: {{ CURATED_REGION_JOB_QUEUE_PORT }}
+  {%- endif %}
+
   {% if IMPORT_STATUS_SERVICE_HOSTNAME -%}
   import_status_service_hostname: {{ IMPORT_STATUS_SERVICE_HOSTNAME }}
   import_status_service_port: {{ IMPORT_STATUS_SERVICE_PORT }}

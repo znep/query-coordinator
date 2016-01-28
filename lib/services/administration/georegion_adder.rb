@@ -10,38 +10,57 @@ module Services
       #   "defaultFlag" : false
       # }
 
-      def add(view_id, primary_key, geometry_label = nil, name = nil, options = nil, synthetic_id_flag = false)
+      def add(view_id, primary_key, geometry_label = nil, name = nil, options = nil, synthetic_id_flag = false, cookies = nil)
         raise '"id" is required' if view_id.nil?
+        raise '"primaryKey" is required' if primary_key.nil? && !synthetic_id_flag
 
+        view = View.find(view_id)
+        return unless validate_view(view)
+
+        # TODO: Remove curated regions endpoint once we're using synthetic
+        # spatial lens shape ids exclusively
         if synthetic_id_flag
-          # TODO in EN-1956: Enqueue an async job here instead of calling curated_regions API
-          Rails.logger.info("Creating curated region for #{view_id} via Async Region Coder")
+          attributes = {
+            :type => 'prepare_curated_region',
+            :name => name,
+            :geometryLabel => geometry_label,
+            :defaultFlag => false,
+            :enabledFlag => false
+          }
+          attributes = attributes.merge(options) unless options.nil?
+
+          Rails.logger.info("Creating curated region for #{view_id} via Curated Region Job Queue")
+          make_curated_region_job_queue_request(attributes, view_id, cookies)
         else
-          raise '"primaryKey" is required' if primary_key.nil?
-
-          view = View.find(view_id)
-          return unless validate_view(view)
-
           attributes = {
             :uid => view_id,
             :name => name || view.name,
             :geometryLabel => geometry_label,
             :featurePk => primary_key
           }
+          path = curated_regions_path
           attributes = attributes.merge(options) unless options.nil?
 
           Rails.logger.info("Creating curated region for #{view_id} via Curated Regions")
-          response = make_request(attributes)
+          response = make_curated_regions_request(attributes, path)
           CuratedRegion.parse(response)
         end
       end
 
-      def path
+      def curated_regions_path
         "/#{CuratedRegion.service_name}"
       end
 
-      def make_request(attributes)
+      def make_curated_regions_request(attributes, path)
         CoreServer::Base.connection.create_request(path, attributes.to_json, {})
+      end
+
+      def make_curated_region_job_queue_request(attributes, id, cookies)
+        curated_region_job_queue.enqueue_job(attributes, id, {:cookies => cookies})
+      end
+
+      def curated_region_job_queue
+        @curated_region_job_queue ||= CuratedRegionJobQueue.new
       end
 
       def validate_view(view)

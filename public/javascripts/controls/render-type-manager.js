@@ -22,7 +22,7 @@
                 { assets: 'rich-render-bundle' },
                 { assets: 'display-chart' }],
             scrollsInline: true,
-            translations: [ 'controls.charts' ]
+            translations: [ 'controls.charts', 'controls.common.visualization' ]
         },
 
         form: {
@@ -44,7 +44,7 @@
                 { assets: 'display-map' },
                 { assets: 'rich-render-bundle' }],
             scrollsInline: true,
-            translations: [ 'controls.map' ]
+            translations: [ 'controls.map', 'controls.common.visualization' ]
         },
 
         fatrow: {

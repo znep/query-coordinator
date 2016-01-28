@@ -247,6 +247,14 @@ class DatasetsControllerTest < ActionController::TestCase
 
   end
 
+  context 'helper methods' do
+
+    should 'respond to is_mobile?' do
+      assert(@controller.respond_to?(:is_mobile?))
+    end
+
+  end
+
   private
 
   def contact_form_data

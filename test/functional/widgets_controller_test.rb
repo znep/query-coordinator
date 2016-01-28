@@ -8,6 +8,14 @@ class WidgetsControllerTest < ActionController::TestCase
     load_sample_data('test/fixtures/sample-data.json')
   end
 
+  context 'helper methods' do
+
+    should 'respond to is_mobile?' do
+      assert(@controller.respond_to?(:is_mobile?))
+    end
+
+  end
+
   context '#show' do
     setup do
       test_view = View.find('test-data')

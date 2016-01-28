@@ -1,4 +1,7 @@
 class WidgetsController < ApplicationController
+
+  include ApplicationHelper
+
   skip_before_filter :require_user, :disable_frame_embedding
   layout 'widgets'
 

@@ -895,6 +895,7 @@ en:
       previous: Previous
       previous_row: Previous row
       request_timed_out: Request for this data timed out.
+      unable_to_load_map_html: <h3>We're having trouble connecting to the Esri map service that hosts this map.</h3><p>If the problem persists, please contact this site’s administrator with this error message.</p>
     nominate:
       all: All
       approve: "(Approve)"

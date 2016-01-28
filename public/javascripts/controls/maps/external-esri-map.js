@@ -33,8 +33,45 @@
                     layer.featureLayer
                         = new esri.layers.FeatureLayer(path + '/' + layer.layerId);
 
+                    // If the customer's endpoint sends back a 4xx/5xx error,
+                    // Dojo will helpfully twiddle its thumbs for a full minute.
+                    //
+                    // This value is configurable @ esri.config.defaults.io.timeout —
+                    // https://developers.arcgis.com/javascript/jsapi/esri.config.html —
+                    // but that would affect all requests and there's a fine line
+                    // between waiting too long without reacting and not waiting
+                    // long enough for the server to respond.
+                    //
+                    // The onLoad error below won't be triggered until that time
+                    // has elapsed, so we need to show something else that lets
+                    // the user know we didn't just walk away.
+                    var errorOverlay = $.tag({
+                        tagName: 'div',
+                        'class': 'esriConnectorWarning',
+                        contents: [{
+                            tagName: 'div',
+                            contents: $.t('controls.map.unable_to_load_map_html')
+                        }, {
+                            tagName: 'div',
+                            'class': 'loadingSpinner minimal'
+                        }]
+                    });
+                    var errorOverlayTimer = setTimeout(function() {
+                        $('.visualizationArea').prepend(errorOverlay);
+                    }, 2000);
+
+                    dojo.connect(layer.featureLayer, 'onError', function() {
+                        // Something went wrong with the request for the customer's endpoint.
+                        // This could be a 404/500 error, or it could be a 200
+                        // with an embedded error code/detail in the response.
+                        errorOverlay.find('.loadingSpinner').remove();
+                    });
+
                     dojo.connect(layer.featureLayer, 'onLoad', function()
                     {
+                        clearTimeout(errorOverlayTimer);
+                        errorOverlay.remove();
+
                         if ($.subKeyDefined(layer, 'featureLayer.renderer.infos'))
                         {
                             layer._suggestedTolerance = Math.round(Math.max.apply(null,

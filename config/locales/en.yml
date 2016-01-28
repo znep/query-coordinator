@@ -1818,7 +1818,7 @@ en:
               description: The job is being aborted because too many errors were found in your input data.
             invalid_row_length:
               title: Unexpected number of fields in row
-              description: Row #%{record} in your CSV file contained %{actual} fields, whereas your other rows contained %{expected} fields. Please ensure that your file has a consistent number of fields per row.
+              description: "Row #%{record} in your CSV file contained %{actual} fields, whereas your other rows contained %{expected} fields. Please ensure that your file has a consistent number of fields per row."
             uninterpretable_value:
               title: Uninterpretable record value
               description: The value "%{value}" in row %{record}, column "%{column}" could not be read as a %{expectedType}. Please ensure that all values are formatted correctly for their target columns.

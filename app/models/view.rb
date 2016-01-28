@@ -876,8 +876,12 @@ class View < Model
     "https://dev.socrata.com/foundry/#{domain}/#{id}"
   end
 
-  def resource_url
-    "//#{CurrentDomain.cname}/resource/#{id}.json"
+  def resource_url(request = nil)
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{id}.json"
+  end
+
+  def odata_url(request = nil)
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{id}"
   end
 
   def tweet

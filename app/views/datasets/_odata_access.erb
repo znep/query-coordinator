@@ -5,6 +5,6 @@
   </div>
   <h3><%= t('screens.ds.grid_sidebar.odata.endpoint_action') %></h3>
   <div class="odataEndpointWrapper">
-    <pre><%= "//#{CurrentDomain.cname}/OData.svc/#{@view.id}" %></pre>
+    <%= content_tag('input', nil, value: @view.odata_url(request), readonly: 'readonly', type: 'text', onclick: 'this.select();') %>
   </div>
 </div>

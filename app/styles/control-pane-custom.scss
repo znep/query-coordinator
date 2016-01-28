@@ -158,20 +158,13 @@
         margin-bottom: 1em;
       }
       .apiEndpointWrapper {
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
-        -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-        flex-direction: row;
-        -webkit-flex-wrap: nowrap;
-        -ms-flex-wrap: nowrap;
-        flex-wrap: nowrap;
-        -webkit-align-content: stretch;
-        -ms-flex-line-pack: stretch;
-        align-content: stretch;
-        input {
-          width: 100%;
+        background-color: #ddd;
+        margin: 1em;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 2em;
+        input[type=text] {
+          width: 95%;
         }
         button {}
       }
@@ -192,8 +185,8 @@
         overflow-x: auto;
         overflow-y: hidden;
         padding: 2em;
-        pre {
-          font-size: 1.3em;
+        input[type=text] {
+          width: 95%;
         }
       }
     }

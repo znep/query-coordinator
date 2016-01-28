@@ -649,6 +649,26 @@ class ViewTest < Test::Unit::TestCase
     assert(derived_view_from_multiple_datasets.is_layered?)
   end
 
+  def test_resource_url_uses_proper_scheme
+    view = View.new('id' => '1234-1234')
+    assert_equal('https://localhost/resource/1234-1234.json', view.resource_url)
+    mock_request = stub
+    mock_request.stubs(:scheme => 'https')
+    assert_equal('https://localhost/resource/1234-1234.json', view.resource_url(mock_request))
+    mock_request.stubs(:scheme => 'http')
+    assert_equal('http://localhost/resource/1234-1234.json', view.resource_url(mock_request))
+  end
+
+  def test_odata_url_uses_proper_scheme
+    view = View.new('id' => '1234-1234')
+    assert_equal('https://localhost/OData.svc/1234-1234', view.odata_url)
+    mock_request = stub
+    mock_request.stubs(:scheme => 'https')
+    assert_equal('https://localhost/OData.svc/1234-1234', view.odata_url(mock_request))
+    mock_request.stubs(:scheme => 'http')
+    assert_equal('http://localhost/OData.svc/1234-1234', view.odata_url(mock_request))
+  end
+
   private
 
   def stub_core_server_connection

@@ -124,11 +124,6 @@ var Dataset = ServerModel.extend({
                 this._setupDefaultSnapshotting(5000);
             }
         }
-      this.bucketSize = parseInt(blist.feature_flags.nbe_bucket_size, 10) || 1000;
-    },
-
-    usingBuckets: function() {
-      return this.newBackend && false !== blist.feature_flags.nbe_bucket_size;
     },
 
     rowForID: function(id)
@@ -148,18 +143,6 @@ var Dataset = ServerModel.extend({
 
     totalRows: function()
     { return this._activeRowSet.totalRows(); },
-
-    getRowBucket: function(index) {
-      return this._activeRowSet.getRowBucket(index);
-    },
-
-    bucketIndex: function(bucketStart) {
-      return this._activeRowSet.bucketIndex(bucketStart);
-    },
-
-    totalBuckets: function() {
-      return this._activeRowSet.totalBuckets();
-    },
 
     isDefault: function() { return _.include(this.flags || [], 'default'); },
 
@@ -948,9 +931,9 @@ var Dataset = ServerModel.extend({
     },
 
     // Callback may be called multiple times with smaller batches of rows
-    getRows: function(start, len, successCallback, errorCallback, reversedSortOrder)
+    getRows: function(start, len, successCallback, errorCallback)
     {
-        this._activeRowSet.getRows(start, len, successCallback, errorCallback, reversedSortOrder);
+        this._activeRowSet.getRows(start, len, successCallback, errorCallback);
     },
 
     getAllRows: function(successCallback, errorCallback)

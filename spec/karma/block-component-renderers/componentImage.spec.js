@@ -7,7 +7,8 @@ describe('componentImage jQuery plugin', function() {
     type: 'image',
     value: {
       documentId: '1234',
-      url: 'https://imageuploads.com/valid-upload-image.png'
+      url: 'https://imageuploads.com/valid-upload-image.png',
+      alt: 'Much alt'
     }
   };
 
@@ -95,6 +96,27 @@ describe('componentImage jQuery plugin', function() {
         assert.equal(
           $component.find('img').attr('src'),
           updatedData.value.url
+        );
+      });
+    });
+
+    describe('img src attribute', function() {
+      it('should start off correct', function() {
+        assert.equal(
+          $component.find('img').attr('alt'),
+          validComponentData.value.alt
+        );
+      });
+
+      it('should update', function() {
+        var updatedData = _.cloneDeep(validComponentData);
+        updatedData.value.alt = '';
+
+        $component.componentImage(updatedData);
+
+        assert.equal(
+          $component.find('img').attr('alt'),
+          null
         );
       });
     });

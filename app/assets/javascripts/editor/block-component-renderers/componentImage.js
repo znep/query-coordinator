@@ -23,10 +23,11 @@
       append($imgElement);
   }
 
-  function _updateSrc($element, componentData) {
+  function _updateImageAttributes($element, componentData) {
 
     var imgSrc;
     var documentId;
+    var altAttribute;
     var $imgElement = $element.find('img');
 
     utils.assertHasProperty(componentData, 'value');
@@ -35,6 +36,7 @@
 
     imgSrc = componentData.value.url;
     documentId = componentData.value.documentId;
+    altAttribute = componentData.value.alt;
 
     if ($imgElement.attr('src') !== imgSrc || $imgElement.attr('data-document-id') !== String(documentId)) {
       _informHeightChanges($imgElement);
@@ -42,6 +44,8 @@
       $imgElement.attr('src', imgSrc);
       $imgElement.attr('data-document-id', documentId);
     }
+
+    $imgElement.attr('alt', _.isEmpty(altAttribute) ? null : altAttribute);
   }
 
   function _informHeightChanges($image) {
@@ -95,7 +99,7 @@
       _renderImage($this, componentData);
     }
 
-    _updateSrc($this, componentData);
+    _updateImageAttributes($this, componentData);
     $this.componentBase(componentData, theme, options);
 
     return $this;

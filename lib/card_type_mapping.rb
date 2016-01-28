@@ -42,20 +42,12 @@ module CardTypeMapping
       when 'geo_entity'
         card_type = 'feature'
       when 'money'
-        if histogram_enabled?
-          card_type = 'histogram'
-        else
-          card_type = 'column'
-        end
+        card_type = 'histogram'
       when 'number'
         if has_georegion_computation_strategy?(column)
           card_type = 'choropleth'
-        elsif histogram_enabled?
-          card_type = 'histogram'
-        elsif is_low_cardinality?(cardinality, dataset_size)
-          card_type = 'column'
         else
-          card_type = 'search'
+          card_type = 'histogram'
         end
       when 'point'
         card_type = 'feature'
@@ -118,18 +110,12 @@ module CardTypeMapping
       when 'geo_entity'
         available_card_types = ['feature']
       when 'money'
-        if histogram_enabled?
-          available_card_types = ['column', 'search', 'histogram']
-        else
-          available_card_types = ['column', 'search']
-        end
+        available_card_types = ['column', 'search', 'histogram']
       when 'number'
         if has_georegion_computation_strategy?(column)
           available_card_types = ['choropleth']
-        elsif histogram_enabled?
-          available_card_types = ['histogram', 'column', 'search']
         else
-          available_card_types = ['column', 'search']
+          available_card_types = ['histogram', 'column', 'search']
         end
       when 'point'
         available_card_types = ['feature', 'choropleth']
@@ -158,10 +144,6 @@ module CardTypeMapping
   end
 
   private
-
-  def histogram_enabled?
-    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:odux_enable_histogram]
-  end
 
   def has_georegion_computation_strategy?(column)
     computation_strategy_type = column.try(:[], :computationStrategy).try(:[], :strategy_type)

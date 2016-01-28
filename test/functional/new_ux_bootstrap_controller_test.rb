@@ -22,7 +22,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       View.any_instance.stubs(:find => test_view)
       # TODO determine why 23 tests fail or break when :use_ephemeral_bootstrap is set to true
       stub_feature_flags_with(:use_ephemeral_bootstrap, false)
-      stub_feature_flags_with(:odux_enable_histogram, true)
       stub_feature_flags_with(:create_v2_data_lens, false)
       stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, false)
     end
@@ -575,51 +574,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               assert(page['cards'].none? do |card|
                 card['fieldName'] == 'point_city'
               end, 'should omit sub-columns')
-
-            end.returns(status: '200', body: { pageId: 'neoo-page' })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
-
-          should 'not create a card for number or money columns, if histograms are unsupported' do
-            mock_dataset_metadata = v1_mock_dataset_metadata
-            mock_dataset_metadata[:columns] = {
-              money_column: {
-                name: 'Moneymoneymoneymoooney',
-                description: 'A Money column that should be omitted',
-                fred: 'money',
-                physicalDatatype: 'money'
-              },
-              number_column: {
-                name: 'Onetwothree',
-                description: 'best to conserve numbers afore they run out',
-                fred: 'number',
-                physicalDatatype: 'number'
-              },
-              time_column: {
-                name: 'time column',
-                description: 'this is the only one that should be included',
-                fred: 'time',
-                physicalDatatype: 'fixed_timestamp'
-              }
-            }
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: mock_dataset_metadata
-              },
-              update_dataset_metadata: {
-                status: '200', body: mock_dataset_metadata
-              }
-            )
-            stub_feature_flags_with(:odux_enable_histogram, false)
-
-            # Make sure the page we're creating doesn't create cards out of money or number columns
-            @page_metadata_manager.expects(:create).with do |page, _|
-              refute(page['cards'].any? { |card| card['cardType'] == 'histogram' },
-                'should omit all number/money coumns')
-
-              assert_equal(page['cards'][0]['fieldName'], 'time_column')
 
             end.returns(status: '200', body: { pageId: 'neoo-page' })
 

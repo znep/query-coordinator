@@ -7,15 +7,11 @@ angular.module('dataCards.models').
 
     // Determine additional customization and export parameters based on enabled features
     var CUSTOMIZABLE_MAP_TYPES = ['choropleth'];
-    var EXPORTABLE_CARD_TYPES = ['choropleth', 'column', 'timeline'];
+    var EXPORTABLE_CARD_TYPES = ['choropleth', 'column', 'timeline', 'histogram'];
 
     if (ServerConfig.get('oduxEnableFeatureMap')) {
       CUSTOMIZABLE_MAP_TYPES.push('feature');
       EXPORTABLE_CARD_TYPES.push('feature');
-    }
-
-    if (ServerConfig.get('oduxEnableHistogram')) {
-      EXPORTABLE_CARD_TYPES.push('histogram');
     }
 
     var Card = Model.extend({

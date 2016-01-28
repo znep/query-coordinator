@@ -4,12 +4,13 @@ Rails.application.routes.draw do
   get 'post_login' => 'post_login#show'
 
   scope '/s', constraints: { uid: UNANCHORED_FOUR_BY_FOUR_PATTERN } do
-    get '(:vanity_text)/:uid' => 'stories#show'
+    get '(:vanity_text)/:uid' => 'stories#show', as: 'story'
     get ':uid/create' => 'stories#new'
     get ':uid/copy' => 'stories#copy'
     post ':uid/create' => 'stories#create'
     get '(:vanity_text)/:uid/edit' => 'stories#edit'
     get '(:vanity_text)/:uid/preview' => 'stories#preview'
+    get '(:vanity_text)/:uid/widget' => 'stories#widget', as: 'widget'
   end
 
   get 'themes/custom' => 'themes#custom', defaults: { format: 'css' }

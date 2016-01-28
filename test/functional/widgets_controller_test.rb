@@ -21,7 +21,7 @@ class WidgetsControllerTest < ActionController::TestCase
       @request.env['HTTPS'] = 'on'
       get :show, id: 'four-four', customization_id: 'default'
       assert_response :success
-      assert_select_quiet '.odataEndpointWrapper pre' do |elements|
+      assert_select_quiet '.odataEndpointWrapper input' do |elements|
         elements.each do |element|
           element.to_s.scan(/http.?:\/\//).each do |match|
             assert_equal(match, 'https://')

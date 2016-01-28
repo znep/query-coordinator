@@ -183,7 +183,7 @@
     blist.widget.theme = <%= raw json_escape(@theme.to_json) %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
     blist.widget.enabledModules = <%= raw json_escape(@view.enabled_modules.to_json) %>;
-    blist.widget.showPrivateMessage = <%= !@view.is_public? && !is_mobile %>;
+    blist.widget.showPrivateMessage = <%= !@view.is_public? && !is_mobile? %>;
   </script>
 
   <%= include_javascripts 'widgets-show' %>

@@ -24,10 +24,8 @@
   }
 }
 
-.navRenderType, .blist-table-pagination {
-  .navigation li .button {
-    @include sprite-menu-icons;
-  }
+.navRenderType .navigation li .button {
+  @include sprite-menu-icons;
 }
 
 .geolocator_button {

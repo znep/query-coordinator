@@ -1100,8 +1100,6 @@
             var viewportHeight = $scrolls.height();
             if ($footerScrolls.is(':visible'))
             { viewportHeight -= $footerScrolls.outerHeight() - 1; }
-            if ($pagination.is(':visible'))
-            { viewportHeight -= $pagination.outerHeight() - 1; }
             if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
             {
                 viewportHeight -= scrollbarWidth;
@@ -2183,7 +2181,6 @@
             '<div class="blist-table-footer-scrolls">' +
             '    <div class="blist-table-footer">&nbsp;</div>' +
             '</div>' +
-            '<div class="blist-table-pagination"></div>' +
             '<div class="blist-table-util"></div>';
 
         $(document)
@@ -2249,7 +2246,6 @@
         // Footer pieces
         var $footerScrolls = $outside.find('.blist-table-footer-scrolls');
         var $footer = $footerScrolls.find('.blist-table-footer');
-        var $pagination = $outside.find('.blist-table-pagination');
 
         // These utility nodes are used to append rows and measure cell text,
         // respectively
@@ -2341,8 +2337,6 @@
             var footerHeight = 0;
             if ($footerScrolls.is(':visible'))
             { footerHeight += $footerScrolls.outerHeight() - 1; }
-            if ($pagination.is(':visible'))
-            { footerHeight += $pagination.outerHeight() - 1; }
             if (insideHeight + footerHeight < scrollHeight)
             { footerHeight += scrollHeight - footerHeight - insideHeight; }
             end("updateLayout.size.footer");
@@ -2409,10 +2403,8 @@
                 lockedBottom += scrollbarWidth;
                 footerBottom += scrollbarWidth;
             }
-            var paginationHeight = $pagination.filter(':visible').outerHeight() || 0;
-            $lockedFooter.css('bottom', lockedBottom + paginationHeight - 2);
             $lockedScrolls.height($outside.height() - lockedBottom);
-            $footerScrolls.css('bottom', footerBottom + paginationHeight - 1);
+            $footerScrolls.css('bottom', footerBottom);
 
             // Adjust the margin footer for the scrollbar if necessary
             // Adjusting the width directly caused Safari to lose scrolling
@@ -3829,148 +3821,6 @@
             { pendingAggs = true; }
         };
 
-        // String that describe the current page.
-        var currentPageText = function() {
-          return $.t('controls.grid.viewing_current_page', {
-            current: $.commaify(model.currentBucketIndex() + 1),
-            total: $.commaify(model.totalBuckets())
-          });
-        };
-
-        var updateCurrentPageText = function(start, stop) {
-          $pagination.find('.info').text(currentPageText());
-        };
-
-        var scrollToTop = function() {
-          $scrolls.scrollTop(0);
-        };
-
-        var scrollToBottom = function() {
-          // Update the layout to make sure that the scrollHeight is correct before
-          // trying to scroll to it.
-          // Specific use case: number of rows rendered < bucketSize.
-          updateLayout();
-          $scrolls.scrollTop($scrolls[0].scrollHeight);
-        };
-
-        var handlePageChange = function(options) {
-          if ((options || {}).goToBottom) {
-            scrollToBottom()
-          } else {
-            scrollToTop();
-          }
-          renderRows();
-          updateCurrentPageText();
-
-          $pagination.
-            find('.start, .previous').
-              toggleClass('disabled', model.inFirstBucket()).
-              end().
-            find('.next, .end').
-              toggleClass('disabled', model.inLastBucket()).
-              end().
-            find('.rowCount').
-              text($.t('controls.grid.row_count',
-                    { count: $.commaify(model.dataLength()) }));
-        };
-
-        var renderPagination = function() {
-          var $pagination = $outside.find('.blist-table-pagination');
-
-          // If we're not using buckets, then there's no pagination.
-          if (!model.usingBuckets()) {
-            $pagination.hide();
-            return;
-          } else {
-            $pagination.show();
-          }
-
-          var rowCount = {
-            _: 'li',
-            className: 'rowCount',
-            contents: $.t('controls.grid.row_count',
-                { count: $.commaify(model.dataLength()) })
-          };
-
-          var bucketSize = {
-            _: 'li',
-            className: 'bucketSize',
-            contents: $.t('controls.grid.page_size',
-                { pageSize: $.commaify(model.bucketSize) })
-          };
-
-          var buttonBlock = function(clsName) {
-            return {
-              _: 'li',
-              contents: [
-                {
-                  _: 'a',
-                  href: '#' + clsName,
-                  className: [ clsName, 'button' ].join(' '),
-                  contents: [{ _: 'span', className: 'icon' }],
-                  title: $.t('controls.grid.{0}_page'.format(clsName))
-                }
-              ]
-            }
-          };
-          $pagination.html($.tag2({
-            _: 'ul',
-            className: 'navigation',
-            contents: [
-              rowCount,
-              buttonBlock('start'),
-              buttonBlock('previous'),
-              {
-                _: 'li',
-                className: 'info',
-                contents: currentPageText()
-              },
-              buttonBlock('next'),
-              buttonBlock('end'),
-              bucketSize
-            ]
-          }));
-
-          if (model.totalBuckets() <= 1) {
-            $pagination.find('li:not(.rowCount)').remove();
-          }
-
-          $pagination.
-            find('.start, .previous').
-              toggleClass('disabled', model.inFirstBucket()).
-              end().
-            find('.next, .end').
-              toggleClass('disabled', model.inLastBucket());
-
-          $('.button', $pagination).click(function(e) {
-            var $this = $(this);
-            e.preventDefault();
-
-            if ($this.is('.disabled')) {
-              return;
-            }
-
-            switch ($.hashHref($this.attr('href'))) {
-              case 'start':
-                model.setRowBucket(0, 'normal');
-                handlePageChange();
-                break;
-              case 'previous':
-                model.setRowBucket(model.currentBucket.start - 1);
-                handlePageChange();
-                break;
-              case 'next':
-                model.setRowBucket(model.currentBucket.finish + 1);
-                handlePageChange();
-                break;
-              case 'end':
-                model.setRowBucket(model.dataLength(), 'reversed');
-                handlePageChange({ goToBottom: true });
-                break;
-            }
-          });
-        };
-
         var showNoResults = function(doShow)
         {
             $noResults.toggleClass('hide', !doShow);
@@ -4071,7 +3921,6 @@
             // Determine the range of rows we need to render, with safety
             // checks to be sure we don't attempt the impossible
             var stop = Math.ceil(start + pageSize * 1.5);
-
             if (start < 0) { start = 0; }
             if (stop > model.length()) { stop = model.length(); }
 
@@ -4083,8 +3932,6 @@
             var insideHeight = inside.height();
             if ($footerScrolls.is(':visible'))
             { insideHeight -= $footerScrolls.outerHeight() - 1; }
-            if ($pagination.is(':visible'))
-            { insideHeight -= $pagination.outerHeight() - 1; }
             if (renderTop + renderHeight > insideHeight)
             { renderTop = insideHeight - renderHeight; }
 
@@ -4102,17 +3949,14 @@
 
             begin("renderRows.destroy");
             // Destroy the rows that are no longer visible
-            var bucketStart = start + model.currentBucket.start;
-            var bucketStop = stop + model.currentBucket.start;
-            //updateCurrentPageText(bucketStart, bucketStop);
             for (var rowID in renderedRows)
             {
-                if (rowIndices[rowID] < bucketStart || rowIndices[rowID] >= bucketStop)
+                if (rowIndices[rowID] < start || rowIndices[rowID] >= stop)
                 { cleanRow(rowID, renderedRows); }
             }
             for (var rowID in dirtyRows)
             {
-                if (rowIndices[rowID] < bucketStart || rowIndices[rowID] >= bucketStop)
+                if (rowIndices[rowID] < start || rowIndices[rowID] >= stop)
                 { cleanRow(rowID, dirtyRows); }
             }
 
@@ -4160,7 +4004,7 @@
                     var row = rows[i];
                     var rowID = row.id;
                     var rowIndex = model.index(row);
-                    if (renderedRows[rowID] && (rowIndices[rowID] == rowIndex + bucketStart))
+                    if (renderedRows[rowID] && rowIndices[rowID] == rowIndex)
                     {
                         // We need to adjust top positions, since the render
                         // divs (may) have moved, and rows are rendered relative
@@ -4188,7 +4032,7 @@
                             rowLockedRenderFn(lockedHtml,
                                 rowIndex - start, row.index, row);
                         }
-                        rowIndices[rowID] = rowIndex + bucketStart;
+                        rowIndices[rowID] = rowIndex;
                     }
                 }
                 end("renderRows.render");
@@ -4267,7 +4111,6 @@
                 initMeta();
                 renderHeader();
                 renderFooter();
-                renderPagination();
             }
             end("initRows.handle");
 
@@ -4376,7 +4219,6 @@
                     initMeta();
                     renderHeader();
                     renderFooter();
-                    renderPagination();
                     initRows();
 
                     // Bind to events on the DOM that are thrown by the model
@@ -4386,19 +4228,12 @@
                                 initMeta();
                                 renderHeader();
                                 renderFooter();
-                                renderPagination();
                                 initRows();
                             })
                         .bind('rows_changed', function(event)
                             {
                                 begin("updateRows");
                                 initRows();
-                                // If the row count changes, we should move to the
-                                // first page in case the current bucket is empty.
-                                if (model.usingBuckets()) {
-                                  model.setRowBucket(0, 'normal');
-                                }
-                                renderPagination();
                                 end("updateRows");
                             })
                         .bind('selection_change', function(event, rows)
@@ -4412,7 +4247,6 @@
                                 initMeta();
                                 renderHeader();
                                 renderFooter();
-                                renderPagination();
                                 initRows();
                             });
                 }

@@ -185,18 +185,6 @@ blist.namespace.fetch('blist.data');
         {
             if ($.isBlank(this.view)) { return false; }
 
-            if (this.usingBuckets()) {
-              if (_.isNull(this.currentBucket)) {
-                this.setRowBucket(start);
-              }
-
-              start += this.currentBucket.start;
-              stop += this.currentBucket.start;
-            } else {
-              // .finish is currently only used when we're using buckets.
-              this.currentBucket = { start: 0 };
-            }
-
             // Adjust max & min account for special rows, so we get real
             // offsets to the server
             var specToStop = countSpecialTo(stop, true);
@@ -217,11 +205,10 @@ blist.namespace.fetch('blist.data');
                 if (_.isFunction(successCallback)) { successCallback(modelRows); }
             };
 
-            if (adjStop == adjStart) {
-              gotRows([]);
-            } else {
-              this.view.getRows(adjStart, adjStop - adjStart, gotRows, errorCallback, this.currentBucket.sortOrderForRequest);
-            }
+            if (adjStop == adjStart)
+            { gotRows([]); }
+            else
+            { this.view.getRows(adjStart, adjStop - adjStart, gotRows, errorCallback); }
 
             return true;
         };
@@ -649,7 +636,7 @@ blist.namespace.fetch('blist.data');
         {
             if ($.isBlank(this.view)) { return undefined; }
             if (!$.isBlank(specialLookup[row.id])) { return row.index; }
-            return row.index + countSpecialTo(row.index + 1) - this.currentBucket.start;
+            return row.index + countSpecialTo(row.index + 1);
         };
 
         /**
@@ -658,8 +645,8 @@ blist.namespace.fetch('blist.data');
         this.get = function(index)
         {
             if ($.isBlank(this.view)) { return undefined; }
-            return specialRows[index + this.currentBucket.start] ||
-                this.view.rowForIndex(index - countSpecialTo(index, true) + this.currentBucket.start);
+            return specialRows[index] ||
+                this.view.rowForIndex(index - countSpecialTo(index, true));
         };
 
         /**
@@ -699,18 +686,9 @@ blist.namespace.fetch('blist.data');
         /**
          * Retrieve the total number of rows.
          */
-        this.length = function(accountForBuckets) {
-          if (_.isUndefined(accountForBuckets)) {
-            accountForBuckets = true;
-          }
-          if (accountForBuckets && this.usingBuckets() && !_.isNull(this.currentBucket)) {
-            return Math.min(
-                this.view.bucketSize,
-                this.dataLength() - this.currentBucket.start + specialCount
-                );
-          } else {
+        this.length = function()
+        {
             return this.dataLength() + specialCount;
-          }
         };
 
         /**
@@ -923,92 +901,6 @@ blist.namespace.fetch('blist.data');
             }
         };
 
-        /*
-         * Row Bucketing functions
-         *
-         * If buckets are in use, then we'll enable pagination on the grid view.
-         * General paradigm is that we match pages with RowSet bucketing on a 1:1 basis:
-         * RowSet bucketing makes a large, single request for rows, defaulting to 1000,
-         * in order to minimize the number of individual requests made to the backend.
-         *
-         * It *should* be easy to decouple pages from buckets: you just need to change
-         * the value returned by Model#bucketSize below.
-         * That's the theory. I didn't test that.
-         *
-         * "Sort Order For Request" is to handle cases where the user wants to navigate to
-         * the end of a dataset and page backwards. In those cases, we want to be using a
-         * reverse sort and reverse-indexing the returned rows, because that's faster
-         * according to the backend. Here, it is only an extra parameter being passed along.
-         */
-        this.currentBucket = null;
-
-        this.usingBuckets = function() {
-          return this.view.usingBuckets();
-        };
-
-        this.getLastIndex = function() {
-          if (this.usingBuckets()) {
-            var lastBucket = this.view.getRowBucket(this.dataLength());
-            return this.dataLength() - lastBucket.start;
-          } else {
-            return this.length();
-          }
-        };
-
-        this.setRowBucket = function(newBucketOrIndex, newSortOrder) {
-          if (!_.isUndefined(newSortOrder)) {
-            this.setSortOrder(newSortOrder);
-          }
-          var sortOrderForRequest = (this.currentBucket || {}).sortOrderForRequest;
-          var error = function() {
-            if (_.isFunction(_.get(console, 'error'))) {
-              console.error('setBucket called with invalid bucket: {0}'.format(newBucketOrIndex));
-            }
-          };
-
-          if (_.isPlainObject(newBucketOrIndex)) {
-            if (_.has(newBucketOrIndex, 'start') && _.has(newBucketOrIndex, 'finish')) {
-              this.currentBucket = newBucketOrIndex;
-            } else {
-              error();
-            }
-          } else if (_.isNumber(newBucketOrIndex)) {
-            this.currentBucket = this.view.getRowBucket(newBucketOrIndex);
-          } else {
-            error();
-          }
-          this.currentBucket.sortOrderForRequest = sortOrderForRequest;
-
-          return this.currentBucket;
-        };
-
-        this.setSortOrder = function(sortOrderForRequest) {
-          if (!_.isNull(this.currentBucket)) {
-            this.currentBucket.sortOrderForRequest = sortOrderForRequest;
-          }
-        };
-
-        this.currentBucketIndex = function() {
-          return this.view.bucketIndex(this.currentBucket.start);
-        };
-
-        this.totalBuckets = function() {
-          return this.view.totalBuckets();
-        };
-
-        this.inFirstBucket = function() {
-          if (_.isNull(this.currentBucket)) { return; }
-
-          return this.currentBucket.start === 0;
-        };
-
-        this.inLastBucket = function() {
-          if (_.isNull(this.currentBucket)) { return; }
-
-          return this.currentBucket.finish >= this.dataLength();
-        };
-
-
 
         // Apply filtering, grouping, and sub-row expansion to the active set.
         // This applies current settings to the active set and then notifies
@@ -1024,8 +916,8 @@ blist.namespace.fetch('blist.data');
                 var blankRow = {invalid: {}, changed: {}, error: {}, data: {}, metadata: {}};
                 blankRow.type = 'blank';
                 blankRow.id = 'blank';
-                blankRow.index = self.getLastIndex();
-                specialRows[self.length(false)] = blankRow;
+                blankRow.index = self.length();
+                specialRows[self.length()] = blankRow;
                 specialLookup[blankRow.id] = blankRow;
                 specialCount++;
             }

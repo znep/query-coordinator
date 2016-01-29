@@ -3,6 +3,7 @@ var DataProvider = require('./DataProvider');
 var _ = require('lodash');
 
 function MetadataProvider(config) {
+  var self = this;
 
   _.extend(this, new DataProvider(config));
 
@@ -167,6 +168,20 @@ function MetadataProvider(config) {
 
     return isSubcolumn;
   };
+
+  // Given a dataset metadata object (see .getDatasetMetadata()),
+  // returns an array of the columns  which are suitable for
+  // display to the user (all columns minus system and subcolumns).
+  //
+  // @return {Object[]}
+  this.getDisplayableColumns = function(datasetMetadata) {
+    utils.assertHasProperty(datasetMetadata, 'columns');
+
+    return _.reject(datasetMetadata.columns, function(column) {
+      return self.isSystemColumn(column.fieldName) ||
+        self.isSubcolumn(column.fieldName, datasetMetadata);
+    });
+  }
 
 
 }

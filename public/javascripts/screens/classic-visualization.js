@@ -9,6 +9,8 @@ $(function() {
     viewObject = _.cloneDeep(viewObject);
     var dataset = new Dataset(viewObject);
 
+    // Clear out any errors that were shown.
+    $('.missing-columns-warning').remove();
     // Clear out the last instance of RenderTypeManager.
     $innerContainer.empty();
     $innerContainer.data('renderTypeManager', null);
@@ -24,16 +26,16 @@ $(function() {
     var notInDOM = $('.missing-columns-warning').length === 0;
 
     if (missingColumnsError && notInDOM) {
-      var _$missingColumns = $('<div>', {'class': 'missing-columns-warning'});
+      var $missingColumns = $('<div>', {'class': 'missing-columns-warning'});
 
-      _$missingColumns.append(
+      $missingColumns.append(
         $('<div>', {'class': 'missing-columns-warning-message flash notice'}).
           append(
             $('<p>' + $.t('controls.charts.missing_column_html') + '</p>')
           )
         );
 
-      $('body').append(_$missingColumns);
+      $('body').append($missingColumns);
     }
   });
 });

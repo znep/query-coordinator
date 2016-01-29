@@ -339,4 +339,40 @@ describe('MetadataProvider', function() {
       assert.isTrue(metadataProvider.isSubcolumn('location_city', SAMPLE_DATASET_METADATA));
     });
   });
+
+  describe('getDisplayableColumns()', function() {
+    var mockMetadata = {
+      columns: [{
+        fieldName: 'mockColumn'
+      }]
+    };
+
+    it('excludes the column if either isSystemColumn or isSubcolumn', function() {
+      sinon.stub(metadataProvider, 'isSystemColumn', _.constant(true));
+      sinon.stub(metadataProvider, 'isSubcolumn', _.constant(false));
+      assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
+      metadataProvider.isSystemColumn.restore();
+      metadataProvider.isSubcolumn.restore();
+
+      sinon.stub(metadataProvider, 'isSystemColumn', _.constant(false));
+      sinon.stub(metadataProvider, 'isSubcolumn', _.constant(true));
+      assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
+      metadataProvider.isSystemColumn.restore();
+      metadataProvider.isSubcolumn.restore();
+
+      sinon.stub(metadataProvider, 'isSystemColumn', _.constant(true));
+      sinon.stub(metadataProvider, 'isSubcolumn', _.constant(true));
+      assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
+      metadataProvider.isSystemColumn.restore();
+      metadataProvider.isSubcolumn.restore();
+
+      sinon.stub(metadataProvider, 'isSystemColumn', _.constant(false));
+      sinon.stub(metadataProvider, 'isSubcolumn', _.constant(false));
+      assert.deepEqual(
+        metadataProvider.getDisplayableColumns(mockMetadata),
+        mockMetadata.columns
+      );
+    });
+  });
+
 });

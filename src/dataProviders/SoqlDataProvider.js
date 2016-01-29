@@ -13,13 +13,6 @@ var _ = require('lodash');
  *  @property {String} domain - The domain against which to make the query.
  *  @property {String} datasetUid - The uid of the dataset against which
  *    the user intends to query.
- *  @property {Function} success - The function to be called with successful
- *    query results.
- *  @property {Function} error - The function to be called on failure.
- *
- * See the documentation for `_onRequestSuccess()` and `_onRequestError()`
- * below for the expected function signatures for the success and error
- * callbacks, respectively.
  */
 function SoqlDataProvider(config) {
   'use strict';
@@ -72,7 +65,7 @@ function SoqlDataProvider(config) {
 
     return _makeSoqlGetRequestWithSalt(url).then(
       function(data) {
-        return _mapQueryResponseToTable(data, nameAlias, valueAlias)
+        return _mapRowsResponseToTable([ nameAlias, valueAlias ], data);
       }
     );
   };
@@ -89,25 +82,42 @@ function SoqlDataProvider(config) {
 
   /**
    * `.getRows()` executes a SoQL query against the current domain that
-   * returns all rows. The query string is passed in by the caller, meaning
+   * returns all rows. The response is mapped to the DataProvider data schema (1).
+   * The query string is passed in by the caller, meaning
    * that at this level of abstraction we have no notion of SoQL grammar.
    *
+   * @param {String[]} columnNames - A list of column names to extract from the response.
    * @param {String} queryString - A valid SoQL query.
+   *
+   * (1) - The DataProvider data schema:
+   * {
+   *   columns: {String[]},
+   *   rows: {{Object[]}[]}.
+   * }
+   * Row:
+   *
+   * Example:
+   * {
+   *   columns: [ 'date', 'id' ],
+   *   rows: [
+   *    [ '2016-01-15T11:08:45.000', '123' ],
+   *    [ '2016-01-15T11:08:45.000', '345' ]
+   *   ]
+   * }
    *
    * @return {Promise}
    */
-  this.getRows = function(queryString) {
-    return Promise.all([
-      metadataProvider.getDatasetMetadata(),
-      _makeSoqlGetRequestWithSalt(_queryUrl(queryString))
-    ]).then(
-      function(responses) {
-        var columnNames = _.chain(responses[0].columns).
-          sortBy('position').
-          pluck('fieldName').
-          value();
+  this.getRows = function(columnNames, queryString) {
+    utils.assertInstanceOf(columnNames, Array);
+    utils.assert(columnNames.length > 0);
+    utils.assertIsOneOfTypes(queryString, 'string');
+    _.each(columnNames, function(columnName) {
+      utils.assertIsOneOfTypes(columnName, 'string');
+    });
 
-        return _mapRowsResponseToTable(columnNames, responses[1]);
+    return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(
+      function(soqlData) {
+        return _mapRowsResponseToTable(columnNames, soqlData);
       }
     );
   };
@@ -188,47 +198,6 @@ function SoqlDataProvider(config) {
       _self.getConfigurationProperty('datasetUid'),
       queryString
     );
-  }
-
-  /**
-   * Transforms a raw SoQL query result into a 'table' object.
-   *
-   * @param {Object[]} data - The query result, which is an array of objects
-   *   with keys equal to the `nameAlias` and `valueAlias` used in the query
-   *   and values equal to the row values for those columns.
-   * @param {String} nameAlias - The alias used for the 'name' column in
-   *   the query.
-   * @param {String} valueAlias - The alias used for the 'value' column in
-   *   the query.
-   *
-   * @return {Object}
-   *   @property {String[]} columns - An ordered list of the column aliases
-   *     present in the query.
-   *   @property {[][]} rows - An array of rows returned by the query.
-   *
-   * The columns array is of the format:
-   *
-   *   [<value of `nameAlias`>, <value of `valueAlias`>]
-   *
-   * Accordingly, each row in the rows array is of the format:
-   *
-   *   [
-   *     <row value of the `nameAlias` column>,
-   *     <row value of the `valueAlias` column>
-   *   ]
-   */
-  function _mapQueryResponseToTable(data, nameAlias, valueAlias) {
-
-    return {
-      columns: [nameAlias, valueAlias],
-      rows: data.map(function(datum) {
-
-        return [
-          datum[nameAlias],
-          datum[valueAlias]
-        ];
-      })
-    };
   }
 
   /**

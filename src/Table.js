@@ -332,14 +332,7 @@ $.fn.socrataTable = function(vif) {
   }
 
   function _getDisplayableColumns() {
-    return _getDatasetMetadata().then(function(datasetMetadata) {
-      var columns = _.pluck(datasetMetadata.columns, 'fieldName');
-
-      return _.reject(datasetMetadata.columns, function(column) {
-        return metadataProvider.isSystemColumn(column.fieldName) ||
-          metadataProvider.isSubcolumn(column.fieldName, datasetMetadata);
-      });
-    });
+    return _getDatasetMetadata().then(metadataProvider.getDisplayableColumns);
   }
 
   function _getVif() {

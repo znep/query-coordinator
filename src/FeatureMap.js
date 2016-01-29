@@ -216,12 +216,11 @@ $.fn.socrataFeatureMap = function(vif) {
     datasetMetadata = data;
   }
 
-  function handleDatasetMetadataRequestError() {
+  function handleDatasetMetadataRequestError(error) {
 
-    // We can gracefully degrade here since the dataset metadata is only used
-    // to provide formatting information for the row inspector.
-    // In its absence, we simply won't format the row inspector data as
-    // nicely.
+    // The only consumer of dataset metadata is the row inspector flyout.
+    // If the request fails, we won't show the row inspector on click.
+    console.error('Failed to fetch dataset metadata: {0}'.format(error));
   }
 
   function handleFeatureExtentQuerySuccess(response) {
@@ -313,6 +312,12 @@ $.fn.socrataFeatureMap = function(vif) {
   }
 
   function handleRowInspectorQuery(event) {
+    if (!datasetMetadata) {
+      // Dataset metadata request either failed or isn't ready yet.
+      // Pop up an error.
+      handleRowInspectorQueryError();
+      return;
+    }
 
     var payload = event.originalEvent.detail;
 
@@ -325,6 +330,8 @@ $.fn.socrataFeatureMap = function(vif) {
         generateWithinBoxClause(vif.columnName, payload.queryBounds)
       );
 
+    var displayableColumns = metadataProvider.getDisplayableColumns(datasetMetadata);
+
     function generateWithinBoxClause(columnName, bounds) {
 
       return '&$where=within_box({0}, {1}, {2})'.format(
@@ -335,7 +342,7 @@ $.fn.socrataFeatureMap = function(vif) {
     }
 
     soqlDataProvider.
-      getRows(query).
+      getRows(_.pluck(displayableColumns, 'fieldName'), query).
       then(
         handleRowInspectorQuerySuccess,
         handleRowInspectorQueryError
@@ -434,26 +441,11 @@ $.fn.socrataFeatureMap = function(vif) {
     // objects.  Each row corresponds to a single page in the flannel.
     return data.rows.map(
       function(row) {
-
-        // If the dataset metadata request fails, then datasetMetadata will
-        // be undefined. In this case, we should fall back to sorting
-        // alphabetically instead of sorting by the order in which the
-        // columns have been arranged in the dataset view.
-        if (datasetMetadata) {
-
-          return orderRowDataByColumnIndex(
-            datasetMetadata.columns,
-            data.columns,
-            row
-          );
-
-        } else {
-
-          return orderRowDataAlphabetically(
-            data.columns,
-            row
-          );
-        }
+        return orderRowDataByColumnIndex(
+          datasetMetadata.columns,
+          data.columns,
+          row
+        );
       }
     );
   }
@@ -545,32 +537,6 @@ $.fn.socrataFeatureMap = function(vif) {
           return !_.isUndefined(datum);
         }
       );
-  }
-
-  function orderRowDataAlphabetically(columnNames, row) {
-
-    var formattedRowData = [];
-    var sortedColumnNames = columnNames.sort();
-
-    sortedColumnNames.
-      forEach(
-      function(columnName) {
-
-        var originalColumnIndex = columnNames.indexOf(columnName);
-        var columnValue = row[originalColumnIndex];
-
-        var rowDatum = {
-          column: columnName,
-          value: _.isObject(columnValue) ? [columnValue] : columnValue,
-          format: undefined,
-          physicalDatatype: undefined
-        };
-
-        formattedRowData.push(rowDatum);
-      }
-    );
-
-    return formattedRowData;
   }
 
   function logError(e) {

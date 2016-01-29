@@ -4,7 +4,7 @@ ruby File.read('.ruby-version').strip
 
 gem 'dotenv-rails', groups: [:development, :test]
 
-gem 'rails', '4.2.5'
+gem 'rails', '4.2.5.1'
 
 # Use postgres as the database for Active Record
 gem 'pg'

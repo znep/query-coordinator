@@ -5,13 +5,6 @@
     <div class="browse2-result-header clearfix">
       <div class="browse2-result-header-content">
 
-        <%- if result_display_title.present? -%>
-          <div class="browse2-result-type">
-            <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
-            <span class="browse2-result-type-name"><%= result_display_title %></span>
-          </div>
-        <%- end -%>
-
         <div class="browse2-result-title">
           <h2 class="browse2-result-name">
             <a class="browse2-result-name-link" href="<%= result_link %>" rel="<%= result_link_rel_type %>" itemprop="url"><%= result_name %></a>
@@ -49,6 +42,14 @@
             </a>
           <%- end -%>
         </div>
+
+        <%- if result_display_title.present? -%>
+          <div class="browse2-result-type">
+            <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
+            <span class="browse2-result-type-name"><%= result_display_title %></span>
+          </div>
+        <%- end -%>
+
       </div>
     </div>
 
@@ -57,12 +58,14 @@
         <div class="browse2-result-description-container">
           <div class="browse2-result-description"><%= result_description %></div>
           <div class="browse2-result-description-truncation-toggle-control">
-            <span class="browse2-result-description-show-more-label">
+            <a class="browse2-result-description-show-more-label"
+              title="<%= t('controls.browse.browse2.description.show_more_label') %>" href="#">
               <%= t('controls.browse.browse2.description.show_more_label') %>
-            </span>
-            <span class="browse2-result-description-show-less-label">
+            </a>
+            <a class="browse2-result-description-show-less-label"
+              title="<%= t('controls.browse.browse2.description.show_less_label') %>" href="#">
               <%= t('controls.browse.browse2.description.show_less_label') %>
-            </span>
+            </a>
           </div>
         </div>
       <%- end -%>

@@ -555,6 +555,8 @@ en:
         settings:
           title: Settings
           label: Settings
+        skiplinks:
+          results: Skip to the results
         sort:
           label: Order by
           periods:

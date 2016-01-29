@@ -1,11 +1,11 @@
 <div class="browse2-results-sort-controls-container clearfix">
   <div class="browse2-results-sort-controls">
     <div class="browse2-results-sort-control-group">
-      <label for="browseSortType" class="browse2-results-sort-control-type-label">
+      <label for="browse2-sort-type" class="browse2-results-sort-control-type-label">
         <%= t('controls.browse.browse2.sort.label') %>
       </label>
       <div class="browse2-results-sort-control-container">
-        <select id="browse2-sort-type" class="browse2-results-sort-control" name="sortType">
+        <select id="browse2-sort-type" class="browse2-results-sort-control">
         <%- opts[:sort_opts].each do |sort_option| -%>
           <%- next if !sort_option[:requires].nil? && opts[sort_option[:requires]].nil? -%>
           <option value="<%= sort_option[:value] %>" class="<%= 'timePeriod' if sort_option[:is_time_period] %>"
@@ -17,11 +17,11 @@
     </div>
 
     <div class="browse2-results-sort-control-group <%= 'hidden' if !opts[:show_time_period] %>">
-      <label for="browseSortPeriod" class="browse2-results-sort-control-period-label">
+      <label for="browse2-sort-period" class="browse2-results-sort-control-period-label">
         <%= t('controls.browse.browse2.sort.periods.label') %>
       </label>
       <div class="browse2-results-sort-control-container">
-        <select id="browse2-sort-period" class="browse2-results-sort-control" name="sortPeriod">
+        <select id="browse2-sort-period" class="browse2-results-sort-control">
           <%- time_options.each do |time_option| -%>
             <option value="<%= time_option[:value] %>"<%= ' selected="selected"' if time_option[:value] == opts[:sortPeriod] %>>
               <%= time_option[:name] %>

@@ -33,7 +33,7 @@
   <body ng-app="<%= angular_app %>">
 
     <% if @migration_metadata %>
-      <div id="skip-links">
+      <div class="skip-links">
         <%= link_to 'Go to an accessible version of this page', get_alt_dataset_link(@migration_metadata[:obeId]) %>
       </div>
       <%= render_noscript(@migration_metadata[:obeId]) %>

@@ -2,17 +2,17 @@
   <%= raw opts[:sidebar_config].header if opts[:sidebar_config] && opts[:sidebar_config].header %>
 
   <div class="browse2-facets-pane-mobile-header">
-    <div class="browse2-facets-pane-mobile-back-button">
+    <a class="browse2-facets-pane-mobile-back-button" href="#">
       <span class="browse2-mobile-filter-icon icon-arrow-left"></span>
       <%= t('controls.browse.browse2.facets.mobile.back') %>
-    </div>
+    </a>
   </div>
 
   <div class="browse2-facets-pane-mobile-body">
     <div class="browse2-facets-pane-mobile-clear-all-div">
-      <div class="browse2-facets-pane-mobile-clear-all-button">
+      <a class="browse2-facets-pane-mobile-clear-all-button" href="#">
         <%= t('controls.browse.browse2.facets.mobile.clear_all') %>
-      </div>
+      </a>
     </div>
 
     <div class="browse2-facets-mobile-active-filters">
@@ -40,9 +40,9 @@
     </div>
 
     <div class="browse2-facets">
-      <div class="browse2-mobile-facets-header">
+      <h2 class="browse2-mobile-facets-header">
         <%= t('controls.browse.browse2.facets.mobile.all_filters') %>
-      </div>
+      </h2>
       <%-
       facets.each do |facet| -%>
         <%=

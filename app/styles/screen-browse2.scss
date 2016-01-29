@@ -1,3 +1,4 @@
+$dark-text-color: #4a4a4a;
 $panel-border-color: #e0e0e0;
 $panel-internal-border-color: #eee;
 $result-description-preview-height: 48px;
@@ -151,7 +152,7 @@ html {
         color: #888;
         border-left: 5px solid $panel-internal-border-color;
 
-        &:hover {
+        &:hover, &:focus {
           background-color: $panel-internal-border-color;
           border-left: 5px solid $link-color;
         }
@@ -317,7 +318,7 @@ html {
       background-color: $link-color;
       @include transition(0.2s, background-color);
 
-      &:hover {
+      &:hover, &:focus {
         background-color: $link-hover-color;
       }
 
@@ -352,7 +353,7 @@ html {
       padding: 0 0.5rem;
       z-index: 2;
 
-      &:hover {
+      &:hover, &:focus {
         color: #888;
       }
 
@@ -487,7 +488,7 @@ html {
             }
 
             &:active,
-            &:focus {
+            &:hover {
               text-decoration: none;
             }
           }
@@ -500,7 +501,7 @@ html {
             @include border-radius(0.3em);
             @include transition(0.2s, background-color);
 
-            &:hover {
+            &:hover, &:focus {
               background-color: #f9f9f9;
               color: #777;
             }
@@ -578,6 +579,10 @@ html {
                 -webkit-appearance: none;
                 -moz-appearance: none;
 
+                &:focus {
+                  text-decoration: underline;
+                }
+
                 // Hide dotted border around select element in Firefox
                 &:-moz-focusring {
                   color: transparent;
@@ -600,7 +605,7 @@ html {
                 z-index: 0;
               }
 
-              &:hover {
+              &:hover, &:focus {
                 background-color: #c8c8c8;
               }
             }
@@ -664,6 +669,7 @@ html {
           overflow: hidden;
 
           .browse2-facets-pane-mobile-clear-all-button {
+            display: block;
             font-size: 12px;
             margin: 0.5em 1.5em;
             padding: 0.9em 1em;
@@ -674,7 +680,7 @@ html {
             @include border-radius(0.3em);
             @include transition(0.2s, background-color);
 
-            &:hover {
+            &:hover, &:focus {
               background-color: #f9f9f9;
               color: #777;
             }
@@ -694,7 +700,7 @@ html {
             display: block;
             padding: 1rem 0.75rem 1rem 1.5rem;
             font-size: 14px;
-            color: #4a4a4a;
+            color: $dark-text-color;
             text-decoration: none;
             text-transform: capitalize;
             cursor: pointer;
@@ -718,7 +724,7 @@ html {
               color: $filter-color;
             }
 
-            &:hover {
+            &:hover, &:focus {
               background-color: $facet-hover-color;
             }
 
@@ -788,13 +794,13 @@ html {
           .browse2-facet-section-expand-contract-icon {
             position: absolute;
             right: 14px;
-            top: 19px;
+            top: 21px;
             font-size: 12px;
             font-weight: 700;
             color: #666;
           }
 
-          &:hover {
+          &:hover, &:focus {
             background-color: $facet-hover-color;
           }
         }
@@ -807,35 +813,21 @@ html {
           overflow: hidden;
 
           li {
+            position: relative;
+
             &.truncated {
               display: none;
             }
 
             .browse2-facet-section-option {
-              position: relative;
               display: block;
               padding: 1rem 2.5rem 1rem 1.5rem;
               font-size: 14px;
-              color: #4a4a4a;
+              color: $dark-text-color;
               border-left: 5px solid #d6d6d6;
               text-decoration: none;
 
-              .browse2-facet-section-expand-contract-icon {
-                padding: 1rem;
-                display: block;
-                position: absolute;
-                top: 0;
-                right: 0;
-                font-size: 10px;
-                font-weight: 700;
-                line-height: 14px;
-
-                &:hover {
-                  background: #eee;
-                }
-              }
-
-              &:hover {
+              &:hover, &:focus {
                 background-color: $facet-hover-color;
                 border-left: 5px solid #ccc;
               }
@@ -863,6 +855,23 @@ html {
               }
             }
 
+            .browse2-facet-section-child-option-toggle .browse2-facet-section-expand-contract-icon {
+              padding: 1rem;
+              display: block;
+              position: absolute;
+              top: 0;
+              right: 0;
+              font-size: 10px;
+              font-weight: 700;
+              line-height: 14px;
+              text-decoration: none;
+              cursor: pointer;
+
+              &:hover {
+                background: #eee;
+              }
+            }
+
             .browse2-facet-section-child-options {
               display: none;
 
@@ -873,7 +882,7 @@ html {
                   display: block;
                   padding: 1rem 2.5rem 1rem 2.5rem;
                   font-size: 14px;
-                  color: #4a4a4a;
+                  color: $dark-text-color;
                   border-left: 5px solid #d6d6d6;
                   text-decoration: none;
 
@@ -884,7 +893,7 @@ html {
                     color: #333;
                   }
 
-                  &:hover {
+                  &:hover, &:focus {
                     background-color: $facet-hover-color;
                     border-left: 5px solid #ccc;
                   }
@@ -920,16 +929,17 @@ html {
         .browse2-facet-section-contract-button {
           width: 100%;
           margin: 0;
-          padding: 0.5em 0;
+          padding: 0.7em 0;
           font-family: 'Open Sans', sans-serif;
           color: #888;
           background-color: $facet-hover-color;
           border: none;
           border-left: 5px solid #d6d6d6;
           cursor: pointer;
+          text-align: center;
+          text-decoration: none;
           display: none;
 
-          .browse2-facet-section-expand-contract-icon,
           .browse2-facet-section-expand-icon,
           .browse2-facet-section-contract-icon {
             margin-left: 0.5em;
@@ -947,7 +957,8 @@ html {
               text-decoration: underline;
             }
 
-            .browse2-facet-section-expand-contract-icon {
+            .browse2-facet-section-expand-icon,
+            .browse2-facet-section-contract-icon {
               text-decoration: none;
             }
           }
@@ -1019,7 +1030,7 @@ html {
         cursor: pointer;
 
         @include transition(0.2s, background-color);
-        &:hover {
+        &:hover, &:focus {
           background-color: $link-hover-color;
         }
       }
@@ -1118,6 +1129,7 @@ html {
 
             .browse2-result-title {
               position: relative;
+              float: left;
               display: block;
 
               .browse2-result-name {
@@ -1137,7 +1149,7 @@ html {
                 .browse2-result-name-link {
                   color: $link-color;
 
-                  &:hover {
+                  &:hover, &:focus {
                     text-decoration: underline;
                   }
 
@@ -1164,7 +1176,7 @@ html {
                 -ms-transform: translate(0, -0.1rem);
                 transform: translate(0, -0.1rem);
 
-                &:hover {
+                &:hover, &:focus {
                   text-decoration: underline;
                 }
               }
@@ -1174,7 +1186,7 @@ html {
                 line-height: 1.4em;
                 margin-top: 0.5em;
                 bottom: 1px;
-                color: #4a4a4a;
+                color: $dark-text-color;
                 text-decoration: none;
 
                 .browse2-result-federated-source {
@@ -1187,7 +1199,7 @@ html {
                   height: 1.35em;
                   top: 1px;
                   min-width: 1.35em;
-                  color: #4a4a4a;
+                  color: $dark-text-color;
                   -webkit-transform: translate(0, 0.2em);
                   -moz-transform: translate(0, 0.2em);
                   -ms-transform: translate(0, 0.2em);
@@ -1199,6 +1211,7 @@ html {
                 }
 
                 &:hover,
+                &:focus,
                 &:active {
                   text-decoration: underline;
 
@@ -1242,7 +1255,7 @@ html {
             @include mobile {
               width: 100%;
             }
-            color: #4a4a4a;
+            color: $dark-text-color;
 
             .browse2-result-description-container {
               overflow: hidden;
@@ -1254,6 +1267,11 @@ html {
 
               .browse2-result-description {
                 padding: 0.3rem 0;
+                font-size: 15px;
+                font-weight: 400;
+                line-height: 24px;
+                text-overflow: ellipsis;
+                overflow: hidden;
 
                 * {
                   margin-bottom: 12px;
@@ -1281,6 +1299,7 @@ html {
                   cursor: pointer;
                   font-size: 14px;
                   text-decoration: underline;
+                  color: $dark-text-color;
                 }
               }
 
@@ -1358,7 +1377,7 @@ html {
 
                 .browse2-result-topic {
                   color: $link-color;
-                  &:hover {
+                  &:hover, &:focus {
                     text-decoration: underline;
                   }
                   &:after {
@@ -1382,7 +1401,7 @@ html {
                 }
 
                 .browse2-result-no-topic-content {
-                  color: #ccc;
+                  color: #aaa;
                   font-style: oblique;
                 }
               }
@@ -1428,11 +1447,10 @@ html {
               .browse2-result-api-link {
                 color: $link-color;
 
-                &:hover {
+                &:hover, &:focus {
                   text-decoration: underline;
                 }
 
-                &:focus,
                 &:active {
                   text-decoration: none;
                 }
@@ -1602,7 +1620,7 @@ html {
           border: 1px solid $panel-border-color;
           box-sizing: border-box;
 
-          &:hover {
+          &:hover, &:focus {
             background-color: $panel-internal-border-color;
           }
 
@@ -1678,17 +1696,27 @@ html {
   }
 
   .browse2-suggest-dataset {
+    @include desktop {
+      text-align: right;
+    }
+    @include mobile {
+      text-align: center;
+    }
     position: relative;
     display: block;
     width: 100%;
     margin-bottom: 3em;
-    text-align: right;
 
     .browse2-suggest-dataset-prompt {
+      @include mobile {
+        margin-bottom: 1em;
+      }
+      @include desktop {
+        margin-right: 1em;
+      }
       position: relative;
       display: inline-block;
       width: auto;
-      margin-right: 1em;
       font-size: 15px;
       font-weight: 300;
       line-height: normal;
@@ -1702,12 +1730,16 @@ html {
       color: #666;
       background-color: #e8e8e8;
       border: 1px solid $panel-border-color;
+      @include mobile {
+        padding: 1em;
+        display: block;
+      }
 
       .browse2-suggest-dataset-icon {
         margin-left: 0.5em;
       }
 
-      &:hover {
+      &:hover, &:focus {
         background-color: #c8c8c8;
       }
 

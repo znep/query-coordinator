@@ -467,6 +467,32 @@ $geolocator_margin_top: 6px;
   }
 }
 
+.esriConnectorWarning {
+  background-color: #fef8dc;
+  border: 1px solid #ecd776;
+  color: #7a6710;
+  font-size: 1.2em;
+  left: 0;
+  margin: 0 auto;
+  padding: 1em;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 40%;
+  width: 50%;
+
+  p {
+    padding-top: 1em;
+  }
+
+  .loadingSpinner {
+    left: auto;
+    margin: 1em auto 0;
+    position: relative;
+    top: auto;
+  }
+}
+
 @media print {
   .mapLayers, .mapOverview, .olMapViewport .olControlNoSelect {
     display: none;

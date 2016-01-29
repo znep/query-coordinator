@@ -15,11 +15,12 @@ $(function()
             summary: { plus: downloadsAction, verbPhrase: t('downloads'),
                        verbPhraseSingular: t('download') }};
 
-    var charts, summaries, details;
+    var charts, summaries, details, topLists;
     if (blist.dataset.viewType == 'tabular')
     {
         charts = [
-            {id: 'performanceChart',
+            {
+                id: 'performanceChart',
                 loading: blist.metrics.chartLoading,
                 children: _.filter([
                     {text: t('bytes_out'),    series: [{method: 'bytes-out'}]},
@@ -68,27 +69,7 @@ $(function()
                 verbPhrase: t('comments_created'),
                 verbPhraseSingular: t('comment_created')}}
         ];
-    }
-    else
-    {
-        charts = [
-            {id: 'performanceChart',
-                loading: blist.metrics.chartLoading,
-                children: [ {text: t('views_loaded'), series: [{method: 'view-loaded'}]} ]
-            }
-        ];
-        summaries = [
-            viewSummary,
-            downloadsSummary
-        ];
-    }
-
-    var screen = $('#analyticsDataContainer').metricsScreen($.extend({
-        urlBase: '/api/views/' + blist.metrics.viewID +  '/metrics.json',
-        chartSections:  charts,
-        detailSections: _.filter(details, function(section) { return section.enabled !== false; }),
-        summarySections: _.filter(summaries, function(section) { return section.enabled !== false; }),
-        topListSections: [
+        topLists = [
             {
                 id: 'topViews', displayName: t('top_embeds'),
                 heading: $.capitalize(t('embeds')), className: 'expanding', renderTo: 'leftColumn',
@@ -99,7 +80,55 @@ $(function()
                 heading: t('referrals'), className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
             }
-        ]
+        ];
+    } else if (blist.dataset.displayType == 'story') {
+            summaries = [ viewSummary ]
+            charts = [
+                {
+                    id: 'performanceChart',
+                    loading: blist.metrics.chartLoading,
+                    children: [ { text: t('views_loaded'), series: [ { method: 'view-loaded' } ] } ]
+                }
+            ];
+            topLists = [
+                {
+                    id: 'topReferrers', displayName: t('top_referrers'),
+                    heading: t('referrals'), className: 'expanding', renderTo: 'leftColumn',
+                    callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
+                }
+            ];
+    } else {
+        charts = [
+            {
+                id: 'performanceChart',
+                loading: blist.metrics.chartLoading,
+                children: [ {text: t('views_loaded'), series: [{method: 'view-loaded'}]} ]
+            }
+        ];
+        summaries = [
+            viewSummary,
+            downloadsSummary
+        ];
+        topLists = [
+            {
+                id: 'topViews', displayName: t('top_embeds'),
+                heading: $.capitalize(t('embeds')), className: 'expanding', renderTo: 'leftColumn',
+                callback: blist.metrics.urlMapCallback,  top: 'EMBEDS'
+            },
+            {
+                id: 'topReferrers', displayName: t('top_referrers'),
+                heading: t('referrals'), className: 'expanding', renderTo: 'rightColumn',
+                callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
+            }
+        ];
+    }
+
+    var screen = $('#analyticsDataContainer').metricsScreen($.extend({
+        urlBase: '/api/views/' + blist.metrics.viewID +  '/metrics.json',
+        chartSections:  charts,
+        detailSections: _.filter(details, function(section) { return section.enabled !== false; }),
+        summarySections: _.filter(summaries, function(section) { return section.enabled !== false; }),
+        topListSections: _.filter(topLists, function(section) { return section.enabled !== false; })
     }, blist.metrics.metricsScreenOptions));
 
      $('#analyticsTimeControl').metricsTimeControl({

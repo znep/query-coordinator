@@ -100,8 +100,8 @@ describe ImportActivity do
   end
 
   describe '#activity_type' do
-    it 'returns the activity type it was initialized with' do
-      expect(activity.activity_type).to eq('Import')
+    it 'returns the activity type it was initialized with, downcased' do
+      expect(activity.activity_type).to eq('import')
     end
   end
 

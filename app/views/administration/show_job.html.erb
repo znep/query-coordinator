@@ -37,7 +37,7 @@
 
   <div style="position: relative;">
     <div>
-      <h1><%= t("#{jobs_prefix}.actions.#{@activity.activity_type.downcase}") %></h1>
+      <h1><%= t("#{jobs_prefix}.actions.#{@activity.activity_type}") %></h1>
       <p class="file-name">
         <% if @activity.file_name.blank? %>
           (<%= t("#{jobs_prefix}.show_page.file_name_unknown") %>

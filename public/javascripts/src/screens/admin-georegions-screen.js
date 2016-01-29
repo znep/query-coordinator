@@ -177,6 +177,10 @@ function showInitialConfigureModal(uid) {
     });
   };
 
+  // TODO: Remove enableSyntheticSpatialLensId once we're using
+  // synthetic spatial lens shape ids exclusively
+  const enableSyntheticSpatialLensId = blist.feature_flags.enable_synthetic_spatial_lens_id;
+
   const onSave = (boundary, completeCallback, errorCallback) => {
     const onSuccess = ({ error, message, success }) => {
       if (success) {
@@ -188,9 +192,16 @@ function showInitialConfigureModal(uid) {
       }
     };
 
+    // TODO: Remove query parameter in url once we're using synthetic
+    // spatial lens shape ids exclusively. We're passing it along here
+    // to make it respect query parameter feature flags in the ajax request.
+    const url = enableSyntheticSpatialLensId ?
+      '/admin/geo?enable_synthetic_spatial_lens_id=true' :
+      '/admin/geo';
+
     $.ajax({
       contentType: 'application/json',
-      url: '/admin/geo',
+      url: url,
       type: 'post',
       data: JSON.stringify(_.extend({ id: uid }, boundary)),
       dataType: 'json',
@@ -205,15 +216,24 @@ function showInitialConfigureModal(uid) {
     $('#selectDataset').jqmShow();
   };
 
+  // TODO: Remove allowPrimaryKeySelection option once we're using
+  // synthetic spatial lens shape ids exclusively
+  const enablePrimaryKeySelection = !enableSyntheticSpatialLensId;
+  const requiredFields = ['name', 'geometryLabel'];
+
+  if (enablePrimaryKeySelection) {
+    requiredFields.push('primaryKey');
+  }
+
   ReactDOM.render(
     <ConfigureBoundaryForm
-      allowPrimaryKeySelection
+      allowPrimaryKeySelection={enablePrimaryKeySelection}
       cancelLabel={$.t('core.dialogs.back')}
       fetchInitialState={fetchInitialState}
       id={uid}
       onCancel={onBack}
       onSave={onSave}
-      requiredFields={['name', 'geometryLabel', 'primaryKey']}
+      requiredFields={requiredFields}
       saveLabel={$.t('core.dialogs.create')}
       title={t('configure_boundary.configure_boundary')}
       />,

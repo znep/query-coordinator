@@ -112,6 +112,11 @@ describe AdministrationController do
 
       before(:each) do
         stub_admin_user
+
+        # TODO: Remove this stub once using synthetic spatial lens shape ids exclusively
+        feature_flags = Hashie::Mash.new
+        feature_flags.enable_synthetic_spatial_lens_id = false
+        allow(CurrentDomain).to receive(:feature_flags).and_return(feature_flags)
       end
 
       it 'redirects to /admin/geo' do

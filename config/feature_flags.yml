@@ -178,9 +178,6 @@ odux_enable_feature_map_hover:
   description: Enable hover functionality in point maps.
   defaultValue: true
   category: data lens
-odux_enable_histogram:
-  description: Enable histogram visualizations.
-  defaultValue: true
 reenable_ui_for_nbe:
   description: Some pieces of the UI were disabled for NBE; setting this to true renables them.
   defaultValue: false

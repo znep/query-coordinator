@@ -348,12 +348,6 @@ class NewUxBootstrapController < ActionController::Base
     !APP_CONFIG.odux_enable_feature_map
   end
 
-  # If the column is either money or number, then we only support bootstrapping
-  # it if the histogram feature is enabled.
-  def histogram_is_unsupported_on_column?(column)
-    (number_column?(column) || money_column?(column)) && !histogram_enabled?
-  end
-
   def column_too_large_for_feature_card?(column)
     point_column?(column) && dataset_size > 100_000
   end
@@ -390,7 +384,6 @@ class NewUxBootstrapController < ActionController::Base
   def non_bootstrappable_column?(field_name, column)
     field_name_ignored_for_bootstrap?(field_name) ||
       system_column?(field_name) ||
-      histogram_is_unsupported_on_column?(column) ||
       column_too_large_for_feature_card?(column) ||
       point_column_has_insufficient_cardinality?(column) ||
       (feature_map_disabled? && point_column?(column)) ||

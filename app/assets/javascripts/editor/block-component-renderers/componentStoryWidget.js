@@ -232,6 +232,7 @@
 
     $this.on('destroy', function() {
       $(window).off('resize', _handleWindowResize);
+      $this.empty();
     });
 
     return $this;

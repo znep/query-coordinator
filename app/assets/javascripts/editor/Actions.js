@@ -149,6 +149,13 @@
     ASSET_SELECTOR_PROVIDER_CHOSEN: 'ASSET_SELECTOR_PROVIDER_CHOSEN',
 
     /**
+     * Story widget embed flow
+     */
+
+    // {string} url
+    ASSET_SELECTOR_UPDATE_STORY_URL: 'ASSET_SELECTOR_UPDATE_STORY_URL',
+
+    /**
      * YouTube embed flow
      */
 

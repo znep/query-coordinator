@@ -135,12 +135,20 @@
       return accumulator;
     },
 
-    generateStoryWidgetJsonSrc: function(storyDomain, storyId) {
+    generateStoryWidgetIframeSrc: function(storyDomain, storyUid) {
 
       socrata.utils.assertIsOneOfTypes(storyDomain, 'string');
-      socrata.utils.assertIsOneOfTypes(storyId, 'string');
+      socrata.utils.assertIsOneOfTypes(storyUid, 'string');
 
-      return 'https://' + storyDomain + '/stories/s/' + storyId + '/widget.json';
+      return 'https://' + storyDomain + '/stories/s/' + storyUid + '/widget';
+    },
+
+    generateStoryWidgetJsonSrc: function(storyDomain, storyUid) {
+
+      socrata.utils.assertIsOneOfTypes(storyDomain, 'string');
+      socrata.utils.assertIsOneOfTypes(storyUid, 'string');
+
+      return 'https://' + storyDomain + '/stories/s/' + storyUid + '/widget.json';
     },
 
     generateYoutubeUrl: function(youtubeId) {

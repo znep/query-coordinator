@@ -108,12 +108,12 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       it 'ignores vanity_text' do
-        get :widget, uid: story_revision.uid, vanity_text: 'haha'
+        get :widget, uid: story_revision.uid, vanity_text: 'haha', format: :json
         expect(assigns(:story)).to eq(story_revision)
       end
 
       it 'renders 404' do
-        get :widget, uid: 'notf-ound'
+        get :widget, uid: 'notf-ound', format: :json
         expect(response).to be_not_found
       end
 
@@ -142,7 +142,7 @@ RSpec.describe StoriesController, type: :controller do
     context 'when there is no story with the given four by four' do
 
       it 'renders 404' do
-        get :show, uid: 'notf-ound'
+        get :widget, uid: 'notf-ound', format: :json
         expect(response).to have_http_status(404)
       end
     end

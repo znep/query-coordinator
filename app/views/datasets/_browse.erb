@@ -125,7 +125,7 @@ end
             <h3><%= t('controls.browse.actions.create_resource') %></h3>
             <div class="buttonContainer">
 
-            <%- if CurrentDomain.feature_flags[:stories_enabled] -%>
+            <%- if current_user_can_create_story? -%>
 
                 <a class="button downArrow" href="#" data-jq-dropdown="#create-resource-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
                   <%= t('controls.browse.actions.create_resource_short') %>
@@ -244,7 +244,7 @@ end
               <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
 
-                <%- if CurrentDomain.feature_flags[:stories_enabled] -%>
+                <%- if current_user_can_create_story? -%>
 
                   <a class="button dropdown-button downArrow" href="#" data-jq-dropdown="#create-resource-footer-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
                     <%= t('controls.browse.actions.create_resource_short') %>
@@ -292,7 +292,7 @@ end
               <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
 
-                <%- if CurrentDomain.feature_flags[:stories_enabled] -%>
+                <%- if current_user_can_create_story? -%>
 
                   <a class="button dropdown-button downArrow" href="#" data-jq-dropdown="#create-resource-footer-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
                     <%= t('controls.browse.actions.create_resource_short') %>

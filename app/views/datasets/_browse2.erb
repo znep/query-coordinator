@@ -361,12 +361,16 @@
             result_edit_controls = false
             # Assume all results are private unless we can verify that they are not.
             result_is_public = false
+            # Assume deletion is not allowed.
+            result_can_be_deleted = false
 
             # Only show the result edit controls if the user is permissioned to create assets
             # on the domain (`create_asset_enabled`) and the result is not federated.
             if create_asset_enabled && result.respond_to?(:is_public?) && result.respond_to?(:federated?) && !result.federated?
               result_edit_controls = true
               result_is_public = result.is_public?
+
+              result_can_be_deleted = (current_user.id === result.owner.id)
             end
 
             if result.federated?
@@ -411,7 +415,8 @@
                 :result_odn_link => result_odn_link,
                 :result_api_link => result_api_link,
                 :result_edit_controls => result_edit_controls,
-                :result_is_public => result_is_public
+                :result_is_public => result_is_public,
+                :result_can_be_deleted => result_can_be_deleted
               }
             )
           %>

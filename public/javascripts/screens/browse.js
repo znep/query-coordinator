@@ -143,8 +143,18 @@ $(function() {
               (!publicGrant || !publicGrant.inherited) ? '' : 'hide';
           },
         '.delete.button@class+': function(v) {
-            return v.context.hasRight(blist.rights.view.DELETE_VIEW) &&
-              !v.context.isFederated() ? '' : 'hide';
+            var isStory = v.context.displayType === 'story';
+            var canDeleteStories = blist.currentUser && blist.currentUser.hasRight(blist.rights.user.DELETE_STORY);
+            var ownsAsset = v.context.owner.id === blist.currentUserId;
+
+            if (isStory && canDeleteStories && ownsAsset) {
+              return '';
+            } else if (isStory) {
+              return 'hide';
+            } else {
+              return v.context.hasRight(blist.rights.view.DELETE_VIEW) &&
+                !v.context.isFederated() ? '' : 'hide';
+            }
           },
         '.comments .value': 'numberOfComments'
       }));

@@ -158,6 +158,41 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_not_match(/fonts.googleapis.com/, output)
   end
 
+  def setup_current_user_can_create_story(booleans)
+    CurrentDomain.
+      stubs(
+        :feature_flags => {
+          :stories_enabled => booleans[:stories_enabled]
+        }
+      )
+
+    user = stub
+    user.stubs(:has_right? => booleans[:has_create_story])
+
+    application_helper.
+      stubs(:current_user => user)
+  end
+
+  def test_current_user_can_create_story_returns_true_when_stories_are_enabled_and_user_can_create_stories_foo
+    setup_current_user_can_create_story(:stories_enabled => true, :has_create_story => true)
+    assert(application_helper.current_user_can_create_story?, 'Expected current_user_can_create_story? to be true')
+  end
+
+  def test_current_user_can_create_story_returns_false_when_stories_are_enabled_and_user_cannot_create_stories
+    setup_current_user_can_create_story(:stories_enabled => true, :has_create_story => false)
+    assert(application_helper.current_user_can_create_story? == false, 'Expected current_user_can_create_story? to be false')
+  end
+
+  def test_current_user_can_create_story_returns_false_when_stories_are_disabled_and_user_can_create_stories
+    setup_current_user_can_create_story(:stories_enabled => false, :has_create_story => true)
+    assert(application_helper.current_user_can_create_story? == false, 'Expected current_user_can_create_story? to be false')
+  end
+
+  def test_current_user_can_create_story_returns_false_when_stories_are_disabled_and_user_cannot_create_stories
+    setup_current_user_can_create_story(:stories_enabled => false, :has_create_story => false)
+    assert(application_helper.current_user_can_create_story? == false, 'Expected current_user_can_create_story? to be false')
+  end
+
   def test_is_mobile_http_user_agent_on_mobile_device_returns_true_without_overriding_params
     init_current_domain_mobile_device
     application_helper.stubs(:params => {})

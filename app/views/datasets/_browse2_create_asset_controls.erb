@@ -14,14 +14,16 @@
 
     </a>
 
-    <a id="create-story-button" class="browse2-create-story-button" href="#" title="<%= t('controls.browse.browse2.create.story.title') %>" data-status="ready">
+    <% if current_user_can_create_story? -%>
+      <a id="create-story-button" class="browse2-create-story-button" href="#" title="<%= t('controls.browse.browse2.create.story.title') %>" data-status="ready">
 
-      <span class="browse2-create-story-button-icon icon-story"></span>
-      <span class="browse2-create-story-button-label">
-        <%= t('controls.browse.browse2.create.story.label') %>
-      </span>
-      <span class="browse2-create-story-button-busy-spinner"></span>
+        <span class="browse2-create-story-button-icon icon-story"></span>
+        <span class="browse2-create-story-button-label">
+          <%= t('controls.browse.browse2.create.story.label') %>
+        </span>
+        <span class="browse2-create-story-button-busy-spinner"></span>
 
-    </a>
+      </a>
+    <% end -%>
   </div>
 </div>

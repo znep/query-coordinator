@@ -47,10 +47,10 @@
           <td>
             <%= link_to activity.dataset.name, view_path(activity.dataset) %>
           </td>
-          <td>
+          <td nowrap>
             <%= link_to activity.initiated_by.displayName, profile_path(activity.initiated_by) %>
           </td>
-          <td>
+          <td nowrap>
             <span class="started-time" data-epoch-seconds="<%= activity.created_at.to_i %>">
               <%= activity.created_at.strftime('%H:%M:%S') %>
             </span>
@@ -58,7 +58,7 @@
               <%= relative_day(activity.created_at) %>
             </span>
           </td>
-          <td class="import-status-label">
+          <td class="import-status-label" nowrap>
             <span class="import-status-icon import-status-icon-<%= activity.status %> icon-<%= icon_for_status(activity.status) %>"></span>
             <% if activity.status == 'failure' %>
               <%= link_to t("#{jobs_prefix}.statuses.#{activity.status}"),

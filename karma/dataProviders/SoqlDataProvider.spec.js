@@ -9,6 +9,7 @@ describe('SoqlDataProvider', function() {
   var INVALID_DOMAIN = null;
   var INVALID_DATASET_UID = null;
 
+  var QUERY_COLUMNS = [ 'NAME_ALIAS', 'VALUE_ALIAS' ];
   var QUERY_STRING = 'SELECT testName AS NAME_ALIAS, testValue AS VALUE_ALIAS WHERE testValue > 0 LIMIT 200';
 
   var ERROR_STATUS = 400;
@@ -89,8 +90,28 @@ describe('SoqlDataProvider', function() {
       "source": "Voice In",
       "status": "Closed",
       "supervisor_district": "6",
-      "updated": "2009-12-30T09:13:10.000"
+      "updated": "2009-12-30T09:13:10.000",
+      "can_be_blank": "not blank this time"
     },
+    {
+      "address": "83 S King St",
+      "case_id": "12345",
+      "category": "General Requests",
+      "closed": "2009-12-30T09:13:10.000",
+      "neighborhood": "Treasure Island/YBI",
+      "opened": "2009-09-09T06:50:28.000",
+      "point": {
+        "type": "Point",
+        "coordinates": [-120, 30]
+      },
+      "request_details": "foo",
+      "request_type": "bar",
+      "responsible_agency": "baz",
+      "source": "BATMAN",
+      "status": "Closed",
+      "supervisor_district": "1",
+      "updated": "2009-12-30T09:13:10.000"
+    }
   ]);
 
   var SAMPLE_DATASET_METADATA = {
@@ -111,30 +132,6 @@ describe('SoqlDataProvider', function() {
   var EXPECTED_ROW_COUNT = 100;
 
   var SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{count: EXPECTED_ROW_COUNT}]);
-
-  var EXPECTED_ROW_REQUEST_COLUMNS = Object.keys(JSON.parse(SAMPLE_ROW_REQUEST_RESPONSE)[0]);
-
-  var EXPECTED_ROW_REQUEST_ROWS = [
-    [
-      "Intersection of TREASURE ISLAND RD and",
-      "501753",
-      "General Requests",
-      "2009-12-30T09:13:10.000",
-      "Treasure Island/YBI",
-      "2009-09-09T06:50:28.000",
-      {
-        "type": "Point",
-        "coordinates": [-122.36357929,37.808938925]
-      },
-      "tida - tida - request_for_service",
-      "tida - tida - request_for_service",
-      "PUC - Electric/Power - G - Hold",
-      "Voice In",
-      "Closed",
-      "6",
-      "2009-12-30T09:13:10.000"
-    ]
-  ];
 
   var server;
 
@@ -406,7 +403,7 @@ describe('SoqlDataProvider', function() {
       it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
 
         soqlDataProvider.
-          getRows(QUERY_STRING).
+          getRows(QUERY_COLUMNS, QUERY_STRING).
           then(
             function(data) {
               // Fail the test since we expected an error response.
@@ -429,7 +426,7 @@ describe('SoqlDataProvider', function() {
       it('should include the correct request error status', function(done) {
 
         soqlDataProvider.
-          getRows(QUERY_STRING).
+          getRows(QUERY_COLUMNS, QUERY_STRING).
           then(
             function(data) {
               done('Request succeeded, we did not expect it to.');
@@ -449,7 +446,7 @@ describe('SoqlDataProvider', function() {
       it('should include the correct request error message', function(done) {
 
         soqlDataProvider.
-          getRows(QUERY_STRING).
+          getRows(QUERY_COLUMNS, QUERY_STRING).
           then(
             function(data) {
               // Fail the test since we expected an error response.
@@ -469,7 +466,7 @@ describe('SoqlDataProvider', function() {
       it('should include the correct soqlError object', function(done) {
 
         soqlDataProvider.
-          getRows(QUERY_STRING).
+          getRows(QUERY_COLUMNS, QUERY_STRING).
           then(
             function(data) {
               // Fail the test since we expected an error response.
@@ -495,6 +492,35 @@ describe('SoqlDataProvider', function() {
       };
       var soqlDataProvider;
 
+      var columnsToRetrieve = [
+        'address', // Exists, always non null
+        'point',   // Exists, always non null
+        'can_be_blank', // Sometimes is null.
+        'always_blank', // Always null.
+      ];
+
+      var expectedRowResults = [
+        [
+          "Intersection of TREASURE ISLAND RD and",
+          {
+            "type": "Point",
+            "coordinates": [-122.36357929,37.808938925]
+          },
+          "not blank this time",
+          undefined
+        ],
+        [
+          "83 S King St",
+          {
+            "type": "Point",
+            "coordinates": [-120, 30 ]
+          },
+          undefined,
+          undefined
+        ]
+      ];
+
+
       beforeEach(function() {
 
         server = sinon.fakeServer.create();
@@ -509,7 +535,7 @@ describe('SoqlDataProvider', function() {
       it('should return an object containing columns and rows', function(done) {
 
         soqlDataProvider.
-          getRows(QUERY_STRING).
+          getRows(columnsToRetrieve, QUERY_STRING).
           then(
             function(data) {
 
@@ -526,11 +552,11 @@ describe('SoqlDataProvider', function() {
       it('should return the expected columns', function(done) {
 
         soqlDataProvider.
-          getRows(QUERY_STRING).
+          getRows(columnsToRetrieve, QUERY_STRING).
           then(
             function(data) {
 
-              assert.deepEqual(data.columns, EXPECTED_ROW_REQUEST_COLUMNS);
+              assert.deepEqual(data.columns, columnsToRetrieve);
               done();
             },
             done
@@ -542,11 +568,11 @@ describe('SoqlDataProvider', function() {
       it('should return the expected rows', function(done) {
 
         soqlDataProvider.
-          getRows(QUERY_STRING).
+          getRows(columnsToRetrieve, QUERY_STRING).
           then(
             function(data) {
 
-              assert.deepEqual(data.rows, EXPECTED_ROW_REQUEST_ROWS);
+              assert.deepEqual(data.rows, expectedRowResults);
               done();
             },
             done

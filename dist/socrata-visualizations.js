@@ -57,11 +57,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(40);
-	var ColumnChart = __webpack_require__(41);
-	var FeatureMap = __webpack_require__(42);
-	var Table = __webpack_require__(43);
-	var TimelineChart = __webpack_require__(44);
+	var ChoroplethMap = __webpack_require__(41);
+	var ColumnChart = __webpack_require__(42);
+	var FeatureMap = __webpack_require__(43);
+	var Table = __webpack_require__(44);
+	var TimelineChart = __webpack_require__(45);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -21006,6 +21006,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _ = __webpack_require__(9);
 
 	function MetadataProvider(config) {
+	  var self = this;
 
 	  _.extend(this, new DataProvider(config));
 
@@ -21171,6 +21172,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return isSubcolumn;
 	  };
 
+	  // Given a dataset metadata object (see .getDatasetMetadata()),
+	  // returns an array of the columns  which are suitable for
+	  // display to the user (all columns minus system and subcolumns).
+	  //
+	  // @return {Object[]}
+	  this.getDisplayableColumns = function(datasetMetadata) {
+	    utils.assertHasProperty(datasetMetadata, 'columns');
+
+	    return _.reject(datasetMetadata.columns, function(column) {
+	      return self.isSystemColumn(column.fieldName) ||
+	        self.isSubcolumn(column.fieldName, datasetMetadata);
+	    });
+	  }
+
 
 	}
 
@@ -21196,13 +21211,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *  @property {String} domain - The domain against which to make the query.
 	 *  @property {String} datasetUid - The uid of the dataset against which
 	 *    the user intends to query.
-	 *  @property {Function} success - The function to be called with successful
-	 *    query results.
-	 *  @property {Function} error - The function to be called on failure.
-	 *
-	 * See the documentation for `_onRequestSuccess()` and `_onRequestError()`
-	 * below for the expected function signatures for the success and error
-	 * callbacks, respectively.
 	 */
 	function SoqlDataProvider(config) {
 	  'use strict';
@@ -21255,7 +21263,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return _makeSoqlGetRequestWithSalt(url).then(
 	      function(data) {
-	        return _mapQueryResponseToTable(data, nameAlias, valueAlias)
+	        return _mapRowsResponseToTable([ nameAlias, valueAlias ], data);
 	      }
 	    );
 	  };
@@ -21272,25 +21280,42 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  /**
 	   * `.getRows()` executes a SoQL query against the current domain that
-	   * returns all rows. The query string is passed in by the caller, meaning
+	   * returns all rows. The response is mapped to the DataProvider data schema (1).
+	   * The query string is passed in by the caller, meaning
 	   * that at this level of abstraction we have no notion of SoQL grammar.
 	   *
+	   * @param {String[]} columnNames - A list of column names to extract from the response.
 	   * @param {String} queryString - A valid SoQL query.
+	   *
+	   * (1) - The DataProvider data schema:
+	   * {
+	   *   columns: {String[]},
+	   *   rows: {{Object[]}[]}.
+	   * }
+	   * Row:
+	   *
+	   * Example:
+	   * {
+	   *   columns: [ 'date', 'id' ],
+	   *   rows: [
+	   *    [ '2016-01-15T11:08:45.000', '123' ],
+	   *    [ '2016-01-15T11:08:45.000', '345' ]
+	   *   ]
+	   * }
 	   *
 	   * @return {Promise}
 	   */
-	  this.getRows = function(queryString) {
-	    return Promise.all([
-	      metadataProvider.getDatasetMetadata(),
-	      _makeSoqlGetRequestWithSalt(_queryUrl(queryString))
-	    ]).then(
-	      function(responses) {
-	        var columnNames = _.chain(responses[0].columns).
-	          sortBy('position').
-	          pluck('fieldName').
-	          value();
+	  this.getRows = function(columnNames, queryString) {
+	    utils.assertInstanceOf(columnNames, Array);
+	    utils.assert(columnNames.length > 0);
+	    utils.assertIsOneOfTypes(queryString, 'string');
+	    _.each(columnNames, function(columnName) {
+	      utils.assertIsOneOfTypes(columnName, 'string');
+	    });
 
-	        return _mapRowsResponseToTable(columnNames, responses[1]);
+	    return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(
+	      function(soqlData) {
+	        return _mapRowsResponseToTable(columnNames, soqlData);
 	      }
 	    );
 	  };
@@ -21371,47 +21396,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _self.getConfigurationProperty('datasetUid'),
 	      queryString
 	    );
-	  }
-
-	  /**
-	   * Transforms a raw SoQL query result into a 'table' object.
-	   *
-	   * @param {Object[]} data - The query result, which is an array of objects
-	   *   with keys equal to the `nameAlias` and `valueAlias` used in the query
-	   *   and values equal to the row values for those columns.
-	   * @param {String} nameAlias - The alias used for the 'name' column in
-	   *   the query.
-	   * @param {String} valueAlias - The alias used for the 'value' column in
-	   *   the query.
-	   *
-	   * @return {Object}
-	   *   @property {String[]} columns - An ordered list of the column aliases
-	   *     present in the query.
-	   *   @property {[][]} rows - An array of rows returned by the query.
-	   *
-	   * The columns array is of the format:
-	   *
-	   *   [<value of `nameAlias`>, <value of `valueAlias`>]
-	   *
-	   * Accordingly, each row in the rows array is of the format:
-	   *
-	   *   [
-	   *     <row value of the `nameAlias` column>,
-	   *     <row value of the `valueAlias` column>
-	   *   ]
-	   */
-	  function _mapQueryResponseToTable(data, nameAlias, valueAlias) {
-
-	    return {
-	      columns: [nameAlias, valueAlias],
-	      rows: data.map(function(datum) {
-
-	        return [
-	          datum[nameAlias],
-	          datum[valueAlias]
-	        ];
-	      })
-	    };
 	  }
 
 	  /**
@@ -23806,7 +23790,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(38);
+	var ieee754 = __webpack_require__(40);
 
 	var BufferMethods;
 
@@ -25749,6 +25733,96 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 40 */
+/***/ function(module, exports) {
+
+	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var nBits = -7
+	  var i = isLE ? (nBytes - 1) : 0
+	  var d = isLE ? -1 : 1
+	  var s = buffer[offset + i]
+
+	  i += d
+
+	  e = s & ((1 << (-nBits)) - 1)
+	  s >>= (-nBits)
+	  nBits += eLen
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  m = e & ((1 << (-nBits)) - 1)
+	  e >>= (-nBits)
+	  nBits += mLen
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  if (e === 0) {
+	    e = 1 - eBias
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen)
+	    e = e - eBias
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	}
+
+	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+	  var i = isLE ? 0 : (nBytes - 1)
+	  var d = isLE ? 1 : -1
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+	  value = Math.abs(value)
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0
+	    e = eMax
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2)
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--
+	      c *= 2
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias)
+	    }
+	    if (value * c >= 2) {
+	      e++
+	      c /= 2
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0
+	      e = eMax
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen)
+	      e = e + eBias
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+	      e = 0
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+	  e = (e << mLen) | m
+	  eLen += mLen
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+	  buffer[offset + i - d] |= s * 128
+	}
+
+
+/***/ },
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -26391,7 +26465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -26838,7 +26912,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27059,12 +27133,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    datasetMetadata = data;
 	  }
 
-	  function handleDatasetMetadataRequestError() {
+	  function handleDatasetMetadataRequestError(error) {
 
-	    // We can gracefully degrade here since the dataset metadata is only used
-	    // to provide formatting information for the row inspector.
-	    // In its absence, we simply won't format the row inspector data as
-	    // nicely.
+	    // The only consumer of dataset metadata is the row inspector flyout.
+	    // If the request fails, we won't show the row inspector on click.
+	    console.error('Failed to fetch dataset metadata: {0}'.format(error));
 	  }
 
 	  function handleFeatureExtentQuerySuccess(response) {
@@ -27156,6 +27229,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function handleRowInspectorQuery(event) {
+	    if (!datasetMetadata) {
+	      // Dataset metadata request either failed or isn't ready yet.
+	      // Pop up an error.
+	      handleRowInspectorQueryError();
+	      return;
+	    }
 
 	    var payload = event.originalEvent.detail;
 
@@ -27168,6 +27247,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        generateWithinBoxClause(vif.columnName, payload.queryBounds)
 	      );
 
+	    var displayableColumns = metadataProvider.getDisplayableColumns(datasetMetadata);
+
 	    function generateWithinBoxClause(columnName, bounds) {
 
 	      return '&$where=within_box({0}, {1}, {2})'.format(
@@ -27178,7 +27259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    soqlDataProvider.
-	      getRows(query).
+	      getRows(_.pluck(displayableColumns, 'fieldName'), query).
 	      then(
 	        handleRowInspectorQuerySuccess,
 	        handleRowInspectorQueryError
@@ -27277,26 +27358,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // objects.  Each row corresponds to a single page in the flannel.
 	    return data.rows.map(
 	      function(row) {
-
-	        // If the dataset metadata request fails, then datasetMetadata will
-	        // be undefined. In this case, we should fall back to sorting
-	        // alphabetically instead of sorting by the order in which the
-	        // columns have been arranged in the dataset view.
-	        if (datasetMetadata) {
-
-	          return orderRowDataByColumnIndex(
-	            datasetMetadata.columns,
-	            data.columns,
-	            row
-	          );
-
-	        } else {
-
-	          return orderRowDataAlphabetically(
-	            data.columns,
-	            row
-	          );
-	        }
+	        return orderRowDataByColumnIndex(
+	          datasetMetadata.columns,
+	          data.columns,
+	          row
+	        );
 	      }
 	    );
 	  }
@@ -27390,32 +27456,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      );
 	  }
 
-	  function orderRowDataAlphabetically(columnNames, row) {
-
-	    var formattedRowData = [];
-	    var sortedColumnNames = columnNames.sort();
-
-	    sortedColumnNames.
-	      forEach(
-	      function(columnName) {
-
-	        var originalColumnIndex = columnNames.indexOf(columnName);
-	        var columnValue = row[originalColumnIndex];
-
-	        var rowDatum = {
-	          column: columnName,
-	          value: _.isObject(columnValue) ? [columnValue] : columnValue,
-	          format: undefined,
-	          physicalDatatype: undefined
-	        };
-
-	        formattedRowData.push(rowDatum);
-	      }
-	    );
-
-	    return formattedRowData;
-	  }
-
 	  function logError(e) {
 
 	    if (console && console.error) {
@@ -27430,7 +27470,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27767,14 +27807,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function _getDisplayableColumns() {
-	    return _getDatasetMetadata().then(function(datasetMetadata) {
-	      var columns = _.pluck(datasetMetadata.columns, 'fieldName');
-
-	      return _.reject(datasetMetadata.columns, function(column) {
-	        return metadataProvider.isSystemColumn(column.fieldName) ||
-	          metadataProvider.isSubcolumn(column.fieldName, datasetMetadata);
-	      });
-	    });
+	    return _getDatasetMetadata().then(metadataProvider.getDisplayableColumns);
 	  }
 
 	  function _getVif() {
@@ -27832,7 +27865,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -28217,7 +28250,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var precisionPromise = vif.configuration.precision ?
 	      Promise.resolve(vif.configuration.precision) :
 	      precisionSoqlDataProvider.
-	        getRows('$query=' + precisionQueryString).
+	        getRows(
+	          [ SOQL_PRECISION_START_ALIAS, SOQL_PRECISION_END_ALIAS ],
+	          '$query=' + precisionQueryString
+	        ).
 	        then(mapQueryResponseToPrecision);
 
 	    var dataPromise = precisionPromise.

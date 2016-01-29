@@ -380,7 +380,10 @@ $.fn.socrataTimelineChart = function(vif) {
     var precisionPromise = vif.configuration.precision ?
       Promise.resolve(vif.configuration.precision) :
       precisionSoqlDataProvider.
-        getRows('$query=' + precisionQueryString).
+        getRows(
+          [ SOQL_PRECISION_START_ALIAS, SOQL_PRECISION_END_ALIAS ],
+          '$query=' + precisionQueryString
+        ).
         then(mapQueryResponseToPrecision);
 
     var dataPromise = precisionPromise.

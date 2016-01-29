@@ -75,9 +75,10 @@ describe('views/Table', function() {
     var vif;
     var getTableDataSpy;
     var tableRenderSpy;
-    var theSingleSubcolumn = 'location_city';
-    var theSingleSystemColumn = ':@computed_region_awaf_s7ux';
-    var expectedQueryColumns;
+    // Arbitrary choice, in real life MetadataProvider.getDisplayableColumns provides this for us.
+    var theSingleNonDisplayableColumn = 'location_city';
+    var displayableColumns;
+    var displayableColumnNames;
 
     beforeEach(function(done) {
       vif = _.cloneDeep(tableVIF);
@@ -89,23 +90,23 @@ describe('views/Table', function() {
       ));
       tableRenderSpy = sinon.spy();
 
-      expectedQueryColumns = _.chain(window.testData.CHICAGO_CRIMES_DATASET_METADATA.columns).
-        pluck('fieldName').
-        without(theSingleSubcolumn).
-        without(theSingleSystemColumn).
-        value();
+      displayableColumns = _.filter(
+        window.testData.CHICAGO_CRIMES_DATASET_METADATA.columns,
+        function(column) {
+          return column.fieldName !== theSingleNonDisplayableColumn;
+        }
+      );
+      displayableColumnNames = _.pluck(displayableColumns, 'fieldName');
 
       // Mock data providers
+
       revertRewire = Table.__set__({
         MetadataProvider: function() {
           this.getDatasetMetadata = _.constant(
             Promise.resolve(window.testData.CHICAGO_CRIMES_DATASET_METADATA)
           );
-          this.isSubcolumn = function(columnName) {
-            return columnName === theSingleSubcolumn;
-          };
-          this.isSystemColumn = function(columnName) {
-            return columnName === theSingleSystemColumn;
+          this.getDisplayableColumns = function() {
+            return displayableColumns;
           };
         },
         SoqlDataProvider: function() {
@@ -138,8 +139,8 @@ describe('views/Table', function() {
       );
     }
 
-    it('rejects subcolumns', function() {
-      // Note that isSubcolumn is stubbed to only return true on 'location_city'
+    it('displays only displayable columns', function() {
+      // We're testing that Table delegates to MetadataProvider.getDisplayableColumns.
       var calls = tableRenderSpy.getCalls();
 
       assert.lengthOf(calls, 1);
@@ -150,7 +151,7 @@ describe('views/Table', function() {
       );
 
       assert.include(columnNamesQueriedFor, 'ward');
-      assert.notInclude(columnNamesQueriedFor, theSingleSubcolumn);
+      assert.notInclude(columnNamesQueriedFor, theSingleNonDisplayableColumn);
     });
 
     describe('on SOCRATA_VISUALIZATION_PAGINATION_NEXT', function() {
@@ -171,7 +172,7 @@ describe('views/Table', function() {
         assert.deepEqual(
           getGetTableDataArgumentsHash(calls[0]),
           {
-            columnNames: expectedQueryColumns,
+            columnNames: displayableColumnNames,
             order: [ { ascending: true, columnName: 'ward' } ],
             limit: 6,
             offset: 0
@@ -181,7 +182,7 @@ describe('views/Table', function() {
         assert.deepEqual(
           getGetTableDataArgumentsHash(calls[1]),
           {
-            columnNames: expectedQueryColumns,
+            columnNames: displayableColumnNames,
             order: [ { ascending: true, columnName: 'ward' } ],
             limit: 6,
             offset: 6
@@ -207,7 +208,7 @@ describe('views/Table', function() {
           assert.deepEqual(
             getGetTableDataArgumentsHash(calls[2]),
             {
-              columnNames: expectedQueryColumns,
+              columnNames: displayableColumnNames,
               order: [ { ascending: true, columnName: 'ward' } ],
               limit: 6,
               offset: 0
@@ -238,7 +239,7 @@ describe('views/Table', function() {
         assert.deepEqual(
           getGetTableDataArgumentsHash(calls[0]),
           {
-            columnNames: expectedQueryColumns,
+            columnNames: displayableColumnNames,
             order: [ { ascending: true, columnName: 'ward' } ],
             limit: 6,
             offset: 0
@@ -248,7 +249,7 @@ describe('views/Table', function() {
         assert.deepEqual(
           getGetTableDataArgumentsHash(calls[1]),
           {
-            columnNames: expectedQueryColumns,
+            columnNames: displayableColumnNames,
             order: [ { ascending: true, columnName: 'district' } ],
             limit: 6,
             offset: 0
@@ -284,7 +285,7 @@ describe('views/Table', function() {
           assert.deepEqual(
             getGetTableDataArgumentsHash(calls[2]),
             {
-              columnNames: expectedQueryColumns,
+              columnNames: displayableColumnNames,
               order: [ { ascending: false, columnName: 'district' } ],
               limit: 6,
               offset: 0
@@ -306,7 +307,7 @@ describe('views/Table', function() {
             assert.deepEqual(
               getGetTableDataArgumentsHash(calls[3]),
               {
-                columnNames: expectedQueryColumns,
+                columnNames: displayableColumnNames,
                 order: [ { ascending: true, columnName: 'district' } ],
                 limit: 6,
                 offset: 0

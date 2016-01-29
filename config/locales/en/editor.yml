@@ -169,6 +169,8 @@ en:
       saving: 'Saving...'
       unsaved: 'Save'
       idle: 'Save'
+    story_widget:
+      view_story_prompt: 'View Story'
     visualizations:
       no_value_placeholder: '(No value)'
       default_unit:

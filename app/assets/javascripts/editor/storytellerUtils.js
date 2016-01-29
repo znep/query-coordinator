@@ -135,6 +135,14 @@
       return accumulator;
     },
 
+    generateStoryWidgetJsonSrc: function(storyDomain, storyId) {
+
+      socrata.utils.assertIsOneOfTypes(storyDomain, 'string');
+      socrata.utils.assertIsOneOfTypes(storyId, 'string');
+
+      return 'https://' + storyDomain + '/stories/s/' + storyId + '/widget.json';
+    },
+
     generateYoutubeUrl: function(youtubeId) {
 
       socrata.utils.assertIsOneOfTypes(youtubeId, 'string');

@@ -124,8 +124,7 @@ function generateOldUxConfig() {
   console.log('Building oldUx entrypoints: ', entries);
 
   var entry = getEntryObjectFromArray(
-    entries.map(function(entryPoint) { return [entryPoint, './screens/' + entryPoint]; }),
-    isProduction() ? null : 'webpack/hot/only-dev-server'
+    entries.map(function(entryPoint) { return [entryPoint, './screens/' + entryPoint]; })
   );
 
   return _.defaultsDeep({
@@ -136,7 +135,6 @@ function generateOldUxConfig() {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
         loaders: _.compact([
-          isProduction() ? null : 'react-hot',
           'babel'
         ])
       }]

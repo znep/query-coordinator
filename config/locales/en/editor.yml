@@ -147,6 +147,11 @@ en:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
           validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'
           exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."
+      image_preview:
+        preview_label: 'Preview'
+        description_label: 'Image Description (optional)'
+        description_alt_attribute: 'This text is called an alt attribute and will not be displayed on your story page '
+        alt_attribute_tooltip: 'An alt attribute (short for alternative) is the text displayed in place of an image in the event that the image cannot be loaded.  It’s also used by screen reader software to describe the image so that users of assistive technology can interact with the elements of the page.'
       embed_code:
         name: 'HTML Embed'
         description: 'Insert embed code to include external web content.'

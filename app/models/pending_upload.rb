@@ -13,6 +13,12 @@ class PendingUpload
   def initialize(filename)
     @filename = filename
     @content_type = MIME::Types.type_for(filename).first.content_type
+
+    # Firefox appends 'charset=UTF-8' to content-type on xhr requests. We need to match that
+    # tomfoolery because the presigned url we generate in #url uses the content_type to
+    # generate the signature of the request. We get a SignatureMismatchError from S3
+    # when we try to PUT to the presigned url with different content types.
+    @content_type << '; charset=UTF-8' if @content_type == 'text/html'
   end
 
   def url

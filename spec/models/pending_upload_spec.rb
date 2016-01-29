@@ -23,23 +23,33 @@ RSpec.describe PendingUpload, type: :model do
       end
     end
 
+    context 'with html file' do
+      let(:filename) { 'hot-ham-water.html' }
+
+      it 'sets appends charset to content_type' do
+        expect(subject.content_type).to eq('text/html; charset=UTF-8')
+      end
+    end
+
   end
 
   describe '#url' do
 
-    it 'creates url for new s3 object' do
-      mock_result = 'the_resulting_url_from_s3_magic'
+    let(:mock_s3_object) { double('mock_s3_object') }
+    let(:mock_buckets) { double('mock_buckets') }
+    let(:mock_bucket) { double('mock_bucket') }
+    let(:mock_objects) { double('mock_objects') }
+    let(:mock_result) { 'the_resulting_url_from_s3_magic' }
 
-      mock_s3_object = double('mock_s3_object')
-      mock_buckets = double('mock_buckets')
-      mock_bucket = double('mock_bucket')
-      mock_objects = double('mock_objects')
-
+    before do
       expect(SecureRandom).to receive(:uuid).and_return('a_random_string')
       expect(AWS::S3).to receive_message_chain(:new, :buckets).and_return(mock_buckets)
       expect(mock_buckets).to receive(:[]).with(Rails.application.secrets.aws['s3_bucket_name']).and_return(mock_bucket)
       expect(mock_bucket).to receive(:objects).and_return(mock_objects)
       expect(mock_objects).to receive(:[]).with("uploads/a_random_string/#{filename}").and_return(mock_s3_object)
+    end
+
+    it 'creates url for new s3 object' do
       expect(mock_s3_object).to receive(:url_for).with(:write, content_type: 'image/png', acl: :public_read).and_return(mock_result)
 
       expect(subject.url).to eq(mock_result)

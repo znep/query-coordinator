@@ -137,78 +137,158 @@ describe('AssetSelectorRenderer', function() {
       container.find('.modal-close-btn').trigger('click');
     });
 
-    it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
+    describe('event triggered in youtube url field', function() {
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: 'YOUTUBE'
+        });
+      });
+      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
 
-      storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
-        provider: 'YOUTUBE'
+        storyteller.dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
+          assert.equal(payload.url, '');
+          done();
+        });
+
+        var event = $.Event('keyup'); //eslint-disable-line new-cap
+        // `a`
+        event.keyCode = 65;
+        container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
       });
 
-      storyteller.dispatcher.register(function(payload) {
-        var action = payload.action;
-        assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
-        assert.equal(payload.url, '');
-        done();
+      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a delete key', function(done) {
+
+        storyteller.dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
+          assert.equal(payload.url, '');
+          done();
+        });
+
+        var event = $.Event('keyup'); //eslint-disable-line new-cap
+        // `BACKSPACE`
+        event.keyCode = 8;
+        container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
       });
 
-      var event = $.Event('keyup'); //eslint-disable-line new-cap
-      // `a`
-      event.keyCode = 65;
-      container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
+      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a cut event from the youtube url input control', function(done) {
+
+        storyteller.dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
+          assert.equal(payload.url, '');
+          done();
+        });
+
+        container.find('[data-asset-selector-validate-field="youtubeId"]').trigger('cut');
+      });
+
+      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a paste event from the youtube url input control', function(done) {
+
+        storyteller.dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
+          assert.equal(payload.url, '');
+          done();
+        });
+
+        container.find('[data-asset-selector-validate-field="youtubeId"]').trigger('paste');
+      });
     });
 
-    it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a delete key', function(done) {
+    describe('event triggered in image description (alt attribute) field', function() {
+      beforeEach(function() {
+        var payloadUrl = 'https://validurl.com/image.png';
+        var payloadDocumentId = '12345';
 
-      storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
-        provider: 'YOUTUBE'
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: 'IMAGE'
+        });
+
+        storyteller.dispatcher.dispatch({
+          action: Actions.FILE_UPLOAD_DONE,
+          url: payloadUrl,
+          documentId: payloadDocumentId
+        });
       });
 
-      storyteller.dispatcher.register(function(payload) {
-        var action = payload.action;
-        assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
-        assert.equal(payload.url, '');
-        done();
+      it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a keyup event from the image description input field where `.keyCode` is a character', function(done) {
+
+        storyteller.dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
+          assert.equal(payload.altAttribute, 'Hey alt');
+          done();
+        });
+
+        var altFieldInput = container.find('.asset-selector-alt-text-input');
+        assert.lengthOf(altFieldInput, 1);
+
+        altFieldInput.val('Hey alt');
+
+        var event = $.Event('keyup'); //eslint-disable-line new-cap
+        // `a`
+        event.keyCode = 65;
+        altFieldInput.trigger(event);
       });
 
-      var event = $.Event('keyup'); //eslint-disable-line new-cap
-      // `BACKSPACE`
-      event.keyCode = 8;
-      container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
-    });
+      it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a keyup event from the image description input field where `.keyCode` is a delete key', function(done) {
 
-    it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a cut event from the youtube url input control', function(done) {
+        storyteller.dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
+          assert.equal(payload.altAttribute, 'Hey alt');
+          done();
+        });
 
-      storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
-        provider: 'YOUTUBE'
+        var altFieldInput = container.find('.asset-selector-alt-text-input');
+        assert.lengthOf(altFieldInput, 1);
+
+        altFieldInput.val('Hey alt');
+
+        var event = $.Event('keyup'); //eslint-disable-line new-cap
+        // `BACKSPACE`
+        event.keyCode = 8;
+        container.find('.asset-selector-alt-text-input').trigger(event);
       });
 
-      storyteller.dispatcher.register(function(payload) {
-        var action = payload.action;
-        assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
-        assert.equal(payload.url, '');
-        done();
+      it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a cut event from the image description input field', function(done) {
+
+        storyteller.dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
+          assert.equal(payload.altAttribute, 'Hey alt');
+          done();
+        });
+
+        var altFieldInput = container.find('.asset-selector-alt-text-input');
+        assert.lengthOf(altFieldInput, 1);
+
+        altFieldInput.val('Hey alt');
+
+        container.find('.asset-selector-alt-text-input').trigger('cut');
       });
 
-      container.find('[data-asset-selector-validate-field="youtubeId"]').trigger('cut');
-    });
+      it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a paste event from the image description input field', function(done) {
 
-    it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a paste event from the youtube url input control', function(done) {
+        storyteller.dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
+          assert.equal(payload.altAttribute, 'Hey alt');
+          done();
+        });
 
-      storyteller.dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
-        provider: 'YOUTUBE'
+        var altFieldInput = container.find('.asset-selector-alt-text-input');
+        assert.lengthOf(altFieldInput, 1);
+
+        altFieldInput.val('Hey alt');
+
+        container.find('.asset-selector-alt-text-input').trigger('paste');
       });
-
-      storyteller.dispatcher.register(function(payload) {
-        var action = payload.action;
-        assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
-        assert.equal(payload.url, '');
-        done();
-      });
-
-      container.find('[data-asset-selector-validate-field="youtubeId"]').trigger('paste');
     });
 
     it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event', function(done) {
@@ -226,11 +306,18 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('dispatches `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
-      storyteller.assetSelectorStore.addChangeListener(function() {
-        _.defer(function() {
-          container.find('.modal-dialog').trigger('visualizationSelected', {format: 'vif', data: {}});
-        });
+      storyteller.dispatcher.register(function(payload) {
+        if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
+          // the values will be empty, but assert that the event adds the correct keys
+          assert.property(payload, 'visualization');
+          assert.property(payload.visualization, 'format');
+          done();
+        }
       });
+
+      storyteller.assetSelectorStore.addChangeListener(_.once(function() {
+        container.find('.modal-dialog').trigger('visualizationSelected', {format: 'vif', data: {}});
+      }));
 
       // add dataset so the proper component values are there for updating
       storyteller.dispatcher.dispatch({
@@ -239,15 +326,6 @@ describe('AssetSelectorRenderer', function() {
         isNewBackend: true
       });
       server.respond([200, {}, '{}']);
-
-
-      storyteller.dispatcher.register(function(payload) {
-        assert.equal(payload.action, Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION);
-        // the values will be empty, but assert that the event adds the correct keys
-        assert.property(payload, 'visualization');
-        assert.property(payload.visualization, 'format');
-        done();
-      });
     });
 
     describe('select file in image upload', function() {
@@ -314,6 +392,29 @@ describe('AssetSelectorRenderer', function() {
       assert.isTrue(container.find('[data-provider="SOCRATA_VISUALIZATION"]').length > 0);
       assert.isTrue(container.find('[data-provider="EMBED_CODE"]').length > 0);
       assert.isTrue(container.find('[data-provider="IMAGE"]').length > 0);
+    });
+
+    it('renders an image preview with a description (alt attribute) container', function() {
+      var payloadUrl = 'https://validurl.com/image.png';
+      var payloadDocumentId = '12345';
+
+      storyteller.dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+        blockId: testBlockId,
+        componentIndex: testComponentIndex,
+        provider: 'IMAGE'
+      });
+
+      storyteller.dispatcher.dispatch({
+        action: Actions.FILE_UPLOAD_DONE,
+        url: payloadUrl,
+        documentId: payloadDocumentId
+      });
+
+      assert.equal(container.find('.asset-selector-image-description-container').length, 1);
+      assert.equal(container.find('.asset-selector-alt-text-input').length, 1);
+      assert.equal(container.find('.asset-selector-image-description-label').length, 1);
+      assert.equal(container.find('.asset-selector-image-alt-hint').length, 1);
     });
 
     it('renders the "choose YouTube" content on an appropriate `ASSET_SELECTOR_PROVIDER_CHOSEN` event', function() {

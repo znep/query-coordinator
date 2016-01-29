@@ -68,22 +68,60 @@
       );
 
       _container.on(
-        'keyup',
-        '[data-asset-selector-validate-field="youtubeId"]',
+        'cut paste keyup',
+        '.asset-selector-alt-text-input',
         function(event) {
+          // If no key was down then we can assume that a cut or paste event came
+          // from the mouse (keyboard-originated paste events will trigger the
+          // 'keyup' handler above).
+          //
+          // The `setTimeout` is necessary because the 'paste' event will fire
+          // before the paste action takes place, so we need to break execution
+          // to allow the DOM time to update itself before we query for the
+          // value of the input control.
+          if (!event.keyCode) {
+            setTimeout(function() {
+              storyteller.dispatcher.dispatch({
+                action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
+                altAttribute: $(event.target).val()
+              });
+            }, 0);
+          } else {
+            storyteller.dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
+              altAttribute: $(event.target).val()
+            });
+          }
+        }
+      );
 
-          storyteller.dispatcher.dispatch({
-            action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
-            url: $(event.target).val()
+      _container.on(
+        'mouseenter',
+        '.asset-selector-image-alt-hint',
+        function() {
+          storyteller.flyoutRenderer.render({
+            element: this,
+            content: '<span class="tooltip-text">' +
+              I18n.t('editor.asset_selector.image_preview.alt_attribute_tooltip') +
+              '</span>',
+            rightSideHint: false,
+            belowTarget: false
           });
         }
       );
 
       _container.on(
-        'cut paste',
+        'mouseout',
+        '.asset-selector-image-alt-hint',
+        function() {
+          storyteller.flyoutRenderer.clear();
+        }
+      );
+
+      _container.on(
+        'cut paste keyup',
         '[data-asset-selector-validate-field="youtubeId"]',
         function(event) {
-
           // If no key was down then we can assume that a cut or paste event came
           // from the mouse (keyboard-originated paste events will trigger the
           // 'keyup' handler above).
@@ -99,6 +137,11 @@
                 url: $(event.target).val()
               });
             }, 0);
+          } else {
+            storyteller.dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+              url: $(event.target).val()
+            });
           }
         }
       );
@@ -491,7 +534,6 @@
       return [ content, buttonGroup ];
     }
 
-
     function _renderImageUploadErrorData(componentProperties) {
       var progressContainer = _container.find('.asset-selector-image-upload-progress');
       var progressSpinner = progressContainer.find('.btn-busy');
@@ -517,6 +559,11 @@
     }
 
     function _renderImagePreviewTemplate() {
+      var previewImageLabel = $(
+        '<h2>',
+        { 'class': 'asset-selector-preview-image-label' }
+      ).text(I18n.t('editor.asset_selector.image_preview.preview_label'));
+
       var previewImage = $(
         '<img>',
         { 'class': 'asset-selector-preview-image' }
@@ -527,6 +574,36 @@
         { 'class': 'asset-selector-preview-image-container' }
       ).append([
         previewImage
+      ]);
+
+      var descriptionLabel = $(
+        '<h2>',
+        { 'class': 'asset-selector-image-description-label' }
+      ).text(I18n.t('editor.asset_selector.image_preview.description_label'));
+
+      var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-image-alt-hint' });
+
+      var inputLabelText = $(
+        '<p>',
+        { 'class': 'asset-selector-image-alt-input-info' }
+      ).text(I18n.t('editor.asset_selector.image_preview.description_alt_attribute'));
+
+      var inputLabel = inputLabelText.append([questionIcon]);
+
+      var inputField = $(
+        '<input>',
+        {
+          'class': 'asset-selector-alt-text-input',
+          'type': 'text'
+        }
+      );
+
+      var descriptionContainer = $(
+        '<div>',
+        { 'class': 'asset-selector-image-description-container' }
+      ).append([
+        inputField,
+        inputLabel
       ]);
 
       var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
@@ -550,7 +627,10 @@
         '<div>',
         { 'class': 'asset-selector-input-group' }
       ).append([
-        previewContainer
+        previewImageLabel,
+        previewContainer,
+        descriptionLabel,
+        descriptionContainer
       ]);
 
       return [ content, buttonGroup ];
@@ -560,9 +640,11 @@
 
       var documentId = null;
       var imageUrl = null;
+      var altAttribute = null;
       var imageContainer = _container.find('.asset-selector-preview-image-container');
       var imageElement = imageContainer.find('.asset-selector-preview-image');
       var imageSrc = imageElement.attr('src');
+      var altInputField = _container.find('.asset-selector-alt-text-input');
       var insertButton = _container.find('.btn-apply');
 
       if (componentProperties !== null &&
@@ -571,7 +653,10 @@
 
         documentId = componentProperties.documentId;
         imageUrl = componentProperties.url;
+        altAttribute = componentProperties.alt;
       }
+
+      altInputField.attr('value', _.isEmpty(altAttribute) ? null : altAttribute);
 
       if (!_.isNull(documentId) && !_.isNull(imageUrl)) {
 

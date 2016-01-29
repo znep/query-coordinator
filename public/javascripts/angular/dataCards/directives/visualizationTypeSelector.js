@@ -17,52 +17,41 @@ function visualizationTypeSelector(
     var dataset$ = cardModel$.observeOnLatest('page.dataset');
     var columns$ = cardModel$.observeOnLatest('page.dataset.columns');
     var computedColumn$ = cardModel$.observeOnLatest('computedColumn');
-    var datasetRowCount$ = dataset$.
-      pluck('id').
-      flatMapLatest(_.ary(CardDataService.getRowCount.bind(CardDataService), 1)).
-      share();
 
-    scope.showDisabledCuratedRegionSection = false;
-    var regionCodingDetails$ = Rx.Observable.combineLatest(
-      dataset$,
-      datasetRowCount$,
-      function(dataset, rowCount) {
-        if (!_.includes(dataset.getCurrentValue('permissions').rights, 'write')) {
-          return {
-            enabled: false,
-            disabledMessage: I18n.addCardDialog.disabledCuratedRegionMessage.permissions,
-            showInfoMessage: true,
-            showDisabledSection: true
-          };
-        }
-
-        if (rowCount > Constants.CHOROPLETH_REGION_CODE_ROW_COUNT_THRESHOLD) {
-          return {
-            enabled: false,
-            disabledMessage: I18n.addCardDialog.disabledCuratedRegionMessage.datasetTooBig,
-            showDisabledSection: true
-          };
-        }
-
-        if (!ServerConfig.get('enableSpatialLensRegionCoding')) {
-          return {
-            enabled: false,
-            disabledMessage: null,
-            showDisabledSection: false
-          };
-        }
-
+    var regionCodingDetails$ = dataset$.map(function(dataset) {
+      if (!_.includes(dataset.getCurrentValue('permissions').rights, 'write')) {
         return {
-          enabled: true,
-          disabledMessage: null,
+          enabled: false,
           showInfoMessage: true,
-          showDisabledSection: false
+          showNonComputedSection: true,
+          enableNonComputedSection: false,
+          nonComputedSectionTitle: I18n.addCardDialog.curatedRegionMessages.permissions
         };
-      }).share();
+      }
+
+      if (!ServerConfig.get('enableSpatialLensRegionCoding')) {
+        return {
+          enabled: false,
+          showInfoMessage: false,
+          showNonComputedSection: false,
+          enableNonComputedSection: false,
+          nonComputedSectionTitle: null
+        };
+      }
+
+      return {
+        enabled: true,
+        showInfoMessage: true,
+        showNonComputedSection: true,
+        enableNonComputedSection: true,
+        nonComputedSectionTitle: I18n.addCardDialog.curatedRegionMessages.notYetComputed
+      };
+    }).share();
 
     var isRegionCodingEnabled$ = regionCodingDetails$.pluck('enabled');
-    scope.$bindObservable('showDisabledCuratedRegionSection', regionCodingDetails$.pluck('showDisabledSection'));
-    scope.$bindObservable('disabledCuratedRegionMessage', regionCodingDetails$.pluck('disabledMessage'));
+    scope.$bindObservable('showNonComputedSection', regionCodingDetails$.pluck('showNonComputedSection'));
+    scope.$bindObservable('enableNonComputedSection', regionCodingDetails$.pluck('enableNonComputedSection'));
+    scope.$bindObservable('nonComputedSectionTitle', regionCodingDetails$.pluck('nonComputedSectionTitle'));
     var informationMessage$ = regionCodingDetails$.pluck('showInfoMessage').filter(_.identity).combineLatest(
       currentUser$.map(UserSessionService.isAdmin),
       function(isRegionCodingEnabled, isAdmin) {
@@ -102,6 +91,7 @@ function visualizationTypeSelector(
         return _.uniq(allRegions, 'view.id');
       }
     );
+    scope.$bindObservable('allCuratedRegions', curatedAndExistingRegions$);
 
     // Bootstrap initial dropdown options and selection.
     Rx.Observable.subscribeLatest(
@@ -121,27 +111,21 @@ function visualizationTypeSelector(
           });
         }
 
-        if (isRegionCodingEnabled) {
-          scope.curatedRegions = curatedRegions;
-        } else {
-          var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);
-          scope.curatedRegions = partitionedCuratedRegions[0];
-          scope.disabledCuratedRegions = partitionedCuratedRegions[1];
-          if (_.isEmpty(scope.disabledCuratedRegions)) {
-            scope.disabledCuratedRegions = null;
-            scope.showDisabledCuratedRegionSection = false;
-          }
-        }
+        var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);
+        scope.computedCuratedRegions = partitionedCuratedRegions[0];
+        scope.nonComputedCuratedRegions = partitionedCuratedRegions[1];
 
-        var disableChoropleths = _.isEmpty(scope.curatedRegions) &&
-          (!scope.showDisabledCuratedRegionSection || _.isNull(scope.disabledCuratedRegions));
+        var disableChoropleths = _.isEmpty(curatedRegions);
 
-        scope.hasSingleCuratedRegion = _.get(scope , 'curatedRegions.length', 0) === 1;
+        scope.hasSingleCuratedRegion = curatedRegions.length === 1;
 
         if (disableChoropleths) {
           scope.showChoroplethWarning = true;
         } else {
-          var defaultCuratedRegion = _.get(_.first(scope.curatedRegions), 'view.id');
+          var defaultCuratedRegion = _.get(
+            _.first(scope.computedCuratedRegions) || _.first(scope.nonComputedCuratedRegions),
+           'view.id'
+         );
 
           if (_.isPresent(computedColumn)) {
             var path = `${computedColumn}.computationStrategy.parameters.region`;

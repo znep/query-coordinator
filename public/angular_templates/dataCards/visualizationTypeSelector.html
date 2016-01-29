@@ -58,27 +58,32 @@
 
 <div class="curated-region-selector" ng-show="showCuratedRegionSelector">
   <span>{{'common.by' | I18n}}</span>
-  <span class="soc-select" ng-show="hasSingleCuratedRegion">{{curatedRegions[0].name}}</span>
+  <span class="soc-select" ng-show="hasSingleCuratedRegion">{{allCuratedRegions[0].name}}</span>
   <soc-select ng-model="selectedCuratedRegion" ng-show="!hasSingleCuratedRegion">
     <soc-option
       value="{{curatedRegion.view.id}}"
-      ng-repeat="curatedRegion in curatedRegions"
+      ng-repeat="curatedRegion in computedCuratedRegions"
+      ng-show="computedCuratedRegions.length"
       ng-selected="curatedRegion.view.id === selectedCuratedRegion"
       ng-bind="curatedRegion.name">
     </soc-option>
     <soc-option
-      ng-if="showDisabledCuratedRegionSection"
+      ng-if="showNonComputedSection && nonComputedCuratedRegions.length && computedCuratedRegions.length"
       disabled="disabled">
     </soc-option>
     <soc-option
-      ng-if="showDisabledCuratedRegionSection"
+      ng-if="showNonComputedSection"
+      ng-show="nonComputedCuratedRegions.length"
       disabled="disabled"
-      ng-bind-html="disabledCuratedRegionMessage">
+      ng-bind-html="nonComputedSectionTitle">
     </soc-option>
     <soc-option
-      ng-if="showDisabledCuratedRegionSection"
-      ng-repeat="curatedRegion in disabledCuratedRegions"
-      disabled="disabled"
+      value="{{curatedRegion.view.id}}"
+      ng-if="showNonComputedSection"
+      ng-show="nonComputedCuratedRegions.length"
+      ng-repeat="curatedRegion in nonComputedCuratedRegions"
+      ng-selected="curatedRegion.view.id === selectedCuratedRegion"
+      ng-disabled="!enableNonComputedSection"
       ng-bind="curatedRegion.name">
     </soc-option>
   </soc-select>

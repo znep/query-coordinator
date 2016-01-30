@@ -4,9 +4,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   # Expose helper_methods for use in all views
-  helper_method :current_user, :current_user_authorization
+  helper_method :current_user, :current_user_story_authorization
 
   prepend_before_filter :require_logged_in_user
+
+  before_filter :set_story_uid
 
   # Returns the current user, or nil
   #
@@ -16,11 +18,15 @@ class ApplicationController < ActionController::Base
   #   current_user  # with invalid cookies
   #   => nil
   def current_user
-    @current_user ||= env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
+    @current_user = env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
   end
 
-  def current_user_authorization
-    @current_user_authorization ||= CoreServer.current_user_authorization(current_user, params[:uid])
+  def current_user_story_authorization
+    @current_user_story_authorization = CoreServer.current_user_story_authorization
+  end
+
+  def set_story_uid
+    ::RequestStore.store[:story_uid] = params['uid']
   end
 
   # +before_filter+

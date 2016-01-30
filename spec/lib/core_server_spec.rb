@@ -25,46 +25,58 @@ describe CoreServer do
     allow(Rails.application.config).to receive(:core_service_app_token).and_return(app_token)
   end
 
-  describe '#current_user_authorization' do
+  describe '#current_user_story_authorization' do
     let(:grants) { [] }
-    let(:rights) { [] }
-    let(:user) { {'id' => 'here-iams'} }
-    let(:view) { {'owner' => {'id' => 'here-iams'}, 'grants' => grants, 'rights' => rights} }
-    let(:subject) { CoreServer.current_user_authorization(user, 'four-four') }
+    let(:view_rights) { [] }
+    let(:user_id) { 'here-iams' }
+    let(:user_role) { 'user_role' }
+    let(:user_rights) { ['user_rights'] }
+    let(:user) { {'id' => user_id, 'roleName' => user_role, 'rights' => user_rights } }
+    let(:view) { {'owner' => {'id' => 'here-iams'}, 'grants' => grants, 'rights' => view_rights} }
+    let(:subject) { CoreServer.current_user_story_authorization }
 
     before do
+      allow(::RequestStore).to receive(:store) { {:story_uid => 'what-what'} }
+      allow(CoreServer).to receive(:current_user) { user }
       allow(CoreServer).to receive(:get_view) { view }
     end
 
     describe 'when primary owner' do
       it 'returns role, rights, and a key indicating primary owner' do
         expect(subject).to eql({
-          'role' => 'owner',
-          'rights' => rights,
+          'viewRole' => 'owner',
+          'viewRights' => view_rights,
+          'domainRole' => user_role,
+          'domainRights' => user_rights,
           'primary' => true
         })
       end
     end
 
     describe 'when a shared contributor' do
-      let(:user) { {'id' => 'share-user'} }
+      let(:user_id) { 'share-user' }
       let(:grants) { [{'userId' => 'share-user', 'type' => 'contributor'}] }
 
       it 'returns role, rights' do
         expect(subject).to eql({
-          'role' => 'contributor',
-          'rights' => rights
+          'viewRole' => 'contributor',
+          'viewRights' => view_rights,
+          'domainRole' => user_role,
+          'domainRights' => user_rights
         })
       end
     end
 
     describe 'when unknown (usually super admin)' do
-      let(:user) { {'id' => 'supe-radm'} }
+      let(:user_role) { nil }
+      let(:user_id) { 'supe-radm' }
 
       it 'returns role, rights' do
         expect(subject).to eql({
-          'role' => 'unknown',
-          'rights' => rights
+          'viewRole' => 'unknown',
+          'viewRights' => view_rights,
+          'domainRole' => 'unknown',
+          'domainRights' => user_rights
         })
       end
     end

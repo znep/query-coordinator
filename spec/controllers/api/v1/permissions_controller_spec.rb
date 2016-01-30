@@ -15,6 +15,7 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
     end
 
     before do
+      stub_sufficient_rights
       allow(AirbrakeNotifier).to receive(:report_error)
     end
 
@@ -83,6 +84,54 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
         it 'receives an error' do
           put :update, params
           expect(response).to be_error
+        end
+      end
+    end
+  end
+
+  describe 'require_sufficient_rights' do
+    let(:action) { :nothing }
+    let(:get_request) { get action, uid: 'test-test' }
+
+    before do
+      stub_core_view('test-test')
+      stub_valid_session
+    end
+
+    describe 'when updating the story\'s permissions' do
+      let(:admin) { false }
+      let(:owner) { false }
+      let(:action) { :update }
+
+      before do
+        permissions_updater = instance_double('PermissionsUpdater', :update_permissions => true)
+        allow(PermissionsUpdater).to receive(:new).and_return(permissions_updater)
+        allow(controller).to receive(:admin?).and_return(admin)
+        allow(controller).to receive(:owner?).and_return(owner)
+      end
+
+      describe 'when user is admin' do
+        let(:admin) { true }
+
+        it 'does not 403' do
+          get_request
+          expect(response.status).to_not be(403)
+        end
+      end
+
+      describe 'when user is owner' do
+        let(:owner) { true }
+
+        it 'does not 403' do
+          get_request
+          expect(response.status).to_not be(403)
+        end
+      end
+
+      describe 'when user is neither admin nor owner' do
+        it '403s' do
+          get_request
+          expect(response.status).to be(403)
         end
       end
     end

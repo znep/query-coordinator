@@ -4,15 +4,17 @@ require 'json'
 
 class StoriesController < ApplicationController
   include StoriesHelper
+  include UserAuthorizationHelper
 
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
-  # rescue_from ActiveRecord::RecordNotFound, with: :render_404
+  # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
   skip_before_filter :require_logged_in_user, only: [:show, :widget]
+
   before_filter :require_sufficient_rights
 
   after_action :allow_iframe, only: :widget
-  helper_method :needs_view_assets?, :can_update_view?
+  helper_method :needs_view_assets?, :contributor?
 
   def show
     @site_chrome = SiteChrome.for_current_domain
@@ -161,11 +163,6 @@ class StoriesController < ApplicationController
     %w{ show preview }.include?(action_name)
   end
 
-  def can_update_view?
-    current_user_authorization.present? &&
-    current_user_authorization['rights'].include?('update_view')
-  end
-
   private
 
   # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
@@ -274,21 +271,14 @@ class StoriesController < ApplicationController
 
   # This logic is duplicated in Frontend/Browse as story_url
   def require_sufficient_rights
-    return render_404 unless params.present? && params[:uid].present?
-
     action = params[:action]
-    view = CoreServer.get_view(
-      params[:uid]
-    )
-    published_story = PublishedStory.find_by_uid(params[:uid])
-
-    return render_404 unless view.present? && view['rights'].present?
 
     if action == 'edit'
-      render_404 unless view['rights'].include?('write')
-    elsif action == 'show' || action == 'preview'
-      render_404 unless view['rights'].include?('read')
-    elsif action == 'show' && view
+      render_404 unless can_edit_story?
+    elsif action == 'copy'
+      render text: 'It seems that you don\'t have access to do that. Sorry!', status: 403 unless can_make_copy?
+    elsif action == 'preview'
+      render_404 unless can_view_unpublished_story?
     end
   end
 

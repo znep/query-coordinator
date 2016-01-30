@@ -80,7 +80,7 @@ RSpec.describe PermissionsUpdater do
 
     context 'when view has owner different than current user and user does not have the update_view right.' do
       let(:user) { mock_valid_user.tap{ |user| user['id'] = 'bugs-bnny' } }
-      let(:user_authorization) { mock_user_authorization.tap{ |user_authorization| user_authorization['rights'] = [] } }
+      let(:user_authorization) { mock_user_authorization.tap{ |user_authorization| user_authorization['domainRights'] = [] } }
 
       it 'returns false' do
         expect(subject.update_permissions(is_public: true)).to be false

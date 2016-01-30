@@ -433,13 +433,13 @@ class PageMetadataManager
       # is a high probability that it is a histogram rendering as a column
       # chart, so use the default group by.
       if bucket_size == 'logarithmic' || bucket_type == 'logarithmic'
-        next "signed_magnitude_10(#{field_name})"
+        next [ field_name, "signed_magnitude_10(#{field_name})" ]
       elsif bucket_size.is_a? Numeric
-        next "signed_magnitude_linear(#{field_name}, #{bucket_size})"
+        next [ field_name, "signed_magnitude_linear(#{field_name}, #{bucket_size})" ]
       elsif bucket_type.nil? && bucket_size.nil?
         next field_name
       end
-    end.compact.uniq
+    end.flatten.compact.uniq
   end
 
   def update_rollup_table(args)

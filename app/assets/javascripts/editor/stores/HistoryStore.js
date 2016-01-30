@@ -43,33 +43,31 @@
 
         var historyLength = _history.length;
         var newHistoryLength;
-        var serializedStory = JSON.stringify(
-          storyteller.storyStore.serializeStory(forStoryUid)
-        );
+        var storySnapshot = storyteller.storyStore.snapshotContents(forStoryUid);
 
         // This is the case when one or more undo operations have
         // taken place and then content that does not match the next
         // redo content is applied. This should cause the history of
         // serializedStories following the current undo cursor to be
         // truncated.
-        if (_shouldAppendToHistoryAndTruncateRedo(serializedStory)) {
+        if (_shouldAppendToHistoryAndTruncateRedo(storySnapshot)) {
 
           newHistoryLength = _undoCursor + 1;
 
           _history.length = newHistoryLength;
           _undoCursor = newHistoryLength;
-          _history.push(serializedStory);
+          _history.push(storySnapshot);
 
         // This is the case where we are already at the end of the
         // history array so we just append to it.
-        } else if (_shouldAppendToHistory(serializedStory)) {
+        } else if (_shouldAppendToHistory(storySnapshot)) {
 
           if (historyLength === Constants.HISTORY_MAX_UNDO_COUNT) {
             _history.shift();
           }
 
           _undoCursor = historyLength;
-          _history.push(serializedStory);
+          _history.push(storySnapshot);
         }
 
         self._emitChange();
@@ -88,7 +86,7 @@
       return ((_history.length - 1) > _undoCursor);
     };
 
-    this.getStateAtCursor = function() {
+    this.getStorySnapshotAtCursor = function() {
       return _history[_undoCursor];
     };
 
@@ -96,30 +94,30 @@
      * Private methods
      */
 
-    function _shouldAppendToHistoryAndTruncateRedo(serializedStory) {
+    function _shouldAppendToHistoryAndTruncateRedo(storySnapshot) {
 
       var historyLength = _history.length;
 
-      utils.assertIsOneOfTypes(serializedStory, 'string');
+      utils.assertIsOneOfTypes(storySnapshot, 'object');
 
       return (
         historyLength > 0 &&
         _undoCursor < historyLength - 1 &&
-        _history[_undoCursor] !== serializedStory &&
-        _history[_undoCursor + 1] !== serializedStory
+        !_.isEqual(_history[_undoCursor], storySnapshot) &&
+        !_.isEqual(_history[_undoCursor + 1], storySnapshot)
       );
     }
 
-    function _shouldAppendToHistory(serializedStory) {
+    function _shouldAppendToHistory(storySnapshot) {
 
       var historyLength = _history.length;
 
-      utils.assertIsOneOfTypes(serializedStory, 'string');
+      utils.assertIsOneOfTypes(storySnapshot, 'object');
 
       return (
         historyLength === 0 ||
-        _history[historyLength - 1] !== serializedStory &&
-        _history[_undoCursor] !== serializedStory
+        !_.isEqual(_history[_undoCursor - 1], storySnapshot) &&
+        !_.isEqual(_history[_undoCursor], storySnapshot)
       );
     }
 

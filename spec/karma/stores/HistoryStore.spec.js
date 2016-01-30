@@ -37,6 +37,44 @@ describe('HistoryStore', function() {
       })
     ]
   });
+  var storyState4 = generateStoryData({
+    uid: validStoryUid,
+    blocks: [
+      generateBlockData({
+        id: 'block1'
+      }),
+      generateBlockData({
+        id: 'block2'
+      }),
+      generateBlockData({
+        id: 'block3'
+      }),
+      generateBlockData({
+        id: 'block4'
+      })
+    ]
+  });
+
+  var firstEditAction = {
+    action: Actions.STORY_INSERT_BLOCK,
+    storyUid: validStoryUid,
+    insertAt: 1,
+    blockContent: storyState2.blocks[1]
+  };
+
+  var secondEditAction = {
+    action: Actions.STORY_INSERT_BLOCK,
+    storyUid: validStoryUid,
+    insertAt: 1,
+    blockContent: storyState3.blocks[2]
+  };
+
+  var thirdEditAction = {
+    action: Actions.STORY_INSERT_BLOCK,
+    storyUid: validStoryUid,
+    insertAt: 1,
+    blockContent: storyState4.blocks[3]
+  };
 
   beforeEach(function() {
     storyteller.historyStore = new storyteller.HistoryStore(validStoryUid);
@@ -69,10 +107,7 @@ describe('HistoryStore', function() {
     describe('given a newly-created story and one content change', function() {
 
       beforeEach(function() {
-        dispatch({
-          action: Actions.STORY_OVERWRITE_STATE,
-          data: storyState2
-        });
+        dispatch(firstEditAction);
       });
 
       describe('.canUndo()', function() {
@@ -93,14 +128,8 @@ describe('HistoryStore', function() {
     describe('given a newly-created story, two content changes and one undo action', function() {
 
       beforeEach(function() {
-        dispatch({
-          action: Actions.STORY_OVERWRITE_STATE,
-          data: storyState2
-        });
-        dispatch({
-          action: Actions.STORY_OVERWRITE_STATE,
-          data: storyState3
-        });
+        dispatch(firstEditAction);
+        dispatch(secondEditAction);
         dispatch({ action: Actions.HISTORY_UNDO });
       });
 
@@ -122,14 +151,8 @@ describe('HistoryStore', function() {
     describe('given a newly-created story, two content changes and two undo actions', function() {
 
       beforeEach(function() {
-        dispatch({
-          action: Actions.STORY_OVERWRITE_STATE,
-          data: storyState2
-        });
-        dispatch({
-          action: Actions.STORY_OVERWRITE_STATE,
-          data: storyState3
-        });
+        dispatch(firstEditAction);
+        dispatch(secondEditAction);
         dispatch({ action: Actions.HISTORY_UNDO });
         dispatch({ action: Actions.HISTORY_UNDO });
       });
@@ -158,13 +181,13 @@ describe('HistoryStore', function() {
 
         it('should not modify the story', function() {
 
-          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyBeforeUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
 
           dispatch({ action: Actions.HISTORY_UNDO });
 
-          var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyAfterUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
         });
@@ -173,21 +196,18 @@ describe('HistoryStore', function() {
       describe('given a newly-created story and one content change', function() {
 
         beforeEach(function() {
-          dispatch({
-            action: Actions.STORY_OVERWRITE_STATE,
-            data: storyState2
-          });
+          dispatch(firstEditAction);
         });
 
         it('should cause the story data to revert to the previous version', function() {
 
-          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyBeforeUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Actions.HISTORY_UNDO });
 
-          var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyAfterUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
         });
@@ -196,33 +216,27 @@ describe('HistoryStore', function() {
       describe('given a newly-created story, one content change, an undo action and a different content change', function() {
 
         beforeEach(function() {
-          dispatch({
-            action: Actions.STORY_OVERWRITE_STATE,
-            data: storyState2
-          });
+          dispatch(firstEditAction);
         });
 
-        it('should cause reflect the latest content change and disable redo', function() {
+        it('should reflect the latest content change and disable redo', function() {
 
-          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyBeforeUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Actions.HISTORY_UNDO });
 
-          var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyAfterUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
 
           assert.isTrue(window.socrata.storyteller.historyStore.canRedo());
 
-          dispatch({
-            action: Actions.STORY_OVERWRITE_STATE,
-            data: storyState3
-          });
+          dispatch(secondEditAction);
 
-          var storyAfterContentChange = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
-          assert.equal(storyAfterContentChange.blocks.length, storyState3.blocks.length);
+          var storyAfterContentChange = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
+          assert.equal(storyAfterContentChange.blocks.length, storyState2.blocks.length);
 
           assert.isFalse(window.socrata.storyteller.historyStore.canRedo());
         });
@@ -236,20 +250,11 @@ describe('HistoryStore', function() {
             var mod = i % 3;
 
             if (mod === 0) {
-              dispatch({
-                action: Actions.STORY_OVERWRITE_STATE,
-                data: storyState3
-              });
+              dispatch(firstEditAction);
             } else if (mod === 1) {
-              dispatch({
-                action: Actions.STORY_OVERWRITE_STATE,
-                data: storyState2
-              });
+              dispatch(secondEditAction);
             } else {
-              dispatch({
-                action: Actions.STORY_OVERWRITE_STATE,
-                data: storyState1
-              });
+              dispatch(thirdEditAction);
             }
           }
         });
@@ -273,13 +278,13 @@ describe('HistoryStore', function() {
 
         it('should not modify the story', function() {
 
-          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyBeforeUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
 
           dispatch({ action: Actions.HISTORY_REDO });
 
-          var storyAfterRedo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyAfterRedo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyAfterRedo.blocks.length, storyState1.blocks.length);
         });
@@ -288,21 +293,18 @@ describe('HistoryStore', function() {
       describe('given a newly-created story and one content change', function() {
 
         beforeEach(function() {
-          dispatch({
-            action: Actions.STORY_OVERWRITE_STATE,
-            data: storyState2
-          });
+          dispatch(firstEditAction);
         });
 
         it('should not modify the story', function() {
 
-          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyBeforeUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Actions.HISTORY_REDO });
 
-          var storyAfterRedo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyAfterRedo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyAfterRedo.blocks.length, storyState2.blocks.length);
         });
@@ -311,27 +313,24 @@ describe('HistoryStore', function() {
       describe('given a newly-created story, one content change and one undo action', function() {
 
         beforeEach(function() {
-          dispatch({
-            action: Actions.STORY_OVERWRITE_STATE,
-            data: storyState2
-          });
+          dispatch(firstEditAction);
         });
 
         it('should revert the story to the last updated version', function() {
 
-          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyBeforeUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Actions.HISTORY_UNDO });
 
-          var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyAfterUndo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
 
           dispatch({ action: Actions.HISTORY_REDO });
 
-          var storyAfterRedo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
+          var storyAfterRedo = window.socrata.storyteller.historyStore.getStorySnapshotAtCursor();
 
           assert.equal(storyAfterRedo.blocks.length, storyState2.blocks.length);
         });

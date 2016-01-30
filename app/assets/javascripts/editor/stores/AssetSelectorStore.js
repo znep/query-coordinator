@@ -529,7 +529,7 @@
     }
 
     function _extractDomainFromStoryUrl(storyUrl) {
-      var match = storyUrl.match(/https\:\/\/(.*)\/stories\/s\/\w{4}\-\w{4}/i);
+      var match = storyUrl.match(/^https\:\/\/(.*)\/stories\/s\/\w{4}\-\w{4}/i);
       var storyDomain = null;
 
       if (match !== null) {
@@ -540,7 +540,7 @@
     }
 
     function _extractStoryUidFromStoryUrl(storyUrl) {
-      var match = storyUrl.match(/https\:\/\/.*\/stories\/s\/(\w{4}\-\w{4})/i);
+      var match = storyUrl.match(/^https\:\/\/.*\/stories\/s\/(\w{4}\-\w{4})/i);
       var storyId = null;
 
       if (match !== null) {

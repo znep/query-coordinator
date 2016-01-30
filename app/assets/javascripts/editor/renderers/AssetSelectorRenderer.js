@@ -119,7 +119,7 @@
       );
 
       _container.on(
-        'keyup',
+        'input',
         '[data-asset-selector-validate-field="storyUrl"]',
         function(event) {
 
@@ -127,30 +127,6 @@
             action: Actions.ASSET_SELECTOR_UPDATE_STORY_URL,
             url: $(event.target).val()
           });
-        }
-      );
-
-      _container.on(
-        'cut paste',
-        '[data-asset-selector-validate-field="storyUrl"]',
-        function(event) {
-
-          // If no key was down then we can assume that a cut or paste event came
-          // from the mouse (keyboard-originated paste events will trigger the
-          // 'keyup' handler above).
-          //
-          // The `setTimeout` is necessary because the 'paste' event will fire
-          // before the paste action takes place, so we need to break execution
-          // to allow the DOM time to update itself before we query for the
-          // value of the input control.
-          if (!event.keyCode) {
-            setTimeout(function() {
-              storyteller.dispatcher.dispatch({
-                action: Actions.ASSET_SELECTOR_UPDATE_STORY_URL,
-                url: $(event.target).val()
-              });
-            }, 0);
-          }
         }
       );
 
@@ -807,17 +783,6 @@
       return [ content, buttonGroup ];
     }
 
-    /**
-     * componentValue is of the following form:
-     *
-     * {
-     *   type: 'media',
-     *   subtype: 'storyWidget',
-     *   value: {
-     *     url: '<Story url>'
-     *   }
-     * }
-     */
     function _renderChooseStoryData(componentProperties) {
       var $previewContainer = _container.find('.asset-selector-preview-container');
       var $storyWidgetPreviewContainer = _container.find('.asset-selector-preview-widget-container');

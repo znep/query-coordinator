@@ -11,9 +11,11 @@
     var storyWidgetSrc;
     var renderedStoryWidgetSrc = $element.attr('data-rendered-story-widget-url');
 
-    utils.assertHasProperty(componentData, 'value');
-    utils.assertHasProperty(componentData.value, 'domain');
-    utils.assertHasProperty(componentData.value, 'storyUid');
+    utils.assertHasProperties(
+      componentData,
+      'value.domain',
+      'value.storyUid'
+    );
 
     storyWidgetSrc = utils.generateStoryWidgetJsonSrc(
       componentData.value.domain,
@@ -22,15 +24,16 @@
 
     if (renderedStoryWidgetSrc !== storyWidgetSrc) {
 
+      // Although we do some basic validation on the user input,
+      // since we must support arbitrary customer domains `storyWidgetSrc`
+      // can point to any domain. Accordingly, this is a potential phishing
+      // risk.
       $element.attr('data-rendered-story-widget-url', storyWidgetSrc);
 
       Promise.resolve($.get(storyWidgetSrc)).
         then(
           function(storyWidgetData) {
             _renderStoryWidget($element, componentData, storyWidgetData);
-          },
-          function(error) {
-            _renderStoryWidgetError($element, componentData);
           }
         ).
         catch(
@@ -146,15 +149,13 @@
     $widgetTitle = $('<h2>', {'class': 'story-widget-title' }).
       text(storyWidgetData.title);
 
-    if (storyWidgetData.image !== null) {
-      $widgetImage = $(
-        '<img>',
-        {
-          'class': 'story-widget-image',
-          'style': 'background-image:url("{0}");'.format(storyWidgetData.image)
-        }
-      );
-    }
+    $widgetImage = $(
+      '<img>',
+      {
+        'class': 'story-widget-image',
+        'style': 'background-image:url("{0}");'.format(storyWidgetData.image)
+      }
+    );
 
     $widgetDescription = $('<p>', {'class': 'story-widget-description'})
 
@@ -190,8 +191,6 @@
   }
 
   function _renderStoryWidgetError($element, componentData, error) {
-
-    utils.assertHasProperty(componentData, 'type');
 
     $element.
       empty().

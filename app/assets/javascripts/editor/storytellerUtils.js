@@ -139,6 +139,11 @@
 
       socrata.utils.assertIsOneOfTypes(storyDomain, 'string');
       socrata.utils.assertIsOneOfTypes(storyUid, 'string');
+      socrata.utils.assertEqual(storyDomain.match(/[^a-z0-9\.\-]/gi), null);
+      socrata.utils.assert(
+        storyUid.match(/^\w{4}\-\w{4}$/) !== null,
+        '`storyUid` does not match anchored four-by-four pattern'
+      );
 
       return 'https://' + storyDomain + '/stories/s/' + storyUid + '/widget';
     },
@@ -147,6 +152,11 @@
 
       socrata.utils.assertIsOneOfTypes(storyDomain, 'string');
       socrata.utils.assertIsOneOfTypes(storyUid, 'string');
+      socrata.utils.assertEqual(storyDomain.match(/[^a-z0-9\.\-]/gi), null);
+      socrata.utils.assert(
+        storyUid.match(/^\w{4}\-\w{4}$/) !== null,
+        '`storyUid` does not match anchored four-by-four pattern'
+      );
 
       return 'https://' + storyDomain + '/stories/s/' + storyUid + '/widget.json';
     },

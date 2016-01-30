@@ -77,6 +77,10 @@ class Model
     end
   end
 
+  def ==(other)
+    self.class == other.class && data_hash == other.data_hash
+  end
+
   #
   # Find a cached model, delegating to cached_user_user if there is a user
   # find* provides much of the user-level permissioning we need for things

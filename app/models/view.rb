@@ -1,5 +1,6 @@
 class View < Model
   include Rails.application.routes.url_helpers
+  extend FindExtensions
 
   cattr_accessor :filter_type1s
   attr_accessor :custom_vis_cols, :sodacan

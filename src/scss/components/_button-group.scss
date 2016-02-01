@@ -1,4 +1,4 @@
-.btn-group {
+.btn-group, .btn-group-vertical {
   display: inline-block;
   letter-spacing: -4px;
 
@@ -9,12 +9,36 @@
   .btn:first-child {
     border-top-left-radius: 1px;
     border-bottom-left-radius: 1px;
-    border-right: none;
+    border-right-width: 0px;
   }
 
   .btn:last-child {
     border-top-right-radius: 1px;
     border-bottom-right-radius: 1px;
-    border-left: none;
+    border-left-width: 0px;
   }
+}
+
+.btn-group-vertical {
+  &> .btn {
+    display: block;
+    width: 100%;
+    float: none;
+    border-bottom-width: 0px;
+    
+    &:first-child:not(:last-child) {
+      border-right-width: 1px;
+      border-bottom-left-radius: 0px;
+      border-top-right-radius: 1px;
+      border-top-left-radius: 1px;
+    }
+
+    &:last-child:not(:first-child) {
+      border-top-right-radius: 0px;
+      border-bottom-left-radius: 1px;
+      border-left-width: 1px;
+      border-bottom-width: 1px;
+    }
+
+  } 
 }

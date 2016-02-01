@@ -11,14 +11,7 @@
 
 <%= render :partial => 'left_nav' %>
 
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('.started-time').each(function(i, el) {
-      var $el = $(el);
-      $el.text(moment.unix($el.data('epoch-seconds')).format('HH:mm:ss'));
-    });
-  });
-</script>
+<%= include_webpack_bundle 'admin-jobs.js' %>
 
 <div class="contentBox withLeftNavigation jobsScreen">
   <div class="adminHeader floating jobs">
@@ -55,7 +48,7 @@
               <%= activity.created_at.strftime('%H:%M:%S') %>
             </span>
             <span class="started-time-relative-day">
-              <%= relative_day(activity.created_at) %>
+              <%= activity.created_at.strftime('%d %b %Y') %>
             </span>
           </td>
           <td class="import-status-label" nowrap>

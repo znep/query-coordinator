@@ -124,7 +124,8 @@ function generateOldUxConfig() {
   console.log('Building oldUx entrypoints: ', entries);
 
   var entry = getEntryObjectFromArray(
-    entries.map(function(entryPoint) { return [entryPoint, './screens/' + entryPoint]; })
+    entries.map(function(entryPoint) { return [entryPoint, './screens/' + entryPoint]; }),
+    null
   );
 
   return _.defaultsDeep({

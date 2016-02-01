@@ -59,6 +59,23 @@ class InternalController < ApplicationController
         ingress_strategy: 'delta-importer'
       }
     }
+
+    @known_config_types = ExternalConfig.for(:configuration_types).
+      type_descriptions.
+      reject { |type, description| description.try(:[], 'hide_in_creation_ui') }.
+      inject([]) do |memo, (type, description)|
+        description ||= {}
+        description['description'] ||= %q(Haven't written a description yet.)
+        description.keys.each do |key|
+          description[key] =
+            case description[key]
+            when Array then description[key].join(', ')
+            else description[key]
+            end
+        end
+        memo << description.merge({ name: type })
+        memo
+      end
   end
 
   def config_info
@@ -77,6 +94,9 @@ class InternalController < ApplicationController
       @parent_config = ::Configuration.find(@config.parentId.to_s)
       @parent_domain = Domain.find(@parent_config.domainCName)
     end
+
+    @type_description = ExternalConfig.for(:configuration_types).
+      type_descriptions[@config.type]
   end
 
   def show_property

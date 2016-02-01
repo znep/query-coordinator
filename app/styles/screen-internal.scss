@@ -283,3 +283,37 @@ form.wide {
 dl.internalPanel {
   @include dl-section-content;
 }
+ul.config_type_autocomplete {
+  li.active p {
+    white-space: normal;
+  }
+  li .matchRow a {
+    font-size: inherit;
+  }
+}
+
+.config_type_description {
+  margin-top: 2em;
+
+  dt {
+    color: #666;
+    font-size: 1.1em;
+    font-weight: bold;
+    height: 2em;
+    margin-bottom: -4em;
+    overflow: hidden;
+    padding: 1em;
+    white-space: nowrap;
+    max-width: 40%;
+  }
+
+  dd {
+    border-top: 1px solid #cecece;
+    color: #666;
+    font-size: 1.1em;
+    overflow: hidden;
+    padding: 1em;
+    padding-left: 50%;
+    text-align: right;
+  }
+}

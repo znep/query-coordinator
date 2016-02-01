@@ -69,7 +69,7 @@
         </div>
         <div class='line'>
           <label>Type</label>
-          <input type='text' name='config[type]' value='' />
+          <input class="add_config_type" type='text' name='config[type]' value='' />
         </div>
         <input type='submit' value='Create' />
       <% end %>
@@ -148,6 +148,43 @@
           return true;
         }
       });
+
+      var configTypeRenderFunction = function(dataItem, topMatch, config) {
+        var toRender = [];
+        toRender.push(
+          $.tag2({ _: 'p', className: 'title', contents: dataItem[config.nameField] }));
+        _.each(_.without(_.keys(dataItem), 'name'), function(key) {
+          var value = dataItem[key];
+          // Autolink because that seems obvious.
+          // There's more refined autolinking theoretically possible, but it's more
+          // effort to figure out than it's worth.
+          if (/^http/.test(value)) {
+            value = {
+              _: 'a',
+              target: '_blank',
+              // Nuke all the html tags that awesomecomplete adds when matching.
+              href: $('<div>' + value + '</div>').text(),
+              contents: value
+            };
+          }
+          toRender.push(
+            $.tag2({ _: 'p', className: 'matchRow', contents: [
+              { _: 'span', className: 'matchedField', contents: key },
+              value]
+            }));
+        });
+        return _.pluck(toRender, '0.outerHTML').join('');
+      };
+
+      $('.add_config_type').focus(_.once(function() {
+        $(this).awesomecomplete({
+          highlightMatches: true,
+          ignoreCase: true,
+          renderFunction: configTypeRenderFunction,
+          staticData: <%== @known_config_types.to_json %>,
+          suggestionListClass: 'autocomplete config_type_autocomplete'
+        });
+      }));
     });
   </script>
 <% end %>

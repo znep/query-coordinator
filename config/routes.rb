@@ -70,6 +70,7 @@ Frontend::Application.routes do
         get '', :action => 'show_domain', :as => 'show_domain'
         post '/default_site_config', :action => 'set_default_site_config'
         post '/delete_config/:id', :action => 'delete_site_config'
+        post '/rename_config/:id', :action => 'rename_site_config', :as => 'rename_config'
         post '/feature', :action => 'set_features'
         post '/aliases', :action => 'update_aliases'
         post '/account_modules', :action => 'add_module_to_domain'

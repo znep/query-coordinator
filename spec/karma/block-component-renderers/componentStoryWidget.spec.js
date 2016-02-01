@@ -58,10 +58,10 @@ describe('componentStoryWidget jQuery plugin', function() {
 
   describe('given a valid component type and value', function() {
 
-    describe('when the story image is absent', function() {
+    describe('when there is no image specified', function() {
       var server;
 
-      beforeEach(function() {
+      beforeEach(function(done) {
         // Since these tests actually expect to use AJAX, we need to disable the
         // mocked XMLHttpRequest (which happens in StandardMocks) before each,
         // and re-enble it after each.
@@ -82,6 +82,7 @@ describe('componentStoryWidget jQuery plugin', function() {
         );
 
         $component = $component.componentStoryWidget(validComponentData);
+        setTimeout(function() { done(); }, 0);
       });
 
       afterEach(function() {
@@ -91,61 +92,83 @@ describe('componentStoryWidget jQuery plugin', function() {
         window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
       });
 
-      it('should return a jQuery object for chaining', function(done) {
-        setTimeout(function() {
-          assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
-          done();
-        }, 0);
+      it('should return a jQuery object for chaining', function() {
+        assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
       });
 
-      it('should render the widget as a link to the story', function(done) {
+      it('should render the widget as a link to the story', function() {
 
-        // Need to use a setTimeout to escape the stack and resolve the promise.
-        setTimeout(function() {
-          assert.equal(
-            $component.find('.story-widget-container').attr('href'),
-            validStoryWidgetDataWithoutImage.url
-          );
-          done();
-        }, 0);
+        assert.equal(
+          $component.find('.story-widget-container').attr('href'),
+          validStoryWidgetDataWithoutImage.url
+        );
       });
 
-      it('should render the story title', function(done) {
-        
-        // Need to use a setTimeout to escape the stack and resolve the promise.
-        setTimeout(function() {
-          assert.equal(
-            $component.find('.story-widget-title').text(),
-            validStoryWidgetDataWithoutImage.title
-          );
-          done();
-        }, 0);
+      it('should render the story title', function() {
+
+        assert.equal(
+          $component.find('.story-widget-title').text(),
+          validStoryWidgetDataWithoutImage.title
+        );
       });
 
-      it('should render the story image', function(done) {
+      it('should render the default story image', function() {
 
-        // Need to use a setTimeout to escape the stack and resolve the promise.
-        setTimeout(function() {
-
-          assert.lengthOf(
-            $component.find('.story-widget-image'),
-            1
-          );
-
-          done();
-        }, 0);
+        assert.equal(
+          $component.find('.story-widget-image').attr('style'),
+          null
+        );
       });
 
-      it('should render the story description', function(done) {
-        
-        // Need to use a setTimeout to escape the stack and resolve the promise.
-        setTimeout(function() {
-          assert.equal(
-            $component.find('.story-widget-description').text(),
-            validStoryWidgetDataWithoutImage.description
-          );
-          done();
-        }, 0);
+      it('should render the story description', function() {
+
+        assert.equal(
+          $component.find('.story-widget-description').text(),
+          validStoryWidgetDataWithoutImage.description
+        );
+      });
+    });
+
+    describe('when there is an image specified', function() {
+      var server;
+
+      beforeEach(function(done) {
+        // Since these tests actually expect to use AJAX, we need to disable the
+        // mocked XMLHttpRequest (which happens in StandardMocks) before each,
+        // and re-enble it after each.
+        window.mockedXMLHttpRequest.restore();
+
+        server = sinon.fakeServer.create();
+        server.respondImmediately = true;
+        server.respondWith(
+          'GET',
+          'https://example.com/stories/s/{0}/widget.json'.format(
+            validComponentData.value.storyUid
+          ),
+          [
+            200,
+            { 'Content-Type': 'application/json' },
+            JSON.stringify(validStoryWidgetDataWithImage)
+          ]
+        );
+
+        $component = $component.componentStoryWidget(validComponentData);
+        setTimeout(function() { done(); }, 0);
+      });
+
+      afterEach(function() {
+        server.restore();
+
+        // See comment above re: temporarily disabling the mocked XMLHttpRequest.
+        window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
+      });
+
+      it('should render the specified  image', function() {
+
+        assert.equal(
+          $component.find('.story-widget-image').css('background-image'),
+          'url(about:blank)'
+        );
       });
     });
   });

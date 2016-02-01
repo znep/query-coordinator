@@ -152,10 +152,13 @@
     $widgetImage = $(
       '<img>',
       {
-        'class': 'story-widget-image',
-        'style': 'background-image:url("{0}");'.format(storyWidgetData.image)
+        'class': 'story-widget-image'
       }
     );
+
+    if (storyWidgetData.image !== null) {
+      $widgetImage.attr('style', 'background-image:url({0})'.format(storyWidgetData.image));
+    }
 
     $widgetDescription = $('<p>', {'class': 'story-widget-description'})
 

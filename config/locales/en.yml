@@ -519,12 +519,9 @@ en:
         facets:
           hint: Filter or Browse Results
           clear_all: Clear All
-          contract:
-            label: Show Less
-            title: Click to show fewer options
           expand:
-            label: Show All
-            title: Click to show all options
+            label: Show All...
+            title: Show all options
           hint: Filter or Browse Results
           header:
             result: Result
@@ -535,6 +532,10 @@ en:
             clear_all: Clear All
             filter: Filter
             all_filters: All Filters
+          modal:
+            alphaAscending: A-Z
+            close: Close
+            top: Top
         federation:
           label: Data Provided by
           label_with_source: Data Provided by %{source}

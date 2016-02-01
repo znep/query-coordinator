@@ -374,16 +374,36 @@ $(function() {
     }, 0);
   }
 
-  function toggleBrowse2FacetTruncation(event) {
+  function showBrowse2FacetModal(event) {
     event.preventDefault();
-    var sectionContainer = $(this).parent('.browse2-facet-section');
-    var currentDisplay = sectionContainer.attr('data-facet-truncation');
+    // Set height of modal based on user's window size
+    var modalVerticalMargins = 40;
+    var modalHeaderFooterHeight = 120;
+    var modalContentMaxHeight = window.innerHeight - (modalVerticalMargins * 2) - modalHeaderFooterHeight;
+    $('.browse2-facet-section-modal-container').css({
+      'margin': '{0}px auto'.format(modalVerticalMargins)
+    });
+    $('.browse2-facet-section-modal-content').css({
+      'max-height': '{0}px'.format(modalContentMaxHeight)
+    });
+    // Prevent the normal body scroll and show the modal
+    $('body').css('overflow', 'hidden');
+    var chosenFacet = $(event.currentTarget).data('modalFacet');
+    $('.browse2-facet-section-modal[data-modal-facet="{0}"]'.format(chosenFacet)).removeClass('hidden');
+    hideBrowse2FacetModalOnEscape();
+  }
 
-    if (currentDisplay === 'show') {
-      sectionContainer.attr('data-facet-truncation', 'truncate');
-    } else {
-      sectionContainer.attr('data-facet-truncation', 'show');
-    }
+  function hideBrowse2FacetModalOnEscape() {
+    $(document).keyup(function(e) {
+      if (e.keyCode == 27) {
+        hideBrowse2FacetModal();
+      }
+    });
+  }
+
+  function hideBrowse2FacetModal() {
+    $('.browse2-facet-section-modal').addClass('hidden');
+    $('body').css('overflow', 'auto');
   }
 
   function truncateDescription(element) {
@@ -687,7 +707,8 @@ $(function() {
   $('.browse2-facet-section-option, .browse2-facet-section-child-option').on('click', browse2MobileFacetClick);
   $('.browse2-mobile-facets-filter-button').on('click', filterBrowse2MobileFacets);
   $('.browse2-facets-pane-mobile-clear-all-button').on('click', browse2MobileFacetClearAll);
-  $('.browse2-facet-section-expand-button, .browse2-facet-section-contract-button').on('click', toggleBrowse2FacetTruncation);
+  $('.browse2-facet-section-modal-button').on('click', showBrowse2FacetModal);
+  $('.browse2-facet-section-modal-background, .browse2-facet-section-modal-close').click(hideBrowse2FacetModal);
   $('.browse2-result-description-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
   $('.browse2-result-make-public-button').on('click', makeResultPublic);
   $('.browse2-result-make-private-button').on('click', makeResultPrivate);

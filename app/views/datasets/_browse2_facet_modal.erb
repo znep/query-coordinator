@@ -1,0 +1,63 @@
+<div class="browse2-facet-section-modal hidden" data-modal-facet="<%= facet_title %>">
+  <div class="browse2-facet-section-modal-background"></div>
+  <div class="browse2-facet-section-modal-container">
+    <h1><%= facet_title %></h1>
+    <div class="browse2-facet-section-modal-close modal-close-x">
+      <span class="icon-close-2"></span>
+    </div>
+    <div class="browse2-facet-section-modal-content">
+      <%-
+      # Top facet options, only for 'Topics' which have the frequency counts from Core
+      if facet_title == 'Topics'
+      -%>
+        <div class="browse2-facet-section-modal-content-top">
+          <h2><%= t('controls.browse.browse2.facets.modal.top') %></h2>
+          <ul>
+            <%-
+            (0...truncate_facet_section_at_index).each do |i|
+              facet_option = all_facet_options[i]
+              facet_link_classnames = facet_option_classnames(opts, facet_param, facet_option, false, false)
+              facet_link_href = facet_option_url(opts, facet_param, facet_option, params)
+            -%>
+              <%=
+              render(
+                :partial => 'datasets/browse2_facet_modal_option',
+                :locals => {
+                  :facet_option => facet_option,
+                  :facet_link_classnames => facet_link_classnames,
+                  :facet_link_href => facet_link_href
+                }
+              )
+              %>
+            <%- end -%>
+          </ul>
+        </div>
+      <%- end -%>
+      <!-- All facet options (alphabetical) -->
+      <div class="browse2-facet-section-modal-content-all">
+        <h2><%= t('controls.browse.browse2.facets.modal.alphaAscending') %></h2>
+        <ul>
+          <%-
+          all_facet_options.sort_by { |o| o[:text] }.each do |facet_option|
+            facet_link_classnames = facet_option_classnames(opts, facet_param, facet_option, false, false)
+            facet_link_href = facet_option_url(opts, facet_param, facet_option, params)
+          -%>
+            <%=
+            render(
+              :partial => 'datasets/browse2_facet_modal_option',
+              :locals => {
+                :facet_option => facet_option,
+                :facet_link_classnames => facet_link_classnames,
+                :facet_link_href => facet_link_href
+              }
+            )
+            %>
+          <%- end -%>
+        </ul>
+      </div>
+    </div>
+    <div class="browse2-facet-section-modal-close modal-close-button">
+      <%= t('controls.browse.browse2.facets.modal.close') %>
+    </div>
+  </div>
+</div>

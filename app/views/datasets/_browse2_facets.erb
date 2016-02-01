@@ -8,7 +8,7 @@
     </a>
   </div>
 
-  <div class="browse2-facets-pane-mobile-body">
+  <div class="browse2-facets-pane-body">
     <div class="browse2-facets-pane-mobile-clear-all-div">
       <a class="browse2-facets-pane-mobile-clear-all-button" href="#">
         <%= t('controls.browse.browse2.facets.mobile.clear_all') %>
@@ -44,17 +44,47 @@
         <%= t('controls.browse.browse2.facets.mobile.all_filters') %>
       </h2>
       <%-
-      facets.each do |facet| -%>
+      facets.each do |facet|
+        # TODO - once browse1 is 🔥, we should refactor the :options vs :extra_options logic
+        # to just have :options contain everything, and handle the trimming logic elsewhere.
+        all_facet_options = get_all_facet_options(facet).
+          sort_by { |option| [-option.fetch(:count, 0), option.fetch(:text)] }
+
+        all_facet_options_flattened = flatten_facet_options(all_facet_options).
+          sort_by { |option| [-option.fetch(:count, 0), option.fetch(:text)] }
+
+        facet_section_has_modal = facet[:extra_options].present?
+      -%>
+      <%=
+        render(
+          :partial => 'datasets/browse2_facet_section',
+          :locals => {
+            :opts => opts,
+            :facet_title => facet[:title],
+            :facet_param => facet[:param],
+            :facet_section_has_modal => facet_section_has_modal,
+            :truncate_facet_section_at_index => facet[:options].length,
+            :all_facet_options => all_facet_options
+          }
+        )
+      %>
+      <%- if facet_section_has_modal -%>
         <%=
           render(
-            :partial => 'datasets/browse2_facet_section',
+            :partial => 'datasets/browse2_facet_modal',
             :locals => {
               :opts => opts,
-              :facet => facet
+              :facet_title => facet[:title],
+              :facet_param => facet[:param],
+              :truncate_facet_section_at_index => facet[:options].length,
+              :all_facet_options => all_facet_options_flattened
             }
           )
         %>
-      <%- end -%>
+      <%-
+        end
+      end
+      -%>
     </div>
 
     <div class="browse2-mobile-facets-filter-button-spacing"></div>

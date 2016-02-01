@@ -9,7 +9,7 @@ $(document).on('ready', function() {
 
   storyteller.csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-  storyteller.airbrake = new storyteller.Airbrake({
+  storyteller.airbrake = new storyteller.ExceptionNotifier({
     'environment': storyteller.config.getAirbrakeConfig('environment'),
     'projectKey': storyteller.config.getAirbrakeConfig('projectKey'),
     'projectId': storyteller.config.getAirbrakeConfig('projectId')

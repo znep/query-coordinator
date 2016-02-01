@@ -5,12 +5,14 @@
   var storyteller = socrata.storyteller;
 
   function sendEventToGoogleAnalytics(payload) {
-    ga('send', {
-      hitType: 'event',
-      eventCategory: payload.action,
-      eventAction: payload.errorReporting.message,
-      eventLabel: payload.errorReporting.label
-    });
+    if (typeof window.ga === 'function') {
+      ga('send', {
+        hitType: 'event',
+        eventCategory: payload.action,
+        eventAction: payload.errorReporting.message,
+        eventLabel: payload.errorReporting.label
+      });
+    }
   }
 
   function ErrorReporter() {

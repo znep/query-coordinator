@@ -53,7 +53,9 @@ function httpProvider($http, $rootScope, RequestId, $log) {
     var csrfMethods = [ 'put', 'post', 'patch', 'delete' ];
     var csrfRequired = _.get(requestConfig, 'csrfRequired', true) && _.includes(csrfMethods, requestConfig.method);
     var csrfCookie = socrata.utils.getCookie('socrata-csrf-token');
-    if (csrfCookie) {
+    var csrfToken = csrfCookie ? decodeURIComponent(csrfCookie) : $('meta[name="csrf-token"]').attr('content');
+
+    if (csrfToken) {
       requestConfig.headers['X-CSRF-Token'] = decodeURIComponent(csrfCookie);
     } else if (csrfRequired) {
       throw new Error(`Missing socrata-csrf-token - Unable to make authenticated "${requestConfig.method}" request to ${requestConfig.url}`);

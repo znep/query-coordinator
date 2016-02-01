@@ -3,14 +3,15 @@ require 'uri'
 require 'json'
 
 class StoriesController < ApplicationController
+  include StoriesHelper
 
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
   skip_before_filter :require_logged_in_user, only: [:show, :widget]
-
   before_filter :require_sufficient_rights
 
+  after_action :allow_iframe, only: :widget
   helper_method :needs_view_assets?, :can_update_view?
 
   def show
@@ -28,14 +29,12 @@ class StoriesController < ApplicationController
 
     if @story
       StoryAccessLogger.log_story_view_access(@story)
-      # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
-      # somewhere, but that clearly won't work with an embeddable widget so we
-      # remove it for this endpoint.
-      response.headers.delete('X-Frame-Options')
-      respond_to do |format|
-        format.json {
 
-          core_attributes = CoreServer.get_view(@story.uid) || {}
+      core_attributes = CoreServer.get_view(@story.uid) || {}
+
+      respond_to do |format|
+        format.html { render 'stories/widget', layout: 'widget' }
+        format.json {
 
           render(
             json: {
@@ -168,6 +167,13 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
+  # somewhere, but that clearly won't work with an embeddable widget so we
+  # remove it for this endpoint.
+  def allow_iframe
+    response.headers.except! 'X-Frame-Options'
+  end
 
   def respond_with_story(story)
     @story = story

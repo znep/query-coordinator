@@ -80,6 +80,7 @@ RSpec.describe StoriesController, type: :controller do
           expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
           get :show, uid: story_revision.uid, format: :json
         end
+
         it 'does not log view access when story does not exist' do
           expect(StoryAccessLogger).to_not receive(:log_story_view_access)
           get :show, uid: 'notf-ound'
@@ -97,53 +98,117 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#widget' do
+    let(:story_revision) { FactoryGirl.create(:published_story) }
+    let(:widget_title) { 'Widget Test' }
+    let(:widget_description) { 'Widget Test Description' }
 
-    context 'when there is a story with the given four by four' do
-      let(:story_revision) { FactoryGirl.create(:published_story) }
-      let(:widget_title) { 'Widget Test' }
-      let(:widget_description) { 'Widget Test Description' }
+    before do
+      stub_core_view(story_revision.uid, {name: widget_title, description: widget_description})
+    end
 
-      before do
-        stub_core_view(story_revision.uid, {name: widget_title, description: widget_description})
+    context 'when html is requested' do
+      context 'when there is a story with the given four by four' do
+        it 'ignores vanity_text' do
+          get :widget, uid: story_revision.uid, vanity_text: 'haha'
+          expect(assigns(:story)).to eq(story_revision)
+        end
+
+        it 'renders when unauthenticated' do
+          stub_invalid_session
+          get :widget, uid: story_revision.uid
+
+          expect(response).to render_template(:widget)
+        end
+
+        it 'renders when authenticated' do
+          get :widget, uid: story_revision.uid
+
+          expect(response).to render_template(:widget)
+        end
       end
 
-      it 'ignores vanity_text' do
-        get :widget, uid: story_revision.uid, vanity_text: 'haha', format: :json
-        expect(assigns(:story)).to eq(story_revision)
+      context 'when there is no story with the given four by four' do
+        it 'returns 404' do
+          get :widget, uid: 'notf-ound'
+          expect(response).to have_http_status(404)
+        end
       end
 
-      it 'renders 404' do
-        get :widget, uid: 'notf-ound', format: :json
-        expect(response).to be_not_found
-      end
+      describe 'google analytics' do
+        render_views
 
-      it 'renders json when requested' do
-        get :widget, uid: story_revision.uid, format: :json
+        context 'when not configured' do
+          it 'does not render google analytics partial' do
+            get :widget, uid: story_revision.uid
+            expect(response.body).to_not have_content(@google_analytics_tracking_id)
+          end
+        end
 
-        response_json_as_hash = JSON.parse(response.body)
-        expect(response_json_as_hash['title']).to eq(widget_title)
-        expect(response_json_as_hash['image']).to eq(nil)
-        expect(response_json_as_hash['description']).to eq(widget_description)
-        expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
-      end
+        context 'when configured' do
+          before do
+            stub_google_analytics
+          end
 
-      it 'renders when unauthenticated' do
-        stub_invalid_session
-        get :widget, uid: story_revision.uid, format: :json
-
-        response_json_as_hash = JSON.parse(response.body)
-        expect(response_json_as_hash['title']).to eq(widget_title)
-        expect(response_json_as_hash['image']).to eq(nil)
-        expect(response_json_as_hash['description']).to eq(widget_description)
-        expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
+          it 'renders google analytics partial' do
+            get :widget, uid: story_revision.uid
+            expect(response.body).to have_content(@google_analytics_tracking_id)
+          end
+        end
       end
     end
 
-    context 'when there is no story with the given four by four' do
+    context 'when json is requested' do
+      context 'when there is a story with the given four by four' do
+        it 'ignores vanity_text' do
+          get :widget, uid: story_revision.uid, vanity_text: 'haha', format: :json
+          expect(assigns(:story)).to eq(story_revision)
+        end
 
-      it 'renders 404' do
-        get :widget, uid: 'notf-ound', format: :json
-        expect(response).to have_http_status(404)
+        it 'responds when unauthenticated' do
+          stub_invalid_session
+          get :widget, uid: story_revision.uid, format: :json
+
+          response_json_as_hash = JSON.parse(response.body)
+          expect(response_json_as_hash['title']).to eq(widget_title)
+          expect(response_json_as_hash['image']).to eq(nil)
+          expect(response_json_as_hash['description']).to eq(widget_description)
+          expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
+        end
+
+        it 'responds when authenticated' do
+          stub_invalid_session
+          get :widget, uid: story_revision.uid, format: :json
+
+          response_json_as_hash = JSON.parse(response.body)
+          expect(response_json_as_hash['title']).to eq(widget_title)
+          expect(response_json_as_hash['image']).to eq(nil)
+          expect(response_json_as_hash['description']).to eq(widget_description)
+          expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
+        end
+      end
+
+      context 'when there is no story with the given four by four' do
+        it 'returns 404' do
+          get :widget, uid: 'notf-ound', format: :json
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    describe 'log view access' do
+      it 'logs view access when story exists' do
+        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        get :widget, uid: story_revision.uid
+      end
+
+      it 'logs view access for json requests' do
+        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        get :widget, uid: story_revision.uid, format: :json
+      end
+
+      it 'does not log view access when story does not exist' do
+        expect(StoryAccessLogger).to_not receive(:log_story_view_access)
+        get :widget, uid: 'notf-ound'
       end
     end
   end

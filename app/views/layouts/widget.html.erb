@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+ <head>
+    <title><%= core_attributes['name'] || t('default_page_title') %></title>
+    <%= default_meta_tags() %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= stylesheet_link_tag 'widget', media: 'all' %>
+    <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
+    <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
+    <%= javascript_include_tag 'widget' %>
+    <%= google_font_code_embed %>
+    <%= render 'shared/google_analytics_script' %>
+  </head>
+
+  <body>
+
+    <%= yield %>
+
+  </body>
+
+</html>

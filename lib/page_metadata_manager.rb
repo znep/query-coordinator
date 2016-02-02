@@ -3,6 +3,7 @@ class PageMetadataManager
 
   include CommonMetadataMethods
   include CommonMetadataTransitionMethods
+  include ApplicationHelper
 
   attr_accessor :column_field_name, :logical_datatype_name
 

@@ -218,6 +218,9 @@ http://www.socrata.com
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;
+    blist.requestId = '<%= request_id %>';
+    blist.sessionId = '<%= safe_session_id %>';
+    blist.requestIp = '<%= request_ip_address %>';
     blist.configuration.maintenance_messages = _.map(<%== Downtime.map(&:to_json) %>,
         function(item) {
           var data = JSON.parse(item);

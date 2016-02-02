@@ -528,7 +528,7 @@ $(function() {
         if (!blist.mixpanelLoaded) {
           doBrowse(newOpts);
         } else {
-          $.mixpanelMeta();
+          $.updateMixpanelProperties();
           mixpanel.track('Used Search Field', {}, function() {
             doBrowse(newOpts);
           });

@@ -548,6 +548,7 @@
        blist.browse.baseURL = "<%= opts[:base_url] %>";
        <%- if opts[:row_count].present? -%>
        blist.browse.rowCount = <%= opts[:row_count].to_i %>;
+       blist.browse.limit = <%= opts[:limit].to_i %>;
        blist.browse.searchOptions = <%= safe_json(opts[:search_options]) %>;
        <%- end -%>
     });

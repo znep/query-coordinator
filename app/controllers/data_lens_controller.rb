@@ -1,6 +1,7 @@
 class DataLensController < ApplicationController
   include UserAuthMethods
   include CommonMetadataMethods
+  include ApplicationHelper
 
   # TODO: We need to plumb our code through to support csrf token verification
   skip_before_filter :verify_authenticity_token

@@ -34,7 +34,6 @@ javascripts:
     - public/javascripts/util/markup.js
     - public/javascripts/util/alert-override.js
     - public/javascripts/util/google-analytics.js
-    - public/javascripts/util/mixpanel-analytics.js
     - public/javascripts/util/user.js
     - public/javascripts/util/domain/configuration.js
     - public/javascripts/util/dataset/column-container.js

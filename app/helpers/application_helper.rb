@@ -790,4 +790,20 @@ module ApplicationHelper
     end
   end
 
+  def request_ip_address
+    request.try(:remote_ip) || env['REMOTE_ADDR']
+  end
+
+  # The intention here is to provide an opaque session id for metrics tracking purposes
+  # that is derived from, but not fungible with, the session id used by the application.
+  def safe_session_id
+    Digest::SHA256.hexdigest(session['session_id'] + Frontend::SESSION_SALT) if session['session_id'].present?
+  end
+
+  def request_id
+    return 'Unavailable' unless request.present?
+
+    request.headers['X-Socrata-RequestId'] || request.headers['action_dispatch.request_id']
+  end
+
 end

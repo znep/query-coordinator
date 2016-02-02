@@ -45,10 +45,6 @@ module CommonMetadataMethods
     @phidippides ||= Phidippides.new
   end
 
-  def request_id
-    request.headers['X-Socrata-RequestId'] || request.headers['action_dispatch.request_id']
-  end
-
   def dataset_metadata
     return @dataset_metadata if defined? @dataset_metadata
     result = phidippides.fetch_dataset_metadata(

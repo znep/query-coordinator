@@ -7,6 +7,7 @@ class NewUxBootstrapController < ActionController::Base
   include CommonMetadataTransitionMethods
   include UserAuthMethods
   include CardTypeMapping
+  include ApplicationHelper
 
   before_filter :hook_auth_controller
   before_filter :set_locale

@@ -5,9 +5,9 @@ function relatedVisualization() {
     restrict: 'E',
     scope: true,
     templateUrl: templateUrl,
-    link: function(scope) {
-      scope.humanReadableColumnList = scope.visualization.columns.map(
-        scope.columnNameToReadableNameFn
+    link: function($scope) {
+      $scope.humanReadableColumnList = $scope.visualization.columns.map(
+        $scope.columnNameToReadableNameFn
       ).join(', ');
     }
   };

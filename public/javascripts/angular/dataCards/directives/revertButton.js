@@ -8,17 +8,17 @@ function revertButton(FlyoutService, I18n) {
       revertInitiated: '='
     },
     templateUrl: templateUrl,
-    link: function(scope, element) {
+    link: function($scope, element) {
       FlyoutService.register({
         selector: '.customize-bar .revert-btn',
         render: function() {
-          var flyoutTitle = scope.pageHasChanges ?
+          var flyoutTitle = $scope.pageHasChanges ?
             I18n.revertButton.flyoutHasChanges :
             I18n.revertButton.flyoutNoChanges;
 
           return `<div class="flyout-title">${flyoutTitle}</div>`;
         },
-        destroySignal: scope.$destroyAsObservable(element)
+        destroySignal: $scope.$destroyAsObservable(element)
       });
     }
   };

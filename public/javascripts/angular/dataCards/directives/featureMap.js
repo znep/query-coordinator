@@ -20,11 +20,11 @@ function featureMap(
     scope: true,
     controller: 'FeatureMapController',
     templateUrl: templateUrl,
-    link: function(scope, element) {
-      var baseLayerUrl$ = scope.$observe('baseLayerUrl');
-      var featureExtent$ = scope.$observe('featureExtent');
-      var vectorTileGetter$ = scope.$observe('vectorTileGetter');
-      var busy$ = scope.$observe('busy');
+    link: function($scope, element) {
+      var baseLayerUrl$ = $scope.$observe('baseLayerUrl');
+      var featureExtent$ = $scope.$observe('featureExtent');
+      var vectorTileGetter$ = $scope.$observe('vectorTileGetter');
+      var busy$ = $scope.$observe('busy');
 
       var mapOptions = {
         attributionControl: false,
@@ -41,7 +41,7 @@ function featureMap(
       }
 
       // CORE-4832 - disable pan and zoom on feature map
-      if (scope.disablePanAndZoom === true) {
+      if ($scope.disablePanAndZoom === true) {
         $.extend(mapOptions, {
           dragging: false,
           zoomControl: false,
@@ -50,7 +50,7 @@ function featureMap(
           doubleClickZoom: false,
           boxZoom: false
         });
-        scope.showPanZoomDisabledWarning = true;
+        $scope.showPanZoomDisabledWarning = true;
         $(element).children('.feature-map-container').css('cursor', 'default');
 
         FlyoutService.register({
@@ -58,7 +58,7 @@ function featureMap(
           render: _.constant(
             `<div class="flyout-title">${I18n.featureMap.zoomDisabled}</div>`
           ),
-          destroySignal: scope.$destroyAsObservable()
+          destroySignal: $scope.$destroyAsObservable()
         });
       }
 
@@ -94,7 +94,7 @@ function featureMap(
         // max number of rows to be displayed on a flannel,
         // prompt the user to filter and/or zoom in for accurate data.
         if (flyoutData.totalPoints >= Constants.FEATURE_MAP_MAX_TILE_DENSITY) {
-          var rowDisplayUnit = PluralizeService.pluralize(scope.rowDisplayUnit);
+          var rowDisplayUnit = PluralizeService.pluralize($scope.rowDisplayUnit);
           return template.format(
             I18n.t('flyout.denseData', rowDisplayUnit),
             chooseUserActionPrompt(zoom)
@@ -117,7 +117,7 @@ function featureMap(
       }
 
       function assembleFlyoutRowInfo() {
-        var unit = PluralizeService.pluralize(scope.rowDisplayUnit, flyoutData.count);
+        var unit = PluralizeService.pluralize($scope.rowDisplayUnit, flyoutData.count);
         return `${flyoutData.count} ${_.escape(unit)}`;
       }
 
@@ -143,7 +143,7 @@ function featureMap(
           getOffset: function() {
             return flyoutData.offset;
           },
-          destroySignal: scope.$destroyAsObservable(),
+          destroySignal: $scope.$destroyAsObservable(),
           persistOnMousedown: true
         });
       });
@@ -370,7 +370,7 @@ function featureMap(
             // of directive need to be performed inside $safeApply.
             flannelScope = $rootScope.$new();
             flannelScope.queryStatus = Constants.QUERY_PENDING;
-            flannelScope.rowDisplayUnit = scope.rowDisplayUnit;
+            flannelScope.rowDisplayUnit = $scope.rowDisplayUnit;
             flannelScope.useDefaults = false;
 
             // Instantiate the flannel
@@ -390,7 +390,7 @@ function featureMap(
             var withinBoxBounds = preprocessQueryRequest(e.containerPoint);
 
             // Kick off and manage query for clicked row data
-            var rowQueryResponse$ = scope.getClickedRows(e.latlng, e.points, withinBoxBounds);
+            var rowQueryResponse$ = $scope.getClickedRows(e.latlng, e.points, withinBoxBounds);
 
             // Provoke an update of flannel content based on status of query result.
             // Will show an error message of the query failed, otherwise the formatted
@@ -453,7 +453,7 @@ function featureMap(
                 return true; // Escape key
               }
             }).subscribe(function(evt) {
-              scope.$safeApply(handleDestroyFlannel);
+              $scope.$safeApply(handleDestroyFlannel);
               if ($(evt.target).closest('.feature-map-container').length === 0) {
                 // If click outside map itself, clear all hover and clicked point highlighting
                 map.fire('clearhighlightrequest');
@@ -466,7 +466,7 @@ function featureMap(
             // Remove the flannel on pan/zoom, but just shift its position
             // if the map resizes innocuously (e.g. due to window resize).
             map.once('dragstart zoomstart', function() {
-              scope.$safeApply(handleDestroyFlannel);
+              $scope.$safeApply(handleDestroyFlannel);
             });
             map.on('resize', adjustPosition);
           }
@@ -566,7 +566,7 @@ function featureMap(
           layerOrdering: getFeatureZIndex,
           style: getFeatureStyle,
           getHoverThreshold: getHoverThreshold,
-          debounceMilliseconds: scope.zoomDebounceMilliseconds,
+          debounceMilliseconds: $scope.zoomDebounceMilliseconds,
           onRenderStart: emitRenderStarted,
           onRenderComplete: function() {
             emitRenderCompleted();
@@ -581,14 +581,14 @@ function featureMap(
             var promise = vectorTileGetter.apply(this, Array.prototype.slice.call(arguments));
             promise.then(_.noop,
               function() {
-                scope.$safeApply(function() {
+                $scope.$safeApply(function() {
 
                   // CORE-5208: PhantomJS always produces an error here even
                   // though it successfully renders the points. For now we
                   // are making an exception to improve the polaroid
                   // experience until we can investigate the cause further.
                   if (!$window._phantom) {
-                    scope.$emit('render:error');
+                    $scope.$emit('render:error');
                   }
                 });
               });
@@ -654,8 +654,8 @@ function featureMap(
        * and by the analytics system to record render timings.
        */
       function emitRenderStarted() {
-        scope.$safeApply(function() {
-          scope.$emit('render:start', { source: `feature_map_${scope.$id}`, timestamp: _.now(), tag: 'vector_tile_render' });
+        $scope.$safeApply(function() {
+          $scope.$emit('render:start', { source: `feature_map_${$scope.$id}`, timestamp: _.now(), tag: 'vector_tile_render' });
         });
       }
 
@@ -665,8 +665,8 @@ function featureMap(
        * and by the analytics system to record render timings.
        */
       function emitRenderCompleted() {
-        scope.$safeApply(function() {
-          scope.$emit('render:complete', { source: `feature_map_${scope.$id}`, timestamp: _.now(), tag: 'vector_tile_render' });
+        $scope.$safeApply(function() {
+          $scope.$emit('render:complete', { source: `feature_map_${$scope.$id}`, timestamp: _.now(), tag: 'vector_tile_render' });
         });
       }
 
@@ -709,7 +709,7 @@ function featureMap(
         completeResizeFn();
       });
 
-      LeafletVisualizationHelpersService.emitExtentEventsFromMap(scope, map);
+      LeafletVisualizationHelpersService.emitExtentEventsFromMap($scope, map);
 
       // Keep the baseTileLayer in sync with the baseLayerUrl observable.
       baseTileLayer$ = baseLayerUrl$.
@@ -746,7 +746,7 @@ function featureMap(
         }
       ).
       // Only subscribe once everything is wired up, otherwise some
-      // subscribers may miss the first value from the scope.observe().
+      // subscribers may miss the first value from the $scope.observe().
       publish();
 
       // Observe map dimensions exist and have a height and width.

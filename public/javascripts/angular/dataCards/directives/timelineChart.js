@@ -15,13 +15,13 @@ function timelineChart(
     scope: true,
     controller: 'TimelineChartController',
     templateUrl: templateUrl,
-    link: function(scope, element) {
-      var chartData$ = scope.$observe('chartData');
-      var precision$ = scope.$observe('precision');
-      var rowDisplayUnit$ = scope.$observe('rowDisplayUnit');
-      var activeFilters$ = scope.$observe('activeFilters');
+    link: function($scope, element) {
+      var chartData$ = $scope.$observe('chartData');
+      var precision$ = $scope.$observe('precision');
+      var rowDisplayUnit$ = $scope.$observe('rowDisplayUnit');
+      var activeFilters$ = $scope.$observe('activeFilters');
 
-      if (scope.allowFilterChange) {
+      if ($scope.allowFilterChange) {
         element.addClass('filterable');
       }
 
@@ -51,7 +51,7 @@ function timelineChart(
         }
       });
 
-      scope.$destroyAsObservable(element).subscribe(function() {
+      $scope.$destroyAsObservable(element).subscribe(function() {
         FlyoutService.deregister(flyoutSelectors, renderFlyout);
       });
 
@@ -70,21 +70,21 @@ function timelineChart(
 
       function handleFilterEvent(event) {
         const payload = event.originalEvent.detail;
-        scope.$emit('filter-timeline-chart', payload);
+        $scope.$emit('filter-timeline-chart', payload);
       }
 
       timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', handleFlyoutEvent);
       timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_FILTER', handleFilterEvent);
 
-      scope.$destroyAsObservable(element).subscribe(function() {
+      $scope.$destroyAsObservable(element).subscribe(function() {
         timelineChartElement.off('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', handleFlyoutEvent);
         timelineChartElement.off('SOCRATA_VISUALIZATION_TIMELINE_FILTER', handleFilterEvent);
       });
 
       // Create visualization
       const timelineChartConfig = TimelineChartService.getVisualizationConfig(
-        scope.rowDisplayUnit,
-        scope.allowFilterChange
+        $scope.rowDisplayUnit,
+        $scope.allowFilterChange
       );
 
       const timelineChartVisualization = new TimelineChart(timelineChartElement, timelineChartConfig);
@@ -98,8 +98,8 @@ function timelineChart(
         }
 
         // Analytics
-        scope.$emit('render:start', {
-          source: `timelineChart_${scope.$id}`,
+        $scope.$emit('render:start', {
+          source: `timelineChart_${$scope.$id}`,
           timestamp: _.now()
         });
 
@@ -116,8 +116,8 @@ function timelineChart(
 
         // Analytics
         $timeout(function() {
-          scope.$emit('render:complete', {
-            source: `timelineChart_${scope.$id}`,
+          $scope.$emit('render:complete', {
+            source: `timelineChart_${$scope.$id}`,
             timestamp: _.now()
           });
         });

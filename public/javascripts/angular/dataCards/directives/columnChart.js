@@ -16,12 +16,12 @@ function columnChart(
     scope: true,
     controller: 'ColumnChartController',
     templateUrl: templateUrl,
-    link: function(scope, element) {
-      var cardData$ = scope.$observe('cardData');
-      var isFiltered$ = scope.$observe('isFiltered');
-      var expanded$ = scope.$observe('model').observeOnLatest('expanded');
-      var showAllLabels$ = scope.$observe('showAllLabels');
-      var rowDisplayUnit$ = scope.$observe('rowDisplayUnit');
+    link: function($scope, element) {
+      var cardData$ = $scope.$observe('cardData');
+      var isFiltered$ = $scope.$observe('isFiltered');
+      var expanded$ = $scope.$observe('model').observeOnLatest('expanded');
+      var showAllLabels$ = $scope.$observe('showAllLabels');
+      var rowDisplayUnit$ = $scope.$observe('rowDisplayUnit');
       var columnChartConfig;
       var columnChartComponent;
       var lastFlyoutData;
@@ -36,12 +36,12 @@ function columnChart(
         throw new Error('[columnChart] column-chart is missing a .card-visualization (grand)parent.');
       }
 
-      ColumnChartService.registerColumnChartEvents(scope, element);
+      ColumnChartService.registerColumnChartEvents($scope, element);
 
       FlyoutService.register({
         selector: '.truncation-marker',
         render: _.constant(`<div class="flyout-title">${I18n.flyout.expand}</div>`),
-        destroySignal: scope.$destroyAsObservable(element)
+        destroySignal: $scope.$destroyAsObservable(element)
       });
 
       FlyoutService.register({
@@ -101,13 +101,13 @@ function columnChart(
             return flyoutTarget;
           }
         },
-        destroySignal: scope.$destroyAsObservable(element)
+        destroySignal: $scope.$destroyAsObservable(element)
       });
 
       FlyoutService.register({
         selector: '.labels .label .contents .icon-close',
         render: _.constant(`<div class="flyout-title">${I18n.flyout.clearFilter}</div>`),
-        destroySignal: scope.$destroyAsObservable(element)
+        destroySignal: $scope.$destroyAsObservable(element)
       });
 
       // Render the content of the column chart flyout by grabbing
@@ -199,7 +199,7 @@ function columnChart(
         }
       }
 
-      var initialRowDisplayUnit = scope.rowDisplayUnit || I18n.common.row;
+      var initialRowDisplayUnit = $scope.rowDisplayUnit || I18n.common.row;
       columnChartConfig = {
         configuration: {
           columns: {
@@ -208,12 +208,12 @@ function columnChart(
             filteredValue: 2,
             selected: 3
           },
-          interactive: scope.allowFilterChange,
+          interactive: $scope.allowFilterChange,
           localization: {
             'NO_VALUE': `(${I18n.common.noValue})`,
             'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.flyout.total,
             'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.flyout.filteredAmount,
-            'FLYOUT_SELECTED_NOTICE': scope.allowFilterChange ? I18n.flyout.clearFilterLong : ''
+            'FLYOUT_SELECTED_NOTICE': $scope.allowFilterChange ? I18n.flyout.clearFilterLong : ''
           }
         },
         unit: {
@@ -250,7 +250,7 @@ function columnChart(
 
           rowDisplayUnit = rowDisplayUnit || I18n.common.row;
 
-          scope.$emit('render:start', { source: `columnChart_${scope.$id}`, timestamp: _.now() });
+          $scope.$emit('render:start', { source: `columnChart_${$scope.$id}`, timestamp: _.now() });
 
           var chartRenderOptions = {
             expanded: expanded,
@@ -265,12 +265,12 @@ function columnChart(
 
           // Yield execution to the browser to render, then notify that render is complete
           $timeout(function() {
-            scope.$emit('render:complete', { source: `columnChart_${scope.$id}`, timestamp: _.now() });
+            $scope.$emit('render:complete', { source: `columnChart_${$scope.$id}`, timestamp: _.now() });
           });
         }
       );
 
-      scope.$destroyAsObservable(element).subscribe(function() {
+      $scope.$destroyAsObservable(element).subscribe(function() {
         columnChartComponent.destroy();
       });
 

@@ -33,7 +33,7 @@ function columnAndVisualizationSelector(
       classicVisualization: '='
     },
     templateUrl: templateUrl,
-    link: function(scope) {
+    link: function($scope) {
 
       /************************
       * Add new card behavior *
@@ -51,13 +51,13 @@ function columnAndVisualizationSelector(
 
       // Get a sorted list of all dataset columns excluding system columns but
       // including computed columns
-      var sortedDatasetColumns$ = DatasetColumnsService.getSortedColumns$(scope);
+      var sortedDatasetColumns$ = DatasetColumnsService.getSortedColumns$($scope);
 
       // Determine which columns can be visualized and added as cards
       var datasetColumnsInfo$ = Rx.Observable.combineLatest(
         sortedDatasetColumns$,
-        scope.$observe('supportedCardTypes'),
-        scope.$observe('defaultCardTypeByColumn'),
+        $scope.$observe('supportedCardTypes'),
+        $scope.$observe('defaultCardTypeByColumn'),
         function(sortedColumns, supportedCardTypes, defaultCardTypeByColumn) {
 
           // Split into available and unsupported columns.
@@ -101,8 +101,8 @@ function columnAndVisualizationSelector(
           };
         });
 
-      var addCardSelectedColumnFieldName$ = scope.$observe('addCardSelectedColumnFieldName');
-      var columns$ = scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined);
+      var addCardSelectedColumnFieldName$ = $scope.$observe('addCardSelectedColumnFieldName');
+      var columns$ = $scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined);
       var availableColumns$ = datasetColumnsInfo$.filter(_.isDefined).pluck('available');
 
       var column$ = Rx.Observable.combineLatest(
@@ -141,7 +141,7 @@ function columnAndVisualizationSelector(
           } else {
             // TODO: Enforce some kind of schema validation at this step.
             serializedCard = {
-              'cardSize': parseInt(scope.cardSize, 10),
+              'cardSize': parseInt($scope.cardSize, 10),
               'expanded': false,
               'fieldName': fieldName,
               'cardType': adjustedDefaultCardTypeHash[fieldName]
@@ -149,24 +149,24 @@ function columnAndVisualizationSelector(
 
             // TODO: We're going towards passing in serialized blobs to Model constructors.
             // Revisit this line when that effort reaches Card.
-            return Card.deserialize(scope.page, serializedCard);
+            return Card.deserialize($scope.page, serializedCard);
           }
         }
       ).share();
 
-      scope.selectedCardModel = null;
-      scope.availableCardTypes = [];
-      scope.addVisualizationPrompt = scope.addVisualizationPrompt || 'addCardDialog.prompt';
+      $scope.selectedCardModel = null;
+      $scope.availableCardTypes = [];
+      $scope.addVisualizationPrompt = $scope.addVisualizationPrompt || 'addCardDialog.prompt';
 
-      scope.$bindObservable('shouldShowAggregationSelector', selectedCardModel$.
+      $scope.$bindObservable('shouldShowAggregationSelector', selectedCardModel$.
         observeOnLatest('cardType').
         map(function(cardType) {
-          return scope.page.version >= 4 &&
+          return $scope.page.version >= 4 &&
             ServerConfig.get('enableDataLensCardLevelAggregation') &&
             !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
         }));
 
-      scope.$bindObservable(
+      $scope.$bindObservable(
         'availableCardTypes',
         column$.map(function(column) {
           if (column) {
@@ -177,9 +177,9 @@ function columnAndVisualizationSelector(
         })
       );
 
-      scope.$bindObservable('availableAndSupportedCardTypes', Rx.Observable.combineLatest(
-        scope.$observe('availableCardTypes'),
-        scope.$observe('supportedCardTypes'),
+      $scope.$bindObservable('availableAndSupportedCardTypes', Rx.Observable.combineLatest(
+        $scope.$observe('availableCardTypes'),
+        $scope.$observe('supportedCardTypes'),
         function(availableCardTypes, supportedCardTypes) {
           // if supportedCardTypes is null, that means we support all card types.
           // Yes, I know, sorry :(
@@ -187,41 +187,41 @@ function columnAndVisualizationSelector(
         })
       );
 
-      scope.$bindObservable('availableColumns', datasetColumnsInfo$.pluck('available'));
-      scope.$bindObservable('unsupportedColumns', datasetColumnsInfo$.pluck('unsupported'));
-      scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$(scope));
-      scope.$bindObservable('selectedCardModel', selectedCardModel$);
-      scope.$bindObservable(
+      $scope.$bindObservable('availableColumns', datasetColumnsInfo$.pluck('available'));
+      $scope.$bindObservable('unsupportedColumns', datasetColumnsInfo$.pluck('unsupported'));
+      $scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$($scope));
+      $scope.$bindObservable('selectedCardModel', selectedCardModel$);
+      $scope.$bindObservable(
         'isCustomizableMap',
         selectedCardModel$.observeOnLatest('isCustomizableMap')
       );
 
       // When a user selects a column,
       // emit card-model-selected.
-      // It's not sufficient to simply monitor scope.selectedCardModel
+      // It's not sufficient to simply monitor $scope.selectedCardModel
       // for changes, as that value can change for reasons outside
       // of the user making a selection inside this directive.
       // For instance, if the incoming binding of addCardSelectedColumnFieldName
-      // changes, scope.selectedCardModel will be updated to reflect the new
+      // changes, $scope.selectedCardModel will be updated to reflect the new
       // field, but this does not mean the user selected a column.
-      scope.$emitEventsFromObservable(
+      $scope.$emitEventsFromObservable(
         'card-model-selected',
-        selectedCardModel$.sample(scope.$eventToObservable('soc-select-change'))
+        selectedCardModel$.sample($scope.$eventToObservable('soc-select-change'))
       );
 
       // No idea why this one has to be structured like it is, but using
       // the same .sample() pattern as above ended up with it not triggering
       // in all cases. Giacomo suspects some misunderstood behavior in the
       // third-party angular rx extensions' .safeApply().
-      scope.$emitEventsFromObservable(
+      $scope.$emitEventsFromObservable(
         'card-model-selected',
         selectedCardModel$.observeOnLatest('cardType').map(function() {
-          return scope.selectedCardModel;
+          return $scope.selectedCardModel;
         })
       );
 
-      scope.onCustomizeCard = function(selectedCardModel) {
-        scope.$emit('customize-card-with-model', selectedCardModel);
+      $scope.onCustomizeCard = function(selectedCardModel) {
+        $scope.$emit('customize-card-with-model', selectedCardModel);
       };
     }
   };

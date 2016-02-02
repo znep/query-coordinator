@@ -9,17 +9,17 @@ function modalDialog(WindowState, $window) {
     },
     transclude: true,
     templateUrl: templateUrl,
-    link: function(scope, element) {
-      if (!scope.state) {
-        scope.state = { show: false };
+    link: function($scope, element) {
+      if (!$scope.state) {
+        $scope.state = { show: false };
       }
 
       // Close the dialog unless we have disabled closing the dialog
       // (i.e. during saving).
-      scope.closeDialog = function() {
-        if (!scope.state.disableCloseDialog) {
-          scope.$safeApply(function() {
-            scope.state.show = false;
+      $scope.closeDialog = function() {
+        if (!$scope.state.disableCloseDialog) {
+          $scope.$safeApply(function() {
+            $scope.state.show = false;
           });
         }
       };
@@ -33,7 +33,7 @@ function modalDialog(WindowState, $window) {
         testPoint.left += 1;
         var topMostElement = $window.document.elementFromPoint(testPoint.left, testPoint.top);
         return dialog[0] === topMostElement;
-      }).takeUntil(scope.$destroyAsObservable(element)).subscribe(scope.closeDialog);
+      }).takeUntil($scope.$destroyAsObservable(element)).subscribe($scope.closeDialog);
     }
   };
 }

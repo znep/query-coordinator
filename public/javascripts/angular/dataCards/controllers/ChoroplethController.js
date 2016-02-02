@@ -295,7 +295,7 @@ function ChoroplethController(
   unfilteredData$ = requestDataWithWhereClauseSequence(baseSoqlFilter, 'unfiltered_query:complete');
   filteredData$ = requestDataWithWhereClauseSequence(whereClause$, 'filtered_query:complete');
 
-  // NOTE: This needs to be defined on the $scope BEFORE
+  // NOTE: This needs to be defined on the scope BEFORE
   // the 'geojsonAggregateData' observable is bound, or
   // else it sometimes fails to set the value to true
   // when it encounters an error. WTF.

@@ -5,23 +5,23 @@ function feedbackPanel(ServerConfig, I18n) {
     restrict: 'E',
     scope: { },
     templateUrl: templateUrl,
-    link: function(scope, element) {
+    link: function($scope, element) {
 
       if (ServerConfig.get('enableFeedback')) {
 
-        scope.showFeedbackButton = true;
-        scope.showFeedbackContent = false;
+        $scope.showFeedbackButton = true;
+        $scope.showFeedbackContent = false;
 
-        scope.switchFeedbackInterfaceState = function(e) {
+        $scope.switchFeedbackInterfaceState = function(e) {
           // Don't dismiss the feedback panel when the user clicks on a link,
           // only when the user clicks on the panel itself.
           if (!e.target.hasOwnProperty('href')) {
-            scope.showFeedbackButton = !scope.showFeedbackButton;
-            scope.showFeedbackContent = !scope.showFeedbackContent;
+            $scope.showFeedbackButton = !$scope.showFeedbackButton;
+            $scope.showFeedbackContent = !$scope.showFeedbackContent;
           }
         };
 
-        scope.includeScreenshot = function(e) {
+        $scope.includeScreenshot = function(e) {
 
           var usersnapConfig = {
             emailBox: true,
@@ -78,11 +78,11 @@ function feedbackPanel(ServerConfig, I18n) {
 
           $('head').append($(scriptContent));
 
-          scope.showFeedbackContent = false;
+          $scope.showFeedbackContent = false;
 
         };
 
-        scope.doNotIncludeScreenshot = function(e) {
+        $scope.doNotIncludeScreenshot = function(e) {
 
           var scriptContent = [
             '<!-- Start of Zendesk Widget script -->',
@@ -134,7 +134,7 @@ function feedbackPanel(ServerConfig, I18n) {
 
           $('head').append($(scriptContent));
 
-          scope.showFeedbackContent = false;
+          $scope.showFeedbackContent = false;
 
         };
 

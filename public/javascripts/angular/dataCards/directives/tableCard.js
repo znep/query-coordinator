@@ -25,11 +25,11 @@ function tableCard(
     },
     controller: 'TableCardController',
     templateUrl: templateUrl,
-    link: function(scope, element) {
-      var columnDetails$ = scope.$observe('columnDetails');
-      var whereClause$ = scope.$observe('whereClause');
-      var rowCount$ = scope.$observe('rowCount');
-      var filteredRowCount$ = scope.$observe('filteredRowCount');
+    link: function($scope, element) {
+      var columnDetails$ = $scope.$observe('columnDetails');
+      var whereClause$ = $scope.$observe('whereClause');
+      var rowCount$ = $scope.$observe('rowCount');
+      var filteredRowCount$ = $scope.$observe('filteredRowCount');
       var tableScroll$;
       var tableMouseScroll$;
       var tableMousemove$;
@@ -55,7 +55,7 @@ function tableCard(
       function setupTable() {
         var subscriptions = [];
         // A unique jQuery namespace, specific to one table instance.
-        var instanceUniqueNamespace = `table.instance${scope.$id}`;
+        var instanceUniqueNamespace = `table.instance${$scope.$id}`;
 
         var currentBlocks = [];
         var sortColumnId = '';
@@ -69,14 +69,14 @@ function tableCard(
         var $expander = element.find('.table-expander');
 
         var getColumn = function(fieldName) {
-          return _.find(scope.columnDetails, function(column) {
+          return _.find($scope.columnDetails, function(column) {
             return column.fieldName === fieldName;
           });
         };
 
-        scope.$watch('showCount', function(newVal) {
+        $scope.$watch('showCount', function(newVal) {
           if (_.isUndefined(newVal)) {
-            scope.showCount = true;
+            $scope.showCount = true;
           }
         });
 
@@ -84,14 +84,14 @@ function tableCard(
           if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) {
             return; // The flyout might not be our own!
           }
-          scope.$safeApply(function() {
+          $scope.$safeApply(function() {
             var columnId = $(e.currentTarget).parent().data('column-id');
 
             sortOnColumn(columnId);
           });
         });
 
-        scope.$destroyAsObservable(element).subscribe(function() {
+        $scope.$destroyAsObservable(element).subscribe(function() {
           $('body').off(`.${instanceUniqueNamespace}`);
         });
 
@@ -99,7 +99,7 @@ function tableCard(
           var tableHeight = dimensions.height - element.position().top;
 
           element.height(tableHeight);
-          $tableBody.height(tableHeight - $tableHead.height() - (scope.showCount ? rowHeight : 0));
+          $tableBody.height(tableHeight - $tableHead.height() - ($scope.showCount ? rowHeight : 0));
           $tableHead.find('.resize').height(tableHeight);
 
           checkBlocks();
@@ -118,7 +118,7 @@ function tableCard(
         };
 
         var shouldApplyDefaultSort = function() {
-          return _.isPresent(scope.defaultSortColumnName) &&
+          return _.isPresent($scope.defaultSortColumnName) &&
             _.isEmpty(sortColumnId) &&
             _.isEmpty(sortOrdering);
         };
@@ -186,7 +186,7 @@ function tableCard(
           reloadRows();
         };
 
-        scope.sortOnColumn = function($event, columnId) {
+        $scope.sortOnColumn = function($event, columnId) {
           if (!$($event.target).hasClass('resize')) {
             sortOnColumn(columnId);
           }
@@ -249,13 +249,13 @@ function tableCard(
         };
 
         var ensureColumnHeaders = function() {
-          if (!scope.headers) {
+          if (!$scope.headers) {
             updateColumnHeaders();
           }
         };
 
         var updateColumnHeaders = function() {
-          scope.headers = _.map(scope.columnDetails, function(column, i) {
+          $scope.headers = _.map($scope.columnDetails, function(column, i) {
             // Symbols: ▼ ▲
             var ordering = getCurrentOrDefaultSortForColumn(column.fieldName);
 
@@ -287,7 +287,7 @@ function tableCard(
               // row_block.row.cell
               children().children().children();
             cells = cells.add($tableHead.children());
-            var columns = scope.columnDetails;
+            var columns = $scope.columnDetails;
 
             // Find the widest cell in each column
             cells.each(function(i, cell) {
@@ -364,11 +364,11 @@ function tableCard(
 
           httpRequests[block] = canceler;
 
-          scope.getRows(block * rowsPerBlock, rowsPerBlock, getFormattedSort(), canceler, scope.whereClause).then(function(data) {
+          $scope.getRows(block * rowsPerBlock, rowsPerBlock, getFormattedSort(), canceler, $scope.whereClause).then(function(data) {
             delete httpRequests[block];
             ensureColumnHeaders();
 
-            scope.$emit('rows:loaded', block * rowsPerBlock);
+            $scope.$emit('rows:loaded', block * rowsPerBlock);
 
             if (currentBlocks.indexOf(block) === -1 || data.length === 0) {
               return;
@@ -404,7 +404,7 @@ function tableCard(
               return cellText;
             }
 
-            var columns = scope.columnDetails;
+            var columns = $scope.columnDetails;
             var blockDiv = $('<div>').
               addClass(`row-block ${block}`).
               css({
@@ -487,28 +487,28 @@ function tableCard(
         var updateLabel = function() {
           var bottomRow = Math.min(
             Math.floor(($tableBody.scrollTop() + $tableBody.height()) / rowHeight),
-            scope.filteredRowCount
+            $scope.filteredRowCount
           );
           var topRow = Math.min(
             Math.floor($tableBody.scrollTop() / rowHeight) + 1,
             bottomRow
           );
 
-          scope.$safeApply(function() {
+          $scope.$safeApply(function() {
 
-            if (scope.filteredRowCount <= 1) {
-              scope.tableLabel = I18n.t('table.nonRangeLabel',
-                _.escape(_.capitalize(scope.rowDisplayUnit)),
+            if ($scope.filteredRowCount <= 1) {
+              $scope.tableLabel = I18n.t('table.nonRangeLabel',
+                _.escape(_.capitalize($scope.rowDisplayUnit)),
                 $window.socrata.utils.commaify(topRow),
-                $window.socrata.utils.commaify(scope.filteredRowCount)
+                $window.socrata.utils.commaify($scope.filteredRowCount)
               );
             } else {
-              var rowDisplayUnit = PluralizeService.pluralize(scope.rowDisplayUnit);
-              scope.tableLabel = I18n.t('table.rangeLabel',
+              var rowDisplayUnit = PluralizeService.pluralize($scope.rowDisplayUnit);
+              $scope.tableLabel = I18n.t('table.rangeLabel',
                 _.escape(_.capitalize(rowDisplayUnit)),
                 $window.socrata.utils.commaify(topRow),
                 $window.socrata.utils.commaify(bottomRow),
-                $window.socrata.utils.commaify(scope.filteredRowCount)
+                $window.socrata.utils.commaify($scope.filteredRowCount)
               );
             }
           });
@@ -522,7 +522,7 @@ function tableCard(
         };
 
         var showOrHideNoRowMessage = function() {
-          element.toggleClass('has-rows', scope.filteredRowCount !== 0);
+          element.toggleClass('has-rows', $scope.filteredRowCount !== 0);
         };
 
         var disableScrollingOnMousemove$;
@@ -578,7 +578,7 @@ function tableCard(
         // When the table is scrolled, update its content.
         tableScroll$.
           subscribe(function() {
-            scope.$safeApply(function() {
+            $scope.$safeApply(function() {
               moveHeader();
               checkBlocks();
               updateLabel();
@@ -609,7 +609,7 @@ function tableCard(
           title: function($target) {
             var title = _.escape($target.text());
             var index = $target.data('index');
-            var description = _.escape(_.get(scope.columnDetails, index + '.description'));
+            var description = _.escape(_.get($scope.columnDetails, index + '.description'));
             if (_.isDefined(description)) {
               return `<div class="title">${title}</div><div class="description">${description}</div>`;
             }
@@ -669,11 +669,11 @@ function tableCard(
           columnDetails$,
           function(cardDimensions, rowCount, filteredRowCount) {
 
-            scope.$emit('render:start', {
-              source: `table_${scope.$id}`,
+            $scope.$emit('render:start', {
+              source: `table_${$scope.$id}`,
               timestamp: _.now()
             });
-            scope.$emit('rows:info', {
+            $scope.$emit('rows:info', {
               hasRows: filteredRowCount !== 0,
               rowCount: rowCount,
               filteredRowCount: filteredRowCount
@@ -686,7 +686,7 @@ function tableCard(
 
               // Apply a default sort if needed.
               if (shouldApplyDefaultSort()) {
-                sortOnColumn(scope.defaultSortColumnName);
+                sortOnColumn($scope.defaultSortColumnName);
               }
 
               renderTable(cardDimensions);
@@ -694,8 +694,8 @@ function tableCard(
 
             // Yield execution to the browser to render, then notify that render is complete
             $timeout(function() {
-              scope.$emit('render:complete', {
-                source: `table_${scope.$id}`,
+              $scope.$emit('render:complete', {
+                source: `table_${$scope.$id}`,
                 timestamp: _.now()
               });
             }, 0, false);
@@ -703,12 +703,12 @@ function tableCard(
         ));
 
         subscriptions.push(whereClause$.subscribe(function() {
-          if (scope.getRows) {
+          if ($scope.getRows) {
             reloadRows();
           }
         }));
 
-        scope.$destroyAsObservable(element).subscribe(function() {
+        $scope.$destroyAsObservable(element).subscribe(function() {
           _.invoke(subscriptions, 'dispose');
         });
       }

@@ -6,9 +6,9 @@ angular.
       Object.defineProperties($delegate.constructor.prototype, {
         '$destroyAsObservable': {
           value: function $destroyAsObservable(element) {
-            var scope = this;
+            var $scope = this;
             return rx.Observable.merge(
-                scope.$eventToObservable('$destroy'),
+                $scope.$eventToObservable('$destroy'),
                 element ?
                   rx.Observable.fromEvent(element, '$destroy') :
                   rx.Observable.empty()
@@ -24,10 +24,10 @@ angular.
 /* TODO: Use this version, but needs tests to pass for the table directive :(
         '$observe': {
           value: function(watchExpression, objectEquality) {
-            var scope = this;
-            return scope.$toObservable(watchExpression, objectEquality).
+            var $scope = this;
+            return $scope.$toObservable(watchExpression, objectEquality).
               pluck('newValue').
-              takeUntil(scope.$eventToObservable('$destroy')).
+              takeUntil($scope.$eventToObservable('$destroy')).
               publish().
               refCount();
           },
@@ -38,10 +38,10 @@ angular.
 */
         '$observe': {
           value: function $observe(expression) {
-            var scope = this;
-            var evaluatedExpression = scope.$eval(expression);
+            var $scope = this;
+            var evaluatedExpression = $scope.$eval(expression);
             var observable = new rx.BehaviorSubject(evaluatedExpression);
-            scope.$watch(expression, function(value) {
+            $scope.$watch(expression, function(value) {
               if (value !== evaluatedExpression) {
                 evaluatedExpression = value;
                 observable.onNext(value);
@@ -49,7 +49,7 @@ angular.
             });
 
             return observable.
-              takeUntil(scope.$eventToObservable('$destroy')); //TakeUntil to avoid leaks.
+              takeUntil($scope.$eventToObservable('$destroy')); //TakeUntil to avoid leaks.
           },
           enumerable: false,
           configurable: true,
@@ -57,16 +57,16 @@ angular.
         },
         '$emitEventsFromObservable': {
           value: function $emitEventsFromObservable(eventName, observable) {
-            var scope = this;
+            var $scope = this;
 
             if (_.isEmpty(eventName) || !_.isString(eventName)) {
               throw new Error('$emitEventsFromObservable not passed a string event name');
             }
 
             return observable.
-              takeUntil(scope.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
-              safeApply(scope, function(value) {
-                scope.$emit(eventName, value);
+              takeUntil($scope.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+              safeApply($scope, function(value) {
+                $scope.$emit(eventName, value);
               }).
               subscribe();
           },
@@ -81,14 +81,14 @@ angular.
           // This is often useful when combining Observables of arbitrary origin to
           // angular-related Observables.
           value: function $safeApply(fn) {
-            var scope = this;
-            var phase = scope.$root.$$phase; // eslint-disable-line angular/no-private-call
+            var $scope = this;
+            var phase = $scope.$root.$$phase; // eslint-disable-line angular/no-private-call
             if (phase === '$apply' || phase === '$digest') {
               if (fn && _.isFunction(fn)) {
                 fn();
               }
             } else {
-              scope.$apply(fn);
+              $scope.$apply(fn);
             }
           },
           enumerable: false,
@@ -116,10 +116,10 @@ angular.
               throw new Error('onCompleted provided, but it is not a function.');
             }
 
-            var scope = this;
+            var $scope = this;
             function set(newValue) {
-              scope.$safeApply(function() {
-                scope[propName] = newValue;
+              $scope.$safeApply(function() {
+                $scope[propName] = newValue;
               });
             }
 
@@ -140,11 +140,11 @@ angular.
              * causeScope, and causeBoundProperty.
              */
             function defaultErrorHandler(e) {
-              var genericErrorMessage = `$bindObservable: Unhandled error in sequence bound to property ${propName} of scope ${scope.$id}`;
+              var genericErrorMessage = `$bindObservable: Unhandled error in sequence bound to property ${propName} of scope ${$scope.$id}`;
               if (e instanceof Error) {
                 // For debugging, place the message on the Error instance.
                 e.tag = genericErrorMessage;
-                e.causeScope = scope;
+                e.causeScope = $scope;
                 e.causeBoundProperty = propName;
                 throw e;
               }
@@ -152,7 +152,7 @@ angular.
             }
 
             observable.
-              takeUntil(scope.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+              takeUntil($scope.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
               subscribe(
               set,
               onError ? errorHandler : defaultErrorHandler,

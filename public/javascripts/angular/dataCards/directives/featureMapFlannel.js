@@ -6,13 +6,13 @@ function FeatureMapFlannel(I18n, DataTypeFormatService, Constants, $timeout) {
     restrict: 'E',
     scope: false,
     templateUrl: templateUrl,
-    link: function(scope, element) {
+    link: function($scope, element) {
       var iconClose = element.find('.icon-close');
       var stickyBorders = element.find('.sticky-border');
       var flannelContent = element.find('.flannel-content');
-      var currentIndex$ = scope.$observe('currentIndex').
+      var currentIndex$ = $scope.$observe('currentIndex').
         filter(function(index) { return index >= 0; });
-      var queryStatus$ = scope.$observe('queryStatus');
+      var queryStatus$ = $scope.$observe('queryStatus');
       var successfulQuery$ = queryStatus$.
         filter(function(status) { return status === Constants.QUERY_SUCCESS; });
 
@@ -22,19 +22,19 @@ function FeatureMapFlannel(I18n, DataTypeFormatService, Constants, $timeout) {
         startWith(true).
         distinctUntilChanged();
 
-      scope.$bindObservable('busy', busy$);
+      $scope.$bindObservable('busy', busy$);
 
       // Compile a formatted row title from the given title column or lack thereof.
       function compileRowTitle(titleColumn) {
         if (_.isUndefined(titleColumn)) {
           return;
-        } else if (scope.useDefaults) {
+        } else if ($scope.useDefaults) {
           // defaults are lat/lng coordiantes from a location column, which we
           // can count on being accessible in this way
           var coordinates = formatContentByType(titleColumn.value[0], titleColumn, true);
           return coordinates;
         } else {
-          var title = scope.formatCellValue(titleColumn, true);
+          var title = $scope.formatCellValue(titleColumn, true);
           return _.isString(title) ? title.toUpperCase() : title;
         }
       }
@@ -68,7 +68,7 @@ function FeatureMapFlannel(I18n, DataTypeFormatService, Constants, $timeout) {
       }
 
       // Format an array of subcolumns under a given parent column
-      scope.formatCellValue = function(column, isTitle) {
+      $scope.formatCellValue = function(column, isTitle) {
         if (_.isNull(column.value)) {
           return '';
         }
@@ -158,32 +158,32 @@ function FeatureMapFlannel(I18n, DataTypeFormatService, Constants, $timeout) {
       };
 
       // Handle pagination between multiple rows
-      scope.goToPreviousRow = function() {
-        if (scope.currentIndex > 0) {
-          scope.currentIndex--;
+      $scope.goToPreviousRow = function() {
+        if ($scope.currentIndex > 0) {
+          $scope.currentIndex--;
         }
       };
 
-      scope.goToNextRow = function() {
-        if (scope.currentIndex < scope.rows.length - 1) {
-          scope.currentIndex++;
+      $scope.goToNextRow = function() {
+        if ($scope.currentIndex < $scope.rows.length - 1) {
+          $scope.currentIndex++;
         }
       };
 
       // On every page change, update the flyout content and positioning.
       currentIndex$.subscribe(function(index) {
-        scope.selectedRowTitle = compileRowTitle(scope.titles[index]);
-        scope.selectedRow = scope.rows[index];
-        scope.showingMessage = I18n.t('featureMapFlannel.showing',
-          scope.rowDisplayUnit, ++index, scope.rows.length);
+        $scope.selectedRowTitle = compileRowTitle($scope.titles[index]);
+        $scope.selectedRow = $scope.rows[index];
+        $scope.showingMessage = I18n.t('featureMapFlannel.showing',
+          $scope.rowDisplayUnit, ++index, $scope.rows.length);
 
         $timeout(function() {
           var scrollbarNotVisible = flannelContent.outerWidth() === Constants.FEATURE_MAP_FLANNEL_WIDTH;
-          scope.isScrollable = flannelContent.innerHeight() > Constants.FEATURE_MAP_FLANNEL_MAX_CONTENT_HEIGHT;
+          $scope.isScrollable = flannelContent.innerHeight() > Constants.FEATURE_MAP_FLANNEL_MAX_CONTENT_HEIGHT;
 
           // If a scrollbar should exist, but it's not visible (Firefox),
           // dedicate room for it.
-          if (scope.isScrollable && scrollbarNotVisible) {
+          if ($scope.isScrollable && scrollbarNotVisible) {
             flannelContent.width(flannelContent.width() -
               Constants.FEATURE_MAP_FLANNEL_FIREFOX_SCROLLBAR_PADDING);
           }
@@ -192,12 +192,12 @@ function FeatureMapFlannel(I18n, DataTypeFormatService, Constants, $timeout) {
           iconClose.css('left', flannelContent.innerWidth() - iconClose.width() -
             Constants.FEATURE_MAP_FLANNEL_CLOSE_ICON_INITIAL_PADDING);
           stickyBorders.width(flannelContent.innerWidth() - iconClose.width());
-          stickyBorders.toggle(scope.isScrollable);
+          stickyBorders.toggle($scope.isScrollable);
         });
       });
 
       successfulQuery$.subscribe(function() {
-        scope.currentIndex = 0;
+        $scope.currentIndex = 0;
       });
     }
   };

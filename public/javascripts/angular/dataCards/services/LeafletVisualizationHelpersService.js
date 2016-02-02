@@ -18,16 +18,16 @@ function LeafletVisualizationHelpersService(LeafletHelpersService, $rootScope, r
   /**
    * Mixin helper for card visualizations that wrap a leaflet map that can
    * save its user-modified extent to the card model
-   * @param {$rootScope.Scope} scope
+   * @param {$rootScope.Scope} $scope
    * @param {Card} model
    * @returns {*}
    */
-  this.setObservedExtentOnModel = function setObservedExtentOnModel(scope, model) {
+  this.setObservedExtentOnModel = function setObservedExtentOnModel($scope, model) {
     model.page.observe('hasExpandedCard').subscribe(function(value) {
       $rootScope.$emit(EXPAND_CARD_EVENT_ID, value);
     });
 
-    var extentChanges$ = scope.$eventToObservable(EXTENT_EVENT_ID).
+    var extentChanges$ = $scope.$eventToObservable(EXTENT_EVENT_ID).
       skip(1). // skip initial setup zoom
       map(_.property('additionalArguments[0]'));
 
@@ -38,10 +38,10 @@ function LeafletVisualizationHelpersService(LeafletHelpersService, $rootScope, r
   /**
    * Mixin helper for map directives that use leaflet.  Emits an event when
    * user zooms or pans
-   * @param {$rootScope.Scope} scope
+   * @param {$rootScope.Scope} $scope
    * @param {L.Map} map
    */
-  this.emitExtentEventsFromMap = function emitExtentEventsFromMap(scope, map) {
+  this.emitExtentEventsFromMap = function emitExtentEventsFromMap($scope, map) {
     var expandedCard$ = $rootScope.$eventToObservable(EXPAND_CARD_EVENT_ID).
       map(_.property('additionalArguments[0]')).
       filter(_.isPresent).
@@ -59,7 +59,7 @@ function LeafletVisualizationHelpersService(LeafletHelpersService, $rootScope, r
     });
 
     mapExtents$.subscribe(function(mapExtents) {
-      scope.$emit(EXTENT_EVENT_ID, mapExtents);
+      $scope.$emit(EXTENT_EVENT_ID, mapExtents);
     });
   };
 }

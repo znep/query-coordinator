@@ -13,7 +13,7 @@ function visualizationTypeSelector(
   rx) {
   const Rx = rx;
 
-  function initializeCuratedRegionSelector(scope, cardModel$, cardType$) {
+  function initializeCuratedRegionSelector($scope, cardModel$, cardType$) {
     var currentUser$ = Rx.Observable.returnValue($window.currentUser);
     var dataset$ = cardModel$.observeOnLatest('page.dataset');
     var columns$ = cardModel$.observeOnLatest('page.dataset.columns');
@@ -50,9 +50,9 @@ function visualizationTypeSelector(
     }).share();
 
     var isRegionCodingEnabled$ = regionCodingDetails$.pluck('enabled');
-    scope.$bindObservable('showNonComputedSection', regionCodingDetails$.pluck('showNonComputedSection'));
-    scope.$bindObservable('enableNonComputedSection', regionCodingDetails$.pluck('enableNonComputedSection'));
-    scope.$bindObservable('nonComputedSectionTitle', regionCodingDetails$.pluck('nonComputedSectionTitle'));
+    $scope.$bindObservable('showNonComputedSection', regionCodingDetails$.pluck('showNonComputedSection'));
+    $scope.$bindObservable('enableNonComputedSection', regionCodingDetails$.pluck('enableNonComputedSection'));
+    $scope.$bindObservable('nonComputedSectionTitle', regionCodingDetails$.pluck('nonComputedSectionTitle'));
     var informationMessage$ = regionCodingDetails$.pluck('showInfoMessage').filter(_.identity).combineLatest(
       currentUser$.map(UserSessionService.isAdmin),
       function(isRegionCodingEnabled, isAdmin) {
@@ -60,12 +60,12 @@ function visualizationTypeSelector(
           I18n.addCardDialog.choroplethAdminMessage :
           I18n.addCardDialog.choroplethMessage;
       });
-    scope.$bindObservable('informationMessage', informationMessage$);
+    $scope.$bindObservable('informationMessage', informationMessage$);
 
     // Only show the dropdown if the card is a choropleth.
     var isChoropleth = _.partial(_.isEqual, 'choropleth');
     var showCuratedRegionSelector$ = cardType$.map(isChoropleth);
-    scope.$bindObservable('showCuratedRegionSelector', showCuratedRegionSelector$);
+    $scope.$bindObservable('showCuratedRegionSelector', showCuratedRegionSelector$);
 
     // Retrieve the list of curated regions, used to populate the dropdown.
     var curatedRegions$ = ServerConfig.get('enableSpatialLensRegionCoding') ?
@@ -92,7 +92,7 @@ function visualizationTypeSelector(
         return _.uniq(allRegions, 'view.id');
       }
     );
-    scope.$bindObservable('allCuratedRegions', curatedAndExistingRegions$);
+    $scope.$bindObservable('allCuratedRegions', curatedAndExistingRegions$);
 
     // Bootstrap initial dropdown options and selection.
     Rx.Observable.subscribeLatest(
@@ -113,18 +113,18 @@ function visualizationTypeSelector(
         }
 
         var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);
-        scope.computedCuratedRegions = partitionedCuratedRegions[0];
-        scope.nonComputedCuratedRegions = partitionedCuratedRegions[1];
+        $scope.computedCuratedRegions = partitionedCuratedRegions[0];
+        $scope.nonComputedCuratedRegions = partitionedCuratedRegions[1];
 
         var disableChoropleths = _.isEmpty(curatedRegions);
 
-        scope.hasSingleCuratedRegion = curatedRegions.length === 1;
+        $scope.hasSingleCuratedRegion = curatedRegions.length === 1;
 
         if (disableChoropleths) {
-          scope.showChoroplethWarning = true;
+          $scope.showChoroplethWarning = true;
         } else {
           var defaultCuratedRegion = _.get(
-            _.first(scope.computedCuratedRegions) || _.first(scope.nonComputedCuratedRegions),
+            _.first($scope.computedCuratedRegions) || _.first($scope.nonComputedCuratedRegions),
            'view.id'
          );
 
@@ -133,21 +133,21 @@ function visualizationTypeSelector(
             var shapefile = _.get(columns, path);
 
             if (_.isUndefined(shapefile)) {
-              scope.selectedCuratedRegion = defaultCuratedRegion;
+              $scope.selectedCuratedRegion = defaultCuratedRegion;
             } else {
-              scope.selectedCuratedRegion = shapefile.substring(1);
+              $scope.selectedCuratedRegion = shapefile.substring(1);
             }
           } else {
-            scope.selectedCuratedRegion = defaultCuratedRegion;
+            $scope.selectedCuratedRegion = defaultCuratedRegion;
           }
         }
 
-        scope.$safeApply();
+        $scope.$safeApply();
       }
     );
 
     // If the value of the dropdown changes, set it on the CardOptions.
-    var selectedCuratedRegion$ = scope.$observe('selectedCuratedRegion');
+    var selectedCuratedRegion$ = $scope.$observe('selectedCuratedRegion');
 
     Rx.Observable.subscribeLatest(
       columns$,
@@ -178,8 +178,8 @@ function visualizationTypeSelector(
       supportedCardTypes: '=?'
     },
     templateUrl: templateUrl,
-    link: function(scope, element) {
-      var cardModel$ = scope.$observe('cardModel').filter(_.isPresent);
+    link: function($scope, element) {
+      var cardModel$ = $scope.$observe('cardModel').filter(_.isPresent);
       var cardModelColumn$ = cardModel$.observeOnLatest('column').filter(_.isDefined);
       var cardType$ = cardModel$.observeOnLatest('cardType');
       var FLYOUT_TEMPLATE = '<div class="flyout-title">{0}</div>';
@@ -192,42 +192,42 @@ function visualizationTypeSelector(
       cardModel$.observeOnLatest('visualizationType').
         withLatestFrom(cardType$, histogramIsRenderingAsColumnChart).
         subscribe(function(showHistogramColumnChartWarning) {
-          scope.$safeApply(function() {
-            scope.showHistogramColumnChartWarning = showHistogramColumnChartWarning;
+          $scope.$safeApply(function() {
+            $scope.showHistogramColumnChartWarning = showHistogramColumnChartWarning;
           });
         });
 
       Rx.Observable.subscribeLatest(
         cardModelColumn$,
-        scope.$observe('supportedCardTypes'),
+        $scope.$observe('supportedCardTypes'),
         function(column, supportedCardTypes) {
-          // If scope.supportedCardTypes is undefined, we support all card types.
+          // If $scope.supportedCardTypes is undefined, we support all card types.
           supportedCardTypes = supportedCardTypes || column.availableCardTypes;
 
-          scope.$safeApply(function() {
-            scope.availableCardTypes = _.intersection(column.availableCardTypes, supportedCardTypes);
+          $scope.$safeApply(function() {
+            $scope.availableCardTypes = _.intersection(column.availableCardTypes, supportedCardTypes);
 
             // Determine whether or not to show cardinality warning.
-            scope.cardinality = parseInt(_.get(column, 'cardinality', 0), 10);
-            scope.showCardinalityWarning = scope.cardinality > Constants.COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD;
+            $scope.cardinality = parseInt(_.get(column, 'cardinality', 0), 10);
+            $scope.showCardinalityWarning = $scope.cardinality > Constants.COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD;
           });
         }
       );
 
-      initializeCuratedRegionSelector(scope, cardModel$, cardType$);
+      initializeCuratedRegionSelector($scope, cardModel$, cardType$);
 
-      scope.setCardType = function(cardType, event) {
+      $scope.setCardType = function(cardType, event) {
         if (_.isPresent(event) && $(event.currentTarget).hasClass('disabled')) {
           return;
         }
 
-        if (_.isNull(scope.cardModel) || !_.contains(scope.availableCardTypes, cardType)) {
+        if (_.isNull($scope.cardModel) || !_.contains($scope.availableCardTypes, cardType)) {
           $log.error(`Could not set card type of "${cardType}".`);
           return;
         }
 
-        scope.$safeApply(function() {
-          scope.cardModel.set('cardType', cardType);
+        $scope.$safeApply(function() {
+          $scope.cardModel.set('cardType', cardType);
         });
       };
 
@@ -237,18 +237,18 @@ function visualizationTypeSelector(
           var visualizationName = $(el).attr('data-visualization-name');
           var flyoutMessage = I18n.t(`addCardDialog.visualizeFlyout.${visualizationName}`);
 
-          if (scope.showCardinalityWarning && $(el).hasClass('icon-bar-chart')) {
+          if ($scope.showCardinalityWarning && $(el).hasClass('icon-bar-chart')) {
             flyoutMessage = I18n.addCardDialog.columnChartWarning;
-          } else if (scope.showHistogramColumnChartWarning && $(el).hasClass('icon-distribution')) {
+          } else if ($scope.showHistogramColumnChartWarning && $(el).hasClass('icon-distribution')) {
             flyoutMessage = I18n.addCardDialog.histogramColumnChartWarning;
-          } else if (scope.showChoroplethWarning && $(el).hasClass('icon-region')) {
+          } else if ($scope.showChoroplethWarning && $(el).hasClass('icon-region')) {
             flyoutMessage = I18n.addCardDialog.choroplethWarning;
           }
 
           return FLYOUT_TEMPLATE.format(flyoutMessage);
         },
         persistOnMousedown: true,
-        destroySignal: scope.$destroyAsObservable(element)
+        destroySignal: $scope.$destroyAsObservable(element)
       });
 
       FlyoutService.register({
@@ -258,7 +258,7 @@ function visualizationTypeSelector(
           return $(el).closest('.visualization-type')[0];
         },
         persistOnMousedown: true,
-        destroySignal: scope.$destroyAsObservable(element)
+        destroySignal: $scope.$destroyAsObservable(element)
       });
 
       FlyoutService.register({
@@ -268,7 +268,7 @@ function visualizationTypeSelector(
           return $(el).closest('.visualization-type')[0];
         },
         persistOnMousedown: true,
-        destroySignal: scope.$destroyAsObservable(element)
+        destroySignal: $scope.$destroyAsObservable(element)
       });
 
       FlyoutService.register({
@@ -278,7 +278,7 @@ function visualizationTypeSelector(
           return el.closest('.visualization-type');
         },
         persistOnMousedown: true,
-        destroySignal: scope.$destroyAsObservable(element)
+        destroySignal: $scope.$destroyAsObservable(element)
       });
     }
   };

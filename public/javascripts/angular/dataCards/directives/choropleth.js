@@ -23,20 +23,20 @@ function choropleth(
     scope: true,
     controller: 'ChoroplethController',
     templateUrl: templateUrl,
-    link: function choroplethLink(scope, element) {
+    link: function choroplethLink($scope, element) {
 
-      if (scope.allowFilterChange) {
+      if ($scope.allowFilterChange) {
         element.addClass('filterable');
       }
 
-      var baseLayerUrl$ = scope.$observe('baseLayerUrl');
-      var geojsonAggregateData$ = scope.$observe('geojsonAggregateData').
+      var baseLayerUrl$ = $scope.$observe('baseLayerUrl');
+      var geojsonAggregateData$ = $scope.$observe('geojsonAggregateData').
         filter(function(data) {
           // The behavior of _.isPresent is different than _.isUndefined for null
           return !_.isUndefined(data);
         });
 
-      var destroy$ = scope.$destroyAsObservable(element);
+      var destroy$ = $scope.$destroyAsObservable(element);
 
       var visualization;
       var visualizationElement = element.find('.choropleth');
@@ -64,21 +64,21 @@ function choropleth(
 
       var config = {
         configuration: {
-          defaultExtent: scope.defaultExtent,
+          defaultExtent: $scope.defaultExtent,
           defaultWidth: Constants.CHOROPLETH_DEFAULT_WIDTH,
           disableLeafletZoomAnimation: Constants.DISABLE_LEAFLET_ZOOM_ANIMATION,
           highlightWidth: Constants.CHOROPLETH_HIGHLIGHT_WIDTH,
           legend: {
-            type: scope.stops
+            type: $scope.stops
           },
           localization: {
             NO_VALUE: `(${I18n.common.noValue})`,
-            FLYOUT_SELECTED_NOTICE: scope.allowFilterChange ? I18n.flyout.clearFilterLong : '',
+            FLYOUT_SELECTED_NOTICE: $scope.allowFilterChange ? I18n.flyout.clearFilterLong : '',
             FLYOUT_UNFILTERED_AMOUNT_LABEL: I18n.flyout.total,
             FLYOUT_FILTERED_AMOUNT_LABEL: I18n.flyout.filteredAmount,
             CLEAR_FILTER_LABEL: I18n.flyout.clear_filter
           },
-          savedExtent: scope.savedExtent,
+          savedExtent: $scope.savedExtent,
           shapefile: {
             columns: {
               name: Constants.HUMAN_READABLE_PROPERTY_NAME,
@@ -89,8 +89,8 @@ function choropleth(
           }
         },
         unit: {
-          one: PluralizeService.pluralize(scope.rowDisplayUnit, 1),
-          other: PluralizeService.pluralize(scope.rowDisplayUnit, 2)
+          one: PluralizeService.pluralize($scope.rowDisplayUnit, 1),
+          other: PluralizeService.pluralize($scope.rowDisplayUnit, 2)
         }
       };
 
@@ -147,7 +147,7 @@ function choropleth(
        */
       function handleSelectRegion(event) {
         // Handle if filtering enabled
-        if (scope.allowFilterChange) {
+        if ($scope.allowFilterChange) {
 
           var eventObject = event.originalEvent.detail;
           var layer = eventObject.layer;
@@ -185,16 +185,16 @@ function choropleth(
        * Emits selected filter events
        */
       function setDatasetFilter(feature) {
-        scope.$emit('dataset-filter:choropleth');
-        scope.$emit('toggle-dataset-filter:choropleth', feature);
+        $scope.$emit('dataset-filter:choropleth');
+        $scope.$emit('toggle-dataset-filter:choropleth', feature);
       }
 
       /**
        * Emits cleared filter events
        */
       function clearDatasetFilter(feature) {
-        scope.$emit('dataset-filter-clear:choropleth');
-        scope.$emit('toggle-dataset-filter:choropleth', feature);
+        $scope.$emit('dataset-filter-clear:choropleth');
+        $scope.$emit('toggle-dataset-filter:choropleth', feature);
       }
 
       function handleExtentChange(e) {
@@ -204,14 +204,14 @@ function choropleth(
           northeast: [newExtents.northeast.lat, newExtents.northeast.lng]
         };
 
-        scope.$emit('set-extent', formattedExtents);
+        $scope.$emit('set-extent', formattedExtents);
       }
 
       function handleRenderStart(e) {
         var timestamp = e.originalEvent.detail.timestamp;
 
-        scope.$emit('render:start', {
-          source: 'choropleth_{0}'.format(scope.$id),
+        $scope.$emit('render:start', {
+          source: 'choropleth_{0}'.format($scope.$id),
           timestamp: timestamp
         });
       }
@@ -219,8 +219,8 @@ function choropleth(
       function handleRenderComplete(e) {
         var timestamp = e.originalEvent.detail.timestamp;
 
-        scope.$emit('render:complete', {
-          source: 'choropleth_{0}'.format(scope.$id),
+        $scope.$emit('render:complete', {
+          source: 'choropleth_{0}'.format($scope.$id),
           timestamp: timestamp
         });
       }
@@ -233,7 +233,7 @@ function choropleth(
        * Display the bottom-left clear selection box if layer selected.
        */
       function showSelectionBox() {
-        if (scope.allowFilterChange) {
+        if ($scope.allowFilterChange) {
           var boxValue = selectionBoxFlyoutData.title;
 
           // The max-width of the selection box is the width of the map minus
@@ -275,7 +275,7 @@ function choropleth(
           feature.properties[Constants.UNFILTERED_VALUE_PROPERTY_NAME]
         );
 
-        if (scope.allowFilterChange) {
+        if ($scope.allowFilterChange) {
           data.filteredValue = formatValue(
             feature.properties[Constants.FILTERED_VALUE_PROPERTY_NAME]
           );
@@ -289,7 +289,7 @@ function choropleth(
           return `(${I18n.common.noValue})`;
         }
 
-        var rowDisplayUnit = PluralizeService.pluralize(scope.rowDisplayUnit, value);
+        var rowDisplayUnit = PluralizeService.pluralize($scope.rowDisplayUnit, value);
         return `${$window.socrata.utils.formatNumber(value)} ${rowDisplayUnit}`;
       }
 
@@ -332,7 +332,7 @@ function choropleth(
           return undefined;
         }
 
-        isFiltered = scope.isFiltered;
+        isFiltered = $scope.isFiltered;
         isSelected = flyoutData.selected;
 
         flyoutContent = [

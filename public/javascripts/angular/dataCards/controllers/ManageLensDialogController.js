@@ -11,7 +11,7 @@ function ManageLensDialogController($scope, $window, ViewRights, ServerConfig) {
   // Show ownership section if the feature flag is enabled
   $scope.shouldShowOwnershipSection = ServerConfig.get('allowDataLensOwnerChange');
 
-  // Decorate the $scope of the permissions with a components object. Each
+  // Decorate the scope of the permissions with a components object. Each
   // component should be placed in this object with a save function that
   // returns a promise and a hasChanges boolean that reflects its dirty state.
   $scope.components = {};

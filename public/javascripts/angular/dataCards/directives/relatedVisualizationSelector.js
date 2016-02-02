@@ -16,28 +16,28 @@ function relatedVisualizationSelector(FlyoutService, I18n, $window) {
     restrict: 'E',
     scope: true,
     templateUrl: templateUrl,
-    link: function(scope) {
+    link: function($scope) {
       var socrata = $window.socrata;
       var utils = socrata.utils;
 
       utils.assert(
-        _.isFunction(scope.columnNameToReadableNameFn),
+        _.isFunction($scope.columnNameToReadableNameFn),
         'columnNameToReadableNameFn expected to be a function on the scope'
       );
 
-      scope.onVisualizationSelected = function(visualization) {
-        scope.$emit('related-visualization-selected', visualization);
+      $scope.onVisualizationSelected = function(visualization) {
+        $scope.$emit('related-visualization-selected', visualization);
       };
 
-      scope.shouldDisable = function(visualization) {
-        return !_.contains(scope.supportedCardTypes, visualization.type) && visualization.format === 'page_metadata';
+      $scope.shouldDisable = function(visualization) {
+        return !_.contains($scope.supportedCardTypes, visualization.type) && visualization.format === 'page_metadata';
       };
 
-      scope.shouldHighlightSourceColumn = function(visualization) {
-        return _.intersection(scope.highlightedColumns, visualization.columns).length > 0;
+      $scope.shouldHighlightSourceColumn = function(visualization) {
+        return _.intersection($scope.highlightedColumns, visualization.columns).length > 0;
       };
 
-      scope.iconClass = function(visualization) {
+      $scope.iconClass = function(visualization) {
         var type = visualization.type;
 
         // This handles both Data Lens card types and classic
@@ -70,20 +70,20 @@ function relatedVisualizationSelector(FlyoutService, I18n, $window) {
         'trackCursor': true
       });
 
-      scope.$watch('[relatedVisualizations, supportedCardTypes]', function() {
+      $scope.$watch('[relatedVisualizations, supportedCardTypes]', function() {
         // Sort by columnName and title, then place all disabled visualizations
         // at end of list.
-        var orderedVisualizations = _.chain(scope.relatedVisualizations).
+        var orderedVisualizations = _.chain($scope.relatedVisualizations).
           sortByAll(
             'primaryColumn',
             'title'
           ).
           groupBy(function(visualization) {
-            return scope.shouldDisable(visualization);
+            return $scope.shouldDisable(visualization);
           }
         ).value();
 
-        scope.orderedVisualizations = (orderedVisualizations['false'] || []).
+        $scope.orderedVisualizations = (orderedVisualizations['false'] || []).
           concat(orderedVisualizations['true'] || []);
       }, true);
     }

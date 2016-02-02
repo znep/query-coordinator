@@ -16,7 +16,7 @@ var COLLAPSED_SIZE_TO_HEIGHT = {
 };
 
 function initCardSelection(
-  scope,
+  $scope,
   FlyoutService,
   $timeout,
   element,
@@ -27,7 +27,7 @@ function initCardSelection(
     selector: '.export-visualization-disabled',
     render: _.constant(
       `<div class="flyout-title">${I18n.common.errors.exportVisualizationDisabled}</div>`),
-    destroySignal: scope.$destroyAsObservable(element)
+    destroySignal: $scope.$destroyAsObservable(element)
   });
 }
 
@@ -46,7 +46,7 @@ function multiCardLayout(
   sortedTileLayout = new SortedTileLayout();
   return {
     restrict: 'E',
-    // it seems we can't use a child scope here becase `expandedCard` changes need to be propagated up to parent scope
+    // it seems we can't use a child scope here becase `expandedCard` changes need to be propagated up to parent $scope
     scope: {
       page: '=',
       expandedCard: '=',
@@ -55,8 +55,8 @@ function multiCardLayout(
       globalWhereClauseFragment: '='
     },
     templateUrl: templateUrl,
-    link: function(scope, cardContainer) {
-      scope.grabbedCard = null;
+    link: function($scope, cardContainer) {
+      $scope.grabbedCard = null;
 
       var jqueryWindow = $(window);
       var jqueryDocument = $(document);
@@ -96,8 +96,8 @@ function multiCardLayout(
         var quickFilterBarHeight = quickFilterBar.height();
         var containerTop = cardContainer.get(0).getBoundingClientRect().top;
 
-        scope.$safeApply(function() {
-          _.each(scope.cardGroups, function(cardGroup) {
+        $scope.$safeApply(function() {
+          _.each($scope.cardGroups, function(cardGroup) {
             var hintTop, hintPosition;
 
             if (containerTop + cardGroup.style.top < quickFilterBarHeight) {
@@ -508,18 +508,18 @@ function multiCardLayout(
         return card.model.fieldName === '*';
       }
 
-      var cardsBySize$ = zipLatestArray(scope.page.observe('cards'), 'cardSize').
+      var cardsBySize$ = zipLatestArray($scope.page.observe('cards'), 'cardSize').
         map(function(cards) {
           var groupedCards = _.groupBy(cards, function(card) {
             return isTableCard(card) ? 'dataCard' : 'normal';
           });
           return _.defaults(groupedCards, {
             normal: [],
-            dataCard: [{model: new Card(scope.page, '*', {cardType: 'table'})}]
+            dataCard: [{model: new Card($scope.page, '*', {cardType: 'table'})}]
           });
         });
 
-      var expandedCards$ = zipLatestArray(scope.page.observe('cards'), 'expanded').
+      var expandedCards$ = zipLatestArray($scope.page.observe('cards'), 'expanded').
           map(function(cards) {
             return _.filter(cards, _.property('expanded'));
           });
@@ -547,7 +547,7 @@ function multiCardLayout(
           };
 
         }
-      ).takeUntil(scope.$destroyAsObservable(cardContainer));
+      ).takeUntil($scope.$destroyAsObservable(cardContainer));
 
       // Figure out the sticky-ness of the QFB onscroll and un/stick appropriately
       subscriptions.push(
@@ -565,7 +565,7 @@ function multiCardLayout(
       subscriptions.push(Rx.Observable.
         subscribeLatest(
           observableForStaticElements,
-          scope.$observe('editMode').filter(_.identity),
+          $scope.$observe('editMode').filter(_.identity),
           adjustCardGroupCustomizeHints));
 
       // We also change the height of the expanded card onscroll, and if the QFB height
@@ -574,7 +574,7 @@ function multiCardLayout(
         observableForStaticElements.filter(function() {
           // Cast to a boolean and filter so that we only update the expanded
           // card's layout when there is an expanded card.
-          return !!scope.expandedCard;
+          return !!$scope.expandedCard;
         }).subscribe(
           function(dimensions) {
 
@@ -618,7 +618,7 @@ function multiCardLayout(
       subscriptions.push(Rx.Observable.subscribeLatest(
         cardsBySize$,
         expandedCards$,
-        scope.$observe('editMode'),
+        $scope.$observe('editMode'),
         debouncedWindowSize$,
         function layoutFn(cardsBySize, expandedCards, editMode, windowSize) {
           if (_.isEmpty(cardsBySize.normal) && _.isEmpty(cardsBySize.dataCard)) {
@@ -627,7 +627,7 @@ function multiCardLayout(
 
           // Figure out if there is an expanded card.
           if (expandedCards.length > 1) {
-            // We're in an intermediate state while the scope.page is switching which
+            // We're in an intermediate state while the $scope.page is switching which
             // card is expanded - ie it turns the new one on first, then the old one
             // off. So ignore. The animation of the expansion & collapse of cards
             // depends on knowing whether it was previously expanded or collapsed or
@@ -641,13 +641,13 @@ function multiCardLayout(
           var oldExpandedId;
           var newExpandedId;
           // '!=' to deal with null vs undef
-          if (scope.expandedCard != expandedCard) { // eslint-disable-line eqeqeq
-            oldExpandedId = scope.expandedCard && scope.expandedCard.uniqueId;
+          if ($scope.expandedCard != expandedCard) { // eslint-disable-line eqeqeq
+            oldExpandedId = $scope.expandedCard && $scope.expandedCard.uniqueId;
             newExpandedId = expandedCard && expandedCard.uniqueId;
             // Keep track of whether the layout is an expanded-card layout, so upstream
             // scopes can do things like disable edit buttons
-            scope.$safeApply(function() {
-              scope.expandedCard = expandedCard;
+            $scope.$safeApply(function() {
+              $scope.expandedCard = expandedCard;
             });
           }
 
@@ -673,7 +673,7 @@ function multiCardLayout(
             v.style = null;
           });
           // Branch here based on whether or not there is an expanded card.
-          if (scope.expandedCard) {
+          if ($scope.expandedCard) {
             heightOfAllCards = layoutExpanded(
               cardsBySize, containerContentWidth, windowSize);
           } else {
@@ -682,19 +682,19 @@ function multiCardLayout(
               cardGroups, dropTargets, addCardButtons);
           }
 
-          scope.$safeApply(function() {
-            scope.cardStates = cardsBySize.normal.concat(cardsBySize.dataCard);
+          $scope.$safeApply(function() {
+            $scope.cardStates = cardsBySize.normal.concat(cardsBySize.dataCard);
           });
 
           // The order in which things will animate
           if (editMode) {
             // Don't animate
-            _.each(scope.cardStates, function(card) {
+            _.each($scope.cardStates, function(card) {
               card.index = -1;
             });
           } else {
             var index = 1;
-            _.each(scope.cardStates, function(card) {
+            _.each($scope.cardStates, function(card) {
               if (newExpandedId === card.model.uniqueId || oldExpandedId === card.model.uniqueId) {
                 card.index = 0;
               } else {
@@ -709,9 +709,9 @@ function multiCardLayout(
             height: heightOfAllCards
           });
 
-          scope.cardGroups = cardGroups;
-          scope.dropTargets = dropTargets;
-          scope.addCardButtons = addCardButtons;
+          $scope.cardGroups = cardGroups;
+          $scope.dropTargets = dropTargets;
+          $scope.addCardButtons = addCardButtons;
 
           if (editMode === true) {
             adjustCardGroupCustomizeHints();
@@ -762,7 +762,7 @@ function multiCardLayout(
 
         }
 
-        if (scope.grabbedCard !== null) {
+        if ($scope.grabbedCard !== null) {
           lastFrameTime = now;
           $window.requestAnimationFrame(checkForScroll);
         }
@@ -780,7 +780,7 @@ function multiCardLayout(
         var cursorY = cardOriginY - containerYOffset;
         var adjustedClientY = clientY - containerYOffset;
 
-        var cardsInMyRow = _.filter(scope.cardStates, function(cardStateData) {
+        var cardsInMyRow = _.filter($scope.cardStates, function(cardStateData) {
           return cardStateData.style.top <= adjustedClientY && (
             cardStateData.style.top + cardStateData.style.height) >= adjustedClientY;
         });
@@ -805,7 +805,7 @@ function multiCardLayout(
 
       cardContainer.on('mousedown', '.card-drag-overlay', function(e) {
 
-        if (scope.editMode) {
+        if ($scope.editMode) {
 
           if (e.button === 0) {
             mouseIsDown = true;
@@ -832,18 +832,18 @@ function multiCardLayout(
           mouseIsDown = false;
           mouseDownClientX = null;
           mouseDownClientY = null;
-          scope.$safeApply(function() {
-            if (scope.grabbedCard) {
+          $scope.$safeApply(function() {
+            if ($scope.grabbedCard) {
               // Reset the element to default
-              scope.grabbedCard.jqEl.css({top: '', left: ''});
+              $scope.grabbedCard.jqEl.css({top: '', left: ''});
             }
-            scope.grabbedCard = null;
+            $scope.grabbedCard = null;
           });
         }
       }));
 
       subscriptions.push(WindowState.mousePosition$.subscribe(function(position) {
-        if (mouseIsDown && scope.grabbedCard === null) {
+        if (mouseIsDown && $scope.grabbedCard === null) {
 
           var distanceSinceDragStart =
             Math.floor(Math.sqrt(
@@ -853,10 +853,10 @@ function multiCardLayout(
           // If we're out of the dead zone, start the drag operation.
           if (distanceSinceDragStart > 3) {
 
-            scope.$safeApply(function() {
+            $scope.$safeApply(function() {
 
               var jqEl = $(position.target);
-              scope.grabbedCard = {
+              $scope.grabbedCard = {
                 model: jqEl.scope().$parent.model,
                 jqEl: jqEl.parent('card')
               };
@@ -865,22 +865,22 @@ function multiCardLayout(
 
         }
 
-        if (!_.isEmpty(scope.grabbedCard)) {
+        if (!_.isEmpty($scope.grabbedCard)) {
 
           // Card is being dragged.
 
-          var cardTile = scope.grabbedCard.jqEl.closest('.card-spot');
+          var cardTile = $scope.grabbedCard.jqEl.closest('.card-spot');
           var newWidth = cardTile.width();
           var newHeight = cardTile.height();
           var newCardOriginX = position.clientX - newWidth * cursorToCardOriginXRatio;
           var newCardOriginY = position.clientY - newHeight * cursorToCardOriginYRatio;
 
-          var cardModel = scope.grabbedCard.model;
+          var cardModel = $scope.grabbedCard.model;
           var targetModel = findDropTarget(newCardOriginX, newCardOriginY, position.clientY);
 
           if (targetModel !== null && targetModel !== cardModel) {
 
-            var currentCards = scope.page.getCurrentValue('cards');
+            var currentCards = $scope.page.getCurrentValue('cards');
 
             var targetModelIndex = _.indexOf(currentCards, targetModel);
 
@@ -895,8 +895,8 @@ function multiCardLayout(
 
             newCards.splice(targetModelIndex, 0, cardModel);
 
-            scope.$safeApply(function() {
-              scope.page.set('cards', newCards);
+            $scope.$safeApply(function() {
+              $scope.page.set('cards', newCards);
             });
 
           } else {
@@ -914,14 +914,14 @@ function multiCardLayout(
             });
 
             if (cardSize !== null) {
-              scope.$safeApply(function() {
+              $scope.$safeApply(function() {
                 cardModel.set('cardSize', cardSize);
               });
             }
 
           }
 
-          scope.grabbedCard.jqEl.css({
+          $scope.grabbedCard.jqEl.css({
             top: newCardOriginY,
             left: newCardOriginX,
             height: newHeight
@@ -932,17 +932,17 @@ function multiCardLayout(
 
       }));
 
-      scope.addCardWithSize = function(cardSize) {
-        scope.$emit('add-card-with-size', cardSize);
+      $scope.addCardWithSize = function(cardSize) {
+        $scope.$emit('add-card-with-size', cardSize);
       };
 
-      scope.isGrabbedCard = function(cardModel) {
-        return (scope.grabbedCard !== null) &&
-          cardModel === scope.grabbedCard.model;
+      $scope.isGrabbedCard = function(cardModel) {
+        return ($scope.grabbedCard !== null) &&
+          cardModel === $scope.grabbedCard.model;
       };
 
       initCardSelection(
-        scope,
+        $scope,
         FlyoutService,
         $timeout,
         cardContainer,
@@ -964,7 +964,7 @@ function multiCardLayout(
         positionOn: function(target) {
           return $(target).closest(cardControlSelectors[0])[0];
         },
-        destroySignal: scope.$destroyAsObservable(cardContainer)
+        destroySignal: $scope.$destroyAsObservable(cardContainer)
       });
 
       FlyoutService.register({
@@ -972,11 +972,11 @@ function multiCardLayout(
         render: function() {
           return I18n.t('cardLayout.cardGroupCustomizeHintFlyoutText');
         },
-        destroySignal: scope.$destroyAsObservable(cardContainer)
+        destroySignal: $scope.$destroyAsObservable(cardContainer)
       });
 
       // Destroy observable
-      scope.$destroyAsObservable(cardContainer).subscribe(function() {
+      $scope.$destroyAsObservable(cardContainer).subscribe(function() {
         _.invoke(subscriptions, 'dispose');
       });
     }

@@ -83,18 +83,18 @@ function customizeCardDialog(
     });
   }
 
-  function setupFlannelTitleSelect(cardModel, scope) {
-    scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$(scope));
+  function setupFlannelTitleSelect(cardModel, $scope) {
+    $scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$($scope));
 
-    scope.$bindObservable('titleColumnOptions', DatasetColumnsService.getSortedColumns$(scope).map(function(sortedColumns) {
+    $scope.$bindObservable('titleColumnOptions', DatasetColumnsService.getSortedColumns$($scope).map(function(sortedColumns) {
       return _.pluck(sortedColumns, 'fieldName');
     }));
 
     // Initialize selection to the existing flannel title column.
-    scope.$bindObservable('selectedFlannelTitleColumnName', cardModel.observe('cardOptions.mapFlannelTitleColumn'));
+    $scope.$bindObservable('selectedFlannelTitleColumnName', cardModel.observe('cardOptions.mapFlannelTitleColumn'));
 
     // Process updates to selected flannel title column
-    var updatedFlannelTitle$ = scope.$observe('selectedFlannelTitleColumnName');
+    var updatedFlannelTitle$ = $scope.$observe('selectedFlannelTitleColumnName');
     updatedFlannelTitle$.skip(1).subscribe(
       function(updatedFlannelTitle) {
         cardModel.setOption('mapFlannelTitleColumn', updatedFlannelTitle);

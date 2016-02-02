@@ -15,18 +15,20 @@
    * @param {String} options.projectKey - A valid Airbrake project key.
    * @param {String} options.projectId - A valid Airbrake project id.
    */
-  function Airbrake(options) {
+  function ExceptionNotifier(options) {
     var _self = this;
     var _airbrake;
-    var _environment = options.environment;
-    var _airbrakeOptions = _.omit(options, 'environment');
+    var _options = options || {};
+    var _environment = _options.environment;
+    var _airbrakeOptions = _.omit(_options, 'environment');
+    var _Client = window.airbrakeJs.Client;
 
     setup();
     attachEvents();
 
     function setup() {
-      if (_airbrakeOptions.projectKey !== null) {
-        _airbrake = new airbrakeJs.Client(_airbrakeOptions);
+      if (typeof _airbrakeOptions.projectKey === 'string') {
+        _airbrake = new _Client(_airbrakeOptions);
         _airbrake.addFilter(function(notice) {
           notice.context.environment = _environment;
           return notice;
@@ -56,12 +58,16 @@
 
       console.error(error);
 
-      ga('send', 'exception', {
-        'exDescription': 'Airbrake notification: {0}'.format(error.message),
-        'exFatal': false
-      });
+      if (typeof window.ga === 'function') {
+        var message = error.message || error;
+
+        window.ga('send', 'exception', {
+          'exDescription': 'Airbrake notification: {0}'.format(message),
+          'exFatal': false
+        });
+      }
     };
   }
 
-  storyteller.Airbrake = Airbrake;
+  storyteller.ExceptionNotifier = ExceptionNotifier;
 })();

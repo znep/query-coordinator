@@ -1,4 +1,6 @@
 class User < Model
+  extend FindExtensions
+
   cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts, :csv_columns
   attr_accessor :session_token
 

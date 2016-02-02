@@ -10,11 +10,12 @@ class ImportActivity
     response = ImportStatusService::get('/activity')
     activities = response.map(&:with_indifferent_access)
     view_ids = activities.pluck(:entity_id)
-    views = view_ids.empty? ? [] : View.find_multiple(view_ids)
+    views = View.find_multiple_dedup(view_ids)
     user_ids = activities.pluck(:user_id)
-    users = user_ids.empty? ? [] : User.find_multiple(user_ids)
-    return activities.zip(views, users).map do |activity, view, user|
-      ImportActivity.new(activity.with_indifferent_access, user, view)
+    users = User.find_multiple_dedup(user_ids)
+    return activities.map do |activity|
+      activity_wia = activity.with_indifferent_access
+      ImportActivity.new(activity_wia, users[activity_wia[:user_id]], views[activity_wia[:entity_id]])
     end
   end
 

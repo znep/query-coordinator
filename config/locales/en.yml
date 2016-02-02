@@ -1743,11 +1743,12 @@ en:
           file_name_unknown: file name unknown
           import: Import
           import_failures:
-            # As of 1/21, all keys are derived from the tags specified in the codec in DI2's FailureDetails.scala
+            # Derived from the tags specified in the codec in DI2's FailureDetails.scala
             # https://github.com/socrata/delta-importer-2/blob/master/di2-common/src/main/scala/com/socrata/deltaimporter/messaging/details/FailureDetails.scala
             # with -'s replaced with _'s.
             # Interpolation arguments in the messages come directly from the fields of case classes
             # in that Scala file (via an AutomaticJsonCodecBuilder for each class).
+            # (Imports2 also reuses some of these)
             invalid_encoding:
               title: Invalid file encoding
               description: We could not read your file because it was encoded with %{encoding}, and we only support UTF-8. For best results, please ensure that your file is a valid UTF-8 file.
@@ -1838,6 +1839,35 @@ en:
             upsert_already_in_progress_by_someone_else:
               title: Upsert already in progress
               description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
+            # Sent by Imports2
+            unsupported_import_type:
+              title: Unsupported import method
+              description: The import method "%{importType}" is not supported. Please use "replace", "append", or "import".
+            generic:
+              title: Something went wrong
+              description: Sorry, we were unable to process your import request due to an unexpected error.
+            row_too_large:
+              title: Row too large
+              description: Row number %{nearRecord} of your file had too many characters; the limit is %{limit}.
+            completed_with_warnings:
+              title: Error saving warnings
+              description: "Your data was imported with warnings, but there was an error saving the warnings to the dataset. However, you can find a full list of warnings here: %{warnings}"
+            malformed_blueprint:
+              title: Malformed blueprint
+              description: 'The blueprint you provided could not be used. Error message: "%{message}".'
+            # Sent by GeoImporter
+            corrupt_shapefile:
+              title: Corrupt shapefile
+              description: The shapefile header could not be read.
+            incomplete_archive:
+              title: Incomplete shapefile archive
+              description: 'The shapefile archive you uploaded is missing a file with extension "%{missing}". Please ensure that your archive has this file and try again.'
+            parse_error:
+              title: Parse error
+              description: 'Parsing the file you uploaded failed on line %{lineNumber} with message "%{reason}".'
+            corrupt_archive:
+              title: Corrupt archive
+              description: 'We could not process the archive you uploaded. Error message: %{reason}'
           no_events: No progress events have been recorded yet for this job.
           to: to
         statuses:

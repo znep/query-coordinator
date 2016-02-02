@@ -18,7 +18,7 @@
   </div>
 </div>
 
-<%- if CurrentDomain.user_can?(current_user, 'manage_stories') -%>
+<%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_STORIES) -%>
 <div class="contentBox withLeftNavigation">
   <a href="<%= url_for :action => :new_story %>" class="button newButton newStoryButton rightArrow"><%= t("#{prefix}.create_new_story") %><span class="icon"></span></a>
   <h2><%= t("#{prefix}.manage_story_content") %></h2>
@@ -86,7 +86,7 @@
 </div>
 <%- end -%>
 
-<%- if CurrentDomain.user_can?(current_user, 'feature_items') -%>
+<%- if CurrentDomain.user_can?(current_user, UserRights::FEATURE_ITEMS) -%>
   <div class="contentBox withLeftNavigation">
     <a href="#saveFeatures" class="button newButton saveFeaturesButton rightArrow"><%= t("#{prefix}.save_now") %><span class="icon"></span></a>
     <a href="#newFeature" class="button newButton newFeatureButton add"><%= t("#{prefix}.add_featured_dataset") %><span class="icon"></span></a>
@@ -104,7 +104,7 @@
 
 <%- end -%>
 
-<%- if CurrentDomain.user_can?(current_user, 'edit_site_theme') -%>
+<%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
   <%- view_type = @catalog_config.try(:properties).try(:view_type) || 'table' -%>
   <%- # Disable these options for browse2 because they over-write the view_type -%>
   <%- unless view_type == 'browse2' -%>

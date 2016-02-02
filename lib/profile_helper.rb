@@ -56,9 +56,9 @@ module ProfileHelper
     return base_relative_url unless view.rights.present?
 
     # This logic is duplicated in Storyteller as require_sufficient_rights
-    if view.rights.include?('write')
+    if view.rights.include?(ViewRights::WRITE)
       base_relative_url << '/edit'
-    elsif view.rights.include?('read')
+    elsif view.rights.include?(ViewRights::READ)
       base_relative_url << '/preview'
     else
       base_relative_url

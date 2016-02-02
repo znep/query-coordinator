@@ -11,7 +11,7 @@
         class="queue <%= active == 'queue' ? "active" : '' %>">
         <span class="icon"></span>Approval Queue
       </a></li>
-      <%- if CurrentDomain.user_can?(current_user, 'manage_approval') -%>
+      <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_APPROVAL) -%>
       <li><a href="<%= routing_approval_administration_path %>/manage"
         class="manage <%= active == 'manage' ? "active" : '' %>">
         <span class="icon"></span>Approval Management

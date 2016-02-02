@@ -242,7 +242,7 @@
     }, {name: 'sortRollUp'}, 'controlPane');
 
     var isEdit = function(cpObj)
-    { return cpObj._view.isGrouped() && cpObj._view.hasRight('update_view'); };
+    { return cpObj._view.isGrouped() && cpObj._view.hasRight(blist.rights.view.UPDATE_VIEW); };
 
     if ($.isBlank(blist.sidebarHidden.filter) || !blist.sidebarHidden.filter.filterDataset)
     { $.gridSidebar.registerConfig('filter.sortRollUp', 'pane_sortRollUp', 3, 'grouped'); }

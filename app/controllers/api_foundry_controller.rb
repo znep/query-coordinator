@@ -114,7 +114,7 @@ private
     elsif @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
       redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id])
       return false
-    elsif @current_user.nil? || !@view.has_rights?('update_view')
+    elsif @current_user.nil? || !@view.has_rights?(ViewRights::UPDATE_VIEW)
       render_forbidden("You do not have permission to view this dataset")
       return false
     end

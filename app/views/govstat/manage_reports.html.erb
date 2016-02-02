@@ -65,7 +65,7 @@
                 <a href="<%= locale_link[report.path] %>"><span class="actionDetails ss-right"></span></a>
               </div>
               <div class="secondaryAction">
-                <%- if CurrentDomain.user_can?(current_user, 'edit_pages' ) -%>
+                <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_PAGES) -%>
                 <a href="<%= locale_link[report.path] %>?_edit_mode=true" class="button edit">
                   <span class="actionDetails ss-write"><%= t("#{prefix}.edit") %></span></a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"

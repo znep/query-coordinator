@@ -57,7 +57,7 @@ class Displays::Base
 
     # What type of public to use for toggling permissions
     def public_perm_type
-      'read'
+      ViewRights::READ
     end
 
     # Render inline javascript to be included in the body *before* the bulk of javascript initializes.  Called by view

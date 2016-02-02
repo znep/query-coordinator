@@ -174,7 +174,7 @@ class DatasetsHelperTest < Test::Unit::TestCase
     # create_v2_data_lens feature flag is false
     FeatureFlags.stub :derive, Hashie::Mash.new(:create_v2_data_lens => false) do
       # current_user is an admin or publisher
-      @object.current_user.stubs(:rights => [:edit_others_datasets])
+      @object.current_user.stubs(:rights => [UserRights::EDIT_OTHERS_DATASETS.to_sym])
       assert @object.hide_data_lens_create?, 'hide_data_lens_create expected to be false'
 
       # current_user is not an admin or publisher

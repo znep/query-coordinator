@@ -48,7 +48,7 @@
         <li><a href="<%= append_dataset_path(@view) %>">Append Rows via Upload...</a></li>
         <li><a href="<%= append_dataset_path(@view) %>?type=replace">Replace Rows via Upload...</a></li>
     <%- end -%>
-    <%- if @view.is_unpublished? && @view.has_rights?('delete') -%>
+    <%- if @view.is_unpublished? && @view.has_rights?(ViewRights::DELETE) -%>
       <li><a href="<%= delete_working_copy_dataset_path(@view) %>">Delete This Working Copy</a></li>
     <%- end -%>
     <%- if @view.is_tabular? -%>

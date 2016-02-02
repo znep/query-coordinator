@@ -24,7 +24,7 @@ blist.datasetPage.clearTempView = function()
 
 blist.datasetPage.setTempView = function()
 {
-    if (blist.dataset.minorChange && !blist.dataset.hasRight('update_view'))
+    if (blist.dataset.minorChange && !blist.dataset.hasRight(blist.rights.view.UPDATE_VIEW))
     { return; }
 
     $('body, #datasetBar').addClass('unsavedView')
@@ -783,7 +783,7 @@ $(function()
             return !_.isNull(blist.currentUser) && !_.isUndefined(blist.currentUser) &&
                     blist.currentUser.hasOwnProperty('rights') &&
                     // The user is an admin or publisher.
-                    blist.currentUser.rights.indexOf('edit_others_datasets') > -1;
+                    blist.currentUser.rights.indexOf(blist.rights.user.EDIT_OTHERS_DATASETS) > -1;
         }
       },
       getNewUXLinkParams: function() {

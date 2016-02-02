@@ -48,7 +48,7 @@ $(function()
             comments: comments,
             filterCategories: null,
             highlightCallback: function(feedItem) {
-                return _.include(feedItem.user.rights || [], 'approve_nominations');
+                return _.include(feedItem.user.rights || [], blist.rights.user.APPROVE_NOMINATIONS);
             },
             mainView: nom
         });

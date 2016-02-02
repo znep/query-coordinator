@@ -21,7 +21,7 @@
           <span class="linkText"><%= t('screens.profile.bar.unfollow_link') %></span>
         </a>
       <%- end -%>
-      <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
+      <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_USERS) -%>
         <a href="#Message" class="button smallButton contactUserButton">
           <span class="icon"></span>
           <span class="linkText"><%= t('screens.profile.bar.message_link') %></span>

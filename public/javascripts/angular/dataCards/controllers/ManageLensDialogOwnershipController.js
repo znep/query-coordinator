@@ -8,6 +8,7 @@ function ManageLensDialogOwnershipController(
   $document,
   UserSessionService,
   UserSearchService,
+  UserRights,
   Constants,
   I18n,
   http,
@@ -206,7 +207,7 @@ function ManageLensDialogOwnershipController(
   // and whether the necessary service for owner change is available
   $scope.isUserSearchAvailable = true;
   var isUserPermitted$ = UserSessionService.getCurrentUser$().map(function(user) {
-    return _.contains(user.rights, 'chown_datasets');
+    return _.contains(user.rights, UserRights.CHOWN_DATASETS);
   });
   var isUserSearchAvailable$ = $scope.$observe('isUserSearchAvailable');
   var hasPermission$ = Rx.Observable.combineLatest(

@@ -109,7 +109,7 @@ $(function()
 
                 var officialComments = _.select(flattenedComments, function(c)
                 {
-                    return _.include(c.user.rights || [], 'approve_nominations');
+                    return _.include(c.user.rights || [], blist.rights.user.APPROVE_NOMINATIONS);
                 });
 
                 if (officialComments.length > 0)

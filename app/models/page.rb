@@ -204,7 +204,7 @@ class Page < Model
     case page.permission
     when 'private'
       return nil if user.nil? ||
-        (user.id != page.owner_id && !user.has_right?('edit_pages'))
+        (user.id != page.owner_id && !user.has_right?(UserRights::EDIT_PAGES))
     when 'domain_private'
       return nil if user.nil? ||
         (user.id != page.owner_id && !CurrentDomain.member?(user))

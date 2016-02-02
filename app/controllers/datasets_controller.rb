@@ -16,7 +16,7 @@ class DatasetsController < ApplicationController
 
 # collection actions
   def new
-    if (!CurrentDomain.user_can?(current_user, :create_datasets) &&
+    if (!CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) &&
         !CurrentDomain.module_enabled?(:community_creation))
       # User doesn't have access to create new datasets
       render 'shared/error', :status => :not_found
@@ -504,8 +504,8 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    if @current_user.nil? || !(@current_user.has_right?('create_datasets') &&
-      @view.has_rights?('update_view'))
+    if @current_user.nil? || !(@current_user.has_right?(UserRights::CREATE_DATASETS) &&
+      @view.has_rights?(ViewRights::UPDATE_VIEW))
       return render_forbidden
     end
   end
@@ -514,7 +514,7 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    unless @view.has_rights?('update_view')
+    unless @view.has_rights?(ViewRights::UPDATE_VIEW)
       return render_forbidden
     end
 
@@ -526,7 +526,7 @@ class DatasetsController < ApplicationController
     return if @view.nil?
 
     if !(@view.user_granted?(current_user) || \
-        CurrentDomain.user_can?(current_user, :edit_others_datasets))
+        CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS))
       return render_forbidden
     end
 

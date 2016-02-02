@@ -149,7 +149,7 @@
 
         calObj._ignoreViewChanges = true;
         calObj.$dom().fullCalendar({aspectRatio: 2,
-                editable: calObj.settings.editEnabled && calObj._primaryView.hasRight('write'),
+                editable: calObj.settings.editEnabled && calObj._primaryView.hasRight(blist.rights.view.WRITE),
                 disableResizing: $.isBlank(calObj._displayFormat.endDateTableId),
                 viewDisplay: function()
                     { viewDisplay.apply(this, [calObj].concat($.makeArray(arguments))); },

@@ -193,6 +193,8 @@ function CardsViewController(
   I18n,
   PluralizeService,
   Constants,
+  UserRights,
+  ViewRights,
   domain,
   rx) {
   const Rx = rx;
@@ -281,7 +283,7 @@ function CardsViewController(
     Rx.Observable.returnValue(false) :
     page.observe('rights').map(function(rights) {
       return _.any(rights, function(right) {
-        return right === 'update_view' || right === 'grant';
+        return right === ViewRights.UPDATE_VIEW || right === ViewRights.GRANT;
       });
     });
 
@@ -307,7 +309,7 @@ function CardsViewController(
   var currentUserHasProvenanceRight$ =
     currentUser$.
     map(function(user) {
-      return _.includes(_.get(user, 'rights', []), 'manage_provenance');
+      return _.includes(_.get(user, 'rights', []), UserRights.MANAGE_PROVENANCE);
     });
 
   $scope.$bindObservable('currentUserHasProvenanceRight', currentUserHasProvenanceRight$);

@@ -1,10 +1,10 @@
 const angular = require('angular');
-function ManageLensDialogController($scope, $window, ServerConfig) {
+function ManageLensDialogController($scope, $window, ViewRights, ServerConfig) {
 
   // Show sharing section for users who have 'grant' right
   $scope.$bindObservable('shouldShowSharingSection',
     $scope.page.observe('rights').map(function(rights) {
-      return _.includes(rights, 'grant');
+      return _.includes(rights, ViewRights.GRANT);
     })
   );
 

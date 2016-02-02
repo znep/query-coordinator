@@ -1,3 +1,4 @@
+import './values';
 import './decorators';
 import './services';
 import './filters';

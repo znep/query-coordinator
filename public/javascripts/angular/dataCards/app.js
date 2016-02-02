@@ -7,6 +7,7 @@ var dependencies = [
   'ui.router',
   'ngSanitize',
   'monospaced.elastic',
+  'socrataCommon.values',
   'socrataCommon.services',
   'socrataCommon.decorators',
   'socrataCommon.directives',

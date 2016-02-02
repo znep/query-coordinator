@@ -6,13 +6,15 @@ describe('ManageLensDialogController', function() {
   var $scope;
   var $controller;
   var $window;
+  var ViewRights;
 
-  beforeEach(inject(function(_$controller_, _$window_, $rootScope, ServerConfig, Mockumentary) {
+  beforeEach(inject(function(_$controller_, _$window_, _ViewRights_, $rootScope, ServerConfig, Mockumentary) {
     // TODO: remove override when owner change is fully enabled and flag is removed
     ServerConfig.override('allowDataLensOwnerChange', true);
 
     $controller = _$controller_;
     $window = _$window_;
+    ViewRights = _ViewRights_;
 
     $scope = $rootScope.$new();
     $scope.page = Mockumentary.createPage();
@@ -26,7 +28,7 @@ describe('ManageLensDialogController', function() {
   });
 
   it('should set shouldShowSharingSection to true if the user has grants right', function() {
-    $scope.page.set('rights', ['grant']);
+    $scope.page.set('rights', [ViewRights.GRANT]);
     $scope.$digest();
     expect($scope.shouldShowSharingSection).to.equal(true);
   });

@@ -61,7 +61,7 @@ $(function() {
 
     blist.configuration.onCurrentUser(function(user)
     {
-        if (!$.isBlank(user) && (user.hasRight('edit_pages') || user.id == blist.configuration.page.owner ||
+        if (!$.isBlank(user) && (user.hasRight(blist.rights.user.EDIT_PAGES) || user.id == blist.configuration.page.owner ||
                 user.id == (blist.configuration.page.owner || {}).id) &&
             blist.configuration.designerEnabled)
         {

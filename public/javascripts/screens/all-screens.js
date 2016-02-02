@@ -335,7 +335,7 @@
          {
             $('.adminLink').removeClass('hide');
          }
-         $('.myGoalsLink').toggleClass('hide', _.isUndefined(user) || !user.hasRight('edit_goals') );
+         $('.myGoalsLink').toggleClass('hide', _.isUndefined(user) || !user.hasRight(blist.rights.user.EDIT_GOALS) );
       });
 
     // GovStat account links are setup in main.html; originally before any current

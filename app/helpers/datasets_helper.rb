@@ -304,7 +304,7 @@ module DatasetsHelper
   end
 
   def hide_add_column?
-    !view.is_unpublished? || !view.is_blist? || !view.has_rights?('add_column') || view.is_immutable?
+    !view.is_unpublished? || !view.is_blist? || !view.has_rights?(ViewRights::ADD_COLUMN) || view.is_immutable?
   end
 
   def hide_append_replace?
@@ -314,7 +314,7 @@ module DatasetsHelper
       hide_append_replace_for_nbe_geo?,
       view.is_href?,
       !view.flag?('default') && !view.is_geo?, # Allow Mondara maps to be editable.
-      !view.has_rights?('add')
+      !view.has_rights?(ViewRights::ADD)
     ].any?
   end
 
@@ -369,7 +369,7 @@ module DatasetsHelper
       (
         !view.owned_by?(current_user) || view.parent_dataset.nil? || !view.parent_dataset.owned_by?(current_user)
       ) &&
-      !CurrentDomain.user_can?(current_user, :edit_others_datasets)
+      !CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
     )
   end
 
@@ -377,7 +377,7 @@ module DatasetsHelper
     # CORE-3871: michael.chui@socrata.com was too lazy to actually rip out all the appropriate pieces.
     if FeatureFlags.derive(view, request).enable_api_foundry_pane
       !module_enabled?(:api_foundry) || (!view.is_blist? && !view.is_api?) ||
-        !view.is_published? || !view.has_rights?('update_view') || !view.can_publish? ||
+        !view.is_published? || !view.has_rights?(ViewRights::UPDATE_VIEW) || !view.can_publish? ||
         view.new_backend? || view.is_arcgis?
     else
       true
@@ -412,7 +412,7 @@ module DatasetsHelper
 
     if !FeatureFlags.derive(view, request).create_v2_data_lens
       # for v1 data lenses, hide unless current_user is admin or publisher
-      !CurrentDomain.user_can?(current_user, :edit_others_datasets)
+      !CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
     else
       # otherwise hide if current_user doesn't have any rights
       # (i.e. doesn't have a domain role)
@@ -517,10 +517,10 @@ module DatasetsHelper
 
     hash.manage!.updateColumn = hide_update_column?
     hash.manage!.showHide = hide_show_hide_columns?
-    hash.manage!.sharing = view.is_snapshotted? || !view.has_rights?('grant')
-    hash.manage!.permissions = view.is_snapshotted? || !view.has_rights?('update_view')
-    hash.manage!.plagiarize = !CurrentDomain.user_can?(current_user, :chown_datasets)
-    hash.manage!.deleteDataset = !view.has_rights?('delete_view')
+    hash.manage!.sharing = view.is_snapshotted? || !view.has_rights?(ViewRights::GRANT)
+    hash.manage!.permissions = view.is_snapshotted? || !view.has_rights?(ViewRights::UPDATE_VIEW)
+    hash.manage!.plagiarize = !CurrentDomain.user_can?(current_user, UserRights::CHOWN_DATASETS)
+    hash.manage!.deleteDataset = !view.has_rights?(ViewRights::DELETE_VIEW)
     hash.manage!.api_foundry = hide_api_foundry?
 
     hash.columnProperties = view.non_tabular?

@@ -16,7 +16,7 @@ class AdministrationController < ApplicationController
     redirect_to '/manage/site_config' if CurrentDomain.module_enabled?(:govStat)
   end
 
-  before_filter :only => [:datasets] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
+  before_filter :only => [:datasets] {|c| c.check_auth_levels_any([UserRights::EDIT_OTHERS_DATASETS, UserRights::EDIT_SITE_THEME]) }
   def datasets
     vtf = view_types_facet
 
@@ -61,7 +61,7 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:modify_sidebar_config] {|c| c.check_auth_level('edit_site_theme')}
+  before_filter :only => [:modify_sidebar_config] {|c| c.check_auth_level(UserRights::EDIT_SITE_THEME)}
   def modify_sidebar_config
     config = ::Configuration.get_or_create('sidebar', {'name' => 'Sidebar configuration'})
 
@@ -109,12 +109,12 @@ class AdministrationController < ApplicationController
   def analytics
   end
 
-  before_filter :only => [:canvas_pages] {|c| c.check_auth_level('edit_pages')}
+  before_filter :only => [:canvas_pages] {|c| c.check_auth_level(UserRights::EDIT_PAGES)}
   def canvas_pages
     @pages = Page.find('$order' => 'name', 'status' => 'all')
   end
 
-  before_filter :only => [:create_canvas_page, :post_canvas_page] {|c| c.check_auth_level('create_pages')}
+  before_filter :only => [:create_canvas_page, :post_canvas_page] {|c| c.check_auth_level(UserRights::CREATE_PAGES)}
   def create_canvas_page
     @cur_path = params[:path]
     @cur_title = params[:title]
@@ -323,7 +323,7 @@ class AdministrationController < ApplicationController
   #
 
   before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users,
-                          :delete_future_user, :re_enable_user] {|c| c.check_auth_level('manage_users')}
+                          :delete_future_user, :re_enable_user] {|c| c.check_auth_level(UserRights::MANAGE_USERS)}
   def users
     @roles_list = User.roles_list
     if !params[:username].blank?
@@ -422,12 +422,12 @@ class AdministrationController < ApplicationController
     handle_button_response(success, error_message, t('screens.admin.users.flashes.pending_permissions_removed'), :users)
   end
 
-  before_filter :only => [:comment_moderation] {|c| c.check_auth_level('moderate_comments')}
+  before_filter :only => [:comment_moderation] {|c| c.check_auth_level(UserRights::MODERATE_COMMENTS)}
   before_filter :only => [:comment_moderation] {|c| c.check_module('publisher_comment_moderation')}
   def comment_moderation
   end
 
-  before_filter :only => [:views] {|c| c.check_auth_level('approve_nominations')}
+  before_filter :only => [:views] {|c| c.check_auth_level(UserRights::APPROVE_NOMINATIONS)}
   before_filter :only => [:views] {|c| c.check_feature(:view_moderation)}
   def views
     view_facet = view_types_facet()
@@ -454,7 +454,7 @@ class AdministrationController < ApplicationController
   end
 
 
-  before_filter :only => [:set_view_moderation_status] {|c| c.check_auth_level('approve_nominations')}
+  before_filter :only => [:set_view_moderation_status] {|c| c.check_auth_level(UserRights::APPROVE_NOMINATIONS)}
   def set_view_moderation_status
     begin
       v = View.find(params[:id])
@@ -475,7 +475,7 @@ class AdministrationController < ApplicationController
   # Social Data Player - theme customization
   #
 
-  before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {|c| c.check_auth_level('edit_sdp')}
+  before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {|c| c.check_auth_level(UserRights::EDIT_SDP)}
   def sdp_templates
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id
@@ -580,7 +580,7 @@ class AdministrationController < ApplicationController
   # Open Data Federation
   #
 
-  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_auth_level('federations')}
+  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_auth_level(UserRights::FEDERATIONS)}
   before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_module_available('federations')}
   def federations
     if (params[:dataset].nil?)
@@ -644,7 +644,7 @@ class AdministrationController < ApplicationController
   #
   # Dataset-level metadata (custom fields, categories)
   #
-  before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :save_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category] {|c| c.check_auth_level('edit_site_theme')}
+  before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :save_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category] {|c| c.check_auth_level(UserRights::EDIT_SITE_THEME)}
   def metadata
     config = ::Configuration.get_or_create('metadata', {'name' => 'Metadata configuration'})
     @metadata = config.properties.fieldsets || []
@@ -884,7 +884,7 @@ class AdministrationController < ApplicationController
   end
 
   before_filter :only => [:jobs, :show_job] do |c|
-    c.check_feature_flag(:show_admin_processes) && c.check_auth_level(:view_all_dataset_status_logs)
+    c.check_feature_flag(:show_admin_processes) && c.check_auth_level(UserRights::VIEW_ALL_DATASET_STATUS_LOGS)
   end
 
   #
@@ -908,7 +908,7 @@ class AdministrationController < ApplicationController
   # Homepage Customization
   #
 
-  before_filter :only => [:home, :save_featured_views] {|c| c.check_auth_levels_any(['manage_stories', 'feature_items', 'edit_site_theme'])}
+  before_filter :only => [:home, :save_featured_views] {|c| c.check_auth_levels_any([UserRights::MANAGE_STORIES, UserRights::FEATURE_ITEMS, UserRights::EDIT_SITE_THEME])}
   def home
     @stories = Story.find.sort
     @features = get_configuration().properties.featured_views
@@ -931,7 +931,7 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] {|c| c.check_auth_level('manage_stories')}
+  before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] {|c| c.check_auth_level(UserRights::MANAGE_STORIES)}
   def delete_story
     begin
       Story.delete(params[:id])
@@ -1027,7 +1027,7 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:modify_catalog_config] {|c| c.check_auth_level('edit_site_theme')}
+  before_filter :only => [:modify_catalog_config] {|c| c.check_auth_level(UserRights::EDIT_SITE_THEME)}
   def modify_catalog_config
     config = get_configuration('catalog')
     if config.nil?
@@ -1053,7 +1053,7 @@ class AdministrationController < ApplicationController
   #
   before_filter :only => [:routing_approval, :routing_approval_queue, :approve_view, :routing_approval_manage, :routing_approval_manage_save] {|c| c.check_module('routing_approval')}
   before_filter :only => [:routing_approval, :routing_approval_queue] {|c| c.check_approval_rights}
-  before_filter :only => [:routing_approval_manage, :routing_approval_manage_save] {|c| c.check_auth_level('manage_approval')}
+  before_filter :only => [:routing_approval_manage, :routing_approval_manage_save] {|c| c.check_auth_level(UserRights::MANAGE_APPROVAL)}
 
   def routing_approval
     # We only support one template for now, so assume it is the first one
@@ -1247,7 +1247,7 @@ class AdministrationController < ApplicationController
     return(redirect_to (request.referer || {:action => 'routing_approval_manage'}))
   end
 
-  before_filter :only => [:tos] {|c| c.check_auth_level('manage_users')}
+  before_filter :only => [:tos] {|c| c.check_auth_level(UserRights::MANAGE_USERS)}
   def tos
     @tos = CurrentDomain.strings.terms_of_service
     return render_404 if @tos.blank?
@@ -1274,7 +1274,7 @@ class AdministrationController < ApplicationController
   def configuration
     # Proxy configurations, with access checks
     return false unless params[:type] == 'metadata' &&
-      check_auth_levels_any(['edit_site_theme', 'edit_pages']) ||
+      check_auth_levels_any([UserRights::EDIT_SITE_THEME, UserRights::EDIT_PAGES]) ||
       params[:type] == 'catalog' || params[:type] == 'view_categories'
 
     config = get_configuration(params[:type], params[:merge])
@@ -1287,7 +1287,7 @@ class AdministrationController < ApplicationController
   def flag_out_of_date
     if authenticate_with_http_basic do |u, p|
         user_session = UserSession.new('login' => u, 'password' => p)
-        user_session.save && check_auth_levels_any(['edit_site_theme', 'edit_pages', 'create_pages'])
+        user_session.save && check_auth_levels_any([UserRights::EDIT_SITE_THEME, UserRights::EDIT_PAGES, UserRights::CREATE_PAGES])
     end
       CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
       respond_to do |format|

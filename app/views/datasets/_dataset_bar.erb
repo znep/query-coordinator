@@ -14,7 +14,7 @@
     </div>
     <div class="unsavedLine">
       <h2 id="unsavedTitle"><%= t('screens.ds.bar.unsaved_title') %></h2>
-      <%- if @view.has_rights?('update_view') && !@view.is_snapshotted? && !@view.is_api? -%>
+      <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) && !@view.is_snapshotted? && !@view.is_api? -%>
         <a href="#Save" title="<%= t('screens.ds.bar.save_prompt') %>" data-savingText="<%= t('screens.ds.bar.save_progress') %>"
         class="save toolbarButton"><%= t('screens.ds.bar.save_button') %></a>
       <%- end -%>

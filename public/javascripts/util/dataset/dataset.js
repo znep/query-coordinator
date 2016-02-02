@@ -169,14 +169,14 @@ var Dataset = ServerModel.extend({
 
     canEdit: function()
     {
-        return (this.hasRight('write') || this.hasRight('add') || this.hasRight('delete')) &&
+        return (this.hasRight(blist.rights.view.WRITE) || this.hasRight(blist.rights.view.ADD) || this.hasRight(blist.rights.view.DELETE)) &&
             !this.isGrouped() && !this.isAPI();
     },
 
     canUpdate: function()
     {
         return (this.isUnpublished() || !this.isDefault()) &&
-            this.hasRight('update_view');
+            this.hasRight(blist.rights.view.UPDATE_VIEW);
     },
 
     isGrid: function()
@@ -322,7 +322,7 @@ var Dataset = ServerModel.extend({
     save: function(successCallback, errorCallback, allowedKeys)
     {
         var ds = this;
-        if (!ds.hasRight('update_view')) { return false; }
+        if (!ds.hasRight(blist.rights.view.UPDATE_VIEW)) { return false; }
 
         var vizIds = $.isBlank(ds.visibleColumns) ? null :
             _.pluck(ds.visibleColumns, 'id');
@@ -1843,7 +1843,7 @@ var Dataset = ServerModel.extend({
             });
         };
 
-        if (ds.hasRight('update_view') && !ds.isDefault())
+        if (ds.hasRight(blist.rights.view.UPDATE_VIEW) && !ds.isDefault())
         {
             ds.getParentView(function(par)
             {

@@ -365,7 +365,7 @@ class CustomContentController < ApplicationController
     Rails.logger.info("#{Canvas2::DataContext::timings.length} contexts loaded.")
   end
 
-  before_filter :only => [:template] { |c| c.require_right(:create_pages) }
+  before_filter :only => [:template] { |c| c.require_right(UserRights::CREATE_PAGES) }
   def template
     @templet = Template[params[:id]]
     return(render_404) unless @templet

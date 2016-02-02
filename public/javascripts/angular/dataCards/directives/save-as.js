@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/saveAs.html');
 const angular = require('angular');
-function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, rx) {
+function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, UserRights, rx) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -18,7 +18,7 @@ function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, rx) {
 
       var userCanApproveNominations$ = Rx.Observable.returnValue(
         ($window.currentUser || {}).hasOwnProperty('rights') &&
-          $window.currentUser.rights.indexOf('approve_nominations') >= 0
+          $window.currentUser.rights.indexOf(UserRights.APPROVE_NOMINATIONS) >= 0
       );
 
       $scope.usingViewModeration = ServerConfig.getFeatureSet().view_moderation;
@@ -53,7 +53,6 @@ function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, rx) {
         FlyoutService.refreshFlyout();
       });
 
-      var $saveAsButton = element.find('.save-as-button');
       var $nameInput = element.find('#save-as-name');
       var $descriptionInput = element.find('#save-as-description');
 

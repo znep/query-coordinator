@@ -564,7 +564,7 @@ module BrowseActions
   end
 
   def current_user_can_edit_others_datasets?
-    defined?(current_user) && CurrentDomain.user_can?(current_user, :edit_others_datasets)
+    defined?(current_user) && CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
   end
 
   def add_data_lens_view_type?

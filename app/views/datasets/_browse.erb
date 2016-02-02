@@ -118,7 +118,7 @@ end
     <%- end -%>
     <%- unless opts[:embedded_browse_iframe_hack] -%>
 
-        <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
+        <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
                 CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
 
           <div class="createDatasetBox infoBox">
@@ -241,7 +241,7 @@ end
             <span class="message"><%= opts[:timeout_text] %></span>
             <%- unless opts[:embedded_browse_iframe_hack] -%>
 
-              <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
+              <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
 
                 <%- if CurrentDomain.feature_flags[:stories_enabled] -%>
@@ -289,7 +289,7 @@ end
             <span class="message"><%= opts[:no_results_text] %></span>
             <%- unless opts[:embedded_browse_iframe_hack] -%>
 
-              <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
+              <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
 
                 <%- if CurrentDomain.feature_flags[:stories_enabled] -%>

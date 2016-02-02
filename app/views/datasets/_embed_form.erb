@@ -61,7 +61,7 @@
     </div>
   </div>
 
-  <%- if CurrentDomain.user_can?(current_user, :edit_sdp) -%>
+  <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SDP) -%>
     <div class="templateSection">
       <div class="formHeader"><%= t('controls.embed.sdp_template') %></div>
       <div class="sectionContent template">

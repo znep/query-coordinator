@@ -11,7 +11,7 @@
 
     var canConvert = function(cpObj, col)
     {
-        if ($.isBlank(col) || !cpObj._view.hasRight('update_column'))
+        if ($.isBlank(col) || !cpObj._view.hasRight(blist.rights.view.UPDATE_COLUMN))
         { return false; }
 
         var convT = col.dataType.convertableTypes;

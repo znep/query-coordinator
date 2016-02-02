@@ -19,14 +19,14 @@
 
   <%= display_standard_flashes %>
 
-  <%- if CurrentDomain.user_can?(current_user, 'edit_others_datasets') -%>
+  <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) -%>
   <div class="datasetsList content">
     <h2><%= t("#{prefix}.title") %></h2>
     <%= render_browse(@processed_browse) %>
   </div>
   <%- end -%>
 
-  <%- if CurrentDomain.user_can?(current_user, 'edit_site_theme') -%>
+  <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
   <%- sidebar_position = CurrentDomain.property(:position, :sidebar) || 'right' -%>
   <div class="layoutConfig">
     <h2><%= t("#{prefix}.layout_config") %></h2>

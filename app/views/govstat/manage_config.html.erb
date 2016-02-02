@@ -18,7 +18,7 @@
       title: 'Open Performance',
       color: '#002635',
       links: [
-        { icon: 'users', translateKey: 'users', href: '/admin/users', right: :manage_users },
+        { icon: 'users', translateKey: 'users', href: '/admin/users', right: UserRights::MANAGE_USERS },
         { icon: 'linecharts', translateKey: 'analytics', href: '/admin/analytics' }
       ]
     }, {
@@ -26,11 +26,11 @@
       color: '#d97925',
       links: [
         { icon: 'notebook', translateKey: 'datasets', href: '/admin/datasets',
-          right: :edit_others_datasets },
+          right: UserRights::EDIT_OTHERS_DATASETS },
         { icon: 'searchbarcode', translateKey: 'metadata', href: '/admin/metadata',
-          right: :edit_site_theme },
+          right: UserRights::EDIT_SITE_THEME },
         { icon: 'contract', translateKey: 'federations', href: '/admin/federations',
-          right: :federations, module_available: :federations },
+          right: UserRights::FEDERATIONS, module_available: :federations },
         { icon: 'check', translateKey: 'routing', href: '/admin/routing_approval',
           module_enabled: :routing_approval } # current_user.can_approve?
       ]
@@ -39,18 +39,18 @@
       color: '#a1ba25',
       links: [
         { icon: 'bankcheck', translateKey: 'sdp_templates', href: '/admin/sdp_templates',
-          right: :edit_sdp },
+          right: UserRights::EDIT_SDP },
         { icon: 'browseonline', translateKey: 'homepage', href: '/admin/home',
-          right: :edit_site_theme }
+          right: UserRights::EDIT_SITE_THEME }
       ]
     }, {
       title: t("#{prefix}.content_moderation"),
       color: '#a92c2a',
       links: [
         { icon: 'chat', translateKey: 'moderation', href: '/admin/comment_moderation',
-          right: :moderate_comments },
+          right: UserRights::MODERATE_COMMENTS },
         { icon: 'userprofile', translateKey: 'nomination', href: '/admin/nominations',
-          right: :approve_nominations, feature: :view_moderation }
+          right: UserRights::APPROVE_NOMINATIONS, feature: :view_moderation }
       ]
     }]
   %>

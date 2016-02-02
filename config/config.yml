@@ -59,6 +59,7 @@ default: &default
 # Local development
 development: &development
   <<: *default
+  cetera_host: 'http://api.us.socrata.com/api'
   ssl_port: 443
   http_port: 9292
   metrics_dir: tmp/metriclogs

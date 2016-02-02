@@ -141,6 +141,42 @@ describe Browse2Helper do
     end
   end
 
+  describe '#get_all_facet_options' do
+    def test_facet
+      {
+        :param => 'category',
+        :options => [
+          { :value => 'Police', :text => 'Police' },
+          { :value => 'Public Safety', :text => 'Public Safety' }
+        ],
+        :extra_options => [
+          { :value => 'Parks', :text => 'Parks' },
+          { :value => 'Police', :text => 'Police' },
+          { :value => 'Wizards', :text => 'Wizards' }
+        ]
+      }
+    end
+
+    def combined_options
+      [
+        { :value => 'Police', :text => 'Police' },
+        { :value => 'Public Safety', :text => 'Public Safety' },
+        { :value => 'Parks', :text => 'Parks' },
+        { :value => 'Wizards', :text => 'Wizards' }
+      ]
+    end
+
+    it 'returns an array of the options is there are no extra_options' do
+      facet = test_facet
+      facet[:extra_options] = nil
+      expect(helper.get_all_facet_options(facet)).to match_array(facet[:options])
+    end
+
+    it 'returns an array combining options and extra options and removes duplicates' do
+      expect(helper.get_all_facet_options(test_facet)).to match_array(combined_options)
+    end
+  end
+
   describe '#active_facet_option' do
 
     def test_facet
@@ -232,6 +268,70 @@ describe Browse2Helper do
           :url => '/browse?'
         }
       ])
+    end
+  end
+
+  describe '#flatten_facet_options' do
+    def facet_options_without_children
+      [
+        { :value => 'Business', :text => 'Business' },
+        { :value => 'Fun', :text => 'Fun' },
+        { :value => 'Finance', :text => 'Finance' },
+        { :value => 'Parks', :text => 'Parks' }
+      ]
+    end
+
+    def facet_options_without_children_with_count
+      [
+        { :value => 'Business', :text => 'Business', :count => 0 },
+        { :value => 'Fun', :text => 'Fun', :count => 0 },
+        { :value => 'Finance', :text => 'Finance', :count => 0 },
+        { :value => 'Parks', :text => 'Parks', :count => 0 }
+      ]
+    end
+
+    def facet_options_with_children
+      [
+        { :value => 'Business', :text => 'Business', :children => [
+          { :value => 'Books', :text => 'Books' },
+          { :value => 'Paper', :text => 'Paper' }
+        ] },
+        { :value => 'Fun', :text => 'Fun', :children => [
+          { :value => 'Beer', :text => 'Beer' },
+          { :value => 'Music', :text => 'Music' },
+          { :value => 'Coffee', :text => 'Coffee' }
+        ] }
+      ]
+    end
+
+    def facet_options_with_children_flattened
+      [
+        { :value => 'Business', :text => 'Business', :count => 0 },
+        { :value => 'Books', :text => 'Books', :count => 0 },
+        { :value => 'Paper', :text => 'Paper', :count => 0 },
+        { :value => 'Fun', :text => 'Fun', :count => 0 },
+        { :value => 'Beer', :text => 'Beer', :count => 0 },
+        { :value => 'Music', :text => 'Music', :count => 0 },
+        { :value => 'Coffee', :text => 'Coffee', :count => 0 }
+      ]
+    end
+
+    it 'returns an empty array given empty input' do
+      result = helper.flatten_facet_options([])
+      expect(result).to eq([])
+
+      result2 = helper.flatten_facet_options(nil)
+      expect(result2).to eq([])
+    end
+
+    it 'returns the same array (with count) if there are no child options' do
+      result = helper.flatten_facet_options(facet_options_without_children)
+      expect(result).to match_array(facet_options_without_children_with_count)
+    end
+
+    it 'returns a flattened array of top level and child options' do
+      result = helper.flatten_facet_options(facet_options_with_children)
+      expect(result).to match_array(facet_options_with_children_flattened)
     end
   end
 end

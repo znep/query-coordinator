@@ -1,0 +1,12 @@
+<li>
+  <a class="<%= facet_link_classnames %>" href="<%= facet_link_href %>">
+    <span class="modal-content-name">
+      <%= facet_option[:text] %>
+    </span>
+    <%- if facet_option[:count].to_i > 0 -%>
+      <span class="modal-content-count">
+        (<%= facet_option[:count] %>)
+      </span>
+    <%- end -%>
+  </a>
+</li>

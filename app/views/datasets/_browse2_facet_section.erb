@@ -1,33 +1,14 @@
-<%-
-facet_param = facet[:param]
-facet_options = facet[:options]
-truncate_facet_section = false
-truncate_facet_section_at_index = Float::INFINITY
-facet_extra_options = nil
-
-if facet[:extra_options].present?
-  truncate_facet_section = true
-  truncate_facet_section_at_index = facet[:options].length
-
-  facet_extra_options = facet[:extra_options].reject do |extra_facet_option|
-    facet_options.select { |facet_option| extra_facet_option[:value] == facet_option[:value] }.length > 0
-  end
-
-  facet_options.concat(facet_extra_options)
-end
--%>
-
 <div class="browse2-facet-section"
-  data-facet-display="show"<%== ' data-facet-truncation="truncate"' if truncate_facet_section %>
+  data-facet-display="show"<%== ' data-facet-has-modal="true"' if facet_section_has_modal %>
   data-facet-option-type="<%= facet_param.to_s %>">
-  <h3 class="browse2-facet-section-title" title="<%= facet[:title] %>">
-    <%= facet[:title] %>
+  <h3 class="browse2-facet-section-title" title="<%= facet_title %>">
+    <%= facet_title %>
     <span class="browse2-facet-section-expand-contract-icon icon-arrow-down"></span>
   </h3>
 
   <ul class="browse2-facet-section-options">
   <%-
-    facet_options.each_with_index do |facet_option, index|
+    all_facet_options.each_with_index do |facet_option, index|
       has_child_options = facet_option[:children].respond_to?(:each)
 
       facet_link_classnames = facet_option_classnames(opts, facet_param, facet_option, false, has_child_options)
@@ -69,15 +50,12 @@ end
     <%- end -%>
   </ul>
 
-  <!-- "Show All" and "Show Less" toggle at the bottom of facet sections -->
-  <%- if truncate_facet_section && facet_extra_options.present? -%>
-    <a class="browse2-facet-section-expand-button" href="#" title="<%= t('controls.browse.browse2.facets.expand.title') %>">
-      <span class="browse2-facet-section-expand-label"><%= t('controls.browse.browse2.facets.expand.label') %></span>
-      <span class="browse2-facet-section-expand-icon icon-arrow-down"></span>
-    </a>
-    <a class="browse2-facet-section-contract-button" href="#" title="<%= t('controls.browse.browse2.facets.contract.title') %>">
-      <span class="browse2-facet-section-contract-label"><%= t('controls.browse.browse2.facets.contract.label') %></span>
-      <span class="browse2-facet-section-contract-icon icon-arrow-up"></span>
+  <!-- "Show All" button at the bottom of facet sections to open the modal -->
+  <%- if facet_section_has_modal -%>
+    <a class="browse2-facet-section-modal-button"
+      data-modal-facet="<%= facet_title %>" href="#"
+      title="<%= t('controls.browse.browse2.facets.expand.title') %>">
+      <%= t('controls.browse.browse2.facets.expand.label') %>
     </a>
   <%- end -%>
 

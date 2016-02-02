@@ -20,6 +20,43 @@ describe('componentStoryWidget jQuery plugin', function() {
   var validStoryWidgetDataWithImage = _.clone(validStoryWidgetDataWithoutImage);
   validStoryWidgetDataWithImage.image = 'about:blank';
 
+  function stubWidgetJsonApiWith(blob) {
+    var server;
+
+    beforeEach(function(done) {
+      // Since these tests actually expect to use AJAX, we need to disable the
+      // mocked XMLHttpRequest (which happens in StandardMocks) before each,
+      // and re-enble it after each.
+      window.mockedXMLHttpRequest.restore();
+
+      server = sinon.fakeServer.create();
+      server.respondImmediately = true;
+      server.respondWith(
+        'GET',
+        'https://example.com/stories/s/{0}/widget.json'.format(
+          validComponentData.value.storyUid
+        ),
+        [
+          200,
+          { 'Content-Type': 'application/json' },
+          JSON.stringify(blob)
+        ]
+      );
+
+      $component = $component.componentStoryWidget(validComponentData);
+
+      // Need to use a setTimeout to escape the stack and resolve the promise.
+      setTimeout(function() { done(); }, 0);
+    });
+
+    afterEach(function() {
+      server.restore();
+
+      // See comment above re: temporarily disabling the mocked XMLHttpRequest.
+      window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
+    });
+  }
+
   beforeEach(function() {
     testDom.append('<div>');
     $component = testDom.children('div');
@@ -59,38 +96,7 @@ describe('componentStoryWidget jQuery plugin', function() {
   describe('given a valid component type and value', function() {
 
     describe('when there is no image specified', function() {
-      var server;
-
-      beforeEach(function(done) {
-        // Since these tests actually expect to use AJAX, we need to disable the
-        // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-        // and re-enble it after each.
-        window.mockedXMLHttpRequest.restore();
-
-        server = sinon.fakeServer.create();
-        server.respondImmediately = true;
-        server.respondWith(
-          'GET',
-          'https://example.com/stories/s/{0}/widget.json'.format(
-            validComponentData.value.storyUid
-          ),
-          [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify(validStoryWidgetDataWithoutImage)
-          ]
-        );
-
-        $component = $component.componentStoryWidget(validComponentData);
-        setTimeout(function() { done(); }, 0);
-      });
-
-      afterEach(function() {
-        server.restore();
-
-        // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-        window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
-      });
+      stubWidgetJsonApiWith(validStoryWidgetDataWithoutImage);
 
       it('should return a jQuery object for chaining', function() {
         assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
@@ -130,38 +136,7 @@ describe('componentStoryWidget jQuery plugin', function() {
     });
 
     describe('when there is an image specified', function() {
-      var server;
-
-      beforeEach(function(done) {
-        // Since these tests actually expect to use AJAX, we need to disable the
-        // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-        // and re-enble it after each.
-        window.mockedXMLHttpRequest.restore();
-
-        server = sinon.fakeServer.create();
-        server.respondImmediately = true;
-        server.respondWith(
-          'GET',
-          'https://example.com/stories/s/{0}/widget.json'.format(
-            validComponentData.value.storyUid
-          ),
-          [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify(validStoryWidgetDataWithImage)
-          ]
-        );
-
-        $component = $component.componentStoryWidget(validComponentData);
-        setTimeout(function() { done(); }, 0);
-      });
-
-      afterEach(function() {
-        server.restore();
-
-        // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-        window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
-      });
+      stubWidgetJsonApiWith(validStoryWidgetDataWithImage);
 
       it('should render the specified  image', function() {
 

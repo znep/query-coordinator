@@ -2,6 +2,7 @@ require 'csv'
 
 class AdministrationController < ApplicationController
   include BrowseActions
+  include CommonSocrataMethods
   include GeoregionsHelper
   include JobsHelper
 
@@ -197,7 +198,8 @@ class AdministrationController < ApplicationController
         params[:geometryLabel],
         params[:name],
         { :enabledFlag => false },
-        enable_synthetic_spatial_lens_id
+        enable_synthetic_spatial_lens_id,
+        forwardable_session_cookies
       )
       is_success = success_message.present?
     rescue CoreServer::CoreServerError => ex

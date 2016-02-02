@@ -13,8 +13,8 @@ describe ::Services::Administration::GeoregionAdder do
     JSON::parse(file.read)
   end
 
-  it 'builds the coreserver api path' do
-    expect(subject.path).to eq('/curated_regions')
+  it 'builds the coreserver curated regions api path' do
+    expect(subject.curated_regions_path).to eq('/curated_regions')
   end
 
   describe '#add' do
@@ -26,13 +26,13 @@ describe ::Services::Administration::GeoregionAdder do
 
     it 'fetches the view' do
       expect(View).to receive(:find).with('test-data').and_call_original
-      allow(subject).to receive(:make_request).and_return({})
+      allow(subject).to receive(:make_curated_regions_request).and_return({})
       subject.add(view_id, feature_pk)
     end
 
     it 'validates the view' do
       expect(subject).to receive(:validate_view).and_return(true)
-      allow(subject).to receive(:make_request).and_return({})
+      allow(subject).to receive(:make_curated_regions_request).and_return({})
       subject.add(view_id, feature_pk)
     end
 
@@ -41,18 +41,23 @@ describe ::Services::Administration::GeoregionAdder do
       expect(subject.add(view_id, feature_pk)).to eq(nil)
     end
 
-    it 'returns the curated region if successful' do
+    # TODO: Remove this test once we're using synthetic ids exclusively
+    it 'returns the curated region if successful when synthetic id flag is false' do
       stub_request(:post, 'http://localhost:8080/curated_regions').
         to_return(:status => 200, :body => {}.to_json, :headers => { 'ContentType' => 'application/json' })
       actual = subject.add(view_id, feature_pk, geometry_label, name)
       expect(actual).to be_an_instance_of(CuratedRegion)
     end
 
-    # TODO: Update this to test using synthetic spatial lens shape ids
-    it 'does not return the curated region if synthetic id flag is true' do
-      expect(subject.add(view_id, nil, geometry_label, name, nil, true)).to_not be_an_instance_of(CuratedRegion)
-    end
+    it 'returns the Curated Region Job Queue jobId if successful when synthetic id flag is true' do
+      crjq = CuratedRegionJobQueue.new
+      allow(subject).to receive(:curated_region_job_queue).and_return(crjq)
+      expect(crjq).to receive(:enqueue_job).and_return({'jobId' => '12e4'})
 
+      actual = subject.add(view_id, nil, geometry_label, name, nil, true)
+      expect(actual).not_to be_an_instance_of(CuratedRegion)
+      expect(actual['jobId']).to eq('12e4')
+    end
   end
 
   describe '#validate_view' do
@@ -63,5 +68,4 @@ describe ::Services::Administration::GeoregionAdder do
       expect(subject.validate_view(view_double)).to eq(true)
     end
   end
-
 end

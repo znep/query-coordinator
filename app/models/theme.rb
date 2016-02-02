@@ -136,14 +136,15 @@ class Theme
   end
 
   # We are using these defaults in the theme admin form. They are used to whitelist
-  # variables when saving as well. When adding fields to the form, make sure to add
-  # a default to this list as well.
+  # variables when saving as well. If you add a field here, you'll want to add
+  # the field to views/admin/themes/_form.html.erb so the user can edit it.
   def self.default_css_variables
     {
       '$base-type-size' => '1em',
       '$base-line-height' => '1.54',
       '$std-type-size' => '1.1em',
       '$std-line-height' => '1.44',
+      '$heading-font-weight' => 'bold',
       '$lg-type-size' => '1.18em',
       '$lg-line-height' => '1.54',
       '$heading-font-stack' => 'Helvetica, serif',

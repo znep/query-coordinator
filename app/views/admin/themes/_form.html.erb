@@ -53,6 +53,14 @@
                 help_text: 'Large type size is the type for large displays.'
               } %>
 
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: "type-size-font-weight",
+                theme: theme,
+                theme_variables: %w( $heading-font-weight ),
+                help_text: 'The heading font weight (i.e: 300, 400, 500, 600, 700, 800)'
+              } %>
+
   <h4 class="border-below">Typeface</h4>
   <%= render  partial: 'form_section',
               locals: {

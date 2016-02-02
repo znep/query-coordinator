@@ -12,6 +12,10 @@ class CurrentDomain
         @@property_store[cname] = { :data => Domain.find(cname) }
       rescue CoreServer::ResourceNotFound
         return false
+      rescue
+        raise CoreServer::ConnectionError.new(OpenStruct.new(:code => 500),
+          'There was a problem fetching current domain from core. Check that core ' <<
+          'is available and that the domain exists.')
       end
     end
 

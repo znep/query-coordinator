@@ -44,7 +44,7 @@ class ImportActivity
   end
 
   def activity_type
-    @data[:activity_type]
+    @data[:activity_type].downcase
   end
 
   def dataset

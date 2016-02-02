@@ -192,6 +192,21 @@ var utils = {
     }
   },
 
+  /**
+   * Asserts that the given collection is of the expected length.
+   *
+   * @param {Array | Array-like} collection - The collection to check.
+   * @param {Number} expectedLength - The expected length.
+   */
+  assertLengthIs: function(collection, expectedLength) {
+    this.assertHasProperty(collection, 'length');
+    this.assertIsOneOfTypes(expectedLength, 'number');
+    utils.assert(
+      collection.length === expectedLength,
+      'Expected `{0}` to have length {1}, was {2}.'.format(collection, expectedLength, collection.length)
+    );
+  },
+
   valueIsBlank: function(value) {
     return _.isUndefined(value) || _.isNull(value) || value === '';
   },

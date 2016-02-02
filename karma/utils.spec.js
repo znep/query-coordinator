@@ -237,6 +237,88 @@ describe('utils.js', function() {
     });
   });
 
+  describe('assertLengthIs', function() {
+    describe('given a value without a length property', function() {
+      it('throws', function() {
+        assert.throw(function() {
+          utils.assertLengthIs(1, 10);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs({}, 10);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs(null, 10);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs(undefined, 10);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs(/asd/, 10);
+        });
+      });
+    });
+
+    describe('given a non-number expected length', function() {
+      it('throws', function() {
+        assert.throw(function() {
+          utils.assertLengthIs([]);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs([], '');
+        });
+        assert.throw(function() {
+          utils.assertLengthIs([], {});
+        });
+        assert.throw(function() {
+          utils.assertLengthIs([], []);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs([], null);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs([], undefined);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs([], /asd/);
+        });
+      });
+    });
+
+    describe('given a mismatch in length', function() {
+      it('throws', function() {
+        assert.throw(function() {
+          utils.assertLengthIs([], 1);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs([ 'a' ], 0);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs([ 'a', 'b' ], 3);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs('', 1);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs('a', 0);
+        });
+        assert.throw(function() {
+          utils.assertLengthIs('ab', 3);
+        });
+      });
+    });
+
+    describe('given a matching length', function() {
+      it('does not throw', function() {
+        utils.assertLengthIs([], 0);
+        utils.assertLengthIs([ 'a' ], 1);
+        utils.assertLengthIs([ 'a', 'b' ], 2);
+        utils.assertLengthIs('', 0);
+        utils.assertLengthIs('a', 1);
+        utils.assertLengthIs('ab', 2);
+      });
+    });
+  });
+
   describe('valueIsBlank', function() {
 
     describe('when the input is undefined', function() {

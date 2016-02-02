@@ -36,6 +36,7 @@
 //= require editor/block-component-renderers/componentSocrataVisualizationTable
 //= require editor/block-component-renderers/componentSocrataVisualizationTimelineChart
 //= require editor/block-component-renderers/componentSocrataVisualizationFeatureMap
+//= require editor/block-component-renderers/componentStoryWidget
 
 // Store setup
 //= require editor/SimpleEventEmitter.js

@@ -96,6 +96,58 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
+  describe '#widget' do
+
+    context 'when there is a story with the given four by four' do
+      let(:story_revision) { FactoryGirl.create(:published_story) }
+      let(:widget_title) { 'Widget Test' }
+      let(:widget_description) { 'Widget Test Description' }
+
+      before do
+        stub_core_view(story_revision.uid, {name: widget_title, description: widget_description})
+      end
+
+      it 'ignores vanity_text' do
+        get :widget, uid: story_revision.uid, vanity_text: 'haha', format: :json
+        expect(assigns(:story)).to eq(story_revision)
+      end
+
+      it 'renders 404' do
+        get :widget, uid: 'notf-ound', format: :json
+        expect(response).to be_not_found
+      end
+
+      it 'renders json when requested' do
+        get :widget, uid: story_revision.uid, format: :json
+
+        response_json_as_hash = JSON.parse(response.body)
+        expect(response_json_as_hash['title']).to eq(widget_title)
+        expect(response_json_as_hash['image']).to eq(nil)
+        expect(response_json_as_hash['description']).to eq(widget_description)
+        expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
+      end
+
+      it 'renders when unauthenticated' do
+        stub_invalid_session
+        get :widget, uid: story_revision.uid, format: :json
+
+        response_json_as_hash = JSON.parse(response.body)
+        expect(response_json_as_hash['title']).to eq(widget_title)
+        expect(response_json_as_hash['image']).to eq(nil)
+        expect(response_json_as_hash['description']).to eq(widget_description)
+        expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
+      end
+    end
+
+    context 'when there is no story with the given four by four' do
+
+      it 'renders 404' do
+        get :widget, uid: 'notf-ound', format: :json
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
   describe '#copy' do
     let!(:story_revision) { FactoryGirl.create(:draft_story_with_blocks) }
     let(:story_copy_title) { "Copy of #{mock_valid_lenses_view_title}" }

@@ -11,6 +11,8 @@
     // Do you want a Socrata visualization, Youtube, an image, etc?
     SELECT_ASSET_PROVIDER: 'SELECT_ASSET_PROVIDER',
 
+    ENTER_STORY_URL: 'ENTER_STORY_URL',
+
     ENTER_YOUTUBE_URL: 'ENTER_YOUTUBE_URL',
 
     ENTER_EMBED_CODE: 'ENTER_EMBED_CODE',
@@ -67,6 +69,10 @@
           _updateImageAltAttribute(payload);
           break;
 
+        case Actions.ASSET_SELECTOR_UPDATE_STORY_URL:
+          _updateStoryUrl(payload);
+          break;
+
         case Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL:
           _updateYoutubeUrl(payload);
           break;
@@ -75,6 +81,9 @@
           switch (payload.provider) {
             case 'SOCRATA_VISUALIZATION':
               _chooseVisualization();
+              break;
+            case 'STORY_WIDGET':
+              _chooseStoryWidget();
               break;
             case 'YOUTUBE':
               _chooseYoutube();
@@ -185,6 +194,7 @@
     function _stepForUpdate(type) {
       switch (type) {
         case 'image': return WIZARD_STEP.IMAGE_PREVIEW;
+        case 'story.widget': return WIZARD_STEP.ENTER_STORY_URL;
         case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
         case 'embeddedHtml': return WIZARD_STEP.ENTER_EMBED_CODE;
       }
@@ -252,6 +262,11 @@
         _state.step = payload.step;
         self._emitChange();
       }
+    }
+
+    function _chooseStoryWidget() {
+      _state.step = WIZARD_STEP.ENTER_STORY_URL;
+      self._emitChange();
     }
 
     function _chooseYoutube() {
@@ -471,6 +486,20 @@
       self._emitChange();
     }
 
+    function _updateStoryUrl(payload) {
+      var storyDomain = _extractDomainFromStoryUrl(payload.url);
+      var storyId = _extractStoryUidFromStoryUrl(payload.url);
+
+      _state.componentType = 'story.widget';
+
+      _state.componentProperties = {
+        domain: storyDomain,
+        storyUid: storyId
+      };
+
+      self._emitChange();
+    }
+
     function _updateYoutubeUrl(payload) {
 
       var youtubeId = _extractIdFromYoutubeUrl(payload.url);
@@ -497,6 +526,28 @@
       _cancelFileUploads();
 
       self._emitChange();
+    }
+
+    function _extractDomainFromStoryUrl(storyUrl) {
+      var match = storyUrl.match(/^https\:\/\/(.*)\/stories\/s\/\w{4}\-\w{4}/i);
+      var storyDomain = null;
+
+      if (match !== null) {
+        storyDomain = match[1];
+      }
+
+      return storyDomain;
+    }
+
+    function _extractStoryUidFromStoryUrl(storyUrl) {
+      var match = storyUrl.match(/^https\:\/\/.*\/stories\/s\/(\w{4}\-\w{4})/i);
+      var storyId = null;
+
+      if (match !== null) {
+        storyId = match[1];
+      }
+
+      return storyId;
     }
 
     /**

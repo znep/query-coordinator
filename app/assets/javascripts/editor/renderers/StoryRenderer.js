@@ -24,6 +24,8 @@
         return 'componentAssetSelector';
       case 'image':
         return 'componentImage';
+      case 'story.widget':
+        return 'componentStoryWidget';
       case 'youtube.video':
         return 'componentYoutubeVideo';
       case 'socrata.visualization.classic':

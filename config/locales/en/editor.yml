@@ -160,6 +160,14 @@ en:
         description_label: 'Image Description (optional)'
         description_alt_attribute: 'This text is called an alt attribute and will not be displayed on your story page '
         alt_attribute_tooltip: 'An alt attribute (short for alternative) is the text displayed in place of an image in the event that the image cannot be loaded.  It’s also used by screen reader software to describe the image so that users of assistive technology can interact with the elements of the page.'
+      story_widget:
+        name: 'Socrata Story Widget'
+        description: 'Insert a preview of another story.'
+        heading: 'Add a Preview of Another Story'
+        input_label: 'Link to story'
+        invalid_message_title_1: 'Oh No!'
+        invalid_message_title_2: 'Something went wrong.'
+        invalid_message_description: 'Try using a valid link to a Socrata Perspectives Story.'
       embed_code:
         name: 'HTML Embed'
         description: 'Insert embed code to include external web content.'
@@ -177,6 +185,8 @@ en:
       saving: 'Saving...'
       unsaved: 'Save'
       idle: 'Save'
+    story_widget:
+      view_story_prompt: 'View Story'
     visualizations:
       no_value_placeholder: '(No value)'
       default_unit:

@@ -7,7 +7,7 @@ class StoriesController < ApplicationController
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
-  skip_before_filter :require_logged_in_user, only: [:show]
+  skip_before_filter :require_logged_in_user, only: [:show, :widget]
 
   before_filter :require_sufficient_rights
 
@@ -21,6 +21,36 @@ class StoriesController < ApplicationController
   def preview
     @site_chrome = SiteChrome.for_current_domain
     respond_with_story(DraftStory.find_by_uid(params[:uid]))
+  end
+
+  def widget
+    @story = PublishedStory.find_by_uid(params[:uid])
+
+    if @story
+      StoryAccessLogger.log_story_view_access(@story)
+      # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
+      # somewhere, but that clearly won't work with an embeddable widget so we
+      # remove it for this endpoint.
+      response.headers.delete('X-Frame-Options')
+      respond_to do |format|
+        format.json {
+
+          core_attributes = CoreServer.get_view(@story.uid) || {}
+
+          render(
+            json: {
+              title: core_attributes['name'] || t('default_page_title'),
+              description: core_attributes['description'] || nil,
+              image: @story.block_images.first || nil,
+              theme: @story.theme,
+              url: story_url(uid: @story.uid)
+            }
+          )
+        }
+      end
+    else
+      tmp_render_404
+    end
   end
 
   def new

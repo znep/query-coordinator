@@ -30,6 +30,7 @@ module StoriesHelper
       'socrata.visualization.timelineChart' => 'component_socrata_visualization_timeline_chart',
       'socrata.visualization.featureMap' => 'component_socrata_visualization_feature_map',
       'spacer' => 'component_spacer',
+      'story.widget' => 'component_story_widget',
       'youtube.video' => 'component_youtube_video'
     }
 

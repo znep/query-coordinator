@@ -25,9 +25,6 @@
     // {object} publishedStory
     STORY_SET_PUBLISHED_STORY: 'STORY_SET_PUBLISHED_STORY',
 
-    // {object} data: Story data object.
-    STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
-
     // {string} storyUid
     // {string} blockId
     STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',

@@ -41,6 +41,7 @@
 
       _$visibilityButton.click(function() {
         var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
+        utils.assert(permissions, 'Permissions object must be available');
 
         if (permissions.isPublic) {
           storyteller.storyPermissionsManager.makePrivate(_renderError);
@@ -54,6 +55,7 @@
 
       _$updatePublicButton.click(function() {
         var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
+        utils.assert(permissions, 'Permissions object must be available');
 
         if (permissions.isPublic) {
           storyteller.storyPermissionsManager.makePublic(_renderError);

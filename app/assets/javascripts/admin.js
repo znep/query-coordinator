@@ -1,33 +1,39 @@
 //= require jquery
 //= require jquery_ujs
+//= require lodash
+// NOTE: The usage of socrata-utils isn't obvious. It's String.format.
+//= require socrata-utils/dist/socrata.utils
 //= require_self
 
 (function() {
   'use strict';
 
-  $(function() {
+  function hookUpSectionCollapseCheckboxes() {
+    $('.form-section').each(function() {
+      var sectionName = this.getAttribute('data-section-name');
+      var $formSection = $(this);
+      var $associatedCheckbox = $('.form-section-checkbox[data-section-name="{0}"] input'.format(sectionName));
 
-    function flashCallback() {
-      $('.alert').fadeOut();
-    }
-    setTimeout(flashCallback, 3000);
+      // Toggle visibility of the form section.
+      $associatedCheckbox.change(function() {
+        if (this.checked) {
+          $formSection.slideDown();
+        } else {
+          $formSection.slideUp();
+        }
 
-    var googleFontFormInput = $('#theme_google_font_code');
-    var googleFontForm = $('label[for="theme_google_font_code"], #theme_google_font_code, #google_font_code_help_text');
-    var googleFontCheckbox = $('.google-font-checkbox');
+        // Disable/enable the section's inputs so they don't/do send data to the server.
+        $formSection.find('input').prop('disabled', !this.checked);
+      });
 
-    // Toggle visibility of Google font form field
-    googleFontCheckbox.change(function() {
-      googleFontForm.toggleClass('visible', this.checked);
-      if (!this.checked) {
-        googleFontFormInput.val('');
-      }
+      // Ensure the visibility of the form section matches the initial checkbox state.
+      $associatedCheckbox.triggerHandler('change');
+      $formSection.stop(false, true); // But we don't want the animations.
     });
+  }
 
-    // Google font checkbox is 'checked' if field has a value
-    if ((googleFontFormInput.val() || '').length > 0) {
-      googleFontForm.addClass('visible');
-      googleFontCheckbox.find('input').prop('checked', true);
-    }
+  $(function() {
+    $('.alert').delay(3000).slideUp();
+    hookUpSectionCollapseCheckboxes();
   });
 })();

@@ -159,6 +159,9 @@ class Theme
       '$blockquote-padding-left' => '1rem',
       '$blockquote-margin-left' => '1.3rem',
       '$list-padding-left' => '2.1em',
+      '$list-bullet-character' => '\2022',
+      '$list-bullet-color' => '#252525',
+      '$list-margin-adjustment' => '1.2em',
       '$ul-list-style-type' => 'disc',
       '$ol-list-style-type' => 'decimal',
       '$hr-border-top' => '1px solid #ccc'
@@ -187,7 +190,7 @@ class Theme
         },
         {
           'name' => 'google_font_code',
-          'value' => google_font_code
+          'value' => google_font_code || ''
         }
       ]
     }

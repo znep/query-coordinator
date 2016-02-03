@@ -70,20 +70,19 @@
                 help_text: '<p><a href="https://developer.mozilla.org/en-US/Learn/CSS/Howto/style_text#Web_safe_fonts">Click here</a> for a list of web-safe fonts and additional guidance. <br><b>Example Heading Font Stack</b>: Georgia, serif <br><b>Example Body Font Stack</b>: "Trebuchet MS", Helvetica, sans-serif</p>'
               } -%>
 
-  <div class="form-section google-fonts">
-    <div class="form-fields">
-      <div class="checkbox google-font-checkbox">
-        <input id="google_font_checkbox" type="checkbox"/>
-        <label for="google_font_checkbox">
-          <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>Use Google fonts
-        </label>
-      </div>
-    </div>
+  <!-- This form section is odd in that it doesn't deal directly with CSS variables. -->
 
-    <div class="help">Check this box to use a Google Font collection.</div>
-  </div>
+  <%=
+    render partial: 'form_section_checkbox',
+      locals: {
+        section_name: 'google-font-code',
+        collapse_checkbox_title_text: 'Use Google fonts',
+        collapse_checkbox_help_text: 'Check this box to use a Google Font collection.',
+        theme: theme
+    }
+  %>
 
-  <div class="form-section typeface">
+  <div class="form-section google-font-code" data-section-name="google-font-code">
     <div class="form-fields form-fields-label-above">
       <div class="form-group">
         <%= form.label :google_font_code, "Google Font Code" %>
@@ -96,6 +95,8 @@
       <b>Example Google Font Code</b>: &lt;link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'&gt;
     </div>
   </div>
+
+  <!-- End odd section -->
 
   <h4 class="border-below">Colors</h4>
   <%= render  partial: 'form_section',
@@ -128,6 +129,18 @@
                 theme: theme,
                 theme_variables: %w( $list-padding-left $ul-list-style-type $ol-list-style-type )
               } %>
+
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: "list-custom-bullet",
+                theme: theme,
+                theme_variables: %w( $list-bullet-character $list-bullet-color $list-margin-adjustment ),
+                help_text: 'Bullet Character can either be a literal character (examples: • or ►), or Unicode hexadecimal codes (examples: \\2022 or \\25BA).',
+                collapsible: true,
+                collapse_checkbox_title_text: "Use Custom Bullet",
+                collapse_checkbox_help_text: "Check this box to use a custom bullet style."
+              } %>
+
 
   <h4 class="border-below">Rule</h4>
   <%= render  partial: 'form_section',

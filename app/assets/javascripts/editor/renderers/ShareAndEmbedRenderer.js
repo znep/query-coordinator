@@ -37,7 +37,6 @@
 
     function template() {
       var storyUrl = storyteller.shareAndEmbedStore.getStoryUrl();
-      var storyWidgetUrl = storyteller.shareAndEmbedStore.getStoryWidgetUrl();
       var storyWidgetEmbedCode = storyteller.shareAndEmbedStore.getStoryEmbedCode();
 
       return (

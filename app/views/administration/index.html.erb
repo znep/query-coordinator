@@ -109,7 +109,7 @@
       </li>
     <%- end -%>
     <%- if FeatureFlags.derive(nil, request).show_admin_processes &&
-            CurrentDomain.user_can?(current_user, :view_all_dataset_status_logs) %>
+            CurrentDomain.user_can?(current_user, UserRights::VIEW_ALL_DATASET_STATUS_LOGS) %>
       <li class="jobs">
         <%= admin_nav_link_to 'Jobs', :action => 'jobs' %>
         <span class="description">

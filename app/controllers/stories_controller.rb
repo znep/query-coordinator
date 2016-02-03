@@ -7,7 +7,7 @@ class StoriesController < ApplicationController
 
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
-  # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
+  # rescue_from ActiveRecord::RecordNotFound, with: :render_404
   skip_before_filter :require_logged_in_user, only: [:show, :widget]
   before_filter :require_sufficient_rights
 
@@ -48,7 +48,7 @@ class StoriesController < ApplicationController
         }
       end
     else
-      tmp_render_404
+      render_404
     end
   end
 
@@ -67,10 +67,10 @@ class StoriesController < ApplicationController
           RuntimeError.new,
           "TEMPORARY/DEBUG: No story title on view '#{view}'"
         )
-        tmp_render_404
+        render_404
       end
     else
-      tmp_render_404
+      render_404
     end
   end
 
@@ -153,7 +153,7 @@ class StoriesController < ApplicationController
         format.html { render 'stories/edit', layout: 'editor' }
       end
     else
-      tmp_render_404
+      render_404
     end
   end
 
@@ -185,7 +185,7 @@ class StoriesController < ApplicationController
         format.json { render json: @story }
       end
     else
-      tmp_render_404
+      render_404
     end
   end
 
@@ -241,11 +241,6 @@ class StoriesController < ApplicationController
     Block.create(example_block.except('id'))
   end
 
-  # TODO replace this with the real solution
-  def tmp_render_404
-    render text: 'Whoops! 404. Probably an invalid 4x4', status: 404
-  end
-
   def finish_story_creation(original_action, view, uid, title)
     return redirect_to "/stories/s/#{uid}/create", :flash => {
       :error => I18n.t('stories_controller.error_creating_story_flash')
@@ -279,7 +274,7 @@ class StoriesController < ApplicationController
 
   # This logic is duplicated in Frontend/Browse as story_url
   def require_sufficient_rights
-    return tmp_render_404 unless params.present? && params[:uid].present?
+    return render_404 unless params.present? && params[:uid].present?
 
     action = params[:action]
     view = CoreServer.get_view(
@@ -287,13 +282,20 @@ class StoriesController < ApplicationController
     )
     published_story = PublishedStory.find_by_uid(params[:uid])
 
-    return tmp_render_404 unless view.present? && view['rights'].present?
+    return render_404 unless view.present? && view['rights'].present?
 
     if action == 'edit'
-      tmp_render_404 unless view['rights'].include?('write')
+      render_404 unless view['rights'].include?('write')
     elsif action == 'show' || action == 'preview'
-      tmp_render_404 unless view['rights'].include?('read')
+      render_404 unless view['rights'].include?('read')
     elsif action == 'show' && view
+    end
+  end
+
+  def render_404
+    respond_to do |format|
+      format.html { render 'stories/404', layout: '404', status: 404 }
+      format.json { render json: {error: '404 Not Found'}, status: 404 }
     end
   end
 end

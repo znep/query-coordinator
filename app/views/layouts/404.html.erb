@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+ <head>
+    <title><%= t('stories_404.title') %></title>
+    <%= default_meta_tags() %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= stylesheet_link_tag '404', media: 'all' %>
+    <%= render 'shared/google_analytics_script' %>
+  </head>
+
+  <body>
+
+    <%= yield %>
+
+  </body>
+
+</html>

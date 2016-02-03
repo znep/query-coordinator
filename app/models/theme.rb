@@ -140,11 +140,9 @@ class Theme
   # the field to views/admin/themes/_form.html.erb so the user can edit it.
   def self.default_css_variables
     {
-      '$base-type-size' => '1em',
-      '$base-line-height' => '1.54',
       '$std-type-size' => '1.1em',
       '$std-line-height' => '1.44',
-      '$heading-font-weight' => 'bold',
+      '$heading-font-weight' => '700',
       '$lg-type-size' => '1.18em',
       '$lg-line-height' => '1.54',
       '$heading-font-stack' => 'Helvetica, serif',
@@ -166,6 +164,18 @@ class Theme
       '$ol-list-style-type' => 'decimal',
       '$hr-border-top' => '1px solid #ccc'
     }
+  end
+
+  # CSS variables that still work, but we no longer allow folks to customize.
+  # They will be deleted when the user saves the theme again.
+  def self.deprecated_css_variables
+    %w( $base-type-size $base-line-height )
+  end
+
+  # All CSS variables that can be used. Note this includes deprecated variables (they're deprecated,
+  # not removed).
+  def self.allowed_css_variables
+    default_css_variables.keys + deprecated_css_variables
   end
 
   private
@@ -190,7 +200,7 @@ class Theme
         },
         {
           'name' => 'google_font_code',
-          'value' => google_font_code || ''
+          'value' => google_font_code.to_s
         }
       ]
     }

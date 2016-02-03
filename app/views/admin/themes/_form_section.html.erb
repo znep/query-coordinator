@@ -2,7 +2,6 @@
 <% help_text ||= '' -%>
 <% collapsible ||= false -%>
 <% collapse_checkbox_title_text ||= section_name -%>
-<% collapse_checkbox_help_text ||= '' -%>
 <% unless theme_variables.blank? -%>
 
   <%=
@@ -11,7 +10,7 @@
          locals: {
            section_name: section_name,
            collapse_checkbox_title_text: collapse_checkbox_title_text,
-           collapse_checkbox_help_text: collapse_checkbox_help_text,
+           collapse_checkbox_help_text: collapse_checkbox_help_text.to_s,
            theme: theme
       }
     end
@@ -31,7 +30,7 @@
     </div>
 
     <div class="help">
-      <%= help_text.html_safe %>
+      <%== help_text %>
     </div>
   </div>
 <% end -%>

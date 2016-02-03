@@ -30,7 +30,7 @@ describe('ExceptionNotifier', function() {
   describe('initialization', function() {
     describe('options are set', function() {
       var options;
-      var exceptionNotifier;
+      var exceptionNotifier; //eslint-disable-line no-unused-vars
 
       beforeEach(function() {
         options = { environment: 'hola', projectKey: 'this is key'};
@@ -48,7 +48,7 @@ describe('ExceptionNotifier', function() {
 
     describe('options are not set', function() {
       var options;
-      var exceptionNotifier;
+      var exceptionNotifier; //eslint-disable-line no-unused-vars
 
       beforeEach(function() {
         options = null;

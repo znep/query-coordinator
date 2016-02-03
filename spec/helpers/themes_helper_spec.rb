@@ -86,13 +86,13 @@ RSpec.describe ThemesHelper, type: :helper do
       context 'with a custom bullet config' do
         let(:fixture_name) { 'story_theme_with_custom_bullet.json' }
         it 'is true' do
-          expect(section_starts_expanded(theme, 'list-custom-bullet')).to be true
+          expect(section_starts_expanded(theme, 'list-custom-bullet')).to eq(true)
         end
       end
       context 'with no custom bullet config' do
         let(:fixture_name) { 'story_theme_minimal.json' }
         it 'is false' do
-          expect(section_starts_expanded(theme, 'list-custom-bullet')).to be false
+          expect(section_starts_expanded(theme, 'list-custom-bullet')).to eq(false)
         end
       end
     end

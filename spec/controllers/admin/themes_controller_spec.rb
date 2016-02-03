@@ -267,6 +267,19 @@ RSpec.describe Admin::ThemesController, type: :controller do
           expect(flash[:error]).to_not be_blank
         end
       end
+
+      context 'with deprecated css_variables' do
+        it 'accepts the variables' do
+          request.host = 'somehostname.com'
+          theme_attrs['css_variables'].merge!(
+            Theme.deprecated_css_variables[0] => 'asd'
+          )
+          expected = theme_attrs.merge('domain_cname' => 'somehostname.com')
+          expect(theme).to receive(:update_attributes).with(expected)
+          put :update, id: theme.id, theme: theme_attrs
+        end
+      end
+
     end
   end
 

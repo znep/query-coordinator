@@ -26,10 +26,10 @@ module ThemesHelper
   def section_starts_expanded(theme, section_name)
     case section_name
     when 'list-custom-bullet'
-      !(
-        theme.css_variables['$list-bullet-character'].blank? ||
-        theme.css_variables['$list-bullet-color'].blank? ||
-        theme.css_variables['$list-margin-adjustment'].blank?
+      (
+        theme.css_variables['$list-bullet-character'].present? &&
+        theme.css_variables['$list-bullet-color'].present? &&
+        theme.css_variables['$list-margin-adjustment'].present?
       )
     when 'google-font-code'
       !theme.google_font_code.blank?

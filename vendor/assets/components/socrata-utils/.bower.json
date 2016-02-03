@@ -1,6 +1,6 @@
 {
   "name": "socrata-utils",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": [
     "dist/socrata.utils.js"
   ],
@@ -19,13 +19,13 @@
     "jquery": "~2.1.1"
   },
   "homepage": "https://github.com/socrata/frontend-utils",
-  "_release": "1.1.1",
+  "_release": "1.1.2",
   "_resolution": {
     "type": "version",
-    "tag": "1.1.1",
-    "commit": "56b467878f25bff1b0e6b50f75c3f469e5f0dc88"
+    "tag": "1.1.2",
+    "commit": "89a43b61d098a6d36aefee06ff980e559c96e1c9"
   },
   "_source": "git@github.com:socrata/frontend-utils.git",
-  "_target": "1.1.1",
+  "_target": "1.1.2",
   "_originalSource": "git@github.com:socrata/frontend-utils.git"
 }

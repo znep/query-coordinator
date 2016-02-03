@@ -1,5 +1,9 @@
 module StoriesHelper
 
+  def core_attributes
+    @core_attributes ||= CoreServer.get_view(@story.uid) || {}
+  end
+
   def user_story_json
     @story.as_json.merge(
       {
@@ -126,9 +130,5 @@ module StoriesHelper
     {
       isPublic: grants.any? { |grant| (grant['flags'] || []).include?('public') }
     }
-  end
-
-  def core_attributes
-    @core_attributes ||= CoreServer.get_view(@story.uid) || {}
   end
 end

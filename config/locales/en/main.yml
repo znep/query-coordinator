@@ -53,3 +53,6 @@ en:
     slab_theme_description: 'Bold and strong headlines make for easy reading.'
     heading_font_sample: 'Abc'
     render_error: 'There was an error'
+  widget:
+    no_description_label: 'This story has no description.'
+    read_more_prompt: 'Read more at '

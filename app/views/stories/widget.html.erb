@@ -1,0 +1,35 @@
+<div class="widget-container theme-<%= @story.theme %>">
+  <div class="widget typeset">
+
+    <h1 class="widget-title"><%= core_attributes['name'] || t('default_page_title') %></h1>
+
+    <% if @story.block_images.first.present? %>
+      <div class="widget-image" style="background-image: url('<%= @story.block_images.first %>');'"></div>
+    <% else %>
+      <div class="widget-image"></div>
+    <% end %>
+
+    <% if core_attributes['description'].present? %>
+      <p class="widget-description"><%= core_attributes['description'] %></p>
+    <% else %>
+      <p class="widget-no-description"><%= t('widget.no_description_label') %></p>
+    <% end %>
+
+    <div class="widget-link-container">
+      <p class="widget-link">
+        <%= t('widget.read_more_prompt') %>
+        <a
+          href="<%= story_url(uid: @story.uid) %>"
+          title="<%= "#{t('widget.read_more_prompt')}#{story_url(uid: @story.uid)}" %>"
+          target="_blank">
+          <%= story_url(uid: @story.uid) %>
+        </a>
+      </p>
+    </div>
+
+    <div class="widget-loading">
+      <div class="widget-loading-spinner"></div>
+    </div>
+
+  </div>
+</div>

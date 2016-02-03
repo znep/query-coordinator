@@ -226,11 +226,5 @@ describe('SaveAs', function() {
       setup(false, true, 'asdf-fdsa');
       expect(element.find('.visibility-alert').html()).to.match(/This Data Lens is based on the private dataset/);
     });
-
-    it('should show a message without a link if the user can approve nominations and the dataset is private and the obeId does not exist', function() {
-      setup(true, true, null);
-      expect(element.find('.visibility-alert').html()).to.match(/This Data Lens is based on the private dataset/);
-      expect(element.find('.visibility-alert').html()).to.not.match(/\<a/);
-    });
   });
 });

@@ -82,12 +82,24 @@ $(function()
             }
         ];
     } else if (blist.dataset.displayType == 'story') {
-            summaries = [ viewSummary ]
+            summaries = [
+                {
+                  id: 'summaryVisits',
+                  displayName: t('browser_page_views'),
+                  summary: {
+                    plus: 'js-page-view',
+                    total: false,
+                    verbPhrase: t('pages_viewed'),
+                    verbPhraseSingular: t('page_viewed'),
+                    deltaPhrase: t('browser_page_views')
+                  }
+                }
+            ]
             charts = [
                 {
                     id: 'performanceChart',
                     loading: blist.metrics.chartLoading,
-                    children: [ { text: t('views_loaded'), series: [ { method: 'view-loaded' } ] } ]
+                    children: [ { text: t('browser_page_views'), series: [ { method: 'js-page-view' } ] } ]
                 }
             ];
             topLists = [

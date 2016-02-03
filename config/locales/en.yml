@@ -3212,6 +3212,7 @@ en:
     stats:
       api: API
       apply: Apply
+      browser_page_views: Browser Page Views
       bytes_out: Bytes Out
       chart_created: chart created
       charts: Charts

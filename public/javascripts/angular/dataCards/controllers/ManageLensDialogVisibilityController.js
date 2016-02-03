@@ -60,10 +60,8 @@ function ManageLensDialogVisibilityController($q, $scope, $window, ServerConfig,
     function(datasetIsPrivate, userCanApproveNominations, dataset) {
       if (datasetIsPrivate) {
         var datasetName = dataset.getCurrentValue('name');
-        var sourceDatasetLink = I18n.a(`/d/${dataset.obeId}`);
-        var sourceDatasetText = _.isPresent(dataset.obeId) ?
-          `<a href="${sourceDatasetLink}" target="_blank">${datasetName}</a>` :
-          datasetName;
+        var sourceDatasetLink = I18n.a(`/d/${dataset.obeId || dataset.id}`);
+        var sourceDatasetText = `<a href="${sourceDatasetLink}" target="_blank">${datasetName}</a>`;
 
         $scope.visibilityDropdownError = I18n.t('manageLensDialog.visibility.datasetIsPrivate', sourceDatasetText);
       } else if (!userCanApproveNominations) {

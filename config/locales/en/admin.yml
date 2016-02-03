@@ -4,6 +4,7 @@ en:
       form_section:
         $base-type-size: 'Base Type Size'
         $base-line-height: 'Base Line Height'
+        $heading-font-weight: 'Heading Font Weight'
         $std-type-size: 'Standard Type Size'
         $std-line-height: 'Standard Line Height'
         $lg-type-size: 'Large Type Size'
@@ -21,6 +22,9 @@ en:
         $blockquote-padding-left: 'Padding Left'
         $blockquote-margin-left: 'Margin Left'
         $list-padding-left: 'Padding Left'
+        $list-bullet-character: 'Bullet character'
+        $list-bullet-color: 'Bullet color'
+        $list-margin-adjustment: 'List margin adjustment'
         $ul-list-style-type: 'Unordered List Style Type'
         $ol-list-style-type: 'Ordered List Style Type'
         $hr-border-top: 'Rule Border'

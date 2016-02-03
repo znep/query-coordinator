@@ -136,14 +136,13 @@ class Theme
   end
 
   # We are using these defaults in the theme admin form. They are used to whitelist
-  # variables when saving as well. When adding fields to the form, make sure to add
-  # a default to this list as well.
+  # variables when saving as well. If you add a field here, you'll want to add
+  # the field to views/admin/themes/_form.html.erb so the user can edit it.
   def self.default_css_variables
     {
-      '$base-type-size' => '1em',
-      '$base-line-height' => '1.54',
       '$std-type-size' => '1.1em',
       '$std-line-height' => '1.44',
+      '$heading-font-weight' => '700',
       '$lg-type-size' => '1.18em',
       '$lg-line-height' => '1.54',
       '$heading-font-stack' => 'Helvetica, serif',
@@ -158,10 +157,25 @@ class Theme
       '$blockquote-padding-left' => '1rem',
       '$blockquote-margin-left' => '1.3rem',
       '$list-padding-left' => '2.1em',
+      '$list-bullet-character' => '\2022',
+      '$list-bullet-color' => '#252525',
+      '$list-margin-adjustment' => '1.2em',
       '$ul-list-style-type' => 'disc',
       '$ol-list-style-type' => 'decimal',
       '$hr-border-top' => '1px solid #ccc'
     }
+  end
+
+  # CSS variables that still work, but we no longer allow folks to customize.
+  # They will be deleted when the user saves the theme again.
+  def self.deprecated_css_variables
+    %w( $base-type-size $base-line-height )
+  end
+
+  # All CSS variables that can be used. Note this includes deprecated variables (they're deprecated,
+  # not removed).
+  def self.allowed_css_variables
+    default_css_variables.keys + deprecated_css_variables
   end
 
   private
@@ -186,7 +200,7 @@ class Theme
         },
         {
           'name' => 'google_font_code',
-          'value' => google_font_code
+          'value' => google_font_code.to_s
         }
       ]
     }

@@ -67,8 +67,8 @@
           '" ' +
           'scrolling="no" ' +
           'frameborder="0">' +
-        '</iframe>'
-      ).format(
+        '</iframe>').
+      format(
         this.getStoryWidgetUrl()
       );
     };

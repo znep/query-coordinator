@@ -37,7 +37,7 @@
           }
         ).
         catch(
-          function(error) {
+          function() {
             _renderStoryWidgetError($element, componentData);
           }
         );
@@ -68,7 +68,7 @@
       $element.text(truncatedWords.join(' ') + '…');
 
       if (truncatedWords.length > 0) {
-          _ellipsifyText($element, lineCount);
+        _ellipsifyText($element, lineCount);
       }
     }
   }
@@ -160,7 +160,7 @@
       $widgetImage.attr('style', 'background-image:url({0})'.format(storyWidgetData.image));
     }
 
-    $widgetDescription = $('<p>', {'class': 'story-widget-description'})
+    $widgetDescription = $('<p>', {'class': 'story-widget-description'});
 
     if (storyWidgetData.description !== null) {
       $widgetDescription.text(storyWidgetData.description);

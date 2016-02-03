@@ -28,17 +28,7 @@
   <h4 class="border-below">Type Size and Line Height</h4>
   <%= render  partial: 'form_section',
               locals: {
-                section_name: "type-size-and-line-height",
-                theme: theme,
-                theme_variables: %w( $base-type-size $base-line-height ),
-                help_text: 'Base Typesize is used as a base calculation for the entire typographic scale. This is used
-                            to derive appropriate typesiezes for headings given a breakpoint and base type size. Use
-                            with care. Learn more at <a href="http://www.modularscale.com">http://www.modularscale.com</a>'
-              } %>
-
-  <%= render  partial: 'form_section',
-              locals: {
-                section_name: "type-size-and-line-height",
+                section_name: 'type-size-and-line-height',
                 theme: theme,
                 theme_variables: %w( $std-type-size $std-line-height ),
                 help_text: 'Standard Type size is used for tablet, mobile, and small desktop displays. This is your
@@ -47,35 +37,42 @@
 
   <%= render  partial: 'form_section',
               locals: {
-                section_name: "type-size-line-height",
+                section_name: 'type-size-line-height',
                 theme: theme,
                 theme_variables: %w( $lg-type-size $lg-line-height ),
                 help_text: 'Large type size is the type for large displays.'
               } %>
 
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'type-size-font-weight',
+                theme: theme,
+                theme_variables: %w( $heading-font-weight ),
+                help_text: 'The heading font weight (i.e: 300, 400, 500, 600, 700, 800)'
+              } %>
+
   <h4 class="border-below">Typeface</h4>
   <%= render  partial: 'form_section',
               locals: {
-                section_name: "typeface",
+                section_name: 'typeface',
                 theme: theme,
                 theme_variables: %w( $heading-font-stack $body-font-stack ),
                 help_text: '<p><a href="https://developer.mozilla.org/en-US/Learn/CSS/Howto/style_text#Web_safe_fonts">Click here</a> for a list of web-safe fonts and additional guidance. <br><b>Example Heading Font Stack</b>: Georgia, serif <br><b>Example Body Font Stack</b>: "Trebuchet MS", Helvetica, sans-serif</p>'
               } -%>
 
-  <div class="form-section google-fonts">
-    <div class="form-fields">
-      <div class="checkbox google-font-checkbox">
-        <input id="google_font_checkbox" type="checkbox"/>
-        <label for="google_font_checkbox">
-          <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>Use Google fonts
-        </label>
-      </div>
-    </div>
+  <!-- This form section is odd in that it doesn't deal directly with CSS variables. -->
 
-    <div class="help">Check this box to use a Google Font collection.</div>
-  </div>
+  <%=
+    render partial: 'form_section_checkbox',
+      locals: {
+        section_name: 'google-font-code',
+        collapse_checkbox_title_text: 'Use Google fonts',
+        collapse_checkbox_help_text: 'Check this box to use a Google Font collection.',
+        theme: theme
+    }
+  %>
 
-  <div class="form-section typeface">
+  <div class="form-section google-font-code" data-section-name="google-font-code">
     <div class="form-fields form-fields-label-above">
       <div class="form-group">
         <%= form.label :google_font_code, "Google Font Code" %>
@@ -89,10 +86,12 @@
     </div>
   </div>
 
+  <!-- End odd section -->
+
   <h4 class="border-below">Colors</h4>
   <%= render  partial: 'form_section',
               locals: {
-                section_name: "colors",
+                section_name: 'colors',
                 theme: theme,
                 theme_variables: %w( $heading-type-color $default-type-color )
               } %>
@@ -100,7 +99,7 @@
   <h4 class="border-below">Hyperlinks</h4>
   <%= render  partial: 'form_section',
               locals: {
-                section_name: "hyperlinks",
+                section_name: 'hyperlinks',
                 theme: theme,
                 theme_variables: %w( $link-color $link-text-decoration $link-hover )
               } %>
@@ -108,7 +107,7 @@
   <h4 class="border-below">Blockquote</h4>
   <%= render  partial: 'form_section',
               locals: {
-                section_name: "blockquote",
+                section_name: 'blockquote',
                 theme: theme,
                 theme_variables: %w( $blockquote-font-style $blockquote-border-left $blockquote-padding-left $blockquote-margin-left )
               } %>
@@ -116,15 +115,27 @@
   <h4 class="border-below">Lists</h4>
   <%= render  partial: 'form_section',
               locals: {
-                section_name: "lists",
+                section_name: 'lists',
                 theme: theme,
                 theme_variables: %w( $list-padding-left $ul-list-style-type $ol-list-style-type )
               } %>
 
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'list-custom-bullet',
+                theme: theme,
+                theme_variables: %w( $list-bullet-character $list-bullet-color $list-margin-adjustment ),
+                help_text: 'Bullet Character can either be a literal character (examples: • or ►), or Unicode hexadecimal codes (examples: \\2022 or \\25BA).',
+                collapsible: true,
+                collapse_checkbox_title_text: "Use Custom Bullet",
+                collapse_checkbox_help_text: "Check this box to use a custom bullet style."
+              } %>
+
+
   <h4 class="border-below">Rule</h4>
   <%= render  partial: 'form_section',
               locals: {
-                section_name: "rule",
+                section_name: 'rule',
                 theme: theme,
                 theme_variables: %w( $hr-border-top )
               } %>

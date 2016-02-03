@@ -1,0 +1,27 @@
+[
+  {
+    "default": true,
+    "domainCName": "bobloblawslawblog.com",
+    "id": 234,
+    "name": "Minimal",
+    "properties": [
+      {
+        "name": "id",
+        "value": "minimal"
+      },
+      {
+        "name": "title",
+        "value": "Minimal"
+      },
+      {
+        "name": "description",
+        "value": "Minimal theme"
+      },
+      {
+        "name": "css_variables",
+        "value": {}
+      }
+    ],
+    "type": "story_theme"
+  }
+]

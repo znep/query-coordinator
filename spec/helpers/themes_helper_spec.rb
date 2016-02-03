@@ -77,4 +77,46 @@ RSpec.describe ThemesHelper, type: :helper do
       expect(theme_style_property(theme, 'font-size', '$medium')).to eq('font-size: 768px;')
     end
   end
+
+  describe '#section_starts_expanded' do
+    let(:story_theme_json) { JSON.parse(fixture(fixture_name).read).first }
+    let(:theme) { Theme.from_core_config(story_theme_json) }
+
+    context 'list-custom-bullet' do
+      context 'with a custom bullet config' do
+        let(:fixture_name) { 'story_theme_with_custom_bullet.json' }
+        it 'is true' do
+          expect(section_starts_expanded(theme, 'list-custom-bullet')).to eq(true)
+        end
+      end
+      context 'with no custom bullet config' do
+        let(:fixture_name) { 'story_theme_minimal.json' }
+        it 'is false' do
+          expect(section_starts_expanded(theme, 'list-custom-bullet')).to eq(false)
+        end
+      end
+    end
+
+    context 'google-font-code' do
+      context 'with a google font code configured' do
+        let(:fixture_name) { 'story_theme_with_google_font.json' }
+        it 'is true' do
+          expect(section_starts_expanded(theme, 'google-font-code')).to be true
+        end
+      end
+      context 'with no google font code configured' do
+        let(:fixture_name) { 'story_theme_minimal.json' }
+        it 'is false' do
+          expect(section_starts_expanded(theme, 'google-font-code')).to be false
+        end
+      end
+    end
+
+    context 'some random unspecified section' do
+      let(:fixture_name) { 'story_theme_minimal.json' }
+      it 'is false' do
+        expect(section_starts_expanded(theme, 'some-random-section')).to be false
+      end
+    end
+  end
 end

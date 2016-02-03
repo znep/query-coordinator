@@ -815,7 +815,7 @@
               domain: storyDomain,
               storyUid: storyUid
             }
-          }
+          };
 
           $storyWidgetPreviewContainer.
             trigger('destroy').

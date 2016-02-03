@@ -51,7 +51,7 @@ class Admin::ThemesController < ApplicationController
       :title,
       :description,
       :google_font_code,
-      :css_variables => Theme.default_css_variables.keys
+      :css_variables => Theme.allowed_css_variables
     ).tap do |whitelisted|
       whitelisted['domain_cname'] = request.host
     end

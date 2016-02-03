@@ -75,10 +75,8 @@ function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, UserRig
 
       var privateDatasetMessage$ = $scope.page.observe('dataset').map(function(dataset) {
         var datasetName = dataset.getCurrentValue('name');
-        var sourceDatasetLink = I18n.a(`/d/${dataset.obeId}`);
-        var sourceDatasetText = _.isPresent(dataset.obeId) ?
-          `<a href="${sourceDatasetLink}" target="_blank">${datasetName}</a>` :
-          datasetName;
+        var sourceDatasetLink = I18n.a(`/d/${dataset.obeId || dataset.id}`);
+        var sourceDatasetText = `<a href="${sourceDatasetLink}" target="_blank">${datasetName}</a>`;
 
         return I18n.t('manageLensDialog.visibility.datasetIsPrivate', sourceDatasetText);
       });

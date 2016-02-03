@@ -49,7 +49,7 @@
           </span>
       </li>
     <%- end -%>
-    <%- if user_can?(current_user, :edit_sdp) -%>
+    <%- if user_can?(current_user, UserRights::EDIT_SDP) -%>
       <li class="appearance">
         <%= admin_nav_link_to 'SDP Templates', :action => 'sdp_templates' %>
         <span class="description">

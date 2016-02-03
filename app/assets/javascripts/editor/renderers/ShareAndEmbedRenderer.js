@@ -68,6 +68,8 @@
     function attachEvents() {
       $shareAndEmbed.on('click', '[data-action="SHARE_AND_EMBED_MODAL_CLOSE"]', handleModalDismissed);
       $shareAndEmbed.on('modal-dismissed', handleModalDismissed);
+      $shareAndEmbed.on('focus', '.share-and-embed-story-url', function() { $(this).select(); });
+      $shareAndEmbed.on('focus', '.share-and-embed-embed-code', function() { $(this).select(); });
     }
 
     function detachEvents() {

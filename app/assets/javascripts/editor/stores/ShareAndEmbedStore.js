@@ -65,7 +65,8 @@
             'background-color:transparent;' +
             'overflow:hidden;' +
           '" ' +
-          'scrolling="no">' +
+          'scrolling="no" ' +
+          'frameborder="0">' +
         '</iframe>'
       ).format(
         this.getStoryWidgetUrl()
@@ -91,4 +92,3 @@
 
   root.socrata.storyteller.ShareAndEmbedStore = ShareAndEmbedStore;
 })(window);
-

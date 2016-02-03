@@ -34,12 +34,21 @@
      * @function getCollaborators
      * @description
      * Obtains a list of collaborators from the grants Core API endpoint.
+     * Note: This adds the primary owner to collaborators.
      * @returns {Promise} - A promise that resolves with the Array of collaborators.
      */
     this.getCollaborators = function() {
       return new Promise(function(resolve, reject) {
         $.getJSON(urls.read).
           then(function(grants) {
+
+            // Add the primary owner to the list of grants.
+            grants = grants.concat({
+              primary: true,
+              userId: storyteller.storyStore.
+                getStoryCreatedBy(storyteller.userStoryUid)
+            });
+
             var promises = _.chain(grants).
               filter(function(grant) {
                 return grant.hasOwnProperty('userEmail') || grant.hasOwnProperty('userId');
@@ -66,6 +75,14 @@
         ).then(function(json) {
           collaborator.userEmail = json.email;
           collaborator.displayName = json.displayName;
+          collaborator.roleName = json.roleName || 'unknown';
+
+          if (collaborator.primary) {
+            collaborator.type = 'owner';
+          } else if (!_.isString(collaborator.type)) {
+            collaborator.type = 'unknown';
+          }
+
           return collaborator;
         });
       } else {
@@ -185,12 +202,14 @@
           uid: grant.userId,
           email: grant.userEmail,
           displayName: grant.displayName,
+          roleName: grant.roleName,
           accessLevel: grant.type
         };
       } else {
         return {
           email: grant.userEmail,
           displayName: grant.displayName,
+          roleName: grant.roleName,
           accessLevel: grant.type
         };
       }

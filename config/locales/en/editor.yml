@@ -41,11 +41,18 @@ en:
         keep: 'Keep'
         remove: 'Remove'
         invite_collaborators: 'Invite Collaborators'
+        who_has_access: 'Who Has Access'
         owner: 'Co-Owner'
+        owner_description: 'Can control all aspects of the story, including sharing and publishing'
         contributor: 'Contributor'
+        contributor_description: 'Can edit the content on the story canvas'
         viewer: 'Viewer'
+        viewer_description: 'Can view the story, even if it is not published'
         no_collaborators: 'There are no collaborators for this story.'
+        licenses: 'Only individuals with a Perspectives license can be the co-owner of a story. <a href="https://support.socrata.com/hc/en-us/articles/216288698" target="_blank">Learn more</a>.'
         errors:
+          adding_self: "Sorry, you can't add yourself to your own story."
+          already_added: 'This collaborator already has access.'
           invalid_email: 'Please use a valid email address.'
           unknown_error: 'Looks like an unknown error occurred. Our engineers have been notified.'
     share_and_embed:

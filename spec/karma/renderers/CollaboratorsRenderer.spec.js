@@ -4,8 +4,13 @@ describe('CollaboratorsRenderer', function() {
   var $collaborators;
   var renderer;
   var storyteller = window.socrata.storyteller;
+  var debounceStub;
 
   beforeEach(function() {
+    debounceStub = sinon.stub(window._, 'debounce', function(fn) {
+      return fn;
+    });
+
     renderer = new storyteller.CollaboratorsRenderer();
 
     storyteller.dispatcher.dispatch({
@@ -17,6 +22,7 @@ describe('CollaboratorsRenderer', function() {
 
   afterEach(function() {
     renderer.destroy();
+    debounceStub.restore();
   });
 
   describe('rendering', function() {

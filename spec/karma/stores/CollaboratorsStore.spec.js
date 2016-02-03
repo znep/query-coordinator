@@ -121,12 +121,14 @@ describe('CollaboratorsStore', function() {
         email: 'hello@socrata.com',
         accessLevel: 'accessLevel',
         displayName: 'Hello',
+        roleName: 'administrator',
         uid: 'four-four'
       };
       var collaboratorTwo = {
         email: 'helloTwo@socrata.com',
         accessLevel: 'accessLevel',
         displayName: 'Hello Two',
+        roleName: 'administrator',
         uid: 'four-four'
       };
 
@@ -177,7 +179,8 @@ describe('CollaboratorsStore', function() {
           email: 'hello@socrata.com',
           accessLevel: 'accessLevel',
           uid: 'four-four',
-          displayName: 'Hello'
+          displayName: 'Hello',
+          roleName: 'administrator'
         };
 
         dispatchAction(Actions.COLLABORATORS_LOAD, {
@@ -256,9 +259,27 @@ describe('CollaboratorsStore', function() {
     describe('when given a correct payload', function() {
       it('should change one collaborator in the store', function() {
         var collaborators;
-        var collaboratorOne = {email: 'hello@socrata.com', accessLevel: 'accessLevel', uid: 'four-four', displayName: 'Hello'};
-        var collaboratorTwo = {email: 'helloTwo@socrata.com', accessLevel: 'accessLevel', uid: 'four-four', displayName: 'Hello Two'};
-        var updatedCollaboratorOne = {email: 'hello@socrata.com', accessLevel: 'newAccessLevel', uid: 'four-four', displayName: 'Hello'};
+        var collaboratorOne = {
+          email: 'hello@socrata.com',
+          accessLevel: 'accessLevel',
+          uid: 'four-four',
+          displayName: 'Hello',
+          roleName: 'administrator'
+        };
+        var collaboratorTwo = {
+          email: 'helloTwo@socrata.com',
+          accessLevel: 'accessLevel',
+          uid: 'four-four',
+          displayName: 'Hello Two',
+          roleName: 'administrator'
+        };
+        var updatedCollaboratorOne = {
+          email: 'hello@socrata.com',
+          accessLevel: 'newAccessLevel',
+          uid: 'four-four',
+          displayName: 'Hello',
+          roleName: 'administrator'
+        };
 
         dispatchAction(Actions.COLLABORATORS_LOAD, {
           collaborators: [collaboratorOne, collaboratorTwo]

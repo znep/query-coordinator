@@ -134,6 +134,11 @@
       return _.cloneDeep(story.permissions);
     };
 
+    this.getStoryCreatedBy = function(storyUid) {
+      var story = _getStory(storyUid);
+      return story.createdBy;
+    };
+
     this.getStoryPublishedStory = function(storyUid) {
       var story = _getStory(storyUid);
 
@@ -497,7 +502,8 @@
         theme: storyData.theme,
         blockIds: blockIds,
         digest: storyData.digest,
-        permissions: storyData.permissions
+        permissions: storyData.permissions,
+        createdBy: storyData.createdBy
       };
 
       self._emitChange();

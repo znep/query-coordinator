@@ -57,11 +57,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(40);
-	var ColumnChart = __webpack_require__(41);
-	var FeatureMap = __webpack_require__(42);
-	var Table = __webpack_require__(43);
-	var TimelineChart = __webpack_require__(44);
+	var ChoroplethMap = __webpack_require__(41);
+	var ColumnChart = __webpack_require__(42);
+	var FeatureMap = __webpack_require__(43);
+	var Table = __webpack_require__(44);
+	var TimelineChart = __webpack_require__(45);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -21236,6 +21236,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
+	   * @param {Object} vif
+	   */
+	  this.buildUnfilteredWhereClause = function(vif) {
+	    return _buildWhereClause(vif, false);
+	  };
+
+	  /**
+	   * @param {Object} vif
+	   */
+	  this.buildFilteredWhereClause = function(vif) {
+	    return _buildWhereClause(vif, true);
+	  };
+
+	  /**
 	   * `.query()` executes a SoQL query against the current domain that returns
 	   * key => value pairs. The query string is passed in by the caller, meaning
 	   * that at this level of abstraction we have no notion of SoQL grammar.
@@ -21320,24 +21334,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  };
 
-	  // Returns a Promise for a GET against the given SOQL url.
-	  // Adds salt to the end of the URL for cache bust.
-	  // On error, rejects with an object: {
-	  //   status: HTTP code,
-	  //   message: status text,
-	  //   soqlError: response JSON
-	  // }
-	  function _makeSoqlGetRequestWithSalt(url) {
-	    return Promise.resolve($.get(_withSalt(url))).
-	      catch(function(error) {
-	        return Promise.reject({
-	          status: parseInt(error.status, 10),
-	          message: error.statusText,
-	          soqlError: error.responseJSON || error.responseText
-	        });
-	      });
-	  }
-
 	  /**
 	   * `.getTableData()`
 	   *
@@ -21385,6 +21381,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Private methods
 	   */
+
+	  // Returns a Promise for a GET against the given SOQL url.
+	  // Adds salt to the end of the URL for cache bust.
+	  // On error, rejects with an object: {
+	  //   status: HTTP code,
+	  //   message: status text,
+	  //   soqlError: response JSON
+	  // }
+	  function _makeSoqlGetRequestWithSalt(url) {
+	    return Promise.resolve($.get(_withSalt(url))).
+	      catch(function(error) {
+	        return Promise.reject({
+	          status: parseInt(error.status, 10),
+	          message: error.statusText,
+	          soqlError: error.responseJSON || error.responseText
+	        });
+	      });
+	  }
 
 	  function _escapeColumnName(columnName) {
 	    return '`{0}`'.format(columnName);
@@ -23790,7 +23804,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(38);
+	var ieee754 = __webpack_require__(40);
 
 	var BufferMethods;
 
@@ -23957,8 +23971,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	/* eslint-disable no-proto */
 
-	'use strict'
-
 	var base64 = __webpack_require__(37)
 	var ieee754 = __webpack_require__(38)
 	var isArray = __webpack_require__(39)
@@ -24041,10 +24053,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new Buffer(arg)
 	  }
 
-	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
-	    this.length = 0
-	    this.parent = undefined
-	  }
+	  this.length = 0
+	  this.parent = undefined
 
 	  // Common case.
 	  if (typeof arg === 'number') {
@@ -24175,10 +24185,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	if (Buffer.TYPED_ARRAY_SUPPORT) {
 	  Buffer.prototype.__proto__ = Uint8Array.prototype
 	  Buffer.__proto__ = Uint8Array
-	} else {
-	  // pre-set for values that may exist in the future
-	  Buffer.prototype.length = undefined
-	  Buffer.prototype.parent = undefined
 	}
 
 	function allocate (that, length) {
@@ -24328,6 +24334,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	Buffer.byteLength = byteLength
+
+	// pre-set for values that may exist in the future
+	Buffer.prototype.length = undefined
+	Buffer.prototype.parent = undefined
 
 	function slowToString (encoding, start, end) {
 	  var loweredCase = false
@@ -25724,15 +25734,133 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 39 */
 /***/ function(module, exports) {
 
-	var toString = {}.toString;
+	
+	/**
+	 * isArray
+	 */
 
-	module.exports = Array.isArray || function (arr) {
-	  return toString.call(arr) == '[object Array]';
+	var isArray = Array.isArray;
+
+	/**
+	 * toString
+	 */
+
+	var str = Object.prototype.toString;
+
+	/**
+	 * Whether or not the given `val`
+	 * is an array.
+	 *
+	 * example:
+	 *
+	 *        isArray([]);
+	 *        // > true
+	 *        isArray(arguments);
+	 *        // > false
+	 *        isArray('');
+	 *        // > false
+	 *
+	 * @param {mixed} val
+	 * @return {bool}
+	 */
+
+	module.exports = isArray || function (val) {
+	  return !! val && '[object Array]' == str.call(val);
 	};
 
 
 /***/ },
 /* 40 */
+/***/ function(module, exports) {
+
+	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var nBits = -7
+	  var i = isLE ? (nBytes - 1) : 0
+	  var d = isLE ? -1 : 1
+	  var s = buffer[offset + i]
+
+	  i += d
+
+	  e = s & ((1 << (-nBits)) - 1)
+	  s >>= (-nBits)
+	  nBits += eLen
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  m = e & ((1 << (-nBits)) - 1)
+	  e >>= (-nBits)
+	  nBits += mLen
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  if (e === 0) {
+	    e = 1 - eBias
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen)
+	    e = e - eBias
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	}
+
+	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+	  var i = isLE ? 0 : (nBytes - 1)
+	  var d = isLE ? 1 : -1
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+	  value = Math.abs(value)
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0
+	    e = eMax
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2)
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--
+	      c *= 2
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias)
+	    }
+	    if (value * c >= 2) {
+	      e++
+	      c /= 2
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0
+	      e = eMax
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen)
+	      e = e + eBias
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+	      e = 0
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+	  e = (e << mLen) | m
+	  eLen += mLen
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+	  buffer[offset + i - d] |= s * 128
+	}
+
+
+/***/ },
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -26375,7 +26503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -26822,7 +26950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27380,7 +27508,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27775,7 +27903,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);

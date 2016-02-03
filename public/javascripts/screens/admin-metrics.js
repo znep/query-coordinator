@@ -3,6 +3,8 @@
 
   blist.namespace.fetch('blist.metrics');
 
+  var t = function(str, props) { return $.t('screens.stats.' + str, props); };
+
   var pageViewsSection;
   if (blist.feature_flags['embetter_analytics_page']) {
     pageViewsSection = {
@@ -25,7 +27,7 @@
       },
         {
           method: 'js-page-view',
-          label: 'Browser Page Views',
+          label: t('browser_page_views'),
           options: {stacking: null, type: 'line'}
         }]
     };

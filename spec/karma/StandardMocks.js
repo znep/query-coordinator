@@ -156,7 +156,12 @@ function applyStandardMocks() {
 
   // Stub currentUser and currentUserAuthorization
   window.currentUser = {email: 'rawr@socrata.com', id: 'rawr-rawr'};
-  window.currentUserAuthorization = {role: 'owner', primary: true, rights: ['update_view']};
+  window.currentUserStoryAuthorization = {
+    viewRole: 'owner',
+    primary: true,
+    viewRights: ['update_view'],
+    domainRights: ['manage_story_public_version']
+  };
 
   window.socrata.storyteller.AssetFinderMocker.mock();
   window.socrata.storyteller.assetFinder = new storyteller.AssetFinder();

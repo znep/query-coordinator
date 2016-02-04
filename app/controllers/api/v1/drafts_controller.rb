@@ -1,4 +1,7 @@
 class Api::V1::DraftsController < ApplicationController
+  include UserAuthorizationHelper
+
+  before_filter :require_sufficient_rights
 
   def latest
     @story = DraftStory.find_by_uid(params[:uid])
@@ -43,5 +46,17 @@ class Api::V1::DraftsController < ApplicationController
     response_obj = {}
 
     render json: response_obj
+  end
+
+  private
+
+  def require_sufficient_rights
+    action = params[:action]
+
+    if action == 'create'
+      return render nothing: true, status: 403 unless can_edit_story?
+    elsif action == 'latest'
+      return render nothing: true, status: 403 unless can_view_unpublished_story?
+    end
   end
 end

@@ -28,13 +28,6 @@ RSpec.describe ApplicationController, :type => :controller do
 
       controller.current_user
     end
-
-    it 'is memoized' do
-      expect(controller.env).to receive(:[]).with(SocrataSession::SOCRATA_SESSION_ENV_KEY).once.and_return(double.as_null_object)
-
-      controller.current_user
-      controller.current_user
-    end
   end
 
   describe '#require_logged_in_user' do

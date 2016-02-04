@@ -219,8 +219,9 @@ def mock_valid_initialized_lenses_view
 end
 
 def stub_valid_session
+  allow(CoreServer).to receive(:current_user).and_return(mock_valid_user)
   allow(@controller).to receive(:current_user).and_return(mock_valid_user)
-  allow(@controller).to receive(:current_user_authorization).and_return(mock_user_authorization)
+  allow(@controller).to receive(:current_user_story_authorization).and_return(mock_user_authorization)
 end
 
 def stub_super_admin_session
@@ -264,11 +265,18 @@ end
 def stub_logged_in_user
   allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
   allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(mock_valid_user)
-  allow_any_instance_of(ApplicationController).to receive(:current_user_authorization).and_return(mock_user_authorization)
+  allow_any_instance_of(ApplicationController).to receive(:current_user_story_authorization).and_return(mock_user_authorization)
 end
 
 def stub_sufficient_rights
-  allow_any_instance_of(StoriesController).to receive(:require_sufficient_rights).and_return(true)
+  if defined? controller
+    allow(controller).to receive(:require_sufficient_rights).and_return(true)
+  else
+    allow_any_instance_of(StoriesController).to receive(:require_sufficient_rights).and_return(true)
+    allow_any_instance_of(Api::V1::PublishedController).to receive(:require_sufficient_rights).and_return(true)
+    allow_any_instance_of(Api::V1::PermissionsController).to receive(:require_sufficient_rights).and_return(true)
+    allow_any_instance_of(Api::V1::DraftsController).to receive(:require_sufficient_rights).and_return(true)
+  end
 end
 
 def stub_core_view(uid, options={})

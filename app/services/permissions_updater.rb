@@ -35,7 +35,8 @@ class PermissionsUpdater
   end
 
   def can_update_view?(user_authorization)
-    user_authorization['rights'].include?('update_view')
+    user_authorization['domainRights'].include?('manage_story_visibility') &&
+    user_authorization['domainRights'].include?('manage_story_public_version')
   end
 
   def story_belongs_to_current_user?(view, user)

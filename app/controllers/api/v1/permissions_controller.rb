@@ -1,7 +1,10 @@
 class Api::V1::PermissionsController < ApplicationController
+  include UserAuthorizationHelper
+
+  before_filter :require_sufficient_rights
 
   def update
-    permissions = PermissionsUpdater.new(current_user, current_user_authorization, params[:uid])
+    permissions = PermissionsUpdater.new(current_user, current_user_story_authorization, params[:uid])
     permissions_response = nil
 
     begin
@@ -15,6 +18,10 @@ class Api::V1::PermissionsController < ApplicationController
     else
       render json: {isPublic: params[:isPublic]}, status: :ok
     end
+  end
+
+  def require_sufficient_rights
+    return render nothing: true, status: 403 unless admin? || owner?
   end
 end
 

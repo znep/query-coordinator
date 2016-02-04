@@ -30,11 +30,9 @@ class ImportActivity
     other.class == self.class && @data == other.data
   end
 
+  # nil for initiated_by or dataset means that that user or dataset has been deleted
   def initialize(data, initiated_by, dataset)
     @data = data
-    # TODO: these could actually happen if either one of them is deleted
-    raise ArgumentError.new('initiated_by is blank') if initiated_by.blank?
-    raise ArgumentError.new('dataset is blank') if dataset.blank?
     @dataset = dataset
     @initiated_by = initiated_by
   end

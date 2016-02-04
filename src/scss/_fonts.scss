@@ -23,6 +23,12 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-info-inverse:before {
+    content: "\e636";
+}
+.icon-info:before {
+    content: "\e635";
+}
 .icon-copy-document:before {
     content: "\e90c";
 }

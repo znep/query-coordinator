@@ -422,6 +422,14 @@ describe('StoryStore', function() {
         });
       });
 
+      describe('.getStoryPrimaryOwnerUid()', function() {
+
+        it('should return the correct value', function() {
+          window.primaryOwnerUid = 'test-test';
+          assert.equal(storyteller.storyStore.getStoryPrimaryOwnerUid(), window.primaryOwnerUid);
+        });
+      });
+
       describe('.getStoryBlockIds()', function() {
 
         it('should return the correct value', function() {

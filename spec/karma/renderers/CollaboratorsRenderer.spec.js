@@ -7,6 +7,7 @@ describe('CollaboratorsRenderer', function() {
   var debounceStub;
 
   beforeEach(function() {
+    window.primaryOwnerUid = 'test-test';
     debounceStub = sinon.stub(window._, 'debounce', function(fn) {
       return fn;
     });
@@ -21,6 +22,7 @@ describe('CollaboratorsRenderer', function() {
   });
 
   afterEach(function() {
+    delete window.primaryOwnerUid;
     renderer.destroy();
     debounceStub.restore();
   });

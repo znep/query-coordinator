@@ -1656,8 +1656,7 @@ html {
               }
             }
 
-            .browse2-result-make-public-button,
-            .browse2-result-make-private-button {
+            button:not(:last-child) {
               margin-right: 1.5em;
             }
           }

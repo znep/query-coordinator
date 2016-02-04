@@ -724,6 +724,10 @@ module ApplicationHelper
             '</div></noscript>').html_safe
   end
 
+  def current_user_can_create_story?
+    CurrentDomain.feature_flags[:stories_enabled] && current_user.has_right?(UserRights::CREATE_STORY)
+  end
+
   # ONCALL-3032: Spam e-mail sent via the Socrata platform
   #
   # The ability for unauthenticated users to send 'share this dataset via email' messages

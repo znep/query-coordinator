@@ -170,12 +170,14 @@
           </button>
         <%- end -%>
 
+        <% if result_can_be_deleted -%>
         <button class="browse2-result-delete-button" title="<%= t('controls.browse.browse2.edit.delete.title', :name => result_name) %>" data-result-id="<%= result_id %>">
           <span class="browse2-result-delete-icon icon-delete"></span>
           <span class="browse2-result-delete-label">
             <%= t('controls.browse.browse2.edit.delete.label') %>
           </span>
         </button>
+        <% end -%>
       </div>
     </div>
 

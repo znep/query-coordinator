@@ -19,6 +19,7 @@ function Toolbar(element, attrs, editor, I18n) {
           pathRegex: />B\b/
         };
         break;
+
       case 'italic':
         controls.italic = {
           element: $('<div class="rich-text-editor-button italic icon-italic2" title="' + I18n.richTextEditor.italic + '"></button>').
@@ -27,6 +28,7 @@ function Toolbar(element, attrs, editor, I18n) {
           pathRegex: />I\b/
         };
         break;
+
       case 'underline':
         controls.underline = {
           element: $('<div class="rich-text-editor-button underline icon-underline" title="' + I18n.richTextEditor.underline + '">u</button>').
@@ -35,6 +37,7 @@ function Toolbar(element, attrs, editor, I18n) {
           pathRegex: />U\b/
         };
         break;
+
       case 'anchor':
       case 'link':
         controls.anchor = {
@@ -81,6 +84,7 @@ function Toolbar(element, attrs, editor, I18n) {
     }
   });
 }
+
 // Add instance methods
 $.extend(Toolbar.prototype, {
   toggleBold: function() {
@@ -133,7 +137,7 @@ $.extend(Toolbar.prototype, {
     if (!/^https?:\/\//.test(url)) {
       url = 'http://' + url;
     }
-    var urlOptions = { target: '_blank' };
+    var urlOptions = { target: '_blank', rel: 'nofollow external' };
     this.editor.makeLink(url, urlOptions);
 
     this.hideAnchorInput();

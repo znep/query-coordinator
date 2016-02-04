@@ -71,6 +71,13 @@ module AdminHelper
     )
   end
 
+  def admin_user_zoom
+    render :partial => 'templates/userzoom_survey_script', :locals => {
+      :userzoom_set_id => 'E2A55F5C0FC6E51180CC0050569444FB',
+      :userzoom_set_sid => 'E1A55F5C0FC6E51180CC0050569444FB'
+    }
+  end
+
   private
 
   def a11y_summary(opts)

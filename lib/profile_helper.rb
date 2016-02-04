@@ -48,6 +48,15 @@ module ProfileHelper
     end
   end
 
+  def profile_user_zoom
+    if current_domain.member?(current_user)
+      render :partial => 'templates/userzoom_survey_script', :locals => {
+        :userzoom_set_id => '8EEF9FD913C6E51180CC0050569444FB',
+        :userzoom_set_sid => '8DEF9FD913C6E51180CC0050569444FB'
+      }
+    end
+  end
+
   private
 
   def story_url(view)

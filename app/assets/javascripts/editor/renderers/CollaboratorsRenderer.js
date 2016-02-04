@@ -183,7 +183,7 @@
     }
 
     function attachEvents() {
-      debouncedHandleKeys = _.debounce(handleKeys, 5000);
+      debouncedHandleKeys = _.debounce(handleKeys, 250);
 
       storyteller.collaboratorsStore.addChangeListener(render);
       $collaborators.on('click', '[data-action]', dispatchActions);

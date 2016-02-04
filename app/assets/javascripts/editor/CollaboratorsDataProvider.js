@@ -45,8 +45,7 @@
             // Add the primary owner to the list of grants.
             grants = grants.concat({
               primary: true,
-              userId: storyteller.storyStore.
-                getStoryCreatedBy(storyteller.userStoryUid)
+              userId: storyteller.storyStore.getStoryPrimaryOwnerUid()
             });
 
             var promises = _.chain(grants).

@@ -1734,6 +1734,8 @@ en:
           status: Status
           showing_most_recent: Showing the most recent %{limit} jobs
           title: Data Jobs
+          deleted_dataset: Dataset has been deleted
+          deleted_user: User has been deleted
         show_page:
           back: Back to jobs list
           error_details_heading: Error details

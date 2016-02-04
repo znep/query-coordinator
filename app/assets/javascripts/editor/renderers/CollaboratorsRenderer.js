@@ -46,7 +46,6 @@
               '<div class="modal-input-group">' +
                 '<input type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')) +
                 '<div class="modal-radio-group">' +
-                  '<div class="alert info hidden">{0}</div>'.format(t('editor.collaborators.modal.licenses')) +
                   '<div class="alert warning-bar hidden adding-self"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.adding_self')) +
                   '<div class="alert warning-bar hidden already-added"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.already_added')) +
                   '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.access_level')) +
@@ -66,6 +65,7 @@
                       '</label>' +
                     '</li>' +
                     '<li>' +
+                      '<div class="radio-label-subtitle alert info"><small>{0}</small></div>'.format(t('editor.collaborators.modal.licenses')) +
                       '<label class="disabled">' +
                         '<input type="radio" value="owner" name="access-levels" disabled>' +
                         '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.owner')) +
@@ -183,13 +183,13 @@
     }
 
     function attachEvents() {
-      debouncedHandleKeys = _.debounce(handleKeys, 250);
+      debouncedHandleKeys = _.debounce(handleKeys, 5000);
 
       storyteller.collaboratorsStore.addChangeListener(render);
       $collaborators.on('click', '[data-action]', dispatchActions);
       $collaborators.on('modal-dismissed', handleModalDismissed);
       $collaborators.on('change', 'td select', dispatchActions);
-      $collaborators.on('keyup', 'input[type="email"]', debouncedHandleKeys);
+      $collaborators.on('keyup paste', 'input[type="email"]', debouncedHandleKeys);
       $collaborators.on('change', 'input[type="radio"]', debouncedHandleKeys);
     }
 
@@ -197,16 +197,15 @@
       $collaborators.off('click', '[data-action]', dispatchActions);
       $collaborators.off('modal-dismissed', handleModalDismissed);
       $collaborators.off('change', 'td select', dispatchActions);
-      $collaborators.off('keyup', 'input[type="email"]', debouncedHandleKeys);
+      $collaborators.off('keyup paste', 'input[type="email"]', debouncedHandleKeys);
+      $collaborators.off('change', 'input[type="radio"]', debouncedHandleKeys);
+
       storyteller.collaboratorsStore.removeChangeListener(render);
     }
 
-    function showInfoMessageAndDisableOwnerSelection() {
+    function disableOwnerSelectionAndPossiblyDisableButton() {
       var ownerSelectionChecked = $collaborators.find('.modal-radio-group ul li:last-child input:checked').length >= 1;
 
-      $collaborators.
-        find('.modal-radio-group .info').
-        removeClass('hidden');
       $collaborators.find('.modal-radio-group ul li:last-child label').
         addClass('disabled');
       $collaborators.
@@ -220,10 +219,7 @@
       }
     }
 
-    function hideInfoMessageAndDisableOwnerSelection() {
-      $collaborators.
-        find('.modal-radio-group .info').
-        addClass('hidden');
+    function disableOwnerSelection() {
       $collaborators.
         find('.modal-radio-group ul li:last-child label').
         addClass('disabled');
@@ -232,10 +228,7 @@
         prop('disabled', true);
     }
 
-    function hideInfoMessageAndEnableOwnerSelection() {
-      $collaborators.
-        find('.modal-radio-group .info').
-        addClass('hidden');
+    function enableOwnerSelection() {
       $collaborators.
         find('.modal-radio-group .disabled input').
         prop('disabled', false);
@@ -265,28 +258,27 @@
           var user = _.get(data, 'results[0]');
 
           if (user && hasStoriesRole(user.roleName)) {
-            hideInfoMessageAndEnableOwnerSelection();
+            enableOwnerSelection();
           } else {
-            showInfoMessageAndDisableOwnerSelection();
+            disableOwnerSelectionAndPossiblyDisableButton();
           }
         }, function() {
-          showInfoMessageAndDisableOwnerSelection();
+          disableOwnerSelectionAndPossiblyDisableButton();
         });
     }
 
     function handleKeys() {
       var $input = $collaborators.find('input[type="email"]');
-      var invalid = !$input[0].checkValidity();
       var value = $input.val();
+      var valid = Constants.VALID_EMAIL_REGEX.test(value);
       var isMissingValue = !value || value.length === 0;
-      var hasPartialEmail = /^@\w+$/i.test(value);
       var isSharingSelf = window.currentUser.email === value;
       var accessLevel = $collaborators.find('option:selected').val();
       var collaborator = {email: value, accessLevel: accessLevel};
       var hasCollaborator = storyteller.collaboratorsStore.hasCollaborator(collaborator);
-      var buttonDisabled = invalid || isMissingValue || hasCollaborator || isSharingSelf;
+      var buttonDisabled = !valid || isMissingValue || hasCollaborator || isSharingSelf;
       var buttonEnabled = !buttonDisabled;
-      var validEmail = !isMissingValue && !invalid && hasPartialEmail;
+      var validEmail = !isMissingValue && valid;
 
       $collaborators.
         find('.modal-input-group button').
@@ -294,19 +286,19 @@
 
       if (hasCollaborator) {
         showAlreadyAddedWarning();
-        hideInfoMessageAndDisableOwnerSelection();
+        disableOwnerSelection();
       } else if (isSharingSelf) {
         showSharingSelfWarning();
-        hideInfoMessageAndDisableOwnerSelection();
+        disableOwnerSelection();
       } else if (buttonEnabled) {
         hideAllWarnings();
         determineIfUserHasStoriesRole(value);
       } else if (validEmail) {
         hideAllWarnings();
-        showInfoMessageAndDisableOwnerSelection();
+        disableOwnerSelectionAndPossiblyDisableButton();
       } else {
         hideAllWarnings();
-        hideInfoMessageAndDisableOwnerSelection();
+        disableOwnerSelection();
       }
     }
 
@@ -534,7 +526,6 @@
     function resetInputs() {
       $collaborators.find('.modal-input-group input[type="email"]').val('');
       $collaborators.find('.modal-input-group button').prop('disabled', true);
-      $collaborators.find('.modal-radio-group .info').addClass('hidden');
       $collaborators.find('.modal-radio-group ul li:first-child input').prop('checked', true);
       $collaborators.find('.modal-radio-group ul li:last-child label').addClass('disabled');
       $collaborators.find('.modal-radio-group ul li:last-child input').prop('disabled', true);

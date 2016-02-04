@@ -265,18 +265,14 @@
 
 .alert.info {
   font-size: 1.5rem;
-  padding: 1.1rem;
-	background-color: #d5eaf8;
-	border: solid 1px #2C97DE;
-	color: #1f6a9b;
-  opacity: 1;
+	background-color: #E0EFF9;
+  border: none;
+  color: #1f6a9b;
+  padding: 0.75rem 1.1rem;
+  margin-top: 15px;
+  padding-left: 3rem;
 
   a {
     color: #2295E1;
-  }
-
-  &.hidden {
-    opacity: 0;
-    transition: opacity .2s;
   }
 }

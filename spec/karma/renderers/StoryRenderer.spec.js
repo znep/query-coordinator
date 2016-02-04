@@ -54,13 +54,6 @@ describe('StoryRenderer', function() {
     storyteller.RichTextEditorManagerMocker.unmock();
   });
 
-  function forceRender() {
-    storyteller.dispatcher.dispatch({
-      action: Actions.STORY_OVERWRITE_STATE,
-      data: storyteller.storyStore.serializeStory(storyUid)
-    });
-  }
-
   describe('constructor', function() {
 
     describe('when passed a configuration object', function() {
@@ -301,7 +294,6 @@ describe('StoryRenderer', function() {
           it('renders blocks but no insertion hint', function() {
 
             storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-            forceRender();
 
             assert($('.block').length > 0, 'there is more than one block');
             assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is hidden');

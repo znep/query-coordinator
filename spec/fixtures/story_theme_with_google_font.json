@@ -1,0 +1,36 @@
+[
+  {
+    "default": true,
+    "domainCName": "bobloblawslawblog.com",
+    "id": 234,
+    "name": "Story Theme 1",
+    "properties": [
+      {
+        "name": "id",
+        "value": "drab"
+      },
+      {
+        "name": "title",
+        "value": "Drab"
+      },
+      {
+        "name": "description",
+        "value": "Drab Theme"
+      },
+      {
+        "name": "google_font_code",
+        "value": "<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>"
+      },
+      {
+        "name": "css_variables",
+        "value": {
+          "$medium": "768px",
+          "$large": "1200px",
+          "$xlarge": "1400px",
+          "$xxlarge": "1600px"
+        }
+      }
+    ],
+    "type": "story_theme"
+  }
+]

@@ -1,7 +1,22 @@
 <% theme_variables ||= [] -%>
 <% help_text ||= '' -%>
+<% collapsible ||= false -%>
+<% collapse_checkbox_title_text ||= section_name -%>
 <% unless theme_variables.blank? -%>
-  <div class="form-section <%= section_name %>" >
+
+  <%=
+    if collapsible
+      render partial: 'form_section_checkbox',
+         locals: {
+           section_name: section_name,
+           collapse_checkbox_title_text: collapse_checkbox_title_text,
+           collapse_checkbox_help_text: collapse_checkbox_help_text.to_s,
+           theme: theme
+      }
+    end
+  %>
+
+  <div class="form-section <%= section_name %>" data-section-name="<%= section_name %>">
     <div class="form-fields form-fields-label-above">
       <% theme_variables.each do |var_name| -%>
         <div class="form-group">
@@ -11,11 +26,11 @@
           <%= label_tag field_name, t(".#{var_name}") %>
           <%= text_field_tag field_name, value, class: "text-input" %>
         </div>
-      <% end %>  
+      <% end %>
     </div>
 
     <div class="help">
-      <%= help_text.html_safe %>
+      <%== help_text %>
     </div>
   </div>
 <% end -%>

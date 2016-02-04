@@ -11,6 +11,10 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
       }
     end
 
+    before do
+      stub_sufficient_rights
+    end
+
     context 'when not authenticated' do
       before do
         stub_invalid_session
@@ -67,5 +71,56 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
         end
       end
     end
+  end
+
+  describe '#require_sufficient_rights' do
+    let(:action) { :nothing }
+    let(:get_request) { get action, uid: 'test-test' }
+
+    before do
+      stub_core_view('test-test')
+      stub_valid_session
+    end
+
+    describe 'when creating a published story' do
+      let(:admin) { false }
+      let(:owner) { false }
+      let(:action) { 'create' }
+
+      before do
+        story = double('story', :attributes => {})
+        story_publisher = instance_double('story_publisher', :publish => true, :story => story)
+
+        allow(controller).to receive(:admin?).and_return(admin)
+        allow(controller).to receive(:owner?).and_return(owner)
+        allow(StoryPublisher).to receive(:new).and_return(story_publisher)
+      end
+
+      describe 'and the user is an admin' do
+        let(:admin) { true }
+
+        it 'does not 403' do
+          get_request
+          expect(response.status).to_not be(403)
+        end
+      end
+
+      describe 'and the user is an owner' do
+        let(:owner) { true }
+
+        it 'does not 403' do
+          get_request
+          expect(response.status).to_not be(403)
+        end
+      end
+
+      describe 'and the user is neither admin nor owner' do
+        it '403s' do
+          get_request
+          expect(response.status).to be(403)
+        end
+      end
+    end
+
   end
 end

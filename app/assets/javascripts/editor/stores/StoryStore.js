@@ -59,10 +59,6 @@
           _setStoryPublishedStory(payload);
           break;
 
-        case Actions.STORY_OVERWRITE_STATE:
-          _overwriteStory(payload.data);
-          break;
-
         case Actions.STORY_MOVE_BLOCK_UP:
           _moveBlockUp(payload);
           break;
@@ -138,6 +134,11 @@
       return _.cloneDeep(story.permissions);
     };
 
+    this.getStoryCreatedBy = function(storyUid) {
+      var story = _getStory(storyUid);
+      return story.createdBy;
+    };
+
     this.getStoryPublishedStory = function(storyUid) {
       var story = _getStory(storyUid);
 
@@ -200,6 +201,7 @@
       return _.cloneDeep(components[index]);
     };
 
+    // Serialize the story for saving purposes.
     this.serializeStory = function(storyUid) {
 
       var story = _getStory(storyUid);
@@ -213,6 +215,12 @@
       };
     };
 
+    // Provides a snapshot of a story's editing state,
+    // for later application via HISTORY_UNDO and HISTORY_REDO.
+    this.snapshotContents = function(storyUid) {
+      return _.cloneDeep(this.serializeStory(storyUid));
+    };
+
     /**
      * Private methods
      */
@@ -220,6 +228,7 @@
     /**
      * Action responses
      */
+
 
     function _setStoryTitle(payload) {
 
@@ -470,23 +479,9 @@
     }
 
     /**
-     * Updates a story in this store according to the provided story JSON.
-     * If the argument's uid property does not correspond to a story already
-     * in this store, an error is thrown.
-     */
-    function _overwriteStory(storyData) {
-      utils.assert(
-        _stories.hasOwnProperty(storyData.uid),
-        'Cannot overwrite story: story with uid {0} does not exist.'.format(storyData.uid)
-      );
-
-      _setStory(storyData);
-    }
-
-    /**
      * Deserializes a story represented as a JSON blob into this store.
-     * Consider using _importStory or _overwriteStory, as they verify
-     * the presence/absence of the story in the store (this function
+     * Consider using _importStory, as it verifies
+     * the absence of the story in the store (this function
      * overwrites/creates blindly).
      */
     function _setStory(storyData) {
@@ -507,7 +502,8 @@
         theme: storyData.theme,
         blockIds: blockIds,
         digest: storyData.digest,
-        permissions: storyData.permissions
+        permissions: storyData.permissions,
+        createdBy: storyData.createdBy
       };
 
       self._emitChange();
@@ -549,10 +545,14 @@
     function _validateStoryData(storyData) {
 
       utils.assertIsOneOfTypes(storyData, 'object');
-      utils.assertHasProperty(storyData, 'uid');
-      utils.assertHasProperty(storyData, 'title');
-      utils.assertHasProperty(storyData, 'description');
-      utils.assertHasProperty(storyData, 'blocks');
+      utils.assertHasProperties(
+        storyData,
+        'uid',
+        'title',
+        'description',
+        'blocks',
+        'permissions'
+      );
 
       if (storyData.uid.match(FOUR_BY_FOUR_PATTERN) === null) {
         throw new Error(
@@ -650,15 +650,21 @@
     function _applyHistoryState() {
       storyteller.dispatcher.waitFor([ storyteller.historyStore.getDispatcherToken() ]);
 
-      var serializedStory = storyteller.historyStore.getStateAtCursor();
+      var snapshot = storyteller.historyStore.getStorySnapshotAtCursor();
+      var currentStoryData = _getStory(snapshot.uid);
 
-      if (serializedStory) {
-        var deserializedStory = JSON.parse(serializedStory);
-        // Make sure we keep the latest digest - if a user undoes past a save,
-        // saving a draft should continue to work.
-        deserializedStory.digest = self.getStoryDigest(deserializedStory.uid);
+      if (snapshot) {
+        // The snapshot is actually a story data blob.
+        utils.assert(!snapshot.digest); // This should never be present. Otherwise, autosave will break.
 
-        _overwriteStory(deserializedStory);
+        // Preserve annotations such as permissions that _shouldn't_ be in a history snapshot.
+        var newStoryContent = _.extend(
+          {},
+          currentStoryData,
+          snapshot
+        );
+
+        _setStory(newStoryContent);
       }
     }
   }

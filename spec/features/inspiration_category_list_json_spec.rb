@@ -26,8 +26,8 @@ RSpec.describe 'inspiration block list json', type: :feature, js: true do
     page.evaluate_multiline_script("
       var inspirationBlocks = $('[data-block-content]');
       var storyData = storyteller.storyStore.serializeStory(storyteller.userStoryUid);
-      var inspirationBlockContent = [];
 
+      // Insert all inspiration blocks
       $.each(inspirationBlocks, function(index, block) {
         var blockContent = JSON.parse(block.getAttribute('data-block-content'));
 
@@ -40,18 +40,15 @@ RSpec.describe 'inspiration block list json', type: :feature, js: true do
         });
 
         if (shouldTestComponent) {
-          inspirationBlockContent.push(blockContent);
+         storyteller.dispatcher.dispatch({
+           action: Actions.STORY_INSERT_BLOCK,
+           storyUid: storyteller.userStoryUid,
+           insertAt: 0,
+           blockContent: blockContent
+         });
         }
       });
-
-      // Override existing user story with all inspiration blocks
-      storyData.blocks = inspirationBlockContent;
-
-      // Trigger a re-render
-      storyteller.dispatcher.dispatch({
-        action: Actions.STORY_OVERWRITE_STATE,
-        data: storyData
-      });"
+      "
     )
     # No need for assertions, as any javascript errors will cause the test to fail
 

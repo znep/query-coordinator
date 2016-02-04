@@ -119,6 +119,18 @@
       );
 
       _container.on(
+        'input',
+        '[data-asset-selector-validate-field="storyUrl"]',
+        function(event) {
+
+          storyteller.dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_UPDATE_STORY_URL,
+            url: $(event.target).val()
+          });
+        }
+      );
+
+      _container.on(
         'cut paste keyup',
         '[data-asset-selector-validate-field="youtubeId"]',
         function(event) {
@@ -272,6 +284,11 @@
             selectorContent = _renderChooseProvider();
             break;
 
+          case WIZARD_STEP.ENTER_STORY_URL:
+            selectorTitle = I18n.t('editor.asset_selector.story_widget.heading');
+            selectorContent = _renderChooseStoryTemplate(componentValue);
+            break;
+
           case WIZARD_STEP.ENTER_YOUTUBE_URL:
             selectorTitle = I18n.t('editor.asset_selector.youtube.heading');
             selectorContent = _renderChooseYoutubeTemplate(componentValue);
@@ -338,6 +355,10 @@
       // not update dynamically
       switch (step) {
 
+        case WIZARD_STEP.ENTER_STORY_URL:
+          _renderChooseStoryData(componentValue);
+          break;
+
         case WIZARD_STEP.ENTER_YOUTUBE_URL:
           _renderChooseYoutubeData(componentValue);
           break;
@@ -382,6 +403,11 @@
       var imageUploadDescription = $('<p>').
         text(I18n.t('editor.asset_selector.image_upload.description'));
 
+      var storyWidgetHeader = $('<h3>').
+        text(I18n.t('editor.asset_selector.story_widget.name'));
+      var storyWidgetDescription = $('<p>').
+        text(I18n.t('editor.asset_selector.story_widget.description'));
+
       var embedCodeHeader = $('<h3>').
         text(I18n.t('editor.asset_selector.embed_code.name'));
       var embedCodeDescription = $('<p>').
@@ -391,6 +417,9 @@
         $('<li>', {
           'data-provider': 'SOCRATA_VISUALIZATION'
         }).append(visualizationHeader, visualizationDescription),
+        $('<li>', {
+          'data-provider': 'STORY_WIDGET'
+        }).append(storyWidgetHeader, storyWidgetDescription),
         $('<li>', {
           'data-provider': 'YOUTUBE'
         }).append(youtubeHeader, youtubeDescription),
@@ -667,6 +696,166 @@
         insertButton.prop('disabled', false);
       } else {
         insertButton.prop('disabled', true);
+      }
+    }
+
+    function _renderChooseStoryTemplate() {
+
+      var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
+        text(I18n.t('editor.asset_selector.story_widget.input_label'));
+
+      var inputControl = $(
+        '<input>',
+        {
+          'class': 'asset-selector-text-input',
+          'data-asset-selector-validate-field': 'storyUrl',
+          'placeholder': 'https://www.example.com/stories/s/abcd-efgh',
+          'type': 'text'
+        }
+      );
+
+      var previewInvalidMessageTitle = $(
+        '<div>',
+        { 'class': 'asset-selector-invalid-title' }
+      ).html(
+        [
+          I18n.t('editor.asset_selector.story_widget.invalid_message_title_1'),
+          '<br />',
+          I18n.t('editor.asset_selector.story_widget.invalid_message_title_2')
+        ].join('')
+      );
+
+      var previewInvalidMessageDescription = $(
+        '<div>',
+        { 'class': 'asset-selector-invalid-description' }
+      ).text(
+        I18n.t('editor.asset_selector.story_widget.invalid_message_description')
+      );
+
+      var previewInvalidMessage = $(
+        '<div>',
+        {
+          'class': 'asset-selector-invalid-message'
+        }
+      ).append([
+        previewInvalidMessageTitle,
+        previewInvalidMessageDescription
+      ]);
+
+      var previewWidgetContainer = $(
+        '<div>',
+        {
+          'class': 'asset-selector-preview-widget-container'
+        }
+      );
+
+      var previewContainer = $(
+        '<div>',
+        {
+          'class': 'asset-selector-preview-container asset-selector-story-widget-preview-container'
+        }
+      ).append([
+        previewInvalidMessage,
+        previewWidgetContainer
+      ]);
+
+      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+
+      var insertButton = $(
+        '<button>',
+        {
+          'class': 'btn btn-primary btn-apply'
+        }
+      ).text(_insertButtonText());
+
+      var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
+        inputLabel,
+        inputControl,
+        previewContainer
+      ]);
+
+      var buttonGroup = $(
+        '<div>',
+        {
+          'class': 'modal-button-group r-to-l'
+        }).append([ backButton, insertButton ]);
+
+      return [ content, buttonGroup ];
+    }
+
+    function _renderChooseStoryData(componentProperties) {
+      var $previewContainer = _container.find('.asset-selector-preview-container');
+      var $storyWidgetPreviewContainer = _container.find('.asset-selector-preview-widget-container');
+      var $inputControl = _container.find('[data-asset-selector-validate-field="storyUrl"]');
+      var $insertButton = _container.find('.btn-apply');
+      var storyDomain = null;
+      var storyUid = null;
+      var renderedStoryDomain = $storyWidgetPreviewContainer.attr('data-rendered-story-domain');
+      var renderedStoryUid = $storyWidgetPreviewContainer.attr('data-rendered-story-uid');
+      var componentData;
+
+      if (componentProperties !== null &&
+        _.has(componentProperties, 'domain') &&
+        _.has(componentProperties, 'storyUid')) {
+
+        storyDomain = componentProperties.domain;
+        storyUid = componentProperties.storyUid;
+      }
+
+      if (storyDomain !== null && storyUid !== null) {
+
+        if (
+          storyDomain !== renderedStoryDomain ||
+          storyUid !== renderedStoryUid
+        ) {
+
+          componentData = {
+            type: 'story.widget',
+            value: {
+              domain: storyDomain,
+              storyUid: storyUid
+            }
+          };
+
+          $storyWidgetPreviewContainer.
+            trigger('destroy').
+            empty().
+            append($('<div>').componentStoryWidget(componentData)).
+            attr('data-rendered-story-domain', storyDomain).
+            attr('data-rendered-story-uid', storyUid);
+
+          // If we have already configured a story but there is not currently-
+          // selected url, it is probably because we're editing an existing
+          // component. In order to make the UI consistent with this state,
+          // we can synthesize a valid URL for the component and set the value
+          // of the text input control to reflect that.
+          if (_.isEmpty($inputControl.val().replace(/\s/g, ''))) {
+            $inputControl.val(
+              'https://{0}/stories/s/{1}'.format(storyDomain, storyUid)
+            );
+          }
+
+          $previewContainer.removeClass('invalid');
+
+          $insertButton.prop('disabled', false);
+        }
+
+      } else {
+
+        $storyWidgetPreviewContainer.
+          trigger('destroy').
+          empty().
+          attr('data-rendered-story-domain', null).
+          attr('data-rendered-story-uid', null);
+
+        // Only show the 'invalid url' icon if the user has entered text.
+        if (_.isEmpty($inputControl.val().replace(/\s/g, ''))) {
+          $previewContainer.removeClass('invalid');
+        } else {
+          $previewContainer.addClass('invalid');
+        }
+
+        $insertButton.prop('disabled', true);
       }
     }
 

@@ -25,9 +25,6 @@
     // {object} publishedStory
     STORY_SET_PUBLISHED_STORY: 'STORY_SET_PUBLISHED_STORY',
 
-    // {object} data: Story data object.
-    STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
-
     // {string} storyUid
     // {string} blockId
     STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',
@@ -147,6 +144,13 @@
     //  - 'IMAGE'
     //  - 'EMBED_CODE'
     ASSET_SELECTOR_PROVIDER_CHOSEN: 'ASSET_SELECTOR_PROVIDER_CHOSEN',
+
+    /**
+     * Story widget embed flow
+     */
+
+    // {string} url
+    ASSET_SELECTOR_UPDATE_STORY_URL: 'ASSET_SELECTOR_UPDATE_STORY_URL',
 
     /**
      * YouTube embed flow
@@ -312,6 +316,12 @@
 
     // No payload
     COLLABORATORS_ERROR: 'COLLABORATORS_ERROR',
+
+    // No payload
+    SHARE_AND_EMBED_MODAL_OPEN: 'SHARE_AND_EMBED_MODAL_OPEN',
+
+    // No payload
+    SHARE_AND_EMBED_MODAL_CLOSE: 'SHARE_AND_EMBED_MODAL_CLOSE',
 
     // No payload
     LOGIN_BUTTON_CLICK: 'LOGIN_BUTTON_CLICK'

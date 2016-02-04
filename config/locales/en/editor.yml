@@ -41,13 +41,26 @@ en:
         keep: 'Keep'
         remove: 'Remove'
         invite_collaborators: 'Invite Collaborators'
+        who_has_access: 'Who Has Access'
         owner: 'Co-Owner'
+        owner_description: 'Can control all aspects of the story, including sharing and publishing'
         contributor: 'Contributor'
+        contributor_description: 'Can edit the content on the story canvas'
         viewer: 'Viewer'
+        viewer_description: 'Can view the story, even if it is not published'
         no_collaborators: 'There are no collaborators for this story.'
+        licenses: 'Only individuals with a Perspectives license can be the co-owner of a story. <a href="https://support.socrata.com/hc/en-us/articles/216288698" target="_blank">Learn more</a>.'
         errors:
+          adding_self: "Sorry, you can't add yourself to your own story."
+          already_added: 'This collaborator already has access.'
           invalid_email: 'Please use a valid email address.'
           unknown_error: 'Looks like an unknown error occurred. Our engineers have been notified.'
+    share_and_embed:
+      modal:
+        heading: 'Share and Embed Your Story'
+        story_url_label: 'Story URL'
+        embed_code_label: 'Embed Code'
+        preview_label: 'Preview'
     rich_text_toolbar:
       link_modal:
         heading: 'Add a Link'
@@ -108,6 +121,8 @@ en:
           previously_published: 'There is a previously published version of this story. Updating will make your changes visible to everyone.'
         errors:
           not_published_not_updated: 'Your story has not been published and cannot be updated.'
+      story_widget_embed_section:
+        section_title: 'Share and Embed...'
     make_a_copy:
       cancel: 'Cancel'
       copy_warning: 'When a story is copied, Publishing and Visibility settings are set to private even if the current story is published.'
@@ -152,6 +167,14 @@ en:
         description_label: 'Image Description (optional)'
         description_alt_attribute: 'This text is called an alt attribute and will not be displayed on your story page '
         alt_attribute_tooltip: 'An alt attribute (short for alternative) is the text displayed in place of an image in the event that the image cannot be loaded.  It’s also used by screen reader software to describe the image so that users of assistive technology can interact with the elements of the page.'
+      story_widget:
+        name: 'Socrata Story Widget'
+        description: 'Insert a preview of another story.'
+        heading: 'Add a Preview of Another Story'
+        input_label: 'Link to story'
+        invalid_message_title_1: 'Oh No!'
+        invalid_message_title_2: 'Something went wrong.'
+        invalid_message_description: 'Try using a valid link to a Socrata Perspectives Story.'
       embed_code:
         name: 'HTML Embed'
         description: 'Insert embed code to include external web content.'
@@ -169,6 +192,8 @@ en:
       saving: 'Saving...'
       unsaved: 'Save'
       idle: 'Save'
+    story_widget:
+      view_story_prompt: 'View Story'
     visualizations:
       no_value_placeholder: '(No value)'
       default_unit:

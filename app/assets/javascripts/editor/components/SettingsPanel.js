@@ -155,6 +155,11 @@
             action: Actions.STORY_MAKE_COPY_MODAL_OPEN
           });
           break;
+        case Actions.SHARE_AND_EMBED_MODAL_OPEN:
+          storyteller.dispatcher.dispatch({
+            action: Actions.SHARE_AND_EMBED_MODAL_OPEN
+          });
+          break;
       }
     }
 
@@ -174,13 +179,14 @@
     $(document).on('keydown', function(e) {
       var isCollaboratorsModalOpen = storyteller.collaboratorsStore.isOpen();
       var isCopyModalOpen = storyteller.storyCopierStore.getCurrentOpenState();
+      var isShareAndEmbedModalOpen = storyteller.shareAndEmbedStore.isOpen();
 
       if (e.ctrlKey && e.keyCode === 188) { // ',' because it's settings
         settingsPanel.trigger('sidebar:toggle');
       }
 
       if (e.keyCode === 27) { // esc
-        if (!isCollaboratorsModalOpen && !isCopyModalOpen) {
+        if (!isCollaboratorsModalOpen && !isCopyModalOpen && !isShareAndEmbedModalOpen) {
           settingsPanel.trigger('sidebar:close');
         }
       }

@@ -1,5 +1,9 @@
 module StoriesHelper
 
+  def core_attributes
+    @core_attributes ||= CoreServer.get_view(@story.uid) || {}
+  end
+
   def user_story_json
     @story.as_json.merge(
       {
@@ -30,6 +34,7 @@ module StoriesHelper
       'socrata.visualization.timelineChart' => 'component_socrata_visualization_timeline_chart',
       'socrata.visualization.featureMap' => 'component_socrata_visualization_feature_map',
       'spacer' => 'component_spacer',
+      'story.widget' => 'component_story_widget',
       'youtube.video' => 'component_youtube_video'
     }
 
@@ -125,9 +130,5 @@ module StoriesHelper
     {
       isPublic: grants.any? { |grant| (grant['flags'] || []).include?('public') }
     }
-  end
-
-  def core_attributes
-    @core_attributes ||= CoreServer.get_view(@story.uid) || {}
   end
 end

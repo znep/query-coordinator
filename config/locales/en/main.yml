@@ -20,6 +20,12 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  # Apparently YAML forbids beginning keys with numbers, so just like with the
+  # CSS rules, we'll call this key `stories_404` instead of just `404`.
+  stories_404:
+    status_code: '4&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;4'
+    title: 'Not Found'
+    description: 'Either this story does not exist or has not yet been published.'
   login_successful: 'Login Successful'
   taking_you_back_to_your_story: 'Taking you back to your story...'
   add_content_panel:
@@ -53,3 +59,6 @@ en:
     slab_theme_description: 'Bold and strong headlines make for easy reading.'
     heading_font_sample: 'Abc'
     render_error: 'There was an error'
+  widget:
+    no_description_label: 'This story has no description.'
+    read_more_prompt: 'Read more at '

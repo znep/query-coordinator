@@ -3,15 +3,18 @@ require 'uri'
 require 'json'
 
 class StoriesController < ApplicationController
+  include StoriesHelper
+  include UserAuthorizationHelper
 
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
-  skip_before_filter :require_logged_in_user, only: [:show]
+  skip_before_filter :require_logged_in_user, only: [:show, :widget]
 
   before_filter :require_sufficient_rights
 
-  helper_method :needs_view_assets?, :can_update_view?
+  after_action :allow_iframe, only: :widget
+  helper_method :needs_view_assets?, :contributor?
 
   def show
     @site_chrome = SiteChrome.for_current_domain
@@ -21,6 +24,34 @@ class StoriesController < ApplicationController
   def preview
     @site_chrome = SiteChrome.for_current_domain
     respond_with_story(DraftStory.find_by_uid(params[:uid]))
+  end
+
+  def widget
+    @story = PublishedStory.find_by_uid(params[:uid])
+
+    if @story
+      StoryAccessLogger.log_story_view_access(@story)
+
+      core_attributes = CoreServer.get_view(@story.uid) || {}
+
+      respond_to do |format|
+        format.html { render 'stories/widget', layout: 'widget' }
+        format.json {
+
+          render(
+            json: {
+              title: core_attributes['name'] || t('default_page_title'),
+              description: core_attributes['description'] || nil,
+              image: @story.block_images.first || nil,
+              theme: @story.theme,
+              url: story_url(uid: @story.uid)
+            }
+          )
+        }
+      end
+    else
+      render_404
+    end
   end
 
   def new
@@ -38,10 +69,10 @@ class StoriesController < ApplicationController
           RuntimeError.new,
           "TEMPORARY/DEBUG: No story title on view '#{view}'"
         )
-        tmp_render_404
+        render_404
       end
     else
-      tmp_render_404
+      render_404
     end
   end
 
@@ -124,7 +155,7 @@ class StoriesController < ApplicationController
         format.html { render 'stories/edit', layout: 'editor' }
       end
     else
-      tmp_render_404
+      render_404
     end
   end
 
@@ -132,12 +163,14 @@ class StoriesController < ApplicationController
     %w{ show preview }.include?(action_name)
   end
 
-  def can_update_view?
-    current_user_authorization.present? &&
-    current_user_authorization['rights'].include?('update_view')
-  end
-
   private
+
+  # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
+  # somewhere, but that clearly won't work with an embeddable widget so we
+  # remove it for this endpoint.
+  def allow_iframe
+    response.headers.except! 'X-Frame-Options'
+  end
 
   def respond_with_story(story)
     @story = story
@@ -149,7 +182,7 @@ class StoriesController < ApplicationController
         format.json { render json: @story }
       end
     else
-      tmp_render_404
+      render_404
     end
   end
 
@@ -205,11 +238,6 @@ class StoriesController < ApplicationController
     Block.create(example_block.except('id'))
   end
 
-  # TODO replace this with the real solution
-  def tmp_render_404
-    render text: 'Whoops! 404. Probably an invalid 4x4', status: 404
-  end
-
   def finish_story_creation(original_action, view, uid, title)
     return redirect_to "/stories/s/#{uid}/create", :flash => {
       :error => I18n.t('stories_controller.error_creating_story_flash')
@@ -243,21 +271,21 @@ class StoriesController < ApplicationController
 
   # This logic is duplicated in Frontend/Browse as story_url
   def require_sufficient_rights
-    return tmp_render_404 unless params.present? && params[:uid].present?
-
     action = params[:action]
-    view = CoreServer.get_view(
-      params[:uid]
-    )
-    published_story = PublishedStory.find_by_uid(params[:uid])
-
-    return tmp_render_404 unless view.present? && view['rights'].present?
 
     if action == 'edit'
-      tmp_render_404 unless view['rights'].include?('write')
-    elsif action == 'show' || action == 'preview'
-      tmp_render_404 unless view['rights'].include?('read')
-    elsif action == 'show' && view
+      render_404 unless can_edit_story?
+    elsif action == 'copy'
+      render text: 'It seems that you don\'t have access to do that. Sorry!', status: 403 unless can_make_copy?
+    elsif action == 'preview'
+      render_404 unless can_view_unpublished_story?
+    end
+  end
+
+  def render_404
+    respond_to do |format|
+      format.html { render 'stories/404', layout: '404', status: 404 }
+      format.json { render json: {error: '404 Not Found'}, status: 404 }
     end
   end
 end

@@ -1,0 +1,68 @@
+@import 'lib/variables';
+
+html {
+  font-size: 10px;
+
+  body {
+    background-color: aliceblue;
+    overflow-y: scroll;
+
+    .stories-404-container {
+      position: relative;
+      display: block;
+      margin: 10vh auto;
+      width: 50%;
+      min-width: 48rem;
+      max-width: 64rem;
+      min-height: 32rem;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 0.25rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      box-sizing: content-box;
+
+      .stories-404-status-code {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        left: 0;
+        top: 0;
+        font-size: 14rem;
+        font-weight: 200;
+        text-align: center;
+        color: #f4f4f4;
+      }
+
+      .stories-404-title {
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        font-size: 6rem;
+        font-weight: 200;
+        text-align: center;
+        color: #686868;
+      }
+
+      .stories-404-image {
+        position: relative;
+        display: block;
+        width: 100%;
+        background-color: #eee;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .stories-404-description {
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        font-size: 2rem;
+        font-weight: 200;
+        text-align: center;
+        color: #888;
+      }
+    }
+  }
+}

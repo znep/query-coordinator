@@ -70,6 +70,11 @@ $(document).on('ready', function() {
 
       switch (componentData.type) {
 
+        case 'story.widget':
+          $element.
+            componentStoryWidget(componentData);
+          break;
+
         case 'socrata.visualization.classic':
           $element.
             componentSocrataVisualizationClassic(componentData);

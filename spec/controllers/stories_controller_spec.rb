@@ -4,7 +4,6 @@ RSpec.describe StoriesController, type: :controller do
 
   before do
     stub_core_view('test-test')
-    stub_sufficient_rights
     # stub custom themes
     allow(CoreServer).to receive(:story_themes).and_return([])
     allow(StoryAccessLogger).to receive(:log_story_view_access)
@@ -12,6 +11,10 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#show' do
+
+    before do
+      stub_sufficient_rights
+    end
 
     context 'when there is a story with the given four by four' do
 
@@ -80,6 +83,7 @@ RSpec.describe StoriesController, type: :controller do
           expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
           get :show, uid: story_revision.uid, format: :json
         end
+
         it 'does not log view access when story does not exist' do
           expect(StoryAccessLogger).to_not receive(:log_story_view_access)
           get :show, uid: 'notf-ound'
@@ -96,9 +100,129 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
+  describe '#widget' do
+    let(:story_revision) { FactoryGirl.create(:published_story) }
+    let(:widget_title) { 'Widget Test' }
+    let(:widget_description) { 'Widget Test Description' }
+
+    before do
+      stub_core_view(story_revision.uid, {name: widget_title, description: widget_description})
+    end
+
+    context 'when html is requested' do
+      context 'when there is a story with the given four by four' do
+        it 'ignores vanity_text' do
+          get :widget, uid: story_revision.uid, vanity_text: 'haha'
+          expect(assigns(:story)).to eq(story_revision)
+        end
+
+        it 'renders when unauthenticated' do
+          stub_invalid_session
+          get :widget, uid: story_revision.uid
+
+          expect(response).to render_template(:widget)
+        end
+
+        it 'renders when authenticated' do
+          get :widget, uid: story_revision.uid
+
+          expect(response).to render_template(:widget)
+        end
+      end
+
+      context 'when there is no story with the given four by four' do
+        it 'returns 404' do
+          get :widget, uid: 'notf-ound'
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      describe 'google analytics' do
+        render_views
+
+        context 'when not configured' do
+          it 'does not render google analytics partial' do
+            get :widget, uid: story_revision.uid
+            expect(response.body).to_not have_content(@google_analytics_tracking_id)
+          end
+        end
+
+        context 'when configured' do
+          before do
+            stub_google_analytics
+          end
+
+          it 'renders google analytics partial' do
+            get :widget, uid: story_revision.uid
+            expect(response.body).to have_content(@google_analytics_tracking_id)
+          end
+        end
+      end
+    end
+
+    context 'when json is requested' do
+      context 'when there is a story with the given four by four' do
+        it 'ignores vanity_text' do
+          get :widget, uid: story_revision.uid, vanity_text: 'haha', format: :json
+          expect(assigns(:story)).to eq(story_revision)
+        end
+
+        it 'responds when unauthenticated' do
+          stub_invalid_session
+          get :widget, uid: story_revision.uid, format: :json
+
+          response_json_as_hash = JSON.parse(response.body)
+          expect(response_json_as_hash['title']).to eq(widget_title)
+          expect(response_json_as_hash['image']).to eq(nil)
+          expect(response_json_as_hash['description']).to eq(widget_description)
+          expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
+        end
+
+        it 'responds when authenticated' do
+          stub_invalid_session
+          get :widget, uid: story_revision.uid, format: :json
+
+          response_json_as_hash = JSON.parse(response.body)
+          expect(response_json_as_hash['title']).to eq(widget_title)
+          expect(response_json_as_hash['image']).to eq(nil)
+          expect(response_json_as_hash['description']).to eq(widget_description)
+          expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
+        end
+      end
+
+      context 'when there is no story with the given four by four' do
+        it 'returns 404' do
+          get :widget, uid: 'notf-ound', format: :json
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    describe 'log view access' do
+      it 'logs view access when story exists' do
+        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        get :widget, uid: story_revision.uid
+      end
+
+      it 'logs view access for json requests' do
+        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        get :widget, uid: story_revision.uid, format: :json
+      end
+
+      it 'does not log view access when story does not exist' do
+        expect(StoryAccessLogger).to_not receive(:log_story_view_access)
+        get :widget, uid: 'notf-ound'
+      end
+    end
+  end
+
   describe '#copy' do
     let!(:story_revision) { FactoryGirl.create(:draft_story_with_blocks) }
     let(:story_copy_title) { "Copy of #{mock_valid_lenses_view_title}" }
+
+    before do
+      stub_sufficient_rights
+    end
 
     context 'when authenticated' do
       before do
@@ -217,6 +341,10 @@ RSpec.describe StoriesController, type: :controller do
 
   describe '#preview' do
 
+    before do
+      stub_sufficient_rights
+    end
+
     context 'when authenticated' do
       before do
         stub_valid_session
@@ -310,6 +438,10 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#new' do
+
+    before do
+      stub_sufficient_rights
+    end
 
     context 'when authenticated' do
       before do
@@ -425,6 +557,10 @@ RSpec.describe StoriesController, type: :controller do
 
   describe '#create' do
 
+    before do
+      stub_sufficient_rights
+    end
+
     context 'when authenticated' do
       before do
         stub_valid_session
@@ -531,6 +667,10 @@ RSpec.describe StoriesController, type: :controller do
 
   describe '#edit' do
 
+    before do
+      stub_sufficient_rights
+    end
+
     context 'when authenticated' do
       before do
         stub_valid_session
@@ -621,5 +761,92 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
+  describe '#require_sufficient_rights' do
+    let(:action) { :nothing }
+    let(:get_request) { get action, uid: 'test-test' }
+
+    before do
+      stub_valid_session
+    end
+
+    describe 'editing' do
+      let(:action) { :edit }
+
+      before do
+        allow(controller).to receive(:can_edit_story?).and_return(can_edit_story)
+      end
+
+      describe 'when user can edit story' do
+        let(:can_edit_story) { true }
+
+        it 'does not 404' do
+          get_request
+          expect(response.status).to_not be(404)
+        end
+      end
+
+      describe 'when user cannot edit story' do
+        let(:can_edit_story) { false }
+
+        it '404s' do
+          get_request
+          expect(response.status).to be(404)
+        end
+      end
+    end
+
+    describe 'copying' do
+      let(:action) { :copy }
+
+      before do
+        allow(controller).to receive(:can_make_copy?).and_return(can_make_copy)
+        allow(DraftStory).to receive(:find_by_uid).and_return(nil)
+      end
+
+      describe 'when user can make copy' do
+        let(:can_make_copy) { true }
+
+        it 'does not 403' do
+          get_request
+          expect(response.status).to_not be(403)
+        end
+      end
+
+      describe 'when user cannot make copy' do
+        let(:can_make_copy) { false }
+
+        it '403s' do
+          get_request
+          expect(response.status).to be(403)
+        end
+      end
+    end
+
+    describe 'previewing' do
+      let(:action) { :preview }
+
+      before do
+        allow(controller).to receive(:can_view_unpublished_story?).and_return(can_view_unpublished_story)
+      end
+
+      describe 'when user can view an unpublished story' do
+        let(:can_view_unpublished_story) { true }
+
+        it 'does not 404' do
+          get_request
+          expect(response.status).to_not be(404)
+        end
+      end
+
+      describe 'when user cannot view an unpublished story' do
+        let(:can_view_unpublished_story) { false }
+
+        it '404s' do
+          get_request
+          expect(response.status).to be(404)
+        end
+      end
+    end
+  end
 
 end

@@ -15,7 +15,7 @@
     "jQuery-sidebar": "socrata-platform/jQuery-sidebar#master",
     "leaflet": "0.7.3",
     "moment": "~2.10.6",
-    "socrata-utils": "git@github.com:socrata/frontend-utils.git#1.1.1",
+    "socrata-utils": "git@github.com:socrata/frontend-utils.git#1.1.2",
     "socrata-visualizations": "git@github.com:socrata/frontend-visualizations.git#master",
     "squire-rte": "git@github.com:socrata-platform/Squire.git#1.4.2-fixes",
     "unidragger": "~1.1.3",
@@ -23,6 +23,6 @@
     "sinon-1.17.2": "http://sinonjs.org/releases/sinon-1.17.2.js"
   },
   "resolutions": {
-    "socrata-utils": "1.1.1"
+    "socrata-utils": "1.1.2"
   }
 }

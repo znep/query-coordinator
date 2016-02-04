@@ -9,7 +9,7 @@ $(document).on('ready', function() {
 
   storyteller.csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-  storyteller.airbrake = new storyteller.Airbrake({
+  storyteller.airbrake = new storyteller.ExceptionNotifier({
     'environment': storyteller.config.getAirbrakeConfig('environment'),
     'projectKey': storyteller.config.getAirbrakeConfig('projectKey'),
     'projectId': storyteller.config.getAirbrakeConfig('projectId')
@@ -79,6 +79,7 @@ $(document).on('ready', function() {
   storyteller.storyCopierStore = new storyteller.StoryCopierStore();
   storyteller.collaboratorsStore = new storyteller.CollaboratorsStore();
   storyteller.userSessionStore = new storyteller.UserSessionStore();
+  storyteller.shareAndEmbedStore = new storyteller.ShareAndEmbedStore();
   storyteller.flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
   socrata.visualizations.views.RowInspector.setup();
@@ -107,6 +108,7 @@ $(document).on('ready', function() {
   var errorModalRenderer = new storyteller.ErrorModalRenderer();
   var linkTipRenderer = new storyteller.LinkTipRenderer();
   var collaboratorsRenderer = new storyteller.CollaboratorsRenderer();
+  var shareAndEmbedRenderer = new storyteller.ShareAndEmbedRenderer();
   var loginWindowRenderer = new storyteller.LoginWindowRenderer();
   /*eslint-enable no-unused-vars */
 

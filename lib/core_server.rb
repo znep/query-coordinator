@@ -49,34 +49,51 @@ class CoreServer
     configurations_request(verb: :get, type: 'site_chrome', default_only: false, merge: false)
   end
 
-  def self.current_user_authorization(user, uid)
+  def self.current_user_story_authorization
+    authorization = nil
+    stored_authorization = ::RequestStore.store[:current_user_story_authorization]
+
+    return stored_authorization if stored_authorization.present?
+
+    user = CoreServer.current_user
+    uid = ::RequestStore.store[:story_uid]
+
     if user.present? && uid.present?
       view = CoreServer.get_view(uid)
 
       if view.present?
+        domain_role = user['roleName'] || 'unknown'
         corresponding_grant = lambda { |grant| grant['userId'] == user['id'] }
         is_primary_owner = view['owner']['id'] == user['id']
         has_user_grant = view['grants'].present? && view['grants'].one?(&corresponding_grant)
 
         if is_primary_owner
-          {
-            'role' => 'owner',
-            'rights' => view['rights'],
+          authorization = {
+            'domainRole' => domain_role,
+            'domainRights' => user['rights'],
+            'viewRole' => 'owner',
+            'viewRights' => view['rights'],
             'primary' => true
           }
         elsif has_user_grant
-          {
-            'role' => view['grants'].find(&corresponding_grant)['type'],
-            'rights' => view['rights']
+          authorization = {
+            'domainRole' => domain_role,
+            'domainRights' => user['rights'],
+            'viewRole' => view['grants'].find(&corresponding_grant)['type'],
+            'viewRights' => view['rights']
           }
         else
-          {
-            'role' => 'unknown',
-            'rights' => view['rights']
+          authorization = {
+            'domainRole' => domain_role,
+            'domainRights' => user['rights'],
+            'viewRole' => 'unknown',
+            'viewRights' => view['rights']
           }
         end
       end
     end
+
+    ::RequestStore.store[:current_user_story_authorization] = authorization
   end
 
   # Generate Cookie, X-CSRF-Token, X-Socrata-RequestId, and X-Socrata-Host
@@ -270,8 +287,8 @@ class CoreServer
       }
 
       # When attempting to update an existing configuration where the configuration has new properties
-      # we will get errors when trying to update a property that does not exist 
-      # so we need to add the property in the case where it doesn't currently exist in 
+      # we will get errors when trying to update a property that does not exist
+      # so we need to add the property in the case where it doesn't currently exist in
       # the configuration. This is due to the way the configurations API is defined where properties are
       # managed separate from their configurations.
       result = core_server_request_with_retries(core_server_request_options)
@@ -392,7 +409,22 @@ class CoreServer
       core_request.body = JSON.dump(body)
     end
 
-    http.request(core_request)
+    if options[:verb] == 'get'
+      checksum = Digest::MD5.hexdigest({
+        :options => options,
+        :headers => headers,
+        :body => body
+      }.to_s)
+
+      if ::RequestStore.store[checksum]
+        ::RequestStore.store[checksum]
+      else
+        response = http.request(core_request)
+        ::RequestStore.store[checksum] = response
+      end
+    else
+      http.request(core_request)
+    end
   end
 
   def self.view_with_title(title)

@@ -140,6 +140,26 @@ $th-headings: (
     font-size: 1em;
   }
 
+  // Custom bullets
+  @if variable-exists(list-bullet-character) and $list-bullet-character {
+    ul {
+      list-style-type: none !important;
+    }
+
+    ul li {
+      text-indent: -$list-margin-adjustment;
+      padding-left: $list-margin-adjustment;
+      &:before {
+        display: inline;
+        // Force Sass to interpret the unicode escapes in $list-bullet-character
+        // in the way CSS would (i.e., not as the literal string "\2022", but as the dot).
+        content: unquote('"' + $list-bullet-character + '"');
+        color: $list-bullet-color;
+        margin-right: 0.8em;
+      }
+    }
+  }
+
   // In text hyperlinks
   a {
     color: $link-color;

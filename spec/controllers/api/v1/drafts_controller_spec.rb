@@ -33,6 +33,8 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
     let(:new_story_digest) { 'new_digest' }
 
     before do
+      stub_sufficient_rights
+
       allow(StoryDraftCreator).to receive(:new).and_return(mock_story_draft_creator)
       allow(mock_story_draft_creator).to receive(:create).and_return(new_draft_story)
       allow(new_draft_story).to receive(:digest).and_return(new_story_digest)
@@ -114,6 +116,68 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
       it 'still renders json' do
         post :create, params.merge(format: 'html'), headers
         expect(response.content_type).to eq('application/json')
+      end
+    end
+  end
+
+  describe 'require_sufficient_rights' do
+    let(:action) { :nothing }
+    let(:get_request) { get action, uid: 'test-test' }
+
+    before do
+      stub_core_view('test-test')
+      stub_valid_session
+    end
+
+    describe 'when creating a draft story' do
+      let(:action) { :create }
+
+      before do
+        allow(controller).to receive(:can_edit_story?).and_return(can_edit_story)
+      end
+
+      describe 'when the user can edit the story' do
+        let(:can_edit_story) { true }
+
+        it 'does not 403' do
+          get_request
+          expect(response.status).to_not be(403)
+        end
+      end
+
+      describe 'when the user cannot edit the story' do
+        let(:can_edit_story) { false }
+
+        it '403s' do
+          get_request
+          expect(response.status).to be(403)
+        end
+      end
+    end
+
+    describe 'when accessing the latest draft story' do
+      let(:action) { :latest }
+
+      before do
+        allow(controller).to receive(:can_edit_story?).and_return(can_view_unpublished_story)
+      end
+
+      describe 'when the user can view unpublished story' do
+        let(:can_view_unpublished_story) { true }
+
+        it 'does not 403' do
+          get_request
+          expect(response.status).to_not be(403)
+        end
+      end
+
+      describe 'when the user cannot view unpublished story' do
+        let(:can_view_unpublished_story) { false }
+
+        it '403s' do
+          get_request
+          expect(response.status).to be(403)
+        end
       end
     end
   end

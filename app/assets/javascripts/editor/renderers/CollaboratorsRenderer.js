@@ -44,7 +44,7 @@
             '<div>' +
               '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.invite_collaborators')) +
               '<div class="modal-input-group">' +
-                '<input type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')) +
+                '<input name="collaborators-email" type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')) +
                 '<div class="modal-radio-group">' +
                   '<div class="alert warning-bar hidden adding-self"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.adding_self')) +
                   '<div class="alert warning-bar hidden already-added"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.already_added')) +
@@ -52,25 +52,25 @@
                   '<ul>' +
                     '<li>' +
                       '<label>' +
-                        '<input type="radio" value="viewer" name="access-levels" checked>' +
+                        '<input type="radio" value="viewer" name="access-levels" id="access-level-viewer" checked>' +
                         '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.viewer')) +
                         '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.viewer_description')) +
                       '</label>' +
                     '</li>' +
                     '<li>' +
                       '<label>' +
-                        '<input type="radio" value="contributor" name="access-levels">' +
+                        '<input type="radio" value="contributor" name="access-levels" id="access-level-contributor">' +
                         '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.contributor')) +
                         '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.contributor_description')) +
                       '</label>' +
                     '</li>' +
                     '<li>' +
-                      '<div class="radio-label-subtitle alert info"><small><span class="icon-info-inverse"></span>{0}</small></div>'.format(t('editor.collaborators.modal.licenses')) +
                       '<label class="disabled">' +
-                        '<input type="radio" value="owner" name="access-levels" disabled>' +
+                        '<input type="radio" value="owner" name="access-levels" id="access-level-owner" disabled>' +
                         '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.owner')) +
                         '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.owner_description')) +
                       '</label>' +
+                      '<div class="radio-label-subtitle alert info"><small><span class="icon-info-inverse"></span>{0}</small></div>'.format(t('editor.collaborators.modal.licenses')) +
                     '</li>' +
                   '</ul>' +
                 '</div>' +

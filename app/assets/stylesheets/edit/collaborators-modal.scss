@@ -109,7 +109,7 @@
     }
 
     .radio-label-title,
-    .radio-label-subtitle {
+    .radio-label-subtitle:not(.info) {
       padding-left: 3rem;
     }
 
@@ -268,9 +268,12 @@
   background-color: #d5eaf8;
   border: none;
   color: #1f6a9b;
-  padding: 0.75rem 1.1rem;
-  margin-top: 15px;
-  padding-left: 3rem;
+  margin-left: 3rem;
+  margin-right: 3rem;
+  // margin-top: 5px;
+  padding: 0.75rem;
+
+
 
   a {
     color: #2295E1;

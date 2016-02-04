@@ -32,7 +32,7 @@
     $.templates.downloadsTable = {
         downloadTypes: {
             'obe_normal': normalDownloadTypes,
-            'nbe_normal': [ 'CSV', 'JSON' ],
+            'nbe_normal': _.without(normalDownloadTypes, 'RSS'),
             'layer_attributes': [ 'CSV', 'JSON' ], // for obe and nbe monolayer datasets
             'layer_geojson_attributes': [ 'CSV', 'JSON', 'GeoJSON' ],
             'obe_geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ],

@@ -839,6 +839,7 @@ en:
       delete_warning_multi_column: Do you want to delete the selected columns? All data in these columns will be removed!
       delete_warning_single_column: Do you want to delete the selected column? All data in this column will be removed!
       edit_column_properties: Edit Column Properties
+      end_page: Last Page
       errors:
         cannot_edit_at_this_time: The column cannot be edited at this moment. Please try again later.
         data_lens_is_incompatible_with_group_bys: Datasets with groupings cannot be used with a Data Lens page. We apologize for this inconvenience.
@@ -851,13 +852,18 @@ en:
       menu: Menu
       must_enter_name: You must enter a name for this column
       new_row: New
+      next_page: Next Page
       no_columns: Dataset %{uid} does not have any columns.
       no_rows: No rows to display
+      page_size: Showing %{pageSize} rows per page
       permission_denied: You do not have access to this view.
       previous: Previous
+      previous_page: Previous Page
       required_cols_missing: Columns required for this view are missing
+      row_count: Total number of rows %{count}
       sort_ascending: Sort Ascending
       sort_descending: Sort Descending
+      start_page: First Page
       totals: Totals
       view_cell_comments: View comments for this cell
       view_first_row: View first row
@@ -866,6 +872,7 @@ en:
       view_previous_row: View previous row
       view_row: View row
       view_single_row: View Single Row Data
+      viewing_current_page: Viewing page %{current} of %{total}
       viewing_row_html: Viewing row <span class="curPage"></span> of <span class="totalPages"></span>
     map:
       address_prompt: Enter address here

@@ -134,9 +134,8 @@
       return _.cloneDeep(story.permissions);
     };
 
-    this.getStoryCreatedBy = function(storyUid) {
-      var story = _getStory(storyUid);
-      return story.createdBy;
+    this.getStoryPrimaryOwnerUid = function() {
+      return window.primaryOwnerUid;
     };
 
     this.getStoryPublishedStory = function(storyUid) {

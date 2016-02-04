@@ -703,6 +703,31 @@ RSpec.describe StoriesController, type: :controller do
             get :edit, uid: draft_story.uid
             expect(response.body).to match(/userStoryData = {/)
           end
+
+          it 'renders a string for primaryOwnerUid' do
+            get :edit, uid: draft_story.uid
+            expect(response.body).to match(/primaryOwnerUid = '/)
+          end
+
+          it 'renders a json object for currentUser' do
+            get :edit, uid: draft_story.uid
+            expect(response.body).to match(/currentUser = {/)
+          end
+
+          it 'renders a json object for currentUserStoryAuthorization' do
+            get :edit, uid: draft_story.uid
+            expect(response.body).to match(/currentUserStoryAuthorization = {/)
+          end
+
+          it 'renders a json array for customThemes' do
+            get :edit, uid: draft_story.uid
+            expect(response.body).to match(/customThemes = \[/)
+          end
+
+          it 'renders a json object for publishedStory' do
+            get :edit, uid: draft_story.uid
+            expect(response.body).to match(/publishedStory = {/)
+          end
         end
       end
 

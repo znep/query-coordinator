@@ -500,8 +500,8 @@
 
     function renderCollaborators(collaborators) {
       var staticCollaborators = _.filter(collaborators, function(collaborator) {
-        var createdBy = storyteller.storyStore.getStoryCreatedBy(storyteller.userStoryUid);
-        return collaborator.uid === window.currentUser.id || collaborator.uid === createdBy;
+        var primaryOwnerUid = storyteller.storyStore.getStoryPrimaryOwnerUid();
+        return collaborator.uid === window.currentUser.id || collaborator.uid === primaryOwnerUid;
       });
       var editableCollaborators = _.difference(collaborators, staticCollaborators);
 
@@ -609,7 +609,8 @@
     }
 
     function saveCollaboratorsError(response) {
-      var message = response.getResponseHeader('X-Error-Message');
+      var isXMLRequest = response instanceof XMLHttpRequest;
+      var message = isXMLRequest ? response.getResponseHeader('X-Error-Message') : response;
       var errorReportingLabel = 'CollaboratorsRenderer#_saveCollaboratorsError';
 
       $saveButton.removeClass('btn-busy');

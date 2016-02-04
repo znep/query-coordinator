@@ -65,7 +65,7 @@
                       '</label>' +
                     '</li>' +
                     '<li>' +
-                      '<div class="radio-label-subtitle alert info"><small>{0}</small></div>'.format(t('editor.collaborators.modal.licenses')) +
+                      '<div class="radio-label-subtitle alert info"><small><span class="icon-info-inverse"></span>{0}</small></div>'.format(t('editor.collaborators.modal.licenses')) +
                       '<label class="disabled">' +
                         '<input type="radio" value="owner" name="access-levels" disabled>' +
                         '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.owner')) +

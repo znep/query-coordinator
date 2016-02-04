@@ -265,7 +265,7 @@
 
 .alert.info {
   font-size: 1.5rem;
-	background-color: #E0EFF9;
+	background-color: #d5eaf8;
   border: none;
   color: #1f6a9b;
   padding: 0.75rem 1.1rem;
@@ -274,5 +274,10 @@
 
   a {
     color: #2295E1;
+  }
+
+  [class^="icon-"] {
+    color: #1f6a9b;
+    margin-right: 4px;
   }
 }

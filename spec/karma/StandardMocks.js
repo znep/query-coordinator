@@ -36,6 +36,7 @@ function applyStandardMocks() {
     title: storyTitle,
     description: storyDescription,
     digest: 'test-digest',
+    createdBy: 'rawr-rawr',
     blocks: [
       generateBlockData({
         layout: '12',

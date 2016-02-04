@@ -63,66 +63,60 @@
     }
   }
 
-  .modal-left-panel,
-  .modal-right-panel {
-    float: left;
-  }
-
-  .modal-left-panel {
-    @include media-query-property(
-      'width',
-      100%,
-      100%,
-      calc(78% - 1rem),
-      calc(78% - 1rem)
-    );
-
-    @include media-query-property(
-      'margin-bottom',
-      1rem,
-      1rem,
-      0,
-      0
-    );
-    margin-right: 1rem;
-
-    .modal-input[type="email"] {
-      width: calc(66% - 1rem);
-      margin-right: 1rem;
-    }
-
-    .modal-select {
-      width: 34%;
-
-      select {
-        width: 100%;
-      }
-    }
-  }
-
-  .modal-right-panel {
-    @include media-query-property(
-      'width',
-      100%,
-      100%,
-      22%,
-      22%
-    );
-    text-align: right;
-
-    .btn-default {
-      width: 100%;
-    }
-  }
-
   input[type="email"] {
-    width: 45%;
-    margin-right: 2%;
-    margin-bottom: 0;
+    width: 100%;
     display: inline-block;
     padding: 0.75rem;
     font-size: 1.5rem;
     background-color: $collaborators-input-email-background-color;
+  }
+
+  .modal-radio-group {
+    position: relative;
+    margin-bottom: 1rem;
+
+    input[type="radio"] {
+      position: absolute;
+      left: -0.075rem;
+    }
+
+    label {
+      margin: 0;
+      padding: 1rem 0;
+      cursor: pointer;
+      transition: background-color .2s;
+
+      &:hover {
+        background-color: #ddd;
+      }
+
+      &.disabled {
+        color: #999;
+        cursor: not-allowed;
+
+        &:hover {
+          background-color: #f2f2f2;
+        }
+
+        .radio-label-subtitle {
+          color: #999;
+        }
+      }
+    }
+
+    ul {
+      margin: 0 -1rem;
+    }
+
+    .radio-label-title,
+    .radio-label-subtitle {
+      padding-left: 3rem;
+    }
+
+    .radio-label-subtitle {
+      color: #888;
+      letter-spacing: 0.25px;
+    }
   }
 
   .modal-select {
@@ -266,5 +260,23 @@
         color: $collaborators-table-empty-color;
       }
     }
+  }
+}
+
+.alert.info {
+  font-size: 1.5rem;
+  padding: 1.1rem;
+	background-color: #d5eaf8;
+	border: solid 1px #2C97DE;
+	color: #1f6a9b;
+  opacity: 1;
+
+  a {
+    color: #2295E1;
+  }
+
+  &.hidden {
+    opacity: 0;
+    transition: opacity .2s;
   }
 }

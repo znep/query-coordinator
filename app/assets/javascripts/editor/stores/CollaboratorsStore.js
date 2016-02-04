@@ -220,6 +220,7 @@
           email: collaborator.email,
           accessLevel: collaborator.accessLevel,
           displayName: collaborator.displayName,
+          roleName: collaborator.roleName,
           state: {
             previous: (collaborator.state && collaborator.state.current) || null,
             current: state

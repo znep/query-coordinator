@@ -11,8 +11,11 @@
    */
   function CollaboratorsRenderer() {
     var t = I18n.t;
+    var debouncedHandleKeys;
     var $collaborators;
     var $saveButton;
+    var $alreadyAddedWarning;
+    var $addingSelfWarning;
 
     compileDOM();
     attachEvents();
@@ -39,6 +42,43 @@
       return (
           '<div>' +
             '<div>' +
+              '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.invite_collaborators')) +
+              '<div class="modal-input-group">' +
+                '<input type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')) +
+                '<div class="modal-radio-group">' +
+                  '<div class="alert info hidden">{0}</div>'.format(t('editor.collaborators.modal.licenses')) +
+                  '<div class="alert warning-bar hidden adding-self"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.adding_self')) +
+                  '<div class="alert warning-bar hidden already-added"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.already_added')) +
+                  '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.access_level')) +
+                  '<ul>' +
+                    '<li>' +
+                      '<label>' +
+                        '<input type="radio" value="viewer" name="access-levels" checked>' +
+                        '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.viewer')) +
+                        '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.viewer_description')) +
+                      '</label>' +
+                    '</li>' +
+                    '<li>' +
+                      '<label>' +
+                        '<input type="radio" value="contributor" name="access-levels">' +
+                        '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.contributor')) +
+                        '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.contributor_description')) +
+                      '</label>' +
+                    '</li>' +
+                    '<li>' +
+                      '<label class="disabled">' +
+                        '<input type="radio" value="owner" name="access-levels" disabled>' +
+                        '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.owner')) +
+                        '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.owner_description')) +
+                      '</label>' +
+                    '</li>' +
+                  '</ul>' +
+                '</div>' +
+                '<button class="btn-default" data-action="{0}" disabled>{1}</button>'.format(Actions.COLLABORATORS_ADD, t('editor.collaborators.modal.add_contributor')) +
+              '</div>' +
+            '</div>' +
+            '<div>' +
+              '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.who_has_access')) +
               '<table class="table-borderless">' +
                 '<thead>' +
                   '<tr>' +
@@ -50,24 +90,6 @@
                 '</tbody>' +
               '</table>' +
             '</div>' +
-            '<div>' +
-              '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.invite_collaborators')) +
-              '<div class="modal-input-group">' +
-                '<div class="modal-left-panel">' +
-                  '<input type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')) +
-                  '<div class="modal-select">' +
-                    '<select class="modal-input">' +
-                      '<option value="{0}">{1}</option>'.format('owner', t('editor.collaborators.modal.owner')) +
-                      '<option value="{0}">{1}</option>'.format('contributor', t('editor.collaborators.modal.contributor')) +
-                      '<option value="{0}">{1}</option>'.format('viewer', t('editor.collaborators.modal.viewer')) +
-                    '</select>' +
-                  '</div>' +
-                '</div>' +
-                '<div class="modal-right-panel">' +
-                  '<button class="btn-default" data-action="{0}" disabled>{1}</button>'.format(Actions.COLLABORATORS_ADD, t('editor.collaborators.modal.add_contributor')) +
-                '</div>' +
-              '</div>' +
-            '</div>' +
             '<div class="modal-button-group r-to-l">' +
               '<button class="btn-default btn-inverse" data-action="{0}">{1}</button>'.format(Actions.COLLABORATORS_CANCEL, t('editor.modal.buttons.cancel')) +
               '<button class="btn-primary" data-action="{0}" disabled><span>{1}</span></button>'.format(Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')) +
@@ -76,11 +98,11 @@
       );
     }
 
-    function templateAccessLevel() {
+    function templateAccessLevel(role) {
       return (
         '<div class="modal-select">' +
           '<select data-action="{0}">'.format(Actions.COLLABORATORS_CHANGE) +
-            '<option value="{0}">{1}</option>'.format('owner', t('editor.collaborators.modal.owner')) +
+            '<option value="{0}"{1}>{2}</option>'.format('owner', hasStoriesRole(role) ? '' : ' disabled', t('editor.collaborators.modal.owner')) +
             '<option value="{0}">{1}</option>'.format('contributor', t('editor.collaborators.modal.contributor')) +
             '<option value="{0}">{1}</option>'.format('viewer', t('editor.collaborators.modal.viewer')) +
           '</select>' +
@@ -97,42 +119,42 @@
       );
     }
 
-    function templateContributor() {
+    function templateContributor(contributor) {
       return (
-        '<td>{displayName}</td>' +
-        '<td>{0}</td>'.format(templateAccessLevel) +
+        '<td>{displayName}</td>'.format(contributor) +
+        '<td>{0}</td>'.format(templateAccessLevel(contributor.roleName)) +
         '<td>{0}</td>'.format(templateRemove)
       );
     }
 
-    function templateContributorOnlyEmail() {
+    function templateContributorOnlyEmail(contributor) {
       return (
-        '<td>{email}</td>' +
-        '<td>{0}</td>'.format(templateAccessLevel) +
+        '<td>{email}</td>'.format(contributor) +
+        '<td>{0}</td>'.format(templateAccessLevel(contributor.roleName)) +
         '<td>{0}</td>'.format(templateRemove)
       );
     }
 
-    function templateContributorAndEmail() {
+    function templateContributorAndEmail(contributor) {
       return (
-        '<td>{displayName}, &lt;{email}&gt;</td>' +
-        '<td>{0}</td>'.format(templateAccessLevel) +
+        '<td>{displayName}, &lt;{email}&gt;</td>'.format(contributor) +
+        '<td>{0}</td>'.format(templateAccessLevel(contributor.roleName)) +
         '<td>{0}</td>'.format(templateRemove)
       );
     }
 
-    function templateStaticContributor() {
-      return (
-        '<td class="static">{displayName}</td>' +
+    function templateStaticContributor(contributor) {
+      return [
+        '<td class="static">{displayName}</td>',
         '<td class="static" colspan="2">{accessLevel}</td>'
-      );
+      ].join().format(contributor);
     }
 
-    function templateStaticContributorAndEmail() {
-      return (
-        '<td class="static">{displayName}, &lt;{email}&gt;</td>' +
+    function templateStaticContributorAndEmail(contributor) {
+      return [
+        '<td class="static">{displayName}, &lt;{email}&gt;</td>',
         '<td class="static" colspan="2">{accessLevel}</td>'
-      );
+      ].join().format(contributor);
     }
 
     function templateNoCollaborators() {
@@ -154,43 +176,137 @@
       });
 
       $saveButton = $collaborators.find('[data-action="{0}"]'.format(Actions.COLLABORATORS_SAVE));
+      $alreadyAddedWarning = $collaborators.find('.already-added');
+      $addingSelfWarning = $collaborators.find('.adding-self');
 
       $(document.body).append($collaborators);
     }
 
     function attachEvents() {
+      debouncedHandleKeys = _.debounce(handleKeys, 250);
+
       storyteller.collaboratorsStore.addChangeListener(render);
       $collaborators.on('click', '[data-action]', dispatchActions);
       $collaborators.on('modal-dismissed', handleModalDismissed);
       $collaborators.on('change', 'td select', dispatchActions);
-      $collaborators.on('keyup', 'input[type="email"]', handleKeys);
+      $collaborators.on('keyup', 'input[type="email"]', debouncedHandleKeys);
+      $collaborators.on('change', 'input[type="radio"]', debouncedHandleKeys);
     }
 
     function detachEvents() {
       $collaborators.off('click', '[data-action]', dispatchActions);
       $collaborators.off('modal-dismissed', handleModalDismissed);
       $collaborators.off('change', 'td select', dispatchActions);
-      $collaborators.off('keyup', 'input[type="email"]', handleKeys);
+      $collaborators.off('keyup', 'input[type="email"]', debouncedHandleKeys);
       storyteller.collaboratorsStore.removeChangeListener(render);
     }
 
-    function handleKeys(event) {
-      var invalid = !event.target.checkValidity();
-      var isMissingValue = !event.target.value || event.target.value.length === 0;
-      var isSharingSelf = window.currentUser.email === event.target.value;
-      var hasCollaborator = storyteller.collaboratorsStore.hasCollaborator({
-        email: event.target.value,
-        accessLevel: $collaborators.find('option:selected').val()
-      });
+    function showInfoMessageAndDisableOwnerSelection() {
+      var ownerSelectionChecked = $collaborators.find('.modal-radio-group ul li:last-child input:checked').length >= 1;
 
-      var disabled = invalid ||
-        isMissingValue ||
-        hasCollaborator ||
-        isSharingSelf;
+      $collaborators.
+        find('.modal-radio-group .info').
+        removeClass('hidden');
+      $collaborators.find('.modal-radio-group ul li:last-child label').
+        addClass('disabled');
+      $collaborators.
+        find('.modal-radio-group ul li:last-child input').
+        prop('disabled', true);
+
+      if (ownerSelectionChecked) {
+        $collaborators.
+          find('.modal-input-group button').
+          prop('disabled', true);
+      }
+    }
+
+    function hideInfoMessageAndDisableOwnerSelection() {
+      $collaborators.
+        find('.modal-radio-group .info').
+        addClass('hidden');
+      $collaborators.
+        find('.modal-radio-group ul li:last-child label').
+        addClass('disabled');
+      $collaborators.
+        find('.modal-radio-group ul li:last-child input').
+        prop('disabled', true);
+    }
+
+    function hideInfoMessageAndEnableOwnerSelection() {
+      $collaborators.
+        find('.modal-radio-group .info').
+        addClass('hidden');
+      $collaborators.
+        find('.modal-radio-group .disabled input').
+        prop('disabled', false);
+      $collaborators.
+        find('.modal-radio-group .disabled').
+        removeClass('disabled');
+    }
+
+    function hideAllWarnings() {
+      $alreadyAddedWarning.addClass('hidden');
+      $addingSelfWarning.addClass('hidden');
+    }
+
+    function showAlreadyAddedWarning() {
+      $alreadyAddedWarning.removeClass('hidden');
+      $addingSelfWarning.addClass('hidden');
+    }
+
+    function showSharingSelfWarning() {
+      $alreadyAddedWarning.addClass('hidden');
+      $addingSelfWarning.removeClass('hidden');
+    }
+
+    function determineIfUserHasStoriesRole(email) {
+      $.getJSON('/api/search/users.json?q={0}'.format(email)).
+        then(function(data) {
+          var user = _.get(data, 'results[0]');
+
+          if (user && hasStoriesRole(user.roleName)) {
+            hideInfoMessageAndEnableOwnerSelection();
+          } else {
+            showInfoMessageAndDisableOwnerSelection();
+          }
+        }, function() {
+          showInfoMessageAndDisableOwnerSelection();
+        });
+    }
+
+    function handleKeys() {
+      var $input = $collaborators.find('input[type="email"]');
+      var invalid = !$input[0].checkValidity();
+      var value = $input.val();
+      var isMissingValue = !value || value.length === 0;
+      var isSharingSelf = window.currentUser.email === value;
+      var accessLevel = $collaborators.find('option:selected').val();
+      var collaborator = {email: value, accessLevel: accessLevel};
+      var hasCollaborator = storyteller.collaboratorsStore.hasCollaborator(collaborator);
+      var buttonDisabled = invalid || isMissingValue || hasCollaborator || isSharingSelf;
+      var buttonEnabled = !buttonDisabled;
+      var validEmail = !isMissingValue && !invalid;
 
       $collaborators.
         find('.modal-input-group button').
-        prop('disabled', disabled);
+        prop('disabled', buttonDisabled);
+
+      if (hasCollaborator) {
+        showAlreadyAddedWarning();
+        hideInfoMessageAndDisableOwnerSelection();
+      } else if (isSharingSelf) {
+        showSharingSelfWarning();
+        hideInfoMessageAndDisableOwnerSelection();
+      } else if (buttonEnabled) {
+        hideAllWarnings();
+        determineIfUserHasStoriesRole(value);
+      } else if (validEmail) {
+        hideAllWarnings();
+        showInfoMessageAndDisableOwnerSelection();
+      } else {
+        hideAllWarnings();
+        hideInfoMessageAndDisableOwnerSelection();
+      }
     }
 
     function handleModalDismissed() {
@@ -247,7 +363,7 @@
           break;
         case Actions.COLLABORATORS_ADD:
           email = $collaborators.find('input[type="email"]').val();
-          accessLevel = $collaborators.find('.modal-input-group option:selected').val();
+          accessLevel = $collaborators.find('.modal-radio-group input:checked').val();
 
           dispatcher.dispatch({
             action: Actions.COLLABORATORS_ADD,
@@ -335,18 +451,11 @@
       }
 
       if (collaborator.email && collaborator.displayName) {
-        subtemplate = templateContributorAndEmail().format({
-          email: collaborator.email,
-          displayName: collaborator.displayName
-        });
+        subtemplate = templateContributorAndEmail(collaborator);
       } else if (collaborator.email) {
-        subtemplate = templateContributorOnlyEmail().format({
-          email: collaborator.email
-        });
+        subtemplate = templateContributorOnlyEmail(collaborator);
       } else {
-        subtemplate = templateContributor().format({
-          displayName: collaborator.displayName
-        });
+        subtemplate = templateContributor(collaborator);
       }
 
       var $subtemplate = $(subtemplate);
@@ -374,13 +483,13 @@
       });
 
       if (collaborator.email) {
-        subtemplate = templateStaticContributorAndEmail().format({
+        subtemplate = templateStaticContributorAndEmail({
           displayName: collaborator.displayName,
           email: collaborator.email,
           accessLevel: t('editor.collaborators.modal.{0}'.format(collaborator.accessLevel))
         });
       } else {
-        subtemplate = templateStaticContributor().format({
+        subtemplate = templateStaticContributor({
           displayName: collaborator.displayName,
           accessLevel: t('editor.collaborators.modal.{0}'.format(collaborator.accessLevel))
         });
@@ -390,7 +499,10 @@
     }
 
     function renderCollaborators(collaborators) {
-      var staticCollaborators = _.filter(collaborators, {uid: window.currentUser.id});
+      var staticCollaborators = _.filter(collaborators, function(collaborator) {
+        var createdBy = storyteller.storyStore.getStoryCreatedBy(storyteller.userStoryUid);
+        return collaborator.uid === window.currentUser.id || collaborator.uid === createdBy;
+      });
       var editableCollaborators = _.difference(collaborators, staticCollaborators);
 
       $collaborators.find('tbody').
@@ -419,9 +531,12 @@
     }
 
     function resetInputs() {
-      $collaborators.find('.modal-input-group input').val('');
+      $collaborators.find('.modal-input-group input[type="email"]').val('');
       $collaborators.find('.modal-input-group button').prop('disabled', true);
-      $collaborators.find('.modal-input-group option:selected').prop('selected', false);
+      $collaborators.find('.modal-radio-group .info').addClass('hidden');
+      $collaborators.find('.modal-radio-group ul li:first-child input').prop('checked', true);
+      $collaborators.find('.modal-radio-group ul li:last-child label').addClass('disabled');
+      $collaborators.find('.modal-radio-group ul li:last-child input').prop('disabled', true);
     }
 
     function toggleModal(show) {
@@ -436,6 +551,10 @@
 
     function toggleLoadingButton(loading) {
       $saveButton[loading ? 'addClass' : 'removeClass']('btn-busy');
+    }
+
+    function hasStoriesRole(role) {
+      return _.includes(['publisher_stories', 'editor_stories'], role);
     }
 
     function saveCollaborators(collaborators) {

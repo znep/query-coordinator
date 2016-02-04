@@ -7,12 +7,16 @@ module FindExtensions
     if unique_ids.empty?
       return {}
     end
-    core_result = find_multiple(unique_ids)
-    result = {}
-    unique_ids.zip(core_result).each do |id, view|
-      result[id] = view
+    core_result_by_id = {}
+    find_multiple(unique_ids).each do |view|
+      core_result_by_id[view.id] = view
     end
-    result
+    unique_ids.each do |id|
+      if !core_result_by_id.has_key?(id)
+        core_result_by_id[id] = nil
+      end
+    end
+    core_result_by_id
   end
 
 end

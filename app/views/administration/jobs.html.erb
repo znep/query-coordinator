@@ -38,10 +38,18 @@
         <tr class="job-row">
           <td><%= t("#{jobs_prefix}.actions.#{activity.activity_type}") %></td>
           <td>
-            <%= link_to activity.dataset.name, view_path(activity.dataset) %>
+            <% if activity.dataset.nil? %>
+              <%= "(#{t("#{jobs_prefix}.index_page.deleted_dataset")})" %>
+            <% else %>
+              <%= link_to activity.dataset.name, view_path(activity.dataset) %>
+            <% end %>
           </td>
           <td nowrap>
-            <%= link_to activity.initiated_by.displayName, profile_path(activity.initiated_by) %>
+            <% if activity.initiated_by.nil? %>
+              <%= "(#{t("#{jobs_prefix}.index_page.deleted_user")})" %>
+            <% else %>
+              <%= link_to activity.initiated_by.displayName, profile_path(activity.initiated_by) %>
+            <% end %>
           </td>
           <td nowrap>
             <span class="started-time" data-epoch-seconds="<%= activity.created_at.to_i %>">

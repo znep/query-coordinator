@@ -73,16 +73,6 @@ describe ImportActivity do
 
     let(:activity_data) { JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json")) }
 
-    it 'raises an ArgumentError if not given a dataset' do
-      expect { ImportActivity.new(activity_data, User.find_profile('tugg-ikce'), nil) }
-          .to raise_exception(ArgumentError, 'dataset is blank')
-    end
-
-    it 'raises an ArgumentError if not given an initiated_by user' do
-      expect { ImportActivity.new(activity_data, nil, View.find('dzuq-scr8')) }
-          .to raise_exception(ArgumentError, 'initiated_by is blank')
-    end
-
     it 'passes through the ResourceNotFound exception raised by ISS for a nonexistent activity id' do
       allow(ImportStatusService).to receive(:get)
         .with('/activity/nonexistent-activity-id')

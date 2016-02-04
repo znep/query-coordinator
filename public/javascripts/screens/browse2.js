@@ -81,7 +81,7 @@ $(function() {
           $searchSection.find('.browse2-search-control').val()
         ),
         'Type': {
-          'Name': 'Cleared Search Field'
+          'Name': 'Used Search Field'
         }
       });
 

@@ -279,13 +279,14 @@
       var invalid = !$input[0].checkValidity();
       var value = $input.val();
       var isMissingValue = !value || value.length === 0;
+      var hasPartialEmail = /^@\w+$/i.test(value);
       var isSharingSelf = window.currentUser.email === value;
       var accessLevel = $collaborators.find('option:selected').val();
       var collaborator = {email: value, accessLevel: accessLevel};
       var hasCollaborator = storyteller.collaboratorsStore.hasCollaborator(collaborator);
       var buttonDisabled = invalid || isMissingValue || hasCollaborator || isSharingSelf;
       var buttonEnabled = !buttonDisabled;
-      var validEmail = !isMissingValue && !invalid;
+      var validEmail = !isMissingValue && !invalid && hasPartialEmail;
 
       $collaborators.
         find('.modal-input-group button').

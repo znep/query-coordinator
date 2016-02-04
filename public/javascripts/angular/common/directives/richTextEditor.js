@@ -13,7 +13,7 @@ function Toolbar(element, attrs, editor, I18n) {
     switch (value) {
       case 'bold':
         controls.bold = {
-          element: $('<div class="rich-text-editor-button bold icon-bold" title="' + I18n.richTextEditor.bold + '"></button>').
+          element: $('<div class="rich-text-editor-button bold icon-bold2" title="' + I18n.richTextEditor.bold + '"></button>').
             on('click', _.bind(self.toggleBold, self)).
             appendTo(element),
           pathRegex: />B\b/
@@ -21,7 +21,7 @@ function Toolbar(element, attrs, editor, I18n) {
         break;
       case 'italic':
         controls.italic = {
-          element: $('<div class="rich-text-editor-button italic icon-italic" title="' + I18n.richTextEditor.italic + '"></button>').
+          element: $('<div class="rich-text-editor-button italic icon-italic2" title="' + I18n.richTextEditor.italic + '"></button>').
             on('click', _.bind(self.toggleItalic, self)).
             appendTo(element),
           pathRegex: />I\b/

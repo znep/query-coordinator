@@ -150,6 +150,7 @@ class StoriesController < ApplicationController
       @custom_theme_configs = theme_list.custom_theme_list.sort_by { |key| key["title"] }
       @custom_themes = theme_list.custom_themes
       @published_story = PublishedStory.find_by_uid(params[:uid])
+      @primary_owner_uid = CoreServer.get_view(params[:uid])['owner']['id']
 
       respond_to do |format|
         format.html { render 'stories/edit', layout: 'editor' }

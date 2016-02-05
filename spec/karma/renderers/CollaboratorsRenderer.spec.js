@@ -3,14 +3,18 @@ describe('CollaboratorsRenderer', function() {
 
   var $collaborators;
   var renderer;
+  var server;
   var storyteller = window.socrata.storyteller;
   var debounceStub;
 
   beforeEach(function() {
+    window.mockedXMLHttpRequest.restore();
+    window.primaryOwnerUid = 'test-test';
     debounceStub = sinon.stub(window._, 'debounce', function(fn) {
       return fn;
     });
 
+    server = sinon.fakeServer.create();
     renderer = new storyteller.CollaboratorsRenderer();
 
     storyteller.dispatcher.dispatch({
@@ -21,8 +25,11 @@ describe('CollaboratorsRenderer', function() {
   });
 
   afterEach(function() {
+    delete window.primaryOwnerUid;
     renderer.destroy();
     debounceStub.restore();
+    server.restore();
+    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
   });
 
   describe('rendering', function() {
@@ -129,7 +136,7 @@ describe('CollaboratorsRenderer', function() {
       it('should disallow an improperly-structured email', function() {
         $email.
           val('hello').
-          trigger('keyup');
+          trigger('input');
 
         assert.isTrue(
           $collaborators.find('[data-action="COLLABORATORS_ADD"]').prop('disabled')
@@ -139,7 +146,7 @@ describe('CollaboratorsRenderer', function() {
       it('should disallow adding the user\'s email address', function() {
         $email.
           val('rawr@socrata.com').
-          trigger('keyup');
+          trigger('input');
 
         assert.isTrue(
           $collaborators.find('[data-action="COLLABORATORS_ADD"]').prop('disabled')
@@ -149,43 +156,58 @@ describe('CollaboratorsRenderer', function() {
       it('should disallow adding an already-added user\'s email address', function() {
         $email.
           val('hello@socrata.com').
-          trigger('keyup');
+          trigger('input');
 
         assert.isTrue(
           $collaborators.find('[data-action="COLLABORATORS_ADD"]').prop('disabled')
         );
       });
 
-      it('should allow a properly-structured email address', function() {
+      it('should allow a properly-structured email address', function(done) {
         $email.
           val('valid@valid.com').
-          trigger('keyup');
+          trigger('input');
 
-        assert.isFalse(
-          $collaborators.find('[data-action="COLLABORATORS_ADD"]').prop('disabled')
-        );
+        server.respond([200, {'Content-Type': 'application/json'}, '']);
+
+        _.defer(function() {
+          assert.isFalse(
+            $collaborators.find('[data-action="COLLABORATORS_ADD"]').prop('disabled')
+          );
+
+          done();
+        });
       });
 
       describe('with a valid collaborator', function() {
-        var $tr;
+        var response = [200, {'Content-Type': 'application/json'}, '{}'];
+        var addCollaborator = function() {
+          $collaborators.find('.modal-input-group button').click();
+          return $collaborators.find('tbody tr[data-email="valid@valid.com"]');
+        };
+
         beforeEach(function() {
           $email.
             val('valid@valid.com').
-            trigger('keyup');
+            trigger('input');
 
-          $collaborators.
-            find('.modal-input-group button').
-            click();
-
-          $tr = $collaborators.find('tbody tr[data-email="valid@valid.com"]');
+          server.respond(response);
         });
 
-        it('should add the collaborator to the table', function() {
-          assert.lengthOf($tr, 1);
+        it('should add the collaborator to the table', function(done) {
+          _.defer(function() {
+            var $tr = addCollaborator();
+            assert.lengthOf($tr, 1);
+            done();
+          });
         });
 
-        it('should set the row state class to "added"', function() {
-          assert.isTrue($tr.hasClass('added'));
+        it('should set the row state class to "added"', function(done) {
+          _.defer(function() {
+            var $tr = addCollaborator();
+            assert.isTrue($tr.hasClass('added'));
+            done();
+          });
         });
       });
     });

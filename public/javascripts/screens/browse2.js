@@ -75,12 +75,14 @@ $(function() {
     event.preventDefault();
 
     _.defer(function() {
+      var query = encodeURIComponent($searchSection.find('.browse2-search-control').val());
       var newOpts = $.extend({}, opts, {
-        'q': encodeURIComponent(
-          $searchSection.find('.browse2-search-control').val()
-        ),
+        'q': query,
         'Type': {
-          'Name': 'Used Search Field'
+          'Name': 'Used Search Field',
+          'Properties': {
+            'Query': query
+          }
         }
       });
 

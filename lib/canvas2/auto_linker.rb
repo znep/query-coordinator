@@ -136,7 +136,7 @@ module Canvas2
         else
           link_url = 'http://' + matched_substring
         end
-        "<a class=\"auto_link\" href=\"#{link_url}\" rel=\"nofollow external\">#{matched_substring}</a>"
+        "<a class=\"auto_link\" href=\"#{link_url}\" rel=\"nofollow noreferrer external\">#{matched_substring}</a>"
       end
 
       return linkified_html

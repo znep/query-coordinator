@@ -1,4 +1,5 @@
 const angular = require('angular');
+
 function sanitizeUserHtml(htmlString) {
   if (!_.isString(htmlString) || htmlString.length === 0) {
     return htmlString;

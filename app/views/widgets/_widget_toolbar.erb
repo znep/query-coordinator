@@ -23,7 +23,7 @@
         <dt>Author</dt>
         <dd><a href="<%= profile_path(@view.owner) %>"><%= @view.owner.displayName %></a></dd>
         <dt>Description</dt>
-        <dd><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow external' })) || '(none)' %></dd>
+        <dd><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow noreferrer external' })) || '(none)' %></dd>
         <%- if @view.category -%>
           <dt>Category</dt>
           <dd><%= @view.category_display %></dd>
@@ -40,7 +40,7 @@
         <%- end -%>
         <%- if @view.property_or_default(['attributionLink']) -%>
           <dt>Source Link</dt>
-          <dd><%= link_to_url(h(@view.property_or_default(['attributionLink'])), :rel => 'nofollow external') %></dd>
+          <dd><%= link_to_url(h(@view.property_or_default(['attributionLink'])), :rel => 'nofollow noreferrer external') %></dd>
         <%- end -%>
         <%- if @view.property_or_default(['license']) -%>
           <dt>License</dt>

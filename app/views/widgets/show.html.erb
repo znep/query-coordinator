@@ -33,7 +33,7 @@
             <noscript>
               <h3><a href="<%= view_path(@view) %>"><%= @view.name %></a></h3>
 
-              <p><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow external' })) %></p>
+              <p><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow noreferrer external' })) %></p>
 
               <a href="<%= view_path(@view) %>">Visit the full page to view this data.</a>
             </noscript>

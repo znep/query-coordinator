@@ -267,7 +267,7 @@
       <dt><%= t('screens.about.source_link') %></dt>
       <dd><%= @view.property_or_default(['attributionLink']).blank? ?
                 t('screens.about.none') :
-                link_to_url(h(@view.property_or_default(['attributionLink'])), :rel => 'nofollow external') %></dd>
+                link_to_url(h(@view.property_or_default(['attributionLink'])), :rel => 'nofollow noreferrer external') %></dd>
       <%- if @view.property_or_default(['license']) -%>
         <dt><%= t('screens.about.license') %></dt>
         <dd><%== render_license %></dd>
@@ -351,7 +351,7 @@
               <dt><%= field.displayName || field.name %></dt>
               <dd><span class="wrap">
                   <%= raw(auto_link(h(existing_fields[field.name])|| '',
-                      :html => { :rel => 'nofollow external' })) %>
+                      :html => { :rel => 'nofollow noreferrer external' })) %>
               </span></dd>
             <%- end -%>
           <%- end -%>

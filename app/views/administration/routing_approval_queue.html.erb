@@ -98,7 +98,7 @@
                   rel="<%= rel_type %>"><span class="icon"
                     title="This dataset has been inactive for more than <%= pluralize(@approval_template.maxInactivityInterval, "day") %>"></span><%= v.name %></a>
                 <div class="description" title="<%= v.description %>">
-                  <%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow external' })) %>
+                  <%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow noreferrer external' })) %>
                 </div>
                 <div class="expandBlock clearfix collapsed">
                   <div class="extraInfo <%= @use_federations ? "federated" : "" %>">

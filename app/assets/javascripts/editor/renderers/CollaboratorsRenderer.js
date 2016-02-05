@@ -280,6 +280,7 @@
       }
 
       if (shouldCancel) {
+        toggleAlreadyAddedWarning(false);
         storyteller.dispatcher.dispatch({
           action: Actions.COLLABORATORS_CANCEL
         });

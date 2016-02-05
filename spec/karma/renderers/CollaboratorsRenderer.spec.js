@@ -118,10 +118,19 @@ describe('CollaboratorsRenderer', function() {
       });
 
       describe('when the modal indicates it is dismissed', function() {
-        it('should add a "hidden" class', function() {
+        it('should add a "hidden" class to the modal', function() {
           $collaborators.trigger('modal-dismissed');
 
           assert.isTrue($collaborators.hasClass('hidden'));
+        });
+
+        it.only('should add a "hidden" class to any warnings present', function() {
+          var $alreadyAddedWarning = $collaborators.find('.already-added');
+
+          $alreadyAddedWarning.removeClass('hidden');
+          $collaborators.trigger('modal-dismissed');
+
+          assert.isTrue($alreadyAddedWarning.hasClass('hidden'));
         });
       });
     });

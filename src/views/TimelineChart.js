@@ -467,13 +467,19 @@ function TimelineChart(element, vif) {
     var $target = $(event.target);
 
     if ($target.is('.timeline-chart-clear-selection-button')) {
+
       payload.title = 'Clear filter range';
       payload.element = $target.get(0);
+
       return emitFlyoutEvent(payload);
-    } else if($target.is('.selection-marker')) {
+
+    } else if(_interactive && $target.is('.selection-marker')) {
+
       payload.title = 'Drag to change filter range';
       payload.element = $target.get(0);
+
       return emitFlyoutEvent(payload);
+
     }
 
     var flyoutTarget = _chartElement.find('.timeline-chart-flyout-target');
@@ -1039,7 +1045,9 @@ function TimelineChart(element, vif) {
       label = formattedStartDate;
     }
 
-    return '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label);
+    return (_interactive) ?
+      '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label) :
+      '{0}'.format(label);
   }
 
   /**

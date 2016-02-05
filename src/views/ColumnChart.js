@@ -28,6 +28,7 @@ function ColumnChart(element, vif) {
   var _truncationMarker;
   var _lastRenderData;
   var _lastRenderOptions;
+  var _lastRenderedVif;
 
   var _truncationMarkerSelector = '.truncation-marker';
   var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';
@@ -51,7 +52,11 @@ function ColumnChart(element, vif) {
   this.render = function(data, options) {
     _lastRenderData = data;
     _lastRenderOptions = options;
-    _renderData(_chartElement, data, options);
+    // Eventually we may only want to pass in the VIF instead of other render
+    // options as well as the VIF, but for the time being we will just treat it
+    // as another property on `options`.
+    _lastRenderedVif = options.vif;
+    _renderData(_chartElement, data, options)
   };
 
   this.renderError = function() {
@@ -249,7 +254,8 @@ function ColumnChart(element, vif) {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
       {
-        name: d3.select(event.currentTarget).datum()[NAME_INDEX]
+        name: d3.select(event.currentTarget).datum()[NAME_INDEX],
+        renderedVif: _lastRenderedVif
       }
     );
   }

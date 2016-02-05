@@ -11,24 +11,8 @@
         font-family: sans-serif;
       }
 
-      #timeline-chart-1 {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 100px auto 0 auto;
-        border: 1px solid #aaa;
-      }
-
-      #timeline-chart-2 {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 100px auto 0 auto;
-        border: 1px solid #aaa;
-      }
-
+      #timeline-chart-1,
+      #timeline-chart-2,
       #timeline-chart-3 {
         display: block;
         position: relative;
@@ -37,23 +21,12 @@
         margin: 100px auto 0 auto;
         border: 1px solid #aaa;
       }
-
-      #timeline-chart-4 {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 100px auto 0 auto;
-        border: 1px solid #aaa;
-      }
-
     </style>
   </head>
   <body>
     <div id="timeline-chart-1"></div>
     <div id="timeline-chart-2"></div>
     <div id="timeline-chart-3"></div>
-    <div id="timeline-chart-4"></div>
   </body>
 
   <!-- Include external dependencies -->
@@ -81,6 +54,7 @@
       },
       'columnName': COLUMN_NAME,
       'configuration': {
+        'interactive': false,
         // The localization values should be set by the application but are set to string literals
         // for the purposes of this example.
         'localization': {
@@ -116,26 +90,39 @@
 
     var timelineChart2VIF = _.cloneDeep(timelineChart1VIF);
     timelineChart2VIF.datasetUid = 'r6t9-rak2';
-    timelineChart2VIF.columnName = 'updated';
+    timelineChart2VIF.columnName = 'opened';
+    timelineChart2VIF.filters = [
+      {
+        'columnName': 'updated',
+        'function': 'timeRange',
+        'arguments': {
+          'start': '2009-01-01T08:00:00',
+          'end': '2010-01-01T08:00:00'
+        }
+      }
+    ];
     delete timelineChart2VIF.configuration.precision;
 
     var $timelineChart2Element = $('#timeline-chart-2');
     $timelineChart2Element.socrataTimelineChart(timelineChart2VIF);
 
     var timelineChart3VIF = _.cloneDeep(timelineChart1VIF);
-    timelineChart3VIF.domain = 'vertex-stories.rc-socrata.com';
-    timelineChart3VIF.datasetUid = '7s6i-wbnq';
-    timelineChart3VIF.columnName = 'date';
+    timelineChart3VIF.datasetUid = 'r6t9-rak2';
+    timelineChart3VIF.columnName = 'updated';
+    timelineChart3VIF.filters = [
+      {
+        'columnName': 'updated',
+        'function': 'timeRange',
+        'arguments': {
+          'start': '2009-01-01T08:00:00',
+          'end': '2010-01-01T08:00:00'
+        }
+      }
+    ];
     delete timelineChart3VIF.configuration.precision;
 
     var $timelineChart3Element = $('#timeline-chart-3');
     $timelineChart3Element.socrataTimelineChart(timelineChart3VIF);
-
-    var timelineChart4VIF = _.cloneDeep(timelineChart1VIF);
-    timelineChart4VIF.configuration.interactive = true;
-
-    var $timelineChart4Element = $('#timeline-chart-4');
-    $timelineChart4Element.socrataTimelineChart(timelineChart4VIF);
 
     /**
      * Handle flyout events.

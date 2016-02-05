@@ -95,6 +95,7 @@ function ChoroplethMap(element, vif) {
   var _firstRender = true;
 
   var _lastRenderOptions = {};
+  var _lastRenderedVif;
 
   // Keep track of click details so that we can zoom on double-click but
   // still selects on single clicks.
@@ -168,7 +169,13 @@ function ChoroplethMap(element, vif) {
       return;
     }
 
+    // Why are we merging the options here but replacing them in other
+    // visualization implementations?
     _.merge(_lastRenderOptions, options);
+    // Eventually we may only want to pass in the VIF instead of other render
+    // options as well as the VIF, but for the time being we will just treat it
+    // as another property on `options`.
+    _lastRenderedVif = options.vif;
 
     // Calling _initializeMap should only occur here if bounds were not specified in the VIF.
     // We call it here because the fallback bounds calculation requires geoJSON.
@@ -350,16 +357,37 @@ function ChoroplethMap(element, vif) {
         _map.setView(event.latlng, _map.getZoom() + 1);
       }
     } else {
-      _lastClickTimeout = window.setTimeout(function() {
+      _lastClickTimeout = window.setTimeout(
+        function() { _emitSelectRegionEvent(event); },
+        MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS
+      );
+    }
+  }
 
-        self.emitEvent(
-          'SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION',
-          {
-            layer: event.target,
-            feature: event.target.feature
-          }
-        );
-      }, MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS);
+  function _emitSelectRegionEvent(event) {
+    utils.assertHasProperties(
+      _lastRenderedVif,
+      'configuration.shapefile.primaryKey'
+    );
+
+    var feature = event.target.feature;
+    var shapefilePrimaryKey = _lastRenderedVif.
+      configuration.
+      shapefile.
+      primaryKey;
+
+    if (feature.properties.hasOwnProperty(shapefilePrimaryKey)) {
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION',
+        {
+          // TODO: Once Data Lens has been updated, kill the `layer` and
+          // `feature` properties of the emitted event payload.
+          layer: event.target,
+          feature: event.target.feature,
+          shapefileFeatureId: feature.properties[shapefilePrimaryKey],
+          renderedVif: _lastRenderedVif
+        }
+      );
     }
   }
 

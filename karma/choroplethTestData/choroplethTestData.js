@@ -36,8 +36,8 @@ window.choroplethTestData = {
   "polygonData2": {
     "type": "FeatureCollection",
     "features": [
-      { "type": "Feature", "properties": { "__SOCRATA_FILTERED_VALUE__": 1, "__SOCRATA_HUMAN_READABLE_NAME__": "Some Cool Place", "__SOCRATA_UNFILTERED_VALUE__": 1, "__SOCRATA_FEATURE_SELECTED__": false  }, "geometry": { "type": "Polygon", "coordinates": [ [[121.5505,23.9772],[121.8005,24.7272],[122.0505,23.9772],[121.3005,24.4772],[122.3005,24.5272],[121.5505,23.9772]] ] } },
-      { "type": "Feature", "properties": { "__SOCRATA_FILTERED_VALUE__": 2, "__SOCRATA_HUMAN_READABLE_NAME__": "Some Cool Place", "__SOCRATA_UNFILTERED_VALUE__": 2, "__SOCRATA_FEATURE_SELECTED__": false  }, "geometry": { "type": "Polygon", "coordinates": [ [[122.3505,23.9772],[122.6005,24.7272],[122.8505,23.9772],[122.1005,24.4772],[123.1005,24.5272],[122.3505,23.9772]] ] } }
+      { "type": "Feature", "properties": { "primaryKey": "1", "__SOCRATA_FILTERED_VALUE__": 1, "__SOCRATA_HUMAN_READABLE_NAME__": "Some Cool Place", "__SOCRATA_UNFILTERED_VALUE__": 1, "__SOCRATA_FEATURE_SELECTED__": false  }, "geometry": { "type": "Polygon", "coordinates": [ [[121.5505,23.9772],[121.8005,24.7272],[122.0505,23.9772],[121.3005,24.4772],[122.3005,24.5272],[121.5505,23.9772]] ] } },
+      { "type": "Feature", "properties": { "primaryKey": "2", "__SOCRATA_FILTERED_VALUE__": 2, "__SOCRATA_HUMAN_READABLE_NAME__": "Some Cool Place", "__SOCRATA_UNFILTERED_VALUE__": 2, "__SOCRATA_FEATURE_SELECTED__": false  }, "geometry": { "type": "Polygon", "coordinates": [ [[122.3505,23.9772],[122.6005,24.7272],[122.8505,23.9772],[122.1005,24.4772],[123.1005,24.5272],[122.3505,23.9772]] ] } }
     ],
     "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } }
   },

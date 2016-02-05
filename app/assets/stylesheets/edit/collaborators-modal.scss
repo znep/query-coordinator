@@ -87,19 +87,19 @@
       transition: background-color .2s;
 
       &:hover {
-        background-color: #ddd;
+        background-color: $collaborators-select-hover-color;
       }
 
       &.disabled {
-        color: #999;
+        color: $collaborators-select-disabled-color;
         cursor: not-allowed;
 
         &:hover {
-          background-color: #f2f2f2;
+          background-color: $collaborators-select-disabled-background-color;
         }
 
         .radio-label-subtitle {
-          color: #999;
+          color: $collaborators-select-disabled-radio-label-subtitle-color;
         }
       }
     }
@@ -114,7 +114,7 @@
     }
 
     .radio-label-subtitle {
-      color: #888;
+      color: $collaborators-select-radio-label-subtitle-color;
       letter-spacing: 0.25px;
     }
   }
@@ -265,9 +265,9 @@
 
 .alert.info {
   font-size: 1.5rem;
-  background-color: #d5eaf8;
+  background-color: $collaborators-select-alert-info-background-color;
   border: none;
-  color: #1f6a9b;
+  color: $collaborators-select-alert-info-color;
   margin-left: 3rem;
   margin-right: 3rem;
   margin-top: 5px;
@@ -275,11 +275,11 @@
   padding-bottom: 0.9rem;
 
   a {
-    color: #2295E1;
+    color: $collaborators-select-alert-info-anchor-color;
   }
 
   [class^="icon-"] {
-    color: #1f6a9b;
+    color: $collaborators-select-alert-info-icon-color;
     margin-right: 4px;
   }
 }

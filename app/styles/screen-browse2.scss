@@ -65,7 +65,7 @@ html {
 @include mobile {
   html, body, .siteOuterWrapper, .siteInnerWrapper, .siteContentWrapper, #siteHeader, #siteFooter {
     width: auto !important;
-    min-width: auto !important;
+    min-width: initial !important;
   }
 
   .siteContentWrapper {

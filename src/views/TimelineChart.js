@@ -1082,8 +1082,8 @@ function TimelineChart(element, vif) {
         Constants.TIMELINE_CHART_REQUIRED_LABEL_WIDTH);
       var labelEveryN;
 
-      // TODO - write integration tests for the number of labels shown at given screen widths
-      // and ensuring that they are interactive.
+      // TODO - write integration tests for the number of labels shown at given
+      // screen widths and ensuring that they are interactive.
 
       // Show every label, every other label, etc...
       if (numberOfLabels <= labelsWeHaveRoomFor) {

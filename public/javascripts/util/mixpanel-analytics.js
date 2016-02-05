@@ -63,13 +63,11 @@ $(document).ready(function() {
   };
 
   var catalogEventPayload = function(element, eventName) {
+    var clickPosition = _.keys($.deepGet(true, blist, 'browse', 'datasets')).indexOf(element.href.match(/\w{4}-\w{4}$/)[0]);
     return _.extend(_genericPayload(), {
       'Type': {
         'Name': eventName,
-        'Properties': {
-          'Click Position': _.keys($.deepGet(true, blist, 'browse', 'datasets')).indexOf(element.href.match(/\w{4}-\w{4}$/)[0])
-          // 'Click Position': $(element).closest('.browse2-results').find('a.browse2-result-name-link').index(element)
-        }
+        'Properties': _.extend({}, clickPosition >= 0 ? {'Click Position': clickPosition} : {})
       }
     });
   };

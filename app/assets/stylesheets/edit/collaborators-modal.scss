@@ -87,19 +87,19 @@
       transition: background-color .2s;
 
       &:hover {
-        background-color: #ddd;
+        background-color: $collaborators-select-hover-color;
       }
 
       &.disabled {
-        color: #999;
+        color: $collaborators-select-disabled-color;
         cursor: not-allowed;
 
         &:hover {
-          background-color: #f2f2f2;
+          background-color: $collaborators-select-disabled-background-color;
         }
 
         .radio-label-subtitle {
-          color: #999;
+          color: $collaborators-select-disabled-radio-label-subtitle-color;
         }
       }
     }
@@ -109,12 +109,12 @@
     }
 
     .radio-label-title,
-    .radio-label-subtitle {
+    .radio-label-subtitle:not(.info) {
       padding-left: 3rem;
     }
 
     .radio-label-subtitle {
-      color: #888;
+      color: $collaborators-select-radio-label-subtitle-color;
       letter-spacing: 0.25px;
     }
   }
@@ -265,18 +265,21 @@
 
 .alert.info {
   font-size: 1.5rem;
-  padding: 1.1rem;
-	background-color: #d5eaf8;
-	border: solid 1px #2C97DE;
-	color: #1f6a9b;
-  opacity: 1;
+  background-color: $collaborators-select-alert-info-background-color;
+  border: none;
+  color: $collaborators-select-alert-info-color;
+  margin-left: 3rem;
+  margin-right: 3rem;
+  margin-top: 5px;
+  padding: 0.75rem;
+  padding-bottom: 0.9rem;
 
   a {
-    color: #2295E1;
+    color: $collaborators-select-alert-info-anchor-color;
   }
 
-  &.hidden {
-    opacity: 0;
-    transition: opacity .2s;
+  [class^="icon-"] {
+    color: $collaborators-select-alert-info-icon-color;
+    margin-right: 4px;
   }
 }

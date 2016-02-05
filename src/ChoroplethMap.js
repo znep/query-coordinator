@@ -660,35 +660,19 @@ $.fn.socrataChoroplethMap = function(vif) {
           return filter.arguments.operand;
         }
       );
-    var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
 
-    if (ownFilterOperands.indexOf(payload.shapefileFeatureId) > -1) {
+    newVif.filters = newVif.
+      filters.
+      filter(function(filter) {
 
-      newVif.filters = newVif.
-        filters.
-        filter(function(filter) {
-
-          return (
-            (filter.columnName !== newVif.columnName) &&
-            (filter.function !== 'binaryComputedGeoregionOperator') &&
-            (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
-          );
-        });
-
-    } else {
-
-      newVif.filters = newVif.
-        filters.
-        filter(
-          function(filter) {
-
-            return (
-              (filter.columnName !== newVif.columnName) &&
-              (filter.function !== 'binaryComputedGeoregionOperator') &&
-              (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
-            );
-          }
+        return (
+          (filter.columnName !== newVif.columnName) &&
+          (filter.function !== 'binaryComputedGeoregionOperator') &&
+          (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
         );
+      });
+
+    if (ownFilterOperands.indexOf(payload.shapefileFeatureId) === -1) {
 
       newVif.
         filters.

@@ -360,21 +360,13 @@ $.fn.socrataColumnChart = function(vif) {
         return filter.arguments.operand;
       });
 
-    if (ownFilterOperands.indexOf(payload.name) > -1) {
+    newVif.filters = newVif.
+      filters.
+      filter(function(filter) {
+        return filter.columnName !== newVif.columnName;
+      });
 
-      newVif.filters = newVif.
-        filters.
-        filter(function(filter) {
-          return filter.columnName !== newVif.columnName;
-        });
-
-    } else {
-
-      newVif.filters = newVif.
-        filters.
-        filter(function(filter) {
-          return filter.columnName !== newVif.columnName;
-        });
+    if (ownFilterOperands.indexOf(payload.name) === -1) {
 
       newVif.filters.push(
         {

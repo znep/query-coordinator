@@ -26589,35 +26589,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return filter.arguments.operand;
 	        }
 	      );
-	    var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
 
-	    if (ownFilterOperands.indexOf(payload.shapefileFeatureId) > -1) {
+	    newVif.filters = newVif.
+	      filters.
+	      filter(function(filter) {
 
-	      newVif.filters = newVif.
-	        filters.
-	        filter(function(filter) {
-
-	          return (
-	            (filter.columnName !== newVif.columnName) &&
-	            (filter.function !== 'binaryComputedGeoregionOperator') &&
-	            (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
-	          );
-	        });
-
-	    } else {
-
-	      newVif.filters = newVif.
-	        filters.
-	        filter(
-	          function(filter) {
-
-	            return (
-	              (filter.columnName !== newVif.columnName) &&
-	              (filter.function !== 'binaryComputedGeoregionOperator') &&
-	              (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
-	            );
-	          }
+	        return (
+	          (filter.columnName !== newVif.columnName) &&
+	          (filter.function !== 'binaryComputedGeoregionOperator') &&
+	          (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
 	        );
+	      });
+
+	    if (ownFilterOperands.indexOf(payload.shapefileFeatureId) === -1) {
 
 	      newVif.
 	        filters.
@@ -27300,21 +27284,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return filter.arguments.operand;
 	      });
 
-	    if (ownFilterOperands.indexOf(payload.name) > -1) {
+	    newVif.filters = newVif.
+	      filters.
+	      filter(function(filter) {
+	        return filter.columnName !== newVif.columnName;
+	      });
 
-	      newVif.filters = newVif.
-	        filters.
-	        filter(function(filter) {
-	          return filter.columnName !== newVif.columnName;
-	        });
-
-	    } else {
-
-	      newVif.filters = newVif.
-	        filters.
-	        filter(function(filter) {
-	          return filter.columnName !== newVif.columnName;
-	        });
+	    if (ownFilterOperands.indexOf(payload.name) === -1) {
 
 	      newVif.filters.push(
 	        {

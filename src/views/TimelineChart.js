@@ -1849,8 +1849,7 @@ function TimelineChart(element, vif) {
         // Todo: Change this to emit ISO-8601 strings rather than instances of
         // moment.
         start: selectionStartDate,
-        end: selectionEndDate,
-        renderedVif: _lastRenderedVif
+        end: selectionEndDate
       }
     );
   }

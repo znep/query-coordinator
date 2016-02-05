@@ -149,9 +149,10 @@ $.fn.socrataColumnChart = function(vif) {
     $(window).on('resize', _handleWindowResize);
 
     $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
-    $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
+    $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleSelection);
     $element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _detachEvents() {
@@ -159,9 +160,10 @@ $.fn.socrataColumnChart = function(vif) {
     $(window).off('resize', _handleWindowResize);
 
     $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
-    $element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
+    $element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleSelection);
     $element.off('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _handleWindowResize() {
@@ -347,11 +349,54 @@ $.fn.socrataColumnChart = function(vif) {
     );
   }
 
-  function _handleDatumSelect() {// event) { ---> Linting sucks
+  function _handleSelection(event) {
+    var payload = event.originalEvent.detail;
+    var newVif = _.cloneDeep(_lastRenderedVif);
+    var ownFilterOperands = newVif.
+      filters.
+      filter(function(filter) {
+        return filter.columnName === newVif.columnName;
+      }).map(function(filter) {
+        return filter.arguments.operand;
+      });
 
-    // var payload = event.originalEvent.detail;
+    if (ownFilterOperands.indexOf(payload.name) > -1) {
 
-    // TODO: Implement.
+      newVif.filters = newVif.
+        filters.
+        filter(function(filter) {
+          return filter.columnName !== newVif.columnName;
+        });
+
+    } else {
+
+      newVif.filters = newVif.
+        filters.
+        filter(function(filter) {
+          return filter.columnName !== newVif.columnName;
+        });
+
+      newVif.filters.push(
+        {
+          'columnName': newVif.columnName,
+          'function': 'binaryOperator',
+          'arguments': {
+            'operator': '=',
+            'operand': payload.name
+          }
+        }
+      );
+    }
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        {
+          detail: newVif,
+          bubbles: true
+        }
+      )
+    );
   }
 
   function _handleExpandedToggle() {// event) { ---> Linting sucks
@@ -359,6 +404,21 @@ $.fn.socrataColumnChart = function(vif) {
     // var payload = event.originalEvent.detail;
 
     // TODO: Implement.
+  }
+
+  function _handleRenderVif(event) {
+    var newVif = event.originalEvent.detail;
+
+    if (newVif.type !== 'columnChart') {
+      throw new Error(
+        'Cannot update VIF; old type: `columnChart`, new type: `{0}`.'.
+          format(
+            newVif.type
+          )
+        );
+    }
+
+    _updateData(newVif);
   }
 
   /**

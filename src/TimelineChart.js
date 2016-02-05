@@ -164,7 +164,9 @@ $.fn.socrataTimelineChart = function(vif) {
     $(window).on('resize', _handleWindowResize);
 
     $element.on('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+    $element.on('SOCRATA_VISUALIZATION_TIMELINE_FILTER', _handleSelection);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _detachEvents() {
@@ -172,7 +174,9 @@ $.fn.socrataTimelineChart = function(vif) {
     $(window).off('resize', _handleWindowResize);
 
     $element.off('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+    $element.off('SOCRATA_VISUALIZATION_TIMELINE_FILTER', _handleSelection);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _handleWindowResize() {
@@ -357,18 +361,65 @@ $.fn.socrataTimelineChart = function(vif) {
     );
   }
 
-  function _handleDatumSelect() {// event) { ---> Linting sucks
+  function _handleSelection(event) {
+    var payload = event.originalEvent.detail;
+    var newVif = _.cloneDeep(_lastRenderedVif);
+    var ownFilterStartEnd = newVif.
+      filters.
+      filter(function(filter) {
+        return filter.columnName === newVif.columnName && filter.function === 'timeRangeFilter';
+      }).map(function(filter) {
+        return filter.arguments;
+      });
 
-    // var payload = event.originalEvent.detail;
+    newVif.filters = newVif.
+      filters.
+      filter(function(filter) {
+        return filter.columnName !== newVif.columnName;
+      });
 
-    // TODO: Implement.
+    if (
+      payload !== null &&
+      payload.hasOwnProperty('start') &&
+      payload.hasOwnProperty('end')
+    ) {
+
+      newVif.filters.push(
+        {
+          'columnName': newVif.columnName,
+          'function': 'timeRange',
+          'arguments': {
+            'start': payload.start.toISOString().substring(0, 19),
+            'end': payload.end.toISOString().substring(0, 19)
+          }
+        }
+      );
+    }
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        {
+          detail: newVif,
+          bubbles: true
+        }
+      )
+    );
   }
 
-  function _handleExpandedToggle() {// event) { ---> Linting sucks
+  function _handleRenderVif(event) {
+    var newVif = event.originalEvent.detail;
 
-    // var payload = event.originalEvent.detail;
+    if (newVif.type !== 'timelineChart') {
+      throw new Error(
+        'Cannot update VIF; old type: `timelineChart`, new type: `{0}`.'.
+          format(
+            newVif.type
+          )
+        );
+    }
 
-    // TODO: Implement.
+    _updateData(newVif);
   }
 
   /**

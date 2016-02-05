@@ -384,8 +384,7 @@ function ChoroplethMap(element, vif) {
           // `feature` properties of the emitted event payload.
           layer: event.target,
           feature: event.target.feature,
-          shapefileFeatureId: feature.properties[shapefilePrimaryKey],
-          renderedVif: _lastRenderedVif
+          shapefileFeatureId: feature.properties[shapefilePrimaryKey]
         }
       );
     }

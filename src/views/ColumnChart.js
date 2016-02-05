@@ -254,8 +254,7 @@ function ColumnChart(element, vif) {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
       {
-        name: d3.select(event.currentTarget).datum()[NAME_INDEX],
-        renderedVif: _lastRenderedVif
+        name: d3.select(event.currentTarget).datum()[NAME_INDEX]
       }
     );
   }

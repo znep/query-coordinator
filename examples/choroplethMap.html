@@ -157,9 +157,13 @@
        */
 
       $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      $choroplethElement1.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
       $choroplethElement2.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      $choroplethElement2.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
       $choroplethElement3.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      $choroplethElement3.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
       function handleFlyout(event) {
 
@@ -171,6 +175,17 @@
         } else {
           flyoutRenderer.clear();
         }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
       }
 
       /**

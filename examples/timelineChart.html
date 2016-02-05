@@ -54,7 +54,7 @@
       },
       'columnName': COLUMN_NAME,
       'configuration': {
-        'interactive': false,
+        'interactive': true,
         // The localization values should be set by the application but are set to string literals
         // for the purposes of this example.
         'localization': {
@@ -129,11 +129,15 @@
      */
 
     $timelineChart1Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+    $timelineChart1Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
     $timelineChart2Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+    $timelineChart2Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
     $timelineChart3Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+    $timelineChart3Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
     function handleFlyout(event) {
-
       var payload = event.originalEvent.detail;
 
       // Render/hide a flyout
@@ -145,6 +149,17 @@
 
         flyoutRenderer.clear();
       }
+    }
+
+    function handleVifUpdated(event) {
+      var payload = event.originalEvent.detail;
+      var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+      renderVifEvent.originalEvent = {
+        detail: payload
+      };
+
+      $(this).trigger(renderVifEvent);
     }
 
     // $timelineChart1Element.trigger('destroy');

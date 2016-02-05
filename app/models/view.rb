@@ -985,7 +985,7 @@ class View < Model
   end
 
   def can_add?
-    rights_include?(ViewRights::ADD) && !new_backend?
+    rights_include?(ViewRights::ADD)
   end
 
   def has_rights?(*rights)

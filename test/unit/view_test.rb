@@ -140,11 +140,11 @@ class ViewTest < Test::Unit::TestCase
     assert View.new.can_add?, 'Should be able to add if newBackend is false'
   end
 
-  def test_can_add_returns_false_if_new_backend_is_true
+  def test_can_add_returns_true_if_new_backend_is_true
     stub_core_server_connection
     mock_data = mock.tap { |mock| mock.stubs(:[]).with('rights').returns(ViewRights::ADD) }
     View.any_instance.stubs(:data => mock_data, :new_backend? => true, :rights_include? => true)
-    refute View.new.can_add?, 'Should not be able to add if newBackend is true'
+    assert View.new.can_add?, 'Should be able to add if newBackend is true'
   end
 
   def test_immutable_is_false_if_new_backend_is_true

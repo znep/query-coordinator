@@ -14,7 +14,7 @@ function whereClauseNotFilteringOwnColumn(vif) {
   var whereClauseComponents = _whereClauseFromVif(vif, false);
 
   if (whereClauseComponents) {
-    return ' WHERE ' + whereClauseComponents;
+    return whereClauseComponents;
   }
 
   return '';
@@ -27,7 +27,7 @@ function whereClauseFilteringOwnColumn(vif) {
   var whereClauseComponents = _whereClauseFromVif(vif, true);
 
   if (whereClauseComponents) {
-    return ' WHERE ' + whereClauseComponents;
+    return whereClauseComponents;
   }
 
   return '';

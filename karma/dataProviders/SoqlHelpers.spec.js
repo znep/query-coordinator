@@ -1,7 +1,7 @@
 var rewire = require('rewire');
 var SoqlHelpers = rewire('../../src/dataProviders/SoqlHelpers');
 
-describe.only('SoqlHelpers', function() {
+describe('SoqlHelpers', function() {
 
   var TEST_OWN_COLUMN_NAME = 'test_column';
   var TEST_OWN_COMPUTED_COLUMN_NAME = ':@test_computed_column';

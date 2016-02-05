@@ -32,7 +32,8 @@ describe('ChoroplethMap', function() {
           filtered: '__SOCRATA_FILTERED_VALUE__',
           selected: '__SOCRATA_SELECTED_VALUE__',
           name: '__SOCRATA_HUMAN_READABLE_NAME__'
-        }
+        },
+        primaryKey: 'primaryKey'
       },
       savedExtent: {
         southwest: [41.42625319507272, -88.5662841796875],
@@ -103,12 +104,19 @@ describe('ChoroplethMap', function() {
       baseLayer: {
         url: DEFAULT_BASE_LAYER_URL,
         opacity: DEFAULT_BASE_LAYER_OPACITY
+      },
+      vif: {
+        configuration: {
+          shapefile: {
+            primaryKey: 'primaryKey',
+          }
+        }
       }
     };
 
     var visualization = new ChoroplethMap($element, choroplethVIF);
     visualization.updateTileLayer(visualizationRenderOptions);
-    visualization.render(data);
+    visualization.render(data, visualizationRenderOptions);
 
     // Choropleth has "interesting" double-click detection, so we need to
     // manipulate time to get it to register clicks correctly
@@ -201,9 +209,46 @@ describe('ChoroplethMap', function() {
       createGeoJsonData(values.length),
       values,
       values,
-      null,
-      'mycolumn',
-      {mycolumn: {shapefile: null}}
+      {filters: []}
+    );
+  }
+
+  // Duplicated from SocrataChoroplethMap
+  function _aggregateGeoJsonData(
+    geometryLabel,
+    primaryKey,
+    geojsonRegions,
+    unfilteredData,
+    filteredData,
+    vifToRender) {
+
+    var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
+    var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
+    var ownFilterOperands = vifToRender.
+      filters.
+      filter(
+        function(filter) {
+
+          return (
+            (filter.columnName === vifToRender.columnName) &&
+            (filter.function === 'binaryComputedGeoregionOperator') &&
+            (filter.arguments.computedColumnName === vifToRender.configuration.computedColumnName)
+          );
+        }
+      ).
+      map(
+        function(filter) {
+          return filter.arguments.operand;
+        }
+      );
+
+    return _mergeRegionAndAggregateData(
+      geometryLabel,
+      primaryKey,
+      geojsonRegions,
+      unfilteredDataAsHash,
+      filteredDataAsHash,
+      ownFilterOperands
     );
   }
 
@@ -214,7 +259,7 @@ describe('ChoroplethMap', function() {
     geojsonRegions,
     unfilteredDataAsHash,
     filteredDataAsHash,
-    activeFilterNames
+    ownFilterOperands
   ) {
 
     var newFeatures = _.chain(_.get(geojsonRegions, 'features', [])).
@@ -228,9 +273,9 @@ describe('ChoroplethMap', function() {
 
         properties[primaryKey] = name;
         properties[choroplethVIF.configuration.shapefile.columns.name] = humanReadableName;
-        properties[choroplethVIF.configuration.shapefile.columns.filtered] = filteredDataAsHash[name];
+        properties[choroplethVIF.configuration.shapefile.columns.filtered] = filteredDataAsHash[name] || null;
         properties[choroplethVIF.configuration.shapefile.columns.unfiltered] = unfilteredDataAsHash[name];
-        properties[choroplethVIF.configuration.shapefile.columns.selected] = _.contains(activeFilterNames, name);
+        properties[choroplethVIF.configuration.shapefile.columns.selected] = _.contains(ownFilterOperands, name);
 
         // Create a new object to get rid of superfluous shapefile-specific
         // fields coming out of the backend.
@@ -246,29 +291,6 @@ describe('ChoroplethMap', function() {
       features: newFeatures,
       type: geojsonRegions.type
     };
-  }
-
-  // Duplicated from SocrataChoroplethMap
-  function _aggregateGeoJsonData(
-    geometryLabel,
-    primaryKey,
-    geojsonRegions,
-    unfilteredData,
-    filteredData,
-    activeFilters) {
-
-    var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
-    var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
-    var activeFilterNames = _.pluck(activeFilters, 'operand');
-
-    return _mergeRegionAndAggregateData(
-      geometryLabel,
-      primaryKey,
-      geojsonRegions,
-      unfilteredDataAsHash,
-      filteredDataAsHash,
-      activeFilterNames
-    );
   }
 
   /**

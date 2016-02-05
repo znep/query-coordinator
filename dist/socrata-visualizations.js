@@ -58,10 +58,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
 	var ChoroplethMap = __webpack_require__(41);
-	var ColumnChart = __webpack_require__(42);
-	var FeatureMap = __webpack_require__(43);
-	var Table = __webpack_require__(44);
-	var TimelineChart = __webpack_require__(45);
+	var ColumnChart = __webpack_require__(43);
+	var FeatureMap = __webpack_require__(44);
+	var Table = __webpack_require__(45);
+	var TimelineChart = __webpack_require__(46);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -203,6 +203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _firstRender = true;
 
 	  var _lastRenderOptions = {};
+	  var _lastRenderedVif;
 
 	  // Keep track of click details so that we can zoom on double-click but
 	  // still selects on single clicks.
@@ -276,7 +277,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 
+	    // Why are we merging the options here but replacing them in other
+	    // visualization implementations?
 	    _.merge(_lastRenderOptions, options);
+	    // Eventually we may only want to pass in the VIF instead of other render
+	    // options as well as the VIF, but for the time being we will just treat it
+	    // as another property on `options`.
+	    _lastRenderedVif = options.vif;
 
 	    // Calling _initializeMap should only occur here if bounds were not specified in the VIF.
 	    // We call it here because the fallback bounds calculation requires geoJSON.
@@ -458,16 +465,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _map.setView(event.latlng, _map.getZoom() + 1);
 	      }
 	    } else {
-	      _lastClickTimeout = window.setTimeout(function() {
+	      _lastClickTimeout = window.setTimeout(
+	        function() { _emitSelectRegionEvent(event); },
+	        MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS
+	      );
+	    }
+	  }
 
-	        self.emitEvent(
-	          'SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION',
-	          {
-	            layer: event.target,
-	            feature: event.target.feature
-	          }
-	        );
-	      }, MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS);
+	  function _emitSelectRegionEvent(event) {
+	    utils.assertHasProperties(
+	      _lastRenderedVif,
+	      'configuration.shapefile.primaryKey'
+	    );
+
+	    var feature = event.target.feature;
+	    var shapefilePrimaryKey = _lastRenderedVif.
+	      configuration.
+	      shapefile.
+	      primaryKey;
+
+	    if (feature.properties.hasOwnProperty(shapefilePrimaryKey)) {
+	      self.emitEvent(
+	        'SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION',
+	        {
+	          // TODO: Once Data Lens has been updated, kill the `layer` and
+	          // `feature` properties of the emitted event payload.
+	          layer: event.target,
+	          feature: event.target.feature,
+	          shapefileFeatureId: feature.properties[shapefilePrimaryKey],
+	          renderedVif: _lastRenderedVif
+	        }
+	      );
 	    }
 	  }
 
@@ -5453,6 +5481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _truncationMarker;
 	  var _lastRenderData;
 	  var _lastRenderOptions;
+	  var _lastRenderedVif;
 
 	  var _truncationMarkerSelector = '.truncation-marker';
 	  var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';
@@ -5476,7 +5505,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.render = function(data, options) {
 	    _lastRenderData = data;
 	    _lastRenderOptions = options;
-	    _renderData(_chartElement, data, options);
+	    // Eventually we may only want to pass in the VIF instead of other render
+	    // options as well as the VIF, but for the time being we will just treat it
+	    // as another property on `options`.
+	    _lastRenderedVif = options.vif;
+	    _renderData(_chartElement, data, options)
 	  };
 
 	  this.renderError = function() {
@@ -5674,7 +5707,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    self.emitEvent(
 	      'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
 	      {
-	        name: d3.select(event.currentTarget).datum()[NAME_INDEX]
+	        name: d3.select(event.currentTarget).datum()[NAME_INDEX],
+	        renderedVif: _lastRenderedVif
 	      }
 	    );
 	  }
@@ -7033,8 +7067,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _chartLeftAxisLabel;
 	  var _lastRenderData;
 	  var _lastRenderOptions;
+	  var _lastRenderedVif;
 
-	  var _interactive = vif.configuration.interactive;
+	  var _interactive = (vif.configuration.interactive === false) ? false : true;
 
 	  _renderTemplate(this.element);
 	  _attachEvents(this.element);
@@ -7046,6 +7081,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.render = function(data, options) {
 	    _lastRenderData = data;
 	    _lastRenderOptions = options;
+	    // Eventually we may only want to pass in the VIF instead of other render
+	    // options as well as the VIF, but for the time being we will just treat it
+	    // as another property on `options`.
+	    _lastRenderedVif = options.vif;
 	    _renderData(_chartElement, data, options);
 	  };
 
@@ -7699,13 +7738,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	        renderChartSelection();
 	      }
 
+	      // This was the original implementation to support filtering from data
+	      // lens, but now that we are consolidating this functionality, we will
+	      // probably want to deprecate this method in favor of:
+	      //
+	      // First: getting the VIF from the render options.
+	      //
+	      // Eventually: receiving the VIF instead of the render options.
 	      if (_.isArray(options.activeFilters) && options.activeFilters.length > 0) {
+
 	        var filter = _.first(options.activeFilters);
 
 	        selectionStartDate = filter.start;
 	        selectionEndDate = filter.end;
 	        renderChartSelection();
 	        enterSelectedState();
+
+	      // Re: the above, this is phase one of the transition to using the VIF to
+	      // describe filter state. A second PR will be made to convert the render
+	      // options into a VIF on its own.
+	      } else if (options.vif) {
+
+	        //derive selection start and end
+	        var filtersOnThisColumn = options.
+	          vif.
+	          filters.
+	          filter(function(filter) {
+	            return (
+	              (filter.columnName === options.vif.columnName) &&
+	              (filter.function === 'timeRange')
+	            );
+	          });
+
+	        if (filtersOnThisColumn.length > 0) {
+
+	          var filter = filtersOnThisColumn[0];
+
+	          selectionStartDate = new Date(filter.arguments.start);
+	          selectionEndDate = new Date(filter.arguments.end);
+	          renderChartSelection();
+	          enterSelectedState();
+
+	        }
+
 	      } else {
 	        enterDefaultState();
 	      }
@@ -8723,10 +8798,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function requestChartFilterByCurrentSelection() {
-	    self.emitEvent('SOCRATA_VISUALIZATION_TIMELINE_FILTER', {
-	      start: selectionStartDate,
-	      end: selectionEndDate
-	    });
+	    self.emitEvent(
+	      'SOCRATA_VISUALIZATION_TIMELINE_FILTER',
+	      {
+	        // Todo: Change this to emit ISO-8601 strings rather than instances of
+	        // moment.
+	        start: selectionStartDate,
+	        end: selectionEndDate,
+	        renderedVif: _lastRenderedVif
+	      }
+	    );
 	  }
 
 	  function requestChartFilterReset() {
@@ -21236,20 +21317,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * @param {Object} vif
-	   */
-	  this.buildUnfilteredWhereClause = function(vif) {
-	    return _buildWhereClause(vif, false);
-	  };
-
-	  /**
-	   * @param {Object} vif
-	   */
-	  this.buildFilteredWhereClause = function(vif) {
-	    return _buildWhereClause(vif, true);
-	  };
-
-	  /**
 	   * `.query()` executes a SoQL query against the current domain that returns
 	   * key => value pairs. The query string is passed in by the caller, meaning
 	   * that at this level of abstraction we have no notion of SoQL grammar.
@@ -25870,12 +25937,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var MetadataProvider = __webpack_require__(25);
 	var GeospaceDataProvider = __webpack_require__(23);
 	var SoqlDataProvider = __webpack_require__(26);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
 	var NAME_ALIAS = '__NAME_ALIAS__';
 	var VALUE_ALIAS = '__VALUE_ALIAS__';
-	var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+	var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} {3} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
 	var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 	/**
@@ -26052,10 +26120,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            cachedGeometryLabel = shapefileMetadata.geometryLabel || null;
 	            cachedShapefile = shapefile;
 	            // Next, render base layer.
-	            visualization.updateTileLayer(_getRenderOptions());
+	            visualization.updateTileLayer(_getRenderOptions(vif));
 	            // Finally, make the data queries and prepare to draw the choropleth
 	            // regions.
-	            _updateData();
+	            _updateData(vif);
 	          },
 	          function(error) {
 	            _logError(error);
@@ -26064,32 +26132,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    );
 
-	  function _getRenderOptions() {
+	  function _getRenderOptions(vifToRender) {
+
 	    return {
 	      baseLayer: {
 	        url: vif.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
 	        opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
-	      }
+	      },
+	      showFiltered: vifToRender.filters.length > 0
 	    };
 	  }
 
 	  /**
 	   * Fetches SOQL data and aggregates with shapefile geoJSON
 	   */
-	  function _updateData() {
-	    var queryString = BASE_QUERY.format(
-	      vif.configuration.computedColumnName,
+	  function _updateData(vifToRender) {
+	    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
+	    var unfilteredQueryString = BASE_QUERY.format(
+	      vifToRender.configuration.computedColumnName,
 	      NAME_ALIAS,
-	      VALUE_ALIAS
+	      VALUE_ALIAS,
+	      ''
+	    );
+	    var filteredQueryString = BASE_QUERY.format(
+	      vifToRender.configuration.computedColumnName,
+	      NAME_ALIAS,
+	      VALUE_ALIAS,
+	      (whereClauseComponents) ? 'WHERE {0}'.format(whereClauseComponents) : ''
 	    );
 	    var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-	      query(queryString, NAME_ALIAS, VALUE_ALIAS)
+	      query(unfilteredQueryString, NAME_ALIAS, VALUE_ALIAS)
 	      ['catch'](function(error) {
 	        _logError(error);
 	        visualization.renderError();
 	      });
 	    var filteredSoqlQuery = filteredSoqlDataProvider.
-	      query(queryString, NAME_ALIAS, VALUE_ALIAS)
+	      query(filteredQueryString, NAME_ALIAS, VALUE_ALIAS)
 	      ['catch'](function(error) {
 	        _logError(error);
 	        visualization.renderError();
@@ -26118,16 +26196,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // Consolidate configuration and data into one object
 	        var aggregatedData = _aggregateGeoJsonData(
 	          cachedGeometryLabel,
-	          vif.configuration.shapefile.primaryKey,
+	          vifToRender.configuration.shapefile.primaryKey,
 	          cachedShapefile,
 	          unfilteredQueryResponse,
 	          filteredQueryResponse,
-	          vif.filters
+	          vifToRender
 	        );
 
 	        visualization.render(
 	          aggregatedData,
-	          _getRenderOptions()
+	          _.merge(_getRenderOptions(vifToRender), {vif: vifToRender})
 	        );
 	      })
 	      ['catch'](function(error) {
@@ -26139,6 +26217,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Data Formatting Functions
 	   */
+
+	  /**
+	   * See CardVisualizationChoroplethHelpers.js in the frontend repo for more
+	   * details about _aggregateGeoJsonData
+	   *
+	   * Consolidates the given geojson data into one object.
+	   *
+	   * @param {String} geometryLabel - The name of the property that should be
+	   *   used as the 'human-readable' name for a region.
+	   * @param {String} primaryKey - Name of the property to be used as the primary key
+	   * @param {Object} geojsonRegions - A geoJson-formatted object.
+	   * @param {Object[]} unfilteredData - An array of objects with 'name' and
+	   *   'value' keys (the unfiltered values of the data).
+	   * @param {Object[]} filteredData - An array of objects with 'name' and
+	   *   'value' keys (the filtered values of the data).
+	   * @param {Object[]} vifToRender - The vif that is being rendered.
+	   *
+	   * @return {Object} (See _mergeRegionAndAggregateData)
+	   */
+	  function _aggregateGeoJsonData(
+	    geometryLabel,
+	    primaryKey,
+	    geojsonRegions,
+	    unfilteredData,
+	    filteredData,
+	    vifToRender) {
+
+	    var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
+	    var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
+	    var ownFilterOperands = vifToRender.
+	      filters.
+	      filter(
+	        function(filter) {
+
+	          return (
+	            (filter.columnName === vifToRender.columnName) &&
+	            (filter.function === 'binaryComputedGeoregionOperator') &&
+	            (filter.arguments.computedColumnName === vifToRender.configuration.computedColumnName)
+	          );
+	        }
+	      ).
+	      map(
+	        function(filter) {
+	          return filter.arguments.operand;
+	        }
+	      );
+
+	    return _mergeRegionAndAggregateData(
+	      geometryLabel,
+	      primaryKey,
+	      geojsonRegions,
+	      unfilteredDataAsHash,
+	      filteredDataAsHash,
+	      ownFilterOperands
+	    );
+	  }
+
 	  /**
 	   * See CardVisualizationChoroplethHelpers.js in the frontend repo for more
 	   * details about _mergeRegionAndAggregateData
@@ -26174,7 +26309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    geojsonRegions,
 	    unfilteredDataAsHash,
 	    filteredDataAsHash,
-	    activeFilterNames
+	    ownFilterOperands
 	  ) {
 
 	    var newFeatures = _.chain(_.get(geojsonRegions, 'features', [])).
@@ -26188,9 +26323,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        properties[primaryKey] = name;
 	        properties[vif.configuration.shapefile.columns.name] = humanReadableName;
-	        properties[vif.configuration.shapefile.columns.filtered] = filteredDataAsHash[name];
+	        properties[vif.configuration.shapefile.columns.filtered] = filteredDataAsHash[name] || null;
 	        properties[vif.configuration.shapefile.columns.unfiltered] = unfilteredDataAsHash[name];
-	        properties[vif.configuration.shapefile.columns.selected] = _.contains(activeFilterNames, name);
+	        properties[vif.configuration.shapefile.columns.selected] = _.contains(ownFilterOperands, name);
 
 	        // Create a new object to get rid of superfluous shapefile-specific
 	        // fields coming out of the backend.
@@ -26206,47 +26341,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      features: newFeatures,
 	      type: geojsonRegions.type
 	    };
-	  }
-
-	  /**
-	   * See CardVisualizationChoroplethHelpers.js in the frontend repo for more
-	   * details about _aggregateGeoJsonData
-	   *
-	   * Consolidates the given geojson data into one object.
-	   *
-	   * @param {String} geometryLabel - The name of the property that should be
-	   *   used as the 'human-readable' name for a region.
-	   * @param {String} primaryKey - Name of the property to be used as the primary key
-	   * @param {Object} geojsonRegions - A geoJson-formatted object.
-	   * @param {Object[]} unfilteredData - An array of objects with 'name' and
-	   *   'value' keys (the unfiltered values of the data).
-	   * @param {Object[]} filteredData - An array of objects with 'name' and
-	   *   'value' keys (the filtered values of the data).
-	   * @param {Object[]} activeFilters - The active filters - each filter must
-	   *   have an 'operand' key.
-	   *
-	   * @return {Object} (See _mergeRegionAndAggregateData)
-	   */
-	  function _aggregateGeoJsonData(
-	    geometryLabel,
-	    primaryKey,
-	    geojsonRegions,
-	    unfilteredData,
-	    filteredData,
-	    activeFilters) {
-
-	    var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
-	    var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
-	    var activeFilterNames = _.pluck(activeFilters, 'operand');
-
-	    return _mergeRegionAndAggregateData(
-	      geometryLabel,
-	      primaryKey,
-	      geojsonRegions,
-	      unfilteredDataAsHash,
-	      filteredDataAsHash,
-	      activeFilterNames
-	    );
 	  }
 
 	  /**
@@ -26266,7 +26360,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
-	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleRegionSelect);
 	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	  }
 
@@ -26277,7 +26370,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
-	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleRegionSelect);
 	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	  }
 
@@ -26483,13 +26575,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  }
 
-	  function _handleRegionSelect() {// event) { ---> Linting sucks
-
-	    // var payload = event.originalEvent.detail;
-
-	    // TODO: Implement whenever Stories gets filtering
-	  }
-
 	  function _logError(error) {
 	    if (window.console && window.console.error) {
 	      console.error(error);
@@ -26506,11 +26591,261 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var utils = __webpack_require__(3);
+	var _ = __webpack_require__(9);
+
+	var VALID_BINARY_OPERATORS = ['=', '!=', '<', '<=', '>', '>='];
+
+	/**
+	 * 'Public' methods
+	 */
+
+	/**
+	 * @param {Object} vif
+	 */
+	function whereClauseNotFilteringOwnColumn(vif) {
+	  var whereClauseComponents = _whereClauseFromVif(vif, false);
+
+	  if (whereClauseComponents) {
+	    return whereClauseComponents;
+	  }
+
+	  return '';
+	}
+
+	/**
+	 * @param {Object} vif
+	 */
+	function whereClauseFilteringOwnColumn(vif) {
+	  var whereClauseComponents = _whereClauseFromVif(vif, true);
+
+	  if (whereClauseComponents) {
+	    return whereClauseComponents;
+	  }
+
+	  return '';
+	}
+
+	/**
+	 * 'Private' methods
+	 */
+
+	function _whereClauseFromVif(vif, filterOwnColumn) {
+	  utils.assertHasProperties(
+	    vif,
+	    'columnName',
+	    'filters'
+	  );
+	  utils.assertIsOneOfTypes(vif.columnName, 'string');
+	  utils.assertIsOneOfTypes(vif.filters, 'object');
+	  utils.assert(_.isArray(vif.filters), '`vif.filters` must be an array.');
+
+	  return vif.
+	    filters.
+	    filter(
+	      function(filter) {
+	        return filterOwnColumn || (filter.columnName !== vif.columnName);
+	      }
+	    ).map(
+	      _filterToWhereClauseComponent
+	    ).
+	    join(' AND ');
+	}
+
+	function _filterToWhereClauseComponent(filter) {
+	  utils.assertHasProperties(
+	    filter,
+	    'columnName',
+	    'function',
+	    'arguments'
+	  );
+
+	  switch (filter.function) {
+	    case 'binaryOperator':
+	      return _binaryOperatorWhereClauseComponent(filter);
+	      break;
+	    case 'binaryComputedGeoregionOperator':
+	      return _binaryComputedGeoregionOperatorWhereClauseComponent(filter);
+	      break;
+	    case 'isNull':
+	      return _isNullWhereClauseComponent(filter);
+	      break;
+	    case 'timeRange':
+	      return _timeRangeWhereClauseComponent(filter);
+	      break;
+	    case 'valueRange':
+	      return _valueRangeWhereClauseComponent(filter);
+	      break;
+	    default:
+	      throw new Error(
+	        'Invalid filter function: `{0}`.'.format(filter.function)
+	      );
+	      break;
+	  }
+	}
+
+	function _soqlEncodeColumnName(columnName) {
+	  utils.assertIsOneOfTypes(columnName, 'string');
+
+	  return '`{0}`'.format(
+	    columnName.replace(/\-/g, '_')
+	  );
+	}
+
+	function _soqlEncodeValue(value) {
+	  // Note: These conditionals will fall through.
+	  if (_.isString(value)) {
+	    return _soqlEncodeString(value);
+	  }
+
+	  if (_.isDate(value)) {
+	    return _soqlEncodeDate(value);
+	  }
+
+	  if (_.isNumber(value) || _.isBoolean(value)) {
+	    return value;
+	  }
+
+	  throw new Error(
+	    'Cannot soql-encode value of type: {0}'.format(typeof value)
+	  );
+	}
+
+	function _soqlEncodeString(value) {
+	  return "'{0}'".format(value.replace(/'/g, "''"))
+	}
+
+	function _soqlEncodeDate(value) {
+	  return _soqlEncodeString(
+	    _serializeFloatingTimestamp(
+	      value
+	    )
+	  );
+	}
+
+	function _serializeFloatingTimestamp(date) {
+	  function _formatToTwoPlaces(value) {
+	    return (value < 10) ?
+	      '0' + value.toString() :
+	      value.toString();
+	  }
+
+	  return '{0}-{1}-{2}T{3}:{4}:{5}'.format(
+	    date.getFullYear(),
+	    // The month component of JavaScript dates is 0-indexed (I have no idea
+	    // why) so when we are serializing a JavaScript date as ISO-8601 date we
+	    // need to increment the month value.
+	    _formatToTwoPlaces(date.getMonth() + 1),
+	    _formatToTwoPlaces(date.getDate()),
+	    _formatToTwoPlaces(date.getHours()),
+	    _formatToTwoPlaces(date.getMinutes()),
+	    _formatToTwoPlaces(date.getSeconds())
+	  );
+	}
+
+	function _binaryOperatorWhereClauseComponent(filter) {
+	  utils.assertHasProperties(
+	    filter,
+	    'columnName',
+	    'arguments',
+	    'arguments.operator',
+	    'arguments.operand'
+	  );
+	  utils.assert(
+	    VALID_BINARY_OPERATORS.indexOf(filter.arguments.operator) > -1,
+	    'Invalid binary operator: `{0}`'.format(filter.arguments.operator)
+	  );
+
+	  return '{0} {1} {2}'.format(
+	    _soqlEncodeColumnName(filter.columnName),
+	    filter.arguments.operator,
+	    _soqlEncodeValue(filter.arguments.operand)
+	  );
+	}
+
+	function _binaryComputedGeoregionOperatorWhereClauseComponent(filter) {
+	  utils.assertHasProperties(
+	    filter,
+	    'columnName',
+	    'arguments',
+	    'arguments.computedColumnName',
+	    'arguments.operator',
+	    'arguments.operand'
+	  );
+	  utils.assert(
+	    VALID_BINARY_OPERATORS.indexOf(filter.arguments.operator) > -1,
+	    'Invalid binary operator: `{0}`'.format(filter.arguments.operator)
+	  );
+
+	  return '{0} {1} {2}'.format(
+	    _soqlEncodeColumnName(filter.arguments.computedColumnName),
+	    filter.arguments.operator,
+	    _soqlEncodeValue(filter.arguments.operand)
+	  );
+	}
+
+	function _isNullWhereClauseComponent(filter) {
+	  utils.assertHasProperties(
+	    filter,
+	    'columnName',
+	    'arguments',
+	    'arguments.isNull'
+	  );
+
+	  return '{0} {1}' .format(
+	    _soqlEncodeColumnName(filter.columnName),
+	    filter.arguments.isNull ? 'IS NULL' : 'IS NOT NULL'
+	  );
+	}
+
+	function _timeRangeWhereClauseComponent(filter) {
+	  utils.assertHasProperties(
+	    filter,
+	    'columnName',
+	    'arguments',
+	    'arguments.start',
+	    'arguments.end'
+	  );
+
+	  return '{0} >= {1} AND {0} < {2}'.format(
+	    _soqlEncodeColumnName(filter.columnName),
+	    _soqlEncodeValue(filter.arguments.start),
+	    _soqlEncodeValue(filter.arguments.end)
+	  );
+	}
+
+	function _valueRangeWhereClauseComponent(filter) {
+	  utils.assertHasProperties(
+	    filter,
+	    'columnName',
+	    'arguments',
+	    'arguments.start',
+	    'arguments.end'
+	  );
+
+	  return '{0} >= {1} AND {0} < {2}'.format(
+	    _soqlEncodeColumnName(filter.columnName),
+	    _soqlEncodeValue(filter.arguments.start),
+	    _soqlEncodeValue(filter.arguments.end)
+	  );
+	}
+
+	module.exports = {
+	  whereClauseNotFilteringOwnColumn: whereClauseNotFilteringOwnColumn,
+	  whereClauseFilteringOwnColumn: whereClauseFilteringOwnColumn
+	};
+
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var ColumnChart = __webpack_require__(12);
 	var SoqlDataProvider = __webpack_require__(26);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var NAME_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
@@ -26518,7 +26853,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var SELECTED_INDEX = 3;
 	var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
 	var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
-	var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+	var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} {3} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
 	var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 	/**
@@ -26625,7 +26960,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var rerenderOnResizeTimeout;
 
 	  _attachEvents();
-	  _updateData();
+	  _updateData(vif);
 
 	  /**
 	   * Configuration
@@ -26634,7 +26969,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function _getRenderOptions() {
 	    return {
 	      showAllLabels: true,
-	      showFiltered: false
+	      showFiltered: true
 	    };
 	  }
 
@@ -26682,10 +27017,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  }
 
-	  function _render() {
+	  function _render(vifToRender) {
 	    visualization.render(
 	      visualizationData,
-	      _getRenderOptions()
+	      _.merge(_getRenderOptions(), {vif: vifToRender})
 	    );
 	  }
 
@@ -26839,7 +27174,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    $element[0].dispatchEvent(
 	      new window.CustomEvent(
-	        'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
+	        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
 	        {
 	          detail: flyoutPayload,
 	          bubbles: true
@@ -26866,23 +27201,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Data requests
 	   */
 
-	  function _updateData() {
+	  function _updateData(vifToRender) {
 
-	    var queryString = BASE_QUERY.format(
-	      vif.columnName,
+	    var unfilteredQueryString = BASE_QUERY.format(
+	      vifToRender.columnName,
 	      SOQL_DATA_PROVIDER_NAME_ALIAS,
-	      SOQL_DATA_PROVIDER_VALUE_ALIAS
+	      SOQL_DATA_PROVIDER_VALUE_ALIAS,
+	      ''
 	    );
 
 	    var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-	      query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+	      query(
+	        unfilteredQueryString,
+	        SOQL_DATA_PROVIDER_NAME_ALIAS,
+	        SOQL_DATA_PROVIDER_VALUE_ALIAS
+	      )
 	      ['catch'](function(error) {
 	        _logError(error);
 	        visualization.renderError();
 	      });
 
+	    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
+	    var filteredQueryString = BASE_QUERY.format(
+	      vifToRender.columnName,
+	      SOQL_DATA_PROVIDER_NAME_ALIAS,
+	      SOQL_DATA_PROVIDER_VALUE_ALIAS,
+	      (whereClauseComponents.length > 0) ?
+	        'WHERE {0}'.format(whereClauseComponents) :
+	        ''
+	    );
+
 	    var filteredSoqlQuery = filteredSoqlDataProvider.
-	      query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+	      query(
+	        filteredQueryString,
+	        SOQL_DATA_PROVIDER_NAME_ALIAS,
+	        SOQL_DATA_PROVIDER_VALUE_ALIAS
+	      )
 	      ['catch'](function(error) {
 	        _logError(error);
 	        visualization.renderError();
@@ -26895,11 +27249,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var filteredQueryResponse = values[1];
 
 	        visualizationData = _mergeUnfilteredAndFilteredData(
+	          vifToRender,
 	          unfilteredQueryResponse,
 	          filteredQueryResponse
 	        );
 
-	        _render();
+	        _render(vifToRender);
 	      })
 	      ['catch'](function(error) {
 	        _logError(error);
@@ -26907,10 +27262,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	  }
 
-	  function _mergeUnfilteredAndFilteredData(unfiltered, filtered) {
-
+	  function _mergeUnfilteredAndFilteredData(renderedVif, unfiltered, filtered) {
 	    var unfilteredAsHash;
 	    var filteredAsHash;
+	    var selectedColumns = renderedVif.
+	      filters.
+	      filter(function(filter) {
+	        return filter.columnName === renderedVif.columnName;
+	      }).
+	      map(function(filter) {
+	        return filter.arguments.operand;
+	      });
 
 	    unfilteredAsHash = _.indexBy(
 	      unfiltered.rows,
@@ -26923,14 +27285,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 
 	    return Object.keys(unfilteredAsHash).map(function(name) {
-
-	      var datumIsSelected = false;
-
+	      var datumIsSelected = selectedColumns.indexOf(name) > -1;
 	      var result = [undefined, undefined, undefined, undefined];
 
 	      result[NAME_INDEX] = (_.isNull(name) || _.isUndefined(name)) ? '' : name;
 	      result[UNFILTERED_INDEX] = Number(unfilteredAsHash[name][1]);
-	      result[FILTERED_INDEX] = Number(filteredAsHash[name][1]) || 0;
+	      result[FILTERED_INDEX] = (filteredAsHash.hasOwnProperty(name)) ?
+	        Number(filteredAsHash[name][1]) :
+	        0;
 	      result[SELECTED_INDEX] = datumIsSelected;
 
 	      return result;
@@ -26950,7 +27312,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27508,7 +27870,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27903,7 +28265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27912,6 +28274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var moment = __webpack_require__(15);
 	var TimelineChart = __webpack_require__(16);
 	var SoqlDataProvider = __webpack_require__(26);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 	var DATE_INDEX = 0;
@@ -27923,7 +28286,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
 	var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
 	var PRECISION_QUERY = 'SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < \'{1}\'';
-	var DATA_QUERY = 'SELECT {3}(`{0}`) AS {1}, count(*) AS {2} WHERE `{0}` IS NOT NULL AND `{0}` < \'{4}\' AND (1=1) GROUP BY {1}';
+	var DATA_QUERY_PREFIX = 'SELECT {3}(`{0}`) AS {1}, count(*) AS {2}';
+	var DATA_QUERY_SUFFIX = 'GROUP BY {0}';
+	var DATA_QUERY_WHERE_CLAUSE_PREFIX = 'WHERE';
+	var DATA_QUERY_WHERE_CLAUSE_SUFFIX = '`{0}` IS NOT NULL AND `{0}` < \'{1}\' AND (1=1)';
 	//'SELECT {2}({0}) AS {4}, {3} AS {5} {1} GROUP BY {4}'.  format(fieldName, whereClause, dateTruncFunction, aggregationClause, dateAlias, valueAlias)
 	var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
@@ -27987,7 +28353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var rerenderOnResizeTimeout;
 
 	  _attachEvents();
-	  _updateData();
+	  _updateData(vif);
 
 	  /**
 	   * Configuration
@@ -28276,17 +28642,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    visualization.renderError();
 	  }
 
-	  function _updateData() {
-
+	  function _updateData(vifToRender) {
 	    var precisionQueryString = PRECISION_QUERY.format(
-	      vif.columnName,
+	      vifToRender.columnName,
 	      MAX_LEGAL_JAVASCRIPT_DATE_STRING,
 	      SOQL_PRECISION_START_ALIAS,
 	      SOQL_PRECISION_END_ALIAS
 	    );
 
-	    var precisionPromise = vif.configuration.precision ?
-	      Promise.resolve(vif.configuration.precision) :
+	    var precisionPromise = vifToRender.configuration.precision ?
+	      Promise.resolve(vifToRender.configuration.precision) :
 	      precisionSoqlDataProvider.
 	        getRows(
 	          [ SOQL_PRECISION_START_ALIAS, SOQL_PRECISION_END_ALIAS ],
@@ -28315,12 +28680,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (!domain.start.isValid()) {
 	        domain.start = null;
-	        console.warn('Invalid start date on {0} ({1})'.format(vif.columnName, domainStartDate));
+	        console.warn('Invalid start date on {0} ({1})'.format(vifToRender.columnName, domainStartDate));
 	      }
 
 	      if (!domain.end.isValid()) {
 	        domain.end = null;
-	        console.warn('Invalid end date on {0} ({1})'.format(vif.columnName, domainEndDate));
+	        console.warn('Invalid end date on {0} ({1})'.format(vifToRender.columnName, domainEndDate));
 	      }
 
 	      // Return undefined if the domain is undefined, null, or malformed
@@ -28353,6 +28718,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    function mapPrecisionToDataQuery(precision) {
 	      var date_trunc_function;
+
 	      switch (precision) {
 	        case 'YEAR':
 	          date_trunc_function = 'date_trunc_y';
@@ -28367,23 +28733,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	          throw 'precision was invalid: {0}'.format(precision);
 	      }
 
-	      return DATA_QUERY.format(
-	        vif.columnName,
-	        SOQL_DATA_PROVIDER_NAME_ALIAS,
-	        SOQL_DATA_PROVIDER_VALUE_ALIAS,
-	        date_trunc_function,
-	        MAX_LEGAL_JAVASCRIPT_DATE_STRING
+	      return (
+	        DATA_QUERY_PREFIX.format(
+	          vifToRender.columnName,
+	          SOQL_DATA_PROVIDER_NAME_ALIAS,
+	          SOQL_DATA_PROVIDER_VALUE_ALIAS,
+	          date_trunc_function
+	        ) +
+	        ' {0} ' +
+	        DATA_QUERY_SUFFIX.format(SOQL_DATA_PROVIDER_NAME_ALIAS)
 	      );
 	    }
 
 	    function mapQueryToPromises(dataQueryString) {
+	      var unfilteredWhereClause = '{0} {1}'.format(
+	        DATA_QUERY_WHERE_CLAUSE_PREFIX,
+	        DATA_QUERY_WHERE_CLAUSE_SUFFIX.format(vifToRender.columnName, MAX_LEGAL_JAVASCRIPT_DATE_STRING)
+	      );
+	      var whereClauseFilterComponents = SoqlHelpers.whereClauseNotFilteringOwnColumn(vifToRender);
+	      var filteredWhereClause = '{0} {1} {2} {3}'.format(
+	        DATA_QUERY_WHERE_CLAUSE_PREFIX,
+	        whereClauseFilterComponents,
+	        (whereClauseFilterComponents.length > 0) ? 'AND' : '',
+	        DATA_QUERY_WHERE_CLAUSE_SUFFIX.format(vifToRender.columnName, MAX_LEGAL_JAVASCRIPT_DATE_STRING)
+	      );
 	      var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-	        query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
-	        ['catch'](handleError);
-
+	        query(
+	          dataQueryString.format(unfilteredWhereClause),
+	          SOQL_DATA_PROVIDER_NAME_ALIAS,
+	          SOQL_DATA_PROVIDER_VALUE_ALIAS
+	        )['catch'](handleError);
 	      var filteredSoqlQuery = filteredSoqlDataProvider.
-	        query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
-	        ['catch'](handleError);
+	        query(
+	          dataQueryString.format(filteredWhereClause),
+	          SOQL_DATA_PROVIDER_NAME_ALIAS,
+	          SOQL_DATA_PROVIDER_VALUE_ALIAS
+	        )['catch'](handleError);
 
 	      return Promise.all([unfilteredSoqlQuery, filteredSoqlQuery]);
 	    }
@@ -28402,26 +28787,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      visualization.render(
 	        visualizationData,
-	        _getRenderOptions()
+	        _.merge(_getRenderOptions(), {vif: vifToRender})
 	      );
 	    }
 	  }
 
 	  function _mergeUnfilteredAndFilteredData(unfiltered, filtered, precision) {
 
-	    var unfilteredAsHash;
-	    var filteredAsHash;
-
-	    unfilteredAsHash = _.indexBy(
+	    var unfilteredAsHash = _.indexBy(
 	      unfiltered.rows,
 	      unfiltered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
 	    );
-
-	    filteredAsHash = _.indexBy(
+	    var filteredAsHash = _.indexBy(
 	      filtered.rows,
 	      filtered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
 	    );
-
 	    var dates = Object.keys(unfilteredAsHash).map(function(date) {
 	      return moment((_.isNull(date) || _.isUndefined(date)) ? '' : date);
 	    });
@@ -28430,21 +28810,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var timeData = Array(timeEnd.diff(timeStart, precision));
 	    _.each(unfiltered.rows, function(item) {
 	      var date = item[DATE_INDEX];
-	      date = moment((_.isNull(date) || _.isUndefined(date)) ? '' : date);
-	      var timeSlot = date.diff(timeStart, precision);
+	      var dateAsMoment = moment((_.isNull(date) || _.isUndefined(date)) ? '' : date);
+	      var timeSlot = dateAsMoment.diff(timeStart, precision);
 
 	      // Default to null in case we don't receive a value associated with
 	      // this date. If we do not, the result of Number(item.value) is NaN
 	      // and the timeline chart breaks because it tries to use NaN to
 	      // calculate the height of the chart.
-	      var itemValue = !_.isUndefined(item[UNFILTERED_INDEX]) ?
+	      var unfilteredValue = !_.isUndefined(item[UNFILTERED_INDEX]) ?
 	        Number(item[UNFILTERED_INDEX]) :
 	        null;
 
+	      var filteredValue;
+	      // If the filtered value exists, use it.
+	      if (filteredAsHash.hasOwnProperty(item[DATE_INDEX])) {
+	        filteredValue = Number(filteredAsHash[item[DATE_INDEX]][1])
+	      } else {
+	        // If the filtered value does not exist but the unfiltered value for
+	        // the same date interval exists, then the value has just been filtered
+	        // and we should show '0'.
+	        if (!_.isUndefined(item[UNFILTERED_INDEX])) {
+	          filteredValue = 0;
+	        // If the unfiltered value for the same date interval does not exist,
+	        // then the value should actually be rendered as being null.
+	        } else {
+	          filteredValue = null;
+	        }
+	      }
+
 	      timeData[timeSlot] = {
-	        date: date,
-	        filtered: itemValue,
-	        total: itemValue
+	        date: dateAsMoment,
+	        filtered: filteredValue,
+	        total: unfilteredValue
 	      };
 	    });
 

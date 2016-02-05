@@ -112,8 +112,9 @@ function TimelineChart(element, vif) {
   var _chartLeftAxisLabel;
   var _lastRenderData;
   var _lastRenderOptions;
+  var _lastRenderedVif;
 
-  var _interactive = vif.configuration.interactive;
+  var _interactive = (vif.configuration.interactive === false) ? false : true;
 
   _renderTemplate(this.element);
   _attachEvents(this.element);
@@ -125,6 +126,10 @@ function TimelineChart(element, vif) {
   this.render = function(data, options) {
     _lastRenderData = data;
     _lastRenderOptions = options;
+    // Eventually we may only want to pass in the VIF instead of other render
+    // options as well as the VIF, but for the time being we will just treat it
+    // as another property on `options`.
+    _lastRenderedVif = options.vif;
     _renderData(_chartElement, data, options);
   };
 
@@ -778,13 +783,49 @@ function TimelineChart(element, vif) {
         renderChartSelection();
       }
 
+      // This was the original implementation to support filtering from data
+      // lens, but now that we are consolidating this functionality, we will
+      // probably want to deprecate this method in favor of:
+      //
+      // First: getting the VIF from the render options.
+      //
+      // Eventually: receiving the VIF instead of the render options.
       if (_.isArray(options.activeFilters) && options.activeFilters.length > 0) {
+
         var filter = _.first(options.activeFilters);
 
         selectionStartDate = filter.start;
         selectionEndDate = filter.end;
         renderChartSelection();
         enterSelectedState();
+
+      // Re: the above, this is phase one of the transition to using the VIF to
+      // describe filter state. A second PR will be made to convert the render
+      // options into a VIF on its own.
+      } else if (options.vif) {
+
+        //derive selection start and end
+        var filtersOnThisColumn = options.
+          vif.
+          filters.
+          filter(function(filter) {
+            return (
+              (filter.columnName === options.vif.columnName) &&
+              (filter.function === 'timeRange')
+            );
+          });
+
+        if (filtersOnThisColumn.length > 0) {
+
+          var filter = filtersOnThisColumn[0];
+
+          selectionStartDate = new Date(filter.arguments.start);
+          selectionEndDate = new Date(filter.arguments.end);
+          renderChartSelection();
+          enterSelectedState();
+
+        }
+
       } else {
         enterDefaultState();
       }
@@ -1802,10 +1843,16 @@ function TimelineChart(element, vif) {
   }
 
   function requestChartFilterByCurrentSelection() {
-    self.emitEvent('SOCRATA_VISUALIZATION_TIMELINE_FILTER', {
-      start: selectionStartDate,
-      end: selectionEndDate
-    });
+    self.emitEvent(
+      'SOCRATA_VISUALIZATION_TIMELINE_FILTER',
+      {
+        // Todo: Change this to emit ISO-8601 strings rather than instances of
+        // moment.
+        start: selectionStartDate,
+        end: selectionEndDate,
+        renderedVif: _lastRenderedVif
+      }
+    );
   }
 
   function requestChartFilterReset() {

@@ -455,7 +455,7 @@ $.getTemplate = function(template) {
     if ($jsAppendedTemplates.is(templateSelector)) {
         return $jsAppendedTemplates.filter(templateSelector);
     }
-    return $($('#templates').contents().text()).filter(templateSelector);
+    return $($('#templates').html()).filter(templateSelector);
 };
 
 $.renderTemplate = function(template, data, directive, keepText)

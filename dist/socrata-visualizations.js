@@ -205,6 +205,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _lastRenderOptions = {};
 	  var _lastRenderedVif;
 
+	  var _interactive = (vif.configuration.interactive === false) ? false : true;
+
 	  // Keep track of click details so that we can zoom on double-click but
 	  // still selects on single clicks.
 	  var _lastClick = 0;
@@ -451,24 +453,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Handle clicking on a feature.
 	   */
 	  function _onSelectRegion(event) {
-
 	    var now = Date.now();
 	    var delay = now - _lastClick;
-	    _lastClick = now;
-	    if (delay < MAP_DOUBLE_CLICK_THRESHOLD_MILLISECONDS) {
-	      if (!_.isNull(_lastClickTimeout)) {
 
-	        // If this is actually a double click, cancel the timeout which selects
-	        // the feature and zoom in instead.
-	        window.clearTimeout(_lastClickTimeout);
-	        _lastClickTimeout = null;
-	        _map.setView(event.latlng, _map.getZoom() + 1);
+	    _lastClick = now;
+
+	    if (_interactive) {
+	      if (delay < MAP_DOUBLE_CLICK_THRESHOLD_MILLISECONDS) {
+	        if (!_.isNull(_lastClickTimeout)) {
+
+	          // If this is actually a double click, cancel the timeout which
+	          // selects the feature and zoom in instead.
+	          window.clearTimeout(_lastClickTimeout);
+	          _lastClickTimeout = null;
+	          _map.setView(event.latlng, _map.getZoom() + 1);
+	        }
+	      } else {
+	        _lastClickTimeout = window.setTimeout(
+	          function() { _emitSelectRegionEvent(event); },
+	          MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS
+	        );
 	      }
-	    } else {
-	      _lastClickTimeout = window.setTimeout(
-	        function() { _emitSelectRegionEvent(event); },
-	        MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS
-	      );
 	    }
 	  }
 
@@ -5482,6 +5487,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _lastRenderOptions;
 	  var _lastRenderedVif;
 
+	  var _interactive = (vif.configuration.interactive === false) ? false : true;
+
 	  var _truncationMarkerSelector = '.truncation-marker';
 	  var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';
 	  var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
@@ -5491,8 +5498,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var UNFILTERED_INDEX = vif.configuration.columns.unfilteredValue;
 	  var FILTERED_INDEX = vif.configuration.columns.filteredValue;
 	  var SELECTED_INDEX = vif.configuration.columns.selected;
-
-	  var _interactive = vif.configuration.interactive;
 
 	  _renderTemplate(this.element);
 	  _attachEvents(this.element);
@@ -8035,8 +8040,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        Constants.TIMELINE_CHART_REQUIRED_LABEL_WIDTH);
 	      var labelEveryN;
 
-	      // TODO - write integration tests for the number of labels shown at given screen widths
-	      // and ensuring that they are interactive.
+	      // TODO - write integration tests for the number of labels shown at given
+	      // screen widths and ensuring that they are interactive.
 
 	      // Show every label, every other label, etc...
 	      if (numberOfLabels <= labelsWeHaveRoomFor) {

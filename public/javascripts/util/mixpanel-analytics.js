@@ -48,12 +48,16 @@ $(document).ready(function() {
   };
 
   var facetEventPayload = function(element, eventName) {
+    var isActiveOrClearAll = $(element).hasClass('active') || $(element).attr('class') === 'browse2-results-clear-all-button';
     return _.extend(_genericPayload(), {
       'Type': {
-        'Name': $(element).hasClass('active') ? 'Clear Facet' : eventName,
-        'Properties': {
-          'Click Position': $(element).closest('ul').find('a').index(element)
-        }
+        'Name': isActiveOrClearAll  ? 'Cleared Facet' : eventName,
+        'Properties': _.extend({},
+          isActiveOrClearAll ? {} : {
+            'Facet Value': $(element).attr('title'),
+            'Facet Name': $(element).closest('ul').prev('h3').attr('title')
+          }
+        )
       }
     });
   };

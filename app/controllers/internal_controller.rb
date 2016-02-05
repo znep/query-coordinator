@@ -174,6 +174,16 @@ class InternalController < ApplicationController
                                  id: config.id)
   end
 
+  def rename_site_config
+    ::Configuration.update_attributes!(params['rename-config'],
+                                       { 'name' => params['rename-config-to'] })
+
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
+
+    redirect_to show_config_path(domain_id: params[:domain_id],
+                                 id: params['rename-config'])
+  end
+
   def set_default_site_config
     ::Configuration.update_attributes!(params['default-site-config'],
                                      {'default' => true})

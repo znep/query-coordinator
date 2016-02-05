@@ -95,6 +95,11 @@
       </div>
       <input type="submit" value="Add"/>
     <% end %>
+    <%= form_tag rename_config_path(id: @config.id), :class => 'oneButtonForm renameConfig' do %>
+        <input type="text" name="rename-config-to" value="<%= @config.name %>" />
+        <input type="hidden" name="rename-config" value="<%= @config.id %>" />
+        <input type="submit" value="Rename Config" />
+      <% end %>
     <%- end -%>
 
   </div>

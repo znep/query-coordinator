@@ -52,11 +52,10 @@ $(function() {
 
     _.defer(function() {
       var newOpts = $.extend({}, opts, {
-        'q': encodeURIComponent(
-          $searchSection.find('.browse2-search-control').val()
-        ),
+        'q': encodeURIComponent($searchSection.find('.browse2-search-control').val()),
         'Type': {
-          'Name': 'Cleared Search Field'
+          'Name': 'Cleared Search Field',
+          'Properties': {}
         }
       });
 

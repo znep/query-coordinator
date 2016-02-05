@@ -111,4 +111,22 @@ module Browse2Helper
     end
     flattened_options
   end
+
+  # Returns result topics array truncated to provided limit. Also ensures that any currently
+  # filtered result topic will be in the truncated result.
+  def truncate_result_topics(result_topics, user_params, limit)
+    truncated_results = []
+    if result_topics.present?
+      (0...[result_topics.length, limit].min).each do |i|
+        truncated_results.push(result_topics[i])
+      end
+      active_tag_filter = user_params[:tags]
+      # If there is an active tag filter and it isn't already in the truncated results,
+      # replace the last element in truncated_results with it.
+      if active_tag_filter && !truncated_results.include?(active_tag_filter)
+        truncated_results[-1] = active_tag_filter
+      end
+    end
+    truncated_results
+  end
 end

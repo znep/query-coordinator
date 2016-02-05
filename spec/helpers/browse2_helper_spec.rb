@@ -334,4 +334,29 @@ describe Browse2Helper do
       expect(result).to match_array(facet_options_with_children_flattened)
     end
   end
+
+  describe '#truncate_result_topics' do
+    before(:each) do
+      @result_topics = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
+      @limit = 5
+    end
+
+    it 'truncates to limit with no active filtered tags' do
+      user_params = {}
+      result = helper.truncate_result_topics(@result_topics, user_params, @limit)
+      expect(result).to match_array(['a', 'b', 'c', 'd', 'e'])
+    end
+
+    it 'truncates to limit with an active filtered tag before the limit' do
+      user_params = { :tags => 'b' }
+      result = helper.truncate_result_topics(@result_topics, user_params, @limit)
+      expect(result).to match_array(['a', 'b', 'c', 'd', 'e'])
+    end
+
+    it 'truncates to limit with an active filtered tag after the limit and the result contains the active filtered tag' do
+      user_params = { :tags => 'j' }
+      result = helper.truncate_result_topics(@result_topics, user_params, @limit)
+      expect(result).to match_array(['a', 'b', 'c', 'd', 'j'])
+    end
+  end
 end

@@ -569,6 +569,7 @@ en:
         topics:
           label: Topics
           empty: No topics assigned
+          more: and %{count} more
         view_count:
           label: Views
         visibility:

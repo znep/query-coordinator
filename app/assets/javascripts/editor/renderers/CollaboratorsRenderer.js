@@ -67,8 +67,8 @@
                         '<input type="radio" value="owner" name="access-levels" id="access-level-owner" disabled>' +
                         '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.owner')) +
                         '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.owner_description')) +
+                        '<div class="radio-label-subtitle alert info"><small><span class="icon-info-inverse"></span>{0}</small></div>'.format(t('editor.collaborators.modal.licenses')) +
                       '</label>' +
-                      '<div class="radio-label-subtitle alert info"><small><span class="icon-info-inverse"></span>{0}</small></div>'.format(t('editor.collaborators.modal.licenses')) +
                     '</li>' +
                   '</ul>' +
                 '</div>' +

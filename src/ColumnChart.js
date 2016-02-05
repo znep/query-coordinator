@@ -116,6 +116,7 @@ $.fn.socrataColumnChart = function(vif) {
   var visualization = new ColumnChart($element, vif);
   var visualizationData = [];
   var rerenderOnResizeTimeout;
+  var _lastRenderedVif;
 
   _attachEvents();
   _updateData(vif);
@@ -124,10 +125,11 @@ $.fn.socrataColumnChart = function(vif) {
    * Configuration
    */
 
-  function _getRenderOptions() {
+  function _getRenderOptions(vifToRender) {
     return {
       showAllLabels: true,
-      showFiltered: true
+      showFiltered: true,
+      vif: vifToRender
     };
   }
 
@@ -176,9 +178,13 @@ $.fn.socrataColumnChart = function(vif) {
   }
 
   function _render(vifToRender) {
+    if (vifToRender) {
+      _lastRenderedVif = vifToRender;
+    }
+
     visualization.render(
       visualizationData,
-      _.merge(_getRenderOptions(), {vif: vifToRender})
+      _getRenderOptions(_lastRenderedVif)
     );
   }
 

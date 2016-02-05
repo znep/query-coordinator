@@ -81,6 +81,7 @@ $.fn.socrataTimelineChart = function(vif) {
   var visualizationData = transformChartDataForRendering([]);
   var precision;
   var rerenderOnResizeTimeout;
+  var _lastRenderedVif;
 
   _attachEvents();
   _updateData(vif);
@@ -89,11 +90,12 @@ $.fn.socrataTimelineChart = function(vif) {
    * Configuration
    */
 
-  function _getRenderOptions() {
+  function _getRenderOptions(vifToRender) {
     return {
       showAllLabels: true,
       showFiltered: false,
-      precision: precision
+      precision: precision,
+      vif: vifToRender
     };
   }
 
@@ -177,16 +179,22 @@ $.fn.socrataTimelineChart = function(vif) {
     clearTimeout(rerenderOnResizeTimeout);
 
     rerenderOnResizeTimeout = setTimeout(
-      function() {
-        visualization.render(
-          visualizationData,
-          _getRenderOptions()
-        );
-      },
+      _render,
       // Add some jitter in order to make sure multiple visualizations are
       // unlikely to all attempt to rerender themselves at the exact same
       // moment.
       WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+    );
+  }
+
+  function _render(vifToRender) {
+    if (vifToRender) {
+      _lastRenderedVif = vifToRender;
+    }
+
+    visualization.render(
+      visualizationData,
+      _getRenderOptions(_lastRenderedVif)
     );
   }
 
@@ -515,10 +523,7 @@ $.fn.socrataTimelineChart = function(vif) {
         precision
       );
 
-      visualization.render(
-        visualizationData,
-        _.merge(_getRenderOptions(), {vif: vifToRender})
-      );
+      _render(vifToRender);
     }
   }
 

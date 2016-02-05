@@ -26958,6 +26958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var visualization = new ColumnChart($element, vif);
 	  var visualizationData = [];
 	  var rerenderOnResizeTimeout;
+	  var _lastRenderedVif;
 
 	  _attachEvents();
 	  _updateData(vif);
@@ -26966,10 +26967,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Configuration
 	   */
 
-	  function _getRenderOptions() {
+	  function _getRenderOptions(vifToRender) {
 	    return {
 	      showAllLabels: true,
-	      showFiltered: true
+	      showFiltered: true,
+	      vif: vifToRender
 	    };
 	  }
 
@@ -27018,9 +27020,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function _render(vifToRender) {
+	    if (vifToRender) {
+	      _lastRenderedVif = vifToRender;
+	    }
+
 	    visualization.render(
 	      visualizationData,
-	      _.merge(_getRenderOptions(), {vif: vifToRender})
+	      _getRenderOptions(_lastRenderedVif)
 	    );
 	  }
 
@@ -28351,6 +28357,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var visualizationData = transformChartDataForRendering([]);
 	  var precision;
 	  var rerenderOnResizeTimeout;
+	  var _lastRenderedVif;
 
 	  _attachEvents();
 	  _updateData(vif);
@@ -28359,11 +28366,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Configuration
 	   */
 
-	  function _getRenderOptions() {
+	  function _getRenderOptions(vifToRender) {
 	    return {
 	      showAllLabels: true,
 	      showFiltered: false,
-	      precision: precision
+	      precision: precision,
+	      vif: vifToRender
 	    };
 	  }
 
@@ -28447,16 +28455,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    clearTimeout(rerenderOnResizeTimeout);
 
 	    rerenderOnResizeTimeout = setTimeout(
-	      function() {
-	        visualization.render(
-	          visualizationData,
-	          _getRenderOptions()
-	        );
-	      },
+	      _render,
 	      // Add some jitter in order to make sure multiple visualizations are
 	      // unlikely to all attempt to rerender themselves at the exact same
 	      // moment.
 	      WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+	    );
+	  }
+
+	  function _render(vifToRender) {
+	    if (vifToRender) {
+	      _lastRenderedVif = vifToRender;
+	    }
+
+	    visualization.render(
+	      visualizationData,
+	      _getRenderOptions(_lastRenderedVif)
 	    );
 	  }
 
@@ -28785,10 +28799,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        precision
 	      );
 
-	      visualization.render(
-	        visualizationData,
-	        _.merge(_getRenderOptions(), {vif: vifToRender})
-	      );
+	      _render(vifToRender);
 	    }
 	  }
 

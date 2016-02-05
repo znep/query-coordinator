@@ -67,7 +67,7 @@ $(document).ready(function() {
     return _.extend(_genericPayload(), {
       'Type': {
         'Name': eventName,
-        'Properties': _.extend({}, clickPosition >= 0 ? {'Click Position': clickPosition} : {})
+        'Properties': clickPosition >= 0 ? {'Click Position': clickPosition} : {}
       }
     });
   };

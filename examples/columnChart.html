@@ -121,9 +121,9 @@
      * Handle flyout events.
      */
 
-    $columnChart1Element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', handleFlyout);
-    $columnChart2Element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', handleFlyout);
-    $columnChart3Element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', handleFlyout);
+    $columnChart1Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+    $columnChart2Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+    $columnChart3Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
 
     function handleFlyout(event) {
       var payload = event.originalEvent.detail;

@@ -27174,7 +27174,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    $element[0].dispatchEvent(
 	      new window.CustomEvent(
-	        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+	        'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
 	        {
 	          detail: flyoutPayload,
 	          bubbles: true

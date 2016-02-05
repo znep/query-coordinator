@@ -101,7 +101,7 @@ fedramp-prod:
 # eu-west-test.socrata.com
 eu-prod:
   <<: *default
-    mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
+  mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
 # www.socrata.com
 production:

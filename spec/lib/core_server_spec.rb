@@ -41,6 +41,21 @@ describe CoreServer do
       allow(CoreServer).to receive(:get_view) { view }
     end
 
+    describe 'when a user without a role or rights' do
+      let(:user_id) { 'note-this' }
+      let(:user_role) { nil }
+      let(:user_rights) { nil }
+
+      it 'returns role "unknown" and an empty list of rights' do
+        expect(subject).to eql({
+          'viewRole' => 'unknown',
+          'viewRights' => [],
+          'domainRole' => 'unknown',
+          'domainRights' => []
+        })
+      end
+    end
+
     describe 'when primary owner' do
       it 'returns role, rights, and a key indicating primary owner' do
         expect(subject).to eql({

@@ -220,16 +220,11 @@
     }
 
     function determineIfUserHasStoriesRole(email) {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function(resolve) {
         $.getJSON('/api/search/users.json?q={0}'.format(email)).
           then(function(data) {
             var user = _.get(data, 'results[0]');
-
-            if (user && hasStoriesRole(user.roleName)) {
-              resolve(true);
-            } else {
-              resolve(false);
-            }
+            resolve(user && hasStoriesRole(user.roleName));
           }, function() {
             resolve(false);
           });
@@ -258,7 +253,10 @@
           } else {
             toggleAlreadyAddedWarning(false);
             toggleOwnerSelection(false);
-            toggleAddCollaboratorsButton(true);
+            toggleAddCollaboratorsButton(
+              $collaborators.
+                has('li:last-child input:not(:checked)').length === 1
+            );
           }
         });
       } else {

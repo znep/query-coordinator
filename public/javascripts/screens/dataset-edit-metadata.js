@@ -180,34 +180,71 @@
     initCustomRdf();
 
     // Access points aka HREF aka external sources aka external datasets
-    var $existingSources = $form.find('.existingExternalSource');
-    var sourceCount = $existingSources.length;
-    var updateRemoveLinks = function()
-    {
-        if (sourceCount == 1)
-        {
-            $existingSources
-                .find('.removeExternalSource')
-                .addClass('disabled');
+    var updateRemoveLinks = function() {
+        var $externalSources = $form.find('.externalSource');
+        var sourceCount = $('.externalDatasetBox').find('.externalSource').length;
+        if (sourceCount === 1) {
+            $externalSources.
+                find('.removeExternalSource').
+                addClass('disabled');
+        } else {
+            $externalSources.
+                find('.removeExternalSource').
+                removeClass('disabled');
         }
     };
     updateRemoveLinks();
 
-    $form.find('.removeExternalSource').click(function(event)
-    {
+    $form.on('click', '.removeExternalSource', function(event) {
         event.preventDefault();
         if ($(this).hasClass('disabled')) { return; }
 
-        if (confirm($.t('screens.edit_dataset.external_confirm')))
-        {
+        if (confirm($.t('screens.edit_metadata.external_confirm'))) {
             var $line = $(this).closest('.line');
             $line.slideUp(300, function() {
                 $line.remove();
+                updateRemoveLinks();
             });
-            sourceCount--;
-            updateRemoveLinks();
         }
     });
+
+    $form.on('click', '.removeExternalLink', function(event) {
+        event.preventDefault();
+        if ($(this).hasClass('disabled')) { return; }
+
+        if (confirm($.t('screens.edit_metadata.external_confirm'))) {
+            var endpointCount = $(this).parent().siblings('.externalLink').length;
+            var $externalLink = $(this).closest('.externalLink');
+
+            if (endpointCount === 0) {
+                $externalLink.find('input').val('');
+            } else {
+                $externalLink.slideUp(300, function() {
+                    $externalLink.remove();
+                    updateRemoveLinks();
+                });
+            }
+        }
+    });
+
+    $form.on('click', '.addExternalSource', function(event) {
+        event.preventDefault();
+        var $clone = $('.externalSource').first().clone();
+        // Clear cloned content and append to page
+        $clone.find('#external_sources__title, #external_sources__description').attr('value', '').text('');
+        $clone.find('.externalLink').find('input').attr('value', '');
+        $clone.appendTo('.externalDatasetBox');
+        updateRemoveLinks();
+    });
+
+    $form.on('click', '.addExternalLink', function(event) {
+        event.preventDefault();
+        var $line = $(this).closest('.line').clone(false);
+        var $externalLinkBox = $(this).closest('.externalLinkBox');
+        $line.find('input').attr('value', '');
+        $externalLinkBox.find('.removeExternalSource').before($line);
+    });
+
 
     $('.customImage #custom_image').imageUploader({
         $image: $('.customImageContainer'),

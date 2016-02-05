@@ -758,30 +758,45 @@ protected
 
   def parse_external_sources
     if params[:external_sources].present?
-      accessPoints = {}
+      additionalAccessPoints = []
       params[:external_sources].each do |source|
-        next if source['name'].blank?
-        extension = source['extension']
-        extension = file_extension(source['name']) if extension.blank?
-        if extension.nil?
-          flash.now[:error] = "The url '#{source['name']}' does not appear to be valid " +
-            "for downloading. Please specify file type or fix the URL."
-          return false
+        title = source[:title]
+        description = source[:description]
+        entry = { :title => title, :description => description, :urls => {} }
+        if source[:urls].present?
+          source[:urls].each do |endpoint|
+            url = endpoint[:url]
+            extension = (endpoint[:extension].present? ?
+              endpoint[:extension] : compute_extension_from_url(url)
+            ).downcase
+            if entry[:urls][extension].present?
+              flash.now[:error] = I18n.t('screens.edit_metadata.multiple_extensions')
+              return false
+            end
+            entry[:urls][extension] = url
+          end
+        else
+          url = source[:name]
+          extension = (source[:extension].present? ?
+            source[:extension] : compute_extension_from_url(url)
+          ).downcase
+          entry[:urls][extension] = url
         end
-        if !accessPoints[extension.downcase].nil?
-          flash.now[:error] = "Multiple external datasets with the same " +
-            "extension are not allowed. Please remove one of the '.#{extension}' files."
-          return false
-        end
-        accessPoints[extension.downcase] = source['name']
+        additionalAccessPoints.push(entry)
       end
-      if accessPoints.size < 1
-        flash.now[:error] = "You must have at least one source for this external dataset."
-        return false
-      end
+      # Store the first accessPoints url as metadata accessPoint
+      accessPoints = additionalAccessPoints[0][:urls] if additionalAccessPoints[0]
       params[:view][:metadata][:accessPoints] = accessPoints
+      params[:view][:metadata][:additionalAccessPoints] = additionalAccessPoints
+    else
+      flash.now[:error] = I18n.t('screens.edit_metadata.missing_external_dataset')
+      return false
     end
     true
+  end
+
+  def compute_extension_from_url(url)
+    File.extname(url)[1..-1].to_s
   end
 
   def parse_attachments

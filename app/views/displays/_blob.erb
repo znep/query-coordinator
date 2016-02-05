@@ -8,23 +8,46 @@
   <%= t 'screens.ds.blob.limited_download' %>
   <%- end -%>
   </p>
-  <div class="downloadBox">
+  <%- multiAccessPoints = @view.allAccessPoints.length > 1 -%>
+  <div class="downloadBox <%= 'multiAccessPoints' if multiAccessPoints %>">
     <%- if @view.display.type == 'href' || @view.display.display_type == 'link' -%>
       <h5><%= t 'screens.ds.blob.external_link' %></h5>
     <%- else -%>
       <h5><%= t 'screens.ds.blob.download' %></h5>
     <%- end -%>
     <ul>
-      <%- @view.blobs.each do |b| -%>
-      <li><a class="button" href="<%= metric_redirect_path(:type => b['type'], :id => @view.id) %>" target="_blank">
-        <%- s = b['size'].is_a?(Numeric) ?
-        number_to_human_size(b['size'], :locale => :en) : b['size'] -%>
-        <%- if !b['name'].blank? -%>
-        <%= b['name'] %> (<%= b['type'] %> <%= s %>)
+      <%- @view.allAccessPoints.each do |accessPoint| -%>
+        <%- if accessPoint['title'].present? -%>
+          <li>
+            <span class="accessPointTitle">
+              <%= accessPoint['title'] %>
+            </span>
+            <div class="accessPointButtons">
+              <%- accessPoint['urls'].each do |format, url| -%>
+                <a class="button" href="<%= url %>" target="_blank">
+                  <%- size = accessPoint['size'].is_a?(Numeric) ?
+                    number_to_human_size(accessPoint['size'], :locale => :en) : accessPoint['size'] -%>
+                  <%= format.upcase %> <%= size %>
+                </a>
+              <%- end -%>
+            </div>
+          </li>
         <%- else -%>
-        <%= b['type'] %> <%= s %>
+          <%- accessPoint['urls'].each do |format, url| -%>
+            <li>
+              <span class="accessPointTitle">
+                <%= url %>
+              </span>
+              <div class="accessPointButtons">
+                <a class="button" href="<%= url %>" target="_blank">
+                  <%- size = accessPoint['size'].is_a?(Numeric) ?
+                    number_to_human_size(accessPoint['size'], :locale => :en) : accessPoint['size'] -%>
+                  <%= format.upcase %> <%= size %>
+                </a>
+              </div>
+            </li>
+          <%- end -%>
         <%- end -%>
-      </a></li>
       <%- end -%>
     </ul>
   </div>

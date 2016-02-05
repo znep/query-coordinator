@@ -100,6 +100,19 @@
         <input type="hidden" name="rename-config" value="<%= @config.id %>" />
         <input type="submit" value="Rename Config" />
       <% end %>
+
+      <dl class="config_type_description"><% @type_description.try(:each) do |key, value| %>
+        <%- next if key == 'hide_from_creator' %>
+        <dt><%= key.titleize %></dt>
+        <dd><%=
+          if /^http/ =~ value.to_s
+            link_to value, value, target: '_blank'
+          else
+            value
+          end
+        %></dd>
+      <% end %></dl>
+
     <%- end -%>
 
   </div>

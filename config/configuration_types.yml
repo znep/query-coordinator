@@ -1,0 +1,100 @@
+# WARNING: This is NOT a comprehensive list. Because of the nature of the config
+# system, it is possible to create a new 'type' simply by choosing a different string
+# when coding it.
+#
+# The `hide_in_creation_ui` property is meaningful.
+# Everything else just gets dumped out for the user to see.
+---
+auth0:
+  description: Auth0 is a special login solution wanted by some customers.
+  cs_wiki: https://sites.google.com/a/socrata.com/client-services/security/auth0-login-flows
+  known_properties:
+  - auth0_connections
+  - auth0_callback_uri
+  - auth0_always_redirect_connection
+catalog:
+  holy_shit: There is a lot of magic in this config.
+  cs_wiki: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/catalog-options
+  new_catalog_info: https://sites.google.com/a/socrata.com/client-services/4-adding-additional-site-features/enabling-new-catalog
+catalog_federations:
+  description: Used by core server. Not sure for what.
+  hide_in_creation_ui: true
+custom_content:
+  description: Appears to be for oldest DataSlate? Not sure what this actually does.
+  deprecation: "Let's just... not use this, yeah?"
+email_interests:
+  description: "Found this deep in core. I don't understand it yet."
+  hide_in_creation_ui: true
+feature_set:
+  warning: "This is a visible config so that you can delete features. DO NOT set their values! If you're lucky, it will be fine; if you're unlucky, it will break things."
+  hide_in_creation_ui: true
+feature_flags:
+  hide_in_creation_ui: true
+geo_setup:
+  description: Something to do with setting up region coding when syncing to NBE.
+  deprecation: We should start using /admin/georegions instead.
+  known_properties:
+  - curated_regions
+gov_stat:
+  description: Configure displays. Dashboard can be list or grid_flow.
+  how_to_suppress_govstat: https://sites.google.com/a/socrata.com/client-services/2-editing-an-open-data-site/supressing-open-performance-govstat-config
+  known_properties:
+  - suppress_govstat
+  - dashboard_layout
+icon:
+  description: Icon to use when federating datasets from this domain. Use the wiki-suggested method instead of this.
+  cs_wiki: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/adding-the-small-icon-for-federation
+  known_properties:
+  - id
+locales:
+  description: Handle which locales are available for this domain, which is the default, and also different defaults for language-specific aliases.
+  cs_wiki: https://sites.google.com/a/socrata.com/client-services/localization/localizing-content
+  known_properties:
+  - *
+  - available_locales
+metadata:
+  description: This holds the values from /admin/metadata.
+  hide_in_creation_ui: true
+nbe_timezone:
+  description: Configures which time zone your datasets are presumed to be in when ingressing.
+  known_properties:
+  - name
+quotas:
+  cs_wiki_admins: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/allowing-extra-administrators
+  cs_wiki_snapshots: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/snapshot-counts
+sidebar:
+  description: Position old UX sidebar on left or right; open a pane by default when loading a dataset.
+  cs_wiki: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/default-pane-on-dataset-non-datalens-pages
+  known_properties:
+  - position
+  - default_pane
+site_chrome:
+  description: Site header/footer configuration, currently only used in Storyteller. Edit it at /stories/admin/site_chrome/edit
+  hide_in_creation_ui: true
+site_theme:
+  cs_wiki: https://sites.google.com/a/socrata.com/client-services/2-editing-an-open-data-site/a-site-configurations
+  properties_you_care_about:
+  - theme_v2b
+soda2:
+  known_properties:
+  - switch_table_rows_threshold
+story_theme:
+  description: Storyteller custom themes. The admin ui is at /stories/admin/themes
+  hide_in_creation_ui: true
+theme_v3:
+  description: Data Lens theming, I think?
+upload_record_limit:
+  known_properties:
+  - large_4x4s
+  - disable_all_record_limits
+user_rights:
+  description: Blah blah. This is dangerous, etc., etc.
+  known_properties:
+  - administrator
+  - designer
+  - editor
+  - publisher
+  - viewer
+view_categories:
+  description: Holds the categories that views can be. Managed by /admin/metadata.
+  hide_in_creation_ui: true

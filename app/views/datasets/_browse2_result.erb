@@ -78,13 +78,21 @@
 
           <%-
           if result_topics.present?
-            result_topics.each do |result_topic|
+            top_result_topics = truncate_result_topics(result_topics, user_params, 5)
+            top_result_topics.each do |result_topic|
               params_for_url = user_params.merge(tags: result_topic)
               result_topic_url = "#{base_url}?#{params_for_url.to_param}"
           -%>
 
               <a class="browse2-result-topic" href="<%= result_topic_url %>"><%= result_topic %></a>
 
+            <%- end -%>
+
+            <%- if result_topics.length > top_result_topics.length -%>
+              <%- remaining_topics_count = result_topics.length - top_result_topics.length -%>
+              <span class="browse2-remaining-topics">
+                <%= t('controls.browse.browse2.topics.more', :count => remaining_topics_count) %>
+              </span>
             <%- end -%>
 
           <%- else -%>

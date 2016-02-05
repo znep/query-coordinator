@@ -15,7 +15,6 @@
     var $collaborators;
     var $saveButton;
     var $alreadyAddedWarning;
-    var $addingSelfWarning;
 
     compileDOM();
     attachEvents();
@@ -46,7 +45,6 @@
               '<div class="modal-input-group">' +
                 '<input name="collaborators-email" type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')) +
                 '<div class="modal-radio-group">' +
-                  '<div class="alert warning-bar hidden adding-self"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.adding_self')) +
                   '<div class="alert warning-bar hidden already-added"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.already_added')) +
                   '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.access_level')) +
                   '<ul>' +
@@ -177,7 +175,6 @@
 
       $saveButton = $collaborators.find('[data-action="{0}"]'.format(Actions.COLLABORATORS_SAVE));
       $alreadyAddedWarning = $collaborators.find('.already-added');
-      $addingSelfWarning = $collaborators.find('.adding-self');
 
       $(document.body).append($collaborators);
     }
@@ -189,7 +186,7 @@
       $collaborators.on('click', '[data-action]', dispatchActions);
       $collaborators.on('modal-dismissed', handleModalDismissed);
       $collaborators.on('change', 'td select', dispatchActions);
-      $collaborators.on('keyup paste', 'input[type="email"]', debouncedHandleKeys);
+      $collaborators.on('input', 'input[type="email"]', debouncedHandleKeys);
       $collaborators.on('change', 'input[type="radio"]', debouncedHandleKeys);
     }
 
@@ -197,108 +194,77 @@
       $collaborators.off('click', '[data-action]', dispatchActions);
       $collaborators.off('modal-dismissed', handleModalDismissed);
       $collaborators.off('change', 'td select', dispatchActions);
-      $collaborators.off('keyup paste', 'input[type="email"]', debouncedHandleKeys);
+      $collaborators.off('input', 'input[type="email"]', debouncedHandleKeys);
       $collaborators.off('change', 'input[type="radio"]', debouncedHandleKeys);
 
       storyteller.collaboratorsStore.removeChangeListener(render);
     }
 
-    function disableOwnerSelectionAndPossiblyDisableButton() {
-      var ownerSelectionChecked = $collaborators.find('.modal-radio-group ul li:last-child input:checked').length >= 1;
-
-      $collaborators.find('.modal-radio-group ul li:last-child label').
-        addClass('disabled');
+    function toggleOwnerSelection(enabled) {
+      $collaborators.
+        find('.modal-radio-group ul li:last-child label')
+          [enabled ? 'removeClass' : 'addClass']('disabled');
       $collaborators.
         find('.modal-radio-group ul li:last-child input').
-        prop('disabled', true);
-
-      if (ownerSelectionChecked) {
-        $collaborators.
-          find('.modal-input-group button').
-          prop('disabled', true);
-      }
+        prop('disabled', !enabled);
     }
 
-    function disableOwnerSelection() {
+    function toggleAddCollaboratorsButton(enabled) {
       $collaborators.
-        find('.modal-radio-group ul li:last-child label').
-        addClass('disabled');
-      $collaborators.
-        find('.modal-radio-group ul li:last-child input').
-        prop('disabled', true);
+        find('.modal-input-group .btn-default').
+        prop('disabled', !enabled);
     }
 
-    function enableOwnerSelection() {
-      $collaborators.
-        find('.modal-radio-group .disabled input').
-        prop('disabled', false);
-      $collaborators.
-        find('.modal-radio-group .disabled').
-        removeClass('disabled');
-    }
-
-    function hideAllWarnings() {
-      $alreadyAddedWarning.addClass('hidden');
-      $addingSelfWarning.addClass('hidden');
-    }
-
-    function showAlreadyAddedWarning() {
-      $alreadyAddedWarning.removeClass('hidden');
-      $addingSelfWarning.addClass('hidden');
-    }
-
-    function showSharingSelfWarning() {
-      $alreadyAddedWarning.addClass('hidden');
-      $addingSelfWarning.removeClass('hidden');
+    function toggleAlreadyAddedWarning(enabled) {
+      $alreadyAddedWarning[enabled ? 'removeClass' : 'addClass']('hidden');
     }
 
     function determineIfUserHasStoriesRole(email) {
-      $.getJSON('/api/search/users.json?q={0}'.format(email)).
-        then(function(data) {
-          var user = _.get(data, 'results[0]');
+      return new Promise(function(resolve, reject) {
+        $.getJSON('/api/search/users.json?q={0}'.format(email)).
+          then(function(data) {
+            var user = _.get(data, 'results[0]');
 
-          if (user && hasStoriesRole(user.roleName)) {
-            enableOwnerSelection();
-          } else {
-            disableOwnerSelectionAndPossiblyDisableButton();
-          }
-        }, function() {
-          disableOwnerSelectionAndPossiblyDisableButton();
-        });
+            if (user && hasStoriesRole(user.roleName)) {
+              resolve(true);
+            } else {
+              resolve(false);
+            }
+          }, function() {
+            resolve(false);
+          });
+      });
     }
 
     function handleKeys() {
       var $input = $collaborators.find('input[type="email"]');
       var value = $input.val();
-      var valid = Constants.VALID_EMAIL_REGEX.test(value);
-      var isMissingValue = !value || value.length === 0;
-      var isSharingSelf = window.currentUser.email === value;
       var accessLevel = $collaborators.find('option:selected').val();
       var collaborator = {email: value, accessLevel: accessLevel};
-      var hasCollaborator = storyteller.collaboratorsStore.hasCollaborator(collaborator);
-      var buttonDisabled = !valid || isMissingValue || hasCollaborator || isSharingSelf;
-      var buttonEnabled = !buttonDisabled;
-      var validEmail = !isMissingValue && valid;
 
-      $collaborators.
-        find('.modal-input-group button').
-        prop('disabled', buttonDisabled);
+      var hasCollaborator = storyteller.collaboratorsStore.hasCollaborator(collaborator);
+      var isValidEmail = Constants.VALID_EMAIL_PATTERN.test(value);
 
       if (hasCollaborator) {
-        showAlreadyAddedWarning();
-        disableOwnerSelection();
-      } else if (isSharingSelf) {
-        showSharingSelfWarning();
-        disableOwnerSelection();
-      } else if (buttonEnabled) {
-        hideAllWarnings();
-        determineIfUserHasStoriesRole(value);
-      } else if (validEmail) {
-        hideAllWarnings();
-        disableOwnerSelectionAndPossiblyDisableButton();
+        toggleAlreadyAddedWarning(true);
+        toggleOwnerSelection(false);
+        toggleAddCollaboratorsButton(false);
+      } else if (isValidEmail) {
+        determineIfUserHasStoriesRole(value).then(function(hasRole) {
+          if (hasRole) {
+            toggleAlreadyAddedWarning(false);
+            toggleOwnerSelection(true);
+            toggleAddCollaboratorsButton(true);
+          } else {
+            toggleAlreadyAddedWarning(false);
+            toggleOwnerSelection(false);
+            toggleAddCollaboratorsButton(true);
+          }
+        });
       } else {
-        hideAllWarnings();
-        disableOwnerSelection();
+        toggleAlreadyAddedWarning(false);
+        toggleOwnerSelection(false);
+        toggleAddCollaboratorsButton(false);
       }
     }
 

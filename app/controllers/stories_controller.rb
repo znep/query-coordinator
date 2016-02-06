@@ -105,6 +105,16 @@ class StoriesController < ApplicationController
     finish_story_creation('create', view, clean_uid, clean_title)
   end
 
+  def about
+    story = DraftStory.find_by_uid(params[:uid])
+
+    if story.present?
+      redirect_to "/datasets/#{params[:uid]}/about"
+    else
+      render_404
+    end
+  end
+
   def copy
     view = CoreServer.get_view(params[:uid])
     story = DraftStory.find_by_uid(params[:uid])

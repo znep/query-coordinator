@@ -238,6 +238,7 @@ describe('ChoroplethMap jQuery component', function() {
       $container.socrataChoroplethMap(vif);
       $container.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', function(event) {
         if (event.originalEvent.detail !== null) {
+
           assert.isTrue(true, 'Flyout was rendered.');
           done();
         }
@@ -245,6 +246,34 @@ describe('ChoroplethMap jQuery component', function() {
 
       setTimeout(function() {
         $container.find('.choropleth-legend-color').trigger('mousemove');
+      }, 0);
+    });
+
+    it('emits a ...VIF_UPDATED event with a new filter when a region is clicked (simulated with a ...SELECT_REGION event)', function(done) {
+      var vif = _.cloneDeep(choroplethVIF);
+
+      vif.configuration.interactive = true;
+
+      assert.equal(vif.filters.length, 0);
+
+      $container.socrataChoroplethMap(vif);
+      $container.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
+
+        assert.isTrue(true, 'SOCRATA_VISUALIZATION_VIF_UPDATED event was received.');
+        assert.equal(event.originalEvent.detail.filters.length, 1);
+        done();
+      });
+
+      setTimeout(function() {
+        $container.find('.choropleth-map-container')[0].dispatchEvent(
+          new window.CustomEvent(
+            'SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION',
+            {
+              detail: {shapefileFeatureId: 'test'},
+              bubbles: true
+            }
+          )
+        );
       }, 0);
     });
   });

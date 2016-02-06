@@ -304,7 +304,7 @@ module DatasetsHelper
   end
 
   def hide_add_column?
-    !view.is_unpublished? || !view.is_blist? || !view.has_rights?(ViewRights::ADD_COLUMN) || view.is_immutable?
+    !view.is_unpublished? || !view.is_blist? || !view.has_rights?(ViewRights::ADD_COLUMN) || view.is_immutable? || view.geoParent.present?
   end
 
   def hide_append_replace?
@@ -314,6 +314,7 @@ module DatasetsHelper
       hide_append_replace_for_nbe_geo?,
       view.is_href?,
       !view.flag?('default') && !view.is_geo?, # Allow Mondara maps to be editable.
+      view.geoParent.present?,
       !view.has_rights?(ViewRights::ADD)
     ].any?
   end
@@ -322,16 +323,18 @@ module DatasetsHelper
     [
       [ view.new_backend?,
         !view.is_geo?,
-        FeatureFlags.derive(@view, request).ingress_strategy == 'obe'
+        FeatureFlags.derive(view, request).ingress_strategy == 'obe'
       ].all?,
       [ view.new_backend?,
         view.is_geo?,
-        !FeatureFlags.derive(@view, request).geo_imports_to_nbe_enabled
+        !FeatureFlags.derive(view, request).geo_imports_to_nbe_enabled
       ].all?
     ].any?
   end
 
   def hide_export_section?(section)
+    return true if view.geoParent.present?
+
     case section
       when :print then !view.can_print? || view.new_backend?
       when :download then (view.non_tabular? && !view.is_geo?) || view.is_form?
@@ -345,7 +348,8 @@ module DatasetsHelper
   def hide_embed_sdp?
     [ !view.is_published?,
       view.is_api?,
-      view.new_backend? && FeatureFlags.derive(@view, request).reenable_ui_for_nbe === false
+      view.geoParent.present?,
+      view.new_backend? && FeatureFlags.derive(view, request).reenable_ui_for_nbe === false
     ].any?
   end
 
@@ -358,12 +362,12 @@ module DatasetsHelper
   end
 
   def hide_conditional_formatting?
-    view.is_unpublished? || view.non_tabular? || view.is_form? || view.is_api?
+    view.is_unpublished? || view.non_tabular? || view.is_form? || view.is_api? || view.geoParent.present?
   end
 
   # LOLWUT
   def hide_form_create?
-    !view.is_published? || (view.non_tabular? && !view.is_form?) || view.is_api? ||
+    !view.is_published? || (view.non_tabular? && !view.is_form?) || view.is_api? || view.geoParent.present? ||
     view.is_grouped? ||
     (
       (
@@ -378,7 +382,7 @@ module DatasetsHelper
     if FeatureFlags.derive(view, request).enable_api_foundry_pane
       !module_enabled?(:api_foundry) || (!view.is_blist? && !view.is_api?) ||
         !view.is_published? || !view.has_rights?(ViewRights::UPDATE_VIEW) || !view.can_publish? ||
-        view.new_backend? || view.is_arcgis?
+        view.new_backend? || view.is_arcgis? || view.geoParent.present?
     else
       true
     end
@@ -386,29 +390,45 @@ module DatasetsHelper
 
   # Note: This controls visibility of columnOrder, not to be confused with the aptly named "manage.columnOrder" config. :-/
   def hide_update_column?
-    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_api?
+    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_api? || view.geoParent.present?
   end
 
   def hide_show_hide_columns?
     view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_geo?
   end
 
+  def hide_sharing?
+    view.is_snapshotted? || !view.has_rights?(ViewRights::GRANT) || view.geoParent.present?
+  end
+
+  def hide_permissions?
+    view.is_snapshotted? || !view.has_rights?(ViewRights::UPDATE_VIEW) || view.geoParent.present?
+  end
+
+  def hide_plagiarize?
+    !CurrentDomain.user_can?(current_user, UserRights::CHOWN_DATASETS) || view.geoParent.present?
+  end
+
+  def hide_delete_dataset?
+    !view.has_rights?(ViewRights::DELETE_VIEW) || view.geoParent.present?
+  end
+
   def hide_filter_dataset?
-    view.non_tabular? || view.is_form? || view.is_insecure_arcgis?
+    view.non_tabular? || view.is_form? || view.is_insecure_arcgis? || view.geoParent.present?
   end
 
   def hide_calendar_create?
-    view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('calendar')
+    view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('calendar') || view.geoParent.present?
   end
 
   def hide_chart_create?
-    view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('chart')
+    view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('chart') || view.geoParent.present?
   end
 
   def hide_data_lens_create?
     # (Replicating the logic from canUpdateMetadata in dataset-show.js)
     # Always hide if current_user doesn't exist (spooooky)
-    return true if !current_user || view.is_unpublished? || !view.dataset?
+    return true if !current_user || view.is_unpublished? || !view.dataset? || view.geoParent.present?
 
     if !FeatureFlags.derive(view, request).create_v2_data_lens
       # for v1 data lenses, hide unless current_user is admin or publisher
@@ -422,17 +442,18 @@ module DatasetsHelper
 
   def hide_map_create?
     [ view.is_unpublished?,
+      view.geoParent.present?,
       view.is_alt_view? && !view.available_display_types.include?('map'),
       view.is_grouped?
     ].any?
   end
 
   def hide_cell_feed?
-    !view.module_enabled?('cell_comments') || !view.is_published? || view.is_api?
+    !view.module_enabled?('cell_comments') || !view.is_published? || view.is_api? || view.geoParent.present?
   end
 
   def hide_discuss?
-    !@view.is_published? || @view.is_api?
+    !view.is_published? || view.is_api? || view.geoParent.present?
   end
 
   def hide_about?
@@ -440,7 +461,7 @@ module DatasetsHelper
   end
 
   def hide_more_views_views?
-    !view.is_published? || (view.non_tabular? && !view.is_geo?)
+    !view.is_published? || (view.non_tabular? && !view.is_geo?) || view.geoParent.present?
   end
 
   def hide_more_views_snapshots?
@@ -517,10 +538,10 @@ module DatasetsHelper
 
     hash.manage!.updateColumn = hide_update_column?
     hash.manage!.showHide = hide_show_hide_columns?
-    hash.manage!.sharing = view.is_snapshotted? || !view.has_rights?(ViewRights::GRANT)
-    hash.manage!.permissions = view.is_snapshotted? || !view.has_rights?(ViewRights::UPDATE_VIEW)
-    hash.manage!.plagiarize = !CurrentDomain.user_can?(current_user, UserRights::CHOWN_DATASETS)
-    hash.manage!.deleteDataset = !view.has_rights?(ViewRights::DELETE_VIEW)
+    hash.manage!.sharing = hide_sharing?
+    hash.manage!.permissions = hide_permissions?
+    hash.manage!.plagiarize = hide_plagiarize?
+    hash.manage!.deleteDataset = hide_delete_dataset?
     hash.manage!.api_foundry = hide_api_foundry?
 
     hash.columnProperties = view.non_tabular?

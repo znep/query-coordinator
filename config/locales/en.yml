@@ -1639,7 +1639,7 @@ en:
       georegions:
         actions: Actions
         add_new: Add new
-        choose_a_dataset: Choose a new geospatial Dataset
+        choose_a_dataset: Choose a Layer
         configure_boundary:
           boundary_geometry_label_field_error: The boundary must have a shape label.
           boundary_geometry_label_page_error: "Unable to save: the boundary must have a shape label."
@@ -2113,6 +2113,7 @@ en:
       bar:
         api_unsavable: API views cannot be modified
         based_on_html: Based on <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_layer_html: A layer from the geospatial dataset <a href="%{href}" class="parentName">%{name}</a>
         based_on_parent_html: Based on <a class="parentName"></a>
         based_on_private_view: a private view.
         based_on_working_copy_html: Based on the working copy of <a class="revertLink currentViewName" href="#revert">%{name}</a>

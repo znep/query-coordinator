@@ -9,6 +9,7 @@
   border-radius: 0.1rem;
   visibility: hidden;
   white-space: nowrap;
+  z-index: $link-tip-z-index;
 
   &.visible {
     visibility: visible;

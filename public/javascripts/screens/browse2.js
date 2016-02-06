@@ -52,11 +52,10 @@ $(function() {
 
     _.defer(function() {
       var newOpts = $.extend({}, opts, {
-        'q': encodeURIComponent(
-          $searchSection.find('.browse2-search-control').val()
-        ),
+        'q': encodeURIComponent($searchSection.find('.browse2-search-control').val()),
         'Type': {
-          'Name': 'Cleared Search Field'
+          'Name': 'Cleared Search Field',
+          'Properties': {}
         }
       });
 
@@ -76,12 +75,14 @@ $(function() {
     event.preventDefault();
 
     _.defer(function() {
+      var query = encodeURIComponent($searchSection.find('.browse2-search-control').val());
       var newOpts = $.extend({}, opts, {
-        'q': encodeURIComponent(
-          $searchSection.find('.browse2-search-control').val()
-        ),
+        'q': query,
         'Type': {
-          'Name': 'Cleared Search Field'
+          'Name': 'Used Search Field',
+          'Properties': {
+            'Query': query
+          }
         }
       });
 

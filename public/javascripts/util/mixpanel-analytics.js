@@ -48,24 +48,26 @@ $(document).ready(function() {
   };
 
   var facetEventPayload = function(element, eventName) {
+    var isActiveOrClearAll = $(element).hasClass('active') || $(element).attr('class') === 'browse2-results-clear-all-button';
     return _.extend(_genericPayload(), {
       'Type': {
-        'Name': $(element).hasClass('active') ? 'Clear Facet' : eventName,
-        'Properties': {
-          'Click Position': $(element).closest('ul').find('a').index(element)
-        }
+        'Name': isActiveOrClearAll  ? 'Cleared Facet' : eventName,
+        'Properties': _.extend({},
+          isActiveOrClearAll ? {} : {
+            'Facet Value': $(element).attr('title'),
+            'Facet Name': $(element).closest('ul').prev('h3').attr('title')
+          }
+        )
       }
     });
   };
 
   var catalogEventPayload = function(element, eventName) {
+    var clickPosition = _.keys($.deepGet(true, blist, 'browse', 'datasets')).indexOf(element.href.match(/\w{4}-\w{4}$/)[0]);
     return _.extend(_genericPayload(), {
       'Type': {
         'Name': eventName,
-        'Properties': {
-          'Click Position': _.keys($.deepGet(true, blist, 'browse', 'datasets')).indexOf(element.href.match(/\w{4}-\w{4}$/)[0])
-          // 'Click Position': $(element).closest('.browse2-results').find('a.browse2-result-name-link').index(element)
-        }
+        'Properties': clickPosition >= 0 ? {'Click Position': clickPosition} : {}
       }
     });
   };

@@ -106,7 +106,13 @@ class StoriesController < ApplicationController
   end
 
   def about
-    redirect_to "/datasets/#{params[:uid]}/about"
+    story = DraftStory.find_by_uid(params[:uid])
+
+    if story.present?
+      redirect_to "/datasets/#{params[:uid]}/about"
+    else
+      render_404
+    end
   end
 
   def copy

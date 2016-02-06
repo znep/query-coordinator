@@ -216,6 +216,37 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
+  describe '#about' do
+    before do
+      stub_sufficient_rights
+    end
+
+    context 'when authenticated' do
+      before do
+        stub_valid_session
+      end
+
+      context 'when there is no story with the given four by four' do
+        it 'redirects to frontend, /datasets/four-four/about' do
+          get :about, uid: 'notf-ound'
+          expect(response.status).to be(404)
+        end
+      end
+
+      context 'when there is a story with the given four by four' do
+        before do
+          stub_core_view('test-test')
+        end
+
+        it 'redirects to frontend, /datasets/four-four/about' do
+          get :about, uid: 'test-test'
+          expect(response).to redirect_to '/datasets/test-test/about'
+          expect(response.status).to be(302)
+        end
+      end
+    end
+  end
+
   describe '#copy' do
     let!(:story_revision) { FactoryGirl.create(:draft_story_with_blocks) }
     let(:story_copy_title) { "Copy of #{mock_valid_lenses_view_title}" }

@@ -124,7 +124,7 @@ describe('CollaboratorsRenderer', function() {
           assert.isTrue($collaborators.hasClass('hidden'));
         });
 
-        it.only('should add a "hidden" class to any warnings present', function() {
+        it('should add a "hidden" class to any warnings present', function() {
           var $alreadyAddedWarning = $collaborators.find('.already-added');
 
           $alreadyAddedWarning.removeClass('hidden');
@@ -185,6 +185,53 @@ describe('CollaboratorsRenderer', function() {
           );
 
           done();
+        });
+      });
+
+      describe('user has a stories/administrator role', function() {
+        it('should enable owner selection for an administrator', function(done) {
+          $email.val('valid@valid.com').trigger('input');
+
+          server.respond([200, { 'Content-Type': 'application/json' }, '{ "results" : [{ "roleName" : "administrator" } ] }']);
+
+          _.defer(function() {
+            assert.isFalse(
+              $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
+            );
+
+            done();
+          });
+        });
+
+        it('should enable owner selection for a stories role', function(done) {
+          $email.val('valid@valid.com').trigger('input');
+
+          server.respond([200, { 'Content-Type': 'application/json' }, '{ "results" : [{ "roleName" : "publisher_stories" } ] }']);
+
+          _.defer(function() {
+            assert.isFalse(
+              $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
+            );
+
+            done();
+          });
+        });
+      });
+
+      describe('user does not have a stories/administrator role', function() {
+        it('should disable owner selection for users without a stories/administrator role', function(done) {
+          $email.val('valid@valid.com').trigger('input');
+
+          server.
+            respond([200, { 'Content-Type': 'application/json' }, '{ "results" : [{ "roleName" : "nope" } ] }']);
+
+          _.defer(function() {
+            assert.isTrue(
+              $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
+            );
+
+            done();
+          });
         });
       });
 

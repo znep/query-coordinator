@@ -311,13 +311,13 @@ blist.datasetControls.datasetContact = function($sect)
             $(window).resize();
         }
 
-        blist.util.loadCaptcha('contactCaptcha');
-
         // Grab the form from its template
         if ($sect.find('.contactOwnerForm').length === 0)
         {
             $this.closest('.formSection').after(
                 $.renderTemplate('aboutDataset_contact'));
+
+            blist.util.loadCaptcha('contactCaptcha');
             var $form = $sect.find('.contactOwnerForm').addClass('sectionContent');
             $form.parent().addClass('formSection');
 

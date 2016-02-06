@@ -227,7 +227,7 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no story with the given four by four' do
-        it 'redirects to frontend, /datasets/four-four/about' do
+        it '404s' do
           get :about, uid: 'notf-ound'
           expect(response.status).to be(404)
         end

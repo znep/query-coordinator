@@ -30,7 +30,7 @@ function ColumnChart(element, vif) {
   var _lastRenderOptions;
   var _lastRenderedVif;
 
-  var _interactive = (vif.configuration.interactive === false) ? false : true;
+  var _interactive = (vif.configuration.interactive === true) ? true : false;
 
   var _truncationMarkerSelector = '.truncation-marker';
   var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';

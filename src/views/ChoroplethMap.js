@@ -97,7 +97,7 @@ function ChoroplethMap(element, vif) {
   var _lastRenderOptions = {};
   var _lastRenderedVif;
 
-  var _interactive = (vif.configuration.interactive === false) ? false : true;
+  var _interactive = (vif.configuration.interactive === true) ? true : false;
 
   // Keep track of click details so that we can zoom on double-click but
   // still selects on single clicks.

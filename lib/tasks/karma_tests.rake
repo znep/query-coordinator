@@ -14,6 +14,8 @@ namespace :test do
       browser = args.browser || 'PhantomJS'
       reporter = args.reporter || 'dots,coverage'
 
+      raise 'Watching karma tests is TEMPORARILY DISABLED due to webpack integration issues: EN-2662' if watch
+
       if browser =~ /^phantom/i then
         browser = 'PhantomJS'
       elsif browser =~ /^chrome/i then

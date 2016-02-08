@@ -114,7 +114,7 @@ function TimelineChart(element, vif) {
   var _lastRenderOptions;
   var _lastRenderedVif;
 
-  var _interactive = (vif.configuration.interactive === true) ? true : false;
+  var _interactive = vif.configuration.interactive === true;
 
   _renderTemplate(this.element);
   _attachEvents(this.element);

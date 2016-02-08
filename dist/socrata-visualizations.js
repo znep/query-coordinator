@@ -205,7 +205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _lastRenderOptions = {};
 	  var _lastRenderedVif;
 
-	  var _interactive = (vif.configuration.interactive === true) ? true : false;
+	  var _interactive = vif.configuration.interactive === true;
 
 	  // Keep track of click details so that we can zoom on double-click but
 	  // still selects on single clicks.
@@ -5487,7 +5487,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _lastRenderOptions;
 	  var _lastRenderedVif;
 
-	  var _interactive = (vif.configuration.interactive === true) ? true : false;
+	  var _interactive = vif.configuration.interactive === true;
 
 	  var _truncationMarkerSelector = '.truncation-marker';
 	  var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';
@@ -7072,7 +7072,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _lastRenderOptions;
 	  var _lastRenderedVif;
 
-	  var _interactive = (vif.configuration.interactive === true) ? true : false;
+	  var _interactive = vif.configuration.interactive === true;
 
 	  _renderTemplate(this.element);
 	  _attachEvents(this.element);

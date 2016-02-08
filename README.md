@@ -95,7 +95,9 @@ bundle exec rake test:js:oldUx
 Each rake task accepts three arguments:
 
 - `watch`: Whether or not to watch files for changes. If a change to any of the
-  tested files is detected, the tests will re-run.
+  tested files is detected, the tests will re-run. NOTE: THIS IS TEMPORARILY
+  DISABLED due to webpack integration issues, see EN-2662. Using the option will
+  cause an explanatory error on the console.
 - `browser`: Which browser to run the tests in. Can be `phantom`, `chrome`, or
   `firefox`.
 - `reporter`: Which reporter to use. The default is `dots`. You can also specify

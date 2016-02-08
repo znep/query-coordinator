@@ -3,12 +3,15 @@ require 'rails_helper'
 RSpec.describe 'add content panel', type: :feature, js: true do
   let(:data_toggle_selector) { 'button[data-panel-toggle="add-content-panel"]' }
   let(:add_content_panel_selector) { '#add-content-panel' }
+  let(:user_story_container_selector) { '.user-story-container' }
 
   before do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('hasb-lock')
     visit '/s/magic-thing/hasb-lock/edit'
+    @blocks = page.all('.user-story .block-edit')
+    @first_block = @blocks.first
   end
 
   it 'opens and closes on click' do
@@ -41,6 +44,19 @@ RSpec.describe 'add content panel', type: :feature, js: true do
     # Close with add content button
     add_content_button.click()
     expect_add_content_panel_to_be_closed
+  end
+
+  describe 'click outside the add content panel' do
+    it 'closes the add content panel when clicking within a block' do
+      @first_block.click()
+      expect_add_content_panel_to_be_closed
+    end
+
+    it 'does not close the add content panel when clicking within the story (outside a block)' do
+      user_story_container = page.all(user_story_container_selector).first()
+      user_story_container.click()
+      expect_add_content_panel_to_be_open
+    end
   end
 
   def expect_add_content_panel_to_be_closed

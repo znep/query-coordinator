@@ -257,8 +257,6 @@ describe('RichTextEditor', function() {
     });
   });
 
-
-
   describe('with an existing editor', function() {
     var $textEditor;
     var editor;
@@ -415,7 +413,6 @@ describe('RichTextEditor', function() {
         });
       });
     });
-
   });
 
   describe('.deselect()', function() {

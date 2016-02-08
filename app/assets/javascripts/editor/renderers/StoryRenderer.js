@@ -356,6 +356,7 @@
         if ($blockElement === null) {
           $blockElement = _renderBlock(blockId);
           $container.append($blockElement);
+          _toggleBlockEditActive($blockElement);
         }
 
         _renderBlockComponents(blockId);
@@ -396,6 +397,21 @@
       } else {
         $container.height(layoutHeight);
       }
+    }
+
+    /**
+     * @function _toggleBlockEditActive
+     * @desc Toggle the opacity of the controls due to a bug in IE11.
+     * @param {jQuery} $blockElement
+     */
+    function _toggleBlockEditActive($blockElement) {
+      $blockElement.
+        mouseenter(function() {
+          $blockElement.addClass('active');
+        }).
+        mouseleave(function() {
+          $blockElement.removeClass('active');
+        });
     }
 
     function _showInsertionHintAtIndex(index) {

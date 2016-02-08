@@ -30,8 +30,6 @@
     _applyThemeFontIfPresent(editor, theme);
     editor.applyThemeClass(theme);
 
-    _attachBlockEditControlToggle($element);
-
     $element.one('destroy', function() {
       storyteller.richTextEditorManager.deleteEditor(editorId);
     });
@@ -51,21 +49,6 @@
     if (_.has(customTheme, 'google_font_code')) {
       editor.applyThemeFont(customTheme.google_font_code);
     }
-  }
-
-  /**
-   * @function _attachBlockEditControlToggle
-   * @desc Toggle the opacity of the controls due to a bug in IE11.
-   * @param {jQuery} element
-   */
-  function _attachBlockEditControlToggle($element) {
-    $element.find('iframe').
-      mouseenter(function() {
-        $element.closest('.block-edit').addClass('active');
-      }).
-      mouseleave(function() {
-        $element.closest('.block-edit').removeClass('active');
-      });
   }
 
   /**

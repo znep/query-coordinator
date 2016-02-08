@@ -534,7 +534,7 @@
       } else {
         text = selection.toString();
         link = '';
-        openInNewWindow = false;
+        openInNewWindow = true;
       }
 
       storyteller.dispatcher.dispatch({

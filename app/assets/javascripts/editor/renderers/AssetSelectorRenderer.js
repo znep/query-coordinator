@@ -1160,7 +1160,7 @@
     function _renderChooseTableOrChartTemplate() {
       var $backButton = _renderModalBackButton(WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION);
 
-      var $chartButton = $('<button>', { 'class': 'default-focus btn-visualize-chart' }).
+      var $chartButton = $('<button>', { 'class': 'btn-visualize-chart' }).
         append($('<span>', { 'class': 'icon-chart' })).
         append($('<div>').text(I18n.t('editor.asset_selector.visualization.choose_chart')));
 
@@ -1171,6 +1171,8 @@
       var $visualizationChoiceGroup = $('<div>', {
         'class': 'visualization-choice'
       }).append([ $chartButton, $tableButton ]);
+
+      $visualizationChoiceGroup.prepend($('<button>', { 'class': 'default-focus focus-catcher'}));
 
       var $buttonGroup = $('<div>', {
         'class': 'modal-button-group r-to-l'

@@ -28,6 +28,8 @@
   </div>
 </div>
 
+<%= profile_user_zoom %>
+
 <% content_for :js_footer do %>
   <%- unless params[:no_js].present? -%>
     <%= include_javascripts 'screen-profile-edit' %>

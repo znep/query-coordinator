@@ -35,7 +35,7 @@
                 "<a class=\"auto_link\" href=\"#{link_url}\">#{matched_substring}</a>"
                 return '<a class="auto_link" href="' +
                         encodeURI(linkUrl) +
-                        '" rel="nofollow external">' +
+                        '" rel="nofollow noreferrer external">' +
                         matchedSubstring +
                         '</a>';
             });

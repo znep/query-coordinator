@@ -64,11 +64,24 @@ module BrowseHelper
   def sanitize_string(input)
     input = h(raw(input))
     # autolinking - uses a deprecated function, and further-deprecated syntax for that function
-    input = auto_link(input, :all, {'rel' => 'nofollow external' })
+    input = auto_link(input, :all)
     # sanitize to eliminate risky html tags and attributes
-    allowed_tags = %w(a b br div em hr i p span strong sub sup u)
-    allowed_attr = %w(href rel target)
-    sanitize(raw(input), tags: allowed_tags, attributes: allowed_attr)
+    allowed_elements = %w(a b br div em hr i p span strong sub sup u)
+    allowed_attributes = {
+      'a' => %w(href target)
+    }
+
+    # Force all anchors to a secure rel attribute, see EN-1266.
+    added_attributes = {
+      'a' => { 'rel' => 'nofollow noreferrer external' }
+    }
+
+    Sanitize.fragment(
+      raw(input),
+      elements: allowed_elements,
+      attributes: allowed_attributes,
+      add_attributes: added_attributes
+    ).html_safe
   end
 
   def view_formatted_description(result)

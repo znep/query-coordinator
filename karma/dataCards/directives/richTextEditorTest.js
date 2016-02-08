@@ -288,7 +288,7 @@ describe('Rich text editor', function() {
           this.find('iframe')[0].contentWindow.editor.fireEvent('input');
           // Should apply the input
           expect(this.val()).to.contain('target="_blank"');
-          expect(this.val()).to.contain('rel="nofollow external"');
+          expect(this.val()).to.contain('rel="nofollow noreferrer external"');
           expect(this.val()).to.contain('href="http://m.xkcd.com"');
           done();
         });
@@ -310,7 +310,7 @@ describe('Rich text editor', function() {
           // Should apply the input
           expect(this.val()).to.contain('<b>t');
           expect(this.val()).to.contain('target="_blank"');
-          expect(this.val()).to.contain('rel="nofollow external"');
+          expect(this.val()).to.contain('rel="nofollow noreferrer external"');
           expect(this.val()).to.contain('href="http://m.xkcd.com"');
           expect(this.val()).to.contain('ext for lin');
           done();
@@ -329,7 +329,7 @@ describe('Rich text editor', function() {
           this.find('iframe')[0].contentWindow.editor.fireEvent('input');
           // Should apply the input
           expect(this.val()).to.contain('target="_blank"');
-          expect(this.val()).to.contain('rel="nofollow external"');
+          expect(this.val()).to.contain('rel="nofollow noreferrer external"');
           expect(this.val()).to.contain('href="http://m.xkcd.com"');
           expect(this.val()).to.contain('>m.xkcd.com</a>');
           done();

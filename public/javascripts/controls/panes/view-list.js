@@ -115,7 +115,7 @@
                         var nodeText = [];
                         var linkifyNodeText = function() {
                             if (this.nodeType === 3) {
-                                nodeText.push(this.textContent.linkify('rel="nofollow external"'));
+                                nodeText.push(this.textContent.linkify('rel="nofollow noreferrer external"'));
                             } else {
                                 var $node = $(this);
                                 if ($node.is(':not(a)')) {

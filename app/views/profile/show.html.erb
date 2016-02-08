@@ -19,7 +19,7 @@
           <h2><%= t('screens.profile.info.title') %></h2>
           <%- if @user.description -%>
           <p class="innerItem textItem"><%= auto_link(h(@user.description),
-            :html => {:rel => 'nofollow external'}) %></p>
+            :html => {:rel => 'nofollow noreferrer external'}) %></p>
           <%- else -%>
           <p class="innerItem emptyItem"><%= t('screens.profile.info.no_description') %></p>
           <%- end -%>
@@ -44,7 +44,7 @@
                 <p>
                   <span class="subHeader textDisplay"><%= link_type.nil? ? t('screens.profile.info.other_ext_link') : t('screens.profile.info.links.' + link_type[1]) %></span>
                   <%= link_to user_link.label.present? ? user_link.label : user_link.url,
-                    user_link.url, :class => 'textDisplay', :rel => 'nofollow external' %>
+                    user_link.url, :class => 'textDisplay', :rel => 'nofollow noreferrer external' %>
                 </p>
               <%- end -%>
             </div>

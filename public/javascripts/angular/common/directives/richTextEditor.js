@@ -137,7 +137,10 @@ $.extend(Toolbar.prototype, {
     if (!/^https?:\/\//.test(url)) {
       url = 'http://' + url;
     }
-    var urlOptions = { target: '_blank', rel: 'nofollow external' };
+
+    // Note that the sanitizer will also enforce rel="nofollow noreferrer external"
+    // This is a failsafe if we end up using this in a different context.
+    var urlOptions = { target: '_blank', rel: 'nofollow noreferrer external' };
     this.editor.makeLink(url, urlOptions);
 
     this.hideAnchorInput();

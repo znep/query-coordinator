@@ -164,12 +164,12 @@ describe BrowseHelper do
   describe '#view_format_text' do
     it 'formats the text converting newlines into html breaks' do
       description = %(my description \n http://google.com <b>bold!</b>)
-      expect(helper.view_format_description_text(description)).to eql(%(<p>my description \n<br /> <a href="http://google.com" rel="nofollow external">http://google.com</a> <b>bold!</b></p>))
+      expect(helper.view_format_description_text(description)).to eql(%(<p>my description \n<br> <a href="http://google.com" rel="nofollow noreferrer external">http://google.com</a> <b>bold!</b></p>))
     end
 
     it 'formats the description ignoring newline html formatting' do
       description = %(my description http://google.com\n <b>bold!</b>)
-      expect(helper.view_format_description_text(description, false)).to eql(%(my description <a href="http://google.com" rel="nofollow external">http://google.com</a>\n <b>bold!</b>))
+      expect(helper.view_format_description_text(description, false)).to eql(%(my description <a href="http://google.com" rel="nofollow noreferrer external">http://google.com</a>\n <b>bold!</b>))
     end
   end
 

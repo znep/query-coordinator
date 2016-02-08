@@ -118,6 +118,7 @@ $.fn.socrataChoroplethMap = function(vif) {
   var featureExtentRequest;
   var cachedGeometryLabel;
   var rerenderOnResizeTimeout;
+  var _lastRenderedVif;
 
   _attachEvents();
 
@@ -204,10 +205,11 @@ $.fn.socrataChoroplethMap = function(vif) {
 
     return {
       baseLayer: {
-        url: vif.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
-        opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
+        url: vifToRender.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
+        opacity: vifToRender.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
       },
-      showFiltered: vifToRender.filters.length > 0
+      showFiltered: vifToRender.filters.length > 0,
+      vif: vifToRender
     };
   }
 
@@ -271,9 +273,13 @@ $.fn.socrataChoroplethMap = function(vif) {
           vifToRender
         );
 
+        if (vifToRender) {
+          _lastRenderedVif = vifToRender;
+        }
+
         visualization.render(
           aggregatedData,
-          _.merge(_getRenderOptions(vifToRender), {vif: vifToRender})
+          _getRenderOptions(_lastRenderedVif)
         );
       })
       ['catch'](function(error) {
@@ -428,7 +434,9 @@ $.fn.socrataChoroplethMap = function(vif) {
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
+    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleSelection);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _detachEvents() {
@@ -438,7 +446,9 @@ $.fn.socrataChoroplethMap = function(vif) {
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
+    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleSelection);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _handleWindowResize() {
@@ -628,6 +638,81 @@ $.fn.socrataChoroplethMap = function(vif) {
   function _hideFlyout() {
 
     _dispatchFlyout(null);
+  }
+
+  function _handleSelection(event) {
+    var payload = event.originalEvent.detail;
+    var newVif = _.cloneDeep(_lastRenderedVif);
+    var ownFilterOperands = newVif.
+      filters.
+      filter(
+        function(filter) {
+
+          return (
+            (filter.columnName === newVif.columnName) &&
+            (filter.function === 'binaryComputedGeoregionOperator') &&
+            (filter.arguments.computedColumnName === newVif.configuration.computedColumnName)
+          );
+        }
+      ).
+      map(
+        function(filter) {
+          return filter.arguments.operand;
+        }
+      );
+
+    newVif.filters = newVif.
+      filters.
+      filter(function(filter) {
+
+        return (
+          (filter.columnName !== newVif.columnName) &&
+          (filter.function !== 'binaryComputedGeoregionOperator') &&
+          (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
+        );
+      });
+
+    if (ownFilterOperands.indexOf(payload.shapefileFeatureId) === -1) {
+
+      newVif.
+        filters.
+        push(
+          {
+            'columnName': newVif.columnName,
+            'function': 'binaryComputedGeoregionOperator',
+            'arguments': {
+              'computedColumnName': newVif.configuration.computedColumnName,
+              'operator': '=',
+              'operand': payload.shapefileFeatureId
+            }
+          }
+        );
+    }
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        {
+          detail: newVif,
+          bubbles: true
+        }
+      )
+    );
+  }
+
+  function _handleRenderVif(event) {
+    var newVif = event.originalEvent.detail;
+
+    if (newVif.type !== 'choroplethMap') {
+      throw new Error(
+        'Cannot update VIF; old type: `choroplethMap`, new type: `{0}`.'.
+          format(
+            newVif.type
+          )
+        );
+    }
+
+    _updateData(newVif);
   }
 
   function _dispatchFlyout(payload) {

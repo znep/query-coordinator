@@ -115,6 +115,34 @@ describe('ColumnChart jQuery component', function() {
           0
         );
       });
+
+      it('emits a ...VIF_UPDATED event with a new filter when a column is clicked (simulated with a ...COLUMN_SELECTION event)', function(done) {
+        var vif = _.cloneDeep(columnChartVIF);
+
+        vif.configuration.interactive = true;
+
+        assert.equal(vif.filters.length, 0);
+
+        $container.socrataColumnChart(vif);
+        $container.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
+
+          assert.isTrue(true, 'SOCRATA_VISUALIZATION_VIF_UPDATED event was received.');
+          assert.equal(event.originalEvent.detail.filters.length, 1);
+          done();
+        });
+
+        setTimeout(function() {
+          $container.find('.chart-scroll')[0].dispatchEvent(
+            new window.CustomEvent(
+              'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+              {
+                detail: {name: 'test'},
+                bubbles: true
+              }
+            )
+          );
+        }, 0);
+      });
     });
   });
 });

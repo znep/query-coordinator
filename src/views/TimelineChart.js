@@ -114,7 +114,7 @@ function TimelineChart(element, vif) {
   var _lastRenderOptions;
   var _lastRenderedVif;
 
-  var _interactive = (vif.configuration.interactive === false) ? false : true;
+  var _interactive = vif.configuration.interactive === true;
 
   _renderTemplate(this.element);
   _attachEvents(this.element);
@@ -467,13 +467,19 @@ function TimelineChart(element, vif) {
     var $target = $(event.target);
 
     if ($target.is('.timeline-chart-clear-selection-button')) {
+
       payload.title = 'Clear filter range';
       payload.element = $target.get(0);
+
       return emitFlyoutEvent(payload);
-    } else if($target.is('.selection-marker')) {
+
+    } else if(_interactive && $target.is('.selection-marker')) {
+
       payload.title = 'Drag to change filter range';
       payload.element = $target.get(0);
+
       return emitFlyoutEvent(payload);
+
     }
 
     var flyoutTarget = _chartElement.find('.timeline-chart-flyout-target');
@@ -1039,7 +1045,9 @@ function TimelineChart(element, vif) {
       label = formattedStartDate;
     }
 
-    return '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label);
+    return (_interactive) ?
+      '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label) :
+      '{0}'.format(label);
   }
 
   /**
@@ -1082,8 +1090,8 @@ function TimelineChart(element, vif) {
         Constants.TIMELINE_CHART_REQUIRED_LABEL_WIDTH);
       var labelEveryN;
 
-      // TODO - write integration tests for the number of labels shown at given screen widths
-      // and ensuring that they are interactive.
+      // TODO - write integration tests for the number of labels shown at given
+      // screen widths and ensuring that they are interactive.
 
       // Show every label, every other label, etc...
       if (numberOfLabels <= labelsWeHaveRoomFor) {
@@ -1849,8 +1857,7 @@ function TimelineChart(element, vif) {
         // Todo: Change this to emit ISO-8601 strings rather than instances of
         // moment.
         start: selectionStartDate,
-        end: selectionEndDate,
-        renderedVif: _lastRenderedVif
+        end: selectionEndDate
       }
     );
   }

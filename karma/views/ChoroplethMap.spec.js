@@ -17,6 +17,7 @@ describe('ChoroplethMap', function() {
         southwest: [41.45919537950706, -90.24169921875],
         northeast: [42.20817645934742, -85.242919921875]
       },
+      interactive: true,
       legend: {
         type: 'discrete'
       },

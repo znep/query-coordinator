@@ -128,6 +128,34 @@ describe('TimelineChart jQuery component', function() {
           0
         );
       });
+
+      it('emits a ...VIF_UPDATED event with a new filter when a date range is selected (simulated with a ...COLUMN_SELECTION event)', function(done) {
+        var vif = _.cloneDeep(timelineChartVIF);
+
+        vif.configuration.interactive = true;
+
+        assert.equal(vif.filters.length, 0);
+
+        $container.socrataTimelineChart(vif);
+        $container.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
+
+          assert.isTrue(true, 'SOCRATA_VISUALIZATION_VIF_UPDATED event was received.');
+          assert.equal(event.originalEvent.detail.filters.length, 1);
+          done();
+        });
+
+        setTimeout(function() {
+          $container.find('.chart-scroll')[0].dispatchEvent(
+            new window.CustomEvent(
+              'SOCRATA_VISUALIZATION_TIMELINE_FILTER',
+              {
+                detail: {start: new Date('2001-01-01T00:00:00'), end: new Date('2002-01-01T00:00:00')},
+                bubbles: true
+              }
+            )
+          );
+        }, 0);
+      });
     });
   });
 });

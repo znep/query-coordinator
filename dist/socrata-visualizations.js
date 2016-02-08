@@ -205,6 +205,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _lastRenderOptions = {};
 	  var _lastRenderedVif;
 
+	  var _interactive = vif.configuration.interactive === true;
+
 	  // Keep track of click details so that we can zoom on double-click but
 	  // still selects on single clicks.
 	  var _lastClick = 0;
@@ -451,24 +453,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Handle clicking on a feature.
 	   */
 	  function _onSelectRegion(event) {
-
 	    var now = Date.now();
 	    var delay = now - _lastClick;
-	    _lastClick = now;
-	    if (delay < MAP_DOUBLE_CLICK_THRESHOLD_MILLISECONDS) {
-	      if (!_.isNull(_lastClickTimeout)) {
 
-	        // If this is actually a double click, cancel the timeout which selects
-	        // the feature and zoom in instead.
-	        window.clearTimeout(_lastClickTimeout);
-	        _lastClickTimeout = null;
-	        _map.setView(event.latlng, _map.getZoom() + 1);
+	    _lastClick = now;
+
+	    if (_interactive) {
+	      if (delay < MAP_DOUBLE_CLICK_THRESHOLD_MILLISECONDS) {
+	        if (!_.isNull(_lastClickTimeout)) {
+
+	          // If this is actually a double click, cancel the timeout which
+	          // selects the feature and zoom in instead.
+	          window.clearTimeout(_lastClickTimeout);
+	          _lastClickTimeout = null;
+	          _map.setView(event.latlng, _map.getZoom() + 1);
+	        }
+	      } else {
+	        _lastClickTimeout = window.setTimeout(
+	          function() { _emitSelectRegionEvent(event); },
+	          MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS
+	        );
 	      }
-	    } else {
-	      _lastClickTimeout = window.setTimeout(
-	        function() { _emitSelectRegionEvent(event); },
-	        MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS
-	      );
 	    }
 	  }
 
@@ -492,8 +497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          // `feature` properties of the emitted event payload.
 	          layer: event.target,
 	          feature: event.target.feature,
-	          shapefileFeatureId: feature.properties[shapefilePrimaryKey],
-	          renderedVif: _lastRenderedVif
+	          shapefileFeatureId: feature.properties[shapefilePrimaryKey]
 	        }
 	      );
 	    }
@@ -5483,6 +5487,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _lastRenderOptions;
 	  var _lastRenderedVif;
 
+	  var _interactive = vif.configuration.interactive === true;
+
 	  var _truncationMarkerSelector = '.truncation-marker';
 	  var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';
 	  var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
@@ -5492,8 +5498,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var UNFILTERED_INDEX = vif.configuration.columns.unfilteredValue;
 	  var FILTERED_INDEX = vif.configuration.columns.filteredValue;
 	  var SELECTED_INDEX = vif.configuration.columns.selected;
-
-	  var _interactive = vif.configuration.interactive;
 
 	  _renderTemplate(this.element);
 	  _attachEvents(this.element);
@@ -5707,8 +5711,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    self.emitEvent(
 	      'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
 	      {
-	        name: d3.select(event.currentTarget).datum()[NAME_INDEX],
-	        renderedVif: _lastRenderedVif
+	        name: d3.select(event.currentTarget).datum()[NAME_INDEX]
 	      }
 	    );
 	  }
@@ -7069,7 +7072,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _lastRenderOptions;
 	  var _lastRenderedVif;
 
-	  var _interactive = (vif.configuration.interactive === false) ? false : true;
+	  var _interactive = vif.configuration.interactive === true;
 
 	  _renderTemplate(this.element);
 	  _attachEvents(this.element);
@@ -7422,13 +7425,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var $target = $(event.target);
 
 	    if ($target.is('.timeline-chart-clear-selection-button')) {
+
 	      payload.title = 'Clear filter range';
 	      payload.element = $target.get(0);
+
 	      return emitFlyoutEvent(payload);
-	    } else if($target.is('.selection-marker')) {
+
+	    } else if(_interactive && $target.is('.selection-marker')) {
+
 	      payload.title = 'Drag to change filter range';
 	      payload.element = $target.get(0);
+
 	      return emitFlyoutEvent(payload);
+
 	    }
 
 	    var flyoutTarget = _chartElement.find('.timeline-chart-flyout-target');
@@ -7994,7 +8003,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      label = formattedStartDate;
 	    }
 
-	    return '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label);
+	    return (_interactive) ?
+	      '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label) :
+	      '{0}'.format(label);
 	  }
 
 	  /**
@@ -8037,8 +8048,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        Constants.TIMELINE_CHART_REQUIRED_LABEL_WIDTH);
 	      var labelEveryN;
 
-	      // TODO - write integration tests for the number of labels shown at given screen widths
-	      // and ensuring that they are interactive.
+	      // TODO - write integration tests for the number of labels shown at given
+	      // screen widths and ensuring that they are interactive.
 
 	      // Show every label, every other label, etc...
 	      if (numberOfLabels <= labelsWeHaveRoomFor) {
@@ -8804,8 +8815,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // Todo: Change this to emit ISO-8601 strings rather than instances of
 	        // moment.
 	        start: selectionStartDate,
-	        end: selectionEndDate,
-	        renderedVif: _lastRenderedVif
+	        end: selectionEndDate
 	      }
 	    );
 	  }
@@ -26050,6 +26060,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var featureExtentRequest;
 	  var cachedGeometryLabel;
 	  var rerenderOnResizeTimeout;
+	  var _lastRenderedVif;
 
 	  _attachEvents();
 
@@ -26136,10 +26147,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return {
 	      baseLayer: {
-	        url: vif.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
-	        opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
+	        url: vifToRender.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
+	        opacity: vifToRender.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
 	      },
-	      showFiltered: vifToRender.filters.length > 0
+	      showFiltered: vifToRender.filters.length > 0,
+	      vif: vifToRender
 	    };
 	  }
 
@@ -26203,9 +26215,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	          vifToRender
 	        );
 
+	        if (vifToRender) {
+	          _lastRenderedVif = vifToRender;
+	        }
+
 	        visualization.render(
 	          aggregatedData,
-	          _.merge(_getRenderOptions(vifToRender), {vif: vifToRender})
+	          _getRenderOptions(_lastRenderedVif)
 	        );
 	      })
 	      ['catch'](function(error) {
@@ -26360,7 +26376,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
+	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleSelection);
 	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+	    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  function _detachEvents() {
@@ -26370,7 +26388,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
+	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleSelection);
 	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+	    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  function _handleWindowResize() {
@@ -26560,6 +26580,81 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function _hideFlyout() {
 
 	    _dispatchFlyout(null);
+	  }
+
+	  function _handleSelection(event) {
+	    var payload = event.originalEvent.detail;
+	    var newVif = _.cloneDeep(_lastRenderedVif);
+	    var ownFilterOperands = newVif.
+	      filters.
+	      filter(
+	        function(filter) {
+
+	          return (
+	            (filter.columnName === newVif.columnName) &&
+	            (filter.function === 'binaryComputedGeoregionOperator') &&
+	            (filter.arguments.computedColumnName === newVif.configuration.computedColumnName)
+	          );
+	        }
+	      ).
+	      map(
+	        function(filter) {
+	          return filter.arguments.operand;
+	        }
+	      );
+
+	    newVif.filters = newVif.
+	      filters.
+	      filter(function(filter) {
+
+	        return (
+	          (filter.columnName !== newVif.columnName) &&
+	          (filter.function !== 'binaryComputedGeoregionOperator') &&
+	          (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
+	        );
+	      });
+
+	    if (ownFilterOperands.indexOf(payload.shapefileFeatureId) === -1) {
+
+	      newVif.
+	        filters.
+	        push(
+	          {
+	            'columnName': newVif.columnName,
+	            'function': 'binaryComputedGeoregionOperator',
+	            'arguments': {
+	              'computedColumnName': newVif.configuration.computedColumnName,
+	              'operator': '=',
+	              'operand': payload.shapefileFeatureId
+	            }
+	          }
+	        );
+	    }
+
+	    $element[0].dispatchEvent(
+	      new window.CustomEvent(
+	        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+	        {
+	          detail: newVif,
+	          bubbles: true
+	        }
+	      )
+	    );
+	  }
+
+	  function _handleRenderVif(event) {
+	    var newVif = event.originalEvent.detail;
+
+	    if (newVif.type !== 'choroplethMap') {
+	      throw new Error(
+	        'Cannot update VIF; old type: `choroplethMap`, new type: `{0}`.'.
+	          format(
+	            newVif.type
+	          )
+	        );
+	    }
+
+	    _updateData(newVif);
 	  }
 
 	  function _dispatchFlyout(payload) {
@@ -26991,9 +27086,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $(window).on('resize', _handleWindowResize);
 
 	    $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
-	    $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
+	    $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleSelection);
 	    $element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
 	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+	    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  function _detachEvents() {
@@ -27001,9 +27097,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $(window).off('resize', _handleWindowResize);
 
 	    $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
-	    $element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
+	    $element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleSelection);
 	    $element.off('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
 	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+	    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  function _handleWindowResize() {
@@ -27189,11 +27286,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  }
 
-	  function _handleDatumSelect() {// event) { ---> Linting sucks
+	  function _handleSelection(event) {
+	    var payload = event.originalEvent.detail;
+	    var newVif = _.cloneDeep(_lastRenderedVif);
+	    var ownFilterOperands = newVif.
+	      filters.
+	      filter(function(filter) {
+	        return filter.columnName === newVif.columnName;
+	      }).map(function(filter) {
+	        return filter.arguments.operand;
+	      });
 
-	    // var payload = event.originalEvent.detail;
+	    newVif.filters = newVif.
+	      filters.
+	      filter(function(filter) {
+	        return filter.columnName !== newVif.columnName;
+	      });
 
-	    // TODO: Implement.
+	    if (ownFilterOperands.indexOf(payload.name) === -1) {
+
+	      newVif.filters.push(
+	        {
+	          'columnName': newVif.columnName,
+	          'function': 'binaryOperator',
+	          'arguments': {
+	            'operator': '=',
+	            'operand': payload.name
+	          }
+	        }
+	      );
+	    }
+
+	    $element[0].dispatchEvent(
+	      new window.CustomEvent(
+	        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+	        {
+	          detail: newVif,
+	          bubbles: true
+	        }
+	      )
+	    );
 	  }
 
 	  function _handleExpandedToggle() {// event) { ---> Linting sucks
@@ -27201,6 +27333,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // var payload = event.originalEvent.detail;
 
 	    // TODO: Implement.
+	  }
+
+	  function _handleRenderVif(event) {
+	    var newVif = event.originalEvent.detail;
+
+	    if (newVif.type !== 'columnChart') {
+	      throw new Error(
+	        'Cannot update VIF; old type: `columnChart`, new type: `{0}`.'.
+	          format(
+	            newVif.type
+	          )
+	        );
+	    }
+
+	    _updateData(newVif);
 	  }
 
 	  /**
@@ -28440,7 +28587,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $(window).on('resize', _handleWindowResize);
 
 	    $element.on('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+	    $element.on('SOCRATA_VISUALIZATION_TIMELINE_FILTER', _handleSelection);
 	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+	    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  function _detachEvents() {
@@ -28448,7 +28597,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $(window).off('resize', _handleWindowResize);
 
 	    $element.off('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+	    $element.off('SOCRATA_VISUALIZATION_TIMELINE_FILTER', _handleSelection);
 	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+	    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  function _handleWindowResize() {
@@ -28633,18 +28784,65 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  }
 
-	  function _handleDatumSelect() {// event) { ---> Linting sucks
+	  function _handleSelection(event) {
+	    var payload = event.originalEvent.detail;
+	    var newVif = _.cloneDeep(_lastRenderedVif);
+	    var ownFilterStartEnd = newVif.
+	      filters.
+	      filter(function(filter) {
+	        return filter.columnName === newVif.columnName && filter.function === 'timeRangeFilter';
+	      }).map(function(filter) {
+	        return filter.arguments;
+	      });
 
-	    // var payload = event.originalEvent.detail;
+	    newVif.filters = newVif.
+	      filters.
+	      filter(function(filter) {
+	        return filter.columnName !== newVif.columnName;
+	      });
 
-	    // TODO: Implement.
+	    if (
+	      payload !== null &&
+	      payload.hasOwnProperty('start') &&
+	      payload.hasOwnProperty('end')
+	    ) {
+
+	      newVif.filters.push(
+	        {
+	          'columnName': newVif.columnName,
+	          'function': 'timeRange',
+	          'arguments': {
+	            'start': payload.start.toISOString().substring(0, 19),
+	            'end': payload.end.toISOString().substring(0, 19)
+	          }
+	        }
+	      );
+	    }
+
+	    $element[0].dispatchEvent(
+	      new window.CustomEvent(
+	        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+	        {
+	          detail: newVif,
+	          bubbles: true
+	        }
+	      )
+	    );
 	  }
 
-	  function _handleExpandedToggle() {// event) { ---> Linting sucks
+	  function _handleRenderVif(event) {
+	    var newVif = event.originalEvent.detail;
 
-	    // var payload = event.originalEvent.detail;
+	    if (newVif.type !== 'timelineChart') {
+	      throw new Error(
+	        'Cannot update VIF; old type: `timelineChart`, new type: `{0}`.'.
+	          format(
+	            newVif.type
+	          )
+	        );
+	    }
 
-	    // TODO: Implement.
+	    _updateData(newVif);
 	  }
 
 	  /**

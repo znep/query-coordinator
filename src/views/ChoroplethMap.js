@@ -97,6 +97,8 @@ function ChoroplethMap(element, vif) {
   var _lastRenderOptions = {};
   var _lastRenderedVif;
 
+  var _interactive = vif.configuration.interactive === true;
+
   // Keep track of click details so that we can zoom on double-click but
   // still selects on single clicks.
   var _lastClick = 0;
@@ -343,24 +345,27 @@ function ChoroplethMap(element, vif) {
    * Handle clicking on a feature.
    */
   function _onSelectRegion(event) {
-
     var now = Date.now();
     var delay = now - _lastClick;
-    _lastClick = now;
-    if (delay < MAP_DOUBLE_CLICK_THRESHOLD_MILLISECONDS) {
-      if (!_.isNull(_lastClickTimeout)) {
 
-        // If this is actually a double click, cancel the timeout which selects
-        // the feature and zoom in instead.
-        window.clearTimeout(_lastClickTimeout);
-        _lastClickTimeout = null;
-        _map.setView(event.latlng, _map.getZoom() + 1);
+    _lastClick = now;
+
+    if (_interactive) {
+      if (delay < MAP_DOUBLE_CLICK_THRESHOLD_MILLISECONDS) {
+        if (!_.isNull(_lastClickTimeout)) {
+
+          // If this is actually a double click, cancel the timeout which
+          // selects the feature and zoom in instead.
+          window.clearTimeout(_lastClickTimeout);
+          _lastClickTimeout = null;
+          _map.setView(event.latlng, _map.getZoom() + 1);
+        }
+      } else {
+        _lastClickTimeout = window.setTimeout(
+          function() { _emitSelectRegionEvent(event); },
+          MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS
+        );
       }
-    } else {
-      _lastClickTimeout = window.setTimeout(
-        function() { _emitSelectRegionEvent(event); },
-        MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS
-      );
     }
   }
 
@@ -384,8 +389,7 @@ function ChoroplethMap(element, vif) {
           // `feature` properties of the emitted event payload.
           layer: event.target,
           feature: event.target.feature,
-          shapefileFeatureId: feature.properties[shapefilePrimaryKey],
-          renderedVif: _lastRenderedVif
+          shapefileFeatureId: feature.properties[shapefilePrimaryKey]
         }
       );
     }

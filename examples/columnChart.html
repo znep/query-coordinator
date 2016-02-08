@@ -53,9 +53,9 @@
       },
       'columnName': COLUMN_NAME,
       'configuration': {
-        // The localization values should be set by the application but are set to string literals
-        // for the purposes of this example.
         'interactive': true,
+        // The localization values should be set by the application but are set
+        // to string literals for the purposes of this example.
         'localization': {
           'NO_VALUE': 'No value',
           'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
@@ -122,8 +122,13 @@
      */
 
     $columnChart1Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+    $columnChart1Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
     $columnChart2Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+    $columnChart2Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
     $columnChart3Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+    $columnChart3Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
     function handleFlyout(event) {
       var payload = event.originalEvent.detail;
@@ -137,6 +142,17 @@
 
         flyoutRenderer.clear();
       }
+    }
+
+    function handleVifUpdated(event) {
+      var payload = event.originalEvent.detail;
+      var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+      renderVifEvent.originalEvent = {
+        detail: payload
+      };
+
+      $(this).trigger(renderVifEvent);
     }
 
     /**

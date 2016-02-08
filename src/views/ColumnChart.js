@@ -30,6 +30,8 @@ function ColumnChart(element, vif) {
   var _lastRenderOptions;
   var _lastRenderedVif;
 
+  var _interactive = vif.configuration.interactive === true;
+
   var _truncationMarkerSelector = '.truncation-marker';
   var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';
   var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
@@ -39,8 +41,6 @@ function ColumnChart(element, vif) {
   var UNFILTERED_INDEX = vif.configuration.columns.unfilteredValue;
   var FILTERED_INDEX = vif.configuration.columns.filteredValue;
   var SELECTED_INDEX = vif.configuration.columns.selected;
-
-  var _interactive = vif.configuration.interactive;
 
   _renderTemplate(this.element);
   _attachEvents(this.element);
@@ -254,8 +254,7 @@ function ColumnChart(element, vif) {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
       {
-        name: d3.select(event.currentTarget).datum()[NAME_INDEX],
-        renderedVif: _lastRenderedVif
+        name: d3.select(event.currentTarget).datum()[NAME_INDEX]
       }
     );
   }

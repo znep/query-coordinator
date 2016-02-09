@@ -34,6 +34,9 @@ Rails.application.routes.draw do
     resource :site_chrome, only: [:edit, :update]
   end
 
+  # We expose certain health checks for consul
+  get 'consul_checks/active' => 'consul_checks#active'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

@@ -98,7 +98,7 @@ function FeatureMapController(
   $scope.getClickedRows = function(mousePosition, points, bounds) {
 
     // Get necessary data for query and perform query for clicked rows
-    var numberOfRowsClicked = _.sum(points, 'count');
+    var numberOfRowsClicked = parseInt(points, 10);
     var rowQueryComponents$ = Rx.Observable.combineLatest(
       id$,
       dataFieldName$,
@@ -142,8 +142,8 @@ function FeatureMapController(
       dataFieldName$,
       flannelTitleColumn$,
       function(rows, columns, fieldName, flannelTitleColumn) {
-        if (_.isNull(rows)) {
-          return null;
+        if (_.isNull(rows) || !_.isArray(rows)) {
+          throw new Error('Error fetching rows for RowInspector flannel');
         }
 
         var orderedDisplayableColumns = _.chain(columns).

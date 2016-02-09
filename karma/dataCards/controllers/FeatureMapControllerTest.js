@@ -234,7 +234,7 @@ describe('FeatureMapController', function() {
     describe('query request parameters', function() {
 
       // Common getClickedRows parameters
-      var fakePointsClicked = [{ count: 1 }, { count: 2 }];
+      var fakeRowCount = 3;
       var fakeMousePosition = {
         lat: 45.7,
         lng: -122.3
@@ -261,7 +261,7 @@ describe('FeatureMapController', function() {
 
         var queryResponse$ = getClickedRows(
           fakeMousePosition,
-          fakePointsClicked,
+          fakeRowCount,
           fakeWithinBoxBounds
         );
 
@@ -300,7 +300,7 @@ describe('FeatureMapController', function() {
 
         var queryResponse$ = getClickedRows(
           fakeMousePosition,
-          fakePointsClicked,
+          fakeRowCount,
           fakeWithinBoxBounds
         );
 

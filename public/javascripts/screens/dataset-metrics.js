@@ -87,7 +87,7 @@ $(function()
                   id: 'summaryVisits',
                   displayName: t('browser_page_views'),
                   summary: {
-                    plus: 'js-page-view',
+                    plus: 'view-loaded',
                     total: false,
                     verbPhrase: t('pages_viewed'),
                     verbPhraseSingular: t('page_viewed'),

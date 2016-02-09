@@ -166,40 +166,40 @@ function FeatureMap(element, vif) {
 	 * Private methods
 	 */
 
-	function _renderTemplate(element) {
+	function _renderTemplate(el) {
 
 		var mapElement = $(
 			'<div>',
 			{
-				'class': 'feature-map'
+				class: 'feature-map'
 			}
 		);
 
 		var mapLegend = $(
 			'<div>',
 			{
-				'class': 'feature-map-legend'
+				class: 'feature-map-legend'
 			}
 		);
 
 		var mapPanZoomDisabledWarningIcon = $(
 			'<div>',
 			{
-				'class': 'icon-warning feature-map-pan-zoom-disabled-warning-icon'
+				class: 'icon-warning feature-map-pan-zoom-disabled-warning-icon'
 			}
 		);
 
 		var mapPanZoomDisabledWarning = $(
 			'<div>',
 			{
-				'class': 'feature-map-pan-zoom-disabled-warning'
+				class: 'feature-map-pan-zoom-disabled-warning'
 			}
 		).append(mapPanZoomDisabledWarningIcon);
 
 		var mapContainer = $(
 			'<div>',
 			{
-				'class': 'feature-map-container'
+				class: 'feature-map-container'
 			}
 		).append([
 			mapElement,
@@ -218,7 +218,7 @@ function FeatureMap(element, vif) {
 			var mapLocateUserBusySpinner = $(
 				'<div>',
 				{
-					'class': 'feature-map-locate-user-busy-spinner'
+					class: 'feature-map-locate-user-busy-spinner'
 				}
 			);
 
@@ -253,7 +253,7 @@ function FeatureMap(element, vif) {
 		_mapPanZoomDisabledWarning = mapPanZoomDisabledWarning;
 		_mapLocateUserButton = mapLocateUserButton;
 
-		element.append(mapContainer);
+		el.append(mapContainer);
 	}
 
 	function _attachEvents() {
@@ -320,7 +320,7 @@ function FeatureMap(element, vif) {
 		$(window).on('resize', _hideRowInspector);
 	}
 
-	function _detachEvents(element) {
+	function _detachEvents() {
 
 		// Only detach map events if the map has actually been instantiated.
 		if (_map) {
@@ -500,7 +500,7 @@ function FeatureMap(element, vif) {
 		_updateLocateUserButtonStatus('ready');
 	}
 
-	function _handleLocateUserError(error) {
+	function _handleLocateUserError() {
 
 		_updateLocateUserButtonStatus('error');
 		_showLocateUserButtonFlyout();
@@ -534,14 +534,9 @@ function FeatureMap(element, vif) {
 		}
 	}
 
-	function _handleLocateUserButtonMousemove(event) {
+	function _handleLocateUserButtonMousemove() {
 
 		_showLocateUserButtonFlyout();
-	}
-
-	function _handleLocateUserButtonMouseout(event) {
-
-		_hideFlyout();
 	}
 
 	function _handleVectorTileMousemove(event) {

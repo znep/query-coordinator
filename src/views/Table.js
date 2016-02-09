@@ -54,12 +54,11 @@ module.exports = function Table(element, vif) {
       return 0;
     }
 
-    var currentRenderData = _lastRenderData;
-    var currentRenderOptions = _lastRenderOptions;
     var headerHeightPx;
     var rowHeightPx;
     var heightLeftAfterHeaderPx;
     var maxRowCount;
+    var numberOfRows;
     var alreadyHasData = _lastRenderData && _lastRenderOptions && _lastRenderData.rows.length > 0;
 
     // We need some data in the table to do the measurements.
@@ -69,7 +68,7 @@ module.exports = function Table(element, vif) {
       self.render(
         {
           columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ],
-          rows: [ [ 'placeholder' ] ],
+          rows: [ [ 'placeholder' ] ]
         },
         [ {} ]
       );
@@ -203,7 +202,7 @@ module.exports = function Table(element, vif) {
               }
 
               return '<tr>' + data.columns.map(function(column, columnIndex) {
-                return _templateTableCell(column, row[columnIndex])
+                return _templateTableCell(column, row[columnIndex]);
               }).join('\n') + '</tr>';
             }),
           '</tbody>',
@@ -233,7 +232,7 @@ module.exports = function Table(element, vif) {
     _scrollbarHeightPx = _scrollbarHeightPx || $newTable[0].offsetHeight - $newTable[0].clientHeight;
   }
 
-  function _attachEvents(element) {
+  function _attachEvents() {
     self.element.on('click', '.socrata-table thead th', _handleRowHeaderClick);
 
     self.element.on('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
@@ -243,7 +242,7 @@ module.exports = function Table(element, vif) {
     self.element.on('mouseleave', '.socrata-table tbody td', _hideCellFlyout);
   }
 
-  function _detachEvents(element) {
+  function _detachEvents() {
     self.element.off('click', '.socrata-table thead th', _handleRowHeaderClick);
 
     self.element.off('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
@@ -279,9 +278,7 @@ module.exports = function Table(element, vif) {
     );
   }
 
-  function _hideDescriptionFlyout(event) {
-    var $target = $(event.currentTarget);
-
+  function _hideDescriptionFlyout() {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
       null

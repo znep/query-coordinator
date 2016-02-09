@@ -36,21 +36,21 @@ function FlyoutRenderer() {
     var flyoutContent = $(
       '<div>',
       {
-        'class': 'socrata-flyout-content'
+        class: 'socrata-flyout-content'
       }
     );
 
     var flyoutHint = $(
       '<div>',
       {
-        'class': 'socrata-flyout-hint'
+        class: 'socrata-flyout-hint'
       }
     );
 
     var flyout = $(
       '<div>',
       {
-        'id': 'socrata-flyout'
+        id: 'socrata-flyout'
       }
     ).append([
       flyoutContent,

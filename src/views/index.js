@@ -12,6 +12,8 @@ module.exports = {
   ChoroplethMap: ChoroplethMap,
   ChoroplethMapUtils: ChoroplethMapUtils,
   ColumnChart: ColumnChart,
+  Pager: Pager,
+  Table: Table,
   TimelineChart: TimelineChart,
   FeatureMap: FeatureMap,
   FlyoutRenderer: FlyoutRenderer,

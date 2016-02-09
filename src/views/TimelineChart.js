@@ -5,20 +5,20 @@ var _ = require('lodash');
 var $ = require('jquery');
 
 var Constants = {
-  'TIMELINE_CHART_MARGIN': {
-    'TOP': 0,
-    'RIGHT': 0,
-    'BOTTOM': 30,
-    'LEFT': 0
+  TIMELINE_CHART_MARGIN: {
+    TOP: 0,
+    RIGHT: 0,
+    BOTTOM: 30,
+    LEFT: 0
   },
-  'TIMELINE_CHART_NUMBER_OF_TICKS': 3,
-  'TIMELINE_CHART_TICK_SIZE': 3,
-  'TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN': 50,
-  'TIMELINE_CHART_GUTTER': 15,
-  'TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET': 11,
-  'TIMELINE_CHART_DRAG_HANDLE_WIDTH': 24,
-  'TIMELINE_CHART_MIN_LABEL_WIDTH': 150,
-  'TIMELINE_CHART_REQUIRED_LABEL_WIDTH': 50
+  TIMELINE_CHART_NUMBER_OF_TICKS: 3,
+  TIMELINE_CHART_TICK_SIZE: 3,
+  TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN: 50,
+  TIMELINE_CHART_GUTTER: 15,
+  TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET: 11,
+  TIMELINE_CHART_DRAG_HANDLE_WIDTH: 24,
+  TIMELINE_CHART_MIN_LABEL_WIDTH: 150,
+  TIMELINE_CHART_REQUIRED_LABEL_WIDTH: 50
 };
 
 var DateHelpers = {
@@ -101,18 +101,10 @@ function TimelineChart(element, vif) {
 
   utils.assertHasProperty(vif, 'configuration');
 
-  var _chartContainer;
   var _chartElement;
   var _chartWrapper;
-  var _chartScroll;
-  var _chartLabels;
-  var _chartTopAxisLabel;
-  var _chartRightAxisLabel;
-  var _chartBottomAxisLabel;
-  var _chartLeftAxisLabel;
   var _lastRenderData;
   var _lastRenderOptions;
-  var _lastRenderedVif;
 
   var _interactive = vif.configuration.interactive === true;
 
@@ -129,7 +121,6 @@ function TimelineChart(element, vif) {
     // Eventually we may only want to pass in the VIF instead of other render
     // options as well as the VIF, but for the time being we will just treat it
     // as another property on `options`.
-    _lastRenderedVif = options.vif;
     _renderData(_chartElement, data, options);
   };
 
@@ -152,13 +143,13 @@ function TimelineChart(element, vif) {
    * Private methods
    */
 
-  function _renderTemplate(element, axisLabels) {
+  function _renderTemplate(el) {
 
     function divWithClass(clsName) {
       return $(
         '<div>',
         {
-          'class': clsName
+          class: clsName
         }
       );
     }
@@ -179,7 +170,7 @@ function TimelineChart(element, vif) {
       return $svg(
         'svg',
         {
-          'class': clsName
+          class: clsName
         }
       ).append(
         $svg('g')
@@ -199,14 +190,14 @@ function TimelineChart(element, vif) {
     var leftSelectionLine = $svg(
       'line',
       {
-        'y1': '0',
-        'y2': '100%'
+        y1: '0',
+        y2: '100%'
       }
     );
     var leftSelectionTriangle = $svg(
       'path',
       {
-        'd': 'M0,0L-10,0L-10,8L0,16Z'
+        d: 'M0,0L-10,0L-10,8L0,16Z'
       }
     );
     var leftSelectionRect = $svg(
@@ -223,7 +214,7 @@ function TimelineChart(element, vif) {
     var leftSelectionGroup = $svg(
       'g',
       {
-        'transform': 'translate(24, 0)'
+        transform: 'translate(24, 0)'
       }
     ).append([
       leftSelectionLine,
@@ -238,14 +229,14 @@ function TimelineChart(element, vif) {
     var rightSelectionLine = $svg(
       'line',
       {
-        'y1': '0',
-        'y2': '100%'
+        y1: '0',
+        y2: '100%'
       }
     );
     var rightSelectionTriangle = $svg(
       'path',
       {
-        'd': 'M0,0L10,0L10,8L0,16Z'
+        d: 'M0,0L10,0L10,8L0,16Z'
       }
     );
     var rightSelectionRect = $svg(
@@ -262,7 +253,7 @@ function TimelineChart(element, vif) {
     var rightSelectionGroup = $svg(
       'g',
       {
-        'transform': 'translate(0,0)'
+        transform: 'translate(0,0)'
       }
     ).append([
       rightSelectionLine,
@@ -279,14 +270,14 @@ function TimelineChart(element, vif) {
     var timelineClearSelectionLabel = $(
       '<span>',
       {
-        'class': 'timeline-chart-clear-selection-label'
+        class: 'timeline-chart-clear-selection-label'
       }
     );
 
     var chartWrapper = $(
       '<div>',
       {
-        'class': 'timeline-chart-wrapper'
+        class: 'timeline-chart-wrapper'
       }
     ).append([
       yTicks,
@@ -305,14 +296,14 @@ function TimelineChart(element, vif) {
     var chartLabels = $(
       '<div>',
       {
-        'class': 'labels'
+        class: 'labels'
       }
     );
 
     var chartScroll = $(
       '<div>',
       {
-        'class': 'chart-scroll'
+        class: 'chart-scroll'
       }
     ).append([
       chartWrapper,
@@ -322,14 +313,14 @@ function TimelineChart(element, vif) {
     var chartElement = $(
       '<div>',
       {
-        'class': 'timeline-chart'
+        class: 'timeline-chart'
       }
     ).append(chartScroll);
 
     var chartContainer = $(
       '<div>',
       {
-        'class': 'timeline-chart-container'
+        class: 'timeline-chart-container'
       }
     ).append(
       chartElement
@@ -338,77 +329,74 @@ function TimelineChart(element, vif) {
     self.renderAxisLabels(chartContainer);
 
     // Cache element selections
-    _chartContainer = chartContainer;
     _chartElement = chartElement;
     _chartWrapper = chartWrapper;
-    _chartScroll = chartScroll;
-    _chartLabels = chartLabels;
 
-    element.append(chartContainer);
+    el.append(chartContainer);
   }
 
-  function _attachEvents(element) {
-    element.on(
+  function _attachEvents(el) {
+    el.on(
       'mouseenter mousemove',
       '.timeline-chart',
       showFlyout
     );
 
-    element.on(
+    el.on(
       'mouseleave',
       '.timeline-chart',
       mouseHasLeftChart
     );
 
     if (_interactive) {
-      element.on(
+      el.on(
         'mousedown mouseup',
         '.timeline-chart',
         leftMouseButtonStateHasChanged
       );
 
-      element.on(
+      el.on(
         'mousedown',
         '.timeline-chart-clear-selection-label',
         handleClearSelectionLabelMousedownEvent
       );
     }
 
-    element.on(
+    el.on(
       'mousemove',
       '.timeline-chart-clear-selection-label',
       showFlyout
     );
   }
 
-  function _unattachEvents(element) {
-    element.off(
+  function _unattachEvents(el) {
+    el.off(
       'mouseenter mousemove',
       '.timeline-chart',
       showFlyout
     );
 
-    element.off(
+    el.off(
       'mouseleave',
       '.timeline-chart',
       hideFlyout
     );
 
     if (_interactive) {
-      element.off(
+      el.off(
         'mousedown mouseup',
         '.timeline-chart',
         leftMouseButtonStateHasChanged
       );
 
-      element.off(
+      el.off(
         'mousedown',
         '.timeline-chart-clear-selection-label',
         handleClearSelectionLabelMousedownEvent
       );
     }
 
-    element.off(
+    el.off(
       'mousemove',
       '.timeline-chart-clear-selection-label',
       showFlyout
@@ -453,7 +441,7 @@ function TimelineChart(element, vif) {
       } else {
         return resolve(rules.other);
       }
-    };
+    }
 
     var payload = {
       title: null,
@@ -473,7 +461,7 @@ function TimelineChart(element, vif) {
 
       return emitFlyoutEvent(payload);
 
-    } else if(_interactive && $target.is('.selection-marker')) {
+    } else if (_interactive && $target.is('.selection-marker')) {
 
       payload.title = 'Drag to change filter range';
       payload.element = $target.get(0);
@@ -563,7 +551,7 @@ function TimelineChart(element, vif) {
     }
   }
 
-  function hideFlyout(event) {
+  function hideFlyout() {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_TIMELINE_FLYOUT',
       null
@@ -574,7 +562,6 @@ function TimelineChart(element, vif) {
   // need to be wrapped in Rx mojo.
   var cachedChartDimensions = null;
   var cachedChartData = null;
-  var cachedRowDisplayUnit = null;
 
   // Keep track of whether or not the mouse position is within this
   // instance of a timeline chart's visualization area (the chart itself
@@ -644,14 +631,14 @@ function TimelineChart(element, vif) {
     '.timeline-chart-clear-selection-label'
   ];
 
-  function _renderData(element, data, options) {
+  function _renderData(el, data, options) {
 
     _chartElement.width(options.width);
     _chartElement.height(options.height);
 
     // Cache dimensions and options
-    var chartWidth = element.width();
-    var chartHeight = element.height();
+    var chartWidth = el.width();
+    var chartHeight = el.height();
     var showAllLabels = options.showAllLabels;
     var showFiltered = options.showFiltered;
     var precision = options.precision;
@@ -686,8 +673,8 @@ function TimelineChart(element, vif) {
     function renderChart() {
 
       var margin;
-      var chartWidth;
-      var chartHeight;
+      var width;
+      var height;
 
       if (cachedChartDimensions.width <= 0 || cachedChartDimensions.height <= 0) {
         return;
@@ -698,10 +685,10 @@ function TimelineChart(element, vif) {
       //
       margin = Constants.TIMELINE_CHART_MARGIN;
 
-      // chartWidth and chartHeight do not include margins so that
+      // width and height do not include margins so that
       // we can use the margins to render axis ticks.
-      chartWidth = cachedChartDimensions.width - margin.LEFT - margin.RIGHT;
-      chartHeight = cachedChartDimensions.height - margin.TOP - margin.BOTTOM;
+      width = cachedChartDimensions.width - margin.LEFT - margin.RIGHT;
+      height = cachedChartDimensions.height - margin.TOP - margin.BOTTOM;
 
       // Set up the scales and the chart-specific stack and area functions.
       // Also create the root svg element to which the other d3 functions
@@ -716,7 +703,7 @@ function TimelineChart(element, vif) {
           DateHelpers.decrementDateByHalfInterval(cachedChartData.minDate, datasetPrecision),
           DateHelpers.incrementDateByHalfInterval(cachedChartData.maxDate, datasetPrecision)
         ]).
-        range([0, chartWidth]);
+        range([0, width]);
 
       // d3YScale is global to the directive so that we can
       // access it without having to re-render.
@@ -724,7 +711,7 @@ function TimelineChart(element, vif) {
         scale.
         linear().
         domain([cachedChartData.minValue, cachedChartData.maxValue]).
-        range([chartHeight, 0]).
+        range([height, 0]).
         clamp(true);
 
       // Render the x-axis.
@@ -733,8 +720,8 @@ function TimelineChart(element, vif) {
       // Render the y-axis. Since we eschew d3's built-in y-axis for a
       // custom implementation this calls out to a separate function.
       renderChartYAxis(
-        chartWidth,
-        chartHeight
+        width,
+        height
       );
 
       // Render the unfiltered and filtered values of the chart.
@@ -743,9 +730,11 @@ function TimelineChart(element, vif) {
     }
 
     // Render the chart
-    function cacheThenRender(chartDimensions, chartData, precision, rowDisplayUnit) {
+    function cacheThenRender(chartDimensions, chartData, chartPrecision) {
 
-      if (_.isUndefined(chartData) || _.isNull(chartData) || _.isUndefined(precision)) {
+      var filter;
+
+      if (_.isUndefined(chartData) || _.isNull(chartData) || _.isUndefined(chartPrecision)) {
         return;
       }
 
@@ -766,13 +755,12 @@ function TimelineChart(element, vif) {
 
       // Update the cached value for dataset precision.
       // This is global to the directive, but only updated here.
-      datasetPrecision = precision;
+      datasetPrecision = chartPrecision;
 
       // Cache the row display unit for use in the flyout (which
       // necessarily is handled outside the scope of this subscribeLatest
       // and which probably shouldn't be wrapped in its own
       // subscribeLatest or other combinator).
-      cachedRowDisplayUnit = rowDisplayUnit;
 
       cachedChartDimensions = chartDimensions;
       cachedChartData = chartData;
@@ -798,7 +786,7 @@ function TimelineChart(element, vif) {
       // Eventually: receiving the VIF instead of the render options.
       if (_.isArray(options.activeFilters) && options.activeFilters.length > 0) {
 
-        var filter = _.first(options.activeFilters);
+        filter = _.first(options.activeFilters);
 
         selectionStartDate = filter.start;
         selectionEndDate = filter.end;
@@ -814,16 +802,16 @@ function TimelineChart(element, vif) {
         var filtersOnThisColumn = options.
           vif.
           filters.
-          filter(function(filter) {
+          filter(function(filterComponent) {
             return (
-              (filter.columnName === options.vif.columnName) &&
-              (filter.function === 'timeRange')
+              (filterComponent.columnName === options.vif.columnName) &&
+              (filterComponent.function === 'timeRange')
             );
           });
 
         if (filtersOnThisColumn.length > 0) {
 
-          var filter = filtersOnThisColumn[0];
+          filter = filtersOnThisColumn[0];
 
           selectionStartDate = new Date(filter.arguments.start);
           selectionEndDate = new Date(filter.arguments.end);
@@ -872,9 +860,6 @@ function TimelineChart(element, vif) {
     lineClass: 'shaded-trace'
   });
 
-  var mouseLeftButtonChangesSubscription;
-  var mouseMoveOrLeftButtonChangesSubscription;
-
   /* Use a function generator to DRY up very similar rendering functions.
    * The specified opts object factors out the few bits where filtered and
    * unfiltered chart rendering are different.
@@ -890,8 +875,6 @@ function TimelineChart(element, vif) {
     return function() {
 
       var margin;
-      var chartWidth;
-      var chartHeight;
       var values;
       var line;
       var area;
@@ -899,12 +882,6 @@ function TimelineChart(element, vif) {
       var selection;
 
       margin = Constants.TIMELINE_CHART_MARGIN;
-
-      // chartWidth and chartHeight do not include margins so that
-      // we can use the margins to render axis ticks.
-      chartWidth = cachedChartDimensions.width - margin.LEFT - margin.RIGHT;
-      chartHeight = cachedChartDimensions.height - margin.TOP - margin.BOTTOM;
-
       values = chartOpts.valueTransformer(cachedChartData.values);
 
       line = d3.
@@ -919,7 +896,7 @@ function TimelineChart(element, vif) {
         area().
         defined(line.defined()).
         x(line.x()).
-        y0(function(d) { return d3YScale(0); }).
+        y0(function() { return d3YScale(0); }).
         y1(line.y());
 
       svgChart = d3ChartElement.
@@ -1080,9 +1057,9 @@ function TimelineChart(element, vif) {
       return xAxisLabelPrecision;
     }
 
-    function deriveXAxisLabelDatumStep(labels) {
+    function deriveXAxisLabelDatumStep(allLabels) {
 
-      var numberOfLabels = labels.length;
+      var numberOfLabels = allLabels.length;
 
       // TIMELINE_CHART_REQUIRED_LABEL_WIDTH is the min
       // width required for labels with month ("Oct 15")
@@ -1109,12 +1086,13 @@ function TimelineChart(element, vif) {
       return labelEveryN;
     }
 
-    function recordLabel(labels, startDate, endDate, pixelsPerDay, shouldLabel) {
-      labels.push({
+    // pxPerDay == pixelsPerDay
+    function recordLabel(allLabels, startDate, endDate, pxPerDay, shouldLabel) {
+      allLabels.push({
         startDate: startDate,
         endDate: endDate,
         left: d3XScale(startDate) - halfVisualizedDatumWidth,
-        width: moment.duration(moment(endDate) - moment(startDate)).asDays() * pixelsPerDay,
+        width: moment.duration(moment(endDate) - moment(startDate)).asDays() * pxPerDay,
         shouldLabel: shouldLabel
       });
     }
@@ -1490,7 +1468,7 @@ function TimelineChart(element, vif) {
      * In the case that the selection ends at the end of the overall data
      * the last data point's value will be used instead.
      */
-    function deriveSelectionValues(chartData, minDate, maxDate) {
+    function deriveSelectionValues(chartData, minimumDate, maximumDate) {
 
       var lastChartDatum = _.last(chartData.values);
       var prevOutOfBoundsDatum = { filtered: null };
@@ -1503,7 +1481,7 @@ function TimelineChart(element, vif) {
 
       _.each(chartData.values, function(datum) {
 
-        if (datum.date >= minDate && datum.date <= maxDate) {
+        if (datum.date >= minimumDate && datum.date <= maximumDate) {
           if (_.isNull(firstSelectionDatum)) {
             firstSelectionDatum = datum;
           }
@@ -1512,9 +1490,9 @@ function TimelineChart(element, vif) {
           // value below!
           nextOutOfBoundsDatum = datum;
           selectionValues.push(datum);
-        } else if (datum.date < minDate) {
+        } else if (datum.date < minimumDate) {
           prevOutOfBoundsDatum = datum;
-        } else if (datum.date > maxDate) {
+        } else if (datum.date > maximumDate) {
           return false;
         }
       });
@@ -1534,7 +1512,7 @@ function TimelineChart(element, vif) {
       // our selection's end date is after the last date in the actual
       // values and append a surrogate value to the filtered array with
       // an appropriate date to show as the end of the x scale.
-      if (lastChartDatum.date < maxDate) {
+      if (lastChartDatum.date < maximumDate) {
         selectionValues.push(lastChartDatum);
       }
 
@@ -1592,8 +1570,6 @@ function TimelineChart(element, vif) {
     var labelLeftOffset;
     var labelRightPosition;
     var selectionDelta;
-    var chartWidth;
-    var chartHeight;
     var margin;
     var values;
     var transformedMinDate;
@@ -1632,11 +1608,6 @@ function TimelineChart(element, vif) {
 
       margin = Constants.TIMELINE_CHART_MARGIN;
 
-      // chartWidth and chartHeight do not include margins so that
-      // we can use the margins to render axis ticks.
-      chartWidth = cachedChartDimensions.width - margin.LEFT - margin.RIGHT;
-      chartHeight = cachedChartDimensions.height - margin.TOP - margin.BOTTOM;
-
       values = [
         deriveSelectionValues(cachedChartData, minDate, maxDate)
       ];
@@ -1658,7 +1629,7 @@ function TimelineChart(element, vif) {
         area().
         defined(line.defined()).
         x(line.x()).
-        y0(function(d) { return d3YScale(0); }).
+        y0(function() { return d3YScale(0); }).
         y1(line.y());
 
       svgChart = d3ChartElement.
@@ -1877,19 +1848,16 @@ function TimelineChart(element, vif) {
     var date = d3XScale.invert(offsetX);
 
     // Clear out unneeded precision from the date objects.
-    // This intentionally falls through! Watch out!
-    switch (datasetPrecision) {
-      case 'YEAR':
-        date.setMonth(0);
-      case 'MONTH':
-        date.setDate(1);
-      default:
-        date.setMilliseconds(0);
-        date.setSeconds(0);
-        date.setMinutes(0);
-        date.setHours(0);
-        break;
+    if (datasetPrecision === 'YEAR') {
+      date.setMonth(0);
+    } else if (datasetPrecision === 'MONTH') {
+      date.setDate(1);
     }
+
+    date.setMilliseconds(0);
+    date.setSeconds(0);
+    date.setMinutes(0);
+    date.setHours(0);
 
     return date;
 
@@ -2121,11 +2089,6 @@ function TimelineChart(element, vif) {
 
     }
 
-  }
-
-  function handleChartMouseleaveEvent() {
-    d3ChartElement.select('svg.timeline-chart-highlight-container').select('g').remove();
-    currentDatum = null;
   }
 
   function handleClearSelectionLabelMousedownEvent() {

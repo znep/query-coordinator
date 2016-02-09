@@ -43,7 +43,7 @@ function MetadataProvider(config) {
       this.getConfigurationProperty('datasetUid')
     );
     var headers = {
-      'Accept': 'application/json'
+      Accept: 'application/json'
     };
 
     return new Promise(function(resolve, reject) {
@@ -112,17 +112,17 @@ function MetadataProvider(config) {
     var fieldNameWithoutCollisionSuffix = fieldName.replace(/_\d+$/g, '');
     var hasExplodedSuffix = /_(address|city|state|zip|type|description)$/.test(fieldNameWithoutCollisionSuffix);
 
-    var column = _.find(columns, _.matches({ fieldName: fieldName }));
+    var matchedColumn = _.find(columns, _.matches({ fieldName: fieldName }));
     var parentColumnName;
 
     utils.assert(
-      column,
+      matchedColumn,
       'could not find column {0} in dataset {1}'.format(fieldName, datasetMetadata.id)
     );
 
     // The naming convention is that child column names are the parent column name, followed by the
     // child column name in parentheses. Remove the parentheses to get the parent column's name.
-    parentColumnName = column.name.replace(/(\w) +\(.+\)$/, '$1');
+    parentColumnName = matchedColumn.name.replace(/(\w) +\(.+\)$/, '$1');
 
     /*
      * CORE-6925: Fairly brittle, but with no other clear option, it seems that
@@ -151,7 +151,7 @@ function MetadataProvider(config) {
      */
 
 
-    if (parentColumnName !== column.name && hasExplodedSuffix) {
+    if (parentColumnName !== matchedColumn.name && hasExplodedSuffix) {
       _.each(columns, function(column) {
         fieldNameByName[column.name] = fieldNameByName[column.name] || [];
         fieldNameByName[column.name].push(column.fieldName);
@@ -181,7 +181,7 @@ function MetadataProvider(config) {
       return self.isSystemColumn(column.fieldName) ||
         self.isSubcolumn(column.fieldName, datasetMetadata);
     });
-  }
+  };
 
 
 }

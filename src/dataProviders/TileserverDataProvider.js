@@ -1,7 +1,6 @@
 var utils = require('socrata-utils');
 var DataProvider = require('./DataProvider');
 var _ = require('lodash');
-var VectorTile = require('vector-tile').VectorTile;
 
 var MAX_FEATURES_PER_TILE = 256 * 256;
 var DEFAULT_FEATURES_PER_TILE = 50000;
@@ -194,11 +193,11 @@ function TileserverDataProvider(config) {
    * Makes an AJAX request for an array buffer to Socrata Tileserver.
    *
    * @param {String} url
-   * @param {{headers: Object}} config
+   * @param {{headers: Object}} configuration
    *
    * @return {Promise}
    */
-  function _getArrayBuffer(url, config) {
+  function _getArrayBuffer(url, configuration) {
 
     return (
       new Promise(
@@ -210,7 +209,7 @@ function TileserverDataProvider(config) {
             return reject({
               status: parseInt(xhr.status, 10),
               headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-              config: config,
+              config: configuration,
               statusText: xhr.statusText
             });
           }
@@ -230,7 +229,7 @@ function TileserverDataProvider(config) {
                   data: arrayBuffer,
                   status: status,
                   headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-                  config: config,
+                  config: configuration,
                   statusText: xhr.statusText
                 });
               }
@@ -253,7 +252,7 @@ function TileserverDataProvider(config) {
 
           xhr.send();
         }
-      )['catch'](
+      ).catch(
         function(error) {
           throw error;
         }

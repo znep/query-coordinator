@@ -70,24 +70,18 @@ function _filterToWhereClauseComponent(filter) {
   switch (filter.function) {
     case 'binaryOperator':
       return _binaryOperatorWhereClauseComponent(filter);
-      break;
     case 'binaryComputedGeoregionOperator':
       return _binaryComputedGeoregionOperatorWhereClauseComponent(filter);
-      break;
     case 'isNull':
       return _isNullWhereClauseComponent(filter);
-      break;
     case 'timeRange':
       return _timeRangeWhereClauseComponent(filter);
-      break;
     case 'valueRange':
       return _valueRangeWhereClauseComponent(filter);
-      break;
     default:
       throw new Error(
         'Invalid filter function: `{0}`.'.format(filter.function)
       );
-      break;
   }
 }
 
@@ -119,7 +113,7 @@ function _soqlEncodeValue(value) {
 }
 
 function _soqlEncodeString(value) {
-  return "'{0}'".format(value.replace(/'/g, "''"))
+  return '\'{0}\''.format(value.replace(/'/g, '\'\''));
 }
 
 function _soqlEncodeDate(value) {

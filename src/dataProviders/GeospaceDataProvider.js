@@ -23,7 +23,7 @@ function GeospaceDataProvider(config) {
       columnName
     );
     var headers = {
-      'Accept': 'application/json'
+      Accept: 'application/json'
     };
 
     return (
@@ -97,14 +97,13 @@ function GeospaceDataProvider(config) {
       this.getConfigurationProperty('datasetUid')
     );
     var headers = {
-      'Accept': 'application/json'
+      Accept: 'application/json'
     };
-    var extentQuery = "?$select=*&$where=intersects(the_geom, " +
-      "'MULTIPOLYGON((({0})))')&$limit=5000";
+    var extentQuery = '?$select=*&$where=intersects(the_geom, \'MULTIPOLYGON((({0})))\')&$limit=5000';
     var extentValidationErrorMessage = 'Argument `extent` must be an object ' +
       'with two keys: `southwest` and `northeast`; the value assigned to ' +
       'each key must be an array of two numbers in the following format: `[' +
-      'latitude, longitude]`.'
+      'latitude, longitude]`.';
 
     // Do not use a looser test for falsiness because if an invalid extent is
     // provided in any form we want to kick an error up to help with debugging.

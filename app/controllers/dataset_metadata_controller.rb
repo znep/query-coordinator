@@ -119,9 +119,11 @@ class DatasetMetadataController < ApplicationController
 
   def can_read_dataset_data?(dataset_id)
     begin
-      response = JSON.parse(
-        CoreServer::Base.connection.get_request("/id/#{dataset_id}?%24query=select+0+limit+1")
-      )
+      response = CoreServer::Base.connection.get_request("/id/#{dataset_id}?%24query=select+0+limit+1")
+
+      return false if response.blank?
+
+      response = JSON.parse(response)
 
       # CORE-5321: when requesting a choropleth, requests for the underlying shapefile
       # will also be made; if the customer has deleted the shapefile, this request

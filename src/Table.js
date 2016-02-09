@@ -149,7 +149,7 @@ $.fn.socrataTable = function(vif) {
       pager.render({
         unit: vif.unit,
         startIndex: _renderState.fetchedData.startIndex,
-        endIndex: _renderState.fetchedData.startIndex + _renderState.fetchedData.rows.length - 1,
+        endIndex: Math.min(_renderState.fetchedData.startIndex + _renderState.fetchedData.rows.length - 1, _renderState.datasetRowCount),
         datasetRowCount: _renderState.datasetRowCount,
         disabled: _renderState.busy || !_.isFinite(_renderState.datasetRowCount)
       });

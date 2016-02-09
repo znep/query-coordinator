@@ -50,7 +50,7 @@ module.exports = function Pager(element, vif) {
 
     if (options.datasetRowCount === 0) {
       message = vif.configuration.localization.NO_ROWS;
-    } else if (options.endIndex === options.startIndex) {
+    } else if (options.endIndex - 1 === options.startIndex) {
       message = vif.configuration.localization.ONLY_ROW;
     } else {
       message = vif.configuration.localization.MANY_ROWS;

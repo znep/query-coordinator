@@ -2,8 +2,9 @@
   'use strict';
 
   var DOMAIN = window.location.hostname;
-  // var DOMAIN = 'dataspace.demo.socrata.com'; // For local development
+  //var DOMAIN = 'dataspace.demo.socrata.com'; // For local development
   var PAGE_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
+  //var PAGE_UID = 'rewx-rnbf';
   var DATASET_UID;
   var cardsData;
   var cardsMetaData;
@@ -80,6 +81,17 @@
           };
 
           socrata.visualizations.mobileFeatureMap(values, $cardContainer.find('#feature-map'));
+          break;
+        case 'choropleth':
+          cardOptions.id = 'choropleth';
+          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+          values = {
+            domain: DOMAIN,
+            uid: DATASET_UID,
+            columnName: card.fieldName
+          };
+
+          socrata.visualizations.mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
           break;
         case 'column':
           cardOptions.id = 'column-chart';

@@ -295,3 +295,4 @@ mobile:
 - mobile/components/row-inspector
 - mobile/components/column-chart
 - mobile/components/timeline-chart
+- mobile/components/choropleth-map

@@ -317,8 +317,15 @@ describe('Table', function() {
     });
 
     describe('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function() {
+      var data = {
+        columns: [
+          { fieldName: 'hello', name: 'hello', renderTypeName: 'text' },
+          { fieldName: 'hello', name: 'hello', renderTypeName: 'point' }
+        ]
+      };
+
       it('emits event when clicking a column header', function(done) {
-        render(table, {columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ]});
+        render(table, data);
 
         table.element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(event) {
           var payload = event.originalEvent.detail;
@@ -328,6 +335,20 @@ describe('Table', function() {
         });
 
         table.element.find('th:first-child').click();
+      });
+
+      it('does not emit an event when the column is a geometry type', function(done) {
+        render(table, data);
+
+        table.element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(event) {
+          done('SOCRATA_VISUALIZATION_COLUMN_CLICKED should not be emitted.');
+        });
+
+        table.element.find('th:nth-child(2)').click();
+
+        _.delay(function() {
+          done();
+        }, 10);
       });
     });
 

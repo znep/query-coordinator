@@ -47,10 +47,11 @@ module.exports = function Pager(element, vif) {
 
   function _templatePagerLabel(options) {
     var message;
+    var endIndex = Math.min(options.datasetRowCount, options.endIndex);
 
     if (options.datasetRowCount === 0) {
       message = vif.configuration.localization.NO_ROWS;
-    } else if (options.endIndex - 1 === options.startIndex) {
+    } else if (options.endIndex === options.startIndex + 1) {
       message = vif.configuration.localization.ONLY_ROW;
     } else {
       message = vif.configuration.localization.MANY_ROWS;
@@ -60,7 +61,7 @@ module.exports = function Pager(element, vif) {
       unitOne: vif.unit.one,
       unitOther: vif.unit.other,
       firstRowOrdinal: options.datasetRowCount ? utils.commaify(options.startIndex + 1) : undefined,
-      lastRowOrdinal: options.datasetRowCount ? utils.commaify(options.endIndex + 1) : undefined,
+      lastRowOrdinal: options.datasetRowCount ? utils.commaify(endIndex) : undefined,
       datasetRowCount: utils.commaify(options.datasetRowCount)
     });
 

@@ -11,7 +11,7 @@ class DatasetsController < ApplicationController
   # verify_recaptcha test in the 'create' method is our only protection against abuse.
   skip_before_filter :verify_authenticity_token,
     :if => lambda { |controller|
-      controller.action_name == 'validate_contact_owner' && request.format.data?
+      controller.action_name == 'validate_contact_owner'
     }
 
 # collection actions

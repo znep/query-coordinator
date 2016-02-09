@@ -85,13 +85,13 @@ $(function()
             summaries = [
                 {
                   id: 'summaryVisits',
-                  displayName: t('browser_page_views'),
+                  displayName: t('views_loaded'),
                   summary: {
                     plus: 'view-loaded',
                     total: false,
                     verbPhrase: t('pages_viewed'),
                     verbPhraseSingular: t('page_viewed'),
-                    deltaPhrase: t('browser_page_views')
+                    deltaPhrase: t('views_loaded')
                   }
                 }
             ]
@@ -99,7 +99,7 @@ $(function()
                 {
                     id: 'performanceChart',
                     loading: blist.metrics.chartLoading,
-                    children: [ { text: t('browser_page_views'), series: [ { method: 'js-page-view' } ] } ]
+                    children: [ { text: t('views_loaded'), series: [ { method: 'view-loaded' } ] } ]
                 }
             ];
             topLists = [

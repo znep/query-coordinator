@@ -1,8 +1,8 @@
 blist.namespace.fetch('blist.metrics');
 
-'use strict';
-
 $(function() {
+    'use strict';
+
     var t = function(str, props) { return $.t('screens.stats.' + str, props); };
     // Shared between tabular and non-tabular
     var viewSummary = {id: 'summaryViews', displayName: t('views'), summary: {

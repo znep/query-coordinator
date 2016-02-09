@@ -21,7 +21,8 @@ module.exports = function Table(element, vif) {
   utils.assertHasProperties(
     vif,
     'configuration.localization.LATITUDE',
-    'configuration.localization.LONGITUDE'
+    'configuration.localization.LONGITUDE',
+    'configuration.localization.NO_COLUMN_DESCRIPTION'
   );
 
   _attachEvents(this.element);
@@ -78,8 +79,8 @@ module.exports = function Table(element, vif) {
     utils.assertInstanceOf(element.find('tbody tr')[0], HTMLElement);
 
     // Measure.
-    headerHeightPx = element.find('thead')[0].getBoundingClientRect().height;
-    rowHeightPx = element.find('tbody tr')[0].getBoundingClientRect().height;
+    headerHeightPx = element.find('thead').outerHeight();
+    rowHeightPx = element.find('tbody tr').outerHeight();
 
     // Compute
     heightLeftAfterHeaderPx = overallHeightPx - headerHeightPx - _scrollbarHeightPx;
@@ -115,8 +116,10 @@ module.exports = function Table(element, vif) {
       return this.getBoundingClientRect().width;
     });
 
+    var columns = _.pluck(_lastRenderData.columns, 'fieldName');
+
     _columnWidths = _.zipObject(
-      _lastRenderData.columns,
+      columns,
       headerWidths
     );
 
@@ -129,7 +132,7 @@ module.exports = function Table(element, vif) {
 
   function _templateTableCell(column, cell) {
     return [
-      '<td>',
+      '<td data-cell-render-type="{renderTypeName}">',
         '<div>',
           DataTypeFormatter.renderCell(cell, column, {
             latitude: vif.configuration.localization.LATITUDE,
@@ -137,21 +140,35 @@ module.exports = function Table(element, vif) {
           }),
         '</div>',
       '</td>'
-    ].join('');
+    ].join('').format(column);
   }
 
   function _templateTableSortedHeader() {
     return [
-      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-sort>',
-        '{columnTitle}<span class="icon-{sortDirection}"></span>',
+      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" data-sort scope="col">',
+        '<div>',
+          '{columnTitle}<span class="icon-{sortDirection}"></span>',
+        '</div>',
+      '</th>'
+    ].join('');
+  }
+
+  function _templateTableUnsortableHeader() {
+    return [
+      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
+        '<div>',
+          '{columnTitle}',
+        '</div>',
       '</th>'
     ].join('');
   }
 
   function _templateTableHeader() {
     return [
-      '<th data-column-name="{columnName}" data-column-description="{columnDescription}">',
-        '{columnTitle}',
+      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
+        '<div>',
+          '{columnTitle}<span class="icon-arrow-down"></span>',
+        '</div>',
       '</th>'
     ].join('');
   }
@@ -165,14 +182,21 @@ module.exports = function Table(element, vif) {
           '<thead>',
             '<tr>',
               data.columns.map(function(column) {
-                var template = activeSort.columnName === column.fieldName ?
-                  _templateTableSortedHeader() :
-                  _templateTableHeader();
+                var template;
+
+                if (_isGeometryType(column)) {
+                  template = _templateTableUnsortableHeader();
+                } else {
+                  template = activeSort.columnName === column.fieldName ?
+                    _templateTableSortedHeader() :
+                    _templateTableHeader();
+                }
 
                 return template.format({
                   columnName: column.fieldName,
                   columnTitle: (column && column.name) || column.fieldName,
                   columnDescription: (column && column.description) || '',
+                  renderTypeName: (column && column.renderTypeName) || '',
                   sortDirection: activeSort.ascending ? 'arrow-down' : 'arrow-up'
                 });
               }),
@@ -201,6 +225,7 @@ module.exports = function Table(element, vif) {
     var $newTable;
 
     _applyFrozenColumns($template);
+
     if ($existingTable.length) {
       $existingTable.replaceWith($template);
     } else {
@@ -236,19 +261,28 @@ module.exports = function Table(element, vif) {
 
   function _showDescriptionFlyout(event) {
     var $target = $(event.currentTarget);
-    var description = $target.data('column-description');
+    var noColumnDescription = '<em>{noColumnDescription}</em>'
+    var description = $target.data('column-description') || noColumnDescription;
+    var content = [
+      '<span>{title}</span><br>',
+      '<span>{description}</span>'
+    ].join('\n');
 
-    if (description && description.length > 0) {
-      self.emitEvent(
-        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-        {
-          element: $target[0],
-          content: description,
-          belowTarget: true,
-          rightSideHint: false
-        }
-      );
-    }
+    content = content.format({
+      title: $target.text(),
+      description: description,
+      noColumnDescription: vif.configuration.localization.NO_COLUMN_DESCRIPTION
+    });
+
+    self.emitEvent(
+      'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+      {
+        element: $target[0],
+        content: content,
+        belowTarget: true,
+        rightSideHint: false
+      }
+    );
   }
 
   function _hideDescriptionFlyout(event) {
@@ -285,9 +319,23 @@ module.exports = function Table(element, vif) {
     );
   }
 
+  function _isGeometryType(column) {
+    return _.includes([
+      'point',
+      'multipoint',
+      'line',
+      'multiline',
+      'polygon',
+      'multipolygon',
+      'location'
+    ], column.renderTypeName);
+  }
+
   function _handleRowHeaderClick() {
     var columnName = this.getAttribute('data-column-name');
-    if (columnName) {
+    var columnRenderType = this.getAttribute('data-column-render-type');
+
+    if (columnName && !_isGeometryType({renderTypeName: columnRenderType})) {
       self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_CLICKED', columnName);
     }
   }

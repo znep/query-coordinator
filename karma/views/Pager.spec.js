@@ -144,7 +144,7 @@ describe('Pager', function() {
 
       renderPagerWithOptions({
         startIndex: 9,
-        endIndex: 9,
+        endIndex: 10,
         datasetRowCount: 10
       });
 
@@ -184,7 +184,7 @@ describe('Pager', function() {
             unitOne: 'case',
             unitOther: 'cases',
             firstRowOrdinal: '1',
-            lastRowOrdinal: '10',
+            lastRowOrdinal: '9',
             datasetRowCount: '10'
           }
         );

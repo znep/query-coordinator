@@ -11,7 +11,8 @@ describe('Table', function() {
       configuration: {
         localization: {
           'LATITUDE': 'translation for latitude',
-          'LONGITUDE': 'translation for longitude'
+          'LONGITUDE': 'translation for longitude',
+          'NO_COLUMN_DESCRIPTION': 'translation for no_column_description'
         }
       }
     };
@@ -316,8 +317,15 @@ describe('Table', function() {
     });
 
     describe('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function() {
+      var data = {
+        columns: [
+          { fieldName: 'hello', name: 'hello', renderTypeName: 'text' },
+          { fieldName: 'hello', name: 'hello', renderTypeName: 'point' }
+        ]
+      };
+
       it('emits event when clicking a column header', function(done) {
-        render(table, {columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ]});
+        render(table, data);
 
         table.element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(event) {
           var payload = event.originalEvent.detail;
@@ -328,57 +336,86 @@ describe('Table', function() {
 
         table.element.find('th:first-child').click();
       });
+
+      it('does not emit an event when the column is a geometry type', function(done) {
+        render(table, data);
+
+        table.element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(event) {
+          done('SOCRATA_VISUALIZATION_COLUMN_CLICKED should not be emitted.');
+        });
+
+        table.element.find('th:nth-child(2)').click();
+
+        _.delay(function() {
+          done();
+        }, 10);
+      });
     });
 
     describe('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function() {
       var data;
 
+      var emit = function(event) {
+        return function (selector) {
+          table.element.find(selector).trigger(event);
+        }
+      };
+      var mouseenter = emit('mouseenter');
+      var mouseleave = emit('mouseleave');
+      var onmouseenter = function(callback, done) {
+        table.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
+          callback(event.originalEvent.detail);
+          done();
+        });
+      };
+
       beforeEach(function() {
         data = {
-          columns: [ { description: 'world', fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ]
+          columns: [
+            { description: 'world', fieldName: 'hello', name: 'hello', renderTypeName: 'text' },
+            { description: null, fieldName: 'rawr', name: 'rawr', renderTypeName: 'text' }
+          ]
         }
       });
 
-      it('does not emit event when column does not have description', function(done) {
-        delete data.columns[0].description;
+      describe('when the column has a description', function() {
+        it('emits event with content that contains both the column name and description', function(done) {
+          render(table, data);
 
-        render(table, data);
+          onmouseenter(function(payload) {
+            assert.property(payload, 'element');
+            assert.property(payload, 'content');
+            assert.match(payload.content, /hello/);
+            assert.match(payload.content, /world/);
+          }, done);
 
-        table.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
-          done('SOCRATA_VISUALIZATION_COLUMN_FLYOUT should not be triggered!');
+          mouseenter('th:first-child');
         });
-
-        table.element.find('th:first-child').trigger('mouseenter');
-        setTimeout(done, 100);
       });
 
-      it('emits event when column has a description', function(done) {
-        render(table, data);
+      describe('when the column does not have a description', function() {
+        it('emits event with content that contains the column name and NO_COLUMN_DESCRIPTION localization', function(done) {
+          render(table, data);
 
-        table.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
-          var payload = event.originalEvent.detail;
+          onmouseenter(function(payload) {
+            assert.property(payload, 'element');
+            assert.property(payload, 'content');
+            assert.match(payload.content, /rawr/);
+            assert.match(payload.content, /translation for/);
+          }, done);
 
-          assert.property(payload, 'element');
-          assert.property(payload, 'content');
-          assert.equal(payload.content, 'world');
-
-          done();
+          mouseenter('th:nth-child(2)');
         });
-
-        table.element.find('th:first-child').trigger('mouseenter');
       });
 
       it('emits event to hide flyout on mouseleave', function(done) {
         render(table, data);
 
-        table.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
-          var payload = event.originalEvent.detail;
-
+        onmouseenter(function(payload) {
           assert.isNull(payload);
-          done();
-        });
+        }, done);
 
-        table.element.find('th:first-child').trigger('mouseleave');
+        mouseleave('th:first-child');
       });
     });
 

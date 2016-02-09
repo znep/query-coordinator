@@ -40,8 +40,12 @@
         var blockComponent = storyteller.storyStore.getBlockComponentAtIndex(blockId, componentIndex);
 
         newValue = _.cloneDeep(componentData.value);
-        newValue.layout.height = blockComponent.value.layout.height;
         newValue.vif = newVif;
+
+        if (blockComponent.value.layout && _.isFinite(blockComponent.value.layout.height)) {
+          newValue.layout = newValue.layout || {};
+          newValue.layout.height = blockComponent.value.layout.height;
+        }
 
         if (!_.isEqual(newValue, componentData.value)) {
           storyteller.dispatcher.dispatch({

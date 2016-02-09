@@ -254,7 +254,7 @@ module.exports = function Table(element, vif) {
 
   function _showDescriptionFlyout(event) {
     var $target = $(event.currentTarget);
-    var noColumnDescription = '<em>{noColumnDescription}</em>'
+    var noColumnDescription = '<em>{noColumnDescription}</em>';
     var description = $target.data('column-description') || noColumnDescription;
     var content = [
       '<span>{title}</span><br>',

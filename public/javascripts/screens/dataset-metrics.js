@@ -1,7 +1,8 @@
-;blist.namespace.fetch('blist.metrics');
+blist.namespace.fetch('blist.metrics');
 
-$(function()
-{
+'use strict';
+
+$(function() {
     var t = function(str, props) { return $.t('screens.stats.' + str, props); };
     // Shared between tabular and non-tabular
     var viewSummary = {id: 'summaryViews', displayName: t('views'), summary: {
@@ -16,8 +17,7 @@ $(function()
                        verbPhraseSingular: t('download') }};
 
     var charts, summaries, details, topLists;
-    if (blist.dataset.viewType == 'tabular')
-    {
+    if (blist.dataset.viewType == 'tabular') {
         charts = [
             {
                 id: 'performanceChart',
@@ -94,7 +94,7 @@ $(function()
                     deltaPhrase: t('views_loaded')
                   }
                 }
-            ]
+            ];
             charts = [
                 {
                     id: 'performanceChart',

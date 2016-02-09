@@ -94,7 +94,7 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
     describe('on SOCRATA_VISUALIZATION_VIF_UPDATED', function() {
       beforeEach(function() {
         sinon.stub(storyteller.storyStore, 'getBlockComponentAtIndex', function() {
-          return {value: {layout: {height: 100}}}
+          return {value: {layout: {height: 100}}};
         });
       });
 

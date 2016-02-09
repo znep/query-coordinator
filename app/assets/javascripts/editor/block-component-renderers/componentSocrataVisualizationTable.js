@@ -37,7 +37,10 @@
         utils.assertIsOneOfTypes(blockId, 'string');
         utils.assert(_.isFinite(componentIndex));
 
+        var blockComponent = storyteller.storyStore.getBlockComponentAtIndex(blockId, componentIndex);
+
         newValue = _.cloneDeep(componentData.value);
+        newValue.layout.height = blockComponent.value.layout.height;
         newValue.vif = newVif;
 
         if (!_.isEqual(newValue, componentData.value)) {

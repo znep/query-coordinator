@@ -32,7 +32,12 @@
           :class => 'textPrompt', :title => t("#{prefix}.email_prompt") ) %>
       </div>
       <div class="line">
-        <%= raw(select_for_role('role', 'role', nil, 'roleSelect', false)) %>
+        <%= raw(select_for_role(
+            'role',
+            'name' => 'role',
+            'css_class' => 'roleSelect',
+            'include_none' => false
+        )) %>
       </div>
       <div class="line">
         <label>&nbsp;</label>
@@ -149,7 +154,13 @@
                   <span class="cellInner hide"><%= (user.roleName || '').titleize %></span>
                   <%= form_tag({:action => 'set_user_role'}, {:method => 'put'}) %>
                     <input type="hidden" name="user_id" class="hiddenID" value="<%= user.id %>" />
-                    <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roleName, 'roleSelect')) %>
+                    <%= raw(select_for_role(
+                        "userSelect-#{user.id}",
+                        'name' => 'role',
+                        'current_role' => user.roleName,
+                        'css_class' => 'roleSelect',
+                        'show_label' => false
+                    )) %>
                     <%- if no_js -%>
                       <input type="submit" class="userSaveButton" value="<%= t('core.dialogs.save') %>" />
                     <%- end -%>

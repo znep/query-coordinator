@@ -345,3 +345,17 @@ under the `eslintConfig` key. Currently we use no configuration options for
 * [Rails (official)](http://api.rubyonrails.org/)
 * [RSpec](http://rspec.info/documentation/)
 * [Webmock](https://github.com/bblimke/webmock)
+
+## Features and feature_flags
+
+#### Those necessary for geospatial import
+
+##### These feature_flags must be turned on:
+* enable\_ingress\_geometry\_types
+* geo\_imports\_to\_nbe\_enabled
+* enable\_spatial\_lens\_admin
+* enable\_spatial\_lens\_region_coding
+
+##### These Features must be added to your domain(s):
+* mondara\_nbe
+* geospatial

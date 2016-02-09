@@ -57,11 +57,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(40);
-	var ColumnChart = __webpack_require__(42);
-	var FeatureMap = __webpack_require__(43);
-	var Table = __webpack_require__(44);
-	var TimelineChart = __webpack_require__(45);
+	var ChoroplethMap = __webpack_require__(41);
+	var ColumnChart = __webpack_require__(43);
+	var FeatureMap = __webpack_require__(44);
+	var Table = __webpack_require__(45);
+	var TimelineChart = __webpack_require__(46);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -10022,6 +10022,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var FEATURE_MAP_MIN_HOVER_THRESHOLD = 5;
 	var FEATURE_MAP_MAX_ZOOM = 18; // same as Leaflet default
 	var FEATURE_MAP_MAX_TILE_DENSITY = 256 * 256;
+	var FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD = 6;
 	var FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL = 200;
 	var FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL = 250;
 	var FEATURE_MAP_FLYOUT_Y_OFFSET = 1.25;
@@ -10054,11 +10055,12 @@ return /******/ (function(modules) { // webpackBootstrap
 			center: [47.609895, -122.330259], // Center on Seattle by default.
 			keyboard: false,
 			scrollWheelZoom: false,
-			zoom: 10,
+			zoom: 1,
 			zoomControlPosition: 'topleft',
 			maxZoom: FEATURE_MAP_MAX_ZOOM
 		};
 		var _mapOptions;
+		var _debug;
 		var _hover;
 		var _panAndZoom;
 		var _locateUser;
@@ -10067,10 +10069,18 @@ return /******/ (function(modules) { // webpackBootstrap
 		var _baseTileLayer;
 		var _map;
 		var _lastRenderOptions;
+
+		// We buffer feature layers so that there isn't a visible flash
+		// of emptiness when we transition from one to the next. This is accomplished
+		// by only removing the previous layers when the current one completes rendering.
+
+		// We also keep a handle on the current feature layer Url so we know which of
+		// the existing layers we can safely remove (i.e. not the current one).
 		var _featureLayers = {};
 		var _flyoutData = {};
 		var _currentLayerId;
 
+		_debug = vif.configuration.debug;
 		_hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
 		_panAndZoom = (_.isUndefined(vif.configuration.panAndZoom)) ? FEATURE_MAP_DEFAULT_PAN_AND_ZOOM : vif.configuration.panAndZoom;
 		_locateUser = !(vif.configuration.locateUser && ('geolocation' in navigator)) ? FEATURE_MAP_DEFAULT_LOCATE_USER : vif.configuration.locateUser;
@@ -10108,6 +10118,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 			if (_mapElement.width() > 0 && _mapElement.height() > 0) {
 
+				var boundsChanged;
+				var baseLayerChanged;
+				var vectorTileGetterChanged;
+
 				if (!_map) {
 
 					// Construct leaflet map
@@ -10116,17 +10130,25 @@ return /******/ (function(modules) { // webpackBootstrap
 					_attachEvents(this.element);
 				}
 
+				boundsChanged = renderOptions.bounds !== _.get(_lastRenderOptions, 'bounds');
+				baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
+				vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
+
 				_lastRenderOptions = renderOptions;
 
 				if (_userCurrentPositionBounds) {
 					_fitBounds(_userCurrentPositionBounds);
-				} else {
+				} else if (boundsChanged) {
 					_fitBounds(renderOptions.bounds);
 				}
 
-				_updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
+				if (baseLayerChanged) {
+					_updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
+				}
 
-				_createNewFeatureLayer(renderOptions.vectorTileGetter);
+				if (vectorTileGetterChanged) {
+					_createNewFeatureLayer(renderOptions.vectorTileGetter);
+				}
 			}
 		};
 
@@ -10355,13 +10377,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		function _handleExtentChange() {
 
+			var formattedBounds;
 			var bounds = _map.getBounds();
 
 			if (bounds.isValid()) {
-				return {
+				formattedBounds = {
 					southwest: [bounds.getSouth(), bounds.getWest()],
 					northeast: [bounds.getNorth(), bounds.getEast()]
 				};
+
+				self.emitEvent(
+					'SOCRATA_VISUALIZATION_FEATURE_MAP_EXTENT_CHANGE',
+					formattedBounds
+				);
+
+				return formattedBounds;
 			}
 		}
 
@@ -10567,13 +10597,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		function _handleVectorTileRenderStart() {
 
+			self.emitEvent(
+				'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
+				null
+			);
+
 			_hideFlyout();
 			_hideRowInspector();
 		}
 
 		function _handleVectorTileRenderComplete() {
 
+			self.emitEvent(
+				'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE',
+				null
+			);
+
 			_removeOldFeatureLayers();
+
+			if (_hover) {
+				_map.fire('clearhighlightrequest');
+			}
 		}
 
 		function _showFeatureFlyout(event) {
@@ -10722,7 +10766,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				_map.removeLayer(_baseTileLayer);
 			}
 
-			var _baseTileLayer = L.tileLayer(
+			_baseTileLayer = L.tileLayer(
 				url,
 				{
 					attribution: '',
@@ -10736,12 +10780,18 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 
 		/**
-		 * Transforms the viewport to match or contain the provided map bounds.
+		 * Derives a bounding box that contains each element in a set of points
+		 * and then causes the map to fit that bounding box within its viewport.
 		 *
 		 * @param bounds - The Leaflet LatLngBounds object that represents the
 		 *   extents of the column's features.
 		 */
 		function _fitBounds(bounds) {
+
+			// It is critical to invalidate size prior to updating bounds.
+			// Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
+			// This manifests itself as the map being zoomed all of the way out.
+			_map.invalidateSize();
 
 			_map.fitBounds(
 				bounds,
@@ -10775,12 +10825,13 @@ return /******/ (function(modules) { // webpackBootstrap
 				// Data requests
 				vectorTileGetter: vectorTileGetter,
 				// Behavior
-				debug: false,
+				debug: _debug,
 				hover: _hover,
 				debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
 				rowInspectorMaxRowDensity: FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY,
 				maxZoom: FEATURE_MAP_MAX_ZOOM,
 				maxTileDensity: FEATURE_MAP_MAX_TILE_DENSITY,
+				tileOverlapZoomThreshold: FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD,
 				// Helper functions
 				getFeatureId: _getFeatureId,
 				getFeatureStyle: _getFeatureStyle,
@@ -10807,8 +10858,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		/**
 		 * Removes existing but out of date feature layers from the map.
 		 * This is used in conjunction with `_createNewFeatureLayer()`.
-		 *
-		 * @param map - The Leaflet map object.
 		 */
 		function _removeOldFeatureLayers() {
 
@@ -22328,7 +22377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var VectorTileUtil = {
 
 	  getTileId: function(tile) {
-	    return '' + tile.zoom + ':' + tile.x + ':' + tile.y;
+	    return _.at(tile, ['zoom', 'x', 'y']).join(':');
 	  },
 
 	  getLeafletTileId: function(tileId) {
@@ -22390,6 +22439,57 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  getTileLayerCanvas: function(tileLayer, tileId) {
 	    return _.get(tileLayer, '_tiles.' + VectorTileUtil.getLeafletTileId(tileId));
+	  },
+
+	  hotspots: [
+	    ['top'],
+	    ['left'],
+	    ['bottom'],
+	    ['right']
+	  ].concat(
+	    _.zip(
+	      ['top', 'top', 'bottom', 'bottom'],
+	      ['left', 'right', 'left', 'right']
+	    )
+	  ),
+
+	  oppositeDirections: {
+	    top: 'bottom',
+	    bottom: 'top',
+	    left: 'right',
+	    right: 'left'
+	  },
+
+	  tileSize: 256,
+
+	  tileIdModifiers: {
+	    top: function(neighborTile) {
+	      neighborTile.y--;
+	    },
+	    left: function(neighborTile) {
+	      neighborTile.x--;
+	    },
+	    bottom: function(neighborTile) {
+	      neighborTile.y++;
+	    },
+	    right: function(neighborTile) {
+	      neighborTile.x++;
+	    }
+	  },
+
+	  tileOffsetModifiers: {
+	    top: function(tileOffset) {
+	      tileOffset.y -= VectorTileUtil.tileSize;
+	    },
+	    left: function(tileOffset) {
+	      tileOffset.x -= VectorTileUtil.tileSize;
+	    },
+	    bottom: function(tileOffset) {
+	      tileOffset.y += VectorTileUtil.tileSize;
+	    },
+	    right: function(tileOffset) {
+	      tileOffset.x += VectorTileUtil.tileSize;
+	    }
 	  }
 	};
 
@@ -22433,14 +22533,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return new L.Point(coordinates.x / this.divisor, coordinates.y / this.divisor);
 	};
 
-	VectorTileFeature.prototype.draw = function(tileId) {
+	VectorTileFeature.prototype.draw = function(tileId, offset) {
 
 	  var feature = this.feature;
 	  var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, tileId);
 
 	  switch (feature.type) {
 	    case 1: //Point
-	      this.drawPoint(canvas, feature.coordinates, this.getFeatureStyle);
+	      this.drawPoint(canvas, feature.coordinates, this.getFeatureStyle, offset);
 	      break;
 
 	    case 2: //LineString
@@ -22456,7 +22556,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 
-	VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle) {
+	VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle, offset) {
 	  var ctx;
 	  var projectedPoint;
 	  var color;
@@ -22477,6 +22577,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  projectedPoint = this.projectGeometryToTilePoint(geometry[0][0]);
+
+	  if (offset) {
+	    projectedPoint.x += offset.x;
+	    projectedPoint.y += offset.y;
+	  }
 
 	  // Determine point styling based on computed style and map zoom
 	  if (_.isFunction(computedStyle.color)) {
@@ -22667,7 +22772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  initialize: function(tileManager, options) {
 
 	    this.options = {
-	      tileSize: 256
+	      tileSize: VectorTileUtil.tileSize
 	    };
 	    L.Util.setOptions(this, options);
 
@@ -22676,12 +22781,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.featuresByTile = {};
 	    this.totalPointsByTile = {};
 	    this.quadTreesByTile = {};
+	    this.boundaryPointsByTile = {};
+	    this.boundaryPointCountByTileAndDirection = {};
 	  },
 
 	  onAdd: function(map) {
 
 	    this.map = map;
-
 	    L.TileLayer.Canvas.prototype.onAdd.call(this, map);
 	  },
 
@@ -22696,6 +22802,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.featuresByTile[tileId] = [];
 	    this.totalPointsByTile[tileId] = 0;
 	    this.quadTreesByTile[tileId] = this.tileManager.quadTreeFactory([]);
+	    this.boundaryPointsByTile[tileId] = {
+	      top: [],
+	      left: [],
+	      bottom: [],
+	      right: []
+	    };
+	    this.boundaryPointCountByTileAndDirection[tileId] = {
+	      top: 0,
+	      left: 0,
+	      right: 0,
+	      bottom: 0,
+	      topleft: 0,
+	      topright: 0,
+	      bottomleft: 0,
+	      bottomright: 0
+	    };
 
 	    return this;
 	  },
@@ -22708,6 +22830,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var feature;
 	    var featureArray;
 	    var featurePointCount = 0;
+	    var tileSize = this.options.tileSize;
+
+	    var style = this.getFeatureStyle({type: 1});
+	    var featureRadius;
+	    if (_.isFunction(style.radius)) {
+	      featureRadius = style.radius(this.map.getZoom());
+	    } else {
+	      featureRadius = style.radius;
+	    }
 
 	    if (!this.featuresByTile.hasOwnProperty(tileId) && featureCount > 0) {
 	      this.featuresByTile[tileId] = [];
@@ -22725,6 +22856,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var vectorTileFeature = new VectorTileFeature(this, feature, this.getFeatureStyle(feature));
 	      var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
 
+	      var boundaryPoints = this.boundaryPointsByTile[tileId];
+	      if (boundaryPoints) {
+	        if (projectedPoint.x <= featureRadius) {
+	          boundaryPoints.left.push(vectorTileFeature);
+	        } else if (projectedPoint.x >= tileSize - featureRadius) {
+	          boundaryPoints.right.push(vectorTileFeature);
+	        }
+
+	        if (projectedPoint.y <= featureRadius) {
+	          boundaryPoints.top.push(vectorTileFeature);
+	        } else if (projectedPoint.y >= tileSize - featureRadius) {
+	          boundaryPoints.bottom.push(vectorTileFeature);
+	        }
+	      }
+
 	      projectedPoint.count = vectorTileFeature.properties.count;
 	      featurePointCount += parseInt(_.get(vectorTileFeature, 'properties.count', 0), 10);
 
@@ -22736,6 +22882,45 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.totalPointsByTile[tileId] = featurePointCount;
 	    this.renderTile(tileId, tileRenderedCallback);
+	  },
+
+	  renderTileOverlap: function(tileId) {
+	    var self = this;
+
+	    var tileInfo = _.chain(['z', 'x', 'y']).
+	      zipObject(tileId.split(':')).
+	      mapValues(Number).
+	      value();
+
+	    _.each(VectorTileUtil.hotspots, function(hotspot) {
+	      var neighbor = _.clone(tileInfo);
+	      var offset = {x: 0, y: 0};
+
+	      _.each(hotspot, function(direction) {
+	        VectorTileUtil.tileIdModifiers[direction](neighbor);
+	        VectorTileUtil.tileOffsetModifiers[direction](offset);
+	      });
+
+	      neighbor.zoom = neighbor.z;
+	      neighbor.id = VectorTileUtil.getTileId(neighbor);
+	      var features = [];
+
+	      _.each(hotspot, function(direction) {
+	        if (self.boundaryPointsByTile[neighbor.id]) {
+	          features = features.concat(self.boundaryPointsByTile[neighbor.id][VectorTileUtil.oppositeDirections[direction]]);
+	        }
+	      });
+
+	      var featureCount = features.length;
+	      var serializedHotspot = hotspot.join('');
+	      var boundaryPointCount = self.boundaryPointCountByTileAndDirection[tileId];
+	      if (boundaryPointCount && (!boundaryPointCount[serializedHotspot] || boundaryPointCount[serializedHotspot] < featureCount)) {
+	        boundaryPointCount[serializedHotspot] = featureCount;
+	        for (var i = 0; i < featureCount; i++) {
+	          features[i].draw(tileId, offset);
+	        }
+	      }
+	    });
 	  },
 
 	  renderTile: function(tileId, tileRenderedCallback) {
@@ -22829,14 +23014,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // to handle events while the layer is loading. This value is then set
 	      // to true once the layer has completed loading.
 	      interactive: false,
-	      tileSize: 256,
+	      tileSize: VectorTileUtil.tileSize,
 	      debounceMilliseconds: 500,
 	      onRenderStart: _.noop,
 	      onRenderComplete: _.noop,
 	      // threshold options represent distance to neighboring points permitted for hover and click in px
 	      getHoverThreshold: _.noop,
 	      maxHoverThreshold: pointStyle.radius(options.maxZoom),
-	      maxTileDensity: options.maxTileDensity
+	      maxTileDensity: options.maxTileDensity,
+	      tileOverlapZoomThreshold: options.tileOverlapZoomThreshold
 	    };
 
 	    L.Util.setOptions(this, options);
@@ -22897,12 +23083,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var mapMousemoveCallback;
 	    var mapClickCallback;
 	    var mapMouseoutCallback;
+
 	    var mapDragstartCallback;
 	    var mapZoomstartCallback;
-	    // Find all edges and corners that the mouse is near
-	    var edges = [['top'], ['left'], ['bottom'], ['right']];
-	    var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
-	    var hotspots = Array.prototype.concat.call(edges, corners);
+
+	    var flannelClosedCallback;
+	    var clearHighlightRequestCallback;
 
 	    this.map = map;
 	    this.hoverHighlightLayer.addTo(map);
@@ -22926,43 +23112,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        right: tileSize - mouseTileOffset.x < hoverThreshold
 	      };
 
-	      // Get neighboring tile id for a tile's edge
-	      var tileIdModifiers = {
-	        top: function(neighborTile) {
-	          neighborTile.y--;
-	        },
-	        left: function(neighborTile) {
-	          neighborTile.x--;
-	        },
-	        bottom: function(neighborTile) {
-	          neighborTile.y++;
-	        },
-	        right: function(neighborTile) {
-	          neighborTile.x++;
-	        }
-	      };
-
-	      // Modify tile pixel offsets
-	      // tileOffset = {x: tileOffsetX, y: tileOffsetY}
-	      var tileOffsetModifiers = {
-	        top: function(tileOffset) {
-	          tileOffset.y += tileSize;
-	        },
-	        left: function(tileOffset) {
-	          tileOffset.x += tileSize;
-	        },
-	        bottom: function(tileOffset) {
-	          tileOffset.y -= tileSize;
-	        },
-	        right: function(tileOffset) {
-	          tileOffset.x -= tileSize;
-	        }
-	      };
-
 	      // Now get those neighboring tile ids
 	      neighboringTiles = _.compact(
 	        _.map(
-	          hotspots,
+	          VectorTileUtil.hotspots,
 	          function(hotspot) {
 
 	            // hotspot is ['left'], ['left', 'top'], etc...
@@ -22974,8 +23127,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	              var neighborOffset = _.clone(mouseTileOffset);
 
 	              _.each(hotspot, function(dir) {
-	                tileIdModifiers[dir](neighborTile);
-	                tileOffsetModifiers[dir](neighborOffset);
+	                VectorTileUtil.tileIdModifiers[dir](neighborTile);
+	                VectorTileUtil.tileOffsetModifiers[VectorTileUtil.oppositeDirections[dir]](neighborOffset);
 	              });
 
 	              return {
@@ -23186,11 +23339,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	      map.on('click', mapClickCallback);
 	    }
 
-	    mapMouseoutCallback = function(e) {
-	      self.clearHoverPointHighlights();
-	    };
+	    if (self.options.hover) {
+	      mapMouseoutCallback = function(e) {
+	        self.clearHoverPointHighlights();
+	      };
 
-	    map.on('mouseout', mapMouseoutCallback);
+	      map.on('mouseout', mapMouseoutCallback);
+
+	      // Ensure highlighting on points previously clicked under closed flannel
+	      // is cleared, but points highlighted under a new flannel remain.
+	      flannelClosedCallback = function(e) {
+	        var pointsToKeepHighlighted = self.currentClickedPoints.filter(function(value) {
+	          return !_.contains(e.points, value);
+	        });
+	        highlightClickedPoints(pointsToKeepHighlighted);
+	      };
+
+	      map.on('flannelclosed', flannelClosedCallback);
+
+	      // Upon map refresh due to adding or removing a filter,
+	      // remove highlighting on all clicked and moused-over points
+	      clearHighlightRequestCallback = function() {
+	        self.clearClickedPointHighlights();
+	        self.clearHoverPointHighlights();
+	      };
+
+	      map.on('clearhighlightrequest', clearHighlightRequestCallback);
+	    }
 
 	    mapDragstartCallback = function(e) {
 	      self.clearHoverPointHighlights();
@@ -23230,7 +23405,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          map.off('click', mapClickCallback);
 	        }
 
-	        map.off('mouseout', mapMouseoutCallback);
+	        if (self.options.hover) {
+	          map.off('mouseout', mapMouseoutCallback);
+	          map.off('flannelclosed', flannelClosedCallback);
+	          map.off('clearhighlightrequest', clearHighlightRequestCallback);
+	        }
+
 	        map.off('dragstart', mapDragstartCallback);
 	        map.off('zoomstart', mapZoomstartCallback);
 	      }
@@ -23377,6 +23557,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      self.tileLoaded(tileId);
 	    }
 
+	    // VectorTile is a Leaflet global variable
 	    vectorTile = VectorTileUtil.unpackVectorTile(
 	      new VectorTile(
 	        new pbf(arrayBuffer)
@@ -23417,11 +23598,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  addChildLayers: function() {
 
 	    var self = this;
-	    var layer;
 
 	    Object.keys(this.layers).forEach(function(layerId) {
 
-	      layer = this.layers[layerId];
+	      var layer = this.layers[layerId];
 
 	      if (layer.hasOwnProperty('_map')) {
 	        self.map.addLayer(layer);
@@ -23432,11 +23612,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  removeChildLayers: function() {
 
 	    var self = this;
-	    var layer;
 
 	    Object.keys(self.layers).forEach(function(layerId) {
 
-	      layer = self.layers[layerId];
+	      var layer = self.layers[layerId];
 
 	      self.map.removeLayer(layer);
 	    });
@@ -23453,9 +23632,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  tileLoaded: function(tileId) {
 
+	    var self = this;
+
 	    delete this.outstandingTileDataRequests[tileId];
 
 	    if (Object.keys(this.outstandingTileDataRequests).length === 0) {
+	      if (this.lastCommitedZoomLevel > this.options.tileOverlapZoomThreshold) {
+
+	        Object.keys(self.layers).forEach(function(layerId) {
+	          var layer = self.layers[layerId];
+
+	          _.each(_.keys(layer.featuresByTile), function(tile) {
+	            layer.renderTileOverlap(tile);
+	          });
+	        });
+	      }
 
 	      // Set the layer's interactivity to true so that we will begin to
 	      // handle events.
@@ -23924,7 +24115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(38);
+	var ieee754 = __webpack_require__(40);
 
 	var BufferMethods;
 
@@ -25867,6 +26058,96 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 40 */
+/***/ function(module, exports) {
+
+	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var nBits = -7
+	  var i = isLE ? (nBytes - 1) : 0
+	  var d = isLE ? -1 : 1
+	  var s = buffer[offset + i]
+
+	  i += d
+
+	  e = s & ((1 << (-nBits)) - 1)
+	  s >>= (-nBits)
+	  nBits += eLen
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  m = e & ((1 << (-nBits)) - 1)
+	  e >>= (-nBits)
+	  nBits += mLen
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  if (e === 0) {
+	    e = 1 - eBias
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen)
+	    e = e - eBias
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	}
+
+	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+	  var i = isLE ? 0 : (nBytes - 1)
+	  var d = isLE ? 1 : -1
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+	  value = Math.abs(value)
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0
+	    e = eMax
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2)
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--
+	      c *= 2
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias)
+	    }
+	    if (value * c >= 2) {
+	      e++
+	      c /= 2
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0
+	      e = eMax
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen)
+	      e = e + eBias
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+	      e = 0
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+	  e = (e << mLen) | m
+	  eLen += mLen
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+	  buffer[offset + i - d] |= s * 128
+	}
+
+
+/***/ },
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -25876,7 +26157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var MetadataProvider = __webpack_require__(25);
 	var GeospaceDataProvider = __webpack_require__(23);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -26612,7 +26893,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(3);
@@ -26861,7 +27142,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -26869,7 +27150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var utils = __webpack_require__(3);
 	var ColumnChart = __webpack_require__(12);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var NAME_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
@@ -27394,7 +27675,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -27952,7 +28233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -28347,7 +28628,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -28356,7 +28637,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var moment = __webpack_require__(15);
 	var TimelineChart = __webpack_require__(16);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 	var DATE_INDEX = 0;

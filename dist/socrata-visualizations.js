@@ -57,11 +57,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(41);
-	var ColumnChart = __webpack_require__(43);
-	var FeatureMap = __webpack_require__(44);
-	var Table = __webpack_require__(45);
-	var TimelineChart = __webpack_require__(46);
+	var ChoroplethMap = __webpack_require__(40);
+	var ColumnChart = __webpack_require__(42);
+	var FeatureMap = __webpack_require__(43);
+	var Table = __webpack_require__(44);
+	var TimelineChart = __webpack_require__(45);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -6513,10 +6513,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function _templatePagerLabel(options) {
 	    var message;
+	    var endIndex = Math.min(options.datasetRowCount, options.endIndex);
 
 	    if (options.datasetRowCount === 0) {
 	      message = vif.configuration.localization.NO_ROWS;
-	    } else if (options.endIndex === options.startIndex) {
+	    } else if (options.endIndex === options.startIndex + 1) {
 	      message = vif.configuration.localization.ONLY_ROW;
 	    } else {
 	      message = vif.configuration.localization.MANY_ROWS;
@@ -6526,7 +6527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      unitOne: vif.unit.one,
 	      unitOther: vif.unit.other,
 	      firstRowOrdinal: options.datasetRowCount ? utils.commaify(options.startIndex + 1) : undefined,
-	      lastRowOrdinal: options.datasetRowCount ? utils.commaify(options.endIndex + 1) : undefined,
+	      lastRowOrdinal: options.datasetRowCount ? utils.commaify(endIndex) : undefined,
 	      datasetRowCount: utils.commaify(options.datasetRowCount)
 	    });
 
@@ -9683,7 +9684,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  utils.assertHasProperties(
 	    vif,
 	    'configuration.localization.LATITUDE',
-	    'configuration.localization.LONGITUDE'
+	    'configuration.localization.LONGITUDE',
+	    'configuration.localization.NO_COLUMN_DESCRIPTION'
 	  );
 
 	  _attachEvents(this.element);
@@ -9740,8 +9742,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    utils.assertInstanceOf(element.find('tbody tr')[0], HTMLElement);
 
 	    // Measure.
-	    headerHeightPx = element.find('thead')[0].getBoundingClientRect().height;
-	    rowHeightPx = element.find('tbody tr')[0].getBoundingClientRect().height;
+	    headerHeightPx = element.find('thead').outerHeight();
+	    rowHeightPx = element.find('tbody tr').outerHeight();
 
 	    // Compute
 	    heightLeftAfterHeaderPx = overallHeightPx - headerHeightPx - _scrollbarHeightPx;
@@ -9777,8 +9779,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.getBoundingClientRect().width;
 	    });
 
+	    var columns = _.pluck(_lastRenderData.columns, 'fieldName');
+
 	    _columnWidths = _.zipObject(
-	      _lastRenderData.columns,
+	      columns,
 	      headerWidths
 	    );
 
@@ -9791,7 +9795,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function _templateTableCell(column, cell) {
 	    return [
-	      '<td>',
+	      '<td data-cell-render-type="{renderTypeName}">',
 	        '<div>',
 	          DataTypeFormatter.renderCell(cell, column, {
 	            latitude: vif.configuration.localization.LATITUDE,
@@ -9799,21 +9803,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }),
 	        '</div>',
 	      '</td>'
-	    ].join('');
+	    ].join('').format(column);
 	  }
 
 	  function _templateTableSortedHeader() {
 	    return [
-	      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-sort>',
-	        '{columnTitle}<span class="icon-{sortDirection}"></span>',
+	      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" data-sort scope="col">',
+	        '<div>',
+	          '{columnTitle}<span class="icon-{sortDirection}"></span>',
+	        '</div>',
+	      '</th>'
+	    ].join('');
+	  }
+
+	  function _templateTableUnsortableHeader() {
+	    return [
+	      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
+	        '<div>',
+	          '{columnTitle}',
+	        '</div>',
 	      '</th>'
 	    ].join('');
 	  }
 
 	  function _templateTableHeader() {
 	    return [
-	      '<th data-column-name="{columnName}" data-column-description="{columnDescription}">',
-	        '{columnTitle}',
+	      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
+	        '<div>',
+	          '{columnTitle}<span class="icon-arrow-down"></span>',
+	        '</div>',
 	      '</th>'
 	    ].join('');
 	  }
@@ -9827,14 +9845,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	          '<thead>',
 	            '<tr>',
 	              data.columns.map(function(column) {
-	                var template = activeSort.columnName === column.fieldName ?
-	                  _templateTableSortedHeader() :
-	                  _templateTableHeader();
+	                var template;
+
+	                if (_isGeometryType(column)) {
+	                  template = _templateTableUnsortableHeader();
+	                } else {
+	                  template = activeSort.columnName === column.fieldName ?
+	                    _templateTableSortedHeader() :
+	                    _templateTableHeader();
+	                }
 
 	                return template.format({
 	                  columnName: column.fieldName,
 	                  columnTitle: (column && column.name) || column.fieldName,
 	                  columnDescription: (column && column.description) || '',
+	                  renderTypeName: (column && column.renderTypeName) || '',
 	                  sortDirection: activeSort.ascending ? 'arrow-down' : 'arrow-up'
 	                });
 	              }),
@@ -9863,6 +9888,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var $newTable;
 
 	    _applyFrozenColumns($template);
+
 	    if ($existingTable.length) {
 	      $existingTable.replaceWith($template);
 	    } else {
@@ -9898,19 +9924,28 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function _showDescriptionFlyout(event) {
 	    var $target = $(event.currentTarget);
-	    var description = $target.data('column-description');
+	    var noColumnDescription = '<em>{noColumnDescription}</em>'
+	    var description = $target.data('column-description') || noColumnDescription;
+	    var content = [
+	      '<span>{title}</span><br>',
+	      '<span>{description}</span>'
+	    ].join('\n');
 
-	    if (description && description.length > 0) {
-	      self.emitEvent(
-	        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-	        {
-	          element: $target[0],
-	          content: description,
-	          belowTarget: true,
-	          rightSideHint: false
-	        }
-	      );
-	    }
+	    content = content.format({
+	      title: $target.text(),
+	      description: description,
+	      noColumnDescription: vif.configuration.localization.NO_COLUMN_DESCRIPTION
+	    });
+
+	    self.emitEvent(
+	      'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+	      {
+	        element: $target[0],
+	        content: content,
+	        belowTarget: true,
+	        rightSideHint: false
+	      }
+	    );
 	  }
 
 	  function _hideDescriptionFlyout(event) {
@@ -9947,9 +9982,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  }
 
+	  function _isGeometryType(column) {
+	    return _.includes([
+	      'point',
+	      'multipoint',
+	      'line',
+	      'multiline',
+	      'polygon',
+	      'multipolygon',
+	      'location'
+	    ], column.renderTypeName);
+	  }
+
 	  function _handleRowHeaderClick() {
 	    var columnName = this.getAttribute('data-column-name');
-	    if (columnName) {
+	    var columnRenderType = this.getAttribute('data-column-render-type');
+
+	    if (columnName && !_isGeometryType({renderTypeName: columnRenderType})) {
 	      self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_CLICKED', columnName);
 	    }
 	  }
@@ -23881,7 +23930,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(40);
+	var ieee754 = __webpack_require__(38);
 
 	var BufferMethods;
 
@@ -24048,6 +24097,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	/* eslint-disable no-proto */
 
+	'use strict'
+
 	var base64 = __webpack_require__(37)
 	var ieee754 = __webpack_require__(38)
 	var isArray = __webpack_require__(39)
@@ -24130,8 +24181,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new Buffer(arg)
 	  }
 
-	  this.length = 0
-	  this.parent = undefined
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+	    this.length = 0
+	    this.parent = undefined
+	  }
 
 	  // Common case.
 	  if (typeof arg === 'number') {
@@ -24262,6 +24315,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	if (Buffer.TYPED_ARRAY_SUPPORT) {
 	  Buffer.prototype.__proto__ = Uint8Array.prototype
 	  Buffer.__proto__ = Uint8Array
+	} else {
+	  // pre-set for values that may exist in the future
+	  Buffer.prototype.length = undefined
+	  Buffer.prototype.parent = undefined
 	}
 
 	function allocate (that, length) {
@@ -24411,10 +24468,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	Buffer.byteLength = byteLength
-
-	// pre-set for values that may exist in the future
-	Buffer.prototype.length = undefined
-	Buffer.prototype.parent = undefined
 
 	function slowToString (encoding, start, end) {
 	  var loweredCase = false
@@ -25811,133 +25864,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 39 */
 /***/ function(module, exports) {
 
-	
-	/**
-	 * isArray
-	 */
+	var toString = {}.toString;
 
-	var isArray = Array.isArray;
-
-	/**
-	 * toString
-	 */
-
-	var str = Object.prototype.toString;
-
-	/**
-	 * Whether or not the given `val`
-	 * is an array.
-	 *
-	 * example:
-	 *
-	 *        isArray([]);
-	 *        // > true
-	 *        isArray(arguments);
-	 *        // > false
-	 *        isArray('');
-	 *        // > false
-	 *
-	 * @param {mixed} val
-	 * @return {bool}
-	 */
-
-	module.exports = isArray || function (val) {
-	  return !! val && '[object Array]' == str.call(val);
+	module.exports = Array.isArray || function (arr) {
+	  return toString.call(arr) == '[object Array]';
 	};
 
 
 /***/ },
 /* 40 */
-/***/ function(module, exports) {
-
-	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-	  var e, m
-	  var eLen = nBytes * 8 - mLen - 1
-	  var eMax = (1 << eLen) - 1
-	  var eBias = eMax >> 1
-	  var nBits = -7
-	  var i = isLE ? (nBytes - 1) : 0
-	  var d = isLE ? -1 : 1
-	  var s = buffer[offset + i]
-
-	  i += d
-
-	  e = s & ((1 << (-nBits)) - 1)
-	  s >>= (-nBits)
-	  nBits += eLen
-	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-	  m = e & ((1 << (-nBits)) - 1)
-	  e >>= (-nBits)
-	  nBits += mLen
-	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-	  if (e === 0) {
-	    e = 1 - eBias
-	  } else if (e === eMax) {
-	    return m ? NaN : ((s ? -1 : 1) * Infinity)
-	  } else {
-	    m = m + Math.pow(2, mLen)
-	    e = e - eBias
-	  }
-	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-	}
-
-	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-	  var e, m, c
-	  var eLen = nBytes * 8 - mLen - 1
-	  var eMax = (1 << eLen) - 1
-	  var eBias = eMax >> 1
-	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-	  var i = isLE ? 0 : (nBytes - 1)
-	  var d = isLE ? 1 : -1
-	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-	  value = Math.abs(value)
-
-	  if (isNaN(value) || value === Infinity) {
-	    m = isNaN(value) ? 1 : 0
-	    e = eMax
-	  } else {
-	    e = Math.floor(Math.log(value) / Math.LN2)
-	    if (value * (c = Math.pow(2, -e)) < 1) {
-	      e--
-	      c *= 2
-	    }
-	    if (e + eBias >= 1) {
-	      value += rt / c
-	    } else {
-	      value += rt * Math.pow(2, 1 - eBias)
-	    }
-	    if (value * c >= 2) {
-	      e++
-	      c /= 2
-	    }
-
-	    if (e + eBias >= eMax) {
-	      m = 0
-	      e = eMax
-	    } else if (e + eBias >= 1) {
-	      m = (value * c - 1) * Math.pow(2, mLen)
-	      e = e + eBias
-	    } else {
-	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-	      e = 0
-	    }
-	  }
-
-	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-	  e = (e << mLen) | m
-	  eLen += mLen
-	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-	  buffer[offset + i - d] |= s * 128
-	}
-
-
-/***/ },
-/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -25947,7 +25882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var MetadataProvider = __webpack_require__(25);
 	var GeospaceDataProvider = __webpack_require__(23);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(42);
+	var SoqlHelpers = __webpack_require__(41);
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -26683,7 +26618,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(3);
@@ -26932,7 +26867,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -26940,7 +26875,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var utils = __webpack_require__(3);
 	var ColumnChart = __webpack_require__(12);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(42);
+	var SoqlHelpers = __webpack_require__(41);
 
 	var NAME_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
@@ -27465,7 +27400,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -28023,7 +27958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -28177,7 +28112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      pager.render({
 	        unit: vif.unit,
 	        startIndex: _renderState.fetchedData.startIndex,
-	        endIndex: _renderState.fetchedData.startIndex + _renderState.fetchedData.rows.length - 1,
+	        endIndex: Math.min(_renderState.fetchedData.startIndex + _renderState.fetchedData.rows.length, _renderState.datasetRowCount),
 	        datasetRowCount: _renderState.datasetRowCount,
 	        disabled: _renderState.busy || !_.isFinite(_renderState.datasetRowCount)
 	      });
@@ -28418,7 +28353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 46 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(9);
@@ -28427,7 +28362,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var moment = __webpack_require__(15);
 	var TimelineChart = __webpack_require__(16);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(42);
+	var SoqlHelpers = __webpack_require__(41);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 	var DATE_INDEX = 0;

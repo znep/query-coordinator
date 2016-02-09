@@ -409,10 +409,31 @@ $(function() {
       'max-height': '{0}px'.format(modalContentMaxHeight)
     });
     // Prevent the normal body scroll and show the modal
-    $('body').css('overflow', 'hidden');
+    storeOverflowPropertyInModal('html');
+    storeOverflowPropertyInModal('body');
+    $('html, body').css('overflow', 'hidden');
     var chosenFacet = $(event.currentTarget).data('modalFacet');
     $('.browse2-facet-section-modal[data-modal-facet="{0}"]'.format(chosenFacet)).removeClass('hidden');
     hideBrowse2FacetModalOnEscape();
+  }
+
+  // Store the overflow property values as data attributes on the facet modal so we can restore
+  // it once the modal is hidden.
+  function storeOverflowPropertyInModal(element) {
+    var overflowX = $(element).css('overflow-x');
+    var overflowY = $(element).css('overflow-y');
+    $('.browse2-facet-section-modal').data('{0}OverflowX'.format(element), overflowX);
+    $('.browse2-facet-section-modal').data('{0}OverflowY'.format(element), overflowY);
+  }
+
+  function restoreOverflowProperty(element) {
+    var overflowX = $('.browse2-facet-section-modal').data('{0}OverflowX'.format(element));
+    var overflowY = $('.browse2-facet-section-modal').data('{0}OverflowY'.format(element));
+    var defaultOverflow = 'initial';
+    $(element).css({
+      'overflow-x': overflowX || defaultOverflow,
+      'overflow-y': overflowY || defaultOverflow
+    });
   }
 
   function hideBrowse2FacetModalOnEscape() {
@@ -425,7 +446,8 @@ $(function() {
 
   function hideBrowse2FacetModal() {
     $('.browse2-facet-section-modal').addClass('hidden');
-    $('body').css('overflow', 'auto');
+    restoreOverflowProperty('html');
+    restoreOverflowProperty('body');
   }
 
   function truncateDescription(element) {

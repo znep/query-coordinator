@@ -23,7 +23,18 @@ class ImportActivity
   def self.find(id)
     activity = ImportStatusService::get("/activity/#{id}").with_indifferent_access
 
-    ImportActivity.new(activity, User.find_profile(activity[:user_id]), View.find(activity[:entity_id]))
+    begin
+      view = View.find(activity[:entity_id])
+    rescue CoreServer::ResourceNotFound
+      view = nil
+    end
+
+    begin
+      user = User.find_profile(activity[:user_id])
+    rescue CoreServer::ResourceNotFound
+      user = nil
+    end
+    ImportActivity.new(activity, user, view)
   end
 
   def ==(other)

@@ -6,7 +6,8 @@ class CeteraTest < Test::Unit::TestCase
   describe 'Cetera' do
     def sample_search_options
       {
-        domains: 'data.cityofchicago.org',
+        domains: ['data.cityofchicago.org', 'data.example.com', 'datacatalog.cookcountyil.gov'],
+        domain_boosts: { 'data.example.com' => 0.808, 'datacatalog.cookcountyil.gov' => 0.909 },
         limitTo: 'tables',
         q: 'giraffes are whack!&@*!',
         limit: 10,
@@ -19,8 +20,9 @@ class CeteraTest < Test::Unit::TestCase
     # CGI.escape happens in search_views params.to_query
     def expected_cetera_params
       {
-        domains: 'data.cityofchicago.org',
+        domains: 'data.cityofchicago.org,data.example.com,datacatalog.cookcountyil.gov',
         # search_context (CurrentDomain.cname) changes with test context so is not tested
+        boostDomains: { 'data.example.com' => 0.808, 'datacatalog.cookcountyil.gov' => 0.909 },
         only: 'datasets',
         q: 'giraffes are whack!&@*!',
         limit: 10,
@@ -32,8 +34,10 @@ class CeteraTest < Test::Unit::TestCase
 
     def test_cetera_soql_params_as_query
       params = Cetera.cetera_soql_params(sample_search_options)
-      expected_cetera_params.each do |k, v|
-        assert_equal(v, params[k], "Field: #{k} expected #{v} but was #{params[k].inspect}")
+
+      expected_cetera_params.each do |key, expected|
+        actual = params[key]
+        assert_equal expected, actual, "Field: #{key} expected #{expected} but was #{actual}"
       end
     end
 

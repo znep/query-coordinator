@@ -119,25 +119,49 @@ module BrowseActions
     }
   end
 
-  def federations_hash
-    @federations_hash ||= Federation.find.each_with_object({}) do |f, hash|
-      next unless
-        f.targetDomainCName == CurrentDomain.cname &&
+  def federations
+    @federations ||= Federation.find.select do |f|
+      f.targetDomainCName ==
+        CurrentDomain.cname &&
         f.lensName.empty? &&
-        f.acceptedUserId.present?
+        f.acceptedUserId.present? &&
+        f.sourceDomainCName != CurrentDomain.cname # protect against degenerate case
+    end
+  end
 
-      hash[f.sourceDomainId] = f.sourceDomainCName
+  def federated_search_boosts
+    federations.each_with_object({}) do |f, hash|
+      hash[f.sourceDomainCName] = f.searchBoost
+    end
+  end
+
+  # Look up the domain cnames for Cetera
+  def federated_domain_cnames(federation_id)
+    home = [CurrentDomain.cname]
+
+    if federation_id.blank?
+      # All domains in the federation
+      home + federations.map(&:sourceDomainCName)
+
+    elsif federation_id.to_i == CurrentDomain.domain.id
+      # Just the home domain
+      home
+
+    else
+      # Just a federated domain--potentially empty
+      federations.find_all { |fed| fed.id == federation_id.to_i }.map(&:sourceDomainCName)
     end
   end
 
   def federated_facet
-    all_feds = federations_hash.sort_by(&:last).map do |f_id, f_cname|
+    all_feds = federations.sort_by(&:text).map do |fed|
+      cname = fed.sourceDomainCName
       {
-        text: f_cname,
-        value: f_id.to_s,
+        text: cname,
+        value: fed.id.to_s, # must be string or view doesn't notice it
         icon: {
           type: 'static',
-          href: "/api/domains/#{f_cname}/icons/smallIcon"
+          href: "/api/domains/#{cname}/icons/smallIcon"
         }
       }
     end
@@ -146,7 +170,7 @@ module BrowseActions
 
     all_feds.unshift(
       text: 'This site only',
-      value: CurrentDomain.domain.id.to_s,
+      value: CurrentDomain.domain.id.to_s, # must be string or view won't notice
       icon: {
         type: 'static',
         href: "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"
@@ -405,15 +429,19 @@ module BrowseActions
         view_results =
           if using_cetera?
             # TODO: actually check if federation is enabled first
+
+            # WARN: federated domains are not showing up highlighted in facet bar
+
+            # Domain ids have to be translated to domain cnames for Cetera
             fed_id = browse_options[:search_options][:federation_filter]
-            browse_options[:search_options][:domains] =
-              if fed_id.present?
-                # Federation filter domain id has to be translated to domain cname for Cetera
-                federations_hash.merge(CurrentDomain.domain.id => CurrentDomain.cname)[fed_id.to_i]
-              else
-                # All domains in the federation
-                [CurrentDomain.cname].concat(federations_hash.values.sort).join(',')
-              end
+            browse_options[:search_options][:domains] = federated_domain_cnames(fed_id)
+
+            # If you try to federate from a domain that didn't approve it, no federation for you!
+            unless browse_options[:search_options][:domains].present?
+              raise "Invalid federated domain id: #{fed_id} for domain #{CurrentDomain.cname}"
+            end
+
+            browse_options[:search_options][:domain_boosts] = federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
             Cetera.search_views(browse_options[:search_options])
           else

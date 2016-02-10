@@ -32,7 +32,8 @@ module Cetera
 
   def self.cetera_soql_params(opts = {})
     (opts[:metadata_tag] || {}).merge(
-      domains: opts[:domains],
+      domains: opts[:domains].join(','), # Cetera does not yet support domains[]
+      boostDomains: opts[:domain_boosts], # Federated domains have searchBoost values
       search_context: CurrentDomain.cname,
       only: translate_display_type(opts[:limitTo], opts[:datasetView]),
       categories: opts[:categories],

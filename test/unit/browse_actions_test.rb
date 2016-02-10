@@ -176,7 +176,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       @browse_actions_container.stubs(custom_facets: custom_facets)
       @browse_actions_container.stubs(categories_facet: nil)
       @browse_actions_container.stubs(topics_facet: nil)
-      @browse_actions_container.stubs(federations_hash: {})
+      @browse_actions_container.stubs(federations: [])
 
       CurrentDomain.stubs(configuration: nil)
       CurrentDomain.stubs(default_locale: 'en')
@@ -243,7 +243,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       @browse_actions_container.stubs(custom_facets: @test_custom_facets)
       @browse_actions_container.stubs(categories_facet: @test_categories)
       @browse_actions_container.stubs(topics_facet: nil)
-      @browse_actions_container.stubs(federations_hash: {})
+      @browse_actions_container.stubs(federations: [])
     end
 
     def stub_core_for_category(category)
@@ -391,7 +391,7 @@ class BrowseActionsTest < Test::Unit::TestCase
 
       Clytemnestra.stubs(search_views: [])
 
-      @browse_actions_container.stubs(federations_hash: {})
+      @browse_actions_container.stubs(federations: [])
 
       # It's important to have multiple custom facets so we can test that
       # we aren't hardcoding to the 3rd slot regardless
@@ -632,6 +632,104 @@ class BrowseActionsTest < Test::Unit::TestCase
         assert_equal(expected[:extra_option_texts],
                      extra_options.to_a.pluck('text'),
                      "Failure of extra_options at cutoff level #{cutoff}")
+      end
+    end
+  end
+
+  describe 'federated search boosts' do
+    def federation_hash
+      {
+        'id' => 2,
+        'acceptedUserId' => 2,
+        'acceptorScreenName' => 'Somebody Who',
+        'lensName' => '',
+        'providerScreenName' => 'Somebody Who',
+        'searchBoost' => 0.8,
+        'sourceDomainCName' => 'performance.seattle.gov',
+        'sourceDomainId' => 3,
+        'targetDomainCName' => 'localhost', # set by init_current_domain
+        'targetDomainId' => 1,
+        'flags' => []
+      }
+    end
+
+    def federation_find
+      Federation.set_up_model(
+        [
+          federation_hash.merge('id' => 2, 'sourceDomainCName' => 'performance.seattle.gov'),
+          federation_hash.merge('id' => 3, 'sourceDomainCName' => 'data.seattle.gov'),
+          federation_hash.merge('id' => 4, 'sourceDomainCName' => 'seattle.example.com',
+                                'targetDomainCName' => 'not-localhost'), # invalid
+          federation_hash.merge('id' => 5, 'sourceDomainCName' => 'seattle.example.com',
+                                'lensName' => "Lenz's law"), # invalid
+          federation_hash.merge('id' => 6, 'sourceDomainCName' => 'seattle.example.com',
+                                'acceptedUserId' => nil), # invalid
+          federation_hash.merge('id' => 1, 'sourceDomainCName' => 'localhost',
+                                'targetDomainCName' => 'localhost') # degenerate case
+        ]
+      )
+    end
+
+    def setup
+      @browse_actions_container = BrowseActionsContainer.new
+      init_current_domain
+      Federation.expects(:find).returns(federation_find)
+    end
+
+    def test_federations
+      expected = federation_find.first(2) # last three are invalid
+      actual = @browse_actions_container.send(:federations)
+      assert_equal expected, actual
+    end
+
+    def test_federated_search_boosts
+      expected = { 'performance.seattle.gov' => 0.8, 'data.seattle.gov' => 0.8 }
+      actual = @browse_actions_container.send(:federated_search_boosts)
+      assert_equal expected, actual
+    end
+
+    def test_federated_domain_cnames_with_nil_domain_id
+      expected = ['localhost', 'performance.seattle.gov', 'data.seattle.gov']
+      actual = @browse_actions_container.send(:federated_domain_cnames, nil)
+      assert_equal expected, actual
+    end
+
+    def test_federated_domain_cnames_with_blank_domain_id
+      expected = ['localhost', 'performance.seattle.gov', 'data.seattle.gov']
+      actual = @browse_actions_container.send(:federated_domain_cnames, '')
+      assert_equal expected, actual
+    end
+
+    def test_federated_domain_cnames_with_own_domain_id
+      Federation.unstub(:find) # no need to call out to federations
+      expected = ['localhost']
+      actual = @browse_actions_container.send(:federated_domain_cnames, '1')
+      assert_equal expected, actual
+    end
+
+    def test_federated_domain_cnames_with_federated_domain_id
+      expected = ['data.seattle.gov']
+      actual = @browse_actions_container.send(:federated_domain_cnames, '3')
+      assert_equal expected, actual
+    end
+
+    def test_federated_domain_cnames_with_invalid_federated_domain_id
+      actual = @browse_actions_container.send(:federated_domain_cnames, '5')
+      assert_empty actual
+    end
+
+    def test_federated_domain_cnames_with_far_out_domain_id
+      actual = @browse_actions_container.send(:federated_domain_cnames, '123')
+      assert_empty actual
+    end
+
+    # unit tests being a poor man's type system and all the rest of it
+    def test_federated_domain_cnames_can_deal_with_strings_or_ints
+      1.upto(6).each do |domain_id|
+        assert_equal(
+          @browse_actions_container.send(:federated_domain_cnames, domain_id),
+          @browse_actions_container.send(:federated_domain_cnames, domain_id.to_s)
+        )
       end
     end
   end

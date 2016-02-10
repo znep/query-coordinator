@@ -72,6 +72,7 @@ class UserSession
   #   UserSession.new
   #   UserSession.new(:login => 'login', :password => 'password')
   def initialize(*args)
+    puts caller
     raise NotActivatedError.new(self) unless self.class.activated?
 
     if args.size == 1 && args.first.is_a?(Hash)

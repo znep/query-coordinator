@@ -89,6 +89,26 @@ class FilterContainer extends React.Component {
     this.setState({ filters: [] });
     Filter.clear();
   }
+  prettifyFilterForDLMobile(filters) {
+    var modifiedFilters = filters.map(function(filter, i) {
+      var filterObj = {};
+
+      switch(filter.type) {
+        case 'int':
+          filterObj['columnName'] = filter.name;
+          filterObj['function'] = 'valueRange';
+          filterObj['arguments'] = {
+            'start': filter.data.val1,
+            'end': filter.data.val2
+          };
+          return filterObj;
+        default:
+          break;
+      }
+    });
+
+    return modifiedFilters;
+  }
 
   handleFilterAddition(filterId, dataObj) {
     var aFilters = this.state.filters;
@@ -97,7 +117,8 @@ class FilterContainer extends React.Component {
 
     this.setState({ filters: aFilters });
 
-    this.props.handleFilterBroadcast({filters: aFilters});
+    var modifiedFilters = this.prettifyFilterForDLMobile(aFilters);
+    this.props.handleFilterBroadcast({filters: modifiedFilters});
     //Filter.apply(this.state.filters);
   }
   handleFilterDeletion(filterId) {

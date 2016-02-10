@@ -56,12 +56,6 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
   
   $timelineChartElement.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
-  function handleFilterUpdate(e, data) {
-
-    console.log('Broadcast message for applied filters:');
-    console.log(data.filters);
-  }
-
   function clearFlyout() {
     $timelineChartElement.removeClass('expanded');
     $timelineChartContainer.find('.mobile-flyout').html('');
@@ -77,17 +71,8 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
     }
   }
 
-  function handleVifUpdated(event) {
-    timelineChartVIF.filters = [
-      {
-        'columnName': 'year',
-        'function': 'valueRange',
-        'arguments': {
-          'start': '2011',
-          'end': '2012'
-        }
-      }
-    ];
+  function handleVifUpdated(event, data) {
+    timelineChartVIF.filters = data.filters;
 
     var payload = timelineChartVIF;
     var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');

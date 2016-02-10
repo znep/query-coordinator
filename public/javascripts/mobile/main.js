@@ -9,11 +9,6 @@
   var cardsData;
   var cardsMetaData;
 
-  $(document).on('socrata/qfb/appliedFilters', function(e, data) {
-    console.log('Broadcast message for applied filters:');
-    console.log(data.filters);
-  });
-
   function getPageData() {
     return $.get(window.location.protocol + '//' + DOMAIN + '/views/' + PAGE_UID);
   }
@@ -32,7 +27,7 @@
           case 'text':
             filterOption = {
               filterName: cardsMetaData[key].name,
-              name: key,
+              name: cardsMetaData[key].fieldName,
               id: cardsMetaData[key].position,
               type: 'string'
             };
@@ -41,7 +36,7 @@
           case 'number':
             filterOption = {
               filterName: cardsMetaData[key].name,
-              name: key,
+              name: cardsMetaData[key].fieldName,
               id: cardsMetaData[key].position,
               type: 'int'
             };

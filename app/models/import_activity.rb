@@ -1,13 +1,9 @@
 # TODO: replace this REST API & wrapper with GraphQL
 class ImportActivity
 
-  # this should match the "activities.default-limit" option in
-  # Import Status Service's config file
-  FEED_ITEMS_LIMIT = 250
-
   # throws ISS errors and Core errors
-  def self.find_all_by_created_at_descending
-    response = ImportStatusService::get('/activity')
+  def self.find_all_by_created_at_descending(limit)
+    response = ImportStatusService::get("/activity?limit=#{limit}")
     activities = response.map(&:with_indifferent_access)
     view_ids = activities.pluck(:entity_id)
     views = View.find_multiple_dedup(view_ids)

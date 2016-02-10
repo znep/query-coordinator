@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'set'
+
 module BrowseActions
   include ActionView::Helpers::TranslationHelper
   include ApplicationHelper
@@ -389,7 +391,6 @@ module BrowseActions
     browse_options[:sort_opts] ||= default_browse_sort_opts
     browse_options[:disable] = {} unless browse_options[:disable].present?
 
-    # TODO: include? filters should be done on sets
     # get the subset relevant to various things
     browse_options[:search_options] =
       browse_options.select { |k| @@search_options.include?(k) }.merge(search_options)
@@ -690,13 +691,14 @@ module BrowseActions
   @@numeric_options = [ :limit, :page ]
   @@boolean_options = [ :nofederate, :curated_region_candidates ]
 
-  @@moderatable_types = [ 'new_view', 'filters', 'charts', 'maps', 'calendars', 'forms' ]
+  @@moderatable_types = Set.new([ 'new_view', 'filters', 'charts', 'maps', 'calendars', 'forms' ])
 
-  @@search_options = [
-    :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView,
-    :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver,
-    :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields
-  ]
-  @@querystring_options = []
-
+  @@search_options = Set.new(
+    [
+      :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo,
+      :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation,
+      :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id,
+      :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields
+    ]
+  )
 end

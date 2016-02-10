@@ -347,15 +347,9 @@
 
     function _attachEvents(element) {
       element.on(
-        'mouseenter mousemove',
+        'click',
         '.timeline-chart',
         showFlyout
-      );
-
-      element.on(
-        'mouseleave',
-        '.timeline-chart',
-        mouseHasLeftChart
       );
 
       if (_interactive) {
@@ -373,15 +367,21 @@
       }
 
       element.on(
-        'mousemove',
-        '.timeline-chart-clear-selection-label',
+        'touchmove',
+        '.timeline-chart',
         showFlyout
       );
     }
 
     function _unattachEvents(element) {
       element.off(
-        'mouseenter mousemove',
+        'click',
+        '.timeline-chart',
+        showFlyout
+      );
+
+      element.off(
+        'touchmove',
         '.timeline-chart',
         showFlyout
       );

@@ -42,7 +42,7 @@
         newValue = _.cloneDeep(componentData.value);
         newValue.vif = newVif;
 
-        if (blockComponent.value.layout && _.isFinite(blockComponent.value.layout.height)) {
+        if (_.has(blockComponent, 'value.layout.height') && _.isFinite(blockComponent.value.layout.height)) {
           newValue.layout = newValue.layout || {};
           newValue.layout.height = blockComponent.value.layout.height;
         }

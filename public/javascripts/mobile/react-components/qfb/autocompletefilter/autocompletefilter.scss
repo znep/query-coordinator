@@ -1,0 +1,127 @@
+.mod-socrata-autocomplete-lists-suggestions-list::-webkit-scrollbar {
+  width: 9px;
+}
+
+.mod-socrata-autocomplete-lists-suggestions-list::-webkit-scrollbar-track {
+  border-radius: 2px;
+  background-color: #D2D2D2;
+}
+
+.mod-socrata-autocomplete-lists-suggestions-list::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: #9E9E9E;
+}
+
+.mod-socrata-autocomplete-searchfield {
+  background-color: white;
+  padding: 2%;
+  border-radius: 2px;
+  border: 1px solid #C7C7C7;
+  min-width: 260px;
+  .search-icon {
+    color: #ccc;
+    font-size: 1.8rem;
+    padding-right: 7px;
+    padding-left: 4px;
+    &.is-active-focus {
+      color: #2c97de;
+    }
+  }
+  input {
+    width: 84%;
+    padding: 3px;
+    font-size: 1.6rem;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #616161;
+  }
+  .clearSuggestion {
+    cursor: pointer;
+    color: #ccc;
+  }
+}
+.mod-socrata-autocomplete-message {
+  margin-top: 5px;
+  color: #737171;
+  font-weight: 100;
+  font-size: 1.1rem;
+}
+.mod-socrata-autocomplete-lists {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  .mod-socrata-autocomplete-lists-filter-title {
+    color: #737373;
+    margin-top: 13px;
+    padding-top: 8px;
+    margin-bottom: 0;
+    font-weight: 300;
+    font-size: 1.5rem;
+    border-top: 1px solid #DADADA;
+
+  }
+  .mod-socrata-autocomplete-lists-filter-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    color: #737171;
+    margin-top: 4px;
+    .mod-socrata-autocomplete-lists-filter-listitem {
+      &:last-child {
+        margin-bottom: 10px;
+        padding-bottom: 9px;
+        border-bottom: 1px solid #DADADA;
+      }
+      padding: 4px;
+      font-weight: 100;
+      font-size: 1.4rem;
+      cursor: default;
+      &:hover {
+        color: #212121;
+      }
+      .icon-close-circle {
+        margin-right: 15px;
+        cursor: pointer;
+        &:hover {
+          color: #B30909;
+        }
+      }
+      .icon-filter {
+        margin-right: 5px;
+        color: #2c97de;
+      }
+    }
+  }
+  .mod-socrata-autocomplete-lists-suggestions-list {
+    list-style: none;
+    padding: 0;
+    color: #1D1D1D;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 5px;
+    .mod-socrata-autocomplete-lists-suggestions-listitem {
+      cursor: pointer;
+      padding: 5px;
+      font-weight: 100;
+      font-size: 1.4rem;
+      &.is-active {
+        color: white;
+        background-color: #69A4D0;
+      }
+    }
+  }
+  .listitem-footnote {
+    font-weight: 200;
+    font-style: italic;
+    font-size: 1rem;
+    color: black;
+    margin-left: 6px;
+    margin-top: 8px;
+  }
+}

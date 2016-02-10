@@ -1,0 +1,13 @@
+@import './qfb-variables.scss';
+
+.caret-up {
+  content: "";
+  border-top: 0;
+  border-bottom: 4px dashed;
+}
+
+@media all and (min-width: $mobile-point) {
+  .visible-only-on-mobile {
+    display: none;
+  }
+}

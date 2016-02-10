@@ -4,6 +4,7 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
   var DOMAIN = values.domain;
   var DATASET_UID = values.uid;
   var COLUMN_NAME = values.columnName;
+  
   var timelineChartVIF = {
     'aggregation': {
       'columnName': null,
@@ -11,12 +12,16 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
     },
     'columnName': COLUMN_NAME,
     'configuration': {
+      'interactive': false,
+      // The localization values should be set by the application but are set
+      // to string literals for the purposes of this example.
       'localization': {
         'NO_VALUE': 'No value',
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
         'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
         'FLYOUT_SELECTED_NOTICE': 'This column is selected'
-      }
+      },
+      'precision': 'MONTH'
     },
     'createdAt': '2014-01-01T00:00:00',
     'datasetUid': DATASET_UID,
@@ -47,6 +52,15 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
   // Handle flyout events
   $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
   $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_CLEAR', clearFlyout);
+  $(document).on('socrata/qfb/appliedFilters', handleVifUpdated);
+  
+  $timelineChartElement.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
+  function handleFilterUpdate(e, data) {
+
+    console.log('Broadcast message for applied filters:');
+    console.log(data.filters);
+  }
 
   function clearFlyout() {
     $timelineChartElement.removeClass('expanded');
@@ -61,6 +75,28 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
       mobileFlyoutRender(payload);
       $timelineChartElement.addClass('expanded');
     }
+  }
+
+  function handleVifUpdated(event) {
+    timelineChartVIF.filters = [
+      {
+        'columnName': 'year',
+        'function': 'valueRange',
+        'arguments': {
+          'start': '2011',
+          'end': '2012'
+        }
+      }
+    ];
+
+    var payload = timelineChartVIF;
+    var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+    renderVifEvent.originalEvent = {
+      detail: payload
+    };
+
+    $timelineChartElement.trigger(renderVifEvent);
   }
 
   function mobileFlyoutRender(payload) {

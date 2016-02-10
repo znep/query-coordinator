@@ -732,8 +732,10 @@ javascripts:
     - public/javascripts/util/lodash-mixins.js
 
   mobile:
+    - public/javascripts/mobile/app-bundle.js
     - public/javascripts/mobile/chroma.js
     - public/javascripts/mobile/simple_statistics.js
+    - public/javascripts/mobile/dependencies/SoqlHelpers.js
     - public/javascripts/mobile/mobile.visualizations.Visualizations.js
     - public/javascripts/mobile/mobile.visualizations.FlyoutRenderer.js
     - public/javascripts/mobile/mobile.visualizations.DataProvider.js
@@ -752,9 +754,9 @@ javascripts:
     - public/javascripts/mobile/components/SocrataFeatureMap.js
     - public/javascripts/mobile/components/SocrataTimelineChart.js
     - public/javascripts/mobile/components/SocrataChoroplethMap.js
-    - public/javascripts/mobile/mobile.featuremap.js
     - public/javascripts/mobile/mobile.columnchart.js
     - public/javascripts/mobile/mobile.timelinechart.js
+    - public/javascripts/mobile/mobile.featuremap.js
     - public/javascripts/mobile/mobile.choroplethMap.js
     - public/javascripts/mobile/main.js
 

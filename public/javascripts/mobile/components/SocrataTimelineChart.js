@@ -17,8 +17,12 @@
   var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
   var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
   var PRECISION_QUERY = 'SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < \'{1}\'';
-  var DATA_QUERY = 'SELECT {3}(`{0}`) AS {1}, count(*) AS {2} WHERE `{0}` IS NOT NULL AND `{0}` < \'{4}\' AND (1=1) GROUP BY {1}';
-  //'SELECT {2}({0}) AS {4}, {3} AS {5} {1} GROUP BY {4}'.  format(fieldName, whereClause, dateTruncFunction, aggregationClause, dateAlias, valueAlias)
+  var DATA_QUERY_PREFIX = 'SELECT {3}(`{0}`) AS {1}, count(*) AS {2}';
+  var DATA_QUERY_SUFFIX = 'GROUP BY {0}';
+  var DATA_QUERY_WHERE_CLAUSE_PREFIX = 'WHERE';
+  var DATA_QUERY_WHERE_CLAUSE_SUFFIX = '`{0}` IS NOT NULL AND `{0}` < \'{1}\' AND (1=1)';
+//'SELECT {2}({0}) AS {4}, {3} AS {5} {1} GROUP BY {4}'.  format(fieldName, whereClause, dateTruncFunction, aggregationClause, dateAlias, valueAlias)
+
   var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
   /**
@@ -85,9 +89,10 @@
     var visualizationData = transformChartDataForRendering([]);
     var precision;
     var rerenderOnResizeTimeout;
+    var _lastRenderedVif;
 
     _attachEvents();
-    _updateData();
+    _updateData(vif);
 
     /**
      * Configuration
@@ -155,29 +160,52 @@
      */
 
     function _attachEvents() {
-      $(root).on('resize', _handleWindowResize);
-      $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
+
+      // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
+      $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
+        clearTimeout(rerenderOnResizeTimeout);
+        visualization.destroy();
+        _detachEvents();
+      });
+
+      $(window).on('resize', _handleWindowResize);
+
+      $element.on('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+      $element.on('SOCRATA_VISUALIZATION_TIMELINE_FILTER', _handleSelection);
+      $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+      $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
     }
 
     function _detachEvents() {
-      $(root).off('resize', _handleWindowResize);
-      $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
+
+      $(window).off('resize', _handleWindowResize);
+
+      $element.off('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', _handleVisualizationFlyout);
+      $element.off('SOCRATA_VISUALIZATION_TIMELINE_FILTER', _handleSelection);
+      $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+      $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
     }
 
     function _handleWindowResize() {
       clearTimeout(rerenderOnResizeTimeout);
 
       rerenderOnResizeTimeout = setTimeout(
-        function() {
-          visualization.render(
-            visualizationData,
-            _getRenderOptions()
-          );
-        },
+        _render,
         // Add some jitter in order to make sure multiple visualizations are
         // unlikely to all attempt to rerender themselves at the exact same
         // moment.
         WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+      );
+    }
+
+    function _render(vifToRender) {
+      if (vifToRender) {
+        _lastRenderedVif = vifToRender;
+      }
+      console.log('visualizationData', visualizationData)
+      visualization.render(
+        visualizationData,
+        _getRenderOptions(_lastRenderedVif)
       );
     }
 
@@ -341,19 +369,67 @@
       );
     }
 
-    //function _handleDatumSelect() {// event) { ---> Linting sucks
-    //
-    //  // var payload = event.originalEvent.detail;
-    //
-    //  // TODO: Implement.
-    //}
+    function _handleSelection(event) {
+      var payload = event.originalEvent.detail;
+      var newVif = _.cloneDeep(_lastRenderedVif);
+      var ownFilterStartEnd = newVif.
+        filters.
+        filter(function(filter) {
+          return filter.columnName === newVif.columnName && filter.function === 'timeRangeFilter';
+        }).map(function(filter) {
+          return filter.arguments;
+        });
 
-    //function _handleExpandedToggle() {// event) { ---> Linting sucks
-    //
-    //  // var payload = event.originalEvent.detail;
-    //
-    //  // TODO: Implement.
-    //}
+      newVif.filters = newVif.
+        filters.
+        filter(function(filter) {
+          return filter.columnName !== newVif.columnName;
+        });
+
+      if (
+        payload !== null &&
+        payload.hasOwnProperty('start') &&
+        payload.hasOwnProperty('end')
+      ) {
+
+        newVif.filters.push(
+          {
+            'columnName': newVif.columnName,
+            'function': 'timeRange',
+            'arguments': {
+              'start': payload.start.toISOString().substring(0, 19),
+              'end': payload.end.toISOString().substring(0, 19)
+            }
+          }
+        );
+      }
+
+      $element[0].dispatchEvent(
+        new window.CustomEvent(
+          'SOCRATA_VISUALIZATION_VIF_UPDATED',
+          {
+            detail: newVif,
+            bubbles: true
+          }
+        )
+      );
+    }
+
+    function _handleRenderVif(event) {
+      console.log('_handleRenderVif', event);
+      var newVif = event.originalEvent.detail;
+
+      if (newVif.type !== 'timelineChart') {
+        throw new Error(
+          'Cannot update VIF; old type: `timelineChart`, new type: `{0}`.'.
+            format(
+              newVif.type
+            )
+          );
+      }
+
+      _updateData(newVif);
+    }
 
     /**
      * Data requests
@@ -364,29 +440,31 @@
       visualization.renderError();
     }
 
-    function _updateData() {
 
+    function _updateData(vifToRender) {
       var precisionQueryString = PRECISION_QUERY.format(
-        vif.columnName,
+        vifToRender.columnName,
         MAX_LEGAL_JAVASCRIPT_DATE_STRING,
         SOQL_PRECISION_START_ALIAS,
         SOQL_PRECISION_END_ALIAS
       );
 
-      var precisionPromise = vif.configuration.precision ?
-        Promise.resolve(vif.configuration.precision) :
+      var precisionPromise = vifToRender.configuration.precision ?
+        Promise.resolve(vifToRender.configuration.precision) :
         precisionSoqlDataProvider.
-          getRows('$query=' + precisionQueryString).
-          then(mapQueryResponseToPrecision);
+        getRows(
+          [ SOQL_PRECISION_START_ALIAS, SOQL_PRECISION_END_ALIAS ],
+          '$query=' + precisionQueryString
+        ).
+        then(mapQueryResponseToPrecision);
 
       var dataPromise = precisionPromise.
-        then(mapPrecisionToDataQuery).
-        then(mapQueryToPromises);
+      then(mapPrecisionToDataQuery).
+      then(mapQueryToPromises);
 
       Promise.all([ dataPromise, precisionPromise ]).
-        then(renderDataFromPromises)['catch'](function(e) {
-          handleError(e);
-        });
+      then(renderDataFromPromises)
+        ['catch'](handleError);
 
       function mapQueryResponseToPrecision(response) {
         var startIndex = _.indexOf(response.columns, SOQL_PRECISION_START_ALIAS);
@@ -401,12 +479,12 @@
 
         if (!domain.start.isValid()) {
           domain.start = null;
-          console.warn('Invalid start date on {0} ({1})'.format(vif.columnName, domainStartDate));
+          console.warn('Invalid start date on {0} ({1})'.format(vifToRender.columnName, domainStartDate));
         }
 
         if (!domain.end.isValid()) {
           domain.end = null;
-          console.warn('Invalid end date on {0} ({1})'.format(vif.columnName, domainEndDate));
+          console.warn('Invalid end date on {0} ({1})'.format(vifToRender.columnName, domainEndDate));
         }
 
         // Return undefined if the domain is undefined, null, or malformed
@@ -426,8 +504,8 @@
         // like 40ms).
         if (domain.start.add('years', 1).isAfter(domain.end)) {
           precision = 'DAY';
-        // We're actually checking for 20 years but have already added one
-        // to the original domain start date in the if block above.
+          // We're actually checking for 20 years but have already added one
+          // to the original domain start date in the if block above.
         } else if (domain.start.add('years', 19).isAfter(domain.end)) {
           precision = 'MONTH';
         } else {
@@ -437,41 +515,60 @@
         return precision;
       }
 
-      function mapPrecisionToDataQuery(precisionVal) {
-        var dateTruncFunction;
-        switch (precisionVal) {
+      function mapPrecisionToDataQuery(precision) {
+        var date_trunc_function;
+
+        switch (precision) {
           case 'YEAR':
-            dateTruncFunction = 'date_trunc_y';
+            date_trunc_function = 'date_trunc_y';
             break;
           case 'MONTH':
-            dateTruncFunction = 'date_trunc_ym';
+            date_trunc_function = 'date_trunc_ym';
             break;
           case 'DAY':
-            dateTruncFunction = 'date_trunc_ymd';
+            date_trunc_function = 'date_trunc_ymd';
             break;
           default:
-            throw 'precision was invalid: {0}'.format(precisionVal);
+            throw 'precision was invalid: {0}'.format(precision);
         }
 
-        return DATA_QUERY.format(
-          vif.columnName,
-          SOQL_DATA_PROVIDER_NAME_ALIAS,
-          SOQL_DATA_PROVIDER_VALUE_ALIAS,
-          dateTruncFunction,
-          MAX_LEGAL_JAVASCRIPT_DATE_STRING
+        return (
+          DATA_QUERY_PREFIX.format(
+            vifToRender.columnName,
+            SOQL_DATA_PROVIDER_NAME_ALIAS,
+            SOQL_DATA_PROVIDER_VALUE_ALIAS,
+            date_trunc_function
+          ) +
+          ' {0} ' +
+          DATA_QUERY_SUFFIX.format(SOQL_DATA_PROVIDER_NAME_ALIAS)
         );
       }
 
       function mapQueryToPromises(dataQueryString) {
-        var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)['catch'](function(e) {
-            handleError(e);
-          });
+        var unfilteredWhereClause = '{0} {1}'.format(
+          DATA_QUERY_WHERE_CLAUSE_PREFIX,
+          DATA_QUERY_WHERE_CLAUSE_SUFFIX.format(vifToRender.columnName, MAX_LEGAL_JAVASCRIPT_DATE_STRING)
+        );
+        var whereClauseFilterComponents = SoqlHelpers.whereClauseNotFilteringOwnColumn(vifToRender);
+        var filteredWhereClause = '{0} {1} {2} {3}'.format(
+          DATA_QUERY_WHERE_CLAUSE_PREFIX,
+          whereClauseFilterComponents,
+          (whereClauseFilterComponents.length > 0) ? 'AND' : '',
+          DATA_QUERY_WHERE_CLAUSE_SUFFIX.format(vifToRender.columnName, MAX_LEGAL_JAVASCRIPT_DATE_STRING)
+        );
 
+        var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
+        query(
+          dataQueryString.format(unfilteredWhereClause),
+          SOQL_DATA_PROVIDER_NAME_ALIAS,
+          SOQL_DATA_PROVIDER_VALUE_ALIAS
+        )['catch'](handleError);
         var filteredSoqlQuery = filteredSoqlDataProvider.
-          query(dataQueryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)['catch'](function(e) {
-            handleError(e);
-          });
+        query(
+          dataQueryString.format(filteredWhereClause),
+          SOQL_DATA_PROVIDER_NAME_ALIAS,
+          SOQL_DATA_PROVIDER_VALUE_ALIAS
+        )['catch'](handleError);
 
         return Promise.all([unfilteredSoqlQuery, filteredSoqlQuery]);
       }
@@ -488,66 +585,76 @@
           precision
         );
 
-        visualization.render(
-          visualizationData,
-          _getRenderOptions()
-        );
+        _render(vifToRender);
       }
     }
 
-    function _mergeUnfilteredAndFilteredData(unfiltered, filtered, precisionVal) {
 
-      var unfilteredAsHash;
-      //var filteredAsHash;
+    function _mergeUnfilteredAndFilteredData(unfiltered, filtered, precision) {
 
-      unfilteredAsHash = _.indexBy(
+      var unfilteredAsHash = _.indexBy(
         unfiltered.rows,
         unfiltered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
       );
-
-      //filteredAsHash = _.indexBy(
-      //  filtered.rows,
-      //  filtered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
-      //);
-
+      var filteredAsHash = _.indexBy(
+        filtered.rows,
+        filtered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
+      );
       var dates = Object.keys(unfilteredAsHash).map(function(date) {
         return moment((_.isNull(date) || _.isUndefined(date)) ? '' : date);
       });
       var timeStart = _.min(dates);
       var timeEnd = _.max(dates);
-      var timeData = Array(timeEnd.diff(timeStart, precisionVal));
+      var timeData = Array(timeEnd.diff(timeStart, precision));
       _.each(unfiltered.rows, function(item) {
         var date = item[DATE_INDEX];
-        date = moment((_.isNull(date) || _.isUndefined(date)) ? '' : date);
-        var timeSlot = date.diff(timeStart, precisionVal);
+        var dateAsMoment = moment((_.isNull(date) || _.isUndefined(date)) ? '' : date);
+        var timeSlot = dateAsMoment.diff(timeStart, precision);
 
         // Default to null in case we don't receive a value associated with
         // this date. If we do not, the result of Number(item.value) is NaN
         // and the timeline chart breaks because it tries to use NaN to
         // calculate the height of the chart.
-        var itemValue = !_.isUndefined(item[UNFILTERED_INDEX]) ?
+        var unfilteredValue = !_.isUndefined(item[UNFILTERED_INDEX]) ?
           Number(item[UNFILTERED_INDEX]) :
           null;
 
+        var filteredValue;
+        // If the filtered value exists, use it.
+        if (filteredAsHash.hasOwnProperty(item[DATE_INDEX])) {
+          filteredValue = Number(filteredAsHash[item[DATE_INDEX]][1])
+        } else {
+          // If the filtered value does not exist but the unfiltered value for
+          // the same date interval exists, then the value has just been filtered
+          // and we should show '0'.
+          if (!_.isUndefined(item[UNFILTERED_INDEX])) {
+            filteredValue = 0;
+            // If the unfiltered value for the same date interval does not exist,
+            // then the value should actually be rendered as being null.
+          } else {
+            filteredValue = null;
+          }
+        }
+
         timeData[timeSlot] = {
-          date: date,
-          filtered: itemValue,
-          total: itemValue
+          date: dateAsMoment,
+          filtered: filteredValue,
+          total: unfilteredValue
         };
       });
 
       return transformChartDataForRendering(
-          _.map(timeData, function(item, i) {
-            if (_.isUndefined(item)) {
-              item = {
-                date: moment(timeStart, moment.ISO_8601).add(i, precisionVal),
-                filtered: null,
-                total: null
-              };
-            }
-            return item;
-          })
-        );
+        _.map(timeData, function(item, i) {
+          if (_.isUndefined(item)) {
+            item = {
+              date: moment(timeStart, moment.ISO_8601).add(i, precision),
+              filtered: null,
+              total: null
+            };
+          }
+          return item;
+        })
+      );
     }
 
     function _logError(error) {

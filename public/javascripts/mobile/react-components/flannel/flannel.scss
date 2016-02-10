@@ -1,0 +1,21 @@
+body.is-mobile.is-modal-open {
+  overflow: hidden;
+  padding-right: 15px;
+}
+
+#qfb-flannel-overlay {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #000;
+  z-index: 2000;
+  opacity: 0;
+}
+
+@media all and (max-width: 600px) {
+  #qfb-flannel-overlay {
+    opacity: 0.7;
+  }
+}

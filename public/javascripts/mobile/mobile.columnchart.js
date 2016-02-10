@@ -28,7 +28,16 @@ socrata.visualizations.mobileColumnChart = function(values, $target) {
     'createdAt': '2014-01-01T00:00:00',
     'datasetUid': DATASET_UID,
     'domain': DOMAIN,
-    'filters': [],
+    'filters': [
+      {
+        columnName: 'year',
+        function: 'valueRange',
+        arguments: {
+          start: 1990,
+          end: 2015
+        }
+      }
+    ],
     'format': {
       'type': 'visualization_interchange_format',
       'version': 1

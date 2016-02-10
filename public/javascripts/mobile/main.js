@@ -1,13 +1,18 @@
 (function() {
   'use strict';
 
-  var DOMAIN = window.location.hostname;
-  //var DOMAIN = 'dataspace.demo.socrata.com'; // For local development
-  var PAGE_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
-  //var PAGE_UID = 'rewx-rnbf';
+  //var DOMAIN = window.location.hostname;
+  var DOMAIN = 'dataspace.demo.socrata.com'; // For local development
+  //var PAGE_UID = window.location.pathname.match(/\w{4}\-\w{4}/)[0];
+  var PAGE_UID = 'rewx-rnbf';
   var DATASET_UID;
   var cardsData;
   var cardsMetaData;
+
+  $(document).on('socrata/qfb/appliedFilters', function(e, data) {
+    console.log('Broadcast message for applied filters:');
+    console.log(data.filters);
+  });
 
   function getPageData() {
     return $.get(window.location.protocol + '//' + DOMAIN + '/views/' + PAGE_UID);
@@ -19,6 +24,39 @@
       DATASET_UID = data.displayFormat.data_lens_page_metadata.datasetId;
       cardsData = data.displayFormat.data_lens_page_metadata.cards;
       cardsMetaData = data.columns;
+
+      var aFilterOps = [];
+      for (var key in cardsMetaData) {
+        var filterOption = {};
+        switch (cardsMetaData[key].dataTypeName) {
+          case 'text':
+            filterOption = {
+              filterName: cardsMetaData[key].name,
+              name: key,
+              id: cardsMetaData[key].position,
+              type: 'string'
+            };
+            aFilterOps.push(filterOption);
+            break;
+          case 'number':
+            filterOption = {
+              filterName: cardsMetaData[key].name,
+              name: key,
+              id: cardsMetaData[key].position,
+              type: 'int'
+            };
+            aFilterOps.push(filterOption);
+            break;
+          default:
+            break;
+        }
+      }
+
+      var filterOptions = {
+        filterOps: aFilterOps
+      };
+      $(document).trigger('socrata/qfb/filterOps',[filterOptions, DOMAIN, DATASET_UID]);
+
       renderCards(cardsData, cardsMetaData);
     });
   }
@@ -70,40 +108,40 @@
 
           socrata.visualizations.mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
           break;
-        case 'feature':
-          cardOptions.id = 'feature-map';
-          cardOptions.containerClass = 'map-container';
-          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          values = {
-            domain: DOMAIN,
-            uid: DATASET_UID,
-            columnName: card.fieldName
-          };
+        // case 'feature':
+        //   cardOptions.id = 'feature-map';
+        //   cardOptions.containerClass = 'map-container';
+        //   $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+        //   values = {
+        //     domain: DOMAIN,
+        //     uid: DATASET_UID,
+        //     columnName: card.fieldName
+        //   };
 
-          socrata.visualizations.mobileFeatureMap(values, $cardContainer.find('#feature-map'));
-          break;
-        case 'choropleth':
-          cardOptions.id = 'choropleth';
-          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          values = {
-            domain: DOMAIN,
-            uid: DATASET_UID,
-            columnName: card.fieldName
-          };
+        //   socrata.visualizations.mobileFeatureMap(values, $cardContainer.find('#feature-map'));
+        //   break;
+        // case 'choropleth':
+        //   cardOptions.id = 'choropleth';
+        //   $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+        //   values = {
+        //     domain: DOMAIN,
+        //     uid: DATASET_UID,
+        //     columnName: card.fieldName
+        //   };
 
-          socrata.visualizations.mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
-          break;
-        case 'column':
-          cardOptions.id = 'column-chart';
-          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          values = {
-            domain: DOMAIN,
-            uid: DATASET_UID,
-            columnName: card.fieldName
-          };
+        //   socrata.visualizations.mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
+        //   break;
+        // case 'column':
+        //   cardOptions.id = 'column-chart';
+        //   $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+        //   values = {
+        //     domain: DOMAIN,
+        //     uid: DATASET_UID,
+        //     columnName: card.fieldName
+        //   };
 
-          socrata.visualizations.mobileColumnChart(values, $cardContainer.find('#column-chart'));
-          break;
+        //   socrata.visualizations.mobileColumnChart(values, $cardContainer.find('#column-chart'));
+        //   break;
         default:
           break;
       }

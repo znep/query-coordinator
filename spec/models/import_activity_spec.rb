@@ -81,6 +81,20 @@ describe ImportActivity do
       expect { ImportActivity.find('nonexistent-activity-id') }
         .to raise_exception(ImportStatusService::ResourceNotFound)
     end
+
+    it 'sets initiated_by and dataset to nil if they aren\'t found' do
+      allow(ImportStatusService).to receive(:get)
+        .with('/activity/c02d8b44-269a-4891-a872-6020d39e887d')
+        .and_return(JSON::parse(File.read("#{fixture_prefix}/activity_show_response_nonexistent_view_user.json")))
+
+      allow(View).to receive(:find).and_raise(CoreServer::ResourceNotFound.new(nil))
+      allow(User).to receive(:find_profile).and_raise(CoreServer::ResourceNotFound.new(nil))
+
+      activity = ImportActivity.find('c02d8b44-269a-4891-a872-6020d39e887d')
+      expect(activity.initiated_by).to be_nil
+      expect(activity.dataset).to be_nil
+    end
+
   end
 
   describe '#id' do

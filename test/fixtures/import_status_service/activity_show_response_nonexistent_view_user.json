@@ -1,0 +1,12 @@
+{
+  "id": "c02d8b44-269a-4891-a872-6020d39e887d",
+  "created_at": "2016-01-21T22:04:21.896Z",
+  "activity_type": "Import",
+  "user_id": "tugg-ikcu",
+  "service": "DeltaImporter2",
+  "entity_type": "Dataset",
+  "entity_id": "dzuq-scr9",
+  "activity_name": "UFO_Test_7.csv.sdiff",
+  "domain": "localhost",
+  "status": "Failure"
+}

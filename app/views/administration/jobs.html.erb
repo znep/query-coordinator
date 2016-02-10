@@ -39,7 +39,7 @@
           <td><%= t("#{jobs_prefix}.actions.#{activity.activity_type}") %></td>
           <td>
             <% if activity.dataset.nil? %>
-              <%= "(#{t("#{jobs_prefix}.index_page.deleted_dataset")})" %>
+              (<%= t("#{jobs_prefix}.index_page.deleted_dataset") %>)
             <% else %>
               <%= link_to activity.dataset.name, view_path(activity.dataset) %>
             <% end %>

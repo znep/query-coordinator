@@ -297,175 +297,12 @@ module DatasetsHelper
     params.fetch('$$force_editable', 'false') == 'true'
   end
 
-  def hide_redirect?
-    return false if force_editable?
-
-    !view.is_published? || !view.is_blist? || !view.can_edit? || current_user.blank? || view.is_immutable?
-  end
-
-  def hide_add_column?
-    !view.is_unpublished? || !view.is_blist? || !view.has_rights?(ViewRights::ADD_COLUMN) || view.is_immutable? || view.geoParent.present?
-  end
-
-  def hide_append_replace?
-    # If the dataset is new_backend, it will never be blobby.
-    #  It will not (yet) be geo. It will not (yet) be unpublished.
-    [ !view.is_unpublished? && !view.is_geo? && !view.is_blobby?,
-      hide_append_replace_for_nbe_geo?,
-      view.is_href?,
-      !view.flag?('default') && !view.is_geo?, # Allow Mondara maps to be editable.
-      view.geoParent.present?,
-      !view.has_rights?(ViewRights::ADD)
-    ].any?
-  end
-
-  def hide_append_replace_for_nbe_geo?
-    [
-      [ view.new_backend?,
-        !view.is_geo?,
-        FeatureFlags.derive(view, request).ingress_strategy == 'obe'
-      ].all?,
-      [ view.new_backend?,
-        view.is_geo?,
-        !FeatureFlags.derive(view, request).geo_imports_to_nbe_enabled
-      ].all?
-    ].any?
-  end
-
-  def hide_export_section?(section)
-    return true if view.geoParent.present?
-
-    case section
-      when :print then !view.can_print? || view.new_backend?
-      when :download then (view.non_tabular? && !view.is_geo?) || view.is_form?
-      when :api then view.non_tabular?
-      when :odata then view.non_tabular? || view.is_alt_view? || view.new_backend?
-      when :subscribe then !view.is_published? || view.non_tabular? || view.is_api? || view.is_form?
-      else false
-    end
-  end
-
-  def hide_embed_sdp?
-    [ !view.is_published?,
-      view.is_api?,
-      view.geoParent.present?,
-      view.new_backend? && FeatureFlags.derive(view, request).reenable_ui_for_nbe === false
-    ].any?
-  end
-
   def row_identifier_select_tag(disabled = false)
     select_tag(
       'view[metadata[rowIdentifier]]',
       rdf_subject_select_options(view.columns, h(view.metadata.try(:rowIdentifier).to_s)),
       :disabled => disabled
     )
-  end
-
-  def hide_conditional_formatting?
-    view.is_unpublished? || view.non_tabular? || view.is_form? || view.is_api? || view.geoParent.present?
-  end
-
-  # LOLWUT
-  def hide_form_create?
-    !view.is_published? || (view.non_tabular? && !view.is_form?) || view.is_api? || view.geoParent.present? ||
-    view.is_grouped? ||
-    (
-      (
-        !view.owned_by?(current_user) || view.parent_dataset.nil? || !view.parent_dataset.owned_by?(current_user)
-      ) &&
-      !CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
-    )
-  end
-
-  def hide_api_foundry?
-    # CORE-3871: michael.chui@socrata.com was too lazy to actually rip out all the appropriate pieces.
-    if FeatureFlags.derive(view, request).enable_api_foundry_pane
-      !module_enabled?(:api_foundry) || (!view.is_blist? && !view.is_api?) ||
-        !view.is_published? || !view.has_rights?(ViewRights::UPDATE_VIEW) || !view.can_publish? ||
-        view.new_backend? || view.is_arcgis? || view.geoParent.present?
-    else
-      true
-    end
-  end
-
-  # Note: This controls visibility of columnOrder, not to be confused with the aptly named "manage.columnOrder" config. :-/
-  def hide_update_column?
-    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_api? || view.geoParent.present?
-  end
-
-  def hide_show_hide_columns?
-    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_geo?
-  end
-
-  def hide_sharing?
-    view.is_snapshotted? || !view.has_rights?(ViewRights::GRANT) || view.geoParent.present?
-  end
-
-  def hide_permissions?
-    view.is_snapshotted? || !view.has_rights?(ViewRights::UPDATE_VIEW) || view.geoParent.present?
-  end
-
-  def hide_plagiarize?
-    !CurrentDomain.user_can?(current_user, UserRights::CHOWN_DATASETS) || view.geoParent.present?
-  end
-
-  def hide_delete_dataset?
-    !view.has_rights?(ViewRights::DELETE_VIEW) || view.geoParent.present?
-  end
-
-  def hide_filter_dataset?
-    view.non_tabular? || view.is_form? || view.is_insecure_arcgis? || view.geoParent.present?
-  end
-
-  def hide_calendar_create?
-    view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('calendar') || view.geoParent.present?
-  end
-
-  def hide_chart_create?
-    view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('chart') || view.geoParent.present?
-  end
-
-  def hide_data_lens_create?
-    # (Replicating the logic from canUpdateMetadata in dataset-show.js)
-    # Always hide if current_user doesn't exist (spooooky)
-    return true if !current_user || view.is_unpublished? || !view.dataset? || view.geoParent.present?
-
-    if !FeatureFlags.derive(view, request).create_v2_data_lens
-      # for v1 data lenses, hide unless current_user is admin or publisher
-      !CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
-    else
-      # otherwise hide if current_user doesn't have any rights
-      # (i.e. doesn't have a domain role)
-      current_user.rights.blank?
-    end
-  end
-
-  def hide_map_create?
-    [ view.is_unpublished?,
-      view.geoParent.present?,
-      view.is_alt_view? && !view.available_display_types.include?('map'),
-      view.is_grouped?
-    ].any?
-  end
-
-  def hide_cell_feed?
-    !view.module_enabled?('cell_comments') || !view.is_published? || view.is_api? || view.geoParent.present?
-  end
-
-  def hide_discuss?
-    !view.is_published? || view.is_api? || view.geoParent.present?
-  end
-
-  def hide_about?
-    view.is_href? || view.is_blobby? && view.display.display_type == 'link'
-  end
-
-  def hide_more_views_views?
-    !view.is_published? || (view.non_tabular? && !view.is_geo?) || view.geoParent.present?
-  end
-
-  def hide_more_views_snapshots?
-    view.new_backend? || view.is_unpublished? || !view.flag?('default') || view.is_arcgis? || view.is_geo?
   end
 
   def show_save_as_button?
@@ -573,6 +410,273 @@ module DatasetsHelper
 
   def row_label
     view.metadata.try(:rowLabel) || t('screens.edit_metadata.default_row_label')
+  end
+
+  private
+
+  # all of the hide_* methods are invoked only by sidebar_hidden.
+
+  def hide_redirect?
+    return false if force_editable?
+
+    [
+      !view.is_published?,
+      !view.is_blist?,
+      !view.can_edit?,
+      current_user.blank?,
+      view.is_immutable?
+    ].any?
+  end
+
+  def hide_add_column?
+    [
+      !view.is_unpublished?,
+      !view.is_blist?,
+      !view.has_rights?(ViewRights::ADD_COLUMN),
+      view.is_immutable?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_append_replace?
+    # If the dataset is new_backend, it will never be blobby.
+    #  It will not (yet) be geo. It will not (yet) be unpublished.
+    [
+      !view.is_unpublished? && !view.is_geo? && !view.is_blobby?,
+      hide_append_replace_for_nbe_geo?,
+      view.is_href?,
+      !view.flag?('default') && !view.is_geo?, # Allow Mondara maps to be editable.
+      view.geoParent.present?,
+      !view.has_rights?(ViewRights::ADD)
+    ].any?
+  end
+
+  def hide_append_replace_for_nbe_geo?
+    return false unless view.new_backend?
+
+    [
+      !view.is_geo? && FeatureFlags.derive(view, request).ingress_strategy == 'obe',
+      view.is_geo? && !FeatureFlags.derive(view, request).geo_imports_to_nbe_enabled
+    ].any?
+  end
+
+  def hide_export_section?(section)
+    return true if view.geoParent.present?
+
+    case section
+      when :print
+        [
+          !view.can_print?,
+          view.new_backend?
+        ].any?
+      when :download
+        [
+          view.non_tabular? && !view.is_geo?,
+          view.is_form?
+        ].any?
+      when :api
+        view.non_tabular?
+      when :odata
+        [
+          view.non_tabular?,
+          view.is_alt_view?,
+          view.new_backend?
+        ].any?
+      when :subscribe
+        [
+          !view.is_published?,
+          view.non_tabular?,
+          view.is_api?,
+          view.is_form?
+        ].any?
+    end
+  end
+
+  def hide_embed_sdp?
+    [
+      !view.is_published?,
+      view.is_api?,
+      view.geoParent.present?,
+      view.new_backend? && FeatureFlags.derive(view, request).reenable_ui_for_nbe === false
+    ].any?
+  end
+
+  def hide_conditional_formatting?
+    [
+      view.is_unpublished?,
+      view.non_tabular?,
+      view.is_form?,
+      view.is_api?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_form_create?
+    current_user_does_not_own = [
+      !view.owned_by?(current_user),
+      view.parent_dataset && !view.parent_dataset.owned_by?(current_user)
+    ].any?
+
+    [
+      !view.is_published?,
+      view.non_tabular? && !view.is_form?,
+      view.is_api?,
+      view.geoParent.present?,
+      view.is_grouped?,
+      current_user_does_not_own && !CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
+    ].any?
+  end
+
+  def hide_api_foundry?
+    return true unless FeatureFlags.derive(view, request).enable_api_foundry_pane
+
+    [
+      !module_enabled?(:api_foundry),
+      !view.is_blist? && !view.is_api?,
+      !view.is_published?,
+      !view.has_rights?(ViewRights::UPDATE_VIEW),
+      !view.can_publish?,
+      view.new_backend?,
+      view.is_arcgis?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  # Note: This controls visibility of columnOrder, not to be confused with the aptly named "manage.columnOrder" config. :-/
+  def hide_update_column?
+    [
+      view.is_snapshotted?,
+      view.non_tabular?,
+      view.is_form?,
+      view.is_api?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_show_hide_columns?
+    [
+      view.is_snapshotted?,
+      view.non_tabular?,
+      view.is_form?,
+      view.is_geo?
+    ].any?
+  end
+
+  def hide_sharing?
+    [
+      view.is_snapshotted?,
+      !view.has_rights?(ViewRights::GRANT),
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_permissions?
+    [
+      view.is_snapshotted?,
+      !view.has_rights?(ViewRights::UPDATE_VIEW),
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_plagiarize?
+    [
+      !CurrentDomain.user_can?(current_user, UserRights::CHOWN_DATASETS),
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_delete_dataset?
+    [
+      !view.has_rights?(ViewRights::DELETE_VIEW),
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_filter_dataset?
+    [
+      view.non_tabular?,
+      view.is_form?,
+      view.is_insecure_arcgis?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_calendar_create?
+    [
+      view.is_unpublished?,
+      view.is_alt_view? && !view.available_display_types.include?('calendar'),
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_chart_create?
+    [
+      view.is_unpublished?,
+      view.is_alt_view? && !view.available_display_types.include?('chart'),
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_map_create?
+    [
+      view.is_unpublished?,
+      view.is_alt_view? && !view.available_display_types.include?('map'),
+      view.is_grouped?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_data_lens_create?
+    return true unless current_user
+
+    [
+      current_user.rights.blank?,
+      view.is_unpublished?,
+      !view.dataset?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_cell_feed?
+    [
+      !view.module_enabled?('cell_comments'),
+      !view.is_published?,
+      view.is_api?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_discuss?
+    [
+      !view.is_published?,
+      view.is_api?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_about?
+    [
+      view.is_href?,
+      view.is_blobby? && view.display.display_type == 'link'
+    ].any?
+  end
+
+  def hide_more_views_views?
+    [
+      !view.is_published?,
+      view.non_tabular? && !view.is_geo?,
+      view.geoParent.present?
+    ].any?
+  end
+
+  def hide_more_views_snapshots?
+    [
+      view.new_backend?,
+      view.is_unpublished?,
+      !view.flag?('default'),
+      view.is_arcgis?,
+      view.is_geo?
+    ].any?
   end
 
 end

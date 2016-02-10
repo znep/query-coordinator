@@ -1,6 +1,8 @@
-<button class="btn-linear-mode icon-stories-icon" title="<%= t('preview_mode.linear_mode.title') %>" disabled></button>
-<button class="btn-presentation-mode icon-presentation" title="<%= t('preview_mode.presentation_mode.title') %>"></button>
-<div class="presentation-navigation hidden">
-  <button class="btn-presentation-previous icon-arrow-prev" title="<%= t('preview_mode.presentation_mode.previous') %>"></button>
-  <button class="btn-presentation-next icon-arrow-next" title="<%= t('preview_mode.presentation_mode.next') %>"></button>
+<div class="actions-bar">
+  <% if can_edit_story? && is_published_view? -%>
+    <button class="btn-edit icon-edit" title="Edit This Story"></button>
+  <% end -%>
+  <button class="btn-presentation-previous icon-arrow-left hidden" title="<%= t('preview_mode.presentation_mode.previous') %>"></button>
+  <button class="btn-presentation-next icon-arrow-right hidden" title="<%= t('preview_mode.presentation_mode.next') %>"></button>
+  <button class="btn-presentation-mode icon-presentation" title="<%= t('preview_mode.presentation_mode.title') %>"></button>
 </div>

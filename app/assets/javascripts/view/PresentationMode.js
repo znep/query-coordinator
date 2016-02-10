@@ -31,36 +31,71 @@
     }
 
     function attachEvents() {
+      var editButton = document.querySelector('.btn-edit');
+
+      if (editButton) {
+        editButton.addEventListener('click', editPage);
+      }
+
       document.documentElement.addEventListener('keyup', pageOrClose);
       document.querySelector('.btn-presentation-next').addEventListener('click', pageNext);
       document.querySelector('.btn-presentation-previous').addEventListener('click', pagePrevious);
       document.querySelector('.btn-presentation-mode').addEventListener('click', enablePresentationMode);
-      document.querySelector('.btn-linear-mode').addEventListener('click', enableLinearMode);
+    }
+
+    function editPage() {
+      var slash = window.location.href.lastIndexOf('/') === window.location.href.length - 1 ?  '' : '/';
+      window.location = window.location.href + slash + 'edit';
     }
 
     function enablePresentationMode() {
-      document.querySelector('.user-story').classList.add('presentation-mode');
-      document.querySelector('.btn-presentation-mode').setAttribute('disabled', 'disabled');
-      document.querySelector('.btn-linear-mode').removeAttribute('disabled');
+      var userStory = document.querySelector('.user-story');
 
-      blocks.forEach(function(block) {
-        var index = parseInt(block.getAttribute('data-page-index'));
-        block.classList.toggle('hidden', index !== 0);
-      });
+      if (userStory.classList.contains('presentation-mode')) {
+        enableLinearMode();
+      } else {
+        var editButton = document.querySelector('.btn-edit');
+        var presentationModeButton = document.querySelector('.btn-presentation-mode');
 
-      document.querySelector('.presentation-navigation').classList.remove('hidden');
+        userStory.classList.add('presentation-mode');
+
+        presentationModeButton.classList.remove('icon-presentation');
+        presentationModeButton.classList.add('icon-cross2');
+
+
+        if (editButton) {
+          editButton.classList.add('hidden');
+        }
+
+        blocks.forEach(function(block) {
+          var index = parseInt(block.getAttribute('data-page-index'));
+          block.classList.toggle('hidden', index !== 0);
+        });
+
+        document.querySelector('.btn-presentation-previous').classList.remove('hidden');
+        document.querySelector('.btn-presentation-next').classList.remove('hidden');
+      }
     }
 
     function enableLinearMode() {
+      var editButton = document.querySelector('.btn-edit');
+      var presentationModeButton = document.querySelector('.btn-presentation-mode');
+
       document.querySelector('.user-story').classList.remove('presentation-mode');
-      document.querySelector('.btn-linear-mode').setAttribute('disabled', 'disabled');
-      document.querySelector('.btn-presentation-mode').removeAttribute('disabled');
+
+      if (editButton) {
+        editButton.classList.remove('hidden');
+      }
+
+      presentationModeButton.classList.remove('icon-cross2');
+      presentationModeButton.classList.add('icon-presentation');
 
       blocks.forEach(function(block) {
         block.classList.remove('hidden');
       });
 
-      document.querySelector('.presentation-navigation').classList.add('hidden');
+      document.querySelector('.btn-presentation-previous').classList.add('hidden');
+      document.querySelector('.btn-presentation-next').classList.add('hidden');
 
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
@@ -97,7 +132,7 @@
       if (isPresenting) {
         // 27 == ESC, 37 == <-, 39 == ->
         if (key === 27) {
-          document.querySelector('.btn-linear-mode').click();
+          enableLinearMode();
         } else if (key === 37) {
           pagePrevious();
         } else if (key === 39) {
@@ -106,7 +141,7 @@
       } else {
         // 80 == p
         if (key === 80) {
-          document.querySelector('.btn-presentation-mode').click();
+          presentationMode();
         }
       }
     }

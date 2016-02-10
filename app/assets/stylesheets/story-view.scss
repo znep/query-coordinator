@@ -216,27 +216,34 @@
     }
   }
 
-  .btn-presentation-mode,
-  .btn-linear-mode,
-  .presentation-navigation {
+  .actions-bar {
     position: fixed;
-    right: 0;
+    bottom: $view-mode-button-width;
+    right: 10px;
     z-index: 10;
   }
 
+  .actions-bar {
+    box-shadow: 0 0 10px #ccc;
+
+    .btn-edit {
+      border-bottom: none;
+    }
+  }
+
+  .btn-edit,
   .btn-presentation-mode,
-  .btn-linear-mode,
   .btn-presentation-next,
   .btn-presentation-previous {
+    display: block;
     background-color: $view-mode-button-background-color;
     color: $view-mode-button-color;
-    border: none;
+    border: solid 1px $view-mode-button-border-color;
     width: $view-mode-button-width;
     height: $view-mode-button-width;
     padding: 0;
     font-size: $presentation-mode-button-font-size;
     border-radius: 0;
-    right: 0;
     text-align: center;
     transition: color 0.2s;
 
@@ -245,19 +252,42 @@
     }
 
     &:hover {
-      color: $view-mode-button-disabled-color;
+      background-color: darken($view-mode-button-background-color, 8%);
     }
 
     &:disabled {
       cursor: default;
-      background-color: $view-mode-button-disabled-background-color;
-      color: $view-mode-button-disabled-color;
+      box-shadow: inset 0 0 8px #bdbdbd;
+      background: $view-mode-button-background-color;
+    }
+  }
+
+  .btn-edit,
+  .btn-presentation-previous,
+  .btn-presentation-next {
+    opacity: 1;
+    transition: opacity 0.15s;
+
+    &.hidden {
+      &::before {
+        display: none;
+      }
+
+      display: block !important;
+      border: 0 !important;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+      opacity: 0;
     }
   }
 
   .btn-presentation-next,
   .btn-presentation-previous {
+    display: inline-block;
     background-color: $view-mode-button-disabled-background-color;
+    border-color: $view-mode-button-disabled-background-color;
+    border-top: solid 1px $view-mode-button-disabled-background-color;
     color: $view-mode-button-disabled-color;
     transition: background-color 0.2s;
 
@@ -266,25 +296,17 @@
     }
   }
 
-  .btn-linear-mode {
-    bottom: $view-mode-button-width * 2;
-  }
-
   .btn-presentation-mode {
-    bottom: $view-mode-button-width;
+    &.icon-cross2 {
+      display: inline-block;
+      float: right;
+      border-top: solid 1px $view-mode-button-border-color;
+      border-left: solid 1px $view-mode-button-disabled-background-color;
+    }
   }
 
   .btn-presentation-previous {
     float: left;
-  }
-
-  .presentation-navigation {
-    right: $view-mode-button-width;
-    bottom: $view-mode-button-width;
-
-    &.hidden {
-      display: none;
-    }
   }
 
   .profiler-results {

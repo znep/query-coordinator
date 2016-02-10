@@ -21,6 +21,57 @@
       "extra_options": null
     },
     {
+      "title": "View Types",
+      "param": "limitTo",
+      "options": [
+        {
+            "text": "Data Lens pages",
+            "value": "new_view",
+            "class": "typeDataLens"
+        },
+        {
+            "text": "Datasets",
+            "value": "datasets",
+            "class": "typeBlist"
+        },
+        {
+            "text": "Charts",
+            "value": "charts",
+            "class": "typeChart"
+        },
+        {
+            "text": "Maps",
+            "value": "maps",
+            "class": "typeMap"
+        },
+        {
+            "text": "Calendars",
+            "value": "calendars",
+            "class": "typeCalendar"
+        },
+        {
+            "text": "Filtered Views",
+            "value": "filters",
+            "class": "typeFilter"
+        },
+        {
+            "text": "External Datasets",
+            "value": "href",
+            "class": "typeHref"
+        },
+        {
+            "text": "Files and Documents",
+            "value": "blob",
+            "class": "typeBlob"
+        },
+        {
+            "text": "Forms",
+            "value": "forms",
+            "class": "typeForm"
+        }
+      ]
+    },
+    {
       "title": "Topics",
       "param": "tags",
       "options": [

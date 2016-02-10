@@ -76,9 +76,13 @@
     <p class="end-message">
       <%= t("#{jobs_prefix}.index_page.no_jobs") %>
     </p>
-  <% elsif @activities.length == ImportActivity::FEED_ITEMS_LIMIT %>
+  <% elsif @activities.length == JobsHelper::FEED_ITEMS_LIMIT %>
     <p class="end-message">
-      <%= t("#{jobs_prefix}.index_page.showing_most_recent", :limit => ImportActivity::FEED_ITEMS_LIMIT) %>
+      <%= t("#{jobs_prefix}.index_page.showing_most_recent", :limit => JobsHelper::FEED_ITEMS_LIMIT) %>
+    </p>
+  <% else %>
+    <p class="end-message">
+      <%= t("#{jobs_prefix}.index_page.showing_all_so_far", :limit => JobsHelper::FEED_ITEMS_LIMIT) %>
     </p>
   <% end %>
 </div>

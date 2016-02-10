@@ -83,17 +83,7 @@ $(function() {
         ];
     } else if (blist.dataset.displayType == 'story') {
             summaries = [
-                {
-                  id: 'summaryVisits',
-                  displayName: t('views_loaded'),
-                  summary: {
-                    plus: 'view-loaded',
-                    total: false,
-                    verbPhrase: t('pages_viewed'),
-                    verbPhraseSingular: t('page_viewed'),
-                    deltaPhrase: t('views_loaded')
-                  }
-                }
+              viewSummary
             ];
             charts = [
                 {

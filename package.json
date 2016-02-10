@@ -49,7 +49,8 @@
   },
   "eslintConfig": {
     "env": {
-      "browser": true
+      "browser": true,
+      "commonjs": true
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -132,10 +133,8 @@
       "d3": true,
       "jQuery": true,
       "L": true,
-      "module": true,
       "moment": true,
       "pbf": true,
-      "require": true,
       "socrata": true,
       "ss": true,
       "VBArray": true,

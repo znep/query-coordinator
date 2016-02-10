@@ -17,8 +17,15 @@ class StoriesController < ApplicationController
   helper_method :needs_view_assets?, :contributor?
 
   def show
-    @site_chrome = SiteChrome.for_current_domain
-    respond_with_story(PublishedStory.find_by_uid(params[:uid]))
+    # This param is set in the link provided to users who receive a collaboration request
+    # via email. In this case, we want to redirect them to the most privileged action they
+    # have access to.
+    if params['from_collaboration_email']
+      login_then_redirect_to_highest_privilege
+    else
+      @site_chrome = SiteChrome.for_current_domain
+      respond_with_story(PublishedStory.find_by_uid(params[:uid]))
+    end
   end
 
   def preview
@@ -297,6 +304,20 @@ class StoriesController < ApplicationController
     respond_to do |format|
       format.html { render 'stories/404', layout: '404', status: 404 }
       format.json { render json: {error: '404 Not Found'}, status: 404 }
+    end
+  end
+
+  def login_then_redirect_to_highest_privilege
+    if current_user.present?
+      if can_edit_story?
+        redirect_to :action => :edit
+      elsif can_view_unpublished_story?
+        redirect_to :action => :preview
+      else
+        redirect_to :action => :show
+      end
+    else
+      require_logged_in_user # Redirect them to login, then back here.
     end
   end
 end

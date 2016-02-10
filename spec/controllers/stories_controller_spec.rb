@@ -10,13 +10,83 @@ RSpec.describe StoriesController, type: :controller do
     allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
   end
 
+  describe '#show with param from_collaboration_email=true' do
+    context 'with an unpublished story' do
+      context 'for an unauthenticated user' do
+        before do
+          stub_invalid_session
+        end
+
+        it 'redirects to login' do
+          get :show, uid: 'unpu-blsh', from_collaboration_email: true
+          expect(response).to redirect_to '/login?return_to=%2Fs%2Funpu-blsh%3Ffrom_collaboration_email%3Dtrue'
+        end
+      end
+
+      context 'for a co-owner' do
+        before do
+          stub_valid_session
+          stub_current_user_story_authorization(mock_user_authorization_owner_publisher)
+        end
+
+        it 'redirects to #edit' do
+          get :show, uid: 'unpu-blsh', from_collaboration_email: true
+          expect(response).to redirect_to "/s/unpu-blsh/edit"
+        end
+      end
+
+      context 'for a collaborator' do
+        before do
+          stub_valid_session
+          stub_current_user_story_authorization(mock_user_authorization_collaborator)
+        end
+
+        it 'redirects to #edit' do
+          get :show, uid: 'unpu-blsh', from_collaboration_email: true
+          expect(response).to redirect_to "/s/unpu-blsh/edit"
+        end
+      end
+
+      context 'for a viewer' do
+        before do
+          stub_valid_session
+          stub_current_user_story_authorization(mock_user_authorization_viewer)
+        end
+
+        it 'redirects to #preview' do
+          get :show, uid: 'unpu-blsh', from_collaboration_email: true
+          expect(response).to redirect_to "/s/unpu-blsh/preview"
+        end
+      end
+
+      context 'for a unprivileged user' do
+        before do
+          stub_valid_session
+          stub_current_user_story_authorization(mock_user_authorization_unprivileged)
+        end
+
+        it 'redirects to #edit' do
+          get :show, uid: 'unpu-blsh', from_collaboration_email: true
+          expect(response).to redirect_to "/s/unpu-blsh"
+        end
+      end
+    end
+  end
+
   describe '#show' do
 
     before do
       stub_sufficient_rights
     end
 
-    context 'when there is a story with the given four by four' do
+    context 'when there is an unpublished story with the given four by four' do
+      it 'renders 404' do
+        get :show, uid: 'unpu-blsh'
+        expect(response).to be_not_found
+      end
+    end
+
+    context 'when there is a published story with the given four by four' do
 
       let(:story_revision) { FactoryGirl.create(:published_story) }
 
@@ -28,11 +98,6 @@ RSpec.describe StoriesController, type: :controller do
       it 'ignores vanity_text' do
         get :show, uid: story_revision.uid, vanity_text: 'haha'
         expect(assigns(:story)).to eq(story_revision)
-      end
-
-      it 'renders 404' do
-        get :show, uid: 'notf-ound'
-        expect(response).to be_not_found
       end
 
       it 'assigns the :story' do
@@ -95,9 +160,10 @@ RSpec.describe StoriesController, type: :controller do
 
       it 'renders 404' do
         get :show, uid: 'notf-ound'
-        expect(response).to have_http_status(404)
+        expect(response).to be_not_found
       end
     end
+
   end
 
   describe '#widget' do

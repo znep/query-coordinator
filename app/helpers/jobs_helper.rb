@@ -1,5 +1,7 @@
 module JobsHelper
 
+  FEED_ITEMS_LIMIT = 250
+
   def date_and_relative_day(time)
     "#{time.strftime('%d %b %Y at %H:%M:%S %Z')} (#{HumaneDateHelper.humane_date(time)})"
   end

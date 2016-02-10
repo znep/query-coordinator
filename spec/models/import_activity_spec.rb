@@ -30,7 +30,7 @@ describe ImportActivity do
   describe 'self.find_all_by_finished_at_descending' do
 
     before(:each) do
-      allow(ImportStatusService).to receive(:get).with('/activity').and_return(
+      allow(ImportStatusService).to receive(:get).with("/activity?limit=#{JobsHelper::FEED_ITEMS_LIMIT}").and_return(
         JSON::parse(File.read("#{fixture_prefix}/activity_index_response.json"))
       )
 
@@ -57,7 +57,7 @@ describe ImportActivity do
         ImportActivity.new(activities_fixtures[1], users[1], views[1])
       ]
 
-      expect(ImportActivity.find_all_by_created_at_descending).to eq(expected_activities)
+      expect(ImportActivity.find_all_by_created_at_descending(JobsHelper::FEED_ITEMS_LIMIT)).to eq(expected_activities)
     end
 
   end

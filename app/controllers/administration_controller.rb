@@ -893,7 +893,7 @@ class AdministrationController < ApplicationController
   # Jobs log
   #
   def jobs
-    @activities = ImportActivity.find_all_by_created_at_descending
+    @activities = ImportActivity.find_all_by_created_at_descending(JobsHelper::FEED_ITEMS_LIMIT)
   end
 
   def show_job

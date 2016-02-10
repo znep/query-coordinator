@@ -133,3 +133,10 @@ embedded_html_story = DraftStory.create(
   created_by: 'good-doer',
   theme: 'serif'
 )
+
+unpublished_story = DraftStory.create(
+  uid: 'unpu-blsh',
+  block_ids: [block_8.id],
+  created_by: 'good-doer',
+  theme: 'serif'
+)

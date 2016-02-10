@@ -4,7 +4,7 @@ RSpec.describe StoryPublisher do
 
   let(:draft_story) { FactoryGirl.create(:draft_story) }
   let(:user) { mock_valid_user }
-  let(:user_authorization) { mock_user_authorization }
+  let(:user_authorization) { mock_user_authorization_owner_publisher }
   let(:params) do
     {
       uid: draft_story.uid,

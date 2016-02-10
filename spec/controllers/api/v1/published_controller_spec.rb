@@ -28,7 +28,7 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
 
     context 'when authenticated' do
       let(:user) { mock_valid_user }
-      let(:user_authorization) { mock_user_authorization }
+      let(:user_authorization) { mock_user_authorization_owner_publisher }
       let(:mock_story_publisher) { double('StoryPublisher') }
       let(:success) { nil }
       let(:published_story) { FactoryGirl.create(:published_story) }

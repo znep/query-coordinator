@@ -182,10 +182,35 @@ def mock_valid_user
   }
 end
 
-def mock_user_authorization
+def mock_user_authorization_owner_publisher
   {
-    'role' => 'owner',
-    'rights' => ['read', 'write', 'delete', 'update_view']
+    'viewRole' => 'owner',
+    'viewRights' => ['read', 'write', 'delete', 'update_view', 'edit_story'],
+    'domainRole' => 'publisher_stories'
+  }
+end
+
+def mock_user_authorization_collaborator
+  {
+    'viewRole' => 'contributor',
+    'viewRights' => ['read', 'write', 'delete', 'update_view'],
+    'domainRole' => 'viewer'
+  }
+end
+
+def mock_user_authorization_viewer
+  {
+    'viewRole' => 'viewer',
+    'viewRights' => ['read', 'write', 'delete', 'update_view'],
+    'domainRole' => 'viewer'
+  }
+end
+
+def mock_user_authorization_unprivileged
+  {
+    'viewRole' => nil,
+    'viewRights' => [],
+    'domainRole' => 'none'
   }
 end
 
@@ -221,7 +246,11 @@ end
 def stub_valid_session
   allow(CoreServer).to receive(:current_user).and_return(mock_valid_user)
   allow(@controller).to receive(:current_user).and_return(mock_valid_user)
-  allow(@controller).to receive(:current_user_story_authorization).and_return(mock_user_authorization)
+  stub_current_user_story_authorization(mock_user_authorization_owner_publisher)
+end
+
+def stub_current_user_story_authorization(authorization)
+  allow(CoreServer).to receive(:current_user_story_authorization).and_return(authorization)
 end
 
 def stub_super_admin_session
@@ -265,7 +294,7 @@ end
 def stub_logged_in_user
   allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
   allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(mock_valid_user)
-  allow_any_instance_of(ApplicationController).to receive(:current_user_story_authorization).and_return(mock_user_authorization)
+  allow_any_instance_of(ApplicationController).to receive(:current_user_story_authorization).and_return(mock_user_authorization_owner_publisher)
 end
 
 def stub_sufficient_rights

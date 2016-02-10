@@ -44,7 +44,7 @@
     }
 
     function editPage() {
-      var slash = window.location.href.lastIndexOf('/') === window.location.href.length - 1 ?  '' : '/';
+      var slash = window.location.href.lastIndexOf('/') === window.location.href.length - 1 ? '' : '/';
       window.location = window.location.href + slash + 'edit';
     }
 
@@ -141,7 +141,7 @@
       } else {
         // 80 == p
         if (key === 80) {
-          presentationMode();
+          enablePresentationMode();
         }
       }
     }

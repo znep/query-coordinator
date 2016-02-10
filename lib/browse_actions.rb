@@ -301,21 +301,27 @@ module BrowseActions
       end
     end
 
-    cfs = custom_facets
-    if cfs
-      cfs.each do |facet|
-        f_value = browse_options[facet[:param]]
-        next unless f_value.present?
+    # We want to call this in a thread later
+    custom_facets_fn = lambda do
+      cfs = custom_facets
 
-        f_param = facet[:param].to_s
-        if using_cetera?
-          browse_options[:metadata_tag] ||= {}
-          browse_options[:metadata_tag].merge!(f_param => f_value)
-        else
-          browse_options[:metadata_tag] ||= []
-          browse_options[:metadata_tag] << "#{f_param}:#{f_value}"
+      if cfs
+        cfs.each do |facet|
+          f_value = browse_options[facet[:param]]
+          next unless f_value.present?
+
+          f_param = facet[:param].to_s
+          if using_cetera?
+            browse_options[:metadata_tag] ||= {}
+            browse_options[:metadata_tag].merge!(f_param => f_value)
+          else
+            browse_options[:metadata_tag] ||= []
+            browse_options[:metadata_tag] << "#{f_param}:#{f_value}"
+          end
         end
       end
+
+      cfs
     end
 
     if browse_options[:curated_region_candidates]
@@ -352,16 +358,23 @@ module BrowseActions
         end
     end
 
-    # Categories should be at the top in browse2, otherwise in the 3rd slot
-    categories_index = browse_options[:view_type] == 'browse2' ? 0 : 2
-    browse_options[:facets] ||= [
-      view_types_facet,
-      cfs,
-      topics_facet,
-      federated_facet
-    ].insert(categories_index, categories_facet)
+    browse_options[:facets] ||=
+      begin
+        facets = [nil, nil, nil, nil, nil]
 
-    browse_options[:facets] = browse_options[:facets].compact.flatten.reject { |f| f[:hidden] }
+        [
+          Thread.new { facets[0] = categories_facet },
+          Thread.new { facets[1] = view_types_facet },
+          Thread.new { facets[2] = custom_facets_fn.call },
+          Thread.new { facets[3] = topics_facet },
+          Thread.new { facets[4] = federated_facet }
+        ].each(&:join)
+
+        # Categories should be at the top in browse2, otherwise in the 3rd slot
+        facets.insert(2, facets.shift) unless browse_options[:view_type] == 'browse2'
+
+        facets.compact.flatten.reject { |f| f[:hidden] }
+      end
 
     if browse_options[:suppressed_facets].is_a? Array
       browse_options[:facets].reject! do |facet|

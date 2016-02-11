@@ -188,7 +188,7 @@ reenable_ui_for_nbe:
   category: obe deprecation
 show_admin_processes:
   description: Enable the "Jobs" section of the admin interface, which allows users to monitor the status of ingress jobs
-  defaultValue: false
+  defaultValue: true
   category: admin
 show_newux_page_header:
   description: Show the header logo and sign in/up/out links.

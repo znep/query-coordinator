@@ -38,15 +38,21 @@
     th, td {
       box-sizing: border-box;
       height: 15px;
-      padding: 15px;
+      padding: 10px;
       border: solid 1px #c0c0c0;
       text-align: left;
+      vertical-align: middle;
+      line-height: 1.5;
     }
 
     td {
+      &[data-cell-render-type="checkbox"] {
+        text-align: center;
+      }
+
       div {
         max-width: 300px;
-        overflow: hidden;
+        overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
@@ -59,12 +65,38 @@
       cursor: pointer;
       white-space: nowrap;
 
-      span {
+      div {
+        margin: auto 0;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-right: 15px;
+      }
+
+      span[class^="icon-"] {
         position: absolute;
         right: 15px;
         top: calc(38px / 2);
         background: #e8e8e8;
         box-shadow: -10px 0 7px #e8e8e8;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+
+      &[data-column-render-type="point"] {
+        cursor: default;
+      }
+
+      &[data-sort] {
+        span {
+          opacity: 1;
+        }
+      }
+
+      &:hover {
+        span {
+          opacity: 1;
+        }
       }
     }
   }
@@ -73,14 +105,14 @@
 .socrata-pager {
   display: flex;
   background: #f2f2f2;
-  padding: 15px 7.5px;
+  padding: 10px 7.5px;
   border: solid 1px #e4e4e4;
   flex-wrap: wrap;
   justify-content: space-between;
 
   .pager-buttons,
   .pager-label {
-    display: block;
+    display: inline-flex;
   }
 
   .pager-buttons {
@@ -101,7 +133,8 @@
 
       &:hover {
         background: transparent;
-        border-bottom: solid 1px #2c98e1;
+        border: solid 1px #d4d4d4;
+        border-radius: 2px;
       }
 
       &:active {
@@ -112,7 +145,7 @@
       &:disabled {
         color: #777;
         cursor: not-allowed;
-        border-bottom: solid 1px transparent;
+        border: solid 1px transparent;
       }
 
       [class*="icon"] {
@@ -123,6 +156,7 @@
   }
 
   .pager-label {
+    margin: auto 0;
     padding: 4px;
     font-size: 15px;
     color: #555;

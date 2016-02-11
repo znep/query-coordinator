@@ -27,9 +27,7 @@ RSpec.describe MetricsProcessor do
 
     it 'writes metrics to file' do
       buffer = StringIO.new()
-      filename = 'somefile.txt'
-      allow(MetricsProcessor).to receive(:metrics_file_path).and_return(filename)
-      allow(File).to receive(:open).with(filename, 'ab').and_yield(buffer)
+      expect(File).to receive(:open).with(%r{#{metrics_path}/metrics2012.[a-f0-9]+.data.COMPLETED}, 'ab').and_yield(buffer)
 
       MetricsProcessor.process(metrics)
 

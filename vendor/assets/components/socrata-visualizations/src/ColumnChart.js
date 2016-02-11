@@ -3,6 +3,7 @@ var $ = require('jquery');
 var utils = require('socrata-utils');
 var ColumnChart = require('./views/ColumnChart');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 
 var NAME_INDEX = 0;
 var UNFILTERED_INDEX = 1;
@@ -10,7 +11,7 @@ var FILTERED_INDEX = 2;
 var SELECTED_INDEX = 3;
 var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
 var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
-var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} {3} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
 var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
@@ -115,18 +116,20 @@ $.fn.socrataColumnChart = function(vif) {
   var visualization = new ColumnChart($element, vif);
   var visualizationData = [];
   var rerenderOnResizeTimeout;
+  var _lastRenderedVif;
 
   _attachEvents();
-  _updateData();
+  _updateData(vif);
 
   /**
    * Configuration
    */
 
-  function _getRenderOptions() {
+  function _getRenderOptions(vifToRender) {
     return {
       showAllLabels: true,
-      showFiltered: false
+      showFiltered: true,
+      vif: vifToRender
     };
   }
 
@@ -146,9 +149,10 @@ $.fn.socrataColumnChart = function(vif) {
     $(window).on('resize', _handleWindowResize);
 
     $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
-    $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
+    $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleSelection);
     $element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _detachEvents() {
@@ -156,9 +160,10 @@ $.fn.socrataColumnChart = function(vif) {
     $(window).off('resize', _handleWindowResize);
 
     $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
-    $element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
+    $element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleSelection);
     $element.off('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _handleWindowResize() {
@@ -174,10 +179,14 @@ $.fn.socrataColumnChart = function(vif) {
     );
   }
 
-  function _render() {
+  function _render(vifToRender) {
+    if (vifToRender) {
+      _lastRenderedVif = vifToRender;
+    }
+
     visualization.render(
       visualizationData,
-      _getRenderOptions()
+      _getRenderOptions(_lastRenderedVif)
     );
   }
 
@@ -340,11 +349,46 @@ $.fn.socrataColumnChart = function(vif) {
     );
   }
 
-  function _handleDatumSelect() {// event) { ---> Linting sucks
+  function _handleSelection(event) {
+    var payload = event.originalEvent.detail;
+    var newVif = _.cloneDeep(_lastRenderedVif);
+    var ownFilterOperands = newVif.
+      filters.
+      filter(function(filter) {
+        return filter.columnName === newVif.columnName;
+      }).map(function(filter) {
+        return filter.arguments.operand;
+      });
 
-    // var payload = event.originalEvent.detail;
+    newVif.filters = newVif.
+      filters.
+      filter(function(filter) {
+        return filter.columnName !== newVif.columnName;
+      });
 
-    // TODO: Implement.
+    if (ownFilterOperands.indexOf(payload.name) === -1) {
+
+      newVif.filters.push(
+        {
+          'columnName': newVif.columnName,
+          'function': 'binaryOperator',
+          'arguments': {
+            'operator': '=',
+            'operand': payload.name
+          }
+        }
+      );
+    }
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        {
+          detail: newVif,
+          bubbles: true
+        }
+      )
+    );
   }
 
   function _handleExpandedToggle() {// event) { ---> Linting sucks
@@ -354,27 +398,61 @@ $.fn.socrataColumnChart = function(vif) {
     // TODO: Implement.
   }
 
+  function _handleRenderVif(event) {
+    var newVif = event.originalEvent.detail;
+
+    if (newVif.type !== 'columnChart') {
+      throw new Error(
+        'Cannot update VIF; old type: `columnChart`, new type: `{0}`.'.
+          format(
+            newVif.type
+          )
+        );
+    }
+
+    _updateData(newVif);
+  }
+
   /**
    * Data requests
    */
 
-  function _updateData() {
+  function _updateData(vifToRender) {
 
-    var queryString = BASE_QUERY.format(
-      vif.columnName,
+    var unfilteredQueryString = BASE_QUERY.format(
+      vifToRender.columnName,
       SOQL_DATA_PROVIDER_NAME_ALIAS,
-      SOQL_DATA_PROVIDER_VALUE_ALIAS
+      SOQL_DATA_PROVIDER_VALUE_ALIAS,
+      ''
     );
 
     var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-      query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+      query(
+        unfilteredQueryString,
+        SOQL_DATA_PROVIDER_NAME_ALIAS,
+        SOQL_DATA_PROVIDER_VALUE_ALIAS
+      )
       ['catch'](function(error) {
         _logError(error);
         visualization.renderError();
       });
 
+    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
+    var filteredQueryString = BASE_QUERY.format(
+      vifToRender.columnName,
+      SOQL_DATA_PROVIDER_NAME_ALIAS,
+      SOQL_DATA_PROVIDER_VALUE_ALIAS,
+      (whereClauseComponents.length > 0) ?
+        'WHERE {0}'.format(whereClauseComponents) :
+        ''
+    );
+
     var filteredSoqlQuery = filteredSoqlDataProvider.
-      query(queryString, SOQL_DATA_PROVIDER_NAME_ALIAS, SOQL_DATA_PROVIDER_VALUE_ALIAS)
+      query(
+        filteredQueryString,
+        SOQL_DATA_PROVIDER_NAME_ALIAS,
+        SOQL_DATA_PROVIDER_VALUE_ALIAS
+      )
       ['catch'](function(error) {
         _logError(error);
         visualization.renderError();
@@ -387,11 +465,12 @@ $.fn.socrataColumnChart = function(vif) {
         var filteredQueryResponse = values[1];
 
         visualizationData = _mergeUnfilteredAndFilteredData(
+          vifToRender,
           unfilteredQueryResponse,
           filteredQueryResponse
         );
 
-        _render();
+        _render(vifToRender);
       })
       ['catch'](function(error) {
         _logError(error);
@@ -399,10 +478,17 @@ $.fn.socrataColumnChart = function(vif) {
       });
   }
 
-  function _mergeUnfilteredAndFilteredData(unfiltered, filtered) {
-
+  function _mergeUnfilteredAndFilteredData(renderedVif, unfiltered, filtered) {
     var unfilteredAsHash;
     var filteredAsHash;
+    var selectedColumns = renderedVif.
+      filters.
+      filter(function(filter) {
+        return filter.columnName === renderedVif.columnName;
+      }).
+      map(function(filter) {
+        return filter.arguments.operand;
+      });
 
     unfilteredAsHash = _.indexBy(
       unfiltered.rows,
@@ -415,14 +501,14 @@ $.fn.socrataColumnChart = function(vif) {
     );
 
     return Object.keys(unfilteredAsHash).map(function(name) {
-
-      var datumIsSelected = false;
-
+      var datumIsSelected = selectedColumns.indexOf(name) > -1;
       var result = [undefined, undefined, undefined, undefined];
 
       result[NAME_INDEX] = (_.isNull(name) || _.isUndefined(name)) ? '' : name;
       result[UNFILTERED_INDEX] = Number(unfilteredAsHash[name][1]);
-      result[FILTERED_INDEX] = Number(filteredAsHash[name][1]) || 0;
+      result[FILTERED_INDEX] = (filteredAsHash.hasOwnProperty(name)) ?
+        Number(filteredAsHash[name][1]) :
+        0;
       result[SELECTED_INDEX] = datumIsSelected;
 
       return result;

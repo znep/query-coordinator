@@ -2,6 +2,10 @@
 # We're writing to a data directory for metrics, e.g. /data/metrics, which is
 # configured via environment variables and loaded in the metrics_config.rb
 # initializer.
+#
+# There is a slight change in process from how the MetricQueue works in frontend.
+# We will output a metrics file with every run of `process`. The previous method
+# involved writing a new file every 2 minutes. See EN-2400 for more details.
 class MetricsProcessor
 
   class << self
@@ -34,23 +38,14 @@ class MetricsProcessor
       file.write(END_OF_FIELD)
     end
 
-    # Implementation copied from app/models/metric_queue.rb in frontend.
-    def now
-      return @now unless @now.nil?
-
-      @now = Time.now.to_i
-      @now -= @now % 120
-      @now *= 1000
-      @now
-    end
-
     def metrics_path
       Rails.application.config.metrics_path
     end
 
     # Copied from app/models/metric_queue.rb in frontend.
     def metrics_file_path
-      File.join(metrics_path, sprintf("/metrics2012.%016x.data", now))
+      # Adding 'COMPLETED' so that the balboa agent knows it can consume this file.
+      File.join(metrics_path, sprintf("/metrics2012.%016x.data.COMPLETED", Time.now.to_i))
     end
   end
 end

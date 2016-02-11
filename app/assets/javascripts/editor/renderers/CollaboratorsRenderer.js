@@ -100,7 +100,7 @@
       return (
         '<div class="modal-select">' +
           '<select data-action="{0}">'.format(Actions.COLLABORATORS_CHANGE) +
-            '<option value="{0}"{1}>{2}</option>'.format('owner', hasStoriesRole(role) ? '' : ' disabled', t('editor.collaborators.modal.owner')) +
+            '<option value="{0}"{1}>{2}</option>'.format('owner', hasStoriesOrAdministratorRole(role) ? '' : ' disabled', t('editor.collaborators.modal.owner')) +
             '<option value="{0}">{1}</option>'.format('contributor', t('editor.collaborators.modal.contributor')) +
             '<option value="{0}">{1}</option>'.format('viewer', t('editor.collaborators.modal.viewer')) +
           '</select>' +
@@ -224,7 +224,7 @@
         $.getJSON('/api/search/users.json?q={0}'.format(email)).
           then(function(data) {
             var user = _.get(data, 'results[0]');
-            resolve(user && hasStoriesRole(user.roleName));
+            resolve(user && hasStoriesOrAdministratorRole(user.roleName));
           }, function() {
             resolve(false);
           });
@@ -280,6 +280,7 @@
       }
 
       if (shouldCancel) {
+        toggleAlreadyAddedWarning(false);
         storyteller.dispatcher.dispatch({
           action: Actions.COLLABORATORS_CANCEL
         });
@@ -509,8 +510,8 @@
       $saveButton[loading ? 'addClass' : 'removeClass']('btn-busy');
     }
 
-    function hasStoriesRole(role) {
-      return _.includes(['publisher_stories', 'editor_stories'], role);
+    function hasStoriesOrAdministratorRole(role) {
+      return _.includes(['publisher_stories', 'editor_stories', 'administrator'], role);
     }
 
     function saveCollaborators(collaborators) {

@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
       if params[:format] == 'json'
         head :unauthorized
       else
-        redirect_to "/login?return_to=#{request.path}"
+        redirect_to_login_and_return
       end
     end
   end
@@ -46,8 +46,12 @@ class ApplicationController < ActionController::Base
   # +before_filter+
   def require_super_admin
     unless current_user.try(:[], 'flags').try(:include?, 'admin')
-      redirect_to "/login?return_to=#{request.path}"
+      redirect_to_login_and_return
     end
+  end
+
+  def redirect_to_login_and_return
+    redirect_to "/login?return_to=#{Rack::Utils.escape(request.fullpath)}"
   end
 end
 

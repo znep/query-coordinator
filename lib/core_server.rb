@@ -63,6 +63,8 @@ class CoreServer
 
       if view.present?
         domain_role = user['roleName'] || 'unknown'
+        domain_rights = user['rights'] || []
+        view_rights = view['rights'] || []
         corresponding_grant = lambda { |grant| grant['userId'] == user['id'] }
         is_primary_owner = view['owner']['id'] == user['id']
         has_user_grant = view['grants'].present? && view['grants'].one?(&corresponding_grant)
@@ -70,24 +72,24 @@ class CoreServer
         if is_primary_owner
           authorization = {
             'domainRole' => domain_role,
-            'domainRights' => user['rights'],
+            'domainRights' => domain_rights,
             'viewRole' => 'owner',
-            'viewRights' => view['rights'],
+            'viewRights' => view_rights,
             'primary' => true
           }
         elsif has_user_grant
           authorization = {
             'domainRole' => domain_role,
-            'domainRights' => user['rights'],
+            'domainRights' => domain_rights,
             'viewRole' => view['grants'].find(&corresponding_grant)['type'],
-            'viewRights' => view['rights']
+            'viewRights' => view_rights
           }
         else
           authorization = {
             'domainRole' => domain_role,
-            'domainRights' => user['rights'],
+            'domainRights' => domain_rights,
             'viewRole' => 'unknown',
-            'viewRights' => view['rights']
+            'viewRights' => view_rights
           }
         end
       end

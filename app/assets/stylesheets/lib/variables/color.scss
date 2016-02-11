@@ -210,11 +210,13 @@ $btn-disabled-dark-border-color: #838383;
 $btn-disabled-dark-background-color: #716d6d;
 
 // View Mode buttons
-$view-mode-button-color: #ddd;
-$view-mode-button-background-color: #474747;
-$view-mode-button-disabled-color: #fff;
-$view-mode-button-disabled-background-color: #3398DC;
-$view-mode-button-navigation-hover-background-color: darken($view-mode-button-disabled-background-color, 10%);
+$actions-bar-box-shadow-color: #ccc;
+$view-mode-button-color: #555;
+$view-mode-button-background-color: #fff;
+$view-mode-button-border-color: #ccc;
+$view-mode-button-navigation-color: #fff;
+$view-mode-button-navigation-background-color: #3398DC;
+$view-mode-button-navigation-hover-background-color: darken($view-mode-button-navigation-background-color, 10%);
 
 // Flyout
 $flyout-color: #8a8686;

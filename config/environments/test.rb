@@ -48,4 +48,6 @@ Rails.application.configure do
   config.relative_url_root = ''
 
   config.action_controller.action_on_unpermitted_parameters = :raise
+
+  config.cache_store = :null_store
 end

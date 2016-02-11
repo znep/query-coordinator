@@ -113,6 +113,13 @@ presentation_story = DraftStory.create(
   theme: 'serif'
 )
 
+presentation_published = PublishedStory.create(
+  uid: 'pres-ents',
+  block_ids: [block_1.id, block_2.id, block_3.id, block_5.id, block_4.id],
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
 draft_story = DraftStory.create(
   uid: 'h1bl-ocks',
   block_ids: [block_6.id],
@@ -129,6 +136,13 @@ draft_story = DraftStory.create(
 
 embedded_html_story = DraftStory.create(
   uid: 'embd-html',
+  block_ids: [block_8.id],
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
+unpublished_story = DraftStory.create(
+  uid: 'unpu-blsh',
   block_ids: [block_8.id],
   created_by: 'good-doer',
   theme: 'serif'

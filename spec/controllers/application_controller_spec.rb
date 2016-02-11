@@ -52,7 +52,7 @@ RSpec.describe ApplicationController, :type => :controller do
         it 'should redirect to a login page with the correct return_to query param' do
           stub_invalid_session
           get :test_action
-          expect(response).to redirect_to('/login?return_to=/test_action')
+          expect(response).to redirect_to('/login?return_to=%2Ftest_action')
         end
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe ApplicationController, :type => :controller do
       it 'is forbidden' do
         stub_invalid_session
         get :test_super_action
-        expect(response).to redirect_to('/login?return_to=/test_super_action')
+        expect(response).to redirect_to('/login?return_to=%2Ftest_super_action')
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe ApplicationController, :type => :controller do
       it 'is forbidden' do
         stub_valid_session
         get :test_super_action
-        expect(response).to redirect_to('/login?return_to=/test_super_action')
+        expect(response).to redirect_to('/login?return_to=%2Ftest_super_action')
       end
     end
 

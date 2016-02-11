@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     get ':uid/create' => 'stories#new'
     get ':uid/copy' => 'stories#copy'
     post ':uid/create' => 'stories#create'
+    get '(:vanity_text)/:uid/about' => 'stories#about'
     get '(:vanity_text)/:uid/edit' => 'stories#edit'
     get '(:vanity_text)/:uid/preview' => 'stories#preview'
     get '(:vanity_text)/:uid/widget' => 'stories#widget', as: 'widget'
@@ -32,6 +33,9 @@ Rails.application.routes.draw do
     resources :themes
     resource :site_chrome, only: [:edit, :update]
   end
+
+  # We expose certain health checks for consul
+  get 'consul_checks/active' => 'consul_checks#active'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

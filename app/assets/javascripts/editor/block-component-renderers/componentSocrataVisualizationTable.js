@@ -37,8 +37,15 @@
         utils.assertIsOneOfTypes(blockId, 'string');
         utils.assert(_.isFinite(componentIndex));
 
+        var blockComponent = storyteller.storyStore.getBlockComponentAtIndex(blockId, componentIndex);
+
         newValue = _.cloneDeep(componentData.value);
         newValue.vif = newVif;
+
+        if (_.has(blockComponent, 'value.layout.height') && _.isFinite(blockComponent.value.layout.height)) {
+          newValue.layout = newValue.layout || {};
+          newValue.layout.height = blockComponent.value.layout.height;
+        }
 
         if (!_.isEqual(newValue, componentData.value)) {
           storyteller.dispatcher.dispatch({
@@ -85,7 +92,8 @@
         'ONLY_ROW': 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
         'MANY_ROWS': 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
         'LATITUDE': 'Latitude',
-        'LONGITUDE': 'Longitude'
+        'LONGITUDE': 'Longitude',
+        'NO_COLUMN_DESCRIPTION': 'No description provided.'
       };
 
       vif.unit = {

@@ -15,44 +15,39 @@
   var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
   var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
+  /*eslint-disable */
   /**
    * Temporary polyfills until we can come up with a better implementation and include it somewhere else.
    */
 
-  String.prototype.visualSize = _.memoize(
-    function(fontSize) {
-      var $ruler = $('#ruler');
-      var dimensions;
+  String.prototype.visualSize = function(fontSize) {
 
-      if ($ruler.length < 1) {
-        $('body').append('<span class="ruler" id="ruler"></span>');
-        $ruler = $('#ruler');
-      }
-      if (!fontSize) {
-        fontSize = '';
-      }
-      $ruler.css('font-size', fontSize);
-      $ruler.text(this + '');
-      dimensions = {width: $ruler.width(), height: $ruler.height()};
-      $ruler.remove();
+    var $ruler = $('#ruler');
+    var dimensions;
 
-      return dimensions;
-    },
-    function(fontSize) { // memoization key
-      return this + '|' + fontSize;
+    if ($ruler.length < 1) {
+      $('body').append('<span class="ruler" id="ruler"></span>');
+      $ruler = $('#ruler');
     }
-  );
+    if (!fontSize) {
+      fontSize = '';
+    }
+    $ruler.css('font-size', fontSize);
+    $ruler.text(this + '');
+    dimensions = {width: $ruler.width(), height: $ruler.height()};
+    $ruler.remove();
+
+    return dimensions;
+  };
 
   String.prototype.visualLength = function(fontSize) {
     return this.visualSize(fontSize).width;
   };
+  /*eslint-enable */
 
   /**
    * Instantiates a Socrata ColumnChart Visualization from the
    * `socrata-visualizations` package.
-   *
-   * Supported event triggers:
-   * - invalidateSize: Forces a rerender, useful if the hosting page has resized the container.
    *
    * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
    */
@@ -85,6 +80,13 @@
       'FLYOUT_FILTERED_AMOUNT_LABEL',
       'FLYOUT_SELECTED_NOTICE'
     );
+
+    this.destroySocrataColumnChart = function() {
+
+      clearTimeout(rerenderOnResizeTimeout);
+      visualization.destroy();
+      _detachEvents();
+    };
 
     var $element = $(this);
 
@@ -127,7 +129,7 @@
 
     function _getRenderOptions() {
       return {
-        showAllLabels: true,
+        showAllLabels: false,
         showFiltered: false
       };
     }
@@ -138,18 +140,10 @@
 
     function _attachEvents() {
 
-      // Destroy on (only the first) 'destroy' event.
-      $element.one('destroy', function() {
-        clearTimeout(rerenderOnResizeTimeout);
-        visualization.destroy();
-        _detachEvents();
-      });
-
       $(window).on('resize', _handleWindowResize);
       $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
       $element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
       $element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
-      $element.on('invalidateSize', _render);
     }
 
     function _detachEvents() {
@@ -165,18 +159,17 @@
       clearTimeout(rerenderOnResizeTimeout);
 
       rerenderOnResizeTimeout = setTimeout(
-        _render,
+        function() {
+          visualization.render(
+            visualizationData,
+            _getRenderOptions()
+          );
+          _selectFirst();
+        },
         // Add some jitter in order to make sure multiple visualizations are
         // unlikely to all attempt to rerender themselves at the exact same
         // moment.
         WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
-      );
-    }
-
-    function _render() {
-      visualization.render(
-        visualizationData,
-        _getRenderOptions()
       );
     }
 
@@ -390,7 +383,11 @@
             filteredQueryResponse
           );
 
-          _render();
+          visualization.render(
+            visualizationData,
+            _getRenderOptions()
+          );
+          _selectFirst();
         })
         ['catch'](function(error) {
           _logError(error);
@@ -399,7 +396,6 @@
     }
 
     function _mergeUnfilteredAndFilteredData(unfiltered, filtered) {
-
       var unfilteredAsHash;
       var filteredAsHash;
 
@@ -414,9 +410,7 @@
       );
 
       return Object.keys(unfilteredAsHash).map(function(name) {
-
         var datumIsSelected = false;
-
         var result = [undefined, undefined, undefined, undefined];
 
         result[NAME_INDEX] = (_.isNull(name) || _.isUndefined(name)) ? '' : name;
@@ -432,6 +426,13 @@
       if (window.console && window.console.error) {
         console.error(error);
       }
+    }
+
+    function _selectFirst() {
+      var chartWidth = (visualization.element.find('.bar-group').length * 50) + 33;
+      visualization.element.find('.ticks').css('min-width', chartWidth + 'px');
+      visualization.element.find('.column-chart-wrapper').css('min-width', chartWidth + 'px');
+      visualization.element.find('.bar-group').first().click();
     }
 
     return this;

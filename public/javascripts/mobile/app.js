@@ -9,7 +9,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
   'use strict';
 
   function handleBroadcast(filterObject) {
-    $(document).trigger('socrata/qfb/appliedFilters',filterObject);
+    $(document).trigger('socrata/qfb/appliedFilters', filterObject);
   }
 
   $(document).on('socrata/qfb/filterOps', function(e, opsData, domain, datasetId) {

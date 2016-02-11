@@ -87,7 +87,7 @@ class FilterContainer extends React.Component {
   onClickClearAllFilters() {
     // AJAX CALL TO REMOVE ALL FILTERS
     this.setState({ filters: [] });
-    Filter.clear();
+    this.props.handleFilterBroadcast({filters: []});
   }
   prettifyFilterForDLMobile(filters) {
     var modifiedFilters = filters.map(function(filter, i) {
@@ -119,7 +119,6 @@ class FilterContainer extends React.Component {
 
     var modifiedFilters = this.prettifyFilterForDLMobile(aFilters);
     this.props.handleFilterBroadcast({filters: modifiedFilters});
-    //Filter.apply(this.state.filters);
   }
   handleFilterDeletion(filterId) {
     var aFilters = this.state.filters;

@@ -15,6 +15,12 @@
     var $collaborators;
     var $saveButton;
     var $alreadyAddedWarning;
+    var $userHasNoAccountWarning;
+
+    // A mapping of email to user details (result of /api/users/4x4.json).
+    // Changing this _must_ be followed with a call to updateUi.
+    // See fetchUserThenUpdateUi.
+    var userDetailsCache = {};
 
     compileDOM();
     attachEvents();
@@ -43,9 +49,13 @@
             '<div>' +
               '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.invite_collaborators')) +
               '<div class="modal-input-group">' +
-                '<input name="collaborators-email" type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')) +
+                '<div class="collaborators-email-input-wrapper">' +
+                  '<input name="collaborators-email" type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')) +
+                  '<button class="btn btn-transparent btn-busy"><span></span></button>' +
+                '</div>' +
                 '<div class="modal-radio-group">' +
                   '<div class="alert warning-bar hidden already-added"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.already_added')) +
+                  '<div class="alert warning-bar hidden user-has-no-account"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.user_has_no_account')) +
                   '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.access_level')) +
                   '<ul>' +
                     '<li>' +
@@ -93,14 +103,17 @@
               '<button class="btn-primary" data-action="{0}" disabled><span>{1}</span></button>'.format(Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')) +
             '</div>' +
           '</div>'
-      );
+      ).format({
+        // intentionally not a link, this should be pasted into an email by the user (not followed by them).
+        domain: window.location.hostname
+      });
     }
 
     function templateAccessLevel(role) {
       return (
         '<div class="modal-select">' +
           '<select data-action="{0}">'.format(Actions.COLLABORATORS_CHANGE) +
-            '<option value="{0}"{1}>{2}</option>'.format('owner', hasStoriesOrAdministratorRole(role) ? '' : ' disabled', t('editor.collaborators.modal.owner')) +
+            '<option value="{0}"{1}>{2}</option>'.format('owner', isStoriesOrAdministratorRole(role) ? '' : ' disabled', t('editor.collaborators.modal.owner')) +
             '<option value="{0}">{1}</option>'.format('contributor', t('editor.collaborators.modal.contributor')) +
             '<option value="{0}">{1}</option>'.format('viewer', t('editor.collaborators.modal.viewer')) +
           '</select>' +
@@ -175,6 +188,7 @@
 
       $saveButton = $collaborators.find('[data-action="{0}"]'.format(Actions.COLLABORATORS_SAVE));
       $alreadyAddedWarning = $collaborators.find('.already-added');
+      $userHasNoAccountWarning = $collaborators.find('.user-has-no-account');
 
       $(document.body).append($collaborators);
     }
@@ -202,8 +216,8 @@
 
     function toggleOwnerSelection(enabled) {
       $collaborators.
-        find('.modal-radio-group ul li:last-child label')
-          [enabled ? 'removeClass' : 'addClass']('disabled');
+        find('.modal-radio-group ul li:last-child label').
+        toggleClass('disabled', !enabled);
       $collaborators.
         find('.modal-radio-group ul li:last-child input').
         prop('disabled', !enabled);
@@ -216,54 +230,117 @@
     }
 
     function toggleAlreadyAddedWarning(enabled) {
-      $alreadyAddedWarning[enabled ? 'removeClass' : 'addClass']('hidden');
+      $alreadyAddedWarning.toggleClass('hidden', !enabled);
     }
 
-    function determineIfUserHasStoriesRole(email) {
-      return new Promise(function(resolve) {
-        $.getJSON('/api/search/users.json?q={0}'.format(email)).
-          then(function(data) {
-            var user = _.get(data, 'results[0]');
-            resolve(user && hasStoriesOrAdministratorRole(user.roleName));
-          }, function() {
-            resolve(false);
-          });
+    function toggleUserHasNoAccountWarning(enabled) {
+      $userHasNoAccountWarning.toggleClass('hidden', !enabled);
+    }
+
+    function getUserOrNull(email) {
+      return Promise.resolve($.getJSON('/api/search/users.json?q={0}'.format(email))).then(function(data) {
+        return _.get(data, 'results[0]', null);
       });
     }
 
-    function handleKeys() {
-      var $input = $collaborators.find('input[type="email"]');
-      var value = $input.val();
+    function isStoriesOrAdministratorRole(role) {
+      return _.includes(['publisher_stories', 'editor_stories', 'administrator'], role);
+    }
+
+    // Fetches details of the given user and populates userDetailsCache with the result.
+    // Then, call updateUi.
+    function fetchUserThenUpdateUi(email) {
+      if (!_.has(userDetailsCache, email)) {
+        getUserOrNull(email).
+          catch(_.constant(null)). // If the request fails, assume user does not exist.
+          then(function(userDetails) {
+            userDetailsCache[email] = userDetails;
+            updateUi();
+          });
+      }
+    }
+
+    function invalidateUserDetailsCache() {
+      userDetailsCache = {};
+    }
+
+    // Updates the state of the UI (button enabled/disabled states,
+    // warning visibilities, etc).
+    function updateUi() {
+      var value = getValueInInputBox();
       var accessLevel = $collaborators.find('option:selected').val();
       var collaborator = {email: value, accessLevel: accessLevel};
 
       var hasCollaborator = storyteller.collaboratorsStore.hasCollaborator(collaborator);
-      var isValidEmail = Constants.VALID_EMAIL_PATTERN.test(value);
+      var hasUserDetails = _.has(userDetailsCache, value);
+      var userDetails = userDetailsCache[value]; // Updated async, we'll get called again if it changes.
+      var roleName = _.get(userDetails, 'roleName');
+
+      var validEmail = getValidEmailInInputBoxOrNull();
+      $collaborators.find('.collaborators-email-input-wrapper').toggleClass('busy', !!validEmail && !hasUserDetails);
 
       if (hasCollaborator) {
         toggleAlreadyAddedWarning(true);
+        toggleUserHasNoAccountWarning(false);
         toggleOwnerSelection(false);
         toggleAddCollaboratorsButton(false);
-      } else if (isValidEmail) {
-        determineIfUserHasStoriesRole(value).then(function(hasRole) {
-          if (hasRole) {
-            toggleAlreadyAddedWarning(false);
-            toggleOwnerSelection(true);
-            toggleAddCollaboratorsButton(true);
-          } else {
-            toggleAlreadyAddedWarning(false);
-            toggleOwnerSelection(false);
-            toggleAddCollaboratorsButton(
-              $collaborators.
-                has('li:last-child input:not(:checked)').length === 1
-            );
-          }
-        });
+      } else if (hasUserDetails && validEmail) {
+        if (isStoriesOrAdministratorRole(roleName)) {
+          // Licensed stories user.
+          toggleAlreadyAddedWarning(false);
+          toggleUserHasNoAccountWarning(false);
+          toggleOwnerSelection(true);
+          toggleAddCollaboratorsButton(true);
+        } else if (userDetails) {
+          // Non stories, but still a registered user.
+          toggleAlreadyAddedWarning(false);
+          toggleUserHasNoAccountWarning(false);
+          toggleOwnerSelection(false);
+          toggleAddCollaboratorsButton(
+            $collaborators.
+              has('li:last-child input:not(:checked)').length === 1
+          );
+        } else {
+          // Unroled user. Not allowed.
+          toggleAlreadyAddedWarning(false);
+          toggleUserHasNoAccountWarning(true);
+          toggleOwnerSelection(false);
+          toggleAddCollaboratorsButton(false);
+        }
       } else {
         toggleAlreadyAddedWarning(false);
+        toggleUserHasNoAccountWarning(false);
         toggleOwnerSelection(false);
         toggleAddCollaboratorsButton(false);
       }
+    }
+
+    // Returns whatever valid or invalid value there exists
+    // in the input box.
+    function getValueInInputBox() {
+      var $input = $collaborators.find('input[type="email"]');
+      return $input.val();
+    }
+
+    // If there's a valid email in the input box, return it.
+    // Otherwise, return null.
+    function getValidEmailInInputBoxOrNull() {
+      var value = getValueInInputBox();
+      var isValidEmail = Constants.VALID_EMAIL_PATTERN.test(value);
+
+      return isValidEmail ? value : null;
+    }
+
+    // User stopped typing into input box. Cause rest of UI to be
+    // updated.
+    function handleKeys() {
+      var validEmail = getValidEmailInInputBoxOrNull();
+
+      if (validEmail) {
+        fetchUserThenUpdateUi(validEmail);
+      }
+
+      updateUi();
     }
 
     function handleModalDismissed() {
@@ -368,6 +445,12 @@
         } else {
           renderNoCollaborators();
         }
+      }
+
+      if (isOpen) {
+        updateUi();
+      } else {
+        invalidateUserDetailsCache();
       }
 
       renderErrorMessage();
@@ -507,11 +590,7 @@
     }
 
     function toggleLoadingButton(loading) {
-      $saveButton[loading ? 'addClass' : 'removeClass']('btn-busy');
-    }
-
-    function hasStoriesOrAdministratorRole(role) {
-      return _.includes(['publisher_stories', 'editor_stories', 'administrator'], role);
+      $saveButton.toggleClass('btn-busy', loading);
     }
 
     function saveCollaborators(collaborators) {

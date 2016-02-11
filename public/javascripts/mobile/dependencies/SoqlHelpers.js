@@ -230,11 +230,23 @@ var SoqlHelpers = (function(_, utils) {
       'arguments.end'
     );
 
-    return '{0} >= {1} AND {0} < {2}'.format(
-      _soqlEncodeColumnName(filter.columnName),
-      _soqlEncodeValue(filter.arguments.start),
-      _soqlEncodeValue(filter.arguments.end)
-    );
+    if (filter.arguments.start && filter.arguments.end) {
+      return '{0} >= {1} AND {0} < {2}'.format(
+          _soqlEncodeColumnName(filter.columnName),
+          _soqlEncodeValue(filter.arguments.start),
+          _soqlEncodeValue(filter.arguments.end)
+      );
+    } else if (filter.arguments.start) {
+      return '{0} >= {1}'.format(
+          _soqlEncodeColumnName(filter.columnName),
+          _soqlEncodeValue(filter.arguments.start)
+      );
+    } else if (filter.arguments.end) {
+      return '{0} < {1}'.format(
+          _soqlEncodeColumnName(filter.columnName),
+          _soqlEncodeValue(filter.arguments.end)
+      );
+    }
   }
 
   return {

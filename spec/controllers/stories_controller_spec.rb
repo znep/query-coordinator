@@ -119,6 +119,10 @@ RSpec.describe StoriesController, type: :controller do
       describe 'google analytics' do
         render_views
 
+        before do
+          stub_current_user_story_authorization(mock_user_authorization_unprivileged)
+        end
+
         context 'when not configured' do
           it 'does not render google analytics partial' do
             get :show, uid: story_revision.uid

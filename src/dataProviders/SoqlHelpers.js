@@ -113,7 +113,7 @@ function _soqlEncodeValue(value) {
 }
 
 function _soqlEncodeString(value) {
-  return '\'{0}\''.format(value.replace(/'/g, '\'\''));
+  return "'{0}'".format(value.replace(/'/g, "''"));
 }
 
 function _soqlEncodeDate(value) {

@@ -99,7 +99,7 @@ function GeospaceDataProvider(config) {
     var headers = {
       Accept: 'application/json'
     };
-    var extentQuery = '?$select=*&$where=intersects(the_geom, \'MULTIPOLYGON((({0})))\')&$limit=5000';
+    var extentQuery = "?$select=*&$where=intersects(the_geom, 'MULTIPOLYGON((({0})))')&$limit=5000";
     var extentValidationErrorMessage = 'Argument `extent` must be an object ' +
       'with two keys: `southwest` and `northeast`; the value assigned to ' +
       'each key must be an array of two numbers in the following format: `[' +

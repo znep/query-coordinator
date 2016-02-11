@@ -2436,7 +2436,7 @@ function TimelineChart(element, vif) {
             labelDate.getFullYear()
           );
         } else {
-          label = '{0} \'{1}'.format(
+          label = "{0} '{1}".format(
             moment(labelDate).format('MMM'),
             '0{0}'.format(labelDate.getFullYear() % 100).slice(-2)
           );

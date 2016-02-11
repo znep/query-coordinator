@@ -146,9 +146,7 @@ module.exports = function Table(element, vif) {
   function _templateTableSortedHeader() {
     return [
       '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" data-sort scope="col">',
-        '<div>',
-          '<div>{columnTitle}<span class="icon-{sortDirection}"></span></div>',
-        '</div>',
+        '<div>{columnTitle}<span class="icon-{sortDirection}"></span></div>',
       '</th>'
     ].join('');
   }
@@ -156,9 +154,7 @@ module.exports = function Table(element, vif) {
   function _templateTableUnsortableHeader() {
     return [
       '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
-        '<div>',
-          '<div>{columnTitle}</div>',
-        '</div>',
+        '<div>{columnTitle}</div>',
       '</th>'
     ].join('');
   }
@@ -166,9 +162,7 @@ module.exports = function Table(element, vif) {
   function _templateTableHeader() {
     return [
       '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
-        '<div>',
-          '<div>{columnTitle}<span class="icon-arrow-down"></span></div>',
-        '</div>',
+        '<div>{columnTitle}<span class="icon-arrow-down"></span></div>',
       '</th>'
     ].join('');
   }

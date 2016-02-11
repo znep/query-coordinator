@@ -32,6 +32,8 @@
     var addContentPanel = $(this).sidebar({
       side: 'right'
     });
+    var $userStory = $('.user-story');
+    var $addContentPanelBtn = $('.content-panel-btn');
 
     // Set up some input events.
 
@@ -45,13 +47,28 @@
     });
 
     $(document).on('keydown', function(e) {
-      if (e.ctrlKey && e.keyCode === 49) { // '1'
+      if (e.ctrlKey && e.keyCode === 49 || e.metaKey && e.keyCode === 49) { // '1'
+        e.preventDefault();
         addContentPanel.trigger('sidebar:toggle');
       }
       if (e.keyCode === 27) { // esc
         addContentPanel.trigger('sidebar:close');
       }
     });
+
+    $userStory.on('click', function(event) {
+      handleClickOutsideAddContentPanel(event);
+    });
+
+    $(document).on('rich-text-editor::focus-change', function(event) {
+      handleClickOutsideAddContentPanel(event);
+    });
+
+    function handleClickOutsideAddContentPanel(event) {
+      if (($userStory.is(event.target) || !$addContentPanelBtn.is(event.target)) && addContentPanel.hasClass('active')) {
+        addContentPanel.trigger('sidebar:close');
+      }
+    }
 
     addContentPanel.
       on('sidebar:open', function() {

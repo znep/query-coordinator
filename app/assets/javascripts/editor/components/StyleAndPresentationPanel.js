@@ -45,7 +45,8 @@
     });
 
     $(document).on('keydown', function(e) {
-      if (e.ctrlKey && e.keyCode === 50) { // '2'
+      if (e.ctrlKey && e.keyCode === 50 || e.metaKey && e.keyCode === 50) { // '2'
+        e.preventDefault();
         styleAndPresentationPanel.trigger('sidebar:toggle');
       }
       if (e.keyCode === 27) { // esc

@@ -235,6 +235,9 @@
         _editor.addEventListener('mouseup', _linkActionTip);
         _editor.addEventListener('pathChange', _linkActionTip);
 
+        _editor.setKeyHandler('ctrl-k', _clickEditorLinkButton);
+        _editor.setKeyHandler('meta-k', _clickEditorLinkButton);
+
         // Pre-load existing content (e.g. if we are editing an
         // existing resource).
         if (_contentToPreload !== null) {
@@ -249,6 +252,23 @@
       });
 
       _containerElement.append(_editorElement);
+    }
+
+    /**
+     * @function _clickEditorLinkButton
+     * @description
+     * This function prevents the default behavior based on the event.
+     * It will click the editor toolbar link button and focus on the
+     * URL input field when present. The function is called to handle the Ctrl/Cmd + k shortcut
+     * that allows the user to add or edit a link to their current selection.
+     *
+     * @param {Object} editor - the Squire instance (req'd for Squire setKeyHandler function)
+     * @param {Object} event - a ctrl-k or meta-k event object
+     */
+    function _clickEditorLinkButton(editor, event) {
+      event.preventDefault();
+      $('.rich-text-editor-toolbar-btn-link').click();
+      $('input[type="url"]').focus();
     }
 
     /**

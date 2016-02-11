@@ -67,6 +67,17 @@
       </li>
 
       <li class="menu-list-item">
+        <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= ' disabled' if contributor? %>>
+          <span class="icon-add-collaborator"></span>
+          <span><%= t('editor.settings_panel.collaborators_section.section_title') %></span>
+          <%- if contributor? -%>
+            <br>
+            <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
+          <%- end %>
+        </button>
+      </li>
+
+      <li class="menu-list-item">
         <button class="menu-list-item-header expandable">
           <span class="icon-eye"></span>
           <span><%= t('editor.settings_panel.publishing_section.section_title') %></span>
@@ -115,17 +126,6 @@
             </p>
           </div>
         </div>
-      </li>
-
-      <li class="menu-list-item">
-        <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= ' disabled' if contributor? %>>
-          <span class="icon-add-collaborator"></span>
-          <span><%= t('editor.settings_panel.collaborators_section.section_title') %></span>
-          <%- if contributor? -%>
-            <br>
-            <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
-          <%- end %>
-        </button>
       </li>
 
       <li class="menu-list-item">

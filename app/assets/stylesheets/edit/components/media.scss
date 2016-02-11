@@ -46,6 +46,16 @@
   }
 }
 
+#story-view {
+  .component-asset-selector {
+    background-color: transparent;
+
+    &:before {
+      background-image: none;
+    }
+  }
+}
+
 .component-asset-selector,
 .component-embedded-html,
 .component-image,

@@ -51,6 +51,7 @@
       );
 
       saveButton.toggleClass('busy', saveInProgress);
+      saveButton.toggleClass('btn-busy', saveInProgress);
 
       saveErrorMessage.toggleClass('active', lastSaveError !== null);
       saveErrorMessageDetails.text(lastSaveError);
@@ -181,7 +182,8 @@
       var isCopyModalOpen = storyteller.storyCopierStore.getCurrentOpenState();
       var isShareAndEmbedModalOpen = storyteller.shareAndEmbedStore.isOpen();
 
-      if (e.ctrlKey && e.keyCode === 188) { // ',' because it's settings
+      if (e.ctrlKey && e.keyCode === 188 || e.metaKey && e.keyCode === 188) { // ',' because it's settings
+        e.preventDefault();
         settingsPanel.trigger('sidebar:toggle');
       }
 

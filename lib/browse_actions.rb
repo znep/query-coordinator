@@ -631,7 +631,10 @@ module BrowseActions
         :value => 'story',
         :class => 'typeStory',
         :icon_font_class => 'icon-story',
-        :help_text => ::I18n.t('controls.browse.facets.view_types.story_help')
+        :help_link => {
+          :href => 'https://www.socrata.com/products/perspectives',
+          :text => ::I18n.t('controls.browse.facets.view_types.story_help')
+        }
       }
 
       # Stories are more contextualized than datasets, so put them above dataset entry

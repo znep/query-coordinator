@@ -128,9 +128,9 @@ class FilterContainer extends React.Component {
 
     this.setState({ filters: aFilters });
     if (filterCount > 1) {
-      Filter.apply(aFilters);
+      this.props.handleFilterBroadcast({filters: aFilters});
     } else if (filterCount == 1) {
-      Filter.clear();
+      this.props.handleFilterBroadcast({filters: []});
     }
   }
 

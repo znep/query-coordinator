@@ -26655,17 +26655,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 	function _whereClauseFromVif(vif, filterOwnColumn) {
+	  var filters = vif.filters || [];
+
 	  utils.assertHasProperties(
 	    vif,
 	    'columnName',
 	    'filters'
 	  );
 	  utils.assertIsOneOfTypes(vif.columnName, 'string');
-	  utils.assertIsOneOfTypes(vif.filters, 'object');
-	  utils.assert(_.isArray(vif.filters), '`vif.filters` must be an array.');
+	  utils.assertInstanceOf(filters, Array);
 
-	  return vif.
-	    filters.
+	  return filters.
 	    filter(
 	      function(filter) {
 	        return filterOwnColumn || (filter.columnName !== vif.columnName);

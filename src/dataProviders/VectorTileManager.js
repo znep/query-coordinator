@@ -14,7 +14,7 @@ var pbf = require('pbf');
 var VectorTileUtil = {
 
   getTileId: function(tile) {
-    return '' + tile.zoom + ':' + tile.x + ':' + tile.y;
+    return _.at(tile, ['zoom', 'x', 'y']).join(':');
   },
 
   getLeafletTileId: function(tileId) {
@@ -76,6 +76,57 @@ var VectorTileUtil = {
 
   getTileLayerCanvas: function(tileLayer, tileId) {
     return _.get(tileLayer, '_tiles.' + VectorTileUtil.getLeafletTileId(tileId));
+  },
+
+  hotspots: [
+    ['top'],
+    ['left'],
+    ['bottom'],
+    ['right']
+  ].concat(
+    _.zip(
+      ['top', 'top', 'bottom', 'bottom'],
+      ['left', 'right', 'left', 'right']
+    )
+  ),
+
+  oppositeDirections: {
+    top: 'bottom',
+    bottom: 'top',
+    left: 'right',
+    right: 'left'
+  },
+
+  tileSize: 256,
+
+  tileIdModifiers: {
+    top: function(neighborTile) {
+      neighborTile.y--;
+    },
+    left: function(neighborTile) {
+      neighborTile.x--;
+    },
+    bottom: function(neighborTile) {
+      neighborTile.y++;
+    },
+    right: function(neighborTile) {
+      neighborTile.x++;
+    }
+  },
+
+  tileOffsetModifiers: {
+    top: function(tileOffset) {
+      tileOffset.y -= VectorTileUtil.tileSize;
+    },
+    left: function(tileOffset) {
+      tileOffset.x -= VectorTileUtil.tileSize;
+    },
+    bottom: function(tileOffset) {
+      tileOffset.y += VectorTileUtil.tileSize;
+    },
+    right: function(tileOffset) {
+      tileOffset.x += VectorTileUtil.tileSize;
+    }
   }
 };
 
@@ -119,14 +170,14 @@ VectorTileFeature.prototype.projectGeometryToTilePoint = function(coordinates) {
   return new L.Point(coordinates.x / this.divisor, coordinates.y / this.divisor);
 };
 
-VectorTileFeature.prototype.draw = function(tileId) {
+VectorTileFeature.prototype.draw = function(tileId, offset) {
 
   var feature = this.feature;
   var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, tileId);
 
   switch (feature.type) {
     case 1: //Point
-      this.drawPoint(canvas, feature.coordinates, this.getFeatureStyle);
+      this.drawPoint(canvas, feature.coordinates, this.getFeatureStyle, offset);
       break;
 
     case 2: //LineString
@@ -142,7 +193,7 @@ VectorTileFeature.prototype.draw = function(tileId) {
   }
 };
 
-VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle) {
+VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle, offset) {
   var ctx;
   var projectedPoint;
   var color;
@@ -163,6 +214,11 @@ VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle
   }
 
   projectedPoint = this.projectGeometryToTilePoint(geometry[0][0]);
+
+  if (offset) {
+    projectedPoint.x += offset.x;
+    projectedPoint.y += offset.y;
+  }
 
   // Determine point styling based on computed style and map zoom
   if (_.isFunction(computedStyle.color)) {
@@ -353,7 +409,7 @@ var VectorTileLayer = L.TileLayer.Canvas.extend({
   initialize: function(tileManager, options) {
 
     this.options = {
-      tileSize: 256
+      tileSize: VectorTileUtil.tileSize
     };
     L.Util.setOptions(this, options);
 
@@ -362,12 +418,13 @@ var VectorTileLayer = L.TileLayer.Canvas.extend({
     this.featuresByTile = {};
     this.totalPointsByTile = {};
     this.quadTreesByTile = {};
+    this.boundaryPointsByTile = {};
+    this.boundaryPointCountByTileAndDirection = {};
   },
 
   onAdd: function(map) {
 
     this.map = map;
-
     L.TileLayer.Canvas.prototype.onAdd.call(this, map);
   },
 
@@ -382,6 +439,22 @@ var VectorTileLayer = L.TileLayer.Canvas.extend({
     this.featuresByTile[tileId] = [];
     this.totalPointsByTile[tileId] = 0;
     this.quadTreesByTile[tileId] = this.tileManager.quadTreeFactory([]);
+    this.boundaryPointsByTile[tileId] = {
+      top: [],
+      left: [],
+      bottom: [],
+      right: []
+    };
+    this.boundaryPointCountByTileAndDirection[tileId] = {
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      topleft: 0,
+      topright: 0,
+      bottomleft: 0,
+      bottomright: 0
+    };
 
     return this;
   },
@@ -394,6 +467,15 @@ var VectorTileLayer = L.TileLayer.Canvas.extend({
     var feature;
     var featureArray;
     var featurePointCount = 0;
+    var tileSize = this.options.tileSize;
+
+    var style = this.getFeatureStyle({type: 1});
+    var featureRadius;
+    if (_.isFunction(style.radius)) {
+      featureRadius = style.radius(this.map.getZoom());
+    } else {
+      featureRadius = style.radius;
+    }
 
     if (!this.featuresByTile.hasOwnProperty(tileId) && featureCount > 0) {
       this.featuresByTile[tileId] = [];
@@ -411,6 +493,21 @@ var VectorTileLayer = L.TileLayer.Canvas.extend({
       var vectorTileFeature = new VectorTileFeature(this, feature, this.getFeatureStyle(feature));
       var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
 
+      var boundaryPoints = this.boundaryPointsByTile[tileId];
+      if (boundaryPoints) {
+        if (projectedPoint.x <= featureRadius) {
+          boundaryPoints.left.push(vectorTileFeature);
+        } else if (projectedPoint.x >= tileSize - featureRadius) {
+          boundaryPoints.right.push(vectorTileFeature);
+        }
+
+        if (projectedPoint.y <= featureRadius) {
+          boundaryPoints.top.push(vectorTileFeature);
+        } else if (projectedPoint.y >= tileSize - featureRadius) {
+          boundaryPoints.bottom.push(vectorTileFeature);
+        }
+      }
+
       projectedPoint.count = vectorTileFeature.properties.count;
       featurePointCount += parseInt(_.get(vectorTileFeature, 'properties.count', 0), 10);
 
@@ -422,6 +519,45 @@ var VectorTileLayer = L.TileLayer.Canvas.extend({
 
     this.totalPointsByTile[tileId] = featurePointCount;
     this.renderTile(tileId, tileRenderedCallback);
+  },
+
+  renderTileOverlap: function(tileId) {
+    var self = this;
+
+    var tileInfo = _.chain(['z', 'x', 'y']).
+      zipObject(tileId.split(':')).
+      mapValues(Number).
+      value();
+
+    _.each(VectorTileUtil.hotspots, function(hotspot) {
+      var neighbor = _.clone(tileInfo);
+      var offset = {x: 0, y: 0};
+
+      _.each(hotspot, function(direction) {
+        VectorTileUtil.tileIdModifiers[direction](neighbor);
+        VectorTileUtil.tileOffsetModifiers[direction](offset);
+      });
+
+      neighbor.zoom = neighbor.z;
+      neighbor.id = VectorTileUtil.getTileId(neighbor);
+      var features = [];
+
+      _.each(hotspot, function(direction) {
+        if (self.boundaryPointsByTile[neighbor.id]) {
+          features = features.concat(self.boundaryPointsByTile[neighbor.id][VectorTileUtil.oppositeDirections[direction]]);
+        }
+      });
+
+      var featureCount = features.length;
+      var serializedHotspot = hotspot.join('');
+      var boundaryPointCount = self.boundaryPointCountByTileAndDirection[tileId];
+      if (boundaryPointCount && (!boundaryPointCount[serializedHotspot] || boundaryPointCount[serializedHotspot] < featureCount)) {
+        boundaryPointCount[serializedHotspot] = featureCount;
+        for (var i = 0; i < featureCount; i++) {
+          features[i].draw(tileId, offset);
+        }
+      }
+    });
   },
 
   renderTile: function(tileId, tileRenderedCallback) {
@@ -515,14 +651,15 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       // to handle events while the layer is loading. This value is then set
       // to true once the layer has completed loading.
       interactive: false,
-      tileSize: 256,
+      tileSize: VectorTileUtil.tileSize,
       debounceMilliseconds: 500,
       onRenderStart: _.noop,
       onRenderComplete: _.noop,
       // threshold options represent distance to neighboring points permitted for hover and click in px
       getHoverThreshold: _.noop,
       maxHoverThreshold: pointStyle.radius(options.maxZoom),
-      maxTileDensity: options.maxTileDensity
+      maxTileDensity: options.maxTileDensity,
+      tileOverlapZoomThreshold: options.tileOverlapZoomThreshold
     };
 
     L.Util.setOptions(this, options);
@@ -583,12 +720,12 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
     var mapMousemoveCallback;
     var mapClickCallback;
     var mapMouseoutCallback;
+
     var mapDragstartCallback;
     var mapZoomstartCallback;
-    // Find all edges and corners that the mouse is near
-    var edges = [['top'], ['left'], ['bottom'], ['right']];
-    var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
-    var hotspots = Array.prototype.concat.call(edges, corners);
+
+    var flannelClosedCallback;
+    var clearHighlightRequestCallback;
 
     this.map = map;
     this.hoverHighlightLayer.addTo(map);
@@ -612,43 +749,10 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
         right: tileSize - mouseTileOffset.x < hoverThreshold
       };
 
-      // Get neighboring tile id for a tile's edge
-      var tileIdModifiers = {
-        top: function(neighborTile) {
-          neighborTile.y--;
-        },
-        left: function(neighborTile) {
-          neighborTile.x--;
-        },
-        bottom: function(neighborTile) {
-          neighborTile.y++;
-        },
-        right: function(neighborTile) {
-          neighborTile.x++;
-        }
-      };
-
-      // Modify tile pixel offsets
-      // tileOffset = {x: tileOffsetX, y: tileOffsetY}
-      var tileOffsetModifiers = {
-        top: function(tileOffset) {
-          tileOffset.y += tileSize;
-        },
-        left: function(tileOffset) {
-          tileOffset.x += tileSize;
-        },
-        bottom: function(tileOffset) {
-          tileOffset.y -= tileSize;
-        },
-        right: function(tileOffset) {
-          tileOffset.x -= tileSize;
-        }
-      };
-
       // Now get those neighboring tile ids
       neighboringTiles = _.compact(
         _.map(
-          hotspots,
+          VectorTileUtil.hotspots,
           function(hotspot) {
 
             // hotspot is ['left'], ['left', 'top'], etc...
@@ -660,8 +764,8 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
               var neighborOffset = _.clone(mouseTileOffset);
 
               _.each(hotspot, function(dir) {
-                tileIdModifiers[dir](neighborTile);
-                tileOffsetModifiers[dir](neighborOffset);
+                VectorTileUtil.tileIdModifiers[dir](neighborTile);
+                VectorTileUtil.tileOffsetModifiers[VectorTileUtil.oppositeDirections[dir]](neighborOffset);
               });
 
               return {
@@ -872,11 +976,33 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       map.on('click', mapClickCallback);
     }
 
-    mapMouseoutCallback = function(e) {
-      self.clearHoverPointHighlights();
-    };
+    if (self.options.hover) {
+      mapMouseoutCallback = function(e) {
+        self.clearHoverPointHighlights();
+      };
 
-    map.on('mouseout', mapMouseoutCallback);
+      map.on('mouseout', mapMouseoutCallback);
+
+      // Ensure highlighting on points previously clicked under closed flannel
+      // is cleared, but points highlighted under a new flannel remain.
+      flannelClosedCallback = function(e) {
+        var pointsToKeepHighlighted = self.currentClickedPoints.filter(function(value) {
+          return !_.contains(e.points, value);
+        });
+        highlightClickedPoints(pointsToKeepHighlighted);
+      };
+
+      map.on('flannelclosed', flannelClosedCallback);
+
+      // Upon map refresh due to adding or removing a filter,
+      // remove highlighting on all clicked and moused-over points
+      clearHighlightRequestCallback = function() {
+        self.clearClickedPointHighlights();
+        self.clearHoverPointHighlights();
+      };
+
+      map.on('clearhighlightrequest', clearHighlightRequestCallback);
+    }
 
     mapDragstartCallback = function(e) {
       self.clearHoverPointHighlights();
@@ -916,7 +1042,12 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
           map.off('click', mapClickCallback);
         }
 
-        map.off('mouseout', mapMouseoutCallback);
+        if (self.options.hover) {
+          map.off('mouseout', mapMouseoutCallback);
+          map.off('flannelclosed', flannelClosedCallback);
+          map.off('clearhighlightrequest', clearHighlightRequestCallback);
+        }
+
         map.off('dragstart', mapDragstartCallback);
         map.off('zoomstart', mapZoomstartCallback);
       }
@@ -1063,6 +1194,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       self.tileLoaded(tileId);
     }
 
+    // VectorTile is a Leaflet global variable
     vectorTile = VectorTileUtil.unpackVectorTile(
       new VectorTile(
         new pbf(arrayBuffer)
@@ -1103,11 +1235,10 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
   addChildLayers: function() {
 
     var self = this;
-    var layer;
 
     Object.keys(this.layers).forEach(function(layerId) {
 
-      layer = this.layers[layerId];
+      var layer = this.layers[layerId];
 
       if (layer.hasOwnProperty('_map')) {
         self.map.addLayer(layer);
@@ -1118,11 +1249,10 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
   removeChildLayers: function() {
 
     var self = this;
-    var layer;
 
     Object.keys(self.layers).forEach(function(layerId) {
 
-      layer = self.layers[layerId];
+      var layer = self.layers[layerId];
 
       self.map.removeLayer(layer);
     });
@@ -1139,9 +1269,21 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
 
   tileLoaded: function(tileId) {
 
+    var self = this;
+
     delete this.outstandingTileDataRequests[tileId];
 
     if (Object.keys(this.outstandingTileDataRequests).length === 0) {
+      if (this.lastCommitedZoomLevel > this.options.tileOverlapZoomThreshold) {
+
+        Object.keys(self.layers).forEach(function(layerId) {
+          var layer = self.layers[layerId];
+
+          _.each(_.keys(layer.featuresByTile), function(tile) {
+            layer.renderTileOverlap(tile);
+          });
+        });
+      }
 
       // Set the layer's interactivity to true so that we will begin to
       // handle events.

@@ -7,6 +7,7 @@ var $ = require('jquery');
 var FEATURE_MAP_MIN_HOVER_THRESHOLD = 5;
 var FEATURE_MAP_MAX_ZOOM = 18; // same as Leaflet default
 var FEATURE_MAP_MAX_TILE_DENSITY = 256 * 256;
+var FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD = 6;
 var FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL = 200;
 var FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL = 250;
 var FEATURE_MAP_FLYOUT_Y_OFFSET = 1.25;
@@ -39,11 +40,12 @@ function FeatureMap(element, vif) {
 		center: [47.609895, -122.330259], // Center on Seattle by default.
 		keyboard: false,
 		scrollWheelZoom: false,
-		zoom: 10,
+		zoom: 1,
 		zoomControlPosition: 'topleft',
 		maxZoom: FEATURE_MAP_MAX_ZOOM
 	};
 	var _mapOptions;
+	var _debug;
 	var _hover;
 	var _panAndZoom;
 	var _locateUser;
@@ -52,10 +54,18 @@ function FeatureMap(element, vif) {
 	var _baseTileLayer;
 	var _map;
 	var _lastRenderOptions;
+
+	// We buffer feature layers so that there isn't a visible flash
+	// of emptiness when we transition from one to the next. This is accomplished
+	// by only removing the previous layers when the current one completes rendering.
+
+	// We also keep a handle on the current feature layer Url so we know which of
+	// the existing layers we can safely remove (i.e. not the current one).
 	var _featureLayers = {};
 	var _flyoutData = {};
 	var _currentLayerId;
 
+	_debug = vif.configuration.debug;
 	_hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
 	_panAndZoom = (_.isUndefined(vif.configuration.panAndZoom)) ? FEATURE_MAP_DEFAULT_PAN_AND_ZOOM : vif.configuration.panAndZoom;
 	_locateUser = !(vif.configuration.locateUser && ('geolocation' in navigator)) ? FEATURE_MAP_DEFAULT_LOCATE_USER : vif.configuration.locateUser;
@@ -93,6 +103,10 @@ function FeatureMap(element, vif) {
 
 		if (_mapElement.width() > 0 && _mapElement.height() > 0) {
 
+			var boundsChanged;
+			var baseLayerChanged;
+			var vectorTileGetterChanged;
+
 			if (!_map) {
 
 				// Construct leaflet map
@@ -101,17 +115,25 @@ function FeatureMap(element, vif) {
 				_attachEvents(this.element);
 			}
 
+			boundsChanged = renderOptions.bounds !== _.get(_lastRenderOptions, 'bounds');
+			baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
+			vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
+
 			_lastRenderOptions = renderOptions;
 
 			if (_userCurrentPositionBounds) {
 				_fitBounds(_userCurrentPositionBounds);
-			} else {
+			} else if (boundsChanged) {
 				_fitBounds(renderOptions.bounds);
 			}
 
-			_updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
+			if (baseLayerChanged) {
+				_updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
+			}
 
-			_createNewFeatureLayer(renderOptions.vectorTileGetter);
+			if (vectorTileGetterChanged) {
+				_createNewFeatureLayer(renderOptions.vectorTileGetter);
+			}
 		}
 	};
 
@@ -340,13 +362,21 @@ function FeatureMap(element, vif) {
 
 	function _handleExtentChange() {
 
+		var formattedBounds;
 		var bounds = _map.getBounds();
 
 		if (bounds.isValid()) {
-			return {
+			formattedBounds = {
 				southwest: [bounds.getSouth(), bounds.getWest()],
 				northeast: [bounds.getNorth(), bounds.getEast()]
 			};
+
+			self.emitEvent(
+				'SOCRATA_VISUALIZATION_FEATURE_MAP_EXTENT_CHANGE',
+				formattedBounds
+			);
+
+			return formattedBounds;
 		}
 	}
 
@@ -552,13 +582,27 @@ function FeatureMap(element, vif) {
 
 	function _handleVectorTileRenderStart() {
 
+		self.emitEvent(
+			'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
+			null
+		);
+
 		_hideFlyout();
 		_hideRowInspector();
 	}
 
 	function _handleVectorTileRenderComplete() {
 
+		self.emitEvent(
+			'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE',
+			null
+		);
+
 		_removeOldFeatureLayers();
+
+		if (_hover) {
+			_map.fire('clearhighlightrequest');
+		}
 	}
 
 	function _showFeatureFlyout(event) {
@@ -707,7 +751,7 @@ function FeatureMap(element, vif) {
 			_map.removeLayer(_baseTileLayer);
 		}
 
-		var _baseTileLayer = L.tileLayer(
+		_baseTileLayer = L.tileLayer(
 			url,
 			{
 				attribution: '',
@@ -721,12 +765,18 @@ function FeatureMap(element, vif) {
 	}
 
 	/**
-	 * Transforms the viewport to match or contain the provided map bounds.
+	 * Derives a bounding box that contains each element in a set of points
+	 * and then causes the map to fit that bounding box within its viewport.
 	 *
 	 * @param bounds - The Leaflet LatLngBounds object that represents the
 	 *   extents of the column's features.
 	 */
 	function _fitBounds(bounds) {
+
+		// It is critical to invalidate size prior to updating bounds.
+		// Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
+		// This manifests itself as the map being zoomed all of the way out.
+		_map.invalidateSize();
 
 		_map.fitBounds(
 			bounds,
@@ -760,12 +810,13 @@ function FeatureMap(element, vif) {
 			// Data requests
 			vectorTileGetter: vectorTileGetter,
 			// Behavior
-			debug: false,
+			debug: _debug,
 			hover: _hover,
 			debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
 			rowInspectorMaxRowDensity: FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY,
 			maxZoom: FEATURE_MAP_MAX_ZOOM,
 			maxTileDensity: FEATURE_MAP_MAX_TILE_DENSITY,
+			tileOverlapZoomThreshold: FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD,
 			// Helper functions
 			getFeatureId: _getFeatureId,
 			getFeatureStyle: _getFeatureStyle,
@@ -792,8 +843,6 @@ function FeatureMap(element, vif) {
 	/**
 	 * Removes existing but out of date feature layers from the map.
 	 * This is used in conjunction with `_createNewFeatureLayer()`.
-	 *
-	 * @param map - The Leaflet map object.
 	 */
 	function _removeOldFeatureLayers() {
 

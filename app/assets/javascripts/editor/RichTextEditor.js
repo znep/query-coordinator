@@ -70,6 +70,7 @@
     var _containerElement = element;
     var _assetFinder = assetFinder;
     var _formats = formats;
+    var _contentWindowDocument;
     var _contentToPreload = null;
     // _editor is the Squire instance.
     var _editor = null;
@@ -206,13 +207,16 @@
 
       $(_editorElement).load(function(e) {
 
-        _addThemeStyles(e.target.contentWindow.document);
-        _editor = new Squire(e.target.contentWindow.document);
-        _editorBodyElement = $(e.target.contentWindow.document).find('body');
+        _contentWindowDocument = e.target.contentWindow.document;
+        _addThemeStyles(_contentWindowDocument);
+        _editor = new Squire(_contentWindowDocument);
+        _editorBodyElement = $(_contentWindowDocument).find('body');
         _formatController = new storyteller.RichTextEditorFormatController(
           _self,
           _formats
         );
+
+        _contentWindowDocument.addEventListener('click', _broadcastContentClick);
 
         _editor.addEventListener('focus', _broadcastFocus);
         _editor.addEventListener('blur', _broadcastBlur);
@@ -530,12 +534,16 @@
       );
     }
 
+    function _broadcastContentClick() {
+      _emitEvent('rich-text-editor::content-click');
+    }
+
     function _broadcastFocus() {
-      _emitEvent('rich-text-editor::focus-change', { content: true });
+      _emitEvent('rich-text-editor::focus-change', { isFocused: true });
     }
 
     function _broadcastBlur() {
-      _emitEvent('rich-text-editor::focus-change', { content: false });
+      _emitEvent('rich-text-editor::focus-change', { isFocused: false });
     }
 
     /**

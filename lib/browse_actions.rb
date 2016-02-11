@@ -258,8 +258,7 @@ module BrowseActions
     configured_params = (catalog_config.default_params || {}).to_hash.deep_symbolize_keys
 
     # deal with default base_url wrt localization (ergghhhh bad hack.)
-    base_url = request.path
-    base_url = '/' + I18n.locale.to_s + base_url if I18n.locale.to_s != CurrentDomain.default_locale
+    base_url = "#{locale_url_prefix}#{request.path}"
 
     # next deal with options
     default_options = {

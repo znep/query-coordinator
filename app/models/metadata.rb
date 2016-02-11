@@ -20,4 +20,8 @@ class Metadata < Model
   def json_query
     data['jsonQuery']
   end
+
+  def geo
+    data['geo']
+  end
 end

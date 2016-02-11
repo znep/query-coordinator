@@ -153,6 +153,18 @@ class DatasetsController < ApplicationController
       end
       needs_view_js @view.modifyingViewUid, parent_view
     end
+
+    # add parent information if this view is a child layer
+    if @view.is_geospatial? && @view.metadata.geo['parentUid'].present?
+      @view.geoParent = get_view(@view.metadata.geo['parentUid'])
+      if @view.geoParent.nil?
+        Rails.logger.error("Unable to fetch parent geo dataset #{@view.metadata.geo['parentUid']} from child layer #{@view.id}")
+        flash.now[:error] = 'This layer has been dissociated from its parent geospatial dataset.'
+        render 'shared/error', :status => :not_found
+        return nil
+      end
+    end
+
     if FeatureFlags.derive(@view, request).swap_in_nbe_view === true && !@view.newBackend?
       begin
         @view.nbe_view_id = @view.nbe_view.id

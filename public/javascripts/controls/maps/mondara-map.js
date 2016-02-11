@@ -185,6 +185,13 @@
       layerObj._pubDate = layerObj._view.publicationDate;
       layerObj._dataLayers = [];
 
+      // If we are processing a single layer only, munge with parent properties.
+      if (layerObj._view.geoParent) {
+        var parentMetadata = _.cloneDeep(layerObj._view.geoParent.metadata.geo);
+        parentMetadata.layers = layerObj._view.id;
+        layerObj._config = parentMetadata;
+      }
+
       if (layerObj._config.isNbe) {
         this._provider = new NBEMapProvider(this);
       } else {

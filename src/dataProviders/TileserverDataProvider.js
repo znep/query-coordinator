@@ -244,7 +244,7 @@ function TileserverDataProvider(config) {
           xhr.open('GET', url, true);
 
           // Set user-defined headers.
-          _.each(config.headers, function(value, key) {
+          _.each(configuration.headers, function(value, key) {
             xhr.setRequestHeader(key, value);
           });
 

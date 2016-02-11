@@ -9048,7 +9048,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            labelDate.getFullYear()
 	          );
 	        } else {
-	          label = '{0} \'{1}'.format(
+	          label = "{0} '{1}".format(
 	            moment(labelDate).format('MMM'),
 	            '0{0}'.format(labelDate.getFullYear() % 100).slice(-2)
 	          );
@@ -20950,7 +20950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var headers = {
 	      Accept: 'application/json'
 	    };
-	    var extentQuery = '?$select=*&$where=intersects(the_geom, \'MULTIPOLYGON((({0})))\')&$limit=5000';
+	    var extentQuery = "?$select=*&$where=intersects(the_geom, 'MULTIPOLYGON((({0})))')&$limit=5000";
 	    var extentValidationErrorMessage = 'Argument `extent` must be an object ' +
 	      'with two keys: `southwest` and `northeast`; the value assigned to ' +
 	      'each key must be an array of two numbers in the following format: `[' +
@@ -26946,7 +26946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function _soqlEncodeString(value) {
-	  return '\'{0}\''.format(value.replace(/'/g, '\'\''));
+	  return "'{0}'".format(value.replace(/'/g, "''"));
 	}
 
 	function _soqlEncodeDate(value) {
@@ -28585,11 +28585,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var SOQL_PRECISION_END_ALIAS = '__END__';
 	var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
 	var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
-	var PRECISION_QUERY = 'SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < \'{1}\'';
+	var PRECISION_QUERY = "SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < '{1}'";
 	var DATA_QUERY_PREFIX = 'SELECT {3}(`{0}`) AS {1}, count(*) AS {2}';
 	var DATA_QUERY_SUFFIX = 'GROUP BY {0}';
 	var DATA_QUERY_WHERE_CLAUSE_PREFIX = 'WHERE';
-	var DATA_QUERY_WHERE_CLAUSE_SUFFIX = '`{0}` IS NOT NULL AND `{0}` < \'{1}\' AND (1=1)';
+	var DATA_QUERY_WHERE_CLAUSE_SUFFIX = "`{0}` IS NOT NULL AND `{0}` < '{1}' AND (1=1)";
 	//'SELECT {2}({0}) AS {4}, {3} AS {5} {1} GROUP BY {4}'.  format(fieldName, whereClause, dateTruncFunction, aggregationClause, dateAlias, valueAlias)
 	var WINDOW_RESIZE_RERENDER_DELAY = 200;
 

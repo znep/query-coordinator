@@ -1016,6 +1016,7 @@ en:
       timeline: Timeline
       treemap: Tree Map
     data_types:
+      blob: Blob
       calendar_date: Date & Time
       checkbox: Checkbox
       dataset_link: Dataset Link

@@ -780,10 +780,18 @@
             $scrolls.append($curEditContainer);
             var realCol = model.columnForID(col.id);
             if ($.isBlank(realCol.renderType.interfaceType)) { return; }
-            var blistEditor = $curEditContainer.blistEditor(
-                {type: realCol.renderType, row: row, value: value, newValue: newValue,
-                    format: realCol.format, customProperties: {dropDownList: realCol.dropDownList,
-                        baseUrl: realCol.baseUrl()}});
+            var blistEditor = $curEditContainer.blistEditor({
+              type: realCol.renderType,
+              row: row,
+              value: value,
+              newValue: newValue,
+              colLookup: realCol.lookup,
+              modelView: model.view,
+              format: realCol.format,
+              customProperties: {
+                dropDownList: realCol.dropDownList,
+                baseUrl: realCol.baseUrl()
+              }});
 
             $curEditContainer.data('realColumn', realCol);
             configureEditor(cell, $curEditContainer, mode);
@@ -3067,7 +3075,8 @@
                     canDelete: model.canDelete(),
                     canEdit: canEdit()
                 },
-                cellClasses: customCellClasses
+                cellClasses: customCellClasses,
+                modelView: model.view
             };
 
             // Create default column rendering

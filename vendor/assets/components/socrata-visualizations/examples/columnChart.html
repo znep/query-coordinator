@@ -11,24 +11,8 @@
         font-family: sans-serif;
       }
 
-      #column-chart-1 {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 100px auto 0 auto;
-        border: 1px solid #aaa;
-      }
-
-      #column-chart-2 {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 100px auto 0 auto;
-        border: 1px solid #aaa;
-      }
-
+      #column-chart-1,
+      #column-chart-2,
       #column-chart-3 {
         display: block;
         position: relative;
@@ -37,7 +21,6 @@
         margin: 100px auto 0 auto;
         border: 1px solid #aaa;
       }
-
     </style>
   </head>
   <body>
@@ -70,8 +53,9 @@
       },
       'columnName': COLUMN_NAME,
       'configuration': {
-        // The localization values should be set by the application but are set to string literals
-        // for the purposes of this example.
+        'interactive': true,
+        // The localization values should be set by the application but are set
+        // to string literals for the purposes of this example.
         'localization': {
           'NO_VALUE': 'No value',
           'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
@@ -103,13 +87,32 @@
     $columnChart1Element.socrataColumnChart(columnChart1VIF);
 
     var columnChart2VIF = _.cloneDeep(columnChart1VIF);
-    columnChart2VIF.columnName = 'source';
+    columnChart2VIF.filters = [
+      {
+        'function': 'binaryOperator',
+        'columnName': 'source',
+        'arguments': {
+          'operator': '=',
+          'operand': 'Web Self Service'
+        }
+      }
+    ];
 
     var $columnChart2Element = $('#column-chart-2');
     $columnChart2Element.socrataColumnChart(columnChart2VIF);
 
     var columnChart3VIF = _.cloneDeep(columnChart1VIF);
-    columnChart3VIF.configuration.interactive = false;
+    columnChart3VIF.columnName = 'source';
+    columnChart3VIF.filters = [
+      {
+        'function': 'binaryOperator',
+        'columnName': 'source',
+        'arguments': {
+          'operator': '=',
+          'operand': 'Web Self Service'
+        }
+      }
+    ];
 
     var $columnChart3Element = $('#column-chart-3');
     $columnChart3Element.socrataColumnChart(columnChart3VIF);
@@ -119,10 +122,15 @@
      */
 
     $columnChart1Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+    $columnChart1Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
     $columnChart2Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+    $columnChart2Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
+    $columnChart3Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+    $columnChart3Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
     function handleFlyout(event) {
-
       var payload = event.originalEvent.detail;
 
       // Render/hide a flyout
@@ -134,6 +142,17 @@
 
         flyoutRenderer.clear();
       }
+    }
+
+    function handleVifUpdated(event) {
+      var payload = event.originalEvent.detail;
+      var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+      renderVifEvent.originalEvent = {
+        detail: payload
+      };
+
+      $(this).trigger(renderVifEvent);
     }
 
     /**

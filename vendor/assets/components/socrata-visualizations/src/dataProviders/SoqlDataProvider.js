@@ -122,24 +122,6 @@ function SoqlDataProvider(config) {
     );
   };
 
-  // Returns a Promise for a GET against the given SOQL url.
-  // Adds salt to the end of the URL for cache bust.
-  // On error, rejects with an object: {
-  //   status: HTTP code,
-  //   message: status text,
-  //   soqlError: response JSON
-  // }
-  function _makeSoqlGetRequestWithSalt(url) {
-    return Promise.resolve($.get(_withSalt(url))).
-      catch(function(error) {
-        return Promise.reject({
-          status: parseInt(error.status, 10),
-          message: error.statusText,
-          soqlError: error.responseJSON || error.responseText
-        });
-      });
-  }
-
   /**
    * `.getTableData()`
    *
@@ -187,6 +169,24 @@ function SoqlDataProvider(config) {
   /**
    * Private methods
    */
+
+  // Returns a Promise for a GET against the given SOQL url.
+  // Adds salt to the end of the URL for cache bust.
+  // On error, rejects with an object: {
+  //   status: HTTP code,
+  //   message: status text,
+  //   soqlError: response JSON
+  // }
+  function _makeSoqlGetRequestWithSalt(url) {
+    return Promise.resolve($.get(_withSalt(url))).
+      catch(function(error) {
+        return Promise.reject({
+          status: parseInt(error.status, 10),
+          message: error.statusText,
+          soqlError: error.responseJSON || error.responseText
+        });
+      });
+  }
 
   function _escapeColumnName(columnName) {
     return '`{0}`'.format(columnName);

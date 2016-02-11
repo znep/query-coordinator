@@ -5,12 +5,13 @@ var ChoroplethMap = require('./views/ChoroplethMap');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 
 var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 var DEFAULT_BASE_LAYER_OPACITY = 0.8;
 var NAME_ALIAS = '__NAME_ALIAS__';
 var VALUE_ALIAS = '__VALUE_ALIAS__';
-var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} {3} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
 var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
@@ -117,6 +118,7 @@ $.fn.socrataChoroplethMap = function(vif) {
   var featureExtentRequest;
   var cachedGeometryLabel;
   var rerenderOnResizeTimeout;
+  var _lastRenderedVif;
 
   _attachEvents();
 
@@ -187,10 +189,10 @@ $.fn.socrataChoroplethMap = function(vif) {
             cachedGeometryLabel = shapefileMetadata.geometryLabel || null;
             cachedShapefile = shapefile;
             // Next, render base layer.
-            visualization.updateTileLayer(_getRenderOptions());
+            visualization.updateTileLayer(_getRenderOptions(vif));
             // Finally, make the data queries and prepare to draw the choropleth
             // regions.
-            _updateData();
+            _updateData(vif);
           },
           function(error) {
             _logError(error);
@@ -199,32 +201,43 @@ $.fn.socrataChoroplethMap = function(vif) {
       }
     );
 
-  function _getRenderOptions() {
+  function _getRenderOptions(vifToRender) {
+
     return {
       baseLayer: {
-        url: vif.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
-        opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
-      }
+        url: vifToRender.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
+        opacity: vifToRender.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
+      },
+      showFiltered: vifToRender.filters.length > 0,
+      vif: vifToRender
     };
   }
 
   /**
    * Fetches SOQL data and aggregates with shapefile geoJSON
    */
-  function _updateData() {
-    var queryString = BASE_QUERY.format(
-      vif.configuration.computedColumnName,
+  function _updateData(vifToRender) {
+    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
+    var unfilteredQueryString = BASE_QUERY.format(
+      vifToRender.configuration.computedColumnName,
       NAME_ALIAS,
-      VALUE_ALIAS
+      VALUE_ALIAS,
+      ''
+    );
+    var filteredQueryString = BASE_QUERY.format(
+      vifToRender.configuration.computedColumnName,
+      NAME_ALIAS,
+      VALUE_ALIAS,
+      (whereClauseComponents) ? 'WHERE {0}'.format(whereClauseComponents) : ''
     );
     var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-      query(queryString, NAME_ALIAS, VALUE_ALIAS)
+      query(unfilteredQueryString, NAME_ALIAS, VALUE_ALIAS)
       ['catch'](function(error) {
         _logError(error);
         visualization.renderError();
       });
     var filteredSoqlQuery = filteredSoqlDataProvider.
-      query(queryString, NAME_ALIAS, VALUE_ALIAS)
+      query(filteredQueryString, NAME_ALIAS, VALUE_ALIAS)
       ['catch'](function(error) {
         _logError(error);
         visualization.renderError();
@@ -253,16 +266,20 @@ $.fn.socrataChoroplethMap = function(vif) {
         // Consolidate configuration and data into one object
         var aggregatedData = _aggregateGeoJsonData(
           cachedGeometryLabel,
-          vif.configuration.shapefile.primaryKey,
+          vifToRender.configuration.shapefile.primaryKey,
           cachedShapefile,
           unfilteredQueryResponse,
           filteredQueryResponse,
-          vif.filters
+          vifToRender
         );
+
+        if (vifToRender) {
+          _lastRenderedVif = vifToRender;
+        }
 
         visualization.render(
           aggregatedData,
-          _getRenderOptions()
+          _getRenderOptions(_lastRenderedVif)
         );
       })
       ['catch'](function(error) {
@@ -274,6 +291,63 @@ $.fn.socrataChoroplethMap = function(vif) {
   /**
    * Data Formatting Functions
    */
+
+  /**
+   * See CardVisualizationChoroplethHelpers.js in the frontend repo for more
+   * details about _aggregateGeoJsonData
+   *
+   * Consolidates the given geojson data into one object.
+   *
+   * @param {String} geometryLabel - The name of the property that should be
+   *   used as the 'human-readable' name for a region.
+   * @param {String} primaryKey - Name of the property to be used as the primary key
+   * @param {Object} geojsonRegions - A geoJson-formatted object.
+   * @param {Object[]} unfilteredData - An array of objects with 'name' and
+   *   'value' keys (the unfiltered values of the data).
+   * @param {Object[]} filteredData - An array of objects with 'name' and
+   *   'value' keys (the filtered values of the data).
+   * @param {Object[]} vifToRender - The vif that is being rendered.
+   *
+   * @return {Object} (See _mergeRegionAndAggregateData)
+   */
+  function _aggregateGeoJsonData(
+    geometryLabel,
+    primaryKey,
+    geojsonRegions,
+    unfilteredData,
+    filteredData,
+    vifToRender) {
+
+    var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
+    var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
+    var ownFilterOperands = vifToRender.
+      filters.
+      filter(
+        function(filter) {
+
+          return (
+            (filter.columnName === vifToRender.columnName) &&
+            (filter.function === 'binaryComputedGeoregionOperator') &&
+            (filter.arguments.computedColumnName === vifToRender.configuration.computedColumnName)
+          );
+        }
+      ).
+      map(
+        function(filter) {
+          return filter.arguments.operand;
+        }
+      );
+
+    return _mergeRegionAndAggregateData(
+      geometryLabel,
+      primaryKey,
+      geojsonRegions,
+      unfilteredDataAsHash,
+      filteredDataAsHash,
+      ownFilterOperands
+    );
+  }
+
   /**
    * See CardVisualizationChoroplethHelpers.js in the frontend repo for more
    * details about _mergeRegionAndAggregateData
@@ -309,7 +383,7 @@ $.fn.socrataChoroplethMap = function(vif) {
     geojsonRegions,
     unfilteredDataAsHash,
     filteredDataAsHash,
-    activeFilterNames
+    ownFilterOperands
   ) {
 
     var newFeatures = _.chain(_.get(geojsonRegions, 'features', [])).
@@ -323,9 +397,9 @@ $.fn.socrataChoroplethMap = function(vif) {
 
         properties[primaryKey] = name;
         properties[vif.configuration.shapefile.columns.name] = humanReadableName;
-        properties[vif.configuration.shapefile.columns.filtered] = filteredDataAsHash[name];
+        properties[vif.configuration.shapefile.columns.filtered] = filteredDataAsHash[name] || null;
         properties[vif.configuration.shapefile.columns.unfiltered] = unfilteredDataAsHash[name];
-        properties[vif.configuration.shapefile.columns.selected] = _.contains(activeFilterNames, name);
+        properties[vif.configuration.shapefile.columns.selected] = _.contains(ownFilterOperands, name);
 
         // Create a new object to get rid of superfluous shapefile-specific
         // fields coming out of the backend.
@@ -341,47 +415,6 @@ $.fn.socrataChoroplethMap = function(vif) {
       features: newFeatures,
       type: geojsonRegions.type
     };
-  }
-
-  /**
-   * See CardVisualizationChoroplethHelpers.js in the frontend repo for more
-   * details about _aggregateGeoJsonData
-   *
-   * Consolidates the given geojson data into one object.
-   *
-   * @param {String} geometryLabel - The name of the property that should be
-   *   used as the 'human-readable' name for a region.
-   * @param {String} primaryKey - Name of the property to be used as the primary key
-   * @param {Object} geojsonRegions - A geoJson-formatted object.
-   * @param {Object[]} unfilteredData - An array of objects with 'name' and
-   *   'value' keys (the unfiltered values of the data).
-   * @param {Object[]} filteredData - An array of objects with 'name' and
-   *   'value' keys (the filtered values of the data).
-   * @param {Object[]} activeFilters - The active filters - each filter must
-   *   have an 'operand' key.
-   *
-   * @return {Object} (See _mergeRegionAndAggregateData)
-   */
-  function _aggregateGeoJsonData(
-    geometryLabel,
-    primaryKey,
-    geojsonRegions,
-    unfilteredData,
-    filteredData,
-    activeFilters) {
-
-    var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
-    var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
-    var activeFilterNames = _.pluck(activeFilters, 'operand');
-
-    return _mergeRegionAndAggregateData(
-      geometryLabel,
-      primaryKey,
-      geojsonRegions,
-      unfilteredDataAsHash,
-      filteredDataAsHash,
-      activeFilterNames
-    );
   }
 
   /**
@@ -401,8 +434,9 @@ $.fn.socrataChoroplethMap = function(vif) {
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
-    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleRegionSelect);
+    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleSelection);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _detachEvents() {
@@ -412,8 +446,9 @@ $.fn.socrataChoroplethMap = function(vif) {
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
-    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleRegionSelect);
+    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleSelection);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _handleWindowResize() {
@@ -605,6 +640,81 @@ $.fn.socrataChoroplethMap = function(vif) {
     _dispatchFlyout(null);
   }
 
+  function _handleSelection(event) {
+    var payload = event.originalEvent.detail;
+    var newVif = _.cloneDeep(_lastRenderedVif);
+    var ownFilterOperands = newVif.
+      filters.
+      filter(
+        function(filter) {
+
+          return (
+            (filter.columnName === newVif.columnName) &&
+            (filter.function === 'binaryComputedGeoregionOperator') &&
+            (filter.arguments.computedColumnName === newVif.configuration.computedColumnName)
+          );
+        }
+      ).
+      map(
+        function(filter) {
+          return filter.arguments.operand;
+        }
+      );
+
+    newVif.filters = newVif.
+      filters.
+      filter(function(filter) {
+
+        return (
+          (filter.columnName !== newVif.columnName) &&
+          (filter.function !== 'binaryComputedGeoregionOperator') &&
+          (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
+        );
+      });
+
+    if (ownFilterOperands.indexOf(payload.shapefileFeatureId) === -1) {
+
+      newVif.
+        filters.
+        push(
+          {
+            'columnName': newVif.columnName,
+            'function': 'binaryComputedGeoregionOperator',
+            'arguments': {
+              'computedColumnName': newVif.configuration.computedColumnName,
+              'operator': '=',
+              'operand': payload.shapefileFeatureId
+            }
+          }
+        );
+    }
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        {
+          detail: newVif,
+          bubbles: true
+        }
+      )
+    );
+  }
+
+  function _handleRenderVif(event) {
+    var newVif = event.originalEvent.detail;
+
+    if (newVif.type !== 'choroplethMap') {
+      throw new Error(
+        'Cannot update VIF; old type: `choroplethMap`, new type: `{0}`.'.
+          format(
+            newVif.type
+          )
+        );
+    }
+
+    _updateData(newVif);
+  }
+
   function _dispatchFlyout(payload) {
 
     $element[0].dispatchEvent(
@@ -616,13 +726,6 @@ $.fn.socrataChoroplethMap = function(vif) {
         }
       )
     );
-  }
-
-  function _handleRegionSelect() {// event) { ---> Linting sucks
-
-    // var payload = event.originalEvent.detail;
-
-    // TODO: Implement whenever Stories gets filtering
   }
 
   function _logError(error) {

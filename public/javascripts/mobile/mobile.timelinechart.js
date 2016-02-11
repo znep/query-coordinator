@@ -1,15 +1,12 @@
 socrata.visualizations.mobileTimelineChart = function(values, $target) {
   'use strict';
 
-  var DOMAIN = values.domain;
-  var DATASET_UID = values.uid;
-  var COLUMN_NAME = values.columnName;
   var timelineChartVIF = {
     'aggregation': {
       'columnName': null,
       'function': 'count'
     },
-    'columnName': COLUMN_NAME,
+    'columnName': values.columnName,
     'configuration': {
       'localization': {
         'NO_VALUE': 'No value',
@@ -19,8 +16,8 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
       }
     },
     'createdAt': '2014-01-01T00:00:00',
-    'datasetUid': DATASET_UID,
-    'domain': DOMAIN,
+    'datasetUid': values.datasetUid,
+    'domain': values.domain,
     'filters': [],
     'format': {
       'type': 'visualization_interchange_format',
@@ -30,7 +27,7 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
       'type': 'test_data',
       'url': 'localhost'
     },
-    'title': COLUMN_NAME,
+    'title': values.columnName,
     'type': 'timelineChart',
     'unit': {
       'one': 'case',

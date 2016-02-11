@@ -1,16 +1,6 @@
 (function() {
   'use strict';
 
-  var DOMAIN = datasetMetadata.domain;
-  var PAGE_UID = pageMetadata.pageId;
-  var DATASET_UID = datasetMetadata.id;
-  var cardsData = pageMetadata.cards;
-  var cardsMetaData = datasetMetadata.columns;
-
-  function getPageData() {
-    return $.get(window.location.protocol + '//' + DOMAIN + '/views/' + PAGE_UID);
-  }
-
   function getTemplate(options) {
     return $(
       [
@@ -93,10 +83,10 @@
     var $cardContainer;
     var values;
 
-    $.each(cardsData, function(i, card) {
+    $.each(pageMetadata.cards, function(i, card) {
       var cardOptions = {
         id: '',
-        metaData: cardsMetaData[card.fieldName],
+        metaData: datasetMetadata.columns[card.fieldName],
         containerClass: ''
       };
 
@@ -106,8 +96,8 @@
           cardOptions.containerClass = 'timeline-chart-container';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
-            domain: DOMAIN,
-            uid: DATASET_UID,
+            domain: datasetMetadata.domain,
+            datasetUid: datasetMetadata.id,
             columnName: card.fieldName
           };
 
@@ -118,8 +108,8 @@
           cardOptions.containerClass = 'map-container';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
-            domain: DOMAIN,
-            uid: DATASET_UID,
+            domain: datasetMetadata.domain,
+            datasetUid: datasetMetadata.id,
             columnName: card.fieldName
           };
 
@@ -129,9 +119,11 @@
           cardOptions.id = 'choropleth';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
-            domain: DOMAIN,
-            uid: DATASET_UID,
-            columnName: card.fieldName
+            domain: datasetMetadata.domain,
+            datasetUid: datasetMetadata.id,
+            columnName: card.fieldName,
+            // TODO Write some bloody error handling
+            geojsonUid: datasetMetadata.columns[card.computedColumn].computationStrategy.parameters.region.substring(1)
           };
 
           socrata.visualizations.mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
@@ -140,8 +132,8 @@
           cardOptions.id = 'column-chart';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
-            domain: DOMAIN,
-            uid: DATASET_UID,
+            domain: datasetMetadata.domain,
+            datasetUid: datasetMetadata.id,
             columnName: card.fieldName
           };
 

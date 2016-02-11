@@ -4,16 +4,6 @@
   socrata.visualizations.mobileChoroplethMap = function(values, $target) {
 
     /**
-     * Sample data!
-     */
-
-    // var DOMAIN = values.domain;
-    // var DATASET_UID = values.uid;
-    var DATASET_UID = '52my-2pak';
-    var DOMAIN = 'dataspace.demo.socrata.com';
-    var GEOJSON_UID = 'snuk-a5kv';
-
-    /**
      * Render things!
      */
 
@@ -56,12 +46,12 @@
           },
           'geometryLabel': 'ward',
           'primaryKey': '_feature_id',
-          'uid': GEOJSON_UID
+          'uid': values.geojsonUid
         }
       },
-      'datasetUid': DATASET_UID,
+      'datasetUid': values.datasetUid,
       'description': 'An example choropleth',
-      'domain': DOMAIN,
+      'domain': values.domain,
       'filters': [],
       'format': {
         'type': 'visualization_interchange_format',

@@ -25,8 +25,6 @@
   }
 
   function mobileCardViewer() {
-    'use strict';
-
     var $intro = $('.intro');
     var $all = $('.all');
     var description = $('.all').find('.desc').html();
@@ -77,7 +75,7 @@
       }
       lastScrollTop = stp;
     });
-  };
+  }
 
   function renderCards() {
     var $cardContainer;

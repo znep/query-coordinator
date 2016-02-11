@@ -76,6 +76,13 @@ class InternalController < ApplicationController
         memo << description.merge({ name: type })
         memo
       end
+
+    respond_to do |format|
+      format.json do
+        render :json => @domain.data.to_json
+      end
+      format.html { render }
+    end
   end
 
   def config_info

@@ -155,6 +155,20 @@ describe('socrata.visualizations.views.RowInspector', function() {
             assert.equal($values.text(), _.pluck(validData[0], 'value').join(''));
             assert.equal($rowInspector.find('.paging-info .message div:first-child').text(), 'Showing Row');
           });
+
+          it('should not render a title if none provided', function() {
+            var $title = $rowInspector.find('.row-inspector-title');
+            assert.lengthOf($title, 0);
+          });
+
+          it('should render a title if one is provided', function(done) {
+            validUpdatePayload.titles = ['Wombats in Space'];
+            triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', validUpdatePayload);
+            _.defer(done);
+
+            var $title = $rowInspector.find('.row-inspector-title');
+            assert.lengthOf($title, 1);
+          });
         });
       });
     });
@@ -324,18 +338,6 @@ describe('socrata.visualizations.views.RowInspector', function() {
     });
   });
 
-  // TODO: Figure out why the three `xit`'d tests below are failing sometimes in
-  // PhantomJS (and less often in Chrome):
-  //
-  // PhantomJS 1.9.8 (Mac OS X 0.0.0) socrata.visualizations.rowInspector positioning when shown at the right edge of the screen should display the hint at the extreme right of the rowInspector FAILED
-  //   AssertionError: expected 'left: auto; right: 224px; ' to include 'right: 0'
-  //       at base/karma/socrata.visualizations.rowInspector.spec.js?0abcb6b177435e21688d1935c3f58908c15114bc:364
-  // PhantomJS 1.9.8 (Mac OS X 0.0.0) socrata.visualizations.rowInspector positioning when shown at the right edge of the screen should display a southeast hint FAILED
-  //   AssertionError: expected { Object (length, prevObject, ...) } to have a length of 1 but got 0
-  //       at base/karma/socrata.visualizations.rowInspector.spec.js?0abcb6b177435e21688d1935c3f58908c15114bc:368
-  // PhantomJS 1.9.8 (Mac OS X 0.0.0) socrata.visualizations.rowInspector positioning when shown 50px from the right edge of the screen should display a southeast hint FAILED
-  //   AssertionError: expected { Object (length, prevObject, ...) } to have a length of 1 but got 0
-  //       at base/karma/socrata.visualizations.rowInspector.spec.js?0abcb6b177435e21688d1935c3f58908c15114bc:385
   describe('positioning', function() {
     var $hint;
     before(function() {
@@ -354,6 +356,18 @@ describe('socrata.visualizations.views.RowInspector', function() {
       });
     }
 
+    function showAtYPosition(y) {
+      var showEventPayload = {
+        position: { pageX: 200, pageY: y },
+        error: false
+      };
+
+      beforeEach(function(done) {
+        triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', showEventPayload);
+        _.defer(done);
+      });
+    }
+
     function distanceFromRightEdge() {
       // Look at tool-panel-main, as the root of the rowInspector does not actually have dimensions.
       var contentPosition = $toolPanel.find('.tool-panel-main')[0].getBoundingClientRect();
@@ -361,68 +375,88 @@ describe('socrata.visualizations.views.RowInspector', function() {
       return windowWidth - contentPosition.right;
     }
 
-    describe('when shown at the right edge of the screen', function() {
-      showAtXPosition($(window).width());
-      it('should stick to the right side of the screen', function() {
-        assert.isAbove(distanceFromRightEdge(), 0);
+    // TODO: Figure out why the three `xit`'d tests below are failing sometimes in
+    // PhantomJS (and less often in Chrome):
+    describe('east/west positioning', function() {
+      describe('when shown at the right edge of the screen', function() {
+        showAtXPosition($(window).width());
+        it('should stick to the right side of the screen', function() {
+          assert.isAbove(distanceFromRightEdge(), 0);
+        });
+
+        xit('should display the hint at the extreme right of the rowInspector', function() {
+          assert.include($hint.attr('style'), 'right: 0');
+        });
+
+        xit('should display an east hint', function() {
+          assert.lengthOf($rowInspector.find('.tool-panel.east'), 1);
+        });
       });
 
-      xit('should display the hint at the extreme right of the rowInspector', function() {
-        assert.include($hint.attr('style'), 'right: 0');
+      describe('when shown 50px from the right edge of the screen', function() {
+        var xPositionShownAt = $(window).width() - 50;
+        showAtXPosition(xPositionShownAt);
+        it('should stick to the right side of the screen', function() {
+          assert.isAbove(distanceFromRightEdge(), 0);
+        });
+
+        it('should display the hint at the mouse X position', function() {
+          var distance = Math.abs(xPositionShownAt - $hint[0].getBoundingClientRect().right);
+          assert.isBelow(distance, $hint.width());
+        });
+
+        xit('should display an east hint', function() {
+          assert.lengthOf($rowInspector.find('.tool-panel.east'), 1);
+        });
       });
 
-      xit('should display a southeast hint', function() {
-        assert.lengthOf($rowInspector.find('.tool-panel.southeast'), 1);
+      describe('when shown 275px from the right edge of the screen', function() {
+        var xPositionShownAt = $(window).width() - 275;
+        showAtXPosition(xPositionShownAt);
+        it('should stick to the right side of the screen', function() {
+          assert.isAbove(distanceFromRightEdge(), 0);
+        });
+
+        it('should display the hint at the mouse X position', function() {
+          var distance= Math.abs(xPositionShownAt - $hint[0].getBoundingClientRect().left);
+          assert.isBelow(distance, $hint.width());
+        });
+
+        it('should display a west hint', function() {
+          assert.lengthOf($rowInspector.find('.tool-panel.west'), 1);
+        });
+      });
+
+      describe('when shown at the left edge of the screen', function() {
+        showAtXPosition(0);
+        it('should stick to the left side of the screen', function() {
+          assert.include($toolPanel.attr('style'), 'left: 0');
+        });
+
+        it('should display the hint at the extreme left of the rowInspector', function() {
+          // The tip is somewhat oddly shaped, which confuses getBoundingClientRect sometimes.
+          assert.isBelow($hint[0].getBoundingClientRect().left, 2);
+        });
+
+        it('should display a west hint', function() {
+          assert.lengthOf($rowInspector.find('.tool-panel.west'), 1);
+        });
       });
     });
 
-    describe('when shown 50px from the right edge of the screen', function() {
-      var xPositionShownAt = $(window).width() - 50;
-      showAtXPosition(xPositionShownAt);
-      it('should stick to the right side of the screen', function() {
-        assert.isAbove(distanceFromRightEdge(), 0);
+    // TODO: Figure out why the `xit`'d test below also fails sometimes in
+    // PhantomJS (and less often in Chrome):
+    describe('north/south positioning', function() {
+      xit('should position towards the bottom of the screen when above screen midpoint', function() {
+        var yPositionShownAt = ($(window).height() - 10) / 2;
+        showAtYPosition(yPositionShownAt);
+        assert.lengthOf($rowInspector.find('.tool-panel.south'), 1);
       });
 
-      it('should display the hint at the mouse X position', function() {
-        var distance = Math.abs(xPositionShownAt - $hint[0].getBoundingClientRect().right);
-        assert.isBelow(distance, $hint.width());
-      });
-
-      xit('should display a southeast hint', function() {
-        assert.lengthOf($rowInspector.find('.tool-panel.southeast'), 1);
-      });
-    });
-
-    describe('when shown 275px from the right edge of the screen', function() {
-      var xPositionShownAt = $(window).width() - 275;
-      showAtXPosition(xPositionShownAt);
-      it('should stick to the right side of the screen', function() {
-        assert.isAbove(distanceFromRightEdge(), 0);
-      });
-
-      it('should display the hint at the mouse X position', function() {
-        var distance= Math.abs(xPositionShownAt - $hint[0].getBoundingClientRect().left);
-        assert.isBelow(distance, $hint.width());
-      });
-
-      it('should display a southwest hint', function() {
-        assert.lengthOf($rowInspector.find('.tool-panel.southwest'), 1);
-      });
-    });
-
-    describe('when shown at the left edge of the screen', function() {
-      showAtXPosition(0);
-      it('should stick to the left side of the screen', function() {
-        assert.include($toolPanel.attr('style'), 'left: 0');
-      });
-
-      it('should display the hint at the extreme left of the rowInspector', function() {
-        // The tip is somewhat oddly shaped, which confuses getBoundingClientRect sometimes.
-        assert.isBelow($hint[0].getBoundingClientRect().left, 2);
-      });
-
-      it('should display a southwest hint', function() {
-        assert.lengthOf($rowInspector.find('.tool-panel.southwest'), 1);
+      it('should position towards the top of the screen when below screen midpoint', function() {
+        var yPositionShownAt = ($(window).height() + 10) / 2;
+        showAtYPosition(yPositionShownAt);
+        assert.lengthOf($rowInspector.find('.tool-panel.north'), 1);
       });
     });
   });

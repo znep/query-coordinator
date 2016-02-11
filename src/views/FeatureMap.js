@@ -107,6 +107,9 @@ function FeatureMap(element, vif) {
       var baseLayerChanged;
       var vectorTileGetterChanged;
 
+      // Emit render start event
+      _emitRenderStart();
+
       if (!_map) {
 
         // Construct leaflet map
@@ -134,6 +137,9 @@ function FeatureMap(element, vif) {
       if (vectorTileGetterChanged) {
         _createNewFeatureLayer(renderOptions.vectorTileGetter);
       }
+
+      // Emit render complete event
+      _emitRenderComplete();
     }
   };
 
@@ -348,6 +354,20 @@ function FeatureMap(element, vif) {
     }
 
     $(window).off('resize', _hideRowInspector);
+  }
+
+  function _emitRenderStart() {
+    self.emitEvent(
+      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
+      null
+    );
+  }
+
+  function _emitRenderComplete() {
+    self.emitEvent(
+      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE',
+      null
+    );
   }
 
   function _handleMapResize() {
@@ -577,21 +597,11 @@ function FeatureMap(element, vif) {
 
   function _handleVectorTileRenderStart() {
 
-    self.emitEvent(
-      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
-      null
-    );
-
     _hideFlyout();
     _hideRowInspector();
   }
 
   function _handleVectorTileRenderComplete() {
-
-    self.emitEvent(
-      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE',
-      null
-    );
 
     _removeOldFeatureLayers();
 

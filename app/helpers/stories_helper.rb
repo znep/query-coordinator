@@ -1,5 +1,9 @@
 module StoriesHelper
 
+  def is_published_view?
+    action_name == 'show'
+  end
+
   def core_attributes
     @core_attributes ||= CoreServer.get_view(@story.uid) || {}
   end

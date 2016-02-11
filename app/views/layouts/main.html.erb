@@ -96,7 +96,7 @@ http://www.socrata.com
             <%= render_text_template('{{main_logo}}') %>
             <ul class="siteUserNav">
               <li class="accountLink hide">
-                <a href="<%= generic_account_path %>" title="<%= t('govstat.chrome.header.links.account_tooltip') %>">
+                <a href="<%= profile_path(current_user) %>" title="<%= t('govstat.chrome.header.links.account_tooltip') %>">
                   <span class="text"><%= t('govstat.chrome.header.links.account') %></span>
                 </a>
               </li>

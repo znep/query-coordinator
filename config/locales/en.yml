@@ -1385,7 +1385,7 @@ en:
     chrome:
       header:
         links:
-          account: Account
+          account: Profile
           account_options: Account Options
           account_tooltip: View and make changes to your user account.
           configuration: Configuration

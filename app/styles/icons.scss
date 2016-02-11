@@ -1053,6 +1053,7 @@ $data-lens-color: #80acca;
   &.checkbox #{$subselector} {
     background-position: 0 -120px;
   }
+  &.blob #{$subselector},
   &.document #{$subselector},
   &.document_obsolete #{$subselector} {
     background-position: 0 -280px;

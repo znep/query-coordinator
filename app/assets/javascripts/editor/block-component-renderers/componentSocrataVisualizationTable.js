@@ -37,8 +37,15 @@
         utils.assertIsOneOfTypes(blockId, 'string');
         utils.assert(_.isFinite(componentIndex));
 
+        var blockComponent = storyteller.storyStore.getBlockComponentAtIndex(blockId, componentIndex);
+
         newValue = _.cloneDeep(componentData.value);
         newValue.vif = newVif;
+
+        if (_.has(blockComponent, 'value.layout.height') && _.isFinite(blockComponent.value.layout.height)) {
+          newValue.layout = newValue.layout || {};
+          newValue.layout.height = blockComponent.value.layout.height;
+        }
 
         if (!_.isEqual(newValue, componentData.value)) {
           storyteller.dispatcher.dispatch({

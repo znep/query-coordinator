@@ -92,6 +92,16 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
     });
 
     describe('on SOCRATA_VISUALIZATION_VIF_UPDATED', function() {
+      beforeEach(function() {
+        sinon.stub(storyteller.storyStore, 'getBlockComponentAtIndex', function() {
+          return {value: {layout: {height: 100}}};
+        });
+      });
+
+      afterEach(function() {
+        storyteller.storyStore.getBlockComponentAtIndex.restore();
+      });
+
       it('should dispatch BLOCK_UPDATE_COMPONENT', function(done) {
         var newVif = { foo: 'bar' };
 
@@ -99,6 +109,7 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
           if (payload.action === Actions.BLOCK_UPDATE_COMPONENT) {
             assert.equal(payload.blockId, standardMocks.validBlockId);
             assert.equal(payload.componentIndex, 0);
+            assert.equal(payload.value.layout.height, 100);
             assert.equal(payload.type, 'socrata.visualization.table');
             assert.deepEqual(payload.value.vif, newVif);
             done();

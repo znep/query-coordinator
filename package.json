@@ -99,7 +99,8 @@
       "no-use-before-define": 0,
       "quotes": [
         1,
-        "single"
+        "single",
+        "avoid-escape"
       ],
       "quote-props": [
         2,

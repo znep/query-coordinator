@@ -41,28 +41,28 @@ function Visualization(element, vif) {
     var topAxisLabel = $(
       '<div>',
       {
-        'class': 'top-axis-label'
+        class: 'top-axis-label'
       }
     );
 
     var rightAxisLabel = $(
       '<div>',
       {
-        'class': 'right-axis-label'
+        class: 'right-axis-label'
       }
     );
 
     var bottomAxisLabel = $(
       '<div>',
       {
-        'class': 'bottom-axis-label'
+        class: 'bottom-axis-label'
       }
     );
 
     var leftAxisLabel = $(
       '<div>',
       {
-        'class': 'left-axis-label'
+        class: 'left-axis-label'
       }
     );
 

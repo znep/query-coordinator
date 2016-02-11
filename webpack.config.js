@@ -21,6 +21,14 @@ module.exports = {
     libraryTarget: 'umd',
     library: ['socrata', 'visualizations']
   },
+  module: {
+    loaders: [
+      {
+        test: /\.js$/,
+        loader: 'strict'
+      }
+    ]
+  },
   resolve: {
     modulesDirectories: ['node_modules', 'bower_components']
   },

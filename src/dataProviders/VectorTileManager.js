@@ -893,7 +893,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
         self.currentClickedPoints = [];
         highlightPoints(self.clickHighlightLayer);
       }
-    }
+    };
 
     self.clearHoverPointHighlights = function clearHoverPointHighlights() {
 
@@ -902,7 +902,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
         self.currentHoverPoints = [];
         highlightPoints(self.hoverHighlightLayer);
       }
-    }
+    };
 
     // Handle callbacks for executable functions of events
     if (_.isFunction(this.options.onMousedown)) {
@@ -977,7 +977,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
     }
 
     if (self.options.hover) {
-      mapMouseoutCallback = function(e) {
+      mapMouseoutCallback = function() {
         self.clearHoverPointHighlights();
       };
 
@@ -1004,14 +1004,14 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       map.on('clearhighlightrequest', clearHighlightRequestCallback);
     }
 
-    mapDragstartCallback = function(e) {
+    mapDragstartCallback = function() {
       self.clearHoverPointHighlights();
       self.clearClickedPointHighlights();
     };
 
     map.on('dragstart', mapDragstartCallback);
 
-    mapZoomstartCallback = function(e) {
+    mapZoomstartCallback = function() {
       self.clearHoverPointHighlights();
       self.clearClickedPointHighlights();
     };
@@ -1149,7 +1149,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       function() {
         self.tileLoaded(tileId);
       }
-    )['catch'](
+    ).catch(
       function(error) {
         throw error;
       }

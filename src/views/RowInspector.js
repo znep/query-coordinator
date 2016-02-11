@@ -1,4 +1,3 @@
-var Visualization = require('./Visualization');
 var utils = require('socrata-utils');
 var _ = require('lodash');
 var $ = require('jquery');
@@ -247,8 +246,8 @@ function _adjustPosition(position) {
   var abutsRightEdge = windowWidth <
     (xPosition + ROW_INSPECTOR_WIDTH + ROW_INSPECTOR_WINDOW_PADDING);
 
-  var panelPositionStyle = {'left': '', 'right': ''};
-  var hintPositionStyle = {'left': '', 'right': ''};
+  var panelPositionStyle = {left: '', right: ''};
+  var hintPositionStyle = {left: '', right: ''};
 
   panelPositionStyle.top = '{0}px'.format(yPosition);
 
@@ -328,9 +327,9 @@ function _renderPage() {
   utils.assert(row.length > 0, 'This row is empty.');
 
   row.forEach(function(columnValue) {
-    var $rowDataItem = $('<div>', {'class': 'row-data-item'});
-    var $name = $('<span>', {'class': 'name'});
-    var $value = $('<span>', {'class': 'value'});
+    var $rowDataItem = $('<div>', {class: 'row-data-item'});
+    var $name = $('<span>', {class: 'name'});
+    var $value = $('<span>', {class: 'value'});
 
     utils.assertHasProperties(columnValue, 'column', 'value');
 

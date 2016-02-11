@@ -28,7 +28,6 @@ function ColumnChart(element, vif) {
   var _truncationMarker;
   var _lastRenderData;
   var _lastRenderOptions;
-  var _lastRenderedVif;
 
   var _interactive = vif.configuration.interactive === true;
 
@@ -55,8 +54,7 @@ function ColumnChart(element, vif) {
     // Eventually we may only want to pass in the VIF instead of other render
     // options as well as the VIF, but for the time being we will just treat it
     // as another property on `options`.
-    _lastRenderedVif = options.vif;
-    _renderData(_chartElement, data, options)
+    _renderData(_chartElement, data, options);
   };
 
   this.renderError = function() {
@@ -78,33 +76,33 @@ function ColumnChart(element, vif) {
    * Private methods
    */
 
-  function _renderTemplate(element) {
+  function _renderTemplate(el) {
 
     var truncationMarker = $(
       '<div>',
       {
-        'class': 'truncation-marker'
+        class: 'truncation-marker'
       }
     ).html('&raquo;');
 
     var chartWrapper = $(
       '<div>',
       {
-        'class': 'column-chart-wrapper'
+        class: 'column-chart-wrapper'
       }
     ).append(truncationMarker);
 
     var chartLabels = $(
       '<div>',
       {
-        'class': 'labels'
+        class: 'labels'
       }
     );
 
     var chartScroll = $(
       '<div>',
       {
-        'class': 'chart-scroll'
+        class: 'chart-scroll'
       }
     ).append([
       chartWrapper,
@@ -114,14 +112,14 @@ function ColumnChart(element, vif) {
     var chartElement = $(
       '<div>',
       {
-        'class': 'column-chart'
+        class: 'column-chart'
       }
     ).append(chartScroll);
 
     var chartContainer = $(
       '<div>',
       {
-        'class': 'column-chart-container'
+        class: 'column-chart-container'
       }
     ).append(
       chartElement
@@ -136,30 +134,30 @@ function ColumnChart(element, vif) {
     _chartLabels = chartLabels;
     _truncationMarker = truncationMarker;
 
-    element.append(chartContainer);
+    el.append(chartContainer);
   }
 
-  function _attachEvents(element) {
+  function _attachEvents(el) {
 
-    element.on(
+    el.on(
       'mouseenter, mousemove',
       _barGroupAndLabelsSelector,
       showFlyout
     );
 
-    element.on(
+    el.on(
       'mouseleave',
       _barGroupAndLabelsSelector,
       hideFlyout
     );
 
-    element.on(
+    el.on(
       'mouseenter',
       _barGroupAndLabelsSelector,
       addHoverClassToBarGroup
     );
 
-    element.on(
+    el.on(
       'mouseleave',
       _barGroupAndLabelsSelector,
       removeHoverClassFromBarGroup
@@ -172,13 +170,13 @@ function ColumnChart(element, vif) {
 
     if (_interactive) {
 
-      element.on(
+      el.on(
         'click',
         _barGroupAndLabelsSelector,
         selectDatum
       );
 
-      element.on(
+      el.on(
         'click',
         _truncationMarkerSelector,
         expandVisualization
@@ -189,7 +187,7 @@ function ColumnChart(element, vif) {
       // three when not expanded), then we should dismiss the highlight.
       // (The 'non-default' class is applied to labels that wouldn't normally
       // be drawn unless a datum is selected)
-      element.on(
+      el.on(
         'mouseup',
         _nonDefaultSelectedLabelSelector,
         removeHoverClassFromBarGroup
@@ -197,27 +195,27 @@ function ColumnChart(element, vif) {
     }
   }
 
-  function _detachEvents(element) {
+  function _detachEvents(el) {
 
-    element.off(
+    el.off(
       'mouseenter, mousemove',
       _barGroupAndLabelsSelector,
       showFlyout
     );
 
-    element.off(
+    el.off(
       'mouseleave',
       _barGroupAndLabelsSelector,
       hideFlyout
     );
 
-    element.off(
+    el.off(
       'mouseenter',
       _barGroupAndLabelsSelector,
       addHoverClassToBarGroup
     );
 
-    element.off(
+    el.off(
       'mouseleave',
       _barGroupAndLabelsSelector,
       removeHoverClassFromBarGroup
@@ -230,19 +228,19 @@ function ColumnChart(element, vif) {
 
     if (_interactive) {
 
-      element.off(
+      el.off(
         'click',
         _barGroupAndLabelsSelector,
         selectDatum
       );
 
-      element.off(
+      el.off(
         'click',
         _truncationMarkerSelector,
         expandVisualization
       );
 
-      element.off(
+      el.off(
         'mouseup',
         _nonDefaultSelectedLabelSelector,
         removeHoverClassFromBarGroup
@@ -273,7 +271,7 @@ function ColumnChart(element, vif) {
     var barGroupName = _toEscapedString(datum[NAME_INDEX]);
     var barGroupElement = _chartWrapper.
       find('.bar-group').
-      filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
+      filter(function(index, el) { return el.getAttribute('data-bar-name') === barGroupName; }).
       find('.unfiltered').
       get(0);
     var unfilteredValueUnit;
@@ -347,7 +345,7 @@ function ColumnChart(element, vif) {
 
     _chartWrapper.
       find('.bar-group').
-      filter(function(index, element) { return element.getAttribute('data-bar-name') === barName; }).
+      filter(function(index, el) { return el.getAttribute('data-bar-name') === barName; }).
       addClass('highlight');
   }
 
@@ -359,11 +357,11 @@ function ColumnChart(element, vif) {
    * Visualization renderer and helper functions
    */
 
-  function _renderData(element, data, options) {
+  function _renderData(el, data, options) {
 
     // Cache dimensions and options
-    var chartWidth = element.width();
-    var chartHeight = element.height();
+    var chartWidth = el.width();
+    var chartHeight = el.height();
     var showAllLabels = options.showAllLabels;
     var showFiltered = options.showFiltered;
 
@@ -407,7 +405,7 @@ function ColumnChart(element, vif) {
     var horizontalScale = horizontalScaleDetails.scale;
     chartTruncated = horizontalScaleDetails.truncated;
     var rangeBand = Math.ceil(horizontalScale.rangeBand());
-    var chartScrollTop = _chartScroll.offset().top - element.offset().top;
+    var chartScrollTop = _chartScroll.offset().top - el.offset().top;
 
     // Compute chart margins
     if (showAllLabels) {
@@ -456,7 +454,7 @@ function ColumnChart(element, vif) {
 
     var _renderTicks = function() {
       // The `+ 3` term accounts for the border-width.
-      var tickHeight = parseInt(element.css('font-size'), 10) + 3;
+      var tickHeight = parseInt(el.css('font-size'), 10) + 3;
       var numberOfTicks = 3;
       // We need to ensure that there is always a '0' tick mark, so we concat
       // the calculated ticks with '0' and then take the unique values. This
@@ -474,7 +472,7 @@ function ColumnChart(element, vif) {
         function(tickValue, index) {
 
           var tick = $('<div>', {
-            'class': tickValue === 0 ? 'tick origin' : 'tick',
+            class: tickValue === 0 ? 'tick origin' : 'tick',
             text: socrata.utils.formatNumber(tickValue)
           });
           var tickTopOffset = innerHeight - verticalScale(tickValue);
@@ -501,12 +499,12 @@ function ColumnChart(element, vif) {
       );
 
       return $('<div>', {
-        'class': 'ticks',
-        'style': ticksStyle
+        class: 'ticks',
+        style: ticksStyle
       }).append(tickMarks);
     };
 
-    var updateLabels = function(labelSelection) {
+    var updateLabels = function(label) {
 
       /**
        * Labels come in two sets of column names:
@@ -573,7 +571,7 @@ function ColumnChart(element, vif) {
       var labelMargin = showAllLabels ? 0 : 0.75;
       var selectedLabelMargin = -0.4;
       // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
-      var labelDivSelection = labelSelection.data(labelData, _.property(NAME_INDEX));
+      var labelDivSelection = label.data(labelData, _.property(NAME_INDEX));
 
       var labelDivSelectionEnter = labelDivSelection.
         enter().
@@ -664,8 +662,8 @@ function ColumnChart(element, vif) {
           var $this = $(this);
 
           // Save references to all d3 selections.
-          var labelSelection = d3.select(this);
-          var labelContentSelection = labelSelection.select('.contents');
+          var labelSel = d3.select(this);
+          var labelContentSelection = labelSel.select('.contents');
           var labelTextSelection = labelContentSelection.select('.text');
 
           var labelLeftOffset = 0;
@@ -712,8 +710,8 @@ function ColumnChart(element, vif) {
 
           // Apply styles
           labelSelectionStyle = 'left: {0}px; right: {1}px;'.format(labelLeftOffset, labelRightOffset);
-          if (labelSelection.attr('style') !== labelSelectionStyle) {
-            labelSelection.attr('style', labelSelectionStyle);
+          if (labelSel.attr('style') !== labelSelectionStyle) {
+            labelSel.attr('style', labelSelectionStyle);
           }
 
           if (!_.isUndefined(labelContentLeftOffset)) {

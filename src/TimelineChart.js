@@ -15,11 +15,11 @@ var SOQL_PRECISION_START_ALIAS = '__START__';
 var SOQL_PRECISION_END_ALIAS = '__END__';
 var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
 var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
-var PRECISION_QUERY = 'SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < \'{1}\'';
+var PRECISION_QUERY = "SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < '{1}'";
 var DATA_QUERY_PREFIX = 'SELECT {3}(`{0}`) AS {1}, count(*) AS {2}';
 var DATA_QUERY_SUFFIX = 'GROUP BY {0}';
 var DATA_QUERY_WHERE_CLAUSE_PREFIX = 'WHERE';
-var DATA_QUERY_WHERE_CLAUSE_SUFFIX = '`{0}` IS NOT NULL AND `{0}` < \'{1}\' AND (1=1)';
+var DATA_QUERY_WHERE_CLAUSE_SUFFIX = "`{0}` IS NOT NULL AND `{0}` < '{1}' AND (1=1)";
 //'SELECT {2}({0}) AS {4}, {3} AS {5} {1} GROUP BY {4}'.  format(fieldName, whereClause, dateTruncFunction, aggregationClause, dateAlias, valueAlias)
 var WINDOW_RESIZE_RERENDER_DELAY = 200;
 

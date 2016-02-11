@@ -1,7 +1,6 @@
 var $ = require('jquery');
 var utils = require('socrata-utils');
 var Visualization = require('./Visualization.js');
-var renderNumberCell = require('./DataTypeFormatter.js').renderNumberCell;
 var _ = require('lodash');
 
 module.exports = function Pager(element, vif) {
@@ -99,12 +98,12 @@ module.exports = function Pager(element, vif) {
     self.element.append($template);
   }
 
-  function _attachEvents(element) {
+  function _attachEvents() {
     self.element.on('click', '.pager-buttons .pager-button-previous', _handlePrevious);
     self.element.on('click', '.pager-buttons .pager-button-next', _handleNext);
   }
 
-  function _detachEvents(element) {
+  function _detachEvents() {
     self.element.off('click', '.pager-buttons .pager-button-previous', _handlePrevious);
     self.element.off('click', '.pager-buttons .pager-button-next', _handleNext);
   }

@@ -249,7 +249,7 @@ function ChoroplethMap(element, vif) {
     var choroplethLegend = $(
       '<div>',
       {
-        'class': 'choropleth-legend'
+        class: 'choropleth-legend'
       }
     ).append([
       gradient,
@@ -259,7 +259,7 @@ function ChoroplethMap(element, vif) {
     var choroplethMapContainer = $(
       '<div>',
       {
-        'class': 'choropleth-map-container'
+        class: 'choropleth-map-container'
       }
     );
 
@@ -269,7 +269,7 @@ function ChoroplethMap(element, vif) {
       choroplethContainer = $(
         '<div>',
         {
-          'class': 'choropleth-container'
+          class: 'choropleth-container'
         }
       );
     }
@@ -1237,7 +1237,7 @@ function ChoroplethMap(element, vif) {
       var gradientStops = gradient.selectAll('stop').data(tickStops);
       gradientStops.enter().append('stop');
       gradientStops.attr({
-        offset: function(value) {
+        'offset': function(value) {
           return '{0}%'.format(positionScale(value));
         },
         'stop-color': colorScale

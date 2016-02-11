@@ -13,7 +13,7 @@
     "build": "webpack && node tools/compile-css.js",
     "prebuild": "rimraf dist",
     "prepublish": "webpack && node tools/compile-css.js",
-    "lint": "eslint -c package.json  --ignore-path .eslintignore *.js components/*.js",
+    "lint": "eslint -c package.json  --ignore-path .eslintignore src/**/*.js",
     "test": "karma start karma.conf.js --singleRun true",
     "watch": "karma start karma.conf.js -v --singleRun false",
     "compile-css": "node tools/compile-css.js"
@@ -43,12 +43,14 @@
     "rewire-webpack": "^1.0.1",
     "rimraf": "^2.4.3",
     "sinon": "^1.15.3",
+    "strict-loader": "^1.0.0",
     "styleguide": "socrata/styleguide.git#0.1.0",
     "webpack": "^1.12.2"
   },
   "eslintConfig": {
     "env": {
-      "browser": true
+      "browser": true,
+      "commonjs": true
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -68,7 +70,7 @@
       "dot-notation": [
         1,
         {
-          "allowKeywords": false
+          "allowKeywords": true
         }
       ],
       "eol-last": 1,
@@ -97,7 +99,15 @@
       "no-use-before-define": 0,
       "quotes": [
         1,
-        "single"
+        "single",
+        "avoid-escape"
+      ],
+      "quote-props": [
+        2,
+        "consistent-as-needed",
+        {
+          "keywords": false
+        }
       ],
       "semi": [
         2,
@@ -115,8 +125,7 @@
         2,
         "never"
       ],
-      "space-infix-ops": 2,
-      "strict": 2
+      "space-infix-ops": 2
     },
     "globals": {
       "$": true,

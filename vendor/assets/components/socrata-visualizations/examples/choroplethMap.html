@@ -13,7 +13,9 @@
         font-family: sans-serif;
       }
 
-      #choropleth1, #choropleth2 {
+      #choropleth-map-1,
+      #choropleth-map-2,
+      #choropleth-map-3 {
         display: block;
         position: relative;
         width: 640px;
@@ -21,12 +23,12 @@
         margin: 50px auto 0 auto;
         border: 1px solid #aaa;
       }
-
     </style>
   </head>
   <body>
-    <div id="choropleth1"></div>
-    <div id="choropleth2"></div>
+    <div id="choropleth-map-1"></div>
+    <div id="choropleth-map-2"></div>
+    <div id="choropleth-map-3"></div>
   </body>
 
   <!-- Include external dependencies -->
@@ -56,7 +58,7 @@
 
       var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
-      var choroplethVIF = {
+      var choropleth1VIF = {
         'aggregation': {
           // TODO: implement this!
         },
@@ -69,11 +71,12 @@
             'southwest': [41.45919537950706, -90.24169921875],
             'northeast': [42.20817645934742, -85.242919921875]
           },
+          'interactive': true,
           'legend': {
             'type': 'continuous'
           },
-          // The localization values should be set by the application but are set to string literals
-          // for the purposes of this example.
+          // The localization values should be set by the application but are set
+          // to string literalsfor the purposes of this example.
           'localization': {
             'FLYOUT_SELECTED_NOTICE': 'The page is currently filtered by this value, click to clear it',
             'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
@@ -106,32 +109,62 @@
           'version': 1
         },
         'title': 'Example Usage: socrata.visualizations.ChoroplethMap.js',
-        'type': 'choropleth',
+        'type': 'choroplethMap',
         'unit': {
           'one': 'crime',
           'other': 'crimes'
         }
       };
 
-      var choroplethVIF1 = _.cloneDeep(choroplethVIF);
-      var choroplethVIF2 = _.cloneDeep(choroplethVIF);
-
-      choroplethVIF2.configuration.legend = {
+      var choropleth2VIF = _.cloneDeep(choropleth1VIF);
+      choropleth2VIF.configuration.legend = {
         'type': 'discrete'
       };
+      choropleth2VIF.filters = [
+        {
+          'columnName': 'location_description',
+          'function': 'binaryOperator',
+          'arguments': {
+            'operator': '=',
+            'operand': 'STREET'
+          }
+        }
+      ];
 
-      var $choroplethElement1 = $('#choropleth1');
-      var visualization1 = $choroplethElement1.socrataChoroplethMap(choroplethVIF1);
+      var choropleth3VIF = _.cloneDeep(choropleth1VIF);
+      choropleth3VIF.filters = [
+        {
+          'columnName': 'location_point',
+          'function': 'binaryComputedGeoregionOperator',
+          'arguments': {
+            'computedColumnName': ':@wards',
+            'operator': '=',
+            'operand': '47'
+          }
+        }
+      ];
 
-      var $choroplethElement2 = $('#choropleth2');
-      var visualization2 = $choroplethElement2.socrataChoroplethMap(choroplethVIF2);
+      var $choroplethElement1 = $('#choropleth-map-1');
+      $choroplethElement1.socrataChoroplethMap(choropleth1VIF);
+
+      var $choroplethElement2 = $('#choropleth-map-2');
+      $choroplethElement2.socrataChoroplethMap(choropleth2VIF);
+
+      var $choroplethElement3 = $('#choropleth-map-3');
+      $choroplethElement3.socrataChoroplethMap(choropleth3VIF);
 
       /**
        * Handle flyout events.
        */
 
       $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      $choroplethElement1.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
       $choroplethElement2.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      $choroplethElement2.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
+      $choroplethElement3.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      $choroplethElement3.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
       function handleFlyout(event) {
 
@@ -143,6 +176,17 @@
         } else {
           flyoutRenderer.clear();
         }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
       }
 
       /**

@@ -28,6 +28,9 @@ function ColumnChart(element, vif) {
   var _truncationMarker;
   var _lastRenderData;
   var _lastRenderOptions;
+  var _lastRenderedVif;
+
+  var _interactive = vif.configuration.interactive === true;
 
   var _truncationMarkerSelector = '.truncation-marker';
   var _barGroupAndLabelsSelector = '.bar-group, .labels .label .contents span, .labels .label .callout';
@@ -39,8 +42,6 @@ function ColumnChart(element, vif) {
   var FILTERED_INDEX = vif.configuration.columns.filteredValue;
   var SELECTED_INDEX = vif.configuration.columns.selected;
 
-  var _interactive = vif.configuration.interactive;
-
   _renderTemplate(this.element);
   _attachEvents(this.element);
 
@@ -51,7 +52,11 @@ function ColumnChart(element, vif) {
   this.render = function(data, options) {
     _lastRenderData = data;
     _lastRenderOptions = options;
-    _renderData(_chartElement, data, options);
+    // Eventually we may only want to pass in the VIF instead of other render
+    // options as well as the VIF, but for the time being we will just treat it
+    // as another property on `options`.
+    _lastRenderedVif = options.vif;
+    _renderData(_chartElement, data, options)
   };
 
   this.renderError = function() {

@@ -92,7 +92,8 @@
         'ONLY_ROW': 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
         'MANY_ROWS': 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
         'LATITUDE': 'Latitude',
-        'LONGITUDE': 'Longitude'
+        'LONGITUDE': 'Longitude',
+        'NO_COLUMN_DESCRIPTION': 'No description provided.'
       };
 
       vif.unit = {

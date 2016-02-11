@@ -147,7 +147,7 @@ module.exports = function Table(element, vif) {
     return [
       '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" data-sort scope="col">',
         '<div>',
-          '{columnTitle}<span class="icon-{sortDirection}"></span>',
+          '<div>{columnTitle}<span class="icon-{sortDirection}"></span></div>',
         '</div>',
       '</th>'
     ].join('');
@@ -157,7 +157,7 @@ module.exports = function Table(element, vif) {
     return [
       '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
         '<div>',
-          '{columnTitle}',
+          '<div>{columnTitle}</div>',
         '</div>',
       '</th>'
     ].join('');
@@ -167,7 +167,7 @@ module.exports = function Table(element, vif) {
     return [
       '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
         '<div>',
-          '{columnTitle}<span class="icon-arrow-down"></span>',
+          '<div>{columnTitle}<span class="icon-arrow-down"></span></div>',
         '</div>',
       '</th>'
     ].join('');

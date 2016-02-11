@@ -69,7 +69,11 @@
 
         blocks.forEach(function(block) {
           var index = parseInt(block.getAttribute('data-page-index'));
-          block.classList.toggle('hidden', index !== 0);
+          if (index !== 0) {
+            block.classList.add('hidden');
+          } else {
+            block.classList.remove('hidden');
+          }
         });
       }
     }

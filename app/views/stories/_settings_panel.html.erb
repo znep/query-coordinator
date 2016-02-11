@@ -23,7 +23,7 @@
 
     <ul class="menu-list">
 
-      <li class="menu-list-item">
+      <li id="settings-panel-story-metadata" class="menu-list-item">
         <button class="menu-list-item-header expandable">
           <span class="icon-edit"></span>
           <span><%= t('editor.settings_panel.displaying_section.section_title') %></span>
@@ -55,7 +55,7 @@
         </div>
       </li>
 
-      <li class="menu-list-item">
+      <li id="settings-panel-copy-story" class="menu-list-item">
         <button class="menu-list-item-header" data-action="STORY_MAKE_COPY_MODAL_OPEN"<%= ' disabled' if contributor? %>>
           <span class="icon-copy-document"></span>
           <span><%= t('editor.settings_panel.copy_section.section_title') %></span>
@@ -66,7 +66,7 @@
         </button>
       </li>
 
-      <li class="menu-list-item">
+      <li id="settings-panel-collaborators" class="menu-list-item">
         <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= ' disabled' if contributor? %>>
           <span class="icon-add-collaborator"></span>
           <span><%= t('editor.settings_panel.collaborators_section.section_title') %></span>
@@ -77,7 +77,7 @@
         </button>
       </li>
 
-      <li class="menu-list-item">
+      <li id="settings-panel-publishing" class="menu-list-item">
         <button class="menu-list-item-header expandable">
           <span class="icon-eye"></span>
           <span><%= t('editor.settings_panel.publishing_section.section_title') %></span>
@@ -128,7 +128,7 @@
         </div>
       </li>
 
-      <li class="menu-list-item">
+      <li id="settings-panel-share" class="menu-list-item">
         <button class="menu-list-item-header" data-action="SHARE_AND_EMBED_MODAL_OPEN">
           <span class="icon-share"></span>
           <span><%= t('editor.settings_panel.story_widget_embed_section.section_title') %></span>

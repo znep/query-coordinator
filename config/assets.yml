@@ -735,6 +735,7 @@ javascripts:
     - public/javascripts/mobile/app-bundle.js
     - public/javascripts/mobile/chroma.js
     - public/javascripts/mobile/simple_statistics.js
+    - public/javascripts/mobile/components/Loader.js
     - public/javascripts/mobile/dependencies/SoqlHelpers.js
     - public/javascripts/mobile/mobile.visualizations.Visualizations.js
     - public/javascripts/mobile/mobile.visualizations.FlyoutRenderer.js

@@ -1,6 +1,9 @@
 class AirbrakeNotifier
-  def self.report_error(error, message, additional_params = {})
-    log_message = "#{error} (on #{message}):\n\n"
+  def self.report_error(error, additional_params = {})
+    log_message = "#{error}"
+    log_message << " (on #{additional_params[:on_method]})" unless additional_params[:on_method].blank?
+    log_message << ":\n\n"
+
     # This check seems necessary because errors that are created and passed as
     # arguments to this method (as opposed to being rescued) will not have a
     # backtrace, causing the previous implementation to fail when it tried to
@@ -11,7 +14,7 @@ class AirbrakeNotifier
 
     Airbrake.notify(
       error,
-      additional_params.merge(message: message)
+      additional_params
     )
   end
 

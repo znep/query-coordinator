@@ -39,7 +39,7 @@ RSpec.describe ProcessDocumentJob do
           ProcessDocumentJob.perform_now(document.id)
         }.to raise_error(error)
 
-        expect(AirbrakeNotifier).to have_received(:report_error).with(error, "ProcessDocumentJob#perform(document_id: #{document.id}, story_uid: #{document.story_uid}, user: #{document.created_by})")
+        expect(AirbrakeNotifier).to have_received(:report_error).with(error, on_method: "ProcessDocumentJob#perform(document_id: #{document.id}, story_uid: #{document.story_uid}, user: #{document.created_by})")
       end
     end
   end

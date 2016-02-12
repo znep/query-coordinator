@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe AirbrakeNotifier do
-  let(:error) { StandardError.new('This is a test error.') }
-  let(:message) { 'Some additional error message here' }
+  let(:error) { StandardError.new('This is a test error') }
+  let(:additional_params) { {} }
 
   before do
     error.set_backtrace(['one', 'two'])
@@ -11,20 +11,36 @@ describe AirbrakeNotifier do
   end
 
   describe '#report_error' do
-    it 'logs error' do
-      expect(Rails.logger).to receive(:error).with("StandardError: This is a test error. (on Some additional error message here):\n\none\\ntwo")
-      AirbrakeNotifier.report_error(error, message)
+    context 'without additional parameters' do
+      it 'logs error' do
+        expect(Rails.logger).to receive(:error).with("StandardError: This is a test error:\n\none\\ntwo")
+        AirbrakeNotifier.report_error(error)
+      end
+
+      it 'notifies airbrake with no additional params' do
+        expect(Airbrake).to receive(:notify).with(error, {})
+        AirbrakeNotifier.report_error(error)
+      end
     end
 
-    it 'notifies airbrake' do
-      expect(Airbrake).to receive(:notify).with(error, { message: message })
-      AirbrakeNotifier.report_error(error, message)
+    context 'with on_method parameter' do
+      let(:on_method_msg) { 'object#thing' }
+      let(:additional_params) do
+        {
+          on_method: on_method_msg,
+          something_to_say: 'Blah'
+        }
+      end
+
+      it 'logs error' do
+        expect(Rails.logger).to receive(:error).with("StandardError: This is a test error (on #{on_method_msg}):\n\none\\ntwo")
+        AirbrakeNotifier.report_error(error, additional_params)
+      end
     end
 
     it 'takes additional parameters to pass to the notice' do
-      additional_params = { something_to_say: 'Blah ' }
-      expect(Airbrake).to receive(:notify).with(error, additional_params.merge(message: message))
-      AirbrakeNotifier.report_error(error, message, additional_params)
+      expect(Airbrake).to receive(:notify).with(error, additional_params)
+      AirbrakeNotifier.report_error(error, additional_params)
     end
   end
 

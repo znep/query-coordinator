@@ -20,7 +20,7 @@ RSpec.describe ProcessMetricsJob, type: :job do
           ProcessMetricsJob.perform_now(metrics)
         }.to raise_error(error)
 
-        expect(AirbrakeNotifier).to have_received(:report_error).with(error, "ProcessMetricsJob#perform")
+        expect(AirbrakeNotifier).to have_received(:report_error).with(error, on_method: "ProcessMetricsJob#perform")
       end
     end
   end

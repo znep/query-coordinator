@@ -74,7 +74,7 @@ class StoriesController < ApplicationController
       else
         AirbrakeNotifier.report_error(
           RuntimeError.new("TEMPORARY/DEBUG: No story title on view '#{view}'",
-          'stories_controller#new')
+          on_method: 'stories_controller#new')
         )
         render_404
       end
@@ -280,7 +280,7 @@ class StoriesController < ApplicationController
 
       AirbrakeNotifier.report_error(
         StandardError.new(error_message),
-        "stories_controller##{original_action}"
+        on_method: "stories_controller##{original_action}"
       )
     end
 

@@ -17,7 +17,10 @@ class ProcessDocumentJob < ActiveJob::Base
     story_uid = document.try(:story_uid)
     user_uid = document.try(:created_by)
 
-    AirbrakeNotifier.report_error(error, "ProcessDocumentJob#perform(document_id: #{document_id}, story_uid: #{story_uid}, user: #{user_uid})")
+    AirbrakeNotifier.report_error(
+      error,
+      on_method: "ProcessDocumentJob#perform(document_id: #{document_id}, story_uid: #{story_uid}, user: #{user_uid})"
+    )
     raise error
   end
 

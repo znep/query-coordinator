@@ -253,6 +253,19 @@ class DatasetsControllerTest < ActionController::TestCase
       assert(@controller.respond_to?(:is_mobile?))
     end
 
+    # compute_extension
+    should 'compute extension defaulting to the extension provided' do
+      assert_equal(@controller.send(:compute_extension, 'pdf', 'test.com'), 'pdf')
+    end
+
+    should 'compute extension from url if empty extension is provided' do
+      assert_equal(@controller.send(:compute_extension, '', 'test.xml'), 'xml')
+    end
+
+    should 'compute extension from url if nil extension is provided' do
+      assert_equal(@controller.send(:compute_extension, nil, 'test.abc'), 'abc')
+    end
+
   end
 
   private

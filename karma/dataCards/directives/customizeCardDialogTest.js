@@ -257,6 +257,10 @@ describe('Customize card dialog', function() {
       expect(dialog.element.find('option:contains("Simple Grey")').length).to.equal(1);
     });
 
+    it('should set humanReadableColumnName to the name of the column', function() {
+      expect(dialog.scope.humanReadableColumnName).to.equal(COLUMNS.choropleth.name);
+    });
+
     // CORE-5814: Verify that the card height is not manually set for customizeCardDialog
     it('should not set the height of the card element', function() {
       var styles = $card.attr('style') || '';

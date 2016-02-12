@@ -1,4 +1,4 @@
-<h2><span class="icon-settings"></span> {{::'customizeCardDialog.title' | I18n}}</h2>
+<h2><span class="icon-settings"></span> {{::'customizeCardDialog.title' | I18n}}: {{humanReadableColumnName}}</h2>
 <div class="row">
   <div class="span7">
     <card-aggregation-selector
@@ -47,9 +47,9 @@
             value="null"
             ng-selected="selectedFlannelTitleColumnName === null">{{::'customizeCardDialog.featureMapFlannel.defaultOption' | I18n}}</soc-option>
           <soc-option
-            value="{{fieldName}}"
-            ng-selected="selectedFlannelTitleColumnName === fieldName"
-            ng-repeat="fieldName in titleColumnOptions">{{columnHumanNameFn(fieldName)}}</soc-option>
+            value="{{column.fieldName}}"
+            ng-selected="selectedFlannelTitleColumnName === column.fieldName"
+            ng-repeat="column in titleColumnOptions">{{column.columnName}}</soc-option>
         </soc-select>
       </div>
     </div>

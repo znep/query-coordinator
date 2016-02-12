@@ -19835,6 +19835,26 @@
 	              'end': filter.data.val2
 	            };
 	            return filterObj;
+	          case 'string':
+	            filterObj['columnName'] = filter.name;
+	            filterObj['function'] = 'binaryOperator';
+
+	            if (filter.data.length > 1) {
+	              var aArguments = [];
+	              for (var i = 0; i < filter.data.length; i++) {
+	                aArguments.push({
+	                  operator: '=',
+	                  operand: filter.data[i].text
+	                });
+	              }
+	              filterObj['arguments'] = aArguments;
+	            } else {
+	              filterObj['arguments'] = {
+	                operator: '=',
+	                operand: filter.data[0].text
+	              };
+	            }
+	            return filterObj;
 	          default:
 	            break;
 	        }
@@ -19852,6 +19872,7 @@
 	      this.setState({ filters: aFilters });
 
 	      var modifiedFilters = this.prettifyFilterForDLMobile(aFilters);
+	      console.log('Modified filters', modifiedFilters);
 	      this.props.handleFilterBroadcast({ filters: modifiedFilters });
 	    }
 	  }, {
@@ -19864,9 +19885,9 @@
 
 	      this.setState({ filters: aFilters });
 	      if (filterCount > 1) {
-	        Filter.apply(aFilters);
+	        this.props.handleFilterBroadcast({ filters: aFilters });
 	      } else if (filterCount == 1) {
-	        Filter.clear();
+	        this.props.handleFilterBroadcast({ filters: [] });
 	      }
 	    }
 

@@ -202,7 +202,7 @@
       if (vifToRender) {
         _lastRenderedVif = vifToRender;
       }
-      console.log('visualizationData', visualizationData)
+
       visualization.render(
         visualizationData,
         _getRenderOptions(_lastRenderedVif)
@@ -416,7 +416,6 @@
     }
 
     function _handleRenderVif(event) {
-      console.log('_handleRenderVif', event);
       var newVif = event.originalEvent.detail;
 
       if (newVif.type !== 'timelineChart') {

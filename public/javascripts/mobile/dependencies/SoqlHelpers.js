@@ -69,7 +69,11 @@ var SoqlHelpers = (function(_, utils) {
 
     switch (filter.function) {
       case 'binaryOperator':
-        return _binaryOperatorWhereClauseComponent(filter);
+        if (filter.arguments instanceof Array) {
+          return _multipleBinaryOperatorWhereClauseComponent(filter);
+        } else {
+          return _binaryOperatorWhereClauseComponent(filter);
+        }
         break;
       case 'binaryComputedGeoregionOperator':
         return _binaryComputedGeoregionOperatorWhereClauseComponent(filter);
@@ -168,6 +172,31 @@ var SoqlHelpers = (function(_, utils) {
       filter.arguments.operator,
       _soqlEncodeValue(filter.arguments.operand)
     );
+  }
+
+  function _multipleBinaryOperatorWhereClauseComponent(filter) {
+    utils.assertHasProperties(
+      filter,
+      'columnName',
+      'arguments'
+    );
+
+    var clauses = [];
+
+    for (var i = 0; filter.arguments.length > i; i++ ) {
+      utils.assert(
+        VALID_BINARY_OPERATORS.indexOf(filter.arguments[i].operator) > -1,
+        'Invalid binary operator: `{0}`'.format(filter.arguments[i].operator)
+      );
+
+      clauses.push('{0} {1} {2}'.format(
+        _soqlEncodeColumnName(filter.columnName),
+        filter.arguments[i].operator,
+        _soqlEncodeValue(filter.arguments[i].operand)
+      ));
+    }
+
+    return '(' + clauses.join(' OR ') + ')';
   }
 
   function _binaryComputedGeoregionOperatorWhereClauseComponent(filter) {

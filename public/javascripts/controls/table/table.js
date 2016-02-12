@@ -4113,7 +4113,6 @@
             // Destroy the rows that are no longer visible
             var bucketStart = start + model.currentBucketStart();
             var bucketStop = stop + model.currentBucketStart();
-            //updateCurrentPageText(bucketStart, bucketStop);
             for (var rowID in renderedRows)
             {
                 if (rowIndices[rowID] < bucketStart || rowIndices[rowID] >= bucketStop)
@@ -4197,7 +4196,7 @@
                             rowLockedRenderFn(lockedHtml,
                                 rowIndex - start, row.index, row);
                         }
-                        rowIndices[rowID] = rowIndex + bucketStart;
+                        rowIndices[rowID] = rowIndex;
                     }
                 }
                 end("renderRows.render");

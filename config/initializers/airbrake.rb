@@ -13,7 +13,10 @@ Airbrake.configure do |config|
   config.params_filters << "EC2_PRIVATE_KEY"
   config.params_filters << "password"
   config.params_filters << "passwordConfirm"
-  config.ignore       << CoreServer::ResourceNotFound
+
+  # Ignore noisey alerts
+  config.ignore << CoreServer::ResourceNotFound
+  config.ignore << CoreServer::TimeoutError
 
   unless ENV['AIRBRAKE_HTTP_PROXY'].to_s.blank?
     proxy = ENV['AIRBRAKE_HTTP_PROXY'].gsub(/https?:\/\//, '').split(':')

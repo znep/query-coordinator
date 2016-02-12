@@ -3905,7 +3905,7 @@
             _: 'li',
             className: 'bucketSize',
             contents: $.t('controls.grid.page_size',
-                { pageSize: $.commaify(model.bucketSize) })
+                { pageSize: $.commaify(model.view.bucketSize) })
           };
 
           var buttonBlock = function(clsName) {

@@ -1,6 +1,5 @@
 FROM socrata/rails3-deps:1.9
 
-
 ENV APP_BASE_DIR /opt
 ENV APP_DIR ${APP_BASE_DIR}/frontend
 ENV GEM_DIR ${APP_BASE_DIR}/gems

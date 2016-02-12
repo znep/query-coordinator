@@ -15,6 +15,13 @@ Optional ENV vars:
 - `STATSD_ENABLED` and `STATSD_SERVER`
 - `TILESERVER_HOSTS` - A comma-separated list of public tileserver API hosts
 
+Additional optional ENV vars for the config/environments/<rails_env>.rb:
+
+- `CACHE_CLASSES` defautls to true
+- `CONSIDER_ALL_REQUESTS_LOCAL` defaults to false
+- `ACTION_CONTROLLER_PERFORM_CHECKING` defaults to true
+- `SERVCE_STATIC_ASSEST` defaults to true
+
 _Note: An IP can be provided with `EXTERNAL_IP` that will be used for the `ZOOKEEPER_HOSTS`,
 `CORESERVICE_URI`
 

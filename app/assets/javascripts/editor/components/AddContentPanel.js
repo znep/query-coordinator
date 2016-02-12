@@ -56,16 +56,10 @@
       }
     });
 
-    $userStory.on('click', function(event) {
-      handleClickOutsideAddContentPanel(event);
-    });
-
-    $(document).on('rich-text-editor::focus-change', function(event) {
-      handleClickOutsideAddContentPanel(event);
-    });
+    $userStory.on('click rich-text-editor::content-click', handleClickOutsideAddContentPanel);
 
     function handleClickOutsideAddContentPanel(event) {
-      if (($userStory.is(event.target) || !$addContentPanelBtn.is(event.target)) && addContentPanel.hasClass('active')) {
+      if (!$addContentPanelBtn.is(event.target) && addContentPanel.hasClass('active')) {
         addContentPanel.trigger('sidebar:close');
       }
     }

@@ -17,7 +17,8 @@ window.socrata.storyteller.config = (function () {
     environment: '<%= Rails.env %>',
     getAirbrakeConfig: function (key) {
       return airbrakeConfigHash[_.camelCase(key)];
-    }
+    },
+    embedCodeSandboxIFrameAllowances: '<%= embed_code_iframe_sandbox_allowances %>'
   }
 })();
 

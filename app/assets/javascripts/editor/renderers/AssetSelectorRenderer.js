@@ -1361,7 +1361,8 @@
       var previewIframe = $(
         '<iframe>',
         {
-          'class': 'asset-selector-preview-iframe'
+          'class': 'asset-selector-preview-iframe',
+          'sandbox': storyteller.config.embedCodeSandboxIFrameAllowances
         }
       );
 

@@ -201,4 +201,9 @@ RSpec.describe StoriesHelper, type: :helper do
 
   end
 
+  describe '#embed_code_iframe_sandbox_allowances' do
+    it 'returns a space-delimited list of things we allow in embed code iframes' do
+      expect(embed_code_iframe_sandbox_allowances).to eq('allow-popups allow-scripts')
+    end
+  end
 end

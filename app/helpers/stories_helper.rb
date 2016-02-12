@@ -126,6 +126,13 @@ module StoriesHelper
     content['footerText']
   end
 
+  def embed_code_iframe_sandbox_allowances
+    %w(
+      allow-popups
+      allow-scripts
+    ).join(' ')
+  end
+
   private
 
   def determine_permissions_from_core_attributes

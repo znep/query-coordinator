@@ -3,6 +3,7 @@
   'use strict';
 
   var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
   function _renderEmbeddedHtml($element, componentData) {
@@ -14,7 +15,8 @@
       {
         'src': 'about:blank',
         'frameborder': '0',
-        'data-document-id': null
+        'data-document-id': null,
+        'sandbox': storyteller.config.embedCodeSandboxIFrameAllowances
       }
     );
 
@@ -101,4 +103,3 @@
 
   $.fn.componentEmbeddedHtml = componentEmbeddedHtml;
 })(window, jQuery);
-

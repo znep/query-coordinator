@@ -46,6 +46,9 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
   var $timelineChartElement = $target;
   var $timelineChartContainer = $('.timeline-chart-container');
 
+  $timelineChartElement.on('SOCRATA_VISUALIZATION_DATA_LOAD_START', function() { console.log('SOCRATA_VISUALIZATION_DATA_LOAD_START'); });
+  $timelineChartElement.on('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE', function() { console.log('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE'); });
+
   $timelineChartElement.socrataTimelineChart(timelineChartVIF);
   $timelineChartContainer.append('<div class="mobile-flyout"></div>');
 

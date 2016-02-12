@@ -462,6 +462,9 @@
       then(mapPrecisionToDataQuery).
       then(mapQueryToPromises);
 
+      // This event fires before data load begin
+      $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+
       Promise.all([ dataPromise, precisionPromise ]).
       then(renderDataFromPromises)
         ['catch'](handleError);
@@ -574,6 +577,8 @@
       }
 
       function renderDataFromPromises(promiseResults) {
+        $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+
         var values = promiseResults[0];
         precision = promiseResults[1];
         var unfilteredQueryResponse = values[0];

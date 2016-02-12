@@ -43,11 +43,16 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
     }
   };
 
+  var timelineLoader = new Loader($target);
   var $timelineChartElement = $target;
   var $timelineChartContainer = $('.timeline-chart-container');
 
   $timelineChartElement.socrataTimelineChart(timelineChartVIF);
   $timelineChartContainer.append('<div class="mobile-flyout"></div>');
+
+  // Loader events for timelineChart
+  $timelineChartElement.on('SOCRATA_VISUALIZATION_DATA_LOAD_START', function() { timelineLoader.showLoader();});
+  $timelineChartElement.on('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE', function() { timelineLoader.hideLoader();});
 
   // Handle flyout events
   $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);

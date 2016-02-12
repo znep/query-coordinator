@@ -14,7 +14,7 @@ Airbrake.configure do |config|
   config.params_filters << "password"
   config.params_filters << "passwordConfirm"
 
-  # Ignore noisey alerts
+  # Ignore noisy alerts
   config.ignore << CoreServer::ResourceNotFound
   config.ignore << CoreServer::TimeoutError
 

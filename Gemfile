@@ -32,9 +32,6 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Configurable retry of blocks with exponential backoff
 gem 'retries'
 
-# Exception notifier
-gem 'airbrake'
-
 # Logging formatter to make sumo happier
 gem 'lograge'
 
@@ -62,6 +59,9 @@ gem 'dalli'
 
 # Stores the request for use later
 gem 'request_store'
+
+# Exception notifier - required last so we get airbrake from delayed jobs
+gem 'airbrake'
 
 group :development, :test do
   # Testing framework

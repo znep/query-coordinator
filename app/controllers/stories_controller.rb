@@ -72,9 +72,9 @@ class StoriesController < ApplicationController
       elsif !@story_title.nil?
         redirect_to "/stories/s/#{params[:uid]}/edit"
       else
-        Airbrake.notify_or_ignore(
-          RuntimeError.new,
-          "TEMPORARY/DEBUG: No story title on view '#{view}'"
+        AirbrakeNotifier.report_error(
+          RuntimeError.new("TEMPORARY/DEBUG: No story title on view '#{view}'",
+          'stories_controller#new')
         )
         render_404
       end

@@ -102,6 +102,26 @@ class FilterContainer extends React.Component {
             'end': filter.data.val2
           };
           return filterObj;
+        case 'string':
+          filterObj['columnName'] = filter.name;
+          filterObj['function'] = 'binaryOperator';
+
+          if(filter.data.length > 1) {
+            var aArguments = [];
+            for(var i = 0; i < filter.data.length; i++) {
+              aArguments.push({
+                operator: '=',
+                operand: filter.data[i].text
+              });
+            }
+            filterObj['arguments'] = aArguments;
+          } else {
+            filterObj['arguments'] = {
+              operator: '=',
+              operand: filter.data[0].text
+            }
+          }
+          return filterObj;
         default:
           break;
       }
@@ -118,6 +138,7 @@ class FilterContainer extends React.Component {
     this.setState({ filters: aFilters });
 
     var modifiedFilters = this.prettifyFilterForDLMobile(aFilters);
+    console.log('Modified filters', modifiedFilters);
     this.props.handleFilterBroadcast({filters: modifiedFilters});
   }
   handleFilterDeletion(filterId) {

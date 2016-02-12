@@ -1851,6 +1851,9 @@ en:
             upsert_already_in_progress_by_someone_else:
               title: Upsert already in progress
               description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
+            bad_response_from_server:
+              title: Something went wrong
+              description: We were not able to import your data because of an unexpected error. Please try again later.
             # Sent by Imports2
             unsupported_import_type:
               title: Unsupported import method

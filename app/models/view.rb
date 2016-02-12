@@ -898,7 +898,7 @@ class View < Model
   end
 
   def allAccessPoints
-    if !metadata.nil?
+    if metadata.present?
       # If additionalAccessPoints is present, we can assume that the links in accessPoints are
       # already inside additionalAccessPoints. Otherwise, we create an array with a single hash
       # for accessPoints.
@@ -911,7 +911,7 @@ class View < Model
   end
 
   def blobs
-    return @blobs if !@blobs.nil?
+    return @blobs unless @blobs.nil?
 
     if is_blobby?
       opts = { :filename => URI.escape(blobFilename || '') }
@@ -921,7 +921,7 @@ class View < Model
       @blobs = [b]
     elsif is_href?
       b = []
-      if !metadata.nil?
+      unless metadata.nil?
         if allAccessPoints.present?
           allAccessPoints.each do |accessPoint|
             accessPoint['urls'].each do |format, url|
@@ -933,7 +933,7 @@ class View < Model
                 'size' => accessPoint['urls'][format + 'Size']
               }
             end
-            b.sort_by! { |a| a['type'] }
+            b.sort_by! { |blob| blob['type'] }
           end
         elsif metadata.href.present?
           b << { 'href' => metadata.href, 'type' => 'Link', 'size' => 'Unknown' }

@@ -765,22 +765,16 @@ protected
         entry = { :title => title, :description => description, :urls => {} }
         if source[:urls].present?
           source[:urls].each do |endpoint|
-            url = endpoint[:url]
-            extension = (endpoint[:extension].present? ?
-              endpoint[:extension] : compute_extension_from_url(url)
-            ).downcase
+            extension = compute_extension(endpoint[:extension], endpoint[:url])
             if entry[:urls][extension].present?
               flash.now[:error] = I18n.t('screens.edit_metadata.multiple_extensions')
               return false
             end
-            entry[:urls][extension] = url
+            entry[:urls][extension] = endpoint[:url]
           end
         else
-          url = source[:name]
-          extension = (source[:extension].present? ?
-            source[:extension] : compute_extension_from_url(url)
-          ).downcase
-          entry[:urls][extension] = url
+          extension = compute_extension(source[:extension], source[:name])
+          entry[:urls][extension] = source[:name]
         end
         additionalAccessPoints.push(entry)
       end
@@ -795,8 +789,9 @@ protected
     true
   end
 
-  def compute_extension_from_url(url)
-    File.extname(url)[1..-1].to_s
+  # Helper to return a downcased extension if provided, else fallback to the URL extension
+  def compute_extension(extension, url)
+    (extension.present? ? extension : File.extname(url)[1..-1].to_s).downcase
   end
 
   def parse_attachments

@@ -1,15 +1,14 @@
 <div class="externalLinkDisplay clearfix <%= @view.display.display_type %>">
   <p class="info">
-  <%- if @view.display.type == 'href' && @view.has_importable_type? -%>
-  <%= t 'screens.ds.blob.download' %>
-  <%- elsif @view.display.type == 'href' || @view.display.display_type == 'link' -%>
-  <%= t 'screens.ds.blob.data_extraction' %>
-  <%- else -%>
-  <%= t 'screens.ds.blob.limited_download' %>
-  <%- end -%>
+    <%- if @view.display.type == 'href' && @view.has_importable_type? -%>
+      <%= t 'screens.ds.blob.download' %>
+    <%- elsif @view.display.type == 'href' || @view.display.display_type == 'link' -%>
+      <%= t 'screens.ds.blob.data_extraction' %>
+    <%- else -%>
+      <%= t 'screens.ds.blob.limited_download' %>
+    <%- end -%>
   </p>
-  <%- multiAccessPoints = @view.allAccessPoints.length > 1 -%>
-  <div class="downloadBox <%= 'multiAccessPoints' if multiAccessPoints %>">
+  <div class="downloadBox <%= 'multiAccessPoints' if @view.allAccessPoints.length > 1 %>">
     <%- if @view.display.type == 'href' || @view.display.display_type == 'link' -%>
       <h5><%= t 'screens.ds.blob.external_link' %></h5>
     <%- else -%>

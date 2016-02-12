@@ -43,10 +43,33 @@ function addGeoregion(newValue) {
   renderPage();
 }
 
+function addGeoregionJob(jobStatus, boundary) {
+  // The response for a single job's status doesn't have the same shape as
+  // the batch data we get back from the queue response, so... more massaging.
+  const newJob = _.extend(jobStatus, {
+    // Properties that mimic metadata from CRJQ
+    common: {
+      classifier: jobStatus.data.dataset,
+      externalId: jobStatus.data.jobId,
+      internalId: jobStatus.data.jobId
+    },
+    dataset: jobStatus.data.dataset,
+    // Properties that mimic the payload from georegion_adder.rb
+    jobParameters: {
+      defaultFlag: false,
+      enabledFlag: false,
+      geometryLabel: boundary.geometryLabel,
+      name: boundary.name,
+      type: 'prepare_curated_region'
+    }
+  });
+  georegionsNS.jobs.push(newJob);
+  renderPage();
+}
+
 function renderTables(georegions, allowEnablement) {
   const authenticityToken = $('.georegions-controls-custom [name="authenticity_token"]').value();
   const baseUrlPath = '/admin/geo/';
-  const customBoundaries = georegions;
   const baseTableProps = {
     allowEnablement,
     authenticityToken,
@@ -57,7 +80,7 @@ function renderTables(georegions, allowEnablement) {
     <GeoregionAdminTable
       onEdit={showConfigureModal}
       onEnableSuccess={onEnableSuccess}
-      rows={customBoundaries}
+      rows={georegions}
       {...baseTableProps} />,
     $('.georegions-custom .gridListWrapper').get(0)
   );
@@ -83,7 +106,27 @@ function renderFlashMessage(messages) {
 }
 
 function renderPage() {
-  const georegions = georegionsNS.georegions;
+  // For failed/queued/processing jobs, copy job parameters out of nested objects,
+  // making the job have a shape more similar to a completed region
+  const decorateJob = (job, metadataObject) => {
+    _.each(metadataObject.jobParameters, (paramValue, paramKey) => {
+      // Odd quirk: if this function isn't wrapped in curly braces,
+      // not all properties will be copied over!
+      job[paramKey] = paramValue;
+    });
+    job.id = metadataObject.common.externalId;
+    return job;
+  };
+  const georegionJobs = _.map(
+    georegionsNS.jobs,
+    (job) => decorateJob(job, job)
+  );
+  const georegionFailedJobs = _.map(
+    georegionsNS.failedJobs,
+    (job) => decorateJob(job, job.latest_event.info)
+  );
+
+  const georegions = georegionsNS.georegions.concat(georegionJobs, georegionFailedJobs);
   const enabledBoundaries = _.filter(georegions, 'enabledFlag');
   const allowEnablement = enabledBoundaries.length < georegionsNS.maximumEnabledCount;
 
@@ -185,11 +228,7 @@ function showInitialConfigureModal(uid) {
     const onSuccess = ({ error, message, success }) => {
       if (success) {
         if (enableSyntheticSpatialLensId) {
-          // add new georegion object to table, along with its jobId for polling
-          addGeoregion({
-            name: boundary.name,
-            jobId: message.jobId
-          });
+          addGeoregionJob(message, boundary);
         } else {
           addGeoregion(message);
         }

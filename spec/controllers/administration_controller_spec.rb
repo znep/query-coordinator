@@ -11,6 +11,8 @@ describe AdministrationController do
       allow_any_instance_of(ApplicationController).to receive(:set_user)
       allow_any_instance_of(ApplicationController).to receive(:set_meta)
       allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
+      allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_return([])
+      allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return([])
       strings = Hashie::Mash.new
       strings.site_title = 'My Site'
       allow(CurrentDomain).to receive(:strings).and_return(strings)
@@ -87,8 +89,7 @@ describe AdministrationController do
           view_model = assigns(:view_model)
           expect(view_model.available_count).to eq(3)
           expect(view_model.enabled_count).to eq(1)
-          expect(view_model.custom_regions).to contain_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion),an_instance_of(CuratedRegion))
-          expect(view_model.default_regions).to eq([])
+          expect(view_model.curated_regions).to contain_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion),an_instance_of(CuratedRegion))
           expect(view_model.translations).to be_an_instance_of(LocalePart)
         end
 

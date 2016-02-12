@@ -138,6 +138,8 @@ class AdministrationController < ApplicationController
   def georegions
     @view_model = ::ViewModels::Administration::Georegions.new(
       CuratedRegion.all,
+      incomplete_curated_region_jobs,
+      failed_curated_region_jobs,
       CurrentDomain.strings.site_title
     )
   end

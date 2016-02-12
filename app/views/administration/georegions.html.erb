@@ -40,9 +40,11 @@
     </div>
 
     <%= render :partial => 'georegions_table', :locals => {
-        :allow_actions => true,
+        :allow_actions => @view_model.curated_regions.any?,
         :allow_enablement => @view_model.allow_enablement?,
-        :georegions => @view_model.custom_regions,
+        :georegions => @view_model.curated_regions,
+        :jobs => @view_model.curated_region_jobs,
+        :failed_jobs => @view_model.failed_curated_region_jobs,
         :limit => @view_model.maximum_enabled_count,
         :prefix => prefix
       } %>
@@ -58,10 +60,37 @@
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js] == 'true' -%>
+
     <script type="text/javascript" id="bar">
-      blist.namespace.fetch('blist.georegions').georegions = <%== @view_model.curated_regions.map {|region| region.name = j(region.name); region }.to_json %>;
-      blist.namespace.fetch('blist.georegions').maximumEnabledCount = <%== @view_model.maximum_enabled_count.to_json %>;
-      blist.namespace.fetch('blist.georegions').flash = <%== flash.map { |type, message| { :type => type, :message => message } }.to_json %>;
+      (function(georegionsNS) {
+        // Run the user-controlled portion of this content through an escaping function.
+        georegionsNS.georegions = <%==
+          @view_model.curated_regions.map do |region|
+            region.name = j(region.name); region
+          end.to_json
+        %>;
+        georegionsNS.jobs = <%==
+          @view_model.curated_region_jobs.map do |job|
+            job['jobParameters']['name'] = j(job['jobParameters']['name']); job
+          end.to_json
+        %>;
+        georegionsNS.failedJobs = <%==
+          @view_model.failed_curated_region_jobs.map do |job|
+            job['latest_event']['info']['jobParameters']['name'] = j(job['latest_event']['info']['jobParameters']['name']) ; job
+          end.to_json
+        %>;
+
+        georegionsNS.maximumEnabledCount = <%==
+          @view_model.maximum_enabled_count.to_json
+        %>;
+        georegionsNS.flash = <%==
+          flash.map do |type, message|
+            { :type => type, :message => message }
+          end.to_json
+        %>;
+      })(
+        blist.namespace.fetch('blist.georegions')
+      );
     </script>
 
     <%= include_webpack_bundle 'admin-georegions-screen.js' %>

@@ -28,6 +28,7 @@ module StoriesHelper
     component_type_mapping = {
       'assetSelector' => 'component_asset_selector',
       'embeddedHtml' => 'component_embedded_html',
+      'hero' => 'component_hero',
       'html' => 'component_html',
       'horizontalRule' => 'component_horizontal_rule',
       'image' => 'component_image',

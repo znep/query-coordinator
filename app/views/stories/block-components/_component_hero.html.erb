@@ -1,0 +1,5 @@
+<div class="hero<%= if component['value']['layout'].present? then '' else ' hero-height-override' end %>" style="background-image: url('<%= component['value']['url'] %>');">
+  <div class="typeset squire-formatted">
+    <% #= component['value']['html'].html_safe %>
+  </div>
+</div>

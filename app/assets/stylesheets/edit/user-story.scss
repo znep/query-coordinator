@@ -49,6 +49,7 @@ body.story-save-error .user-story-container {
       opacity: 0;
       background-color: $block-edit-controls-bg-color;
       text-align: center;
+      z-index: $component-edit-controls-z-index;
 
       .block-edit-controls-move-up-btn,
       .block-edit-controls-move-down-btn,

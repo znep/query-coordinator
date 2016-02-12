@@ -18,6 +18,14 @@ window.storyteller = window.socrata.storyteller;
 
       return assetPaths[name];
     };
+
+    this.getImageAssetPath = function(name) {
+      var assetPaths = {
+        'cover-image': '<%= asset_path("editor/cover-image.png") %>'
+      };
+
+      return assetPaths[name];
+    };
   }
 
   root.socrata.storyteller.AssetFinder = AssetFinder;

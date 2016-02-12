@@ -77,6 +77,8 @@ en:
         button: 'Edit'
       asset_selector:
         insert_btn: 'Insert'
+      hero:
+        set_cover_image: 'Set Cover Image'
     settings_panel:
       panel_title: 'Menu'
       back_to_profile: 'Back to Profile'

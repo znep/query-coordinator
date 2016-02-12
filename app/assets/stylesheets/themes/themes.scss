@@ -61,6 +61,11 @@ html[class*="theme-"] {
 body {
   transition: opacity $iframe-onload-transition-duration;
   margin: 0;
+
+  &.hero-body * {
+    text-shadow: 0 0 10px $hero-text-shadow-color;
+    color: $hero-color !important;
+  }
 }
 
 

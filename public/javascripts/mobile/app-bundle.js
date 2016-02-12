@@ -19872,7 +19872,7 @@
 	      this.setState({ filters: aFilters });
 
 	      var modifiedFilters = this.prettifyFilterForDLMobile(aFilters);
-	      console.log('Modified filters', modifiedFilters);
+
 	      this.props.handleFilterBroadcast({ filters: modifiedFilters });
 	    }
 	  }, {
@@ -19885,7 +19885,7 @@
 
 	      this.setState({ filters: aFilters });
 	      if (filterCount > 1) {
-	        this.props.handleFilterBroadcast({ filters: aFilters });
+	        this.props.handleFilterBroadcast({ filters: this.prettifyFilterForDLMobile(aFilters) });
 	      } else if (filterCount == 1) {
 	        this.props.handleFilterBroadcast({ filters: [] });
 	      }

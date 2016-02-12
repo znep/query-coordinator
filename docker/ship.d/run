@@ -7,6 +7,8 @@ export CORESERVICE_URI=${CORESERVICE_URI:-"$EXTERNAL_IP:8080"}
 /bin/env_parse ${APP_DIR}/docker/config.yml.j2 ${APP_DIR}/config/config.yml
 /bin/env_parse ${APP_DIR}/docker/unicorn.rb.j2 ${APP_DIR}/config/unicorn.rb
 
+/bin/env_parse ${APP_DIR}/docker/environments-config.rb.j2 ${APP_DIR}/config/environment/${RAILS_ENV}.rb
+
 cd ${APP_DIR}
 # Using exec to replace the current bash script running with PID1 with Unicorn
 # This allows docker to send signals to unicorn, allowing for graceful shutdown

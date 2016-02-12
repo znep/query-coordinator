@@ -124,7 +124,7 @@ enable_spatial_lens_region_coding:
 enable_synthetic_spatial_lens_id:
   description: Enable synthetic primary keys for Spatial Lens shapes.
   category: data lens
-  defaultValue: false
+  defaultValue: true
 stories_enabled:
   description: Enable the Storyteller application.
   category: storyteller

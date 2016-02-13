@@ -8,7 +8,7 @@
       <%= t 'screens.ds.blob.limited_download' %>
     <%- end -%>
   </p>
-  <div class="downloadBox <%= 'multiAccessPoints' if @view.allAccessPoints.length > 1 %>">
+  <div class="downloadBox <%= 'multiAccessPoints' if @view.allAccessPoints.try(:length) > 1 %>">
     <%- if @view.display.type == 'href' || @view.display.display_type == 'link' -%>
       <h5><%= t 'screens.ds.blob.external_link' %></h5>
     <%- else -%>

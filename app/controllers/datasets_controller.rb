@@ -760,9 +760,10 @@ protected
     if params[:external_sources].present?
       additionalAccessPoints = []
       params[:external_sources].each do |source|
-        title = source[:title]
-        description = source[:description]
-        entry = { :title => title, :description => description, :urls => {} }
+        entry = {}
+        entry[:title] = source[:title] if source[:title].present?
+        entry[:description] = source[:description] if source[:description].present?
+        entry[:urls] = {}
         if source[:urls].present?
           source[:urls].each do |endpoint|
             extension = compute_extension(endpoint[:extension], endpoint[:url])

@@ -1,5 +1,16 @@
+@charset 'utf-8';
 <% cache(cache_key_for_custom_themes(@custom_themes)) do %>
   <% @custom_themes.each do |custom_theme| -%>
-    <%=raw Sass::Engine.new(render(custom_theme), sass_engine_options).render %>
+    <%=
+      # Wow, this is super important. Since stylesheets come from heterogenous
+      # sources, and some of them might be utf-8, something (Ruby?) is going way
+      # overboard adding BOMs willy nilly when we concatenate the contents of
+      # each stylesheet. Accordingly, we need to use strip_byte_order_mark! to
+      # search and destroy BOMs throughout the file (remember, there might be
+      # many since we're concatenating a bunch of files together). Yuck!
+      css = Sass::Engine.new(render(custom_theme), sass_engine_options).render
+      strip_byte_order_marks!(css)
+      raw(css)
+    %>
   <% end -%>
 <% end %>

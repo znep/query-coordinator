@@ -119,4 +119,17 @@ RSpec.describe ThemesHelper, type: :helper do
       end
     end
   end
+
+  describe '#strip_byte_order_marks!' do
+    let(:no_bom) { "nope" }
+    let(:bom) { "\xEF\xBB\xBF".force_encoding('utf-8') }
+
+    it 'removes byte order marks if present' do
+      strip_byte_order_marks!(no_bom)
+      strip_byte_order_marks!(bom)
+
+      expect(no_bom).to eq('nope')
+      expect(bom).to eq('')
+    end
+  end
 end

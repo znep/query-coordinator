@@ -84,10 +84,13 @@ function customizeCardDialog(
   }
 
   function setupFlannelTitleSelect(cardModel, $scope) {
-    $scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$($scope));
-
     $scope.$bindObservable('titleColumnOptions', DatasetColumnsService.getSortedColumns$($scope).map(function(sortedColumns) {
-      return _.pluck(sortedColumns, 'fieldName');
+      return sortedColumns.map(function(column) {
+        return {
+          'fieldName': column.fieldName,
+          'columnName': column.columnInfo.name
+        };
+      });
     }));
 
     // Initialize selection to the existing flannel title column.
@@ -170,10 +173,13 @@ function customizeCardDialog(
     },
     templateUrl: templateUrl,
     link: function($scope, element) {
-
       // Clone the card, so we can cancel without having made any changes
       $scope.customizedCard = $scope.dialogState.cardModel.clone();
       $scope.showBucketTypeWarning = false;
+
+      // Make columnHumanNameFn broadly available
+      $scope.$bindObservable('humanReadableColumnName',
+        $scope.customizedCard.observe('column.name'));
 
       $scope.$bindObservable('shouldShowAggregationSelector',
         $scope.customizedCard.observe('cardType').map(function(cardType) {

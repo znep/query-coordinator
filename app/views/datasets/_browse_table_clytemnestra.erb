@@ -45,7 +45,7 @@
             </div>
 
             <div class="expandBlock clearfix collapsed">
-              <div class="description"><%= view_format_description_text(v.description) %></div>
+              <div class="description"><%= view_formatted_description(v) %></div>
               <div class="rowSearchResults"><% if in_search %><span><%= t('controls.browse.row_results.matching_rows') %></span><% end %></div>
               <div class="extraInfo <%= opts[:use_federations] ? 'federated' : '' %>">
                 <div class="infoContent"></div>
@@ -88,7 +88,7 @@
               </div>
             <% end %>
             <div class="expandBlock">
-              <div class="description collapsed"><%= view_format_description_text(v.description) %></div>
+              <div class="description collapsed"><%= view_formatted_description(v) %></div>
               <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
                 <%= sprite_icon(:alt_text => t('controls.browse.actions.expand_section')) %>
               </a>

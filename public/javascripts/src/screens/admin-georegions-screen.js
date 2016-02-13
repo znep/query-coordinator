@@ -65,8 +65,8 @@ function renderTables(georegions, allowEnablement) {
 
 function renderPageSubtitle(enabledCount, availableCount) {
   const pageSubtitle = t('page_subtitle', {
-    'enabled_count': String(enabledCount),
-    'available_count': String(availableCount)
+    enabled_count: String(enabledCount),
+    available_count: String(availableCount)
   });
 
   ReactDOM.render(
@@ -197,7 +197,7 @@ function showInitialConfigureModal(uid) {
         setFlashMessage(t('configure_boundary.save_success'), 'notice');
         closeConfigureModal();
       } else if (error) {
-        errorCallback(t('configure_boundary.save_core_error', {'error_message': message}));
+        errorCallback(t('configure_boundary.save_core_error', {error_message: message}));
       }
     };
 

@@ -111,19 +111,19 @@ function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) 
             // otherwise default to 'count'
             return {
               'function': 'count',
-              'column': null,
-              'fieldName': null,
-              'unit': unit || DEFAULT_ROW_DISPLAY_UNIT,
-              'rowDisplayUnit': rowDisplayUnit || DEFAULT_ROW_DISPLAY_UNIT
+              column: null,
+              fieldName: null,
+              unit: unit || DEFAULT_ROW_DISPLAY_UNIT,
+              rowDisplayUnit: rowDisplayUnit || DEFAULT_ROW_DISPLAY_UNIT
             };
           }
 
           return {
             'function': primaryAggregation || 'count',
-            'column': columnAggregatedUpon, // MAY BE NULL IF COUNT(*)
-            'fieldName': fieldNameAggregatedUpon, // MAY BE NULL IF COUNT(*)
-            'unit': unit || DEFAULT_ROW_DISPLAY_UNIT,
-            'rowDisplayUnit': rowDisplayUnit || DEFAULT_ROW_DISPLAY_UNIT
+            column: columnAggregatedUpon, // MAY BE NULL IF COUNT(*)
+            fieldName: fieldNameAggregatedUpon, // MAY BE NULL IF COUNT(*)
+            unit: unit || DEFAULT_ROW_DISPLAY_UNIT,
+            rowDisplayUnit: rowDisplayUnit || DEFAULT_ROW_DISPLAY_UNIT
           };
         }).
         filter(function(aggregation) {

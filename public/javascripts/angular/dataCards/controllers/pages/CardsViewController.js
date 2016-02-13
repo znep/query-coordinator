@@ -714,7 +714,7 @@ function CardsViewController(
   var isMobile = DeviceService.isMobile();
 
   $scope.mobileWarningState = {
-    'show': isMobile && !mobileWarningClosed
+    show: isMobile && !mobileWarningClosed
   };
 
   $scope.$watch('mobileWarningState.show', function(newValue) {

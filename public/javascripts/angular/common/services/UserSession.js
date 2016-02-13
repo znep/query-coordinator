@@ -21,7 +21,12 @@ function UserSessionService($http, $q, rx) {
   function getCurrentUser() {
     // NOTE: If nobody is logged in, then this returns a 404.
 
-    var config = httpConfig.call(this, { headers: {'Cache-Control': 'nocache'}, 'airbrakeShouldIgnore404Errors': true });
+    var config = httpConfig.call(this, {
+      headers: {
+        'Cache-Control': 'nocache'
+      },
+      airbrakeShouldIgnore404Errors: true
+    });
 
     var url = $.baseUrl('/api/users/current.json');
     return $http.get(url.href, config).then(function(response) {

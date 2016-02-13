@@ -87,8 +87,8 @@ function customizeCardDialog(
     $scope.$bindObservable('titleColumnOptions', DatasetColumnsService.getSortedColumns$($scope).map(function(sortedColumns) {
       return sortedColumns.map(function(column) {
         return {
-          'fieldName': column.fieldName,
-          'columnName': column.columnInfo.name
+          fieldName: column.fieldName,
+          columnName: column.columnInfo.name
         };
       });
     }));

@@ -43,12 +43,12 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
   const Rx = rx;
   return {
     scope: {
-      'maxLines': '@',
-      'tolerance': '@',
-      'text': '@',
-      'animationDuration': '@',
-      'escapeHtml': '@',
-      'expanded': '='
+      maxLines: '@',
+      tolerance: '@',
+      text: '@',
+      animationDuration: '@',
+      escapeHtml: '@',
+      expanded: '='
     },
     template: '<div class="content" title="{{contentTitleAttr}}"></div>' +
       '<div ng-if="showMoreMode == \'expand-link\'" ' +
@@ -90,7 +90,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
         var defer = $q.defer();
         content.css('height', from);
         content.animate( {
-          'height': to
+          height: to
         }, {
           easing: 'socraticEase',
           duration: animationDuration,

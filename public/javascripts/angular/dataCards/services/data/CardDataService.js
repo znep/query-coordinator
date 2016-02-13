@@ -368,7 +368,7 @@ function CardDataService(
       shapefileId = DeveloperOverrides.dataOverrideForDataset(shapefileId) || shapefileId;
       var url = $.baseUrl(`/resource/${shapefileId}.geojson`);
       url.searchParams.set('$limit', shapefileRegionQueryLimit());
-      var config = httpConfig.call(this, { headers: { 'Accept': 'application/vnd.geo+json' } });
+      var config = httpConfig.call(this, { headers: { Accept: 'application/vnd.geo+json' } });
       return http.get(url.href, config).
         then(function(response) {
           return response.data;
@@ -589,7 +589,7 @@ ${JSON.stringify(errors)}`
 
           var geoJsonConfig = httpConfig.call(self, {
             headers: {
-              'Accept': 'application/vnd.geo+json'
+              Accept: 'application/vnd.geo+json'
             }
           });
           return http.get(geoJsonUrl.href, geoJsonConfig).

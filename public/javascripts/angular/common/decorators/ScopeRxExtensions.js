@@ -4,7 +4,7 @@ angular.
   config(function($provide) {
     $provide.decorator('$rootScope', ['$delegate', '$log', 'rx', function($delegate, $log, rx) {
       Object.defineProperties($delegate.constructor.prototype, {
-        '$destroyAsObservable': {
+        $destroyAsObservable: {
           value: function $destroyAsObservable(element) {
             var $scope = this;
             return rx.Observable.merge(
@@ -36,7 +36,7 @@ angular.
           writable: true
         },
 */
-        '$observe': {
+        $observe: {
           value: function $observe(expression) {
             var $scope = this;
             var evaluatedExpression = $scope.$eval(expression);
@@ -55,7 +55,7 @@ angular.
           configurable: true,
           writable: true
         },
-        '$emitEventsFromObservable': {
+        $emitEventsFromObservable: {
           value: function $emitEventsFromObservable(eventName, observable) {
             var $scope = this;
 
@@ -74,7 +74,7 @@ angular.
           configurable: true,
           writable: true
         },
-        '$safeApply': {
+        $safeApply: {
           // Execute the given function immediately if an angular digest-apply is
           // already in progress, otherwise starts a digest-apply cycle then executes
           // the function within that cycle.
@@ -95,7 +95,7 @@ angular.
           configurable: true,
           writable: true
         },
-        '$bindObservable': {
+        $bindObservable: {
           // Bind an observable sequence to a scope's property.
           // For example, this will cause the 'ticks' property
           // on scope $scope to increment every second:

@@ -4,7 +4,7 @@ function removeAllCards($window, WindowState) {
   return {
     restrict: 'E',
     scope: {
-      'enabled': '='
+      enabled: '='
     },
     templateUrl: templateUrl,
     link: function($scope, element) {

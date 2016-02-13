@@ -141,10 +141,10 @@ function columnAndVisualizationSelector(
           } else {
             // TODO: Enforce some kind of schema validation at this step.
             serializedCard = {
-              'cardSize': parseInt($scope.cardSize, 10),
-              'expanded': false,
-              'fieldName': fieldName,
-              'cardType': adjustedDefaultCardTypeHash[fieldName]
+              cardSize: parseInt($scope.cardSize, 10),
+              expanded: false,
+              fieldName: fieldName,
+              cardType: adjustedDefaultCardTypeHash[fieldName]
             };
 
             // TODO: We're going towards passing in serialized blobs to Model constructors.

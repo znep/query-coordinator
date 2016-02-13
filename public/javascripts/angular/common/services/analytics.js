@@ -186,18 +186,18 @@ function Analytics($log, $window, http, ServerConfig, $rootScope, rx) {
         return;
       }
       // create the batched payload and reset the queue
-      analyticsPayload = JSON.stringify({'metrics': queue});
+      analyticsPayload = JSON.stringify({metrics: queue});
       queue = [];
 
       analyticsConfig = {
-        'headers': {
+        headers: {
           'X-Socrata-Auth': 'unauthenticated',
           'Content-Type': 'application/text'
         },
-        'contentType': 'application/json',
-        'dataType': 'json',
-        'requester': {},
-        'csrfRequired': false
+        contentType: 'application/json',
+        dataType: 'json',
+        requester: {},
+        csrfRequired: false
       };
 
       http.post(analyticsUrl, analyticsPayload, analyticsConfig);

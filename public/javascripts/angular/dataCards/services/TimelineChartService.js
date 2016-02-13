@@ -71,8 +71,8 @@ function TimelineChartService(I18n, PluralizeService) {
       configuration: {
         interactive: allowFilterChange,
         localization: {
-          'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.flyout.total,
-          'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.flyout.filteredAmount
+          FLYOUT_UNFILTERED_AMOUNT_LABEL: I18n.flyout.total,
+          FLYOUT_FILTERED_AMOUNT_LABEL: I18n.flyout.filteredAmount
         }
       },
       unit: getUnitConfiguration(rowDisplayUnit)

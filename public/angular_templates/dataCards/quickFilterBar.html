@@ -1,0 +1,34 @@
+<div id="quick-filter-bar-container">
+  <div class="quick-filter-bar" with-spacer>
+    <div class="content cf">
+      <span ng-bind-html="quickFilterBarTitle"></span>
+      </span>
+      <div class="filters">
+        <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
+          <span ng-if="$first">{{::'filter.where' | I18n}}</span>
+          <span ng-if="!$first">{{::'filter.and' | I18n}}</span>
+          <span class="light lowercase">{{filter.column.version === '0' ? filter.column.title : filter.column.name}}</span>
+          <span>{{filter.operator}}</span>
+          <span
+            class="light"
+            title="{{filter.operand.length > maxOperandLength ? filter.operand : ''}}">
+            {{filter.operand | ellipsify:maxOperandLength}}
+          </span>
+        </div>
+      </div>
+      <button
+        class="clear-all-filters-button action-btn dark"
+        ng-if="appliedFiltersForDisplay.length > 0 && !page.isStandaloneVisualization"
+        ng-click="clearAllFilters()">
+        {{::'quickFilterBar.clearAll' | I18n}}
+        <span class="icon-close"></span>
+      </button>
+      <div class="aggregation-tour-attachment" ng-controller="AggregationTourController"></div>
+      <aggregation-chooser
+        page="page"
+        is-standalone-visualization="page.isStandaloneVisualization"
+        ng-show="shouldShowAggregationChooser">
+      </aggregation-chooser>
+    </div>
+  </div>
+</div>

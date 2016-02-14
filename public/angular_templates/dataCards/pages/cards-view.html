@@ -26,26 +26,17 @@
 
     <quick-filter-bar></quick-filter-bar>
 
-    <multi-card-layout
+    <card-layout
       id="card-container"
-      class="cards multiple-cards"
+      class="cards"
       ng-class="{'edit-mode': editMode}"
-      ng-if="!page.isStandaloneVisualization"
       page="page"
       edit-mode="editMode"
       global-where-clause-fragment="globalWhereClauseFragment"
       expanded-card="expandedCard"
       allow-add-card="!allVisualizableColumnsVisualized"
       chooser-mode="chooserMode">
-    </multi-card-layout>
-
-    <div ng-if="page.isStandaloneVisualization">
-      <single-card-layout
-         id="card-container"
-         class="cards single-card">
-      </single-card-layout>
-    </div>
-
+    </card-layout>
   </div>
 
   <div class="manage-lens-dialogs" ng-controller="ManageLensDialogController">
@@ -86,18 +77,6 @@
 
     <mobile-warning-dialog dialog-state="mobileWarningState"></mobile-warning-dialog>
 
-  </modal-dialog>
-
-  <modal-dialog
-    ng-if="saveVisualizationAsState.show"
-    dialog-state="saveVisualizationAsState"
-    id="save-visualization-as-dialog">
-    <save-visualization-as-dialog
-      show-provenance-section="showProvenanceSection"
-      domain="domain"
-      dialog-state="saveVisualizationAsState"
-      page="page">
-    </save-visualization-as-dialog>
   </modal-dialog>
 
   <div class="tour-overlay"></div>

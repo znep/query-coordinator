@@ -14,7 +14,6 @@
   ],
   "datasetId": "vdj8-z7h2",
   "description": "Test VIF description",
-  "displayType": "data_lens_chart",
   "name": "UFO Sightings Test: plausibility (filtered on BAC)",
   "pageId": "page-test",
   "permissions": {

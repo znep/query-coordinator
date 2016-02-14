@@ -36,7 +36,7 @@ describe('aggregationChooser', function() {
       availableCardTypes: ['column', 'search']
     }
   };
-  var ELEMENT_HTML = '<aggregation-chooser page="page" is-standalone-visualization="isStandaloneVisualization"></aggregation-chooser>';
+  var ELEMENT_HTML = '<aggregation-chooser page="page"></aggregation-chooser>';
 
   var testHelpers;
   var $rootScope;
@@ -282,7 +282,7 @@ describe('aggregationChooser', function() {
     expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
   });
 
-  function createColumnsAndAggregationChooser(numColumns, isStandaloneVisualization) {
+  function createColumnsAndAggregationChooser(numColumns) {
     var columns = {};
     var numberColumns = numColumns;
     var moneyThreshold = Math.floor(numberColumns / 2);
@@ -299,8 +299,7 @@ describe('aggregationChooser', function() {
     });
     var models = createModels({ columns: columns });
     var subjectUnderTest = createElement({
-      page: models.page,
-      isStandaloneVisualization: isStandaloneVisualization
+      page: models.page
     });
 
     testHelpers.TestDom.append(subjectUnderTest);
@@ -345,49 +344,6 @@ describe('aggregationChooser', function() {
       expect(flyout).to.have.class('aggregation-chooser');
       expect(flyout.text()).to.match(/looks like this dataset contains more than/i);
 
-    });
-
-  });
-
-  describe('on a standalone viz page', function() {
-
-    it('should be disabled without a flyout if it has too many number or money columns', function() {
-      var subjectUnderTest =
-        createColumnsAndAggregationChooser(Constants.AGGREGATION_MAX_COLUMN_COUNT + 2, true);
-
-      var trigger = subjectUnderTest.find('.aggregation-chooser-trigger');
-
-      expect(trigger).to.have.class('disabled');
-
-      testHelpers.fireMouseEvent(trigger[0], 'click');
-      expect(subjectUnderTest.isolateScope().panelActive).to.be.false;
-
-      // Test if a warning flyout appears when hovering over the
-      // aggregation chooser.
-      testHelpers.fireMouseEvent(trigger[0], 'mousemove');
-
-      var flyout = $('#uber-flyout');
-      expect(flyout).to.exist;
-      expect(flyout).to.be.not.visible;
-    });
-
-    it('should be disabled without a flyout with a normal number of columns', function() {
-      var subjectUnderTest = createColumnsAndAggregationChooser(2, true);
-
-      var trigger = subjectUnderTest.find('.aggregation-chooser-trigger');
-
-      expect(trigger).to.have.class('disabled');
-
-      testHelpers.fireMouseEvent(trigger[0], 'click');
-      expect(subjectUnderTest.isolateScope().panelActive).to.be.false;
-
-      // Test if a warning flyout appears when hovering over the
-      // aggregation chooser.
-      testHelpers.fireMouseEvent(trigger[0], 'mousemove');
-
-      var flyout = $('#uber-flyout');
-      expect(flyout).to.exist;
-      expect(flyout).to.be.not.visible;
     });
 
   });

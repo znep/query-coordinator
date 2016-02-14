@@ -22,8 +22,7 @@ function AggregationChooser(
     restrict: 'E',
     templateUrl: templateUrl,
     scope: {
-      page: '=',
-      isStandaloneVisualization: '='
+      page: '='
     },
     link: function($scope, element) {
       /*
@@ -203,7 +202,7 @@ function AggregationChooser(
         });
 
       $scope.togglePanel = function() {
-        if (!$scope.isStandaloneVisualization && $scope.canChooseAggregation) {
+        if ($scope.canChooseAggregation) {
           $scope.panelActive = !$scope.panelActive;
         }
       };
@@ -212,45 +211,43 @@ function AggregationChooser(
        * Register flyout for disabled aggregation columns
        */
 
-      if (!$scope.isStandaloneVisualization) {
-        FlyoutService.register({
-          selector: '.aggregation-option',
-          render: function(flyoutElement) {
-            if ($(flyoutElement).is('.disabled.no-count')) {
-              return `<span class="flyout-cell">${I18n.aggregationChooser.optionDisabled}</span>`;
-            }
-          },
-          destroySignal: $scope.$destroyAsObservable(element),
-          trackCursor: true
-        });
+      FlyoutService.register({
+        selector: '.aggregation-option',
+        render: function(flyoutElement) {
+          if ($(flyoutElement).is('.disabled.no-count')) {
+            return `<span class="flyout-cell">${I18n.aggregationChooser.optionDisabled}</span>`;
+          }
+        },
+        destroySignal: $scope.$destroyAsObservable(element),
+        trackCursor: true
+      });
 
-        var aggregationChooserSelectors = [
-          '.aggregation-chooser-trigger.disabled',
-          '.aggregation-chooser-trigger.disabled span'
-        ];
+      var aggregationChooserSelectors = [
+        '.aggregation-chooser-trigger.disabled',
+        '.aggregation-chooser-trigger.disabled span'
+      ];
 
-        FlyoutService.register({
-          selector: aggregationChooserSelectors.join(', '),
-          positionOn: function() {
+      FlyoutService.register({
+        selector: aggregationChooserSelectors.join(', '),
+        positionOn: function() {
 
-            // Targets the span element whose ::after pseudoelement we're using
-            // to render the down-arrow "icon".
-            return $(`${aggregationChooserSelectors[0]} .tool-panel-cue`)[0];
-          },
-          render: _.constant(
-            `<span class="icon-warning"></span><span class="flyout-title">${I18n.t(
-              'aggregationChooser.tooManyColumns.title',
-              Constants.AGGREGATION_MAX_COLUMN_COUNT
-            )}</span><p>${I18n.t(
-              'aggregationChooser.tooManyColumns.message',
-              Constants.AGGREGATION_MAX_COLUMN_COUNT
-            )}</p>`
-          ),
-          belowTarget: true,
-          classes: 'aggregation-chooser',
-          destroySignal: $scope.$destroyAsObservable(element)
-        });
-      }
+          // Targets the span element whose ::after pseudoelement we're using
+          // to render the down-arrow "icon".
+          return $(`${aggregationChooserSelectors[0]} .tool-panel-cue`)[0];
+        },
+        render: _.constant(
+          `<span class="icon-warning"></span><span class="flyout-title">${I18n.t(
+            'aggregationChooser.tooManyColumns.title',
+            Constants.AGGREGATION_MAX_COLUMN_COUNT
+          )}</span><p>${I18n.t(
+            'aggregationChooser.tooManyColumns.message',
+            Constants.AGGREGATION_MAX_COLUMN_COUNT
+          )}</p>`
+        ),
+        belowTarget: true,
+        classes: 'aggregation-chooser',
+        destroySignal: $scope.$destroyAsObservable(element)
+      });
 
       /*
        * Callback functions

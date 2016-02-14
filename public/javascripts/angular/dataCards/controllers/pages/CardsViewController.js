@@ -15,10 +15,7 @@ function initDownload($scope, WindowState) {
 
   // Unsets chooser mode on init and whenever completion is signaled.
   var clearChooserMode = function() {
-    $scope.chooserMode = {
-      show: false,
-      action: null
-    };
+    $scope.chooserMode = { show: false };
 
     // NOTE: I don't really like having this event, but I feel like it's
     // preferable to plumbing the chooserMode object itself. Once the original
@@ -31,11 +28,8 @@ function initDownload($scope, WindowState) {
 
   // Activates chooser mode in an event-based manner, allowing this mode to be
   // triggered by child directives.
-  $scope.$on('enter-export-card-visualization-mode', function(e, action) {
-    $scope.chooserMode = {
-      show: true,
-      action: action
-    };
+  $scope.$on('enter-export-card-visualization-mode', function() {
+    $scope.chooserMode = { show: true };
   });
 }
 
@@ -132,7 +126,6 @@ function CardsViewController(
   Constants,
   UserRights,
   ViewRights,
-  domain,
   rx) {
   const Rx = rx;
 
@@ -151,7 +144,6 @@ function CardsViewController(
   *************************/
 
   $scope.page = page;
-  $scope.domain = domain;
   $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
   $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
   $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));
@@ -227,15 +219,7 @@ function CardsViewController(
     });
 
   $scope.$bindObservable('currentUserHasProvenanceRight', currentUserHasProvenanceRight$);
-
-  // We're checking the displayType as well as the user to account for
-  // standalone visualizations
-  $scope.$bindObservable(
-    'shouldDisplayCustomizeBar',
-    currentUser$.map(function(user) {
-      return user && page.displayType == 'data_lens';
-    })
-  );
+  $scope.$bindObservable('shouldDisplayCustomizeBar', currentUser$.map(_.isPresent));
 
   initDownload($scope, WindowState);
 
@@ -490,15 +474,6 @@ function CardsViewController(
   $scope.$on('customize-card-with-model', function(e, cardModel) {
     $scope.customizeState.cardModel = cardModel;
     $scope.customizeState.show = true;
-  });
-
-  $scope.saveVisualizationAsState = {
-    cardModel: null,
-    show: false
-  };
-  $scope.$on('save-visualization-as', function(e, cardModel) {
-    $scope.saveVisualizationAsState.cardModel = cardModel;
-    $scope.saveVisualizationAsState.show = true;
   });
 
   // Handle the event emitted by the Remove All Cards button and delegate

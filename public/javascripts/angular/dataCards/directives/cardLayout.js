@@ -1,4 +1,4 @@
-var templateUrl = require('angular_templates/dataCards/multiCardLayout.html');
+var templateUrl = require('angular_templates/dataCards/cardLayout.html');
 const angular = require('angular');
 var sortedTileLayout;
 // Map from a cardSize category to a height in pixels
@@ -31,7 +31,7 @@ function initCardSelection(
   });
 }
 
-function multiCardLayout(
+function cardLayout(
   Constants,
   WindowState,
   SortedTileLayout,
@@ -79,12 +79,12 @@ function multiCardLayout(
       // verify our requirements are met.
       if (_.isEmpty(cardsMetadata)) {
         throw new Error(
-          'The multiCardLayout directive must be in the DOM with a node with class "cards-metadata".'
+          'The cardLayout directive must be in the DOM with a node with class "cards-metadata".'
         );
       }
       if (_.isEmpty(quickFilterBar)) {
         throw new Error(
-          'The multiCardLayout directive must be in the DOM with a node with class "quick-filter-bar".'
+          'The cardLayout directive must be in the DOM with a node with class "quick-filter-bar".'
         );
       }
 
@@ -985,4 +985,4 @@ function multiCardLayout(
 
 angular.
   module('dataCards.directives').
-  directive('multiCardLayout', multiCardLayout);
+  directive('cardLayout', cardLayout);

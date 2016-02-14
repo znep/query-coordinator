@@ -1669,38 +1669,24 @@ class View < Model
       originalUid: id
     }
 
-    if standalone_visualization?
-      # Map standalone visualizations to synthetic Page metadata
-      standalone_visualization_manager = StandaloneVisualizationManager.new
-      page_metadata = standalone_visualization_manager.page_metadata_from_vif(
-        visualization_interchange_format_v1,
-        nbe_view.id,
-        {}
-      )
-      visualization[:data] = page_metadata
-      visualization[:columns] = [ page_metadata[:cards][0][:fieldName] ]
-      visualization[:type] = page_metadata[:cards][0][:cardType]
-      visualization[:format] = 'page_metadata'
-    else
-      # re-fetch the JSON to ensure we have column information (some core calls
-      # like that used in find_related strip it out).
-      json = fetch_json.deep_merge(
-        'metadata' => {
-          'renderTypeConfig' => {
-            'visible' => {
-              'table' => false
-            }
+    # re-fetch the JSON to ensure we have column information (some core calls
+    # like that used in find_related strip it out).
+    json = fetch_json.deep_merge(
+      'metadata' => {
+        'renderTypeConfig' => {
+          'visible' => {
+            'table' => false
           }
         }
-      )
+      }
+    )
 
-      real_view = View.new(json)
+    real_view = View.new(json)
 
-      visualization[:data] = json
-      visualization[:columns] = real_view.display_format_columns
-      visualization[:type] = real_view.displayFormat.chartType
-      visualization[:format] = 'classic'
-    end
+    visualization[:data] = json
+    visualization[:columns] = real_view.display_format_columns
+    visualization[:type] = real_view.displayFormat.chartType
+    visualization[:format] = 'classic'
 
     visualization
   end

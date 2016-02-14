@@ -204,10 +204,6 @@ show_provenance_badge_in_catalog:
 show_share_dataset_by_email_button_for_general_users:
   description: Toggle the visibility of the "share by email" button on dataset pages for unauthenticated or non-domain-role-holding users (see ONCALL-3032).
   defaultValue: true
-standalone_lens_chart:
-  description: When enabled, allows individual visualizations from a data lens page to be saved as standalone catalog entries.
-  defaultValue: false
-  category: data lens
 swap_in_nbe_view:
   description: "Utility flag to make frontend views use their NBE counterparts. NOTE: This is intended to be used for NBE Go testing; it may cause errors if enabled for general use."
   defaultValue: false

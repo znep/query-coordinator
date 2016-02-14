@@ -20,8 +20,7 @@ function CardDirective(
       allowFilterChange: '=',
       cardDraggable: '=',
       chooserMode: '=',
-      isGrabbed: '=',
-      isStandaloneVisualization: '='
+      isGrabbed: '='
     },
     templateUrl: templateUrl,
     link: function($scope, element) {
@@ -196,24 +195,9 @@ function CardDirective(
             return I18n.common.done;
           case 'error':
             return I18n.common.error;
+          default:
+            return I18n.common.download;
         }
-
-        // Handle the default state whose text varies by mode,
-        // as well as a generic fallback case.
-        if ($scope.chooserMode) {
-          switch ($scope.chooserMode.action) {
-            case 'vif':
-              return I18n.common.save;
-            case 'polaroid':
-            default:
-              // The old-style Download dropdown menu may not
-              // define this property, so fall back.
-              return I18n.common.download;
-          }
-        } else {
-          return I18n.common.download;
-        }
-
       };
 
       $scope.exportCard = function(e) {
@@ -246,35 +230,21 @@ function CardDirective(
 
         $(e.target).blur();
 
-        // Perform an activity depending on the current mode.
-        // The string values signifying these modes are defined
-        // (somewhat arbitrarily) by exportMenu.html and get
-        // plumbed through to here.
-        switch ($scope.chooserMode.action) {
-          case 'vif':
-            $scope.downloadState = 'success';
-            $scope.$emit('save-visualization-as', $scope.model);
-            resetDownloadButton(0);
-            break;
-          case 'polaroid':
-          default:
-            var vif = VIFExportService.exportVIF($scope.model.page, $scope.model.uniqueId, 'Polaroid Export', '');
-            var url = '/view/vif.png';
-            PolaroidService.download(url, vif).then(
-              function() {
-                $scope.$safeApply(function() {
-                  $scope.downloadState = 'success';
-                });
-              }, function() {
-                $scope.$safeApply(function() {
-                  $scope.downloadState = 'error';
-                });
-              }
-            )['finally'](function() {
-              resetDownloadButton(2000);
+        var vif = VIFExportService.exportVIF($scope.model.page, $scope.model.uniqueId, 'Polaroid Export', '');
+        var url = '/view/vif.png';
+        PolaroidService.download(url, vif).then(
+          function() {
+            $scope.$safeApply(function() {
+              $scope.downloadState = 'success';
             });
-            break;
-        }
+          }, function() {
+            $scope.$safeApply(function() {
+              $scope.downloadState = 'error';
+            });
+          }
+        )['finally'](function() {
+          resetDownloadButton(2000);
+        });
       };
 
       descriptionTruncatedContent = element.find('.description-truncated-content');

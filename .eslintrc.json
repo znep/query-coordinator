@@ -91,7 +91,6 @@
     "d3": true,
     "Dataset": true,
     "datasetMetadata": true,
-    "domainMetadata": true,
     "DOMPurify": true,
     "Highcharts": true,
     "jQuery": true,

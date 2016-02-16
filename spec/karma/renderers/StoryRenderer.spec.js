@@ -42,7 +42,9 @@ describe('StoryRenderer', function() {
       storyContainerElement: testDom.find('.story-container'),
       warningMessageElement: testDom.find('.message-warning'),
       insertionHintElement: testDom.find('.insertion-hint'),
-      onRenderError: function() {}
+      onRenderError: function(error) {
+        throw new Error(error); // Fail the test on render error.
+      }
     };
   });
 
@@ -245,6 +247,33 @@ describe('StoryRenderer', function() {
         storyteller.storyRenderer = new storyteller.StoryRenderer(options);
 
         assert.equal($('.message-empty-story').length, 0);
+      });
+
+      describe('that cause a mid-render rerender', function() {
+        it('completes the current render before starting a new render', function() {
+          var rendering = false;
+
+          var imageRenderStub = sinon.stub($.fn, 'componentImage', function() {
+            assert.isFalse(rendering, 'reentrant call to renderer'); // Shouldn't re-enter.
+            rendering = true;
+
+            // Cause a rerender the first render.
+            if (imageRenderStub.calledOnce) {
+              this[0].dispatchEvent(
+                new storyteller.CustomEvent(
+                  'component::height-change',
+                  { detail: {}, bubbles: true }
+                )
+              );
+            }
+            rendering = false;
+          });
+
+          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+
+          sinon.assert.calledTwice(imageRenderStub);
+
+        });
       });
 
     });

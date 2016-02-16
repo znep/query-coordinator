@@ -161,15 +161,24 @@ describe BrowseHelper do
     end
   end
 
-  describe '#view_format_text' do
-    it 'formats the text converting newlines into html breaks' do
-      description = %(my description \n http://google.com <b>bold!</b>)
-      expect(helper.view_format_description_text(description)).to eql(%(<p>my description \n<br> <a href="http://google.com" rel="nofollow noreferrer external">http://google.com</a> <b>bold!</b></p>))
+  describe '#view_formatted_description' do
+    let(:view) { View.new }
+
+    it 'returns if description is nil' do
+      expect(helper.view_formatted_description(view)).to eql(nil)
     end
 
-    it 'formats the description ignoring newline html formatting' do
-      description = %(my description http://google.com\n <b>bold!</b>)
-      expect(helper.view_format_description_text(description, false)).to eql(%(my description <a href="http://google.com" rel="nofollow noreferrer external">http://google.com</a>\n <b>bold!</b>))
+    it 'returns the plain text description formatted with simple_format' do
+      view.description = 'basic plain text description'
+      expect(helper.view_formatted_description(view)).to eql(%(<p>basic plain text description</p>))
+    end
+
+    it 'returns the description without simple_format-ing if the display type is data_lens' do
+      view.description = %(<div>my rich text description \n http://google.com <b>bold!</b></div>)
+      display = double
+      allow(display).to receive('type').and_return('data_lens')
+      allow(view).to receive('display').and_return(display)
+      expect(helper.view_formatted_description(view)).to eql(%(<div>my rich text description \n <a href="http://google.com" rel="nofollow noreferrer external">http://google.com</a> <b>bold!</b></div>))
     end
   end
 

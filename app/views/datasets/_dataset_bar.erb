@@ -75,7 +75,7 @@
             name: @view.geoParent.name, href: view_url(@view.geoParent)) %>
         </div>
       <%- else -%>
-        <div class="descriptionContent collapsed"><%= view_format_description_text(@view.description) || '(No description provided)'%></div>
+        <div class="descriptionContent collapsed"><%= view_formatted_description(@view) || '(No description provided)'%></div>
         <a href="#expand" class="descriptionExpander rightArrow" title="<%= t('core.expando.prompt') %>">
           <span class="icon"><%= t('core.expando.expand') %></span>
         </a>

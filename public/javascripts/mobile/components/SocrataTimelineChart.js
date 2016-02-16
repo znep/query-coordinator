@@ -1,3 +1,4 @@
+/* global SoqlHelpers */
 (function($, root) {
 
   'use strict';
@@ -372,10 +373,10 @@
     function _handleSelection(event) {
       var payload = event.originalEvent.detail;
       var newVif = _.cloneDeep(_lastRenderedVif);
-      var ownFilterStartEnd = newVif.
+      newVif.
         filters.
         filter(function(filter) {
-          return filter.columnName === newVif.columnName && filter.function === 'timeRangeFilter';
+          return filter.columnName === newVif.columnName && filter.function === 'timeRangeFilter'; // eslint-disable-line dot-notation
         }).map(function(filter) {
           return filter.arguments;
         });
@@ -451,10 +452,7 @@
       var precisionPromise = vifToRender.configuration.precision ?
         Promise.resolve(vifToRender.configuration.precision) :
         precisionSoqlDataProvider.
-        getRows(
-          [ SOQL_PRECISION_START_ALIAS, SOQL_PRECISION_END_ALIAS ],
-          '$query=' + precisionQueryString
-        ).
+        getRows('$query=' + precisionQueryString).
         then(mapQueryResponseToPrecision);
 
       var dataPromise = precisionPromise.
@@ -517,7 +515,7 @@
         return precision;
       }
 
-      function mapPrecisionToDataQuery(precision) {
+      function mapPrecisionToDataQuery($precision) {
         var date_trunc_function;
 
         switch (precision) {
@@ -531,7 +529,7 @@
             date_trunc_function = 'date_trunc_ymd';
             break;
           default:
-            throw 'precision was invalid: {0}'.format(precision);
+            throw 'precision was invalid: {0}'.format($precision);
         }
 
         return (
@@ -594,7 +592,7 @@
     }
 
 
-    function _mergeUnfilteredAndFilteredData(unfiltered, filtered, precision) {
+    function _mergeUnfilteredAndFilteredData(unfiltered, filtered, $precision) {
 
       var unfilteredAsHash = _.indexBy(
         unfiltered.rows,
@@ -609,11 +607,11 @@
       });
       var timeStart = _.min(dates);
       var timeEnd = _.max(dates);
-      var timeData = Array(timeEnd.diff(timeStart, precision));
+      var timeData = Array(timeEnd.diff(timeStart, $precision));
       _.each(unfiltered.rows, function(item) {
         var date = item[DATE_INDEX];
         var dateAsMoment = moment((_.isNull(date) || _.isUndefined(date)) ? '' : date);
-        var timeSlot = dateAsMoment.diff(timeStart, precision);
+        var timeSlot = dateAsMoment.diff(timeStart, $precision);
 
         // Default to null in case we don't receive a value associated with
         // this date. If we do not, the result of Number(item.value) is NaN
@@ -626,7 +624,7 @@
         var filteredValue;
         // If the filtered value exists, use it.
         if (filteredAsHash.hasOwnProperty(item[DATE_INDEX])) {
-          filteredValue = Number(filteredAsHash[item[DATE_INDEX]][1])
+          filteredValue = Number(filteredAsHash[item[DATE_INDEX]][1]);
         } else {
           // If the filtered value does not exist but the unfiltered value for
           // the same date interval exists, then the value has just been filtered

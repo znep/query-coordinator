@@ -47,6 +47,21 @@
             translations: [ 'controls.map', 'controls.common.visualization' ]
         },
 
+        geoRows: {
+            name: 'geoRows',
+            domId: 'mapRenderType',
+            initFunction: 'socrataMap',
+            javascripts: [
+                'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.3', false,
+                { assets: 'shared-map' }
+            ],
+            stylesheets: [{ assets: 'render-images-bundle', hasImages: true },
+                { assets: 'display-map' },
+                { assets: 'rich-render-bundle' }],
+            scrollsInline: true,
+            translations: [ 'controls.map', 'controls.common.visualization' ]
+        },
+
         fatrow: {
             name: 'fatrow',
             domId: 'fatRowRenderType',

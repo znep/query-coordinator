@@ -69,10 +69,17 @@
     <%- end -%>
 
     <div id="description">
-      <div class="descriptionContent collapsed"><%= view_format_description_text(@view.description) || '(No description provided)'%></div>
-      <a href="#expand" class="descriptionExpander rightArrow" title="<%= t('core.expando.prompt') %>">
-        <span class="icon"><%= t('core.expando.expand') %></span>
-      </a>
+      <%- if @view.is_geospatial? && @view.geoParent -%>
+        <div class="descriptionContent collapsed">
+          <%= t('screens.ds.bar.based_on_layer_html',
+            name: @view.geoParent.name, href: view_url(@view.geoParent)) %>
+        </div>
+      <%- else -%>
+        <div class="descriptionContent collapsed"><%= view_format_description_text(@view.description) || '(No description provided)'%></div>
+        <a href="#expand" class="descriptionExpander rightArrow" title="<%= t('core.expando.prompt') %>">
+          <span class="icon"><%= t('core.expando.expand') %></span>
+        </a>
+      <%- end -%>
     </div>
 
   </div>

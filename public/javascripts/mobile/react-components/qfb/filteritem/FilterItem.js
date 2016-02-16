@@ -6,6 +6,7 @@ import FlannelUtils from '../../flannel/flannel';
 /* eslint-disable */
 import SocrataAutocompletefilter from '../autocompletefilter/react.socrata.autocompletefilter';
 import SocrataNumberfilter from '../numberfilter/react.socrata.numberfilter';
+import SocrataDatefilter from '../datefilter/react.socrata.datefilter';
 /* eslint-enable */
 
 class FilterItem extends React.Component {
@@ -96,7 +97,12 @@ class FilterItem extends React.Component {
           dataColumn={ this.props.filter.name }
           dataHandler={ this.handleFilterData } />;
         break;
-      case 'datetime':
+      case 'calendar_date':
+        filter = <SocrataDatefilter
+          key={ 'qf-' + this.props.filter.id }
+          componentId={ this.props.filter.id }
+          name={ this.props.filter.name }
+          dataHandler={ this.handleFilterData } />;
         break;
       default:
         break;

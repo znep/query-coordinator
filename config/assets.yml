@@ -89,6 +89,7 @@ javascripts:
     - public/javascripts/controls/editors/html-editor.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/upload-dialog.js
+    - public/javascripts/controls/editors/blob-editor.js
     - public/javascripts/controls/editors/document-editor.js
     - public/javascripts/controls/editors/photo-editor.js
   canvas:

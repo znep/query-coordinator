@@ -150,7 +150,7 @@
      * Private methods
      */
 
-    function _renderTemplate(element, axisLabels) {
+    function _renderTemplate($element, axisLabels) {
 
       function divWithClass(clsName) {
         return $(
@@ -342,71 +342,71 @@
       _chartScroll = chartScroll;
       _chartLabels = chartLabels;
 
-      element.append(chartContainer);
+      $element.append(chartContainer);
     }
 
-    function _attachEvents(element) {
-      element.on(
+    function _attachEvents($element) {
+      $element.on(
         'click',
         '.timeline-chart',
         showFlyout
       );
 
       if (_interactive) {
-        element.on(
+        $element.on(
           'mousedown mouseup',
           '.timeline-chart',
           leftMouseButtonStateHasChanged
         );
 
-        element.on(
+        $element.on(
           'mousedown',
           '.timeline-chart-clear-selection-label',
           handleClearSelectionLabelMousedownEvent
         );
       }
 
-      element.on(
+      $element.on(
         'touchmove',
         '.timeline-chart',
         showFlyout
       );
     }
 
-    function _unattachEvents(element) {
-      element.off(
+    function _unattachEvents($element) {
+      $element.off(
         'click',
         '.timeline-chart',
         showFlyout
       );
 
-      element.off(
+      $element.off(
         'touchmove',
         '.timeline-chart',
         showFlyout
       );
 
-      element.off(
+      $element.off(
         'mouseleave',
         '.timeline-chart',
         hideFlyout
       );
 
       if (_interactive) {
-        element.off(
+        $element.off(
           'mousedown mouseup',
           '.timeline-chart',
           leftMouseButtonStateHasChanged
         );
 
-        element.off(
+        $element.off(
           'mousedown',
           '.timeline-chart-clear-selection-label',
           handleClearSelectionLabelMousedownEvent
         );
       }
 
-      element.off(
+      $element.off(
         'mousemove',
         '.timeline-chart-clear-selection-label',
         showFlyout
@@ -451,7 +451,7 @@
         } else {
           return resolve(rules.other);
         }
-      };
+      }
 
       var payload = {
         title: null,
@@ -471,7 +471,7 @@
 
         return emitFlyoutEvent(payload);
 
-      } else if(_interactive && $target.is('.selection-marker')) {
+      } else if (_interactive && $target.is('.selection-marker')) {
 
         payload.title = 'Drag to change filter range';
         payload.element = $target.get(0);
@@ -642,14 +642,14 @@
       '.timeline-chart-clear-selection-label'
     ];
 
-    function _renderData(element, data, options) {
+    function _renderData($element, data, options) {
 
       _chartElement.width(options.width);
       _chartElement.height(options.height);
 
       // Cache dimensions and options
-      var chartWidth = element.width();
-      var chartHeight = element.height();
+      var chartWidth = $element.width();
+      var chartHeight = $element.height();
       var showAllLabels = options.showAllLabels;
       var showFiltered = options.showFiltered;
       var precision = options.precision;
@@ -684,8 +684,8 @@
       function renderChart() {
 
         var margin;
-        var chartWidth;
-        var chartHeight;
+        var $chartWidth;
+        var $chartHeight;
 
         if (cachedChartDimensions.width <= 0 || cachedChartDimensions.height <= 0) {
           return;
@@ -698,8 +698,8 @@
 
         // chartWidth and chartHeight do not include margins so that
         // we can use the margins to render axis ticks.
-        chartWidth = cachedChartDimensions.width - margin.LEFT - margin.RIGHT;
-        chartHeight = cachedChartDimensions.height - margin.TOP - margin.BOTTOM;
+        $chartWidth = cachedChartDimensions.width - margin.LEFT - margin.RIGHT;
+        $chartHeight = cachedChartDimensions.height - margin.TOP - margin.BOTTOM;
 
         // Set up the scales and the chart-specific stack and area functions.
         // Also create the root svg element to which the other d3 functions
@@ -714,7 +714,7 @@
           DateHelpers.decrementDateByHalfInterval(cachedChartData.minDate, datasetPrecision),
           DateHelpers.incrementDateByHalfInterval(cachedChartData.maxDate, datasetPrecision)
         ]).
-        range([0, chartWidth]);
+        range([0, $chartWidth]);
 
         // d3YScale is global to the directive so that we can
         // access it without having to re-render.
@@ -722,7 +722,7 @@
         scale.
         linear().
         domain([cachedChartData.minValue, cachedChartData.maxValue]).
-        range([chartHeight, 0]).
+        range([$chartHeight, 0]).
         clamp(true);
 
         // Render the x-axis.
@@ -731,8 +731,8 @@
         // Render the y-axis. Since we eschew d3's built-in y-axis for a
         // custom implementation this calls out to a separate function.
         renderChartYAxis(
-          chartWidth,
-          chartHeight
+          $chartWidth,
+          $chartHeight
         );
 
         // Render the unfiltered and filtered values of the chart.
@@ -741,9 +741,9 @@
       }
 
       // Render the chart
-      function cacheThenRender(chartDimensions, chartData, precision, rowDisplayUnit) {
+      function cacheThenRender(chartDimensions, chartData, $precision, rowDisplayUnit) {
 
-        if (_.isUndefined(chartData) || _.isNull(chartData) || _.isUndefined(precision)) {
+        if (_.isUndefined(chartData) || _.isNull(chartData) || _.isUndefined($precision)) {
           return;
         }
 
@@ -764,7 +764,7 @@
 
         // Update the cached value for dataset precision.
         // This is global to the directive, but only updated here.
-        datasetPrecision = precision;
+        datasetPrecision = $precision;
 
         // Cache the row display unit for use in the flyout (which
         // necessarily is handled outside the scope of this subscribeLatest
@@ -812,19 +812,19 @@
           var filtersOnThisColumn = options.
           vif.
           filters.
-          filter(function(filter) {
+          filter(function(thisFilter) {
             return (
-              (filter.columnName === options.vif.columnName) &&
-              (filter.function === 'timeRange')
+              (thisFilter.columnName === options.vif.columnName) &&
+              (thisFilter.function === 'timeRange')
             );
           });
 
           if (filtersOnThisColumn.length > 0) {
 
-            var filter = filtersOnThisColumn[0];
+            var $filter = filtersOnThisColumn[0];
 
-            selectionStartDate = new Date(filter.arguments.start);
-            selectionEndDate = new Date(filter.arguments.end);
+            selectionStartDate = new Date($filter.arguments.start);
+            selectionEndDate = new Date($filter.arguments.end);
             renderChartSelection();
             enterSelectedState();
 
@@ -1078,9 +1078,9 @@
         return xAxisLabelPrecision;
       }
 
-      function deriveXAxisLabelDatumStep(labels) {
+      function deriveXAxisLabelDatumStep($labels) {
 
-        var numberOfLabels = labels.length;
+        var numberOfLabels = $labels.length;
 
         // TIMELINE_CHART_REQUIRED_LABEL_WIDTH is the min
         // width required for labels with month ("Oct 15")
@@ -1107,12 +1107,12 @@
         return labelEveryN;
       }
 
-      function recordLabel(labels, startDate, endDate, pixelsPerDay, shouldLabel) {
-        labels.push({
+      function recordLabel($labels, startDate, endDate, $pixelsPerDay, shouldLabel) {
+        $labels.push({
           startDate: startDate,
           endDate: endDate,
           left: d3XScale(startDate) - halfVisualizedDatumWidth,
-          width: moment.duration(moment(endDate) - moment(startDate)).asDays() * pixelsPerDay,
+          width: moment.duration(moment(endDate) - moment(startDate)).asDays() * $pixelsPerDay,
           shouldLabel: shouldLabel
         });
       }
@@ -1488,7 +1488,7 @@
        * In the case that the selection ends at the end of the overall data
        * the last data point's value will be used instead.
        */
-      function deriveSelectionValues(chartData, minDate, maxDate) {
+      function deriveSelectionValues(chartData, $minDate, $maxDate) {
 
         var lastChartDatum = _.last(chartData.values);
         var prevOutOfBoundsDatum = { filtered: null };
@@ -1501,7 +1501,7 @@
 
         _.each(chartData.values, function(datum) {
 
-          if (datum.date >= minDate && datum.date <= maxDate) {
+          if (datum.date >= $minDate && datum.date <= $maxDate) {
             if (_.isNull(firstSelectionDatum)) {
               firstSelectionDatum = datum;
             }
@@ -1510,9 +1510,9 @@
             // value below!
             nextOutOfBoundsDatum = datum;
             selectionValues.push(datum);
-          } else if (datum.date < minDate) {
+          } else if (datum.date < $minDate) {
             prevOutOfBoundsDatum = datum;
-          } else if (datum.date > maxDate) {
+          } else if (datum.date > $maxDate) {
             return false;
           }
         });
@@ -1879,8 +1879,10 @@
       switch (datasetPrecision) {
         case 'YEAR':
           date.setMonth(0);
+          break;
         case 'MONTH':
           date.setDate(1);
+          break;
         default:
           date.setMilliseconds(0);
           date.setSeconds(0);

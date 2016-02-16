@@ -459,6 +459,16 @@ class ApplicationHelperTest < ActionView::TestCase
     assert (keywords - ApplicationHelper.class_variable_get(:@@default_meta_tags)).sort == %w(a b c d)
   end
 
+  def test_locale_url_prefix
+    I18n.stubs(:locale => :foo)
+    CurrentDomain.stubs(:default_locale => 'foo')
+    assert_equal locale_url_prefix, ''
+
+    I18n.stubs(:locale => :bar)
+    CurrentDomain.stubs(:default_locale => 'foo')
+    assert_equal locale_url_prefix, '/bar'
+  end
+
   private
 
   def asset_revision_key_regex

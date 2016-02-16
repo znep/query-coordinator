@@ -962,6 +962,7 @@ img.blist-table-option-icon {
     padding: 0 2px 2px 0;
     position: absolute;
   }
+  .type-blob a.tableButton,
   .type-document a.tableButton,
   .type-photo a.tableButton,
   .type-document_obsolete a.tableButton,
@@ -977,16 +978,19 @@ img.blist-table-option-icon {
     text-indent: -9999px;
     width: 16px;
   }
+  .type-blob a.tableButton.add,
   .type-document a.tableButton.add,
   .type-document_obsolete a.tableButton.add {
     background-position: (-2px) 0;
   }
+  .type-blob a.tableButton.replace,
   .type-document a.tableButton.replace,
   .type-photo a.tableButton.replace,
   .type-document_obsolete a.tableButton.replace,
   .type-photo_obsolete a.tableButton.replace {
     background-position: (-2px) -48px;
   }
+  .type-blob a.tableButton.remove,
   .type-document a.tableButton.remove,
   .type-photo a.tableButton.remove,
   .type-document_obsolete a.tableButton.remove,

@@ -1,10 +1,12 @@
+$fontIcomoonPath: "../../../webfonts" !default;
+
 @font-face {
   font-family: 'icomoon';
-  src:url('fonts/icomoon.eot?anwhd');
-  src:url('fonts/icomoon.eot?anwhd#iefix') format('embedded-opentype'),
-  url('fonts/icomoon.ttf?anwhd') format('truetype'),
-  url('fonts/icomoon.woff?anwhd') format('woff'),
-  url('fonts/icomoon.svg?anwhd#icomoon') format('svg');
+  src:url("#{$fontIcomoonPath}/icomoon.eot?anwhd");
+  src:url("#{$fontIcomoonPath}/icomoon.eot?anwhd#iefix") format('embedded-opentype'),
+  url("#{$fontIcomoonPath}/icomoon.ttf?anwhd") format('truetype'),
+  url("#{$fontIcomoonPath}/icomoon.woff?anwhd") format('woff'),
+  url("#{$fontIcomoonPath}/icomoon.svg?anwhd#icomoon") format('svg');
   font-weight: normal;
   font-style: normal;
 }

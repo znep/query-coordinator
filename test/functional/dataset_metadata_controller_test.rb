@@ -84,6 +84,17 @@ class DatasetMetadataControllerTest < ActionController::TestCase
     assert_equal(columns.count - 2, columns.count { |key, column| !column[:isSubcolumn] })
   end
 
+  test 'show does not error if core response for can_read_dataset_data? is nil' do
+    connection_stub = mock
+    connection_stub.stubs(:get_request).returns(nil, '')
+    CoreServer::Base.stubs(connection: connection_stub)
+    @controller.stubs(can_create_metadata?: true)
+    @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata, status: '200' })
+
+    get :show, id: 'four-four', format: 'json'
+    assert_response(403)
+  end
+
   test 'update returns 401 unless has necessary rights' do
     dataset_stub = mock
     dataset_stub.stubs(can_edit?: false)

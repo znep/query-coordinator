@@ -1,7 +1,8 @@
-;blist.namespace.fetch('blist.metrics');
+blist.namespace.fetch('blist.metrics');
 
-$(function()
-{
+$(function() {
+    'use strict';
+
     var t = function(str, props) { return $.t('screens.stats.' + str, props); };
     // Shared between tabular and non-tabular
     var viewSummary = {id: 'summaryViews', displayName: t('views'), summary: {
@@ -16,8 +17,7 @@ $(function()
                        verbPhraseSingular: t('download') }};
 
     var charts, summaries, details, topLists;
-    if (blist.dataset.viewType == 'tabular')
-    {
+    if (blist.dataset.viewType == 'tabular') {
         charts = [
             {
                 id: 'performanceChart',
@@ -83,23 +83,13 @@ $(function()
         ];
     } else if (blist.dataset.displayType == 'story') {
             summaries = [
-                {
-                  id: 'summaryVisits',
-                  displayName: t('browser_page_views'),
-                  summary: {
-                    plus: 'js-page-view',
-                    total: false,
-                    verbPhrase: t('pages_viewed'),
-                    verbPhraseSingular: t('page_viewed'),
-                    deltaPhrase: t('browser_page_views')
-                  }
-                }
-            ]
+              viewSummary
+            ];
             charts = [
                 {
                     id: 'performanceChart',
                     loading: blist.metrics.chartLoading,
-                    children: [ { text: t('browser_page_views'), series: [ { method: 'js-page-view' } ] } ]
+                    children: [ { text: t('views_loaded'), series: [ { method: 'view-loaded' } ] } ]
                 }
             ];
             topLists = [

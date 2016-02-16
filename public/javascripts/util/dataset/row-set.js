@@ -501,6 +501,59 @@ var RowSet = ServerModel.extend({
         }
     },
 
+    fileDataForFileId: function(fileId, forceResync) {
+      var rs = this;
+      var deferred = $.Deferred();
+      if (!forceResync && rs._dataset._fileDataForFileId[fileId]) {
+        return $.when(rs._dataset._fileDataForFileId[fileId]);
+      }
+
+      var blobColumnLookups = _(rs._dataset.realColumns).
+        filter(function(col) { return col.renderTypeName === 'blob'; }).
+        pluck('lookup').
+        value();
+
+      if (_.isUndefined(rs._fileIdToRowMapping)) {
+        rs._fileIdToRowMapping = {};
+      }
+
+      var fileIds = _(this._rows).
+        map(function(row) {
+          return _.map(blobColumnLookups, function(lookup) {
+            var fileId = _.get(row, 'data.' + lookup);
+            if (fileId) {
+              rs._fileIdToRowMapping[fileId] = { row: row, lookup: lookup };
+              return fileId;
+            }
+          });
+        }).
+        flatten().
+        compact().
+        concat([ fileId ]).
+        uniq().
+        value();
+
+      rs._dataset.resyncFileDataForFileIds(fileIds).
+        done(function(fileMetadata) {
+          _.each(fileMetadata, function(fileData) {
+            var rowsChanged = [];
+            if (rs._fileIdToRowMapping[fileData.id]) {
+              var mapping = rs._fileIdToRowMapping[fileData.id];
+              var row = mapping.row;
+              row.fileData = row.fileData || {};
+              row.fileData[mapping.lookup] = fileData;
+              rowsChanged.push(row);
+            }
+            if (rowsChanged.length > 0) {
+              rs.trigger('row_change', [rowsChanged, false]);
+            }
+          });
+          deferred.resolve(rs._dataset._fileDataForFileId[fileId]);
+        }).
+        fail(function() { deferred.reject(); });
+      return deferred.promise();
+    },
+
     addRow: function(newRow, idx)
     {
         if (!this._doesBelong(newRow)) { return; }
@@ -1270,6 +1323,10 @@ var RowSet = ServerModel.extend({
             rs._pendingRowReqs = [];
             _.each(pending, function(p)
             { rs.getRows(p.start, p.length, p.successCallback, p.errorCallback); });
+
+            if (rs._dataset.hasBlobColumns()) {
+              rs._dataset.resyncFileDataForFileIds();
+            }
         }; // end of rowsLoaded callback function
 
         if (len && !$.isBlank(start))

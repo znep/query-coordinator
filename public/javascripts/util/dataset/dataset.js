@@ -41,6 +41,8 @@ var Dataset = ServerModel.extend({
         _.each(v, function(curVal, key)
             { if (!_.isFunction(ds[key])) { ds[key] = curVal; } });
 
+        this._fileDataForFileId = {};
+
         if (!(blist.sharedDatasetCache[this.id] instanceof Dataset))
         { blist.sharedDatasetCache[this.id] = this; }
         if (!$.isBlank(this.resourceName) &&
@@ -945,6 +947,60 @@ var Dataset = ServerModel.extend({
                 error: errorCallback
             });
         });
+    },
+
+    blobColumns: function() {
+      return _.select(this.realColumns, function(col) {
+        return col.renderTypeName === 'blob';
+      });
+    },
+
+    hasBlobColumns: function() {
+      return _.isEmpty(this.blobColumns);
+    },
+
+    fileDataForFileId: function(id) {
+      if (id) {
+        return this._fileDataForFileId[id];
+      }
+    },
+
+    // File Data exists at the Dataset level, not the RowSet level.
+    // This does two things:
+    // (1) If no ids are provided, then it will ask the active RowSet for them.
+    // This will loop back here with the ids.
+    // (2) If ids are provided, it will go to core and ask for the file data.
+    resyncFileDataForFileIds: function(ids) {
+      var ds = this;
+      var getter = _.bind(this.fileDataForFileId, ds);
+
+      if (_.isUndefined(ids) || ids.length === 1) {
+        var deferred = $.Deferred();
+        ds._activeRowSet.fileDataForFileId((ids || [])[0], true).
+          done(function() { deferred.resolve(_.map(ids, getter)); });
+        return deferred.promise();
+      }
+
+      var fileIds = _.reject(ids, getter);
+
+      if (_.isEmpty(fileIds)) {
+        return $.when(_.map(ids, getter));
+      }
+
+      var promise = $.ajax({
+          url: '/views/{0}/files.json?method=getAll'.format(ds.id),
+          data: JSON.stringify({ fileIds: fileIds }),
+          contentType: 'application/json',
+          type: 'post',
+          dataType: 'json'
+          }).
+        done(function(responseData, success, xhr) {
+          _.each(responseData, function(data) {
+            ds._fileDataForFileId[data.id] = data;
+          });
+          return responseData;
+        });
+      return promise;
     },
 
     // Callback may be called multiple times with smaller batches of rows

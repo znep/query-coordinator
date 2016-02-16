@@ -633,6 +633,26 @@ blist.namespace.fetch('blist.datatypes');
         return rv;
     };
 
+    var renderBlob = function(value, column, plainText, inMenu, context) {
+      var ds = context.modelView,
+          fileData;
+      if (ds && (fileData = ds.fileDataForFileId(value))) {
+        if (/image\/\w+;/.test(fileData.contentType)) {
+          return renderPhoto.apply(null, arguments);
+        } else {
+          var documentObject = {
+            file_id: fileData.id,
+            size: fileData.size,
+            content_type: fileData.contentType, // Not 100% sure we should do this.
+            filename: fileData.filename // This doesn't come back. :(
+          };
+          return renderDocument(documentObject, column, plainText);
+        }
+      }
+
+      // Fallback when fileData isn't available.
+      return renderDocument.apply(null, arguments);
+    };
 
     /* Linking/customization types */
 
@@ -885,6 +905,8 @@ blist.namespace.fetch('blist.datatypes');
     };
 
     blist.datatypes.interfaceTypes = {
+        blob: { renderer: renderBlob },
+
         checkbox: { renderer: renderCheckbox },
 
         date: { renderer: renderDate },
@@ -1551,6 +1573,19 @@ blist.namespace.fetch('blist.datatypes');
 
 
         // Blobby types
+        blob: {
+            title: 'Blob',
+            cls: 'photo', // Because sometimes it is one! This is basically terrible.
+            group: groups.standard,
+            interfaceType: blist.datatypes.interfaceTypes.blob,
+
+            aggregates: nonNumericAggs,
+            createable: true,
+            deleteable: true,
+            filterConditions: blist.filter.groups.blob,
+            inlineType: true
+        },
+
         document: {
             title: 'Document',
             interfaceType: blist.datatypes.interfaceTypes.document,

@@ -36,7 +36,11 @@
           <%= @activity.file_name %>
         <% end %>
         <span class="file-name-to"><%= t("#{jobs_prefix}.show_page.to") %></span>
-        <%= link_to @activity.dataset.name, view_path(@activity.dataset) %>
+        <% if @activity.dataset.nil? %>
+          (<%= t("#{jobs_prefix}.index_page.deleted_dataset") %>)
+        <% else %>
+          <%= link_to @activity.dataset.name, view_path(@activity.dataset) %>
+        <% end %>
       </p>
     </div>
     <div style="position: absolute; right: 0; top: 2px;">

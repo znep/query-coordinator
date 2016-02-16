@@ -261,23 +261,20 @@ Frontend::Application.routes do
 
     # don't change the order of these two
     post '/view/vif.png', :controller => 'polaroid', :action => 'proxy_request'
-    post '/view/vif', :controller => 'angular', :action => 'view_vif', :app => 'dataCards'
+    post '/view/vif', :controller => 'data_lens', :action => 'view_vif', :app => 'dataCards'
 
-    scope :controller => 'angular', :constraints => Constraints::DataLensConstraint.new do
+    scope :controller => 'data_lens', :constraints => Constraints::DataLensConstraint.new do
       # NOTE: The dataCards angular app is capable of rendering multiple views (Pages and Dataset Metadata, for instance).
       # As of 9/24/2014, the angular app itself figures out what particular view to render.
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
       # reflect the changes.
       match '/view/:id', :action => 'data_lens', :app => 'dataCards', :as => :opendata_cards_view
-      # vv the old polaroid route
-      # match '/view/:id/:field_id', :action => 'data_lens', :app => 'dataCards'
-      match '/view/*angularRoute', :action => 'data_lens', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 
     scope do
-      # Angular endpoint for a standalone add card page that uses dataset metadata
+      # Data Lens endpoint for a standalone add card page that uses dataset metadata
       match '/component/visualization/add', {
-        :controller => 'angular',
+        :controller => 'data_lens',
         :action => 'visualization_add',
         :app => 'dataCards'
       }
@@ -307,7 +304,7 @@ Frontend::Application.routes do
       # Overloaded route matcher for SEO purposes.
       # The route structure is identical in each case; the handler for the route
       # is determined by the constraint that is satisfied.
-      get '', :to => 'angular#data_lens', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
+      get '', :to => 'data_lens#data_lens', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
 
       # Fallback: let DatasetsController#show handle it, since it was the original
       # catch-all for SEO-friendly routes (including charts, calendars, etc.).

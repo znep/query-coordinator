@@ -1,11 +1,19 @@
 module AdminHelper
-  def select_for_role(id, name = 'role', current_role = nil, css_class = '', include_none = true)
+  def select_for_role(id, options = {})
+    name = options.fetch('name', 'role')
+    current_role = options['current_role']
+    css_class = options.fetch('css_class', '')
+    include_none = options.fetch('include_none', true)
+    show_label = options.fetch('show_label', true)
+
     stories_roles = ['editor_stories', 'publisher_stories']
     stories_disabled = !FeatureFlags.derive(nil, request).stories_enabled
 
     roles = User.roles_list
 
-    out = %Q(<label for="#{id}">#{I18n.t('screens.admin.users.role')}</label>)
+    out = %Q(<label for="#{id}")
+    out << 'style="display: none"' unless show_label
+    out << %Q(>#{I18n.t('screens.admin.users.role')}</label>)
     out << %Q(<select class="#{css_class}" name="#{name}" id="#{id}">)
     out << %Q(<option value="0">#{t('screens.admin.users.roles.none')}</option>) if include_none
 

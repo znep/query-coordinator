@@ -269,6 +269,18 @@ describe Browse2Helper do
         }
       ])
     end
+
+    it 'works with catalog configuration limitTo facets' do
+      opts = @opts.dup
+      opts[:limitTo] = 'datasets'
+      result = helper.get_clear_facet_options(opts)
+      expect(result).to match_array([
+        {
+          :label => 'View Types > Datasets',
+          :url => '/browse?'
+        }
+      ])
+    end
   end
 
   describe '#flatten_facet_options' do

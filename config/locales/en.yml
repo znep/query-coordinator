@@ -604,7 +604,7 @@ en:
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
-          story_help: Coming soon
+          story_help: New
           unpublished: Unpublished Datasets
         view_types_singular_title: type
         view_types_title: View Types
@@ -1016,6 +1016,7 @@ en:
       timeline: Timeline
       treemap: Tree Map
     data_types:
+      blob: Blob
       calendar_date: Date & Time
       checkbox: Checkbox
       dataset_link: Dataset Link
@@ -1385,7 +1386,7 @@ en:
     chrome:
       header:
         links:
-          account: Account
+          account: Profile
           account_options: Account Options
           account_tooltip: View and make changes to your user account.
           configuration: Configuration
@@ -1639,7 +1640,7 @@ en:
       georegions:
         actions: Actions
         add_new: Add new
-        choose_a_dataset: Choose a new geospatial Dataset
+        choose_a_dataset: Choose a Layer
         configure_boundary:
           boundary_geometry_label_field_error: The boundary must have a shape label.
           boundary_geometry_label_page_error: "Unable to save: the boundary must have a shape label."
@@ -1741,6 +1742,7 @@ en:
           started: Started
           status: Status
           showing_most_recent: Showing the most recent %{limit} jobs
+          showing_all_so_far: Showing all jobs which have been recorded so far
           title: Data Jobs
           deleted_dataset: Dataset has been deleted
           deleted_user: User has been deleted
@@ -1849,6 +1851,9 @@ en:
             upsert_already_in_progress_by_someone_else:
               title: Upsert already in progress
               description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
+            bad_response_from_server:
+              title: Something went wrong
+              description: We were not able to import your data because of an unexpected error. Please try again later.
             # Sent by Imports2
             unsupported_import_type:
               title: Unsupported import method
@@ -2112,6 +2117,7 @@ en:
       bar:
         api_unsavable: API views cannot be modified
         based_on_html: Based on <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_layer_html: A layer from the geospatial dataset <a href="%{href}" class="parentName">%{name}</a>
         based_on_parent_html: Based on <a class="parentName"></a>
         based_on_private_view: a private view.
         based_on_working_copy_html: Based on the working copy of <a class="revertLink currentViewName" href="#revert">%{name}</a>

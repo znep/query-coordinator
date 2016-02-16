@@ -15,10 +15,6 @@ socrata.visualizations.mobileFeatureMap = function(values, $target) {
    * Set up the plugin.
    */
 
-  var DOMAIN = values.domain;
-  var DATASET_UID = values.uid;
-  var COLUMN_NAME = values.columnName;
-
   var flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
   socrata.visualizations.RowInspector.setup();
 
@@ -27,7 +23,7 @@ socrata.visualizations.mobileFeatureMap = function(values, $target) {
       'columnName': null,
       'function': 'count'
     },
-    'columnName': COLUMN_NAME,
+    'columnName': values.columnName,
     'configuration': {
       // If the value of `datasetMetadata` is falsey then the feature map
       // plugin will make its own request for dataset metadata.
@@ -68,8 +64,8 @@ socrata.visualizations.mobileFeatureMap = function(values, $target) {
       'useOriginHost': false
     },
     'createdAt': '2014-01-01T00:00:00',
-    'datasetUid': DATASET_UID,
-    'domain': DOMAIN,
+    'datasetUid': values.datasetUid,
+    'domain': values.domain,
     'filters': [],
     'format': {
       'type': 'visualization_interchange_format',

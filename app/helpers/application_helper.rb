@@ -16,15 +16,14 @@ module ApplicationHelper
   alias :t :translate
 
   def view_url(view)
-    locale_part = I18n.locale.to_s == CurrentDomain.default_locale ? '' : "/#{I18n.locale.to_s}"
     if view.is_api?
       # use the view's federation resolution but throw away the rest for the resource name instead.
       developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
     elsif view.data_lens? || view.standalone_visualization?
       if view.federated?
-        "//#{view.domainCName}#{locale_part}/view/#{view.id}"
+        "//#{view.domainCName}#{locale_url_prefix}/view/#{view.id}"
       else
-        "#{locale_part}/view/#{view.id}"
+        "#{locale_url_prefix}/view/#{view.id}"
       end
     elsif view.story?
       "/stories/s/#{view.id}"
@@ -808,6 +807,13 @@ module ApplicationHelper
     return 'Unavailable' unless request.present?
 
     request.headers['X-Socrata-RequestId'] || request.headers['action_dispatch.request_id']
+  end
+
+  # a snippet that can be included before any non-localized url
+  # to provide a localized url without unnecessary path segments
+  # in the case of the default locale
+  def locale_url_prefix
+    I18n.locale.to_s == CurrentDomain.default_locale ? '' : "/#{I18n.locale}"
   end
 
 end

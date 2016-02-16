@@ -77,21 +77,16 @@ var SoqlHelpers = (function(_, utils) {
         break;
       case 'binaryComputedGeoregionOperator':
         return _binaryComputedGeoregionOperatorWhereClauseComponent(filter);
-        break;
       case 'isNull':
         return _isNullWhereClauseComponent(filter);
-        break;
       case 'timeRange':
         return _timeRangeWhereClauseComponent(filter);
-        break;
       case 'valueRange':
         return _valueRangeWhereClauseComponent(filter);
-        break;
       default:
         throw new Error(
           'Invalid filter function: `{0}`.'.format(filter.function)
         );
-        break;
     }
   }
 
@@ -123,7 +118,7 @@ var SoqlHelpers = (function(_, utils) {
   }
 
   function _soqlEncodeString(value) {
-    return "'{0}'".format(value.replace(/'/g, "''"))
+    return "'{0}'".format(value.replace(/'/g, "''")); // eslint-disable-line quotes
   }
 
   function _soqlEncodeDate(value) {
@@ -243,11 +238,23 @@ var SoqlHelpers = (function(_, utils) {
       'arguments.end'
     );
 
-    return '{0} >= {1} AND {0} < {2}'.format(
-      _soqlEncodeColumnName(filter.columnName),
-      _soqlEncodeValue(filter.arguments.start),
-      _soqlEncodeValue(filter.arguments.end)
-    );
+    if (filter.arguments.start && filter.arguments.end) {
+      return '{0} >= {1} AND {0} < {2}'.format(
+        _soqlEncodeColumnName(filter.columnName),
+        _soqlEncodeValue(filter.arguments.start),
+        _soqlEncodeValue(filter.arguments.end)
+      );
+    } else if (filter.arguments.start) {
+      return '{0} >= {1}'.format(
+        _soqlEncodeColumnName(filter.columnName),
+        _soqlEncodeValue(filter.arguments.start)
+      );
+    } else if (filter.arguments.end) {
+      return '{0} < {1}'.format(
+        _soqlEncodeColumnName(filter.columnName),
+        _soqlEncodeValue(filter.arguments.end)
+      );
+    }
   }
 
   function _valueRangeWhereClauseComponent(filter) {

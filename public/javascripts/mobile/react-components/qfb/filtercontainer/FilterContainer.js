@@ -1,12 +1,8 @@
-/* global Filter */
-
-/* eslint-disable */
 import React from 'react';
 import $ from 'jquery';
 import './filtercontainer.scss';
-import FilterItem from '../filteritem/FilterItem';
+import FilterItem from '../filteritem/FilterItem'; // eslint-disable-line no-unused-vars
 import FlannelUtils from '../../flannel/flannel';
-/* eslint-enable */
 
 class FilterContainer extends React.Component {
 
@@ -91,37 +87,45 @@ class FilterContainer extends React.Component {
   }
 
   prettifyFilterForDLMobile(filters) {
-    var modifiedFilters = filters.map(function(filter, i) {
+    var modifiedFilters = filters.map(function(filter) {
       var filterObj = {};
 
-      switch(filter.type) {
+      switch (filter.type) {
         case 'int':
-          filterObj['columnName'] = filter.name;
-          filterObj['function'] = 'valueRange';
-          filterObj['arguments'] = {
+          filterObj.columnName = filter.name;
+          filterObj.function = 'valueRange';// eslint-disable-line dot-notation
+          filterObj.arguments = {
             'start': filter.data.val1,
             'end': filter.data.val2
           };
           return filterObj;
         case 'string':
-          filterObj['columnName'] = filter.name;
-          filterObj['function'] = 'binaryOperator';
+          filterObj.columnName = filter.name;
+          filterObj.function = 'binaryOperator'; // eslint-disable-line dot-notation
 
-          if(filter.data.length > 1) {
+          if (filter.data.length > 1) {
             var aArguments = [];
-            for(var i = 0; i < filter.data.length; i++) {
+            for (var i = 0; i < filter.data.length; i++) {
               aArguments.push({
                 operator: '=',
                 operand: filter.data[i].text
               });
             }
-            filterObj['arguments'] = aArguments;
+            filterObj.arguments = aArguments;
           } else {
-            filterObj['arguments'] = {
+            filterObj.arguments = {
               operator: '=',
               operand: filter.data[0].text
-            }
+            };
           }
+          return filterObj;
+        case 'calendar_date':
+          filterObj.columnName = filter.name;
+          filterObj.function = 'timeRange'; // eslint-disable-line dot-notation
+          filterObj.arguments = {
+            'start': filter.data.val1,
+            'end': filter.data.val2
+          };
           return filterObj;
         default:
           break;

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class AngularControllerTest < ActionController::TestCase
+class DataLensControllerTest < ActionController::TestCase
 
   def setup
     init_core_session
@@ -134,7 +134,7 @@ class AngularControllerTest < ActionController::TestCase
   end
 
   test 'generic & seo datalens paths route here' do
-    base_path_params = {controller: 'angular', action: 'data_lens', app: 'dataCards'}
+    base_path_params = {controller: 'data_lens', action: 'data_lens', app: 'dataCards'}
     View.any_instance.stubs(
       :data_lens? => true
     )
@@ -339,7 +339,7 @@ class AngularControllerTest < ActionController::TestCase
 
     should 'redirect to the 404 page if the dataset is not found' do
       PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
-      AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::DatasetMetadataNotFound)
+      DataLensController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::DatasetMetadataNotFound)
       DataLensManager.any_instance.stubs(:fetch).returns({})
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
@@ -369,7 +369,7 @@ class AngularControllerTest < ActionController::TestCase
 
       # note that this is not parsed json!
       View.any_instance.stubs(:find_related_as_json => '[]')
-      AngularController.stubs(
+      DataLensController.stubs(
         :find_all_uids => {
           :nbe => 'test-data',
           :all => [ 'test-data', 'obev-rson' ]

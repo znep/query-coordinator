@@ -97,10 +97,12 @@ class View < Model
     false
   end
 
-  # This method addresses the fact that NBE geospatial datasets no longer have an OBE component, so this
-  # method answers the question of whether or not an NBE dataset is geospatial.
+  # NBE geospatial datasets no longer have an OBE component, so this method
+  # answers the question of whether or not an NBE dataset is geospatial.
   def is_geospatial?
-    viewType == 'geo' && displayType == 'map' && new_backend?
+    is_map = viewType == 'geo' && displayType == 'map'
+    is_layer = viewType == 'tabular' && displayType == 'geoRows'
+    new_backend? && (is_map || is_layer)
   end
 
   def nbe_view

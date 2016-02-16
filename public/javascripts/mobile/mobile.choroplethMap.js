@@ -4,16 +4,6 @@
   socrata.visualizations.mobileChoroplethMap = function(values, $target) {
 
     /**
-     * Sample data!
-     */
-
-    // var DOMAIN = values.domain;
-    // var DATASET_UID = values.uid;
-    var DATASET_UID = '52my-2pak';
-    var DOMAIN = 'dataspace.demo.socrata.com';
-    var GEOJSON_UID = 'snuk-a5kv';
-
-    /**
      * Render things!
      */
 
@@ -23,14 +13,11 @@
       'aggregation': {
         // TODO: implement this!
       },
-      'columnName': 'ward',
+      'columnName': values.columnName,
       'configuration': {
         'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
         'baseLayerOpacity': 0.8,
-        'defaultExtent' : {
-          'southwest': [41.45919537950706, -90.24169921875],
-          'northeast': [42.20817645934742, -85.242919921875]
-        },
+        'defaultExtent' : values.map_extent,
         'legend': {
           'type': 'continuous'
         },
@@ -56,12 +43,12 @@
           },
           'geometryLabel': 'ward',
           'primaryKey': '_feature_id',
-          'uid': GEOJSON_UID
+          'uid': values.geojsonUid
         }
       },
-      'datasetUid': DATASET_UID,
+      'datasetUid': values.datasetUid,
       'description': 'An example choropleth',
-      'domain': DOMAIN,
+      'domain': values.domain,
       'filters': [],
       'format': {
         'type': 'visualization_interchange_format',

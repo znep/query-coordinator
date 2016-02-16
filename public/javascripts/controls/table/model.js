@@ -456,10 +456,7 @@ blist.namespace.fetch('blist.data');
                 if ($.isBlank(childRow))
                 {
                     this.view.setRowValue(value, row.id, column.id, !isValid);
-                    if (row.lockedFromEdit) {
-                      console.error('you cannot edit this row because we don\'t know its id.');
-                      this.view.trigger('grid_error_message', [row, column, $.t('controls.grid.errors.row_locked_for_edit')]);
-                    } else if (row.valid) {
+                    if (row.valid) {
                       this.view.saveRow(row.id);
                     }
                 }
@@ -469,12 +466,6 @@ blist.namespace.fetch('blist.data');
                         !isValid, parRow.id, parCol.id);
                     this.view.saveRow(childRow.id, parRow.id, parCol.id);
                 }
-            }
-
-            // Because NBE does not inform us of the new row id, we need to prevent any
-            // further edits to this row.
-            if (isCreate && !this.view.rowsNeedPK && this.view.newBackend) {
-              row.lockedFromEdit = true;
             }
 
             return row;

@@ -50,29 +50,50 @@
 
     <%- if @view.is_href? -%>
       <h2><%= t('screens.edit_metadata.external_datasets') %></h2>
-      <%- if @view.metadata && @view.metadata.accessPoints -%>
-        <%- @view.metadata.accessPoints.each do |key, value| -%>
-          <%- next if key.end_with?('Size') -%>
-          <div class="line clearfix existingExternalSource externalSource">
-            <label for="external_sources[][name]" class="required"><%= key.upcase %></label>
-            <input type="text" name="external_sources[][name]" value="<%= value %>" class="textPrompt url required"/>
-            <label for="external_sources[][name]" class="fileTypeLabel"><%= t('screens.edit_metadata.file_type') %></label>
-            <%= text_field_tag 'external_sources[][extension]', key,
-                  :class => 'extensionField textPrompt', :title => t('screens.edit_metadata.optional') %>
-            <%- unless params[:no_js].present? -%>
-              <a href="#remove" class="removeExternalSource button"><%= t('screens.edit_metadata.remove') %></a>
-            <%- end -%>
-          </div>
-        <%- end -%>
+      <%- if @view.allAccessPoints.present? -%>
+        <div class="externalDatasetBox">
+          <%- @view.allAccessPoints.each_with_index do |entry, i| -%>
+            <div class="line clearfix externalSource">
+              <%# title %>
+              <div class="line clearfix">
+                <label for="external_sources[][title]"><%= t('controls.nominate.title') %></label>
+                <%= text_field_tag('external_sources[][title]', entry['title'], :title => t('screens.edit_metadata.dataset_title_prompt'), :class => "textPrompt") %>
+              </div>
+              <%# description %>
+              <div class="line clearfix">
+                <label for="external_sources[][description]"><%= t('controls.nominate.description') %></label>
+                <%= text_area_tag("external_sources[][description]", entry['description'],
+                  :title => t('screens.edit_metadata.brief_description_prompt'),
+                  :class => 'textPrompt') %>
+              </div>
+              <%# links %>
+              <div class="externalLinkBox">
+                <%- entry['urls'].each do |key, value| -%>
+                  <div class="line clearfix externalLink">
+                    <label for="external_sources[][urls][][url]" class="required"><%= I18n.t('screens.edit_metadata.url') %></label>
+                    <input type="text" name="external_sources[][urls][][url]" value="<%= value %>" class="textPrompt url required"/>
+                    <label for="external_sources[][urls][][extension]" class="fileTypeLabel"><%= t('screens.edit_metadata.file_type') %></label>
+                    <%= text_field_tag('external_sources[][urls][][extension]', key,
+                      :class => 'extensionField textPrompt', :title => t('screens.edit_metadata.optional')) %>
+                    <%- unless params[:no_js].present? -%>
+                      <a href="#remove" class="removeExternalLink addRemove button"><%= t('screens.edit_metadata.remove_link') %></a>
+                      <a href="#add_link" class="addExternalLink addRemove button"><%= t('screens.edit_metadata.add_link') %></a>
+                    <%- end -%>
+                  </div>
+                <%- end -%>
+                <%- unless params[:no_js].present? -%>
+                  <a href="#remove" class="removeExternalSource button"><%= t('screens.edit_metadata.remove') %></a>
+                <%- end -%>
+              </div>
+            </div>
+          <%- end -%>
+        </div>
       <%- end -%>
-      <div class="line clearfix newExternalSource externalSource">
-        <label><%= t('screens.edit_metadata.additional_source') %></label>
-        <%= text_field_tag('external_sources[][name]', '', :class => 'textPrompt url',
-                           :title => t('screens.edit_metadata.alternative_access_prompt')) %>
-        <label for="external_sources[][name]" class="fileTypeLabel"><%= t('screens.edit_metadata.file_type') %></label>
-        <%= text_field_tag 'external_sources[][extension]', '',
-              :class => 'extensionField textPrompt', :title => t('screens.edit_metadata.optional') %>
-      </div>
+      <%- unless params[:no_js].present? -%>
+        <div class="line clearfix">
+          <a href="#add_source" class="addExternalSource button"><%= t('screens.edit_metadata.add_source') %></a>
+        </div>
+      <%- end -%>
     <%- end -%>
 
     <%= render :partial => 'edit_license' %>

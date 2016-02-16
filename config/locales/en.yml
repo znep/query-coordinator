@@ -2931,6 +2931,8 @@ en:
       unable_to_find_dataset_page: We were unable to find a Data Lens page for this dataset.
     edit_metadata:
       about: About
+      add_link: Add link
+      add_source: Add source
       additional_source: Additional Source
       alternative_access_prompt: Enter an alternate access point for this dataset
       api_endpoint: API Endpoint
@@ -2973,6 +2975,8 @@ en:
       licensing_attr: Licensing & Attribution
       list: List
       metadata_help: This field has been marked private by your organization and is not publicly viewable
+      missing_external_dataset: Please supply at least one external dataset.
+      multiple_extensions: More than one of the same extension for the same endpoint is not allowed.
       new_attachment: New Attachment
       none: "(none)"
       northwest_latitude: Northwest Latitude
@@ -2980,6 +2984,7 @@ en:
       optional: Optional
       private_help: This field has been marked private by your organization and is not publicly viewable
       remove_image: Remove Image
+      remove_link: Remove link
       required_field: Required Field
       resource_name: Resource Name
       resource_name_prompt: Enter a resource name
@@ -3008,6 +3013,7 @@ en:
       upload_help: This image will be cropped into a square
       upload_image: Upload Image
       upload_new_attachment: Upload New Attachment
+      url: URL
     forgot_password:
       already_authenticated: 'Unable to reset password: you are already logged in.'
       failed: There was a problem submitting your password reset request. Please try again.

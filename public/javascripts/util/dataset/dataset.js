@@ -956,7 +956,7 @@ var Dataset = ServerModel.extend({
     },
 
     hasBlobColumns: function() {
-      return _.isEmpty(this.blobColumns);
+      return !_.isEmpty(this.blobColumns());
     },
 
     fileDataForFileId: function(id) {

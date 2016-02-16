@@ -1,5 +1,77 @@
 <div class="feature-map-container"></div>
 <div class="feature-map-legend"></div>
+<div class="feature-map-debug-controls" ng-show="debugModeEnabled">
+  <div class="debug-control row">
+    <span class="span6">Point color (R)</span>
+    <span class="span6">
+      <input ng-model="pointColorRed" type="range" min="0" max="255" step="1">
+      <span ng-bind="pointColorRed"></span>
+    </span>
+  </div>
+  <div class="debug-control row">
+    <span class="span6">Point color (G)</span>
+    <span class="span6">
+      <input ng-model="pointColorGreen" type="range" min="0" max="255" step="1">
+      <span ng-bind="pointColorGreen"></span>
+    </span>
+  </div>
+  <div class="debug-control row">
+    <span class="span6">Point color (B)</span>
+    <span class="span6">
+      <input ng-model="pointColorBlue" type="range" min="0" max="255" step="1">
+      <span ng-bind="pointColorBlue"></span>
+    </span>
+  </div>
+  <div class="debug-control row">
+    <span class="span6">Point size</span>
+    <span class="span6">
+      <input ng-model="pointSize" type="range" min="0.1" max="10.0" step="0.1">
+      <span ng-bind="pointSize"></span>
+    </span>
+  </div>
+  <div class="debug-control row">
+    <span class="span6">Stroke size</span>
+    <span class="span6">
+      <input ng-model="strokeSize" type="range" min="0.0" max="2.0" step="0.1">
+      <span ng-bind="strokeSize"></span>
+    </span>
+  </div>
+  <div class="debug-control row">
+    <span class="span6">Point alpha</span>
+    <span class="span6">
+      <input ng-model="pointAlpha" type="range" min="0.0" max="1.0" step="0.1">
+      <span ng-bind="pointAlpha"></span>
+    </span>
+  </div>
+  <div class="debug-control row">
+    <span class="span6">Stroke alpha</span>
+    <span class="span6">
+      <input ng-model="strokeAlpha" type="range" min="0.0" max="1.0" step="0.1">
+      <span ng-bind="strokeAlpha"></span>
+    </span>
+  </div>
+  <div class="debug-control row">
+    <span class="span6">Blend mode</span>
+    <span class="span6">
+      <select ng-model="blendMode">
+        <option value="source-over">Normal</option>
+        <option value="multiply">Multiply</option>
+        <option value="screen">Screen</option>
+        <option value="overlay">Overlay</option>
+        <option value="lighten">Lighten</option>
+        <option value="darken">Darken</option>
+        <option value="color-dodge">Color dodge</option>
+        <option value="color-burn">Color burn</option>
+        <option value="hard-light">Hard light</option>
+        <option value="soft-light">Soft light</option>
+        <option value="hue">Hue</option>
+        <option value="saturation">Saturation</option>
+        <option value="color">Color</option>
+        <option value="luminosity">Luminosity</option>
+      </select>
+    </span>
+  </div>
+</div>
 <div ng-if="showPanZoomDisabledWarning" class="pan-zoom-disabled-warning">
   <div class="icon-warning pan-zoom-disabled-warning-icon"></div>
 </div>

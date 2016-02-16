@@ -51,6 +51,42 @@
     ul {
       li {
         display: inline-block;
+        .accessPointTitle {
+          display: none;
+        }
+      }
+    }
+
+    &.multiAccessPoints {
+      clear: both;
+      float: none;
+      text-align: initial;
+      h5 {
+        display: none;
+      }
+      ul {
+        clear: both;
+        margin: 2em 0;
+        padding: 1em;
+        li {
+          clear: both;
+          overflow: hidden;
+          display: block;
+          margin: 1em 0;
+
+          .accessPointTitle {
+            display: initial;
+            float: left;
+            font-size: 11pt;
+            line-height: 2em;
+            min-width: 12em;
+            margin-right: 1em;
+          }
+
+          .accessPointButtons {
+            float: left;
+          }
+        }
       }
     }
   }

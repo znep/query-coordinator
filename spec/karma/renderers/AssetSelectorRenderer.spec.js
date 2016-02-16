@@ -798,35 +798,57 @@ describe('AssetSelectorRenderer', function() {
       var documentId = 9876;
       var imgEl;
 
-      beforeEach(function() {
-        storyteller.dispatcher.dispatch({
-          action: Actions.FILE_UPLOAD_DONE,
-          url: imageUrl,
-          documentId: documentId
-        });
-        imgEl = container.find('.asset-selector-preview-image');
-      });
+      ['IMAGE', 'HERO', 'AUTHOR'].map(function(provider) {
+        describe('while editing component type: {0}'.format(provider), function() {
+          beforeEach(function() {
+            var blockId;
 
-      it('renders a preview image from the payload URL', function() {
-        assert.equal(imgEl.attr('src'), imageUrl);
-      });
+            if (provider === 'IMAGE') {
+              blockId = standardMocks.imageBlockId;
+            } else if (provider === 'HERO') {
+              blockId = standardMocks.heroBlockId;
+            } else if (provider === 'AUTHOR') {
+              blockId = standardMocks.authorBlockId;
+            }
 
-      describe('the modal', function() {
-        it('has a close button', function() {
-          assert.equal(container.find('.modal-close-btn').length, 1);
-        });
+            storyteller.dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
+              blockId: blockId,
+              componentIndex: 0
+            });
+          });
 
-        it('has a button that goes back to the choose image upload step', function() {
-          assert.lengthOf(
-            container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
-            1
-          );
-        });
+          beforeEach(function() {
+            storyteller.dispatcher.dispatch({
+              action: Actions.FILE_UPLOAD_DONE,
+              url: imageUrl,
+              documentId: documentId
+            });
+            imgEl = container.find('.asset-selector-preview-image');
+          });
 
-        it('has an enabled insert button', function() {
-          assert.isFalse(
-            container.find('.btn-apply').prop('disabled')
-          );
+          it('renders a preview image from the payload URL', function() {
+            assert.equal(imgEl.attr('src'), imageUrl);
+          });
+
+          describe('the modal', function() {
+            it('has a close button', function() {
+              assert.equal(container.find('.modal-close-btn').length, 1);
+            });
+
+            it('has a button that goes back to the choose image upload step', function() {
+              assert.lengthOf(
+                container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
+                1
+              );
+            });
+
+            it('has an enabled insert button', function() {
+              assert.isFalse(
+                container.find('.btn-apply').prop('disabled')
+              );
+            });
+          });
         });
       });
     });

@@ -31,7 +31,7 @@ describe('componentHTML jQuery plugin', function() {
     assert.throws(function() { $component.componentHTML({type: 'invalid', value: 'any'}); });
   });
 
-  describe('given a valid component type and value', function() {
+  describe('given a valid component type and value, and no options', function() {
     var editorId;
     var initialValue = 'testing';
     var componentData = {type: 'html', value: initialValue};
@@ -59,6 +59,10 @@ describe('componentHTML jQuery plugin', function() {
       sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.applyThemeClassSpy, theme);
     });
 
+    it('does not call addContentClass during editor creation', function() {
+      sinon.assert.notCalled(storyteller.RichTextEditorManagerMocker.addContentClass);
+    });
+
     describe('that is then destroyed', function() {
       it('should call deleteEditor on richTextEditorManager', function() {
         sinon.assert.notCalled(storyteller.RichTextEditorManagerMocker.deleteEditorSpy);
@@ -81,4 +85,23 @@ describe('componentHTML jQuery plugin', function() {
       });
     });
   });
+
+  describe('given a valid component type and value, and options containing extraContentClass', function() {
+    var initialValue = 'testing';
+    var componentData = {type: 'html', value: initialValue};
+    var theme = 'classic';
+    var options = {
+      extraContentClass: 'the-extra-content-class'
+    };
+
+    beforeEach(function() {
+      storyteller.RichTextEditorManagerMocker.reset();
+      $component = $component.componentHTML(componentData, theme, options);
+    });
+
+    it('does not call addContentClass during editor creation', function() {
+      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.addContentClass, 'the-extra-content-class');
+    });
+  });
+
 });

@@ -3,6 +3,12 @@ describe('FileUploadStore', function() {
 
   var storyteller = window.socrata.storyteller;
 
+  beforeEach(removeStandardMocks);
+  beforeEach(function() {
+    storyteller.dispatcher = new Flux.Dispatcher();
+    storyteller.fileUploadStore = new storyteller.FileUploadStore();
+  });
+
   describe('file upload progress accessors', function() {
     describe('when in an unintialized state', function() {
       describe('.getFileUploadProgress()', function() {

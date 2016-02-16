@@ -326,8 +326,12 @@ $th-headings: (
   .component-media {
     margin-top: $large-top-margin;
   }
-
 } // End Large Size
+
+// Sometimes we want to make the top of typset text flush with the top of the container (i.e. author block).
+.typeset.remove-top-margin > :first-child {
+  margin-top: 0 !important;
+}
 
 // Media top margins also apply to non-typeset elements
 .component-media {

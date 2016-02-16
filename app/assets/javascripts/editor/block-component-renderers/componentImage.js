@@ -27,6 +27,7 @@
 
     var imgSrc;
     var documentId;
+    var documentIdAsStringOrNull;
     var altAttribute;
     var $imgElement = $element.find('img');
 
@@ -35,10 +36,14 @@
     utils.assertHasProperty(componentData.value, 'documentId');
 
     imgSrc = componentData.value.url;
-    documentId = componentData.value.documentId;
+    documentId = componentData.value.documentId; // May be null or undefined.
+    documentIdAsStringOrNull = _.isNull(documentId) || _.isUndefined(documentId) ? null : String(documentId);
     altAttribute = componentData.value.alt;
 
-    if ($imgElement.attr('src') !== imgSrc || $imgElement.attr('data-document-id') !== String(documentId)) {
+    if (
+      $imgElement.attr('src') !== imgSrc ||
+      $imgElement[0].getAttribute('data-document-id') !== documentIdAsStringOrNull
+    ) {
       _informHeightChanges($imgElement);
 
       $imgElement.attr('src', imgSrc);

@@ -27,6 +27,8 @@ function applyStandardMocks() {
   var classicVizBlockId;
   var vifBlockId;
   var youtubeBlockId;
+  var authorBlockId;
+  var heroBlockId;
   var storyteller = window.socrata.storyteller;
 
   // If you mess with the blocks below, make sure to update
@@ -137,6 +139,27 @@ function applyStandardMocks() {
             'url': 'https://www.youtube.com/watch?v=S7vuwrb2v0M'
           }
         }]
+      }),
+      generateBlockData({
+        components: [{
+          'type': 'author',
+          'value': {
+            'image': {
+              'url': 'https://sa-storyteller-dev-us-west-2-staging.s3.amazonaws.com/documents/uploads/000/000/005/original/q3e87zR.gif?1447210253',
+              'documentId': 5
+            },
+            'blurb': 'foobar'
+          }
+        }]
+      }),
+      generateBlockData({
+        components: [{
+            'type': 'hero',
+            'value': {
+              'url': 'https://sa-storyteller-dev-us-west-2-staging.s3.amazonaws.com/documents/uploads/000/000/005/original/q3e87zR.gif?1447210253',
+              'documentId': 5
+            }
+        }]
       })
     ]
   });
@@ -215,6 +238,8 @@ function applyStandardMocks() {
   classicVizBlockId = blockIds[4];
   vifBlockId = blockIds[5];
   youtubeBlockId = blockIds[6];
+  authorBlockId = blockIds[7];
+  heroBlockId = blockIds[8];
 
   window.standardMocks = {
     remove: removeStandardMocks,
@@ -233,6 +258,8 @@ function applyStandardMocks() {
     classicVizBlockId: classicVizBlockId,
     vifBlockId: vifBlockId,
     youtubeBlockId: youtubeBlockId,
+    authorBlockId: authorBlockId,
+    heroBlockId: heroBlockId,
     validBlockId: textBlockId,
 
     firstBlockId: assetSelectorBlockId,

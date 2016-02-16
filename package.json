@@ -78,6 +78,7 @@
       "afterEach": true,
       "sinon": true,
       "standardMocks": true,
+      "removeStandardMocks": true,
       "testDom": true,
       "generateStoryData": true,
       "generateBlockData": true

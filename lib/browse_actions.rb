@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'set'
+
 module BrowseActions
   include ActionView::Helpers::TranslationHelper
   include ApplicationHelper
@@ -119,25 +121,15 @@ module BrowseActions
     }
   end
 
-  def federations_hash
-    @federations_hash ||= Federation.find.each_with_object({}) do |f, hash|
-      next unless
-        f.targetDomainCName == CurrentDomain.cname &&
-        f.lensName.empty? &&
-        f.acceptedUserId.present?
-
-      hash[f.sourceDomainId] = f.sourceDomainCName
-    end
-  end
-
   def federated_facet
-    all_feds = federations_hash.sort_by(&:last).map do |f_id, f_cname|
+    all_feds = Federation.federations.sort_by(&:text).map do |fed|
+      cname = fed.sourceDomainCName
       {
-        text: f_cname,
-        value: f_id.to_s,
+        text: cname,
+        value: fed.id.to_s, # must be string or view doesn't notice it
         icon: {
           type: 'static',
-          href: "/api/domains/#{f_cname}/icons/smallIcon"
+          href: "/api/domains/#{cname}/icons/smallIcon"
         }
       }
     end
@@ -146,7 +138,7 @@ module BrowseActions
 
     all_feds.unshift(
       text: 'This site only',
-      value: CurrentDomain.domain.id.to_s,
+      value: CurrentDomain.domain.id.to_s, # must be string or view won't notice
       icon: {
         type: 'static',
         href: "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"
@@ -310,21 +302,27 @@ module BrowseActions
       end
     end
 
-    cfs = custom_facets
-    if cfs
-      cfs.each do |facet|
-        f_value = browse_options[facet[:param]]
-        next unless f_value.present?
+    # We want to call this in a thread later
+    custom_facets_fn = lambda do
+      cfs = custom_facets
 
-        f_param = facet[:param].to_s
-        if using_cetera?
-          browse_options[:metadata_tag] ||= {}
-          browse_options[:metadata_tag].merge!(f_param => f_value)
-        else
-          browse_options[:metadata_tag] ||= []
-          browse_options[:metadata_tag] << "#{f_param}:#{f_value}"
+      if cfs
+        cfs.each do |facet|
+          f_value = browse_options[facet[:param]]
+          next unless f_value.present?
+
+          f_param = facet[:param].to_s
+          if using_cetera?
+            browse_options[:metadata_tag] ||= {}
+            browse_options[:metadata_tag].merge!(f_param => f_value)
+          else
+            browse_options[:metadata_tag] ||= []
+            browse_options[:metadata_tag] << "#{f_param}:#{f_value}"
+          end
         end
       end
+
+      cfs
     end
 
     if browse_options[:curated_region_candidates]
@@ -361,16 +359,23 @@ module BrowseActions
         end
     end
 
-    # Categories should be at the top in browse2, otherwise in the 3rd slot
-    categories_index = browse_options[:view_type] == 'browse2' ? 0 : 2
-    browse_options[:facets] ||= [
-      view_types_facet,
-      cfs,
-      topics_facet,
-      federated_facet
-    ].insert(categories_index, categories_facet)
+    browse_options[:facets] ||=
+      begin
+        facets = [nil, nil, nil, nil, nil]
 
-    browse_options[:facets] = browse_options[:facets].compact.flatten.reject { |f| f[:hidden] }
+        [
+          Thread.new { facets[0] = categories_facet },
+          Thread.new { facets[1] = view_types_facet },
+          Thread.new { facets[2] = custom_facets_fn.call },
+          Thread.new { facets[3] = topics_facet },
+          Thread.new { facets[4] = federated_facet }
+        ].each(&:join)
+
+        # Categories should be at the top in browse2, otherwise in the 3rd slot
+        facets.insert(2, facets.shift) unless browse_options[:view_type] == 'browse2'
+
+        facets.compact.flatten.reject { |f| f[:hidden] }
+      end
 
     if browse_options[:suppressed_facets].is_a? Array
       browse_options[:facets].reject! do |facet|
@@ -385,7 +390,6 @@ module BrowseActions
     browse_options[:sort_opts] ||= default_browse_sort_opts
     browse_options[:disable] = {} unless browse_options[:disable].present?
 
-    # TODO: include? filters should be done on sets
     # get the subset relevant to various things
     browse_options[:search_options] =
       browse_options.select { |k| @@search_options.include?(k) }.merge(search_options)
@@ -404,15 +408,19 @@ module BrowseActions
         view_results =
           if using_cetera?
             # TODO: actually check if federation is enabled first
+
+            # WARN: federated domains are not showing up highlighted in facet bar
+
+            # Domain ids have to be translated to domain cnames for Cetera
             fed_id = browse_options[:search_options][:federation_filter]
-            browse_options[:search_options][:domains] =
-              if fed_id.present?
-                # Federation filter domain id has to be translated to domain cname for Cetera
-                federations_hash.merge(CurrentDomain.domain.id => CurrentDomain.cname)[fed_id.to_i]
-              else
-                # All domains in the federation
-                [CurrentDomain.cname].concat(federations_hash.values.sort).join(',')
-              end
+            browse_options[:search_options][:domains] = Federation.federated_domain_cnames(fed_id)
+
+            # If you try to federate from a domain that didn't approve it, no federation for you!
+            unless browse_options[:search_options][:domains].present?
+              raise "Invalid federated domain id: #{fed_id} for domain #{CurrentDomain.cname}"
+            end
+
+            browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
             Cetera.search_views(browse_options[:search_options])
           else
@@ -685,13 +693,14 @@ module BrowseActions
   @@numeric_options = [ :limit, :page ]
   @@boolean_options = [ :nofederate, :curated_region_candidates ]
 
-  @@moderatable_types = [ 'new_view', 'filters', 'charts', 'maps', 'calendars', 'forms' ]
+  @@moderatable_types = Set.new([ 'new_view', 'filters', 'charts', 'maps', 'calendars', 'forms' ])
 
-  @@search_options = [
-    :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView,
-    :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver,
-    :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields
-  ]
-  @@querystring_options = []
-
+  @@search_options = Set.new(
+    [
+      :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo,
+      :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation,
+      :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id,
+      :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields
+    ]
+  )
 end

@@ -1,0 +1,26 @@
+{
+  "computed_region_1": {
+    "fieldName": "computed_region_1",
+    "name": "computed column 1",
+    "physicalDatatype": "number",
+    "availableCardTypes": [],
+    "defaultCardType": "invalid",
+    "computationStrategy": {
+      "parameters": {
+        "region": "_four-four"
+      }
+    }
+  },
+  "computed_region_2": {
+    "fieldName": "computed_region_2",
+    "name": "computed column 2",
+    "physicalDatatype": "number",
+    "availableCardTypes": [],
+    "defaultCardType": "invalid",
+    "computationStrategy": {
+      "parameters": {
+        "region": "_five-five"
+      }
+    }
+  }
+}

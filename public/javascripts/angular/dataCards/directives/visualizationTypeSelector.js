@@ -8,6 +8,7 @@ function visualizationTypeSelector(
   I18n,
   CardDataService,
   ServerConfig,
+  SpatialLensService,
   UserSessionService,
   ViewRights,
   rx) {
@@ -30,7 +31,7 @@ function visualizationTypeSelector(
         };
       }
 
-      if (!ServerConfig.get('enableSpatialLensRegionCoding')) {
+      if (!SpatialLensService.isSpatialLensEnabled()) {
         return {
           enabled: false,
           showInfoMessage: false,
@@ -49,7 +50,6 @@ function visualizationTypeSelector(
       };
     }).share();
 
-    var isRegionCodingEnabled$ = regionCodingDetails$.pluck('enabled');
     $scope.$bindObservable('showNonComputedSection', regionCodingDetails$.pluck('showNonComputedSection'));
     $scope.$bindObservable('enableNonComputedSection', regionCodingDetails$.pluck('enableNonComputedSection'));
     $scope.$bindObservable('nonComputedSectionTitle', regionCodingDetails$.pluck('nonComputedSectionTitle'));
@@ -67,49 +67,17 @@ function visualizationTypeSelector(
     var showCuratedRegionSelector$ = cardType$.map(isChoropleth);
     $scope.$bindObservable('showCuratedRegionSelector', showCuratedRegionSelector$);
 
-    // Retrieve the list of curated regions, used to populate the dropdown.
-    var curatedRegions$ = ServerConfig.get('enableSpatialLensRegionCoding') ?
-      Rx.Observable.fromPromise(CardDataService.getCuratedRegions()) :
-      Rx.Observable.returnValue([]);
-
-    var curatedAndExistingRegions$ = curatedRegions$.combineLatest(
-      columns$,
-      function(curatedRegions, columns) {
-        var existingRegions = _.chain(columns).
-          filter(function(column) {
-            return _.get(column, 'computationStrategy.parameters.region');
-          }).
-          map(function(column) {
-            return {
-                name: column.name,
-                view: {
-                  id: _.get(column, 'computationStrategy.parameters.region').substring(1)
-                }
-            };
-          }).
-          value();
-        var allRegions = existingRegions.concat(curatedRegions);
-        return _.uniq(allRegions, 'view.id');
-      }
-    );
-    $scope.$bindObservable('allCuratedRegions', curatedAndExistingRegions$);
+    var allCuratedRegions$ = dataset$.flatMapLatest(SpatialLensService.getAvailableGeoregions$);
+    $scope.$bindObservable('allCuratedRegions', allCuratedRegions$);
 
     // Bootstrap initial dropdown options and selection.
     Rx.Observable.subscribeLatest(
-      curatedAndExistingRegions$,
+      allCuratedRegions$,
       columns$,
-      isRegionCodingEnabled$,
       computedColumn$.take(1),
-      function(curatedRegions, columns, isRegionCodingEnabled, computedColumn) {
+      function(curatedRegions, columns, computedColumn) {
         function shouldEnableCuratedRegion(curatedRegion) {
-          var shapefileId = curatedRegion.view.id;
-          return _.find(columns, {
-            computationStrategy: {
-              parameters: {
-                region: `_${shapefileId}`
-              }
-            }
-          });
+          return SpatialLensService.findComputedColumnForRegion(columns, curatedRegion.view.id);
         }
 
         var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);

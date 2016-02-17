@@ -1,4 +1,5 @@
 const angular = require('angular');
+
 function CardVisualizationChoroplethHelpers(Constants, $log) {
 
   /**

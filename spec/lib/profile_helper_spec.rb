@@ -2,6 +2,17 @@ require 'rails_helper'
 
 RSpec.describe ProfileHelper, type: :helper do
 
+  describe '#view_url_pulse' do
+    let(:view) { double('view', id: 'four-four', pulse?: view_is_pulse, story?: false) }
+    let(:view_is_pulse) { true }
+
+    describe 'when encountering a Pulse view' do
+      it 'Returns a Pulse url' do
+        expect(view_url(view)).to eq('/pulse/view/four-four')
+      end
+    end
+  end
+
   describe '#view_url' do
     let(:rights) { [] }
     let(:current_user) { User.new('rights' => rights) }

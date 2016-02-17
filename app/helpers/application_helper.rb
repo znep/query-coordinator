@@ -27,6 +27,8 @@ module ApplicationHelper
       end
     elsif view.story?
       "/stories/s/#{view.id}"
+    elsif view.pulse?
+      "/pulse/view/#{view.id}"
     else
       super
     end

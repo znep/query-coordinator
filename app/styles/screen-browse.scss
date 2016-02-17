@@ -395,6 +395,10 @@ $data_lens_icon_color: #80acca;
             min-height: 1.2em;
             overflow: hidden;
             word-break: break-all;
+            > div {
+              font-size: 1.1em;
+              line-height: 1.1em;
+            }
           }
           .rowSearchResults {
             margin-right: -15.2em;
@@ -561,6 +565,10 @@ $data_lens_icon_color: #80acca;
             &.collapsed {
               max-height: 8.727em;
               overflow: hidden;
+            }
+            > div {
+              font-size: 1.1em;
+              line-height: 1.1em;
             }
           }
           .expander {

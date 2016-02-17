@@ -1202,6 +1202,10 @@ class View < Model
     ].flatten.compact.uniq
   end
 
+  def pulse?
+    viewType == 'pulse'
+  end
+
   def story?
     # 12/8/2015 - We are changing the viewType of a storyteller asset from 'href'
     # to 'story'. As such, for the duration of our migration we will have to

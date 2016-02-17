@@ -77,13 +77,7 @@ $(function() {
     _.defer(function() {
       var query = encodeURIComponent($searchSection.find('.browse2-search-control').val());
       var newOpts = $.extend({}, opts, {
-        'q': query,
-        'Type': {
-          'Name': 'Used Search Field',
-          'Properties': {
-            'Query': query
-          }
-        }
+        'q': query
       });
 
       if ($.isBlank(newOpts.q)) {
@@ -98,6 +92,12 @@ $(function() {
       } else {
         $.updateMixpanelProperties();
         var properties = _.extend(window._genericMixpanelPayload(), newOpts);
+        properties.Type = {
+          'Name': 'Used Search Field',
+          'Properties': {
+            'Query': query
+          }
+        };
         mixpanel.track('Used Search Field', properties, function() {
           doBrowse(newOpts);
         });

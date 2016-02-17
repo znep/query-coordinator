@@ -15,8 +15,8 @@ describe('Customize card dialog', function() {
   var testHelpers;
   var _$provide;
   var $timeout;
-  var CardDataService;
   var $q;
+  var SpatialLensService;
 
   beforeEach(angular.mock.module('dataCards'));
 
@@ -40,8 +40,8 @@ describe('Customize card dialog', function() {
     $templateCache = $injector.get('$templateCache');
     testHelpers = $injector.get('testHelpers');
     $timeout = $injector.get('$timeout');
-    CardDataService = $injector.get('CardDataService');
     $q = $injector.get('$q');
+    SpatialLensService = $injector.get('SpatialLensService');
 
     // We don't actually care about the contents of this
     $templateCache.put('/angular_templates/dataCards/choropleth.html', '');
@@ -968,7 +968,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
         });
 
@@ -983,7 +983,7 @@ describe('Customize card dialog', function() {
         expect(options).to.have.length(5);
         expect(options.filter(':not(:disabled)')).to.have.length(3);
 
-        CardDataService.getCuratedRegions.restore();
+        SpatialLensService.getCuratedRegions.restore();
       });
 
       it('should display the correct number of curated regions in the dropdown when the flag is disabled', function() {
@@ -994,7 +994,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
         });
 
@@ -1005,7 +1005,7 @@ describe('Customize card dialog', function() {
         // 2) rook-king, as specified by ':@computedColumn' column
         expect(options).to.have.length(2);
 
-        CardDataService.getCuratedRegions.restore();
+        SpatialLensService.getCuratedRegions.restore();
       });
 
       it('should display the correct number of curated regions in the dropdown when the user lacks write permissions', function() {
@@ -1016,7 +1016,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
         });
 
@@ -1034,7 +1034,7 @@ describe('Customize card dialog', function() {
         expect(options).to.have.length(5);
         expect(options.filter(':not(:disabled)')).to.have.length(2);
 
-        CardDataService.getCuratedRegions.restore();
+        SpatialLensService.getCuratedRegions.restore();
       });
 
       it('should set the computedColumn property on the card when an option is selected', function() {
@@ -1045,7 +1045,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', uid: 'mash-apes', view: { id: 'rook-king' }}
         ];
 
-        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
         });
 
@@ -1057,7 +1057,7 @@ describe('Customize card dialog', function() {
         dialog.element.find('option[value="rook-king"]').prop('selected', true).change();
         expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal(':@computedColumn');
 
-        CardDataService.getCuratedRegions.restore();
+        SpatialLensService.getCuratedRegions.restore();
       });
 
       it('should set the computedColumn property on the card when a nonComputed option is selected', function() {
@@ -1068,7 +1068,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', uid: 'king-pawn', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
         });
 
@@ -1096,7 +1096,7 @@ describe('Customize card dialog', function() {
           { name: 'the most curated region ever', uid: 'mash-apes', view: { id: 'mash-apes' }}
         ];
 
-        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
         });
 
@@ -1115,7 +1115,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', uid: 'king-pawn', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(CardDataService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
           return $q.when(curatedRegions);
         });
 

@@ -158,6 +158,7 @@
             {{::'quickFilterBar.clearAll' | I18n}}
             <span class="icon-close"></span>
           </button>
+          <div class="aggregation-tour-attachment" ng-controller="AggregationTourController"></div>
           <aggregation-chooser
             page="page"
             is-standalone-visualization="page.isStandaloneVisualization"
@@ -240,6 +241,8 @@
       page="page">
     </save-visualization-as-dialog>
   </modal-dialog>
+
+  <div class="tour-overlay"></div>
 
   <feedback-panel></feedback-panel>
 

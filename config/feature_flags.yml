@@ -54,6 +54,10 @@ debug_data_lens:
 disable_dataset_search_box:
   description: Disable the search box in dataset pages.
   defaultValue: false
+enable_data_lens_aggregation_tour:
+  description: Show the tour of the card-level aggregation.
+  defaultValue: false
+  category: data lens
 enable_data_lens_card_level_aggregation:
   description: Allow configuration of the aggregation at the card level instead of the page level.
   defaultValue: false

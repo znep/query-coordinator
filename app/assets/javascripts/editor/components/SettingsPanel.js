@@ -182,8 +182,7 @@
       var isCopyModalOpen = storyteller.storyCopierStore.getCurrentOpenState();
       var isShareAndEmbedModalOpen = storyteller.shareAndEmbedStore.isOpen();
 
-      if (e.ctrlKey && e.keyCode === 188 || e.metaKey && e.keyCode === 188) { // ',' because it's settings
-        e.preventDefault();
+      if (e.ctrlKey && e.keyCode === 188) { // ',' because it's settings
         settingsPanel.trigger('sidebar:toggle');
       }
 

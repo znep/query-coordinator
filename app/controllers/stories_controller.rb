@@ -73,8 +73,8 @@ class StoriesController < ApplicationController
         redirect_to "/stories/s/#{params[:uid]}/edit"
       else
         AirbrakeNotifier.report_error(
-          RuntimeError.new("TEMPORARY/DEBUG: No story title on view '#{view}'",
-          on_method: 'stories_controller#new')
+          RuntimeError.new("TEMPORARY/DEBUG: No story title on view '#{view}'"),
+          on_method: 'stories_controller#new'
         )
         render_404
       end

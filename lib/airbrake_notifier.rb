@@ -1,4 +1,18 @@
 class AirbrakeNotifier
+  # Reports an error to airbrake and logs it to the logger.
+  # You can pass arbitrary additional parameters along with the airbrake notice.
+  #
+  # Passing `:on_method` to additional_params adds " (on `#{on_method}`)" to the rails log message.
+  #
+  # @example
+  #   begin
+  #     ...
+  #   rescue => error
+  #     AirbrakeNotifier.report_error(error)
+  #   end
+  #
+  # @param error [Error]
+  # @param additional_params [Hash]
   def self.report_error(error, additional_params = {})
     log_message = "#{error}"
     log_message << " (on #{additional_params[:on_method]})" unless additional_params[:on_method].blank?
@@ -18,7 +32,8 @@ class AirbrakeNotifier
     )
   end
 
-  # Values that might be useful to have in the airbrake notice.
+  # These values are set for every airbrake error generated from the rails app
+  # See `config/initializers/airbrake.rb`
   def self.default_payload
     payload = {}
 

@@ -1,4 +1,31 @@
+require 'rails_helper'
+
 describe View do
+
+  describe 'pulse view types' do
+    let(:fake_views) do
+      [
+        {
+          'id' => 'fake-fak1',
+          'name' => 'Fake 1',
+          'view_type' => 'pulse'
+        },
+        {
+          'id' => 'fake-fak2',
+          'name' => 'Fake 2',
+          'view_type' => 'story'
+        }
+      ]
+    end
+
+    it 'Should return true when given an asset that is a Pulse asset?' do
+      expect(View.new(fake_views[0]).pulse?)
+    end
+
+    it 'Should return false when given a page that is not a Pulse display type' do
+      expect(!View.new(fake_views[1]).pulse?)
+    end
+  end
 
   describe '.find_multiple_dedup' do
 

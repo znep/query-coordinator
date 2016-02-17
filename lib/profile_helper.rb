@@ -12,6 +12,8 @@ module ProfileHelper
   def view_url(view)
     if view.story? && viewing_self?
       story_url(view)
+    elsif view.pulse?
+      pulse_url(view)
     else
       # Call the original implementation, presumably in ApplicationHelper.
       # If this is throwing, a base module with a view_url implementation
@@ -59,6 +61,10 @@ module ProfileHelper
 
   private
 
+  def pulse_url(view)
+    "/pulse/view/#{view.id}"
+  end
+  
   def story_url(view)
     base_relative_url = "/stories/s/#{view.id}"
 

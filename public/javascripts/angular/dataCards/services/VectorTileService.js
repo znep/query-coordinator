@@ -214,8 +214,6 @@ function VectorTileService(Constants, ServerConfig) {
       throw new Error('Could not draw VectorTileFeature point: canvas context is null.');
     }
 
-    ctx.globalCompositeOperation = computedStyle.blendMode;
-
     projectedPoint = this.projectGeometryToTilePoint(geometry[0][0]);
 
     if (offset) {
@@ -256,8 +254,6 @@ function VectorTileService(Constants, ServerConfig) {
       ctx.stroke();
 
     }
-
-    ctx.globalCompositeOperation = 'source-over';
 
     ctx.restore();
   };

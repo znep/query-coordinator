@@ -1,9 +1,15 @@
+<h1>Edit Site Chrome</h1>
+
+<p class="nav-links">
+  <a href="<%= admin_themes_path %>">Edit Custom Themes</a>
+</p>
+
 <% styles_field_name_prefix = 'site_chrome[styles]' -%>
 <% content_field_name_prefix = 'site_chrome[content]' -%>
 <%= form_for(@site_chrome, url: admin_site_chrome_path, method: :put) do |form| %>
   <header>
     <div class="heading">
-      <h2>Customize the header and footer for the stories on this domain</h2>
+      <h3>Customize the header and footer for the stories on this domain</h3>
     </div>
     <div class="actions">
       <%= link_to 'Cancel', '/admin', class: 'btn btn-link' %>

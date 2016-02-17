@@ -42,7 +42,7 @@ class StoryPublisher
       rescue => exception
         AirbrakeNotifier.report_error(
           exception,
-          "PermissionsUpdater#update_permissions(story_uid: '#{story_uid}')"
+          on_method: "PermissionsUpdater#update_permissions(story_uid: '#{story_uid}')"
         )
       end
 

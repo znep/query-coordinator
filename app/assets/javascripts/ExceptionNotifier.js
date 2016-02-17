@@ -5,7 +5,7 @@
   var storyteller = window.storyteller;
 
   /**
-   * @class Airbrake
+   * @class ExceptionNotifier
    * @description
    * A small wrapper class for airbrake-client-js. Exposes a `.notify`
    * method for elected errors. This class will notify on unexpected

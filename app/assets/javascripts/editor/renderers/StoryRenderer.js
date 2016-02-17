@@ -65,6 +65,16 @@
 
     var _throttledRender = _.debounce(_renderStory, Constants.WINDOW_RESIZE_RERENDER_DELAY);
 
+    // _renderStory must not cause reentrant renders (rendering while rendering), as this
+    // makes writing robust renderers difficult (because another render could come at any point,
+    // even in the middle of initialization). This caused the famous "cannot find rich text editor with ID X"
+    // series of errors.
+    //
+    // These two fields allow us to handle reentrant calls to _renderStory by deferring subsequent renders
+    // to after the current render has completed.
+    var renderNeeded = false;
+    var rendering = false;
+
 
     if (options.hasOwnProperty('onRenderError') &&
       ((typeof options.onRenderError) !== 'function')) {
@@ -326,6 +336,15 @@
     function _renderStory() {
       if (destroyed) { return; }
 
+      // Reentrant call to _renderStory. Defer this render
+      // until the original _renderStory is done.
+      if (rendering) {
+        renderNeeded = true;
+        return;
+      }
+
+      rendering = true;
+
       var blockIds = storyteller.storyStore.getStoryBlockIds(storyUid);
       var blockIdsToRemove = elementCache.getUnusedBlockIds(blockIds);
       var blockCount = blockIds.length;
@@ -396,6 +415,15 @@
         $container.height(fixedHeight);
       } else {
         $container.height(layoutHeight);
+      }
+
+      rendering = false;
+
+      // There were reentrant call(s) to _renderStory.
+      // Take care of those now.
+      if (renderNeeded) {
+        renderNeeded = false;
+        _renderStory();
       }
     }
 
@@ -687,7 +715,12 @@
 
           _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme);
         } catch (e) {
-          storyteller.airbrake.notify(e);
+          if (storyteller.airbrake) {
+            storyteller.airbrake.notify(e);
+          } else {
+            console.error(e);
+          }
+          onRenderError(e);
         }
       });
     }

@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 var httpConfig = {
   requester: {
     requesterLabel: _.constant('spatial-lens-service')
@@ -137,6 +139,6 @@ function SpatialLensService(http, rx, ServerConfig) {
   return spatialLensService;
 }
 
-require('angular').
+angular.
   module('dataCards.services').
   factory('SpatialLensService', SpatialLensService);

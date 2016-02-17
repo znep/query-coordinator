@@ -964,6 +964,9 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
           if (!manyRows) {
             highlightClickedPoints(e.points);
             self.options.onClick(e);
+          } else {
+            // clear any existing highlights that are hanging around
+            self.clearClickedPointHighlights();
           }
 
         } else {

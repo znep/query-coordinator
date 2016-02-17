@@ -263,6 +263,7 @@ function FeatureMap(element, vif) {
   }
 
   function _attachEvents() {
+    var $document = $(document);
 
     // Only attach map events if the map has actually been instantiated.
     if (_map) {
@@ -308,6 +309,10 @@ function FeatureMap(element, vif) {
 
       if (_hover) {
         _map.on('mousemove', _handleMousemove);
+
+        // react to the interactions that would close the RowInspector flannel
+        $document.on('click', _captureLeftClickAndClearHighlight);
+        $document.on('keydown', _captureEscapeAndClearHighlight);
       }
 
       _mapPanZoomDisabledWarning.on('mousemove', _handlePanZoomDisabledWarningMousemove);
@@ -327,6 +332,7 @@ function FeatureMap(element, vif) {
   }
 
   function _detachEvents() {
+    var $document = $(document);
 
     // Only detach map events if the map has actually been instantiated.
     if (_map) {
@@ -338,6 +344,9 @@ function FeatureMap(element, vif) {
 
       if (_hover) {
         _map.off('mousemove', _handleMousemove);
+
+        $document.on('click', _captureLeftClickAndClearHighlight);
+        $document.on('keydown', _captureEscapeAndClearHighlight);
       }
 
       _mapPanZoomDisabledWarning.off('mousemove', _handlePanZoomDisabledWarningMousemove);
@@ -744,6 +753,27 @@ function FeatureMap(element, vif) {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE'
     );
+
+    _map.fire('clearhighlightrequest');
+  }
+
+  function _captureEscapeAndClearHighlight(event) {
+
+    if (event.which === 27) {
+      _map.fire('clearhighlightrequest');
+    }
+  }
+
+  function _captureLeftClickAndClearHighlight(event) {
+
+    var $target = $(event.target);
+    var isLeftClick = event.which === 1;
+    var isOutsideOfMap = $target.closest('.feature-map-container').length === 0;
+    var isIconClose = $target.is('.icon-close');
+
+    if (isLeftClick && (isOutsideOfMap || isIconClose)) {
+      _map.fire('clearhighlightrequest');
+    }
   }
 
   /**

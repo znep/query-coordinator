@@ -16,7 +16,7 @@ class StoriesController < ApplicationController
   after_action :allow_iframe, only: :widget
   helper_method :needs_view_assets?, :contributor?
 
-  force_ssl except: [:show, :widget]
+  force_ssl except: [:show, :widget], unless: :ssl_disabled?
 
   def show
     # This param is set in the link provided to users who receive a collaboration request
@@ -184,6 +184,10 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  def ssl_disabled?
+    Rails.env.test?
+  end
 
   # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
   # somewhere, but that clearly won't work with an embeddable widget so we

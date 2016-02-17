@@ -8,34 +8,6 @@ RSpec.describe StoriesController, type: :controller do
     allow(CoreServer).to receive(:story_themes).and_return([])
     allow(StoryAccessLogger).to receive(:log_story_view_access)
     allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
-
-    request.env['HTTPS'] = 'on'
-  end
-
-  describe 'force ssl' do
-    let!(:story_revision) { FactoryGirl.create(:draft_story_with_blocks) }
-
-    context 'when browsing without ssl' do
-      before do
-        request.env['HTTPS'] = 'off'
-        stub_valid_session
-        stub_sufficient_rights
-      end
-
-      %i( show widget ).each do |action|
-        it "##{action} does not redirect" do
-          get action, uid: story_revision.uid
-          expect(response).to render_template(action)
-        end
-      end
-
-      %i( preview edit new create copy about ).each do |action|
-        it "##{action} redirects" do
-          get action, uid: story_revision.uid
-          expect(response).to be_redirect
-        end
-      end
-    end
   end
 
   describe '#show with param from_collaboration_email=true' do

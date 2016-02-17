@@ -222,7 +222,7 @@ function customizeCardDialog(
           setupHistogramBucketTypeSelect($scope.customizedCard, $scope);
         });
 
-       // Save the model by updating with our cloned copy.
+      // Save the model by updating with our cloned copy.
       $scope.updateCard = function() {
         $scope.dialogState.cardModel.setFrom($scope.customizedCard);
         $scope.dialogState.show = false;
@@ -239,4 +239,4 @@ function customizeCardDialog(
 }
 angular.
   module('dataCards.directives').
-    directive('customizeCardDialog', customizeCardDialog);
+  directive('customizeCardDialog', customizeCardDialog);

@@ -285,6 +285,12 @@
       return (r << 16) + (g << 8) + b;
     }
 
+    function injectDependencies(target, dependencies) {
+      _.each(dependencies, function(dependency) {
+        target[dependency] = $injector.get(dependency);
+      });
+    }
+
     return {
       TestDom: TestDom,
       getTestJson: getTestJson,
@@ -295,7 +301,8 @@
       mockDirective: mockDirective,
       normalizeColor: normalizeColor,
       waitForSatisfy: waitForSatisfy,
-      cleanUp: cleanUp
+      cleanUp: cleanUp,
+      injectDependencies: injectDependencies
     };
   });
 })();

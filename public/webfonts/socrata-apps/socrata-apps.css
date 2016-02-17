@@ -237,4 +237,6 @@
 .icon-processing:before {
 	content: "\e905";
 }
-
+.icon-pulse:before {
+	content: "\e900";
+}

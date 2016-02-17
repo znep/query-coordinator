@@ -17,10 +17,11 @@ Optional ENV vars:
 
 Additional optional ENV vars for the config/environments/<rails_env>.rb:
 
-- `CACHE_CLASSES` defautls to true
+- `CACHE_CLASSES` defaults to true
 - `CONSIDER_ALL_REQUESTS_LOCAL` defaults to false
-- `ACTION_CONTROLLER_PERFORM_CHECKING` defaults to true
-- `SERVCE_STATIC_ASSEST` defaults to true
+- `ACTION_CONTROLLER_PERFORM_CACHING` defaults to true
+- `SERVE_STATIC_ASSETS` defaults to true
+- `MEMCACHE_VALUE_MAX_BYTES` defaults to 2_000_000
 
 _Note: An IP can be provided with `EXTERNAL_IP` that will be used for the `ZOOKEEPER_HOSTS`,
 `CORESERVICE_URI`

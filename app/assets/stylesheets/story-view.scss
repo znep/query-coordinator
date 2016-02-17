@@ -182,13 +182,13 @@
 
       min-height: calc(96vh - #{$user-story-header-height});
       padding-bottom: $user-story-padding-bottom;
-      @include align-items(stretch);
-      @include display(flex);
-      @include flex-direction(column);
-      @include justify-content(space-around);
 
       &.presentation-mode {
         font-size: $presentation-mode-font-size;
+        @include align-items(stretch);
+        @include display(flex);
+        @include flex-direction(column);
+        @include justify-content(space-around);
 
         &.large {
           max-width: $presentation-mode-large-max-width;

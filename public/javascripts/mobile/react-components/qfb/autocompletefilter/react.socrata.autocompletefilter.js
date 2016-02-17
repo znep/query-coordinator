@@ -61,16 +61,9 @@ class SocrataAutocompletefilter extends React.Component {
 
   fetchSuggestions(newSuggestionText) {
     var newSuggestions = newSuggestionText || '';
-    var suggestionUrl = 'https://dataspace.demo.socrata.com/views/' +
-      this.props.datasetId + '/columns/' +
-      this.props.dataColumn + '/suggest/' +
-      newSuggestions + '?size=11';
-
-    /*
-     this.props.domain + '/views/' +
-     https://opendata-demo.test-socrata.com/views/3q2y-nhw8/columns/job_title/suggest/' + newSuggestionText + '?size=11
-     https://dataspace.demo.socrata.com/views/qfph-stuu/columns/country/suggest/a?size=11
-    */
+    var suggestionUrl = window.location.protocol + '//' + this.props.domain + '/view/' +
+      this.props.datasetId + '/columns/' + this.props.dataColumn + '/suggest?text=' + newSuggestions +
+      '&size=11';
 
     this.setState({ requesting: true });
 

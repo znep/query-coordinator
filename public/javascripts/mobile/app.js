@@ -9,10 +9,10 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
   'use strict';
 
   function handleBroadcast(filterObject) {
-    $(document).trigger('socrata/qfb/appliedFilters', filterObject);
+    $(document).trigger('appliedFilters.qfb.socrata', filterObject);
   }
 
-  $(document).on('socrata/qfb/filterOps', function(e, opsData, domain, datasetId) {
+  $(document).on('filterOps.qfb.socrata', function(e, opsData, domain, datasetId) {
     ReactDOM.render(<FilterContainer
       domain={ domain }
       datasetId={ datasetId }

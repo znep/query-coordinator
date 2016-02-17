@@ -188,7 +188,7 @@
     var filterOptions = {
       filterOps: aFilterOps
     };
-    $(document).trigger('socrata/qfb/filterOps',[filterOptions, datasetMetadata.domain, pageMetadata.datasetId]);
+    $(document).trigger('filterOps.qfb.socrata',[filterOptions, datasetMetadata.domain, pageMetadata.datasetId]);
   }
 
   document.title = datasetMetadata.name;

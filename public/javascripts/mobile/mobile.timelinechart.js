@@ -56,7 +56,7 @@ socrata.visualizations.mobileTimelineChart = function(values, $target) {
   $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
   $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_CLEAR', clearFlyout);
 
-  $(document).on('socrata/qfb/appliedFilters', handleVifUpdated);
+  $(document).on('appliedFilters.qfb.socrata', handleVifUpdated);
 
   function handleVifUpdated(event, data) {
     timelineChartVIF.filters = data.filters;

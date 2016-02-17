@@ -16,6 +16,8 @@ class StoriesController < ApplicationController
   after_action :allow_iframe, only: :widget
   helper_method :needs_view_assets?, :contributor?
 
+  force_ssl except: [:show, :widget]
+
   def show
     # This param is set in the link provided to users who receive a collaboration request
     # via email. In this case, we want to redirect them to the most privileged action they

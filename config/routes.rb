@@ -114,7 +114,6 @@ Frontend::Application.routes do
       get 'jobs/:id', :action => 'show_job'
       get :views
       put :save_featured_views
-      get :catalog_widget
       get :routing_approval, :as => 'routing_approval_administration'
 
       put '/users/:user_id/promote/:role', :action => 'set_user_role'

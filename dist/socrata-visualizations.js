@@ -10124,7 +10124,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
 	      vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
 
-	      _lastRenderOptions = renderOptions;
+	      _lastRenderOptions = _.cloneDeep(renderOptions);
+	      _lastRenderOptions.bounds = new L.LatLngBounds(
+	        renderOptions.bounds.getSouthWest(),
+	        renderOptions.bounds.getNorthEast()
+	      );
 
 	      if (_userCurrentPositionBounds) {
 	        _fitBounds(_userCurrentPositionBounds);

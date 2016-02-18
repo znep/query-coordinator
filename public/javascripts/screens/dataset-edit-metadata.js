@@ -16,6 +16,7 @@ $(function() {
     },
     errorPlacement:
       function(error, element) {
+        console.log('errorPlacement called');
         switch (element.get(0).id) {
           case 'view_metadata_customRdfClass':
             // if rdf combo shows, we do not care about the hidden field
@@ -31,6 +32,8 @@ $(function() {
 
   $form.on('change', 'input, select', function() {
     $form.find('.submitButton').toggleClass('disabled', !$form.valid());
+    // debugger;
+    console.log("Form valid? " + $form.valid());
   });
 
   $('.toggleFieldsetLink').click(function(event) {
@@ -214,9 +217,8 @@ $(function() {
     event.preventDefault();
     var $clone = $('.externalSource').first().clone();
     // Clear cloned content and append to page
-    $clone.find('#external_sources__title, #external_sources__description').attr('value', '').text('');
     $clone.find('.externalLink:not(:first)').remove();
-    $clone.find('.externalLink').find('input').attr('value', '');
+    $clone.find('input, textarea').val('').text('');
     $clone.appendTo('.externalDatasetBox');
     updateRemoveLinks();
   });

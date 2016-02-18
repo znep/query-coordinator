@@ -698,7 +698,7 @@ var validateAll = function()
     }
 
     // validate name missing (error)
-    var emptyNameColumns = _.flatten(_.select(names, function(columns, name) { return $.isBlank(name.trim()); }));
+    var emptyNameColumns = _.flattenDeep(_.select(names, function(columns, name) { return $.isBlank(name.trim()); }));
     if (emptyNameColumns.length > 1)
     {
         addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(emptyNameColumns.length)) +

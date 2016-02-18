@@ -779,13 +779,15 @@ protected
         end
         additionalAccessPoints.push(entry)
       end
-      # Store the first accessPoints url as metadata accessPoint
-      accessPoints = additionalAccessPoints[0][:urls] if additionalAccessPoints[0]
-      params[:view][:metadata][:accessPoints] = accessPoints
-      params[:view][:metadata][:additionalAccessPoints] = additionalAccessPoints
-    else
-      flash.now[:error] = I18n.t('screens.edit_metadata.missing_external_dataset')
-      return false
+      if additionalAccessPoints.blank?
+        flash.now[:error] = I18n.t('screens.edit_metadata.missing_external_dataset')
+        return false
+      else
+        # Store the first accessPoints url hash as metadata accessPoint
+        accessPoints = additionalAccessPoints[0][:urls]
+        params[:view][:metadata][:accessPoints] = accessPoints
+        params[:view][:metadata][:additionalAccessPoints] = additionalAccessPoints
+      end
     end
     true
   end

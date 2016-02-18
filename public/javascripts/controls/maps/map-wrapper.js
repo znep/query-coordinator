@@ -309,7 +309,7 @@
             {
                 if (c._view.childViews) { return c._view.childViews; }
                 else { return c._view.id; }
-            }).flatten().uniq().value(); }
+            }).flattenDeep().uniq().value(); }
 
             _.each(mapObj._children, function(childView)
             { childView.bindDatasetEvents(); });
@@ -709,7 +709,7 @@
             var featureLayers = _.chain(mapObj._children)
                 .map(function(childView) { return childView.selectableFeatureLayers(); })
                 .compact()
-                .flatten()
+                .flattenDeep()
                 .value();
 
             mapObj._controls.SelectFeature = new OpenLayers.Control.SelectFeature(featureLayers,

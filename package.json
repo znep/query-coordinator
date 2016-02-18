@@ -99,6 +99,6 @@
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
     "socrata-visualizations": "^5.0.3",
-    "tether-shepherd": "^1.2.0"
+    "tether-shepherd": "1.2.0"
   }
 }

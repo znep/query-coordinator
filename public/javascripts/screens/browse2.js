@@ -76,10 +76,8 @@ $(function() {
     event.preventDefault();
 
     _.defer(function() {
-      var query = encodeURIComponent($searchSection.find('.browse2-search-control').val());
-      var newOpts = $.extend({}, opts, {
-        'q': query
-      });
+      var query = $searchSection.find('.browse2-search-control').val();
+      var newOpts = $.extend({}, opts, { 'q': encodeURIComponent(query) });
 
       if ($.isBlank(newOpts.q)) {
         delete newOpts.q;
@@ -92,13 +90,14 @@ $(function() {
         doBrowse(newOpts);
       } else {
         $.updateMixpanelProperties();
-        var properties = _.extend(window._genericMixpanelPayload(), newOpts);
-        properties.Type = {
-          'Name': 'Used Search Field',
-          'Properties': {
-            'Query': query
+        var properties = _.extend(window._genericMixpanelPayload(), {
+          'Type': {
+            'Name': 'Used Search Field',
+            'Properties': {
+              'Query': query
+            }
           }
-        };
+        });
         mixpanel.track('Used Search Field', properties, function() {
           doBrowse(newOpts);
         });

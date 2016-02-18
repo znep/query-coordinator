@@ -61,13 +61,12 @@ $(function() {
       };
 
       if (!blist.mixpanelLoaded) {
-        document.location = event.target.href;
+        window.location = event.target.href;
       } else {
         $.updateMixpanelProperties();
-        var properties = _.extend(window._genericMixpanelPayload(), newOpts);
         var properties = _.extend(window._genericMixpanelPayload(), queryProperties);
         mixpanel.track('Cleared Search Field', properties, function() {
-          document.location = event.target.href;
+          window.location = event.target.href;
         });
       }
     });

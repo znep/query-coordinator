@@ -248,6 +248,35 @@ describe('StoryRenderer', function() {
 
         assert.equal($('.message-empty-story').length, 0);
       });
+    });
+
+    describe('with a story that has blocks including an image component', function() {
+      var imageOnlyStoryUid = 'with-imge';
+
+      beforeEach(function() {
+        var storyWithOnlyImage = generateStoryData({
+          uid: imageOnlyStoryUid,
+          blocks: [
+            generateBlockData({
+              components: [
+                { type: 'image', value: { url: 'https://example.com/image.png', documentId: '1234' } }
+              ]
+            })
+          ]
+        });
+
+        storyteller.dispatcher.dispatch({
+          action: Actions.STORY_CREATE,
+          data: storyWithOnlyImage
+        });
+      });
+
+      it('renders blocks', function() {
+        options.storyUid = imageOnlyStoryUid;
+        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+
+        assert.equal($('.block').length, 1);
+      });
 
       describe('that cause a mid-render rerender', function() {
         it('completes the current render before starting a new render', function() {
@@ -269,6 +298,7 @@ describe('StoryRenderer', function() {
             rendering = false;
           });
 
+          options.storyUid = imageOnlyStoryUid;
           storyteller.storyRenderer = new storyteller.StoryRenderer(options);
 
           sinon.assert.calledTwice(imageRenderStub);
@@ -276,33 +306,6 @@ describe('StoryRenderer', function() {
         });
       });
 
-    });
-
-    describe('with a story that has blocks including a media component', function() {
-
-      it('renders blocks', function() {
-
-        var storyWithMedia = generateStoryData({
-          uid: 'with-imge',
-          blocks: [
-            generateBlockData({
-              components: [
-                { type: 'assetSelector' }
-              ]
-            })
-          ]
-        });
-
-        storyteller.dispatcher.dispatch({
-          action: Actions.STORY_CREATE,
-          data: storyWithMedia
-        });
-
-        options.storyUid = 'with-imge';
-        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-
-        assert.equal($('.block').length, 1);
-      });
     });
 
     describe('with no insertion hint element defined', function() {

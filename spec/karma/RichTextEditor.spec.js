@@ -305,6 +305,13 @@ describe('RichTextEditor', function() {
       });
     });
 
+    describe('addContentClass', function() {
+      it('adds a new body class when called', function() {
+        editor.addContentClass('the-content-class');
+        assert.isTrue($documentElement.find('body').hasClass('the-content-class'));
+      });
+    });
+
     describe('content height', function() {
       var body;
       beforeEach(function() {

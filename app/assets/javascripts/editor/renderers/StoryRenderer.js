@@ -22,6 +22,8 @@
         return 'componentHorizontalRule';
       case 'assetSelector':
         return 'componentAssetSelector';
+      case 'author':
+        return 'componentAuthor';
       case 'image':
         return 'componentImage';
       case 'hero':
@@ -264,36 +266,18 @@
 
       // Handle updates to block content.
       $container.on('rich-text-editor::content-change', function(event) {
-
         var blockId = utils.findClosestAttribute(event.target, 'data-block-id');
         var componentIndex = utils.findClosestAttribute(event.target, 'data-component-index');
 
         var blockContent = event.originalEvent.detail.content;
 
-        var existingComponentValue = storyteller.
-          storyStore.
-          getBlockComponentAtIndex(blockId, componentIndex).
-          value.
-          replace(/<br>/g, '');
-
-        var newComponentValue = blockContent.
-          replace(/<br>/g, '');
-
-        var contentIsDifferent = (
-          existingComponentValue !==
-          newComponentValue
-        );
-
-        if (contentIsDifferent) {
-
-          dispatcher.dispatch({
-            action: Actions.BLOCK_UPDATE_COMPONENT,
-            blockId: blockId,
-            componentIndex: componentIndex,
-            type: 'html',
-            value: blockContent
-          });
-        }
+        dispatcher.dispatch({
+          action: Actions.BLOCK_UPDATE_COMPONENT,
+          blockId: blockId,
+          componentIndex: componentIndex,
+          type: 'html',
+          value: blockContent
+        });
       });
 
       $container.on('rich-text-editor::height-change', _renderStory);

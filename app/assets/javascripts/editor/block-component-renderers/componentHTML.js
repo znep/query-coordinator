@@ -6,9 +6,10 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  function _setupRichTextEditor($element, componentData, theme) {
+  function _setupRichTextEditor($element, componentData, theme, options) {
     var editorId = _.uniqueId();
     var editor;
+    var extraContentClass = _.get(options, 'extraContentClass');
 
     utils.assertHasProperty(componentData, 'value');
 
@@ -32,7 +33,29 @@
 
     $element.one('destroy', function() {
       storyteller.richTextEditorManager.deleteEditor(editorId);
+      $element.off('rich-text-editor::content-change', _filterSpuriousContentChanges);
     });
+
+    $element.on('rich-text-editor::content-change', _filterSpuriousContentChanges);
+
+    if (extraContentClass) {
+      editor.addContentClass(extraContentClass);
+    }
+  }
+
+  function _filterSpuriousContentChanges(event) {
+    // Make sure the content actually changed. Squire likes to twiddle <br>s.
+    // We want to ignore these.
+
+    var existingValueSignature = _.get($(this).data('component-rendered-data'), 'value', '').
+      replace(/<br>/g, '');
+
+    var newValueSignature = event.originalEvent.detail.content.
+      replace(/<br>/g, '');
+
+    if (existingValueSignature === newValueSignature) {
+      event.stopPropagation();
+    }
   }
 
   /**
@@ -122,7 +145,7 @@
    * @param {object} componentData - An object with a type and value attribute
    * @returns {jQuery} - The rendered layout jQuery element
    */
-  function componentHTML(componentData, theme) {
+  function componentHTML(componentData, theme, options) {
     var $this = $(this);
 
     utils.assertHasProperty(componentData, 'type');
@@ -133,8 +156,10 @@
 
     var needsEditorSetup = !$this.is('[data-editor-id]');
 
+    $this.data('component-rendered-data', componentData); // Cache the data.
+
     if (needsEditorSetup) {
-      _setupRichTextEditor($this, componentData, theme);
+      _setupRichTextEditor($this, componentData, theme, options);
     } else {
       _updateRichTextEditor($this, componentData, theme);
     }

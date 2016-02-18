@@ -14,11 +14,26 @@
 .col12 {
   @include span-columns(12);
 }
+.col11 {
+  @include span-columns(11);
+}
+.col10 {
+  @include span-columns(10);
+}
+.col9 {
+  @include span-columns(9);
+}
 .col8 {
   @include span-columns(8);
 }
+.col7 {
+  @include span-columns(7);
+}
 .col6 {
   @include span-columns(6);
+}
+.col5 {
+  @include span-columns(5);
 }
 .col4 {
   @include span-columns(4);
@@ -28,6 +43,9 @@
 }
 .col2 {
   @include span-columns(2);
+}
+.col1 {
+  @include span-columns(1);
 }
 .last {
   @include omega();

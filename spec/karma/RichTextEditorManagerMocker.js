@@ -6,7 +6,8 @@
   var createMockEditor = function() {
     return {
       setContent: storyteller.RichTextEditorManagerMocker.setContentSpy,
-      applyThemeClass: storyteller.RichTextEditorManagerMocker.applyThemeClassSpy
+      applyThemeClass: storyteller.RichTextEditorManagerMocker.applyThemeClassSpy,
+      addContentClass: storyteller.RichTextEditorManagerMocker.addContentClass
     };
   };
 
@@ -16,6 +17,7 @@
 
     setContentSpy: sinon.spy(),
     applyThemeClassSpy: sinon.spy(),
+    addContentClass: sinon.spy(),
     createEditorSpy: sinon.spy(createMockEditor),
     deleteEditorSpy: sinon.spy(),
     getEditorSpy: sinon.spy(createMockEditor),

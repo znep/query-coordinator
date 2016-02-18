@@ -108,6 +108,38 @@
   }
 }
 
+.block {
+  &:hover,
+  &.active {
+    .author-image .component-edit-controls {
+      opacity: 1;
+    }
+  }
+}
+
+.component-author {
+  background: $author-component-bg-color;
+  margin-left: $author-component-margin;
+  margin-right: $author-component-margin;
+  padding: $author-component-padding;
+  border-bottom: $author-component-border-bottom-thickness solid $author-component-border-bottom-color;
+  padding: 0.5rem;
+  overflow: hidden; // Makes background take size of content.
+
+  .author-image {
+    position: relative;
+    margin-top: 0;
+    border: 1px solid #{$author-component-profile-image-border-color};
+    padding: $author-component-profile-image-padding;
+
+    #story-edit & .component-edit-controls {
+      margin-top: $author-component-profile-image-padding;
+      margin-right: $author-component-profile-image-padding;
+    }
+
+  }
+}
+
 .col3 {
   .component-asset-selector,
   .component-embedded-html,

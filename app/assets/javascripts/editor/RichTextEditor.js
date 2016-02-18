@@ -161,6 +161,12 @@
       }
     };
 
+    // Adds an extra class to the content body.
+    this.addContentClass = function(extraClass) {
+      var body = _editorElement[0].contentDocument.querySelector('body');
+      $(body).addClass(extraClass);
+    };
+
     /**
      * Deselects the rich text <iframe>.
      */

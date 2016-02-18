@@ -533,35 +533,86 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      describe('.getComponentValue()', function() {
-        it('returns object with percentLoaded', function() {
-          assert.deepEqual(
-            storyteller.assetSelectorStore.getComponentValue(),
-            { percentLoaded: 0.245 }
+      describe('.getUploadPercentLoaded()', function() {
+        it('returns the percent loaded', function() {
+          assert.equal(
+            storyteller.assetSelectorStore.getUploadPercentLoaded(),
+            0.245
           );
         });
       });
     });
 
     describe('after a `FILE_UPLOAD_DONE` action', function() {
-
       var payloadUrl = 'https://validurl.com/image.png';
       var payloadDocumentId = '12345';
 
-      beforeEach(function() {
-        storyteller.dispatcher.dispatch({
-          action: Actions.FILE_UPLOAD_DONE,
-          url: payloadUrl,
-          documentId: payloadDocumentId
-        });
-      });
+      ['IMAGE', 'HERO', 'AUTHOR'].map(function(provider) {
+        describe('while editing component type: {0}'.format(provider), function() {
+          beforeEach(function() {
+            var blockId;
 
-      describe('.getComponentValue()', function() {
-        it('returns payload with url and documentId', function() {
-          assert.deepEqual(
-            storyteller.assetSelectorStore.getComponentValue(),
-            { documentId: payloadDocumentId, url: payloadUrl }
-          );
+            if (provider === 'IMAGE') {
+              blockId = standardMocks.imageBlockId;
+            } else if (provider === 'HERO') {
+              blockId = standardMocks.heroBlockId;
+            } else if (provider === 'AUTHOR') {
+              blockId = standardMocks.authorBlockId;
+            }
+
+            storyteller.dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
+              blockId: blockId,
+              componentIndex: 0
+            });
+          });
+
+          beforeEach(function() {
+            storyteller.dispatcher.dispatch({
+              action: Actions.FILE_UPLOAD_DONE,
+              url: payloadUrl,
+              documentId: payloadDocumentId
+            });
+          });
+
+
+          describe('.getComponentType()', function() {
+            var correctType;
+            if (provider === 'IMAGE') {
+              correctType = 'image';
+            } else if (provider === 'HERO') {
+              correctType = 'hero';
+            } else if (provider === 'AUTHOR') {
+              correctType = 'author';
+            }
+
+            it('returns `{0}`'.format(correctType), function() {
+              assert.equal(
+                storyteller.assetSelectorStore.getComponentType(),
+                correctType
+              );
+            });
+          });
+
+          describe('.getComponentValue()', function() {
+            it('returns payload with url and documentId', function() {
+              if (provider === 'AUTHOR') {
+                // I'm a special snowflake
+                assert.deepEqual(
+                  storyteller.assetSelectorStore.getComponentValue(),
+                  {
+                    blurb: storyteller.storyStore.getBlockComponentAtIndex(standardMocks.authorBlockId, 0).value.blurb,
+                    image: { documentId: payloadDocumentId, url: payloadUrl }
+                  }
+                );
+              } else {
+                assert.deepEqual(
+                  storyteller.assetSelectorStore.getComponentValue(),
+                  { documentId: payloadDocumentId, url: payloadUrl }
+                );
+              }
+            });
+          });
         });
       });
     });

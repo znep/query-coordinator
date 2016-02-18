@@ -163,7 +163,7 @@ class StoriesController < ApplicationController
     @story = DraftStory.find_by_uid(params[:uid])
 
     if @story
-      @inspiration_category_list = InspirationCategoryList.new.to_parsed_json
+      @inspiration_category_list = InspirationCategoryList.new(current_user, relative_url_root).to_parsed_json
       theme_list = ThemeList.new
       @standard_theme_configs = theme_list.standard_theme_list.sort_by { |key| key["title"] }
       @custom_theme_configs = theme_list.custom_theme_list.sort_by { |key| key["title"] }
@@ -254,7 +254,7 @@ class StoriesController < ApplicationController
   end
 
   def generate_example_block
-    inspiration_category_list = InspirationCategoryList.new.blocks
+    inspiration_category_list = InspirationCategoryList.new(current_user, relative_url_root).blocks
 
     example_block = inspiration_category_list[0]['blockContent']
     example_block['created_by'] = current_user['id']

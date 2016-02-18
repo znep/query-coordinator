@@ -4,7 +4,11 @@ function ClearableInput(WindowState, rx) {
   const Rx = rx;
   return {
     restrict: 'E',
-    scope: { 'search': '=', 'placeholderValue': '@placeholder', 'inputId': '@' },
+    scope: {
+      search: '=',
+      placeholderValue: '@placeholder',
+      inputId: '@'
+    },
     templateUrl: templateUrl,
     link: function($scope, element) {
       var searchInput = element.find('input');

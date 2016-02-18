@@ -51,13 +51,13 @@ function FeatureMapFlannel(I18n, DataTypeFormatService, Constants, $timeout) {
 
         var datatypeToFormat = {
           'boolean': DataTypeFormatService.renderBooleanCell(content, column),
-          'number': DataTypeFormatService.renderNumberCell(content, column),
-          'geo_entity': DataTypeFormatService.renderGeoCell(content, column),
-          'point': DataTypeFormatService.renderGeoCell(content, column),
-          'timestamp': DataTypeFormatService.renderTimestampCell(content, column),
-          'floating_timestamp': DataTypeFormatService.renderTimestampCell(content, column),
-          'money': DataTypeFormatService.renderMoneyCell(content, column),
-          'text': _.identity(content)
+          number: DataTypeFormatService.renderNumberCell(content, column),
+          geo_entity: DataTypeFormatService.renderGeoCell(content, column),
+          point: DataTypeFormatService.renderGeoCell(content, column),
+          timestamp: DataTypeFormatService.renderTimestampCell(content, column),
+          floating_timestamp: DataTypeFormatService.renderTimestampCell(content, column),
+          money: DataTypeFormatService.renderMoneyCell(content, column),
+          text: _.identity(content)
         };
 
         var formattedContent = _.get(datatypeToFormat, column.physicalDatatype, content);
@@ -96,7 +96,7 @@ function FeatureMapFlannel(I18n, DataTypeFormatService, Constants, $timeout) {
         switch (column.renderTypeName) {
           case 'location':
             var addressColumns = _.map(['address', 'city', 'state', 'zip'], function(addressColumn) {
-              var columnValue = _.result(_.find(subColumns, { 'columnName': addressColumn }), 'value');
+              var columnValue = _.result(_.find(subColumns, { columnName: addressColumn }), 'value');
               return _.isDefined(columnValue) ? columnValue.trim() : columnValue;
             });
 

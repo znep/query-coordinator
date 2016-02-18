@@ -116,7 +116,7 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
         }
       },
       views: {
-        'mainContent': {
+        mainContent: {
           //TODO figure out a way of getting the template dir out of rails.
           templateUrl: templateUrl2,
           controller: 'CardsViewController'
@@ -132,7 +132,7 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
         }
       },
       views: {
-        'mainContent': {
+        mainContent: {
           //TODO figure out a way of getting the template dir out of rails.
           templateUrl: templateUrl3,
           controller: 'SingleCardViewController'
@@ -156,7 +156,7 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
         }
       },
       views: {
-        'mainContent': {
+        mainContent: {
           templateUrl: templateUrl4,
           controller: 'VisualizationAddController'
         }

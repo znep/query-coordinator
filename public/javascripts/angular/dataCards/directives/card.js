@@ -13,15 +13,15 @@ function CardDirective(
   return {
     restrict: 'E',
     scope: {
-      'model': '=',
-      'whereClause': '=',
-      'editMode': '=',
-      'interactive': '=',
-      'allowFilterChange': '=',
-      'cardDraggable': '=',
-      'chooserMode': '=',
-      'isGrabbed': '=',
-      'isStandaloneVisualization': '='
+      model: '=',
+      whereClause: '=',
+      editMode: '=',
+      interactive: '=',
+      allowFilterChange: '=',
+      cardDraggable: '=',
+      chooserMode: '=',
+      isGrabbed: '=',
+      isStandaloneVisualization: '='
     },
     templateUrl: templateUrl,
     link: function($scope, element) {

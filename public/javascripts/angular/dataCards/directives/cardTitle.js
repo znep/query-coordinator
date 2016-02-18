@@ -4,7 +4,7 @@ function CardTitleDirective(Constants, Dataset, PageHelpersService, ServerConfig
   return {
     restrict: 'E',
     scope: {
-      'model': '='
+      model: '='
     },
     template: [
       '<div class="title-one-line dynamic-title" ng-show="displayDynamicTitle">{{dynamicTitle}}</div>',

@@ -248,7 +248,7 @@ angular.module('dataCards.models').
               filterBlob,
               {
                 'function': 'BinaryComputedGeoregionOperator',
-                'computedColumnName': migratedBlob.computedColumn
+                computedColumnName: migratedBlob.computedColumn
               }
             );
 

@@ -78,7 +78,7 @@ function ApiExplorer($window, http, WindowState, rx) {
 
           var config = {
             headers: {
-              'Accept': 'application/vnd.geo+json'
+              Accept: 'application/vnd.geo+json'
             },
             cache: true,
             requester: {
@@ -87,7 +87,7 @@ function ApiExplorer($window, http, WindowState, rx) {
               }
             },
             params: {
-              '$limit': 1
+              $limit: 1
             }
           };
 

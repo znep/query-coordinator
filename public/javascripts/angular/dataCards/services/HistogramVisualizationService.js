@@ -864,9 +864,9 @@ function HistogramVisualizationService(
         d3.event.stopPropagation();
         brush.brushDispatcher.clear();
         var evt = new MouseEvent('mousemove', {
-          'view': $window,
-          'bubbles': true,
-          'cancelable': true
+          view: $window,
+          bubbles: true,
+          cancelable: true
         });
         $window.document.body.dispatchEvent(evt);
       });

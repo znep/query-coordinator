@@ -17,17 +17,17 @@ function VisualizationAddController(
   var utils = socrata.utils;
   // Cards always expect to have a page, too painful to remove for now.
   var pageMetadata = {
-    'cards': [],
-    'datasetId': dataset.id,
-    'version': 3
+    cards: [],
+    datasetId: dataset.id,
+    version: 3
   };
   var blankPage = new Page(pageMetadata, dataset);
   var cardTypesToVIFTypes = {};
   var vifTypesToCardTypes = {
-    'choroplethMap': 'choropleth',
-    'columnChart': 'column',
-    'featureMap': 'feature',
-    'timelineChart': 'timeline'
+    choroplethMap: 'choropleth',
+    columnChart: 'column',
+    featureMap: 'feature',
+    timelineChart: 'timeline'
   };
 
   /**
@@ -43,32 +43,32 @@ function VisualizationAddController(
     var defaultExtentFeatureFlagValue;
     var defaultExtent;
     var vif = {
-      'aggregation': {
-        'field': null,
+      aggregation: {
+        field: null,
         'function': 'count'
       },
-      'columnName': card.fieldName,
-      'configuration': {
-        'localization': {}
+      columnName: card.fieldName,
+      configuration: {
+        localization: {}
       },
-      'createdAt': (new Date()).toISOString(),
-      'datasetUid': dataset.id,
-      'description': column.description,
-      'domain': metadata.domain,
-      'filters': [],
-      'format': {
-        'type': 'visualization_interchange_format',
-        'version': 1
+      createdAt: (new Date()).toISOString(),
+      datasetUid: dataset.id,
+      description: column.description,
+      domain: metadata.domain,
+      filters: [],
+      format: {
+        type: 'visualization_interchange_format',
+        version: 1
       },
-      'origin': {
-        'type': 'data_lens_add_visualization_component',
-        'url': `https://${metadata.domain}/view/${dataset.id}`
+      origin: {
+        type: 'data_lens_add_visualization_component',
+        url: `https://${metadata.domain}/view/${dataset.id}`
       },
-      'title': column.name,
-      'type': cardTypesToVIFTypes[card.cardType],
-      'unit': {
-        'one': 'record',
-        'other': 'records'
+      title: column.name,
+      type: cardTypesToVIFTypes[card.cardType],
+      unit: {
+        one: 'record',
+        other: 'records'
       }
     };
 
@@ -90,15 +90,15 @@ function VisualizationAddController(
       vif.configuration.defaultExtent = defaultExtent;
       vif.configuration.savedExtent = card.cardOptions.mapExtent;
       vif.configuration.shapefile = {
-        'columns': {
-          'name': 'NAME',
-          'unfiltered': 'UNFILTERED',
-          'filtered': 'FILTERED',
-          'selected': 'SELECTED'
+        columns: {
+          name: 'NAME',
+          unfiltered: 'UNFILTERED',
+          filtered: 'FILTERED',
+          selected: 'SELECTED'
         },
-        'primaryKey': _.get(computedColumn, 'computationStrategy.parameters.primary_key', ''),
-        'uid':  _.get(computedColumn, 'computationStrategy.parameters.region', '').replace(/_/g, ''),
-        'geometryLabel': null
+        primaryKey: _.get(computedColumn, 'computationStrategy.parameters.primary_key', ''),
+        uid:  _.get(computedColumn, 'computationStrategy.parameters.region', '').replace(/_/g, ''),
+        geometryLabel: null
       };
     }
 

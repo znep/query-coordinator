@@ -210,10 +210,10 @@ function columnChart(
           },
           interactive: $scope.allowFilterChange,
           localization: {
-            'NO_VALUE': `(${I18n.common.noValue})`,
-            'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.flyout.total,
-            'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.flyout.filteredAmount,
-            'FLYOUT_SELECTED_NOTICE': $scope.allowFilterChange ? I18n.flyout.clearFilterLong : ''
+            NO_VALUE: `(${I18n.common.noValue})`,
+            FLYOUT_UNFILTERED_AMOUNT_LABEL: I18n.flyout.total,
+            FLYOUT_FILTERED_AMOUNT_LABEL: I18n.flyout.filteredAmount,
+            FLYOUT_SELECTED_NOTICE: $scope.allowFilterChange ? I18n.flyout.clearFilterLong : ''
           }
         },
         unit: {

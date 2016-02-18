@@ -1,6 +1,5 @@
 class ThemesController < ApplicationController
   skip_before_filter :require_logged_in_user
-  force_ssl except: [:custom]
 
   layout 'blank'
 

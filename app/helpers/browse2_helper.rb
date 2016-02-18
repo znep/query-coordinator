@@ -12,6 +12,25 @@ module Browse2Helper
     classes.join(' ')
   end
 
+  def facet_sort_option_classnames(opts, facet_option)
+    facet_param = :sortBy
+    facet_option_classnames(opts, facet_param, facet_option, false, false).tap do |classnames|
+      # Sort by relevance by default. Apply active class to that option if there isn't an active sort present.
+      classnames << ' active' if opts[facet_param] == nil && facet_option[:value] == 'relevance'
+    end
+  end
+
+  def facet_sort_option(opts, sort_option, params)
+    sort_option_classnames = facet_sort_option_classnames(opts, sort_option)
+    sort_option_link_href = facet_option_url(opts, :sortBy, sort_option, params)
+
+    content_tag(:li) do
+      link_to(sort_option_link_href, :class => sort_option_classnames, 'data-facet-option-value' => sort_option[:value]) do
+        content_tag(:span, '', :class => 'browse2-facet-option-clear-icon icon-close-2') + sort_option[:name]
+      end
+    end
+  end
+
   def facet_option_url(opts, facet_param, facet_option, params)
     current_params = opts[:user_params].dup
     if params[:view_type] == 'browse2'

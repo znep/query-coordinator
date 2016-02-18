@@ -36,10 +36,6 @@ RSpec.describe InspirationCategoryList, type: :model do
         expect(author_value['blurb']).to include('mock user display name')
       end
 
-      it 'returns the author block with the current user\'s email' do
-        expect(author_value['blurb']).to include('mock@email.com')
-      end
-
       describe 'with no profile image' do
         it 'returns the author block with a placeholder image' do
           expect(author_value['image']['url']).to include('/assets/large-profile')

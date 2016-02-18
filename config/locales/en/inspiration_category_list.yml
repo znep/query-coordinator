@@ -59,3 +59,6 @@ en:
     text_media_4_8:
       heading: Headline
       content: You could leave it here, but it's probably best to use your own. There's little doubt that your text will be better than this text.
+    author:
+      blurb:
+        content: A short bio gives your audience a way to connect with you and establishes a human connection that gives voice to your story.

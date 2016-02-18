@@ -123,7 +123,7 @@
   margin-right: $author-component-margin;
   padding: $author-component-padding;
   border-bottom: $author-component-border-bottom-thickness solid $author-component-border-bottom-color;
-  padding: 0.5rem;
+  border-radius: 1px;
   overflow: hidden; // Makes background take size of content.
 
   .author-image {
@@ -138,6 +138,11 @@
     }
 
   }
+}
+
+.small .component-author {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .col3 {

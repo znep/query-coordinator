@@ -77,7 +77,7 @@
                             layer._suggestedTolerance = Math.round(Math.max.apply(null,
                                 _.chain(layer.featureLayer.renderer.infos)
                                 .map(function(info) { return [info.symbol.height, info.symbol.width]; })
-                                .flatten().compact().value()));
+                                .flattenDeep().compact().value()));
 
                             // Sometimes there are renderer.infos but no height/widths.
                             // In such a case, the above evaluates to negative infinity.

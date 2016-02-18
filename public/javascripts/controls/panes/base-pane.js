@@ -1390,7 +1390,7 @@
     var getValue = function(data, names, valIndex)
     {
         var result = null;
-        _.any(_.reject(_.flatten($.makeArray(names)), function(v) {
+        _.any(_.reject(_.flattenDeep($.makeArray(names)), function(v) {
             return _.isNull(v) || _.isUndefined(v);
         }),
         function(name)
@@ -1465,7 +1465,7 @@
                 { continue; }
             }
 
-            names.push(_.compact(_.flatten([f.name, f.otherNames])));
+            names.push(_.compact(_.flattenDeep([f.name, f.otherNames])));
         }
         return names;
     };
@@ -1963,7 +1963,7 @@
         { defValue = args.item.repeaterValue; }
 
         var curValue;
-        var lookupNames = _.reject(_.flatten([args.item.origName, args.item.otherNames]), function(v) {
+        var lookupNames = _.reject(_.flattenDeep([args.item.origName, args.item.otherNames]), function(v) {
             return _.isNull(v) || _.isUndefined(v);
         });
         if (lookupNames.length > 0)

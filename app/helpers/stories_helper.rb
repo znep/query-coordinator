@@ -28,6 +28,8 @@ module StoriesHelper
     component_type_mapping = {
       'assetSelector' => 'component_asset_selector',
       'embeddedHtml' => 'component_embedded_html',
+      'hero' => 'component_hero',
+      'author' => 'component_author',
       'html' => 'component_html',
       'horizontalRule' => 'component_horizontal_rule',
       'image' => 'component_image',
@@ -124,6 +126,13 @@ module StoriesHelper
 
   def site_chrome_should_show_footer?(content)
     content['footerText']
+  end
+
+  def embed_code_iframe_sandbox_allowances
+    %w(
+      allow-popups
+      allow-scripts
+    ).join(' ')
   end
 
   private

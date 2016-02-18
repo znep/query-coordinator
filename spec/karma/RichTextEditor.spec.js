@@ -257,8 +257,6 @@ describe('RichTextEditor', function() {
     });
   });
 
-
-
   describe('with an existing editor', function() {
     var $textEditor;
     var editor;
@@ -304,6 +302,13 @@ describe('RichTextEditor', function() {
         var currentClasses = $documentElement.attr('class');
 
         assert.lengthOf(currentClasses.match(/theme-/ig), 1);
+      });
+    });
+
+    describe('addContentClass', function() {
+      it('adds a new body class when called', function() {
+        editor.addContentClass('the-content-class');
+        assert.isTrue($documentElement.find('body').hasClass('the-content-class'));
       });
     });
 
@@ -415,7 +420,6 @@ describe('RichTextEditor', function() {
         });
       });
     });
-
   });
 
   describe('.deselect()', function() {

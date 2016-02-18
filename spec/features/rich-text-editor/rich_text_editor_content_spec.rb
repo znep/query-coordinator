@@ -61,7 +61,7 @@ RSpec.describe 'rich text editor content', type: :feature, js: true do
       trigger_focus_event = "$('iframe')[0].dispatchEvent(" \
         "new storyteller.CustomEvent(" \
           "'rich-text-editor::focus-change'," \
-          "{ detail: { id: #{editor_id}, content: true }, bubbles: true }" \
+          "{ detail: { id: #{editor_id}, isFocused: true }, bubbles: true }" \
         ")" \
       ");"
 

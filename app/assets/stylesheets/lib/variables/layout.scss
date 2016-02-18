@@ -38,7 +38,7 @@ $theme-list-theme-padding: 1rem;
 $theme-list-theme-title-font-size: 1.5rem;
 
 // Main content (the width of the user story)
-$main-content-width-small: 40rem;
+$main-content-width-small: 76.8rem;
 $main-content-width-medium: 70rem;
 $main-content-width-large: 96rem;
 $main-content-width-extra-large: 114rem;
@@ -162,3 +162,8 @@ $presentation-mode-small-max-width: 96%;
 // Menu-list
 $menu-list-border-left-width: 7px;
 
+// Author component
+$author-component-padding: 2rem 3rem 2rem 3rem;
+$author-component-margin: 10rem;
+$author-component-profile-image-padding: 0.4rem;
+$author-component-border-bottom-thickness: 1px;

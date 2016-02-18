@@ -141,7 +141,7 @@ $(document).on('ready', function() {
 
     // If an editor is being focused, we must switch the link toolbar's context,
     // and deselect all other editors.
-    if (event.originalEvent.detail.content === true) {
+    if (event.originalEvent.detail.isFocused === true) {
       currentEditorId = event.originalEvent.detail.id;
       editors = _.omit(richTextEditorManager.getAllEditors(), currentEditorId);
 

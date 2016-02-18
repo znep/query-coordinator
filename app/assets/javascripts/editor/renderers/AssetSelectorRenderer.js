@@ -458,7 +458,17 @@
         }
       );
 
-      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+      var backButton;
+      var componentType = storyteller.assetSelectorStore.getComponentType();
+
+      if (componentType === 'image') {
+        // Paradoxically, we allow image components to be changed into other asset types.
+        backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+      } else {
+        // Not so for other image-using components - they're locked to what they are (hero, author).
+        backButton = $('<button>', {class: 'btn-default', 'data-action': Actions.ASSET_SELECTOR_CLOSE});
+        backButton.text(I18n.t('editor.modal.buttons.cancel'));
+      }
 
       var insertButton = $(
         '<button>',
@@ -491,6 +501,14 @@
       inputButton.click(function(event) {
         event.preventDefault();
         inputControl.click();
+      });
+
+      backButton.one('click', function() {
+        if (backButton.attr('data-action')) {
+          storyteller.dispatcher.dispatch({
+            action: backButton.attr('data-action')
+          });
+        }
       });
 
       return [ content, buttonGroup ];
@@ -652,42 +670,52 @@
         insertButton
       ]);
 
+      var isImage = storyteller.assetSelectorStore.getComponentType() === 'image';
       var content = $(
         '<div>',
         { 'class': 'asset-selector-input-group' }
       ).append([
         previewImageLabel,
         previewContainer,
-        descriptionLabel,
-        descriptionContainer
+        isImage ? descriptionLabel : null,
+        isImage ? descriptionContainer : null
       ]);
 
       return [ content, buttonGroup ];
     }
 
+    // Some components types have the image properties under an `image` field,
+    // whereas the image component itself has the image properties at the root.
+    function _extractImageUrl(componentProperties) {
+      return _.get(
+        componentProperties,
+        'url',
+        _.get(componentProperties, 'image.url', null) // Try again, this time under image.url. Overall default is null.
+      );
+    }
+
+    function _extractImageAlt(componentProperties) {
+      return _.get(
+        componentProperties,
+        'alt',
+        _.get(componentProperties, 'image.alt', null) // Try again, this time under image.alt. Overall default is null.
+      );
+    }
+
     function _renderImagePreviewData(componentProperties) {
 
-      var documentId = null;
-      var imageUrl = null;
-      var altAttribute = null;
+      var imageUrl = _extractImageUrl(componentProperties);
+      var altAttribute = _extractImageAlt(componentProperties);
       var imageContainer = _container.find('.asset-selector-preview-image-container');
       var imageElement = imageContainer.find('.asset-selector-preview-image');
       var imageSrc = imageElement.attr('src');
       var altInputField = _container.find('.asset-selector-alt-text-input');
       var insertButton = _container.find('.btn-apply');
 
-      if (componentProperties !== null &&
-        _.has(componentProperties, 'documentId') &&
-        _.has(componentProperties, 'url')) {
-
-        documentId = componentProperties.documentId;
-        imageUrl = componentProperties.url;
-        altAttribute = componentProperties.alt;
-      }
 
       altInputField.attr('value', _.isEmpty(altAttribute) ? null : altAttribute);
 
-      if (!_.isNull(documentId) && !_.isNull(imageUrl)) {
+      if (!_.isNull(imageUrl)) {
 
         if (imageSrc !== imageUrl) {
           imageElement.attr('src', imageUrl);
@@ -1028,7 +1056,7 @@
 
       var htmlFragmentUrl = null;
       var documentId = null;
-      var percentLoaded = null;
+      var percentLoaded = storyteller.assetSelectorStore.getUploadPercentLoaded();
       var errorStep = null;
       var messageTranslationKey;
       var iframeContainer = _container.find('.asset-selector-preview-container');
@@ -1047,10 +1075,6 @@
 
       if (_.has(componentProperties, 'url')) {
         htmlFragmentUrl = componentProperties.url;
-      }
-
-      if (_.has(componentProperties, 'percentLoaded')) {
-        percentLoaded = componentProperties.percentLoaded;
       }
 
       if (_.has(componentProperties, 'step')) {
@@ -1109,7 +1133,7 @@
 
         loadingButton.addClass('hidden');
         insertButton.prop('disabled', true);
-      } else if (!_.isNull(percentLoaded)) {
+      } else if (_.isFinite(percentLoaded)) {
 
         invalidMessageContainer.hide();
 
@@ -1160,7 +1184,7 @@
     function _renderChooseTableOrChartTemplate() {
       var $backButton = _renderModalBackButton(WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION);
 
-      var $chartButton = $('<button>', { 'class': 'default-focus btn-visualize-chart' }).
+      var $chartButton = $('<button>', { 'class': 'btn-visualize-chart' }).
         append($('<span>', { 'class': 'icon-chart' })).
         append($('<div>').text(I18n.t('editor.asset_selector.visualization.choose_chart')));
 
@@ -1171,6 +1195,8 @@
       var $visualizationChoiceGroup = $('<div>', {
         'class': 'visualization-choice'
       }).append([ $chartButton, $tableButton ]);
+
+      $visualizationChoiceGroup.prepend($('<button>', { 'class': 'default-focus focus-catcher'}));
 
       var $buttonGroup = $('<div>', {
         'class': 'modal-button-group r-to-l'
@@ -1359,7 +1385,8 @@
       var previewIframe = $(
         '<iframe>',
         {
-          'class': 'asset-selector-preview-iframe'
+          'class': 'asset-selector-preview-iframe',
+          'sandbox': storyteller.config.embedCodeSandboxIFrameAllowances
         }
       );
 

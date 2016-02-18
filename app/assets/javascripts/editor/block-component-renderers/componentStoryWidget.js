@@ -150,7 +150,7 @@
       text(storyWidgetData.title);
 
     $widgetImage = $(
-      '<img>',
+      '<div>',
       {
         'class': 'story-widget-image'
       }

@@ -1,0 +1,25 @@
+<%
+# Component format:
+# {
+#  type: "author",
+#  value: {
+#    blurb: "<html>",
+#    image: { /* componentImage blob */ }
+#  }
+# }
+%>
+<div class="author-image col2 component-image">
+  <%
+    # image_tag was prepending a spurious /stories for absolute paths (like profile images).
+  %>
+  <img
+     src="<%= component['value']['image']['url'] %>"
+     <%=
+       alt = component['value']['image']['alt']
+       alt.present? ? "alt='#{alt}'" : ''
+     %>
+   >
+</div>
+<div class="author-blurb col10 component-html typeset squire-formatted remove-top-margin">
+  <%= component['value']['blurb'].html_safe %>
+</div>

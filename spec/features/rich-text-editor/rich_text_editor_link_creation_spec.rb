@@ -72,8 +72,8 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
         expect(page).to have_field('link-text', :with => '')
       end
 
-      it 'displays an unchecked "Open In New Window" checkbox' do
-        expect(page).to have_unchecked_field('open-in-new-window', :visible => false)
+      it 'displays a checked "Open In New Window" checkbox' do
+        expect(page).to have_checked_field('open-in-new-window', :visible => false)
       end
     end
 

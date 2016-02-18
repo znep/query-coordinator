@@ -46,7 +46,7 @@
 
     $(document).on('keydown', function(e) {
       if (e.ctrlKey && e.keyCode === 50) { // '2'
-        styleAndPresentationPanel.trigger('sidebar:toggle');
+        toggleButton.click();
       }
       if (e.keyCode === 27) { // esc
         styleAndPresentationPanel.trigger('sidebar:close');

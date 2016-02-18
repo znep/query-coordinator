@@ -70,6 +70,7 @@
     var _containerElement = element;
     var _assetFinder = assetFinder;
     var _formats = formats;
+    var _contentWindowDocument;
     var _contentToPreload = null;
     // _editor is the Squire instance.
     var _editor = null;
@@ -160,6 +161,12 @@
       }
     };
 
+    // Adds an extra class to the content body.
+    this.addContentClass = function(extraClass) {
+      var body = _editorElement[0].contentDocument.querySelector('body');
+      $(body).addClass(extraClass);
+    };
+
     /**
      * Deselects the rich text <iframe>.
      */
@@ -206,13 +213,16 @@
 
       $(_editorElement).load(function(e) {
 
-        _addThemeStyles(e.target.contentWindow.document);
-        _editor = new Squire(e.target.contentWindow.document);
-        _editorBodyElement = $(e.target.contentWindow.document).find('body');
+        _contentWindowDocument = e.target.contentWindow.document;
+        _addThemeStyles(_contentWindowDocument);
+        _editor = new Squire(_contentWindowDocument);
+        _editorBodyElement = $(_contentWindowDocument).find('body');
         _formatController = new storyteller.RichTextEditorFormatController(
           _self,
           _formats
         );
+
+        _contentWindowDocument.addEventListener('click', _broadcastContentClick);
 
         _editor.addEventListener('focus', _broadcastFocus);
         _editor.addEventListener('blur', _broadcastBlur);
@@ -235,6 +245,9 @@
         _editor.addEventListener('mouseup', _linkActionTip);
         _editor.addEventListener('pathChange', _linkActionTip);
 
+        _editor.setKeyHandler('ctrl-k', _clickEditorLinkButton);
+        _editor.setKeyHandler('meta-k', _clickEditorLinkButton);
+
         // Pre-load existing content (e.g. if we are editing an
         // existing resource).
         if (_contentToPreload !== null) {
@@ -249,6 +262,23 @@
       });
 
       _containerElement.append(_editorElement);
+    }
+
+    /**
+     * @function _clickEditorLinkButton
+     * @description
+     * This function prevents the default behavior based on the event.
+     * It will click the editor toolbar link button and focus on the
+     * URL input field when present. The function is called to handle the Ctrl/Cmd + k shortcut
+     * that allows the user to add or edit a link to their current selection.
+     *
+     * @param {Object} editor - the Squire instance (req'd for Squire setKeyHandler function)
+     * @param {Object} event - a ctrl-k or meta-k event object
+     */
+    function _clickEditorLinkButton(editor, event) {
+      event.preventDefault();
+      $('.rich-text-editor-toolbar-btn-link').click();
+      $('input[type="url"]').focus();
     }
 
     /**
@@ -510,12 +540,16 @@
       );
     }
 
+    function _broadcastContentClick() {
+      _emitEvent('rich-text-editor::content-click');
+    }
+
     function _broadcastFocus() {
-      _emitEvent('rich-text-editor::focus-change', { content: true });
+      _emitEvent('rich-text-editor::focus-change', { isFocused: true });
     }
 
     function _broadcastBlur() {
-      _emitEvent('rich-text-editor::focus-change', { content: false });
+      _emitEvent('rich-text-editor::focus-change', { isFocused: false });
     }
 
     /**

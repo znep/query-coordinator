@@ -6,7 +6,9 @@
   //endemic if(data is different) { update() } logic into here.
   //Right now each component implements this in special snowflake
   //ways.
-  function componentBase(componentData, theme, options) {
+  function componentBase(componentData, theme, options, firstRenderCallback, dataChangedCallback) {
+    var currentData = this.data('component-rendered-data');
+
     options = _.extend(
       {
         // Note that it isn't possible to switch between edit
@@ -35,6 +37,17 @@
 
     if (options.editMode && options.resizeSupported) {
       this.componentResizable(options.resizeOptions);
+    }
+
+    if (!this.data('component-rendered')) {
+      // First render
+      this.data('component-rendered', true);
+      (firstRenderCallback || _.noop).call(this, componentData);
+    }
+
+    if (!_.isEqual(currentData, componentData)) {
+      this.data('component-rendered-data', componentData);
+      (dataChangedCallback || _.noop).call(this, componentData);
     }
 
     return this;

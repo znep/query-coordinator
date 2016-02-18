@@ -5,6 +5,9 @@ en:
       text:
         name: Presentation Ideas
         description: Variety and texture keep your readers interested!
+      hero:
+        name: Hero Blocks
+        description: Content to make your story stand out
       media_and_text:
         name: Rich Media and Text
         description: Combinations that feature visualizations and media

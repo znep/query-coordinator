@@ -34,7 +34,7 @@ en:
     render_error: 'There was an error'
   common:
     close: 'Close'
-  default_page_title: 'Storyteller'
+  default_page_title: 'Socrata Perspectives'
   preview_mode:
     presentation_mode:
       title: "Presentation Mode"

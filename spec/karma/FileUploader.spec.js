@@ -7,11 +7,16 @@ describe('FileUploader', function() {
   var fileUploader;
   var mockFile;
 
+  beforeEach(removeStandardMocks);
+
   beforeEach(function() {
-    // Since these tests actually expect to use AJAX, we need to disable the
-    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-    // and re-enble it after each.
-    window.mockedXMLHttpRequest.restore();
+    window.socrata.storyteller.config = {
+      fileUploader: {
+        checkDocumentProcessedRetryInterval: 25,
+        checkDocumentProcessedMaxRetrySeconds: 1,
+        maxFileSizeBytes: 5 * 1024
+      }
+    };
 
     fileUploader = new storyteller.FileUploader();
 
@@ -25,6 +30,7 @@ describe('FileUploader', function() {
 
     storyteller.userStoryUid = 'four-four';
 
+    storyteller.dispatcher = new Flux.Dispatcher();
     storyteller.dispatcher.register(function(payload) {
       dispatchedEvents.push(payload);
     });
@@ -36,10 +42,15 @@ describe('FileUploader', function() {
   afterEach(function() {
     server.restore();
     fileUploader.destroy();
-
-    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
   });
+
+  function waitForActionThen(actionName, callback) {
+    storyteller.dispatcher.register(function(payload) {
+      if (payload.action === actionName) {
+        _.defer(callback, payload); // Make sure action gets processed fully, then callback.
+      }
+    });
+  }
 
   describe('.upload()', function() {
 
@@ -144,7 +155,7 @@ describe('FileUploader', function() {
       it('dispatches events including FILE_UPLOAD_DONE', function(done) {
         fileUploader.upload(mockFile);
 
-        setTimeout(function() {
+        waitForActionThen('FILE_UPLOAD_DONE', function() {
           assert.equal(dispatchedEvents.length, 3);
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_PROGRESS', percentLoaded: 0 }), {
@@ -188,7 +199,7 @@ describe('FileUploader', function() {
 
         fileUploader.upload(mockFile);
 
-        setTimeout(function() {
+        waitForActionThen('FILE_UPLOAD_ERROR', function() {
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_PROGRESS', percentLoaded: 0 }), {
             action: Actions.FILE_UPLOAD_PROGRESS,
@@ -207,7 +218,7 @@ describe('FileUploader', function() {
           assert.equal(server.requests.length, 1);
 
           done();
-        }, 50);
+        });
       });
     });
 
@@ -238,7 +249,7 @@ describe('FileUploader', function() {
       it('dispatches FILE_UPLOAD_ERROR', function(done) {
         fileUploader.upload(mockFile);
 
-        setTimeout(function() {
+        waitForActionThen('FILE_UPLOAD_ERROR', function() {
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_ERROR' }), {
             action: Actions.FILE_UPLOAD_ERROR,
@@ -300,19 +311,22 @@ describe('FileUploader', function() {
       it('dispatches progress events and an error', function(done) {
         fileUploader.upload(mockFile);
 
-        setTimeout(function() {
+        waitForActionThen('FILE_UPLOAD_ERROR', function(errorAction) {
 
-          assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_ERROR' }), {
-            action: Actions.FILE_UPLOAD_ERROR,
-            error: {
-              step: 'save_resource',
-              reason: { status: 500, message: 'Internal Server Error' }
-            },
-            errorReporting: {
-              label: 'FileUploader#_emitError',
-              message: 'FileUploader#_emitError: save_resource - Internal Server Error (story: four-four, status: 500)'
+          assert.deepEqual(
+            errorAction,
+            {
+              action: Actions.FILE_UPLOAD_ERROR,
+              error: {
+                step: 'save_resource',
+                reason: { status: 500, message: 'Internal Server Error' }
+              },
+              errorReporting: {
+                label: 'FileUploader#_emitError',
+                message: 'FileUploader#_emitError: save_resource - Internal Server Error (story: four-four, status: 500)'
+              }
             }
-          });
+          );
 
           assert.equal(server.requests.length, 3);
 
@@ -372,19 +386,22 @@ describe('FileUploader', function() {
       it('dispatches FILE_UPLOAD_ERROR', function(done) {
         fileUploader.upload(mockFile);
 
-        setTimeout(function() {
+        waitForActionThen('FILE_UPLOAD_ERROR', function(errorAction) {
 
-          assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_ERROR' }), {
-            action: Actions.FILE_UPLOAD_ERROR,
-            error: {
-              step: 'get_resource',
-              reason: { status: 400, message: 'Bad Request' }
-            },
-            errorReporting: {
-              label: 'FileUploader#_emitError',
-              message: 'FileUploader#_emitError: get_resource - Bad Request (story: four-four, status: 400)'
+          assert.deepEqual(
+            errorAction,
+            {
+              action: Actions.FILE_UPLOAD_ERROR,
+              error: {
+                step: 'get_resource',
+                reason: { status: 400, message: 'Bad Request' }
+              },
+              errorReporting: {
+                label: 'FileUploader#_emitError',
+                message: 'FileUploader#_emitError: get_resource - Bad Request (story: four-four, status: 400)'
+              }
             }
-          });
+          );
 
           // account for retries
           assert.equal(server.requests.length, 6);

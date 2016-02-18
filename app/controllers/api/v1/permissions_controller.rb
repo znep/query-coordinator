@@ -10,7 +10,7 @@ class Api::V1::PermissionsController < ApplicationController
     begin
       permissions_response = permissions.update_permissions(is_public: params[:isPublic])
     rescue => exception
-      AirbrakeNotifier.report_error(exception, 'Permissions service object did not instantiate successfully.')
+      AirbrakeNotifier.report_error(exception, message: 'Permissions service object did not instantiate successfully.')
     end
 
     if permissions_response.nil?
@@ -24,4 +24,3 @@ class Api::V1::PermissionsController < ApplicationController
     return render nothing: true, status: 403 unless admin? || owner?
   end
 end
-

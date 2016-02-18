@@ -8,7 +8,7 @@
 
 en:
   editor:
-    default_page_title: 'Storyteller'
+    default_page_title: 'Socrata Perspectives - Create a Story'
     empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
     remove_block_confirmation: 'Are you sure you want to remove this block?'
     page_close_confirmation: 'You have unsaved changes to this story.'
@@ -52,6 +52,7 @@ en:
         licenses: 'Only individuals with a Perspectives license can be the Co-Owner of a story. <a href="https://support.socrata.com/hc/en-us/articles/216288698" target="_blank">Learn more</a>'
         errors:
           already_added: 'This collaborator already has access.'
+          user_has_no_account: 'Sorry! This email address is not associated with a Socrata account. Ask the user to register at https://{domain}/signup and then try again.'
           invalid_email: 'Please use a valid email address.'
           unknown_error: 'Looks like an unknown error occurred. Our engineers have been notified.'
     share_and_embed:
@@ -76,6 +77,8 @@ en:
         button: 'Edit'
       asset_selector:
         insert_btn: 'Insert'
+      hero:
+        set_cover_image: 'Set Cover Image'
     settings_panel:
       panel_title: 'Menu'
       back_to_profile: 'Back to Profile'

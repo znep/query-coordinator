@@ -19,6 +19,7 @@ class StoryAccessLogger
         metrics << Metric.new("referrer-hosts-#{current_domain_id}", "referrer-#{referrer_host}")
         metrics << Metric.new("referrer-hosts-#{story.uid}", "referrer-#{referrer_host}")
         metrics << Metric.new("referrer-paths-#{current_domain_id}-#{referrer_host}", "path-#{referrer_path}")
+        metrics << Metric.new("referrer-paths-#{story.uid}-#{referrer_host}", "path-#{referrer_path}")
       end
     end
 

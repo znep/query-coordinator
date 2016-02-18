@@ -58,6 +58,29 @@
       clear: both;
     }
 
+    .collaborators-email-input-wrapper {
+      position: relative;
+      margin-bottom: 1rem;
+
+      &.busy {
+        input {
+          padding-right: 5rem;
+        }
+
+        .btn-busy {
+          display: block;
+        }
+      }
+    }
+
+    .btn-busy {
+      display: none;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+    }
+
     .btn-default {
       padding: 0.75rem 1.5rem;
     }
@@ -69,6 +92,7 @@
     padding: 0.75rem;
     font-size: 1.5rem;
     background-color: $collaborators-input-email-background-color;
+    margin-bottom: 0;
   }
 
   .modal-radio-group {

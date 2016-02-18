@@ -32,6 +32,8 @@
     var addContentPanel = $(this).sidebar({
       side: 'right'
     });
+    var $userStory = $('.user-story');
+    var $addContentPanelBtn = $('.content-panel-btn');
 
     // Set up some input events.
 
@@ -46,12 +48,20 @@
 
     $(document).on('keydown', function(e) {
       if (e.ctrlKey && e.keyCode === 49) { // '1'
-        addContentPanel.trigger('sidebar:toggle');
+        toggleButton.click();
       }
       if (e.keyCode === 27) { // esc
         addContentPanel.trigger('sidebar:close');
       }
     });
+
+    $userStory.on('click rich-text-editor::content-click', handleClickOutsideAddContentPanel);
+
+    function handleClickOutsideAddContentPanel(event) {
+      if (!$addContentPanelBtn.is(event.target) && addContentPanel.hasClass('active')) {
+        addContentPanel.trigger('sidebar:close');
+      }
+    }
 
     addContentPanel.
       on('sidebar:open', function() {

@@ -37,4 +37,9 @@ module ThemesHelper
       false
     end
   end
+
+  # method from socrata/frontend
+  def strip_byte_order_marks!(string)
+    string.gsub!("\xEF\xBB\xBF".force_encoding('utf-8'), '')
+  end
 end

@@ -7,6 +7,28 @@ describe('CollaboratorsRenderer', function() {
   var storyteller = window.socrata.storyteller;
   var debounceStub;
 
+  function respondWithNoUserFound() {
+    server.respond([
+      200,
+      {'Content-Type': 'application/json'},
+      JSON.stringify({
+        results: []
+      })
+    ]);
+  }
+
+  function respondWithUserRole(role) {
+    server.respond([
+      200,
+      { 'Content-Type': 'application/json' },
+      JSON.stringify({
+        results: [
+          { roleName: role }
+        ]
+      })
+    ]);
+  }
+
   beforeEach(function() {
     window.mockedXMLHttpRequest.restore();
     window.primaryOwnerUid = 'test-test';
@@ -57,7 +79,7 @@ describe('CollaboratorsRenderer', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
           action: Actions.COLLABORATORS_LOAD,
-          collaborators: [{email: 'hello@socrata.com', accessLevel: 'accessLevel', uid: 'four-four', displayName: 'Hello'}]
+          collaborators: [{email: 'already-shared-with@socrata.com', accessLevel: 'accessLevel', uid: 'four-four', displayName: 'Hello'}]
         });
 
         storyteller.dispatcher.dispatch({
@@ -81,7 +103,7 @@ describe('CollaboratorsRenderer', function() {
       });
 
       it('should have data-* attributes that identify the table entry', function() {
-        assert.equal($tr.attr('data-email'), 'hello@socrata.com');
+        assert.equal($tr.attr('data-email'), 'already-shared-with@socrata.com');
         assert.equal($tr.attr('data-access-level'), 'accessLevel');
       });
 
@@ -96,7 +118,7 @@ describe('CollaboratorsRenderer', function() {
       storyteller.dispatcher.dispatch({
         action: Actions.COLLABORATORS_LOAD,
         collaborators: [{
-          email: 'hello@socrata.com',
+          email: 'already-shared-with@socrata.com',
           accessLevel: 'viewer'
         }]
       });
@@ -164,7 +186,7 @@ describe('CollaboratorsRenderer', function() {
 
       it('should disallow adding an already-added user\'s email address', function() {
         $email.
-          val('hello@socrata.com').
+          val('already-shared-with@socrata.com').
           trigger('input');
 
         assert.isTrue(
@@ -172,15 +194,15 @@ describe('CollaboratorsRenderer', function() {
         );
       });
 
-      it('should allow a properly-structured email address', function(done) {
+      it('should disallow a properly-structured but unregistered email address', function(done) {
         $email.
-          val('valid@valid.com').
+          val('valid-but-not-a-user@valid.com').
           trigger('input');
 
-        server.respond([200, {'Content-Type': 'application/json'}, '']);
+        respondWithNoUserFound();
 
         _.defer(function() {
-          assert.isFalse(
+          assert.isTrue(
             $collaborators.find('[data-action="COLLABORATORS_ADD"]').prop('disabled')
           );
 
@@ -189,10 +211,12 @@ describe('CollaboratorsRenderer', function() {
       });
 
       describe('user has a stories/administrator role', function() {
+        verifyAddButtonBehaviorWithRole('administrator');
+
         it('should enable owner selection for an administrator', function(done) {
           $email.val('valid@valid.com').trigger('input');
 
-          server.respond([200, { 'Content-Type': 'application/json' }, '{ "results" : [{ "roleName" : "administrator" } ] }']);
+          respondWithUserRole('administrator');
 
           _.defer(function() {
             assert.isFalse(
@@ -206,7 +230,7 @@ describe('CollaboratorsRenderer', function() {
         it('should enable owner selection for a stories role', function(done) {
           $email.val('valid@valid.com').trigger('input');
 
-          server.respond([200, { 'Content-Type': 'application/json' }, '{ "results" : [{ "roleName" : "publisher_stories" } ] }']);
+          respondWithUserRole('publisher_stories');
 
           _.defer(function() {
             assert.isFalse(
@@ -219,11 +243,12 @@ describe('CollaboratorsRenderer', function() {
       });
 
       describe('user does not have a stories/administrator role', function() {
+        verifyAddButtonBehaviorWithRole('nope');
+
         it('should disable owner selection for users without a stories/administrator role', function(done) {
           $email.val('valid@valid.com').trigger('input');
 
-          server.
-            respond([200, { 'Content-Type': 'application/json' }, '{ "results" : [{ "roleName" : "nope" } ] }']);
+          respondWithUserRole('nope');
 
           _.defer(function() {
             assert.isTrue(
@@ -235,37 +260,40 @@ describe('CollaboratorsRenderer', function() {
         });
       });
 
-      describe('with a valid collaborator', function() {
-        var response = [200, {'Content-Type': 'application/json'}, '{}'];
-        var addCollaborator = function() {
-          $collaborators.find('.modal-input-group button').click();
-          return $collaborators.find('tbody tr[data-email="valid@valid.com"]');
-        };
+      function verifyAddButtonBehaviorWithRole(role) {
+        describe('add button', function() {
+          var $resultantTableRow;
 
-        beforeEach(function() {
-          $email.
-            val('valid@valid.com').
-            trigger('input');
+          function addCollaborator() {
+            $collaborators.find('.modal-input-group button').click();
+          }
 
-          server.respond(response);
-        });
+          beforeEach(function(done) {
+            $email.
+              val('valid@valid.com').
+              trigger('input');
 
-        it('should add the collaborator to the table', function(done) {
-          _.defer(function() {
-            var $tr = addCollaborator();
-            assert.lengthOf($tr, 1);
-            done();
+            respondWithUserRole(role);
+
+            _.defer(function() {
+              addCollaborator();
+              $resultantTableRow = $collaborators.find('tbody tr[data-email="valid@valid.com"]');
+              done();
+            });
+          });
+
+          it('should add the collaborator to the table', function() {
+            assert.lengthOf(
+              $resultantTableRow,
+              1
+            );
+          });
+
+          it('should set the row state class to "added"', function() {
+            assert.isTrue($resultantTableRow.hasClass('added'));
           });
         });
-
-        it('should set the row state class to "added"', function(done) {
-          _.defer(function() {
-            var $tr = addCollaborator();
-            assert.isTrue($tr.hasClass('added'));
-            done();
-          });
-        });
-      });
+      }
     });
 
     describe('when manipulating a newly-added collaborator', function() {

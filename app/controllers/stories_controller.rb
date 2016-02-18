@@ -16,6 +16,8 @@ class StoriesController < ApplicationController
   after_action :allow_iframe, only: :widget
   helper_method :needs_view_assets?, :contributor?
 
+  force_ssl except: [:show, :widget], unless: :ssl_disabled?
+
   def show
     # This param is set in the link provided to users who receive a collaboration request
     # via email. In this case, we want to redirect them to the most privileged action they
@@ -72,9 +74,9 @@ class StoriesController < ApplicationController
       elsif !@story_title.nil?
         redirect_to "/stories/s/#{params[:uid]}/edit"
       else
-        Airbrake.notify_or_ignore(
-          RuntimeError.new,
-          "TEMPORARY/DEBUG: No story title on view '#{view}'"
+        AirbrakeNotifier.report_error(
+          RuntimeError.new("TEMPORARY/DEBUG: No story title on view '#{view}'"),
+          on_method: 'stories_controller#new'
         )
         render_404
       end
@@ -161,7 +163,7 @@ class StoriesController < ApplicationController
     @story = DraftStory.find_by_uid(params[:uid])
 
     if @story
-      @inspiration_category_list = InspirationCategoryList.new.to_parsed_json
+      @inspiration_category_list = InspirationCategoryList.new(current_user, relative_url_root).to_parsed_json
       theme_list = ThemeList.new
       @standard_theme_configs = theme_list.standard_theme_list.sort_by { |key| key["title"] }
       @custom_theme_configs = theme_list.custom_theme_list.sort_by { |key| key["title"] }
@@ -182,6 +184,10 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  def ssl_disabled?
+    Rails.env.test?
+  end
 
   # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
   # somewhere, but that clearly won't work with an embeddable widget so we
@@ -248,7 +254,7 @@ class StoriesController < ApplicationController
   end
 
   def generate_example_block
-    inspiration_category_list = InspirationCategoryList.new.blocks
+    inspiration_category_list = InspirationCategoryList.new(current_user, relative_url_root).blocks
 
     example_block = inspiration_category_list[0]['blockContent']
     example_block['created_by'] = current_user['id']
@@ -280,7 +286,7 @@ class StoriesController < ApplicationController
 
       AirbrakeNotifier.report_error(
         StandardError.new(error_message),
-        "stories_controller##{original_action}"
+        on_method: "stories_controller##{original_action}"
       )
     end
 

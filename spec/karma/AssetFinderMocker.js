@@ -10,6 +10,9 @@
         },
         getRelativeUrlRoot: function() {
           return '';
+        },
+        getImageAssetPath: function() {
+          return '';
         }
       };
       window.socrata.storyteller.AssetFinder = AssetFinder;

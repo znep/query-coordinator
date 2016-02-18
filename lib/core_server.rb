@@ -141,7 +141,7 @@ class CoreServer
       if attempt_number === 3
         AirbrakeNotifier.report_error(
           exception,
-          "CoreServer::core_server_request() failed with 3 retries after #{total_delay.to_s} seconds."
+          message: "CoreServer::core_server_request() failed with 3 retries after #{total_delay.to_s} seconds."
         )
       end
     end
@@ -357,7 +357,7 @@ class CoreServer
       error_message << " - HTTP #{status_code}" unless status_code.blank?
       error_message << " - '#{response_body.inspect}'" unless response_body.blank?
 
-      AirbrakeNotifier.report_error(error, error_message)
+      AirbrakeNotifier.report_error(error, message: error_message)
     end
 
     json_response
@@ -377,7 +377,7 @@ class CoreServer
       error_message << " - HTTP #{status_code}" unless status_code.blank?
       error_message << " - '#{response_body.inspect}'" unless response_body.blank?
 
-      AirbrakeNotifier.report_error(error, error_message)
+      AirbrakeNotifier.report_error(error, message: error_message)
       false
     end
   end

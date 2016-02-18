@@ -73,6 +73,13 @@ $block-edit-controls-fg-color: #fff;
 $block-edit-controls-bg-color: #00be9b;
 $block-edit-controls-hover-color: #1CAB8D;
 
+// Hero Block
+$hero-unconfigured-background-color: #555;
+$hero-unconfigured-hover-background-color: #333;
+$hero-checkered-background-color: #efefef;
+$hero-text-shadow-color: #666;
+$hero-color: white;
+
 // Resize UI
 $resize-bar-color: #fff;
 $resize-bar-hover-color: #eee;
@@ -281,3 +288,8 @@ $menu-list-item-content-div-background-color: #555;
 // Spinner
 $spinner-border-color: #9b9b9b;
 $spinner-border-right-color: #c9c9c9;
+
+// Author component
+$author-component-bg-color: #f9f9f9;
+$author-component-border-bottom-color: #aaa;
+$author-component-profile-image-border-color: #ccc;

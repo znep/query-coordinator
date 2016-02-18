@@ -88,7 +88,12 @@
             case 'YOUTUBE':
               _chooseYoutube();
               break;
+            case 'HERO':
+              _setComponentType('hero');
+              _chooseImageUpload();
+              break;
             case 'IMAGE':
+              _setComponentType('image');
               _chooseImageUpload();
               break;
             case 'EMBED_CODE':
@@ -182,6 +187,10 @@
       return _state.isEditingExisting === true;
     };
 
+    this.getUploadPercentLoaded = function() {
+      return _.get(_state, 'uploadPercentLoaded', null);
+    };
+
     /**
      * Private methods
      */
@@ -193,10 +202,12 @@
      */
     function _stepForUpdate(type) {
       switch (type) {
+        case 'hero': return WIZARD_STEP.IMAGE_PREVIEW;
         case 'image': return WIZARD_STEP.IMAGE_PREVIEW;
         case 'story.widget': return WIZARD_STEP.ENTER_STORY_URL;
         case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
         case 'embeddedHtml': return WIZARD_STEP.ENTER_EMBED_CODE;
+        case 'author': return WIZARD_STEP.IMAGE_PREVIEW; // Author blocks act like an image embed + RTE blurb.
       }
 
       if (type === 'socrata.visualization.table') {
@@ -262,6 +273,10 @@
         _state.step = payload.step;
         self._emitChange();
       }
+    }
+
+    function _setComponentType(type) {
+      _state.componentType = type;
     }
 
     function _chooseStoryWidget() {
@@ -437,9 +452,7 @@
 
     function _updateImageUploadProgress(payload) {
       _state.step = WIZARD_STEP.IMAGE_UPLOADING;
-      _state.componentProperties = {
-        percentLoaded: payload.percentLoaded
-      };
+      _state.uploadPercentLoaded = payload.percentLoaded;
 
       self._emitChange();
     }
@@ -447,14 +460,21 @@
     function _updateImagePreview(payload) {
       var imageUrl = payload.url;
       var documentId = payload.documentId;
+      var componentType = _state.componentType;
 
       _state.step = WIZARD_STEP.IMAGE_PREVIEW;
-      _state.componentType = 'image';
 
-      _state.componentProperties = {
-        documentId: documentId,
-        url: imageUrl
-      };
+      if (componentType === 'image' || componentType === 'hero') {
+        _state.componentProperties = {
+          documentId: documentId,
+          url: imageUrl
+        };
+      } else if (componentType === 'author') {
+        _.set(_state.componentProperties, 'image.documentId', documentId);
+        _.set(_state.componentProperties, 'image.url', imageUrl);
+      } else {
+        throw new Error('Don\'t know how to set image values for component: ' + _state.componentType);
+      }
 
       self._emitChange();
     }
@@ -589,9 +609,7 @@
     function _updateEmbedCodeProgress(payload) {
       _state.componentType = 'embeddedHtml';
 
-      _state.componentProperties = {
-        percentLoaded: payload.percentLoaded
-      };
+      _state.uploadPercentLoaded = payload.percentLoaded;
 
       self._emitChange();
     }

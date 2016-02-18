@@ -94,7 +94,7 @@ RSpec.describe StoryAccessLogger do
           StoryAccessLogger.log_story_view_access(story)
         end
 
-        it 'pushes a referrer event for current 4x4' do
+        it 'pushes a referrer event for current story 4x4' do
           expect(ProcessMetricsJob).to receive(:perform_later) do |args|
             expect(
               args.detect {|m| m[:entityId] == "referrer-hosts-#{story.uid}" && m[:name] == referrer_host_metric_name }
@@ -107,6 +107,15 @@ RSpec.describe StoryAccessLogger do
           expect(ProcessMetricsJob).to receive(:perform_later) do |args|
             expect(
               args.detect {|m| m[:entityId] == "referrer-paths-#{domain_id}-http-example.com" && m[:name] == 'path-/blah/blah.html' }
+            ).to be_present
+          end
+          StoryAccessLogger.log_story_view_access(story)
+        end
+
+        it 'pushes a referrer-paths event for current story 4x4' do
+          expect(ProcessMetricsJob).to receive(:perform_later) do |args|
+            expect(
+              args.detect {|m| m[:entityId] == "referrer-paths-#{story.uid}-http-example.com" && m[:name] == 'path-/blah/blah.html' }
             ).to be_present
           end
           StoryAccessLogger.log_story_view_access(story)

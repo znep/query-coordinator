@@ -9,7 +9,7 @@
     display: block;
     width: 100%;
     height: 100%;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+    border: 1px solid #ddd;
     text-decoration: none;
     cursor: pointer;
     outline: none;
@@ -47,7 +47,6 @@
         background-repeat: no-repeat;
         border-top: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
-        box-shadow: inset 0px 4px 4px -1px rgba(0, 0, 0, 0.25);
       }
 
       .story-widget-description {

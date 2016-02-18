@@ -22,8 +22,12 @@
         return 'componentHorizontalRule';
       case 'assetSelector':
         return 'componentAssetSelector';
+      case 'author':
+        return 'componentAuthor';
       case 'image':
         return 'componentImage';
+      case 'hero':
+        return 'componentHero';
       case 'story.widget':
         return 'componentStoryWidget';
       case 'youtube.video':
@@ -64,6 +68,16 @@
     var destroyed = false;
 
     var _throttledRender = _.debounce(_renderStory, Constants.WINDOW_RESIZE_RERENDER_DELAY);
+
+    // _renderStory must not cause reentrant renders (rendering while rendering), as this
+    // makes writing robust renderers difficult (because another render could come at any point,
+    // even in the middle of initialization). This caused the famous "cannot find rich text editor with ID X"
+    // series of errors.
+    //
+    // These two fields allow us to handle reentrant calls to _renderStory by deferring subsequent renders
+    // to after the current render has completed.
+    var renderNeeded = false;
+    var rendering = false;
 
 
     if (options.hasOwnProperty('onRenderError') &&
@@ -252,36 +266,18 @@
 
       // Handle updates to block content.
       $container.on('rich-text-editor::content-change', function(event) {
-
         var blockId = utils.findClosestAttribute(event.target, 'data-block-id');
         var componentIndex = utils.findClosestAttribute(event.target, 'data-component-index');
 
         var blockContent = event.originalEvent.detail.content;
 
-        var existingComponentValue = storyteller.
-          storyStore.
-          getBlockComponentAtIndex(blockId, componentIndex).
-          value.
-          replace(/<br>/g, '');
-
-        var newComponentValue = blockContent.
-          replace(/<br>/g, '');
-
-        var contentIsDifferent = (
-          existingComponentValue !==
-          newComponentValue
-        );
-
-        if (contentIsDifferent) {
-
-          dispatcher.dispatch({
-            action: Actions.BLOCK_UPDATE_COMPONENT,
-            blockId: blockId,
-            componentIndex: componentIndex,
-            type: 'html',
-            value: blockContent
-          });
-        }
+        dispatcher.dispatch({
+          action: Actions.BLOCK_UPDATE_COMPONENT,
+          blockId: blockId,
+          componentIndex: componentIndex,
+          type: 'html',
+          value: blockContent
+        });
       });
 
       $container.on('rich-text-editor::height-change', _renderStory);
@@ -326,6 +322,15 @@
     function _renderStory() {
       if (destroyed) { return; }
 
+      // Reentrant call to _renderStory. Defer this render
+      // until the original _renderStory is done.
+      if (rendering) {
+        renderNeeded = true;
+        return;
+      }
+
+      rendering = true;
+
       var blockIds = storyteller.storyStore.getStoryBlockIds(storyUid);
       var blockIdsToRemove = elementCache.getUnusedBlockIds(blockIds);
       var blockCount = blockIds.length;
@@ -356,6 +361,7 @@
         if ($blockElement === null) {
           $blockElement = _renderBlock(blockId);
           $container.append($blockElement);
+          _toggleBlockEditActive($blockElement);
         }
 
         _renderBlockComponents(blockId);
@@ -396,6 +402,30 @@
       } else {
         $container.height(layoutHeight);
       }
+
+      rendering = false;
+
+      // There were reentrant call(s) to _renderStory.
+      // Take care of those now.
+      if (renderNeeded) {
+        renderNeeded = false;
+        _renderStory();
+      }
+    }
+
+    /**
+     * @function _toggleBlockEditActive
+     * @desc Toggle the opacity of the controls due to a bug in IE11.
+     * @param {jQuery} $blockElement
+     */
+    function _toggleBlockEditActive($blockElement) {
+      $blockElement.
+        mouseenter(function() {
+          $blockElement.addClass('active');
+        }).
+        mouseleave(function() {
+          $blockElement.removeClass('active');
+        });
     }
 
     function _showInsertionHintAtIndex(index) {
@@ -541,7 +571,7 @@
            iframe.contentDocument.body &&
            iframe.contentDocument.body.clientHeight === 0);
       };
-      var $iframes = $blockElement.find('.component-html iframe');
+      var $iframes = $blockElement.find('.component-html iframe, .component-hero iframe');
       var iframeContentMissing = $iframes.toArray().some(contentMissingCheck);
 
       componentData.forEach(function(componentDatum, i) {
@@ -559,9 +589,21 @@
             attr('data-editor-id');
 
           editor = storyteller.richTextEditorManager.getEditor(editorId);
-
           if (editor) {
             contentHeight = editor.getContentHeight();
+          }
+        } else if (componentDatum.type === 'hero') {
+          editorId = $blockElement.
+            find('.component-hero').
+            attr('data-editor-id');
+
+          editor = storyteller.richTextEditorManager.getEditor(editorId);
+          var heroHeight = $blockElement.find('.component-container .component-hero').height();
+
+          if (editor) {
+            contentHeight = Math.max(editor.getContentHeight(), heroHeight);
+          } else {
+            contentHeight = heroHeight;
           }
         } else {
 
@@ -595,7 +637,7 @@
       }
 
       $blockElement.
-        find('.component-html > iframe').
+        find('.component-html > iframe, .component-hero iframe, .component-hero').
         height(maxEditorHeight);
     }
 
@@ -671,7 +713,12 @@
 
           _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme);
         } catch (e) {
-          storyteller.airbrake.notify(e);
+          if (storyteller.airbrake) {
+            storyteller.airbrake.notify(e);
+          } else {
+            console.error(e);
+          }
+          onRenderError(e);
         }
       });
     }

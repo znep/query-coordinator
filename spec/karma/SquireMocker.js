@@ -21,6 +21,7 @@
             commonAncestorContainer: document.createElement('div')
           };
         },
+        setKeyHandler: function() {},
         hasFormat: function() {},
         setHTML: function() {}
       };

@@ -51,6 +51,7 @@
       );
 
       saveButton.toggleClass('busy', saveInProgress);
+      saveButton.toggleClass('btn-busy', saveInProgress);
 
       saveErrorMessage.toggleClass('active', lastSaveError !== null);
       saveErrorMessageDetails.text(lastSaveError);

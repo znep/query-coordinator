@@ -44,128 +44,128 @@
      */
 
     function template() {
-      return (
-          '<div>' +
-            '<div>' +
-              '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.invite_collaborators')) +
-              '<div class="modal-input-group">' +
-                '<div class="collaborators-email-input-wrapper">' +
-                  '<input name="collaborators-email" type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')) +
-                  '<button class="btn btn-transparent btn-busy"><span></span></button>' +
-                '</div>' +
-                '<div class="modal-radio-group">' +
-                  '<div class="alert warning-bar hidden already-added"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.already_added')) +
-                  '<div class="alert warning-bar hidden user-has-no-account"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.user_has_no_account')) +
-                  '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.access_level')) +
-                  '<ul>' +
-                    '<li>' +
-                      '<label>' +
-                        '<input type="radio" value="viewer" name="access-levels" id="access-level-viewer" checked>' +
-                        '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.viewer')) +
-                        '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.viewer_description')) +
-                      '</label>' +
-                    '</li>' +
-                    '<li>' +
-                      '<label>' +
-                        '<input type="radio" value="contributor" name="access-levels" id="access-level-contributor">' +
-                        '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.contributor')) +
-                        '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.contributor_description')) +
-                      '</label>' +
-                    '</li>' +
-                    '<li>' +
-                      '<label class="disabled">' +
-                        '<input type="radio" value="owner" name="access-levels" id="access-level-owner" disabled>' +
-                        '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.owner')) +
-                        '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.owner_description')) +
-                        '<div class="radio-label-subtitle alert info"><small><span class="icon-info-inverse"></span>{0}</small></div>'.format(t('editor.collaborators.modal.licenses')) +
-                      '</label>' +
-                    '</li>' +
-                  '</ul>' +
-                '</div>' +
-                '<button class="btn-default" data-action="{0}" disabled>{1}</button>'.format(Actions.COLLABORATORS_ADD, t('editor.collaborators.modal.add_contributor')) +
-              '</div>' +
-            '</div>' +
-            '<div>' +
-              '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.who_has_access')) +
-              '<table class="table-borderless">' +
-                '<thead>' +
-                  '<tr>' +
-                    '<th>{0}</th>'.format(t('editor.collaborators.modal.collaborator')) +
-                    '<th>{0}</th>'.format(t('editor.collaborators.modal.access_level')) +
-                  '</tr>' +
-                '</thead>' +
-                '<tbody>' +
-                '</tbody>' +
-              '</table>' +
-            '</div>' +
-            '<div class="modal-button-group r-to-l">' +
-              '<button class="btn-default btn-inverse" data-action="{0}">{1}</button>'.format(Actions.COLLABORATORS_CANCEL, t('editor.modal.buttons.cancel')) +
-              '<button class="btn-primary" data-action="{0}" disabled><span>{1}</span></button>'.format(Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')) +
-            '</div>' +
-          '</div>'
-      ).format({
+      return [
+        '<div>',
+          '<div>',
+            '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.invite_collaborators')),
+            '<div class="modal-input-group">',
+              '<div class="collaborators-email-input-wrapper">',
+                '<input name="collaborators-email" type="email" class="modal-input" placeholder="{0}">'.format(t('editor.collaborators.modal.email_placeholder')),
+                '<button class="btn btn-transparent btn-busy"><span></span></button>',
+              '</div>',
+              '<div class="modal-radio-group">',
+                '<div class="alert warning-bar hidden already-added"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.already_added')),
+                '<div class="alert warning-bar hidden user-has-no-account"><p><span class="icon-warning"></span></p><p>{0}</p></div>'.format(t('editor.collaborators.modal.errors.user_has_no_account')),
+                '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.access_level')),
+                '<ul>',
+                  '<li>',
+                    '<label>',
+                      '<input type="radio" value="viewer" name="access-levels" id="access-level-viewer" checked>',
+                      '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.viewer')),
+                      '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.viewer_description')),
+                    '</label>',
+                  '</li>',
+                  '<li>',
+                    '<label>',
+                      '<input type="radio" value="contributor" name="access-levels" id="access-level-contributor">',
+                      '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.contributor')),
+                      '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.contributor_description')),
+                    '</label>',
+                  '</li>',
+                  '<li>',
+                    '<label class="disabled">',
+                      '<input type="radio" value="owner" name="access-levels" id="access-level-owner" disabled>',
+                      '<div class="radio-label-title">{0}</div>'.format(t('editor.collaborators.modal.owner')),
+                      '<div class="radio-label-subtitle"><small>{0}</small></div>'.format(t('editor.collaborators.modal.owner_description')),
+                      '<div class="radio-label-subtitle alert info"><small><span class="icon-info-inverse"></span>{0}</small></div>'.format(t('editor.collaborators.modal.licenses')),
+                    '</label>',
+                  '</li>',
+                '</ul>',
+              '</div>',
+              '<button class="btn-default" data-action="{0}" disabled>{1}</button>'.format(Actions.COLLABORATORS_ADD, t('editor.collaborators.modal.add_contributor')),
+            '</div>',
+          '</div>',
+          '<div>',
+            '<h2 class="modal-input-label">{0}</h2>'.format(t('editor.collaborators.modal.who_has_access')),
+            '<table class="table-borderless">',
+              '<thead>',
+                '<tr>',
+                  '<th>{0}</th>'.format(t('editor.collaborators.modal.collaborator')),
+                  '<th>{0}</th>'.format(t('editor.collaborators.modal.access_level')),
+                '</tr>',
+              '</thead>',
+              '<tbody>',
+              '</tbody>',
+            '</table>',
+          '</div>',
+          '<div class="modal-button-group r-to-l">',
+            '<button class="btn-default btn-inverse" data-action="{0}">{1}</button>'.format(Actions.COLLABORATORS_CANCEL, t('editor.modal.buttons.cancel')),
+            '<button class="btn-primary" data-action="{0}" disabled><span>{1}</span></button>'.format(Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')),
+          '</div>',
+        '</div>'
+      ].join('').format({
         // intentionally not a link, this should be pasted into an email by the user (not followed by them).
         domain: window.location.hostname
       });
     }
 
     function templateAccessLevel(role) {
-      return (
-        '<div class="modal-select">' +
-          '<select data-action="{0}">'.format(Actions.COLLABORATORS_CHANGE) +
-            '<option value="{0}"{1}>{2}</option>'.format('owner', isStoriesOrAdministratorRole(role) ? '' : ' disabled', t('editor.collaborators.modal.owner')) +
-            '<option value="{0}">{1}</option>'.format('contributor', t('editor.collaborators.modal.contributor')) +
-            '<option value="{0}">{1}</option>'.format('viewer', t('editor.collaborators.modal.viewer')) +
-          '</select>' +
+      return [
+        '<div class="modal-select">',
+          '<select data-action="{0}">'.format(Actions.COLLABORATORS_CHANGE),
+            '<option value="{0}"{1}>{2}</option>'.format('owner', isStoriesOrAdministratorRole(role) ? '' : ' disabled', t('editor.collaborators.modal.owner')),
+            '<option value="{0}">{1}</option>'.format('contributor', t('editor.collaborators.modal.contributor')),
+            '<option value="{0}">{1}</option>'.format('viewer', t('editor.collaborators.modal.viewer')),
+          '</select>',
         '</div>'
-      );
+      ].join('');
     }
 
     function templateRemove() {
-      return (
-        '<button ' +
-          'class="btn-default btn-inverse"' +
-          'data-action="{0}"'.format(Actions.COLLABORATORS_REMOVE) +
+      return [
+        '<button ',
+          'class="btn-default btn-inverse"',
+          'data-action="{0}"'.format(Actions.COLLABORATORS_REMOVE),
         '>{0}</button>'.format(t('editor.collaborators.modal.remove'))
-      );
+      ].join('');
     }
 
     function templateContributor(contributor) {
-      return (
-        '<td>{displayName}</td>'.format(contributor) +
-        '<td>{0}</td>'.format(templateAccessLevel(contributor.roleName)) +
+      return [
+        '<td>{displayName}</td>'.format(contributor),
+        '<td>{0}</td>'.format(templateAccessLevel(contributor.roleName)),
         '<td>{0}</td>'.format(templateRemove)
-      );
+      ].join('');
     }
 
     function templateContributorOnlyEmail(contributor) {
-      return (
-        '<td>{email}</td>'.format(contributor) +
-        '<td>{0}</td>'.format(templateAccessLevel(contributor.roleName)) +
+      return [
+        '<td>{email}</td>'.format(contributor),
+        '<td>{0}</td>'.format(templateAccessLevel(contributor.roleName)),
         '<td>{0}</td>'.format(templateRemove)
-      );
+      ].join('');
     }
 
     function templateContributorAndEmail(contributor) {
-      return (
-        '<td>{displayName}, &lt;{email}&gt;</td>'.format(contributor) +
-        '<td>{0}</td>'.format(templateAccessLevel(contributor.roleName)) +
+      return [
+        '<td>{displayName}, &lt;{email}&gt;</td>'.format(contributor),
+        '<td>{0}</td>'.format(templateAccessLevel(contributor.roleName)),
         '<td>{0}</td>'.format(templateRemove)
-      );
+      ].join('');
     }
 
     function templateStaticContributor(contributor) {
       return [
         '<td class="static">{displayName}</td>',
         '<td class="static" colspan="2">{accessLevel}</td>'
-      ].join().format(contributor);
+      ].join('').format(contributor);
     }
 
     function templateStaticContributorAndEmail(contributor) {
       return [
         '<td class="static">{displayName}, &lt;{email}&gt;</td>',
         '<td class="static" colspan="2">{accessLevel}</td>'
-      ].join().format(contributor);
+      ].join('').format(contributor);
     }
 
     function templateNoCollaborators() {

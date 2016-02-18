@@ -556,15 +556,6 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      describe('.getComponentType()', function() {
-        it('returns `image`', function() {
-          assert.equal(
-            storyteller.assetSelectorStore.getComponentType(),
-            'image'
-          );
-        });
-      });
-
       describe('.getComponentValue()', function() {
         it('returns payload with url and documentId', function() {
           assert.deepEqual(

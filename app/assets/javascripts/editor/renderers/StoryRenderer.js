@@ -24,6 +24,8 @@
         return 'componentAssetSelector';
       case 'image':
         return 'componentImage';
+      case 'hero':
+        return 'componentHero';
       case 'story.widget':
         return 'componentStoryWidget';
       case 'youtube.video':
@@ -585,7 +587,7 @@
            iframe.contentDocument.body &&
            iframe.contentDocument.body.clientHeight === 0);
       };
-      var $iframes = $blockElement.find('.component-html iframe');
+      var $iframes = $blockElement.find('.component-html iframe, .component-hero iframe');
       var iframeContentMissing = $iframes.toArray().some(contentMissingCheck);
 
       componentData.forEach(function(componentDatum, i) {
@@ -603,9 +605,21 @@
             attr('data-editor-id');
 
           editor = storyteller.richTextEditorManager.getEditor(editorId);
-
           if (editor) {
             contentHeight = editor.getContentHeight();
+          }
+        } else if (componentDatum.type === 'hero') {
+          editorId = $blockElement.
+            find('.component-hero').
+            attr('data-editor-id');
+
+          editor = storyteller.richTextEditorManager.getEditor(editorId);
+          var heroHeight = $blockElement.find('.component-container .component-hero').height();
+
+          if (editor) {
+            contentHeight = Math.max(editor.getContentHeight(), heroHeight);
+          } else {
+            contentHeight = heroHeight;
           }
         } else {
 
@@ -639,7 +653,7 @@
       }
 
       $blockElement.
-        find('.component-html > iframe').
+        find('.component-html > iframe, .component-hero iframe, .component-hero').
         height(maxEditorHeight);
     }
 

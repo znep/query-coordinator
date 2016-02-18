@@ -458,7 +458,15 @@
         }
       );
 
-      var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+      var backButton;
+      var componentType = storyteller.assetSelectorStore.getComponentType();
+
+      if (componentType === 'image') {
+        backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+      } else {
+        backButton = $('<button>', {class: 'btn-default', 'data-action': Actions.ASSET_SELECTOR_CLOSE});
+        backButton.text(I18n.t('editor.modal.buttons.cancel'));
+      }
 
       var insertButton = $(
         '<button>',
@@ -491,6 +499,14 @@
       inputButton.click(function(event) {
         event.preventDefault();
         inputControl.click();
+      });
+
+      backButton.one('click', function() {
+        if (backButton.attr('data-action')) {
+          storyteller.dispatcher.dispatch({
+            action: backButton.attr('data-action')
+          });
+        }
       });
 
       return [ content, buttonGroup ];
@@ -652,14 +668,15 @@
         insertButton
       ]);
 
+      var isImage = storyteller.assetSelectorStore.getComponentType() === 'image';
       var content = $(
         '<div>',
         { 'class': 'asset-selector-input-group' }
       ).append([
         previewImageLabel,
         previewContainer,
-        descriptionLabel,
-        descriptionContainer
+        isImage ? descriptionLabel : null,
+        isImage ? descriptionContainer : null
       ]);
 
       return [ content, buttonGroup ];

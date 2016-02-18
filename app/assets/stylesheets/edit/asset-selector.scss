@@ -315,6 +315,8 @@
 }
 
 .asset-selector-preview-image-container {
+  @include display(flex);
+
   overflow: auto;
   border: 1px solid $asset-selector-input-group-border-color;
   padding: 0.5rem;
@@ -322,7 +324,7 @@
   img {
     max-height: 100%;
     max-width: 100%;
-    margin: 0 auto;
+    margin: auto;
     display: block;
   }
 }

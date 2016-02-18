@@ -88,7 +88,12 @@
             case 'YOUTUBE':
               _chooseYoutube();
               break;
+            case 'HERO':
+              _setComponentType('hero');
+              _chooseImageUpload();
+              break;
             case 'IMAGE':
+              _setComponentType('image');
               _chooseImageUpload();
               break;
             case 'EMBED_CODE':
@@ -193,6 +198,7 @@
      */
     function _stepForUpdate(type) {
       switch (type) {
+        case 'hero': return WIZARD_STEP.IMAGE_PREVIEW;
         case 'image': return WIZARD_STEP.IMAGE_PREVIEW;
         case 'story.widget': return WIZARD_STEP.ENTER_STORY_URL;
         case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
@@ -262,6 +268,10 @@
         _state.step = payload.step;
         self._emitChange();
       }
+    }
+
+    function _setComponentType(type) {
+      _state.componentType = type;
     }
 
     function _chooseStoryWidget() {
@@ -449,7 +459,6 @@
       var documentId = payload.documentId;
 
       _state.step = WIZARD_STEP.IMAGE_PREVIEW;
-      _state.componentType = 'image';
 
       _state.componentProperties = {
         documentId: documentId,

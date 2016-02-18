@@ -329,6 +329,24 @@
     ]
   },
 
+  "hero": {
+    "name": "<%= I18n.t('inspiration_blocks.categories.hero.name') %>",
+    "description": "<%= I18n.t('inspiration_blocks.categories.hero.description') %>",
+    "blocks": [
+      {
+        "imagePreview": "<%= asset_path('editor/iconic-blocks/cover-image.svg') %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "hero"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   "dividers_and_spacers": {
     "name": "<%= I18n.t('inspiration_blocks.categories.dividers_and_spacers.name') %>",
     "blocks": [

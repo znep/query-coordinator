@@ -2,9 +2,21 @@ namespace :manifest do
   %w[staging release].each do |environment|
     desc "Create a changelog between the last two #{environment} releases"
     task environment.to_sym, [:output_file] do |task, args|
-      tags = `git tag -l #{environment}/*`.split.sort
-      from_tag = ENV['FROM_TAG'] || tags[-2]
-      to_tag = ENV['TO_TAG'] || tags[-1]
+      tags = `git tag -l #{environment}/*`.split.sort.reverse.first(10)
+
+      to_tag = ENV['TO_TAG'] || tags[0]
+      from_tag = ENV['FROM_TAG'] || tags[1]
+      puts "Default comparison is #{from_tag} .. #{to_tag}"
+      puts "Press <Enter> to continue, or 'N'<Enter> to choose a previous tag"
+      answer = STDIN.gets.upcase.chomp
+
+      if answer == 'N'
+        puts "Select a recent tag to compare:"
+        tags.each_with_index{ |tag, index| puts " #{index + 1}) #{tag}" }
+        from_tag_index = STDIN.gets.chomp.to_i
+        from_tag = tags[from_tag_index - 1]
+      end
+
       puts("= FRONTEND = (from #{from_tag} to #{to_tag})")
       manifest_output = `git log #{from_tag}..#{to_tag} --no-merges --date-order --reverse --shortstat --abbrev-commit`
 

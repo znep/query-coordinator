@@ -61,7 +61,7 @@
           "allowSingleLine": true
         }
       ],
-      "camelcase": 1,
+      "camelcase": [1, {"properties": "never"}],
       "consistent-return": 0,
       "dot-location": [
         1,
@@ -104,9 +104,10 @@
       ],
       "quote-props": [
         2,
-        "consistent-as-needed",
+        "as-needed",
         {
-          "keywords": false
+          "keywords": true,
+          "unnecessary": false
         }
       ],
       "semi": [

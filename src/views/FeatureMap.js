@@ -181,35 +181,35 @@ function FeatureMap(element, vif) {
     var mapElement = $(
       '<div>',
       {
-        class: 'feature-map'
+        'class': 'feature-map'
       }
     );
 
     var mapLegend = $(
       '<div>',
       {
-        class: 'feature-map-legend'
+        'class': 'feature-map-legend'
       }
     );
 
     var mapPanZoomDisabledWarningIcon = $(
       '<div>',
       {
-        class: 'icon-warning feature-map-pan-zoom-disabled-warning-icon'
+        'class': 'icon-warning feature-map-pan-zoom-disabled-warning-icon'
       }
     );
 
     var mapPanZoomDisabledWarning = $(
       '<div>',
       {
-        class: 'feature-map-pan-zoom-disabled-warning'
+        'class': 'feature-map-pan-zoom-disabled-warning'
       }
     ).append(mapPanZoomDisabledWarningIcon);
 
     var mapContainer = $(
       '<div>',
       {
-        class: 'feature-map-container'
+        'class': 'feature-map-container'
       }
     ).append([
       mapElement,
@@ -228,7 +228,7 @@ function FeatureMap(element, vif) {
       var mapLocateUserBusySpinner = $(
         '<div>',
         {
-          class: 'feature-map-locate-user-busy-spinner'
+          'class': 'feature-map-locate-user-busy-spinner'
         }
       );
 

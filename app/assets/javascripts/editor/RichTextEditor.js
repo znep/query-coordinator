@@ -406,14 +406,25 @@
       // browser have 10ms to finalize its layout before invoking
       // _handleContentChange(), which seems to do the trick. This delay
       // is small enough that it should be imperceptible to users.
-      styleEl.onload = function() {
-        setTimeout(function() {
-            _updateContentHeight();
-            _broadcastHeightChange();
+      var defaultThemesLoaded = false;
+      var customThemesLoaded = false;
+
+      var handleStyleLoading = _.debounce(
+        function() {
+          _updateContentHeight();
+          _broadcastHeightChange();
+          if (defaultThemesLoaded && customThemesLoaded) {
             $(document.body).css('opacity', '');
-          },
-          10
-        );
+          }
+        }, 10);
+
+      styleEl.onload = function() {
+        defaultThemesLoaded = true;
+        handleStyleLoading();
+      };
+      customThemesEl.onload = function() {
+        customThemesLoaded = true;
+        handleStyleLoading();
       };
 
       document.head.appendChild(styleEl);

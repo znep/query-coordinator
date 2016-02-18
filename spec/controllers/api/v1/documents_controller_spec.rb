@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::DocumentsController, type: :controller do
 
+  before do
+    request.env['HTTPS'] = 'on'
+  end
+
   describe '#create' do
 
     let(:create_document_service) { double('create_document_service').as_null_object }

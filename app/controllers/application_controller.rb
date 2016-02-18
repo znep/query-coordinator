@@ -53,5 +53,8 @@ class ApplicationController < ActionController::Base
   def redirect_to_login_and_return
     redirect_to "/login?return_to=#{Rack::Utils.escape(request.fullpath)}"
   end
-end
 
+  def ssl_disabled?
+    Rails.env.test?
+  end
+end

@@ -107,6 +107,9 @@ function FeatureMap(element, vif) {
       var baseLayerChanged;
       var vectorTileGetterChanged;
 
+      // Emit render start event
+      _emitRenderStart();
+
       if (!_map) {
 
         // Construct leaflet map
@@ -119,7 +122,11 @@ function FeatureMap(element, vif) {
       baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
       vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
 
-      _lastRenderOptions = renderOptions;
+      _lastRenderOptions = _.cloneDeep(renderOptions);
+      _lastRenderOptions.bounds = new L.LatLngBounds(
+        renderOptions.bounds.getSouthWest(),
+        renderOptions.bounds.getNorthEast()
+      );
 
       if (_userCurrentPositionBounds) {
         _fitBounds(_userCurrentPositionBounds);
@@ -134,6 +141,9 @@ function FeatureMap(element, vif) {
       if (vectorTileGetterChanged) {
         _createNewFeatureLayer(renderOptions.vectorTileGetter);
       }
+
+      // Emit render complete event
+      _emitRenderComplete();
     }
   };
 
@@ -257,6 +267,7 @@ function FeatureMap(element, vif) {
   }
 
   function _attachEvents() {
+    var $document = $(document);
 
     // Only attach map events if the map has actually been instantiated.
     if (_map) {
@@ -302,6 +313,10 @@ function FeatureMap(element, vif) {
 
       if (_hover) {
         _map.on('mousemove', _handleMousemove);
+
+        // react to the interactions that would close the RowInspector flannel
+        $document.on('click', _captureLeftClickAndClearHighlight);
+        $document.on('keydown', _captureEscapeAndClearHighlight);
       }
 
       _mapPanZoomDisabledWarning.on('mousemove', _handlePanZoomDisabledWarningMousemove);
@@ -321,6 +336,7 @@ function FeatureMap(element, vif) {
   }
 
   function _detachEvents() {
+    var $document = $(document);
 
     // Only detach map events if the map has actually been instantiated.
     if (_map) {
@@ -332,6 +348,9 @@ function FeatureMap(element, vif) {
 
       if (_hover) {
         _map.off('mousemove', _handleMousemove);
+
+        $document.on('click', _captureLeftClickAndClearHighlight);
+        $document.on('keydown', _captureEscapeAndClearHighlight);
       }
 
       _mapPanZoomDisabledWarning.off('mousemove', _handlePanZoomDisabledWarningMousemove);
@@ -348,6 +367,20 @@ function FeatureMap(element, vif) {
     }
 
     $(window).off('resize', _hideRowInspector);
+  }
+
+  function _emitRenderStart() {
+    self.emitEvent(
+      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
+      null
+    );
+  }
+
+  function _emitRenderComplete() {
+    self.emitEvent(
+      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE',
+      null
+    );
   }
 
   function _handleMapResize() {
@@ -577,21 +610,11 @@ function FeatureMap(element, vif) {
 
   function _handleVectorTileRenderStart() {
 
-    self.emitEvent(
-      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
-      null
-    );
-
     _hideFlyout();
     _hideRowInspector();
   }
 
   function _handleVectorTileRenderComplete() {
-
-    self.emitEvent(
-      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE',
-      null
-    );
 
     _removeOldFeatureLayers();
 
@@ -734,6 +757,27 @@ function FeatureMap(element, vif) {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE'
     );
+
+    _map.fire('clearhighlightrequest');
+  }
+
+  function _captureEscapeAndClearHighlight(event) {
+
+    if (event.which === 27) {
+      _map.fire('clearhighlightrequest');
+    }
+  }
+
+  function _captureLeftClickAndClearHighlight(event) {
+
+    var $target = $(event.target);
+    var isLeftClick = event.which === 1;
+    var isOutsideOfMap = $target.closest('.feature-map-container').length === 0;
+    var isIconClose = $target.is('.icon-close');
+
+    if (isLeftClick && (isOutsideOfMap || isIconClose)) {
+      _map.fire('clearhighlightrequest');
+    }
   }
 
   /**

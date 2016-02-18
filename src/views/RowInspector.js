@@ -200,6 +200,7 @@ var _attachEventsOnce = _.once(function() {
   });
 
   $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE', _hide);
+  $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_ADJUST_POSITION', _render);
 
   $document.on('click', _captureLeftClickAndHide);
   $document.on('keydown', _captureEscapeAndHide);
@@ -238,10 +239,13 @@ function _decrementPageByOne() {
 function _adjustPosition(position) {
   var hintRightOffset;
   var hintPositionFromRight;
+  var distanceOutOfView = $(window).scrollTop();
   var xPosition = position.pageX;
   var yPosition = position.pageY;
   var windowWidth = $(window).width();
-  var useSoutheastHint = false;
+  var windowHeight = $(window).innerHeight();
+  var positionFlannelEast = false;
+  var positionFlannelNorth = false;
 
   var abutsRightEdge = windowWidth <
     (xPosition + ROW_INSPECTOR_WIDTH + ROW_INSPECTOR_WINDOW_PADDING);
@@ -251,8 +255,12 @@ function _adjustPosition(position) {
 
   panelPositionStyle.top = '{0}px'.format(yPosition);
 
+  // Display flannel above clicked point if the point is more than halfway
+  // down the window viewport. Else display flannel below the point.
+  positionFlannelNorth = (yPosition - distanceOutOfView) < (windowHeight / 2);
+
   if (abutsRightEdge) {
-    useSoutheastHint = xPosition + (ROW_INSPECTOR_WIDTH / 2) >
+    positionFlannelEast = xPosition + (ROW_INSPECTOR_WIDTH / 2) >
       windowWidth - (ROW_INSPECTOR_WINDOW_PADDING + ROW_INSPECTOR_PADDING_COMPENSATION);
 
     panelPositionStyle.right = '{0}px'.format(
@@ -260,20 +268,22 @@ function _adjustPosition(position) {
     );
 
     hintRightOffset = xPosition + ROW_INSPECTOR_WINDOW_PADDING +
-      (useSoutheastHint ? 0 : ROW_INSPECTOR_HINT_WIDTH);
+      (positionFlannelEast ? 0 : ROW_INSPECTOR_HINT_WIDTH);
     hintPositionFromRight = Math.max(0, windowWidth - hintRightOffset);
 
     hintPositionStyle.right = '{0}px'.format(hintPositionFromRight);
     hintPositionStyle.left = 'auto';
   } else {
     panelPositionStyle.left = '{0}px'.format(xPosition);
-    useSoutheastHint = false;
+    positionFlannelEast = false;
   }
 
   _$rowInspectorToolPanel.css(panelPositionStyle);
   _$rowInspectorToolPanelHint.css(hintPositionStyle);
-  _$rowInspectorToolPanel.toggleClass('southwest', !useSoutheastHint);
-  _$rowInspectorToolPanel.toggleClass('southeast', useSoutheastHint);
+  _$rowInspectorToolPanel.toggleClass('west', !positionFlannelEast);
+  _$rowInspectorToolPanel.toggleClass('east', positionFlannelEast);
+  _$rowInspectorToolPanel.toggleClass('south', !positionFlannelNorth);
+  _$rowInspectorToolPanel.toggleClass('north', positionFlannelNorth);
 }
 
 
@@ -313,7 +323,8 @@ function _renderError() {
 }
 
 function _renderPage() {
-  var row = _.get(_state, 'rows[{0}]'.format(_state.pageIndex));
+  var row = _.get(_state, ['rows', _state.pageIndex]);
+  var title = _.get(_state, ['titles', _state.pageIndex]);
 
   _$rowInspectorContent.empty();
 
@@ -325,6 +336,10 @@ function _renderPage() {
 
   utils.assert(Array.isArray(row), 'rowInspector data must be composed of an array of arrays');
   utils.assert(row.length > 0, 'This row is empty.');
+
+  if (title) {
+    _$rowInspectorContent.append('<h3 class="row-inspector-title">{0}</h3>'.format(title));
+  }
 
   row.forEach(function(columnValue) {
     var $rowDataItem = $('<div>', {class: 'row-data-item'});
@@ -374,11 +389,16 @@ function _setState(payload) {
   utils.assertHasProperties(payload.position, 'pageX', 'pageY');
 
   if (payload.data) {
-    utils.assert(_.isArray(payload.data), 'rowInspector data must be an array');
+    utils.assert(_.isArray(payload.data), 'rowInspector row data must be an array');
+  }
+
+  if (payload.titles) {
+    utils.assert(_.isArray(payload.titles), 'rowInspector title data must be an array');
   }
 
   _state = {
     rows: payload.error ? null : payload.data,
+    titles: payload.error ? null : payload.titles,
     labelUnit: payload.labelUnit || _config.localization.defaultLabelUnit,
     error: payload.error,
     message: payload.message,

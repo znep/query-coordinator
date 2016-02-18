@@ -59,11 +59,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(40);
-	var ColumnChart = __webpack_require__(42);
-	var FeatureMap = __webpack_require__(43);
-	var Table = __webpack_require__(44);
-	var TimelineChart = __webpack_require__(45);
+	var ChoroplethMap = __webpack_require__(41);
+	var ColumnChart = __webpack_require__(43);
+	var FeatureMap = __webpack_require__(44);
+	var Table = __webpack_require__(45);
+	var TimelineChart = __webpack_require__(46);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -10109,6 +10109,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var baseLayerChanged;
 	      var vectorTileGetterChanged;
 
+	      // Emit render start event
+	      _emitRenderStart();
+
 	      if (!_map) {
 
 	        // Construct leaflet map
@@ -10121,7 +10124,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
 	      vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
 
-	      _lastRenderOptions = renderOptions;
+	      _lastRenderOptions = _.cloneDeep(renderOptions);
+	      _lastRenderOptions.bounds = new L.LatLngBounds(
+	        renderOptions.bounds.getSouthWest(),
+	        renderOptions.bounds.getNorthEast()
+	      );
 
 	      if (_userCurrentPositionBounds) {
 	        _fitBounds(_userCurrentPositionBounds);
@@ -10136,6 +10143,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (vectorTileGetterChanged) {
 	        _createNewFeatureLayer(renderOptions.vectorTileGetter);
 	      }
+
+	      // Emit render complete event
+	      _emitRenderComplete();
 	    }
 	  };
 
@@ -10259,6 +10269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function _attachEvents() {
+	    var $document = $(document);
 
 	    // Only attach map events if the map has actually been instantiated.
 	    if (_map) {
@@ -10304,6 +10315,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (_hover) {
 	        _map.on('mousemove', _handleMousemove);
+
+	        // react to the interactions that would close the RowInspector flannel
+	        $document.on('click', _captureLeftClickAndClearHighlight);
+	        $document.on('keydown', _captureEscapeAndClearHighlight);
 	      }
 
 	      _mapPanZoomDisabledWarning.on('mousemove', _handlePanZoomDisabledWarningMousemove);
@@ -10323,6 +10338,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function _detachEvents() {
+	    var $document = $(document);
 
 	    // Only detach map events if the map has actually been instantiated.
 	    if (_map) {
@@ -10334,6 +10350,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (_hover) {
 	        _map.off('mousemove', _handleMousemove);
+
+	        $document.on('click', _captureLeftClickAndClearHighlight);
+	        $document.on('keydown', _captureEscapeAndClearHighlight);
 	      }
 
 	      _mapPanZoomDisabledWarning.off('mousemove', _handlePanZoomDisabledWarningMousemove);
@@ -10350,6 +10369,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    $(window).off('resize', _hideRowInspector);
+	  }
+
+	  function _emitRenderStart() {
+	    self.emitEvent(
+	      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
+	      null
+	    );
+	  }
+
+	  function _emitRenderComplete() {
+	    self.emitEvent(
+	      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE',
+	      null
+	    );
 	  }
 
 	  function _handleMapResize() {
@@ -10579,21 +10612,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function _handleVectorTileRenderStart() {
 
-	    self.emitEvent(
-	      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
-	      null
-	    );
-
 	    _hideFlyout();
 	    _hideRowInspector();
 	  }
 
 	  function _handleVectorTileRenderComplete() {
-
-	    self.emitEvent(
-	      'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE',
-	      null
-	    );
 
 	    _removeOldFeatureLayers();
 
@@ -10736,6 +10759,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	    self.emitEvent(
 	      'SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE'
 	    );
+
+	    _map.fire('clearhighlightrequest');
+	  }
+
+	  function _captureEscapeAndClearHighlight(event) {
+
+	    if (event.which === 27) {
+	      _map.fire('clearhighlightrequest');
+	    }
+	  }
+
+	  function _captureLeftClickAndClearHighlight(event) {
+
+	    var $target = $(event.target);
+	    var isLeftClick = event.which === 1;
+	    var isOutsideOfMap = $target.closest('.feature-map-container').length === 0;
+	    var isIconClose = $target.is('.icon-close');
+
+	    if (isLeftClick && (isOutsideOfMap || isIconClose)) {
+	      _map.fire('clearhighlightrequest');
+	    }
 	  }
 
 	  /**
@@ -20627,6 +20671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 
 	  $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE', _hide);
+	  $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_ADJUST_POSITION', _render);
 
 	  $document.on('click', _captureLeftClickAndHide);
 	  $document.on('keydown', _captureEscapeAndHide);
@@ -20665,10 +20710,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _adjustPosition(position) {
 	  var hintRightOffset;
 	  var hintPositionFromRight;
+	  var distanceOutOfView = $(window).scrollTop();
 	  var xPosition = position.pageX;
 	  var yPosition = position.pageY;
 	  var windowWidth = $(window).width();
-	  var useSoutheastHint = false;
+	  var windowHeight = $(window).innerHeight();
+	  var positionFlannelEast = false;
+	  var positionFlannelNorth = false;
 
 	  var abutsRightEdge = windowWidth <
 	    (xPosition + ROW_INSPECTOR_WIDTH + ROW_INSPECTOR_WINDOW_PADDING);
@@ -20678,8 +20726,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  panelPositionStyle.top = '{0}px'.format(yPosition);
 
+	  // Display flannel above clicked point if the point is more than halfway
+	  // down the window viewport. Else display flannel below the point.
+	  positionFlannelNorth = (yPosition - distanceOutOfView) < (windowHeight / 2);
+
 	  if (abutsRightEdge) {
-	    useSoutheastHint = xPosition + (ROW_INSPECTOR_WIDTH / 2) >
+	    positionFlannelEast = xPosition + (ROW_INSPECTOR_WIDTH / 2) >
 	      windowWidth - (ROW_INSPECTOR_WINDOW_PADDING + ROW_INSPECTOR_PADDING_COMPENSATION);
 
 	    panelPositionStyle.right = '{0}px'.format(
@@ -20687,20 +20739,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 
 	    hintRightOffset = xPosition + ROW_INSPECTOR_WINDOW_PADDING +
-	      (useSoutheastHint ? 0 : ROW_INSPECTOR_HINT_WIDTH);
+	      (positionFlannelEast ? 0 : ROW_INSPECTOR_HINT_WIDTH);
 	    hintPositionFromRight = Math.max(0, windowWidth - hintRightOffset);
 
 	    hintPositionStyle.right = '{0}px'.format(hintPositionFromRight);
 	    hintPositionStyle.left = 'auto';
 	  } else {
 	    panelPositionStyle.left = '{0}px'.format(xPosition);
-	    useSoutheastHint = false;
+	    positionFlannelEast = false;
 	  }
 
 	  _$rowInspectorToolPanel.css(panelPositionStyle);
 	  _$rowInspectorToolPanelHint.css(hintPositionStyle);
-	  _$rowInspectorToolPanel.toggleClass('southwest', !useSoutheastHint);
-	  _$rowInspectorToolPanel.toggleClass('southeast', useSoutheastHint);
+	  _$rowInspectorToolPanel.toggleClass('west', !positionFlannelEast);
+	  _$rowInspectorToolPanel.toggleClass('east', positionFlannelEast);
+	  _$rowInspectorToolPanel.toggleClass('south', !positionFlannelNorth);
+	  _$rowInspectorToolPanel.toggleClass('north', positionFlannelNorth);
 	}
 
 
@@ -20740,7 +20794,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function _renderPage() {
-	  var row = _.get(_state, 'rows[{0}]'.format(_state.pageIndex));
+	  var row = _.get(_state, ['rows', _state.pageIndex]);
+	  var title = _.get(_state, ['titles', _state.pageIndex]);
 
 	  _$rowInspectorContent.empty();
 
@@ -20752,6 +20807,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  utils.assert(Array.isArray(row), 'rowInspector data must be composed of an array of arrays');
 	  utils.assert(row.length > 0, 'This row is empty.');
+
+	  if (title) {
+	    _$rowInspectorContent.append('<h3 class="row-inspector-title">{0}</h3>'.format(title));
+	  }
 
 	  row.forEach(function(columnValue) {
 	    var $rowDataItem = $('<div>', {class: 'row-data-item'});
@@ -20801,11 +20860,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  utils.assertHasProperties(payload.position, 'pageX', 'pageY');
 
 	  if (payload.data) {
-	    utils.assert(_.isArray(payload.data), 'rowInspector data must be an array');
+	    utils.assert(_.isArray(payload.data), 'rowInspector row data must be an array');
+	  }
+
+	  if (payload.titles) {
+	    utils.assert(_.isArray(payload.titles), 'rowInspector title data must be an array');
 	  }
 
 	  _state = {
 	    rows: payload.error ? null : payload.data,
+	    titles: payload.error ? null : payload.titles,
 	    labelUnit: payload.labelUnit || _config.localization.defaultLabelUnit,
 	    error: payload.error,
 	    message: payload.message,
@@ -22887,19 +22951,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          injectTileInfo(e);
 
-	          // Only execute click if data under cursor does not exceed max tile
-	          // or inspector row density.
+	          // Only execute click if data under cursor does not exceed inspector
+	          // row density.
 	          //
 	          // NOTE: `self.options` (which refers to the VectorTileManager
 	          // instance options) is not the same as `this.options` (which refers
 	          // to the map instance options).
-	          var denseData = e.tile.totalPoints >= self.options.maxTileDensity;
 	          var manyRows = _.sum(e.points, 'count') > self.options.rowInspectorMaxRowDensity;
 
-	          if (!denseData && !manyRows) {
-
+	          if (!manyRows) {
 	            highlightClickedPoints(e.points);
 	            self.options.onClick(e);
+	          } else {
+	            // clear any existing highlights that are hanging around
+	            self.clearClickedPointHighlights();
 	          }
 
 	        } else {
@@ -24128,7 +24193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(38);
+	var ieee754 = __webpack_require__(40);
 
 	var BufferMethods;
 
@@ -26079,6 +26144,98 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 40 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var nBits = -7
+	  var i = isLE ? (nBytes - 1) : 0
+	  var d = isLE ? -1 : 1
+	  var s = buffer[offset + i]
+
+	  i += d
+
+	  e = s & ((1 << (-nBits)) - 1)
+	  s >>= (-nBits)
+	  nBits += eLen
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  m = e & ((1 << (-nBits)) - 1)
+	  e >>= (-nBits)
+	  nBits += mLen
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  if (e === 0) {
+	    e = 1 - eBias
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen)
+	    e = e - eBias
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	}
+
+	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+	  var i = isLE ? 0 : (nBytes - 1)
+	  var d = isLE ? 1 : -1
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+	  value = Math.abs(value)
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0
+	    e = eMax
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2)
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--
+	      c *= 2
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias)
+	    }
+	    if (value * c >= 2) {
+	      e++
+	      c /= 2
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0
+	      e = eMax
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen)
+	      e = e + eBias
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+	      e = 0
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+	  e = (e << mLen) | m
+	  eLen += mLen
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+	  buffer[offset + i - d] |= s * 128
+	}
+
+
+/***/ },
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26090,7 +26247,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var MetadataProvider = __webpack_require__(25);
 	var GeospaceDataProvider = __webpack_require__(23);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -26826,7 +26983,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27071,7 +27228,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27081,7 +27238,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var utils = __webpack_require__(3);
 	var ColumnChart = __webpack_require__(12);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var NAME_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
@@ -27606,7 +27763,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28166,7 +28323,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28563,7 +28720,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28574,7 +28731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var moment = __webpack_require__(17);
 	var TimelineChart = __webpack_require__(14);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 	var DATE_INDEX = 0;

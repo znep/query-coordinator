@@ -67,9 +67,7 @@ module ProfileHelper
 
   def shared_to?(view, user)
     grants = view.grants || []
-    user_ids = grants.map {|grant| grant.userId}
-
-    user_ids.include?(user.id)
+    grants.map(&:userId).include?(user.id)
   end
 
   def owns?(view, user)
@@ -78,8 +76,7 @@ module ProfileHelper
 
   def grant(view, user)
     grants = view.grants || []
-
-    grants.find {|grant| grant.userId == current_user.id } || {}
+    grants.find {|grant| grant.userId == current_user.id } || Grant.new
   end
 
   def pulse_url(view)

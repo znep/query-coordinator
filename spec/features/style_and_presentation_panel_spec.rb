@@ -3,12 +3,15 @@ require 'rails_helper'
 RSpec.describe 'style and presentation panel', type: :feature, js: true do
   let(:data_toggle_selector) { 'button[data-panel-toggle="style-and-presentation-panel"]' }
   let(:style_and_presentation_panel_selector) { '#style-and-presentation-panel' }
+  let(:user_story_container_selector) { '.user-story-container' }
 
   before do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('hasb-lock')
     visit '/s/magic-thing/hasb-lock/edit'
+    @blocks = page.all('.user-story .block-edit')
+    @first_block = @blocks.first
   end
 
   it 'opens and closes on click' do
@@ -42,6 +45,19 @@ RSpec.describe 'style and presentation panel', type: :feature, js: true do
     # Close with add content button
     style_and_presentation_button.click()
     expect_style_and_presentation_panel_to_be_closed
+  end
+
+  describe 'click outside the style and presentation panel' do
+    it 'closes the add style and presentation panel when clicking within a block' do
+      @first_block.click()
+      expect_style_and_presentation_panel_to_be_closed
+    end
+
+    it 'closes the style and presentation panel when clicking within the story (outside a block)' do
+      user_story_container = page.all(user_story_container_selector).first()
+      user_story_container.click()
+      expect_style_and_presentation_panel_to_be_closed
+    end
   end
 
   def expect_style_and_presentation_panel_to_be_closed

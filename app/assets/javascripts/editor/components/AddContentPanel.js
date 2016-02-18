@@ -47,9 +47,8 @@
     });
 
     $(document).on('keydown', function(e) {
-      if (e.ctrlKey && e.keyCode === 49 || e.metaKey && e.keyCode === 49) { // '1'
-        e.preventDefault();
-        addContentPanel.trigger('sidebar:toggle');
+      if (e.ctrlKey && e.keyCode === 49) { // '1'
+        toggleButton.click();
       }
       if (e.keyCode === 27) { // esc
         addContentPanel.trigger('sidebar:close');

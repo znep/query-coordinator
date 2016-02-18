@@ -60,14 +60,19 @@ $(function() {
         }
       };
 
-      if (!blist.mixpanelLoaded) {
+      var resolveEvent = function() {
         window.location = event.target.href;
+      };
+
+      if (!blist.mixpanelLoaded) {
+        resolveEvent();
       } else {
         $.updateMixpanelProperties();
-        var properties = _.extend(window._genericMixpanelPayload(), queryProperties);
-        mixpanel.track('Cleared Search Field', properties, function() {
-          window.location = event.target.href;
-        });
+        mixpanel.track(
+          'Cleared Search Field',
+          _.extend(window._genericMixpanelPayload(), queryProperties),
+          resolveEvent
+        );
       }
     });
   }
@@ -77,20 +82,24 @@ $(function() {
 
     _.defer(function() {
       var query = $searchSection.find('.browse2-search-control').val();
-      var newOpts = $.extend({}, opts, { 'q': encodeURIComponent(query) });
+      var searchOptions = $.extend({}, opts, { 'q': encodeURIComponent(query) });
 
-      if ($.isBlank(newOpts.q)) {
-        delete newOpts.q;
+      if ($.isBlank(searchOptions.q)) {
+        delete searchOptions.q;
       } else {
-        delete newOpts.sortPeriod;
-        newOpts.sortBy = 'relevance';
+        delete searchOptions.sortPeriod;
+        searchOptions.sortBy = 'relevance';
       }
 
+      var resolveEvent = function() {
+        doBrowse(searchOptions);
+      };
+
       if (!blist.mixpanelLoaded) {
-        doBrowse(newOpts);
+        resolveEvent();
       } else {
         $.updateMixpanelProperties();
-        var properties = _.extend(window._genericMixpanelPayload(), {
+        var mixpanelPayload = _.extend(window._genericMixpanelPayload(), {
           'Type': {
             'Name': 'Used Search Field',
             'Properties': {
@@ -98,9 +107,7 @@ $(function() {
             }
           }
         });
-        mixpanel.track('Used Search Field', properties, function() {
-          doBrowse(newOpts);
-        });
+        mixpanel.track('Used Search Field', mixpanelPayload, resolveEvent);
       }
     });
   }

@@ -1,5 +1,6 @@
 class VersionController < ApplicationController
   skip_before_filter :require_logged_in_user
+  force_ssl except: [:show]
 
   # We use this endpoint as a health check and for monitoring.
   def show

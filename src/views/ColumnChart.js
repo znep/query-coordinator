@@ -81,28 +81,28 @@ function ColumnChart(element, vif) {
     var truncationMarker = $(
       '<div>',
       {
-        class: 'truncation-marker'
+        'class': 'truncation-marker'
       }
     ).html('&raquo;');
 
     var chartWrapper = $(
       '<div>',
       {
-        class: 'column-chart-wrapper'
+        'class': 'column-chart-wrapper'
       }
     ).append(truncationMarker);
 
     var chartLabels = $(
       '<div>',
       {
-        class: 'labels'
+        'class': 'labels'
       }
     );
 
     var chartScroll = $(
       '<div>',
       {
-        class: 'chart-scroll'
+        'class': 'chart-scroll'
       }
     ).append([
       chartWrapper,
@@ -112,14 +112,14 @@ function ColumnChart(element, vif) {
     var chartElement = $(
       '<div>',
       {
-        class: 'column-chart'
+        'class': 'column-chart'
       }
     ).append(chartScroll);
 
     var chartContainer = $(
       '<div>',
       {
-        class: 'column-chart-container'
+        'class': 'column-chart-container'
       }
     ).append(
       chartElement
@@ -472,7 +472,7 @@ function ColumnChart(element, vif) {
         function(tickValue, index) {
 
           var tick = $('<div>', {
-            class: tickValue === 0 ? 'tick origin' : 'tick',
+            'class': tickValue === 0 ? 'tick origin' : 'tick',
             text: socrata.utils.formatNumber(tickValue)
           });
           var tickTopOffset = innerHeight - verticalScale(tickValue);
@@ -499,7 +499,7 @@ function ColumnChart(element, vif) {
       );
 
       return $('<div>', {
-        class: 'ticks',
+        'class': 'ticks',
         style: ticksStyle
       }).append(tickMarks);
     };

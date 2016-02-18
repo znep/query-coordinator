@@ -149,7 +149,7 @@ function TimelineChart(element, vif) {
       return $(
         '<div>',
         {
-          class: clsName
+          'class': clsName
         }
       );
     }
@@ -170,7 +170,7 @@ function TimelineChart(element, vif) {
       return $svg(
         'svg',
         {
-          class: clsName
+          'class': clsName
         }
       ).append(
         $svg('g')
@@ -270,14 +270,14 @@ function TimelineChart(element, vif) {
     var timelineClearSelectionLabel = $(
       '<span>',
       {
-        class: 'timeline-chart-clear-selection-label'
+        'class': 'timeline-chart-clear-selection-label'
       }
     );
 
     var chartWrapper = $(
       '<div>',
       {
-        class: 'timeline-chart-wrapper'
+        'class': 'timeline-chart-wrapper'
       }
     ).append([
       yTicks,
@@ -296,14 +296,14 @@ function TimelineChart(element, vif) {
     var chartLabels = $(
       '<div>',
       {
-        class: 'labels'
+        'class': 'labels'
       }
     );
 
     var chartScroll = $(
       '<div>',
       {
-        class: 'chart-scroll'
+        'class': 'chart-scroll'
       }
     ).append([
       chartWrapper,
@@ -313,14 +313,14 @@ function TimelineChart(element, vif) {
     var chartElement = $(
       '<div>',
       {
-        class: 'timeline-chart'
+        'class': 'timeline-chart'
       }
     ).append(chartScroll);
 
     var chartContainer = $(
       '<div>',
       {
-        class: 'timeline-chart-container'
+        'class': 'timeline-chart-container'
       }
     ).append(
       chartElement

@@ -327,9 +327,9 @@ function _renderPage() {
   utils.assert(row.length > 0, 'This row is empty.');
 
   row.forEach(function(columnValue) {
-    var $rowDataItem = $('<div>', {class: 'row-data-item'});
-    var $name = $('<span>', {class: 'name'});
-    var $value = $('<span>', {class: 'value'});
+    var $rowDataItem = $('<div>', {'class': 'row-data-item'});
+    var $name = $('<span>', {'class': 'name'});
+    var $value = $('<span>', {'class': 'value'});
 
     utils.assertHasProperties(columnValue, 'column', 'value');
 

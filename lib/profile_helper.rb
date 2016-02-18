@@ -61,26 +61,52 @@ module ProfileHelper
 
   private
 
+  def viewing_self?
+    @user.id == current_user.id
+  end
+
+  def shared_to?(view, user)
+    grants = view.grants || []
+    user_ids = grants.map {|grant| grant.userId}
+
+    user_ids.include?(user.id)
+  end
+
+  def owns?(view, user)
+    view.owner.id == user.id
+  end
+
+  def grant(view, user)
+    grants = view.grants || []
+
+    grants.find {|grant| grant.userId == current_user.id } || {}
+  end
+
   def pulse_url(view)
     "/pulse/view/#{view.id}"
   end
-  
+
   def story_url(view)
+    is_admin = current_user.is_admin?
     base_relative_url = "/stories/s/#{view.id}"
 
-    return base_relative_url unless view.rights.present?
+    if shared_to?(view, current_user)
+      user_grant = grant(view, current_user)
+      is_owner = user_grant.type == 'owner'
+      is_contributor = user_grant.type == 'contributor'
+      is_viewer = user_grant.type == 'viewer'
 
-    # This logic is duplicated in Storyteller as require_sufficient_rights
-    if current_user.has_right?(UserRights::EDIT_STORY)
+      if is_contributor || is_owner || is_admin
+        base_relative_url << '/edit'
+      elsif is_viewer
+        base_relative_url << '/preview'
+      else
+        base_relative_url
+      end
+    elsif owns?(view, current_user) || is_admin
       base_relative_url << '/edit'
-    elsif current_user.has_right?(UserRights::VIEW_UNPUBLISHED_STORY)
-      base_relative_url << '/preview'
     else
       base_relative_url
     end
-  end
-
-  def viewing_self?
-    @user.id == current_user.id
   end
 end

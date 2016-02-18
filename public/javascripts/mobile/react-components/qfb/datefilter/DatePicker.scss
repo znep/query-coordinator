@@ -1,0 +1,55 @@
+@import '../qfb-variables.scss';
+// DatePicker styles
+
+.filter-select {
+  width: 130px;
+  height: 33px;
+  position: relative;
+  display: inline-block;
+  border: 1px solid;
+  margin-bottom: 10px;
+}
+.picker-category-selector {
+  position: absolute;
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: transparent;
+  padding: 5px;
+  border: none;
+  outline: none;
+}
+.filter-select > i {
+  position: absolute;
+  right: 6px;
+  top: 8px;
+}
+
+.pickers-container {
+  display: flex;
+  justify-content: space-between;
+}
+.separator {
+  width: 30px;
+  align-self: center;
+  text-align: center;
+}
+.dateInput {
+  text-align: center;
+  width: 95px;
+  padding: 4px;
+  border: 1px solid #A7A7A7;
+}
+
+@media all and (max-width: $mobile-point) {
+  .pickers-container {
+    flex-direction: column;
+  }
+  .dateInput {
+    display: block;
+    margin: 0 auto;
+  }
+  .separator {
+    margin: 5px 0;
+  }
+}

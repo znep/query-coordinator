@@ -288,8 +288,10 @@ dataset-about-full:
 - screen-dataset-about
 mobile:
 - mobile/base
+- mobile/fonts
 - mobile/layout
 - mobile/states
+- mobile/loader
 - mobile/components/navbar
 - mobile/components/meta
 - mobile/components/feature-map

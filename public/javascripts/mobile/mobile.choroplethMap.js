@@ -13,14 +13,11 @@
       'aggregation': {
         // TODO: implement this!
       },
-      'columnName': 'ward',
+      'columnName': values.columnName,
       'configuration': {
         'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
         'baseLayerOpacity': 0.8,
-        'defaultExtent' : {
-          'southwest': [41.45919537950706, -90.24169921875],
-          'northeast': [42.20817645934742, -85.242919921875]
-        },
+        'defaultExtent' : values.map_extent,
         'legend': {
           'type': 'continuous'
         },

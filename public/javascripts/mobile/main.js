@@ -1,3 +1,4 @@
+/* global pageMetadata, datasetMetadata */
 (function() {
   'use strict';
 
@@ -121,7 +122,8 @@
             datasetUid: datasetMetadata.id,
             columnName: card.fieldName,
             // TODO Write some bloody error handling
-            geojsonUid: datasetMetadata.columns[card.computedColumn].computationStrategy.parameters.region.substring(1)
+            geojsonUid: datasetMetadata.columns[card.computedColumn].computationStrategy.parameters.region.substring(1),
+            map_extent: (card.cardOptions) ? card.cardOptions.mapExtent || {} : {}
           };
 
           socrata.visualizations.mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
@@ -141,7 +143,52 @@
           break;
       }
     });
+
     mobileCardViewer();
+    setupQfb();
+  }
+
+  function setupQfb() {
+    var aFilterOps = [];
+    _.each(datasetMetadata.columns, function(column, fieldName) {
+      var filterOption = {};
+      switch (column.dataTypeName) {
+        case 'text':
+          filterOption = {
+            filterName: column.name,
+            name: fieldName,
+            id: column.position,
+            type: 'string'
+          };
+          aFilterOps.push(filterOption);
+          break;
+        case 'number':
+          filterOption = {
+            filterName: column.name,
+            name: fieldName,
+            id: column.position,
+            type: 'int'
+          };
+          aFilterOps.push(filterOption);
+          break;
+        case 'calendar_date':
+          filterOption = {
+            filterName: column.name,
+            name: fieldName,
+            id: column.position,
+            type: 'calendar_date'
+          };
+          aFilterOps.push(filterOption);
+          break;
+        default:
+          break;
+      }
+    });
+
+    var filterOptions = {
+      filterOps: aFilterOps
+    };
+    $(document).trigger('filterOps.qfb.socrata',[filterOptions, datasetMetadata.domain, pageMetadata.datasetId]);
   }
 
   document.title = datasetMetadata.name;

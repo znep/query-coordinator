@@ -49,7 +49,7 @@
                     { return [c].concat(_.sortBy(c.realChildColumns, sortFunc)); }
                     else { return c; }
                 })
-                .flatten()
+                .flattenDeep()
                 .value();
 
             if (cpObj._view.isGrouped())

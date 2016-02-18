@@ -761,7 +761,7 @@
         {
             var control = this, $dom = this.$dom;
             var dataLayers = _.chain($.makeArray(layerObj.dataLayers()))
-                .flatten().compact().value();
+                .flattenDeep().compact().value();
 
             var typeMap = {
                 'point':     $.t('controls.map.point_map'),
@@ -1521,7 +1521,7 @@
             var buildFilterCondition = function(viewport)
             {
                 return { type: 'operator', value: 'AND',
-                    children: _.flatten(_.map(['x', 'y'], function(axis)
+                    children: _.flattenDeep(_.map(['x', 'y'], function(axis)
                     {
                         return _.map(['min', 'max'], function(bound)
                         {

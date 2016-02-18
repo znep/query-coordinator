@@ -1,0 +1,21 @@
+.qfb-filter-item-flannel-numberfilter {
+  display: flex;
+  justify-content: flex-start;
+}
+  .qfb-filter-item-flannel-numberfilter-part {
+    width: 45%;
+  }
+    .qfb-filter-item-flannel-numberfilter-part label {
+      color: #636363;
+    }
+    .qfb-filter-item-flannel-numberfilter-part input[type=number] {
+      width: 130px;
+      padding: 5px;
+      &.disabled {
+        cursor: text;
+        color: #A7A7A7;
+      }
+    }
+  .qfb-filter-item-flannel-numberfilter-seperator {
+    padding: 10px;
+  }

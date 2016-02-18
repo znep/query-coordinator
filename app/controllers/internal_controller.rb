@@ -379,7 +379,10 @@ class InternalController < ApplicationController
     @domain = Domain.find(params[:domain_id])
     config = @domain.default_configuration('feature_flags')
 
-    if config.nil?
+    # If the cname is different, then this is a merged parent domain's config and
+    # consequently means we'd be setting the properties on the wrong config object.
+    # If `config` is wrong in any way, that means it doesn't exist and we should create it.
+    if config.try(:domainCName) != @domain.cname
       begin
         config = ::Configuration.create(
           'name' => 'Feature Flags',

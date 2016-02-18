@@ -66,6 +66,24 @@ class InternalControllerTest < ActionController::TestCase
     refute(@controller.send(:valid_cname?, 'cityofmadison,demo.socrata.com'))
   end
 
+  test '#set_feature_flags does not make changes to a config with the wrong cname' do
+    init_for_feature_flags
+
+    @domain.instance_variable_get(:@default_configs)['feature_flags'].
+      data['domainCName'] = 'not.localhost'
+
+    Configuration.expects(:create).once.
+      returns(Hashie::Mash.new.tap { |hashie| hashie.properties = {} })
+    post(:set_feature_flags, domain_id: 'localhost', format: 'data')
+  end
+
+  test '#set_feature_flags does make changes to a config with the same cname' do
+    init_for_feature_flags
+
+    Configuration.expects(:create).never
+    post(:set_feature_flags, domain_id: 'localhost', format: 'data')
+  end
+
   test '#set_feature_flags does not require feature_flags param' do
     init_for_feature_flags
 

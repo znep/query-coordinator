@@ -1,0 +1,141 @@
+@import '../qfb-variables.scss';
+// DayPicker styles
+
+$blue: #277BB0;
+$red: #D0021B;
+$grey: #DCE0E0;
+$dark-grey: #565A5C;
+$white: #FFF;
+
+.DayPicker {
+  display: flex;
+  flex-wrap: wrap;
+  outline: none;
+  justify-content: center;
+  position: relative;
+  padding: 1rem 0;
+  user-select: none;
+}
+
+.DayPicker-Month {
+  display: table;
+  border-collapse: collapse;
+  border-spacing: 0;
+  user-select: none;
+}
+
+.DayPicker-NavBar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 0 0.5rem;
+}
+
+.DayPicker-NavButton {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.DayPicker-NavButton--prev {
+  left: 10px;
+  background-image: url("./prev.svg");
+}
+
+.DayPicker-NavButton--next {
+  right: 10px;
+  background-image: url("./next.svg");
+}
+
+
+.DayPicker-Caption {
+  display: table-caption;
+  height: 1.5rem;
+  line-height: 1rem;
+  font-weight: 500;
+  font-size: 12px;
+  text-align: center;
+}
+
+.DayPicker-Weekdays {
+  display: none;
+}
+
+.DayPicker-Weekday {
+  display: table-cell;
+  padding: 0.5rem;
+  font-size: 0.875em;
+  text-align: center;
+}
+
+.DayPicker-Body {
+  background-color: $white;
+  border: 1px solid #A7A7A7;
+  padding: 5px;
+  display: block;
+  margin-top: 7px;
+}
+
+.DayPicker-Week {
+  display: table-row;
+}
+
+.DayPicker-Day {
+  display: table-cell;
+  padding: 0.7rem;
+  border: transparent;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1.5rem;
+  vertical-align: middle;
+  font-size: 12px;
+}
+
+.DayPicker--interactionDisabled .DayPicker-Day {
+  cursor: default;
+}
+
+
+// Modifiers
+.DayPicker-Day--today {
+  color: $red;
+  font-weight: 500;
+}
+
+.DayPicker-Day--disabled {
+  color: $grey;
+  cursor: default;
+  background-color: lighten($grey, 7);
+}
+
+.DayPicker-Day--sunday {
+  color: $grey;
+  background-color: lighten($grey, 10);
+}
+
+.DayPicker-Day--outside {
+  cursor: default;
+  color: $grey;
+}
+
+.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+  color: $white;
+  background-color: $blue;
+}
+
+.DayPicker--ar {
+  direction: rtl;
+}
+
+@media all and (max-width: $mobile-point) {
+  .DayPicker-Caption {
+    font-size: 20px;
+  }
+  .DayPicker-Day {
+    padding: 1rem;
+  }
+}

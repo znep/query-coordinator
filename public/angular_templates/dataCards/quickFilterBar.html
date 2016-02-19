@@ -18,7 +18,7 @@
       </div>
       <button
         class="clear-all-filters-button action-btn dark"
-        ng-if="appliedFiltersForDisplay.length > 0 && !page.isStandaloneVisualization"
+        ng-if="appliedFiltersForDisplay.length > 0"
         ng-click="clearAllFilters()">
         {{::'quickFilterBar.clearAll' | I18n}}
         <span class="icon-close"></span>
@@ -26,7 +26,6 @@
       <div class="aggregation-tour-attachment" ng-controller="AggregationTourController"></div>
       <aggregation-chooser
         page="page"
-        is-standalone-visualization="page.isStandaloneVisualization"
         ng-show="shouldShowAggregationChooser">
       </aggregation-chooser>
     </div>

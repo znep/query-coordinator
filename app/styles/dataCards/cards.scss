@@ -246,19 +246,7 @@ body.state-view-cards {
     }
     #card-container {
       position: relative;
-
-      &.multiple-cards {
-        margin: 0 0 ($customize-bar-height + 10px);
-      }
-
-      &.single-card {
-        margin: 0;
-
-        .card {
-          padding-top: 30px;
-          border-radius: 0;
-        }
-      }
+      margin: 0 0 ($customize-bar-height + 10px);
     }
     .cards {
       display: block;

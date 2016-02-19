@@ -71,32 +71,24 @@ class PageMetadataManager
     end
 
     case result[:displayType]
-      when 'data_lens_chart', 'data_lens_map' # standalone visualizations
-        # VIFs stored in DB in JSON.dump'd form because core removes keys with null values otherwise
-        vif = JSON.parse(result[:displayFormat][:visualization_interchange_format_v1]).with_indifferent_access
-        page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(vif, id, permissions)
       when 'data_lens'
         page_metadata = result[:displayFormat][:data_lens_page_metadata].with_indifferent_access
       else
-        raise "data lens #{id} is backed by metadb but is not of display type data_lens_chart, data_lens_map, or data_lens. DisplayType: #{result[:displayType]}"
+        raise "data lens #{id} is backed by metadb but is not of display type data_lens. DisplayType: #{result[:displayType]}"
     end
     page_metadata = ensure_page_metadata_properties(page_metadata)
 
-    # Don't migrate page metadata if we're looking at a standalone visualization
-    # ('data_lens_chart' or 'data_lens_map' display type)
-    if result[:displayType] == 'data_lens'
-      page_metadata = migrated_page_metadata(page_metadata, options)
-    end
+    # Migrate page metadata to the newest schema version before serving to client.
+    page_metadata = migrated_page_metadata(page_metadata, options)
+
     page_metadata[:permissions] = permissions.stringify_keys!
     page_metadata[:moderationStatus] = result[:moderationStatus]
     page_metadata[:shares] = View.new(result).shares
     page_metadata[:rights] = result[:rights]
-    page_metadata[:displayType] = result[:displayType]
     page_metadata[:provenance] = result[:provenance]
     page_metadata[:ownerId] = result[:owner][:id]
 
     page_metadata
-
   end
 
   # Creates a new page
@@ -291,6 +283,23 @@ class PageMetadataManager
   # Page metadata keys we don't want in the inner page_metadata
   def self.keys_to_skip
     %w(permissions moderationStatus shares rights displayType provenance ownerId parentLensId)
+  end
+
+  def page_metadata_from_vif(vif, vif_lens_id, permissions)
+    page_metadata = {
+      :sourceVif => vif,
+      :datasetId => vif[:datasetUid],
+      :cards => [card_from_vif(vif)],
+      :description => vif[:description],
+      :name => vif[:title],
+      :pageId => vif_lens_id,
+      :permissions => permissions,
+      :primaryAggregation => vif[:aggregation][:function],
+      :primaryAmountField => vif[:aggregation][:field],
+      :version => 4
+    }.with_indifferent_access
+
+    page_metadata
   end
 
   private
@@ -517,6 +526,54 @@ class PageMetadataManager
         :error_message => error_msg
       )
       nil
+    end
+  end
+
+  def card_from_vif(vif)
+    configuration = vif.try(:[], :configuration) || {}
+
+    card = {
+      :activeFilters => [],
+      :cardOptions => {},
+      :cardSize => 1,
+      :cardType => card_type_from_vif(vif),
+      :expanded => true,
+      :fieldName => vif[:columnName],
+      # Not all VIFs will have a :computedColumnName property, which
+      # lives in the :configuration hash.
+      #
+      # The frontend may still assume this property is always present
+      # and that it can be null, so we override nil to ensure that we
+      # always output a value even if we don't have one on the input.
+      :computedColumn => configuration[:computedColumnName],
+      :aggregationFunction => vif[:aggregation][:function],
+      :aggregationField => vif[:aggregation][:field]
+    }.with_indifferent_access
+
+    # histograms will figure out what bucketType it thinks is best, but
+    # we need to pass it in explicity to standalone visualizations if
+    # we want it to respect the saved bucketType
+    if vif[:type] == 'histogramChart'
+      card[:bucketType] = configuration[:bucketType]
+    end
+
+    card
+  end
+
+  def card_type_from_vif(vif)
+    case vif[:type]
+      when 'columnChart'
+        'column'
+      when 'histogramChart'
+        'histogram'
+      when 'timelineChart'
+        'timeline'
+      when 'choroplethMap'
+        'choropleth'
+      when 'featureMap'
+        'feature'
+      else
+        raise ArgumentError.new "unrecognized vif[:type]: #{vif[:type]}"
     end
   end
 

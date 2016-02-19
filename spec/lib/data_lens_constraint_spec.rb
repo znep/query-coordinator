@@ -33,24 +33,9 @@ describe Constraints::DataLensConstraint do
     # the missing/invalid ID cases are covered by resource_constraint_spec.rb
     context 'when the given ID corresponds to a data lens' do
 
-      it 'is accepted (data_lens version)' do
+      it 'is accepted' do
         allow(data_lens).to receive(:data_lens?).and_return(true)
-        allow(data_lens).to receive(:standalone_visualization?).and_return(false)
         expect(constraint.matches?(request_without_query)).to be_truthy
-      end
-
-      it 'is accepted (standalone_visualization version, with flag)' do
-        allow(FeatureFlags).to receive(:derive).and_return(standalone_lens_chart: true)
-        allow(data_lens).to receive(:data_lens?).and_return(false)
-        allow(data_lens).to receive(:standalone_visualization?).and_return(true)
-        expect(constraint.matches?(request_without_query)).to be_truthy
-      end
-
-      it 'is not accepted (standalone_visualization version, without flag)' do
-        allow(FeatureFlags).to receive(:derive).and_return(standalone_lens_chart: false)
-        allow(data_lens).to receive(:data_lens?).and_return(false)
-        allow(data_lens).to receive(:standalone_visualization?).and_return(true)
-        expect(constraint.matches?(request_without_query)).to be_falsy
       end
 
     end
@@ -59,7 +44,6 @@ describe Constraints::DataLensConstraint do
 
       it 'is not accepted' do
         allow(data_lens).to receive(:data_lens?).and_return(false)
-        allow(data_lens).to receive(:standalone_visualization?).and_return(false)
         expect(constraint.matches?(request_without_query)).to be_falsy
       end
 

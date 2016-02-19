@@ -180,9 +180,6 @@ sl:
         image:
           header:
           description:
-        standalone_visualization:
-          header:
-          description:
         choose_card:
       feature_map:
         feature_map_disabled:
@@ -341,17 +338,6 @@ sl:
         save: Shrani
         saved: Shranjeno!
         saving: Shranjujem...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Poskusite z iskanjem številke, ki ne vsebuje črk.

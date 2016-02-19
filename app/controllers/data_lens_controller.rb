@@ -225,8 +225,6 @@ class DataLensController < ActionController::Base
       return render_403 if error.error_code == 'permission_denied'
     rescue
     end
-
-    @domain_metadata = domain_metadata
   end
 
   def data_lens
@@ -239,7 +237,7 @@ class DataLensController < ActionController::Base
     # First fetch the current user's profile.
     @current_user = current_user
 
-    @page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(
+    @page_metadata = page_metadata_manager.page_metadata_from_vif(
         parsed_vif, nil, nil)
 
     # Then ensure that there is a dataset id.
@@ -267,8 +265,6 @@ class DataLensController < ActionController::Base
       report_error(error_class, error_message)
       return render_500
     end
-
-    @domain_metadata = domain_metadata
   end
 
   def visualization_add

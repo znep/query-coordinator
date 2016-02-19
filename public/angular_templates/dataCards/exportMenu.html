@@ -68,23 +68,8 @@
         <div class="tool-panel-input-group alt-group-padding">
           <button
             ng-click="initiateCardSelectionMode('polaroid')"
-            ng-show="!page.isStandaloneVisualization"
             type="button"
             data-action="export-polaroid"
-            class="tool-panel-btn action-btn l-to-r">
-            {{::'exportMenu.chooseCard' | I18n}}
-          </button>
-        </div>
-      </div>
-
-      <div ng-if="showStandaloneVisualizationExport">
-        <h2>{{::'exportMenu.standaloneVisualization.header' | I18n}}</h2>
-        <p>{{::'exportMenu.standaloneVisualization.description' | I18n}}</p>
-        <div class="tool-panel-input-group alt-group-padding">
-          <button
-            ng-click="initiateCardSelectionMode('vif')"
-            type="button"
-            data-action="export-vif"
             class="tool-panel-btn action-btn l-to-r">
             {{::'exportMenu.chooseCard' | I18n}}
           </button>

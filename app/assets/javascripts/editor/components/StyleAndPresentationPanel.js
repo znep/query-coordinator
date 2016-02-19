@@ -32,6 +32,8 @@
     var styleAndPresentationPanel = $(this).sidebar({
       side: 'right'
     });
+    var $userStoryContainer = $('.user-story-container');
+    var $stylePanelBtn = $('.style-panel-btn');
 
     // Set up some input events.
 
@@ -52,6 +54,14 @@
         styleAndPresentationPanel.trigger('sidebar:close');
       }
     });
+
+    $userStoryContainer.on('click rich-text-editor::content-click', handleClickOutsideStylePanel);
+
+    function handleClickOutsideStylePanel(event) {
+      if (!$stylePanelBtn.is(event.target) && styleAndPresentationPanel.hasClass('active')) {
+        styleAndPresentationPanel.trigger('sidebar:close');
+      }
+    }
 
     styleAndPresentationPanel.
       on('sidebar:open', function() {

@@ -305,6 +305,17 @@ describe('RichTextEditor', function() {
       });
     });
 
+    describe('applyThemeFont', function() {
+      var googleFontCode = '<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet" type="text/css">';
+
+      it('adds unique theme font when called', function() {
+        editor.applyThemeFont(googleFontCode);
+        editor.applyThemeFont(googleFontCode);
+
+        assert.lengthOf($documentElement.find('link[href="https://fonts.googleapis.com/css?family=Quicksand"]'), 1);
+      });
+    });
+
     describe('addContentClass', function() {
       it('adds a new body class when called', function() {
         editor.addContentClass('the-content-class');

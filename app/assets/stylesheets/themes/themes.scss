@@ -56,10 +56,7 @@ html[class*="theme-"] {
   overflow: hidden;
 }
 
-// Javascript sets body opacity to 0 while styles load, then removes that style,
-// so this provides a nice fade-in
 body {
-  transition: opacity $iframe-onload-transition-duration;
   margin: 0;
 
   &.hero-body * {

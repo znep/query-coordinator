@@ -74,14 +74,14 @@ class ImportActivity
 
   def import_method
     case @data[:service]
-    when "Imports2"
-      "Web interface"
-    when "DeltaImporter2"
-      "DataSync"
-    when "Upsert"
-      "Upsert API"
-    else
-      @data[:service]
+      when 'Imports2'
+        'Web interface'
+      when 'DeltaImporter2'
+        'DataSync'
+      when 'Upsert'
+        'Upsert API'
+      else
+        @data[:service]
     end
   end
 
@@ -93,10 +93,10 @@ class ImportActivity
   end
 
   def last_updated
-    if events.empty?
+    if events.blank?
       created_at
     else
-      events.sort_by { |event| event.event_time }.last.event_time
+      events.sort_by(&:event_time).last.event_time
     end
   end
 

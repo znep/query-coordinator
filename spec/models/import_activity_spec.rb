@@ -161,7 +161,7 @@ describe ImportActivity do
 
   describe '#last_updated' do
     it 'returns the event_time of the most recent associated event' do
-      expect(activity.last_updated).to eq(Time.parse '2016-01-21T22:04:22.161Z')
+      expect(activity.last_updated).to eq(Time.parse('2016-01-21T22:04:22.161Z'))
     end
   end
 

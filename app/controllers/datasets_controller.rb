@@ -765,7 +765,7 @@ protected
         entry[:description] = source[:description] if source[:description].present?
         entry[:urls] = {}
         if source[:urls].present?
-          source[:urls].each do |endpoint|
+          source[:urls].select { |source_url| source_url[:url].present? }.each do |endpoint|
             extension = compute_extension(endpoint[:extension], endpoint[:url])
             if entry[:urls][extension].present?
               flash.now[:error] = I18n.t('screens.edit_metadata.multiple_extensions')
@@ -777,7 +777,7 @@ protected
           extension = compute_extension(source[:extension], source[:name])
           entry[:urls][extension] = source[:name]
         end
-        additionalAccessPoints.push(entry)
+        additionalAccessPoints << entry unless entry[:urls].empty?
       end
       if additionalAccessPoints.blank?
         flash.now[:error] = I18n.t('screens.edit_metadata.missing_external_dataset')

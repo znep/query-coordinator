@@ -21442,6 +21442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var DataProvider = __webpack_require__(24);
 	var _ = __webpack_require__(9);

@@ -136,9 +136,19 @@
       return _lastContentHeight;
     };
 
+
+    /**
+     * Applies the Google Font embed code to the rich text editor.
+     * Will only add this code if it has not already been added.
+     */
     this.applyThemeFont = function(theme) {
       var headElement = _editorElement[0].contentDocument.querySelector('head');
-      $(headElement).append($(theme));
+      var $theme = $(theme);
+      var href = $theme.attr('href');
+
+      if ($(headElement).find('link[href="{0}"]'.format(href)).length === 0) {
+        $(headElement).append($(theme));
+      }
     };
 
     // Add a `themeName` class to the html root of the iframe

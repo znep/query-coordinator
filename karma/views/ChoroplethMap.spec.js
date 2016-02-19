@@ -1137,6 +1137,16 @@ describe('ChoroplethMap', function() {
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();
             expect(isGray(elementColor)).to.equal(true);
           });
+
+          it('does not render if no data is present', function() {
+            var geojsonAggregateData = testData.polygonData2NoValues;
+
+            var choroplethObject = createChoroplethMap(geojsonAggregateData, 'continuous');
+            var el = choroplethObject.element;
+
+            expect(el.find(legendSelector).find('rect').children().length).to.equal(0);
+            expect(el.find(legendSelector).find('g.tick').children().length).to.equal(0);
+          });
         });
       });
     });

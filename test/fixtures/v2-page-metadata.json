@@ -68,6 +68,14 @@
           "bucketSize": 500
         }
       }, {
+        "description": "A map",
+        "fieldName": "some_location_column",
+        "cardSize": 3,
+        "cardType": "choropleth",
+        "computedColumn": ":@computed_region_four_four",
+        "appliedFilters": [],
+        "expanded": false
+      }, {
         "description": "Table",
         "fieldName": "*",
         "cardSize": 3,

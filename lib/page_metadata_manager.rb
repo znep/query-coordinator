@@ -216,21 +216,28 @@ class PageMetadataManager
 
   def build_rollup_soql(page_metadata, columns, cards)
 
-    non_date_card_types_for_rollup = %w{column choropleth}
     normalized_columns = transformed_columns(columns)
 
-    #get cards info, specifically the field names
-    columns_to_roll_up = cards.
-      select { |card| non_date_card_types_for_rollup.include?(card['cardType']) }.
-      pluck(column_field_name)
+    # Get cards info, specifically the field names
+    column_chart_rollups = cards.
+      select { |card| card['cardType'] == 'column' }.
+      pluck(column_field_name).
+      uniq
+
+    choropleth_rollups = cards.
+      select { |card| card['cardType'] == 'choropleth' }.
+      pluck('computedColumn').
+      uniq
 
     # Nothing to roll up
-    return if columns_to_roll_up.blank? &&
+    return if column_chart_rollups.blank? &&
+      choropleth_rollups.blank? &&
       columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank? &&
       cards.select { |card| card['cardType'] == 'histogram' }.empty?
 
     rolled_up_columns_soql = (
-      columns_to_roll_up +
+      column_chart_rollups +
+      choropleth_rollups +
       date_trunc_column_queries(page_metadata['datasetId'], cards) +
       bucketed_column_queries(page_metadata['datasetId'], cards)
     ).compact.join(', ')

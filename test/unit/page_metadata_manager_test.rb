@@ -278,12 +278,16 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     cards = data_lens_page_metadata.fetch('cards')
 
-    expected_soql = 'select some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
-      'some_number_column, signed_magnitude_10(some_number_column), ' <<
-      'some_other_number_column, signed_magnitude_linear(some_other_number_column, 500), ' <<
-      'count(*) as value group by some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
-      'some_number_column, signed_magnitude_10(some_number_column), ' <<
-      'some_other_number_column, signed_magnitude_linear(some_other_number_column, 500)'
+    expected_soql = %q{
+      select some_column, some_other_column, :@computed_region_four_four,
+      date_trunc_y(time_column_fine_granularity), some_number_column,
+      signed_magnitude_10(some_number_column), some_other_number_column,
+      signed_magnitude_linear(some_other_number_column, 500), count(*) as value group by
+      some_column, some_other_column, :@computed_region_four_four,
+      date_trunc_y(time_column_fine_granularity), some_number_column,
+      signed_magnitude_10(some_number_column), some_other_number_column,
+      signed_magnitude_linear(some_other_number_column, 500)
+    }.gsub(/\s+/, ' ').strip
 
     soql = manager.build_rollup_soql(data_lens_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)
@@ -306,12 +310,16 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     cards = data_lens_page_metadata.fetch('cards')
     cards.push(cards.first) # Duplicate the first card
 
-    expected_soql = 'select some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
-      'some_number_column, signed_magnitude_10(some_number_column), ' <<
-      'some_other_number_column, signed_magnitude_linear(some_other_number_column, 500), ' <<
-      'count(*) as value group by some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
-      'some_number_column, signed_magnitude_10(some_number_column), ' <<
-      'some_other_number_column, signed_magnitude_linear(some_other_number_column, 500)'
+    expected_soql = %q{
+      select some_column, some_other_column, :@computed_region_four_four,
+      date_trunc_y(time_column_fine_granularity), some_number_column,
+      signed_magnitude_10(some_number_column), some_other_number_column,
+      signed_magnitude_linear(some_other_number_column, 500), count(*) as value group by
+      some_column, some_other_column, :@computed_region_four_four,
+      date_trunc_y(time_column_fine_granularity), some_number_column,
+      signed_magnitude_10(some_number_column), some_other_number_column,
+      signed_magnitude_linear(some_other_number_column, 500)
+    }.gsub(/\s+/, ' ').strip
 
     soql = manager.build_rollup_soql(data_lens_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)

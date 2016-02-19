@@ -323,9 +323,11 @@ Frontend::Application.routes do
       # Short URLs
       get 'blob/:id', :action => 'blob'
       get 'dataset/:id', :action => 'show'
+      get 'dataset/:id/stats', :action => 'stats'
       # The ":as" option, provides the short_view_url helper method
       get 'd/:id', :action => 'show', :as => :short_view
       get 'd/:id/alt', :action => 'alt'
+      get 'd/:id/stats', :action => 'stats'
 
       get 'd/:id/:row_id', :action => 'show',
         :constraints => {:row_id => /\d+/}

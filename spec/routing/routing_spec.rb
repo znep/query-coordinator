@@ -49,4 +49,32 @@ RSpec.describe 'routes for Data Lens' do
     allow_any_instance_of(ActionDispatch::Request).to receive(:path_parameters).and_return(dataslate_matching_resource_constraint_params)
     expect(get('/dickbutt/manbearpig/notfourbyfour')).to route_to('custom_content#page', dataslate_matching_resource_constraint_params)
   end
+
+  describe 'dataset stats routing' do
+    it 'routes /category/viewname/1234-1234/stats to the stats action of the datasets controller' do
+      expect(get: '/category/viewname/1234-1234/stats').to route_to(
+        controller: 'datasets',
+        category: 'category',
+        view_name: 'viewname',
+        action: 'stats',
+        id: '1234-1234'
+      )
+    end
+
+    it 'routes /dataset/four-four/stats to the stats action of the datasets controller' do
+      expect(get: '/dataset/four-four/stats').to route_to(
+        controller: 'datasets',
+        action: 'stats',
+        id: 'four-four'
+      )
+    end
+
+    it 'routes /d/four-four/stats to the stats action of the datasets controller' do
+      expect(get: '/d/four-four/stats').to route_to(
+        controller: 'datasets',
+        action: 'stats',
+        id: 'four-four'
+      )
+    end
+  end
 end

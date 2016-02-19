@@ -1,120 +1,9 @@
-<div class="cards-view" notify-resize="headerContent">
-  <!-- HEADER -->
+<div class="cards-view">
+
   <page-header ng-show="pageHeaderEnabled"></page-header>
-  <!-- METADATA BAR -->
-  <div class="cards-metadata" ng-class="{'page-header-enabled': pageHeaderEnabled}">
-    <div class="row">
-      <div class="span6 padded-wrapper">
-        <div class="left-pane span12">
-          <div ng-hide="nonEphemeralEditMode">
-            <header ng-hide="isEphemeral"
-              multiline-ellipsis
-              max-lines="2"
-              tolerance="8"
-              text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
-              escape-html="true"
-              show-more-mode="title-attr">
-            </header>
-            <header ng-show="isEphemeral"
-              multiline-ellipsis
-              max-lines="2"
-              tolerance="8"
-              text="{{('metadata.pageNamePlaceholder' | I18n)}}"
-              escape-html="true"
-              show-more-mode="title-attr">
-            </header>
-          </div>
-          <!-- Text field & decorations for editing page name -->
-          <label class="edit-page-name" ng-if="nonEphemeralEditMode">
-            <div class="icon-warning edit-page-warning"
-              ng-if="writablePage.warnings.name"
-              title="{{ writablePage.warnings.name.join('\n') }}"></div>
-            <textarea
-              msd-elastic
-              disable-newline
-              ng-model="writablePage.name"
-              ng-trim="false">
-              {{writablePage.name}}
-            </textarea>
-            <div class="icon-edit placeholder"><span>({{::'metadata.pageNamePlaceholder' | I18n}})</span></div>
-          </label>
-          <!-- description -->
-          <div ng-hide="nonEphemeralEditMode || isEphemeral"
-            class="page-description"
-            expanded="expanded"
-            multiline-ellipsis
-            max-lines="3"
-            tolerance="2"
-            text="{{pageDescription}}"
-            show-more-mode="expand-link">
-          </div>
-          <label class="edit-page-description" ng-if="nonEphemeralEditMode">
-            <rich-text-editor
-              buttons="bold italic link"
-              content="writablePage.description"
-              placeholder="{{::'metadata.editDescriptionPrompt' | I18n}}">
-            </rich-text-editor>
-          </label>
-        </div>
-      </div>
-      <div class="span6 padded-wrapper">
-        <div class="right-pane span12">
-          <div class="metadata">
-            <div class="metadatum-wrapper row">
-              <lens-type></lens-type>
-            </div>
-            <div class="metadatum-wrapper row" ng-show="sourceDatasetURL">
-              <div class="metadatum">
-                <span class="label">{{::'metadata.sourceDataset' | I18n}}</span>
-                <span class="value source-dataset-name">
-                  <a href="{{sourceDatasetURL}}" title="{{sourceDatasetName}}" target="_parent">{{sourceDatasetName}}</a>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row activities">
-      <div class="span12 room-for-activities padded-wrapper">
-        <related-views
-          page="page"
-          dataset-pages="datasetPages"
-          ng-show="showOtherViewsButton && currentUserHasSaveRight">
-        </related-views>
 
-        <!-- Export dropdown -->
-        <div
-          ng-click="onDownloadClick($event)"
-          class="action-btn l-to-r download-menu"
-          ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
-          ng-if="showDownloadButton && !shouldShowExportMenu"
-          >{{ (chooserMode.show ? 'common.cancel' : 'common.download') | I18n }}
-          <dropdown-menu ng-if="downloadOpened">
-            <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
-            <a href='#'
-              ng-click="chooserMode.show = true">
-              {{::'metadata.visualizationAsImage' | I18n}}
-            </a>
-          </dropdown-menu>
-        </div>
-        <a ng-if="!showDownloadButton && !shouldShowExportMenu"
-           class="action-btn l-to-r"
-           href="{{datasetCSVDownloadURL}}">{{::'common.download' | I18n}}</a>
+  <info-pane></info-pane>
 
-        <!-- Export menu -->
-        <export-menu ng-if="shouldShowExportMenu"></export-menu>
-
-        <api-explorer></api-explorer>
-        <div class="manage-section">
-          <div class="action-btn r-to-l manage-button" ng-if="shouldShowManageLens" ng-click="manageLensState.show = true">
-            {{::'manageLensDialog.title' | I18n}}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- CUSTOMIZE_BAR -->
   <customize-bar
     card-count="cardCount"
     show-provenance-section="showProvenanceSection"
@@ -132,41 +21,10 @@
     page="page"
     ng-show="shouldDisplayCustomizeBar">
   </customize-bar>
+
   <div class="cards-content">
-    <div id="quick-filter-bar-container">
-      <div class="quick-filter-bar" with-spacer>
-        <div class="content cf">
-          <span ng-bind-html="quickFilterBarTitle"></span>
-          </span>
-          <div class="filters">
-            <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
-              <span ng-if="$first">{{::'filter.where' | I18n}}</span>
-              <span ng-if="!$first">{{::'filter.and' | I18n}}</span>
-              <span class="light lowercase">{{filter.column.version === '0' ? filter.column.title : filter.column.name}}</span>
-              <span>{{filter.operator}}</span>
-              <span
-                class="light"
-                title="{{filter.operand.length > maxOperandLength ? filter.operand : ''}}">
-                {{filter.operand | ellipsify:maxOperandLength}}
-              </span>
-            </div>
-          </div>
-          <button
-            class="clear-all-filters-button action-btn dark"
-            ng-if="appliedFiltersForDisplay.length > 0 && !page.isStandaloneVisualization"
-            ng-click="clearAllFilters()">
-            {{::'quickFilterBar.clearAll' | I18n}}
-            <span class="icon-close"></span>
-          </button>
-          <div class="aggregation-tour-attachment" ng-controller="AggregationTourController"></div>
-          <aggregation-chooser
-            page="page"
-            is-standalone-visualization="page.isStandaloneVisualization"
-            ng-show="shouldShowAggregationChooser">
-          </aggregation-chooser>
-        </div>
-      </div>
-    </div>
+
+    <quick-filter-bar></quick-filter-bar>
 
     <multi-card-layout
       id="card-container"

@@ -59,11 +59,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(41);
-	var ColumnChart = __webpack_require__(43);
-	var FeatureMap = __webpack_require__(44);
-	var Table = __webpack_require__(45);
-	var TimelineChart = __webpack_require__(46);
+	var ChoroplethMap = __webpack_require__(40);
+	var ColumnChart = __webpack_require__(42);
+	var FeatureMap = __webpack_require__(43);
+	var Table = __webpack_require__(44);
+	var TimelineChart = __webpack_require__(45);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -365,7 +365,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var choroplethLegend = $(
 	      '<div>',
 	      {
-	        class: 'choropleth-legend'
+	        'class': 'choropleth-legend'
 	      }
 	    ).append([
 	      gradient,
@@ -375,7 +375,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var choroplethMapContainer = $(
 	      '<div>',
 	      {
-	        class: 'choropleth-map-container'
+	        'class': 'choropleth-map-container'
 	      }
 	    );
 
@@ -385,7 +385,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      choroplethContainer = $(
 	        '<div>',
 	        {
-	          class: 'choropleth-container'
+	          'class': 'choropleth-container'
 	        }
 	      );
 	    }
@@ -5051,28 +5051,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var topAxisLabel = $(
 	      '<div>',
 	      {
-	        class: 'top-axis-label'
+	        'class': 'top-axis-label'
 	      }
 	    );
 
 	    var rightAxisLabel = $(
 	      '<div>',
 	      {
-	        class: 'right-axis-label'
+	        'class': 'right-axis-label'
 	      }
 	    );
 
 	    var bottomAxisLabel = $(
 	      '<div>',
 	      {
-	        class: 'bottom-axis-label'
+	        'class': 'bottom-axis-label'
 	      }
 	    );
 
 	    var leftAxisLabel = $(
 	      '<div>',
 	      {
-	        class: 'left-axis-label'
+	        'class': 'left-axis-label'
 	      }
 	    );
 
@@ -5162,6 +5162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
+	var utils = __webpack_require__(3);
 	var ss = __webpack_require__(5);
 	var chroma = __webpack_require__(6);
 
@@ -5423,13 +5424,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if (isMultipleOf10) {
 	      numNonzeroDigits = coefficient.toString().length;
-	      formattedNum = window.socrata.utils.formatNumber(val, {
+	      formattedNum = utils.formatNumber(val, {
 	        precision: 0,
 	        maxLength: _.min([numNonzeroDigits, 3])
 	      });
 	    } else {
 	      numNonzeroDigits = coefficient.toString().length - 1;
-	      formattedNum = window.socrata.utils.formatNumber(val, {
+	      formattedNum = utils.formatNumber(val, {
 	        maxLength: _.min([numNonzeroDigits, 3])
 	      });
 	    }
@@ -5558,28 +5559,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var truncationMarker = $(
 	      '<div>',
 	      {
-	        class: 'truncation-marker'
+	        'class': 'truncation-marker'
 	      }
 	    ).html('&raquo;');
 
 	    var chartWrapper = $(
 	      '<div>',
 	      {
-	        class: 'column-chart-wrapper'
+	        'class': 'column-chart-wrapper'
 	      }
 	    ).append(truncationMarker);
 
 	    var chartLabels = $(
 	      '<div>',
 	      {
-	        class: 'labels'
+	        'class': 'labels'
 	      }
 	    );
 
 	    var chartScroll = $(
 	      '<div>',
 	      {
-	        class: 'chart-scroll'
+	        'class': 'chart-scroll'
 	      }
 	    ).append([
 	      chartWrapper,
@@ -5589,14 +5590,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var chartElement = $(
 	      '<div>',
 	      {
-	        class: 'column-chart'
+	        'class': 'column-chart'
 	      }
 	    ).append(chartScroll);
 
 	    var chartContainer = $(
 	      '<div>',
 	      {
-	        class: 'column-chart-container'
+	        'class': 'column-chart-container'
 	      }
 	    ).append(
 	      chartElement
@@ -5949,8 +5950,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        function(tickValue, index) {
 
 	          var tick = $('<div>', {
-	            class: tickValue === 0 ? 'tick origin' : 'tick',
-	            text: socrata.utils.formatNumber(tickValue)
+	            'class': tickValue === 0 ? 'tick origin' : 'tick',
+	            text: utils.formatNumber(tickValue)
 	          });
 	          var tickTopOffset = innerHeight - verticalScale(tickValue);
 
@@ -5976,7 +5977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      );
 
 	      return $('<div>', {
-	        class: 'ticks',
+	        'class': 'ticks',
 	        style: ticksStyle
 	      }).append(tickMarks);
 	    };
@@ -6381,7 +6382,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    valueText = String(value) || '';
 
-	    return socrata.utils.valueIsBlank(valueText.trim().escapeSpaces()) ?
+	    return utils.valueIsBlank(valueText.trim().escapeSpaces()) ?
 	      placeholderText :
 	      valueText;
 	  }
@@ -6761,7 +6762,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return $(
 	        '<div>',
 	        {
-	          class: clsName
+	          'class': clsName
 	        }
 	      );
 	    }
@@ -6782,7 +6783,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return $svg(
 	        'svg',
 	        {
-	          class: clsName
+	          'class': clsName
 	        }
 	      ).append(
 	        $svg('g')
@@ -6882,14 +6883,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var timelineClearSelectionLabel = $(
 	      '<span>',
 	      {
-	        class: 'timeline-chart-clear-selection-label'
+	        'class': 'timeline-chart-clear-selection-label'
 	      }
 	    );
 
 	    var chartWrapper = $(
 	      '<div>',
 	      {
-	        class: 'timeline-chart-wrapper'
+	        'class': 'timeline-chart-wrapper'
 	      }
 	    ).append([
 	      yTicks,
@@ -6908,14 +6909,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var chartLabels = $(
 	      '<div>',
 	      {
-	        class: 'labels'
+	        'class': 'labels'
 	      }
 	    );
 
 	    var chartScroll = $(
 	      '<div>',
 	      {
-	        class: 'chart-scroll'
+	        'class': 'chart-scroll'
 	      }
 	    ).append([
 	      chartWrapper,
@@ -6925,14 +6926,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var chartElement = $(
 	      '<div>',
 	      {
-	        class: 'timeline-chart'
+	        'class': 'timeline-chart'
 	      }
 	    ).append(chartScroll);
 
 	    var chartContainer = $(
 	      '<div>',
 	      {
-	        class: 'timeline-chart-container'
+	        'class': 'timeline-chart-container'
 	      }
 	    ).append(
 	      chartElement
@@ -7946,7 +7947,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      tickElement = $('<div>').
 	        addClass('y-tick').
 	        css('bottom', Math.floor(chartHeight * tick)).
-	        text(window.socrata.utils.formatNumber(labels[index]));
+	        text(utils.formatNumber(labels[index]));
 
 	      if (labels[index] === 0) {
 	        tickElement.addClass('origin');
@@ -10183,35 +10184,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var mapElement = $(
 	      '<div>',
 	      {
-	        class: 'feature-map'
+	        'class': 'feature-map'
 	      }
 	    );
 
 	    var mapLegend = $(
 	      '<div>',
 	      {
-	        class: 'feature-map-legend'
+	        'class': 'feature-map-legend'
 	      }
 	    );
 
 	    var mapPanZoomDisabledWarningIcon = $(
 	      '<div>',
 	      {
-	        class: 'icon-warning feature-map-pan-zoom-disabled-warning-icon'
+	        'class': 'icon-warning feature-map-pan-zoom-disabled-warning-icon'
 	      }
 	    );
 
 	    var mapPanZoomDisabledWarning = $(
 	      '<div>',
 	      {
-	        class: 'feature-map-pan-zoom-disabled-warning'
+	        'class': 'feature-map-pan-zoom-disabled-warning'
 	      }
 	    ).append(mapPanZoomDisabledWarningIcon);
 
 	    var mapContainer = $(
 	      '<div>',
 	      {
-	        class: 'feature-map-container'
+	        'class': 'feature-map-container'
 	      }
 	    ).append([
 	      mapElement,
@@ -10230,7 +10231,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var mapLocateUserBusySpinner = $(
 	        '<div>',
 	        {
-	          class: 'feature-map-locate-user-busy-spinner'
+	          'class': 'feature-map-locate-user-busy-spinner'
 	        }
 	      );
 
@@ -20307,14 +20308,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var flyoutContent = $(
 	      '<div>',
 	      {
-	        class: 'socrata-flyout-content'
+	        'class': 'socrata-flyout-content'
 	      }
 	    );
 
 	    var flyoutHint = $(
 	      '<div>',
 	      {
-	        class: 'socrata-flyout-hint'
+	        'class': 'socrata-flyout-hint'
 	      }
 	    );
 
@@ -20813,9 +20814,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  row.forEach(function(columnValue) {
-	    var $rowDataItem = $('<div>', {class: 'row-data-item'});
-	    var $name = $('<span>', {class: 'name'});
-	    var $value = $('<span>', {class: 'value'});
+	    var $rowDataItem = $('<div>', {'class': 'row-data-item'});
+	    var $name = $('<span>', {'class': 'name'});
+	    var $value = $('<span>', {'class': 'value'});
 
 	    utils.assertHasProperties(columnValue, 'column', 'value');
 
@@ -24193,7 +24194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(40);
+	var ieee754 = __webpack_require__(38);
 
 	var BufferMethods;
 
@@ -26144,98 +26145,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 40 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-	  var e, m
-	  var eLen = nBytes * 8 - mLen - 1
-	  var eMax = (1 << eLen) - 1
-	  var eBias = eMax >> 1
-	  var nBits = -7
-	  var i = isLE ? (nBytes - 1) : 0
-	  var d = isLE ? -1 : 1
-	  var s = buffer[offset + i]
-
-	  i += d
-
-	  e = s & ((1 << (-nBits)) - 1)
-	  s >>= (-nBits)
-	  nBits += eLen
-	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-	  m = e & ((1 << (-nBits)) - 1)
-	  e >>= (-nBits)
-	  nBits += mLen
-	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-	  if (e === 0) {
-	    e = 1 - eBias
-	  } else if (e === eMax) {
-	    return m ? NaN : ((s ? -1 : 1) * Infinity)
-	  } else {
-	    m = m + Math.pow(2, mLen)
-	    e = e - eBias
-	  }
-	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-	}
-
-	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-	  var e, m, c
-	  var eLen = nBytes * 8 - mLen - 1
-	  var eMax = (1 << eLen) - 1
-	  var eBias = eMax >> 1
-	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-	  var i = isLE ? 0 : (nBytes - 1)
-	  var d = isLE ? 1 : -1
-	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-	  value = Math.abs(value)
-
-	  if (isNaN(value) || value === Infinity) {
-	    m = isNaN(value) ? 1 : 0
-	    e = eMax
-	  } else {
-	    e = Math.floor(Math.log(value) / Math.LN2)
-	    if (value * (c = Math.pow(2, -e)) < 1) {
-	      e--
-	      c *= 2
-	    }
-	    if (e + eBias >= 1) {
-	      value += rt / c
-	    } else {
-	      value += rt * Math.pow(2, 1 - eBias)
-	    }
-	    if (value * c >= 2) {
-	      e++
-	      c /= 2
-	    }
-
-	    if (e + eBias >= eMax) {
-	      m = 0
-	      e = eMax
-	    } else if (e + eBias >= 1) {
-	      m = (value * c - 1) * Math.pow(2, mLen)
-	      e = e + eBias
-	    } else {
-	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-	      e = 0
-	    }
-	  }
-
-	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-	  e = (e << mLen) | m
-	  eLen += mLen
-	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-	  buffer[offset + i - d] |= s * 128
-	}
-
-
-/***/ },
-/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26247,7 +26156,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var MetadataProvider = __webpack_require__(25);
 	var GeospaceDataProvider = __webpack_require__(23);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(42);
+	var SoqlHelpers = __webpack_require__(41);
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -26983,7 +26892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27228,7 +27137,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27238,7 +27147,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var utils = __webpack_require__(3);
 	var ColumnChart = __webpack_require__(12);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(42);
+	var SoqlHelpers = __webpack_require__(41);
 
 	var NAME_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
@@ -27763,7 +27672,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28323,7 +28232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28720,7 +28629,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 46 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28731,7 +28640,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var moment = __webpack_require__(17);
 	var TimelineChart = __webpack_require__(14);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(42);
+	var SoqlHelpers = __webpack_require__(41);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 	var DATE_INDEX = 0;

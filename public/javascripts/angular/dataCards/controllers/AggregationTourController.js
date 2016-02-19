@@ -1,12 +1,22 @@
 const angular = require('angular');
 const Shepherd = require('tether-shepherd');
 
-function AggregationTourController($scope, $window, I18n, ServerConfig, WindowState, rx) {
+function AggregationTourController($scope, $window, I18n, MixpanelService, ServerConfig, WindowState, rx) {
   var hasCookie = socrata.utils.getCookie('aggregationTourClosed');
   var isFeatureFlagEnabled = ServerConfig.get('enableDataLensAggregationTour');
   var $tourOverlay = $('.tour-overlay');
 
+  function featureTourPayload(step) {
+    return {
+      'Tour': 'Aggregation Tour',
+      'Step in Tour': step || '1',
+      'Total Steps in Tour': '5'
+    };
+  }
+
   if (isFeatureFlagEnabled && !hasCookie) {
+    var currentStep;
+
     var tour = new Shepherd.Tour({
       defaults: {
         showCancelLink: true,
@@ -22,6 +32,10 @@ function AggregationTourController($scope, $window, I18n, ServerConfig, WindowSt
             text: 'Next',
             classes: 'btn-primary',
             action: function() {
+              // TODO: Verify Mixpanel is enabled before sending payload
+              currentStep = tour.getCurrentStep().id.replace('step-', '');
+              MixpanelService.sendPayload('Clicked Next in Tour', featureTourPayload(currentStep));
+
               tour.next();
             }
           }
@@ -87,11 +101,17 @@ function AggregationTourController($scope, $window, I18n, ServerConfig, WindowSt
 
     tour.on('active', function() {
       $tourOverlay.show();
+      currentStep = '1';
     });
 
     tour.on('inactive', function() {
       $window.document.cookie = 'aggregationTourClosed=1';
       $tourOverlay.hide();
+
+      // TODO: Don't talk to Mixpanel if it's not enabled
+      if (_.isDefined(currentStep)) {
+        MixpanelService.sendPayload('Closed Tour', featureTourPayload(currentStep));
+      }
     });
 
     var $destroy = $scope.$destroyAsObservable();

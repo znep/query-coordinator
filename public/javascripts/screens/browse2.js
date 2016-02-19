@@ -4,6 +4,7 @@ $(function() {
   var MIN_DESKTOP_WIDTH = 885;
   // 2x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
   var DESCRIPTION_TRUNCATION_THRESHOLD = 58;
+  var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
 
   function doBrowse(newOpts) {
     // Reset page
@@ -67,10 +68,10 @@ $(function() {
       if (!blist.mixpanelLoaded) {
         resolveEvent();
       } else {
-        $.updateMixpanelProperties();
-        mixpanel.track(
+        // TODO: Don't talk to Mixpanel if it's not enabled
+        mixpanelNS.delegateCatalogSearchEvents(
           'Cleared Search Field',
-          _.extend(window._genericMixpanelPayload(), queryProperties),
+          queryProperties,
           resolveEvent
         );
       }
@@ -83,6 +84,14 @@ $(function() {
     _.defer(function() {
       var query = $searchSection.find('.browse2-search-control').val();
       var searchOptions = $.extend({}, opts, { 'q': encodeURIComponent(query) });
+      var mixpanelPayload = {
+        'Type': {
+          'Name': 'Used Search Field',
+          'Properties': {
+            'Query': query
+          }
+        }
+      };
 
       if ($.isBlank(searchOptions.q)) {
         delete searchOptions.q;
@@ -98,16 +107,12 @@ $(function() {
       if (!blist.mixpanelLoaded) {
         resolveEvent();
       } else {
-        $.updateMixpanelProperties();
-        var mixpanelPayload = _.extend(window._genericMixpanelPayload(), {
-          'Type': {
-            'Name': 'Used Search Field',
-            'Properties': {
-              'Query': query
-            }
-          }
-        });
-        mixpanel.track('Used Search Field', mixpanelPayload, resolveEvent);
+        // TODO: Don't talk to Mixpanel if it's not enabled
+        mixpanelNS.delegateCatalogSearchEvents(
+          'Used Search Field',
+          mixpanelPayload,
+          resolveEvent
+        );
       }
     });
   }

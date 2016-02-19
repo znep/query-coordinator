@@ -535,13 +535,22 @@ $(function() {
           newOpts.sortBy = 'relevance';
         }
 
-        if (!blist.mixpanelLoaded) {
+        var resolveEvent = function() {
           doBrowse(newOpts);
+        };
+
+        if (!blist.mixpanelLoaded) {
+          resolveEvent();
         } else {
-          $.updateMixpanelProperties();
-          mixpanel.track('Used Search Field', {}, function() {
-            doBrowse(newOpts);
-          });
+          // TODO: Don't talk to Mixpanel if it's not enabled
+          var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
+          mixpanelNS.delegateCatalogSearchEvents(
+            'Used Search Field',
+            {
+              'Catalog Version': 'browse1'
+            },
+            resolveEvent
+          );
         }
       });
     };

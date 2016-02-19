@@ -374,7 +374,7 @@ module BrowseActions
     browse_options[:header_config]  = catalog_config.header
     browse_options[:footer_config]  = catalog_config.footer
 
-    browse_options[:sort_opts] ||= default_browse_sort_opts
+    browse_options[:sort_opts] ||= using_cetera? ? cetera_browse_sort_opts : default_browse_sort_opts
     browse_options[:disable] = {} unless browse_options[:disable].present?
 
     # get the subset relevant to various things
@@ -459,7 +459,7 @@ module BrowseActions
           }
       end
 
-    # In Cetera search, hide sort_dropdown, popularity, and rss links
+    # In Cetera search, hide popularity and rss links
     if using_cetera?
       browse_options[:grid_items][:popularity] = false
       browse_options[:grid_items][:rss] = false
@@ -524,6 +524,10 @@ module BrowseActions
     end.to_str # force this string to be marked html unsafe
   end
 
+  def browse_sort_opts
+    using_cetera? ? cetera_browse_sort_opts : default_browse_sort_opts
+  end
+
   def default_browse_sort_opts
     [
       { value: 'relevance', name: t('controls.browse.sorts.relevance') },
@@ -534,6 +538,17 @@ module BrowseActions
       { value: 'last_modified', name: t('controls.browse.sorts.last_modified') },
       { value: 'rating', name: t('controls.browse.sorts.rating') },
       { value: 'comments', name: t('controls.browse.sorts.comments') }
+    ]
+  end
+
+  def cetera_browse_sort_opts
+    [
+      { value: 'relevance', name: t('controls.browse.sorts.relevance') },
+      { value: 'most_accessed', name: t('controls.browse.sorts.most_accessed') },
+      { value: 'alpha', name: t('controls.browse.sorts.alpha') },
+      { value: 'newest', name: t('controls.browse.sorts.newest') },
+      { value: 'oldest', name: t('controls.browse.sorts.oldest') },
+      { value: 'last_modified', name: t('controls.browse.sorts.last_modified') }
     ]
   end
 

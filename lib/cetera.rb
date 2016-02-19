@@ -30,6 +30,18 @@ module Cetera
     end
   end
 
+  # translate FE 'sortBy' values to Cetera 'order'
+  def self.translate_sort_by(sort_by)
+    {
+      'relevance' => 'relevance',
+      'most_accessed' => 'page_views_total',
+      'alpha' => 'name',
+      'newest' => 'createdAt',
+      'oldest' => 'createdAt ASC',
+      'last_modified' => 'updatedAt'
+    }[sort_by]
+  end
+
   def self.cetera_soql_params(opts = {})
     (opts[:metadata_tag] || {}).merge(
       domains: opts[:domains].join(','), # Cetera does not yet support domains[]
@@ -40,7 +52,8 @@ module Cetera
       tags: opts[:tags],
       q: opts[:q],
       offset: opts[:page] ? (opts[:page] - 1) * opts[:limit] : 0,
-      limit: opts[:limit]
+      limit: opts[:limit],
+      order: translate_sort_by(opts[:sortBy])
     ).reject { |_, v| v.blank? }
   end
 

@@ -960,34 +960,27 @@ var Dataset = ServerModel.extend({
     },
 
     fileDataForFileId: function(id) {
-      if (id) {
-        return this._fileDataForFileId[id];
-      }
+      return this._fileDataForFileId[id];
     },
 
     // File Data exists at the Dataset level, not the RowSet level.
-    // This does two things:
-    // (1) If no ids are provided, then it will ask the active RowSet for them.
-    // This will loop back here with the ids.
-    // (2) If ids are provided, it will go to core and ask for the file data.
     resyncFileDataForFileIds: function(ids) {
       var ds = this;
-      var getter = _.bind(this.fileDataForFileId, ds);
 
-      if (_.isUndefined(ids) || ids.length === 1) {
-        var deferred = $.Deferred();
-        ds._activeRowSet.fileDataForFileId((ids || [])[0], true).
-          done(function() { deferred.resolve(_.map(ids, getter)); });
-        return deferred.promise();
+      // We choose to be overzealous here because we'll reject them in the next step.
+      if (_.isUndefined(ids)) {
+        ids = ds._activeRowSet.getFileIds();
+        ds._activeRowSet.mapFileIdsToRows();
       }
 
-      var fileIds = _.reject(ids, getter);
+      var fileIds = _.reject(ids, _.bind(this.fileDataForFileId, ds));
 
       if (_.isEmpty(fileIds)) {
-        return $.when(_.map(ids, getter));
+        return $.when(ds._fileDataForFileId);
       }
 
-      var promise = $.ajax({
+      var deferred = $.Deferred();
+      $.ajax({
           url: '/views/{0}/files.json?method=getAll'.format(ds.id),
           data: JSON.stringify({ fileIds: fileIds }),
           contentType: 'application/json',
@@ -995,12 +988,20 @@ var Dataset = ServerModel.extend({
           dataType: 'json'
           }).
         done(function(responseData, success, xhr) {
-          _.each(responseData, function(data) {
-            ds._fileDataForFileId[data.id] = data;
-          });
-          return responseData;
+          var rowsChanged = _(responseData).
+            map(function(data) {
+              ds._fileDataForFileId[data.id] = data;
+              return ds._activeRowSet.applyFileDataToRow(data);
+            }).
+            select(_.identity). // Dump falses.
+            value();
+
+          if (rowsChanged.length > 0) {
+            ds._activeRowSet.trigger('row_change', [rowsChanged, false]);
+          }
+          deferred.resolve(ds._fileDataForFileId);
         });
-      return promise;
+      return deferred.promise();
     },
 
     // Callback may be called multiple times with smaller batches of rows

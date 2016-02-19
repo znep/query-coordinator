@@ -32,7 +32,9 @@
     var fileUploaded = function(editObj, fileId, fileName) {
       editObj._curVal = fileId;
       editObj._modelView.resyncFileDataForFileIds([ fileId ]).
-        done(function(responseData) { editObj._fileData = responseData[0]; }).
+        done(function(fileDataMap) {
+          editObj._fileData = fileDataMap[fileId];
+        }).
         then(function() {
           updateButtons(editObj);
           editObj.$dom().trigger('edit_end', [true]);

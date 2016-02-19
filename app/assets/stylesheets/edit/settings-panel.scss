@@ -121,12 +121,20 @@
 
   .settings-panel-subtitle {
     margin-left: calc(20px + 2rem);
+    margin-top: 0.125rem;
     font-style: italic;
     font-size: 1.25rem;
   }
 
   .menu-list {
     margin: 2rem -1.5rem;
+  }
+
+  a:not([href]), a:not([href]):hover {
+    color: $menu-list-item-header-disabled-color;
+    cursor: not-allowed;
+    line-height: normal;
+    background: transparent;
   }
 }
 

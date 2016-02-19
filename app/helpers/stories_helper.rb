@@ -23,6 +23,17 @@ module StoriesHelper
     raw(Theme.find_by_class_name(@story.theme).try(:google_font_code))
   end
 
+  def settings_panel_story_stats_link
+    content_tag('a',
+      href: can_see_story_stats? ? "/d/#{@story.uid}/stats" : nil,
+      class: 'menu-list-item-header',
+      role: 'button',
+      target: '_blank') do
+
+      yield if block_given?
+    end
+  end
+
   # Maps the component type stored in the database to the partial used to render it
   def component_partial_name(component_type)
     component_type_mapping = {

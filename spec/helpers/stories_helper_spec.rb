@@ -58,7 +58,7 @@ RSpec.describe StoriesHelper, type: :helper do
     let(:story_json) { JSON.parse(fixture('story_theme.json').read).first }
     let(:id) { story_json['id'] }
 
-    before do
+    before :each do
       allow(CoreServer).to receive(:get_configuration).with(id).and_return(story_json)
     end
 
@@ -83,6 +83,28 @@ RSpec.describe StoriesHelper, type: :helper do
         @story = FactoryGirl.create(:draft_story)
 
         expect(google_font_code_embed).to be_blank
+      end
+    end
+  end
+
+  describe '#settings_panel_story_stats_link', verify_stubs: false do
+    before :each do
+      @story = FactoryGirl.create(:draft_story)
+    end
+
+    context 'when a user can see story stats' do
+      it 'returns the anchor element for the story stats page with an href' do
+        allow(self).to receive(:can_see_story_stats?).and_return(true)
+
+        expect(settings_panel_story_stats_link).to eq('<a href="/d/test-test/stats" class="menu-list-item-header" role="button" target="_blank"></a>')
+      end
+    end
+
+    context 'when a user cannot see story stats' do
+      it 'returns the anchor element for the story stats page without an href' do
+        allow(self).to receive(:can_see_story_stats?).and_return(false)
+
+        expect(settings_panel_story_stats_link).to eq('<a class="menu-list-item-header" role="button" target="_blank"></a>')
       end
     end
   end
@@ -198,7 +220,6 @@ RSpec.describe StoriesHelper, type: :helper do
         ).not_to include_class('component-media')
       end
     end
-
   end
 
   describe '#embed_code_iframe_sandbox_allowances' do

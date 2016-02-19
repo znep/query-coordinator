@@ -1,0 +1,95 @@
+<div class="cards-metadata" ng-class="{'page-header-enabled': pageHeaderEnabled}">
+  <div class="row">
+    <div class="span6 padded-wrapper">
+      <div class="left-pane span12">
+        <div ng-hide="nonEphemeralEditMode">
+          <header ng-hide="isEphemeral"
+            multiline-ellipsis
+            max-lines="2"
+            tolerance="8"
+            text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
+            escape-html="true"
+            show-more-mode="title-attr">
+          </header>
+          <header ng-show="isEphemeral"
+            multiline-ellipsis
+            max-lines="2"
+            tolerance="8"
+            text="{{('metadata.pageNamePlaceholder' | I18n)}}"
+            escape-html="true"
+            show-more-mode="title-attr">
+          </header>
+        </div>
+        <!-- Text field & decorations for editing page name -->
+        <label class="edit-page-name" ng-if="nonEphemeralEditMode">
+          <div class="icon-warning edit-page-warning"
+            ng-if="writablePage.warnings.name"
+            title="{{writablePage.warnings.name.join('\n')}}"></div>
+          <textarea
+            msd-elastic
+            disable-newline
+            ng-model="writablePage.name"
+            ng-trim="false">
+            {{writablePage.name}}
+          </textarea>
+          <div class="icon-edit placeholder"><span>({{::'metadata.pageNamePlaceholder' | I18n}})</span></div>
+        </label>
+        <!-- description -->
+        <div ng-hide="nonEphemeralEditMode || isEphemeral"
+          class="page-description"
+          expanded="expanded"
+          multiline-ellipsis
+          max-lines="3"
+          tolerance="2"
+          text="{{pageDescription}}"
+          show-more-mode="expand-link">
+        </div>
+        <label class="edit-page-description" ng-if="nonEphemeralEditMode">
+          <rich-text-editor
+            buttons="bold italic link"
+            content="writablePage.description"
+            placeholder="{{::'metadata.editDescriptionPrompt' | I18n}}">
+          </rich-text-editor>
+        </label>
+      </div>
+    </div>
+    <div class="span6 padded-wrapper">
+      <div class="right-pane span12">
+        <div class="metadata">
+          <div class="metadatum-wrapper row">
+            <lens-type></lens-type>
+          </div>
+          <div class="metadatum-wrapper row" ng-show="sourceDatasetURL">
+            <div class="metadatum">
+              <span class="label">{{::'metadata.sourceDataset' | I18n}}</span>
+              <span class="value source-dataset-name">
+                <a href="{{sourceDatasetURL}}" title="{{sourceDatasetName}}" target="_parent">{{sourceDatasetName}}</a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row activities">
+    <div class="span12 room-for-activities padded-wrapper">
+
+      <related-views
+        page="page"
+        dataset-pages="datasetPages"
+        ng-show="showOtherViewsButton && currentUserHasSaveRight">
+      </related-views>
+
+      <export-menu ng-if="shouldShowExportMenu"></export-menu>
+
+      <api-explorer></api-explorer>
+
+      <div class="manage-section">
+        <div class="action-btn r-to-l manage-button" ng-if="shouldShowManageLens" ng-click="manageLensState.show = true">
+          {{::'manageLensDialog.title' | I18n}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

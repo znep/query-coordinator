@@ -474,7 +474,6 @@ module BrowseActions
 
     # In Cetera search, hide sort_dropdown, popularity, and rss links
     if using_cetera?
-      browse_options[:disable][:sort] = true
       browse_options[:grid_items][:popularity] = false
       browse_options[:grid_items][:rss] = false
       browse_options[:hide_catalog_rss] = true

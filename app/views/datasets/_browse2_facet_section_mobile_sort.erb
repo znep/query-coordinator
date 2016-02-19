@@ -1,0 +1,10 @@
+<div class="browse2-facet-section" data-facet-display="show" data-facet-option-type="sortBy">
+  <h3 class="browse2-facet-section-title" title="<%= current_sort[:name] %>">
+    <%= "#{t('controls.browse.browse2.facets.mobile.sort_by')} #{current_sort[:name]}" %>
+    <span class="browse2-facet-section-expand-contract-icon icon-arrow-down"></span>
+  </h3>
+
+  <ul class="browse2-facet-section-options">
+    <%- sort_opts.each { |sort_option| concat(facet_sort_option(opts, sort_option, params)) } -%>
+  </ul>
+</div>

@@ -88,6 +88,66 @@ describe Browse2Helper do
 
   end
 
+  describe '#facet_sort_option_classes' do
+    it 'returns classnames for a sort option' do
+      page = setup
+      expect(helper.facet_sort_option_classnames(
+        page[:opts],
+        page[:facet_option]
+      )).to eq('browse2-facet-section-option')
+    end
+
+    it 'returns classnames for a sort option that is active because it is a url param' do
+      page = setup({
+        :facet_option => {
+          :name => 'Alphabetical',
+          :value => 'alpha'
+        }
+      })
+      page[:opts][:sortBy] = 'alpha'
+      expect(helper.facet_sort_option_classnames(
+        page[:opts],
+        page[:facet_option]
+      )).to eq('browse2-facet-section-option active')
+    end
+
+    it 'returns classnames for a sort option that is active because it is the default sort' do
+      page = setup({
+        :facet_option => {
+          :name => 'Most Relevant',
+          :value => 'relevance'
+        }
+      })
+      page[:opts][:sortBy] = nil
+      expect(helper.facet_sort_option_classnames(
+        page[:opts],
+        page[:facet_option]
+      )).to eq('browse2-facet-section-option active')
+    end
+  end
+
+  describe '#facet_sort_option' do
+    it 'returns a facet sort option' do
+      page = setup({
+        :facet_option => {
+          :name => 'Most Relevant',
+          :value => 'relevance'
+        }
+      })
+
+      output = helper.facet_sort_option(
+        page[:opts],
+        page[:facet_option],
+        page[:params]
+      )
+      expect(output).to match(/^<li><a/)
+      expect(output).to match(/href=\"\/browse\?sortBy=relevance\"/)
+      expect(output).to match(/class=\"browse2-facet-section-option active\"/)
+      expect(output).to match(/data-facet-option-value=\"relevance\"/)
+      expect(output).to match(/<span class=\"browse2-facet-option-clear-icon icon-close-2\"><\/span>Most Relevant<\/a><\/li>$/)
+    end
+  end
+
   describe '#facet_option_url' do
     it 'creates an empty search string given no params' do
       page = setup({

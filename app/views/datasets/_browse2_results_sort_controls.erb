@@ -15,21 +15,5 @@
         <span class="browse2-results-sort-control-icon icon-arrow-down"></span>
       </div>
     </div>
-
-    <div class="browse2-results-sort-control-group <%= 'hidden' if !opts[:show_time_period] %>">
-      <label for="browse2-sort-period" class="browse2-results-sort-control-period-label">
-        <%= t('controls.browse.browse2.sort.periods.label') %>
-      </label>
-      <div class="browse2-results-sort-control-container">
-        <select id="browse2-sort-period" class="browse2-results-sort-control">
-          <%- time_options.each do |time_option| -%>
-            <option value="<%= time_option[:value] %>"<%= ' selected="selected"' if time_option[:value] == opts[:sortPeriod] %>>
-              <%= time_option[:name] %>
-            </option>
-          <%- end -%>
-        </select>
-        <span class="browse2-results-sort-control-icon icon-arrow-down"></span>
-      </div>
-    </div>
   </div>
 </div>

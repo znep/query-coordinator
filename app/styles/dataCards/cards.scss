@@ -186,32 +186,6 @@ body.state-view-cards {
     .save-button {
       position: relative;
     }
-    .download-menu {
-      $border-width: 2px;
-      position: relative;
-      border-width: $border-width;
-      overflow: visible;
-      dropdown-menu {
-        z-index: 1003;
-        position: absolute;
-        top: 100%;
-        // Compensate for the border on the containing button
-        margin: 0 #{-$border-width};
-        background-color: inherit;
-        a {
-          white-space: nowrap;
-          color: inherit;
-          display: block;
-          line-height: 2rem;
-          text-align: left;
-          padding: $action-btn-padding-top $action-btn-padding-left;
-          &:hover {
-            background-color: $btn-bg-color;
-            color: $aqua-font-color;
-          }
-        }
-      }
-    }
   }
   .cards-content {
     position: relative;

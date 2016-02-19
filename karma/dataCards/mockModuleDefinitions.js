@@ -24,6 +24,10 @@ dataCards.run(function(ServerConfig, testHelpers) {
     oduxEnableFeatureMap: true,
     enablePngDownloadUi: true,
     enableFeedback: true,
-    enableSearchSuggestions: true
+    enableSearchSuggestions: true,
+    locales: {
+      defaultLocale: 'en',
+      currentLocale: 'en'
+    }
   });
 });

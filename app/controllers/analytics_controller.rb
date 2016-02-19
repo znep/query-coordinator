@@ -94,6 +94,7 @@ module ClientAnalyticsHelper
                            dataslate admin profile govstat
                            browse browse-search
                            newux
+                           story
                            other).freeze
 
   DYNAMIC_METRIC_TYPES =  %w(js-dom-load-samples js-page-load-samples js-page-load-time js-dom-load-time).freeze

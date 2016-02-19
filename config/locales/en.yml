@@ -546,10 +546,12 @@ en:
             filter: Filter
             filtered_by: filtered by
           mobile:
+            all_filters: All Filters
             back: Back
             clear_all: Clear All
             filter: Filter
-            all_filters: All Filters
+            sort: Sort
+            sort_by: Sort by
           modal:
             alphaAscending: A-Z
             close: Close

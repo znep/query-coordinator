@@ -1334,7 +1334,7 @@ function TimelineChart(element, vif) {
       tickElement = $('<div>').
         addClass('y-tick').
         css('bottom', Math.floor(chartHeight * tick)).
-        text(window.socrata.utils.formatNumber(labels[index]));
+        text(utils.formatNumber(labels[index]));
 
       if (labels[index] === 0) {
         tickElement.addClass('origin');

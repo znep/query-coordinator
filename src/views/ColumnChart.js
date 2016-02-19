@@ -473,7 +473,7 @@ function ColumnChart(element, vif) {
 
           var tick = $('<div>', {
             'class': tickValue === 0 ? 'tick origin' : 'tick',
-            text: socrata.utils.formatNumber(tickValue)
+            text: utils.formatNumber(tickValue)
           });
           var tickTopOffset = innerHeight - verticalScale(tickValue);
 
@@ -904,7 +904,7 @@ function ColumnChart(element, vif) {
 
     valueText = String(value) || '';
 
-    return socrata.utils.valueIsBlank(valueText.trim().escapeSpaces()) ?
+    return utils.valueIsBlank(valueText.trim().escapeSpaces()) ?
       placeholderText :
       valueText;
   }

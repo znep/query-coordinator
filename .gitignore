@@ -7,3 +7,4 @@ marathon.properties
 *.swp
 npm-debug.log
 .idea
+.npmrc

@@ -16,7 +16,6 @@ $(function() {
     },
     errorPlacement:
       function(error, element) {
-        console.log('errorPlacement called');
         switch (element.get(0).id) {
           case 'view_metadata_customRdfClass':
             // if rdf combo shows, we do not care about the hidden field
@@ -32,8 +31,6 @@ $(function() {
 
   $form.on('change', 'input, select', function() {
     $form.find('.submitButton').toggleClass('disabled', !$form.valid());
-    // debugger;
-    console.log("Form valid? " + $form.valid());
   });
 
   $('.toggleFieldsetLink').click(function(event) {

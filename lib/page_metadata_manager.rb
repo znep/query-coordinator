@@ -222,7 +222,8 @@ class PageMetadataManager
     #get cards info, specifically the field names
     columns_to_roll_up = cards.
       select { |card| non_date_card_types_for_rollup.include?(card['cardType']) }.
-      pluck(column_field_name)
+      pluck(column_field_name).
+      uniq
 
     # Nothing to roll up
     return if columns_to_roll_up.blank? &&

@@ -72,10 +72,31 @@ class ImportActivity
     @data[:activity_name]
   end
 
+  def import_method
+    case @data[:service]
+      when 'Imports2'
+        'Web interface'
+      when 'DeltaImporter2'
+        'DataSync'
+      when 'Upsert'
+        'Upsert API'
+      else
+        @data[:service]
+    end
+  end
+
   # throws ISS errors
   def events
     @events ||= ImportStatusService::get("/activity/#{id}/events").map do |event|
       ImportActivityEvent.new(event.with_indifferent_access)
+    end
+  end
+
+  def last_updated
+    if events.blank?
+      created_at
+    else
+      events.sort_by(&:event_time).last.event_time
     end
   end
 

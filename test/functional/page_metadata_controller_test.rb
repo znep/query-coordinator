@@ -21,10 +21,6 @@ class PageMetadataControllerTest < ActionController::TestCase
       create: { body: '', status: '200' },
       update: { body: '', status: '200' }
     )
-
-    StandaloneVisualizationManager.any_instance.stubs(
-      create: {id: 'page-test'}
-    )
   end
 
   def json_post(body = nil)
@@ -192,13 +188,6 @@ class PageMetadataControllerTest < ActionController::TestCase
 
     post :create, format: :json
     assert_response(401)
-  end
-
-  test 'create_standalone_visualization passes along result from standalone_visualization_manager' do
-    post :create_standalone_visualization, vif: vif
-    assert_response(200)
-    result = JSON.parse(@response.body)
-    assert_equal({'id' => 'page-test'}, result)
   end
 
   private

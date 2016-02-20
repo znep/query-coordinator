@@ -153,4 +153,16 @@ describe ImportActivity do
     end
   end
 
+  describe '#import_method' do
+    it 'returns the public facing import_method for the service' do
+      expect(activity.import_method).to eq('DataSync')
+    end
+  end
+
+  describe '#last_updated' do
+    it 'returns the event_time of the most recent associated event' do
+      expect(activity.last_updated).to eq(Time.parse('2016-01-21T22:04:22.161Z'))
+    end
+  end
+
 end

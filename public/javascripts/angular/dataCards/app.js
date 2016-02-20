@@ -110,9 +110,6 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
       resolve: {
         page: function(Page, Dataset) {
           return new Page(pageMetadata, new Dataset(datasetMetadata, migrationMetadata));
-        },
-        domain: function(Domain) {
-          return new Domain(domainMetadata);
         }
       },
       views: {

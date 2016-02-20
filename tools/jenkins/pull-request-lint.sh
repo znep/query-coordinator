@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -ex
 
+# Fail on errors in pipes (note that each command in the pipe is still run: http://www.gnu.org/software/bash/manual/html_node/Pipelines.html)
+# This combined with set -e above causes the script to terminate if eslint returns nonzero.
+set -o pipefail
+
 npm install --depth 0
 NEW_PROBLEMS=`node_modules/.bin/eslint --ignore-path .eslintignore -f compact public/javascripts/angular | sort | tail -n +3`
 NEW_PROBLEMS_COUNT=`wc -l <(echo "$NEW_PROBLEMS") | awk '{print $1}'`

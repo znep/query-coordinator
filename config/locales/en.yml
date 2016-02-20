@@ -196,9 +196,6 @@ en:
         image:
           header: Visualization as Image
           description: Save a PNG-image file of a visualization
-        standalone_visualization:
-          header: Visualization to Catalog
-          description: Save one of the cards as a standalone interactive visualization in the catalog
         choose_card: Choose Card
       feature_map:
         feature_map_disabled: Feature maps are unavailable.
@@ -243,6 +240,8 @@ en:
       lens_type:
         community: community
         official: official
+        official_view_explanation: Selecting this option will give the view a special designation indicating that it is an Official View.
+        official_view_label: Official View
       manage_lens_dialog:
         dataset_private_page_private: Because this page’s source dataset is set to <b>Private</b>, this page cannot be made Public.  Only those with privileged access will be able to see it, and it will not appear in the public catalog.
         dataset_private_page_public: <span class="icon-warning"></span> This page’s source dataset is set to <b>Private</b>, so even though this page is set to Public, anyone without access to the source dataset will not be able to see it. It will still appear in the public catalog. You should consider setting the dataset to Public, or setting this page to Private.
@@ -364,23 +363,6 @@ en:
         save: Save
         saved: Saved!
         saving: Saving...
-      save_visualization_as_dialog:
-        category_label: Choose a category for your new visualization (optional)
-        description_help_text: |-
-          As a guideline, describe:
-          <ul>
-          <li>What this visualization means</li>
-          <li>Why it’s important to the viewer</li>
-          <li>How this information will be used to inform future plans or decisions</li>
-          </ul>
-        description_label: Enter a description for your new visualization (optional)
-        enter_name_error: Please enter a title
-        enter_name_placeholder: Enter a name
-        name_label: Save this visualization with a new name
-        official_view_explanation: Selecting this option will give the view a special designation indicating that it is an Official View.
-        official_view_label: Official View
-        server_error: Sorry, something went wrong. Please try again later.
-        title: Save Visualization As
       search_card:
         error_explanation: "<p>An error was encountered while fetching search suggestions.</p><p>You can still press Enter at any time to search exactly by the text you entered, or you can try again later to see suggested values.</p>"
         invalid_search: Try searching for a number containing no letters.

@@ -11,19 +11,8 @@ function ExportMenu(WindowState, ServerConfig, CardDataService, rx) {
       // Determine if polaroid button should be visible.
       $scope.showPolaroidButton = ServerConfig.get('enablePngDownloadUi');
 
-      // Determine if standalone visualization export should be visible.
-      var userHasSaveRight = $scope.currentUserHasSaveRight;
-      var isStandalonePage = $scope.page.isStandaloneVisualization;
-      var featureFlagEnabled = ServerConfig.get('standaloneLensChart');
-      if (userHasSaveRight && !isStandalonePage && featureFlagEnabled) {
-        $scope.showStandaloneVisualizationExport = true;
-      } else {
-        $scope.showStandaloneVisualizationExport = false;
-      }
-
       // Retrieve row count and filtered row count for radio button labels.  Create shared
       // observables to avoid instantiating multiple observable instances.
-
       var dataset$ = $scope.page.observe('dataset').shareReplay();
       var whereClause$ = $scope.page.observe('computedWhereClauseFragment').shareReplay();
 
@@ -109,10 +98,10 @@ function ExportMenu(WindowState, ServerConfig, CardDataService, rx) {
         });
 
       // Enter card selection mode
-      $scope.initiateCardSelectionMode = function(type) {
+      $scope.initiateCardSelectionMode = function() {
         $scope.panelActive = false;
         $scope.allowChooserModeCancel = true;
-        $scope.$emit('enter-export-card-visualization-mode', type);
+        $scope.$emit('enter-export-card-visualization-mode');
       };
 
       // Leave card selection mode on clicking cancel, on init, and on signal

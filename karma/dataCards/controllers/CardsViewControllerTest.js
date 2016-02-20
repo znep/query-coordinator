@@ -7,7 +7,6 @@ describe('CardsViewController', function() {
 
   var Card;
   var Page;
-  var Domain;
   var ViewRights;
   var Mockumentary;
   var testHelpers;
@@ -48,7 +47,6 @@ describe('CardsViewController', function() {
         '$q',
         'Card',
         'Page',
-        'Domain',
         'ViewRights',
         'Mockumentary',
         '$rootScope',
@@ -63,7 +61,6 @@ describe('CardsViewController', function() {
           _$q,
           _Card,
           _Page,
-          _Domain,
           _ViewRights,
           _Mockumentary,
           _$rootScope,
@@ -77,7 +74,6 @@ describe('CardsViewController', function() {
 
       Card = _Card;
       Page = _Page;
-      Domain = _Domain;
       ViewRights = _ViewRights;
       Mockumentary = _Mockumentary;
       $q = _$q;
@@ -117,12 +113,6 @@ describe('CardsViewController', function() {
       pageOverrides.datasetId = datasetOverrides.id;
     }
     var page = Mockumentary.createPage(pageOverrides, datasetOverrides);
-    var domain = new Domain({
-      categories: [
-        'Business',
-        'Government'
-      ]
-    });
 
     var currentUserDefer = $q.defer();
     var promise = currentUserDefer.promise;
@@ -137,7 +127,6 @@ describe('CardsViewController', function() {
     return {
       $scope: $scope,
       page: page,
-      domain: domain,
       currentUserDefer: currentUserDefer
     };
   }
@@ -162,28 +151,24 @@ describe('CardsViewController', function() {
   // when time allows.
   function renderCardsView(options) {
     var options = options || {};
-    var layout = typeof options.layout === 'undefined' ? 'multiCardLayout' : options.layout;
 
     var context = options.context || makeContext();
-    var cardLayout = {};
     testHelpers.mockDirective(_$provide, 'apiExplorer');
 
-    if (options.layout !== null) {
-      testHelpers.mockDirective(_$provide, layout, function() {
-        return {
-          link: function($scope) {
-            cardLayout.$scope = $scope;
-          }
-        };
-      });
-    }
+    var cardLayout = {};
+    testHelpers.mockDirective(_$provide, 'cardLayout', function() {
+      return {
+        link: function($scope) {
+          cardLayout.$scope = $scope;
+        }
+      };
+    });
 
     testHelpers.mockDirective(_$provide, 'multilineEllipsis');
     testHelpers.mockDirective(_$provide, 'notifyResize');
     testHelpers.mockDirective(_$provide, 'aggregationChooser');
     testHelpers.mockDirective(_$provide, 'newShareDialog');
     _$provide.value('page', context.page);
-    _$provide.value('domain', context.domain);
     var html = '<div class="cards-metadata"></div>' +
       '<div class="quick-filter-bar"></div>' +
       '<ng-include ng-controller="CardsViewController" ' +
@@ -790,43 +775,6 @@ describe('CardsViewController', function() {
     });
   });
 
-  describe('save-visualization-as dialog', function() {
-    beforeEach(inject(['testHelpers', function(_testHelpers) {
-      testHelpers = _testHelpers;
-      controllerHarness = makeController();
-      $scope = controllerHarness.$scope;
-    }]));
-
-    it('should become visible when a "save-visualization-as" event is received which includes a model of \
-        a card type that can be persisted as a standalone visualization', function(done) {
-
-      var serializedCard;
-      var cardModel;
-
-      controllerHarness.$scope.$digest();
-
-      expect($scope.saveVisualizationAsState.show).to.equal(false);
-
-      $scope.$on('save-visualization-as', function(e, model) {
-        $scope.$apply();
-        expect($scope.saveVisualizationAsState.show).to.equal(true);
-        expect($scope.saveVisualizationAsState.cardModel).to.equal(cardModel);
-        done();
-      });
-
-      serializedCard = {
-        'cardSize': 1,
-        'cardType': 'choropleth',
-        'expanded': false,
-        'fieldName': 'customizableFieldName'
-      };
-
-      cardModel = Card.deserialize($scope.page, serializedCard);
-
-      $rootScope.$broadcast('save-visualization-as', cardModel);
-    });
-  });
-
   describe('savePageAs', function() {
     var controllerHarness;
     var $scope;
@@ -868,32 +816,6 @@ describe('CardsViewController', function() {
           done();
         }
       });
-    });
-
-  });
-
-  describe('layout modes', function() {
-
-    it('loads single-card-layout if the page has a display type of data_lens_*', function() {
-      var context = makeContext(null, {
-        displayType: 'data_lens_chart',
-        cards: [Mockumentary.createCardMetadata()]
-      });
-      var view = renderCardsView({layout: null, context: context});
-
-      expect(view.element.find('.single-card').length).to.equal(1);
-      expect(view.element.find('.multiple-cards').length).to.equal(0);
-    });
-
-    it('loads multi-card-layout if the page does not have a display type of data_lens_*', function() {
-      var context = makeContext(null, {
-        displayType: 'data_lens',
-        cards: [Mockumentary.createCardMetadata()]
-      });
-      var view = renderCardsView({layout: null, context: context});
-
-      expect(view.element.find('.single-card').length).to.equal(0);
-      expect(view.element.find('.multiple-cards').length).to.equal(1);
     });
   });
 });

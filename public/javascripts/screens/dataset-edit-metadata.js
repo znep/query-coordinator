@@ -214,9 +214,8 @@ $(function() {
     event.preventDefault();
     var $clone = $('.externalSource').first().clone();
     // Clear cloned content and append to page
-    $clone.find('#external_sources__title, #external_sources__description').attr('value', '').text('');
     $clone.find('.externalLink:not(:first)').remove();
-    $clone.find('.externalLink').find('input').attr('value', '');
+    $clone.find('input, textarea').val('').text('');
     $clone.appendTo('.externalDatasetBox');
     updateRemoveLinks();
   });

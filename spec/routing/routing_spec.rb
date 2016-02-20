@@ -33,7 +33,6 @@ RSpec.describe 'routes for Data Lens' do
     view_double = double
     allow(view_double).to receive(:data_lens?).and_return(true)
     allow(View).to receive(:find).and_return(view_double)
-    allow(FeatureFlags).to receive(:derive).and_return(:standalone_lens_chart => false)
     expect(get('/view/1234-1234')).to route_to('angular#data_lens', datalens_matching_datalens_constraint_params)
   end
 

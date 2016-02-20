@@ -48,10 +48,6 @@ function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) 
         'rights'
       ];
 
-      this.displayType = pageMetadata.displayType;
-      this.isStandaloneVisualization =
-          this.displayType === 'data_lens_chart' || this.displayType === 'data_lens_map';
-
       var deserializedCards = _.map(pageMetadata.cards, function(serializedCard) {
         return Card.deserialize(self, serializedCard);
       });
@@ -236,7 +232,7 @@ function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) 
       // Enforce that here.
 
       // Since swapping the expanded card is not an atomic operation, observers listening
-      // to the expanded state (eg multiCardLayout.js) will trigger multiple times for the
+      // to the expanded state (eg cardLayout.js) will trigger multiple times for the
       // same operation. Ideally it'd be an atomic operation, but since it isn't, let's
       // at least let the subscribers know by preferring to set more cards to expanded.
       // (ie since having 0 expanded cards is a valid state, but having 2 expanded cards

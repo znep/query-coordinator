@@ -414,7 +414,6 @@ Frontend::Application.routes do
     scope :controller => 'page_metadata' do
       match '/metadata/v1/page/:id', :to => 'page_metadata#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
       match '/metadata/v1/page', :to => 'page_metadata#create', :via => [:post]
-      match '/metadata/v1/standalone_viz', :to => 'page_metadata#create_standalone_visualization', :via => [:post]
       match '/metadata/v1/page/:id', :to => 'page_metadata#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
       match '/metadata/v1/page/:id', :to => 'page_metadata#destroy', :via => [:delete], :constraints => { :id => Frontend::UID_REGEXP }
     end

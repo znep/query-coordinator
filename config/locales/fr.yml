@@ -179,9 +179,6 @@ fr:
         image:
           header:
           description:
-        standalone_visualization:
-          header:
-          description:
         choose_card:
       feature_map:
         feature_map_disabled:
@@ -340,17 +337,6 @@ fr:
         save: Enregistrer
         saved: Enregistré!
         saving: Sauvegarde...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Essayer de chercher un nombre qui n'a pas de lettres.

@@ -365,7 +365,7 @@ var utils = {
     var needToRegister;
     var needToUnregister;
 
-    this.assertInstanceOf($element, window.jQuery);
+    this.assertInstanceOf($element, $);
     this.assert($element.length === 1, '`element` selection must have length 1');
     this.assertIsOneOfTypes(enable, 'boolean');
 

@@ -35,6 +35,7 @@
 
   $(function() {
     blist.metrics.datasetPostfix = '/stats';
+    var storiesEnabled = !!blist.feature_flags.stories_enabled;
     var screen = $('#analyticsDataContainer').metricsScreen(
       $.extend({}, blist.metrics.sitewideShared,
         {
@@ -76,7 +77,7 @@
                 {
                   text: 'Page Types',
                   title: 'Page Types',
-                  series: [
+                  series: _.compact([
                     {
                       method: 'js-page-view-homepage',
                       label: 'Homepage',
@@ -117,12 +118,17 @@
                       label: 'Data Lens',
                       options: {stacking: null, type: 'line'}
                     },
+                    storiesEnabled ? {
+                      method: 'js-page-view-story',
+                      label: 'Stories',
+                      options: {stacking: null, type: 'line'}
+                    } : null,
                     {
                       method: 'js-page-view-other',
                       label: 'Other',
                       options: {stacking: null, type: 'line'}
                     }
-                  ]
+                  ])
                 },
                 {
                   text: 'Dashboard Views',

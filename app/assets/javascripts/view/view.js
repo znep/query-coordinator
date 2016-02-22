@@ -70,6 +70,11 @@ $(document).on('ready', function() {
 
       switch (componentData.type) {
 
+        case 'hero':
+          $element.
+            componentHero(componentData);
+          break;
+
         case 'story.widget':
           $element.
             componentStoryWidget(componentData);

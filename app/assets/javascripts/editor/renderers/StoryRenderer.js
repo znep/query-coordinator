@@ -571,7 +571,7 @@
            iframe.contentDocument.body &&
            iframe.contentDocument.body.clientHeight === 0);
       };
-      var $iframes = $blockElement.find('.component-html iframe, .component-hero iframe');
+      var $iframes = $blockElement.find('.component-html iframe');
       var iframeContentMissing = $iframes.toArray().some(contentMissingCheck);
 
       componentData.forEach(function(componentDatum, i) {
@@ -637,7 +637,7 @@
       }
 
       $blockElement.
-        find('.component-html > iframe, .component-hero iframe, .component-hero').
+        find('.component-container > .component-html > iframe').
         height(maxEditorHeight);
     }
 

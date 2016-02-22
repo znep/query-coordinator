@@ -1,12 +1,12 @@
 <% if component.present? && component['value'].present? -%>
   <div
-    class="hero<%= ' hero-height-override' if component['value']['layout'].blank? %>"
+    class="hero<%= ' hero-no-image' if component['value']['url'].blank? %><%= ' hero-default-height' if component['value']['layout'].blank? %>"
     style="background-image: url('<%= component['value']['url'] %>');">
 
-    <div class="typeset squire-formatted">
-      <% #= component['value']['html'].html_safe %>
+    <div class="typeset squire-formatted remove-top-margin">
+      <%= component['value']['html'].to_s.html_safe %>
     </div>
   </div>
 <% else -%>
-  <div class="hero hero-height-override"></div>
+  <div class="hero"></div>
 <% end -%>

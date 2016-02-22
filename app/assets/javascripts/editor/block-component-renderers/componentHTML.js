@@ -9,7 +9,7 @@
   function _setupRichTextEditor($element, componentData, theme, options) {
     var editorId = _.uniqueId();
     var editor;
-    var extraContentClass = _.get(options, 'extraContentClass');
+    var extraContentClasses = _.get(options, 'extraContentClasses', []);
 
     utils.assertHasProperty(componentData, 'value');
 
@@ -38,9 +38,7 @@
 
     $element.on('rich-text-editor::content-change', _filterSpuriousContentChanges);
 
-    if (extraContentClass) {
-      editor.addContentClass(extraContentClass);
-    }
+    _.each(extraContentClasses, editor.addContentClass);
   }
 
   function _filterSpuriousContentChanges(event) {

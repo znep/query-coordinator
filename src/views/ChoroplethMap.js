@@ -1464,6 +1464,13 @@ function ChoroplethMap(element, vif) {
       var min = _.min(values);
       var max = _.max(values);
 
+      if (_.isFinite(min) && _.isFinite(max)) {
+        this.legendElement.show();
+      } else {
+        this.legendElement.hide();
+        return;
+      }
+
       if (min === max) {
 
         // If there's only one value, make it a scale from 0 to that value.

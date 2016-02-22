@@ -5,3 +5,4 @@ node_modules/
 REVISION
 marathon.properties
 .npmrc
+.npm-debug.log

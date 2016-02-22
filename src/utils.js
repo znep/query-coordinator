@@ -7,13 +7,6 @@ if (typeof window.Promise !== 'function') {
   window.Promise = require('es6-promise-polyfill').Promise;
 }
 
-if (String.prototype.format) {
-  throw new Error(
-    'Cannot assign format function to String prototype: ' +
-    '`String.prototype.format` already exists.'
-  );
-}
-
 var NUMBER_FORMATTER_MAGNITUDE_SYMBOLS = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
 var MOUSE_WHEEL_EVENTS = 'mousewheel DOMMouseScroll MozMousePixelScroll';
 

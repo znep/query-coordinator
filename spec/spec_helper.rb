@@ -78,6 +78,14 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  config.around(:each, verify_stubs: false) do |example|
+    config.mock_with :rspec do |mocks|
+      mocks.verify_partial_doubles = false
+      example.run
+      mocks.verify_partial_doubles = true
+    end
+  end
+
 
   # Full test suite before and after
   config.before(:suite) do

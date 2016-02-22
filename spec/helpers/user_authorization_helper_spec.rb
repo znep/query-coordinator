@@ -196,6 +196,34 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
     end
   end
 
+  describe '#can_edit_title_and_description?' do
+    describe 'when the user is an admin' do
+      let(:domain_role) { 'administrator' }
+
+      it 'returns true' do
+        expect(can_edit_title_and_description?).to be(true)
+      end
+    end
+
+    describe 'when the user is an owner and in a Stories role' do
+      let(:view_role) { 'owner' }
+      let(:domain_role) { 'publisher_stories' }
+
+      it 'returns true' do
+        expect(can_edit_title_and_description?).to be(true)
+      end
+    end
+
+    describe 'when the user is neither an admin nor an owner with a Stories role' do
+      let(:domain_role) { 'not-administator-nor-publisher_stories' }
+      let(:view_role) { 'not-owner' }
+
+      it 'returns false' do
+        expect(can_edit_title_and_description?).to be(false)
+      end
+    end
+  end
+
   describe '#can_make_copy?' do
     describe 'when the user is an admin' do
       let(:domain_role) { 'administrator' }
@@ -220,6 +248,90 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
 
       it 'returns false' do
         expect(can_make_copy?).to be(false)
+      end
+    end
+  end
+
+  describe '#can_manage_collaborators?' do
+    describe 'when the user is an admin' do
+      let(:domain_role) { 'administrator' }
+
+      it 'returns true' do
+        expect(can_manage_collaborators?).to be(true)
+      end
+    end
+
+    describe 'when the user is an owner and in a Stories role' do
+      let(:view_role) { 'owner' }
+      let(:domain_role) { 'publisher_stories' }
+
+      it 'returns true' do
+        expect(can_manage_collaborators?).to be(true)
+      end
+    end
+
+    describe 'when the user is neither an admin nor an owner with a Stories role' do
+      let(:domain_role) { 'not-administator-nor-publisher_stories' }
+      let(:view_role) { 'not-owner' }
+
+      it 'returns false' do
+        expect(can_manage_collaborators?).to be(false)
+      end
+    end
+  end
+
+  describe '#can_manage_story_visibility?' do
+    describe 'when the user is an admin' do
+      let(:domain_role) { 'administrator' }
+
+      it 'returns true' do
+        expect(can_manage_story_visibility?).to be(true)
+      end
+    end
+
+    describe 'when the user is an owner and in a Stories role' do
+      let(:view_role) { 'owner' }
+      let(:domain_role) { 'publisher_stories' }
+
+      it 'returns true' do
+        expect(can_manage_story_visibility?).to be(true)
+      end
+    end
+
+    describe 'when the user is neither an admin nor an owner with a Stories role' do
+      let(:domain_role) { 'not-administator-nor-publisher_stories' }
+      let(:view_role) { 'not-owner' }
+
+      it 'returns false' do
+        expect(can_manage_story_visibility?).to be(false)
+      end
+    end
+  end
+
+  describe '#can_see_story_stats?' do
+    describe 'when the user is an admin' do
+      let(:domain_role) { 'administrator' }
+
+      it 'returns true' do
+        expect(can_see_story_stats?).to be(true)
+      end
+    end
+
+    describe 'when the user is an owner and in a Stories role' do
+      let(:view_role) { 'owner' }
+      let(:domain_role) { 'publisher_stories' }
+
+      it 'returns true' do
+        expect(can_see_story_stats?).to be(true)
+      end
+    end
+
+    describe 'when the user is neither an admin nor an owner with a Stories role' do
+      let(:domain_role) { 'not-administator-nor-publisher_stories' }
+      let(:view_role) { 'not-owner' }
+
+      it 'returns false' do
+        expect(can_see_story_stats?).to be(false)
       end
     end
   end

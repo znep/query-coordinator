@@ -10,6 +10,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   before do
     stub_logged_in_user
     stub_sufficient_rights
+    stub_current_user_story_authorization(mock_user_authorization_owner_publisher)
     stub_core_view('hasb-lock', {
       'rights' => ['update_view'],
       'owner' => {

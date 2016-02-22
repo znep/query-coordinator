@@ -30,7 +30,23 @@ module UserAuthorizationHelper
     can_edit_story? || viewer?
   end
 
+  def can_edit_title_and_description?
+    admin? || (owner? && storyteller_role?)
+  end
+
   def can_make_copy?
+    admin? || (owner? && storyteller_role?)
+  end
+
+  def can_manage_collaborators?
+    admin? || (owner? && storyteller_role?)
+  end
+
+  def can_manage_story_visibility?
+    admin? || (owner? && storyteller_role?)
+  end
+
+  def can_see_story_stats?
     admin? || (owner? && storyteller_role?)
   end
 

@@ -181,7 +181,11 @@ var utils = {
   assertInstanceOfAny: function(instance) {
     var instantiators = _.tail(arguments);
     var valid = _.some(instantiators, function(instantiator) {
-      return instance instanceof instantiator;
+      if (instantiator.toString().indexOf('function Array') > -1) {
+        return Array.isArray(instance);
+      } else {
+        return instance instanceof instantiator;
+      }
     });
 
     if (!valid) {

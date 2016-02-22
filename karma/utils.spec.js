@@ -858,6 +858,12 @@ describe('utils.js', function() {
         utils.assertInstanceOf(new SomeClass(), SomeClass);
       });
     });
+
+    describe('given an Array that is an instance of the instantiator', function() {
+      it('should not throw', function() {
+        utils.assertInstanceOf([], Array);
+      });
+    });
   });
 
   describe('assertInstanceOfAny', function() {
@@ -888,6 +894,13 @@ describe('utils.js', function() {
         utils.assertInstanceOfAny(new SomeClass(), SomeOtherClass, SomeClass);
       });
     });
-  });
 
+    describe('given an Array that is an instance of at least one of the given instantiators', function() {
+      it('should not throw', function() {
+        utils.assertInstanceOfAny([], Array);
+        utils.assertInstanceOfAny([], Array, SomeClass);
+        utils.assertInstanceOfAny([], Array, SomeOtherClass);
+      });
+    });
+  });
 });

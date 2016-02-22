@@ -477,6 +477,10 @@ var utils = {
   }
 };
 
+if (String.prototype.format && console && console.warn) {
+  console.warn('Warning: String.prototype.format was already set somewhere else. It may not function as expected.');
+}
+
 // Attach `.format()` and `.escapeSpaces()` to String.prototype.
 String.prototype.format = format;
 String.prototype.escapeSpaces = escapeSpaces;

@@ -45,7 +45,7 @@ class BrowseController < ApplicationController
         categories_facet(params),
         topics_facet(params),
         federated_facet
-      ]
+      ].compact.flatten.reject { |f| f[:hidden] }
 
       @processed_browse = process_browse(request, browse_options)
     end

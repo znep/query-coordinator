@@ -822,6 +822,9 @@ html {
               &.truncated {
                 display: none;
               }
+              &.active {
+                display: block;
+              }
             }
 
             .browse2-facet-section-option {

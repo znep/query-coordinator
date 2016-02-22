@@ -221,4 +221,22 @@ class BrowseControllerTest < ActionController::TestCase
     Clytemnestra.unstub(:search_views)
   end
 
+  context 'embedded browse page' do
+    should 'render without errors' do
+      get :embed
+      assert_response :success
+    end
+
+    should 'render without errors when custom facets is nil' do
+      BrowseActions.stubs(custom_facets: nil)
+      get :embed
+      assert_response :success
+    end
+
+    should 'render without errors when custom facets is []' do
+      BrowseActions.stubs(custom_facets: [])
+      get :embed
+      assert_response :success
+    end
+  end
 end

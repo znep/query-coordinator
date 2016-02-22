@@ -1,3 +1,4 @@
+var $ = require('jquery');
 var utils = require('socrata-utils');
 var DataProvider = require('./DataProvider');
 var _ = require('lodash');

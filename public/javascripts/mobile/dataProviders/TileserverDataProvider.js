@@ -30,7 +30,7 @@
    */
   function TileserverDataProvider(config) {
 
-    _.extend(this, new root.socrata.visualizations.DataProvider(config));
+    _.extend(this, new socrata.visualizations.DataProvider(config));
 
     utils.assertHasProperty(config, 'domain');
     utils.assertHasProperty(config, 'datasetUid');
@@ -193,7 +193,7 @@
       // Handle IE.
       if (_xhrHasVBArray(xhr)) {
         return new VBArray(xhr.responseBody).toArray();
-      // Fall back to default for well-behaved browsers.
+        // Fall back to default for well-behaved browsers.
       } else if (xhr.response && xhr.response instanceof ArrayBuffer) {
         return new Uint8Array(xhr.response);
       }
@@ -205,64 +205,71 @@
      * Makes an AJAX request for an array buffer to Socrata Tileserver.
      *
      * @param {String} url
-     * @param {{headers: Object}} thisConfig
+     * @param {{headers: Object}} configuration
      *
      * @return {Promise}
      */
-    function _getArrayBuffer(url, thisConfig) {
+    function _getArrayBuffer(url, configuration) {
 
-      return new Promise(function(resolve, reject) {
+      return (
+        new Promise(
+          function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
 
-        var xhr = new XMLHttpRequest();
+            function onFail() {
 
-        function onFail() {
-
-          return reject({
-            status: parseInt(xhr.status, 10),
-            headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-            config: thisConfig,
-            statusText: xhr.statusText
-          });
-        }
-
-        xhr.onload = function() {
-
-          var arrayBuffer;
-          var status = parseInt(xhr.status, 10);
-
-          if (status === 200) {
-
-            arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
-
-            if (!_.isUndefined(arrayBuffer)) {
-
-              return resolve({
-                data: arrayBuffer,
-                status: status,
+              return reject({
+                status: parseInt(xhr.status, 10),
                 headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-                config: thisConfig,
+                config: configuration,
                 statusText: xhr.statusText
               });
             }
+
+            xhr.onload = function() {
+
+              var arrayBuffer;
+              var status = parseInt(xhr.status, 10);
+
+              if (status === 200) {
+
+                arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
+
+                if (!_.isUndefined(arrayBuffer)) {
+
+                  return resolve({
+                    data: arrayBuffer,
+                    status: status,
+                    headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+                    config: configuration,
+                    statusText: xhr.statusText
+                  });
+                }
+              }
+
+              onFail();
+            };
+
+            xhr.onabort = onFail;
+            xhr.onerror = onFail;
+
+            xhr.open('GET', url, true);
+
+            // Set user-defined headers.
+            _.each(configuration.headers, function(value, key) {
+              xhr.setRequestHeader(key, value);
+            });
+
+            xhr.responseType = 'arraybuffer';
+
+            xhr.send();
           }
-
-          onFail();
-        };
-
-        xhr.onabort = onFail;
-        xhr.onerror = onFail;
-
-        xhr.open('GET', url, true);
-
-        // Set user-defined headers.
-        _.each(thisConfig.headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
-        });
-
-        xhr.responseType = 'arraybuffer';
-
-        xhr.send();
-      });
+        ).catch(
+          function(error) {
+            throw error;
+          }
+        )
+      );
     }
   }
 

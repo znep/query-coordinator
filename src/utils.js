@@ -7,13 +7,6 @@ if (typeof window.Promise !== 'function') {
   window.Promise = require('es6-promise-polyfill').Promise;
 }
 
-if (String.prototype.format) {
-  throw new Error(
-    'Cannot assign format function to String prototype: ' +
-    '`String.prototype.format` already exists.'
-  );
-}
-
 var NUMBER_FORMATTER_MAGNITUDE_SYMBOLS = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
 var MOUSE_WHEEL_EVENTS = 'mousewheel DOMMouseScroll MozMousePixelScroll';
 
@@ -365,7 +358,7 @@ var utils = {
     var needToRegister;
     var needToUnregister;
 
-    this.assertInstanceOf($element, window.jQuery);
+    this.assertInstanceOf($element, $);
     this.assert($element.length === 1, '`element` selection must have length 1');
     this.assertIsOneOfTypes(enable, 'boolean');
 
@@ -483,6 +476,10 @@ var utils = {
     );
   }
 };
+
+if (String.prototype.format && console && console.warn) {
+  console.warn('Warning: String.prototype.format was already set somewhere else. It may not function as expected.');
+}
 
 // Attach `.format()` and `.escapeSpaces()` to String.prototype.
 String.prototype.format = format;

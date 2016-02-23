@@ -264,7 +264,7 @@
 
             xhr.send();
           }
-        ).catch(
+        )['catch'](
           function(error) {
             throw error;
           }

@@ -188,8 +188,7 @@
     //   soqlError: response JSON
     // }
     function _makeSoqlGetRequestWithSalt(url) {
-      return Promise.resolve($.get(_withSalt(url))).
-      catch(function(error) {
+      return Promise.resolve($.get(_withSalt(url)))['catch'](function(error) {
         return Promise.reject({
           status: parseInt(error.status, 10),
           message: error.statusText,

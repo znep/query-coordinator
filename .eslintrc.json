@@ -79,7 +79,7 @@
       "never"
     ],
     "space-infix-ops": 2,
-    "strict": 2
+    "strict": 0
   },
   "globals": {
     "$": true,

@@ -41,7 +41,7 @@
 
     this.emitEvent = function(name, payload) {
       this.element[0].dispatchEvent(
-        new root.CustomEvent(
+        new window.CustomEvent(
           name,
           { detail: payload, bubbles: true }
         )
@@ -67,8 +67,8 @@
       }
 
       headers.
-        split('\n').
-        forEach(function(line) {
+      split('\n').
+      forEach(function(line) {
           colonIndex = line.indexOf(':');
           key = line.substr(0, colonIndex).trim().toLowerCase();
           val = line.substr(colonIndex + 1).trim();

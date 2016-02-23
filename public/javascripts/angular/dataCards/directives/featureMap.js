@@ -26,18 +26,6 @@ function featureMap(
       var vectorTileGetter$ = $scope.$observe('vectorTileGetter');
       var busy$ = $scope.$observe('busy');
 
-      // Expose experimental debug sliders for controlling point appearance in real-time.
-      $scope.debugModeEnabled = ServerConfig.get('debugDataLens');
-
-      $scope.pointColorRed = 234;
-      $scope.pointColorGreen = 105;
-      $scope.pointColorBlue = 0;
-      $scope.pointSize = 1;
-      $scope.strokeSize = .5;
-      $scope.pointAlpha = .5;
-      $scope.strokeAlpha = .5;
-      $scope.blendMode = 'color-dodge';
-
       var mapOptions = {
         attributionControl: false,
         center: [47.609895, -122.330259], // Center on Seattle by default.
@@ -227,9 +215,6 @@ function featureMap(
        * @returns {Number}
        */
       function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
-        if ($scope.debugModeEnabled) {
-          return $scope.pointSize;
-        }
 
         // This was created somewhat arbitrarily by Chris to
         // result in point features which get slightly larger
@@ -254,9 +239,8 @@ function featureMap(
           color: calculatePointColor,
           highlightColor: 'rgba(255,255,255,.5)',
           radius: scalePointFeatureRadiusByZoomLevel,
-          lineWidth: $scope.debugModeEnabled ? $scope.strokeSize : 1,
-          strokeStyle: calculateStrokeStyleColor,
-          blendMode: $scope.debugModeEnabled ? $scope.blendMode : 'source-over'
+          lineWidth: 1,
+          strokeStyle: calculateStrokeStyleColor
         };
       }
 
@@ -265,10 +249,6 @@ function featureMap(
       * Makes points more transparent as map zooms out.
       */
       function calculatePointColor(zoomLevel) {
-        if ($scope.debugModeEnabled) {
-          return `rgba(${$scope.pointColorRed}, ${$scope.pointColorGreen}, ${$scope.pointColorBlue}, ${$scope.pointAlpha})`;
-        }
-
         return 'rgba(234,105,0,' + (0.2 * Math.pow(zoomLevel / 18, 5) + 0.6) + ')';
       }
 
@@ -277,10 +257,6 @@ function featureMap(
       * Dims point outline color as map zooms out.
       */
       function calculateStrokeStyleColor(zoomLevel) {
-        if ($scope.debugModeEnabled) {
-          return 'rgba(0,0,0,' + $scope.strokeAlpha + ')';
-        }
-
         return 'rgba(255,255,255,' + (0.8 * Math.pow(zoomLevel / 18, 8) + 0.1) + ')';
       }
 
@@ -582,7 +558,7 @@ function featureMap(
       function createNewFeatureLayer(vectorTileGetter) {
         var layer;
         var featureLayerOptions = {
-          debug: false,
+          debug: ServerConfig.get('debugDataLens'),
           // disable interactivity during load
           disableMapInteractions: true,
           getFeatureId: getFeatureId,
@@ -821,17 +797,6 @@ function featureMap(
           map.invalidateSize();
         });
 
-      var debugControlChanges$ = Rx.Observable.merge(
-        $scope.$observe('pointColorRed'),
-        $scope.$observe('pointColorGreen'),
-        $scope.$observe('pointColorBlue'),
-        $scope.$observe('pointSize'),
-        $scope.$observe('strokeSize'),
-        $scope.$observe('pointAlpha'),
-        $scope.$observe('strokeAlpha'),
-        $scope.$observe('blendMode')
-      ).debounce(500);
-
       // React to changes to the vectorTileGetter observable
       // (which changes indicate that a re-render is needed).
       // Only render once the feature extent has been defined.
@@ -839,14 +804,7 @@ function featureMap(
         vectorTileGetter$.filter(_.isFunction),
         featureExtent$.filter(_.isDefined), // Used for signaling to create feature layer
         dimensions$,
-        $scope.debugModeEnabled ? debugControlChanges$ : Rx.Observable.returnValue(null),
         function(vectorTileGetter) {
-
-          // Duplicate getter so points rerender when debug controls are changed
-          if ($scope.debugModeEnabled) {
-            vectorTileGetter = vectorTileGetter.bind({});
-          }
-
           currentVectorTileGetter = vectorTileGetter;
           createNewFeatureLayer(vectorTileGetter);
         }

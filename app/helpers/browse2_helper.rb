@@ -55,13 +55,30 @@ module Browse2Helper
     "#{opts[:base_url]}?#{current_params.to_param}"
   end
 
+  # Returns the facet option cutoff point. Looks at the domain configuration cutoff if set,
+  # else falls back to default, 5. "View Type" is special and always shows everything.
+  def browse2_facet_cutoff(facet)
+    domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
+    facet_name = facet[:singular_description]
+    facet_name == 'type' ?
+      Float::INFINITY :
+      domain_cutoffs[facet_name] || 5
+  end
+
   # Return an array containing a combination of facet[:options] and facet[:extra_options].
   # "Topics" have the options repeated in the extra_options because of how the browse1
   # word cloud works, so reject any dupes from the returned array.
   def get_all_facet_options(facet)
-    facet[:options] + facet[:extra_options].to_a.reject do |facet_extra_option|
-      facet[:options].detect { |facet_option| facet_extra_option[:value] == facet_option[:value] }
-    end
+    sort_facet_options(
+      facet[:options] + facet[:extra_options].to_a.reject do |facet_extra_option|
+        facet[:options].detect { |facet_option| facet_extra_option[:value] == facet_option[:value] }
+      end
+    )
+  end
+
+  # Sorts facet options by count, then name
+  def sort_facet_options(facet_options)
+    facet_options.to_a.sort_by { |option| [-option.fetch(:count, 0), option.fetch(:text)] }
   end
 
   def active_facet_option(active_option, facet)
@@ -129,7 +146,7 @@ module Browse2Helper
         flattened_options.push(new_child_option)
       end
     end
-    flattened_options
+    sort_facet_options(flattened_options)
   end
 
   # Returns result topics array truncated to provided limit. Also ensures that any currently

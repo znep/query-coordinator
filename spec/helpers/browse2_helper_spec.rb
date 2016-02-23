@@ -201,6 +201,26 @@ describe Browse2Helper do
     end
   end
 
+  describe '#browse2_facet_cutoff' do
+    it 'defaults to 5' do
+      facet = { :singular_description => 'category' }
+      allow(CurrentDomain).to receive(:property).and_return({})
+      expect(helper.browse2_facet_cutoff(facet)).to eq(5)
+    end
+
+    it 'returns the property set in domain configuration if available' do
+      facet = { :singular_description => 'category' }
+      allow(CurrentDomain).to receive(:property).and_return({ 'category' => 13 })
+      expect(helper.browse2_facet_cutoff(facet)).to eq(13)
+    end
+
+    it 'returns infinity for the view type facet' do
+      facet = { :singular_description => 'type' }
+      allow(CurrentDomain).to receive(:property).and_return({})
+      expect(helper.browse2_facet_cutoff(facet)).to eq(Float::INFINITY)
+    end
+  end
+
   describe '#get_all_facet_options' do
     def test_facet
       {
@@ -219,9 +239,9 @@ describe Browse2Helper do
 
     def combined_options
       [
+        { :value => 'Parks', :text => 'Parks' },
         { :value => 'Police', :text => 'Police' },
         { :value => 'Public Safety', :text => 'Public Safety' },
-        { :value => 'Parks', :text => 'Parks' },
         { :value => 'Wizards', :text => 'Wizards' }
       ]
     end
@@ -234,6 +254,28 @@ describe Browse2Helper do
 
     it 'returns an array combining options and extra options and removes duplicates' do
       expect(helper.get_all_facet_options(test_facet)).to match_array(combined_options)
+    end
+  end
+
+  describe '#sort_facet_options' do
+    def facet_options
+      [ { :value => 'b', :text => 'b', :count => 4 }, { :value => 'c', :text => 'c', :count => 2 },
+        { :value => 'a', :text => 'a', :count => 0 }, { :value => 'd', :text => 'd', :count => 4 } ]
+    end
+
+    def facet_options_without_count
+      [ { :value => 'b', :text => 'b' }, { :value => 'c', :text => 'c' },
+        { :value => 'a', :text => 'a' }, { :value => 'd', :text => 'd' } ]
+    end
+
+    it 'returns the options sorted by count, then name' do
+      sorted_by_count = [{:value => 'b', :text => 'b', :count => 4}, {:value => 'd', :text => 'd', :count => 4}, {:value => 'c', :text => 'c', :count => 2}, {:value => 'a', :text => 'a', :count => 0}]
+      expect(helper.sort_facet_options(facet_options)).to match_array(sorted_by_count)
+    end
+
+    it 'returns the options sorted by name if count is not present' do
+      sorted_by_text = [{:value => 'a', :text => 'a'}, {:value => 'b', :text => 'b'}, {:value => 'c', :text => 'c'}, {:value => 'd', :text => 'd'}]
+      expect(helper.sort_facet_options(facet_options_without_count)).to match_array(sorted_by_text)
     end
   end
 

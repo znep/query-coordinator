@@ -94,7 +94,8 @@ var baseConfig = {
   },
   eslint: {
     configFile: isProduction() ? '.eslintrc.json' : '.eslintrc-dev.json',
-    formatter: require('eslint/lib/formatters/compact')
+    formatter: require('eslint/lib/formatters/compact'),
+    failOnError: false
   },
   module: {
     preLoaders: [

@@ -1,5 +1,3 @@
-# HEY LOOK AT ME: YOU MUST UPDATE THE VERSION IN BOTH `package.json` AS WELL AS `bower.json` WHEN YOU BUMP THE VERSION!!!
-
 # Socrata Visualizations
 
 Visualizations that we can share between frontend projects.

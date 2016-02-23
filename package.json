@@ -14,6 +14,7 @@
     "prepublish": "webpack",
     "lint": "eslint -c package.json  --ignore-path .eslintignore *.js src/*.js",
     "test": "karma start karma.conf.js --singleRun true",
+    "version-bump-check": "node tools/version-bump-check.js",
     "watch": "karma start karma.conf.js -v --singleRun false"
   },
   "homepage": "https://github.com/socrata/frontend-utils",
@@ -38,6 +39,8 @@
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.17",
     "rimraf": "^2.4.3",
+    "semver": "^5.1.0",
+    "shelljs": "^0.6.0",
     "sinon": "^1.15.3",
     "webpack": "^1.12.2"
   },

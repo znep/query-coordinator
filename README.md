@@ -36,11 +36,15 @@ This library depends on [frontend-utils](https://github.com/socrata/frontend-uti
 this library as a dependency in another project, you must also include the non-Socrata libraries in
 your dependencies because they will not be automatically installed.
 
-## Contributing
+## Pre-requisites
 
-If you are contributing to this library, run `npm install && bower install` to set up your environment.
+> You must fist setup artifactory credentials in order to allow `bower` and `npm` to resolve dependencies. See the `setup-environment.sh` script in the `frontend` repo for more information.
 
-Useful commands:
+```
+npm install && bower install
+```
+
+## Useful commands
 
 - `npm test` to run the tests.
 - `npm run watch` to automatically run the tests when files change.  The tests can be debugged in

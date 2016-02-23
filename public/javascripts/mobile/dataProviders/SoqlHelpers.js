@@ -67,7 +67,7 @@ var SoqlHelpers = (function(_, utils) {
       'arguments'
     );
 
-    switch (filter.function) {
+    switch (filter['function']) {
       case 'binaryOperator':
         if (filter.arguments instanceof Array) {
           return _multipleBinaryOperatorWhereClauseComponent(filter);
@@ -85,7 +85,7 @@ var SoqlHelpers = (function(_, utils) {
         return _valueRangeWhereClauseComponent(filter);
       default:
         throw new Error(
-          'Invalid filter function: `{0}`.'.format(filter.function)
+          'Invalid filter function: `{0}`.'.format(filter['function'])
         );
     }
   }

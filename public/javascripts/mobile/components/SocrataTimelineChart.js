@@ -376,7 +376,7 @@
       newVif.
         filters.
         filter(function(filter) {
-          return filter.columnName === newVif.columnName && filter.function === 'timeRangeFilter'; // eslint-disable-line dot-notation
+          return filter.columnName === newVif.columnName && filter['function'] === 'timeRangeFilter'; // eslint-disable-line dot-notation
         }).map(function(filter) {
           return filter.arguments;
         });

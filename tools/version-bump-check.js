@@ -33,7 +33,7 @@ if (isNotMaster && (lessThanMasterVersion || equalToMasterVersion)) {
   echo('=> Version bumps can be completed by editing .version in package.json and bower.json (if it exists).');
   exitCode = 1;
 } else {
-  echo('You\'re version is good to go!');
+  echo('Your version is good to go!');
   exitCode = 0;
 }
 

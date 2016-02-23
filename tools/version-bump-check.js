@@ -8,11 +8,11 @@ if (!which('git')) {
 var masterPackageJSON;
 var path = require('path');
 var semver = require('semver');
-var packagePath = path.resolve('.', 'package.json');
+var packagePath = path.join(__dirname, '..', 'package.json');
 var currentBranchPackageJSON = require(packagePath);
 
-var isNotMaster = exec('git branch | grep "* master"', {silent: true}).stdout.length === 0;
-var stashed = exec('git stash', {silent: true}).stdout.indexOf('No local changes to save') === -1;
+var isNotMaster = exec('git rev-parse --abbrev-ref HEAD', {silent: true}).stdout !== 'master';
+var stashed = exec('git stash -u', {silent: true}).stdout.indexOf('No local changes to save') === -1;
 
 exec('git checkout master', {silent: true});
 
@@ -20,9 +20,9 @@ exec('git checkout master', {silent: true});
 delete require.cache[require.resolve(packagePath)];
 masterPackageJSON = require(packagePath);
 
+var exitCode = 0;
 var lessThanMasterVersion = semver.lt(currentBranchPackageJSON.version, masterPackageJSON.version);
 var equalToMasterVersion = currentBranchPackageJSON.version === masterPackageJSON.version;
-var exitCode = 0;
 
 if (isNotMaster && (lessThanMasterVersion || equalToMasterVersion)) {
   echo('Error: Version discrepancy: ' + currentBranchPackageJSON.version + ' (yours), ' + masterPackageJSON.version + ' (master)');
@@ -36,3 +36,5 @@ if (isNotMaster && (lessThanMasterVersion || equalToMasterVersion)) {
 
 exec('git checkout -', {silent: true});
 if (stashed) { exec('git stash pop', {silent: true}); }
+
+exit(exitCode);

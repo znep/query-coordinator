@@ -59,11 +59,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(40);
-	var ColumnChart = __webpack_require__(42);
-	var FeatureMap = __webpack_require__(43);
-	var Table = __webpack_require__(44);
-	var TimelineChart = __webpack_require__(45);
+	var ChoroplethMap = __webpack_require__(41);
+	var ColumnChart = __webpack_require__(43);
+	var FeatureMap = __webpack_require__(44);
+	var Table = __webpack_require__(45);
+	var TimelineChart = __webpack_require__(46);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -10782,10 +10782,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var $target = $(event.target);
 	    var isLeftClick = event.which === 1;
-	    var isOutsideOfMap = $target.closest('.feature-map-container').length === 0;
+	    var isOutsideOfCurrentMap = $target.closest('.feature-map-container')[0] !== _mapContainer[0];
 	    var isIconClose = $target.is('.icon-close');
 
-	    if (isLeftClick && (isOutsideOfMap || isIconClose)) {
+	    if (isLeftClick && (isOutsideOfCurrentMap || isIconClose)) {
 	      _map.fire('clearhighlightrequest');
 	    }
 	  }
@@ -24203,7 +24203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(38);
+	var ieee754 = __webpack_require__(40);
 
 	var BufferMethods;
 
@@ -26154,6 +26154,98 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 40 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var nBits = -7
+	  var i = isLE ? (nBytes - 1) : 0
+	  var d = isLE ? -1 : 1
+	  var s = buffer[offset + i]
+
+	  i += d
+
+	  e = s & ((1 << (-nBits)) - 1)
+	  s >>= (-nBits)
+	  nBits += eLen
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  m = e & ((1 << (-nBits)) - 1)
+	  e >>= (-nBits)
+	  nBits += mLen
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  if (e === 0) {
+	    e = 1 - eBias
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen)
+	    e = e - eBias
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	}
+
+	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+	  var i = isLE ? 0 : (nBytes - 1)
+	  var d = isLE ? 1 : -1
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+	  value = Math.abs(value)
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0
+	    e = eMax
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2)
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--
+	      c *= 2
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias)
+	    }
+	    if (value * c >= 2) {
+	      e++
+	      c /= 2
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0
+	      e = eMax
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen)
+	      e = e + eBias
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+	      e = 0
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+	  e = (e << mLen) | m
+	  eLen += mLen
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+	  buffer[offset + i - d] |= s * 128
+	}
+
+
+/***/ },
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26165,7 +26257,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var MetadataProvider = __webpack_require__(25);
 	var GeospaceDataProvider = __webpack_require__(23);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -26901,7 +26993,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27146,7 +27238,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27156,7 +27248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var utils = __webpack_require__(3);
 	var ColumnChart = __webpack_require__(12);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var NAME_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
@@ -27681,7 +27773,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28241,7 +28333,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28638,7 +28730,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28649,7 +28741,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var moment = __webpack_require__(17);
 	var TimelineChart = __webpack_require__(14);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 	var DATE_INDEX = 0;

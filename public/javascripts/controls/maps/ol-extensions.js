@@ -631,8 +631,12 @@
             $dom.find('.base').toggle(backgroundLayers.length > 0);
             $dom.find('.data').toggle(this._dataLayers.length > 0);
 
-            _.each(backgroundLayers.slice().reverse(), this.renderBackgroundLayer, this);
-            _.each(this._dataLayers.slice().reverse(), this.renderDataLayer, this);
+            var walkLayers = function(discontinuousArray, iterator) {
+              _.eachRight(_.compact(discontinuousArray), iterator, control);
+            };
+
+            walkLayers(backgroundLayers, this.renderBackgroundLayer);
+            walkLayers(this._dataLayers, this.renderDataLayer);
             _.each(this._config.customEntries, this.renderCustomEntry, this);
 
             $dom.find(':checkbox').click(function(e)

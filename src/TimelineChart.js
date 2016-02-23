@@ -389,8 +389,8 @@ $.fn.socrataTimelineChart = function(vif) {
           'columnName': newVif.columnName,
           'function': 'timeRange',
           'arguments': {
-            'start': payload.start.toISOString().substring(0, 19),
-            'end': payload.end.toISOString().substring(0, 19)
+            'start': payload.start.toISOString(),
+            'end': payload.end.toISOString()
           }
         }
       );

@@ -27,7 +27,6 @@ fi
 gem source -a https://${ARTIFACTORY_ONLINE_USER}:${ARTIFACTORY_ONLINE_PASSWORD}@socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/
 gem install bundler
 bundle config socrata.artifactoryonline.com "${ARTIFACTORY_ONLINE_USER}":"${ARTIFACTORY_ONLINE_PASSWORD}"
-echo "" > "${HOME}/.gemrc"
 
 # 3. NPM
 sudo chown -R $(whoami) ~/.npm

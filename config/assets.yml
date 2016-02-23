@@ -733,7 +733,6 @@ javascripts:
     - public/javascripts/util/lodash-mixins.js
 
   mobile:
-    - public/javascripts/mobile/app-bundle.js
     - public/javascripts/mobile/chroma.js
     - public/javascripts/mobile/simple_statistics.js
     - public/javascripts/mobile/components/Loader.js

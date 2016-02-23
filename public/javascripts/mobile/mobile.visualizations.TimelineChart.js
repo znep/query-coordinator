@@ -815,7 +815,7 @@
           filter(function(thisFilter) {
             return (
               (thisFilter.columnName === options.vif.columnName) &&
-              (thisFilter.function === 'timeRange')
+              (thisFilter['function'] === 'timeRange')
             );
           });
 

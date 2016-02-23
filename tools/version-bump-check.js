@@ -9,7 +9,10 @@ var masterPackageJSON;
 var path = require('path');
 var semver = require('semver');
 var packagePath = path.join(__dirname, '..', 'package.json');
+var baseDirectory = path.join(__dirname, '..');
 var currentBranchPackageJSON = require(packagePath);
+
+pushd(baseDirectory, {silent: true});
 
 var isNotMaster = exec('git rev-parse --abbrev-ref HEAD', {silent: true}).stdout !== 'master';
 var stashed = exec('git stash -u', {silent: true}).stdout.indexOf('No local changes to save') === -1;
@@ -37,4 +40,5 @@ if (isNotMaster && (lessThanMasterVersion || equalToMasterVersion)) {
 exec('git checkout -', {silent: true});
 if (stashed) { exec('git stash pop', {silent: true}); }
 
+popd();
 exit(exitCode);

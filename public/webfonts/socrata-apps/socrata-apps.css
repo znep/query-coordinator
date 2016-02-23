@@ -10,8 +10,10 @@
 }
 
 [class^="icon-"], [class*=" icon-"] {
-	/* use !important to prevent issues with browser extensions that change fonts */
-	font-family: 'socrata-apps' !important;
+	/* SR 2016-02-22: Icomoon seems to want to add !important to prevent issues with browser extensions
+		 that change fonts, but this causes issues with our use of it. If you end up regenerating this file
+		 and icomoon adds it, remove it again, please. */
+	font-family: 'socrata-apps';
 	speak: none;
 	font-style: normal;
 	font-weight: normal;

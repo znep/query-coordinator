@@ -772,10 +772,10 @@ function FeatureMap(element, vif) {
 
     var $target = $(event.target);
     var isLeftClick = event.which === 1;
-    var isOutsideOfMap = $target.closest('.feature-map-container').length === 0;
+    var isOutsideOfCurrentMap = $target.closest('.feature-map-container')[0] !== _mapContainer[0];
     var isIconClose = $target.is('.icon-close');
 
-    if (isLeftClick && (isOutsideOfMap || isIconClose)) {
+    if (isLeftClick && (isOutsideOfCurrentMap || isIconClose)) {
       _map.fire('clearhighlightrequest');
     }
   }

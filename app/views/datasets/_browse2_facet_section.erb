@@ -9,12 +9,15 @@
   <ul class="browse2-facet-section-options">
   <%-
     all_facet_options.each_with_index do |facet_option, index|
+      facet_li_classnames = [
+        index >= truncate_facet_section_at_index ? 'truncated' : nil,
+        facet_option_is_active?(opts, facet_param, facet_option) ? 'active' : nil
+      ].compact.join(' ')
       has_child_options = facet_option[:children].respond_to?(:each)
-
       facet_link_classnames = facet_option_classnames(opts, facet_param, facet_option, false, has_child_options)
       facet_link_href = facet_option_url(opts, facet_param, facet_option, params)
   -%>
-      <li <%== 'class="truncated"' if index >= truncate_facet_section_at_index %>>
+      <li class="<%= facet_li_classnames %>">
         <a class="<%= facet_link_classnames %>" href="<%= facet_link_href %>"
           data-facet-option-value="<%= facet_option[:value] %>"
           title="<%= facet_option[:text] %>">
@@ -25,10 +28,7 @@
           <a class="browse2-facet-section-child-option-toggle" href="#" title="<%= t('controls.browse.browse2.facets.expand.title') %>">
             <span class="browse2-facet-section-expand-contract-icon icon-arrow-down" href="#"></span>
           </a>
-        <%- end -%>
 
-        <!-- Child facet options -->
-        <%- if has_child_options -%>
           <ul class="browse2-facet-section-child-options">
             <%-
               facet_option[:children].each do |child_facet_option|

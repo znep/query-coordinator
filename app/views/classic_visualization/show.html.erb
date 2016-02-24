@@ -23,6 +23,7 @@
 
     <script type="text/javascript">
       blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request).to_json) %>;
+      blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };
 
       blist.namespace.fetch('blist.snapshot');
       blist.namespace.fetch('blist.configuration');

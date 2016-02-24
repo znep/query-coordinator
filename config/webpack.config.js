@@ -214,8 +214,27 @@ function generateDataLensConfig() {
 
 }
 
+function generateDataLensMobileConfig() {
+  var mobilePath = path.resolve(projectRootDir, 'public/javascripts/mobile');
+
+  return _.defaultsDeep({
+    context: mobilePath,
+    entry: path.resolve(mobilePath, 'main.js'),
+    externals: datalensWebpackExternals,
+    output: {
+      filename: isProduction() ? 'mobile/[name]-[hash].js' : 'mobile/[name].js'
+    },
+    plugins: [
+      new ManifestPlugin({
+        fileName: 'data-lens-mobile-manifest.json'
+      })
+    ].concat(getPlugins())
+  }, baseConfig);
+}
+
 // Export the bundle configurations to build
 module.exports = [
   generateOldUxConfig(),
-  generateDataLensConfig()
+  generateDataLensConfig(),
+  generateDataLensMobileConfig()
 ];

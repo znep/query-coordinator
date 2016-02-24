@@ -759,7 +759,6 @@ javascripts:
     - public/javascripts/mobile/mobile.timelinechart.js
     - public/javascripts/mobile/mobile.featuremap.js
     - public/javascripts/mobile/mobile.choroplethMap.js
-    - public/javascripts/mobile/main.js
 
 dump:
   javascripts:

@@ -25,8 +25,7 @@ class Federation < Model
   # Fetches active federations for current domain
   def self.federations
     find.select do |f|
-      f.targetDomainCName ==
-        CurrentDomain.cname &&
+      f.targetDomainCName == CurrentDomain.cname &&
         f.lensName.empty? &&
         f.acceptedUserId.present? &&
         f.sourceDomainCName != CurrentDomain.cname # protect against degenerate case
@@ -41,20 +40,25 @@ class Federation < Model
   end
 
   # Looks up domain cnames for Cetera
-  def self.federated_domain_cnames(federation_id)
-    home = [CurrentDomain.cname]
+  def self.federated_domain_cnames(federated_domain_id)
+    home_cname = [CurrentDomain.cname]
+    home_domain_id = CurrentDomain.domain.id
 
-    if federation_id.blank?
+    if federated_domain_id.blank?
       # All domains in the federation
-      home + federations.map(&:sourceDomainCName)
+      home_cname + federations
+        .find_all { |fed| fed.targetDomainId == home_domain_id }
+        .map(&:sourceDomainCName)
 
-    elsif federation_id.to_i == CurrentDomain.domain.id
+    elsif federated_domain_id.to_i == home_domain_id
       # Just the home domain
-      home
+      home_cname
 
     else
       # Just a federated domain--potentially empty
-      federations.find_all { |fed| fed.id == federation_id.to_i }.map(&:sourceDomainCName)
+      federations
+        .find_all { |fed| fed.sourceDomainId == federated_domain_id.to_i }
+        .map(&:sourceDomainCName)
     end
   end
 end

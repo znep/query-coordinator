@@ -4,7 +4,6 @@ class FederationTest < Test::Unit::TestCase
   describe 'federated search boosts' do
     def federation_hash
       {
-        'id' => 2,
         'acceptedUserId' => 2,
         'acceptorScreenName' => 'Somebody Who',
         'lensName' => '',
@@ -20,16 +19,12 @@ class FederationTest < Test::Unit::TestCase
 
     def federations_json_response
       [
-        federation_hash.merge('id' => 2, 'sourceDomainCName' => 'performance.seattle.gov'),
-        federation_hash.merge('id' => 3, 'sourceDomainCName' => 'data.seattle.gov'),
-        federation_hash.merge('id' => 4, 'sourceDomainCName' => 'seattle.example.com',
-                              'targetDomainCName' => 'not-localhost'), # invalid
-        federation_hash.merge('id' => 5, 'sourceDomainCName' => 'seattle.example.com',
-                              'lensName' => "Lenz's law"), # invalid
-        federation_hash.merge('id' => 6, 'sourceDomainCName' => 'seattle.example.com',
-                              'acceptedUserId' => nil), # invalid
-        federation_hash.merge('id' => 1, 'sourceDomainCName' => 'localhost',
-                              'targetDomainCName' => 'localhost') # degenerate case
+        federation_hash.merge('sourceDomainId' => 2, 'sourceDomainCName' => 'performance.seattle.gov'),
+        federation_hash.merge('sourceDomainId' => 3, 'sourceDomainCName' => 'data.seattle.gov'),
+        federation_hash.merge('sourceDomainId' => 4, 'sourceDomainCName' => 'seattle.example.com', 'targetDomainId' => 11, 'targetDomainCName' => 'not-localhost'), # invalid
+        federation_hash.merge('sourceDomainId' => 5, 'sourceDomainCName' => 'seattle.example.com', 'lensName' => "Lenz's law"), # invalid
+        federation_hash.merge('sourceDomainId' => 6, 'sourceDomainCName' => 'seattle.example.com', 'acceptedUserId' => nil), # invalid
+        federation_hash.merge('sourceDomainId' => 1, 'sourceDomainCName' => 'localhost', 'targetDomainCName' => 'localhost') # degenerate case
       ].to_json
     end
 

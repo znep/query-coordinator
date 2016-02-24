@@ -92,8 +92,8 @@
         <% end %>
       </p>
       <h3>Initiated at</h3>
-      <p class="started-time" data-epoch-seconds="<%= @activity.created_at.to_i %>">
-        <%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %>
+      <p class="started-time-stamp time-stamp" data-epoch-seconds="<%= @activity.created_at.to_i %>">
+        <span><%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
       </p>
       <h3>Import method</h3>
       <p><%= @activity.import_method %></p>

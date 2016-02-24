@@ -153,25 +153,25 @@
 	content: "\e80c";
 }
 .icon-check-2:before {
-	content: "\e900";
-}
-.icon-close-circle:before {
 	content: "\e901";
 }
-.icon-pause:before {
-	content: "\e906";
-}
-.icon-play:before {
-	content: "\e907";
-}
-.icon-waiting:before {
-	content: "\e908";
-}
-.icon-eye:before {
+.icon-close-circle:before {
 	content: "\e902";
 }
-.icon-eye-blocked:before {
+.icon-pause:before {
+	content: "\e907";
+}
+.icon-play:before {
+	content: "\e908";
+}
+.icon-waiting:before {
+	content: "\e909";
+}
+.icon-eye:before {
 	content: "\e903";
+}
+.icon-eye-blocked:before {
+	content: "\e904";
 }
 .icon-presentation:before {
 	content: "\e95c";
@@ -234,10 +234,10 @@
 	content: "\eec5";
 }
 .icon-failed:before {
-	content: "\e904";
+	content: "\e905";
 }
 .icon-processing:before {
-	content: "\e905";
+	content: "\e906";
 }
 .icon-pulse:before {
 	content: "\e900";

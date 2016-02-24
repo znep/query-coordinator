@@ -147,6 +147,11 @@ describe('ChoroplethController', function() {
     model.defineObservableProperty('computedColumn', 'ward');
     model.defineObservableProperty('cardType', 'choropleth');
     model.defineObservableProperty('customTitle', 'Cool Title');
+    model.defineObservableProperty('aggregation', {
+      'function': 'count',
+      'column': 'ward',
+      'unit': 'aWardDisplayUnit'
+    });
     model.setOption = _.noop;
 
     if (!datasetModel) {
@@ -180,11 +185,6 @@ describe('ChoroplethController', function() {
     var pageModel = new Model();
     pageModel.defineObservableProperty('dataset', datasetModel);
     pageModel.defineObservableProperty('baseSoqlFilter', null);
-    pageModel.defineObservableProperty('aggregation', {
-      'function': 'count',
-      'column': 'ward',
-      'unit': 'aWardDisplayUnit'
-    });
     pageModel.defineEphemeralObservableProperty('hasExpandedCard', null);
     model.page = pageModel;
 

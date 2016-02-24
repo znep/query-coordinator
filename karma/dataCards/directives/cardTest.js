@@ -411,41 +411,33 @@ describe('card directive', function() {
       return directive.element.find('.card-controls .icon-settings');
     }
 
-    describe('when the card is not customizable', function() {
+    describe('when the directive is not in edit mode', function() {
+      beforeEach(function() {
+        directive.scope.editMode = false;
+        directive.scope.$digest();
+      });
+
       it('should not be visible', function() {
-        directive.scope.cardModel.set('cardType', 'timeline');
-        expect(findButton().hasClass('disabled')).to.equal(true);
+        expect(findButton().hasClass('ng-hide')).to.equal(true);
       });
     });
-    describe('when the card is customizable', function() {
-      describe('and the directive is not in edit mode', function() {
-        beforeEach(function() {
-          directive.scope.editMode = false;
-          directive.scope.$digest();
-        });
 
-        it('should not be visible', function() {
-          expect(findButton().hasClass('ng-hide')).to.equal(true);
-        });
+    describe('when the directive is in edit mode', function() {
+      beforeEach(function() {
+        directive.scope.editMode = true;
+        directive.scope.$digest();
+      });
+      it('should be visible', function() {
+        expect(findButton().hasClass('disabled')).to.equal(false);
+        expect(findButton().hasClass('ng-hide')).to.equal(false);
       });
 
-      describe('and the directive is in edit mode', function() {
-        beforeEach(function() {
-          directive.scope.editMode = true;
-          directive.scope.$digest();
+      it('should trigger customize-card-with-model when clicked', function(done) {
+        directive.scope.$on('customize-card-with-model', function(event, payload) {
+          expect(payload).to.have.property('fieldName', 'myFieldName');
+          done();
         });
-        it('should be visible', function() {
-          expect(findButton().hasClass('disabled')).to.equal(false);
-          expect(findButton().hasClass('ng-hide')).to.equal(false);
-        });
-
-        it('should trigger customize-card-with-model when clicked', function(done) {
-          directive.scope.$on('customize-card-with-model', function(event, payload) {
-            expect(payload).to.have.property('fieldName', 'myFieldName');
-            done();
-          });
-          findButton().click();
-        });
+        findButton().click();
       });
     });
   });

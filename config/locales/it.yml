@@ -64,19 +64,6 @@ it:
           feature_map: Visualizza questa colonna come una mappa delle funzionalità
           search_card: Visualizza questa colonna come una cerca scheda
           timeline_chart: Visualizza questa colonna come un grafico temporale
-      aggregation_chooser:
-        by_the_number_of: <span class="information">dal</span> numero di
-        by_the_sum_of: <span class="information">dalla</span> somma di
-        count_label: considera {0} per elemento
-        description: 'Visualizza gli elementi dei dati ridimensionati o colorati da:'
-        option_disabled: Questa colonna non può essere usata con un<br>numero di aggregazione
-        sum_label: aggiungi per ognuno {0}
-        the_number_of: Il numero di
-        the_sum_of: La somma di
-        title: Aggregazione
-        too_many_columns:
-          message: Al momento, non siamo in grado di fornire la somma come aggregato per le pagine Data Lens che hanno più di {0} colonne di tipo Numero o Denaro.
-          title: Sembra che questo set di dati contenga più di {0} numero di colonne
       api_explorer:
         additional_resources: 'Risorse aggiuntive per questa API:'
         api_button: API

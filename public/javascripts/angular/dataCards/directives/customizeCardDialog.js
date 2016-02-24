@@ -183,9 +183,7 @@ function customizeCardDialog(
 
       $scope.$bindObservable('shouldShowAggregationSelector',
         $scope.customizedCard.observe('cardType').map(function(cardType) {
-          return $scope.page.version >= 4 &&
-            ServerConfig.get('enableDataLensCardLevelAggregation') &&
-            !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
+          return !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
         }));
 
       $scope.$bindObservable('availableCardTypes',

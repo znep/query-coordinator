@@ -207,32 +207,6 @@ describe('Card model', function() {
   });
 
   describe('aggregation', function() {
-    it('defaults to the page aggregation if the page is version 3 or lower', function(done) {
-      var card = makeCard(TEST_CARD_BLOB, { version: 3 });
-      Rx.Observable.subscribeLatest(
-        card.observe('aggregation').first(),
-        page.observe('aggregation').first(),
-        function(cardAggregation, pageAggregation) {
-          expect(cardAggregation).to.deep.equal(pageAggregation);
-          done();
-        }
-      );
-    });
-
-    it('defaults to the page aggregation if the appropriate feature flag is disabled', function(done) {
-      sinon.stub(ServerConfig, 'get').withArgs('enableDataLensCardLevelAggregation').returns(false);
-      var card = makeCard(TEST_CARD_BLOB, { version: 4 });
-      Rx.Observable.subscribeLatest(
-        card.observe('aggregation').first(),
-        page.observe('aggregation').first(),
-        function(cardAggregation, pageAggregation) {
-          expect(cardAggregation).to.deep.equal(pageAggregation);
-          ServerConfig.get.restore();
-          done();
-        }
-      );
-    });
-
     describe('when using the card aggregation', function() {
 
       // Required so aggregation gets correctly generated.
@@ -247,16 +221,8 @@ describe('Card model', function() {
         }
       };
 
-      beforeEach(function() {
-        sinon.stub(ServerConfig, 'get').withArgs('enableDataLensCardLevelAggregation').returns(true);
-      });
-
-      afterEach(function() {
-        ServerConfig.get.restore();
-      });
-
       it('uses the aggregation fields from the card blob', function(done) {
-        var card = makeCard(TEST_CARD_BLOB, { version: 4 }, datasetOverrides);
+        var card = makeCard(TEST_CARD_BLOB, null, datasetOverrides);
         card.observe('aggregation').subscribe(function(aggregation) {
           expect(aggregation['function']).to.equal('sum');
           expect(aggregation.fieldName).to.equal('wabbit');
@@ -269,7 +235,7 @@ describe('Card model', function() {
         delete cardBlob.aggregationFunction;
         delete cardBlob.aggregationField;
 
-        var card = makeCard(cardBlob, { version: 4 }, datasetOverrides);
+        var card = makeCard(cardBlob, null, datasetOverrides);
         card.observe('aggregation').subscribe(function(aggregation) {
           expect(aggregation['function']).to.equal('count');
           expect(aggregation.fieldName).to.equal(null);
@@ -282,7 +248,7 @@ describe('Card model', function() {
         cardBlob.aggregationFunction = null;
         cardBlob.aggregationField = null;
 
-        var card = makeCard(cardBlob, { version: 4 }, datasetOverrides);
+        var card = makeCard(cardBlob, null, datasetOverrides);
         card.observe('aggregation').subscribe(function(aggregation) {
           expect(aggregation['function']).to.equal('count');
           expect(aggregation.fieldName).to.equal(null);
@@ -292,7 +258,7 @@ describe('Card model', function() {
 
       it('defaults to count(*) if the aggregationField is not a valid column', function(done) {
         var cardBlob = _.clone(TEST_CARD_BLOB);
-        var card = makeCard(cardBlob, { version: 4 });
+        var card = makeCard(cardBlob);
         card.observe('aggregation').subscribe(function(aggregation) {
           expect(aggregation['function']).to.equal('count');
           expect(aggregation.fieldName).to.equal(null);
@@ -302,7 +268,7 @@ describe('Card model', function() {
 
       it('uses the name of the column as the unit if a valid column is provided for aggregationField', function(done) {
         var cardBlob = _.clone(TEST_CARD_BLOB);
-        var card = makeCard(cardBlob, { version: 4 }, datasetOverrides);
+        var card = makeCard(cardBlob, null, datasetOverrides);
         card.observe('aggregation').subscribe(function(aggregation) {
           expect(aggregation.unit).to.equal('wabbit');
           expect(aggregation.rowDisplayUnit).to.equal('row');

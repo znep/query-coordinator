@@ -43,12 +43,9 @@
     ng-show="debugDataLens">
   </div>
   <div class="card-control icon-settings"
-    ng-class="{ disabled: !isCustomizable }"
-    ng-click="customizeCardIfCustomizable(isCustomizable)"
+    ng-click="customizeCard()"
     ng-show="editMode && interactive && model.fieldName !== '*'"
-    title="{{ (isCustomizable ?
-      'cardControls.customizeEnabled' :
-      'cardControls.customizeDisabled') | I18n}}">
+    title="{{'cardControls.customizeEnabled' | I18n}}">
   </div>
   <div ng-attr-title="{{ (expanded ? 'cardControls.collapseCard' : 'cardControls.expandCard') | I18n }}"
     ng-click="toggleExpanded()"

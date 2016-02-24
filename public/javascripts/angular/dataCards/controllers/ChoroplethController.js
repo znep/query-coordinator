@@ -284,6 +284,7 @@ function ChoroplethController(
   $scope.$bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
   $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
   $scope.$bindObservable('isFiltered', whereClause$.map(_.isPresent));
+  $scope.$bindObservable('primaryKey', primaryKey$);
 
   var geojsonAggregateData$ = Rx.Observable.combineLatest(
     geometryLabel$,

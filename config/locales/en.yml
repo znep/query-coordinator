@@ -203,8 +203,9 @@ en:
       feature_map_flannel:
         error_message: An error occurred while fetching location data.
         next: Next
+        paging: "{0} of {1}"
         previous: Previous
-        showing: "<div>Showing {0}</div><div>{1}&nbsp;of&nbsp;{2}</div>"
+        showing: "Showing {0}"
       feedback_panel:
         broken: Something seems broken
         feedback: Feedback

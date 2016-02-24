@@ -22,7 +22,7 @@ class RequestLoggerMiddleware
     @logger = Logger.new('/dev/null')
 
     # check env. variables if we aren't running apache then send to stderr
-    if env['SERVER_SOFTWARE'].downcase != 'apache'
+    if ENV['SERVER_SOFTWARE'] !~ /apache/i
       @logger = Logger.new(STDERR)
     end
 

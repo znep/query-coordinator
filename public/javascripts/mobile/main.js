@@ -1,6 +1,7 @@
 /* global pageMetadata, datasetMetadata */
 
 var mobileColumnChart = require('./mobile.columnchart.js');
+var mobileTimelineChart = require('./mobile.timelinechart.js');
 
 (function() {
   'use strict';

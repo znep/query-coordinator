@@ -749,11 +749,8 @@ javascripts:
     - public/javascripts/mobile/mobile.visualizations.ChoroplethMapUtils.js
     - public/javascripts/mobile/mobile.visualizations.ChoroplethMap.js
     - public/javascripts/mobile/mobile.visualizations.FeatureMap.js
-    - public/javascripts/mobile/mobile.visualizations.TimelineChart.js
     - public/javascripts/mobile/components/SocrataFeatureMap.js
-    - public/javascripts/mobile/components/SocrataTimelineChart.js
     - public/javascripts/mobile/components/SocrataChoroplethMap.js
-    - public/javascripts/mobile/mobile.timelinechart.js
     - public/javascripts/mobile/mobile.featuremap.js
     - public/javascripts/mobile/mobile.choroplethMap.js
 

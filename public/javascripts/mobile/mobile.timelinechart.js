@@ -1,5 +1,9 @@
 /* global Loader */
-socrata.visualizations.mobileTimelineChart = function(values, $target) {
+
+// Has side effect of registering jQuery plugin.
+require('socrata-visualizations').TimelineChart;
+
+module.exports = function(values, $target) {
   'use strict';
 
   var timelineChartVIF = {

@@ -126,7 +126,7 @@ module BrowseActions
       cname = fed.sourceDomainCName
       {
         text: cname,
-        value: fed.id.to_s, # must be string or view doesn't notice it
+        value: fed.sourceDomainId.to_s, # must be string or view doesn't notice it
         icon: {
           type: 'static',
           href: "/api/domains/#{cname}/icons/smallIcon"

@@ -1,6 +1,7 @@
 /* global socrata, $ */
 
 require('socrata-visualizations').FeatureMap;
+var FlyoutRenderer = require('socrata-visualizations').views.FlyoutRenderer;
 
 module.exports = function(values, $target) {
   'use strict';
@@ -17,7 +18,7 @@ module.exports = function(values, $target) {
    * Set up the plugin.
    */
 
-  var flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
+  var flyoutRenderer = new FlyoutRenderer();
   socrata.visualizations.RowInspector.setup();
 
   var featureMap1VIF = {

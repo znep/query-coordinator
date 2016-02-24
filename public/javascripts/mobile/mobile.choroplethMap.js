@@ -1,5 +1,6 @@
 // Has side effect of registering jQuery plugin.
 require('socrata-visualizations').ChoroplethMap;
+var FlyoutRenderer = require('socrata-visualizations').views.FlyoutRenderer;
 
 module.exports = function(values, $target) {
 
@@ -7,7 +8,7 @@ module.exports = function(values, $target) {
    * Render things!
    */
 
-  var flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
+  var flyoutRenderer = new FlyoutRenderer();
 
   var choroplethVIF = {
     'aggregation': {

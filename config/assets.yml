@@ -746,10 +746,6 @@ javascripts:
     - public/javascripts/mobile/dataProviders/MetadataProvider.js
     - public/javascripts/mobile/mobile.visualizations.VectorTileManager.js
     - public/javascripts/mobile/mobile.visualizations.rowInspector.js
-    - public/javascripts/mobile/mobile.visualizations.ChoroplethMapUtils.js
-    - public/javascripts/mobile/mobile.visualizations.ChoroplethMap.js
-    - public/javascripts/mobile/components/SocrataChoroplethMap.js
-    - public/javascripts/mobile/mobile.choroplethMap.js
 
 dump:
   javascripts:

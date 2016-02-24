@@ -3,6 +3,7 @@
 var mobileColumnChart = require('./mobile.columnchart.js');
 var mobileTimelineChart = require('./mobile.timelinechart.js');
 var mobileFeatureMap = require('./mobile.featuremap.js');
+var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 
 (function() {
   'use strict';
@@ -127,11 +128,12 @@ var mobileFeatureMap = require('./mobile.featuremap.js');
             datasetUid: datasetMetadata.id,
             columnName: card.fieldName,
             // TODO Write some bloody error handling
+            computedColumnName: card.computedColumn,
             geojsonUid: datasetMetadata.columns[card.computedColumn].computationStrategy.parameters.region.substring(1),
             map_extent: (card.cardOptions) ? card.cardOptions.mapExtent || {} : {}
           };
 
-          socrata.visualizations.mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
+          mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
           break;
         case 'column':
           cardOptions.id = 'column-chart';

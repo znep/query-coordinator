@@ -655,15 +655,17 @@ module BrowseActions
   # we're operating as though there's only one category, even though cetera
   # will expect an array of the parent and children categories[].
   def selected_category_and_any_children(browse_options)
-    return nil unless browse_options[:search_options].try(:[], :category).present?
+    search_options = browse_options[:search_options]
+    selected_category = search_options.try(:[], :category)
 
-    selected_category = browse_options[:search_options][:category]
+    return nil unless selected_category.present?
+
     categories_facet = browse_options[:facets].detect { |facet| facet[:param] == :category }
 
     # extra_options could potentially be nil (see EN-760 and categories_facet method)
-    categories = categories_facet[:options] + categories_facet[:extra_options].to_a
-
-    return nil unless categories.present?
+    # categories_facet, technically speaking, could be absent
+    categories = categories_facet && categories_facet[:options] + categories_facet[:extra_options].to_a
+    categories ||= [] # this is for the edge case when there is no categories facet
 
     # Is it a top-level category?
     category = categories.find { |c| c[:value] == selected_category }

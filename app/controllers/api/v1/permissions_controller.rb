@@ -3,6 +3,8 @@ class Api::V1::PermissionsController < ApplicationController
 
   before_filter :require_sufficient_rights
 
+  force_ssl
+
   def update
     permissions = PermissionsUpdater.new(current_user, current_user_story_authorization, params[:uid])
     permissions_response = nil

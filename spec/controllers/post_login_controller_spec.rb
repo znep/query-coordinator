@@ -4,6 +4,7 @@ RSpec.describe PostLoginController, type: :controller do
 
   before do
     stub_valid_session
+    request.env['HTTPS'] = 'on'
   end
 
   describe 'google analytics' do

@@ -2,6 +2,7 @@
 # after uploading that file via the URL generated with the UploadsController#create
 # endpoint.
 class Api::V1::DocumentsController < ApplicationController
+  force_ssl
 
   def show
     document = Document.find(params[:id])

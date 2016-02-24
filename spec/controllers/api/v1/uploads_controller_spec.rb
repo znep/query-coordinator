@@ -18,9 +18,9 @@ RSpec.describe Api::V1::UploadsController, type: :controller do
       }
     end
 
-    # before do
-    #   allow(GeneratePendingUpload).to receive(:new).with(filename).and_return(pending_upload)
-    # end
+    before do
+      request.env['HTTPS'] = 'on'
+    end
 
     context 'when not authenticated' do
       before do

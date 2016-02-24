@@ -8,6 +8,8 @@ RSpec.describe StoriesController, type: :controller do
     allow(CoreServer).to receive(:story_themes).and_return([])
     allow(StoryAccessLogger).to receive(:log_story_view_access)
     allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
+
+    request.env['HTTPS'] = 'on'
   end
 
   describe '#show with param from_collaboration_email=true' do

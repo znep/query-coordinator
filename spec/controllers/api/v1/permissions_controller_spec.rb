@@ -17,6 +17,7 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
     before do
       stub_sufficient_rights
       allow(AirbrakeNotifier).to receive(:report_error)
+      request.env['HTTPS'] = 'on'
     end
 
     context 'when not authenticated' do

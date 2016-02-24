@@ -2,6 +2,7 @@
 
 var mobileColumnChart = require('./mobile.columnchart.js');
 var mobileTimelineChart = require('./mobile.timelinechart.js');
+var mobileFeatureMap = require('./mobile.featuremap.js');
 
 (function() {
   'use strict';
@@ -116,7 +117,7 @@ var mobileTimelineChart = require('./mobile.timelinechart.js');
             columnName: card.fieldName
           };
 
-          socrata.visualizations.mobileFeatureMap(values, $cardContainer.find('#feature-map'));
+          mobileFeatureMap(values, $cardContainer.find('#feature-map'));
           break;
         case 'choropleth':
           cardOptions.id = 'choropleth';

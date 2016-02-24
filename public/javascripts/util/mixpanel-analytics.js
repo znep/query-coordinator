@@ -1,40 +1,129 @@
 //Track clicking certain links on the page
 $(document).ready(function() {
+  'use strict';
 
-  mixpanel.delegateLinks = function(parent, selector, eventName, allowDefault, getProperties) {
-    $(parent || document.body).on('click', selector, function(event) {
-      try {
-        //get the specific properties for the event
-        var properties = _.isFunction(getProperties) ? getProperties(event.currentTarget, eventName) : {};
-        var willOpenInNewTab = event.which === 2 || event.metaKey || event.currentTarget.target === '_blank';
-        var isDefaultPrevented = event.isDefaultPrevented();
-        var callback = function() {
-          if (!willOpenInNewTab && !isDefaultPrevented && (properties['New URL'] != null)) {
-            window.location = properties['New URL'];
-          }
-        }
+  // Return early if blist doesn't exist (for instance, if we're in Data Lens)
+  if (_.isUndefined(window.blist)) {
+    return;
+  }
 
-        if (!willOpenInNewTab && !allowDefault) {
-          event.preventDefault();
-        }
-        properties['New URL'] = event.currentTarget.href;
+  // This is duplicated in angular/common/values.js
+  var MIXPANEL_EVENTS = [
+    'Changed Render Type Options',
+    'Chose Visualization Type',
+    'Cleared Facets',
+    'Cleared Search Field',
+    'Clicked API Docs Link',
+    'Clicked Catalog Result',
+    'Clicked Featured View',
+    'Clicked Footer Item',
+    'Clicked Header Item',
+    'Clicked Next in Tour',
+    'Clicked Sidebar Option',
+    'Clicked Pane in Sidebar',
+    'Closed Tour',
+    'Opened Goal Chart',
+    'Used Search Facets',
+    'Used Search Field'
+  ];
 
-        //update the meta properties (also includes people tracking)
-        $.updateMixpanelProperties();
-        //Track!
-        mixpanel.track(eventName, properties, callback);
-      }
-      catch(e) {
-        if (!isDefaultPrevented && (event.currentTarget.href != null)) {
-          window.location = event.currentTarget.href;
-        }
-        throw e;
-      }
-    });
+  // This is duplicated in angular/common/values.js
+  var MIXPANEL_PROPERTIES = [
+    'Catalog Version',
+    'Click Position',
+    'Dataset Owner',
+    'Domain',
+    'Facet Name',
+    'Facet Type',
+    'Facet Type Name',
+    'Facet Value',
+    'Footer Item Type',
+    'Header Item Type',
+    'IP',
+    'Limit',
+    'Name',
+    'New URL',
+    'Page Number',
+    'Pane Name',
+    'On Page',
+    'Properties',
+    'Render Type',
+    'Result Ids',
+    'Result Number',
+    'Request Id',
+    'Session Id',
+    'Sidebar Name',
+    'Socrata Employee',
+    'Time Since Page Opened (sec)',
+    'Tour',
+    'Step in Tour',
+    'Total Steps in Tour',
+    'Type',
+    'URL',
+    'User Id',
+    'User Owns Dataset',
+    'User Role Name',
+    'View Id',
+    'View Type',
+    'Visualization Type'
+  ];
+
+  // TODO: Properly manage user identification in Mixpanel instead of
+  // resetting this cookie every time we call out to Mixpanel. Will probably
+  // look something like watching login events and using identify/alias.
+  // (see: https://mixpanel.com/help/reference/javascript#user-identity)
+  //
+  // Registered properties are automatically added to the payload properties
+  // sent to Mixpanel. They're also saved in a cookie, so we need to be sure
+  // to not to include any information that changes from session to session.
+  // (i.e. View Id or User Owns Dataset). This function serves to set up the
+  // initial cookie and to update the cookie with changes.
+  var registerUserProperties = function() {
+    var userId = _.get(blist, 'currentUserId', 'Not Logged In');
+    var isSocrata = _.includes(_.get(blist, 'currentUser.flags'), 'admin');
+    var userRoleName = _.get(blist, 'currentUser.roleName', 'N/A');
+    var domain = window.location.hostname;
+
+    if (blist.mixpanelLoaded) {
+      mixpanel.register({
+        'User Id': userId,
+        'Socrata Employee': isSocrata,
+        'User Role Name': userRoleName,
+        'Domain': domain
+      });
+      //set user ID to mixpanels user ID if not logged in
+      mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
+    }
+  };
+
+  // Page properties we want to also track
+  var genericPagePayload = function() {
+    var userId = _.get(blist, 'currentUserId', 'Not Logged In');
+    var datasetOwner = _.get(blist, 'dataset.owner.id', 'N/A');
+    var viewType = _.get(blist, 'dataset.displayName', 'N/A');
+    var viewId = _.get(blist, 'dataset.id', 'N/A');
+    var userOwnsDataset = datasetOwner === userId;
+    var pathName = window.location.pathname;
+    var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
+
+    return {
+      'Dataset Owner': datasetOwner,
+      'User Owns Dataset': userOwnsDataset,
+      'View Id': viewId,
+      'View Type': viewType,
+      'On Page': pathName,
+      'Time Since Page Opened (sec)': time
+    };
   };
 
   // Note: 'New URL' is merged into these properties in the delegateLinks function
-  var _genericPayload = function() {
+  // Also Note: 'Result Ids' is not guaranteed to be the results of the current
+  // search (for instance we use this payload when we click on a facet or when we
+  // perform a text search, but before we've gotten the results of that query).
+  // Essentially, it's possible to send Mixpanel a payload that contains Request Ids
+  // for a search that returned no results. This is intentional, as knowing what the
+  // search term the user used before finding what they wanted is helpful.
+  var genericBrowsePayload = function() {
     return {
       'Catalog Version': 'browse2',
       'IP': blist.requestIp,
@@ -49,7 +138,7 @@ $(document).ready(function() {
 
   var facetEventPayload = function(element, eventName) {
     var isActiveOrClearAll = $(element).hasClass('active') || $(element).attr('class') === 'browse2-results-clear-all-button';
-    return _.extend(_genericPayload(), {
+    return _.extend(genericBrowsePayload(), {
       'Type': {
         'Name': isActiveOrClearAll  ? 'Cleared Facet' : eventName,
         'Properties': _.extend({},
@@ -64,7 +153,7 @@ $(document).ready(function() {
 
   var catalogEventPayload = function(element, eventName) {
     var clickPosition = _.keys($.deepGet(true, blist, 'browse', 'datasets')).indexOf(element.href.match(/\w{4}-\w{4}$/)[0]);
-    return _.extend(_genericPayload(), {
+    return _.extend(genericBrowsePayload(), {
       'Type': {
         'Name': eventName,
         'Properties': clickPosition >= 0 ? {'Click Position': clickPosition} : {}
@@ -72,80 +161,165 @@ $(document).ready(function() {
     });
   };
 
+  // Fetch the blist mixpanel object
+  var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
+
+  mixpanelNS.MIXPANEL_EVENTS = MIXPANEL_EVENTS;
+  mixpanelNS.MIXPANEL_PROPERTIES = MIXPANEL_PROPERTIES;
+
+  var validateEventName = function(eventName) {
+    return _.includes(MIXPANEL_EVENTS, eventName);
+  };
+
+  var validateProperties = function(properties) {
+    var valid = true;
+
+    _.forEach(properties, function(value, key) {
+      if (_.isObject(value)) {
+        validateProperties(value);
+      } else {
+        valid = _.includes(MIXPANEL_PROPERTIES, key);
+        return valid;
+      }
+    });
+
+    return valid;
+  };
+
+  var validateAndSendPayload = function(eventName, properties, callback) {
+    var validEventName = validateEventName(eventName);
+    var validProperties = validateProperties(properties);
+
+    if (validEventName && validProperties) {
+      mixpanel.track(eventName, properties, callback);
+    }
+  };
+
+  // Initialize event watcher to emit Mixpanel payloads for generic link events
+  mixpanelNS.delegateLinks = function(parent, selector, eventName, allowDefault, getProperties) {
+    $(parent || document.body).on('click', selector, function(event) {
+      try {
+        registerUserProperties();
+
+        // Get the specific properties for the event
+        var properties = _.isFunction(getProperties) ? getProperties(event.currentTarget, eventName) : {};
+        // Update the properties with the page-specific properties we want to track
+        var mergedProperties = _.extend(genericPagePayload(), properties);
+
+        var willOpenInNewTab = event.which === 2 || event.metaKey || event.currentTarget.target === '_blank';
+        var isDefaultPrevented = event.isDefaultPrevented();
+        var callback = function() {
+          if (!willOpenInNewTab && !isDefaultPrevented && (mergedProperties['New URL'] != null)) {
+            window.location = mergedProperties['New URL'];
+          }
+        };
+
+        if (!willOpenInNewTab && !allowDefault) {
+          event.preventDefault();
+        }
+        mergedProperties['New URL'] = event.currentTarget.href;
+
+        // Validate and track!
+        validateAndSendPayload(eventName, mergedProperties, callback);
+      }
+      catch(e) {
+        if (!isDefaultPrevented && (event.currentTarget.href != null)) {
+          window.location = event.currentTarget.href;
+        }
+        throw e;
+      }
+    });
+  };
+
+  // Assemble and emit catalog search event payloads
+  // Note: this is used by screens/browse.js and screens/browse2.js
+  mixpanelNS.delegateCatalogSearchEvents = function(eventName, properties, callback) {
+    registerUserProperties();
+
+    var mergedProperties = _.extend(
+      genericPagePayload(),
+      genericBrowsePayload(),
+      properties
+    );
+
+    // Validate and track!
+    validateAndSendPayload(eventName, mergedProperties, callback);
+  };
+
+  // TODO: Move the event tracking below this to separate file(s)
+  // TODO: Don't talk to Mixpanel if it's not enabled
   //HEADER
-  mixpanel.delegateLinks('#siteHeader', 'a', 'Clicked Header Item', false, function(element) {
+  mixpanelNS.delegateLinks('#siteHeader', 'a', 'Clicked Header Item', false, function(element) {
     var linkType = (element.title != '') ? element.title : element.text;
     return { 'Header Item Type': linkType };
   });
 
   //FOOTER
-  mixpanel.delegateLinks('#siteFooter', 'a', 'Clicked Footer Item', false, function(element) {
+  mixpanelNS.delegateLinks('#siteFooter', 'a', 'Clicked Footer Item', false, function(element) {
     var linkType = (element.title != '') ? element.title : element.text;
     return { 'Footer Item Type': linkType };
   });
 
   //CATALOG
   //Featured Views
-  mixpanel.delegateLinks('.featuredViews .featuredView', 'a', 'Clicked Featured View', false);
+  mixpanelNS.delegateLinks('.featuredViews .featuredView', 'a', 'Clicked Featured View', false);
 
   //Catalog results
   // Browse2
-  mixpanel.delegateLinks('.browse2-result-name', 'a', 'Clicked Catalog Result', false, catalogEventPayload);
+  mixpanelNS.delegateLinks('.browse2-result-name', 'a', 'Clicked Catalog Result', false, catalogEventPayload);
 
   // Browse1
-  mixpanel.delegateLinks('.gridList .titleLine', 'a', 'Clicked Catalog Result', false, function(element) {
+  mixpanelNS.delegateLinks('.gridList .titleLine', 'a', 'Clicked Catalog Result', false, function(element) {
     var linkNo = parseFloat($(element).closest('.item').find('.index .value').text());
-    var page = $(element).closest('.browseList').find('.pagination .active').text();
+    var page = $(element).closest('.browseList').find('.pagination .active').text().match(/\d/);
     var pageNo = (page=='')? 1 : parseFloat(page);
     return { 'Result Number': linkNo, 'Page Number': pageNo };
   });
 
   // API docs link
-  mixpanel.delegateLinks('.browse2-result-explore', 'a', 'Clicked API Docs Link', false, catalogEventPayload);
+  mixpanelNS.delegateLinks('.browse2-result-explore', 'a', 'Clicked API Docs Link', false, catalogEventPayload);
 
   //SEARCH FACETS
   //View Types/Categories/Topics
   // Browse2
-  mixpanel.delegateLinks('.browse2-facet-section-options', 'a', 'Used Search Facets', false, facetEventPayload);
+  mixpanelNS.delegateLinks('.browse2-facet-section-options', 'a', 'Used Search Facets', false, facetEventPayload);
   // Modal (Note: Model more than way to select facets)
-  mixpanel.delegateLinks('.browse2-facet-section-modal-content-top', 'a', 'Used Search Facets', false, facetEventPayload);
-  mixpanel.delegateLinks('.browse2-facet-section-modal-content-all', 'a', 'Used Search Facets', false, facetEventPayload);
+  mixpanelNS.delegateLinks('.browse2-facet-section-modal-content-top', 'a', 'Used Search Facets', false, facetEventPayload);
+  mixpanelNS.delegateLinks('.browse2-facet-section-modal-content-all', 'a', 'Used Search Facets', false, facetEventPayload);
   // Clear facets method #1
-  mixpanel.delegateLinks('.browse2-results-clear-controls', 'a', 'Cleared Facets', false, facetEventPayload);
+  mixpanelNS.delegateLinks('.browse2-results-clear-controls', 'a', 'Cleared Facets', false, facetEventPayload);
 
   // Browse1
-  mixpanel.delegateLinks('.facetSection', 'a', 'Used Search Facets', false, function(element) {
-    facetType = $(element).closest('.facetSection').find('> .title').text();
+  mixpanelNS.delegateLinks('.facetSection', 'a', 'Used Search Facets', false, function(element) {
+    var facetType = $(element).closest('.facetSection').find('> .title').text();
     var linkName = element.text;
     return { 'Facet Type': facetType, 'Facet Type Name': linkName };
   });
 
   //SIDEBAR TRACKING
-  mixpanel.delegateLinks('#sidebarOptions', 'a', 'Clicked Sidebar Option', false, function(element) {
+  mixpanelNS.delegateLinks('#sidebarOptions', 'a', 'Clicked Sidebar Option', false, function(element) {
     return {'Sidebar Name': element.title};
   });
 
   //Panes in sidebar (Needs a delegated .on since they are not present in the DOM from the beginning)
-  mixpanel.delegateLinks('#gridSidebar', 'a.headerLink', 'Clicked Pane in Sidebar', false, function(element) {
+  mixpanelNS.delegateLinks('#gridSidebar', 'a.headerLink', 'Clicked Pane in Sidebar', false, function(element) {
     return {'Pane Name': element.text};
   });
 
   //In the visualize pane - the different visualization types
-  mixpanel.delegateLinks('#gridSidebar', '.radioBlock .radioLine', 'Chose Visualization Type', true, function(element) {
+  mixpanelNS.delegateLinks('#gridSidebar', '.radioBlock .radioLine', 'Chose Visualization Type', true, function(element) {
     return {'Visualization Type': element.outerText};
   });
 
   //Render Type Options
-  mixpanel.delegateLinks('#renderTypeOptions', 'a', 'Changed Render Type Options', false, function(element) {
+  mixpanelNS.delegateLinks('#renderTypeOptions', 'a', 'Changed Render Type Options', false, function(element) {
     return {'Render Type': element.title};
   });
 
   // GOVSTAT
   // opening old chart
-  mixpanel.delegateLinks('#janus', '.goalBox .pull.down', 'Opened Goal Chart', false, _.noop);
+  mixpanelNS.delegateLinks('#janus', '.goalBox .pull.down', 'Opened Goal Chart', false, _.noop);
 
   // opening new chart
-  mixpanel.delegateLinks('#janus', '.goalBox .progressViewChart .viewChart', 'Opened Goal Chart', false, _.noop);
-
-  window._genericMixpanelPayload = _genericPayload;
+  mixpanelNS.delegateLinks('#janus', '.goalBox .progressViewChart .viewChart', 'Opened Goal Chart', false, _.noop);
 });

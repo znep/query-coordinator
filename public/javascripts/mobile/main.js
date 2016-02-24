@@ -1,4 +1,7 @@
 /* global pageMetadata, datasetMetadata */
+
+var mobileColumnChart = require('./mobile.columnchart.js');
+
 (function() {
   'use strict';
 
@@ -100,7 +103,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
+          mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
           break;
         case 'feature':
           cardOptions.id = 'feature-map';
@@ -137,7 +140,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.mobileColumnChart(values, $cardContainer.find('#column-chart'));
+          mobileColumnChart(values, $cardContainer.find('#column-chart'));
           break;
         default:
           break;

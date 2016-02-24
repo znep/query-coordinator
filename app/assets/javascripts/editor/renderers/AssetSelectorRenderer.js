@@ -1287,7 +1287,7 @@
     function _datasetChooserUrl() {
       return encodeURI(
         '{0}/browse/select_dataset?suppressed_facets[]=type&limitTo=datasets'.
-          format(window.location.origin)
+          format(window.location.protocol + '//' + window.location.hostname)
       );
     }
 
@@ -1318,7 +1318,7 @@
       return encodeURI(
         '{0}/component/visualization/add?datasetId={1}&defaultColumn={2}&defaultVifType={3}&defaultRelatedVisualizationUid={4}'.
           format(
-            window.location.origin,
+            window.location.protocol + '//' + window.location.hostname,
             componentProperties.dataset.datasetUid,
             defaultColumn,
             defaultVifType,

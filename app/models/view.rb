@@ -922,20 +922,7 @@ class View < Model
     elsif is_href?
       b = []
       unless metadata.nil?
-        if allAccessPoints.present?
-          allAccessPoints.each do |accessPoint|
-            accessPoint['urls'].each do |format, url|
-              b << {
-                'title' => accessPoint['title'],
-                'description' => accessPoint['description'],
-                'href' => url,
-                'type' => format.upcase,
-                'size' => accessPoint['urls'][format + 'Size']
-              }
-            end
-            b.sort_by! { |blob| blob['type'] }
-          end
-        elsif metadata.href.present?
+        if metadata.href.present?
           b << { 'href' => metadata.href, 'type' => 'Link', 'size' => 'Unknown' }
         end
       end

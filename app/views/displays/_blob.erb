@@ -15,6 +15,21 @@
       <h5><%= t 'screens.ds.blob.download' %></h5>
     <%- end -%>
     <ul>
+      <%# Blobs and accessPoints are mutually exclusive, but they each populate the same list
+        # on their respective pages. %>
+      <%- @view.blobs.each do |blob| -%>
+        <li>
+          <a class="button" href="<%= metric_redirect_path(:type => blob['type'], :id => @view.id) %>" target="_blank">
+            <%- size = blob['size'].is_a?(Numeric) ?
+              number_to_human_size(blob['size'], :locale => :en) : blob['size'] -%>
+              <%- if !blob['name'].blank? -%>
+                <%= blob['name'] %> (<%= blob['type'] %> <%= size %>)
+              <%- else -%>
+                <%= blob['type'] %> <%= size %>
+              <%- end -%>
+          </a>
+        </li>
+      <%- end -%>
       <%- @view.allAccessPoints.each do |accessPoint| -%>
         <%- if accessPoint['title'].present? -%>
           <li>

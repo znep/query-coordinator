@@ -1,49 +1,35 @@
 const angular = require('angular');
 
 function MixpanelService($log, MixpanelEvents, MixpanelProperties, $window) {
-  var currentUser = $window.currentUser;
-  var pageMetadata = $window.pageMetadata;
-
   // TODO: This file would be a good spot to ensure we only talk
   // to Mixpanel if it's enabled.
 
-  // Note this is duplicated from util/mixpanel-analytics.js
-  function registerUserProperties() {
-    var userId = _.get(currentUser, 'id', 'Not Logged In');
-    var isSocrata = _.includes(_.get(currentUser, 'flags'), 'admin');
-    var userRoleName = _.get(currentUser, 'roleName', 'N/A');
-    var domain = $window.location.hostname;
+  const MISSING_PROP_VALUE = 'N/A';
 
-    if (_.isDefined($window.mixpanel)) {
-      $window.mixpanel.register({
-        'User Id': userId,
-        'Socrata Employee': isSocrata,
-        'User Role Name': userRoleName,
-        'Domain': domain
-      });
-      //set user ID to mixpanels user ID if not logged in
-      $window.mixpanel.identify(userId === 'Not Logged In' ? $window.mixpanel.get_distinct_id() : userId);
-    }
-  }
+  // These are properties that don't change once a page has loaded;
+  var userId;
+  var ownerId;
+  var staticPageProperties;
 
-  // Note this is duplicated from util/mixpanel-analytics.js
-  function genericPagePayload() {
-    var userId = _.get(currentUser, 'id', 'Not Logged In');
-    var datasetOwner = _.get(pageMetadata, 'ownerId', 'N/A');
-    var viewType = _.get(pageMetadata, 'name', 'N/A');
-    var viewId = _.get(pageMetadata, 'pageId', 'N/A');
-    var userOwnsDataset = datasetOwner === userId;
-    var pathName = $window.location.pathname;
+  function init(pageMetadata, currentUser) {
+    userId = _.get(currentUser, 'id', 'Not Logged In');
+    ownerId = _.get(pageMetadata, 'ownerId', MISSING_PROP_VALUE);
 
-    return {
-      'Dataset Owner': datasetOwner,
-      'User Owns Dataset': userOwnsDataset,
-      'View Id': viewId,
-      'View Type': viewType,
-      'On Page': pathName
+    // Note that 'View Type' is hardcoded here, but outside of Data Lens,
+    // this is the blist.dataset._mixpanelViewType
+    staticPageProperties = {
+      'Dataset Owner': ownerId,
+      'Domain': $window.location.hostname,
+      'Socrata Employee': _.includes(_.get(currentUser, 'flags'), 'admin'),
+      'User Id': userId,
+      'User Owns Dataset': ownerId === userId,
+      'User Role Name': _.get(currentUser, 'roleName', MISSING_PROP_VALUE),
+      'View Id': _.get(pageMetadata, 'pageId', MISSING_PROP_VALUE),
+      'View Type': 'data lens'
     };
   }
 
+  // Event name validation
   function validateEventName(eventName) {
     var valid = _.includes(MixpanelEvents, eventName);
 
@@ -54,6 +40,7 @@ function MixpanelService($log, MixpanelEvents, MixpanelProperties, $window) {
     return valid;
   }
 
+  // Payload property validation
   function validateProperties(properties) {
     var valid = true;
 
@@ -74,6 +61,36 @@ function MixpanelService($log, MixpanelEvents, MixpanelProperties, $window) {
     return valid;
   }
 
+  // Note this is duplicated from util/mixpanel-analytics.js
+  function registerUserProperties() {
+    var properties = _.pick(
+      staticPageProperties,
+      'User Id',
+      'Socrata Employee',
+      'User Role Name',
+      'Domain'
+    );
+    validateProperties(properties);
+
+    if (_.isDefined($window.mixpanel)) {
+      $window.mixpanel.register(properties);
+      //set user ID to mixpanels user ID if not logged in
+      $window.mixpanel.identify(userId === 'Not Logged In' ? $window.mixpanel.get_distinct_id() : userId);
+    }
+  }
+
+  // Note this is duplicated from util/mixpanel-analytics.js
+  function genericPagePayload() {
+    return _.pick(
+      staticPageProperties,
+      'Dataset Owner',
+      'User Owns Dataset',
+      'View Id',
+      'View Type',
+      'On Page'
+    );
+  }
+
   function sendPayload(eventName, properties) {
     if (_.isDefined($window.mixpanel)) {
       // Make sure cookies are up-to-date
@@ -91,6 +108,7 @@ function MixpanelService($log, MixpanelEvents, MixpanelProperties, $window) {
   }
 
   return {
+    init: init,
     sendPayload: sendPayload
   };
 }

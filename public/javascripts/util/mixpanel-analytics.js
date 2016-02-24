@@ -7,6 +7,8 @@ $(document).ready(function() {
     return;
   }
 
+  var MISSING_PROP_VALUE = 'N/A';
+
   // This is duplicated in angular/common/values.js
   var MIXPANEL_EVENTS = [
     'Changed Render Type Options',
@@ -55,9 +57,9 @@ $(document).ready(function() {
     'Session Id',
     'Sidebar Name',
     'Socrata Employee',
+    'Step in Tour',
     'Time Since Page Opened (sec)',
     'Tour',
-    'Step in Tour',
     'Total Steps in Tour',
     'Type',
     'URL',
@@ -68,6 +70,59 @@ $(document).ready(function() {
     'View Type',
     'Visualization Type'
   ];
+
+  // Event name validation
+  var validateEventName = function(eventName) {
+    var valid = _.includes(MIXPANEL_EVENTS, eventName);
+
+    if (!valid) {
+      console.error('Mixpanel payload validation failed: Unknown event name: "{0}"'.format(eventName));
+    }
+
+    return valid;
+  };
+
+  // Payload property validation
+  var validateProperties = function(properties) {
+    var valid = true;
+
+    _.forEach(properties, function(value, key) {
+      if (_.isObject(value)) {
+        validateProperties(value);
+      } else {
+        valid = _.includes(MIXPANEL_PROPERTIES, key);
+
+        if (!valid) {
+          console.error('Mixpanel payload validation failed: Unknown property "{0}"'.format(key));
+        }
+
+        return valid;
+      }
+    });
+
+    return valid;
+  };
+
+  // These are properties that don't change once a page has loaded;
+  var userId = _.get(blist, 'currentUserId', 'Not Logged In');
+  var ownerId = _.get(blist, 'dataset.owner.id', MISSING_PROP_VALUE);
+  var staticPageProperties = {
+    'Dataset Owner': ownerId,
+    'Domain': window.location.hostname,
+    'IP': blist.requestIp,
+    'Limit': _.get(blist, 'browse.limit'),
+    'On Page': window.location.pathname,
+    'Request Id': blist.requestId,
+    'Result Ids': _.keys(_.get(blist, 'browse.datasets')),
+    'Session Id': blist.sessionId,
+    'Socrata Employee': _.includes(_.get(blist, 'currentUser.flags'), 'admin'),
+    'URL': window.location.href,
+    'User Id': userId,
+    'User Owns Dataset': ownerId === userId,
+    'User Role Name': _.get(blist, 'currentUser.roleName', MISSING_PROP_VALUE),
+    'View Id': _.get(blist, 'dataset.id', MISSING_PROP_VALUE),
+    'View Type': _.get(blist, 'dataset._mixpanelViewType', MISSING_PROP_VALUE)
+  };
 
   // TODO: Properly manage user identification in Mixpanel instead of
   // resetting this cookie every time we call out to Mixpanel. Will probably
@@ -80,18 +135,17 @@ $(document).ready(function() {
   // (i.e. View Id or User Owns Dataset). This function serves to set up the
   // initial cookie and to update the cookie with changes.
   var registerUserProperties = function() {
-    var userId = _.get(blist, 'currentUserId', 'Not Logged In');
-    var isSocrata = _.includes(_.get(blist, 'currentUser.flags'), 'admin');
-    var userRoleName = _.get(blist, 'currentUser.roleName', 'N/A');
-    var domain = window.location.hostname;
+    var properties = _.pick(
+      staticPageProperties,
+      'User Id',
+      'Socrata Employee',
+      'User Role Name',
+      'Domain'
+    );
+    validateProperties(properties);
 
     if (blist.mixpanelLoaded) {
-      mixpanel.register({
-        'User Id': userId,
-        'Socrata Employee': isSocrata,
-        'User Role Name': userRoleName,
-        'Domain': domain
-      });
+      mixpanel.register(properties);
       //set user ID to mixpanels user ID if not logged in
       mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
     }
@@ -99,22 +153,21 @@ $(document).ready(function() {
 
   // Page properties we want to also track
   var genericPagePayload = function() {
-    var userId = _.get(blist, 'currentUserId', 'Not Logged In');
-    var datasetOwner = _.get(blist, 'dataset.owner.id', 'N/A');
-    var viewType = _.get(blist, 'dataset.displayName', 'N/A');
-    var viewId = _.get(blist, 'dataset.id', 'N/A');
-    var userOwnsDataset = datasetOwner === userId;
-    var pathName = window.location.pathname;
-    var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
-
-    return {
-      'Dataset Owner': datasetOwner,
-      'User Owns Dataset': userOwnsDataset,
-      'View Id': viewId,
-      'View Type': viewType,
-      'On Page': pathName,
-      'Time Since Page Opened (sec)': time
+    var dynamicProperties = {
+      'Time Since Page Opened (sec)': Math.round(new Date().getTime() / 1000) - blist.pageOpened
     };
+    var staticPropertyNames = [
+      'Dataset Owner',
+      'User Owns Dataset',
+      'View Id',
+      'View Type',
+      'On Page'
+    ];
+
+    return _.merge(
+      _.pick(staticPageProperties, staticPropertyNames),
+      dynamicProperties
+    );
   };
 
   // Note: 'New URL' is merged into these properties in the delegateLinks function
@@ -125,16 +178,23 @@ $(document).ready(function() {
   // for a search that returned no results. This is intentional, as knowing what the
   // search term the user used before finding what they wanted is helpful.
   var genericBrowsePayload = function() {
-    return {
+    var uniqueToBrowseProperties = {
       'Catalog Version': 'browse2',
-      'IP': blist.requestIp,
-      'Limit': blist.browse.limit,
-      'URL': document.location.href,
-      'Request Id': blist.requestId,
-      'Result Ids': _.keys(_.get(blist, 'browse.datasets')),
-      'Session Id': blist.sessionId,
       'User Id': blist.currentUser ? blist.currentUser.email : 'Anonymous'
     };
+    var staticPropertyNames = [
+      'IP',
+      'Limit',
+      'URL',
+      'Request Id',
+      'Result Ids',
+      'Session Id'
+    ];
+
+    return _.merge(
+      _.pick(staticPageProperties, staticPropertyNames),
+      uniqueToBrowseProperties
+    );
   };
 
   var facetEventPayload = function(element, eventName) {
@@ -167,36 +227,6 @@ $(document).ready(function() {
 
   mixpanelNS.MIXPANEL_EVENTS = MIXPANEL_EVENTS;
   mixpanelNS.MIXPANEL_PROPERTIES = MIXPANEL_PROPERTIES;
-
-  var validateEventName = function(eventName) {
-    var valid = _.includes(MIXPANEL_EVENTS, eventName);
-
-    if (!valid) {
-      console.error('Mixpanel payload validation failed: Unknown event name: "{0}"'.format(eventName));
-    }
-
-    return valid;
-  };
-
-  var validateProperties = function(properties) {
-    var valid = true;
-
-    _.forEach(properties, function(value, key) {
-      if (_.isObject(value)) {
-        validateProperties(value);
-      } else {
-        valid = _.includes(MIXPANEL_PROPERTIES, key);
-
-        if (!valid) {
-          console.error('Mixpanel payload validation failed: Unknown property "{0}"'.format(key));
-        }
-
-        return valid;
-      }
-    });
-
-    return valid;
-  };
 
   var validateAndSendPayload = function(eventName, properties, callback) {
     validateEventName(eventName);

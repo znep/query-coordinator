@@ -229,3 +229,7 @@ angular.module('dataCards').run(function(
 
   $state.go(initialAppUIState, initialRoute.parameters);
 });
+
+angular.module('dataCards').run(function($window, MixpanelService) {
+  MixpanelService.init($window.pageMetadata, $window.currentUser);
+});

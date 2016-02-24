@@ -157,7 +157,8 @@ function applyStandardMocks() {
             'type': 'hero',
             'value': {
               'url': 'https://sa-storyteller-dev-us-west-2-staging.s3.amazonaws.com/documents/uploads/000/000/005/original/q3e87zR.gif?1447210253',
-              'documentId': 5
+              'documentId': 5,
+              'html': 'html content'
             }
         }]
       })

@@ -64,6 +64,27 @@ describe('AssetSelectorStore', function() {
       });
     });
 
+    describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action with `initialComponentProperties` set', function() {
+
+      var testBlockId = 'testBlock1';
+      var testComponentIndex = '1';
+
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
+          blockId: testBlockId,
+          componentIndex: testComponentIndex,
+          initialComponentProperties: {
+            foo: 'bar'
+          }
+        });
+      });
+
+      it('should reflect the initialComponentProperties in getComponentValue', function() {
+        assert.propertyVal(storyteller.assetSelectorStore.getComponentValue(), 'foo', 'bar');
+      });
+    });
+
     describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action', function() {
 
       var testBlockId = 'testBlock1';
@@ -595,15 +616,19 @@ describe('AssetSelectorStore', function() {
           });
 
           describe('.getComponentValue()', function() {
-            it('returns payload with url and documentId', function() {
+            it('returns correct payload', function() {
               if (provider === 'AUTHOR') {
-                // I'm a special snowflake
                 assert.deepEqual(
                   storyteller.assetSelectorStore.getComponentValue(),
                   {
                     blurb: storyteller.storyStore.getBlockComponentAtIndex(standardMocks.authorBlockId, 0).value.blurb,
                     image: { documentId: payloadDocumentId, url: payloadUrl }
                   }
+                );
+              } else if (provider === 'HERO') {
+                assert.deepEqual(
+                  storyteller.assetSelectorStore.getComponentValue(),
+                  { documentId: payloadDocumentId, url: payloadUrl, html: 'html content' }
                 );
               } else {
                 assert.deepEqual(

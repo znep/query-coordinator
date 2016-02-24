@@ -230,7 +230,8 @@
         step: WIZARD_STEP.SELECT_ASSET_PROVIDER,
         blockId: payload.blockId,
         componentIndex: payload.componentIndex,
-        isEditingExisting: false
+        isEditingExisting: false,
+        componentProperties: payload.initialComponentProperties
       };
 
       self._emitChange();
@@ -464,11 +465,23 @@
 
       _state.step = WIZARD_STEP.IMAGE_PREVIEW;
 
-      if (componentType === 'image' || componentType === 'hero') {
+      if (componentType === 'image') {
         _state.componentProperties = {
           documentId: documentId,
           url: imageUrl
         };
+      } else if (componentType === 'hero') {
+        var html = _.get(_state, 'componentProperties.html'); // Preserve any previous HTML content.
+
+        _state.componentProperties = {
+          documentId: documentId,
+          url: imageUrl
+        };
+
+        if (html) {
+          _state.componentProperties.html = html;
+        }
+
       } else if (componentType === 'author') {
         _.set(_state.componentProperties, 'image.documentId', documentId);
         _.set(_state.componentProperties, 'image.url', imageUrl);

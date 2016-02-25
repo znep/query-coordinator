@@ -1,6 +1,6 @@
 const angular = require('angular');
 angular.module('dataCards.models').
-  factory('Card', function(ServerConfig, CardOptions, Model, Schemas, Filter, Constants, I18n, rx, Dataset) {
+  factory('Card', function($log, ServerConfig, CardOptions, Model, Schemas, Filter, Constants, I18n, rx, Dataset) {
     const Rx = rx;
 
     var schemas = Schemas.regarding('card_metadata');
@@ -30,8 +30,15 @@ angular.module('dataCards.models').
         this.fieldName = fieldName;
         this.uniqueId = initialValues.id || _.uniqueId();
 
-        if (_.isNumber(this.version) && this.version >= schemas.getLatestSchemaVersion()) {
-          this.version = schemas.getLatestSchemaVersion();
+        var latestSchemaVersion = schemas.getLatestSchemaVersion();
+        if (_.isNumber(this.version) && this.version >= latestSchemaVersion) {
+          $log.warn(`Page metadata version is ${this.version}. This is newer than the most recent ` +
+            `known page version, which is ${latestSchemaVersion}. Using version ${latestSchemaVersion}.`);
+
+          this.version = latestSchemaVersion;
+        } else if (_.isNumber(this.version) && this.version < latestSchemaVersion) {
+          $log.warn(`Page metadata version is ${this.version}. This is older than the most recent ` +
+            `known page version, which is ${latestSchemaVersion}. Using version ${this.version}.`);
         }
 
         var cardOptions = CardOptions.deserialize(self, initialValues.cardOptions);

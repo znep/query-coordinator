@@ -121,7 +121,13 @@ function visualizationTypeSelector(
       columns$,
       cardModel$,
       selectedCuratedRegion$.filter(_.isPresent),
-      function(columns, cardModel, selectedCuratedRegion) {
+      cardType$,
+      function(columns, cardModel, selectedCuratedRegion, cardType) {
+        if (cardType !== 'choropleth') {
+          cardModel.set('computedColumn', null);
+          return;
+        }
+
         var region = `_${selectedCuratedRegion}`;
 
         var computedColumn = _.findKey(columns, function(column) {

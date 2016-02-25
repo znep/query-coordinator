@@ -2,7 +2,7 @@ require 'addressable/uri'
 
 class StoryAccessLogger
 
-  def self.log_story_view_access(story)
+  def self.log_story_view_access(story, additional_params = {})
     metrics = []
 
     # We're only currently interested in logging view-loaded metrics for published stories
@@ -12,14 +12,18 @@ class StoryAccessLogger
 
       metrics << Metric.new(story.uid, 'view-loaded')
       metrics << Metric.new(current_domain_id, 'view-loaded')
-      metrics << Metric.new(current_domain_id, 'published-story-loaded')
-      metrics << Metric.new("views-loaded-#{current_domain_id}", "view-#{story.uid}")
+      metrics << Metric.new("stories-views-loaded-#{current_domain_id}", "view-#{story.uid}")
 
       unless referrer.blank?
-        metrics << Metric.new("referrer-hosts-#{current_domain_id}", "referrer-#{referrer_host}")
-        metrics << Metric.new("referrer-hosts-#{story.uid}", "referrer-#{referrer_host}")
-        metrics << Metric.new("referrer-paths-#{current_domain_id}-#{referrer_host}", "path-#{referrer_path}")
-        metrics << Metric.new("referrer-paths-#{story.uid}-#{referrer_host}", "path-#{referrer_path}")
+        metrics << Metric.new("stories-referrer-hosts-#{current_domain_id}", "referrer-#{referrer_host}")
+        metrics << Metric.new("stories-referrer-hosts-#{story.uid}", "referrer-#{referrer_host}")
+        metrics << Metric.new("stories-referrer-paths-#{current_domain_id}-#{referrer_host}", "path-#{referrer_path}")
+        metrics << Metric.new("stories-referrer-paths-#{story.uid}-#{referrer_host}", "path-#{referrer_path}")
+
+        if additional_params[:embedded]
+          metrics << Metric.new("stories-publishes-hosts-#{current_domain_id}", "referrer-#{referrer_host}")
+          metrics << Metric.new("stories-publishes-hosts-#{story.uid}", "referrer-#{referrer_host}")
+        end
       end
     end
 

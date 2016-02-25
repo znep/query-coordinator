@@ -529,7 +529,6 @@ en:
             filter: Filter
             filtered_by: filtered by
           mobile:
-            all_filters: All Filters
             back: Back
             clear_all: Clear All
             filter: Filter

@@ -6,7 +6,7 @@
       </label>
       <div class="browse2-results-sort-control-container">
         <select id="browse2-sort-type" class="browse2-results-sort-control">
-        <%- opts[:sort_opts].each do |sort_option| -%>
+        <%- sort_opts.each do |sort_option| -%>
           <%- next if !sort_option[:requires].nil? && opts[sort_option[:requires]].nil? -%>
           <option value="<%= sort_option[:value] %>" class="<%= 'timePeriod' if sort_option[:is_time_period] %>"
             <%= "selected='selected'" if sort_option[:value] == opts[:sortBy] %>><%= sort_option[:name] %></option>

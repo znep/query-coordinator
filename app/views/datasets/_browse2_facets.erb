@@ -51,14 +51,14 @@
         :locals => {
           :opts => opts,
           :current_sort =>  opts[:current_sort] ||
-            opts[:sort_opts].select { |opt| opt[:value] == 'relevance' }.first,
-          :sort_opts => opts[:sort_opts]
+            sort_opts.select { |opt| opt[:value] == 'relevance' }.first,
+          :sort_opts => sort_opts
         }
       )
     %>
 
       <h2 class="browse2-mobile-facets-header">
-        <%= t('controls.browse.browse2.facets.mobile.all_filters') %>
+        <%= t('controls.browse.browse2.facets.mobile.filter') %>
       </h2>
       <%-
       facets.each do |facet|

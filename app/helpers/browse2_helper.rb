@@ -12,6 +12,13 @@ module Browse2Helper
     classes.join(' ')
   end
 
+  # EN-2938: browse2 sort options are limited to Relevance, Most Accessed, Recently Added, and Recently Updated
+  def browse2_sort_opts(opts)
+    opts[:sort_opts].to_a.tap do |sort_opts|
+      sort_opts.select! { |sort_opt| %w(relevance most_accessed newest last_modified).include?(sort_opt[:value]) }
+    end
+  end
+
   def facet_sort_option_classnames(opts, facet_option)
     facet_param = :sortBy
     facet_option_classnames(opts, facet_param, facet_option, false, false).tap do |classnames|
@@ -26,7 +33,7 @@ module Browse2Helper
 
     content_tag(:li) do
       link_to(sort_option_link_href, :class => sort_option_classnames, 'data-facet-option-value' => sort_option[:value]) do
-        content_tag(:span, '', :class => 'browse2-facet-option-clear-icon icon-close-2') + sort_option[:name]
+        content_tag(:span, '', :class => 'browse2-facet-option-clear-icon icon-check-2') + sort_option[:name]
       end
     end
   end

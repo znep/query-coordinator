@@ -88,6 +88,34 @@ describe Browse2Helper do
 
   end
 
+  describe '#browse2_sort_opts' do
+    it 'returns empty array if opts[:sort_opts] is nil or empty' do
+      test_opts_1 = {}
+      test_opts_2 = { :sort_opts => [] }
+      expect(helper.browse2_sort_opts(test_opts_1)).to eq([])
+      expect(helper.browse2_sort_opts(test_opts_2)).to eq([])
+    end
+
+    it 'returns an array of only the accepted sort options' do
+      test_opts = { :sort_opts => [
+        { :value=>'relevance', :name=>'Most Relevant' },
+        { :value=>'most_accessed', :name=>'Most Accessed' },
+        { :value=>'alpha', :name=>'Alphabetical' },
+        { :value=>'newest', :name=>'Newest' },
+        { :value=>'oldest', :name=>'Oldest' },
+        { :value=>'last_modified', :name=>'Recently Updated' },
+        { :value=>'rating', :name=>'Highest Rated' },
+        { :value=>'comments', :name=>'Most Comments' }
+      ] }
+      expect(helper.browse2_sort_opts(test_opts)).to eq([
+        { :value=>'relevance', :name=>'Most Relevant' },
+        { :value=>'most_accessed', :name=>'Most Accessed' },
+        { :value=>'newest', :name=>'Newest' },
+        { :value=>'last_modified', :name=>'Recently Updated' }
+      ])
+    end
+  end
+
   describe '#facet_sort_option_classes' do
     it 'returns classnames for a sort option' do
       page = setup
@@ -144,7 +172,7 @@ describe Browse2Helper do
       expect(output).to match(/href=\"\/browse\?sortBy=relevance\"/)
       expect(output).to match(/class=\"browse2-facet-section-option active\"/)
       expect(output).to match(/data-facet-option-value=\"relevance\"/)
-      expect(output).to match(/<span class=\"browse2-facet-option-clear-icon icon-close-2\"><\/span>Most Relevant<\/a><\/li>$/)
+      expect(output).to match(/<span class=\"browse2-facet-option-clear-icon icon-check-2\"><\/span>Most Relevant<\/a><\/li>$/)
     end
   end
 

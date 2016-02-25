@@ -33,20 +33,20 @@
       <div class="georegions-controls-custom">
         <%= form_button(
           { :action => 'add_georegion' },
-          t("#{prefix}.add_new"),
+          t("#{prefix}.create_new"),
           { :method => :post },
           { :class => 'button', 'data-action' => 'add' }) %>
       </div>
     </div>
 
     <%= render :partial => 'georegions_table', :locals => {
-        :allow_actions => @view_model.curated_regions.any?,
         :allow_enablement => @view_model.allow_enablement?,
+        :failed_jobs => @view_model.failed_curated_region_jobs,
         :georegions => @view_model.curated_regions,
         :jobs => @view_model.curated_region_jobs,
-        :failed_jobs => @view_model.failed_curated_region_jobs,
         :limit => @view_model.maximum_enabled_count,
-        :prefix => prefix
+        :prefix => prefix,
+        :render_actions => @view_model.curated_regions.any?
       } %>
   </div>
 </div>

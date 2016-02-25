@@ -19,7 +19,7 @@ describe('ConfigureBoundaryForm', function() {
       onSave: sinon.stub(),
       fetchInitialState: function(complete, success) {
         complete();
-        success();
+        success({name: 'my boundary layer'});
       },
       saveLabel: 'Save',
       title: 'my title'
@@ -93,7 +93,8 @@ describe('ConfigureBoundaryForm', function() {
       onSave: saveStub,
       initialState: {
         name: 'name',
-        geometryLabel: 'geometryLabel'
+        geometryLabel: 'geometryLabel',
+        isConfigured: true
       }
     });
 

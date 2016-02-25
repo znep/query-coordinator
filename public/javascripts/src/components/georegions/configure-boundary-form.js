@@ -12,25 +12,25 @@ function t(str, props) {
 const ConfigureBoundaryForm = React.createClass({
   propTypes: {
     allowPrimaryKeySelection: PropTypes.bool,
-    authenticityToken: PropTypes.string.isRequired,
-    cancelLabel: PropTypes.string.isRequired,
+    cancelLabel: PropTypes.string,
     fetchInitialState: PropTypes.func.isRequired,
     id: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number]).isRequired,
     initialState: PropTypes.object,
-    onBack: PropTypes.func,
     onCancel: PropTypes.func,
     onClose: PropTypes.func,
     onSave: PropTypes.func.isRequired,
     requiredFields: PropTypes.arrayOf(PropTypes.string),
-    saveLabel: PropTypes.string.isRequired,
+    saveLabel: PropTypes.string,
+    shouldConfirm: PropTypes.bool,
     title: PropTypes.string.isRequired
   },
   getDefaultProps() {
     return {
       allowPrimaryKeySelection: false,
-      requiredFields: []
+      requiredFields: [],
+      shouldConfirm: false
     };
   },
   getInitialState() {
@@ -38,6 +38,7 @@ const ConfigureBoundaryForm = React.createClass({
       geometryLabel: '',
       geometryLabelColumns: [],
       isLoading: true,
+      isConfigured: false,
       name: ''
     }, this.props.initialState);
   },
@@ -47,14 +48,28 @@ const ConfigureBoundaryForm = React.createClass({
     }
 
     const complete = () => this.setState({ isLoading: false });
-    const success = (initialState) => this.setState({...initialState});
+    const success = (initialState) => {
+      this.setState({
+        backActions: [this.props.onCancel],
+        boundaryName: initialState.name,
+        ...initialState
+      });
+    };
     const error = (message) => this.setState({ errorMessage: message });
     this.props.fetchInitialState(complete, success, error);
+  },
+  handleCancel() {
+    const { backActions } = this.state;
+    const action = backActions.pop();
+    this.setState({backActions});
+    action();
   },
   handleSave() {
     const { onSave } = this.props;
 
     const {
+      backActions,
+      isConfigured,
       geometryLabel,
       name,
       primaryKey
@@ -73,9 +88,14 @@ const ConfigureBoundaryForm = React.createClass({
     };
     const error = (message) => this.setState({ errorMessage: message });
 
-    this.setState({isLoading: true});
+    if (isConfigured) {
+      this.setState({isLoading: true});
+      onSave(boundary, complete, error);
+    } else {
+      backActions.push(() => this.setState({isConfigured: false}));
+      this.setState({backActions, isConfigured: true});
+    }
 
-    onSave(boundary, complete, error);
   },
 
   handleSubmit(event) {
@@ -162,18 +182,22 @@ const ConfigureBoundaryForm = React.createClass({
   },
 
   renderFormControls() {
-    const {
-      cancelLabel,
-      onCancel,
-      saveLabel
-    } = this.props;
+    const { shouldConfirm } = this.props;
+    const { isConfigured } = this.state;
+
+    let cancelLabel;
+    let saveLabel;
+    if (shouldConfirm) {
+      cancelLabel = $.t('core.dialogs.back');
+      saveLabel = isConfigured ? $.t('core.dialogs.create') : t('configure_boundary.next');
+    }
 
     return (
       <FormControls
         cancelLabel={cancelLabel}
-        saveDisabled={!this.validateForm()}
-        onCancel={onCancel}
+        onCancel={this.handleCancel}
         onSave={this.handleSave}
+        saveDisabled={!this.validateForm()}
         saveLabel={saveLabel}
         />
     );
@@ -205,22 +229,41 @@ const ConfigureBoundaryForm = React.createClass({
   },
 
   render() {
-    const { title } = this.props;
-    const { isLoading } = this.state;
+    const { shouldConfirm, title } = this.props;
+    const { boundaryName, isConfigured, isLoading, name } = this.state;
 
-    return (
-      <div>
-        <Spinner isLoading={isLoading} className="georegion-spinner" />
-        <h2>{title}</h2>
-        {this.renderFlashMessage()}
-        <form className="commonForm" onSubmit={this.handleSubmit}>
-          {this.renderBoundaryNameField()}
-          {this.renderShapeLabelField()}
-          {this.renderKeySelector()}
-          {this.renderFormControls()}
-        </form>
-      </div>
-    );
+    const confirmation = {
+      __html: t('configure_boundary.confirm_html', {spatial_lens_name: name, boundary_name: boundaryName})
+    };
+
+    if (shouldConfirm && isConfigured) {
+      return (
+        <div>
+          <div className="confirmation">
+            <h2>{ t('configure_boundary.confirm_title') }</h2>
+            <img src="/images/admin/geo/spatial-lens-icon.png" alt="" className="spatial-lens-icon" />
+            <div dangerouslySetInnerHTML={confirmation} />
+          </div>
+          <form className="commonForm" onSubmit={this.handleSubmit}>
+            {this.renderFormControls()}
+          </form>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Spinner isLoading={isLoading} className="georegion-spinner" />
+          <h2>{title}</h2>
+          {this.renderFlashMessage()}
+          <form className="commonForm" onSubmit={this.handleSubmit}>
+            {this.renderBoundaryNameField()}
+            {this.renderShapeLabelField()}
+            {this.renderKeySelector()}
+            {this.renderFormControls()}
+          </form>
+        </div>
+      );
+    }
   }
 });
 

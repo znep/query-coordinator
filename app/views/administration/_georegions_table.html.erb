@@ -3,7 +3,8 @@
     <colgroup>
       <col class="name" />
       <col class="status" />
-      <%- if allow_actions -%>
+      <%- if render_actions -%>
+      <col class="date-added" />
       <col class="edit-action" />
       <%- end -%>
     </colgroup>
@@ -11,7 +12,8 @@
     <tr>
       <th class="name"><div><%= t("#{prefix}.region_name") %></div></th>
       <th class="status"><div><%= t("#{prefix}.enabled?") %></div></th>
-      <%- if allow_actions -%>
+      <%- if render_actions -%>
+      <th class="date-added"><div><%= t("#{prefix}.date_added") %></div></th>
       <th class="edit-action"><div><%= t("#{prefix}.actions") %></div></th>
       <%- end -%>
     </tr>
@@ -44,7 +46,9 @@
                   }) %>
           <%- end -%>
         </td>
-        <%- if allow_actions -%>
+        <td class="date-added">
+          <span><%= georegion.datetime_added.strftime('%B %-d %Y') %></span>
+        </td>
         <td class="edit-action">
           <%= form_button(
                 { :action => :configure_boundary, :id => georegion.id },
@@ -52,13 +56,12 @@
                 { :method => :get },
                 { :class => 'button', 'data-action' => 'edit' }) %>
         </td>
-        <%- end -%>
       </tr>
     <%- end -%>
     <%- jobs.each do |job| -%>
       <tr class="item">
         <td class="name"><%= job['jobParameters']['name'] %></td>
-        <td class="status">
+        <td class="status" colspan="<%= render_actions ? 3 : 1  %>">
           <span class="status-icon-progress icon-processing"></span>
           <span class="row-status-widget-label is-progress">
             <%=  t("#{prefix}.status_progress") %>
@@ -66,15 +69,12 @@
             <span class="substatus"><%= t("#{prefix}.substatus_progress") %></span>
           </span>
         </td>
-        <%- if allow_actions -%>
-        <td></td>
-        <%- end -%>
       </tr>
     <%- end -%>
     <%- failed_jobs.each do |job| -%>
       <tr class="item">
         <td class="name"><%= job['latest_event']['info']['jobParameters']['name'] %></td>
-        <td class="status">
+        <td class="status" colspan="<%= render_actions ? 3 : 1  %>">
           <span class="status-icon-failed icon-failed"></span>
           <span class="row-status-widget-label is-failed">
             <%=  t("#{prefix}.status_failed") %>
@@ -82,9 +82,6 @@
             <span class="substatus"><%= t("#{prefix}.substatus_failed_html", code: job['id']) %></span>
           </span>
         </td>
-        <%- if allow_actions -%>
-        <td></td>
-        <%- end -%>
       </tr>
     <%- end -%>
     </tbody>

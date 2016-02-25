@@ -49,14 +49,15 @@ describe ::Services::Administration::GeoregionAdder do
       expect(actual).to be_an_instance_of(CuratedRegion)
     end
 
-    it 'returns the Curated Region Job Queue jobId if successful when synthetic id flag is true' do
+    it 'returns the CRJQ job if successful when synthetic id flag is true' do
       crjq = CuratedRegionJobQueue.new
       allow(subject).to receive(:curated_region_job_queue).and_return(crjq)
       expect(crjq).to receive(:enqueue_job).and_return({'jobId' => '12e4'})
+      expect(crjq).to receive(:get_job_status).and_return({'data' => {'jobId' => '12e4'}})
 
       actual = subject.add(view_id, nil, geometry_label, name, nil, true)
       expect(actual).not_to be_an_instance_of(CuratedRegion)
-      expect(actual['jobId']).to eq('12e4')
+      expect(actual['data']['jobId']).to eq('12e4')
     end
   end
 

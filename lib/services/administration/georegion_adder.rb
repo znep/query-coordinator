@@ -56,7 +56,11 @@ module Services
       end
 
       def make_curated_region_job_queue_request(attributes, id, cookies)
-        curated_region_job_queue.enqueue_job(attributes, id, {:cookies => cookies})
+        enqueue_response = curated_region_job_queue.enqueue_job(attributes, id, {:cookies => cookies})
+        jobId = enqueue_response['jobId']
+        status_response = curated_region_job_queue.get_job_status(id, jobId, {:cookies => cookies})
+        status_response['jobId'] = jobId
+        status_response
       end
 
       def curated_region_job_queue

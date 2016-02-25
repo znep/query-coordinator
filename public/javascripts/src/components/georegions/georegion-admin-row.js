@@ -1,12 +1,17 @@
-import EnabledWidget from './enabled-widget';
+import Status from './georegion-status';
+import RowStatusWidget from './row-status-widget';
 import React, { PropTypes } from 'react';
+
+function t(str, props) {
+  return $.t('screens.admin.georegions.' + str, props);
+}
 
 const GeoregionAdminRow = React.createClass({
   propTypes: {
     action: PropTypes.string.isRequired,
     allowEnablement: PropTypes.bool,
     authenticityToken: PropTypes.string.isRequired,
-    isEnabled: PropTypes.bool.isRequired,
+    status: PropTypes.oneOf(_.values(Status)).isRequired,
     name: PropTypes.string.isRequired,
     onEdit: PropTypes.func.isRequired,
     onEnableSuccess: PropTypes.func.isRequired,
@@ -17,42 +22,49 @@ const GeoregionAdminRow = React.createClass({
       allowEnablement: true
     };
   },
-  renderEnabledWidget() {
+  renderRowStatusWidget() {
     const {
-      isEnabled,
+      status,
       onEnableSuccess,
       ...props
     } = this.props;
 
     return (
-      <EnabledWidget
-        isEnabled={isEnabled}
+      <RowStatusWidget
+        status={status}
         onSuccess={onEnableSuccess}
         {...props}
         />
     );
   },
-  render() {
+  renderEditCell() {
     const {
-      name,
+      onEdit,
       renderActions,
-      onEdit
+      status
     } = this.props;
 
+    switch (status) {
+      case Status.ENABLED:
+      case Status.DISABLED:
+        return (
+          <td className="edit-action">
+            <button className="button" type="button" onClick={onEdit}>{t('edit')}</button>
+          </td>
+        );
+      case Status.PROGRESS:
+      case Status.FAILED:
+        return renderActions ? (<td></td>) : null;
+    }
+  },
+  render() {
     return (
       <tr className="item">
-        <td className="name">{name}</td>
-        <td className="toggle-enabled">
-          {this.renderEnabledWidget()}
+        <td className="name">{this.props.name}</td>
+        <td className="status">
+          {this.renderRowStatusWidget()}
         </td>
-        { renderActions ?
-          (<td className="edit-action">
-            <button className="button" type="button" onClick={onEdit}>{$.t('screens.admin.georegions.edit')}</button>
-          </td>)
-          : null }
-        { renderActions ?
-          (<td className="remove-action"></td>)
-          : null }
+        {this.renderEditCell()}
       </tr>
     );
   }

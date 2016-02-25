@@ -1,5 +1,7 @@
 $is-enabled-color: #5F865F;
 $is-disabled-color: #999;
+$is-progress-color: #999;
+$is-failed-color: #CB1919;
 
 #georegions-page-subtitle {
   display: inline-block;
@@ -13,14 +15,19 @@ $is-disabled-color: #999;
   }
 }
 
-.enabled-widget-label {
+// override
+.gridList tbody tr td {
+  vertical-align: middle;
+}
+
+.row-status-widget-label {
   display: inline-block;
-  width: 2em;
-  &.is-enabled {
-    color: $is-enabled-color;
+  vertical-align: top;
+  &.is-enabled, &.is-disabled {
+    margin-top: 0.75em;
   }
-  &.is-disabled {
-    color: $is-disabled-color;
+  &.is-progress, &.is-failed {
+    margin-top: 0.25em;
   }
 }
 
@@ -42,9 +49,44 @@ $is-disabled-color: #999;
 
 .georegions-table {
   .name {
-    width: 50%;
+    width: 30%;
   }
-  .toggle-enabled, .edit-action, .remove-action {
+  .status {
+    width: 50%;
+
+    .substatus {
+      font-size: 0.5em;
+      padding-top: 0.4em;
+    }
+
+    .icon-check, .icon-failed, .icon-processing {
+      font-size: 1.5em;
+      margin-right: 0.25em;
+      &:before {
+        display: inline-block;
+        padding-top: 0.3em;
+      }
+      &.status-icon-enabled {
+        color: $is-enabled-color;
+      }
+      &.status-icon-disabled {
+        color: $is-disabled-color;
+      }
+      &.status-icon-progress {
+        color: $is-progress-color;
+      }
+      &.status-icon-failed {
+        color: $is-failed-color;
+      }
+    }
+
+    form {
+      display: inline-block;
+      float: right;
+      width: 75%;
+    }
+  }
+  .status, .edit-action {
     input.button, button.button {
       font-size: 0.8em;
       opacity: 0.3;
@@ -56,16 +98,10 @@ $is-disabled-color: #999;
     }
   }
   .edit-action {
-    width: 4.5em;
+    width: 10em;
   }
   td.edit-action, th.edit-action {
     padding-right: 0;
-  }
-  .remove-action {
-    width: 7em;
-  }
-  td.remove-action, th.remove-action {
-    padding-left: 0;
   }
 }
 

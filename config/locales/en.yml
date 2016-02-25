@@ -1672,8 +1672,6 @@ en:
         edit: Edit
         enable: Enable
         enabled?: Enabled?
-        enabled_no: "No"
-        enabled_yes: "Yes"
         enabled_georegions_limit: You have reached the limit of %{limit} enabled boundaries for this site.
         enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         flashes:
@@ -1683,6 +1681,12 @@ en:
         learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
         region_name: Boundary Name
         remove: Remove
+        status_disabled: Not enabled
+        status_enabled: Ready to use
+        status_failed: Something went wrong...
+        status_progress: Processing
+        substatus_failed_html: Please contact <a href="https://support.socrata.com">Socrata support</a> and include the code <strong>%{code}</strong>.
+        substatus_progress: Available shortly
         title: Spatial Lens
       home:
         add_featured_dataset: Add a New Featured Dataset

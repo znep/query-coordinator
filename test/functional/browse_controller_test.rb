@@ -250,7 +250,7 @@ class BrowseControllerTest < ActionController::TestCase
       'category' => 'Public+Safety', # category gets correct url encoding
       'federation_filter' => '1',
       'limitTo' => 'datasets',
-      'q' => 'pale%20moonlight', # q gets %20
+      'q' => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       'sortBy' => 'relevance',
       'tags' => 'crime',
       'utf8' => '%E2%9C%93'
@@ -265,7 +265,7 @@ class BrowseControllerTest < ActionController::TestCase
       'limitTo' => 'tables',
       'metadata_tag' => ['Dataset-Information_Superhero:Batman'],
       'page' => 1,
-      'q' => 'pale%20moonlight', # keeping it literal
+      'q' => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       'sortBy' => 'relevance',
       'tags' => 'crime'
     }.symbolize_keys
@@ -280,7 +280,7 @@ class BrowseControllerTest < ActionController::TestCase
       :offset => 0,
       :only => 'datasets',
       :order => 'relevance',
-      :q => 'pale%20moonlight', # keeping it literal
+      :q => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       :search_context => 'data.seattle.gov',
       :tags => 'crime'
     }

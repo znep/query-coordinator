@@ -33,13 +33,14 @@ module Cetera
   # translate FE 'sortBy' values to Cetera 'order'
   def self.translate_sort_by(sort_by)
     {
+      nil => 'relevance', # Critical that nil is a key
       'relevance' => 'relevance',
       'most_accessed' => 'page_views_total',
       'alpha' => 'name',
       'newest' => 'createdAt',
       'oldest' => 'createdAt ASC',
       'last_modified' => 'updatedAt'
-    }[sort_by]
+    }.fetch(sort_by) # For Core/Cly parity, we want no results if sort_by is bogus
   end
 
   def self.cetera_soql_params(opts = {})

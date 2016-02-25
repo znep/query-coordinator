@@ -264,6 +264,7 @@ class BrowseActionsTest < Test::Unit::TestCase
         domains: 'localhost',
         limit: 10,
         offset: 0,
+        order: 'relevance',
         search_context: 'localhost'
       }.reject { |_, v| v.blank? }
       url = cetera_url + '?' + cetera_params.to_query

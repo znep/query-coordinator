@@ -122,5 +122,27 @@ class CeteraTest < Test::Unit::TestCase
         assert_equal false, row.story?
       end
     end
+
+    def test_cetera_sort_order_translator
+      frontend_to_cetera = {
+        nil => 'relevance',
+        'relevance' => 'relevance',
+        'most_accessed' => 'page_views_total',
+        'alpha' => 'name',
+        'newest' => 'createdAt',
+        'oldest' => 'createdAt ASC',
+        'last_modified' => 'updatedAt'
+      }
+
+      frontend_to_cetera.each do |frontend_type, cetera_type|
+        assert_equal cetera_type, Cetera.translate_sort_by(frontend_type)
+      end
+
+      ['bogus', 'sort by', 'orders'].each do |bogus|
+        assert_raises KeyError do
+          Cetera.translate_sort_by(bogus)
+        end
+      end
+    end
   end
 end

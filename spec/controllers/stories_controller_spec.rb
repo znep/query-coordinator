@@ -272,12 +272,12 @@ RSpec.describe StoriesController, type: :controller do
 
     describe 'log view access' do
       it 'logs view access when story exists' do
-        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision, embedded: true)
         get :widget, uid: story_revision.uid
       end
 
       it 'logs view access for json requests' do
-        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision, embedded: true)
         get :widget, uid: story_revision.uid, format: :json
       end
 

@@ -1,4 +1,14 @@
 require 'rails_helper'
+require 'rspec/expectations'
+
+RSpec::Matchers.define :a_metric_matching do |entity, name|
+  match do |actual|
+    actual.detect { |m| m[:entityId] == entity && m[:name] == name }.present?
+  end
+  description do
+    "a metric matching { entityId: #{entity}, name: #{name} }"
+  end
+end
 
 RSpec.describe StoryAccessLogger do
 
@@ -28,38 +38,17 @@ RSpec.describe StoryAccessLogger do
       end
 
       it 'pushes a view-loaded event for story uid' do
-        expect(ProcessMetricsJob).to receive(:perform_later) do |args|
-          expect(
-            args.detect {|m| m[:entityId] == story.uid && m[:name] == 'view-loaded' }
-          ).to be_present
-        end
+        expect(ProcessMetricsJob).to receive(:perform_later).with(a_metric_matching(story.uid, 'view-loaded'))
         StoryAccessLogger.log_story_view_access(story)
       end
 
       it 'pushes a view-loaded event for current domain' do
-        expect(ProcessMetricsJob).to receive(:perform_later) do |args|
-          expect(
-            args.detect {|m| m[:entityId] == domain_id && m[:name] == 'view-loaded' }
-          ).to be_present
-        end
+        expect(ProcessMetricsJob).to receive(:perform_later).with(a_metric_matching(domain_id, 'view-loaded'))
         StoryAccessLogger.log_story_view_access(story)
       end
 
-      it 'pushes a views-4x4 event for current domain' do
-        expect(ProcessMetricsJob).to receive(:perform_later) do |args|
-          expect(
-            args.detect {|m| m[:entityId] == "views-loaded-#{domain_id}" && m[:name] == "view-#{story.uid}" }
-          ).to be_present
-        end
-        StoryAccessLogger.log_story_view_access(story)
-      end
-
-      it 'pushes a published-story-loaded event for current domain' do
-        expect(ProcessMetricsJob).to receive(:perform_later) do |args|
-          expect(
-            args.detect {|m| m[:entityId] == domain_id && m[:name] == 'published-story-loaded' }
-          ).to be_present
-        end
+      it 'pushes a stories-views-loaded event for current domain' do
+        expect(ProcessMetricsJob).to receive(:perform_later).with(a_metric_matching("stories-views-loaded-#{domain_id}", "view-#{story.uid}"))
         StoryAccessLogger.log_story_view_access(story)
       end
 
@@ -69,12 +58,15 @@ RSpec.describe StoryAccessLogger do
         end
 
         it 'does not push a referrer event for current domain' do
-          expect(ProcessMetricsJob).to receive(:perform_later) do |args|
-            expect(
-              args.detect {|m| m[:entityId] == "referrer-hosts-#{domain_id}" && m[:name] == referrer_host_metric_name }
-            ).to_not be_present
-          end
+          expect(ProcessMetricsJob).to receive(:perform_later)
+          expect(ProcessMetricsJob).to_not receive(:perform_later).with(a_metric_matching("referrer-hosts-#{domain_id}", referrer_host_metric_name))
           StoryAccessLogger.log_story_view_access(story)
+        end
+
+        it 'does not push embedded view metrics when :embedded option is true' do
+          expect(ProcessMetricsJob).to receive(:perform_later)
+          expect(ProcessMetricsJob).to_not receive(:perform_later).with(a_metric_matching("stories-publishes-hosts-#{domain_id}", referrer_host_metric_name))
+          StoryAccessLogger.log_story_view_access(story, embedded: true)
         end
       end
 
@@ -85,40 +77,42 @@ RSpec.describe StoryAccessLogger do
           allow(::RequestStore.store).to receive(:[]).with(:http_referrer).and_return(referrer_host)
         end
 
-        it 'pushes a referrer event for current domain' do
-          expect(ProcessMetricsJob).to receive(:perform_later) do |args|
-            expect(
-              args.detect {|m| m[:entityId] == "referrer-hosts-#{domain_id}" && m[:name] == referrer_host_metric_name }
-            ).to be_present
-          end
+        it 'pushes a stories-referrer event for current domain' do
+          expect(ProcessMetricsJob).to receive(:perform_later).with(a_metric_matching("stories-referrer-hosts-#{domain_id}", referrer_host_metric_name))
           StoryAccessLogger.log_story_view_access(story)
         end
 
-        it 'pushes a referrer event for current story 4x4' do
-          expect(ProcessMetricsJob).to receive(:perform_later) do |args|
-            expect(
-              args.detect {|m| m[:entityId] == "referrer-hosts-#{story.uid}" && m[:name] == referrer_host_metric_name }
-            ).to be_present
-          end
+        it 'pushes a stories-referrer event for current story 4x4' do
+          expect(ProcessMetricsJob).to receive(:perform_later).with(a_metric_matching("stories-referrer-hosts-#{story.uid}", referrer_host_metric_name))
           StoryAccessLogger.log_story_view_access(story)
         end
 
-        it 'pushes a referrer-paths event for current domain' do
-          expect(ProcessMetricsJob).to receive(:perform_later) do |args|
-            expect(
-              args.detect {|m| m[:entityId] == "referrer-paths-#{domain_id}-http-example.com" && m[:name] == 'path-/blah/blah.html' }
-            ).to be_present
-          end
+        it 'pushes a stories-referrer-paths event for current domain' do
+          expect(ProcessMetricsJob).to receive(:perform_later).with(a_metric_matching("stories-referrer-paths-#{domain_id}-http-example.com", 'path-/blah/blah.html'))
           StoryAccessLogger.log_story_view_access(story)
         end
 
-        it 'pushes a referrer-paths event for current story 4x4' do
-          expect(ProcessMetricsJob).to receive(:perform_later) do |args|
-            expect(
-              args.detect {|m| m[:entityId] == "referrer-paths-#{story.uid}-http-example.com" && m[:name] == 'path-/blah/blah.html' }
-            ).to be_present
-          end
+        it 'pushes a stories-referrer-paths event for current story 4x4' do
+          expect(ProcessMetricsJob).to receive(:perform_later).with(a_metric_matching("stories-referrer-paths-#{story.uid}-http-example.com", 'path-/blah/blah.html'))
           StoryAccessLogger.log_story_view_access(story)
+        end
+
+        it 'does not push embedded view metrics by default' do
+          expect(ProcessMetricsJob).to receive(:perform_later)
+          expect(ProcessMetricsJob).to_not receive(:perform_later).with(a_metric_matching("stories-publishes-hosts-#{domain_id}", referrer_host_metric_name))
+          StoryAccessLogger.log_story_view_access(story)
+        end
+
+        context 'when additional_param, :embedded, is set to true' do
+          it 'pushes stories-publishes-hosts event for current domain' do
+            expect(ProcessMetricsJob).to receive(:perform_later).with(a_metric_matching("stories-publishes-hosts-#{domain_id}", referrer_host_metric_name))
+            StoryAccessLogger.log_story_view_access(story, embedded: true)
+          end
+
+          it 'pushes stories-publishes-hosts event for current story 4x4' do
+            expect(ProcessMetricsJob).to receive(:perform_later).with(a_metric_matching("stories-publishes-hosts-#{story.uid}", referrer_host_metric_name))
+            StoryAccessLogger.log_story_view_access(story, embedded: true)
+          end
         end
       end
     end

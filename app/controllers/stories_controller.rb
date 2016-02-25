@@ -39,7 +39,7 @@ class StoriesController < ApplicationController
     @story = PublishedStory.find_by_uid(params[:uid])
 
     if @story
-      StoryAccessLogger.log_story_view_access(@story)
+      StoryAccessLogger.log_story_view_access(@story, embedded: true)
 
       core_attributes = CoreServer.get_view(@story.uid) || {}
 

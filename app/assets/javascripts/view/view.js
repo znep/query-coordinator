@@ -127,6 +127,8 @@ $(document).on('ready', function() {
 
   if (window.isStoryPublished) {
     storyteller.analytics.sendMetric('domain', 'js-page-view', 1);
+    storyteller.analytics.sendMetric('domain', 'js-page-view-story', 1);
+    storyteller.analytics.sendMetric('domain', 'page-view', 1);
     storyteller.analytics.flushMetrics();
   }
 });

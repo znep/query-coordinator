@@ -11,4 +11,10 @@ FactoryGirl.define do
     components { [ { type: 'image', value: { url: 'http://example.com/image.jpg' } } ] }
     created_by 'test_user@socrata.com'
   end
+
+  factory :block_with_hero, class: Block do
+    layout '12'
+    components { [ { type: 'hero', value: { url: 'http://example.com/hero-image.jpg' } } ] }
+    created_by 'test_user@socrata.com'
+  end
 end

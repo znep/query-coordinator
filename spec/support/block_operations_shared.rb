@@ -69,5 +69,30 @@ shared_examples 'has_block_operations' do
         expect(subject.block_images).to be_empty
       end
     end
+
+    context 'with hero blocks' do
+      before do
+        @hero_block = FactoryGirl.create(:block_with_hero)
+        subject.block_ids = [@hero_block.id]
+      end
+
+      it 'returns the first hero block' do
+        expect(subject.block_images).to eq(['http://example.com/hero-image.jpg'])
+      end
+    end
+
+    context 'with a mix of blocks' do
+      before do
+        @hero_block = FactoryGirl.create(:block_with_hero)
+        @image_block = FactoryGirl.create(:block_with_image)
+        @html_block = FactoryGirl.create(:block)
+        subject.block_ids = [@html_block.id, @image_block.id, @hero_block.id]
+      end
+
+      it 'returns the first hero block' do
+        expect(subject.block_images).to eq(['http://example.com/image.jpg', 'http://example.com/hero-image.jpg'])
+      end
+    end
+
   end
 end

@@ -2,6 +2,7 @@
 
 require('socrata-visualizations').FeatureMap;
 var FlyoutRenderer = require('socrata-visualizations').views.FlyoutRenderer;
+var RowInspector = require('socrata-visualizations').views.RowInspector;
 
 module.exports = function(values, $target) {
   'use strict';
@@ -19,7 +20,7 @@ module.exports = function(values, $target) {
    */
 
   var flyoutRenderer = new FlyoutRenderer();
-  socrata.visualizations.RowInspector.setup();
+  RowInspector.setup();
 
   var featureMap1VIF = {
     'aggregation': {

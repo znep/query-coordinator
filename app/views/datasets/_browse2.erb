@@ -8,9 +8,10 @@
   )
 
   opts[:current_sort] = nil
+  sort_opts = browse2_sort_opts(opts)
 
-  if opts[:sort_opts].present? && opts[:sort_opts].respond_to?('detect')
-    opts[:current_sort] = opts[:sort_opts].detect { |s| s[:value] == opts[:sortBy] }
+  if sort_opts.present?
+    opts[:current_sort] = sort_opts.detect { |s| s[:value] == opts[:sortBy] }
   end
 
   opts[:show_time_period] = opts[:current_sort].nil? ? false : opts[:current_sort][:is_time_period]
@@ -152,6 +153,7 @@
                 :partial => 'datasets/browse2_results_sort_controls',
                 :locals => {
                   :opts => opts,
+                  :sort_opts => sort_opts,
                   :time_options => [
                     { :value => 'week', :name => t('controls.browse.browse2.sort.periods.week') },
                     { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
@@ -174,6 +176,7 @@
           :partial => 'datasets/browse2_facets',
           :locals => {
             :opts => opts,
+            :sort_opts => sort_opts,
             :facets_pane_classes => opts[:show_time_period] ? 'hasTimePeriod' : ''
           }
         )

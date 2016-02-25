@@ -55,7 +55,7 @@ function renderCell(cellContent, column, i18n) {
 */
 function renderBooleanCell(cellContent) {
   return _.isBoolean(cellContent) && cellContent ? '✓' : '';
-};
+}
 
 /**
 * Render a number based on column specified formatting.
@@ -102,7 +102,7 @@ function renderNumberCell(input, column) {
         return _renderStandardNumber(amount, format);
     }
   }
-};
+}
 
 /**
 * Renders a Point in plain text as a lat/lng pair.
@@ -119,7 +119,7 @@ function renderGeoCell(cellContent) {
   } else {
     return '';
   }
-};
+}
 
 /**
 * Renders a Point wrapped in an HTML span element
@@ -149,7 +149,7 @@ function renderGeoCellHTML(cellContent, columnMetadata, i18n) {
   } else {
     return '';
   }
-};
+}
 
 /**
 * Render a numeric value as currency
@@ -225,7 +225,7 @@ function renderMoneyCell(cellContent, column) {
     });
   }
   return cellContent;
-};
+}
 
 /**
 * Render a date or timestamp following column formatting, otherwise following defaults.
@@ -247,7 +247,7 @@ function renderTimestampCell(cellContent, column) {
     }
   }
   return '';
-};
+}
 
 /**
  * hoisted helper methods below

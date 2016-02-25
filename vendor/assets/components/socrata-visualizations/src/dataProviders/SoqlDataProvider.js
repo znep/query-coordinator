@@ -1,6 +1,6 @@
+var $ = require('jquery');
 var utils = require('socrata-utils');
 var DataProvider = require('./DataProvider');
-var MetadataProvider = require('./MetadataProvider');
 var _ = require('lodash');
 
 /**
@@ -26,7 +26,6 @@ function SoqlDataProvider(config) {
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
   var _self = this;
-  var metadataProvider = new MetadataProvider(config);
 
   /**
    * Public methods
@@ -78,7 +77,7 @@ function SoqlDataProvider(config) {
         return parseInt(_.get(data, '[0].count'), 10);
       }
     );
-  }
+  };
 
   /**
    * `.getRows()` executes a SoQL query against the current domain that
@@ -229,7 +228,7 @@ function SoqlDataProvider(config) {
 
     var table = {
       columns: columnNames,
-      rows: [],
+      rows: []
     };
 
     if (data.length > 0) {

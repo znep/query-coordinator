@@ -26,8 +26,10 @@ var RowSet = ServerModel.extend({
         if (!_.isEmpty(initRows))
         {
             this._addRows(initRows.rows, initRows.start);
-            if (!$.isBlank(initRows.total))
-            { this._totalCount = initRows.total; }
+            if (!$.isBlank(initRows.total)) {
+              this._totalCount = initRows.total;
+              delete this._potentialBuckets;
+            }
         }
 
         this.formattingChanged();
@@ -98,7 +100,7 @@ var RowSet = ServerModel.extend({
 
     potentialBuckets: function() {
       if (_.isUndefined(this._potentialBuckets)) {
-        this._potentialBuckets = _.range(0, this._totalCount, this._dataset.bucketSize);
+        this._potentialBuckets = _.range(0, this._totalCount || 1, this._dataset.bucketSize);
       }
       return this._potentialBuckets;
     },
@@ -155,6 +157,7 @@ var RowSet = ServerModel.extend({
             var newRows = _.map(_.select(rs._parent._rows, function(r)
                     { return rs._doesBelong(r); }), function(r) { return $.extend({}, r); });
             rs._totalCount = newRows.length;
+            delete rs._potentialBuckets;
 
             var sortVals = _.map(newRows, function(r)
             {
@@ -501,12 +504,33 @@ var RowSet = ServerModel.extend({
         }
     },
 
-    fileDataForFileId: function(fileId, forceResync) {
+    // This function fetches all the fileIds present in the row data.
+    getFileIds: function() {
       var rs = this;
-      var deferred = $.Deferred();
-      if (!forceResync && rs._dataset._fileDataForFileId[fileId]) {
-        return $.when(rs._dataset._fileDataForFileId[fileId]);
-      }
+
+      var blobColumnLookups = _(rs._dataset.realColumns).
+        filter(function(col) { return col.renderTypeName === 'blob'; }).
+        pluck('lookup').
+        value();
+
+      var fileIds = _(rs._rows).
+        map(function(row) {
+          return _.map(blobColumnLookups, function(lookup) {
+            return _.get(row, 'data.' + lookup);
+          });
+        }).
+        flatten().
+        compact().
+        uniq().
+        value();
+
+      return fileIds;
+    },
+
+    // This function creates a fileId->row mapping which is used to decorate rows
+    // with fileData information.
+    mapFileIdsToRows: function() {
+      var rs = this;
 
       var blobColumnLookups = _(rs._dataset.realColumns).
         filter(function(col) { return col.renderTypeName === 'blob'; }).
@@ -517,41 +541,29 @@ var RowSet = ServerModel.extend({
         rs._fileIdToRowMapping = {};
       }
 
-      var fileIds = _(this._rows).
-        map(function(row) {
-          return _.map(blobColumnLookups, function(lookup) {
-            var fileId = _.get(row, 'data.' + lookup);
-            if (fileId) {
-              rs._fileIdToRowMapping[fileId] = { row: row, lookup: lookup };
-              return fileId;
-            }
-          });
-        }).
-        flatten().
-        compact().
-        concat([ fileId ]).
-        uniq().
-        value();
+      _.each(rs._rows, function(row) {
+        _.each(blobColumnLookups, function(lookup) {
+          var fileId = _.get(row, 'data.' + lookup);
+          if (fileId) {
+            rs._fileIdToRowMapping[fileId] = { row: row, lookup: lookup };
+          }
+        });
+      });
+    },
 
-      rs._dataset.resyncFileDataForFileIds(fileIds).
-        done(function(fileMetadata) {
-          _.each(fileMetadata, function(fileData) {
-            var rowsChanged = [];
-            if (rs._fileIdToRowMapping[fileData.id]) {
-              var mapping = rs._fileIdToRowMapping[fileData.id];
-              var row = mapping.row;
-              row.fileData = row.fileData || {};
-              row.fileData[mapping.lookup] = fileData;
-              rowsChanged.push(row);
-            }
-            if (rowsChanged.length > 0) {
-              rs.trigger('row_change', [rowsChanged, false]);
-            }
-          });
-          deferred.resolve(rs._dataset._fileDataForFileId[fileId]);
-        }).
-        fail(function() { deferred.reject(); });
-      return deferred.promise();
+    // Returns the row if and only if a change was made.
+    applyFileDataToRow: function(fileData) {
+      var rs = this;
+      var mapping = _.get(rs, '_fileIdToRowMapping.' + fileData.id);
+      var row = _.get(mapping, 'row');
+      var lookupPath = 'fileData.' + _.get(mapping, 'lookup');
+      var rowHasSameIdAsFileData = _.get(row, lookupPath + '.id') === fileData.id;
+
+      if (_.isUndefined(mapping) || rowHasSameIdAsFileData) {
+        return false;
+      }
+
+      return _.set(mapping.row, lookupPath, fileData);
     },
 
     addRow: function(newRow, idx)
@@ -615,6 +627,7 @@ var RowSet = ServerModel.extend({
     {
         var rs = this;
         delete rs._totalCount;
+        delete rs._potentialBuckets;
         delete rs._rows;
         delete rs._rowIDLookup;
         delete rs._aggCache;
@@ -1167,6 +1180,7 @@ var RowSet = ServerModel.extend({
                 delete rs._curMetaReq;
                 delete rs._curMetaReqMeta;
                 rs._totalCount = result.meta.totalRows;
+                delete rs._potentialBuckets;
                 delete rs._columnsInvalid;
                 var metaToUpdate;
                 if (rs._dataset._useSODA2)
@@ -1216,8 +1230,10 @@ var RowSet = ServerModel.extend({
             else if (rs._dataset._useSODA2)
             {
                 var rowCount = JSON.parse(xhr.getResponseHeader('X-SODA2-Row-Count') || 'null');
-                if (_.isNumber(rowCount))
-                { rs._totalCount = rowCount; }
+                if (_.isNumber(rowCount)) {
+                  rs._totalCount = rowCount;
+                  delete rs._potentialBuckets;
+                }
 
                 var fields = JSON.parse(xhr.getResponseHeader('X-SODA2-Fields'));
                 var types = JSON.parse(xhr.getResponseHeader('X-SODA2-Types') || '[]') || [];

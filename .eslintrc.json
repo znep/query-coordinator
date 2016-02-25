@@ -1,6 +1,7 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "commonjs": true
   },
   "extends": "eslint:recommended",
   "parser": "babel-eslint",
@@ -101,7 +102,6 @@
     "moment": true,
     "pageMetadata": true,
     "pbf": true,
-    "require": true,
     "saveAs": true,
     "socrata": true,
     "ss": true,

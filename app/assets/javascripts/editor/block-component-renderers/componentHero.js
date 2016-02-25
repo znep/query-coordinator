@@ -8,10 +8,18 @@
 
   var DEFAULT_HEIGHT_PX = 300;
 
+  function enableText() {
+    return storyteller.config.fullBleedImageEnableTextOverlay;
+  }
+
+  function optionalHeroText() {
+    return enableText() ? '<div class="hero-text"></div>' : '';
+  }
+
   function templateUnconfiguredHero() {
     return [
       '<div class="hero hero-unconfigured">',
-        '<div class="hero-text"></div>',
+        optionalHeroText(),
         '<div class="hero-add-controls">',
           '<img src="{coverImageUrl}" alt="Add Cover Image">',
           '<button class="btn-primary">{coverImage}</button>',
@@ -22,7 +30,9 @@
 
   function templateHero() {
     return [
-      '<div class="hero" data-url="{image}"><div class="hero-text"></div></div>'
+      '<div class="hero" data-url="{image}">',
+      optionalHeroText(),
+      '</div>'
     ].join('');
   }
 
@@ -240,7 +250,6 @@
 
     function computeHeight() {
       var editorHeight = 0;
-      var editorIframe = $this.find('iframe');
       var buttonHeight = $this.find('.hero-add-controls').outerHeight(true) || 0;
 
       var editor = getEditorOrNull.call($this);

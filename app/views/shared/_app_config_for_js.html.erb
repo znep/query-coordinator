@@ -9,6 +9,7 @@ window.socrata.storyteller.config = (function () {
   return {
     autosaveDebounceTimeInSeconds: 2,
     coreServiceAppToken: '<%= Rails.application.config.core_service_app_token %>',
+    fullBleedImageEnableTextOverlay: <%= Rails.application.config.full_bleed_image_enable_text_overlay%>,
     fileUploader: {
       checkDocumentProcessedRetryInterval: 1000,
       checkDocumentProcessedMaxRetrySeconds: 30,

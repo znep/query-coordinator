@@ -20,6 +20,8 @@ describe('componentHero jQuery plugin', function() {
   var options = { editMode: true };
 
   beforeEach(function() {
+    storyteller.config.fullBleedImageEnableTextOverlay = true;
+
     blockId = standardMocks.heroBlockId;
     testDom.append('<div>');
     $component = testDom.children('div');

@@ -71,6 +71,9 @@ class AppConfig < Hashie::Dash
   property :enable_png_download_ui
   property :enable_search_suggestions
 
+  # Userzoom configuration
+  property :userzoom, default: {}
+
   # Misc
   property :threadpool_count, default: 0, transform_with: as_int
   property :secondary_group_identifier

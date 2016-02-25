@@ -8,6 +8,7 @@
 # We want to override view_url for Profiles specifically, but if this file lived
 # in app/helpers, the override would take place for _all_ views.
 module ProfileHelper
+  include Userzoom
 
   def view_url(view)
     if view.story? && viewing_self?
@@ -50,13 +51,8 @@ module ProfileHelper
     end
   end
 
-  def profile_user_zoom
-    if current_domain.member?(current_user)
-      render :partial => 'templates/userzoom_survey_script', :locals => {
-        :userzoom_set_id => '8EEF9FD913C6E51180CC0050569444FB',
-        :userzoom_set_sid => '8DEF9FD913C6E51180CC0050569444FB'
-      }
-    end
+  def render_profile_userzoom
+    render_userzoom_survey('profile')
   end
 
   private

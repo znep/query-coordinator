@@ -248,7 +248,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  assertInstanceOfAny: function(instance) {
 	    var instantiators = _.tail(arguments);
 	    var valid = _.some(instantiators, function(instantiator) {
-	      return instance instanceof instantiator;
+	      if (instantiator.toString().indexOf('function Array') > -1) {
+	        return Array.isArray(instance);
+	      } else {
+	        return instance instanceof instantiator;
+	      }
 	    });
 
 	    if (!valid) {
@@ -428,7 +432,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var needToRegister;
 	    var needToUnregister;
 
-	    this.assertInstanceOf($element, window.jQuery);
+	    this.assertInstanceOf($element, $);
 	    this.assert($element.length === 1, '`element` selection must have length 1');
 	    this.assertIsOneOfTypes(enable, 'boolean');
 

@@ -1,6 +1,6 @@
 const angular = require('angular');
 
-function MixpanelService(MixpanelEvents, MixpanelProperties, $window) {
+function MixpanelService($log, MixpanelEvents, MixpanelProperties, $window) {
   var currentUser = $window.currentUser;
   var pageMetadata = $window.pageMetadata;
 
@@ -9,7 +9,7 @@ function MixpanelService(MixpanelEvents, MixpanelProperties, $window) {
 
   // Note this is duplicated from util/mixpanel-analytics.js
   function registerUserProperties() {
-    var userId = _.get(currentUser, 'currentUserId', 'Not Logged In');
+    var userId = _.get(currentUser, 'id', 'Not Logged In');
     var isSocrata = _.includes(_.get(currentUser, 'flags'), 'admin');
     var userRoleName = _.get(currentUser, 'roleName', 'N/A');
     var domain = $window.location.hostname;
@@ -28,10 +28,10 @@ function MixpanelService(MixpanelEvents, MixpanelProperties, $window) {
 
   // Note this is duplicated from util/mixpanel-analytics.js
   function genericPagePayload() {
-    var userId = _.get(currentUser, 'currentUserId', 'Not Logged In');
+    var userId = _.get(currentUser, 'id', 'Not Logged In');
     var datasetOwner = _.get(pageMetadata, 'ownerId', 'N/A');
     var viewType = _.get(pageMetadata, 'name', 'N/A');
-    var viewId = _.get(pageMetadata, 'datasetId', 'N/A');
+    var viewId = _.get(pageMetadata, 'pageId', 'N/A');
     var userOwnsDataset = datasetOwner === userId;
     var pathName = $window.location.pathname;
 
@@ -45,7 +45,13 @@ function MixpanelService(MixpanelEvents, MixpanelProperties, $window) {
   }
 
   function validateEventName(eventName) {
-    return _.includes(MixpanelEvents, eventName);
+    var valid = _.includes(MixpanelEvents, eventName);
+
+    if (!valid) {
+      $log.error(`Mixpanel payload validation failed: Unknown event name: "${eventName}"`);
+    }
+
+    return valid;
   }
 
   function validateProperties(properties) {
@@ -56,6 +62,11 @@ function MixpanelService(MixpanelEvents, MixpanelProperties, $window) {
         validateProperties(value);
       } else {
         valid = _.includes(MixpanelProperties, key);
+
+        if (!valid) {
+          $log.error(`Mixpanel payload validation failed: Unknown property "${key}"`);
+        }
+
         return valid;
       }
     });
@@ -72,12 +83,10 @@ function MixpanelService(MixpanelEvents, MixpanelProperties, $window) {
       var mergedProperties = _.extend(genericPagePayload(), properties);
 
       // Track!
-      var validEventName = validateEventName(eventName);
-      var validProperties = validateProperties(mergedProperties);
+      validateEventName(eventName);
+      validateProperties(mergedProperties);
 
-      if (validEventName && validProperties) {
-        $window.mixpanel.track(eventName, mergedProperties);
-      }
+      $window.mixpanel.track(eventName, mergedProperties);
     }
   }
 

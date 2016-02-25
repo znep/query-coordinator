@@ -94,6 +94,7 @@ const MIXPANEL_PROPERTIES = [
   'Pane Name',
   'On Page',
   'Properties',
+  'Query',
   'Render Type',
   'Result Ids',
   'Result Number',

@@ -425,7 +425,7 @@ function TimelineChart(element, vif) {
 
       utils.assertHasProperty(rules, 'other');
 
-      if (_.isNull(value)) {
+      if (_.isNull(value) || !_.isFinite(value)) {
         return 'No value';
       }
 

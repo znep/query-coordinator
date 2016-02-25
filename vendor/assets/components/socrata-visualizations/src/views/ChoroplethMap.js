@@ -1237,7 +1237,7 @@ function ChoroplethMap(element, vif) {
       var gradientStops = gradient.selectAll('stop').data(tickStops);
       gradientStops.enter().append('stop');
       gradientStops.attr({
-        offset: function(value) {
+        'offset': function(value) {
           return '{0}%'.format(positionScale(value));
         },
         'stop-color': colorScale
@@ -1463,6 +1463,13 @@ function ChoroplethMap(element, vif) {
       );
       var min = _.min(values);
       var max = _.max(values);
+
+      if (_.isFinite(min) && _.isFinite(max)) {
+        this.legendElement.show();
+      } else {
+        this.legendElement.hide();
+        return;
+      }
 
       if (min === max) {
 

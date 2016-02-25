@@ -102,11 +102,15 @@ module ClientAnalyticsHelper
   DYNAMIC_MARK_METRIC_TYPES  =  %w(js-dom-load-samples js-page-load-samples).freeze
 
   STATIC_MARK_METRICS = %w(domain/js-page-view
+                           domain/js-page-view-story
+                           domain/page-view
                            domain-intern/js-page-load-samples
                            domain-intern/js-dom-load-samples).freeze
 
 
   STATIC_ALLOWED_METRICS = %w(domain/js-page-view
+                              domain/js-page-view-story
+                              domain/page-view
                               domain-intern/js-cardsview-page-load-time
                               domain-intern/js-cardsview-bar-filter-time
                               domain-intern/js-cardsview-region-filter-time

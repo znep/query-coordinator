@@ -19,6 +19,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <%= include_javascripts 'bower-all' %>
     <%= javascript_include_tag 'mobile/app-bundle.js' %>
-    <%= include_javascripts 'mobile' %>
+    <%= include_webpack_bundle 'mobile/main.js' %>
   </body>
 </html>

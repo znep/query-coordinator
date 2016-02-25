@@ -1,4 +1,10 @@
 /* global pageMetadata, datasetMetadata */
+
+var mobileColumnChart = require('./mobile.columnchart.js');
+var mobileTimelineChart = require('./mobile.timelinechart.js');
+var mobileFeatureMap = require('./mobile.featuremap.js');
+var mobileChoroplethMap = require('./mobile.choroplethmap.js');
+
 (function() {
   'use strict';
 
@@ -100,7 +106,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
+          mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
           break;
         case 'feature':
           cardOptions.id = 'feature-map';
@@ -112,7 +118,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.mobileFeatureMap(values, $cardContainer.find('#feature-map'));
+          mobileFeatureMap(values, $cardContainer.find('#feature-map'));
           break;
         case 'choropleth':
           cardOptions.id = 'choropleth';
@@ -122,11 +128,12 @@
             datasetUid: datasetMetadata.id,
             columnName: card.fieldName,
             // TODO Write some bloody error handling
+            computedColumnName: card.computedColumn,
             geojsonUid: datasetMetadata.columns[card.computedColumn].computationStrategy.parameters.region.substring(1),
             map_extent: (card.cardOptions) ? card.cardOptions.mapExtent || {} : {}
           };
 
-          socrata.visualizations.mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
+          mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
           break;
         case 'column':
           cardOptions.id = 'column-chart';
@@ -137,7 +144,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.mobileColumnChart(values, $cardContainer.find('#column-chart'));
+          mobileColumnChart(values, $cardContainer.find('#column-chart'));
           break;
         default:
           break;

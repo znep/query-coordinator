@@ -1,5 +1,10 @@
 /* global Loader */
-socrata.visualizations.mobileColumnChart = function(values, $target) {
+
+// Has side effect of registering jQuery plugin.
+require('socrata-visualizations').ColumnChart;
+var Loader = require('./components/Loader');
+
+module.exports = function(values, $target) {
   'use strict';
 
   var NAME_INDEX = 0;

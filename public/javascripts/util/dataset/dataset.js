@@ -16,6 +16,9 @@
     + displayName: set by this Model, a displayable string that should used in the
         UI to indicate this item.  For example, it can be 'dataset',
         'filtered view', 'grouped view', etc.
+    + _mixpanelViewType: set by this Model, based on type, this is a human-friendly version
+        of type that is intended for internal use only (specifically sending events to
+        Mixpanel). If you add new types to type, update this mapping!
 
     + temporary: True if the dataset has been modified and not saved
     + minorChange: Only valid when temporary is set.  If this is true, it is a
@@ -2495,6 +2498,7 @@ var Dataset = ServerModel.extend({
         if (sodaVersion === '2') { ds._useSODA2 = true; }
 
         ds.type = getType(ds);
+        ds._mixpanelViewType = getMixpanelViewType(ds);
 
         if (ds.isUnpublished())
         { ds.styleClass = 'Unpublished'; }
@@ -4226,6 +4230,34 @@ function getType(ds)
     { type = 'filter'; }
 
     return type;
+};
+
+// Returns a human-friendly Mixpanel 'View Type' (for internal use only!)
+function getMixpanelViewType(ds) {
+    var type = ds.type;
+
+    if (type === 'blist') {
+        type = ds.isPublished() ? 'dataset' : 'working_copy';
+    }
+
+    var humanReadableTypes = {
+        api: 'API view',
+        blob: 'non-tabular file or document',
+        calendar: 'calendar',
+        chart: 'chart',
+        data_lens: 'data lens',
+        dataset: 'dataset',
+        filter: 'filtered view',
+        form: 'form',
+        group: 'grouped view',
+        grouped: 'grouped view',
+        href: 'external dataset',
+        map: 'map',
+        table: 'table',
+        working_copy: 'working copy'
+    };
+
+    return humanReadableTypes[type] || type;
 };
 
 function getDisplayName(ds)

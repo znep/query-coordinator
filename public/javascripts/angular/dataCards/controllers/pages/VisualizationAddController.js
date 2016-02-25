@@ -110,10 +110,23 @@ function VisualizationAddController(
     // Trigger function attached to the iframe element in the parent
     if (_.isNull($window.frameElement)) {
       throw new Error('Page expects to be in an iframe, passing information to the parent window.');
+    } else if (_.isFunction($window.frameElement.onVisualizationSelectedV2)) {
+      // Passing objects cross-frame is dangerous in IE, because the cross-frame object's prototype
+      // will become invalid if the frame is unloaded. The safest way around this is to send over
+      // JSON strings, which are less likely to cause issues (but still suffer prototype breakage,
+      // just not to the same degree).
+      //
+      // FYI: _.cloneDeep preserves prototypes, so we can't just use that.
+      $window.frameElement.onVisualizationSelectedV2(
+        visualizationData ? JSON.stringify(visualizationData) : null,
+        visualizationType,
+        originalUid
+      );
     } else if (_.isFunction($window.frameElement.onVisualizationSelected)) {
+      // DEPRECATED: Remove this function once frontend and storyteller are stable in production.
       $window.frameElement.onVisualizationSelected(visualizationData, visualizationType, originalUid);
     } else {
-      throw new Error('Cannot find onVisualizationSelected on the iframe.');
+      throw new Error('Cannot find onVisualizationSelected or onVisualizationSelectedV2 on the iframe.');
     }
   }
 

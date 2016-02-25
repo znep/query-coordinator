@@ -47,6 +47,7 @@ $(document).ready(function() {
     'Pane Name',
     'On Page',
     'Properties',
+    'Query',
     'Render Type',
     'Result Ids',
     'Result Number',
@@ -168,7 +169,13 @@ $(document).ready(function() {
   mixpanelNS.MIXPANEL_PROPERTIES = MIXPANEL_PROPERTIES;
 
   var validateEventName = function(eventName) {
-    return _.includes(MIXPANEL_EVENTS, eventName);
+    var valid = _.includes(MIXPANEL_EVENTS, eventName);
+
+    if (!valid) {
+      console.error('Mixpanel payload validation failed: Unknown event name: "{0}"'.format(eventName));
+    }
+
+    return valid;
   };
 
   var validateProperties = function(properties) {
@@ -179,6 +186,11 @@ $(document).ready(function() {
         validateProperties(value);
       } else {
         valid = _.includes(MIXPANEL_PROPERTIES, key);
+
+        if (!valid) {
+          console.error('Mixpanel payload validation failed: Unknown property "{0}"'.format(key));
+        }
+
         return valid;
       }
     });
@@ -187,12 +199,10 @@ $(document).ready(function() {
   };
 
   var validateAndSendPayload = function(eventName, properties, callback) {
-    var validEventName = validateEventName(eventName);
-    var validProperties = validateProperties(properties);
+    validateEventName(eventName);
+    validateProperties(properties);
 
-    if (validEventName && validProperties) {
-      mixpanel.track(eventName, properties, callback);
-    }
+    mixpanel.track(eventName, properties, callback);
   };
 
   // Initialize event watcher to emit Mixpanel payloads for generic link events

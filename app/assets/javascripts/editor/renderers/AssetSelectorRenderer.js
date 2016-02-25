@@ -1250,6 +1250,7 @@
         'class': 'modal-button-group r-to-l'
       }).append([ backButton, insertButton ]);
 
+      // DEPRECATED: Remove this function once frontend and storyteller are stable in production.
       configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format, originalUid) {
         // This function is called by the visualization chooser when:
         //   - The user makes or clears a selection (argument is either null or a visualization).
@@ -1258,7 +1259,23 @@
         // originalUid may be null (say if the user created the visualization inline).
         configureVisualizationIframe.
           trigger('visualizationSelected', {
-            data: datasetObj,
+            data: JSON.parse(JSON.stringify(datasetObj)),
+
+            // format can either be 'classic' or 'vif'.
+            format: format,
+            originalUid: originalUid
+          });
+      };
+
+      configureVisualizationIframe[0].onVisualizationSelectedV2 = function(datasetObjJson, format, originalUid) {
+        // This function is called by the visualization chooser when:
+        //   - The user makes or clears a selection (argument is either null or a visualization).
+        //   - The page finishes loading (argument is null).
+        // In either case, we should consider the iframe loaded.
+        // originalUid may be null (say if the user created the visualization inline).
+        configureVisualizationIframe.
+          trigger('visualizationSelected', {
+            data: JSON.parse(datasetObjJson),
 
             // format can either be 'classic' or 'vif'.
             format: format,
@@ -1287,7 +1304,7 @@
     function _datasetChooserUrl() {
       return encodeURI(
         '{0}/browse/select_dataset?suppressed_facets[]=type&limitTo=datasets'.
-          format(window.location.origin)
+          format(window.location.protocol + '//' + window.location.hostname)
       );
     }
 
@@ -1318,7 +1335,7 @@
       return encodeURI(
         '{0}/component/visualization/add?datasetId={1}&defaultColumn={2}&defaultVifType={3}&defaultRelatedVisualizationUid={4}'.
           format(
-            window.location.origin,
+            window.location.protocol + '//' + window.location.hostname,
             componentProperties.dataset.datasetUid,
             defaultColumn,
             defaultVifType,

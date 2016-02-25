@@ -13,6 +13,7 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
 
     before do
       stub_sufficient_rights
+      request.env['HTTPS'] = 'on'
     end
 
     context 'when not authenticated' do

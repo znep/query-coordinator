@@ -39,9 +39,9 @@
 
             <form>
               <label><%= t('editor.settings_panel.displaying_section.title_label') %></label>
-              <input name="title" type="text" maxlength="254"<%= ' disabled' if contributor? %>>
+              <input name="title" type="text" maxlength="254"<%= ' disabled' unless can_edit_title_and_description? %>>
               <label><%= t('editor.settings_panel.displaying_section.description_label') %></label>
-              <textarea <%= ' disabled' if contributor? %>></textarea>
+              <textarea <%= ' disabled' unless can_edit_title_and_description? %>></textarea>
             </form>
 
             <div class="settings-save-failure-message">
@@ -56,22 +56,20 @@
       </li>
 
       <li id="settings-panel-copy-story" class="menu-list-item">
-        <button class="menu-list-item-header" data-action="STORY_MAKE_COPY_MODAL_OPEN"<%= ' disabled' if contributor? %>>
+        <button class="menu-list-item-header" data-action="STORY_MAKE_COPY_MODAL_OPEN"<%= ' disabled' unless can_make_copy? %>>
           <span class="icon-copy-document"></span>
           <span><%= t('editor.settings_panel.copy_section.section_title') %></span>
-          <%- if contributor? -%>
-            <br>
+          <%- unless can_make_copy? -%>
             <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
           <%- end %>
         </button>
       </li>
 
       <li id="settings-panel-collaborators" class="menu-list-item">
-        <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= ' disabled' if contributor? %>>
+        <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= ' disabled' unless can_manage_collaborators? %>>
           <span class="icon-add-collaborator"></span>
           <span><%= t('editor.settings_panel.collaborators_section.section_title') %></span>
-          <%- if contributor? -%>
-            <br>
+          <%- unless can_manage_collaborators? -%>
             <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
           <%- end %>
         </button>
@@ -101,7 +99,7 @@
                 <h3><%= t('editor.settings_panel.publishing_section.visibility.private') %></h3>
               </div>
               <div>
-                <button class="btn-secondary btn-dark" <%= ' disabled' if contributor? %>>
+                <button class="btn-secondary btn-dark" <%= ' disabled' unless can_manage_story_visibility? %>>
                   <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
                 </button>
               </div>
@@ -133,6 +131,16 @@
           <span class="icon-share"></span>
           <span><%= t('editor.settings_panel.story_widget_embed_section.section_title') %></span>
         </button>
+      </li>
+
+      <li id="settings-panel-story-stats" class="menu-list-item">
+        <%= settings_panel_story_stats_link do %>
+          <span class="icon-bar-chart"></span>
+          <span><%= t('editor.settings_panel.story_stats_section.section_title') %></span>
+          <%- unless can_see_story_stats? -%>
+            <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
+          <%- end %>
+        <% end -%>
       </li>
 
     </ul>

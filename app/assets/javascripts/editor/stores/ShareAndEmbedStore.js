@@ -46,7 +46,7 @@
 
     this.getStoryUrl = function() {
       return '{0}/stories/s/{1}'.format(
-        window.location.origin,
+        window.location.protocol + '//' + window.location.hostname,
         window.userStoryData.uid
       );
     };

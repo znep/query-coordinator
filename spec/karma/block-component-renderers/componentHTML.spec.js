@@ -86,12 +86,12 @@ describe('componentHTML jQuery plugin', function() {
     });
   });
 
-  describe('given a valid component type and value, and options containing extraContentClass', function() {
+  describe('given a valid component type and value, and options containing extraContentClasses', function() {
     var initialValue = 'testing';
     var componentData = {type: 'html', value: initialValue};
     var theme = 'classic';
     var options = {
-      extraContentClass: 'the-extra-content-class'
+      extraContentClasses: [ 'the-extra-content-class' ]
     };
 
     beforeEach(function() {

@@ -1,5 +1,6 @@
 var $ = require('jquery');
 var _ = require('lodash');
+var utils = require('socrata-utils');
 var ss = require('simple-statistics');
 var chroma = require('chroma-js');
 
@@ -261,13 +262,13 @@ $.extend(ChoroplethMapUtils.prototype, {
 
     if (isMultipleOf10) {
       numNonzeroDigits = coefficient.toString().length;
-      formattedNum = window.socrata.utils.formatNumber(val, {
+      formattedNum = utils.formatNumber(val, {
         precision: 0,
         maxLength: _.min([numNonzeroDigits, 3])
       });
     } else {
       numNonzeroDigits = coefficient.toString().length - 1;
-      formattedNum = window.socrata.utils.formatNumber(val, {
+      formattedNum = utils.formatNumber(val, {
         maxLength: _.min([numNonzeroDigits, 3])
       });
     }

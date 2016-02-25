@@ -50,7 +50,7 @@ function FlyoutRenderer() {
     var flyout = $(
       '<div>',
       {
-        'id': 'socrata-flyout'
+        id: 'socrata-flyout'
       }
     ).append([
       flyoutContent,

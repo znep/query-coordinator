@@ -6,18 +6,33 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
+  var DEFAULT_HEIGHT_PX = 300;
+
+  function enableText() {
+    return storyteller.config.fullBleedImageEnableTextOverlay;
+  }
+
+  function optionalHeroText() {
+    return enableText() ? '<div class="hero-text"></div>' : '';
+  }
+
   function templateUnconfiguredHero() {
     return [
       '<div class="hero hero-unconfigured">',
-        '<img src="{coverImageUrl}" alt="Add Cover Image">',
-        '<button class="btn-primary">{coverImage}</button>',
+        optionalHeroText(),
+        '<div class="hero-add-controls">',
+          '<img src="{coverImageUrl}" alt="Add Cover Image">',
+          '<button class="btn-primary">{coverImage}</button>',
+        '</div>',
       '</div>'
     ].join('');
   }
 
   function templateHero() {
     return [
-      '<div class="hero" data-url="{image}"></div>'
+      '<div class="hero" data-url="{image}">',
+      optionalHeroText(),
+      '</div>'
     ].join('');
   }
 
@@ -30,9 +45,9 @@
     var $template = $(templateUnconfiguredHero().format(formatters));
 
     $template.
-      addClass('hero-height-override').
       click(launchImageSelection);
 
+    $element.find('.hero-text').triggerHandler('destroy');
     $element.
       find('.hero').
       remove();
@@ -41,47 +56,29 @@
       append($template);
   }
 
-  function renderHero($element, componentData /*, theme */) {
+  function renderHero($element, componentData) {
     assertComponentDataStructure(componentData);
 
     var url = componentData.value.url;
     var formatters = {image: url};
     var $template = $(templateHero().format(formatters));
 
-    /**
-     * To be released in another iteration.
-    var editorId = _.uniqueId();
-    var editor = storyteller.richTextEditorManager.createEditor(
-      $template,
-      editorId,
-      (componentData.value.html = '<h1>Hello, World!</h1>')
-    );
-
-    $template.
-      find('iframe').
-      one('load', applyStyles(editor, theme));
-    $template.
-      on('rich-text-editor::content-change', contentChanged);
-    */
+    $element.
+      find('.hero-text').
+      triggerHandler('destroy');
 
     $element.
       find('.hero').
       remove();
     $element.
       attr('data-url', url).
-      // attr('data-editor-id', editorId).
       addClass(typeClass()).
       append($template);
 
-    $template.
-      toggleClass(
-        'hero-height-override',
-        !_.get(componentData, 'value.layout.height')
-      ).
-      css(
-        'background-image',
-        'url({0}), {1}'.format(url, $template.css('background-image'))
-      );
+    $template.css(
+      'background-image',
+      'url({0}), {1}'.format(url, $template.css('background-image'))
+    );
   }
 
   function updateHero($element, componentData) {
@@ -89,13 +86,6 @@
 
     var $hero = $element.find('.hero');
     var url = $hero.attr('data-url');
-    // var html = getEditor().getContent();
-
-    $hero.
-      toggleClass(
-        'hero-height-override',
-        !_.get(componentData, 'value.layout.height')
-      );
 
     if (changedImage(url, componentData)) {
 
@@ -112,65 +102,27 @@
         attr('data-url', componentData.value.url).
         css('background-image', backgroundImage);
     }
-
-    /**
-     * To be released in another iteration.
-    if (changedText(html, componentData)) {
-      getEditor($element).setContent(html);
-    };
-    */
   }
 
-  /**
-   * To be released in another iteration.
   function contentChanged(event) {
-    event.stopPropagation();
+    event.stopPropagation(); // Otherwise StoryRenderer will attempt to treat this as an HTML component.
 
-    var breakTagRegexp = /<br>/g;
+    var html = event.originalEvent.detail.content;
+
     var blockId = utils.findClosestAttribute(event.target, 'data-block-id');
-    var blockContent = event.originalEvent.detail.content;
+    var componentIndex = parseInt(utils.findClosestAttribute(event.target, 'data-component-index'), 10);
 
-    var componentIndex = utils.findClosestAttribute(event.target, 'data-component-index');
-    var component = storyteller.storyStore.getBlockComponentAtIndex(blockId, componentIndex);
+    var value = storyteller.storyStore.getBlockComponentAtIndex(blockId, componentIndex).value;
+    _.set(value, 'html', html);
 
-    var existingComponentValue = component.value.html ?
-      component.value.html.replace(breakTagRegexp, '') :
-      '';
-    var newComponentValue = blockContent.replace(breakTagRegexp, '');
-
-    var contentIsDifferent = (
-      existingComponentValue !== newComponentValue
-    );
-
-    if (contentIsDifferent) {
-      component.value.html = blockContent;
-
-      storyteller.dispatcher.dispatch({
-        action: Actions.BLOCK_UPDATE_COMPONENT,
-        blockId: blockId,
-        componentIndex: componentIndex,
-        type: 'hero',
-        value: component.value
-      });
-    }
+    storyteller.dispatcher.dispatch({
+      action: Actions.BLOCK_UPDATE_COMPONENT,
+      blockId: blockId,
+      componentIndex: componentIndex,
+      type: 'hero',
+      value: value
+    });
   }
-
-  function applyStyles(editor, theme) {
-    return function() {
-      editor.applyThemeClass(theme);
-      applyThemeFontIfPresent(editor, theme);
-      this.contentWindow.document.body.classList.add('hero-body');
-    };
-  }
-
-  function applyThemeFontIfPresent(editor, theme) {
-    var customTheme = _.find(window.customThemes, { 'id': parseInt(theme.replace('custom-', ''), 10) });
-
-    if (_.has(customTheme, 'google_font_code')) {
-      editor.applyThemeFont(customTheme.google_font_code);
-    }
-  }
-  */
 
   function assertComponentDataStructure(componentData) {
     utils.assertHasProperty(componentData, 'value');
@@ -196,23 +148,21 @@
   function launchImageSelection() {
     var dispatcher = storyteller.dispatcher;
     var componentMetadata = getComponentMetadata(this);
+    var componentProperties = storyteller.storyStore.
+      getBlockComponentAtIndex(componentMetadata.blockId, componentMetadata.componentIndex).
+      value;
 
     dispatcher.dispatch({
       action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
       blockId: componentMetadata.blockId,
-      componentIndex: componentMetadata.componentIndex
+      componentIndex: componentMetadata.componentIndex,
+      initialComponentProperties: componentProperties
     });
 
     dispatcher.dispatch({
       action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
       provider: 'HERO'
     });
-  }
-
-  function getEditor($element) {
-    return storyteller.richTextEditorManager.getEditor(
-      $element && $element.attr('data-editor-id')
-    );
   }
 
   function empty(componentData) {
@@ -235,12 +185,17 @@
     return url !== componentData.value.url;
   }
 
-  /**
-   * To be released in another iteration.
-  function changedText(html, componentData, resolutionTree) {
-    return html !== componentData.value.html;
+  function synthesizeRichTextEditorData(componentData) {
+    return {
+      type: 'html',
+      value: _.get(componentData, 'value.html', '')
+    };
   }
-  */
+
+  function getEditorOrNull() {
+    var editorId = $(this).find('[data-editor-id]').attr('data-editor-id');
+    return editorId ? storyteller.richTextEditorManager.getEditor(editorId) : null;
+  }
 
   function componentHero(componentData, theme, options) {
     utils.assertHasProperties(componentData, 'type');
@@ -252,27 +207,96 @@
     );
 
     var $this = $(this);
-    var defaultOptions = {
-      resizeSupported: true,
-      editMode: true,
-      editButtonSupported: notEmpty(componentData),
-      resizeOptions: {
-        minHeight: getEditor() && getEditor().getContentHeight() || 150
+
+    function getOptions(currentComponentData) {
+      var editor = getEditorOrNull.call($this);
+      var defaultOptions = {
+        resizeSupported: notEmpty(currentComponentData),
+        editButtonSupported: notEmpty(currentComponentData),
+        resizeOptions: {
+          minHeight: editor && editor.getContentHeight() || 150
+        },
+        defaultHeight: DEFAULT_HEIGHT_PX
+      };
+
+      return _.extend({}, options, defaultOptions);
+    }
+
+
+    function onDataChanged(newComponentData) {
+      updateHeight.call(this);
+
+      if (!getOptions(newComponentData).editMode) { return; }
+
+      if (empty(newComponentData) && notRendered($this)) {
+        renderUnconfiguredHero($this, newComponentData);
+      } else if (rendered($this)) {
+        updateHero($this, newComponentData);
+      } else if (notEmpty(newComponentData)) {
+        renderHero($this, newComponentData);
       }
-    };
+    }
+
+    function onFirstRender() {
+      this.on('rich-text-editor::content-change', contentChanged);
+      this.on('rich-text-editor::height-change component::height-change', updateHeight);
+
+      this.one('destroy', function() {
+        $(this).find('.hero-text').triggerHandler('destroy');
+        $(this).off('rich-text-editor::content-change', contentChanged);
+        $(this).off('rich-text-editor::height-change component::height-change', updateHeight);
+      });
+    }
+
+    function computeHeight() {
+      var editorHeight = 0;
+      var buttonHeight = $this.find('.hero-add-controls').outerHeight(true) || 0;
+
+      var editor = getEditorOrNull.call($this);
+      if (editor) {
+        editorHeight = $this.find('.component-html').outerHeight(true);
+      } else {
+        editorHeight = $this.find('.typeset').outerHeight();
+      }
+
+      return Math.max(
+        editorHeight + buttonHeight,
+        _.get($this.data('component-rendered-data'), 'value.layout.height', DEFAULT_HEIGHT_PX)
+      );
+    }
+
+    function updateEditorIframeHeight() {
+      var editor = getEditorOrNull.call($this);
+      if (editor) {
+        $this.find('.component-html iframe').height(editor.getContentHeight());
+      }
+    }
+
+    function updateHeight() {
+      updateEditorIframeHeight();
+
+      var augmentedComponentData = _.cloneDeep($this.data('component-rendered-data'));
+      _.set(augmentedComponentData, 'value.layout.height', computeHeight());
+      $this.withLayoutHeightFromComponentData(augmentedComponentData, getOptions(augmentedComponentData).defaultHeight);
+    }
 
     $this.componentBase(
       componentData,
       theme,
-      _.extend(defaultOptions, options)
+      getOptions(componentData),
+      onFirstRender,
+      onDataChanged
     );
 
-    if (empty(componentData) && notRendered($this)) {
-      renderUnconfiguredHero($this, componentData);
-    } else if (rendered($this)) {
-      updateHero($this, componentData);
-    } else if (notEmpty(componentData)) {
-      renderHero($this, componentData, theme);
+    updateHeight();
+
+    // Delegate to child components.
+    if (getOptions(componentData).editMode && this.find('.hero-text').length > 0) {
+      this.find('.hero-text').componentHTML(
+        synthesizeRichTextEditorData(componentData),
+        theme,
+        _.extend({}, options, { extraContentClasses: [ 'hero-body', 'remove-top-margin' ] })
+      );
     }
 
     return $this;

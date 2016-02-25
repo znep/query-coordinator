@@ -132,7 +132,7 @@
     this.find('.author-blurb').componentHTML(
       _synthesizeBlurbData(componentData),
       theme,
-      _.extend({}, options, { extraContentClass: 'remove-top-margin' })
+      _.extend({}, options, { extraContentClasses: [ 'remove-top-margin' ] })
     );
 
 

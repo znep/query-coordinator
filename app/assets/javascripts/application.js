@@ -30,6 +30,7 @@
 //= require editor/componentBase
 //= require editor/withLayoutHeightFromComponentData
 //= require editor/storytellerJQueryUtils
+//= require editor/block-component-renderers/componentHero
 //= require editor/block-component-renderers/componentSocrataVisualizationClassic
 //= require editor/block-component-renderers/componentSocrataVisualizationChoroplethMap
 //= require editor/block-component-renderers/componentSocrataVisualizationColumnChart

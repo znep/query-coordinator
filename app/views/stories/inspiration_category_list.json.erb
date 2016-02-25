@@ -334,12 +334,24 @@
     "description": "<%= I18n.t('inspiration_blocks.categories.hero.description') %>",
     "blocks": [
       {
-        "imagePreview": "<%= asset_path('editor/iconic-blocks/cover-image.svg') %>",
+        <% if Rails.application.config.full_bleed_image_enable_text_overlay %>
+          "imagePreview": "<%= asset_path('editor/iconic-blocks/cover-image-text.svg') %>",
+        <% else %>
+          "imagePreview": "<%= asset_path('editor/iconic-blocks/cover-image.svg') %>",
+        <% end %>
         "blockContent": {
           "layout": "12",
           "components": [
             {
-              "type": "hero"
+              "type": "hero",
+              "value": {
+                "html":
+                  <% if Rails.application.config.full_bleed_image_enable_text_overlay %>
+                    "<h1 class='align-center' style='text-align:center'><%= I18n.t('inspiration_blocks.hero.heading') %><br></h1>"
+                  <% else %>
+                    ""
+                  <% end %>
+              }
             }
           ]
         }

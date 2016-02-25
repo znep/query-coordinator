@@ -70,6 +70,11 @@ $(document).on('ready', function() {
 
       switch (componentData.type) {
 
+        case 'hero':
+          $element.
+            componentHero(componentData);
+          break;
+
         case 'story.widget':
           $element.
             componentStoryWidget(componentData);
@@ -122,6 +127,13 @@ $(document).on('ready', function() {
 
   if (window.isStoryPublished) {
     storyteller.analytics.sendMetric('domain', 'js-page-view', 1);
+
+    // Remove this check when the frontend code that supports these metrics is stable
+    if (storyteller.config.enableNewStoryPageViewMetrics) {
+      storyteller.analytics.sendMetric('domain', 'js-page-view-story', 1);
+      storyteller.analytics.sendMetric('domain', 'page-view', 1);
+    }
+
     storyteller.analytics.flushMetrics();
   }
 });

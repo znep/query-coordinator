@@ -8,6 +8,8 @@ RSpec.describe StoriesController, type: :controller do
     allow(CoreServer).to receive(:story_themes).and_return([])
     allow(StoryAccessLogger).to receive(:log_story_view_access)
     allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
+
+    request.env['HTTPS'] = 'on'
   end
 
   describe '#show with param from_collaboration_email=true' do
@@ -270,12 +272,12 @@ RSpec.describe StoriesController, type: :controller do
 
     describe 'log view access' do
       it 'logs view access when story exists' do
-        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision, embedded: true)
         get :widget, uid: story_revision.uid
       end
 
       it 'logs view access for json requests' do
-        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision, embedded: true)
         get :widget, uid: story_revision.uid, format: :json
       end
 

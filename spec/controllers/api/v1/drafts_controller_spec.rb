@@ -5,6 +5,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
   before do
     stub_valid_session
     stub_core_view('test-test')
+    request.env['HTTPS'] = 'on'
   end
 
   describe '#create' do

@@ -11,3 +11,4 @@ module.exports = {
   TileserverDataProvider: TileserverDataProvider,
   VectorTileManager: VectorTileManager
 };
+

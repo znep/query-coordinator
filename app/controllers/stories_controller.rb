@@ -16,6 +16,8 @@ class StoriesController < ApplicationController
   after_action :allow_iframe, only: :widget
   helper_method :needs_view_assets?, :contributor?
 
+  force_ssl except: [:show, :widget], unless: :ssl_disabled?
+
   def show
     # This param is set in the link provided to users who receive a collaboration request
     # via email. In this case, we want to redirect them to the most privileged action they
@@ -37,7 +39,7 @@ class StoriesController < ApplicationController
     @story = PublishedStory.find_by_uid(params[:uid])
 
     if @story
-      StoryAccessLogger.log_story_view_access(@story)
+      StoryAccessLogger.log_story_view_access(@story, embedded: true)
 
       core_attributes = CoreServer.get_view(@story.uid) || {}
 

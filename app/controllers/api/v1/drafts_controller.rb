@@ -3,6 +3,8 @@ class Api::V1::DraftsController < ApplicationController
 
   before_filter :require_sufficient_rights
 
+  force_ssl
+
   def latest
     @story = DraftStory.find_by_uid(params[:uid])
 

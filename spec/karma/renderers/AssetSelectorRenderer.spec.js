@@ -645,6 +645,70 @@ describe('AssetSelectorRenderer', function() {
           it('has a modal title loading spinner', function() {
             assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
           });
+
+          describe('onVisualizationSelected on the iframe', function() {
+            var iframe;
+            var selectedVisualization = { visualization: 'blob' };
+            beforeEach(function() {
+              iframe = container.find('iframe')[0];
+            });
+
+            it('has a onVisualizationSelected function on it', function() {
+              assert.isFunction(iframe.onVisualizationSelected);
+            });
+
+            it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
+              storyteller.dispatcher.register(function(payload) {
+                if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
+                  assert.deepEqual(payload.visualization.data, selectedVisualization);
+                  assert.deepPropertyVal(payload, 'visualization.format', 'classic');
+                  assert.deepPropertyVal(payload, 'visualization.originalUid', 'orig-inal');
+                  done();
+                }
+              });
+
+              iframe.onVisualizationSelected(selectedVisualization, 'classic', 'orig-inal');
+            });
+
+            it('does not preserve the object constructor (because in IE, the constructor will break on iframe unload)', function(done) {
+              function StrangeConstructor() {}
+              var objectWithStrangeConstructor = new StrangeConstructor();
+
+              storyteller.dispatcher.register(function(payload) {
+                if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
+                  assert.notInstanceOf(payload.visualization.data, StrangeConstructor);
+                  done();
+                }
+              });
+
+              iframe.onVisualizationSelected(objectWithStrangeConstructor, 'classic', 'orig-inal');
+            });
+          });
+
+          describe('onVisualizationSelectedV2 on the iframe', function() {
+            var iframe;
+            var selectedVisualizationJson = JSON.stringify({ visualization: 'blob' });
+            beforeEach(function() {
+              iframe = container.find('iframe')[0];
+            });
+
+            it('has a onVisualizationSelectedV2 function on it', function() {
+              assert.isFunction(iframe.onVisualizationSelectedV2);
+            });
+
+            it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
+              storyteller.dispatcher.register(function(payload) {
+                if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
+                  assert.deepEqual(payload.visualization.data, JSON.parse(selectedVisualizationJson));
+                  assert.deepPropertyVal(payload, 'visualization.format', 'classic');
+                  assert.deepPropertyVal(payload, 'visualization.originalUid', 'orig-inal');
+                  done();
+                }
+              });
+
+              iframe.onVisualizationSelectedV2(selectedVisualizationJson, 'classic', 'orig-inal');
+            });
+          });
         });
 
         describe('the modal', function() {

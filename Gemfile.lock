@@ -106,7 +106,7 @@ GEM
       guard-compat (~> 1.2)
       minitest (>= 3.0)
     hashdiff (0.2.3)
-    hashie (2.0.5)
+    hashie (2.1.2)
     hike (1.2.3)
     hirb (0.7.3)
     htmlentities (4.3.4)
@@ -345,7 +345,7 @@ DEPENDENCIES
   foreman
   guard
   guard-minitest
-  hashie (= 2.0.5)
+  hashie (= 2.1.2)
   httparty
   jammit (= 0.6.5)
   jazz_hands

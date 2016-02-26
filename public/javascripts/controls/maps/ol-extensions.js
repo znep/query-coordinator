@@ -619,6 +619,19 @@
         {
             var control = this;
             if (control._handlingEvent == 'changebaselayer') { return; }
+            // Sometimes `this.map` is null, which causes basically everything
+            // to explode. This happens on the `window.unload` event, which is
+            // ok for most contexts but fails badly in Stories, where we load
+            // and unload iframes with these things in a long-running outer
+            // context. We'll quit early if we can't properly clean up so as
+            // to avoid bleeding exceptions.
+            if (!this.hasOwnProperty('mtSwitcher') &&
+                !this.mtSwitcher.hasOwnProperty('layers') &&
+                this.map === null &&
+                typeof this.map.backgroundLayers !== 'function')
+            {
+                return;
+            }
 
             var $dom = this.$dom;
             var backgroundLayers = this.exclusiveLayers ? _.values(this.mtSwitcher.layers)
@@ -1354,6 +1367,13 @@
 
         destroy: function()
         {
+            // Sometimes `this.map` is already null, so we cannot properly unregister
+            // the `moveend` event. In this case we just move on and pretend nothing
+            // happened. >_>
+            if (this.map === null) {
+                return;
+            }
+
             this.map.events.unregister('moveend', this, this.onMoveEnd);
         },
 

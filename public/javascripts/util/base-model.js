@@ -103,9 +103,18 @@ var Model = Class.extend({
             verifyEvent(evName);
             // IE requires that if you pass something for args, it must be
             // an array; not null or undefined
-            _.each(listeners[evName] || [], function(f)
-                { f.apply(that, args || []); });
-            return that;
+
+            // In some cases (presumably when legacy visualizations are being
+            // displayed in iframes) this code attempts to call _.each and _
+            // is undefined. This likely happens in response to a `window.unload`
+            // event, in which case we probably don't care, and if _ is undefined
+            // we can't do anything except raise a TypeError anyway.
+            if (_.hasOwnProperty('each'))
+            {
+                _.each(listeners[evName] || [], function(f)
+                    { f.apply(that, args || []); });
+                return that;
+            }
         };
 
         this.availableEvents = function()

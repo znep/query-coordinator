@@ -374,7 +374,7 @@ module BrowseActions
     browse_options[:header_config]  = catalog_config.header
     browse_options[:footer_config]  = catalog_config.footer
 
-    browse_options[:sort_opts] ||= using_cetera? ? cetera_browse_sort_opts : default_browse_sort_opts
+    browse_options[:sort_opts] ||= browse_sort_opts
     browse_options[:disable] = {} unless browse_options[:disable].present?
 
     # get the subset relevant to various things
@@ -545,9 +545,7 @@ module BrowseActions
     [
       { value: 'relevance', name: t('controls.browse.sorts.relevance') },
       { value: 'most_accessed', name: t('controls.browse.sorts.most_accessed') },
-      { value: 'alpha', name: t('controls.browse.sorts.alpha') },
       { value: 'newest', name: t('controls.browse.sorts.newest') },
-      { value: 'oldest', name: t('controls.browse.sorts.oldest') },
       { value: 'last_modified', name: t('controls.browse.sorts.last_modified') }
     ]
   end

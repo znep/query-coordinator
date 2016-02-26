@@ -34,12 +34,9 @@
  *                   Note that it's up to the developer to actually close
  *                   the modal (via .trigger('modal-close')).
  */
-(function($, root) {
+(function($) {
 
   'use strict';
-
-  var socrata = root.socrata;
-  var utils = socrata.utils;
 
   function _renderModalCloseButton() {
     return $(
@@ -67,7 +64,6 @@
     if (!this.data('modal-rendered')) {
       // Initial setup.
       this.append(
-        $('<div>', { 'class': 'modal-overlay' }).on('click', _emitDismissed),
         $('<div>', { 'class': 'modal-dialog' }).
           append(
             $('<div>', { 'class': 'modal-header-group' }).
@@ -82,15 +78,20 @@
       this.
         data('modal-rendered', true).
         addClass('modal').
-        on('modal-open', function() { self.removeClass('hidden'); }).
-        on('modal-close', function() { self.addClass('hidden'); }).
-        // Do not scroll page if the container is scrolled
-        on('mousewheel', utils.preventScrolling);
+        on('modal-open', function() {
+          self.removeClass('hidden');
+          $('html').css('overflow', 'hidden');
+        }).
+        on('modal-close', function() {
+          self.addClass('hidden');
+          $('html').css('overflow', 'auto');
+        }).
+        on('click', _emitDismissed);
 
       $(document).on('keyup', function(event) {
         // `ESC`
         if (event.keyCode === 27) {
-          _emitDismissed();
+          self.trigger('modal-dismissed');
         }
       });
 
@@ -105,12 +106,17 @@
       this.find('.modal-content').empty().append(options.content);
     }
 
+    function _emitDismissed(event) {
+      var isOutsideModalDialog = $(event.target).closest('.modal-dialog').length === 0;
+      var isInsideHtml = $(event.target).closest('html').length === 1;
+      var isModalCloseButton = $(event.target).hasClass('modal-close-btn') || $(event.target).closest('.modal-close-btn').length === 1;
 
-    function _emitDismissed() {
-      self.trigger('modal-dismissed');
+      if ((isOutsideModalDialog && isInsideHtml) || isModalCloseButton) {
+        self.trigger('modal-dismissed');
+      }
     }
 
     return this;
   };
 
-}(jQuery, window));
+}(jQuery));

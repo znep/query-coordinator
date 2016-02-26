@@ -1,4 +1,7 @@
+require 'hashie/extensions/ignore_undeclared'
+
 class AppConfig < Hashie::Dash
+  include Hashie::Extensions::IgnoreUndeclared
 
   as_int = ->(val) { val.to_i }
 

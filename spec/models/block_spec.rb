@@ -203,6 +203,26 @@ RSpec.describe Block, type: :model do
         expect(result.first).to eq(block_with_image)
       end
     end
+
+    context 'when passing multiple component types' do
+      let(:result) { Block.with_component_type('image', 'missing') }
+
+      it 'returns blocks containing image' do
+        expect(result.size).to eq(1)
+        expect(result.first).to eq(block_with_image)
+      end
+
+      context 'when all component types exist in blocks' do
+        let!(:block_with_hero) { FactoryGirl.create(:block_with_hero) }
+        let(:result) { Block.with_component_type('image', 'hero') }
+
+        it 'returns blocks containing image or hero' do
+          expect(result.size).to eq(2)
+          expect(result.first).to eq(block_with_image)
+          expect(result.second).to eq(block_with_hero)
+        end
+      end
+    end
   end
 
   describe '.from_json' do

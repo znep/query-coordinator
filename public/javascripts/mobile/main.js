@@ -5,6 +5,14 @@ var mobileTimelineChart = require('./mobile.timelinechart.js');
 var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 
+
+/*
+* QFB components
+*/
+import React from 'react'; // eslint-disable-line no-unused-vars
+import ReactDOM from 'react-dom';
+import FilterContainer from './react-components/qfb/filtercontainer/FilterContainer.js';
+
 (function() {
   'use strict';
 
@@ -156,6 +164,7 @@ var mobileChoroplethMap = require('./mobile.choroplethmap.js');
   }
 
   function setupQfb() {
+
     var aFilterOps = [];
     _.each(datasetMetadata.columns, function(column, fieldName) {
       var filterOption = {};
@@ -192,10 +201,15 @@ var mobileChoroplethMap = require('./mobile.choroplethmap.js');
       }
     });
 
-    var filterOptions = {
-      filterOps: aFilterOps
-    };
-    $(document).trigger('filterOps.qfb.socrata',[filterOptions, datasetMetadata.domain, pageMetadata.datasetId]);
+    ReactDOM.render(<FilterContainer
+      domain={ datasetMetadata.domain }
+      datasetId={ pageMetadata.datasetId }
+      filterOps={ aFilterOps }
+      handleFilterBroadcast={ handleBroadcast } />, document.getElementById('filters'));
+
+    function handleBroadcast(filterObject) {
+      $(document).trigger('appliedFilters.qfb.socrata', filterObject);
+    }
   }
 
   document.title = datasetMetadata.name;

@@ -1,5 +1,14 @@
+.fullHeight {
+  height: 100%;
+}
+
 .outerContainer {
+  height: 100%;
   border: none;
+}
+
+#renderTypeContainer {
+  height: 100%;
 }
 
 .missing-columns-warning {

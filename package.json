@@ -68,6 +68,8 @@
       "Unidragger": true,
       "Unipointer": true,
       "userStoryData": true,
+      "defaultThemes": true,
+      "customThemes": true,
       "ga": true,
 
       "assert": true,

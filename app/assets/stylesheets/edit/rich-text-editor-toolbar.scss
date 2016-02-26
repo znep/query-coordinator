@@ -149,6 +149,84 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
     }
   }
 
+  .rich-text-editor-toolbar-btn-textColor {
+    position: relative;
+
+    .rich-text-editor-toolbar-text-color-swatch {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      left: 10px;
+      top: 11px;
+      background-color: transparent;
+      border: 1px solid #d7d7d7;
+      border-radius: 0.1rem;
+      pointer-events: none;
+    }
+
+    .rich-text-editor-toolbar-text-color-panel {
+      position: absolute;
+      display: none;
+      width: 130px;
+      height: 110px;
+      bottom: -110px;
+      left: 0px;
+      padding: 0 2px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+
+      hr {
+        margin: 0;
+        border-top: 0;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .rich-text-editor-toolbar-text-color-panel-color-swatch,
+      .rich-text-editor-toolbar-text-color-panel-custom-color-swatch,
+      .rich-text-editor-toolbar-text-color-panel-active-custom-color-swatch {
+        width: 20px;
+        height: 20px;
+        margin: 7px 2px;
+        border: 1px solid #ddd;
+        border-radius: 0.1rem
+      }
+
+      .rich-text-editor-toolbar-text-color-panel-active-custom-color-container {
+        position: relative;
+        display: block;
+
+        .rich-text-editor-toolbar-text-color-panel-color-input {
+          display: block;
+          padding: 0 0.5rem;
+          width: 80px;
+          font-size: 1.35rem;
+          line-height: 3rem;
+          margin: 2px 35px 0 4px;
+          background-color: #fff;
+        }
+
+        .rich-text-editor-toolbar-text-color-panel-active-custom-color-swatch {
+          position: absolute;
+          display: block;
+          top: 0px;
+          right: 4px;
+          margin: 0;
+          padding: 0;
+          width: 32px;
+          height: 32px;
+          border: 1px solid #c5c5c5;
+        }
+      }
+    }
+
+    &.active {
+      .rich-text-editor-toolbar-text-color-panel {
+        display: block;
+      }
+    }
+  }
+
   .rich-text-editor-toolbar-divider {
     position: relative;
     top: -2px;
@@ -157,6 +235,13 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
     vertical-align: middle;
     border-left: 1px solid $rich-text-editor-toolbar-inactive-color;
     margin: 0 0.8rem;
+  }
+
+  &.dim {
+    .rich-text-editor-toolbar-text-color-swatch {
+      border-color: #d7d7d7 !important;
+      background-color: transparent !important;
+    }
   }
 
   &.active {

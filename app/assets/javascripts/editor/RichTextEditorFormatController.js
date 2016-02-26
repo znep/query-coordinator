@@ -50,6 +50,7 @@
       'heading4': function() { _setHeading('h4'); },
       'heading5': function() { _setHeading('h5'); },
       'heading6': function() { _setHeading('h6'); },
+      'textColor': function(color) { _setTextColor(color); },
       'text': function() { _clearFormat(); },
       'bold': function() { _toggleBold(); },
       'italic': function() { _toggleItalic(); },
@@ -184,11 +185,44 @@
         return foundFormats;
       }
 
+      function _recordElementTextColor(element, foundTextStyles) {
+
+        if (element.nodeType === element.ELEMENT_NODE) {
+          var computedStyles = window.getComputedStyle(element);
+
+          // Make a synthetic 'format' object here, since we cannot enumerate
+          // all possible color values but we want to conform to the downstream
+          // expectation that all of the active 'formats' are format objects.
+          foundTextStyles.push({
+            dropdown: false,
+            id: 'textColor',
+            name: 'textColor',
+            tag: null,
+            color: computedStyles.getPropertyValue('color')
+          });
+        }
+      }
+
+      function _recordTextColor(element) {
+
+        var foundTextStyles = utils.reduceDOMFragmentAscending(
+          element,
+          _recordElementTextColor,
+          function(el) {
+            return el.nodeType === el.ELEMENT_NODE;
+          },
+          []
+        );
+
+        return foundTextStyles;
+      }
+
       var selection = _squire.getSelection();
       var foundAlignmentFormats = _recordAlignmentFormats(selection.commonAncestorContainer);
-      var foundStyleFormats = _recordStyleFormats(selection.cloneContents());
+      var foundStyleFormats = _recordStyleFormats(selection.commonAncestorContainer);
+      var foundTextColor = _recordTextColor(selection.commonAncestorContainer);
 
-      return foundAlignmentFormats.concat(foundStyleFormats);
+      return foundAlignmentFormats.concat(foundStyleFormats).concat(foundTextColor);
     };
 
     /**
@@ -440,6 +474,10 @@
 
     function _setHeading(headingTag) {
       _updateBlockType(headingTag);
+    }
+
+    function _setTextColor(color) {
+      _squire.setTextColour(color);
     }
 
     function _toggleBold() {

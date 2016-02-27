@@ -159,7 +159,7 @@
                     { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
                     { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
                   ]
-                }
+                }.reject { |k, v| k == :time_options && using_cetera? }
               )
             %>
         <%- end -%>

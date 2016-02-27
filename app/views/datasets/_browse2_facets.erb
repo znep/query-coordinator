@@ -41,24 +41,21 @@
 
     <div class="browse2-facets">
 
-      <div style="display:none"> <!-- EN-3305 -->
+      <h2 class="browse2-mobile-facets-header">
+        <%= t('controls.browse.browse2.facets.mobile.sort') %>
+      </h2>
 
-        <h2 class="browse2-mobile-facets-header">
-          <%= t('controls.browse.browse2.facets.mobile.sort') %>
-        </h2>
-
-      <%=
-        render(
-          :partial => 'datasets/browse2_facet_section_mobile_sort',
-          :locals => {
-            :opts => opts,
-            :current_sort =>  opts[:current_sort] ||
-              sort_opts.select { |opt| opt[:value] == 'relevance' }.first,
-            :sort_opts => sort_opts
-          }
-        )
-      %>
-      </div>
+    <%=
+      render(
+        :partial => 'datasets/browse2_facet_section_mobile_sort',
+        :locals => {
+          :opts => opts,
+          :current_sort =>  opts[:current_sort] ||
+            sort_opts.select { |opt| opt[:value] == 'relevance' }.first,
+          :sort_opts => sort_opts
+        }
+      )
+    %>
 
       <h2 class="browse2-mobile-facets-header">
         <%= t('controls.browse.browse2.facets.mobile.filter') %>

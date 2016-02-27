@@ -374,7 +374,7 @@ module BrowseActions
     browse_options[:header_config]  = catalog_config.header
     browse_options[:footer_config]  = catalog_config.footer
 
-    browse_options[:sort_opts] ||= default_browse_sort_opts
+    browse_options[:sort_opts] ||= browse_sort_opts
     browse_options[:disable] = {} unless browse_options[:disable].present?
 
     # get the subset relevant to various things
@@ -459,7 +459,7 @@ module BrowseActions
           }
       end
 
-    # In Cetera search, hide sort_dropdown, popularity, and rss links
+    # In Cetera search, hide popularity and rss links
     if using_cetera?
       browse_options[:grid_items][:popularity] = false
       browse_options[:grid_items][:rss] = false
@@ -524,6 +524,10 @@ module BrowseActions
     end.to_str # force this string to be marked html unsafe
   end
 
+  def browse_sort_opts
+    using_cetera? ? cetera_browse_sort_opts : default_browse_sort_opts
+  end
+
   def default_browse_sort_opts
     [
       { value: 'relevance', name: t('controls.browse.sorts.relevance') },
@@ -534,6 +538,15 @@ module BrowseActions
       { value: 'last_modified', name: t('controls.browse.sorts.last_modified') },
       { value: 'rating', name: t('controls.browse.sorts.rating') },
       { value: 'comments', name: t('controls.browse.sorts.comments') }
+    ]
+  end
+
+  def cetera_browse_sort_opts
+    [
+      { value: 'relevance', name: t('controls.browse.sorts.relevance') },
+      { value: 'most_accessed', name: t('controls.browse.sorts.most_accessed') },
+      { value: 'newest', name: t('controls.browse.sorts.newest') },
+      { value: 'last_modified', name: t('controls.browse.sorts.last_modified') }
     ]
   end
 
@@ -640,15 +653,17 @@ module BrowseActions
   # we're operating as though there's only one category, even though cetera
   # will expect an array of the parent and children categories[].
   def selected_category_and_any_children(browse_options)
-    return nil unless browse_options[:search_options].try(:[], :category).present?
+    search_options = browse_options[:search_options]
+    selected_category = search_options.try(:[], :category)
 
-    selected_category = browse_options[:search_options][:category]
+    return nil unless selected_category.present?
+
     categories_facet = browse_options[:facets].detect { |facet| facet[:param] == :category }
 
     # extra_options could potentially be nil (see EN-760 and categories_facet method)
-    categories = categories_facet[:options] + categories_facet[:extra_options].to_a
-
-    return nil unless categories.present?
+    # categories_facet, technically speaking, could be absent
+    categories = categories_facet && categories_facet[:options] + categories_facet[:extra_options].to_a
+    categories ||= [] # this is for the edge case when there is no categories facet
 
     # Is it a top-level category?
     category = categories.find { |c| c[:value] == selected_category }

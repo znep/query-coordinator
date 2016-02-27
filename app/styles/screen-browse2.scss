@@ -510,7 +510,6 @@ html {
       }
 
       .browse2-results-sort-controls-container {
-        display: none !important; // EN-3305
         @include desktop {
           width: 210px;
           float: right;

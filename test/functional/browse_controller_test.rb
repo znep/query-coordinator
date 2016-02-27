@@ -270,6 +270,11 @@ class BrowseControllerTest < ActionController::TestCase
       'tags' => 'crime'
     }.symbolize_keys
 
+    default_core_cly_params = {
+      limit: 10,
+      page: 1
+    }
+
     # The FE params should be translated like so when being sent to Cetera
     cetera_params = {
       'Dataset-Information_Superhero' => 'Batman',
@@ -283,6 +288,14 @@ class BrowseControllerTest < ActionController::TestCase
       :q => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       :search_context => 'data.seattle.gov',
       :tags => 'crime'
+    }
+
+    default_cetera_params = {
+      domains: 'localhost',
+      limit: 10,
+      offset: 0,
+      order: 'relevance',
+      search_context: 'localhost'
     }
 
     # NOTE: this is an Array of Hashie::Mash, unlike other facets
@@ -362,6 +375,8 @@ class BrowseControllerTest < ActionController::TestCase
 
       get(:show, front_end_url_params)
       assert_response :success
+      assert_match(/This is my new view blah blah blah/, @response.body)
+      assert_match(/Newest/, @response.body) # sort order
 
       Clytemnestra.unstub(:search_views)
     end
@@ -374,6 +389,8 @@ class BrowseControllerTest < ActionController::TestCase
 
       get(:embed, front_end_url_params)
       assert_response :success
+      assert_match(/This is my new view blah blah blah/, @response.body)
+      assert_match(/Recently Updated/, @response.body) # sort order
 
       Clytemnestra.unstub(:search_views)
     end
@@ -390,6 +407,8 @@ class BrowseControllerTest < ActionController::TestCase
 
       get(:show, front_end_url_params)
       assert_response :success
+      assert_match(/Sold Fleet Equipment/, @response.body)
+      assert_match(/Most Relevant/, @response.body) # sort order
 
       CurrentDomain.unstub(:cname)
     end
@@ -406,8 +425,61 @@ class BrowseControllerTest < ActionController::TestCase
 
       get(:embed, front_end_url_params)
       assert_response :success
+      assert_match(/Sold Fleet Equipment/, @response.body)
+      assert_match(/Most Accessed/, @response.body) # sort order
 
       CurrentDomain.unstub(:cname)
+    end
+
+    ##################################################################
+    # Let's check default paths just to make sure we don't break these
+
+    should 'send correct default params to Core with embed' do
+      CoreServer::Base.unstub(:connection) # stubbed willy nilly
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
+        .with(query: default_core_cly_params,
+              headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: clytemnestra_payload, headers: {})
+      get(:embed, {})
+      assert_response :success
+      assert_match(/This is my new view blah blah blah/, @response.body)
+      assert_match(/Most Relevant/, @response.body) # sort order
+    end
+
+    should 'send correct default params to Core with browse' do
+      CoreServer::Base.unstub(:connection) # stubbed willy nilly
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
+        .with(query: default_core_cly_params,
+              headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: clytemnestra_payload, headers: {})
+      get(:show, {})
+      assert_response :success
+      assert_match(/This is my new view blah blah blah/, @response.body)
+      assert_match(/Most Accessed/, @response.body) # sort order
+    end
+
+    should 'send default params to Cetera with embed' do
+      stub_feature_flags_with(:cetera_search, true)
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
+        .with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: cetera_payload, headers: {})
+
+      get(:embed, {})
+      assert_response :success
+      assert_match(/Sold Fleet Equipment/, @response.body)
+      assert_match(/Newest/, @response.body) # sort order
+    end
+
+    should 'send default params to Cetera with browse' do
+      stub_feature_flags_with(:cetera_search, true)
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
+        .with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: cetera_payload, headers: {})
+
+      get(:show, {})
+      assert_response :success
+      assert_match(/Sold Fleet Equipment/, @response.body)
+      assert_match(/Recently Updated/, @response.body) # sort order
     end
   end
 end

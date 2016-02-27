@@ -66,11 +66,10 @@ describe('AssetSelectorRenderer', function() {
 
       describe('with an `assetSelectorContainerElement` property that is a jQuery object', function() {
 
-        it('appends a `.modal-overlay` and a `.modal-dialog` to the `assetSelectorContainerElement`', function() {
+        it('appends a `.modal-dialog` to the `assetSelectorContainerElement`', function() {
 
           new AssetSelectorRenderer(options); //eslint-disable-line no-new
 
-          assert.equal(container.find('.modal-overlay').length, 1);
           assert.equal(container.find('.modal-dialog').length, 1);
         });
       });
@@ -103,7 +102,7 @@ describe('AssetSelectorRenderer', function() {
       $(document).trigger(event);
     });
 
-    it('dispatches an `ASSET_SELECTOR_CLOSE` action when the overlay is clicked', function(done) {
+    it('dispatches an `ASSET_SELECTOR_CLOSE` action when the area outside modal-dialog is clicked', function(done) {
 
       storyteller.dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
@@ -117,7 +116,7 @@ describe('AssetSelectorRenderer', function() {
         done();
       });
 
-      container.find('.modal-overlay').trigger('click');
+      container.trigger('click');
     });
 
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the modal dialog close button is clicked', function(done) {

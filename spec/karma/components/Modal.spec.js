@@ -82,9 +82,23 @@ describe('Modal jQuery plugin', function() {
       assert.isFalse(node.hasClass('hidden'));
     });
 
-    it('should emit modal-dismissed on overlay click', function(done) {
+    it('should hide overflow', function() {
+      assert.isTrue($('html').css('overflow') === 'hidden');
+    });
+  });
+
+  describe('when closing the modal', function() {
+    beforeEach(function() {
+      node.modal({
+        title: 'test title',
+        content: $('<div>')
+      });
+      node.trigger('modal-open');
+    });
+
+    it('should emit modal-dismissed on click outside modal-dialog', function(done) {
       node.on('modal-dismissed', function() { done(); });
-      node.find('.modal-overlay').click();
+      node.click();
     });
 
     it('should emit modal-dismissed on X click', function(done) {
@@ -97,9 +111,14 @@ describe('Modal jQuery plugin', function() {
       $(document).triggerHandler($.Event('keyup', { keyCode: 27 })); //eslint-disable-line new-cap
     });
 
-    it('after modal-close event should become invisible', function() {
+    it('should become invisible', function() {
       node.trigger('modal-close');
       assert.isTrue(node.hasClass('hidden'));
+    });
+
+    it('should set overflow to auto', function() {
+      node.trigger('modal-close');
+      assert.isTrue($('html').css('overflow') === 'auto');
     });
   });
 

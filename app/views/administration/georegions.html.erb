@@ -19,7 +19,7 @@
     <span class="icon"></span>
 
     <h1><%= t("#{prefix}.page_title") %></h1>
-    <h4 id="georegions-page-subtitle"><span><%= t("#{prefix}.page_subtitle", :enabled_count => @view_model.enabled_count, :available_count => @view_model.maximum_enabled_count) %></span></h4>
+    <h4 id="georegions-page-subtitle"><span><%= t("#{prefix}.page_subtitle", :default_count => @view_model.default_count, :available_count => @view_model.maximum_default_count) %></span></h4>
     <h4 id="georegions-learn-more"><span class="icon-info"></span> <span><%= raw(t("#{prefix}.learn_more")) %></span></h4>
   </div>
 </div>
@@ -40,11 +40,12 @@
     </div>
 
     <%= render :partial => 'georegions_table', :locals => {
-        :allow_enablement => @view_model.allow_enablement?,
+        :allow_defaulting => @view_model.allow_defaulting?,
+        :count => @view_model.default_count,
         :failed_jobs => @view_model.failed_curated_region_jobs,
         :georegions => @view_model.curated_regions,
         :jobs => @view_model.curated_region_jobs,
-        :limit => @view_model.maximum_enabled_count,
+        :limit => @view_model.maximum_default_count,
         :prefix => prefix,
         :render_actions => @view_model.curated_regions.any?
       } %>
@@ -67,7 +68,10 @@
         georegionsNS.jobs = <%== @view_model.curated_region_jobs.to_json %>;
         georegionsNS.failedJobs = <%== @view_model.failed_curated_region_jobs.to_json %>;
 
-        georegionsNS.maximumEnabledCount = <%== @view_model.maximum_enabled_count.to_json %>;
+        georegionsNS.maximumDefaultCount = <%==
+          @view_model.maximum_default_count.to_json
+        %>;
+
         georegionsNS.flash = <%==
           flash.map do |type, message|
             { :type => type, :message => message }

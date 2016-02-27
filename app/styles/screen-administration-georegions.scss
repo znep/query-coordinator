@@ -2,6 +2,9 @@ $is-enabled-color: #5F865F;
 $is-disabled-color: #999;
 $is-progress-color: #999;
 $is-failed-color: #CB1919;
+$form-checkbox-background-color: #FFF;
+$form-checkbox-border-color: #E2E2E2;
+$form-checkbox-hover-check-color: #999;
 
 #georegions-page-subtitle {
   display: inline-block;
@@ -47,12 +50,46 @@ $is-failed-color: #CB1919;
   }
 }
 
+.form-checkbox {
+  border: solid 1px $form-checkbox-border-color;
+  border-radius: 1px;
+  background-color: $form-checkbox-background-color;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  vertical-align: text-bottom;
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .icon-check {
+    display: inline-block;
+    vertical-align: text-top;
+    padding-left: 3px;
+    padding-top: 2px;
+
+    &.unchecked {
+      color: $form-checkbox-background-color;
+
+      &:hover,
+      &:focus,
+      &:active {
+        color: $form-checkbox-hover-check-color;
+      }
+    }
+  }
+}
+
 .georegions-table {
   .name {
     width: 30%;
   }
   .status {
-    width: 40%;
+    width: 35%;
 
     .substatus {
       font-size: 0.5em;
@@ -97,8 +134,14 @@ $is-failed-color: #CB1919;
       opacity: 1;
     }
   }
+  .default {
+    .icon-info {
+      font-size: 1.3em;
+      padding-left: 0.2em;
+    }
+  }
   .edit-action, .date-added {
-    width: 6em;
+    width: 10em;
   }
   td.edit-action, th.edit-action {
     padding-right: 0;

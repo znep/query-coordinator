@@ -4,7 +4,7 @@ module ViewModels
       attr_reader :curated_regions
       attr_reader :curated_region_jobs
       attr_reader :failed_curated_region_jobs
-      attr_reader :maximum_enabled_count
+      attr_reader :maximum_default_count
       attr_reader :site_title
 
       def initialize(curated_regions, curated_region_jobs, failed_curated_region_jobs, site_title)
@@ -24,20 +24,20 @@ module ViewModels
         # The set of failed curated region jobs (from ISS)
         @failed_curated_region_jobs = failed_curated_region_jobs
 
-        @maximum_enabled_count = 5 # Move to config?
+        @maximum_default_count = 5 # Move to config?
         @site_title = site_title
       end
 
-      def enabled_count
-        curated_regions.count(&:enabled?)
+      def default_count
+        curated_regions.count(&:default?)
       end
 
       def available_count
         curated_regions.count
       end
 
-      def allow_enablement?
-        enabled_count < maximum_enabled_count
+      def allow_defaulting?
+        default_count < maximum_default_count
       end
 
       def translations

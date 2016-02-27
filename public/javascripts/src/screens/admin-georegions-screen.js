@@ -11,10 +11,19 @@ function t(str, props) {
 const georegionsNS = blist.namespace.fetch('blist.georegions');
 georegionsNS.flash = georegionsNS.flash || {};
 
-function onEnableSuccess(id, newState, { error, message, success }) {
+function onDefaultSuccess(id, newState, { error, message, success }) {
   if (success) {
     setFlashMessage(message, 'notice');
-    updateGeoregion(id, { enabledFlag: newState });
+    updateGeoregion(id, { defaultFlag: newState });
+  } else if (error) {
+    setFlashMessage(message, 'error');
+  }
+}
+
+function onEnableSuccess(id, newEnabledState, newDefaultState, { error, message, success }) {
+  if (success) {
+    setFlashMessage(message, 'notice');
+    updateGeoregion(id, { enabledFlag: newEnabledState, defaultFlag: newDefaultState });
   } else if (error) {
     setFlashMessage(message, 'error');
   }
@@ -57,7 +66,7 @@ function addGeoregionJob(jobStatus, boundary) {
     // Properties that mimic the payload from georegion_adder.rb
     jobParameters: {
       defaultFlag: false,
-      enabledFlag: false,
+      enabledFlag: true,
       geometryLabel: boundary.geometryLabel,
       name: boundary.name,
       type: 'prepare_curated_region'
@@ -67,17 +76,20 @@ function addGeoregionJob(jobStatus, boundary) {
   renderPage();
 }
 
-function renderTables(georegions, allowEnablement) {
+function renderTables(georegions, allowDefaulting, defaultCount, defaultLimit) {
   const authenticityToken = $('.georegions-controls-custom [name="authenticity_token"]').value();
   const baseUrlPath = '/admin/geo/';
   const baseTableProps = {
-    allowEnablement,
+    allowDefaulting,
     authenticityToken,
-    baseUrlPath
+    baseUrlPath,
+    defaultCount,
+    defaultLimit
   };
 
   ReactDOM.render(
     <GeoregionAdminTable
+      onDefaultSuccess={onDefaultSuccess}
       onEdit={showConfigureModal}
       onEnableSuccess={onEnableSuccess}
       rows={georegions}
@@ -86,9 +98,9 @@ function renderTables(georegions, allowEnablement) {
   );
 }
 
-function renderPageSubtitle(enabledCount, availableCount) {
+function renderPageSubtitle(defaultCount, availableCount) {
   const pageSubtitle = t('page_subtitle', {
-    enabled_count: String(enabledCount),
+    default_count: String(defaultCount),
     available_count: String(availableCount)
   });
 
@@ -127,11 +139,13 @@ function renderPage() {
   );
 
   const georegions = georegionsNS.georegions.concat(georegionJobs, georegionFailedJobs);
-  const enabledBoundaries = _.filter(georegions, 'enabledFlag');
-  const allowEnablement = enabledBoundaries.length < georegionsNS.maximumEnabledCount;
+  const defaultBoundaries = _.filter(georegions, 'defaultFlag');
+  const allowDefaulting = defaultBoundaries.length < georegionsNS.maximumDefaultCount;
+  const defaultCount = defaultBoundaries.length;
+  const defaultLimit = georegionsNS.maximumDefaultCount;
 
-  renderTables(georegions, allowEnablement);
-  renderPageSubtitle(enabledBoundaries.length, georegionsNS.maximumEnabledCount);
+  renderTables(georegions, allowDefaulting, defaultCount, defaultLimit);
+  renderPageSubtitle(defaultCount, defaultLimit);
   renderFlashMessage(georegionsNS.flash);
 }
 
@@ -310,5 +324,12 @@ $(() => {
     if (!$(event.target).hasClass('disabled')) {
       $('#selectDataset').jqmShow();
     }
+  });
+
+  // Set default region code column flyout
+  const flyoutTarget = $('.georegions-table .icon-info');
+  flyoutTarget.socrataTip({
+    content: t('default_georegions_flyout'),
+    width: '300px'
   });
 });

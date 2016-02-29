@@ -1478,7 +1478,6 @@ sl:
         title: Odpri združevanje podatkov
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:

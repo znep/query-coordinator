@@ -276,13 +276,12 @@ function showInitialConfigureModal(uid) {
   ReactDOM.render(
     <ConfigureBoundaryForm
       allowPrimaryKeySelection={enablePrimaryKeySelection}
-      cancelLabel={$.t('core.dialogs.back')}
       fetchInitialState={fetchInitialState}
       id={uid}
       onCancel={onBack}
       onSave={onSave}
       requiredFields={requiredFields}
-      saveLabel={$.t('core.dialogs.create')}
+      shouldConfirm
       title={t('configure_boundary.configure_boundary')}
       />,
     $reactModal.get(0)

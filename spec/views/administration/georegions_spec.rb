@@ -13,6 +13,7 @@ describe 'administration/georegions.html.erb' do
       :failed_curated_region_jobs => []
     )
   end
+  let(:curated_region_view) { double(View, :createdAt => 1456530636244) }
   let(:enabled_curated_region) do
     CuratedRegion.new(
       'id' => 1,
@@ -77,6 +78,7 @@ describe 'administration/georegions.html.erb' do
     allow_any_instance_of(ActionView::Helpers::CaptureHelper).to receive(:content_for)
     allow_any_instance_of(Jammit::Helper).to receive(:include_javascripts).and_return('')
     allow_any_instance_of(ApplicationHelper).to receive(:render_translations).and_return('')
+    allow_any_instance_of(CuratedRegion).to receive(:view).and_return(curated_region_view)
     stub_template 'administration/_left_nav.html.erb' => ''
   end
 

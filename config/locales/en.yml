@@ -1642,7 +1642,6 @@ en:
         title: Open Data Federation
       georegions:
         actions: Actions
-        add_new: Add new
         choose_a_dataset: Choose a Layer
         configure_boundary:
           boundary_geometry_label_field_error: The boundary must have a shape label.
@@ -1653,6 +1652,9 @@ en:
           boundary_name_required_page_error: "Unable to save: the boundary must have a name."
           choose_a_column: Choose a column...
           configure_boundary: Configure Boundary
+          confirm_html: "<p>We're ready to create \"%{spatial_lens_name}\" as a Spatial Lens based on the boundary \"%{boundary_name}\".</p><p>The Spatial Lens is separate from the boundary and will stay the same even if you update your boundary.</p>"
+          confirm_title: Create Your Spatial Lens
+          next: Next
           page_title: Manage Boundaries
           primary_key_column: Shape ID
           primary_key_column_description: The column that contains the unique ID that identifies each shape in the boundary.  If there isn’t such a column, pick any unique column.
@@ -1662,7 +1664,9 @@ en:
           save_success: Changes saved successfully.
           shape_label: Shape Label
           shape_label_description: "The column that should be used as the label for each shape (ex: a column containing \"WA\" and \"NY\")."
+        create_new: Create New
         custom_georegions: Custom Boundaries
+        date_added: Date Added
         description: Configure custom boundaries that can be used to create Spatial Lens maps
         default_georegions: Socrata Default Boundaries
         delete: Delete
@@ -1676,9 +1680,11 @@ en:
         enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         flashes:
           add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
+        learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
         page_title: Manage Spatial Lens
         page_subtitle: You have enabled %{enabled_count} of %{available_count} available boundaries.
-        learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
+        picker_explanation: Choose a geospatial layer that you want to use as the basis for your Spatial Lens. You can click on the name to preview the layer in a new browser tab.
+        picker_support_html: Can't find what you're looking for? View the article <a href="https://support.socrata.com/hc/en-us/articles/217039278">Finding a Dataset for your Spatial Lens</a> to learn more.
         region_name: Boundary Name
         remove: Remove
         status_disabled: Not enabled

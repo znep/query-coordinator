@@ -52,7 +52,7 @@ $is-failed-color: #CB1919;
     width: 30%;
   }
   .status {
-    width: 50%;
+    width: 40%;
 
     .substatus {
       font-size: 0.5em;
@@ -83,7 +83,7 @@ $is-failed-color: #CB1919;
     form {
       display: inline-block;
       float: right;
-      width: 75%;
+      width: 65%;
     }
   }
   .status, .edit-action {
@@ -97,8 +97,8 @@ $is-failed-color: #CB1919;
       opacity: 1;
     }
   }
-  .edit-action {
-    width: 10em;
+  .edit-action, .date-added {
+    width: 6em;
   }
   td.edit-action, th.edit-action {
     padding-right: 0;
@@ -139,6 +139,18 @@ $is-failed-color: #CB1919;
     position: absolute;
     top: calc(50% - #{$img-size / 2});
     left: calc(50% - #{$img-size / 2});
+  }
+}
+
+.spatial-lens-icon {
+  margin: 0 auto;
+}
+
+.confirmation {
+  text-align: center;
+
+  p {
+    margin: 1em auto;
   }
 }
 

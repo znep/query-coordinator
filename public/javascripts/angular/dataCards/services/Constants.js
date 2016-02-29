@@ -35,10 +35,6 @@ function Constants() {
     MAX_NUMBER_OF_SUGGESTIONS: 10,
     MAX_SUGGESTION_LENGTH: 85,
 
-    // Customization parameters.
-    CUSTOMIZATION_DISABLED_CARD_TYPES: ['timeline'],
-    CUSTOMIZATION_DISABLED_DATA_TYPES: ['boolean'],
-
     // Visualization
     MAPBOX_SIMPLE_GREY_BASE_LAYER_URL: 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
     MAPBOX_SIMPLE_BLUE_BASE_LAYER_URL: 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
@@ -143,8 +139,8 @@ function Constants() {
     // QFB
     MAX_OPERAND_LENGTH: 85,
 
-    // Aggregation Chooser
-    AGGREGATION_MAX_COLUMN_COUNT: 15,
+    // Card Aggregation Selector
+    AGGREGATION_CARDTYPE_BLACKLIST: ['search', 'feature', 'table'],
     FIELD_NAMES_THAT_CANNOT_BE_AGGREGATED: [
       // TODO: Once a "logical" type property is available, this will need to be updated
       'latitude',
@@ -155,9 +151,6 @@ function Constants() {
       'x',
       'y'
     ],
-
-    // Card Aggregation Selector
-    AGGREGATION_CARDTYPE_BLACKLIST: ['search', 'feature', 'table'],
 
     // This is a filter we use to exclude dates outside the maximum legal date value
     // as a string in Javascript.  We set it to 01/01 so we can still use rollups

@@ -49,36 +49,16 @@ describe('quickFilterBar', function() {
   }
 
   describe('quickFilterBarTitle', function() {
-    it('should use the aggregation-based title if the page metadata is v3 or lower', function() {
-      self.ServerConfig.override('enableDataLensCardLevelAggregation', true);
-      createQuickFilterBar({ version: 3 });
-
-      expect(self.element.scope().quickFilterBarTitle).to.equal(
-        'Showing <span class="light">the number of rows</span>'
-      );
-    });
-
-    it('should use the aggregation-based title if the card-level aggregation feature flag is disabled', function() {
-      self.ServerConfig.override('enableDataLensCardLevelAggregation', false);
+    it('should contain the correct title if the page is not filtered', function() {
       createQuickFilterBar();
-
-      expect(self.element.scope().quickFilterBarTitle).to.equal(
-        'Showing <span class="light">the number of rows</span>'
-      );
-    });
-
-    it('should use the rowDisplayUnit-based title if the page is version 4 and the card-level aggregation feature flag is enabled', function() {
-      self.ServerConfig.override('enableDataLensCardLevelAggregation', true);
-      createQuickFilterBar({ version: 4 });
 
       expect(self.element.scope().quickFilterBarTitle).to.equal(
         'Showing <span class="light">all rows</span>'
       );
     });
 
-    it('should change the new title if the page is filtered', inject(function(Filter) {
-      self.ServerConfig.override('enableDataLensCardLevelAggregation', true);
-      createQuickFilterBar({ version: 4 });
+    it('should contain the correct title if the page is filtered', inject(function(Filter) {
+      createQuickFilterBar();
       var cards = setCards('field1');
       cards[0].set('activeFilters', [ new self.Filter.IsNullFilter(true) ]);
       expect(self.element.scope().quickFilterBarTitle).to.equal(

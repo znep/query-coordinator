@@ -33,7 +33,6 @@ function CardDirective(
       $scope.descriptionCollapsed = true;
       $scope.$bindObservable('expanded', model$.observeOnLatest('expanded'));
 
-      $scope.$bindObservable('isCustomizable', model$.observeOnLatest('isCustomizable'));
       $scope.$bindObservable('isCustomizableMap', model$.observeOnLatest('isCustomizableMap'));
       $scope.$bindObservable('isExportable', model$.observeOnLatest('isExportable'));
       $scope.$bindObservable('showDescription', model$.observeOnLatest('showDescription'));
@@ -171,10 +170,8 @@ function CardDirective(
         $scope.model.page.toggleExpanded($scope.model);
       };
 
-      $scope.customizeCardIfCustomizable = function(modelIsCustomizable) {
-        if (modelIsCustomizable) {
-          $scope.$emit('customize-card-with-model', $scope.model);
-        }
+      $scope.customizeCard = function() {
+        $scope.$emit('customize-card-with-model', $scope.model);
       };
 
       $scope.deleteCard = function() {

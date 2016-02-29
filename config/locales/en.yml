@@ -71,19 +71,6 @@ en:
           feature_map: Visualize this column as a feature map
           search_card: Visualize this column as a search card
           timeline_chart: Visualize this column as a timeline chart
-      aggregation_chooser:
-        by_the_number_of: <span class="information">by the</span> number of
-        by_the_sum_of: <span class="information">by the</span> sum of
-        count_label: count {0} per element
-        description: 'See data elements sized or colored by:'
-        option_disabled: This column cannot be used with a<br>number of aggregate
-        sum_label: add for each {0}
-        the_number_of: The number of
-        the_sum_of: The sum of
-        title: Aggregation
-        too_many_columns:
-          message: At this time we are not able to provide summing as an aggregate for Data Lens pages that have more than {0} columns of type Number or Money.
-          title: Looks like this dataset contains more than {0} number columns
       api_explorer:
         additional_resources: 'Additional resources for this API:'
         api_button: API

@@ -14,8 +14,7 @@ function columnAndVisualizationSelector(
   Constants,
   DatasetColumnsService,
   $log,
-  rx,
-  ServerConfig) {
+  rx) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -161,9 +160,7 @@ function columnAndVisualizationSelector(
       $scope.$bindObservable('shouldShowAggregationSelector', selectedCardModel$.
         observeOnLatest('cardType').
         map(function(cardType) {
-          return $scope.page.version >= 4 &&
-            ServerConfig.get('enableDataLensCardLevelAggregation') &&
-            !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
+          return !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
         }));
 
       $scope.$bindObservable(

@@ -193,6 +193,7 @@ en:
           current_filter: Current Filter
           all_rows: All Rows
           not_available: N/A
+          not_available_specific: Not available for this dataset.
         image:
           header: Visualization as Image
           description: Save a PNG-image file of a visualization

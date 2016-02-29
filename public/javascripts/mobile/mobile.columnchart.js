@@ -22,6 +22,7 @@ module.exports = function(values, $target) {
     showFiltered: true,
     'columnName': values.columnName,
     'configuration': {
+      'isMobile': true,
       'localization': {
         'NO_VALUE': 'No value',
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',

@@ -1639,7 +1639,7 @@ en:
           boundary_name_required_page_error: "Unable to save: the boundary must have a name."
           choose_a_column: Choose a column...
           configure_boundary: Configure Boundary
-          confirm_html: "<p>We're ready to create \"%{spatial_lens_name}\" as a Spatial Lens based on the boundary \"%{boundary_name}\".</p><p>The Spatial Lens is separate from the boundary and will stay the same even if you update your boundary.</p>"
+          confirm_html: "<p>We're ready to create \"%{spatial_lens_name}\" as a Spatial Lens based on the boundary \"%{boundary_name}\".</p><p>Note that the Spatial Lens is separate from the source file, and it will stay the same even if you update your boundary.</p>"
           confirm_title: Create Your Spatial Lens
           next: Next
           page_title: Manage Boundaries

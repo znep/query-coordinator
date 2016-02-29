@@ -241,7 +241,7 @@ const ConfigureBoundaryForm = React.createClass({
         <div>
           <div className="confirmation">
             <h2>{ t('configure_boundary.confirm_title') }</h2>
-            <img src="/images/admin/geo/spatial-lens-icon.png" alt="" className="spatial-lens-icon" />
+            <img src="/images/admin/geo/spatial-lens-icon.png" alt="" height="200" className="spatial-lens-icon" />
             <div dangerouslySetInnerHTML={confirmation} />
           </div>
           <form className="commonForm" onSubmit={this.handleSubmit}>

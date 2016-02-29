@@ -91,6 +91,7 @@ describe ::ViewModels::Administration::Georegions do
   before(:each) do
     allow_any_instance_of(CuratedRegion).to receive(:primary_key_columns).and_return(nil)
     allow_any_instance_of(CuratedRegion).to receive(:geometry_label_columns).and_return(nil)
+    allow_any_instance_of(CuratedRegion).to receive(:datetime_added).and_return(DateTime.now)
   end
 
   it 'calculates default count' do

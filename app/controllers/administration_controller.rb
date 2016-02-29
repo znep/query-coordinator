@@ -318,6 +318,26 @@ class AdministrationController < ApplicationController
     )
   end
 
+  def poll_georegion_jobs
+    begin
+      message = {
+        :georegions => CuratedRegion.all,
+        :jobs => incomplete_curated_region_jobs,
+        :failedJobs => failed_curated_region_jobs
+      }
+      success = true
+    rescue StandardError => ex
+      message = {
+        :errorMessage => "Polling error: #{ex}"
+      }
+      success = false
+    end
+    render :json => {
+      :message => message,
+      :success => success
+    }.to_json, :status => (success ? 200 : 500)
+  end
+
 
   #
   # Manage Users and User Roles

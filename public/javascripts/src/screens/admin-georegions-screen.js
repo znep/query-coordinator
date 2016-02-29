@@ -4,12 +4,12 @@ import FlashMessage from '../components/flash-message';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const commonNS = blist.namespace.fetch('blist.common');
+const georegionsNS = blist.namespace.fetch('blist.georegions');
+
 function t(str, props) {
   return $.t('screens.admin.georegions.' + str, props);
 }
-
-const georegionsNS = blist.namespace.fetch('blist.georegions');
-georegionsNS.flash = georegionsNS.flash || {};
 
 function onDefaultSuccess(id, newState, { error, message, success }) {
   if (success) {
@@ -37,6 +37,63 @@ function setFlashMessage(message, type) {
 function clearFlashMessage() {
   georegionsNS.flash = [];
   renderPage();
+}
+
+function normalizeGeoregions() {
+  // For failed/queued/processing jobs, copy job parameters out of nested objects,
+  // making the job have a shape more similar to a completed region
+  const decorateJob = (job, metadataObject) => {
+    _.each(metadataObject.jobParameters, (paramValue, paramKey) => {
+      // Do not inline this assignment; without curly braces,
+      // ES6 will inject implicit return, which can exit _.each prematurely.
+      job[paramKey] = paramValue;
+    });
+    job.id = metadataObject.common.externalId;
+    return job;
+  };
+
+  const georegions = _.sortByOrder(georegionsNS.georegions, ['dateAdded'], [false]);
+  const jobs = _.map(georegionsNS.jobs, (job) => decorateJob(job, job));
+  const failedJobs = _.map(georegionsNS.failedJobs, (job) => decorateJob(job, job.latest_event.info));
+
+  return georegions.concat(jobs, failedJobs);
+}
+
+function pollGeoregions(timeout) {
+  georegionsNS.poller = setTimeout(updateAllGeoregions, timeout, timeout);
+}
+
+function updateAllGeoregions(timeout) {
+  // The backoff timings were calibrated against a local dev environment
+  // such that results for small boundaries (or failures that occurred early)
+  // were reported after 1 polling call, while results for larger boundaries
+  // (including late-stage failures) were usually reported after 3-4 polls.
+  const nextPollInterval = Math.min(
+    (1.25 * timeout) + (2 * 1000),
+    60 * 1000
+  );
+
+  $.ajax({
+    url: '/admin/geo/poll',
+    type: 'post',
+    dataType: 'json',
+    success: ({ message, success }) => {
+      if (success) {
+        const { georegions, jobs, failedJobs } = message;
+        georegionsNS.georegions = georegions;
+        georegionsNS.jobs = jobs;
+        georegionsNS.failedJobs = failedJobs;
+
+        if (georegionsNS.jobs.length > 0) {
+          pollGeoregions(nextPollInterval);
+        }
+
+        renderPage();
+      } else if (message.errorMessage) {
+        console.error(message.errorMessage);
+      }
+    }
+  });
 }
 
 function updateGeoregion(id, newValue) {
@@ -72,7 +129,15 @@ function addGeoregionJob(jobStatus, boundary) {
       type: 'prepare_curated_region'
     }
   });
-  georegionsNS.jobs.push(newJob);
+  georegionsNS.jobs.unshift(newJob);
+
+  // Wait a few seconds before starting to poll — jobs don't finish instantly.
+  // See note on timings above.
+  const initialPollInterval = 8 * 1000;
+  const pollingDelay = 2 * 1000;
+  clearTimeout(georegionsNS.poller);
+  setTimeout(pollGeoregions, pollingDelay, initialPollInterval);
+
   renderPage();
 }
 
@@ -118,27 +183,7 @@ function renderFlashMessage(messages) {
 }
 
 function renderPage() {
-  // For failed/queued/processing jobs, copy job parameters out of nested objects,
-  // making the job have a shape more similar to a completed region
-  const decorateJob = (job, metadataObject) => {
-    _.each(metadataObject.jobParameters, (paramValue, paramKey) => {
-      // Odd quirk: if this function isn't wrapped in curly braces,
-      // not all properties will be copied over!
-      job[paramKey] = paramValue;
-    });
-    job.id = metadataObject.common.externalId;
-    return job;
-  };
-  const georegionJobs = _.map(
-    georegionsNS.jobs,
-    (job) => decorateJob(job, job)
-  );
-  const georegionFailedJobs = _.map(
-    georegionsNS.failedJobs,
-    (job) => decorateJob(job, job.latest_event.info)
-  );
-
-  const georegions = georegionsNS.georegions.concat(georegionJobs, georegionFailedJobs);
+  const georegions = normalizeGeoregions();
   const defaultBoundaries = _.filter(georegions, 'defaultFlag');
   const allowDefaulting = defaultBoundaries.length < georegionsNS.maximumDefaultCount;
   const defaultCount = defaultBoundaries.length;
@@ -303,10 +348,11 @@ function showInitialConfigureModal(uid) {
   $reactModal.jqmShow();
 }
 
+// end function definitions; begin immediately executed code
+
 georegionsNS.renderPage = renderPage;
 georegionsNS.clearFlashMessage = clearFlashMessage;
-
-const commonNS = blist.namespace.fetch('blist.common');
+georegionsNS.flash = georegionsNS.flash || [];
 
 commonNS.georegionSelected = (datasetId) => {
   $('#selectDataset').jqmHide();
@@ -314,9 +360,11 @@ commonNS.georegionSelected = (datasetId) => {
 };
 
 $(() => {
-  const georegionsNamespace = blist.namespace.fetch('blist.georegions');
+  georegionsNS.renderPage();
 
-  georegionsNamespace.renderPage();
+  if (georegionsNS.jobs.length > 0) {
+    pollGeoregions(4 * 1000);
+  }
 
   $('[data-action="add"]').click((event) => {
     event.preventDefault();

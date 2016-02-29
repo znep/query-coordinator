@@ -336,71 +336,88 @@ function TimelineChart(element, vif) {
   }
 
   function _attachEvents(el) {
-    el.on(
-      'mouseenter mousemove',
-      '.timeline-chart',
-      showFlyout
-    );
-
-    el.on(
-      'mouseleave',
-      '.timeline-chart',
-      mouseHasLeftChart
-    );
-
-    if (_interactive) {
+    if (vif.configuration.isMobile) {
       el.on(
-        'mousedown mouseup',
+        'click touchmove',
         '.timeline-chart',
-        leftMouseButtonStateHasChanged
+        showFlyout
+      );
+    } else {
+      el.on(
+        'mouseenter mousemove',
+        '.timeline-chart',
+        showFlyout
       );
 
       el.on(
-        'mousedown',
+        'mouseleave',
+        '.timeline-chart',
+        mouseHasLeftChart
+      );
+
+
+      if (_interactive) {
+        el.on(
+          'mousedown mouseup',
+          '.timeline-chart',
+          leftMouseButtonStateHasChanged
+        );
+
+        el.on(
+          'mousedown',
+          '.timeline-chart-clear-selection-label',
+          handleClearSelectionLabelMousedownEvent
+        );
+      }
+
+      el.on(
+        'mousemove',
         '.timeline-chart-clear-selection-label',
-        handleClearSelectionLabelMousedownEvent
+        showFlyout
       );
     }
-
-    el.on(
-      'mousemove',
-      '.timeline-chart-clear-selection-label',
-      showFlyout
-    );
   }
 
   function _unattachEvents(el) {
-    el.off(
-      'mouseenter mousemove',
-      '.timeline-chart',
-      showFlyout
-    );
-
-    el.off(
-      'mouseleave',
-      '.timeline-chart',
-      hideFlyout
-    );
-
-    if (_interactive) {
+    if (vif.configuration.isMobile) {
       el.off(
-        'mousedown mouseup',
+        'click touchmove',
         '.timeline-chart',
-        leftMouseButtonStateHasChanged
+        showFlyout
+      );
+    } else {
+      el.off(
+        'mouseenter mousemove',
+        '.timeline-chart',
+        showFlyout
       );
 
       el.off(
-        'mousedown',
+        'mouseleave',
+        '.timeline-chart',
+        hideFlyout
+      );
+
+      if (_interactive) {
+        el.off(
+          'mousedown mouseup',
+          '.timeline-chart',
+          leftMouseButtonStateHasChanged
+        );
+
+        el.off(
+          'mousedown',
+          '.timeline-chart-clear-selection-label',
+          handleClearSelectionLabelMousedownEvent
+        );
+      }
+
+      el.off(
+        'mousemove',
         '.timeline-chart-clear-selection-label',
-        handleClearSelectionLabelMousedownEvent
+        showFlyout
       );
     }
-
-    el.off(
-      'mousemove',
-      '.timeline-chart-clear-selection-label',
-      showFlyout
-    );
   }
 
   /**
@@ -2096,6 +2113,15 @@ function TimelineChart(element, vif) {
     enterDefaultState();
   }
 
+  function clearHighlightedLabels() {
+    _chartElement.find('.x-tick-label').removeClass('highlight');
+  }
+
+  function highlightLabel(target) {
+    clearHighlightedLabels();
+    $(target).addClass('highlight');
+  }
+
   /**
    * @param {DOM Element} target - A DOM element with data attributes
    *                               describing an interval's start date,
@@ -2103,6 +2129,15 @@ function TimelineChart(element, vif) {
    *                               values and the formatted flyout label.
    */
   function highlightChartByInterval(target) {
+    if (vif.configuration.isMobile) {
+      if (!$(target).hasClass('x-tick-label')) {
+        clearChartHighlight();
+        return;
+      } else {
+        highlightLabel(target);
+      }
+    }
+
     var startDate;
     var endDate;
     startDate = new Date(target.getAttribute('data-start'));
@@ -2231,6 +2266,10 @@ function TimelineChart(element, vif) {
       element.find('.timeline-chart-highlight-container > g > path').remove();
       element.find('.timeline-chart-highlight-container').
         css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
+
+      if (vif.configuration.isMobile) {
+        self.emitEvent('SOCRATA_VISUALIZATION_TIMELINE_CHART_CLEAR');
+      }
     }
   }
 
@@ -2240,6 +2279,7 @@ function TimelineChart(element, vif) {
    */
   function highlightChart(startDate, endDate) {
     var highlightData;
+    clearHighlightedLabels();
     setCurrentDatumByDate(startDate);
     highlightData = filterChartDataByInterval(
       startDate,
@@ -2292,7 +2332,10 @@ function TimelineChart(element, vif) {
     endDate = new Date(moment(currentDatum.date).add(1, currentPrecision).toDate());
 
     // Dim existing labels and add text and attribute information to the datum label.
-    $chartElement.addClass('dimmed');
+    if (!vif.configuration.isMobile) {
+      $chartElement.addClass('dimmed');
+    }
+
     $datumLabel.
       text(formatDateLabel(startDate, false, currentPrecision)).
       attr('data-start', startDate).
@@ -2386,7 +2429,10 @@ function TimelineChart(element, vif) {
 
   function hideDatumLabel() {
     $datumLabel.hide();
-    $chartElement.removeClass('dimmed');
+
+    if (!vif.configuration.isMobile) {
+      $chartElement.removeClass('dimmed');
+    }
   }
 
   /**
@@ -2584,12 +2630,20 @@ function TimelineChart(element, vif) {
       return;
     }
 
-    offsetX = mousePosition.clientX - element.offset().left;
+    if (vif.configuration.isMobile && mousePosition.originalEvent.touches) {
+      offsetX = mousePosition.originalEvent.touches[0].clientX - element.offset().left;
+    } else {
+      offsetX = mousePosition.clientX - element.offset().left;
+    }
 
     // The method 'getBoundingClientRect().top' must be used here
     // because the offset of expanded cards changes as the window
     // scrolls.
-    offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
+    if (vif.configuration.isMobile && mousePosition.originalEvent.touches) {
+      offsetY = mousePosition.originalEvent.touches[0].clientY - element.get(0).getBoundingClientRect().top;
+    } else {
+      offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
+    }
 
     // mousePositionWithinChartElement is a global variable that is
     // used elsewhere as well
@@ -2638,7 +2692,11 @@ function TimelineChart(element, vif) {
         // the label that is currently under the mouse.
         } else {
           if (!allChartLabelsShown && !mousePositionIsSelectionLabel) {
-            highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePositionTarget);
+            if (vif.configuration.isMobile) {
+              highlightChartByInterval(mousePosition.target);
+            } else {
+              highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePositionTarget);
+            }
           } else {
             highlightChartByInterval(mousePosition.target);
           }

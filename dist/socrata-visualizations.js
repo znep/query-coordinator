@@ -7056,7 +7056,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      utils.assertHasProperty(rules, 'other');
 
-	      if (_.isNull(value) || !_.isFinite(value)) {
+	      if (_.isNull(value) || !isFinite(value)) {
 	        return 'No value';
 	      }
 

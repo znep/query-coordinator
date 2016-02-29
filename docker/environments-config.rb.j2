@@ -10,7 +10,7 @@ Frontend::Application.configure do
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local = {{ CONSIDER_ALL_REQUESTS_LOCAL | default('false') }}
-  config.action_controller.perform_caching = {{ ACTION_CONTROLLER_PERFORM_CHECKING | default('true') }}
+  config.action_controller.perform_caching = {{ ACTION_CONTROLLER_PERFORM_CACHING | default('true') }}
 
   # Ordinarily this should be turned off in staging, rc, and production environments
   # However, in AWS this must be set to true until we figure out the routing story for

@@ -31,7 +31,7 @@ angular.module('dataCards.models').
         this.uniqueId = initialValues.id || _.uniqueId();
 
         var latestSchemaVersion = schemas.getLatestSchemaVersion();
-        if (_.isNumber(this.version) && this.version >= latestSchemaVersion) {
+        if (_.isNumber(this.version) && this.version > latestSchemaVersion) {
           $log.warn(`Page metadata version is ${this.version}. This is newer than the most recent ` +
             `known page version, which is ${latestSchemaVersion}. Using version ${latestSchemaVersion}.`);
 

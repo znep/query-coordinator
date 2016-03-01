@@ -275,7 +275,6 @@
     {
         var types = [col.renderType].concat(_.values(col.renderType.subColumns || {}));
         return $.isBlank(col.parentColumn) && !cmObj.settings.view.isGrouped() &&
-            !cmObj.settings.view.newBackend &&
             _.any(types, function(t) { return $.subKeyDefined(t, 'filterConditions.details.EQUALS'); });
     };
 

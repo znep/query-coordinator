@@ -210,8 +210,7 @@ section.styleguide-section {
 }
 
 .usage {
-  background-color: $almost-white-bg;
-  border: 1px solid $light-grey-5;
+  background-color: $light-grey-5;
   font-size: ms(-1);
   padding: ms(-2);
   border-radius: 1px;
@@ -245,17 +244,17 @@ section.styleguide-section {
 
   li {
     @include span-columns(1);
-    @include omega(8n);
+    @include omega(4n);
     margin-bottom: ms(5);
     padding-left: 0;
 
     &.icon-sample {
-      height: 34px;
-      width: 38px;
-      background-color: #eee;
-      font-size: ms(1);
+      
+      width: 20%;
+      background-color: $light-grey-5;
+      font-size: ms(3);
       text-align: center;
-      padding-top: 2px;
+      padding-top: ms(-2);
     }
   }
 }

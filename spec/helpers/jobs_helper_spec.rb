@@ -1,3 +1,4 @@
+# Encoding: utf-8
 require 'rails_helper'
 
 describe JobsHelper do
@@ -7,6 +8,7 @@ describe JobsHelper do
     it 'returns a localized description if the translation exists' do
       event = ImportActivityEvent.new({
         :info => {:type => 'no_field_names_in_input'},
+        :status => 'Failure',
         :event_type => 'no_field_names_in_input'
       })
       expect(event_description(event)).to eq('Usually this is because the CSV file we have been ' +
@@ -16,6 +18,7 @@ describe JobsHelper do
     it 'interpolates string arguments from error JSON into messages' do
       event = ImportActivityEvent.new({
         :event_type => 'too_many_records_in_input',
+        :status => 'Failure',
         :info => {:type => 'too_many_records_in_input', :recordCount => 100, :maxRecordCount => 99}
       })
       expect(event_description(event)).to eq('Your data file exceeded the maximum number of ' +
@@ -26,6 +29,7 @@ describe JobsHelper do
     it 'joins lists in the interpolation arguments with commas and "and" before interpolation' do
       event = ImportActivityEvent.new({
         :event_type => 'field_not_in_dataset',
+        :status => 'Failure',
         :info => {:type => 'field_not_in_dataset', :fieldNames => %w(bac witness_gibberish)}
       })
       expect(event_description(event)).to eq('The field name(s) bac and witness_gibberish could ' +
@@ -34,6 +38,7 @@ describe JobsHelper do
 
       event2 = ImportActivityEvent.new({
         :event_type => 'field_not_in_dataset',
+        :status => 'Failure',
         :info => {:type => 'field_not_in_dataset', :fieldNames => %w(bac witness_gibberish location)}
       })
       expect(event_description(event2)).to eq('The field name(s) bac, witness_gibberish, and location could ' +
@@ -44,14 +49,29 @@ describe JobsHelper do
     it 'returns nil if an interpolation argument is missing' do
       event2 = ImportActivityEvent.new({
         :event_type => 'field_not_in_dataset',
+        :status => 'Failure',
         :info => {:type => 'field_not_in_dataset'}
       })
       expect(event_description(event2)).to eq(nil)
     end
 
+    it 'returns "Completed" if the status is success_with_data_errors' do
+      event = ImportActivityEvent.new({
+        :status => 'SuccessWithDataErrors',
+        :info => {:failCount => 99, :rowCount => 1000}
+      })
+      expect(event_description(event)).to eq('Your import file has been imported, ' +
+        'but out of 1000 total rows, we were unable to load 99 rows into ' +
+        'your dataset. If this is unexpected, please download the Failed Rows from the right, ' +
+        'and verify that your values match ' +
+        '<a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">' +
+        'Socrata’s expected formats</a>. You can then re-import just these rows.')
+    end
+
     it 'returns nil if there is no translation' do
       event = ImportActivityEvent.new({
         :event_type => 'out-of-bagels',
+        :status => 'Failure',
         :info => {:type => 'out-of-bagels'}
       })
       expect(event_description(event)).to eq(nil)
@@ -64,6 +84,7 @@ describe JobsHelper do
     it 'returns a localized error message if the translation exists' do
       event = ImportActivityEvent.new({
         :event_type => 'field-not-in-dataset',
+        :status => 'Failure',
         :info => {:type => 'field-not-in-dataset'}
       })
       expect(event_title(event)).to eq('Could not find field in dataset')
@@ -72,9 +93,18 @@ describe JobsHelper do
     it 'returns the error code itself if no translation exists' do
       event = ImportActivityEvent.new({
         :event_type => 'feeling-sleepy',
+        :status => 'Failure',
         :info => {:type => 'feeling-sleepy'}
       })
       expect(event_title(event)).to eq('Error: feeling_sleepy')
+    end
+
+    it 'returns "Completed" if the status is success_with_data_errors' do
+      event = ImportActivityEvent.new({
+        :status => 'SuccessWithDataErrors',
+        :info => {:failCount => 99, :rowCount => 1000}
+      })
+      expect(event_title(event)).to eq('Completed')
     end
 
   end

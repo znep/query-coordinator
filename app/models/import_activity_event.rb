@@ -1,4 +1,5 @@
 class ImportActivityEvent
+  include JobsHelper
 
   def initialize(data)
     @data = data
@@ -9,7 +10,7 @@ class ImportActivityEvent
   end
 
   def status
-    @data[:status]
+    status_to_snake(@data[:status])
   end
 
   def event_time

@@ -144,8 +144,8 @@ describe ImportActivity do
   end
 
   describe '#status' do
-    it 'returns the status it was initialized with, downcased' do
-      expect(activity.status).to eq('failure')
+    it 'returns the status it was initialized with, converted to snake case' do
+      expect(activity.status).to eq('success_with_data_errors')
     end
   end
 

@@ -66,19 +66,6 @@ sw:
           feature_map:
           search_card:
           timeline_chart:
-      aggregation_chooser:
-        by_the_number_of:
-        by_the_sum_of:
-        count_label:
-        description:
-        option_disabled:
-        sum_label:
-        the_number_of:
-        the_sum_of:
-        title:
-        too_many_columns:
-          message:
-          title:
       api_explorer:
         additional_resources:
         api_button:
@@ -179,9 +166,6 @@ sw:
           all_rows:
           not_available:
         image:
-          header:
-          description:
-        standalone_visualization:
           header:
           description:
         choose_card:
@@ -342,17 +326,6 @@ sw:
         save:
         saved:
         saving:
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search:
@@ -1503,7 +1476,6 @@ sw:
         title: Fungua Muungano wa Data
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1534,8 +1506,6 @@ sw:
         enable_success:
         enabled?:
         enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
         page_subtitle:

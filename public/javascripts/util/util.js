@@ -165,36 +165,6 @@ String.prototype.linkify = function(extra)
 // When the Old UX is upgraded to ≥ 1.8, we can remove this line.
 $.fn.addBack = $.fn.andSelf;
 
-$.updateMixpanelProperties = function() {
-  var userId = _.get(blist, 'currentUserId', 'Not Logged In');
-  var isSocrata = _.includes(_.get(blist, 'currentUser.flags'), 'admin');
-  var userRoleName = _.get(blist, 'currentUser.roleName', 'N/A');
-  var datasetOwner = _.get(blist, 'dataset.owner.id', 'N/A');
-  var viewType = _.get(blist, 'dataset.displayName', 'N/A');
-  var viewId = _.get(blist, 'dataset.id', 'N/A');
-  var userOwnsDataset = _.get(blist, 'dataset.owner.id') === userId;
-  var domain = window.location.hostname;
-  var pathName = window.location.pathname;
-  var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
-
-  if (blist.mixpanelLoaded) {
-    mixpanel.register({
-      'User Id': userId,
-      'Socrata Employee': isSocrata,
-      'User Role Name': userRoleName,
-      'Dataset Owner': datasetOwner,
-      'User Owns Dataset': userOwnsDataset,
-      'View Id': viewId,
-      'View Type': viewType,
-      'Domain': domain,
-      'On Page': pathName,
-      'Time Since Page Opened (sec)': time
-    });
-    //set user ID to mixpanels user ID if not logged in
-    mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
-  }
-}
-
 $.hashHref = function(href)
 {
     // IE sticks the entire page URL on, so we can't just strip off the hash;
@@ -439,7 +409,7 @@ $.flattenChildren = function(array, key)
                 return [elem, recurse(elem[key])];
         });
     };
-    return _.flatten(recurse(array));
+    return _.flattenDeep(recurse(array));
 }
 
 $.unwrapHtml = function(html)
@@ -816,7 +786,7 @@ $.clamp = function(number, bounds)
 // Underscore's _.union uses _.uniq, which uses === rather than _.isEqual.
 $.union = function()
 {
-    return _.reduce(_.flatten(arguments), function(memo, item)
+    return _.reduce(_.flattenDeep(arguments), function(memo, item)
     {
         if (_.all(memo, function(val) { return !_.isEqual(item, val); })) { memo.push(item); }
         return memo;

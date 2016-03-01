@@ -142,10 +142,8 @@ describe('Analytics service', function() {
 
       it('should report page load time on natural settling', function() {
         var fakeRenderEndTime = _.now();
-        var getCookieStub = sinon.stub();
+        sinon.stub(socrata.utils, 'getCookie').returns('CSRF-TOKEN');
 
-        getCookieStub.returns('CSRF-TOKEN');
-        socrata.utils.getCookie = getCookieStub;
         expectDefaultMetrics();
 
         // Metric is considered complete after at least one render complete is received,
@@ -155,6 +153,7 @@ describe('Analytics service', function() {
         allowPageToSettle();
 
         flushHttp();
+        socrata.utils.getCookie.restore();
       });
 
       it('should report page load time immediately on user action', function() {

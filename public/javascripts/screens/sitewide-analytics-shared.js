@@ -7,7 +7,9 @@ $(function()
         datasetsListHeader,
         pageViewsName;
 
-    if(blist.feature_flags.dataset_count_v2){
+    var storiesEnabled = !!blist.feature_flags.stories_enabled;
+    var storiesMetricName = 'lense-story-published-v1';
+    if (blist.feature_flags.dataset_count_v2) {
       datasetsMetricName = 'datasets-published-v2';
     } else {
       datasetsMetricName = 'datasets';
@@ -290,6 +292,18 @@ $(function()
           enabled: !blist.feature_flags.embetter_analytics_page
         },
         {
+          id: 'summaryStories',
+          displayName: 'Total Stories',
+          summary: {
+            plus: storiesMetricName,
+            range: false,
+            verbPhrase: 'stories created',
+            verbPhraseSingular: 'story created',
+            deltaPhrase: 'stories'
+          },
+          enabled: (!blist.feature_flags.embetter_analytics_page && storiesEnabled)
+        },
+        {
           id: 'summaryRows',
           displayName: 'Total Rows',
           summary: {
@@ -326,17 +340,27 @@ $(function()
           enabled: blist.feature_flags.embetter_analytics_page || false
         }
       ], function(section) { return section.enabled !== false; }),
-      topListSections: [
+      topListSections: _.compact([
         {
           id: 'topDatasets', displayName: 'Top Datasets',
           heading: datasetsListHeader, renderTo: 'leftColumn',
-          callback: blist.metrics.topDatasetsCallback,  top: 'DATASETS'
+          callback: blist.metrics.topDatasetsCallback, top: 'DATASETS'
         },
         {
-          id: 'topReferrers', displayName: 'Top Referrers',
+          id: 'topReferrers', displayName: 'Top Dataset Referrers',
           heading: 'Referrals', className: 'expanding', renderTo: 'rightColumn',
           callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
         },
+        storiesEnabled ? {
+          id: 'topStories', displayName: 'Top Stories',
+          heading: datasetsListHeader, renderTo: 'leftColumn',
+          callback: blist.metrics.topDatasetsCallback, top: 'STORIES'
+        } : null,
+        storiesEnabled ? {
+          id: 'topStoryReferrers', displayName: 'Top Story Referrers',
+          heading: 'Referrals', className: 'expanding', renderTo: 'rightColumn',
+          callback: blist.metrics.urlMapCallback, top: 'STORY_REFERRERS'
+        } : null,
         {
           id: 'topSearches', displayName: 'Top Search Terms',
           heading: 'Count', renderTo: 'leftColumn',
@@ -349,6 +373,6 @@ $(function()
           heading: 'Embeds', className: 'expanding', renderTo: 'rightColumn',
           callback: blist.metrics.urlMapCallback, top: 'EMBEDS'
         }
-      ]
+      ])
     };
 });

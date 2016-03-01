@@ -177,49 +177,6 @@ describe('Page model', function() {
     return Mockumentary.createPage(pageOverrides, datasetOverrides);
   }
 
-  function aggregationExpectation(
-    instance,
-    aggregationFunction,
-    aggregationColumnIsNull,
-    aggregationFieldName,
-    done
-  ) {
-    instance.observe('aggregation').subscribe(function(aggregation) {
-      expect(aggregation['function']).to.equal(aggregationFunction);
-      expect(aggregation.column === null).to.equal(aggregationColumnIsNull);
-      expect(aggregation.fieldName).to.equal(aggregationFieldName);
-      done();
-    });
-  }
-
-  describe('aggregation ephemeral property', function() {
-
-    it('handles a count aggregation with no primaryAmountField', function(done) {
-      var instance = makePage('count', null);
-      aggregationExpectation(instance, 'count', true, null, done);
-    });
-
-    it('handles a count aggregation with a primaryAmountField that does not exist', function(done) {
-      var instance = makePage('count', 'unused');
-      aggregationExpectation(instance, 'count', true, 'unused', done);
-    });
-
-    it('handles a non-count aggregation with a null primaryAmountField', function(done) {
-      var instance = makePage('sum', null);
-      aggregationExpectation(instance, 'count', true, null, done);
-    });
-
-    it('handles a non-count aggregation with a primaryAmountField that does not exist', function(done) {
-      var instance = makePage('sum', 'unused');
-      aggregationExpectation(instance, 'count', true, null, done);
-    });
-
-    it('handles a non-count aggregation with a valid primaryAmountField', function(done) {
-      var instance = makePage('sum', 'existing_column');
-      aggregationExpectation(instance, 'sum', false, 'existing_column', done);
-    })
-  });
-
   describe('activeFilters ephemeral property', function() {
 
     it('is computed from cards when there is no VIF', function(done) {

@@ -6,18 +6,17 @@
 <% end %>
 
 <% content_for :skip_links do %>
-  <%= link_to t('core.no_js'), '?no_js=true' %>
+  <%= link_to(t('core.no_js'), '?no_js=true') %>
 <% end %>
 
 <%= include_webpack_bundle 'admin-show-job.js' %>
 
 <%= render :partial => 'left_nav' %>
-
 <div class="contentBox withLeftNavigation showJobScreen">
   <div class="adminHeader floating jobs">
     <span class="icon"></span>
     <span class="back-to-jobs-list">
-      <%= link_to t("#{jobs_prefix}.show_page.back"), {:action => 'jobs'} %>
+      <%= link_to(t("#{jobs_prefix}.show_page.back"), {:action => 'jobs'}) %>
     </span>
     <h1><%= t("#{jobs_prefix}.show_page.page_title") %></h1>
   </div>
@@ -30,16 +29,26 @@
     <div>
       <h1><%= t("#{jobs_prefix}.actions.#{@activity.activity_type}") %></h1>
       <p class="file-name">
-        <% if @activity.file_name.blank? %>
-          (<%= t("#{jobs_prefix}.show_page.file_name_unknown") %>
-        <% else %>
-          <%= @activity.file_name %>
-        <% end %>
-        <span class="file-name-to"><%= t("#{jobs_prefix}.show_page.to") %></span>
         <% if @activity.dataset.nil? %>
-          (<%= t("#{jobs_prefix}.index_page.deleted_dataset") %>)
+          <%= t("#{jobs_prefix}.index_page.deleted_dataset") %>
         <% else %>
-          <%= link_to @activity.dataset.name, view_path(@activity.dataset) %>
+          <%= link_to(@activity.dataset.name, view_path(@activity.dataset)) %>
+        <% end %>
+        <% if @activity.file_name.blank? %>
+          <%= t("(#{jobs_prefix}.show_page.file_name_unknown)") %>
+        <% else %>
+          <%= "(#{@activity.file_name})" %>
+        <% end %>
+        <% if @activity.had_working_copy? %>
+          <% working_copy = @activity.working_copy %>
+          <p class="working-copy-annotation">
+            to working copy
+          <% if working_copy && working_copy.is_unpublished? %>
+            <%= link_to(@activity.working_copy_id, view_path(working_copy)) %>
+          <% else %>
+            <%= @activity.working_copy_display %>
+          <% end %>
+          </p>
         <% end %>
       </p>
     </div>
@@ -49,36 +58,55 @@
         <%= t("#{jobs_prefix}.statuses.#{@activity.status}") %>
       </p>
       <p class="result-time-stamp time-stamp" data-epoch-seconds="<%= @activity.created_at.to_i %>">
-        <span><%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
-        (<%= HumaneDateHelper.humane_date(@activity.created_at) %>)
+        <span><%= @activity.last_updated.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
+        (<%= HumaneDateHelper.humane_date(@activity.last_updated) %>)
       </p>
     </div>
   </div>
 
-  <div class="import-job-events">
-    <% failure_events = @activity.events.keep_if { |event| event.status == 'Failure'} %>
-    <% if failure_events.empty? %>
-      <p><%= t("#{jobs_prefix}.show_page.no_events") %></p>
-    <% else %>
-      <% last_event = failure_events.last %>
-      <div class="import-job-event">
-        <h2><%= event_title(last_event) %></h2>
-        <p class="event-time-stamp time-stamp" data-epoch-seconds="<%= @activity.created_at.to_i %>">
-          <span><%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
-          (<%= HumaneDateHelper.humane_date(@activity.created_at) %>)
-        </p>
-        <div class="event-description-container">
-          <% description = event_description(last_event) %>
-          <% unless description.blank? %>
-            <p class="event-description event-description-human-readable"><%= html_safe(description) %></p>
-          <% else %>
-            <p class="error-details-heading">
-              <%= t("#{jobs_prefix}.show_page.error_details_heading") %>:
-            </p>
-            <pre class="event-description event-description-json"><%= JSON.pretty_generate(last_event.info) %></pre>
-          <% end %>
+  <section class="import-job-container">
+    <div class="import-job-events">
+      <% failure_events = @activity.events.keep_if { |event| event.status == 'Failure'} %>
+      <% if failure_events.empty? %>
+        <p><%= t("#{jobs_prefix}.show_page.no_events") %></p>
+      <% else %>
+        <% last_event = failure_events.last %>
+        <div class="import-job-event">
+          <h2><%= event_title(last_event) %></h2>
+          <p class="event-time-stamp time-stamp" data-epoch-seconds="<%= @activity.created_at.to_i %>">
+            <span><%= last_event.event_time.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
+            (<%= HumaneDateHelper.humane_date(last_event.event_time) %>)
+          </p>
+          <div class="event-description-container">
+            <% description = event_description(last_event) %>
+            <% unless description.blank? %>
+              <p class="event-description event-description-human-readable"><%= html_safe(description) %></p>
+            <% else %>
+              <p class="error-details-heading">
+                <%= t("#{jobs_prefix}.show_page.error_details_heading") %>:
+              </p>
+              <pre class="event-description event-description-json"><%= JSON.pretty_generate(last_event.info) %></pre>
+            <% end %>
+          </div>
         </div>
-      </div>
-    <% end %>
-  </div>
+      <% end %>
+    </div>
+
+    <div class="import-job-details">
+      <h3>Started by</h3>
+      <p>
+        <% if @activity.initiated_by.nil? %>
+          <%= "(#{t("#{jobs_prefix}.index_page.deleted_user")})" %>
+        <% else %>
+          <%= link_to(@activity.initiated_by.displayName, profile_path(@activity.initiated_by))%>
+        <% end %>
+      </p>
+      <h3>Initiated at</h3>
+      <p class="started-time-stamp time-stamp" data-epoch-seconds="<%= @activity.created_at.to_i %>">
+        <span><%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
+      </p>
+      <h3>Import method</h3>
+      <p><%= @activity.import_method %></p>
+    </div>
+  </section>
 </div>

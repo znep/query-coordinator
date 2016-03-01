@@ -64,19 +64,6 @@ ca:
           feature_map: Visualitza aquesta columna com a característica del mapa
           search_card: Visualitza aquesta columna com a cerca de targetes
           timeline_chart: Visualitza aquesta columna com a gràfica de línia del temps
-      aggregation_chooser:
-        by_the_number_of: <span class="information">per el</span> número de
-        by_the_sum_of: <span class="information">per la</span> quantitat de
-        count_label: compta {0} per element
-        description: 'Veges els elements de les dades amb mida o color per:'
-        option_disabled: Aquesta columna no es pot fer servir amb un<br>número total
-        sum_label: afegeix per cada {0}
-        the_number_of: El número de
-        the_sum_of: La quantitat de
-        title: Conjunt
-        too_many_columns:
-          message: Actualment no podem donar-vos una suma com a total per les pàgines de Visió de dades que tinguin més de {0} columnes de tipus de números o diners.
-          title: Sembla que aquesta taula de dades té més de {0} columnes de números
       api_explorer:
         additional_resources: 'Recursos addicionals per aquest Institut Americà de Petroli:'
         api_button: Institut Americà de Petroli
@@ -177,9 +164,6 @@ ca:
           all_rows:
           not_available:
         image:
-          header:
-          description:
-        standalone_visualization:
           header:
           description:
         choose_card:
@@ -340,17 +324,6 @@ ca:
         save: Guardar
         saved: Guardat!
         saving: Guardant...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Intenteu buscar per números, no per lletres.
@@ -1485,7 +1458,6 @@ ca:
         title: Federació de Dades Obertes
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1516,8 +1488,6 @@ ca:
         enable_success:
         enabled?:
         enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
         page_subtitle:

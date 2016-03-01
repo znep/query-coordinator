@@ -1,0 +1,24 @@
+{
+  "id": "74aeaf9e-8e9b-496f-b186-3f542500f1f5",
+  "created_at": "2016-01-21T22:04:21.896Z",
+  "activity_type": "Import",
+  "user_id": "tugg-ikce",
+  "service": "DeltaImporter2",
+  "entity_type": "Dataset",
+  "entity_id": "dzuq-scr8",
+  "activity_name": "UFO_Test_7.csv.sdiff",
+  "domain": "localhost",
+  "status": "Failure",
+  "latest_event": {
+    "id": 2,
+    "event_time": "2016-01-21T22:04:22.161Z",
+    "event_type": "field-wrong-format",
+    "status": "Failure",
+    "info": {
+      "fieldName": "Incident Occurrence",
+      "type": "field-wrong-format"
+    },
+    "activity_id": "c02d8b44-269a-4891-a872-6020d39e887c",
+    "event_id": "b8f1c48c-9ba9-458a-9597-9af8e601082f"
+    }
+}

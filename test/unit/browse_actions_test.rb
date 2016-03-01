@@ -176,7 +176,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       @browse_actions_container.stubs(custom_facets: custom_facets)
       @browse_actions_container.stubs(categories_facet: nil)
       @browse_actions_container.stubs(topics_facet: nil)
-      @browse_actions_container.stubs(federations_hash: {})
+      Federation.stubs(federations: [])
 
       CurrentDomain.stubs(configuration: nil)
       CurrentDomain.stubs(default_locale: 'en')
@@ -243,7 +243,7 @@ class BrowseActionsTest < Test::Unit::TestCase
       @browse_actions_container.stubs(custom_facets: @test_custom_facets)
       @browse_actions_container.stubs(categories_facet: @test_categories)
       @browse_actions_container.stubs(topics_facet: nil)
-      @browse_actions_container.stubs(federations_hash: {})
+      Federation.stubs(federations: [])
     end
 
     def stub_core_for_category(category)
@@ -264,6 +264,7 @@ class BrowseActionsTest < Test::Unit::TestCase
         domains: 'localhost',
         limit: 10,
         offset: 0,
+        order: 'relevance',
         search_context: 'localhost'
       }.reject { |_, v| v.blank? }
       url = cetera_url + '?' + cetera_params.to_query
@@ -391,7 +392,7 @@ class BrowseActionsTest < Test::Unit::TestCase
 
       Clytemnestra.stubs(search_views: [])
 
-      @browse_actions_container.stubs(federations_hash: {})
+      Federation.stubs(federations: [])
 
       # It's important to have multiple custom facets so we can test that
       # we aren't hardcoding to the 3rd slot regardless

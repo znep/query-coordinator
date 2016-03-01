@@ -8,10 +8,13 @@
 # We want to override view_url for Profiles specifically, but if this file lived
 # in app/helpers, the override would take place for _all_ views.
 module ProfileHelper
+  include Userzoom
 
   def view_url(view)
     if view.story? && viewing_self?
       story_url(view)
+    elsif view.pulse?
+      pulse_url(view)
     else
       # Call the original implementation, presumably in ApplicationHelper.
       # If this is throwing, a base module with a view_url implementation
@@ -48,33 +51,55 @@ module ProfileHelper
     end
   end
 
-  def profile_user_zoom
-    if current_domain.member?(current_user)
-      render :partial => 'templates/userzoom_survey_script', :locals => {
-        :userzoom_set_id => '8EEF9FD913C6E51180CC0050569444FB',
-        :userzoom_set_sid => '8DEF9FD913C6E51180CC0050569444FB'
-      }
-    end
+  def render_profile_userzoom
+    render_userzoom_survey('profile')
   end
 
   private
 
+  def viewing_self?
+    @user.id == current_user.id
+  end
+
+  def shared_to?(view, user)
+    grants = view.grants || []
+    grants.map(&:userId).include?(user.id)
+  end
+
+  def owns?(view, user)
+    view.owner.id == user.id
+  end
+
+  def grant(view, user)
+    grants = view.grants || []
+    grants.find {|grant| grant.userId == current_user.id } || Grant.new
+  end
+
+  def pulse_url(view)
+    "/pulse/view/#{view.id}"
+  end
+
   def story_url(view)
+    is_admin = current_user.is_admin?
     base_relative_url = "/stories/s/#{view.id}"
 
-    return base_relative_url unless view.rights.present?
+    if shared_to?(view, current_user)
+      user_grant = grant(view, current_user)
+      is_owner = user_grant.type == 'owner'
+      is_contributor = user_grant.type == 'contributor'
+      is_viewer = user_grant.type == 'viewer'
 
-    # This logic is duplicated in Storyteller as require_sufficient_rights
-    if current_user.has_right?(UserRights::EDIT_STORY)
+      if is_contributor || is_owner || is_admin
+        base_relative_url << '/edit'
+      elsif is_viewer
+        base_relative_url << '/preview'
+      else
+        base_relative_url
+      end
+    elsif owns?(view, current_user) || is_admin
       base_relative_url << '/edit'
-    elsif current_user.has_right?(UserRights::VIEW_UNPUBLISHED_STORY)
-      base_relative_url << '/preview'
     else
       base_relative_url
     end
-  end
-
-  def viewing_self?
-    @user.id == current_user.id
   end
 end

@@ -7,7 +7,6 @@ describe('CardsViewController', function() {
 
   var Card;
   var Page;
-  var Domain;
   var ViewRights;
   var Mockumentary;
   var testHelpers;
@@ -24,9 +23,6 @@ describe('CardsViewController', function() {
   var $scope;
   var mockWindowServiceLocationSeq;
   var mockWindowOperations = {
-    setTitle: function(title) {
-      mockWindowOperations.currentTitle = title;
-    },
     navigateTo: function(url) {
       mockWindowOperations.currentUrl = url;
       mockWindowServiceLocationSeq.onNext(url);
@@ -51,7 +47,6 @@ describe('CardsViewController', function() {
         '$q',
         'Card',
         'Page',
-        'Domain',
         'ViewRights',
         'Mockumentary',
         '$rootScope',
@@ -66,7 +61,6 @@ describe('CardsViewController', function() {
           _$q,
           _Card,
           _Page,
-          _Domain,
           _ViewRights,
           _Mockumentary,
           _$rootScope,
@@ -80,7 +74,6 @@ describe('CardsViewController', function() {
 
       Card = _Card;
       Page = _Page;
-      Domain = _Domain;
       ViewRights = _ViewRights;
       Mockumentary = _Mockumentary;
       $q = _$q;
@@ -94,6 +87,8 @@ describe('CardsViewController', function() {
       DeviceService = _DeviceService;
       testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
       testHelpers.mockDirective(_$provide, 'pageHeader');
+      testHelpers.mockDirective(_$provide, 'infoPane');
+      testHelpers.mockDirective(_$provide, 'quickFilterBar');
   }]));
 
   beforeEach(function() {
@@ -118,12 +113,6 @@ describe('CardsViewController', function() {
       pageOverrides.datasetId = datasetOverrides.id;
     }
     var page = Mockumentary.createPage(pageOverrides, datasetOverrides);
-    var domain = new Domain({
-      categories: [
-        'Business',
-        'Government'
-      ]
-    });
 
     var currentUserDefer = $q.defer();
     var promise = currentUserDefer.promise;
@@ -138,7 +127,6 @@ describe('CardsViewController', function() {
     return {
       $scope: $scope,
       page: page,
-      domain: domain,
       currentUserDefer: currentUserDefer
     };
   }
@@ -163,30 +151,28 @@ describe('CardsViewController', function() {
   // when time allows.
   function renderCardsView(options) {
     var options = options || {};
-    var layout = typeof options.layout === 'undefined' ? 'multiCardLayout' : options.layout;
 
     var context = options.context || makeContext();
-    var cardLayout = {};
     testHelpers.mockDirective(_$provide, 'apiExplorer');
 
-    if (options.layout !== null) {
-      testHelpers.mockDirective(_$provide, layout, function() {
-        return {
-          link: function($scope) {
-            cardLayout.$scope = $scope;
-          }
-        };
-      });
-    }
+    var cardLayout = {};
+    testHelpers.mockDirective(_$provide, 'cardLayout', function() {
+      return {
+        link: function($scope) {
+          cardLayout.$scope = $scope;
+        }
+      };
+    });
 
     testHelpers.mockDirective(_$provide, 'multilineEllipsis');
     testHelpers.mockDirective(_$provide, 'notifyResize');
     testHelpers.mockDirective(_$provide, 'aggregationChooser');
     testHelpers.mockDirective(_$provide, 'newShareDialog');
     _$provide.value('page', context.page);
-    _$provide.value('domain', context.domain);
-    var html = '<ng-include ng-controller="CardsViewController"' +
-        'src="\'/angular_templates/dataCards/pages/cards-view.html\'"></ng-include>';
+    var html = '<div class="cards-metadata"></div>' +
+      '<div class="quick-filter-bar"></div>' +
+      '<ng-include ng-controller="CardsViewController" ' +
+      'src="\'/angular_templates/dataCards/pages/cards-view.html\'"></ng-include>';
     var element = testHelpers.TestDom.compileAndAppend(html, context.$scope);
     return $.extend({
       cardLayout: cardLayout,
@@ -210,27 +196,6 @@ describe('CardsViewController', function() {
   });
 
   describe('page name', function() {
-
-    it('should be used for the document title', function() {
-      var controllerHarness = makeController();
-      var nameOne = _.uniqueId('name');
-
-      $rootScope.$digest();
-      expect(mockWindowOperations.currentTitle).to.equal('{0} | Socrata'.format(DEFAULT_PAGE_NAME));
-    });
-
-    it('should update on the scope when the property changes on the model', function() {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
-      var newName = _.uniqueId('name');
-
-      $rootScope.$digest();
-
-      expect($scope.pageName).to.equal(DEFAULT_PAGE_NAME);
-
-      $scope.page.set('name', newName);
-      expect($scope.pageName).to.equal(newName);
-    });
 
     it('syncs the model and scope references to the page name', function() {
       var controllerHarness = makeController();
@@ -300,64 +265,6 @@ describe('CardsViewController', function() {
     });
   });
 
-  describe('source dataset link', function() {
-    it('sets the sourceDatasetURL if the migration info is available', function() {
-      var controllerHarness = makeController({ id: 'nach-oids', obeId: 'asdf-fdsa' });
-      var $scope = controllerHarness.$scope;
-
-      expect($scope.sourceDatasetURL).to.be.ok;
-    });
-
-    it('does not set the sourceDatasetURL if the migration info is not available', function() {
-      var controllerHarness = makeController({ id: 'nach-oids', obeId: null });
-      var $scope = controllerHarness.$scope;
-
-      expect($scope.sourceDatasetURL).not.to.be.ok;
-    });
-  });
-
-  describe('related views', function() {
-    it('shows the related views area if feature flag enable_data_lens_other_views is true and currentUserHasSaveRight is true', function() {
-      ServerConfig.override('enableDataLensOtherViews', true);
-      var context = renderCardsView();
-      $scope = context.element.scope();
-      $scope.currentUserHasSaveRight = true;
-      $scope.$digest();
-      var relatedViews = context.element.find('related-views');
-      expect(relatedViews).to.not.have.class('ng-hide');
-    });
-
-    it('does not show related views area if feature flag enable_data_lens_other_views is false', function() {
-      ServerConfig.override('enableDataLensOtherViews', false);
-      var context = renderCardsView();
-      var relatedViews = context.element.find('related-views');
-      expect(relatedViews).to.have.class('ng-hide');
-    });
-
-    it('does not show related views area if currentUserHasSaveRight is false', function() {
-      ServerConfig.override('enableDataLensOtherViews', true);
-      var context = renderCardsView();
-      var relatedViews = context.element.find('related-views');
-      $scope = context.$scope;
-      $scope.currentUserHasSaveRight = false;
-      $scope.$digest();
-      expect(relatedViews).to.have.class('ng-hide');
-    });
-  });
-
-  describe('page description', function() {
-    it('should update on the scope when the property changes on the model', function() {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
-      var newDescription = _.uniqueId('description');
-
-      expect($scope.pageDescription).to.equal(DEFAULT_PAGE_DESCRIPTION);
-
-      $scope.page.set('description', newDescription);
-      expect($scope.pageDescription).to.equal(newDescription);
-    });
-  });
-
   describe('expanded card', function() {
     var controllerHarness;
     var $scope;
@@ -389,7 +296,7 @@ describe('CardsViewController', function() {
     });
   });
 
-  describe('filtering', function() {
+  describe('globalWhereClauseFragment', function() {
 
     function makeMinimalController(datasetOverrides, pageOverrides) {
       var controllerHarness = makeController(datasetOverrides, pageOverrides);
@@ -413,10 +320,6 @@ describe('CardsViewController', function() {
           var harness = makeMinimalController();
           expect(harness.$scope.globalWhereClauseFragment).to.be.empty;
         });
-        it('should yield an empty set of filtered column names', function() {
-          var harness = makeMinimalController();
-          expect(harness.$scope.appliedFiltersForDisplay).to.be.empty;
-        });
       });
 
       describe('with a base filter', function() {
@@ -425,12 +328,6 @@ describe('CardsViewController', function() {
           var fakeFilter = "fakeField='fakeValue'";
           harness.page.set('baseSoqlFilter', fakeFilter);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(fakeFilter);
-        });
-        it('should yield an empty set of filtered column names', function() {
-          var harness = makeMinimalController();
-          var fakeFilter = "fakeField='fakeValue'";
-          harness.page.set('baseSoqlFilter', fakeFilter);
-          expect(harness.$scope.appliedFiltersForDisplay).to.be.empty;
         });
       });
     });
@@ -452,50 +349,6 @@ describe('CardsViewController', function() {
 
       afterEach(function() {
         testHelpers.fireMouseEvent(document.body, 'mousemove');
-      });
-
-      it('should be clear-all-able', inject(function(Filter) {
-        var filters = [
-          new Filter.IsNullFilter(true),
-          new Filter.BinaryOperatorFilter('=', 'test'),
-        ];
-
-        firstCard.set('activeFilters', [filters[0]]);
-        secondCard.set('activeFilters', [filters[1]]);
-
-        harness.$scope.clearAllFilters();
-
-        expect(firstCard.getCurrentValue('activeFilters')).to.be.empty;
-        expect(secondCard.getCurrentValue('activeFilters')).to.be.empty;
-        expect(secondCardDuplicate.getCurrentValue('activeFilters')).to.be.empty;
-      }));
-
-      it('should register a flyout for a clear-all-filters button', function() {
-        var buttonElement = testHelpers.TestDom.append(
-          '<button class="clear-all-filters-button" />');
-        expect($('.flyout-title').length).to.equal(0);
-
-        testHelpers.fireMouseEvent(buttonElement[0], 'mousemove');
-
-        var flyout = $('.flyout-title');
-        expect(flyout.length).to.equal(1);
-        expect(flyout.text().indexOf('Click to reset all filters')).to.be.greaterThan(-1);
-      });
-
-      it('should register a flyout for the clear-all-filters button close icon', function() {
-        var buttonHTML = [
-          '<button class="clear-all-filters-button">',
-            '<span class="icon-close"></span>',
-          '</button>'
-        ].join('');
-        var buttonElement = testHelpers.TestDom.append(buttonHTML);
-        expect($('.flyout-title').length).to.equal(0);
-
-        testHelpers.fireMouseEvent(buttonElement.find('.icon-close')[0], 'mousemove');
-
-        var flyout = $('.flyout-title');
-        expect(flyout.length).to.equal(1);
-        expect(flyout.text().indexOf('Click to reset all filters')).to.be.greaterThan(-1);
       });
 
       describe('with no base filter', function() {
@@ -523,53 +376,6 @@ describe('CardsViewController', function() {
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(firstCard.fieldName)
               ));
-        }));
-        it('should yield the filtered column names on appliedFiltersForDisplay', inject(function(Filter) {
-          var filterOne = new Filter.IsNullFilter(false);
-          var filterTwo = new Filter.BinaryOperatorFilter('=', 'test');
-
-          // Just one card
-          firstCard.set('activeFilters', [filterOne]);
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
-
-          // Two filtered cards
-          secondCard.set('activeFilters', [filterTwo]);
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' , 'is' ]);
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
-
-          // One filtered card, with two filters.
-          firstCard.set('activeFilters', [filterOne, filterTwo]);
-          secondCard.set('activeFilters', []);
-          // NOTE: for MVP, only the first filter is honored for a particular card. See todo in production code.
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
-
-          // Two identical filtered cards
-          firstCard.set('activeFilters', []);
-          secondCard.set('activeFilters', [filterOne]);
-          secondCardDuplicate.set('activeFilters', [filterTwo]);
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' , 'is' ]);
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
-        }));
-
-        it('should render a whitespace-only operand filter the same way as a null filter', inject(function(Filter) {
-          var filterOne = new Filter.IsNullFilter(true);
-          var filterTwo = new Filter.BinaryOperatorFilter('=', ' ');
-
-          firstCard.set('activeFilters', [filterOne]);
-          secondCard.set('activeFilters', [filterTwo]);
-
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is' , 'is' ]);
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', 'blank' ]);
-
-          // Two identical filtered cards
-          firstCard.set('activeFilters', []);
-          secondCard.set('activeFilters', [filterOne]);
-          secondCardDuplicate.set('activeFilters', [filterTwo]);
-
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is' , 'is' ]);
-          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', 'blank' ]);
         }));
       });
 
@@ -622,34 +428,6 @@ describe('CardsViewController', function() {
               ));
         }));
       });
-    });
-
-    describe('quickFilterBarTitle', function() {
-      it('should use the aggregation-based title if the page metadata is v3 or lower', function() {
-        ServerConfig.override('enableDataLensCardLevelAggregation', true);
-        var harness = makeMinimalController({}, { version: 3 });
-        expect(harness.$scope.quickFilterBarTitle).to.equal('Showing <span class="light">the number of rows</span>');
-      });
-
-      it('should use the aggregation-based title if the card-level aggregation feature flag is disabled', function() {
-        ServerConfig.override('enableDataLensCardLevelAggregation', false);
-        var harness = makeMinimalController();
-        expect(harness.$scope.quickFilterBarTitle).to.equal('Showing <span class="light">the number of rows</span>');
-      });
-
-      it('should use the rowDisplayUnit-based title if the page is version 4 and the card-level aggregation feature flag is enabled', function() {
-        ServerConfig.override('enableDataLensCardLevelAggregation', true);
-        var harness = makeMinimalController({}, { version: 4 });
-        expect(harness.$scope.quickFilterBarTitle).to.equal('Showing <span class="light">all rows</span>');
-      });
-
-      it('should change the new title if the page is filtered', inject(function(Filter) {
-        ServerConfig.override('enableDataLensCardLevelAggregation', true);
-        var harness = makeMinimalController({}, { version: 4 });
-        var cards = harness.page.getCurrentValue('cards');
-        cards[0].set('activeFilters', [new Filter.IsNullFilter(true)]);
-        expect(harness.$scope.quickFilterBarTitle).to.equal('Showing <span class="light">rows</span>');
-      }));
     });
   });
 
@@ -997,43 +775,6 @@ describe('CardsViewController', function() {
     });
   });
 
-  describe('save-visualization-as dialog', function() {
-    beforeEach(inject(['testHelpers', function(_testHelpers) {
-      testHelpers = _testHelpers;
-      controllerHarness = makeController();
-      $scope = controllerHarness.$scope;
-    }]));
-
-    it('should become visible when a "save-visualization-as" event is received which includes a model of \
-        a card type that can be persisted as a standalone visualization', function(done) {
-
-      var serializedCard;
-      var cardModel;
-
-      controllerHarness.$scope.$digest();
-
-      expect($scope.saveVisualizationAsState.show).to.equal(false);
-
-      $scope.$on('save-visualization-as', function(e, model) {
-        $scope.$apply();
-        expect($scope.saveVisualizationAsState.show).to.equal(true);
-        expect($scope.saveVisualizationAsState.cardModel).to.equal(cardModel);
-        done();
-      });
-
-      serializedCard = {
-        'cardSize': 1,
-        'cardType': 'choropleth',
-        'expanded': false,
-        'fieldName': 'customizableFieldName'
-      };
-
-      cardModel = Card.deserialize($scope.page, serializedCard);
-
-      $rootScope.$broadcast('save-visualization-as', cardModel);
-    });
-  });
-
   describe('savePageAs', function() {
     var controllerHarness;
     var $scope;
@@ -1075,169 +816,6 @@ describe('CardsViewController', function() {
           done();
         }
       });
-    });
-
-  });
-
-  describe('download button', function() {
-    it('should provide a default download link for the CSV', function() {
-      var controllerHarness = makeController({obeId: null}); // simulate missing obeId
-
-      expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.match(new RegExp('/api/views/asdf-fdsa/rows\\.csv\\?accessType=DOWNLOAD$'));
-    });
-
-    it('should allow the metadata to override the download link', function() {
-      var controllerHarness = makeController({ downloadOverride: 'https://example.com' });
-
-      expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.equal('https://example.com');
-    });
-
-    it('uses the obeid for the csv download link if available', function() {
-      var controllerHarness = makeController();
-
-      expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.match(new RegExp('/api/views/asdf-fdsa/rows\\.csv\\?accessType=DOWNLOAD&bom=true$'));
-    });
-
-    it('closes the dialog when clicking (or hitting esc) outside it', function() {
-      ServerConfig.override('enablePngDownloadUi', true);
-      var context = renderCardsView();
-      var body = $('body');
-      var downloadButton = context.element.find('.download-menu');
-
-      function openMenu() {
-        downloadButton.click();
-        context.$scope.$digest();
-        expect(downloadButton.find('dropdown-menu').length).to.equal(1);
-      }
-      function expectClosedMenu() {
-        expect(downloadButton.find('dropdown-menu').length).to.equal(0);
-      }
-
-      openMenu();
-      testHelpers.fireMouseEvent(body[0], 'click');
-      context.$scope.$digest();
-      expectClosedMenu();
-
-      openMenu();
-      body.trigger($.Event('keydown', { which: 27 }));
-      context.$scope.$digest();
-      expectClosedMenu();
-
-      // Now test clicking inside a download menu
-      openMenu();
-      downloadButton.find('a').click();
-      expectClosedMenu();
-    });
-
-    it('allows other dialogs to close when clicking download', inject(function(WindowState) {
-      ServerConfig.override('enablePngDownloadUi', true);
-      var context = renderCardsView();
-
-      // Simulate another dialog waiting to be closed
-      var closed = false;
-      var subscription = WindowState.closeDialogEvent$.subscribe(function() {
-        closed = true;
-      });
-
-      try {
-        // Now click the download button.
-        var downloadButton = context.element.find('.download-menu');
-        expect(downloadButton.find('dropdown-menu').length).to.equal(0);
-        testHelpers.fireMouseEvent(downloadButton[0], 'click');
-        context.$scope.$digest();
-
-        expect(downloadButton.find('dropdown-menu').length).to.equal(1);
-        expect(closed).to.equal(true);
-      } finally {
-        // Clean up after ourselves
-        subscription.dispose();
-      }
-    }));
-
-    it('triggers chooser mode when selecting png download', function() {
-      ServerConfig.override('enablePngDownloadUi', true);
-      var context = renderCardsView();
-      var downloadButton = context.element.find('.download-menu');
-      testHelpers.fireMouseEvent(downloadButton[0], 'click');
-      testHelpers.fireMouseEvent(downloadButton.find('a:contains("Visualization")')[0], 'click');
-      expect(context.cardLayout.$scope.chooserMode.show).to.equal(true);
-    });
-
-    it('turns into a cancel button in chooser mode, which cancels chooser mode', function() {
-      ServerConfig.override('enablePngDownloadUi', true);
-      var context = renderCardsView();
-      var downloadButton = context.element.find('.download-menu');
-      testHelpers.fireMouseEvent(downloadButton[0], 'click');
-      testHelpers.fireMouseEvent(downloadButton.find('a:contains("Visualization")')[0], 'click');
-      expect(downloadButton.text()).to.match(/Cancel/);
-
-      expect(context.cardLayout.$scope.chooserMode.show).to.equal(true);
-
-      testHelpers.fireMouseEvent(downloadButton[0], 'click');
-
-      expect(context.cardLayout.$scope.chooserMode.show).to.equal(false);
-    });
-
-
-    // IE10 and IE11 have an issue with setting nodeValue on textNode if the node has been replaced
-    // so this test is failing. We have to manually skip the test. =(
-    // See http://jsfiddle.net/bwrrp/a4qkeb26/
-    ((navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) ?
-      xit :
-      it)('does not trigger when the the user is in customize edit mode', function() {
-        ServerConfig.override('enablePngDownloadUi', true);
-        ServerConfig.override('enableDataLensExportMenu', false);
-        var context = renderCardsView();
-        var cardLayout = context.cardLayout;
-        var $scope = cardLayout.$scope;
-        var $parentScope = $scope.$parent.$parent;
-        var downloadButton = context.element.find('.download-menu');
-
-        $parentScope.editMode = true;
-        $httpBackend.when('GET', '/javascripts/plugins/squire.js').respond({});
-        testHelpers.fireMouseEvent(downloadButton[0], 'click');
-        $scope.$apply();
-        expect(downloadButton.find('dropdown-menu').length).to.equal(0);
-      });
-  });
-
-  describe('shouldShowExportMenu', function() {
-    it('is true if dataLensEnableExportMenu is true', function() {
-      ServerConfig.override('enableDataLensExportMenu', true);
-      expect(makeController().$scope.shouldShowExportMenu).to.equal(true);
-    });
-
-    it('is false if dataLensEnableExportMenu is false', function() {
-      ServerConfig.override('enableDataLensExportMenu', false);
-      expect(makeController().$scope.shouldShowExportMenu).to.equal(false);
-    });
-  });
-
-  describe('layout modes', function() {
-
-    it('loads single-card-layout if the page has a display type of data_lens_*', function() {
-      var context = makeContext(null, {
-        displayType: 'data_lens_chart',
-        cards: [Mockumentary.createCardMetadata()]
-      });
-      var view = renderCardsView({layout: null, context: context});
-
-      expect(view.element.find('.single-card').length).to.equal(1);
-      expect(view.element.find('.multiple-cards').length).to.equal(0);
-    });
-
-    it('loads multi-card-layout if the page does not have a display type of data_lens_*', function() {
-      var context = makeContext(null, {
-        displayType: 'data_lens',
-        cards: [Mockumentary.createCardMetadata()]
-      });
-      var view = renderCardsView({layout: null, context: context});
-
-      expect(view.element.find('.single-card').length).to.equal(0);
-      expect(view.element.find('.multiple-cards').length).to.equal(1);
     });
   });
 });

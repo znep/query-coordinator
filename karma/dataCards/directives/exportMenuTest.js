@@ -26,8 +26,6 @@ describe('Export Menu', function() {
 
       var rowCount$ = $q.when(5);
       rowCountStub = sinon.stub(CardDataService, 'getRowCount').returns(rowCount$);
-
-      ServerConfig.override('standaloneLensChart', true);
     });
   });
 
@@ -93,14 +91,13 @@ describe('Export Menu', function() {
 
       it('disables the filtered radio button if the row counts are the same', function() {
         stubRowCounts(50000, 50000);
-
         context = createElement();
-
         expect(context.element.find('input[type="radio"]:disabled')).to.exist;
+      });
 
-        context.element.scope().filteredRowCount = 30000;
-        context.element.scope().$apply();
-
+      it('enables the filtered radio button if the row counts are different', function() {
+        stubRowCounts(50000, 30000);
+        context = createElement();
         expect(context.element.find('input[type="radio"]:disabled')).to.not.exist;
       });
 
@@ -118,6 +115,32 @@ describe('Export Menu', function() {
 
         var regex = /query=select\+\*\+where\+%60something%60\+is\+null/i;
         expect(context.element.find('a').get(0).href).to.match(regex);
+      });
+
+      it('respects downloadOverride if the page is not filtered', function() {
+        stubRowCounts(50000, 50000);
+
+        context = createElement({}, {}, { downloadOverride: 'https://socrata.com' });
+
+        expect(context.element.scope().csvDownloadURL).to.equal('https://socrata.com');
+        expect(context.element.find('a').get(0).href).to.equal('https://socrata.com/');
+      });
+
+      it('disables filtered export if the download override is set', function() {
+        stubRowCounts(50000, 30000);
+
+        context = createElement({}, {}, { downloadOverride: 'https://socrata.com' });
+
+        var page = context.element.scope().page;
+        page.set('cards', [Mockumentary.createCard(page, 'something')]);
+        page.getCurrentValue('cards')[0].set('activeFilters', [new Filter.IsNullFilter(true)]);
+
+        context.element.scope().$apply();
+
+        expect(context.element.scope().shouldDisableFilteredExport).to.equal(true);
+        expect(context.element.scope().disabledFilteredExportMessage).to.match(/not available for this dataset/i);
+        expect(context.element.scope().csvDownloadURL).to.equal('https://socrata.com');
+        expect(context.element.find('a').get(0).href).to.equal('https://socrata.com/');
       });
     });
 
@@ -144,8 +167,7 @@ describe('Export Menu', function() {
         ServerConfig.override('enablePngDownloadUi', true);
         context = createElement();
 
-        context.scope.$on('enter-export-card-visualization-mode', function(e, type) {
-          expect(type).to.equal('polaroid');
+        context.scope.$on('enter-export-card-visualization-mode', function(e) {
           expect(context.element.scope().allowChooserModeCancel).to.be.true;
           expect(context.element.scope().panelActive).to.be.false;
           done();
@@ -153,50 +175,6 @@ describe('Export Menu', function() {
 
         testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
         testHelpers.fireMouseEvent(context.element.find('[data-action="export-polaroid"]')[0], 'click');
-      });
-    });
-
-    describe('the standalone visualization button', function() {
-      it('should not be visible when the user does not have save rights', function() {
-        ServerConfig.override('standaloneLensChart', true);
-        context = createElement({
-          currentUserHasSaveRight: false
-        });
-
-        expect(context.element.find('[data-action="export-vif"]')).to.not.exist;
-      });
-
-      it('should not be visible when the feature flag is disabled', function() {
-        ServerConfig.override('standaloneLensChart', false);
-        context = createElement({
-          currentUserHasSaveRight: true
-        });
-
-        expect(context.element.find('[data-action="export-vif"]')).to.not.exist;
-      });
-
-      it('should be visible if the feature flag is enabled and the user has sufficient rights', function() {
-        ServerConfig.override('standaloneLensChart', true);
-        context = createElement({
-          currentUserHasSaveRight: true
-        });
-
-        expect(context.element.find('[data-action="export-vif"]')).to.exist;
-      });
-
-      it('should trigger card selection mode on click', function(done) {
-        ServerConfig.override('standaloneLensChart', true);
-        context = createElement();
-
-        context.scope.$on('enter-export-card-visualization-mode', function(e, type) {
-          expect(type).to.equal('vif');
-          expect(context.element.scope().allowChooserModeCancel).to.be.true;
-          expect(context.element.scope().panelActive).to.be.false;
-          done();
-        });
-
-        testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
-        testHelpers.fireMouseEvent(context.element.find('[data-action="export-vif"]')[0], 'click');
       });
     });
 
@@ -210,7 +188,7 @@ describe('Export Menu', function() {
       });
 
       testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
-      testHelpers.fireMouseEvent(context.element.find('[data-action="export-vif"]')[0], 'click');
+      testHelpers.fireMouseEvent(context.element.find('[data-action="export-polaroid"]')[0], 'click');
       testHelpers.fireMouseEvent(context.element.find('[data-action="quit-chooser"]')[0], 'click');
     });
 
@@ -224,7 +202,7 @@ describe('Export Menu', function() {
       });
 
       testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
-      testHelpers.fireMouseEvent(context.element.find('[data-action="export-vif"]')[0], 'click');
+      testHelpers.fireMouseEvent(context.element.find('[data-action="export-polaroid"]')[0], 'click');
 
       $('body').trigger($.Event('keydown', { which: 27 }));
     });

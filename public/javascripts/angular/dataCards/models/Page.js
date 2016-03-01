@@ -48,10 +48,6 @@ function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) 
         'rights'
       ];
 
-      this.displayType = pageMetadata.displayType;
-      this.isStandaloneVisualization =
-          this.displayType === 'data_lens_chart' || this.displayType === 'data_lens_map';
-
       var deserializedCards = _.map(pageMetadata.cards, function(serializedCard) {
         return Card.deserialize(self, serializedCard);
       });
@@ -69,78 +65,7 @@ function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) 
       self.defineEphemeralObservableProperty('moderationStatus', pageMetadata.moderationStatus);
       self.defineEphemeralObservableProperty('ownerId', pageMetadata.ownerId);
 
-      var primaryAmountField$ = self.observe('primaryAmountField');
-
-      var columnAggregatedUpon$ = primaryAmountField$.
-        distinctUntilChanged().
-        combineLatest(
-          self.observe('dataset.columns'),
-          function(field, columns) {
-            return _.has(columns, field) ?
-              self.observe(`dataset.columns.${field}`) :
-              Rx.Observable.returnValue(null);
-          }).
-        switchLatest();
-
-      var validPrimaryAggregation$ = self.observe('primaryAggregation').
-        filter(function(value) {
-          return value !== 'invalid';
-        });
       var rowDisplayUnit$ = self.observe('dataset.rowDisplayUnit');
-
-      // Synchronize changes between primaryAmountField and primaryAggregation
-      // Normalize aggregation-related fields.
-      var aggregation$ = Rx.Observable.combineLatest(
-        validPrimaryAggregation$,
-        rowDisplayUnit$,
-        primaryAmountField$,
-        columnAggregatedUpon$,
-        function(
-          primaryAggregation,
-          rowDisplayUnit,
-          fieldNameAggregatedUpon,
-          columnAggregatedUpon
-        ) {
-          var unit = rowDisplayUnit;
-
-          if (columnAggregatedUpon) {
-            unit = Dataset.extractHumanReadableColumnName(columnAggregatedUpon);
-          } else if (primaryAggregation !== 'count') {
-
-            // aggregations other than count require a valid column
-            // otherwise default to 'count'
-            return {
-              'function': 'count',
-              'column': null,
-              'fieldName': null,
-              'unit': unit || DEFAULT_ROW_DISPLAY_UNIT,
-              'rowDisplayUnit': rowDisplayUnit || DEFAULT_ROW_DISPLAY_UNIT
-            };
-          }
-
-          return {
-            'function': primaryAggregation || 'count',
-            'column': columnAggregatedUpon, // MAY BE NULL IF COUNT(*)
-            'fieldName': fieldNameAggregatedUpon, // MAY BE NULL IF COUNT(*)
-            'unit': unit || DEFAULT_ROW_DISPLAY_UNIT,
-            'rowDisplayUnit': rowDisplayUnit || DEFAULT_ROW_DISPLAY_UNIT
-          };
-        }).
-        filter(function(aggregation) {
-          // While things settle, we may not have all the information needed
-          // to build the aggregation properly. Don't emit while this is true.
-          if (aggregation['function'] === 'count') {
-            // Count is only valid if not against a column.
-            return aggregation.column === null;
-          } else {
-            // All other aggregations are valid as long as they are
-            // against a column.
-            return _.isPresent(aggregation.column);
-          }
-        }).
-        shareReplay(1);
-
-      self.defineEphemeralObservablePropertyFromSequence('aggregation', aggregation$);
 
       self.defineEphemeralObservablePropertyFromSequence('rowDisplayUnit',
         rowDisplayUnit$.filter(_.isDefined).startWith(DEFAULT_ROW_DISPLAY_UNIT));
@@ -236,7 +161,7 @@ function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) 
       // Enforce that here.
 
       // Since swapping the expanded card is not an atomic operation, observers listening
-      // to the expanded state (eg multiCardLayout.js) will trigger multiple times for the
+      // to the expanded state (eg cardLayout.js) will trigger multiple times for the
       // same operation. Ideally it'd be an atomic operation, but since it isn't, let's
       // at least let the subscribers know by preferring to set more cards to expanded.
       // (ie since having 0 expanded cards is a valid state, but having 2 expanded cards

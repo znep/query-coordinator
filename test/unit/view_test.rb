@@ -533,50 +533,7 @@ class ViewTest < Test::Unit::TestCase
     assert_equal(view.display_format_columns, [ 'location_1', 'location_2' ])
   end
 
-  def test_to_visualization_embed_blob_for_nbe_visualization
-    stub_page_metadata = {
-      :cards => [
-        {
-          :cardType => 'columnChart',
-          :fieldName => 'source_column'
-        }
-      ]
-    }
-    StandaloneVisualizationManager.any_instance.stubs(
-      :page_metadata_from_vif => stub_page_metadata
-    )
-
-    json = {
-      'id' => 'sooo-neww',
-      'name' => 'SOOO NEW!',
-      'description' => 'i have no lawn',
-      'viewType' => 'tabular',
-      'displayType' => 'data_lens_chart',
-      'displayFormat' => {
-        'something' => 'something'
-      }
-    }
-    view = View.new(json)
-    view.stubs(
-      :visualization_interchange_format_v1 => { },
-      :newBackend? => true
-    )
-
-    assert_equal(
-      view.to_visualization_embed_blob,
-      {
-        :originalUid => 'sooo-neww',
-        :title => 'SOOO NEW!',
-        :description => 'i have no lawn',
-        :data => stub_page_metadata,
-        :format => 'page_metadata',
-        :type => 'columnChart',
-        :columns => [ 'source_column' ]
-      }
-    )
-  end
-
-  def test_to_visualization_embed_blob_for_obe_visualization
+  def test_to_visualization_embed_blob
     json = {
       'id' => 'sooo-oldd',
       'name' => 'SOOO OLD!',

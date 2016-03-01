@@ -35,6 +35,7 @@ function choropleth(
           // The behavior of _.isPresent is different than _.isUndefined for null
           return !_.isUndefined(data);
         });
+      var primaryKey$ = $scope.$observe('primaryKey');
 
       var destroy$ = $scope.$destroyAsObservable(element);
 
@@ -58,16 +59,18 @@ function choropleth(
       var selectionBoxFlyoutData;
 
 
-      /**********************
-      * Setup Configuration *
-      **********************/
+      /************
+      * Setup VIF *
+      ************/
 
-      var config = {
+     // Note that configuration.shapefile.primaryKey gets set before rendering
+      var vif = {
         configuration: {
           defaultExtent: $scope.defaultExtent,
           defaultWidth: Constants.CHOROPLETH_DEFAULT_WIDTH,
           disableLeafletZoomAnimation: Constants.DISABLE_LEAFLET_ZOOM_ANIMATION,
           highlightWidth: Constants.CHOROPLETH_HIGHLIGHT_WIDTH,
+          interactive: true,
           legend: {
             type: $scope.stops
           },
@@ -85,7 +88,8 @@ function choropleth(
               unfiltered: Constants.UNFILTERED_VALUE_PROPERTY_NAME,
               filtered: Constants.FILTERED_VALUE_PROPERTY_NAME,
               selected: Constants.SELECTED_PROPERTY_NAME
-            }
+            },
+            primaryKey: null
           }
         },
         unit: {
@@ -99,7 +103,7 @@ function choropleth(
       // This is in a separate function because we need to wait until our element
       // has a height and width before initializing it
       function initializeVisualization() {
-        visualization = new ChoroplethMap(visualizationElement, config);
+        visualization = new ChoroplethMap(visualizationElement, vif);
       }
 
 
@@ -479,11 +483,16 @@ function choropleth(
         dimensions$,
         tileLayer$,
         geojsonAggregateData$,
-        function(dimensions, tileLayer, geojsonAggregateData) {
+        primaryKey$,
+        function(dimensions, tileLayer, geojsonAggregateData, primaryKey) {
+
+          vif.configuration.shapefile.primaryKey = primaryKey;
+
           var options = {
             // In Data Lens we want the visualization to always show
             // filtered data, so this is effectively a constant.
-            showFiltered: true
+            showFiltered: true,
+            vif: vif
           };
 
           if (_.isUndefined(visualization)) {

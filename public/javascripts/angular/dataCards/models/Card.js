@@ -1,6 +1,6 @@
 const angular = require('angular');
 angular.module('dataCards.models').
-  factory('Card', function(ServerConfig, CardOptions, Model, Schemas, Filter, Constants, I18n, rx, Dataset) {
+  factory('Card', function($log, ServerConfig, CardOptions, Model, Schemas, Filter, Constants, I18n, rx, Dataset) {
     const Rx = rx;
 
     var schemas = Schemas.regarding('card_metadata');
@@ -30,8 +30,15 @@ angular.module('dataCards.models').
         this.fieldName = fieldName;
         this.uniqueId = initialValues.id || _.uniqueId();
 
-        if (_.isNumber(this.version) && this.version >= schemas.getLatestSchemaVersion()) {
-          this.version = schemas.getLatestSchemaVersion();
+        var latestSchemaVersion = schemas.getLatestSchemaVersion();
+        if (_.isNumber(this.version) && this.version > latestSchemaVersion) {
+          $log.warn(`Page metadata version is ${this.version}. This is newer than the most recent ` +
+            `known page version, which is ${latestSchemaVersion}. Using version ${latestSchemaVersion}.`);
+
+          this.version = latestSchemaVersion;
+        } else if (_.isNumber(this.version) && this.version < latestSchemaVersion) {
+          $log.warn(`Page metadata version is ${this.version}. This is older than the most recent ` +
+            `known page version, which is ${latestSchemaVersion}. Using version ${this.version}.`);
         }
 
         var cardOptions = CardOptions.deserialize(self, initialValues.cardOptions);
@@ -67,41 +74,6 @@ angular.module('dataCards.models').
           )
         );
 
-        if (ServerConfig.get('enableDataLensCardLevelAggregation') && self.version >= 4) {
-          self.defineEphemeralObservablePropertyFromSequence(
-            'isCustomizable',
-            // TODO leads to a lot of dead code that can be unravelled once we are officially on v4.
-            Rx.Observable.returnValue(true)
-          );
-        } else {
-          self.defineEphemeralObservablePropertyFromSequence(
-            'isCustomizableCard',
-            self.observe('cardType').map(
-              function(cardType) {
-                return !_.contains(Constants.CUSTOMIZATION_DISABLED_CARD_TYPES, cardType);
-              }
-            )
-          );
-
-          self.defineEphemeralObservablePropertyFromSequence(
-            'isCustomizableDataType',
-            self.observe('column').map(
-              function(column) {
-                return !_.contains(Constants.CUSTOMIZATION_DISABLED_DATA_TYPES, column.physicalDatatype);
-              }
-            )
-          );
-
-          self.defineEphemeralObservablePropertyFromSequence(
-            'isCustomizable',
-            self.observe('isCustomizableCard').combineLatest(self.observe('isCustomizableDataType'),
-              function(isCustomizableCard, isCustomizableDataType) {
-                return isCustomizableCard && isCustomizableDataType;
-              }
-            )
-          );
-        }
-
         self.defineEphemeralObservablePropertyFromSequence(
           'isExportable',
           self.observe('cardType').map(
@@ -119,38 +91,32 @@ angular.module('dataCards.models').
           self.getCurrentValue('cardType')
         );
 
-        var aggregation$;
-
-        if (self.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation')) {
-          aggregation$ = self.observe('page.aggregation');
-        } else {
-          aggregation$ = Rx.Observable.combineLatest(
-            self.observe('aggregationField'),
-            self.observe('aggregationFunction'),
-            self.observe('page.dataset.rowDisplayUnit'),
-            self.observe('page.dataset.columns'),
-            function(aggregationField, aggregationFunction, rowDisplayUnit, columns) {
-              if (aggregationField === '*') {
-                aggregationField = null;
-              }
-
-              var unit = rowDisplayUnit || I18n.common.row;
-              if (_.has(columns, aggregationField)) {
-                unit = Dataset.extractHumanReadableColumnName(columns[aggregationField]);
-              } else if (aggregationFunction !== 'count' || aggregationField !== null) {
-                aggregationFunction = 'count';
-                aggregationField = null;
-              }
-
-              return {
-                'function': aggregationFunction || 'count',
-                fieldName: aggregationField,
-                unit: unit,
-                rowDisplayUnit: rowDisplayUnit || I18n.common.row
-              };
+        var aggregation$ = Rx.Observable.combineLatest(
+          self.observe('aggregationField'),
+          self.observe('aggregationFunction'),
+          self.observe('page.dataset.rowDisplayUnit'),
+          self.observe('page.dataset.columns'),
+          function(aggregationField, aggregationFunction, rowDisplayUnit, columns) {
+            if (aggregationField === '*') {
+              aggregationField = null;
             }
-          );
-        }
+
+            var unit = rowDisplayUnit || I18n.common.row;
+            if (_.has(columns, aggregationField)) {
+              unit = Dataset.extractHumanReadableColumnName(columns[aggregationField]);
+            } else if (aggregationFunction !== 'count' || aggregationField !== null) {
+              aggregationFunction = 'count';
+              aggregationField = null;
+            }
+
+            return {
+              'function': aggregationFunction || 'count',
+              fieldName: aggregationField,
+              unit: unit,
+              rowDisplayUnit: rowDisplayUnit || I18n.common.row
+            };
+          }
+        );
 
         self.defineEphemeralObservablePropertyFromSequence('aggregation', aggregation$);
       },
@@ -248,7 +214,7 @@ angular.module('dataCards.models').
               filterBlob,
               {
                 'function': 'BinaryComputedGeoregionOperator',
-                'computedColumnName': migratedBlob.computedColumn
+                computedColumnName: migratedBlob.computedColumn
               }
             );
 

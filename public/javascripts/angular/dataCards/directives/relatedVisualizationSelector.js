@@ -65,9 +65,9 @@ function relatedVisualizationSelector(FlyoutService, I18n, $window) {
       };
 
       FlyoutService.register({
-        'selector': '.visualization-disabled, .visualization-disabled *',
-        'render': _.constant(I18n.t('relatedVisualizationSelector.visualizationNotSupported')),
-        'trackCursor': true
+        selector: '.visualization-disabled, .visualization-disabled *',
+        render: _.constant(I18n.t('relatedVisualizationSelector.visualizationNotSupported')),
+        trackCursor: true
       });
 
       $scope.$watch('[relatedVisualizations, supportedCardTypes]', function() {

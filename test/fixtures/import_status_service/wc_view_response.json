@@ -1,0 +1,147 @@
+{
+  "id" : "copy-four",
+  "name" : "Space-2",
+  "averageRating" : 0,
+  "createdAt" : 1455815261,
+  "downloadCount" : 0,
+  "indexUpdatedAt" : 1455815266,
+  "newBackend" : false,
+  "numberOfComments" : 0,
+  "oid" : 693083,
+  "publicationAppendEnabled" : false,
+  "publicationGroup" : 659932,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1455815263,
+  "rowsUpdatedBy" : "tugg-ikce",
+  "tableId" : 659932,
+  "totalTimesRated" : 0,
+  "viewCount" : 0,
+  "viewLastModified" : 1455815262,
+  "viewType" : "tabular",
+  "columns" : [ {
+    "id" : 3059269,
+    "name" : "space",
+    "dataTypeName" : "text",
+    "fieldName" : "space",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 2628470,
+    "width" : 160,
+    "cachedContents" : {
+      "non_null" : 3,
+      "smallest" : "999",
+      "null" : 0,
+      "largest" : "very far",
+      "top" : [ {
+        "count" : 20,
+        "item" : "999"
+      }, {
+        "count" : 19,
+        "item" : "very far"
+      }, {
+        "count" : 18,
+        "item" : "pretty close actually"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 3059270,
+    "name" : "amount",
+    "dataTypeName" : "number",
+    "fieldName" : "amount",
+    "position" : 3,
+    "renderTypeName" : "number",
+    "tableColumnId" : 2628471,
+    "width" : 172,
+    "cachedContents" : {
+      "non_null" : 3,
+      "smallest" : "20",
+      "sum" : "660",
+      "null" : 0,
+      "average" : "220",
+      "largest" : "555",
+      "top" : [ {
+        "count" : 20,
+        "item" : "555"
+      }, {
+        "count" : 19,
+        "item" : "20"
+      }, {
+        "count" : 18,
+        "item" : "85"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 3059271,
+    "name" : "difficulties",
+    "dataTypeName" : "number",
+    "fieldName" : "difficulties",
+    "position" : 4,
+    "renderTypeName" : "number",
+    "tableColumnId" : 2628472,
+    "width" : 244,
+    "cachedContents" : {
+      "non_null" : 3,
+      "smallest" : "10",
+      "sum" : "80110",
+      "null" : 0,
+      "average" : "26703.33333333333",
+      "largest" : "80000",
+      "top" : [ {
+        "count" : 20,
+        "item" : "80000"
+      }, {
+        "count" : 19,
+        "item" : "10"
+      }, {
+        "count" : 18,
+        "item" : "100"
+      } ]
+    },
+    "format" : { }
+  }, {
+    "id" : 3059272,
+    "name" : "time",
+    "dataTypeName" : "calendar_date",
+    "fieldName" : "time",
+    "position" : 5,
+    "renderTypeName" : "calendar_date",
+    "tableColumnId" : 2628473,
+    "width" : 148,
+    "cachedContents" : {
+      "non_null" : 3,
+      "smallest" : "1999-01-01T00:00:00",
+      "null" : 0,
+      "largest" : "2016-06-12T00:00:00",
+      "top" : [ {
+        "count" : 20,
+        "item" : "2016-06-12T00:00:00"
+      }, {
+        "count" : 19,
+        "item" : "1999-01-01T00:00:00"
+      }, {
+        "count" : 18,
+        "item" : "2011-10-19T00:00:00"
+      } ]
+    },
+    "format" : { }
+  } ],
+  "owner" : {
+    "id" : "tugg-ikce",
+    "displayName" : "Pete Vilter",
+    "screenName" : "Pete Vilter",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs" ],
+    "flags" : [ "admin" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "tugg-ikce",
+    "displayName" : "Pete Vilter",
+    "screenName" : "Pete Vilter",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs" ],
+    "flags" : [ "admin" ]
+  },
+  "flags" : [ "default" ]
+}

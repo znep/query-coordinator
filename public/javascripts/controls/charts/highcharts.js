@@ -909,7 +909,7 @@
                         high: datum.row && datum.row.data[chartObj._errorBarConfig.high.lookup]
                     };
                 }); })
-                .flatten()
+                .flattenDeep()
                 .reject(function(errorBar)
                     { return $.isBlank(errorBar.low) || $.isBlank(errorBar.high); })
                 .value();
@@ -1055,7 +1055,7 @@
                     var attrs = { 'zIndex': 10,
                                   'stroke': marker.color,
                                   'stroke-width': thickStroke ? 2 : 1 };
-                    markerStore[index] = chartObj.chart.renderer.path(_.flatten(commands))
+                    markerStore[index] = chartObj.chart.renderer.path(_.flattenDeep(commands))
                         .attr(attrs)
                         .add();
                     if (!isErrorBar)
@@ -1063,8 +1063,8 @@
                     else
                     {
                         markerStore[index].bars = [
-                            chartObj.chart.renderer.path(_.flatten(lowBar)).attr(attrs).add(),
-                            chartObj.chart.renderer.path(_.flatten(highBar)).attr(attrs).add()
+                            chartObj.chart.renderer.path(_.flattenDeep(lowBar)).attr(attrs).add(),
+                            chartObj.chart.renderer.path(_.flattenDeep(highBar)).attr(attrs).add()
                         ];
                     }
 

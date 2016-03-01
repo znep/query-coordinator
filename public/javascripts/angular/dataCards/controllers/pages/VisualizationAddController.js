@@ -17,17 +17,17 @@ function VisualizationAddController(
   var utils = socrata.utils;
   // Cards always expect to have a page, too painful to remove for now.
   var pageMetadata = {
-    'cards': [],
-    'datasetId': dataset.id,
-    'version': 3
+    cards: [],
+    datasetId: dataset.id,
+    version: 3
   };
   var blankPage = new Page(pageMetadata, dataset);
   var cardTypesToVIFTypes = {};
   var vifTypesToCardTypes = {
-    'choroplethMap': 'choropleth',
-    'columnChart': 'column',
-    'featureMap': 'feature',
-    'timelineChart': 'timeline'
+    choroplethMap: 'choropleth',
+    columnChart: 'column',
+    featureMap: 'feature',
+    timelineChart: 'timeline'
   };
 
   /**
@@ -43,32 +43,32 @@ function VisualizationAddController(
     var defaultExtentFeatureFlagValue;
     var defaultExtent;
     var vif = {
-      'aggregation': {
-        'field': null,
+      aggregation: {
+        field: null,
         'function': 'count'
       },
-      'columnName': card.fieldName,
-      'configuration': {
-        'localization': {}
+      columnName: card.fieldName,
+      configuration: {
+        localization: {}
       },
-      'createdAt': (new Date()).toISOString(),
-      'datasetUid': dataset.id,
-      'description': column.description,
-      'domain': metadata.domain,
-      'filters': [],
-      'format': {
-        'type': 'visualization_interchange_format',
-        'version': 1
+      createdAt: (new Date()).toISOString(),
+      datasetUid: dataset.id,
+      description: column.description,
+      domain: metadata.domain,
+      filters: [],
+      format: {
+        type: 'visualization_interchange_format',
+        version: 1
       },
-      'origin': {
-        'type': 'data_lens_add_visualization_component',
-        'url': `https://${metadata.domain}/view/${dataset.id}`
+      origin: {
+        type: 'data_lens_add_visualization_component',
+        url: `https://${metadata.domain}/view/${dataset.id}`
       },
-      'title': column.name,
-      'type': cardTypesToVIFTypes[card.cardType],
-      'unit': {
-        'one': 'record',
-        'other': 'records'
+      title: column.name,
+      type: cardTypesToVIFTypes[card.cardType],
+      unit: {
+        one: 'record',
+        other: 'records'
       }
     };
 
@@ -90,15 +90,15 @@ function VisualizationAddController(
       vif.configuration.defaultExtent = defaultExtent;
       vif.configuration.savedExtent = card.cardOptions.mapExtent;
       vif.configuration.shapefile = {
-        'columns': {
-          'name': 'NAME',
-          'unfiltered': 'UNFILTERED',
-          'filtered': 'FILTERED',
-          'selected': 'SELECTED'
+        columns: {
+          name: 'NAME',
+          unfiltered: 'UNFILTERED',
+          filtered: 'FILTERED',
+          selected: 'SELECTED'
         },
-        'primaryKey': _.get(computedColumn, 'computationStrategy.parameters.primary_key', ''),
-        'uid':  _.get(computedColumn, 'computationStrategy.parameters.region', '').replace(/_/g, ''),
-        'geometryLabel': null
+        primaryKey: _.get(computedColumn, 'computationStrategy.parameters.primary_key', ''),
+        uid:  _.get(computedColumn, 'computationStrategy.parameters.region', '').replace(/_/g, ''),
+        geometryLabel: null
       };
     }
 
@@ -110,10 +110,23 @@ function VisualizationAddController(
     // Trigger function attached to the iframe element in the parent
     if (_.isNull($window.frameElement)) {
       throw new Error('Page expects to be in an iframe, passing information to the parent window.');
+    } else if (_.isFunction($window.frameElement.onVisualizationSelectedV2)) {
+      // Passing objects cross-frame is dangerous in IE, because the cross-frame object's prototype
+      // will become invalid if the frame is unloaded. The safest way around this is to send over
+      // JSON strings, which are less likely to cause issues (but still suffer prototype breakage,
+      // just not to the same degree).
+      //
+      // FYI: _.cloneDeep preserves prototypes, so we can't just use that.
+      $window.frameElement.onVisualizationSelectedV2(
+        visualizationData ? JSON.stringify(visualizationData) : null,
+        visualizationType,
+        originalUid
+      );
     } else if (_.isFunction($window.frameElement.onVisualizationSelected)) {
+      // DEPRECATED: Remove this function once frontend and storyteller are stable in production.
       $window.frameElement.onVisualizationSelected(visualizationData, visualizationType, originalUid);
     } else {
-      throw new Error('Cannot find onVisualizationSelected on the iframe.');
+      throw new Error('Cannot find onVisualizationSelected or onVisualizationSelectedV2 on the iframe.');
     }
   }
 

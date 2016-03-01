@@ -86,17 +86,11 @@ module BrowseHelper
 
   def view_formatted_description(result)
     description = result.description
-
-    if description_contains_html?(result.display.type)
-      sanitize_string(description)
-    else
-      view_format_description_text(description)
-    end
-  end
-
-  def view_format_description_text(description, preserve_newlines = true)
     return unless description.present?
-    description = simple_format(description) if preserve_newlines
+
+    unless description_contains_html?(result.display.type)
+      description = simple_format(description)
+    end
     sanitize_string(description)
   end
 

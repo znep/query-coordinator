@@ -32,7 +32,9 @@
         { icon: 'contract', translateKey: 'federations', href: '/admin/federations',
           right: UserRights::FEDERATIONS, module_available: :federations },
         { icon: 'check', translateKey: 'routing', href: '/admin/routing_approval',
-          module_enabled: :routing_approval } # current_user.can_approve?
+          module_enabled: :routing_approval }, # current_user.can_approve?
+        { icon: 'gear', translateKey: 'jobs', href: '/admin/jobs',
+          right: UserRights::VIEW_ALL_DATASET_STATUS_LOGS }
       ]
     }, {
       title: t("#{prefix}.appearance"),

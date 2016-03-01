@@ -9,6 +9,7 @@ function ChoroplethController(
   Filter,
   LeafletVisualizationHelpersService,
   ServerConfig,
+  SpatialLensService,
   $log,
   rx) {
   const Rx = rx;
@@ -58,6 +59,15 @@ function ChoroplethController(
 
   var shapefileId$ = computedColumnName$.map(CardVisualizationChoroplethHelpers.computedColumnNameToShapefileId);
 
+  function transformNewColumns(newColumns) {
+    return _.mapValues(newColumns, function(column, fieldName) {
+      return _.extend({
+        fieldName: fieldName,
+        isSystemColumn: DatasetColumnsService.isSystemColumn(column)
+      }, column);
+    });
+  }
+
   if (regionCodingDisabled) {
     computedColumnBase$.
       map(_.isPresent).
@@ -69,61 +79,26 @@ function ChoroplethController(
       });
   } else {
 
-    // If the computed column is missing
+    // If the computed column is missing, enqueue an adhoc region coding job and poll for status.
     computedColumnMissing$.
       safeApply($scope, function() { $scope.isPendingComputation = true; }).
-      withLatestFrom(
+      combineLatest(
         datasetId$,
         shapefileId$,
         fieldName$,
-        function(computedColumnIsMissing, datasetId, shapefileId, sourceColumnFieldName) {
-
-          // Request rails to initiate region coding (add the computed column).
-          return CardDataService.initiateRegionCoding(datasetId, shapefileId, sourceColumnFieldName);
+        function(_, datasetId, shapefileId, fieldName) {
+          return SpatialLensService.executeRegionCodingJob(datasetId, shapefileId, fieldName);
         }
       ).
-      switchLatest(). // Wait for a response from the server
-      pluck('data', 'success').
-      tap(function(success) {
-
-        // If initiating region coding failed, show an error.
-        if (!success) {
-          $scope.$safeApply(function() {
-            $scope.choroplethRenderError = true;
-          });
-        }
-      }).
-      filter(_.isPresent). // Only continue if region coding initiation succeeded.
-      flatMapLatest(datasetId$).
-      combineLatest(
-        shapefileId$,
-        _.bind(CardDataService.getRegionCodingStatus, CardDataService, _, _)).
-      flatMapLatest(function(getRegionCodingStatus) {
-
-        // Setup a timer that polls for completion of the region coding.
-        // This is an observable of observables.
-        return Rx.Observable.
-          interval(5000).
-          map(getRegionCodingStatus).
-          takeUntil(computedColumn$); // Stop polling if the computed column gets added.
-      }).
-      switchLatest(). // Grab out the result of the most recent status check.
+      switchLatest().
       safeApplyOnError($scope, function() {
+        $scope.isPendingColumnAddition = false;
         $scope.isPendingComputation = false;
         $scope.choroplethRenderError = true;
       }).
-      pluck('data').
-      filter(_.property('success')).
-      map(_.property('datasetMetadata.columns')).
-      filter(_.isDefined).
-      map(function(newColumns) {
-        return _.mapValues(newColumns, function(column, fieldName) {
-          return _.extend({
-            fieldName: fieldName,
-            isSystemColumn: DatasetColumnsService.isSystemColumn(column)
-          }, column);
-        });
-      }).
+      map(_.property('data.datasetMetadata.columns')).
+      filter(_.isObject).
+      map(transformNewColumns).
       subscribeLatest(
         dataset,
         function(newColumns, datasetModel) {
@@ -307,8 +282,9 @@ function ChoroplethController(
 
   $scope.$bindObservable('fieldName', fieldName$);
   $scope.$bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
-  $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+  $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('aggregation.unit'));
   $scope.$bindObservable('isFiltered', whereClause$.map(_.isPresent));
+  $scope.$bindObservable('primaryKey', primaryKey$);
 
   var geojsonAggregateData$ = Rx.Observable.combineLatest(
     geometryLabel$,

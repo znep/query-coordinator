@@ -82,7 +82,6 @@ $modal-dialog-disabled-close-button-color: #e9e6e7;
 $modal-dialog-link-text-color: $aqua-color;
 $modal-dialog-new-share-dialog-email-text-color: #fff;
 $modal-dialog-new-share-dialog-message-text-color: #fff;
-$modal-dialog-save-visualization-as-dialog-red-error-color: $red-error-color;
 
 // multiline-ellipsis
 $multiline-ellipsis-color: $aqua-color;
@@ -137,6 +136,29 @@ $tool-panel-light-border-color: #d4d4d4;
 $tool-panel-form-text-color: #555;
 $tool-panel-form-background-color: #fff;
 $tool-panel-form-error-border-color: $red-error-color;
+
+// tour
+$tour-step-background-color: #fff;
+$tour-step-box-shadow-color: rgba(#000, .34);
+$tour-hint-color: #fff;
+$tour-text-color: #5c5c5c;
+$tour-link-color: #0000C8;
+$tour-button-active-box-shadow-color: #2c2c2c;
+$tour-btn-primary-background-color: #2c97de;
+$tour-btn-primary-text-color: #fff;
+$tour-btn-primary-border-color: #2c97de;
+$tour-btn-primary-hover-background-color: #2379b2;
+$tour-btn-primary-active-background-color: #2379b2;
+$tour-btn-primary-active-border-color: #2888c8;
+$tour-btn-default-text-color: #7a7a7a;
+$tour-btn-default-background-color: #fff;
+$tour-btn-default-border-color: #c2c2c2;
+$tour-btn-default-hover-background-color: #e6e6e6;
+$tour-btn-default-active-background-color: #e6e6e6;
+$tour-btn-default-active-border-color: #ccc;
+$tour-cancel-link-color: #adadad;
+$tour-cancel-link-hover-color: #7a7a7a;
+$tour-overlay-background-color: rgba(#000, .35);
 
 // Visualizations
 
@@ -276,15 +298,6 @@ $cards-metadata-value-link-text-color: $aqua-color;
 // lens-type
 $lens-type-background-color: #eee;
 $lens-type-text-color: $cards-metadata-text-color;
-
-// aggregation-chooser
-$aggregation-chooser-trigger-color: #fff;
-$aggregation-chooser-trigger-disabled-color: rgba(#fff, 0.5);
-$aggregation-chooser-option-hover-count-background-color: #394047;
-$aggregation-chooser-option-hover-no-count-background-color: #394047;
-$aggregation-chooser-option-text-color: #fff;
-$aggregation-chooser-option-active-text-color: #394047;
-$aggregation-chooser-option-disabled-text-color: rgba(#fff, 0.5);
 
 // cards
 $cards-content-background-color: #4d5969;

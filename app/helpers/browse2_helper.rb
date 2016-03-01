@@ -12,6 +12,32 @@ module Browse2Helper
     classes.join(' ')
   end
 
+  # EN-2938: browse2 sort options are limited to Relevance, Most Accessed, Recently Added, and Recently Updated
+  def browse2_sort_opts(opts)
+    opts[:sort_opts].to_a.tap do |sort_opts|
+      sort_opts.select! { |sort_opt| %w(relevance most_accessed newest last_modified).include?(sort_opt[:value]) }
+    end
+  end
+
+  def facet_sort_option_classnames(opts, facet_option)
+    facet_param = :sortBy
+    facet_option_classnames(opts, facet_param, facet_option, false, false).tap do |classnames|
+      # Sort by relevance by default. Apply active class to that option if there isn't an active sort present.
+      classnames << ' active' if opts[facet_param] == nil && facet_option[:value] == 'relevance'
+    end
+  end
+
+  def facet_sort_option(opts, sort_option, params)
+    sort_option_classnames = facet_sort_option_classnames(opts, sort_option)
+    sort_option_link_href = facet_option_url(opts, :sortBy, sort_option, params)
+
+    content_tag(:li) do
+      link_to(sort_option_link_href, :class => sort_option_classnames, 'data-facet-option-value' => sort_option[:value]) do
+        content_tag(:span, '', :class => 'browse2-facet-option-clear-icon icon-check-2') + sort_option[:name]
+      end
+    end
+  end
+
   def facet_option_url(opts, facet_param, facet_option, params)
     current_params = opts[:user_params].dup
     if params[:view_type] == 'browse2'
@@ -36,13 +62,30 @@ module Browse2Helper
     "#{opts[:base_url]}?#{current_params.to_param}"
   end
 
+  # Returns the facet option cutoff point. Looks at the domain configuration cutoff if set,
+  # else falls back to default, 5. "View Type" is special and always shows everything.
+  def browse2_facet_cutoff(facet)
+    domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
+    facet_name = facet[:singular_description]
+    facet_name == 'type' ?
+      Float::INFINITY :
+      domain_cutoffs[facet_name] || 5
+  end
+
   # Return an array containing a combination of facet[:options] and facet[:extra_options].
   # "Topics" have the options repeated in the extra_options because of how the browse1
   # word cloud works, so reject any dupes from the returned array.
   def get_all_facet_options(facet)
-    facet[:options] + facet[:extra_options].to_a.reject do |facet_extra_option|
-      facet[:options].detect { |facet_option| facet_extra_option[:value] == facet_option[:value] }
-    end
+    sort_facet_options(
+      facet[:options] + facet[:extra_options].to_a.reject do |facet_extra_option|
+        facet[:options].detect { |facet_option| facet_extra_option[:value] == facet_option[:value] }
+      end
+    )
+  end
+
+  # Sorts facet options by count, then name
+  def sort_facet_options(facet_options)
+    facet_options.to_a.sort_by { |option| [-option.fetch(:count, 0), option.fetch(:text)] }
   end
 
   def active_facet_option(active_option, facet)
@@ -110,7 +153,7 @@ module Browse2Helper
         flattened_options.push(new_child_option)
       end
     end
-    flattened_options
+    sort_facet_options(flattened_options)
   end
 
   # Returns result topics array truncated to provided limit. Also ensures that any currently

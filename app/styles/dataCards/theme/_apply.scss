@@ -238,9 +238,6 @@
     border: 1px solid $modal-dialog-border-color;
     .modal-dialog-content {
       color: $modal-dialog-text-color;
-      input.invalid {
-        border-color: $modal-dialog-save-visualization-as-dialog-red-error-color;
-      }
     }
     .modal-close-button {
       color: $modal-dialog-close-button-color;
@@ -290,12 +287,6 @@ new-share-dialog {
     color: $modal-dialog-new-share-dialog-message-text-color;
     background-color: $soc-select-background-color;
     border: 1px solid $soc-select-border-color;
-  }
-}
-
-#save-visualization-as-dialog .modal-dialog {
-  .icon-warning {
-    color: $modal-dialog-save-visualization-as-dialog-red-error-color;
   }
 }
 
@@ -456,6 +447,86 @@ soc-select, .soc-select {
       }
     }
   }
+}
+
+$hint-size: 18px;
+
+.shepherd-step {
+  background: $tour-step-background-color;
+  box-shadow: 1px 2px 6px $tour-step-box-shadow-color;
+
+  h3 {
+    color: $tour-text-color;
+  }
+
+  .shepherd-text {
+    color: $tour-text-color;
+    a {
+      color: $tour-link-color;
+    }
+  }
+
+  &.shepherd-element-attached-bottom {
+    &:before {
+      border-top-color: $tour-hint-color;
+    }
+  }
+
+  &.shepherd-element-attached-top {
+    &:before {
+      border-bottom-color: $tour-hint-color;
+    }
+  }
+
+  .shepherd-buttons {
+    .btn-primary {
+      color: $tour-btn-primary-text-color;
+      background: $tour-btn-primary-background-color;
+      border: 1px $tour-btn-primary-border-color solid;
+
+      &:hover {
+        background-color: $tour-btn-primary-hover-background-color;
+      }
+
+      &:active {
+        background-color: $tour-btn-primary-active-background-color;
+        border: 1px $tour-btn-primary-active-border-color solid;
+      }
+    }
+
+    .btn-default {
+      color: $tour-btn-default-text-color;
+      background-color: $tour-btn-default-background-color;
+      border: 1px $tour-btn-default-border-color solid;
+
+      &:hover {
+        background-color: $tour-btn-default-hover-background-color;
+      }
+
+      &:active {
+        background-color: $tour-btn-default-active-background-color;
+        border: 1px $tour-btn-default-active-border-color solid;
+      }
+    }
+
+    .btn-primary, .btn-default {
+      &:active {
+        box-shadow: inset 0 0 10px -2px $tour-button-active-box-shadow-color;
+      }
+    }
+  }
+
+  .shepherd-cancel-link {
+    color: $tour-cancel-link-color;
+
+    &:hover {
+      color: $tour-cancel-link-hover-color;
+    }
+  }
+}
+
+.tour-overlay {
+  background: $tour-overlay-background-color;
 }
 
 // Visualizations
@@ -922,38 +993,6 @@ lens-type {
   .icon-check {
     color: white;
     background-color: $aqua-color;
-  }
-}
-
-// aggregation-chooser
-aggregation-chooser {
-  .aggregation-chooser-trigger {
-    color: $aggregation-chooser-trigger-color;
-    span::after {
-      border-color: $aggregation-chooser-trigger-color transparent transparent transparent;
-    }
-    &.disabled span::after {
-      border-color: $aggregation-chooser-trigger-disabled-color transparent transparent transparent;
-    }
-  }
-  .aggregation-columns.count {
-    .aggregation-option.count:hover {
-      background-color: $aggregation-chooser-option-hover-count-background-color;
-    }
-  }
-  .aggregation-columns.no-count {
-    .aggregation-option.no-count:hover {
-      background-color: $aggregation-chooser-option-hover-no-count-background-color;
-    }
-  }
-  .aggregation-option {
-    color: $aggregation-chooser-option-text-color;
-    &.active {
-      background-color: $aggregation-chooser-option-active-text-color;
-    }
-    &.disabled {
-      color: $aggregation-chooser-option-disabled-text-color;
-    }
   }
 }
 

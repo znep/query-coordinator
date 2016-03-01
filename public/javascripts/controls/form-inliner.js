@@ -24,9 +24,18 @@ blistCommonNS.formInliner = function(event)
         return this.each(function()
         {
             var $dom = $(this);
+            var lastClickTime;
             $dom.off('.downloadToFormCatcher');
             $dom.on('click.downloadToFormCatcher', function(event)
             {
+                var lastClickTimeExceedsThrottle =
+                  _.isUndefined(lastClickTime) || (_.now() - lastClickTime) > (30 * 1000);
+                if (!lastClickTimeExceedsThrottle) {
+                  return false;
+                }
+
+                lastClickTime = _.now();
+
                 if (ds.temporary !== true)
                 { return true; }
 

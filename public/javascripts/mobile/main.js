@@ -1,3 +1,18 @@
+/* global pageMetadata, datasetMetadata */
+
+var mobileColumnChart = require('./mobile.columnchart.js');
+var mobileTimelineChart = require('./mobile.timelinechart.js');
+var mobileFeatureMap = require('./mobile.featuremap.js');
+var mobileChoroplethMap = require('./mobile.choroplethmap.js');
+
+
+/*
+* QFB components
+*/
+import React from 'react'; // eslint-disable-line no-unused-vars
+import ReactDOM from 'react-dom';
+import FilterContainer from './react-components/qfb/filtercontainer/FilterContainer.js';
+
 (function() {
   'use strict';
 
@@ -99,7 +114,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
+          mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
           break;
         case 'feature':
           cardOptions.id = 'feature-map';
@@ -111,7 +126,7 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.mobileFeatureMap(values, $cardContainer.find('#feature-map'));
+          mobileFeatureMap(values, $cardContainer.find('#feature-map'));
           break;
         case 'choropleth':
           cardOptions.id = 'choropleth';
@@ -121,10 +136,12 @@
             datasetUid: datasetMetadata.id,
             columnName: card.fieldName,
             // TODO Write some bloody error handling
-            geojsonUid: datasetMetadata.columns[card.computedColumn].computationStrategy.parameters.region.substring(1)
+            computedColumnName: card.computedColumn,
+            geojsonUid: datasetMetadata.columns[card.computedColumn].computationStrategy.parameters.region.substring(1),
+            map_extent: (card.cardOptions) ? card.cardOptions.mapExtent || {} : {}
           };
 
-          socrata.visualizations.mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
+          mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
           break;
         case 'column':
           cardOptions.id = 'column-chart';
@@ -135,13 +152,64 @@
             columnName: card.fieldName
           };
 
-          socrata.visualizations.mobileColumnChart(values, $cardContainer.find('#column-chart'));
+          mobileColumnChart(values, $cardContainer.find('#column-chart'));
           break;
         default:
           break;
       }
     });
+
     mobileCardViewer();
+    setupQfb();
+  }
+
+  function setupQfb() {
+
+    var aFilterOps = [];
+    _.each(datasetMetadata.columns, function(column, fieldName) {
+      var filterOption = {};
+      switch (column.dataTypeName) {
+        case 'text':
+          filterOption = {
+            filterName: column.name,
+            name: fieldName,
+            id: column.position,
+            type: 'string'
+          };
+          aFilterOps.push(filterOption);
+          break;
+        case 'number':
+          filterOption = {
+            filterName: column.name,
+            name: fieldName,
+            id: column.position,
+            type: 'int'
+          };
+          aFilterOps.push(filterOption);
+          break;
+        case 'calendar_date':
+          filterOption = {
+            filterName: column.name,
+            name: fieldName,
+            id: column.position,
+            type: 'calendar_date'
+          };
+          aFilterOps.push(filterOption);
+          break;
+        default:
+          break;
+      }
+    });
+
+    ReactDOM.render(<FilterContainer
+      domain={ datasetMetadata.domain }
+      datasetId={ pageMetadata.datasetId }
+      filterOps={ aFilterOps }
+      handleFilterBroadcast={ handleBroadcast } />, document.getElementById('filters'));
+
+    function handleBroadcast(filterObject) {
+      $(document).trigger('appliedFilters.qfb.socrata', filterObject);
+    }
   }
 
   document.title = datasetMetadata.name;

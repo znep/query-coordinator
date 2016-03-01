@@ -4,6 +4,7 @@ $(function() {
   var MIN_DESKTOP_WIDTH = 885;
   // 2x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
   var DESCRIPTION_TRUNCATION_THRESHOLD = 58;
+  var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
 
   function doBrowse(newOpts) {
     // Reset page
@@ -51,22 +52,28 @@ $(function() {
     event.preventDefault();
 
     _.defer(function() {
-      var newOpts = $.extend({}, opts, {
-        'q': encodeURIComponent($searchSection.find('.browse2-search-control').val()),
+      var queryProperties = {
         'Type': {
           'Name': 'Cleared Search Field',
-          'Properties': {}
+          'Properties': {
+            'Query': $searchSection.find('.browse2-search-control').val()
+          }
         }
-      });
+      };
+
+      var resolveEvent = function() {
+        window.location = event.target.href;
+      };
 
       if (!blist.mixpanelLoaded) {
-        document.location = event.target.href;
+        resolveEvent();
       } else {
-        $.updateMixpanelProperties();
-        var properties = _.extend(window._genericMixpanelPayload(), newOpts);
-        mixpanel.track('Cleared Search Field', properties, function() {
-          document.location = event.target.href;
-        });
+        // TODO: Don't talk to Mixpanel if it's not enabled
+        mixpanelNS.delegateCatalogSearchEvents(
+          'Cleared Search Field',
+          queryProperties,
+          resolveEvent
+        );
       }
     });
   }
@@ -75,32 +82,37 @@ $(function() {
     event.preventDefault();
 
     _.defer(function() {
-      var query = encodeURIComponent($searchSection.find('.browse2-search-control').val());
-      var newOpts = $.extend({}, opts, {
-        'q': query,
+      var query = $searchSection.find('.browse2-search-control').val();
+      var searchOptions = $.extend({}, opts, { 'q': encodeURIComponent(query) });
+      var mixpanelPayload = {
         'Type': {
           'Name': 'Used Search Field',
           'Properties': {
             'Query': query
           }
         }
-      });
+      };
 
-      if ($.isBlank(newOpts.q)) {
-        delete newOpts.q;
+      if ($.isBlank(searchOptions.q)) {
+        delete searchOptions.q;
       } else {
-        delete newOpts.sortPeriod;
-        newOpts.sortBy = 'relevance';
+        delete searchOptions.sortPeriod;
+        searchOptions.sortBy = 'relevance';
       }
 
+      var resolveEvent = function() {
+        doBrowse(searchOptions);
+      };
+
       if (!blist.mixpanelLoaded) {
-        doBrowse(newOpts);
+        resolveEvent();
       } else {
-        $.updateMixpanelProperties();
-        var properties = _.extend(window._genericMixpanelPayload(), newOpts);
-        mixpanel.track('Used Search Field', properties, function() {
-          doBrowse(newOpts);
-        });
+        // TODO: Don't talk to Mixpanel if it's not enabled
+        mixpanelNS.delegateCatalogSearchEvents(
+          'Used Search Field',
+          mixpanelPayload,
+          resolveEvent
+        );
       }
     });
   }

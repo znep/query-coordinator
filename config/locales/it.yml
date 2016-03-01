@@ -64,19 +64,6 @@ it:
           feature_map: Visualizza questa colonna come una mappa delle funzionalità
           search_card: Visualizza questa colonna come una cerca scheda
           timeline_chart: Visualizza questa colonna come un grafico temporale
-      aggregation_chooser:
-        by_the_number_of: <span class="information">dal</span> numero di
-        by_the_sum_of: <span class="information">dalla</span> somma di
-        count_label: considera {0} per elemento
-        description: 'Visualizza gli elementi dei dati ridimensionati o colorati da:'
-        option_disabled: Questa colonna non può essere usata con un<br>numero di aggregazione
-        sum_label: aggiungi per ognuno {0}
-        the_number_of: Il numero di
-        the_sum_of: La somma di
-        title: Aggregazione
-        too_many_columns:
-          message: Al momento, non siamo in grado di fornire la somma come aggregato per le pagine Data Lens che hanno più di {0} colonne di tipo Numero o Denaro.
-          title: Sembra che questo set di dati contenga più di {0} numero di colonne
       api_explorer:
         additional_resources: 'Risorse aggiuntive per questa API:'
         api_button: API
@@ -177,9 +164,6 @@ it:
           all_rows:
           not_available:
         image:
-          header:
-          description:
-        standalone_visualization:
           header:
           description:
         choose_card:
@@ -340,17 +324,6 @@ it:
         save: Salva
         saved: Salvata!
         saving: Salvataggio...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Prova a cercare un numero che non contenga lettere.
@@ -1483,7 +1456,6 @@ it:
         title: Apri i dati della Federazione
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1514,8 +1486,6 @@ it:
         enable_success:
         enabled?:
         enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
         page_subtitle:

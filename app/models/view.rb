@@ -897,8 +897,21 @@ class View < Model
     end
   end
 
+  def allAccessPoints
+    if metadata.present?
+      # If additionalAccessPoints is present, we can assume that the links in accessPoints are
+      # already inside additionalAccessPoints. Otherwise, we create an array with a single hash
+      # for accessPoints.
+      metadata.additionalAccessPoints.present? ?
+        metadata.additionalAccessPoints :
+        [ { 'title' => nil, 'description' => nil, 'urls' => metadata.accessPoints || {} } ]
+    else
+      []
+    end
+  end
+
   def blobs
-    return @blobs if !@blobs.nil?
+    return @blobs unless @blobs.nil?
 
     if is_blobby?
       opts = { :filename => URI.escape(blobFilename || '') }
@@ -908,17 +921,9 @@ class View < Model
       @blobs = [b]
     elsif is_href?
       b = []
-      if !metadata.nil?
-        if !metadata.data['accessPoints'].blank?
-          metadata.data['accessPoints'].each do |k, v|
-            if !k.end_with?('Size')
-              b << {'href' => v, 'type' => k.upcase,
-                'size' => metadata.data['accessPoints'][k + 'Size']}
-            end
-          end
-          b.sort_by! {|a| a['type']}
-        elsif !metadata.href.blank?
-          b << {'href' => metadata.href, 'type' => 'Link', 'size' => 'Unknown'}
+      unless metadata.nil?
+        if metadata.href.present?
+          b << { 'href' => metadata.href, 'type' => 'Link', 'size' => 'Unknown' }
         end
       end
       @blobs = b
@@ -1182,6 +1187,10 @@ class View < Model
       displayFormat.fixedColumns || [],
       (displayFormat.seriesColumns || []).pluck('fieldName')
     ].flatten.compact.uniq
+  end
+
+  def pulse?
+    viewType == 'pulse'
   end
 
   def story?
@@ -1647,38 +1656,24 @@ class View < Model
       originalUid: id
     }
 
-    if standalone_visualization?
-      # Map standalone visualizations to synthetic Page metadata
-      standalone_visualization_manager = StandaloneVisualizationManager.new
-      page_metadata = standalone_visualization_manager.page_metadata_from_vif(
-        visualization_interchange_format_v1,
-        nbe_view.id,
-        {}
-      )
-      visualization[:data] = page_metadata
-      visualization[:columns] = [ page_metadata[:cards][0][:fieldName] ]
-      visualization[:type] = page_metadata[:cards][0][:cardType]
-      visualization[:format] = 'page_metadata'
-    else
-      # re-fetch the JSON to ensure we have column information (some core calls
-      # like that used in find_related strip it out).
-      json = fetch_json.deep_merge(
-        'metadata' => {
-          'renderTypeConfig' => {
-            'visible' => {
-              'table' => false
-            }
+    # re-fetch the JSON to ensure we have column information (some core calls
+    # like that used in find_related strip it out).
+    json = fetch_json.deep_merge(
+      'metadata' => {
+        'renderTypeConfig' => {
+          'visible' => {
+            'table' => false
           }
         }
-      )
+      }
+    )
 
-      real_view = View.new(json)
+    real_view = View.new(json)
 
-      visualization[:data] = json
-      visualization[:columns] = real_view.display_format_columns
-      visualization[:type] = real_view.displayFormat.chartType
-      visualization[:format] = 'classic'
-    end
+    visualization[:data] = json
+    visualization[:columns] = real_view.display_format_columns
+    visualization[:type] = real_view.displayFormat.chartType
+    visualization[:format] = 'classic'
 
     visualization
   end

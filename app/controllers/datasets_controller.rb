@@ -758,30 +758,43 @@ protected
 
   def parse_external_sources
     if params[:external_sources].present?
-      accessPoints = {}
+      additionalAccessPoints = []
       params[:external_sources].each do |source|
-        next if source['name'].blank?
-        extension = source['extension']
-        extension = file_extension(source['name']) if extension.blank?
-        if extension.nil?
-          flash.now[:error] = "The url '#{source['name']}' does not appear to be valid " +
-            "for downloading. Please specify file type or fix the URL."
-          return false
+        entry = {}
+        entry[:title] = source[:title] if source[:title].present?
+        entry[:description] = source[:description] if source[:description].present?
+        entry[:urls] = {}
+        if source[:urls].present?
+          source[:urls].select { |source_url| source_url[:url].present? }.each do |endpoint|
+            extension = compute_extension(endpoint[:extension], endpoint[:url])
+            if entry[:urls][extension].present?
+              flash.now[:error] = I18n.t('screens.edit_metadata.multiple_extensions')
+              return false
+            end
+            entry[:urls][extension] = endpoint[:url]
+          end
+        else
+          extension = compute_extension(source[:extension], source[:name])
+          entry[:urls][extension] = source[:name]
         end
-        if !accessPoints[extension.downcase].nil?
-          flash.now[:error] = "Multiple external datasets with the same " +
-            "extension are not allowed. Please remove one of the '.#{extension}' files."
-          return false
-        end
-        accessPoints[extension.downcase] = source['name']
+        additionalAccessPoints << entry unless entry[:urls].empty?
       end
-      if accessPoints.size < 1
-        flash.now[:error] = "You must have at least one source for this external dataset."
+      if additionalAccessPoints.blank?
+        flash.now[:error] = I18n.t('screens.edit_metadata.missing_external_dataset')
         return false
+      else
+        # Store the first accessPoints url hash as metadata accessPoint
+        accessPoints = additionalAccessPoints[0][:urls]
+        params[:view][:metadata][:accessPoints] = accessPoints
+        params[:view][:metadata][:additionalAccessPoints] = additionalAccessPoints
       end
-      params[:view][:metadata][:accessPoints] = accessPoints
     end
     true
+  end
+
+  # Helper to return a downcased extension if provided, else fallback to the URL extension
+  def compute_extension(extension, url)
+    (extension.present? ? extension : File.extname(url)[1..-1].to_s).downcase
   end
 
   def parse_attachments

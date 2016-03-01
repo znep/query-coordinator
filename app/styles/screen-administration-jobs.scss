@@ -66,14 +66,42 @@ $grey: #646565;
     color: $grey;
   }
 
-  .import-job-events {
+  .import-job-container {
     border-top: 1px solid lightgrey;
     margin-top: 20px;
+    padding-bottom: 5px;
+  }
+
+  .import-job-events {
+    width: calc(100% - 255px);
+    display: inline-block;
+    vertical-align: top;
     padding-bottom: 5px;
 
     p {
       padding-top: 2px;
       font-size: 1.3em;
+    }
+  }
+
+  .import-job-details {
+    display: inline-block;
+    width: 225px;
+    border-left: 1px solid lightgrey;
+    padding-left: 2em;
+    padding-bottom: 15px;
+
+    h3 {
+      margin-top: 12px;
+
+      color: #888;
+      font-size: .8rem;
+      display: inline-block;
+    }
+
+    p {
+      padding-top: 2px;
+      font-size: 1rem;
     }
   }
 
@@ -104,6 +132,12 @@ $grey: #646565;
 
 }
 
+.working-copy-annotation {
+  color: #888;
+  font-size: .8rem;
+  padding-top: .2rem;
+}
+
 .jobsScreen {
 
   .import-status-icon:before {
@@ -118,7 +152,7 @@ $grey: #646565;
     font-size: 1rem;
   }
 
-  .started-time {
+  .started-time-stamp {
     font-size: 1rem;
   }
 

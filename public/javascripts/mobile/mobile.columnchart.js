@@ -1,4 +1,10 @@
-socrata.visualizations.mobileColumnChart = function(values, $target) {
+/* global Loader */
+
+// Has side effect of registering jQuery plugin.
+require('socrata-visualizations').ColumnChart;
+var Loader = require('./components/Loader');
+
+module.exports = function(values, $target) {
   'use strict';
 
   var NAME_INDEX = 0;
@@ -16,6 +22,7 @@ socrata.visualizations.mobileColumnChart = function(values, $target) {
     showFiltered: true,
     'columnName': values.columnName,
     'configuration': {
+      'isMobile': true,
       'localization': {
         'NO_VALUE': 'No value',
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
@@ -43,6 +50,8 @@ socrata.visualizations.mobileColumnChart = function(values, $target) {
     }
   };
 
+  var columnChartLoader = new Loader($target);
+
   var $columnChartElement = $target;
   $columnChartElement.socrataColumnChart(columnChartVIF);
 
@@ -63,6 +72,17 @@ socrata.visualizations.mobileColumnChart = function(values, $target) {
   $columnChartElement.addClass('responsive');
   $columnChartElement.find('.chart-scroll').width(chartWidth);
 
+  // Loader events for timelineChart
+  $columnChartElement.on('SOCRATA_VISUALIZATION_DATA_LOAD_START', function() {
+    columnChartLoader.showLoader();
+  });
+
+  $columnChartElement.on('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE', function() {
+    columnChartLoader.hideLoader();
+  });
+
+  $(document).on('appliedFilters.qfb.socrata', handleVifUpdated);
+
   function selectDatum(event) {
     chartWrapper.find('.bar-group').removeClass('selected');
     $columnChartElement.selectedData = {
@@ -72,6 +92,19 @@ socrata.visualizations.mobileColumnChart = function(values, $target) {
       selected: d3.select(event.currentTarget).datum()[SELECTED_INDEX]
     };
     selectBar(event);
+  }
+
+  function handleVifUpdated(event, data) {
+    columnChartVIF.filters = data.filters;
+
+    var payload = columnChartVIF;
+    var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
+
+    renderVifEvent.originalEvent = {
+      detail: payload
+    };
+
+    $columnChartElement.trigger(renderVifEvent);
   }
 
   function selectBar(event) {

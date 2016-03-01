@@ -55,6 +55,8 @@ default: &default
   feature_map_disable_pan_zoom: false
   cetera_host: 'http://localhost:5704'
   kafka_rest_uri: 'http://localhost:8082'
+  userzoom:
+    cuid: 'C95E515772DAE311BEDA0022196C4538'
 
 # Local development
 development: &development

@@ -16,7 +16,7 @@
             function(a) { return (!_.isUndefined(a.context.currentUserRating) &&
                                       a.context.currentUserRating.thumbUp === false) ? ' ratedDown' : ''; },
         '.commentActions@class+':
-            function(a) { return _.compact([(a.context.user.id == blist.currentUserId) ? 'ownItem' : null,
+            function(a) { return _.compact([(_.get(a.context, 'user.id') == blist.currentUserId) ? 'ownItem' : null,
                                             ((!_.isUndefined(blist.currentUser) &&
                                              _.include(blist.currentUser.rights, blist.rights.user.MODERATE_COMMENTS)) ? 'isModerator' : null)]).join(' '); }
     };

@@ -64,19 +64,6 @@ ro:
           feature_map: Vizualizați această coloană ca pe o cartă caracteristică
           search_card: Vizualizați această coloană ca pe o căutare card
           timeline_chart: Vizualizați această coloană ca pe o diagramă cronologică
-      aggregation_chooser:
-        by_the_number_of: <span class="information">prin</span> număr de
-        by_the_sum_of: <span class="information">prin</span> suma de
-        count_label: numărați {0} per element
-        description: 'Vedeți elementele de date de mărimea sau culoarea:'
-        option_disabled: Această coloană nu poate fi utilizată cu un<br>număr total
-        sum_label: adăugați pentru fiecare {0}
-        the_number_of: Număr de
-        the_sum_of: Suma de
-        title: "Însumare"
-        too_many_columns:
-          message: "În acest moment nu vă putem furniza bilanțul ca o însumare a paginilor Data Lens care au mai mult de {0} coloane de tipul Număr sau Bani"
-          title: Se pare că setul de date conține mai mult de {0} coloane de numere
       api_explorer:
         additional_resources: 'Resurse suplimentare pentru acest API:'
         api_button: API
@@ -177,9 +164,6 @@ ro:
           all_rows:
           not_available:
         image:
-          header:
-          description:
-        standalone_visualization:
           header:
           description:
         choose_card:
@@ -340,17 +324,6 @@ ro:
         save: Salvare
         saved: Salvat!
         saving: Se salvează...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: "Încercați să căutați un număr care să nu conțină litere"
@@ -1484,7 +1457,6 @@ ro:
         title: Deschidere federare date
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1515,8 +1487,6 @@ ro:
         enable_success:
         enabled?:
         enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
         page_subtitle:

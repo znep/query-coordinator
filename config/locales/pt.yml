@@ -64,19 +64,6 @@ pt:
           feature_map: Visualize esta coluna como um apresentar mapas
           search_card: Visualize esta coluna como um procurar o cartão
           timeline_chart: Visualize esta coluna como um gráfico de linha do tempo
-      aggregation_chooser:
-        by_the_number_of: <span class="information">pelo</span> número de
-        by_the_sum_of: <span class="information">pela</span> quantia de
-        count_label: conte {0} por cada elemento
-        description: 'Veja elementos de dados dimensionados ou coloridos por:'
-        option_disabled: C
-        sum_label: Adicionar por cada {0}
-        the_number_of: O número de
-        the_sum_of: A quantia de
-        title: Agregação
-        too_many_columns:
-          message: Neste momento não nos é possível fornecer uma síntese como um agregado para páginas Data Lens que possuam mais de {0} colunas de tipo de Número ou de Dinheiro.
-          title: Parece que este conjunto de dados contém mias de {0} colunas de número
       api_explorer:
         additional_resources: 'Recursos adicionais para esta API:'
         api_button: API
@@ -177,9 +164,6 @@ pt:
           all_rows:
           not_available:
         image:
-          header:
-          description:
-        standalone_visualization:
           header:
           description:
         choose_card:
@@ -340,17 +324,6 @@ pt:
         save: Guardar
         saved: Guardado!
         saving: A guardar...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Tente pesquisar um número que não contenha letras.
@@ -1484,7 +1457,6 @@ pt:
         title: Federação de Dados Abertos
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1515,8 +1487,6 @@ pt:
         enable_success:
         enabled?:
         enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
         page_subtitle:

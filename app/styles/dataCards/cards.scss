@@ -1,7 +1,6 @@
 @import "dataCards/common/colors";
 @import "dataCards/common/layout";
 @import "dataCards/action-button";
-@import "dataCards/aggregation-chooser";
 @import "dataCards/tool-panel";
 @import "dataCards/feature-map-flannel";
 @import "dataCards/inputs";
@@ -186,32 +185,6 @@ body.state-view-cards {
     .save-button {
       position: relative;
     }
-    .download-menu {
-      $border-width: 2px;
-      position: relative;
-      border-width: $border-width;
-      overflow: visible;
-      dropdown-menu {
-        z-index: 1003;
-        position: absolute;
-        top: 100%;
-        // Compensate for the border on the containing button
-        margin: 0 #{-$border-width};
-        background-color: inherit;
-        a {
-          white-space: nowrap;
-          color: inherit;
-          display: block;
-          line-height: 2rem;
-          text-align: left;
-          padding: $action-btn-padding-top $action-btn-padding-left;
-          &:hover {
-            background-color: $btn-bg-color;
-            color: $aqua-font-color;
-          }
-        }
-      }
-    }
   }
   .cards-content {
     position: relative;
@@ -272,19 +245,7 @@ body.state-view-cards {
     }
     #card-container {
       position: relative;
-
-      &.multiple-cards {
-        margin: 0 0 ($customize-bar-height + 10px);
-      }
-
-      &.single-card {
-        margin: 0;
-
-        .card {
-          padding-top: 30px;
-          border-radius: 0;
-        }
-      }
+      margin: 0 0 ($customize-bar-height + 10px);
     }
     .cards {
       display: block;

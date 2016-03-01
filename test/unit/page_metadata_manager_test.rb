@@ -43,7 +43,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('mjcb-9cxc')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
-      permissions displayType moderationStatus shares rights provenance ownerId
+      permissions moderationStatus shares rights provenance ownerId
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -60,7 +60,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('mjcb-9cxc')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
-      permissions displayType moderationStatus shares rights provenance ownerId
+      permissions moderationStatus shares rights provenance ownerId
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -278,12 +278,48 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     cards = data_lens_page_metadata.fetch('cards')
 
-    expected_soql = 'select some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
-      'some_number_column, signed_magnitude_10(some_number_column), ' <<
-      'some_other_number_column, signed_magnitude_linear(some_other_number_column, 500), ' <<
-      'count(*) as value group by some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
-      'some_number_column, signed_magnitude_10(some_number_column), ' <<
-      'some_other_number_column, signed_magnitude_linear(some_other_number_column, 500)'
+    expected_soql = %q{
+      select some_column, some_other_column, :@computed_region_four_four,
+      date_trunc_y(time_column_fine_granularity), some_number_column,
+      signed_magnitude_10(some_number_column), some_other_number_column,
+      signed_magnitude_linear(some_other_number_column, 500), count(*) as value group by
+      some_column, some_other_column, :@computed_region_four_four,
+      date_trunc_y(time_column_fine_granularity), some_number_column,
+      signed_magnitude_10(some_number_column), some_other_number_column,
+      signed_magnitude_linear(some_other_number_column, 500)
+    }.gsub(/\s+/, ' ').strip
+
+    soql = manager.build_rollup_soql(data_lens_page_metadata, columns, cards)
+    assert_equal(expected_soql, soql)
+  end
+
+  def test_build_rollup_soql_has_no_duplicate_columns
+    manager.stubs(
+      phidippides: stub(
+        fetch_dataset_metadata: { body: v1_dataset_metadata }
+      ),
+      column_field_name: 'fieldName',
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: {
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      }
+    )
+    columns = v1_dataset_metadata.fetch('columns')
+
+    cards = data_lens_page_metadata.fetch('cards')
+    cards.push(cards.first) # Duplicate the first card
+
+    expected_soql = %q{
+      select some_column, some_other_column, :@computed_region_four_four,
+      date_trunc_y(time_column_fine_granularity), some_number_column,
+      signed_magnitude_10(some_number_column), some_other_number_column,
+      signed_magnitude_linear(some_other_number_column, 500), count(*) as value group by
+      some_column, some_other_column, :@computed_region_four_four,
+      date_trunc_y(time_column_fine_granularity), some_number_column,
+      signed_magnitude_10(some_number_column), some_other_number_column,
+      signed_magnitude_linear(some_other_number_column, 500)
+    }.gsub(/\s+/, ' ').strip
 
     soql = manager.build_rollup_soql(data_lens_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)

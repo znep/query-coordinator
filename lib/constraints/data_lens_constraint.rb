@@ -16,8 +16,7 @@ module Constraints
         cookie_string = request.cookies.respond_to?(:map) ?
           request.cookies.map { |k, v| "#{k}=#{v}" }.join(';') : request.cookies.to_s
         view = View.find(params[:id], 'Cookie' => cookie_string)
-        standalone_visualizations_enabled = FeatureFlags.derive(nil, request)[:standalone_lens_chart]
-        view.data_lens? || (view.standalone_visualization? && standalone_visualizations_enabled)
+        view.data_lens?
       rescue
         false
       end

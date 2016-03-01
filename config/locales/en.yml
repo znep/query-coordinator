@@ -71,19 +71,6 @@ en:
           feature_map: Visualize this column as a feature map
           search_card: Visualize this column as a search card
           timeline_chart: Visualize this column as a timeline chart
-      aggregation_chooser:
-        by_the_number_of: <span class="information">by the</span> number of
-        by_the_sum_of: <span class="information">by the</span> sum of
-        count_label: count {0} per element
-        description: 'See data elements sized or colored by:'
-        option_disabled: This column cannot be used with a<br>number of aggregate
-        sum_label: add for each {0}
-        the_number_of: The number of
-        the_sum_of: The sum of
-        title: Aggregation
-        too_many_columns:
-          message: At this time we are not able to provide summing as an aggregate for Data Lens pages that have more than {0} columns of type Number or Money.
-          title: Looks like this dataset contains more than {0} number columns
       api_explorer:
         additional_resources: 'Additional resources for this API:'
         api_button: API
@@ -193,12 +180,10 @@ en:
           current_filter: Current Filter
           all_rows: All Rows
           not_available: N/A
+          not_available_specific: Not available for this dataset.
         image:
           header: Visualization as Image
           description: Save a PNG-image file of a visualization
-        standalone_visualization:
-          header: Visualization to Catalog
-          description: Save one of the cards as a standalone interactive visualization in the catalog
         choose_card: Choose Card
       feature_map:
         feature_map_disabled: Feature maps are unavailable.
@@ -206,8 +191,9 @@ en:
       feature_map_flannel:
         error_message: An error occurred while fetching location data.
         next: Next
+        paging: "{0} of {1}"
         previous: Previous
-        showing: "<div>Showing {0}</div><div>{1}&nbsp;of&nbsp;{2}</div>"
+        showing: "Showing {0}"
       feedback_panel:
         broken: Something seems broken
         feedback: Feedback
@@ -243,6 +229,8 @@ en:
       lens_type:
         community: community
         official: official
+        official_view_explanation: Selecting this option will give the view a special designation indicating that it is an Official View.
+        official_view_label: Official View
       manage_lens_dialog:
         dataset_private_page_private: Because this page’s source dataset is set to <b>Private</b>, this page cannot be made Public.  Only those with privileged access will be able to see it, and it will not appear in the public catalog.
         dataset_private_page_public: <span class="icon-warning"></span> This page’s source dataset is set to <b>Private</b>, so even though this page is set to Public, anyone without access to the source dataset will not be able to see it. It will still appear in the public catalog. You should consider setting the dataset to Public, or setting this page to Private.
@@ -364,23 +352,6 @@ en:
         save: Save
         saved: Saved!
         saving: Saving...
-      save_visualization_as_dialog:
-        category_label: Choose a category for your new visualization (optional)
-        description_help_text: |-
-          As a guideline, describe:
-          <ul>
-          <li>What this visualization means</li>
-          <li>Why it’s important to the viewer</li>
-          <li>How this information will be used to inform future plans or decisions</li>
-          </ul>
-        description_label: Enter a description for your new visualization (optional)
-        enter_name_error: Please enter a title
-        enter_name_placeholder: Enter a name
-        name_label: Save this visualization with a new name
-        official_view_explanation: Selecting this option will give the view a special designation indicating that it is an Official View.
-        official_view_label: Official View
-        server_error: Sorry, something went wrong. Please try again later.
-        title: Save Visualization As
       search_card:
         error_explanation: "<p>An error was encountered while fetching search suggestions.</p><p>You can still press Enter at any time to search exactly by the text you entered, or you can try again later to see suggested values.</p>"
         invalid_search: Try searching for a number containing no letters.
@@ -424,6 +395,24 @@ en:
           bad_dates: Chart cannot be rendered due to invalid date values.
           default: Chart cannot be rendered.
           no_data: Chart cannot be rendered with no values.
+      tour:
+        aggregation:
+          step_1:
+            title: Notice something different?
+            text: We listened to your feedback. We moved a setting to improve customize mode!
+          step_2:
+            title: Use Settings to change the Aggregation function
+            text: Each card can be summarized by a different column. We also removed the 15 number column limit.
+          step_3:
+            title: Summarize by SUM or COUNT
+            text: Pick the number column you want to sum, or choose to count the rows.
+          step_4:
+            title: It's now more flexible!
+            text: You can add multiple cards for the same column, then summarize by different column values. This allows for useful comparisons.
+          step_5:
+            title: Try it yourself!
+            text_one: Create your page using this flexible way to summarize data.
+            text_two: Learn more by visiting the <a href="https://support.socrata.com/hc/en-us/articles/216510338">Using the Aggregation Function</a> article on the Socrata Knowledge Base.  As always, we'd love your feedback.
   controls:
     browse:
       actions:
@@ -531,7 +520,8 @@ en:
             back: Back
             clear_all: Clear All
             filter: Filter
-            all_filters: All Filters
+            sort: Sort
+            sort_by: Sort by
           modal:
             alphaAscending: A-Z
             close: Close
@@ -1410,6 +1400,7 @@ en:
       datasets: Datasets
       federations: Federations
       homepage: Homepage
+      jobs: Jobs
       metadata: Metadata
       moderation: Comment Moderation
       nomination: Nomination Moderation
@@ -1639,7 +1630,6 @@ en:
         title: Open Data Federation
       georegions:
         actions: Actions
-        add_new: Add new
         choose_a_dataset: Choose a Layer
         configure_boundary:
           boundary_geometry_label_field_error: The boundary must have a shape label.
@@ -1650,6 +1640,9 @@ en:
           boundary_name_required_page_error: "Unable to save: the boundary must have a name."
           choose_a_column: Choose a column...
           configure_boundary: Configure Boundary
+          confirm_html: "<p>We're ready to create \"%{spatial_lens_name}\" as a Spatial Lens based on the boundary \"%{boundary_name}\".</p><p>The Spatial Lens is separate from the boundary and will stay the same even if you update your boundary.</p>"
+          confirm_title: Create Your Spatial Lens
+          next: Next
           page_title: Manage Boundaries
           primary_key_column: Shape ID
           primary_key_column_description: The column that contains the unique ID that identifies each shape in the boundary.  If there isn’t such a column, pick any unique column.
@@ -1659,7 +1652,9 @@ en:
           save_success: Changes saved successfully.
           shape_label: Shape Label
           shape_label_description: "The column that should be used as the label for each shape (ex: a column containing \"WA\" and \"NY\")."
+        create_new: Create New
         custom_georegions: Custom Boundaries
+        date_added: Date Added
         description: Configure custom boundaries that can be used to create Spatial Lens maps
         default_georegions: Socrata Default Boundaries
         delete: Delete
@@ -1669,16 +1664,23 @@ en:
         edit: Edit
         enable: Enable
         enabled?: Enabled?
-        enabled_no: "No"
-        enabled_yes: "Yes"
         enabled_georegions_limit: You have reached the limit of %{limit} enabled boundaries for this site.
         enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         flashes:
           add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
+        learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
         page_title: Manage Spatial Lens
         page_subtitle: You have enabled %{enabled_count} of %{available_count} available boundaries.
+        picker_explanation: Choose a geospatial layer that you want to use as the basis for your Spatial Lens. You can click on the name to preview the layer in a new browser tab.
+        picker_support_html: Can't find what you're looking for? View the article <a href="https://support.socrata.com/hc/en-us/articles/217039278">Finding a Dataset for your Spatial Lens</a> to learn more.
         region_name: Boundary Name
         remove: Remove
+        status_disabled: Not enabled
+        status_enabled: Ready to use
+        status_failed: Something went wrong...
+        status_progress: Processing
+        substatus_failed_html: Please contact <a href="https://support.socrata.com">Socrata support</a> and include the code <strong>%{code}</strong>.
+        substatus_progress: Available shortly
         title: Spatial Lens
       home:
         add_featured_dataset: Add a New Featured Dataset
@@ -1744,7 +1746,7 @@ en:
           showing_most_recent: Showing the most recent %{limit} jobs
           showing_all_so_far: Showing all jobs which have been recorded so far
           title: Data Jobs
-          deleted_dataset: Dataset has been deleted
+          deleted_dataset: Deleted dataset
           deleted_user: User has been deleted
         show_page:
           back: Back to jobs list
@@ -2931,6 +2933,8 @@ en:
       unable_to_find_dataset_page: We were unable to find a Data Lens page for this dataset.
     edit_metadata:
       about: About
+      add_link: Add link
+      add_source: Add source
       additional_source: Additional Source
       alternative_access_prompt: Enter an alternate access point for this dataset
       api_endpoint: API Endpoint
@@ -2973,6 +2977,8 @@ en:
       licensing_attr: Licensing & Attribution
       list: List
       metadata_help: This field has been marked private by your organization and is not publicly viewable
+      missing_external_dataset: Please supply at least one external dataset.
+      multiple_extensions: More than one of the same extension for the same endpoint is not allowed.
       new_attachment: New Attachment
       none: "(none)"
       northwest_latitude: Northwest Latitude
@@ -2980,6 +2986,7 @@ en:
       optional: Optional
       private_help: This field has been marked private by your organization and is not publicly viewable
       remove_image: Remove Image
+      remove_link: Remove link
       required_field: Required Field
       resource_name: Resource Name
       resource_name_prompt: Enter a resource name
@@ -3008,6 +3015,7 @@ en:
       upload_help: This image will be cropped into a square
       upload_image: Upload Image
       upload_new_attachment: Upload New Attachment
+      url: URL
     forgot_password:
       already_authenticated: 'Unable to reset password: you are already logged in.'
       failed: There was a problem submitting your password reset request. Please try again.

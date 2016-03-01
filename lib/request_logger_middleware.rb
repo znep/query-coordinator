@@ -19,7 +19,13 @@ class RequestLoggerMiddleware
 
   def initialize(app, datetime_format = nil)
     @app = app
-    @logger = Logger.new(STDERR)
+    @logger = Logger.new('/dev/null')
+
+    # check env. variables if we aren't running apache then send to stderr
+    if ENV['SERVER_SOFTWARE'] !~ /apache/i
+      @logger = Logger.new(STDERR)
+    end
+
     @datetime_format = datetime_format || DATETIME_FORMAT
   end
 

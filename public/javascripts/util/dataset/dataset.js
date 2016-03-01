@@ -16,6 +16,9 @@
     + displayName: set by this Model, a displayable string that should used in the
         UI to indicate this item.  For example, it can be 'dataset',
         'filtered view', 'grouped view', etc.
+    + _mixpanelViewType: set by this Model, based on type, this is a human-friendly version
+        of type that is intended for internal use only (specifically sending events to
+        Mixpanel). If you add new types to type, update this mapping!
 
     + temporary: True if the dataset has been modified and not saved
     + minorChange: Only valid when temporary is set.  If this is true, it is a
@@ -956,38 +959,31 @@ var Dataset = ServerModel.extend({
     },
 
     hasBlobColumns: function() {
-      return _.isEmpty(this.blobColumns);
+      return !_.isEmpty(this.blobColumns());
     },
 
     fileDataForFileId: function(id) {
-      if (id) {
-        return this._fileDataForFileId[id];
-      }
+      return this._fileDataForFileId[id];
     },
 
     // File Data exists at the Dataset level, not the RowSet level.
-    // This does two things:
-    // (1) If no ids are provided, then it will ask the active RowSet for them.
-    // This will loop back here with the ids.
-    // (2) If ids are provided, it will go to core and ask for the file data.
     resyncFileDataForFileIds: function(ids) {
       var ds = this;
-      var getter = _.bind(this.fileDataForFileId, ds);
 
-      if (_.isUndefined(ids) || ids.length === 1) {
-        var deferred = $.Deferred();
-        ds._activeRowSet.fileDataForFileId((ids || [])[0], true).
-          done(function() { deferred.resolve(_.map(ids, getter)); });
-        return deferred.promise();
+      // We choose to be overzealous here because we'll reject them in the next step.
+      if (_.isUndefined(ids)) {
+        ids = ds._activeRowSet.getFileIds();
+        ds._activeRowSet.mapFileIdsToRows();
       }
 
-      var fileIds = _.reject(ids, getter);
+      var fileIds = _.reject(ids, _.bind(this.fileDataForFileId, ds));
 
       if (_.isEmpty(fileIds)) {
-        return $.when(_.map(ids, getter));
+        return $.when(ds._fileDataForFileId);
       }
 
-      var promise = $.ajax({
+      var deferred = $.Deferred();
+      $.ajax({
           url: '/views/{0}/files.json?method=getAll'.format(ds.id),
           data: JSON.stringify({ fileIds: fileIds }),
           contentType: 'application/json',
@@ -995,12 +991,20 @@ var Dataset = ServerModel.extend({
           dataType: 'json'
           }).
         done(function(responseData, success, xhr) {
-          _.each(responseData, function(data) {
-            ds._fileDataForFileId[data.id] = data;
-          });
-          return responseData;
+          var rowsChanged = _(responseData).
+            map(function(data) {
+              ds._fileDataForFileId[data.id] = data;
+              return ds._activeRowSet.applyFileDataToRow(data);
+            }).
+            select(_.identity). // Dump falses.
+            value();
+
+          if (rowsChanged.length > 0) {
+            ds._activeRowSet.trigger('row_change', [rowsChanged, false]);
+          }
+          deferred.resolve(ds._fileDataForFileId);
         });
-      return promise;
+      return deferred.promise();
     },
 
     // Callback may be called multiple times with smaller batches of rows
@@ -2494,6 +2498,7 @@ var Dataset = ServerModel.extend({
         if (sodaVersion === '2') { ds._useSODA2 = true; }
 
         ds.type = getType(ds);
+        ds._mixpanelViewType = getMixpanelViewType(ds);
 
         if (ds.isUnpublished())
         { ds.styleClass = 'Unpublished'; }
@@ -4225,6 +4230,34 @@ function getType(ds)
     { type = 'filter'; }
 
     return type;
+};
+
+// Returns a human-friendly Mixpanel 'View Type' (for internal use only!)
+function getMixpanelViewType(ds) {
+    var type = ds.type;
+
+    if (type === 'blist') {
+        type = ds.isPublished() ? 'dataset' : 'working_copy';
+    }
+
+    var humanReadableTypes = {
+        api: 'API view',
+        blob: 'non-tabular file or document',
+        calendar: 'calendar',
+        chart: 'chart',
+        data_lens: 'data lens',
+        dataset: 'dataset',
+        filter: 'filtered view',
+        form: 'form',
+        group: 'grouped view',
+        grouped: 'grouped view',
+        href: 'external dataset',
+        map: 'map',
+        table: 'table',
+        working_copy: 'working copy'
+    };
+
+    return humanReadableTypes[type] || type;
 };
 
 function getDisplayName(ds)

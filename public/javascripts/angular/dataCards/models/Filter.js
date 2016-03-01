@@ -18,10 +18,10 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   BinaryOperatorFilter.prototype.serialize = function() {
     return {
       'function': 'BinaryOperator',
-      'arguments': {
-        'operator': this.operator,
-        'operand': this.operand,
-        'humanReadableOperand': this.humanReadableOperand
+      arguments: {
+        operator: this.operator,
+        operand: this.operand,
+        humanReadableOperand: this.humanReadableOperand
       }
     };
   };
@@ -73,11 +73,11 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
 
     return {
       'function': 'BinaryComputedGeoregionOperator',
-      'computedColumnName': this.computedColumnName,
-      'arguments': {
-        'operator': this.operator,
-        'operand': this.operand,
-        'humanReadableOperand': this.humanReadableOperand
+      computedColumnName: this.computedColumnName,
+      arguments: {
+        operator: this.operator,
+        operand: this.operand,
+        humanReadableOperand: this.humanReadableOperand
       }
     };
   };
@@ -114,8 +114,8 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   IsNullFilter.prototype.serialize = function() {
     return {
       'function': 'IsNull',
-      'arguments': {
-        'isNull': this.isNull
+      arguments: {
+        isNull: this.isNull
       }
     };
   };
@@ -134,9 +134,9 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   TimeRangeFilter.prototype.serialize = function() {
     return {
       'function': 'TimeRange',
-      'arguments': {
-        'start': DateHelpers.serializeFloatingTimestamp(this.start),
-        'end': DateHelpers.serializeFloatingTimestamp(this.end)
+      arguments: {
+        start: DateHelpers.serializeFloatingTimestamp(this.start),
+        end: DateHelpers.serializeFloatingTimestamp(this.end)
       }
     };
   };
@@ -166,9 +166,9 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   ValueRangeFilter.prototype.serialize = function() {
     return {
       'function': 'ValueRange',
-      'arguments': {
-        'start': this.start,
-        'end': this.end
+      arguments: {
+        start: this.start,
+        end: this.end
       }
     };
   };

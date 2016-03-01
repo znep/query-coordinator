@@ -1,9 +1,11 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "commonjs": true
   },
   "extends": "eslint:recommended",
   "parser": "babel-eslint",
+  "plugins": ["react"],
   "rules": {
     "brace-style": [
       2,
@@ -12,7 +14,7 @@
         "allowSingleLine": true
       }
     ],
-    "camelcase": 1,
+    "camelcase": [1, {"properties": "never"}],
     "consistent-return": 0,
     "dot-location": [
       1,
@@ -51,7 +53,16 @@
     "no-use-before-define": 0,
     "quotes": [
       1,
-      "single"
+      "single",
+      "avoid-escape"
+    ],
+    "quote-props": [
+      2,
+      "as-needed",
+      {
+        "keywords": true,
+        "unnecessary": false
+      }
     ],
     "semi": [
       2,
@@ -70,7 +81,7 @@
       "never"
     ],
     "space-infix-ops": 2,
-    "strict": 2
+    "strict": 0
   },
   "globals": {
     "$": true,
@@ -82,7 +93,6 @@
     "d3": true,
     "Dataset": true,
     "datasetMetadata": true,
-    "domainMetadata": true,
     "DOMPurify": true,
     "Highcharts": true,
     "jQuery": true,
@@ -93,7 +103,6 @@
     "moment": true,
     "pageMetadata": true,
     "pbf": true,
-    "require": true,
     "saveAs": true,
     "socrata": true,
     "ss": true,

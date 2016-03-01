@@ -1,0 +1,26 @@
+// Colors
+$gray-base: #EFEFEF;
+// $gray-base: #F3F3F3;
+$gray-dark: #DCDBDB;
+$gray-darker: #C9C9C9;
+
+$text-primary: #4B4B4B;
+$text-input: #01735E;
+$text-light: #767677;
+$text-link: #257AB3;
+
+// Fonts
+$font-family-sans-serif: 'Open Sans', Helvetica;
+
+.btn-toggle {
+  cursor: pointer;
+  position: absolute;
+  right: 11px;
+  top: 17px;
+  text-align: center;
+  color: lighten($text-primary, 20%);
+  transition: 0.2s all;
+  &:hover {
+    color: darken($text-primary, 20%);
+  }
+}

@@ -1,6 +1,10 @@
 /* global socrata, $ */
 
-socrata.visualizations.mobileFeatureMap = function(values, $target) {
+require('socrata-visualizations').FeatureMap;
+var FlyoutRenderer = require('socrata-visualizations').views.FlyoutRenderer;
+var RowInspector = require('socrata-visualizations').views.RowInspector;
+
+module.exports = function(values, $target) {
   'use strict';
 
   var endScrolling;
@@ -15,8 +19,8 @@ socrata.visualizations.mobileFeatureMap = function(values, $target) {
    * Set up the plugin.
    */
 
-  var flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
-  socrata.visualizations.RowInspector.setup();
+  var flyoutRenderer = new FlyoutRenderer();
+  RowInspector.setup();
 
   var featureMap1VIF = {
     'aggregation': {
@@ -61,6 +65,7 @@ socrata.visualizations.mobileFeatureMap = function(values, $target) {
       // Base layer
       'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
       'baseLayerOpacity': 0.5,
+      'tileserverHosts': window.socrataConfig.tileserverHosts,
       'useOriginHost': false
     },
     'createdAt': '2014-01-01T00:00:00',
@@ -82,7 +87,7 @@ socrata.visualizations.mobileFeatureMap = function(values, $target) {
   };
 
   var $featureMapElement = $target;
-  $featureMapElement.socrataMobileFeatureMap(featureMap1VIF);
+  $featureMapElement.socrataFeatureMap(featureMap1VIF);
 
   var mapHeight = (60 * $(window).height()) / 100;// Map should be 60% of device height
   $featureMapElement.height(mapHeight);

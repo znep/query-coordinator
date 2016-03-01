@@ -7,20 +7,11 @@ feature-map {
   padding: 0;
   width: 100%;
   height: 100%;
-  .feature-map-container {
+  .feature-map {
     height: 100%;
   }
-  .pan-zoom-disabled-warning {
-    position: absolute;
-    right: 1em;
-    bottom: 1em;
-    cursor: default;
-    @include border-radius($rounded-corners-border-radius);
-    .icon-warning {
-      font-size: 1.3em;
-      padding: 0.2em;
-      color: $yellow-warning-color;
-    }
+  .feature-map-container {
+    height: 100%;
   }
   .display-render-warning {
     padding-top: 0.5rem;

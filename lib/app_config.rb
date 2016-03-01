@@ -1,4 +1,7 @@
+require 'hashie/extensions/ignore_undeclared'
+
 class AppConfig < Hashie::Dash
+  include Hashie::Extensions::IgnoreUndeclared
 
   as_int = ->(val) { val.to_i }
 
@@ -67,6 +70,9 @@ class AppConfig < Hashie::Dash
   property :shape_file_region_query_limit
   property :enable_png_download_ui
   property :enable_search_suggestions
+
+  # Userzoom configuration
+  property :userzoom, default: {}
 
   # Misc
   property :threadpool_count, default: 0, transform_with: as_int

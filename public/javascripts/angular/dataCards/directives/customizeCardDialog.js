@@ -84,10 +84,13 @@ function customizeCardDialog(
   }
 
   function setupFlannelTitleSelect(cardModel, $scope) {
-    $scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$($scope));
-
     $scope.$bindObservable('titleColumnOptions', DatasetColumnsService.getSortedColumns$($scope).map(function(sortedColumns) {
-      return _.pluck(sortedColumns, 'fieldName');
+      return sortedColumns.map(function(column) {
+        return {
+          fieldName: column.fieldName,
+          columnName: column.columnInfo.name
+        };
+      });
     }));
 
     // Initialize selection to the existing flannel title column.
@@ -170,16 +173,17 @@ function customizeCardDialog(
     },
     templateUrl: templateUrl,
     link: function($scope, element) {
-
       // Clone the card, so we can cancel without having made any changes
       $scope.customizedCard = $scope.dialogState.cardModel.clone();
       $scope.showBucketTypeWarning = false;
 
+      // Make columnHumanNameFn broadly available
+      $scope.$bindObservable('humanReadableColumnName',
+        $scope.customizedCard.observe('column.name'));
+
       $scope.$bindObservable('shouldShowAggregationSelector',
         $scope.customizedCard.observe('cardType').map(function(cardType) {
-          return $scope.page.version >= 4 &&
-            ServerConfig.get('enableDataLensCardLevelAggregation') &&
-            !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
+          return !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
         }));
 
       $scope.$bindObservable('availableCardTypes',
@@ -216,7 +220,7 @@ function customizeCardDialog(
           setupHistogramBucketTypeSelect($scope.customizedCard, $scope);
         });
 
-       // Save the model by updating with our cloned copy.
+      // Save the model by updating with our cloned copy.
       $scope.updateCard = function() {
         $scope.dialogState.cardModel.setFrom($scope.customizedCard);
         $scope.dialogState.show = false;
@@ -233,4 +237,4 @@ function customizeCardDialog(
 }
 angular.
   module('dataCards.directives').
-    directive('customizeCardDialog', customizeCardDialog);
+  directive('customizeCardDialog', customizeCardDialog);

@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'set'
+
 module BrowseActions
   include ActionView::Helpers::TranslationHelper
   include ApplicationHelper
@@ -119,25 +121,15 @@ module BrowseActions
     }
   end
 
-  def federations_hash
-    @federations_hash ||= Federation.find.each_with_object({}) do |f, hash|
-      next unless
-        f.targetDomainCName == CurrentDomain.cname &&
-        f.lensName.empty? &&
-        f.acceptedUserId.present?
-
-      hash[f.sourceDomainId] = f.sourceDomainCName
-    end
-  end
-
   def federated_facet
-    all_feds = federations_hash.sort_by(&:last).map do |f_id, f_cname|
+    all_feds = Federation.federations.sort_by(&:text).map do |fed|
+      cname = fed.sourceDomainCName
       {
-        text: f_cname,
-        value: f_id.to_s,
+        text: cname,
+        value: fed.sourceDomainId.to_s, # must be string or view doesn't notice it
         icon: {
           type: 'static',
-          href: "/api/domains/#{f_cname}/icons/smallIcon"
+          href: "/api/domains/#{cname}/icons/smallIcon"
         }
       }
     end
@@ -146,7 +138,7 @@ module BrowseActions
 
     all_feds.unshift(
       text: 'This site only',
-      value: CurrentDomain.domain.id.to_s,
+      value: CurrentDomain.domain.id.to_s, # must be string or view won't notice
       icon: {
         type: 'static',
         href: "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"
@@ -382,10 +374,9 @@ module BrowseActions
     browse_options[:header_config]  = catalog_config.header
     browse_options[:footer_config]  = catalog_config.footer
 
-    browse_options[:sort_opts] ||= default_browse_sort_opts
+    browse_options[:sort_opts] ||= browse_sort_opts
     browse_options[:disable] = {} unless browse_options[:disable].present?
 
-    # TODO: include? filters should be done on sets
     # get the subset relevant to various things
     browse_options[:search_options] =
       browse_options.select { |k| @@search_options.include?(k) }.merge(search_options)
@@ -404,15 +395,19 @@ module BrowseActions
         view_results =
           if using_cetera?
             # TODO: actually check if federation is enabled first
+
+            # WARN: federated domains are not showing up highlighted in facet bar
+
+            # Domain ids have to be translated to domain cnames for Cetera
             fed_id = browse_options[:search_options][:federation_filter]
-            browse_options[:search_options][:domains] =
-              if fed_id.present?
-                # Federation filter domain id has to be translated to domain cname for Cetera
-                federations_hash.merge(CurrentDomain.domain.id => CurrentDomain.cname)[fed_id.to_i]
-              else
-                # All domains in the federation
-                [CurrentDomain.cname].concat(federations_hash.values.sort).join(',')
-              end
+            browse_options[:search_options][:domains] = Federation.federated_domain_cnames(fed_id)
+
+            # If you try to federate from a domain that didn't approve it, no federation for you!
+            unless browse_options[:search_options][:domains].present?
+              raise "Invalid federated domain id: #{fed_id} for domain #{CurrentDomain.cname}"
+            end
+
+            browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
             Cetera.search_views(browse_options[:search_options])
           else
@@ -464,9 +459,8 @@ module BrowseActions
           }
       end
 
-    # In Cetera search, hide sort_dropdown, popularity, and rss links
+    # In Cetera search, hide popularity and rss links
     if using_cetera?
-      browse_options[:disable][:sort] = true
       browse_options[:grid_items][:popularity] = false
       browse_options[:grid_items][:rss] = false
       browse_options[:hide_catalog_rss] = true
@@ -530,6 +524,10 @@ module BrowseActions
     end.to_str # force this string to be marked html unsafe
   end
 
+  def browse_sort_opts
+    using_cetera? ? cetera_browse_sort_opts : default_browse_sort_opts
+  end
+
   def default_browse_sort_opts
     [
       { value: 'relevance', name: t('controls.browse.sorts.relevance') },
@@ -540,6 +538,15 @@ module BrowseActions
       { value: 'last_modified', name: t('controls.browse.sorts.last_modified') },
       { value: 'rating', name: t('controls.browse.sorts.rating') },
       { value: 'comments', name: t('controls.browse.sorts.comments') }
+    ]
+  end
+
+  def cetera_browse_sort_opts
+    [
+      { value: 'relevance', name: t('controls.browse.sorts.relevance') },
+      { value: 'most_accessed', name: t('controls.browse.sorts.most_accessed') },
+      { value: 'newest', name: t('controls.browse.sorts.newest') },
+      { value: 'last_modified', name: t('controls.browse.sorts.last_modified') }
     ]
   end
 
@@ -646,15 +653,17 @@ module BrowseActions
   # we're operating as though there's only one category, even though cetera
   # will expect an array of the parent and children categories[].
   def selected_category_and_any_children(browse_options)
-    return nil unless browse_options[:search_options].try(:[], :category).present?
+    search_options = browse_options[:search_options]
+    selected_category = search_options.try(:[], :category)
 
-    selected_category = browse_options[:search_options][:category]
+    return nil unless selected_category.present?
+
     categories_facet = browse_options[:facets].detect { |facet| facet[:param] == :category }
 
     # extra_options could potentially be nil (see EN-760 and categories_facet method)
-    categories = categories_facet[:options] + categories_facet[:extra_options].to_a
-
-    return nil unless categories.present?
+    # categories_facet, technically speaking, could be absent
+    categories = categories_facet && categories_facet[:options] + categories_facet[:extra_options].to_a
+    categories ||= [] # this is for the edge case when there is no categories facet
 
     # Is it a top-level category?
     category = categories.find { |c| c[:value] == selected_category }
@@ -685,13 +694,14 @@ module BrowseActions
   @@numeric_options = [ :limit, :page ]
   @@boolean_options = [ :nofederate, :curated_region_candidates ]
 
-  @@moderatable_types = [ 'new_view', 'filters', 'charts', 'maps', 'calendars', 'forms' ]
+  @@moderatable_types = Set.new([ 'new_view', 'filters', 'charts', 'maps', 'calendars', 'forms' ])
 
-  @@search_options = [
-    :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView,
-    :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver,
-    :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields
-  ]
-  @@querystring_options = []
-
+  @@search_options = Set.new(
+    [
+      :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo,
+      :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation,
+      :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id,
+      :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields
+    ]
+  )
 end

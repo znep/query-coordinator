@@ -35,9 +35,59 @@ describe ::ViewModels::Administration::Georegions do
       'defaultFlag' => true
     )
   end
+  let(:job_in_progress) do
+    {
+      'common' => {
+        'internalId' => 'cur8ed-r3g10n-j0b',
+        'externalId' => 'cur8ed-r3g10n-j0b'
+      },
+      'dataset' => 't3st-d4t4',
+      'jobParameters' => {
+        'geometryLabel' => 'name',
+        'name' => 'Curated Region Job in Progress',
+        'enabledFlag' => false,
+        'defaultFlag' => false,
+        'type' => 'prepare_curated_region'
+      }
+    }
+  end
+  let(:failed_job) do
+    {
+      'id' => 'f41l3d-cur8ed-r3g10n-j0b',
+      'activity_type' => 'PrepareCuratedRegion',
+      'service' => 'CuratedRegionJob',
+      'entity_type' => 'Dataset',
+      'entity_id' => 'm0r3-d4t4',
+      'status' => 'Failure',
+      'latest_event' => {
+        'status' => 'Failure',
+        'info' => {
+          'common' => {
+            'internalId' => 'f41l3d-cur8ed-r3g10n-j0b',
+            'externalId' => 'f41l3d-cur8ed-r3g10n-j0b'
+           },
+          'dataset' => 'm0r3-d4t4',
+          'jobParameters' => {
+            'geometryLabel' => 'name',
+            'name' => 'Failed Curated Region Job',
+            'enabledFlag' => false,
+            'defaultFlag' => false,
+            'type' => 'prepare_curated_region'
+          }
+        }
+      }
+    }
+  end
 
   let(:site_title) { 'My Site' }
-  subject { ::ViewModels::Administration::Georegions.new([curated_region, enabled_region, default_region], site_title) }
+  subject do
+    ::ViewModels::Administration::Georegions.new(
+      [curated_region, enabled_region, default_region],
+      [job_in_progress],
+      [failed_job],
+      site_title
+    )
+  end
   before(:each) do
     allow_any_instance_of(CuratedRegion).to receive(:primary_key_columns).and_return(nil)
     allow_any_instance_of(CuratedRegion).to receive(:geometry_label_columns).and_return(nil)
@@ -55,12 +105,16 @@ describe ::ViewModels::Administration::Georegions do
     expect(subject.maximum_enabled_count).to eq(5)
   end
 
-  it 'has default regions' do
-    expect(subject.default_regions).to eq([])
+  it 'has curated regions' do
+    expect(subject.curated_regions).to include(curated_region, enabled_region, default_region)
   end
 
-  it 'has custom regions' do
-    expect(subject.custom_regions).to include(curated_region, enabled_region, default_region)
+  it 'has jobs in progress' do
+    expect(subject.curated_region_jobs).to include(job_in_progress)
+  end
+
+  it 'has recent failed jobs' do
+    expect(subject.failed_curated_region_jobs).to include(failed_job)
   end
 
   it 'has translations' do
@@ -72,8 +126,13 @@ describe ::ViewModels::Administration::Georegions do
   end
 
   it 'filters out elements with duplicate ids' do
-    subject_with_duplicate_item = ::ViewModels::Administration::Georegions.new([curated_region, duplicate_region], site_title)
-    expect(subject_with_duplicate_item.custom_regions).to eq([curated_region])
+    subject_with_duplicate_item = ::ViewModels::Administration::Georegions.new(
+      [curated_region, duplicate_region],
+      [job_in_progress],
+      [failed_job],
+      site_title
+    )
+    expect(subject_with_duplicate_item.curated_regions).to eq([curated_region])
   end
 
 end

@@ -1,57 +1,6 @@
 const angular = require('angular');
 
-function sanitizeUserHtml(htmlString) {
-  if (!_.isString(htmlString) || htmlString.length === 0) {
-    return htmlString;
-  }
-
-  var allowedTags = ['a', 'b', 'br', 'div', 'em', 'hr', 'i', 'p', 'span', 'strong', 'sub', 'sup', 'u'];
-  var allowedAttr = ['href', 'target', 'rel'];
-
-  return DOMPurify.sanitize(htmlString, {
-    ALLOWED_TAGS: allowedTags,
-    ALLOWED_ATTR: allowedAttr
-  });
-}
-
-function initDownload($scope, page, WindowState, ServerConfig) {
-  var dataset$ = page.observe('dataset').filter(_.isObject);
-  var datasetCSVDownloadURL$ = dataset$.map(function(dataset) {
-    var downloadOverride = dataset.getCurrentValue('downloadOverride');
-    if (downloadOverride) {
-      return downloadOverride;
-    } else {
-      var url = $.baseUrl();
-      url.searchParams.set('accessType', 'DOWNLOAD');
-
-      if (dataset.obeId) {
-        url.pathname = `/api/views/${dataset.obeId}/rows.csv`;
-        url.searchParams.set('bom', true);
-      } else if (dataset.id) {
-        url.pathname = `/api/views/${dataset.id}/rows.csv`;
-      } else {
-        return '#';
-      }
-      return url.href;
-    }
-  });
-
-  // The CSV download url
-  $scope.$bindObservable('datasetCSVDownloadURL', datasetCSVDownloadURL$);
-
-  // Download menu
-  $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
-  WindowState.closeDialogEvent$.filter(function(e) {
-    return $scope.downloadOpened &&
-      // Don't double-handle toggling downloadOpened
-      !$(e.target).closest('.download-menu').length;
-  }).
-  takeUntil($scope.$destroyAsObservable()).
-  subscribe(function() {
-    $scope.$apply(function() {
-      $scope.downloadOpened = false;
-    });
-  });
+function initDownload($scope, WindowState) {
 
   // Close png export with escape
   WindowState.escapeKey$.filter(function() {
@@ -66,10 +15,7 @@ function initDownload($scope, page, WindowState, ServerConfig) {
 
   // Unsets chooser mode on init and whenever completion is signaled.
   var clearChooserMode = function() {
-    $scope.chooserMode = {
-      show: false,
-      action: null
-    };
+    $scope.chooserMode = { show: false };
 
     // NOTE: I don't really like having this event, but I feel like it's
     // preferable to plumbing the chooserMode object itself. Once the original
@@ -82,25 +28,9 @@ function initDownload($scope, page, WindowState, ServerConfig) {
 
   // Activates chooser mode in an event-based manner, allowing this mode to be
   // triggered by child directives.
-  $scope.$on('enter-export-card-visualization-mode', function(e, action) {
-    $scope.chooserMode = {
-      show: true,
-      action: action
-    };
+  $scope.$on('enter-export-card-visualization-mode', function() {
+    $scope.chooserMode = { show: true };
   });
-
-  // Activates the old "Download" dropdown for CSV and Polaroid functionality.
-  $scope.onDownloadClick = function(event) {
-    if (!$scope.editMode) {
-      // Clicking the 'Cancel' button
-      if ($(event.target).hasClass('download-menu') && $scope.chooserMode.show) {
-        clearChooserMode();
-      } else {
-        // Otherwise, toggle the dialog
-        $scope.downloadOpened = !$scope.downloadOpened;
-      }
-    }
-  };
 }
 
 function initManageLens($scope, page) {
@@ -196,7 +126,6 @@ function CardsViewController(
   Constants,
   UserRights,
   ViewRights,
-  domain,
   rx) {
   const Rx = rx;
 
@@ -215,20 +144,10 @@ function CardsViewController(
   *************************/
 
   $scope.page = page;
-  $scope.domain = domain;
-  $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
   $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
   $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
-
-  var pageName$ = page.observe('name').filter(_.isPresent).map(sanitizeUserHtml);
-  var pageDescription$ = page.observe('description').map(sanitizeUserHtml);
-  $scope.$bindObservable('pageName', pageName$);
-  $scope.$bindObservable('pageDescription', pageDescription$);
   $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));
-
   $scope.$bindObservable('dataset', page.observe('dataset'));
-  $scope.$bindObservable('datasetPages', page.observe('dataset.pages'));
-  $scope.$bindObservable('sourceDatasetName', page.observe('dataset.name'));
 
   var cardModelsObservable = page.observe('cards');
   var cardCountObservable = cardModelsObservable.map(function(models) {
@@ -244,20 +163,6 @@ function CardsViewController(
       return card.getCurrentValue('expanded');
     });
   }));
-
-  pageName$.subscribe(function(pageName) {
-    WindowOperations.setTitle(`${pageName} | Socrata`);
-  });
-
-  $scope.$bindObservable(
-    'sourceDatasetURL',
-    page.observe('dataset').pluck('obeId').filter(_.isPresent).map(function(obeId) {
-      return I18n.a(`/d/${obeId}`);
-    })
-  );
-
-  $scope.shouldShowAggregationChooser = page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation');
-  $scope.shouldShowExportMenu = ServerConfig.get('enableDataLensExportMenu');
 
   /***************
   * User session *
@@ -314,17 +219,9 @@ function CardsViewController(
     });
 
   $scope.$bindObservable('currentUserHasProvenanceRight', currentUserHasProvenanceRight$);
+  $scope.$bindObservable('shouldDisplayCustomizeBar', currentUser$.map(_.isPresent));
 
-  // We're checking the displayType as well as the user to account for
-  // standalone visualizations
-  $scope.$bindObservable(
-    'shouldDisplayCustomizeBar',
-    currentUser$.map(function(user) {
-      return user && page.displayType == 'data_lens';
-    })
-  );
-
-  initDownload($scope, page, WindowState, ServerConfig);
+  initDownload($scope, WindowState);
 
   $scope.$bindObservable('shouldShowManageLens', userCanManageView$);
   initManageLens($scope, page);
@@ -338,119 +235,7 @@ function CardsViewController(
   * Filters and the where clause *
   *******************************/
 
-  var allCardsFilters = page.observe('activeFilters');
-
-  $scope.maxOperandLength = Constants.MAX_OPERAND_LENGTH;
   $scope.$bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
-
-  var datasetColumns$ = page.observe('dataset.columns');
-
-  var appliedFiltersForDisplay$ = allCardsFilters.
-    combineLatest(datasetColumns$, function(pageFilters, columns) {
-
-      function humanReadableOperator(filter) {
-        if (
-          filter instanceof Filter.BinaryOperatorFilter ||
-          filter instanceof Filter.BinaryComputedGeoregionOperatorFilter
-        ) {
-          if (filter.operator === '=') {
-            return I18n.filter.is;
-          } else {
-            throw new Error('Only the "=" filter is currently supported.');
-          }
-        } else if (filter instanceof Filter.TimeRangeFilter) {
-          return I18n.filter.is;
-        } else if (filter instanceof Filter.ValueRangeFilter) {
-          return I18n.filter.is;
-        } else if (filter instanceof Filter.IsNullFilter) {
-          if (filter.isNull) {
-            return I18n.filter.is;
-          } else {
-            return I18n.filter.isNot;
-          }
-        } else {
-          throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
-        }
-      }
-
-      function humanReadableOperand(filter) {
-        if (
-          filter instanceof Filter.BinaryOperatorFilter ||
-          filter instanceof Filter.BinaryComputedGeoregionOperatorFilter
-        ) {
-          if (_.isPresent(filter.operand.toString().trim())) {
-            return filter.humanReadableOperand || filter.operand;
-          } else {
-            return I18n.filter.blank;
-          }
-        } else if (filter instanceof Filter.IsNullFilter) {
-          return I18n.filter.blank;
-        } else if (filter instanceof Filter.TimeRangeFilter) {
-          var format = 'YYYY MMMM DD';
-          return I18n.t('filter.dateRange',
-            moment(filter.start).format(format),
-            moment(filter.end).format(format)
-          );
-        } else if (filter instanceof Filter.ValueRangeFilter) {
-          return I18n.t('filter.valueRange',
-            $window.socrata.utils.formatNumber(filter.start),
-            $window.socrata.utils.formatNumber(filter.end)
-          );
-        } else {
-          throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
-        }
-      }
-
-      return _.reduce(pageFilters, function(accumulator, cardFilterInfo) {
-        if ($.isPresent(cardFilterInfo.filters)) {
-          if (cardFilterInfo.filters.length > 1) {
-            $log.warn('Cannot apply multiple filters to a single card.');
-          }
-          var filter = _.first(cardFilterInfo.filters);
-          accumulator.push({
-            column: columns[cardFilterInfo.fieldName],
-            operator: humanReadableOperator(filter),
-            operand: humanReadableOperand(filter)
-          });
-        }
-        return accumulator;
-      }, []);
-
-    });
-  $scope.$bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplay$);
-
-  $scope.clearAllFilters = function() {
-    _.each($scope.page.getCurrentValue('cards'), function(card) {
-      if (!_.isEmpty(card.getCurrentValue('activeFilters'))) {
-        card.set('activeFilters', []);
-      }
-    });
-  };
-
-  var quickFilterBarTitle$;
-
-  if (page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation')) {
-    var dynamicTitle$ = PageHelpersService.dynamicAggregationTitle(Rx.Observable.returnValue(page));
-    quickFilterBarTitle$ = dynamicTitle$.map(function(dynamicTitle) {
-      return I18n.t('quickFilterBar.oldFilterTitle', dynamicTitle);
-    });
-  } else {
-    quickFilterBarTitle$ = Rx.Observable.combineLatest(
-      appliedFiltersForDisplay$,
-      page.observe('dataset.rowDisplayUnit'),
-      function(appliedFiltersForDisplay, rowDisplayUnit) {
-        rowDisplayUnit = PluralizeService.pluralize(rowDisplayUnit || I18n.common.row);
-
-        if (_.isEmpty(appliedFiltersForDisplay)) {
-          return I18n.t('quickFilterBar.filterTitle.unfiltered', rowDisplayUnit);
-        } else {
-          return I18n.t('quickFilterBar.filterTitle.filtered', rowDisplayUnit);
-        }
-      }
-    );
-  }
-
-  $scope.$bindObservable('quickFilterBarTitle', quickFilterBarTitle$);
 
   /***************************
   * View/edit cards behavior *
@@ -691,15 +476,6 @@ function CardsViewController(
     $scope.customizeState.show = true;
   });
 
-  $scope.saveVisualizationAsState = {
-    cardModel: null,
-    show: false
-  };
-  $scope.$on('save-visualization-as', function(e, cardModel) {
-    $scope.saveVisualizationAsState.cardModel = cardModel;
-    $scope.saveVisualizationAsState.show = true;
-  });
-
   // Handle the event emitted by the Remove All Cards button and delegate
   // to each card so that we exercise the existing card deletion path.
   $scope.$on('delete-all-cards', function() {
@@ -714,7 +490,7 @@ function CardsViewController(
   var isMobile = DeviceService.isMobile();
 
   $scope.mobileWarningState = {
-    'show': isMobile && !mobileWarningClosed
+    show: isMobile && !mobileWarningClosed
   };
 
   $scope.$watch('mobileWarningState.show', function(newValue) {
@@ -768,22 +544,6 @@ function CardsViewController(
     render: function() {
       var flyoutTitle = $scope.isEphemeral ? I18n.saveAs.flyoutEphemeral : I18n.saveAs.flyoutIdle;
       return `<div class="flyout-title">${flyoutTitle}</div>`;
-    },
-    destroySignal: destroy$
-  });
-
-  var clearAllFiltersSelectors = [
-    '.clear-all-filters-button',
-    '.clear-all-filters-button .icon-close'
-  ];
-
-  FlyoutService.register({
-    selector: clearAllFiltersSelectors.join(', '),
-    render: function() {
-      return `<div class="flyout-title">${I18n.quickFilterBar.clearAllFlyout}</div>`;
-    },
-    positionOn: function() {
-      return $(clearAllFiltersSelectors[0])[0];
     },
     destroySignal: destroy$
   });

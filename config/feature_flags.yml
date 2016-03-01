@@ -54,9 +54,9 @@ debug_data_lens:
 disable_dataset_search_box:
   description: Disable the search box in dataset pages.
   defaultValue: false
-enable_data_lens_card_level_aggregation:
-  description: Allow configuration of the aggregation at the card level instead of the page level.
-  defaultValue: false
+enable_data_lens_aggregation_tour:
+  description: Show the tour of the card-level aggregation.
+  defaultValue: true
   category: data lens
 enable_data_lens_export_menu:
   description: Toggles visibility of the export menu, which also allows export of the current filter.
@@ -124,7 +124,7 @@ enable_spatial_lens_region_coding:
 enable_synthetic_spatial_lens_id:
   description: Enable synthetic primary keys for Spatial Lens shapes.
   category: data lens
-  defaultValue: false
+  defaultValue: true
 stories_enabled:
   description: Enable the Storyteller application.
   category: storyteller
@@ -200,10 +200,6 @@ show_provenance_badge_in_catalog:
 show_share_dataset_by_email_button_for_general_users:
   description: Toggle the visibility of the "share by email" button on dataset pages for unauthenticated or non-domain-role-holding users (see ONCALL-3032).
   defaultValue: true
-standalone_lens_chart:
-  description: When enabled, allows individual visualizations from a data lens page to be saved as standalone catalog entries.
-  defaultValue: false
-  category: data lens
 swap_in_nbe_view:
   description: "Utility flag to make frontend views use their NBE counterparts. NOTE: This is intended to be used for NBE Go testing; it may cause errors if enabled for general use."
   defaultValue: false

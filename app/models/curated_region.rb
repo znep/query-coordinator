@@ -43,6 +43,10 @@ class CuratedRegion < Model
     @view ||= View.find(@data['view']['id'])
   end
 
+  def datetime_added
+    Time.at(view.createdAt).to_datetime
+  end
+
   def geometry_label_columns
     CuratedRegion.geometry_label_columns(view)
   end
@@ -62,12 +66,13 @@ class CuratedRegion < Model
   def as_json(options={})
     {
       :id => id,
+      :dateAdded => view.createdAt,
       :enabledFlag => enabledFlag,
-      :name => name,
       :featurePk => featurePk,
-      :primaryKeyColumns => primary_key_columns,
       :geometryLabel => geometryLabel,
-      :geometryLabelColumns => geometry_label_columns
+      :geometryLabelColumns => geometry_label_columns,
+      :name => name,
+      :primaryKeyColumns => primary_key_columns
     }
   end
 

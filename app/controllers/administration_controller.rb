@@ -77,35 +77,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :check_member, :only => :catalog_widget
-  def catalog_widget
-    topics_all = Tag.find({:method => 'viewsTags'}).map do |t|
-      escaped = CGI.escapeHTML(t.name)
-      { :text => escaped, :value => escaped }
-    end
-    @custom_facets = custom_facets()
-    @widget_width  = 750
-    @widget_height = 550
-    @embed_base    = url_for(:controller => 'browse', :action => 'embed')
-    @embed_options = @@default_embed_options
-    @browse_select_options = {
-        :limitTo => view_types_facet,
-        :categories => categories_facet(params),
-        :topics => topics_all,
-        :sortBy => @@default_browse_sort_opts.map do |item|
-          { :value => item[:value], :text => item[:name],
-            :is_time_period => item[:is_time_period] }
-        end,
-        :timePeriods =>  [
-          {:value => 'week', :text => 'This week'},
-          {:value => 'month', :text => 'This month'},
-          {:value => 'year', :text => 'This year'}
-        ]
-    }
-
-  end
-
-
   before_filter :check_member, :only => :analytics
   def analytics
   end
@@ -167,6 +138,8 @@ class AdministrationController < ApplicationController
   def georegions
     @view_model = ::ViewModels::Administration::Georegions.new(
       CuratedRegion.all,
+      incomplete_curated_region_jobs,
+      failed_curated_region_jobs,
       CurrentDomain.strings.site_title
     )
   end

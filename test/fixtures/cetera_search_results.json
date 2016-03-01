@@ -1,0 +1,95 @@
+{
+  "results" :
+  [
+    {
+      "resource" :
+      {
+        "description" : "This dataset is all the Police responses to 9-1-1 calls within the city. Police response data shows all officers dispatched. To protect the security of a scene, the safety of officers and the public, and sensitive ongoing investigation, these events are added to the data.seattle.gov only after the incident is considered safe to close out. Data is refreshed on a 4 hour interval.",
+        "view_count" :
+        {
+          "page_views_last_week" : 687,
+          "page_views_total" : 71629,
+          "page_views_last_month" : 2944
+        },
+        "updatedAt" : "2016-02-23T19:15:44.434000",
+        "id" : "3k2p-39jp",
+        "createdAt" : "2010-10-08T09:53:37.670000",
+        "columns_description" : [],
+        "obe_fxf" : "3k2p-39jp",
+        "name" : "Seattle Police Department 911 Incident Response",
+        "nbe_fxf" : "pu5n-trf4",
+        "columns_field_name" : [],
+        "columns_name" : [],
+        "type" : "dataset"
+      },
+      "classification" :
+      {
+        "categories" : [],
+        "tags" : [],
+        "domain_category" : "Public Safety",
+        "domain_tags" :
+        [
+          "police",
+          "crime",
+          "incident response",
+          "census911incidents",
+          "911"
+        ],
+        "domain_metadata" :
+        [
+          { "value" : "hourly", "key" : "Refresh-Frequency_Frequency" },
+          {
+            "value" : "Department of Information Technology",
+            "key" : "Data-Owner_Owner"
+          }
+        ]
+      },
+      "metadata" : { "domain" : "data.seattle.gov" },
+      "permalink" : "https://data.seattle.gov/d/3k2p-39jp",
+      "link" : "https://data.seattle.gov/Public-Safety/Seattle-Police-Department-911-Incident-Response/3k2p-39jp"
+    },
+    {
+      "resource" :
+      {
+        "description" : "This dataset includes sales data for fleet equipment that was sold in the current and previous two years. This dataset does not include sales data for Seattle City Light (SCL) fleet equipment.",
+        "view_count" :
+        {
+          "page_views_last_week" : 652,
+          "page_views_total" : 51894,
+          "page_views_last_month" : 3158
+        },
+        "updatedAt" : "2016-01-28T00:57:00.157000",
+        "id" : "y6ef-jf2w",
+        "createdAt" : "2014-02-06T08:40:51.513000",
+        "columns_description" : [],
+        "obe_fxf" : "y6ef-jf2w",
+        "name" : "Sold Fleet Equipment",
+        "nbe_fxf" : "gh64-vd9r",
+        "columns_field_name" : [],
+        "columns_name" : [],
+        "type" : "dataset"
+      },
+      "classification" :
+      {
+        "categories" : [ "infrastructure", "housing & development" ],
+        "tags" : [ "construction" ],
+        "domain_category" : "City Business",
+        "domain_tags" :
+        [ "fleet", "equipment", "auction", "cars", "trucks", "surplus" ],
+        "domain_metadata" :
+        [
+          { "value" : "Monthly", "key" : "Refresh-Frequency_Frequency" },
+          {
+            "value" : "Finance and Administrative Services",
+            "key" : "Data-Owner_Owner"
+          }
+        ]
+      },
+      "metadata" : { "domain" : "data.seattle.gov" },
+      "permalink" : "https://data.seattle.gov/d/y6ef-jf2w",
+      "link" : "https://data.seattle.gov/City-Business/Sold-Fleet-Equipment/y6ef-jf2w"
+    }
+  ],
+  "resultSetSize" : 2534,
+  "timings" : { "serviceMillis" : 8, "searchMillis" : 3 }
+}

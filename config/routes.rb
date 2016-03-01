@@ -114,7 +114,6 @@ Frontend::Application.routes do
       get 'jobs/:id', :action => 'show_job'
       get :views
       put :save_featured_views
-      get :catalog_widget
       get :routing_approval, :as => 'routing_approval_administration'
 
       put '/users/:user_id/promote/:role', :action => 'set_user_role'
@@ -324,9 +323,11 @@ Frontend::Application.routes do
       # Short URLs
       get 'blob/:id', :action => 'blob'
       get 'dataset/:id', :action => 'show'
+      get 'dataset/:id/stats', :action => 'stats'
       # The ":as" option, provides the short_view_url helper method
       get 'd/:id', :action => 'show', :as => :short_view
       get 'd/:id/alt', :action => 'alt'
+      get 'd/:id/stats', :action => 'stats'
 
       get 'd/:id/:row_id', :action => 'show',
         :constraints => {:row_id => /\d+/}
@@ -413,7 +414,6 @@ Frontend::Application.routes do
     scope :controller => 'page_metadata' do
       match '/metadata/v1/page/:id', :to => 'page_metadata#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
       match '/metadata/v1/page', :to => 'page_metadata#create', :via => [:post]
-      match '/metadata/v1/standalone_viz', :to => 'page_metadata#create_standalone_visualization', :via => [:post]
       match '/metadata/v1/page/:id', :to => 'page_metadata#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
       match '/metadata/v1/page/:id', :to => 'page_metadata#destroy', :via => [:delete], :constraints => { :id => Frontend::UID_REGEXP }
     end

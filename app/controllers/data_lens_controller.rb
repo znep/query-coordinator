@@ -25,41 +25,101 @@ class DataLensController < ActionController::Base
   layout 'angular'
 
   def initiate_region_coding
-    status = :ok
     begin
-      region_coding_initiator.initiate(
-        params[:shapefileId],
-        params[:datasetId],
-        params[:column]
+      dataset_id = params[:datasetId]
+      shapefile_id = params[:shapefileId]
+      source_column = params[:sourceColumn]
+
+      raise ArgumentError.new('datasetId must be a string') unless dataset_id.respond_to?(:to_str)
+      raise ArgumentError.new('shapefileId must be a string') unless shapefile_id.respond_to?(:to_str)
+      raise ArgumentError.new('sourceColumn must be a string') unless source_column.respond_to?(:to_str)
+
+      job_id = region_coder.initiate(
+        dataset_id,
+        shapefile_id,
+        source_column,
+        forwardable_session_cookies
       )
+
+      status = :ok
       result = {
-        :success => true
+        :success => true,
+        :jobId => job_id
       }
-    rescue => ex
+    rescue ArgumentError => exception
+      status = :bad_request
+      result = {
+        :success => false,
+        :error => exception.message
+      }
+    rescue Services::DataLens::RegionCoder::CuratedRegionNotFound => exception
+      status = :not_found
+      result = {
+        :success => false,
+        :error => "Curated region not found for region #{params[:shapefileId]}: #{exception.message}"
+      }
+    rescue => exception
       status = :internal_server_error
       result = {
-        :error => true,
-        :message => ex.to_s
+        :success => false,
+        :error => exception.message
       }
     end
 
     render :json => result, :status => status
-
   end
 
   def region_coding_status
-    status = :ok
+
+    # Initialize session
+    current_user
+
     begin
-      success = region_coding_status_checker.complete?(params[:shapefileId], params[:datasetId])
+      dataset_id = params[:datasetId]
+      shapefile_id = params[:shapefileId]
+      job_id = params[:jobId]
+
+      raise ArgumentError.new('datasetId must be a string') unless dataset_id.respond_to?(:to_str)
+
+      if shapefile_id.present?
+        job_status = region_coder.get_status_for_region(
+          dataset_id,
+          shapefile_id,
+          forwardable_session_cookies
+        )
+      elsif job_id.present?
+        job_status = region_coder.get_status_for_job(
+          dataset_id,
+          job_id,
+          forwardable_session_cookies
+        )
+      else
+        raise ArgumentError.new('Either shapefile_id or job_id must be provided')
+      end
+
+      success = job_status['progress']['english'] != 'failed'
+      status = success ? :ok : :internal_server_error
       result = {
-        :success => success
+        :success => success,
+        :status => job_status['progress']['english'],
+        :details => job_status['english']
       }
-      result = result.merge(:datasetMetadata => fetch_dataset_metadata(params[:datasetId])) if success
-    rescue => ex
+
+      # Also send dataset metadata containing new computed column info if job was successful
+      if success && result[:status] == 'completed'
+        result[:datasetMetadata] = job_status[:datasetMetadata] || fetch_dataset_metadata(dataset_id)
+      end
+    rescue ArgumentError => exception
+      status = :bad_request
+      result = {
+        :success => false,
+        :error => exception.message
+      }
+    rescue => exception
       status = :internal_server_error
       result = {
-        :error => true,
-        :message => ex.to_s
+        :success => false,
+        :error => exception.message
       }
     end
 
@@ -70,17 +130,13 @@ class DataLensController < ActionController::Base
     render 'mobile/datalens/show', :layout => 'layouts/mobile'
   end
 
-  def region_coding_initiator
-    @region_coding_initiator ||= ::Services::DataLens::RegionCodingInitiator.new
-  end
-
-  def region_coding_status_checker
-    @region_coding_status_checker ||= ::Services::DataLens::RegionCodingStatusChecker.new
+  def region_coder
+    @region_coder ||= Services::DataLens::RegionCoder.new
   end
 
   def preload_metadata
     # First fetch the current user's profile.
-    @current_user = current_user
+    current_user
 
     # If we're reaching the data lens page via an SEO-friendly URL,
     # ensure that we end up on the canonical (SEO-friendly) URL.
@@ -173,8 +229,6 @@ class DataLensController < ActionController::Base
       return render_403 if error.error_code == 'permission_denied'
     rescue
     end
-
-    @domain_metadata = domain_metadata
   end
 
   def data_lens
@@ -185,9 +239,9 @@ class DataLensController < ActionController::Base
     parsed_vif = params[:vif].with_indifferent_access
 
     # First fetch the current user's profile.
-    @current_user = current_user
+    current_user
 
-    @page_metadata = StandaloneVisualizationManager.new.page_metadata_from_vif(
+    @page_metadata = page_metadata_manager.page_metadata_from_vif(
         parsed_vif, nil, nil)
 
     # Then ensure that there is a dataset id.
@@ -215,8 +269,6 @@ class DataLensController < ActionController::Base
       report_error(error_class, error_message)
       return render_500
     end
-
-    @domain_metadata = domain_metadata
   end
 
   def visualization_add
@@ -226,7 +278,7 @@ class DataLensController < ActionController::Base
     # NOTE: The call to `current_user` is side-effecty and if we do
     # not 'initialize' the frontend by calling this then future calls
     # made by CoreServer will fail.
-    @current_user = current_user
+    current_user
 
     # Can't render add card without a dataset
     if dataset_id_param.blank?

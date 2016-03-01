@@ -64,19 +64,6 @@ es:
           feature_map: Visualizar esta columna como un mapa de características
           search_card: Visualizar esta columna como una tarjeta de búsqueda
           timeline_chart: Visualizar esta columna como un gráfico cronológico
-      aggregation_chooser:
-        by_the_number_of: <span class="information">al</span> número de
-        by_the_sum_of: <span class="information">a la</span> suma de
-        count_label: contar {0} por elemento
-        description: 'Ver los elementos de datos según los tamaños y colores siguientes:'
-        option_disabled: No se puede usar esta columna con un<br>número total
-        sum_label: añadir para cada {0}
-        the_number_of: El número de
-        the_sum_of: La suma de
-        title: Conjunto
-        too_many_columns:
-          message: Actualmente no podemos proporcionar la suma como total en las páginas Data Lens que tengan más de {0} columnas de tipo Número o Dinero.
-          title: Parece que este conjunto de datos contiene más de {0} columnas de números
       api_explorer:
         additional_resources: 'Recursos adicionales para esta API:'
         api_button: API
@@ -177,9 +164,6 @@ es:
           all_rows:
           not_available:
         image:
-          header:
-          description:
-        standalone_visualization:
           header:
           description:
         choose_card:
@@ -340,17 +324,6 @@ es:
         save: Guardar
         saved: "¡Guardado!"
         saving: Guardando...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Pruebe a buscar un número que no contenga letras.
@@ -1487,7 +1460,6 @@ es:
         title: Abrir federación de datos
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1518,8 +1490,6 @@ es:
         enable_success:
         enabled?:
         enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
         page_subtitle:

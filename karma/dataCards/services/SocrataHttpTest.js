@@ -102,10 +102,7 @@ describe('Socrata-flavored $http service', function() {
     describe('when the csrfRequired option is false', function() {
       it('does not error even if the CSRF token is missing and the HTTP method is a common non-GET method', function() {
         var config = { url: '/test', method: 'put', csrfRequired: false };
-        var getCookieStub = sinon.stub();
-
-        getCookieStub.returns(undefined);
-        socrata.utils.getCookie = getCookieStub;
+        sinon.stub(socrata.utils, 'getCookie').returns(undefined);
 
         $httpBackend.whenPUT('/test').respond(403, '');
 
@@ -114,30 +111,27 @@ describe('Socrata-flavored $http service', function() {
         }).to.not.throw('Unable to make authenticated "put" request to /test');
 
         $httpBackend.flush();
+        socrata.utils.getCookie.restore();
       });
     });
 
     describe('if the csrfRequired option is unspecified', function() {
       it('should error if the the CSRF token is missing and the HTTP method is a common non-GET method', function() {
         var config = { url: '/test', method: 'put' };
-        var getCookieStub = sinon.stub();
-
-        getCookieStub.returns(undefined);
-        socrata.utils.getCookie = getCookieStub;
+        sinon.stub(socrata.utils, 'getCookie').returns(undefined);
 
         $httpBackend.whenPUT('/test').respond(403, '');
 
         expect(function() {
           http(config);
         }).to.throw('Unable to make authenticated "put" request to /test');
+
+        socrata.utils.getCookie.restore();
       });
 
       it('should not error if the CSRF token is missing and the HTTP method is GET', function() {
         var config = { url: '/test', method: 'get' };
-        var getCookieStub = sinon.stub();
-
-        getCookieStub.returns(undefined);
-        socrata.utils.getCookie = getCookieStub;
+        sinon.stub(socrata.utils, 'getCookie').returns(undefined);
 
         $httpBackend.whenGET('/test').respond(403, '');
 
@@ -146,15 +140,14 @@ describe('Socrata-flavored $http service', function() {
         }).to.not.throw('Unable to make authenticated "put" request to /test');
 
         $httpBackend.flush();
+
+        socrata.utils.getCookie.restore();
       });
     });
 
     it('configures requests to use our csrf token/header', function() {
       var config = {url: '/test', method: 'put'};
-      var getCookieStub = sinon.stub();
-
-      getCookieStub.returns('CSRF-TOKEN');
-      socrata.utils.getCookie = getCookieStub;
+      sinon.stub(socrata.utils, 'getCookie').returns('CSRF-TOKEN');
 
       $httpBackend.expectPUT('/test', function(data) { return true; }, function(headers) {
         return headers['X-CSRF-Token'] === 'CSRF-TOKEN';
@@ -164,10 +157,12 @@ describe('Socrata-flavored $http service', function() {
 
       expect($httpBackend.flush).to.not.throw();
 
-      sinon.assert.alwaysCalledWithExactly(getCookieStub, 'socrata-csrf-token')
+      sinon.assert.alwaysCalledWithExactly(socrata.utils.getCookie, 'socrata-csrf-token')
 
       expect(config.xsrfHeaderName).to.equal('X-CSRF-Token');
       expect(config.xsrfCookieName).to.equal('socrata-csrf-token');
+
+      socrata.utils.getCookie.restore();
     });
   });
 

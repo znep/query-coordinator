@@ -1,4 +1,4 @@
-<div class="card-text" ng-show="!isStandaloneVisualization">
+<div class="card-text">
   <card-title model="model"></card-title>
   <div class="description"
     ng-show="showDescription"
@@ -43,23 +43,20 @@
     ng-show="debugDataLens">
   </div>
   <div class="card-control icon-settings"
-    ng-class="{ disabled: !isCustomizable }"
-    ng-click="customizeCardIfCustomizable(isCustomizable)"
-    ng-show="editMode && interactive && model.fieldName !== '*' && !isStandaloneVisualization"
-    title="{{ (isCustomizable ?
-      'cardControls.customizeEnabled' :
-      'cardControls.customizeDisabled') | I18n}}">
+    ng-click="customizeCard()"
+    ng-show="editMode && interactive && model.fieldName !== '*'"
+    title="{{'cardControls.customizeEnabled' | I18n}}">
   </div>
   <div ng-attr-title="{{ (expanded ? 'cardControls.collapseCard' : 'cardControls.expandCard') | I18n }}"
     ng-click="toggleExpanded()"
     ng-class="{'icon-expand': !expanded, 'icon-collapse': expanded}"
-    ng-show="!editMode && interactive && !isStandaloneVisualization"
+    ng-show="!editMode && interactive"
     class="card-control">
   </div>
   <div class="card-control icon-close"
     title="{{::'cardControls.removeCard' | I18n}}"
     ng-click="deleteCard()"
-    ng-show="editMode && interactive && model.fieldName !== '*' && !isStandaloneVisualization">
+    ng-show="editMode && interactive && model.fieldName !== '*'">
   </div>
 </div>
 

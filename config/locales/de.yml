@@ -64,19 +64,6 @@ de:
           feature_map: Diese Spalte als Merkmalskarte anzeigen
           search_card: Diese Spalte als Such-Card anzeigen
           timeline_chart: Diese Spalte als Zeitleisten-Card anzeigen
-      aggregation_chooser:
-        by_the_number_of: <span class="information">durch die</span> Anzahl der
-        by_the_sum_of: <span class="information">durch die</span> Summe der
-        count_label: Anzahl {0} pro Element
-        description: 'Größe oder Farbe der Datenelemente bedingt durch:'
-        option_disabled: Diese Spalte kann nicht mit einer<br>Aggregatnummer verwendet werden
-        sum_label: für jede(-es/-en) {0} hinzufügen
-        the_number_of: Die Anzahl der
-        the_sum_of: Die Summe der
-        title: Aggregierung
-        too_many_columns:
-          message: Wir sind momentan nicht in der Lage, die Summe als Aggregierung von Data Lens Seiten anzubieten, die mehr als {0} Spalten vom Typ Number (Zahl) oder Money (Währung) sind.
-          title: Anscheinend hat dieses Dataset mehr als {0} Zahlenspalten.
       api_explorer:
         additional_resources: 'Zusätzliche Ressourcen für diese API:'
         api_button: API
@@ -177,9 +164,6 @@ de:
           all_rows:
           not_available:
         image:
-          header:
-          description:
-        standalone_visualization:
           header:
           description:
         choose_card:
@@ -340,17 +324,6 @@ de:
         save: Speichern
         saved: Gespeichert!
         saving: Am Speichern ...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Versuch, eine Nummer ohne Buchstaben zu finden.
@@ -1483,7 +1456,6 @@ de:
         title: Daten-Verbund öffnen
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1514,8 +1486,6 @@ de:
         enable_success:
         enabled?:
         enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
         page_subtitle:

@@ -2,10 +2,17 @@ describe ImportActivity do
 
   let(:fixture_prefix) { "#{Rails.root}/test/fixtures/import_status_service" }
 
+  let(:headers) { {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456',
+                    'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'} }
+
   before :each do
 
     allow(ImportStatusService).to receive(:get).with('/activity/c02d8b44-269a-4891-a872-6020d39e887c').and_return(
       JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json"))
+    )
+
+    allow(ImportStatusService).to receive(:get).with('/activity/74aeaf9e-8e9b-496f-b186-3f542500f1f5').and_return(
+      JSON::parse(File.read("#{fixture_prefix}/activity_no_wc_response.json"))
     )
 
     allow(ImportStatusService).to receive(:get).with('/activity/c02d8b44-269a-4891-a872-6020d39e887c/events').and_return(
@@ -13,15 +20,16 @@ describe ImportActivity do
     )
 
     stub_request(:get, "http://localhost:8080/users/tugg-ikce.json?method=getProfile").
-       with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456',
-                         'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+       with(:headers => headers).
        to_return(:status => 200, :body => File.read("#{fixture_prefix}/user_response.json"), :headers => {})
 
     stub_request(:get, "http://localhost:8080/views/dzuq-scr8.json").
-         with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby',
-                           'X-Socrata-Federation'=>'Honey Badger', 'X-Socrata-Host'=>'localhost'}).
-         to_return(:status => 200, :body => File.read("#{fixture_prefix}/view_response.json"), :headers => {})
+      with(:headers => headers).
+      to_return(:status => 200, :body => File.read("#{fixture_prefix}/view_response.json"), :headers => {})
 
+    stub_request(:get, "http://localhost:8080/views/copy-four.json").
+      with(:headers => headers).
+      to_return(:status => 200, :body => File.read("#{fixture_prefix}/wc_view_response.json"), :headers => {})
 
   end
 
@@ -35,7 +43,7 @@ describe ImportActivity do
       )
 
       # batched request for views
-      stub_request(:get, "http://localhost:8080/views.json?ids%5B%5D=dzuq-scr8&ids%5B%5D=d9fh-q64b").
+      stub_request(:get, "http://localhost:8080/views.json?ids%5B%5D=dzuq-scr8&ids%5B%5D=d9fh-q64b&ids%5B%5D=copy-four&ids%5B%5D=cop2-four").
          with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby',
                            'X-Socrata-Federation'=>'Honey Badger', 'X-Socrata-Host'=>'localhost'}).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/views_batch_response.json"), :headers => {})
@@ -50,11 +58,11 @@ describe ImportActivity do
     it 'returns a list of activities, each with a user and view' do
       activities_fixtures = JSON::parse(File.read("#{fixture_prefix}/activity_index_response.json"))
                                 .map(&:with_indifferent_access)
-      views = View.find_multiple(%w(dzuq-scr8 d9fh-q64b))
+      views = View.find_multiple(%w(dzuq-scr8 d9fh-q64b copy-four cop2-four))
       users = User.find_multiple(%w(tugg-ikce tugg-ikcu))
       expected_activities = [
-        ImportActivity.new(activities_fixtures[0], users[0], views[0]),
-        ImportActivity.new(activities_fixtures[1], users[1], views[1])
+        ImportActivity.new(activities_fixtures[0], users[0], views[0], views[2]),
+        ImportActivity.new(activities_fixtures[1], users[1], views[1], views[2])
       ]
 
       expect(ImportActivity.find_all_by_created_at_descending(JobsHelper::FEED_ITEMS_LIMIT)).to eq(expected_activities)
@@ -67,7 +75,8 @@ describe ImportActivity do
       from_fixture = JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json"))
       initiated_by = User.find_profile('tugg-ikce')
       dataset = View.find('dzuq-scr8')
-      expected = ImportActivity.new(from_fixture, initiated_by, dataset)
+      working_copy = View.find('copy-four')
+      expected = ImportActivity.new(from_fixture, initiated_by, dataset, working_copy)
       expect(activity).to eq(expected)
     end
 
@@ -82,7 +91,7 @@ describe ImportActivity do
         .to raise_exception(ImportStatusService::ResourceNotFound)
     end
 
-    it 'sets initiated_by and dataset to nil if they aren\'t found' do
+    it 'sets initiated_by, dataset, and working_copy to nil if they aren\'t found' do
       allow(ImportStatusService).to receive(:get)
         .with('/activity/c02d8b44-269a-4891-a872-6020d39e887d')
         .and_return(JSON::parse(File.read("#{fixture_prefix}/activity_show_response_nonexistent_view_user.json")))
@@ -93,6 +102,7 @@ describe ImportActivity do
       activity = ImportActivity.find('c02d8b44-269a-4891-a872-6020d39e887d')
       expect(activity.initiated_by).to be_nil
       expect(activity.dataset).to be_nil
+      expect(activity.working_copy).to be_nil
     end
 
   end
@@ -153,4 +163,75 @@ describe ImportActivity do
     end
   end
 
+  describe '#import_method' do
+    it 'returns the public facing import_method for the service' do
+      expect(activity.import_method).to eq('DataSync')
+    end
+  end
+
+  describe '#last_updated' do
+    it 'returns the event_time of the most recent associated event' do
+      expect(activity.last_updated).to eq(Time.parse('2016-01-21T22:04:22.161Z'))
+    end
+  end
+
+  describe '#had_working_copy?' do
+    context 'the working_copy attribute is not nil, and the working_copy data field is present' do
+      it 'returns true' do
+        expect(activity.had_working_copy?).to eq(true)
+      end
+    end
+
+    context 'the working_copy attribute is nil and the working_copy data field is present' do
+      it 'returns true' do
+        from_fixture = JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json")).with_indifferent_access
+        initiated_by = User.find_profile('tugg-ikce')
+        dataset = View.find('dzuq-scr8')
+        # simulate View not returning activity (deleted)
+        activity = ImportActivity.new(from_fixture, initiated_by, dataset, nil)
+        expect(activity.had_working_copy?).to eq(true)
+      end
+    end
+
+    context 'the working_copy data field is empty' do
+      it 'returns false' do
+        no_wc_activity = ImportActivity.find('74aeaf9e-8e9b-496f-b186-3f542500f1f5')
+        expect(no_wc_activity.had_working_copy?).to eq(false)
+      end
+    end
+  end
+
+  describe '#working_copy' do
+    context 'there is an undeleted uid in the activity data working_copy_id field' do
+      it 'returns a view associated with that uid' do
+        expected = View.find('copy-four')
+        expect(activity.working_copy).to eq(expected)
+      end
+    end
+  end
+
+  describe '#working_copy_display' do
+    context 'there working_copy attribute on the activity is nil' do
+      it 'returns the string \'<uid> (deleted)\'' do
+        from_fixture = JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json")).with_indifferent_access
+        initiated_by = User.find_profile('tugg-ikce')
+        dataset = View.find('dzuq-scr8')
+        # simulate View not returning activity (deleted)
+        activity = ImportActivity.new(from_fixture, initiated_by, dataset, nil)
+        expect(activity.working_copy_display).to eq('copy-four (deleted)')
+      end
+    end
+
+    context 'requesting the wc view has a publicationStage published' do
+      it 'returns the string <uid> (published)' do
+        from_fixture = JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json")).with_indifferent_access
+        initiated_by = User.find_profile('tugg-ikce').with_indifferent_access
+        dataset = View.find('dzuq-scr8')
+        working_copy = View.find('copy-four')
+        allow(working_copy).to receive(:is_snapshotted?).and_return(true)
+        activity = ImportActivity.new(from_fixture, initiated_by, dataset, working_copy)
+        expect(activity.working_copy_display).to eq('copy-four (published)')
+      end
+    end
+  end
 end

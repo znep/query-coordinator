@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
+import Status from 'components/georegions/georegion-status';
 import GeoregionAdminTable from 'components/georegions/georegion-admin-table';
 import GeoregionAdminRow from 'components/georegions/georegion-admin-row';
 
@@ -43,25 +44,25 @@ describe('GeoregionAdminTable', function() {
     beforeEach(function() {
       this.node = this.renderIntoDocument({
         rows: [
-          { enabledFlag: true, id: 1, name: 'Item 1' },
-          { enabledFlag: false, id: 2, name: 'Item 2' },
-          { enabledFlag: true, id: 3, name: 'Item 3' }
+          { enabledFlag: true, featurePk: 'geo_id', id: 1, name: 'Enabled Curated Region' },
+          { enabledFlag: false, featurePk: 'geo_id', id: 2, name: 'Disabled Curated Region' },
+          { enabledFlag: false, id: 'cur4t3d-r3g10n-j0b', name: 'In-Progress Curated Region Job' },
+          { enabledFlag: false, id: 'f41l3d-cur4t3d-r3g10n-j0b', latest_event: {}, name: 'Failed Curated Region Job' }
         ]
       });
     });
 
     it('renders the rows', function() {
       var rows = TestUtils.scryRenderedComponentsWithType(this.node, GeoregionAdminRow);
-      expect(rows).to.have.length(3);
-      expect(rows[0]).to.have.deep.property('props.isEnabled', true);
-      expect(rows[0]).to.have.deep.property('props.renderActions', true);
+      expect(rows).to.have.length(4);
+      expect(rows[0]).to.have.deep.property('props.status', Status.ENABLED);
       expect(rows[0]).to.have.deep.property('props.action', '/admin/geo/1');
-      expect(rows[1]).to.have.deep.property('props.isEnabled', false);
-      expect(rows[1]).to.have.deep.property('props.renderActions', true);
+      expect(rows[1]).to.have.deep.property('props.status', Status.DISABLED);
       expect(rows[1]).to.have.deep.property('props.action', '/admin/geo/2');
-      expect(rows[2]).to.have.deep.property('props.isEnabled', true);
-      expect(rows[2]).to.have.deep.property('props.renderActions', true);
-      expect(rows[2]).to.have.deep.property('props.action', '/admin/geo/3');
+      expect(rows[2]).to.have.deep.property('props.status', Status.PROGRESS);
+      expect(rows[2]).to.have.deep.property('props.action', '');
+      expect(rows[3]).to.have.deep.property('props.status', Status.FAILED);
+      expect(rows[3]).to.have.deep.property('props.action', '');
     });
 
   });

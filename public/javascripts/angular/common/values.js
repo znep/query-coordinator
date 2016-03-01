@@ -54,6 +54,68 @@ const USER_RIGHTS = [
   'view_unpublished_story'
 ];
 
+// This is duplicated in mixpanel-analytics.js
+const MIXPANEL_EVENTS = [
+  'Changed Render Type Options',
+  'Chose Visualization Type',
+  'Cleared Facets',
+  'Cleared Search Field',
+  'Clicked API Docs Link',
+  'Clicked Catalog Result',
+  'Clicked Featured View',
+  'Clicked Footer Item',
+  'Clicked Header Item',
+  'Clicked Next in Tour',
+  'Clicked Sidebar Option',
+  'Clicked Pane in Sidebar',
+  'Closed Tour',
+  'Opened Goal Chart',
+  'Used Search Facets',
+  'Used Search Field'
+];
+
+// This is duplicated in mixpanel-analytics.js
+const MIXPANEL_PROPERTIES = [
+  'Catalog Version',
+  'Click Position',
+  'Dataset Owner',
+  'Domain',
+  'Facet Name',
+  'Facet Type',
+  'Facet Type Name',
+  'Facet Value',
+  'Footer Item Type',
+  'Header Item Type',
+  'IP',
+  'Limit',
+  'Name',
+  'New URL',
+  'Page Number',
+  'Pane Name',
+  'On Page',
+  'Properties',
+  'Query',
+  'Render Type',
+  'Result Ids',
+  'Result Number',
+  'Request Id',
+  'Session Id',
+  'Sidebar Name',
+  'Socrata Employee',
+  'Step in Tour',
+  'Time Since Page Opened (sec)',
+  'Tour',
+  'Total Steps in Tour',
+  'Type',
+  'URL',
+  'User Id',
+  'User Owns Dataset',
+  'User Role Name',
+  'View Id',
+  'View Type',
+  'Visualization Type'
+];
+
 function asObject(stringArray) {
   return _.zipObject(
     _.invoke(stringArray, String.prototype.toUpperCase),
@@ -62,5 +124,7 @@ function asObject(stringArray) {
 }
 
 angular.module('socrataCommon.values', []).
+  value('MixpanelEvents', MIXPANEL_EVENTS).
+  value('MixpanelProperties', MIXPANEL_PROPERTIES).
   value('ViewRights', asObject(VIEW_RIGHTS)).
   value('UserRights', asObject(USER_RIGHTS));

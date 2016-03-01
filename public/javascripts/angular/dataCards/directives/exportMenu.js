@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/exportMenu.html');
 const angular = require('angular');
-function ExportMenu(WindowState, ServerConfig, CardDataService, rx) {
+function ExportMenu(WindowState, ServerConfig, CardDataService, rx, I18n) {
   return {
     restrict: 'E',
     templateUrl: templateUrl,
@@ -11,19 +11,8 @@ function ExportMenu(WindowState, ServerConfig, CardDataService, rx) {
       // Determine if polaroid button should be visible.
       $scope.showPolaroidButton = ServerConfig.get('enablePngDownloadUi');
 
-      // Determine if standalone visualization export should be visible.
-      var userHasSaveRight = $scope.currentUserHasSaveRight;
-      var isStandalonePage = $scope.page.isStandaloneVisualization;
-      var featureFlagEnabled = ServerConfig.get('standaloneLensChart');
-      if (userHasSaveRight && !isStandalonePage && featureFlagEnabled) {
-        $scope.showStandaloneVisualizationExport = true;
-      } else {
-        $scope.showStandaloneVisualizationExport = false;
-      }
-
       // Retrieve row count and filtered row count for radio button labels.  Create shared
       // observables to avoid instantiating multiple observable instances.
-
       var dataset$ = $scope.page.observe('dataset').shareReplay();
       var whereClause$ = $scope.page.observe('computedWhereClauseFragment').shareReplay();
 
@@ -43,8 +32,29 @@ function ExportMenu(WindowState, ServerConfig, CardDataService, rx) {
         switchLatest().
         map(socrata.utils.commaify);
 
+      var shouldDisableFilteredExport$ = rx.Observable.combineLatest(
+        rowCount$,
+        filteredRowCount$,
+        dataset$.observeOnLatest('downloadOverride'),
+        function(rowCount, filteredRowCount, downloadOverride) {
+          return rowCount === filteredRowCount || _.isString(downloadOverride);
+        }
+      );
+
+      var disabledFilteredExportMessage$ = dataset$.observeOnLatest('downloadOverride').
+        startWith(undefined).
+        map(function(downloadOverride) {
+          if (_.isString(downloadOverride)) {
+            return I18n.exportMenu.csv.notAvailableSpecific;
+          } else {
+            return I18n.exportMenu.csv.notAvailable;
+          }
+        });
+
       $scope.$bindObservable('rowCount', rowCount$);
       $scope.$bindObservable('filteredRowCount', filteredRowCount$);
+      $scope.$bindObservable('shouldDisableFilteredExport', shouldDisableFilteredExport$);
+      $scope.$bindObservable('disabledFilteredExportMessage', disabledFilteredExportMessage$);
 
       $scope.isFilteredCSVExport = true;
 
@@ -109,10 +119,10 @@ function ExportMenu(WindowState, ServerConfig, CardDataService, rx) {
         });
 
       // Enter card selection mode
-      $scope.initiateCardSelectionMode = function(type) {
+      $scope.initiateCardSelectionMode = function() {
         $scope.panelActive = false;
         $scope.allowChooserModeCancel = true;
-        $scope.$emit('enter-export-card-visualization-mode', type);
+        $scope.$emit('enter-export-card-visualization-mode');
       };
 
       // Leave card selection mode on clicking cancel, on init, and on signal

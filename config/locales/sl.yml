@@ -64,19 +64,6 @@ sl:
           feature_map: Predstavi ta stolpec kot zemljevid s funkcijami
           search_card: Predstavi ta stolpec kot išči kartico
           timeline_chart: Predstavi ta stolpec kot diagram časovnega poteka
-      aggregation_chooser:
-        by_the_number_of: <span class="information">s</span> številom
-        by_the_sum_of: <span class="information">z</span> vsoto
-        count_label: "štej {0} za vsak element"
-        description: 'Glej elemente podatkov te velikosti ali barve:'
-        option_disabled: Tega stolpca ni mogoče uporabljati z/s<br>številom skupka
-        sum_label: dodaj za vsak {0}
-        the_number_of: "Število"
-        the_sum_of: Seštevek
-        title: Zbiranje
-        too_many_columns:
-          message: V tem trenutku ne moremo zagotoviti seštevanja za zbiranje vrednosti na straneh Data Lens (Razvid podatkov), ki imajo več kot {0} stolpcev s številkami ali denarjem.
-          title: Videti je, da združuje ta podatkovni niz več kot {0} stolpcev s številkami
       api_explorer:
         additional_resources: 'Dodatni viri za ta API:'
         api_button: API
@@ -178,9 +165,6 @@ sl:
           all_rows:
           not_available:
         image:
-          header:
-          description:
-        standalone_visualization:
           header:
           description:
         choose_card:
@@ -341,17 +325,6 @@ sl:
         save: Shrani
         saved: Shranjeno!
         saving: Shranjujem...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Poskusite z iskanjem številke, ki ne vsebuje črk.
@@ -1492,7 +1465,6 @@ sl:
         title: Odpri združevanje podatkov
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1523,8 +1495,6 @@ sl:
         enable_success:
         enabled?:
         enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
         page_subtitle:

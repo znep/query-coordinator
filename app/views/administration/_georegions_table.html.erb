@@ -2,19 +2,19 @@
   <table class="gridList georegions-table" cellspacing="0">
     <colgroup>
       <col class="name" />
-      <col class="toggle-enabled" />
-      <%- if allow_actions -%>
+      <col class="status" />
+      <%- if render_actions -%>
+      <col class="date-added" />
       <col class="edit-action" />
-      <col class="remove-action" />
       <%- end -%>
     </colgroup>
     <thead>
     <tr>
-      <th class="name"><div><%= t("#{prefix}.region_name") %></div><span class="icon"></span></th>
-      <th class="toggle-enabled"><div><%= t("#{prefix}.enabled?") %></div><span class="icon"></span></th>
-      <%- if allow_actions -%>
-      <th class="edit-action"><div><%= t("#{prefix}.actions") %></div><span class="icon"></span></th>
-      <th class="remove-action"></th>
+      <th class="name"><div><%= t("#{prefix}.region_name") %></div></th>
+      <th class="status"><div><%= t("#{prefix}.enabled?") %></div></th>
+      <%- if render_actions -%>
+      <th class="date-added"><div><%= t("#{prefix}.date_added") %></div></th>
+      <th class="edit-action"><div><%= t("#{prefix}.actions") %></div></th>
       <%- end -%>
     </tr>
     </thead>
@@ -22,9 +22,10 @@
     <%- georegions.each do |georegion| -%>
       <tr class="item">
         <td class="name"><%= georegion.name %></td>
-        <td class="toggle-enabled">
-          <span class="enabled-widget-label <%= georegion.enabled? ? 'is-enabled' : 'is-disabled'%>">
-            <%=  t(georegion.enabled? ? "#{prefix}.enabled_yes" : "#{prefix}.enabled_no") %>
+        <td class="status">
+          <span class="<%= georegion.enabled? ? 'status-icon-enabled icon-check' : 'status-icon-disabled icon-failed' %>"></span>
+          <span class="row-status-widget-label <%= georegion.enabled? ? 'is-enabled' : 'is-disabled'%>">
+            <%=  t(georegion.enabled? ? "#{prefix}.status_enabled" : "#{prefix}.status_disabled") %>
           </span>
           <%- if georegion.enabled? -%>
             <%= form_button(
@@ -45,7 +46,9 @@
                   }) %>
           <%- end -%>
         </td>
-        <%- if allow_actions -%>
+        <td class="date-added">
+          <span><%= georegion.datetime_added.strftime('%B %-d %Y') %></span>
+        </td>
         <td class="edit-action">
           <%= form_button(
                 { :action => :configure_boundary, :id => georegion.id },
@@ -53,9 +56,32 @@
                 { :method => :get },
                 { :class => 'button', 'data-action' => 'edit' }) %>
         </td>
-        <td class="remove-action">
+      </tr>
+    <%- end -%>
+    <%- jobs.each do |job| -%>
+      <tr class="item">
+        <td class="name"><%= job['jobParameters']['name'] %></td>
+        <td class="status" colspan="<%= render_actions ? 3 : 1  %>">
+          <span class="status-icon-progress icon-processing"></span>
+          <span class="row-status-widget-label is-progress">
+            <%=  t("#{prefix}.status_progress") %>
+            <br>
+            <span class="substatus"><%= t("#{prefix}.substatus_progress") %></span>
+          </span>
         </td>
-        <%- end -%>
+      </tr>
+    <%- end -%>
+    <%- failed_jobs.each do |job| -%>
+      <tr class="item">
+        <td class="name"><%= job['latest_event']['info']['jobParameters']['name'] %></td>
+        <td class="status" colspan="<%= render_actions ? 3 : 1  %>">
+          <span class="status-icon-failed icon-failed"></span>
+          <span class="row-status-widget-label is-failed">
+            <%=  t("#{prefix}.status_failed") %>
+            <br>
+            <span class="substatus"><%= t("#{prefix}.substatus_failed_html", code: job['id']) %></span>
+          </span>
+        </td>
       </tr>
     <%- end -%>
     </tbody>

@@ -221,4 +221,265 @@ class BrowseControllerTest < ActionController::TestCase
     Clytemnestra.unstub(:search_views)
   end
 
+  context 'embedded browse page' do
+    should 'render without errors' do
+      get :embed
+      assert_response :success
+    end
+
+    should 'render without errors when custom facets is nil' do
+      BrowseActions.stubs(custom_facets: nil)
+      get :embed
+      assert_response :success
+    end
+
+    should 'render without errors when custom facets is []' do
+      BrowseActions.stubs(custom_facets: [])
+      get :embed
+      assert_response :success
+    end
+  end
+
+  # These tests make sure that both Core/Cly and Cetera get the correct query
+  # params whether from /browse or from /browse/embed
+  # See EN-3164 and EN-3131
+  context 'browse and embedded facets and sort' do
+    # These would be passed in to Rails from the url on a user's browser
+    front_end_url_params = {
+      'Dataset-Information_Superhero' => 'Batman',
+      'category' => 'Public+Safety', # category gets correct url encoding
+      'federation_filter' => '1',
+      'limitTo' => 'datasets',
+      'q' => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
+      'sortBy' => 'relevance',
+      'tags' => 'crime',
+      'utf8' => '%E2%9C%93'
+    }
+
+    # The FE params should be translated like so when being sent to Core/Cly
+    core_cly_params = {
+      'category' => 'Public+Safety', # category gets correct url encoding
+      'datasetView' => 'dataset',
+      'federation_filter' => '1',
+      'limit' => 10,
+      'limitTo' => 'tables',
+      'metadata_tag' => ['Dataset-Information_Superhero:Batman'],
+      'page' => 1,
+      'q' => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
+      'sortBy' => 'relevance',
+      'tags' => 'crime'
+    }.symbolize_keys
+
+    default_core_cly_params = {
+      limit: 10,
+      page: 1
+    }
+
+    # The FE params should be translated like so when being sent to Cetera
+    cetera_params = {
+      'Dataset-Information_Superhero' => 'Batman',
+      :boostDomains => { 'performance.seattle.gov' => 0.8 },
+      :categories => ['Public+Safety'],
+      :domains => 'data.seattle.gov',
+      :limit => 10,
+      :offset => 0,
+      :only => 'datasets',
+      :order => 'relevance',
+      :q => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
+      :search_context => 'data.seattle.gov',
+      :tags => 'crime'
+    }
+
+    default_cetera_params = {
+      domains: 'localhost',
+      limit: 10,
+      offset: 0,
+      order: 'relevance',
+      search_context: 'localhost'
+    }
+
+    # NOTE: this is an Array of Hashie::Mash, unlike other facets
+    custom_facets = [
+      Hashie::Mash.new(
+        'singular_description' => 'superhero',
+        'title' => 'Superhero',
+        'param' => 'Dataset-Information_Superhero',
+        'options' => [
+          { 'summary' => false, 'text' => 'Superman', 'value' => 'Superman' },
+          { 'summary' => false, 'text' => 'Batman', 'value' => 'Batman' },
+          { 'summary' => false, 'text' => 'Flash', 'value' => 'Flash' },
+          { 'summary' => false, 'text' => 'Spiderman', 'value' => 'Spiderman' },
+          { 'summary' => false, 'text' => 'Hulk', 'value' => 'Hulk' }
+        ]
+      )
+    ]
+
+    # Let's actually render the categories facet from the site config
+    view_category_tree = {
+      '' => { text: '-- No category --', value: '' },
+      'City Business' => {
+        children:
+          [{ value: 'Community', text: 'Community' }, { value: 'Education', text: 'Education' }],
+        value: 'City Business', text: 'City Business'
+      },
+      'Finance' => { value: 'Finance', text: 'Finance' },
+      'Health & Human Services' =>
+        { value: 'Health & Human Services', text: 'Health & Human Services' },
+      'Public Safety' => { value: 'Public Safety', text: 'Public Safety' },
+      'Community & Economic Development' => {
+        value: 'Community & Economic Development', text: 'Community & Economic Development'
+      },
+      'Service Requests' => { value: 'Service Requests', text: 'Service Requests' }
+    }
+
+    # Cetera needs to call out to Core to look up Federation IDs
+    federations_stub = [
+      Hashie::Mash.new(
+        'id' => 2,
+        'acceptedUserId' => 2,
+        'acceptorScreenName' => 'Somebody Who',
+        'lensName' => '',
+        'providerScreenName' => 'Somebody Who',
+        'searchBoost' => 0.8,
+        'sourceDomainCName' => 'performance.seattle.gov',
+        'sourceDomainId' => 3,
+        'targetDomainCName' => 'data.seattle.gov',
+        'targetDomainId' => 1,
+        'flags' => []
+      )
+    ]
+
+    clytemnestra_payload = File.read('test/fixtures/catalog_search_results.json')
+    cetera_payload = File.read('test/fixtures/cetera_search_results.json')
+
+    setup do
+      # let's actually test the categories facet
+      @controller.unstub(:categories_facet)
+      View.expects(:category_tree).returns(view_category_tree)
+
+      CurrentDomain.expects(:property).with(:custom_facets, :catalog).returns(custom_facets).twice
+      CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns(nil)
+      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
+    end
+
+    teardown do
+      CurrentDomain.unstub(:property)
+      View.unstub(:category_tree)
+    end
+
+    should 'send correct facet params to Core Cly with browse' do
+      Clytemnestra
+        .expects(:search_views)
+        .with(core_cly_params)
+        .returns(Clytemnestra::ViewSearchResult.from_result(clytemnestra_payload))
+
+      get(:show, front_end_url_params)
+      assert_response :success
+      assert_match(/This is my new view blah blah blah/, @response.body)
+      assert_match(/Newest/, @response.body) # sort order
+
+      Clytemnestra.unstub(:search_views)
+    end
+
+    should 'send correct facet params to Core Cly with embed' do
+      Clytemnestra
+        .expects(:search_views)
+        .with(core_cly_params)
+        .returns(Clytemnestra::ViewSearchResult.from_result(clytemnestra_payload))
+
+      get(:embed, front_end_url_params)
+      assert_response :success
+      assert_match(/This is my new view blah blah blah/, @response.body)
+      assert_match(/Recently Updated/, @response.body) # sort order
+
+      Clytemnestra.unstub(:search_views)
+    end
+
+    should 'send correct facet params to Cetera with browse' do
+      # Cetera will abort if Federation ids don't check out
+      Federation.expects(:federations).returns(federations_stub).twice # We should cache this
+      CurrentDomain.stubs(:cname).returns('data.seattle.gov') # for Cetera
+
+      stub_feature_flags_with(:cetera_search, true)
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1') # TODO: update when moving to v2
+        .with(query: cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: cetera_payload, headers: {})
+
+      get(:show, front_end_url_params)
+      assert_response :success
+      assert_match(/Sold Fleet Equipment/, @response.body)
+      assert_match(/Most Relevant/, @response.body) # sort order
+
+      CurrentDomain.unstub(:cname)
+    end
+
+    should 'send correct facet params to Cetera with embed' do
+      # Cetera will abort if Federation ids don't check out
+      Federation.expects(:federations).returns(federations_stub).twice # We should cache this
+      CurrentDomain.stubs(:cname).returns('data.seattle.gov') # for Cetera
+
+      stub_feature_flags_with(:cetera_search, true)
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1') # TODO: update when moving to v2
+        .with(query: cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: cetera_payload, headers: {})
+
+      get(:embed, front_end_url_params)
+      assert_response :success
+      assert_match(/Sold Fleet Equipment/, @response.body)
+      assert_match(/Most Accessed/, @response.body) # sort order
+
+      CurrentDomain.unstub(:cname)
+    end
+
+    ##################################################################
+    # Let's check default paths just to make sure we don't break these
+
+    should 'send correct default params to Core with embed' do
+      CoreServer::Base.unstub(:connection) # stubbed willy nilly
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
+        .with(query: default_core_cly_params,
+              headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: clytemnestra_payload, headers: {})
+      get(:embed, {})
+      assert_response :success
+      assert_match(/This is my new view blah blah blah/, @response.body)
+      assert_match(/Most Relevant/, @response.body) # sort order
+    end
+
+    should 'send correct default params to Core with browse' do
+      CoreServer::Base.unstub(:connection) # stubbed willy nilly
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
+        .with(query: default_core_cly_params,
+              headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: clytemnestra_payload, headers: {})
+      get(:show, {})
+      assert_response :success
+      assert_match(/This is my new view blah blah blah/, @response.body)
+      assert_match(/Most Accessed/, @response.body) # sort order
+    end
+
+    should 'send default params to Cetera with embed' do
+      stub_feature_flags_with(:cetera_search, true)
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
+        .with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: cetera_payload, headers: {})
+
+      get(:embed, {})
+      assert_response :success
+      assert_match(/Sold Fleet Equipment/, @response.body)
+      assert_match(/Newest/, @response.body) # sort order
+    end
+
+    should 'send default params to Cetera with browse' do
+      stub_feature_flags_with(:cetera_search, true)
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
+        .with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: cetera_payload, headers: {})
+
+      get(:show, {})
+      assert_response :success
+      assert_match(/Sold Fleet Equipment/, @response.body)
+      assert_match(/Recently Updated/, @response.body) # sort order
+    end
+  end
 end

@@ -29,13 +29,13 @@ angular-app-dataCards:
 - dataCards/add-customize-card-dialog
 - dataCards/manage-dialog
 - dataCards/new-share-dialog
-- dataCards/save-as-dialog
 - dataCards/feature-map
 - dataCards/feedback-panel
 - dataCards/lens-type
 - dataCards/visualization-type-selector
 - dataCards/classic-visualization-previewer
 - dataCards/export-menu
+- dataCards/tour
 
 ie9:
 - dataCards/ie9
@@ -287,8 +287,10 @@ dataset-about-full:
 - screen-dataset-about
 mobile:
 - mobile/base
+- mobile/fonts
 - mobile/layout
 - mobile/states
+- mobile/loader
 - mobile/components/navbar
 - mobile/components/meta
 - mobile/components/feature-map

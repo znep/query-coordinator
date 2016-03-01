@@ -110,13 +110,10 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
       resolve: {
         page: function(Page, Dataset) {
           return new Page(pageMetadata, new Dataset(datasetMetadata, migrationMetadata));
-        },
-        domain: function(Domain) {
-          return new Domain(domainMetadata);
         }
       },
       views: {
-        'mainContent': {
+        mainContent: {
           //TODO figure out a way of getting the template dir out of rails.
           templateUrl: templateUrl2,
           controller: 'CardsViewController'
@@ -132,7 +129,7 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
         }
       },
       views: {
-        'mainContent': {
+        mainContent: {
           //TODO figure out a way of getting the template dir out of rails.
           templateUrl: templateUrl3,
           controller: 'SingleCardViewController'
@@ -156,7 +153,7 @@ angular.module('dataCards').config(function($provide, $stateProvider) {
         }
       },
       views: {
-        'mainContent': {
+        mainContent: {
           templateUrl: templateUrl4,
           controller: 'VisualizationAddController'
         }
@@ -231,4 +228,8 @@ angular.module('dataCards').run(function(
   Analytics.setServerUploadEnabled(isStatsdEnabled && initialAppUIState.analyticsEnabled || false);
 
   $state.go(initialAppUIState, initialRoute.parameters);
+});
+
+angular.module('dataCards').run(function($window, MixpanelService) {
+  MixpanelService.init($window.pageMetadata, $window.currentUser);
 });

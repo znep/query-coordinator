@@ -88,6 +88,94 @@ describe Browse2Helper do
 
   end
 
+  describe '#browse2_sort_opts' do
+    it 'returns empty array if opts[:sort_opts] is nil or empty' do
+      test_opts_1 = {}
+      test_opts_2 = { :sort_opts => [] }
+      expect(helper.browse2_sort_opts(test_opts_1)).to eq([])
+      expect(helper.browse2_sort_opts(test_opts_2)).to eq([])
+    end
+
+    it 'returns an array of only the accepted sort options' do
+      test_opts = { :sort_opts => [
+        { :value=>'relevance', :name=>'Most Relevant' },
+        { :value=>'most_accessed', :name=>'Most Accessed' },
+        { :value=>'alpha', :name=>'Alphabetical' },
+        { :value=>'newest', :name=>'Newest' },
+        { :value=>'oldest', :name=>'Oldest' },
+        { :value=>'last_modified', :name=>'Recently Updated' },
+        { :value=>'rating', :name=>'Highest Rated' },
+        { :value=>'comments', :name=>'Most Comments' }
+      ] }
+      expect(helper.browse2_sort_opts(test_opts)).to eq([
+        { :value=>'relevance', :name=>'Most Relevant' },
+        { :value=>'most_accessed', :name=>'Most Accessed' },
+        { :value=>'newest', :name=>'Newest' },
+        { :value=>'last_modified', :name=>'Recently Updated' }
+      ])
+    end
+  end
+
+  describe '#facet_sort_option_classes' do
+    it 'returns classnames for a sort option' do
+      page = setup
+      expect(helper.facet_sort_option_classnames(
+        page[:opts],
+        page[:facet_option]
+      )).to eq('browse2-facet-section-option')
+    end
+
+    it 'returns classnames for a sort option that is active because it is a url param' do
+      page = setup({
+        :facet_option => {
+          :name => 'Alphabetical',
+          :value => 'alpha'
+        }
+      })
+      page[:opts][:sortBy] = 'alpha'
+      expect(helper.facet_sort_option_classnames(
+        page[:opts],
+        page[:facet_option]
+      )).to eq('browse2-facet-section-option active')
+    end
+
+    it 'returns classnames for a sort option that is active because it is the default sort' do
+      page = setup({
+        :facet_option => {
+          :name => 'Most Relevant',
+          :value => 'relevance'
+        }
+      })
+      page[:opts][:sortBy] = nil
+      expect(helper.facet_sort_option_classnames(
+        page[:opts],
+        page[:facet_option]
+      )).to eq('browse2-facet-section-option active')
+    end
+  end
+
+  describe '#facet_sort_option' do
+    it 'returns a facet sort option' do
+      page = setup({
+        :facet_option => {
+          :name => 'Most Relevant',
+          :value => 'relevance'
+        }
+      })
+
+      output = helper.facet_sort_option(
+        page[:opts],
+        page[:facet_option],
+        page[:params]
+      )
+      expect(output).to match(/^<li><a/)
+      expect(output).to match(/href=\"\/browse\?sortBy=relevance\"/)
+      expect(output).to match(/class=\"browse2-facet-section-option active\"/)
+      expect(output).to match(/data-facet-option-value=\"relevance\"/)
+      expect(output).to match(/<span class=\"browse2-facet-option-clear-icon icon-check-2\"><\/span>Most Relevant<\/a><\/li>$/)
+    end
+  end
+
   describe '#facet_option_url' do
     it 'creates an empty search string given no params' do
       page = setup({
@@ -141,6 +229,26 @@ describe Browse2Helper do
     end
   end
 
+  describe '#browse2_facet_cutoff' do
+    it 'defaults to 5' do
+      facet = { :singular_description => 'category' }
+      allow(CurrentDomain).to receive(:property).and_return({})
+      expect(helper.browse2_facet_cutoff(facet)).to eq(5)
+    end
+
+    it 'returns the property set in domain configuration if available' do
+      facet = { :singular_description => 'category' }
+      allow(CurrentDomain).to receive(:property).and_return({ 'category' => 13 })
+      expect(helper.browse2_facet_cutoff(facet)).to eq(13)
+    end
+
+    it 'returns infinity for the view type facet' do
+      facet = { :singular_description => 'type' }
+      allow(CurrentDomain).to receive(:property).and_return({})
+      expect(helper.browse2_facet_cutoff(facet)).to eq(Float::INFINITY)
+    end
+  end
+
   describe '#get_all_facet_options' do
     def test_facet
       {
@@ -159,9 +267,9 @@ describe Browse2Helper do
 
     def combined_options
       [
+        { :value => 'Parks', :text => 'Parks' },
         { :value => 'Police', :text => 'Police' },
         { :value => 'Public Safety', :text => 'Public Safety' },
-        { :value => 'Parks', :text => 'Parks' },
         { :value => 'Wizards', :text => 'Wizards' }
       ]
     end
@@ -174,6 +282,28 @@ describe Browse2Helper do
 
     it 'returns an array combining options and extra options and removes duplicates' do
       expect(helper.get_all_facet_options(test_facet)).to match_array(combined_options)
+    end
+  end
+
+  describe '#sort_facet_options' do
+    def facet_options
+      [ { :value => 'b', :text => 'b', :count => 4 }, { :value => 'c', :text => 'c', :count => 2 },
+        { :value => 'a', :text => 'a', :count => 0 }, { :value => 'd', :text => 'd', :count => 4 } ]
+    end
+
+    def facet_options_without_count
+      [ { :value => 'b', :text => 'b' }, { :value => 'c', :text => 'c' },
+        { :value => 'a', :text => 'a' }, { :value => 'd', :text => 'd' } ]
+    end
+
+    it 'returns the options sorted by count, then name' do
+      sorted_by_count = [{:value => 'b', :text => 'b', :count => 4}, {:value => 'd', :text => 'd', :count => 4}, {:value => 'c', :text => 'c', :count => 2}, {:value => 'a', :text => 'a', :count => 0}]
+      expect(helper.sort_facet_options(facet_options)).to match_array(sorted_by_count)
+    end
+
+    it 'returns the options sorted by name if count is not present' do
+      sorted_by_text = [{:value => 'a', :text => 'a'}, {:value => 'b', :text => 'b'}, {:value => 'c', :text => 'c'}, {:value => 'd', :text => 'd'}]
+      expect(helper.sort_facet_options(facet_options_without_count)).to match_array(sorted_by_text)
     end
   end
 

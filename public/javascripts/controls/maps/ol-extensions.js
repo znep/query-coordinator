@@ -619,6 +619,19 @@
         {
             var control = this;
             if (control._handlingEvent == 'changebaselayer') { return; }
+            // Sometimes `this.map` is null, which causes basically everything
+            // to explode. This happens on the `window.unload` event, which is
+            // ok for most contexts but fails badly in Stories, where we load
+            // and unload iframes with these things in a long-running outer
+            // context. We'll quit early if we can't properly clean up so as
+            // to avoid bleeding exceptions.
+            if (!this.hasOwnProperty('mtSwitcher') &&
+                !this.mtSwitcher.hasOwnProperty('layers') &&
+                this.map === null &&
+                typeof this.map.backgroundLayers !== 'function')
+            {
+                return;
+            }
 
             var $dom = this.$dom;
             var backgroundLayers = this.exclusiveLayers ? _.values(this.mtSwitcher.layers)
@@ -631,8 +644,12 @@
             $dom.find('.base').toggle(backgroundLayers.length > 0);
             $dom.find('.data').toggle(this._dataLayers.length > 0);
 
-            _.each(backgroundLayers.slice().reverse(), this.renderBackgroundLayer, this);
-            _.each(this._dataLayers.slice().reverse(), this.renderDataLayer, this);
+            var walkLayers = function(discontinuousArray, iterator) {
+              _.eachRight(_.compact(discontinuousArray), iterator, control);
+            };
+
+            walkLayers(backgroundLayers, this.renderBackgroundLayer);
+            walkLayers(this._dataLayers, this.renderDataLayer);
             _.each(this._config.customEntries, this.renderCustomEntry, this);
 
             $dom.find(':checkbox').click(function(e)
@@ -761,7 +778,7 @@
         {
             var control = this, $dom = this.$dom;
             var dataLayers = _.chain($.makeArray(layerObj.dataLayers()))
-                .flatten().compact().value();
+                .flattenDeep().compact().value();
 
             var typeMap = {
                 'point':     $.t('controls.map.point_map'),
@@ -1350,6 +1367,13 @@
 
         destroy: function()
         {
+            // Sometimes `this.map` is already null, so we cannot properly unregister
+            // the `moveend` event. In this case we just move on and pretend nothing
+            // happened. >_>
+            if (this.map === null) {
+                return;
+            }
+
             this.map.events.unregister('moveend', this, this.onMoveEnd);
         },
 
@@ -1521,7 +1545,7 @@
             var buildFilterCondition = function(viewport)
             {
                 return { type: 'operator', value: 'AND',
-                    children: _.flatten(_.map(['x', 'y'], function(axis)
+                    children: _.flattenDeep(_.map(['x', 'y'], function(axis)
                     {
                         return _.map(['min', 'max'], function(bound)
                         {

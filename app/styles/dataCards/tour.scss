@@ -1,0 +1,133 @@
+$hint-size: 18px;
+
+.shepherd-step {
+  z-index: 5001;
+  padding: 16px;
+  margin-bottom: $hint-size;
+
+  width: 300px;
+  &.wide {
+    width: 600px;
+  }
+
+  display: none;
+  &.shepherd-open {
+    display: block;
+  }
+
+  h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 16px;
+  }
+
+  .shepherd-text {
+    font-size: 15px;
+    line-height: 24.27px;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+
+    a {
+      text-decoration: underline;
+    }
+  }
+
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 85%;
+    width: 0;
+    height: 0;
+    margin-left: -$hint-size;
+
+    border-width: $hint-size;
+    border-color: transparent;
+    border-style: solid;
+  }
+
+  &.shepherd-element-attached-bottom {
+    &:before {
+      top: 100%;
+    }
+  }
+
+  &.shepherd-element-attached-top {
+    &:before {
+      top: -$hint-size * 2;
+    }
+  }
+
+  .aggregation-tour-image {
+    width: 600px;
+    height: 324px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &.step-2 {
+      background-image: url(/images/dataCards/aggregationTour/stepTwo.jpg);
+    }
+
+    &.step-3 {
+      background-image: url(/images/dataCards/aggregationTour/stepThree.jpg);
+    }
+
+    &.step-4 {
+      background-image: url(/images/dataCards/aggregationTour/stepFour.jpg);
+    }
+
+    &.step-5 {
+      background-image: url(/images/dataCards/aggregationTour/stepFive.jpg);
+      height: 250px;
+    }
+  }
+
+  .shepherd-buttons {
+    text-align: right;
+    margin-top: 30px;
+
+    li, a {
+      display: inline;
+      margin-right: 10px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .shepherd-button {
+      padding: 10px 15px;
+      border-radius: 1px;
+      font-size: 15px;
+      outline: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-primary, .btn-default {
+      @include prefixer(transition, "background-color 0.2s");
+    }
+  }
+
+  .shepherd-cancel-link {
+    @include prefixer(transition, "color 0.2s");
+
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+}
+
+.tour-overlay {
+  z-index: 5000;
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

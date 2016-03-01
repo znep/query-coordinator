@@ -535,13 +535,22 @@ $(function() {
           newOpts.sortBy = 'relevance';
         }
 
-        if (!blist.mixpanelLoaded) {
+        var resolveEvent = function() {
           doBrowse(newOpts);
+        };
+
+        if (!blist.mixpanelLoaded) {
+          resolveEvent();
         } else {
-          $.updateMixpanelProperties();
-          mixpanel.track('Used Search Field', {}, function() {
-            doBrowse(newOpts);
-          });
+          // TODO: Don't talk to Mixpanel if it's not enabled
+          var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
+          mixpanelNS.delegateCatalogSearchEvents(
+            'Used Search Field',
+            {
+              'Catalog Version': 'browse1'
+            },
+            resolveEvent
+          );
         }
       });
     };
@@ -628,54 +637,51 @@ $(function() {
   function generateCreateNewStoryHandler($dropdownElement) {
 
     return function() {
-      /* eslint-disable no-inner-declarations */
 
-      if (window.hasOwnProperty('blist') &&
-        window.blist.hasOwnProperty('configuration') &&
-        window.blist.configuration.hasOwnProperty('appToken')) {
+      function onError() {
 
-        function onError() {
+        $dropdownElement.removeClass('working');
 
-          $dropdownElement.removeClass('working');
+        alert('Oh no! There’s been a problem. Please try again.');
+      }
 
-          alert('Oh no! There’s been a problem. Please try again.');
+      function onSuccess(data, textStatus, xhr) {
+
+        function validate4x4(testString) {
+
+          var valid = false;
+          var pattern = window.blist.util.patterns.UID;
+
+          if (pattern) {
+            valid = testString.match(pattern) !== null;
+          }
+
+          return valid;
         }
 
-        function onSuccess(data, textStatus, xhr) {
+        function onPublishSuccess(publishData) {
 
-          function validate4x4(testString) {
+          if (publishData.hasOwnProperty('id') && validate4x4(publishData.id)) {
 
-            var valid = false;
-            var pattern = window.blist.util.patterns.UID;
+            // This is the second phase of the creation action,
+            // and this endpoint is responsible for removing the
+            // '"initialized": false' flag (or setting it to true)
+            // when it succeeds at creating the new story objects
+            // in Storyteller's datastore.
+            //
+            // This isn't perfect but it should (hopefully) be
+            // reliable enough that users will not totally fail to
+            // create stories when they intend to do so.
+            window.location.href = '/stories/s/' + publishData.id + '/create';
 
-            if (pattern) {
-              valid = testString.match(pattern) !== null;
-            }
-
-            return valid;
+          } else {
+            onError();
           }
+        }
 
-          function onPublishSuccess(publishData) {
-
-            if (publishData.hasOwnProperty('id') && validate4x4(publishData.id)) {
-
-              // This is the second phase of the creation action,
-              // and this endpoint is responsible for removing the
-              // '"initialized": false' flag (or setting it to true)
-              // when it succeeds at creating the new story objects
-              // in Storyteller's datastore.
-              //
-              // This isn't perfect but it should (hopefully) be
-              // reliable enough that users will not totally fail to
-              // create stories when they intend to do so.
-              window.location.href = '/stories/s/' + publishData.id + '/create';
-
-            } else {
-              onError();
-            }
-          }
-
-          /* eslint-enable no-inner-declarations */
+        if (window.hasOwnProperty('blist') &&
+          window.blist.hasOwnProperty('configuration') &&
+          window.blist.configuration.hasOwnProperty('appToken')) {
 
           if (data.hasOwnProperty('id') && validate4x4(data.id)) {
 
@@ -699,58 +705,57 @@ $(function() {
             onError(xhr, 'Invalid storyUid', 'Invalid storyUid');
           }
         }
-
-        var newStoryName = (
-          'Untitled Story - ' +
-          (new Date().format('m-d-Y'))
-        );
-
-        var newStoryData = {
-          displayFormat: {},
-          displayType: 'story',
-          metadata: {
-            availableDisplayTypes: ['story'],
-            // Since Storyteller has its own datastore, we will
-            // need to treat this asynchonously. Tagging the
-            // metadata with '"initialized": false' should at least
-            // allow us to understand how many of the two-phase
-            // story creation actions fail, and should also allow
-            // us to do some garbage collection down the road.
-            initialized: false,
-            // Because of an unfortunate legacy in Core Server,
-            // the way that we ensure that the newly-created asset
-            // is of viewType 'story' is by putting a property
-            // called 'isStorytellerAsset' on the metadata object.
-            isStorytellerAsset: true,
-            jsonQuery: {},
-            renderTypeConfig: {
-              visible: {
-                story: true
-              }
-            }
-          },
-          name: newStoryName,
-          query: {}
-        };
-
-        var url = '/api/views.json';
-        var settings = {
-          contentType: false,
-          data: JSON.stringify(newStoryData),
-          dataType: 'json',
-          error: onError,
-          headers: {
-            'Content-type': 'application/json',
-            'X-App-Token': blist.configuration.appToken
-          },
-          type: 'POST',
-          success: onSuccess
-        };
-
-        $dropdownElement.addClass('working');
-        $.ajax(url, settings);
       }
+
+      var newStoryName = (
+        'Untitled Story - ' +
+        (new Date().format('m-d-Y'))
+      );
+
+      var newStoryData = {
+        displayFormat: {},
+        displayType: 'story',
+        metadata: {
+          availableDisplayTypes: ['story'],
+          // Since Storyteller has its own datastore, we will
+          // need to treat this asynchonously. Tagging the
+          // metadata with '"initialized": false' should at least
+          // allow us to understand how many of the two-phase
+          // story creation actions fail, and should also allow
+          // us to do some garbage collection down the road.
+          initialized: false,
+          // Because of an unfortunate legacy in Core Server,
+          // the way that we ensure that the newly-created asset
+          // is of viewType 'story' is by putting a property
+          // called 'isStorytellerAsset' on the metadata object.
+          isStorytellerAsset: true,
+          jsonQuery: {},
+          renderTypeConfig: {
+            visible: {
+              story: true
+            }
+          }
+        },
+        name: newStoryName,
+        query: {}
+      };
+
+      var url = '/api/views.json';
+      var settings = {
+        contentType: false,
+        data: JSON.stringify(newStoryData),
+        dataType: 'json',
+        error: onError,
+        headers: {
+          'Content-type': 'application/json',
+          'X-App-Token': blist.configuration.appToken
+        },
+        type: 'POST',
+        success: onSuccess
+      };
+
+      $dropdownElement.addClass('working');
+      $.ajax(url, settings);
     };
   }
-
 });

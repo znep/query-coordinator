@@ -6,7 +6,6 @@ describe('cardAggregationSelector', function() {
   var Mockumentary;
   var $compile;
   var Constants;
-  var ServerConfig;
 
   var DEFAULT_ROW_DISPLAY_UNIT = 'unicorn hair';
   var DEFAULT_COLUMNS = {
@@ -96,10 +95,7 @@ describe('cardAggregationSelector', function() {
       Mockumentary = $injector.get('Mockumentary');
       $compile = $injector.get('$compile');
       Constants = $injector.get('Constants');
-      ServerConfig = $injector.get('ServerConfig');
     });
-
-    ServerConfig.override('enableDataLensCardLevelAggregation', true);
   });
 
   afterEach(function(){

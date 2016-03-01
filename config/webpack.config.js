@@ -94,7 +94,8 @@ var baseConfig = {
   },
   eslint: {
     configFile: isProduction() ? '.eslintrc.json' : '.eslintrc-dev.json',
-    formatter: require('eslint/lib/formatters/compact')
+    formatter: require('eslint/lib/formatters/compact'),
+    failOnError: false
   },
   module: {
     preLoaders: [
@@ -213,8 +214,51 @@ function generateDataLensConfig() {
 
 }
 
+function generateDataLensMobileConfig() {
+  var mobilePath = path.resolve(projectRootDir, 'public/javascripts/mobile');
+
+  return _.defaultsDeep({
+    context: mobilePath,
+    entry: path.resolve(mobilePath, 'main.js'),
+    externals: datalensWebpackExternals,
+    output: {
+      filename: isProduction() ? 'mobile/[name]-[hash].js' : 'mobile/[name].js'
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.jsx?$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: 'babel',
+          query: {
+            presets: ['react', 'es2015']
+          }
+        },
+        {
+          test: /\.scss$/,
+          loader: 'style!css!autoprefixer-loader!sass'
+        },
+        {
+          test: /\.svg/,
+          loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+        },
+        {
+          test: /\.png$/,
+          loader: 'url-loader?limit=100000'
+        }
+      ]
+    },
+    plugins: [
+      new ManifestPlugin({
+        fileName: 'data-lens-mobile-manifest.json'
+      })
+    ].concat(getPlugins())
+  }, baseConfig);
+}
+
 // Export the bundle configurations to build
 module.exports = [
   generateOldUxConfig(),
-  generateDataLensConfig()
+  generateDataLensConfig(),
+  generateDataLensMobileConfig()
 ];

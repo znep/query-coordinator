@@ -1,6 +1,7 @@
 describe ImportActivityEvent do
 
   let(:fixture_prefix) { "#{Rails.root}/test/fixtures/import_status_service" }
+  let(:headers) { {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'} }
 
   before :each do
 
@@ -13,12 +14,16 @@ describe ImportActivityEvent do
     )
 
     stub_request(:get, "http://localhost:8080/users/tugg-ikce.json?method=getProfile").
-       with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+       with(:headers => headers).
        to_return(:status => 200, :body => File.read("#{fixture_prefix}/user_response.json"), :headers => {})
 
     stub_request(:get, "http://localhost:8080/views/dzuq-scr8.json").
-         with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby', 'X-Socrata-Federation'=>'Honey Badger', 'X-Socrata-Host'=>'localhost'}).
+         with(:headers => headers).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/view_response.json"), :headers => {})
+
+    stub_request(:get, "http://localhost:8080/views/copy-four.json").
+      with(:headers => headers).
+      to_return(:status => 200, :body => File.read("#{fixture_prefix}/wc_view_response.json"), :headers => {})
 
   end
 

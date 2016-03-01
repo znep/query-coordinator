@@ -7,9 +7,22 @@
     "service": "DeltaImporter2",
     "entity_type": "Dataset",
     "entity_id": "dzuq-scr8",
+    "working_copy_id": "copy-four",
     "activity_name": "UFO_Test_7.csv.sdiff",
     "domain": "localhost",
-    "status": "Failure"
+    "status": "Failure",
+    "latest_event": {
+      "id": 4,
+      "event_time": "2016-01-21T22:04:22.161Z",
+      "event_type": "field-wrong-format",
+      "status": "Failure",
+      "info": {
+        "fieldName": "Incident Occurrence",
+        "type": "field-wrong-format"
+      },
+      "activity_id": "c02d8b44-269a-4891-a872-6020d39e887c",
+      "event_id": "b8f1c48c-9ba9-458a-9597-9af8e601082f"
+      }
   },
   {
     "id": "df48f5ff-b696-43aa-bc92-c45765d64ace",
@@ -19,8 +32,21 @@
     "service": "DeltaImporter2",
     "entity_type": "Dataset",
     "entity_id": "d9fh-q64b",
+    "working_copy_id": "cop2-four",
     "activity_name": "UFO_Test_9.csv.sdiff",
     "domain": "localhost",
-    "status": "Failure"
+    "status": "Failure",
+    "latest_event": {
+      "id": 5,
+      "event_time": "2016-01-21T18:04:22.161Z",
+      "event_type": "field-wrong-format",
+      "status": "Failure",
+      "info": {
+        "fieldName": "Incident Occurrence",
+        "type": "field-wrong-format"
+      },
+      "activity_id": "df48f5ff-b696-43aa-bc92-c45765d64ace",
+      "event_id": "9f575b73-9ae6-4553-bea4-2a942690953d"
+      }
   }
 ]

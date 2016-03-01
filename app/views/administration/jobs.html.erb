@@ -43,6 +43,17 @@
             <% else %>
               <%= link_to activity.dataset.name, view_path(activity.dataset) %>
             <% end %>
+            <% if activity.had_working_copy? %>
+              <% working_copy = activity.working_copy %>
+              <p class="working-copy-annotation">
+                to working copy
+              <% if working_copy && working_copy.is_unpublished? %>
+                <%= link_to(activity.working_copy_id, view_path(working_copy)) %>
+              <% else %>
+                <%= activity.working_copy_display %>
+              <% end %>
+              </p>
+            <% end %>
           </td>
           <td nowrap>
             <% if activity.initiated_by.nil? %>

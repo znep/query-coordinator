@@ -20,3 +20,6 @@ gem 'modular-scale'
 gem "breakpoint"
 gem 'type-heading', '~> 0.0.7'
 
+#Iconfont
+gem "fontcustom"
+

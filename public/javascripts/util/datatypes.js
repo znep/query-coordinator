@@ -1848,7 +1848,7 @@ blist.namespace.fetch('blist.datatypes');
         {
             op = op.toUpperCase();
             if (!$.subKeyDefined(type, 'filterConditions.details.' + op)) { return false; }
-            var vals = _.map(_.flattenDeep(_.toArray(arguments).slice(2)), function(v)
+            var vals = _.map(_.flatten(_.toArray(arguments).slice(2)), function(v)
             {
                 // Transform
                 if (_.isFunction(type.matchValue)) { v = type.matchValue(v, col); }

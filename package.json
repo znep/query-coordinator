@@ -98,7 +98,7 @@
     "lodash": "^3.10.1",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
-    "socrata-visualizations": "6.2.14",
+    "socrata-visualizations": "6.2.16",
     "tether-shepherd": "1.2.0"
   }
 }

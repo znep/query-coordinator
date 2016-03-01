@@ -1,0 +1,193 @@
+/*
+  Icon Font: socrata-icons
+*/
+
+@font-face {
+  font-family: "socrata-icons";
+  src: url("../fonts/socrata-icons.eot");
+  src: url("../fonts/socrata-icons.eot?#iefix") format("embedded-opentype"),
+       url("../fonts/socrata-icons.woff") format("woff"),
+       url("../fonts/socrata-icons.ttf") format("truetype"),
+       url("../fonts/socrata-icons.svg#socrata-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "socrata-icons";
+    src: url("../fonts/socrata-icons.svg#socrata-icons") format("svg");
+  }
+}
+
+[data-icon]:before { content: attr(data-icon); }
+
+[data-icon]:before,
+.icon-add:before,
+.icon-add-collaborator:before,
+.icon-arrow-down:before,
+.icon-arrow-left:before,
+.icon-arrow-next:before,
+.icon-arrow-prev:before,
+.icon-arrow-right:before,
+.icon-arrow-up:before,
+.icon-bar-chart:before,
+.icon-bold2:before,
+.icon-cards:before,
+.icon-chart:before,
+.icon-check:before,
+.icon-check-2:before,
+.icon-checkmark3:before,
+.icon-chevron-down:before,
+.icon-chevron-up:before,
+.icon-clear-formatting:before,
+.icon-close:before,
+.icon-close-2:before,
+.icon-close-circle:before,
+.icon-collapse:before,
+.icon-copy-document:before,
+.icon-cross2:before,
+.icon-data:before,
+.icon-dataset:before,
+.icon-distribution:before,
+.icon-edit:before,
+.icon-expand:before,
+.icon-external:before,
+.icon-eye:before,
+.icon-eye-blocked:before,
+.icon-failed:before,
+.icon-filter:before,
+.icon-geo:before,
+.icon-info:before,
+.icon-info-inverse:before,
+.icon-italic2:before,
+.icon-line-chart:before,
+.icon-link:before,
+.icon-link2:before,
+.icon-linked:before,
+.icon-list-numbered:before,
+.icon-list2:before,
+.icon-map:before,
+.icon-move:before,
+.icon-number:before,
+.icon-official:before,
+.icon-paragraph-center3:before,
+.icon-paragraph-left3:before,
+.icon-paragraph-right3:before,
+.icon-pause:before,
+.icon-play:before,
+.icon-plus2:before,
+.icon-plus3:before,
+.icon-presentation:before,
+.icon-preview:before,
+.icon-processing:before,
+.icon-puzzle:before,
+.icon-question:before,
+.icon-question-inverse:before,
+.icon-quotes-left:before,
+.icon-redo:before,
+.icon-region:before,
+.icon-search:before,
+.icon-settings:before,
+.icon-share:before,
+.icon-stories-icon:before,
+.icon-stories-menu:before,
+.icon-story:before,
+.icon-table:before,
+.icon-tag:before,
+.icon-undo:before,
+.icon-user:before,
+.icon-waiting:before,
+.icon-warning:before,
+.icon-warning2:before {
+  display: inline-block;
+  font-family: "socrata-icons";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+.icon-add:before { content: "\f101"; }
+.icon-add-collaborator:before { content: "\f102"; }
+.icon-arrow-down:before { content: "\f103"; }
+.icon-arrow-left:before { content: "\f104"; }
+.icon-arrow-next:before { content: "\f105"; }
+.icon-arrow-prev:before { content: "\f106"; }
+.icon-arrow-right:before { content: "\f107"; }
+.icon-arrow-up:before { content: "\f108"; }
+.icon-bar-chart:before { content: "\f109"; }
+.icon-bold2:before { content: "\f10a"; }
+.icon-cards:before { content: "\f10b"; }
+.icon-chart:before { content: "\f10c"; }
+.icon-check:before { content: "\f10d"; }
+.icon-check-2:before { content: "\f10e"; }
+.icon-checkmark3:before { content: "\f10f"; }
+.icon-chevron-down:before { content: "\f110"; }
+.icon-chevron-up:before { content: "\f111"; }
+.icon-clear-formatting:before { content: "\f112"; }
+.icon-close:before { content: "\f113"; }
+.icon-close-2:before { content: "\f114"; }
+.icon-close-circle:before { content: "\f115"; }
+.icon-collapse:before { content: "\f116"; }
+.icon-copy-document:before { content: "\f117"; }
+.icon-cross2:before { content: "\f118"; }
+.icon-data:before { content: "\f119"; }
+.icon-dataset:before { content: "\f11a"; }
+.icon-distribution:before { content: "\f11b"; }
+.icon-edit:before { content: "\f11c"; }
+.icon-expand:before { content: "\f11d"; }
+.icon-external:before { content: "\f11e"; }
+.icon-eye:before { content: "\f11f"; }
+.icon-eye-blocked:before { content: "\f120"; }
+.icon-failed:before { content: "\f121"; }
+.icon-filter:before { content: "\f122"; }
+.icon-geo:before { content: "\f123"; }
+.icon-info:before { content: "\f124"; }
+.icon-info-inverse:before { content: "\f125"; }
+.icon-italic2:before { content: "\f126"; }
+.icon-line-chart:before { content: "\f127"; }
+.icon-link:before { content: "\f128"; }
+.icon-link2:before { content: "\f129"; }
+.icon-linked:before { content: "\f12a"; }
+.icon-list-numbered:before { content: "\f12b"; }
+.icon-list2:before { content: "\f12c"; }
+.icon-map:before { content: "\f12d"; }
+.icon-move:before { content: "\f12e"; }
+.icon-number:before { content: "\f12f"; }
+.icon-official:before { content: "\f130"; }
+.icon-paragraph-center3:before { content: "\f131"; }
+.icon-paragraph-left3:before { content: "\f132"; }
+.icon-paragraph-right3:before { content: "\f133"; }
+.icon-pause:before { content: "\f134"; }
+.icon-play:before { content: "\f135"; }
+.icon-plus2:before { content: "\f136"; }
+.icon-plus3:before { content: "\f137"; }
+.icon-presentation:before { content: "\f138"; }
+.icon-preview:before { content: "\f139"; }
+.icon-processing:before { content: "\f13a"; }
+.icon-puzzle:before { content: "\f13b"; }
+.icon-question:before { content: "\f13c"; }
+.icon-question-inverse:before { content: "\f13d"; }
+.icon-quotes-left:before { content: "\f13e"; }
+.icon-redo:before { content: "\f13f"; }
+.icon-region:before { content: "\f140"; }
+.icon-search:before { content: "\f141"; }
+.icon-settings:before { content: "\f142"; }
+.icon-share:before { content: "\f143"; }
+.icon-stories-icon:before { content: "\f144"; }
+.icon-stories-menu:before { content: "\f145"; }
+.icon-story:before { content: "\f146"; }
+.icon-table:before { content: "\f147"; }
+.icon-tag:before { content: "\f148"; }
+.icon-undo:before { content: "\f149"; }
+.icon-user:before { content: "\f14a"; }
+.icon-waiting:before { content: "\f14b"; }
+.icon-warning:before { content: "\f14c"; }
+.icon-warning2:before { content: "\f14d"; }

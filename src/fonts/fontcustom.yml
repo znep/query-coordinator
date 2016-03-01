@@ -1,0 +1,10 @@
+--- 
+font_name: socrata-icons
+force: true
+css_selector: .icon-{{glyph}}
+no_hash: true
+input: 
+  vectors: svg/
+output: 
+  css: ../scss
+  fonts: "."

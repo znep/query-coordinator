@@ -10650,6 +10650,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function _handleVectorTileClick(event) {
 
+	    if (vif.configuration.isMobile) {
+	      _flyoutData.offset = {
+	        x: event.originalEvent.clientX,
+	        y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
+	      };
+
+	      _flyoutData.count = _.sum(event.points, 'count');
+	    }
+
 	    var inspectorDataQueryConfig;
 
 	    if (_flyoutData.count > 0 &&
@@ -10664,6 +10673,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        rowCount: _.sum(event.points, 'count'),
 	        queryBounds: _getQueryBounds(event.containerPoint)
 	      };
+
+	      if (vif.configuration.isMobile) {
+	        _map.setView(event.latlng);
+	        var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
+	        inspectorDataQueryConfig.position.pageX = 0;
+	        inspectorDataQueryConfig.position.pageY = bottom;
+	      }
 
 	      _showRowInspector(inspectorDataQueryConfig);
 
@@ -20626,50 +20642,105 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  if ($('#socrata-row-inspector').length === 0) {
 
-	    _$rowInspectorContainer = $(
-	      [
-	        '<div id="socrata-row-inspector">',
-	          '<div class="tool-panel">',
-	            '<div class="tool-panel-main">',
-	              '<div class="icon-close"></div>',
-	              '<div class="sticky-border"></div>',
-	              '<div class="tool-panel-inner-container">',
-	                '<!-- Successful query response -->',
-	                '<div class="row-inspector-content">',
-	                  '<div class="row-data-item">',
-	                    '<span class="name"></span>',
-	                    '<span class="value"></span>',
+	    if (config.isMobile) {
+
+	      _$rowInspectorContainer = $(
+	        [
+	          '<div id="socrata-row-inspector">',
+	            '<div class="tool-panel">',
+	              '<div class="tool-panel-arrow"></div>',
+	              '<div class="tool-panel-main">',
+	                '<div class="icon-close"></div>',
+	                '<div class="paging-panel">',
+	                  '<button type="button" class="l-to-r paging-btn action-btn previous">',
+	                    '<span class="arrow"></span>',
+	                  '</button>',
+	                  '<button type="button" class="r-to-l paging-btn action-btn next">',
+	                    '<span class="arrow"></span>',
+	                  '</button>',
+	                  '<div class="paging-info">',
+	                    '<div class="message">',
+	                      '<div></div>',
+	                      '<div></div>',
+	                    '</div>',
 	                  '</div>',
 	                '</div>',
-	                '<!-- Loading spinner while query pending-->',
-	                '<div class="pending-content"></div>',
-	                '<!-- Error message if row query unsuccessful -->',
-	                '<div class="error-content">',
-	                  '<div class="icon-warning"></div>',
-	                  '<div class="error-message"></div>',
-	                '</div>',
-	              '</div>',
-	              '<div class="sticky-border bottom"></div>',
-	              '<div class="paging-panel">',
-	                '<button type="button" class="l-to-r paging-btn action-btn previous">',
-	                  '<span class="caret"></span>',
-	                '</button>',
-	                '<button type="button" class="r-to-l paging-btn action-btn next">',
-	                  '<span class="caret"></span>',
-	                '</button>',
-	                '<div class="paging-info">',
-	                  '<div class="message">',
-	                    '<div></div>',
-	                    '<div></div>',
+	                '<div class="tool-panel-inner-container">',
+	                  '<!-- Successful query response -->',
+	                  '<div class="row-inspector-content">',
+	                    '<div class="row-data-item">',
+	                      '<span class="name"></span>',
+	                      '<span class="value"></span>',
+	                    '</div>',
+	                  '</div>',
+	                  '<!-- Loading spinner while query pending-->',
+	                  '<div class="pending-content"></div>',
+	                  '<!-- Error message if row query unsuccessful -->',
+	                  '<div class="error-content">',
+	                    '<div class="icon-warning"></div>',
+	                    '<div class="error-message"></div>',
 	                  '</div>',
 	                '</div>',
+	                '<div class="sticky-border bottom show-more">',
+	                  '<a class="show-more-button">',
+	                  '<span class="show-details">Show More</span>',
+	                  '<span class="hide-details">Show Less</span>',
+	                  '</a>',
+	                '</div>',
 	              '</div>',
-	              '<div class="tool-panel-hint"></div>',
 	            '</div>',
-	          '</div>',
-	        '</div>'
-	      ].join('')
-	    );
+	          '</div>'
+	        ].join('')
+	      );
+
+	    } else {
+
+	      _$rowInspectorContainer = $(
+	        [
+	          '<div id="socrata-row-inspector">',
+	            '<div class="tool-panel">',
+	              '<div class="tool-panel-main">',
+	                '<div class="icon-close"></div>',
+	                '<div class="sticky-border"></div>',
+	                '<div class="tool-panel-inner-container">',
+	                  '<!-- Successful query response -->',
+	                  '<div class="row-inspector-content">',
+	                    '<div class="row-data-item">',
+	                      '<span class="name"></span>',
+	                      '<span class="value"></span>',
+	                    '</div>',
+	                  '</div>',
+	                  '<!-- Loading spinner while query pending-->',
+	                  '<div class="pending-content"></div>',
+	                  '<!-- Error message if row query unsuccessful -->',
+	                  '<div class="error-content">',
+	                    '<div class="icon-warning"></div>',
+	                    '<div class="error-message"></div>',
+	                  '</div>',
+	                '</div>',
+	                '<div class="sticky-border bottom"></div>',
+	                '<div class="paging-panel">',
+	                  '<button type="button" class="l-to-r paging-btn action-btn previous">',
+	                    '<span class="caret"></span>',
+	                  '</button>',
+	                  '<button type="button" class="r-to-l paging-btn action-btn next">',
+	                    '<span class="caret"></span>',
+	                  '</button>',
+	                  '<div class="paging-info">',
+	                    '<div class="message">',
+	                      '<div></div>',
+	                      '<div></div>',
+	                    '</div>',
+	                  '</div>',
+	                '</div>',
+	                '<div class="tool-panel-hint"></div>',
+	              '</div>',
+	            '</div>',
+	          '</div>'
+	        ].join('')
+	      );
+
+	    }
 
 	    $('body').append(_$rowInspectorContainer);
 
@@ -20693,8 +20764,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _$stickyBorderBottom = _$rowInspectorContainer.find('.sticky-border.bottom');
 
 	  // Add translations
-	  _$paginationButtonPrevious.find('span').text(_config.localization.previous);
-	  _$paginationButtonNext.find('span').text(_config.localization.next);
+	  if (!config.isMobile) {
+	    _$paginationButtonPrevious.find('span').text(_config.localization.previous);
+	    _$paginationButtonNext.find('span').text(_config.localization.next);
+	  }
 
 	  // rowInspectorSetup can be called multiple times
 	  // but we only want our bindings set once.

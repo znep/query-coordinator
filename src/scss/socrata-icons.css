@@ -98,8 +98,7 @@
 .icon-undo:before,
 .icon-user:before,
 .icon-waiting:before,
-.icon-warning:before,
-.icon-warning2:before {
+.icon-warning:before {
   display: inline-block;
   font-family: "socrata-icons";
   font-style: normal;
@@ -190,4 +189,3 @@
 .icon-user:before { content: "\f149"; }
 .icon-waiting:before { content: "\f14a"; }
 .icon-warning:before { content: "\f14b"; }
-.icon-warning2:before { content: "\f14c"; }

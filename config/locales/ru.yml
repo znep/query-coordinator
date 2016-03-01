@@ -64,19 +64,6 @@ ru:
           feature_map: "Визуализировать этот столбец как характеристическая карта"
           search_card: "Визуализировать этот столбец как искать карту"
           timeline_chart: "Визуализировать этот столбец как хронологическая таблица"
-      aggregation_chooser:
-        by_the_number_of: <span class="information">по</span> количество
-        by_the_sum_of: <span class="information">по</span> сумма
-        count_label: "счет {0} по элементам"
-        description: "Просмотреть элементы данных, рассортированные или раскрашенные по:"
-        option_disabled: "Это столбец невозможно использовать с количеством <br> статистических вычислений"
-        sum_label: "добавить к каждому {0}"
-        the_number_of: "Количество"
-        the_sum_of: "Сумма"
-        title: "Агрегирование"
-        too_many_columns:
-          message: "В данный момент мы не можем предоставить суммирование в виде статистического выражения для страниц линз данных, которые имеют больше {0} столбцов типа Количество или Деньги."
-          title: "Похоже, что этот набор данных содержит больше {0} столбцов"
       api_explorer:
         additional_resources: "Дополнительные ресурсы для этого API:"
         api_button: API
@@ -1471,7 +1458,6 @@ ru:
         title: "Федерация открытых данных"
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:

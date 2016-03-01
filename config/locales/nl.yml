@@ -64,19 +64,6 @@ nl:
           feature_map: Visualiseer deze kolom als een eigenschapskaart
           search_card: Visualiseer deze kolom als een zoekkaart
           timeline_chart: Visualiseer deze kolom als een tijdlijn
-      aggregation_chooser:
-        by_the_number_of: <span class="information">per het</span> aantal
-        by_the_sum_of: <span class="information">per het</span> totaal aantal
-        count_label: aantal van {0} per element
-        description: 'Zie gegevenselementen gerangschikt of gekleurd door:'
-        option_disabled: Deze kolom kan niet worden gebruikt met een<br>aantal van het totaal
-        sum_label: toevoegen voor iedere {0}
-        the_number_of: Het aantal
-        the_sum_of: Het totaal aantal
-        title: Samenvoeging
-        too_many_columns:
-          message: Op dit moment kunnen we optellen niet als aanbieden als een samenvoeging voor Data Lens pagina's met meer dan {0} kolommen van het type Getal of Geld.
-          title: Het lijkt er op dat dit gegevensbestand meer dan {0} getallenkolommen bevat
       api_explorer:
         additional_resources: 'Aanvullende hulpbronnen voor deze API:'
         api_button: API
@@ -1482,7 +1469,6 @@ nl:
         title: Open datafederatie
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:

@@ -64,19 +64,6 @@ de:
           feature_map: Diese Spalte als Merkmalskarte anzeigen
           search_card: Diese Spalte als Such-Card anzeigen
           timeline_chart: Diese Spalte als Zeitleisten-Card anzeigen
-      aggregation_chooser:
-        by_the_number_of: <span class="information">durch die</span> Anzahl der
-        by_the_sum_of: <span class="information">durch die</span> Summe der
-        count_label: Anzahl {0} pro Element
-        description: 'Größe oder Farbe der Datenelemente bedingt durch:'
-        option_disabled: Diese Spalte kann nicht mit einer<br>Aggregatnummer verwendet werden
-        sum_label: für jede(-es/-en) {0} hinzufügen
-        the_number_of: Die Anzahl der
-        the_sum_of: Die Summe der
-        title: Aggregierung
-        too_many_columns:
-          message: Wir sind momentan nicht in der Lage, die Summe als Aggregierung von Data Lens Seiten anzubieten, die mehr als {0} Spalten vom Typ Number (Zahl) oder Money (Währung) sind.
-          title: Anscheinend hat dieses Dataset mehr als {0} Zahlenspalten.
       api_explorer:
         additional_resources: 'Zusätzliche Ressourcen für diese API:'
         api_button: API
@@ -1469,7 +1456,6 @@ de:
         title: Daten-Verbund öffnen
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:

@@ -10,8 +10,7 @@ function quickFilterBar(
   FlyoutService,
   I18n,
   PageHelpersService,
-  PluralizeService,
-  ServerConfig) {
+  PluralizeService) {
 
   function humanReadableOperator(filter) {
     if (
@@ -110,28 +109,19 @@ function quickFilterBar(
           }
         );
 
-      var quickFilterBarTitle$;
+      var quickFilterBarTitle$ = rx.Observable.combineLatest(
+        appliedFiltersForDisplay$,
+        page.observe('dataset.rowDisplayUnit'),
+        function(appliedFiltersForDisplay, rowDisplayUnit) {
+          rowDisplayUnit = PluralizeService.pluralize(rowDisplayUnit || I18n.common.row);
 
-      if (page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation')) {
-        var dynamicTitle$ = PageHelpersService.dynamicAggregationTitle(rx.Observable.returnValue(page));
-        quickFilterBarTitle$ = dynamicTitle$.map(function(dynamicTitle) {
-          return I18n.t('quickFilterBar.oldFilterTitle', dynamicTitle);
-        });
-      } else {
-        quickFilterBarTitle$ = rx.Observable.combineLatest(
-          appliedFiltersForDisplay$,
-          page.observe('dataset.rowDisplayUnit'),
-          function(appliedFiltersForDisplay, rowDisplayUnit) {
-            rowDisplayUnit = PluralizeService.pluralize(rowDisplayUnit || I18n.common.row);
-
-            if (_.isEmpty(appliedFiltersForDisplay)) {
-              return I18n.t('quickFilterBar.filterTitle.unfiltered', rowDisplayUnit);
-            } else {
-              return I18n.t('quickFilterBar.filterTitle.filtered', rowDisplayUnit);
-            }
+          if (_.isEmpty(appliedFiltersForDisplay)) {
+            return I18n.t('quickFilterBar.filterTitle.unfiltered', rowDisplayUnit);
+          } else {
+            return I18n.t('quickFilterBar.filterTitle.filtered', rowDisplayUnit);
           }
-        );
-      }
+        }
+      );
 
       $scope.clearAllFilters = function() {
         _.each($scope.page.getCurrentValue('cards'), function(card) {
@@ -142,7 +132,6 @@ function quickFilterBar(
       };
 
       $scope.maxOperandLength = Constants.MAX_OPERAND_LENGTH;
-      $scope.shouldShowAggregationChooser = page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation');
       $scope.$bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplay$);
       $scope.$bindObservable('quickFilterBarTitle', quickFilterBarTitle$);
     }

@@ -25,7 +25,8 @@ module Services
             :name => name,
             :geometryLabel => geometry_label,
             :defaultFlag => false,
-            :enabledFlag => false
+            :enabledFlag => false,
+            :createClone => true
           }
           attributes = attributes.merge(options) unless options.nil?
 

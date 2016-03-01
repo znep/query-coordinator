@@ -4,10 +4,12 @@ describe ::Services::Administration::GeoregionEnabler do
 
   subject { ::Services::Administration::GeoregionEnabler.new }
 
+  let(:curated_region_view) { double(View, :createdAt => 1456530636244) }
   let(:curated_region) { double(CuratedRegion, :id => 5) }
 
   before(:each) do
     allow(CurrentDomain).to receive(:cname).and_return('localhost')
+    allow_any_instance_of(CuratedRegion).to receive(:view).and_return(curated_region_view)
   end
 
   describe 'enabling' do

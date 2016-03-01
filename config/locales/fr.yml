@@ -64,19 +64,6 @@ fr:
           feature_map: Visualiser cette colonne comme carte présentée
           search_card: Visualiser cette colonne comme carte de recherche
           timeline_chart: Visualiser cette colonne comme frise chronologique
-      aggregation_chooser:
-        by_the_number_of: <span class="information">par le</span> nombre de
-        by_the_sum_of: <span class="information">par la</span> somme de
-        count_label: compter {0} par élément
-        description: 'Afficher les éléments de données calibrées ou colorées par :'
-        option_disabled: Cette colonne ne peut pas être utilisée avec un<br>nombre d'agrégats
-        sum_label: ajouter pour chacun {0}
-        the_number_of: Le nombre de
-        the_sum_of: La somme de
-        title: Agrégation
-        too_many_columns:
-          message: Nous ne sommes pas actuellement capables de fournir la somme sous forme d'agrégat pour les pages de Lentille de données qui ont plus de {0} colonnes de type Nombre ou Argent.
-          title: Il semble que cet ensemble de données contient plus de {0} nombre de colonnes
       api_explorer:
         additional_resources: 'Ressources supplémentaires pour cet API :'
         api_button: API
@@ -1456,7 +1443,6 @@ fr:
         title: Ouvrir Fédération de Données
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:

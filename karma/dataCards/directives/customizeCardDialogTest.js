@@ -399,41 +399,22 @@ describe('Customize card dialog', function() {
     });
 
     describe('shouldShowAggregationSelector scope variable', function() {
-      it('should not show cardAggregationSelector if feature flag is disabled', function() {
-        ServerConfig.override('enableDataLensCardLevelAggregation', false);
-        var dialog = createDialog();
+      it('should not show cardAggregationSelector when card type is blacklisted', function() {
+        var card = {
+          fieldName: 'search',
+          cardSize: 2,
+          cardType: 'search',
+          expanded: false
+        }
+        var dialog = createDialog({card: card});
 
         expect(dialog.element.find('card-aggregation-selector')).to.not.exist;
       });
 
-      describe('when enable_data_lens_card_level_aggregation feature flag is enabled', function() {
-        beforeEach(function() {
-          ServerConfig.override('enableDataLensCardLevelAggregation', true);
-        });
+      it('should show cardAggregationSelector the card type is not blacklisted', function() {
+        var dialog = createDialog();
 
-        it('should not show cardAggregationSelector when version is less than 4', function() {
-          var dialog = createDialog({pageOverrides: {version: 3}});
-
-          expect(dialog.element.find('card-aggregation-selector')).to.not.exist;
-        });
-
-        it('should not show cardAggregationSelector when card type is blacklisted', function() {
-          var card = {
-            fieldName: 'search',
-            cardSize: 2,
-            cardType: 'search',
-            expanded: false
-          }
-          var dialog = createDialog({card: card});
-
-          expect(dialog.element.find('card-aggregation-selector')).to.not.exist;
-        });
-
-        it('should show cardAggregationSelector if feature flag is enabled', function() {
-          var dialog = createDialog();
-
-          expect(dialog.element.find('card-aggregation-selector')).to.exist;
-        });
+        expect(dialog.element.find('card-aggregation-selector')).to.exist;
       });
     });
   });

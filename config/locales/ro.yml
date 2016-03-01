@@ -64,19 +64,6 @@ ro:
           feature_map: Vizualizați această coloană ca pe o cartă caracteristică
           search_card: Vizualizați această coloană ca pe o căutare card
           timeline_chart: Vizualizați această coloană ca pe o diagramă cronologică
-      aggregation_chooser:
-        by_the_number_of: <span class="information">prin</span> număr de
-        by_the_sum_of: <span class="information">prin</span> suma de
-        count_label: numărați {0} per element
-        description: 'Vedeți elementele de date de mărimea sau culoarea:'
-        option_disabled: Această coloană nu poate fi utilizată cu un<br>număr total
-        sum_label: adăugați pentru fiecare {0}
-        the_number_of: Număr de
-        the_sum_of: Suma de
-        title: "Însumare"
-        too_many_columns:
-          message: "În acest moment nu vă putem furniza bilanțul ca o însumare a paginilor Data Lens care au mai mult de {0} coloane de tipul Număr sau Bani"
-          title: Se pare că setul de date conține mai mult de {0} coloane de numere
       api_explorer:
         additional_resources: 'Resurse suplimentare pentru acest API:'
         api_button: API
@@ -1470,7 +1457,6 @@ ro:
         title: Deschidere federare date
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:

@@ -1,6 +1,6 @@
 const angular = require('angular');
 
-function CardTitleDirective(Constants, Dataset, PageHelpersService, ServerConfig) {
+function CardTitleDirective(Constants, Dataset, PageHelpersService) {
   return {
     restrict: 'E',
     scope: {
@@ -21,20 +21,11 @@ function CardTitleDirective(Constants, Dataset, PageHelpersService, ServerConfig
       var model$ = $scope.$observe('model').filter(_.isPresent);
       var customTitle$ = model$.observeOnLatest('customTitle');
 
-      var dynamicTitle$ = model$.map(function(model) {
-        if (model.page.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation')) {
-          return PageHelpersService.dynamicAggregationTitle(model$.pluck('page')).
-            map(function(title) {
-              return `${_.capitalize(title)} by`;
-            });
-        } else {
-          return PageHelpersService.dynamicCardAggregationTitle(model$).
-            map(_.capitalize).
-            map(function(title) {
-              return `${title} by`;
-            });
-        }
-      }).switchLatest();
+      var dynamicTitle$ = PageHelpersService.dynamicCardAggregationTitle(model$).
+        map(_.capitalize).
+        map(function(title) {
+          return `${title} by`;
+        });
 
       var displayDynamicTitle$ = model$.
         observeOnLatest('cardType').

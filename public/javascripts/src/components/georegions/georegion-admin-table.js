@@ -100,12 +100,14 @@ const GeoregionAdminTable = React.createClass({
         <colgroup>
           <col className="name" />
           <col className="status" />
+          { renderActions ? (<col className="date-added" />) : null }
           { renderActions ? (<col className="edit-action" />) : null }
         </colgroup>
         <thead>
         <tr>
           <th className="name"><div>{ t('region_name') }</div></th>
           <th className="status"><div>{ t('enabled?') }</div></th>
+          { renderActions ? (<th className="date-added"><div>{ t('date_added') }</div></th>) : null }
           { renderActions ? (<th className="edit-action"><div>{ t('actions') }</div></th>) : null }
         </tr>
         </thead>

@@ -64,19 +64,6 @@ zh:
           feature_map:
           search_card:
           timeline_chart:
-      aggregation_chooser:
-        by_the_number_of:
-        by_the_sum_of:
-        count_label: "每个元素计{0}"
-        description: "查看大小或颜色如下的数据元素："
-        option_disabled: "此列不能与<BR>总数共用"
-        sum_label: "为每个{0}添加"
-        the_number_of: "数量"
-        the_sum_of: "总数"
-        title: "汇总"
-        too_many_columns:
-          message: "目前我们无法为型数列或金钱列超过{0}的Data Lens页面提供数据汇总"
-          title: "貌似该数据集包含超过{0}个数列"
       api_explorer:
         additional_resources: "此API的其他资源："
         api_button: API
@@ -1469,7 +1456,6 @@ zh:
         title: "打开数据联盟"
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:

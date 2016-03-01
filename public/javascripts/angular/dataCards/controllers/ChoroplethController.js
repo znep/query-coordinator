@@ -282,7 +282,7 @@ function ChoroplethController(
 
   $scope.$bindObservable('fieldName', fieldName$);
   $scope.$bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
-  $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+  $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('aggregation.unit'));
   $scope.$bindObservable('isFiltered', whereClause$.map(_.isPresent));
   $scope.$bindObservable('primaryKey', primaryKey$);
 

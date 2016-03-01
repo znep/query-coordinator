@@ -1,0 +1,18 @@
+<h2 class="h6"><span class="icon-eye"></span> Con Font</h2>
+
+<ul class="blockgrid">
+
+  <% @glyphs.each do |name, value|
+    selector = @options[:css_selector].sub('{{glyph}}', name.to_s) %>
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="<%= selector[1..-1] %>" class="<%= selector[1..-1].gsub('.', ' ') %>"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value="<%= selector %>" />
+      </div>
+    </li>
+    <% end %>
+
+
+  </ul>

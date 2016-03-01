@@ -1746,7 +1746,7 @@ en:
           showing_most_recent: Showing the most recent %{limit} jobs
           showing_all_so_far: Showing all jobs which have been recorded so far
           title: Data Jobs
-          deleted_dataset: Dataset has been deleted
+          deleted_dataset: Deleted dataset
           deleted_user: User has been deleted
         show_page:
           back: Back to jobs list

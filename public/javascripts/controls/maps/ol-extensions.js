@@ -645,7 +645,7 @@
             $dom.find('.data').toggle(this._dataLayers.length > 0);
 
             var walkLayers = function(discontinuousArray, iterator) {
-              _.eachRight(_.compact(discontinuousArray), iterator, control);
+              _.each(_.compact(discontinuousArray).reverse(), iterator, control);
             };
 
             walkLayers(backgroundLayers, this.renderBackgroundLayer);

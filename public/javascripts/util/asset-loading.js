@@ -70,7 +70,7 @@ assetNS.loadLibraries = function(scriptQueue, callback)
     // arrayify to make it loopable if they pass in a string.
     // flatten to bring development packages to toplevel array (preserving order).
     // compact to remove falsy values (because they're not useful).
-    var queue = _.compact(_.flattenDeep($.arrayify(scriptQueue)));
+    var queue = _.compact(_.flatten($.arrayify(scriptQueue)));
 
     if (_.isEmpty(queue))
     {
@@ -184,7 +184,7 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
             return _.isArray(item.sheet) ? _.map(item.sheet, function(s)
                 { return $.extend({}, item, {sheet: s}); }) : item;
         })
-        .flattenDeep()
+        .flatten()
         .reject(function(item) { return lazyLoadedAssets.stylesheets[item.sheet]; }).value();
     // We don't care about currently loading sheets, because Tache will properly handle
     // de-duping those; and this way we get the proper callbacks.

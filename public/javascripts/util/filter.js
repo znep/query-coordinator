@@ -63,7 +63,7 @@ blist.namespace.fetch('blist.filter');
             soql: function(c, v, newBackend) { return soqlInfix(c, '>=', v[0], newBackend && isText(c) ? toUpperFn : identityFn) + ' AND ' + soqlInfix(c, '<=', v[1], newBackend && isText(c) ? toUpperFn : identityFn); },
             opMatches: function(v, cv, cv2)
             {
-                var cva = _.flattenDeep(_.compact([cv, cv2]));
+                var cva = _.flatten(_.compact([cv, cv2]));
                 if (!_.isArray(cva) || cva.length != 2) { return false; }
                 return cva[0] <= v && v <= cva[1];
             } },
@@ -123,10 +123,10 @@ blist.namespace.fetch('blist.filter');
         op.matches = function() // v, cv, etc
         {
             // If we want to trim strings, we should do that here
-            var vals = _.flattenDeep(arguments);
+            var vals = _.flatten(arguments);
 
             var getResult = function(v, vals)
-            { return op.opMatches.apply(op, _.flattenDeep([v, vals])); }
+            { return op.opMatches.apply(op, _.flatten([v, vals])); }
 
             var matchVal = vals.shift();
             if ($.isPlainObject(matchVal))

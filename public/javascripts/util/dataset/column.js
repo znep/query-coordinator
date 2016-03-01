@@ -49,20 +49,60 @@ var Column = ServerModel.extend({
             }
         };
 
+        var colSumLoadedSODA2 = function(resp) {
+          col._summary = {};
+          col._summaryLimit = limit;
+
+          // Yeah, we're just making this all up.
+          // It normally comes back from getSummary for us.
+          var aggregateAlias = 'count_{0}'.format(col.fieldName);
+          col._summary[col.renderTypeName] = {
+            subColumnType: col.renderTypeName,
+            topFrequencies: _.map(resp, function(item) {
+              return {
+                count: parseInt(item[aggregateAlias], 10),
+                value: item[col.fieldName]
+              };
+            })
+          };
+
+          if (canCallback) {
+            successCallback(col._summary);
+          }
+        };
+
         if ($.isBlank(col._summary) || limit > col._summaryLimit) {
-            col.view.makeRequest({
-                inline: true,
-                params: {
-                    method: 'getSummary',
-                    columnId: col.id,
-                    limit: limit
-                },
-                success: colSumLoaded
-            });
-        } else {
-            if (canCallback) {
-                successCallback(col._summary);
+          if (col.view._useSODA2) {
+            var aggregateAlias = 'count_{0}'.format(col.fieldName);
+            var soql = {
+              '$select': [ col.fieldName,
+                           'count({0}) as {1}'.format(col.fieldName, aggregateAlias)
+                         ].join(','),
+              '$group': col.fieldName,
+              '$order': '{0} desc'.format(aggregateAlias),
+              '$limit': limit
             }
+            col.view.makeRequest({
+              url: '/resource/{0}.json'.format(col.view.id),
+              params: soql,
+              isSODA: true,
+              success: colSumLoadedSODA2
+            });
+          } else {
+            col.view.makeRequest({
+              inline: true,
+              params: {
+                method: 'getSummary',
+                columnId: col.id,
+                limit: limit
+              },
+              success: colSumLoaded
+            });
+          }
+        } else {
+          if (canCallback) {
+            successCallback(col._summary);
+          }
         }
     },
 

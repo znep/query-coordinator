@@ -409,7 +409,7 @@ $.flattenChildren = function(array, key)
                 return [elem, recurse(elem[key])];
         });
     };
-    return _.flattenDeep(recurse(array));
+    return _.flatten(recurse(array));
 }
 
 $.unwrapHtml = function(html)
@@ -786,7 +786,7 @@ $.clamp = function(number, bounds)
 // Underscore's _.union uses _.uniq, which uses === rather than _.isEqual.
 $.union = function()
 {
-    return _.reduce(_.flattenDeep(arguments), function(memo, item)
+    return _.reduce(_.flatten(arguments), function(memo, item)
     {
         if (_.all(memo, function(val) { return !_.isEqual(item, val); })) { memo.push(item); }
         return memo;

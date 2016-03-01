@@ -6950,71 +6950,88 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function _attachEvents(el) {
-	    el.on(
-	      'mouseenter mousemove',
-	      '.timeline-chart',
-	      showFlyout
-	    );
-
-	    el.on(
-	      'mouseleave',
-	      '.timeline-chart',
-	      mouseHasLeftChart
-	    );
-
-	    if (_interactive) {
+	    if (vif.configuration.isMobile) {
 	      el.on(
-	        'mousedown mouseup',
+	        'click touchmove',
 	        '.timeline-chart',
-	        leftMouseButtonStateHasChanged
+	        showFlyout
+	      );
+	    } else {
+	      el.on(
+	        'mouseenter mousemove',
+	        '.timeline-chart',
+	        showFlyout
 	      );
 
 	      el.on(
-	        'mousedown',
+	        'mouseleave',
+	        '.timeline-chart',
+	        mouseHasLeftChart
+	      );
+
+
+	      if (_interactive) {
+	        el.on(
+	          'mousedown mouseup',
+	          '.timeline-chart',
+	          leftMouseButtonStateHasChanged
+	        );
+
+	        el.on(
+	          'mousedown',
+	          '.timeline-chart-clear-selection-label',
+	          handleClearSelectionLabelMousedownEvent
+	        );
+	      }
+
+	      el.on(
+	        'mousemove',
 	        '.timeline-chart-clear-selection-label',
-	        handleClearSelectionLabelMousedownEvent
+	        showFlyout
 	      );
 	    }
-
-	    el.on(
-	      'mousemove',
-	      '.timeline-chart-clear-selection-label',
-	      showFlyout
-	    );
 	  }
 
 	  function _unattachEvents(el) {
-	    el.off(
-	      'mouseenter mousemove',
-	      '.timeline-chart',
-	      showFlyout
-	    );
-
-	    el.off(
-	      'mouseleave',
-	      '.timeline-chart',
-	      hideFlyout
-	    );
-
-	    if (_interactive) {
+	    if (vif.configuration.isMobile) {
 	      el.off(
-	        'mousedown mouseup',
+	        'click touchmove',
 	        '.timeline-chart',
-	        leftMouseButtonStateHasChanged
+	        showFlyout
+	      );
+	    } else {
+	      el.off(
+	        'mouseenter mousemove',
+	        '.timeline-chart',
+	        showFlyout
 	      );
 
 	      el.off(
-	        'mousedown',
+	        'mouseleave',
+	        '.timeline-chart',
+	        hideFlyout
+	      );
+
+	      if (_interactive) {
+	        el.off(
+	          'mousedown mouseup',
+	          '.timeline-chart',
+	          leftMouseButtonStateHasChanged
+	        );
+
+	        el.off(
+	          'mousedown',
+	          '.timeline-chart-clear-selection-label',
+	          handleClearSelectionLabelMousedownEvent
+	        );
+	      }
+
+	      el.off(
+	        'mousemove',
 	        '.timeline-chart-clear-selection-label',
-	        handleClearSelectionLabelMousedownEvent
+	        showFlyout
 	      );
 	    }
-
-	    el.off(
-	      'mousemove',
-	      '.timeline-chart-clear-selection-label',
-	      showFlyout
-	    );
 	  }
 
 	  /**
@@ -7039,7 +7056,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      utils.assertHasProperty(rules, 'other');
 
-	      if (_.isNull(value) || !_.isFinite(value)) {
+	      if (_.isNull(value) || !isFinite(value)) {
 	        return 'No value';
 	      }
 
@@ -8710,6 +8727,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    enterDefaultState();
 	  }
 
+	  function clearHighlightedLabels() {
+	    _chartElement.find('.x-tick-label').removeClass('highlight');
+	  }
+
+	  function highlightLabel(target) {
+	    clearHighlightedLabels();
+	    $(target).addClass('highlight');
+	  }
+
 	  /**
 	   * @param {DOM Element} target - A DOM element with data attributes
 	   *                               describing an interval's start date,
@@ -8717,6 +8743,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *                               values and the formatted flyout label.
 	   */
 	  function highlightChartByInterval(target) {
+	    if (vif.configuration.isMobile) {
+	      if (!$(target).hasClass('x-tick-label')) {
+	        clearChartHighlight();
+	        return;
+	      } else {
+	        highlightLabel(target);
+	      }
+	    }
+
 	    var startDate;
 	    var endDate;
 	    startDate = new Date(target.getAttribute('data-start'));
@@ -8845,6 +8880,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      element.find('.timeline-chart-highlight-container > g > path').remove();
 	      element.find('.timeline-chart-highlight-container').
 	        css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
+
+	      if (vif.configuration.isMobile) {
+	        self.emitEvent('SOCRATA_VISUALIZATION_TIMELINE_CHART_CLEAR');
+	      }
 	    }
 	  }
 
@@ -8854,6 +8893,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  function highlightChart(startDate, endDate) {
 	    var highlightData;
+	    clearHighlightedLabels();
 	    setCurrentDatumByDate(startDate);
 	    highlightData = filterChartDataByInterval(
 	      startDate,
@@ -8906,7 +8946,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    endDate = new Date(moment(currentDatum.date).add(1, currentPrecision).toDate());
 
 	    // Dim existing labels and add text and attribute information to the datum label.
-	    $chartElement.addClass('dimmed');
+	    if (!vif.configuration.isMobile) {
+	      $chartElement.addClass('dimmed');
+	    }
+
 	    $datumLabel.
 	      text(formatDateLabel(startDate, false, currentPrecision)).
 	      attr('data-start', startDate).
@@ -9000,7 +9043,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function hideDatumLabel() {
 	    $datumLabel.hide();
-	    $chartElement.removeClass('dimmed');
+
+	    if (!vif.configuration.isMobile) {
+	      $chartElement.removeClass('dimmed');
+	    }
 	  }
 
 	  /**
@@ -9198,12 +9244,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 
-	    offsetX = mousePosition.clientX - element.offset().left;
+	    if (vif.configuration.isMobile && mousePosition.originalEvent.touches) {
+	      offsetX = mousePosition.originalEvent.touches[0].clientX - element.offset().left;
+	    } else {
+	      offsetX = mousePosition.clientX - element.offset().left;
+	    }
 
 	    // The method 'getBoundingClientRect().top' must be used here
 	    // because the offset of expanded cards changes as the window
 	    // scrolls.
-	    offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
+	    if (vif.configuration.isMobile && mousePosition.originalEvent.touches) {
+	      offsetY = mousePosition.originalEvent.touches[0].clientY - element.get(0).getBoundingClientRect().top;
+	    } else {
+	      offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
+	    }
 
 	    // mousePositionWithinChartElement is a global variable that is
 	    // used elsewhere as well
@@ -9252,7 +9306,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // the label that is currently under the mouse.
 	        } else {
 	          if (!allChartLabelsShown && !mousePositionIsSelectionLabel) {
-	            highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePositionTarget);
+	            if (vif.configuration.isMobile) {
+	              highlightChartByInterval(mousePosition.target);
+	            } else {
+	              highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePositionTarget);
+	            }
 	          } else {
 	            highlightChartByInterval(mousePosition.target);
 	          }
@@ -29078,6 +29136,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      then(mapPrecisionToDataQuery).
 	      then(mapQueryToPromises);
 
+	    $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+
 	    Promise.all([ dataPromise, precisionPromise ]).
 	      then(renderDataFromPromises)
 	      ['catch'](handleError);
@@ -29193,6 +29253,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      precision = promiseResults[1];
 	      var unfilteredQueryResponse = values[0];
 	      var filteredQueryResponse = values[1];
+
+	      $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
 
 	      visualizationData = _mergeUnfilteredAndFilteredData(
 	        unfilteredQueryResponse,

@@ -14,7 +14,7 @@ var FlannelUtils;
       if ( $('#flannel-overlay').length === 0) {
         $('<div/>', {
           id: 'qfb-flannel-overlay',
-          class: 'hidden'
+          'class': 'hidden'
         }).
         appendTo('body').
         on('click', function() {

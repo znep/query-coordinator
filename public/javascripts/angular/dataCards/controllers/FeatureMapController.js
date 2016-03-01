@@ -182,41 +182,46 @@ function FeatureMapController(
               // 'crime_location_zip', the parentColumnName would be
               // 'crime_location'.
               var parentColumnName = cellName.slice(0, cellName.lastIndexOf('_'));
-              var parentPosition = columns[parentColumnName].position;
-              var parentColumn = formattedRowData[parentPosition];
 
-              // If the parent column has not already been marked as one,
-              // mark it, and format its existing value as a subcolumn,
-              // migrating over its attributes
-              if (!parentColumn.isParentColumn) {
-                parentColumn.isParentColumn = true;
-                if (_.isArray(parentColumn.value)) {
-                  var existingValue = parentColumn.value[0];
-                  parentColumn.value[0] = {
-                    columnName: parentColumn.columnName,
-                    value: existingValue,
-                    format: parentColumn.format,
-                    physicalDatatype: parentColumn.physicalDatatype,
-                    renderTypeName: parentColumn.renderTypeName
-                  };
+              // The parent column may not exist if our heuristic for determining subcolumns fails
+              // or if there is no data in the parent column.
+              if (_.isObject(columns[parentColumnName])) {
+                var parentPosition = columns[parentColumnName].position;
+                var parentColumn = formattedRowData[parentPosition];
+
+                // If the parent column has not already been marked as one,
+                // mark it, and format its existing value as a subcolumn,
+                // migrating over its attributes
+                if (!parentColumn.isParentColumn) {
+                  parentColumn.isParentColumn = true;
+                  if (_.isArray(parentColumn.value)) {
+                    var existingValue = parentColumn.value[0];
+                    parentColumn.value[0] = {
+                      columnName: parentColumn.columnName,
+                      value: existingValue,
+                      format: parentColumn.format,
+                      physicalDatatype: parentColumn.physicalDatatype,
+                      renderTypeName: parentColumn.renderTypeName
+                    };
+                  }
                 }
+
+                var subColumnName = constructSubColumnName(column.name, parentColumnName);
+
+                if (_.isArray(parentColumn.value)) {
+                  // Add the subcolumn data to the parent column's value.
+                  parentColumn.value.push({
+                    columnName: subColumnName,
+                    value: cellValue,
+                    format: column.format,
+                    physicalDatatype: column.physicalDatatype,
+                    renderTypeName: column.renderTypeName
+                  });
+                }
+
+                // Overwrite saved parent column with updated parent column
+                formattedRowData[parentPosition] = parentColumn;
               }
-
-              var subColumnName = constructSubColumnName(column.name, parentColumnName);
-
-              if (_.isArray(parentColumn.value)) {
-                // Add the subcolumn data to the parent column's value.
-                parentColumn.value.push({
-                  columnName: subColumnName,
-                  value: cellValue,
-                  format: column.format,
-                  physicalDatatype: column.physicalDatatype,
-                  renderTypeName: column.renderTypeName
-                });
-              }
-
-              // Overwrite saved parent column with updated parent column
-              formattedRowData[parentPosition] = parentColumn;
             } else {
               // If the cellValue is an object (e.g. a coordinate point),
               // we should format it slightly differently.

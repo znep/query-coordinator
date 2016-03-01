@@ -70,6 +70,10 @@ class DataLensController < ActionController::Base
   end
 
   def region_coding_status
+
+    # Initialize session
+    current_user
+
     begin
       dataset_id = params[:datasetId]
       shapefile_id = params[:shapefileId]
@@ -132,7 +136,7 @@ class DataLensController < ActionController::Base
 
   def preload_metadata
     # First fetch the current user's profile.
-    @current_user = current_user
+    current_user
 
     # If we're reaching the data lens page via an SEO-friendly URL,
     # ensure that we end up on the canonical (SEO-friendly) URL.
@@ -235,7 +239,7 @@ class DataLensController < ActionController::Base
     parsed_vif = params[:vif].with_indifferent_access
 
     # First fetch the current user's profile.
-    @current_user = current_user
+    current_user
 
     @page_metadata = page_metadata_manager.page_metadata_from_vif(
         parsed_vif, nil, nil)
@@ -274,7 +278,7 @@ class DataLensController < ActionController::Base
     # NOTE: The call to `current_user` is side-effecty and if we do
     # not 'initialize' the frontend by calling this then future calls
     # made by CoreServer will fail.
-    @current_user = current_user
+    current_user
 
     # Can't render add card without a dataset
     if dataset_id_param.blank?

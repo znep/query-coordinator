@@ -29,16 +29,26 @@
     <div>
       <h1><%= t("#{jobs_prefix}.actions.#{@activity.activity_type}") %></h1>
       <p class="file-name">
-        <% if @activity.file_name.blank? %>
-          (<%= t("#{jobs_prefix}.show_page.file_name_unknown") %>
-        <% else %>
-          <%= @activity.file_name %>
-        <% end %>
-        <span class="file-name-to"><%= t("#{jobs_prefix}.show_page.to") %></span>
         <% if @activity.dataset.nil? %>
-          (<%= t("#{jobs_prefix}.index_page.deleted_dataset") %>)
+          <%= t("#{jobs_prefix}.index_page.deleted_dataset") %>
         <% else %>
           <%= link_to(@activity.dataset.name, view_path(@activity.dataset)) %>
+        <% end %>
+        <% if @activity.file_name.blank? %>
+          <%= t("(#{jobs_prefix}.show_page.file_name_unknown)") %>
+        <% else %>
+          <%= "(#{@activity.file_name})" %>
+        <% end %>
+        <% if @activity.had_working_copy? %>
+          <% working_copy = @activity.working_copy %>
+          <p class="working-copy-annotation">
+            to working copy
+          <% if working_copy && working_copy.is_unpublished? %>
+            <%= link_to(@activity.working_copy_id, view_path(working_copy)) %>
+          <% else %>
+            <%= @activity.working_copy_display %>
+          <% end %>
+          </p>
         <% end %>
       </p>
     </div>

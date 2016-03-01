@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/exportMenu.html');
 const angular = require('angular');
-function ExportMenu(WindowState, ServerConfig, CardDataService, rx) {
+function ExportMenu(WindowState, ServerConfig, CardDataService, rx, I18n) {
   return {
     restrict: 'E',
     templateUrl: templateUrl,
@@ -32,8 +32,29 @@ function ExportMenu(WindowState, ServerConfig, CardDataService, rx) {
         switchLatest().
         map(socrata.utils.commaify);
 
+      var shouldDisableFilteredExport$ = rx.Observable.combineLatest(
+        rowCount$,
+        filteredRowCount$,
+        dataset$.observeOnLatest('downloadOverride'),
+        function(rowCount, filteredRowCount, downloadOverride) {
+          return rowCount === filteredRowCount || _.isString(downloadOverride);
+        }
+      );
+
+      var disabledFilteredExportMessage$ = dataset$.observeOnLatest('downloadOverride').
+        startWith(undefined).
+        map(function(downloadOverride) {
+          if (_.isString(downloadOverride)) {
+            return I18n.exportMenu.csv.notAvailableSpecific;
+          } else {
+            return I18n.exportMenu.csv.notAvailable;
+          }
+        });
+
       $scope.$bindObservable('rowCount', rowCount$);
       $scope.$bindObservable('filteredRowCount', filteredRowCount$);
+      $scope.$bindObservable('shouldDisableFilteredExport', shouldDisableFilteredExport$);
+      $scope.$bindObservable('disabledFilteredExportMessage', disabledFilteredExportMessage$);
 
       $scope.isFilteredCSVExport = true;
 

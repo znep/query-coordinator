@@ -1311,7 +1311,7 @@ describe('cardLayout', function() {
         expect(flyout.text()).to.equal(I18n.cardControls.collapseCard);
       });
 
-      it('should display "Customize this card" over the customize button on customizable cards', function() {
+      it('should display "Customize this card" over the customize button', function() {
         var cl = createLayoutWithCards([{fieldName: '*'}, {fieldName: 'choropleth_column'}]);
 
         cl.outerScope.interactive = true;
@@ -1342,92 +1342,6 @@ describe('cardLayout', function() {
         expectFlyoutPosition(customize.eq(0), flyout);
         expect(flyout.is(':visible')).to.be.true;
         expect(flyout.text()).to.equal(I18n.cardControls.customizeEnabled);
-      });
-
-      it('should display a different message over the customize button of non-customizable cards', function() {
-        ServerConfig.override('enableDataLensCardLevelAggregation', false);
-
-        var cl = createLayoutWithCards([
-          {fieldName: '*'},
-          {fieldName: 'timeline_column'}
-        ]);
-
-        cl.outerScope.interactive = true;
-        cl.outerScope.$apply();
-
-        var flyout = $('#uber-flyout');
-        expect(flyout.is(':visible')).to.be.false;
-
-        var visualizations = cl.element.find('.card-visualization').
-            children('timeline-chart').
-            closest('.card-spot');
-        expect(visualizations.length).to.equal(1);
-        expect(visualizations.find('.card-control.icon-settings:visible').length).to.equal(0);
-
-        var disabled = visualizations.find('.card-control.disabled:visible');
-
-        // Shouldn't show up unless you're in edit mode
-        expect(disabled.length).to.equal(0);
-
-        cl.outerScope.editMode = true;
-        cl.outerScope.$apply();
-
-        disabled = visualizations.find('.card-control.disabled:visible');
-        expect(disabled.length).to.equal(visualizations.length);
-
-        mockWindowStateService.mousePosition$.onNext({
-          clientX: 0,
-          clientY: 0,
-          target: disabled[0]
-        });
-
-        expectFlyoutPosition(disabled.eq(0), flyout);
-        expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.equal(I18n.cardControls.customizeDisabled);
-      });
-
-      it('should display "Customize this card" over the customize button of non-customizable cards if card-level aggregation is enabled', function() {
-        ServerConfig.override('enableDataLensCardLevelAggregation', true);
-
-        var cl = createLayoutWithCards([
-          {fieldName: '*'},
-          {fieldName: 'timeline_column'}
-        ]);
-
-        cl.outerScope.interactive = true;
-        cl.outerScope.$apply();
-
-        var flyout = $('#uber-flyout');
-        expect(flyout.is(':visible')).to.be.false;
-
-        var visualizations = cl.element.find('.card-visualization').
-            children('timeline-chart').
-            closest('.card-spot');
-        expect(visualizations.length).to.equal(1);
-        expect(visualizations.find('.card-control.icon-settings:visible').length).to.equal(0);
-
-        var disabled = visualizations.find('.card-control.disabled:visible');
-
-        // Shouldn't show up unless you're in edit mode
-        expect(disabled.length).to.equal(0);
-
-        cl.outerScope.editMode = true;
-        cl.outerScope.$apply();
-
-        var customize = visualizations.find('.card-control.icon-settings:visible');
-        expect(customize.length).to.equal(visualizations.length);
-
-        mockWindowStateService.mousePosition$.onNext({
-          clientX: 0,
-          clientY: 0,
-          target: customize[0]
-        });
-
-        expectFlyoutPosition(customize.eq(0), flyout);
-        expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.equal(I18n.cardControls.customizeEnabled);
-
-        ServerConfig.override('enableDataLensCardLevelAggregation', false);
       });
     });
   });

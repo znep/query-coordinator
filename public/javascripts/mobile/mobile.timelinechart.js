@@ -14,6 +14,7 @@ module.exports = function(values, $target) {
     },
     'columnName': values.columnName,
     'configuration': {
+      'isMobile': true,
       'localization': {
         'NO_VALUE': 'No value',
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
@@ -58,7 +59,7 @@ module.exports = function(values, $target) {
   });
 
   // Handle flyout events
-  $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+  $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_FLYOUT', handleFlyout);
   $timelineChartElement.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_CLEAR', clearFlyout);
 
   $(document).on('appliedFilters.qfb.socrata', handleVifUpdated);
@@ -99,9 +100,9 @@ module.exports = function(values, $target) {
       html:
       '<div class="labels mobile">' +
       '<div class="arrow" style="left: ' + ((flyoutBounds.left - 28) + (highlightedBarWidth / 2)) + 'px"></div>' +
-      '<h4 class="title pull-left">' + payload.data.title + '</h4>' +
-      '<h4 class="value pull-right text-right">' + payload.data.unfilteredValue.split(' ')[0] +
-      '<span> ' + payload.data.unfilteredValue.split(' ')[1] + '</span>' +
+      '<h4 class="title pull-left">' + payload.title + '</h4>' +
+      '<h4 class="value pull-right text-right">' + payload.unfilteredValue.split(' ')[0] +
+      '<span> ' + payload.unfilteredValue.split(' ')[1] + '</span>' +
       '</h4>' +
       '</div>'
     });

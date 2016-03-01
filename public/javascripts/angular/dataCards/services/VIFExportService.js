@@ -1,5 +1,5 @@
 const angular = require('angular');
-function VIFExportService(Page, DateHelpers, $window, ServerConfig) {
+function VIFExportService(Page, DateHelpers, $window) {
 
   /**
    * Return a representation of a card as a Visualization Interchange Format (VIF) JSON object.
@@ -112,16 +112,8 @@ function VIFExportService(Page, DateHelpers, $window, ServerConfig) {
       }).map(function(cardModel) {
         var visualizationType = cardModel.getCurrentValue('cardType');
 
-        var aggregationField;
-        var aggregationFunction;
-
-        if (pageModel.version <= 3 || !ServerConfig.get('enableDataLensCardLevelAggregation')) {
-          aggregationField = pageModel.getCurrentValue('primaryAmountField');
-          aggregationFunction = pageModel.getCurrentValue('primaryAggregation');
-        } else {
-          aggregationField = cardModel.getCurrentValue('aggregationField');
-          aggregationFunction = cardModel.getCurrentValue('aggregationFunction');
-        }
+        var aggregationField = cardModel.getCurrentValue('aggregationField');
+        var aggregationFunction = cardModel.getCurrentValue('aggregationFunction');
 
         var vif = {
           aggregation: {

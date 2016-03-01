@@ -637,7 +637,6 @@ $(function() {
   function generateCreateNewStoryHandler($dropdownElement) {
 
     return function() {
-      /* eslint-disable no-inner-declarations */
 
       function onError() {
 
@@ -680,11 +679,9 @@ $(function() {
           }
         }
 
-      if (window.hasOwnProperty('blist') &&
-        window.blist.hasOwnProperty('configuration') &&
-        window.blist.configuration.hasOwnProperty('appToken')) {
-
-          /* eslint-enable no-inner-declarations */
+        if (window.hasOwnProperty('blist') &&
+          window.blist.hasOwnProperty('configuration') &&
+          window.blist.configuration.hasOwnProperty('appToken')) {
 
           if (data.hasOwnProperty('id') && validate4x4(data.id)) {
 
@@ -708,58 +705,57 @@ $(function() {
             onError(xhr, 'Invalid storyUid', 'Invalid storyUid');
           }
         }
-
-        var newStoryName = (
-          'Untitled Story - ' +
-          (new Date().format('m-d-Y'))
-        );
-
-        var newStoryData = {
-          displayFormat: {},
-          displayType: 'story',
-          metadata: {
-            availableDisplayTypes: ['story'],
-            // Since Storyteller has its own datastore, we will
-            // need to treat this asynchonously. Tagging the
-            // metadata with '"initialized": false' should at least
-            // allow us to understand how many of the two-phase
-            // story creation actions fail, and should also allow
-            // us to do some garbage collection down the road.
-            initialized: false,
-            // Because of an unfortunate legacy in Core Server,
-            // the way that we ensure that the newly-created asset
-            // is of viewType 'story' is by putting a property
-            // called 'isStorytellerAsset' on the metadata object.
-            isStorytellerAsset: true,
-            jsonQuery: {},
-            renderTypeConfig: {
-              visible: {
-                story: true
-              }
-            }
-          },
-          name: newStoryName,
-          query: {}
-        };
-
-        var url = '/api/views.json';
-        var settings = {
-          contentType: false,
-          data: JSON.stringify(newStoryData),
-          dataType: 'json',
-          error: onError,
-          headers: {
-            'Content-type': 'application/json',
-            'X-App-Token': blist.configuration.appToken
-          },
-          type: 'POST',
-          success: onSuccess
-        };
-
-        $dropdownElement.addClass('working');
-        $.ajax(url, settings);
       }
+
+      var newStoryName = (
+        'Untitled Story - ' +
+        (new Date().format('m-d-Y'))
+      );
+
+      var newStoryData = {
+        displayFormat: {},
+        displayType: 'story',
+        metadata: {
+          availableDisplayTypes: ['story'],
+          // Since Storyteller has its own datastore, we will
+          // need to treat this asynchonously. Tagging the
+          // metadata with '"initialized": false' should at least
+          // allow us to understand how many of the two-phase
+          // story creation actions fail, and should also allow
+          // us to do some garbage collection down the road.
+          initialized: false,
+          // Because of an unfortunate legacy in Core Server,
+          // the way that we ensure that the newly-created asset
+          // is of viewType 'story' is by putting a property
+          // called 'isStorytellerAsset' on the metadata object.
+          isStorytellerAsset: true,
+          jsonQuery: {},
+          renderTypeConfig: {
+            visible: {
+              story: true
+            }
+          }
+        },
+        name: newStoryName,
+        query: {}
+      };
+
+      var url = '/api/views.json';
+      var settings = {
+        contentType: false,
+        data: JSON.stringify(newStoryData),
+        dataType: 'json',
+        error: onError,
+        headers: {
+          'Content-type': 'application/json',
+          'X-App-Token': blist.configuration.appToken
+        },
+        type: 'POST',
+        success: onSuccess
+      };
+
+      $dropdownElement.addClass('working');
+      $.ajax(url, settings);
     };
   }
-
 });

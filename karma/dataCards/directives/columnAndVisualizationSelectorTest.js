@@ -580,53 +580,29 @@ describe('columnAndVisualizationSelectorTest', function() {
   });
 
   describe('shouldShowAggregationSelector scope variable', function() {
-    it('should not show card aggregation when feature flag is disabled', function() {
-      ServerConfig.override('enableDataLensCardLevelAggregation', false);
+    it('should not show card aggregation when no column is selected', function() {
       var directive = createDirective();
-
-      directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
       var cardAggregationSelector = directive.element.find('card-aggregation-selector');
 
       expect(cardAggregationSelector).to.not.exist;
     });
 
-    describe('when enable_data_lens_card_level_aggregation feature flag is enabled', function() {
-      beforeEach(function() {
-        ServerConfig.override('enableDataLensCardLevelAggregation', true);
-      });
+    it('should not show card aggregation when card type is blacklisted', function() {
+      var directive = createDirective();
+      directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+      directive.element.find('.icon-search').trigger('click');
+      var cardAggregationSelector = directive.element.find('card-aggregation-selector');
 
-      it('should not show card aggregation when version is less than 4', function() {
-        var directive = createDirective({version: 3});
-        directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
-        var cardAggregationSelector = directive.element.find('card-aggregation-selector');
+      expect(cardAggregationSelector).to.not.exist;
+    });
 
-        expect(cardAggregationSelector).to.not.exist;
-      });
+    it('should show card aggregation when column is selected', function() {
+      var directive = createDirective();
+      directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+      directive.element.find('.icon-bar-chart').trigger('click');
+      var cardAggregationSelector = directive.element.find('card-aggregation-selector');
 
-      it('should not show card aggregation when no column is selected', function() {
-        var directive = createDirective();
-        var cardAggregationSelector = directive.element.find('card-aggregation-selector');
-
-        expect(cardAggregationSelector).to.not.exist;
-      });
-
-      it('should not show card aggregation when card type is blacklisted', function() {
-        var directive = createDirective();
-        directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
-        directive.element.find('.icon-search').trigger('click');
-        var cardAggregationSelector = directive.element.find('card-aggregation-selector');
-
-        expect(cardAggregationSelector).to.not.exist;
-      });
-
-      it('should show card aggregation when column is selected', function() {
-        var directive = createDirective();
-        directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
-        directive.element.find('.icon-bar-chart').trigger('click');
-        var cardAggregationSelector = directive.element.find('card-aggregation-selector');
-
-        expect(cardAggregationSelector).to.exist;
-      });
+      expect(cardAggregationSelector).to.exist;
     });
   });
 });

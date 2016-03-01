@@ -62,7 +62,7 @@ function HistogramController(
   var cardId$ = cardModel$.pluck('uniqueId');
   var bucketType$ = cardModel$.observeOnLatest('bucketType');
   var expanded$ = cardModel$.observeOnLatest('expanded');
-  var rowDisplayUnit$ = cardModel$.observeOnLatest('page.aggregation.unit');
+  var rowDisplayUnit$ = cardModel$.observeOnLatest('aggregation.unit');
   var filterSelected$ = $scope.$eventToObservable('toggle-dataset-filter:histogram').
     map(_.property('additionalArguments[0]'));
 

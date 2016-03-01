@@ -41,15 +41,15 @@
             <label>
               <input
                 ng-model="isFilteredCSVExport"
-                ng-disabled="rowCount === filteredRowCount"
+                ng-disabled="shouldDisableFilteredExport"
                 ng-value="true"
                 type="radio"
                 name="isFilteredCSVExport">
               {{::'exportMenu.csv.currentFilter' | I18n}}
-              <span ng-show="rowCount === filteredRowCount">
-                ({{::'exportMenu.csv.notAvailable' | I18n}})
+              <span ng-show="shouldDisableFilteredExport">
+                ({{disabledFilteredExportMessage}})
               </span>
-              <span ng-show="rowCount !== filteredRowCount">
+              <span ng-hide="shouldDisableFilteredExport">
                 ({{filteredRowCount}} {{'common.row' | I18n | pluralize:filteredRowCount}})
               </span>
             </label>

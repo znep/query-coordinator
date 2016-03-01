@@ -996,38 +996,6 @@ lens-type {
   }
 }
 
-// aggregation-chooser
-aggregation-chooser {
-  .aggregation-chooser-trigger {
-    color: $aggregation-chooser-trigger-color;
-    span::after {
-      border-color: $aggregation-chooser-trigger-color transparent transparent transparent;
-    }
-    &.disabled span::after {
-      border-color: $aggregation-chooser-trigger-disabled-color transparent transparent transparent;
-    }
-  }
-  .aggregation-columns.count {
-    .aggregation-option.count:hover {
-      background-color: $aggregation-chooser-option-hover-count-background-color;
-    }
-  }
-  .aggregation-columns.no-count {
-    .aggregation-option.no-count:hover {
-      background-color: $aggregation-chooser-option-hover-no-count-background-color;
-    }
-  }
-  .aggregation-option {
-    color: $aggregation-chooser-option-text-color;
-    &.active {
-      background-color: $aggregation-chooser-option-active-text-color;
-    }
-    &.disabled {
-      color: $aggregation-chooser-option-disabled-text-color;
-    }
-  }
-}
-
 // cards
 body.state-view-cards {
   .cards-content {

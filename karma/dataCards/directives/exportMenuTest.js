@@ -91,14 +91,13 @@ describe('Export Menu', function() {
 
       it('disables the filtered radio button if the row counts are the same', function() {
         stubRowCounts(50000, 50000);
-
         context = createElement();
-
         expect(context.element.find('input[type="radio"]:disabled')).to.exist;
+      });
 
-        context.element.scope().filteredRowCount = 30000;
-        context.element.scope().$apply();
-
+      it('enables the filtered radio button if the row counts are different', function() {
+        stubRowCounts(50000, 30000);
+        context = createElement();
         expect(context.element.find('input[type="radio"]:disabled')).to.not.exist;
       });
 
@@ -116,6 +115,32 @@ describe('Export Menu', function() {
 
         var regex = /query=select\+\*\+where\+%60something%60\+is\+null/i;
         expect(context.element.find('a').get(0).href).to.match(regex);
+      });
+
+      it('respects downloadOverride if the page is not filtered', function() {
+        stubRowCounts(50000, 50000);
+
+        context = createElement({}, {}, { downloadOverride: 'https://socrata.com' });
+
+        expect(context.element.scope().csvDownloadURL).to.equal('https://socrata.com');
+        expect(context.element.find('a').get(0).href).to.equal('https://socrata.com/');
+      });
+
+      it('disables filtered export if the download override is set', function() {
+        stubRowCounts(50000, 30000);
+
+        context = createElement({}, {}, { downloadOverride: 'https://socrata.com' });
+
+        var page = context.element.scope().page;
+        page.set('cards', [Mockumentary.createCard(page, 'something')]);
+        page.getCurrentValue('cards')[0].set('activeFilters', [new Filter.IsNullFilter(true)]);
+
+        context.element.scope().$apply();
+
+        expect(context.element.scope().shouldDisableFilteredExport).to.equal(true);
+        expect(context.element.scope().disabledFilteredExportMessage).to.match(/not available for this dataset/i);
+        expect(context.element.scope().csvDownloadURL).to.equal('https://socrata.com');
+        expect(context.element.find('a').get(0).href).to.equal('https://socrata.com/');
       });
     });
 

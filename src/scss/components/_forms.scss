@@ -118,6 +118,8 @@ form {
             height:19px;
             cursor:pointer; 
             vertical-align: text-bottom;
+            line-height: 1;
+            padding: 2px;
         }
         input[type=checkbox] + label .fake-checkbox span{
             display: none;

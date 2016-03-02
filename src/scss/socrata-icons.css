@@ -50,6 +50,7 @@
 .icon-data:before,
 .icon-dataset:before,
 .icon-distribution:before,
+.icon-droplet:before,
 .icon-edit:before,
 .icon-expand:before,
 .icon-external:before,
@@ -140,6 +141,7 @@
 .icon-data:before { content: "\f118"; }
 .icon-dataset:before { content: "\f119"; }
 .icon-distribution:before { content: "\f11a"; }
+.icon-droplet:before { content: "\f14e"; }
 .icon-edit:before { content: "\f11b"; }
 .icon-expand:before { content: "\f11c"; }
 .icon-external:before { content: "\f11d"; }

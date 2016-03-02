@@ -34,7 +34,7 @@ var formatWithArgs = function() {
  * 'Hello, {what}!'.format({ what: 'World'});
  * => 'Hello, World!'
  */
-var formatWithObject = function(objectMaybe) {
+var formatWithObject = function() {
 
   var values = arguments[0];
 
@@ -285,10 +285,8 @@ var utils = {
     // The one edge case to handle is when 999.9[KMB...] rounds up, which
     // bumps us into the next magnitude.
     if (newValue === '1000') {
-
       newValue = '1';
       symbolIndex++;
-
     }
 
     if (!_.isUndefined(NUMBER_FORMATTER_MAGNITUDE_SYMBOLS[symbolIndex])) {
@@ -299,14 +297,9 @@ var utils = {
         parseFloat(newValue).toString().replace('.', formatNumberOptions.decimalCharacter),
         NUMBER_FORMATTER_MAGNITUDE_SYMBOLS[symbolIndex]
       );
-
     } else {
-
       return val.toString();
-
     }
-
-    this.assert(false, 'Call to `.formatNumber()` was not handled by any format branch.');
   },
 
   // Given a number or a string representing a number, returns a string delimited
@@ -412,7 +405,7 @@ var utils = {
     var name = cookieName + '=';
     var cookies = document.cookie.split(/;\s*/);
 
-    for(var i = 0; i < cookies.length; i++) {
+    for (var i = 0; i < cookies.length; i++) {
       var cookie = cookies[i];
 
       if (cookie.indexOf(name) === 0) {
@@ -481,9 +474,13 @@ if (String.prototype.format && console && console.warn) {
   console.warn('Warning: String.prototype.format was already set somewhere else. It may not function as expected.');
 }
 
+/* eslint-disable no-extend-native */
+
 // Attach `.format()` and `.escapeSpaces()` to String.prototype.
 String.prototype.format = format;
 String.prototype.escapeSpaces = escapeSpaces;
+
+/* eslint-enable no-extend-native */
 
 // Add CustomEvent to the window.
 CustomEvent.prototype = window.Event.prototype;

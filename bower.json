@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "6.2.16",
+  "version": "7.0.0",
   "main": [
     "dist/socrata-visualizations.js"
   ],

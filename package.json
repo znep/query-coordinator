@@ -23,7 +23,8 @@
   "devDependencies": {
     "autoprefixer": "^6.3.1",
     "chai": "^3.0.0",
-    "eslint": "^1.5.1",
+    "eslint": "^2.2.0",
+    "eslint-base": "^0.2.1",
     "karma": "^0.13.14",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.1",
@@ -48,97 +49,24 @@
     "webpack": "^1.12.2"
   },
   "eslintConfig": {
-    "env": {
-      "browser": true,
-      "commonjs": true
-    },
-    "extends": "eslint:recommended",
+    "extends": "./node_modules/eslint-base/.eslintrc.json",
     "rules": {
-      "brace-style": [
-        2,
-        "1tbs",
-        {
-          "allowSingleLine": true
-        }
-      ],
-      "camelcase": [1, {"properties": "never"}],
-      "consistent-return": 0,
-      "dot-location": [
-        1,
-        "object"
-      ],
-      "dot-notation": [
-        1,
-        {
-          "allowKeywords": true
-        }
-      ],
-      "eol-last": 1,
-      "indent": 0,
-      "new-cap": [
-        1,
-        {
-          "newIsCapExceptions": [
-            "pbf"
-          ]
-        }
-      ],
-      "no-console": 0,
-      "no-extend-native": 2,
-      "no-extra-semi": 1,
-      "no-shadow": [
-        2,
-        {
-          "hoist": "all"
-        }
-      ],
-      "no-spaced-func": 2,
-      "no-trailing-spaces": 2,
-      "no-underscore-dangle": 0,
-      "no-unused-vars": 1,
-      "no-use-before-define": 0,
-      "quotes": [
-        1,
-        "single",
-        "avoid-escape"
-      ],
-      "quote-props": [
-        2,
-        "as-needed",
-        {
-          "keywords": true,
-          "unnecessary": false
-        }
-      ],
-      "semi": [
-        2,
-        "always"
-      ],
-      "space-after-keywords": [
-        2,
-        "always"
-      ],
-      "space-before-blocks": [
-        2,
-        "always"
-      ],
-      "space-before-function-paren": [
-        2,
-        "never"
-      ],
-      "space-infix-ops": 2
+      "dot-notation": [1, {"allowKeywords": true}]
     },
     "globals": {
       "$": true,
       "_": true,
+      "ArrayBuffer": true,
       "chroma": true,
       "d3": true,
       "jQuery": true,
       "L": true,
       "moment": true,
       "pbf": true,
+      "Promise": true,
       "socrata": true,
       "ss": true,
+      "Uint8Array": true,
       "VBArray": true,
       "VectorTile": true
     }

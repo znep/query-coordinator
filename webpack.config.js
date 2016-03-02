@@ -13,7 +13,8 @@ module.exports = {
     },
     'd3': 'd3',
     'lodash': '_',
-    'moment': 'moment'
+    'moment': 'moment',
+    'leaflet': 'L'
   },
   output: {
     path: __dirname + '/dist',

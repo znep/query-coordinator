@@ -38,7 +38,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('copy', function() {
-  gulp.src('src/fonts/**/*').
+  gulp.src('src/fonts/socrata-icons*').
     pipe(gulp.dest('dist/fonts'));
 });
 

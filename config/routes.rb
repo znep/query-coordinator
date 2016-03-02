@@ -36,6 +36,7 @@ Frontend::Application.routes do
     end
 
     # New frontend pages
+    get '/stat/version(.:format)' => 'odysseus#version'
     scope :controller => 'odysseus', :action => 'index' do
       match '/stat', :as => 'govstat_root'
       match '/stat/goals', :as => 'govstat_goals'

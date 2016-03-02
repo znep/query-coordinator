@@ -645,7 +645,7 @@
             $dom.find('.data').toggle(this._dataLayers.length > 0);
 
             var walkLayers = function(discontinuousArray, iterator) {
-              _.eachRight(_.compact(discontinuousArray), iterator, control);
+              _.each(_.compact(discontinuousArray).reverse(), iterator, control);
             };
 
             walkLayers(backgroundLayers, this.renderBackgroundLayer);
@@ -778,7 +778,7 @@
         {
             var control = this, $dom = this.$dom;
             var dataLayers = _.chain($.makeArray(layerObj.dataLayers()))
-                .flattenDeep().compact().value();
+                .flatten().compact().value();
 
             var typeMap = {
                 'point':     $.t('controls.map.point_map'),
@@ -1545,7 +1545,7 @@
             var buildFilterCondition = function(viewport)
             {
                 return { type: 'operator', value: 'AND',
-                    children: _.flattenDeep(_.map(['x', 'y'], function(axis)
+                    children: _.flatten(_.map(['x', 'y'], function(axis)
                     {
                         return _.map(['min', 'max'], function(bound)
                         {

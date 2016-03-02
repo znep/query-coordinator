@@ -70,7 +70,8 @@ class BrowseController < ApplicationController
       :rel_type => 'external',
       :view_type => 'table',
       :hide_view_types => true,
-      :suppress_dataset_creation => true
+      :suppress_dataset_creation => true,
+      :admin => true
     )
   end
 

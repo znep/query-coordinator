@@ -246,7 +246,7 @@ $(document).ready(function() {
         // Update the properties with the page-specific properties we want to track
         var mergedProperties = _.extend(genericPagePayload(), properties);
 
-        var willOpenInNewTab = event.which === 2 || event.metaKey || event.currentTarget.target === '_blank';
+        var willOpenInNewTab = event.which === 2 || event.metaKey || || event.ctrlKey || event.currentTarget.target === '_blank';
         var isDefaultPrevented = event.isDefaultPrevented();
         var callback = function() {
           if (!willOpenInNewTab && !isDefaultPrevented && (mergedProperties['New URL'] != null)) {

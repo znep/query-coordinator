@@ -20,7 +20,7 @@ module.exports = function(values, $target) {
    */
 
   var flyoutRenderer = new FlyoutRenderer();
-  RowInspector.setup();
+  RowInspector.setup({ isMobile: true });
 
   var featureMap1VIF = {
     'aggregation': {
@@ -36,6 +36,7 @@ module.exports = function(values, $target) {
       'datasetMetadata': false,
       // Behavior
       'hover': true,
+      'isMobile': true,
       'panAndZoom': true,
       'locateUser': true,
       'mapOptions': {

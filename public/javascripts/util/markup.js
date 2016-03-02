@@ -176,7 +176,7 @@
 
         return $.tag($.extend(opts.customAttrs,
             {tagName: 'a', href: opts.href || '#',
-            'class': _.flattenDeep(['button', opts.className, opts.iconClass]),
+            'class': _.flatten(['button', opts.className, opts.iconClass]),
             contents: [
                 {value: {tagName: 'span', 'class': 'icon'},
                     onlyIf: !$.isBlank(opts.iconClass)},

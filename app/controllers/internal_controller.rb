@@ -102,8 +102,9 @@ class InternalController < ApplicationController
       @parent_domain = Domain.find(@parent_config.domainCName)
     end
 
-    @type_description = ExternalConfig.for(:configuration_types).
-      type_descriptions[@config.type]
+    type_data = ExternalConfig.for(:configuration_types)
+    @type_description = type_data.description_for(@config.type)
+    @property_type_checking = type_data.property_type_checking_for(@config.type)
   end
 
   def show_property

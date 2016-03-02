@@ -54,6 +54,8 @@ locales:
   known_properties:
   - *
   - available_locales
+  property_type_checking:
+    available_locales: Array
 metadata:
   description: This holds the values from /admin/metadata.
   hide_in_creation_ui: true

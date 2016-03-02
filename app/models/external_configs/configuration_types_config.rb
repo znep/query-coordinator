@@ -10,4 +10,12 @@ class ConfigurationTypesConfig < ExternalConfig
 
     @type_descriptions = YAML.load_file(filename)
   end
+
+  def description_for(type)
+    @type_descriptions[type].try(:reject) { |k, _| k == 'property_type_checking' }
+  end
+
+  def property_type_checking_for(type)
+    @type_descriptions[type].try(:[], 'property_type_checking')
+  end
 end

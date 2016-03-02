@@ -194,6 +194,61 @@
           $('.configProperties').submit();
         }
       });
+
+      var propertyTyping = <%== @property_type_checking.to_json %> || {};
+      $('form.configProperties, form.newProperty').find('textarea').change(function() {
+        var $this = $(this);
+        var propertyName = $this.attr('name');
+        var deleting = false;
+        if (propertyName === 'new-property_value') {
+          propertyName = $this.siblings('input').val();
+        } else {
+          propertyName = $this.siblings('label').text();
+          deleting = !!$this.siblings('input').attr('checked');
+        }
+
+        if (!deleting && propertyTyping[propertyName]) {
+          var validJSON, jsonIsNotValid;
+
+          try {
+            validJSON = JSON.parse($this.val());
+          } catch(e) {
+            if (e.name !== 'SyntaxError') {
+              console.error(e);
+            }
+            jsonIsNotValid = true;
+          }
+
+          if (jsonIsNotValid ||
+            (propertyTyping[propertyName] === 'Array' && !_.isArray(validJSON)) ||
+            (propertyTyping[propertyName] === 'Object' && !_.isPlainObject(validJSON)) ||
+            (propertyTyping[propertyName] === 'Number' && !_.isNumber(validJSON))
+          ) {
+            var errorMessage = [
+              'This should be a valid JSON {0} but it is not.',
+              'Make sure you\'re using double-quotes!'
+            ];
+
+            // Double-quotes are kinda irrelevant if it's a number.
+            if (propertyTyping[propertyName] === 'Number') {
+              errorMessage.pop();
+            }
+            errorMessage = errorMessage.join(' ').format(propertyTyping[propertyName]);
+
+            $this.css('background-color', '#FF9494');
+            $this.socrataTip({
+              trigger: 'none',
+              isSolo: true,
+              message: errorMessage,
+              'parent': 'body'
+            });
+            $this.btOn();
+          } else {
+            $this.css('background-color', 'white');
+            $this.btOff();
+          }
+        }
+      });
     });
   </script>
 <% end %>

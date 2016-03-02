@@ -20,3 +20,6 @@ Rails.application.config.full_bleed_image_enable_text_overlay = (ENV['FULL_BLEED
 
 # Enable sending of new metrics for story page views
 Rails.application.config.enable_new_story_page_view_metrics = (ENV['ENABLE_NEW_STORY_PAGE_VIEW_METRICS'].to_s.downcase == 'true')
+
+# Enable stats link in the story settings panel
+Rails.application.config.enable_settings_panel_stats_link = (ENV['ENABLE_SETTINGS_PANEL_STATS_LINK'].to_s.downcase == 'true')

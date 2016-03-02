@@ -1,5 +1,5 @@
 /*!
- * Socrata Styleguide v0.2.0
+ * Socrata Styleguide v0.3.0
  * Copyright 2015-2016 Socrata, Inc.
  * Licensed under MIT
  */

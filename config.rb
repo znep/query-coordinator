@@ -25,5 +25,8 @@ configure :build do
 end
 
 after_configuration do
-  FileUtils.cp_r('./src/fonts', './docs')
+  if !File.exists?('./docs/fonts')
+  	FileUtils.mkdir('./docs/fonts')
+  end
+  FileUtils.cp(Dir.glob('./src/fonts/socrata-icons*'), './docs/fonts')
 end

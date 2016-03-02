@@ -1,5 +1,6 @@
 @import "bourbon";
-@import "fonts";
+//@import "fonts";
+@import "socrata-icons";
 @import "components/grid";
 @import "components/typography";
 @import "components/colors";
@@ -209,8 +210,7 @@ section.styleguide-section {
 }
 
 .usage {
-  background-color: $almost-white-bg;
-  border: 1px solid $light-grey-5;
+  background-color: $light-grey-5;
   font-size: ms(-1);
   padding: ms(-2);
   border-radius: 1px;
@@ -244,17 +244,17 @@ section.styleguide-section {
 
   li {
     @include span-columns(1);
-    @include omega(8n);
+    @include omega(4n);
     margin-bottom: ms(5);
     padding-left: 0;
 
     &.icon-sample {
-      height: 40px;
-      width: 40px;
-      background-color: #eee;
+      
+      width: 20%;
+      background-color: $light-grey-5;
       font-size: ms(3);
       text-align: center;
-      padding-top: ms(-3);
+      padding-top: ms(-2);
     }
   }
 }

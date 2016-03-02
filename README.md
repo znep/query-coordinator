@@ -17,6 +17,16 @@ This libarary uses the Middleman static site generator to to provide an asset pi
 5. `bundle exec middleman`
 6. Open your favorite browser to look at [http://localhost:4567](http://localhost:4567).
 
+### Adding icons to the Socrata-Icons font
+In order to compile and update the icon font, additional setup is required. We are using the [fontcustom](https://github.com/FontCustom/fontcustom) gem, which in turn requires you to install _fontforge_ and _eot-utils_ to generate the font. **Review the fontcustom setup documentation before attempting to update the icon font**.
+
+#### Updating the icon
+1. Make sure you've installed the fontcustom required utilities
+2. Add/remove/update the `.svg` file(s) in the `/src/fonts/svg/` folder
+3. Open a terminal and cd to `styleguide/src/fonts`
+4. Run `fontcustom compile -c .`
+5. Restart middleman
+
 ## Contributions
 Anyone and everyone is welcome to submit a pull request with code and documentation. Fork the repository and work through the Setup section.
 
@@ -41,3 +51,4 @@ When a PR is successfully merged, an admin must run – from `master` – the d
 2. [Modular Scale](https://github.com/modularscale/modularscale-sass)
 3. [Bourbon](http://bourbon.io/) and [Neat](http://neat.bourbon.io) (for layout grids)
 4. [Prism](http://prismjs.com/) (for syntax highlighting)
+5. [Font]

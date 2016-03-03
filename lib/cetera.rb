@@ -9,7 +9,7 @@ module Cetera
 
     Rails.logger.info("Cetera request to #{cetera_url} with params: #{query.inspect}")
 
-    result = HTTParty.get(cetera_url, query: query.to_query)
+    result = HTTParty.get(cetera_url, query: query.to_query, timeout: 5)
     CeteraSearchResult.from_result(result.body)
   end
 

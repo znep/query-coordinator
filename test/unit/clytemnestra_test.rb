@@ -2,7 +2,7 @@ require 'test_helper'
 
 include Clytemnestra
 
-class ClytemnestraTest < Test::Unit::TestCase
+class ClytemnestraTest < MiniTest::Unit::TestCase
   # yes, this is a little silly
   def test_check_time_and_id_are_there_yo
     searchView = ViewSearchResult.new
@@ -70,10 +70,20 @@ class ClytemnestraTest < Test::Unit::TestCase
     ].join('&')
 
     stub_request(:get, "#{APP_CONFIG.coreservice_uri}/search/views.json?#{param_string}")
-      .with(headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
       .to_return(status: 200, body: payload, headers: {})
 
     # Really what we're testing is that the generated URL matches our stubbed URL
     assert_equal expected.results, Clytemnestra.search_views(search_options).results
+  end
+
+  def test_search_views_timeout_throws_core_server_timeout
+    CurrentDomain.stubs(:cname).returns('localhost')
+    stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
+      .with(query: {}, headers: { 'X-Socrata-Host' => 'localhost' })
+      .to_timeout
+
+    assert_raises CoreServer::TimeoutError do
+      Clytemnestra.search_views({})
+    end
   end
 end

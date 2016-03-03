@@ -2,7 +2,7 @@ require 'test_helper'
 
 include Cetera
 
-class CeteraTest < Test::Unit::TestCase
+class CeteraTest < MiniTest::Unit::TestCase
   describe 'Cetera' do
     def sample_search_options
       {
@@ -141,6 +141,19 @@ class CeteraTest < Test::Unit::TestCase
       ['bogus', 'sort by', 'orders'].each do |bogus|
         assert_raises KeyError do
           Cetera.translate_sort_by(bogus)
+        end
+      end
+    end
+
+    describe 'search_views' do
+      def test_cetera_search_views_raises_timeout_error_on_timeout
+        query = { domains: ['example.com'] }
+        stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
+          .with(query: Cetera.cetera_soql_params(query))
+          .to_timeout
+
+        assert_raises TimeoutError do
+          Cetera.search_views(query)
         end
       end
     end

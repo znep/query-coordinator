@@ -524,4 +524,142 @@ class BrowseControllerTest < ActionController::TestCase
       end
     end
   end
+
+  #########################################################################
+  # Let's test some failure cases. If Core is down, sure, we're hosed.
+  # But, if just Cly or Cetera is down or slow, we should at least timeout.
+  # It's important not to let FE requests get backed up.
+
+  context 'browse' do
+    setup do
+      CurrentDomain.stubs(:cname).returns('example.com')
+    end
+
+    ########
+    # Cetera
+
+    should 'fail gracefully on Cetera timeout' do
+      stub_feature_flags_with(:cetera_search, true)
+
+      cetera_params = Cetera.cetera_soql_params(
+        domains: ['example.com'], search_context: 'example.com', limit: 10
+      )
+
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
+        .with(query: cetera_params)
+        .to_timeout
+
+      # Cetera should be paired with browse2
+      get(:show, view_type: 'browse2')
+      assert_response :success
+
+      selector = ['div.browse2-mobile-filter-header', 'div'].join(' > ')
+
+      # browse2 does not have a helpful error message indicate a service outage
+      assert_select(selector, /0 Results/)
+    end
+
+    should 'fail gracefully on Cetera 500' do
+      stub_feature_flags_with(:cetera_search, true)
+
+      cetera_params = Cetera.cetera_soql_params(
+        domains: ['example.com'],
+        search_context: 'example.com',
+        limit: 10
+      )
+
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
+        .with(query: cetera_params)
+        .to_return(status: 500)
+
+      get(:show, view_type: 'browse2')
+      assert_response :success
+
+      selector = ['div.browse2-mobile-filter-header', 'div'].join(' > ')
+
+      assert_select(selector, /0 Results/)
+    end
+
+    should 'fail gracefully on Cetera unexpected payload' do
+      stub_feature_flags_with(:cetera_search, true)
+
+      cetera_params = Cetera.cetera_soql_params(
+        domains: ['example.com'],
+        search_context: 'example.com',
+        limit: 10
+      )
+
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
+        .with(query: cetera_params)
+        .to_return(status: 200, body: 'oh no they were ready for that!')
+
+      get(:show, view_type: 'browse2')
+      assert_response :success
+
+      selector = ['div.browse2-mobile-filter-header', 'div'].join(' > ')
+
+      assert_select(selector, /0 Results/)
+    end
+
+    ##########
+    # Core/Cly
+
+    should 'fail gracefully on Core/Cly timeout' do
+      stub_feature_flags_with(:cetera_search, false)
+      CoreServer::Base.unstub(:connection) # we stubbed all the things
+
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
+        .with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' })
+        .to_timeout
+
+      get(:show, {})
+      assert_response :success
+
+      selector = ['div.browseList', 'div.results', 'div', 'span'].join(' > ')
+
+      # old browse has a helpful message indicating search is unavailable
+      assert_select(
+        selector,
+        'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
+      )
+    end
+
+    should 'fail gracefully on Core/Cly 500' do
+      stub_feature_flags_with(:cetera_search, false)
+      CoreServer::Base.unstub(:connection)
+
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
+        .with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' })
+        .to_return(status: 500)
+
+      get(:show, {})
+      assert_response :success
+
+      selector = ['div.browseList', 'div.results', 'div', 'span'].join(' > ')
+
+      assert_select(
+        selector,
+        'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
+      )
+    end
+
+    should 'fail gracefully on Core/Cly unexpected payload' do
+      stub_feature_flags_with(:cetera_search, false)
+      CoreServer::Base.unstub(:connection)
+
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
+        .with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' })
+        .to_return(status: 200, body: 'core has been deprecated')
+
+      get(:show, {})
+      assert_response :success
+
+      selector = ['div.browseList', 'div.results', 'div', 'span'].join(' > ')
+
+      assert_select(
+        selector,
+        'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
+      )
+    end
+  end
 end

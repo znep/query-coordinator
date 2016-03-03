@@ -46,6 +46,16 @@ describe('test DataTypeFormatService output', function() {
       // 123% | -12.345,678%
       var PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX = /^-?\d{1,3}(\.\d{3})*(,\d+)?%$/;
 
+      it('should multiply the value by 100', function() {
+        columnMetadata = {
+          dataTypeName: 'percent'
+        };
+        NUMBER_DATA.forEach(function(value) {
+          var cellContent = DataTypeFormatService.renderNumberCell(value, columnMetadata);
+          expect(parseFloat((parseFloat(cellContent.replace(/,/g, '')) / 100).toPrecision(12))).to.equal(value);
+        });
+      });
+
       it('should render number cells as percent values', function() {
         columnMetadata = {
           dataTypeName: 'percent'

@@ -5,6 +5,7 @@ var FeatureMap = require('./views/FeatureMap');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 var TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
 
 var DEFAULT_TILESERVER_HOSTS = [
@@ -184,6 +185,7 @@ $.fn.socrataFeatureMap = function(vif) {
     $element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
     $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function detachEvents() {
@@ -192,11 +194,20 @@ $.fn.socrataFeatureMap = function(vif) {
     $element.off('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
     $element.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   /**
    * Event handlers
    */
+
+  function _handleRenderVif(event) {
+    var newVif = event.originalEvent.detail;
+
+    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif), newVif.configuration.useOriginHost);
+
+    renderIfReady();
+  }
 
   function _handleWindowResize() {
 
@@ -321,13 +332,15 @@ $.fn.socrataFeatureMap = function(vif) {
 
     var payload = event.originalEvent.detail;
 
-    var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}'.
+    var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif);
+    var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}{5}'.
       format(
         payload.rowCount,
         vif.columnName,
         payload.latLng.lng,
         payload.latLng.lat,
-        generateWithinBoxClause(vif.columnName, payload.queryBounds)
+        generateWithinBoxClause(vif.columnName, payload.queryBounds),
+        whereClause ? ' AND ' + whereClause : ''
       );
 
     var displayableColumns = metadataProvider.getDisplayableColumns(datasetMetadata);
@@ -395,10 +408,8 @@ $.fn.socrataFeatureMap = function(vif) {
 
     attachEvents();
 
-    // For now, we don't need to use any where clause but the default
-    // one, so we just inline the call to
-    // updateRenderOptionsVectorTileGetter.
-    updateRenderOptionsVectorTileGetter(soqlDataProvider.buildBaseQuery(vif.filters), vif.configuration.useOriginHost);
+    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(vif), vif.configuration.useOriginHost);
+
     renderIfReady();
   }
 

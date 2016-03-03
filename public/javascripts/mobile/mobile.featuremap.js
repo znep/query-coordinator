@@ -25,7 +25,20 @@ module.exports = function(values, $target) {
   var flyoutRenderer = new FlyoutRenderer();
   RowInspector.setup();
 
-  var featureMap1VIF = {
+  var domainBasedTileServerList;
+  if (!_.isEmpty(socrataConfig.tileserverHosts)) {
+    domainBasedTileServerList = socrataConfig.tileserverHosts;
+  } else {
+    var tileServerTemplate = [
+      'https://tileserver1.api.us.',
+      'https://tileserver2.api.us.',
+      'https://tileserver3.api.us.',
+      'https://tileserver4.api.us.'
+    ];
+    var topDomain = window.location.host.match(/[\w\-]+.com$/)[0];
+    domainBasedTileServerList = _.map(tileServerTemplate, (server) => { return server + topDomain; });
+  }
+
     'aggregation': {
       'columnName': null,
       'function': 'count'
@@ -68,7 +81,7 @@ module.exports = function(values, $target) {
       // Base layer
       'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
       'baseLayerOpacity': 0.5,
-      'tileserverHosts': window.socrataConfig.tileserverHosts,
+      'tileserverHosts': domainBasedTileServerList,
       'useOriginHost': false
     },
     'createdAt': '2014-01-01T00:00:00',

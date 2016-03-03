@@ -82,6 +82,7 @@
 .icon-presentation:before,
 .icon-preview:before,
 .icon-processing:before,
+.icon-pulse:before,
 .icon-puzzle:before,
 .icon-question:before,
 .icon-question-inverse:before,
@@ -141,7 +142,7 @@
 .icon-data:before { content: "\f118"; }
 .icon-dataset:before { content: "\f119"; }
 .icon-distribution:before { content: "\f11a"; }
-.icon-droplet:before { content: "\f14e"; }
+.icon-droplet:before { content: "\f14d"; }
 .icon-edit:before { content: "\f11b"; }
 .icon-expand:before { content: "\f11c"; }
 .icon-external:before { content: "\f11d"; }
@@ -173,6 +174,7 @@
 .icon-presentation:before { content: "\f137"; }
 .icon-preview:before { content: "\f138"; }
 .icon-processing:before { content: "\f139"; }
+.icon-pulse:before { content: "\f14c"; }
 .icon-puzzle:before { content: "\f13a"; }
 .icon-question:before { content: "\f13b"; }
 .icon-question-inverse:before { content: "\f13c"; }

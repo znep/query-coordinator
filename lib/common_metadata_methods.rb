@@ -73,14 +73,14 @@ module CommonMetadataMethods
     @data_lens_manager ||= DataLensManager.new
   end
 
-  def fetch_dataset_metadata(dataset_id)
+  def fetch_dataset_metadata(dataset_id, options = {})
     # Grab permissions from core.
     permissions = fetch_permissions_and_normalize_exceptions(dataset_id)
 
     result = phidippides.fetch_dataset_metadata(
       dataset_id,
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
+      :request_id => options[:request_id] || request_id,
+      :cookies => options[:cookies] || forwardable_session_cookies
     )
 
     if result[:status] != '200'

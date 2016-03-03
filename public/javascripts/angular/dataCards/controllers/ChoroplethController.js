@@ -11,6 +11,7 @@ function ChoroplethController(
   ServerConfig,
   SpatialLensService,
   $log,
+  $window,
   rx) {
   const Rx = rx;
   var model = $scope.$observe('model').filter(_.isPresent);
@@ -82,29 +83,75 @@ function ChoroplethController(
     // If the computed column is missing, enqueue an adhoc region coding job and poll for status.
     computedColumnMissing$.
       safeApply($scope, function() { $scope.isPendingComputation = true; }).
+
+      // Make an initial status request
+      combineLatest(
+        datasetId$,
+        shapefileId$,
+        function(_, datasetId, shapefileId) {
+          return SpatialLensService.getRegionCodingStatus(datasetId, shapefileId);
+        }
+      ).
+      switchLatest().
+
+      // Take action based on whether the job is thought to be completed, failed, or pending.
       combineLatest(
         datasetId$,
         shapefileId$,
         fieldName$,
-        function(_, datasetId, shapefileId, fieldName) {
-          return SpatialLensService.executeRegionCodingJob(datasetId, shapefileId, fieldName);
+        function(statusResponse, datasetId, shapefileId, fieldName) {
+          var status = _.get(statusResponse, 'data.status', 'failed');
+          var jobId = _.get(statusResponse, 'data.data.jobId');
+
+          // If this happens, the region coding job succeeded between the time we loaded the page
+          // and the time we made this request. This is very unlikely but in this case we will
+          // return the status response which will include the dataset metadata.
+          if (status === 'completed' && _.isObject(statusResponse.data.datasetMetadata)) {
+            return Rx.Observable.returnValue(statusResponse);
+          }
+
+          // If this comes back as failed or unknown, then that means that no job is in progress and
+          // the computed column doesn't exist on the dataset.  In this case we'll try to add the
+          // computed column to the dataset again, but only if the current user is privileged. If
+          // they are not a privileged user then we'll show them an error and sob softly.
+          if (status === 'failed' || status === 'unknown') {
+            if (_.isPresent($window.currentUser)) {
+              var role = _.get($window.currentUser, 'role');
+              var userHasAdminOrPublisherRole = role === 'administrator' || role === 'publisher';
+              var userHasAdminRight = _.contains($window.currentUser.flags, 'admin');
+              if (userHasAdminOrPublisherRole || userHasAdminRight) {
+                return SpatialLensService.executeRegionCodingJob(datasetId, shapefileId, fieldName);
+              }
+            }
+
+            // An unprivileged user is viewing a choropleth that hasn't been region coded and no
+            // job is currently in progress. Display an error in the console.
+            var description = `Unable to start region coding job for shapefile ${shapefileId} ` +
+              `and dataset ${datasetId} due to insufficient permissions.`;
+            return Rx.Observable['throw'](new Error(description));
+          }
+
+          // If we get here then the job is in progress, poll for its status.
+          return SpatialLensService.pollRegionCodingStatus(datasetId, jobId);
         }
       ).
       switchLatest().
+
+      // Show an error if any errors occurred (typically 4xx/5xx responses from backend).
       safeApplyOnError($scope, function() {
         $scope.isPendingColumnAddition = false;
         $scope.isPendingComputation = false;
         $scope.choroplethRenderError = true;
       }).
+
+      // Grab out the new dataset metadata containing the new computed column and set it on the
+      // Dataset model, which retriggers the computed column observables and renders the map.
       map(_.property('data.datasetMetadata.columns')).
       filter(_.isObject).
       map(transformNewColumns).
       subscribeLatest(
         dataset,
         function(newColumns, datasetModel) {
-          // Set the dataset columns, which retriggers the computedColumn$
-          // observable (except it will exist this time), which will
-          // trigger a render of the choropleth.
           datasetModel.set('columns', newColumns);
         });
   }

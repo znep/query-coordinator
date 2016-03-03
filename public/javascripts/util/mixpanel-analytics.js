@@ -73,6 +73,7 @@ $(document).ready(function() {
 
   // Event name validation
   var validateEventName = function(eventName) {
+    blist.util.enforceLodashFunctions();
     var valid = _.includes(MIXPANEL_EVENTS, eventName);
 
     if (!valid) {
@@ -90,6 +91,7 @@ $(document).ready(function() {
       if (_.isObject(value)) {
         validateProperties(value);
       } else {
+        blist.util.enforceLodashFunctions();
         valid = _.includes(MIXPANEL_PROPERTIES, key);
 
         if (!valid) {
@@ -103,6 +105,7 @@ $(document).ready(function() {
     return valid;
   };
 
+  blist.util.enforceLodashFunctions();
   // These are properties that don't change once a page has loaded;
   var userId = _.get(blist, 'currentUserId', 'Not Logged In');
   var ownerId = _.get(blist, 'dataset.owner.id', MISSING_PROP_VALUE);

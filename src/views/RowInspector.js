@@ -32,6 +32,8 @@ var _$stickyBorderBottom;
 var _config;
 var _state;
 
+var _$target;
+
 /**
  * @function setup
  * @description
@@ -86,16 +88,20 @@ var _state;
  *     }
  *   }
  *
+ * @param {Object} $target - Target container. Falls back to body
+ *
  * These translations will be merged into the default translations.
  * For other available keys, see ROW_INSPECTOR_DEFAULT_TRANSLATIONS in this file.
  */
-function setup(config) {
+function setup(config, $target) {
   _config = _.cloneDeep(config || {});
 
   _config.localization = _config.localization || {};
   _config.localization = _.merge({}, ROW_INSPECTOR_DEFAULT_TRANSLATIONS, _config.localization);
 
-  if ($('#socrata-row-inspector').length === 0) {
+  _$target = $target || $('body');
+
+  if (_$target.find('#socrata-row-inspector').length === 0) {
 
     _$rowInspectorContainer = $(
       [
@@ -142,11 +148,11 @@ function setup(config) {
       ].join('')
     );
 
-    $('body').append(_$rowInspectorContainer);
+    _$target.append(_$rowInspectorContainer);
 
   } else {
 
-    _$rowInspectorContainer = $('#socrata-row-inspector');
+    _$rowInspectorContainer = _$target.find('#socrata-row-inspector');
 
   }
 
@@ -176,7 +182,9 @@ var _attachEventsOnce = _.once(function() {
   var $document = $(document);
   var $body = $(document.body);
 
-  $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function(event, jQueryPayload) {
+  _$target.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function(event, jQueryPayload) {
+    event.stopPropagation();
+
     // These events are CustomEvents. jQuery < 3.0 does not understand that
     // event.detail should be passed as an argument to the handler.
     var payload = jQueryPayload || _.get(event, 'originalEvent.detail');
@@ -186,7 +194,9 @@ var _attachEventsOnce = _.once(function() {
     _setState(payload);
   });
 
-  $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event, jQueryPayload) {
+  _$target.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event, jQueryPayload) {
+    event.stopPropagation();
+
     // These events are CustomEvents. jQuery < 3.0 does not understand that
     // event.detail should be passed as an argument to the handler.
     var payload = jQueryPayload || _.get(event, 'originalEvent.detail');

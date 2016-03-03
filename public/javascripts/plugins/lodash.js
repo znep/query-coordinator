@@ -12392,4 +12392,6 @@
     // Export for a browser or Rhino.
     root._ = _;
   }
+
+  root.socrataLodash = _;
 }.call(this));

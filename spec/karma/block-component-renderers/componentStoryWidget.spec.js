@@ -110,6 +110,12 @@ describe('componentStoryWidget jQuery plugin', function() {
         );
       });
 
+      it('should render the story title container', function() {
+        assert.lengthOf(
+          $component.find('.story-widget-title-container'), 1
+        );
+      });
+
       it('should render the story title', function() {
 
         assert.equal(

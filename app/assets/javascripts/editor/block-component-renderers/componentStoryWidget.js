@@ -108,6 +108,7 @@
     var $widgetContainer;
     var $widgetContent;
     var $widgetTitle;
+    var $widgetTitleContainer;
     var $widgetImage;
     var $widgetDescription;
     var $widgetViewStory;
@@ -149,6 +150,9 @@
     $widgetTitle = $('<h2>', {'class': 'story-widget-title' }).
       text(storyWidgetData.title);
 
+    $widgetTitleContainer = $('<div>', {'class': 'story-widget-title-container'}).
+      append($widgetTitle);
+
     $widgetImage = $(
       '<div>',
       {
@@ -174,7 +178,7 @@
     );
 
     $widgetContent.append([
-      $widgetTitle,
+      $widgetTitleContainer,
       $widgetImage,
       $widgetDescription,
       $widgetViewStory

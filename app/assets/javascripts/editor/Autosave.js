@@ -1,88 +1,69 @@
-(function(root) {
+(function() {
 
   'use strict';
 
-  var socrata = root.socrata;
+  var socrata = window.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
+  var savingRightNow = false;
 
-  function Autosave(storyUid, opts) {
-    var defaultOptions = {
-      disableOnFail: false,
-      debouncePeriod: storyteller.config.autosaveDebounceTimeInSeconds
-    };
-    var options = _.merge(defaultOptions, opts);
-    var self = this;
-    var _autosaveDisabled = false;
-    var _debouncedSave;
+  function clearSavingFlag() {
+    savingRightNow = false;
+  }
+
+  function Autosave(storyUid) {
+    utils.assertIsOneOfTypes(storyteller.config.autosaveDebounceTimeInSeconds, 'number');
+
+    var autosaveDebounceMsec = storyteller.config.autosaveDebounceTimeInSeconds * 1000;
+    var saveOnceSettled;
 
     // Autosave can be disabled from a URL parameter: autosave.
     // For example: https://example.com?autosave=false
-    var _forceDisabled = utils.queryParameters().some(function(parameter) {
+    var disabledByUrlParam = utils.queryParameters().some(function(parameter) {
       return parameter[0] === 'autosave' && parameter[1] === 'false';
     });
 
-    this.enable = function() {
-      _autosaveDisabled = false;
-    };
-
-    this.disable = function() {
-      _autosaveDisabled = true;
-    };
-
-    function triggerSave() {
-      if (_autosaveDisabled || _forceDisabled) {
+    function saveASAP() {
+      if (disabledByUrlParam) {
         return;
       }
 
-      var storySaveIsPossible = storyteller.storySaveStatusStore.isStorySavePossible();
-      if (storySaveIsPossible) {
-        var savePromise = storyteller.StoryDraftCreator.saveDraft(storyUid);
-        if (options.disableOnFail) {
-          savePromise.fail(self.disable);
+      if (savingRightNow) {
+        saveOnceSettled(); // Try again in a bit.
+      } else {
+        if (storyteller.storySaveStatusStore.isStorySavePossible()) {
+          savingRightNow = true;
+          storyteller.StoryDraftCreator.saveDraft(storyUid).then(
+            clearSavingFlag, // success
+            function(error) {
+              // error
+              clearSavingFlag();
+              saveOnceSettled(); // try again
+              storyteller.airbrake.notify(error);
+            });
         }
       }
     }
 
-    /**
-     * Re-creates the debounced saving function according to the timeout.
-     *
-     * @param {number|moment.duration} - seconds to wait before saving a change.
-     *                                   or moment.duration(number, unit),
-     */
-    this.setDebouncePeriod = function(inSeconds) {
-      if (window.moment && window.moment.isDuration(inSeconds)) {
-        options.debouncePeriod = inSeconds.asSeconds();
-      } else {
-        utils.assertIsOneOfTypes(inSeconds, 'number');
-        options.debouncePeriod = inSeconds;
+    // A function that saves the story
+    // once this function (saveOnceSettled) stops
+    // being called for autosaveDebounceMsec.
+    saveOnceSettled = _.debounce(
+      saveASAP,
+      autosaveDebounceMsec
+    );
+
+    storyteller.storyStore.addChangeListener(saveOnceSettled);
+    storyteller.userSessionStore.addChangeListener(function() {
+      // When the session is re-established, trigger autosave
+      if (storyteller.userSessionStore.hasValidSession()) {
+        saveOnceSettled();
       }
+    });
 
-      if (_.isFunction(_debouncedSave)) {
-        storyteller.storyStore.removeChangeListener(_debouncedSave);
-      }
-
-      _debouncedSave = _.debounce(
-        triggerSave,
-        options.debouncePeriod * 1000
-      );
-      storyteller.storyStore.addChangeListener(_debouncedSave);
-      storyteller.userSessionStore.addChangeListener(function() {
-        // When the session is re-established, trigger autosave
-        // and re-enable (the autosave was likely disabled due
-        // to persistent errors caused by expired sessions).
-        if (storyteller.userSessionStore.hasValidSession()) {
-          if (options.disableOnFail) {
-            self.enable();
-          }
-          triggerSave();
-        }
-      });
-    };
-
-    this.setDebouncePeriod(options.debouncePeriod);
+    this.saveASAP = saveASAP;
   }
 
   storyteller.Autosave = Autosave;
 
-})(window);
+})();

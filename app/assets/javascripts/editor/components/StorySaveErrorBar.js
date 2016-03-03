@@ -19,7 +19,7 @@
     var $container = $('<span>', { 'class': 'container' });
     var $message = $('<span>', { 'class': 'message' });
     var $tryAgainButton = $('<button>', { 'class': 'try-again' });
-
+    var $tryingAgainSpinner = $('<span>', { 'class': 'trying-again-spinner' });
 
     var $loginMessage = $('<span>', { 'class': 'message login' }).
       append(
@@ -33,11 +33,11 @@
     $container.append($('<span>', { 'class': 'icon-warning' }));
     $container.append($message);
     $container.append($tryAgainButton);
+    $container.append($tryingAgainSpinner);
     $container.append($loginMessage);
     $this.append($container);
 
     function render() {
-      var isStorySaveInProgress = storyteller.storySaveStatusStore.isStorySaveInProgress();
       var saveError = storyteller.storySaveStatusStore.lastSaveError();
       var hasValidUserSession = storyteller.userSessionStore.hasValidSession();
 
@@ -47,10 +47,9 @@
       var showTryAgainButton =
         hasValidUserSession && // no point to retry if no session.
         hasError &&
-        !isStorySaveInProgress &&
         !saveError.conflict;
 
-      $tryAgainButton.toggle(showTryAgainButton);
+      $tryAgainButton.toggleClass('available', showTryAgainButton);
       $loginMessage.toggle(!hasValidUserSession);
       $(document.body).toggleClass('story-save-error', hasError);
 
@@ -66,11 +65,18 @@
         $message.text(text);
       }
 
+      if (hasError && !$this.hasClass('visible')) {
+        // Was closed, now opening
+        $container.removeClass('story-save-error-bar-trying-again');
+      }
+
       $this.toggleClass('visible', hasError);
     }
 
     $tryAgainButton.on('click', function() {
-      storyteller.StoryDraftCreator.saveDraft(storyteller.userStoryUid);
+      // Show the "I'm trying" feedback until the error bar goes away.
+      $container.addClass('story-save-error-bar-trying-again');
+      storyteller.autosave.saveASAP();
     });
 
     $loginMessage.find('button').on('click', function() {

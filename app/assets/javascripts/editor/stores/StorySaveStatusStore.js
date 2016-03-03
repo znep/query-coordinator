@@ -64,7 +64,6 @@
           }
           _lastSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
           _saveInProgress = true;
-          _lastSaveError = null;
           self._emitChange();
           break;
       }

@@ -19,7 +19,8 @@
       "jQuery": "$",
       "d3": "d3",
       "_": "_",
-      "socrata.utils": "socrata.utils"
+      "socrata.utils": "socrata.utils",
+      "L": "L"
     }
   },
   "scripts": {
@@ -98,7 +99,7 @@
     "lodash": "^3.10.1",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
-    "socrata-visualizations": "6.2.16",
+    "socrata-visualizations": "7.0.0",
     "tether-shepherd": "1.2.0"
   }
 }

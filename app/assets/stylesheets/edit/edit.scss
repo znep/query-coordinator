@@ -1,5 +1,6 @@
 @import 'lib/open-sans-font';
 @import 'lib/variables';
+@import 'tool-classes';
 
 html {
   font-family: "Open Sans", "Helvetica", sans-serif;
@@ -227,21 +228,42 @@ body .header-main {
     border: 1px solid $story-save-error-bar-border-color;
     pointer-events: all;
 
+    &.story-save-error-bar-trying-again {
+      $spinner-size: 1.1rem;
+
+      .trying-again-spinner {
+        @include spinner;
+        width: $spinner-size;
+        height: $spinner-size;
+        margin-left: 0.5rem;
+      }
+
+      button.try-again.available {
+        display: none;
+      }
+    }
+
     .message {
       color: $story-save-error-bar-color;
       padding-left: 0.6rem;
     }
 
-    button {
+    button.try-again {
       border: none;
       outline: none;
       color: $story-save-error-bar-color;
       background-color: transparent;
       text-decoration: underline;
       font-weight: bold;
+      display: none;
+      line-height: 1; // Our two CSS resets are fighting :(
+
+      &.available {
+        display: inline-block;
+      }
     }
   }
-} //end .header-main
+}
 
 input[type="text"], textarea {
   &:disabled {

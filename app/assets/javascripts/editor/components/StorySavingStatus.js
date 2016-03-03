@@ -17,7 +17,12 @@
     utils.assert(storyteller.storySaveStatusStore, 'storySaveStatusStore must be instantiated');
     utils.assertIsOneOfTypes(options, 'object', 'undefined');
 
-    options = _.extend({}, { savedMessageTimeout: 5000 }, options);
+    options = _.extend({}, {
+      savedMessageTimeout: 5000, // When the story saves, keep displaying 'Saved!' for this long.
+      statusDebounceTimeout: 250 // Prevent rapid changes in status from twitching the display.
+    }, options);
+
+    var debouncedRender = _.debounce(render, options.statusDebounceTimeout);
 
     // Stay in holdInSavedState until things settle down for the configured timeout.
     clearHoldInSaveStateAfterDebounce = _.debounce(function() {
@@ -62,8 +67,9 @@
 
     storyteller.storySaveStatusStore.addChangeListener(function() {
       holdInSavedState = !storyteller.storySaveStatusStore.isStoryDirty();
-      render();
+      debouncedRender();
     });
+
     render();
 
     return this;

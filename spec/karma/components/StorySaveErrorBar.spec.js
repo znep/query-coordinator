@@ -31,6 +31,9 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
     mockStore = new MockStore();
     storyteller.storySaveStatusStore = mockStore;
+    storyteller.autosave = {
+      saveASAP: sinon.stub()
+    };
   });
 
   it('should return a jQuery object for chaining', function() {
@@ -77,27 +80,42 @@ describe('storySaveErrorBar jQuery plugin', function() {
       });
 
       describe('try again button', function() {
-        var saveDraftStub;
-
-        beforeEach(function() {
-          saveDraftStub = sinon.stub(storyteller.StoryDraftCreator, 'saveDraft', _.noop);
-        });
-
-        afterEach(function() {
-          saveDraftStub.restore();
-        });
-
-        it('should call StoryDraftCreator.saveDraft when clicked', function() {
+        it('should call autosave.saveASAP when clicked', function() {
+          sinon.assert.notCalled(storyteller.autosave.saveASAP);
           $errorBar.find('button.try-again').click();
-          sinon.assert.calledWithExactly(saveDraftStub, standardMocks.validStoryUid);
+          sinon.assert.calledOnce(storyteller.autosave.saveASAP);
         });
 
-        it('try again button should be visible only when save is not in progress', function() {
+        it('should be available', function() {
+          // Yes, even during save. Otherwise it flashes all around as autosave
+          // keeps trying.
           mockStore.mockIsSaveInProgress(true);
-          assert.equal($errorBar.find('button.try-again').css('display'), 'none');
+          assert.isTrue(tryAgainButtonAvailable());
 
           mockStore.mockIsSaveInProgress(false);
-          assert.equal($errorBar.find('button.try-again').css('display'), 'inline-block');
+          assert.isTrue(tryAgainButtonAvailable());
+        });
+
+        it('when clicked should show the trying-again UI until the bar is re-opened', function() {
+          var $container = $errorBar.find('.container');
+          function isTryAgainShown() {
+            return $container.hasClass('story-save-error-bar-trying-again');
+          }
+
+          assert.isFalse(isTryAgainShown());
+          $errorBar.find('button.try-again').click();
+          assert.isTrue(isTryAgainShown());
+          mockStore._emitChange();
+          assert.isTrue(isTryAgainShown());
+          mockStore.mockIsSaveInProgress(true);
+          assert.isTrue(isTryAgainShown());
+          mockStore.mockIsSaveInProgress(false);
+          assert.isTrue(isTryAgainShown());
+
+          mockStore.mockLastError(null); // close it
+          mockStore.mockLastError({ something: 'foo' }); // open it
+
+          assert.isFalse(isTryAgainShown());
         });
       });
 
@@ -123,12 +141,12 @@ describe('storySaveErrorBar jQuery plugin', function() {
         assert.isTrue($errorBar.hasClass('visible'));
       });
 
-      it('try again button should be hidden', function() {
+      it('try again button should not be available', function() {
         mockStore.mockIsSaveInProgress(true);
-        assert.equal($errorBar.find('button.try-again').css('display'), 'none');
+        assert.isFalse(tryAgainButtonAvailable());
 
         mockStore.mockIsSaveInProgress(false);
-        assert.equal($errorBar.find('button.try-again').css('display'), 'none');
+        assert.isFalse(tryAgainButtonAvailable());
       });
 
       it('should place the correct text in the message', function() {
@@ -170,4 +188,8 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
     });
   });
+
+  function tryAgainButtonAvailable() {
+    return $errorBar.find('button.try-again').hasClass('available');
+  }
 });

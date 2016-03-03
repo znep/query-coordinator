@@ -19,7 +19,8 @@
       "jQuery": "$",
       "d3": "d3",
       "_": "_",
-      "socrata.utils": "socrata.utils"
+      "socrata.utils": "socrata.utils",
+      "L": "L"
     }
   },
   "scripts": {

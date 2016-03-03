@@ -1,4 +1,4 @@
-/* global socrata, $ */
+/* global socrata, $, socrataConfig */
 
 require('socrata-visualizations').FeatureMap;
 require('./styles/feature-map.scss');
@@ -23,7 +23,6 @@ module.exports = function(values, $target) {
    */
 
   var flyoutRenderer = new FlyoutRenderer();
-  RowInspector.setup();
 
   var domainBasedTileServerList;
   if (!_.isEmpty(socrataConfig.tileserverHosts)) {
@@ -39,6 +38,7 @@ module.exports = function(values, $target) {
     domainBasedTileServerList = _.map(tileServerTemplate, (server) => { return server + topDomain; });
   }
 
+  var featureMapVIF = {
     'aggregation': {
       'columnName': null,
       'function': 'count'
@@ -103,10 +103,10 @@ module.exports = function(values, $target) {
   };
 
   var $featureMapElement = $target;
-  $featureMapElement.socrataFeatureMap(featureMap1VIF);
+  $featureMapElement.socrataFeatureMap(featureMapVIF);
 
   var mapHeight = (60 * $(window).height()) / 100;// Map should be 60% of device height
-  $featureMapElement.height(mapHeight);
+  $featureMapElement.find('.feature-map-container').height(mapHeight);
 
   /**
    * Handle flyout events.
@@ -114,6 +114,8 @@ module.exports = function(values, $target) {
    */
 
   $featureMapElement.on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', handleFlyout);
+
+  RowInspector.setup({}, $target);
 
   function handleFlyout(event) {
 
@@ -126,4 +128,21 @@ module.exports = function(values, $target) {
       flyoutRenderer.clear();
     }
   }
+
+  $(document).on('appliedFilters.qfb.socrata', handleVifUpdated);
+
+  function handleVifUpdated(event, data) {
+
+    featureMapVIF.filters = data.filters;
+
+    var payload = featureMapVIF;
+    var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
+
+    renderVifEvent.originalEvent = {
+      detail: payload
+    };
+
+    $featureMapElement.trigger(renderVifEvent);
+  }
+
 };

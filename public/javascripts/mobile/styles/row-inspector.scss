@@ -23,7 +23,8 @@
   }
 
   .tool-panel {
-    width: 100%;
+    width: 100% !important;
+    position: static !important;
 
     .tool-panel-inner-container {
       max-height: 107px;
@@ -36,14 +37,17 @@
     }
 
     .tool-panel-main {
-      left: 0;
+      left: 0 !important;
       bottom: inherit;
       max-width: 100%;
-      width: 100%;
+      width: 100% !important;
       min-height: 180px;
+      max-height: 250px;
       background-color: #ffffff;
       border: solid #A1A1A1;
       border-width: 0 10px 10px;
+      right: initial !important;
+      position: static !important;
 
       .sticky-border.show-more {
         bottom: 0 !important;
@@ -70,6 +74,10 @@
         }
       }
 
+      .sticky-border.bottom {
+        display: none !important;
+      }
+
       .paging-panel {
         height: 33px;
         background-color: #eeeeee;
@@ -79,7 +87,7 @@
           background-color: transparent;
           border: 0;
           color: #5D5D5D;
-          width: 60px;
+          width: 80px;
           height: 20px;
 
           &:disabled {

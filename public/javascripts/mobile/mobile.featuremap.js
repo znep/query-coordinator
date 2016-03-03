@@ -1,6 +1,9 @@
 /* global socrata, $ */
 
 require('socrata-visualizations').FeatureMap;
+require('./styles/feature-map.scss');
+require('./styles/row-inspector.scss');
+
 var FlyoutRenderer = require('socrata-visualizations').views.FlyoutRenderer;
 var RowInspector = require('socrata-visualizations').views.RowInspector;
 

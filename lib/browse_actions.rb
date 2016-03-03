@@ -212,6 +212,7 @@ module BrowseActions
     end
   end
 
+  # TODO: Remove the class variable "caching"
   def get_facet_cutoff(facet_name)
     if @@cutoff_store[CurrentDomain.cname].nil?
       domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}

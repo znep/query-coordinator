@@ -352,13 +352,15 @@ class BrowseControllerTest < ActionController::TestCase
     clytemnestra_payload = File.read('test/fixtures/catalog_search_results.json')
     cetera_payload = File.read('test/fixtures/cetera_search_results.json')
 
+    stubbed_custom_cutoff = 3
+
     setup do
       # let's actually test the categories facet
       @controller.unstub(:categories_facet)
       View.expects(:category_tree).returns(view_category_tree)
 
       CurrentDomain.expects(:property).with(:custom_facets, :catalog).returns(custom_facets).twice
-      CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns(nil)
+      CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns('custom' => stubbed_custom_cutoff)
       CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
     end
 
@@ -480,6 +482,46 @@ class BrowseControllerTest < ActionController::TestCase
       assert_response :success
       assert_match(/Sold Fleet Equipment/, @response.body)
       assert_match(/Recently Updated/, @response.body) # sort order
+    end
+
+    # See EN-3383
+    should 'truncate custom cutoffs as configured' do
+      stub_feature_flags_with(:cetera_search, true)
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
+        .with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
+        .to_return(status: 200, body: cetera_payload, headers: {})
+
+      get(:show, {})
+      assert_response :success
+
+      visible = custom_facets.first['options'].map { |opt| opt['text'] }.first(stubbed_custom_cutoff)
+      def visible_selector(index)
+        [
+          'div.browseFacets',
+          'div.facetSection.clearfix.Dataset-Information_Superhero',
+          'ul',
+          "li:nth-child(#{index})",
+          'a'
+        ].join(' > ')
+      end
+
+      truncated = custom_facets.first['options'].map { |opt| opt['text'] }[stubbed_custom_cutoff..-1]
+      def truncated_selector(index)
+        [
+          'div.browseFacets',
+          'div.facetSection.clearfix.Dataset-Information_Superhero',
+          'div',
+          "a:nth-child(#{index})"
+        ].join(' > ')
+      end
+
+      visible.each_with_index do |text, index|
+        assert_select_quiet visible_selector(index + 1)
+      end
+
+      truncated.each_with_index do |text, index|
+        assert_select_quiet truncated_selector(index + 1)
+      end
     end
   end
 end

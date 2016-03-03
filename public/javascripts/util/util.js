@@ -1104,6 +1104,26 @@ blist.util.enforceLodashFunctions = function() {
     }
     window.collidedWithLodash = _.noConflict();
     window._ = window.socrataLodash;
+
+    // We are not currently aware of any breakages that
+    // this would fix. This is a safety measure in case
+    // forcing us back to lodash causes problems for NYS'
+    // code.
+    //
+    // Known NYS cnames:
+    // 'health.data.ny.gov',
+    // 'nys-staging.demo.socrata.com',
+    // 'data.ny.gov',
+    // 'nysdoh-staging.demo.socrata.com'
+    if (/nys(doh)?-staging|data.ny.gov/.test(window.location.hostname)) {
+      var functionsUsedByNYS = [
+        'template', 'first', 'keys', 'each', 'extend',
+        'debounce', 'pluck', 'reject', 'findWhere'
+      ];
+      functionsUsedByNYS.forEach(function(func) {
+        window._[func] = window.collidedWithLodash[func];
+      });
+    }
   }
 };
 

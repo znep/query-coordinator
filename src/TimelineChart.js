@@ -452,6 +452,8 @@ $.fn.socrataTimelineChart = function(vif) {
       then(mapPrecisionToDataQuery).
       then(mapQueryToPromises);
 
+    $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+
     Promise.all([ dataPromise, precisionPromise ]).
       then(renderDataFromPromises)
       ['catch'](handleError);
@@ -567,6 +569,8 @@ $.fn.socrataTimelineChart = function(vif) {
       precision = promiseResults[1];
       var unfilteredQueryResponse = values[0];
       var filteredQueryResponse = values[1];
+
+      $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
 
       visualizationData = _mergeUnfilteredAndFilteredData(
         unfilteredQueryResponse,

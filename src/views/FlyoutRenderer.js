@@ -11,9 +11,12 @@ function FlyoutRenderer() {
   var _flyoutContent;
   var _flyoutHint;
 
-  _renderFlyoutTemplate();
-
-  _hideFlyout();
+  // Don't attempt to add yourself to the DOM unless
+  // it actually exists.
+  $(function() {
+    _renderFlyoutTemplate();
+    _hideFlyout();
+  });
 
   /**
    * Public methods

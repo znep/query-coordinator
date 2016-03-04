@@ -41,12 +41,23 @@ your dependencies because they will not be automatically installed.
 > You must fist setup artifactory credentials in order to allow `bower` and `npm` to resolve dependencies. See the `setup-environment.sh` script in the `frontend` repo for more information.
 
 ```
-npm install -g bower && npm install -g bower-art
+npm install -g bower
 ```
 
 ```
-npm install && bower install
+bower install && npm install
 ```
+
+Here are the versions we use for externals, which are not included in the webpack bundle:
+
+- `d3` - 3.5.6
+- `leaflet` - 0.7.3
+- `lodash` - 3.10.0
+- `jquery` - 2.1.1
+- `vector-tile` - 0.1.1
+- `moment` - 2.10.6
+- `chroma-js` - 0.5.6
+- `simple-statistics` - 0.8.1
 
 ## Useful commands
 

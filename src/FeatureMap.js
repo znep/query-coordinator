@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var $ = require('jquery');
+var L = require('leaflet');
 var utils = require('socrata-utils');
 var FeatureMap = require('./views/FeatureMap');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');

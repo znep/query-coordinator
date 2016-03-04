@@ -591,6 +591,15 @@ function FeatureMap(element, vif) {
 
   function _handleVectorTileClick(event) {
 
+    if (vif.configuration.isMobile) {
+      _flyoutData.offset = {
+        x: event.originalEvent.clientX,
+        y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
+      };
+
+      _flyoutData.count = _.sum(event.points, 'count');
+    }
+
     var inspectorDataQueryConfig;
     var position = vif.configuration.isMobile ?
       { pageX: 0, pageY: (_mapContainer.height() + _mapContainer.offset().top) } :
@@ -609,6 +618,13 @@ function FeatureMap(element, vif) {
         rowCount: _.sum(event.points, 'count'),
         queryBounds: _getQueryBounds(event.containerPoint)
       };
+
+      if (vif.configuration.isMobile) {
+        _map.setView(event.latlng);
+        var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
+        inspectorDataQueryConfig.position.pageX = 0;
+        inspectorDataQueryConfig.position.pageY = bottom;
+      }
 
       _showRowInspector(inspectorDataQueryConfig);
 

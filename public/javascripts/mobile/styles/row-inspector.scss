@@ -1,5 +1,10 @@
 #socrata-row-inspector {
 
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  height: 250px !important;
+
   .pending-content {
     height: 140px;
   }

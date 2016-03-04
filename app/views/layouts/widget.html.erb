@@ -8,7 +8,8 @@
     <%= stylesheet_link_tag 'widget', media: 'all' %>
     <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
     <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
-    <script type="text/javascript" src="/stories/js/widget.js"></script>
+
+    <%= storyteller_javascript_include_tag 'widget' %>
     <%= google_font_code_embed %>
     <%= render 'shared/google_analytics_script' %>
   </head>

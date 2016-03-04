@@ -663,7 +663,7 @@ function TimelineChart(element, vif) {
 
     if (chartWidth <= 0 || chartHeight <= 0) {
       if (window.console && window.console.warn) {
-        console.warn('Aborted rendering column chart: chart width or height is zero.');
+        console.warn('Aborted rendering timeline chart: chart width or height is zero.');
       }
       return;
     }

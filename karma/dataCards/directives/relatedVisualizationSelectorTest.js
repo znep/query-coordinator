@@ -157,13 +157,6 @@ describe('relatedVisualizationSelector', function() {
       ]);
     });
 
-    it('displays the special icon for classic visualizations', function() {
-      directive.scope.relatedVisualizations[0].format = 'classic';
-      directive.scope.$apply();
-
-      expect(directive.element.find('related-visualization .icon-puzzle')).to.have.length(1);
-    });
-
     it('uses the human name for the "based on" text', function() {
       var texts = _.map(directive.element.find('.related-visualization-metadata'), function(item) {
         return $(item).text().trim();

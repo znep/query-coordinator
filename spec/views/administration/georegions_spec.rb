@@ -25,7 +25,7 @@ describe 'administration/georegions.html.erb' do
   let(:disabled_curated_region) do
     CuratedRegion.new(
       'id' => 2,
-      'name' => 'My Other Curated Region',
+      'name' => 'My "Other" %name\'s Curated-Region',
       'enabledFlag' => false,
       'defaultFlag' => false
     )
@@ -113,7 +113,7 @@ describe 'administration/georegions.html.erb' do
       render
       expect(rendered).to include('My Curated Region')
       expect(rendered).to include('Ready to use')
-      expect(rendered).to include('My Other Curated Region')
+      expect(rendered).to include('My &quot;Other&quot; %name&#x27;s Curated-Region')
       expect(rendered).to include('Not enabled')
       expect(rendered).to include('Curated Region Job in Progress')
       expect(rendered).to include('Processing')

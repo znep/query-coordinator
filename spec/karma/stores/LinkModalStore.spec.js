@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import Actions from '../../../app/assets/javascripts/editor/Actions';
 import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import I18nMocker from '../I18nMocker';
 
 import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';

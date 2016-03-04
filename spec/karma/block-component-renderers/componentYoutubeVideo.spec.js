@@ -1,4 +1,5 @@
 import $ from 'jQuery';
+import _ from 'lodash';
 
 import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
 import '../../../app/assets/javascripts/editor/block-component-renderers/componentYoutubeVideo';

@@ -59,7 +59,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
   it('should return a jQuery object for chaining', function() {
     var returnValue = $errorBar.storySaveErrorBar();
-    assert.instanceOf(returnValue, jQuery);
+    assert.instanceOf(returnValue, $);
   });
 
 

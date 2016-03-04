@@ -57,7 +57,7 @@ describe('storyPublicationStatus jQuery plugin', function() {
 
   it('should return a jQuery object for chaining', function() {
     var returnValue = $button.storyPublicationStatus();
-    assert.instanceOf(returnValue, jQuery);
+    assert.instanceOf(returnValue, $);
   });
 
   describe('instance', function() {

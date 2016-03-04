@@ -91,9 +91,22 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
     });
   }
 
+  function findObjectWithProperties(name) {
+    var obj = {};
+    _.each(datasetMetadata.columns, function(column, fieldName) {
+      if (name == fieldName) {
+        obj.position = column.position;
+        obj.name = column.name;
+      }
+    });
+
+    return obj;
+  }
+
   function renderCards() {
     var $cardContainer;
     var values;
+    var aPredefinedFilters = [];
 
     $.each(pageMetadata.cards, function(i, card) {
       var cardOptions = {
@@ -103,6 +116,17 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
       };
 
       switch (card.cardType) {
+        case 'search':
+          var filterObj = {
+            id: findObjectWithProperties(card.fieldName).position,
+            type: 'string',
+            name: card.fieldName,
+            displayName: findObjectWithProperties(card.fieldName).name,
+            data: null,
+            startWithClosedFlannel: true
+          };
+          aPredefinedFilters.push(filterObj);
+          break;
         case 'timeline':
           cardOptions.id = 'timeline-chart';
           cardOptions.containerClass = 'timeline-chart-container';
@@ -159,10 +183,10 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
     });
 
     mobileCardViewer();
-    setupQfb();
+    setupQfb(aPredefinedFilters);
   }
 
-  function setupQfb() {
+  function setupQfb(preloadedFilters) {
 
     var aFilterOps = [];
     _.each(datasetMetadata.columns, function(column, fieldName) {
@@ -203,6 +227,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
     ReactDOM.render(<FilterContainer
       domain={ datasetMetadata.domain }
       datasetId={ pageMetadata.datasetId }
+      filters={ preloadedFilters }
       filterOps={ aFilterOps }
       handleFilterBroadcast={ handleBroadcast } />, document.getElementById('filters'));
 

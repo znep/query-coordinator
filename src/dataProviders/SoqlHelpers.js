@@ -69,8 +69,7 @@ function _filterToWhereClauseComponent(filter) {
 
   switch (filter.function) {
     case 'binaryOperator':
-      return (filter.arguments instanceof Array) ?
-        _multipleBinaryOperatorWhereClauseComponent(filter) : _binaryOperatorWhereClauseComponent(filter);
+      return _binaryOperatorWhereClauseComponent(filter);
     case 'binaryComputedGeoregionOperator':
       return _binaryComputedGeoregionOperatorWhereClauseComponent(filter);
     case 'isNull':
@@ -149,45 +148,61 @@ function _binaryOperatorWhereClauseComponent(filter) {
   utils.assertHasProperties(
     filter,
     'columnName',
-    'arguments',
-    'arguments.operator',
-    'arguments.operand'
-  );
-  utils.assert(
-    VALID_BINARY_OPERATORS.indexOf(filter.arguments.operator) > -1,
-    'Invalid binary operator: `{0}`'.format(filter.arguments.operator)
-  );
-
-  return '{0} {1} {2}'.format(
-    _soqlEncodeColumnName(filter.columnName),
-    filter.arguments.operator,
-    _soqlEncodeValue(filter.arguments.operand)
-  );
-}
-
-function _multipleBinaryOperatorWhereClauseComponent(filter) {
-  utils.assertHasProperties(
-    filter,
-    'columnName',
     'arguments'
   );
 
-  var clauses = [];
+  // If `arguments` is an array, that means that we want multiple binary
+  // operators to be joined with an 'OR'.
+  if (_.isArray(filter.arguments)) {
 
-  for (var i = 0; filter.arguments.length > i; i++ ) {
-    utils.assert(
-      VALID_BINARY_OPERATORS.indexOf(filter.arguments[i].operator) > -1,
-      'Invalid binary operator: `{0}`'.format(filter.arguments[i].operator)
+    filter.arguments.forEach(function(argument) {
+
+      utils.assertHasProperties(
+        argument,
+        'operator',
+        'operand'
+      );
+
+      utils.assert(
+        VALID_BINARY_OPERATORS.indexOf(argument.operator) > -1,
+        'Invalid binary operator: `{0}`'.format(argument.operator)
+      );
+    });
+
+    return '({0})'.format(
+      filter.
+        arguments.
+        map(function(argument) {
+          return '{0} {1} {2}'.format(
+            _soqlEncodeColumnName(filter.columnName),
+            argument.operator,
+            _soqlEncodeValue(argument.operand)
+          );
+        }).
+        join(' OR ')
+      );
+  // If `arguments` is an object, that means that we want this binary
+  // operator to exist on its own (as if arguments were an array with one
+  // element.
+  } else {
+
+    utils.assertHasProperties(
+      filter,
+      'arguments.operator',
+      'arguments.operand'
     );
 
-    clauses.push('{0} {1} {2}'.format(
-      _soqlEncodeColumnName(filter.columnName),
-      filter.arguments[i].operator,
-      _soqlEncodeValue(filter.arguments[i].operand)
-    ));
-  }
+    utils.assert(
+      VALID_BINARY_OPERATORS.indexOf(filter.arguments.operator) > -1,
+      'Invalid binary operator: `{0}`'.format(filter.arguments.operator)
+    );
 
-  return '(' + clauses.join(' OR ') + ')';
+    return '{0} {1} {2}'.format(
+      _soqlEncodeColumnName(filter.columnName),
+      filter.arguments.operator,
+      _soqlEncodeValue(filter.arguments.operand)
+    );
+  }
 }
 
 function _binaryComputedGeoregionOperatorWhereClauseComponent(filter) {

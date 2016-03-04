@@ -54,14 +54,16 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(40);
-	var ColumnChart = __webpack_require__(42);
-	var FeatureMap = __webpack_require__(43);
-	var Table = __webpack_require__(44);
-	var TimelineChart = __webpack_require__(45);
+	var ChoroplethMap = __webpack_require__(41);
+	var ColumnChart = __webpack_require__(43);
+	var FeatureMap = __webpack_require__(44);
+	var Table = __webpack_require__(45);
+	var TimelineChart = __webpack_require__(46);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -80,6 +82,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var ChoroplethMap = __webpack_require__(2);
 	var ChoroplethMapUtils = __webpack_require__(11);
@@ -107,6 +111,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	/**
 	 * TODO:
@@ -5001,6 +5007,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var utils = __webpack_require__(3);
 	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
@@ -5150,6 +5158,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
@@ -5464,6 +5474,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -6472,6 +6484,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -6595,6 +6609,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -9321,6 +9337,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -9669,6 +9687,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	'use strict';
 	var utils = __webpack_require__(3);
@@ -10037,6 +10057,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -11155,6 +11177,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var $ = __webpack_require__(8);
 
 	function FlyoutRenderer() {
@@ -11355,6 +11379,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var utils = __webpack_require__(3);
 	var _ = __webpack_require__(9);
@@ -11843,6 +11869,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var GeospaceDataProvider = __webpack_require__(23);
 	var MetadataProvider = __webpack_require__(25);
 	var SoqlDataProvider = __webpack_require__(26);
@@ -11862,6 +11890,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var utils = __webpack_require__(3);
 	var DataProvider = __webpack_require__(24);
@@ -12104,6 +12134,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var _ = __webpack_require__(9);
 
 	function DataProvider(config) {
@@ -12189,6 +12221,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -12385,6 +12419,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -12669,6 +12705,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var utils = __webpack_require__(3);
 	var DataProvider = __webpack_require__(24);
 	var _ = __webpack_require__(9);
@@ -12938,6 +12976,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var utils = __webpack_require__(3);
@@ -15122,7 +15162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(38);
+	var ieee754 = __webpack_require__(40);
 
 	var BufferMethods;
 
@@ -15289,8 +15329,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	/* eslint-disable no-proto */
 
-	'use strict'
-
 	var base64 = __webpack_require__(37)
 	var ieee754 = __webpack_require__(38)
 	var isArray = __webpack_require__(39)
@@ -15373,10 +15411,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new Buffer(arg)
 	  }
 
-	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
-	    this.length = 0
-	    this.parent = undefined
-	  }
+	  this.length = 0
+	  this.parent = undefined
 
 	  // Common case.
 	  if (typeof arg === 'number') {
@@ -15507,10 +15543,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	if (Buffer.TYPED_ARRAY_SUPPORT) {
 	  Buffer.prototype.__proto__ = Uint8Array.prototype
 	  Buffer.__proto__ = Uint8Array
-	} else {
-	  // pre-set for values that may exist in the future
-	  Buffer.prototype.length = undefined
-	  Buffer.prototype.parent = undefined
 	}
 
 	function allocate (that, length) {
@@ -15660,6 +15692,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	Buffer.byteLength = byteLength
+
+	// pre-set for values that may exist in the future
+	Buffer.prototype.length = undefined
+	Buffer.prototype.parent = undefined
 
 	function slowToString (encoding, start, end) {
 	  var loweredCase = false
@@ -17056,16 +17092,136 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 39 */
 /***/ function(module, exports) {
 
-	var toString = {}.toString;
+	
+	/**
+	 * isArray
+	 */
 
-	module.exports = Array.isArray || function (arr) {
-	  return toString.call(arr) == '[object Array]';
+	var isArray = Array.isArray;
+
+	/**
+	 * toString
+	 */
+
+	var str = Object.prototype.toString;
+
+	/**
+	 * Whether or not the given `val`
+	 * is an array.
+	 *
+	 * example:
+	 *
+	 *        isArray([]);
+	 *        // > true
+	 *        isArray(arguments);
+	 *        // > false
+	 *        isArray('');
+	 *        // > false
+	 *
+	 * @param {mixed} val
+	 * @return {bool}
+	 */
+
+	module.exports = isArray || function (val) {
+	  return !! val && '[object Array]' == str.call(val);
 	};
 
 
 /***/ },
 /* 40 */
+/***/ function(module, exports) {
+
+	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var nBits = -7
+	  var i = isLE ? (nBytes - 1) : 0
+	  var d = isLE ? -1 : 1
+	  var s = buffer[offset + i]
+
+	  i += d
+
+	  e = s & ((1 << (-nBits)) - 1)
+	  s >>= (-nBits)
+	  nBits += eLen
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  m = e & ((1 << (-nBits)) - 1)
+	  e >>= (-nBits)
+	  nBits += mLen
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  if (e === 0) {
+	    e = 1 - eBias
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen)
+	    e = e - eBias
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	}
+
+	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+	  var i = isLE ? 0 : (nBytes - 1)
+	  var d = isLE ? 1 : -1
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+	  value = Math.abs(value)
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0
+	    e = eMax
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2)
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--
+	      c *= 2
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias)
+	    }
+	    if (value * c >= 2) {
+	      e++
+	      c /= 2
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0
+	      e = eMax
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen)
+	      e = e + eBias
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+	      e = 0
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+	  e = (e << mLen) | m
+	  eLen += mLen
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+	  buffer[offset + i - d] |= s * 128
+	}
+
+
+/***/ },
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
@@ -17074,7 +17230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var MetadataProvider = __webpack_require__(25);
 	var GeospaceDataProvider = __webpack_require__(23);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -17810,8 +17966,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var utils = __webpack_require__(3);
 	var _ = __webpack_require__(9);
@@ -17884,8 +18042,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  switch (filter.function) {
 	    case 'binaryOperator':
-	      return (filter.arguments instanceof Array) ?
-	        _multipleBinaryOperatorWhereClauseComponent(filter) : _binaryOperatorWhereClauseComponent(filter);
+	      return _binaryOperatorWhereClauseComponent(filter);
 	    case 'binaryComputedGeoregionOperator':
 	      return _binaryComputedGeoregionOperatorWhereClauseComponent(filter);
 	    case 'isNull':
@@ -17964,45 +18121,61 @@ return /******/ (function(modules) { // webpackBootstrap
 	  utils.assertHasProperties(
 	    filter,
 	    'columnName',
-	    'arguments',
-	    'arguments.operator',
-	    'arguments.operand'
-	  );
-	  utils.assert(
-	    VALID_BINARY_OPERATORS.indexOf(filter.arguments.operator) > -1,
-	    'Invalid binary operator: `{0}`'.format(filter.arguments.operator)
-	  );
-
-	  return '{0} {1} {2}'.format(
-	    _soqlEncodeColumnName(filter.columnName),
-	    filter.arguments.operator,
-	    _soqlEncodeValue(filter.arguments.operand)
-	  );
-	}
-
-	function _multipleBinaryOperatorWhereClauseComponent(filter) {
-	  utils.assertHasProperties(
-	    filter,
-	    'columnName',
 	    'arguments'
 	  );
 
-	  var clauses = [];
+	  // If `arguments` is an array, that means that we want multiple binary
+	  // operators to be joined with an 'OR'.
+	  if (_.isArray(filter.arguments)) {
 
-	  for (var i = 0; filter.arguments.length > i; i++ ) {
-	    utils.assert(
-	      VALID_BINARY_OPERATORS.indexOf(filter.arguments[i].operator) > -1,
-	      'Invalid binary operator: `{0}`'.format(filter.arguments[i].operator)
+	    filter.arguments.forEach(function(argument) {
+
+	      utils.assertHasProperties(
+	        argument,
+	        'operator',
+	        'operand'
+	      );
+
+	      utils.assert(
+	        VALID_BINARY_OPERATORS.indexOf(argument.operator) > -1,
+	        'Invalid binary operator: `{0}`'.format(argument.operator)
+	      );
+	    });
+
+	    return '({0})'.format(
+	      filter.
+	        arguments.
+	        map(function(argument) {
+	          return '{0} {1} {2}'.format(
+	            _soqlEncodeColumnName(filter.columnName),
+	            argument.operator,
+	            _soqlEncodeValue(argument.operand)
+	          );
+	        }).
+	        join(' OR ')
+	      );
+	  // If `arguments` is an object, that means that we want this binary
+	  // operator to exist on its own (as if arguments were an array with one
+	  // element.
+	  } else {
+
+	    utils.assertHasProperties(
+	      filter,
+	      'arguments.operator',
+	      'arguments.operand'
 	    );
 
-	    clauses.push('{0} {1} {2}'.format(
-	      _soqlEncodeColumnName(filter.columnName),
-	      filter.arguments[i].operator,
-	      _soqlEncodeValue(filter.arguments[i].operand)
-	    ));
-	  }
+	    utils.assert(
+	      VALID_BINARY_OPERATORS.indexOf(filter.arguments.operator) > -1,
+	      'Invalid binary operator: `{0}`'.format(filter.arguments.operator)
+	    );
 
-	  return '(' + clauses.join(' OR ') + ')';
+	    return '{0} {1} {2}'.format(
+	      _soqlEncodeColumnName(filter.columnName),
+	      filter.arguments.operator,
+	      _soqlEncodeValue(filter.arguments.operand)
+	    );
+	  }
 	}
 
 	function _binaryComputedGeoregionOperatorWhereClauseComponent(filter) {
@@ -18079,15 +18252,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var ColumnChart = __webpack_require__(12);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var NAME_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
@@ -18623,8 +18798,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
@@ -18634,7 +18811,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var GeospaceDataProvider = __webpack_require__(23);
 	var TileserverDataProvider = __webpack_require__(27);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 	var MetadataProvider = __webpack_require__(25);
 
 	var DEFAULT_TILESERVER_HOSTS = [
@@ -19193,15 +19370,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var Table = __webpack_require__(15);
 	var Pager = __webpack_require__(13);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 	var SoqlDataProvider = __webpack_require__(26);
 	var MetadataProvider = __webpack_require__(25);
 
@@ -19330,7 +19509,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.on('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
 	    $element.on('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
 	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
-	    $element.on('SOCRATA_VISUALIZATION_CHANGE_FILTER', _handleFilterChange);
+	    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  function _detachEvents() {
@@ -19340,7 +19519,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.off('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
 	    $element.off('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
 	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
-	    $element.off('SOCRATA_VISUALIZATION_CHANGE_FILTER', _handleFilterChange);
+	    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  function _render() {
@@ -19471,14 +19650,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  function _handleFilterChange(e) {
-	    var newWhereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(e.originalEvent);
+	  function _handleRenderVif(event) {
+	    var newVif = event.originalEvent.detail;
+
+	    if (newVif.type !== 'table') {
+	      throw new Error(
+	        'Cannot update VIF; old type: `table`, new type: `{0}`.'.
+	          format(
+	            newVif.type
+	          )
+	      );
+	    }
 
 	    _setDataQuery(
 	      _renderState.fetchedData.startIndex,
 	      _renderState.fetchedData.pageSize,
 	      _renderState.fetchedData.order,
-	      newWhereClauseComponents
+	      SoqlHelpers.whereClauseFilteringOwnColumn(newVif)
 	    );
 	  }
 
@@ -19611,8 +19799,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
@@ -19620,7 +19810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var moment = __webpack_require__(17);
 	var TimelineChart = __webpack_require__(14);
 	var SoqlDataProvider = __webpack_require__(26);
-	var SoqlHelpers = __webpack_require__(41);
+	var SoqlHelpers = __webpack_require__(42);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 	var DATE_INDEX = 0;

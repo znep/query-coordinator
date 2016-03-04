@@ -1,5 +1,5 @@
 const angular = require('angular');
-function FeatureMapService(DataTypeFormatService) {
+function FeatureMapService(DataTypeFormatService, linkyFilter) {
 
   function formatRowInspectorQueryResponse(data) {
     // Extract and format titles from the provided data
@@ -193,14 +193,18 @@ function FeatureMapService(DataTypeFormatService) {
       'timestamp': DataTypeFormatService.renderTimestampCell(content, column),
       'floating_timestamp': DataTypeFormatService.renderTimestampCell(content, column),
       'money': DataTypeFormatService.renderMoneyCell(content, column),
-      'text': _.identity(content)
+      'text': _.isString(content) ? linkyFilter(content, '_blank') : content
     };
 
     var formattedContent = _.get(datatypeToFormat, column.physicalDatatype, content);
     if (isTitle && isLatLng) {
       formattedContent = formattedContent.replace(/[()]/g, '');
     }
-    return formattedContent;
+
+    return DOMPurify.sanitize(formattedContent, {
+      ALLOWED_TAGS: ['a'],
+      ALLOWED_ATTR: ['href', 'target', 'rel']
+    });
   }
 
   return {

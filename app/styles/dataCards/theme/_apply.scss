@@ -762,6 +762,9 @@ $hint-size: 18px;
             background-color: $table-resize-active-background-color;
           }
         }
+        a {
+          color: $table-link-color;
+        }
       }
     }
     .table-label {

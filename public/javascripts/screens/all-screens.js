@@ -1,5 +1,7 @@
 ;$(function()
 {
+    blist.util.enforceLodashFunctions();
+
     // generic events
     $.live('a[rel$=external]', 'focus', function(event)
     {

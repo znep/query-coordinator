@@ -267,6 +267,7 @@ javascripts:
     - public/javascripts/plugins/jquery.dropdown.js
     - public/javascripts/util/serialize.js
     - public/javascripts/screens/admin-config-common.js
+    - public/javascripts/screens/admin-datasets.js
   admin-browse-widget:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js

@@ -29,8 +29,9 @@
   .adminHeader {
     border-bottom: 1px solid $color_chrome_box_border;
     @include admin-header-icons;
-    padding: 1em 1em 0.5em 1em;
+    padding: 1em 1em 0.9em 1em;
     margin-bottom: 1em;
+    margin-right: -0.4em;
     &.floating {
       border-bottom: 0;
       margin-bottom: 0;
@@ -40,9 +41,24 @@
       margin-right: 1em;
     }
     h1 {
+      display: inline-block;
       line-height: 32px;
       &.floating {
         float: left;
+      }
+    }
+    .asset_inventory_link_wrapper {
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+      float: right;
+
+      .asset_inventory_link_hover_window {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
       }
     }
   }
@@ -114,4 +130,13 @@
 
 .button:focus, input:focus.submit {
   outline: 1px double;
+}
+
+.datasetsList {
+  .createDatasetBox {
+    height: 1.2em;
+    .buttonContainer {
+      margin-top: 0.8em;
+    }
+  }
 }

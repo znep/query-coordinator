@@ -160,6 +160,10 @@ $action-btn-disabled-font-color: #c6c1bf;
     .tool-panel-main {
       margin: 0;
       display: block;
+      width: 350px;
+      max-height: $row-inspector-max-height;
+      right: inherit;
+      left: 50%;
       height: $row-inspector-max-height;
       z-index: 1003;
     }

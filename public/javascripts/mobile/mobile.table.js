@@ -22,7 +22,7 @@ module.exports = function(values, $target) {
       },
       'order': [{
         ascending: true,
-        columnName: values.columnName === '*' ? 'railroad' : values.columnName
+        columnName: values.columnName
       }]
     },
     'createdAt': '2014-01-01T00:00:00',

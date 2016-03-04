@@ -129,6 +129,22 @@
       var featureMap2VIF = _.clone(featureMap1VIF);
       featureMap2VIF.configuration.datasetMetadata = TEST_DATASET_METADATA;
       featureMap2VIF.configuration.panAndZoom = false;
+      featureMap2VIF.filters = [
+        {
+          function: 'binaryOperator',
+          columnName: 'category',
+          arguments: [
+            {
+              operator: '=',
+              operand: 'General Requests'
+            },
+            {
+              operator: '=',
+              operand: 'Illegal Postings'
+            }
+          ]
+        }
+      ];
 
       var $featureMap2Element = $('#feature-map-2');
       $featureMap2Element.socrataFeatureMap(featureMap2VIF);

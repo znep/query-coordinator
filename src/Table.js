@@ -132,7 +132,7 @@ $.fn.socrataTable = function(vif) {
     $element.on('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
     $element.on('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
-    $element.on('SOCRATA_VISUALIZATION_CHANGE_FILTER', _handleFilterChange);
+    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _detachEvents() {
@@ -142,7 +142,7 @@ $.fn.socrataTable = function(vif) {
     $element.off('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
     $element.off('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
-    $element.off('SOCRATA_VISUALIZATION_CHANGE_FILTER', _handleFilterChange);
+    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
 
   function _render() {
@@ -273,14 +273,23 @@ $.fn.socrataTable = function(vif) {
     }
   }
 
-  function _handleFilterChange(e) {
-    var newWhereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(e.originalEvent);
+  function _handleRenderVif(event) {
+    var newVif = event.originalEvent.detail;
+
+    if (newVif.type !== 'table') {
+      throw new Error(
+        'Cannot update VIF; old type: `table`, new type: `{0}`.'.
+          format(
+            newVif.type
+          )
+      );
+    }
 
     _setDataQuery(
       _renderState.fetchedData.startIndex,
       _renderState.fetchedData.pageSize,
       _renderState.fetchedData.order,
-      newWhereClauseComponents
+      SoqlHelpers.whereClauseFilteringOwnColumn(newVif)
     );
   }
 

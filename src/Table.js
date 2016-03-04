@@ -3,6 +3,7 @@ var $ = require('jquery');
 var utils = require('socrata-utils');
 var Table = require('./views/Table');
 var Pager = require('./views/Pager');
+var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
 
@@ -87,6 +88,8 @@ $.fn.socrataTable = function(vif) {
     datasetRowCount: null
   };
 
+  var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vif);
+
   _attachEvents();
 
   $element.addClass('socrata-paginated-table');
@@ -100,7 +103,8 @@ $.fn.socrataTable = function(vif) {
   _setDataQuery(
     0, // Offset
     _computePageSize(),
-    _.get(vif, 'configuration.order')
+    _.get(vif, 'configuration.order'),
+    whereClauseComponents
   ).then(function() {
     visualization.freezeColumnWidthsAndRender();
   });
@@ -128,6 +132,7 @@ $.fn.socrataTable = function(vif) {
     $element.on('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
     $element.on('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
+    $element.on('SOCRATA_VISUALIZATION_CHANGE_FILTER', _handleFilterChange);
   }
 
   function _detachEvents() {
@@ -137,6 +142,7 @@ $.fn.socrataTable = function(vif) {
     $element.off('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
     $element.off('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
+    $element.off('SOCRATA_VISUALIZATION_CHANGE_FILTER', _handleFilterChange);
   }
 
   function _render() {
@@ -200,7 +206,8 @@ $.fn.socrataTable = function(vif) {
     _setDataQuery(
       0,
       _renderState.fetchedData.pageSize,
-      newOrder
+      newOrder,
+      _renderState.fetchedData.whereClauseComponents
     );
   }
 
@@ -236,14 +243,16 @@ $.fn.socrataTable = function(vif) {
     _setDataQuery(
       _renderState.fetchedData.startIndex + _renderState.fetchedData.pageSize,
       _renderState.fetchedData.pageSize,
-      _renderState.fetchedData.order
+      _renderState.fetchedData.order,
+      _renderState.fetchedData.whereClauseComponents
     );
   }
   function _handlePrevious() {
     _setDataQuery(
       Math.max(0, _renderState.fetchedData.startIndex - _renderState.fetchedData.pageSize),
       _renderState.fetchedData.pageSize,
-      _renderState.fetchedData.order
+      _renderState.fetchedData.order,
+      _renderState.fetchedData.whereClauseComponents
     );
   }
 
@@ -258,9 +267,21 @@ $.fn.socrataTable = function(vif) {
       _setDataQuery(
         _renderState.fetchedData.startIndex,
         pageSize,
-        _renderState.fetchedData.order
+        _renderState.fetchedData.order,
+        _renderState.fetchedData.whereClauseComponents
       );
     }
+  }
+
+  function _handleFilterChange(e) {
+    var newWhereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(e.originalEvent);
+
+    _setDataQuery(
+      _renderState.fetchedData.startIndex,
+      _renderState.fetchedData.pageSize,
+      _renderState.fetchedData.order,
+      newWhereClauseComponents
+    );
   }
 
   function _computePageSize() {
@@ -274,7 +295,7 @@ $.fn.socrataTable = function(vif) {
    * Data Requests
    */
 
-  function _setDataQuery(startIndex, pageSize, order) {
+  function _setDataQuery(startIndex, pageSize, order, whereClauseComponents) {
     utils.assert(order.length === 1, 'order parameter must be an array with exactly one element.');
 
     if (_renderState.busy) {
@@ -289,7 +310,8 @@ $.fn.socrataTable = function(vif) {
         _.pluck(displayableColumns, 'fieldName'),
         order,
         startIndex,
-        pageSize
+        pageSize,
+        whereClauseComponents
       );
     });
 
@@ -315,7 +337,8 @@ $.fn.socrataTable = function(vif) {
           columns: displayableColumns,
           startIndex: startIndex,
           pageSize: pageSize,
-          order: order
+          order: order,
+          whereClauseComponents: whereClauseComponents
         },
         busy: false
       });

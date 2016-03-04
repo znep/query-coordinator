@@ -139,7 +139,7 @@ function SoqlDataProvider(config) {
    *
    * @return {Promise}
    */
-  this.getTableData = function(columnNames, order, offset, limit) {
+  this.getTableData = function(columnNames, order, offset, limit, whereClauseComponents) {
     utils.assertInstanceOf(columnNames, Array);
     utils.assertIsOneOfTypes(offset, 'number');
     utils.assertIsOneOfTypes(limit, 'number');
@@ -152,12 +152,13 @@ function SoqlDataProvider(config) {
       '[0].columnName'
     );
 
-    var queryString = '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}'.format(
+    var queryString = '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}'.format(
       columnNames.map(_escapeColumnName).join(','),
       order[0].columnName,
       (order[0].ascending ? 'ASC' : 'DESC'),
       limit,
-      offset
+      offset,
+      whereClauseComponents ? "&$where=" + whereClauseComponents : ''
     );
 
     return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(function(data) {

@@ -54,8 +54,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
@@ -83,8 +81,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var ChoroplethMap = __webpack_require__(2);
 	var ChoroplethMapUtils = __webpack_require__(11);
 	var ColumnChart = __webpack_require__(12);
@@ -111,8 +107,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	/**
 	 * TODO:
@@ -5007,8 +5001,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var utils = __webpack_require__(3);
 	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
@@ -5158,8 +5150,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
@@ -5474,8 +5464,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -6484,8 +6472,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -6609,8 +6595,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -7277,7 +7261,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if (chartWidth <= 0 || chartHeight <= 0) {
 	      if (window.console && window.console.warn) {
-	        console.warn('Aborted rendering column chart: chart width or height is zero.');
+	        console.warn('Aborted rendering timeline chart: chart width or height is zero.');
 	      }
 	      return;
 	    }
@@ -9337,8 +9321,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -9687,8 +9669,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	'use strict';
 	var utils = __webpack_require__(3);
@@ -10058,8 +10038,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
 	var L = __webpack_require__(19);
@@ -10390,7 +10368,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (_locateUser) {
 	        _mapLocateUserButton.on('click', _handleLocateUserButtonClick);
 	        _mapLocateUserButton.on('mousemove', _handleLocateUserButtonMousemove);
-	        _mapLocateUserButton.on('mouseout', _hideFlyout);
+
+	        if (!vif.configuration.isMobile) {
+	          _mapLocateUserButton.on('mouseout', _hideFlyout);
+	        }
 	      }
 	    }
 
@@ -10660,22 +10641,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    var inspectorDataQueryConfig;
+	    var position = vif.configuration.isMobile ?
+	      { pageX: 0, pageY: (_mapContainer.height() + _mapContainer.offset().top) } :
+	      { pageX: event.originalEvent.pageX, pageY: event.originalEvent.pageY };
 
 	    if (_flyoutData.count > 0 &&
 	      _flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
 
 	      inspectorDataQueryConfig = {
 	        latLng: event.latlng,
-	        position: {
-	          pageX: event.originalEvent.pageX,
-	          pageY: event.originalEvent.pageY
-	        },
+	        position: position,
 	        rowCount: _.sum(event.points, 'count'),
 	        queryBounds: _getQueryBounds(event.containerPoint)
 	      };
 
 	      if (vif.configuration.isMobile) {
-	        _map.setView(event.latlng);
+	        _map.panTo(event.latlng);
 	        var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
 	        inspectorDataQueryConfig.position.pageX = 0;
 	        inspectorDataQueryConfig.position.pageY = bottom;
@@ -11174,8 +11155,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var $ = __webpack_require__(8);
 
 	function FlyoutRenderer() {
@@ -11189,6 +11168,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _flyoutContent;
 	  var _flyoutHint;
 
+	  // Don't attempt to add yourself to the DOM unless
+	  // it actually exists.
 	  $(function() {
 	    _renderFlyoutTemplate();
 	    _hideFlyout();
@@ -11375,8 +11356,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var utils = __webpack_require__(3);
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
@@ -11410,6 +11389,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _config;
 	var _state;
+
+	var _$target;
 
 	/**
 	 * @function setup
@@ -11465,16 +11446,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *     }
 	 *   }
 	 *
+	 * @param {Object} $target - Target container. Falls back to body
+	 *
 	 * These translations will be merged into the default translations.
 	 * For other available keys, see ROW_INSPECTOR_DEFAULT_TRANSLATIONS in this file.
 	 */
-	function setup(config) {
+	function setup(config, $target) {
 	  _config = _.cloneDeep(config || {});
 
 	  _config.localization = _config.localization || {};
 	  _config.localization = _.merge({}, ROW_INSPECTOR_DEFAULT_TRANSLATIONS, _config.localization);
 
-	  if ($('#socrata-row-inspector').length === 0) {
+	  _$target = $target || $('body');
+
+	  if (_$target.find('#socrata-row-inspector').length === 0) {
 
 	    if (_config.isMobile) {
 
@@ -11576,11 +11561,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    }
 
-	    $('body').append(_$rowInspectorContainer);
+	    _$target.append(_$rowInspectorContainer);
 
 	  } else {
 
-	    _$rowInspectorContainer = $('#socrata-row-inspector');
+	    _$rowInspectorContainer = _$target.find('#socrata-row-inspector');
 
 	  }
 
@@ -11612,7 +11597,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var $document = $(document);
 	  var $body = $(document.body);
 
-	  $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function(event, jQueryPayload) {
+	  _$target.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function(event, jQueryPayload) {
+	    event.stopPropagation();
+
 	    // These events are CustomEvents. jQuery < 3.0 does not understand that
 	    // event.detail should be passed as an argument to the handler.
 	    var payload = jQueryPayload || _.get(event, 'originalEvent.detail');
@@ -11622,7 +11609,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _setState(payload);
 	  });
 
-	  $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event, jQueryPayload) {
+	  _$target.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event, jQueryPayload) {
+	    event.stopPropagation();
+
 	    // These events are CustomEvents. jQuery < 3.0 does not understand that
 	    // event.detail should be passed as an argument to the handler.
 	    var payload = jQueryPayload || _.get(event, 'originalEvent.detail');
@@ -11854,8 +11843,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var GeospaceDataProvider = __webpack_require__(23);
 	var MetadataProvider = __webpack_require__(25);
 	var SoqlDataProvider = __webpack_require__(26);
@@ -11875,8 +11862,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var utils = __webpack_require__(3);
 	var DataProvider = __webpack_require__(24);
@@ -12119,8 +12104,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var _ = __webpack_require__(9);
 
 	function DataProvider(config) {
@@ -12206,8 +12189,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -12404,8 +12385,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -12689,8 +12668,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var utils = __webpack_require__(3);
 	var DataProvider = __webpack_require__(24);
 	var _ = __webpack_require__(9);
@@ -12960,8 +12937,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var _ = __webpack_require__(9);
 	var utils = __webpack_require__(3);
@@ -17091,8 +17066,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -17839,8 +17812,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var utils = __webpack_require__(3);
 	var _ = __webpack_require__(9);
 
@@ -17912,7 +17883,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  switch (filter.function) {
 	    case 'binaryOperator':
-	      return _binaryOperatorWhereClauseComponent(filter);
+	      return (filter.arguments instanceof Array) ?
+	        _multipleBinaryOperatorWhereClauseComponent(filter) : _binaryOperatorWhereClauseComponent(filter);
 	    case 'binaryComputedGeoregionOperator':
 	      return _binaryComputedGeoregionOperatorWhereClauseComponent(filter);
 	    case 'isNull':
@@ -18007,6 +17979,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 	}
 
+	function _multipleBinaryOperatorWhereClauseComponent(filter) {
+	  utils.assertHasProperties(
+	    filter,
+	    'columnName',
+	    'arguments'
+	  );
+
+	  var clauses = [];
+
+	  for (var i = 0; filter.arguments.length > i; i++ ) {
+	    utils.assert(
+	      VALID_BINARY_OPERATORS.indexOf(filter.arguments[i].operator) > -1,
+	      'Invalid binary operator: `{0}`'.format(filter.arguments[i].operator)
+	    );
+
+	    clauses.push('{0} {1} {2}'.format(
+	      _soqlEncodeColumnName(filter.columnName),
+	      filter.arguments[i].operator,
+	      _soqlEncodeValue(filter.arguments[i].operand)
+	    ));
+	  }
+
+	  return '(' + clauses.join(' OR ') + ')';
+	}
+
 	function _binaryComputedGeoregionOperatorWhereClauseComponent(filter) {
 	  utils.assertHasProperties(
 	    filter,
@@ -18083,8 +18080,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 42 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
@@ -18630,8 +18625,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var L = __webpack_require__(19);
@@ -18640,6 +18633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var GeospaceDataProvider = __webpack_require__(23);
 	var TileserverDataProvider = __webpack_require__(27);
 	var SoqlDataProvider = __webpack_require__(26);
+	var SoqlHelpers = __webpack_require__(41);
 	var MetadataProvider = __webpack_require__(25);
 
 	var DEFAULT_TILESERVER_HOSTS = [
@@ -18819,6 +18813,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
 	    $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
 	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+	    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  function detachEvents() {
@@ -18827,11 +18822,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.off('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
 	    $element.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
 	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+	    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
 	  }
 
 	  /**
 	   * Event handlers
 	   */
+
+	  function _handleRenderVif(event) {
+	    var newVif = event.originalEvent.detail;
+
+	    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif), newVif.configuration.useOriginHost);
+
+	    renderIfReady();
+	  }
 
 	  function _handleWindowResize() {
 
@@ -18956,13 +18960,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var payload = event.originalEvent.detail;
 
-	    var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}'.
+	    var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif);
+	    var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}{5}'.
 	      format(
 	        payload.rowCount,
 	        vif.columnName,
 	        payload.latLng.lng,
 	        payload.latLng.lat,
-	        generateWithinBoxClause(vif.columnName, payload.queryBounds)
+	        generateWithinBoxClause(vif.columnName, payload.queryBounds),
+	        whereClause ? ' AND ' + whereClause : ''
 	      );
 
 	    var displayableColumns = metadataProvider.getDisplayableColumns(datasetMetadata);
@@ -19030,10 +19036,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    attachEvents();
 
-	    // For now, we don't need to use any where clause but the default
-	    // one, so we just inline the call to
-	    // updateRenderOptionsVectorTileGetter.
-	    updateRenderOptionsVectorTileGetter(soqlDataProvider.buildBaseQuery(vif.filters), vif.configuration.useOriginHost);
+	    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(vif), vif.configuration.useOriginHost);
+
 	    renderIfReady();
 	  }
 
@@ -19190,8 +19194,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 44 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
@@ -19587,8 +19589,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 45 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);

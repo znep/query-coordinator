@@ -23,7 +23,7 @@ describe('socrata.visualizations.views.RowInspector', function() {
   }
 
   before(function() {
-    RowInspector.setup();
+    RowInspector.setup({ isMobile: false }, null);
     $rowInspector = $('#socrata-row-inspector');
     $toolPanel = $rowInspector.find('.tool-panel');
   });

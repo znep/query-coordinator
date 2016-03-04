@@ -603,11 +603,7 @@ function FeatureMap(element, vif) {
     var inspectorDataQueryConfig;
     var position = vif.configuration.isMobile ?
       { pageX: 0, pageY: (_mapContainer.height() + _mapContainer.offset().top) } :
-      { pageX: event.originalEvent.pageX, pageY: event.originalEvent.pageY }
-
-    if (vif.configuration.isMobile) {
-      _map.setView(event.latlng);
-    }
+      { pageX: event.originalEvent.pageX, pageY: event.originalEvent.pageY };
 
     if (_flyoutData.count > 0 &&
       _flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
@@ -620,7 +616,7 @@ function FeatureMap(element, vif) {
       };
 
       if (vif.configuration.isMobile) {
-        _map.setView(event.latlng);
+        _map.panTo(event.latlng);
         var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
         inspectorDataQueryConfig.position.pageX = 0;
         inspectorDataQueryConfig.position.pageY = bottom;

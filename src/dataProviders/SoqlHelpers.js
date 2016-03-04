@@ -70,7 +70,7 @@ function _filterToWhereClauseComponent(filter) {
   switch (filter.function) {
     case 'binaryOperator':
       return (filter.arguments instanceof Array) ?
-        _multipleBinaryOperatorWhereClauseComponent(filter) :_binaryOperatorWhereClauseComponent(filter);
+        _multipleBinaryOperatorWhereClauseComponent(filter) : _binaryOperatorWhereClauseComponent(filter);
     case 'binaryComputedGeoregionOperator':
       return _binaryComputedGeoregionOperatorWhereClauseComponent(filter);
     case 'isNull':

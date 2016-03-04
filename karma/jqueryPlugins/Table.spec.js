@@ -7,6 +7,7 @@ describe('views/Table', function() {
 
   var $container;
   var tableVIF = {
+    columnName: '',
     configuration: {
       localization: {
         PREVIOUS: 'translation for previous button',

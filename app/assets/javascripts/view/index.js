@@ -2,6 +2,7 @@ import $ from 'jQuery';
 import SocrataVisualizations from 'socrata-visualizations';
 
 import '../editor/componentBase';
+import '../editor/block-component-renderers/componentHero';
 import '../editor/block-component-renderers/componentSocrataVisualizationChoroplethMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationClassic';
 import '../editor/block-component-renderers/componentSocrataVisualizationColumnChart';

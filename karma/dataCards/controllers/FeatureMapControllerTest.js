@@ -137,6 +137,7 @@ describe('FeatureMapController', function() {
   var Constants;
   var $controller;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(angular.mock.module(function($provide) {
@@ -615,6 +616,10 @@ describe('FeatureMapController', function() {
   });
 
   describe('tileserver sharding', function() {
+    beforeEach(function() {
+      ServerConfig.override('oduxEnableFeatureMap', true);
+    });
+
     it('should parallelize tileserver requests if dataset is public', function() {
       dataset.defineObservableProperty('permissions', { isPublic: true });
 

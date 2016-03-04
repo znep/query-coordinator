@@ -1,5 +1,4 @@
-const angular = require('angular');
-var Routes = {
+module.exports = {
   getUIStateAndConfigFromUrl: function(urlPathname, urlSearch) {
     var stateName = '404';
     var params = {};
@@ -54,7 +53,3 @@ var Routes = {
     };
   }
 };
-
-angular.
-  module('dataCards.services').
-    constant('Routes', Routes);

@@ -1,4 +1,3 @@
-const angular = require('angular');
 // Extracted from inflection-js (https://code.google.com/p/inflection-js/),
 // a port of the functionality from Ruby on Rails' Active Support Inflection classes into Javascript.
 // MIT Licensed
@@ -60,12 +59,8 @@ function pluralize(str, count) {
   return applyRules(str, pluralRules, uncountableWords);
 }
 
-function PluralizeService() {
+module.exports = function PluralizeService() {
   return {
     pluralize: pluralize
   };
-}
-
-angular.
-  module('socrataCommon.services').
-    factory('PluralizeService', PluralizeService);
+};

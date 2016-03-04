@@ -1,5 +1,4 @@
-const angular = require('angular');
-function TimelineChartController(
+module.exports = function TimelineChartController(
   $scope,
   CardDataService,
   ServerConfig,
@@ -306,8 +305,4 @@ function TimelineChartController(
       }
     }
   );
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('TimelineChartController', TimelineChartController);
+};

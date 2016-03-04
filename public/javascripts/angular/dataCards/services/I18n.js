@@ -1,5 +1,4 @@
-const angular = require('angular');
-function I18n($log, ServerConfig, $window) {
+module.exports = function I18n($log, ServerConfig, $window) {
 
   // TODO clean this up using _.mapKeys when we upgrade lodash
   function camelCaseKeys(obj) {
@@ -48,8 +47,4 @@ function I18n($log, ServerConfig, $window) {
   };
 
   return i18n;
-}
-
-angular.
-  module('dataCards.services').
-    service('I18n', I18n);
+};

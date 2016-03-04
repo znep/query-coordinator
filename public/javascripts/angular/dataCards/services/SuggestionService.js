@@ -1,5 +1,4 @@
-const angular = require('angular');
-function SuggestionService(http, $window) {
+module.exports = function SuggestionService(http, $window) {
 
   var serviceDefinition = {
 
@@ -46,8 +45,4 @@ function SuggestionService(http, $window) {
   };
 
   return serviceDefinition;
-}
-
-angular.
-  module('dataCards.services').
-  service('SuggestionService', SuggestionService);
+};

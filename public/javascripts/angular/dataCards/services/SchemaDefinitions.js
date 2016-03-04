@@ -1,12 +1,10 @@
-const angular = require('angular');
-
 /**
  * This file holds all of our js schema definitions, to keep them organizationally separate from the
  * validation logic, etc. It is not intended to be consumed by anything except for the Schemas
  * service, which basically just uses SchemaDefinitions to inject these definitions into the Schemas
  * service.
  */
-angular.module('dataCards.services').factory('SchemaDefinitions', function() {
+module.exports = function() {
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
   function registerWith(schemasService) {
@@ -250,4 +248,4 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
     registerWith: registerWith,
     uidRegexp: UID_REGEXP
   };
-});
+};

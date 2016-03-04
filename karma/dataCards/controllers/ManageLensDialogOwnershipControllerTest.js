@@ -37,6 +37,7 @@ describe('ManageLensDialogOwnershipController', function() {
     }
   ];
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {

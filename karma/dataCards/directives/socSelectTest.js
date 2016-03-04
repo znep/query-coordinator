@@ -4,8 +4,9 @@ describe('socSelect', function() {
   var testHelpers;
   var $rootScope;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/cards.scss'));
+  require('app/styles/dataCards/cards.scss');
 
   beforeEach(function() {
     inject(function($injector) {

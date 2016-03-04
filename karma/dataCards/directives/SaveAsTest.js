@@ -7,6 +7,7 @@ describe('SaveAs', function() {
   var ServerConfig;
   var saveAsEventSubject;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {

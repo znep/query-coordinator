@@ -15,7 +15,9 @@ describe('searchCard', function() {
   var getRowsStub;
   var _$provide;
   var Constants;
+  var ServerConfig;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
@@ -34,6 +36,7 @@ describe('searchCard', function() {
     q = $injector.get('$q');
     Filter = $injector.get('Filter');
     CardDataService = $injector.get('CardDataService');
+    ServerConfig = $injector.get('ServerConfig');
     sinon.stub(CardDataService, 'getData').returns(q.when([]));
     getRowsStub = sinon.stub(CardDataService, 'getRows').returns(
       q.when([
@@ -48,6 +51,7 @@ describe('searchCard', function() {
     getSampleDataStub = sinon.stub(CardDataService, 'getSampleData');
     getSampleDataStub.returns(q.when([]));
     testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
+    ServerConfig.override('enableSearchSuggestions', true);
   }));
 
   afterEach(function() {

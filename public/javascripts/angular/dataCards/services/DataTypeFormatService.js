@@ -1,5 +1,4 @@
-const angular = require('angular');
-function DataTypeFormatService(I18n, $window) {
+module.exports = function DataTypeFormatService(I18n, $window) {
 
   /**
   * Renders a boolean value in checkbox format
@@ -291,9 +290,4 @@ function DataTypeFormatService(I18n, $window) {
     var coordinates = _.get(cellContent, 'value.coordinates', cellContent.coordinates);
     return _.isArray(coordinates) ? coordinates : null;
   }
-}
-
-
-angular.
-  module('dataCards.services').
-    factory('DataTypeFormatService', DataTypeFormatService);
+};

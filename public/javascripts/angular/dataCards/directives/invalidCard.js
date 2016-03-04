@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/invalidCard.html');
-const angular = require('angular');
-function InvalidCard() {
+
+module.exports = function InvalidCard() {
   return {
     restrict: 'E',
     scope: false,
@@ -11,8 +11,4 @@ function InvalidCard() {
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('invalidCard', InvalidCard);
+};

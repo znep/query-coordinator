@@ -86,6 +86,7 @@ describe('columnChart', function() {
     return modifiedData;
   }
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(angular.mock.module(function(_$controllerProvider_) {

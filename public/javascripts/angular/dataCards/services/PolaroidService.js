@@ -1,4 +1,3 @@
-const angular = require('angular');
 var TRACKING_ID_PARAM = 'renderTrackingId';
 var POLL_INTERVAL = 1000;
 var TIMEOUT = 30000;
@@ -14,7 +13,7 @@ var httpRequester = {
  * Content-Disposition:attachment) without risking navigating away from the page if the server
  * responds incorrectly.
  */
-angular.module('dataCards.services').factory('PolaroidService', function($q, $window, http, rx) {
+module.exports = function($q, $window, http, rx) {
   const Rx = rx;
   /**
    * Have the user's browser download the specified path.
@@ -112,7 +111,7 @@ angular.module('dataCards.services').factory('PolaroidService', function($q, $wi
           filename = _.isPresent(matches[1]) ? matches[1] : filename;
         }
 
-        saveAs(response.data, filename);
+        $window.saveAs(response.data, filename);
         deferred.resolve();
       }, function(error) {
         deferred.reject({ error: error });
@@ -125,4 +124,4 @@ angular.module('dataCards.services').factory('PolaroidService', function($q, $wi
   return {
     download: download
   };
-});
+};

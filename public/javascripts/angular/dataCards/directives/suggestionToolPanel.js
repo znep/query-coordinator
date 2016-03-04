@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/suggestionToolPanel.html');
-const angular = require('angular');
-function SuggestionToolPanel(SuggestionService, ServerConfig, Constants, I18n, rx) {
+
+module.exports = function SuggestionToolPanel(SuggestionService, ServerConfig, Constants, I18n, rx) {
   const Rx = rx;
   if (!ServerConfig.get('enableSearchSuggestions')) {
     return {};
@@ -127,8 +127,4 @@ function SuggestionToolPanel(SuggestionService, ServerConfig, Constants, I18n, r
       $scope.maxSuggestionLength = Constants.MAX_SUGGESTION_LENGTH;
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('suggestionToolPanel', SuggestionToolPanel);
+};

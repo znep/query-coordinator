@@ -1,5 +1,4 @@
-const angular = require('angular');
-function DeviceService($window) {
+module.exports = function DeviceService($window) {
   function isMobile() {
     return (/Mobi/).test($window.navigator.userAgent);
   }
@@ -12,8 +11,4 @@ function DeviceService($window) {
     isMobile: isMobile,
     isDesktop: isDesktop
   };
-}
-
-angular.
-  module('socrataCommon.services').
-    factory('DeviceService', DeviceService);
+};

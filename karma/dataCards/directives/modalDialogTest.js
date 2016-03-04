@@ -4,8 +4,9 @@ describe('modalDialog', function() {
   var testHelpers;
   var rootScope;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/modal-dialog.scss'));
+  require('app/styles/dataCards/modal-dialog.scss');
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');

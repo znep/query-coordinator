@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/customizeBar.html');
-const angular = require('angular');
-function customizeBar(FlyoutService, ServerConfig, I18n, rx) {
+
+module.exports = function customizeBar(FlyoutService, ServerConfig, I18n, rx) {
   const Rx = rx;
   return {
     scope: {
@@ -112,8 +112,4 @@ function customizeBar(FlyoutService, ServerConfig, I18n, rx) {
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('customizeBar', customizeBar);
+};

@@ -1,4 +1,3 @@
-const angular = require('angular');
 // The implementation of the SoQL spec is incomplete at the moment, causing it to choke
 // when it encounters a column name containing a hyphen. The spec states that quoting
 // the column name with backticks should ensure the entire field name is used rather
@@ -7,7 +6,7 @@ const angular = require('angular');
 // Instead, since hyphens are supposed to be rewritten to underscores internally anyway,
 // we can avoid the quoting/truncation issue by rewriting hyphens to underscores before
 // making the request from the front-end.
-function CardDataService(
+module.exports = function CardDataService(
   $q,
   http,
   JJV,
@@ -699,8 +698,4 @@ ${JSON.stringify(errors)}`
   };
 
   return serviceDefinition;
-}
-
-angular.
-  module('dataCards.services').
-  factory('CardDataService', CardDataService);
+};

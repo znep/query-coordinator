@@ -1,5 +1,4 @@
-const angular = require('angular');
-angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState, $window, rx) {
+module.exports = function(Constants, WindowState, $window, rx) {
   const Rx = rx;
 
   var handlers = {};
@@ -325,4 +324,4 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     targetUnder: targetUnder,
     hide: hide
   };
-});
+};

@@ -1,7 +1,6 @@
-const angular = require('angular');
 const Shepherd = require('tether-shepherd');
 
-function AggregationTourController($scope, $window, I18n, MixpanelService, ServerConfig, WindowState, rx) {
+module.exports = function AggregationTourController($scope, $window, I18n, MixpanelService, ServerConfig, WindowState, rx) {
   var hasCookie = socrata.utils.getCookie('aggregationTourClosed');
   var isFeatureFlagEnabled = ServerConfig.get('enableDataLensAggregationTour');
   var $tourOverlay = $('.tour-overlay');
@@ -136,8 +135,4 @@ function AggregationTourController($scope, $window, I18n, MixpanelService, Serve
       filter(_.negate(_.identity)).
       subscribe(_.bind(tour.cancel, tour));
   }
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('AggregationTourController', AggregationTourController);
+};

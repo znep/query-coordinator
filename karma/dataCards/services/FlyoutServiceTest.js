@@ -14,9 +14,10 @@ describe('Flyout service', function() {
   var TOLERANCE = 10;
   var testCompleted$ = new Rx.Subject();
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/flyout.scss'));
-  beforeEach(angular.mock.module('dataCards/theme/default.scss'));
+  require('app/styles/dataCards/flyout.scss');
+  require('app/styles/dataCards/theme/default.scss');
 
   beforeEach(inject(function($injector) {
     FlyoutService = $injector.get('FlyoutService');

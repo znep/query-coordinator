@@ -16,8 +16,10 @@ describe('featureMap', function() {
   var testTimeoutScheduler;
   var normalTimeoutScheduler;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/feature-map.scss'));
+  beforeEach(angular.mock.module('dataCards.templates'));
+  require('app/styles/dataCards/feature-map.scss');
 
   beforeEach(function() {
     angular.mock.module(function($provide, $controllerProvider) {

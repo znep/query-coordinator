@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/card.html');
-const angular = require('angular');
-function CardDirective(
+
+module.exports = function CardDirective(
   PolaroidService,
   ServerConfig,
   FlyoutService,
@@ -291,8 +291,4 @@ function CardDirective(
         });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('card', CardDirective);
+};

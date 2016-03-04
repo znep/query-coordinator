@@ -1,5 +1,6 @@
-const angular = require('angular');
-function FeatureMapService(DataTypeFormatService, linkyFilter) {
+var DOMPurify = require('DOMPurify');
+
+module.exports = function FeatureMapService(DataTypeFormatService, linkyFilter) {
 
   function formatRowInspectorQueryResponse(data) {
     // Extract and format titles from the provided data
@@ -210,8 +211,4 @@ function FeatureMapService(DataTypeFormatService, linkyFilter) {
   return {
     formatRowInspectorQueryResponse: formatRowInspectorQueryResponse
   };
-}
-
-angular.
-  module('dataCards.services').
-    factory('FeatureMapService', FeatureMapService);
+};

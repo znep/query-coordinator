@@ -1,5 +1,4 @@
-const angular = require('angular');
-function ManageLensDialogSharingController($scope, $q, $window, I18n, http, rx) {
+module.exports = function ManageLensDialogSharingController($scope, $q, $window, I18n, http, rx) {
   const Rx = rx;
   var self = this;
 
@@ -234,8 +233,4 @@ function ManageLensDialogSharingController($scope, $q, $window, I18n, http, rx) 
         return share.initialType !== share.type;
       });
     });
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('ManageLensDialogSharingController', ManageLensDialogSharingController);
+};

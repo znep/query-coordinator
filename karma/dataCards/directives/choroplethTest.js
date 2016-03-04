@@ -13,8 +13,9 @@ describe('Choropleth', function() {
   var testTimeoutScheduler;
   var normalTimeoutScheduler;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/choropleth.scss'));
+  require('app/styles/dataCards/choropleth.scss');
 
   beforeEach(angular.mock.module(function($controllerProvider) {
     $controllerProvider.register('ChoroplethController', _.noop);

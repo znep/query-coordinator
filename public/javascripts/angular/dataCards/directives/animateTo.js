@@ -1,11 +1,10 @@
-const angular = require('angular');
 /**
  * An attribute you can add to a tag, to have it animate between positions.
  * Assumptions:
  *   The position of the element is either fixed or absolute.
  *   There is one child element, and it is the one setting the background color.
  */
-angular.module('dataCards.directives').directive('animateTo', function() {
+module.exports = function() {
   var ANIMATION_DURATION = 0.25;
   var ANIMATION_STAGGER = 0.04;
   return {
@@ -152,4 +151,4 @@ angular.module('dataCards.directives').directive('animateTo', function() {
       }
     }
   };
-});
+};

@@ -21,6 +21,7 @@ describe('Rich text editor', function() {
     }
   });
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   var jqueryFx;

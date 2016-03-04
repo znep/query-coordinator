@@ -3,7 +3,7 @@ describe('Request ID service', function() {
 
   var RequestId;
 
-  beforeEach(angular.mock.module('socrataCommon.services'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
     inject(function($injector) {

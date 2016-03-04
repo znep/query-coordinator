@@ -4,6 +4,7 @@ describe('Revert button', function() {
   var testHelpers;
   var rootScope;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {

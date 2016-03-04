@@ -17,7 +17,7 @@ describe('Socrata-flavored $http service', function() {
   beforeEach(function() {
     fakeClock = sinon.useFakeTimers(INITIAL_TIME);
 
-    angular.mock.module('socrataCommon.services', function($provide) {
+    angular.mock.module('dataCards', function($provide) {
       $provide.value('RequestId', {
         generate: function() {
           return MOCK_GUID;

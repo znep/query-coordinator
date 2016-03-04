@@ -1,4 +1,3 @@
-const angular = require('angular');
 /*
 We are now introducing 'Provenance' to our users. Provenance has two values:
   - OFFICIAL
@@ -7,7 +6,7 @@ We are now introducing 'Provenance' to our users. Provenance has two values:
 Eventually we want to introduce another value, "COMMUNITY", but for now it is either OFFICIAL or null.
 */
 
-function ManageLensDialogProvenanceController($scope, http, $q, rx) {
+module.exports = function ManageLensDialogProvenanceController($scope, http, $q, rx) {
   const Rx = rx;
 
   var initialProvenance$ = $scope.page.observe('provenance');
@@ -58,8 +57,4 @@ function ManageLensDialogProvenanceController($scope, http, $q, rx) {
     hasChanges: false,
     hasErrors: false
   };
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('ManageLensDialogProvenanceController', ManageLensDialogProvenanceController);
+};

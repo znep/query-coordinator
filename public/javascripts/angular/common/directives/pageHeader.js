@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/common/pageHeader.html');
-const angular = require('angular');
-function pageHeader(ServerConfig, I18n, $window) {
+
+module.exports = function pageHeader(ServerConfig, I18n, $window) {
   var DEFAULT_LOGO_URL = '/stylesheets/images/common/socrata_logo_white.png';
 
   var DEFAULT_VALUES = {
@@ -40,8 +40,4 @@ function pageHeader(ServerConfig, I18n, $window) {
       $scope.currentUser = $window.currentUser;
     }
   };
-}
-
-angular.
-  module('socrataCommon.directives').
-  directive('pageHeader', pageHeader);
+};

@@ -6,6 +6,7 @@ describe('lensType', function() {
   var Mockumentary;
   var element = '<lens-type />';
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {

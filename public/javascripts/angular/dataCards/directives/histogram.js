@@ -1,5 +1,4 @@
 var templateUrl = require('angular_templates/dataCards/histogram.html');
-const angular = require('angular');
 function extentComparer(originalValue, newValue) {
   if (_.isArray(originalValue) && _.isArray(newValue)) {
     return (originalValue[0] === newValue[0]) && (originalValue[1] === newValue[1]);
@@ -8,7 +7,7 @@ function extentComparer(originalValue, newValue) {
   }
 }
 
-function histogram(
+module.exports = function histogram(
   FlyoutService,
   HistogramVisualizationService,
   Constants,
@@ -322,8 +321,4 @@ function histogram(
 
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('histogram', histogram);
+};

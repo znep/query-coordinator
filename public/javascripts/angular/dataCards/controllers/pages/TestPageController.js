@@ -1,7 +1,3 @@
-const angular = require('angular');
-function TestPageController() {
-}
+module.exports = function TestPageController() {
 
-angular.
-module('dataCards.controllers').
-controller('TestPageController', TestPageController);
+};

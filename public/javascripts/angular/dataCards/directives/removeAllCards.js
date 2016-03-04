@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/removeAllCards.html');
-const angular = require('angular');
-function removeAllCards($window, WindowState) {
+
+module.exports = function removeAllCards($window, WindowState) {
   return {
     restrict: 'E',
     scope: {
@@ -47,8 +47,4 @@ function removeAllCards($window, WindowState) {
         });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('removeAllCards', removeAllCards);
+};

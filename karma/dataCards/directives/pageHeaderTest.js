@@ -12,6 +12,7 @@ describe('pageHeader', function() {
     'logo_url': 'http://placekitten.com/g/500/200'
   };
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {

@@ -1,8 +1,7 @@
-const angular = require('angular');
 var templateUrl = require('angular_templates/dataCards/columnChart.html');
 const ColumnChart = require('socrata-visualizations').views.ColumnChart;
 
-function columnChart(
+module.exports = function columnChart(
   $parse,
   $timeout,
   FlyoutService,
@@ -288,8 +287,4 @@ function columnChart(
       }
     }
   };
-}
-
-angular.
-  module('socrataCommon.directives').
-  directive('columnChart', columnChart);
+};

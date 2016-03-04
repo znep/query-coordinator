@@ -10,8 +10,9 @@ describe('manageLensDialog', function() {
   var $timeout;
   var $q;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/cards.scss'));
+  require('app/styles/dataCards/cards.scss');
 
   beforeEach(angular.mock.module(function($provide) {
     _$provide = $provide;
@@ -162,6 +163,7 @@ describe('manageLensDialog', function() {
   describe('when view moderation is enabled', function() {
     beforeEach(function() {
       ServerConfig.override('featureSet', {view_moderation: true});
+      ServerConfig.override('allowDataLensOwnerChange', false);
     });
 
     it('should have three options if the page has no moderation status', function() {

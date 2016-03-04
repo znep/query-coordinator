@@ -17,9 +17,10 @@ describe('suggestionToolPanel', function() {
   var timeoutScheduler;
   var testScheduler;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/cards.scss'));
-  beforeEach(angular.mock.module('dataCards/search.scss'));
+  require('app/styles/dataCards/cards.scss');
+  require('app/styles/dataCards/search.scss');
 
   beforeEach(function() {
     timeoutScheduler = Rx.Scheduler.timeout;
@@ -56,6 +57,8 @@ describe('suggestionToolPanel', function() {
 
     testHelpers.mockDirective(_$provide, 'spinner');
     testHelpers.mockDirective(_$provide, 'clearableInput');
+
+    ServerConfig.override('enableSearchSuggestions', true);
   }));
 
   afterEach(function() {

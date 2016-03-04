@@ -158,19 +158,10 @@ function generateOldUxConfig() {
 function generateDataLensConfig() {
   var angularDir = path.resolve(projectRootDir, 'public/javascripts/angular');
   var templateDir = path.resolve(projectRootDir, 'public/angular_templates');
-  var srcDir = path.resolve(angularDir, 'src');
-
-  var entries = getEntriesInDir(srcDir);
-
-  console.log('Building datalens entrypoints: ', entries);
-
-  var entry = getEntryObjectFromArray(
-    entries.map(function(entryPoint) { return [entryPoint, './' + entryPoint]; })
-  );
 
   return _.defaultsDeep({
-    context: srcDir,
-    entry: entry,
+    context: angularDir,
+    entry: path.resolve(angularDir, 'dataCards/index.js'),
     externals: datalensWebpackExternals,
     module: {
       loaders: [
@@ -205,7 +196,7 @@ function generateDataLensConfig() {
       ]
     },
     output: {
-      filename: isProduction() ? 'angular/[name]-[hash].js' : 'angular/[name].js'
+      filename: isProduction() ? 'angular/data-lens-[hash].js' : 'angular/data-lens.js'
     },
     plugins: [
       new ManifestPlugin({
@@ -219,7 +210,6 @@ function generateDataLensConfig() {
       }
     }
   }, baseConfig);
-
 }
 
 function generateDataLensMobileConfig() {

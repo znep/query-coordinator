@@ -1,4 +1,3 @@
-const angular = require('angular');
 // Errors that can happen within this service.
 var Errors = {
   NotLoggedIn: function() {},
@@ -12,7 +11,7 @@ function httpConfig(config) {
   }, config);
 }
 
-function UserSessionService($http, $q, rx) {
+module.exports = function UserSessionService($http, $q, rx) {
   const Rx = rx;
   // Get a promise for the current user.
   // Will be rejected with an appropriate error
@@ -76,8 +75,4 @@ function UserSessionService($http, $q, rx) {
     isAdmin: isAdmin,
     Errors: Errors
   };
-}
-
-angular.
-  module('socrataCommon.services').
-    service('UserSessionService', UserSessionService);
+};

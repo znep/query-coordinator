@@ -1,5 +1,4 @@
-const angular = require('angular');
-function ColumnChartService(Filter) {
+module.exports = function ColumnChartService(Filter) {
 
   function registerColumnChartEvents($scope, element) {
     element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', handleDatumSelect);
@@ -66,8 +65,4 @@ function ColumnChartService(Filter) {
     registerColumnChartEvents: registerColumnChartEvents,
     unregisterColumnChartEvents: unregisterColumnChartEvents
   };
-}
-
-angular.
-  module('dataCards.services').
-    factory('ColumnChartService', ColumnChartService);
+};

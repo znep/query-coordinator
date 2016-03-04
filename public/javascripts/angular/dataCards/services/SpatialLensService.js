@@ -1,5 +1,3 @@
-const angular = require('angular');
-
 var httpConfig = {
   requester: {
     requesterLabel: _.constant('spatial-lens-service')
@@ -7,7 +5,7 @@ var httpConfig = {
   cache: true
 };
 
-function SpatialLensService(http, rx, ServerConfig) {
+module.exports = function SpatialLensService(http, rx, ServerConfig) {
   var spatialLensService = {
     isSpatialLensEnabled: isSpatialLensEnabled,
     isSpatialLensAdminEnabled: isSpatialLensAdminEnabled,
@@ -148,8 +146,4 @@ function SpatialLensService(http, rx, ServerConfig) {
   }
 
   return spatialLensService;
-}
-
-angular.
-  module('dataCards.services').
-  factory('SpatialLensService', SpatialLensService);
+};

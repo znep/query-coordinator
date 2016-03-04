@@ -1,4 +1,3 @@
-const angular = require('angular');
 /**
  * A toolbar that controls the iframe, via squire.
  */
@@ -202,7 +201,7 @@ function removeChildren(node) {
 /**
  * A <rich-text-editor /> is meant to replace a <textarea />, and provide limited html formatting.
  */
-angular.module('socrataCommon.directives').directive('richTextEditor', function($window, I18n, SquireSource, rx) {
+module.exports = function($window, I18n, SquireSource, rx) {
   const Rx = rx;
   var toolbar;
   /**
@@ -355,4 +354,4 @@ angular.module('socrataCommon.directives').directive('richTextEditor', function(
                '<iframe allowtransparency="true" scrolling="auto" src="about:blank"/>'),
     link: init
   };
-});
+};

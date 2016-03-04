@@ -1,6 +1,4 @@
-const angular = require('angular');
-
-function MixpanelService($log, MixpanelEvents, MixpanelProperties, $window) {
+module.exports = function MixpanelService($log, MixpanelEvents, MixpanelProperties, $window) {
   // TODO: This file would be a good spot to ensure we only talk
   // to Mixpanel if it's enabled.
 
@@ -111,8 +109,4 @@ function MixpanelService($log, MixpanelEvents, MixpanelProperties, $window) {
     init: init,
     sendPayload: sendPayload
   };
-}
-
-angular.
-  module('dataCards.services').
-  service('MixpanelService', MixpanelService);
+};

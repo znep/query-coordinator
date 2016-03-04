@@ -9,7 +9,9 @@ describe('VectorTileDataService', function() {
   var tileserverHosts;
   var protocolBufferEndpointResponses = 'karma/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(function() {
     sinon.stub($, 'baseUrl', function(pathname) {

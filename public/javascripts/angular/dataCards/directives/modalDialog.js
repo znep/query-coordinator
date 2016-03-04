@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/modalDialog.html');
-const angular = require('angular');
-function modalDialog(WindowState, $window) {
+
+module.exports = function modalDialog(WindowState, $window) {
   return {
     restrict: 'E',
     scope: {
@@ -36,7 +36,4 @@ function modalDialog(WindowState, $window) {
       }).takeUntil($scope.$destroyAsObservable(element)).subscribe($scope.closeDialog);
     }
   };
-}
-
-angular.module('dataCards.directives').
-  directive('modalDialog', modalDialog);
+};

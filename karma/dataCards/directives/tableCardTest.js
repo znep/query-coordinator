@@ -118,10 +118,12 @@ describe('tableCard', function() {
   var descriptionColumnIndex;
   var idColumnIndex;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/card.scss'));
-  beforeEach(angular.mock.module('dataCards/cards.scss'));
-  beforeEach(angular.mock.module('dataCards/table.scss'));
+  beforeEach(angular.mock.module('dataCards.templates'));
+  require('app/styles/dataCards/card.scss');
+  require('app/styles/dataCards/cards.scss');
+  require('app/styles/dataCards/table.scss');
 
   beforeEach(angular.mock.module(function(_$controllerProvider_) {
     $controllerProvider = _$controllerProvider_;

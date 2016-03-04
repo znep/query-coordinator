@@ -370,10 +370,10 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'send correct facet params to Core Cly with browse' do
-      Clytemnestra
-        .expects(:search_views)
-        .with(core_cly_params)
-        .returns(Clytemnestra::ViewSearchResult.from_result(clytemnestra_payload))
+      Clytemnestra.
+        expects(:search_views).
+        with(core_cly_params).
+        returns(Clytemnestra::ViewSearchResult.from_result(clytemnestra_payload))
 
       get(:show, front_end_url_params)
       assert_response :success
@@ -384,10 +384,10 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'send correct facet params to Core Cly with embed' do
-      Clytemnestra
-        .expects(:search_views)
-        .with(core_cly_params)
-        .returns(Clytemnestra::ViewSearchResult.from_result(clytemnestra_payload))
+      Clytemnestra.
+        expects(:search_views).
+        with(core_cly_params).
+        returns(Clytemnestra::ViewSearchResult.from_result(clytemnestra_payload))
 
       get(:embed, front_end_url_params)
       assert_response :success
@@ -403,9 +403,9 @@ class BrowseControllerTest < ActionController::TestCase
       CurrentDomain.stubs(:cname).returns('data.seattle.gov') # for Cetera
 
       stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1') # TODO: update when moving to v2
-        .with(query: cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
-        .to_return(status: 200, body: cetera_payload, headers: {})
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1'). # TODO: update when moving to v2
+        with(query: cetera_params).
+        to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:show, front_end_url_params)
       assert_response :success
@@ -421,9 +421,9 @@ class BrowseControllerTest < ActionController::TestCase
       CurrentDomain.stubs(:cname).returns('data.seattle.gov') # for Cetera
 
       stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1') # TODO: update when moving to v2
-        .with(query: cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
-        .to_return(status: 200, body: cetera_payload, headers: {})
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: cetera_params).
+        to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:embed, front_end_url_params)
       assert_response :success
@@ -438,10 +438,9 @@ class BrowseControllerTest < ActionController::TestCase
 
     should 'send correct default params to Core with embed' do
       CoreServer::Base.unstub(:connection) # stubbed willy nilly
-      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
-        .with(query: default_core_cly_params,
-              headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
-        .to_return(status: 200, body: clytemnestra_payload, headers: {})
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
+        with(query: default_core_cly_params).
+        to_return(status: 200, body: clytemnestra_payload, headers: {})
       get(:embed, {})
       assert_response :success
       assert_match(/This is my new view blah blah blah/, @response.body)
@@ -450,10 +449,9 @@ class BrowseControllerTest < ActionController::TestCase
 
     should 'send correct default params to Core with browse' do
       CoreServer::Base.unstub(:connection) # stubbed willy nilly
-      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
-        .with(query: default_core_cly_params,
-              headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
-        .to_return(status: 200, body: clytemnestra_payload, headers: {})
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
+        with(query: default_core_cly_params).
+        to_return(status: 200, body: clytemnestra_payload, headers: {})
       get(:show, {})
       assert_response :success
       assert_match(/This is my new view blah blah blah/, @response.body)
@@ -462,9 +460,9 @@ class BrowseControllerTest < ActionController::TestCase
 
     should 'send default params to Cetera with embed' do
       stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
-        .with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
-        .to_return(status: 200, body: cetera_payload, headers: {})
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: default_cetera_params).
+        to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:embed, {})
       assert_response :success
@@ -474,9 +472,9 @@ class BrowseControllerTest < ActionController::TestCase
 
     should 'send default params to Cetera with browse' do
       stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
-        .with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
-        .to_return(status: 200, body: cetera_payload, headers: {})
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: default_cetera_params).
+        to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:show, {})
       assert_response :success
@@ -487,9 +485,9 @@ class BrowseControllerTest < ActionController::TestCase
     # See EN-3383
     should 'truncate custom cutoffs as configured' do
       stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
-        .with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
-        .to_return(status: 200, body: cetera_payload, headers: {})
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' }).
+        to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:show, {})
       assert_response :success
@@ -538,6 +536,9 @@ class BrowseControllerTest < ActionController::TestCase
     ########
     # Cetera
 
+    cetera_selector = 'div.browse2-mobile-filter-header > div'
+    cetera_message = '0 Results' # browse2 does not disambiguate between failure and no results
+
     should 'fail gracefully on Cetera timeout' do
       stub_feature_flags_with(:cetera_search, true)
 
@@ -545,18 +546,15 @@ class BrowseControllerTest < ActionController::TestCase
         domains: ['example.com'], search_context: 'example.com', limit: 10
       )
 
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
-        .with(query: cetera_params)
-        .to_timeout
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: cetera_params).
+        to_timeout
 
       # Cetera should be paired with browse2
       get(:show, view_type: 'browse2')
       assert_response :success
 
-      selector = ['div.browse2-mobile-filter-header', 'div'].join(' > ')
-
-      # browse2 does not have a helpful error message indicate a service outage
-      assert_select(selector, /0 Results/)
+      assert_select cetera_selector, cetera_message
     end
 
     should 'fail gracefully on Cetera 500' do
@@ -568,16 +566,14 @@ class BrowseControllerTest < ActionController::TestCase
         limit: 10
       )
 
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
-        .with(query: cetera_params)
-        .to_return(status: 500)
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: cetera_params).
+        to_return(status: 500)
 
       get(:show, view_type: 'browse2')
       assert_response :success
 
-      selector = ['div.browse2-mobile-filter-header', 'div'].join(' > ')
-
-      assert_select(selector, /0 Results/)
+      assert_select cetera_selector, cetera_message
     end
 
     should 'fail gracefully on Cetera unexpected payload' do
@@ -589,77 +585,63 @@ class BrowseControllerTest < ActionController::TestCase
         limit: 10
       )
 
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1')
-        .with(query: cetera_params)
-        .to_return(status: 200, body: 'oh no they were ready for that!')
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: cetera_params).
+        to_return(status: 200, body: 'oh no they were ready for that!')
 
       get(:show, view_type: 'browse2')
       assert_response :success
 
-      selector = ['div.browse2-mobile-filter-header', 'div'].join(' > ')
-
-      assert_select(selector, /0 Results/)
+      assert_select cetera_selector, cetera_message
     end
 
     ##########
     # Core/Cly
 
+    core_cly_selector = 'div.browseList > div.results > div > span'
+    core_cly_message = # old browse has a helpful message indicating search is unavailable
+      'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
+
     should 'fail gracefully on Core/Cly timeout' do
       stub_feature_flags_with(:cetera_search, false)
       CoreServer::Base.unstub(:connection) # we stubbed all the things
 
-      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
-        .with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' })
-        .to_timeout
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
+        with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
+        to_timeout
 
       get(:show, {})
       assert_response :success
 
-      selector = ['div.browseList', 'div.results', 'div', 'span'].join(' > ')
-
-      # old browse has a helpful message indicating search is unavailable
-      assert_select(
-        selector,
-        'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
-      )
+      assert_select core_cly_selector, core_cly_message
     end
 
     should 'fail gracefully on Core/Cly 500' do
       stub_feature_flags_with(:cetera_search, false)
       CoreServer::Base.unstub(:connection)
 
-      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
-        .with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' })
-        .to_return(status: 500)
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
+        with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
+        to_return(status: 500)
 
       get(:show, {})
       assert_response :success
 
-      selector = ['div.browseList', 'div.results', 'div', 'span'].join(' > ')
-
-      assert_select(
-        selector,
-        'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
-      )
+      assert_select core_cly_selector, core_cly_message
     end
 
     should 'fail gracefully on Core/Cly unexpected payload' do
       stub_feature_flags_with(:cetera_search, false)
       CoreServer::Base.unstub(:connection)
 
-      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json')
-        .with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' })
-        .to_return(status: 200, body: 'core has been deprecated')
+      stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
+        with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
+        to_return(status: 200, body: 'core has been deprecated')
 
       get(:show, {})
       assert_response :success
 
-      selector = ['div.browseList', 'div.results', 'div', 'span'].join(' > ')
-
-      assert_select(
-        selector,
-        'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
-      )
+      assert_select core_cly_selector, core_cly_message
     end
   end
 end

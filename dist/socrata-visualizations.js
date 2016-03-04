@@ -12527,7 +12527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *
 	   * @return {Promise}
 	   */
-	  this.getTableData = function(columnNames, order, offset, limit) {
+	  this.getTableData = function(columnNames, order, offset, limit, whereClauseComponents) {
 	    utils.assertInstanceOf(columnNames, Array);
 	    utils.assertIsOneOfTypes(offset, 'number');
 	    utils.assertIsOneOfTypes(limit, 'number');
@@ -12540,12 +12540,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      '[0].columnName'
 	    );
 
-	    var queryString = '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}'.format(
+	    var queryString = '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}'.format(
 	      columnNames.map(_escapeColumnName).join(','),
 	      order[0].columnName,
 	      (order[0].ascending ? 'ASC' : 'DESC'),
 	      limit,
-	      offset
+	      offset,
+	      whereClauseComponents ? "&$where=" + whereClauseComponents : ''
 	    );
 
 	    return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(function(data) {
@@ -19200,6 +19201,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var utils = __webpack_require__(3);
 	var Table = __webpack_require__(15);
 	var Pager = __webpack_require__(13);
+	var SoqlHelpers = __webpack_require__(41);
 	var SoqlDataProvider = __webpack_require__(26);
 	var MetadataProvider = __webpack_require__(25);
 
@@ -19284,6 +19286,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    datasetRowCount: null
 	  };
 
+	  var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vif);
+
 	  _attachEvents();
 
 	  $element.addClass('socrata-paginated-table');
@@ -19297,7 +19301,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _setDataQuery(
 	    0, // Offset
 	    _computePageSize(),
-	    _.get(vif, 'configuration.order')
+	    _.get(vif, 'configuration.order'),
+	    whereClauseComponents
 	  ).then(function() {
 	    visualization.freezeColumnWidthsAndRender();
 	  });
@@ -19325,6 +19330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.on('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
 	    $element.on('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
 	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
+	    $element.on('SOCRATA_VISUALIZATION_CHANGE_FILTER', _handleFilterChange);
 	  }
 
 	  function _detachEvents() {
@@ -19334,6 +19340,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $element.off('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
 	    $element.off('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
 	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
+	    $element.off('SOCRATA_VISUALIZATION_CHANGE_FILTER', _handleFilterChange);
 	  }
 
 	  function _render() {
@@ -19397,7 +19404,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _setDataQuery(
 	      0,
 	      _renderState.fetchedData.pageSize,
-	      newOrder
+	      newOrder,
+	      _renderState.fetchedData.whereClauseComponents
 	    );
 	  }
 
@@ -19433,14 +19441,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _setDataQuery(
 	      _renderState.fetchedData.startIndex + _renderState.fetchedData.pageSize,
 	      _renderState.fetchedData.pageSize,
-	      _renderState.fetchedData.order
+	      _renderState.fetchedData.order,
+	      _renderState.fetchedData.whereClauseComponents
 	    );
 	  }
 	  function _handlePrevious() {
 	    _setDataQuery(
 	      Math.max(0, _renderState.fetchedData.startIndex - _renderState.fetchedData.pageSize),
 	      _renderState.fetchedData.pageSize,
-	      _renderState.fetchedData.order
+	      _renderState.fetchedData.order,
+	      _renderState.fetchedData.whereClauseComponents
 	    );
 	  }
 
@@ -19455,9 +19465,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _setDataQuery(
 	        _renderState.fetchedData.startIndex,
 	        pageSize,
-	        _renderState.fetchedData.order
+	        _renderState.fetchedData.order,
+	        _renderState.fetchedData.whereClauseComponents
 	      );
 	    }
+	  }
+
+	  function _handleFilterChange(e) {
+	    var newWhereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(e.originalEvent);
+
+	    _setDataQuery(
+	      _renderState.fetchedData.startIndex,
+	      _renderState.fetchedData.pageSize,
+	      _renderState.fetchedData.order,
+	      newWhereClauseComponents
+	    );
 	  }
 
 	  function _computePageSize() {
@@ -19471,7 +19493,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Data Requests
 	   */
 
-	  function _setDataQuery(startIndex, pageSize, order) {
+	  function _setDataQuery(startIndex, pageSize, order, whereClauseComponents) {
 	    utils.assert(order.length === 1, 'order parameter must be an array with exactly one element.');
 
 	    if (_renderState.busy) {
@@ -19486,7 +19508,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _.pluck(displayableColumns, 'fieldName'),
 	        order,
 	        startIndex,
-	        pageSize
+	        pageSize,
+	        whereClauseComponents
 	      );
 	    });
 
@@ -19512,7 +19535,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          columns: displayableColumns,
 	          startIndex: startIndex,
 	          pageSize: pageSize,
-	          order: order
+	          order: order,
+	          whereClauseComponents: whereClauseComponents
 	        },
 	        busy: false
 	      });

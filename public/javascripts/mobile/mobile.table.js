@@ -49,14 +49,12 @@ module.exports = function(values, $target) {
   $tableElement.socrataTable(tableVIF);
 
   function handleFiltersUpdated(event, data) {
-    /* Destroy current table */
     tableVIF.filters = data.filters;
-    var destroyEvent = jQuery.Event('SOCRATA_VISUALIZATION_DESTROY'); // eslint-disable-line
-    $tableElement.trigger(destroyEvent);
 
-    /* Render new table */
-    console.log(tableVIF);
-    $tableElement.socrataTable(tableVIF);
+    var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_CHANGE_FILTER'); // eslint-disable-line
+    changeEvent.originalEvent = tableVIF;
+
+    $tableElement.trigger(changeEvent);
   }
 
   $(document).on('appliedFilters.qfb.socrata', handleFiltersUpdated);

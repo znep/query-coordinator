@@ -1,11 +1,20 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import LinkModalStore from '../../../app/assets/javascripts/editor/stores/LinkModalStore';
+import LinkTipStore from '../../../app/assets/javascripts/editor/stores/LinkTipStore';
+import LinkTipRenderer, {__RewireAPI__ as LinkTipRendererAPI} from '../../../app/assets/javascripts/editor/renderers/LinkTipRenderer';
+
 describe('LinkTipRenderer', function() {
-  'use strict';
 
   var $editor;
   var $body;
   var $linkTip;
   var renderer;
-  var storyteller = window.socrata.storyteller;
+  var dispatcher;
 
   beforeEach(function() {
     $body = $('body');
@@ -13,9 +22,16 @@ describe('LinkTipRenderer', function() {
 
     $body.append($editor);
 
-    renderer = new storyteller.LinkTipRenderer();
+    dispatcher = new Dispatcher();
 
-    storyteller.dispatcher.dispatch({
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+    LinkTipRendererAPI.__Rewire__('dispatcher', dispatcher);
+    LinkTipRendererAPI.__Rewire__('linkModalStore', new LinkModalStore());
+    LinkTipRendererAPI.__Rewire__('linkTipStore', new LinkTipStore());
+
+    renderer = new LinkTipRenderer();
+
+    dispatcher.dispatch({
       action: Actions.LINK_TIP_OPEN,
       editorId: 'test',
       text: 'text',
@@ -33,6 +49,11 @@ describe('LinkTipRenderer', function() {
   afterEach(function() {
     $editor.remove();
     renderer.destroy();
+
+    StoreAPI.__ResetDependency__('dispatcher');
+    LinkTipRendererAPI.__ResetDependency__('dispatcher');
+    LinkTipRendererAPI.__ResetDependency__('linkModalStore');
+    LinkTipRendererAPI.__ResetDependency__('linkTipStore');
   });
 
   describe('rendering', function() {
@@ -55,19 +76,16 @@ describe('LinkTipRenderer', function() {
 
   describe('events', function() {
     describe('causing dispatches', function() {
-      var manager;
       var text;
       var dispatch;
 
       beforeEach(function() {
-        dispatch = sinon.spy(storyteller.dispatcher, 'dispatch');
-        manager = storyteller.richTextEditorManager;
+        dispatch = sinon.spy(dispatcher, 'dispatch');
         text = document.createTextNode('Hello, World!');
 
         $body.append(text);
 
-        // Intense mock of richTextEditorManager
-        storyteller.richTextEditorManager = {
+        LinkTipRendererAPI.__Rewire__('richTextEditorManager', {
           getEditor: function() {
             return {
               getSquireInstance: function() {
@@ -80,12 +98,14 @@ describe('LinkTipRenderer', function() {
               }
             };
           }
-        };
+        });
       });
 
       afterEach(function() {
         dispatch.restore();
-        storyteller.richTextEditorManager = manager;
+
+        LinkTipRendererAPI.__ResetDependency__('richTextEditorManager');
+
         $body[0].removeChild(text);
       });
 
@@ -113,7 +133,7 @@ describe('LinkTipRenderer', function() {
     });
 
     it('should close when dispatching updates visibility', function() {
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.LINK_TIP_CLOSE
       });
 

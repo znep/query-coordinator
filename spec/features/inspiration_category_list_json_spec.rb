@@ -25,7 +25,7 @@ RSpec.describe 'inspiration block list json', type: :feature, js: true do
     # Get all inspiration block data, and render the user story with it
     page.evaluate_multiline_script("
       var inspirationBlocks = $('[data-block-content]');
-      var storyData = storyteller.storyStore.serializeStory(storyteller.userStoryUid);
+      var storyData = storyteller.storyStore.serializeStory(window.STORY_UID);
 
       // Insert all inspiration blocks
       $.each(inspirationBlocks, function(index, block) {
@@ -41,8 +41,8 @@ RSpec.describe 'inspiration block list json', type: :feature, js: true do
 
         if (shouldTestComponent) {
          storyteller.dispatcher.dispatch({
-           action: Actions.STORY_INSERT_BLOCK,
-           storyUid: storyteller.userStoryUid,
+           action: 'STORY_INSERT_BLOCK',
+           storyUid: window.STORY_UID,
            insertAt: 0,
            blockContent: blockContent
          });

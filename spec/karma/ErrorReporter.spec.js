@@ -1,12 +1,19 @@
-describe('ErrorReporter', function() {
-  'use strict';
+import _ from 'lodash';
 
-  var storyteller = window.socrata.storyteller;
-  var mockPayload = { error: { step: 'step' }, errorReporting: { message: 'a message', label: 'a label' } };
+import Actions from '../../app/assets/javascripts/editor/Actions';
+import ErrorReporter from '../../app/assets/javascripts/services/ErrorReporter';
+import { dispatcher } from '../../app/assets/javascripts/editor/Dispatcher';
+
+describe('ErrorReporter', function() {
+
+  var mockPayload = {
+    error: { step: 'step' },
+    errorReporting: { message: 'a message', label: 'a label' }
+  };
 
   function dispatchAction(action, payload) {
     payload = _.extend({ action: action }, payload);
-    storyteller.dispatcher.dispatch(payload);
+    dispatcher.dispatch(payload);
   }
 
   function assertEventSentToGoogleAnalytics(done, action) {
@@ -25,7 +32,7 @@ describe('ErrorReporter', function() {
   }
 
   beforeEach(function() {
-    new storyteller.ErrorReporter(); // eslint-disable-line no-new
+    new ErrorReporter(); // eslint-disable-line no-new
   });
 
   describe('FILE_UPLOAD_ERROR', function() {

@@ -17,9 +17,9 @@ RSpec.describe AirbrakeHelper, type: :helper do
   describe '#airbrake_config_for_js' do
     it 'returns a hash with config values' do
       expected = {
-        environment: environment,
-        projectId: project_id,
-        projectKey: project_key
+        ENVIRONMENT_NAME: environment,
+        PROJECT_ID: project_id,
+        API_KEY: project_key
       }
       expect(airbrake_config_for_js).to eq(expected)
     end
@@ -29,9 +29,9 @@ RSpec.describe AirbrakeHelper, type: :helper do
 
       it 'has environment set to Rails.env' do
         expected = {
-          environment: rails_env,
-          projectId: project_id,
-          projectKey: project_key
+          ENVIRONMENT_NAME: rails_env,
+          PROJECT_ID: project_id,
+          API_KEY: project_key
         }
         expect(airbrake_config_for_js).to eq(expected)
       end

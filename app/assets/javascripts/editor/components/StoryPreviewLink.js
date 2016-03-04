@@ -1,35 +1,28 @@
-/*
- * A component that renders a story title.
- */
-(function($, root) {
+import $ from 'jQuery';
 
-  'use strict';
+import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
+$.fn.storyPreviewLink = StoryPreviewLink;
 
-  $.fn.storyPreviewLink = function() {
-    var $this = $(this);
-    var disabled = false;
+export default function StoryPreviewLink() {
+  var $this = $(this);
+  var disabled = false;
 
-    function render() {
-      $this.toggleClass('disabled', disabled);
-    }
+  function render() {
+    $this.toggleClass('disabled', disabled);
+  }
 
-    storyteller.storySaveStatusStore.addChangeListener(function() {
-      disabled = storyteller.storySaveStatusStore.isStoryDirty();
-      render();
-    });
+  storySaveStatusStore.addChangeListener(function() {
+    disabled = storySaveStatusStore.isStoryDirty();
     render();
+  });
+  render();
 
-    $this.on('click', function(event) {
-      if (disabled) {
-        event.preventDefault();
-      }
-    });
+  $this.on('click', function(event) {
+    if (disabled) {
+      event.preventDefault();
+    }
+  });
 
-    return this;
-  };
-
-}(jQuery, window));
-
+  return this;
+}

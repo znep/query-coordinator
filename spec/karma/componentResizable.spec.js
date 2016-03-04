@@ -1,17 +1,29 @@
-describe('componentResizable jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
+import Unidragger from 'unidragger';
 
+import {__RewireAPI__ as componentResizableAPI} from '../../app/assets/javascripts/editor/componentResizable';
+
+describe('componentResizable jQuery plugin', function() {
+
+  var testDom;
   var $component;
   var bindHandlesStub;
 
   beforeEach(function() {
+    bindHandlesStub = sinon.spy(Unidragger.prototype, 'bindHandles');
+
+    testDom = $('<div>');
     testDom.append('<div>');
     $component = testDom.children('div');
-    bindHandlesStub = sinon.spy(Unidragger.prototype, 'bindHandles');
+
+    $(document.body).append(testDom);
+    componentResizableAPI.__Rewire__('Unidragger', Unidragger);
   });
 
   afterEach(function() {
+    testDom.remove();
     bindHandlesStub.restore();
+    componentResizableAPI.__ResetDependency__('Unidragger');
   });
 
   it('should return a jQuery object for chaining', function() {

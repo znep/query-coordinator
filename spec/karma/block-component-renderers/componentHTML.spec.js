@@ -1,17 +1,53 @@
-describe('componentHTML jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
 
+import {__RewireAPI__ as componentHTMLAPI} from '../../../app/assets/javascripts/editor/block-component-renderers/componentHTML';
+
+describe('componentHTML jQuery plugin', function() {
+
+  var testDom;
   var $component;
-  var storyteller = window.socrata.storyteller;
+
+  var editorMock = function() {
+    return {
+      setContent: setContentSpy,
+      applyThemeClass: applyThemeClassSpy,
+      addContentClass: addContentClassSpy
+    };
+  };
+  var applyThemeClassSpy = sinon.spy();
+  var addContentClassSpy = sinon.spy();
+  var deleteEditorSpy = sinon.spy();
+  var getEditorSpy = sinon.spy(editorMock);
+  var setContentSpy = sinon.spy();
+  var createEditorSpy = sinon.spy(editorMock);
 
   beforeEach(function() {
+    testDom = $('<div></div>');
     testDom.append('<div>');
     $component = testDom.children('div');
-    storyteller.RichTextEditorManagerMocker.mock();
+    $(document.body).append(testDom);
+
+    componentHTMLAPI.__Rewire__('richTextEditorManager', {
+      createEditor: createEditorSpy,
+      applyThemeClass: applyThemeClassSpy,
+      addContentClass: addContentClassSpy,
+      deleteEditor: deleteEditorSpy,
+      getEditor: getEditorSpy,
+      setContent: setContentSpy
+    });
   });
 
   afterEach(function() {
-    storyteller.RichTextEditorManagerMocker.unmock();
+    testDom.remove();
+
+    createEditorSpy.reset();
+    applyThemeClassSpy.reset();
+    addContentClassSpy.reset();
+    deleteEditorSpy.reset();
+    getEditorSpy.reset();
+    setContentSpy.reset();
+
+    componentHTMLAPI.__ResetDependency__('richTextEditorManager');
   });
 
   it('should throw when passed invalid arguments', function() {
@@ -38,13 +74,12 @@ describe('componentHTML jQuery plugin', function() {
     var theme = 'classic';
 
     beforeEach(function() {
-      storyteller.RichTextEditorManagerMocker.reset();
       $component = $component.componentHTML(componentData, theme);
       editorId = $component.attr('data-editor-id');
     });
 
     it('should return a jQuery object for chaining', function() {
-      assert.instanceOf($component, jQuery);
+      assert.instanceOf($component, $);
     });
 
     it('sets the data-editor-id attribute on the $component', function() {
@@ -52,26 +87,26 @@ describe('componentHTML jQuery plugin', function() {
     });
 
     it('calls createEditor on richTextEditorManager', function() {
-      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.createEditorSpy, $component, editorId, initialValue);
+      sinon.assert.calledWith(createEditorSpy, $component, editorId, initialValue);
     });
 
     it('calls applyThemeClass during editor creation', function() {
-      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.applyThemeClassSpy, theme);
+      sinon.assert.calledWith(applyThemeClassSpy, theme);
     });
 
     it('does not call addContentClass during editor creation', function() {
-      sinon.assert.notCalled(storyteller.RichTextEditorManagerMocker.addContentClass);
+      sinon.assert.notCalled(addContentClassSpy);
     });
 
     describe('that is then destroyed', function() {
       it('should call deleteEditor on richTextEditorManager', function() {
-        sinon.assert.notCalled(storyteller.RichTextEditorManagerMocker.deleteEditorSpy);
+        sinon.assert.notCalled(deleteEditorSpy);
 
         // It should be safe to destroy multiple times.
         $component.trigger('destroy').trigger('destroy');
 
-        sinon.assert.calledOnce(storyteller.RichTextEditorManagerMocker.deleteEditorSpy);
-        sinon.assert.calledWithExactly(storyteller.RichTextEditorManagerMocker.deleteEditorSpy, editorId);
+        sinon.assert.calledOnce(deleteEditorSpy);
+        sinon.assert.calledWithExactly(deleteEditorSpy, editorId);
       });
     });
 
@@ -80,8 +115,8 @@ describe('componentHTML jQuery plugin', function() {
         var newValue = 'something';
 
         $component.componentHTML({type: 'html', value: newValue}, theme);
-        sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.getEditorSpy, editorId);
-        sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.setContentSpy, newValue);
+        sinon.assert.calledWith(getEditorSpy, editorId);
+        sinon.assert.calledWith(setContentSpy, newValue);
       });
     });
   });
@@ -95,12 +130,11 @@ describe('componentHTML jQuery plugin', function() {
     };
 
     beforeEach(function() {
-      storyteller.RichTextEditorManagerMocker.reset();
       $component = $component.componentHTML(componentData, theme, options);
     });
 
     it('does not call addContentClass during editor creation', function() {
-      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.addContentClass, 'the-extra-content-class');
+      sinon.assert.calledWith(addContentClassSpy, 'the-extra-content-class');
     });
   });
 

@@ -1,6 +1,13 @@
-describe('componentAssetSelector jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
+import _ from 'lodash';
 
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
+import '../../../app/assets/javascripts/editor/block-component-renderers/componentAssetSelector';
+
+describe('componentAssetSelector jQuery plugin', function() {
+
+  var testDom;
   var $component;
 
   var validComponentData = {
@@ -8,8 +15,14 @@ describe('componentAssetSelector jQuery plugin', function() {
   };
 
   beforeEach(function() {
+    testDom = $('<div>');
     testDom.append('<div>');
     $component = testDom.children('div');
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should throw when passed invalid arguments', function() {
@@ -50,8 +63,10 @@ describe('componentAssetSelector jQuery plugin', function() {
       assert.equal(
         $component.attr('data-action'),
         Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
-        'Asset Selector component should have the attribute data-action={0}'.
-          format(Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT)
+        StorytellerUtils.format(
+          'Asset Selector component should have the attribute data-action={0}',
+          Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT
+        )
       );
     });
   });

@@ -7,14 +7,13 @@
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
   <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
+  <%= stylesheet_link_tag 'story-view', media: 'all' %>
+
+  <script type="text/javascript">
+    window.ENABLE_NEW_STORY_PAGE_VIEW_METRICS = <%= Rails.application.config.enable_new_story_page_view_metrics %>;
+  </script>
+
   <%= google_font_code_embed %>
-  <%= javascript_include_tag 'airbrake-js-client/dist/client' %>
-  <%= javascript_include_tag 'application' %>
-  <% if needs_view_assets? %>
-    <%= stylesheet_link_tag 'story-view', media: 'all' %>
-    <%= javascript_include_tag 'view' %>
-  <% end %>
-  <%= javascript_include_tag('test') if Rails.env.test? %>
 
   <!-- Twitter Sharing Metadata -->
   <meta name="twitter:card" content="summary_large_image">
@@ -34,7 +33,10 @@
 
 <%= yield %>
 
-<%= render 'shared/i18n_for_js' %>
-<%= render 'shared/app_config_for_js' %>
+<% if Rails.env.test? -%>
+  <%= javascript_include_tag 'sinon-server-1.17.3' %>
+  <%= storyteller_javascript_include_tag 'test' %>
+<% end -%>
+<%= storyteller_javascript_include_tag 'view' %>
 </body>
 </html>

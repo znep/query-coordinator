@@ -1,34 +1,28 @@
-/*
- * A component that renders a story title.
- */
-(function($, root) {
+import $ from 'jQuery';
 
-  'use strict';
+import StorytellerUtils from '../../StorytellerUtils';
+import { storyStore } from '../stores/StoryStore';
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
+$.fn.storyTitle = StoryTitle;
 
-  $.fn.storyTitle = function(storyUid) {
+export default function StoryTitle(storyUid) {
 
-    utils.assertIsOneOfTypes(storyUid, 'string');
+  StorytellerUtils.assertIsOneOfTypes(storyUid, 'string');
 
-    var titleNodes = this;
+  var titleNodes = this;
 
-    function render() {
-      titleNodes.each(function() {
-        var title = storyteller.storyStore.getStoryTitle(storyUid);
+  function render() {
+    titleNodes.each(function() {
+      var title = storyStore.getStoryTitle(storyUid);
 
-        $(this).
-          text(title).
-          attr('title', title);
-      });
-    }
+      $(this).
+        text(title).
+        attr('title', title);
+    });
+  }
 
-    storyteller.storyStore.addChangeListener(render);
-    render();
+  storyStore.addChangeListener(render);
+  render();
 
-    return this;
-  };
-
-}(jQuery, window));
+  return this;
+}

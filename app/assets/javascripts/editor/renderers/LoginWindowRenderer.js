@@ -1,42 +1,34 @@
-(function() {
-  'use strict';
+import Constants from '../Constants';
+import { userSessionStore } from '../stores/UserSessionStore';
 
-  var socrata = window.socrata;
-  var storyteller = socrata.storyteller;
+/*
+ * Renders a login window if a login is in progress.
+ * Related action: LOGIN_BUTTON_CLICK
+ */
+export default function LoginWindowRenderer() {
+  var loginWindow = null;
 
-  var LOGIN_PATH = '/login?return_to=/stories/post_login';
+  userSessionStore.addChangeListener(function() {
+    var loginInProgress = userSessionStore.loginInProgress();
 
-  /*
-   * Renders a login window if a login is in progress.
-   * Related action: LOGIN_BUTTON_CLICK
-   */
-  function LoginWindowRenderer() {
-    var loginWindow = null;
-
-    storyteller.userSessionStore.addChangeListener(function() {
-      var loginInProgress = storyteller.userSessionStore.loginInProgress();
-
-      if (loginInProgress) {
-        openLoginWindow();
-      } else {
-        closeLoginWindow();
-      }
-
-    });
-
-    function openLoginWindow() {
-      if (!loginWindow) {
-        loginWindow = window.open(LOGIN_PATH);
-      }
+    if (loginInProgress) {
+      openLoginWindow();
+    } else {
+      closeLoginWindow();
     }
 
-    function closeLoginWindow() {
-      if (loginWindow) {
-        loginWindow.close();
-        loginWindow = null;
-      }
+  });
+
+  function openLoginWindow() {
+    if (!loginWindow) {
+      loginWindow = window.open(Constants.LOGIN_PATH);
     }
   }
 
-  storyteller.LoginWindowRenderer = LoginWindowRenderer;
-})();
+  function closeLoginWindow() {
+    if (loginWindow) {
+      loginWindow.close();
+      loginWindow = null;
+    }
+  }
+}

@@ -1,9 +1,18 @@
-describe('SettingsPanel jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
+import _ from 'lodash';
 
+import StandardMocks from '../StandardMocks';
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import {__RewireAPI__ as SettingsPanelAPI} from '../../../app/assets/javascripts/editor/components/SettingsPanel';
+
+describe('SettingsPanel jQuery plugin', function() {
+
+  var testDom;
   var node;
   var handle;
-  var storyteller = window.socrata.storyteller;
+  var dispatcher;
+  var coreSavingStore;
 
   beforeEach(function() {
     var dom = [
@@ -22,52 +31,62 @@ describe('SettingsPanel jQuery plugin', function() {
       '</div>'
     ].join('');
 
+    testDom = $('<div>');
     testDom.append(dom);
     testDom.append('<div class="handle">');
 
     node = testDom.find('.panel');
     handle = testDom.find('.handle');
 
-    storyteller.userStoryUid = standardMocks.validStoryUid;
+    $(document.body).append(testDom);
 
-    // We need to get rid of mocks - they have too much behavior we'd have to mock and override.
-    // We'll just provide our own implementations of what we care about.
-    standardMocks.remove();
+    dispatcher = new Dispatcher();
 
-    window.socrata.storyteller.dispatcher = new Flux.Dispatcher();
-
-    storyteller.storySaveStatusStore = {
-      addChangeListener: _.noop,
-      isStoryDirty: _.constant(true)
-    };
-
-    storyteller.storyStore = {
-      addChangeListener: _.noop,
-      getStoryTitle: _.constant(standardMocks.validStoryTitle),
-      getStoryDescription: _.constant(standardMocks.validStoryDescription),
-      getStoryPermissions: _.constant({ isPublic: true }),
-      getStoryPublishedStory: _.constant({}),
-      getStoryDigest: _.constant('')
-    };
-
-    storyteller.coreSavingStore = {
+    coreSavingStore = {
       addChangeListener: function(listener) {
-        storyteller.coreSavingStore.listeners.push(listener);
+        coreSavingStore.listeners.push(listener);
       },
       triggerChange: function() {
-        _.each(this.listeners, function(listener) { listener(); });
+        _.each(coreSavingStore.listeners, function(listener) { listener(); });
       },
       listeners: [],
       isSaveInProgress: _.constant(false),
       lastRequestSaveErrorForStory: _.constant(null)
-
     };
+
+    SettingsPanelAPI.__Rewire__('dispatcher', dispatcher);
+    SettingsPanelAPI.__Rewire__('StoryPermissionsRenderer', _.noop);
+
+    SettingsPanelAPI.__Rewire__('Environment', {
+      STORY_UID: StandardMocks.validStoryUid
+    });
+
+    SettingsPanelAPI.__Rewire__('storyStore', {
+      addChangeListener: _.noop,
+      getStoryTitle: _.constant('Title'),
+      getStoryDescription: _.constant('Description'),
+      getStoryPermissions: _.constant({ isPublic: true }),
+      getStoryPublishedStory: _.constant({}),
+      getStoryDigest: _.constant('')
+    });
+
+    SettingsPanelAPI.__Rewire__('coreSavingStore', coreSavingStore);
+  });
+
+  afterEach(function() {
+    testDom.remove();
+
+    SettingsPanelAPI.__ResetDependency__('dispatcher');
+    SettingsPanelAPI.__ResetDependency__('StoryPermissionsRenderer');
+    SettingsPanelAPI.__ResetDependency__('Environment');
+    SettingsPanelAPI.__ResetDependency__('storyStore');
+    SettingsPanelAPI.__ResetDependency__('coreSavingStore');
   });
 
   function setIsSavingAndLastError(isSaveInProgress, lastSaveError) {
-    storyteller.coreSavingStore.isSaveInProgress = _.constant(isSaveInProgress);
-    storyteller.coreSavingStore.lastRequestSaveErrorForStory = _.constant(lastSaveError);
-    storyteller.coreSavingStore.triggerChange();
+    coreSavingStore.isSaveInProgress = _.constant(isSaveInProgress);
+    coreSavingStore.lastRequestSaveErrorForStory = _.constant(lastSaveError);
+    coreSavingStore.triggerChange();
   }
 
   it('should throw when passed invalid arguments', function() {
@@ -106,14 +125,14 @@ describe('SettingsPanel jQuery plugin', function() {
         });
 
         it('should be prepopulated with the current story title', function() {
-          assert.equal(field.val(), standardMocks.validStoryTitle);
+          assert.equal(field.val(), 'Title');
         });
 
         describe('when edited', function() {
           var newTitle;
 
           beforeEach(function() {
-            newTitle = standardMocks.validStoryTitle + 'foobar';
+            newTitle = 'foobar';
             field.val(newTitle);
             field.trigger('input');
           });
@@ -131,7 +150,7 @@ describe('SettingsPanel jQuery plugin', function() {
             assert.lengthOf(node.find('.settings-save-btn:enabled'), 1);
 
             // Also test that it disables again if I edit back.
-            field.val(standardMocks.validStoryTitle);
+            field.val('Title');
             field.trigger('input');
             assert.lengthOf(node.find('.settings-save-btn:disabled'), 1);
           });
@@ -141,7 +160,7 @@ describe('SettingsPanel jQuery plugin', function() {
               it('should case a STORY_SET_TITLE action, then a STORY_SAVE_METADATA action', function() {
                 var actions = [];
 
-                storyteller.dispatcher.register(function(payload) {
+                dispatcher.register(function(payload) {
                   actions.push(payload);
                 });
 
@@ -152,10 +171,10 @@ describe('SettingsPanel jQuery plugin', function() {
                   [ Actions.STORY_SET_TITLE, Actions.STORY_SAVE_METADATA ]
                 );
 
-                assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
+                assert.equal(actions[0].storyUid, StandardMocks.validStoryUid);
                 assert.equal(actions[0].title, newTitle);
 
-                assert.equal(actions[1].storyUid, standardMocks.validStoryUid);
+                assert.equal(actions[1].storyUid, StandardMocks.validStoryUid);
               });
             });
 
@@ -169,7 +188,7 @@ describe('SettingsPanel jQuery plugin', function() {
               it('should cause a STORY_SET_TITLE action, then a STORY_SAVE_METADATA action', function() {
                 var actions = [];
 
-                storyteller.dispatcher.register(function(payload) {
+                dispatcher.register(function(payload) {
                   actions.push(payload);
                 });
                 saveButton.click();
@@ -179,32 +198,32 @@ describe('SettingsPanel jQuery plugin', function() {
                   [ Actions.STORY_SET_TITLE, Actions.STORY_SAVE_METADATA ]
                 );
 
-                assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
+                assert.equal(actions[0].storyUid, StandardMocks.validStoryUid);
                 assert.equal(actions[0].title, newTitle);
 
-                assert.equal(actions[1].storyUid, standardMocks.validStoryUid);
+                assert.equal(actions[1].storyUid, StandardMocks.validStoryUid);
               });
             });
           });
         });
-
       });
 
       describe('story description field', function() {
         var field;
+
         beforeEach(function() {
           field = node.find('textarea');
         });
 
         it('should be prepopulated with the current story description', function() {
-          assert.equal(field.val(), standardMocks.validStoryDescription);
+          assert.equal(field.val(), 'Description');
         });
 
         describe('when edited', function() {
           var newDescription;
 
           beforeEach(function() {
-            newDescription = standardMocks.validStoryDescription + 'foobar';
+            newDescription = 'foobar';
             field.val(newDescription);
             field.trigger('input');
           });
@@ -213,7 +232,7 @@ describe('SettingsPanel jQuery plugin', function() {
             assert.lengthOf(node.find('.settings-save-btn:enabled'), 1);
 
             // Also test that it disables again if I edit back.
-            field.val(standardMocks.validStoryDescription);
+            field.val('Description');
             field.trigger('input');
             assert.lengthOf(node.find('.settings-save-btn:disabled'), 1);
           });
@@ -228,7 +247,7 @@ describe('SettingsPanel jQuery plugin', function() {
             it('should cause a STORY_SET_DESCRIPTION action, then a STORY_SAVE_METADATA action', function() {
               var actions = [];
 
-              storyteller.dispatcher.register(function(payload) {
+              dispatcher.register(function(payload) {
                 actions.push(payload);
               });
               saveButton.click();
@@ -238,10 +257,10 @@ describe('SettingsPanel jQuery plugin', function() {
                 [ Actions.STORY_SET_DESCRIPTION, Actions.STORY_SAVE_METADATA ]
               );
 
-              assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
+              assert.equal(actions[0].storyUid, StandardMocks.validStoryUid);
               assert.equal(actions[0].description, newDescription);
 
-              assert.equal(actions[1].storyUid, standardMocks.validStoryUid);
+              assert.equal(actions[1].storyUid, StandardMocks.validStoryUid);
             });
           });
         });
@@ -324,7 +343,7 @@ describe('SettingsPanel jQuery plugin', function() {
                 descriptionTextarea.val('bar');
                 descriptionTextarea.trigger('input');
 
-                storyteller.dispatcher.register(function(payload) {
+                dispatcher.register(function(payload) {
                   actions.push(payload);
                 });
 
@@ -336,11 +355,11 @@ describe('SettingsPanel jQuery plugin', function() {
                   [ Actions.STORY_SET_TITLE, Actions.STORY_SET_DESCRIPTION ]
                 );
 
-                assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
-                assert.equal(actions[0].title, standardMocks.validStoryTitle);
+                assert.equal(actions[0].storyUid, StandardMocks.validStoryUid);
+                assert.equal(actions[0].title, 'Title');
 
-                assert.equal(actions[1].storyUid, standardMocks.validStoryUid);
-                assert.equal(actions[1].description, standardMocks.validStoryDescription);
+                assert.equal(actions[1].storyUid, StandardMocks.validStoryUid);
+                assert.equal(actions[1].description, 'Description');
               });
             });
           });
@@ -378,9 +397,7 @@ describe('SettingsPanel jQuery plugin', function() {
             assert.equal(errorDetails.text(), error);
           });
         });
-
       });
     });
-
   });
 });

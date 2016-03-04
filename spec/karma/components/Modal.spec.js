@@ -1,10 +1,19 @@
-describe('Modal jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
+import '../../../app/assets/javascripts/editor/components/Modal';
 
+describe('Modal jQuery plugin', function() {
+
+  var testDom;
   var node;
 
   beforeEach(function() {
+    testDom = $('<div>');
     node = testDom.append('<div>');
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should return `this` for chaining', function() {

@@ -1,68 +1,56 @@
-(function(root) {
+import _ from 'lodash';
 
-  'use strict';
+import Store from './Store';
+import Actions from '../Actions';
+import StorytellerUtils from '../../StorytellerUtils';
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
+export var storyCopierStore = new StoryCopierStore();
+export default function StoryCopierStore() {
+  _.extend(this, new Store());
 
-  function StoryCopierStore() {
+  var _currentOpenState = false;
+  var self = this;
 
-    _.extend(this, new storyteller.Store());
+  this.register(function(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'action');
 
-    var _currentOpenState = false;
+    var action = payload.action;
 
-    var self = this;
-
-    this.register(function(payload) {
-
-      var action;
-
-      utils.assertHasProperty(payload, 'action');
-
-      action = payload.action;
-
-      // Note that we do not assign `_currentSelectorState` the value of action
-      // outside of the case statements because ALL events will pass through
-      // this function and we only want to alter `_currentSelectorState` in
-      // response to actions that are actually relevant.
-      switch (action) {
-
-        case Actions.STORY_MAKE_COPY_MODAL_OPEN:
-          _openDialog();
-          break;
-
-        case Actions.STORY_MAKE_COPY_MODAL_CANCEL:
-          _closeDialog();
-          break;
-      }
-    });
-
-    /**
-     * Public methods
-     */
-
-    this.getCurrentOpenState = function() {
-      return _currentOpenState;
-    };
-
-    /**
-     * Private methods
-     */
-
-    function _openDialog() {
-      _currentOpenState = true;
-
-      self._emitChange();
+    // Note that we do not assign `_currentSelectorState` the value of action
+    // outside of the case statements because ALL events will pass through
+    // this function and we only want to alter `_currentSelectorState` in
+    // response to actions that are actually relevant.
+    switch (action) {
+      case Actions.STORY_MAKE_COPY_MODAL_OPEN:
+        _openDialog();
+        break;
+      case Actions.STORY_MAKE_COPY_MODAL_CANCEL:
+        _closeDialog();
+        break;
     }
+  });
 
-    function _closeDialog() {
-      _currentOpenState = false;
+  /**
+   * Public methods
+   */
 
-      self._emitChange();
-    }
+  this.getCurrentOpenState = function() {
+    return _currentOpenState;
+  };
+
+  /**
+   * Private methods
+   */
+
+  function _openDialog() {
+    _currentOpenState = true;
+
+    self._emitChange();
   }
 
-  root.socrata.storyteller.StoryCopierStore = StoryCopierStore;
-})(window);
+  function _closeDialog() {
+    _currentOpenState = false;
 
+    self._emitChange();
+  }
+}

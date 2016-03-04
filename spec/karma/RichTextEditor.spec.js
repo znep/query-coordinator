@@ -1,11 +1,17 @@
-describe('RichTextEditor', function() {
-  'use strict';
+import $ from 'jQuery';
+import _ from 'lodash';
+import SquireMocker from './SquireMocker';
 
+import { dispatcher } from '../../app/assets/javascripts/editor/Dispatcher';
+import { windowSizeBreakpointStore } from '../../app/assets/javascripts/editor/stores/WindowSizeBreakpointStore';
+import RichTextEditor, {__RewireAPI__ as RichTextEditorAPI} from '../../app/assets/javascripts/editor/RichTextEditor';
+
+describe('RichTextEditor', function() {
+
+  var testDom;
   var validEditorId = '1';
   var validFormats = [];
   var validPreloadContent = 'Hello, world!';
-  var storyteller = window.socrata.storyteller;
-  var RichTextEditor = storyteller.RichTextEditor;
 
   // Squire does not attach itself to the window if it detects that
   // it is inside an iFrame.
@@ -14,7 +20,16 @@ describe('RichTextEditor', function() {
   // object on the window in order to test the correct instantiation
   // of the wrapper object.
   beforeEach(function() {
+    testDom = $('<div>');
     testDom.append($('<div class="text-editor">'));
+
+    $(document.body).append(testDom);
+    RichTextEditorAPI.__Rewire__('Squire', SquireMocker);
+  });
+
+  afterEach(function() {
+    testDom.remove();
+    RichTextEditorAPI.__ResetDependency__('Squire');
   });
 
   describe('constructor', function() {
@@ -30,7 +45,6 @@ describe('RichTextEditor', function() {
           new RichTextEditor( //eslint-disable-line no-new
             null,
             validEditorId,
-            window.socrata.storyteller.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -47,7 +61,6 @@ describe('RichTextEditor', function() {
           new RichTextEditor( //eslint-disable-line no-new
             jqueryObject,
             validEditorId,
-            window.socrata.storyteller.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -76,7 +89,6 @@ describe('RichTextEditor', function() {
           new RichTextEditor( //eslint-disable-line no-new
             jqueryObject,
             validEditorId,
-            window.socrata.storyteller.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -95,7 +107,6 @@ describe('RichTextEditor', function() {
             new RichTextEditor( //eslint-disable-line no-new
               jqueryObject,
               false,
-              window.socrata.storyteller.assetFinder,
               validFormats,
               validPreloadContent
             );
@@ -108,15 +119,14 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new storyteller.RichTextEditor(
+          var editor = new RichTextEditor(
             jqueryObject,
             12,
-            window.socrata.storyteller.assetFinder,
             validFormats,
             validPreloadContent
           );
 
-          assert.instanceOf(editor, storyteller.RichTextEditor, 'editor is an instance of RichTextEditor');
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
       });
 
@@ -125,49 +135,14 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new storyteller.RichTextEditor(
+          var editor = new RichTextEditor(
             jqueryObject,
             '12',
-            storyteller.assetFinder,
             validFormats,
             validPreloadContent
           );
 
-          assert.instanceOf(editor, storyteller.RichTextEditor, 'editor is an instance of RichTextEditor');
-        });
-      });
-
-      describe('and an assetFinder that is not an instance of AssetFinder', function() {
-
-        it('raises an exception', function() {
-
-          var jqueryObject = $('.text-editor');
-          assert.throws(function() {
-            new storyteller.RichTextEditor( //eslint-disable-line no-new
-              jqueryObject,
-              '12',
-              null,
-              validFormats,
-              validPreloadContent
-            );
-          });
-        });
-      });
-
-      describe('and an assetFinder that is an instance of AssetFinder', function() {
-
-        it('creates a new RichTextEditor', function() {
-
-          var jqueryObject = $('.text-editor');
-          var editor = new storyteller.RichTextEditor(
-            jqueryObject,
-            '12',
-            window.socrata.storyteller.assetFinder,
-            validFormats,
-            validPreloadContent
-          );
-
-          assert.instanceOf(editor, storyteller.RichTextEditor, 'editor is an instance of RichTextEditor');
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
       });
 
@@ -180,7 +155,6 @@ describe('RichTextEditor', function() {
             new RichTextEditor( //eslint-disable-line no-new
               jqueryObject,
               '12',
-              window.socrata.storyteller.assetFinder,
               false,
               validPreloadContent
             );
@@ -193,15 +167,14 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new storyteller.RichTextEditor(
+          var editor = new RichTextEditor(
             jqueryObject,
             '12',
-            window.socrata.storyteller.assetFinder,
             validFormats,
             validPreloadContent
           );
 
-          assert.instanceOf(editor, storyteller.RichTextEditor, 'editor is an instance of RichTextEditor');
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
       });
 
@@ -210,14 +183,13 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new storyteller.RichTextEditor(
+          var editor = new RichTextEditor(
             jqueryObject,
             validEditorId,
-            window.socrata.storyteller.assetFinder,
             validFormats
           );
 
-          assert.instanceOf(editor, storyteller.RichTextEditor, 'editor is an instance of RichTextEditor');
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
       });
 
@@ -227,10 +199,9 @@ describe('RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            new storyteller.RichTextEditor( //eslint-disable-line no-new
+            new RichTextEditor( //eslint-disable-line no-new
               jqueryObject,
               validEditorId,
-              window.socrata.storyteller.assetFinder,
               validFormats,
               12
             );
@@ -243,15 +214,14 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new storyteller.RichTextEditor(
+          var editor = new RichTextEditor(
             jqueryObject,
             validEditorId,
-            storyteller.assetFinder,
             validFormats,
             'Hello, world!'
           );
 
-          assert.instanceOf(editor, storyteller.RichTextEditor, 'editor is an instance of RichTextEditor');
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
       });
     });
@@ -264,10 +234,9 @@ describe('RichTextEditor', function() {
 
     beforeEach(function() {
       $textEditor = $('.text-editor');
-      editor = new storyteller.RichTextEditor(
+      editor = new RichTextEditor(
         $textEditor,
         validEditorId,
-        window.socrata.storyteller.assetFinder,
         validFormats,
         'Hello, world!'
       );
@@ -278,13 +247,13 @@ describe('RichTextEditor', function() {
     describe('squire instance', function() {
       it('should return the squire instance attached to this RichTextEditor', function() {
         var instance = editor.getSquireInstance();
-        assert.instanceOf(instance, Squire);
+        assert.instanceOf(instance, SquireMocker);
       });
     });
 
     describe('window size classes', function() {
       it('should apply the current class break to the iframe documentElement (html node)', function() {
-        var currentClassName = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
+        var currentClassName = windowSizeBreakpointStore.getWindowSizeClass();
 
         assert.isTrue($documentElement.hasClass(currentClassName));
       });
@@ -370,7 +339,7 @@ describe('RichTextEditor', function() {
       beforeEach(function() {
         // This function is how RichTextEditor determines if the path is in an
         // anchor.
-        Squire.prototype.hasFormat = function(formatName) {
+        editor.getSquireInstance().hasFormat = function(formatName) {
           if (formatName === 'a') {
             return hasFormatA;
           } else {
@@ -383,10 +352,10 @@ describe('RichTextEditor', function() {
         describe('to a link (anchor tag)', function() {
           beforeEach(function() { hasFormatA = true; });
           it('should dispatch LINK_TIP_OPEN', function(done) {
-            storyteller.dispatcher.register(function(action) {
-              if (action.action === 'LINK_TIP_OPEN') {
+            dispatcher.register(function(payload) {
+              if (payload.action === 'LINK_TIP_OPEN') {
                 assert.deepEqual(
-                  action,
+                  payload,
                   {
                     action: 'LINK_TIP_OPEN',
                     editorId: '1',
@@ -400,10 +369,11 @@ describe('RichTextEditor', function() {
               }
             });
 
+            var squire = editor.getSquireInstance();
             // The getSelection stub needs a little more
             // functionality.
-            Squire.prototype.getSelection = _.wrap(
-              Squire.prototype.getSelection,
+            squire.getSelection = _.wrap(
+              squire.getSelection,
               function(func, args) {
                 var returnValue = func(args);
                 returnValue.startContainer = {
@@ -415,18 +385,19 @@ describe('RichTextEditor', function() {
                 };
                 return returnValue;
               });
-            socrata.storyteller.SquireMocker.invokeStubEvent('pathChange');
+
+            squire.__invokeEvent__('pathChange');
           });
         });
         describe('to anything other than a link', function() {
           beforeEach(function() { hasFormatA = false; });
           it('should dispatch LINK_TIP_CLOSE', function(done) {
-            storyteller.dispatcher.register(function(action) {
-              if (action.action === 'LINK_TIP_CLOSE') {
+            dispatcher.register(function(payload) {
+              if (payload.action === 'LINK_TIP_CLOSE') {
                 done();
               }
             });
-            socrata.storyteller.SquireMocker.invokeStubEvent('pathChange');
+            editor.getSquireInstance().__invokeEvent__('pathChange');
           });
         });
       });
@@ -440,10 +411,9 @@ describe('RichTextEditor', function() {
 
     beforeEach(function() {
       $textEditor = $('.text-editor');
-      editor = new storyteller.RichTextEditor(
+      editor = new RichTextEditor(
         $textEditor,
         validEditorId,
-        window.socrata.storyteller.assetFinder,
         validFormats,
         'Hello, world!'
       );
@@ -472,15 +442,14 @@ describe('RichTextEditor', function() {
     it('removes the editor element from the container', function() {
 
       var jqueryObject = $('.text-editor');
-      var editor = new storyteller.RichTextEditor(
+      var editor = new RichTextEditor(
         jqueryObject,
         validEditorId,
-        window.socrata.storyteller.assetFinder,
         validFormats,
         'Hello, world!'
       );
 
-      assert.instanceOf(editor, storyteller.RichTextEditor, 'editor is an instance of RichTextEditor');
+      assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
       assert.isTrue($('iframe').length > 0, 'an iframe exists');
 
       editor.destroy();

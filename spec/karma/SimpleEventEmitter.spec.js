@@ -1,11 +1,10 @@
-describe('SimpleEventEmitter', function() {
-  'use strict';
+import SimpleEventEmitter from '../../app/assets/javascripts/editor/SimpleEventEmitter';
 
+describe('SimpleEventEmitter', function() {
   var emitter;
-  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
-    emitter = new storyteller.SimpleEventEmitter();
+    emitter = new SimpleEventEmitter();
   });
 
   describe('.emit', function() {

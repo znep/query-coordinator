@@ -1,80 +1,52 @@
-(function(root) {
+import Constants from './Constants';
+import RichTextEditor from './RichTextEditor';
+import StorytellerUtils from '../StorytellerUtils';
+import RichTextEditorToolbar, { richTextEditorToolbar } from './RichTextEditorToolbar';
 
-  'use strict';
+export var richTextEditorManager = StorytellerUtils.export(
+  new RichTextEditorManager(richTextEditorToolbar, Constants.RICH_TEXT_FORMATS),
+  'storyteller.richTextEditorManager'
+);
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
+export default function RichTextEditorManager(toolbar, formats) {
+  StorytellerUtils.assertInstanceOf(toolbar, RichTextEditorToolbar);
+  StorytellerUtils.assertInstanceOf(formats, Array);
 
-  function RichTextEditorManager(assetFinder, toolbar, formats) {
+  var _formats = formats;
+  var _toolbar = toolbar;
+  var _editors = {};
 
-    var RichTextEditor = storyteller.RichTextEditor;
+  this.createEditor = function(element, editorId, contentToPreload) {
+    _editors[editorId] = new RichTextEditor(element, editorId, _formats, contentToPreload);
 
-    if (!(assetFinder instanceof storyteller.AssetFinder)) {
-      throw new Error(
-        '`assetFinder` must be an AssetFinder (is of type ' +
-        (typeof assetFinder) +
-        ').'
-      );
+    return _editors[editorId];
+  };
+
+  this.getEditor = function(editorId) {
+    var editor = null;
+
+    if (_editors.hasOwnProperty(editorId)) {
+      editor = _editors[editorId];
     }
 
-    if (!(toolbar instanceof storyteller.RichTextEditorToolbar)) {
-      throw new Error(
-        '`toolbar` must be a RichTextEditorToolbar (is of type ' +
-        (typeof toolbar) +
-        ').'
-      );
-    }
+    return editor;
+  };
 
-    if (!(formats instanceof Array)) {
-      throw new Error(
-        '`formats` must be an array (is of type ' +
-        (typeof formats) +
-        ').'
-      );
-    }
+  this.getAllEditors = function() {
+    return _editors;
+  };
 
-    var _assetFinder = assetFinder;
-    var _formats = formats;
-    var _toolbar = toolbar;
-    var _editors = {};
+  this.deleteEditor = function(editorId) {
+    _editors[editorId].destroy();
 
-    this.createEditor = function(element, editorId, contentToPreload) {
+    delete _editors[editorId];
+  };
 
-      _editors[editorId] = new RichTextEditor(element, editorId, _assetFinder, _formats, contentToPreload);
+  this.linkToolbar = function(editorId) {
+    _toolbar.link(this.getEditor(editorId).getFormatController());
+  };
 
-      return _editors[editorId];
-    };
-
-    this.getEditor = function(editorId) {
-
-      var editor = null;
-
-      if (_editors.hasOwnProperty(editorId)) {
-        editor = _editors[editorId];
-      }
-
-      return editor;
-    };
-
-    this.getAllEditors = function() {
-      return _editors;
-    };
-
-    this.deleteEditor = function(editorId) {
-
-      _editors[editorId].destroy();
-
-      delete _editors[editorId];
-    };
-
-    this.linkToolbar = function(editorId) {
-      _toolbar.link(this.getEditor(editorId).getFormatController());
-    };
-
-    this.unlinkToolbar = function() {
-      _toolbar.unlink();
-    };
-  }
-
-  storyteller.RichTextEditorManager = RichTextEditorManager;
-})(window);
+  this.unlinkToolbar = function() {
+    _toolbar.unlink();
+  };
+}

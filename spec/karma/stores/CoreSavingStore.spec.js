@@ -1,57 +1,92 @@
-describe('CoreSavingStore', function() {
-  'use strict';
+import I18nMocker from '../I18nMocker';
 
-  var storyteller = window.socrata.storyteller;
+import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import CoreSavingStore, {__RewireAPI__ as CoreSavingStoreAPI} from '../../../app/assets/javascripts/editor/stores/CoreSavingStore';
+
+describe('CoreSavingStore', function() {
+
   var server;
+  var dispatcher;
+  var coreSavingStore;
+  var storyTitle;
+  var storyUid = 'test-test';
+  var storyDescription;
 
   beforeEach(function() {
-    // Since these tests actually expect to use AJAX, we need to disable the
-    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-    // and re-enble it after each.
-    window.mockedXMLHttpRequest.restore();
+    storyTitle = 'title';
+    storyDescription = 'description';
 
+    dispatcher = new Dispatcher();
     server = sinon.fakeServer.create();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    var StoryStoreMock = function() {
+      _.extend(this, new Store());
+
+      this.getStoryTitle = function() {
+        return storyTitle;
+      };
+
+      this.getStoryDescription = function() {
+        return storyDescription;
+      };
+    };
+
+    CoreSavingStoreAPI.__Rewire__('dispatcher', dispatcher);
+    CoreSavingStoreAPI.__Rewire__('storyStore', new StoryStoreMock());
+    CoreSavingStoreAPI.__Rewire__('I18n', I18nMocker);
+    CoreSavingStoreAPI.__Rewire__('Environment', {
+      CORE_SERVICE_APP_TOKEN: 'storyteller_app_token'
+    });
+
+    coreSavingStore = new CoreSavingStore();
   });
 
   afterEach(function() {
     server.restore();
 
-    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
+    StoreAPI.__ResetDependency__('dispatcher');
+    CoreSavingStoreAPI.__ResetDependency__('dispatcher');
+    CoreSavingStoreAPI.__ResetDependency__('storyStore');
+    CoreSavingStoreAPI.__ResetDependency__('Environment');
   });
 
   function waitFor(condition, done) {
     if (condition()) {
       done();
     } else {
-      storyteller.coreSavingStore.addChangeListener(function() {
+      coreSavingStore.addChangeListener(function() {
         if (condition()) { done(); }
       });
     }
   }
 
   function expectError(done, optionalStoryUid) {
-    optionalStoryUid = optionalStoryUid || standardMocks.validStoryUid;
+    optionalStoryUid = optionalStoryUid || storyUid;
     waitFor(function() {
-      return storyteller.coreSavingStore.lastRequestSaveErrorForStory(optionalStoryUid) !== null;
+      return coreSavingStore.lastRequestSaveErrorForStory(optionalStoryUid) !== null;
     }, done);
   }
   function expectNoError(done, optionalStoryUid) {
-    optionalStoryUid = optionalStoryUid || standardMocks.validStoryUid;
+    optionalStoryUid = optionalStoryUid || storyUid;
     waitFor(function() {
-      return storyteller.coreSavingStore.lastRequestSaveErrorForStory(optionalStoryUid) === null;
+      return coreSavingStore.lastRequestSaveErrorForStory(optionalStoryUid) === null;
     }, done);
   }
 
   function expectSaveInProgress(done) {
     waitFor(function() {
-      return storyteller.coreSavingStore.isSaveInProgress() === true;
+      return coreSavingStore.isSaveInProgress() === true;
     }, done);
   }
 
   function expectNoSaveInProgress(done) {
     waitFor(function() {
-      return storyteller.coreSavingStore.isSaveInProgress() === false;
+      return coreSavingStore.isSaveInProgress() === false;
     }, done);
   }
 
@@ -61,43 +96,40 @@ describe('CoreSavingStore', function() {
   });
 
   describe('given action STORY_SAVE_METADATA', function() {
-
     describe('with a title that is too long', function() {
-
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
-          action: Actions.STORY_SET_TITLE,
-          storyUid: standardMocks.validStoryUid,
-          title: _.range(0, 1000).join()
-        });
+        storyTitle = _.range(0, 1000).join();
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.STORY_SAVE_METADATA,
-          storyUid: standardMocks.validStoryUid
+          storyUid: storyUid
         });
-
       });
 
       it('should immediately report an error', expectError);
       it('should indicate no save in progress', expectNoSaveInProgress);
-
     });
 
     describe('with app token undefined', function() {
+      var errorSpy;
 
       beforeEach(function() {
-        storyteller.config.coreServiceAppToken = undefined;
+        CoreSavingStoreAPI.__Rewire__('Environment', {
+          CORE_SERVICE_APP_TOKEN: undefined
+        });
+
+        coreSavingStore = new CoreSavingStore();
+        errorSpy = sinon.spy(console, 'error');
       });
 
       it('immediately reports an error', function() {
-        assert.throw(function() {
-          storyteller.dispatcher.dispatch({
-            action: Actions.STORY_SAVE_METADATA,
-            storyUid: standardMocks.validStoryUid
-          });
+        dispatcher.dispatch({
+          action: Actions.STORY_SAVE_METADATA,
+          storyUid: storyUid
         });
-      });
 
+        assert.isTrue(errorSpy.called);
+      });
     });
 
     describe('with no validation issues', function() {
@@ -107,11 +139,15 @@ describe('CoreSavingStore', function() {
       beforeEach(function() {
         document.cookie = cookie;
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.STORY_SAVE_METADATA,
-          storyUid: standardMocks.validStoryUid
+          storyUid: storyUid
         });
-        viewUrl = '/api/views/{0}.json'.format(standardMocks.validStoryUid);
+
+        viewUrl = StorytellerUtils.format(
+          '/api/views/{0}.json',
+          storyUid
+        );
       });
 
       afterEach(function() {
@@ -136,12 +172,11 @@ describe('CoreSavingStore', function() {
         assert.equal(request.requestHeaders['X-CSRF-Token'], 'the_csrf_token=');
 
         var body = JSON.parse(request.requestBody);
-        assert.propertyVal(body, 'name', standardMocks.validStoryTitle);
-        assert.propertyVal(body, 'description', standardMocks.validStoryDescription);
+        assert.propertyVal(body, 'name', storyTitle);
+        assert.propertyVal(body, 'description', storyDescription);
       });
 
       describe('and the PUT succeeds', function() {
-
         beforeEach(function() {
           server.respondWith(
             viewUrl,
@@ -160,7 +195,6 @@ describe('CoreSavingStore', function() {
       });
 
       describe('and the PUT fails', function() {
-
         beforeEach(function() {
           server.respondWith(
             viewUrl,

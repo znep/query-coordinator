@@ -1,39 +1,37 @@
-(function(root, $) {
+import $ from 'jQuery';
+import StorytellerUtils from '../../StorytellerUtils';
 
-  'use strict';
+/**
+ * @function componentSpacer
+ * @desc Renders out a <div.spacer>.
+ * @param {object} componentData - An object with a type and value attribute
+ * @returns {jQuery} - The rendered spacer jQuery element
+ */
+$.fn.componentSpacer = componentSpacer;
 
-  var socrata = root.socrata;
-  var utils = socrata.utils;
+function componentSpacer(componentData) {
+  var $this = $(this);
 
-  function _renderSpacerContent(componentData) {
-    return $('<div>', {'class': utils.typeToClassNameForComponentType(componentData.type)});
-  }
+  StorytellerUtils.assertHasProperty(componentData, 'type');
+  StorytellerUtils.assert(
+    componentData.type === 'spacer',
+    StorytellerUtils.format(
+      'componentSpacer: Unsupported component type {0}',
+      componentData.type
+    )
+  );
+  StorytellerUtils.assert(
+    $this.length === 1,
+    'Selection must have exactly one element.'
+  );
 
-  /**
-   * @function componentSpacer
-   * @desc Renders out a <div.spacer>.
-   * @param {object} componentData - An object with a type and value attribute
-   * @returns {jQuery} - The rendered spacer jQuery element
-   */
-  function componentSpacer(componentData) {
-    var $this = $(this);
+  $this.empty().append(_renderSpacerContent(componentData));
 
-    utils.assertHasProperty(componentData, 'type');
-    utils.assert(
-      componentData.type === 'spacer',
-      'componentSpacer: Unsupported component type {0}'.format(
-        componentData.type
-      )
-    );
-    utils.assert(
-      $this.length === 1,
-      'Selection must have exactly one element.'
-    );
+  return $this;
+}
 
-    $this.empty().append(_renderSpacerContent(componentData));
-
-    return $this;
-  }
-
-  $.fn.componentSpacer = componentSpacer;
-})(window, jQuery);
+function _renderSpacerContent(componentData) {
+  return $('<div>', {
+    'class': StorytellerUtils.typeToClassNameForComponentType(componentData.type)
+  });
+}

@@ -12,15 +12,16 @@ RSpec.describe 'autosave', type: :feature, js: true do
 
   # Get the seconds to wait.
   def expected_delay_before_autosave
-    @expected_delay ||= page.evaluate_script(
-      'storyteller.config.autosaveDebounceTimeInSeconds'
-    ).to_f
+    2
+    # @expected_delay ||= page.evaluate_script(
+    #   'storyteller.config.autosaveDebounceTimeInSeconds'
+    # ).to_f
   end
 
   # Get number of blocks in the current story
   def block_count
     page.evaluate_script(
-      'storyteller.storyStore.getStoryBlockIds(storyteller.userStoryUid).length'
+      'storyteller.storyStore.getStoryBlockIds(window.STORY_UID).length'
     )
   end
 

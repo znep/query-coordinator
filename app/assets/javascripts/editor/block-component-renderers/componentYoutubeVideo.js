@@ -1,64 +1,58 @@
-(function(root, $) {
+import $ from 'jQuery';
 
-  'use strict';
+import '../componentBase';
+import StorytellerUtils from '../../StorytellerUtils';
 
-  var socrata = root.socrata;
-  var utils = socrata.utils;
+$.fn.componentYoutubeVideo = componentYoutubeVideo;
 
-  function _renderYoutube($element, componentData) {
+export default function componentYoutubeVideo(componentData, theme, options) {
+  var $this = $(this);
 
-    utils.assertHasProperty(componentData, 'type');
+  StorytellerUtils.assertHasProperties(componentData, 'type');
+  StorytellerUtils.assert(
+    componentData.type === 'youtube.video',
+    StorytellerUtils.format(
+      'componentYoutubeVideo: Unsupported component type {0}',
+      componentData.type
+    )
+  );
 
-    var $iframeElement = $(
-      '<iframe>',
-      {
-        'src': 'about:blank',
-        'frameborder': '0',
-        'allowfullscreen': true
-      }
-    );
-
-    $element.
-      addClass(utils.typeToClassNameForComponentType(componentData.type)).
-      append($iframeElement);
+  if ($this.children().length === 0) {
+    _renderYoutube($this, componentData);
   }
 
-  function _updateSrc($element, componentData) {
+  _updateSrc($this, componentData);
+  $this.componentBase(componentData, theme, options);
 
-    var youtubeSource;
-    var $iframeElement = $element.find('iframe');
+  return $this;
+}
 
-    utils.assertHasProperty(componentData, 'value');
-    utils.assertHasProperty(componentData.value, 'id');
+function _renderYoutube($element, componentData) {
+  StorytellerUtils.assertHasProperty(componentData, 'type');
 
-    youtubeSource = utils.generateYoutubeIframeSrc(componentData.value.id);
-
-    if ($iframeElement.attr('src') !== youtubeSource) {
-      $iframeElement.attr('src', youtubeSource);
+  var $iframeElement = $(
+    '<iframe>',
+    {
+      'src': 'about:blank',
+      'frameborder': '0',
+      'allowfullscreen': true
     }
+  );
+  var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+
+  $element.
+    addClass(className).
+    append($iframeElement);
+}
+
+function _updateSrc($element, componentData) {
+  StorytellerUtils.assertHasProperty(componentData, 'value');
+  StorytellerUtils.assertHasProperty(componentData.value, 'id');
+
+  var $iframeElement = $element.find('iframe');
+  var youtubeSource = StorytellerUtils.generateYoutubeIframeSrc(componentData.value.id);
+
+  if ($iframeElement.attr('src') !== youtubeSource) {
+    $iframeElement.attr('src', youtubeSource);
   }
-
-  function componentYoutubeVideo(componentData, theme, options) {
-
-    var $this = $(this);
-
-    utils.assertHasProperties(componentData, 'type');
-    utils.assert(
-      componentData.type === 'youtube.video',
-      'componentYoutubeVideo: Unsupported component type {0}'.format(
-        componentData.type
-      )
-    );
-
-    if ($this.children().length === 0) {
-      _renderYoutube($this, componentData);
-    }
-
-    _updateSrc($this, componentData);
-    $this.componentBase(componentData, theme, options);
-
-    return $this;
-  }
-
-  $.fn.componentYoutubeVideo = componentYoutubeVideo;
-})(window, jQuery);
+}

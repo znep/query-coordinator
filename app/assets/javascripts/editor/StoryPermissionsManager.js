@@ -1,99 +1,101 @@
-(function(root) {
-  'use strict';
+import _ from 'lodash';
 
-  var storyteller = root.socrata.storyteller;
-  var utils = root.socrata.utils;
+import { dispatcher } from './Dispatcher';
+import { storyStore } from './stores/StoryStore';
+import Environment from '../StorytellerEnvironment';
+import StorytellerUtils from '../StorytellerUtils';
+import Actions from './Actions';
+
+/**
+ * @class StoryPermissionsManager
+ */
+export var storyPermissionsManager = new StoryPermissionsManager();
+export default function StoryPermissionsManager() {
 
   /**
-   * @class StoryPermissionsManager
+   * @function makePublic
    */
-  function StoryPermissionsManager() {
+  this.makePublic = function(errorCallback) {
+    StorytellerUtils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
 
-    /**
-     * @function makePublic
-     */
-    this.makePublic = function(errorCallback) {
-      utils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
+    _setToPublic().
+      then(
+        function(response) {
+          dispatcher.dispatch({
+            action: Actions.STORY_SET_PUBLISHED_STORY,
+            storyUid: Environment.STORY_UID,
+            publishedStory: response
+          });
+          _handleRequestSuccess(response);
+        },
+        function(error) {
+          _handleRequestError(error, errorCallback);
+        }
+      );
+  };
 
-      _setToPublic().
-        then(
-          function(response) {
-            storyteller.dispatcher.dispatch({
-              action: Actions.STORY_SET_PUBLISHED_STORY,
-              storyUid: storyteller.userStoryUid,
-              publishedStory: response
-            });
-            _handleRequestSuccess(response);
-          },
-          function(error) {
-            _handleRequestError(error, errorCallback);
-          }
-        );
+  /**
+   * @function makePrivate
+   */
+  this.makePrivate = function(errorCallback) {
+    StorytellerUtils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
+
+    _setToPrivate().
+      then(
+        _handleRequestSuccess,
+        function(error) {
+          _handleRequestError(error, errorCallback);
+        }
+      );
+  };
+
+  function _handleRequestSuccess(response) {
+    StorytellerUtils.assertIsOneOfTypes(response, 'object');
+    StorytellerUtils.assertHasProperty(response, 'isPublic');
+    StorytellerUtils.assertIsOneOfTypes(response.isPublic, 'boolean');
+
+    var payload = {
+      action: Actions.STORY_SET_PERMISSIONS,
+      storyUid: Environment.STORY_UID,
+      isPublic: response.isPublic
     };
 
-    /**
-     * @function makePrivate
-     */
-    this.makePrivate = function(errorCallback) {
-      utils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
+    dispatcher.dispatch(payload);
+  }
 
-      _setToPrivate().
-        then(
-          _handleRequestSuccess,
-          function(error) {
-            _handleRequestError(error, errorCallback);
-          }
-        );
-    };
+  function _handleRequestError(error, callback) {
+    StorytellerUtils.assert(
+      !callback ||
+      (callback && _.isFunction(callback)),
+      'callback must be a function'
+    );
 
-    function _handleRequestSuccess(response) {
-      utils.assertIsOneOfTypes(response, 'object');
-      utils.assertHasProperty(response, 'isPublic');
-      utils.assertIsOneOfTypes(response.isPublic, 'boolean');
+    console.error(error);
 
-      var payload = {
-        action: Actions.STORY_SET_PERMISSIONS,
-        storyUid: storyteller.userStoryUid,
-        isPublic: response.isPublic
-      };
-
-      storyteller.dispatcher.dispatch(payload);
-    }
-
-    function _handleRequestError(error, callback) {
-      if (callback) {
-        utils.assert(_.isFunction(callback), 'callback must be a function');
-      }
-
-      console.error(error);
-
-      if (callback) {
-        callback();
-      }
-    }
-
-    function _setToPublic() {
-      return socrata.utils.storytellerApiRequest(
-        'stories/{0}/published'.format(storyteller.userStoryUid),
-        'POST',
-        JSON.stringify({
-          digest: storyteller.storyStore.getStoryDigest(
-            storyteller.userStoryUid
-          )
-        })
-      );
-    }
-
-    function _setToPrivate() {
-      return socrata.utils.storytellerApiRequest(
-        'stories/{0}/permissions'.format(storyteller.userStoryUid),
-        'PUT',
-        JSON.stringify({
-          isPublic: false
-        })
-      );
+    if (callback) {
+      callback();
     }
   }
 
-  storyteller.StoryPermissionsManager = StoryPermissionsManager;
-})(window);
+  function _setToPublic() {
+    return StorytellerUtils.storytellerApiRequest(
+      StorytellerUtils.format('stories/{0}/published', Environment.STORY_UID),
+      'POST',
+      JSON.stringify({
+        digest: storyStore.getStoryDigest(
+          Environment.STORY_UID
+        )
+      })
+    );
+  }
+
+  function _setToPrivate() {
+    return StorytellerUtils.storytellerApiRequest(
+      StorytellerUtils.format('stories/{0}/permissions', Environment.STORY_UID),
+      'PUT',
+      JSON.stringify({
+        isPublic: false
+      })
+    );
+  }
+}

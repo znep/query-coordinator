@@ -1,8 +1,12 @@
+import $ from 'jQuery';
+
+import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
+import '../../../app/assets/javascripts/editor/block-component-renderers/componentYoutubeVideo';
+
 describe('componentYoutubeVideo jQuery plugin', function() {
-  'use strict';
 
+  var testDom;
   var $component;
-
   var validComponentData = {
     type: 'youtube.video',
     value: {
@@ -11,8 +15,14 @@ describe('componentYoutubeVideo jQuery plugin', function() {
   };
 
   beforeEach(function() {
+    testDom = $('<div>');
     testDom.append('<div>');
     $component = testDom.children('div');
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should throw when passed invalid arguments', function() {
@@ -49,7 +59,10 @@ describe('componentYoutubeVideo jQuery plugin', function() {
       it('should start off correct', function() {
         assert.equal(
           $component.find('iframe').attr('src'),
-          'https://www.youtube.com/embed/{0}?rel=0&showinfo=0'.format(validComponentData.value.id)
+          StorytellerUtils.format(
+            'https://www.youtube.com/embed/{0}?rel=0&showinfo=0',
+            validComponentData.value.id
+          )
         );
       });
 
@@ -61,13 +74,12 @@ describe('componentYoutubeVideo jQuery plugin', function() {
 
         assert.equal(
           $component.find('iframe').attr('src'),
-          'https://www.youtube.com/embed/{0}?rel=0&showinfo=0'.format('1234')
+          StorytellerUtils.format(
+            'https://www.youtube.com/embed/{0}?rel=0&showinfo=0',
+            '1234'
+          )
         );
       });
-
-      //TODO I don't know how to test this.
-      it('should not be set unnecessarily');
     });
-
   });
 });

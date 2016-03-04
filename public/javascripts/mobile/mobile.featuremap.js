@@ -23,7 +23,6 @@ module.exports = function(values, $target) {
    */
 
   var flyoutRenderer = new FlyoutRenderer();
-  RowInspector.setup({ isMobile: true });
 
   var domainBasedTileServerList;
   if (!_.isEmpty(socrataConfig.tileserverHosts)) {

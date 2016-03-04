@@ -164,6 +164,7 @@ $action-btn-disabled-font-color: #c6c1bf;
       max-height: $row-inspector-max-height;
       right: inherit;
       left: 50%;
+      height: $row-inspector-max-height;
       z-index: 1003;
     }
 
@@ -383,6 +384,16 @@ $action-btn-disabled-font-color: #c6c1bf;
 
       .caret {
         @include unselectable();
+
+        display: initial;
+        width: initial;
+        height: initial;
+        margin-left: initial;
+        vertical-align: initial;
+        border-top: initial;
+        border-top: initial;
+        border-right: initial;
+        border-left: initial;
       }
 
       &.previous {

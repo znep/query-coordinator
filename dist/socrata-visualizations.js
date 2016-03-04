@@ -11189,9 +11189,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _flyoutContent;
 	  var _flyoutHint;
 
-	  _renderFlyoutTemplate();
-
-	  _hideFlyout();
+	  $(function() {
+	    _renderFlyoutTemplate();
+	    _hideFlyout();
+	  });
 
 	  /**
 	   * Public methods

@@ -88,7 +88,7 @@ describe AdministrationController do
           get :georegions
           view_model = assigns(:view_model)
           expect(view_model.available_count).to eq(3)
-          expect(view_model.enabled_count).to eq(1)
+          expect(view_model.default_count).to eq(1)
           expect(view_model.curated_regions).to contain_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion),an_instance_of(CuratedRegion))
           expect(view_model.translations).to be_an_instance_of(LocalePart)
         end
@@ -323,19 +323,7 @@ describe AdministrationController do
           expect_any_instance_of(::Services::Administration::GeoregionEnabler).to receive(:enable)
           put :enable_georegion, :id => 1
         end
-
       end
-
-      describe 'failure' do
-        it 'errors when the limit is met' do
-          allow_any_instance_of(::Services::Administration::GeoregionEnabler).
-            to receive(:enable).
-            and_raise(::Services::Administration::EnabledGeoregionsLimitMetError)
-          put :enable_georegion, :id => 1
-          expect(flash[:error]).to_not be_nil
-        end
-      end
-
     end
 
     describe 'PUT /admin/geo/:id/disable' do
@@ -355,6 +343,54 @@ describe AdministrationController do
       it 'disables via the enabler' do
         expect_any_instance_of(::Services::Administration::GeoregionEnabler).to receive(:disable)
         put :disable_georegion, :id => 1
+      end
+    end
+
+    describe 'PUT admin/geo/:id/:default_flag' do
+      let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
+
+      before(:each) do
+        stub_admin_user
+        allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
+        allow(CuratedRegion).to receive(:find_default).and_return([])
+      end
+
+      describe 'when flag is default' do
+        describe 'success' do
+          it 'redirects to /admin/geo' do
+            allow_any_instance_of(::Services::Administration::GeoregionDefaulter).to receive(:default)
+            put :set_georegion_default_status, :id => 1, :default_flag => 'default'
+            expect(response).to redirect_to('/admin/geo')
+          end
+
+          it 'defaults via the defaulter' do
+            expect_any_instance_of(::Services::Administration::GeoregionDefaulter).to receive(:default)
+            put :set_georegion_default_status, :id => 1, :default_flag => 'default'
+          end
+        end
+
+        describe 'failure' do
+          it 'errors when the limit is met' do
+            allow_any_instance_of(::Services::Administration::GeoregionDefaulter).
+              to receive(:default).
+              and_raise(::Services::Administration::DefaultGeoregionsLimitMetError)
+            put :set_georegion_default_status, :id => 1, :default_flag => 'default'
+            expect(flash[:error]).to_not be_nil
+          end
+        end
+      end
+
+      describe 'when flag is undefault' do
+        it 'redirects to /admin/geo' do
+          allow_any_instance_of(::Services::Administration::GeoregionDefaulter).to receive(:undefault)
+          put :set_georegion_default_status, :id => 1, :default_flag => 'undefault'
+          expect(response).to redirect_to('/admin/geo')
+        end
+
+        it 'undefaults via the defaulter' do
+          expect_any_instance_of(::Services::Administration::GeoregionDefaulter).to receive(:undefault)
+          put :set_georegion_default_status, :id => 1, :default_flag => 'undefault'
+        end
       end
     end
   end

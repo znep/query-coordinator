@@ -9,6 +9,7 @@ function t(str, props) {
 // This defines the necessary shape for each item that will occupy a table row.
 // Jobs are massaged into a shape that closely resembles completed curated regions.
 const GeoregionPropType = PropTypes.shape({
+  defaultFlag: PropTypes.bool.isRequired,
   enabledFlag: PropTypes.bool.isRequired,
   id: PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
   name: PropTypes.string.isRequired
@@ -16,39 +17,46 @@ const GeoregionPropType = PropTypes.shape({
 
 const GeoregionAdminTable = React.createClass({
   propTypes: {
-    allowEnablement: PropTypes.bool,
+    allowDefaulting: PropTypes.bool,
     authenticityToken: PropTypes.string.isRequired,
     baseUrlPath: PropTypes.string.isRequired,
+    defaultCount: PropTypes.number.isRequired,
+    defaultLimit: PropTypes.number.isRequired,
+    onDefaultSuccess: PropTypes.func.isRequired,
     onEdit: PropTypes.func,
     onEnableSuccess: PropTypes.func.isRequired,
     rows: PropTypes.arrayOf(GeoregionPropType).isRequired
   },
   getDefaultProps() {
     return {
-      allowEnablement: true,
+      allowDefaulting: true,
       onEdit: _.noop,
       rows: []
     };
   },
   renderRows(rows) {
     const {
-      allowEnablement,
+      allowDefaulting,
       authenticityToken,
       baseUrlPath,
+      defaultLimit,
       onEdit,
-      onEnableSuccess
+      onEnableSuccess,
+      onDefaultSuccess
     } = this.props;
 
     const baseRowProps = {
-      allowEnablement,
+      allowDefaulting,
       authenticityToken,
-      baseUrlPath
+      baseUrlPath,
+      defaultLimit
     };
 
     const renderActions = _.any(rows, 'featurePk');
 
     return rows.map((row) => {
       const {
+        defaultFlag,
         enabledFlag,
         featurePk,
         status, // slice out and replace in rowProps
@@ -71,12 +79,21 @@ const GeoregionAdminTable = React.createClass({
 
       const actionURL = featurePk ? `${baseUrlPath}${itemProps.id}` : '';
 
+      const decoratedOnEnableSuccess = (response) => {
+        // Toggle defaultFlag if disabling region
+        const newDefaultState = enabledFlag ? false : defaultFlag;
+
+        return onEnableSuccess(itemProps.id, !enabledFlag, newDefaultState, response);
+      };
+
       const rowProps = {
         action: actionURL,
+        defaultStatus: defaultFlag,
         status: rowStatus,
         renderActions,
         key: itemProps.id,
-        onEnableSuccess: (response) => onEnableSuccess(itemProps.id, !enabledFlag, response),
+        onDefaultSuccess: (response) => onDefaultSuccess(itemProps.id, !defaultFlag, response),
+        onEnableSuccess: decoratedOnEnableSuccess,
         onEdit: () => onEdit(itemProps.id),
         ...itemProps,
         ...baseRowProps
@@ -89,6 +106,8 @@ const GeoregionAdminTable = React.createClass({
   render() {
     const {
       authenticityToken,
+      defaultCount,
+      defaultLimit,
       rows
     } = this.props;
 
@@ -100,6 +119,7 @@ const GeoregionAdminTable = React.createClass({
         <colgroup>
           <col className="name" />
           <col className="status" />
+          { renderActions ? (<col className="default" />) : null }
           { renderActions ? (<col className="date-added" />) : null }
           { renderActions ? (<col className="edit-action" />) : null }
         </colgroup>
@@ -107,6 +127,14 @@ const GeoregionAdminTable = React.createClass({
         <tr>
           <th className="name"><div>{ t('region_name') }</div></th>
           <th className="status"><div>{ t('enabled?') }</div></th>
+          { renderActions ? (
+          <th className="default">
+            <div>
+              { t('default_georegions', { count: String(defaultCount), limit: String(defaultLimit) }) }
+              <span className="icon-info"></span>
+            </div>
+          </th>
+          ) : null }
           { renderActions ? (<th className="date-added"><div>{ t('date_added') }</div></th>) : null }
           { renderActions ? (<th className="edit-action"><div>{ t('actions') }</div></th>) : null }
         </tr>

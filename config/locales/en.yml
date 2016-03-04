@@ -1655,21 +1655,24 @@ en:
         custom_georegions: Custom Boundaries
         date_added: Date Added
         description: Configure custom boundaries that can be used to create Spatial Lens maps
-        default_georegions: Socrata Default Boundaries
+        default: Set auto-encoding for boundary
+        default_georegions: 'Auto-encode on Ingress (%{count} of %{limit})'
+        default_georegions_flyout: Choose this option for your most commonly used boundaries. Auto-encoding on ingress allows for instant creation of choropleth maps when using Spatial Lens with these boundaries. You can select up to 5 auto-encoded boundaries.
+        default_georegions_limit: You can at most have %{limit} auto-encoded boundaries.
+        default_success: '%{name} has been set to auto-encode. All new datasets will automatically be region coded using this Spatial Lens boundary.'
         delete: Delete
         description: Configure custom boundaries that can be used to create Spatial Lens maps
         disable: Disable
-        disable_success: "%{name} has been disabled and will no longer be automatically computed for new datasets."
+        disable_success: '%{name} has been disabled and will no longer be available for creating choropleth maps in Data Lens using this Spatial Lens boundary.'
         edit: Edit
         enable: Enable
         enabled?: Enabled?
-        enabled_georegions_limit: You have reached the limit of %{limit} enabled boundaries for this site.
         enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         flashes:
           add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
         learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
         page_title: Manage Spatial Lens
-        page_subtitle: You have enabled %{enabled_count} of %{available_count} available boundaries.
+        page_subtitle: You have set %{default_count} of %{available_count} available boundaries as auto-encoded boundaries.
         picker_explanation: Choose a geospatial layer that you want to use as the basis for your Spatial Lens. You can click on the name to preview the layer in a new browser tab.
         picker_support_html: Can't find what you're looking for? View the article <a href="https://support.socrata.com/hc/en-us/articles/217039278">Finding a Dataset for your Spatial Lens</a> to learn more.
         region_name: Boundary Name
@@ -1681,6 +1684,8 @@ en:
         substatus_failed_html: Please contact <a href="https://support.socrata.com">Socrata support</a> and include the code <strong>%{code}</strong>.
         substatus_progress: Available shortly
         title: Spatial Lens
+        undefault: Unset auto-encoding for boundary
+        undefault_success: 'Auto-encoding has been unset for %{name} and will no longer be automatically computed for new datasets.'
       home:
         add_featured_dataset: Add a New Featured Dataset
         are_you_sure: Are you sure? This action cannot be undone.

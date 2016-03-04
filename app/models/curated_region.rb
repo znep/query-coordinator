@@ -67,6 +67,7 @@ class CuratedRegion < Model
     {
       :id => id,
       :dateAdded => view.createdAt,
+      :defaultFlag => defaultFlag,
       :enabledFlag => enabledFlag,
       :featurePk => featurePk,
       :geometryLabel => geometryLabel,

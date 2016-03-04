@@ -141,9 +141,6 @@ function FeatureMap(element, vif) {
       if (vectorTileGetterChanged) {
         _createNewFeatureLayer(renderOptions.vectorTileGetter);
       }
-
-      // Emit render complete event
-      _emitRenderComplete();
     }
   };
 
@@ -640,6 +637,9 @@ function FeatureMap(element, vif) {
     if (_hover) {
       _map.fire('clearhighlightrequest');
     }
+
+    // Emit render complete event
+    _emitRenderComplete();
   }
 
   function _showFeatureFlyout(event) {

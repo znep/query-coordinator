@@ -199,6 +199,24 @@ function applyStandardMocks() {
     }
   };
 
+  window.defaultThemes = {
+    'themes': [
+      {
+        'description': 'Classic Theme. This one is a true classic; a throw back to the past.',
+        'id': 'classic',
+        'css_variables': {
+          '$body-font-stack': '"Georgia", sans-serif',
+          '$heading-font-stack': '"Helvetica", serif',
+          '$default-type-color': '#252525',
+          '$heading-type-color': '#333'
+        },
+        'google_font_code': '',
+        'title': 'Classic'
+      }
+    ]
+  };
+  window.customThemes = [];
+
   window.socrata.storyteller.SquireMocker.mock();
 
   window.socrata.storyteller.dispatcher = new Flux.Dispatcher();
@@ -227,6 +245,7 @@ function applyStandardMocks() {
   storyteller.linkTipStore = new storyteller.LinkTipStore();
   storyteller.collaboratorsStore = new storyteller.CollaboratorsStore();
   storyteller.userSessionStore = new storyteller.UserSessionStore();
+  storyteller.richTextEditorColorStore = new storyteller.RichTextEditorColorStore();
 
   storyteller.dispatcher.dispatch({ action: Actions.STORY_CREATE, data: storyData });
 
@@ -296,14 +315,18 @@ function removeStandardMocks() {
   delete storyteller.dispatcher;
   delete storyteller.storyStore;
   delete storyteller.storySaveStatusStore;
+  delete storyteller.assetSelectorStore;
   delete storyteller.dropHintStore;
   delete storyteller.historyStore;
   delete storyteller.blockRemovalConfirmationStore;
   delete storyteller.coreSavingStore;
-  delete storyteller.assetSelectorStore;
+  delete storyteller.windowSizeBreakpointStore;
   delete storyteller.fileUploadStore;
+  delete storyteller.linkModalStore;
+  delete storyteller.linkTipStore;
   delete storyteller.collaboratorsStore;
   delete storyteller.userSessionStore;
+  delete storyteller.richTextEditorColorStore;
   delete storyteller.I18n;
   delete storyteller.config;
   delete storyteller.standardMocks;

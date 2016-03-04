@@ -50,7 +50,7 @@ class Block < ActiveRecord::Base
   SANITIZE_CONFIG['html'] = {
     :elements => %w(
       h1 h2 h3 h4 h5 h6
-      div blockquote
+      div blockquote span
       ol ul li
       b i em
       a p br
@@ -59,7 +59,7 @@ class Block < ActiveRecord::Base
       :all => [ 'class', 'style' ],
       'a' => [ 'href', 'target', 'rel' ]
     },
-    :properties => 'text-align'
+    :properties => %w( text-align color )
   }
 
   after_initialize do

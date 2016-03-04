@@ -233,12 +233,23 @@
         );
 
         _contentWindowDocument.addEventListener('click', _broadcastContentClick);
+        _contentWindowDocument.addEventListener('click', _broadcastFormatChange);
 
         _editor.addEventListener('focus', _broadcastFocus);
         _editor.addEventListener('blur', _broadcastBlur);
 
-        _editor.addEventListener('focus', _broadcastFormatChange);
+        // TODO: If nothing obvious is broken with the Rich Text Editor Toolbar
+        // when you come across this message, please remove the following two
+        // commented-out lines. They do not seem to be required for the correct
+        // functioning of the RTE toolbar (including updating the state of the
+        // buttons and the color of the text color icon), and so can probably
+        // be safely removed.
+        //
+        // _editor.addEventListener('focus', _broadcastFormatChange);
         _editor.addEventListener('select', _broadcastFormatChange);
+        // This is needed to get the active text color swatch to update when
+        // moving the cursor around with the arrow keys.
+        _editor.addEventListener('keydown', _broadcastFormatChangeOnArrowKeydown);
         _editor.addEventListener('pathChange', _broadcastFormatChange);
 
         _editor.addEventListener('input', _handleContentChangeByUser);
@@ -559,6 +570,22 @@
         'rich-text-editor::format-change',
         { content: _formatController.getActiveFormats() }
       );
+    }
+
+    function _broadcastFormatChangeOnArrowKeydown(e) {
+
+      if (
+        e.keyCode === 37 || // left arrow key
+        e.keyCode === 38 || // up arrow key
+        e.keyCode === 39 || // right arrow key
+        e.keyCode === 40    // down arrow key
+      ) {
+
+        _emitEvent(
+          'rich-text-editor::format-change',
+          { content: _formatController.getActiveFormats() }
+        );
+      }
     }
 
     function _broadcastContentClick() {

@@ -167,6 +167,7 @@ class StoriesController < ApplicationController
       theme_list = ThemeList.new
       @standard_theme_configs = theme_list.standard_theme_list.sort_by { |key| key["title"] }
       @custom_theme_configs = theme_list.custom_theme_list.sort_by { |key| key["title"] }
+      @default_themes = theme_list
       @custom_themes = theme_list.custom_themes
       @published_story = PublishedStory.find_by_uid(params[:uid])
       @primary_owner_uid = CoreServer.get_view(params[:uid])['owner']['id']

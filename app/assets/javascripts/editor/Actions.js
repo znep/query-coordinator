@@ -100,6 +100,14 @@
     // {array[string]} activeFormats: Currently available formatters.
     RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS: 'RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS',
 
+    // {string} activeColor
+    RTE_TOOLBAR_SET_ACTIVE_COLOR: 'RTE_TOOLBAR_SET_ACTIVE_COLOR',
+
+    // {string} customColor
+    RTE_TOOLBAR_UPDATE_ACTIVE_CUSTOM_COLOR: 'RTE_TOOLBAR_UPDATE_ACTIVE_CUSTOM_COLOR',
+
+    // No payload
+    RTE_TOOLBAR_SAVE_ACTIVE_CUSTOM_COLOR: 'RTE_TOOLBAR_SAVE_ACTIVE_CUSTOM_COLOR',
     /**
      * History management
      */

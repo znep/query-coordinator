@@ -27,16 +27,17 @@ $(document).on('ready', function() {
     { id: 'heading5', tag: 'h5', name: 'Heading 5', dropdown: true },
     { id: 'heading6', tag: 'h6', name: 'Heading 6', dropdown: true },
     { id: 'text', tag: null, name: 'Paragraph', dropdown: true },
-    { id: 'bold', tag: 'b', name: 'Bold', dropdown: false, group: 0 },
-    { id: 'italic', tag: 'i', name: 'Italic', dropdown: false, group: 0 },
-    { id: 'left', tag: null, name: 'Align Left', dropdown: false, group: 1 },
-    { id: 'center', tag: null, name: 'Align Center', dropdown: false, group: 1 },
-    { id: 'right', tag: null, name: 'Align Right', dropdown: false, group: 1 },
-    { id: 'orderedList', tag: 'ol', name: 'Ordered List', dropdown: false, group: 2 },
-    { id: 'unorderedList', tag: 'ul', name: 'Unordered List', dropdown: false, group: 2 },
-    { id: 'blockquote', tag: 'blockquote', name: 'Block Quote', dropdown: false, group: 2 },
-    { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 },
-    { id: 'clearFormatting', tag: null, name: 'Clear Formatting', dropdown: false, group: 4 }
+    { id: 'bold', tag: 'b', name: 'Bold', dropdown: false, group: 0, panel: false },
+    { id: 'italic', tag: 'i', name: 'Italic', dropdown: false, group: 0, panel: false },
+    { id: 'textColor', tag: null, name: 'Text Color', dropdown: false, group: 1, panel: true },
+    { id: 'left', tag: null, name: 'Align Left', dropdown: false, group: 2, panel: false },
+    { id: 'center', tag: null, name: 'Align Center', dropdown: false, group: 2, panel: false },
+    { id: 'right', tag: null, name: 'Align Right', dropdown: false, group: 2, panel: false },
+    { id: 'orderedList', tag: 'ol', name: 'Ordered List', dropdown: false, group: 3, panel: false },
+    { id: 'unorderedList', tag: 'ul', name: 'Unordered List', dropdown: false, group: 3, panel: false },
+    { id: 'blockquote', tag: 'blockquote', name: 'Block Quote', dropdown: false, group: 3, panel: false },
+    { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 4, panel: false },
+    { id: 'clearFormatting', tag: null, name: 'Clear Formatting', dropdown: false, group: 5, panel: false }
   ];
 
   /**
@@ -81,6 +82,7 @@ $(document).on('ready', function() {
   storyteller.userSessionStore = new storyteller.UserSessionStore();
   storyteller.shareAndEmbedStore = new storyteller.ShareAndEmbedStore();
   storyteller.flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+  storyteller.richTextEditorColorStore = new storyteller.RichTextEditorColorStore();
 
   socrata.visualizations.views.RowInspector.setup();
 

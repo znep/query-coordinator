@@ -205,7 +205,6 @@ function ChoroplethController(
       featurePk: Constants.INTERNAL_DATASET_FEATURE_ID
     }));
 
-  var geometryLabel$ = regionMetadata$.pluck('geometryLabel');
   var primaryKey$ = regionMetadata$.pluck('featurePk');
 
   geojsonRegions$ = Rx.Observable.combineLatest(
@@ -287,8 +286,7 @@ function ChoroplethController(
   $scope.$bindObservable('primaryKey', primaryKey$);
 
   var geojsonAggregateData$ = Rx.Observable.combineLatest(
-    geometryLabel$,
-    primaryKey$,
+    regionMetadata$,
     geojsonRegions$,
     unfilteredData$,
     filteredData$,

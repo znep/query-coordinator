@@ -63,26 +63,11 @@
 
     <script type="text/javascript" id="bar">
       (function(georegionsNS) {
-        // Run the user-controlled portion of this content through an escaping function.
-        georegionsNS.georegions = <%==
-          @view_model.curated_regions.map do |region|
-            region.name = j(region.name); region
-          end.to_json
-        %>;
-        georegionsNS.jobs = <%==
-          @view_model.curated_region_jobs.map do |job|
-            job['jobParameters']['name'] = j(job['jobParameters']['name']); job
-          end.to_json
-        %>;
-        georegionsNS.failedJobs = <%==
-          @view_model.failed_curated_region_jobs.map do |job|
-            job['latest_event']['info']['jobParameters']['name'] = j(job['latest_event']['info']['jobParameters']['name']) ; job
-          end.to_json
-        %>;
+        georegionsNS.georegions = <%== @view_model.curated_regions.to_json %>;
+        georegionsNS.jobs = <%== @view_model.curated_region_jobs.to_json %>;
+        georegionsNS.failedJobs = <%== @view_model.failed_curated_region_jobs.to_json %>;
 
-        georegionsNS.maximumEnabledCount = <%==
-          @view_model.maximum_enabled_count.to_json
-        %>;
+        georegionsNS.maximumEnabledCount = <%== @view_model.maximum_enabled_count.to_json %>;
         georegionsNS.flash = <%==
           flash.map do |type, message|
             { :type => type, :message => message }

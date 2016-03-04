@@ -23,6 +23,7 @@ module.exports = function(values, $target) {
    */
 
   var flyoutRenderer = new FlyoutRenderer();
+  RowInspector.setup({ isMobile: true });
 
   var domainBasedTileServerList;
   if (!_.isEmpty(socrataConfig.tileserverHosts)) {
@@ -52,6 +53,7 @@ module.exports = function(values, $target) {
       'datasetMetadata': false,
       // Behavior
       'hover': true,
+      'isMobile': true,
       'panAndZoom': true,
       'locateUser': true,
       'mapOptions': {
@@ -115,7 +117,7 @@ module.exports = function(values, $target) {
 
   $featureMapElement.on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', handleFlyout);
 
-  RowInspector.setup({}, $target);
+  RowInspector.setup({ isMobile: true }, $target);
 
   function handleFlyout(event) {
 

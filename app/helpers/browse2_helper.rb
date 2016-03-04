@@ -1,4 +1,7 @@
+# NOTE: Parts of this module duplicate facet logic in lib/browse_actions.rb incompletely
 module Browse2Helper
+  DEFAULT_FACET_CUTOFF = 5
+  MAX_FACET_CUTOFF = 100
 
   def facet_option_is_active?(opts, facet_param, facet_option)
     opts[facet_param] == facet_option[:value]
@@ -62,14 +65,25 @@ module Browse2Helper
     "#{opts[:base_url]}?#{current_params.to_param}"
   end
 
+  # Q: Why does this exist when lib/browse_actions.rb already has partitioning logic?
+  #
+  # A: Display logic does not belong in lib/browse_actions.rb. Once the old view types are EOL,
+  # partitioning logic will be removed from lib/browse_actions.rb.
+  #
   # Returns the facet option cutoff point. Looks at the domain configuration cutoff if set,
   # else falls back to default, 5. "View Type" is special and always shows everything.
   def browse2_facet_cutoff(facet)
     domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
+
     facet_name = facet[:singular_description]
-    facet_name == 'type' ?
-      Float::INFINITY :
-      domain_cutoffs[facet_name] || 5
+
+    if facet_name == 'type'
+      MAX_FACET_CUTOFF
+    elsif domain_cutoffs.keys.include?(facet_name)
+      domain_cutoffs[facet_name]
+    else
+      domain_cutoffs.fetch('custom', DEFAULT_FACET_CUTOFF)
+    end.to_i # just in case someone threw in a string
   end
 
   # Return an array containing a combination of facet[:options] and facet[:extra_options].

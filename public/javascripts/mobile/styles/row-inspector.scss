@@ -37,8 +37,8 @@
     }
 
     .tool-panel-main {
-      left: 0 !important;
-      bottom: inherit;
+      left: 0;
+      bottom: inherit !important;
       max-width: 100%;
       width: 100% !important;
       min-height: 180px;

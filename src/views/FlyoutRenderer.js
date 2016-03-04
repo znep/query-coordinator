@@ -11,6 +11,8 @@ function FlyoutRenderer() {
   var _flyoutContent;
   var _flyoutHint;
 
+  // Don't attempt to add yourself to the DOM unless
+  // it actually exists.
   $(function() {
     _renderFlyoutTemplate();
     _hideFlyout();

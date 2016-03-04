@@ -536,8 +536,9 @@ class BrowseControllerTest < ActionController::TestCase
     ########
     # Cetera
 
-    cetera_selector = 'div.browse2-mobile-filter-header > div'
-    cetera_message = '0 Results' # browse2 does not disambiguate between failure and no results
+    cetera_selector = 'div.browse2-results-pane.clearfix > div.browse2-results > div > span'
+    search_failure_message =
+      'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
 
     should 'fail gracefully on Cetera timeout' do
       stub_feature_flags_with(:cetera_search, true)
@@ -554,7 +555,7 @@ class BrowseControllerTest < ActionController::TestCase
       get(:show, view_type: 'browse2')
       assert_response :success
 
-      assert_select cetera_selector, cetera_message
+      assert_select cetera_selector, search_failure_message
     end
 
     should 'fail gracefully on Cetera 500' do
@@ -573,7 +574,7 @@ class BrowseControllerTest < ActionController::TestCase
       get(:show, view_type: 'browse2')
       assert_response :success
 
-      assert_select cetera_selector, cetera_message
+      assert_select cetera_selector, search_failure_message
     end
 
     should 'fail gracefully on Cetera unexpected payload' do
@@ -592,15 +593,13 @@ class BrowseControllerTest < ActionController::TestCase
       get(:show, view_type: 'browse2')
       assert_response :success
 
-      assert_select cetera_selector, cetera_message
+      assert_select cetera_selector, search_failure_message
     end
 
     ##########
     # Core/Cly
 
     core_cly_selector = 'div.browseList > div.results > div > span'
-    core_cly_message = # old browse has a helpful message indicating search is unavailable
-      'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
 
     should 'fail gracefully on Core/Cly timeout' do
       stub_feature_flags_with(:cetera_search, false)
@@ -613,7 +612,7 @@ class BrowseControllerTest < ActionController::TestCase
       get(:show, {})
       assert_response :success
 
-      assert_select core_cly_selector, core_cly_message
+      assert_select core_cly_selector, search_failure_message
     end
 
     should 'fail gracefully on Core/Cly 500' do
@@ -627,7 +626,7 @@ class BrowseControllerTest < ActionController::TestCase
       get(:show, {})
       assert_response :success
 
-      assert_select core_cly_selector, core_cly_message
+      assert_select core_cly_selector, search_failure_message
     end
 
     should 'fail gracefully on Core/Cly unexpected payload' do
@@ -641,7 +640,7 @@ class BrowseControllerTest < ActionController::TestCase
       get(:show, {})
       assert_response :success
 
-      assert_select core_cly_selector, core_cly_message
+      assert_select core_cly_selector, search_failure_message
     end
   end
 end

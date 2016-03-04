@@ -292,6 +292,11 @@ class StoriesController < ApplicationController
 
   # This logic is duplicated in Frontend/Browse as story_url
   def require_sufficient_rights
+    # always check that the user has access to the 4x4
+    return render_404 unless CoreServer.view_accessible?(params[:uid])
+
+    # If that passes, check additional storyteller-specific
+    # permission rules.
     action = params[:action]
 
     if action == 'edit'

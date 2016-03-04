@@ -8,6 +8,10 @@ class CoreServer
     view_request(uid: uid, verb: :get)
   end
 
+  def self.view_accessible?(uid)
+    get_view(uid).present?
+  end
+
   def self.update_view(uid, view_data, query_params = nil)
     view_request(uid: uid, verb: :put, data: view_data, query_params: query_params)
   end

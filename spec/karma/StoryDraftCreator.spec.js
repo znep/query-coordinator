@@ -1,18 +1,33 @@
+import $ from 'jQuery';
+
+import StandardMocks from './StandardMocks';
+import EnvironmentMocker from './StorytellerEnvironmentMocker';
+import Actions from '../../app/assets/javascripts/editor/Actions';
+import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';
+import Dispatcher from '../../app/assets/javascripts/editor/Dispatcher';
+import StoryStore from '../../app/assets/javascripts/editor/stores/StoryStore';
+import StoryDraftCreator, {__RewireAPI__ as StoryDraftCreatorAPI} from '../../app/assets/javascripts/editor/StoryDraftCreator';
+
 describe('StoryDraftCreator', function() {
 
-  'use strict';
-
-  var storyteller = window.socrata.storyteller;
-
   describe('.saveDraft()', function() {
+    var dispatcher;
     var server;
     var fakeTokenMeta;
+    var storyStoreStub;
+    var story = {uid: 'four-four'};
 
     beforeEach(function() {
-      // Since these tests actually expect to use AJAX, we need to disable the
-      // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-      // and re-enble it after each.
-      window.mockedXMLHttpRequest.restore();
+      dispatcher = new Dispatcher();
+
+      storyStoreStub = sinon.createStubInstance(StoryStore);
+      storyStoreStub.storyExists = _.constant(true);
+      storyStoreStub.serializeStory = _.constant(story);
+      storyStoreStub.getStoryDigest = _.constant('digest');
+
+      StoryDraftCreatorAPI.__Rewire__('Environment', EnvironmentMocker);
+      StoryDraftCreatorAPI.__Rewire__('dispatcher', dispatcher);
+      StoryDraftCreatorAPI.__Rewire__('storyStore', storyStoreStub);
 
       fakeTokenMeta = $('<meta>', { name: 'csrf-token', content: 'faketoken' });
 
@@ -25,20 +40,22 @@ describe('StoryDraftCreator', function() {
       server.restore();
       fakeTokenMeta.remove();
 
-      // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-      window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
+      StoryDraftCreatorAPI.__ResetDependency__('Environment');
+      StoryDraftCreatorAPI.__ResetDependency__('dispatcher');
+      StoryDraftCreatorAPI.__ResetDependency__('storyStore');
     });
 
     it('should throw when passed invalid arguments', function() {
-      assert.throws(function() { storyteller.StoryDraftCreator.saveDraft(); });
-      assert.throws(function() { storyteller.StoryDraftCreator.saveDraft({}); });
-      assert.throws(function() { storyteller.StoryDraftCreator.saveDraft([]); });
-      assert.throws(function() { storyteller.StoryDraftCreator.saveDraft(5); });
-      assert.throws(function() { storyteller.StoryDraftCreator.saveDraft(null); });
+      assert.throws(function() { StoryDraftCreator.saveDraft(); });
+      assert.throws(function() { StoryDraftCreator.saveDraft({}); });
+      assert.throws(function() { StoryDraftCreator.saveDraft([]); });
+      assert.throws(function() { StoryDraftCreator.saveDraft(5); });
+      assert.throws(function() { StoryDraftCreator.saveDraft(null); });
     });
 
     it('should throw when given a non-existent story uid', function() {
-      assert.throws(function() { storyteller.StoryDraftCreator.saveDraft('notastory'); });
+      storyStoreStub.storyExists = _.constant(false);
+      assert.throws(function() { StoryDraftCreator.saveDraft('notastory'); });
     });
 
     it('should hit the drafts endpoint with the stories JSON', function(done) {
@@ -46,26 +63,20 @@ describe('StoryDraftCreator', function() {
 
       server.respondWith(function(request) {
         assert.propertyVal(request, 'method', 'POST');
-        assert.propertyVal(request, 'url', '/stories/api/v1/stories/{0}/drafts'.format(standardMocks.validStoryUid));
+        assert.propertyVal(request, 'url', StorytellerUtils.format('/stories/api/v1/stories/{0}/drafts', StandardMocks.validStoryUid));
         assert.deepPropertyVal(request, 'requestHeaders.X-Socrata-Host', location.host);
         assert.deepPropertyVal(request, 'requestHeaders.X-CSRF-Token', 'faketoken');
-        assert.deepPropertyVal(request, 'requestHeaders.If-Match', standardMocks.validStoryDigest);
-        assert.deepPropertyVal(request, 'requestHeaders.X-App-Token', storyteller.config.coreServiceAppToken);
+        assert.deepPropertyVal(request, 'requestHeaders.If-Match', StandardMocks.validStoryDigest);
+        assert.deepPropertyVal(request, 'requestHeaders.X-App-Token', EnvironmentMocker.CORE_SERVICE_APP_TOKEN);
         assert.deepEqual(
           JSON.parse(request.requestBody),
-          // The stringify-then-parse step is because
-          // JSON.stringify omits object values that are undefined.
-          // For instance, JSON.stringify({foo: undefined}) returns '{}'.
-          // This is significant because sometimes 'themeId' is undefined.
-          JSON.parse(JSON.stringify(
-            storyteller.storyStore.serializeStory(standardMocks.validStoryUid)
-          ))
+          story
         );
         // Don't bother responding.
         done();
       });
 
-      storyteller.StoryDraftCreator.saveDraft(standardMocks.validStoryUid);
+      StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
     });
 
     describe('on succesful request', function() {
@@ -86,20 +97,20 @@ describe('StoryDraftCreator', function() {
       });
 
       it('should dispatch STORY_SAVED with the new digest', function(done) {
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           assert.notEqual(payload.action, Actions.STORY_SAVE_FAILED);
           if (payload.action === Actions.STORY_SAVED) {
-            assert.equal(payload.storyUid, standardMocks.validStoryUid);
+            assert.equal(payload.storyUid, StandardMocks.validStoryUid);
             assert.equal(payload.digest, newDigest);
             done();
           }
         });
 
-        storyteller.StoryDraftCreator.saveDraft(standardMocks.validStoryUid);
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
       });
 
       it('should resolve the promise with the new digest', function(done) {
-        storyteller.StoryDraftCreator.saveDraft(standardMocks.validStoryUid).
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).
         done(function(digest) {
           assert.equal(digest, newDigest);
           done();
@@ -122,19 +133,19 @@ describe('StoryDraftCreator', function() {
       });
 
       it('should dispatch STORY_SAVE_FAILED', function(done) {
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           assert.notEqual(payload.action, Actions.STORY_SAVED);
           if (payload.action === Actions.STORY_SAVE_FAILED) {
-            assert.equal(payload.storyUid, standardMocks.validStoryUid);
+            assert.equal(payload.storyUid, StandardMocks.validStoryUid);
             done();
           }
         });
 
-        storyteller.StoryDraftCreator.saveDraft(standardMocks.validStoryUid);
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
       });
 
       it('reject the returned promise', function(done) {
-        storyteller.StoryDraftCreator.saveDraft(standardMocks.validStoryUid).fail(function() {
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).fail(function() {
           done();
         });
       });
@@ -155,19 +166,19 @@ describe('StoryDraftCreator', function() {
       });
 
       it('should dispatch STORY_SAVE_FAILED', function(done) {
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           assert.notEqual(payload.action, Actions.STORY_SAVED);
           if (payload.action === Actions.STORY_SAVE_FAILED) {
-            assert.equal(payload.storyUid, standardMocks.validStoryUid);
+            assert.equal(payload.storyUid, StandardMocks.validStoryUid);
             done();
           }
         });
 
-        storyteller.StoryDraftCreator.saveDraft(standardMocks.validStoryUid);
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
       });
 
       it('reject the returned promise', function(done) {
-        storyteller.StoryDraftCreator.saveDraft(standardMocks.validStoryUid).fail(function() {
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).fail(function() {
           done();
         });
       });

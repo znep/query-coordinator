@@ -1,21 +1,25 @@
+import _ from 'lodash';
+import ExceptionNotifier, {__RewireAPI__ as ExceptionNotifierAPI} from '../../app/assets/javascripts/services/ExceptionNotifier';
+
 describe('ExceptionNotifier', function() {
-  'use strict';
 
   var notifyStub;
   var addFilterStub;
   var ClientStub;
   var consoleErrorStub;
-  var originalAirbrakeJs;
 
   beforeEach(function() {
     notifyStub = sinon.stub();
     addFilterStub = sinon.stub();
     consoleErrorStub = sinon.stub(window.console, 'error');
 
-    originalAirbrakeJs = window.airbrakeJs;
-    window.airbrakeJs = { Client: function() {} };
+    var AirbrakeMocker = {
+      Client: _.noop
+    };
 
-    ClientStub = sinon.stub(window.airbrakeJs, 'Client', function() {
+    ExceptionNotifierAPI.__Rewire__('Airbrake', AirbrakeMocker);
+
+    ClientStub = sinon.stub(AirbrakeMocker, 'Client', function() {
       this.addFilter = addFilterStub;
       this.notify = notifyStub;
     });
@@ -23,8 +27,7 @@ describe('ExceptionNotifier', function() {
 
   afterEach(function() {
     window.console.error.restore();
-    window.airbrakeJs.Client.restore();
-    window.airbrakeJs = originalAirbrakeJs;
+    ExceptionNotifierAPI.__ResetDependency__('Airbrake');
   });
 
   describe('initialization', function() {
@@ -33,12 +36,12 @@ describe('ExceptionNotifier', function() {
       var exceptionNotifier; //eslint-disable-line no-unused-vars
 
       beforeEach(function() {
-        options = { environment: 'hola', projectKey: 'this is key'};
-        exceptionNotifier = new window.storyteller.ExceptionNotifier(options);
+        options = { ENVIRONMENT: 'hola', PROJECT_KEY: 'this is key'};
+        exceptionNotifier = new ExceptionNotifier(options);
       });
 
       it('instantiates clients with airbrake options', function() {
-        assert.isTrue(ClientStub.calledWith({projectKey: 'this is key'}));
+        assert.isTrue(ClientStub.calledWith({PROJECT_KEY: 'this is key'}));
       });
 
       it('sets the environment using addFilter', function() {
@@ -52,7 +55,7 @@ describe('ExceptionNotifier', function() {
 
       beforeEach(function() {
         options = null;
-        exceptionNotifier = new window.storyteller.ExceptionNotifier(options);
+        exceptionNotifier = new ExceptionNotifier(options);
       });
 
       it('instantiates clients with airbrake options', function() {
@@ -72,7 +75,7 @@ describe('ExceptionNotifier', function() {
       var error = 'hello';
 
       beforeEach(function() {
-        exceptionNotifier = new window.storyteller.ExceptionNotifier({projectKey: 'werdz'});
+        exceptionNotifier = new ExceptionNotifier({PROJECT_KEY: 'werdz'});
         exceptionNotifier.notify(error);
       });
 
@@ -89,7 +92,7 @@ describe('ExceptionNotifier', function() {
       var error = 'from the other side';
 
       beforeEach(function() {
-        exceptionNotifier = new window.storyteller.ExceptionNotifier({});
+        exceptionNotifier = new ExceptionNotifier({});
         exceptionNotifier.notify(error);
       });
 
@@ -106,7 +109,7 @@ describe('ExceptionNotifier', function() {
       var error = 'Google Analytics';
 
       beforeEach(function() {
-        exceptionNotifier = new window.storyteller.ExceptionNotifier();
+        exceptionNotifier = new ExceptionNotifier();
       });
 
       describe('ga is defined', function() {

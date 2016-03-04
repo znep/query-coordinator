@@ -1,12 +1,30 @@
-describe('LinkTipStore', function() {
-  'use strict';
+import _ from 'lodash';
 
-  var storyteller = window.socrata.storyteller;
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import LinkTipStore from '../../../app/assets/javascripts/editor/stores/LinkTipStore';
+
+describe('LinkTipStore', function() {
+
+  var dispatcher;
+  var linkTipStore;
 
   function dispatchAction(action, payload) {
     payload = _.extend({action: action}, payload);
-    storyteller.dispatcher.dispatch(payload);
+    dispatcher.dispatch(payload);
   }
+
+  beforeEach(function() {
+    dispatcher = new Dispatcher();
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    linkTipStore = new LinkTipStore();
+  });
+
+  afterEach(function() {
+    StoreAPI.__ResetDependency__('dispatcher');
+  });
 
   describe('Actions.LINK_TIP_OPEN', function() {
     describe('when given an incorrect payload', function() {
@@ -31,7 +49,7 @@ describe('LinkTipStore', function() {
       });
 
       it('should emit a change', function(done) {
-        storyteller.linkTipStore.addChangeListener(function() {
+        linkTipStore.addChangeListener(function() {
           done();
         });
 
@@ -39,11 +57,11 @@ describe('LinkTipStore', function() {
       });
 
       it('should update visibility to true', function() {
-        assert.isTrue(storyteller.linkTipStore.getVisibility());
+        assert.isTrue(linkTipStore.getVisibility());
       });
 
       it('should update inputs', function() {
-        assert.deepEqual(storyteller.linkTipStore.getInputs(), {
+        assert.deepEqual(linkTipStore.getInputs(), {
           text: 'text',
           link: 'link',
           openInNewWindow: true
@@ -51,11 +69,11 @@ describe('LinkTipStore', function() {
       });
 
       it('should update bounding client rectangle', function() {
-        assert.deepEqual(storyteller.linkTipStore.getBoundingClientRect(), 'boundingClientRect');
+        assert.deepEqual(linkTipStore.getBoundingClientRect(), 'boundingClientRect');
       });
 
       it('should update editor ID', function() {
-        assert.equal(storyteller.linkTipStore.getEditorId(), 'id');
+        assert.equal(linkTipStore.getEditorId(), 'id');
       });
     });
   });
@@ -81,7 +99,7 @@ describe('LinkTipStore', function() {
       });
 
       it('should emit a change', function(done) {
-        storyteller.linkTipStore.addChangeListener(function() {
+        linkTipStore.addChangeListener(function() {
           done();
         });
 
@@ -89,7 +107,7 @@ describe('LinkTipStore', function() {
       });
 
       it('should update inputs', function() {
-        assert.deepEqual(storyteller.linkTipStore.getInputs(), {
+        assert.deepEqual(linkTipStore.getInputs(), {
           text: 'text',
           link: 'link',
           openInNewWindow: false
@@ -101,7 +119,7 @@ describe('LinkTipStore', function() {
   describe('Actions.LINK_TIP_REMOVE', function() {
     describe('when given no payload', function() {
       it('should emit a change', function(done) {
-        storyteller.linkTipStore.addChangeListener(function() {
+        linkTipStore.addChangeListener(function() {
           done();
         });
 
@@ -109,22 +127,22 @@ describe('LinkTipStore', function() {
       });
 
       it('should temporarily cause shouldRemoveLink to return true for the specific editor', function() {
-        var id = storyteller.linkTipStore.getEditorId();
+        var id = linkTipStore.getEditorId();
         var shouldRemoveLinkReturnedTrue = false;
         // shouldRemoveLink is only true momentarily.
         // This is because RichTextEditorFormatController is
         // eagerly waiting for shouldRemoveLink() to return
         // true for its editor, ready to remove the link
         // immediately.
-        storyteller.linkTipStore.addChangeListener(function() {
-          if (storyteller.linkTipStore.shouldRemoveLink(id)) {
+        linkTipStore.addChangeListener(function() {
+          if (linkTipStore.shouldRemoveLink(id)) {
             shouldRemoveLinkReturnedTrue = true;
           }
-          assert.isFalse(storyteller.linkTipStore.shouldRemoveLink('some random ID'));
+          assert.isFalse(linkTipStore.shouldRemoveLink('some random ID'));
         });
         dispatchAction(Actions.LINK_TIP_REMOVE);
         assert.isTrue(shouldRemoveLinkReturnedTrue);
-        assert.isFalse(storyteller.linkTipStore.shouldRemoveLink(id));
+        assert.isFalse(linkTipStore.shouldRemoveLink(id));
       });
     });
   });
@@ -136,7 +154,7 @@ describe('LinkTipStore', function() {
       });
 
       it('should emit a change', function(done) {
-        storyteller.linkTipStore.addChangeListener(function() {
+        linkTipStore.addChangeListener(function() {
           done();
         });
 
@@ -144,7 +162,7 @@ describe('LinkTipStore', function() {
       });
 
       it('should update visibility', function() {
-        assert.isFalse(storyteller.linkTipStore.getVisibility());
+        assert.isFalse(linkTipStore.getVisibility());
       });
     });
   });

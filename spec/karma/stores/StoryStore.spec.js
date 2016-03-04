@@ -1,8 +1,14 @@
+import DataGenerators from '../DataGenerators';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Environment from '../../../app/assets/javascripts/StorytellerEnvironment';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import StoryStore from '../../../app/assets/javascripts/editor/stores/StoryStore';
+
 describe('StoryStore', function() {
-
-  'use strict';
-
-  var story1Uid = 'stry-spc1';
+  var dispatcher;
+  var storyStore;
+  var story1Uid = 'what-what';
   var story1Title = 'Story 1';
   var story1Description = 'Story 1 Description';
   var story1Theme = 'testTheme';
@@ -34,10 +40,9 @@ describe('StoryStore', function() {
   var block3Id = 'block3';
   var block3Layout = '12';
   var block3Components = [ { type: 'html', value: 'Third Block' } ];
-  var storyteller = window.socrata.storyteller;
 
   function dispatch(action) {
-    storyteller.dispatcher.dispatch(action);
+    dispatcher.dispatch(action);
   }
 
   // We don't rely on StandardMocks for the sample stories because
@@ -45,7 +50,7 @@ describe('StoryStore', function() {
   // through some mocking layer.
   function createSampleStories() {
 
-    var sampleStory1Data = generateStoryData({
+    var sampleStory1Data = DataGenerators.generateStoryData({
       uid: story1Uid,
       title: story1Title,
       description: story1Description,
@@ -54,18 +59,18 @@ describe('StoryStore', function() {
       permissions: {isPublic: false},
       publishedStory: story1PublishedStory,
       blocks: [
-        generateBlockData({
+        DataGenerators.generateBlockData({
           layout: block1Layout,
           components: block1Components
         }),
-        generateBlockData({
+        DataGenerators.generateBlockData({
           layout: block2Layout,
           components: block2Components
         })
       ]
     });
 
-    var sampleStory2Data = generateStoryData({
+    var sampleStory2Data = DataGenerators.generateStoryData({
       uid: story2Uid,
       title: story2Title,
       description: story2Description,
@@ -73,7 +78,7 @@ describe('StoryStore', function() {
       permissions: {isPublic: true},
       publishedStory: story2PublishedStory,
       blocks: [
-        generateBlockData({
+        DataGenerators.generateBlockData({
           layout: block3Layout,
           components: block3Components
         })
@@ -94,13 +99,22 @@ describe('StoryStore', function() {
       storyUid: sampleStory2Data.uid
     });
 
-    block1Id = storyteller.storyStore.getStoryBlockIds(story1Uid)[0];
-    block2Id = storyteller.storyStore.getStoryBlockIds(story1Uid)[1];
-    block3Id = storyteller.storyStore.getStoryBlockIds(story2Uid)[0];
+    block1Id = storyStore.getStoryBlockIds(story1Uid)[0];
+    block2Id = storyStore.getStoryBlockIds(story1Uid)[1];
+    block3Id = storyStore.getStoryBlockIds(story2Uid)[0];
   }
 
   beforeEach(function() {
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+    storyStore = new StoryStore();
+
     createSampleStories();
+  });
+
+  afterEach(function() {
+    StoreAPI.__ResetDependency__('dispatcher');
   });
 
   describe('story data accessors', function() {
@@ -110,7 +124,7 @@ describe('StoryStore', function() {
       describe('.storyExists()', function() {
 
         it('should return false', function() {
-          assert.isFalse(storyteller.storyStore.storyExists(null));
+          assert.isFalse(storyStore.storyExists(null));
         });
       });
 
@@ -119,7 +133,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.storyHasBlock(null);
+            storyStore.storyHasBlock(null);
           });
         });
       });
@@ -129,7 +143,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryTitle(null);
+            storyStore.getStoryTitle(null);
           });
         });
       });
@@ -139,7 +153,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryDescription(null);
+            storyStore.getStoryDescription(null);
           });
         });
       });
@@ -149,7 +163,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryTheme(null);
+            storyStore.getStoryTheme(null);
           });
         });
       });
@@ -159,7 +173,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryDigest(null);
+            storyStore.getStoryDigest(null);
           });
         });
       });
@@ -169,7 +183,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryPermissions(null);
+            storyStore.getStoryPermissions(null);
           });
         });
       });
@@ -179,7 +193,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryPublishedStory(null);
+            storyStore.getStoryPublishedStory(null);
           });
         });
       });
@@ -189,7 +203,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryBlockIds(null);
+            storyStore.getStoryBlockIds(null);
           });
         });
       });
@@ -199,7 +213,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryBlockAtIndex(null, 0);
+            storyStore.getStoryBlockAtIndex(null, 0);
           });
         });
       });
@@ -209,7 +223,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryBlockIdAtIndex(null, 0);
+            storyStore.getStoryBlockIdAtIndex(null, 0);
           });
         });
       });
@@ -219,7 +233,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.serializeStory(null);
+            storyStore.serializeStory(null);
           });
         });
       });
@@ -230,7 +244,7 @@ describe('StoryStore', function() {
       describe('.storyExists()', function() {
 
         it('should return false', function() {
-          assert.isFalse(storyteller.storyStore.storyExists('notf-ound'));
+          assert.isFalse(storyStore.storyExists('notf-ound'));
         });
       });
 
@@ -239,7 +253,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.storyHasBlock('notf-ound');
+            storyStore.storyHasBlock('notf-ound');
           });
         });
       });
@@ -249,7 +263,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryTitle('notf-ound');
+            storyStore.getStoryTitle('notf-ound');
           });
         });
       });
@@ -259,7 +273,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryDescription('notf-ound');
+            storyStore.getStoryDescription('notf-ound');
           });
         });
       });
@@ -269,7 +283,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryTheme('notf-ound');
+            storyStore.getStoryTheme('notf-ound');
           });
         });
       });
@@ -279,7 +293,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryDigest('notf-ound');
+            storyStore.getStoryDigest('notf-ound');
           });
         });
       });
@@ -289,7 +303,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryPermissions('notf-ound');
+            storyStore.getStoryPermissions('notf-ound');
           });
         });
       });
@@ -299,7 +313,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryPublishedStory('notf-ound');
+            storyStore.getStoryPublishedStory('notf-ound');
           });
         });
       });
@@ -309,7 +323,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryBlockIds('notf-ound');
+            storyStore.getStoryBlockIds('notf-ound');
           });
         });
       });
@@ -319,7 +333,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryBlockAtIndex('notf-ound', 0);
+            storyStore.getStoryBlockAtIndex('notf-ound', 0);
           });
         });
       });
@@ -329,7 +343,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getStoryBlockIdAtIndex('notf-ound', 0);
+            storyStore.getStoryBlockIdAtIndex('notf-ound', 0);
           });
         });
       });
@@ -339,7 +353,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.serializeStory('notf-ound');
+            storyStore.serializeStory('notf-ound');
           });
         });
       });
@@ -350,41 +364,41 @@ describe('StoryStore', function() {
       describe('.storyExists()', function() {
 
         it('should return true', function() {
-          assert.isTrue(storyteller.storyStore.storyExists(story1Uid));
+          assert.isTrue(storyStore.storyExists(story1Uid));
         });
       });
 
       describe('.storyHasBlock()', function() {
 
         it('should return the correct value', function() {
-          assert.isTrue(storyteller.storyStore.storyHasBlock(story2Uid, block3Id));
-          assert.isFalse(storyteller.storyStore.storyHasBlock(story2Uid, 'notthere'));
+          assert.isTrue(storyStore.storyHasBlock(story2Uid, block3Id));
+          assert.isFalse(storyStore.storyHasBlock(story2Uid, 'notthere'));
         });
       });
 
       describe('.getStoryTitle()', function() {
 
         it('should return the correct value', function() {
-          assert.equal(storyteller.storyStore.getStoryTitle(story1Uid), story1Title);
-          assert.equal(storyteller.storyStore.getStoryTitle(story2Uid), story2Title);
+          assert.equal(storyStore.getStoryTitle(story1Uid), story1Title);
+          assert.equal(storyStore.getStoryTitle(story2Uid), story2Title);
         });
       });
 
       describe('.getStoryDescription()', function() {
 
         it('should return the correct value', function() {
-          assert.equal(storyteller.storyStore.getStoryDescription(story1Uid), story1Description);
-          assert.equal(storyteller.storyStore.getStoryDescription(story2Uid), story2Description);
+          assert.equal(storyStore.getStoryDescription(story1Uid), story1Description);
+          assert.equal(storyStore.getStoryDescription(story2Uid), story2Description);
         });
       });
 
       describe('.getStoryTheme()', function() {
         it('defaults to `classic` when not set', function() {
-          assert.equal(storyteller.storyStore.getStoryTheme(story2Uid), 'classic');
+          assert.equal(storyStore.getStoryTheme(story2Uid), 'classic');
         });
 
         it('returns the correct value when set on STORY_CREATE', function() {
-          assert.equal(storyteller.storyStore.getStoryTheme(story1Uid), story1Theme);
+          assert.equal(storyStore.getStoryTheme(story1Uid), story1Theme);
         });
 
         it('changes the value when `STORY_UPDATE_THEME` is fired', function() {
@@ -394,47 +408,46 @@ describe('StoryStore', function() {
             theme: 'serif'
           });
 
-          assert.equal(storyteller.storyStore.getStoryTheme(story1Uid), 'serif');
+          assert.equal(storyStore.getStoryTheme(story1Uid), 'serif');
         });
       });
 
       describe('.getStoryDigest()', function() {
 
         it('should return the correct value', function() {
-          assert.equal(storyteller.storyStore.getStoryDigest(story1Uid), story1Digest);
-          assert.equal(storyteller.storyStore.getStoryDigest(story2Uid), story2Digest);
+          assert.equal(storyStore.getStoryDigest(story1Uid), story1Digest);
+          assert.equal(storyStore.getStoryDigest(story2Uid), story2Digest);
         });
       });
 
       describe('.getStoryPermissions()', function() {
 
         it('should return the correct value', function() {
-          assert.deepEqual(storyteller.storyStore.getStoryPermissions(story1Uid), {isPublic: false});
-          assert.deepEqual(storyteller.storyStore.getStoryPermissions(story2Uid), {isPublic: true});
+          assert.deepEqual(storyStore.getStoryPermissions(story1Uid), {isPublic: false});
+          assert.deepEqual(storyStore.getStoryPermissions(story2Uid), {isPublic: true});
         });
       });
 
       describe('.getStoryPublishedStory()', function() {
 
         it('should return the correct value', function() {
-          assert.deepEqual(storyteller.storyStore.getStoryPublishedStory(story1Uid), story1PublishedStory);
-          assert.deepEqual(storyteller.storyStore.getStoryPublishedStory(story2Uid), story2PublishedStory);
+          assert.deepEqual(storyStore.getStoryPublishedStory(story1Uid), story1PublishedStory);
+          assert.deepEqual(storyStore.getStoryPublishedStory(story2Uid), story2PublishedStory);
         });
       });
 
       describe('.getStoryPrimaryOwnerUid()', function() {
 
         it('should return the correct value', function() {
-          window.primaryOwnerUid = 'test-test';
-          assert.equal(storyteller.storyStore.getStoryPrimaryOwnerUid(), window.primaryOwnerUid);
+          assert.equal(storyStore.getStoryPrimaryOwnerUid(), Environment.PRIMARY_OWNER_UID);
         });
       });
 
       describe('.getStoryBlockIds()', function() {
 
         it('should return the correct value', function() {
-          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story1Uid), [ block1Id, block2Id ]);
-          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story2Uid), [ block3Id ]);
+          assert.deepEqual(storyStore.getStoryBlockIds(story1Uid), [ block1Id, block2Id ]);
+          assert.deepEqual(storyStore.getStoryBlockIds(story2Uid), [ block3Id ]);
         });
       });
 
@@ -444,7 +457,7 @@ describe('StoryStore', function() {
 
           it('should throw an error', function() {
             assert.throw(function() {
-              storyteller.storyStore.getStoryBlockAtIndex(story1Uid, 99);
+              storyStore.getStoryBlockAtIndex(story1Uid, 99);
             });
           });
         });
@@ -453,8 +466,8 @@ describe('StoryStore', function() {
 
           it('should return the correct value', function() {
 
-            var block1 = storyteller.storyStore.getStoryBlockAtIndex(story1Uid, 0);
-            var block3 = storyteller.storyStore.getStoryBlockAtIndex(story2Uid, 0);
+            var block1 = storyStore.getStoryBlockAtIndex(story1Uid, 0);
+            var block3 = storyStore.getStoryBlockAtIndex(story2Uid, 0);
 
             assert.propertyVal(block1, 'layout', block1Layout);
             assert.equal(block1.components[0].type, block1Components[0].type);
@@ -475,7 +488,7 @@ describe('StoryStore', function() {
 
           it('should throw an error', function() {
             assert.throw(function() {
-              storyteller.storyStore.getStoryBlockIdAtIndex(story1Uid, 99);
+              storyStore.getStoryBlockIdAtIndex(story1Uid, 99);
             });
           });
         });
@@ -483,8 +496,8 @@ describe('StoryStore', function() {
         describe('given a valid index', function() {
 
           it('should return the correct value', function() {
-            assert.equal(storyteller.storyStore.getStoryBlockIdAtIndex(story1Uid, 0), block1Id);
-            assert.equal(storyteller.storyStore.getStoryBlockIdAtIndex(story2Uid, 0), block3Id);
+            assert.equal(storyStore.getStoryBlockIdAtIndex(story1Uid, 0), block1Id);
+            assert.equal(storyStore.getStoryBlockIdAtIndex(story2Uid, 0), block3Id);
           });
         });
       });
@@ -493,7 +506,7 @@ describe('StoryStore', function() {
 
         it('should return an object matching the properties of the story', function() {
 
-          var serializedStory = storyteller.storyStore.serializeStory(story1Uid);
+          var serializedStory = storyStore.serializeStory(story1Uid);
 
           assert.equal(serializedStory.uid, story1Uid);
           assert.equal(serializedStory.title, story1Title);
@@ -515,7 +528,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getBlockLayout(null);
+            storyStore.getBlockLayout(null);
           });
         });
       });
@@ -525,7 +538,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getBlockLayout(null);
+            storyStore.getBlockLayout(null);
           });
         });
       });
@@ -535,7 +548,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getBlockComponentAtIndex(null, 0);
+            storyStore.getBlockComponentAtIndex(null, 0);
           });
         });
       });
@@ -548,7 +561,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getBlockLayout('does not exist');
+            storyStore.getBlockLayout('does not exist');
           });
         });
       });
@@ -558,7 +571,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getBlockComponents('does not exist');
+            storyStore.getBlockComponents('does not exist');
           });
         });
       });
@@ -568,7 +581,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyteller.storyStore.getBlockLayout('does not exist', 0);
+            storyStore.getBlockLayout('does not exist', 0);
           });
         });
       });
@@ -580,8 +593,8 @@ describe('StoryStore', function() {
 
         it('should return the layout of the specified block', function() {
 
-          assert.equal(storyteller.storyStore.getBlockLayout(block1Id), block1Layout);
-          assert.equal(storyteller.storyStore.getBlockLayout(block2Id), block2Layout);
+          assert.equal(storyStore.getBlockLayout(block1Id), block1Layout);
+          assert.equal(storyStore.getBlockLayout(block2Id), block2Layout);
         });
       });
 
@@ -589,8 +602,8 @@ describe('StoryStore', function() {
 
         it('should return the components of the specified block', function() {
 
-          assert.deepEqual(storyteller.storyStore.getBlockComponents(block1Id), block1Components);
-          assert.deepEqual(storyteller.storyStore.getBlockComponents(block2Id), block2Components);
+          assert.deepEqual(storyStore.getBlockComponents(block1Id), block1Components);
+          assert.deepEqual(storyStore.getBlockComponents(block2Id), block2Components);
         });
       });
 
@@ -601,7 +614,7 @@ describe('StoryStore', function() {
           it('should throw an error', function() {
 
             assert.throw(function() {
-              storyteller.storyStore.getBlockComponentAtIndex(block1Id, -1);
+              storyStore.getBlockComponentAtIndex(block1Id, -1);
             });
           });
         });
@@ -611,11 +624,11 @@ describe('StoryStore', function() {
           it('should throw an error', function() {
 
             assert.throw(function() {
-              storyteller.storyStore.getBlockComponentAtIndex(block1Id, 2);
+              storyStore.getBlockComponentAtIndex(block1Id, 2);
             });
 
             assert.throw(function() {
-              storyteller.storyStore.getBlockComponentAtIndex(block1Id, 3);
+              storyStore.getBlockComponentAtIndex(block1Id, 3);
             });
           });
         });
@@ -624,7 +637,7 @@ describe('StoryStore', function() {
 
           it('should return the specified component of the specified block', function() {
 
-            var component = storyteller.storyStore.getBlockComponentAtIndex(block1Id, 1);
+            var component = storyStore.getBlockComponentAtIndex(block1Id, 1);
 
             assert.equal(component.type, block1Components[1].type);
             assert.equal(component.value, block1Components[1].value);
@@ -643,7 +656,7 @@ describe('StoryStore', function() {
         var storyData;
 
         beforeEach(function() {
-          storyData = generateStoryData();
+          storyData = DataGenerators.generateStoryData();
         });
 
         describe('and `uid` is missing', function() {
@@ -698,7 +711,7 @@ describe('StoryStore', function() {
 
           it('raises an exception', function() {
 
-            var invalidStoryData = generateStoryData({
+            var invalidStoryData = DataGenerators.generateStoryData({
               blocks: 'not an array'
             });
 
@@ -713,7 +726,7 @@ describe('StoryStore', function() {
 
         it('raises an exception', function() {
 
-          var invalidStoryData = generateStoryData({
+          var invalidStoryData = DataGenerators.generateStoryData({
             blocks: [
               { invalidBlockObject: true }
             ]
@@ -729,7 +742,7 @@ describe('StoryStore', function() {
 
         it('raises an exception', function() {
 
-          var invalidStoryData = generateStoryData({
+          var invalidStoryData = DataGenerators.generateStoryData({
             blocks: [
               {
                 invalidBlockObject: {
@@ -752,7 +765,7 @@ describe('StoryStore', function() {
 
         it('raises an exception', function() {
 
-          var invalidStoryData = generateStoryData({
+          var invalidStoryData = DataGenerators.generateStoryData({
             blocks: [
               {
                 invalidBlockObject: {
@@ -775,7 +788,7 @@ describe('StoryStore', function() {
 
         it('raises an exception', function() {
 
-          var invalidStoryData = generateStoryData({
+          var invalidStoryData = DataGenerators.generateStoryData({
             blocks: [
               {
                 invalidBlockObject: {
@@ -796,7 +809,7 @@ describe('StoryStore', function() {
 
         it('should throw an error', function() {
 
-          var invalidStoryData = generateStoryData({
+          var invalidStoryData = DataGenerators.generateStoryData({
             uid: story1Uid
           });
 
@@ -813,14 +826,14 @@ describe('StoryStore', function() {
           var validStoryUid = 'test-titl';
           var validStoryTitle = 'Test Title';
 
-          var validStoryData = generateStoryData({
+          var validStoryData = DataGenerators.generateStoryData({
             uid: validStoryUid,
             title: validStoryTitle
           });
 
           dispatch({ action: Actions.STORY_CREATE, data: validStoryData });
 
-          assert.equal(storyteller.storyStore.getStoryTitle(validStoryUid), validStoryTitle);
+          assert.equal(storyStore.getStoryTitle(validStoryUid), validStoryTitle);
         });
       });
     });
@@ -878,7 +891,7 @@ describe('StoryStore', function() {
             title: 'new title'
           });
 
-          assert.deepEqual(storyteller.storyStore.getStoryTitle(story1Uid), 'new title');
+          assert.deepEqual(storyStore.getStoryTitle(story1Uid), 'new title');
         });
       });
     });
@@ -891,7 +904,7 @@ describe('StoryStore', function() {
           digest: 'new digest'
         });
 
-        assert.equal(storyteller.storyStore.getStoryDigest(story1Uid), 'new digest');
+        assert.equal(storyStore.getStoryDigest(story1Uid), 'new digest');
       });
     });
 
@@ -947,7 +960,7 @@ describe('StoryStore', function() {
             description: 'new description'
           });
 
-          assert.equal(storyteller.storyStore.getStoryDescription(story1Uid), 'new description');
+          assert.equal(storyStore.getStoryDescription(story1Uid), 'new description');
         });
       });
     });
@@ -1004,7 +1017,7 @@ describe('StoryStore', function() {
             isPublic: true
           });
 
-          assert.deepEqual(storyteller.storyStore.getStoryPermissions(story1Uid), {isPublic: true});
+          assert.deepEqual(storyStore.getStoryPermissions(story1Uid), {isPublic: true});
         });
       });
     });
@@ -1061,7 +1074,7 @@ describe('StoryStore', function() {
             publishedStory: {digest: 'new-digest'}
           });
 
-          assert.deepEqual(storyteller.storyStore.getStoryPublishedStory(story1Uid), {digest: 'new-digest'});
+          assert.deepEqual(storyStore.getStoryPublishedStory(story1Uid), {digest: 'new-digest'});
         });
       });
     });
@@ -1162,7 +1175,7 @@ describe('StoryStore', function() {
             blockId: block2Id
           });
 
-          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
+          assert.deepEqual(storyStore.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
         });
       });
     });
@@ -1262,7 +1275,7 @@ describe('StoryStore', function() {
             blockId: block1Id
           });
 
-          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
+          assert.deepEqual(storyStore.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
         });
       });
     });
@@ -1362,7 +1375,7 @@ describe('StoryStore', function() {
             blockId: block1Id
           });
 
-          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story1Uid), [ block2Id ]);
+          assert.deepEqual(storyStore.getStoryBlockIds(story1Uid), [ block2Id ]);
         });
       });
     });
@@ -1504,7 +1517,7 @@ describe('StoryStore', function() {
             insertAt: validInsertionIndex
           });
 
-          var clonedBlock = storyteller.storyStore.getStoryBlockAtIndex(story1Uid, validInsertionIndex);
+          var clonedBlock = storyStore.getStoryBlockAtIndex(story1Uid, validInsertionIndex);
 
           assert.equal(clonedBlock.layout, block1Layout);
           assert.deepEqual(clonedBlock.components, block1Components);
@@ -1584,7 +1597,350 @@ describe('StoryStore', function() {
             value: validComponentValue
           });
 
-          assert.equal(storyteller.storyStore.getBlockComponentAtIndex(block1Id, 1).value, validComponentValue);
+          assert.equal(storyStore.getBlockComponentAtIndex(block1Id, 1).value, validComponentValue);
+        });
+      });
+    });
+  });
+});
+
+describe('HistoryStore', function() {
+  var historyStore;
+  var dispatcher;
+  var validStoryUid = 'what-what';
+  var storyState1 = DataGenerators.generateStoryData({
+    uid: validStoryUid,
+    blocks: [
+      DataGenerators.generateBlockData({
+        id: 'block1'
+      })
+    ]
+  });
+  var storyState2 = DataGenerators.generateStoryData({
+    uid: validStoryUid,
+    blocks: [
+      DataGenerators.generateBlockData({
+        id: 'block1'
+      }),
+      DataGenerators.generateBlockData({
+        id: 'block2'
+      })
+    ]
+  });
+  var storyState3 = DataGenerators.generateStoryData({
+    uid: validStoryUid,
+    blocks: [
+      DataGenerators.generateBlockData({
+        id: 'block1'
+      }),
+      DataGenerators.generateBlockData({
+        id: 'block2'
+      }),
+      DataGenerators.generateBlockData({
+        id: 'block3'
+      })
+    ]
+  });
+  var storyState4 = DataGenerators.generateStoryData({
+    uid: validStoryUid,
+    blocks: [
+      DataGenerators.generateBlockData({
+        id: 'block1'
+      }),
+      DataGenerators.generateBlockData({
+        id: 'block2'
+      }),
+      DataGenerators.generateBlockData({
+        id: 'block3'
+      }),
+      DataGenerators.generateBlockData({
+        id: 'block4'
+      })
+    ]
+  });
+
+  var firstEditAction = {
+    action: Actions.STORY_INSERT_BLOCK,
+    storyUid: validStoryUid,
+    insertAt: 1,
+    blockContent: storyState2.blocks[1]
+  };
+
+  var secondEditAction = {
+    action: Actions.STORY_INSERT_BLOCK,
+    storyUid: validStoryUid,
+    insertAt: 1,
+    blockContent: storyState3.blocks[2]
+  };
+
+  var thirdEditAction = {
+    action: Actions.STORY_INSERT_BLOCK,
+    storyUid: validStoryUid,
+    insertAt: 1,
+    blockContent: storyState4.blocks[3]
+  };
+
+  beforeEach(function() {
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    historyStore = new StoryStore(validStoryUid);
+    dispatch({ action: Actions.STORY_CREATE, data: storyState1 });
+  });
+
+  function dispatch(action) {
+    dispatcher.dispatch(action);
+  }
+
+  describe('history accessors', function() {
+
+    describe('given a newly-created story', function() {
+
+      describe('.canUndo()', function() {
+
+        it('should return false', function() {
+          assert.isFalse(historyStore.canUndo());
+        });
+      });
+
+      describe('.canRedo()', function() {
+
+        it('should return false', function() {
+          assert.isFalse(historyStore.canUndo());
+        });
+      });
+    });
+
+    describe('given a newly-created story and one content change', function() {
+
+      beforeEach(function() {
+        dispatch(firstEditAction);
+      });
+
+      describe('.canUndo()', function() {
+
+        it('should return true', function() {
+          assert.isTrue(historyStore.canUndo());
+        });
+      });
+
+      describe('.canRedo()', function() {
+
+        it('should return false', function() {
+          assert.isFalse(historyStore.canRedo());
+        });
+      });
+    });
+
+    describe('given a newly-created story, two content changes and one undo action', function() {
+
+      beforeEach(function() {
+        dispatch(firstEditAction);
+        dispatch(secondEditAction);
+        dispatch({ action: Actions.HISTORY_UNDO });
+      });
+
+      describe('.canUndo()', function() {
+
+        it('should return true', function() {
+          assert.isTrue(historyStore.canUndo());
+        });
+      });
+
+      describe('.canRedo()', function() {
+
+        it('should return true', function() {
+          assert.isTrue(historyStore.canUndo());
+        });
+      });
+    });
+
+    describe('given a newly-created story, two content changes and two undo actions', function() {
+
+      beforeEach(function() {
+        dispatch(firstEditAction);
+        dispatch(secondEditAction);
+        dispatch({ action: Actions.HISTORY_UNDO });
+        dispatch({ action: Actions.HISTORY_UNDO });
+      });
+
+      describe('.canUndo()', function() {
+
+        it('should return false', function() {
+          assert.isFalse(historyStore.canUndo());
+        });
+      });
+
+      describe('.canRedo()', function() {
+
+        it('should return true', function() {
+          assert.isTrue(historyStore.canRedo());
+        });
+      });
+    });
+  });
+
+  describe('actions', function() {
+
+    describe('HISTORY_UNDO', function() {
+
+      describe('given a newly-created story', function() {
+
+        it('should not modify the story', function() {
+
+          var storyBeforeUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
+
+          dispatch({ action: Actions.HISTORY_UNDO });
+
+          var storyAfterUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
+        });
+      });
+
+      describe('given a newly-created story and one content change', function() {
+
+        beforeEach(function() {
+          dispatch(firstEditAction);
+        });
+
+        it('should cause the story data to revert to the previous version', function() {
+
+          var storyBeforeUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
+
+          dispatch({ action: Actions.HISTORY_UNDO });
+
+          var storyAfterUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
+        });
+      });
+
+      describe('given a newly-created story, one content change, an undo action and a different content change', function() {
+
+        beforeEach(function() {
+          dispatch(firstEditAction);
+        });
+
+        it('should reflect the latest content change and disable redo', function() {
+
+          var storyBeforeUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
+
+          dispatch({ action: Actions.HISTORY_UNDO });
+
+          var storyAfterUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
+
+          assert.isTrue(historyStore.canRedo());
+
+          dispatch(secondEditAction);
+
+          var storyAfterContentChange = historyStore.getStorySnapshotAtCursor();
+          assert.equal(storyAfterContentChange.blocks.length, storyState2.blocks.length);
+
+          assert.isFalse(historyStore.canRedo());
+        });
+      });
+
+      describe('given 100 content changes', function() {
+
+        beforeEach(function() {
+          for (var i = 0; i < 100; i++) {
+
+            var mod = i % 3;
+
+            if (mod === 0) {
+              dispatch(firstEditAction);
+            } else if (mod === 1) {
+              dispatch(secondEditAction);
+            } else {
+              dispatch(thirdEditAction);
+            }
+          }
+        });
+
+        it('should allow 99 redo actions (but a switch case 1)', function() {
+
+          for (var i = 0; i < 98; i++) {
+            dispatch({ action: Actions.HISTORY_UNDO });
+            assert.isTrue(historyStore.canUndo());
+          }
+
+          dispatch({ action: Actions.HISTORY_UNDO });
+          assert.isFalse(historyStore.canUndo());
+        });
+      });
+    });
+
+    describe('HISTORY_REDO', function() {
+
+      describe('given a newly-created story', function() {
+
+        it('should not modify the story', function() {
+
+          var storyBeforeUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
+
+          dispatch({ action: Actions.HISTORY_REDO });
+
+          var storyAfterRedo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyAfterRedo.blocks.length, storyState1.blocks.length);
+        });
+      });
+
+      describe('given a newly-created story and one content change', function() {
+
+        beforeEach(function() {
+          dispatch(firstEditAction);
+        });
+
+        it('should not modify the story', function() {
+
+          var storyBeforeUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
+
+          dispatch({ action: Actions.HISTORY_REDO });
+
+          var storyAfterRedo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyAfterRedo.blocks.length, storyState2.blocks.length);
+        });
+      });
+
+      describe('given a newly-created story, one content change and one undo action', function() {
+
+        beforeEach(function() {
+          dispatch(firstEditAction);
+        });
+
+        it('should revert the story to the last updated version', function() {
+
+          var storyBeforeUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
+
+          dispatch({ action: Actions.HISTORY_UNDO });
+
+          var storyAfterUndo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
+
+          dispatch({ action: Actions.HISTORY_REDO });
+
+          var storyAfterRedo = historyStore.getStorySnapshotAtCursor();
+
+          assert.equal(storyAfterRedo.blocks.length, storyState2.blocks.length);
         });
       });
     });

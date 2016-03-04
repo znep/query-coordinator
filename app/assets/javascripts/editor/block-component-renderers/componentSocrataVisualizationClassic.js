@@ -1,89 +1,89 @@
-(function(root, $) {
+import $ from 'jQuery';
+import _ from 'lodash';
 
-  'use strict';
+import '../componentBase';
+import Constants from '../Constants';
+import StorytellerUtils from '../../StorytellerUtils';
 
-  var socrata = root.socrata;
-  var utils = socrata.utils;
-  var COMPONENT_VALUE_CACHE_ATTR_NAME = 'classic-visualization-component-value';
+var COMPONENT_VALUE_CACHE_ATTR_NAME = 'classic-visualization-component-value';
 
-  function _renderVisualization($element, componentData) {
+$.fn.componentSocrataVisualizationClassic = componentSocrataVisualizationClassic;
 
-    utils.assertHasProperty(componentData, 'type');
+export default function componentSocrataVisualizationClassic(componentData, theme, options) {
+  var $this = $(this);
 
-    var $iframeElement = $(
-      '<iframe>',
-      {
-        'src': '/component/visualization/v0/show',
-        'frameborder': '0',
-        'allowfullscreen': true
-      }
-    );
+  StorytellerUtils.assertHasProperties(componentData, 'type');
+  StorytellerUtils.assert(
+    componentData.type === 'socrata.visualization.classic',
+    StorytellerUtils.format(
+      'componentSocrataVisualizationClassic: Unsupported component type {0}',
+      componentData.type
+    )
+  );
+  StorytellerUtils.assertHasProperty(componentData, 'value.visualization');
 
-    $iframeElement.one('load', function() {
-      _updateVisualization($element, componentData);
-    });
-
-    $element.
-      addClass(utils.typeToClassNameForComponentType(componentData.type)).
-      append($iframeElement);
+  if ($this.children().length === 0) {
+    _renderVisualization($this, componentData);
+  } else {
+    _updateVisualization($this, componentData);
   }
 
-  function _updateVisualization($element, componentData) {
-
-    var $iframe = $element.find('iframe');
-    var oldValue = $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME);
-    var newValue = componentData.value.visualization;
-
-    utils.assertInstanceOf($iframe, jQuery);
-
-    // This guard is to wait for loading.
-    // The iframe load event above should invoke _updateVisualization again.
-    if (_.isFunction($iframe[0].contentWindow.renderVisualization)) {
-
-      // Don't re-render if we've already rendered this visualization.
-      if (!_.isEqual(oldValue, newValue)) {
-        $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME, componentData.value.visualization);
-
-        // The iframe we're using goes to a frontend endpoint: /component/visualization/v0/show.
-        // This endpoint contains a function on window called renderVisualization.
-        // renderVisualization kicks off a classic visualization rendering using a view
-        // metadata object. See the frontend implementation for more information.
-        $iframe[0].contentWindow.renderVisualization(componentData.value.visualization);
+  $this.componentBase(componentData, theme, _.extend(
+    {
+      resizeSupported: true,
+      resizeOptions: {
+        minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.VISUALIZATION
       }
+    },
+    options
+  ));
+
+  return $this;
+}
+
+function _renderVisualization($element, componentData) {
+  StorytellerUtils.assertHasProperty(componentData, 'type');
+
+  var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+  var $iframeElement = $(
+    '<iframe>',
+    {
+      'src': '/component/visualization/v0/show',
+      'frameborder': '0',
+      'allowfullscreen': true
+    }
+  );
+
+  $iframeElement.one('load', function() {
+    _updateVisualization($element, componentData);
+  });
+
+  $element.
+    addClass(className).
+    append($iframeElement);
+}
+
+function _updateVisualization($element, componentData) {
+
+  var $iframe = $element.find('iframe');
+  var oldValue = $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME);
+  var newValue = componentData.value.visualization;
+
+  StorytellerUtils.assertInstanceOf($iframe, $);
+
+  // This guard is to wait for loading.
+  // The iframe load event above should invoke _updateVisualization again.
+  if (_.isFunction($iframe[0].contentWindow.renderVisualization)) {
+
+    // Don't re-render if we've already rendered this visualization.
+    if (!_.isEqual(oldValue, newValue)) {
+      $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME, componentData.value.visualization);
+
+      // The iframe we're using goes to a frontend endpoint: /component/visualization/v0/show.
+      // This endpoint contains a function on window called renderVisualization.
+      // renderVisualization kicks off a classic visualization rendering using a view
+      // metadata object. See the frontend implementation for more information.
+      $iframe[0].contentWindow.renderVisualization(componentData.value.visualization);
     }
   }
-
-  function componentSocrataVisualizationClassic(componentData, theme, options) {
-
-    var $this = $(this);
-
-    utils.assertHasProperties(componentData, 'type');
-    utils.assert(
-      componentData.type === 'socrata.visualization.classic',
-      'componentSocrataVisualizationClassic: Unsupported component type {0}'.format(
-        componentData.type
-      )
-    );
-    utils.assertHasProperty(componentData, 'value.visualization');
-
-    if ($this.children().length === 0) {
-      _renderVisualization($this, componentData);
-    } else {
-      _updateVisualization($this, componentData);
-    }
-
-    $this.componentBase(componentData, theme, _.extend(
-      {
-        resizeSupported: true,
-        resizeOptions: {
-          minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.visualization
-        }
-      },
-      options
-    ));
-
-    return $this;
-  }
-
-  $.fn.componentSocrataVisualizationClassic = componentSocrataVisualizationClassic;
-})(window, jQuery);
+}

@@ -1,10 +1,19 @@
-describe('CollaboratorsRenderer', function() {
-  'use strict';
+import $ from 'jQuery';
+import _ from 'lodash';
 
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import {__RewireAPI__ as StoryStoreAPI} from '../../../app/assets/javascripts/editor/stores/StoryStore';
+import CollaboratorsStore, {__RewireAPI__ as CollaboratorsStoreAPI} from '../../../app/assets/javascripts/editor/stores/CollaboratorsStore';
+import CollaboratorsRenderer, {__RewireAPI__ as CollaboratorsRendererAPI} from '../../../app/assets/javascripts/editor/renderers/CollaboratorsRenderer';
+
+describe('CollaboratorsRenderer', function() {
+
+  var dispatcher;
   var $collaborators;
   var renderer;
   var server;
-  var storyteller = window.socrata.storyteller;
   var debounceStub;
 
   function respondWithNoUserFound() {
@@ -30,16 +39,32 @@ describe('CollaboratorsRenderer', function() {
   }
 
   beforeEach(function() {
-    window.mockedXMLHttpRequest.restore();
-    window.primaryOwnerUid = 'test-test';
     debounceStub = sinon.stub(window._, 'debounce', function(fn) {
       return fn;
     });
 
     server = sinon.fakeServer.create();
-    renderer = new storyteller.CollaboratorsRenderer();
+    dispatcher = new Dispatcher();
 
-    storyteller.dispatcher.dispatch({
+    var environment = {
+      STORY_UID: 'what-what',
+      CURRENT_USER: {id: 'test-test'}
+    };
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+    CollaboratorsRendererAPI.__Rewire__('dispatcher', dispatcher);
+    CollaboratorsStoreAPI.__Rewire__('dispatcher', dispatcher);
+    StoryStoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    CollaboratorsRendererAPI.__Rewire__('storyStore', {
+      getStoryPrimaryOwnerUid: _.constant('test-test')
+    });
+    CollaboratorsRendererAPI.__Rewire__('collaboratorsStore', new CollaboratorsStore());
+    CollaboratorsRendererAPI.__Rewire__('Environment', environment);
+
+    renderer = new CollaboratorsRenderer();
+
+    dispatcher.dispatch({
       action: Actions.COLLABORATORS_OPEN
     });
 
@@ -47,11 +72,19 @@ describe('CollaboratorsRenderer', function() {
   });
 
   afterEach(function() {
-    delete window.primaryOwnerUid;
+    delete window.PRIMARY_OWNER_UID;
+
+    StoreAPI.__ResetDependency__('dispatcher');
+    CollaboratorsRendererAPI.__ResetDependency__('dispatcher');
+    CollaboratorsStoreAPI.__ResetDependency__('dispatcher');
+    StoryStoreAPI.__ResetDependency__('dispatcher');
+
+    CollaboratorsRendererAPI.__ResetDependency__('collaboratorsStore');
+    CollaboratorsRendererAPI.__ResetDependency__('Environment');
+
     renderer.destroy();
     debounceStub.restore();
     server.restore();
-    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
   });
 
   describe('rendering', function() {
@@ -77,12 +110,12 @@ describe('CollaboratorsRenderer', function() {
       var $tr;
 
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.COLLABORATORS_LOAD,
           collaborators: [{email: 'already-shared-with@socrata.com', accessLevel: 'accessLevel', uid: 'four-four', displayName: 'Hello'}]
         });
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.COLLABORATORS_OPEN
         });
 
@@ -115,7 +148,7 @@ describe('CollaboratorsRenderer', function() {
 
   describe('events', function() {
     beforeEach(function() {
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.COLLABORATORS_LOAD,
         collaborators: [{
           email: 'already-shared-with@socrata.com',
@@ -123,7 +156,7 @@ describe('CollaboratorsRenderer', function() {
         }]
       });
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.COLLABORATORS_OPEN
       });
     });
@@ -305,12 +338,12 @@ describe('CollaboratorsRenderer', function() {
       }
 
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.COLLABORATORS_ADD,
           collaborator: {email: newCollaborator, accessLevel: 'viewer'}
         });
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.COLLABORATORS_ADD,
           collaborator: {email: newestCollaborator, accessLevel: 'viewer'}
         });

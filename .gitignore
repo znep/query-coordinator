@@ -12,6 +12,9 @@ marathon.properties
 /coverage
 *.log
 .sass-cache
+public/js
+.npmrc
+webpack-assets.json
 
 # Ignore local database settings
 config/database.yml

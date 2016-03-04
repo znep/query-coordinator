@@ -1,26 +1,32 @@
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import FileUploadStore from '../../../app/assets/javascripts/editor/stores/FileUploadStore';
+
 describe('FileUploadStore', function() {
-  'use strict';
 
-  var storyteller = window.socrata.storyteller;
+  var dispatcher;
+  var fileUploadStore;
 
-  beforeEach(removeStandardMocks);
   beforeEach(function() {
-    storyteller.dispatcher = new Flux.Dispatcher();
-    storyteller.fileUploadStore = new storyteller.FileUploadStore();
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+    fileUploadStore = new FileUploadStore();
   });
 
   describe('file upload progress accessors', function() {
     describe('when in an unintialized state', function() {
       describe('.getFileUploadProgress()', function() {
         it('returns null', function() {
-          assert.equal(storyteller.fileUploadStore.getFileUploadProgress(), null);
+          assert.equal(fileUploadStore.getFileUploadProgress(), null);
         });
       });
     });
 
     describe('after a `FILE_UPLOAD_PROGRESS` action', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: 0.5
         });
@@ -28,25 +34,25 @@ describe('FileUploadStore', function() {
 
       describe('.getFileUploadProgress()', function() {
         it('returns the percentLoaded', function() {
-          assert.equal(storyteller.fileUploadStore.getFileUploadProgress(), 0.5);
+          assert.equal(fileUploadStore.getFileUploadProgress(), 0.5);
         });
       });
     });
 
     describe('after a `FILE_UPLOAD_DONE` action', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: 0.5
         });
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.FILE_UPLOAD_DONE
         });
       });
 
       describe('.getFileUploadProgress()', function() {
         it('returns null', function() {
-          assert.equal(storyteller.fileUploadStore.getFileUploadProgress(), null);
+          assert.equal(fileUploadStore.getFileUploadProgress(), null);
         });
       });
     });

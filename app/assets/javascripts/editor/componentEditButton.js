@@ -1,44 +1,42 @@
-(function(root, $) {
+import $ from 'jQuery';
+import _ from 'lodash';
 
-  'use strict';
+import I18n from './I18n';
+import Actions from './Actions';
+import StorytellerUtils from '../StorytellerUtils';
+import { dispatcher } from './Dispatcher';
 
-  var socrata = root.socrata;
-  var utils = socrata.utils;
-  var storyteller = socrata.storyteller;
+$.fn.componentEditButton = componentEditButton;
 
-  function componentEditButton() {
-    var $this = $(this);
-    var $editControls = $this.find('.component-edit-controls');
+export default function componentEditButton() {
+  var $this = $(this);
+  var $editControls = $this.find('.component-edit-controls');
 
-    if ($editControls.length === 0) {
-      $editControls = $('<div>', { 'class': 'component-edit-controls' }).
-        append(
-          $('<button>', { 'class': 'component-edit-controls-edit-btn' }).
-          click(_handleClick).
-          text(I18n.t('editor.components.edit_controls.button'))
-        );
+  if ($editControls.length === 0) {
+    $editControls = $('<div>', { 'class': 'component-edit-controls' }).
+      append(
+        $('<button>', { 'class': 'component-edit-controls-edit-btn' }).
+        click(_handleClick).
+        text(I18n.t('editor.components.edit_controls.button'))
+      );
 
-      $this.append($editControls);
-    }
-
-    return $this;
+    $this.append($editControls);
   }
 
-  function _handleClick() {
-    var blockId = utils.findClosestAttribute(this, 'data-block-id');
-    var componentIndex = parseInt(
-      utils.findClosestAttribute(this, 'data-component-index'),
-      10);
+  return $this;
+}
 
-    utils.assertIsOneOfTypes(blockId, 'string');
-    utils.assert(_.isFinite(componentIndex));
+function _handleClick() {
+  var blockId = StorytellerUtils.findClosestAttribute(this, 'data-block-id');
+  var componentIndex = StorytellerUtils.findClosestAttribute(this, 'data-component-index');
+  componentIndex = parseInt(componentIndex, 10);
 
-    storyteller.dispatcher.dispatch({
-      action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
-      blockId: blockId,
-      componentIndex: componentIndex
-    });
-  }
+  StorytellerUtils.assertIsOneOfTypes(blockId, 'string');
+  StorytellerUtils.assert(_.isFinite(componentIndex));
 
-  $.fn.componentEditButton = componentEditButton;
-})(window, jQuery);
+  dispatcher.dispatch({
+    action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
+    blockId: blockId,
+    componentIndex: componentIndex
+  });
+}

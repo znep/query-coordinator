@@ -1,124 +1,120 @@
-(function(socrata) {
+import $ from 'jQuery';
+import _ from 'lodash';
+import Unipointer from 'unipointer';
 
-  'use strict';
+import Store from './Store';
+import Actions from '../Actions';
+import StorytellerUtils from '../../StorytellerUtils';
+import { storyStore } from './StoryStore';
 
-  var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
+export var dropHintStore = new DropHintStore();
+export default function DropHintStore() {
 
-  function DropHintStore() {
+  _.extend(this, new Store());
 
-    _.extend(this, new storyteller.Store());
+  var self = this;
+  var _reorderHintPosition = null;
 
-    var self = this;
-    var _reorderHintPosition = null;
-
-    this.register(function(payload) {
-
-      switch (payload.action) {
-        case Actions.STORY_DRAG_OVER:
-          _storyDragOver(payload);
-          break;
-        case Actions.STORY_DRAG_LEAVE:
-          _storyDragLeave(payload);
-          break;
-        case Actions.STORY_DROP:
-          _storyDrop(payload);
-          break;
-      }
-    });
-
-    /**
-     * Returns where the drop hint should be.
-     *
-     * Returns null, or:
-     * {
-     *   storyUid: Uid of story that should be hinted.
-     *   dropIndex: Index to hint.
-     * }
-     */
-    this.getDropHintPosition = function() {
-      return _reorderHintPosition;
-    };
-
-    this.isDraggingOverStory = function(storyUid) {
-      var position = this.getDropHintPosition();
-
-      return !!(position && position.storyUid === storyUid);
-    };
-
-    function _setReorderHintPosition(position) {
-      if (position !== _reorderHintPosition) {
-        _reorderHintPosition = position;
-        self._emitChange();
-      }
+  this.register(function(payload) {
+    switch (payload.action) {
+      case Actions.STORY_DRAG_OVER:
+        _storyDragOver(payload);
+        break;
+      case Actions.STORY_DRAG_LEAVE:
+        _storyDragLeave(payload);
+        break;
+      case Actions.STORY_DROP:
+        _storyDrop(payload);
+        break;
     }
+  });
 
-    /*
-     * Action handlers
-     */
+  /**
+   * Returns where the drop hint should be.
+   *
+   * Returns null, or:
+   * {
+   *   storyUid: Uid of story that should be hinted.
+   *   dropIndex: Index to hint.
+   * }
+   */
+  this.getDropHintPosition = function() {
+    return _reorderHintPosition;
+  };
 
-    function _storyDragOver(payload) {
+  this.isDraggingOverStory = function(storyUid) {
+    var position = this.getDropHintPosition();
 
-      utils.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement');
+    return !!(position && position.storyUid === storyUid);
+  };
 
-      if (storyteller.storyStore.storyExists(payload.storyUid)) {
-        var dropIndex;
-
-        var pointerY = Unipointer.getPointerPoint(payload.pointer).y - window.pageYOffset;
-
-        // _.chain allows you to chain lodash calls together, vs. having to nest individual
-        // calls.
-        var blocksSortedByVerticalPosition = _.chain($(payload.storyElement).find('.block')).
-          map(function(block) { return block.getBoundingClientRect(); }).
-          sortBy('top').
-          value();
-
-        // From the bottom, give me first block where the top extent
-        // is above the pointer. This is the block we're over.
-        var indexOfBlockUnderPointer = _.findLastIndex(
-          blocksSortedByVerticalPosition,
-          function(rect) {
-            return rect.top <= pointerY;
-          });
-
-        if (indexOfBlockUnderPointer >= 0) {
-          var blockExtents = blocksSortedByVerticalPosition[indexOfBlockUnderPointer];
-          var height = blockExtents.bottom - blockExtents.top;
-          var isOverBottomHalf = pointerY >= blockExtents.top + (height / 2);
-
-          dropIndex = indexOfBlockUnderPointer + (isOverBottomHalf ? 1 : 0);
-        } else {
-          dropIndex = 0;
-        }
-
-        _setReorderHintPosition({
-          storyUid: payload.storyUid,
-          dropIndex: dropIndex
-        });
-      } else {
-        _setReorderHintPosition(null);
-      }
+  function _setReorderHintPosition(position) {
+    if (position !== _reorderHintPosition) {
+      _reorderHintPosition = position;
+      self._emitChange();
     }
-
-    function _storyDragLeave(payload) {
-
-      utils.assertHasProperties(payload, 'storyUid');
-
-      if (_reorderHintPosition && _reorderHintPosition.storyUid === payload.storyUid) {
-        _setReorderHintPosition(null);
-      }
-    }
-
-    function _storyDrop(payload) {
-
-      utils.assertHasProperties(payload, 'storyUid');
-
-      if (self.isDraggingOverStory(payload.storyUid)) {
-        _setReorderHintPosition(null);
-      }
-    }
-
   }
 
-  storyteller.DropHintStore = DropHintStore;
-}(window.socrata));
+  /*
+   * Action handlers
+   */
+
+  function _storyDragOver(payload) {
+    StorytellerUtils.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement');
+
+    if (storyStore.storyExists(payload.storyUid)) {
+      var dropIndex;
+
+      var pointerY = Unipointer.getPointerPoint(payload.pointer).y - window.pageYOffset;
+
+      // _.chain allows you to chain lodash calls together, vs. having to nest individual
+      // calls.
+      var blocksSortedByVerticalPosition = _.chain($(payload.storyElement).find('.block')).
+        map(function(block) { return block.getBoundingClientRect(); }).
+        sortBy('top').
+        value();
+
+      // From the bottom, give me first block where the top extent
+      // is above the pointer. This is the block we're over.
+      var indexOfBlockUnderPointer = _.findLastIndex(
+        blocksSortedByVerticalPosition,
+        function(rect) {
+          return rect.top <= pointerY;
+        });
+
+      if (indexOfBlockUnderPointer >= 0) {
+        var blockExtents = blocksSortedByVerticalPosition[indexOfBlockUnderPointer];
+        var height = blockExtents.bottom - blockExtents.top;
+        var isOverBottomHalf = pointerY >= blockExtents.top + (height / 2);
+
+        dropIndex = indexOfBlockUnderPointer + (isOverBottomHalf ? 1 : 0);
+      } else {
+        dropIndex = 0;
+      }
+
+      _setReorderHintPosition({
+        storyUid: payload.storyUid,
+        dropIndex: dropIndex
+      });
+    } else {
+      _setReorderHintPosition(null);
+    }
+  }
+
+  function _storyDragLeave(payload) {
+    StorytellerUtils.assertHasProperties(payload, 'storyUid');
+
+    if (_reorderHintPosition && _reorderHintPosition.storyUid === payload.storyUid) {
+      _setReorderHintPosition(null);
+    }
+  }
+
+  function _storyDrop(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'storyUid');
+
+    if (self.isDraggingOverStory(payload.storyUid)) {
+      _setReorderHintPosition(null);
+    }
+  }
+
+}

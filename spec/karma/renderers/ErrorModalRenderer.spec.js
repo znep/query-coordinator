@@ -1,9 +1,22 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import ErrorModalRenderer, {__RewireAPI__ as ErrorModalRendererAPI} from '../../../app/assets/javascripts/editor/renderers/ErrorModalRenderer';
+
 describe('ErrorModalRenderer', function() {
-  'use strict';
 
   var $body;
   var $modal;
-  var storyteller = window.socrata.storyteller;
+  var dispatcher;
+  var userSessionStore;
+  var storySaveStatusStore;
+
+  var hasValidSession = true;
+  var isSaveImpossibleDueToConflict = false;
+  var userCausingConflict = {};
 
   beforeEach(function() {
     $body = $('body');
@@ -11,25 +24,54 @@ describe('ErrorModalRenderer', function() {
       append($('<div>', { 'class': 'error-warning-message' }));
     $body.append($modal);
 
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+    ErrorModalRendererAPI.__Rewire__('dispatcher', dispatcher);
+
+    var StorySaveStatusStoreMock = function() {
+      _.extend(this, new Store());
+
+      this.isSaveImpossibleDueToConflict = function() { return isSaveImpossibleDueToConflict; };
+      this.userCausingConflict = function() { return userCausingConflict; };
+    };
+
+    var UserSessionStoreMock = function() {
+      _.extend(this, new Store());
+
+      this.hasValidSession = function() { return hasValidSession; };
+    };
+
+    storySaveStatusStore = new StorySaveStatusStoreMock();
+    userSessionStore = new UserSessionStoreMock();
+
+    ErrorModalRendererAPI.__Rewire__('storySaveStatusStore', storySaveStatusStore);
+    ErrorModalRendererAPI.__Rewire__('userSessionStore', userSessionStore);
+
     sinon.stub($.fn, 'modal', _.noop);
 
-    new storyteller.ErrorModalRenderer(); //eslint-disable-line no-new
+    new ErrorModalRenderer(); //eslint-disable-line no-new
   });
 
   afterEach(function() {
     $.fn.modal.restore();
     $modal.remove();
+
+    ErrorModalRendererAPI.__ResetDependency__('storySaveStatusStore');
+    ErrorModalRendererAPI.__ResetDependency__('userSessionStore');
+    StoreAPI.__ResetDependency__('dispatcher');
+    ErrorModalRendererAPI.__ResetDependency__('dispatcher');
   });
 
   describe('on expired session', function() {
     function causeSessionExpiry() {
-      storyteller.userSessionStore.hasValidSession = _.constant(false);
-      storyteller.userSessionStore._emitChange();
+      hasValidSession = false;
+      userSessionStore._emitChange();
     }
 
     function reestablishSession() {
-      storyteller.userSessionStore.hasValidSession = _.constant(true);
-      storyteller.userSessionStore._emitChange();
+      hasValidSession = true;
+      userSessionStore._emitChange();
     }
 
     it('should open', function(done) {
@@ -59,7 +101,7 @@ describe('ErrorModalRenderer', function() {
     it('should include a login link that dispatches LOGIN_BUTTON_CLICK', function(done) {
       causeSessionExpiry();
 
-      storyteller.dispatcher.register(function(action) {
+      dispatcher.register(function(action) {
         if (action.action === Actions.LOGIN_BUTTON_CLICK) {
           done();
         }
@@ -71,16 +113,17 @@ describe('ErrorModalRenderer', function() {
 
   describe('on conflict', function() {
     function causeConflict() {
-      storyteller.storySaveStatusStore.isSaveImpossibleDueToConflict = _.constant(true);
-      storyteller.storySaveStatusStore._emitChange();
+      isSaveImpossibleDueToConflict = true;
+      storySaveStatusStore._emitChange();
     }
 
     function populateUserDetails() {
-      storyteller.storySaveStatusStore.userCausingConflict = _.constant({
+      userCausingConflict = {
         id: 'evil-user',
         displayName: 'Evil User'
-      });
-      storyteller.storySaveStatusStore._emitChange();
+      };
+
+      storySaveStatusStore._emitChange();
     }
 
     it('should open', function(done) {

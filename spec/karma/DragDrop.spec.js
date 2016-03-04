@@ -1,49 +1,67 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import StandardMocks from './StandardMocks';
+import Actions from '../../app/assets/javascripts/editor/Actions';
+import DragDrop, {__RewireAPI__ as DragDropAPI} from '../../app/assets/javascripts/editor/DragDrop';
+import Dispatcher from '../../app/assets/javascripts/editor/Dispatcher';
+
 describe('DragDrop', function() {
 
-  'use strict';
-
-  var storyteller = window.socrata.storyteller;
   var dispatchedEvents;
   var story;
   var blocks;
   var ghost;
+  var testDom;
   var inspirationBlockList;
+  var dispatcher;
 
   beforeEach(function() {
-
     dispatchedEvents = [];
 
-    storyteller.dispatcher.register(function(payload) {
+    dispatcher = new Dispatcher();
+    dispatcher.register(function(payload) {
       dispatchedEvents.push(payload);
     });
 
+    DragDropAPI.__Rewire__('dispatcher', dispatcher);
+
     ghost = $('<div id="block-ghost" class="hidden">');
-    story = $('<div class="story" data-story-uid="' + standardMocks.validStoryUid + '">');
+    story = $('<div class="story" data-story-uid="' + StandardMocks.validStoryUid + '">');
 
     inspirationBlockList = $('<div class="inspiration-block-list">');
     inspirationBlockList.append($('<div class="inspiration-block"></div>').
-      attr('data-block-content', JSON.stringify(standardMocks.validBlockData1)).
+      attr('data-block-content', JSON.stringify(StandardMocks.validBlockData1)).
       append('<span>other</span>')
     );
 
     ghost.css('position', 'absolute');
-    story.append('<div class="block" data-block-id="' + standardMocks.firstBlockId + '"><span>content1</span></div>');
-    story.append('<div class="block" data-block-id="' + standardMocks.secondBlockId + '"><span>content2</span></div>');
+    story.append('<div class="block" data-block-id="' + StandardMocks.firstBlockId + '"><span>content1</span></div>');
+    story.append('<div class="block" data-block-id="' + StandardMocks.secondBlockId + '"><span>content2</span></div>');
 
     blocks = story.find('.block');
+
+    testDom = $('<div>');
     testDom.append(story);
     testDom.append(ghost);
     testDom.append(inspirationBlockList);
+
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
+    DragDropAPI.__ResetDependency__('dispatcher');
   });
 
   describe('constructor', function() {
     describe('given bad arguments', function() {
       it('should throw', function() {
         /* eslint-disable no-new */
-        assert.throws(function() { new storyteller.DragDrop(); });
-        assert.throws(function() { new storyteller.DragDrop([]); });
-        assert.throws(function() { new storyteller.DragDrop(3, ghost); });
-        assert.throws(function() { new storyteller.DragDrop(blocks, $('nothing')); });
+        assert.throws(function() { new DragDrop(); });
+        assert.throws(function() { new DragDrop([]); });
+        assert.throws(function() { new DragDrop(3, ghost); });
+        assert.throws(function() { new DragDrop(blocks, $('nothing')); });
         /* eslint-enable no-new */
       });
     });
@@ -57,11 +75,12 @@ describe('DragDrop', function() {
     var fakeDragStartPointer;
 
     beforeEach(function() {
-      dragDrop = new storyteller.DragDrop(blocks, ghost);
+      dragDrop = new DragDrop(blocks, ghost);
       dragDrop.setup();
 
       // Manually invoke pointerDown and dragStart - in an actual browser UniDragger does this for us.
       fakePointerDownEvent = {
+        preventDefault: _.noop,
         target: testDom.find('[data-block-content]').first(),
         type: 'mousedown'
       };
@@ -147,78 +166,15 @@ describe('DragDrop', function() {
 
         it('should dispatch STORY_DRAG_OVER', function() {
           assert.equal(dispatchedEvents.length, 1);
-
           assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DRAG_OVER'}), {
             action: Actions.STORY_DRAG_OVER,
-            storyUid: standardMocks.validStoryUid,
-            blockContent: standardMocks.validBlockData1,
+            storyUid: StandardMocks.validStoryUid,
+            blockContent: StandardMocks.validBlockData1,
             pointer: fakeDragMovePointer,
-            storyElement: $('[data-story-uid="' + standardMocks.validStoryUid + '"]')[0]
+            storyElement: $('[data-story-uid="' + StandardMocks.validStoryUid + '"]')[0]
           });
-        });
-
-        // TODO: Remove these two tests
-        //
-        // For some reason, triggering the `.dragEnd()` manually causes the
-        // `STORY_DROP` action to occur after the `STORY_INSERT_BLOCK` action,
-        // and in such a way that the test exits before the `STORY_DROP` event
-        // has been recorded.
-        //
-        // I have no idea why (or how) this happens and, a) having verified
-        // that we see the expected behavior in actual usage and b) having
-        // reached consensus that we should probably be testing multi-step
-        // behaviors like these in the context of a feature test, have decided
-        // to disable the tests relying on `STORY_DROP` actions.
-        //
-        // Note that the 'should not invoke STORY_DROP' test technically still
-        // passes but is pretty meaningless if we can never observe a
-        // `STORY_DROP` action in the first place.
-        xdescribe('and the user has dropped', function() {
-          var fakeDragEndEvent;
-          var fakeDragEndPointer;
-
-          beforeEach(function() {
-            // Manually invoke dragEnd - usually UniDragger does this for us.
-            // Drop our inspiration block on the first block element
-            fakeDragEndEvent = {
-              target: testDom.find('.block').first()
-            };
-            fakeDragEndPointer = fakeDragEndEvent;
-            dragDrop.dragEnd(fakeDragEndEvent, fakeDragEndPointer);
-          });
-
-          it('should invoke STORY_DROP', function() {
-            assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DROP'}), {
-              action: Actions.STORY_DROP,
-              storyUid: standardMocks.validStoryUid
-            });
-
-          });
-        });
-
-      });
-
-      xdescribe('and the user has dropped', function() {
-        var fakeDragEndEvent;
-        var fakeDragEndPointer;
-
-        beforeEach(function() {
-          // Manually invoke dragEnd - usually UniDragger does this for us.
-          // Drop our inspiration block on the first block element
-          fakeDragEndEvent = {
-            target: testDom.find('.inspiration-block').first()
-          };
-          fakeDragEndPointer = fakeDragEndEvent;
-
-          dragDrop.dragEnd(fakeDragEndEvent, fakeDragEndPointer);
-        });
-
-        it('should not invoke STORY_DROP', function() {
-
-          assert.isUndefined(_.findWhere(dispatchedEvents, {'action': 'STORY_DROP'}));
         });
       });
     });
   });
-
 });

@@ -1,114 +1,110 @@
-(function(root, $) {
+import $ from 'jQuery';
 
-  'use strict';
+import '../componentBase';
+import CustomEvent from '../../CustomEvent';
+import StorytellerUtils from '../../StorytellerUtils';
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
+/**
+ * Creates or updates an image component
+ * based on the componentData, theme, and options.
+ *
+ * @param {object} componentData - Data for image block. See below.
+ * @param {string} theme - Theme name. Currently not used.
+ * @param {object} options - Renderer settings. Optional. See below.
+ *
+ *
+ * Sample componentData:
+ *  {
+ *    type: "image",
+ *    value: {
+ *      documentId: "1234",
+ *      url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg"
+ *    }
+ *  }
+ *
+ * Supported options (default):
+ *  - editMode (false): If true, renders an edit button on hover. The edit button
+ *    dispatches Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED.
+ */
+$.fn.componentImage = componentImage;
 
-  function _renderImage($element, componentData) {
+export default function componentImage(componentData, theme, options) {
+  var $this = $(this);
 
-    utils.assertHasProperty(componentData, 'type');
+  StorytellerUtils.assertHasProperties(componentData, 'type');
+  StorytellerUtils.assert(
+    componentData.type === 'image',
+    StorytellerUtils.format(
+      'componentImage: Unsupported component type {0}',
+      componentData.type
+    )
+  );
 
-    var $imgElement = $(
-      '<img>',
-      {
-        'src': null,
-        'data-document-id': null
-      }
-    );
-
-    $element.
-      addClass(utils.typeToClassNameForComponentType(componentData.type)).
-      append($imgElement);
+  if ($this.children().length === 0) {
+    _renderImage($this, componentData);
   }
 
-  function _updateImageAttributes($element, componentData) {
+  _updateImageAttributes($this, componentData);
+  $this.componentBase(componentData, theme, options);
 
-    var imgSrc;
-    var documentId;
-    var documentIdAsStringOrNull;
-    var altAttribute;
-    var $imgElement = $element.find('img');
+  return $this;
+}
 
-    utils.assertHasProperty(componentData, 'value');
-    utils.assertHasProperty(componentData.value, 'url');
-    utils.assertHasProperty(componentData.value, 'documentId');
+function _renderImage($element, componentData) {
+  StorytellerUtils.assertHasProperty(componentData, 'type');
 
-    imgSrc = componentData.value.url;
-    documentId = componentData.value.documentId; // May be null or undefined.
-    documentIdAsStringOrNull = _.isNull(documentId) || _.isUndefined(documentId) ? null : String(documentId);
-    altAttribute = componentData.value.alt;
-
-    if (
-      $imgElement.attr('src') !== imgSrc ||
-      $imgElement[0].getAttribute('data-document-id') !== documentIdAsStringOrNull
-    ) {
-      _informHeightChanges($imgElement);
-
-      $imgElement.attr('src', imgSrc);
-      $imgElement.attr('data-document-id', documentId);
+  var $imgElement = $(
+    '<img>',
+    {
+      'src': null,
+      'data-document-id': null
     }
+  );
 
-    $imgElement.attr('alt', _.isEmpty(altAttribute) ? null : altAttribute);
+  $element.
+    addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type)).
+    append($imgElement);
+}
+
+function _updateImageAttributes($element, componentData) {
+  var imgSrc;
+  var documentId;
+  var documentIdAsStringOrNull;
+  var altAttribute;
+  var $imgElement = $element.find('img');
+
+  StorytellerUtils.assertHasProperty(componentData, 'value');
+  StorytellerUtils.assertHasProperty(componentData.value, 'url');
+  StorytellerUtils.assertHasProperty(componentData.value, 'documentId');
+
+  imgSrc = componentData.value.url;
+  documentId = componentData.value.documentId; // May be null or undefined.
+  documentIdAsStringOrNull = _.isNull(documentId) || _.isUndefined(documentId) ? null : String(documentId);
+  altAttribute = componentData.value.alt;
+
+  if (
+    $imgElement.attr('src') !== imgSrc ||
+    $imgElement[0].getAttribute('data-document-id') !== documentIdAsStringOrNull
+  ) {
+    _informHeightChanges($imgElement);
+
+    $imgElement.attr('src', imgSrc);
+    $imgElement.attr('data-document-id', documentId);
   }
 
-  function _informHeightChanges($image) {
-    utils.assertInstanceOf($image, $);
+  $imgElement.attr('alt', _.isEmpty(altAttribute) ? null : altAttribute);
+}
 
-    $image.one('load', function() {
-      $image[0].dispatchEvent(
-        new storyteller.CustomEvent(
-          'component::height-change',
-          { detail: {}, bubbles: true }
-        )
-      );
-    });
-  }
+function _informHeightChanges($image) {
+  StorytellerUtils.assertInstanceOf($image, $);
 
-  /**
-   * Creates or updates an image component
-   * based on the componentData, theme, and options.
-   *
-   * @param {object} componentData - Data for image block. See below.
-   * @param {string} theme - Theme name. Currently not used.
-   * @param {object} options - Renderer settings. Optional. See below.
-   *
-   *
-   * Sample componentData:
-   *  {
-   *    type: "image",
-   *    value: {
-   *      documentId: "1234",
-   *      url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg"
-   *    }
-   *  }
-   *
-   * Supported options (default):
-   *  - editMode (false): If true, renders an edit button on hover. The edit button
-   *    dispatches Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED.
-   */
-  function componentImage(componentData, theme, options) {
-
-    var $this = $(this);
-
-    utils.assertHasProperties(componentData, 'type');
-    utils.assert(
-      componentData.type === 'image',
-      'componentImage: Unsupported component type {0}'.format(
-        componentData.type
+  $image.one('load', function() {
+    $image[0].dispatchEvent(
+      new CustomEvent(
+        'component::height-change',
+        { detail: {}, bubbles: true }
       )
     );
+  });
+}
 
-    if ($this.children().length === 0) {
-      _renderImage($this, componentData);
-    }
-
-    _updateImageAttributes($this, componentData);
-    $this.componentBase(componentData, theme, options);
-
-    return $this;
-  }
-
-  $.fn.componentImage = componentImage;
-})(window, jQuery);

@@ -1,39 +1,40 @@
-(function(root, $) {
+import $ from 'jQuery';
+import StorytellerUtils from '../../StorytellerUtils';
 
-  'use strict';
+/**
+ * @function componentHorizontalRule
+ * @desc Renders out a <hr>.
+ * @param {object} componentData - An object with a type and value attribute
+ * @returns {jQuery} - The rendered horizontal rule jQuery element
+ */
+$.fn.componentHorizontalRule = componentHorizontalRule;
 
-  var socrata = root.socrata;
-  var utils = socrata.utils;
+export default function componentHorizontalRule(componentData) {
+  var $this = $(this);
 
-  function _renderHorizontalRuleContent(componentData) {
-    return $('<hr>', utils.typeToClassNameForComponentType(componentData.type));
-  }
+  StorytellerUtils.assertHasProperty(componentData, 'type');
+  StorytellerUtils.assert(
+    componentData.type === 'horizontalRule',
+    StorytellerUtils.format(
+      'componentHorizontalRule: Unsupported component type {0}',
+      componentData.type
+    )
+  );
+  StorytellerUtils.assert(
+    $this.length === 1,
+    'Selection must have exactly one element.'
+  );
 
-  /**
-   * @function componentHorizontalRule
-   * @desc Renders out a <hr>.
-   * @param {object} componentData - An object with a type and value attribute
-   * @returns {jQuery} - The rendered horizontal rule jQuery element
-   */
-  function componentHorizontalRule(componentData) {
-    var $this = $(this);
-
-    utils.assertHasProperty(componentData, 'type');
-    utils.assert(
-      componentData.type === 'horizontalRule',
-      'componentHorizontalRule: Unsupported component type {0}'.format(
-        componentData.type
-      )
+  $this.
+    empty().
+    append(
+      _renderHorizontalRuleContent(componentData)
     );
-    utils.assert(
-      $this.length === 1,
-      'Selection must have exactly one element.'
-    );
 
-    $this.empty().append(_renderHorizontalRuleContent(componentData));
+  return $this;
+}
 
-    return $this;
-  }
-
-  $.fn.componentHorizontalRule = componentHorizontalRule;
-})(window, jQuery);
+function _renderHorizontalRuleContent(componentData) {
+  var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+  return $('<hr>', className);
+}

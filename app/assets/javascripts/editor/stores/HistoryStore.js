@@ -1,138 +1,132 @@
-(function(root) {
+import _ from 'lodash';
 
-  'use strict';
+import Store from './Store';
+import Actions from '../Actions';
+import Constants from '../Constants';
+import Environment from '../../StorytellerEnvironment';
+import StorytellerUtils from '../../StorytellerUtils';
+import { storyStore } from './StoryStore';
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
+/**
+ * A store that maintains a story's edit history.
+ *
+ * @param {string} forStoryUid - The UID of the story to track.
+ */
+export var historyStore = new HistoryStore(Environment.STORY_UID);
+export default function HistoryStore(forStoryUid) {
+	StorytellerUtils.assertIsOneOfTypes(forStoryUid, 'string');
 
-  /**
-   * A store that maintains a story's edit history.
-   *
-   * @param {string} forStoryUid - The UID of the story to track.
-   */
-  function HistoryStore(forStoryUid) {
+	_.extend(this, new Store());
 
-    utils.assertIsOneOfTypes(forStoryUid, 'string');
+	var self = this;
+	var _history = [];
+	var _undoCursor = 0;
 
-    _.extend(this, new storyteller.Store());
+	this.register(function(payload) {
+		switch (payload.action) {
 
-    var self = this;
-    var _history = [];
-    var _undoCursor = 0;
+			case Actions.HISTORY_UNDO:
+				_undo();
+				break;
 
-    this.register(function(payload) {
+			case Actions.HISTORY_REDO:
+				_redo();
+				break;
+		}
+	});
 
-      var action = payload.action;
+	storyStore.addChangeListener(function() {
 
-      switch (action) {
+		if (storyStore.storyExists(forStoryUid)) {
 
-        case Actions.HISTORY_UNDO:
-          _undo();
-          break;
+			var historyLength = _history.length;
+			var newHistoryLength;
+			var storySnapshot = storyStore.snapshotContents(forStoryUid);
 
-        case Actions.HISTORY_REDO:
-          _redo();
-          break;
-      }
-    });
+			// This is the case when one or more undo operations have
+			// taken place and then content that does not match the next
+			// redo content is applied. This should cause the history of
+			// serializedStories following the current undo cursor to be
+			// truncated.
+			if (_shouldAppendToHistoryAndTruncateRedo(storySnapshot)) {
 
-    storyteller.storyStore.addChangeListener(function() {
+				newHistoryLength = _undoCursor + 1;
 
-      if (storyteller.storyStore.storyExists(forStoryUid)) {
+				_history.length = newHistoryLength;
+				_undoCursor = newHistoryLength;
+				_history.push(storySnapshot);
 
-        var historyLength = _history.length;
-        var newHistoryLength;
-        var storySnapshot = storyteller.storyStore.snapshotContents(forStoryUid);
+			// This is the case where we are already at the end of the
+			// history array so we just append to it.
+			} else if (_shouldAppendToHistory(storySnapshot)) {
 
-        // This is the case when one or more undo operations have
-        // taken place and then content that does not match the next
-        // redo content is applied. This should cause the history of
-        // serializedStories following the current undo cursor to be
-        // truncated.
-        if (_shouldAppendToHistoryAndTruncateRedo(storySnapshot)) {
+				if (historyLength === Constants.HISTORY_MAX_UNDO_COUNT) {
+					_history.shift();
+				}
 
-          newHistoryLength = _undoCursor + 1;
+				_undoCursor = historyLength;
+				_history.push(storySnapshot);
+			}
 
-          _history.length = newHistoryLength;
-          _undoCursor = newHistoryLength;
-          _history.push(storySnapshot);
+			self._emitChange();
+		}
+	});
 
-        // This is the case where we are already at the end of the
-        // history array so we just append to it.
-        } else if (_shouldAppendToHistory(storySnapshot)) {
+	/**
+	 * Public methods
+	 */
 
-          if (historyLength === Constants.HISTORY_MAX_UNDO_COUNT) {
-            _history.shift();
-          }
+	this.canUndo = function() {
+		return (_undoCursor > 0);
+	};
 
-          _undoCursor = historyLength;
-          _history.push(storySnapshot);
-        }
+	this.canRedo = function() {
+		return ((_history.length - 1) > _undoCursor);
+	};
 
-        self._emitChange();
-      }
-    });
+	this.getStorySnapshotAtCursor = function() {
+		return _history[_undoCursor];
+	};
 
-    /**
-     * Public methods
-     */
+	/**
+	 * Private methods
+	 */
 
-    this.canUndo = function() {
-      return (_undoCursor > 0);
-    };
+	function _shouldAppendToHistoryAndTruncateRedo(storySnapshot) {
+		var historyLength = _history.length;
 
-    this.canRedo = function() {
-      return ((_history.length - 1) > _undoCursor);
-    };
+		StorytellerUtils.assertIsOneOfTypes(storySnapshot, 'object');
 
-    this.getStorySnapshotAtCursor = function() {
-      return _history[_undoCursor];
-    };
+		return (
+			historyLength > 0 &&
+			_undoCursor < historyLength - 1 &&
+			!_.isEqual(_history[_undoCursor], storySnapshot) &&
+			!_.isEqual(_history[_undoCursor + 1], storySnapshot)
+		);
+	}
 
-    /**
-     * Private methods
-     */
+	function _shouldAppendToHistory(storySnapshot) {
 
-    function _shouldAppendToHistoryAndTruncateRedo(storySnapshot) {
+		var historyLength = _history.length;
 
-      var historyLength = _history.length;
+		StorytellerUtils.assertIsOneOfTypes(storySnapshot, 'object');
 
-      utils.assertIsOneOfTypes(storySnapshot, 'object');
+		return (
+			historyLength === 0 ||
+			!_.isEqual(_history[_undoCursor - 1], storySnapshot) &&
+			!_.isEqual(_history[_undoCursor], storySnapshot)
+		);
+	}
 
-      return (
-        historyLength > 0 &&
-        _undoCursor < historyLength - 1 &&
-        !_.isEqual(_history[_undoCursor], storySnapshot) &&
-        !_.isEqual(_history[_undoCursor + 1], storySnapshot)
-      );
-    }
+	function _undo() {
+		if (self.canUndo()) {
+			_undoCursor--;
+		}
+	}
 
-    function _shouldAppendToHistory(storySnapshot) {
-
-      var historyLength = _history.length;
-
-      utils.assertIsOneOfTypes(storySnapshot, 'object');
-
-      return (
-        historyLength === 0 ||
-        !_.isEqual(_history[_undoCursor - 1], storySnapshot) &&
-        !_.isEqual(_history[_undoCursor], storySnapshot)
-      );
-    }
-
-    function _undo() {
-      if (self.canUndo()) {
-        _undoCursor--;
-      }
-    }
-
-    function _redo() {
-      if (self.canRedo()) {
-        _undoCursor++;
-      }
-    }
-  }
-
-  root.socrata.storyteller.HistoryStore = HistoryStore;
-})(window);
+	function _redo() {
+		if (self.canRedo()) {
+			_undoCursor++;
+		}
+	}
+}

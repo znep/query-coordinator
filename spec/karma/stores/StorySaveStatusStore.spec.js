@@ -1,19 +1,69 @@
-describe('StorySaveStatusStore', function() {
-  'use strict';
-  var storyteller = window.socrata.storyteller;
-  var store;
+import _ from 'lodash';
 
-  it('should throw if StoryStore is not initialized yet', function() {
-    standardMocks.remove();
-    assert.isUndefined(storyteller.storyStore); // sanity for test
-    assert.throws(function() {
-      new storyteller.StorySaveStatusStore(); //eslint-disable-line no-new
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import StorySaveStatusStore, {__RewireAPI__ as StorySaveStatusStoreAPI} from '../../../app/assets/javascripts/editor/stores/StorySaveStatusStore';
+
+describe('StorySaveStatusStore', function() {
+
+  var dispatcher;
+  var storySaveStatusStore;
+  var serializeStory;
+  var storyUid = 'test-test';
+  var storyStore;
+
+  beforeEach(function() {
+    dispatcher =  new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    var StoryStoreMock = function() {
+      _.extend(this, new Store());
+
+      this.register(_.noop);
+      this.serializeStory = function() {
+        return serializeStory;
+      };
+    };
+
+    storyStore = new StoryStoreMock();
+
+    StorySaveStatusStoreAPI.__Rewire__('dispatcher', dispatcher);
+    StorySaveStatusStoreAPI.__Rewire__('storyStore', storyStore);
+
+    storySaveStatusStore = new StorySaveStatusStore('test-test');
+
+    serializeStory = {hello: 'world'};
+
+    dispatcher.dispatch({
+      action: Actions.STORY_CREATE
+    });
+  });
+
+  afterEach(function() {
+    StoreAPI.__ResetDependency__('dispatcher');
+    StorySaveStatusStoreAPI.__ResetDependency__('dispatcher');
+    StorySaveStatusStoreAPI.__ResetDependency__('storyStore');
+  });
+
+  describe('when StoryStore is uninitialized', function() {
+    beforeEach(function() {
+      StorySaveStatusStoreAPI.__Rewire__('storyStore', null);
+    });
+
+    it('should throw', function() {
+      assert.throws(function() {
+        new StorySaveStatusStore('test-test'); //eslint-disable-line no-new
+      });
     });
   });
 
   describe('instance', function() {
+    var store;
+
     beforeEach(function() {
-      store = storyteller.storySaveStatusStore;
+      store = storySaveStatusStore;
     });
 
     describe('on story loaded', function() {
@@ -29,14 +79,14 @@ describe('StorySaveStatusStore', function() {
 
     describe('when only metadata has been changed', function() {
       it('should indicate that the story is saved', function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.STORY_SET_TITLE,
-          storyUid: standardMocks.validStoryUid,
+          storyUid: storyUid,
           title: 'i am a title'
         });
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.STORY_SET_DESCRIPTION,
-          storyUid: standardMocks.validStoryUid,
+          storyUid: storyUid,
           description: 'i am a description'
         });
         assert.isFalse(store.isStoryDirty());
@@ -45,11 +95,8 @@ describe('StorySaveStatusStore', function() {
 
     describe('after a story is modified', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
-          action: Actions.STORY_DELETE_BLOCK,
-          storyUid: standardMocks.validStoryUid,
-          blockId: standardMocks.validBlockId
-        });
+        serializeStory = {something: 'new'};
+        storyStore._emitChange();
       });
 
       it('should indicate the story is unsaved', function() {
@@ -62,9 +109,9 @@ describe('StorySaveStatusStore', function() {
 
       describe('after a save starts', function() {
         beforeEach(function() {
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.STORY_SAVE_STARTED,
-            storyUid: standardMocks.validStoryUid
+            storyUid: storyUid
           });
         });
 
@@ -79,9 +126,9 @@ describe('StorySaveStatusStore', function() {
         describe('and another save starts before the first completes', function() {
           it('should throw', function() {
             assert.throws(function() {
-              storyteller.dispatcher.dispatch({
+              dispatcher.dispatch({
                 action: Actions.STORY_SAVE_STARTED,
-                storyUid: standardMocks.validStoryUid
+                storyUid: storyUid
               });
             });
           });
@@ -89,9 +136,9 @@ describe('StorySaveStatusStore', function() {
 
         describe('that completes', function() {
           beforeEach(function() {
-            storyteller.dispatcher.dispatch({
+            dispatcher.dispatch({
               action: Actions.STORY_SAVED,
-              storyUid: standardMocks.validStoryUid,
+              storyUid: storyUid,
               digest: 'foo'
             });
           });
@@ -107,9 +154,9 @@ describe('StorySaveStatusStore', function() {
 
         describe('that errors', function() {
           beforeEach(function() {
-            storyteller.dispatcher.dispatch({
+            dispatcher.dispatch({
               action: Actions.STORY_SAVE_FAILED,
-              storyUid: standardMocks.validStoryUid,
+              storyUid: storyUid,
               message: 'foo'
             });
           });
@@ -126,10 +173,8 @@ describe('StorySaveStatusStore', function() {
 
       describe('but the edit is undone', function() {
         beforeEach(function() {
-          storyteller.dispatcher.dispatch({
-            action: Actions.HISTORY_UNDO,
-            storyUid: standardMocks.validStoryUid
-          });
+          serializeStory = {hello: 'world'};
+          storyStore._emitChange();
         });
 
         it('should indicate the story is fully saved', function() {

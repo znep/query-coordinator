@@ -1,56 +1,84 @@
+import _ from 'lodash';
+
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import BlockRemovalConfirmationStore from '../../../app/assets/javascripts/editor/stores/BlockRemovalConfirmationStore';
+
 describe('BlockRemovalConfirmationStore', function() {
 
-  'use strict';
+  var dispatcher;
+  var storyBlockIds;
+  var blockRemovalConfirmationStore;
 
-  var storyteller = window.socrata.storyteller;
+  beforeEach(function() {
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    var StoryStoreMock = function() {
+      _.extend(this, new Store());
+
+      this.register(_.noop);
+      this.getStoryBlockIds = function() {
+        return storyBlockIds;
+      };
+    };
+
+    BlockRemovalConfirmationStore.__Rewire__('dispatcher', dispatcher);
+    BlockRemovalConfirmationStore.__Rewire__('storyStore', new StoryStoreMock());
+
+    blockRemovalConfirmationStore = new BlockRemovalConfirmationStore();
+  });
+
+  afterEach(function() {
+    StoreAPI.__ResetDependency__('dispatcher');
+    BlockRemovalConfirmationStore.__ResetDependency__('dispatcher');
+    BlockRemovalConfirmationStore.__ResetDependency__('storyStore');
+  });
 
   describe('needsConfirmation', function() {
-
     describe('for a newly loaded story', function() {
+      beforeEach(function() {
+        storyBlockIds = ['test-block-id'];
+        dispatcher.dispatch({action: Actions.STORY_CREATE, data: {uid: 'test-test'}});
+      });
+
       it('needs confirmation to remove any block', function() {
-        assert.isTrue(storyteller.blockRemovalConfirmationStore.needsConfirmation(standardMocks.firstBlockId));
+        assert.isTrue(
+          blockRemovalConfirmationStore.needsConfirmation(
+            'test-block-id'
+          )
+        );
       });
     });
 
     describe('when a new block has been added', function() {
-      var newlyAddedBlockId;
-
       beforeEach(function() {
-        var validInsertionIndex = 0;
-        var blockContent = standardMocks.validBlockData1;
-
-        storyteller.dispatcher.dispatch({
-          action: Actions.STORY_INSERT_BLOCK,
-          blockContent: blockContent,
-          insertAt: validInsertionIndex,
-          storyUid: standardMocks.validStoryUid
-        });
-
-        // id has been generated during the copy, fetch it.
-        newlyAddedBlockId = storyteller.storyStore.getStoryBlockIds(
-          standardMocks.validStoryUid
-        )[validInsertionIndex];
+        storyBlockIds = [];
       });
 
       it('should not ask for confirmation to delete', function() {
-        assert.isFalse(storyteller.blockRemovalConfirmationStore.needsConfirmation(newlyAddedBlockId));
+        assert.isFalse(
+          blockRemovalConfirmationStore.needsConfirmation('new-block-id')
+        );
       });
 
       describe('and then it is edited', function() {
-
         it('should ask for confirmation to delete', function() {
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.BLOCK_UPDATE_COMPONENT,
-            blockId: newlyAddedBlockId,
+            blockId: 'new-block-id',
             componentIndex: 0,
             type: '',
             value: ''
           });
 
-          assert.isTrue(storyteller.blockRemovalConfirmationStore.needsConfirmation(newlyAddedBlockId));
+          assert.isTrue(
+            blockRemovalConfirmationStore.needsConfirmation('new-block-id')
+          );
         });
       });
-
     });
   });
 });

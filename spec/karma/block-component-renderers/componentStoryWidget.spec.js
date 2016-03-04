@@ -1,6 +1,12 @@
-describe('componentStoryWidget jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
+import _ from 'lodash';
 
+import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
+import '../../../app/assets/javascripts/editor/block-component-renderers/componentStoryWidget';
+
+describe('componentStoryWidget jQuery plugin', function() {
+
+  var testDom;
   var $component;
   var validComponentData = {
     type: 'story.widget',
@@ -15,7 +21,9 @@ describe('componentStoryWidget jQuery plugin', function() {
     image: null,
     description: 'Unicorns are the most noble of all creatures. They are herbivores. It is considered good luck to see a unicorn. Unicorns are proud. Some unicorns have fire instead of hair, but not all the hair just the long hair. These are the most noble of all the unicorns.',
     theme: 'classic',
-    url: 'https://example.com/stories/s/{0}'.format(validComponentData.value.storyUid)
+    url: StorytellerUtils.format(
+      'https://example.com/stories/s/{0}', validComponentData.value.storyUid
+    )
   };
   var validStoryWidgetDataWithImage = _.clone(validStoryWidgetDataWithoutImage);
   validStoryWidgetDataWithImage.image = 'about:blank';
@@ -24,16 +32,12 @@ describe('componentStoryWidget jQuery plugin', function() {
     var server;
 
     beforeEach(function(done) {
-      // Since these tests actually expect to use AJAX, we need to disable the
-      // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-      // and re-enble it after each.
-      window.mockedXMLHttpRequest.restore();
-
       server = sinon.fakeServer.create();
       server.respondImmediately = true;
       server.respondWith(
         'GET',
-        'https://example.com/stories/s/{0}/widget.json'.format(
+        StorytellerUtils.format(
+          'https://example.com/stories/s/{0}/widget.json',
           validComponentData.value.storyUid
         ),
         [
@@ -51,15 +55,18 @@ describe('componentStoryWidget jQuery plugin', function() {
 
     afterEach(function() {
       server.restore();
-
-      // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-      window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
     });
   }
 
   beforeEach(function() {
+    testDom = $('<div>');
     testDom.append('<div>');
     $component = testDom.children('div');
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should throw when passed invalid arguments', function() {

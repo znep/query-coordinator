@@ -1,8 +1,12 @@
+import $ from 'jQuery';
+
+import '../../app/assets/javascripts/editor/componentBase';
+
 describe('componentBase jQuery plugin', function() {
-  'use strict';
 
   var $component;
   var componentData;
+  var testDom;
 
   function callWithOptions(options) {
     beforeEach(function() {
@@ -12,8 +16,14 @@ describe('componentBase jQuery plugin', function() {
   }
 
   beforeEach(function() {
+    testDom = $('<div>');
     testDom.append('<div>');
     $component = testDom.children('div');
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should return a jQuery object for chaining', function() {

@@ -1,7 +1,11 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationFeatureMap';
+
 describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
 
-  'use strict';
-
+  var testDom;
   var $component;
 
   var validComponentData = {
@@ -17,8 +21,14 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
   };
 
   beforeEach(function() {
+    testDom = $('<div>');
     testDom.append('<div>');
     $component = testDom.children('div');
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should throw when passed invalid arguments', function() {

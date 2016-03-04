@@ -5,52 +5,70 @@
     "url": "https://github.com/socrata/storyteller.git"
   },
   "scripts": {
-    "lint": "eslint"
+    "lint": "eslint --ignore-path .eslintignore -- app/assets/javascripts spec/karma",
+    "test": "./node_modules/.bin/karma start spec/karma/karma.conf.js",
+    "test-watch": "./node_modules/.bin/karma start spec/karma/karma.conf.js --singleRun false",
+    "webpack": "./node_modules/.bin/webpack --config config/webpack.config.js",
+    "watch": "./node_modules/.bin/webpack-dev-server --config config/webpack.config.js",
+    "build": "npm run webpack",
+    "postinstall": "npm run webpack"
   },
   "homepage": "https://github.com/socrata/storyteller",
   "devDependencies": {
-    "chai": "^3.0.0",
-    "eslint": "^0.24.0",
-    "karma": "^0.12.36",
-    "karma-chai": "^0.1.0",
-    "karma-coverage": "^0.3.1",
-    "karma-mocha": "^0.1.10",
-    "karma-phantomjs-launcher": "^0.2.0",
-    "karma-sinon": "^1.0.4",
-    "karma-sprockets": "^0.3.0",
-    "mocha": "^2.2.5",
-    "phantomjs": "^1.9.17",
-    "sinon": "^1.15.3"
+    "assets-webpack-plugin": "3.3.0",
+    "babel-core": "6.4.5",
+    "babel-eslint": "5.0.0",
+    "babel-loader": "6.2.2",
+    "babel-plugin-rewire": "1.0.0-beta-5",
+    "babel-plugin-syntax-jsx": "6.3.13",
+    "babel-preset-es2015": "6.3.13",
+    "chai": "3.5.0",
+    "eslint": "2.2.0",
+    "eslint-base": "0.2.1",
+    "expose-loader": "0.7.1",
+    "imports-loader": "0.6.5",
+    "json-loader": "0.5.4",
+    "karma": "0.13.21",
+    "karma-chai": "0.1.0",
+    "karma-chrome-launcher": "0.2.2",
+    "karma-mocha": "0.2.2",
+    "karma-phantomjs-launcher": "1.0.0",
+    "karma-sinon": "1.0.4",
+    "karma-sourcemap-loader": "0.3.7",
+    "karma-webpack": "1.7.0",
+    "mocha": "2.4.5",
+    "phantomjs-prebuilt": "2.1.4",
+    "rewire": "2.5.1",
+    "rimraf": "2.5.2",
+    "sinon": "1.17.3",
+    "webpack": "1.12.13",
+    "webpack-dev-server": "1.14.1"
   },
   "eslintConfig": {
-    "env": {
-      "browser": true
+    "extends": "./node_modules/eslint-base/.eslintrc.json",
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "impliedStrict": true
+      }
     },
     "rules": {
-      "brace-style": [2, "1tbs", {"allowSingleLine": true}],
-      "camelcase": 1,
-      "consistent-return": 1,
-      "dot-location": [1, "object"],
-      "dot-notation": [1, {"allowKeywords": true}],
-      "eol-last": 1,
-      "indent": [1, 2],
-      "new-cap": 1,
-      "no-console": 0,
-      "no-extend-native": 0,
-      "no-extra-semi": 1,
-      "no-shadow": [2, {"hoist": "all"}],
-      "no-spaced-func": 2,
-      "no-trailing-spaces": 2,
-      "no-underscore-dangle": 0,
-      "no-unused-vars": 1,
-      "no-use-before-define": 0,
-      "quotes": [1, "single"],
-      "semi": [2, "always"],
-      "space-after-keywords": [2, "always"],
-      "space-before-blocks": [2, "always"],
-      "space-before-function-paren": [2, "never"],
-      "space-infix-ops": 2,
-      "strict": 2
+      "dot-notation": [
+        1,
+        {
+          "allowKeywords": true,
+          "allowPattern": "^[a-z]+(_[a-z]+)+$"
+        }
+      ],
+      "quote-props": [
+        2,
+        "as-needed",
+        {
+          "keywords": false,
+          "unnecessary": false
+        }
+      ]
     },
     "globals": {
       "$": true,
@@ -71,7 +89,6 @@
       "defaultThemes": true,
       "customThemes": true,
       "ga": true,
-
       "assert": true,
       "describe": true,
       "xdescribe": true,
@@ -83,7 +100,22 @@
       "removeStandardMocks": true,
       "testDom": true,
       "generateStoryData": true,
-      "generateBlockData": true
+      "generateBlockData": true,
+      "Promise": true
     }
+  },
+  "dependencies": {
+    "airbrake-js": "0.5.8",
+    "d3": "3.5.14",
+    "flux": "2.1.1",
+    "jquery": "2.2.0",
+    "jquery-sidebar": "3.3.2",
+    "leaflet": "0.7.7",
+    "lodash": "3.10.1",
+    "socrata-utils": "1.2.0",
+    "socrata-visualizations": "7.0.1",
+    "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
+    "unidragger": "2.1.0",
+    "unipointer": "2.1.0"
   }
 }

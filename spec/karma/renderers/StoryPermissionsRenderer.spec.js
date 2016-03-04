@@ -1,12 +1,18 @@
+import $ from 'jQuery';
+
+import I18nMocker from '../I18nMocker';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import StoryPermissionsRenderer, {__RewireAPI__ as StoryPermissionsRendererAPI} from '../../../app/assets/javascripts/editor/renderers/StoryPermissionsRenderer';
+
 describe('StoryPermissionsRenderer', function() {
-  'use strict';
-
-  var storyteller = window.socrata.storyteller;
-
-  var StoryPermissionsRenderer;
-  var uniqueId = 1000;
 
   // Template Variables
+  var dispatcher;
+  var storyPermissionsManager;
+  var isPublic;
+  var storyDigest;
+  var publishedStoryDigest;
   var $settingsPanelPublishing;
   var $visibilityLabel;
   var $visibilityButton;
@@ -16,38 +22,6 @@ describe('StoryPermissionsRenderer', function() {
   var $publishingHelpText;
   var $errorContainer;
   var $settingsPanel;
-
-  function newStory(isPublic) {
-    var uid = 'four-' + uniqueId++;
-    var sampleStoryData = generateStoryData({
-      uid: uid,
-      title: 'My Title',
-      description: 'My Description',
-      theme: 'My Theme',
-      digest: 'digest',
-      permissions: {isPublic: isPublic ? true : false},
-      blocks: [
-        generateBlockData({
-          id: 'id1' + uniqueId,
-          layout: 'notsure',
-          components: []
-        })
-      ]
-    });
-
-    window.publishedStory = {digest: 'digest'};
-    storyteller.userStoryUid = uid;
-    storyteller.dispatcher.dispatch({
-      action: Actions.STORY_CREATE,
-      data: sampleStoryData
-    });
-
-    storyteller.dispatcher.dispatch({
-      action: Actions.STORY_SET_PUBLISHED_STORY,
-      publishedStory: {digest: 'digest'},
-      storyUid: uid
-    });
-  }
 
   function buildAndCleanTemplate() {
     beforeEach(function() {
@@ -99,20 +73,61 @@ describe('StoryPermissionsRenderer', function() {
 
   function stubStoryPermissionsManager() {
     beforeEach(function() {
-      storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
-      sinon.stub(storyteller.storyPermissionsManager, 'makePublic');
-      sinon.stub(storyteller.storyPermissionsManager, 'makePrivate');
+      storyPermissionsManager = {
+        makePublic: sinon.stub(),
+        makePrivate: sinon.stub()
+      };
+
+      StoryPermissionsRendererAPI.__Rewire__(
+        'storyPermissionsManager',
+        storyPermissionsManager
+      );
     });
 
     afterEach(function() {
-      storyteller.storyPermissionsManager.makePublic.restore();
-      storyteller.storyPermissionsManager.makePrivate.restore();
+      StoryPermissionsRendererAPI.__ResetDependency__(
+        'storyPermissionsManager'
+      );
     });
   }
 
   beforeEach(function() {
-    StoryPermissionsRenderer = storyteller.StoryPermissionsRenderer;
-    newStory();
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    var StoryStoreMock = function() {
+      _.extend(this, new Store());
+
+      this.getStoryPermissions = function() {
+        return {isPublic: isPublic};
+      };
+
+      this.getStoryPublishedStory = function() {
+        return {digest: publishedStoryDigest};
+      };
+
+      this.getStoryDigest = function() {
+        return storyDigest;
+      };
+    };
+
+    StoryPermissionsRendererAPI.__Rewire__('storyStore', new StoryStoreMock());
+    StoryPermissionsRendererAPI.__Rewire__('I18n', I18nMocker);
+    StoryPermissionsRendererAPI.__Rewire__('Environment', {
+      STORY_UID: 'four-four',
+      CURRENT_USER_STORY_AUTHORIZATION: {
+        domainRights: ['manage_story_public_version'],
+        viewRole: 'owner'
+      }
+    });
+  });
+
+  afterEach(function() {
+    StoreAPI.__ResetDependency__('dispatcher');
+    StoryPermissionsRendererAPI.__ResetDependency__('storyStore');
+    StoryPermissionsRendererAPI.__ResetDependency__('I18n');
+    StoryPermissionsRendererAPI.__ResetDependency__('Environment');
   });
 
   describe('constructor', function() {
@@ -130,53 +145,50 @@ describe('StoryPermissionsRenderer', function() {
 
         describe('with a story that is currently public', function() {
           beforeEach(function() {
-            newStory(true);
+            isPublic = true;
           });
 
           it('renders', function() {
             new StoryPermissionsRenderer(); //eslint-disable-line no-new
 
-            assert.equal($visibilityLabel.text(), I18n.t('editor.settings_panel.publishing_section.visibility.public'));
-            assert.equal($visibilityButtonText.text(), I18n.t('editor.settings_panel.publishing_section.visibility.make_story_private'));
+            assert.equal($visibilityLabel.text(), I18nMocker.t('editor.settings_panel.publishing_section.visibility.public'));
+            assert.equal($visibilityButtonText.text(), I18nMocker.t('editor.settings_panel.publishing_section.visibility.make_story_private'));
             assert($visibilityButton.hasClass('btn-default'));
             assert(!$visibilityButton.hasClass('btn-secondary'));
             assert.equal($updatePublicButton.prop('disabled'), true);
-            assert.equal($updatePublicLabel.text(), I18n.t('editor.settings_panel.publishing_section.status.published'));
-            assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.has_been_published'));
+            assert.equal($updatePublicLabel.text(), I18nMocker.t('editor.settings_panel.publishing_section.status.published'));
+            assert.equal($publishingHelpText.text(), I18nMocker.t('editor.settings_panel.publishing_section.messages.has_been_published'));
           });
 
           describe('and has a difference in digest', function() {
             beforeEach(function() {
-              storyteller.dispatcher.dispatch({
-                action: Actions.STORY_SET_PUBLISHED_STORY,
-                publishedStory: {digest: 'new-digest'},
-                storyUid: storyteller.userStoryUid
-              });
+              storyDigest = 'digest';
+              publishedStoryDigest = 'new-digest';
             });
 
             it('renders', function() {
               new StoryPermissionsRenderer(); //eslint-disable-line no-new
 
               assert.equal($updatePublicButton.prop('disabled'), false);
-              assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.previously_published'));
-              assert.equal($updatePublicLabel.text(), I18n.t('editor.settings_panel.publishing_section.status.draft'));
+              assert.equal($publishingHelpText.text(), I18nMocker.t('editor.settings_panel.publishing_section.messages.previously_published'));
+              assert.equal($updatePublicLabel.text(), I18nMocker.t('editor.settings_panel.publishing_section.status.draft'));
             });
           });
         });
 
         describe('with a story that is currently private', function() {
           beforeEach(function() {
-            newStory(false);
+            isPublic = false;
           });
 
           it('renders', function() {
             new StoryPermissionsRenderer(); //eslint-disable-line no-new
 
-            assert.equal($visibilityLabel.text(), I18n.t('editor.settings_panel.publishing_section.visibility.private'));
-            assert.equal($visibilityButtonText.text(), I18n.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
+            assert.equal($visibilityLabel.text(), I18nMocker.t('editor.settings_panel.publishing_section.visibility.private'));
+            assert.equal($visibilityButtonText.text(), I18nMocker.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
             assert.isTrue($visibilityButton.hasClass('btn-secondary'));
             assert.equal($updatePublicButton.prop('disabled'), true);
-            assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly'));
+            assert.equal($publishingHelpText.text(), I18nMocker.t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly'));
           });
         });
       });
@@ -189,14 +201,14 @@ describe('StoryPermissionsRenderer', function() {
 
     describe('when the story is public', function() {
       beforeEach(function() {
-        newStory(false);
+        isPublic = false;
         new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
 
       it('attempts to make a call to StoryPermissionsManager to make the story public', function() {
         $visibilityButton.click();
 
-        assert(storyteller.storyPermissionsManager.makePublic.called);
+        assert(storyPermissionsManager.makePublic.called);
         assert($visibilityButton.hasClass('btn-busy'), 'Excepted the visibility button to have a class, .busy');
         assert($errorContainer.hasClass('hidden'), 'Excepted the error container to have a class, .hidden');
       });
@@ -204,14 +216,14 @@ describe('StoryPermissionsRenderer', function() {
 
     describe('when the story is private', function() {
       beforeEach(function() {
-        newStory(true);
+        isPublic = true;
         new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
 
       it('attempts to make a call to StoryPermissionsManager to make the story private', function() {
         $visibilityButton.click();
 
-        assert(storyteller.storyPermissionsManager.makePrivate.called);
+        assert(storyPermissionsManager.makePrivate.called);
         assert($visibilityButton.hasClass('btn-busy'), 'Excepted the visibility button to have a class, .busy');
         assert($errorContainer.hasClass('hidden'), 'Excepted the error container to have a class, .hidden');
       });
@@ -224,13 +236,8 @@ describe('StoryPermissionsRenderer', function() {
 
     describe('when the story is public', function() {
       beforeEach(function() {
-        newStory(true);
-
-        storyteller.dispatcher.dispatch({
-          action: Actions.STORY_SET_PUBLISHED_STORY,
-          publishedStory: {digest: 'new-digest'},
-          storyUid: storyteller.userStoryUid
-        });
+        isPublic = true;
+        publishedStoryDigest = 'new-digest';
 
         new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
@@ -240,7 +247,7 @@ describe('StoryPermissionsRenderer', function() {
 
         $updatePublicButton.click();
 
-        assert(storyteller.storyPermissionsManager.makePublic.called);
+        assert(storyPermissionsManager.makePublic.called);
         assert($updatePublicButton.hasClass('btn-busy'), 'Excepted the update button to have a class, .busy');
         assert($errorContainer.hasClass('hidden'), 'Excepted the error container to have a class, .hidden');
       });
@@ -248,7 +255,7 @@ describe('StoryPermissionsRenderer', function() {
 
     describe('when the story is private', function() {
       beforeEach(function() {
-        newStory(false);
+        isPublic = false;
         new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
 
@@ -257,7 +264,7 @@ describe('StoryPermissionsRenderer', function() {
 
         $updatePublicButton.click();
 
-        assert(storyteller.storyPermissionsManager.makePublic.notCalled, 'makePublic should not be called');
+        assert(storyPermissionsManager.makePublic.notCalled, 'makePublic should not be called');
       });
     });
   });

@@ -1,64 +1,78 @@
+import StandardMocks from '../StandardMocks';
+import Constants from '../../../app/assets/javascripts/editor/Constants';
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import AssetSelectorStore, {WIZARD_STEP, __RewireAPI__ as AssetSelectorStoreAPI} from '../../../app/assets/javascripts/editor/stores/AssetSelectorStore';
+
 describe('AssetSelectorStore', function() {
 
-  'use strict';
-  var storyteller = window.socrata.storyteller;
-  var WIZARD_STEP = storyteller.AssetSelectorStore.WIZARD_STEP;
   var server;
+  var dispatcher;
+  var storyStore;
+  var assetSelectorStore;
+  var blockComponentAtIndex;
 
   beforeEach(function() {
-    // Since these tests actually expect to use AJAX, we need to disable the
-    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-    // and re-enble it after each.
-    window.mockedXMLHttpRequest.restore();
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    var StoryStoreMock = function() {
+      _.extend(this, new Store());
+
+      this.getBlockComponentAtIndex = function() {
+        return blockComponentAtIndex;
+      };
+    };
+
+    storyStore = new StoryStoreMock();
+
+    AssetSelectorStoreAPI.__Rewire__('dispatcher', dispatcher);
+    AssetSelectorStoreAPI.__Rewire__('storyStore',  storyStore);
 
     server = sinon.fakeServer.create();
+    assetSelectorStore = new AssetSelectorStore();
   });
 
   afterEach(function() {
-    server.restore();
+    StoreAPI.__ResetDependency__('dispatcher');
+    AssetSelectorStoreAPI.__ResetDependency__('dispatcher');
+    AssetSelectorStoreAPI.__ResetDependency__('storyStore');
 
-    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
+    server.restore();
   });
 
   describe('asset selector data accessors', function() {
-
     describe('when in an uninitialized state', function() {
-
       describe('.getStep()', function() {
-
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getStep(), null);
+          assert.equal(assetSelectorStore.getStep(), null);
         });
       });
 
       describe('.getBlockId()', function() {
-
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getBlockId(), null);
+          assert.equal(assetSelectorStore.getBlockId(), null);
         });
       });
 
       describe('.getComponentIndex()', function() {
-
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getComponentIndex(), null);
+          assert.equal(assetSelectorStore.getComponentIndex(), null);
         });
       });
 
       describe('.getComponentType()', function() {
-
         it('should return undefined', function() {
-          assert.isUndefined(storyteller.assetSelectorStore.getComponentType());
+          assert.isUndefined(assetSelectorStore.getComponentType());
         });
       });
 
       describe('.getComponentValue()', function() {
-
         it('should return undefined', function() {
-
-          var value = storyteller.assetSelectorStore.getComponentValue();
-
+          var value = assetSelectorStore.getComponentValue();
           assert.isUndefined(value);
         });
       });
@@ -70,7 +84,7 @@ describe('AssetSelectorStore', function() {
       var testComponentIndex = '1';
 
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
           blockId: testBlockId,
           componentIndex: testComponentIndex,
@@ -81,17 +95,16 @@ describe('AssetSelectorStore', function() {
       });
 
       it('should reflect the initialComponentProperties in getComponentValue', function() {
-        assert.propertyVal(storyteller.assetSelectorStore.getComponentValue(), 'foo', 'bar');
+        assert.propertyVal(assetSelectorStore.getComponentValue(), 'foo', 'bar');
       });
     });
 
     describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action', function() {
-
       var testBlockId = 'testBlock1';
       var testComponentIndex = '1';
 
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
           blockId: testBlockId,
           componentIndex: testComponentIndex
@@ -99,47 +112,43 @@ describe('AssetSelectorStore', function() {
       });
 
       describe('.getStep()', function() {
-
         it('should return SELECT_ASSET_PROVIDER', function() {
-          assert.equal(storyteller.assetSelectorStore.getStep(), WIZARD_STEP.SELECT_ASSET_PROVIDER);
+          assert.equal(assetSelectorStore.getStep(), WIZARD_STEP.SELECT_ASSET_PROVIDER);
         });
       });
 
       describe('.getBlockId()', function() {
-
         it('should return the blockId specified in the action payload', function() {
-          assert.equal(storyteller.assetSelectorStore.getBlockId(), testBlockId);
+          assert.equal(assetSelectorStore.getBlockId(), testBlockId);
         });
       });
 
       describe('.getComponentIndex()', function() {
-
         it('should return the componentIndex specified in the action payload', function() {
-          assert.equal(storyteller.assetSelectorStore.getComponentIndex(), testComponentIndex);
+          assert.equal(assetSelectorStore.getComponentIndex(), testComponentIndex);
         });
       });
     });
 
     describe('after an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action', function() {
-
       var payloadUrl = 'https://validurl.com/image.png';
       var payloadDocumentId = '12345';
       var payloadAlt = 'So alt';
 
       describe('.getComponentValue()', function() {
         beforeEach(function() {
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
             provider: 'IMAGE'
           });
 
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.FILE_UPLOAD_DONE,
             url: payloadUrl,
             documentId: payloadDocumentId
           });
 
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
             altAttribute: payloadAlt
           });
@@ -147,7 +156,7 @@ describe('AssetSelectorStore', function() {
 
         it('returns object with alt', function() {
           assert.deepEqual(
-            storyteller.assetSelectorStore.getComponentValue(),
+            assetSelectorStore.getComponentValue(),
             { documentId: payloadDocumentId, url: payloadUrl, alt: payloadAlt }
           );
         });
@@ -155,12 +164,12 @@ describe('AssetSelectorStore', function() {
 
       describe('with a bad provider', function() {
         function badProvider() {
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
             provider: 'YOUTUBE'
           });
 
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
             altAttribute: payloadAlt
           });
@@ -176,7 +185,7 @@ describe('AssetSelectorStore', function() {
 
     describe('after an `ASSET_SELECTOR_PROVIDER_CHOSEN` action', function() {
       function withProvider(provider) {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
           provider: provider
         });
@@ -196,7 +205,7 @@ describe('AssetSelectorStore', function() {
         'YOUTUBE',
         'EMBED_CODE'
       ].map(function(validProvider) {
-        describe('with provider: {0}'.format(validProvider), function() {
+        describe(StorytellerUtils.format('with provider: {0}', validProvider), function() {
           beforeEach(function() {
             withProvider(validProvider);
           });
@@ -210,8 +219,8 @@ describe('AssetSelectorStore', function() {
             };
             var expectedStep = EXPECTED_STEPS[validProvider];
 
-            it('should return {0}'.format(expectedStep), function() {
-              assert.equal(storyteller.assetSelectorStore.getStep(), expectedStep);
+            it(StorytellerUtils.format('should return {0}', expectedStep), function() {
+              assert.equal(assetSelectorStore.getStep(), expectedStep);
             });
           });
         });
@@ -219,40 +228,36 @@ describe('AssetSelectorStore', function() {
     });
 
     describe('after an `ASSET_SELECTOR_CLOSE` action', function() {
-
       var testBlockId = 'testBlock1';
       var testComponentIndex = '1';
 
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
           blockId: testBlockId,
           componentIndex: testComponentIndex
         });
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CLOSE
         });
       });
 
       describe('.getStep()', function() {
-
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getStep(), null);
+          assert.equal(assetSelectorStore.getStep(), null);
         });
       });
 
       describe('.getBlockId()', function() {
-
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getBlockId(), null);
+          assert.equal(assetSelectorStore.getBlockId(), null);
         });
       });
 
       describe('.getComponentIndex()', function() {
-
         it('should return null', function() {
-          assert.equal(storyteller.assetSelectorStore.getComponentIndex(), null);
+          assert.equal(assetSelectorStore.getComponentIndex(), null);
         });
       });
     });
@@ -261,13 +266,13 @@ describe('AssetSelectorStore', function() {
       var migrationUrl;
 
       beforeEach(function() {
-        migrationUrl = '/api/migrations/{0}.json'.format(standardMocks.validStoryUid);
+        migrationUrl = StorytellerUtils.format('/api/migrations/{0}.json', StandardMocks.validStoryUid);
       });
 
       it('should attempt to fetch the NBE datasetUid if dataset is OBE', function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-          datasetUid: standardMocks.validStoryUid,
+          datasetUid: StandardMocks.validStoryUid,
           isNewBackend: false
         });
 
@@ -278,9 +283,9 @@ describe('AssetSelectorStore', function() {
       });
 
       it('should not request API migrations if dataset is already NBE', function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-          datasetUid: standardMocks.validStoryUid,
+          datasetUid: StandardMocks.validStoryUid,
           isNewBackend: true
         });
 
@@ -291,28 +296,28 @@ describe('AssetSelectorStore', function() {
       });
 
       it('should add datasetUid to _currentComponentProperities', function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-          datasetUid: standardMocks.validStoryUid,
+          datasetUid: StandardMocks.validStoryUid,
           isNewBackend: true
         });
 
         server.respond([200, {}, '{}']);
 
         assert.equal(
-          storyteller.assetSelectorStore.getComponentValue().dataset.datasetUid,
-          standardMocks.validStoryUid
+          assetSelectorStore.getComponentValue().dataset.datasetUid,
+          StandardMocks.validStoryUid
         );
       });
     });
 
     describe('after an `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` action', function() {
-
       beforeEach(function() {
+
         // Send in dataset uid so ComponentValues.value.settings exists
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-          datasetUid: standardMocks.validStoryUid,
+          datasetUid: StandardMocks.validStoryUid,
           isNewBackend: true
         });
 
@@ -328,22 +333,22 @@ describe('AssetSelectorStore', function() {
           originalUid: 'orig-inal'
         };
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
           visualization: payload
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getComponentType(),
+          assetSelectorStore.getComponentType(),
           'socrata.visualization.columnChart'
         );
 
         assert.deepEqual(
-          storyteller.assetSelectorStore.getComponentValue(),
+          assetSelectorStore.getComponentValue(),
           {
             vif: payload.data,
             dataset: {
-              datasetUid: 'test-test',
+              datasetUid: 'what-what',
               domain: window.location.hostname
             },
             originalUid: 'orig-inal'
@@ -360,28 +365,27 @@ describe('AssetSelectorStore', function() {
           }
         };
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
           visualization: payload
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getComponentType(),
+          assetSelectorStore.getComponentType(),
           'socrata.visualization.columnChart'
         );
 
         assert.deepEqual(
-          storyteller.assetSelectorStore.getComponentValue(),
+          assetSelectorStore.getComponentValue(),
           {
             vif: payload.data,
             dataset: {
-              datasetUid: 'test-test',
+              datasetUid: 'what-what',
               domain: window.location.hostname
             },
             originalUid: undefined
           }
         );
-
       });
 
       // Note that classic viz without originalUid is not supported.
@@ -520,22 +524,22 @@ describe('AssetSelectorStore', function() {
           }
         };
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
           visualization: payload
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getComponentType(),
+          assetSelectorStore.getComponentType(),
           'socrata.visualization.classic'
         );
 
         assert.deepEqual(
-          storyteller.assetSelectorStore.getComponentValue(),
+          assetSelectorStore.getComponentValue(),
           {
             visualization: payload.data,
             dataset: {
-              datasetUid: 'test-test',
+              datasetUid: 'what-what',
               domain: window.location.hostname
             },
             originalUid: 'orig-inal'
@@ -546,9 +550,8 @@ describe('AssetSelectorStore', function() {
     });
 
     describe('after a `FILE_UPLOAD_PROGRESS` action', function() {
-
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: 0.245
         });
@@ -557,7 +560,7 @@ describe('AssetSelectorStore', function() {
       describe('.getUploadPercentLoaded()', function() {
         it('returns the percent loaded', function() {
           assert.equal(
-            storyteller.assetSelectorStore.getUploadPercentLoaded(),
+            assetSelectorStore.getUploadPercentLoaded(),
             0.245
           );
         });
@@ -568,34 +571,53 @@ describe('AssetSelectorStore', function() {
       var payloadUrl = 'https://validurl.com/image.png';
       var payloadDocumentId = '12345';
 
-      ['IMAGE', 'HERO', 'AUTHOR'].map(function(provider) {
-        describe('while editing component type: {0}'.format(provider), function() {
+      ['HERO'].map(function(provider) {
+        describe(StorytellerUtils.format('while editing component type: {0}', provider), function() {
           beforeEach(function() {
-            var blockId;
-
-            if (provider === 'IMAGE') {
-              blockId = standardMocks.imageBlockId;
+            if (provider === 'AUTHOR') {
+              blockComponentAtIndex = {
+                type: provider.toLowerCase(),
+                value: {
+                  image: {
+                    url: payloadUrl,
+                    documentId: payloadDocumentId
+                  },
+                  blurb: 'blurb'
+                }
+              };
             } else if (provider === 'HERO') {
-              blockId = standardMocks.heroBlockId;
-            } else if (provider === 'AUTHOR') {
-              blockId = standardMocks.authorBlockId;
+              blockComponentAtIndex = {
+                type: provider.toLowerCase(),
+                value: {
+                  url: payloadUrl,
+                  documentId: payloadDocumentId,
+                  html: 'html content'
+                }
+              };
+            } else {
+              blockComponentAtIndex = {
+                type: provider.toLowerCase(),
+                value: {
+                  url: payloadUrl,
+                  documentId: payloadDocumentId
+                }
+              };
             }
 
-            storyteller.dispatcher.dispatch({
+            dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
-              blockId: blockId,
+              blockId: 'block-id',
               componentIndex: 0
             });
           });
 
           beforeEach(function() {
-            storyteller.dispatcher.dispatch({
+            dispatcher.dispatch({
               action: Actions.FILE_UPLOAD_DONE,
               url: payloadUrl,
               documentId: payloadDocumentId
             });
           });
-
 
           describe('.getComponentType()', function() {
             var correctType;
@@ -607,9 +629,9 @@ describe('AssetSelectorStore', function() {
               correctType = 'author';
             }
 
-            it('returns `{0}`'.format(correctType), function() {
+            it(StorytellerUtils.format('returns `{0}`', correctType), function() {
               assert.equal(
-                storyteller.assetSelectorStore.getComponentType(),
+                assetSelectorStore.getComponentType(),
                 correctType
               );
             });
@@ -619,20 +641,20 @@ describe('AssetSelectorStore', function() {
             it('returns correct payload', function() {
               if (provider === 'AUTHOR') {
                 assert.deepEqual(
-                  storyteller.assetSelectorStore.getComponentValue(),
+                  assetSelectorStore.getComponentValue(),
                   {
-                    blurb: storyteller.storyStore.getBlockComponentAtIndex(standardMocks.authorBlockId, 0).value.blurb,
+                    blurb: storyStore.getBlockComponentAtIndex(StandardMocks.authorBlockId, 0).value.blurb,
                     image: { documentId: payloadDocumentId, url: payloadUrl }
                   }
                 );
               } else if (provider === 'HERO') {
                 assert.deepEqual(
-                  storyteller.assetSelectorStore.getComponentValue(),
+                  assetSelectorStore.getComponentValue(),
                   { documentId: payloadDocumentId, url: payloadUrl, html: 'html content' }
                 );
               } else {
                 assert.deepEqual(
-                  storyteller.assetSelectorStore.getComponentValue(),
+                  assetSelectorStore.getComponentValue(),
                   { documentId: payloadDocumentId, url: payloadUrl }
                 );
               }
@@ -643,10 +665,9 @@ describe('AssetSelectorStore', function() {
     });
 
     describe('after a `FILE_UPLOAD_ERROR` action', function() {
-
       describe('for file type validation error', function() {
         beforeEach(function() {
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.FILE_UPLOAD_ERROR,
             error: {
               step: 'validation_file_type'
@@ -657,7 +678,7 @@ describe('AssetSelectorStore', function() {
         describe('.getComponentType()', function() {
           it('returns `imageUploadError`', function() {
             assert.equal(
-              storyteller.assetSelectorStore.getComponentType(),
+              assetSelectorStore.getComponentType(),
               'imageUploadError'
             );
           });
@@ -666,7 +687,7 @@ describe('AssetSelectorStore', function() {
         describe('.getComponentValue()', function() {
           it('returns `validation_file_type`', function() {
             assert.deepEqual(
-              storyteller.assetSelectorStore.getComponentValue(),
+              assetSelectorStore.getComponentValue(),
               { step: 'validation_file_type' }
             );
           });
@@ -675,7 +696,7 @@ describe('AssetSelectorStore', function() {
 
       describe('for file size validation error', function() {
         beforeEach(function() {
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.FILE_UPLOAD_ERROR,
             error: {
               step: 'validation_file_size'
@@ -686,7 +707,7 @@ describe('AssetSelectorStore', function() {
         describe('.getComponentType()', function() {
           it('returns `imageUploadError`', function() {
             assert.equal(
-              storyteller.assetSelectorStore.getComponentType(),
+              assetSelectorStore.getComponentType(),
               'imageUploadError'
             );
           });
@@ -695,7 +716,7 @@ describe('AssetSelectorStore', function() {
         describe('.getComponentValue()', function() {
           it('returns `validation_file_size`', function() {
             assert.deepEqual(
-              storyteller.assetSelectorStore.getComponentValue(),
+              assetSelectorStore.getComponentValue(),
               { step: 'validation_file_size' }
             );
           });
@@ -704,7 +725,7 @@ describe('AssetSelectorStore', function() {
 
       describe('for other upload error with reason', function() {
         beforeEach(function() {
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.FILE_UPLOAD_ERROR,
             error: {
               step: 'get_upload_url',
@@ -716,7 +737,7 @@ describe('AssetSelectorStore', function() {
         describe('.getComponentType()', function() {
           it('returns `imageUploadError`', function() {
             assert.equal(
-              storyteller.assetSelectorStore.getComponentType(),
+              assetSelectorStore.getComponentType(),
               'imageUploadError'
             );
           });
@@ -725,7 +746,7 @@ describe('AssetSelectorStore', function() {
         describe('.getComponentValue()', function() {
           it('returns `get_upload_url`', function() {
             assert.deepEqual(
-              storyteller.assetSelectorStore.getComponentValue(),
+              assetSelectorStore.getComponentValue(),
               { step: 'get_upload_url', reason: { status: 500, message: 'Internal Server Error' } }
             );
           });
@@ -735,9 +756,12 @@ describe('AssetSelectorStore', function() {
 
     describe('non-linear workflows', function() {
       var blockIdBeingEdited;
-      function editComponent(blockId) {
+
+      function editComponent(blockId, type) {
         blockIdBeingEdited = blockId;
-        storyteller.dispatcher.dispatch({
+        blockComponentAtIndex = {type: type};
+
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
           blockId: blockId,
           componentIndex: 0
@@ -747,7 +771,7 @@ describe('AssetSelectorStore', function() {
 
       function jumpToStep(step) {
         beforeEach(function() {
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
             step: step
           });
@@ -755,33 +779,33 @@ describe('AssetSelectorStore', function() {
       }
 
       function verifyStepIs(step) {
-        it('should set the step to {0}'.format(step), function() {
-          assert.equal(storyteller.assetSelectorStore.getStep(), WIZARD_STEP[step]);
+        it(StorytellerUtils.format('should set the step to {0}', step), function() {
+          assert.equal(assetSelectorStore.getStep(), WIZARD_STEP[step]);
         });
       }
 
       function verifyComponentDataInAssetSelectorStoreMatchesStoryStore() {
         it('should copy componentValue into assetSelectorStore', function() {
           assert.deepEqual(
-            storyteller.assetSelectorStore.getComponentValue(),
-            storyteller.storyStore.getBlockComponentAtIndex(blockIdBeingEdited, 0).value
+            assetSelectorStore.getComponentValue(),
+            storyStore.getBlockComponentAtIndex(blockIdBeingEdited, 0).value
           );
         });
         it('should copy componentType into assetSelectorStore', function() {
           assert.deepEqual(
-            storyteller.assetSelectorStore.getComponentType(),
-            storyteller.storyStore.getBlockComponentAtIndex(blockIdBeingEdited, 0).type
+            assetSelectorStore.getComponentType(),
+            storyStore.getBlockComponentAtIndex(blockIdBeingEdited, 0).type
           );
         });
         it('should copy componentIndex into assetSelectorStore', function() {
           assert.equal(
-            storyteller.assetSelectorStore.getComponentIndex(),
+            assetSelectorStore.getComponentIndex(),
             0 // All these tests use the first component.
           );
         });
         it('should copy blockId into assetSelectorStore', function() {
           assert.equal(
-            storyteller.assetSelectorStore.getBlockId(),
+            assetSelectorStore.getBlockId(),
             blockIdBeingEdited
           );
         });
@@ -789,7 +813,7 @@ describe('AssetSelectorStore', function() {
 
       describe('Editing an existing', function() {
         describe('image', function() {
-          beforeEach(function() { editComponent(standardMocks.imageBlockId); });
+          beforeEach(function() { editComponent(StandardMocks.imageBlockId, 'image'); });
           verifyStepIs('IMAGE_PREVIEW');
           verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
 
@@ -801,7 +825,7 @@ describe('AssetSelectorStore', function() {
         });
 
         describe('socrata.visualization.classic', function() {
-          beforeEach(function() { editComponent(standardMocks.classicVizBlockId); });
+          beforeEach(function() { editComponent(StandardMocks.classicVizBlockId, 'socrata.visualization.classic'); });
           verifyStepIs('CONFIGURE_VISUALIZATION');
           verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
 
@@ -820,7 +844,7 @@ describe('AssetSelectorStore', function() {
           describe('then jump to an invalid step', function() {
             it('should raise', function() {
               assert.throws(function() {
-                storyteller.dispatcher.dispatch({
+                dispatcher.dispatch({
                   action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
                   step: 'NOT_VALID_YO'
                 });
@@ -830,7 +854,7 @@ describe('AssetSelectorStore', function() {
         });
 
         describe('socrata.visualization.columnChart', function() {
-          beforeEach(function() { editComponent(standardMocks.vifBlockId); });
+          beforeEach(function() { editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart'); });
           verifyStepIs('CONFIGURE_VISUALIZATION');
           verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
 
@@ -848,7 +872,7 @@ describe('AssetSelectorStore', function() {
         });
 
         describe('youtube.video', function() {
-          beforeEach(function() { editComponent(standardMocks.youtubeBlockId); });
+          beforeEach(function() { editComponent(StandardMocks.youtubeBlockId, 'youtube.video'); });
           verifyStepIs('ENTER_YOUTUBE_URL');
           verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
 
@@ -862,12 +886,11 @@ describe('AssetSelectorStore', function() {
     });
 
     describe('after a `EMBED_CODE_UPLOAD_DONE` action', function() {
-
       var payloadUrl = 'https://validurl.com/embeddedHtml.html';
       var payloadDocumentId = '2345';
 
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.EMBED_CODE_UPLOAD_DONE,
           url: payloadUrl,
           documentId: payloadDocumentId
@@ -877,7 +900,7 @@ describe('AssetSelectorStore', function() {
       describe('.getComponentType()', function() {
         it('returns `embeddedHtml`', function() {
           assert.equal(
-            storyteller.assetSelectorStore.getComponentType(),
+            assetSelectorStore.getComponentType(),
             'embeddedHtml'
           );
         });
@@ -886,7 +909,7 @@ describe('AssetSelectorStore', function() {
       describe('.getComponentValue()', function() {
         it('returns payload with url and documentId and layout', function() {
           assert.deepEqual(
-            storyteller.assetSelectorStore.getComponentValue(),
+            assetSelectorStore.getComponentValue(),
             {
               documentId: payloadDocumentId,
               url: payloadUrl,

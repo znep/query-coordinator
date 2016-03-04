@@ -1,17 +1,20 @@
+import _ from 'lodash';
+
+import Actions from '../../app/assets/javascripts/editor/Actions';
+import StoryStore from '../../app/assets/javascripts/editor/stores/StoryStore';
+import Dispatcher from '../../app/assets/javascripts/editor/Dispatcher';
+import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';
+import StoryPermissionsManager, {__RewireAPI__ as StoryPermissionsManagerAPI} from '../../app/assets/javascripts/editor/StoryPermissionsManager';
+
+import EnvironmentMocker from './StorytellerEnvironmentMocker';
+
 describe('StoryPermissionsManager', function() {
 
-  'use strict';
-
-  var storyteller = window.socrata.storyteller;
   var manager;
+  var dispatcher;
 
   beforeEach(function() {
-    manager = new storyteller.StoryPermissionsManager();
-    storyteller.userStoryUid = standardMocks.validStoryUid;
-  });
-
-  afterEach(function() {
-    delete storyteller.userStoryUid;
+    manager = new StoryPermissionsManager();
   });
 
   var storytellerApiRequestStub;
@@ -19,16 +22,30 @@ describe('StoryPermissionsManager', function() {
   var storytellerApiRequestPromiseReject;
 
   beforeEach(function() {
+    var storyStoreStub = sinon.createStubInstance(StoryStore);
+    storyStoreStub.getStoryDigest = _.constant('test-digest');
+
+    var StorytellerUtilsMocker = _.cloneDeep(StorytellerUtils);
     var storytellerApiRequestPromise = new Promise(function(resolve, reject) {
       storytellerApiRequestPromiseResolve = resolve;
       storytellerApiRequestPromiseReject = reject;
     });
 
-    storytellerApiRequestStub = sinon.stub(socrata.utils, 'storytellerApiRequest', _.constant(storytellerApiRequestPromise));
+    dispatcher = new Dispatcher();
+    storytellerApiRequestStub = sinon.stub(StorytellerUtilsMocker, 'storytellerApiRequest', _.constant(storytellerApiRequestPromise));
+
+    StoryPermissionsManagerAPI.__Rewire__('StorytellerUtils', StorytellerUtilsMocker);
+    StoryPermissionsManagerAPI.__Rewire__('Environment', EnvironmentMocker);
+    StoryPermissionsManagerAPI.__Rewire__('storyStore', storyStoreStub);
+    StoryPermissionsManagerAPI.__Rewire__('dispatcher', dispatcher);
   });
 
   afterEach(function() {
     storytellerApiRequestStub.restore();
+    StoryPermissionsManagerAPI.__ResetDependency__('StorytellerUtils');
+    StoryPermissionsManagerAPI.__ResetDependency__('Environment');
+    StoryPermissionsManagerAPI.__ResetDependency__('storyStore');
+    StoryPermissionsManagerAPI.__ResetDependency__('dispatcher');
   });
 
   function testVariant(apiName, expectedUrl, expectedHttpMethod, expectedData, expectedActions, expectedPayload) {
@@ -64,10 +81,10 @@ describe('StoryPermissionsManager', function() {
           beforeEach(function() {
             data = expectedData;
             _.each(expectedActions, function(expectedAction) {
-              expectedAction.storyUid = storyteller.userStoryUid;
+              expectedAction.storyUid = EnvironmentMocker.STORY_UID;
             });
             actions = [];
-            storyteller.dispatcher.register(function(payload) {
+            dispatcher.register(function(payload) {
               actions.push(payload);
             });
             storytellerApiRequestPromiseResolve(data);
@@ -135,7 +152,7 @@ describe('StoryPermissionsManager', function() {
     isPublic: false
   }];
 
-  testVariant('makePublic', 'stories/test-test/published', 'POST', { isPublic: true }, publicActions, JSON.stringify({ digest: 'test-digest' }));
-  testVariant('makePrivate', 'stories/test-test/permissions', 'PUT', { isPublic: false }, privateActions, JSON.stringify({ isPublic: false }));
+  testVariant('makePublic', 'stories/four-four/published', 'POST', { isPublic: true }, publicActions, JSON.stringify({ digest: 'test-digest' }));
+  testVariant('makePrivate', 'stories/four-four/permissions', 'PUT', { isPublic: false }, privateActions, JSON.stringify({ isPublic: false }));
 
 });

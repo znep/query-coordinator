@@ -1,8 +1,14 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import I18nMocker from '../I18nMocker';
+import Store from '../../../app/assets/javascripts/editor/stores/Store';
+import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
+import {__RewireAPI__ as StoryPublicationStatusAPI} from '../../../app/assets/javascripts/editor/components/StoryPublicationStatus';
+
 describe('storyPublicationStatus jQuery plugin', function() {
-  'use strict';
 
   var $button;
-  var storyteller = window.socrata.storyteller;
   var mockStore;
 
   beforeEach(function() {
@@ -14,7 +20,7 @@ describe('storyPublicationStatus jQuery plugin', function() {
       var _isPublic = false;
       var _currentDigest = 'unpublished';
 
-      _.extend(this, new storyteller.Store());
+      _.extend(this, new Store());
 
       this.mockIsStoryDirty = function(isDirty) {
         _isDirty = isDirty;
@@ -38,8 +44,15 @@ describe('storyPublicationStatus jQuery plugin', function() {
     }
 
     mockStore = new MockStore();
-    storyteller.storySaveStatusStore = mockStore;
-    storyteller.storyStore = mockStore;
+    StoryPublicationStatusAPI.__Rewire__('storySaveStatusStore', mockStore);
+    StoryPublicationStatusAPI.__Rewire__('storyStore', mockStore);
+    StoryPublicationStatusAPI.__Rewire__('I18n', I18nMocker);
+  });
+
+  afterEach(function() {
+    StoryPublicationStatusAPI.__ResetDependency__('storySaveStatusStore');
+    StoryPublicationStatusAPI.__ResetDependency__('storyStore');
+    StoryPublicationStatusAPI.__ResetDependency__('I18n');
   });
 
   it('should return a jQuery object for chaining', function() {
@@ -54,8 +67,10 @@ describe('storyPublicationStatus jQuery plugin', function() {
 
     describe('button text', function() {
       function textFor(status) {
-        return 'Translation for: editor.settings_panel.publishing_section.status.{0}'.
-          format(status);
+        return StorytellerUtils.format(
+          'Translation for: editor.settings_panel.publishing_section.status.{0}',
+          status
+        );
       }
 
       it('should mirror the story save state', function() {

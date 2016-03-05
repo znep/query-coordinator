@@ -1,4 +1,5 @@
 import $ from 'jQuery';
+import _ from 'lodash';
 
 import I18nMocker from '../I18nMocker';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';

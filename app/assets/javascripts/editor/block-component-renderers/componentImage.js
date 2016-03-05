@@ -1,4 +1,5 @@
 import $ from 'jQuery';
+import _ from 'lodash';
 
 import '../componentBase';
 import CustomEvent from '../../CustomEvent';

@@ -1,4 +1,6 @@
 import $ from 'jQuery';
+import _ from 'lodash';
+
 import '../../../app/assets/javascripts/editor/block-component-renderers/componentImage';
 
 describe('componentImage jQuery plugin', function() {

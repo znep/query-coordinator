@@ -52,7 +52,7 @@ describe('storySavingStatus jQuery plugin', function() {
 
   it('should return a jQuery object for chaining', function() {
     var returnValue = $button.storySavingStatus();
-    assert.instanceOf(returnValue, jQuery);
+    assert.instanceOf(returnValue, $);
   });
 
 

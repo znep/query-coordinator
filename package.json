@@ -46,6 +46,9 @@
   },
   "eslintConfig": {
     "extends": "./node_modules/eslint-base/.eslintrc.json",
+    "env": {
+      "mocha": true
+    },
     "parserOptions": {
       "ecmaVersion": 6,
       "sourceType": "module",
@@ -71,36 +74,8 @@
       ]
     },
     "globals": {
-      "$": true,
-      "_": true,
-      "_socrataVisualizationComponentTemplateRenderers": true,
-      "_socrataVisualizationComponentDataRenderers": true,
-      "airbrakeJs": true,
-      "Constants": true,
-      "Actions": true,
-      "Flux": true,
-      "jQuery": true,
-      "I18n": true,
-      "socrata": true,
-      "Squire": true,
-      "Unidragger": true,
-      "Unipointer": true,
-      "userStoryData": true,
-      "defaultThemes": true,
-      "customThemes": true,
-      "ga": true,
       "assert": true,
-      "describe": true,
-      "xdescribe": true,
-      "it": true,
-      "beforeEach": true,
-      "afterEach": true,
       "sinon": true,
-      "standardMocks": true,
-      "removeStandardMocks": true,
-      "testDom": true,
-      "generateStoryData": true,
-      "generateBlockData": true,
       "Promise": true
     }
   },

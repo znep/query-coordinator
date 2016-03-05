@@ -1,4 +1,5 @@
 import $ from 'jQuery';
+import _ from 'lodash';
 
 import StandardMocks from './StandardMocks';
 import EnvironmentMocker from './StorytellerEnvironmentMocker';

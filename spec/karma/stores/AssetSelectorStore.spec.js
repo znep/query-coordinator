@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import StandardMocks from '../StandardMocks';
 import Constants from '../../../app/assets/javascripts/editor/Constants';
 import Actions from '../../../app/assets/javascripts/editor/Actions';

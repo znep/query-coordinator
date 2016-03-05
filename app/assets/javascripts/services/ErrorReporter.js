@@ -4,7 +4,7 @@ import Actions from '../editor/Actions';
 export default function ErrorReporter() {
   function sendEventToGoogleAnalytics(payload) {
     if (typeof window.ga === 'function') {
-      ga('send', {
+      window.ga('send', {
         hitType: 'event',
         eventCategory: payload.action,
         eventAction: payload.errorReporting.message,

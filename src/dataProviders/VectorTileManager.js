@@ -1141,7 +1141,8 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
     getterPromise.then(
       function(response) {
 
-        if (_.isEmpty(response.data)) {
+        // sometimes response is undefined, so access the data property safely
+        if (_.isEmpty(_.get(response, 'data', []))) {
           self.tileLoaded(tileId);
         } else {
           callback.call(self, response.data, tileId);

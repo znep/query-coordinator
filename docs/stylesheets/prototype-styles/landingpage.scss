@@ -418,11 +418,83 @@ a {
 
 
 }
+.lp-section {
+
+	@include span-columns(10);
+	@include shift(1);
+	margin-bottom: ms(0);
+	padding: ms(-2);
+
+
+	.section-header {
+		padding: ms(-2) 0;
+		font-weight: 400;
+		font-size: ms(1);
+	}
+	@include breakpoint($tablet) {
+		.section-header {
+			font-size: ms(2);
+		}
+	}
+
+	.card-frame {
+		@include outer-container;
+		@include span-columns(12);
+		background-color: $white;
+		border: 1px solid $light-grey-4;
+		border-bottom: 2px solid $light-grey-4;
+		padding: ms(1);
+
+		.second-metadata-table {
+			display: none;
+		}
+		.table-condensed{
+			margin: 0;
+		}
+		.centered {
+			display: none;
+		}
+		@include breakpoint($tablet) {
+			.btn-block {
+				display: none;
+			}
+			.centered {
+				display: block;
+				@include span-columns(12);
+				.more-link {
+					float: right;
+					white-space: nowrap;
+					color: $light-grey-1;
+					text-decoration: underline;
+					margin-bottom: - ms(-6);
+					&:hover {
+						color: $light-grey-0;
+					}
+				}
+				.btn {
+					margin: ms(-2) auto; 
+				}
+			}
+			.first-metadata-table {
+				float: left;
+				@include span-columns(6);
+				margin: 0;
+			}
+			.second-metadata-table {
+				float: right !important;
+				@include span-columns(6);
+				margin: 0;
+			}
+
+		}
+	}
+}
 
 
 .result-card {
 	@include outer-container();
-	padding: 0 ms(-2);
+	@include span-columns(10);
+	@include shift(1);
 
 	.entry-header {
 		@include outer-container();
@@ -433,10 +505,9 @@ a {
 		.entry-title {
 			@include span-columns(12);
 			.entry-name {
-				font-weight: 200;
 				display: inline-block;
 				margin-right: ms(-2);
-				font-size: ms(2);
+				font-size: ms(3);
 				
 			}
 

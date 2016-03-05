@@ -18,7 +18,7 @@ module ViewModels
         # there may be a need to monitor multiple jobs per layer (perhaps in JS).
 
         # The set of available (enabled and disabled) curated regions (from Core)
-        @curated_regions = curated_regions.uniq(&:id)
+        @curated_regions = curated_regions.uniq(&:id).sort_by(&:datetime_added).reverse
         # The set of queued/in-progress curated region jobs (from CRJQ)
         @curated_region_jobs = curated_region_jobs
         # The set of failed curated region jobs (from ISS)

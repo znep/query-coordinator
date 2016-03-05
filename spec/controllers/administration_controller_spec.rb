@@ -3,6 +3,8 @@ require 'rails_helper'
 describe AdministrationController do
   include TestHelperMethods
 
+  let(:view) { double(View, :createdAt => 1456530636244, :columns => []) }
+
   describe 'georegions' do
     before(:each) do
       init_current_user(controller)
@@ -13,6 +15,7 @@ describe AdministrationController do
       allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
       allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_return([])
       allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return([])
+      allow_any_instance_of(CuratedRegion).to receive(:view).and_return(view)
       strings = Hashie::Mash.new
       strings.site_title = 'My Site'
       allow(CurrentDomain).to receive(:strings).and_return(strings)
@@ -391,6 +394,46 @@ describe AdministrationController do
           expect_any_instance_of(::Services::Administration::GeoregionDefaulter).to receive(:undefault)
           put :set_georegion_default_status, :id => 1, :default_flag => 'undefault'
         end
+      end
+    end
+
+    describe 'POST /admin/geo/poll' do
+      it 'gets curated regions, in-progress jobs, and failed jobs' do
+        allow(CuratedRegion).to receive(:find).and_return(
+          [build(:curated_region), build(:curated_region), build(:curated_region)]
+        )
+        allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_return(
+          [{ 'jobId' => 'cur8ed-r3g10n-j0b'}]
+        )
+        allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return(
+          [{ 'jobId' => 'f41l3d-cur8ed-r3g10n-j0b-1'}, { 'jobId' => 'f41l3d-cur8ed-r3g10n-j0b-2'}]
+        )
+
+        post :poll_georegion_jobs
+        expect(response).to have_http_status(200)
+        response_body = JSON.parse(response.body)
+        expect(response_body).to include('success' => true)
+        expect(response_body['message']['georegions'].size).to eq(3)
+        expect(response_body['message']['jobs'].size).to eq(1)
+        expect(response_body['message']['failedJobs'].size).to eq(2)
+      end
+
+      it 'provides an error message if any API call fails' do
+        allow(CuratedRegion).to receive(:find).and_return(
+          []
+        )
+        allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_raise(
+          'CRJQ exploded'
+        )
+        allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return(
+          []
+        )
+
+        post :poll_georegion_jobs
+        expect(response).to have_http_status(500)
+        response_body = JSON.parse(response.body)
+        expect(response_body['success']).to eq(false)
+        expect(response_body['message']['errorMessage']).to include('CRJQ exploded')
       end
     end
   end

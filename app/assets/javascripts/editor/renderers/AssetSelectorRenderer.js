@@ -54,7 +54,11 @@ export default function AssetSelectorRenderer(options) {
       function(event) {
         if (event.target.files && event.target.files.length > 0) {
           fileUploader.cancel();
-          fileUploader.upload(event.target.files[0]);
+          fileUploader.upload(event.target.files[0], {
+            progressAction: Actions.FILE_UPLOAD_PROGRESS,
+            errorAction: Actions.FILE_UPLOAD_ERROR,
+            doneAction: Actions.FILE_UPLOAD_DONE
+          });
         }
       }
     );
@@ -173,10 +177,7 @@ export default function AssetSelectorRenderer(options) {
 
     var currentHtmlFragment = '';
     var debounceForOneSecondThenUploadHtmlFragment = _.debounce(function(event) {
-      if (fileUploader !== undefined && fileUploader !== null) {
-        fileUploader.cancel();
-        currentHtmlFragment = undefined;
-      }
+      fileUploader.cancel();
 
       var htmlFragment = $(event.target).val();
       _warnAboutInsecureHTML = /src=("|')http:\/\//.test(htmlFragment);

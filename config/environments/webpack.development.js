@@ -12,7 +12,7 @@ module.exports = {
     contentBase: 'public/js',
     https: true
   },
-  devtool: 'eval-cheap-module-source-map',
+  devtool: 'eval',
   output: {
     filename: '[name].[hash].js',
     path: 'public/js'

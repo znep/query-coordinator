@@ -6,8 +6,8 @@
   },
   "scripts": {
     "lint": "eslint --ignore-path .eslintignore -- app/assets/javascripts spec/karma",
-    "test": "./node_modules/.bin/karma start spec/karma/karma.conf.js",
-    "test-watch": "./node_modules/.bin/karma start spec/karma/karma.conf.js --singleRun false",
+    "test": "RAILS_ENV=karma ./node_modules/.bin/karma start spec/karma/karma.conf.js",
+    "test-watch": "RAILS_ENV=karma ./node_modules/.bin/karma start spec/karma/karma.conf.js --singleRun false",
     "webpack": "./node_modules/.bin/webpack --config config/webpack.config.js",
     "watch": "./node_modules/.bin/webpack-dev-server --config config/webpack.config.js",
     "build": "npm run webpack",

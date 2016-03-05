@@ -1,6 +1,7 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from '../TransientElement';
 import DataGenerators from '../DataGenerators';
 import I18nMocker from '../I18nMocker';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
@@ -16,7 +17,6 @@ import RichTextEditorManager from '../../../app/assets/javascripts/editor/RichTe
 
 describe('StoryRenderer', function() {
 
-  var testDom;
   var storyUid = 'what-what';
   var assetSelectorBlockId;
   var textBlockId;
@@ -31,13 +31,10 @@ describe('StoryRenderer', function() {
   var dropHintStore;
 
   beforeEach(function() {
-    testDom = $('<div></div>');
-    testDom.append([
+    $transient.append([
       $('<div>', { 'class': 'insertion-hint hidden' }),
       $('<div>', { 'id': 'rich-text-editor-toolbar' })
     ]);
-
-    $(document.body).append(testDom);
 
     validToolbar = Object.create(RichTextEditorToolbar.prototype);
     validFormats = [];
@@ -87,7 +84,7 @@ describe('StoryRenderer', function() {
     assetSelectorBlockId = blockIds[0];
     textBlockId = blockIds[1];
 
-    testDom.append(
+    $transient.append(
         $('<div>', { 'class': 'story-container' })
       ).append(
         $('<p>', { 'class': 'message-warning' })
@@ -97,15 +94,13 @@ describe('StoryRenderer', function() {
 
     options = {
       storyUid: storyUid,
-      storyContainerElement: testDom.find('.story-container'),
-      warningMessageElement: testDom.find('.message-warning'),
-      insertionHintElement: testDom.find('.insertion-hint')
+      storyContainerElement: $transient.find('.story-container'),
+      warningMessageElement: $transient.find('.message-warning'),
+      insertionHintElement: $transient.find('.insertion-hint')
     };
   });
 
   afterEach(function() {
-    testDom.remove();
-
     if (storyRenderer) {
       storyRenderer.destroy();
     }

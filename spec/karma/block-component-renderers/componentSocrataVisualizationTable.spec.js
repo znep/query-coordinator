@@ -1,6 +1,7 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
 import Actions from '../../../app/assets/javascripts/editor/Actions';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
@@ -9,7 +10,6 @@ import {__RewireAPI__ as componentSocrataVisualizationTableAPI} from '../../../a
 
 describe('componentSocrataVisualizationTable jQuery plugin', function() {
 
-  var testDom;
   var $component;
   var validComponentData = {
     type: 'socrata.visualization.table',
@@ -26,19 +26,13 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
   };
 
   beforeEach(function() {
-    testDom = $('<div>');
-    testDom.append(
+    $transient.append(
       StorytellerUtils.format(
         '<div data-block-id="{0}" data-component-index="0">',
         StandardMocks.validBlockId
       )
     );
-    $component = testDom.children('div');
-    $(document.body).append(testDom);
-  });
-
-  afterEach(function() {
-    testDom.remove();
+    $component = $transient.children('div');
   });
 
   it('should throw when passed invalid arguments', function() {

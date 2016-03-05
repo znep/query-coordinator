@@ -1,6 +1,7 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from '../TransientElement';
 import DataGenerators from '../DataGenerators';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
 import CustomEvent from '../../../app/assets/javascripts/CustomEvent';
@@ -26,7 +27,6 @@ describe('componentHero jQuery plugin', function() {
   var theme = 'slate';
   var dispatcher;
   var story;
-  var testDom;
   var storyStore;
   var options = { editMode: true };
 
@@ -61,12 +61,10 @@ describe('componentHero jQuery plugin', function() {
       IMAGES: {COVER_IMAGE_ICON: ''}
     });
 
-    testDom = $('<div>');
-    testDom.append('<div>');
-    $component = testDom.children('div');
+    $transient.append('<div>');
+    $component = $transient.children('div');
 
     $(document.body).
-      append(testDom).
       attr('data-block-id', blockId).
       attr('data-component-index', componentIndex);
 
@@ -74,7 +72,6 @@ describe('componentHero jQuery plugin', function() {
   });
 
   afterEach(function() {
-    testDom.remove();
     mockComponentHTML.restore();
   });
 

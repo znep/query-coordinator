@@ -1,4 +1,6 @@
 import $ from 'jQuery';
+
+import { $transient } from './TransientElement';
 import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';
 
 describe('StorytellerUtils', function() {
@@ -464,7 +466,6 @@ describe('StorytellerUtils', function() {
 
     describe('when given an attribute', function() {
       var element;
-      var testDom;
 
       beforeEach(function() {
         var html = [
@@ -475,14 +476,8 @@ describe('StorytellerUtils', function() {
           '</div>'
         ].join('');
 
-        testDom = $('<div></div>');
-        testDom.append(html);
-        element = testDom.find('#element');
-        $(document.body).append(testDom);
-      });
-
-      afterEach(function() {
-        testDom.remove();
+        $transient.append(html);
+        element = $transient.find('#element');
       });
 
       describe('that does not exist in the DOM', function() {

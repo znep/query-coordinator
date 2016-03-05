@@ -13,6 +13,10 @@ var configuration = (function(environment) {
       return require(
         path.resolve('.', 'config/environments/webpack.test.js')
       );
+    case 'karma':
+      return require(
+        path.resolve('.', 'config/environments/webpack.karma.js')
+      );
     default:
       return require(
         path.resolve('.', 'config/environments/webpack.development.js')

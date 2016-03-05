@@ -18,7 +18,6 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         query: {
-          plugins: ['babel-plugin-rewire'],
           presets: ['es2015']
         }
       },

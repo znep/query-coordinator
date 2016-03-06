@@ -112,8 +112,7 @@ function choropleth(
       ******************/
 
       function attachEvents() {
-        element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', handleFeatureFlyout);
-        element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', handleFeatureMouseout);
+        element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT', handleFlyoutEvent);
 
         element.on('SOCRATA_VISUALIZATION_CHOROPLETH_RENDER_START', handleRenderStart);
         element.on('SOCRATA_VISUALIZATION_CHOROPLETH_RENDER_COMPLETE', handleRenderComplete);
@@ -127,8 +126,7 @@ function choropleth(
       }
 
       function detachEvents() {
-        element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', handleFeatureFlyout);
-        element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', handleFeatureMouseout);
+        element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT', handleFlyoutEvent);
 
         element.off('SOCRATA_VISUALIZATION_CHOROPLETH_RENDER_START', handleRenderStart);
         element.off('SOCRATA_VISUALIZATION_CHOROPLETH_RENDER_COMPLETE', handleRenderComplete);
@@ -303,11 +301,24 @@ function choropleth(
       *************************/
 
       /**
+       * Handle flyout events
+       */
+     function handleFlyoutEvent(event) {
+       var payload = event.originalEvent.detail;
+
+       if (!_.isNull(payload)) {
+         handleFeatureMousemove(payload);
+       } else {
+         handleFeatureMouseout();
+       }
+     }
+
+      /**
        * Handle feature mouse over event
        */
-      function handleFeatureFlyout(event) {
-        lastFlyoutData = event.originalEvent.detail;
-        currentFeature = lastFlyoutData.element.feature;
+      function handleFeatureMousemove(payload) {
+        lastFlyoutData = payload;
+        currentFeature = payload.element.feature;
       }
 
       /**
@@ -331,7 +342,7 @@ function choropleth(
         // This is set to a non-null value when a feature controlled by
         // the choropleth raises a mousemove event, and reset to null
         // when a feature controlled by the choropleth raises a mouseout
-        // event. (See onFeatureMouseMove and onFeatureMouseOut).
+        // event. (See handleFeatureMousemove and handleFeatureMouseout).
         if (dragging || (_.isNull(currentFeature) && _.isNull(selectedFeature))) {
           return undefined;
         }

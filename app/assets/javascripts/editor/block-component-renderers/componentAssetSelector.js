@@ -1,44 +1,43 @@
-(function(root, $) {
+import $ from 'jQuery';
 
-  'use strict';
+import I18n from '../I18n';
+import Actions from '../Actions';
+import StorytellerUtils from '../../StorytellerUtils';
 
-  var socrata = root.socrata;
-  var utils = socrata.utils;
+$.fn.componentAssetSelector = componentAssetSelector;
 
-  function _renderSelector($element, componentData) {
+export default function componentAssetSelector(componentData) {
+  var $this = $(this);
 
-    var $controlsInsertButton;
+  StorytellerUtils.assertHasProperties(componentData, 'type');
+  StorytellerUtils.assert(
+    componentData.type === 'assetSelector',
+    StorytellerUtils.format(
+      'componentAssetSelector: Unsupported component type {0}',
+      componentData.type
+    )
+  );
 
-    $element.addClass(utils.typeToClassNameForComponentType(componentData.type));
-    $element.attr('data-action', Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT);
-
-    $controlsInsertButton = $(
-      '<button>',
-      {
-        'class': 'btn-primary asset-selector-insert-btn'
-      }
-    ).text(I18n.t('editor.components.asset_selector.insert_btn'));
-
-    $element.append($controlsInsertButton);
+  if ($this.children().length === 0) {
+    _renderSelector($this, componentData);
   }
 
-  function componentAssetSelector(componentData) {
-    var $this = $(this);
+  return $this;
+}
 
-    utils.assertHasProperties(componentData, 'type');
-    utils.assert(
-      componentData.type === 'assetSelector',
-      'componentAssetSelector: Unsupported component type {0}'.format(
-        componentData.type
-      )
-    );
+function _renderSelector($element, componentData) {
+  var $controlsInsertButton;
+  var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
 
-    if ($this.children().length === 0) {
-      _renderSelector($this, componentData);
+  $element.addClass(className);
+  $element.attr('data-action', Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT);
+
+  $controlsInsertButton = $(
+    '<button>',
+    {
+      'class': 'btn-primary asset-selector-insert-btn'
     }
+  ).text(I18n.t('editor.components.asset_selector.insert_btn'));
 
-    return $this;
-  }
-
-  $.fn.componentAssetSelector = componentAssetSelector;
-})(window, jQuery);
+  $element.append($controlsInsertButton);
+}

@@ -1,11 +1,18 @@
-describe('componentHero jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
+import _ from 'lodash';
 
+import DataGenerators from '../DataGenerators';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import CustomEvent from '../../../app/assets/javascripts/CustomEvent';
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import StoryStore from '../../../app/assets/javascripts/editor/stores/StoryStore';
+import {__RewireAPI__ as componentHeroAPI} from '../../../app/assets/javascripts/editor/block-component-renderers/componentHero';
+
+describe('componentHero jQuery plugin', function() {
   var $component;
-  var manager;
   var blockId;
   var componentIndex = 0;
-  var storyteller = window.socrata.storyteller;
   var mockComponentHTML;
   var validComponentData = {
     type: 'hero',
@@ -17,29 +24,57 @@ describe('componentHero jQuery plugin', function() {
   };
 
   var theme = 'slate';
+  var dispatcher;
+  var story;
+  var testDom;
+  var storyStore;
   var options = { editMode: true };
 
   beforeEach(function() {
-    storyteller.config.fullBleedImageEnableTextOverlay = true;
+    story = DataGenerators.generateStoryData({
+      uid: 'what-what',
+      blocks: [
+        DataGenerators.generateBlockData({
+          components: [validComponentData]
+        })
+      ]
+    });
 
-    blockId = standardMocks.heroBlockId;
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    storyStore = new StoryStore();
+
+    dispatcher.dispatch({
+      action: Actions.STORY_CREATE,
+      data: story
+    });
+
+    blockId = storyStore.getStoryBlockIds(story.uid)[0];
+
+    componentHeroAPI.__Rewire__('storyStore', storyStore);
+    componentHeroAPI.__Rewire__('dispatcher', dispatcher);
+    componentHeroAPI.__Rewire__('richTextEditorManager', {getEditor: _.noop});
+    componentHeroAPI.__Rewire__('Environment', {
+      FULL_BLEED_IMAGE_ENABLE_TEXT_OVERLAY: true,
+      IMAGES: {COVER_IMAGE_ICON: ''}
+    });
+
+    testDom = $('<div>');
     testDom.append('<div>');
     $component = testDom.children('div');
 
     $(document.body).
+      append(testDom).
       attr('data-block-id', blockId).
       attr('data-component-index', componentIndex);
-
-    manager = storyteller.richTextEditorManager;
-    storyteller.richTextEditorManager = {
-      getEditor: _.noop
-    };
 
     mockComponentHTML = sinon.stub($.fn, 'componentHTML', _.noop);
   });
 
   afterEach(function() {
-    storyteller.richTextEditorManager = manager;
+    testDom.remove();
     mockComponentHTML.restore();
   });
 
@@ -73,7 +108,7 @@ describe('componentHero jQuery plugin', function() {
 
       describe('launching an image upload', function() {
         it('should dispatch ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT', function(done) {
-          storyteller.dispatcher.register(function(payload) {
+          dispatcher.register(function(payload) {
             if (payload.action === 'ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT') {
               assert.propertyVal(payload, 'blockId', blockId);
               assert.propertyVal(payload, 'componentIndex', componentIndex);
@@ -86,7 +121,7 @@ describe('componentHero jQuery plugin', function() {
         });
 
         it('should dispatch ASSET_SELECTOR_PROVIDER_CHOSEN,', function(done) {
-          storyteller.dispatcher.register(function(payload) {
+          dispatcher.register(function(payload) {
             if (payload.action === 'ASSET_SELECTOR_PROVIDER_CHOSEN') {
               assert.propertyVal(payload, 'provider', 'HERO');
               done();
@@ -141,7 +176,7 @@ describe('componentHero jQuery plugin', function() {
     describe('on rich-text-editor::content-change', function() {
       it('should dispatch BLOCK_UPDATE_COMPONENT', function(done) {
         $component.componentHero(validComponentData, theme, options);
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           if (payload.action === Actions.BLOCK_UPDATE_COMPONENT) {
             assert.propertyVal(payload, 'type', 'hero');
             assert.propertyVal(payload.value, 'html', 'new content');
@@ -151,7 +186,7 @@ describe('componentHero jQuery plugin', function() {
           }
         });
         $component[0].dispatchEvent(
-          new window.CustomEvent(
+          new CustomEvent(
             'rich-text-editor::content-change',
             { detail: { content: 'new content' }, bubbles: true }
           )

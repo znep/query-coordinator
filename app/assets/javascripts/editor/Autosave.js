@@ -1,88 +1,70 @@
-(function(root) {
+import _ from 'lodash';
 
-  'use strict';
+import Constants from './Constants';
+import StorytellerUtils from '../StorytellerUtils';
+import Environment from '../StorytellerEnvironment';
+import { storySaveStatusStore } from './stores/StorySaveStatusStore';
+import { storyStore } from './stores/StoryStore';
+import { userSessionStore } from './stores/UserSessionStore';
+import { exceptionNotifier } from '../services/ExceptionNotifier';
+import StoryDraftCreator from './StoryDraftCreator';
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
+var savingRightNow = false;
 
-  function Autosave(storyUid, opts) {
-    var defaultOptions = {
-      disableOnFail: false,
-      debouncePeriod: storyteller.config.autosaveDebounceTimeInSeconds
-    };
-    var options = _.merge(defaultOptions, opts);
-    var self = this;
-    var _autosaveDisabled = false;
-    var _debouncedSave;
+function clearSavingFlag() {
+	savingRightNow = false;
+}
 
-    // Autosave can be disabled from a URL parameter: autosave.
-    // For example: https://example.com?autosave=false
-    var _forceDisabled = utils.queryParameters().some(function(parameter) {
-      return parameter[0] === 'autosave' && parameter[1] === 'false';
-    });
+export var autosave = new Autosave(Environment.STORY_UID);
+export default function Autosave(storyUid) {
+	StorytellerUtils.assertIsOneOfTypes(Constants.AUTOSAVE_DEBOUNCE_TIME_IN_SECONDS, 'number');
 
-    this.enable = function() {
-      _autosaveDisabled = false;
-    };
+	var autosaveDebounceMsec = Constants.AUTOSAVE_DEBOUNCE_TIME_IN_SECONDS * 1000;
+	var saveOnceSettled;
 
-    this.disable = function() {
-      _autosaveDisabled = true;
-    };
+	// Autosave can be disabled from a URL parameter: autosave.
+	// For example: https://example.com?autosave=false
+	var disabledByUrlParam = StorytellerUtils.queryParameters().some(function(parameter) {
+		return parameter[0] === 'autosave' && parameter[1] === 'false';
+	});
 
-    function triggerSave() {
-      if (_autosaveDisabled || _forceDisabled) {
-        return;
-      }
+	function saveASAP() {
+		if (disabledByUrlParam) {
+			return;
+		}
 
-      var storySaveIsPossible = storyteller.storySaveStatusStore.isStorySavePossible();
-      if (storySaveIsPossible) {
-        var savePromise = storyteller.StoryDraftCreator.saveDraft(storyUid);
-        if (options.disableOnFail) {
-          savePromise.fail(self.disable);
-        }
-      }
-    }
+		if (savingRightNow) {
+			saveOnceSettled(); // Try again in a bit.
+		} else {
+			if (storySaveStatusStore.isStorySavePossible()) {
+				savingRightNow = true;
+				StoryDraftCreator.saveDraft(storyUid).then(
+					clearSavingFlag, // success
+					function(error) {
+						// error
+						clearSavingFlag();
+						saveOnceSettled(); // try again
+						exceptionNotifier.notify(error);
+					});
+			}
+		}
+	}
 
-    /**
-     * Re-creates the debounced saving function according to the timeout.
-     *
-     * @param {number|moment.duration} - seconds to wait before saving a change.
-     *                                   or moment.duration(number, unit),
-     */
-    this.setDebouncePeriod = function(inSeconds) {
-      if (window.moment && window.moment.isDuration(inSeconds)) {
-        options.debouncePeriod = inSeconds.asSeconds();
-      } else {
-        utils.assertIsOneOfTypes(inSeconds, 'number');
-        options.debouncePeriod = inSeconds;
-      }
+	// A function that saves the story
+	// once this function (saveOnceSettled) stops
+	// being called for autosaveDebounceMsec.
+	saveOnceSettled = _.debounce(
+		saveASAP,
+		autosaveDebounceMsec
+	);
 
-      if (_.isFunction(_debouncedSave)) {
-        storyteller.storyStore.removeChangeListener(_debouncedSave);
-      }
+	storyStore.addChangeListener(saveOnceSettled);
+	userSessionStore.addChangeListener(function() {
+		// When the session is re-established, trigger autosave
+		if (userSessionStore.hasValidSession()) {
+			saveOnceSettled();
+		}
+	});
 
-      _debouncedSave = _.debounce(
-        triggerSave,
-        options.debouncePeriod * 1000
-      );
-      storyteller.storyStore.addChangeListener(_debouncedSave);
-      storyteller.userSessionStore.addChangeListener(function() {
-        // When the session is re-established, trigger autosave
-        // and re-enable (the autosave was likely disabled due
-        // to persistent errors caused by expired sessions).
-        if (storyteller.userSessionStore.hasValidSession()) {
-          if (options.disableOnFail) {
-            self.enable();
-          }
-          triggerSave();
-        }
-      });
-    };
-
-    this.setDebouncePeriod(options.debouncePeriod);
-  }
-
-  storyteller.Autosave = Autosave;
-
-})(window);
+	this.saveASAP = saveASAP;
+}

@@ -29,7 +29,7 @@ RSpec.describe Metric, type: :model do
   end
 
   it 'initializes timestamp to now' do
-    expect(subject.timestamp).to be_within(0.01).of(Time.now.to_i * 1000)
+    expect(subject.timestamp).to be_within(1000).of(Time.now.to_i * 1000)
   end
 
   it 'initializes type to be "aggregate"' do

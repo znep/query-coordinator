@@ -1,11 +1,18 @@
-describe('CollaboratorsStore', function() {
-  'use strict';
+import _ from 'lodash';
 
-  var storyteller = window.socrata.storyteller;
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import CollaboratorsStore from '../../../app/assets/javascripts/editor/stores/CollaboratorsStore';
+
+describe('CollaboratorsStore', function() {
+
+  var dispatcher;
+  var collaboratorsStore;
 
   function dispatchAction(action, payload) {
     payload = _.extend({action: action}, payload);
-    storyteller.dispatcher.dispatch(payload);
+    dispatcher.dispatch(payload);
   }
 
   function describeMalformedCollaborator(action) {
@@ -109,7 +116,10 @@ describe('CollaboratorsStore', function() {
   }
 
   beforeEach(function() {
-    storyteller.collaboratorsStore = new storyteller.CollaboratorsStore();
+    dispatcher = new Dispatcher();
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    collaboratorsStore = new CollaboratorsStore();
   });
 
   describe('COLLABORATORS_LOAD', function() {
@@ -137,7 +147,7 @@ describe('CollaboratorsStore', function() {
           collaborators: [collaboratorOne, collaboratorTwo]
         });
 
-        collaborators = storyteller.collaboratorsStore.getCollaborators();
+        collaborators = collaboratorsStore.getCollaborators();
       });
 
       it('should load all collaborators', function() {
@@ -188,7 +198,7 @@ describe('CollaboratorsStore', function() {
         });
 
         collaborators = _.map(
-          storyteller.collaboratorsStore.getCollaborators(),
+          collaboratorsStore.getCollaborators(),
           function(collaborator) {
             return _.omit(collaborator, 'state');
           }
@@ -221,7 +231,7 @@ describe('CollaboratorsStore', function() {
           collaborator: collaboratorOne
         });
 
-        collaborators = storyteller.collaboratorsStore.getCollaborators();
+        collaborators = collaboratorsStore.getCollaborators();
 
         assert.lengthOf(collaborators, 1);
         assert.deepPropertyVal(
@@ -246,7 +256,7 @@ describe('CollaboratorsStore', function() {
         });
 
         assert.lengthOf(
-          storyteller.collaboratorsStore.getCollaborators(),
+          collaboratorsStore.getCollaborators(),
           0
         );
       });
@@ -289,7 +299,7 @@ describe('CollaboratorsStore', function() {
           collaborator: updatedCollaboratorOne
         });
 
-        collaborators = _.map(storyteller.collaboratorsStore.getCollaborators(), function(collaborator) {
+        collaborators = _.map(collaboratorsStore.getCollaborators(), function(collaborator) {
           return _.omit(collaborator, 'state');
         });
 
@@ -318,7 +328,7 @@ describe('CollaboratorsStore', function() {
         });
 
         assert.deepPropertyVal(
-          storyteller.collaboratorsStore.getCollaborators()[0],
+          collaboratorsStore.getCollaborators()[0],
           'state.current',
           'marked'
         );
@@ -350,7 +360,7 @@ describe('CollaboratorsStore', function() {
         });
 
 
-        collaborator = storyteller.collaboratorsStore.getCollaborators()[0];
+        collaborator = collaboratorsStore.getCollaborators()[0];
 
         assert.deepPropertyVal(
           collaborator,
@@ -370,21 +380,21 @@ describe('CollaboratorsStore', function() {
   describe('COLLABORATORS_OPEN', function() {
     it('should set the open state to true', function() {
       dispatchAction(Actions.COLLABORATORS_OPEN);
-      assert.isTrue(storyteller.collaboratorsStore.isOpen());
+      assert.isTrue(collaboratorsStore.isOpen());
     });
   });
 
   describe('COLLABORATORS_CANCEL', function() {
     it('should set the open state to false', function() {
       dispatchAction(Actions.COLLABORATORS_CANCEL);
-      assert.isFalse(storyteller.collaboratorsStore.isOpen());
+      assert.isFalse(collaboratorsStore.isOpen());
     });
   });
 
   describe('COLLABORATORS_SAVE', function() {
     it('should set the saving state to true', function() {
       dispatchAction(Actions.COLLABORATORS_SAVE);
-      assert.isTrue(storyteller.collaboratorsStore.isSaving());
+      assert.isTrue(collaboratorsStore.isSaving());
     });
   });
 });

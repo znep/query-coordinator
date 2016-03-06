@@ -1,12 +1,25 @@
-describe('LinkModalStore', function() {
-  'use strict';
+import _ from 'lodash';
 
-  var storyteller = window.socrata.storyteller;
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import LinkModalStore from '../../../app/assets/javascripts/editor/stores/LinkModalStore';
+
+describe('LinkModalStore', function() {
+
+  var dispatcher;
+  var linkModalStore;
 
   function dispatchAction(action, payload) {
     payload = _.extend({action: action}, payload);
-    storyteller.dispatcher.dispatch(payload);
+    dispatcher.dispatch(payload);
   }
+
+  beforeEach(function() {
+    dispatcher = new Dispatcher();
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+    linkModalStore = new LinkModalStore();
+  });
 
   describe('Actions.LINK_MODAL_OPEN', function() {
     describe('when given an incorrect payload', function() {
@@ -29,15 +42,15 @@ describe('LinkModalStore', function() {
       });
 
       it('should update visibility', function() {
-        assert(storyteller.linkModalStore.getVisibility());
+        assert(linkModalStore.getVisibility());
       });
 
       it('should remember the editor ID that opened it', function() {
-        assert.equal(storyteller.linkModalStore.getEditorId(), 'yes');
+        assert.equal(linkModalStore.getEditorId(), 'yes');
       });
 
       it('should emit a change', function(done) {
-        storyteller.linkModalStore.addChangeListener(function() {
+        linkModalStore.addChangeListener(function() {
           done();
         });
 
@@ -58,12 +71,12 @@ describe('LinkModalStore', function() {
       });
 
       it('should reset all state variables', function() {
-        assert.isNull(storyteller.linkModalStore.getEditorId());
-        assert.isNull(storyteller.linkModalStore.getInputs());
+        assert.isNull(linkModalStore.getEditorId());
+        assert.isNull(linkModalStore.getInputs());
 
-        assert.isFalse(storyteller.linkModalStore.getVisibility());
-        assert.isFalse(storyteller.linkModalStore.getValidity());
-        assert.isFalse(storyteller.linkModalStore.getAccepted());
+        assert.isFalse(linkModalStore.getVisibility());
+        assert.isFalse(linkModalStore.getValidity());
+        assert.isFalse(linkModalStore.getAccepted());
       });
     });
   });
@@ -99,7 +112,7 @@ describe('LinkModalStore', function() {
       });
 
       it('should set inputs', function() {
-        assert.deepEqual(storyteller.linkModalStore.getInputs(), {
+        assert.deepEqual(linkModalStore.getInputs(), {
           link: 'link',
           text: 'text',
           openInNewWindow: true
@@ -107,11 +120,11 @@ describe('LinkModalStore', function() {
       });
 
       it('should set validity', function() {
-        assert.equal(storyteller.linkModalStore.getValidity(), true);
+        assert.equal(linkModalStore.getValidity(), true);
       });
 
       it('should emit a change', function(done) {
-        storyteller.linkModalStore.addChangeListener(function() {
+        linkModalStore.addChangeListener(function() {
           done();
         });
 
@@ -132,11 +145,11 @@ describe('LinkModalStore', function() {
     describe('when given a valid payload', function() {
       it('should set accepted state', function() {
         dispatchAction(Actions.LINK_MODAL_ACCEPT, {text: '', link: '', openInNewWindow: false});
-        assert(storyteller.linkModalStore.getAccepted());
+        assert(linkModalStore.getAccepted());
       });
 
       it('should emit a change', function(done) {
-        storyteller.linkModalStore.addChangeListener(function() {
+        linkModalStore.addChangeListener(function() {
           done();
         });
 

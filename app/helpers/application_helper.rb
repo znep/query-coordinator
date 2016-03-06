@@ -21,4 +21,17 @@ module ApplicationHelper
 
     (defaults + tags).uniq.join("\n").html_safe
   end
+
+  def storyteller_javascript_include_tag(file)
+    root = Rails.application.config.relative_url_root
+    uri = "#{root}/js/#{webpack_assets[file]['js']}"
+
+    content_tag('script', '', :type => 'text/javascript', :src => uri)
+  end
+
+  private
+
+  def webpack_assets
+    @manifest ||= JSON.parse(File.read(Rails.root.join('webpack-assets.json')))
+  end
 end

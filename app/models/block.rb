@@ -22,9 +22,27 @@ class Block < ActiveRecord::Base
   end
 
   # Searches the json blog for components with the specified type and only returns those blocks
-  scope :with_component_type, ->(component_type) do
-    json_query = [{ type: component_type }].to_json
-    where("components @> ?", json_query)
+  #
+  # Takes one or more component_types as parameters
+  # Example:
+  #
+  # Returns all blocks that have one or more components of type 'image'
+  #   Block.with_component_type('image')
+  #
+  # Returns all blocks that have one or more components of EITHER 'image' or 'hero' as their type
+  #   Block.with_component_type('image', 'hero')
+  #
+  scope :with_component_type, ->(*component_types) do
+    types_to_query = component_types
+    unless types_to_query.is_a?(Array)
+      types_to_query = [component_types]
+    end
+    queries = types_to_query.map { |type| [{ type: type }].to_json }
+    query_string = Array.new(queries.length, "components @> ?").join(" OR ")
+
+    # At this point, if there are more than one types, the query will end up looking like:
+    # => where("components @> ? OR components @> ?", '[{"type":"image"}]', '[{"type":"hero"}]')
+    where(query_string, *queries)
   end
 
   # Using our own config because it's more restrictive than the ones Sanitize provides.
@@ -32,7 +50,7 @@ class Block < ActiveRecord::Base
   SANITIZE_CONFIG['html'] = {
     :elements => %w(
       h1 h2 h3 h4 h5 h6
-      div blockquote
+      div blockquote span
       ol ul li
       b i em
       a p br
@@ -41,7 +59,7 @@ class Block < ActiveRecord::Base
       :all => [ 'class', 'style' ],
       'a' => [ 'href', 'target', 'rel' ]
     },
-    :properties => 'text-align'
+    :properties => %w( text-align color )
   }
 
   after_initialize do

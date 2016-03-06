@@ -1,8 +1,13 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import I18nMocker from '../I18nMocker';
+import Store from '../../../app/assets/javascripts/editor/stores/Store';
+import {__RewireAPI__ as StorySavingStatusAPI} from '../../../app/assets/javascripts/editor/components/StorySavingStatus';
+
 describe('storySavingStatus jQuery plugin', function() {
-  'use strict';
 
   var $button;
-  var storyteller = window.socrata.storyteller;
   var mockStore;
 
   beforeEach(function() {
@@ -13,7 +18,7 @@ describe('storySavingStatus jQuery plugin', function() {
       var _isDirty = false;
       var _isSaveInProgress = false;
 
-      _.extend(this, new storyteller.Store());
+      _.extend(this, new Store());
 
       this.mockIsStoryDirty = function(isDirty) {
         _isDirty = isDirty;
@@ -31,7 +36,13 @@ describe('storySavingStatus jQuery plugin', function() {
     }
 
     mockStore = new MockStore();
-    storyteller.storySaveStatusStore = mockStore;
+    StorySavingStatusAPI.__Rewire__('storySaveStatusStore', mockStore);
+    StorySavingStatusAPI.__Rewire__('I18n', I18nMocker);
+  });
+
+  afterEach(function() {
+    StorySavingStatusAPI.__ResetDependency__('storySaveStatusStore');
+    StorySavingStatusAPI.__ResetDependency__('I18n');
   });
 
   it('should throw when passed invalid arguments', function() {
@@ -41,48 +52,56 @@ describe('storySavingStatus jQuery plugin', function() {
 
   it('should return a jQuery object for chaining', function() {
     var returnValue = $button.storySavingStatus();
-    assert.instanceOf(returnValue, jQuery);
+    assert.instanceOf(returnValue, $);
   });
 
 
   describe('instance', function() {
     beforeEach(function() {
-      $button.storySavingStatus({ savedMessageTimeout: 10 });
+      $button.storySavingStatus({ savedMessageTimeout: 10, statusDebounceTimeout: 10 });
     });
 
     describe('button text', function() {
-      it('should mirror the story save state', function() {
-        mockStore.mockIsSaveInProgress(false);
-        mockStore.mockIsStoryDirty(false);
-        assert.equal($button.text(), 'Translation for: editor.story_save_button.saved');
+      function verify(saving, dirty, expectedButtonText, callback) {
+        mockStore.mockIsSaveInProgress(saving);
+        mockStore.mockIsStoryDirty(dirty);
+        setTimeout(function() {
+          assert.equal($button.text(), expectedButtonText);
+          callback();
+        }, 20);
+      }
 
-        mockStore.mockIsSaveInProgress(false);
-        mockStore.mockIsStoryDirty(true);
-        assert.isTrue($button.is(':hidden'));
-
-        mockStore.mockIsSaveInProgress(true);
-        mockStore.mockIsStoryDirty(false);
-        assert.equal($button.text(), 'Translation for: editor.story_save_button.saving');
-
-        mockStore.mockIsSaveInProgress(true);
-        mockStore.mockIsStoryDirty(true);
-        assert.equal($button.text(), 'Translation for: editor.story_save_button.saving');
+      it('not saving, clean', function(done) {
+        verify(false, false, '', done); // empty
+      });
+      it('saving, clean', function(done) {
+        verify(true, false, 'Translation for: editor.story_save_button.saving', done);
+      });
+      it('saving, dirty', function(done) {
+        verify(true, true, 'Translation for: editor.story_save_button.saving', done);
+      });
+      it('not saving, dirty', function(done) {
+        verify(false, true, '', done); // empty
       });
 
       describe('five seconds after story finishes saving', function() {
-        it('should say "save" and stay disabled', function(done) {
+        it('should say "saved" and stay disabled', function(done) {
           mockStore.mockIsSaveInProgress(true);
           mockStore.mockIsStoryDirty(true);
-          assert.equal($button.text(), 'Translation for: editor.story_save_button.saving');
-
-          mockStore.mockIsStoryDirty(false);
-          mockStore.mockIsSaveInProgress(false);
-          assert.equal($button.text(), 'Translation for: editor.story_save_button.saved');
-
           setTimeout(function() {
-            assert.isTrue($button.is(':hidden'));
-            done();
-          }, 20);
+            assert.equal($button.text(), 'Translation for: editor.story_save_button.saving');
+
+            mockStore.mockIsStoryDirty(false);
+            mockStore.mockIsSaveInProgress(false);
+            setTimeout(function() {
+              assert.equal($button.text(), 'Translation for: editor.story_save_button.saved');
+
+              setTimeout(function() {
+                assert.isTrue($button.is(':hidden'));
+                done();
+              }, 50);
+            }, 50);
+          }, 50);
 
         });
       });
@@ -90,23 +109,23 @@ describe('storySavingStatus jQuery plugin', function() {
 
     describe('button', function() {
       describe('visible state', function() {
-        it('should mirror the story save state', function() {
-          mockStore.mockIsSaveInProgress(false);
-          mockStore.mockIsStoryDirty(false);
-          assert.isTrue($button.is(':hidden'));
+        function verify(saving, dirty, expectedHidden, callback) {
+          mockStore.mockIsSaveInProgress(saving);
+          mockStore.mockIsStoryDirty(dirty);
+          setTimeout(function() {
+            assert.equal(expectedHidden, $button.is(':hidden'));
+            callback();
+          }, 20);
+        }
 
-          mockStore.mockIsSaveInProgress(false);
-          mockStore.mockIsStoryDirty(true);
-          assert.isTrue($button.is(':hidden'));
-
-          //mockStore.mockIsSaveInProgress(true);
-          //mockStore.mockIsStoryDirty(false); // Autosave should be triggered, then...
-          //assert.isFalse($button.is(':hidden')); // Text should be visible and read 'Saving...'
-          // TODO: Figure out how to make the timing work.
-
-          mockStore.mockIsSaveInProgress(true);
-          mockStore.mockIsStoryDirty(true);
-          assert.isTrue($button.is(':hidden')); // Waiting for autosave to kick in; hide button.
+        it('not saving, clean', function(done) {
+          verify(false, false, true, done);
+        });
+        it('not saving, dirty', function(done) {
+          verify(false, true, true, done);
+        });
+        it('saving, dirty', function(done) {
+          verify(true, true, true, done);
         });
       });
     });

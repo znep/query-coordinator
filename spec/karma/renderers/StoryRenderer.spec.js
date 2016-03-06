@@ -1,33 +1,91 @@
-describe('StoryRenderer', function() {
-  'use strict';
+import $ from 'jQuery';
+import _ from 'lodash';
 
-  var storyteller = window.socrata.storyteller;
-  var storyUid;
+import DataGenerators from '../DataGenerators';
+import I18nMocker from '../I18nMocker';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import CustomEvent from '../../../app/assets/javascripts/CustomEvent';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import StoryStore from '../../../app/assets/javascripts/editor/stores/StoryStore';
+import DropHintStore, {__RewireAPI__ as DropHintStoreAPI} from '../../../app/assets/javascripts/editor/stores/DropHintStore';
+import WindowSizeBreakpointStore from '../../../app/assets/javascripts/editor/stores/WindowSizeBreakpointStore';
+import StoryRenderer, {__RewireAPI__ as StoryRendererAPI} from '../../../app/assets/javascripts/editor/renderers/StoryRenderer';
+import RichTextEditorToolbar from '../../../app/assets/javascripts/editor/RichTextEditorToolbar';
+import RichTextEditorManager from '../../../app/assets/javascripts/editor/RichTextEditorManager';
+
+describe('StoryRenderer', function() {
+
+  var testDom;
+  var storyUid = 'what-what';
   var assetSelectorBlockId;
   var textBlockId;
   var options;
   var validToolbar;
   var validFormats;
+  var storyRenderer;
+  var richTextEditorManager;
+  var dispatcher;
+  var storyStore;
+  var windowSizeBreakpointStore;
+  var dropHintStore;
 
   beforeEach(function() {
-
+    testDom = $('<div></div>');
     testDom.append([
       $('<div>', { 'class': 'insertion-hint hidden' }),
       $('<div>', { 'id': 'rich-text-editor-toolbar' })
     ]);
 
-    validToolbar = Object.create(storyteller.RichTextEditorToolbar.prototype);
+    $(document.body).append(testDom);
+
+    validToolbar = Object.create(RichTextEditorToolbar.prototype);
     validFormats = [];
 
-    storyteller.richTextEditorManager = new storyteller.RichTextEditorManager(
-      storyteller.assetFinder,
+    richTextEditorManager = new RichTextEditorManager(
       validToolbar,
       validFormats
     );
 
-    storyUid = standardMocks.validStoryUid;
-    assetSelectorBlockId = standardMocks.assetSelectorBlockId;
-    textBlockId = standardMocks.textBlockId;
+    dispatcher = new Dispatcher();
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    storyStore = new StoryStore();
+    windowSizeBreakpointStore = new WindowSizeBreakpointStore();
+
+    DropHintStoreAPI.__Rewire__('storyStore', storyStore);
+    dropHintStore = new DropHintStore();
+
+    StoryRendererAPI.__Rewire__('storyStore', storyStore);
+    StoryRendererAPI.__Rewire__('dropHintStore', dropHintStore);
+    StoryRendererAPI.__Rewire__('richTextEditorManager', richTextEditorManager);
+    StoryRendererAPI.__Rewire__('windowSizeBreakpointStore', windowSizeBreakpointStore);
+    StoryRendererAPI.__Rewire__('I18n', I18nMocker);
+
+    dispatcher.dispatch({
+      action: Actions.STORY_CREATE,
+      data: DataGenerators.generateStoryData({
+        uid: storyUid,
+        blocks: [
+          DataGenerators.generateBlockData({
+            layout: '12',
+            components: [
+              {type: 'assetSelector'}
+            ]
+          }),
+          DataGenerators.generateBlockData({
+            layout: '12',
+            components: [
+              {type: 'html', value: '<p>hello</p>'}
+            ]
+          })
+        ]
+      })
+    });
+
+    var blockIds = storyStore.getStoryBlockIds(storyUid);
+    assetSelectorBlockId = blockIds[0];
+    textBlockId = blockIds[1];
 
     testDom.append(
         $('<div>', { 'class': 'story-container' })
@@ -41,137 +99,84 @@ describe('StoryRenderer', function() {
       storyUid: storyUid,
       storyContainerElement: testDom.find('.story-container'),
       warningMessageElement: testDom.find('.message-warning'),
-      insertionHintElement: testDom.find('.insertion-hint'),
-      onRenderError: function(error) {
-        throw new Error(error); // Fail the test on render error.
-      }
+      insertionHintElement: testDom.find('.insertion-hint')
     };
   });
 
   afterEach(function() {
-    if (storyteller.storyRenderer) {
-      storyteller.storyRenderer.destroy();
-    }
+    testDom.remove();
 
-    storyteller.RichTextEditorManagerMocker.unmock();
+    if (storyRenderer) {
+      storyRenderer.destroy();
+    }
   });
 
   describe('constructor', function() {
-
     describe('when passed a configuration object', function() {
-
-      describe('with an onRenderError property that is not a function', function() {
-
-        it('raises an exception', function() {
-
-          options.onRenderError = null;
-
-          assert.throws(function() {
-            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-          });
-        });
-      });
-
-      describe('with no onRenderError property', function() {
-
-        it('creates a new storyteller.StoryRenderer', function() {
-
-          delete options.onRenderError;
-
-          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-          assert.instanceOf(storyteller.storyRenderer, storyteller.StoryRenderer, 'renderer is instance of StoryRenderer');
-        });
-      });
-
       describe('with a storyUid property that is not a string', function() {
-
         it('raises an exception', function() {
-
           options.storyUid = {};
 
           assert.throws(function() {
-            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+            storyRenderer = new StoryRenderer(options);
           });
         });
       });
 
       describe('with a storyContainerElement property that is not a jQuery object', function() {
-
         it('raises an exception', function() {
-
           options.storyContainerElement = {};
 
           assert.throws(function() {
-            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+            storyRenderer = new StoryRenderer(options);
           });
         });
       });
 
       describe('with a storyContainerElement property that is a jQuery object', function() {
-
         it('adds a data-story-uid attr to the storyContainerElement', function() {
           var uid = options.storyContainerElement.attr('data-story-uid');
           assert.isUndefined(uid);
 
-          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+          storyRenderer = new StoryRenderer(options);
           uid = options.storyContainerElement.attr('data-story-uid');
           assert.equal(uid, options.storyUid);
         });
       });
 
       describe('with an insertionHintElement property that is not a jQuery object', function() {
-
         it('raises an exception', function() {
-
           options.insertionHintElement = {};
 
           assert.throws(function() {
-            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+            storyRenderer = new StoryRenderer(options);
           });
         });
       });
 
       describe('with an insertionHintElement property that is a jQuery object', function() {
-
         it('adds a data-story-uid attr to the insertionHintElement', function() {
           var uid = options.insertionHintElement.attr('data-story-uid');
           assert.isUndefined(uid);
 
-          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+          storyRenderer = new StoryRenderer(options);
           uid = options.insertionHintElement.attr('data-story-uid');
           assert.equal(uid, options.storyUid);
         });
       });
 
-      describe('with with editable set to true but no richTextEditorManager', function() {
+      describe('without a richTextEditorManager', function() {
+        beforeEach(function() {
+          StoryRendererAPI.__Rewire__('richTextEditorManager', {});
+        });
+
+        afterEach(function() {
+          StoryRendererAPI.__ResetDependency__('richTextEditorManager');
+        });
 
         it('raises an exception', function() {
-
-          storyteller.richTextEditorManager = {};
-
-          options.editable = true;
-
           assert.throws(function() {
-            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-          });
-        });
-      });
-
-      describe('with a custom onRenderError function', function() {
-
-        describe('and an error is thrown', function() {
-
-          it('calls the custom onRenderError function', function(done) {
-
-            options.storyUid = {};
-            options.onRenderError = function() {
-              assert.isTrue(true);
-              done();
-            };
-
-            assert.throws(function() {
-              storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-            });
+            storyRenderer = new StoryRenderer(options);
           });
         });
       });
@@ -179,19 +184,16 @@ describe('StoryRenderer', function() {
   });
 
   describe('when rendering a story', function() {
-
     afterEach(function() {
-
       $('.insertion-hint').remove();
       $('#rich-text-editor-toolbar').remove();
     });
 
     describe('window size class', function() {
       it('should apply the current class break to the story container', function() {
+        storyRenderer = new StoryRenderer(options);
 
-        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-
-        var currentClassName = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
+        var currentClassName = windowSizeBreakpointStore.getWindowSizeClass();
 
         assert.isTrue(options.storyContainerElement.hasClass(currentClassName));
       });
@@ -199,41 +201,38 @@ describe('StoryRenderer', function() {
 
     describe('that is empty', function() {
       it('should display an empty story message', function() {
-        var storyWithoutBlocks = generateStoryData({
+        var storyWithoutBlocks = DataGenerators.generateStoryData({
           uid: 'empt-yyyy',
           blocks: []
         });
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.STORY_CREATE,
           data: storyWithoutBlocks
         });
 
         options.storyUid = 'empt-yyyy';
-        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+        storyRenderer = new StoryRenderer(options);
 
         assert.equal($('.message-warning.message-empty-story').length, 1);
         assert.isAbove($('.message-empty-story').text().length, 1);
-        assert.isTrue(I18n.t.calledWith('editor.empty_story_warning'));
+        assert.isTrue(I18nMocker.t.calledWith('editor.empty_story_warning'));
       });
     });
 
     describe('with a story that has blocks', function() {
-
       it('renders blocks', function() {
-
-        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-        var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
+        storyRenderer = new StoryRenderer(options);
+        var numberOfBlocks = storyStore.getStoryBlockIds(storyUid).length;
 
         assert.equal($('.block').length, numberOfBlocks);
       });
 
       it('does not render deleted blocks', function() {
+        storyRenderer = new StoryRenderer(options);
+        var numberOfBlocks = storyStore.getStoryBlockIds(storyUid).length;
 
-        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-        var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
-
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.STORY_DELETE_BLOCK,
           storyUid: storyUid,
           blockId: assetSelectorBlockId
@@ -243,8 +242,7 @@ describe('StoryRenderer', function() {
       });
 
       it('does not render the empty story warning', function() {
-
-        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+        storyRenderer = new StoryRenderer(options);
 
         assert.equal($('.message-empty-story').length, 0);
       });
@@ -254,10 +252,10 @@ describe('StoryRenderer', function() {
       var imageOnlyStoryUid = 'with-imge';
 
       beforeEach(function() {
-        var storyWithOnlyImage = generateStoryData({
+        var storyWithOnlyImage = DataGenerators.generateStoryData({
           uid: imageOnlyStoryUid,
           blocks: [
-            generateBlockData({
+            DataGenerators.generateBlockData({
               components: [
                 { type: 'image', value: { url: 'https://example.com/image.png', documentId: '1234' } }
               ]
@@ -265,7 +263,7 @@ describe('StoryRenderer', function() {
           ]
         });
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.STORY_CREATE,
           data: storyWithOnlyImage
         });
@@ -273,7 +271,7 @@ describe('StoryRenderer', function() {
 
       it('renders blocks', function() {
         options.storyUid = imageOnlyStoryUid;
-        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+        storyRenderer = new StoryRenderer(options);
 
         assert.equal($('.block').length, 1);
       });
@@ -289,7 +287,7 @@ describe('StoryRenderer', function() {
             // Cause a rerender the first render.
             if (imageRenderStub.calledOnce) {
               this[0].dispatchEvent(
-                new storyteller.CustomEvent(
+                new CustomEvent(
                   'component::height-change',
                   { detail: {}, bubbles: true }
                 )
@@ -299,7 +297,7 @@ describe('StoryRenderer', function() {
           });
 
           options.storyUid = imageOnlyStoryUid;
-          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+          storyRenderer = new StoryRenderer(options);
 
           sinon.assert.calledTwice(imageRenderStub);
 
@@ -312,20 +310,16 @@ describe('StoryRenderer', function() {
       it('should throw', function() {
         var optionsWithoutInsertionHintElement = _.omit(options, 'insertionHintElement');
         assert.throws(function() {
-          new storyteller.StoryRenderer(optionsWithoutInsertionHintElement); //eslint-disable-line no-new
+          new StoryRenderer(optionsWithoutInsertionHintElement); //eslint-disable-line no-new
         });
       });
     });
 
     describe('insertion hint', function() {
-
       describe('with a story that has blocks', function() {
-
         describe('when no insertionHintIndex has been set', function() {
-
           it('renders blocks but no insertion hint', function() {
-
-            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+            storyRenderer = new StoryRenderer(options);
 
             assert($('.block').length > 0, 'there is more than one block');
             assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is hidden');
@@ -336,30 +330,24 @@ describe('StoryRenderer', function() {
   });
 
   describe('drag-and-drop insertion hint', function() {
-
     beforeEach(function() {
-
       $('body').append([
         $('<div>', { 'class': 'insertion-hint hidden' }),
         $('<div>', { 'id': 'rich-text-editor-toolbar' })
       ]);
 
-      validToolbar = Object.create(storyteller.RichTextEditorToolbar.prototype);
+      validToolbar = Object.create(RichTextEditorToolbar.prototype);
       validFormats = [];
 
-      storyteller.richTextEditorManager = new storyteller.RichTextEditorManager(
-        storyteller.assetFinder,
+      richTextEditorManager = new RichTextEditorManager(
         validToolbar,
         validFormats
       );
 
-      options.editable = true;
-
-      storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+      storyRenderer = new StoryRenderer(options);
     });
 
     afterEach(function() {
-
       $('#rich-text-editor-toolbar').remove();
     });
 
@@ -367,7 +355,7 @@ describe('StoryRenderer', function() {
 
       // Cause DropHintStore to indicate we're dragging over
       // the given story and block.
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.STORY_DRAG_OVER,
         storyUid: storyUidToHint,
         blockId: blockIdToHint,
@@ -380,7 +368,7 @@ describe('StoryRenderer', function() {
 
       // Cause DropHintStore to indicate we're dragging over
       // nothing at all.
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.STORY_DRAG_LEAVE,
         storyUid: storyUid
       });
@@ -436,7 +424,6 @@ describe('StoryRenderer', function() {
             'insertion hint is not shown'
           );
         });
-
       });
     });
   });

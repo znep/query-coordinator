@@ -1,89 +1,93 @@
-/*
- * A component that renders a story's save error, if any.
- * Responsible for adding the `story-save-error` class to the body
- * to allow the rest of the page styling to react.
- */
-(function($, root) {
+import $ from 'jQuery';
 
-  'use strict';
+import I18n from '../I18n';
+import Actions from '../Actions';
+import StorytellerUtils from '../../StorytellerUtils';
+import { dispatcher } from '../Dispatcher';
+import { autosave } from '../Autosave';
+import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
+import { userSessionStore } from '../stores/UserSessionStore';
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
+$.fn.storySaveErrorBar = StorySaveErrorBar;
 
-  $.fn.storySaveErrorBar = function() {
-    var $this = $(this);
+export default function StorySaveErrorBar() {
+  StorytellerUtils.assert(
+    storySaveStatusStore,
+    'storySaveStatusStore must be instantiated'
+  );
 
-    utils.assert(storyteller.storySaveStatusStore, 'storySaveStatusStore must be instantiated');
+  var $this = $(this);
+  var $container = $('<span>', { 'class': 'container' });
+  var $message = $('<span>', { 'class': 'message' });
+  var $tryAgainButton = $('<button>', { 'class': 'try-again' });
+  var $tryingAgainSpinner = $('<span>', { 'class': 'trying-again-spinner' });
 
-    var $container = $('<span>', { 'class': 'container' });
-    var $message = $('<span>', { 'class': 'message' });
-    var $tryAgainButton = $('<button>', { 'class': 'try-again' });
+  var $loginMessage = $('<span>', { 'class': 'message login' }).
+    append(
+      $('<span>').text(I18n.t('editor.login_phrase_1_good_manners'))
+    ).
+    append(
+      $('<button>').text(I18n.t('editor.login_phrase_2_link_text'))
+    );
+  $tryAgainButton.text(I18n.t('editor.story_save_error_try_again'));
 
+  $container.append($('<span>', { 'class': 'icon-warning' }));
+  $container.append($message);
+  $container.append($tryAgainButton);
+  $container.append($tryingAgainSpinner);
+  $container.append($loginMessage);
+  $this.append($container);
 
-    var $loginMessage = $('<span>', { 'class': 'message login' }).
-      append(
-        $('<span>').text(I18n.t('editor.login_phrase_1_good_manners'))
-      ).
-      append(
-        $('<button>').text(I18n.t('editor.login_phrase_2_link_text'))
-      );
-    $tryAgainButton.text(I18n.t('editor.story_save_error_try_again'));
+  function render() {
+    var saveError = storySaveStatusStore.lastSaveError();
+    var hasValidUserSession = userSessionStore.hasValidSession();
 
-    $container.append($('<span>', { 'class': 'icon-warning' }));
-    $container.append($message);
-    $container.append($tryAgainButton);
-    $container.append($loginMessage);
-    $this.append($container);
+    var hasError = !!saveError || !hasValidUserSession;
+    var text = '';
 
-    function render() {
-      var isStorySaveInProgress = storyteller.storySaveStatusStore.isStorySaveInProgress();
-      var saveError = storyteller.storySaveStatusStore.lastSaveError();
-      var hasValidUserSession = storyteller.userSessionStore.hasValidSession();
+    var showTryAgainButton =
+      hasValidUserSession && // no point to retry if no session.
+      hasError &&
+      !saveError.conflict;
 
-      var hasError = !!saveError || !hasValidUserSession;
-      var text = '';
+    $tryAgainButton.toggleClass('available', showTryAgainButton);
+    $loginMessage.toggle(!hasValidUserSession);
+    $(document.body).toggleClass('story-save-error', hasError);
 
-      var showTryAgainButton =
-        hasValidUserSession && // no point to retry if no session.
-        hasError &&
-        !isStorySaveInProgress &&
-        !saveError.conflict;
-
-      $tryAgainButton.toggle(showTryAgainButton);
-      $loginMessage.toggle(!hasValidUserSession);
-      $(document.body).toggleClass('story-save-error', hasError);
-
-      if (hasError) {
-        if (!hasValidUserSession) {
-          text = I18n.t('editor.user_session_timeout');
-        } else {
-          text = I18n.t(saveError.conflict ?
-            'editor.story_save_error_conflict' :
-            'editor.story_save_error_generic'
-          );
-        }
-        $message.text(text);
+    if (hasError) {
+      if (!hasValidUserSession) {
+        text = I18n.t('editor.user_session_timeout');
+      } else {
+        text = I18n.t(saveError.conflict ?
+          'editor.story_save_error_conflict' :
+          'editor.story_save_error_generic'
+        );
       }
-
-      $this.toggleClass('visible', hasError);
+      $message.text(text);
     }
 
-    $tryAgainButton.on('click', function() {
-      storyteller.StoryDraftCreator.saveDraft(storyteller.userStoryUid);
+    if (hasError && !$this.hasClass('visible')) {
+      // Was closed, now opening
+      $container.removeClass('story-save-error-bar-trying-again');
+    }
+
+    $this.toggleClass('visible', hasError);
+  }
+
+  $tryAgainButton.on('click', function() {
+    $container.addClass('story-save-error-bar-trying-again');
+    autosave.saveASAP();
+  });
+
+  $loginMessage.find('button').on('click', function() {
+    dispatcher.dispatch({
+      action: Actions.LOGIN_BUTTON_CLICK
     });
+  });
 
-    $loginMessage.find('button').on('click', function() {
-      storyteller.dispatcher.dispatch({
-        action: Actions.LOGIN_BUTTON_CLICK
-      });
-    });
+  storySaveStatusStore.addChangeListener(render);
+  userSessionStore.addChangeListener(render);
+  render();
 
-    storyteller.storySaveStatusStore.addChangeListener(render);
-    storyteller.userSessionStore.addChangeListener(render);
-    render();
-
-    return this;
-  };
-
-}(jQuery, window));
+  return this;
+}

@@ -1,11 +1,20 @@
-describe('componentSpacer jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
+import '../../../app/assets/javascripts/editor/block-component-renderers/componentSpacer';
 
+describe('componentSpacer jQuery plugin', function() {
+
+  var testDom;
   var $component;
 
   beforeEach(function() {
+    testDom = $('<div>');
     testDom.append('<div>');
     $component = testDom.children('div');
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should throw when passed invalid arguments', function() {

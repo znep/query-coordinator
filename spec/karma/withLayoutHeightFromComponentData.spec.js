@@ -1,11 +1,22 @@
-describe('withLayoutHeightFromComponentData jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
+import _ from 'lodash';
 
+import '../../app/assets/javascripts/editor/withLayoutHeightFromComponentData';
+
+describe('withLayoutHeightFromComponentData jQuery plugin', function() {
+
+  var testDom;
   var $component;
 
   beforeEach(function() {
+    testDom = $('<div>');
     testDom.append('<div><div class="component-content"></div><div class="not-component-content"></div></div>');
     $component = testDom.children('div');
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should return a jQuery object for chaining', function() {

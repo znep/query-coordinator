@@ -1,21 +1,18 @@
-(function(root, $) {
+import $ from 'jQuery';
+import RichTextEditorToolbar from '../../app/assets/javascripts/editor/RichTextEditorToolbar.js';
 
-  'use strict';
-
-  var storyteller = root.socrata.storyteller;
-
+describe('RichTextEditorToolbar', function() {
   describe('instantiation', function() {
-
     describe('should throw when', function() {
       it('should throw when providing an element that is not a jQuery object', function() {
         assert.throws(function() {
-          new storyteller.RichTextEditorToolbar({}); //eslint-disable-line no-new
+          new RichTextEditorToolbar({}); //eslint-disable-line no-new
         });
       });
 
       it('should throw when providing an empty jQuery object', function() {
         assert.throws(function() {
-          new storyteller.RichTextEditorToolbar($('.nothing')); //eslint-disable-line no-new
+          new RichTextEditorToolbar($('.nothing')); //eslint-disable-line no-new
         });
       });
 
@@ -26,20 +23,20 @@
         $container.append($('<div>'));
 
         assert.throws(function() {
-          new storyteller.RichTextEditorToolbar($container.find('div')); //eslint-disable-line no-new
+          new RichTextEditorToolbar($container.find('div')); //eslint-disable-line no-new
         });
       });
 
       it('should throw when providing a non-Array format', function() {
         assert.throws(function() {
-          new storyteller.RichTextEditorToolbar($('<div>'), null); //eslint-disable-line no-new
+          new RichTextEditorToolbar($('<div>'), null); //eslint-disable-line no-new
         });
       });
     });
 
     it('should instantiate when passed a jQuery object and format array', function() {
-      var toolbar = new storyteller.RichTextEditorToolbar($('<div>'), []);
-      assert.instanceOf(toolbar, storyteller.RichTextEditorToolbar);
+      var toolbar = new RichTextEditorToolbar($('<div>'), []);
+      assert.instanceOf(toolbar, RichTextEditorToolbar);
     });
   });
 
@@ -49,7 +46,7 @@
 
     beforeEach(function() {
       $container = $('<div>');
-      toolbar = new storyteller.RichTextEditorToolbar($container, []);
+      toolbar = new RichTextEditorToolbar($container, []);
     });
 
     describe('.link()', function() {
@@ -78,4 +75,4 @@
       });
     });
   });
-})(window, jQuery);
+});

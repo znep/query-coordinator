@@ -1,94 +1,85 @@
-(function(root) {
+import _ from 'lodash';
 
-  'use strict';
+import Store from '../stores/Store';
+import Actions from '../Actions';
+import Environment from '../../StorytellerEnvironment';
+import StorytellerUtils from '../../StorytellerUtils';
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
+export var shareAndEmbedStore = new ShareAndEmbedStore();
+export default function ShareAndEmbedStore() {
+  _.extend(this, new Store());
 
-  function ShareAndEmbedStore() {
+  var _currentOpenState = false;
+  var self = this;
 
-    _.extend(this, new storyteller.Store());
+  this.register(function(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'action');
+    // Note that we do not assign `_currentOpenState` the value of action
+    // outside of the case statements because ALL events will pass through
+    // this function and we only want to alter `_currentSelectorState` in
+    // response to actions that are actually relevant.
+    switch (payload.action) {
 
-    var _currentOpenState = false;
-    var self = this;
+      case Actions.SHARE_AND_EMBED_MODAL_OPEN:
+        _openDialog();
+        break;
 
-    this.register(function(payload) {
-      var action;
-
-      utils.assertHasProperty(payload, 'action');
-
-      action = payload.action;
-
-      // Note that we do not assign `_currentOpenState` the value of action
-      // outside of the case statements because ALL events will pass through
-      // this function and we only want to alter `_currentSelectorState` in
-      // response to actions that are actually relevant.
-      switch (action) {
-
-        case Actions.SHARE_AND_EMBED_MODAL_OPEN:
-          _openDialog();
-          break;
-
-        case Actions.SHARE_AND_EMBED_MODAL_CLOSE:
-          _closeDialog();
-          break;
-      }
-    });
-
-    /**
-     * Public methods
-     */
-
-    this.isOpen = function() {
-      return _currentOpenState;
-    };
-
-    this.getStoryUrl = function() {
-      return '{0}/stories/s/{1}'.format(
-        window.location.protocol + '//' + window.location.hostname,
-        window.userStoryData.uid
-      );
-    };
-
-    this.getStoryWidgetUrl = function() {
-      return '{0}/widget'.format(this.getStoryUrl());
-    };
-
-    this.getStoryEmbedCode = function() {
-      return (
-        '<iframe ' +
-          'src="{0}" ' +
-          'style="' +
-            'width:600px;' +
-            'height:320px;' +
-            'background-color:transparent;' +
-            'overflow:hidden;' +
-          '" ' +
-          'scrolling="no" ' +
-          'frameborder="0">' +
-        '</iframe>').
-      format(
-        this.getStoryWidgetUrl()
-      );
-    };
-
-    /**
-     * Private methods
-     */
-
-    function _openDialog() {
-      _currentOpenState = true;
-
-      self._emitChange();
+      case Actions.SHARE_AND_EMBED_MODAL_CLOSE:
+        _closeDialog();
+        break;
     }
+  });
 
-    function _closeDialog() {
-      _currentOpenState = false;
+  /**
+   * Public methods
+   */
 
-      self._emitChange();
-    }
+  this.isOpen = function() {
+    return _currentOpenState;
+  };
+
+  this.getStoryUrl = function() {
+    return StorytellerUtils.format(
+      '{0}/stories/s/{1}',
+      window.location.protocol + '//' + window.location.hostname,
+      Environment.STORY_UID
+    );
+  };
+
+  this.getStoryWidgetUrl = function() {
+    return StorytellerUtils.format('{0}/widget', this.getStoryUrl());
+  };
+
+  this.getStoryEmbedCode = function() {
+    return StorytellerUtils.format(
+      '<iframe ' +
+        'src="{0}" ' +
+        'style="' +
+          'width:600px;' +
+          'height:320px;' +
+          'background-color:transparent;' +
+          'overflow:hidden;' +
+        '" ' +
+        'scrolling="no" ' +
+        'frameborder="0">' +
+      '</iframe>',
+      this.getStoryWidgetUrl()
+    );
+  };
+
+  /**
+   * Private methods
+   */
+
+  function _openDialog() {
+    _currentOpenState = true;
+
+    self._emitChange();
   }
 
-  root.socrata.storyteller.ShareAndEmbedStore = ShareAndEmbedStore;
-})(window);
+  function _closeDialog() {
+    _currentOpenState = false;
+
+    self._emitChange();
+  }
+}

@@ -570,7 +570,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    self.emitEvent(
-	      'SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT',
+	      'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT',
 	      payload
 	    );
 	  }
@@ -585,7 +585,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    self.emitEvent(
-	      'SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT',
+	      'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT',
 	      payload
 	    );
 	  }
@@ -593,7 +593,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function _hideFlyout() {
 
 	    self.emitEvent(
-	      'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE',
+	      'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT',
 	      null
 	    );
 	  }
@@ -17630,9 +17630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    $(window).on('resize', _handleWindowResize);
 
-	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
-	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
-	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
+	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT', _handleFlyoutEvent);
 	    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleSelection);
 	    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
@@ -17642,9 +17640,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    $(window).off('resize', _handleWindowResize);
 
-	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', _handleFeatureFlyout);
-	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', _handleLegendFlyout);
-	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', _hideFlyout);
+	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT', _handleFlyoutEvent);
 	    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', _handleSelection);
 	    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
 	    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
@@ -17663,8 +17659,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  }
 
-	  function _handleFeatureFlyout(event) {
-	    var payload = event.originalEvent.detail;
+	  function _handleFeatureFlyout(payload) {
 	    var flyoutPayload;
 	    var flyoutContent;
 	    var flyoutTable;
@@ -17817,9 +17812,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _dispatchFlyout(flyoutPayload);
 	  }
 
-	  function _handleLegendFlyout(event) {
-
-	    var payload = event.originalEvent.detail;
+	  function _handleLegendFlyout(payload) {
 	    var flyoutContent = '<div class="flyout-title">{0}</div>'.format(payload.title);
 
 	    // Assemble payload
@@ -17834,8 +17827,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _dispatchFlyout(flyoutPayload);
 	  }
 
-	  function _hideFlyout() {
+	  function _handleFlyoutEvent(event) {
+	    var payload = event.originalEvent.detail;
 
+	    if (_.isNull(payload)) {
+	      _hideFlyout();
+	    } else if (_.has(payload, 'element.feature')) {
+	      _handleFeatureFlyout(payload);
+	    } else {
+	      _handleLegendFlyout(payload);
+	    }
+	  }
+
+	  function _hideFlyout() {
 	    _dispatchFlyout(null);
 	  }
 
@@ -17918,7 +17922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    $element[0].dispatchEvent(
 	      new window.CustomEvent(
-	        'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT',
+	        'SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT',
 	        {
 	          detail: payload,
 	          bubbles: true

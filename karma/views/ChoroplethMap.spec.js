@@ -1246,20 +1246,19 @@ describe('ChoroplethMap', function() {
         var el = choroplethObject.element;
 
         var feature = $(el).find(featureGeometrySelector)[0];
+        var mouseEventCount = 0;
 
-        el.on('SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT', function(e) {
+        el.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT', function(e) {
 
+          mouseEventCount += 1;
           var payload = e.originalEvent.detail;
 
-          expect(payload).to.not.be.undefined;
-        });
-
-        el.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE', function(e) {
-
-          var payload = e.originalEvent.detail;
-
-          expect(payload).to.not.exist;
-          done();
+          if (mouseEventCount < 2) {
+            expect(payload).to.not.be.undefined;
+          } else {
+            expect(payload).to.not.exist;
+            done();
+          }
         });
 
         testHelpers.fireEvent(feature, 'mousemove');
@@ -1393,7 +1392,7 @@ describe('ChoroplethMap', function() {
           var legendColor = el.find(legendColorSelector)[0];
           var legendColorFlyoutText = $(legendColor).data('flyout-text');
 
-          el.on('SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT', function(event) {
+          el.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT', function(event) {
             var payload = event.originalEvent.detail;
 
             expect(payload.title).to.equal(legendColorFlyoutText);

@@ -454,7 +454,7 @@ function ChoroplethMap(element, vif) {
     }
 
     self.emitEvent(
-      'SOCRATA_VISUALIZATION_CHOROPLETH_FEATURE_FLYOUT',
+      'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT',
       payload
     );
   }
@@ -469,7 +469,7 @@ function ChoroplethMap(element, vif) {
     };
 
     self.emitEvent(
-      'SOCRATA_VISUALIZATION_CHOROPLETH_LEGEND_FLYOUT',
+      'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT',
       payload
     );
   }
@@ -477,7 +477,7 @@ function ChoroplethMap(element, vif) {
   function _hideFlyout() {
 
     self.emitEvent(
-      'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_HIDE',
+      'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT',
       null
     );
   }

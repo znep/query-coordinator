@@ -237,7 +237,7 @@ describe('ChoroplethMap jQuery component', function() {
       var vif = _.cloneDeep(choroplethVIF);
 
       $container.socrataChoroplethMap(vif);
-      $container.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', function(event) {
+      $container.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', function(event) {
         if (event.originalEvent.detail !== null) {
 
           assert.isTrue(true, 'Flyout was rendered.');

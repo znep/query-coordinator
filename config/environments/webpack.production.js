@@ -10,9 +10,8 @@ module.exports = {
   plugins: [
     new AssetsPlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
+      compress: false,
+      mangle: false
     })
   ]
 }

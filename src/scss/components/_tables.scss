@@ -1,4 +1,4 @@
-//Tables
+  //Tables
 
 // Borderd Table
 table {
@@ -25,7 +25,14 @@ table {
   //Condensed Table
   &.table-condensed {
       th, td {
+        padding: ms(-5);
+        font-size: ms(-1);
+    }
+    @include breakpoint($medium) { 
+      th, td {
         padding: ms(-3);
+        font-size: ms(0);
+      }
     }
   }
 

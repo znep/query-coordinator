@@ -66,25 +66,30 @@ body.state-view-visualizationAdd {
       display: none;
     }
 
-    .add-card-select-column soc-select {
-      margin-bottom: 1rem;
-      background-color: $visualization-add-column-select-bg-color;
+    .add-card-select-input-group, card-aggregation-selector {
+      soc-select, input {
+        background-color: $visualization-add-column-select-bg-color;
+      }
 
       select {
         color: $visualization-add-column-select-color;
         font-size: $visualization-add-column-base-font;
         font-family: $visualization-add-column-font-family;
       }
+    }
 
-      .arrow {
-        border-color: $visualization-add-column-select-color transparent transparent transparent;
-      }
+    .add-card-select-column soc-select .arrow {
+      border-color: $visualization-add-column-select-color transparent transparent transparent;
+    }
+
+    .add-card-select-input-group {
+      margin-bottom: 1rem;
     }
 
     .add-card-preview {
       position: relative;
       height: $visualization-add-column-preview-height;
-      margin-bottom: 1em;
+      margin: 1em 0;
       color: $visualization-add-column-select-color;
       background-color: transparent;
 

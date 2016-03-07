@@ -13,6 +13,9 @@ describe('GeoregionAdminTable', function() {
     this.props = {
       authenticityToken: 'token',
       baseUrlPath: '/admin/geo/',
+      defaultCount: 0,
+      defaultLimit: 5,
+      onDefaultSuccess: _.noop,
       onEnableSuccess: _.noop
     };
 
@@ -44,10 +47,10 @@ describe('GeoregionAdminTable', function() {
     beforeEach(function() {
       this.node = this.renderIntoDocument({
         rows: [
-          { enabledFlag: true, featurePk: 'geo_id', id: 1, name: 'Enabled Curated Region' },
-          { enabledFlag: false, featurePk: 'geo_id', id: 2, name: 'Disabled Curated Region' },
-          { enabledFlag: false, id: 'cur4t3d-r3g10n-j0b', name: 'In-Progress Curated Region Job' },
-          { enabledFlag: false, id: 'f41l3d-cur4t3d-r3g10n-j0b', latest_event: {}, name: 'Failed Curated Region Job' }
+          { defaultFlag: true, enabledFlag: true, featurePk: 'geo_id', id: 1, name: 'Enabled Curated Region' },
+          { defaultFlag: false, enabledFlag: false, featurePk: 'geo_id', id: 2, name: 'Disabled Curated Region' },
+          { defaultFlag: false, enabledFlag: false, id: 'cur4t3d-r3g10n-j0b', name: 'In-Progress Curated Region Job' },
+          { defaultFlag: false, enabledFlag: false, id: 'f41l3d-cur4t3d-r3g10n-j0b', latest_event: {}, name: 'Failed Curated Region Job' }
         ]
       });
     });
@@ -55,12 +58,16 @@ describe('GeoregionAdminTable', function() {
     it('renders the rows', function() {
       var rows = TestUtils.scryRenderedComponentsWithType(this.node, GeoregionAdminRow);
       expect(rows).to.have.length(4);
+      expect(rows[0]).to.have.deep.property('props.defaultStatus', true);
       expect(rows[0]).to.have.deep.property('props.status', Status.ENABLED);
       expect(rows[0]).to.have.deep.property('props.action', '/admin/geo/1');
+      expect(rows[1]).to.have.deep.property('props.defaultStatus', false);
       expect(rows[1]).to.have.deep.property('props.status', Status.DISABLED);
       expect(rows[1]).to.have.deep.property('props.action', '/admin/geo/2');
+      expect(rows[2]).to.have.deep.property('props.defaultStatus', false);
       expect(rows[2]).to.have.deep.property('props.status', Status.PROGRESS);
       expect(rows[2]).to.have.deep.property('props.action', '');
+      expect(rows[3]).to.have.deep.property('props.defaultStatus', false);
       expect(rows[3]).to.have.deep.property('props.status', Status.FAILED);
       expect(rows[3]).to.have.deep.property('props.action', '');
     });

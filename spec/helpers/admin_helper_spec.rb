@@ -8,6 +8,40 @@ describe AdminHelper do
     end
   end
 
+  describe '#form_checkbox_button' do
+    let(:options) { { :url_opts => '/', :id => 'wombats' } }
+
+    it 'generates a submit tag when not disabled' do
+      options[:disabled] = false
+      expect(helper.form_checkbox_button(options)).to match(/submit/)
+    end
+
+    it 'displays an enabled checkbox when not disabled' do
+      options[:disabled] = false
+      expect(helper.form_checkbox_button(options)).to_not match(/disabled/)
+    end
+
+    it 'does not generate a submit tag when disabled' do
+      options[:disabled] = true
+      expect(helper.form_checkbox_button(options)).to_not match(/submit/)
+    end
+
+    it 'displays a disabled checkbox when disabled' do
+      options[:disabled] = true
+      expect(helper.form_checkbox_button(options)).to match(/disabled/)
+    end
+
+    it 'displays a check when checked' do
+      options[:checked] = true
+      expect(helper.form_checkbox_button(options)).to match(/icon-check/)
+    end
+
+    it 'does not display a check when not checked' do
+      options[:checked] = false
+      expect(helper.form_checkbox_button(options)).to match(/unchecked/)
+    end
+  end
+
   describe 'a11y_metadata_fieldset_summary' do
     it 'returns an a11y_summary with non-empty "fields" value' do
       metadata_fields = { 'fields' => [ { 'name' => 'anemone' } ] }

@@ -12,7 +12,6 @@ function t(str, props) {
 const RowStatusWidget = React.createClass({
   propTypes: {
     action: PropTypes.string.isRequired,
-    allowEnablement: PropTypes.bool,
     authenticityToken: PropTypes.string.isRequired,
     disabledTitle: PropTypes.string.isRequired,
     id: PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
@@ -21,7 +20,6 @@ const RowStatusWidget = React.createClass({
   },
   getDefaultProps() {
     return {
-      allowEnablement: true,
       disabledTitle: t('enabled_georegions_limit', { limit: georegionsNS.maximumEnabledCount }),
       onSuccess: _.noop
     };
@@ -29,7 +27,6 @@ const RowStatusWidget = React.createClass({
   render() {
     const {
       action,
-      allowEnablement,
       authenticityToken,
       disabledTitle,
       id,
@@ -51,14 +48,12 @@ const RowStatusWidget = React.createClass({
       case Status.DISABLED:
         const disabledFormButtonProps = _.merge(defaultButtonProps, {
           action: `${action}/enable`,
-          disabled: !allowEnablement,
-          title: !allowEnablement ? disabledTitle : null,
           value: t('enable')
         });
 
         return (
           <div>
-            <span className="icon-failed status-icon-disabled"></span>
+            <span className="icon-failed status-icon-disabled" />
             {' '}
             <span className={className}>{statusLabel}</span>
             <FormButton {...disabledFormButtonProps} />
@@ -75,7 +70,7 @@ const RowStatusWidget = React.createClass({
 
         return (
           <div>
-            <span className="icon-check status-icon-enabled"></span>
+            <span className="icon-check status-icon-enabled" />
             {' '}
             <span className={className}>{statusLabel}</span>
             <FormButton {...enabledFormButtonProps} />
@@ -85,7 +80,7 @@ const RowStatusWidget = React.createClass({
       case Status.PROGRESS:
         return (
           <div>
-            <span className="icon-processing status-icon-progress"></span>
+            <span className="status-icon-progress" />
             {' '}
             <span className={className}>
               {statusLabel}
@@ -101,7 +96,7 @@ const RowStatusWidget = React.createClass({
         };
         return (
           <div>
-            <span className="icon-failed status-icon-failed"></span>
+            <span className="icon-failed status-icon-failed" />
             {' '}
             <span className={className}>
               {statusLabel}

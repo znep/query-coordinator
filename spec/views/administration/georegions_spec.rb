@@ -4,9 +4,9 @@ describe 'administration/georegions.html.erb' do
 
   let(:view_model) do
     double(::ViewModels::Administration::Georegions,
-      :allow_enablement? => true,
-      :enabled_count => 4,
-      :maximum_enabled_count => 5,
+      :allow_defaulting? => true,
+      :default_count => 4,
+      :maximum_default_count => 5,
       :translations => nil,
       :curated_regions => [],
       :curated_region_jobs => [],
@@ -92,8 +92,8 @@ describe 'administration/georegions.html.erb' do
       expect(rendered).to include('Manage Spatial Lens')
     end
 
-    it 'renders the available and enabled counts' do
-      expect(rendered).to include('You have enabled 4 of 5 available boundaries')
+    it 'renders the available and default counts' do
+      expect(rendered).to include('4 of 5', 'boundaries')
     end
 
     it 'renders the table partial once' do
@@ -121,14 +121,13 @@ describe 'administration/georegions.html.erb' do
       expect(rendered).to include('Something went wrong...')
     end
 
-    it 'disables the enable button if enablement is not allowed' do
-      allow(view_model).to receive(:allow_enablement?).and_return(false)
+    it 'does not render more checkboxes if setting defaults is not allowed' do
+      allow(view_model).to receive(:allow_defaulting?).and_return(false)
       allow(view_model).to receive(:curated_regions).and_return([disabled_curated_region])
       assign(:view_model, view_model)
 
       render
-      expect(rendered).to include('disabled="disabled"')
-      expect(rendered).to include('You have reached the limit of 5 enabled boundaries for this site')
+      expect(rendered).to_not include('checked="true"')
     end
 
   end

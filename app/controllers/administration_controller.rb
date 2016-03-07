@@ -133,7 +133,7 @@ class AdministrationController < ApplicationController
 
   before_filter :allow_georegions_access?, :only => [
       :georegions, :add_georegion, :enable_georegion, :disable_georegion,
-      :edit_georegion, :remove_georegion
+      :set_georegion_default_status, :edit_georegion, :remove_georegion
     ]
   def georegions
     @view_model = ::ViewModels::Administration::Georegions.new(
@@ -170,7 +170,7 @@ class AdministrationController < ApplicationController
         params[:primaryKey],
         params[:geometryLabel],
         params[:name],
-        { :enabledFlag => false },
+        { :enabledFlag => true },
         enable_synthetic_spatial_lens_id,
         forwardable_session_cookies
       )
@@ -191,10 +191,6 @@ class AdministrationController < ApplicationController
     )
   end
 
-  def georegion_enabler
-    @georegion_enabler ||= ::Services::Administration::GeoregionEnabler.new
-  end
-
   def enable_georegion
     curated_region = CuratedRegion.find(params[:id])
     is_success = false
@@ -209,8 +205,6 @@ class AdministrationController < ApplicationController
       )
     rescue CoreServer::CoreServerError
       error_message = t('error.error_500.were_sorry')
-    rescue ::Services::Administration::EnabledGeoregionsLimitMetError
-      error_message = t('screens.admin.georegions.enabled_georegions_limit', :limit => georegion_enabler.maximum_enabled_count)
     end
     handle_button_response(is_success, error_message, success_message, :georegions)
   end
@@ -229,6 +223,38 @@ class AdministrationController < ApplicationController
       )
     rescue CoreServer::CoreServerError
       error_message = t('error.error_500.were_sorry')
+    end
+    handle_button_response(is_success, error_message, success_message, :georegions)
+  end
+
+  def set_georegion_default_status
+    curated_region = CuratedRegion.find(params[:id])
+    default_flag = params[:default_flag]
+    is_success = false
+    error_message = nil
+    success_message = nil
+    begin
+      if default_flag == 'default'
+        georegion_defaulter.default(curated_region)
+        is_success = true
+        success_message = t(
+          'screens.admin.georegions.default_success',
+          :name => curated_region.name
+        )
+      elsif default_flag == 'undefault'
+        georegion_defaulter.undefault(curated_region)
+        is_success = true
+        success_message = t(
+          'screens.admin.georegions.undefault_success',
+          :name => curated_region.name
+        )
+      else
+        error_message = t('error.error_500.were_sorry')
+      end
+    rescue CoreServer::CoreServerError
+      error_message = t('error.error_500.were_sorry')
+    rescue ::Services::Administration::DefaultGeoregionsLimitMetError
+      error_message = t('screens.admin.georegions.default_georegions_limit', :limit => georegion_defaulter.maximum_default_count)
     end
     handle_button_response(is_success, error_message, success_message, :georegions)
   end
@@ -290,6 +316,26 @@ class AdministrationController < ApplicationController
       CurrentDomain.strings.site_title,
       !!flash[:is_name_missing]
     )
+  end
+
+  def poll_georegion_jobs
+    begin
+      message = {
+        :georegions => CuratedRegion.all,
+        :jobs => incomplete_curated_region_jobs,
+        :failedJobs => failed_curated_region_jobs
+      }
+      success = true
+    rescue StandardError => ex
+      message = {
+        :errorMessage => "Polling error: #{ex}"
+      }
+      success = false
+    end
+    render :json => {
+      :message => message,
+      :success => success
+    }.to_json, :status => (success ? 200 : 500)
   end
 
 
@@ -1387,6 +1433,14 @@ private
     ::Configuration.find_by_type(type, true, CurrentDomain.cname, merge).first
   end
 
+  def georegion_enabler
+    @georegion_enabler ||= ::Services::Administration::GeoregionEnabler.new
+  end
+
+  def georegion_defaulter
+    @georegion_defaulter ||= ::Services::Administration::GeoregionDefaulter.new
+  end
+
   def save_metadata(config, metadata, successMessage, json = false)
     update_or_create_property(config, 'fieldsets', metadata)
 
@@ -1404,9 +1458,9 @@ private
     respond_to do |format|
       format.html do
         if error_message
-          flash[:error] = error_message
+          flash[:error] = error_message.html_safe
         else
-          flash[:notice] = success_message
+          flash[:notice] = success_message.html_safe
         end
         redirect_to({ :action => redirect_action }.merge(request.query_parameters))
       end

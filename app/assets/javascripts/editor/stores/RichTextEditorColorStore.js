@@ -11,7 +11,7 @@ export default function RichTextEditorColorStore() {
   _.extend(this, new Store());
 
   var self = this;
-  var defaultColors = ['#000000', '#666666', '#ffffff', null, null];
+  var defaultColors = [null, null, '#fff', '#666', '#D2160A'];
   var savedCustomColors = [null, null, null, null, null];
   var activeCustomColor = null;
 
@@ -55,6 +55,10 @@ export default function RichTextEditorColorStore() {
   function updateDefaultColors(themeId) {
     StorytellerUtils.assertIsOneOfTypes(themeId, 'string');
 
+    if (_.startsWith(themeId, 'custom-')) {
+      themeId = parseInt(_.trimLeft(themeId, 'custom-'), 10);
+    }
+
     var defaultThemes = Environment.DEFAULT_THEMES.themes;
     var customThemes = Environment.CUSTOM_THEMES;
 
@@ -65,11 +69,11 @@ export default function RichTextEditorColorStore() {
       var cssVariables = currentThemeObj['css_variables'];
 
       if (cssVariables.hasOwnProperty('$heading-type-color')) {
-        defaultColors[3] = cssVariables['$heading-type-color'];
+        defaultColors[0] = cssVariables['$heading-type-color'];
       }
 
       if (cssVariables.hasOwnProperty('$default-type-color')) {
-        defaultColors[4] = cssVariables['$default-type-color'];
+        defaultColors[1] = cssVariables['$default-type-color'];
       }
     }
 

@@ -168,8 +168,7 @@ $(function() {
           {tagName: 'span', 'class': 'shareText', contents: $.t('controls.browse.actions.share_button')}
         ], true),
         onOpen: function() {
-          $.analytics.trackEvent('browse ' + window.location.pathname,
-            'share menu opened', ds.id);
+          $.analytics && $.analytics.trackEvent('browse ' + window.location.pathname, 'share menu opened', ds.id);
         },
         onClose: function($menu) {
           if (($.browser.msie) && ($.browser.majorVersion < 8)) {

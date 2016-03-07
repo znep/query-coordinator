@@ -87,18 +87,43 @@ class FilterContainer extends React.Component {
   }
 
   prettifyFilterForDLMobile(filters) {
-    var modifiedFilters = filters.map(function(filter) {
+    var modifiedFilters = [];
+
+    filters.forEach(function(filter) {
       var filterObj = {};
 
       switch (filter.type) {
         case 'int':
-          filterObj.columnName = filter.name;
-          filterObj.function = 'valueRange';// eslint-disable-line dot-notation
-          filterObj.arguments = {
-            'start': filter.data.val1,
-            'end': filter.data.val2
-          };
-          return filterObj;
+          if (filter.data.val1 && filter.data.val2) {
+            filterObj.columnName = filter.name;
+            filterObj.function = 'valueRange';// eslint-disable-line dot-notation
+            filterObj.arguments = {
+              start: filter.data.val1,
+              end: filter.data.val2
+            };
+
+            modifiedFilters.push(filterObj);
+          } else if (filter.data.val1) {
+            filterObj.columnName = filter.name;
+            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj.arguments = {
+              operator: '>=',
+              operand: filter.data.val1
+            };
+
+            modifiedFilters.push(filterObj);
+          } else if (filter.data.val2) {
+            filterObj.columnName = filter.name;
+            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj.arguments = {
+              operator: '<',
+              operand: filter.data.val2
+            };
+
+            modifiedFilters.push(filterObj);
+          }
+
+          break;
         case 'string':
           filterObj.columnName = filter.name;
           filterObj.function = 'binaryOperator'; // eslint-disable-line dot-notation
@@ -118,7 +143,8 @@ class FilterContainer extends React.Component {
               operand: filter.data[0].text
             };
           }
-          return filterObj;
+          modifiedFilters.push(filterObj);
+          break;
         case 'calendar_date':
           filterObj.columnName = filter.name;
           filterObj.function = 'timeRange'; // eslint-disable-line dot-notation
@@ -126,7 +152,8 @@ class FilterContainer extends React.Component {
             'start': filter.data.val1,
             'end': filter.data.val2
           };
-          return filterObj;
+          modifiedFilters.push(filterObj);
+          break;
         default:
           break;
       }

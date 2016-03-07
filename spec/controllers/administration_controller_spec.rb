@@ -3,6 +3,8 @@ require 'rails_helper'
 describe AdministrationController do
   include TestHelperMethods
 
+  let(:view) { double(View, :createdAt => 1456530636244, :columns => []) }
+
   describe 'georegions' do
     before(:each) do
       init_current_user(controller)
@@ -13,6 +15,7 @@ describe AdministrationController do
       allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
       allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_return([])
       allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return([])
+      allow_any_instance_of(CuratedRegion).to receive(:view).and_return(view)
       strings = Hashie::Mash.new
       strings.site_title = 'My Site'
       allow(CurrentDomain).to receive(:strings).and_return(strings)
@@ -88,7 +91,7 @@ describe AdministrationController do
           get :georegions
           view_model = assigns(:view_model)
           expect(view_model.available_count).to eq(3)
-          expect(view_model.enabled_count).to eq(1)
+          expect(view_model.default_count).to eq(1)
           expect(view_model.curated_regions).to contain_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion),an_instance_of(CuratedRegion))
           expect(view_model.translations).to be_an_instance_of(LocalePart)
         end
@@ -323,19 +326,7 @@ describe AdministrationController do
           expect_any_instance_of(::Services::Administration::GeoregionEnabler).to receive(:enable)
           put :enable_georegion, :id => 1
         end
-
       end
-
-      describe 'failure' do
-        it 'errors when the limit is met' do
-          allow_any_instance_of(::Services::Administration::GeoregionEnabler).
-            to receive(:enable).
-            and_raise(::Services::Administration::EnabledGeoregionsLimitMetError)
-          put :enable_georegion, :id => 1
-          expect(flash[:error]).to_not be_nil
-        end
-      end
-
     end
 
     describe 'PUT /admin/geo/:id/disable' do
@@ -355,6 +346,94 @@ describe AdministrationController do
       it 'disables via the enabler' do
         expect_any_instance_of(::Services::Administration::GeoregionEnabler).to receive(:disable)
         put :disable_georegion, :id => 1
+      end
+    end
+
+    describe 'PUT admin/geo/:id/:default_flag' do
+      let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
+
+      before(:each) do
+        stub_admin_user
+        allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
+        allow(CuratedRegion).to receive(:find_default).and_return([])
+      end
+
+      describe 'when flag is default' do
+        describe 'success' do
+          it 'redirects to /admin/geo' do
+            allow_any_instance_of(::Services::Administration::GeoregionDefaulter).to receive(:default)
+            put :set_georegion_default_status, :id => 1, :default_flag => 'default'
+            expect(response).to redirect_to('/admin/geo')
+          end
+
+          it 'defaults via the defaulter' do
+            expect_any_instance_of(::Services::Administration::GeoregionDefaulter).to receive(:default)
+            put :set_georegion_default_status, :id => 1, :default_flag => 'default'
+          end
+        end
+
+        describe 'failure' do
+          it 'errors when the limit is met' do
+            allow_any_instance_of(::Services::Administration::GeoregionDefaulter).
+              to receive(:default).
+              and_raise(::Services::Administration::DefaultGeoregionsLimitMetError)
+            put :set_georegion_default_status, :id => 1, :default_flag => 'default'
+            expect(flash[:error]).to_not be_nil
+          end
+        end
+      end
+
+      describe 'when flag is undefault' do
+        it 'redirects to /admin/geo' do
+          allow_any_instance_of(::Services::Administration::GeoregionDefaulter).to receive(:undefault)
+          put :set_georegion_default_status, :id => 1, :default_flag => 'undefault'
+          expect(response).to redirect_to('/admin/geo')
+        end
+
+        it 'undefaults via the defaulter' do
+          expect_any_instance_of(::Services::Administration::GeoregionDefaulter).to receive(:undefault)
+          put :set_georegion_default_status, :id => 1, :default_flag => 'undefault'
+        end
+      end
+    end
+
+    describe 'POST /admin/geo/poll' do
+      it 'gets curated regions, in-progress jobs, and failed jobs' do
+        allow(CuratedRegion).to receive(:find).and_return(
+          [build(:curated_region), build(:curated_region), build(:curated_region)]
+        )
+        allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_return(
+          [{ 'jobId' => 'cur8ed-r3g10n-j0b'}]
+        )
+        allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return(
+          [{ 'jobId' => 'f41l3d-cur8ed-r3g10n-j0b-1'}, { 'jobId' => 'f41l3d-cur8ed-r3g10n-j0b-2'}]
+        )
+
+        post :poll_georegion_jobs
+        expect(response).to have_http_status(200)
+        response_body = JSON.parse(response.body)
+        expect(response_body).to include('success' => true)
+        expect(response_body['message']['georegions'].size).to eq(3)
+        expect(response_body['message']['jobs'].size).to eq(1)
+        expect(response_body['message']['failedJobs'].size).to eq(2)
+      end
+
+      it 'provides an error message if any API call fails' do
+        allow(CuratedRegion).to receive(:find).and_return(
+          []
+        )
+        allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_raise(
+          'CRJQ exploded'
+        )
+        allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return(
+          []
+        )
+
+        post :poll_georegion_jobs
+        expect(response).to have_http_status(500)
+        response_body = JSON.parse(response.body)
+        expect(response_body['success']).to eq(false)
+        expect(response_body['message']['errorMessage']).to include('CRJQ exploded')
       end
     end
   end

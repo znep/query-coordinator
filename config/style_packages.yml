@@ -293,8 +293,3 @@ mobile:
 - mobile/loader
 - mobile/components/navbar
 - mobile/components/meta
-- mobile/components/feature-map
-- mobile/components/row-inspector
-- mobile/components/column-chart
-- mobile/components/timeline-chart
-- mobile/components/choropleth-map

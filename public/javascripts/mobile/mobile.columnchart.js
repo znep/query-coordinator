@@ -2,6 +2,7 @@
 
 // Has side effect of registering jQuery plugin.
 require('socrata-visualizations').ColumnChart;
+require('./styles/column-chart.scss');
 var Loader = require('./components/Loader');
 
 module.exports = function(values, $target) {

@@ -1,4 +1,4 @@
-#column-chart {
+.column-chart {
   display: block;
   position: relative;
   width: 100%;
@@ -115,7 +115,7 @@
   }
 }
 
-#column-chart,
+.column-chart,
 .mobile-flyout {
   .labels {
     &.mobile {

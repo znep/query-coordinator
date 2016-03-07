@@ -1090,4 +1090,41 @@ blist.util.recursivePluck = function(pluckee, searchKey) {
   return pluckedArray;
 };
 
+// Because NYS dynamically inserts Underscore 1.6.0 into our page, it is capable
+// of overwriting an existing Lodash instance if it has already been loaded.
+// This function checks to see whether or not this occurred and forces it back to
+// using lodash.
+blist.util.enforceLodashFunctions = function() {
+  if (window._ !== window.socrataLodash) {
+    if (window.console && typeof(window.console.info) === 'function') {
+      console.info(
+        'Lodash collision detected. Expected version: {0}. Actual version: {1}.'.
+        format(window.socrataLodash.VERSION, window._.VERSION)
+      );
+    }
+    window.collidedWithLodash = _.noConflict();
+    window._ = window.socrataLodash;
+
+    // We are not currently aware of any breakages that
+    // this would fix. This is a safety measure in case
+    // forcing us back to lodash causes problems for NYS'
+    // code.
+    //
+    // Known NYS cnames:
+    // 'health.data.ny.gov',
+    // 'nys-staging.demo.socrata.com',
+    // 'data.ny.gov',
+    // 'nysdoh-staging.demo.socrata.com'
+    if (/nys(doh)?-staging|data.ny.gov/.test(window.location.hostname)) {
+      var functionsUsedByNYS = [
+        'template', 'first', 'keys', 'each', 'extend',
+        'debounce', 'pluck', 'reject', 'findWhere'
+      ];
+      functionsUsedByNYS.forEach(function(func) {
+        window._[func] = window.collidedWithLodash[func];
+      });
+    }
+  }
+};
+
 })(jQuery);

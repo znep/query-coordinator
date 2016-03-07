@@ -3,7 +3,7 @@ Frontend::Application.configure do
 
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
-  config.cache_classes = {{ CACHE_CLASSES || default('true') }}
+  config.cache_classes = {{ CACHE_CLASSES | default('true') }}
 
   # Enable threaded mode
   # config.threadsafe!
@@ -18,7 +18,7 @@ Frontend::Application.configure do
   config.serve_static_assets = {{ SERVE_STATIC_ASSETS | default('true') }}
 
   # Use a different cache store in production
-  config.cache_store = :mem_cache_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :value_max_bytes => {{ MEMCACHE_VALUE_MAX_BYTES | default(2_000_000) }} }
+  config.cache_store = :mem_cache_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :value_max_bytes => {{ MEMCACHE_VALUE_MAX_BYTES | default(2000000) }} }
 
   # Enable serving of images, stylesheets, and javascripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"

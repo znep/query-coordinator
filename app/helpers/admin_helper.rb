@@ -36,6 +36,30 @@ module AdminHelper
     end
   end
 
+  def form_checkbox_button(options)
+    url_opts = options[:url_opts]
+    id = options[:id]
+    disabled = options.fetch(:disabled, false)
+    checked = options[:checked]
+    title = options[:title]
+    button_opts = options.fetch(:button_opts, {})
+
+    form_tag(url_opts, :method => :put) do
+      if disabled
+        raw(%Q{<span class="form-checkbox disabled" title="#{title}"></span>})
+      else
+        submit_tag('', {:class => 'button', :id => id, :style => 'display:none;'}.merge(button_opts)) +
+          label_tag(id, nil) do
+          if checked
+            raw(%Q{<span class="form-checkbox" title="#{title}"><span class="icon-check"></span></span>})
+          else
+            raw(%Q{<span class="form-checkbox" title="#{title}"><span class="icon-check unchecked"></span></span>})
+          end
+        end
+      end
+    end
+  end
+
   def notification_interval_select_options(selected_option = nil)
     options_for_select(Approval.notification_intervals.invert.sort { |a, b|
       a.last.to_i - b.last.to_i }, (selected_option || '').to_s)

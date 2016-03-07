@@ -151,11 +151,73 @@ layout: prototype-landingpage
   </div>
 
       <div class='lp-section'>
+        <h2 class="section-header">What's in this Dataset</h2>
+
+        <div class="card-frame">
+        <div class="table-wrapper schema-preview">
+          <table class="table-condensed table-borderless">
+            <thead>
+              <tr>
+                <th scope="col">Column Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Type</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td scope="row">Licensee</td>
+                  <td>Legal name of the license holder</td>
+                  <td>Name, Text <span class="icon-clear-formatting"></span></td>
+                  <td><span class="icon-arrow-down"></span></td>
+                </tr>
+                <tr>
+                  <td scope="row">DBA Name</td>
+                  <td>Doing Business As name. The legal name of the business</td>
+                  <td>Name, Text <span class="icon-clear-formatting"></span></td>
+                  <td><span class="icon-arrow-down"></span></td>
+                </tr>
+                <tr>
+                  <td scope="row">License Number</td>
+                  <td>Unique Identifier for the license. Note: if licence gets renewed, multiple entries with the same identifier may appear.</td>
+                  <td>ID, Number <span class="icon-list-numbered"></span></td>
+                  <td><span class="icon-arrow-down"></span></td>
+                </tr>
+                <tr>
+                  <td scope="row">Expiration Date</td>
+                  <td></td></a>
+                  <td>End Date, Date<span class="icon-table"></span></td>
+                  <td><span class="icon-arrow-down"></span></td>
+                </tr>
+                <tr>
+                  <td scope="row">Value</td>
+                  <td>Value of the license</td>
+                  <td>Amount, Number<span class="icon-list-numbered"></span></td>
+                  <td><span class="icon-arrow-down"></span></td>
+                </tr>
+                <tr>
+                  <td scope="row">Location</td>
+                  <td>Mailing Address of the Business</td>
+                  <td>Location <span class="icon-clear-formatting"></span></td>
+                  <td><span class="icon-arrow-down"></span></td>
+                </tr>
+            </tbody>
+          </table><!-- /.metadata-table -->
+          </div>
+          <button class="btn btn-default btn-sm btn-block">View All (12)</button>
+          <div class="centered">
+            <span class="more-link"><a class="more-link" href="#">View All (12)</a></span>
+            <!-- <button class="btn btn-default btn-xs">See all metadata</button> -->
+          </div>
+        </div><!-- /.card-frame -->
+      </div><!-- /.lp-section -->
+
+
+      <div class='lp-section'>
         <h2 class="section-header">Additional Metadata</h2>
 
         <div class="card-frame">
-        <div class="table-wrapper first-metadata-table">
-          <table class="table-condensed">
+        <div class="table-wrapper metadata-table">
+          <table class="table-condensed table-borderless">
             <tbody>
                 <tr>
                   <td scope="row">Data Last Updated</td>
@@ -176,8 +238,8 @@ layout: prototype-landingpage
             </tbody>
           </table><!-- /.metadata-table -->
           </div>
-          <div class="table-wrapper second-metadata-table">
-          <table class="table-condensed">
+          <div class="table-wrapper metadata-table">
+          <table class="table-condensed table-borderless">
             <tbody>
                 <tr>
                   <td scope="row">Data Owner</td>

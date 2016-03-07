@@ -428,8 +428,8 @@ a {
 
 	.section-header {
 		padding: ms(-2) 0;
-		font-weight: 400;
-		font-size: ms(1);
+		font-weight: 600;
+		font-size: ms(0);
 	}
 	@include breakpoint($tablet) {
 		.section-header {
@@ -445,15 +445,57 @@ a {
 		border-bottom: 2px solid $light-grey-4;
 		padding: ms(1);
 
-		.second-metadata-table {
+		.metadata-table:nth-child(1) {
 			display: none;
 		}
-		.table-condensed{
-			margin: 0;
+		.metadata-table {
+			td:nth-child(1) {
+				font-weight: 600;
+				color: $light-grey-1;
+			}
 		}
-		.centered {
+		.more-link {
 			display: none;
 		}
+
+		.table-condensed {
+			margin-top: 0;
+			th {
+				padding-top: 0;
+			}
+		}
+		.schema-preview {
+			td {
+				max-width: 7em;
+				white-space: nowrap;
+	  			overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			td:nth-child(2), td:nth-child(3) {
+				font-weight: 200;
+			}
+			td:nth-child(3) {
+				color: $grey;
+			}
+			// hide the Type-column on mobile
+			th:nth-child(3), td:nth-child(3)  {
+			    display: none;
+
+			}
+
+			td {
+				span {
+					float: right;
+				}
+			}
+			tbody {
+				tr:hover {
+					background-color: $light-grey-5;
+					cursor: pointer;
+				}
+			}
+		}
+
 		@include breakpoint($tablet) {
 			.btn-block {
 				display: none;
@@ -463,10 +505,10 @@ a {
 				@include span-columns(12);
 				.more-link {
 					float: right;
+					display: inline-block;
 					white-space: nowrap;
 					color: $light-grey-1;
 					text-decoration: underline;
-					margin-bottom: - ms(-6);
 					&:hover {
 						color: $light-grey-0;
 					}
@@ -475,12 +517,18 @@ a {
 					margin: ms(-2) auto; 
 				}
 			}
-			.first-metadata-table {
+			.schema-preview {
+					th:nth-child(3), td:nth-child(3) {
+					    display: table-cell;
+					    max-width: 6em;
+					}
+			}
+			.metadata-table {
 				float: left;
 				@include span-columns(6);
 				margin: 0;
 			}
-			.second-metadata-table {
+			.metadata-table:nth-child(1) {
 				float: right !important;
 				@include span-columns(6);
 				margin: 0;

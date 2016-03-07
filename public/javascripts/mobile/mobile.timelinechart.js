@@ -45,7 +45,7 @@ module.exports = function(values, $target) {
 
   var timelineLoader = new Loader($target);
   var $timelineChartElement = $target;
-  var $timelineChartContainer = $('.timeline-chart-container');
+  var $timelineChartContainer = $target.parent();
 
   $timelineChartElement.socrataTimelineChart(timelineChartVIF);
   $timelineChartContainer.append('<div class="mobile-flyout"></div>');

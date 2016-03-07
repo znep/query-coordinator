@@ -158,7 +158,7 @@ function SoqlDataProvider(config) {
       (order[0].ascending ? 'ASC' : 'DESC'),
       limit,
       offset,
-      whereClauseComponents ? "&$where=" + whereClauseComponents : ''
+      whereClauseComponents ? '&$where=' + whereClauseComponents : ''
     );
 
     return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(function(data) {

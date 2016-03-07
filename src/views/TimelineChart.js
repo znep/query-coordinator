@@ -1,6 +1,7 @@
 var utils = require('socrata-utils');
 var Visualization = require('./Visualization');
 var d3 = require('d3');
+var moment = require('moment');
 var _ = require('lodash');
 var $ = require('jquery');
 

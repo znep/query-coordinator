@@ -9,6 +9,12 @@ var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 var mobileTable = require('./mobile.table.js');
 
+require('./../../../node_modules/leaflet/dist/leaflet.css');
+require('./../../../node_modules/socrata-visualizations/dist/socrata-visualizations.css');
+
+/*
+* QFB components
+*/
 import React from 'react'; // eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 import FilterContainer from './react-components/qfb/filtercontainer/FilterContainer.js';
@@ -33,7 +39,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
         '</p>',
         '</div>',
         '</article>',
-        '<div id="' + options.id + '"></div>',
+        '<div class="' + options.componentClass + '"></div>',
         '</div>'
       ].join('')
     );
@@ -98,14 +104,14 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
 
     $.each(pageMetadata.cards, function(i, card) {
       var cardOptions = {
-        id: '',
+        componentClass: '',
         metaData: datasetMetadata.columns[card.fieldName],
         containerClass: ''
       };
 
       switch (card.cardType) {
         case 'timeline':
-          cardOptions.id = 'timeline-chart';
+          cardOptions.componentClass = 'timeline-chart';
           cardOptions.containerClass = 'timeline-chart-container';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
@@ -114,10 +120,10 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
             columnName: card.fieldName
           };
 
-          mobileTimelineChart(values, $cardContainer.find('#timeline-chart'));
+          mobileTimelineChart(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
         case 'feature':
-          cardOptions.id = 'feature-map';
+          cardOptions.componentClass = 'feature-map';
           cardOptions.containerClass = 'map-container';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
@@ -126,10 +132,10 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
             columnName: card.fieldName
           };
 
-          mobileFeatureMap(values, $cardContainer.find('#feature-map'));
+          mobileFeatureMap(values, $($cardContainer.find('.' + cardOptions.componentClass)));
           break;
         case 'choropleth':
-          cardOptions.id = 'choropleth';
+          cardOptions.componentClass = 'choropleth';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
             domain: datasetMetadata.domain,
@@ -141,10 +147,10 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
             map_extent: (card.cardOptions) ? card.cardOptions.mapExtent || {} : {}
           };
 
-          mobileChoroplethMap(values, $cardContainer.find('#choropleth'));
+          mobileChoroplethMap(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
         case 'column':
-          cardOptions.id = 'column-chart';
+          cardOptions.componentClass = 'column-chart';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
             domain: datasetMetadata.domain,
@@ -152,7 +158,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
             columnName: card.fieldName
           };
 
-          mobileColumnChart(values, $cardContainer.find('#column-chart'));
+          mobileColumnChart(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
 
         case 'table':

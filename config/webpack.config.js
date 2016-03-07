@@ -235,7 +235,7 @@ function generateDataLensMobileConfig() {
           }
         },
         {
-          test: /\.scss$/,
+          test: /\.scss|\.css$/,
           loader: 'style!css!autoprefixer-loader!sass'
         },
         {

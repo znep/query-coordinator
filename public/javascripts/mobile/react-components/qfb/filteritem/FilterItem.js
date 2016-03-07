@@ -31,7 +31,11 @@ class FilterItem extends React.Component {
 
     this.handleFilterData = this.handleFilterData.bind(this);
   }
-
+  componentDidMount() {
+    if (this.props.startWithClosedFlannel) {
+      FlannelUtils.closeAll();
+    }
+  }
   onClickFlannelCanvas(e) {
     e.stopPropagation();
     if ($(e.target).is('.qfb-filter-item-flannel')) {

@@ -830,34 +830,34 @@ RSpec.describe StoriesController, type: :controller do
 
           render_views
 
-          it 'renders a json object for userStoryData' do
+          it 'renders a json object for STORY_DATA' do
             get :edit, uid: draft_story.uid
-            expect(response.body).to match(/userStoryData = {.*};$/)
+            expect(response.body).to match(/window\.STORY_DATA = {.*};$/)
           end
 
-          it 'renders a string for primaryOwnerUid' do
+          it 'renders a string for PRIMARY_OWNER_UID' do
             get :edit, uid: draft_story.uid
-            expect(response.body).to match(/primaryOwnerUid = '.*';$/)
+            expect(response.body).to match(/window\.PRIMARY_OWNER_UID = '.*';$/)
           end
 
-          it 'renders a json object for currentUser' do
+          it 'renders a json object for CURRENT_USER' do
             get :edit, uid: draft_story.uid
-            expect(response.body).to match(/currentUser = {.*};$/)
+            expect(response.body).to match(/window\.CURRENT_USER = {.*};$/)
           end
 
-          it 'renders a json object for currentUserStoryAuthorization' do
+          it 'renders a json object for CURRENT_USER_STORY_AUTHORIZATION' do
             get :edit, uid: draft_story.uid
-            expect(response.body).to match(/currentUserStoryAuthorization = {.*};$/)
+            expect(response.body).to match(/window\.CURRENT_USER_STORY_AUTHORIZATION = {.*};$/)
           end
 
-          it 'renders a json array for customThemes' do
+          it 'renders a json array for CUSTOM_THEMES' do
             get :edit, uid: draft_story.uid
-            expect(response.body).to match(/customThemes = \[.*\];$/)
+            expect(response.body).to match(/window\.CUSTOM_THEMES = \[.*\];$/)
           end
 
-          it 'renders a json object for publishedStory' do
+          it 'renders a json object for PUBLISHED_STORY_DATA' do
             get :edit, uid: draft_story.uid
-            expect(response.body).to match(/publishedStory = {.*};$/)
+            expect(response.body).to match(/window\.PUBLISHED_STORY_DATA = {.*};$/)
           end
         end
       end

@@ -1,8 +1,13 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import I18nMocker from '../I18nMocker';
+import Store from '../../../app/assets/javascripts/editor/stores/Store';
+import {__RewireAPI__ as StorySavingStatusAPI} from '../../../app/assets/javascripts/editor/components/StorySavingStatus';
+
 describe('storySavingStatus jQuery plugin', function() {
-  'use strict';
 
   var $button;
-  var storyteller = window.socrata.storyteller;
   var mockStore;
 
   beforeEach(function() {
@@ -13,7 +18,7 @@ describe('storySavingStatus jQuery plugin', function() {
       var _isDirty = false;
       var _isSaveInProgress = false;
 
-      _.extend(this, new storyteller.Store());
+      _.extend(this, new Store());
 
       this.mockIsStoryDirty = function(isDirty) {
         _isDirty = isDirty;
@@ -31,7 +36,13 @@ describe('storySavingStatus jQuery plugin', function() {
     }
 
     mockStore = new MockStore();
-    storyteller.storySaveStatusStore = mockStore;
+    StorySavingStatusAPI.__Rewire__('storySaveStatusStore', mockStore);
+    StorySavingStatusAPI.__Rewire__('I18n', I18nMocker);
+  });
+
+  afterEach(function() {
+    StorySavingStatusAPI.__ResetDependency__('storySaveStatusStore');
+    StorySavingStatusAPI.__ResetDependency__('I18n');
   });
 
   it('should throw when passed invalid arguments', function() {
@@ -41,7 +52,7 @@ describe('storySavingStatus jQuery plugin', function() {
 
   it('should return a jQuery object for chaining', function() {
     var returnValue = $button.storySavingStatus();
-    assert.instanceOf(returnValue, jQuery);
+    assert.instanceOf(returnValue, $);
   });
 
 

@@ -1,5 +1,4 @@
 (function(root) {
-  'use strict';
 
   var socrata = root.socrata;
   var storyteller = socrata.storyteller;

@@ -1,13 +1,25 @@
-describe('componentSocrataVisualizationClassic jQuery plugin', function() {
-  'use strict';
+import $ from 'jQuery';
+import _ from 'lodash';
 
+import socrataVisualizationClassicComponentData from '../fixtures/socrataVisualizationClassicComponentData';
+import '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationClassic';
+
+describe('componentSocrataVisualizationClassic jQuery plugin', function() {
+
+  var testDom;
   var $component;
   var validComponentData;
 
   beforeEach(function() {
+    testDom = $('<div>');
     testDom.append('<div>');
     $component = testDom.children('div');
-    validComponentData = window.fixtures.socrataVisualizationClassicComponentData;
+    validComponentData = _.cloneDeep(socrataVisualizationClassicComponentData);
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should throw when passed invalid arguments', function() {

@@ -1,6 +1,0 @@
-- [ ] Bumped `package.json` version
-- [ ] Bumped `bower.json` version
-- [ ] The version in `package.json` and `bower.json` are identical.
-- [ ] OMG, seriously, I really updated the version in `bower.json`.
-- [ ] Ran `npm run build`.
-- [ ] Checked in `dist/`.

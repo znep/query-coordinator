@@ -7,7 +7,7 @@ ENV APP_DIR /opt/socrata/storyteller
 RUN DEBIAN_FRONTEND=noninteractive && \
   apt-get update -q && \
   apt-get install -y ruby2.2-dev build-essential libxml2-dev \
-    zlib1g-dev libxslt1-dev libpq-dev nodejs git imagemagick && \
+    zlib1g-dev libxslt1-dev libpq-dev nodejs npm git imagemagick && \
   apt-get purge -y --auto-remove software-properties-common && \
   rm -rf /var/lib/apt/lists/*
 
@@ -20,6 +20,11 @@ RUN bundle install
 ADD config/database.yml.production ${APP_DIR}/config/database.yml
 
 ENV RAILS_ENV production
+
+RUN npm install -g n
+RUN n lts
+RUN npm install
+RUN npm run webpack
 
 RUN bundle exec rake assets:precompile
 

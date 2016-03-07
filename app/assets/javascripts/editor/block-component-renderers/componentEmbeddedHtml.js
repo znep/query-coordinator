@@ -1,105 +1,102 @@
-(function(root, $) {
+import $ from 'jQuery';
+import _ from 'lodash';
 
-  'use strict';
+import '../componentBase';
+import Constants from '../Constants';
+import StorytellerUtils from '../../StorytellerUtils';
+import Environment from '../../StorytellerEnvironment';
 
-  var socrata = root.socrata;
-  var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
+$.fn.componentEmbeddedHtml = componentEmbeddedHtml;
 
-  function _renderEmbeddedHtml($element, componentData) {
+export default function componentEmbeddedHtml(componentData, theme, options) {
+	var $this = $(this);
 
-    utils.assertHasProperty(componentData, 'type');
+	StorytellerUtils.assertHasProperties(componentData, 'type');
+	StorytellerUtils.assert(
+		componentData.type === 'embeddedHtml',
+		StorytellerUtils.format(
+      'componentEmbeddedHtml: Unsupported component type {0}',
+			componentData.type
+		)
+	);
 
-    var $iframeElement = $(
-      '<iframe>',
-      {
-        'src': 'about:blank',
-        'frameborder': '0',
-        'data-document-id': null,
-        'sandbox': storyteller.config.embedCodeSandboxIFrameAllowances
-      }
-    );
+	if ($this.children().length === 0) {
+		_renderEmbeddedHtml($this, componentData);
+	}
 
-    $element.
-      addClass(utils.typeToClassNameForComponentType(componentData.type)).
-      append($iframeElement);
+	_updateSrc($this, componentData);
+	_updateIframeHeight($this, componentData);
+	$this.componentBase(componentData, theme, _.extend(
+		{
+			resizeSupported: true,
+			resizeOptions: {
+				minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.HTMLEMBED
+			}
+		},
+		options
+	));
 
-    $iframeElement.
-      mouseenter(function() {
-        $element.addClass('active');
-      }).
-      mouseleave(function() {
-        $element.removeClass('active');
-      });
-  }
+	return $this;
+}
 
-  function _updateSrc($element, componentData) {
+function _renderEmbeddedHtml($element, componentData) {
+	StorytellerUtils.assertHasProperty(componentData, 'type');
 
-    var embeddedHtmlUrl;
-    var documentId;
-    var $iframeElement = $element.find('iframe');
+	var $iframeElement = $(
+		'<iframe>',
+		{
+			'src': 'about:blank',
+			'frameborder': '0',
+			'data-document-id': null,
+			'sandbox': Environment.EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES
+		}
+	);
 
-    utils.assertHasProperty(componentData, 'value');
-    utils.assertHasProperty(componentData.value, 'url');
+	$element.
+		addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type)).
+		append($iframeElement);
 
-    // We want to eventually check for this, but there was a bug where we weren't saving this to the
-    // database for embeddedHtml elements. Moving forward we will, and may choose to migrate old
-    // data to fix the problem. -SR
-    // utils.assertHasProperty(componentData.value, 'documentId');
+	$iframeElement.
+		mouseenter(function() {
+			$element.addClass('active');
+		}).
+		mouseleave(function() {
+			$element.removeClass('active');
+		});
+}
 
-    embeddedHtmlUrl = componentData.value.url;
-    documentId = componentData.value.documentId;
+function _updateSrc($element, componentData) {
+	var embeddedHtmlUrl;
+	var documentId;
+	var $iframeElement = $element.find('iframe');
 
-    if ($iframeElement.attr('src') !== embeddedHtmlUrl || $iframeElement.attr('data-document-id') !== String(documentId)) {
-      $iframeElement.attr('src', embeddedHtmlUrl);
-      $iframeElement.attr('data-document-id', documentId);
-    }
-  }
+	StorytellerUtils.assertHasProperty(componentData, 'value');
+	StorytellerUtils.assertHasProperty(componentData.value, 'url');
 
-  function _updateIframeHeight($element, componentData) {
+	// We want to eventually check for this, but there was a bug where we weren't saving this to the
+	// database for embeddedHtml elements. Moving forward we will, and may choose to migrate old
+	// data to fix the problem. -SR
+	// utils.assertHasProperty(componentData.value, 'documentId');
 
-    var $iframeElement = $element.find('iframe');
-    var renderedHeight = parseInt($iframeElement.attr('height'), 10);
+	embeddedHtmlUrl = componentData.value.url;
+	documentId = componentData.value.documentId;
 
-    utils.assertHasProperty(componentData, 'value');
-    utils.assertHasProperty(componentData.value, 'layout');
-    utils.assertHasProperty(componentData.value.layout, 'height');
+	if ($iframeElement.attr('src') !== embeddedHtmlUrl || $iframeElement.attr('data-document-id') !== String(documentId)) {
+		$iframeElement.attr('src', embeddedHtmlUrl);
+		$iframeElement.attr('data-document-id', documentId);
+	}
+}
 
-    if (renderedHeight !== componentData.value.layout.height) {
-      $iframeElement.attr('height', componentData.value.layout.height);
-    }
-  }
+function _updateIframeHeight($element, componentData) {
+	var $iframeElement = $element.find('iframe');
+	var renderedHeight = parseInt($iframeElement.attr('height'), 10);
 
-  function componentEmbeddedHtml(componentData, theme, options) {
+	StorytellerUtils.assertHasProperty(componentData, 'value');
+	StorytellerUtils.assertHasProperty(componentData.value, 'layout');
+	StorytellerUtils.assertHasProperty(componentData.value.layout, 'height');
 
-    var $this = $(this);
+	if (renderedHeight !== componentData.value.layout.height) {
+		$iframeElement.attr('height', componentData.value.layout.height);
+	}
+}
 
-    utils.assertHasProperties(componentData, 'type');
-    utils.assert(
-      componentData.type === 'embeddedHtml',
-      'componentEmbeddedHtml: Unsupported component type {0}'.format(
-        componentData.type
-      )
-    );
-
-    if ($this.children().length === 0) {
-      _renderEmbeddedHtml($this, componentData);
-    }
-
-    _updateSrc($this, componentData);
-    _updateIframeHeight($this, componentData);
-    $this.componentBase(componentData, theme, _.extend(
-      {
-        resizeSupported: true,
-        resizeOptions: {
-          minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.htmlEmbed
-        }
-      },
-      options
-    ));
-
-    return $this;
-  }
-
-  $.fn.componentEmbeddedHtml = componentEmbeddedHtml;
-})(window, jQuery);

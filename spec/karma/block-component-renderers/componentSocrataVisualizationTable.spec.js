@@ -1,11 +1,16 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import StandardMocks from '../StandardMocks';
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
+import {__RewireAPI__ as componentSocrataVisualizationTableAPI} from '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationTable';
+
 describe('componentSocrataVisualizationTable jQuery plugin', function() {
 
-  'use strict';
-
-  var storyteller = window.socrata.storyteller;
-
+  var testDom;
   var $component;
-
   var validComponentData = {
     type: 'socrata.visualization.table',
     value: {
@@ -21,8 +26,19 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
   };
 
   beforeEach(function() {
-    testDom.append('<div data-block-id="{0}" data-component-index="0">'.format(standardMocks.validBlockId));
+    testDom = $('<div>');
+    testDom.append(
+      StorytellerUtils.format(
+        '<div data-block-id="{0}" data-component-index="0">',
+        StandardMocks.validBlockId
+      )
+    );
     $component = testDom.children('div');
+    $(document.body).append(testDom);
+  });
+
+  afterEach(function() {
+    testDom.remove();
   });
 
   it('should throw when passed invalid arguments', function() {
@@ -92,22 +108,30 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
     });
 
     describe('on SOCRATA_VISUALIZATION_VIF_UPDATED', function() {
+      var dispatcher;
+
       beforeEach(function() {
-        sinon.stub(storyteller.storyStore, 'getBlockComponentAtIndex', function() {
-          return {value: {layout: {height: 100}}};
+        dispatcher = new Dispatcher();
+
+        componentSocrataVisualizationTableAPI.__Rewire__('dispatcher', dispatcher);
+        componentSocrataVisualizationTableAPI.__Rewire__('storyStore', {
+          getBlockComponentAtIndex: function() {
+            return {value: {layout: {height: 100}}};
+          }
         });
       });
 
       afterEach(function() {
-        storyteller.storyStore.getBlockComponentAtIndex.restore();
+        componentSocrataVisualizationTableAPI.__ResetDependency__('dispatcher');
+        componentSocrataVisualizationTableAPI.__ResetDependency__('storyStore');
       });
 
       it('should dispatch BLOCK_UPDATE_COMPONENT', function(done) {
         var newVif = { foo: 'bar' };
 
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           if (payload.action === Actions.BLOCK_UPDATE_COMPONENT) {
-            assert.equal(payload.blockId, standardMocks.validBlockId);
+            assert.equal(payload.blockId, StandardMocks.validBlockId);
             assert.equal(payload.componentIndex, 0);
             assert.equal(payload.value.layout.height, 100);
             assert.equal(payload.type, 'socrata.visualization.table');

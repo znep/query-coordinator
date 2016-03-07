@@ -1,11 +1,23 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import I18nMocker from '../I18nMocker';
+import Store from '../../../app/assets/javascripts/editor/stores/Store';
+import {__RewireAPI__ as StorySaveErrorBarAPI} from '../../../app/assets/javascripts/editor/components/StorySaveErrorBar';
+
 describe('storySaveErrorBar jQuery plugin', function() {
-  'use strict';
 
   var $errorBar;
-  var storyteller = window.socrata.storyteller;
   var mockStore;
+  var userSessionStoreMock;
+  var autosave;
+
+  function tryAgainButtonAvailable() {
+    return $errorBar.find('button.try-again').hasClass('available');
+  }
 
   beforeEach(function() {
+    $(document.body).attr('class', '');
     $errorBar = $('<div>');
 
     function MockStore() {
@@ -13,7 +25,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
       var _isSaveInProgress = false;
       var _lastSaveError = null;
 
-      _.extend(this, new storyteller.Store());
+      _.extend(this, new Store());
 
       this.mockIsSaveInProgress = function(isSaveInProgress) {
         _isSaveInProgress = isSaveInProgress;
@@ -27,18 +39,27 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
       this.isStorySaveInProgress = function() { return _isSaveInProgress; };
       this.lastSaveError = function() { return _lastSaveError; };
+      this.hasValidSession = _.constant(true);
     }
 
     mockStore = new MockStore();
-    storyteller.storySaveStatusStore = mockStore;
-    storyteller.autosave = {
-      saveASAP: sinon.stub()
-    };
+    userSessionStoreMock = new MockStore();
+		autosave = {saveASAP: sinon.stub()};
+    StorySaveErrorBarAPI.__Rewire__('storySaveStatusStore', mockStore);
+    StorySaveErrorBarAPI.__Rewire__('userSessionStore', userSessionStoreMock);
+    StorySaveErrorBarAPI.__Rewire__('autosave', autosave);
+    StorySaveErrorBarAPI.__Rewire__('I18n', I18nMocker);
+  });
+
+  afterEach(function() {
+    StorySaveErrorBarAPI.__ResetDependency__('userSessionStore');
+    StorySaveErrorBarAPI.__ResetDependency__('storySaveStatusStore');
+    StorySaveErrorBarAPI.__ResetDependency__('I18n');
   });
 
   it('should return a jQuery object for chaining', function() {
     var returnValue = $errorBar.storySaveErrorBar();
-    assert.instanceOf(returnValue, jQuery);
+    assert.instanceOf(returnValue, $);
   });
 
 
@@ -81,9 +102,9 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
       describe('try again button', function() {
         it('should call autosave.saveASAP when clicked', function() {
-          sinon.assert.notCalled(storyteller.autosave.saveASAP);
+          sinon.assert.notCalled(autosave.saveASAP);
           $errorBar.find('button.try-again').click();
-          sinon.assert.calledOnce(storyteller.autosave.saveASAP);
+          sinon.assert.calledOnce(autosave.saveASAP);
         });
 
         it('should be available', function() {
@@ -156,12 +177,8 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
     describe('with an invalid session', function() {
       beforeEach(function() {
-        sinon.stub(storyteller.userSessionStore, 'hasValidSession', _.constant(false));
-        storyteller.userSessionStore._emitChange();
-      });
-
-      afterEach(function() {
-        storyteller.userSessionStore.hasValidSession.restore();
+        userSessionStoreMock.hasValidSession = _.constant(false);
+        userSessionStoreMock._emitChange();
       });
 
       it('should place the story-save-error class on body', function() {
@@ -188,8 +205,4 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
     });
   });
-
-  function tryAgainButtonAvailable() {
-    return $errorBar.find('button.try-again').hasClass('available');
-  }
 });

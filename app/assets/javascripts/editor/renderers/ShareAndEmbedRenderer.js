@@ -1,108 +1,107 @@
-(function() {
-  'use strict';
+import $ from 'jQuery';
 
-  var socrata = window.socrata;
-  var storyteller = socrata.storyteller;
+import I18n from '../I18n';
+import Actions from '../Actions';
+import StorytellerUtils from '../../StorytellerUtils';
+import { dispatcher } from '../Dispatcher';
+import { shareAndEmbedStore } from '../stores/ShareAndEmbedStore';
+
+/**
+ * @class ShareAndEmbedRenderer
+ * Renders a modal that contains the list of collaborators for the current story.
+ * The user is provided several editing actions, such as additions, removals, and changes.
+ */
+export default function ShareAndEmbedRenderer() {
+  var t = I18n.t;
+  var $shareAndEmbed;
+
+  compileDOM();
+  attachEvents();
+  shareAndEmbedStore.addChangeListener(render);
 
   /**
-   * @class ShareAndEmbedRenderer
-   * Renders a modal that contains the list of collaborators for the current story.
-   * The user is provided several editing actions, such as additions, removals, and changes.
+   * Public Methods
    */
-  function ShareAndEmbedRenderer() {
-    var t = I18n.t;
-    var $shareAndEmbed;
 
-    compileDOM();
-    attachEvents();
-    storyteller.shareAndEmbedStore.addChangeListener(render);
+  /**
+   * @function destroy
+   * @description
+   * Removes all attached events to this instance of ShareAndEmbedRenderer
+   */
+  this.destroy = function() {
+    detachEvents();
+    $shareAndEmbed.remove();
+  };
 
-    /**
-     * Public Methods
-     */
+  /**
+   * Private Methods
+   */
 
-    /**
-     * @function destroy
-     * @description
-     * Removes all attached events to this instance of ShareAndEmbedRenderer
-     */
-    this.destroy = function() {
-      detachEvents();
-      $shareAndEmbed.remove();
-    };
+  function template() {
+    var storyUrl = shareAndEmbedStore.getStoryUrl();
+    var storyWidgetEmbedCode = shareAndEmbedStore.getStoryEmbedCode();
 
-    /**
-     * Private Methods
-     */
-
-    function template() {
-      var storyUrl = storyteller.shareAndEmbedStore.getStoryUrl();
-      var storyWidgetEmbedCode = storyteller.shareAndEmbedStore.getStoryEmbedCode();
-
-      return (
-          '<div>' +
-            '<h2 class="modal-input-label input-label">{0}</h2>'.format(t('editor.share_and_embed.modal.story_url_label')) +
-            '<input class="share-and-embed-story-url" type="text" readonly value="{0}">'.format(storyUrl) +
-            '<hr>' +
-            '<h2 class="modal-input-label input-label">{0}</h2>'.format(t('editor.share_and_embed.modal.embed_code_label')) +
-            '<textarea class="share-and-embed-embed-code" readonly>{0}</textarea>'.format(storyWidgetEmbedCode) +
-            '<h2 class="modal-input-label input-label">{0}</h2>'.format(t('editor.share_and_embed.modal.preview_label')) +
-            '<iframe src="about:blank" class="share-and-embed-preview-iframe"></iframe>' +
-            '<div class="modal-button-group r-to-l">' +
-              '<button class="btn-default btn-inverse" data-action="{0}">{1}</button>'.format(Actions.SHARE_AND_EMBED_MODAL_CLOSE, t('editor.modal.buttons.done')) +
-            '</div>' +
-          '</div>'
-      );
-    }
-
-    function compileDOM() {
-      $shareAndEmbed = $('<div>', { id: 'share-and-embed-modal' }).modal({
-        title: t('editor.share_and_embed.modal.heading'),
-        content: $(template())
-      });
-
-      $(document.body).append($shareAndEmbed);
-    }
-
-    function attachEvents() {
-      $shareAndEmbed.on('click', '[data-action="SHARE_AND_EMBED_MODAL_CLOSE"]', handleModalDismissed);
-      $shareAndEmbed.on('modal-dismissed', handleModalDismissed);
-      $shareAndEmbed.on('focus', '.share-and-embed-story-url', function() { $(this).select(); });
-      $shareAndEmbed.on('focus', '.share-and-embed-embed-code', function() { $(this).select(); });
-    }
-
-    function detachEvents() {
-      $shareAndEmbed.off('click', '[data-action="SHARE_AND_EMBED_MODAL_CLOSE"]', handleModalDismissed);
-      $shareAndEmbed.off('modal-dismissed', handleModalDismissed);
-    }
-
-    function handleModalDismissed() {
-      storyteller.dispatcher.dispatch({
-        action: Actions.SHARE_AND_EMBED_MODAL_CLOSE
-      });
-    }
-
-    function render() {
-      var modalIsOpen = storyteller.shareAndEmbedStore.isOpen();
-
-      if (modalIsOpen) {
-
-        $shareAndEmbed.find('.share-and-embed-preview-iframe').
-          attr(
-            'src',
-            storyteller.shareAndEmbedStore.getStoryWidgetUrl()
-          );
-      }
-
-      toggleModal(modalIsOpen);
-    }
-
-    function toggleModal(show) {
-      $shareAndEmbed.trigger(
-        show ? 'modal-open' : 'modal-close'
-      );
-    }
+    return (
+        '<div>' +
+          StorytellerUtils.format('<h2 class="modal-input-label input-label">{0}</h2>', t('editor.share_and_embed.modal.story_url_label')) +
+          StorytellerUtils.format('<input class="share-and-embed-story-url" type="text" readonly value="{0}">', storyUrl) +
+          '<hr>' +
+          StorytellerUtils.format('<h2 class="modal-input-label input-label">{0}</h2>', t('editor.share_and_embed.modal.embed_code_label')) +
+          StorytellerUtils.format('<textarea class="share-and-embed-embed-code" readonly>{0}</textarea>', storyWidgetEmbedCode) +
+          StorytellerUtils.format('<h2 class="modal-input-label input-label">{0}</h2>', t('editor.share_and_embed.modal.preview_label')) +
+          '<iframe src="about:blank" class="share-and-embed-preview-iframe"></iframe>' +
+          '<div class="modal-button-group r-to-l">' +
+            StorytellerUtils.format('<button class="btn-default btn-inverse" data-action="{0}">{1}</button>', Actions.SHARE_AND_EMBED_MODAL_CLOSE, t('editor.modal.buttons.done')) +
+          '</div>' +
+        '</div>'
+    );
   }
 
-  storyteller.ShareAndEmbedRenderer = ShareAndEmbedRenderer;
-})();
+  function compileDOM() {
+    $shareAndEmbed = $('<div>', { id: 'share-and-embed-modal' }).modal({
+      title: t('editor.share_and_embed.modal.heading'),
+      content: $(template())
+    });
+
+    $(document.body).append($shareAndEmbed);
+  }
+
+  function attachEvents() {
+    $shareAndEmbed.on('click', '[data-action="SHARE_AND_EMBED_MODAL_CLOSE"]', handleModalDismissed);
+    $shareAndEmbed.on('modal-dismissed', handleModalDismissed);
+    $shareAndEmbed.on('focus', '.share-and-embed-story-url', function() { $(this).select(); });
+    $shareAndEmbed.on('focus', '.share-and-embed-embed-code', function() { $(this).select(); });
+  }
+
+  function detachEvents() {
+    $shareAndEmbed.off('click', '[data-action="SHARE_AND_EMBED_MODAL_CLOSE"]', handleModalDismissed);
+    $shareAndEmbed.off('modal-dismissed', handleModalDismissed);
+  }
+
+  function handleModalDismissed() {
+    dispatcher.dispatch({
+      action: Actions.SHARE_AND_EMBED_MODAL_CLOSE
+    });
+  }
+
+  function render() {
+    var modalIsOpen = shareAndEmbedStore.isOpen();
+
+    if (modalIsOpen) {
+
+      $shareAndEmbed.find('.share-and-embed-preview-iframe').
+        attr(
+          'src',
+          shareAndEmbedStore.getStoryWidgetUrl()
+        );
+    }
+
+    toggleModal(modalIsOpen);
+  }
+
+  function toggleModal(show) {
+    $shareAndEmbed.trigger(
+      show ? 'modal-open' : 'modal-close'
+    );
+  }
+}

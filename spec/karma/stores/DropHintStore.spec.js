@@ -1,11 +1,22 @@
-describe('DropHintStore', function() {
-  'use strict';
+import _ from 'lodash';
 
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import DropHintStore, {__RewireAPI__ as DropHintStoreAPI} from '../../../app/assets/javascripts/editor/stores/DropHintStore';
+
+describe('DropHintStore', function() {
+
+  var dispatcher;
+  var dropHintStore;
+  var storyExists;
+  var validStoryUid = 'test-test';
+  var invalidStoryUid = 'invalid-story';
+  var invalidBlockId = 'invalid-block';
   var testBlockContent = 'testBlockContent';
-  var storyteller = window.socrata.storyteller;
 
   function dragOver(storyUid, blockContent) {
-    storyteller.dispatcher.dispatch({
+    dispatcher.dispatch({
       action: Actions.STORY_DRAG_OVER,
       storyUid: storyUid,
       pointer: {},
@@ -15,78 +26,97 @@ describe('DropHintStore', function() {
   }
 
   function dragLeave(storyUid) {
-    storyteller.dispatcher.dispatch({
+    dispatcher.dispatch({
       action: Actions.STORY_DRAG_LEAVE,
       storyUid: storyUid
     });
   }
 
   function dragDrop(storyUid) {
-    storyteller.dispatcher.dispatch({
+    dispatcher.dispatch({
       action: Actions.STORY_DROP,
       storyUid: storyUid
     });
   }
 
+  beforeEach(function() {
+    storyExists = true;
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+
+    var StoryStoreMock = function() {
+      _.extend(this, new Store());
+      this.storyExists = function() {
+        return storyExists;
+      };
+    };
+
+    DropHintStoreAPI.__Rewire__('dispatcher', dispatcher);
+    DropHintStoreAPI.__Rewire__('storyStore', new StoryStoreMock());
+
+    dropHintStore = new DropHintStore();
+  });
 
   describe('given STORY_DRAG_OVER action', function() {
     describe('with a valid storyUid and blockId', function() {
       it('should update its hint position', function(done) {
-        storyteller.dropHintStore.addChangeListener(function() {
-          var hint = storyteller.dropHintStore.getDropHintPosition();
-          assert.equal(hint.storyUid, standardMocks.validStoryUid);
+        dropHintStore.addChangeListener(function() {
+          var hint = dropHintStore.getDropHintPosition();
+          assert.equal(hint.storyUid, validStoryUid);
           assert.equal(hint.dropIndex, 0);
           done();
         });
 
-        dragOver(standardMocks.validStoryUid, testBlockContent);
+        dragOver(validStoryUid, testBlockContent);
       });
 
       describe('but then an invalid storyId', function() {
         it('should clear its hint position', function(done) {
-          dragOver(standardMocks.validStoryUid, testBlockContent);
+          dragOver(validStoryUid, testBlockContent);
 
-          storyteller.dropHintStore.addChangeListener(function() {
-            var hint = storyteller.dropHintStore.getDropHintPosition();
+          dropHintStore.addChangeListener(function() {
+            var hint = dropHintStore.getDropHintPosition();
             assert.isNull(hint);
             done();
           });
 
-          dragOver(standardMocks.invalidStoryUid, standardMocks.invalidBlockId);
+          storyExists = false;
+          dragOver(invalidStoryUid, invalidBlockId);
         });
       });
 
       describe('but then a STORY_DRAG_LEAVE event', function() {
         describe('over some other story', function() {
           it('should preserve the existing hint', function() {
-            dragOver(standardMocks.validStoryUid, testBlockContent);
-            var originalHint = storyteller.dropHintStore.getDropHintPosition();
+            dragOver(validStoryUid, testBlockContent);
+            var originalHint = dropHintStore.getDropHintPosition();
             assert.isNotNull(originalHint);
 
-            storyteller.dropHintStore.addChangeListener(function() {
+            dropHintStore.addChangeListener(function() {
               throw new Error('expected no change');
             });
 
-            dragLeave(standardMocks.invalidStoryUid);
+            dragLeave(invalidStoryUid);
 
-            var hint = storyteller.dropHintStore.getDropHintPosition();
+            var hint = dropHintStore.getDropHintPosition();
             assert.equal(hint, originalHint);
 
           });
         });
         describe('over the dragged story', function() {
           it('should clear the hint', function(done) {
-            dragOver(standardMocks.validStoryUid, testBlockContent);
-            var originalHint = storyteller.dropHintStore.getDropHintPosition();
+            dragOver(validStoryUid, testBlockContent);
+            var originalHint = dropHintStore.getDropHintPosition();
             assert.isNotNull(originalHint);
 
-            storyteller.dropHintStore.addChangeListener(function() {
-              var hint = storyteller.dropHintStore.getDropHintPosition();
+            dropHintStore.addChangeListener(function() {
+              var hint = dropHintStore.getDropHintPosition();
               assert.isNull(hint);
               done();
             });
 
-            dragLeave(standardMocks.validStoryUid);
+            dragLeave(validStoryUid);
           });
         });
       });
@@ -96,22 +126,22 @@ describe('DropHintStore', function() {
   describe('given STORY_DROP action', function() {
     describe('while dragging over the story', function() {
       it('should clear the reorder hint position', function(done) {
-        dragOver(standardMocks.validStoryUid, testBlockContent);
+        dragOver(validStoryUid, testBlockContent);
         assert.deepEqual(
-          storyteller.dropHintStore.getDropHintPosition(standardMocks.validStoryUid),
+          dropHintStore.getDropHintPosition(validStoryUid),
           {
-            storyUid: standardMocks.validStoryUid,
+            storyUid: validStoryUid,
             dropIndex: 0
           }
         );
 
-        storyteller.dropHintStore.register(function() {
+        dropHintStore.register(function() {
           assert.isNull(
-            storyteller.dropHintStore.getDropHintPosition(standardMocks.validStoryUid)
+            dropHintStore.getDropHintPosition(validStoryUid)
           );
           done();
         });
-        dragDrop(standardMocks.validStoryUid, standardMocks.validBlockData1);
+        dragDrop(validStoryUid);
 
       });
     });
@@ -119,37 +149,34 @@ describe('DropHintStore', function() {
     describe('while not dragging', function() {
       it('should invoke no further action', function() {
         var spy = sinon.spy();
-        storyteller.dispatcher.register(spy);
-        dragDrop(standardMocks.validStoryUid, standardMocks.validBlockId);
+        dispatcher.register(spy);
+        dragDrop(validStoryUid);
         assert(spy.calledOnce); // Once for the STORY_DROP generated by dragDrop in the test.
       });
     });
-
   });
 
   describe('isDraggingOverStory', function() {
     describe('while not dragging', function() {
       it('should return false', function() {
-        assert.isFalse(storyteller.dropHintStore.isDraggingOverStory(standardMocks.validStoryUid));
+        assert.isFalse(dropHintStore.isDraggingOverStory(validStoryUid));
       });
     });
 
     describe('while dragging', function() {
       beforeEach(function() {
-        dragOver(standardMocks.validStoryUid, testBlockContent);
+        dragOver(validStoryUid, testBlockContent);
       });
       describe('over the story in the argument', function() {
         it('should return true', function() {
-          assert.isTrue(storyteller.dropHintStore.isDraggingOverStory(standardMocks.validStoryUid));
+          assert.isTrue(dropHintStore.isDraggingOverStory(validStoryUid));
         });
       });
       describe('over a story other than the one in the argument', function() {
         it('should return false', function() {
-          assert.isFalse(storyteller.dropHintStore.isDraggingOverStory(standardMocks.invalidStoryUid));
+          assert.isFalse(dropHintStore.isDraggingOverStory(invalidStoryUid));
         });
       });
     });
-
   });
-
 });

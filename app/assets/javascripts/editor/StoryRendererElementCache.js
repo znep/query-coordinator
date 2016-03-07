@@ -1,89 +1,73 @@
-(function(root) {
+import _ from 'lodash';
+import StorytellerUtils from '../StorytellerUtils';
 
-  'use strict';
+export default function StoryRendererElementCache() {
+  var _elements = {};
 
-  function StoryRendererElementCache() {
+  this.getBlock = function(blockId) {
+    var element = null;
 
-    var _elements = {};
+    if (_elements.hasOwnProperty(blockId)) {
+      element = _elements[blockId].blockElement;
+    }
 
-    this.getBlock = function(blockId) {
+    return element;
+  };
 
-      var element = null;
+  this.getComponent = function(blockId, componentIndex) {
+    StorytellerUtils.assertHasProperty(_elements, blockId);
+    StorytellerUtils.assert(
+      _elements[blockId].components.length > componentIndex,
+      StorytellerUtils.format(
+        'block with id "{0}"" does not have a component at index {1}.',
+        blockId,
+        componentIndex
+      )
+    );
 
-      if (_elements.hasOwnProperty(blockId)) {
-        element = _elements[blockId].blockElement;
-      }
+    return _elements[blockId].components[componentIndex];
+  };
 
-      return element;
-    };
+  this.setBlock = function(blockId, componentCount, blockElement) {
+    if (!_elements.hasOwnProperty(blockId)) {
+      _elements[blockId] = {};
+    }
 
-    this.getComponent = function(blockId, componentIndex) {
+    _elements[blockId].blockElement = blockElement;
+    _elements[blockId].components = [];
+    _elements[blockId].components.length = componentCount;
+  };
 
-      if (!_elements.hasOwnProperty(blockId)) {
-        throw new Error(
-          'block with id "' + blockId + '" is not present in cache'
-        );
-      }
+  this.setComponent = function(blockId, componentIndex, componentElement) {
+    var components;
 
-      if (_elements[blockId].components.length <= componentIndex) {
-        throw new Error(
-          'block with id "' +
-          blockId +
-          '" does not have a component at index ' +
-          componentIndex +
-          '.'
-        );
-      }
+    if (!_elements.hasOwnProperty(blockId)) {
+      _elements[blockId] = {};
+    }
 
-      return _elements[blockId].components[componentIndex];
-    };
-
-    this.setBlock = function(blockId, componentCount, blockElement) {
-
-      if (!_elements.hasOwnProperty(blockId)) {
-        _elements[blockId] = {};
-      }
-
-      _elements[blockId].blockElement = blockElement;
+    if (!_elements[blockId].hasOwnProperty('components')) {
       _elements[blockId].components = [];
-      _elements[blockId].components.length = componentCount;
-    };
+    }
 
-    this.setComponent = function(blockId, componentIndex, componentElement) {
+    components = _elements[blockId].components;
 
-      var components;
+    if (components.length <= componentIndex) {
+      components.length = componentIndex + 1;
+    }
 
-      if (!_elements.hasOwnProperty(blockId)) {
-        _elements[blockId] = {};
-      }
+    components[componentIndex] = componentElement;
+  };
 
-      if (!_elements[blockId].hasOwnProperty('components')) {
-        _elements[blockId].components = [];
-      }
+  this.getUnusedBlockIds = function(currentBlockIds) {
+    var blockIdsToRemove = _.difference(
+      Object.keys(_elements),
+      currentBlockIds
+    );
 
-      components = _elements[blockId].components;
+    return blockIdsToRemove;
+  };
 
-      if (components.length <= componentIndex) {
-        components.length = componentIndex + 1;
-      }
-
-      components[componentIndex] = componentElement;
-    };
-
-    this.getUnusedBlockIds = function(currentBlockIds) {
-
-      var blockIdsToRemove = _.difference(
-        Object.keys(_elements),
-        currentBlockIds
-      );
-
-      return blockIdsToRemove;
-    };
-
-    this.flushBlock = function(blockId) {
-      delete _elements[blockId];
-    };
-  }
-
-  root.socrata.storyteller.StoryRendererElementCache = StoryRendererElementCache;
-})(window);
+  this.flushBlock = function(blockId) {
+    delete _elements[blockId];
+  };
+}

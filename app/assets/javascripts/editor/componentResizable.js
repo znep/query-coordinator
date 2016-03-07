@@ -1,97 +1,100 @@
-(function(root, $) {
+import $ from 'jQuery';
+import _ from 'lodash';
+import Unidragger from 'unidragger';
 
-  'use strict';
+import Actions from './Actions';
+import StorytellerUtils from '../StorytellerUtils';
+import { dispatcher } from './Dispatcher';
+import { storyStore } from './stores/StoryStore';
 
-  var socrata = root.socrata;
-  var utils = socrata.utils;
-  var storyteller = socrata.storyteller;
+var RESIZABLE_CLASS_NAME = 'component-resizable';
+var MIN_HEIGHT_DATA_ATTR_NAME = 'data-resizable-min-height';
 
-  var RESIZABLE_CLASS_NAME = 'component-resizable';
-  var MIN_HEIGHT_DATA_ATTR_NAME = 'data-resizable-min-height';
+/**
+ * Makes the current component resizable, will append a resize handle.
+ *
+ * On resize, the component's `layout.height` property will be set
+ * via Actions.BLOCK_UPDATE_COMPONENT.
+ *
+ * The block ID and component index are determined by looking for
+ * `data-block-id` and `data-component-index` attributes walking up
+ * the DOM tree.
+ *
+ * @param {object} options - Configuration. Optional. Keys:
+ *   minHeight: {Number} - Minimum allowed height. Default: 1
+ */
+$.fn.componentResizable = componentResizable;
 
-  function DragResizer($elementToResize, $resizeHandle) {
-    var self = this;
-    self.handles = $resizeHandle; // Unidragger's bindHandles reads this.
+export default function componentResizable(options) {
+  var $this = $(this);
+  var resizer;
+  var $resizeHandle;
+  options = _.extend({ minHeight: 1 }, options);
 
-    self.dragStart = function() {
-      $elementToResize.closest('.block-edit').add(document.body).addClass('is-resizing');
-      self.heightAtDragStart = $elementToResize.height();
-      self.minHeight = parseInt($elementToResize.attr(MIN_HEIGHT_DATA_ATTR_NAME), 10);
-    };
+  StorytellerUtils.assertIsOneOfTypes(options.minHeight, 'number');
 
-    self.dragMove = function(event, pointer, moveVector) {
-      var component;
-      var newHeight = Math.max(
-        self.minHeight,
-        self.heightAtDragStart + moveVector.y
-      );
+  if (!$this.hasClass(RESIZABLE_CLASS_NAME)) {
+    $this.append('<div class="component-resize-handle"><div></div></div>');
+    $resizeHandle = $this.find('.component-resize-handle');
+    $this.addClass(RESIZABLE_CLASS_NAME);
 
-      var blockId = utils.findClosestAttribute($elementToResize, 'data-block-id');
-      var componentIndex = utils.findClosestAttribute($elementToResize, 'data-component-index');
-
-      utils.assert(!_.isEmpty(blockId),
-        'data-block-id attribute must be set on self or a parent');
-      utils.assert(!_.isEmpty(componentIndex),
-        'data-component-index attribute must be set on self or a parent');
-
-      component = storyteller.storyStore.getBlockComponentAtIndex(blockId, componentIndex);
-
-      _.set(component, 'value.layout.height', newHeight);
-      storyteller.dispatcher.dispatch({
-        action: Actions.BLOCK_UPDATE_COMPONENT,
-        blockId: blockId,
-        componentIndex: componentIndex,
-        type: component.type,
-        value: component.value
-      });
-    };
-
-    self.dragEnd = function() {
-      $elementToResize.closest('.block-edit').add(document.body).removeClass('is-resizing');
-    };
-  }
-
-  DragResizer.prototype = Unidragger.prototype;
-
-  function initResizer($this, $resizeHandle) {
-    var resizer = new DragResizer($this, $resizeHandle);
+    resizer = new DragResizer($this, $resizeHandle);
     resizer.bindHandles();
+
+    $this.one('destroy', function() {
+      $resizeHandle.remove();
+    });
   }
 
-  /**
-   * Makes the current component resizable, will append a resize handle.
-   *
-   * On resize, the component's `layout.height` property will be set
-   * via Actions.BLOCK_UPDATE_COMPONENT.
-   *
-   * The block ID and component index are determined by looking for
-   * `data-block-id` and `data-component-index` attributes walking up
-   * the DOM tree.
-   *
-   * @param {object} options - Configuration. Optional. Keys:
-   *   minHeight: {Number} - Minimum allowed height. Default: 1
-   */
-  function componentResizable(options) {
-    var $this = $(this);
-    var $resizeHandle;
-    options = _.extend({ minHeight: 1 }, options);
+  $this.attr(MIN_HEIGHT_DATA_ATTR_NAME, options.minHeight);
 
-    utils.assertIsOneOfTypes(options.minHeight, 'number');
+  return $this;
+}
 
-    if (!$this.hasClass(RESIZABLE_CLASS_NAME)) {
-      $this.append('<div class="component-resize-handle"><div></div></div>');
-      $resizeHandle = $this.find('.component-resize-handle');
-      $this.addClass(RESIZABLE_CLASS_NAME);
-      initResizer($this, $resizeHandle);
-      $this.one('destroy', function() {
-        $resizeHandle.remove();
-      });
-    }
+export function DragResizer($elementToResize, $resizeHandle) {
+  var self = this;
+  self.handles = $resizeHandle; // Unidragger's bindHandles reads this.
 
-    $this.attr(MIN_HEIGHT_DATA_ATTR_NAME, options.minHeight);
+  self.dragStart = function() {
+    $elementToResize.closest('.block-edit').add(document.body).addClass('is-resizing');
+    self.heightAtDragStart = $elementToResize.height();
+    self.minHeight = parseInt($elementToResize.attr(MIN_HEIGHT_DATA_ATTR_NAME), 10);
+  };
 
-    return $this;
-  }
+  self.dragMove = function(event, pointer, moveVector) {
+    var component;
+    var newHeight = Math.max(
+      self.minHeight,
+      self.heightAtDragStart + moveVector.y
+    );
 
-  $.fn.componentResizable = componentResizable;
-})(window, jQuery);
+    var blockId = StorytellerUtils.findClosestAttribute($elementToResize, 'data-block-id');
+    var componentIndex = StorytellerUtils.findClosestAttribute($elementToResize, 'data-component-index');
+
+    StorytellerUtils.assert(
+      !_.isEmpty(blockId),
+      'data-block-id attribute must be set on self or a parent'
+    );
+    StorytellerUtils.assert(
+      !_.isEmpty(componentIndex),
+      'data-component-index attribute must be set on self or a parent'
+    );
+
+    component = storyStore.getBlockComponentAtIndex(blockId, componentIndex);
+
+    _.set(component, 'value.layout.height', newHeight);
+    dispatcher.dispatch({
+      action: Actions.BLOCK_UPDATE_COMPONENT,
+      blockId: blockId,
+      componentIndex: componentIndex,
+      type: component.type,
+      value: component.value
+    });
+  };
+
+  self.dragEnd = function() {
+    $elementToResize.closest('.block-edit').add(document.body).removeClass('is-resizing');
+  };
+}
+
+DragResizer.prototype = Unidragger.prototype;

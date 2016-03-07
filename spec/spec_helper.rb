@@ -345,20 +345,20 @@ end
 
 def current_story_json
   page.evaluate_script(
-    "storyteller.storyStore.serializeStory(storyteller.userStoryUid)"
+    "storyteller.storyStore.serializeStory(window.STORY_UID)"
   )
 end
 
 # Get number of blocks in the current story
 def block_count
   page.evaluate_script(
-    'storyteller.storyStore.getStoryBlockIds(storyteller.userStoryUid).length'
+    'storyteller.storyStore.getStoryBlockIds(window.STORY_UID).length'
   )
 end
 
 def block_component_at_index(block_index)
   block_id = page.evaluate_script(
-    "storyteller.storyStore.getStoryBlockIds(storyteller.userStoryUid)[#{block_index}]"
+    "storyteller.storyStore.getStoryBlockIds(window.STORY_UID)[#{block_index}]"
   )
 
   {

@@ -1,6 +1,13 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import UserSessionStore from '../../../app/assets/javascripts/editor/stores/UserSessionStore';
+
 describe('UserSessionStore', function() {
-  'use strict';
-  var storyteller = window.socrata.storyteller;
+
+  var dispatcher;
   var store;
   var server;
   var ajaxErrorStub;
@@ -28,10 +35,9 @@ describe('UserSessionStore', function() {
 
 
   beforeEach(function() {
-    // Since these tests actually expect to use AJAX, we need to disable the
-    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-    // and re-enble it after each.
-    window.mockedXMLHttpRequest.restore();
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
 
     server = sinon.fakeServer.create();
     server.autoRespond = true;
@@ -39,16 +45,15 @@ describe('UserSessionStore', function() {
   });
 
   afterEach(function() {
-    server.restore();
+    StoreAPI.__ResetDependency__('dispatcher', dispatcher);
 
-    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
+    server.restore();
   });
 
   describe('instance', function() {
     beforeEach(function() {
       ajaxErrorStub = sinon.stub($.fn, 'ajaxError', _.noop);
-      store = new storyteller.UserSessionStore({
+      store = new UserSessionStore({
         sessionCheckDebounceMilliseconds: 1,
         cookieCheckIntervalMilliseconds: 1
       });
@@ -97,7 +102,7 @@ describe('UserSessionStore', function() {
           _.defer(function() {
             // Must defer, we're simulating user interactions here.
             // Otherwise " Cannot dispatch in the middle of a dispatch." error.
-            storyteller.dispatcher.dispatch({ action: 'LOGIN_BUTTON_CLICK' });
+            dispatcher.dispatch({ action: 'LOGIN_BUTTON_CLICK' });
             done();
           });
         });

@@ -1,49 +1,76 @@
+import $ from 'jQuery';
+import _ from 'lodash';
+
+import StandardMocks from '../StandardMocks';
+import story from '../fixtures/Story';
+
+import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
+import Actions from '../../../app/assets/javascripts/editor/Actions';
+import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
+import AssetSelectorRenderer, {__RewireAPI__ as AssetSelectorRendererAPI} from '../../../app/assets/javascripts/editor/renderers/AssetSelectorRenderer';
+import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import AssetSelectorStore, {__RewireAPI__ as AssetSelectorStoreAPI, WIZARD_STEP} from '../../../app/assets/javascripts/editor/stores/AssetSelectorStore';
+
 describe('AssetSelectorRenderer', function() {
-  'use strict';
 
-  var storyteller = window.socrata.storyteller;
-
+  var testDom;
   var container;
   var options;
   var testBlockId = 'testBlock1';
   var testComponentIndex = 1;
-  var AssetSelectorRenderer;
+  var assetSelectorStoreMock;
   var server;
+  var dispatcher;
 
   beforeEach(function() {
-    // Since these tests actually expect to use AJAX, we need to disable the
-    // mocked XMLHttpRequest (which happens in StandardMocks) before each,
-    // and re-enble it after each.
-    window.mockedXMLHttpRequest.restore();
-
     server = sinon.fakeServer.create();
 
-    AssetSelectorRenderer = storyteller.AssetSelectorRenderer;
-
+    testDom = $('<div>');
     container = $('<div>', { 'class': 'asset-selector-container' });
-
     testDom.append(container);
+
+    $(document.body).append(testDom);
 
     options = {
       assetSelectorContainerElement: testDom.find('.asset-selector-container')
     };
+
+    dispatcher = new Dispatcher();
+
+    StoreAPI.__Rewire__('dispatcher', dispatcher);
+    AssetSelectorStoreAPI.__Rewire__('dispatcher', dispatcher);
+    AssetSelectorStoreAPI.__Rewire__('storyStore', {
+      getBlockComponentAtIndex: _.constant({
+        type: 'image'
+      })
+    });
+
+    assetSelectorStoreMock = new AssetSelectorStore();
+
+    AssetSelectorRendererAPI.__Rewire__('dispatcher', dispatcher);
+    AssetSelectorRendererAPI.__Rewire__('assetSelectorStore', assetSelectorStoreMock);
+
+    dispatcher.dispatch({
+      action: Actions.STORY_CREATE,
+      data: story()
+    });
   });
 
   afterEach(function() {
+    testDom.remove();
     server.restore();
 
-    // See comment above re: temporarily disabling the mocked XMLHttpRequest.
-    window.mockedXMLHttpRequest = sinon.useFakeXMLHttpRequest();
+    StoreAPI.__ResetDependency__('dispatcher');
+    AssetSelectorStoreAPI.__ResetDependency__('dispatcher');
+    AssetSelectorStoreAPI.__ResetDependency__('storeStore');
+    AssetSelectorRendererAPI.__ResetDependency__('dispatcher');
+    AssetSelectorRendererAPI.__ResetDependency__('assetSelectorStore');
   });
 
   describe('constructor', function() {
-
     describe('when passed a configuration object', function() {
-
       describe('with no `assetSelectorContainerElement` property', function() {
-
         it('raises an exception', function() {
-
           delete options.assetSelectorContainerElement;
 
           assert.throws(function() {
@@ -53,9 +80,7 @@ describe('AssetSelectorRenderer', function() {
       });
 
       describe('with an `assetSelectorContainerElement` property that is not a jQuery object', function() {
-
         it('raises an exception', function() {
-
           options.assetSelectorContainerElement = {};
 
           assert.throws(function() {
@@ -65,11 +90,10 @@ describe('AssetSelectorRenderer', function() {
       });
 
       describe('with an `assetSelectorContainerElement` property that is a jQuery object', function() {
-
-        it('appends a `.modal-dialog` to the `assetSelectorContainerElement`', function() {
-
+        it('appends a `.modal-overlay` and a `.modal-dialog` to the `assetSelectorContainerElement`', function() {
           new AssetSelectorRenderer(options); //eslint-disable-line no-new
 
+          assert.equal(container.find('.modal-overlay').length, 1);
           assert.equal(container.find('.modal-dialog').length, 1);
         });
       });
@@ -77,20 +101,18 @@ describe('AssetSelectorRenderer', function() {
   });
 
   describe('event handlers', function() {
-
     beforeEach(function() {
       new AssetSelectorRenderer(options); //eslint-disable-line no-new
     });
 
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the escape key is pressed', function(done) {
-
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      storyteller.dispatcher.register(function(payload) {
+      dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Actions.ASSET_SELECTOR_CLOSE);
         done();
@@ -102,32 +124,30 @@ describe('AssetSelectorRenderer', function() {
       $(document).trigger(event);
     });
 
-    it('dispatches an `ASSET_SELECTOR_CLOSE` action when the area outside modal-dialog is clicked', function(done) {
-
-      storyteller.dispatcher.dispatch({
+    it('dispatches an `ASSET_SELECTOR_CLOSE` action when the overlay is clicked', function(done) {
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      storyteller.dispatcher.register(function(payload) {
+      dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Actions.ASSET_SELECTOR_CLOSE);
         done();
       });
 
-      container.trigger('click');
+      container.find('.modal-overlay').trigger('click');
     });
 
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the modal dialog close button is clicked', function(done) {
-
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      storyteller.dispatcher.register(function(payload) {
+      dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Actions.ASSET_SELECTOR_CLOSE);
         done();
@@ -138,14 +158,14 @@ describe('AssetSelectorRenderer', function() {
 
     describe('event triggered in youtube url field', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
           provider: 'YOUTUBE'
         });
       });
-      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
 
-        storyteller.dispatcher.register(function(payload) {
+      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
+        dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
           assert.equal(payload.url, '');
@@ -159,8 +179,7 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a delete key', function(done) {
-
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
           assert.equal(payload.url, '');
@@ -174,8 +193,7 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a cut event from the youtube url input control', function(done) {
-
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
           assert.equal(payload.url, '');
@@ -186,8 +204,7 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a paste event from the youtube url input control', function(done) {
-
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
           assert.equal(payload.url, '');
@@ -203,12 +220,12 @@ describe('AssetSelectorRenderer', function() {
         var payloadUrl = 'https://validurl.com/image.png';
         var payloadDocumentId = '12345';
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
           provider: 'IMAGE'
         });
 
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.FILE_UPLOAD_DONE,
           url: payloadUrl,
           documentId: payloadDocumentId
@@ -216,8 +233,7 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a keyup event from the image description input field where `.keyCode` is a character', function(done) {
-
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
           assert.equal(payload.altAttribute, 'Hey alt');
@@ -236,8 +252,7 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a keyup event from the image description input field where `.keyCode` is a delete key', function(done) {
-
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
           assert.equal(payload.altAttribute, 'Hey alt');
@@ -256,8 +271,7 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a cut event from the image description input field', function(done) {
-
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
           assert.equal(payload.altAttribute, 'Hey alt');
@@ -273,8 +287,7 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a paste event from the image description input field', function(done) {
-
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
           assert.equal(payload.altAttribute, 'Hey alt');
@@ -291,8 +304,7 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event', function(done) {
-
-      storyteller.dispatcher.register(function(payload) {
+      dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
         // the values will be empty, but assert that the event adds the keys
@@ -305,7 +317,7 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('dispatches `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
-      storyteller.dispatcher.register(function(payload) {
+      dispatcher.register(function(payload) {
         if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
           // the values will be empty, but assert that the event adds the correct keys
           assert.property(payload, 'visualization');
@@ -314,20 +326,22 @@ describe('AssetSelectorRenderer', function() {
         }
       });
 
-      storyteller.assetSelectorStore.addChangeListener(_.once(function() {
+      assetSelectorStoreMock.addChangeListener(_.once(function() {
         container.find('.modal-dialog').trigger('visualizationSelected', {format: 'vif', data: {}});
       }));
 
       // add dataset so the proper component values are there for updating
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-        datasetUid: standardMocks.validStoryUid,
+        datasetUid: StandardMocks.validStoryUid,
         isNewBackend: true
       });
       server.respond([200, {}, '{}']);
     });
 
-    describe('select file in image upload', function() {
+    xdescribe('select file in image upload', function() {
+      var cancelSpy;
+      var uploadSpy;
       var mockFile = {
         name: 'fake-file.png',
         type: 'image/png',
@@ -335,39 +349,33 @@ describe('AssetSelectorRenderer', function() {
       };
 
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        cancelSpy = sinon.spy();
+        uploadSpy = sinon.spy();
+
+        AssetSelectorRendererAPI.__Rewire__('fileUploader', {
+          cancel: cancelSpy,
+          upload: uploadSpy
+        });
+
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         });
       });
 
+      afterEach(function() {
+        AssetSelectorRendererAPI.__ResetDependency__('fileUploader');
+      });
+
       it('verifies a file is selected before starting an upload', function() {
         container.find('[data-asset-selector-validate-field="imageUpload"]').trigger('change', { target: { files: [] }});
-        assert.isTrue(storyteller.fileUploader === undefined);
+        assert.isFalse(cancelSpy.called);
+        assert.isFalse(uploadSpy.called);
       });
 
       it('starts uploading the selected file', function() {
         container.find('[data-asset-selector-validate-field="imageUpload"]').trigger('change', { target: { files: [mockFile] }});
-        assert.isTrue(storyteller.fileUploader !== null);
-      });
-
-      // TODO No easy way to test this with the current implementation.
-      // Need to move it into a singleton.
-      xdescribe('when an upload is already in progress', function() {
-        beforeEach(function() {
-          storyteller.FileUploaderMocker.mock();
-          storyteller.fileUploader = new storyteller.FileUploader();
-          sinon.spy(storyteller.fileUploader, 'destroy');
-        });
-
-        afterEach(function() {
-          storyteller.FileUploaderMocker.unmock();
-          delete storyteller.fileUploader;
-        });
-
-        it('cancels previous uploads in progress', function() {
-          container.find('[data-asset-selector-validate-field="imageUpload"]').trigger('change', { target: { files: [mockFile] }});
-          assert.isTrue(storyteller.fileUploader.destroy.calledOnce);
-        });
+        assert.isTrue(cancelSpy.called);
+        assert.isTrue(uploadSpy.called);
       });
     });
   });
@@ -379,7 +387,7 @@ describe('AssetSelectorRenderer', function() {
 
     it('renders the "choose provider" content on an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` event', function() {
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -397,14 +405,14 @@ describe('AssetSelectorRenderer', function() {
       var payloadUrl = 'https://validurl.com/image.png';
       var payloadDocumentId = '12345';
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
         componentIndex: testComponentIndex,
         provider: 'IMAGE'
       });
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.FILE_UPLOAD_DONE,
         url: payloadUrl,
         documentId: payloadDocumentId
@@ -417,8 +425,7 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('renders the "choose YouTube" content on an appropriate `ASSET_SELECTOR_PROVIDER_CHOSEN` event', function() {
-
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
         componentIndex: testComponentIndex,
@@ -431,8 +438,7 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('renders the YouTube preview in the default state when no url has been supplied', function() {
-
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
         componentIndex: testComponentIndex,
@@ -444,8 +450,7 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('renders the YouTube preview in the invalid state when an invalid YouTube url has been supplied', function() {
-
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
         componentIndex: testComponentIndex,
@@ -454,21 +459,19 @@ describe('AssetSelectorRenderer', function() {
 
       container.find('[data-asset-selector-validate-field="youtubeId"]').val('invalid');
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
         url: 'invalid'
       });
 
       assert.isTrue(container.find('.asset-selector-preview-container').hasClass('invalid'));
       assert.equal(container.find('iframe').attr('src'), 'about:blank');
-
     });
 
     it('renders the YouTube preview with the iframe source set to the url when a valid YouTube video url has been supplied', function() {
-
       var rickRoll = 'https://youtu.be/dQw4w9WgXcQ';
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
         componentIndex: testComponentIndex,
@@ -477,7 +480,7 @@ describe('AssetSelectorRenderer', function() {
 
       container.find('[data-asset-selector-validate-field="youtubeId"]').val(rickRoll);
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
@@ -487,10 +490,9 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('renders the YouTube preview with the iframe source set to the url when valid YouTube embed code has been supplied', function() {
-
       var rickRoll = '<iframe width="420" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: testBlockId,
         componentIndex: testComponentIndex,
@@ -499,7 +501,7 @@ describe('AssetSelectorRenderer', function() {
 
       container.find('[data-asset-selector-validate-field="youtubeId"]').val(rickRoll);
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
@@ -509,8 +511,7 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('closes the modal on an `ASSET_SELECTOR_CLOSE` event', function() {
-
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -518,7 +519,7 @@ describe('AssetSelectorRenderer', function() {
 
       assert.isFalse(container.hasClass('hidden'));
 
-      storyteller.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_CLOSE
       });
 
@@ -526,9 +527,8 @@ describe('AssetSelectorRenderer', function() {
     });
 
     describe('when a `ASSET_SELECTOR_PROVIDER_CHOSEN` action with provider = SOCRATA_VISUALIZATION is fired', function() {
-
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
           provider: 'SOCRATA_VISUALIZATION'
         });
@@ -566,23 +566,24 @@ describe('AssetSelectorRenderer', function() {
             1
           );
         });
-
       });
     });
 
     describe('when a `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
-          storyUid: standardMocks.validStoryUid,
-          blockId: standardMocks.validBlockId,
+          storyUid: StandardMocks.validStoryUid,
+          blockId: StandardMocks.validBlockId,
           componentIndex: 0
         });
-        storyteller.dispatcher.dispatch({
+
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-          datasetUid: standardMocks.validStoryUid,
+          datasetUid: StandardMocks.validStoryUid,
           isNewBackend: true
         });
+
         server.respond([
           200,
           { 'Content-Type': 'application/json' },
@@ -598,13 +599,13 @@ describe('AssetSelectorRenderer', function() {
       it('has a button that goes to the chart visualization page', function() {
         container.find('.btn-visualize-chart').click();
         assert.equal(
-          storyteller.assetSelectorStore.getStep(),
-          storyteller.AssetSelectorStore.WIZARD_STEP.CONFIGURE_VISUALIZATION
+          assetSelectorStoreMock.getStep(),
+          WIZARD_STEP.CONFIGURE_VISUALIZATION
         );
       });
 
       it('has a button that inserts a table', function(done) {
-        storyteller.dispatcher.register(function(payload) {
+        dispatcher.register(function(payload) {
           if (payload.action === Actions.BLOCK_UPDATE_COMPONENT) {
             assert.equal(
               payload.value.vif.type,
@@ -619,7 +620,7 @@ describe('AssetSelectorRenderer', function() {
 
       describe('then `ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP` is fired', function() {
         beforeEach(function() {
-          storyteller.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP
           });
         });
@@ -648,7 +649,9 @@ describe('AssetSelectorRenderer', function() {
           describe('onVisualizationSelected on the iframe', function() {
             var iframe;
             var selectedVisualization = { visualization: 'blob' };
+
             beforeEach(function() {
+              console.log(container.find('iframe')[0]);
               iframe = container.find('iframe')[0];
             });
 
@@ -657,7 +660,7 @@ describe('AssetSelectorRenderer', function() {
             });
 
             it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
-              storyteller.dispatcher.register(function(payload) {
+              dispatcher.register(function(payload) {
                 if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
                   assert.deepEqual(payload.visualization.data, selectedVisualization);
                   assert.deepPropertyVal(payload, 'visualization.format', 'classic');
@@ -673,7 +676,7 @@ describe('AssetSelectorRenderer', function() {
               function StrangeConstructor() {}
               var objectWithStrangeConstructor = new StrangeConstructor();
 
-              storyteller.dispatcher.register(function(payload) {
+              dispatcher.register(function(payload) {
                 if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
                   assert.notInstanceOf(payload.visualization.data, StrangeConstructor);
                   done();
@@ -687,6 +690,7 @@ describe('AssetSelectorRenderer', function() {
           describe('onVisualizationSelectedV2 on the iframe', function() {
             var iframe;
             var selectedVisualizationJson = JSON.stringify({ visualization: 'blob' });
+
             beforeEach(function() {
               iframe = container.find('iframe')[0];
             });
@@ -696,7 +700,7 @@ describe('AssetSelectorRenderer', function() {
             });
 
             it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
-              storyteller.dispatcher.register(function(payload) {
+              dispatcher.register(function(payload) {
                 if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
                   assert.deepEqual(payload.visualization.data, JSON.parse(selectedVisualizationJson));
                   assert.deepPropertyVal(payload, 'visualization.format', 'classic');
@@ -725,18 +729,18 @@ describe('AssetSelectorRenderer', function() {
               1
             );
           });
-
         });
       });
     });
 
     describe('when a `ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD` action is fired', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
           provider: 'IMAGE'
         });
-        storyteller.dispatcher.dispatch({
+
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         });
       });
@@ -770,11 +774,12 @@ describe('AssetSelectorRenderer', function() {
 
     describe('when a `FILE_UPLOAD_PROGRESS` action is fired', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
           provider: 'IMAGE'
         });
-        storyteller.dispatcher.dispatch({
+
+        dispatcher.dispatch({
           action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: 0
         });
@@ -815,11 +820,12 @@ describe('AssetSelectorRenderer', function() {
 
     describe('when a `FILE_UPLOAD_ERROR` action is fired', function() {
       beforeEach(function() {
-        storyteller.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
           provider: 'IMAGE'
         });
-        storyteller.dispatcher.dispatch({
+
+        dispatcher.dispatch({
           action: Actions.FILE_UPLOAD_ERROR,
           error: {
             step: 'get_resource',
@@ -862,19 +868,19 @@ describe('AssetSelectorRenderer', function() {
       var imgEl;
 
       ['IMAGE', 'HERO', 'AUTHOR'].map(function(provider) {
-        describe('while editing component type: {0}'.format(provider), function() {
+        describe(StorytellerUtils.format('while editing component type: {0}', provider), function() {
           beforeEach(function() {
             var blockId;
 
             if (provider === 'IMAGE') {
-              blockId = standardMocks.imageBlockId;
+              blockId = StandardMocks.imageBlockId;
             } else if (provider === 'HERO') {
-              blockId = standardMocks.heroBlockId;
+              blockId = StandardMocks.heroBlockId;
             } else if (provider === 'AUTHOR') {
-              blockId = standardMocks.authorBlockId;
+              blockId = StandardMocks.authorBlockId;
             }
 
-            storyteller.dispatcher.dispatch({
+            dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
               blockId: blockId,
               componentIndex: 0
@@ -882,7 +888,7 @@ describe('AssetSelectorRenderer', function() {
           });
 
           beforeEach(function() {
-            storyteller.dispatcher.dispatch({
+            dispatcher.dispatch({
               action: Actions.FILE_UPLOAD_DONE,
               url: imageUrl,
               documentId: documentId

@@ -157,16 +157,16 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
 
       text_color_swatches = @rte_toolbar.all('.rich-text-editor-toolbar-text-color-panel-color-swatch')
 
-      original_first_theme_default_color = text_color_swatches[3].native.css_value('background-color')
-      original_second_theme_default_color = text_color_swatches[4].native.css_value('background-color')
+      original_first_theme_default_color = text_color_swatches[0].native.css_value('background-color')
+      original_second_theme_default_color = text_color_swatches[1].native.css_value('background-color')
 
       page.find('[data-panel-toggle="style-and-presentation-panel"]').click
       page.find('[data-theme="sans"]').click
 
       text_color_button.click
 
-      new_first_theme_default_color = text_color_swatches[3].native.css_value('background-color')
-      new_second_theme_default_color = text_color_swatches[4].native.css_value('background-color')
+      new_first_theme_default_color = text_color_swatches[0].native.css_value('background-color')
+      new_second_theme_default_color = text_color_swatches[1].native.css_value('background-color')
 
       expect(original_first_theme_default_color).to_not eq(new_first_theme_default_color)
       expect(original_second_theme_default_color).to_not eq(new_second_theme_default_color)

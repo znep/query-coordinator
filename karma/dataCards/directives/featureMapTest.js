@@ -186,7 +186,15 @@ describe('featureMap', function() {
         done();
       });
 
-      createFeatureMap();
+      var fm = createFeatureMap();
+      var visualizationElement = fm.find('.feature-map');
+
+      // We are triggering these events directly on the visualization element to
+      // verify the directive responds to those events appropriately and to avoid
+      // dealing with the inner-workings of the frontend-visualization implementation.
+      // TODO: Update this test when we can stub frontend-visualization entirely in tests.
+      visualizationElement.trigger('SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START');
+      visualizationElement.trigger('SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE');
     });
   });
 

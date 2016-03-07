@@ -91,18 +91,19 @@ describe ::ViewModels::Administration::Georegions do
   before(:each) do
     allow_any_instance_of(CuratedRegion).to receive(:primary_key_columns).and_return(nil)
     allow_any_instance_of(CuratedRegion).to receive(:geometry_label_columns).and_return(nil)
+    allow_any_instance_of(CuratedRegion).to receive(:datetime_added).and_return(DateTime.now)
   end
 
-  it 'calculates enabled count' do
-    expect(subject.enabled_count).to eq(1)
+  it 'calculates default count' do
+    expect(subject.default_count).to eq(1)
   end
 
   it 'calculates available count' do
     expect(subject.available_count).to eq(3)
   end
 
-  it 'has a maximum_enabled_count' do
-    expect(subject.maximum_enabled_count).to eq(5)
+  it 'has a maximum_default_count' do
+    expect(subject.maximum_default_count).to eq(5)
   end
 
   it 'has curated regions' do

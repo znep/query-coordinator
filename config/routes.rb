@@ -105,8 +105,10 @@ Frontend::Application.routes do
       get 'geo/:id', :action => :georegion, :format => 'json'
       get 'geo/:id/configure', :action => :configure_boundary
       post 'geo', :action => :add_georegion
+      post 'geo/poll', :action => :poll_georegion_jobs
       match 'geo/:id/enable', :action => :enable_georegion, :via => [:put, :post]
       match 'geo/:id/disable', :action => :disable_georegion, :via => [:put, :post]
+      match 'geo/:id/:default_flag', :action => :set_georegion_default_status, :via => [:put, :post]
       match 'geo/:id', :action => :edit_georegion, :via => [:put, :post]
       delete 'geo/:id', :action => :remove_georegion
       get :home, :as => 'home_administration'

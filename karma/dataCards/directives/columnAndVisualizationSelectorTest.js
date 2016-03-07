@@ -250,10 +250,6 @@ describe('columnAndVisualizationSelectorTest', function() {
       expect(directive.element.find('.classic-visualization-preview')).to.be.visible;
     });
 
-    it('should display the customizability warning', function() {
-      expect(directive.element.find('.classic-visualization-preview p')).to.be.visible;
-    });
-
     it('should hide the card preview placeholder', function() {
       expect(directive.element.find('.add-card-preview-placeholder')).to.not.be.visible;
     });

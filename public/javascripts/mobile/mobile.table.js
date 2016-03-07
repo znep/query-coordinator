@@ -51,8 +51,8 @@ module.exports = function(values, $target) {
   function handleFiltersUpdated(event, data) {
     tableVIF.filters = data.filters;
 
-    var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_CHANGE_FILTER'); // eslint-disable-line
-    changeEvent.originalEvent = tableVIF;
+    var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
+    changeEvent.originalEvent.detail = tableVIF;
 
     $tableElement.trigger(changeEvent);
   }

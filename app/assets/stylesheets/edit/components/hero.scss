@@ -95,7 +95,7 @@
   .block {
     .hero * {
       text-shadow: 0 0 10px $hero-text-shadow-color;
-      color: $hero-color !important;
+      color: $hero-color;
     }
   }
   .block:first-child {

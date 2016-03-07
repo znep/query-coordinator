@@ -7,6 +7,7 @@ var mobileColumnChart = require('./mobile.columnchart.js');
 var mobileTimelineChart = require('./mobile.timelinechart.js');
 var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
+var mobileTable = require('./mobile.table.js');
 
 require('./../../../node_modules/leaflet/dist/leaflet.css');
 require('./../../../node_modules/socrata-visualizations/dist/socrata-visualizations.css');
@@ -159,6 +160,20 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
 
           mobileColumnChart(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
+
+        case 'table':
+          cardOptions.id = 'table';
+          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+          values = {
+            domain: datasetMetadata.domain,
+            datasetUid: datasetMetadata.id,
+            columnName: card.fieldName
+          };
+
+          mobileTable(values, $cardContainer.find('#table'));
+
+          break;
+
         default:
           break;
       }

@@ -305,10 +305,10 @@ $(function()
             $anchor.click(function(e) {
                 e.preventDefault();
                 datasetPageNS.sidebar.show(dataPaneName);
-                $.analytics.trackEvent(
-                    'dataset page (v4-chrome)',
-                    dataPaneName + ' pane opened',
-                    blist.dataset.id
+                $.analytics && $.analytics.trackEvent(
+                  'dataset page (v4-chrome)',
+                  dataPaneName + ' pane opened',
+                  blist.dataset.id
                 );
             });
         } else {
@@ -768,8 +768,7 @@ $(function()
         }
 
         // report to events analytics for easier aggregation
-        $.analytics.trackEvent('dataset page (v4-chrome)',
-            'page loaded', blist.dataset.id);
+        $.analytics && $.analytics.trackEvent('dataset page (v4-chrome)', 'page loaded', blist.dataset.id);
     });
 
     var datasetShowHelpers = {

@@ -136,10 +136,16 @@ class AdministrationController < ApplicationController
       :set_georegion_default_status, :edit_georegion, :remove_georegion
     ]
   def georegions
+    jobs = incomplete_curated_region_jobs
+    failed_jobs = failed_curated_region_jobs
+    if jobs.nil? || failed_jobs.nil?
+      flash[:notice] = t('screens.admin.georegions.flashes.service_unavailable_html')
+    end
+
     @view_model = ::ViewModels::Administration::Georegions.new(
       CuratedRegion.all,
-      incomplete_curated_region_jobs,
-      failed_curated_region_jobs,
+      incomplete_curated_region_jobs || [],
+      failed_curated_region_jobs || [],
       CurrentDomain.strings.site_title
     )
   end

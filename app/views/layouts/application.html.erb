@@ -10,6 +10,7 @@
   <%= stylesheet_link_tag 'story-view', media: 'all' %>
 
   <script type="text/javascript">
+    window.TRANSLATIONS = <%= current_editor_translations.to_json.html_safe %>;
     window.ENABLE_NEW_STORY_PAGE_VIEW_METRICS = <%= Rails.application.config.enable_new_story_page_view_metrics %>;
   </script>
 

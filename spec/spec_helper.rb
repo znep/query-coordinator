@@ -92,6 +92,7 @@ RSpec.configure do |config|
     # Run seed before each test run
     DatabaseCleaner.start
     system "RAILS_ENV=test rake db:seed"
+    system "RAILS_ENV=test rake webpack"
   end
 
   config.after(:suite) do

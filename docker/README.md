@@ -15,8 +15,19 @@ Optional ENV vars:
 - `STATSD_ENABLED` and `STATSD_SERVER`
 - `TILESERVER_HOSTS` - A comma-separated list of public tileserver API hosts
 
+Additional optional ENV vars for the config/environments/<rails_env>.rb:
+
+- `CACHE_CLASSES` defaults to true
+- `CONSIDER_ALL_REQUESTS_LOCAL` defaults to false
+- `ACTION_CONTROLLER_PERFORM_CACHING` defaults to true
+- `SERVE_STATIC_ASSETS` defaults to true
+- `MEMCACHE_VALUE_MAX_BYTES` defaults to 2000000
+
 _Note: An IP can be provided with `EXTERNAL_IP` that will be used for the `ZOOKEEPER_HOSTS`,
 `CORESERVICE_URI`
+
+_Note: Since the template expansion is done by python, you cannot use ruby-isms
+in the defaults, e.g. 2000 cannot be written as 2\_000.
 
 ## Build locally
 ```

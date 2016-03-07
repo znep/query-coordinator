@@ -242,10 +242,49 @@ describe Browse2Helper do
       expect(helper.browse2_facet_cutoff(facet)).to eq(13)
     end
 
-    it 'returns infinity for the view type facet' do
+    it 'returns 100 for the view type facet' do
       facet = { :singular_description => 'type' }
       allow(CurrentDomain).to receive(:property).and_return({})
-      expect(helper.browse2_facet_cutoff(facet)).to eq(Float::INFINITY)
+      expect(helper.browse2_facet_cutoff(facet)).to eq(100) # Browse2Helper::MAX_FACET_CUTOFF
+    end
+
+    # See EN-3383
+    it 'identifies custom facets and respects custom cutoff' do
+      facet = {
+        'singular_description' => 'superhero',
+        'title' => 'Superhero',
+        'param' => :'Dataset-Information_Superhero',
+        'options' => [
+          { 'summary' => false, 'text' => 'Superman', 'value' => 'Superman' },
+          { 'summary' => false, 'text' => 'Batman', 'value' => 'Batman' },
+          { 'summary' => false, 'text' => 'Flash', 'value' => 'Flash' }
+        ],
+        'extra_options' => [
+          { 'summary' => false, 'text' => 'Spiderman', 'value' => 'Spiderman' },
+          { 'summary' => false, 'text' => 'Hulk', 'value' => 'Hulk' }
+        ]
+      }
+
+      0.upto(6) do |cutoff|
+        facet_cutoffs_catalog = {
+          'topic' => cutoff,
+          'category' => cutoff,
+          'custom' => cutoff
+        }
+
+        allow(CurrentDomain).
+          to receive(:property).
+          with(:facet_cutoffs, :catalog).
+          and_return(facet_cutoffs_catalog)
+
+        expect(helper.browse2_facet_cutoff(facet)).to eq(cutoff)
+      end
+    end
+
+    it 'provides default value to custom facets if not defined' do
+      facet = { :singular_description => 'something custom' }
+      allow(CurrentDomain).to receive(:property).and_return({})
+      expect(helper.browse2_facet_cutoff(facet)).to eq(5) # Browse2Helper::DEFAULT_FACET_CUTOFF
     end
   end
 

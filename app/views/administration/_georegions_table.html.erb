@@ -4,6 +4,7 @@
       <col class="name" />
       <col class="status" />
       <%- if render_actions -%>
+      <col class="default" />
       <col class="date-added" />
       <col class="edit-action" />
       <%- end -%>
@@ -13,6 +14,12 @@
       <th class="name"><div><%= t("#{prefix}.region_name") %></div></th>
       <th class="status"><div><%= t("#{prefix}.enabled?") %></div></th>
       <%- if render_actions -%>
+      <th class="default">
+        <div>
+          <%= t("#{prefix}.default_georegions", :count => count, :limit => limit) %>
+          <span class="icon-info" title='<%= t("#{prefix}.default_georegions_flyout") %>'></span>
+        </div>
+      </th>
       <th class="date-added"><div><%= t("#{prefix}.date_added") %></div></th>
       <th class="edit-action"><div><%= t("#{prefix}.actions") %></div></th>
       <%- end -%>
@@ -38,12 +45,34 @@
                   { :action => :enable_georegion, :id => georegion.id }.merge(request.query_parameters),
                   t("#{prefix}.enable"),
                   { :method => :put },
-                  {
-                    :class => ['button', allow_enablement ? nil : 'disabled'].compact.join(' '),
-                    'data-action' => 'enable',
-                    :disabled => allow_enablement ? nil : 'disabled',
-                    :title => (allow_enablement ? nil : t("#{prefix}.enabled_georegions_limit", :limit => limit))
-                  }) %>
+                  { :class => 'button', 'data-action' => 'enable' }) %>
+          <%- end -%>
+        </td>
+        <td class="default">
+          <%- if georegion.default? -%>
+            <%= form_checkbox_button({
+                  :url_opts => {
+                    :action => :set_georegion_default_status,
+                    :id => georegion.id,
+                    :default_flag => 'undefault'
+                  }.merge(request.query_parameters),
+                  :id => "default-#{georegion.id}",
+                  :disabled => false, # never disabled when set as default
+                  :checked => true, # always checked when set as default
+                  :title => t("#{prefix}.undefault"),
+                  :button_opts => { 'data-action' => 'default' } }) %>
+          <%- else -%>
+            <%= form_checkbox_button({
+                  :url_opts => {
+                      :action => :set_georegion_default_status,
+                      :id => georegion.id,
+                      :default_flag => 'default'
+                    }.merge(request.query_parameters),
+                  :id => "default_#{georegion.id}",
+                  :disabled => !allow_defaulting || !georegion.enabled?, # disabled depending on limit
+                  :checked => false, # unchecked when not set as default
+                  :title => allow_defaulting ? t("#{prefix}.default") : t("#{prefix}.default_georegions_limit", :limit => limit),
+                  :button_opts => { 'data-action' => 'default' } }) %>
           <%- end -%>
         </td>
         <td class="date-added">
@@ -61,8 +90,8 @@
     <%- jobs.each do |job| -%>
       <tr class="item">
         <td class="name"><%= job['jobParameters']['name'] %></td>
-        <td class="status" colspan="<%= render_actions ? 3 : 1  %>">
-          <span class="status-icon-progress icon-processing"></span>
+        <td class="status" colspan="<%= render_actions ? 4 : 1  %>">
+          <span class="status-icon-progress"></span>
           <span class="row-status-widget-label is-progress">
             <%=  t("#{prefix}.status_progress") %>
             <br>
@@ -74,7 +103,7 @@
     <%- failed_jobs.each do |job| -%>
       <tr class="item">
         <td class="name"><%= job['latest_event']['info']['jobParameters']['name'] %></td>
-        <td class="status" colspan="<%= render_actions ? 3 : 1  %>">
+        <td class="status" colspan="<%= render_actions ? 4 : 1  %>">
           <span class="status-icon-failed icon-failed"></span>
           <span class="row-status-widget-label is-failed">
             <%=  t("#{prefix}.status_failed") %>

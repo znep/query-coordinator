@@ -73,6 +73,7 @@ $(document).ready(function() {
 
   // Event name validation
   var validateEventName = function(eventName) {
+    blist.util.enforceLodashFunctions();
     var valid = _.includes(MIXPANEL_EVENTS, eventName);
 
     if (!valid) {
@@ -90,6 +91,7 @@ $(document).ready(function() {
       if (_.isObject(value)) {
         validateProperties(value);
       } else {
+        blist.util.enforceLodashFunctions();
         valid = _.includes(MIXPANEL_PROPERTIES, key);
 
         if (!valid) {
@@ -103,6 +105,7 @@ $(document).ready(function() {
     return valid;
   };
 
+  blist.util.enforceLodashFunctions();
   // These are properties that don't change once a page has loaded;
   var userId = _.get(blist, 'currentUserId', 'Not Logged In');
   var ownerId = _.get(blist, 'dataset.owner.id', MISSING_PROP_VALUE);
@@ -246,7 +249,7 @@ $(document).ready(function() {
         // Update the properties with the page-specific properties we want to track
         var mergedProperties = _.extend(genericPagePayload(), properties);
 
-        var willOpenInNewTab = event.which === 2 || event.metaKey || || event.ctrlKey || event.currentTarget.target === '_blank';
+        var willOpenInNewTab = event.which === 2 || event.metaKey || event.ctrlKey || event.currentTarget.target === '_blank';
         var isDefaultPrevented = event.isDefaultPrevented();
         var callback = function() {
           if (!willOpenInNewTab && !isDefaultPrevented && (mergedProperties['New URL'] != null)) {

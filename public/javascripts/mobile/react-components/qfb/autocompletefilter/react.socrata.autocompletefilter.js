@@ -61,7 +61,7 @@ class SocrataAutocompletefilter extends React.Component {
 
   fetchSuggestions(newSuggestionText) {
     var newSuggestions = newSuggestionText || '';
-    var suggestionUrl = window.location.protocol + '//' + this.props.domain + '/view/' +
+    var suggestionUrl = window.location.protocol + '//' + this.props.domain + '/views/' +
       this.props.datasetId + '/columns/' + this.props.dataColumn + '/suggest?text=' + newSuggestions +
       '&size=11';
 

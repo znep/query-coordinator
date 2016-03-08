@@ -1,24 +1,18 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from './TransientElement';
 import '../../app/assets/javascripts/editor/StorytellerJQueryUtils';
 
 describe('StorytellerJQueryUtils', function() {
 
   var $node;
   var attrSpy;
-  var testDom;
 
   beforeEach(function() {
-    testDom = $('<div>');
-    testDom.append('<div>');
-    $node = testDom.children('div');
+    $transient.append('<div>');
+    $node = $transient.children('div');
     attrSpy = sinon.spy($node, 'attr');
-    $(document.body).append(testDom);
-  });
-
-  afterEach(function() {
-    testDom.remove();
   });
 
   it('should return a jQuery object for chaining', function() {

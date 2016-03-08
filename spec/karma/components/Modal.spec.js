@@ -1,19 +1,14 @@
 import $ from 'jQuery';
+
+import { $transient } from '../TransientElement';
 import '../../../app/assets/javascripts/editor/components/Modal';
 
 describe('Modal jQuery plugin', function() {
 
-  var testDom;
   var node;
 
   beforeEach(function() {
-    testDom = $('<div>');
-    node = testDom.append('<div>');
-    $(document.body).append(testDom);
-  });
-
-  afterEach(function() {
-    testDom.remove();
+    node = $transient.append('<div>');
   });
 
   it('should return `this` for chaining', function() {

@@ -1,10 +1,10 @@
 import $ from 'jQuery';
 
+import { $transient } from '../TransientElement';
 import {__RewireAPI__ as componentHTMLAPI} from '../../../app/assets/javascripts/editor/block-component-renderers/componentHTML';
 
 describe('componentHTML jQuery plugin', function() {
 
-  var testDom;
   var $component;
 
   var editorMock = function() {
@@ -22,10 +22,8 @@ describe('componentHTML jQuery plugin', function() {
   var createEditorSpy = sinon.spy(editorMock);
 
   beforeEach(function() {
-    testDom = $('<div></div>');
-    testDom.append('<div>');
-    $component = testDom.children('div');
-    $(document.body).append(testDom);
+    $transient.append('<div>');
+    $component = $transient.children('div');
 
     componentHTMLAPI.__Rewire__('richTextEditorManager', {
       createEditor: createEditorSpy,
@@ -38,8 +36,6 @@ describe('componentHTML jQuery plugin', function() {
   });
 
   afterEach(function() {
-    testDom.remove();
-
     createEditorSpy.reset();
     applyThemeClassSpy.reset();
     addContentClassSpy.reset();

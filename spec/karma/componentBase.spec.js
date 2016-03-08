@@ -1,12 +1,12 @@
 import $ from 'jQuery';
 
+import { $transient } from './TransientElement';
 import '../../app/assets/javascripts/editor/componentBase';
 
 describe('componentBase jQuery plugin', function() {
 
   var $component;
   var componentData;
-  var testDom;
 
   function callWithOptions(options) {
     beforeEach(function() {
@@ -16,14 +16,8 @@ describe('componentBase jQuery plugin', function() {
   }
 
   beforeEach(function() {
-    testDom = $('<div>');
-    testDom.append('<div>');
-    $component = testDom.children('div');
-    $(document.body).append(testDom);
-  });
-
-  afterEach(function() {
-    testDom.remove();
+    $transient.append('<div>');
+    $component = $transient.children('div');
   });
 
   it('should return a jQuery object for chaining', function() {

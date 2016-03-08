@@ -1,25 +1,19 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from '../TransientElement';
 import socrataVisualizationClassicComponentData from '../fixtures/socrataVisualizationClassicComponentData';
 import '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationClassic';
 
 describe('componentSocrataVisualizationClassic jQuery plugin', function() {
 
-  var testDom;
   var $component;
   var validComponentData;
 
   beforeEach(function() {
-    testDom = $('<div>');
-    testDom.append('<div>');
-    $component = testDom.children('div');
+    $transient.append('<div>');
+    $component = $transient.children('div');
     validComponentData = _.cloneDeep(socrataVisualizationClassicComponentData);
-    $(document.body).append(testDom);
-  });
-
-  afterEach(function() {
-    testDom.remove();
   });
 
   it('should throw when passed invalid arguments', function() {

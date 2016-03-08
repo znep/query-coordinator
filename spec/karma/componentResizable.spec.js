@@ -1,27 +1,24 @@
 import $ from 'jQuery';
 import Unidragger from 'unidragger';
 
+import { $transient } from './TransientElement';
 import {__RewireAPI__ as componentResizableAPI} from '../../app/assets/javascripts/editor/componentResizable';
 
 describe('componentResizable jQuery plugin', function() {
 
-  var testDom;
   var $component;
   var bindHandlesStub;
 
   beforeEach(function() {
     bindHandlesStub = sinon.spy(Unidragger.prototype, 'bindHandles');
 
-    testDom = $('<div>');
-    testDom.append('<div>');
-    $component = testDom.children('div');
+    $transient.append('<div>');
+    $component = $transient.children('div');
 
-    $(document.body).append(testDom);
     componentResizableAPI.__Rewire__('Unidragger', Unidragger);
   });
 
   afterEach(function() {
-    testDom.remove();
     bindHandlesStub.restore();
     componentResizableAPI.__ResetDependency__('Unidragger');
   });

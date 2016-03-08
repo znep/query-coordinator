@@ -1,6 +1,7 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
 import Actions from '../../../app/assets/javascripts/editor/Actions';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
@@ -8,7 +9,6 @@ import {__RewireAPI__ as SettingsPanelAPI} from '../../../app/assets/javascripts
 
 describe('SettingsPanel jQuery plugin', function() {
 
-  var testDom;
   var node;
   var handle;
   var dispatcher;
@@ -31,14 +31,11 @@ describe('SettingsPanel jQuery plugin', function() {
       '</div>'
     ].join('');
 
-    testDom = $('<div>');
-    testDom.append(dom);
-    testDom.append('<div class="handle">');
+    $transient.append(dom);
+    $transient.append('<div class="handle">');
 
-    node = testDom.find('.panel');
-    handle = testDom.find('.handle');
-
-    $(document.body).append(testDom);
+    node = $transient.find('.panel');
+    handle = $transient.find('.handle');
 
     dispatcher = new Dispatcher();
 
@@ -74,8 +71,6 @@ describe('SettingsPanel jQuery plugin', function() {
   });
 
   afterEach(function() {
-    testDom.remove();
-
     SettingsPanelAPI.__ResetDependency__('dispatcher');
     SettingsPanelAPI.__ResetDependency__('StoryPermissionsRenderer');
     SettingsPanelAPI.__ResetDependency__('Environment');

@@ -1,6 +1,7 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
 import story from '../fixtures/Story';
 
@@ -13,7 +14,6 @@ import AssetSelectorStore, {__RewireAPI__ as AssetSelectorStoreAPI, WIZARD_STEP}
 
 describe('AssetSelectorRenderer', function() {
 
-  var testDom;
   var container;
   var options;
   var testBlockId = 'testBlock1';
@@ -25,14 +25,11 @@ describe('AssetSelectorRenderer', function() {
   beforeEach(function() {
     server = sinon.fakeServer.create();
 
-    testDom = $('<div>');
     container = $('<div>', { 'class': 'asset-selector-container' });
-    testDom.append(container);
-
-    $(document.body).append(testDom);
+    $transient.append(container);
 
     options = {
-      assetSelectorContainerElement: testDom.find('.asset-selector-container')
+      assetSelectorContainerElement: $transient.find('.asset-selector-container')
     };
 
     dispatcher = new Dispatcher();
@@ -57,7 +54,6 @@ describe('AssetSelectorRenderer', function() {
   });
 
   afterEach(function() {
-    testDom.remove();
     server.restore();
 
     StoreAPI.__ResetDependency__('dispatcher');

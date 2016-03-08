@@ -32,6 +32,7 @@ describe('ColumnChart jQuery component', function() {
       }
     },
     filters: [],
+    type: 'columnChart',
     unit: {
       one: 'case',
       other: 'cases'

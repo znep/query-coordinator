@@ -14,7 +14,8 @@ describe('Table', function() {
           'LONGITUDE': 'translation for longitude',
           'NO_COLUMN_DESCRIPTION': 'translation for no_column_description'
         }
-      }
+      },
+      type: 'table'
     };
 
     if (overrideVIF) {

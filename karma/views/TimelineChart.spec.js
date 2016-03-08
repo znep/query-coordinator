@@ -172,6 +172,7 @@ describe('socrata.visualizations.views.TimelineChart', function() {
         precision: precision,
         interactive: true
       },
+      type: 'timelineChart',
       unit: {
         one: 'case',
         other: 'cases'

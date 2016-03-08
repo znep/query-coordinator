@@ -35,6 +35,7 @@ describe('TimelineChart jQuery component', function() {
       precision: 'MONTH'
     },
     filters: [],
+    type: 'timelineChart',
     unit: {
       one: 'case',
       other: 'cases'

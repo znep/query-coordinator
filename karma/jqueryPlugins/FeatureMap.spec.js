@@ -47,6 +47,7 @@ describe('FeatureMap jQuery component', function() {
       }
     },
     filters: [],
+    type: 'featureMap',
     unit: {
       one: 'record',
       other: 'records'

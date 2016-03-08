@@ -12583,7 +12583,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (order[0].ascending ? 'ASC' : 'DESC'),
 	      limit,
 	      offset,
-	      whereClauseComponents ? "&$where=" + whereClauseComponents : ''
+	      whereClauseComponents ? '&$where=' + whereClauseComponents : ''
 	    );
 
 	    return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(function(data) {
@@ -17900,19 +17900,33 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _whereClauseFromVif(vif, filterOwnColumn) {
 	  var filters = vif.filters || [];
+	  var isTable = false;
 
 	  utils.assertHasProperties(
 	    vif,
-	    'columnName',
+	    'type',
 	    'filters'
 	  );
-	  utils.assertIsOneOfTypes(vif.columnName, 'string');
+
+	  if (vif.type === 'table') {
+	    isTable = true;
+	  } else {
+
+	    utils.assertHasProperties(
+	      vif,
+	      'columnName'
+	    );
+	    utils.assertIsOneOfTypes(vif.columnName, 'string');
+	  }
+
 	  utils.assertInstanceOf(filters, Array);
 
 	  return filters.
 	    filter(
 	      function(filter) {
-	        return filterOwnColumn || (filter.columnName !== vif.columnName);
+	        return (isTable) ?
+	          true :
+	          filterOwnColumn || (filter.columnName !== vif.columnName);
 	      }
 	    ).map(
 	      _filterToWhereClauseComponent

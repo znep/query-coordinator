@@ -28,6 +28,7 @@ describe('views/Table', function() {
     datasetUid: 'snuk-a5kv',
     domain: 'dataspace.demo.socrata.com',
     filters: [],
+    type: 'table',
     unit: {
       one: 'row',
       other: 'rows'

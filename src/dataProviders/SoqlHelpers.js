@@ -39,19 +39,33 @@ function whereClauseFilteringOwnColumn(vif) {
 
 function _whereClauseFromVif(vif, filterOwnColumn) {
   var filters = vif.filters || [];
+  var isTable = false;
 
   utils.assertHasProperties(
     vif,
-    'columnName',
+    'type',
     'filters'
   );
-  utils.assertIsOneOfTypes(vif.columnName, 'string');
+
+  if (vif.type === 'table') {
+    isTable = true;
+  } else {
+
+    utils.assertHasProperties(
+      vif,
+      'columnName'
+    );
+    utils.assertIsOneOfTypes(vif.columnName, 'string');
+  }
+
   utils.assertInstanceOf(filters, Array);
 
   return filters.
     filter(
       function(filter) {
-        return filterOwnColumn || (filter.columnName !== vif.columnName);
+        return (isTable) ?
+          true :
+          filterOwnColumn || (filter.columnName !== vif.columnName);
       }
     ).map(
       _filterToWhereClauseComponent

@@ -13,14 +13,16 @@
         margin: 0;
       }
 
-      #table-1 {
-        height: 100vh;
+      #table-1,
+      #table-2 {
+        height: 50vh;
       }
 
     </style>
   </head>
   <body>
     <div id="table-1"></div>
+    <div id="table-2"></div>
   </body>
 
   <!-- Include external dependencies -->
@@ -42,7 +44,7 @@
     var DATASET_UID = '6zsd-86xi';
     var DOMAIN = 'data.cityofchicago.org';
 
-    var tableVIF = {
+    var table1VIF = {
       'aggregation': {
         'columnName': null,
         'function': 'count'
@@ -83,14 +85,37 @@
       }
     };
 
-    var $tableElement = $('#table-1');
-    $tableElement.socrataTable(tableVIF);
+    var $table1Element = $('#table-1');
+    $table1Element.socrataTable(table1VIF);
+
+    var $table2Element = $('#table-2');
+    var table2VIF = _.cloneDeep(table1VIF);
+    table2VIF.filters = [
+      {
+        'function': 'binaryOperator',
+        'columnName': 'description',
+        'arguments': {
+          'operator': '=',
+          'operand': 'POSS: CRACK'
+        }
+      }
+    ];
+    $table2Element.socrataTable(table2VIF);
 
     $(window).resize(function() {
-      $tableElement.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
+      $table1Element.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
+      $table2Element.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
     });
 
-    $tableElement.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+    $table1Element.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+      if (event.originalEvent.detail) {
+        flyoutRenderer.render(event.originalEvent.detail);
+      } else {
+        flyoutRenderer.clear();
+      }
+    });
+
+    $table2Element.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
       if (event.originalEvent.detail) {
         flyoutRenderer.render(event.originalEvent.detail);
       } else {
@@ -104,7 +129,7 @@
      * The plugin (and all internal modules) can be destroyed by triggering
      * `destroy` on the element.
      */
-    // $columnChart1Element.trigger('destroy');
-    // $columnChart2Element.trigger('destroy');
+    // $table1Element.trigger('destroy');
+    // $table2Element.trigger('destroy');
   </script>
 </html>

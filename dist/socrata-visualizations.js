@@ -11800,8 +11800,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    utils.assertHasProperties(columnValue, 'column', 'value');
 
-	    $name.text(columnValue.column);
-	    $value.text(columnValue.value);
+	    if (_state.allowUnsafeContent === true) {
+	      $name.html(columnValue.column);
+	      $value.html(columnValue.value);
+	    } else {
+	      $name.text(columnValue.column);
+	      $value.text(columnValue.value);
+	    }
 
 	    $rowDataItem.append($name).append($value);
 	    _$rowInspectorContent.append($rowDataItem);
@@ -11855,7 +11860,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    error: payload.error,
 	    message: payload.message,
 	    position: payload.position,
-	    pageIndex: 0
+	    pageIndex: 0,
+	    allowUnsafeContent: payload.allowUnsafeContent === true
 	  };
 
 	  _render();

@@ -170,6 +170,38 @@ describe('socrata.visualizations.views.RowInspector', function() {
             assert.lengthOf($title, 1);
           });
         });
+
+        describe('allowUnsafeContent', function() {
+          var htmlContent = '<blink>party hard</blink>';
+
+          it('escapes HTML by default', function(done) {
+            triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', {
+              position: { pageX: 10, pageY: 200 },
+              data: [[{ column: 'col', value: htmlContent }]],
+              error: false,
+              allowUnsafeContent: false
+            });
+
+            _.defer(function() {
+              assert.equal($rowInspector.find('.row-data-item .value').html(), _.escape(htmlContent));
+              done();
+            });
+          });
+
+          it('does not escape HTML if allowUnsafeContent is passed as true', function(done) {
+            triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', {
+              position: { pageX: 10, pageY: 200 },
+              data: [[{ column: 'col', value: htmlContent }]],
+              error: false,
+              allowUnsafeContent: true
+            });
+
+            _.defer(function() {
+              assert.equal($rowInspector.find('.row-data-item .value').html(), htmlContent);
+              done();
+            });
+          });
+        });
       });
     });
   }

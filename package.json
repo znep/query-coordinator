@@ -89,7 +89,7 @@
     "lodash": "3.10.1",
     "moment": "2.11.2",
     "socrata-utils": "1.2.0",
-    "socrata-visualizations": "7.2.3",
+    "socrata-visualizations": "8.0.0",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
     "unidragger": "2.1.0",
     "unipointer": "2.1.0"

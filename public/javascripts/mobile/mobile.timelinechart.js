@@ -96,7 +96,7 @@ module.exports = function(values, $target) {
   function mobileFlyoutRender(payload) {
     var flyoutBounds = payload.element.getBoundingClientRect();
     var highlightedBarWidth = $('.timeline-chart-highlight-container').width();
-    var value = ((payload.filteredValue) ? payload.filteredValue : payload.unfilteredValue).split(' ');
+    var value = (payload.filteredValue ? payload.filteredValue : payload.unfilteredValue).split(' ');
 
     var flyoutData = $('<div>', {
       'class': 'title-wrapper',

@@ -1,5 +1,3 @@
-/* global Loader */
-
 // Has side effect of registering jQuery plugin.
 require('socrata-visualizations').ColumnChart;
 require('./styles/column-chart.scss');

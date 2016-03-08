@@ -1,5 +1,3 @@
-/* global Loader */
-
 // Has side effect of registering jQuery plugin.
 require('./styles/timeline-chart.scss');
 require('socrata-visualizations').TimelineChart;

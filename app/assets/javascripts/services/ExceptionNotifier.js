@@ -21,15 +21,19 @@ export default function ExceptionNotifier(options) {
   var _self = this;
   var _airbrake;
   var _options = options || {};
-  var _environment = _options.ENVIRONMENT;
-  var _airbrakeOptions = _.omit(_options, 'ENVIRONMENT');
+  var _environment = _options.ENVIRONMENT_NAME;
+  var _airbrakeOptions = _.omit(_options, 'ENVIRONMENT_NAME');
 
   setup();
   attachEvents();
 
   function setup() {
-    if (typeof _airbrakeOptions.PROJECT_KEY === 'string') {
-      _airbrake = new Airbrake.Client(_airbrakeOptions);
+    if (typeof _airbrakeOptions.PROJECT_ID === 'string') {
+      _airbrake = new Airbrake({
+        projectId: _airbrakeOptions.PROJECT_ID,
+        projectKey: _airbrakeOptions.API_KEY
+      });
+
       _airbrake.addFilter(function(notice) {
         notice.context.environment = _environment;
         return notice;

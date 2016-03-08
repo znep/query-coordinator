@@ -1226,7 +1226,9 @@ var Dataset = ServerModel.extend({
 
         // Cleanup the fallout from a failed attempt to create a row on NBE.
         if (ds.newBackend && !_.has(row.metadata, 'version')) {
-          delete sendRow[':id'];
+          if (/^saving\d+/.test(row.id)) {
+            delete sendRow[':id'];
+          }
           delete sendRow[':meta'];
         }
 
@@ -3219,6 +3221,7 @@ var Dataset = ServerModel.extend({
             }
             else
             {
+              // Pretty sure this code path never gets called.
               // Response keys = [:updated_meta, :id, :updated_at, :created_meta, :position, :created_at]
               req.row.id = req.row.metadata.id = req.row.data[':id'] = rr[':id'];
             }
@@ -3350,7 +3353,17 @@ var Dataset = ServerModel.extend({
 
             if (!result._underlying) { r.row.noMatch = null; }
 
-            ds._updateRow(r.parentRow || r.row);
+            // This is the code path when creating a new row in NBE, so
+            // we tell the RowSet, here, to update the row with the new id now
+            // because this is the point at which we receive it.
+            //
+            // This is a NOOP in OBE land.
+            var oldRowId = undefined;
+            if (ds.newBackend && result[':id']) {
+              oldRowId = r.row.id;
+              r.row.id = result[':id'];
+            }
+            ds._updateRow(r.parentRow || r.row, oldRowId);
             ds.trigger('row_change', [[r.parentRow || r.row]]);
             ds.aggregatesChanged();
             if (_.isFunction(r.success)) { r.success(r.row); }
@@ -3378,10 +3391,11 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(r.parentRow))
         { url += '/' + r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows'; }
         url += (ds._useSODA2 ? '' : '/' + r.row.metadata.uuid) + '.json';
-        var data = ds._useSODA2 ? $.makeArray(r.rowData) : r.rowData;
-        ds.makeRequest({url: url, type: ds._useSODA2 ? 'POST' : 'PUT', data: JSON.stringify(data),
-            isSODA: ds._useSODA2, batch: isBatch,
-            success: rowSaved, error: rowErrored, complete: rowCompleted});
+        ds.makeRequest({url: url, type: ds._useSODA2 ? 'POST' : 'PUT',
+          data: JSON.stringify(r.rowData),
+          isSODA: ds._useSODA2, batch: isBatch,
+          success: rowSaved, error: rowErrored, complete: rowCompleted
+        });
 
         ds._aggregatesStale = true;
         _.each(r.columnsSaving, function(cL)

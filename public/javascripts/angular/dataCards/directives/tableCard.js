@@ -13,7 +13,8 @@ function tableCard(
   DataTypeFormatService,
   I18n,
   PluralizeService,
-  rx) {
+  rx,
+  linkyFilter) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -398,7 +399,7 @@ function tableCard(
                   cellText = _.escape(DataTypeFormatService.renderMoneyCell(cellContent, column));
                   break;
                 default:
-                  cellText = _.escape(cellContent);
+                  cellText = linkyFilter(_.escape(cellContent), '_blank');
                   break;
               }
               return cellText;

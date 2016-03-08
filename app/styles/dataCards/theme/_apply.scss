@@ -762,6 +762,9 @@ $hint-size: 18px;
             background-color: $table-resize-active-background-color;
           }
         }
+        a {
+          color: $table-link-color;
+        }
       }
     }
     .table-label {
@@ -851,60 +854,10 @@ $hint-size: 18px;
   }
 }
 
-// feature-map-flannel
-.feature-map-flannel .tool-panel {
-  .tool-panel-main {
-    background-color: $feature-map-flannel-chart-background-color;
-    color: $feature-map-flannel-chart-title-text-color;
-    border-radius: 0;
-    box-shadow: 0 0px 0px;
-    border: 1px solid $feature-map-flannel-border-color;
-    padding: 0px;
-    .error-content {
-      .icon-warning {
-        color: $yellow-color;
-      }
-    }
-    .paging-panel {
-      background-color: $feature-map-flannel-chart-alt-background-color;
-      border-top: 1px solid $feature-map-flannel-border-color;
-    }
-    .sticky-border {
-      background-color: $feature-map-flannel-chart-background-color;
-    }
-  }
-
-  &.north .tool-panel-hint {
-    &:before {
-      border-bottom-color: $feature-map-flannel-border-color;
-    }
-    &:after {
-      border-bottom-color: $feature-map-flannel-chart-background-color;
-    }
-  }
-  &.south .tool-panel-hint {
-    &:before {
-      border-top-color: $feature-map-flannel-border-color;
-    }
-    &:after {
-      border-top-color: $feature-map-flannel-chart-background-color;
-    }
-  }
-  &.east .tool-panel-hint {
-    &:before {
-      border-right-color: $feature-map-flannel-border-color;
-    }
-    &:after {
-      border-right-color: $feature-map-flannel-chart-background-color;
-    }
-  }
-  &.west .tool-panel-hint {
-    &:before {
-      border-left-color: $feature-map-flannel-border-color;
-    }
-    &:after {
-      border-left-color: $feature-map-flannel-chart-background-color;
-    }
+// row-inspector
+.state-view-cards #socrata-row-inspector {
+  .row-inspector-content .row-data-item .value a {
+    color: $row-inspector-link-color;
   }
 }
 

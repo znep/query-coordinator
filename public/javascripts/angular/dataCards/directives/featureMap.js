@@ -319,7 +319,8 @@ function featureMap(
                 data: dataPayload.rows,
                 error: false,
                 message: null,
-                titles: dataPayload.titles
+                titles: dataPayload.titles,
+                allowUnsafeContent: true
               },
               bubbles: true
             }

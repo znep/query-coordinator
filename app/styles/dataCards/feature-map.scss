@@ -1,4 +1,5 @@
 @import "dataCards/common/layout";
+@import "dataCards/common/fonts";
 @import "dataCards/common/colors";
 
 card-visualization-feature-map,
@@ -26,5 +27,29 @@ feature-map {
         cursor: -webkit-grabbing !important;
       }
     }
+  }
+}
+
+.state-view-cards #socrata-row-inspector {
+  .tool-panel .tool-panel-main .paging-panel {
+    font-size: $small-font-size;
+  }
+
+  .row-inspector-content {
+    padding: 0;
+  }
+
+  .icon-close {
+    font-size: $base-font-size;
+    right: 10px;
+  }
+
+  .icon-warning::after {
+    content: none;
+  }
+
+  .error-content.visible {
+    height: auto;
+    padding-bottom: 1.75rem;
   }
 }

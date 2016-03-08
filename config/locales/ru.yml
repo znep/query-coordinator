@@ -46,7 +46,6 @@ ru:
         card_on_page: "Карта уже на странице"
         card_on_page_long: "Эта карта уже на странице"
         choose_column: "Выбрать столбец"
-        choropleth_warning:
         classic_chart:
         column_chart_warning: "Примечание: это приведет к созданию столбчатой диаграммы с более чем 100 столбцами, которая может быть медленнее других диаграмм"
         custom:

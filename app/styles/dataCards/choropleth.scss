@@ -82,3 +82,13 @@ choropleth {
     }
   }
 }
+
+.visualization-render-error {
+  &.choro-processing-computation-error .span2 {
+    position: relative;
+  }
+
+  &.choro-no-boundaries-error .span10 {
+    margin-top: 0.5em;
+  }
+}

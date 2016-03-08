@@ -46,7 +46,6 @@ ca:
         card_on_page: La targeta ja és a la pàgina
         card_on_page_long: Aquesta targeta ja és a la pàgina
         choose_column: Tria una columna
-        choropleth_warning:
         classic_chart:
         column_chart_warning: 'Nota: Això es convertirà en un gràfic de barres amb més de cent barres, pot ser que vagi una mica més lent que altres gràfics'
         custom:

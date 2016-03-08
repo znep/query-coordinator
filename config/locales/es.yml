@@ -46,7 +46,6 @@ es:
         card_on_page: Esta tarjeta ya existe en la página
         card_on_page_long: Esta tarjeta ya existe en la página
         choose_column: Elija una columna...
-        choropleth_warning:
         classic_chart:
         column_chart_warning: 'Nota: esto podría crear un gráfico de barras de más de cien barras, podría tardar más que otros gráficos'
         custom:

@@ -46,7 +46,6 @@ zh:
         card_on_page: "卡片已在页面上"
         card_on_page_long: "该卡片已在页面上"
         choose_column: "选择一列"
-        choropleth_warning:
         classic_chart:
         column_chart_warning: "注意：这将产生一个超过一百条的柱状图，可能比其它图表慢"
         custom:

@@ -46,7 +46,6 @@ sl:
         card_on_page: Kartica je že na strani
         card_on_page_long: Ta kartica je že na strani
         choose_column: Izberite stolpec
-        choropleth_warning:
         classic_chart:
         column_chart_warning: 'Upoštevajte: to bi imelo za posledico palični stolpčni diagram, ki bi vseboval več kot sto stolpcev -- lahko, da bo šlo počasneje kot pri drugih diagramih'
         custom:

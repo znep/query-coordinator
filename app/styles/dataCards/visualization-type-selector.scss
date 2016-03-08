@@ -62,6 +62,10 @@ visualization-type-selector {
       margin-left: .5rem;
       margin-bottom: 1rem;
     }
+
+    .faux-disabled {
+      color: $btn-disabled-font-color;
+    }
   }
 
   .curated-region-info-message {

@@ -253,18 +253,32 @@ describe('addCardDialog', function() {
 
     describe('with no column selected', function() {
       it('should be disabled', function() {
-        expect(button.hasClass('disabled')).to.be.true;
+        expect(button.is(':disabled')).to.be.true;
       });
     });
 
-    describe('with an enabled column selected', function() {
+    describe('with an enabled column and with invalid settings', function() {
       beforeEach(function() {
-        dialog.scope.dialogState.cardSize = 1;
         dialog.element.find('option[value=bar]').prop('selected', true).trigger('change');
+        dialog.scope.$digest();
+        dialog.scope.addCardModel.set('cardType', 'choropleth');
+        dialog.scope.addCardModel.set('computedColumn', undefined);
+        dialog.scope.$digest();
+      });
+
+      it('should be disabled', function() {
+        expect(button.is(':disabled')).to.be.true;
+      });
+    });
+
+    describe('with an enabled column selected and with valid settings', function() {
+      beforeEach(function() {
+        dialog.element.find('option[value=bar]').prop('selected', true).trigger('change');
+        dialog.scope.$digest();
       });
 
       it('should be enabled', function() {
-        expect(button.hasClass('disabled')).to.be.false;
+        expect(button.is(':disabled')).to.be.false;
       });
 
       describe('when clicked', function() {
@@ -273,6 +287,7 @@ describe('addCardDialog', function() {
         beforeEach(function() {
           addCardSpy = sinon.spy(dialog.scope.page, 'addCard');
           button.click();
+          dialog.scope.$digest();
         });
 
         it('should cause addCard() to be called on the page', function() {

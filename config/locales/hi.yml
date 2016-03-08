@@ -46,7 +46,6 @@ hi:
         card_on_page: "कार्ड पहले से ही पेज पर है"
         card_on_page_long: "यह कार्ड पहले से ही पेज पर है"
         choose_column: "एक कॉलम चुनें..."
-        choropleth_warning:
         classic_chart:
         column_chart_warning: "नोट: इसके परिणामस्वरूप आपको एक बार-चार्ट मिलेगा जिसमें सौ से भी ज़्यादा बार होंगे। यह चार्ट दूसरे चार्टों की तुलना में धीमा हो सकता है।"
         custom:

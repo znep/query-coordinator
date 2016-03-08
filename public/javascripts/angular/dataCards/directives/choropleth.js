@@ -67,9 +67,6 @@ function choropleth(
       var vif = {
         configuration: {
           defaultExtent: $scope.defaultExtent,
-          defaultWidth: Constants.CHOROPLETH_DEFAULT_WIDTH,
-          disableLeafletZoomAnimation: Constants.DISABLE_LEAFLET_ZOOM_ANIMATION,
-          highlightWidth: Constants.CHOROPLETH_HIGHLIGHT_WIDTH,
           interactive: true,
           legend: {
             type: $scope.stops
@@ -90,6 +87,9 @@ function choropleth(
               selected: Constants.SELECTED_PROPERTY_NAME
             },
             primaryKey: null
+          },
+          mapOptions: {
+            zoomAnimation: !Constants.DISABLE_LEAFLET_ZOOM_ANIMATION
           }
         },
         unit: {

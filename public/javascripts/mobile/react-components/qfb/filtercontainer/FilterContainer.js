@@ -11,7 +11,7 @@ class FilterContainer extends React.Component {
 
     this.state = {
       filterOps: this.props.filterOps,
-      filters: []
+      filters: this.props.filters
     };
 
     this.domain = this.props.domain;
@@ -233,6 +233,7 @@ class FilterContainer extends React.Component {
       return <FilterItem
           key={ 'qf-' + filter.id }
           filter={ filter }
+          startWithClosedFlannel={ filter.startWithClosedFlannel }
           domain={ this.domain }
           datasetId={ this.datasetId }
           deletionHandler={ this.handleFilterDeletion.bind(this, filter.id) }

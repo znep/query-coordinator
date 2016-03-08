@@ -245,8 +245,7 @@ blist.widget.showPane = function(paneName, paneText, paneColor, paneData)
             { widgetNS.paneHandlers[paneName].apply(this, paneData || []); }
         });
 
-    $.analytics.trackEvent('widget (v2)', 'pane shown: ' + paneName,
-        document.referrer);
+    $.analytics && $.analytics.trackEvent('widget (v2)', 'pane shown: ' + paneName, document.referrer);
 };
 
 blist.widget.closePane = function()
@@ -352,7 +351,7 @@ $(function()
             ],
             onOpen: function()
             {
-                $.analytics.trackEvent('widget (v2)', 'main menu opened', document.referrer);
+                $.analytics && $.analytics.trackEvent('widget (v2)', 'main menu opened', document.referrer);
             }
         });
         if (menuOptions['about_sdp'])
@@ -376,8 +375,11 @@ $(function()
             $this.attr('data-iconColor'));
         if (!$('.widgetContent_' + target).is(':visible'))
         {
-            $.analytics.trackEvent('widget (v2)', 'menu item clicked: ' +
-                $this.attr('href'), document.referrer);
+            $.analytics && $.analytics.trackEvent(
+              'widget (v2)',
+              'menu item clicked: ' + $this.attr('href'),
+              document.referrer
+            );
         }
     });
 
@@ -388,7 +390,7 @@ $(function()
             menuButtonClass: 'icon',
             onOpen: function()
             {
-                $.analytics.trackEvent('widget (v2)', 'share menu opened', document.referrer);
+                $.analytics && $.analytics.trackEvent('widget (v2)', 'share menu opened', document.referrer);
             }
         },
         // ONCALL-3032: Disable unauthenticated share-by-email functionality.
@@ -744,7 +746,7 @@ $(function()
         blist.dataset.registerOpening(document.referrer);
 
         // report to events analytics for easier aggregation
-        $.analytics.trackEvent('widget (v2)', 'page loaded', document.referrer);
+        $.analytics && $.analytics.trackEvent('widget (v2)', 'page loaded', document.referrer);
     });
 
     if (widgetNS.showPrivateMessage === true)

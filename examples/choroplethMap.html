@@ -158,13 +158,13 @@
        * Handle flyout events.
        */
 
-      $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       $choroplethElement1.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
-      $choroplethElement2.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      $choroplethElement2.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       $choroplethElement2.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
-      $choroplethElement3.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      $choroplethElement3.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       $choroplethElement3.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
 
       function handleFlyout(event) {
@@ -197,10 +197,10 @@
        * `.destroySocrataChoroplethMap()` on the element.
        */
 
-      // $choroplethElement1.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      // $choroplethElement1.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       // $choroplethElement1.destroySocrataChoroplethMap();
 
-      // $choroplethElement2.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+      // $choroplethElement2.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       // $choroplethElement2.destroySocrataChoroplethMap();
 
     });

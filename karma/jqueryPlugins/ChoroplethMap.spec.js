@@ -47,6 +47,7 @@ describe('ChoroplethMap jQuery component', function() {
     datasetUid: 'snuk-a5kv',
     domain: 'dataspace.demo.socrata.com',
     filters: [],
+    type: 'choroplethMap',
     unit: {
       one: 'crime',
       other: 'crimes'

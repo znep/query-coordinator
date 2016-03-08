@@ -41,6 +41,7 @@ describe('ChoroplethMap', function() {
         northeast: [42.24478535602799, -86.9183349609375]
       }
     },
+    type: 'choroplethMap',
     unit: {
       one: 'row',
       other: 'rows'

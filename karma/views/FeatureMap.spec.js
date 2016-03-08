@@ -148,6 +148,7 @@ describe('socrata.visualizations.views.FeatureMap', function() {
         panAndZoom: true,
         locateUser: false
       },
+      type: 'featureMap',
       unit: {
         one: 'record',
         other: 'records'

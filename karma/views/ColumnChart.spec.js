@@ -178,6 +178,7 @@ describe('ColumnChart', function() {
         },
         interactive: true
       },
+      type: 'columnChart',
       unit: {
         one: 'case',
         other: 'cases'

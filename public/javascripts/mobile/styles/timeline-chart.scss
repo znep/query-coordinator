@@ -25,9 +25,44 @@
     background-size: 100%;
   }
 
-  .title, .value {
+  .title {
     width: 50%;
     padding: 10px 0;
+  }
+
+  .values {
+    width: 30%;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 16.5px;
+
+    &.unfiltered {
+      padding: 20px 0;
+
+      .total-values {
+        color: #02B38F;
+
+        span {
+          color: #929292;
+        }
+      }
+    }
+
+    &.filtered {
+      padding: 10px 0;
+
+      .total-values {
+        color: #929292;
+      }
+
+      .filtered-values {
+        color: #02B38F;
+
+        span {
+          color: #929292;
+        }
+      }
+    }
   }
 }
 

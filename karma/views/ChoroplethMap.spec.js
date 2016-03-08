@@ -1310,7 +1310,7 @@ describe('ChoroplethMap', function() {
         var visualization = choroplethObject.visualization;
 
         el.find('.choropleth-container').width(10);
-        visualization.updateDimensions();
+        visualization.invalidateSize();
 
         expect(invalidateSizeSpy).to.have.been.called;
       });
@@ -1323,7 +1323,7 @@ describe('ChoroplethMap', function() {
         var el = choroplethObject.element;
         var visualization = choroplethObject.visualization;
 
-        visualization.updateDimensions();
+        visualization.invalidateSize();
 
         expect(invalidateSizeSpy).to.not.have.been.called;
       });

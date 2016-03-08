@@ -1,6 +1,5 @@
 /**
  * TODO:
- * - Lowercase "constants" that are really configurations
  * - Pass in either savedExtent or defaultExtent, rather than both
  */
 
@@ -25,16 +24,13 @@ function ChoroplethMap(element, vif) {
   var FILTERED_GEOJSON_PROPERTY_NAME = vif.configuration.shapefile.columns.filtered;
   var SELECTED_GEOJSON_PROPERTY_NAME = vif.configuration.shapefile.columns.selected;
   // Map configuration
-  var MAP_MIN_ZOOM = vif.configuration.mapMinZoom || 1;
-  var MAP_MAX_ZOOM = vif.configuration.mapMaxZoom || 18;
-  var MAP_ENABLE_ZOOM_ANIMATION = vif.configuration.mapZoomAnimation || false;
   var MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS = 200;
   var MAP_DOUBLE_CLICK_THRESHOLD_MILLISECONDS = 400;
   // Choropleth class derivation
-  var MAXIMUM_NUMBER_OF_CLASS_BREAKS_ALLOWED = vif.configuration.maxJenksClassBreaks || 7;
+  var MAXIMUM_NUMBER_OF_CLASS_BREAKS_ALLOWED = 7;
   // Choropleth region rendering
-  var CHOROPLETH_REGION_DEFAULT_STROKE_WIDTH = vif.configuration.defaultFeatureStrokeWidth || 1;
-  var CHOROPLETH_REGION_HIGHLIGHTED_STROKE_WIDTH = vif.configuration.highlightedFeatureStrokeWidth || 4;
+  var CHOROPLETH_REGION_DEFAULT_STROKE_WIDTH = 1;
+  var CHOROPLETH_REGION_HIGHLIGHTED_STROKE_WIDTH = 4;
   // Legend rendering
   var CONTINUOUS_LEGEND_ZERO_COLOR = '#ffffff';
   var CONTINUOUS_LEGEND_POSITIVE_COLOR = '#003747';
@@ -65,9 +61,9 @@ function ChoroplethMap(element, vif) {
       scrollWheelZoom: false,
       zoom: 1,
       zoomControlPosition: 'topleft',
-      minZoom: MAP_MIN_ZOOM,
-      maxZoom: MAP_MAX_ZOOM,
-      zoomAnimation: MAP_ENABLE_ZOOM_ANIMATION
+      minZoom: 1,
+      maxZoom: 18,
+      zoomAnimation: true
     },
     vif.configuration.mapOptions
   );
@@ -188,12 +184,6 @@ function ChoroplethMap(element, vif) {
     _updateFeatureLayer(data);
 
     // TODO: React to active filters being cleared.
-  };
-
-  // TODO: Remove this once Data Lens is using the new (correct)
-  // `.invalidateSize()` method instead of `.updateDimensions()`.
-  this.updateDimensions = function() {
-    _updateDimensions(_choroplethContainer);
   };
 
   this.invalidateSize = function() {

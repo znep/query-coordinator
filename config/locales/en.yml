@@ -609,6 +609,7 @@ en:
           popularity: Popularity
           rss: RSS
           type: Type
+        # NOTE: timeout is used as a generic search failure message
         timeout: We're sorry. Results could not be retrieved at this time. Please try again later.
       ordered_topics: Ordered Topics
       row_results:

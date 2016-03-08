@@ -289,80 +289,86 @@ $(document).ready(function() {
     validateAndSendPayload(eventName, mergedProperties, callback);
   };
 
-  // TODO: Move the event tracking below this to separate file(s)
-  // TODO: Don't talk to Mixpanel if it's not enabled
-  //HEADER
-  mixpanelNS.delegateLinks('#siteHeader', 'a', 'Clicked Header Item', false, function(element) {
-    var linkType = (element.title != '') ? element.title : element.text;
-    return { 'Header Item Type': linkType };
-  });
+  if (blist.mixpanelLoaded) {
+    // TODO: Move the event tracking below this to separate file(s)
+    // TODO: Don't talk to Mixpanel if it's not enabled
+    //HEADER
+    mixpanelNS.delegateLinks('#siteHeader', 'a', 'Clicked Header Item', false, function(element) {
+      var linkType = (element.title != '') ? element.title : element.text;
+      return { 'Header Item Type': linkType };
+    });
 
-  //FOOTER
-  mixpanelNS.delegateLinks('#siteFooter', 'a', 'Clicked Footer Item', false, function(element) {
-    var linkType = (element.title != '') ? element.title : element.text;
-    return { 'Footer Item Type': linkType };
-  });
+    //FOOTER
+    mixpanelNS.delegateLinks('#siteFooter', 'a', 'Clicked Footer Item', false, function(element) {
+      var linkType = (element.title != '') ? element.title : element.text;
+      return { 'Footer Item Type': linkType };
+    });
 
-  //CATALOG
-  //Featured Views
-  mixpanelNS.delegateLinks('.featuredViews .featuredView', 'a', 'Clicked Featured View', false);
+    //CATALOG
+    //Featured Views
+    mixpanelNS.delegateLinks('.featuredViews .featuredView', 'a', 'Clicked Featured View', false);
 
-  //Catalog results
-  // Browse2
-  mixpanelNS.delegateLinks('.browse2-result-name', 'a', 'Clicked Catalog Result', false, catalogEventPayload);
+    //Catalog results
+    // Browse2
+    mixpanelNS.delegateLinks('.browse2-result-name', 'a', 'Clicked Catalog Result', false, catalogEventPayload);
 
-  // Browse1
-  mixpanelNS.delegateLinks('.gridList .titleLine', 'a', 'Clicked Catalog Result', false, function(element) {
-    var linkNo = parseFloat($(element).closest('.item').find('.index .value').text());
-    var page = $(element).closest('.browseList').find('.pagination .active').text().match(/\d/);
-    var pageNo = (page=='')? 1 : parseFloat(page);
-    return { 'Result Number': linkNo, 'Page Number': pageNo };
-  });
+    // Browse1
+    mixpanelNS.delegateLinks('.gridList .titleLine', 'a', 'Clicked Catalog Result', false, function(element) {
+      var linkNo = parseFloat($(element).closest('.item').find('.index .value').text());
+      var page = $(element).closest('.browseList').find('.pagination .active').text().match(/\d/);
+      var pageNo = (page=='')? 1 : parseFloat(page);
+      return { 'Result Number': linkNo, 'Page Number': pageNo };
+    });
 
-  // API docs link
-  mixpanelNS.delegateLinks('.browse2-result-explore', 'a', 'Clicked API Docs Link', false, catalogEventPayload);
+    // API docs link
+    mixpanelNS.delegateLinks('.browse2-result-explore', 'a', 'Clicked API Docs Link', false, catalogEventPayload);
 
-  //SEARCH FACETS
-  //View Types/Categories/Topics
-  // Browse2
-  mixpanelNS.delegateLinks('.browse2-facet-section-options', 'a', 'Used Search Facets', false, facetEventPayload);
-  // Modal (Note: Model more than way to select facets)
-  mixpanelNS.delegateLinks('.browse2-facet-section-modal-content-top', 'a', 'Used Search Facets', false, facetEventPayload);
-  mixpanelNS.delegateLinks('.browse2-facet-section-modal-content-all', 'a', 'Used Search Facets', false, facetEventPayload);
-  // Clear facets method #1
-  mixpanelNS.delegateLinks('.browse2-results-clear-controls', 'a', 'Cleared Facets', false, facetEventPayload);
+    //SEARCH FACETS
+    //View Types/Categories/Topics
+    // Browse2
+    mixpanelNS.delegateLinks('.browse2-facet-section-options', 'a', 'Used Search Facets', false, facetEventPayload);
+    // Modal (Note: Model more than way to select facets)
+    mixpanelNS.delegateLinks('.browse2-facet-section-modal-content-top', 'a', 'Used Search Facets', false, facetEventPayload);
+    mixpanelNS.delegateLinks('.browse2-facet-section-modal-content-all', 'a', 'Used Search Facets', false, facetEventPayload);
+    // Clear facets method #1
+    mixpanelNS.delegateLinks('.browse2-results-clear-controls', 'a', 'Cleared Facets', false, facetEventPayload);
 
-  // Browse1
-  mixpanelNS.delegateLinks('.facetSection', 'a', 'Used Search Facets', false, function(element) {
-    var facetType = $(element).closest('.facetSection').find('> .title').text();
-    var linkName = element.text;
-    return { 'Facet Type': facetType, 'Facet Type Name': linkName };
-  });
+    // Browse1
+    mixpanelNS.delegateLinks('.facetSection', 'a', 'Used Search Facets', false, function(element) {
+      var facetType = $(element).closest('.facetSection').find('> .title').text();
+      var linkName = element.text;
+      return { 'Facet Type': facetType, 'Facet Type Name': linkName };
+    });
 
-  //SIDEBAR TRACKING
-  mixpanelNS.delegateLinks('#sidebarOptions', 'a', 'Clicked Sidebar Option', false, function(element) {
-    return {'Sidebar Name': element.title};
-  });
+    //SIDEBAR TRACKING
+    mixpanelNS.delegateLinks('#sidebarOptions', 'a', 'Clicked Sidebar Option', false, function(element) {
+      return {'Sidebar Name': element.title};
+    });
 
-  //Panes in sidebar (Needs a delegated .on since they are not present in the DOM from the beginning)
-  mixpanelNS.delegateLinks('#gridSidebar', 'a.headerLink', 'Clicked Pane in Sidebar', false, function(element) {
-    return {'Pane Name': element.text};
-  });
+    //Panes in sidebar (Needs a delegated .on since they are not present in the DOM from the beginning)
+    mixpanelNS.delegateLinks('#gridSidebar', 'a.headerLink', 'Clicked Pane in Sidebar', false, function(element) {
+      return {'Pane Name': element.text};
+    });
 
-  //In the visualize pane - the different visualization types
-  mixpanelNS.delegateLinks('#gridSidebar', '.radioBlock .radioLine', 'Chose Visualization Type', true, function(element) {
-    return {'Visualization Type': element.outerText};
-  });
+    //In the visualize pane - the different visualization types
+    mixpanelNS.delegateLinks('#gridSidebar', '.radioBlock .radioLine', 'Chose Visualization Type', true, function(element) {
+      return {'Visualization Type': element.outerText};
+    });
 
-  //Render Type Options
-  mixpanelNS.delegateLinks('#renderTypeOptions', 'a', 'Changed Render Type Options', false, function(element) {
-    return {'Render Type': element.title};
-  });
+    //Render Type Options
+    mixpanelNS.delegateLinks('#renderTypeOptions', 'a', 'Changed Render Type Options', false, function(element) {
+      return {'Render Type': element.title};
+    });
 
-  // GOVSTAT
-  // opening old chart
-  mixpanelNS.delegateLinks('#janus', '.goalBox .pull.down', 'Opened Goal Chart', false, _.noop);
+    // GOVSTAT
+    // opening old chart
+    mixpanelNS.delegateLinks('#janus', '.goalBox .pull.down', 'Opened Goal Chart', false, _.noop);
 
-  // opening new chart
-  mixpanelNS.delegateLinks('#janus', '.goalBox .progressViewChart .viewChart', 'Opened Goal Chart', false, _.noop);
+    // opening new chart
+    mixpanelNS.delegateLinks('#janus', '.goalBox .progressViewChart .viewChart', 'Opened Goal Chart', false, _.noop);
+  } else {
+    if (console && console.warn) {
+      console.warn('Unable to delegateLinks to Mixpanel. AdBlocking may be in effect.');
+    }
+  }
 });

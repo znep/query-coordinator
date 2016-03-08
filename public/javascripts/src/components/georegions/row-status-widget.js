@@ -28,7 +28,6 @@ const RowStatusWidget = React.createClass({
     const {
       action,
       authenticityToken,
-      disabledTitle,
       id,
       status,
       onSuccess

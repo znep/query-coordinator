@@ -5,7 +5,7 @@
     "url": "https://github.com/socrata/storyteller.git"
   },
   "scripts": {
-    "lint": "eslint --ignore-path .eslintignore -- app/assets/javascripts spec/karma",
+    "lint": "./node_modules/.bin/eslint --ignore-path .eslintignore -- app/assets/javascripts spec/karma",
     "test": "RAILS_ENV=karma ./node_modules/.bin/karma start spec/karma/karma.conf.js",
     "test-watch": "RAILS_ENV=karma ./node_modules/.bin/karma start spec/karma/karma.conf.js --singleRun false",
     "webpack": "./node_modules/.bin/webpack --config config/webpack.config.js",

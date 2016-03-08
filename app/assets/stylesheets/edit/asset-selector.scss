@@ -108,8 +108,6 @@
 
   display: block;
   position: relative;
-  margin-bottom: 1rem;
-  padding: 1rem;
   background-color: $asset-selector-input-group-bg-color;
   border-radius: 0.1rem;
 
@@ -307,11 +305,20 @@
   }
 }
 
+.modal-button-group {
+  padding: 1.5rem 0 0 0;
+}
+
 /* Visualization chooser */
-.asset-selector-full-width-iframe {
+.asset-selector-full-width-iframe,
+#asset-selector-container .component-socrata-visualization-classic {
   width: 100%;
   height: 560px;
   margin-bottom: 1rem;
+}
+
+#asset-selector-container .component-socrata-visualization-classic {
+  border: dashed 1px #aaa;
 }
 
 .asset-selector-preview-image-container {

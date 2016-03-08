@@ -214,7 +214,7 @@ describe('AssetSelectorStore', function() {
 
           describe('.getStep()', function() {
             var EXPECTED_STEPS = {
-              'SOCRATA_VISUALIZATION': 'SELECT_DATASET_FOR_VISUALIZATION',
+              'SOCRATA_VISUALIZATION': 'SELECT_VISUALIZATION_OPTION',
               'IMAGE': 'SELECT_IMAGE_TO_UPLOAD',
               'YOUTUBE': 'ENTER_YOUTUBE_URL',
               'EMBED_CODE': 'ENTER_EMBED_CODE'
@@ -896,18 +896,18 @@ describe('AssetSelectorStore', function() {
 
         describe('socrata.visualization.classic', function() {
           beforeEach(function() { editComponent(StandardMocks.classicVizBlockId, 'socrata.visualization.classic'); });
-          verifyStepIs('CONFIGURE_VISUALIZATION');
+          verifyStepIs('CONFIGURE_MAP_OR_CHART');
           verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
 
-          describe('then jump to SELECT_TABLE_OR_CHART', function() {
-            jumpToStep('SELECT_TABLE_OR_CHART');
-            verifyStepIs('SELECT_TABLE_OR_CHART');
+          describe('then jump to SELECT_VISUALIZATION_OPTION', function() {
+            jumpToStep('SELECT_VISUALIZATION_OPTION');
+            verifyStepIs('SELECT_VISUALIZATION_OPTION');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
 
-          describe('then jump to SELECT_DATASET_FOR_VISUALIZATION', function() {
-            jumpToStep('SELECT_DATASET_FOR_VISUALIZATION');
-            verifyStepIs('SELECT_DATASET_FOR_VISUALIZATION');
+          describe('then jump to SELECT_MAP_OR_CHART_VISUALIZATION', function() {
+            jumpToStep('SELECT_MAP_OR_CHART_VISUALIZATION');
+            verifyStepIs('SELECT_MAP_OR_CHART_VISUALIZATION');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
 
@@ -928,15 +928,15 @@ describe('AssetSelectorStore', function() {
           verifyStepIs('CONFIGURE_VISUALIZATION');
           verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
 
-          describe('then jump to SELECT_TABLE_OR_CHART', function() {
-            jumpToStep('SELECT_TABLE_OR_CHART');
-            verifyStepIs('SELECT_TABLE_OR_CHART');
+          describe('then jump to SELECT_VISUALIZATION_OPTION', function() {
+            jumpToStep('SELECT_VISUALIZATION_OPTION');
+            verifyStepIs('SELECT_VISUALIZATION_OPTION');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
 
-          describe('then jump to SELECT_DATASET_FOR_VISUALIZATION', function() {
-            jumpToStep('SELECT_DATASET_FOR_VISUALIZATION');
-            verifyStepIs('SELECT_DATASET_FOR_VISUALIZATION');
+          describe('then jump to SELECT_MAP_OR_CHART_VISUALIZATION', function() {
+            jumpToStep('SELECT_MAP_OR_CHART_VISUALIZATION');
+            verifyStepIs('SELECT_MAP_OR_CHART_VISUALIZATION');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
         });

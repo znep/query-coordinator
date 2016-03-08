@@ -167,6 +167,17 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
+      'mapOrChartSelected',
+      function(event, mapOrChartObj) {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+          domain: mapOrChartObj.domainCName || window.location.hostname,
+          mapOrChartUid: mapOrChartObj.id
+        });
+      }
+    );
+
+    _container.on(
       'visualizationSelected',
       function(event, selectedVisualization) {
         dispatcher.dispatch({
@@ -217,6 +228,15 @@ export default function AssetSelectorRenderer(options) {
         blockId: assetSelectorStore.getBlockId(),
         componentIndex: assetSelectorStore.getComponentIndex(),
         provider: provider
+      });
+    });
+
+    _container.on('click', '[data-visualization-option]', function() {
+      var visualizationOption = this.getAttribute('data-visualization-option');
+
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
+        visualizationOption: visualizationOption
       });
     });
 
@@ -285,9 +305,20 @@ export default function AssetSelectorRenderer(options) {
           selectorContent = _renderChooseYoutubeTemplate(componentValue);
           break;
 
+        case WIZARD_STEP.SELECT_VISUALIZATION_OPTION:
+          selectorTitle = I18n.t('editor.asset_selector.visualization.choose_visualization_option_heading');
+          selectorContent = _renderChooseVisualizationOptions();
+          break;
+
         case WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION:
           selectorTitle = I18n.t('editor.asset_selector.visualization.choose_dataset_heading');
           selectorContent = _renderChooseDatasetTemplate();
+          selectorWideDisplay = true;
+          break;
+
+        case WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION:
+          selectorTitle = I18n.t('editor.asset_selector.visualization.choose_map_or_chart_heading');
+          selectorContent = _renderChooseMapOrChartTemplate();
           selectorWideDisplay = true;
           break;
 
@@ -299,6 +330,12 @@ export default function AssetSelectorRenderer(options) {
         case WIZARD_STEP.CONFIGURE_VISUALIZATION:
           selectorTitle = I18n.t('editor.asset_selector.visualization.configure_vizualization_heading');
           selectorContent = _renderConfigureVisualizationTemplate();
+          selectorWideDisplay = true;
+          break;
+
+        case WIZARD_STEP.CONFIGURE_MAP_OR_CHART:
+          selectorTitle = I18n.t('editor.asset_selector.visualization.configure_map_or_chart_heading');
+          selectorContent = _renderConfigureMapOrChartTemplate();
           selectorWideDisplay = true;
           break;
 
@@ -356,6 +393,10 @@ export default function AssetSelectorRenderer(options) {
 
       case WIZARD_STEP.CONFIGURE_VISUALIZATION:
         _renderConfigureVisualizationData(componentType, componentValue);
+        break;
+
+      case WIZARD_STEP.CONFIGURE_MAP_OR_CHART:
+        _renderConfigureMapOrChartData(componentType, componentValue);
         break;
 
       case WIZARD_STEP.IMAGE_PREVIEW:
@@ -422,6 +463,46 @@ export default function AssetSelectorRenderer(options) {
     ]);
 
     return providers;
+  }
+
+  function _renderChooseVisualizationOptions() {
+    var insertVisualizationHeader = $('<h3>').
+      text(I18n.t('editor.asset_selector.visualization.choose_insert_visualziation_heading'));
+    var insertVisualizationDescription = $('<p>').
+      text(I18n.t('editor.asset_selector.visualization.choose_insert_visualization_description'));
+
+    var createVisualizationHeader = $('<h3>').
+      text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_heading'));
+    var createVisualizationDescription = $('<p>').
+      text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
+
+    var visualizationOptions =
+      $(
+        '<ul>',
+        {'class': 'asset-selector-button-list visualization-options'}
+      ).
+        append([
+          $(
+            '<li>',
+            {'data-visualization-option': 'INSERT_VISUALIZATION'}
+          ).
+            append(insertVisualizationHeader, insertVisualizationDescription),
+          $(
+            '<li>',
+            {'data-visualization-option': 'CREATE_VISUALIZATION'}
+          ).append(createVisualizationHeader, createVisualizationDescription)
+        ]);
+
+    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+
+    var buttonGroup = $(
+      '<div>',
+      { 'class': 'modal-button-group r-to-l' }
+    ).append([
+      backButton
+    ]);
+
+    return [ visualizationOptions, buttonGroup ];
   }
 
   function _renderChooseImageUploadTemplate() {
@@ -1135,7 +1216,7 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseDatasetTemplate() {
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_VISUALIZATION_OPTION);
 
     var datasetChooserIframe = $(
       '<iframe>',
@@ -1204,6 +1285,37 @@ export default function AssetSelectorRenderer(options) {
     return [ $visualizationChoiceGroup, $buttonGroup ];
   }
 
+  function _renderChooseMapOrChartTemplate() {
+    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_VISUALIZATION_OPTION);
+
+    var mapOrChartChooserIframe = $(
+      '<iframe>',
+      {
+        'class': 'asset-selector-mapOrChart-chooser-iframe asset-selector-full-width-iframe',
+        'src': _mapOrChartChooserUrl()
+      }
+    );
+
+    var loadingButton = $('<button>', {
+      'class': 'btn btn-transparent btn-busy visualization-busy',
+      'disabled': true
+    }).append($('<span>'));
+
+    var buttonGroup = $('<div>', {
+      'class': 'modal-button-group r-to-l'
+    }).append([ backButton ]);
+
+    mapOrChartChooserIframe[0].onDatasetSelected = function(mapOrChartObj) {
+      $(this).trigger('mapOrChartSelected', mapOrChartObj);
+    };
+
+    mapOrChartChooserIframe.one('load', function() {
+      loadingButton.addClass('hidden');
+    });
+
+    return [ loadingButton, mapOrChartChooserIframe, buttonGroup ];
+  }
+
   function _renderConfigureVisualizationTemplate() {
     var configureVisualizationIframe = $(
       '<iframe>',
@@ -1233,23 +1345,6 @@ export default function AssetSelectorRenderer(options) {
     var buttonGroup = $('<div>', {
       'class': 'modal-button-group r-to-l'
     }).append([ backButton, insertButton ]);
-
-    // DEPRECATED: Remove this function once frontend and storyteller are stable in production.
-    configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj, format, originalUid) {
-      // This function is called by the visualization chooser when:
-      //   - The user makes or clears a selection (argument is either null or a visualization).
-      //   - The page finishes loading (argument is null).
-      // In either case, we should consider the iframe loaded.
-      // originalUid may be null (say if the user created the visualization inline).
-      configureVisualizationIframe.
-        trigger('visualizationSelected', {
-          data: JSON.parse(JSON.stringify(datasetObj)),
-
-          // format can either be 'classic' or 'vif'.
-          format: format,
-          originalUid: originalUid
-        });
-    };
 
 		configureVisualizationIframe[0].onVisualizationSelectedV2 = function(datasetObjJson, format, originalUid) {
 			// This function is called by the visualization chooser when:
@@ -1281,6 +1376,102 @@ export default function AssetSelectorRenderer(options) {
     insertButton.prop('disabled', !componentType);
   }
 
+  function _renderConfigureMapOrChartTemplate() {
+    var configureMapOrChartIframe = $(
+      '<iframe>',
+      {
+        'class': 'asset-selector-configure-mapchart-iframe asset-selector-full-width-iframe',
+        'src': ''
+      }
+    );
+
+    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION);
+
+    var insertButton = $(
+      '<button>',
+      {
+        'class': 'btn-primary btn-apply',
+        'disabled': 'disabled'
+      }
+    ).text(_insertButtonText());
+
+    var loadingButton = $('<button>', {
+      'class': 'btn-transparent btn-busy visualization-busy',
+      'disabled': true
+    }).append($('<span>'));
+
+    var buttonGroup = $('<div>', {
+      'class': 'modal-button-group r-to-l'
+    }).append([ backButton, insertButton ]);
+
+    return [ loadingButton, configureMapOrChartIframe, buttonGroup ];
+  }
+
+  function _renderConfigureMapOrChartData(componentType, componentProperties) {
+    var dataset;
+    var insertButton = _container.find('.btn-apply');
+    var mapChartIframe = _container.find('.asset-selector-configure-mapchart-iframe');
+    var assetSelectorStoreDataset = assetSelectorStore.getDataset();
+    var savedDatasetMatchesSelectedDataset = (
+      assetSelectorStoreDataset &&
+      componentProperties.visualization &&
+      componentProperties.visualization.id === assetSelectorStoreDataset.id
+    );
+    var isEditingWithoutSavedDataset = !assetSelectorStoreDataset && assetSelectorStore.isEditingExisting();
+
+    if (componentProperties.dataset && _container.find('.component-socrata-visualization-classic').length === 0) {
+
+      if (savedDatasetMatchesSelectedDataset || isEditingWithoutSavedDataset) {
+        dataset = componentProperties.visualization;
+      } else {
+        dataset = JSON.parse(JSON.stringify(assetSelectorStoreDataset));
+      }
+
+      // If the visualization has a table, make sure it does not display.
+      dataset.metadata.renderTypeConfig.visible.table = false;
+
+      mapChartIframe.hide();
+
+      var componentContainer = $(
+        '<div>',
+        {
+          'class': 'asset-selector-component-container'
+        }
+      );
+
+      _container.
+        find('.modal-content').
+        prepend(componentContainer);
+
+      componentContainer.on('component::visualization-loaded', function() {
+        $('.btn-busy').addClass('hidden');
+        insertButton.prop('disabled', false);
+
+        mapChartIframe.
+          trigger('visualizationSelected', {
+            data: dataset,
+
+            // format can either be 'classic' or 'vif'.
+            format: 'classic',
+            originalUid: dataset.id
+          });
+      });
+
+      componentContainer.componentSocrataVisualizationClassic(
+        {
+          type: 'socrata.visualization.classic',
+          value: {
+            visualization: dataset
+          }
+        },
+        null, {
+          resizeSupported: false
+        });
+
+      insertButton.prop('disabled', true);
+    }
+  }
+
   /**
    * Small helper functions
    */
@@ -1289,6 +1480,16 @@ export default function AssetSelectorRenderer(options) {
     return encodeURI(
       StorytellerUtils.format(
         '{0}/browse/select_dataset?suppressed_facets[]=type&limitTo=datasets',
+        window.location.protocol + '//' + window.location.hostname
+      )
+    );
+  }
+
+  function _mapOrChartChooserUrl() {
+    // remove suppressed_facets param upon frontend release to show 'view types' menu
+    return encodeURI(
+      StorytellerUtils.format(
+        '{0}/browse/select_dataset?suppressed_facets[]=type&filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob',
         window.location.protocol + '//' + window.location.hostname
       )
     );

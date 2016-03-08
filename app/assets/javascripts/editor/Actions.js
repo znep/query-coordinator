@@ -146,6 +146,11 @@ export default {
 	//  - 'EMBED_CODE'
 	ASSET_SELECTOR_PROVIDER_CHOSEN: 'ASSET_SELECTOR_PROVIDER_CHOSEN',
 
+	// The user chose a visualization option.
+	// {string} visualizationOption. One of:
+	// - 'INSERT_VISUALIZATION'
+	// - 'CREATE_VISUALIZATION'
+	ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN: 'ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN',
 	/**
 	 * Story widget embed flow
 	 */
@@ -169,7 +174,12 @@ export default {
 
 	// {string} datasetUid
 	// {boolean} isNewBackend
+	// {string} domain
 	ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET',
+
+	// {string} mapOrChartUid
+	// {string} domain
+	ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART',
 
 	// User chose to visualize the dataset as a table.
 	// No payload.

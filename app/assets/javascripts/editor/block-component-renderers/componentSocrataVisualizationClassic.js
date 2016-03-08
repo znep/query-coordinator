@@ -56,6 +56,13 @@ function _renderVisualization($element, componentData) {
 
   $iframeElement.one('load', function() {
     _updateVisualization($element, componentData);
+
+    $element[0].dispatchEvent(
+      new CustomEvent(
+        'component::visualization-loaded',
+        { detail: {}, bubbles: true }
+      )
+    );
   });
 
   $element.

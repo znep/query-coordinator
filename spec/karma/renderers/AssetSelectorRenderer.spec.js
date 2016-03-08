@@ -335,6 +335,22 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
+    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART` on a mapOrChartSelected event', function(done) {
+      dispatcher.register(function(payload) {
+        var action = payload.action;
+        assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
+        // the values will be empty, but assert that the event adds the keys
+        assert.propertyVal(payload, 'mapOrChartUid', 'mapc-hart');
+        assert.propertyVal(payload, 'domain', window.location.hostname);
+        done();
+      });
+
+      container.find('.modal-dialog').trigger('mapOrChartSelected', {
+        id: 'mapc-hart',
+        domainCName: undefined
+      });
+    });
+
     it('dispatches `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
       dispatcher.register(function(payload) {
         if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
@@ -546,7 +562,7 @@ describe('AssetSelectorRenderer', function() {
       assert.isTrue(container.hasClass('hidden'));
     });
 
-    describe('when a `ASSET_SELECTOR_PROVIDER_CHOSEN` action with provider = SOCRATA_VISUALIZATION is fired', function() {
+    describe('an `ASSET_SELECTOR_PROVIDER_CHOSEN` action with provider = SOCRATA_VISUALIZATION is fired', function() {
       beforeEach(function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -554,30 +570,15 @@ describe('AssetSelectorRenderer', function() {
         });
       });
 
-      it('renders an iframe', function() {
-        assert.equal(container.find('.asset-selector-dataset-chooser-iframe').length, 1);
-      });
-
-      describe('the iframe', function() {
-        it('has the correct source', function() {
-          var iframeSrc = container.find('iframe').attr('src');
-          assert.include(iframeSrc, 'browse/select_dataset');
-          assert.include(iframeSrc, 'suppressed_facets');
-          assert.include(iframeSrc, 'limitTo=datasets');
-        });
-
-        it('has a modal title loading spinner', function() {
-          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
-        });
+      it('renders visualziation options', function() {
+        assert.equal(container.find('.visualization-options').length, 1);
+        assert.equal(container.find('[data-visualization-option="INSERT_VISUALIZATION"]').length, 1);
+        assert.equal(container.find('[data-visualization-option="CREATE_VISUALIZATION"]').length, 1);
       });
 
       describe('the modal', function() {
         it('has a close button', function() {
           assert.equal(container.find('.modal-close-btn').length, 1);
-        });
-
-        it('has the wide class to display the iframe', function() {
-          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
         });
 
         it('has a button that goes back to the provider list', function() {
@@ -589,7 +590,93 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    describe('when a `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
+    describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = INSERT_VISUALIZATION is fired', function() {
+      beforeEach(function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
+          visualizationOption: 'INSERT_VISUALIZATION'
+        });
+      });
+
+      it('renders an iframe', function() {
+        assert.equal(container.find('.asset-selector-mapOrChart-chooser-iframe').length, 1);
+      });
+
+      describe('the iframe', function() {
+        it('has the correct source', function() {
+          var iframeSrc = decodeURI(container.find('iframe').attr('src'));
+          assert.include(iframeSrc, 'browse/select_dataset');
+          assert.include(iframeSrc, 'filtered_types[]=maps&filtered_types[]=charts');
+          assert.include(iframeSrc, 'limitTo[]=charts&limitTo[]=maps&limitTo[]=blob');
+        });
+      });
+
+      describe('the modal', function() {
+        it('has the wide class to display the iframe', function() {
+          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+        });
+
+        it('has a modal title loading spinner', function() {
+          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
+        });
+
+        it('has a close button', function() {
+          assert.equal(container.find('.modal-close-btn').length, 1);
+        });
+
+        it('has a button that goes back to the provider list', function() {
+          assert.lengthOf(
+            container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
+            1
+          );
+        });
+      });
+    });
+
+    describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = CREATE_VISUALIZATION is fired', function() {
+      beforeEach(function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
+          visualizationOption: 'CREATE_VISUALIZATION'
+        });
+      });
+
+      it('renders an iframe', function() {
+        assert.equal(container.find('.asset-selector-dataset-chooser-iframe').length, 1);
+      });
+
+      describe('the iframe', function() {
+        it('has the correct source', function() {
+          var iframeSrc = decodeURI(container.find('iframe').attr('src'));
+          assert.include(iframeSrc, 'browse/select_dataset');
+          assert.include(iframeSrc, 'suppressed_facets[]=type');
+          assert.include(iframeSrc, 'limitTo=datasets');
+        });
+      });
+
+      describe('the modal', function() {
+        it('has the wide class to display the iframe', function() {
+          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+        });
+
+        it('has a modal title loading spinner', function() {
+          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
+        });
+
+        it('has a close button', function() {
+          assert.equal(container.find('.modal-close-btn').length, 1);
+        });
+
+        it('has a button that goes back to the provider list', function() {
+          assert.lengthOf(
+            container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
+            1
+          );
+        });
+      });
+    });
+
+    describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
       beforeEach(function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
@@ -675,8 +762,8 @@ describe('AssetSelectorRenderer', function() {
               iframe = container.find('iframe')[0];
             });
 
-            it('has a onVisualizationSelected function on it', function() {
-              assert.isFunction(iframe.onVisualizationSelected);
+            it('has a onVisualizationSelectedV2 function on it', function() {
+              assert.isFunction(iframe.onVisualizationSelectedV2);
             });
 
             it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
@@ -689,7 +776,7 @@ describe('AssetSelectorRenderer', function() {
                 }
               });
 
-              iframe.onVisualizationSelected(selectedVisualization, 'classic', 'orig-inal');
+              iframe.onVisualizationSelectedV2(JSON.stringify(selectedVisualization), 'classic', 'orig-inal');
             });
 
             it('does not preserve the object constructor (because in IE, the constructor will break on iframe unload)', function(done) {
@@ -703,7 +790,7 @@ describe('AssetSelectorRenderer', function() {
                 }
               });
 
-              iframe.onVisualizationSelected(objectWithStrangeConstructor, 'classic', 'orig-inal');
+              iframe.onVisualizationSelectedV2(JSON.stringify(objectWithStrangeConstructor), 'classic', 'orig-inal');
             });
           });
 
@@ -753,7 +840,21 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    describe('when a `ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD` action is fired', function() {
+    describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART` action is fired', function() {
+      beforeEach(function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+          domain: 'example.com',
+          mapOrChartUid: 'mapc-hart'
+        });
+      });
+
+      it('has a button that goes to the map or chart visualization page', function() {
+        assert.equal(assetSelectorStoreMock.getStep(), WIZARD_STEP.CONFIGURE_MAP_OR_CHART);
+      });
+    });
+
+    describe('an `ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD` action is fired', function() {
       beforeEach(function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -792,7 +893,7 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    describe('when a `FILE_UPLOAD_PROGRESS` action is fired', function() {
+    describe('a `FILE_UPLOAD_PROGRESS` action is fired', function() {
       beforeEach(function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -838,7 +939,7 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    describe('when a `FILE_UPLOAD_ERROR` action is fired', function() {
+    describe('a `FILE_UPLOAD_ERROR` action is fired', function() {
       beforeEach(function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -882,7 +983,7 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    describe('when a `FILE_UPLOAD_DONE` action is fired', function() {
+    describe('a `FILE_UPLOAD_DONE` action is fired', function() {
       var imageUrl = 'https://media.giphy.com/media/I8BOASC4LS0rS/giphy.gif';
       var documentId = 9876;
       var imgEl;

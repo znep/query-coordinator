@@ -4212,6 +4212,7 @@ function getType(ds)
     var type = ds.displayType || 'table';
 
     if (ds.viewType == 'blobby') { type = 'blob'; }
+    else if (ds.displayType == 'assetinventory') { type = 'table'; }
     else if (ds.viewType == 'href') { type = 'href'; }
     else if (ds.displayType == 'api') { type = 'api'; }
     else if (_.include(['table', 'fatrow', 'page'], type) &&

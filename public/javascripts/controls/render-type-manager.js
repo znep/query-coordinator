@@ -169,7 +169,7 @@
     };
 
     typeConfigs.api = typeConfigs.table;
-    typeConfigs.asset_inventory = typeConfigs.table;
+    typeConfigs.assetinventory = typeConfigs.table;
 
     $.fn.renderTypeManager = function(options)
     {

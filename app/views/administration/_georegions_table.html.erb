@@ -26,6 +26,19 @@
     </tr>
     </thead>
     <tbody>
+    <%- jobs.each do |job| -%>
+      <tr class="item">
+        <td class="name"><%= job['jobParameters']['name'] %></td>
+        <td class="status" colspan="<%= render_actions ? 4 : 1  %>">
+          <span class="status-icon-progress"></span>
+          <span class="row-status-widget-label is-progress">
+            <%=  t("#{prefix}.status_progress") %>
+            <br>
+            <span class="substatus"><%= t("#{prefix}.substatus_progress") %></span>
+          </span>
+        </td>
+      </tr>
+    <%- end -%>
     <%- georegions.each do |georegion| -%>
       <tr class="item">
         <td class="name"><%= georegion.name %></td>
@@ -84,19 +97,6 @@
                 t("#{prefix}.edit"),
                 { :method => :get },
                 { :class => 'button', 'data-action' => 'edit' }) %>
-        </td>
-      </tr>
-    <%- end -%>
-    <%- jobs.each do |job| -%>
-      <tr class="item">
-        <td class="name"><%= job['jobParameters']['name'] %></td>
-        <td class="status" colspan="<%= render_actions ? 4 : 1  %>">
-          <span class="status-icon-progress"></span>
-          <span class="row-status-widget-label is-progress">
-            <%=  t("#{prefix}.status_progress") %>
-            <br>
-            <span class="substatus"><%= t("#{prefix}.substatus_progress") %></span>
-          </span>
         </td>
       </tr>
     <%- end -%>

@@ -54,6 +54,7 @@ describe AdministrationController do
         it 'responds successfully with a 200 HTTP status code' do
           curated_region = build(:curated_region)
           allow(CuratedRegion).to receive(:find).and_return([curated_region])
+
           get :georegions
           expect(response).to be_success
           expect(response).to have_http_status(200)
@@ -62,8 +63,27 @@ describe AdministrationController do
         it 'renders the administration/georegions template' do
           curated_region = build(:curated_region)
           allow(CuratedRegion).to receive(:find).and_return([curated_region])
+
           get :georegions
           expect(response).to render_template('administration/georegions')
+        end
+
+        it 'does not error if CRJQ and ISS are down' do
+          allow_any_instance_of(ApplicationHelper).to receive(:translate) { |_, key| "Translation for: #{key}" }
+          allow_any_instance_of(ApplicationHelper).to receive(:t) { |_, key| "Translation for: #{key}" }
+
+          curated_region = build(:curated_region)
+          allow(CuratedRegion).to receive(:find).and_return([curated_region])
+
+          allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_call_original
+          allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_call_original
+          allow_any_instance_of(CuratedRegionJobQueue).to receive(:get_queue).and_raise('CRJQ is down')
+          allow(ImportStatusService).to receive(:get).and_raise('ISS is down')
+
+          get :georegions
+          expect(response).to be_success
+          expect(response).to have_http_status(200)
+          expect(flash[:notice]).to include('Translation for: screens.admin.georegions.flashes.service_unavailable')
         end
 
         it 'loads template data into @georegions' do

@@ -1671,6 +1671,7 @@ en:
         enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         flashes:
           add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
+          service_unavailable_html: <div>We are experiencing technical issues with some services related to Spatial Lens. Please contact <a href="https://support.socrata.com">Socrata support</a> if the issue persists.</div>
         learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
         page_title: Manage Spatial Lens
         page_subtitle: You have set %{default_count} of %{available_count} available boundaries as auto-encoded boundaries.

@@ -645,6 +645,8 @@ function FeatureMap(element, vif) {
   function _showFeatureFlyout(event) {
     var rowCountUnit;
     var payload;
+    var manyRows = _flyoutData.count > FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY;
+    var denseData = _flyoutData.totalPoints >= FEATURE_MAP_MAX_TILE_DENSITY;
 
     if (_flyoutData.count === 1) {
       rowCountUnit = (_.has(_lastRenderOptions, 'unit.one')) ? _lastRenderOptions.unit.one : vif.unit.one;
@@ -664,7 +666,7 @@ function FeatureMap(element, vif) {
       }
     };
 
-    if (_flyoutData.count > FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
+    if (manyRows || denseData) {
 
       if (_map.getZoom() === FEATURE_MAP_MAX_ZOOM) {
         payload.notice = self.getLocalization('FLYOUT_FILTER_NOTICE');
@@ -676,7 +678,7 @@ function FeatureMap(element, vif) {
       // TileServer limit or the selected points contain more than the
       // max number of rows to be displayed on a flannel,
       // prompt the user to filter and/or zoom in for accurate data.
-      if (_flyoutData.totalPoints >= FEATURE_MAP_MAX_TILE_DENSITY) {
+      if (denseData) {
         payload.title = '{0} {1}'.format(
           self.getLocalization('FLYOUT_DENSE_DATA_NOTICE'),
           (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : vif.unit.other

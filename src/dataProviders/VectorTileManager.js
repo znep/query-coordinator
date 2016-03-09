@@ -953,15 +953,16 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
 
           injectTileInfo(e);
 
-          // Only execute click if data under cursor does not exceed inspector
-          // row density.
+          // Only execute click if data under cursor does not exceed max tile
+          // or inspector row density.
           //
           // NOTE: `self.options` (which refers to the VectorTileManager
           // instance options) is not the same as `this.options` (which refers
           // to the map instance options).
           var manyRows = _.sum(e.points, 'count') > self.options.rowInspectorMaxRowDensity;
+          var denseData = e.tile.totalPoints >= self.options.maxTileDensity;
 
-          if (!manyRows) {
+          if (!denseData && !manyRows) {
             highlightClickedPoints(e.points);
             self.options.onClick(e);
           } else {

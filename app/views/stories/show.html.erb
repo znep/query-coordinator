@@ -4,37 +4,51 @@
 
   <div class="user-story large theme-<%= @story.theme %>">
     <% @story.blocks.each do |block| -%>
-      <% layout_columns = block.layout.split('-') %>
+      <% layout_columns = block.layout.split('-') -%>
 
       <div class="block">
-        <% block.components.each_with_index do |component, index| %>
-          <div class="<%= component_container_classes(layout_columns[index]) %>">
+        <% if block.layout == '12-12-12-12' -%>
 
-            <div class="<%= component_classes(component['type']) %>" data-component-data="<%= component.to_json %>">
-
-              <%=
-                render(
-                  partial: component_partial_name(component['type']),
-                  locals: { component: component }
-                )
-              %>
-
+          <!-- Couple two 12's together and wrap them with a .col6 -->
+          <% [block.components.slice(0, 2), block.components.slice(2, 2)].each do |chunk| -%>
+            <div class="col6">
+              <% chunk.each_with_index do |component, index| -%>
+                <%=
+                  render(
+                    partial: 'stories/partials/component',
+                    locals: {
+                      index: index,
+                      layout_columns: layout_columns,
+                      component: component
+                    }
+                  )
+                %>
+              <% end -%>
             </div>
+          <% end -%>
 
-          </div>
+        <% else -%>
+
+          <% block.components.each_with_index do |component, index| %>
+            <%=
+              render(
+                partial: 'stories/partials/component',
+                locals: {
+                  index: index,
+                  layout_columns: layout_columns,
+                  component: component
+                }
+              )
+            %>
+          <% end -%>
+
         <% end %>
       </div>
-
     <% end -%>
 
   </div>
 
   <%= render(partial: 'stories/partials/footer') %>
-
 </div>
 
 <%= render(partial: 'stories/partials/presentation_mode') %>
-
-<script>
-  isStoryPublished = <%= @story.is_a?(PublishedStory) %>
-</script>

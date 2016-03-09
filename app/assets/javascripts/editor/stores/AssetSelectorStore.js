@@ -429,7 +429,15 @@ export default function AssetSelectorStore() {
   function _updateVisualizationConfiguration(payload) {
     var visualization = payload.visualization.data;
 
-    if (payload.visualization.format === 'classic') {
+    if (_.isEmpty(visualization)) {
+      _state.componentType = null;
+
+      _state.componentProperties = {
+        dataset: _state.componentProperties.dataset
+      };
+
+      self._emitChange();
+    } else if (payload.visualization.format === 'classic') {
       _state.componentType = 'socrata.visualization.classic';
       _state.componentProperties = {
         visualization: visualization,

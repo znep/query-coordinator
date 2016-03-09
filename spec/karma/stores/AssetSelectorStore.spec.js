@@ -326,6 +326,34 @@ describe('AssetSelectorStore', function() {
         server.respond([200, {}, '{}']);
       });
 
+      it('clears the componentType and sets componentProperties to an object containing only the dataset when there is a null visualization', function() {
+        var payload = {
+          'format': 'vif',
+          'data': null,
+          originalUid: 'orig-inal'
+        };
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+          visualization: payload
+        });
+
+        assert.equal(
+          assetSelectorStore.getComponentType(),
+          null
+        );
+
+        assert.deepEqual(
+          assetSelectorStore.getComponentValue(),
+          {
+            dataset: {
+              datasetUid: 'what-what',
+              domain: window.location.hostname
+            }
+          }
+        );
+      });
+
       it('adds visualization configuration to componentValue when there is vif with originalUid', function() {
         var payload = {
           'format': 'vif',

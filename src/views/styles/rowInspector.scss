@@ -5,6 +5,7 @@ $small-font-size: $base-font-size * 0.75;
 $row-inspector-max-height: 350px;
 $row-inspector-content-max-height: 250px;
 $row-inspector-content-scroll-bar-width: 1rem;
+$row-inspector-border-width: 1px;
 $pagination-height: 50px;
 
 $socrata-row-inspector-width: 350px;
@@ -164,7 +165,7 @@ $action-btn-disabled-font-color: #c6c1bf;
       max-height: $row-inspector-max-height;
       right: inherit;
       left: 50%;
-      height: $row-inspector-max-height;
+      height: $row-inspector-content-max-height + $pagination-height + ($row-inspector-border-width * 2);
       z-index: 1003;
     }
 
@@ -483,7 +484,7 @@ $action-btn-disabled-font-color: #c6c1bf;
     color: $socrata-row-inspector-chart-title-text-color;
     border-radius: 0;
     box-shadow: 0 0 0;
-    border: 1px solid $socrata-row-inspector-border-color;
+    border: $row-inspector-border-width solid $socrata-row-inspector-border-color;
     padding: 0;
 
     .error-content {

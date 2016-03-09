@@ -594,7 +594,7 @@ var RowSet = ServerModel.extend({
         $.extend(curRow, row, {index: curRow.index});
         this._setRowFormatting(curRow);
         delete this._aggCache;
-        if (!$.isBlank(oldID))
+        if (!$.isBlank(oldID) && oldID !== curRow.id)
         {
             this._rowIDLookup[curRow.id] = curRow;
             delete this._rowIDLookup[oldID];

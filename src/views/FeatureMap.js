@@ -45,6 +45,8 @@ function FeatureMap(element, vif) {
     maxZoom: FEATURE_MAP_MAX_ZOOM
   };
   var _mapOptions;
+  var _maxTileDensity;
+  var _maxRowInspectorDensity;
   var _debug;
   var _hover;
   var _panAndZoom;
@@ -65,6 +67,8 @@ function FeatureMap(element, vif) {
   var _flyoutData = {};
   var _currentLayerId;
 
+  _maxTileDensity = vif.configuration.maxTileDensity || FEATURE_MAP_MAX_TILE_DENSITY;
+  _maxRowInspectorDensity = vif.configuration.maxRowInspectorDensity || FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY;
   _debug = vif.configuration.debug;
   _hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
   _panAndZoom = (_.isUndefined(vif.configuration.panAndZoom)) ? FEATURE_MAP_DEFAULT_PAN_AND_ZOOM : vif.configuration.panAndZoom;
@@ -603,7 +607,7 @@ function FeatureMap(element, vif) {
       { pageX: event.originalEvent.pageX, pageY: event.originalEvent.pageY };
 
     if (_flyoutData.count > 0 &&
-      _flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
+      _flyoutData.count <= _maxRowInspectorDensity) {
 
       inspectorDataQueryConfig = {
         latLng: event.latlng,
@@ -645,8 +649,8 @@ function FeatureMap(element, vif) {
   function _showFeatureFlyout(event) {
     var rowCountUnit;
     var payload;
-    var manyRows = _flyoutData.count > FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY;
-    var denseData = _flyoutData.totalPoints >= FEATURE_MAP_MAX_TILE_DENSITY;
+    var manyRows = _flyoutData.count > _maxRowInspectorDensity;
+    var denseData = _flyoutData.totalPoints >= _maxTileDensity;
 
     if (_flyoutData.count === 1) {
       rowCountUnit = (_.has(_lastRenderOptions, 'unit.one')) ? _lastRenderOptions.unit.one : vif.unit.one;
@@ -873,9 +877,9 @@ function FeatureMap(element, vif) {
       debug: _debug,
       hover: _hover,
       debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
-      rowInspectorMaxRowDensity: FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY,
+      rowInspectorMaxRowDensity: _maxRowInspectorDensity,
       maxZoom: FEATURE_MAP_MAX_ZOOM,
-      maxTileDensity: FEATURE_MAP_MAX_TILE_DENSITY,
+      maxTileDensity: _maxTileDensity,
       tileOverlapZoomThreshold: FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD,
       // Helper functions
       getFeatureId: _getFeatureId,

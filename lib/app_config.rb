@@ -1,7 +1,9 @@
 require 'hashie/extensions/ignore_undeclared'
+require 'hashie/extensions/indifferent_access'
 
 class AppConfig < Hashie::Dash
   include Hashie::Extensions::IgnoreUndeclared
+  include Hashie::Extensions::IndifferentAccess
 
   as_int = ->(val) { val.to_i }
 
@@ -73,6 +75,13 @@ class AppConfig < Hashie::Dash
 
   # Userzoom configuration
   property :userzoom, default: {}
+
+  # What's New configuration
+  property :whats_new, default: {
+    :article_count => 3,
+    :zendesk_section => '200633703',
+    :zendesk_link => 'https://support.socrata.com/hc/en-us/sections/200633703-Release-Notes-and-Updates'
+  }
 
   # Misc
   property :threadpool_count, default: 0, transform_with: as_int

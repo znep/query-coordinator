@@ -143,6 +143,7 @@ module StoriesHelper
     %w(
       allow-popups
       allow-scripts
+      allow-same-origin
     ).join(' ')
   end
 

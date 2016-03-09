@@ -34,7 +34,7 @@ describe('VisualizationAddController', function() {
   var possiblyDescribe = canRunParentWindowTests ? describe : xdescribe;
 
   function emitCardModelSelected(payload) {
-    $scope.$emit('card-model-selected', payload);
+    $scope.$emit('card-model-changed', payload);
     $scope.$apply();
   }
 
@@ -223,7 +223,7 @@ describe('VisualizationAddController', function() {
       });
     });
 
-    describe('card-model-selected scope event', function() {
+    describe('card-model-changed scope event', function() {
 
       describe('with a null payload', function() {
         it('should call onVisualizationSelectedV2 with null', function() {
@@ -318,7 +318,7 @@ describe('VisualizationAddController', function() {
       });
     });
 
-    describe('card-model-selected scope event', function() {
+    describe('card-model-changed scope event', function() {
 
       describe('with a null payload', function() {
         it('should call onVisualizationSelected with null', function() {
@@ -486,7 +486,7 @@ describe('VisualizationAddController', function() {
   });
 
   possiblyDescribe('with no or invalid onVisualizationSelected and no or invalid onVisualizationSelectedV2 function', function() {
-    it('should trigger an error on card-model-selected', function() {
+    it('should trigger an error on card-model-changed', function() {
       expect(function() {
         emitCardModelSelected(null);
       }).to.throw(/onVisualizationSelected/);

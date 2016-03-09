@@ -308,12 +308,12 @@ describe('columnAndVisualizationSelectorTest', function() {
       directive.scope.page.set('cards', [Card.deserialize(directive.scope.page, serializedCard)]);
     });
 
-    describe('card-model-selected scope event', function() {
+    describe('card-model-changed scope event', function() {
       var seenEventPayloads;
 
       beforeEach(function() {
         seenEventPayloads = [];
-        directive.outerScope.$on('card-model-selected', function(event, payload) {
+        directive.outerScope.$on('card-model-changed', function(event, payload) {
           seenEventPayloads.push(payload); // is a card model
         });
       });

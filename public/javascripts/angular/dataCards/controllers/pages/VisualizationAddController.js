@@ -74,6 +74,11 @@ function VisualizationAddController(
 
     if (card.cardType === 'choropleth') {
       computedColumnName = selectedCard.getCurrentValue('computedColumn');
+
+      if (_.isNull(computedColumnName)) {
+        return null;
+      }
+
       computedColumn = dataset.getCurrentValue('columns')[computedColumnName];
       defaultExtentFeatureFlagValue = $window.socrataConfig.featureMapDefaultExtent;
 

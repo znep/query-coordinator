@@ -139,6 +139,8 @@ function visualizationTypeSelector(
         }
 
         cardModel.set('computedColumn', computedColumn);
+
+        $scope.$emit('card-model-selected', cardModel);
       });
   }
 

@@ -234,7 +234,7 @@ describe('VisualizationAddController', function() {
       });
 
       describe('with a non-null payload', function() {
-        beforeEach(function() {
+        it('should call onVisualizationSelectedV2 with the results of VIF synthesis in the payload', function() {
           var cardSelected = Card.deserialize(
             $scope.page,
             {
@@ -246,15 +246,32 @@ describe('VisualizationAddController', function() {
           );
 
           emitCardModelSelected(cardSelected);
-        });
 
-        it('should call onVisualizationSelectedV2 with the results of VIF synthesis in the payload', function() {
           sinon.assert.calledOnce(window.frameElement.onVisualizationSelectedV2);
           var arg = window.frameElement.onVisualizationSelectedV2.getCalls()[0].args[0];
           expect(_.pick(
             JSON.parse(arg),
             _.keys(validVIF)
           )).to.deep.equal(validVIF);
+        });
+
+        it('should call onVisualizationSelectedV2 with null data if the card is a choropleth without a computed column', function() {
+          var cardSelected = Card.deserialize(
+            $scope.page,
+            {
+              fieldName: validVIF.columnName,
+              cardSize: 1,
+              expanded: false,
+              cardType: 'choropleth',
+              computedColumn: null
+            }
+          );
+
+          emitCardModelSelected(cardSelected);
+
+          sinon.assert.calledOnce(window.frameElement.onVisualizationSelectedV2);
+          var arg = window.frameElement.onVisualizationSelectedV2.getCalls()[0].args[0];
+          expect(arg).to.equal(null);
         });
       });
     });

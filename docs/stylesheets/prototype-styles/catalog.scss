@@ -122,6 +122,10 @@ $desktop: 992px;
 
 body {
 	background: $light-grey-6;
+
+	& > .responsive-navbar {
+		background-color: #22B479;
+	}
 }
 
 a {
@@ -276,6 +280,18 @@ a {
 	border-bottom: 1px solid $light-grey-5;
 	border-top: 1px solid $light-grey-5;
 	
+	&.sort {
+		margin-bottom: ms(4);
+
+		ul > li a.active:after {
+			font-family: "socrata-icons";
+			content: "\f10e";
+			font-size: ms(0);
+			top: 15%;
+			right: 1.3em;
+		}
+	}
+
 	.current-filters-group,
 	.filter-list-group {
 		font-size: ms(0);
@@ -291,7 +307,7 @@ a {
 	}
 
 	&.active {
-		margin-bottom: ms(8);
+		margin-bottom: ms(0);
 		border-top: 1px solid $light-grey-4;
 		border-bottom: 1px solid $light-grey-4;
 
@@ -335,8 +351,8 @@ a {
 			display: block;
 			padding: ms(0) ms(-4);
 			&:after {
-				font-family: "icomoon";
-				content: "\e802";
+				font-family: "socrata-icons";
+				content: "\f102";
 				position: absolute;
 				right: 1.2em;
 				line-height: 1.6;
@@ -350,8 +366,6 @@ a {
 					color: $dark-grey-3;
 				}
 			}
-
-
 
 		}
 
@@ -392,11 +406,23 @@ a {
 						}
 
 					}
+
 				}
 			
 				@include media($tablet) {
 					padding-right: ms(1);
 					font-size: ms(-1);
+					&.show-all {
+						text-align: center;
+						background-color: $light-grey-7;
+						color: $dark-grey-1;
+						padding: ms(-6) ms(-4) ms(-6) ms(2);
+							&:after {
+								font-family: "icomoon";
+								content: "\e808";
+							}
+
+					}
 				}
 
 			}
@@ -410,6 +436,33 @@ a {
 			}	
 		}
 	}
+}
+
+//Show All Modal
+#show-all-modal {
+
+	hr {
+		border-top-color: $light-grey-4;
+	}
+
+	h5 {
+		margin-bottom: 0;
+	}
+
+	ul {
+		margin-top: ms(-5);
+		list-style-type: none;
+		padding-left: 0;
+	}
+
+	.count {
+		font-size: ms(-1);
+	}
+
+	.modal-container {
+		max-width: 600px;
+	}
+
 }
 
 .content {
@@ -538,6 +591,10 @@ a {
 
 					@include media($tablet) {
 						@include span-columns(9);
+					}
+
+					.meta-tag-more {
+						color: $light-grey-0;
 					}
 				}
 

@@ -250,7 +250,7 @@ function VisualizationAddController(
    */
 
   // Possible: 'visualization-selected', arg = VIF? (or selectedCard?)
-  $scope.$on('card-model-selected', function(event, selectedCard) {
+  $scope.$on('card-model-changed', function(event, selectedCard) {
     var vif = selectedCard ? generateVIF(selectedCard) : null;
 
     $scope.classicVisualization = null;

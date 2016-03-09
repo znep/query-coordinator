@@ -21,7 +21,7 @@ function addCardDialog() {
       $scope.addCardModel = null;
       $scope.addCardSelectedColumnFieldName = null;
 
-      $scope.$on('card-model-selected', function(event, addCardModel) {
+      $scope.$on('card-model-changed', function(event, addCardModel) {
         $scope.addCardModel = addCardModel;
       });
 

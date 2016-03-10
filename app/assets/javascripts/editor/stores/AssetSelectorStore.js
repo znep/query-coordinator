@@ -318,6 +318,8 @@ export default function AssetSelectorStore() {
   function _chooseVisualizationDataset(payload) {
     _state.step = WIZARD_STEP.SELECT_TABLE_OR_CHART;
 
+    StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
+
     if (payload.isNewBackend) {
       _setVisualizationDataset(payload.domain, payload.datasetUid);
     } else {

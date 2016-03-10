@@ -288,7 +288,7 @@ export default function RichTextEditorToolbar(selector, formats) {
           {
             'class': 'rich-text-editor-toolbar-text-color-panel-color-input',
             'type': 'text',
-            'placeholder': '#d3db3ef'
+            'placeholder': '#333333'
           }
         ),
         $(

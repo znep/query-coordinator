@@ -76,14 +76,27 @@ function _setupRichTextEditor($element, componentData, theme, options) {
 
   $element.one('destroy', function() {
     richTextEditorManager.deleteEditor(editorId);
-    $element.off('rich-text-editor::content-change', _filterSpuriousContentChanges);
+    // Disabling per EN-3593 (see below)
+    // $element.off('rich-text-editor::content-change', _filterSpuriousContentChanges);
   });
 
-  $element.on('rich-text-editor::content-change', _filterSpuriousContentChanges);
+  // EN-3593 Shift + Enter causes text to disappear in RTE
+  //
+  // Because `_filterSpuriousContentChanges()` will kill `rich-text-editor::content-change`
+  // events before they make it to the Story Store and Story Renderer, and the `shift + enter`
+  // key combination causes squire to insert a single `<br>` tag, the events necessary to
+  // preserve and correctly render whitespace inserted this way were never making it to the
+  // proper places.
+  //
+  // The solution appears to be to *not* filter 'spurious content changes'. The event hook
+  // that would do so is therefore being commented out, but left in place in order to help
+  // troubleshoot any future issues arising from its not being called.
+  // $element.on('rich-text-editor::content-change', _filterSpuriousContentChanges);
 
   _.each(extraContentClasses, editor.addContentClass);
 }
 
+/* eslint-disable no-unused-vars */
 function _filterSpuriousContentChanges(event) {
   // Make sure the content actually changed. Squire likes to twiddle <br>s.
   // We want to ignore these.
@@ -98,6 +111,7 @@ function _filterSpuriousContentChanges(event) {
     event.stopPropagation();
   }
 }
+/* eslint-enable no-unused-vars */
 
 /**
 * @function _applyThemeFontIfPresent

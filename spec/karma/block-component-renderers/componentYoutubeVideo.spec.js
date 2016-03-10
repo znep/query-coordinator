@@ -1,12 +1,12 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from '../TransientElement';
 import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
 import '../../../app/assets/javascripts/editor/block-component-renderers/componentYoutubeVideo';
 
 describe('componentYoutubeVideo jQuery plugin', function() {
 
-  var testDom;
   var $component;
   var validComponentData = {
     type: 'youtube.video',
@@ -16,14 +16,8 @@ describe('componentYoutubeVideo jQuery plugin', function() {
   };
 
   beforeEach(function() {
-    testDom = $('<div>');
-    testDom.append('<div>');
-    $component = testDom.children('div');
-    $(document.body).append(testDom);
-  });
-
-  afterEach(function() {
-    testDom.remove();
+    $transient.append('<div>');
+    $component = $transient.children('div');
   });
 
   it('should throw when passed invalid arguments', function() {

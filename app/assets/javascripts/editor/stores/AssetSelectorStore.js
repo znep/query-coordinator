@@ -243,6 +243,7 @@ export default function AssetSelectorStore() {
 
   function _editExisting(payload) {
     var component;
+    var domain;
     var datasetUid;
 
     StorytellerUtils.assertHasProperties(payload, 'blockId', 'componentIndex');
@@ -261,10 +262,12 @@ export default function AssetSelectorStore() {
       isEditingExisting: true
     };
 
+    domain = _.get(component, 'value.dataset.domain');
     datasetUid = _.get(component, 'value.dataset.datasetUid');
 
     if (datasetUid) {
-      _setVisualizationDataset(datasetUid); // Fetch additional data needed for UI.
+      // Fetch additional data needed for UI.
+      _setVisualizationDataset(domain, datasetUid);
     } else {
       self._emitChange();
     }
@@ -314,14 +317,21 @@ export default function AssetSelectorStore() {
 
   function _chooseVisualizationDataset(payload) {
     _state.step = WIZARD_STEP.SELECT_TABLE_OR_CHART;
+
     if (payload.isNewBackend) {
-      _setVisualizationDataset(payload.datasetUid);
+      _setVisualizationDataset(payload.domain, payload.datasetUid);
     } else {
       // We have an OBE datasetId, go fetch the NBE datasetId
-      $.get(StorytellerUtils.format('/api/migrations/{0}.json', payload.datasetUid)).
+      $.get(
+        StorytellerUtils.format(
+          'https://{0}/api/migrations/{1}.json',
+          payload.domain,
+          payload.datasetUid
+        )
+      ).
       then(
         function(migrationData) {
-          _setVisualizationDataset(migrationData.nbeId);
+          _setVisualizationDataset(payload.domain, migrationData.nbeId);
         },
         function(error) {
           alert('This dataset cannot be chosen at this time.'); //eslint-disable-line no-alert
@@ -397,18 +407,25 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
-  function _setVisualizationDataset(uid) {
+  function _setVisualizationDataset(domain, datasetUid) {
     // Fetch the view info.
     // NOTE: Beware that view.metadata is not sync'd across to the NBE
     // as of this writing. If you need to get info out of view.metadata
     // (like rowLabel), you'll need to fetch the OBE view separately.
-    $.get(StorytellerUtils.format('/api/views/{0}.json', uid)).then(
+    $.get(
+      StorytellerUtils.format(
+        'https://{0}/api/views/{1}.json',
+        domain,
+        datasetUid
+      )
+    ).
+    then(
       function(data) {
         _state.componentProperties = _state.componentProperties || {};
         _.extend(_state.componentProperties, {
           dataset: {
-            domain: window.location.hostname,
-            datasetUid: uid
+            domain: domain,
+            datasetUid: datasetUid
           }
         });
 
@@ -429,7 +446,15 @@ export default function AssetSelectorStore() {
   function _updateVisualizationConfiguration(payload) {
     var visualization = payload.visualization.data;
 
-    if (payload.visualization.format === 'classic') {
+    if (_.isEmpty(visualization)) {
+      _state.componentType = null;
+
+      _state.componentProperties = {
+        dataset: _state.componentProperties.dataset
+      };
+
+      self._emitChange();
+    } else if (payload.visualization.format === 'classic') {
       _state.componentType = 'socrata.visualization.classic';
       _state.componentProperties = {
         visualization: visualization,

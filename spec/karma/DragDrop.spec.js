@@ -1,6 +1,7 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from './TransientElement';
 import StandardMocks from './StandardMocks';
 import Actions from '../../app/assets/javascripts/editor/Actions';
 import DragDrop, {__RewireAPI__ as DragDropAPI} from '../../app/assets/javascripts/editor/DragDrop';
@@ -12,7 +13,6 @@ describe('DragDrop', function() {
   var story;
   var blocks;
   var ghost;
-  var testDom;
   var inspirationBlockList;
   var dispatcher;
 
@@ -41,16 +41,12 @@ describe('DragDrop', function() {
 
     blocks = story.find('.block');
 
-    testDom = $('<div>');
-    testDom.append(story);
-    testDom.append(ghost);
-    testDom.append(inspirationBlockList);
-
-    $(document.body).append(testDom);
+    $transient.append(story);
+    $transient.append(ghost);
+    $transient.append(inspirationBlockList);
   });
 
   afterEach(function() {
-    testDom.remove();
     DragDropAPI.__ResetDependency__('dispatcher');
   });
 
@@ -81,13 +77,13 @@ describe('DragDrop', function() {
       // Manually invoke pointerDown and dragStart - in an actual browser UniDragger does this for us.
       fakePointerDownEvent = {
         preventDefault: _.noop,
-        target: testDom.find('[data-block-content]').first(),
+        target: $transient.find('[data-block-content]').first(),
         type: 'mousedown'
       };
       fakePointerDownPointer = fakePointerDownEvent;
 
       fakeDragStartEvent = {
-        target: testDom.find('[data-block-content]').first()
+        target: $transient.find('[data-block-content]').first()
       };
       fakeDragStartPointer = fakeDragStartEvent;
 
@@ -116,7 +112,7 @@ describe('DragDrop', function() {
       beforeEach(function() {
         // Fire first drag move over the inspiration block
         fakeDragMoveEvent = {
-          target: testDom.find('[data-block-content]').first()
+          target: $transient.find('[data-block-content]').first()
         };
         fakeDragMovePointer = fakeDragMoveEvent;
 
@@ -156,7 +152,7 @@ describe('DragDrop', function() {
         beforeEach(function() {
           // drag over an actual story block
           fakeDragMoveEvent = {
-            target: testDom.find('.block').first()
+            target: $transient.find('.block').first()
           };
           fakeDragMovePointer = fakeDragMoveEvent;
 

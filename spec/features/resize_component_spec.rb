@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'add content panel', type: :feature, js: true do
+RSpec.describe 'resize component', type: :feature, js: true do
 
   let(:resize_handle_selector) { '.component-resize-handle' }
   let(:component_selector) { '.component' }

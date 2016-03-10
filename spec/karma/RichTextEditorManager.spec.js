@@ -1,5 +1,6 @@
 import $ from 'jQuery';
 
+import { $transient } from './TransientElement';
 import RichTextEditor from '../../app/assets/javascripts/editor/RichTextEditor';
 import RichTextEditorToolbar from '../../app/assets/javascripts/editor/RichTextEditorToolbar';
 import RichTextEditorManager from '../../app/assets/javascripts/editor/RichTextEditorManager';
@@ -9,18 +10,11 @@ describe('RichTextEditorManager', function() {
   var validElement;
   var validFormats = [];
   var validToolbar;
-  var testDom;
 
   beforeEach(function() {
     validElement = $('<div id="rich-text-editor-toolbar"></div>');
     validToolbar = Object.create(RichTextEditorToolbar.prototype);
-    testDom = $('<div>');
-    testDom.append(validElement);
-    $(document.body).append(testDom);
-  });
-
-  afterEach(function() {
-    testDom.remove();
+    $transient.append(validElement);
   });
 
   describe('constructor', function() {

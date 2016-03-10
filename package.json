@@ -5,7 +5,7 @@
     "url": "https://github.com/socrata/storyteller.git"
   },
   "scripts": {
-    "lint": "eslint --ignore-path .eslintignore -- app/assets/javascripts spec/karma",
+    "lint": "./node_modules/.bin/eslint --ignore-path .eslintignore -- app/assets/javascripts spec/karma",
     "test": "RAILS_ENV=karma ./node_modules/.bin/karma start spec/karma/karma.conf.js",
     "test-watch": "RAILS_ENV=karma ./node_modules/.bin/karma start spec/karma/karma.conf.js --singleRun false",
     "webpack": "./node_modules/.bin/webpack --config config/webpack.config.js",
@@ -87,8 +87,9 @@
     "jquery-sidebar": "3.3.2",
     "leaflet": "0.7.7",
     "lodash": "3.10.1",
+    "moment": "2.11.2",
     "socrata-utils": "1.2.0",
-    "socrata-visualizations": "7.0.1",
+    "socrata-visualizations": "8.0.0",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
     "unidragger": "2.1.0",
     "unipointer": "2.1.0"

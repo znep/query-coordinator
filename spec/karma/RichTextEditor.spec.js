@@ -1,14 +1,14 @@
 import $ from 'jQuery';
 import _ from 'lodash';
-import SquireMocker from './SquireMocker';
 
+import SquireMocker from './SquireMocker';
+import { $transient } from './TransientElement';
 import { dispatcher } from '../../app/assets/javascripts/editor/Dispatcher';
 import { windowSizeBreakpointStore } from '../../app/assets/javascripts/editor/stores/WindowSizeBreakpointStore';
 import RichTextEditor, {__RewireAPI__ as RichTextEditorAPI} from '../../app/assets/javascripts/editor/RichTextEditor';
 
 describe('RichTextEditor', function() {
 
-  var testDom;
   var validEditorId = '1';
   var validFormats = [];
   var validPreloadContent = 'Hello, world!';
@@ -20,15 +20,11 @@ describe('RichTextEditor', function() {
   // object on the window in order to test the correct instantiation
   // of the wrapper object.
   beforeEach(function() {
-    testDom = $('<div>');
-    testDom.append($('<div class="text-editor">'));
-
-    $(document.body).append(testDom);
+    $transient.append($('<div class="text-editor">'));
     RichTextEditorAPI.__Rewire__('Squire', SquireMocker);
   });
 
   afterEach(function() {
-    testDom.remove();
     RichTextEditorAPI.__ResetDependency__('Squire');
   });
 

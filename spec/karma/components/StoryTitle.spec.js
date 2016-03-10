@@ -1,6 +1,7 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
 import Store from '../../../app/assets/javascripts/editor/stores/Store';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
@@ -9,15 +10,12 @@ import {__RewireAPI__ as StoryTitleAPI} from '../../../app/assets/javascripts/ed
 describe('StoryTitle jQuery plugin', function() {
 
   var node;
-  var testDom;
   var dispatcher;
   var storyStoreMock;
   var title;
 
   beforeEach(function() {
-    testDom = $('<div>');
-    node = testDom.append('<div>');
-    $(document.body).append(testDom);
+    node = $transient.append('<div>');
 
     var StoreMock = function() {
       _.extend(this, new Store());
@@ -35,7 +33,6 @@ describe('StoryTitle jQuery plugin', function() {
   });
 
   afterEach(function() {
-    testDom.remove();
     StoryTitleAPI.__ResetDependency__('dispatcher');
     StoryTitleAPI.__ResetDependency__('storyStore');
   });

@@ -1,16 +1,13 @@
 import $ from 'jQuery';
+import { $transient } from './TransientElement';
 import CustomEvent from '../../app/assets/javascripts/CustomEvent';
 
 describe('CustomEvent', function() {
 
   beforeEach(function() {
-    $('body').append(
+    $transient.append(
       $('<div>', { 'class': 'listener' })
     );
-  });
-
-  afterEach(function() {
-    $('.listener').remove();
   });
 
   describe('when called without explicit params', function() {

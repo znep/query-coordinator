@@ -1,7 +1,6 @@
-import _ from 'lodash';
 import ExceptionNotifier, {__RewireAPI__ as ExceptionNotifierAPI} from '../../app/assets/javascripts/services/ExceptionNotifier';
 
-describe('ExceptionNotifier', function() {
+describe.only('ExceptionNotifier', function() {
 
   var notifyStub;
   var addFilterStub;
@@ -13,16 +12,13 @@ describe('ExceptionNotifier', function() {
     addFilterStub = sinon.stub();
     consoleErrorStub = sinon.stub(window.console, 'error');
 
-    var AirbrakeMocker = {
-      Client: _.noop
-    };
-
-    ExceptionNotifierAPI.__Rewire__('Airbrake', AirbrakeMocker);
-
-    ClientStub = sinon.stub(AirbrakeMocker, 'Client', function() {
+    ClientStub = sinon.spy(function() {
       this.addFilter = addFilterStub;
       this.notify = notifyStub;
     });
+
+    ExceptionNotifierAPI.__Rewire__('Airbrake', ClientStub);
+
   });
 
   afterEach(function() {
@@ -36,12 +32,12 @@ describe('ExceptionNotifier', function() {
       var exceptionNotifier; //eslint-disable-line no-unused-vars
 
       beforeEach(function() {
-        options = { ENVIRONMENT: 'hola', PROJECT_KEY: 'this is key'};
+        options = { ENVIRONMENT_NAME: 'hola', PROJECT_ID: 'this is key', API_KEY: 'yes'};
         exceptionNotifier = new ExceptionNotifier(options);
       });
 
       it('instantiates clients with airbrake options', function() {
-        assert.isTrue(ClientStub.calledWith({PROJECT_KEY: 'this is key'}));
+        assert.isTrue(ClientStub.calledWith({projectId: options.PROJECT_ID, projectKey: options.API_KEY}));
       });
 
       it('sets the environment using addFilter', function() {
@@ -75,7 +71,7 @@ describe('ExceptionNotifier', function() {
       var error = 'hello';
 
       beforeEach(function() {
-        exceptionNotifier = new ExceptionNotifier({PROJECT_KEY: 'werdz'});
+        exceptionNotifier = new ExceptionNotifier({PROJECT_ID: 'werdz'});
         exceptionNotifier.notify(error);
       });
 

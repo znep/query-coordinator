@@ -100,7 +100,7 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
         '<IMG """><SCRIPT>window.xssFailure = "malformed IMG tag script injection"</SCRIPT>">',
         '<<SCRIPT>window.xssFailure = "extraneous open brackets script injection";//<</SCRIPT>',
         '<BODY onload="window.xssFailure=\'body.onload event injection\'">',
-        '<DIV STYLE="width: expression(window.xssFailure=\'style expression script injection\');">',
+        '<DIV STYLE="width: expression(window.xssFailure=\'style expression script injection\');"><BR></DIV>',
         '<!--[if gte IE 4]>\n<SCRIPT>window.xssFailure = "ie comment conditional script injection"</SCRIPT>\n<![endif]-->'
       ]
     end

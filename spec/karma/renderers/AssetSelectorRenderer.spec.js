@@ -299,17 +299,40 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event', function(done) {
+    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event for a federated dataset', function(done) {
       dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
         // the values will be empty, but assert that the event adds the keys
-        assert.property(payload, 'datasetUid');
-        assert.property(payload, 'isNewBackend');
+        assert.propertyVal(payload, 'datasetUid', 'the-id');
+        assert.propertyVal(payload, 'domain', 'federate.me');
+        assert.propertyVal(payload, 'isNewBackend', true);
         done();
       });
 
-      container.find('.modal-dialog').trigger('datasetSelected', {});
+      container.find('.modal-dialog').trigger('datasetSelected', {
+        id: 'the-id',
+        domainCName: 'federate.me',
+        newBackend: true
+      });
+    });
+
+    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event for a non-federated dataset', function(done) {
+      dispatcher.register(function(payload) {
+        var action = payload.action;
+        assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
+        // the values will be empty, but assert that the event adds the keys
+        assert.propertyVal(payload, 'datasetUid', 'the-id');
+        assert.propertyVal(payload, 'domain', window.location.hostname);
+        assert.propertyVal(payload, 'isNewBackend', true);
+        done();
+      });
+
+      container.find('.modal-dialog').trigger('datasetSelected', {
+        id: 'the-id',
+        domainCName: undefined, // yes, it comes back as undefined from the dataset picker.
+        newBackend: true
+      });
     });
 
     it('dispatches `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
@@ -330,6 +353,7 @@ describe('AssetSelectorRenderer', function() {
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
         datasetUid: StandardMocks.validStoryUid,
+        domain: 'example.com',
         isNewBackend: true
       });
       server.respond([200, {}, '{}']);
@@ -577,6 +601,7 @@ describe('AssetSelectorRenderer', function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: StandardMocks.validStoryUid,
+          domain: 'example.com',
           isNewBackend: true
         });
 
@@ -647,7 +672,6 @@ describe('AssetSelectorRenderer', function() {
             var selectedVisualization = { visualization: 'blob' };
 
             beforeEach(function() {
-              console.log(container.find('iframe')[0]);
               iframe = container.find('iframe')[0];
             });
 

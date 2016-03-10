@@ -271,6 +271,42 @@ describe('AssetSelectorStore', function() {
         migrationUrl = StorytellerUtils.format('/api/migrations/{0}.json', StandardMocks.validStoryUid);
       });
 
+      it('should throw if domain is not set to a string', function() {
+        // nbe
+        assert.throws(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            datasetUid: StandardMocks.validStoryUid,
+            isNewBackend: true
+          });
+        });
+        assert.throws(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            domain: undefined,
+            datasetUid: StandardMocks.validStoryUid,
+            isNewBackend: true
+          });
+        });
+
+        // obe
+        assert.throws(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            datasetUid: StandardMocks.validStoryUid,
+            isNewBackend: false
+          });
+        });
+        assert.throws(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            domain: undefined,
+            datasetUid: StandardMocks.validStoryUid,
+            isNewBackend: false
+          });
+        });
+      });
+
       it('should attempt to fetch the NBE datasetUid if dataset is OBE', function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
@@ -289,6 +325,7 @@ describe('AssetSelectorStore', function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: StandardMocks.validStoryUid,
+          domain: 'example.com',
           isNewBackend: true
         });
 
@@ -302,6 +339,7 @@ describe('AssetSelectorStore', function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: StandardMocks.validStoryUid,
+          domain: 'example.com',
           isNewBackend: true
         });
 

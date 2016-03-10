@@ -274,6 +274,7 @@ describe('AssetSelectorStore', function() {
       it('should attempt to fetch the NBE datasetUid if dataset is OBE', function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          domain: window.location.hostname,
           datasetUid: StandardMocks.validStoryUid,
           isNewBackend: false
         });
@@ -281,7 +282,7 @@ describe('AssetSelectorStore', function() {
         assert.lengthOf(server.requests, 1);
         var request = server.requests[0];
         assert.equal(request.method, 'GET');
-        assert.equal(request.url, migrationUrl);
+        assert.include(request.url, migrationUrl);
       });
 
       it('should not request API migrations if dataset is already NBE', function() {
@@ -319,6 +320,7 @@ describe('AssetSelectorStore', function() {
         // Send in dataset uid so ComponentValues.value.settings exists
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          domain: window.location.hostname,
           datasetUid: StandardMocks.validStoryUid,
           isNewBackend: true
         });

@@ -199,6 +199,8 @@ class UserSessionsController < ApplicationController
           Rails.logger.error(error)
           Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
         end
+        
+        @auth0_message = properties.try(:auth0_message)
       end
     end
   end

@@ -928,7 +928,14 @@ class AdministrationController < ApplicationController
   # Jobs log
   #
   def jobs
-    @activities = ImportActivity.find_all_by_created_at_descending(JobsHelper::FEED_ITEMS_LIMIT)
+    page_size = 30
+    page_idx = params.fetch(:page, '1').to_i
+    offset = (page_idx - 1) * page_size
+    all_threshold = 8
+    activities_response = ImportActivity.find_all_by_created_at_descending(offset, page_size)
+    @activities = activities_response[:activities]
+    count = activities_response[:count]
+    @pager_elements = Pager::paginate(count, page_size, page_idx, :all_threshold => all_threshold)
   end
 
   def show_job

@@ -2,21 +2,26 @@
 class ImportActivity
 
   # throws ISS errors and Core errors
-  def self.find_all_by_created_at_descending(limit)
-    response = ImportStatusService::get("/activity?limit=#{limit}")
-    activities = response.map(&:with_indifferent_access)
+  def self.find_all_by_created_at_descending(offset, limit)
+    url = "/v2/activity?limit=#{limit}&offset=#{offset}"
+    response = ImportStatusService::get(url)
+    activities = response['activities'].map(&:with_indifferent_access)
     view_ids = activities.pluck(:entity_id)
     working_copy_ids = activities.pluck(:working_copy_id)
     views = View.find_multiple_dedup(view_ids + working_copy_ids)
     user_ids = activities.pluck(:user_id)
     users = User.find_multiple_dedup(user_ids)
-    return activities.map do |activity|
-      activity_wia = activity.with_indifferent_access
-      ImportActivity.new(activity_wia,
-                         users[activity_wia[:user_id]],
-                         views[activity_wia[:entity_id]],
-                         views[activity_wia[:working_copy_id]])
-    end
+    {
+      :activities =>
+          activities.map do |activity|
+            activity_wia = activity.with_indifferent_access
+            ImportActivity.new(activity_wia,
+                               users[activity_wia[:user_id]],
+                               views[activity_wia[:entity_id]],
+                               views[activity_wia[:working_copy_id]])
+          end,
+      :count => response['count']
+    }
   end
 
   # throws ISS errors and Core errors

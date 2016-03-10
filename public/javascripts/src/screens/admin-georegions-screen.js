@@ -56,7 +56,7 @@ function normalizeGeoregions() {
   const jobs = _.map(georegionsNS.jobs, (job) => decorateJob(job, job));
   const failedJobs = _.map(georegionsNS.failedJobs, (job) => decorateJob(job, job.latest_event.info));
 
-  return georegions.concat(jobs, failedJobs);
+  return [].concat(jobs, georegions, failedJobs);
 }
 
 function pollGeoregions(timeout) {

@@ -5,6 +5,10 @@ $form-checkbox-background-color: #FFF;
 $form-checkbox-border-color: #E2E2E2;
 $form-checkbox-hover-check-color: #999;
 
+.georegionsScreen {
+  min-width: 100em;
+}
+
 #georegions-page-subtitle {
   display: inline-block;
 }
@@ -91,7 +95,7 @@ $form-checkbox-hover-check-color: #999;
     width: 35%;
 
     .substatus {
-      font-size: 0.5em;
+      font-size: 0.8em;
       padding-top: 0.4em;
     }
 
@@ -131,6 +135,9 @@ $form-checkbox-hover-check-color: #999;
     }
   }
   .default {
+    width: 10em;
+    min-width: 16em;
+
     .icon-info {
       font-size: 1.3em;
       padding-left: 0.2em;
@@ -138,6 +145,7 @@ $form-checkbox-hover-check-color: #999;
   }
   .edit-action, .date-added {
     width: 10em;
+    min-width: 7em;
   }
   td.edit-action, th.edit-action {
     padding-right: 0;

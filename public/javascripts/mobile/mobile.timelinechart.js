@@ -1,5 +1,3 @@
-/* global Loader */
-
 // Has side effect of registering jQuery plugin.
 require('./styles/timeline-chart.scss');
 require('socrata-visualizations').TimelineChart;
@@ -96,17 +94,28 @@ module.exports = function(values, $target) {
   function mobileFlyoutRender(payload) {
     var flyoutBounds = payload.element.getBoundingClientRect();
     var highlightedBarWidth = $('.timeline-chart-highlight-container').width();
-    var value = (payload.filteredValue ? payload.filteredValue : payload.unfilteredValue).split(' ');
+    var filteredLabelLine = '';
+    var valuesStyleClass = 'unfiltered';
+
+    if (payload.filteredValue) {
+      var filteredValue = payload.filteredValue.split(' ');
+      filteredLabelLine = '<div class="text-right filtered-values">' + filteredValue[0] + '<span> ' +
+        filteredValue[1] + '</span></div>';
+
+      valuesStyleClass = 'filtered';
+    }
+
+    var unFilteredValue = payload.unfilteredValue.split(' ');
+    var unFilteredLabelLine = '<div class="text-right total-values"><span>' + payload.unfilteredLabel + '</span> ' +
+      unFilteredValue[0] + '<span> ' + unFilteredValue[1] + '</span></div>';
 
     var flyoutData = $('<div>', {
       'class': 'title-wrapper',
       html:
       '<div class="labels mobile">' +
-      '<div class="arrow" style="left: ' + ((flyoutBounds.left - 28) + (highlightedBarWidth / 2)) + 'px"></div>' +
-      '<h4 class="title pull-left">' + payload.title + '</h4>' +
-      '<h4 class="value pull-right text-right">' + value[0] +
-      '<span> ' + value[1] + '</span>' +
-      '</h4>' +
+        '<div class="arrow" style="left: ' + ((flyoutBounds.left - 28) + (highlightedBarWidth / 2)) + 'px"></div>' +
+        '<h4 class="title pull-left">' + payload.title + '</h4>' +
+        '<div class="values pull-right ' + valuesStyleClass + '">' + filteredLabelLine + unFilteredLabelLine + '</div>' +
       '</div>'
     });
 

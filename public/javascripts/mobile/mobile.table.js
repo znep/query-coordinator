@@ -1,4 +1,5 @@
 require('socrata-visualizations').Table;
+require('./styles/table.scss');
 
 module.exports = function(values, $target) {
   'use strict';

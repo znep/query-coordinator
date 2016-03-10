@@ -159,6 +159,7 @@ export default function AssetSelectorRenderer(options) {
       function(event, datasetObj) {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          domain: datasetObj.domainCName,
           datasetUid: datasetObj.id,
           isNewBackend: datasetObj.newBackend
         });

@@ -14,6 +14,10 @@ RSpec.describe StoriesController, type: :controller do
 
   describe '#show with param from_collaboration_email=true' do
     context 'with an unpublished story' do
+      before do
+        stub_core_view('unpu-blsh')
+      end
+
       context 'for an unauthenticated user' do
         before do
           stub_invalid_session
@@ -76,100 +80,115 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#show' do
+    context 'when there is an published story with the given four by four' do
+      context 'with an inaccessible core view' do
+        let(:story_revision) { FactoryGirl.create(:published_story) }
 
-    before do
-      stub_sufficient_rights
-    end
-
-    context 'when there is an unpublished story with the given four by four' do
-      it 'renders 404' do
-        get :show, uid: 'unpu-blsh'
-        expect(response).to be_not_found
-      end
-    end
-
-    context 'when there is a published story with the given four by four' do
-
-      let(:story_revision) { FactoryGirl.create(:published_story) }
-
-      it 'renders show template' do
-        get :show, uid: story_revision.uid
-        expect(response).to render_template(:show)
-      end
-
-      it 'ignores vanity_text' do
-        get :show, uid: story_revision.uid, vanity_text: 'haha'
-        expect(assigns(:story)).to eq(story_revision)
-      end
-
-      it 'assigns the :story' do
-        get :show, uid: story_revision.uid
-        expect(assigns(:story)).to eq(story_revision)
-      end
-
-      it 'renders json when requested' do
-        get :show, uid: story_revision.uid, format: :json
-        expect(response.body).to eq(story_revision.to_json)
-      end
-
-      it 'renders when unauthenticated' do
-        stub_invalid_session
-        get :show, uid: story_revision.uid
-        expect(response).to render_template(:show)
-      end
-
-      describe 'google analytics' do
-        render_views
-
-        before do
-          stub_current_user_story_authorization(mock_user_authorization_unprivileged)
-        end
-
-        context 'when not configured' do
-          it 'does not render google analytics partial' do
-            get :show, uid: story_revision.uid
-            expect(response.body).to_not have_content(@google_analytics_tracking_id)
-          end
-        end
-
-        context 'when configured' do
-          before do
-            stub_google_analytics
-          end
-
-          it 'renders google analytics partial' do
-            get :show, uid: story_revision.uid
-            expect(response.body).to have_content(@google_analytics_tracking_id)
-          end
-        end
-      end
-
-      describe 'log view access' do
-        it 'logs view access when story exists' do
-          expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        it 'renders 404' do
+          stub_core_view_as_missing(story_revision.uid)
           get :show, uid: story_revision.uid
+          expect(response).to be_not_found
+        end
+      end
+    end
+
+    context 'with sufficient rights' do
+
+      before do
+        stub_sufficient_rights
+        stub_core_view('unpu-blsh')
+
+      end
+
+      context 'when there is an unpublished story with the given four by four' do
+        it 'renders 404' do
+          get :show, uid: 'unpu-blsh'
+          expect(response).to be_not_found
+        end
+      end
+
+      context 'when there is a published story with the given four by four' do
+
+        let(:story_revision) { FactoryGirl.create(:published_story) }
+
+        it 'renders show template' do
+          get :show, uid: story_revision.uid
+          expect(response).to render_template(:show)
         end
 
-        it 'logs view access for json requests' do
-          expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+        it 'ignores vanity_text' do
+          get :show, uid: story_revision.uid, vanity_text: 'haha'
+          expect(assigns(:story)).to eq(story_revision)
+        end
+
+        it 'assigns the :story' do
+          get :show, uid: story_revision.uid
+          expect(assigns(:story)).to eq(story_revision)
+        end
+
+        it 'renders json when requested' do
           get :show, uid: story_revision.uid, format: :json
+          expect(response.body).to eq(story_revision.to_json)
         end
 
-        it 'does not log view access when story does not exist' do
-          expect(StoryAccessLogger).to_not receive(:log_story_view_access)
+        it 'renders when unauthenticated' do
+          stub_invalid_session
+          get :show, uid: story_revision.uid
+          expect(response).to render_template(:show)
+        end
+
+        describe 'google analytics' do
+          render_views
+
+          before do
+            stub_current_user_story_authorization(mock_user_authorization_unprivileged)
+          end
+
+          context 'when not configured' do
+            it 'does not render google analytics partial' do
+              get :show, uid: story_revision.uid
+              expect(response.body).to_not have_content(@google_analytics_tracking_id)
+            end
+          end
+
+          context 'when configured' do
+            before do
+              stub_google_analytics
+            end
+
+            it 'renders google analytics partial' do
+              get :show, uid: story_revision.uid
+              expect(response.body).to have_content(@google_analytics_tracking_id)
+            end
+          end
+        end
+
+        describe 'log view access' do
+          it 'logs view access when story exists' do
+            expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+            get :show, uid: story_revision.uid
+          end
+
+          it 'logs view access for json requests' do
+            expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision)
+            get :show, uid: story_revision.uid, format: :json
+          end
+
+          it 'does not log view access when story does not exist' do
+            expect(StoryAccessLogger).to_not receive(:log_story_view_access)
+            get :show, uid: 'notf-ound'
+          end
+        end
+      end
+
+      context 'when there is no story with the given four by four' do
+
+        it 'renders 404' do
           get :show, uid: 'notf-ound'
+          expect(response).to be_not_found
         end
       end
     end
-
-    context 'when there is no story with the given four by four' do
-
-      it 'renders 404' do
-        get :show, uid: 'notf-ound'
-        expect(response).to be_not_found
-      end
-    end
-
   end
 
   describe '#widget' do
@@ -203,6 +222,10 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no story with the given four by four' do
+        before do
+          stub_core_view_as_missing('notf-ound')
+        end
+
         it 'returns 404' do
           get :widget, uid: 'notf-ound'
           expect(response).to have_http_status(404)
@@ -263,6 +286,10 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no story with the given four by four' do
+        before do
+          stub_core_view_as_missing('notf-ound')
+        end
+
         it 'returns 404' do
           get :widget, uid: 'notf-ound', format: :json
           expect(response).to have_http_status(404)
@@ -282,6 +309,7 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       it 'does not log view access when story does not exist' do
+        stub_core_view_as_missing('notf-ound')
         expect(StoryAccessLogger).to_not receive(:log_story_view_access)
         get :widget, uid: 'notf-ound'
       end

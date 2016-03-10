@@ -59,6 +59,8 @@ class Api::V1::DraftsController < ApplicationController
       return render nothing: true, status: 403 unless can_edit_story?
     elsif action == 'latest'
       return render nothing: true, status: 403 unless can_view_unpublished_story?
+    else
+      raise "Don't know how to require_sufficient_rights for (new?) action: #{action}"
     end
   end
 end

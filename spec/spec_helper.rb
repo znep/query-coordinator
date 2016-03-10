@@ -328,6 +328,12 @@ def stub_core_view(uid, options={})
     to_return(:status => 200, :body => view.to_json)
 end
 
+def stub_core_view_as_missing(uid)
+  allow(StoryAccessLogger).to receive(:log_story_view_access)
+  stub_request(:get, /\/views\/#{uid}.json/).
+    to_return(:status => 404, :body => nil)
+end
+
 def stub_google_analytics
   allow(Rails.application.config).to receive(:google_analytics_tracking_id).and_return(@google_analytics_tracking_id)
 end

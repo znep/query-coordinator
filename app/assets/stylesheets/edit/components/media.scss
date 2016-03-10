@@ -56,6 +56,29 @@
   }
 }
 
+
+.col6 > .col12,
+.col12 + .col12 {
+  .component-asset-selector,
+  .component-embedded-html,
+  .component-image,
+  .component-socrata-visualization-choropleth-map,
+  .component-socrata-visualization-classic,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-timeline-chart,
+  .component-story-widget,
+  .component-youtube-video {
+    @include media-query-property(
+      'margin-top',
+      $media-component-small-margin-top / 2,
+      $media-component-medium-margin-top / 2,
+      $media-component-large-margin-top / 2,
+      $media-component-extra-large-margin-top / 2
+    );
+  }
+}
+
 .component-asset-selector,
 .component-embedded-html,
 .component-image,
@@ -198,6 +221,25 @@
   $medium-height: $col6-block-edit-content-width-medium * (3/5);
   $large-height: $col6-block-edit-content-width-large * (3/5);
   $extra-large-height: $col6-block-edit-content-width-extra-large * (3/5);
+
+
+  .col12 {
+    .component-asset-selector,
+    .component-socrata-visualization-choropleth-map,
+    .component-socrata-visualization-classic,
+    .component-socrata-visualization-column-chart,
+    .component-socrata-visualization-feature-map,
+    .component-socrata-visualization-timeline-chart,
+    .component-youtube-video {
+      @include media-query-property(
+        'height',
+        $small-height,
+        $medium-height,
+        $large-height,
+        $extra-large-height
+      );
+    }
+  }
 
   .component-asset-selector,
   .component-socrata-visualization-choropleth-map,

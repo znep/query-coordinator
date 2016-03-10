@@ -139,7 +139,7 @@ $(document).on('ready', function() {
   // Init window size
   _applyWindowSizeClass();
 
-  if (window.isStoryPublished) {
+  if (Environment.IS_STORY_PUBLISHED) {
     analytics.sendMetric('domain', 'js-page-view', 1);
 
     // Remove this check when the frontend code that supports these metrics is stable

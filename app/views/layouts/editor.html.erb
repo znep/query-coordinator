@@ -13,6 +13,7 @@
   <script type="text/javascript">
     var meta = document.querySelector('meta[name="csrf-token"]');
 
+    // StorytellerEnvironment bindings.
     window.CSRF_TOKEN = (meta && meta.content) || '';
     window.CURRENT_USER = <%== current_user.to_json %>;
     window.CURRENT_USER_STORY_AUTHORIZATION = <%== current_user_story_authorization.to_json %>;

@@ -222,6 +222,24 @@
         }
       },
       {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-top-media-12.svg") %>",
+        "blockContent": {
+          "layout": "12-12",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%= [
+                "<h3>#{ I18n.t('inspiration_blocks.text_top_media_12.heading') }</h3>",
+                "<p>#{ I18n.t('inspiration_blocks.text_top_media_12.content') }</p>"
+              ].join('').html_safe %>"
+            },
+            {
+              "type": "assetSelector"
+            }
+          ]
+        }
+      },
+      {
         "imagePreview": "<%= asset_path("editor/iconic-blocks/media-6-6.svg") %>",
         "blockContent": {
           "layout": "6-6",
@@ -236,19 +254,14 @@
         }
       },
       {
-        "imagePreview": "<%= asset_path("editor/iconic-blocks/media-4-4-4.svg") %>",
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-top-media-6-6.svg") %>",
         "blockContent": {
-          "layout": "4-4-4",
+          "layout": "12-12-12-12",
           "components": [
-            {
-              "type": "assetSelector"
-            },
-            {
-              "type": "assetSelector"
-            },
-            {
-              "type": "assetSelector"
-            }
+            { "type": "html", "value": "<h4><%= I18n.t('inspiration_blocks.text_top_media_6_6.heading') %></h4>" },
+              { "type": "assetSelector" },
+              { "type": "html", "value": "<h4><%= I18n.t('inspiration_blocks.text_top_media_6_6.heading') %></h4>" },
+              { "type": "assetSelector" }
           ]
         }
       },
@@ -336,6 +349,23 @@
                 "<br>",
                 "</div>"
               ].join('').html_safe %>"
+            }
+          ]
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/media-4-4-4.svg") %>",
+        "blockContent": {
+          "layout": "4-4-4",
+          "components": [
+            {
+              "type": "assetSelector"
+            },
+            {
+              "type": "assetSelector"
+            },
+            {
+              "type": "assetSelector"
             }
           ]
         }

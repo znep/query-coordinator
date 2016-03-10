@@ -10,8 +10,10 @@
   <%= stylesheet_link_tag 'story-view', media: 'all' %>
 
   <script type="text/javascript">
+    // StorytellerEnvironment bindings.
     window.TRANSLATIONS = <%= current_editor_translations.to_json.html_safe %>;
     window.ENABLE_NEW_STORY_PAGE_VIEW_METRICS = <%= Rails.application.config.enable_new_story_page_view_metrics %>;
+    window.IS_STORY_PUBLISHED = <%= @story.is_a?(PublishedStory) %>;
   </script>
 
   <%= google_font_code_embed %>

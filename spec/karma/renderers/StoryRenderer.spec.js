@@ -8,6 +8,8 @@ import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
 import Actions from '../../../app/assets/javascripts/editor/Actions';
 import CustomEvent from '../../../app/assets/javascripts/CustomEvent';
 import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
+import {__RewireAPI__ as componentHTMLAPI} from '../../../app/assets/javascripts/editor/block-component-renderers/componentHTML';
+import Constants from '../../../app/assets/javascripts/editor/Constants';
 import StoryStore from '../../../app/assets/javascripts/editor/stores/StoryStore';
 import DropHintStore, {__RewireAPI__ as DropHintStoreAPI} from '../../../app/assets/javascripts/editor/stores/DropHintStore';
 import WindowSizeBreakpointStore from '../../../app/assets/javascripts/editor/stores/WindowSizeBreakpointStore';
@@ -37,7 +39,7 @@ describe('StoryRenderer', function() {
     ]);
 
     validToolbar = Object.create(RichTextEditorToolbar.prototype);
-    validFormats = [];
+    validFormats = Constants.RICH_TEXT_FORMATS;
 
     richTextEditorManager = new RichTextEditorManager(
       validToolbar,
@@ -58,6 +60,8 @@ describe('StoryRenderer', function() {
     StoryRendererAPI.__Rewire__('richTextEditorManager', richTextEditorManager);
     StoryRendererAPI.__Rewire__('windowSizeBreakpointStore', windowSizeBreakpointStore);
     StoryRendererAPI.__Rewire__('I18n', I18nMocker);
+
+    componentHTMLAPI.__Rewire__('richTextEditorManager', richTextEditorManager);
 
     dispatcher.dispatch({
       action: Actions.STORY_CREATE,
@@ -101,6 +105,16 @@ describe('StoryRenderer', function() {
   });
 
   afterEach(function() {
+    StoreAPI.__ResetDependency__('dispatcher');
+    DropHintStoreAPI.__ResetDependency__('storyStore');
+    componentHTMLAPI.__ResetDependency__('richTextEditorManager');
+
+    StoryRendererAPI.__ResetDependency__('storyStore');
+    StoryRendererAPI.__ResetDependency__('dropHintStore');
+    StoryRendererAPI.__ResetDependency__('richTextEditorManager');
+    StoryRendererAPI.__ResetDependency__('windowSizeBreakpointStore');
+    StoryRendererAPI.__ResetDependency__('I18n');
+
     if (storyRenderer) {
       storyRenderer.destroy();
     }
@@ -240,6 +254,70 @@ describe('StoryRenderer', function() {
         storyRenderer = new StoryRenderer(options);
 
         assert.equal($('.message-empty-story').length, 0);
+      });
+
+      describe('with a story that has text over media blocks', function() {
+        describe('when the block\'s layout is 12-12', function() {
+          beforeEach(function() {
+            dispatcher.dispatch({
+              action: Actions.STORY_INSERT_BLOCK,
+              storyUid: storyUid,
+              insertAt: 0,
+              blockContent: DataGenerators.generateBlockData({
+                layout: '12-12',
+                components: [
+                  {type: 'html', value: 'hello'},
+                  {type: 'assetSelector'}
+                ]
+              })
+            });
+
+            storyRenderer = new StoryRenderer(options);
+          });
+
+          it('contains exactly two 12\'s', function() {
+            // Check if there are two adjacent .col12's
+            assert.lengthOf(
+              $('.block > .col12.component-container + .col12.component-container'),
+              1
+            );
+          });
+        });
+
+        describe('when the block\'s layout is 12-12-12-12', function() {
+          beforeEach(function() {
+            dispatcher.dispatch({
+              action: Actions.STORY_INSERT_BLOCK,
+              storyUid: storyUid,
+              insertAt: 0,
+              blockContent: DataGenerators.generateBlockData({
+                layout: '12-12-12-12',
+                components: [
+                  {type: 'html', value: 'hello'},
+                  {type: 'assetSelector'},
+                  {type: 'html', value: 'world'},
+                  {type: 'assetSelector'}
+                ]
+              })
+            });
+
+            storyRenderer = new StoryRenderer(options);
+          });
+
+          it('wraps 12-12-12-12 in two .col6s', function() {
+            assert.lengthOf(
+              $('.block .col6:not(.component-container)'),
+              2
+            );
+          });
+
+          it('contains exactly four 12\'s', function() {
+            assert.lengthOf(
+              $('.block .col6 .col12.component-container'),
+              4
+            );
+          });
+        });
       });
     });
 

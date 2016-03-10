@@ -47,9 +47,8 @@ en:
         card_on_page: Card already on page
         card_on_page_long: This card is already on the page
         choose_column: Choose a column...
-        choropleth_warning: No boundaries are available for this column to be plotted against.
-        choropleth_admin_message: 'To add custom regions: ask your site administrator to configure the available set through the <a href="/admin/geo">Spatial Lens section</a> in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
-        choropleth_message: 'To add custom regions: ask your site administrator to configure the available set through the Spatial Lens section in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
+        choropleth_admin_message: 'To add custom boundaries: ask your site administrator to configure the available set through the <a href="/admin/geo">Spatial Lens section</a> in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
+        choropleth_message: 'To add custom boundaries: ask your site administrator to configure the available set through the Spatial Lens section in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
         column_chart_warning: 'Note: This would result in a bar chart with over a hundred bars, it might be slower than other charts'
         column_label: Column
         curated_region_messages:
@@ -59,6 +58,7 @@ en:
         customize_prompt: Customize this card
         generic_prompt: Choose a column from the dropdown above to add a new visualization
         histogram_column_chart_warning: 'Note: Because of the distribution of values of this column, it will be presented as a histogram of bars instead of a distribution curve'
+        no_available_boundaries: No available boundaries
         not_supported: Not currently supported
         not_supported_long: This card type is currently unsupported
         prompt: Choose a column from the dropdown above to add a new card
@@ -105,6 +105,7 @@ en:
         number_of: number of {0}
         sum_of: sum of {0}
       choropleth:
+        no_available_boundaries: No available boundaries
         pending_computation: <p>This is the first time this boundary is being used for this dataset.</p><p>It can take a few minutes (more for large datasets) for the map to render once you add it to the page.</p>
         computation_in_progress: This visualization is being computed. Check back in a few minutes.
       common:

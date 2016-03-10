@@ -46,7 +46,6 @@ ro:
         card_on_page: Cardul se află deja pe pagină
         card_on_page_long: Acest card se află deja pe pagină
         choose_column: Alegeți o coloană
-        choropleth_warning:
         classic_chart:
         column_chart_warning: 'Notă: Asta ar rezulta într-o diagramă tip bară, cu peste 100 de bare, ar putea fi mai mai lentă decât alte diagrame'
         custom:

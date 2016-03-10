@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import ExceptionNotifier, {__RewireAPI__ as ExceptionNotifierAPI} from '../../app/assets/javascripts/services/ExceptionNotifier';
 
-describe.only('ExceptionNotifier', function() {
+describe('ExceptionNotifier', function() {
 
   var notifyStub;
   var addFilterStub;

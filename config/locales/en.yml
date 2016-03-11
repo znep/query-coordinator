@@ -3116,11 +3116,17 @@ en:
         title: "%{user}'s Applications"
       bar:
         edit_settings_link: Edit Account Settings
+        edit_info_link: Edit Basic Info
         follow_link: Follow
         join_date: Joined on
         last_seen_date: Last logged in
         message_link: Send Message
         unfollow_link: Unfollow
+      whats_new:
+        title: The latest from Socrata
+        caught_up: You're all caught up! Check out our most recent updates <a target="_blank" href="%{href}">here</a>.
+        read_more: Read more
+        older_news: See older news
       browse:
         owned_datasets: Owned By Me
         shared_datasets: Shared To Me

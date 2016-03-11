@@ -71,7 +71,8 @@ const MIXPANEL_EVENTS = [
   'Closed Tour',
   'Opened Goal Chart',
   'Used Search Facets',
-  'Used Search Field'
+  'Used Search Field',
+  'Clicked Socrata News Link'
 ];
 
 // This is duplicated in mixpanel-analytics.js

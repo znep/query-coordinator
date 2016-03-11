@@ -1,11 +1,17 @@
 require 'test_helper'
 
 class ProfileControllerTest < ActionController::TestCase
-
   def setup
     init_core_session
     init_current_domain
     @user = login
+
+    # so the the news widget finds a cached (empty) article list
+    # otherwise, it will try to connect to Zendesk which WebMock
+    # doesn't like
+    # (a blank list is an acceptable state that happens by default
+    # if there are any issues connecting to Zendesk)
+    Rails.cache.write('whats-new', { 'articles' => [] }, expires_in: 24.hours)
   end
 
   # LOL! Stub all the things!!
@@ -62,5 +68,4 @@ class ProfileControllerTest < ActionController::TestCase
     get :show, :profile_name => @user.screen_name, :id => @user.uid
     assert_redirected_to login_url(:protocol => 'https', :host => @request.host)
   end
-
 end

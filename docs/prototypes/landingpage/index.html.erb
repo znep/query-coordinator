@@ -16,6 +16,12 @@ layout: prototype-landingpage
   var filterListActveHeight = $(".filter-list.active").outerHeight(true);
   var maxContentHeight = viewPortHeight - headerHeight - filterActionHeight - filterListActveHeight + 63;
 
+  $(".schema-preview tr").on("click", function(e) {
+      $(this).toggleClass("expanded");
+      //$(".icon-arrow-down").toggleClass(".icon-arrow-up");
+
+  }) 
+
   // Set the height of the menu content area to position the button
   $(".filter-wrapper").css("height", maxContentHeight);
 
@@ -149,12 +155,12 @@ layout: prototype-landingpage
         </div><!-- /.entry-content -->
       </div> <!-- /.result-card -->        
   </div>
-
+  <div class="page-content">
       <div class='lp-section'>
         <h2 class="section-header">What's in this Dataset</h2>
 
         <div class="card-frame">
-        <div class="table-wrapper schema-preview">
+        <div class="table-wrapper schema-preview schema-preview-expanded">
           <table class="table-condensed table-borderless">
             <thead>
               <tr>
@@ -170,12 +176,56 @@ layout: prototype-landingpage
                   <td>Name, Text <span class="icon-clear-formatting"></span></td>
                   <td><span class="icon-arrow-down"></span></td>
                 </tr>
-                <tr>
+                <tr class='expanded'>
                   <td scope="row">DBA Name</td>
                   <td>Doing Business As name. The legal name of the business</td>
                   <td>Name, Text <span class="icon-clear-formatting"></span></td>
                   <td><span class="icon-arrow-down"></span></td>
                 </tr>
+                  <tr class="details-row expanded">
+                    
+                    <td class="details-content" colspan="4">
+                    
+                  <div class="row">   
+                    <div class="stat-details"> 
+                      <table>
+                        <tbody>
+                        <th class="title">Most Common Values</th>
+                        <tr>
+                          <td class="key">Michael Dunn</td>
+                          <td class="value">254 Occurances</td>
+                        </tr>
+                        <tr>
+                          <td class="key">Teresa Ballard</td>
+                          <td class="value">120 Occurances</td>
+                        </tr>
+                      </tbody>
+                      </table>
+                    </div>
+
+                     <div class="stat-details">
+                      <table class="type-details">
+                        <tbody>
+                        <tr>
+                          <td class="key title">Data Type</td>
+                          <td class="value"><a href="#">Text</a></td>
+                        </tr>
+                        <tr>
+                          <td class="key title">Semantic Type</td>
+                          <td class="value">Name</td>
+                        </tr>
+                        <tr>
+                          <td class="key title">API Fieldname</td>
+                          <td class="value">licensee</td>
+                        </tr>
+                      </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                    </td>
+                  </tr>
+
                 <tr>
                   <td scope="row">License Number</td>
                   <td>Unique Identifier for the license. Note: if licence gets renewed, multiple entries with the same identifier may appear.</td>
@@ -267,6 +317,8 @@ layout: prototype-landingpage
           </div>
         </div><!-- /.card-frame -->
       </div><!-- /.lp-section -->
+    </div><!-- /.page-content -->
+
 
 </div> <!-- ./wrapper -->
 

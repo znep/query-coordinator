@@ -135,9 +135,6 @@ a {
 	max-width: 100%;
 	margin: 0px auto 0;
 	
-	@include breakpoint($lgmobile) {
-		max-width: 100%;
-	}
 
 	@include breakpoint($tablet) {
 		//padding: 0 0.5em;
@@ -418,131 +415,186 @@ a {
 
 
 }
-.lp-section {
+.page-content {
+	@include outer-container();
+	.lp-section {
 
-	@include span-columns(10);
-	@include shift(1);
-	margin-bottom: ms(0);
-	padding: ms(-2);
-
-
-	.section-header {
-		padding: ms(-2) 0;
-		font-weight: 600;
-		font-size: ms(0);
-	}
-	@include breakpoint($tablet) {
-		.section-header {
-			font-size: ms(2);
-		}
-	}
-
-	.card-frame {
-		@include outer-container;
 		@include span-columns(12);
-		background-color: $white;
-		border: 1px solid $light-grey-4;
-		border-bottom: 2px solid $light-grey-4;
-		padding: ms(1);
+		margin-bottom: ms(0);
+		padding: ms(-2);
 
-		.metadata-table:nth-child(1) {
-			display: none;
-		}
-		.metadata-table {
-			td:nth-child(1) {
-				font-weight: 600;
-				color: $light-grey-1;
-			}
-		}
-		.more-link {
-			display: none;
-		}
 
-		.table-condensed {
-			margin-top: 0;
-			th {
-				padding-top: 0;
-			}
+		.section-header {
+			padding: ms(-2) 0;
+			font-weight: 600;
+			font-size: ms(0);
 		}
-		.schema-preview {
-			td {
-				max-width: 7em;
-				white-space: nowrap;
-	  			overflow: hidden;
-				text-overflow: ellipsis;
-			}
-			td:nth-child(2), td:nth-child(3) {
-				font-weight: 200;
-			}
-			td:nth-child(3) {
-				color: $grey;
-			}
-			// hide the Type-column on mobile
-			th:nth-child(3), td:nth-child(3)  {
-			    display: none;
-
-			}
-
-			td {
-				span {
-					float: right;
-				}
-			}
-			tbody {
-				tr:hover {
-					background-color: $light-grey-5;
-					cursor: pointer;
-				}
-			}
-		}
-
 		@include breakpoint($tablet) {
-			.btn-block {
+			.section-header {
+				font-size: ms(2);
+			}
+		}
+
+		.card-frame {
+			@include outer-container;
+			@include span-columns(12);
+			background-color: $white;
+			border: 1px solid $light-grey-4;
+			border-bottom: 2px solid $light-grey-4;
+			padding: ms(1);
+
+			.metadata-table:nth-child(1) {
 				display: none;
 			}
-			.centered {
-				display: block;
-				@include span-columns(12);
-				.more-link {
-					float: right;
-					display: inline-block;
-					white-space: nowrap;
-					color: $light-grey-1;
-					text-decoration: underline;
-					&:hover {
-						color: $light-grey-0;
-					}
-				}
-				.btn {
-					margin: ms(-2) auto; 
-				}
-			}
-			.schema-preview {
-					th:nth-child(3), td:nth-child(3) {
-					    display: table-cell;
-					    max-width: 6em;
-					}
-			}
 			.metadata-table {
-				float: left;
-				@include span-columns(6);
-				margin: 0;
+				td:nth-child(1) {
+					font-weight: 600;
+					color: $light-grey-1;
+				}
 			}
-			.metadata-table:nth-child(1) {
-				float: right !important;
-				@include span-columns(6);
-				margin: 0;
+			.more-link {
+				display: none;
 			}
 
+			.table-condensed {
+				margin-top: 0;
+				th {
+					padding-top: 0;
+				}
+			}
+			.table-borderless {
+				border-bottom: 1px solid $light-grey-3;
+			}
+			.schema-preview {
+				td {
+					max-width: 7em;
+					white-space: nowrap;
+		  			overflow: hidden;
+					text-overflow: ellipsis;
+					span {
+						float: right;
+					}
+				}
+				td:nth-child(2), td:nth-child(3) {
+					font-weight: 200;
+				}
+				td:nth-child(3) {
+					color: $grey;
+				}
+				// hide the Type-column on mobile
+				th:nth-child(3), td:nth-child(3)  {
+				    display: none;
+
+				}
+				
+				tbody {
+					tr:hover {
+						background-color: $light-grey-5;
+						cursor: pointer;
+					}
+				}
+		  		tr.details-row {
+		  			display: none;
+		  		}
+				//Expanded row
+				tr.expanded {
+					td {
+						white-space: normal;
+			  			overflow: visible;
+			  			border-bottom: none;
+		  			}
+		  		}
+
+		  		tr.details-row.expanded {
+		  			display: table-row;
+		  			&:hover {
+		  				cursor: default;
+		  				background-color: $white;
+		  			}
+		  			.details-content {
+		  				//clear all other table styles
+		  				table, tbody, thead, tr, th, td {
+						    border: 0;
+						    outline: 0;
+						    font-size: 100%;
+						    vertical-align: baseline;
+						    background: $white;
+						    white-space: nowrap;
+						    &:hover {
+						    	background-color: $white;
+						    	cursor: default;
+						    }
+						}
+
+		  				.title {
+		  					font-size: ms(-1);
+		  					font-weight: 600;
+							color: $light-grey-1;
+		  				}
+
+		  				.stat-details, .type-details {
+		  					@include span-columns(6);
+		  					tbody {
+		  						display: table;
+		  						width: 100%;
+			  					td {
+			  						padding-top: ms(-10);
+			  						&.value {
+			  							text-align: right;
+			  						}
+			  					}
+			  				}
+		  				}
+		  			}
+		  		}
+			}
+
+			@include breakpoint($tablet) {
+				.btn-block {
+					display: none;
+				}
+				.centered {
+					display: block;
+					@include span-columns(12);
+					.more-link {
+						float: right;
+						display: inline-block;
+						white-space: nowrap;
+						color: $light-grey-1;
+						text-decoration: underline;
+						&:hover {
+							color: $light-grey-0;
+						}
+					}
+					.btn {
+						margin: ms(-2) auto; 
+					}
+				}
+				.schema-preview {
+						th:nth-child(3), td:nth-child(3) {
+						    display: table-cell;
+						    max-width: 6em;
+						}
+				}
+				.metadata-table {
+					float: left;
+					@include span-columns(6);
+					margin: 0;
+				}
+				.metadata-table:nth-child(1) {
+					float: right !important;
+					@include span-columns(6);
+					margin: 0;
+				}
+
+			}
 		}
 	}
 }
 
 
 .result-card {
-	@include outer-container();
-	@include span-columns(10);
-	@include shift(1);
+	@include span-columns(12);
 
 	.entry-header {
 		@include outer-container();

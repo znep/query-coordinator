@@ -22,29 +22,122 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
 (function() {
   'use strict';
 
-  var $metadataContent = $('#metadata-content');
+  var $dlName = $('.dl-name');
+  $dlName.html(datasetMetadata.name);
+
+  function getPageTemplate() {
+
+    var intro;
+    var hasLongVersion;
+
+    if (datasetMetadata.description.length > 85) {
+      intro = datasetMetadata.description.substring(0, 85);
+      hasLongVersion = true;
+    } else {
+      hasLongVersion = false;
+    }
+
+    if (hasLongVersion) {
+      return $(
+        [
+          '<p class="intro padding">',
+            '<span class="dl-description intro-short">' + intro + '</span>',
+            '<span class="text-link">Show more</span>',
+          '</p>',
+          '<div class="all hidden">',
+            '<div class="source-pill">Official</div>',
+            '<p class="padding">',
+              '<span class="dl-description">' + datasetMetadata.description + '</span>',
+              '<span class="text-link">Collapse details</span>',
+            '</p>',
+            '<div class="meta-container">',
+              '<div class="title-section padding">',
+                '<h3 class="meta-title alpha">Source Dataset</h3>',
+                '<h3 class="dl-name meta-title beta"></h3>',
+              '</div>',
+              '<div class="padding">',
+                '<div class="meta-desc">',
+                  '<p>All data powering this page is available for download and/or can be accessed via API from the desktop version of this site</p>',
+                  '<p class="meta-go-link">Tap here to go to the desktop version &raquo;</p>',
+                '</div>',
+              '</div>',
+            '</div>',
+          '</div>'
+        ].join('')
+      );
+    } else {
+      return $(
+        [
+          '<p class="intro padding">',
+            '<span class="dl-description">' + datasetMetadata.description + '</span>',
+          '</p>',
+          '<div class="all hidden">',
+            '<div class="source-pill">Official</div>',
+            '<div class="meta-container">',
+              '<div class="title-section padding">',
+                '<h3 class="meta-title alpha">Source Dataset</h3>',
+                '<h3 class="dl-name meta-title beta"></h3>',
+              '</div>',
+              '<div class="padding">',
+                '<div class="meta-desc">',
+                  '<p>All data powering this page is available for download and/or can be accessed via API from the desktop version of this site</p>',
+                  '<p class="meta-go-link">Tap here to go to the desktop version &raquo;</p>',
+                '</div>',
+              '</div>',
+            '</div>',
+          '</div>'
+        ].join('')
+      );
+    }
+  }
 
   function getTemplate(options) {
-    return $(
-      [
-        '<div class="component-container ' + options.containerClass + '">',
-        '<article class="intro-text">',
-        '<h5>' + options.metaData.name + '</h5>',
-        '<p class="intro padding hidden">',
-        '<span class="desc"></span>',
-        '<span class="text-link">more</span>',
-        '</p>',
-        '<div class="all hidden">',
-        '<p class="padding">',
-        '<span class="desc">' + options.metaData.description + '</span>',
-        '<span class="text-link">less</span>',
-        '</p>',
-        '</div>',
-        '</article>',
-        '<div class="' + options.componentClass + '"></div>',
-        '</div>'
-      ].join('')
-    );
+
+    var intro;
+    var hasLongVersion;
+    if (options.metaData.description.length > 85) {
+      intro = options.metaData.description.substring(0,85);
+      hasLongVersion = true;
+    } else {
+      hasLongVersion = false;
+    }
+
+    if (hasLongVersion) {
+      return $(
+        [
+          '<div class="component-container ' + options.containerClass + '">',
+          '<article class="intro-text">',
+            '<h5>' + options.metaData.name + '</h5>',
+            '<p class="intro padding">',
+            '<span class="desc intro-short">' + intro + '</span>',
+            '<span class="text-link">Show more</span>',
+            '</p>',
+          '<div class="all hidden">',
+            '<p class="padding">',
+            '<span class="desc">' + options.metaData.description + '</span>',
+            '<span class="text-link">Collapse details</span>',
+            '</p>',
+          '</div>',
+          '</article>',
+          '<div class="' + options.componentClass + '"></div>',
+          '</div>'
+        ].join('')
+      );
+    } else {
+      return $(
+        [
+          '<div class="component-container ' + options.containerClass + '">',
+          '<article class="intro-text">',
+            '<h5>' + options.metaData.name + '</h5>',
+            '<p class="intro padding">',
+            '<span class="desc">' + options.metaData.description + '</span>',
+            '</p>',
+          '</article>',
+          '<div class="' + options.componentClass + '"></div>',
+          '</div>'
+        ].join('')
+      );
+    }
   }
 
   $('#button-toggle-metadata').on('click', function(){
@@ -62,13 +155,9 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
   });
 
   function mobileCardViewer() {
+
     var $intro = $('.intro');
     var $all = $('.all');
-    var description = $('.all').find('.desc').html();
-    var introText = description.substring(0, 75);
-
-    $intro.find('.desc').html(introText);
-    $intro.removeClass('hidden');
 
     $intro.find('.text-link').on('click', function() {
       // show all desc
@@ -216,6 +305,8 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
       }
     });
 
+    console.log('hello world');
+    getPageTemplate().appendTo('#introText');
     mobileCardViewer();
     setupQfb(aPredefinedFilters);
   }

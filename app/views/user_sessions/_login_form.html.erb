@@ -10,7 +10,7 @@
     <div class="auth0login">
       <p>
         <%- if @auth0_message.present? -%>
-          <%= @auth0_message.gsub("\n", '<br />').html_safe %>
+          <%== h(@auth0_message).gsub("\n", '<br />') %>
         <%- else -%>
           <%= t('screens.sign_in.auth0_intro') %>
         <%- end -%>

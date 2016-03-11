@@ -609,7 +609,7 @@ $(function() {
   if (window != window.parent &&
     window.parent.blist &&
     window.parent.blist.iframeHack) {
-    $browse.on('click', 'a[rel=external]', function() {
+    $browse.on('click', 'a[rel=external]', function(event) {
       if (!window.parent.blist.iframeHack.isModified()) {
         event.preventDefault();
         event.stopPropagation();

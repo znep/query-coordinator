@@ -320,9 +320,9 @@ module BrowseActions
       end
     end
 
-    if browse_options[:curated_region_candidates]
+    if browse_options[:curated_parent_region_candidates]
       search_options[:options] ||= []
-      search_options[:options] << 'curated_region_candidates'
+      search_options[:options] << 'curated_parent_region_candidates'
     end
 
     if browse_options[:limitTo].present?

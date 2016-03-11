@@ -66,7 +66,7 @@ class BrowseController < ApplicationController
   def select_georegion
     @processed_browse = process_browse(request,
       :browse_in_container => true,
-      :curated_region_candidates => true,
+      :curated_parent_region_candidates => true,
       :rel_type => 'external',
       :view_type => 'table',
       :hide_view_types => true,

@@ -35,7 +35,7 @@ xdescribe('admin-georegions-screen', function() {
     });
 
     it('renders the configure boundary modal', function() {
-      georegionsSelected('four-four');
+      georegionsSelected('four-four', 'My Boundary');
       expect(this.clearFlashMessageStub).to.have.been.calledOnce;
       expect($.fn.jqmShow).to.have.been.calledOnce;
       expect($(this.target)).to.contain('')

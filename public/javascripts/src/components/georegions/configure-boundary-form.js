@@ -230,10 +230,10 @@ const ConfigureBoundaryForm = React.createClass({
 
   render() {
     const { shouldConfirm, title } = this.props;
-    const { boundaryName, isConfigured, isLoading, name } = this.state;
+    const { boundaryName, isConfigured, isLoading } = this.state;
 
     const confirmation = {
-      __html: t('configure_boundary.confirm_html', {spatial_lens_name: name, boundary_name: boundaryName})
+      __html: t('configure_boundary.confirm_html', {boundary_name: boundaryName})
     };
 
     if (shouldConfirm && isConfigured) {

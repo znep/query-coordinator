@@ -17,10 +17,19 @@
       var selectedDataset = blist.browse.getDS($(this));
       var commonNS = window.parent.blist.namespace.fetch('blist.common');
 
-      if (_.isFunction(commonNS.georegionSelected)) {
-        commonNS.georegionSelected(selectedDataset.id);
-      } else {
-        throw "Can't find the georegionSelected handler in the parent!";
+      var hasCallback = _.isFunction(commonNS.georegionSelected);
+      var layerID = _.first(selectedDataset.childViews);
+
+      if (hasCallback && layerID) {
+        commonNS.georegionSelected(layerID, selectedDataset.name);
+        return true;
+      }
+
+      if (!hasCallback) {
+        console.error("Can't find the georegionSelected handler in the parent!");
+      }
+      if (!layerID) {
+        console.error('Unable to find a layer ID from the parent geo dataset!');
       }
     });
   });

@@ -54,6 +54,7 @@
 .icon-edit:before,
 .icon-expand:before,
 .icon-external:before,
+.icon-external-square:before,
 .icon-eye:before,
 .icon-eye-blocked:before,
 .icon-failed:before,
@@ -145,6 +146,7 @@
 .icon-edit:before { content: "\f11c"; }
 .icon-expand:before { content: "\f11d"; }
 .icon-external:before { content: "\f11e"; }
+.icon-external-square:before { content: "\f14e"; }
 .icon-eye:before { content: "\f11f"; }
 .icon-eye-blocked:before { content: "\f120"; }
 .icon-failed:before { content: "\f121"; }

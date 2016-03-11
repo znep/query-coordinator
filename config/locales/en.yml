@@ -2752,6 +2752,7 @@ en:
           validation:
             hidden_location_html: You can <a href="#showLoc" title="Show a location column">show a hidden location column</a>.
             location_column: A location column is required to create a map.
+            location_column_invalid_dataset: Requested dataset does not exist.
             viz_limit: A view may only have one visualization on it
         odata:
           endpoint_action: 'OData Endpoint:'

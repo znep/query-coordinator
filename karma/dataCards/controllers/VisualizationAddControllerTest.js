@@ -156,13 +156,6 @@ describe('VisualizationAddController', function() {
     it('should contain a valid Dataset', function() {
       expect($scope.dataset).to.be.instanceof(Dataset);
     });
-
-    it('should set relatedVisualizations to window.relatedVisualizations', function() {
-      $scope = controllerHarness.$scope;
-
-      expect($scope.relatedVisualizations).to.
-        equal(window.relatedVisualizations);
-    });
   });
 
   possiblyDescribe('with valid onVisualizationSelectedV2 function', function() {
@@ -171,56 +164,6 @@ describe('VisualizationAddController', function() {
     });
     afterEach(function() {
       delete window.frameElement.onVisualizationSelectedV2;
-    });
-
-
-    describe('related-visualization-selected scope event', function() {
-      describe('with a valid classic visualization with no originalUid', function() {
-        var relatedVisualization = {
-          format: 'classic',
-          data: {}
-        };
-
-        it('should throw', function() {
-          expect(function() {
-            emitRelatedVisualizationSelected(relatedVisualization);
-          }).to.throw();
-        });
-      });
-
-      describe('with a valid classic visualization with an originalUid', function() {
-        var relatedVisualizationData = {
-          something: 'something'
-        };
-
-        var relatedVisualization = {
-          format: 'classic',
-          data: relatedVisualizationData,
-          originalUid: 'oldd-vizz'
-        };
-
-        beforeEach(function() {
-          emitRelatedVisualizationSelected(relatedVisualization);
-        });
-
-        it('should call onVisualizationSelectedV2 with the original data and originalUid', function() {
-          sinon.assert.calledOnce(window.frameElement.onVisualizationSelectedV2);
-          sinon.assert.calledWithExactly(
-            window.frameElement.onVisualizationSelectedV2,
-            JSON.stringify(relatedVisualizationData), // NB: This is a string. See comment on onVisualizationSelectedV2.
-            'classic',
-            'oldd-vizz'
-          );
-        });
-
-        it('should set addCardSelectedColumnFieldName to null', function() {
-          expect($scope.addCardSelectedColumnFieldName).to.equal(null);
-        });
-
-        it('should set classicVisualization', function() {
-          expect($scope.classicVisualization).to.equal(relatedVisualization);
-        });
-      });
     });
 
     describe('card-model-changed scope event', function() {
@@ -283,56 +226,6 @@ describe('VisualizationAddController', function() {
     });
     afterEach(function() {
       delete window.frameElement.onVisualizationSelected;
-    });
-
-
-    describe('related-visualization-selected scope event', function() {
-      describe('with a valid classic visualization with no originalUid', function() {
-        var relatedVisualization = {
-          format: 'classic',
-          data: {}
-        };
-
-        it('should throw', function() {
-          expect(function() {
-            emitRelatedVisualizationSelected(relatedVisualization);
-          }).to.throw();
-        });
-      });
-
-      describe('with a valid classic visualization with an originalUid', function() {
-        var relatedVisualizationData = {
-          something: 'something'
-        };
-
-        var relatedVisualization = {
-          format: 'classic',
-          data: relatedVisualizationData,
-          originalUid: 'oldd-vizz'
-        };
-
-        beforeEach(function() {
-          emitRelatedVisualizationSelected(relatedVisualization);
-        });
-
-        it('should call onVisualizationSelected with the original data and originalUid', function() {
-          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
-          sinon.assert.calledWithExactly(
-            window.frameElement.onVisualizationSelected,
-            relatedVisualizationData,
-            'classic',
-            'oldd-vizz'
-          );
-        });
-
-        it('should set addCardSelectedColumnFieldName to null', function() {
-          expect($scope.addCardSelectedColumnFieldName).to.equal(null);
-        });
-
-        it('should set classicVisualization', function() {
-          expect($scope.classicVisualization).to.equal(relatedVisualization);
-        });
-      });
     });
 
     describe('card-model-changed scope event', function() {
@@ -447,56 +340,6 @@ describe('VisualizationAddController', function() {
               expect(fieldName).to.equal(null);
                done();
             });
-        });
-      });
-    });
-
-    describe('with only defaultRelatedVisualizationUid specified', function() {
-      beforeEach(function() {
-        window.relatedVisualizations = [
-          {
-            originalUid: 'corr-ectt'
-          }
-        ];
-      });
-
-      describe('which is valid', function() {
-        it('should emit related-visualization-selected with the matching related visualization', function(done) {
-          $rootScope.$on('related-visualization-selected', function(event, payload) {
-            expect(payload).to.equal(window.relatedVisualizations[0]);
-            done();
-          });
-          controllerHarnessWithDefaultRelatedViz('corr-ectt');
-        });
-      });
-
-      describe('which is not valid', function() {
-        it('should not emit related-visualization-selected', function() {
-          $rootScope.$on('related-visualization-selected', function() {
-            throw new Error('should not get here');
-          });
-          controllerHarnessWithDefaultRelatedViz('wron-ggg');
-        });
-      });
-    });
-
-    describe('with both defaultColumn and defaultRelatedVisualizationUid specified', function() {
-      beforeEach(function() {
-        window.relatedVisualizations = [
-          {
-            originalUid: 'corr-ectt'
-          }
-        ];
-      });
-
-      it('should emit related-visualization-selected with the matching related visualization', function(done) {
-        $rootScope.$on('related-visualization-selected', function(event, payload) {
-          expect(payload).to.equal(window.relatedVisualizations[0]);
-          done();
-        });
-        makeController({
-          defaultRelatedVisualizationUid: 'corr-ectt',
-          defaultColumn: validColumnName
         });
       });
     });

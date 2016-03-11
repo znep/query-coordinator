@@ -1,6 +1,8 @@
 @import "breakpoint";
 @import "vendor/reset";
 //@import "vendor/prism";
+@import "modular-scale";
+
 
 // Style Components
 @import "bourbon";
@@ -62,7 +64,7 @@ $desktop: 992px;
 
 .menu {
 	width: 100%;
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		width: 30%;
 	}
 	background-color: $light-grey-7;
@@ -120,6 +122,10 @@ $desktop: 992px;
 
 body {
 	background: $light-grey-6;
+
+	& > .responsive-navbar {
+		background-color: #22B479;
+	}
 }
 
 a {
@@ -135,11 +141,11 @@ a {
 	max-width: 97%;
 	margin: 0px auto 0;
 	
-	@include breakpoint($lgmobile) {
+	@include media($lgmobile) {
 		max-width: 97%;
 	}
 
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		padding: 0 0.5em;
 		max-width: 80em;
 		margin: 0 auto;
@@ -149,7 +155,7 @@ a {
 
 
 .wrapper {
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 	    margin-top: 112px;
    		border-top: 1px solid $light-grey-3;
 		padding-top: 21px;
@@ -162,7 +168,7 @@ a {
 	.container {
 		max-width: 100%;
 		
-		@include breakpoint($tablet) {
+		@include media($tablet) {
 			max-width: 54em !important;
 			margin: 0px auto;
 			padding: 0;
@@ -185,7 +191,7 @@ a {
 		}
 	}
 
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		@include span-columns(10);
 		@include shift(1);
 		padding: ms(8) 0;
@@ -201,7 +207,7 @@ a {
 .search-result-meta {
 	display: none;
 
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		display: inherit;
 		@include outer-container();
 
@@ -221,7 +227,7 @@ a {
 	border-bottom: 1px solid $light-grey-4;
 	margin-bottom: ms(2);
 	
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		@include span-columns(3);
 		padding-top: 0;
 	}
@@ -229,13 +235,13 @@ a {
 	
 	&.facet-bar-desktop {
 		display: none;
-		@include breakpoint($tablet) {
+		@include media($tablet) {
 			display: inherit;
 		}
 	}
 
 	&.facet-bar-mobile {
-		@include breakpoint($tablet) {
+		@include media($tablet) {
 			display: none;
 		}
 	}
@@ -260,7 +266,7 @@ a {
 	.filter-list-desktop {
 		display: none;
 
-		@include breakpoint($tablet) {
+		@include media($tablet) {
 			display: inherit;
 			border: 1px solid $light-grey-4;
 		}
@@ -274,6 +280,18 @@ a {
 	border-bottom: 1px solid $light-grey-5;
 	border-top: 1px solid $light-grey-5;
 	
+	&.sort {
+		margin-bottom: ms(4);
+
+		ul > li a.active:after {
+			font-family: "socrata-icons";
+			content: "\f10e";
+			font-size: ms(0);
+			top: 15%;
+			right: 1.3em;
+		}
+	}
+
 	.current-filters-group,
 	.filter-list-group {
 		font-size: ms(0);
@@ -283,13 +301,13 @@ a {
 		margin: ms(-6) 0;
 		padding-left: ms(-1);
 
-		@include breakpoint($tablet) {
+		@include media($tablet) {
 			display: none;
 		}
 	}
 
 	&.active {
-		margin-bottom: ms(8);
+		margin-bottom: ms(0);
 		border-top: 1px solid $light-grey-4;
 		border-bottom: 1px solid $light-grey-4;
 
@@ -349,8 +367,6 @@ a {
 				}
 			}
 
-
-
 		}
 
 
@@ -385,16 +401,28 @@ a {
 						line-height: 2.2;
 						color: $secondary;
 
-						@include breakpoint($tablet) {
+						@include media($tablet) {
 							right: 1.85;
 						}
 
 					}
+
 				}
 			
-				@include breakpoint($tablet) {
+				@include media($tablet) {
 					padding-right: ms(1);
 					font-size: ms(-1);
+					&.show-all {
+						text-align: center;
+						background-color: $light-grey-7;
+						color: $dark-grey-1;
+						padding: ms(-6) ms(-4) ms(-6) ms(2);
+							&:after {
+								font-family: "icomoon";
+								content: "\e808";
+							}
+
+					}
 				}
 
 			}
@@ -410,9 +438,36 @@ a {
 	}
 }
 
+//Show All Modal
+#show-all-modal {
+
+	hr {
+		border-top-color: $light-grey-4;
+	}
+
+	h5 {
+		margin-bottom: 0;
+	}
+
+	ul {
+		margin-top: ms(-5);
+		list-style-type: none;
+		padding-left: 0;
+	}
+
+	.count {
+		font-size: ms(-1);
+	}
+
+	.modal-container {
+		max-width: 600px;
+	}
+
+}
+
 .content {
 
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		@include span-columns(9);
 	}
 
@@ -420,7 +475,6 @@ a {
 
 
 .result-card {
-	@include outer-container();
 	background-color: $white;
 	border: 1px solid $light-grey-4;
 	border-bottom: 2px solid $light-grey-4;
@@ -433,7 +487,7 @@ a {
 
 
 	.entry-header {
-		@include outer-container();
+		@include row();
 		padding: ms(-2);
 		border-bottom: 1px solid $light-grey-5;
 		
@@ -448,7 +502,7 @@ a {
 				
 			}
 
-			@include breakpoint($tablet) {
+			@include media($tablet) {
 				@include span-columns(8);
 					.entry-name {
 						
@@ -469,7 +523,7 @@ a {
 			font-weight: 300;
 			padding-top: ms(-6);
 
-			@include breakpoint($tablet) {
+			@include media($tablet) {
 				@include span-columns(4);
 				
 				font-size: ms(0);
@@ -483,8 +537,8 @@ a {
 		
 		
 		.entry-main {			
-			@include breakpoint($tablet) {
-				@include span-columns(8, collapse);
+			@include media($tablet) {
+				@include span-columns(8, block-collapse);
 				border-right: 1px solid $light-grey-4;
 
 				
@@ -524,7 +578,7 @@ a {
 				overflow: hidden;
 				padding: ms(-4) ms(-2);
 
-				@include breakpoint($tablet) {
+				@include media($tablet) {
 					border-bottom: none;
 					border-top: 1px solid $light-grey-5;	
 
@@ -534,15 +588,19 @@ a {
 				.topics {
 					@include span-columns(12);
 
-					@include breakpoint($tablet) {
+					@include media($tablet) {
 						@include span-columns(9);
+					}
+
+					.meta-tag-more {
+						color: $light-grey-0;
 					}
 				}
 
 				.api {
 					display: none !important;
 					
-					@include breakpoint($tablet) {
+					@include media($tablet) {
 						@include span-columns(3);
 						text-align: right;
 					}
@@ -556,7 +614,7 @@ a {
 				padding: ms(-4) ms(-2);
 				border-bottom: 1px solid $light-grey-5;	
 
-				@include breakpoint($tablet) {
+				@include media($tablet) {
 					@include span-columns(4);
 					border-bottom: none;
 					.meta-title {
@@ -564,27 +622,27 @@ a {
 					}
 				}
 
+				.meta-title,
+					.date {
+						display: block;
+					}
+
 				.updated {
 					@include span-columns(6);
 					//margin-top: ms(-12);
 					margin-bottom: 0;
 
-					@include breakpoint($tablet) {
+					@include media($tablet) {
 						@include span-columns(12);
-
-						.meta-title,
-						.date {
-							display: block;
-						}
 					}
 					
 				}
 
 				.views {
-					@include span-columns(6);
+					@include span-columns(4);
 					text-align: right;
 
-					@include breakpoint($tablet) {
+					@include media($tablet) {
 						@include span-columns(12);
 						text-align: left;
 						

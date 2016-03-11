@@ -93,7 +93,7 @@ table {
         }
       }
     
-    @include breakpoint($small) { 
+    @include media($small) { 
       border: none;
 
     } 

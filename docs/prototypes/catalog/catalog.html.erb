@@ -18,11 +18,11 @@ layout: prototype-catalog
   // Set the height of the menu content area to position the button
   $(".filter-wrapper").css("height", maxContentHeight);
 
-  console.log("View Port: " + viewPortHeight);
+  /*console.log("View Port: " + viewPortHeight);
   console.log("Header: " + headerHeight);
   console.log("Filter Action Button: " + filterActionHeight);
   console.log("Active List: " + filterListActveHeight);
-  console.log("Content Max: " + maxContentHeight);
+  console.log("Content Max: " + maxContentHeight);*/
 
   // Hide the facet list & the hint text
   $(".filter-list ul, .filter-hint-text").hide();
@@ -37,7 +37,7 @@ layout: prototype-catalog
     })
   })
 
-  $(".facet-item a").each(function() {
+  $(".facet-item a:not(.facet-item a.show-all)").each(function() {
     $(this).on("click", function(e) {
       e.preventDefault();
       $(this).parent("li").siblings("li").find("a").removeClass("active");
@@ -55,7 +55,7 @@ layout: prototype-catalog
     $(".facet-group.open").next("ul").slideToggle();
     $(".facet-group").removeClass("open");
 
-    var selectedFilters = $(".facet-item a.active:not(.filter-list.active a.active)").get();
+    var selectedFilters = $(".facet-item a.active:not(.filter-list.active a.active, .filter-list.sort a.active)").get();
     //console.log(selectedFilters);
 
     $.each(selectedFilters, function(i, obj) {
@@ -76,9 +76,17 @@ layout: prototype-catalog
       $(".facet-group.open").next("ul").slideToggle();
       $(".facet-group").removeClass("open");
       $(".filter-hint-text").hide();
+      $("span.current-sort-text").text("Relevance");
     })
 
   });
+
+  //Sort Filter
+  $(".filter-list.sort a").on("click", function() {
+      console.log("Sort");
+      $("span.current-sort-text").text($(this).attr("data-sort-name"));
+  })
+
 
 </script>
 
@@ -131,9 +139,20 @@ layout: prototype-catalog
             </ul>
         </div>
 
+        <div class="filter-list sort" role="navigation">
+          <h4 class="filter-list-group">Sort</h4>
+            
+            <h4 class="facet-group"><a href="#">Sort by <span class="current-sort-text">Relevance</span></a></h4>
+            <ul data-facet-name="Sort by">
+                <li class="facet-item"><a data-sort-name="Relevance" href="#" class="active">Relevance</a></li>
+                <li class="facet-item"><a data-sort-name="Popularity"href="#">Popularity</a></li>
+                <li class="facet-item"><a data-sort-name="Recently Updated" href="#">Recently Updated</a></li>
+                <li class="facet-item"><a  data-sort-name="Recently Added" href="#">Recently Added</a></li>
+              </ul>
+        </div>
 
         <div class="filter-list" role="navigation">
-          <h4 class="filter-list-group">All Filters</h4>
+          <h4 class="filter-list-group">Filter</h4>
           
             <h4 class="facet-group"><a href="#">Category</a></h4>
               <ul data-facet-name="Category">
@@ -176,7 +195,7 @@ layout: prototype-catalog
 
 
 
-</div><!-- ./menu --> 
+</div><!-- ./menu (offscreen mobile) --> 
 
 <div class="facet-bar facet-bar-mobile">
   <div class="container">
@@ -286,7 +305,7 @@ layout: prototype-catalog
           <div class="entry-meta second">
             <div class="entry-meta updated">
               <span class="meta-title">Updated</span>
-              <span class="date">December 1, 2015</span>
+              <span class="date">Aug 1, 2015</span>
             </div>                  
             <div class="entry-meta views">
               <span class="meta-title">Views</span>
@@ -303,7 +322,9 @@ layout: prototype-catalog
 
       <div class="entry-header">
         <div class="entry-title">
-          <h2 class="entry-name"><a href="#">Washington Pet Escapes</a></h2>
+          <h2 class="entry-name">
+            <a href="#">Dataset of Datasets with Really Long and Realistic Titles (Latest Version) 2016 <span class="icon-external-square"></span></a> 
+          </h2>
           <span class="tag-federated">
             <a href="#"><span class="icon-linked"></span> Data Provided by <span class="domain">data.wastate.gov</span></a>
           </span>
@@ -320,7 +341,7 @@ layout: prototype-catalog
 
             <div class="entry-meta first">
               <div class="entry-meta topics">
-                <span class="meta-title">Topics</span> <span class="topic-list"><a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a>, <a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a></span>
+                <span class="meta-title">Topics</span> <span class="topic-list"><a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a>, <a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a>, and 12 more</span>
               </div>
 
               <div class="entry-meta api">

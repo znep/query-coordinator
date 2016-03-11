@@ -305,7 +305,6 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
       }
     });
 
-    console.log('hello world');
     getPageTemplate().appendTo('#introText');
     mobileCardViewer();
     setupQfb(aPredefinedFilters);

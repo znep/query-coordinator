@@ -61,6 +61,8 @@ function featureMap(
           mapOptions: {
             zoomAnimation: !Constants.DISABLE_LEAFLET_ZOOM_ANIMATION
           },
+          maxTileDensity: Constants.FEATURE_MAP_MAX_TILE_DENSITY,
+          maxRowInspectorDensity: Constants.FEATURE_MAP_FLANNEL_MAX_ROW_DENSITY,
           panAndZoom: !$scope.disablePanAndZoom
         },
         unit: {

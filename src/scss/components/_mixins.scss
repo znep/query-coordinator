@@ -30,3 +30,16 @@
     clear: both;
   }
 }
+
+/**
+ * Offscreen. Hide text in UI, but keep in document. Accessibiity +1
+ *
+*/ 
+@mixin offscreen-text {
+  height: 1px;
+  left: -10000px;
+  overflow: hidden;
+  position: absolute;
+  top: auto;
+  width: 1px;
+}

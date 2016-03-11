@@ -1,6 +1,8 @@
 var templateUrl = require('angular_templates/dataCards/addCardDialog.html');
 const angular = require('angular');
-function addCardDialog() {
+function addCardDialog(rx) {
+  const Rx = rx;
+
   return {
     restrict: 'E',
     scope: {
@@ -21,9 +23,25 @@ function addCardDialog() {
       $scope.addCardModel = null;
       $scope.addCardSelectedColumnFieldName = null;
 
-      $scope.$on('card-model-selected', function(event, addCardModel) {
+      $scope.$on('card-model-changed', function(event, addCardModel) {
         $scope.addCardModel = addCardModel;
+
+        // Disable the save button if the customized card is in an invalid state.
+        // This behavior is duplicated in customizeCardDialog.
+        // (Expand 'disableSave' as more cases come up.)
+        var isRegionlessChoropleth$ = Rx.Observable.combineLatest(
+          $scope.addCardModel.observe('cardType'),
+          $scope.addCardModel.observe('computedColumn'),
+          function(cardType, computedColumn) {
+            return cardType === 'choropleth' && _.isEmpty(computedColumn);
+          }
+        );
+
+        $scope.$bindObservable('disableSave', isRegionlessChoropleth$);
+
       });
+
+      $scope.disableSave = true;
 
       $scope.addCard = function() {
         if (!_.isNull($scope.addCardModel)) {

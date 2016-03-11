@@ -34,7 +34,7 @@ describe('VisualizationAddController', function() {
   var possiblyDescribe = canRunParentWindowTests ? describe : xdescribe;
 
   function emitCardModelSelected(payload) {
-    $scope.$emit('card-model-selected', payload);
+    $scope.$emit('card-model-changed', payload);
     $scope.$apply();
   }
 
@@ -223,7 +223,7 @@ describe('VisualizationAddController', function() {
       });
     });
 
-    describe('card-model-selected scope event', function() {
+    describe('card-model-changed scope event', function() {
 
       describe('with a null payload', function() {
         it('should call onVisualizationSelectedV2 with null', function() {
@@ -234,7 +234,7 @@ describe('VisualizationAddController', function() {
       });
 
       describe('with a non-null payload', function() {
-        beforeEach(function() {
+        it('should call onVisualizationSelectedV2 with the results of VIF synthesis in the payload', function() {
           var cardSelected = Card.deserialize(
             $scope.page,
             {
@@ -246,15 +246,32 @@ describe('VisualizationAddController', function() {
           );
 
           emitCardModelSelected(cardSelected);
-        });
 
-        it('should call onVisualizationSelectedV2 with the results of VIF synthesis in the payload', function() {
           sinon.assert.calledOnce(window.frameElement.onVisualizationSelectedV2);
           var arg = window.frameElement.onVisualizationSelectedV2.getCalls()[0].args[0];
           expect(_.pick(
             JSON.parse(arg),
             _.keys(validVIF)
           )).to.deep.equal(validVIF);
+        });
+
+        it('should call onVisualizationSelectedV2 with null data if the card is a choropleth without a computed column', function() {
+          var cardSelected = Card.deserialize(
+            $scope.page,
+            {
+              fieldName: validVIF.columnName,
+              cardSize: 1,
+              expanded: false,
+              cardType: 'choropleth',
+              computedColumn: null
+            }
+          );
+
+          emitCardModelSelected(cardSelected);
+
+          sinon.assert.calledOnce(window.frameElement.onVisualizationSelectedV2);
+          var arg = window.frameElement.onVisualizationSelectedV2.getCalls()[0].args[0];
+          expect(arg).to.equal(null);
         });
       });
     });
@@ -318,7 +335,7 @@ describe('VisualizationAddController', function() {
       });
     });
 
-    describe('card-model-selected scope event', function() {
+    describe('card-model-changed scope event', function() {
 
       describe('with a null payload', function() {
         it('should call onVisualizationSelected with null', function() {
@@ -486,7 +503,7 @@ describe('VisualizationAddController', function() {
   });
 
   possiblyDescribe('with no or invalid onVisualizationSelected and no or invalid onVisualizationSelectedV2 function', function() {
-    it('should trigger an error on card-model-selected', function() {
+    it('should trigger an error on card-model-changed', function() {
       expect(function() {
         emitCardModelSelected(null);
       }).to.throw(/onVisualizationSelected/);

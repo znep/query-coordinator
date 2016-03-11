@@ -18,6 +18,7 @@ describe('ChoroplethController', function() {
   var testTimeoutScheduler;
   var normalTimeoutScheduler;
   var mockCardDataService;
+  var mockSpatialLensService;
   var $controller;
 
   var testWards = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
@@ -31,7 +32,9 @@ describe('ChoroplethController', function() {
       provide = $provide;
 
       setMockCardDataServiceToDefault();
+      setMockSpatialLensServiceToDefault();
       $provide.value('CardDataService', mockCardDataService);
+      $provide.value('SpatialLensService', mockSpatialLensService);
       $provide.value('$element', $('<div>'));
     });
   });
@@ -63,6 +66,15 @@ describe('ChoroplethController', function() {
     testHelpers.cleanUp();
     testHelpers.TestDom.clear();
   });
+
+  function setMockSpatialLensServiceToDefault() {
+    mockSpatialLensService = {
+      getAvailableGeoregions$: function() {
+        return Rx.Observable.of([{}]);
+      },
+      isSpatialLensEnabled: _.constant(true)
+    };
+  }
 
   function setMockCardDataServiceToDefault() {
     mockCardDataService = {
@@ -437,6 +449,44 @@ describe('ChoroplethController', function() {
       });
 
       expect(testSubject.$scope.choroplethRenderError).to.equal(true);
+    });
+
+    describe('if there are no available boundaries', function() {
+      beforeEach(function() {
+        mockSpatialLensService.getAvailableGeoregions$ = function() {
+          return Rx.Observable.of([]);
+        }
+      });
+
+      afterEach(function() {
+        setMockSpatialLensServiceToDefault();
+      });
+
+      it('should display an error message', function() {
+        var columns = {
+          "points": {
+            "name": "source column.",
+            "description": "required",
+            "fred": "location",
+            "physicalDatatype": "point"
+          },
+          "ward": {
+            "name": "Ward where crime was committed.",
+            "description": "Batman has bigger fish to fry sometimes, you know.",
+            "fred": "location",
+            "physicalDatatype": "text"
+          }
+        };
+        var testSubject = createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '1'),
+          version: '1'
+        });
+
+        expect(testSubject.$scope.choroplethRenderError).to.equal(true);
+      });
     });
 
     describe('if the extent query used to get the choropleth regions fails', function() {

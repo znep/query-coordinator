@@ -307,6 +307,9 @@ function ChoroplethController(
     }
   );
 
+  var allCuratedRegions$ = dataset.flatMapLatest(SpatialLensService.getAvailableGeoregions$);
+  $scope.$bindObservable('noAvailableBoundaries', allCuratedRegions$.map(_.isEmpty));
+
   /*********************************************************
   * Respond to events in the child 'choropleth' directive. *
   *********************************************************/

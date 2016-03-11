@@ -46,7 +46,6 @@ pt:
         card_on_page: O cartão já consta da página
         card_on_page_long: Este cartão já se encontra na página
         choose_column: Selecione uma coluna...
-        choropleth_warning:
         classic_chart:
         column_chart_warning: 'Atenção: Isto resultaria num gráfico de barras com mais de cem barras, podendo ser mais lento do que os outros gráficos'
         custom:

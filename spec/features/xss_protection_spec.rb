@@ -3,7 +3,11 @@ require 'rails_helper'
 shared_examples 'a secure application' do
 
   before do
-    allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
+    if site_chrome.present?
+      allow(SiteChrome).to receive(:for_current_domain).and_return(site_chrome)
+    else
+      allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
+    end
   end
 
   self.use_transactional_fixtures = false
@@ -70,6 +74,7 @@ end
 # Tread lightly. This was TDDd and was verified to fail before
 # the fixes were put in place.
 RSpec.describe 'XSS protection', type: :feature, js: true do
+  let(:site_chrome) { nil }
   let(:view_metadata) { {} }
 
   before do
@@ -166,6 +171,37 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
     end
 
     let(:attack_story_uid) { 'mtda-doom' }
+
+    it_behaves_like 'a secure application'
+  end
+
+  describe 'attacks against the site chrome footer' do
+    let(:site_chrome) do
+
+      site_chrome = double('site_chrome')
+      allow(site_chrome).to receive(:styles).and_return(
+        {
+          '$bg-color' => '#000',
+          '$font-color' => '#000'
+        }
+      )
+      allow(site_chrome).to receive(:content).and_return(
+        {
+          'friendlySiteName' => '',
+          'footerText' => '<script>window.xssFailure="site chrome footer injection"</script>'
+        }
+      )
+
+      site_chrome
+    end
+
+    let(:story_blocks) do
+      [
+        FactoryGirl.create(:block, components: [ { type: 'html', value: 'positive test' } ])
+      ]
+    end
+
+    let(:attack_story_uid) { 'chrm-doom' }
 
     it_behaves_like 'a secure application'
   end

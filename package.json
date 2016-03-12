@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "file-loader": "^0.8.5",
-    "leaflet": "^0.7.3",
+    "leaflet": "0.7.3",
     "lodash": "^3.10.1",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",

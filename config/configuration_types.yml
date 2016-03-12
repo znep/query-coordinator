@@ -12,6 +12,7 @@ auth0:
   - auth0_connections
   - auth0_callback_uri
   - auth0_always_redirect_connection
+  - auth0_message
 catalog:
   holy_shit: There is a lot of magic in this config.
   cs_wiki: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/catalog-options

@@ -191,12 +191,12 @@ function generateDataLensConfig() {
           ]
         },
         {
-          test: /modernizr\.js$/,
-          loader: 'imports?this=>window'
-        },
-        {
           test: /\.scss|\.css$/,
           loader: 'style!css!autoprefixer-loader!sass'
+        },
+        {
+          test: /modernizr\.js$/,
+          loader: 'imports?this=>window'
         },
         {
           test: /\.png$/,
@@ -261,7 +261,7 @@ function generateDataLensMobileConfig() {
     resolve: {
       alias: {
         'leaflet.css': 'leaflet/dist/leaflet.css',
-        'socrata-visualizations.css': 'socrata-visualizations/dist/socrata-visualizations.css',
+        'socrata-visualizations.css': 'socrata-visualizations/dist/socrata-visualizations.css'
       }
     },
     plugins: [

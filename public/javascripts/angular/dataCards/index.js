@@ -1,6 +1,4 @@
-import 'leaflet.css';
-import 'socrata-visualizations.css';
-
+import './styles';
 import './services';
 import './filters';
 import './directives';

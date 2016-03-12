@@ -193,6 +193,14 @@ function generateDataLensConfig() {
         {
           test: /modernizr\.js$/,
           loader: 'imports?this=>window'
+        },
+        {
+          test: /\.scss|\.css$/,
+          loader: 'style!css!autoprefixer-loader!sass'
+        },
+        {
+          test: /\.png$/,
+          loader: 'url-loader?limit=100000'
         }
       ]
     },
@@ -207,6 +215,8 @@ function generateDataLensConfig() {
     resolve: {
       alias: {
         'angular_templates': templateDir,
+        'leaflet.css': 'leaflet/dist/leaflet.css',
+        'socrata-visualizations.css': 'socrata-visualizations/dist/socrata-visualizations.css',
         plugins: path.resolve(projectRootDir, 'public/javascripts/plugins')
       }
     }
@@ -247,6 +257,12 @@ function generateDataLensMobileConfig() {
           loader: 'url-loader?limit=100000'
         }
       ]
+    },
+    resolve: {
+      alias: {
+        'leaflet.css': 'leaflet/dist/leaflet.css',
+        'socrata-visualizations.css': 'socrata-visualizations/dist/socrata-visualizations.css',
+      }
     },
     plugins: [
       new ManifestPlugin({

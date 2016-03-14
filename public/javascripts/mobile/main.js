@@ -22,6 +22,8 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
 (function() {
   'use strict';
 
+  var $metadataContent = $('#metadata-content');
+
   function getTemplate(options) {
     return $(
       [
@@ -45,11 +47,25 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
     );
   }
 
+  $('#button-toggle-metadata').on('click', function(){
+    var showing = $(this).data('open');
+    var self = $(this);
+
+    if (showing) {
+      self.html('show metadata');
+      self.data('open', false);
+    } else {
+      self.html('hide metadata');
+      self.data('open', true);
+    }
+    $metadataContent.toggleClass('hidden');
+  });
+
   function mobileCardViewer() {
     var $intro = $('.intro');
     var $all = $('.all');
     var description = $('.all').find('.desc').html();
-    var introText = description.substring(0, 85);
+    var introText = description.substring(0, 75);
 
     $intro.find('.desc').html(introText);
     $intro.removeClass('hidden');
@@ -184,7 +200,6 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
 
           mobileColumnChart(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
-
         case 'table':
           cardOptions.id = 'table';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
@@ -195,9 +210,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
           };
 
           mobileTable(values, $cardContainer.find('#table'));
-
           break;
-
         default:
           break;
       }

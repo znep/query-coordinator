@@ -290,9 +290,8 @@ $(document).ready(function() {
     validateAndSendPayload(eventName, mergedProperties, callback);
   };
 
-  if (blist.mixpanelLoaded) {
+  $(document).on('mixpanelLoaded', function() {
     // TODO: Move the event tracking below this to separate file(s)
-    // TODO: Don't talk to Mixpanel if it's not enabled
     //HEADER
     mixpanelNS.delegateLinks('#siteHeader', 'a', 'Clicked Header Item', false, function(element) {
       var linkType = (element.title != '') ? element.title : element.text;
@@ -367,9 +366,5 @@ $(document).ready(function() {
 
     // opening new chart
     mixpanelNS.delegateLinks('#janus', '.goalBox .progressViewChart .viewChart', 'Opened Goal Chart', false, _.noop);
-  } else {
-    if (console && console.warn) {
-      console.warn('Unable to delegateLinks to Mixpanel. AdBlocking may be in effect.');
-    }
-  }
+  });
 });

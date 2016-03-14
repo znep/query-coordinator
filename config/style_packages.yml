@@ -223,6 +223,7 @@ profile-show:
 - screen-profile
 - screen-profile-shared
 - control-feed
+- screen-whats-new
 profile-edit:
 - screen-profile-edit
 - screen-profile-shared

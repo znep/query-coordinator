@@ -26,7 +26,8 @@ $(document).ready(function() {
     'Closed Tour',
     'Opened Goal Chart',
     'Used Search Facets',
-    'Used Search Field'
+    'Used Search Field',
+    'Clicked Socrata News Link'
   ];
 
   // This is duplicated in angular/common/values.js

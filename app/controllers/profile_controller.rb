@@ -5,6 +5,8 @@ class ProfileController < ApplicationController
   # the comment at the top of ProfileHelper's implementation.
   # tl;dr "helper :all" in ApplicationController.
   include ProfileHelper
+  
+  include WhatsNewHelper
 
   skip_before_filter :require_user, :only => [:show_app_token]
 
@@ -106,6 +108,8 @@ class ProfileController < ApplicationController
           :tag_cloud => true
         }
       end
+      
+      @news = retrieve_news
 
       @processed_browse = process_browse(request, browse_options)
     rescue CoreServer::CoreServerError => e

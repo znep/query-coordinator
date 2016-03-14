@@ -47,10 +47,9 @@
   <li ng-show="availableCardTypes.indexOf('choropleth') > -1">
     <button
       class="visualization-type icon-region"
-      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'choropleth', disabled: showChoroplethWarning }"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'choropleth' }"
       ng-click="setCardType('choropleth', $event)"
       data-visualization-name="choropleth">
-        <span class="icon-warning" ng-show="showChoroplethWarning"></span>
     </button>
     <span>{{::'common.cards.choropleth' | I18n}}</span>
   </li>
@@ -58,8 +57,9 @@
 
 <div class="curated-region-selector" ng-show="showCuratedRegionSelector">
   <span>{{'common.by' | I18n}}</span>
+  <span class="soc-select faux-disabled" ng-show="hasZeroCuratedRegions">{{::'addCardDialog.noAvailableBoundaries' | I18n}}</span>
   <span class="soc-select" ng-show="hasSingleCuratedRegion">{{allCuratedRegions[0].name}}</span>
-  <soc-select ng-model="selectedCuratedRegion" ng-show="!hasSingleCuratedRegion">
+  <soc-select ng-model="selectedCuratedRegion" ng-hide="hasZeroCuratedRegions || hasSingleCuratedRegion">
     <soc-option
       value="{{curatedRegion.view.id}}"
       ng-repeat="curatedRegion in computedCuratedRegions"

@@ -47,9 +47,8 @@ en:
         card_on_page: Card already on page
         card_on_page_long: This card is already on the page
         choose_column: Choose a column...
-        choropleth_warning: No boundaries are available for this column to be plotted against.
-        choropleth_admin_message: 'To add custom regions: ask your site administrator to configure the available set through the <a href="/admin/geo">Spatial Lens section</a> in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
-        choropleth_message: 'To add custom regions: ask your site administrator to configure the available set through the Spatial Lens section in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
+        choropleth_admin_message: 'To add custom boundaries: ask your site administrator to configure the available set through the <a href="/admin/geo">Spatial Lens section</a> in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
+        choropleth_message: 'To add custom boundaries: ask your site administrator to configure the available set through the Spatial Lens section in the admin panel, or <a href="mailto:support@socrata.com">contact Socrata support</a>.'
         column_chart_warning: 'Note: This would result in a bar chart with over a hundred bars, it might be slower than other charts'
         column_label: Column
         curated_region_messages:
@@ -59,6 +58,7 @@ en:
         customize_prompt: Customize this card
         generic_prompt: Choose a column from the dropdown above to add a new visualization
         histogram_column_chart_warning: 'Note: Because of the distribution of values of this column, it will be presented as a histogram of bars instead of a distribution curve'
+        no_available_boundaries: No available boundaries
         not_supported: Not currently supported
         not_supported_long: This card type is currently unsupported
         prompt: Choose a column from the dropdown above to add a new card
@@ -105,6 +105,7 @@ en:
         number_of: number of {0}
         sum_of: sum of {0}
       choropleth:
+        no_available_boundaries: No available boundaries
         pending_computation: <p>This is the first time this boundary is being used for this dataset.</p><p>It can take a few minutes (more for large datasets) for the map to render once you add it to the page.</p>
         computation_in_progress: This visualization is being computed. Check back in a few minutes.
       common:
@@ -216,7 +217,7 @@ en:
         clear_filter_long: The page is currently filtered by this value, click to clear it
         clear_range_filter_long: The page is currently filtered by this selection, click to clear it
         current_filter: Current Filter
-        dense_data: Numerous {0}
+        dense_data: Numerous
         details: Click to see details
         expand: Click to expand
         filter_prompt: Apply a filter to see details
@@ -2751,6 +2752,7 @@ en:
           validation:
             hidden_location_html: You can <a href="#showLoc" title="Show a location column">show a hidden location column</a>.
             location_column: A location column is required to create a map.
+            location_column_invalid_dataset: Requested dataset does not exist.
             viz_limit: A view may only have one visualization on it
         odata:
           endpoint_action: 'OData Endpoint:'
@@ -3114,11 +3116,17 @@ en:
         title: "%{user}'s Applications"
       bar:
         edit_settings_link: Edit Account Settings
+        edit_info_link: Edit Basic Info
         follow_link: Follow
         join_date: Joined on
         last_seen_date: Last logged in
         message_link: Send Message
         unfollow_link: Unfollow
+      whats_new:
+        title: The latest from Socrata
+        caught_up: You're all caught up! Check out our most recent updates <a target="_blank" href="%{href}">here</a>.
+        read_more: Read more
+        older_news: See older news
       browse:
         owned_datasets: Owned By Me
         shared_datasets: Shared To Me

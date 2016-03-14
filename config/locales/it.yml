@@ -46,7 +46,6 @@ it:
         card_on_page: Scheda già sulla pagina
         card_on_page_long: Questa scheda è già sulla pagina
         choose_column: Scegli una colonna...
-        choropleth_warning:
         classic_chart:
         column_chart_warning: 'Nota: ciò potrebbe avere come risultato un grafico a barre con più di cento barre e potrebbe essere più lento di altri grafici'
         custom:

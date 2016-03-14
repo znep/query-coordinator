@@ -109,5 +109,13 @@
         });
     });
     $contactForm.validate();
-
 })(jQuery);
+
+// mixpanel tracking for clicking "The latest from Socrata" links
+$(window).load(function() {
+    if(blist.mixpanelLoaded) {
+        var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
+
+        mixpanelNS.delegateLinks('.whats-new--post-list--post', 'a', 'Clicked Socrata News Link');
+    }
+});

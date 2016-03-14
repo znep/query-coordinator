@@ -220,6 +220,19 @@ function customizeCardDialog(
           setupHistogramBucketTypeSelect($scope.customizedCard, $scope);
         });
 
+      // Disable the save button if the customized card is in an invalid state.
+      // This behavior is duplicated in addCardDialog.
+      // (Expand 'disableSave' as more cases come up.)
+      var isRegionlessChoropleth$ = Rx.Observable.combineLatest(
+        $scope.customizedCard.observe('cardType'),
+        $scope.customizedCard.observe('computedColumn'),
+        function(cardType, computedColumn) {
+          return cardType === 'choropleth' && _.isEmpty(computedColumn);
+        }
+      );
+
+      $scope.$bindObservable('disableSave', isRegionlessChoropleth$);
+
       // Save the model by updating with our cloned copy.
       $scope.updateCard = function() {
         $scope.dialogState.cardModel.setFrom($scope.customizedCard);

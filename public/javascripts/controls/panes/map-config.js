@@ -121,9 +121,25 @@
             $('#selectDataset').jqmHide();
             cpObj._$selectedField.data('uid', ds.id);
 
-            var valid = validDataset(ds);
-            cpObj._$selectedField.makeStatic(ds.name, !valid);
-            if (valid) { modifySection.call(cpObj, ds, cpObj._$selectedField); }
+            var createDatasetSuccessCallback = function(dataset) {
+                var valid = validDataset(dataset);
+                cpObj._$selectedField.makeStatic(dataset.name, !valid);
+                if (valid) { modifySection.call(cpObj, dataset, cpObj._$selectedField); }
+
+                $('.mapCreate .finishButtons .submit').removeClass('disabled');
+            };
+
+            var createDatasetErrorCallback = function() {
+                $field.append(
+                    '<span class="error">' +
+                    $.t('screens.ds.grid_sidebar.map.validation.location_column_invalid_dataset') +
+                    '</span>'
+                ).find('span.error').css({ marginLeft: 0, paddingLeft: 0 });
+
+                $('.mapCreate .finishButtons .submit').addClass('disabled');
+            };
+
+            Dataset.lookupFromViewId(ds.id, createDatasetSuccessCallback, createDatasetErrorCallback);
         };
 
         var openSelectDataset = function(e)

@@ -399,7 +399,8 @@ function tableCard(
                   cellText = _.escape(DataTypeFormatService.renderMoneyCell(cellContent, column));
                   break;
                 default:
-                  cellText = linkyFilter(_.escape(cellContent), '_blank');
+                  // linkyFilter does its own escaping, so _.escape is not needed
+                  cellText = linkyFilter(cellContent, '_blank');
                   break;
               }
               return cellText;

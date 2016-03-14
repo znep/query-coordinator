@@ -258,7 +258,7 @@ function closeConfigureModal() {
   $reactModal.jqmHide();
 }
 
-function showInitialConfigureModal(uid) {
+function showInitialConfigureModal(uid, name) {
   const $reactModal = $('#react-modal');
   georegionsNS.clearFlashMessage();
 
@@ -270,7 +270,7 @@ function showInitialConfigureModal(uid) {
       complete: completeCallback,
       success: ({ error, message, success }) => {
         if (success) {
-          successCallback(message);
+          successCallback(_.extend(message, {name}));
         } else if (error) {
           errorCallback(message);
         }
@@ -354,9 +354,9 @@ georegionsNS.renderPage = renderPage;
 georegionsNS.clearFlashMessage = clearFlashMessage;
 georegionsNS.flash = georegionsNS.flash || [];
 
-commonNS.georegionSelected = (datasetId) => {
+commonNS.georegionSelected = (layerId, datasetName) => {
   $('#selectDataset').jqmHide();
-  showInitialConfigureModal(datasetId);
+  showInitialConfigureModal(layerId, datasetName);
 };
 
 $(() => {

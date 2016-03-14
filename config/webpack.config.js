@@ -216,7 +216,7 @@ function generateDataLensConfig() {
       alias: {
         'angular_templates': templateDir,
         'leaflet.css': path.resolve('.', 'node_modules/leaflet/dist/leaflet.css'),
-        'socrata-visualizations.css': path.resolve('.', 'node_modules/socrata-visualizations/dist/socrata-visualizations.css')
+        'socrata-visualizations.css': path.resolve('.', 'node_modules/socrata-visualizations/dist/socrata-visualizations.css'),
         plugins: path.resolve(projectRootDir, 'public/javascripts/plugins')
       }
     }

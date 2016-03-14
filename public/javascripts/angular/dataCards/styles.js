@@ -1,2 +1,2 @@
-import 'leaflet.css';
-import 'socrata-visualizations.css';
+import 'leaflet';
+import 'socrata-visualizations';

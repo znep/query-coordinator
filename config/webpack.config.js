@@ -112,7 +112,7 @@ var baseConfig = {
     publicPath: isProduction() ? '/javascripts/build' : '/javascripts/webpack'
   },
   resolve: {
-    modulesDirectories: [ 'node_modules', 'bower_components' ]
+    modulesDirectories: [ 'node_modules', 'bower_components', 'node_modules/socrata-visualizations/dist' ]
   }
 };
 

@@ -48,7 +48,7 @@ describe Services::DataLens::RegionCoder do
       expect_any_instance_of(CuratedRegionJobQueue).to receive(:get_job_status).
         with(dataset_id, shapefile_id, { :cookies => 'oatmeal' }).
         and_return(nil)
-      subject.get_status_for_job(dataset_id, shapefile_id, 'oatmeal')
+      subject.get_status_for_job(dataset_id, shapefile_id, { :cookies => 'oatmeal' })
     end
   end
 

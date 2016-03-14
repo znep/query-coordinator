@@ -189,7 +189,7 @@ $.fn.socrataColumnChart = function(vif) {
       _getRenderOptions(_lastRenderedVif)
     );
 
-    if (vifToRender.configuration.isMobile) {
+    if (_.get(_lastRenderedVif, 'configuration.isMobile')) {
       _selectFirst();
     }
   }

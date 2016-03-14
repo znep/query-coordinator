@@ -104,7 +104,7 @@ describe('ColumnChart jQuery component', function() {
         revert();
       });
 
-      it('should render a column visualization.', function(done) {
+      it('renders a column chart visualization', function(done) {
 
         $container.socrataColumnChart(columnChartVIF);
 
@@ -112,6 +112,25 @@ describe('ColumnChart jQuery component', function() {
           function() {
             assert.isAbove($('.bar-group').length, 0);
             done();
+          },
+          0
+        );
+      });
+
+      it('re-renders a column chart visualization when the window is resized', function(done) {
+
+        $container.socrataColumnChart(columnChartVIF);
+
+        setTimeout(
+          function() {
+            $(window).trigger('resize');
+
+              setTimeout(function() {
+                assert.isTrue(true);
+                done();
+              },
+              300
+            );
           },
           0
         );

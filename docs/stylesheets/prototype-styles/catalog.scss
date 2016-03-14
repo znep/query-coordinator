@@ -533,7 +533,7 @@ a {
 		}
 	}
 	.entry-content {
-		@include outer-container();
+		@include row();
 		
 		
 		.entry-main {			
@@ -620,12 +620,14 @@ a {
 					.meta-title {
 						padding-top: ms(-7);
 					}
-				}
+				
 
 				.meta-title,
 					.date {
 						display: block;
 					}
+
+				}
 
 				.updated {
 					@include span-columns(6);
@@ -639,7 +641,7 @@ a {
 				}
 
 				.views {
-					@include span-columns(4);
+					@include span-columns(6);
 					text-align: right;
 
 					@include media($tablet) {
@@ -681,7 +683,118 @@ a {
 		}
 
 	}
+
+	&.media {
+		
+		flex: 0 0 260px;
+		@include span-columns(12);
+
+		@include media($tablet) { 
+			@include span-columns(4);
+		}
+
+		
+		.entry-header {
+			padding: ms(-8) ms(-5) 0;
+			.entry-title {
+				@include span-columns(11);
+				min-height: 48px;
+				.entry-name {
+					font-size: ms(0);
+				}
+			}
+
+			.entry-view-type {
+				@include span-columns(1);
+				padding-top: 0;
+			}
+		}
+
+		.entry-meta {
+			@include row();
+			padding: ms(-9) ms(-5);
+
+			.first {
+				@include span-columns(6);
+
+				.date {
+					font-size: ms(-2);
+				}
+			} 
+			
+			.second {
+				@include span-columns(6);
+				text-align: right;
+				.tag-category {
+					font-size: ms(-2);
+					margin-right: 0;
+				}
+			}
+
+		}
+
+		.entry-content {
+	
+		.entry-main {
+			border-right: none;
+			@include media($tablet) {
+				@include span-columns(12);
+			}
+			
+			.entry-description {
+				font-size: ms(-1);
+				padding: ms(-5);
+				min-height: 78px;
+			}
+		}
+
+			img {
+				width: 100%;
+				min-height: 136px;
+			}
+		}
+	}
+
+} //.result-card
+
+
+.media-results {
+	//display: flex;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	-ms-overflow-style: -ms-autohiding-scrollbar;
+	
+	@include media($tablet) {
+		@include row();
+
+	}
+
+	&.header {
+		@include row();
+		border-top: 1px solid $light-grey-3;
+		.header-content {
+			@include span-columns(12);
+			padding: ms(1) 0;
+		}
+	}
+
+	&.footer {
+		@include row();
+		//border-bottom: 1px solid $light-grey-3;
+		.footer-action {
+			@include span-columns(12);
+			padding: 0 0 ms(1);
+			font-size: ms(-1);
+			
+
+		}
+	}
+
 }
+
 
 
 

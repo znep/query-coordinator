@@ -74,6 +74,25 @@ class UserSessionsController < ApplicationController
     @user_session = UserSession.new(params[:user_session])
     session_response = @user_session.save(true)
     if session_response.is_a?(Net::HTTPSuccess)
+      # User logged in successfully, but not using auth0...
+      # check if we want to require auth0 for any of the user's roles
+      if use_auth0?
+        auth0_properties = CurrentDomain.configuration('auth0').try(:properties)
+
+        if auth0_properties.present?
+          restricted_roles = auth0_properties.try(:require_sso_for_rights)
+          
+          if restricted_roles.present? &&
+             restricted_roles.any? { |role| @user_session.user.has_right?(role) }
+            # user has a role that requires auth0... fail
+            meter 'login.failure'
+            @user_session.destroy
+            flash[:error] = t('screens.sign_in.sso_required')
+            redirect_to login_url and return
+          end
+        end
+      end
+
       meter 'login.success'
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       respond_to do |format|

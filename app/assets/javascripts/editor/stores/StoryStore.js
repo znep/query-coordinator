@@ -155,7 +155,13 @@ export default function StoryStore() {
     var blockIds = story.blockIds;
 
     if (index < 0 || index >= blockIds.length) {
-      throw new Error('`index` argument is out of bounds.');
+      throw new Error(
+        StorytellerUtils.format(
+          '`index` argument is out of bounds; index: "{0}", blockIds.length: "{1}".',
+          index,
+          blockIds.length
+        )
+      );
     }
 
     return _.cloneDeep(_blocks[blockIds[index]]);
@@ -166,7 +172,13 @@ export default function StoryStore() {
     var blockIds = story.blockIds;
 
     if (index < 0 || index >= blockIds.length) {
-      throw new Error('`index` argument is out of bounds.');
+      throw new Error(
+        StorytellerUtils.format(
+          '`index` argument is out of bounds; index: "{0}", blockIds.length: "{1}".',
+          index,
+          blockIds.length
+        )
+      );
     }
 
     return _.cloneDeep(blockIds[index]);
@@ -188,7 +200,13 @@ export default function StoryStore() {
     var components = this.getBlockComponents(blockId);
 
     if (index < 0 || index >= components.length) {
-      throw new Error('`index` argument is out of bounds.');
+      throw new Error(
+        StorytellerUtils.format(
+          '`index` argument is out of bounds; index: "{0}", components.length: "{1}".',
+          index,
+          components.length
+        )
+      );
     }
 
     return _.cloneDeep(components[index]);
@@ -344,7 +362,14 @@ export default function StoryStore() {
     var indexOfBlockIdToRemove = story.blockIds.indexOf(blockId);
 
     if (indexOfBlockIdToRemove < 0) {
-      throw new Error('`blockId` does not exist in story.');
+      throw new Error(
+        StorytellerUtils.format(
+          '`blockId` does not exist in story; payload: "{0}", blockIds: "{1}", serializedStory: "{2}"',
+          JSON.stringify(payload),
+          JSON.stringify(story.blockIds),
+          JSON.stringify(self.serializeStory(storyUid))
+        )
+      );
     }
 
     story.blockIds.splice(indexOfBlockIdToRemove, 1);
@@ -394,7 +419,13 @@ export default function StoryStore() {
     }
 
     if (index < 0 || index > block.components.length) {
-      throw new Error('`index` argument is out of bounds.');
+      throw new Error(
+        StorytellerUtils.format(
+          '`index` argument is out of bounds; index: "{0}", block.components.length: "{1}".',
+          index,
+          block.components.length
+        )
+      );
     }
 
     component = block.components[index];
@@ -582,7 +613,13 @@ export default function StoryStore() {
     StorytellerUtils.assertIsOneOfTypes(index, 'number');
 
     if (index < 0 || index > storyBlockIdCount) {
-      throw new Error('`index` argument is out of bounds.');
+      throw new Error(
+        StorytellerUtils.format(
+          '`index` argument is out of bounds; index: "{0}", storyBlockIdCount: "{1}".',
+          index,
+          storyBlockIdCount
+        )
+      );
     }
 
     if (index === storyBlockIdCount) {
@@ -600,11 +637,23 @@ export default function StoryStore() {
     var storyBlockIdCount = story.blockIds.length;
 
     if (index1 < 0 || index1 >= storyBlockIdCount) {
-      throw new Error('`index1` argument is out of bounds.');
+      throw new Error(
+        StorytellerUtils.format(
+          '`index1` argument is out of bounds; index1: "{0}", storyBlockIdCount: "{1}".',
+          index1,
+          storyBlockIdCount
+        )
+      );
     }
 
     if (index2 < 0 || index2 >= storyBlockIdCount) {
-      throw new Error('`index2` argument is out of bounds.');
+      throw new Error(
+        StorytellerUtils.format(
+          '`index2` argument is out of bounds; index1: "{0}", storyBlockIdCount: "{1}".',
+          index2,
+          storyBlockIdCount
+        )
+      );
     }
 
     var tempBlock = story.blockIds[index1];

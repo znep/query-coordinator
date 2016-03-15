@@ -53,6 +53,9 @@ $tablet: 769px;
 $desktop: 992px;
 
 
+//Special Color Vars
+$expanded-row-bg: $light-grey-7;
+
 // Catalog Styles
 
 /* Menu for mobile
@@ -144,268 +147,6 @@ a {
 }
 
 
-.wrapper {
-	@include breakpoint($tablet) {
-	    margin-top: 112px;
-   		border-top: 1px solid $light-grey-3;
-		padding-top: 21px;
-	}
-}
-
-.search {
-	width: 100%;
-	
-	.container {
-		max-width: 100%;
-		
-		@include breakpoint($tablet) {
-			max-width: 54em !important;
-			margin: 0px auto;
-			padding: 0;
-
-
-		}
-	}
-
-	form {
-		margin-bottom: 0 !important;
-	}
-	
-	.input-group {
-
-		.text-input {
-			border-left: none;
-		}
-		.input-group-btn .btn-default {
-			border-right: none;
-		}
-	}
-
-	@include breakpoint($tablet) {
-		@include span-columns(10);
-		@include shift(1);
-		padding: ms(8) 0;
-
-
-		.input-group .text-input {
-			border-left: 1px solid $light-grey-2;
-		}
-	}
-
-}
-
-.search-result-meta {
-	display: none;
-
-	@include breakpoint($tablet) {
-		display: inherit;
-		@include outer-container();
-
-		.container {
-			@include span-columns(8);
-			@include shift(3);
-			padding-bottom: ms(2);
-		}
-	}
-}
-
-
-.facet-bar {
-	padding-top: ms(-8);
-	height: ms(8);
-	background-color: $light-grey-7;
-	border-bottom: 1px solid $light-grey-4;
-	margin-bottom: ms(2);
-	
-	@include breakpoint($tablet) {
-		@include span-columns(3);
-		padding-top: 0;
-	}
-
-	
-	&.facet-bar-desktop {
-		display: none;
-		@include breakpoint($tablet) {
-			display: inherit;
-		}
-	}
-
-	&.facet-bar-mobile {
-		@include breakpoint($tablet) {
-			display: none;
-		}
-	}
-
-	.active-filter-hint {
-		@include span-columns(8);
-		font-weight: 600;
-		.filter-hint-text {
-			font-weight: 400;
-		}
-
-	}
-
-	.filter-link {
-		@include span-columns(4);
-		text-align: right;
-		span {
-			font-size: ms(-1);
-		}
-	}
-
-	.filter-list-desktop {
-		display: none;
-
-		@include breakpoint($tablet) {
-			display: inherit;
-			border: 1px solid $light-grey-4;
-		}
-	}
-
-}
-
-.filter-list {
-	background-color: $white;
-	font-size: ms(0);
-	border-bottom: 1px solid $light-grey-5;
-	border-top: 1px solid $light-grey-5;
-	
-	.current-filters-group,
-	.filter-list-group {
-		font-size: ms(0);
-		font-weight: 300;
-		text-transform: uppercase;
-		color: $dark-grey-3;
-		margin: ms(-6) 0;
-		padding-left: ms(-1);
-
-		@include breakpoint($tablet) {
-			display: none;
-		}
-	}
-
-	&.active {
-		margin-bottom: ms(8);
-		border-top: 1px solid $light-grey-4;
-		border-bottom: 1px solid $light-grey-4;
-
-		.current-filters-action-container {
-			max-width: 93%;
-			margin: 0 auto;
-			
-			#clear-filters {
-				margin: ms(-8) 0;
-			}
-		}
-
-		.active-filters {
-			border-top: 1px solid $light-grey-5;
-			li a {
-				border-bottom: 1px solid $light-grey-5;
-			}
-		}
-
-	}
-
-	.facet-group {
-		font-size: ms(0);
-		font-weight: 600;
-		border-left: 5px solid $light-grey-3;
-		position: relative;
-		&:hover {
-			border-left-color: $light-grey-2;
-		}
-		&.open {
-			border-left-color: $primary;
-			
-			a {
-				border-bottom: 1px solid $light-grey-5;
-			}
-		}
-
-		a {
-			border-top: 1px solid $light-grey-5;
-			color: $dark-grey-2;
-			display: block;
-			padding: ms(0) ms(-4);
-			&:after {
-				font-family: "icomoon";
-				content: "\e802";
-				position: absolute;
-				right: 1.2em;
-				line-height: 1.6;
-				color: $dark-grey-1;
-			}
-			&:hover {
-				text-decoration: none;
-				background-color: $light-grey-6;
-				
-				&:after {
-					color: $dark-grey-3;
-				}
-			}
-
-
-
-		}
-
-
-	}
-
-	ul {
-		padding-left: 0;
-		list-style-type: none;
-		margin: 0;
-		& > li {
-			position: relative;
-			a {
-				border-left: 5px solid $light-grey-3;
-				padding: ms(-2) ms(-4) ms(-2) ms(2);
-				display: block;
-				color: $dark-grey-3;
-				&:hover {
-					text-decoration: none;
-					background-color: $light-grey-6;
-					border-left-color: $light-grey-2;
-				}
-				&.active {
-					border-left-color: $secondary;
-
-					&:after {
-						font-family: "icomoon";
-						content: "\e806";
-						font-size: ms(-2);
-						position: absolute;
-						right: 1.89em;
-						top: 30%;
-						line-height: 2.2;
-						color: $secondary;
-
-						@include breakpoint($tablet) {
-							right: 1.85;
-						}
-
-					}
-				}
-			
-				@include breakpoint($tablet) {
-					padding-right: ms(1);
-					font-size: ms(-1);
-				}
-
-			}
-			&:first-child {
-				padding-bottom: 0;
-			}
-			& ul > li {
-				&:last-child {
-					border-bottom: none;
-				}
-			}	
-		}
-	}
-}
-
 .content {
 
 	@include span-columns(12);
@@ -448,8 +189,8 @@ a {
 			}
 			.metadata-table {
 				td:nth-child(1) {
-					font-weight: 600;
-					color: $light-grey-1;
+					font-weight: 400;
+					color: $grey;
 				}
 			}
 			.more-link {
@@ -473,10 +214,17 @@ a {
 					text-overflow: ellipsis;
 					span {
 						float: right;
+						&.icon-arrow-down {
+		  					display: block;
+		  				}
+		  				&.icon-arrow-up {
+		  					display: none;
+		  				}
 					}
 				}
-				td:nth-child(2), td:nth-child(3) {
-					font-weight: 200;
+				.column-name {
+					font-size: ms(-1);
+					font-weight: 800;
 				}
 				td:nth-child(3) {
 					color: $grey;
@@ -489,7 +237,7 @@ a {
 				
 				tbody {
 					tr:hover {
-						background-color: $light-grey-5;
+						background-color: $light-grey-7;
 						cursor: pointer;
 					}
 				}
@@ -502,43 +250,66 @@ a {
 						white-space: normal;
 			  			overflow: visible;
 			  			border-bottom: none;
+		  				.icon-arrow-down {
+		  					display: none;
+		  				}
+		  				.icon-arrow-up {
+		  					display: block;
+		  				}
 		  			}
+
 		  		}
 
 		  		tr.details-row.expanded {
 		  			display: table-row;
+					background-color: $expanded-row-bg;
 		  			&:hover {
 		  				cursor: default;
-		  				background-color: $white;
+		  				background-color: $expanded-row-bg;
 		  			}
 		  			.details-content {
+		  				border-top-color: $expanded-row-bg;
 		  				//clear all other table styles
 		  				table, tbody, thead, tr, th, td {
 						    border: 0;
 						    outline: 0;
 						    font-size: 100%;
 						    vertical-align: baseline;
-						    background: $white;
+						    background: $expanded-row-bg;
 						    white-space: nowrap;
+						    padding: 0;
+						    margin: 0.2em 0;
 						    &:hover {
-						    	background-color: $white;
+						    	background-color: $expanded-row-bg;
 						    	cursor: default;
 						    }
 						}
 
 		  				.title {
 		  					font-size: ms(-1);
-		  					font-weight: 600;
 							color: $light-grey-1;
+							text-align: left;
+							padding-bottom: ms(-10);
+		  				}
+		  				.key, .value {
+		  					font-size: ms(-1);
+		  				}
+		  				.value {
+		  					color: $light-grey-1;
+		  				}
+		  				.type-details { 
+		  					border-top: 1px solid $light-grey-3;
 		  				}
 
 		  				.stat-details, .type-details {
-		  					@include span-columns(6);
+		  					@include span-columns(12);
 		  					tbody {
 		  						display: table;
 		  						width: 100%;
 			  					td {
-			  						padding-top: ms(-10);
+			  						&.spacer {
+			  							padding-top: ms(-10);
+			  						}
 			  						&.value {
 			  							text-align: right;
 			  						}
@@ -571,10 +342,38 @@ a {
 					}
 				}
 				.schema-preview {
-						th:nth-child(3), td:nth-child(3) {
-						    display: table-cell;
-						    max-width: 6em;
+					.column-name {
+						font-size: ms(0);
+						font-weight: 600;
+					}
+					th:nth-child(3), td:nth-child(3) {
+					    display: table-cell;
+					    max-width: 6em;
+					}
+					.details-row.expanded {
+						.details-content {
+							.row {	
+				  				.stat-details {
+				  					@include span-columns(4);
+					  				.title {
+					  					font-size: ms(0);
+					  				}				  					
+								}
+								.type-details {
+				  					@include span-columns(3);
+				  					@include shift(1);
+				  					border-top: none;
+				  					tr td {
+				  						padding-top: ms(0);
+				  						font-size: ms(0);
+				  						&.value {
+				  							text-align: left;
+				  						}
+				  					}
+								}
+							}
 						}
+					}		  							  					
 				}
 				.metadata-table {
 					float: left;

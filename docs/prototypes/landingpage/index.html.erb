@@ -19,6 +19,7 @@ layout: prototype-landingpage
   $(".schema-preview tr").on("click", function(e) {
       $(this).toggleClass("expanded");
       //$(".icon-arrow-down").toggleClass(".icon-arrow-up");
+      $(this).next().toggleClass("expanded");
 
   }) 
 
@@ -115,7 +116,7 @@ layout: prototype-landingpage
             <span class="tag-category">Animal Control</span>
           </div>
           <div class="entry-view-type">
-            <button class="btn btn-default btn-sm">Download</button>
+            <button class="btn btn-default btn-sm">Download Data</button>
             <button class="btn btn-default btn-sm">API</button>
             <button class="btn btn-default btn-sm">More <span class="icon-arrow-down"></span></button>
           </div>
@@ -142,12 +143,12 @@ layout: prototype-landingpage
 
           <div class="entry-meta second">
             <div class="entry-meta updated">
-              <span class="meta-title">Updated</span>
+              <span class="meta-title">Data Updated</span>
               <span class="date">December 1, 2015</span>
             </div>                  
             <div class="entry-meta views">
-              <span class="meta-title">Views</span>
-              <span class="view-count">12,343</span>
+              <span class="meta-title">Published by</span>
+              <span class="view-count">Department of Economic Development</span>
             </div>
           </div>
 
@@ -161,7 +162,7 @@ layout: prototype-landingpage
 
         <div class="card-frame">
         <div class="table-wrapper schema-preview schema-preview-expanded">
-          <table class="table-condensed table-borderless">
+          <table class="table-condensed table-borderless table-discrete">
             <thead>
               <tr>
                 <th scope="col">Column Name</th>
@@ -171,84 +172,106 @@ layout: prototype-landingpage
             </thead>
             <tbody>
                 <tr>
-                  <td scope="row">Licensee</td>
+                  <td class="column-name" scope="row">Licensee</td>
                   <td>Legal name of the license holder</td>
                   <td>Name, Text <span class="icon-clear-formatting"></span></td>
-                  <td><span class="icon-arrow-down"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
-                <tr class='expanded'>
-                  <td scope="row">DBA Name</td>
+                <tr>
+                  <td class="column-name" scope="row">DBA Name</td>
                   <td>Doing Business As name. The legal name of the business</td>
                   <td>Name, Text <span class="icon-clear-formatting"></span></td>
-                  <td><span class="icon-arrow-down"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
-                  <tr class="details-row expanded">
-                    
-                    <td class="details-content" colspan="4">
-                    
-                  <div class="row">   
-                    <div class="stat-details"> 
-                      <table>
-                        <tbody>
-                        <th class="title">Most Common Values</th>
-                        <tr>
-                          <td class="key">Michael Dunn</td>
-                          <td class="value">254 Occurances</td>
-                        </tr>
-                        <tr>
-                          <td class="key">Teresa Ballard</td>
-                          <td class="value">120 Occurances</td>
-                        </tr>
-                      </tbody>
-                      </table>
-                    </div>
+                <tr class="details-row">
+                  <td class="details-content" colspan="4">
+                    <div class="row">   
+                      <div class="stat-details"> 
+                        <table>
+                          <tbody>
+                          <th class="title">Most Common Values</th>
+                          <tr>
+                            <td class="key">John Smith</td>
+                            <td class="value">254 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Chung Lee</td>
+                            <td class="value">120 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Michael Dunn</td>
+                            <td class="value">97 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Teresa Ballard</td>
+                            <td class="value">89 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Michael Dunn</td>
+                            <td class="value">85 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="spacer"></td>
+                          </tr>
+                          <tr>
+                            <td class="key">Blank Values</td>
+                            <td class="value">10.3%</td>
+                          </tr>
+                        </tbody>
+                        </table>
+                      </div><!-- /stat-details ><!/-->
+                      <div class="type-details">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td class="value">Semantic Type</td>
+                              <td class="key"> Name</td>
+                            </tr>
 
-                     <div class="stat-details">
-                      <table class="type-details">
-                        <tbody>
-                        <tr>
-                          <td class="key title">Data Type</td>
-                          <td class="value"><a href="#">Text</a></td>
-                        </tr>
-                        <tr>
-                          <td class="key title">Semantic Type</td>
-                          <td class="value">Name</td>
-                        </tr>
-                        <tr>
-                          <td class="key title">API Fieldname</td>
-                          <td class="value">licensee</td>
-                        </tr>
-                      </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                    </td>
-                  </tr>
+                            <tr>
+                              <td class="value">Data Type</td>
+                              <td class="key"> <a href="https://dev.socrata.com/docs/datatypes/text.html"> Text</a></td>
+                            </tr>                        
+                          </tbody>
+                        </table>
+                      </div><!-- /type-details ><!/-->
+                      <div class="type-details">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td class="value">API Fieldname</td>
+                              <td class="key"> licensee</td>
+                            </tr>                            
+                          </tbody>
+                        </table>
+                      </div><!-- /type-details ><!/-->
+                    <div><!-- /row ><!/-->
+                  </td><!-- /details-content ><!/-->
+                </tr> <!-- /details-row ><!/-->
 
                 <tr>
-                  <td scope="row">License Number</td>
+                  <td class="column-name" scope="row">License Number</td>
                   <td>Unique Identifier for the license. Note: if licence gets renewed, multiple entries with the same identifier may appear.</td>
                   <td>ID, Number <span class="icon-list-numbered"></span></td>
-                  <td><span class="icon-arrow-down"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
                 <tr>
-                  <td scope="row">Expiration Date</td>
+                  <td class="column-name" scope="row">Expiration Date</td>
                   <td></td></a>
                   <td>End Date, Date<span class="icon-table"></span></td>
-                  <td><span class="icon-arrow-down"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
                 <tr>
-                  <td scope="row">Value</td>
+                  <td class="column-name" scope="row">Value</td>
                   <td>Value of the license</td>
                   <td>Amount, Number<span class="icon-list-numbered"></span></td>
-                  <td><span class="icon-arrow-down"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
                 <tr>
-                  <td scope="row">Location</td>
+                  <td class="column-name" scope="row">Location</td>
                   <td>Mailing Address of the Business</td>
                   <td>Location <span class="icon-clear-formatting"></span></td>
-                  <td><span class="icon-arrow-down"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
             </tbody>
           </table><!-- /.metadata-table -->
@@ -266,50 +289,52 @@ layout: prototype-landingpage
         <h2 class="section-header">Additional Metadata</h2>
 
         <div class="card-frame">
-        <div class="table-wrapper metadata-table">
-          <table class="table-condensed table-borderless">
-            <tbody>
-                <tr>
-                  <td scope="row">Data Last Updated</td>
-                  <td>Jan 7, 2015</td>
-                </tr>
-                <tr>
-                  <td scope="row">Metadata Last updated</td>
-                  <td>Jan 12, 2016</td>
-                </tr>
-                <tr>
-                  <td scope="row">Downloads</td>
-                  <td>1,234</td>
-                </tr>
-                <tr>
-                  <td scope="row"> Data Dictionary</td>
-                  <td><span class="icon-copy-document"></span><a href="#"> dictionary.pdf</td></a>
-                </tr>
-            </tbody>
-          </table><!-- /.metadata-table -->
-          </div>
+
           <div class="table-wrapper metadata-table">
-          <table class="table-condensed table-borderless">
+          <table class="table-condensed table-borderless table-discrete">
             <tbody>
                 <tr>
                   <td scope="row">Data Owner</td>
                   <td>John Smith</td>
                 </tr>
                 <tr>
-                  <td scope="row">Department</td>
-                  <td>Department of Economic Development</td>
+                  <td scope="row"> Data Dictionary</td>
+                  <td><span class="icon-copy-document"></span><a href="#"> dictionary.pdf</td></a>
                 </tr>
                 <tr>
                   <td scope="row">Licensing</td>
                   <td>Creative Commons</td>
                 </tr>
                 <tr>
-                  <td scope="row">Date Created</td>
-                  <td>Jan 1, 2013</td>
+                  <td scope="row">Downloads</td>
+                  <td>1,234</td>
                 </tr>
             </tbody>
           </table><!-- /.metadata-table -->
           </div>
+          <div class="table-wrapper metadata-table">
+            <table class="table-condensed table-borderless table-discrete">
+              <tbody>
+                  <tr>
+                    <td scope="row">Data Last Updated</td>
+                    <td>Jan 7, 2015</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Metadata Last updated</td>
+                    <td>Jan 12, 2016</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Date Created</td>
+                    <td>Jan 1, 2013</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Views</td>
+                    <td>1,345</td>
+                  </tr>
+              </tbody>
+            </table><!-- /.metadata-table -->
+            </div>
+
           <button class="btn btn-default btn-sm btn-block">View All</button>
           <div class="centered">
             <span class="more-link"><a class="more-link" href="#">View All</a></span>

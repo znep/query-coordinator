@@ -6685,6 +6685,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 
+	/**
+	 * Since `_.clamp()` apparently doesn't exist in the version of lodash that we
+	 * are using. This is called `clampValue` in order to prevent confusion due to
+	 * d3 also exposing a `.clamp()` method.
+	 */
+
+	function clampValue(value, min, max) {
+
+	  if (value < min) {
+	    return min;
+	  } else if (value > max) {
+	    return max;
+	  } else {
+	    return value;
+	  }
+	}
+
 	/*
 	KNOWN BUGS
 
@@ -8922,6 +8939,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) *
 	      cachedChartData.values.length);
 
+	    // Clamp the index to known-good values in case rounding errors cause it to drift.
+	    indexIntoChartData = clampValue(indexIntoChartData, 0, cachedChartData.values.length - 1);
+
 	    // Note that currentDatum is a global variable that is set when the
 	    // user hovers over the visualization. The value of currentDatum is
 	    // read by the flyout code.
@@ -9003,6 +9023,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) *
 	      cachedChartData.values.length);
+
+	    // Clamp the index to known-good values in case rounding errors cause it to drift.
+	    indexIntoChartData = clampValue(indexIntoChartData, 0, cachedChartData.values.length - 1);
 
 	    // Note that currentDatum is a global variable that is set when the
 	    // user hovers over the visualization. The value of currentDatum is

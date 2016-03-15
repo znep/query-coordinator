@@ -3269,6 +3269,7 @@ en:
       mismatch: Passwords do not match; please try again
       prompt_html: <img src="/stylesheets/images/common/large_logo.png"> Sign in with your <strong>Socrata ID</strong>.
       sign_in_with: "<strong>Sign in</strong> with %{provider}"
+      sso_required: The administrator for this site requires that privileged users log in with an account other than a Socrata ID. Please log in using a different method.
       tips_html: Use your Email and Password to sign into all <strong>Socrata powered</strong> sites.
     sign_up:
       form:

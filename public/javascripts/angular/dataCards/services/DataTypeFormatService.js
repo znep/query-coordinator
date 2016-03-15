@@ -165,7 +165,7 @@ function DataTypeFormatService(I18n, $window) {
   */
   var renderTimestampCell = function(cellContent, column) {
     if (_.isPresent(cellContent)) {
-      var time = moment(new Date(cellContent));
+      var time = moment(cellContent, 'YYYY-MM-DDTHH:mm:ss');
       if (time.isValid()) {
         if (column.format && column.format.formatString) {
           // Option A: format using user-specified format string

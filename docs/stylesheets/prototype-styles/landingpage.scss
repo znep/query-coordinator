@@ -294,8 +294,11 @@ a {
 		  				.key, .value {
 		  					font-size: ms(-1);
 		  				}
-		  				.value {
-		  					color: $light-grey-1;
+		  				.stat-details .key, .type-details .value {
+		  					color: $dark-grey-1;		  				
+		  				}
+		  				.stat-details .value, .type-details .key {
+		  					color: $light-grey-1;		  				
 		  				}
 		  				.type-details { 
 		  					border-top: 1px solid $light-grey-3;
@@ -307,11 +310,11 @@ a {
 		  						display: table;
 		  						width: 100%;
 			  					td {
-			  						&.spacer {
-			  							padding-top: ms(-10);
-			  						}
 			  						&.value {
 			  							text-align: right;
+			  						}		  						
+			  						&.spacer {
+			  							padding-top: ms(-10);
 			  						}
 			  					}
 			  				}
@@ -366,9 +369,6 @@ a {
 				  					tr td {
 				  						padding-top: ms(0);
 				  						font-size: ms(0);
-				  						&.value {
-				  							text-align: left;
-				  						}
 				  					}
 								}
 							}

@@ -225,7 +225,6 @@ javascripts:
   shared-map-configuration:
     - public/javascripts/controls/panes/map-config.js
   shared-chart:
-    - public/javascripts/controls/panes/new-chart-config.js
     - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/rich-render-library.js
@@ -451,7 +450,6 @@ javascripts:
     - public/javascripts/controls/panes/append-replace.js
     - public/javascripts/controls/panes/calendar-create.js
     - public/javascripts/controls/panes/cell-feed.js
-    - public/javascripts/controls/panes/new-chart-config.js
     - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/panes/chart-create.js
     - public/javascripts/controls/panes/column-order.js
@@ -466,7 +464,6 @@ javascripts:
     - public/javascripts/controls/panes/form-create.js
     - public/javascripts/controls/panes/map-config.js
     - public/javascripts/controls/panes/map-create.js
-    - public/javascripts/controls/panes/new-chart-create.js
     - public/javascripts/controls/panes/odata.js
     - public/javascripts/controls/panes/permissions.js
     - public/javascripts/controls/panes/plagiarize-dataset.js

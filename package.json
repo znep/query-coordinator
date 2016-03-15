@@ -38,7 +38,7 @@
     "url": "git@git.socrata.com:frontend.git"
   },
   "author": "Socrata Engineering <engineering@socrata.com>",
-  "license": "all rights reserved",
+  "license": "UNLICENSED",
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
     "babel": "^6.0.15",
@@ -96,6 +96,8 @@
     "webpack-manifest-plugin": "^0.4.0"
   },
   "dependencies": {
+    "file-loader": "^0.8.5",
+    "leaflet": "0.7.3",
     "lodash": "^3.10.1",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",

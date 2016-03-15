@@ -112,7 +112,7 @@ var baseConfig = {
     publicPath: isProduction() ? '/javascripts/build' : '/javascripts/webpack'
   },
   resolve: {
-    modulesDirectories: [ 'node_modules', 'bower_components' ]
+    modulesDirectories: [ 'node_modules', 'bower_components', 'node_modules/socrata-visualizations/dist' ]
   }
 };
 
@@ -193,6 +193,14 @@ function generateDataLensConfig() {
         {
           test: /modernizr\.js$/,
           loader: 'imports?this=>window'
+        },
+        {
+          test: /\.scss|\.css$/,
+          loader: 'style!css!autoprefixer-loader!sass'
+        },
+        {
+          test: /\.png$/,
+          loader: 'url-loader?limit=100000'
         }
       ]
     },
@@ -207,6 +215,8 @@ function generateDataLensConfig() {
     resolve: {
       alias: {
         'angular_templates': templateDir,
+        'leaflet.css': path.resolve('.', 'node_modules/leaflet/dist/leaflet.css'),
+        'socrata-visualizations.css': path.resolve('.', 'node_modules/socrata-visualizations/dist/socrata-visualizations.css'),
         plugins: path.resolve(projectRootDir, 'public/javascripts/plugins')
       }
     }
@@ -247,6 +257,12 @@ function generateDataLensMobileConfig() {
           loader: 'url-loader?limit=100000'
         }
       ]
+    },
+    resolve: {
+      alias: {
+        'leaflet.css': path.resolve('.', 'node_modules/leaflet/dist/leaflet.css'),
+        'socrata.visualizations.css': path.resolve('.', 'node_modules/socrata-visualizations/dist/socrata-visualizations.css')
+      }
     },
     plugins: [
       new ManifestPlugin({

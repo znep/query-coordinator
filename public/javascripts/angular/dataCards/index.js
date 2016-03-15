@@ -1,3 +1,4 @@
+import './styles';
 import './services';
 import './filters';
 import './directives';

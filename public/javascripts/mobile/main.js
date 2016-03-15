@@ -9,8 +9,8 @@ var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 var mobileTable = require('./mobile.table.js');
 
-require('./../../../node_modules/leaflet/dist/leaflet.css');
-require('./../../../node_modules/socrata-visualizations/dist/socrata-visualizations.css');
+require('leaflet.css');
+require('socrata-visualizations.css');
 
 /*
 * QFB components

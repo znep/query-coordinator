@@ -314,15 +314,28 @@ module.exports = function ( karma ) {
               'ngtemplate?relativeTo=' + templateDir,
               'html'
             ]
+          },
+          {
+            test: /\.scss|\.css$/,
+            loader: 'style!css!autoprefixer-loader!sass'
+          },
+          {
+            test: /\.svg/,
+            loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+          },
+          {
+            test: /\.png$/,
+            loader: 'url-loader?limit=100000'
           }
-
         ]
       },
       resolve: {
         alias: {
-          angular_templates: templateDir
+          angular_templates: templateDir,
+          'leaflet.css': path.resolve('.', 'node_modules/leaflet/dist/leaflet.css'),
+          'socrata.visualizations.css': path.resolve('.', 'node_modules/socrata-visualizations/dist/socrata-visualizations.css')
         },
-        modulesDirectories: [ 'node_modules', 'bower_components' ]
+        modulesDirectories: [ 'node_modules', 'bower_components', 'node_modules/socrata-visualizations/dist' ]
       }
     },
 

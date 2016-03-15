@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class FrontendTest < Test::Unit::TestCase
+class FrontendTest < Minitest::Test
   def test_responds_to_version
     assert Frontend.respond_to?(:version)
   end

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SodaCanOrderTest  < Test::Unit::TestCase
+class SodaCanOrderTest  < Minitest::Test
 
   def setup_orders
     metadata = JSON::parse(File.open("test/fixtures/soda_can/v6f4-jvr4.json").read)

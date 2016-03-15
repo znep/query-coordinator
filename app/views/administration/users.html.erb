@@ -133,7 +133,7 @@
                 </td>
               <%- end -%>
               <th class="user row-header" scope="row">
-                <a href="<%= profile_path(user) %>">
+                <a href="<%= profile_path(user.route_params) %>">
                   <img class="userIcon" src="<%= user.profile_image_path('small')%>"
                     alt="<%= user.displayName %>" />
                   <span class="cellInner">

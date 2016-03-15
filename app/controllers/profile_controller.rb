@@ -13,11 +13,11 @@ class ProfileController < ApplicationController
   helper :user
 
   def index
-    redirect_to profile_path(current_user)
+    redirect_to profile_path(current_user.route_params)
   end
 
   def generic_account
-    redirect_to profile_account_path(current_user)
+    redirect_to profile_account_path(current_user.route_params)
   end
 
   def show
@@ -36,7 +36,7 @@ class ProfileController < ApplicationController
           request.path =~ /^\w{4}-\w{4}/
           logger.info("Doing a profile redirect from #{request.referrer}")
         end
-        redirect_to(profile_path(@user) + '?' + request.query_string, :status => 301)
+        redirect_to(profile_path(@user.route_params) + '?' + request.query_string, :status => 301)
       end
       @app_tokens = @user.app_tokens
 
@@ -194,7 +194,7 @@ class ProfileController < ApplicationController
           return (render 'shared/error', :status => :forbidden)
         else
           flash[:notice] = t('screens.profile.edit.success')
-          redirect_to(profile_path(current_user))
+          redirect_to(profile_path(current_user.route_params))
         end
       end
       format.data { render :json => {:error => error_msg,
@@ -296,7 +296,7 @@ class ProfileController < ApplicationController
         flash[:notice] = t('screens.profile.edit.success')
       end
     end
-    redirect_to profile_account_path(current_user)
+    redirect_to profile_account_path(current_user.route_params)
   end
 
   def edit_image
@@ -388,7 +388,7 @@ class ProfileController < ApplicationController
     Contact.delete(user_id)
 
     respond_to do |format|
-      format.html { redirect_to(profile_path(current_user)) }
+      format.html { redirect_to(profile_path(current_user.route_params)) }
       format.data { render :text => "deleted" }
     end
   end

@@ -1,11 +1,20 @@
+require 'rails_helper'
+
 describe ImportActivity do
+
+  include TestHelperMethods
 
   let(:fixture_prefix) { "#{Rails.root}/test/fixtures/import_status_service" }
 
-  let(:headers) { {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456',
-                    'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'} }
+  let(:headers) do
+    { 'Accept'=>'*/*', 'User-Agent'=>'Ruby',
+      'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      'X-Socrata-Host'=>'localhost' }
+  end
 
   before :each do
+
+    init_current_domain
 
     allow(ImportStatusService).to receive(:get).with('/activity/c02d8b44-269a-4891-a872-6020d39e887c').and_return(
       JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json"))
@@ -43,14 +52,14 @@ describe ImportActivity do
       )
 
       # batched request for views
-      stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=dzuq-scr8&ids%5B%5D=d9fh-q64b&ids%5B%5D=copy-four&ids%5B%5D=cop2-four').
-         with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby',
+      stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=cop2-four&ids%5B%5D=copy-four&ids%5B%5D=d9fh-q64b&ids%5B%5D=dzuq-scr8').
+         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby',
                            'X-Socrata-Federation'=>'Honey Badger', 'X-Socrata-Host'=>'localhost'}).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/views_batch_response.json"), :headers => {})
 
       # batched request for users
       stub_request(:get, 'http://localhost:8080/users.json?ids%5B%5D=tugg-ikce&ids%5B%5D=tugg-ikcu').
-         with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby',
+         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby',
                            'X-Socrata-Host'=>'localhost'}).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/users_batch_response.json"), :headers => {})
     end

@@ -5,7 +5,7 @@
   <div class="profileHeaderText">
     <h1><%= @user.displayName %></h1>
     <%- if @is_user_current -%>
-      <a href="<%= profile_account_path(@user) %>" class="editProfileLink iconLink accountSettings">
+      <a href="<%= profile_account_path(@user.route_params) %>" class="editProfileLink iconLink accountSettings">
         <span class="icon"></span>
         <span class="editLinkText"><%= t('screens.profile.bar.edit_settings_link') %></span>
       </a>

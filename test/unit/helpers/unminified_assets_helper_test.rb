@@ -2,7 +2,7 @@ require 'test_helper'
 
 require_relative '../../../app/helpers/unminified_assets_helper'
 
-class UnminifiedAssetsHelperTest < MiniTest::Unit::TestCase
+class UnminifiedAssetsHelperTest < MiniTest::Test
 
   def setup
     @object = Object.new.tap { |object| object.extend(UnminifiedAssetsHelper) }

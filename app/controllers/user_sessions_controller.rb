@@ -48,13 +48,13 @@ class UserSessionsController < ApplicationController
     end
   end
 
-  def extend
-    # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
-    # purpose; but phusion passenger requires "".
-    response.headers['ETag'] = ''
-    session_response = current_user.nil? ? {:expired => 'expired' } : current_user_session.extend
-    render :json => session_response, :callback => params[:callback], :content_type => 'application/json'
-  end
+  # def extend
+  #   # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
+  #   # purpose; but phusion passenger requires "".
+  #   response.headers['ETag'] = ''
+  #   session_response = current_user.nil? ? {:expired => 'expired' } : current_user_session.extend
+  #   render :json => session_response, :callback => params[:callback], :content_type => 'application/json'
+  # end
 
   def expire_if_idle
     session_response = current_user.nil? ? {:expired => 'expired' } : UserSession.find_seconds_until_timeout

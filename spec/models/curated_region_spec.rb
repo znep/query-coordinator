@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 describe CuratedRegion, :type => :model do
+  include TestHelperMethods
+
   let(:cname) { 'socrata.dev' }
   before(:each) do
-    domain = YAML::load(File.open('test/fixtures/domain.yml'))
-    CurrentDomain.set_domain(domain)
+    init_current_domain
     allow(CurrentDomain).to receive(:cname).and_return(cname)
   end
 

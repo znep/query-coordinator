@@ -1,10 +1,10 @@
 <div class="aboutDataset">
   <div class="aboutHeader clearfix">
-    <a class="aboutAuthorImageLink" href="<%= profile_path(@view.owner) %>">
+    <a class="aboutAuthorImageLink" href="<%= profile_path(@view.owner.route_params) %>">
       <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
         src="<%= @view.owner.profile_image_path("medium") %>"/>
     </a>
-    <a class="aboutAuthorName" href="<%= profile_path(@view.owner) %>"><%= @view.owner.displayName %></a>
+    <a class="aboutAuthorName" href="<%= profile_path(@view.owner.route_params) %>"><%= @view.owner.displayName %></a>
     <p><em><%= t('screens.about.created') %></em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
     <%- if @view.is_snapshotted? -%>
     <p><em><%= t('screens.about.snapshotted') %></em> <span class="aboutUpdateDate"><%= blist_date(@view.publicationDate) %></span></p>
@@ -14,11 +14,11 @@
   </div>
 
   <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) && !@view.is_api? -%>
-    <a href="<%= edit_view_metadata_path(@view) %>" class="fullButton editMetadataButton"><%= t('screens.about.edit_metadata') %></a>
+    <a href="<%= edit_view_metadata_path(@view.route_params) %>" class="fullButton editMetadataButton"><%= t('screens.about.edit_metadata') %></a>
   <%- end -%>
 
   <%- unless local_assigns[:full_page] -%>
-    <a href="<%= about_view_path(@view) %>" class="viewFullLink fullButton"><%= t('screens.about.view_full_page') %></a>
+    <a href="<%= about_view_path(@view.route_params) %>" class="viewFullLink fullButton"><%= t('screens.about.view_full_page') %></a>
   <%- end -%>
 
   <%- if @view.custom_image.present? -%>
@@ -172,7 +172,7 @@
       <dd><%= @view.contributor_users.length %></dd>
       <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) -%>
         <dt class="widenedItem">
-          <%= link_to t('screens.about.view_statistics'), view_stats_path(@view) %>
+          <%= link_to t('screens.about.view_statistics'), view_stats_path(@view.route_params) %>
         </dt>
         <dd>&nbsp;</dd>
       <%- end -%>
@@ -228,7 +228,7 @@
       -%>
         <dt><%= t('screens.about.short_url') %></dt>
         <dd><span class="hardWrap"><%=
-          short_url = short_view_url(@view)
+          short_url = short_view_url(id: @view.id)
           link_to "".html_safe + short_url + "<span class='accessible'>Opens in new window.</span>".html_safe,
                       short_url,
                       :rel => 'external',

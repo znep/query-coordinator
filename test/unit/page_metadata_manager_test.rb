@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PageMetadataManagerTest < Test::Unit::TestCase
+class PageMetadataManagerTest < Minitest::Test
 
   OBE_CATEGORY_NAME = 'obe_test_category'
   NBE_CATEGORY_NAME = 'nbe_test_category'
@@ -108,9 +108,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def test_fetch_dataset_columns_does_not_raise_on_success
     manager.expects(:dataset_metadata).returns(:status => '200', :body => v1_dataset_metadata)
     Rails.logger.expects(:error).never
-    assert_nothing_raised do
-      manager.fetch_dataset_columns('four-four', options)
-    end
+    manager.fetch_dataset_columns('four-four', options)
   end
 
   def test_fetch_dataset_columns_raises_on_non_success
@@ -122,55 +120,67 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_create_creates_data_lens_with_category_from_obe_dataset
-    manager.expects(:fetch_min_max_in_column).returns(
-      'min' => '1987-08-15T00:00:00.000',
-      'max' => '1987-08-15T00:00:00.000'
-    )
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns}
-    )
-    mock_nbe_dataset = stub(:migrations => stub_migrations)
-    mock_obe_dataset = stub(:category => OBE_CATEGORY_NAME)
-    View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
-    View.expects(:find).with(OBE_DATASET_ID).returns(mock_obe_dataset)
+    previous_secondary_group_identifier = APP_CONFIG.secondary_group_identifier
+    begin
+      APP_CONFIG.secondary_group_identifier = 'spandex'
+      manager.expects(:fetch_min_max_in_column).returns(
+        'min' => '1987-08-15T00:00:00.000',
+        'max' => '1987-08-15T00:00:00.000'
+      )
+      Phidippides.any_instance.stubs(
+        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns}
+      )
+      mock_nbe_dataset = stub(:migrations => stub_migrations)
+      mock_obe_dataset = stub(:category => OBE_CATEGORY_NAME)
+      View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
+      View.expects(:find).with(OBE_DATASET_ID).returns(mock_obe_dataset)
 
-    DataLensManager.any_instance.expects(:create).times(1).with do |category, _|
-      assert_equal(OBE_CATEGORY_NAME, category)
-    end.returns('fdsa-fdsa')
+      DataLensManager.any_instance.expects(:create).times(1).with do |category, _|
+        assert_equal(OBE_CATEGORY_NAME, category)
+      end.returns('fdsa-fdsa')
 
-    SodaFountain.any_instance.expects(:create_or_update_rollup_table).returns({status: 204})
-    SodaFountain.any_instance.expects(:issue_request).returns({status: 200})
+      SodaFountain.any_instance.expects(:create_or_update_rollup_table).returns({status: 204})
+      SodaFountain.any_instance.expects(:issue_request).returns({status: 200})
 
-    manager.create(data_lens_page_metadata)
+      manager.create(data_lens_page_metadata)
+    ensure
+      APP_CONFIG.secondary_group_identifier = previous_secondary_group_identifier
+    end
   end
 
   def test_create_creates_data_lens_with_category_from_nbe_dataset
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns}
-    )
-    manager.stubs(
-      fetch_min_max_in_column: {
-        'min' => '1987-08-15T00:00:00.000',
-        'max' => '1987-08-15T00:00:00.000'
-      }
-    )
-    columns = v1_dataset_metadata.fetch('columns')
+    previous_secondary_group_identifier = APP_CONFIG.secondary_group_identifier
+    begin
+      APP_CONFIG.secondary_group_identifier = 'spandex'
+      Phidippides.any_instance.stubs(
+        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns}
+      )
+      manager.stubs(
+        fetch_min_max_in_column: {
+          'min' => '1987-08-15T00:00:00.000',
+          'max' => '1987-08-15T00:00:00.000'
+        }
+      )
+      columns = v1_dataset_metadata.fetch('columns')
 
-    mock_nbe_dataset = stub(
-      :migrations => stub_migrations,
-      :category => NBE_CATEGORY_NAME
-    )
-    View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
-    View.expects(:find).with(OBE_DATASET_ID).raises(CoreServer::ResourceNotFound.new(nil))
+      mock_nbe_dataset = stub(
+        :migrations => stub_migrations,
+        :category => NBE_CATEGORY_NAME
+      )
+      View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
+      View.expects(:find).with(OBE_DATASET_ID).raises(CoreServer::ResourceNotFound.new(nil))
 
-    DataLensManager.any_instance.expects(:create).times(1).with do |category, _|
-      assert_equal(NBE_CATEGORY_NAME, category)
-    end.returns('fdsa-fdsa')
+      DataLensManager.any_instance.expects(:create).times(1).with do |category, _|
+        assert_equal(NBE_CATEGORY_NAME, category)
+      end.returns('fdsa-fdsa')
 
-    SodaFountain.any_instance.expects(:create_or_update_rollup_table).returns({status: 204})
-    SodaFountain.any_instance.expects(:issue_request).returns({status: 200})
+      SodaFountain.any_instance.expects(:create_or_update_rollup_table).returns({status: 204})
+      SodaFountain.any_instance.expects(:issue_request).returns({status: 200})
 
-    manager.create(data_lens_page_metadata)
+      manager.create(data_lens_page_metadata)
+    rescue
+      APP_CONFIG.secondary_group_identifier = previous_secondary_group_identifier
+    end
   end
 
   def test_create_ignores_provided_pageId_with_v2_page_metadata
@@ -674,45 +684,55 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_no_dataset_copy_when_feature_flag_not_set
-    APP_CONFIG.secondary_group_identifier = false
+    previous_secondary_group_identifier = APP_CONFIG.secondary_group_identifier
+    begin
+      APP_CONFIG.secondary_group_identifier = false
 
-    manager.stubs(
-      fetch_min_max_in_column: {
-        'min' => '1987-08-15T00:00:00.000',
-        'max' => '1987-08-15T00:00:00.000'
-      }
-    )
+      manager.stubs(
+        fetch_min_max_in_column: {
+          'min' => '1987-08-15T00:00:00.000',
+          'max' => '1987-08-15T00:00:00.000'
+        }
+      )
 
-    PageMetadataManager.any_instance.expects(:update_rollup_table)
+      PageMetadataManager.any_instance.expects(:update_rollup_table)
 
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil },
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
-    )
-    DataLensManager.any_instance.expects(:create).returns('data-lens')
-    manager.create(data_lens_page_metadata)
-    assert_not_requested @dataset_copy_stub
+      Phidippides.any_instance.stubs(
+        update_page_metadata: { status: '200', body: nil },
+        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
+      )
+      DataLensManager.any_instance.expects(:create).returns('data-lens')
+      manager.create(data_lens_page_metadata)
+      assert_not_requested @dataset_copy_stub
+    rescue
+      APP_CONFIG.secondary_group_identifier = previous_secondary_group_identifier
+    end
   end
 
   def test_no_dataset_copy_when_feature_flag_is_blank
-    APP_CONFIG.secondary_group_identifier = ''
+    previous_secondary_group_identifier = APP_CONFIG.secondary_group_identifier
+    begin
+      APP_CONFIG.secondary_group_identifier = ''
 
-    manager.stubs(
-      fetch_min_max_in_column: {
-        'min' => '1987-08-15T00:00:00.000',
-        'max' => '1987-08-15T00:00:00.000'
-      }
-    )
+      manager.stubs(
+        fetch_min_max_in_column: {
+          'min' => '1987-08-15T00:00:00.000',
+          'max' => '1987-08-15T00:00:00.000'
+        }
+      )
 
-    PageMetadataManager.any_instance.expects(:update_rollup_table)
+      PageMetadataManager.any_instance.expects(:update_rollup_table)
 
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil },
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
-    )
-    DataLensManager.any_instance.expects(:create).returns('data-lens')
-    manager.create(data_lens_page_metadata)
-    assert_not_requested @dataset_copy_stub
+      Phidippides.any_instance.stubs(
+        update_page_metadata: { status: '200', body: nil },
+        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
+      )
+      DataLensManager.any_instance.expects(:create).returns('data-lens')
+      manager.create(data_lens_page_metadata)
+      assert_not_requested @dataset_copy_stub
+    rescue
+      APP_CONFIG.secondary_group_identifier = previous_secondary_group_identifier
+    end
   end
 
   private

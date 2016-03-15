@@ -39,7 +39,7 @@
       <div class="submitButtons clearfix">
         <%= submit_tag('Upload and ' + @type.capitalize,
           :class => 'button default') unless @error_type %>
-        <a class="button" href="<%= alt_view_path(@view) %>">Cancel</a>
+        <a class="button" href="<%= alt_view_path(@view.route_params) %>">Cancel</a>
       </div>
     <% end %>
   </div>

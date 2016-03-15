@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'ostruct'
 
-class BrowseActionsTest < Test::Unit::TestCase
+class BrowseActionsTest < Minitest::Test
   class BrowseActionsContainer
     include BrowseActions
   end

@@ -1,5 +1,5 @@
---- !ruby/object:Domain 
-data: 
+--- !ruby/object:Domain
+data:
   id: 1
   name: Socrata Website
   cname: localhost
@@ -7,7 +7,7 @@ data:
   organizationId: 1
   parentDomainId: 2
   shortName: socrata
-  accountModules: 
+  accountModules:
   - name: basic_visualization
     description: Bar, Pie, Line Charts, Heat Maps, Point Maps
   - name: advanced_visualization
@@ -24,10 +24,10 @@ data:
     description: CanvasX Yo
   - name: canvas_designer
     description: Canvas designer
-  accountTier: 
+  accountTier:
     id: 3
     name: Ultimate
-    accountModules: 
+    accountModules:
     - name: sdp_customizer
       description: Access is granted to the SDP customizer
     - name: basic_visualization
@@ -70,20 +70,20 @@ data:
       description: ESRI map layer datasets
     - name: cell_comments
       description: Allow commenting on individual cells
-    config: 
+    config:
       administrator_cap: 10
       account_lockout_minutes: 30
       metering.monthly.limit: 5368709120000
       snapshots: 2147483647
-default_configs: 
-  :locales: !ruby/object:Configuration 
-    data: 
+default_configs:
+  :locales: !ruby/object:Configuration
+    data:
       id: 8
       name: Default Locales
       default: true
       domainCName: dontuse.ly
       type: locales
-      properties: 
+      properties:
       - name: "*"
         value: en
     update_data: {}
@@ -92,8 +92,8 @@ default_configs:
     data:
       theme: default
 
-  site_theme: !ruby/object:Configuration 
-    data: 
+  site_theme: !ruby/object:Configuration
+    data:
       id: 4
       name: Current Theme
       default: true
@@ -101,7 +101,7 @@ default_configs:
       parentId: 3
       type: site_theme
       updatedAt: 1352416748
-      properties: 
+      properties:
       - name: sdp_template
         value: 4tke-i2cm
       - name: strings.company
@@ -113,56 +113,56 @@ default_configs:
       - name: templates_v2b.header_full
         value: <div class="clearfix">{{main_logo}}<ul class="siteUserNav">{{account_link}}{{admin_link}}{{urls.headerUser}}{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}</ul></div>
       - name: rating_types
-        value: 
+        value:
         - rating
       - name: theme_v2b
-        value: 
-          text: 
+        value:
+          text:
             error: b01e2d
-          stories: 
-            pager: 
+          stories:
+            pager:
               position: center
               type: bullets
               disposition: light
             orientation: left
-            height: 
+            height:
               unit: em
               value: 25
-            box: 
-              headline: 
+            box:
+              headline:
                 color: f7f7f7
                 font_family: Georgia
-                shadow: 
+                shadow:
                   alpha: 0.6
-                  radius: 
+                  radius:
                     unit: px
                     value: 3
-                font_size: 
+                font_size:
                   unit: em
                   value: 1.8
-              body: 
+              body:
                 color: dddddd
                 font_family: Helvetica Neue
-                shadow: 
+                shadow:
                   alpha: 0.3
-                  radius: 
+                  radius:
                     unit: px
                     value: 2
-                font_size: 
+                font_size:
                   unit: em
                   value: 1.4
               color: "000000"
               shadow: 0
-              width: 
+              width:
                 unit: em
                 value: 35
               alpha: 0.8
-              margin: 
+              margin:
                 unit: em
                 value: 1
             autoAdvance: 7
-          urls: 
-            footer: 
+          urls:
+            footer:
             - text: What is Socrata?
               href: http://www.socrata.com/about
             - text: Blog
@@ -180,12 +180,12 @@ default_configs:
             - text: Contact Us
               rel: nofollow
               href: http://www.socrata.com/contact-us
-            headerUser: 
+            headerUser:
             - text: What is Socrata?
               href: http://www.socrata.com/about
             - text: Help
               href: http://www.getsatisfaction.com/socrata
-            headerMain: 
+            headerMain:
             - text: Home
               href: /
             - text: Community
@@ -193,79 +193,79 @@ default_configs:
               ifModuleEnabled: community_module
             - text: My Socrata
               href: /home
-            signup: 
+            signup:
             - text: Terms of Service
               href: /terms-of-service
             - text: Privacy Policy
               href: /privacy
-          chrome: 
+          chrome:
             box_border: cecece
-            nav_buttons: 
-              background: 
+            nav_buttons:
+              background:
               - color: 19538b
               - color: "042656"
               border: "042656"
             background: f7f7f7
-            margin: 
-              outer: 
+            margin:
+              outer:
                 unit: em
                 value: 2
-              inner: 
+              inner:
                 unit: em
                 value: 2
-            sidebar: 
+            sidebar:
               text: "666"
               background: f7f7f7
-          images: 
-            logo_footer: 
+          images:
+            logo_footer:
               height: "20"
               width: "89"
               type: static
               href: /stylesheets/images/common/socrata_logo_footer.png
-            logo_header: 
+            logo_header:
               height: "34"
               width: "129"
               type: static
               href: /stylesheets/images/common/socrata_logo.png
-            favicon: 
+            favicon:
               type: static
               href: /stylesheets/images/common/favicon.ico
-            logo_square: 
+            logo_square:
               height: 110
               width: 94
               type: static
               href: /stylesheets/images/common/socrata_logo_square.png
-          buttons: 
-            default: 
+          buttons:
+            default:
               text: ffffff
-              background: 
+              background:
               - color: ff3333
               - color: "993333"
               border: "993333"
-            default_disabled: 
+            default_disabled:
               text: eeeeee
-              background: 
+              background:
               - color: ff8888
               - color: cc6666
               border: cc6666
-            active: 
+            active:
               text: "666666"
               shadow: rgba(0,0,0,0.2)
-              background: 
+              background:
               - color: fefefe
               - color: f2f2f2
               border: "999999"
-            disabled: 
+            disabled:
               text: "888888"
-              background: 
+              background:
               - color: fcfcfc
               - color: f8f8f8
               border: dddddd
-          links: 
+          links:
             visited: 253A60
             normal: 3B5998
-          table: 
-            header: 
+          table:
+            header:
               inactive: e0e4e9
               active: c5ccd5
       - name: strings.sign_out
@@ -280,15 +280,15 @@ default_configs:
         value: Sign In
     update_data: {}
 
-  feature_set: !ruby/object:Configuration 
-    data: 
+  feature_set: !ruby/object:Configuration
+    data:
       id: 5
       name: Feature set
       default: true
       domainCName: localhost
       type: feature_set
       updatedAt: 1352709746
-      properties: 
+      properties:
       - name: canvas2
         value: true
       - name: canvasX

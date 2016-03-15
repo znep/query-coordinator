@@ -10,7 +10,7 @@ require_relative '../test_helper'
 require 'soql_duct_tape'
 require 'pry'
 
-class JsonQueryFromDatasetTest < Test::Unit::TestCase
+class JsonQueryFromDatasetTest < Minitest::Test
   include SoqlFromConditions
 
   def setup
@@ -427,7 +427,7 @@ class JsonQueryFromDatasetTest < Test::Unit::TestCase
   end
 end
 
-class SoqlFromJsonQueryTest < Test::Unit::TestCase
+class SoqlFromJsonQueryTest < Minitest::Test
   include SoqlFromConditions
 
   def setup
@@ -773,7 +773,7 @@ class SoqlFromJsonQueryTest < Test::Unit::TestCase
   end
 end
 
-class SoqlFromConditionsTest < Test::Unit::TestCase
+class SoqlFromConditionsTest < Minitest::Test
   def setup
     init_current_domain
     load_sample_data('test/fixtures/sample-data.json')

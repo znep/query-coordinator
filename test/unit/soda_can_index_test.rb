@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SodaCanIndexTest < Test::Unit::TestCase
+class SodaCanIndexTest < Minitest::Test
 
   def test_aspe_index
     metadata = JSON::parse(File.open("test/fixtures/soda_can/74nx-npbu.json").read)

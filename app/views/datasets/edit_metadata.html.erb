@@ -10,7 +10,7 @@
 <div class="contentBox fixedWidth">
   <%= form_tag({}, {:id => "editMetadataForm", :class => 'commonForm', :method => :post, :multipart => true}) do %>
     <h1><%= t('screens.edit_metadata.headline', :name => @view.name) %></h1>
-    <a href="<%= view_path(@view) %>" class="returnLink"><%= t('screens.edit_metadata.return') %></a>
+    <a href="<%= view_path(@view.route_params) %>" class="returnLink"><%= t('screens.edit_metadata.return') %></a>
 
     <%= display_standard_flashes %>
 
@@ -277,7 +277,7 @@
     <div class="required"><%= t('screens.edit_metadata.required_field') %></div>
     <div class="clearfix submitActions">
       <input class="button submitButton" type="submit" title="<%= t('screens.edit_metadata.save_changes') %>" value="Save" />
-      <a class="button" href="<%= view_path(@view) %>"><%= t('screens.edit_metadata.cancel') %></a>
+      <a class="button" href="<%= view_path(@view.route_params) %>"><%= t('screens.edit_metadata.cancel') %></a>
     </div>
   <%- end -%>
 </div>

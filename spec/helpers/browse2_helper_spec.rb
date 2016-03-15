@@ -281,6 +281,41 @@ describe Browse2Helper do
       end
     end
 
+    # See EN-3401
+    # This tests that you have enough slots to hold all your summary:true options
+    # But, you also have to sort your options to make sure these show up first
+    it 'sets a facet cutoff large enough to accommodate all summary:true options' do
+      facet = {
+        'singular_description' => 'superhero',
+        'title' => 'Superhero',
+        'param' => :'Dataset-Information_Superhero',
+        'options' => [
+          { 'summary' => true, 'text' => 'Superman', 'value' => 'Superman' },
+          { 'summary' => true, 'text' => 'Batman', 'value' => 'Batman' },
+          { 'summary' => true, 'text' => 'Flash', 'value' => 'Flash' },
+
+          # lib/browse_actions.rb will put all summary:true options into options
+          { 'summary' => true, 'text' => 'Spiderman', 'value' => 'Spiderman' },
+          { 'summary' => true, 'text' => 'Hulk', 'value' => 'Hulk' }
+        ]
+      }
+
+      0.upto(6) do |cutoff|
+        facet_cutoffs_catalog = {
+          'topic' => cutoff,
+          'category' => cutoff,
+          'custom' => cutoff
+        }
+
+        allow(CurrentDomain).
+          to receive(:property).
+          with(:facet_cutoffs, :catalog).
+          and_return(facet_cutoffs_catalog)
+
+        expect(helper.browse2_facet_cutoff(facet)).to be >= 5 # summary:true
+      end
+    end
+
     it 'provides default value to custom facets if not defined' do
       facet = { :singular_description => 'something custom' }
       allow(CurrentDomain).to receive(:property).and_return({})
@@ -335,6 +370,17 @@ describe Browse2Helper do
         { :value => 'a', :text => 'a' }, { :value => 'd', :text => 'd' } ]
     end
 
+    def facet_options_with_some_summary_true
+      [
+        { value: 'f', text: 'f', summary: false},
+        { value: 'e', text: 'e', summary: false, count: 2},
+        { value: 'd', text: 'd', summary: true },
+        { value: 'c', text: 'c', summary: false },
+        { value: 'b', text: 'b', summary: true },
+        { value: 'a', text: 'a', summary: false, count: 1}
+      ]
+    end
+
     it 'returns the options sorted by count, then name' do
       sorted_by_count = [{:value => 'b', :text => 'b', :count => 4}, {:value => 'd', :text => 'd', :count => 4}, {:value => 'c', :text => 'c', :count => 2}, {:value => 'a', :text => 'a', :count => 0}]
       expect(helper.sort_facet_options(facet_options)).to match_array(sorted_by_count)
@@ -343,6 +389,23 @@ describe Browse2Helper do
     it 'returns the options sorted by name if count is not present' do
       sorted_by_text = [{:value => 'a', :text => 'a'}, {:value => 'b', :text => 'b'}, {:value => 'c', :text => 'c'}, {:value => 'd', :text => 'd'}]
       expect(helper.sort_facet_options(facet_options_without_count)).to match_array(sorted_by_text)
+    end
+
+    # NOTE: This only verifies that options are sorted correctly.
+    # If you have summary:true options, you also have to ensure that the facet_cutoff
+    # value is large enough to accommodate them. See the tests around facet cutoffs.
+    it 'sorts by summary:true then count then alphabetical' do
+      sorted_by_summary_count_alpha = [
+        { value: 'b', text: 'b', summary: true },
+        { value: 'd', text: 'd', summary: true },
+        { value: 'e', text: 'e', summary: false, count: 2 },
+        { value: 'a', text: 'a', summary: false, count: 1 },
+        { value: 'c', text: 'c', summary: false },
+        { value: 'f', text: 'f', summary: false }
+      ]
+
+      expect(helper.sort_facet_options(facet_options_with_some_summary_true)).
+        to match_array(sorted_by_summary_count_alpha)
     end
   end
 

@@ -10,6 +10,7 @@
         a.onload = function() {
           blist = window.blist || {};
           blist.mixpanelLoaded = true;
+          $(document).trigger('mixpanelLoaded');
         };
         a.type="text/javascript";
         a.async=!0;

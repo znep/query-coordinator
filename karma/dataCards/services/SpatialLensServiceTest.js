@@ -162,10 +162,92 @@ describe('SpatialLensService', function() {
   });
 
   describe('getRegionCodingStatusFromJob', function() {
-    // TODO write tests for getRegionCodingStatusFromJob
+    it('queries /geo/status with the dataset and job', function() {
+      self.$httpBackend.expectGET(function(url) {
+        if (url.indexOf('/geo/status') === -1) { return false; }
+        if (url.indexOf('datasetId=asdf-fdsa') === -1) { return false; }
+        if (url.indexOf('jobId=qwer-asdf-zxcv') === -1) { return false; }
+        return true;
+      }).respond({ success: true });
+
+      self.SpatialLensService.getRegionCodingStatusFromJob('asdf-fdsa', 'qwer-asdf-zxcv');
+
+      self.$httpBackend.flush();
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+    });
+  });
+
+  describe('pollRegionCodingStatus', function() {
+    var clock;
+
+    beforeEach(function() {
+      clock = sinon.useFakeTimers();
+    });
+
+    afterEach(function() {
+      clock.restore();
+    });
+
+    it('polls the status endpoint every 5 seconds', function() {
+      self.SpatialLensService.pollRegionCodingStatus('asdf-fdsa', 'qwer-asdf-zxcv').subscribe();
+
+      for (var i = 1; i <= 5; i++) {
+        self.$httpBackend.expectGET(function(url) {
+          if (url.indexOf('/geo/status') === -1) { return false; }
+          if (url.indexOf('datasetId=asdf-fdsa') === -1) { return false; }
+          if (url.indexOf('jobId=qwer-asdf-zxcv') === -1) { return false; }
+          return true;
+        }).respond({ success: true, status: i == 5 ? 'completed' : 'processing' });
+
+        clock.tick(5050);
+      }
+
+      self.$httpBackend.flush();
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+    });
   });
 
   describe('executeRegionCodingJob', function() {
-    // TODO write tests for executeRegionCodingJob
+    var clock;
+
+    beforeEach(function() {
+      clock = sinon.useFakeTimers();
+    });
+
+    afterEach(function() {
+      clock.restore();
+    });
+
+    it('enqueues the job, then polls status', function() {
+      sinon.stub(socrata.utils, 'getCookie').returns('CSRF-TOKEN');
+
+      self.$httpBackend.expectPOST(/\/geo\/initiate$/, {
+        datasetId: 'asdf-fdsa',
+        shapefileId: 'four-four',
+        sourceColumn: 'location'
+      }).respond({ success: true, jobId: 'qwer-asdf-zxcv' });
+
+      self.SpatialLensService.executeRegionCodingJob('asdf-fdsa', 'four-four', 'location').subscribe();
+
+      self.$httpBackend.flush();
+
+      for (var i = 1; i <= 5; i++) {
+        self.$httpBackend.expectGET(function(url) {
+          if (url.indexOf('/geo/status') === -1) { return false; }
+          if (url.indexOf('datasetId=asdf-fdsa') === -1) { return false; }
+          if (url.indexOf('jobId=qwer-asdf-zxcv') === -1) { return false; }
+          return true;
+        }).respond({ success: true, status: i == 5 ? 'completed' : 'processing' });
+
+        clock.tick(5050);
+      }
+
+      self.$httpBackend.flush();
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+      socrata.utils.getCookie.restore();
+    });
   });
 });

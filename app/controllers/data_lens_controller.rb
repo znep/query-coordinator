@@ -38,7 +38,7 @@ class DataLensController < ActionController::Base
         dataset_id,
         shapefile_id,
         source_column,
-        forwardable_session_cookies
+        :cookies => forwardable_session_cookies
       )
 
       status = :ok
@@ -85,13 +85,14 @@ class DataLensController < ActionController::Base
         job_status = region_coder.get_status_for_region(
           dataset_id,
           shapefile_id,
-          forwardable_session_cookies
+          :cookies => forwardable_session_cookies,
+          :request_id => request_id
         )
       elsif job_id.present?
         job_status = region_coder.get_status_for_job(
           dataset_id,
           job_id,
-          forwardable_session_cookies
+          :cookies => forwardable_session_cookies
         )
       else
         raise ArgumentError.new('Either shapefile_id or job_id must be provided')
@@ -102,7 +103,8 @@ class DataLensController < ActionController::Base
       result = {
         :success => success,
         :status => job_status['progress']['english'],
-        :details => job_status['english']
+        :details => job_status['english'],
+        :data => job_status['data']
       }
 
       # Also send dataset metadata containing new computed column info if job was successful

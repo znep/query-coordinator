@@ -61,6 +61,19 @@ table {
   }
 }
 
+//Discrete Table
+.table-discrete {
+  thead {
+    tr th {
+      color: $grey;
+      font-weight: 100;
+    }
+  }
+  th, td {
+    border-color: $light-grey-4;
+  }
+}
+
 // Striped Table
 // Zebra-striping
 //

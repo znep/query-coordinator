@@ -4,7 +4,7 @@ h1.padding {
   margin-top: 50px;
   font-size: 2rem;
   padding-bottom: 0;
-  margin-bottom: 0;
+  margin-bottom: 5px;
 }
 .btn-meta {
   cursor: pointer;
@@ -13,7 +13,7 @@ h1.padding {
   padding-bottom: 6px;
   margin-bottom: 0;
 }
-.intro .desc::after {
+.intro .intro-short::after {
   content: "...";
 }
 .text-link-block {
@@ -71,6 +71,7 @@ h1.padding {
 }
 
 .meta-go-link {
+  cursor: pointer;
   text-decoration: underline;
 }
 

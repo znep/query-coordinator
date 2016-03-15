@@ -45,23 +45,10 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
             '<span class="text-link">Show more</span>',
           '</p>',
           '<div class="all hidden">',
-            '<div class="source-pill">Official</div>',
             '<p class="padding">',
               '<span class="dl-description">' + datasetMetadata.description + '</span>',
               '<span class="text-link">Collapse details</span>',
             '</p>',
-            '<div class="meta-container">',
-              '<div class="title-section padding">',
-                '<h3 class="meta-title alpha">Source Dataset</h3>',
-                '<h3 class="dl-name meta-title beta"></h3>',
-              '</div>',
-              '<div class="padding">',
-                '<div class="meta-desc">',
-                  '<p>All data powering this page is available for download and/or can be accessed via API from the desktop version of this site</p>',
-                  '<p class="meta-go-link">Tap here to go to the desktop version &raquo;</p>',
-                '</div>',
-              '</div>',
-            '</div>',
           '</div>'
         ].join('')
       );
@@ -70,22 +57,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
         [
           '<p class="intro padding">',
             '<span class="dl-description">' + datasetMetadata.description + '</span>',
-          '</p>',
-          '<div class="all hidden">',
-            '<div class="source-pill">Official</div>',
-            '<div class="meta-container">',
-              '<div class="title-section padding">',
-                '<h3 class="meta-title alpha">Source Dataset</h3>',
-                '<h3 class="dl-name meta-title beta"></h3>',
-              '</div>',
-              '<div class="padding">',
-                '<div class="meta-desc">',
-                  '<p>All data powering this page is available for download and/or can be accessed via API from the desktop version of this site</p>',
-                  '<p class="meta-go-link">Tap here to go to the desktop version &raquo;</p>',
-                '</div>',
-              '</div>',
-            '</div>',
-          '</div>'
+          '</p>'
         ].join('')
       );
     }
@@ -140,24 +112,11 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
     }
   }
 
-  $('#button-toggle-metadata').on('click', function(){
-    var showing = $(this).data('open');
-    var self = $(this);
-
-    if (showing) {
-      self.html('show metadata');
-      self.data('open', false);
-    } else {
-      self.html('hide metadata');
-      self.data('open', true);
-    }
-    $metadataContent.toggleClass('hidden');
-  });
-
   function mobileCardViewer() {
 
     var $intro = $('.intro');
     var $all = $('.all');
+    var $metadataContent = $('#metadata-content');
 
     $intro.find('.text-link').on('click', function() {
       // show all desc
@@ -169,6 +128,26 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
       // show intro desc
       $(this).parents('.intro-text').find('.intro').removeClass('hidden');
       $(this).parents('.all').addClass('hidden');
+    });
+
+    $('#button-toggle-metadata').on('click', function(){
+      var showing = $(this).data('open');
+      var self = $(this);
+
+      if (showing) {
+        self.html('show metadata');
+        self.data('open', false);
+      } else {
+        self.html('hide metadata');
+        self.data('open', true);
+      }
+      $metadataContent.toggleClass('hidden');
+    });
+
+    $('.meta-go-link').on('click', function(){
+      var url = window.location.href;
+      var aUrlParts = url.split('/mobile');
+      window.location = aUrlParts[0];
     });
 
     var $window = $(window);
@@ -305,7 +284,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
       }
     });
 
-    getPageTemplate().appendTo('#introText');
+    $('.meta-container').before(getPageTemplate());
     mobileCardViewer();
     setupQfb(aPredefinedFilters);
   }

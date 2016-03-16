@@ -68,9 +68,9 @@
     <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) ||
             CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
       <li class="datasets">
-        <%= admin_nav_link_to 'Datasets', :action => 'datasets' %>
+        <%= admin_nav_link_to t('screens.admin.datasets.title'), :action => 'datasets' %>
         <span class="description">
-          List the datasets on this domain and configure the layout of the dataset page
+          <%= t('screens.admin.datasets.description') %>
         </span>
       </li>
     <%- end -%>

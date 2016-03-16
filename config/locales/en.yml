@@ -1599,6 +1599,7 @@ en:
         skip_to_dataset_listing: Skip to dataset listing
         table_description: Datasets
         title: Asset Inventory
+        description: List the assets on this domain and configure the layout of the dataset page 
         unpublished_datasets: Unpublished Datasets
         view_as_a_dataset: View as a Dataset
         asset_inventory:

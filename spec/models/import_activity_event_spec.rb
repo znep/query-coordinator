@@ -31,8 +31,8 @@ describe ImportActivityEvent do
 
   describe '#status' do
 
-    it 'returns the value passed in the :status key of the hash it was initialized with' do
-      expect(event.status).to eq('Failure')
+    it 'returns the value passed in the :status key of the hash it was initialized with, converted to snake case' do
+      expect(event.status).to eq('success_with_data_errors')
     end
 
   end

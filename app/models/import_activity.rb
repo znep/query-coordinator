@@ -1,5 +1,6 @@
 # TODO: replace this REST API & wrapper with GraphQL
 class ImportActivity
+  include JobsHelper
 
   # throws ISS errors and Core errors
   def self.find_all_by_created_at_descending(offset, limit)
@@ -83,7 +84,7 @@ class ImportActivity
   end
 
   def status
-    @data[:status].downcase
+    status_to_snake(@data[:status])
   end
 
   def file_name
@@ -114,11 +115,15 @@ class ImportActivity
     if events.blank?
       created_at
     else
-      events.sort_by(&:event_time).last.event_time
+      most_recent_event.event_time
     end
   end
 
-# even if true @working_copy may still be nil, if the activity was performed on a wc that was since deleted
+  def most_recent_event
+    events.sort_by(&:event_time).last
+  end
+
+  # even if true @working_copy may still be nil, if the activity was performed on a wc that was since deleted
   def had_working_copy?
     @data[:working_copy_id].present?
   end
@@ -138,6 +143,17 @@ class ImportActivity
       "#{working_copy_id} (published)"
     else
       working_copy_id
+    end
+  end
+
+  def bad_rows_url
+    event = most_recent_event
+    if event.blank?
+      nil
+    elsif event.status == 'success_with_data_errors'
+      event.info[:badRowsPath]
+    else
+      nil
     end
   end
 

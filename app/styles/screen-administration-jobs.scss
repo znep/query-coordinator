@@ -1,14 +1,15 @@
 $grey: #646565;
+$warning-icon-color: #debb1e;
 
 .import-status-label span {
   vertical-align: text-top;
 }
 
-.import-status-icon-notstarted:before {
+.import-status-icon-not-started:before {
   color: $grey;
 }
 
-.import-status-icon-inprogress:before {
+.import-status-icon-in-progress:before {
   color: #646565;
 }
 
@@ -20,12 +21,22 @@ $grey: #646565;
   color: green;
 }
 
+.import-status-icon-success-with-data-errors:before {
+  color: $warning-icon-color;
+}
+
 .import-status-label {
   font-weight: bold;
   vertical-align: top;
 }
 
 .showJobScreen {
+
+  .import-job-details {
+    .icon-warning {
+      color: $warning-icon-color;
+    }
+  }
 
   .back-to-jobs-list {
     float: right;
@@ -168,6 +179,14 @@ $grey: #646565;
   }
 
   margin-bottom: 10px;
+
+  .with-problems {
+    font-weight: normal;
+    padding-left: 25px;
+    color: #888;
+    font-size: .8rem;
+    padding-top: .2rem;
+  }
 
 }
 

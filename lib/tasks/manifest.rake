@@ -18,7 +18,8 @@ namespace :manifest do
       end
 
       puts("= FRONTEND = (from #{from_tag} to #{to_tag})")
-      manifest_output = `git log #{from_tag}..#{to_tag} --no-merges --date-order --reverse --shortstat --abbrev-commit`
+      manifest_output = `git log --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
+
 
       if args.output_file.present?
         puts "Writing manifest file to... #{File.expand_path(args.output_file)}"

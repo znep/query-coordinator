@@ -241,9 +241,9 @@ a {
 						cursor: pointer;
 					}
 				}
-		  		tr.details-row {
-		  			display: none;
-		  		}
+				tr.details-row {
+					display: none;
+				}
 				//Expanded row
 				tr.expanded {
 					td {
@@ -260,7 +260,7 @@ a {
 
 		  		}
 
-		  		tr.details-row.expanded {
+		  		tr.details-row {
 		  			display: table-row;
 					background-color: $expanded-row-bg;
 		  			&:hover {
@@ -353,7 +353,7 @@ a {
 					    display: table-cell;
 					    max-width: 6em;
 					}
-					.details-row.expanded {
+					.details-row {
 						.details-content {
 							.row {	
 				  				.stat-details {

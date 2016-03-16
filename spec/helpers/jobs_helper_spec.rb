@@ -58,7 +58,7 @@ describe JobsHelper do
     it 'returns "Completed" if the status is success_with_data_errors' do
       event = ImportActivityEvent.new({
         :status => 'SuccessWithDataErrors',
-        :event_type => 'di2_counts',
+        :event_type => 'di2-counts',
         :info => {:failCount => 99, :rowCount => 1000}
       })
       expect(event_description(event)).to eq('Your import file has been imported, ' +

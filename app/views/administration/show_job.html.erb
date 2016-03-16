@@ -108,7 +108,7 @@
         <span><%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
       </p>
       <h3><%= t("#{jobs_prefix}.show_page.import_method") %></h3>
-      <p><%= @activity.import_method %></p>
+      <p><%= html_safe(t("#{jobs_prefix}.show_page.services.#{@activity.service}")) %></p>
       <% unless @activity.bad_rows_url.blank? %>
         <h3>
           <%= t("#{jobs_prefix}.show_page.failed_rows") %>

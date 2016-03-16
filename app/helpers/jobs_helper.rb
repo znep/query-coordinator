@@ -54,12 +54,7 @@ module JobsHelper
   end
 
   def event_message_prefix(event)
-    case event.status
-      when 'failure'
-        "#{jobs_prefix}.show_page.event_messages.failure.#{event.type}"
-      when 'success_with_data_errors'
-        "#{jobs_prefix}.show_page.event_messages.success_with_data_errors"
-    end
+    "#{jobs_prefix}.show_page.event_messages.#{event.status}.#{event.type}"
   end
 
   def event_title(event)

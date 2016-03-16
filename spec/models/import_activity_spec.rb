@@ -164,9 +164,9 @@ describe ImportActivity do
     end
   end
 
-  describe '#import_method' do
-    it 'returns the public facing import_method for the service' do
-      expect(activity.import_method).to eq('DataSync')
+  describe '#service' do
+    it 'returns the service name it was initialized with' do
+      expect(activity.service).to eq('DeltaImporter2')
     end
   end
 

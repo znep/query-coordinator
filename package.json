@@ -31,7 +31,8 @@
     "webpack-clean": "rimraf ${npm_package_config_webpackDestination}",
     "webpack-dev-server": "webpack-dev-server --config ${npm_package_config_webpackConfig} --https --cert dev-server/ssl/host.crt --cacert dev-server/ssl/ca.crt --key dev-server/ssl/host.key",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "cp node_modules/leaflet/dist/leaflet.css app/styles/mobile && cp node_modules/socrata-visualizations/dist/socrata-visualizations.css app/styles/mobile"
   },
   "repository": {
     "type": "git",

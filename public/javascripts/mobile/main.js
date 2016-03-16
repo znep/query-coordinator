@@ -9,9 +9,6 @@ var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 var mobileTable = require('./mobile.table.js');
 
-require('leaflet.css');
-require('socrata-visualizations.css');
-
 /*
 * QFB components
 */
@@ -130,7 +127,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
       $(this).parents('.all').addClass('hidden');
     });
 
-    $('#button-toggle-metadata').on('click', function(){
+    $('#button-toggle-metadata').on('click', function() {
       var showing = $(this).data('open');
       var self = $(this);
 
@@ -144,7 +141,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
       $metadataContent.toggleClass('hidden');
     });
 
-    $('.meta-go-link').on('click', function(){
+    $('.meta-go-link').on('click', function() {
       var url = window.location.href;
       var aUrlParts = url.split('/mobile');
       window.location = aUrlParts[0];

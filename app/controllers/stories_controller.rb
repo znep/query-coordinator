@@ -173,7 +173,11 @@ class StoriesController < ApplicationController
       @primary_owner_uid = CoreServer.get_view(params[:uid])['owner']['id']
 
       respond_to do |format|
-        format.html { render 'stories/edit', layout: 'editor' }
+        format.html do
+
+          response.headers['Cache-Control'] = 'no-store'
+          render 'stories/edit', layout: 'editor'
+        end
       end
     else
       render_404

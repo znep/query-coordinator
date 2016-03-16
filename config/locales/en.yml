@@ -1768,10 +1768,18 @@ en:
           fallback_event_title: "Error: %{error_code}"
           file_name_unknown: file name unknown
           import: Import
+          services:
+            Imports2: Web Interface
+            DeltaImporter2: DataSync
+            ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Resource API</a>
           event_messages:
             success_with_data_errors:
-              title: Completed
-              description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.
+              di2_counts:
+                title: Completed
+                description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.
+              upsert_counts:
+                title: Completed
+                description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. Please verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>.
             failure:
               # Derived from the tags specified in the codec in DI2's FailureDetails.scala
               # https://github.com/socrata/delta-importer-2/blob/master/di2-common/src/main/scala/com/socrata/deltaimporter/messaging/details/FailureDetails.scala
@@ -1806,6 +1814,9 @@ en:
               delete_without_user_pk:
                 title: Cannot delete without row identifier
                 description: We cannot successfully process delete operations unless a row identifier field is declared.
+              di2_counts:
+                title: Completed
+                description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.
               corrupt_gzip:
                 title: Unable to extract compressed file
                 description: "The GZip-compressed file you provided could not be successfully extracted. Error message: \"%{message}\". Please verify that it is a valid GZip file."
@@ -1901,6 +1912,10 @@ en:
               corrupt_archive:
                 title: Corrupt archive
                 description: 'We could not process the archive you uploaded. Error message: %{reason}'
+              # sent from upsert API
+              upsert_counts:
+                title: Completed
+                description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. Please verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>.
           no_events: No progress events have been recorded yet for this job.
           to: to
           started_by: Started by

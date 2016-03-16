@@ -22,6 +22,7 @@
 @import "components/pagination";
 @import "components/input-groups";
 @import "components/cards";
+@import "components/tour";
 
 .container {
   @include outer-container();
@@ -250,7 +251,7 @@ section.styleguide-section {
     padding-left: 0;
 
     &.icon-sample {
-      
+
       width: 20%;
       background-color: $light-grey-5;
       font-size: ms(3);

@@ -6,3 +6,4 @@
 /docs/fonts
 /node_modules
 .fontcustom-manifest.json
+/src/js/vendor

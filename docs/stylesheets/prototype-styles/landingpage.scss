@@ -1,0 +1,622 @@
+@import "breakpoint";
+@import "vendor/reset";
+//@import "vendor/prism";
+
+// Style Components
+@import "bourbon";
+@import "neat";
+
+@import "../../../src/scss/socrata-icons";
+
+@font-face {
+  font-family: "socrata-icons";
+  src: url("/fonts/socrata-icons.eot");
+  src: url("/fonts/socrata-icons.eot?#iefix") format("embedded-opentype"),
+       url("/fonts/socrata-icons.woff") format("woff"),
+       url("/fonts/socrata-icons.ttf") format("truetype"),
+       url("/fonts/socrata-icons.svg#socrata-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "socrata-icons";
+    src: url("/fonts/socrata-icons.svg#socrata-icons") format("svg");
+  }
+}
+
+@import "../../../src/scss/components/grid";
+@import "../../../src/scss/components/typography";
+@import "../../../src/scss/components/colors";
+@import "../../../src/scss/components/color-swatches";
+@import "../../../src/scss/components/button-group";
+@import "../../../src/scss/components/buttons";
+@import "../../../src/scss/components/list";
+@import "../../../src/scss/components/loader";
+@import "../../../src/scss/components/forms";
+@import "../../../src/scss/components/modal";
+@import "../../../src/scss/components/tags";
+@import "../../../src/scss/components/alerts";
+@import "../../../src/scss/components/dividers";
+@import "../../../src/scss/components/flyout";
+@import "../../../src/scss/components/flannel";
+@import "../../../src/scss/components/nav-bars";
+@import "../../../src/scss/components/tables";
+@import "../../../src/scss/components/menu";
+@import "../../../src/scss/components/pagination";
+@import "../../../src/scss/components/input-groups";
+
+// Media Queries
+$lgmobile: 468px 767px;
+$tablet: 769px;
+$desktop: 992px;
+
+
+//Special Color Vars
+$expanded-row-bg: transparent;
+
+// Catalog Styles
+
+/* Menu for mobile
+ * needs to be refactored a bit, for sure
+ *
+ */ 
+
+.menu {
+	width: 100%;
+	@include breakpoint($tablet) {
+		width: 30%;
+	}
+	background-color: $light-grey-7;
+	color: $black;
+
+	& > *:first-child {
+		margin-top: .3em;
+	}
+
+	& > *:last-child {
+  		margin-bottom: 0;
+	}
+
+	.container {
+		max-width: 100%;	
+	}
+
+	.filter-wrapper {
+		overflow-y: scroll;
+	}
+
+	.filter-action-container {
+		max-width: 94%;
+		margin: 0 auto;
+		padding-top: ms(0);
+	}
+
+
+	&.menu-offscreen.menu-anchor-left {
+		left: -150%;
+		box-shadow: none;
+		border-right: none;
+	}
+
+	.menu-header {
+		height: ms(1);
+	}
+
+	.menu-header-title {
+	  	color: $black;
+	  	font-weight: lighter;
+	  	text-align: center;
+	}
+
+	.menu-header-dismiss {
+		color: $primary;
+		text-align: left;
+		&:hover {
+			color: $dark-grey-1;
+		}
+	}
+
+} //.menu
+
+
+body {
+	background: $light-grey-6;
+}
+
+a {
+	color: $primary;
+	text-decoration: none;	
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.container {
+	@include outer-container();
+	max-width: 100%;
+	margin: 0px auto 0;
+	
+
+	@include breakpoint($tablet) {
+		//padding: 0 0.5em;
+		margin: 0 auto;
+	
+	}
+}
+
+
+.content {
+
+	@include span-columns(12);
+	background-color: $white;
+	border-bottom: 2px solid $light-grey-4;
+	margin-bottom: ms(0);
+
+
+}
+.page-content {
+	@include outer-container();
+	.lp-section {
+
+		@include span-columns(12);
+		margin-bottom: ms(0);
+		padding: ms(-2);
+
+
+		.section-header {
+			padding: ms(-2) 0;
+			font-weight: 600;
+			font-size: ms(0);
+		}
+		@include breakpoint($tablet) {
+			.section-header {
+				font-size: ms(2);
+			}
+		}
+
+		.card-frame {
+			@include outer-container;
+			@include span-columns(12);
+			background-color: $white;
+			border: 1px solid $light-grey-4;
+			border-bottom: 2px solid $light-grey-4;
+			padding: ms(1);
+
+			.metadata-table:nth-child(1) {
+				display: none;
+			}
+			.metadata-table {
+				td:nth-child(1) {
+					font-weight: 400;
+					color: $grey;
+				}
+			}
+			.more-link {
+				display: none;
+			}
+
+			.table-condensed {
+				margin-top: 0;
+				th {
+					padding-top: 0;
+				}
+			}
+			.table-borderless {
+				border-bottom: 1px solid $light-grey-3;
+			}
+			.schema-preview {
+				td {
+					max-width: 7em;
+					white-space: nowrap;
+		  			overflow: hidden;
+					text-overflow: ellipsis;
+					> span {
+						float: right;
+						&.icon-arrow-down {
+		  					display: block;
+		  				}
+		  				&.icon-arrow-up {
+		  					display: none;
+		  				}
+					}
+				}
+				.column-name {
+					font-size: ms(-1);
+					font-weight: 800;
+				}
+				td:nth-child(3) {
+					color: $grey;
+				}
+				// hide the Type-column on mobile
+				th:nth-child(3), td:nth-child(3)  {
+				    display: none;
+
+				}
+				
+				tbody {
+					tr:hover {
+						background-color: $light-grey-7;
+						cursor: pointer;
+					}
+				}
+				tr.details-row {
+					display: none;
+				}
+				//Expanded row
+				tr.expanded {
+					td {
+						white-space: normal;
+			  			overflow: visible;
+			  			border-bottom: none;
+		  				.icon-arrow-down {
+		  					display: none;
+		  				}
+		  				.icon-arrow-up {
+		  					display: block;
+		  				}
+		  			}
+
+		  		}
+
+		  		tr.details-row {
+		  			display: table-row;
+					background-color: $expanded-row-bg;
+		  			&:hover {
+		  				cursor: default;
+		  				background-color: $expanded-row-bg;
+		  			}
+		  			.details-content {
+		  				border-top-color: $light-grey-4;
+		  				//clear all other table styles
+		  				table, tbody, thead, tr, th, td {
+						    border: 0;
+						    outline: 0;
+						    font-size: 100%;
+						    vertical-align: baseline;
+						    background: $expanded-row-bg;
+						    white-space: nowrap;
+						    padding: 0;
+						    margin: 0.2em 0;
+						    &:hover {
+						    	background-color: $expanded-row-bg;
+						    	cursor: default;
+						    }
+						}
+
+		  				.title {
+		  					font-size: ms(-1);
+							color: $light-grey-1;
+							text-align: left;
+							padding-bottom: ms(-10);
+							font-weight: 600;
+		  				}
+		  				.key, .value {
+		  					font-size: ms(-1);
+		  				}
+		  				.stat-details .key, .type-details .value {
+		  					color: $dark-grey-1;		  				
+		  				}
+		  				.stat-details .value, .type-details .key {
+		  					color: $light-grey-1;		  				
+		  				}
+		  				.type-details { 
+		  					@include span-columns(12);
+		  					border-top: 1px solid $light-grey-3;
+		  					.detail-group {
+		  						margin: ms(-1) 0;  
+		  						.key {
+		  							font-weight: 600;
+		  						}
+		  					}
+		  				}
+
+		  				.stat-details {
+		  					@include span-columns(12);
+		  					tbody {
+		  						display: table;
+		  						width: 100%;
+			  					td {
+			  						&.value {
+			  							text-align: right;
+			  						}		  						
+			  						&.spacer {
+			  							padding-top: ms(-10);
+			  						}
+			  					}
+			  				}
+		  				}
+		  			}
+		  		}
+			}
+
+			@include breakpoint($tablet) {
+				.btn-block {
+					display: none;
+				}
+				.centered {
+					display: block;
+					@include span-columns(12);
+					.more-link {
+						float: right;
+						display: inline-block;
+						white-space: nowrap;
+						color: $light-grey-1;
+						text-decoration: underline;
+						&:hover {
+							color: $light-grey-0;
+						}
+					}
+					.btn {
+						margin: ms(-2) auto; 
+					}
+				}
+				.schema-preview {
+					.column-name {
+						font-size: ms(1);
+						font-weight: 400;
+					}
+					th:nth-child(3), td:nth-child(3) {
+					    display: table-cell;
+					    max-width: 6em;
+					}
+					.details-row {
+						.details-content {
+							.row {	
+				  				.title, .key, .value {
+					  				font-size: ms(0);
+					  			}
+				  				.stat-details {
+				  					@include span-columns(5);				  					
+								}
+								.type-details {
+				  					@include span-columns(2);
+				  					@include shift(1);
+				  					border-top: none;
+				  					.detail-group {
+				  						margin-top: ms(-8);
+				  						margin-bottom: ms(0);
+				  						> span {
+				  							display: block;
+				  						}
+				  					}
+
+								}
+							}
+						}
+					}		  							  					
+				}
+				.metadata-table {
+					float: left;
+					@include span-columns(6);
+					margin: 0;
+				}
+				.metadata-table:nth-child(1) {
+					float: right !important;
+					@include span-columns(6);
+					margin: 0;
+				}
+
+			}
+		}
+	}
+}
+
+
+.result-card {
+	@include span-columns(12);
+
+	.entry-header {
+		@include outer-container();
+		padding: ms(-2);
+		border-bottom: 1px solid $light-grey-5;
+		
+
+		.entry-title {
+			@include span-columns(12);
+			.entry-name {
+				display: inline-block;
+				margin-right: ms(-2);
+				font-size: ms(3);
+				
+			}
+
+			@include breakpoint($tablet) {
+				@include span-columns(8);
+					.entry-name {
+						
+						font-size: ms(4);
+
+					}
+
+			}
+
+		
+		}
+
+		.entry-view-type {
+			@include span-columns(12);
+			font-size: ms(-1);
+			color: $dark-grey-1;
+			font-weight: 300;
+			padding-top: ms(-6);
+
+			@include breakpoint($tablet) {
+				@include span-columns(4);
+				text-align: right;
+
+				
+				font-size: ms(0);
+			}
+			
+			
+		}
+	}
+	.entry-content {
+		@include outer-container();
+		
+		
+		.entry-main {			
+			@include breakpoint($tablet) {
+				@include span-columns(8, collapse);
+				border-right: 1px solid $light-grey-4;
+
+				
+			}
+		
+			.entry-description {
+				padding: ms(-2);
+				font-size: ms(0);
+
+				.more-link {
+					white-space: nowrap;
+					color: $light-grey-1;
+					text-decoration: underline;
+					&:hover {
+						color: $light-grey-0;
+					}
+					
+				}
+
+			}
+
+		}
+
+		.meta-title {
+			font-size: ms(-1);
+			color: $light-grey-0;
+			font-weight: 600;
+
+		}
+
+		.entry-meta {
+			font-size: ms(-1);
+
+			
+			&.first {
+				border-bottom: 1px solid $light-grey-5;	
+				overflow: hidden;
+				padding: ms(-4) ms(-2);
+
+				@include breakpoint($tablet) {
+					border-bottom: none;
+					border-top: 1px solid $light-grey-5;	
+
+				}
+
+				
+				.topics {
+					@include span-columns(12);
+
+					@include breakpoint($tablet) {
+						@include span-columns(9);
+					}
+				}
+
+				.api {
+					display: none !important;
+					
+					@include breakpoint($tablet) {
+						@include span-columns(3);
+						text-align: right;
+					}
+					
+				}
+
+			}
+
+			&.second {
+				@include row();
+				padding: ms(-4) ms(-2);
+				border-bottom: 1px solid $light-grey-5;	
+
+				@include breakpoint($tablet) {
+					@include span-columns(4);
+					border-bottom: none;
+					.meta-title {
+						padding-top: ms(-7);
+					}
+				}
+
+				.updated {
+					@include span-columns(6);
+					//margin-top: ms(-12);
+					margin-bottom: 0;
+
+					@include breakpoint($tablet) {
+						@include span-columns(12);
+
+						.meta-title,
+						.date {
+							display: block;
+						}
+					}
+					
+				}
+
+				.views {
+					@include span-columns(6);
+					text-align: right;
+
+					@include breakpoint($tablet) {
+						@include span-columns(12);
+						text-align: left;
+						
+						.meta-title,
+						.views {
+							display: block;
+						}
+					}
+				}
+			}
+		}	
+
+
+
+	}
+
+	.show-wrapper {
+		
+		font-size: ms(-1);
+		text-align: center;
+		
+
+		a {
+			padding: ms(-4) 0;
+			display: block;
+			background-color: $light-grey-6;
+			&:hover {
+				text-decoration: none;
+				background-color: $light-grey-5;
+			}
+
+			[class^="icon-"], [class*="icon-"] {
+				font-size: ms(-3);
+				line-height: 1;
+			}
+		}
+
+	}
+}
+
+
+
+/* .container {
+	@include outer-container();
+  	margin-top: 80px;
+  	&.main {
+    	margin-top: ms(8);
+  	}
+
+	> .menu {
+		@include span-columns(4);
+	    margin-top: 60px;
+	    z-index: 999;
+	 }
+
+  	> .content {
+    @include span-columns(12);
+  }
+}
+ */

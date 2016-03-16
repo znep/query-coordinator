@@ -1,0 +1,640 @@
+---
+title: Socrata Styleguide
+layout: prototype-landingpage
+
+---
+
+
+<% content_for :page_js do %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script>
+
+  var viewPortHeight = $(window).height();
+  var headerHeight = $(".menu-header").outerHeight(true);
+  var filterActionHeight = $(".filter-action-container").outerHeight(true);
+  var filterListActveHeight = $(".filter-list.active").outerHeight(true);
+  var maxContentHeight = viewPortHeight - headerHeight - filterActionHeight - filterListActveHeight + 63;
+
+
+
+  //hide the expandable details
+  $("tr .row").hide(); //div
+  $("tr.details-row").hide(); //tr
+
+
+  //animations for schema preview
+  $(".schema-preview tr.no-details-row").on("click", function(e) {  
+      
+      //if the details aren't shown
+      if($(this).next("tr.details-row").is(":visible") == false) {
+     
+        //show the <tr> then animate
+        $(this).next().show();
+        $(this).next("tr").children().children(".row").slideToggle("slow");
+     
+      } else {
+
+          //animate then hide the <tr>
+          $(this).next("tr").children().children(".row").slideToggle("slow", function() {
+            $(this).parent().parent().hide();
+       
+          });
+      }
+      
+      $(this).toggleClass("expanded");
+
+   }) 
+
+
+  // Set the height of the menu content area to position the button
+  $(".filter-wrapper").css("height", maxContentHeight);
+
+  console.log("View Port: " + viewPortHeight);
+  console.log("Header: " + headerHeight);
+  console.log("Filter Action Button: " + filterActionHeight);
+  console.log("Active List: " + filterListActveHeight);
+  console.log("Content Max: " + maxContentHeight);
+
+  // Hide the facet list & the hint text
+  $(".filter-list ul, .filter-hint-text").hide();
+
+
+  //Toggle the facet group
+  $(".facet-group").each(function() {
+    $(this).show(0).on("click", function(e){
+      e.preventDefault();
+      $(this).toggleClass("open");
+      $(this).next("ul").slideToggle("fast");
+    })
+  })
+
+  $(".facet-item a").each(function() {
+    $(this).on("click", function(e) {
+      e.preventDefault();
+      $(this).parent("li").siblings("li").find("a").removeClass("active");
+      $(this).toggleClass("active");
+    })
+  })
+
+  //Collect and display current filters, remove them, do the filter
+  $("#filter").on("click", function(e) {
+
+    $(".active-filters a.active").remove();
+
+    $(".filter-list.active ul, .filter-hint-text").show();
+
+    $(".facet-group.open").next("ul").slideToggle();
+    $(".facet-group").removeClass("open");
+
+    var selectedFilters = $(".facet-item a.active:not(.filter-list.active a.active)").get();
+    //console.log(selectedFilters);
+
+    $.each(selectedFilters, function(i, obj) {
+
+      var facetGroupName = $(obj).parents("ul").attr("data-facet-name");
+     // console.log(facetGroupName);
+
+      $(".active-filters").append("<li class='facet-item'><a class='active' href='#'>" + facetGroupName + " > " + obj.innerHTML + "</a></li>");
+    })
+
+    $(".active-filters a.active").on("click", function(e) {
+        $(this).remove(); 
+    }) 
+
+    $("#clear-filters").on("click", function(e) {
+      $(".active-filters a.active").remove();
+      $(".facet-item a.active").toggleClass("active");
+      $(".facet-group.open").next("ul").slideToggle();
+      $(".facet-group").removeClass("open");
+      $(".filter-hint-text").hide();
+    })
+
+  });
+
+</script>
+
+
+<% end %> 
+
+<div class="responsive-navbar">
+  <img src="../../images/evergreen.png" />
+  <span>City of Evergreen</span>
+  <div class="responsive-navbar-nav">
+    <button class="btn btn-default btn-inverse">Menu</button>
+  </div>
+</div>
+
+
+<div class="container main">
+
+  <div class="content">
+
+    <div class="result-card">
+
+      <div class="entry-header">
+        <div class="entry-title">
+          <h1 class="entry-name">Current Liquor Licenses</h1>
+          <span class="tag-official">
+            <span class="icon-official"></span> OFFICIAL</span>
+            <span class="tag-category">Animal Control</span>
+          </div>
+          <div class="entry-view-type">
+            <button class="btn btn-default btn-sm">Download Data</button>
+            <button class="btn btn-default btn-sm">API</button>
+            <button class="btn btn-default btn-sm">More <span class="icon-arrow-down"></span></button>
+          </div>
+        </div>
+
+        <div class="entry-content">
+          <div class="entry-main">
+            <div class="entry-description">
+              City-wide listing of current liquor licenses, with location information. All renewal records are created with a term start date and term expiration date. The business liquor licenses layer contains an address point where an active liquor license issued in the City. The listing ... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+            </div>
+
+            <div class="entry-meta first">
+              <div class="entry-meta topics">
+                <span class="meta-title">Topics</span> <span class="topic-list"><a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a>, <a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a></span>
+              </div>
+
+              <div class="entry-meta api">
+                <span class="api-link"><a href="#">API Docs</a></span>
+              </div>
+
+            </div>
+
+          </div><!-- ./entry-main -->
+
+          <div class="entry-meta second">
+            <div class="entry-meta updated">
+              <span class="meta-title">Data Updated</span>
+              <span class="date">December 1, 2015</span>
+            </div>                  
+            <div class="entry-meta views">
+              <span class="meta-title">Published by</span>
+              <span class="view-count">Department of Economic Development</span>
+            </div>
+          </div>
+
+
+        </div><!-- /.entry-content -->
+      </div> <!-- /.result-card -->        
+  </div>
+  <div class="page-content">
+      <div class='lp-section'>
+        <h2 class="section-header">What's in this Dataset</h2>
+
+        <div class="card-frame">
+        <div class="table-wrapper schema-preview schema-preview-expanded">
+          <table class="table-condensed table-borderless table-discrete">
+            <thead>
+              <tr>
+                <th scope="col">Column Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Type</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr class="no-details-row">
+                  <td class="column-name" scope="row">Licensee</td>
+                  <td>Legal name of the license holder</td>
+                  <td>Name, Text <span class="icon-text"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
+                </tr>
+
+                <tr class="details-row">
+                  <td class="details-content" colspan="4">
+                    <div class="row">   
+                      <div class="stat-details"> 
+                        <table>
+                          <tbody>
+                          <th class="title">Most Common Values</th>
+                          <tr>
+                            <td class="key">John Smith</td>
+                            <td class="value">254 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Chung Lee</td>
+                            <td class="value">120 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Michael Dunn</td>
+                            <td class="value">97 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Teresa Ballard</td>
+                            <td class="value">89 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Michael Dunn</td>
+                            <td class="value">85 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="spacer"></td>
+                          </tr>
+                          <tr>
+                            <td class="key">Blank Values</td>
+                            <td class="value">10.3%</td>
+                          </tr>
+                        </tbody>
+                        </table>
+                      </div><!-- /stat-details ><!/-->
+                     
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">Semantic Type</span>
+                              <span class="value"> Name</span>
+                            </div>
+                            <div class="detail-group">
+                              <span class="key">Data Type</span>
+                              <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/text.html"> Text</a></span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">API Fieldname</span>
+                              <span class="value"> licensee</span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+                    
+                    <div><!-- /row ><!/-->
+                  </td><!-- /details-content ><!/-->
+                </tr> <!-- /details-row ><!/-->
+                
+                <tr class="no-details-row">
+                  <td class="column-name" scope="row">DBA Name</td>
+                  <td>Doing Business As name. The legal name of the business</td>
+                  <td>Name, Text <span class="icon-text"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
+                </tr>
+
+                <tr class="details-row">
+                  <td class="details-content" colspan="4">
+                    <div class="row">   
+                      <div class="stat-details"> 
+                        <table>
+                          <tbody>
+                          <th class="title">Most Common Values</th>
+                          <tr>
+                            <td class="key">BevMo</td>
+                            <td class="value">254 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Walgreen's</td>
+                            <td class="value">120 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Safeway</td>
+                            <td class="value">97 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Mike's Hard Lemonade Store</td>
+                            <td class="value">89 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Rudy's</td>
+                            <td class="value">85 Occurrences</td>
+                          </tr>
+                          <tr>
+                            <td class="spacer"></td>
+                          </tr>
+                          <tr>
+                            <td class="key">Blank Values</td>
+                            <td class="value">10.3%</td>
+                          </tr>
+                        </tbody>
+                        </table>
+                      </div><!-- /stat-details ><!/-->
+                     
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">Semantic Type</span>
+                              <span class="value"> Name</span>
+                            </div>
+                            <div class="detail-group">
+                              <span class="key">Data Type</span>
+                              <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/text.html"> Text</a></span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">API Fieldname</span>
+                              <span class="value">dba_name</span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+                    
+                    <div><!-- /row ><!/-->
+                  </td><!-- /details-content ><!/-->
+                </tr> <!-- /details-row ><!/-->
+
+                <tr class="no-details-row">
+                  <td class="column-name" scope="row">License Number</td>
+                  <td>Unique Identifier for the license. Note: if licence gets renewed, multiple entries with the same identifier may appear.</td>
+                  <td>ID, Number <span class="icon-number"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
+                </tr>
+
+                <tr class="details-row">
+                  <td class="details-content" colspan="4">
+                    <div class="row">   
+                      <div class="stat-details"> 
+                        <table>
+                          <tbody>
+                          <th class="title">Statistics</th>
+                          <tr>
+                            <td class="key">Minimum</td>
+                            <td class="value">00012301</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Maximum</td>
+                            <td class="value">99123898</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Average</td>
+                            <td class="value">342912</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Median</td>
+                            <td class="value">234592</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Standard Deviation</td>
+                            <td class="value">85</td>
+                          </tr>
+                          <tr>
+                            <td class="spacer"></td>
+                          </tr>
+                          <tr>
+                            <td class="key">Blank Values</td>
+                            <td class="value">10.3%</td>
+                          </tr>
+                        </tbody>
+                        </table>
+                      </div><!-- /stat-details ><!/-->
+                     
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">Semantic Type</span>
+                              <span class="value"> ID</span>
+                            </div>
+                            <div class="detail-group">
+                              <span class="key">Data Type</span>
+                              <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/number.html"> Number</a></span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">API Fieldname</span>
+                              <span class="value"> license_number</span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+                    
+                    <div><!-- /row ><!/-->
+                  </td><!-- /details-content ><!/-->
+                </tr> <!-- /details-row ><!/-->
+
+                <tr class="no-details-row">
+                  <td class="column-name" scope="row">Expiration Date</td>
+                  <td></td></a>
+                  <td>Date, Timestamp<span class="icon-date"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
+                </tr>
+                
+                <tr class="details-row">
+                  <td class="details-content" colspan="4">
+                    <div class="row">   
+                      <div class="stat-details"> 
+                        <table>
+                          <tbody>
+                            <th class="title">Data Range</th>
+                            <tr>
+                              <td class="key">Earliest Date</td>
+                              <td class="value">Jan 1, 2001</td>
+                            </tr>
+                            <tr>
+                              <td class="key">Latest Date</td>
+                              <td class="value">March 12, 3016</td>
+                            </tr>
+                            <tr>
+                              <td class="spacer"></td>
+                            </tr>
+                            <tr>
+                              <td class="key">Blank Values</td>
+                              <td class="value">10.3%</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div><!-- /stat-details ><!/-->
+                     
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">Semantic Type</span>
+                              <span class="value"> Date</span>
+                            </div>
+                            <div class="detail-group">
+                              <span class="key">Data Type</span>
+                              <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/floating_timestamp.html"> Timestamp</a></span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">API Fieldname</span>
+                              <span class="value"> expiration_date</span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+                    
+                    <div><!-- /row ><!/-->
+                  </td><!-- /details-content ><!/-->
+                </tr> <!-- /details-row ><!/-->
+
+                <tr class="no-details-row">
+                  <td class="column-name" scope="row">Value</td>
+                  <td>Value of the license</td>
+                  <td>Amount, Money<span class="icon-number"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
+                </tr>
+
+                <tr class="details-row">
+                  <td class="details-content" colspan="4">
+                    <div class="row">   
+                      <div class="stat-details"> 
+                        <table>
+                          <tbody>
+                          <th class="title">Statistics</th>
+                          <tr>
+                            <td class="key">Minimum</td>
+                            <td class="value">$-1,432</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Maximum</td>
+                            <td class="value">$99,452</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Average</td>
+                            <td class="value">$33,234</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Median</td>
+                            <td class="value">$5,677</td>
+                          </tr>
+                          <tr>
+                            <td class="key">Standard Deviation</td>
+                            <td class="value">2,345</td>
+                          </tr>
+                          <tr>
+                            <td class="spacer"></td>
+                          </tr>
+                          <tr>
+                            <td class="key">Blank Values</td>
+                            <td class="value">11.3%</td>
+                          </tr>
+                        </tbody>
+                        </table>
+                      </div><!-- /stat-details ><!/-->
+                     
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">Semantic Type</span>
+                              <span class="value"> Amount</span>
+                            </div>
+                            <div class="detail-group">
+                              <span class="key">Data Type</span>
+                              <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/money.html"> Money</a></span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">API Fieldname</span>
+                              <span class="value"> value</span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+                    
+                    <div><!-- /row ><!/-->
+                  </td><!-- /details-content ><!/-->
+                </tr> <!-- /details-row ><!/-->
+
+                <tr class="no-details-row">
+                  <td class="column-name" scope="row">Location</td>
+                  <td>Mailing Address of the Business</td>
+                  <td>Location, Point<span class="icon-map"></span></td>
+                  <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
+                </tr>
+
+                <tr class="details-row">
+                  <td class="details-content" colspan="4">
+                    <div class="row">   
+                      <div class="stat-details"> 
+                        <table>
+                          <tbody>
+                          <th class="title">Statistics</th>
+
+                          <tr>
+                            <td class="key">Blank Values</td>
+                            <td class="value">11.3%</td>
+                          </tr>
+                        </tbody>
+                        </table>
+                      </div><!-- /stat-details ><!/-->
+                     
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">Semantic Type</span>
+                              <span class="value"> Location</span>
+                            </div>
+                            <div class="detail-group">
+                              <span class="key">Data Type</span>
+                              <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/point.html"> Point</a></span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+
+                      <div class="type-details">
+                            <div class="detail-group">
+                              <span class="key">API Fieldname</span>
+                              <span class="value"> location</span>
+                            </div>
+                      </div><!-- /type-details ><!/-->
+                    
+                    <div><!-- /row ><!/-->
+                  </td><!-- /details-content ><!/-->
+                </tr> <!-- /details-row ><!/-->
+
+            </tbody>
+          </table><!-- /.metadata-table -->
+          </div>
+          <button class="btn btn-default btn-sm btn-block">View All (12)</button>
+          <div class="centered">
+            <span class="more-link"><a class="more-link" href="#">View All (12)</a></span>
+            <!-- <button class="btn btn-default btn-xs">See all metadata</button> -->
+          </div>
+        </div><!-- /.card-frame -->
+      </div><!-- /.lp-section -->
+
+
+      <div class='lp-section'>
+        <h2 class="section-header">Additional Metadata</h2>
+
+        <div class="card-frame">
+
+          <div class="table-wrapper metadata-table">
+          <table class="table-condensed table-borderless table-discrete">
+            <tbody>
+                <tr>
+                  <td scope="row">Data Owner</td>
+                  <td>John Smith</td>
+                </tr>
+                <tr>
+                  <td scope="row"> Data Dictionary</td>
+                  <td><span class="icon-copy-document"></span><a href="#"> dictionary.pdf</td></a>
+                </tr>
+                <tr>
+                  <td scope="row">Licensing</td>
+                  <td>Creative Commons</td>
+                </tr>
+                <tr>
+                  <td scope="row">Downloads</td>
+                  <td>1,234</td>
+                </tr>
+            </tbody>
+          </table><!-- /.metadata-table -->
+          </div>
+          <div class="table-wrapper metadata-table">
+            <table class="table-condensed table-borderless table-discrete">
+              <tbody>
+                  <tr>
+                    <td scope="row">Data Last Updated</td>
+                    <td>Jan 7, 2015</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Metadata Last updated</td>
+                    <td>Jan 12, 2016</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Date Created</td>
+                    <td>Jan 1, 2013</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Views</td>
+                    <td>1,345</td>
+                  </tr>
+              </tbody>
+            </table><!-- /.metadata-table -->
+            </div>
+
+          <button class="btn btn-default btn-sm btn-block">View All</button>
+          <div class="centered">
+            <span class="more-link"><a class="more-link" href="#">View All</a></span>
+            <!-- <button class="btn btn-default btn-xs">See all metadata</button> -->
+          </div>
+        </div><!-- /.card-frame -->
+      </div><!-- /.lp-section -->
+    </div><!-- /.page-content -->
+
+
+</div> <!-- ./wrapper -->
+
+</div> <!-- ./container.main -->

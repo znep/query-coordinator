@@ -1,4 +1,4 @@
-//Tables
+  //Tables
 
 // Borderd Table
 table {
@@ -25,7 +25,14 @@ table {
   //Condensed Table
   &.table-condensed {
       th, td {
+        padding: ms(-5);
+        font-size: ms(-1);
+    }
+    @include breakpoint($medium) { 
+      th, td {
         padding: ms(-3);
+        font-size: ms(0);
+      }
     }
   }
 
@@ -51,6 +58,19 @@ table {
       left: 0;
       right: 0;
     }
+  }
+}
+
+//Discrete Table
+.table-discrete {
+  thead {
+    tr th {
+      color: $grey;
+      font-weight: 100;
+    }
+  }
+  th, td {
+    border-color: $light-grey-4;
   }
 }
 

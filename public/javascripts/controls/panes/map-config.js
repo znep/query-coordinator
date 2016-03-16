@@ -1,5 +1,6 @@
 ;(function($) {
     var mapConfigNS = blist.namespace.fetch('blist.configs.map');
+    var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
 
     var mapTypes = _.map(_.pluck(Dataset.map.backgroundLayers, 'key'), function(x) {
       return { text: x, value: x };
@@ -94,6 +95,10 @@
         return mapLayers;
     };
 
+    var errorMessage = function(msg) {
+        return $('<span class="error">' + msg + '</span>').css({ marginLeft: 0, paddingLeft: 0 });
+    };
+
     var disabledMessage = function(options)
     {
         return function()
@@ -107,6 +112,15 @@
             {
                 msg += ' ' + $.t('screens.ds.grid_sidebar.map.validation.hidden_location_html');
             }
+
+            if (blist.mixpanelLoaded) {
+                mixpanelNS.trackUserError({
+                    'Product': 'Classic Maps',
+                    'Message Shown': msg,
+                    'Chart/Map Type': 'Map'
+                });
+            }
+
             return msg;
         };
     };
@@ -130,11 +144,18 @@
             };
 
             var createDatasetErrorCallback = function() {
-                $field.append(
-                    '<span class="error">' +
-                    $.t('screens.ds.grid_sidebar.map.validation.location_column_invalid_dataset') +
-                    '</span>'
-                ).find('span.error').css({ marginLeft: 0, paddingLeft: 0 });
+                var msg = $.t('screens.ds.grid_sidebar.map.validation.location_column_invalid_dataset');
+                var errorSpan = errorMessage(msg);
+
+                $field.append(errorSpan);
+
+                if (blist.mixpanelLoaded) {
+                    mixpanelNS.trackUserError({
+                        'Product': 'Classic Maps',
+                        'Message Shown': msg,
+                        'Chart/Map Type': 'Map'
+                    });
+                }
 
                 $('.mapCreate .finishButtons .submit').addClass('disabled');
             };
@@ -166,8 +187,20 @@
             $field.find('span.edit').click(openSelectDataset)
                 .css({ cursor: 'pointer', color: '#0000ff' });
             if (invalid)
-            { $field.append('<span class="error">' + $.t('screens.ds.grid_sidebar.map.validation.location_column') + '</span>')
-                .find('span.error').css({ marginLeft: 0, paddingLeft: 0 }); }
+            {
+                var msg = $.t('screens.ds.grid_sidebar.map.validation.location_column');
+                var errorSpan = errorMessage(msg);
+
+                $field.append(errorSpan);
+
+                if (blist.mixpanelLoaded) {
+                    mixpanelNS.trackUserError({
+                        'Product': 'Classic Maps',
+                        'Message Shown': msg,
+                        'Chart/Map Type': 'Map'
+                    });
+                }
+            }
         };
 
         if (!$.isBlank(curValue))

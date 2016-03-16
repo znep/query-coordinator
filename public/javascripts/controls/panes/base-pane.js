@@ -1,6 +1,49 @@
 (function($)
 {
+    var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
     var uniformEnabled = function() { return !$.browser.msie || $.browser.majorVersion > 7; };
+
+    var mixpanelUserErrorTracking = function(validator) {
+        if (blist.mixpanelLoaded) {
+            var isClassicVisualizationError = _.any(
+                validator.currentElements,
+                function(el) { return el.name.match(/chart_create/); }
+            );
+            // We don't care about fields that are required but aren't
+            // filled out yet, especially since every interaction with
+            // the form triggers validations to run.
+            var notRequiredFieldErrors = _.any(
+                validator.errorList,
+                function(err) { return err.message != $.t('core.validation.required'); }
+            );
+
+            if (isClassicVisualizationError && notRequiredFieldErrors) {
+                // We're not grabbing the formatted chart type name from the DOM to avoid
+                // localizing our Mixpanel attributes
+                var chartType = _.find(
+                    validator.currentElements,
+                    function(input) { return input.dataset.origname === 'displayFormat.chartType' }
+                ).dataset.datavalue.replace(/"/g, '');
+
+                // Make chartType more human-readable
+                if (chartType.match(/stacked/)) {
+                    var newChartType = chartType.replace('stacked', '');
+                    chartType = 'Stacked ' + newChartType.capitalize();
+                } else {
+                    chartType = chartType.capitalize();
+                }
+
+                var lastActiveElement = _.get(validator, 'lastActive.name');
+                var msg = _.get(validator.errorMap, lastActiveElement, 'No error message provided');
+
+                mixpanelNS.trackUserError({
+                    'Product': 'Classic Visualizations',
+                    'Message Shown': msg,
+                    'Chart/Map Type': chartType
+                });
+            }
+        }
+    };
 
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {
@@ -689,7 +732,9 @@
                         })
                     .validate({ignore: ':hidden', errorElement: 'span',
                         errorPlacement: function($error, $element)
-                            { $error.appendTo($element.closest('.line')); }});
+                            { $error.appendTo($element.closest('.line')); },
+                        invalidHandler: function(event, validator)
+                            { mixpanelUserErrorTracking(validator); }});
                 $pane.data('form-validator', cpObj._validator);
 
                 cpObj._isDirty = false;

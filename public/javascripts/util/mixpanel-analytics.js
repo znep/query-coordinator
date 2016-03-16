@@ -24,6 +24,7 @@ $(document).ready(function() {
     'Clicked Sidebar Option',
     'Clicked Pane in Sidebar',
     'Closed Tour',
+    'Encountered Error Message',
     'Opened Goal Chart',
     'Used Search Facets',
     'Used Search Field',
@@ -33,6 +34,7 @@ $(document).ready(function() {
   // This is duplicated in angular/common/values.js
   var MIXPANEL_PROPERTIES = [
     'Catalog Version',
+    'Chart/Map Type',
     'Click Position',
     'Dataset Owner',
     'Domain',
@@ -42,13 +44,16 @@ $(document).ready(function() {
     'Facet Value',
     'Footer Item Type',
     'Header Item Type',
+    'Ingress Step',
     'IP',
     'Limit',
+    'Message Shown',
     'Name',
     'New URL',
     'Page Number',
     'Pane Name',
     'On Page',
+    'Product',
     'Properties',
     'Query',
     'Render Type',
@@ -288,6 +293,19 @@ $(document).ready(function() {
 
     // Validate and track!
     validateAndSendPayload(eventName, mergedProperties, callback);
+  };
+
+  // Assemble and emit user error payloads
+  mixpanelNS.trackUserError = function(properties) {
+    registerUserProperties();
+
+    var mergedProperties = _.extend(
+      genericPagePayload(),
+      properties
+    );
+
+    // Validate and track!
+    validateAndSendPayload('Encountered Error Message', mergedProperties);
   };
 
   $(document).on('mixpanelLoaded', function() {

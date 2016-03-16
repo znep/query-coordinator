@@ -87,8 +87,8 @@ export default function AssetSelectorStore() {
           case 'SOCRATA_VISUALIZATION':
             _chooseVisualizationOption();
             break;
-          case 'STORY_WIDGET':
-            _chooseStoryWidget();
+          case 'STORY_TILE':
+            _chooseStoryTile();
             break;
           case 'YOUTUBE':
             _chooseYoutube();
@@ -233,7 +233,9 @@ export default function AssetSelectorStore() {
     switch (type) {
       case 'hero': return WIZARD_STEP.IMAGE_PREVIEW;
       case 'image': return WIZARD_STEP.IMAGE_PREVIEW;
-      case 'story.widget': return WIZARD_STEP.ENTER_STORY_URL;
+      case 'story.tile':
+      case 'story.widget':
+        return WIZARD_STEP.ENTER_STORY_URL;
       case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
       case 'embeddedHtml': return WIZARD_STEP.ENTER_EMBED_CODE;
       case 'author': return WIZARD_STEP.IMAGE_PREVIEW; // Author blocks act like an image embed + RTE blurb.
@@ -310,7 +312,7 @@ export default function AssetSelectorStore() {
     _state.componentType = type;
   }
 
-  function _chooseStoryWidget() {
+  function _chooseStoryTile() {
     _state.step = WIZARD_STEP.ENTER_STORY_URL;
     self._emitChange();
   }
@@ -624,7 +626,7 @@ export default function AssetSelectorStore() {
     var storyDomain = _extractDomainFromStoryUrl(payload.url);
     var storyId = _extractStoryUidFromStoryUrl(payload.url);
 
-    _state.componentType = 'story.widget';
+    _state.componentType = 'story.tile';
 
     _state.componentProperties = {
       domain: storyDomain,

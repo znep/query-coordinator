@@ -141,7 +141,7 @@ export default _.merge({}, SocrataUtils, VifUtils, {
 		return accumulator;
 	},
 
-	generateStoryWidgetIframeSrc: function(storyDomain, storyUid) {
+	generateStoryTileIframeSrc: function(storyDomain, storyUid) {
 
 		this.assertIsOneOfTypes(storyDomain, 'string');
 		this.assertIsOneOfTypes(storyUid, 'string');
@@ -151,10 +151,10 @@ export default _.merge({}, SocrataUtils, VifUtils, {
 			'`storyUid` does not match anchored four-by-four pattern'
 		);
 
-		return 'https://' + storyDomain + '/stories/s/' + storyUid + '/widget';
+		return 'https://' + storyDomain + '/stories/s/' + storyUid + '/tile';
 	},
 
-	generateStoryWidgetJsonSrc: function(storyDomain, storyUid) {
+	generateStoryTileJsonSrc: function(storyDomain, storyUid) {
 
 		this.assertIsOneOfTypes(storyDomain, 'string');
 		this.assertIsOneOfTypes(storyUid, 'string');
@@ -164,7 +164,7 @@ export default _.merge({}, SocrataUtils, VifUtils, {
 			'`storyUid` does not match anchored four-by-four pattern'
 		);
 
-		return 'https://' + storyDomain + '/stories/s/' + storyUid + '/widget.json';
+		return 'https://' + storyDomain + '/stories/s/' + storyUid + '/tile.json';
 	},
 
 	generateYoutubeUrl: function(youtubeId) {

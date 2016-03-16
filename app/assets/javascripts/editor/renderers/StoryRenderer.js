@@ -686,8 +686,9 @@ export default function StoryRenderer(options) {
         return 'componentImage';
       case 'hero':
         return 'componentHero';
+      case 'story.tile':
       case 'story.widget':
-        return 'componentStoryWidget';
+        return 'componentStoryTile';
       case 'youtube.video':
         return 'componentYoutubeVideo';
       case 'socrata.visualization.classic':

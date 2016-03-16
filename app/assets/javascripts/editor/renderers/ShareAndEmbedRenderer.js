@@ -39,7 +39,7 @@ export default function ShareAndEmbedRenderer() {
 
   function template() {
     var storyUrl = shareAndEmbedStore.getStoryUrl();
-    var storyWidgetEmbedCode = shareAndEmbedStore.getStoryEmbedCode();
+    var storyTileEmbedCode = shareAndEmbedStore.getStoryEmbedCode();
 
     return (
         '<div>' +
@@ -47,7 +47,7 @@ export default function ShareAndEmbedRenderer() {
           StorytellerUtils.format('<input class="share-and-embed-story-url" type="text" readonly value="{0}">', storyUrl) +
           '<hr>' +
           StorytellerUtils.format('<h2 class="modal-input-label input-label">{0}</h2>', t('editor.share_and_embed.modal.embed_code_label')) +
-          StorytellerUtils.format('<textarea class="share-and-embed-embed-code" readonly>{0}</textarea>', storyWidgetEmbedCode) +
+          StorytellerUtils.format('<textarea class="share-and-embed-embed-code" readonly>{0}</textarea>', storyTileEmbedCode) +
           StorytellerUtils.format('<h2 class="modal-input-label input-label">{0}</h2>', t('editor.share_and_embed.modal.preview_label')) +
           '<iframe src="about:blank" class="share-and-embed-preview-iframe"></iframe>' +
           '<div class="modal-button-group r-to-l">' +
@@ -92,7 +92,7 @@ export default function ShareAndEmbedRenderer() {
       $shareAndEmbed.find('.share-and-embed-preview-iframe').
         attr(
           'src',
-          shareAndEmbedStore.getStoryWidgetUrl()
+          shareAndEmbedStore.getStoryTileUrl()
         );
     }
 

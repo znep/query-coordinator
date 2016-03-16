@@ -67,6 +67,7 @@
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-feature-map,
   .component-socrata-visualization-timeline-chart,
+  .component-story-tile,
   .component-story-widget,
   .component-youtube-video {
     @include media-query-property(
@@ -87,6 +88,7 @@
 .component-socrata-visualization-column-chart,
 .component-socrata-visualization-feature-map,
 .component-socrata-visualization-timeline-chart,
+.component-story-tile,
 .component-story-widget,
 .component-youtube-video {
   @include media-query-property(

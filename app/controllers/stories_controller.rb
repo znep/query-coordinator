@@ -9,14 +9,14 @@ class StoriesController < ApplicationController
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
-  skip_before_filter :require_logged_in_user, only: [:show, :widget]
+  skip_before_filter :require_logged_in_user, only: [:show, :tile]
 
   before_filter :require_sufficient_rights
 
-  after_action :allow_iframe, only: :widget
+  after_action :allow_iframe, only: :tile
   helper_method :needs_view_assets?, :contributor?
 
-  force_ssl except: [:show, :widget], unless: :ssl_disabled?
+  force_ssl except: [:show, :tile], unless: :ssl_disabled?
 
   def show
     # This param is set in the link provided to users who receive a collaboration request
@@ -35,7 +35,7 @@ class StoriesController < ApplicationController
     respond_with_story(DraftStory.find_by_uid(params[:uid]))
   end
 
-  def widget
+  def tile
     @story = PublishedStory.find_by_uid(params[:uid])
 
     if @story
@@ -44,7 +44,7 @@ class StoriesController < ApplicationController
       core_attributes = CoreServer.get_view(@story.uid) || {}
 
       respond_to do |format|
-        format.html { render 'stories/widget', layout: 'widget' }
+        format.html { render 'stories/tile', layout: 'tile' }
         format.json {
 
           render(
@@ -195,7 +195,7 @@ class StoriesController < ApplicationController
   private
 
   # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
-  # somewhere, but that clearly won't work with an embeddable widget so we
+  # somewhere, but that clearly won't work with an embeddable tile so we
   # remove it for this endpoint.
   def allow_iframe
     response.headers.except! 'X-Frame-Options'

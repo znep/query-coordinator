@@ -191,33 +191,33 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
-  describe '#widget' do
+  describe '#tile' do
     let(:story_revision) { FactoryGirl.create(:published_story) }
-    let(:widget_title) { 'Widget Test' }
-    let(:widget_description) { 'Widget Test Description' }
+    let(:tile_title) { 'Tile Test' }
+    let(:tile_description) { 'Tile Test Description' }
 
     before do
-      stub_core_view(story_revision.uid, {name: widget_title, description: widget_description})
+      stub_core_view(story_revision.uid, {name: tile_title, description: tile_description})
     end
 
     context 'when html is requested' do
       context 'when there is a story with the given four by four' do
         it 'ignores vanity_text' do
-          get :widget, uid: story_revision.uid, vanity_text: 'haha'
+          get :tile, uid: story_revision.uid, vanity_text: 'haha'
           expect(assigns(:story)).to eq(story_revision)
         end
 
         it 'renders when unauthenticated' do
           stub_invalid_session
-          get :widget, uid: story_revision.uid
+          get :tile, uid: story_revision.uid
 
-          expect(response).to render_template(:widget)
+          expect(response).to render_template(:tile)
         end
 
         it 'renders when authenticated' do
-          get :widget, uid: story_revision.uid
+          get :tile, uid: story_revision.uid
 
-          expect(response).to render_template(:widget)
+          expect(response).to render_template(:tile)
         end
       end
 
@@ -227,7 +227,7 @@ RSpec.describe StoriesController, type: :controller do
         end
 
         it 'returns 404' do
-          get :widget, uid: 'notf-ound'
+          get :tile, uid: 'notf-ound'
           expect(response).to have_http_status(404)
         end
       end
@@ -237,7 +237,7 @@ RSpec.describe StoriesController, type: :controller do
 
         context 'when not configured' do
           it 'does not render google analytics partial' do
-            get :widget, uid: story_revision.uid
+            get :tile, uid: story_revision.uid
             expect(response.body).to_not have_content(@google_analytics_tracking_id)
           end
         end
@@ -248,7 +248,7 @@ RSpec.describe StoriesController, type: :controller do
           end
 
           it 'renders google analytics partial' do
-            get :widget, uid: story_revision.uid
+            get :tile, uid: story_revision.uid
             expect(response.body).to have_content(@google_analytics_tracking_id)
           end
         end
@@ -258,29 +258,29 @@ RSpec.describe StoriesController, type: :controller do
     context 'when json is requested' do
       context 'when there is a story with the given four by four' do
         it 'ignores vanity_text' do
-          get :widget, uid: story_revision.uid, vanity_text: 'haha', format: :json
+          get :tile, uid: story_revision.uid, vanity_text: 'haha', format: :json
           expect(assigns(:story)).to eq(story_revision)
         end
 
         it 'responds when unauthenticated' do
           stub_invalid_session
-          get :widget, uid: story_revision.uid, format: :json
+          get :tile, uid: story_revision.uid, format: :json
 
           response_json_as_hash = JSON.parse(response.body)
-          expect(response_json_as_hash['title']).to eq(widget_title)
+          expect(response_json_as_hash['title']).to eq(tile_title)
           expect(response_json_as_hash['image']).to eq(nil)
-          expect(response_json_as_hash['description']).to eq(widget_description)
+          expect(response_json_as_hash['description']).to eq(tile_description)
           expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
         end
 
         it 'responds when authenticated' do
           stub_invalid_session
-          get :widget, uid: story_revision.uid, format: :json
+          get :tile, uid: story_revision.uid, format: :json
 
           response_json_as_hash = JSON.parse(response.body)
-          expect(response_json_as_hash['title']).to eq(widget_title)
+          expect(response_json_as_hash['title']).to eq(tile_title)
           expect(response_json_as_hash['image']).to eq(nil)
-          expect(response_json_as_hash['description']).to eq(widget_description)
+          expect(response_json_as_hash['description']).to eq(tile_description)
           expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
         end
       end
@@ -291,7 +291,7 @@ RSpec.describe StoriesController, type: :controller do
         end
 
         it 'returns 404' do
-          get :widget, uid: 'notf-ound', format: :json
+          get :tile, uid: 'notf-ound', format: :json
           expect(response).to have_http_status(404)
         end
       end
@@ -300,18 +300,18 @@ RSpec.describe StoriesController, type: :controller do
     describe 'log view access' do
       it 'logs view access when story exists' do
         expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision, embedded: true)
-        get :widget, uid: story_revision.uid
+        get :tile, uid: story_revision.uid
       end
 
       it 'logs view access for json requests' do
         expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision, embedded: true)
-        get :widget, uid: story_revision.uid, format: :json
+        get :tile, uid: story_revision.uid, format: :json
       end
 
       it 'does not log view access when story does not exist' do
         stub_core_view_as_missing('notf-ound')
         expect(StoryAccessLogger).to_not receive(:log_story_view_access)
-        get :widget, uid: 'notf-ound'
+        get :tile, uid: 'notf-ound'
       end
     end
   end

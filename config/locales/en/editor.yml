@@ -123,7 +123,7 @@ en:
           previously_published: 'There is a previously published version of this story. Updating will make your changes visible to everyone.'
         errors:
           not_published_not_updated: 'Your story has not been published and cannot be updated.'
-      story_widget_embed_section:
+      story_tile_embed_section:
         section_title: 'Share and Embed...'
       story_stats_section:
         section_title: 'View Story Stats'
@@ -180,8 +180,8 @@ en:
         description_label: 'Image Description (optional)'
         description_alt_attribute: 'This text is called an alt attribute and will not be displayed on your story page '
         alt_attribute_tooltip: 'An alt attribute (short for alternative) is the text displayed in place of an image in the event that the image cannot be loaded.  It’s also used by screen reader software to describe the image so that users of assistive technology can interact with the elements of the page.'
-      story_widget:
-        name: 'Socrata Story Widget'
+      story_tile:
+        name: 'Socrata Story Tile'
         description: 'Insert a preview of another story.'
         heading: 'Add a Preview of Another Story'
         input_label: 'Link to story'
@@ -205,7 +205,7 @@ en:
       saving: 'Saving...'
       unsaved: 'Save'
       idle: 'Save'
-    story_widget:
+    story_tile:
       view_story_prompt: 'View Story'
     visualizations:
       no_value_placeholder: '(No value)'

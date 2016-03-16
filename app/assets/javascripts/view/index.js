@@ -9,7 +9,7 @@ import '../editor/block-component-renderers/componentSocrataVisualizationColumnC
 import '../editor/block-component-renderers/componentSocrataVisualizationFeatureMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationTable';
 import '../editor/block-component-renderers/componentSocrataVisualizationTimelineChart';
-import '../editor/block-component-renderers/componentStoryWidget';
+import '../editor/block-component-renderers/componentStoryTile';
 
 import StorytellerUtils from '../StorytellerUtils';
 import Environment from '../StorytellerEnvironment';
@@ -89,9 +89,10 @@ $(document).on('ready', function() {
             componentHero(componentData);
           break;
 
+        case 'story.tile':
         case 'story.widget':
           $element.
-            componentStoryWidget(componentData);
+            componentStoryTile(componentData);
           break;
 
         case 'socrata.visualization.classic':

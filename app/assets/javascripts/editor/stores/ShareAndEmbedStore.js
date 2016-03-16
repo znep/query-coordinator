@@ -46,8 +46,8 @@ export default function ShareAndEmbedStore() {
     );
   };
 
-  this.getStoryWidgetUrl = function() {
-    return StorytellerUtils.format('{0}/widget', this.getStoryUrl());
+  this.getStoryTileUrl = function() {
+    return StorytellerUtils.format('{0}/tile', this.getStoryUrl());
   };
 
   this.getStoryEmbedCode = function() {
@@ -63,7 +63,7 @@ export default function ShareAndEmbedStore() {
         'scrolling="no" ' +
         'frameborder="0">' +
       '</iframe>',
-      this.getStoryWidgetUrl()
+      this.getStoryTileUrl()
     );
   };
 

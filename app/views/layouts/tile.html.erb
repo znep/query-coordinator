@@ -5,11 +5,11 @@
     <title><%= core_attributes['name'] || t('default_page_title') %></title>
     <%= default_meta_tags() %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <%= stylesheet_link_tag 'widget', media: 'all' %>
+    <%= stylesheet_link_tag 'tile', media: 'all' %>
     <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
     <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
 
-    <%= storyteller_javascript_include_tag 'widget' %>
+    <%= storyteller_javascript_include_tag 'tile' %>
     <%= google_font_code_embed %>
     <%= render 'shared/google_analytics_script' %>
   </head>

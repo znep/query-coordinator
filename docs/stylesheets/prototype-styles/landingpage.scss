@@ -305,7 +305,7 @@ a {
 		  					@include span-columns(12);
 		  					border-top: 1px solid $light-grey-3;
 		  					.detail-group {
-		  						margin: ms(-1) 0;
+		  						margin: ms(-1) 0;  
 		  						.key {
 		  							font-weight: 600;
 		  						}
@@ -375,6 +375,8 @@ a {
 				  					@include shift(1);
 				  					border-top: none;
 				  					.detail-group {
+				  						margin-top: ms(-8);
+				  						margin-bottom: ms(0);
 				  						> span {
 				  							display: block;
 				  						}

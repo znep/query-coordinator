@@ -355,8 +355,6 @@ module DatasetsHelper
     hash.newChartsEnabled = true
     hash.newMapsEnabled = module_enabled?(:new_maps)
     hash.oldChartsForced = module_enabled?(:old_charts)
-    hash.newChartConfig = true
-    hash.oldChartConfigForced = module_enabled?(:old_chart_config)
     hash.newCharts!.newBarChart = module_enabled?(:newBarChart)
     hash.newCharts!.newLineChart = module_enabled?(:newLineChart)
 

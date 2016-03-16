@@ -665,7 +665,7 @@
       }
     }
   }
-  &.new_chart_create {
+  &.chart_create {
     margin-top: -1em;
     @include vis-type-colors;
     // Hide the error message shown on the bottom, it doesn't make sense with no apply button

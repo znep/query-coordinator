@@ -3,7 +3,6 @@ angular-app-dataCards:
 - dataCards/flexgrid-custom
 - dataCards/ellipsis
 - dataCards/flyout
-- dataCards/_leaflet
 - dataCards/choropleth
 - dataCards/timeline-chart
 - dataCards/table
@@ -24,6 +23,9 @@ angular-app-dataCards:
 - dataCards/classic-visualization-previewer
 - dataCards/export-menu
 - dataCards/tour
+- mobile/leaflet
+- dataCards/_leaflet
+- mobile/socrata-visualizations
 
 ie9:
 - dataCards/ie9
@@ -282,3 +284,5 @@ mobile:
 - mobile/loader
 - mobile/components/navbar
 - mobile/components/meta
+- mobile/leaflet
+- mobile/socrata-visualizations

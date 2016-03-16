@@ -103,7 +103,7 @@ describe JobsHelper do
     it 'returns "Completed" if the status is success_with_data_errors' do
       event = ImportActivityEvent.new({
         :status => 'SuccessWithDataErrors',
-        :event_type => 'upsert_counts',
+        :event_type => 'upsert-counts',
         :info => {:failCount => 99, :rowCount => 1000}
       })
       expect(event_title(event)).to eq('Completed')

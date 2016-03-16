@@ -371,6 +371,13 @@ module BrowseActions
       end
     end
 
+    if browse_options[:filtered_types].is_a? Array
+      type_facet = browse_options[:facets].find { |facet| facet[:singular_description] == 'type' }
+      type_facet.try(:[], :options).try(:select!) do |facet|
+        browse_options[:filtered_types].include? facet[:value]
+      end
+    end
+
     browse_options[:sidebar_config] = catalog_config.sidebar
     browse_options[:header_config]  = catalog_config.header
     browse_options[:footer_config]  = catalog_config.footer

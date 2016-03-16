@@ -23,7 +23,7 @@ end
       <%= render :partial => 'datasets/browse_search',
                  :locals => { :opts => opts } if opts[:sidebar_config].nil? || opts[:sidebar_config].search %>
 
-      <%- if opts[:q].present? || opts[:facets].any?{ |f| opts[:user_params][f[:param]].present? } -%>
+      <%- if (opts[:q].present? || opts[:facets].any?{ |f| opts[:user_params][f[:param]].present? }) && (!opts[:user_params].include?(:filtered_types))-%>
         <div class="facetSection clearAllSection">
           <ul>
             <li>
@@ -42,14 +42,22 @@ end
           <%- if facet[:custom_content].nil? -%>
             <ul>
               <%- if opts[facet[:param]].present? -%>
-                <%- cp = opts[:user_params].dup -%>
-                <%- cp.delete(facet[:param]) -%>
-                <li><a href="<%= opts[:base_url] + '?' + cp.to_param %>" class="clearValues">
+                <li>
+                  <% if opts[:user_params].include?(:filtered_types) %>
+                    <%- filtered_types = opts[:user_params][:filtered_types] -%>
+                    <%- opts[:user_params][:limitTo] = filtered_types -%>
+                    <a href="<%= opts[:base_url] + '?' + opts[:user_params].to_param %>" class="clearValues">
+                  <% else %>
+                    <%- cp = opts[:user_params].dup -%>
+                    <%- cp.delete(facet[:param]) -%>
+                    <a href="<%= opts[:base_url] + '?' + cp.to_param %>" class="clearValues">
+                  <% end %>
                   <%- if facet[:use_icon] -%>
                     <span class="icon"></span>
                   <%- end -%>
                   <%= t('controls.browse.actions.clear_facet') %>
-                </a></li>
+                  </a>
+                </li>
               <%- end -%>
               <%- facet[:options].each do |facet_option| -%>
                 <%= browse_facet_option(facet_option, facet[:param], opts, facet[:use_icon]) %>

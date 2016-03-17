@@ -29,4 +29,10 @@ after_configuration do
   	FileUtils.mkdir('./docs/fonts')
   end
   FileUtils.cp(Dir.glob('./src/fonts/socrata-icons*'), './docs/fonts')
+
+  if !File.exists?('./src/js/vendor')
+    FileUtils.mkdir('./src/js/vendor')
+  end
+  FileUtils.cp(Dir.glob('./node_modules/tether-shepherd/dist/js/shepherd.min.js'), './src/js/vendor')
+  FileUtils.cp(Dir.glob('./node_modules/tether/dist/js/tether.min.js'), './src/js/vendor')
 end

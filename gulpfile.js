@@ -40,6 +40,12 @@ gulp.task('clean', function() {
 gulp.task('copy', function() {
   gulp.src('src/fonts/socrata-icons*').
     pipe(gulp.dest('dist/fonts'));
+
+  gulp.src('node_modules/tether-shepherd/dist/js/shepherd.min.js').
+    pipe(gulp.dest('dist/js/vendor'));
+
+  gulp.src('node_modules/tether/dist/js/tether.min.js').
+    pipe(gulp.dest('dist/js/vendor'));
 });
 
 gulp.task('sass', function() {

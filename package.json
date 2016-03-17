@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Socrata's guide to good UX.",
   "main": "dist/js/styleguide.js",
   "directories": {
@@ -51,6 +51,8 @@
     "modularscale-sass": "^2.1.1",
     "node-bourbon": "^4.2.3",
     "node-neat": "^1.7.2",
-    "rimraf": "^2.5.0"
+    "rimraf": "^2.5.0",
+    "tether": "^1.0.1",
+    "tether-shepherd": "1.2.0"
   }
 }

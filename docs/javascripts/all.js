@@ -6,6 +6,7 @@
 //= require js/menu
 //= require js/modal
 //= require js/toggle
+//= require js/tour
 
 document.addEventListener('DOMContentLoaded', function() {
   if (document.querySelector('#dd')) {
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var flyoutFactory = new FlyoutFactory( document );
   var flannelFactory = new FlannelFactory( document );
   var menuFactory = new MenuFactory( document );
+  var tourFactory = new TourFactory( document );
 
   /**
    * Fancy demo stuff.

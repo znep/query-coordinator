@@ -917,6 +917,34 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
+  describe '#stats' do
+    before do
+      stub_sufficient_rights
+    end
+
+    context 'when authenticated' do
+      before do
+        stub_valid_session
+      end
+
+      it 'redirects to /d/<four-four>/stats' do
+        get :stats, uid: 'stat-stat'
+        expect(response).to redirect_to '/d/stat-stat/stats'
+      end
+    end
+
+    context 'when unauthenticated' do
+      before do
+        stub_invalid_session
+      end
+
+      it 'redirects to login' do
+        get :stats, uid: 'stat-stat'
+        expect(response).to redirect_to '/login?return_to=%2Fs%2Fstat-stat%2Fstats'
+      end
+    end
+  end
+
   describe '#require_sufficient_rights' do
     let(:action) { :nothing }
     let(:get_request) { get action, uid: 'test-test' }
@@ -925,7 +953,7 @@ RSpec.describe StoriesController, type: :controller do
       stub_valid_session
     end
 
-    describe 'editing' do
+    describe '#edit' do
       let(:action) { :edit }
 
       before do
@@ -951,7 +979,33 @@ RSpec.describe StoriesController, type: :controller do
       end
     end
 
-    describe 'copying' do
+    describe '#stats' do
+      let(:action) { :stats }
+
+      before do
+        allow(controller).to receive(:can_see_story_stats?).and_return(can_see_story_stats)
+      end
+
+      describe 'when user can edit story' do
+        let(:can_see_story_stats) { true }
+
+        it 'does not 404' do
+          get_request
+          expect(response.status).to_not be(404)
+        end
+      end
+
+      describe 'when user cannot edit story' do
+        let(:can_see_story_stats) { false }
+
+        it '404s' do
+          get_request
+          expect(response.status).to be(404)
+        end
+      end
+    end
+
+    describe '#copy' do
       let(:action) { :copy }
 
       before do
@@ -978,7 +1032,7 @@ RSpec.describe StoriesController, type: :controller do
       end
     end
 
-    describe 'previewing' do
+    describe '#preview' do
       let(:action) { :preview }
 
       before do
@@ -1004,5 +1058,4 @@ RSpec.describe StoriesController, type: :controller do
       end
     end
   end
-
 end

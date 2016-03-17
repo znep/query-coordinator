@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     post ':uid/create' => 'stories#create'
     get '(:vanity_text)/:uid/about' => 'stories#about'
     get '(:vanity_text)/:uid/edit' => 'stories#edit'
+    get '(:vanity_text)/:uid/stats' => 'stories#stats'
     get '(:vanity_text)/:uid/preview' => 'stories#preview'
     get '(:vanity_text)/:uid/widget' => 'stories#widget', as: 'widget'
   end

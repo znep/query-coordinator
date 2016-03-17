@@ -30,7 +30,7 @@
         </button>
         <div class="menu-list-item-content settings-panel-displaying collapsed">
           <div>
-            <%- if contributor? -%>
+            <%- unless can_edit_title_and_description? -%>
               <section class="warning-bar">
                 <p><span class="icon-warning"></span></p>
                 <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_edit_title_and_description') %></p>
@@ -82,7 +82,7 @@
         </button>
         <div class="menu-list-item-content settings-panel-publishing collapsed">
           <div>
-            <%- if contributor? -%>
+            <%- unless can_manage_story_visibility? -%>
               <section class="warning-bar">
                 <p><span class="icon-warning"></span></p>
                 <%- if determine_permissions_from_core_attributes[:isPublic] -%>

@@ -3,6 +3,12 @@
   "version": "0.4.0",
   "description": "Socrata's guide to good UX.",
   "main": "dist/js/styleguide.js",
+  "publishConfig": {
+    "registry": "https://socrata.artifactoryonline.com/socrata/api/npm/npm-local"
+  },
+  "files": [
+    "dist"
+  ],
   "directories": {
     "doc": "docs"
   },

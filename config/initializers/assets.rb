@@ -17,6 +17,7 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules', 'socrat
 Rails.application.config.assets.precompile += %w( sinon-server-1.17.3.js )
 Rails.application.config.assets.precompile += %w( themes/themes.css )
 Rails.application.config.assets.precompile += %w( story-view.css )
+Rails.application.config.assets.precompile += %w( print.css )
 Rails.application.config.assets.precompile += %w( admin.css )
 Rails.application.config.assets.precompile += %w( widget.css )
 Rails.application.config.assets.precompile += %w( 404.css )

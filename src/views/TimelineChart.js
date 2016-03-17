@@ -831,7 +831,7 @@ function TimelineChart(element, vif) {
       // Re: the above, this is phase one of the transition to using the VIF to
       // describe filter state. A second PR will be made to convert the render
       // options into a VIF on its own.
-      } else if (options.vif) {
+      } else if (options.vif && !options.vif.configuration.isMobile) {
 
         //derive selection start and end
         var filtersOnThisColumn = options.

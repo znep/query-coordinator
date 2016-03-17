@@ -9,12 +9,8 @@
 # lived in app/helpers, the override would take place for _all_ views.
 module AdministrationHelper
 
-  # Implement special-case behavior:
-  # Stories should load in the editor if
-  #   * opened from a profile page AND
-  #   * the user is looking at their own profile page.
   def view_url(view)
-    if view.story? && view.owner.id == current_user.id
+    if view.story?
       "/stories/s/#{view.id}/edit"
     else
       # Call the original implementation, presumably in ApplicationHelper.

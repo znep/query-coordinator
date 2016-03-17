@@ -21,12 +21,18 @@ export var WIZARD_STEP = {
 
   ENTER_STORY_URL: 'ENTER_STORY_URL',
 
+  // You want a Socrata visualization, so please choose an option
+  SELECT_VISUALIZATION_OPTION: 'SELECT_VISUALIZATION_OPTION',
   // You want a Socrata visualization, so please choose your dataset.
   SELECT_DATASET_FOR_VISUALIZATION: 'SELECT_DATASET_FOR_VISUALIZATION',
   // You chose a dataset. Will it be displayed as a table or some other visualization?
   SELECT_TABLE_OR_CHART: 'SELECT_TABLE_OR_CHART',
+  // You choose a map or chart visualization.
+  SELECT_MAP_OR_CHART_VISUALIZATION: 'SELECT_MAP_OR_CHART_VISUALIZATION',
   // You chose some other visualization. Please edit it to your liking.
   CONFIGURE_VISUALIZATION: 'CONFIGURE_VISUALIZATION',
+  // You chose a map or chart. Please edit it to your liking.
+  CONFIGURE_MAP_OR_CHART: 'CONFIGURE_MAP_OR_CHART',
 
   SELECT_IMAGE_TO_UPLOAD: 'SELECT_IMAGE_TO_UPLOAD',
   IMAGE_UPLOADING: 'IMAGE_UPLOADING',
@@ -34,7 +40,7 @@ export var WIZARD_STEP = {
   IMAGE_UPLOAD_ERROR: 'IMAGE_UPLOAD_ERROR'
 };
 
-export var assetSelectorStore = new AssetSelectorStore();
+export var assetSelectorStore = StorytellerUtils.export(new AssetSelectorStore(), 'storyteller.assetSelectorStore');
 export default function AssetSelectorStore() {
   _.extend(this, new Store());
 
@@ -79,7 +85,7 @@ export default function AssetSelectorStore() {
       case Actions.ASSET_SELECTOR_PROVIDER_CHOSEN:
         switch (payload.provider) {
           case 'SOCRATA_VISUALIZATION':
-            _chooseVisualization();
+            _chooseVisualizationOption();
             break;
           case 'STORY_WIDGET':
             _chooseStoryWidget();
@@ -108,8 +114,23 @@ export default function AssetSelectorStore() {
         }
         break;
 
+      case Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN:
+        switch (payload.visualizationOption) {
+          case 'INSERT_VISUALIZATION':
+            _chooseInsertVisualization();
+            break;
+          case 'CREATE_VISUALIZATION':
+            _chooseCreateVisualization();
+            break;
+        }
+        break;
+
       case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
         _chooseVisualizationDataset(payload);
+        break;
+
+      case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART:
+        _chooseVisualizationMapOrChart(payload);
         break;
 
       case Actions.ASSET_SELECTOR_VISUALIZE_AS_TABLE:
@@ -187,6 +208,10 @@ export default function AssetSelectorStore() {
     return _state.componentProperties;
   };
 
+  this.getDataset = function() {
+    return _state.dataset;
+  };
+
   this.isEditingExisting = function() {
     return _state.isEditingExisting === true;
   };
@@ -212,10 +237,8 @@ export default function AssetSelectorStore() {
       case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
       case 'embeddedHtml': return WIZARD_STEP.ENTER_EMBED_CODE;
       case 'author': return WIZARD_STEP.IMAGE_PREVIEW; // Author blocks act like an image embed + RTE blurb.
-    }
-
-    if (type === 'socrata.visualization.table') {
-      return WIZARD_STEP.SELECT_TABLE_OR_CHART;
+      case 'socrata.visualization.table': return WIZARD_STEP.SELECT_TABLE_OR_CHART;
+      case 'socrata.visualization.classic': return WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
     }
 
     if (type.indexOf('socrata.visualization.') === 0) {
@@ -297,8 +320,18 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
-  function _chooseVisualization() {
+  function _chooseInsertVisualization() {
+    _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION;
+    self._emitChange();
+  }
+
+  function _chooseCreateVisualization() {
     _state.step = WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION;
+    self._emitChange();
+  }
+
+  function _chooseVisualizationOption() {
+    _state.step = WIZARD_STEP.SELECT_VISUALIZATION_OPTION;
     self._emitChange();
   }
 
@@ -336,11 +369,39 @@ export default function AssetSelectorStore() {
           _setVisualizationDataset(payload.domain, migrationData.nbeId);
         },
         function(error) {
-          alert('This dataset cannot be chosen at this time.'); //eslint-disable-line no-alert
+          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error')); //eslint-disable-line no-alert
           exceptionNotifier.notify(error);
         }
       );
     }
+  }
+
+  function _chooseVisualizationMapOrChart(payload) {
+    _state.step = WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
+
+    StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
+
+    var mapChartError = function(error) {
+      alert(I18n.t('editor.asset_selector.visualization.choose_map_or_chart_error')); //eslint-disable-line no-alert
+      exceptionNotifier.notify(error);
+    };
+
+    $.get(
+      StorytellerUtils.format(
+        'https://{0}/api/views/{1}.json',
+        payload.domain,
+        payload.mapOrChartUid
+      )
+    ).then(
+      function(viewData) {
+        if (viewData.displayType === 'chart' || viewData.displayType === 'map') {
+          _setVisualizationDataset(payload.domain, payload.mapOrChartUid, viewData);
+        } else {
+          mapChartError();
+        }
+      },
+      mapChartError
+    );
   }
 
   function _visualizeAsTable() {
@@ -409,40 +470,45 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
-  function _setVisualizationDataset(domain, datasetUid) {
+  function _setVisualizationDataset(domain, datasetUid, viewData) {
+    var updateStateComponentPropertiesAndDataset = function(data) {
+      _state.componentProperties = _state.componentProperties || {};
+      _.extend(_state.componentProperties, {
+        dataset: {
+          domain: domain,
+          datasetUid: datasetUid
+        }
+      });
+
+      // Not going into _state.componentProperties, as we don't want this blob
+      // to end up stored in the story component data.
+      _state.dataset = _.cloneDeep(data);
+
+      self._emitChange();
+    };
+
     // Fetch the view info.
     // NOTE: Beware that view.metadata is not sync'd across to the NBE
     // as of this writing. If you need to get info out of view.metadata
     // (like rowLabel), you'll need to fetch the OBE view separately.
-    $.get(
-      StorytellerUtils.format(
-        'https://{0}/api/views/{1}.json',
-        domain,
-        datasetUid
-      )
-    ).
-    then(
-      function(data) {
-        _state.componentProperties = _state.componentProperties || {};
-        _.extend(_state.componentProperties, {
-          dataset: {
-            domain: domain,
-            datasetUid: datasetUid
-          }
-        });
-
-        // Not going into _state.componentProperties, as we don't want this blob
-        // to end up stored in the story component data.
-        _state.dataset = _.cloneDeep(data);
-
-        self._emitChange();
-      },
-      function(error) {
-        exceptionNotifier.notify(error);
-        // TODO
-        alert('This dataset cannot be chosen at this time.'); //eslint-disable-line no-alert
-      }
-    );
+    if (!viewData) {
+      $.get(
+        StorytellerUtils.format(
+          'https://{0}/api/views/{1}.json',
+          domain,
+          datasetUid
+        )
+      ).
+      then(
+        updateStateComponentPropertiesAndDataset,
+        function(error) {
+          exceptionNotifier.notify(error);
+          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error')); //eslint-disable-line no-alert
+        }
+      );
+    } else {
+      updateStateComponentPropertiesAndDataset(viewData);
+    }
   }
 
   function _updateVisualizationConfiguration(payload) {

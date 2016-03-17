@@ -65,12 +65,9 @@ function UserSessionService($http, $q, rx) {
   }
 
   function isAdmin(user) {
-
-    if (_.has(user, 'flags') && _.has(user, 'roleName')) {
-      return _.contains(user, 'flags.admin') || user.roleName === 'administrator';
-    }
-
-    return false;
+    var flags = _.get(user, 'flags', []);
+    var roleName = _.get(user, 'roleName');
+    return _.contains(flags, 'admin') || roleName === 'administrator';
   }
 
   return {

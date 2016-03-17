@@ -10,6 +10,7 @@ var httpConfig = {
 function SpatialLensService(http, rx, ServerConfig) {
   var spatialLensService = {
     isSpatialLensEnabled: isSpatialLensEnabled,
+    isSpatialLensAdminEnabled: isSpatialLensAdminEnabled,
     getAvailableGeoregions$: getAvailableGeoregions$,
     findComputedColumnForRegion: findComputedColumnForRegion,
     getCuratedRegions: getCuratedRegions,
@@ -22,6 +23,10 @@ function SpatialLensService(http, rx, ServerConfig) {
 
   function isSpatialLensEnabled() {
     return ServerConfig.get('enableSpatialLensRegionCoding');
+  }
+
+  function isSpatialLensAdminEnabled() {
+    return ServerConfig.get('enableSpatialLensAdmin');
   }
 
   function getAvailableGeoregions$(dataset) {

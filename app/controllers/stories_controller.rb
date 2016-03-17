@@ -184,6 +184,10 @@ class StoriesController < ApplicationController
     end
   end
 
+  def stats
+    redirect_to "/d/#{params[:uid]}/stats"
+  end
+
   def needs_view_assets?
     %w{ show preview }.include?(action_name)
   end
@@ -305,6 +309,8 @@ class StoriesController < ApplicationController
 
     if action == 'edit'
       render_404 unless can_edit_story?
+    elsif action == 'stats'
+      render_404 unless can_see_story_stats?
     elsif action == 'copy'
       render text: 'It seems that you don\'t have access to do that. Sorry!', status: 403 unless can_make_copy?
     elsif action == 'preview'

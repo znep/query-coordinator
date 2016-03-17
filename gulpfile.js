@@ -42,10 +42,10 @@ gulp.task('copy', function() {
     pipe(gulp.dest('dist/fonts'));
 
   gulp.src('node_modules/tether-shepherd/dist/js/shepherd.min.js').
-    pipe(gulp.dest('src/js/vendor'));
+    pipe(gulp.dest('dist/js/vendor'));
 
   gulp.src('node_modules/tether/dist/js/tether.min.js').
-    pipe(gulp.dest('src/js/vendor'));
+    pipe(gulp.dest('dist/js/vendor'));
 });
 
 gulp.task('sass', function() {

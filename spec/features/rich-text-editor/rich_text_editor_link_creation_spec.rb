@@ -105,9 +105,8 @@ RSpec.describe 'rich text editor link creation', type: :feature, js: true do
           fill_in('display-text', :with => 'New Text')
           fill_in('link-text', :with => 'https://newurl.com')
           find('label[for="open-in-new-window"]').click
-          # The modal OK button takes a handful of milliseconds
-          # to convert from disabled to enabled.
-          sleep(1)
+          find('#link-modal .btn-primary:not(:disabled)')
+
           save_modal
         end
 

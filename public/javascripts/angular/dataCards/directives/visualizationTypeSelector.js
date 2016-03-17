@@ -21,19 +21,8 @@ function visualizationTypeSelector(
     var computedColumn$ = cardModel$.observeOnLatest('computedColumn');
 
     var regionCodingDetails$ = dataset$.map(function(dataset) {
-      if (!_.includes(dataset.getCurrentValue('permissions').rights, ViewRights.WRITE)) {
-        return {
-          enabled: false,
-          showInfoMessage: true,
-          showNonComputedSection: true,
-          enableNonComputedSection: false,
-          nonComputedSectionTitle: I18n.addCardDialog.curatedRegionMessages.permissions
-        };
-      }
-
       if (!SpatialLensService.isSpatialLensEnabled()) {
         return {
-          enabled: false,
           showInfoMessage: false,
           showNonComputedSection: false,
           enableNonComputedSection: false,
@@ -41,25 +30,34 @@ function visualizationTypeSelector(
         };
       }
 
+      if (!_.includes(dataset.getCurrentValue('permissions').rights, ViewRights.WRITE)) {
+        return {
+          showInfoMessage: SpatialLensService.isSpatialLensAdminEnabled(),
+          showNonComputedSection: true,
+          enableNonComputedSection: false,
+          nonComputedSectionTitle: I18n.addCardDialog.curatedRegionMessages.permissions
+        };
+      }
+
       return {
-        enabled: true,
-        showInfoMessage: true,
+        showInfoMessage: SpatialLensService.isSpatialLensAdminEnabled(),
         showNonComputedSection: true,
         enableNonComputedSection: true,
         nonComputedSectionTitle: I18n.addCardDialog.curatedRegionMessages.notYetComputed
       };
     }).share();
-
     $scope.$bindObservable('showNonComputedSection', regionCodingDetails$.pluck('showNonComputedSection'));
     $scope.$bindObservable('enableNonComputedSection', regionCodingDetails$.pluck('enableNonComputedSection'));
     $scope.$bindObservable('nonComputedSectionTitle', regionCodingDetails$.pluck('nonComputedSectionTitle'));
-    var informationMessage$ = regionCodingDetails$.pluck('showInfoMessage').filter(_.identity).combineLatest(
-      currentUser$.map(UserSessionService.isAdmin),
-      function(isRegionCodingEnabled, isAdmin) {
+    $scope.$bindObservable('showInfoMessage', regionCodingDetails$.pluck('showInfoMessage'));
+
+    var informationMessage$ = currentUser$.map(UserSessionService.isAdmin).map(
+      function(isAdmin) {
         return isAdmin ?
           I18n.addCardDialog.choroplethAdminMessage :
           I18n.addCardDialog.choroplethMessage;
-      });
+      }
+    );
     $scope.$bindObservable('informationMessage', informationMessage$);
 
     // Only show the dropdown if the card is a choropleth.
@@ -83,8 +81,6 @@ function visualizationTypeSelector(
         var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);
         $scope.computedCuratedRegions = partitionedCuratedRegions[0];
         $scope.nonComputedCuratedRegions = partitionedCuratedRegions[1];
-
-        var showCuratedRegionHint = _.isEmpty(curatedRegions);
 
         $scope.hasZeroCuratedRegions = curatedRegions.length === 0;
         $scope.hasSingleCuratedRegion = curatedRegions.length === 1;

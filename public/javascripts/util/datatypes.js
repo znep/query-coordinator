@@ -5,13 +5,37 @@ blist.namespace.fetch('blist.datatypes');
     /*** RENDERERS ***/
 
     /* Textual types */
+    var textualRegexes = {
+      email: blist.util.patterns.core.emailValidator,
+      url: blist.util.patterns.core.urlValidator,
+      phone: /\d+/
+    };
 
     // Text & base textual
     var renderText = function(value, column, plainText, inMenu, context, skipEscape)
     {
-        var v = inMenu ? $.htmlStrip(value) : ($.isBlank(value) ? '' : value);
-        // Can we get rid of htmlEscape here?
-        return skipEscape ? v : $.htmlEscape(v);
+      var displayStyle = $.deepGet(column, 'format', 'displayStyle');
+      switch (displayStyle) {
+        case 'email':
+          if (textualRegexes.email.test(value)) {
+            return renderEmail.apply(null, arguments);
+          }
+          break;
+        case 'url':
+          if (textualRegexes.url.test(value)) {
+            return renderURL.apply(null, arguments);
+          }
+          break;
+        case 'phone':
+          if (textualRegexes.phone.test(value)) {
+            value = { phone_type: 'modern', phone_number: value };
+            return renderPhone(value, column, plainText, inMenu);
+          }
+          break;
+      }
+      var v = inMenu ? $.htmlStrip(value) : ($.isBlank(value) ? '' : value);
+      // Can we get rid of htmlEscape here?
+      return skipEscape ? v : $.htmlEscape(v);
     };
 
     // HTML
@@ -148,6 +172,11 @@ blist.namespace.fetch('blist.datatypes');
 
     var renderNumber = function(value, column)
     {
+        if (column.format.precisionStyle === 'percentage' &&
+            (column.format.visualPercentage === true ||
+            column.format.visualPercentage === 'true')) {
+          return renderPercent.apply(null, arguments);
+        }
         var prefix = null;
         var suffix = null;
 
@@ -787,6 +816,13 @@ blist.namespace.fetch('blist.datatypes');
     var alignment = [alignLeft, alignCenter, alignRight];
     var numericAlignment = [alignRight, alignLeft, alignCenter];
 
+    // Text Formatting
+    var textAsText = {text: 'Plain Text', value: 'plain'};
+    var textAsEmail = {text: 'Email', value: 'email'};
+    var textAsUrl = {text: 'Url', value: 'url'};
+    var textAsPhone = {text: 'Phone', value: 'phone'};
+
+    var textFormattingOptions = [ textAsText, textAsEmail, textAsPhone, textAsUrl ];
 
     // Common convertable types
     var numericConvertTypes = ['money', 'number', 'percent', 'stars'];
@@ -990,6 +1026,7 @@ blist.namespace.fetch('blist.datatypes');
           ].concat(numericConvertTypes),
           createable: true,
           deleteable: true,
+          displayOptions: textFormattingOptions,
           filterConditions: blist.filter.groups.textual,
           inlineType: true,
           matchValue: function(v) {

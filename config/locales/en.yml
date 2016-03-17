@@ -2608,6 +2608,7 @@ en:
             no_precision: None
             precision: Precision
             title: Number Formatting
+            visual_percentage: Visualize Percentage
           number_advanced:
             format_mask: Format Mask
             format_mask_prompt: 'Use #s to indicate numeric digits, and other characters where you want them to go; for example a social security number would be ###-##-####'
@@ -2626,6 +2627,9 @@ en:
             title: Photo Options
           subtitle: Update various properties on this column
           success: Your column has been updated
+          text_formatting:
+            title: Text Formatting
+            display_style: Display Style
           title: Column Properties
           url:
             base_url: Base URL

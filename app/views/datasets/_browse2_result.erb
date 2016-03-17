@@ -7,7 +7,7 @@
 
         <div class="browse2-result-title">
           <h2 class="browse2-result-name">
-            <a class="browse2-result-name-link" href="<%= result_link %>" rel="<%= result_link_rel_type %>" itemprop="url"><%= result_name %></a>
+            <%= browse2_result_link(result_name, result_link, result_is_federated, result_link_rel_type) %>
           </h2>
 
           <%- if show_official_badge -%>
@@ -80,11 +80,15 @@
           if result_topics.present?
             top_result_topics = truncate_result_topics(result_topics, user_params, 5)
             top_result_topics.each do |result_topic|
-              params_for_url = user_params.merge(tags: result_topic)
-              result_topic_url = "#{base_url}?#{params_for_url.to_param}"
           -%>
-
-              <a class="browse2-result-topic" href="<%= result_topic_url %>"><%= result_topic %></a>
+              <%= link_to(result_topic,
+                    browse2_result_topic_url(
+                      base_url,
+                      user_params,
+                      result_topic,
+                      result_federated_origin_url),
+                    class: 'browse2-result-topic',
+                    target: result_is_federated ? '_blank' : '' ) %>
 
             <%- end -%>
 

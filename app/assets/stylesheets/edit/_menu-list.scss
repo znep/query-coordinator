@@ -1,5 +1,5 @@
 @import 'bourbon';
-@import 'lib/icon-font';
+@import 'lib/socrata-icons';
 @import 'lib/variables/color';
 @import 'lib/variables/layout';
 
@@ -71,7 +71,7 @@
           @include transition(transform 0.15s ease-in-out);
           @extend .icon-arrow-down:before;
 
-          font-family: 'icomoon';
+          font-family: 'socrata-icons';
           font-size: 1.25rem;
           display: block;
           float: right;

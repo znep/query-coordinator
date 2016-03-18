@@ -1,5 +1,5 @@
 @import 'lib/variables';
-@import 'lib/icon-font';
+@import 'lib/socrata-icons';
 @import 'edit/button';
 
 #collaborators-modal {
@@ -153,7 +153,7 @@
 
       display: block;
       position: absolute;
-      font-family: 'icomoon';
+      font-family: 'socrata-icons';
       color: $collaborators-select-arrow-color;
       right: 1rem;
       top: calc(2.5rem / 2);

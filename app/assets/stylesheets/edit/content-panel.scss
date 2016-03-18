@@ -15,6 +15,11 @@
   padding: $content-panel-padding / 2;
   background-color: $content-panel-bg-color;
 
+  .scrollable {
+    border-top: solid 1px #ddd;
+    padding-top: 2rem;
+  }
+
   &.active {
     box-shadow: -$content-panel-box-shadow-size 0 $content-panel-box-shadow-size $content-panel-box-shadow-color;
   }
@@ -23,7 +28,7 @@
     display: inline-block;
     width: 100%;
     text-align: right;
-    margin-bottom: $content-panel-close-btn-margin-bottom;
+    margin-top: 0.325rem;
 
     .content-panel-close-btn {
       width: $content-panel-close-btn-width;

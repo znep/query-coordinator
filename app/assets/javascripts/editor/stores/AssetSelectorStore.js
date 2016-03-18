@@ -370,9 +370,8 @@ export default function AssetSelectorStore() {
         function(migrationData) {
           _setVisualizationDataset(payload.domain, migrationData.nbeId);
         },
-        function(error) {
-          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error')); //eslint-disable-line no-alert
-          exceptionNotifier.notify(error);
+        function(jqXhr, textStatus, error) { //eslint-disable-line no-unused-vars
+          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_unsupported_error')); //eslint-disable-line no-alert
         }
       );
     }
@@ -383,9 +382,8 @@ export default function AssetSelectorStore() {
 
     StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
 
-    var mapChartError = function(error) {
+    var mapChartError = function(jqXhr, textStatus, error) { //eslint-disable-line no-unused-vars
       alert(I18n.t('editor.asset_selector.visualization.choose_map_or_chart_error')); //eslint-disable-line no-alert
-      exceptionNotifier.notify(error);
     };
 
     $.get(
@@ -488,23 +486,33 @@ export default function AssetSelectorStore() {
 
       self._emitChange();
     };
+    var viewUrl;
 
     // Fetch the view info.
     // NOTE: Beware that view.metadata is not sync'd across to the NBE
     // as of this writing. If you need to get info out of view.metadata
     // (like rowLabel), you'll need to fetch the OBE view separately.
     if (!viewData) {
-      $.get(
-        StorytellerUtils.format(
-          'https://{0}/api/views/{1}.json',
-          domain,
-          datasetUid
-        )
-      ).
+
+      viewUrl = StorytellerUtils.format(
+        'https://{0}/api/views/{1}.json',
+        domain,
+        datasetUid
+      );
+
+      $.get(viewUrl).
       then(
         updateStateComponentPropertiesAndDataset,
-        function(error) {
-          exceptionNotifier.notify(error);
+        function(jqXhr, textStatus, error) { //eslint-disable-line no-unused-vars
+          var errorObj = new Error(
+            StorytellerUtils.format(
+              'Could not retrieve "{0}" in _setVisualizationDataset(): {1}',
+              viewUrl,
+              jqXhr.responseText
+            )
+          );
+
+          exceptionNotifier.notify(errorObj);
           alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error')); //eslint-disable-line no-alert
         }
       );

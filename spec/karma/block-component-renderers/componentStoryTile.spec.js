@@ -3,20 +3,20 @@ import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
 import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentStoryWidget';
+import '../../../app/assets/javascripts/editor/block-component-renderers/componentStoryTile';
 
-describe('componentStoryWidget jQuery plugin', function() {
+describe('componentStoryTile jQuery plugin', function() {
 
   var $component;
   var validComponentData = {
-    type: 'story.widget',
+    type: 'story.tile',
     value: {
       domain: 'example.com',
       storyUid: 'test-test',
       url: 'https://example.com/stories/s/test-test'
     }
   };
-  var validStoryWidgetDataWithoutImage = {
+  var validStoryTileDataWithoutImage = {
     title: 'The Unicorn Is The Noblest Beast And I Will Cut You If You Say Otherwise',
     image: null,
     description: 'Unicorns are the most noble of all creatures. They are herbivores. It is considered good luck to see a unicorn. Unicorns are proud. Some unicorns have fire instead of hair, but not all the hair just the long hair. These are the most noble of all the unicorns.',
@@ -25,10 +25,10 @@ describe('componentStoryWidget jQuery plugin', function() {
       'https://example.com/stories/s/{0}', validComponentData.value.storyUid
     )
   };
-  var validStoryWidgetDataWithImage = _.clone(validStoryWidgetDataWithoutImage);
-  validStoryWidgetDataWithImage.image = 'about:blank';
+  var validStoryTileDataWithImage = _.clone(validStoryTileDataWithoutImage);
+  validStoryTileDataWithImage.image = 'about:blank';
 
-  function stubWidgetJsonApiWith(blob) {
+  function stubTileJsonApiWith(blob) {
     var server;
 
     beforeEach(function(done) {
@@ -37,7 +37,7 @@ describe('componentStoryWidget jQuery plugin', function() {
       server.respondWith(
         'GET',
         StorytellerUtils.format(
-          'https://example.com/stories/s/{0}/widget.json',
+          'https://example.com/stories/s/{0}/tile.json',
           validComponentData.value.storyUid
         ),
         [
@@ -47,7 +47,7 @@ describe('componentStoryWidget jQuery plugin', function() {
         ]
       );
 
-      $component = $component.componentStoryWidget(validComponentData);
+      $component = $component.componentStoryTile(validComponentData);
 
       // Need to use a setTimeout to escape the stack and resolve the promise.
       setTimeout(function() { done(); }, 0);
@@ -64,32 +64,32 @@ describe('componentStoryWidget jQuery plugin', function() {
   });
 
   it('should throw when passed invalid arguments', function() {
-    assert.throws(function() { $component.componentStoryWidget(); });
-    assert.throws(function() { $component.componentStoryWidget(1); });
-    assert.throws(function() { $component.componentStoryWidget(null); });
-    assert.throws(function() { $component.componentStoryWidget(undefined); });
-    assert.throws(function() { $component.componentStoryWidget({}); });
-    assert.throws(function() { $component.componentStoryWidget([]); });
+    assert.throws(function() { $component.componentStoryTile(); });
+    assert.throws(function() { $component.componentStoryTile(1); });
+    assert.throws(function() { $component.componentStoryTile(null); });
+    assert.throws(function() { $component.componentStoryTile(undefined); });
+    assert.throws(function() { $component.componentStoryTile({}); });
+    assert.throws(function() { $component.componentStoryTile([]); });
   });
 
   describe('given a value that does not contain a domain', function() {
-    it('should throw when setting the widget source', function() {
+    it('should throw when setting the tile source', function() {
       var badData = _.cloneDeep(validComponentData);
       delete badData.value.domain;
 
       assert.throws(function() {
-        $component.componentStoryWidget(badData);
+        $component.componentStoryTile(badData);
       });
     });
   });
 
   describe('given a value that does not contain a storyUid', function() {
-    it('should throw when setting the widget source', function() {
+    it('should throw when setting the tile source', function() {
       var badData = _.cloneDeep(validComponentData);
       delete badData.value.storyUid;
 
       assert.throws(function() {
-        $component.componentStoryWidget(badData);
+        $component.componentStoryTile(badData);
       });
     });
   });
@@ -97,38 +97,38 @@ describe('componentStoryWidget jQuery plugin', function() {
   describe('given a valid component type and value', function() {
 
     describe('when there is no image specified', function() {
-      stubWidgetJsonApiWith(validStoryWidgetDataWithoutImage);
+      stubTileJsonApiWith(validStoryTileDataWithoutImage);
 
       it('should return a jQuery object for chaining', function() {
         assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
       });
 
-      it('should render the widget as a link to the story', function() {
+      it('should render the tile as a link to the story', function() {
 
         assert.equal(
-          $component.find('.story-widget-container').attr('href'),
-          validStoryWidgetDataWithoutImage.url
+          $component.find('.story-tile-container').attr('href'),
+          validStoryTileDataWithoutImage.url
         );
       });
 
       it('should render the story title container', function() {
         assert.lengthOf(
-          $component.find('.story-widget-title-container'), 1
+          $component.find('.story-tile-title-container'), 1
         );
       });
 
       it('should render the story title', function() {
 
         assert.equal(
-          $component.find('.story-widget-title').text(),
-          validStoryWidgetDataWithoutImage.title
+          $component.find('.story-tile-title').text(),
+          validStoryTileDataWithoutImage.title
         );
       });
 
       it('should render the default story image', function() {
 
         assert.equal(
-          $component.find('.story-widget-image').attr('style'),
+          $component.find('.story-tile-image').attr('style'),
           null
         );
       });
@@ -136,19 +136,19 @@ describe('componentStoryWidget jQuery plugin', function() {
       it('should render the story description', function() {
 
         assert.equal(
-          $component.find('.story-widget-description').text(),
-          validStoryWidgetDataWithoutImage.description
+          $component.find('.story-tile-description').text(),
+          validStoryTileDataWithoutImage.description
         );
       });
     });
 
     describe('when there is an image specified', function() {
-      stubWidgetJsonApiWith(validStoryWidgetDataWithImage);
+      stubTileJsonApiWith(validStoryTileDataWithImage);
 
       it('should render the specified  image', function() {
 
         assert.equal(
-          $component.find('.story-widget-image').css('background-image'),
+          $component.find('.story-tile-image').css('background-image'),
           'url(about:blank)'
         );
       });

@@ -50,9 +50,9 @@ import $ from 'jQuery';
     if (document.fonts) {
 
       document.fonts.ready.then(function() {
-        ellipsifyText($('.widget-title'), 1);
-        ellipsifyText($('.widget-description'), 3);
-        $('.widget').addClass('rendered');
+        ellipsifyText($('.tile-title'), 1);
+        ellipsifyText($('.tile-description'), 3);
+        $('.tile').addClass('rendered');
       });
     // IE, meanwhile, does not, so we will have to rely on a timeout. This means
     // that if for some reason the timeout fires before the web fonts are loaded
@@ -61,9 +61,9 @@ import $ from 'jQuery';
     } else {
 
       setTimeout(function() {
-        ellipsifyText($('.widget-title'), 1);
-        ellipsifyText($('.widget-description'), 2);
-        $('.widget').addClass('rendered');
+        ellipsifyText($('.tile-title'), 1);
+        ellipsifyText($('.tile-description'), 2);
+        $('.tile').addClass('rendered');
       }, 200);
     }
   });

@@ -12,7 +12,8 @@ Rails.application.routes.draw do
     get '(:vanity_text)/:uid/edit' => 'stories#edit'
     get '(:vanity_text)/:uid/stats' => 'stories#stats'
     get '(:vanity_text)/:uid/preview' => 'stories#preview'
-    get '(:vanity_text)/:uid/widget' => 'stories#widget', as: 'widget'
+    get '(:vanity_text)/:uid/tile' => 'stories#tile', as: 'tile'
+    get '(:vanity_text)/:uid/widget' => 'stories#tile'
   end
 
   get 'themes/custom' => 'themes#custom', defaults: { format: 'css' }

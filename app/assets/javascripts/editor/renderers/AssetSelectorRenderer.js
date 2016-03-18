@@ -296,7 +296,7 @@ export default function AssetSelectorRenderer(options) {
           break;
 
         case WIZARD_STEP.ENTER_STORY_URL:
-          selectorTitle = I18n.t('editor.asset_selector.story_widget.heading');
+          selectorTitle = I18n.t('editor.asset_selector.story_tile.heading');
           selectorContent = _renderChooseStoryTemplate(componentValue);
           break;
 
@@ -434,10 +434,10 @@ export default function AssetSelectorRenderer(options) {
     var imageUploadDescription = $('<p>').
       text(I18n.t('editor.asset_selector.image_upload.description'));
 
-    var storyWidgetHeader = $('<h3>').
-      text(I18n.t('editor.asset_selector.story_widget.name'));
-    var storyWidgetDescription = $('<p>').
-      text(I18n.t('editor.asset_selector.story_widget.description'));
+    var storyTileHeader = $('<h3>').
+      text(I18n.t('editor.asset_selector.story_tile.name'));
+    var storyTileDescription = $('<p>').
+      text(I18n.t('editor.asset_selector.story_tile.description'));
 
     var embedCodeHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.embed_code.name'));
@@ -449,8 +449,8 @@ export default function AssetSelectorRenderer(options) {
         'data-provider': 'SOCRATA_VISUALIZATION'
       }).append(visualizationHeader, visualizationDescription),
       $('<li>', {
-        'data-provider': 'STORY_WIDGET'
-      }).append(storyWidgetHeader, storyWidgetDescription),
+        'data-provider': 'STORY_TILE'
+      }).append(storyTileHeader, storyTileDescription),
       $('<li>', {
         'data-provider': 'YOUTUBE'
       }).append(youtubeHeader, youtubeDescription),
@@ -797,7 +797,7 @@ export default function AssetSelectorRenderer(options) {
 
   function _renderChooseStoryTemplate() {
     var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
-      text(I18n.t('editor.asset_selector.story_widget.input_label'));
+      text(I18n.t('editor.asset_selector.story_tile.input_label'));
 
     var inputControl = $(
       '<input>',
@@ -814,9 +814,9 @@ export default function AssetSelectorRenderer(options) {
       { 'class': 'asset-selector-invalid-title' }
     ).html(
       [
-        I18n.t('editor.asset_selector.story_widget.invalid_message_title_1'),
+        I18n.t('editor.asset_selector.story_tile.invalid_message_title_1'),
         '<br />',
-        I18n.t('editor.asset_selector.story_widget.invalid_message_title_2')
+        I18n.t('editor.asset_selector.story_tile.invalid_message_title_2')
       ].join('')
     );
 
@@ -824,7 +824,7 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       { 'class': 'asset-selector-invalid-description' }
     ).text(
-      I18n.t('editor.asset_selector.story_widget.invalid_message_description')
+      I18n.t('editor.asset_selector.story_tile.invalid_message_description')
     );
 
     var previewInvalidMessage = $(
@@ -837,21 +837,21 @@ export default function AssetSelectorRenderer(options) {
       previewInvalidMessageDescription
     ]);
 
-    var previewWidgetContainer = $(
+    var previewTileContainer = $(
       '<div>',
       {
-        'class': 'asset-selector-preview-widget-container'
+        'class': 'asset-selector-preview-tile-container'
       }
     );
 
     var previewContainer = $(
       '<div>',
       {
-        'class': 'asset-selector-preview-container asset-selector-story-widget-preview-container'
+        'class': 'asset-selector-preview-container asset-selector-story-tile-preview-container'
       }
     ).append([
       previewInvalidMessage,
-      previewWidgetContainer
+      previewTileContainer
     ]);
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
@@ -880,13 +880,13 @@ export default function AssetSelectorRenderer(options) {
 
   function _renderChooseStoryData(componentProperties) {
     var $previewContainer = _container.find('.asset-selector-preview-container');
-    var $storyWidgetPreviewContainer = _container.find('.asset-selector-preview-widget-container');
+    var $storyTilePreviewContainer = _container.find('.asset-selector-preview-tile-container');
     var $inputControl = _container.find('[data-asset-selector-validate-field="storyUrl"]');
     var $insertButton = _container.find('.btn-apply');
     var storyDomain = null;
     var storyUid = null;
-    var renderedStoryDomain = $storyWidgetPreviewContainer.attr('data-rendered-story-domain');
-    var renderedStoryUid = $storyWidgetPreviewContainer.attr('data-rendered-story-uid');
+    var renderedStoryDomain = $storyTilePreviewContainer.attr('data-rendered-story-domain');
+    var renderedStoryUid = $storyTilePreviewContainer.attr('data-rendered-story-uid');
     var componentData;
 
     if (componentProperties !== null &&
@@ -904,17 +904,17 @@ export default function AssetSelectorRenderer(options) {
       ) {
 
         componentData = {
-          type: 'story.widget',
+          type: 'story.tile',
           value: {
             domain: storyDomain,
             storyUid: storyUid
           }
         };
 
-        $storyWidgetPreviewContainer.
+        $storyTilePreviewContainer.
           trigger('destroy').
           empty().
-          append($('<div>').componentStoryWidget(componentData)).
+          append($('<div>').componentStoryTile(componentData)).
           attr('data-rendered-story-domain', storyDomain).
           attr('data-rendered-story-uid', storyUid);
 
@@ -940,7 +940,7 @@ export default function AssetSelectorRenderer(options) {
 
     } else {
 
-      $storyWidgetPreviewContainer.
+      $storyTilePreviewContainer.
         trigger('destroy').
         empty().
         attr('data-rendered-story-domain', null).

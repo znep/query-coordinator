@@ -12,5 +12,5 @@
  *
  *= require ./lib/normalize
  *= require_tree ./lib
- *= require_tree ./widget
+ *= require_tree ./tile
  */

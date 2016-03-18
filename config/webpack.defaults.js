@@ -5,7 +5,7 @@ module.exports = {
     admin: './app/assets/javascripts/admin',
     view: './app/assets/javascripts/view',
     editor: './app/assets/javascripts/editor',
-    widget: './app/assets/javascripts/widget'
+    tile: './app/assets/javascripts/tile'
   },
   output: {
     filename: '[name].js',

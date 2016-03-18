@@ -254,9 +254,10 @@
     }
   }
 
-  .asset-selector-story-widget-preview-container {
+  .asset-selector-story-tile-preview-container {
     height: 42.2rem !important;
 
+    .component-story-tile,
     .component-story-widget {
       margin-top: 0;
     }

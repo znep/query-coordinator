@@ -12,6 +12,6 @@ import './componentSocrataVisualizationFeatureMap';
 import './componentSocrataVisualizationTable';
 import './componentSocrataVisualizationTimelineChart';
 import './componentSpacer';
-import './componentStoryWidget';
+import './componentStoryTile';
 import './componentYoutubeVideo';
 

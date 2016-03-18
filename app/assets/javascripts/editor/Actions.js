@@ -152,7 +152,7 @@ export default {
 	// - 'CREATE_VISUALIZATION'
 	ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN: 'ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN',
 	/**
-	 * Story widget embed flow
+	 * Story tile embed flow
 	 */
 
 	// {string} url

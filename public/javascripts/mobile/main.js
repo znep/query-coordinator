@@ -267,6 +267,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
           break;
         case 'table':
           cardOptions.id = 'table';
+          cardOptions.componentClass = 'socrata-table';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
             domain: datasetMetadata.domain,
@@ -274,7 +275,7 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
             columnName: card.fieldName
           };
 
-          mobileTable(values, $cardContainer.find('#table'));
+          mobileTable(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
         default:
           break;

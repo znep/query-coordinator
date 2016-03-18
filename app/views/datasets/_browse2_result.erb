@@ -86,9 +86,10 @@
                       base_url,
                       user_params,
                       result_topic,
-                      result_federated_origin_url),
-                    class: 'browse2-result-topic',
-                    target: result_is_federated ? '_blank' : '' ) %>
+                      result_federated_origin_url
+                    ),
+                    { class: 'browse2-result-topic' }.merge(result_is_federated ? { target: '_blank' } : {})
+                  ) %>
 
             <%- end -%>
 

@@ -212,7 +212,8 @@ module Browse2Helper
       result_link,
       class: 'browse2-result-name-link',
       rel: result_link_rel_type,
-      itemprop: 'url')
+      itemprop: 'url'
+    )
   end
 
   def browse2_result_topic_url(base_url, user_params, result_topic, federated_origin_url)

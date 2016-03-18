@@ -1,10 +1,10 @@
 @font-face {
-	font-family: 'socrata-apps';
-	src:	url('socrata-apps.eot?civ1a8');
-	src:	url('socrata-apps.eot?civ1a8#iefix') format('embedded-opentype'),
-		url('socrata-apps.ttf?civ1a8') format('truetype'),
-		url('socrata-apps.woff?civ1a8') format('woff'),
-		url('socrata-apps.svg?civ1a8#socrata-apps') format('svg');
+	font-family: 'socrata-icons';
+	src:	url('socrata-icons.eot?civ1a8');
+	src:	url('socrata-icons.eot?civ1a8#iefix') format('embedded-opentype'),
+		url('socrata-icons.ttf?civ1a8') format('truetype'),
+		url('socrata-icons.woff?civ1a8') format('woff'),
+		url('socrata-icons.svg?civ1a8#socrata-icons') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -13,7 +13,7 @@
 	/* SR 2016-02-22: Icomoon seems to want to add !important to prevent issues with browser extensions
 		 that change fonts, but this causes issues with our use of it. If you end up regenerating this file
 		 and icomoon adds it, remove it again, please. */
-	font-family: 'socrata-apps';
+	font-family: 'socrata-icons';
 	speak: none;
 	font-style: normal;
 	font-weight: normal;

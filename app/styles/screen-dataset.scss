@@ -561,7 +561,7 @@ $new-ux-z-index: 101;
   // Set this explicitly here, so it doesn't get overridden by fontawesome
   &[class^="icon-"], &[class*=" icon-"], [class^="icon-"], [class*=" icon-"] {
     &::before {
-      font-family: "socrata-apps";
+      font-family: "socrata-icons";
     }
   }
   &:before {

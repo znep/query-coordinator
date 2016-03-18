@@ -1,9 +1,8 @@
-# README
-
-## Setup
+## Storyteller
+- External name: _Socrata Perspectives_
 
 ### Requirements
-* Ruby 2.2.3
+* Ruby 2.2.4
 * Postgresql 9.3+
 
 ### System dependencies
@@ -22,10 +21,10 @@ Install rbenv and ruby:
 
 ```
 brew install rbenv ruby-build
-rbenv install 2.2.3
+rbenv install 2.2.4
 ```
 
-To run unit tests, install node and npm: https://nodejs.org/download/,
+Install the latest LTS node and npm: https://nodejs.org/download/,
 then install npm dependencies:
 
 ```
@@ -59,12 +58,17 @@ On your local development instance, you'll likely want to have a nice multi-site
 setup. run `bin/setup_multisite` to setup pow and have it so that you can reach
 your local storyteller instance with blah.dev, vertex.dev, etc.
 
-## Run Server
+### Run Servers and Jobs
 
 To run the rails server:
 ```
 bin/start
 ```
+To run the webpack-dev-server:
+```
+npm run webpack-dev-server
+```
+- You *must* run the NGINX configuration in [frontend](https://github.com/socrata/frontend) for the dev-server to work.
 
 We also have a delayed job queue for processing uploaded files. Everything but uploading files
 will work without this. The jobs can be processed manually with a rake task:
@@ -72,50 +76,55 @@ will work without this. The jobs can be processed manually with a rake task:
 bin/rake jobs:work
 ```
 
-Alternatively, you can run both processes in the same terminal window with foreman.Â
+*Alternatively*, you can run all three processes in the same terminal window with foreman.
 ```
 bundle exec forman start
 ```
 
-## How to run the test suite
+### How to run the test suite
 
-### Setting up the test environment
+#### Setting up the test environment
 
 `bin/test_setup`
 
-### tl;dr: All tests
+#### tl;dr: All tests
 
 `bin/rake test`
 
 Coverage results are in ```coverage/```
 
-### Ruby tests
+#### Ruby tests
 
-`bin/rake spec`
+```shell
+bin/rake spec
+# To run just one rspec test:
+bundle exec rspec <path-to-file>
+```
 
-To run just one rspec test: `bundle exec rspec <path-to-file>`
-
-### Javascript tests
+#### Javascript tests
 
 We use Karma to test our Javascript.
 
-Run all Karma tests locally in PhantomJS:
-`bin/rake karma`
+```shell
+bin/rake karma
+# Or to watch files and you work on tests:
+bin/rake karma:watch
+```
 
-Same, but watch for changes (while developing):
-`bin/rake karma:watch`
-
-## Code coverage
+### Code coverage
 The ```spec``` and ```karma``` tasks generate code coverage reports. They can be found here:
 
-* Ruby: ```coverage/ruby/index.html```
-* JS: ```coverage/<browser name>/index.html```
+#### Ruby
+```
+coverage/ruby/index.html
+```
 
-## Services
+#### JavaScript
+```
+coverage/<browser name>/index.html
+```
 
-As we add services (job queues, cache servers, search engines, etc.), document them here.
-
-## Deployment
+### Deployment
 
 Deployment is done via marathon to AWS. Staging deployment is continuous from
 the master branch.
@@ -132,7 +141,7 @@ There is a task for checking whether migrations need to be run. See `rake aws:mi
 
 ### Deploy to RC, Prod, FedRAMP, EU
 
-See the [Storyteller OpsDoc](https://docs.google.com/document/d/1ZTsUNw3JxbQozdjq69NdnOD1dLYMpzDfQsoolGV-Wb8/edit#heading=h.dgeqv4t1n2bi) for deployment instructions.
+See the [Storyteller OpsDoc](https://docs.google.com/document/d/1Yo7VUCnDGlAImuIPnZhazoQ7heY2krUTD_iOxX0Q8MI) for deployment instructions.
 
 In order to deploy to the `fedramp-prod` environment, you need to get FedRAMP VPN setup and be able to [access bastions](https://docs.google.com/document/d/1BNjUz3Q_DU2q1iDLeY5vk84GwXBDGj5vQQJdeBXpQ-Y/edit#) (jump boxes).
 
@@ -177,7 +186,7 @@ And migrating a different region might look like this:
 bin/rake aws:migrate[eu-west-1,staging]
 ```
 
-## Profiling
+### Profiling
 
 The `rack_mini_profiler` and `flamegraph` gems have been installed and are automatically
 loaded in development mode.
@@ -186,32 +195,18 @@ The profiler tool adds a widget to the top left that profiles rendering and data
 
 To view the flamegraph for a page, append `?pp=flamegraph` to any url.
 
-## Linting
+### Linting
 
 The following command will run `eslint` on the javascript codebase:
 
-```
+```shell
 npm run lint [-- eslint_options]
-```
-
-The configuration options for `eslint` can be found in `package.json`. A rake task will also
-lint the javascript codebase:
-
-```
+# alternatively
 rake lint:js
 ```
+The configuration options for `eslint` can be found in `package.json` and [eslint-base](https://github.com/socrata/eslint-base).
 
-## Dependencies
+### Dependencies
 
-Ruby dependencies are via bundler.
-Javascript dependencies are via bower.
-
-### Updating frontend-visualizations and/or frontend-utils
-
-This is weird at the moment because neither of these packages are version-tagged. For now there are two hack scripts that force bower to re-pull from the respective packages' master branch:
-
-
-```
-bin/update_socrata_visualizations.sh
-bin/update_socrata_utils.sh
-```
+- Ruby dependencies are via [bundler](http://bundler.io/).
+- Javascript dependencies are via [npm](https://npmjs.org) and Artifactory ([setup](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8)).

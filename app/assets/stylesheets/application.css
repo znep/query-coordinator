@@ -12,8 +12,8 @@
  *
  *= require lib/normalize
  *= require lib/socrata-icons
- *= require leaflet/dist/leaflet
- *= require socrata-visualizations/dist/socrata-visualizations
+ *= require leaflet
+ *= require socrata-visualizations
  *= require_tree ./lib
  *= require_tree ./edit
  *= require_tree ./modal

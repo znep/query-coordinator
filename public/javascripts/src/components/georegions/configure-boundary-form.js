@@ -5,6 +5,8 @@ import FormTextInput from '../form-text-input';
 import Spinner from '../spinner';
 import React, { PropTypes } from 'react';
 
+const georegionsNS = blist.namespace.fetch('blist.georegions');
+
 function t(str, props) {
   return $.t('screens.admin.georegions.' + str, props);
 }
@@ -115,10 +117,27 @@ const ConfigureBoundaryForm = React.createClass({
     });
   },
 
-  validateForm() {
+  validateRequiredFields() {
     const { requiredFields } = this.props;
 
     return !_.any(requiredFields, (fieldName) => (_.isEmpty(this.state[fieldName])));
+  },
+
+  validateUniqueName() {
+    const existingGeoregions = _.get(georegionsNS, 'georegions', []);
+    const processingGeoregions = _.get(georegionsNS, 'jobs', []);
+
+    const unavailableGeoregionNames = _(existingGeoregions.concat(processingGeoregions)).
+      reject({id: this.props.id}).
+      map('name').
+      uniq().
+      value();
+
+    return !_.contains(unavailableGeoregionNames, this.state.name);
+  },
+
+  validateForm() {
+    return this.validateRequiredFields() && this.validateUniqueName();
   },
 
   // TODO: Remove renderKeySelector and allowPrimaryKeySelection option once
@@ -158,6 +177,13 @@ const ConfigureBoundaryForm = React.createClass({
       this.setState({name: newName});
     };
 
+    const contentValidator = () => {
+      return {
+        valid: this.validateUniqueName(),
+        message: t('configure_boundary.boundary_name_unique_error')
+      };
+    };
+
     return (
       <FormTextInput
         description={ t('configure_boundary.boundary_name_description') }
@@ -166,7 +192,8 @@ const ConfigureBoundaryForm = React.createClass({
         label={ t('configure_boundary.boundary_name') }
         onChange={handleChange}
         required
-        validationError={ t('configure_boundary.boundary_name_required_field_error') }
+        requiredFieldValidationError={ t('configure_boundary.boundary_name_required_field_error') }
+        contentValidator={contentValidator}
         />
     );
   },

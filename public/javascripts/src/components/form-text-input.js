@@ -10,16 +10,18 @@ const FormTextInput = React.createClass({
     label: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     required: PropTypes.bool,
-    validationError: PropTypes.string
+    requiredFieldValidationError: PropTypes.string,
+    contentValidator: PropTypes.func
   },
   getDefaultProps() {
     return {
       description: '',
-      validationError: '',
+      requiredFieldValidationError: '',
       initialValue: '',
       onBlur: _.noop,
       onChange: _.noop,
-      required: false
+      required: false,
+      contentValidator: _.constant({valid: true})
     };
   },
   getInitialState() {
@@ -47,6 +49,8 @@ const FormTextInput = React.createClass({
     const {
       id,
       required,
+      requiredFieldValidationError,
+      contentValidator,
       ...props
     } = this.props;
 
@@ -57,12 +61,18 @@ const FormTextInput = React.createClass({
 
     const className = classNames({ required });
 
-    const showValidationError = required && dirty && _.isEmpty(value);
+    const contentValidation = contentValidator();
+    const hasContentValidationError = !contentValidation.valid;
+    const hasRequiredFieldError = required && dirty && _.isEmpty(value);
+
+    const showValidationError = hasRequiredFieldError || hasContentValidationError;
+    const validationError = hasRequiredFieldError ? requiredFieldValidationError : contentValidation.message;
 
     const formInputProps = {
       id,
       required,
       showValidationError,
+      validationError,
       ...props
     };
 

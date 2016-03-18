@@ -40,15 +40,31 @@ describe('FormTextInput', function() {
     expect(input).to.exist;
   });
 
-  it('shows validation errors', function() {
+  it('shows required field validation errors', function() {
     var props = _.extend({
       required: true,
-      validationError: 'error message'
+      requiredFieldValidationError: 'error message'
     }, this.props);
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, props));
     TestUtils.Simulate.change(findByTag(node, 'input'));
     var formInput = TestUtils.findRenderedComponentWithType(node, FormInput);
     expect(formInput.props.showValidationError).to.eq(true);
+    expect(formInput.props.validationError).to.eq('error message');
+  });
+
+  it('shows content validation errors', function() {
+    var props = _.extend({
+      initialValue: 'Wombats in Top Hats',
+      contentValidator: _.constant({
+        valid: false,
+        message: 'error message'
+      })
+    }, this.props);
+    var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, props));
+    TestUtils.Simulate.change(findByTag(node, 'input'));
+    var formInput = TestUtils.findRenderedComponentWithType(node, FormInput);
+    expect(formInput.props.showValidationError).to.eq(true);
+    expect(formInput.props.validationError).to.eq('error message');
   });
 
   it('can have an initial value', function() {

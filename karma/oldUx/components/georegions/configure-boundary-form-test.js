@@ -1,6 +1,7 @@
 import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag,
+  scryRenderedDOMComponentsWithTag as findAllByTag,
   findRenderedDOMComponentWithClass as findByClass
 } from 'react-addons-test-utils';
 
@@ -21,6 +22,7 @@ describe('ConfigureBoundaryForm', function() {
         complete();
         success({name: 'my boundary layer'});
       },
+      requiredFields: ['name'],
       saveLabel: 'Save',
       title: 'my title'
     };
@@ -85,6 +87,44 @@ describe('ConfigureBoundaryForm', function() {
     expect(spinner.style.display).to.eq('block');
     fetchStub.firstCall.args[0]();
     expect(spinner.style.display).to.eq('none');
+  });
+
+  describe('validating the form', function() {
+    var node;
+    var input;
+    var saveButton;
+
+    beforeEach(function() {
+      blist.georegions.georegions = [
+        { name: 'Giraffes in Suits' }
+      ];
+      node = this.renderIntoDocument({
+        initialState: {
+          name: 'name'
+        }
+      });
+      input = findByTag(node, 'input');
+      saveButton = findAllByTag(node, 'button')[1];
+    });
+
+    it('disables the save button if no input', function() {
+      input.value = '';
+      TestUtils.Simulate.change(input);
+      expect(saveButton.className).to.include('disabled');
+    });
+
+    it('disables the save button if input is not unique', function() {
+      input.value = 'Giraffes in Suits';
+      TestUtils.Simulate.change(input);
+      expect(saveButton.className).to.include('disabled');
+    });
+
+    it('enables the save button if input is valid', function() {
+      input.value = 'Penguins in Suits';
+      TestUtils.Simulate.change(input);
+      expect(saveButton.className).to.not.include('disabled');
+    });
+
   });
 
   it('saves on submit', function() {

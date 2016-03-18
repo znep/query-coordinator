@@ -1,0 +1,50 @@
+@media print {
+
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+
+  .user-story-container {
+    padding: 0 !important;
+
+    .user-story-header {
+      position: relative !important;
+    }
+
+    .user-story {
+
+      .block {
+        page-break-inside: avoid;
+
+        .component {
+          margin-top: 0 !important;
+          page-break-inside: avoid;
+          font-size: 1rem;
+
+          h1 {
+            font-size: 3.25em;
+          }
+          h2 {
+            font-size: 2.75em;
+          }
+          h3 {
+            font-size: 2.25em;
+          }
+          h4 {
+            font-size: 2em;
+          }
+          h5 {
+            font-size: 1.75em;
+          }
+          h6 {
+            font-size: 1.5em;
+          }
+        }
+      }
+    }
+  }
+
+  .actions-bar {
+    display: none !important;
+  }
+}

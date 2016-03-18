@@ -3,9 +3,9 @@
 <head>
   <%= default_meta_tags %>
   <%= csrf_meta_tags %>
-  <title>Storyteller Admin</title>
+  <title>Perspectives Admin</title>
   <%= stylesheet_link_tag 'admin', media: 'all' %>
-  <script type="text/javascript" src="/stories/js/admin.js"></script>
+  <%= storyteller_javascript_include_tag 'admin' %>
   <%= render 'shared/google_analytics_script' %>
 </head>
 <body>

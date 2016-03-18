@@ -1,5 +1,5 @@
 @import 'lib/variables';
-@import 'lib/icon-font';
+@import 'lib/socrata-icons';
 @import 'bourbon';
 
 @include keyframes(fadeIn) {
@@ -276,7 +276,7 @@
   &::after {
     @extend .icon-arrow-right:before;
 
-    font-family: icomoon;
+    font-family: 'socrata-icons';
     position: absolute;
     right: 1rem;
     top: calc(6.8rem / 2 - 0.75rem);

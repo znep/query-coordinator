@@ -1,14 +1,8 @@
-/*
- * This is a manifest file that'll be compiled into admin.css, which will include all the files
- * listed below.
- *
- *= require socrata-styleguide
- *= require_self
- */
-
 @import 'bourbon';
 @import 'neat';
-@import 'lib/icon-font';
+@import 'socrata-styleguide/dist/css/styleguide';
+
+@import 'lib/socrata-icons';
 @import 'lib/variables/mixin.scss';
 
 .body-wrapper {

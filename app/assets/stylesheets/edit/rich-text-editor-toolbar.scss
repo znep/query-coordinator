@@ -1,5 +1,5 @@
 @import 'lib/variables';
-@import 'lib/icon-font';
+@import 'lib/socrata-icons';
 @import 'bourbon';
 
 body.story-save-error #rich-text-editor-toolbar-wrapper {
@@ -63,47 +63,47 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
     border: none;
     outline: none;
     cursor: default;
-    font-family: 'icomoon';
+    font-family: 'socrata-icons';
   }
 
   .rich-text-editor-toolbar-btn-bold:before {
-    content: '\ee9a';
+    @extend .icon-bold2:before
   }
 
   .rich-text-editor-toolbar-btn-italic:before {
-    content: '\ee9c';
+    @extend .icon-italic2:before
   }
 
   .rich-text-editor-toolbar-btn-left:before {
-    content: '\eebe';
+    @extend .icon-paragraph-left3:before
   }
 
   .rich-text-editor-toolbar-btn-center:before {
-    content: '\eebf';
+    @extend .icon-paragraph-center3:before
   }
 
   .rich-text-editor-toolbar-btn-right:before {
-    content: '\eec0';
+    @extend .icon-paragraph-right3:before;
   }
 
   .rich-text-editor-toolbar-btn-link:before {
-    content: '\ec96';
+    @extend .icon-link2:before;
   }
 
   .rich-text-editor-toolbar-btn-orderedList:before {
-    content: '\ec55';
+    @extend .icon-list-numbered:before;
   }
 
   .rich-text-editor-toolbar-btn-unorderedList:before {
-    content: '\ec57';
+    @extend .icon-list2:before;
   }
 
   .rich-text-editor-toolbar-btn-blockquote:before {
-    content: '\eb18';
+    @extend .icon-quotes-left:before;
   }
 
   .rich-text-editor-toolbar-btn-clearFormatting:before {
-    content: '\e600';
+    @extend .icon-clear-formatting:before;
   }
 
   .rich-text-editor-toolbar-select-container {

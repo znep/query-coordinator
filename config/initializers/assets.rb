@@ -7,8 +7,7 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.paths << Emoji.images_path
 
 Rails.application.config.assets.paths << Rails.root.join('spec', 'scripts')
-Rails.application.config.assets.paths << Rails.root.join('node_modules', 'leaflet', 'dist')
-Rails.application.config.assets.paths << Rails.root.join('node_modules', 'socrata-visualizations', 'dist')
+Rails.application.config.assets.paths << Rails.root.join('node_modules')
 
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.

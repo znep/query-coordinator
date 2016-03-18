@@ -1883,8 +1883,9 @@ var Dataset = ServerModel.extend({
         // figure out which underlying view to show
         var typeDisplay = $.deepGet(true, this, 'metadata',
                 'renderTypeConfig', 'active', type);
-        if (!typeDisplay.id)
-        { typeDisplay.id = vft[0]; }
+        if (!typeDisplay.id || (typeDisplay.id === 'self')) {
+            typeDisplay.id = vft[0];
+        }
 
         this._getChildView(typeDisplay.id, callback);
     },

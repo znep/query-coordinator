@@ -55,6 +55,11 @@
         return c.origColumn.renderType.alignment || 'hidden';
     };
 
+    var textFormattingOptions = function(c) {
+      if ($.isBlank(c)) { return 'plain'; }
+      return c.origColumn.renderType.displayOptions || 'plain';
+    };
+
     var aggregateOptions = function(c)
     {
         if ($.isBlank(c) || _.isEmpty(c.origColumn.renderType.aggregates)) { return 'hidden'; }
@@ -346,6 +351,21 @@
                     ]
                 },
 
+                {
+                    title: $.t('screens.ds.grid_sidebar.column_properties.text_formatting.title'),
+                    onlyIf: {func: function(c)
+                    {
+                        if ($.isBlank(c)) { return false; }
+                        var t = c.origColumn.renderType;
+                        if (t.name !== 'text') { return false; }
+                        return !$.isBlank(t.alignment) || !$.isBlank(t.viewTypes);
+                    }},
+                    fields: [
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.text_formatting.display_style'), type: 'select', name: 'format.displayStyle',
+                        prompt: null, options: textFormattingOptions}
+                    ]
+                },
+
                 // Number-specific info
                 {
                     title: $.t('screens.ds.grid_sidebar.column_properties.number.title'),
@@ -374,6 +394,15 @@
                                 value: 'currency'
                             },
                             prompt: null
+                        },
+                        {
+                          text: $.t('screens.ds.grid_sidebar.column_properties.number.visual_percentage'),
+                          name: 'format.visualPercentage',
+                          type: 'checkbox',
+                          onlyIf: {
+                            field: 'format.precisionStyle',
+                            value: 'percentage'
+                          }
                         },
                         {text: $.t('screens.ds.grid_sidebar.column_properties.number.no_commas'), type: 'checkbox', name: 'format.noCommas'}
                     ]

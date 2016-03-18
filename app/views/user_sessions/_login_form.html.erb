@@ -8,7 +8,13 @@
   <%- if @auth0_connections.present? %>
 
     <div class="auth0login">
-      <p><%= t('screens.sign_in.auth0_intro') %></p>
+      <p>
+        <%- if @auth0_message.present? -%>
+          <%== h(@auth0_message).gsub("\n", '<br />') %>
+        <%- else -%>
+          <%= t('screens.sign_in.auth0_intro') %>
+        <%- end -%>
+      </p>
       <a class="button" data-connection="socrata.com">
         <span class="iconContainer">
           <img src="/stylesheets/images/common/large_logo.png">

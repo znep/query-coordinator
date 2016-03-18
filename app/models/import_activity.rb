@@ -1,22 +1,28 @@
 # TODO: replace this REST API & wrapper with GraphQL
 class ImportActivity
+  include JobsHelper
 
   # throws ISS errors and Core errors
-  def self.find_all_by_created_at_descending(limit)
-    response = ImportStatusService::get("/activity?limit=#{limit}")
-    activities = response.map(&:with_indifferent_access)
+  def self.find_all_by_created_at_descending(offset, limit)
+    url = "/v2/activity?limit=#{limit}&offset=#{offset}"
+    response = ImportStatusService::get(url)
+    activities = response['activities'].map(&:with_indifferent_access)
     view_ids = activities.pluck(:entity_id)
     working_copy_ids = activities.pluck(:working_copy_id)
     views = View.find_multiple_dedup(view_ids + working_copy_ids)
     user_ids = activities.pluck(:user_id)
     users = User.find_multiple_dedup(user_ids)
-    return activities.map do |activity|
-      activity_wia = activity.with_indifferent_access
-      ImportActivity.new(activity_wia,
-                         users[activity_wia[:user_id]],
-                         views[activity_wia[:entity_id]],
-                         views[activity_wia[:working_copy_id]])
-    end
+    {
+      :activities =>
+          activities.map do |activity|
+            activity_wia = activity.with_indifferent_access
+            ImportActivity.new(activity_wia,
+                               users[activity_wia[:user_id]],
+                               views[activity_wia[:entity_id]],
+                               views[activity_wia[:working_copy_id]])
+          end,
+      :count => response['count']
+    }
   end
 
   # throws ISS errors and Core errors
@@ -78,24 +84,15 @@ class ImportActivity
   end
 
   def status
-    @data[:status].downcase
+    status_to_snake(@data[:status])
   end
 
   def file_name
     @data[:activity_name]
   end
 
-  def import_method
-    case @data[:service]
-      when 'Imports2'
-        'Web interface'
-      when 'DeltaImporter2'
-        'DataSync'
-      when 'Upsert'
-        'Upsert API'
-      else
-        @data[:service]
-    end
+  def service
+    @data[:service]
   end
 
   # throws ISS errors
@@ -109,11 +106,15 @@ class ImportActivity
     if events.blank?
       created_at
     else
-      events.sort_by(&:event_time).last.event_time
+      most_recent_event.event_time
     end
   end
 
-# even if true @working_copy may still be nil, if the activity was performed on a wc that was since deleted
+  def most_recent_event
+    events.sort_by(&:event_time).last
+  end
+
+  # even if true @working_copy may still be nil, if the activity was performed on a wc that was since deleted
   def had_working_copy?
     @data[:working_copy_id].present?
   end
@@ -133,6 +134,17 @@ class ImportActivity
       "#{working_copy_id} (published)"
     else
       working_copy_id
+    end
+  end
+
+  def bad_rows_url
+    event = most_recent_event
+    if event.blank?
+      nil
+    elsif event.status == 'success_with_data_errors'
+      event.info[:badRowsPath]
+    else
+      nil
     end
   end
 

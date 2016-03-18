@@ -1,5 +1,4 @@
 <column-and-visualization-selector
-  ng-class="{'has-related-visualizations': relatedVisualizations.length > 0}"
   on-customize-card="customizeCard"
   card-size="1"
   page="blankPage"
@@ -9,4 +8,3 @@
   add-visualization-prompt="'addCardDialog.genericPrompt'"
   classic-visualization="classicVisualization">
 </column-and-visualization-selector>
-<related-visualization-selector ng-if="relatedVisualizations.length > 0"></related-visualization-selector>

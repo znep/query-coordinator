@@ -46,7 +46,7 @@
             <% if activity.had_working_copy? %>
               <% working_copy = activity.working_copy %>
               <p class="working-copy-annotation">
-                to working copy
+                <%= t("#{jobs_prefix}.index_page.to_working_copy") %>
               <% if working_copy && working_copy.is_unpublished? %>
                 <%= link_to(activity.working_copy_id, view_path(working_copy)) %>
               <% else %>
@@ -71,8 +71,12 @@
             </span>
           </td>
           <td class="import-status-label" nowrap>
-            <span class="import-status-icon import-status-icon-<%= activity.status %> icon-<%= icon_for_status(activity.status) %>"></span>
-            <% if activity.status == 'failure' %>
+            <span class="import-status-icon import-status-icon-<%= activity.status.dasherize %> icon-<%= icon_for_status(activity.status) %>"></span>
+            <% if activity.status == 'success_with_data_errors' %>
+              <%= link_to t("#{jobs_prefix}.statuses.success"),
+                          :action => 'show_job', :id => activity.id %>
+              <div class="with-problems"><%= t("#{jobs_prefix}.index_page.with_problems") %></div>
+            <% elsif activity.status == 'failure' %>
               <%= link_to t("#{jobs_prefix}.statuses.#{activity.status}"),
                           :action => 'show_job', :id => activity.id %>
             <% else %>
@@ -87,14 +91,17 @@
     <p class="end-message">
       <%= t("#{jobs_prefix}.index_page.no_jobs") %>
     </p>
-  <% elsif @activities.length == JobsHelper::FEED_ITEMS_LIMIT %>
-    <p class="end-message">
-      <%= t("#{jobs_prefix}.index_page.showing_most_recent", :limit => JobsHelper::FEED_ITEMS_LIMIT) %>
-    </p>
-  <% else %>
-    <p class="end-message">
-      <%= t("#{jobs_prefix}.index_page.showing_all_so_far", :limit => JobsHelper::FEED_ITEMS_LIMIT) %>
-    </p>
+  <% end %>
+</div>
+
+<div class="pager">
+  <% @pager_elements.each do |element| %>
+    <% if element.page? %>
+      <%= link_to(element.index, "/admin/jobs?page=#{element.index}",
+                  :class => 'pager-element page ' + (element.selected ? 'pager-page-selected' : '')) %>
+    <% else %>
+      <span class="pager-element ellipsis">…</span>
+    <% end %>
   <% end %>
 </div>
 

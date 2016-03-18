@@ -82,13 +82,23 @@ module Browse2Helper
     elsif domain_cutoffs.keys.include?(facet_name)
       domain_cutoffs[facet_name]
     else
-      domain_cutoffs.fetch('custom', DEFAULT_FACET_CUTOFF)
+      # It's a custom facet
+      configured_cutoff = domain_cutoffs.fetch('custom', DEFAULT_FACET_CUTOFF)
+
+      # We need a cutoff high enough to display all summary:true options
+      options = facet['options'] || []
+      summary_true_cutoff = options.count { |option| option['summary'] == true }
+
+      # summary:true trumps configured facet cutoff
+      [configured_cutoff, summary_true_cutoff].max
     end.to_i # just in case someone threw in a string
   end
 
   # Return an array containing a combination of facet[:options] and facet[:extra_options].
   # "Topics" have the options repeated in the extra_options because of how the browse1
   # word cloud works, so reject any dupes from the returned array.
+  #
+  # NOTE: At this point, the partitioning from lib/browse_actions.rb is lost
   def get_all_facet_options(facet)
     sort_facet_options(
       facet[:options] + facet[:extra_options].to_a.reject do |facet_extra_option|
@@ -97,9 +107,16 @@ module Browse2Helper
     )
   end
 
-  # Sorts facet options by count, then name
+  # Sorts facet options by summary boolean, then count, then name
+  # NOTE: Only the topics facet has a count
   def sort_facet_options(facet_options)
-    facet_options.to_a.sort_by { |option| [-option.fetch(:count, 0), option.fetch(:text)] }
+    facet_options.to_a.sort_by do |option|
+      [
+        option.fetch(:summary, false) ? -1 : 1, # put summary:true options first
+        -option.fetch(:count, 0), # sort topics by count
+        option.fetch(:text) # alphabetize
+      ]
+    end
   end
 
   def active_facet_option(active_option, facet)

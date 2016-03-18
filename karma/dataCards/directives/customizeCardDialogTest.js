@@ -289,6 +289,18 @@ describe('Customize card dialog', function() {
 
       expect(originalModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
     });
+
+    it('should not allow saving when card-specific conditions are not met', function() {
+      // choropleth with no computed column
+      var doneButton = dialog.element.find('button:contains("Done")');
+      expect(doneButton.is(':disabled')).to.be.false;
+
+      customizedModel.set('cardType', 'choropleth');
+      customizedModel.set('computedColumn', undefined);
+      dialog.scope.$digest();
+
+      expect(doneButton.is(':disabled')).to.be.true;
+    });
   });
 
   describe('visualization type selection', function() {
@@ -1060,6 +1072,55 @@ describe('Customize card dialog', function() {
         expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal('choropleth');
         dialog.element.find('option[value="king-pawn"]').prop('selected', true).change();
         expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal(':@computed_region_king_pawn');
+      });
+
+      it('should display "No available boundaries" when there are no curated regions or computed columns for a choropleth', function() {
+        ServerConfig.override('enableSpatialLensRegionCoding', true);
+
+        // verify that it displays when expected
+
+        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+          return $q.when([]);
+        });
+
+        var customColumns = _.omit(COLUMNS, ':@computedColumn');
+        _.each(customColumns, function(column, columnKey) {
+          customColumns[columnKey] = _.omit(column, 'computationStrategy');
+        });
+
+        var dialog = createDialog({
+          card: choroplethCard,
+          datasetOverrides: {
+            columns: customColumns
+          }
+        });
+
+        dialog.scope.$digest();
+
+        var noAvailableBoundariesElement = dialog.element.find('.soc-select.faux-disabled');
+        expect(noAvailableBoundariesElement).to.not.have.class('ng-hide');
+
+        SpatialLensService.getCuratedRegions.restore();
+
+        // verify that it doesn't display when not expected
+
+        var curatedRegions = [
+          { name: 'the most curated region ever', uid: 'mash-apes', view: { id: 'mash-apes' }},
+          { name: 'the 2nd most curated region ever', uid: 'king-pawn', view: { id: 'king-pawn' }}
+        ];
+
+        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+          return $q.when(curatedRegions);
+        });
+
+        dialog = createDialog({ card: choroplethCard });
+
+        dialog.scope.$digest();
+
+        noAvailableBoundariesElement = dialog.element.find('.soc-select.faux-disabled');
+        expect(noAvailableBoundariesElement).to.have.class('ng-hide');
+
+        SpatialLensService.getCuratedRegions.restore();
       });
 
       // NOTE: These tests are being skipped for now because

@@ -19,6 +19,8 @@ describe('ChoroplethController', function() {
   var normalTimeoutScheduler;
   var mockCardDataService;
   var $controller;
+  var SpatialLensService;
+  var $window;
 
   var testWards = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var testAggregates = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
@@ -51,6 +53,8 @@ describe('ChoroplethController', function() {
     Constants = $injector.get('Constants');
     I18n = $injector.get('I18n');
     $controller = $injector.get('$controller');
+    SpatialLensService = $injector.get('SpatialLensService');
+    $window = $injector.get('$window');
     Constants.DISABLE_LEAFLET_ZOOM_ANIMATION = true;
     testTimeoutScheduler = new Rx.TestScheduler();
     normalTimeoutScheduler = Rx.Scheduler.timeout;
@@ -144,7 +148,7 @@ describe('ChoroplethController', function() {
     model.defineObservableProperty('cardSize', 1);
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
-    model.defineObservableProperty('computedColumn', 'ward');
+    model.defineObservableProperty('computedColumn', options.computedColumn || 'ward');
     model.defineObservableProperty('cardType', 'choropleth');
     model.defineObservableProperty('customTitle', 'Cool Title');
     model.defineObservableProperty('aggregation', {
@@ -193,12 +197,128 @@ describe('ChoroplethController', function() {
     childScope.model = model;
     childScope.allowFilterChange = true;
 
-    $controller('ChoroplethController', { $scope: childScope });
+    $('body').remove('.cards-content');
+    $('body').append('<div class="cards-content"></div>');
+    $('.cards-content').append('<div id="choropleth"></div>');
+    var $element = $('#choropleth');
+
+    $controller('ChoroplethController', { $scope: childScope, $element: $element });
 
     return {
       $scope: childScope
     };
   }
+
+  describe('when the computed column is missing', function() {
+    var newColumns = { fakeColumn: {} };
+
+    beforeEach(function() {
+      sinon.stub(SpatialLensService, 'getRegionCodingStatus');
+      sinon.stub(SpatialLensService, 'executeRegionCodingJob');
+      sinon.stub(SpatialLensService, 'pollRegionCodingStatus');
+    });
+
+    afterEach(function() {
+      SpatialLensService.getRegionCodingStatus.restore();
+      SpatialLensService.executeRegionCodingJob.restore();
+      SpatialLensService.pollRegionCodingStatus.restore();
+    });
+
+    function verifyNewColumnsWereAdded(dataset) {
+      var columns = dataset.getCurrentValue('columns');
+      expect(Object.keys(columns)).to.deep.equal(['fakeColumn']);
+    }
+
+    describe('when an existing region coding job has already completed', function() {
+      it('sets the new column metadata with the region coding job response and does not attempt any region coding or polling', function() {
+        SpatialLensService.getRegionCodingStatus.returns(Rx.Observable.just({
+          data: {
+            success: true,
+            status: 'completed',
+            datasetMetadata: { columns: newColumns }
+          }
+        }));
+
+        var choropleth = createChoropleth({ computedColumn: 'theLimitDoesNotExist' });
+
+        expect(SpatialLensService.getRegionCodingStatus.callCount).to.equal(1);
+        expect(SpatialLensService.executeRegionCodingJob.callCount).to.equal(0);
+        expect(SpatialLensService.pollRegionCodingStatus.callCount).to.equal(0);
+
+        verifyNewColumnsWereAdded(choropleth.$scope.model.page.getCurrentValue('dataset'));
+      });
+    });
+
+    describe('when an existing region coding job has failed', function() {
+      beforeEach(function() {
+        SpatialLensService.getRegionCodingStatus.returns(Rx.Observable.just({
+          data: {
+            success: false,
+            status: 'failed',
+          }
+        }));
+      });
+
+      afterEach(function() {
+        delete $window.currentUser;
+      });
+
+      describe('when the user is an administrator', function() {
+        it('initiates a region coding job', function() {
+          $window.currentUser = { role: 'administrator' };
+
+          SpatialLensService.executeRegionCodingJob.returns(Rx.Observable.just({
+            data: {
+              success: true,
+              status: 'completed',
+              datasetMetadata: { columns: newColumns }
+            }
+          }));
+
+          var choropleth = createChoropleth({ computedColumn: 'theLimitDoesNotExist' });
+
+          expect(SpatialLensService.getRegionCodingStatus.callCount).to.equal(1);
+          expect(SpatialLensService.executeRegionCodingJob.callCount).to.equal(1);
+          expect(SpatialLensService.pollRegionCodingStatus.callCount).to.equal(0);
+
+          verifyNewColumnsWereAdded(choropleth.$scope.model.page.getCurrentValue('dataset'));
+        });
+      });
+
+      describe('when the user is not an administrator', function() {
+        it('shows an error', function() {
+          expect(_.partial(createChoropleth, { computedColumn: 'theLimitDoesNotExist' })).to.throw;
+        });
+      });
+    });
+
+    describe('when an existing region coding job is in progress', function() {
+      it('polls the status of that job', function() {
+        SpatialLensService.getRegionCodingStatus.returns(Rx.Observable.just({
+          data: {
+            success: true,
+            status: 'processing'
+          }
+        }));
+
+        SpatialLensService.pollRegionCodingStatus.returns(Rx.Observable.just({
+          data: {
+            success: true,
+            status: 'completed',
+            datasetMetadata: { columns: newColumns }
+          }
+        }));
+
+        var choropleth = createChoropleth({ computedColumn: 'theLimitDoesNotExist' });
+
+        expect(SpatialLensService.getRegionCodingStatus.callCount).to.equal(1);
+        expect(SpatialLensService.executeRegionCodingJob.callCount).to.equal(0);
+        expect(SpatialLensService.pollRegionCodingStatus.callCount).to.equal(1);
+
+        verifyNewColumnsWereAdded(choropleth.$scope.model.page.getCurrentValue('dataset'));
+      });
+    });
+  });
 
   // TODO migrate these to cheetah.
   xdescribe('clear selection box', function() {
@@ -437,6 +557,44 @@ describe('ChoroplethController', function() {
       });
 
       expect(testSubject.$scope.choroplethRenderError).to.equal(true);
+    });
+
+    describe('if there are no available boundaries', function() {
+      beforeEach(function() {
+        sinon.stub(SpatialLensService, 'getAvailableGeoregions$', function() {
+          return Rx.Observable.of([]);
+        });
+      });
+
+      afterEach(function() {
+        SpatialLensService.getAvailableGeoregions$.restore();
+      });
+
+      it('should display an error message', function() {
+        var columns = {
+          "points": {
+            "name": "source column.",
+            "description": "required",
+            "fred": "location",
+            "physicalDatatype": "point"
+          },
+          "ward": {
+            "name": "Ward where crime was committed.",
+            "description": "Batman has bigger fish to fry sometimes, you know.",
+            "fred": "location",
+            "physicalDatatype": "text"
+          }
+        };
+        var testSubject = createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '1'),
+          version: '1'
+        });
+
+        expect(testSubject.$scope.choroplethRenderError).to.equal(true);
+      });
     });
 
     describe('if the extent query used to get the choropleth regions fails', function() {

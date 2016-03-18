@@ -8,14 +8,21 @@
     <%= display_standard_flashes %>
   </div>
 
-  <%= render :partial => 'header_bar' %>
-  <%= render :partial => 'sidebar' %>
+  <%- if FeatureFlags.derive(@view, request).see_socrata_news -%>
+    <%= render :partial => '/profile/socrata_news/sidebar' %>
+  <%- else -%>
+    <%= render :partial => 'header_bar' %>
+    <%= render :partial => 'sidebar' %>
+  <%- end -%>
 
   <div class="profileMainContent">
-    <%- if @is_user_current || @user.description || @user.interests || @user.userLinks  -%>
+    <%- if FeatureFlags.derive(@view, request).see_socrata_news -%>
+      <%= render :partial => '/profile/socrata_news/header' %>
+    <%- end -%>
+  <%- if @is_user_current || @user.description || @user.interests || @user.userLinks  -%>
       <div class="basicInfo content">
         <div class="innerItem">
-          <%= edit_link(@user, 'editBasicInfoLink basicInfo', t('screens.profile.info.edit_link')) %>
+          <%= edit_link(@user, 'editBasicInfoLink basicInfo', t('screens.profile.bar.edit_info_link')) %>
           <h2><%= t('screens.profile.info.title') %></h2>
           <%- if @user.description -%>
           <p class="innerItem textItem"><%= auto_link(h(@user.description),

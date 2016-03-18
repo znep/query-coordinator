@@ -1,14 +1,15 @@
 $grey: #646565;
+$warning-icon-color: #debb1e;
 
 .import-status-label span {
   vertical-align: text-top;
 }
 
-.import-status-icon-notstarted:before {
+.import-status-icon-not-started:before {
   color: $grey;
 }
 
-.import-status-icon-inprogress:before {
+.import-status-icon-in-progress:before {
   color: #646565;
 }
 
@@ -20,12 +21,22 @@ $grey: #646565;
   color: green;
 }
 
+.import-status-icon-success-with-data-errors:before {
+  color: $warning-icon-color;
+}
+
 .import-status-label {
   font-weight: bold;
   vertical-align: top;
 }
 
 .showJobScreen {
+
+  .import-job-details {
+    .icon-warning {
+      color: $warning-icon-color;
+    }
+  }
 
   .back-to-jobs-list {
     float: right;
@@ -165,6 +176,50 @@ $grey: #646565;
     padding: 10px;
     text-align: center;
     font-size: 1.5em;
+  }
+
+  margin-bottom: 10px;
+
+  .with-problems {
+    font-weight: normal;
+    padding-left: 25px;
+    color: #888;
+    font-size: .8rem;
+    padding-top: .2rem;
+  }
+
+}
+
+.pager {
+
+  margin-left: 19em;
+  overflow: hidden;
+
+  .pager-element {
+
+    margin-right: 5px;
+    display: block;
+    float: left;
+
+    &.page {
+      font-size: .8rem;
+      background-color: white;
+      color: #2f4589;
+      padding: 5px 7px 5px 7px;
+      border: 1px solid lightgrey;
+      text-align: center;
+
+      &.pager-page-selected {
+        background-color: #2f4589;
+        color: white;
+      }
+    }
+
+    &.ellipsis {
+      padding-top: 5px;
+      font-size: .9rem;
+    }
+
   }
 
 }

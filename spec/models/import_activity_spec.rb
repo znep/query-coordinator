@@ -38,26 +38,27 @@ describe ImportActivity do
   describe 'self.find_all_by_finished_at_descending' do
 
     before(:each) do
-      allow(ImportStatusService).to receive(:get).with("/activity?limit=#{JobsHelper::FEED_ITEMS_LIMIT}").and_return(
+      allow(ImportStatusService).to receive(:get).with('/v2/activity?limit=30&offset=0').and_return(
         JSON::parse(File.read("#{fixture_prefix}/activity_index_response.json"))
       )
 
       # batched request for views
-      stub_request(:get, "http://localhost:8080/views.json?ids%5B%5D=dzuq-scr8&ids%5B%5D=d9fh-q64b&ids%5B%5D=copy-four&ids%5B%5D=cop2-four").
+      stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=dzuq-scr8&ids%5B%5D=d9fh-q64b&ids%5B%5D=copy-four&ids%5B%5D=cop2-four').
          with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby',
                            'X-Socrata-Federation'=>'Honey Badger', 'X-Socrata-Host'=>'localhost'}).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/views_batch_response.json"), :headers => {})
 
       # batched request for users
-      stub_request(:get, "http://localhost:8080/users.json?ids%5B%5D=tugg-ikce&ids%5B%5D=tugg-ikcu").
+      stub_request(:get, 'http://localhost:8080/users.json?ids%5B%5D=tugg-ikce&ids%5B%5D=tugg-ikcu').
          with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby',
                            'X-Socrata-Host'=>'localhost'}).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/users_batch_response.json"), :headers => {})
     end
 
     it 'returns a list of activities, each with a user and view' do
-      activities_fixtures = JSON::parse(File.read("#{fixture_prefix}/activity_index_response.json"))
-                                .map(&:with_indifferent_access)
+      activities_fixtures = JSON::parse(
+          File.read("#{fixture_prefix}/activity_index_response.json"))['activities'].
+          map(&:with_indifferent_access)
       views = View.find_multiple(%w(dzuq-scr8 d9fh-q64b copy-four cop2-four))
       users = User.find_multiple(%w(tugg-ikce tugg-ikcu))
       expected_activities = [
@@ -65,7 +66,7 @@ describe ImportActivity do
         ImportActivity.new(activities_fixtures[1], users[1], views[1], views[2])
       ]
 
-      expect(ImportActivity.find_all_by_created_at_descending(JobsHelper::FEED_ITEMS_LIMIT)).to eq(expected_activities)
+      expect(ImportActivity.find_all_by_created_at_descending(0, 30)[:activities]).to eq(expected_activities)
     end
 
   end
@@ -143,8 +144,8 @@ describe ImportActivity do
   end
 
   describe '#status' do
-    it 'returns the status it was initialized with, downcased' do
-      expect(activity.status).to eq('failure')
+    it 'returns the status it was initialized with, converted to snake case' do
+      expect(activity.status).to eq('success_with_data_errors')
     end
   end
 
@@ -163,9 +164,9 @@ describe ImportActivity do
     end
   end
 
-  describe '#import_method' do
-    it 'returns the public facing import_method for the service' do
-      expect(activity.import_method).to eq('DataSync')
+  describe '#service' do
+    it 'returns the service name it was initialized with' do
+      expect(activity.service).to eq('DeltaImporter2')
     end
   end
 

@@ -4,21 +4,40 @@ h1.padding {
   margin-top: 50px;
   font-size: 2rem;
   padding-bottom: 0;
+  margin-bottom: 5px;
+}
+.btn-meta {
+  cursor: pointer;
+  text-align: center;
+  padding-top: 6px;
+  padding-bottom: 6px;
   margin-bottom: 0;
 }
-
-.intro .desc::after {
+.intro .intro-short::after {
   content: "...";
 }
-
+.text-link-block {
+  display: block;
+  margin-left: 0;
+}
 .source-pill {
   display: inline-block;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background-color: #288CCF;
-  color: white;
-  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 0px;
+  background-color: #D6D6D6;
+  color: #636363;
+  font-size: 11px;
   margin-left: 10px;
+  margin-top: 5px;
+  i {
+    font-family: 'icomoon';
+    background-color: #11A0CE;
+    color: white;
+    border-radius:50%;
+    margin-right: 5px;
+    padding: 3px;
+    font-size: 0.8em;
+  }
 }
 
 .meta-container {
@@ -52,6 +71,7 @@ h1.padding {
 }
 
 .meta-go-link {
+  cursor: pointer;
   text-decoration: underline;
 }
 

@@ -315,7 +315,6 @@ module.exports = function ( karma ) {
               'html'
             ]
           }
-
         ]
       },
       resolve: {

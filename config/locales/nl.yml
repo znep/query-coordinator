@@ -46,7 +46,6 @@ nl:
         card_on_page: Kaart al op pagina
         card_on_page_long: Deze kaart is al op de pagina
         choose_column: Kies een kolom...
-        choropleth_warning:
         classic_chart:
         column_chart_warning: 'Let op: dit resulteert in een staafdiagram met meer dan honderd staven, het kan trager zijn dan andere diagrammen'
         custom:

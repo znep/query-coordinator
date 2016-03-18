@@ -72,7 +72,7 @@ module.exports = function(values, $target) {
    * Handle flyout events.
    */
 
-  $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+  $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
 
   function handleFlyout(event) {
 
@@ -93,10 +93,10 @@ module.exports = function(values, $target) {
    * `.destroySocrataChoroplethMap()` on the element.
    */
 
-  // $choroplethElement1.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+  // $choroplethElement1.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
   // $choroplethElement1.destroySocrataChoroplethMap();
 
-  // $choroplethElement2.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', handleFlyout);
+  // $choroplethElement2.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
   // $choroplethElement2.destroySocrataChoroplethMap();
 
 };

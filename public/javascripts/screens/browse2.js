@@ -35,15 +35,7 @@ $(function() {
   function doSort() {
     _.defer(function() {
       var newOpts = $.extend({}, opts);
-
       newOpts.sortBy = $sortType.val();
-
-      if ($sortType.find('option:selected').hasClass('timePeriod')) {
-        newOpts.sortPeriod = $sortPeriod.val();
-      } else {
-        delete newOpts.sortPeriod;
-      }
-
       doBrowse(newOpts);
     });
   }
@@ -96,7 +88,6 @@ $(function() {
       if ($.isBlank(searchOptions.q)) {
         delete searchOptions.q;
       } else {
-        delete searchOptions.sortPeriod;
         searchOptions.sortBy = 'relevance';
       }
 
@@ -627,7 +618,6 @@ $(function() {
   };
   var opts = {};
   var $sortType = $('#browse2-sort-type');
-  var $sortPeriod = $('#browse2-sort-period');
   var $searchSection = $browse.find('.browse2-search');
 
   if (!$.isBlank(window.location.search)) {
@@ -658,7 +648,6 @@ $(function() {
   }
 
   $sortType.on('change', doSort);
-  $sortPeriod.on('change', doSort);
 
   $.live(
     'a[rel*=externalDomain]',

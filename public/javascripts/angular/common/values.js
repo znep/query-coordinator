@@ -69,14 +69,17 @@ const MIXPANEL_EVENTS = [
   'Clicked Sidebar Option',
   'Clicked Pane in Sidebar',
   'Closed Tour',
+  'Encountered Error Message',
   'Opened Goal Chart',
   'Used Search Facets',
-  'Used Search Field'
+  'Used Search Field',
+  'Clicked Socrata News Link'
 ];
 
 // This is duplicated in mixpanel-analytics.js
 const MIXPANEL_PROPERTIES = [
   'Catalog Version',
+  'Chart/Map Type',
   'Click Position',
   'Dataset Owner',
   'Domain',
@@ -86,13 +89,16 @@ const MIXPANEL_PROPERTIES = [
   'Facet Value',
   'Footer Item Type',
   'Header Item Type',
+  'Ingress Step',
   'IP',
   'Limit',
+  'Message Shown',
   'Name',
   'New URL',
   'Page Number',
   'Pane Name',
   'On Page',
+  'Product',
   'Properties',
   'Query',
   'Render Type',

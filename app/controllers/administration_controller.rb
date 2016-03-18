@@ -19,6 +19,16 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:datasets] {|c| c.check_auth_levels_any([UserRights::EDIT_OTHERS_DATASETS, UserRights::EDIT_SITE_THEME]) }
   def datasets
+    if CurrentDomain.feature_flags[:asset_inventory]
+      unless AssetInventory.find.present?
+        Airbrake.notify(:error_class => "Asset Inventory missing for domain",
+          :error_message => "Asset Inventory feature flag is enabled but no dataset of display type assetinventory is found.",
+          :session => {:domain => CurrentDomain.cname},
+          :request => { :params => params })
+         Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
+      end
+    end
+
     vtf = view_types_facet
 
     datasets_index = vtf[:options].index { |option|
@@ -136,10 +146,16 @@ class AdministrationController < ApplicationController
       :set_georegion_default_status, :edit_georegion, :remove_georegion
     ]
   def georegions
+    jobs = incomplete_curated_region_jobs
+    failed_jobs = failed_curated_region_jobs
+    if jobs.nil? || failed_jobs.nil?
+      flash[:notice] = t('screens.admin.georegions.flashes.service_unavailable_html')
+    end
+
     @view_model = ::ViewModels::Administration::Georegions.new(
       CuratedRegion.all,
-      incomplete_curated_region_jobs,
-      failed_curated_region_jobs,
+      incomplete_curated_region_jobs || [],
+      failed_curated_region_jobs || [],
       CurrentDomain.strings.site_title
     )
   end
@@ -912,7 +928,14 @@ class AdministrationController < ApplicationController
   # Jobs log
   #
   def jobs
-    @activities = ImportActivity.find_all_by_created_at_descending(JobsHelper::FEED_ITEMS_LIMIT)
+    page_size = 30
+    page_idx = params.fetch(:page, '1').to_i
+    offset = (page_idx - 1) * page_size
+    all_threshold = 8
+    activities_response = ImportActivity.find_all_by_created_at_descending(offset, page_size)
+    @activities = activities_response[:activities]
+    count = activities_response[:count]
+    @pager_elements = Pager::paginate(count, page_size, page_idx, :all_threshold => all_threshold)
   end
 
   def show_job
@@ -1317,6 +1340,19 @@ class AdministrationController < ApplicationController
       end
     else
       request_http_basic_authentication
+    end
+  end
+
+  before_filter :only => [:asset_inventory] do |c|
+    c.check_feature_flag(:asset_inventory)
+  end
+  def asset_inventory
+    asset_inventory = AssetInventory.find
+
+    if asset_inventory.present?
+      redirect_to :controller => 'datasets', :action => 'show', :id => asset_inventory.id
+    else
+      render 'shared/error', :status => :not_found
     end
   end
 

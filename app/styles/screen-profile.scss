@@ -1,6 +1,10 @@
+@import "_flexbox";
+
 .profileContent {
   .flash {
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1em;
     text-align: center;
     width: 30em;
   }
@@ -112,6 +116,27 @@
       position: relative;
     }
   }
+  .summaryStatsContainer {
+    .summaryBox {
+      border: 1px solid $color_chrome_box_border;
+      @include border-radius(0.2em);
+      background-color: $light_bg_color;
+      float: left;
+      margin-left: 1em;
+      padding: 0.7em;
+      &:first-child {
+        margin-left: 0;
+      }
+      .statHeader {
+        font-size: 1.2em;
+        padding-bottom: 0.3em;
+      }
+      .number {
+        font-size: 2em;
+        font-weight: bold;
+      }
+    }
+  }
   .headerBar {
     .profileImage {
       float: left;
@@ -147,28 +172,6 @@
       }
       .accountDate {
         padding-right: 1em;
-      }
-    }
-    .summaryStatsContainer {
-      float: right;
-      .summaryBox {
-        border: 1px solid $color_chrome_box_border;
-        @include border-radius(0.2em);
-        background-color: $light_bg_color;
-        float: left;
-        margin-left: 1em;
-        padding: 0.7em;
-        &:first-child {
-          margin-left: 0;
-        }
-        .statHeader {
-          font-size: 1.2em;
-          padding-bottom: 0.3em;
-        }
-        .number {
-          font-size: 2em;
-          font-weight: bold;
-        }
       }
     }
   }
@@ -231,4 +234,65 @@
     line-height: 1.7em;
     vertical-align: top;
   }
+}
+
+.profile-sidebar {
+  float: right;
+  margin: 0 {
+    left: $chrome_margin_inner;
+  };
+  width: 25.2em;
+}
+
+.profile-header {
+  @include flexbox;
+
+  &--image {
+    position: relative;
+    margin-right: 1.5em;
+    img {
+      max-height: 150px;
+    }
+    &-edit-link {
+      position: absolute;
+      bottom: 1em;
+      right: 1em;
+      display: inline-block;
+      background-color: rgba($light_bg_color, 0.7);
+      padding: 0.25em;
+    }
+  }
+
+  &--content {
+      @include flex(1);
+      margin-top: 0.5em;
+  }
+  
+  &--primary-user-info {
+      @include flexbox;
+      @include justify-content(space-between);
+  }
+  
+  &--secondary-user-info {
+      margin-bottom: 1em;
+      width: 50%;
+      max-width: 50em;
+      min-width: 20em;
+      @include flexbox;
+      @include justify-content(space-between);
+  }
+  
+  &--user-name {
+      margin-bottom: 0;
+  }
+  
+  &--user-actions {
+      margin-top: -0.9em;
+  }
+}
+
+/* Style hack for the browse section... "Create New Dataset" button was infuriatingly misaligned */
+.buttonContainer {
+    margin-top: -0.4em !important;
+    margin-right: -0.7em !important;
 }

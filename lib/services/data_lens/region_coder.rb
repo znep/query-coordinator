@@ -4,12 +4,13 @@ module Services
 
       # Used to fetch dataset metadata to see if computed column has been added
       include CommonMetadataMethods
+      include ApplicationHelper
 
       class CuratedRegionNotFound < RuntimeError; end
 
       # Initiates a region coding job. After converting the shapefile id to a curated region id,
       # enqueues the job using CuratedRegionJobQueue.
-      def initiate(dataset_id, shapefile_id, source_column, cookies = {})
+      def initiate(dataset_id, shapefile_id, source_column, options = {})
 
         # Convert the shapefile id into a curated region id
         Rails.logger.info "RegionCoder: looking up curated region for region #{shapefile_id}"
@@ -36,8 +37,6 @@ module Services
           ]
         }
 
-        options = { :cookies => cookies }
-
         begin
           response = curated_region_job_queue.enqueue_job(attributes, dataset_id, options)
         rescue => exception
@@ -50,9 +49,7 @@ module Services
 
       # Given a dataset id and the job id, uses the CuratedRegionJobQueue endpoint to query the
       # job's status.
-      def get_status_for_job(dataset_id, job_id, cookies)
-        options = { :cookies => cookies }
-
+      def get_status_for_job(dataset_id, job_id, options)
         begin
           response = curated_region_job_queue.get_job_status(dataset_id, job_id, options)
         rescue => exception
@@ -65,8 +62,7 @@ module Services
       # Given a dataset id and a region id, tries to obtain information about any pending jobs.
       # Provides less reliable information but can be convenient if no job ID is known. Future
       # intent is to improve the backend API to make this obsolete.
-      def get_status_for_region(dataset_id, shapefile_id, cookies)
-        options = { :cookies => cookies }
+      def get_status_for_region(dataset_id, shapefile_id, options = {})
 
         # Convert the shapefile id into a curated region id
         Rails.logger.info "RegionCoder: looking up curated region for region #{shapefile_id}"
@@ -88,15 +84,13 @@ module Services
           params = { :jobType => 'add_region_columns' }
           response = curated_region_job_queue.get_queue(params, options)
           matching_job = response.find { |job|
-            return false unless
-              job['common'].present? &&
+            job['common'].present? &&
               job['dataset'].present? &&
+              job['dataset'] == dataset_id &&
               job['jobParameters'].present? &&
               job['jobParameters']['columnsInfos'].kind_of?(Array) &&
               job['jobParameters']['columnInfos'].length > 0 &&
               job['jobParameters']['columnInfos'].first['curatedRegionId'].present?
-
-            job['dataset'] == dataset_id &&
               job['jobParameters']['columnInfos'].first['curatedRegionId'] == curated_region.id
           }
         rescue => exception
@@ -107,7 +101,7 @@ module Services
         # about its progress.
         if matching_job
           job_id = matching_job['common']['externalId']
-          return get_status_for_job(dataset_id, job_id, cookies)
+          return get_status_for_job(dataset_id, job_id, options)
         end
 
         # If we get here then all we know is the job is not currently in progress. Either it has
@@ -121,14 +115,12 @@ module Services
         Rails.logger.info 'No job found, falling back to using dataset metadata to guess job status'
 
         begin
-          dataset_metadata = fetch_dataset_metadata(dataset_id)
+          dataset_metadata = fetch_dataset_metadata(dataset_id, options)
 
-          computed_column = dataset_metadata['columns'].find { |column|
-            return false unless
-              column['computationStrategy'].present? &&
+          computed_column = dataset_metadata['columns'].select { |key, column|
+            column['computationStrategy'].present? &&
               column['computationStrategy']['parameters'].present? &&
-
-            column['computationStrategy']['parameters']['region'] == shapefile_id
+              column['computationStrategy']['parameters']['region'] == shapefile_id
           }
         rescue => exception
           raise "Unknown error fetching dataset metadata for dataset #{dataset_id}: #{exception.message}"
@@ -136,10 +128,11 @@ module Services
 
         # Conjure up a response that resembles something curated_region_job_queue would return.
         {
-          :english => 'No jobs found.',
-          :progress => {
-            :english => computed_column.nil? ? 'failed' : 'completed',
-            :datasetMetadata => dataset_metadata
+          'data' => {},
+          'english' => 'No jobs found.',
+          'progress' => {
+            'english' => computed_column.empty? ? 'unknown' : 'completed',
+            'datasetMetadata' => dataset_metadata
           }
         }
       end

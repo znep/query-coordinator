@@ -320,9 +320,9 @@ module BrowseActions
       end
     end
 
-    if browse_options[:curated_region_candidates]
+    if browse_options[:curated_parent_region_candidates]
       search_options[:options] ||= []
-      search_options[:options] << 'curated_region_candidates'
+      search_options[:options] << 'curated_parent_region_candidates'
     end
 
     if browse_options[:limitTo].present?
@@ -368,6 +368,13 @@ module BrowseActions
     if browse_options[:suppressed_facets].is_a? Array
       browse_options[:facets].reject! do |facet|
         browse_options[:suppressed_facets].include? facet[:singular_description]
+      end
+    end
+
+    if browse_options[:filtered_types].is_a? Array
+      type_facet = browse_options[:facets].find { |facet| facet[:singular_description] == 'type' }
+      type_facet.try(:[], :options).try(:select!) do |facet|
+        browse_options[:filtered_types].include? facet[:value]
       end
     end
 

@@ -9,9 +9,6 @@ var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 var mobileTable = require('./mobile.table.js');
 
-require('./../../../node_modules/leaflet/dist/leaflet.css');
-require('./../../../node_modules/socrata-visualizations/dist/socrata-visualizations.css');
-
 /*
 * QFB components
 */
@@ -22,37 +19,101 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
 (function() {
   'use strict';
 
+  var $dlName = $('.dl-name');
+  $dlName.html(datasetMetadata.name);
+
+  function getPageTemplate() {
+
+    var intro;
+    var hasLongVersion;
+
+    if (datasetMetadata.description.length > 85) {
+      intro = datasetMetadata.description.substring(0, 85);
+      hasLongVersion = true;
+    } else {
+      hasLongVersion = false;
+    }
+
+    if (hasLongVersion) {
+      return $(
+        [
+          '<p class="intro padding">',
+            '<span class="dl-description intro-short">' + intro + '</span>',
+            '<span class="text-link">Show more</span>',
+          '</p>',
+          '<div class="all hidden">',
+            '<p class="padding">',
+              '<span class="dl-description">' + datasetMetadata.description + '</span>',
+              '<span class="text-link">Collapse details</span>',
+            '</p>',
+          '</div>'
+        ].join('')
+      );
+    } else {
+      return $(
+        [
+          '<p class="intro padding">',
+            '<span class="dl-description">' + datasetMetadata.description + '</span>',
+          '</p>'
+        ].join('')
+      );
+    }
+  }
+
   function getTemplate(options) {
-    return $(
-      [
-        '<div class="component-container ' + options.containerClass + '">',
-        '<article class="intro-text">',
-        '<h5>' + options.metaData.name + '</h5>',
-        '<p class="intro padding hidden">',
-        '<span class="desc"></span>',
-        '<span class="text-link">more</span>',
-        '</p>',
-        '<div class="all hidden">',
-        '<p class="padding">',
-        '<span class="desc">' + options.metaData.description + '</span>',
-        '<span class="text-link">less</span>',
-        '</p>',
-        '</div>',
-        '</article>',
-        '<div class="' + options.componentClass + '"></div>',
-        '</div>'
-      ].join('')
-    );
+
+    var intro;
+    var hasLongVersion;
+    if (options.metaData.description.length > 85) {
+      intro = options.metaData.description.substring(0,85);
+      hasLongVersion = true;
+    } else {
+      hasLongVersion = false;
+    }
+
+    if (hasLongVersion) {
+      return $(
+        [
+          '<div class="component-container ' + options.containerClass + '">',
+          '<article class="intro-text">',
+            '<h5>' + options.metaData.name + '</h5>',
+            '<p class="intro padding">',
+            '<span class="desc intro-short">' + intro + '</span>',
+            '<span class="text-link">Show more</span>',
+            '</p>',
+          '<div class="all hidden">',
+            '<p class="padding">',
+            '<span class="desc">' + options.metaData.description + '</span>',
+            '<span class="text-link">Collapse details</span>',
+            '</p>',
+          '</div>',
+          '</article>',
+          '<div class="' + options.componentClass + '"></div>',
+          '</div>'
+        ].join('')
+      );
+    } else {
+      return $(
+        [
+          '<div class="component-container ' + options.containerClass + '">',
+          '<article class="intro-text">',
+            '<h5>' + options.metaData.name + '</h5>',
+            '<p class="intro padding">',
+            '<span class="desc">' + options.metaData.description + '</span>',
+            '</p>',
+          '</article>',
+          '<div class="' + options.componentClass + '"></div>',
+          '</div>'
+        ].join('')
+      );
+    }
   }
 
   function mobileCardViewer() {
+
     var $intro = $('.intro');
     var $all = $('.all');
-    var description = $('.all').find('.desc').html();
-    var introText = description.substring(0, 85);
-
-    $intro.find('.desc').html(introText);
-    $intro.removeClass('hidden');
+    var $metadataContent = $('#metadata-content');
 
     $intro.find('.text-link').on('click', function() {
       // show all desc
@@ -64,6 +125,26 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
       // show intro desc
       $(this).parents('.intro-text').find('.intro').removeClass('hidden');
       $(this).parents('.all').addClass('hidden');
+    });
+
+    $('#button-toggle-metadata').on('click', function() {
+      var showing = $(this).data('open');
+      var self = $(this);
+
+      if (showing) {
+        self.html('show metadata');
+        self.data('open', false);
+      } else {
+        self.html('hide metadata');
+        self.data('open', true);
+      }
+      $metadataContent.toggleClass('hidden');
+    });
+
+    $('.meta-go-link').on('click', function() {
+      var url = window.location.href;
+      var aUrlParts = url.split('/mobile');
+      window.location = aUrlParts[0];
     });
 
     var $window = $(window);
@@ -184,7 +265,6 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
 
           mobileColumnChart(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
-
         case 'table':
           cardOptions.id = 'table';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
@@ -195,14 +275,13 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
           };
 
           mobileTable(values, $cardContainer.find('#table'));
-
           break;
-
         default:
           break;
       }
     });
 
+    $('.meta-container').before(getPageTemplate());
     mobileCardViewer();
     setupQfb(aPredefinedFilters);
   }

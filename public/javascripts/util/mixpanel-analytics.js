@@ -24,14 +24,17 @@ $(document).ready(function() {
     'Clicked Sidebar Option',
     'Clicked Pane in Sidebar',
     'Closed Tour',
+    'Encountered Error Message',
     'Opened Goal Chart',
     'Used Search Facets',
-    'Used Search Field'
+    'Used Search Field',
+    'Clicked Socrata News Link'
   ];
 
   // This is duplicated in angular/common/values.js
   var MIXPANEL_PROPERTIES = [
     'Catalog Version',
+    'Chart/Map Type',
     'Click Position',
     'Dataset Owner',
     'Domain',
@@ -41,13 +44,16 @@ $(document).ready(function() {
     'Facet Value',
     'Footer Item Type',
     'Header Item Type',
+    'Ingress Step',
     'IP',
     'Limit',
+    'Message Shown',
     'Name',
     'New URL',
     'Page Number',
     'Pane Name',
     'On Page',
+    'Product',
     'Properties',
     'Query',
     'Render Type',
@@ -289,9 +295,21 @@ $(document).ready(function() {
     validateAndSendPayload(eventName, mergedProperties, callback);
   };
 
-  if (blist.mixpanelLoaded) {
+  // Assemble and emit user error payloads
+  mixpanelNS.trackUserError = function(properties) {
+    registerUserProperties();
+
+    var mergedProperties = _.extend(
+      genericPagePayload(),
+      properties
+    );
+
+    // Validate and track!
+    validateAndSendPayload('Encountered Error Message', mergedProperties);
+  };
+
+  $(document).on('mixpanelLoaded', function() {
     // TODO: Move the event tracking below this to separate file(s)
-    // TODO: Don't talk to Mixpanel if it's not enabled
     //HEADER
     mixpanelNS.delegateLinks('#siteHeader', 'a', 'Clicked Header Item', false, function(element) {
       var linkType = (element.title != '') ? element.title : element.text;
@@ -366,9 +384,5 @@ $(document).ready(function() {
 
     // opening new chart
     mixpanelNS.delegateLinks('#janus', '.goalBox .progressViewChart .viewChart', 'Opened Goal Chart', false, _.noop);
-  } else {
-    if (console && console.warn) {
-      console.warn('Unable to delegateLinks to Mixpanel. AdBlocking may be in effect.');
-    }
-  }
+  });
 });

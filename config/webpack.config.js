@@ -193,6 +193,14 @@ function generateDataLensConfig() {
         {
           test: /modernizr\.js$/,
           loader: 'imports?this=>window'
+        },
+        {
+          test: /\.scss|\.css$/,
+          loader: 'style!css!autoprefixer-loader!sass'
+        },
+        {
+          test: /\.png$/,
+          loader: 'url-loader?limit=100000'
         }
       ]
     },

@@ -818,4 +818,26 @@ module ApplicationHelper
     I18n.locale.to_s == CurrentDomain.default_locale ? '' : "/#{I18n.locale}"
   end
 
+  def button_for_t(translation_string, url_options = {}, html_options = {})
+    html_options = html_options.stringify_keys
+
+    url = url_options.is_a?(String) ? url_options : url_for(url_options)
+
+    form_options = html_options.delete('form').merge(
+      :method => 'get',
+      :action => url
+    )
+
+    html_options['type'] = 'submit'
+    html_options['class'] = [html_options['class'], 'button'].compact.join(' ')
+
+    if html_options['disabled']
+      html_options['class'] = [html_options['class'], 'disabled'].compact.join(' ')
+    end
+
+    button = content_tag('button', t(translation_string), html_options)
+
+    content_tag('form', button, form_options)
+  end
+
 end

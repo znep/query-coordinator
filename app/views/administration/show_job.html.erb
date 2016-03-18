@@ -54,7 +54,7 @@
     </div>
     <div style="position: absolute; right: 0; top: 2px;">
       <p class="import-status-label">
-        <span class="import-status-icon import-status-icon-<%= @activity.status %> icon-<%= icon_for_status(@activity.status) %>"></span>
+        <span class="import-status-icon import-status-icon-<%= @activity.status.dasherize %> icon-<%= icon_for_status(@activity.status) %>"></span>
         <%= t("#{jobs_prefix}.statuses.#{@activity.status}") %>
       </p>
       <p class="result-time-stamp time-stamp" data-epoch-seconds="<%= @activity.created_at.to_i %>">
@@ -66,7 +66,7 @@
 
   <section class="import-job-container">
     <div class="import-job-events">
-      <% failure_events = @activity.events.keep_if { |event| event.status == 'Failure'} %>
+      <% failure_events = @activity.events %>
       <% if failure_events.empty? %>
         <p><%= t("#{jobs_prefix}.show_page.no_events") %></p>
       <% else %>
@@ -80,7 +80,9 @@
           <div class="event-description-container">
             <% description = event_description(last_event) %>
             <% unless description.blank? %>
-              <p class="event-description event-description-human-readable"><%= html_safe(description) %></p>
+              <p class="event-description event-description-human-readable">
+                <%= html_safe(description) %>
+              </p>
             <% else %>
               <p class="error-details-heading">
                 <%= t("#{jobs_prefix}.show_page.error_details_heading") %>:
@@ -93,7 +95,7 @@
     </div>
 
     <div class="import-job-details">
-      <h3>Started by</h3>
+      <h3><%= t("#{jobs_prefix}.show_page.started_by") %></h3>
       <p>
         <% if @activity.initiated_by.nil? %>
           <%= "(#{t("#{jobs_prefix}.index_page.deleted_user")})" %>
@@ -101,12 +103,19 @@
           <%= link_to(@activity.initiated_by.displayName, profile_path(@activity.initiated_by))%>
         <% end %>
       </p>
-      <h3>Initiated at</h3>
+      <h3><%= t("#{jobs_prefix}.show_page.initiated_at") %></h3>
       <p class="started-time-stamp time-stamp" data-epoch-seconds="<%= @activity.created_at.to_i %>">
         <span><%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
       </p>
-      <h3>Import method</h3>
-      <p><%= @activity.import_method %></p>
+      <h3><%= t("#{jobs_prefix}.show_page.import_method") %></h3>
+      <p><%= html_safe(t("#{jobs_prefix}.show_page.services.#{@activity.service}")) %></p>
+      <% unless @activity.bad_rows_url.blank? %>
+        <h3>
+          <%= t("#{jobs_prefix}.show_page.failed_rows") %>
+          <span class="icon-warning"></span>
+        </h3>
+        <p><%= link_to('errors.csv', @activity.bad_rows_url) %></p>
+      <% end %>
     </div>
   </section>
 </div>

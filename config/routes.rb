@@ -162,6 +162,8 @@ Frontend::Application.routes do
 
       get '/configuration', :action => 'configuration'
       get '/flag_out_of_date', :action => 'flag_out_of_date'
+
+      get '/asset_inventory', :action => 'asset_inventory'
     end
 
     get '/templates/:id', :controller => 'remote_partials', :action => :templates

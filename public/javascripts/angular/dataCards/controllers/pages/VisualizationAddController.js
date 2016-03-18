@@ -6,15 +6,12 @@ function VisualizationAddController(
   dataset,
   Page,
   defaultColumn,
-  defaultVifType,
-  defaultRelatedVisualizationUid) {
+  defaultVifType) {
 
   /**
    * Declare local variables.
    */
 
-  var socrata = $window.socrata;
-  var utils = socrata.utils;
   // Cards always expect to have a page, too painful to remove for now.
   var pageMetadata = {
     cards: [],
@@ -74,6 +71,11 @@ function VisualizationAddController(
 
     if (card.cardType === 'choropleth') {
       computedColumnName = selectedCard.getCurrentValue('computedColumn');
+
+      if (_.isNull(computedColumnName)) {
+        return null;
+      }
+
       computedColumn = dataset.getCurrentValue('columns')[computedColumnName];
       defaultExtentFeatureFlagValue = $window.socrataConfig.featureMapDefaultExtent;
 
@@ -144,7 +146,6 @@ function VisualizationAddController(
   // Right now we only support embedding a subset of visualization types.
   $scope.supportedCardTypes = ['choropleth', 'column', 'feature', 'timeline'];
   $scope.supportedVIFTypes = ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart'];
-  $scope.relatedVisualizations = $window.relatedVisualizations;
 
   /**
    * Bind observables to the scope.
@@ -172,30 +173,14 @@ function VisualizationAddController(
   /**
    * Modify Controller state at runtime.
    */
-
-  // Coerce the defaults to either valid values or null.
-  defaultRelatedVisualizationUid = _.any(
-    $window.relatedVisualizations,
-    'originalUid',
-    defaultRelatedVisualizationUid) ? defaultRelatedVisualizationUid : null;
-
   defaultColumn = dataset.getCurrentValue('columns')[defaultColumn] ? defaultColumn : null;
 
   $scope.supportedCardTypes.forEach(function(cardType, index) {
     cardTypesToVIFTypes[cardType] = $scope.supportedVIFTypes[index];
   });
 
-  // Apply the defaults, if any. defaultRelatedVisualizationUid is
-  // highest priority (i.e. we only apply defaultColumn if no
-  // defaultRelatedVisualizationUid is present).
-  if (defaultRelatedVisualizationUid) {
-
-    $scope.$emit(
-      'related-visualization-selected',
-      _.find($window.relatedVisualizations, 'originalUid', defaultRelatedVisualizationUid)
-    );
-
-  } else if (defaultColumn) {
+  // Apply the defaults, if any.
+  if (defaultColumn) {
 
     // If we have been passed a card type for the default column, ensure
     // that it is prioritized in `columnAndVisualizationSelector.js` by
@@ -218,34 +203,12 @@ function VisualizationAddController(
     });
   }
 
-
-
-  /**
-   * Respond to user actions.
-   */
-
-  // Emitted by relatedVisualizationSelector. This page metadata contains a
-  // sourceVif property.
-  $scope.$on('related-visualization-selected', function(event, visualization) {
-    if (visualization.format === 'page_metadata') {
-      throw new Error('Exported Data Lens visualizations cannot be selected at this time.');
-    } else if (visualization.format === 'classic') {
-      // Unlike VIF, classic visualization requires originalUid.
-      utils.assertHasProperty(visualization, 'originalUid');
-      utils.assertIsOneOfTypes(visualization.originalUid, 'string');
-
-      $scope.addCardSelectedColumnFieldName = null;
-      $scope.classicVisualization = visualization;
-      sendVisualizationToEnclosingWindow(visualization.data, 'classic', visualization.originalUid);
-    }
-  });
-
   /**
    * Communicate changes upstream (to the iframe's parent window).
    */
 
   // Possible: 'visualization-selected', arg = VIF? (or selectedCard?)
-  $scope.$on('card-model-selected', function(event, selectedCard) {
+  $scope.$on('card-model-changed', function(event, selectedCard) {
     var vif = selectedCard ? generateVIF(selectedCard) : null;
 
     $scope.classicVisualization = null;

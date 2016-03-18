@@ -3,7 +3,7 @@ const angular = require('angular');
 /**
  * UI for configuring a visualization.
  *
- * The scope event 'card-model-selected' is emitted
+ * The scope event 'card-model-changed' is emitted
  * when the user selects a visualization or changes
  * visualization settings. It is up to the consumer
  * to decide when the user has finished editing
@@ -194,7 +194,7 @@ function columnAndVisualizationSelector(
       );
 
       // When a user selects a column,
-      // emit card-model-selected.
+      // emit card-model-changed.
       // It's not sufficient to simply monitor $scope.selectedCardModel
       // for changes, as that value can change for reasons outside
       // of the user making a selection inside this directive.
@@ -202,7 +202,7 @@ function columnAndVisualizationSelector(
       // changes, $scope.selectedCardModel will be updated to reflect the new
       // field, but this does not mean the user selected a column.
       $scope.$emitEventsFromObservable(
-        'card-model-selected',
+        'card-model-changed',
         selectedCardModel$.sample($scope.$eventToObservable('soc-select-change'))
       );
 
@@ -211,7 +211,7 @@ function columnAndVisualizationSelector(
       // in all cases. Giacomo suspects some misunderstood behavior in the
       // third-party angular rx extensions' .safeApply().
       $scope.$emitEventsFromObservable(
-        'card-model-selected',
+        'card-model-changed',
         selectedCardModel$.observeOnLatest('cardType').map(function() {
           return $scope.selectedCardModel;
         })

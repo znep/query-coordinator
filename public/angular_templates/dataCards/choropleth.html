@@ -7,23 +7,30 @@
   </div>
 </div>
 
-<div class="visualization-render-error" ng-show="choroplethRenderError">
+<div class="visualization-render-error choro-map-render-error" ng-show="choroplethRenderError">
   <div class="row">
     <div class="span2"><span class="icon-warning"></span></div>
     <div class="span10">{{::'common.errors.mapRenderError' | I18n}}</div>
   </div>
 </div>
 
-<div class="visualization-render-error" ng-show="isPendingColumnAddition">
+<div class="visualization-render-error choro-no-boundaries-error" ng-show="noAvailableBoundaries">
+  <div class="row">
+    <div class="span2"><span class="icon-warning"></span></div>
+    <div class="span10">{{::'choropleth.noPreviewAvailable' | I18n}}</div>
+  </div>
+</div>
+
+<div class="visualization-render-error choro-pending-computation-error" ng-show="isPendingColumnAddition && !noAvailableBoundaries">
   <div class="row">
     <div class="span2"><span class="icon-info"></span></div>
     <div class="span9" ng-bind-html="'choropleth.pendingComputation' | I18n"></div>
   </div>
 </div>
 
-<div class="visualization-render-error" ng-show="isPendingComputation">
+<div class="visualization-render-error choro-processing-computation-error" ng-show="isPendingComputation">
   <div class="row">
-    <div class="span2" style="position: relative"><load-spinner busy="true"></load-spinner></div>
+    <div class="span2"><load-spinner busy="true"></load-spinner></div>
     <div class="span10">{{::'choropleth.computationInProgress' | I18n}}</div>
   </div>
 </div>

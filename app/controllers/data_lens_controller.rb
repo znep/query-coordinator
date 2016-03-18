@@ -38,7 +38,7 @@ class DataLensController < ActionController::Base
         dataset_id,
         shapefile_id,
         source_column,
-        forwardable_session_cookies
+        :cookies => forwardable_session_cookies
       )
 
       status = :ok
@@ -85,13 +85,14 @@ class DataLensController < ActionController::Base
         job_status = region_coder.get_status_for_region(
           dataset_id,
           shapefile_id,
-          forwardable_session_cookies
+          :cookies => forwardable_session_cookies,
+          :request_id => request_id
         )
       elsif job_id.present?
         job_status = region_coder.get_status_for_job(
           dataset_id,
           job_id,
-          forwardable_session_cookies
+          :cookies => forwardable_session_cookies
         )
       else
         raise ArgumentError.new('Either shapefile_id or job_id must be provided')
@@ -102,7 +103,8 @@ class DataLensController < ActionController::Base
       result = {
         :success => success,
         :status => job_status['progress']['english'],
-        :details => job_status['english']
+        :details => job_status['english'],
+        :data => job_status['data']
       }
 
       # Also send dataset metadata containing new computed column info if job was successful
@@ -306,22 +308,6 @@ class DataLensController < ActionController::Base
       ].compact
 
       @dataset_metadata = fetch_dataset_metadata(view.nbe_view.id)
-
-      # Grab related views for both potential copies of dataset (nbe and obe).
-      related_views = all_backend_views.map do |view|
-        view.find_related(1, 1000)
-      # Filter out data lenses, data lense charts and data lens maps.
-      end.flatten
-
-      # Select only those related views that are visualizations and not
-      # data lens visualizations (we do not currently allow the selecton
-      # of these in the 'add visualization' workflow). Also deduplicate.
-      related_visualizations = related_views.select do |related_view|
-        related_view.visualization? && !related_view.standalone_visualization?
-      end.uniq(&:id)
-
-      # Finally, convert each related visualization to a format that the JS can consume.
-      @related_visualizations = related_visualizations.map(&:to_visualization_embed_blob)
 
     rescue AuthenticationRequired
       return redirect_to_login

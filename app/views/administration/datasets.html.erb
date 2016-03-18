@@ -15,13 +15,19 @@
   <div class="adminHeader datasets">
     <span class="icon"></span>
     <h1><%= t("#{prefix}.title") %></h1>
+    <%- if CurrentDomain.feature_flags[:asset_inventory] -%>
+      <%- disabled = !AssetInventory.find.present? -%>
+      <div class="asset_inventory_link_wrapper">
+        <%= button_for_t("#{prefix}.view_as_a_dataset", {:action => 'asset_inventory'}, {:disabled => disabled, :form => { :class => 'asset_inventory_link' }}) %>
+        <%- if disabled -%><div class="asset_inventory_link_hover_window"  title="<%= t('screens.admin.datasets.asset_inventory.tooltip') %>"></div><%- end -%>
+      </div>
+    <%- end -%>
   </div>
 
   <%= display_standard_flashes %>
 
   <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) -%>
   <div class="datasetsList content">
-    <h2><%= t("#{prefix}.title") %></h2>
     <%= render_browse(@processed_browse) %>
   </div>
   <%- end -%>

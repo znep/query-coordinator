@@ -46,7 +46,6 @@ de:
         card_on_page: Card bereits auf der Seite
         card_on_page_long: Diese Card ist bereits auf der Seite
         choose_column: Eine Spalte wählen ...
-        choropleth_warning:
         classic_chart:
         column_chart_warning: 'Hinweis: Dies ergäbe ein Balkendiagramm mit über 100 Balken und könnte langsamer als andere Diagramme sein'
         custom:

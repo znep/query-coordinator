@@ -10,17 +10,23 @@ var httpConfig = {
 function SpatialLensService(http, rx, ServerConfig) {
   var spatialLensService = {
     isSpatialLensEnabled: isSpatialLensEnabled,
+    isSpatialLensAdminEnabled: isSpatialLensAdminEnabled,
     getAvailableGeoregions$: getAvailableGeoregions$,
     findComputedColumnForRegion: findComputedColumnForRegion,
     getCuratedRegions: getCuratedRegions,
     initiateRegionCoding: initiateRegionCoding,
     getRegionCodingStatus: getRegionCodingStatus,
     getRegionCodingStatusFromJob: getRegionCodingStatusFromJob,
+    pollRegionCodingStatus: pollRegionCodingStatus,
     executeRegionCodingJob: executeRegionCodingJob
   };
 
   function isSpatialLensEnabled() {
     return ServerConfig.get('enableSpatialLensRegionCoding');
+  }
+
+  function isSpatialLensAdminEnabled() {
+    return ServerConfig.get('enableSpatialLensAdmin');
   }
 
   function getAvailableGeoregions$(dataset) {
@@ -87,6 +93,8 @@ function SpatialLensService(http, rx, ServerConfig) {
     return http.post(url.href, payload, httpConfig);
   }
 
+  // Uses an unreliable method to determine region coding status using a shapefile ID. Useful if
+  // the job ID is not known.
   function getRegionCodingStatus(datasetId, shapefileId) {
     var url = $.baseUrl('/geo/status');
 
@@ -98,6 +106,7 @@ function SpatialLensService(http, rx, ServerConfig) {
     }));
   }
 
+  // Gets the status for a region coding job.
   function getRegionCodingStatusFromJob(datasetId, jobId) {
     var url = $.baseUrl('/geo/status');
 
@@ -109,31 +118,33 @@ function SpatialLensService(http, rx, ServerConfig) {
     }));
   }
 
+  // Returns an observable that polls the region coding job's status and emits a value when the
+  // job is complete.
+  function pollRegionCodingStatus(datasetId, jobId) {
+    var getStatus = _.partial(spatialLensService.getRegionCodingStatusFromJob, datasetId, jobId);
+
+    function isComplete(response) {
+      return response.data &&
+        response.data.success === true &&
+        response.data.status === 'completed';
+    }
+
+    return rx.Observable.
+      interval(5000).
+      map(getStatus).
+      switchLatest().
+      filter(isComplete).
+      take(1);
+  }
+
   function executeRegionCodingJob(datasetId, shapefileId, sourceColumn) {
     var initiate$ = spatialLensService.initiateRegionCoding(datasetId, shapefileId, sourceColumn);
-    var stopPolling$ = new rx.AsyncSubject();
-
-    // Returns an observable that produces a value every 5 seconds. The values produced are
-    // observables representing the result of the getRegionCodingStatus request.
-    function pollJobStatus(jobId) {
-      return rx.Observable.
-        interval(5000).
-        map(_.partial(spatialLensService.getRegionCodingStatusFromJob, datasetId, jobId)).
-        takeUntil(stopPolling$);
-    }
+    var getPollObservable = _.partial(spatialLensService.pollRegionCodingStatus, datasetId, _);
 
     return rx.Observable.fromPromise(initiate$). // Make a request to /initiate
       filter(_.property('data.success')). // Only continue if it was successful
       pluck('data', 'jobId'). // Grab out the jobId
-      flatMapLatest(pollJobStatus). // Pass to pollJobStatus, returns observable of observables.
-      switchLatest(). // Listen to the results of the most recent poll request.
-      filter(function(response) {
-        return response.data.success === true && response.data.status === 'completed';
-      }).
-      tap(function() {
-        stopPolling$.onNext('done');
-        stopPolling$.onCompleted();
-      });
+      flatMapLatest(getPollObservable);
   }
 
   return spatialLensService;

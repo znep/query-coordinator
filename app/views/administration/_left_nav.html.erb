@@ -44,7 +44,7 @@
     <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) ||
            CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
       <li class="datasets">
-        <%= admin_nav_link_to 'Datasets', :action => 'datasets' %>
+        <%= admin_nav_link_to t('screens.admin.datasets.title'), :action => 'datasets' %>
       </li>
     <%- end -%>
     <%- if can_view_georegions_admin?(current_user) -%>

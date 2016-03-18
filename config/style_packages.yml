@@ -1,21 +1,8 @@
-# BEGIN BOWER-MANAGED ASSETS
-# NOTE this mega-package of all bower assets is not ideal.
-# Each section of the app should depend only on the components
-# it needs. However, our homegrown style manager doesn't allow packages to refer to other packages.
-# Right now, the only consumer of bower packages is the angular
-# visualization offshoot of the app, so this is the simplest way forward.
-# NOTE Our homegrown style manager doesn't support globs, so you'll need to add all bower-installer installed styles manually :(
-bower-styles-all:
-- leaflet
-- bower/socrata-visualizations
-# END BOWER-MANAGED ASSETS
-
 angular-app-dataCards:
 - dataCards/main
 - dataCards/flexgrid-custom
 - dataCards/ellipsis
 - dataCards/flyout
-- dataCards/_leaflet
 - dataCards/choropleth
 - dataCards/timeline-chart
 - dataCards/table
@@ -36,6 +23,9 @@ angular-app-dataCards:
 - dataCards/classic-visualization-previewer
 - dataCards/export-menu
 - dataCards/tour
+- mobile/leaflet
+- dataCards/_leaflet
+- mobile/socrata-visualizations
 
 ie9:
 - dataCards/ie9
@@ -223,6 +213,7 @@ profile-show:
 - screen-profile
 - screen-profile-shared
 - control-feed
+- screen-whats-new
 profile-edit:
 - screen-profile-edit
 - screen-profile-shared
@@ -293,3 +284,5 @@ mobile:
 - mobile/loader
 - mobile/components/navbar
 - mobile/components/meta
+- mobile/leaflet
+- mobile/socrata-visualizations

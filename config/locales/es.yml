@@ -1668,7 +1668,7 @@ es:
         missing_data_provider: Debe especificar el proveedor de datos (atribucion) en una licencia Creative Commons.
         missing_esri_url: Es necesaria una URL válida de capa de mapa ESRI.
         missing_name: Es necesario un nombre de conjunto de datos.
-        need_description: Por favo, describa &ldquo;%{name}&rdquo;
+        need_description: Por favor, describa &ldquo;%{name}&rdquo;
         point:
           missing_latlong:
           suboptimal_column:

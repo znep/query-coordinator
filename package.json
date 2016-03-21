@@ -1,7 +1,7 @@
 {
   "name": "socrata-styleguide",
-  "version": "0.4.2",
-  "description": "Socrata's guide to good UX.",
+  "version": "0.4.3",
+  "description": "Socrata's Product Styleguide",
   "main": "dist/js/styleguide.js",
   "publishConfig": {
     "registry": "https://socrata.artifactoryonline.com/socrata/api/npm/npm-local"

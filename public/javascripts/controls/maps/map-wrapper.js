@@ -57,6 +57,8 @@
             { mapOptions.disableNavigation = true; }
             if (mapObj.settings.interactToScroll)
             { mapOptions.interactToScroll = true; }
+            if (mapObj._displayFormat.disableZoomWheel)
+            { mapOptions.disableZoomWheel = true; }
             if (_.isArray(mapObj._displayFormat.geocoderRadiusOptions))
             { mapOptions.geocodeOptions
                 = { radiusOptions: mapObj._displayFormat.geocoderRadiusOptions }; }
@@ -87,7 +89,7 @@
                 scope: mapObj
             });
 
-            if (mapObj.settings.interactToScroll && $.subKeyDefined(mapObj, '_controls.Navigation'))
+            if (mapObj.settings.interactToScroll && $.subKeyDefined(mapObj, '_controls.Navigation') && !mapOptions.disableZoomWheel)
             {
                 $(mapObj.currentDom).one('mouseup', function(e)
                 { mapObj._controls.Navigation.enableZoomWheel(); });

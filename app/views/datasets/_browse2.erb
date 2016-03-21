@@ -333,6 +333,7 @@
               result_categories = (result.categories || []).reject(&:empty?)
               result_topics = (result.tags || []).reject(&:empty?)
               result_last_updated = result.updatedAt.present? ? Time.iso8601(result.updatedAt).strftime('%B %-d, %Y') : nil
+              result_created_at = result.createdAt.present? ? Time.iso8601(result.createdAt).strftime('%B %-d, %Y') : nil
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             else
               result_link = result.link.present? ? result.link : view_url(result)
@@ -346,6 +347,8 @@
               elsif result.viewLastModified.present?
                 result_last_updated = Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y')
               end
+
+              result_created_at = Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y')
 
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             end
@@ -392,6 +395,7 @@
               :locals => {
                 :base_url => opts[:base_url],
                 :user_params => opts[:user_params].dup,
+                :current_sort => opts[:current_sort],
                 :result_id => result.id,
                 :result_name => result.name,
                 :result_classes => result_classes,
@@ -403,6 +407,7 @@
                 :result_description => view_formatted_description(result),
                 :result_categories => result_categories,
                 :result_last_updated => result_last_updated,
+                :result_created_at => result_created_at,
                 :result_view_count => result_view_count,
                 :result_topics => result_topics,
                  # Pending a way to determine the result's data types, they will be set to nil and ignored

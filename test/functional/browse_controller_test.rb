@@ -41,6 +41,9 @@ class BrowseControllerTest < ActionController::TestCase
     Federation.stubs(:find => [])
   end
 
+  clytemnestra_payload = File.read('test/fixtures/catalog_search_results.json')
+  cetera_payload = File.read('test/fixtures/cetera_search_results.json')
+
   test 'it should respond to the data_lens_state feature flag as a query string parameter' do
     stub_feature_flags_with(:data_lens_transition_state, 'pre_beta')
     get :show, { 'data_lens_transition_state' => 'post_beta' }
@@ -349,9 +352,6 @@ class BrowseControllerTest < ActionController::TestCase
       )
     ]
 
-    clytemnestra_payload = File.read('test/fixtures/catalog_search_results.json')
-    cetera_payload = File.read('test/fixtures/cetera_search_results.json')
-
     stubbed_custom_cutoff = 3
 
     setup do
@@ -468,6 +468,7 @@ class BrowseControllerTest < ActionController::TestCase
       assert_response :success
       assert_match(/Sold Fleet Equipment/, @response.body)
       assert_match(/Newest/, @response.body) # sort order
+      assert_match(/Created/, @response.body) # created_at timestamp shows with Newest
     end
 
     should 'send default params to Cetera with browse' do
@@ -480,6 +481,7 @@ class BrowseControllerTest < ActionController::TestCase
       assert_response :success
       assert_match(/Sold Fleet Equipment/, @response.body)
       assert_match(/Recently Updated/, @response.body) # sort order
+      assert_match(/Updated/, @response.body) # sort order
     end
 
     # See EN-3383
@@ -641,6 +643,60 @@ class BrowseControllerTest < ActionController::TestCase
       assert_response :success
 
       assert_select core_cly_selector, search_failure_message
+    end
+  end
+
+  # Testing /browse/embed because that path is relatively less tested
+  context 'embedded browse2 results with Cetera' do
+    setup do
+      stub_feature_flags_with(:cetera_search, true)
+      Federation.expects(:federations).returns([]).times(3)
+      CurrentDomain.stubs(:cname).returns('data.seattle.gov')
+    end
+
+    query_params = {
+      domains: 'data.seattle.gov',
+      limit: 10,
+      offset: 0,
+      search_context: 'data.seattle.gov'
+    }
+
+    selector = 'div.browse2-result-timestamp > div.browse2-result-timestamp-label'
+
+    should 'show created at timestamp when sorting by newest' do
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: query_params.merge(order: 'createdAt')).
+        to_return(status: 200, body: cetera_payload)
+
+      get(:embed, view_type: 'browse2', sortBy: 'newest')
+      assert_response :success
+
+      assert_select selector, 'Created'
+      assert_select selector, count: 0, text: 'Updated'
+    end
+
+    should 'show updated at timestamp when sorting by default' do
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: query_params.merge(order: 'relevance')).
+        to_return(status: 200, body: cetera_payload)
+
+      get(:embed, view_type: 'browse2') # default sort should be relevance
+      assert_response :success
+
+      assert_select selector, 'Updated'
+      assert_select selector, count: 0, text: 'Created'
+    end
+
+    should 'show updated at timestamp when sorting by last updated' do
+      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+        with(query: query_params.merge(order: 'updatedAt')).
+        to_return(status: 200, body: cetera_payload)
+
+      get(:embed, view_type: 'browse2', sortBy: 'last_modified')
+      assert_response :success
+
+      assert_select selector, 'Updated'
+      assert_select selector, count: 0, text: 'Created'
     end
   end
 end

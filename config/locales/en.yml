@@ -471,6 +471,8 @@ en:
             label: Create a Socrata Story
             title: Create a new Socrata Story
           title: Create a New Socrata Resource
+        created_at:
+          label: Created
         data_types:
           label: Data Types
         description:
@@ -530,7 +532,7 @@ en:
           label: Data Provided by
           label_with_source: Data Provided by %{source}
         last_updated:
-          label: Last Updated
+          label: Updated
         odn:
           prompt: Find Data Like This
           link:

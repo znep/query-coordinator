@@ -556,6 +556,8 @@ module BrowseActions
     ]
   end
 
+  # NOTE: Although Cetera may ultimately translate these to different display
+  # values, let's keep the underlying keys consistent.
   def cetera_browse_sort_opts
     [
       { value: 'relevance', name: t('controls.browse.sorts.relevance') },

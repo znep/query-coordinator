@@ -91,4 +91,8 @@ choropleth {
   &.choro-no-boundaries-error .span10 {
     margin-top: 0.5em;
   }
+
+  &.choro-no-polygons-error .span10 {
+    line-height: 2rem;
+  }
 }

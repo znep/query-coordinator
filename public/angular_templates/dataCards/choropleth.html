@@ -35,4 +35,11 @@
   </div>
 </div>
 
+<div class="visualization-render-error choro-no-polygons-error" ng-show="hasNoPolygons">
+  <div class="row">
+    <div class="span2"><span class="icon-warning"></span></div>
+    <div class="span10">{{::'choropleth.hasNoPolygons' | I18n}}</div>
+  </div>
+</div>
+
 <load-spinner busy="busy" ng-hide="isPendingColumnAddition || isPendingComputation || choroplethRenderError"></load-spinner>

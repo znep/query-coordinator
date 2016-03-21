@@ -357,6 +357,12 @@ function ChoroplethController(
   var allCuratedRegions$ = dataset.flatMapLatest(SpatialLensService.getAvailableGeoregions$);
   $scope.$bindObservable('noAvailableBoundaries', allCuratedRegions$.map(_.isEmpty));
 
+  var hasNoPolygons$ = geojsonRegions$.
+    map(_.partial(_.get, _, 'features', [])).
+    map(_.isEmpty);
+
+  $scope.$bindObservable('hasNoPolygons', hasNoPolygons$);
+
   /*********************************************************
   * Respond to events in the child 'choropleth' directive. *
   *********************************************************/

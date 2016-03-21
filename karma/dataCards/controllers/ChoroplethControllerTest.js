@@ -769,4 +769,24 @@ describe('ChoroplethController', function() {
       expect(choropleth.$scope.savedExtent).to.be.undefined;
     });
   });
+
+  describe('hasNoPolygons', function() {
+    it('is true if there are no polygons', function() {
+      mockCardDataService.getChoroplethRegionsUsingSourceColumn = function() {
+        return q.when({ features: [] });
+      };
+
+      var choropleth = createChoropleth({});
+      expect(choropleth.$scope.hasNoPolygons).to.equal(true);
+    });
+
+    it('is false if there are polygons', function() {
+      mockCardDataService.getChoroplethRegionsUsingSourceColumn = function() {
+        return q.when({ features: [ 'hi i am a feature' ] });
+      };
+
+      var choropleth = createChoropleth({});
+      expect(choropleth.$scope.hasNoPolygons).to.equal(false);
+    });
+  });
 });

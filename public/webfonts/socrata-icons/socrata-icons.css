@@ -1,0 +1,351 @@
+@font-face {
+	font-family: 'socrata-icons';
+	src:	url('socrata-icons.eot?civ1a8');
+	src:	url('socrata-icons.eot?civ1a8#iefix') format('embedded-opentype'),
+		url('socrata-icons.ttf?civ1a8') format('truetype'),
+		url('socrata-icons.woff?civ1a8') format('woff'),
+		url('socrata-icons.svg?civ1a8#socrata-icons') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	/* SR 2016-02-22: Icomoon seems to want to add !important to prevent issues with browser extensions
+		 that change fonts, but this causes issues with our use of it. If you end up regenerating this file
+		 and icomoon adds it, remove it again, please. */
+	font-family: 'socrata-icons';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-add:before {
+  content: "\f100";
+}
+
+.icon-add-collaborator:before {
+  content: "\f101";
+}
+
+.icon-arrow-down:before {
+  content: "\f102";
+}
+
+.icon-arrow-left:before {
+  content: "\f103";
+}
+
+.icon-arrow-next:before {
+  content: "\f104";
+}
+
+.icon-arrow-prev:before {
+  content: "\f105";
+}
+
+.icon-arrow-right:before {
+  content: "\f106";
+}
+
+.icon-arrow-up:before {
+  content: "\f107";
+}
+
+.icon-bar-chart:before {
+  content: "\f108";
+}
+
+.icon-bold2:before {
+  content: "\f109";
+}
+
+.icon-cards:before {
+  content: "\f10a";
+}
+
+.icon-chart:before {
+  content: "\f10b";
+}
+
+.icon-check:before {
+  content: "\f10c";
+}
+
+.icon-check-2:before {
+  content: "\f10d";
+}
+
+.icon-checkmark3:before {
+  content: "\f10e";
+}
+
+.icon-chevron-down:before {
+  content: "\f10f";
+}
+
+.icon-chevron-up:before {
+  content: "\f110";
+}
+
+.icon-clear-formatting:before {
+  content: "\f111";
+}
+
+.icon-close:before {
+  content: "\f112";
+}
+
+.icon-close-2:before {
+  content: "\f113";
+}
+
+.icon-close-circle:before {
+  content: "\f114";
+}
+
+.icon-collapse:before {
+  content: "\f115";
+}
+
+.icon-copy-document:before {
+  content: "\f116";
+}
+
+.icon-cross2:before {
+  content: "\f117";
+}
+
+.icon-data:before {
+  content: "\f118";
+}
+
+.icon-dataset:before {
+  content: "\f119";
+}
+
+.icon-date:before {
+  content: "\f14e";
+}
+
+.icon-distribution:before {
+  content: "\f11a";
+}
+
+.icon-droplet:before {
+  content: "\f14d";
+}
+
+.icon-edit:before {
+  content: "\f11b";
+}
+
+.icon-expand:before {
+  content: "\f11c";
+}
+
+.icon-external:before {
+  content: "\f11d";
+}
+
+.icon-external-square:before {
+  content: "\f150";
+}
+
+.icon-eye:before {
+  content: "\f11e";
+}
+
+.icon-eye-blocked:before {
+  content: "\f11f";
+}
+
+.icon-failed:before {
+  content: "\f120";
+}
+
+.icon-filter:before {
+  content: "\f121";
+}
+
+.icon-geo:before {
+  content: "\f122";
+}
+
+.icon-info:before {
+  content: "\f123";
+}
+
+.icon-info-inverse:before {
+  content: "\f124";
+}
+
+.icon-italic2:before {
+  content: "\f125";
+}
+
+.icon-line-chart:before {
+  content: "\f126";
+}
+
+.icon-link:before {
+  content: "\f127";
+}
+
+.icon-link2:before {
+  content: "\f128";
+}
+
+.icon-linked:before {
+  content: "\f129";
+}
+
+.icon-list-numbered:before {
+  content: "\f12a";
+}
+
+.icon-list2:before {
+  content: "\f12b";
+}
+
+.icon-map:before {
+  content: "\f12c";
+}
+
+.icon-move:before {
+  content: "\f12d";
+}
+
+.icon-number:before {
+  content: "\f12e";
+}
+
+.icon-official:before {
+  content: "\f12f";
+}
+
+.icon-paragraph-center3:before {
+  content: "\f130";
+}
+
+.icon-paragraph-left3:before {
+  content: "\f131";
+}
+
+.icon-paragraph-right3:before {
+  content: "\f132";
+}
+
+.icon-pause:before {
+  content: "\f133";
+}
+
+.icon-play:before {
+  content: "\f134";
+}
+
+.icon-plus2:before {
+  content: "\f135";
+}
+
+.icon-plus3:before {
+  content: "\f136";
+}
+
+.icon-presentation:before {
+  content: "\f137";
+}
+
+.icon-preview:before {
+  content: "\f138";
+}
+
+.icon-processing:before {
+  content: "\f139";
+}
+
+.icon-pulse:before {
+  content: "\f14c";
+}
+
+.icon-puzzle:before {
+  content: "\f13a";
+}
+
+.icon-question:before {
+  content: "\f13b";
+}
+
+.icon-question-inverse:before {
+  content: "\f13c";
+}
+
+.icon-quotes-left:before {
+  content: "\f13d";
+}
+
+.icon-redo:before {
+  content: "\f13e";
+}
+
+.icon-region:before {
+  content: "\f13f";
+}
+
+.icon-search:before {
+  content: "\f140";
+}
+
+.icon-settings:before {
+  content: "\f141";
+}
+
+.icon-share:before {
+  content: "\f142";
+}
+
+.icon-stories-icon:before {
+  content: "\f143";
+}
+
+.icon-stories-menu:before {
+  content: "\f144";
+}
+
+.icon-story:before {
+  content: "\f145";
+}
+
+.icon-table:before {
+  content: "\f146";
+}
+
+.icon-tag:before {
+  content: "\f147";
+}
+
+.icon-text:before {
+  content: "\f14f";
+}
+
+.icon-undo:before {
+  content: "\f148";
+}
+
+.icon-user:before {
+  content: "\f149";
+}
+
+.icon-waiting:before {
+  content: "\f14a";
+}
+
+.icon-warning:before {
+  content: "\f14b";
+}

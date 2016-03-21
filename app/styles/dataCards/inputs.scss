@@ -1,4 +1,4 @@
-@import "dataCards/common/colors";
+@import 'dataCards/common/colors';
 
 soc-select, .soc-select {
   display: inline-block;
@@ -45,7 +45,7 @@ soc-select, .soc-select {
   margin-bottom: 1rem;
 }
 
-input.dark[type="url"] {
+input.dark[type='url'] {
   color: $dark-input-font-color;
   background-color: $dark-input-bg-color;
   border: 1px solid $dark-input-border-color;
@@ -75,7 +75,7 @@ rich-text-editor {
       width: 1.5em;
       text-align: center;
       background-color: transparent;
-      font-family: "socrata-apps";
+      font-family: 'socrata-icons';
       padding: 6px;
     }
     $toolbar-link-edit-tip-size: 14px;

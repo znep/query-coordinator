@@ -8,7 +8,7 @@
 }
 
 @mixin icon-font {
-  font-family: "socrata-apps";
+  font-family: 'socrata-icons';
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -21,7 +21,7 @@
 }
 
 // icons/button_icons.png
-@mixin sprite-button-icons($subselector: ".icon") {
+@mixin sprite-button-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/button_icons.png?1);
@@ -62,7 +62,7 @@
 // icons/menu_icons.png
 $data-lens-color: #80acca;
 
-@mixin sprite-menu-icons($subselector: ".icon", $defaultDown: true) {
+@mixin sprite-menu-icons($subselector: '.icon', $defaultDown: true) {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/menu_icons.png?3);
@@ -79,8 +79,8 @@ $data-lens-color: #80acca;
       background-position: 0 13px;
     }
   }
-  @if $subselector == "&" {
-    $subselector: "";
+  @if $subselector == '&' {
+    $subselector: '';
   }
   &.none #{$subselector} {
     background-position: 0 13px;
@@ -266,56 +266,56 @@ $data-lens-color: #80acca;
       font-size: 13px;
     }
   }
-  &[data-display-type="data_lens"] {
+  &[data-display-type='data_lens'] {
     &::before {
-      content: "";
+      content: '';
       color: $data-lens-color;
     }
   }
-  &[data-display-type="calendar"] {
+  &[data-display-type='calendar'] {
     &::before {
-      content: "";
+      content: '';
       color: blue;
     }
   }
-  &[data-display-type="datasets"],
-  &[data-display-type="table"],
-  &[data-display-type="blist"] {
+  &[data-display-type='datasets'],
+  &[data-display-type='table'],
+  &[data-display-type='blist'] {
     &::before {
-      content: "";
+      content: '';
       color: #cf7532;
     }
   }
-  &[data-display-type="charts"],
-  &[data-display-type="chart"] {
+  &[data-display-type='charts'],
+  &[data-display-type='chart'] {
     &::before {
-      content: "";
+      content: '';
       color: #e6be65;
     }
   }
-  &[data-display-type="filters"],
-  &[data-display-type="filter"] {
+  &[data-display-type='filters'],
+  &[data-display-type='filter'] {
     &::before {
-      content: "";
+      content: '';
       color: #8db7df;
     }
   }
-  &[data-display-type="blob"] {
+  &[data-display-type='blob'] {
     &::before {
-      content: "";
+      content: '';
       color: #88bb50;
     }
   }
-  &[data-display-type="maps"],
-  &[data-display-type="map"] {
+  &[data-display-type='maps'],
+  &[data-display-type='map'] {
     &::before {
-      content: "";
+      content: '';
       color: #619858;
     }
   }
-  &[data-display-type="unpublished"] {
+  &[data-display-type='unpublished'] {
     &::before {
-      content: "";
+      content: '';
       color: blue;
     }
   }
@@ -328,12 +328,12 @@ $data-lens-color: #80acca;
     @include icon-font;
     font-size: 13px;
     color: gray;
-    content: "";
+    content: '';
   }
 }
 
 // icons/accordion_icons.png
-@mixin sprite-accordion-icons($subselector: ".icon") {
+@mixin sprite-accordion-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/accordion_icons.png?2);
@@ -357,7 +357,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/type_icons_30.png
-@mixin sprite-type-icons-30($subselector: ".icon") {
+@mixin sprite-type-icons-30($subselector: '.icon') {
   #{$subselector},
   .alertIcon {
     @include text-hiding;
@@ -423,7 +423,7 @@ $data-lens-color: #80acca;
   }
   &.typeData_lens {
     .icon-cards {
-      font-family: 'socrata-apps';
+      font-family: 'socrata-icons';
     }
   }
   &.typeUnpublished #{$subselector} {
@@ -438,7 +438,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/type_icons_50.png
-@mixin sprite-type-icons-50($subselector: ".icon") {
+@mixin sprite-type-icons-50($subselector: '.icon') {
   #{$subselector},
   .alertIcon {
     @include text-hiding;
@@ -500,8 +500,8 @@ $data-lens-color: #80acca;
     background: none;
     text-indent: 0;
     &::before {
-      content: "";
-      font-family: "socrata-apps";
+      content: '';
+      font-family: 'socrata-icons';
       font-size: 50px;
       color: $data-lens-color;
     }
@@ -515,7 +515,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/feed_icons.png
-@mixin sprite-feed-icons($subselector: ".icon") {
+@mixin sprite-feed-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/feed_icons.png);
@@ -564,7 +564,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/dataset_edit_icons.png
-@mixin dataset-edit-icons($subselector: ".icon") {
+@mixin dataset-edit-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/dataset_edit_icons.png);
@@ -580,7 +580,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/repeater_icons.png
-@mixin sprite-repeater-icons($subselector: ".icon") {
+@mixin sprite-repeater-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/repeater_icons.png);
@@ -596,7 +596,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/social_media_icons.png
-@mixin sprite-social-media-icons($subselector: ".icon") {
+@mixin sprite-social-media-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/social_media_icons.png);
@@ -630,7 +630,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/dataset_button_icons.png
-@mixin dataset-sidebar-icons($subselector: ".icon") {
+@mixin dataset-sidebar-icons($subselector: '.icon') {
   #{$subselector}, .alertIcon {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/dataset_sidebar_icons.png);
@@ -684,7 +684,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/renderType_toggle_icons.png
-@mixin renderType-toggle-icons($subselector: ".icon") {
+@mixin renderType-toggle-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/renderType_toggle_icons.png?1);
@@ -704,7 +704,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/approval_toggle_icons.png
-@mixin approval-toggle-icons($subselector: ".icon") {
+@mixin approval-toggle-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/approval_toggle_icons.png);
@@ -746,7 +746,7 @@ $data-lens-color: #80acca;
 }
 
 // Grid header icons
-@mixin grid-header-icons($subselector: ".icon", $includeHover: true) {
+@mixin grid-header-icons($subselector: '.icon', $includeHover: true) {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
@@ -779,7 +779,7 @@ $data-lens-color: #80acca;
 }
 
 // Format icons
-@mixin format-icon($subselector: ".icon") {
+@mixin format-icon($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/content/table_menu/rich_text_format_sprites.png);
@@ -823,7 +823,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/admin_icons.png
-@mixin admin-icons($subselector: ".icon") {
+@mixin admin-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/admin_icons.png?2);
@@ -884,7 +884,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/admin_header_icons.png
-@mixin admin-header-icons($subselector: ".icon") {
+@mixin admin-header-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/admin_header_icons.png?2);
@@ -936,7 +936,7 @@ $data-lens-color: #80acca;
 }
 
 //API Management icons
-@mixin api-management-icons($subselector: ".apiicon") {
+@mixin api-management-icons($subselector: '.apiicon') {
   #{$subselector} {
     @include text-hiding;
     height: 50px;
@@ -964,7 +964,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/new_dataset_icons.png
-@mixin new-dataset-icons($subselector: ".icon") {
+@mixin new-dataset-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/new_dataset_icons.png?1);
@@ -1004,7 +1004,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/error_icons.png
-@mixin error-icons($subselector: ".icon") {
+@mixin error-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/error_icons.png);
@@ -1023,7 +1023,7 @@ $data-lens-color: #80acca;
 }
 
 // icons/analytic_icons.png
-@mixin analytic-icons($subselector: ".icon") {
+@mixin analytic-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/analytic_icons.png?1);
@@ -1039,7 +1039,7 @@ $data-lens-color: #80acca;
 }
 
 // Datatype icons
-@mixin datatype-icons($subselector: ".icon") {
+@mixin datatype-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
@@ -1116,7 +1116,7 @@ $data-lens-color: #80acca;
 }
 
 // Component type icons
-@mixin component-icons($subselector: ".icon", $namepart: "icon", $init_hidden: false) {
+@mixin component-icons($subselector: '.icon', $namepart: 'icon', $init_hidden: false) {
   $icon_slot: 0;
   @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, ColumnChart, LineChart, Map, PieChart, Repeater, BubbleChart, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, VerticalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap, HorizontalContainer {
     &.#{$namepart}-#{$name} #{$subselector} {
@@ -1177,7 +1177,7 @@ $data-lens-color: #80acca;
 }
 
 // Login icons
-@mixin authentication-icons($subselector: ".icon") {
+@mixin authentication-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/authentication_icons.png?1);
@@ -1233,7 +1233,7 @@ $data-lens-color: #80acca;
 }
 
 // Profile edit icons
-@mixin profile-icons($subselector: ".icon") {
+@mixin profile-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/profile_icons.png?1);
@@ -1258,7 +1258,7 @@ $data-lens-color: #80acca;
 }
 
 // Story pager icons
-@mixin story-pager-glyphs($subselector: ".icon", $disposition: "light") {
+@mixin story-pager-glyphs($subselector: '.icon', $disposition: 'light') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/interface/story_pager.png);
@@ -1267,7 +1267,7 @@ $data-lens-color: #80acca;
   }
   // default: $disposition is light
   $yoffset: 0;
-  @if $disposition == "dark" {
+  @if $disposition == 'dark' {
     $yoffset: -7px;
   }
   & #{$subselector} {
@@ -1294,7 +1294,7 @@ $data-lens-color: #80acca;
 }
 
 // Medium warning icon
-@mixin warning-icon-medium($subselector: ".icon") {
+@mixin warning-icon-medium($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
     background-image: url(/stylesheets/images/icons/warning_icon_medium.png);

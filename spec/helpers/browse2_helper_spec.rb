@@ -603,4 +603,28 @@ describe Browse2Helper do
       expect(result).to match_array(['a', 'b', 'c', 'd', 'j'])
     end
   end
+
+  describe '#browse2_result_topic_url' do
+    before(:each) do
+      @base_url = '/browse'
+      @user_params = { :category => 'Business', :tags => 'dogs' }
+      @result_topic = 'jorts'
+    end
+
+    it 'returns a url for a non-federated domain' do
+      federated_origin_url = nil
+      result = helper.browse2_result_topic_url(
+        @base_url, @user_params, @result_topic, federated_origin_url
+      )
+      expect(result).to eq('/browse?category=Business&tags=jorts')
+    end
+
+    it 'returns a url for a federated domain' do
+      federated_origin_url = '//data.wa.gov'
+      result = helper.browse2_result_topic_url(
+        @base_url, @user_params, @result_topic, federated_origin_url
+      )
+      expect(result).to eq('//data.wa.gov/browse?tags=jorts')
+    end
+  end
 end

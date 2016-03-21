@@ -204,4 +204,26 @@ module Browse2Helper
     end
     truncated_results
   end
+
+  def browse2_result_link(result_name, result_link, result_is_federated, result_link_rel_type)
+    result_name << ' <span class="icon-external-square"></span>' if result_is_federated
+    link_to(
+      raw(result_name),
+      result_link,
+      class: 'browse2-result-name-link',
+      rel: result_link_rel_type,
+      itemprop: 'url'
+    )
+  end
+
+  def browse2_result_topic_url(base_url, user_params, result_topic, federated_origin_url)
+    # EN-2490: Federated result topics should link to the federated domain filtered only on the topic
+    if federated_origin_url.present?
+      url_params = { tags: result_topic }.to_param
+      "#{federated_origin_url}#{base_url}?#{url_params}"
+    else
+      url_params = user_params.merge(tags: result_topic).to_param
+      "#{base_url}?#{url_params}"
+    end
+  end
 end

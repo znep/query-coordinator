@@ -1642,6 +1642,7 @@ en:
           boundary_name: Boundary Name
           boundary_name_description: 'The name of the boundary (ex: "States" or "Neighborhoods"). Will be displayed in Spatial Lens maps.'
           boundary_name_required_field_error: The boundary must have a name.
+          boundary_name_unique_error: The boundary name must be unique.
           boundary_name_required_page_error: "Unable to save: the boundary must have a name."
           choose_a_column: Choose a column...
           configure_boundary: Configure Boundary

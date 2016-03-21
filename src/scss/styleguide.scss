@@ -32,8 +32,22 @@
 
   > .menu {
     @include span-columns(4);
-    margin-top: 60px;
-    z-index: 999;
+    margin-top: 0px;
+    z-index: 1999;
+
+    .menu-header {
+      .menu-header-title {
+        margin-top: 3rem;
+      }
+      .menu-header-dismiss {
+        text-align: right;
+        &:hover {
+          background-color: #3A3A3A;
+
+        }
+      }
+    }
+
   }
 
   > .content {
@@ -101,9 +115,26 @@ body > .responsive-navbar {
   }
 }
 
-.responsive-navbar .home {
-  text-decoration: none;
-  color: $white;
+.responsive-navbar {
+   .home,
+   .menu-link {
+      text-decoration: none;
+      color: $white;
+      font-weight: 300;
+  }
+  .home {
+    padding-left: ms(-2);
+  }
+  .menu-link {
+    border-right: 1px solid lighten($primary, 30%);
+    padding-right: ms(0);
+    transition: color .5s;
+    &:hover {
+      cursor: pointer;
+      color: darken($white, 10%);
+    }
+  } 
+
 }
 
 .page-header {
@@ -220,7 +251,7 @@ section.styleguide-section {
 
 // Sample Grids for Styleguide
 .inline-container {
-  @include outer-container();
+  @include row();
 }
 
 .one {

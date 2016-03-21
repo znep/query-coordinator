@@ -177,7 +177,8 @@ export default {
         ],
         'descriptionColumns': [
           {}
-        ]
+        ],
+        'disableZoomWheel': true
       },
       'downloadCount': 0,
       'rowsUpdatedAt': 1436996183,

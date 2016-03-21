@@ -22,6 +22,9 @@ export default function componentSocrataVisualizationClassic(componentData, them
   );
   StorytellerUtils.assertHasProperty(componentData, 'value.visualization');
 
+  componentData = _.cloneDeep(componentData);
+  _.set(componentData, 'value.visualization.displayFormat.disableZoomWheel', true);
+
   if ($this.children().length === 0) {
     _renderVisualization($this, componentData);
   } else {

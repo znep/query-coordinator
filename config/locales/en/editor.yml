@@ -188,6 +188,7 @@ en:
         invalid_message_title_1: 'Oh No!'
         invalid_message_title_2: 'Something went wrong.'
         invalid_message_description: 'Try using a valid link to a Socrata Perspectives Story.'
+        invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
       embed_code:
         name: 'HTML Embed'
         description: 'Insert embed code to include external web content.'
@@ -207,6 +208,7 @@ en:
       idle: 'Save'
     story_tile:
       view_story_prompt: 'View Story'
+      invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
     visualizations:
       no_value_placeholder: '(No value)'
       default_unit:

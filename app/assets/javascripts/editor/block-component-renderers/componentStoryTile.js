@@ -244,5 +244,11 @@ function _renderStoryTile($element, componentData, storyTileData) {
 function _renderStoryTileError($element, componentData, error) {
   $element.
     empty().
-    text(JSON.stringify(error));
+    addClass('error').
+    html(
+      StorytellerUtils.format(
+        '<p>{0}</p>',
+        I18n.t('editor.story_tile.invalid_permissions')
+      )
+    );
 }

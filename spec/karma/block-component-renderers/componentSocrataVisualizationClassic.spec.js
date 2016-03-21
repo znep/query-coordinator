@@ -59,7 +59,7 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
       var iframe = $component.find('iframe');
 
       iframe[0].contentWindow.renderVisualization = function(viewObject) {
-        assert.equal(viewObject, validComponentData.value.visualization);
+        assert.deepEqual(viewObject, validComponentData.value.visualization);
         done();
       };
     });

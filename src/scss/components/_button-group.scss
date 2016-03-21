@@ -4,7 +4,11 @@
 
   .btn {
     border-radius: 0;
+    &.btn-primary:not(.btn-inverse), &.btn-secondary:not(.btn-inverse), &.btn-dark {
+      border: 1px solid $white;
+    }
   }
+
 
   .btn:first-child {
     border-top-left-radius: 1px;
@@ -20,6 +24,9 @@
 }
 
 .btn-group-vertical {
+  &.btn-primary:not(.btn-inverse), &.btn-secondary:not(.btn-inverse), &.btn-dark {
+    border-color: $white;
+  }
   &> .btn {
     display: block;
     width: 100%;

@@ -37,6 +37,7 @@ const ConfigureBoundaryForm = React.createClass({
   },
   getInitialState() {
     return _.extend({
+      backActions: [],
       geometryLabel: '',
       geometryLabelColumns: [],
       isLoading: true,

@@ -2,15 +2,15 @@
 // Generated on Wed Jul 29 2015 12:58:51 GMT-0700 (PDT)
 
 var webpackConfig = require('./webpack.config');
-delete webpackConfig.entry;
-delete webpackConfig.output;
-webpackConfig.output = {
+delete webpackConfig[1].entry;
+delete webpackConfig[1].output;
+webpackConfig[1].output = {
   libraryTarget: 'var',
   pathinfo: true
 };
-webpackConfig.devtool = 'inline-source-map';
+webpackConfig[1].devtool = 'inline-source-map';
 
-webpackConfig.externals['socrata-utils'] = 'socrata.utils';
+webpackConfig[1].externals['socrata-utils'] = 'socrata.utils';
 
 module.exports = function(config) {
   config.set({
@@ -28,16 +28,15 @@ module.exports = function(config) {
     files: [
       'karma/chai.conf.js',
       'karma/testHelpers.js',
-      'bower_components/d3/d3.js',
-      'bower_components/jquery/dist/jquery.js',
-      'bower_components/leaflet/dist/leaflet.js',
-      'bower_components/leaflet/dist/leaflet.css',
-      'bower_components/lodash/lodash.js',
-      'bower_components/moment/moment.js',
-      'bower_components/socrata-utils/dist/socrata.utils.js',
-      'bower_components/vector-tile/dist/vectortile.js',
-      'bower_components/simple-statistics/src/simple_statistics.js',
-      'bower_components/chroma-js/chroma.js',
+      'node_modules/d3/d3.js',
+      'node_modules/jquery/dist/jquery.js',
+      'node_modules/leaflet/dist/leaflet.js',
+      'node_modules/leaflet/dist/leaflet.css',
+      'node_modules/lodash/index.js',
+      'node_modules/moment/moment.js',
+      'node_modules/socrata-utils/dist/socrata.utils.js',
+      'node_modules/simple-statistics/src/simple_statistics.js',
+      'node_modules/chroma-js/chroma.js',
       'src/views/styles/*.scss',
       'karma/testData.js',
       'karma/**/*spec.js',
@@ -54,6 +53,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'node_modules/lodash/index.js': ['webpack'],
       'src/views/styles/*.scss': ['scss'],
       'karma/**/*spec.js': ['webpack', 'sourcemap']
     },
@@ -103,7 +103,7 @@ module.exports = function(config) {
       options: {
         sourceMap: true,
         includePaths: [
-          'bower_components'
+          'node_modules'
         ]
       }
     },
@@ -112,7 +112,7 @@ module.exports = function(config) {
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false,
 
-    webpack: webpackConfig, // TODO: make a dev version of this confic with source maps; specify that one
+    webpack: webpackConfig[1], // TODO: make a dev version of this confic with source maps; specify that one
     webpackMiddleware: {
       noInfo: true
     }

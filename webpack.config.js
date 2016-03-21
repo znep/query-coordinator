@@ -1,41 +1,59 @@
+var path = require('path');
 var Rewire = require('rewire-webpack');
 
-module.exports = {
-  context: __dirname,
-  entry: './src/index.js',
-  externals: {
-    'jquery': 'jQuery',
-    'socrata-utils': {
-      root: ['socrata', 'utils'],
-      commonjs2: 'socrata.utils',
-      commonjs: 'socrata.utils',
-      amd: 'socrata.utils'
+module.exports = [
+  {
+    context: __dirname,
+    entry: './examples/index.js',
+    output: {
+      path: __dirname + '/examples',
+      filename: 'vendor.js'
     },
-    'd3': 'd3',
-    'lodash': '_',
-    'moment': 'moment',
-    'leaflet': 'L'
-  },
-  output: {
-    path: __dirname + '/dist',
-    filename: 'socrata-visualizations.js',
-    libraryTarget: 'umd',
-    library: ['socrata', 'visualizations']
-  },
-  module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
-        loader: 'strict'
+    resolve: {
+      modulesDirectories: ['node_modules'],
+      alias: {
+        'socrata-utils': path.join(__dirname, '.', 'node_modules/socrata-utils/dist/socrata.utils.js'),
+        '_': path.join(__dirname, '.', 'node_modules/lodash/index.js')
       }
-    ]
+    }
   },
-  resolve: {
-    modulesDirectories: ['node_modules', 'bower_components']
-  },
-  plugins: [
-    new Rewire()
-  ],
-  devtool: 'cheap-source-map'
-};
+  {
+    context: __dirname,
+    entry: './src/index.js',
+    externals: {
+      'jquery': 'jQuery',
+      'socrata-utils': {
+        root: ['socrata', 'utils'],
+        commonjs2: 'socrata.utils',
+        commonjs: 'socrata.utils',
+        amd: 'socrata.utils'
+      },
+      'd3': 'd3',
+      'lodash': '_',
+      'moment': 'moment',
+      'leaflet': 'L'
+    },
+    output: {
+      path: __dirname + '/dist',
+      filename: 'socrata-visualizations.js',
+      libraryTarget: 'umd',
+      library: ['socrata', 'visualizations']
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          loader: 'strict'
+        }
+      ]
+    },
+    resolve: {
+      modulesDirectories: ['node_modules']
+    },
+    plugins: [
+      new Rewire()
+    ],
+    devtool: 'cheap-source-map'
+  }
+];

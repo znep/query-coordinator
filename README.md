@@ -38,14 +38,10 @@ your dependencies because they will not be automatically installed.
 
 ## Pre-requisites
 
-> You must fist setup artifactory credentials in order to allow `bower` and `npm` to resolve dependencies. See the `setup-environment.sh` script in the `frontend` repo for more information.
+> You must fist setup artifactory credentials in order to allow `npm` to resolve dependencies. See the `setup-environment.sh` script in the `frontend` repo for more information.
 
 ```
-npm install -g bower
-```
-
-```
-bower install && npm install
+npm install
 ```
 
 Here are the versions we use for externals, which are not included in the webpack bundle:

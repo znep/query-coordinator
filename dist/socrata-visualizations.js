@@ -7,7 +7,7 @@
 		exports["visualizations"] = factory(require("socrata.utils"), require("d3"), require("jQuery"), require("_"), require("moment"), require("L"));
 	else
 		root["socrata"] = root["socrata"] || {}, root["socrata"]["visualizations"] = factory(root["socrata"]["utils"], root["d3"], root["jQuery"], root["_"], root["moment"], root["L"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_61__, __WEBPACK_EXTERNAL_MODULE_62__, __WEBPACK_EXTERNAL_MODULE_68__, __WEBPACK_EXTERNAL_MODULE_72__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_8__, __WEBPACK_EXTERNAL_MODULE_9__, __WEBPACK_EXTERNAL_MODULE_15__, __WEBPACK_EXTERNAL_MODULE_19__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -57,13 +57,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var views = __webpack_require__(1);
-	var dataProviders = __webpack_require__(75);
+	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
-	var ChoroplethMap = __webpack_require__(93);
-	var ColumnChart = __webpack_require__(95);
-	var FeatureMap = __webpack_require__(96);
-	var Table = __webpack_require__(97);
-	var TimelineChart = __webpack_require__(98);
+	var ChoroplethMap = __webpack_require__(40);
+	var ColumnChart = __webpack_require__(42);
+	var FeatureMap = __webpack_require__(43);
+	var Table = __webpack_require__(44);
+	var TimelineChart = __webpack_require__(45);
 
 	// TODO: add exported function here called `init` which takes a VIF and instantiates the
 	// appropriate visualization based on the VIF's `type` field
@@ -86,14 +86,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var ChoroplethMap = __webpack_require__(2);
-	var ChoroplethMapUtils = __webpack_require__(64);
-	var ColumnChart = __webpack_require__(65);
-	var Pager = __webpack_require__(66);
-	var TimelineChart = __webpack_require__(67);
-	var Table = __webpack_require__(69);
-	var FeatureMap = __webpack_require__(71);
-	var FlyoutRenderer = __webpack_require__(73);
-	var RowInspector = __webpack_require__(74);
+	var ChoroplethMapUtils = __webpack_require__(11);
+	var ColumnChart = __webpack_require__(12);
+	var Pager = __webpack_require__(13);
+	var TimelineChart = __webpack_require__(14);
+	var Table = __webpack_require__(16);
+	var FeatureMap = __webpack_require__(18);
+	var FlyoutRenderer = __webpack_require__(20);
+	var RowInspector = __webpack_require__(21);
 
 	module.exports = {
 	  ChoroplethMap: ChoroplethMap,
@@ -122,12 +122,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var utils = __webpack_require__(3);
 	var d3 = __webpack_require__(4);
 	var ss = __webpack_require__(5);
-	var chroma = __webpack_require__(59);
-	var $ = __webpack_require__(61);
-	var _ = __webpack_require__(62);
+	var chroma = __webpack_require__(6);
+	var $ = __webpack_require__(8);
+	var _ = __webpack_require__(9);
 
-	var Visualization = __webpack_require__(63);
-	var ChoroplethMapUtils = __webpack_require__(64);
+	var Visualization = __webpack_require__(10);
+	var ChoroplethMapUtils = __webpack_require__(11);
 
 	function ChoroplethMap(element, vif) {
 
@@ -1648,3218 +1648,1449 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* @flow */
-	'use strict';
-
+	/* global module */
 	// # simple-statistics
 	//
-	// A simple, literate statistics system.
+	// A simple, literate statistics system. The code below uses the
+	// [Javascript module pattern](http://www.adequatelygood.com/2010/3/JavaScript-Module-Pattern-In-Depth),
+	// eventually assigning `simple-statistics` to `ss` in browsers or the
+	// `exports` object for node.js
+	(function() {
+	    var ss = {};
 
-	var ss = module.exports = {};
-
-	// Linear Regression
-	ss.linearRegression = __webpack_require__(6);
-	ss.linearRegressionLine = __webpack_require__(7);
-	ss.standardDeviation = __webpack_require__(8);
-	ss.rSquared = __webpack_require__(13);
-	ss.mode = __webpack_require__(14);
-	ss.modeSorted = __webpack_require__(16);
-	ss.min = __webpack_require__(17);
-	ss.max = __webpack_require__(18);
-	ss.sum = __webpack_require__(12);
-	ss.product = __webpack_require__(19);
-	ss.quantile = __webpack_require__(20);
-	ss.quantileSorted = __webpack_require__(21);
-	ss.iqr = ss.interquartileRange = __webpack_require__(22);
-	ss.medianAbsoluteDeviation = ss.mad = __webpack_require__(23);
-	ss.chunk = __webpack_require__(26);
-	ss.shuffle = __webpack_require__(27);
-	ss.shuffleInPlace = __webpack_require__(28);
-	ss.sample = __webpack_require__(29);
-	ss.ckmeans = __webpack_require__(30);
-	ss.uniqueCountSorted = __webpack_require__(31);
-	ss.sumNthPowerDeviations = __webpack_require__(10);
-	ss.equalIntervalBreaks = __webpack_require__(32);
-
-	// sample statistics
-	ss.sampleCovariance = __webpack_require__(33);
-	ss.sampleCorrelation = __webpack_require__(34);
-	ss.sampleVariance = __webpack_require__(36);
-	ss.sampleStandardDeviation = __webpack_require__(35);
-	ss.sampleSkewness = __webpack_require__(37);
-
-	// measures of centrality
-	ss.geometricMean = __webpack_require__(38);
-	ss.harmonicMean = __webpack_require__(39);
-	ss.mean = ss.average = __webpack_require__(11);
-	ss.median = __webpack_require__(24);
-	ss.medianSorted = __webpack_require__(25);
-
-	ss.rootMeanSquare = ss.rms = __webpack_require__(40);
-	ss.variance = __webpack_require__(9);
-	ss.tTest = __webpack_require__(41);
-	ss.tTestTwoSample = __webpack_require__(42);
-	// ss.jenks = require('./src/jenks');
-
-	// Classifiers
-	ss.bayesian = __webpack_require__(43);
-	ss.perceptron = __webpack_require__(44);
-
-	// Distribution-related methods
-	ss.epsilon = __webpack_require__(45); // We make ε available to the test suite.
-	ss.factorial = __webpack_require__(46);
-	ss.bernoulliDistribution = __webpack_require__(47);
-	ss.binomialDistribution = __webpack_require__(48);
-	ss.poissonDistribution = __webpack_require__(49);
-	ss.chiSquaredGoodnessOfFit = __webpack_require__(50);
-
-	// Normal distribution
-	ss.zScore = __webpack_require__(52);
-	ss.cumulativeStdNormalProbability = __webpack_require__(53);
-	ss.standardNormalTable = __webpack_require__(54);
-	ss.errorFunction = ss.erf = __webpack_require__(55);
-	ss.inverseErrorFunction = __webpack_require__(56);
-	ss.probit = __webpack_require__(57);
-	ss.mixin = __webpack_require__(58);
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * [Simple linear regression](http://en.wikipedia.org/wiki/Simple_linear_regression)
-	 * is a simple way to find a fitted line
-	 * between a set of coordinates. This algorithm finds the slope and y-intercept of a regression line
-	 * using the least sum of squares.
-	 *
-	 * @param {Array<Array<number>>} data an array of two-element of arrays,
-	 * like `[[0, 1], [2, 3]]`
-	 * @returns {Object} object containing slope and intersect of regression line
-	 * @example
-	 * linearRegression([[0, 0], [1, 1]]); // { m: 1, b: 0 }
-	 */
-	function linearRegression(data/*: Array<Array<number>> */)/*: { m: number, b: number } */ {
-
-	    var m, b;
-
-	    // Store data length in a local variable to reduce
-	    // repeated object property lookups
-	    var dataLength = data.length;
-
-	    //if there's only one point, arbitrarily choose a slope of 0
-	    //and a y-intercept of whatever the y of the initial point is
-	    if (dataLength === 1) {
-	        m = 0;
-	        b = data[0][1];
+	    if (true) {
+	        // Assign the `ss` object to exports, so that you can require
+	        // it in [node.js](http://nodejs.org/)
+	        module.exports = ss;
 	    } else {
-	        // Initialize our sums and scope the `m` and `b`
-	        // variables that define the line.
-	        var sumX = 0, sumY = 0,
-	            sumXX = 0, sumXY = 0;
-
-	        // Use local variables to grab point values
-	        // with minimal object property lookups
-	        var point, x, y;
-
-	        // Gather the sum of all x values, the sum of all
-	        // y values, and the sum of x^2 and (x*y) for each
-	        // value.
-	        //
-	        // In math notation, these would be SS_x, SS_y, SS_xx, and SS_xy
-	        for (var i = 0; i < dataLength; i++) {
-	            point = data[i];
-	            x = point[0];
-	            y = point[1];
-
-	            sumX += x;
-	            sumY += y;
-
-	            sumXX += x * x;
-	            sumXY += x * y;
-	        }
-
-	        // `m` is the slope of the regression line
-	        m = ((dataLength * sumXY) - (sumX * sumY)) /
-	            ((dataLength * sumXX) - (sumX * sumX));
-
-	        // `b` is the y-intercept of the line.
-	        b = (sumY / dataLength) - ((m * sumX) / dataLength);
+	        // Otherwise, in a browser, we assign `ss` to the window object,
+	        // so you can simply refer to it as `ss`.
+	        this.ss = ss;
 	    }
 
-	    // Return both values as an object.
-	    return {
-	        m: m,
-	        b: b
-	    };
-	}
-
-
-	module.exports = linearRegression;
-
-
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * Given the output of `linearRegression`: an object
-	 * with `m` and `b` values indicating slope and intercept,
-	 * respectively, generate a line function that translates
-	 * x values into y values.
-	 *
-	 * @param {Object} mb object with `m` and `b` members, representing
-	 * slope and intersect of desired line
-	 * @returns {Function} method that computes y-value at any given
-	 * x-value on the line.
-	 * @example
-	 * var l = linearRegressionLine(linearRegression([[0, 0], [1, 1]]));
-	 * l(0) //= 0
-	 * l(2) //= 2
-	 */
-	function linearRegressionLine(mb/*: { b: number, m: number }*/)/*: Function */ {
-	    // Return a function that computes a `y` value for each
-	    // x value it is given, based on the values of `b` and `a`
-	    // that we just computed.
-	    return function(x) {
-	        return mb.b + (mb.m * x);
-	    };
-	}
-
-	module.exports = linearRegressionLine;
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var variance = __webpack_require__(9);
-
-	/**
-	 * The [standard deviation](http://en.wikipedia.org/wiki/Standard_deviation)
-	 * is the square root of the variance. It's useful for measuring the amount
-	 * of variation or dispersion in a set of values.
-	 *
-	 * Standard deviation is only appropriate for full-population knowledge: for
-	 * samples of a population, {@link sampleStandardDeviation} is
-	 * more appropriate.
-	 *
-	 * @param {Array<number>} x input
-	 * @returns {number} standard deviation
-	 * @example
-	 * var scores = [2, 4, 4, 4, 5, 5, 7, 9];
-	 * variance(scores); //= 4
-	 * standardDeviation(scores); //= 2
-	 */
-	function standardDeviation(x /*: Array<number> */)/*:number*/ {
-	    // The standard deviation of no numbers is null
-	    var v = variance(x);
-	    if (isNaN(v)) { return 0; }
-	    return Math.sqrt(v);
-	}
-
-	module.exports = standardDeviation;
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var sumNthPowerDeviations = __webpack_require__(10);
-
-	/**
-	 * The [variance](http://en.wikipedia.org/wiki/Variance)
-	 * is the sum of squared deviations from the mean.
-	 *
-	 * This is an implementation of variance, not sample variance:
-	 * see the `sampleVariance` method if you want a sample measure.
-	 *
-	 * @param {Array<number>} x a population
-	 * @returns {number} variance: a value greater than or equal to zero.
-	 * zero indicates that all values are identical.
-	 * @example
-	 * ss.variance([1, 2, 3, 4, 5, 6]); //= 2.917
-	 */
-	function variance(x/*: Array<number> */)/*:number*/ {
-	    // The variance of no numbers is null
-	    if (x.length === 0) { return NaN; }
-
-	    // Find the mean of squared deviations between the
-	    // mean value and each value.
-	    return sumNthPowerDeviations(x, 2) / x.length;
-	}
-
-	module.exports = variance;
-
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var mean = __webpack_require__(11);
-
-	/**
-	 * The sum of deviations to the Nth power.
-	 * When n=2 it's the sum of squared deviations.
-	 * When n=3 it's the sum of cubed deviations.
-	 *
-	 * @param {Array<number>} x
-	 * @param {number} n power
-	 * @returns {number} sum of nth power deviations
-	 * @example
-	 * var input = [1, 2, 3];
-	 * // since the variance of a set is the mean squared
-	 * // deviations, we can calculate that with sumNthPowerDeviations:
-	 * var variance = sumNthPowerDeviations(input) / input.length;
-	 */
-	function sumNthPowerDeviations(x/*: Array<number> */, n/*: number */)/*:number*/ {
-	    var meanValue = mean(x),
-	        sum = 0;
-
-	    for (var i = 0; i < x.length; i++) {
-	        sum += Math.pow(x[i] - meanValue, n);
-	    }
-
-	    return sum;
-	}
-
-	module.exports = sumNthPowerDeviations;
-
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var sum = __webpack_require__(12);
-
-	/**
-	 * The mean, _also known as average_,
-	 * is the sum of all values over the number of values.
-	 * This is a [measure of central tendency](https://en.wikipedia.org/wiki/Central_tendency):
-	 * a method of finding a typical or central value of a set of numbers.
-	 *
-	 * This runs on `O(n)`, linear time in respect to the array
-	 *
-	 * @param {Array<number>} x input values
-	 * @returns {number} mean
-	 * @example
-	 * console.log(mean([0, 10])); // 5
-	 */
-	function mean(x /*: Array<number> */)/*:number*/ {
-	    // The mean of no numbers is null
-	    if (x.length === 0) { return NaN; }
-
-	    return sum(x) / x.length;
-	}
-
-	module.exports = mean;
-
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The [sum](https://en.wikipedia.org/wiki/Summation) of an array
-	 * is the result of adding all numbers together, starting from zero.
-	 *
-	 * This runs on `O(n)`, linear time in respect to the array
-	 *
-	 * @param {Array<number>} x input
-	 * @return {number} sum of all input numbers
-	 * @example
-	 * console.log(sum([1, 2, 3])); // 6
-	 */
-	function sum(x/*: Array<number> */)/*: number */ {
-	    var value = 0;
-	    for (var i = 0; i < x.length; i++) {
-	        value += x[i];
-	    }
-	    return value;
-	}
-
-	module.exports = sum;
-
-
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The [R Squared](http://en.wikipedia.org/wiki/Coefficient_of_determination)
-	 * value of data compared with a function `f`
-	 * is the sum of the squared differences between the prediction
-	 * and the actual value.
-	 *
-	 * @param {Array<Array<number>>} data input data: this should be doubly-nested
-	 * @param {Function} func function called on `[i][0]` values within the dataset
-	 * @returns {number} r-squared value
-	 * @example
-	 * var samples = [[0, 0], [1, 1]];
-	 * var regressionLine = linearRegressionLine(linearRegression(samples));
-	 * rSquared(samples, regressionLine); //= 1 this line is a perfect fit
-	 */
-	function rSquared(data /*: Array<Array<number>> */, func /*: Function */) /*: number */ {
-	    if (data.length < 2) { return 1; }
-
-	    // Compute the average y value for the actual
-	    // data set in order to compute the
-	    // _total sum of squares_
-	    var sum = 0, average;
-	    for (var i = 0; i < data.length; i++) {
-	        sum += data[i][1];
-	    }
-	    average = sum / data.length;
-
-	    // Compute the total sum of squares - the
-	    // squared difference between each point
-	    // and the average of all points.
-	    var sumOfSquares = 0;
-	    for (var j = 0; j < data.length; j++) {
-	        sumOfSquares += Math.pow(average - data[j][1], 2);
-	    }
-
-	    // Finally estimate the error: the squared
-	    // difference between the estimate and the actual data
-	    // value at each point.
-	    var err = 0;
-	    for (var k = 0; k < data.length; k++) {
-	        err += Math.pow(data[k][1] - func(data[k][0]), 2);
-	    }
-
-	    // As the error grows larger, its ratio to the
-	    // sum of squares increases and the r squared
-	    // value grows lower.
-	    return 1 - err / sumOfSquares;
-	}
-
-	module.exports = rSquared;
-
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var numericSort = __webpack_require__(15),
-	    modeSorted = __webpack_require__(16);
-
-	/**
-	 * The [mode](http://bit.ly/W5K4Yt) is the number that appears in a list the highest number of times.
-	 * There can be multiple modes in a list: in the event of a tie, this
-	 * algorithm will return the most recently seen mode.
-	 *
-	 * This is a [measure of central tendency](https://en.wikipedia.org/wiki/Central_tendency):
-	 * a method of finding a typical or central value of a set of numbers.
-	 *
-	 * This runs on `O(nlog(n))` because it needs to sort the array internally
-	 * before running an `O(n)` search to find the mode.
-	 *
-	 * @param {Array<number>} x input
-	 * @returns {number} mode
-	 * @example
-	 * mode([0, 0, 1]); //= 0
-	 */
-	function mode(x /*: Array<number> */)/*:number*/ {
-	    // Sorting the array lets us iterate through it below and be sure
-	    // that every time we see a new number it's new and we'll never
-	    // see the same number twice
-	    return modeSorted(numericSort(x));
-	}
-
-	module.exports = mode;
-
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * Sort an array of numbers by their numeric value, ensuring that the
-	 * array is not changed in place.
-	 *
-	 * This is necessary because the default behavior of .sort
-	 * in JavaScript is to sort arrays as string values
-	 *
-	 *     [1, 10, 12, 102, 20].sort()
-	 *     // output
-	 *     [1, 10, 102, 12, 20]
-	 *
-	 * @param {Array<number>} array input array
-	 * @return {Array<number>} sorted array
-	 * @private
-	 * @example
-	 * numericSort([3, 2, 1]) // [1, 2, 3]
-	 */
-	function numericSort(array /*: Array<number> */) /*: Array<number> */ {
-	    return array
-	        // ensure the array is changed in-place
-	        .slice()
-	        // comparator function that treats input as numeric
-	        .sort(function(a, b) {
-	            return a - b;
-	        });
-	}
-
-	module.exports = numericSort;
-
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The [mode](http://bit.ly/W5K4Yt) is the number that appears in a list the highest number of times.
-	 * There can be multiple modes in a list: in the event of a tie, this
-	 * algorithm will return the most recently seen mode.
-	 *
-	 * This is a [measure of central tendency](https://en.wikipedia.org/wiki/Central_tendency):
-	 * a method of finding a typical or central value of a set of numbers.
-	 *
-	 * This runs in `O(n)` because the input is sorted.
-	 *
-	 * @param {Array<number>} sorted input
-	 * @returns {number} mode
-	 * @example
-	 * mode([0, 0, 1]); //= 0
-	 */
-	function modeSorted(sorted /*: Array<number> */)/*:number*/ {
-
-	    // Handle edge cases:
-	    // The mode of an empty list is NaN
-	    if (sorted.length === 0) { return NaN; }
-	    else if (sorted.length === 1) { return sorted[0]; }
-
-	    // This assumes it is dealing with an array of size > 1, since size
-	    // 0 and 1 are handled immediately. Hence it starts at index 1 in the
-	    // array.
-	    var last = sorted[0],
-	        // store the mode as we find new modes
-	        value = NaN,
-	        // store how many times we've seen the mode
-	        maxSeen = 0,
-	        // how many times the current candidate for the mode
-	        // has been seen
-	        seenThis = 1;
-
-	    // end at sorted.length + 1 to fix the case in which the mode is
-	    // the highest number that occurs in the sequence. the last iteration
-	    // compares sorted[i], which is undefined, to the highest number
-	    // in the series
-	    for (var i = 1; i < sorted.length + 1; i++) {
-	        // we're seeing a new number pass by
-	        if (sorted[i] !== last) {
-	            // the last number is the new mode since we saw it more
-	            // often than the old one
-	            if (seenThis > maxSeen) {
-	                maxSeen = seenThis;
-	                value = last;
-	            }
-	            seenThis = 1;
-	            last = sorted[i];
-	        // if this isn't a new number, it's one more occurrence of
-	        // the potential mode
-	        } else { seenThis++; }
-	    }
-	    return value;
-	}
-
-	module.exports = modeSorted;
-
-
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The min is the lowest number in the array. This runs on `O(n)`, linear time in respect to the array
-	 *
-	 * @param {Array<number>} x input
-	 * @returns {number} minimum value
-	 * @example
-	 * min([1, 5, -10, 100, 2]); // -100
-	 */
-	function min(x /*: Array<number> */)/*:number*/ {
-	    var value;
-	    for (var i = 0; i < x.length; i++) {
-	        // On the first iteration of this loop, min is
-	        // NaN and is thus made the minimum element in the array
-	        if (value === undefined || x[i] < value) {
-	            value = x[i];
-	        }
-	    }
-	    if (value === undefined) {
-	        return NaN;
-	    }
-	    return value;
-	}
-
-	module.exports = min;
-
-
-/***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * This computes the maximum number in an array.
-	 *
-	 * This runs on `O(n)`, linear time in respect to the array
-	 *
-	 * @param {Array<number>} x input
-	 * @returns {number} maximum value
-	 * @example
-	 * console.log(max([1, 2, 3, 4])); // 4
-	 */
-	function max(x /*: Array<number> */) /*:number*/ {
-	    var value;
-	    for (var i = 0; i < x.length; i++) {
-	        // On the first iteration of this loop, max is
-	        // NaN and is thus made the maximum element in the array
-	        if (value === undefined || x[i] > value) {
-	            value = x[i];
-	        }
-	    }
-	    if (value === undefined) {
-	        return NaN;
-	    }
-	    return value;
-	}
-
-	module.exports = max;
-
-
-/***/ },
-/* 19 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The [product](https://en.wikipedia.org/wiki/Product_(mathematics)) of an array
-	 * is the result of multiplying all numbers together, starting using one as the multiplicative identity.
-	 *
-	 * This runs on `O(n)`, linear time in respect to the array
-	 *
-	 * @param {Array<number>} x input
-	 * @return {number} product of all input numbers
-	 * @example
-	 * console.log(product([1, 2, 3, 4])); // 24
-	 */
-	function product(x/*: Array<number> */)/*: number */ {
-	    var value = 1;
-	    for (var i = 0; i < x.length; i++) {
-	        value *= x[i];
-	    }
-	    return value;
-	}
-
-	module.exports = product;
-
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var quantileSorted = __webpack_require__(21);
-	var numericSort = __webpack_require__(15);
-
-	/**
-	 * The [quantile](https://en.wikipedia.org/wiki/Quantile):
-	 * this is a population quantile, since we assume to know the entire
-	 * dataset in this library. This is an implementation of the
-	 * [Quantiles of a Population](http://en.wikipedia.org/wiki/Quantile#Quantiles_of_a_population)
-	 * algorithm from wikipedia.
-	 *
-	 * Sample is a one-dimensional array of numbers,
-	 * and p is either a decimal number from 0 to 1 or an array of decimal
-	 * numbers from 0 to 1.
-	 * In terms of a k/q quantile, p = k/q - it's just dealing with fractions or dealing
-	 * with decimal values.
-	 * When p is an array, the result of the function is also an array containing the appropriate
-	 * quantiles in input order
-	 *
-	 * @param {Array<number>} sample a sample from the population
-	 * @param {number} p the desired quantile, as a number between 0 and 1
-	 * @returns {number} quantile
-	 * @example
-	 * var data = [3, 6, 7, 8, 8, 9, 10, 13, 15, 16, 20];
-	 * quantile(data, 1); //= max(data);
-	 * quantile(data, 0); //= min(data);
-	 * quantile(data, 0.5); //= 9
-	 */
-	function quantile(sample /*: Array<number> */, p /*: Array<number> | number */) {
-	    // Sort a copy of the array. We'll need a sorted array to index
-	    // the values in sorted order.
-	    var sorted = numericSort(sample);
-
-	    if (Array.isArray(p)) {
-	        // Initialize the result array
-	        var results = [];
-	        // For each requested quantile
-	        for (var i = 0; i < p.length; i++) {
-	            results[i] = quantileSorted(sorted, p[i]);
-	        }
-	        return results;
-	    } else {
-	        return quantileSorted(sorted, p);
-	    }
-	}
-
-	module.exports = quantile;
-
-
-/***/ },
-/* 21 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * This is the internal implementation of quantiles: when you know
-	 * that the order is sorted, you don't need to re-sort it, and the computations
-	 * are faster.
-	 *
-	 * @param {Array<number>} sample input data
-	 * @param {number} p desired quantile: a number between 0 to 1, inclusive
-	 * @returns {number} quantile value
-	 * @example
-	 * var data = [3, 6, 7, 8, 8, 9, 10, 13, 15, 16, 20];
-	 * quantileSorted(data, 1); //= max(data);
-	 * quantileSorted(data, 0); //= min(data);
-	 * quantileSorted(data, 0.5); //= 9
-	 */
-	function quantileSorted(sample /*: Array<number> */, p /*: number */)/*:number*/ {
-	    var idx = sample.length * p;
-	    if (p < 0 || p > 1) {
-	        return NaN;
-	    } else if (p === 1) {
-	        // If p is 1, directly return the last element
-	        return sample[sample.length - 1];
-	    } else if (p === 0) {
-	        // If p is 0, directly return the first element
-	        return sample[0];
-	    } else if (idx % 1 !== 0) {
-	        // If p is not integer, return the next element in array
-	        return sample[Math.ceil(idx) - 1];
-	    } else if (sample.length % 2 === 0) {
-	        // If the list has even-length, we'll take the average of this number
-	        // and the next value, if there is one
-	        return (sample[idx - 1] + sample[idx]) / 2;
-	    } else {
-	        // Finally, in the simple case of an integer value
-	        // with an odd-length list, return the sample value at the index.
-	        return sample[idx];
-	    }
-	}
-
-	module.exports = quantileSorted;
-
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var quantile = __webpack_require__(20);
-
-	/**
-	 * The [Interquartile range](http://en.wikipedia.org/wiki/Interquartile_range) is
-	 * a measure of statistical dispersion, or how scattered, spread, or
-	 * concentrated a distribution is. It's computed as the difference between
-	 * the third quartile and first quartile.
-	 *
-	 * @param {Array<number>} sample
-	 * @returns {number} interquartile range: the span between lower and upper quartile,
-	 * 0.25 and 0.75
-	 * @example
-	 * interquartileRange([0, 1, 2, 3]); //= 2
-	 */
-	function interquartileRange(sample/*: Array<number> */) {
-	    // Interquartile range is the span between the upper quartile,
-	    // at `0.75`, and lower quartile, `0.25`
-	    var q1 = quantile(sample, 0.75),
-	        q2 = quantile(sample, 0.25);
-
-	    if (typeof q1 === 'number' && typeof q2 === 'number') {
-	        return q1 - q2;
-	    }
-	}
-
-	module.exports = interquartileRange;
-
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var median = __webpack_require__(24);
-
-	/**
-	 * The [Median Absolute Deviation](http://en.wikipedia.org/wiki/Median_absolute_deviation) is
-	 * a robust measure of statistical
-	 * dispersion. It is more resilient to outliers than the standard deviation.
-	 *
-	 * @param {Array<number>} x input array
-	 * @returns {number} median absolute deviation
-	 * @example
-	 * mad([1, 1, 2, 2, 4, 6, 9]); //= 1
-	 */
-	function mad(x /*: Array<number> */) {
-	    // The mad of nothing is null
-	    var medianValue = median(x),
-	        medianAbsoluteDeviations = [];
-
-	    // Make a list of absolute deviations from the median
-	    for (var i = 0; i < x.length; i++) {
-	        medianAbsoluteDeviations.push(Math.abs(x[i] - medianValue));
-	    }
-
-	    // Find the median value of that list
-	    return median(medianAbsoluteDeviations);
-	}
-
-	module.exports = mad;
-
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var medianSorted = __webpack_require__(25),
-	    numericSort = __webpack_require__(15);
-
-	/**
-	 * The [median](http://en.wikipedia.org/wiki/Median) is
-	 * the middle number of a list. This is often a good indicator of 'the middle'
-	 * when there are outliers that skew the `mean()` value.
-	 * This is a [measure of central tendency](https://en.wikipedia.org/wiki/Central_tendency):
-	 * a method of finding a typical or central value of a set of numbers.
-	 *
-	 * The median isn't necessarily one of the elements in the list: the value
-	 * can be the average of two elements if the list has an even length
-	 * and the two central values are different.
-	 *
-	 * @param {Array<number>} x input
-	 * @returns {number} median value
-	 * @example
-	 * var incomes = [10, 2, 5, 100, 2, 1];
-	 * median(incomes); //= 3.5
-	 */
-	function median(x /*: Array<number> */)/*:number*/ {
-	    // Sorting the array makes it easy to find the center, but
-	    // use `.slice()` to ensure the original array `x` is not modified
-	    return medianSorted(numericSort(x));
-	}
-
-	module.exports = median;
-
-
-/***/ },
-/* 25 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The [median](http://en.wikipedia.org/wiki/Median) is
-	 * the middle number of a list. This is often a good indicator of 'the middle'
-	 * when there are outliers that skew the `mean()` value.
-	 * This is a [measure of central tendency](https://en.wikipedia.org/wiki/Central_tendency):
-	 * a method of finding a typical or central value of a set of numbers.
-	 *
-	 * The median isn't necessarily one of the elements in the list: the value
-	 * can be the average of two elements if the list has an even length
-	 * and the two central values are different.
-	 *
-	 * @param {Array<number>} sorted input
-	 * @returns {number} median value
-	 * @example
-	 * var incomes = [10, 2, 5, 100, 2, 1];
-	 * median(incomes); //= 3.5
-	 */
-	function medianSorted(sorted /*: Array<number> */)/*:number*/ {
-	    // The median of an empty list is NaN
-	    if (sorted.length === 0) { return NaN; }
-
-	    // If the length of the list is odd, it's the central number
-	    if (sorted.length % 2 === 1) {
-	        return sorted[(sorted.length - 1) / 2];
-	    // Otherwise, the median is the average of the two numbers
-	    // at the center of the list
-	    } else {
-	        var a = sorted[sorted.length / 2 - 1];
-	        var b = sorted[sorted.length / 2];
-	        return (a + b) / 2;
-	    }
-	}
-
-	module.exports = medianSorted;
-
-
-/***/ },
-/* 26 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * Split an array into chunks of a specified size. This function
-	 * has the same behavior as [PHP's array_chunk](http://php.net/manual/en/function.array-chunk.php)
-	 * function, and thus will insert smaller-sized chunks at the end if
-	 * the input size is not divisible by the chunk size.
-	 *
-	 * `sample` is expected to be an array, and `chunkSize` a number.
-	 * The `sample` array can contain any kind of data.
-	 *
-	 * @param {Array} sample any array of values
-	 * @param {number} chunkSize size of each output array
-	 * @returns {Array<Array>} a chunked array
-	 * @example
-	 * console.log(chunk([1, 2, 3, 4], 2)); // [[1, 2], [3, 4]]
-	 */
-	function chunk(sample/*:Array<any>*/, chunkSize/*:number*/)/*:?Array<Array<any>>*/ {
-
-	    // a list of result chunks, as arrays in an array
-	    var output = [];
-
-	    // `chunkSize` must be zero or higher - otherwise the loop below,
-	    // in which we call `start += chunkSize`, will loop infinitely.
-	    // So, we'll detect and throw in that case to indicate
-	    // invalid input.
-	    if (chunkSize <= 0) {
-	        throw new Error('chunk size must be a positive integer');
-	    }
-
-	    // `start` is the index at which `.slice` will start selecting
-	    // new array elements
-	    for (var start = 0; start < sample.length; start += chunkSize) {
-
-	        // for each chunk, slice that part of the array and add it
-	        // to the output. The `.slice` function does not change
-	        // the original array.
-	        output.push(sample.slice(start, start + chunkSize));
-	    }
-	    return output;
-	}
-
-	module.exports = chunk;
-
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var shuffleInPlace = __webpack_require__(28);
-
-	/*
-	 * A [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
-	 * is a fast way to create a random permutation of a finite set. This is
-	 * a function around `shuffle_in_place` that adds the guarantee that
-	 * it will not modify its input.
-	 *
-	 * @param {Array} sample an array of any kind of element
-	 * @param {Function} [randomSource=Math.random] an optional entropy source
-	 * @return {Array} shuffled version of input
-	 * @example
-	 * var shuffled = shuffle([1, 2, 3, 4]);
-	 * shuffled; // = [2, 3, 1, 4] or any other random permutation
-	 */
-	function shuffle/*::<T>*/(sample/*:Array<T>*/, randomSource/*:Function*/) {
-	    // slice the original array so that it is not modified
-	    sample = sample.slice();
-
-	    // and then shuffle that shallow-copied array, in place
-	    return shuffleInPlace(sample.slice(), randomSource);
-	}
-
-	module.exports = shuffle;
-
-
-/***/ },
-/* 28 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/*
-	 * A [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
-	 * in-place - which means that it **will change the order of the original
-	 * array by reference**.
-	 *
-	 * This is an algorithm that generates a random [permutation](https://en.wikipedia.org/wiki/Permutation)
-	 * of a set.
-	 *
-	 * @param {Array} sample input array
-	 * @param {Function} [randomSource=Math.random] an optional source of entropy
-	 * @returns {Array} sample
-	 * @example
-	 * var sample = [1, 2, 3, 4];
-	 * shuffleInPlace(sample);
-	 * // sample is shuffled to a value like [2, 1, 4, 3]
-	 */
-	function shuffleInPlace(sample/*:Array<any>*/, randomSource/*:Function*/)/*:Array<any>*/ {
-
-
-	    // a custom random number source can be provided if you want to use
-	    // a fixed seed or another random number generator, like
-	    // [random-js](https://www.npmjs.org/package/random-js)
-	    randomSource = randomSource || Math.random;
-
-	    // store the current length of the sample to determine
-	    // when no elements remain to shuffle.
-	    var length = sample.length;
-
-	    // temporary is used to hold an item when it is being
-	    // swapped between indices.
-	    var temporary;
-
-	    // The index to swap at each stage.
-	    var index;
-
-	    // While there are still items to shuffle
-	    while (length > 0) {
-	        // chose a random index within the subset of the array
-	        // that is not yet shuffled
-	        index = Math.floor(randomSource() * length--);
-
-	        // store the value that we'll move temporarily
-	        temporary = sample[length];
-
-	        // swap the value at `sample[length]` with `sample[index]`
-	        sample[length] = sample[index];
-	        sample[index] = temporary;
-	    }
-
-	    return sample;
-	}
-
-	module.exports = shuffleInPlace;
-
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var shuffle = __webpack_require__(27);
-
-	/**
-	 * Create a [simple random sample](http://en.wikipedia.org/wiki/Simple_random_sample)
-	 * from a given array of `n` elements.
-	 *
-	 * The sampled values will be in any order, not necessarily the order
-	 * they appear in the input.
-	 *
-	 * @param {Array} array input array. can contain any type
-	 * @param {number} n count of how many elements to take
-	 * @param {Function} [randomSource=Math.random] an optional source of entropy
-	 * instead of Math.random
-	 * @return {Array} subset of n elements in original array
-	 * @example
-	 * var values = [1, 2, 4, 5, 6, 7, 8, 9];
-	 * sample(values, 3); // returns 3 random values, like [2, 5, 8];
-	 */
-	function sample/*:: <T> */(
-	    array /*: Array<T> */,
-	    n /*: number */,
-	    randomSource /*: Function */) /*: Array<T> */ {
-	    // shuffle the original array using a fisher-yates shuffle
-	    var shuffled = shuffle(array, randomSource);
-
-	    // and then return a subset of it - the first `n` elements.
-	    return shuffled.slice(0, n);
-	}
-
-	module.exports = sample;
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var uniqueCountSorted = __webpack_require__(31),
-	    numericSort = __webpack_require__(15);
-
-	/**
-	 * Create a new column x row matrix.
-	 *
-	 * @private
-	 * @param {number} columns
-	 * @param {number} rows
-	 * @return {Array<Array<number>>} matrix
-	 * @example
-	 * makeMatrix(10, 10);
-	 */
-	function makeMatrix(columns, rows) {
-	    var matrix = [];
-	    for (var i = 0; i < columns; i++) {
-	        var column = [];
-	        for (var j = 0; j < rows; j++) {
-	            column.push(0);
-	        }
-	        matrix.push(column);
-	    }
-	    return matrix;
-	}
-
-	/**
-	 * Ckmeans clustering is an improvement on heuristic-based clustering
-	 * approaches like Jenks. The algorithm was developed in
-	 * [Haizhou Wang and Mingzhou Song](http://journal.r-project.org/archive/2011-2/RJournal_2011-2_Wang+Song.pdf)
-	 * as a [dynamic programming](https://en.wikipedia.org/wiki/Dynamic_programming) approach
-	 * to the problem of clustering numeric data into groups with the least
-	 * within-group sum-of-squared-deviations.
-	 *
-	 * Minimizing the difference within groups - what Wang & Song refer to as
-	 * `withinss`, or within sum-of-squares, means that groups are optimally
-	 * homogenous within and the data is split into representative groups.
-	 * This is very useful for visualization, where you may want to represent
-	 * a continuous variable in discrete color or style groups. This function
-	 * can provide groups that emphasize differences between data.
-	 *
-	 * Being a dynamic approach, this algorithm is based on two matrices that
-	 * store incrementally-computed values for squared deviations and backtracking
-	 * indexes.
-	 *
-	 * Unlike the [original implementation](https://cran.r-project.org/web/packages/Ckmeans.1d.dp/index.html),
-	 * this implementation does not include any code to automatically determine
-	 * the optimal number of clusters: this information needs to be explicitly
-	 * provided.
-	 *
-	 * ### References
-	 * _Ckmeans.1d.dp: Optimal k-means Clustering in One Dimension by Dynamic
-	 * Programming_ Haizhou Wang and Mingzhou Song ISSN 2073-4859
-	 *
-	 * from The R Journal Vol. 3/2, December 2011
-	 * @param {Array<number>} data input data, as an array of number values
-	 * @param {number} nClusters number of desired classes. This cannot be
-	 * greater than the number of values in the data array.
-	 * @returns {Array<Array<number>>} clustered input
-	 * @example
-	 * ckmeans([-1, 2, -1, 2, 4, 5, 6, -1, 2, -1], 3);
-	 * // The input, clustered into groups of similar numbers.
-	 * //= [[-1, -1, -1, -1], [2, 2, 2], [4, 5, 6]]);
-	 */
-	function ckmeans(data/*: Array<number> */, nClusters/*: number */)/*: Array<Array<number>> */ {
-
-	    if (nClusters > data.length) {
-	        throw new Error('Cannot generate more classes than there are data values');
-	    }
-
-	    var sorted = numericSort(data),
-	        // we'll use this as the maximum number of clusters
-	        uniqueCount = uniqueCountSorted(sorted);
-
-	    // if all of the input values are identical, there's one cluster
-	    // with all of the input in it.
-	    if (uniqueCount === 1) {
-	        return [sorted];
-	    }
-
-	    // named 'D' originally
-	    var matrix = makeMatrix(nClusters, sorted.length),
-	        // named 'B' originally
-	        backtrackMatrix = makeMatrix(nClusters, sorted.length);
-
-	    // This is a dynamic programming way to solve the problem of minimizing
-	    // within-cluster sum of squares. It's similar to linear regression
-	    // in this way, and this calculation incrementally computes the
-	    // sum of squares that are later read.
-
-	    // The outer loop iterates through clusters, from 0 to nClusters.
-	    for (var cluster = 0; cluster < nClusters; cluster++) {
-
-	        // At the start of each loop, the mean starts as the first element
-	        var firstClusterMean = sorted[0];
-
-	        for (var sortedIdx = Math.max(cluster, 1);
-	             sortedIdx < sorted.length;
-	             sortedIdx++) {
-
-	            if (cluster === 0) {
-
-	                // Increase the running sum of squares calculation by this
-	                // new value
-	                var squaredDifference = Math.pow(
-	                    sorted[sortedIdx] - firstClusterMean, 2);
-	                matrix[cluster][sortedIdx] = matrix[cluster][sortedIdx - 1] +
-	                    (sortedIdx / (sortedIdx + 1)) * squaredDifference;
-
-	                // We're computing a running mean by taking the previous
-	                // mean value, multiplying it by the number of elements
-	                // seen so far, and then dividing it by the number of
-	                // elements total.
-	                var newSum = sortedIdx * firstClusterMean + sorted[sortedIdx];
-	                firstClusterMean = newSum / (sortedIdx + 1);
-
+	    // # [Linear Regression](http://en.wikipedia.org/wiki/Linear_regression)
+	    //
+	    // [Simple linear regression](http://en.wikipedia.org/wiki/Simple_linear_regression)
+	    // is a simple way to find a fitted line
+	    // between a set of coordinates.
+	    function linear_regression() {
+	        var linreg = {},
+	            data = [];
+
+	        // Assign data to the model. Data is assumed to be an array.
+	        linreg.data = function(x) {
+	            if (!arguments.length) return data;
+	            data = x.slice();
+	            return linreg;
+	        };
+
+	        // Calculate the slope and y-intercept of the regression line
+	        // by calculating the least sum of squares
+	        linreg.mb = function() {
+	            var m, b;
+
+	            // Store data length in a local variable to reduce
+	            // repeated object property lookups
+	            var data_length = data.length;
+
+	            //if there's only one point, arbitrarily choose a slope of 0
+	            //and a y-intercept of whatever the y of the initial point is
+	            if (data_length === 1) {
+	                m = 0;
+	                b = data[0][1];
 	            } else {
+	                // Initialize our sums and scope the `m` and `b`
+	                // variables that define the line.
+	                var sum_x = 0, sum_y = 0,
+	                    sum_xx = 0, sum_xy = 0;
 
-	                var sumSquaredDistances = 0,
-	                    meanXJ = 0;
+	                // Use local variables to grab point values
+	                // with minimal object property lookups
+	                var point, x, y;
 
-	                for (var j = sortedIdx; j >= cluster; j--) {
+	                // Gather the sum of all x values, the sum of all
+	                // y values, and the sum of x^2 and (x*y) for each
+	                // value.
+	                //
+	                // In math notation, these would be SS_x, SS_y, SS_xx, and SS_xy
+	                for (var i = 0; i < data_length; i++) {
+	                    point = data[i];
+	                    x = point[0];
+	                    y = point[1];
 
-	                    sumSquaredDistances += (sortedIdx - j) /
-	                        (sortedIdx - j + 1) *
-	                        Math.pow(sorted[j] - meanXJ, 2);
+	                    sum_x += x;
+	                    sum_y += y;
 
-	                    meanXJ = (sorted[j] + (sortedIdx - j) * meanXJ) /
-	                        (sortedIdx - j + 1);
+	                    sum_xx += x * x;
+	                    sum_xy += x * y;
+	                }
 
-	                    if (j === sortedIdx) {
-	                        matrix[cluster][sortedIdx] = sumSquaredDistances;
-	                        backtrackMatrix[cluster][sortedIdx] = j;
-	                        if (j > 0) {
-	                            matrix[cluster][sortedIdx] += matrix[cluster - 1][j - 1];
-	                        }
+	                // `m` is the slope of the regression line
+	                m = ((data_length * sum_xy) - (sum_x * sum_y)) /
+	                    ((data_length * sum_xx) - (sum_x * sum_x));
+
+	                // `b` is the y-intercept of the line.
+	                b = (sum_y / data_length) - ((m * sum_x) / data_length);
+	            }
+
+	            // Return both values as an object.
+	            return { m: m, b: b };
+	        };
+
+	        // a shortcut for simply getting the slope of the regression line
+	        linreg.m = function() {
+	            return linreg.mb().m;
+	        };
+
+	        // a shortcut for simply getting the y-intercept of the regression
+	        // line.
+	        linreg.b = function() {
+	            return linreg.mb().b;
+	        };
+
+	        // ## Fitting The Regression Line
+	        //
+	        // This is called after `.data()` and returns the
+	        // equation `y = f(x)` which gives the position
+	        // of the regression line at each point in `x`.
+	        linreg.line = function() {
+
+	            // Get the slope, `m`, and y-intercept, `b`, of the line.
+	            var mb = linreg.mb(),
+	                m = mb.m,
+	                b = mb.b;
+
+	            // Return a function that computes a `y` value for each
+	            // x value it is given, based on the values of `b` and `a`
+	            // that we just computed.
+	            return function(x) {
+	                return b + (m * x);
+	            };
+	        };
+
+	        return linreg;
+	    }
+
+	    // # [R Squared](http://en.wikipedia.org/wiki/Coefficient_of_determination)
+	    //
+	    // The r-squared value of data compared with a function `f`
+	    // is the sum of the squared differences between the prediction
+	    // and the actual value.
+	    function r_squared(data, f) {
+	        if (data.length < 2) return 1;
+
+	        // Compute the average y value for the actual
+	        // data set in order to compute the
+	        // _total sum of squares_
+	        var sum = 0, average;
+	        for (var i = 0; i < data.length; i++) {
+	            sum += data[i][1];
+	        }
+	        average = sum / data.length;
+
+	        // Compute the total sum of squares - the
+	        // squared difference between each point
+	        // and the average of all points.
+	        var sum_of_squares = 0;
+	        for (var j = 0; j < data.length; j++) {
+	            sum_of_squares += Math.pow(average - data[j][1], 2);
+	        }
+
+	        // Finally estimate the error: the squared
+	        // difference between the estimate and the actual data
+	        // value at each point.
+	        var err = 0;
+	        for (var k = 0; k < data.length; k++) {
+	            err += Math.pow(data[k][1] - f(data[k][0]), 2);
+	        }
+
+	        // As the error grows larger, its ratio to the
+	        // sum of squares increases and the r squared
+	        // value grows lower.
+	        return 1 - (err / sum_of_squares);
+	    }
+
+
+	    // # [Bayesian Classifier](http://en.wikipedia.org/wiki/Naive_Bayes_classifier)
+	    //
+	    // This is a naïve bayesian classifier that takes
+	    // singly-nested objects.
+	    function bayesian() {
+	        // The `bayes_model` object is what will be exposed
+	        // by this closure, with all of its extended methods, and will
+	        // have access to all scope variables, like `total_count`.
+	        var bayes_model = {},
+	            // The number of items that are currently
+	            // classified in the model
+	            total_count = 0,
+	            // Every item classified in the model
+	            data = {};
+
+	        // ## Train
+	        // Train the classifier with a new item, which has a single
+	        // dimension of Javascript literal keys and values.
+	        bayes_model.train = function(item, category) {
+	            // If the data object doesn't have any values
+	            // for this category, create a new object for it.
+	            if (!data[category]) data[category] = {};
+
+	            // Iterate through each key in the item.
+	            for (var k in item) {
+	                var v = item[k];
+	                // Initialize the nested object `data[category][k][item[k]]`
+	                // with an object of keys that equal 0.
+	                if (data[category][k] === undefined) data[category][k] = {};
+	                if (data[category][k][v] === undefined) data[category][k][v] = 0;
+
+	                // And increment the key for this key/value combination.
+	                data[category][k][item[k]]++;
+	            }
+	            // Increment the number of items classified
+	            total_count++;
+	        };
+
+	        // ## Score
+	        // Generate a score of how well this item matches all
+	        // possible categories based on its attributes
+	        bayes_model.score = function(item) {
+	            // Initialize an empty array of odds per category.
+	            var odds = {}, category;
+	            // Iterate through each key in the item,
+	            // then iterate through each category that has been used
+	            // in previous calls to `.train()`
+	            for (var k in item) {
+	                var v = item[k];
+	                for (category in data) {
+	                    // Create an empty object for storing key - value combinations
+	                    // for this category.
+	                    if (odds[category] === undefined) odds[category] = {};
+
+	                    // If this item doesn't even have a property, it counts for nothing,
+	                    // but if it does have the property that we're looking for from
+	                    // the item to categorize, it counts based on how popular it is
+	                    // versus the whole population.
+	                    if (data[category][k]) {
+	                        odds[category][k + '_' + v] = (data[category][k][v] || 0) / total_count;
 	                    } else {
-	                        if (j === 0) {
-	                            if (sumSquaredDistances <= matrix[cluster][sortedIdx]) {
-	                                matrix[cluster][sortedIdx] = sumSquaredDistances;
-	                                backtrackMatrix[cluster][sortedIdx] = j;
-	                            }
-	                        } else if (sumSquaredDistances + matrix[cluster - 1][j - 1] < matrix[cluster][sortedIdx]) {
-	                            matrix[cluster][sortedIdx] = sumSquaredDistances + matrix[cluster - 1][j - 1];
-	                            backtrackMatrix[cluster][sortedIdx] = j;
-	                        }
+	                        odds[category][k + '_' + v] = 0;
 	                    }
 	                }
 	            }
+
+	            // Set up a new object that will contain sums of these odds by category
+	            var odds_sums = {};
+
+	            for (category in odds) {
+	                // Tally all of the odds for each category-combination pair -
+	                // the non-existence of a category does not add anything to the
+	                // score.
+	                for (var combination in odds[category]) {
+	                    if (odds_sums[category] === undefined) odds_sums[category] = 0;
+	                    odds_sums[category] += odds[category][combination];
+	                }
+	            }
+
+	            return odds_sums;
+	        };
+
+	        // Return the completed model.
+	        return bayes_model;
+	    }
+
+	    // # sum
+	    //
+	    // is simply the result of adding all numbers
+	    // together, starting from zero.
+	    //
+	    // This runs on `O(n)`, linear time in respect to the array
+	    function sum(x) {
+	        var value = 0;
+	        for (var i = 0; i < x.length; i++) {
+	            value += x[i];
+	        }
+	        return value;
+	    }
+
+	    // # mean
+	    //
+	    // is the sum over the number of values
+	    //
+	    // This runs on `O(n)`, linear time in respect to the array
+	    function mean(x) {
+	        // The mean of no numbers is null
+	        if (x.length === 0) return null;
+
+	        return sum(x) / x.length;
+	    }
+
+	    // # geometric mean
+	    //
+	    // a mean function that is more useful for numbers in different
+	    // ranges.
+	    //
+	    // this is the nth root of the input numbers multiplied by each other
+	    //
+	    // This runs on `O(n)`, linear time in respect to the array
+	    function geometric_mean(x) {
+	        // The mean of no numbers is null
+	        if (x.length === 0) return null;
+
+	        // the starting value.
+	        var value = 1;
+
+	        for (var i = 0; i < x.length; i++) {
+	            // the geometric mean is only valid for positive numbers
+	            if (x[i] <= 0) return null;
+
+	            // repeatedly multiply the value by each number
+	            value *= x[i];
+	        }
+
+	        return Math.pow(value, 1 / x.length);
+	    }
+
+
+	    // # harmonic mean
+	    //
+	    // a mean function typically used to find the average of rates
+	    //
+	    // this is the reciprocal of the arithmetic mean of the reciprocals
+	    // of the input numbers
+	    //
+	    // This runs on `O(n)`, linear time in respect to the array
+	    function harmonic_mean(x) {
+	        // The mean of no numbers is null
+	        if (x.length === 0) return null;
+
+	        var reciprocal_sum = 0;
+
+	        for (var i = 0; i < x.length; i++) {
+	            // the harmonic mean is only valid for positive numbers
+	            if (x[i] <= 0) return null;
+
+	            reciprocal_sum += 1 / x[i];
+	        }
+
+	        // divide n by the the reciprocal sum
+	        return x.length / reciprocal_sum;
+	    }
+
+
+	    // # min
+	    //
+	    // This is simply the minimum number in the set.
+	    //
+	    // This runs on `O(n)`, linear time in respect to the array
+	    function min(x) {
+	        var value;
+	        for (var i = 0; i < x.length; i++) {
+	            // On the first iteration of this loop, min is
+	            // undefined and is thus made the minimum element in the array
+	            if (x[i] < value || value === undefined) value = x[i];
+	        }
+	        return value;
+	    }
+
+	    // # max
+	    //
+	    // This is simply the maximum number in the set.
+	    //
+	    // This runs on `O(n)`, linear time in respect to the array
+	    function max(x) {
+	        var value;
+	        for (var i = 0; i < x.length; i++) {
+	            // On the first iteration of this loop, max is
+	            // undefined and is thus made the maximum element in the array
+	            if (x[i] > value || value === undefined) value = x[i];
+	        }
+	        return value;
+	    }
+
+	    // # [variance](http://en.wikipedia.org/wiki/Variance)
+	    //
+	    // is the sum of squared deviations from the mean
+	    //
+	    // depends on `mean()`
+	    function variance(x) {
+	        // The variance of no numbers is null
+	        if (x.length === 0) return null;
+
+	        var mean_value = mean(x),
+	            deviations = [];
+
+	        // Make a list of squared deviations from the mean.
+	        for (var i = 0; i < x.length; i++) {
+	            deviations.push(Math.pow(x[i] - mean_value, 2));
+	        }
+
+	        // Find the mean value of that list
+	        return mean(deviations);
+	    }
+
+	    // # [standard deviation](http://en.wikipedia.org/wiki/Standard_deviation)
+	    //
+	    // is just the square root of the variance.
+	    //
+	    // depends on `variance()`
+	    function standard_deviation(x) {
+	        // The standard deviation of no numbers is null
+	        if (x.length === 0) return null;
+
+	        return Math.sqrt(variance(x));
+	    }
+
+	    // The sum of deviations to the Nth power.
+	    // When n=2 it's the sum of squared deviations.
+	    // When n=3 it's the sum of cubed deviations.
+	    //
+	    // depends on `mean()`
+	    function sum_nth_power_deviations(x, n) {
+	        var mean_value = mean(x),
+	            sum = 0;
+
+	        for (var i = 0; i < x.length; i++) {
+	            sum += Math.pow(x[i] - mean_value, n);
+	        }
+
+	        return sum;
+	    }
+
+	    // # [variance](http://en.wikipedia.org/wiki/Variance)
+	    //
+	    // is the sum of squared deviations from the mean
+	    //
+	    // depends on `sum_nth_power_deviations`
+	    function sample_variance(x) {
+	        // The variance of no numbers is null
+	        if (x.length <= 1) return null;
+
+	        var sum_squared_deviations_value = sum_nth_power_deviations(x, 2);
+
+	        // Find the mean value of that list
+	        return sum_squared_deviations_value / (x.length - 1);
+	    }
+
+	    // # [standard deviation](http://en.wikipedia.org/wiki/Standard_deviation)
+	    //
+	    // is just the square root of the variance.
+	    //
+	    // depends on `sample_variance()`
+	    function sample_standard_deviation(x) {
+	        // The standard deviation of no numbers is null
+	        if (x.length <= 1) return null;
+
+	        return Math.sqrt(sample_variance(x));
+	    }
+
+	    // # [covariance](http://en.wikipedia.org/wiki/Covariance)
+	    //
+	    // sample covariance of two datasets:
+	    // how much do the two datasets move together?
+	    // x and y are two datasets, represented as arrays of numbers.
+	    //
+	    // depends on `mean()`
+	    function sample_covariance(x, y) {
+
+	        // The two datasets must have the same length which must be more than 1
+	        if (x.length <= 1 || x.length != y.length){
+	            return null;
+	        }
+
+	        // determine the mean of each dataset so that we can judge each
+	        // value of the dataset fairly as the difference from the mean. this
+	        // way, if one dataset is [1, 2, 3] and [2, 3, 4], their covariance
+	        // does not suffer because of the difference in absolute values
+	        var xmean = mean(x),
+	            ymean = mean(y),
+	            sum = 0;
+
+	        // for each pair of values, the covariance increases when their
+	        // difference from the mean is associated - if both are well above
+	        // or if both are well below
+	        // the mean, the covariance increases significantly.
+	        for (var i = 0; i < x.length; i++){
+	            sum += (x[i] - xmean) * (y[i] - ymean);
+	        }
+
+	        // the covariance is weighted by the length of the datasets.
+	        return sum / (x.length - 1);
+	    }
+
+	    // # [correlation](http://en.wikipedia.org/wiki/Correlation_and_dependence)
+	    //
+	    // Gets a measure of how correlated two datasets are, between -1 and 1
+	    //
+	    // depends on `sample_standard_deviation()` and `sample_covariance()`
+	    function sample_correlation(x, y) {
+	        var cov = sample_covariance(x, y),
+	            xstd = sample_standard_deviation(x),
+	            ystd = sample_standard_deviation(y);
+
+	        if (cov === null || xstd === null || ystd === null) {
+	            return null;
+	        }
+
+	        return cov / xstd / ystd;
+	    }
+
+	    // # [median](http://en.wikipedia.org/wiki/Median)
+	    //
+	    // The middle number of a list. This is often a good indicator of 'the middle'
+	    // when there are outliers that skew the `mean()` value.
+	    function median(x) {
+	        // The median of an empty list is null
+	        if (x.length === 0) return null;
+
+	        // Sorting the array makes it easy to find the center, but
+	        // use `.slice()` to ensure the original array `x` is not modified
+	        var sorted = x.slice().sort(function (a, b) { return a - b; });
+
+	        // If the length of the list is odd, it's the central number
+	        if (sorted.length % 2 === 1) {
+	            return sorted[(sorted.length - 1) / 2];
+	        // Otherwise, the median is the average of the two numbers
+	        // at the center of the list
+	        } else {
+	            var a = sorted[(sorted.length / 2) - 1];
+	            var b = sorted[(sorted.length / 2)];
+	            return (a + b) / 2;
 	        }
 	    }
 
-	    // The real work of Ckmeans clustering happens in the matrix generation:
-	    // the generated matrices encode all possible clustering combinations, and
-	    // once they're generated we can solve for the best clustering groups
-	    // very quickly.
-	    var clusters = [],
-	        clusterRight = backtrackMatrix[0].length - 1;
+	    // # [mode](http://bit.ly/W5K4Yt)
+	    //
+	    // The mode is the number that appears in a list the highest number of times.
+	    // There can be multiple modes in a list: in the event of a tie, this
+	    // algorithm will return the most recently seen mode.
+	    //
+	    // This implementation is inspired by [science.js](https://github.com/jasondavies/science.js/blob/master/src/stats/mode.js)
+	    //
+	    // This runs on `O(n)`, linear time in respect to the array
+	    function mode(x) {
 
-	    // Backtrack the clusters from the dynamic programming matrix. This
-	    // starts at the bottom-right corner of the matrix (if the top-left is 0, 0),
-	    // and moves the cluster target with the loop.
-	    for (cluster = backtrackMatrix.length - 1; cluster >= 0; cluster--) {
+	        // Handle edge cases:
+	        // The median of an empty list is null
+	        if (x.length === 0) return null;
+	        else if (x.length === 1) return x[0];
 
-	        var clusterLeft = backtrackMatrix[cluster][clusterRight];
+	        // Sorting the array lets us iterate through it below and be sure
+	        // that every time we see a new number it's new and we'll never
+	        // see the same number twice
+	        var sorted = x.slice().sort(function (a, b) { return a - b; });
 
-	        // fill the cluster from the sorted input by taking a slice of the
-	        // array. the backtrack matrix makes this easy - it stores the
-	        // indexes where the cluster should start and end.
-	        clusters[cluster] = sorted.slice(clusterLeft, clusterRight + 1);
+	        // This assumes it is dealing with an array of size > 1, since size
+	        // 0 and 1 are handled immediately. Hence it starts at index 1 in the
+	        // array.
+	        var last = sorted[0],
+	            // store the mode as we find new modes
+	            value,
+	            // store how many times we've seen the mode
+	            max_seen = 0,
+	            // how many times the current candidate for the mode
+	            // has been seen
+	            seen_this = 1;
 
-	        if (cluster > 0) {
-	            clusterRight = clusterLeft - 1;
+	        // end at sorted.length + 1 to fix the case in which the mode is
+	        // the highest number that occurs in the sequence. the last iteration
+	        // compares sorted[i], which is undefined, to the highest number
+	        // in the series
+	        for (var i = 1; i < sorted.length + 1; i++) {
+	            // we're seeing a new number pass by
+	            if (sorted[i] !== last) {
+	                // the last number is the new mode since we saw it more
+	                // often than the old one
+	                if (seen_this > max_seen) {
+	                    max_seen = seen_this;
+	                    value = last;
+	                }
+	                seen_this = 1;
+	                last = sorted[i];
+	            // if this isn't a new number, it's one more occurrence of
+	            // the potential mode
+	            } else { seen_this++; }
 	        }
+	        return value;
 	    }
 
-	    return clusters;
-	}
+	    // # [t-test](http://en.wikipedia.org/wiki/Student's_t-test)
+	    //
+	    // This is to compute a one-sample t-test, comparing the mean
+	    // of a sample to a known value, x.
+	    //
+	    // in this case, we're trying to determine whether the
+	    // population mean is equal to the value that we know, which is `x`
+	    // here. usually the results here are used to look up a
+	    // [p-value](http://en.wikipedia.org/wiki/P-value), which, for
+	    // a certain level of significance, will let you determine that the
+	    // null hypothesis can or cannot be rejected.
+	    //
+	    // Depends on `standard_deviation()` and `mean()`
+	    function t_test(sample, x) {
+	        // The mean of the sample
+	        var sample_mean = mean(sample);
 
-	module.exports = ckmeans;
+	        // The standard deviation of the sample
+	        var sd = standard_deviation(sample);
 
+	        // Square root the length of the sample
+	        var rootN = Math.sqrt(sample.length);
 
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * For a sorted input, counting the number of unique values
-	 * is possible in constant time and constant memory. This is
-	 * a simple implementation of the algorithm.
-	 *
-	 * Values are compared with `===`, so objects and non-primitive objects
-	 * are not handled in any special way.
-	 *
-	 * @param {Array} input an array of primitive values.
-	 * @returns {number} count of unique values
-	 * @example
-	 * uniqueCountSorted([1, 2, 3]); // 3
-	 * uniqueCountSorted([1, 1, 1]); // 1
-	 */
-	function uniqueCountSorted(input/*: Array<any>*/)/*: number */ {
-	    var uniqueValueCount = 0,
-	        lastSeenValue;
-	    for (var i = 0; i < input.length; i++) {
-	        if (i === 0 || input[i] !== lastSeenValue) {
-	            lastSeenValue = input[i];
-	            uniqueValueCount++;
-	        }
-	    }
-	    return uniqueValueCount;
-	}
-
-	module.exports = uniqueCountSorted;
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var max = __webpack_require__(18),
-	    min = __webpack_require__(17);
-
-	/**
-	 * Given an array of data, this will find the extent of the
-	 * data and return an array of breaks that can be used
-	 * to categorize the data into a number of classes. The
-	 * returned array will always be 1 longer than the number of
-	 * classes because it includes the minimum value.
-	 *
-	 * @param {Array<number>} data input data, as an array of number values
-	 * @param {number} nClasses number of desired classes
-	 * @returns {Array<number>} array of class break positions
-	 * @example
-	 * equalIntervalBreaks([1, 2, 3, 4, 5, 6], 4); //= [1, 2.25, 3.5, 4.75, 6]
-	 */
-	function equalIntervalBreaks(data/*: Array<number> */, nClasses/*:number*/)/*: Array<number> */ {
-
-	    if (data.length <= 1) {
-	        return data;
+	        // Compute the known value against the sample,
+	        // returning the t value
+	        return (sample_mean - x) / (sd / rootN);
 	    }
 
-	    var theMin = min(data),
-	        theMax = max(data); 
-
-	    // the first break will always be the minimum value
-	    // in the dataset
-	    var breaks = [theMin];
-
-	    // The size of each break is the full range of the data
-	    // divided by the number of classes requested
-	    var breakSize = (theMax - theMin) / nClasses;
-
-	    // In the case of nClasses = 1, this loop won't run
-	    // and the returned breaks will be [min, max]
-	    for (var i = 1; i < nClasses; i++) {
-	        breaks.push(breaks[0] + breakSize * i);
-	    }
-
-	    // the last break will always be the
-	    // maximum.
-	    breaks.push(theMax);
-
-	    return breaks;
-	}
-
-	module.exports = equalIntervalBreaks;
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var mean = __webpack_require__(11);
-
-	/**
-	 * [Sample covariance](https://en.wikipedia.org/wiki/Sample_mean_and_sampleCovariance) of two datasets:
-	 * how much do the two datasets move together?
-	 * x and y are two datasets, represented as arrays of numbers.
-	 *
-	 * @param {Array<number>} x first input
-	 * @param {Array<number>} y second input
-	 * @returns {number} sample covariance
-	 * @example
-	 * var x = [1, 2, 3, 4, 5, 6];
-	 * var y = [6, 5, 4, 3, 2, 1];
-	 * sampleCovariance(x, y); //= -3.5
-	 */
-	function sampleCovariance(x /*:Array<number>*/, y /*:Array<number>*/)/*:number*/ {
-
-	    // The two datasets must have the same length which must be more than 1
-	    if (x.length <= 1 || x.length !== y.length) {
-	        return NaN;
-	    }
-
-	    // determine the mean of each dataset so that we can judge each
-	    // value of the dataset fairly as the difference from the mean. this
-	    // way, if one dataset is [1, 2, 3] and [2, 3, 4], their covariance
-	    // does not suffer because of the difference in absolute values
-	    var xmean = mean(x),
-	        ymean = mean(y),
-	        sum = 0;
-
-	    // for each pair of values, the covariance increases when their
-	    // difference from the mean is associated - if both are well above
-	    // or if both are well below
-	    // the mean, the covariance increases significantly.
-	    for (var i = 0; i < x.length; i++) {
-	        sum += (x[i] - xmean) * (y[i] - ymean);
-	    }
-
-	    // this is Bessels' Correction: an adjustment made to sample statistics
-	    // that allows for the reduced degree of freedom entailed in calculating
-	    // values from samples rather than complete populations.
-	    var besselsCorrection = x.length - 1;
-
-	    // the covariance is weighted by the length of the datasets.
-	    return sum / besselsCorrection;
-	}
-
-	module.exports = sampleCovariance;
-
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var sampleCovariance = __webpack_require__(33);
-	var sampleStandardDeviation = __webpack_require__(35);
-
-	/**
-	 * The [correlation](http://en.wikipedia.org/wiki/Correlation_and_dependence) is
-	 * a measure of how correlated two datasets are, between -1 and 1
-	 *
-	 * @param {Array<number>} x first input
-	 * @param {Array<number>} y second input
-	 * @returns {number} sample correlation
-	 * @example
-	 * var a = [1, 2, 3, 4, 5, 6];
-	 * var b = [2, 2, 3, 4, 5, 60];
-	 * sampleCorrelation(a, b); //= 0.691
-	 */
-	function sampleCorrelation(x/*: Array<number> */, y/*: Array<number> */)/*:number*/ {
-	    var cov = sampleCovariance(x, y),
-	        xstd = sampleStandardDeviation(x),
-	        ystd = sampleStandardDeviation(y);
-
-	    return cov / xstd / ystd;
-	}
-
-	module.exports = sampleCorrelation;
-
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var sampleVariance = __webpack_require__(36);
-
-	/**
-	 * The [standard deviation](http://en.wikipedia.org/wiki/Standard_deviation)
-	 * is the square root of the variance.
-	 *
-	 * @param {Array<number>} x input array
-	 * @returns {number} sample standard deviation
-	 * @example
-	 * ss.sampleStandardDeviation([2, 4, 4, 4, 5, 5, 7, 9]);
-	 * //= 2.138
-	 */
-	function sampleStandardDeviation(x/*:Array<number>*/)/*:number*/ {
-	    // The standard deviation of no numbers is null
-	    var sampleVarianceX = sampleVariance(x);
-	    if (isNaN(sampleVarianceX)) { return NaN; }
-	    return Math.sqrt(sampleVarianceX);
-	}
-
-	module.exports = sampleStandardDeviation;
-
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var sumNthPowerDeviations = __webpack_require__(10);
-
-	/*
-	 * The [sample variance](https://en.wikipedia.org/wiki/Variance#Sample_variance)
-	 * is the sum of squared deviations from the mean. The sample variance
-	 * is distinguished from the variance by the usage of [Bessel's Correction](https://en.wikipedia.org/wiki/Bessel's_correction):
-	 * instead of dividing the sum of squared deviations by the length of the input,
-	 * it is divided by the length minus one. This corrects the bias in estimating
-	 * a value from a set that you don't know if full.
-	 *
-	 * References:
-	 * * [Wolfram MathWorld on Sample Variance](http://mathworld.wolfram.com/SampleVariance.html)
-	 *
-	 * @param {Array<number>} x input array
-	 * @return {number} sample variance
-	 * @example
-	 * sampleVariance([1, 2, 3, 4, 5]); //= 2.5
-	 */
-	function sampleVariance(x /*: Array<number> */)/*:number*/ {
-	    // The variance of no numbers is null
-	    if (x.length <= 1) { return NaN; }
-
-	    var sumSquaredDeviationsValue = sumNthPowerDeviations(x, 2);
-
-	    // this is Bessels' Correction: an adjustment made to sample statistics
-	    // that allows for the reduced degree of freedom entailed in calculating
-	    // values from samples rather than complete populations.
-	    var besselsCorrection = x.length - 1;
-
-	    // Find the mean value of that list
-	    return sumSquaredDeviationsValue / besselsCorrection;
-	}
-
-	module.exports = sampleVariance;
-
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var sumNthPowerDeviations = __webpack_require__(10);
-	var sampleStandardDeviation = __webpack_require__(35);
-
-	/**
-	 * [Skewness](http://en.wikipedia.org/wiki/Skewness) is
-	 * a measure of the extent to which a probability distribution of a
-	 * real-valued random variable "leans" to one side of the mean.
-	 * The skewness value can be positive or negative, or even undefined.
-	 *
-	 * Implementation is based on the adjusted Fisher-Pearson standardized
-	 * moment coefficient, which is the version found in Excel and several
-	 * statistical packages including Minitab, SAS and SPSS.
-	 *
-	 * @param {Array<number>} x input
-	 * @returns {number} sample skewness
-	 * @example
-	 * var data = [2, 4, 6, 3, 1];
-	 * sampleSkewness(data); //= 0.5901286564
-	 */
-	function sampleSkewness(x /*: Array<number> */)/*:number*/ {
-	    // The skewness of less than three arguments is null
-	    var theSampleStandardDeviation = sampleStandardDeviation(x);
-
-	    if (isNaN(theSampleStandardDeviation) || x.length < 3) {
-	        return NaN;
-	    }
-
-	    var n = x.length,
-	        cubedS = Math.pow(theSampleStandardDeviation, 3),
-	        sumCubedDeviations = sumNthPowerDeviations(x, 3);
-
-	    return n * sumCubedDeviations / ((n - 1) * (n - 2) * cubedS);
-	}
-
-	module.exports = sampleSkewness;
-
-
-/***/ },
-/* 38 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The [Geometric Mean](https://en.wikipedia.org/wiki/Geometric_mean) is
-	 * a mean function that is more useful for numbers in different
-	 * ranges.
-	 *
-	 * This is the nth root of the input numbers multiplied by each other.
-	 *
-	 * The geometric mean is often useful for
-	 * **[proportional growth](https://en.wikipedia.org/wiki/Geometric_mean#Proportional_growth)**: given
-	 * growth rates for multiple years, like _80%, 16.66% and 42.85%_, a simple
-	 * mean will incorrectly estimate an average growth rate, whereas a geometric
-	 * mean will correctly estimate a growth rate that, over those years,
-	 * will yield the same end value.
-	 *
-	 * This runs on `O(n)`, linear time in respect to the array
-	 *
-	 * @param {Array<number>} x input array
-	 * @returns {number} geometric mean
-	 * @example
-	 * var growthRates = [1.80, 1.166666, 1.428571];
-	 * var averageGrowth = geometricMean(growthRates);
-	 * var averageGrowthRates = [averageGrowth, averageGrowth, averageGrowth];
-	 * var startingValue = 10;
-	 * var startingValueMean = 10;
-	 * growthRates.forEach(function(rate) {
-	 *   startingValue *= rate;
-	 * });
-	 * averageGrowthRates.forEach(function(rate) {
-	 *   startingValueMean *= rate;
-	 * });
-	 * startingValueMean === startingValue;
-	 */
-	function geometricMean(x /*: Array<number> */) {
-	    // The mean of no numbers is null
-	    if (x.length === 0) { return undefined; }
-
-	    // the starting value.
-	    var value = 1;
-
-	    for (var i = 0; i < x.length; i++) {
-	        // the geometric mean is only valid for positive numbers
-	        if (x[i] <= 0) { return undefined; }
-
-	        // repeatedly multiply the value by each number
-	        value *= x[i];
-	    }
-
-	    return Math.pow(value, 1 / x.length);
-	}
-
-	module.exports = geometricMean;
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The [Harmonic Mean](https://en.wikipedia.org/wiki/Harmonic_mean) is
-	 * a mean function typically used to find the average of rates.
-	 * This mean is calculated by taking the reciprocal of the arithmetic mean
-	 * of the reciprocals of the input numbers.
-	 *
-	 * This is a [measure of central tendency](https://en.wikipedia.org/wiki/Central_tendency):
-	 * a method of finding a typical or central value of a set of numbers.
-	 *
-	 * This runs on `O(n)`, linear time in respect to the array.
-	 *
-	 * @param {Array<number>} x input
-	 * @returns {number} harmonic mean
-	 * @example
-	 * ss.harmonicMean([2, 3]) //= 2.4
-	 */
-	function harmonicMean(x /*: Array<number> */) {
-	    // The mean of no numbers is null
-	    if (x.length === 0) { return undefined; }
-
-	    var reciprocalSum = 0;
-
-	    for (var i = 0; i < x.length; i++) {
-	        // the harmonic mean is only valid for positive numbers
-	        if (x[i] <= 0) { return undefined; }
-
-	        reciprocalSum += 1 / x[i];
-	    }
-
-	    // divide n by the the reciprocal sum
-	    return x.length / reciprocalSum;
-	}
-
-	module.exports = harmonicMean;
-
-
-/***/ },
-/* 40 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The Root Mean Square (RMS) is
-	 * a mean function used as a measure of the magnitude of a set
-	 * of numbers, regardless of their sign.
-	 * This is the square root of the mean of the squares of the
-	 * input numbers.
-	 * This runs on `O(n)`, linear time in respect to the array
-	 *
-	 * @param {Array<number>} x input
-	 * @returns {number} root mean square
-	 * @example
-	 * rootMeanSquare([-1, 1, -1, 1]); //= 1
-	 */
-	function rootMeanSquare(x /*: Array<number> */)/*:number*/ {
-	    if (x.length === 0) { return NaN; }
-
-	    var sumOfSquares = 0;
-	    for (var i = 0; i < x.length; i++) {
-	        sumOfSquares += Math.pow(x[i], 2);
-	    }
-
-	    return Math.sqrt(sumOfSquares / x.length);
-	}
-
-	module.exports = rootMeanSquare;
-
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var standardDeviation = __webpack_require__(8);
-	var mean = __webpack_require__(11);
-
-	/**
-	 * This is to compute [a one-sample t-test](https://en.wikipedia.org/wiki/Student%27s_t-test#One-sample_t-test), comparing the mean
-	 * of a sample to a known value, x.
-	 *
-	 * in this case, we're trying to determine whether the
-	 * population mean is equal to the value that we know, which is `x`
-	 * here. usually the results here are used to look up a
-	 * [p-value](http://en.wikipedia.org/wiki/P-value), which, for
-	 * a certain level of significance, will let you determine that the
-	 * null hypothesis can or cannot be rejected.
-	 *
-	 * @param {Array<number>} sample an array of numbers as input
-	 * @param {number} x expected vale of the population mean
-	 * @returns {number} value
-	 * @example
-	 * tTest([1, 2, 3, 4, 5, 6], 3.385); //= 0.16494154
-	 */
-	function tTest(sample/*: Array<number> */, x/*: number */)/*:number*/ {
-	    // The mean of the sample
-	    var sampleMean = mean(sample);
-
-	    // The standard deviation of the sample
-	    var sd = standardDeviation(sample);
-
-	    // Square root the length of the sample
-	    var rootN = Math.sqrt(sample.length);
-
-	    // returning the t value
-	    return (sampleMean - x) / (sd / rootN);
-	}
-
-	module.exports = tTest;
-
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var mean = __webpack_require__(11);
-	var sampleVariance = __webpack_require__(36);
-
-	/**
-	 * This is to compute [two sample t-test](http://en.wikipedia.org/wiki/Student's_t-test).
-	 * Tests whether "mean(X)-mean(Y) = difference", (
-	 * in the most common case, we often have `difference == 0` to test if two samples
-	 * are likely to be taken from populations with the same mean value) with
-	 * no prior knowledge on standard deviations of both samples
-	 * other than the fact that they have the same standard deviation.
-	 *
-	 * Usually the results here are used to look up a
-	 * [p-value](http://en.wikipedia.org/wiki/P-value), which, for
-	 * a certain level of significance, will let you determine that the
-	 * null hypothesis can or cannot be rejected.
-	 *
-	 * `diff` can be omitted if it equals 0.
-	 *
-	 * [This is used to confirm or deny](http://www.monarchlab.org/Lab/Research/Stats/2SampleT.aspx)
-	 * a null hypothesis that the two populations that have been sampled into
-	 * `sampleX` and `sampleY` are equal to each other.
-	 *
-	 * @param {Array<number>} sampleX a sample as an array of numbers
-	 * @param {Array<number>} sampleY a sample as an array of numbers
-	 * @param {number} [difference=0]
-	 * @returns {number} test result
-	 * @example
-	 * ss.tTestTwoSample([1, 2, 3, 4], [3, 4, 5, 6], 0); //= -2.1908902300206643
-	 */
-	function tTestTwoSample(
-	    sampleX/*: Array<number> */,
-	    sampleY/*: Array<number> */,
-	    difference/*: number */) {
-	    var n = sampleX.length,
-	        m = sampleY.length;
-
-	    // If either sample doesn't actually have any values, we can't
-	    // compute this at all, so we return `null`.
-	    if (!n || !m) { return null; }
-
-	    // default difference (mu) is zero
-	    if (!difference) {
-	        difference = 0;
-	    }
-
-	    var meanX = mean(sampleX),
-	        meanY = mean(sampleY),
-	        sampleVarianceX = sampleVariance(sampleX),
-	        sampleVarianceY = sampleVariance(sampleY);
-
-	    if (typeof meanX === 'number' &&
-	        typeof meanY === 'number' &&
-	        typeof sampleVarianceX === 'number' &&
-	        typeof sampleVarianceY === 'number') {
-	        var weightedVariance = ((n - 1) * sampleVarianceX +
-	            (m - 1) * sampleVarianceY) / (n + m - 2);
+	    // # [2-sample t-test](http://en.wikipedia.org/wiki/Student's_t-test)
+	    //
+	    // This is to compute two sample t-test.
+	    // Tests whether "mean(X)-mean(Y) = difference", (
+	    // in the most common case, we often have `difference == 0` to test if two samples
+	    // are likely to be taken from populations with the same mean value) with
+	    // no prior knowledge on standard deviations of both samples
+	    // other than the fact that they have the same standard deviation.
+	    //
+	    // Usually the results here are used to look up a
+	    // [p-value](http://en.wikipedia.org/wiki/P-value), which, for
+	    // a certain level of significance, will let you determine that the
+	    // null hypothesis can or cannot be rejected.
+	    //
+	    // `diff` can be omitted if it equals 0.
+	    //
+	    // [This is used to confirm or deny](http://www.monarchlab.org/Lab/Research/Stats/2SampleT.aspx)
+	    // a null hypothesis that the two populations that have been sampled into
+	    // `sample_x` and `sample_y` are equal to each other.
+	    //
+	    // Depends on `sample_variance()` and `mean()`
+	    function t_test_two_sample(sample_x, sample_y, difference) {
+	        var n = sample_x.length,
+	            m = sample_y.length;
+
+	        // If either sample doesn't actually have any values, we can't
+	        // compute this at all, so we return `null`.
+	        if (!n || !m) return null ;
+
+	        // default difference (mu) is zero
+	        if (!difference) difference = 0;
+
+	        var meanX = mean(sample_x),
+	            meanY = mean(sample_y);
+
+	        var weightedVariance = ((n - 1) * sample_variance(sample_x) +
+	            (m - 1) * sample_variance(sample_y)) / (n + m - 2);
 
 	        return (meanX - meanY - difference) /
 	            Math.sqrt(weightedVariance * (1 / n + 1 / m));
 	    }
-	}
 
-	module.exports = tTestTwoSample;
+	    // # quantile
+	    //
+	    // This is a population quantile, since we assume to know the entire
+	    // dataset in this library. Thus I'm trying to follow the
+	    // [Quantiles of a Population](http://en.wikipedia.org/wiki/Quantile#Quantiles_of_a_population)
+	    // algorithm from wikipedia.
+	    //
+	    // Sample is a one-dimensional array of numbers,
+	    // and p is either a decimal number from 0 to 1 or an array of decimal
+	    // numbers from 0 to 1.
+	    // In terms of a k/q quantile, p = k/q - it's just dealing with fractions or dealing
+	    // with decimal values.
+	    // When p is an array, the result of the function is also an array containing the appropriate
+	    // quantiles in input order
+	    function quantile(sample, p) {
 
+	        // We can't derive quantiles from an empty list
+	        if (sample.length === 0) return null;
 
-/***/ },
-/* 43 */
-/***/ function(module, exports) {
+	        // Sort a copy of the array. We'll need a sorted array to index
+	        // the values in sorted order.
+	        var sorted = sample.slice().sort(function (a, b) { return a - b; });
 
-	'use strict';
-	/* @flow */
-
-	/**
-	 * [Bayesian Classifier](http://en.wikipedia.org/wiki/Naive_Bayes_classifier)
-	 *
-	 * This is a naïve bayesian classifier that takes
-	 * singly-nested objects.
-	 *
-	 * @class
-	 * @example
-	 * var bayes = new BayesianClassifier();
-	 * bayes.train({
-	 *   species: 'Cat'
-	 * }, 'animal');
-	 * var result = bayes.score({
-	 *   species: 'Cat'
-	 * })
-	 * // result
-	 * // {
-	 * //   animal: 1
-	 * // }
-	 */
-	function BayesianClassifier() {
-	    // The number of items that are currently
-	    // classified in the model
-	    this.totalCount = 0;
-	    // Every item classified in the model
-	    this.data = {};
-	}
-
-	/**
-	 * Train the classifier with a new item, which has a single
-	 * dimension of Javascript literal keys and values.
-	 *
-	 * @param {Object} item an object with singly-deep properties
-	 * @param {string} category the category this item belongs to
-	 * @return {undefined} adds the item to the classifier
-	 */
-	BayesianClassifier.prototype.train = function(item, category) {
-	    // If the data object doesn't have any values
-	    // for this category, create a new object for it.
-	    if (!this.data[category]) {
-	        this.data[category] = {};
+	        if (p.length) {
+	            // Initialize the result array
+	            var results = [];
+	            // For each requested quantile
+	            for (var i = 0; i < p.length; i++) {
+	                results[i] = quantile_sorted(sorted, p[i]);
+	            }
+	            return results;
+	        } else {
+	            return quantile_sorted(sorted, p);
+	        }
 	    }
 
-	    // Iterate through each key in the item.
-	    for (var k in item) {
-	        var v = item[k];
-	        // Initialize the nested object `data[category][k][item[k]]`
-	        // with an object of keys that equal 0.
-	        if (this.data[category][k] === undefined) {
-	            this.data[category][k] = {};
+	    // # quantile
+	    //
+	    // This is the internal implementation of quantiles: when you know
+	    // that the order is sorted, you don't need to re-sort it, and the computations
+	    // are much faster.
+	    function quantile_sorted(sample, p) {
+	        var idx = (sample.length) * p;
+	        if (p < 0 || p > 1) {
+	            return null;
+	        } else if (p === 1) {
+	            // If p is 1, directly return the last element
+	            return sample[sample.length - 1];
+	        } else if (p === 0) {
+	            // If p is 0, directly return the first element
+	            return sample[0];
+	        } else if (idx % 1 !== 0) {
+	            // If p is not integer, return the next element in array
+	            return sample[Math.ceil(idx) - 1];
+	        } else if (sample.length % 2 === 0) {
+	            // If the list has even-length, we'll take the average of this number
+	            // and the next value, if there is one
+	            return (sample[idx - 1] + sample[idx]) / 2;
+	        } else {
+	            // Finally, in the simple case of an integer value
+	            // with an odd-length list, return the sample value at the index.
+	            return sample[idx];
 	        }
-	        if (this.data[category][k][v] === undefined) {
-	            this.data[category][k][v] = 0;
-	        }
-
-	        // And increment the key for this key/value combination.
-	        this.data[category][k][item[k]]++;
 	    }
 
-	    // Increment the number of items classified
-	    this.totalCount++;
-	};
+	    // # [Interquartile range](http://en.wikipedia.org/wiki/Interquartile_range)
+	    //
+	    // A measure of statistical dispersion, or how scattered, spread, or
+	    // concentrated a distribution is. It's computed as the difference between
+	    // the third quartile and first quartile.
+	    function iqr(sample) {
+	        // We can't derive quantiles from an empty list
+	        if (sample.length === 0) return null;
 
-	/**
-	 * Generate a score of how well this item matches all
-	 * possible categories based on its attributes
-	 *
-	 * @param {Object} item an item in the same format as with train
-	 * @returns {Object} of probabilities that this item belongs to a
-	 * given category.
-	 */
-	BayesianClassifier.prototype.score = function(item) {
-	    // Initialize an empty array of odds per category.
-	    var odds = {}, category;
-	    // Iterate through each key in the item,
-	    // then iterate through each category that has been used
-	    // in previous calls to `.train()`
-	    for (var k in item) {
-	        var v = item[k];
-	        for (category in this.data) {
-	            // Create an empty object for storing key - value combinations
-	            // for this category.
-	            if (odds[category] === undefined) { odds[category] = {}; }
+	        // Interquartile range is the span between the upper quartile,
+	        // at `0.75`, and lower quartile, `0.25`
+	        return quantile(sample, 0.75) - quantile(sample, 0.25);
+	    }
 
-	            // If this item doesn't even have a property, it counts for nothing,
-	            // but if it does have the property that we're looking for from
-	            // the item to categorize, it counts based on how popular it is
-	            // versus the whole population.
-	            if (this.data[category][k]) {
-	                odds[category][k + '_' + v] = (this.data[category][k][v] || 0) / this.totalCount;
-	            } else {
-	                odds[category][k + '_' + v] = 0;
+	    // # [Median Absolute Deviation](http://en.wikipedia.org/wiki/Median_absolute_deviation)
+	    //
+	    // The Median Absolute Deviation (MAD) is a robust measure of statistical
+	    // dispersion. It is more resilient to outliers than the standard deviation.
+	    function mad(x) {
+	        // The mad of nothing is null
+	        if (!x || x.length === 0) return null;
+
+	        var median_value = median(x),
+	            median_absolute_deviations = [];
+
+	        // Make a list of absolute deviations from the median
+	        for (var i = 0; i < x.length; i++) {
+	            median_absolute_deviations.push(Math.abs(x[i] - median_value));
+	        }
+
+	        // Find the median value of that list
+	        return median(median_absolute_deviations);
+	    }
+
+	    // ## Compute Matrices for Jenks
+	    //
+	    // Compute the matrices required for Jenks breaks. These matrices
+	    // can be used for any classing of data with `classes <= n_classes`
+	    function jenksMatrices(data, n_classes) {
+
+	        // in the original implementation, these matrices are referred to
+	        // as `LC` and `OP`
+	        //
+	        // * lower_class_limits (LC): optimal lower class limits
+	        // * variance_combinations (OP): optimal variance combinations for all classes
+	        var lower_class_limits = [],
+	            variance_combinations = [],
+	            // loop counters
+	            i, j,
+	            // the variance, as computed at each step in the calculation
+	            variance = 0;
+
+	        // Initialize and fill each matrix with zeroes
+	        for (i = 0; i < data.length + 1; i++) {
+	            var tmp1 = [], tmp2 = [];
+	            // despite these arrays having the same values, we need
+	            // to keep them separate so that changing one does not change
+	            // the other
+	            for (j = 0; j < n_classes + 1; j++) {
+	                tmp1.push(0);
+	                tmp2.push(0);
+	            }
+	            lower_class_limits.push(tmp1);
+	            variance_combinations.push(tmp2);
+	        }
+
+	        for (i = 1; i < n_classes + 1; i++) {
+	            lower_class_limits[1][i] = 1;
+	            variance_combinations[1][i] = 0;
+	            // in the original implementation, 9999999 is used but
+	            // since Javascript has `Infinity`, we use that.
+	            for (j = 2; j < data.length + 1; j++) {
+	                variance_combinations[j][i] = Infinity;
 	            }
 	        }
-	    }
 
-	    // Set up a new object that will contain sums of these odds by category
-	    var oddsSums = {};
+	        for (var l = 2; l < data.length + 1; l++) {
 
-	    for (category in odds) {
-	        // Tally all of the odds for each category-combination pair -
-	        // the non-existence of a category does not add anything to the
-	        // score.
-	        for (var combination in odds[category]) {
-	            if (oddsSums[category] === undefined) {
-	                oddsSums[category] = 0;
+	            // `SZ` originally. this is the sum of the values seen thus
+	            // far when calculating variance.
+	            var sum = 0,
+	                // `ZSQ` originally. the sum of squares of values seen
+	                // thus far
+	                sum_squares = 0,
+	                // `WT` originally. This is the number of
+	                w = 0,
+	                // `IV` originally
+	                i4 = 0;
+
+	            // in several instances, you could say `Math.pow(x, 2)`
+	            // instead of `x * x`, but this is slower in some browsers
+	            // introduces an unnecessary concept.
+	            for (var m = 1; m < l + 1; m++) {
+
+	                // `III` originally
+	                var lower_class_limit = l - m + 1,
+	                    val = data[lower_class_limit - 1];
+
+	                // here we're estimating variance for each potential classing
+	                // of the data, for each potential number of classes. `w`
+	                // is the number of data points considered so far.
+	                w++;
+
+	                // increase the current sum and sum-of-squares
+	                sum += val;
+	                sum_squares += val * val;
+
+	                // the variance at this point in the sequence is the difference
+	                // between the sum of squares and the total x 2, over the number
+	                // of samples.
+	                variance = sum_squares - (sum * sum) / w;
+
+	                i4 = lower_class_limit - 1;
+
+	                if (i4 !== 0) {
+	                    for (j = 2; j < n_classes + 1; j++) {
+	                        // if adding this element to an existing class
+	                        // will increase its variance beyond the limit, break
+	                        // the class at this point, setting the `lower_class_limit`
+	                        // at this point.
+	                        if (variance_combinations[l][j] >=
+	                            (variance + variance_combinations[i4][j - 1])) {
+	                            lower_class_limits[l][j] = lower_class_limit;
+	                            variance_combinations[l][j] = variance +
+	                                variance_combinations[i4][j - 1];
+	                        }
+	                    }
+	                }
 	            }
-	            oddsSums[category] += odds[category][combination];
+
+	            lower_class_limits[l][1] = 1;
+	            variance_combinations[l][1] = variance;
 	        }
-	    }
 
-	    return oddsSums;
-	};
-
-	module.exports = BayesianClassifier;
-
-
-/***/ },
-/* 44 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * This is a single-layer [Perceptron Classifier](http://en.wikipedia.org/wiki/Perceptron) that takes
-	 * arrays of numbers and predicts whether they should be classified
-	 * as either 0 or 1 (negative or positive examples).
-	 * @class
-	 * @example
-	 * // Create the model
-	 * var p = new PerceptronModel();
-	 * // Train the model with input with a diagonal boundary.
-	 * for (var i = 0; i < 5; i++) {
-	 *     p.train([1, 1], 1);
-	 *     p.train([0, 1], 0);
-	 *     p.train([1, 0], 0);
-	 *     p.train([0, 0], 0);
-	 * }
-	 * p.predict([0, 0]); // 0
-	 * p.predict([0, 1]); // 0
-	 * p.predict([1, 0]); // 0
-	 * p.predict([1, 1]); // 1
-	 */
-	function PerceptronModel() {
-	    // The weights, or coefficients of the model;
-	    // weights are only populated when training with data.
-	    this.weights = [];
-	    // The bias term, or intercept; it is also a weight but
-	    // it's stored separately for convenience as it is always
-	    // multiplied by one.
-	    this.bias = 0;
-	}
-
-	/**
-	 * **Predict**: Use an array of features with the weight array and bias
-	 * to predict whether an example is labeled 0 or 1.
-	 *
-	 * @param {Array<number>} features an array of features as numbers
-	 * @returns {number} 1 if the score is over 0, otherwise 0
-	 */
-	PerceptronModel.prototype.predict = function(features) {
-
-	    // Only predict if previously trained
-	    // on the same size feature array(s).
-	    if (features.length !== this.weights.length) { return null; }
-
-	    // Calculate the sum of features times weights,
-	    // with the bias added (implicitly times one).
-	    var score = 0;
-	    for (var i = 0; i < this.weights.length; i++) {
-	        score += this.weights[i] * features[i];
-	    }
-	    score += this.bias;
-
-	    // Classify as 1 if the score is over 0, otherwise 0.
-	    if (score > 0) {
-	        return 1;
-	    } else {
-	        return 0;
-	    }
-	};
-
-	/**
-	 * **Train** the classifier with a new example, which is
-	 * a numeric array of features and a 0 or 1 label.
-	 *
-	 * @param {Array<number>} features an array of features as numbers
-	 * @param {number} label either 0 or 1
-	 * @returns {PerceptronModel} this
-	 */
-	PerceptronModel.prototype.train = function(features, label) {
-	    // Require that only labels of 0 or 1 are considered.
-	    if (label !== 0 && label !== 1) { return null; }
-	    // The length of the feature array determines
-	    // the length of the weight array.
-	    // The perceptron will continue learning as long as
-	    // it keeps seeing feature arrays of the same length.
-	    // When it sees a new data shape, it initializes.
-	    if (features.length !== this.weights.length) {
-	        this.weights = features;
-	        this.bias = 1;
-	    }
-	    // Make a prediction based on current weights.
-	    var prediction = this.predict(features);
-	    // Update the weights if the prediction is wrong.
-	    if (prediction !== label) {
-	        var gradient = label - prediction;
-	        for (var i = 0; i < this.weights.length; i++) {
-	            this.weights[i] += gradient * features[i];
-	        }
-	        this.bias += gradient;
-	    }
-	    return this;
-	};
-
-	module.exports = PerceptronModel;
-
-
-/***/ },
-/* 45 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * We use `ε`, epsilon, as a stopping criterion when we want to iterate
-	 * until we're "close enough". Epsilon is a very small number: for
-	 * simple statistics, that number is **0.0001**
-	 *
-	 * This is used in calculations like the binomialDistribution, in which
-	 * the process of finding a value is [iterative](https://en.wikipedia.org/wiki/Iterative_method):
-	 * it progresses until it is close enough.
-	 *
-	 * Below is an example of using epsilon in [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent),
-	 * where we're trying to find a local minimum of a function's derivative,
-	 * given by the `fDerivative` method.
-	 *
-	 * @example
-	 * // From calculation, we expect that the local minimum occurs at x=9/4
-	 * var x_old = 0;
-	 * // The algorithm starts at x=6
-	 * var x_new = 6;
-	 * var stepSize = 0.01;
-	 *
-	 * function fDerivative(x) {
-	 *   return 4 * Math.pow(x, 3) - 9 * Math.pow(x, 2);
-	 * }
-	 *
-	 * // The loop runs until the difference between the previous
-	 * // value and the current value is smaller than epsilon - a rough
-	 * // meaure of 'close enough'
-	 * while (Math.abs(x_new - x_old) > ss.epsilon) {
-	 *   x_old = x_new;
-	 *   x_new = x_old - stepSize * fDerivative(x_old);
-	 * }
-	 *
-	 * console.log('Local minimum occurs at', x_new);
-	 */
-	var epsilon = 0.0001;
-
-	module.exports = epsilon;
-
-
-/***/ },
-/* 46 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * A [Factorial](https://en.wikipedia.org/wiki/Factorial), usually written n!, is the product of all positive
-	 * integers less than or equal to n. Often factorial is implemented
-	 * recursively, but this iterative approach is significantly faster
-	 * and simpler.
-	 *
-	 * @param {number} n input
-	 * @returns {number} factorial: n!
-	 * @example
-	 * console.log(factorial(5)); // 120
-	 */
-	function factorial(n /*: number */)/*: number */ {
-
-	    // factorial is mathematically undefined for negative numbers
-	    if (n < 0) { return NaN; }
-
-	    // typically you'll expand the factorial function going down, like
-	    // 5! = 5 * 4 * 3 * 2 * 1. This is going in the opposite direction,
-	    // counting from 2 up to the number in question, and since anything
-	    // multiplied by 1 is itself, the loop only needs to start at 2.
-	    var accumulator = 1;
-	    for (var i = 2; i <= n; i++) {
-	        // for each number up to and including the number `n`, multiply
-	        // the accumulator my that number.
-	        accumulator *= i;
-	    }
-	    return accumulator;
-	}
-
-	module.exports = factorial;
-
-
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var binomialDistribution = __webpack_require__(48);
-
-	/**
-	 * The [Bernoulli distribution](http://en.wikipedia.org/wiki/Bernoulli_distribution)
-	 * is the probability discrete
-	 * distribution of a random variable which takes value 1 with success
-	 * probability `p` and value 0 with failure
-	 * probability `q` = 1 - `p`. It can be used, for example, to represent the
-	 * toss of a coin, where "1" is defined to mean "heads" and "0" is defined
-	 * to mean "tails" (or vice versa). It is
-	 * a special case of a Binomial Distribution
-	 * where `n` = 1.
-	 *
-	 * @param {number} p input value, between 0 and 1 inclusive
-	 * @returns {number} value of bernoulli distribution at this point
-	 */
-	function bernoulliDistribution(p/*: number */) {
-	    // Check that `p` is a valid probability (0 ≤ p ≤ 1)
-	    if (p < 0 || p > 1 ) { return NaN; }
-
-	    return binomialDistribution(1, p);
-	}
-
-	module.exports = bernoulliDistribution;
-
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var epsilon = __webpack_require__(45);
-	var factorial = __webpack_require__(46);
-
-	/**
-	 * The [Binomial Distribution](http://en.wikipedia.org/wiki/Binomial_distribution) is the discrete probability
-	 * distribution of the number of successes in a sequence of n independent yes/no experiments, each of which yields
-	 * success with probability `probability`. Such a success/failure experiment is also called a Bernoulli experiment or
-	 * Bernoulli trial; when trials = 1, the Binomial Distribution is a Bernoulli Distribution.
-	 *
-	 * @param {number} trials number of trials to simulate
-	 * @param {number} probability
-	 * @returns {Object} output
-	 */
-	function binomialDistribution(
-	    trials/*: number */,
-	    probability/*: number */)/*: ?Object */ {
-	    // Check that `p` is a valid probability (0 ≤ p ≤ 1),
-	    // that `n` is an integer, strictly positive.
-	    if (probability < 0 || probability > 1 ||
-	        trials <= 0 || trials % 1 !== 0) {
-	        return undefined;
-	    }
-
-	    // We initialize `x`, the random variable, and `accumulator`, an accumulator
-	    // for the cumulative distribution function to 0. `distribution_functions`
-	    // is the object we'll return with the `probability_of_x` and the
-	    // `cumulativeProbability_of_x`, as well as the calculated mean &
-	    // variance. We iterate until the `cumulativeProbability_of_x` is
-	    // within `epsilon` of 1.0.
-	    var x = 0,
-	        cumulativeProbability = 0,
-	        cells = {};
-
-	    // This algorithm iterates through each potential outcome,
-	    // until the `cumulativeProbability` is very close to 1, at
-	    // which point we've defined the vast majority of outcomes
-	    do {
-	        // a [probability mass function](https://en.wikipedia.org/wiki/Probability_mass_function)
-	        cells[x] = factorial(trials) /
-	            (factorial(x) * factorial(trials - x)) *
-	            (Math.pow(probability, x) * Math.pow(1 - probability, trials - x));
-	        cumulativeProbability += cells[x];
-	        x++;
-	    // when the cumulativeProbability is nearly 1, we've calculated
-	    // the useful range of this distribution
-	    } while (cumulativeProbability < 1 - epsilon);
-
-	    return cells;
-	}
-
-	module.exports = binomialDistribution;
-
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var epsilon = __webpack_require__(45);
-	var factorial = __webpack_require__(46);
-
-	/**
-	 * The [Poisson Distribution](http://en.wikipedia.org/wiki/Poisson_distribution)
-	 * is a discrete probability distribution that expresses the probability
-	 * of a given number of events occurring in a fixed interval of time
-	 * and/or space if these events occur with a known average rate and
-	 * independently of the time since the last event.
-	 *
-	 * The Poisson Distribution is characterized by the strictly positive
-	 * mean arrival or occurrence rate, `λ`.
-	 *
-	 * @param {number} lambda location poisson distribution
-	 * @returns {number} value of poisson distribution at that point
-	 */
-	function poissonDistribution(lambda/*: number */) {
-	    // Check that lambda is strictly positive
-	    if (lambda <= 0) { return undefined; }
-
-	    // our current place in the distribution
-	    var x = 0,
-	        // and we keep track of the current cumulative probability, in
-	        // order to know when to stop calculating chances.
-	        cumulativeProbability = 0,
-	        // the calculated cells to be returned
-	        cells = {};
-
-	    // This algorithm iterates through each potential outcome,
-	    // until the `cumulativeProbability` is very close to 1, at
-	    // which point we've defined the vast majority of outcomes
-	    do {
-	        // a [probability mass function](https://en.wikipedia.org/wiki/Probability_mass_function)
-	        cells[x] = (Math.pow(Math.E, -lambda) * Math.pow(lambda, x)) / factorial(x);
-	        cumulativeProbability += cells[x];
-	        x++;
-	    // when the cumulativeProbability is nearly 1, we've calculated
-	    // the useful range of this distribution
-	    } while (cumulativeProbability < 1 - epsilon);
-
-	    return cells;
-	}
-
-	module.exports = poissonDistribution;
-
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var mean = __webpack_require__(11);
-	var chiSquaredDistributionTable = __webpack_require__(51);
-
-	/**
-	 * The [χ2 (Chi-Squared) Goodness-of-Fit Test](http://en.wikipedia.org/wiki/Goodness_of_fit#Pearson.27s_chi-squared_test)
-	 * uses a measure of goodness of fit which is the sum of differences between observed and expected outcome frequencies
-	 * (that is, counts of observations), each squared and divided by the number of observations expected given the
-	 * hypothesized distribution. The resulting χ2 statistic, `chiSquared`, can be compared to the chi-squared distribution
-	 * to determine the goodness of fit. In order to determine the degrees of freedom of the chi-squared distribution, one
-	 * takes the total number of observed frequencies and subtracts the number of estimated parameters. The test statistic
-	 * follows, approximately, a chi-square distribution with (k − c) degrees of freedom where `k` is the number of non-empty
-	 * cells and `c` is the number of estimated parameters for the distribution.
-	 *
-	 * @param {Array<number>} data
-	 * @param {Function} distributionType a function that returns a point in a distribution:
-	 * for instance, binomial, bernoulli, or poisson
-	 * @param {number} significance
-	 * @returns {number} chi squared goodness of fit
-	 * @example
-	 * // Data from Poisson goodness-of-fit example 10-19 in William W. Hines & Douglas C. Montgomery,
-	 * // "Probability and Statistics in Engineering and Management Science", Wiley (1980).
-	 * var data1019 = [
-	 *     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	 *     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	 *     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	 *     2, 2, 2, 2, 2, 2, 2, 2, 2,
-	 *     3, 3, 3, 3
-	 * ];
-	 * ss.chiSquaredGoodnessOfFit(data1019, ss.poissonDistribution, 0.05)); //= false
-	 */
-	function chiSquaredGoodnessOfFit(
-	    data/*: Array<number> */,
-	    distributionType/*: Function */,
-	    significance/*: number */)/*: boolean */ {
-	    // Estimate from the sample data, a weighted mean.
-	    var inputMean = mean(data),
-	        // Calculated value of the χ2 statistic.
-	        chiSquared = 0,
-	        // Degrees of freedom, calculated as (number of class intervals -
-	        // number of hypothesized distribution parameters estimated - 1)
-	        degreesOfFreedom,
-	        // Number of hypothesized distribution parameters estimated, expected to be supplied in the distribution test.
-	        // Lose one degree of freedom for estimating `lambda` from the sample data.
-	        c = 1,
-	        // The hypothesized distribution.
-	        // Generate the hypothesized distribution.
-	        hypothesizedDistribution = distributionType(inputMean),
-	        observedFrequencies = [],
-	        expectedFrequencies = [],
-	        k;
-
-	    // Create an array holding a histogram from the sample data, of
-	    // the form `{ value: numberOfOcurrences }`
-	    for (var i = 0; i < data.length; i++) {
-	        if (observedFrequencies[data[i]] === undefined) {
-	            observedFrequencies[data[i]] = 0;
-	        }
-	        observedFrequencies[data[i]]++;
-	    }
-
-	    // The histogram we created might be sparse - there might be gaps
-	    // between values. So we iterate through the histogram, making
-	    // sure that instead of undefined, gaps have 0 values.
-	    for (i = 0; i < observedFrequencies.length; i++) {
-	        if (observedFrequencies[i] === undefined) {
-	            observedFrequencies[i] = 0;
-	        }
-	    }
-
-	    // Create an array holding a histogram of expected data given the
-	    // sample size and hypothesized distribution.
-	    for (k in hypothesizedDistribution) {
-	        if (k in observedFrequencies) {
-	            expectedFrequencies[+k] = hypothesizedDistribution[k] * data.length;
-	        }
-	    }
-
-	    // Working backward through the expected frequencies, collapse classes
-	    // if less than three observations are expected for a class.
-	    // This transformation is applied to the observed frequencies as well.
-	    for (k = expectedFrequencies.length - 1; k >= 0; k--) {
-	        if (expectedFrequencies[k] < 3) {
-	            expectedFrequencies[k - 1] += expectedFrequencies[k];
-	            expectedFrequencies.pop();
-
-	            observedFrequencies[k - 1] += observedFrequencies[k];
-	            observedFrequencies.pop();
-	        }
-	    }
-
-	    // Iterate through the squared differences between observed & expected
-	    // frequencies, accumulating the `chiSquared` statistic.
-	    for (k = 0; k < observedFrequencies.length; k++) {
-	        chiSquared += Math.pow(
-	            observedFrequencies[k] - expectedFrequencies[k], 2) /
-	            expectedFrequencies[k];
-	    }
-
-	    // Calculate degrees of freedom for this test and look it up in the
-	    // `chiSquaredDistributionTable` in order to
-	    // accept or reject the goodness-of-fit of the hypothesized distribution.
-	    degreesOfFreedom = observedFrequencies.length - c - 1;
-	    return chiSquaredDistributionTable[degreesOfFreedom][significance] < chiSquared;
-	}
-
-	module.exports = chiSquaredGoodnessOfFit;
-
-
-/***/ },
-/* 51 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * **Percentage Points of the χ2 (Chi-Squared) Distribution**
-	 *
-	 * The [χ2 (Chi-Squared) Distribution](http://en.wikipedia.org/wiki/Chi-squared_distribution) is used in the common
-	 * chi-squared tests for goodness of fit of an observed distribution to a theoretical one, the independence of two
-	 * criteria of classification of qualitative data, and in confidence interval estimation for a population standard
-	 * deviation of a normal distribution from a sample standard deviation.
-	 *
-	 * Values from Appendix 1, Table III of William W. Hines & Douglas C. Montgomery, "Probability and Statistics in
-	 * Engineering and Management Science", Wiley (1980).
-	 */
-	var chiSquaredDistributionTable = { '1':
-	   { '0.995': 0,
-	     '0.99': 0,
-	     '0.975': 0,
-	     '0.95': 0,
-	     '0.9': 0.02,
-	     '0.5': 0.45,
-	     '0.1': 2.71,
-	     '0.05': 3.84,
-	     '0.025': 5.02,
-	     '0.01': 6.63,
-	     '0.005': 7.88 },
-	  '2':
-	   { '0.995': 0.01,
-	     '0.99': 0.02,
-	     '0.975': 0.05,
-	     '0.95': 0.1,
-	     '0.9': 0.21,
-	     '0.5': 1.39,
-	     '0.1': 4.61,
-	     '0.05': 5.99,
-	     '0.025': 7.38,
-	     '0.01': 9.21,
-	     '0.005': 10.6 },
-	  '3':
-	   { '0.995': 0.07,
-	     '0.99': 0.11,
-	     '0.975': 0.22,
-	     '0.95': 0.35,
-	     '0.9': 0.58,
-	     '0.5': 2.37,
-	     '0.1': 6.25,
-	     '0.05': 7.81,
-	     '0.025': 9.35,
-	     '0.01': 11.34,
-	     '0.005': 12.84 },
-	  '4':
-	   { '0.995': 0.21,
-	     '0.99': 0.3,
-	     '0.975': 0.48,
-	     '0.95': 0.71,
-	     '0.9': 1.06,
-	     '0.5': 3.36,
-	     '0.1': 7.78,
-	     '0.05': 9.49,
-	     '0.025': 11.14,
-	     '0.01': 13.28,
-	     '0.005': 14.86 },
-	  '5':
-	   { '0.995': 0.41,
-	     '0.99': 0.55,
-	     '0.975': 0.83,
-	     '0.95': 1.15,
-	     '0.9': 1.61,
-	     '0.5': 4.35,
-	     '0.1': 9.24,
-	     '0.05': 11.07,
-	     '0.025': 12.83,
-	     '0.01': 15.09,
-	     '0.005': 16.75 },
-	  '6':
-	   { '0.995': 0.68,
-	     '0.99': 0.87,
-	     '0.975': 1.24,
-	     '0.95': 1.64,
-	     '0.9': 2.2,
-	     '0.5': 5.35,
-	     '0.1': 10.65,
-	     '0.05': 12.59,
-	     '0.025': 14.45,
-	     '0.01': 16.81,
-	     '0.005': 18.55 },
-	  '7':
-	   { '0.995': 0.99,
-	     '0.99': 1.25,
-	     '0.975': 1.69,
-	     '0.95': 2.17,
-	     '0.9': 2.83,
-	     '0.5': 6.35,
-	     '0.1': 12.02,
-	     '0.05': 14.07,
-	     '0.025': 16.01,
-	     '0.01': 18.48,
-	     '0.005': 20.28 },
-	  '8':
-	   { '0.995': 1.34,
-	     '0.99': 1.65,
-	     '0.975': 2.18,
-	     '0.95': 2.73,
-	     '0.9': 3.49,
-	     '0.5': 7.34,
-	     '0.1': 13.36,
-	     '0.05': 15.51,
-	     '0.025': 17.53,
-	     '0.01': 20.09,
-	     '0.005': 21.96 },
-	  '9':
-	   { '0.995': 1.73,
-	     '0.99': 2.09,
-	     '0.975': 2.7,
-	     '0.95': 3.33,
-	     '0.9': 4.17,
-	     '0.5': 8.34,
-	     '0.1': 14.68,
-	     '0.05': 16.92,
-	     '0.025': 19.02,
-	     '0.01': 21.67,
-	     '0.005': 23.59 },
-	  '10':
-	   { '0.995': 2.16,
-	     '0.99': 2.56,
-	     '0.975': 3.25,
-	     '0.95': 3.94,
-	     '0.9': 4.87,
-	     '0.5': 9.34,
-	     '0.1': 15.99,
-	     '0.05': 18.31,
-	     '0.025': 20.48,
-	     '0.01': 23.21,
-	     '0.005': 25.19 },
-	  '11':
-	   { '0.995': 2.6,
-	     '0.99': 3.05,
-	     '0.975': 3.82,
-	     '0.95': 4.57,
-	     '0.9': 5.58,
-	     '0.5': 10.34,
-	     '0.1': 17.28,
-	     '0.05': 19.68,
-	     '0.025': 21.92,
-	     '0.01': 24.72,
-	     '0.005': 26.76 },
-	  '12':
-	   { '0.995': 3.07,
-	     '0.99': 3.57,
-	     '0.975': 4.4,
-	     '0.95': 5.23,
-	     '0.9': 6.3,
-	     '0.5': 11.34,
-	     '0.1': 18.55,
-	     '0.05': 21.03,
-	     '0.025': 23.34,
-	     '0.01': 26.22,
-	     '0.005': 28.3 },
-	  '13':
-	   { '0.995': 3.57,
-	     '0.99': 4.11,
-	     '0.975': 5.01,
-	     '0.95': 5.89,
-	     '0.9': 7.04,
-	     '0.5': 12.34,
-	     '0.1': 19.81,
-	     '0.05': 22.36,
-	     '0.025': 24.74,
-	     '0.01': 27.69,
-	     '0.005': 29.82 },
-	  '14':
-	   { '0.995': 4.07,
-	     '0.99': 4.66,
-	     '0.975': 5.63,
-	     '0.95': 6.57,
-	     '0.9': 7.79,
-	     '0.5': 13.34,
-	     '0.1': 21.06,
-	     '0.05': 23.68,
-	     '0.025': 26.12,
-	     '0.01': 29.14,
-	     '0.005': 31.32 },
-	  '15':
-	   { '0.995': 4.6,
-	     '0.99': 5.23,
-	     '0.975': 6.27,
-	     '0.95': 7.26,
-	     '0.9': 8.55,
-	     '0.5': 14.34,
-	     '0.1': 22.31,
-	     '0.05': 25,
-	     '0.025': 27.49,
-	     '0.01': 30.58,
-	     '0.005': 32.8 },
-	  '16':
-	   { '0.995': 5.14,
-	     '0.99': 5.81,
-	     '0.975': 6.91,
-	     '0.95': 7.96,
-	     '0.9': 9.31,
-	     '0.5': 15.34,
-	     '0.1': 23.54,
-	     '0.05': 26.3,
-	     '0.025': 28.85,
-	     '0.01': 32,
-	     '0.005': 34.27 },
-	  '17':
-	   { '0.995': 5.7,
-	     '0.99': 6.41,
-	     '0.975': 7.56,
-	     '0.95': 8.67,
-	     '0.9': 10.09,
-	     '0.5': 16.34,
-	     '0.1': 24.77,
-	     '0.05': 27.59,
-	     '0.025': 30.19,
-	     '0.01': 33.41,
-	     '0.005': 35.72 },
-	  '18':
-	   { '0.995': 6.26,
-	     '0.99': 7.01,
-	     '0.975': 8.23,
-	     '0.95': 9.39,
-	     '0.9': 10.87,
-	     '0.5': 17.34,
-	     '0.1': 25.99,
-	     '0.05': 28.87,
-	     '0.025': 31.53,
-	     '0.01': 34.81,
-	     '0.005': 37.16 },
-	  '19':
-	   { '0.995': 6.84,
-	     '0.99': 7.63,
-	     '0.975': 8.91,
-	     '0.95': 10.12,
-	     '0.9': 11.65,
-	     '0.5': 18.34,
-	     '0.1': 27.2,
-	     '0.05': 30.14,
-	     '0.025': 32.85,
-	     '0.01': 36.19,
-	     '0.005': 38.58 },
-	  '20':
-	   { '0.995': 7.43,
-	     '0.99': 8.26,
-	     '0.975': 9.59,
-	     '0.95': 10.85,
-	     '0.9': 12.44,
-	     '0.5': 19.34,
-	     '0.1': 28.41,
-	     '0.05': 31.41,
-	     '0.025': 34.17,
-	     '0.01': 37.57,
-	     '0.005': 40 },
-	  '21':
-	   { '0.995': 8.03,
-	     '0.99': 8.9,
-	     '0.975': 10.28,
-	     '0.95': 11.59,
-	     '0.9': 13.24,
-	     '0.5': 20.34,
-	     '0.1': 29.62,
-	     '0.05': 32.67,
-	     '0.025': 35.48,
-	     '0.01': 38.93,
-	     '0.005': 41.4 },
-	  '22':
-	   { '0.995': 8.64,
-	     '0.99': 9.54,
-	     '0.975': 10.98,
-	     '0.95': 12.34,
-	     '0.9': 14.04,
-	     '0.5': 21.34,
-	     '0.1': 30.81,
-	     '0.05': 33.92,
-	     '0.025': 36.78,
-	     '0.01': 40.29,
-	     '0.005': 42.8 },
-	  '23':
-	   { '0.995': 9.26,
-	     '0.99': 10.2,
-	     '0.975': 11.69,
-	     '0.95': 13.09,
-	     '0.9': 14.85,
-	     '0.5': 22.34,
-	     '0.1': 32.01,
-	     '0.05': 35.17,
-	     '0.025': 38.08,
-	     '0.01': 41.64,
-	     '0.005': 44.18 },
-	  '24':
-	   { '0.995': 9.89,
-	     '0.99': 10.86,
-	     '0.975': 12.4,
-	     '0.95': 13.85,
-	     '0.9': 15.66,
-	     '0.5': 23.34,
-	     '0.1': 33.2,
-	     '0.05': 36.42,
-	     '0.025': 39.36,
-	     '0.01': 42.98,
-	     '0.005': 45.56 },
-	  '25':
-	   { '0.995': 10.52,
-	     '0.99': 11.52,
-	     '0.975': 13.12,
-	     '0.95': 14.61,
-	     '0.9': 16.47,
-	     '0.5': 24.34,
-	     '0.1': 34.28,
-	     '0.05': 37.65,
-	     '0.025': 40.65,
-	     '0.01': 44.31,
-	     '0.005': 46.93 },
-	  '26':
-	   { '0.995': 11.16,
-	     '0.99': 12.2,
-	     '0.975': 13.84,
-	     '0.95': 15.38,
-	     '0.9': 17.29,
-	     '0.5': 25.34,
-	     '0.1': 35.56,
-	     '0.05': 38.89,
-	     '0.025': 41.92,
-	     '0.01': 45.64,
-	     '0.005': 48.29 },
-	  '27':
-	   { '0.995': 11.81,
-	     '0.99': 12.88,
-	     '0.975': 14.57,
-	     '0.95': 16.15,
-	     '0.9': 18.11,
-	     '0.5': 26.34,
-	     '0.1': 36.74,
-	     '0.05': 40.11,
-	     '0.025': 43.19,
-	     '0.01': 46.96,
-	     '0.005': 49.65 },
-	  '28':
-	   { '0.995': 12.46,
-	     '0.99': 13.57,
-	     '0.975': 15.31,
-	     '0.95': 16.93,
-	     '0.9': 18.94,
-	     '0.5': 27.34,
-	     '0.1': 37.92,
-	     '0.05': 41.34,
-	     '0.025': 44.46,
-	     '0.01': 48.28,
-	     '0.005': 50.99 },
-	  '29':
-	   { '0.995': 13.12,
-	     '0.99': 14.26,
-	     '0.975': 16.05,
-	     '0.95': 17.71,
-	     '0.9': 19.77,
-	     '0.5': 28.34,
-	     '0.1': 39.09,
-	     '0.05': 42.56,
-	     '0.025': 45.72,
-	     '0.01': 49.59,
-	     '0.005': 52.34 },
-	  '30':
-	   { '0.995': 13.79,
-	     '0.99': 14.95,
-	     '0.975': 16.79,
-	     '0.95': 18.49,
-	     '0.9': 20.6,
-	     '0.5': 29.34,
-	     '0.1': 40.26,
-	     '0.05': 43.77,
-	     '0.025': 46.98,
-	     '0.01': 50.89,
-	     '0.005': 53.67 },
-	  '40':
-	   { '0.995': 20.71,
-	     '0.99': 22.16,
-	     '0.975': 24.43,
-	     '0.95': 26.51,
-	     '0.9': 29.05,
-	     '0.5': 39.34,
-	     '0.1': 51.81,
-	     '0.05': 55.76,
-	     '0.025': 59.34,
-	     '0.01': 63.69,
-	     '0.005': 66.77 },
-	  '50':
-	   { '0.995': 27.99,
-	     '0.99': 29.71,
-	     '0.975': 32.36,
-	     '0.95': 34.76,
-	     '0.9': 37.69,
-	     '0.5': 49.33,
-	     '0.1': 63.17,
-	     '0.05': 67.5,
-	     '0.025': 71.42,
-	     '0.01': 76.15,
-	     '0.005': 79.49 },
-	  '60':
-	   { '0.995': 35.53,
-	     '0.99': 37.48,
-	     '0.975': 40.48,
-	     '0.95': 43.19,
-	     '0.9': 46.46,
-	     '0.5': 59.33,
-	     '0.1': 74.4,
-	     '0.05': 79.08,
-	     '0.025': 83.3,
-	     '0.01': 88.38,
-	     '0.005': 91.95 },
-	  '70':
-	   { '0.995': 43.28,
-	     '0.99': 45.44,
-	     '0.975': 48.76,
-	     '0.95': 51.74,
-	     '0.9': 55.33,
-	     '0.5': 69.33,
-	     '0.1': 85.53,
-	     '0.05': 90.53,
-	     '0.025': 95.02,
-	     '0.01': 100.42,
-	     '0.005': 104.22 },
-	  '80':
-	   { '0.995': 51.17,
-	     '0.99': 53.54,
-	     '0.975': 57.15,
-	     '0.95': 60.39,
-	     '0.9': 64.28,
-	     '0.5': 79.33,
-	     '0.1': 96.58,
-	     '0.05': 101.88,
-	     '0.025': 106.63,
-	     '0.01': 112.33,
-	     '0.005': 116.32 },
-	  '90':
-	   { '0.995': 59.2,
-	     '0.99': 61.75,
-	     '0.975': 65.65,
-	     '0.95': 69.13,
-	     '0.9': 73.29,
-	     '0.5': 89.33,
-	     '0.1': 107.57,
-	     '0.05': 113.14,
-	     '0.025': 118.14,
-	     '0.01': 124.12,
-	     '0.005': 128.3 },
-	  '100':
-	   { '0.995': 67.33,
-	     '0.99': 70.06,
-	     '0.975': 74.22,
-	     '0.95': 77.93,
-	     '0.9': 82.36,
-	     '0.5': 99.33,
-	     '0.1': 118.5,
-	     '0.05': 124.34,
-	     '0.025': 129.56,
-	     '0.01': 135.81,
-	     '0.005': 140.17 } };
-
-	module.exports = chiSquaredDistributionTable;
-
-
-/***/ },
-/* 52 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The [Z-Score, or Standard Score](http://en.wikipedia.org/wiki/Standard_score).
-	 *
-	 * The standard score is the number of standard deviations an observation
-	 * or datum is above or below the mean. Thus, a positive standard score
-	 * represents a datum above the mean, while a negative standard score
-	 * represents a datum below the mean. It is a dimensionless quantity
-	 * obtained by subtracting the population mean from an individual raw
-	 * score and then dividing the difference by the population standard
-	 * deviation.
-	 *
-	 * The z-score is only defined if one knows the population parameters;
-	 * if one only has a sample set, then the analogous computation with
-	 * sample mean and sample standard deviation yields the
-	 * Student's t-statistic.
-	 *
-	 * @param {number} x
-	 * @param {number} mean
-	 * @param {number} standardDeviation
-	 * @return {number} z score
-	 * @example
-	 * ss.zScore(78, 80, 5); //= -0.4
-	 */
-	function zScore(x/*:number*/, mean/*:number*/, standardDeviation/*:number*/)/*:number*/ {
-	    return (x - mean) / standardDeviation;
-	}
-
-	module.exports = zScore;
-
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var standardNormalTable = __webpack_require__(54);
-
-	/**
-	 * **[Cumulative Standard Normal Probability](http://en.wikipedia.org/wiki/Standard_normal_table)**
-	 *
-	 * Since probability tables cannot be
-	 * printed for every normal distribution, as there are an infinite variety
-	 * of normal distributions, it is common practice to convert a normal to a
-	 * standard normal and then use the standard normal table to find probabilities.
-	 *
-	 * You can use `.5 + .5 * errorFunction(x / Math.sqrt(2))` to calculate the probability
-	 * instead of looking it up in a table.
-	 *
-	 * @param {number} z
-	 * @returns {number} cumulative standard normal probability
-	 */
-	function cumulativeStdNormalProbability(z /*:number */)/*:number */ {
-
-	    // Calculate the position of this value.
-	    var absZ = Math.abs(z),
-	        // Each row begins with a different
-	        // significant digit: 0.5, 0.6, 0.7, and so on. Each value in the table
-	        // corresponds to a range of 0.01 in the input values, so the value is
-	        // multiplied by 100.
-	        index = Math.min(Math.round(absZ * 100), standardNormalTable.length - 1);
-
-	    // The index we calculate must be in the table as a positive value,
-	    // but we still pay attention to whether the input is positive
-	    // or negative, and flip the output value as a last step.
-	    if (z >= 0) {
-	        return standardNormalTable[index];
-	    } else {
-	        // due to floating-point arithmetic, values in the table with
-	        // 4 significant figures can nevertheless end up as repeating
-	        // fractions when they're computed here.
-	        return +(1 - standardNormalTable[index]).toFixed(4);
-	    }
-	}
-
-	module.exports = cumulativeStdNormalProbability;
-
-
-/***/ },
-/* 54 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	var SQRT_2PI = Math.sqrt(2 * Math.PI);
-
-	function cumulativeDistribution(z) {
-	    var sum = z,
-	        tmp = z;
-
-	    // 15 iterations are enough for 4-digit precision
-	    for (var i = 1; i < 15; i++) {
-	        tmp *= z * z / (2 * i + 1);
-	        sum += tmp;
-	    }
-	    return Math.round((0.5 + (sum / SQRT_2PI) * Math.exp(-z * z / 2)) * 1e4) / 1e4;
-	}
-
-	/**
-	 * A standard normal table, also called the unit normal table or Z table,
-	 * is a mathematical table for the values of Φ (phi), which are the values of
-	 * the cumulative distribution function of the normal distribution.
-	 * It is used to find the probability that a statistic is observed below,
-	 * above, or between values on the standard normal distribution, and by
-	 * extension, any normal distribution.
-	 *
-	 * The probabilities are calculated using the
-	 * [Cumulative distribution function](https://en.wikipedia.org/wiki/Normal_distribution#Cumulative_distribution_function).
-	 * The table used is the cumulative, and not cumulative from 0 to mean
-	 * (even though the latter has 5 digits precision, instead of 4).
-	 */
-	var standardNormalTable/*: Array<number> */ = [];
-
-	for (var z = 0; z <= 3.09; z += 0.01) {
-	    standardNormalTable.push(cumulativeDistribution(z));
-	}
-
-	module.exports = standardNormalTable;
-
-
-/***/ },
-/* 55 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * **[Gaussian error function](http://en.wikipedia.org/wiki/Error_function)**
-	 *
-	 * The `errorFunction(x/(sd * Math.sqrt(2)))` is the probability that a value in a
-	 * normal distribution with standard deviation sd is within x of the mean.
-	 *
-	 * This function returns a numerical approximation to the exact value.
-	 *
-	 * @param {number} x input
-	 * @return {number} error estimation
-	 * @example
-	 * errorFunction(1); //= 0.8427
-	 */
-	function errorFunction(x/*: number */)/*: number */ {
-	    var t = 1 / (1 + 0.5 * Math.abs(x));
-	    var tau = t * Math.exp(-Math.pow(x, 2) -
-	        1.26551223 +
-	        1.00002368 * t +
-	        0.37409196 * Math.pow(t, 2) +
-	        0.09678418 * Math.pow(t, 3) -
-	        0.18628806 * Math.pow(t, 4) +
-	        0.27886807 * Math.pow(t, 5) -
-	        1.13520398 * Math.pow(t, 6) +
-	        1.48851587 * Math.pow(t, 7) -
-	        0.82215223 * Math.pow(t, 8) +
-	        0.17087277 * Math.pow(t, 9));
-	    if (x >= 0) {
-	        return 1 - tau;
-	    } else {
-	        return tau - 1;
-	    }
-	}
-
-	module.exports = errorFunction;
-
-
-/***/ },
-/* 56 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * The Inverse [Gaussian error function](http://en.wikipedia.org/wiki/Error_function)
-	 * returns a numerical approximation to the value that would have caused
-	 * `errorFunction()` to return x.
-	 *
-	 * @param {number} x value of error function
-	 * @returns {number} estimated inverted value
-	 */
-	function inverseErrorFunction(x/*: number */)/*: number */ {
-	    var a = (8 * (Math.PI - 3)) / (3 * Math.PI * (4 - Math.PI));
-
-	    var inv = Math.sqrt(Math.sqrt(
-	        Math.pow(2 / (Math.PI * a) + Math.log(1 - x * x) / 2, 2) -
-	        Math.log(1 - x * x) / a) -
-	        (2 / (Math.PI * a) + Math.log(1 - x * x) / 2));
-
-	    if (x >= 0) {
-	        return inv;
-	    } else {
-	        return -inv;
-	    }
-	}
-
-	module.exports = inverseErrorFunction;
-
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/* @flow */
-
-	var epsilon = __webpack_require__(45);
-	var inverseErrorFunction = __webpack_require__(56);
-
-	/**
-	 * The [Probit](http://en.wikipedia.org/wiki/Probit)
-	 * is the inverse of cumulativeStdNormalProbability(),
-	 * and is also known as the normal quantile function.
-	 *
-	 * It returns the number of standard deviations from the mean
-	 * where the p'th quantile of values can be found in a normal distribution.
-	 * So, for example, probit(0.5 + 0.6827/2) ≈ 1 because 68.27% of values are
-	 * normally found within 1 standard deviation above or below the mean.
-	 *
-	 * @param {number} p
-	 * @returns {number} probit
-	 */
-	function probit(p /*: number */)/*: number */ {
-	    if (p === 0) {
-	        p = epsilon;
-	    } else if (p >= 1) {
-	        p = 1 - epsilon;
-	    }
-	    return Math.sqrt(2) * inverseErrorFunction(2 * p - 1);
-	}
-
-	module.exports = probit;
-
-
-/***/ },
-/* 58 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* @flow */
-
-	/**
-	 * **Mixin** simple_statistics to a single Array instance if provided
-	 * or the Array native object if not. This is an optional
-	 * feature that lets you treat simple_statistics as a native feature
-	 * of Javascript.
-	 *
-	 * @param {Object} ss simple statistics
-	 * @param {Array} [array=] a single array instance which will be augmented
-	 * with the extra methods. If omitted, mixin will apply to all arrays
-	 * by changing the global `Array.prototype`.
-	 * @returns {*} the extended Array, or Array.prototype if no object
-	 * is given.
-	 *
-	 * @example
-	 * var myNumbers = [1, 2, 3];
-	 * mixin(ss, myNumbers);
-	 * console.log(myNumbers.sum()); // 6
-	 */
-	function mixin(ss /*: Object */, array /*: ?Array<any> */)/*: any */ {
-	    var support = !!(Object.defineProperty && Object.defineProperties);
-	    // Coverage testing will never test this error.
-	    /* istanbul ignore next */
-	    if (!support) {
-	        throw new Error('without defineProperty, simple-statistics cannot be mixed in');
-	    }
-
-	    // only methods which work on basic arrays in a single step
-	    // are supported
-	    var arrayMethods = ['median', 'standardDeviation', 'sum', 'product',
-	        'sampleSkewness',
-	        'mean', 'min', 'max', 'quantile', 'geometricMean',
-	        'harmonicMean', 'root_mean_square'];
-
-	    // create a closure with a method name so that a reference
-	    // like `arrayMethods[i]` doesn't follow the loop increment
-	    function wrap(method) {
-	        return function() {
-	            // cast any arguments into an array, since they're
-	            // natively objects
-	            var args = Array.prototype.slice.apply(arguments);
-	            // make the first argument the array itself
-	            args.unshift(this);
-	            // return the result of the ss method
-	            return ss[method].apply(ss, args);
+	        // return the two matrices. for just providing breaks, only
+	        // `lower_class_limits` is needed, but variances can be useful to
+	        // evaluate goodness of fit.
+	        return {
+	            lower_class_limits: lower_class_limits,
+	            variance_combinations: variance_combinations
 	        };
 	    }
 
-	    // select object to extend
-	    var extending;
-	    if (array) {
-	        // create a shallow copy of the array so that our internal
-	        // operations do not change it by reference
-	        extending = array.slice();
-	    } else {
-	        extending = Array.prototype;
+	    // ## Pull Breaks Values for Jenks
+	    //
+	    // the second part of the jenks recipe: take the calculated matrices
+	    // and derive an array of n breaks.
+	    function jenksBreaks(data, lower_class_limits, n_classes) {
+
+	        var k = data.length - 1,
+	            kclass = [],
+	            countNum = n_classes;
+
+	        // the calculation of classes will never include the upper and
+	        // lower bounds, so we need to explicitly set them
+	        kclass[n_classes] = data[data.length - 1];
+	        kclass[0] = data[0];
+
+	        // the lower_class_limits matrix is used as indices into itself
+	        // here: the `k` variable is reused in each iteration.
+	        while (countNum > 1) {
+	            kclass[countNum - 1] = data[lower_class_limits[k][countNum] - 2];
+	            k = lower_class_limits[k][countNum] - 1;
+	            countNum--;
+	        }
+
+	        return kclass;
 	    }
 
-	    // for each array function, define a function that gets
-	    // the array as the first argument.
-	    // We use [defineProperty](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/defineProperty)
-	    // because it allows these properties to be non-enumerable:
-	    // `for (var in x)` loops will not run into problems with this
-	    // implementation.
-	    for (var i = 0; i < arrayMethods.length; i++) {
-	        Object.defineProperty(extending, arrayMethods[i], {
-	            value: wrap(arrayMethods[i]),
-	            configurable: true,
-	            enumerable: false,
-	            writable: true
-	        });
+	    // # [Jenks natural breaks optimization](http://en.wikipedia.org/wiki/Jenks_natural_breaks_optimization)
+	    //
+	    // Implementations: [1](http://danieljlewis.org/files/2010/06/Jenks.pdf) (python),
+	    // [2](https://github.com/vvoovv/djeo-jenks/blob/master/main.js) (buggy),
+	    // [3](https://github.com/simogeo/geostats/blob/master/lib/geostats.js#L407) (works)
+	    //
+	    // Depends on `jenksBreaks()` and `jenksMatrices()`
+	    function jenks(data, n_classes) {
+
+	        if (n_classes > data.length) return null;
+
+	        // sort data in numerical order, since this is expected
+	        // by the matrices function
+	        data = data.slice().sort(function (a, b) { return a - b; });
+
+	        // get our basic matrices
+	        var matrices = jenksMatrices(data, n_classes),
+	            // we only need lower class limits here
+	            lower_class_limits = matrices.lower_class_limits;
+
+	        // extract n_classes out of the computed matrices
+	        return jenksBreaks(data, lower_class_limits, n_classes);
+
 	    }
 
-	    return extending;
-	}
+	    // # [Skewness](http://en.wikipedia.org/wiki/Skewness)
+	    //
+	    // A measure of the extent to which a probability distribution of a
+	    // real-valued random variable "leans" to one side of the mean.
+	    // The skewness value can be positive or negative, or even undefined.
+	    //
+	    // Implementation is based on the adjusted Fisher-Pearson standardized
+	    // moment coefficient, which is the version found in Excel and several
+	    // statistical packages including Minitab, SAS and SPSS.
+	    //
+	    // Depends on `sum_nth_power_deviations()` and `sample_standard_deviation`
+	    function sample_skewness(x) {
+	        // The skewness of less than three arguments is null
+	        if (x.length < 3) return null;
 
-	module.exports = mixin;
+	        var n = x.length,
+	            cubed_s = Math.pow(sample_standard_deviation(x), 3),
+	            sum_cubed_deviations = sum_nth_power_deviations(x, 3);
+
+	        return n * sum_cubed_deviations / ((n - 1) * (n - 2) * cubed_s);
+	    }
+
+	    // # Standard Normal Table
+	    // A standard normal table, also called the unit normal table or Z table,
+	    // is a mathematical table for the values of Φ (phi), which are the values of
+	    // the cumulative distribution function of the normal distribution.
+	    // It is used to find the probability that a statistic is observed below,
+	    // above, or between values on the standard normal distribution, and by
+	    // extension, any normal distribution.
+	    //
+	    // The probabilities are taken from http://en.wikipedia.org/wiki/Standard_normal_table
+	    // The table used is the cumulative, and not cumulative from 0 to mean
+	    // (even though the latter has 5 digits precision, instead of 4).
+	    var standard_normal_table = [
+	        /*  z      0.00    0.01    0.02    0.03    0.04    0.05    0.06    0.07    0.08    0.09 */
+	        /* 0.0 */
+	        0.5000, 0.5040, 0.5080, 0.5120, 0.5160, 0.5199, 0.5239, 0.5279, 0.5319, 0.5359,
+	        /* 0.1 */
+	        0.5398, 0.5438, 0.5478, 0.5517, 0.5557, 0.5596, 0.5636, 0.5675, 0.5714, 0.5753,
+	        /* 0.2 */
+	        0.5793, 0.5832, 0.5871, 0.5910, 0.5948, 0.5987, 0.6026, 0.6064, 0.6103, 0.6141,
+	        /* 0.3 */
+	        0.6179, 0.6217, 0.6255, 0.6293, 0.6331, 0.6368, 0.6406, 0.6443, 0.6480, 0.6517,
+	        /* 0.4 */
+	        0.6554, 0.6591, 0.6628, 0.6664, 0.6700, 0.6736, 0.6772, 0.6808, 0.6844, 0.6879,
+	        /* 0.5 */
+	        0.6915, 0.6950, 0.6985, 0.7019, 0.7054, 0.7088, 0.7123, 0.7157, 0.7190, 0.7224,
+	        /* 0.6 */
+	        0.7257, 0.7291, 0.7324, 0.7357, 0.7389, 0.7422, 0.7454, 0.7486, 0.7517, 0.7549,
+	        /* 0.7 */
+	        0.7580, 0.7611, 0.7642, 0.7673, 0.7704, 0.7734, 0.7764, 0.7794, 0.7823, 0.7852,
+	        /* 0.8 */
+	        0.7881, 0.7910, 0.7939, 0.7967, 0.7995, 0.8023, 0.8051, 0.8078, 0.8106, 0.8133,
+	        /* 0.9 */
+	        0.8159, 0.8186, 0.8212, 0.8238, 0.8264, 0.8289, 0.8315, 0.8340, 0.8365, 0.8389,
+	        /* 1.0 */
+	        0.8413, 0.8438, 0.8461, 0.8485, 0.8508, 0.8531, 0.8554, 0.8577, 0.8599, 0.8621,
+	        /* 1.1 */
+	        0.8643, 0.8665, 0.8686, 0.8708, 0.8729, 0.8749, 0.8770, 0.8790, 0.8810, 0.8830,
+	        /* 1.2 */
+	        0.8849, 0.8869, 0.8888, 0.8907, 0.8925, 0.8944, 0.8962, 0.8980, 0.8997, 0.9015,
+	        /* 1.3 */
+	        0.9032, 0.9049, 0.9066, 0.9082, 0.9099, 0.9115, 0.9131, 0.9147, 0.9162, 0.9177,
+	        /* 1.4 */
+	        0.9192, 0.9207, 0.9222, 0.9236, 0.9251, 0.9265, 0.9279, 0.9292, 0.9306, 0.9319,
+	        /* 1.5 */
+	        0.9332, 0.9345, 0.9357, 0.9370, 0.9382, 0.9394, 0.9406, 0.9418, 0.9429, 0.9441,
+	        /* 1.6 */
+	        0.9452, 0.9463, 0.9474, 0.9484, 0.9495, 0.9505, 0.9515, 0.9525, 0.9535, 0.9545,
+	        /* 1.7 */
+	        0.9554, 0.9564, 0.9573, 0.9582, 0.9591, 0.9599, 0.9608, 0.9616, 0.9625, 0.9633,
+	        /* 1.8 */
+	        0.9641, 0.9649, 0.9656, 0.9664, 0.9671, 0.9678, 0.9686, 0.9693, 0.9699, 0.9706,
+	        /* 1.9 */
+	        0.9713, 0.9719, 0.9726, 0.9732, 0.9738, 0.9744, 0.9750, 0.9756, 0.9761, 0.9767,
+	        /* 2.0 */
+	        0.9772, 0.9778, 0.9783, 0.9788, 0.9793, 0.9798, 0.9803, 0.9808, 0.9812, 0.9817,
+	        /* 2.1 */
+	        0.9821, 0.9826, 0.9830, 0.9834, 0.9838, 0.9842, 0.9846, 0.9850, 0.9854, 0.9857,
+	        /* 2.2 */
+	        0.9861, 0.9864, 0.9868, 0.9871, 0.9875, 0.9878, 0.9881, 0.9884, 0.9887, 0.9890,
+	        /* 2.3 */
+	        0.9893, 0.9896, 0.9898, 0.9901, 0.9904, 0.9906, 0.9909, 0.9911, 0.9913, 0.9916,
+	        /* 2.4 */
+	        0.9918, 0.9920, 0.9922, 0.9925, 0.9927, 0.9929, 0.9931, 0.9932, 0.9934, 0.9936,
+	        /* 2.5 */
+	        0.9938, 0.9940, 0.9941, 0.9943, 0.9945, 0.9946, 0.9948, 0.9949, 0.9951, 0.9952,
+	        /* 2.6 */
+	        0.9953, 0.9955, 0.9956, 0.9957, 0.9959, 0.9960, 0.9961, 0.9962, 0.9963, 0.9964,
+	        /* 2.7 */
+	        0.9965, 0.9966, 0.9967, 0.9968, 0.9969, 0.9970, 0.9971, 0.9972, 0.9973, 0.9974,
+	        /* 2.8 */
+	        0.9974, 0.9975, 0.9976, 0.9977, 0.9977, 0.9978, 0.9979, 0.9979, 0.9980, 0.9981,
+	        /* 2.9 */
+	        0.9981, 0.9982, 0.9982, 0.9983, 0.9984, 0.9984, 0.9985, 0.9985, 0.9986, 0.9986,
+	        /* 3.0 */
+	        0.9987, 0.9987, 0.9987, 0.9988, 0.9988, 0.9989, 0.9989, 0.9989, 0.9990, 0.9990
+	    ];
+
+	    // # [Cumulative Standard Normal Probability](http://en.wikipedia.org/wiki/Standard_normal_table)
+	    //
+	    // Since probability tables cannot be
+	    // printed for every normal distribution, as there are an infinite variety
+	    // of normal distributions, it is common practice to convert a normal to a
+	    // standard normal and then use the standard normal table to find probabilities
+	    function cumulative_std_normal_probability(z) {
+
+	        // Calculate the position of this value.
+	        var absZ = Math.abs(z),
+	            // Each row begins with a different
+	            // significant digit: 0.5, 0.6, 0.7, and so on. So the row is simply
+	            // this value's significant digit: 0.567 will be in row 0, so row=0,
+	            // 0.643 will be in row 1, so row=10.
+	            row = Math.floor(absZ * 10),
+	            column = 10 * (Math.floor(absZ * 100) / 10 - Math.floor(absZ * 100 / 10)),
+	            index = Math.min((row * 10) + column, standard_normal_table.length - 1);
+
+	        // The index we calculate must be in the table as a positive value,
+	        // but we still pay attention to whether the input is positive
+	        // or negative, and flip the output value as a last step.
+	        if (z >= 0) {
+	            return standard_normal_table[index];
+	        } else {
+	            // due to floating-point arithmetic, values in the table with
+	            // 4 significant figures can nevertheless end up as repeating
+	            // fractions when they're computed here.
+	            return +(1 - standard_normal_table[index]).toFixed(4);
+	        }
+	    }
+
+	    // # [Z-Score, or Standard Score](http://en.wikipedia.org/wiki/Standard_score)
+	    //
+	    // The standard score is the number of standard deviations an observation
+	    // or datum is above or below the mean. Thus, a positive standard score
+	    // represents a datum above the mean, while a negative standard score
+	    // represents a datum below the mean. It is a dimensionless quantity
+	    // obtained by subtracting the population mean from an individual raw
+	    // score and then dividing the difference by the population standard
+	    // deviation.
+	    //
+	    // The z-score is only defined if one knows the population parameters;
+	    // if one only has a sample set, then the analogous computation with
+	    // sample mean and sample standard deviation yields the
+	    // Student's t-statistic.
+	    function z_score(x, mean, standard_deviation) {
+	        return (x - mean) / standard_deviation;
+	    }
+
+	    // We use `ε`, epsilon, as a stopping criterion when we want to iterate
+	    // until we're "close enough".
+	    var epsilon = 0.0001;
+
+	    // # [Factorial](https://en.wikipedia.org/wiki/Factorial)
+	    //
+	    // A factorial, usually written n!, is the product of all positive
+	    // integers less than or equal to n. Often factorial is implemented
+	    // recursively, but this iterative approach is significantly faster
+	    // and simpler.
+	    function factorial(n) {
+
+	        // factorial is mathematically undefined for negative numbers
+	        if (n < 0 ) { return null; }
+
+	        // typically you'll expand the factorial function going down, like
+	        // 5! = 5 * 4 * 3 * 2 * 1. This is going in the opposite direction,
+	        // counting from 2 up to the number in question, and since anything
+	        // multiplied by 1 is itself, the loop only needs to start at 2.
+	        var accumulator = 1;
+	        for (var i = 2; i <= n; i++) {
+	            // for each number up to and including the number `n`, multiply
+	            // the accumulator my that number.
+	            accumulator *= i;
+	        }
+	        return accumulator;
+	    }
+
+	    // # Bernoulli Distribution
+	    //
+	    // The [Bernoulli distribution](http://en.wikipedia.org/wiki/Bernoulli_distribution)
+	    // is the probability discrete
+	    // distribution of a random variable which takes value 1 with success
+	    // probability `p` and value 0 with failure
+	    // probability `q` = 1 - `p`. It can be used, for example, to represent the
+	    // toss of a coin, where "1" is defined to mean "heads" and "0" is defined
+	    // to mean "tails" (or vice versa). It is
+	    // a special case of a Binomial Distribution
+	    // where `n` = 1.
+	    function bernoulli_distribution(p) {
+	        // Check that `p` is a valid probability (0 ≤ p ≤ 1)
+	        if (p < 0 || p > 1 ) { return null; }
+
+	        return binomial_distribution(1, p);
+	    }
+
+	    // # Binomial Distribution
+	    //
+	    // The [Binomial Distribution](http://en.wikipedia.org/wiki/Binomial_distribution) is the discrete probability
+	    // distribution of the number of successes in a sequence of n independent yes/no experiments, each of which yields
+	    // success with probability `probability`. Such a success/failure experiment is also called a Bernoulli experiment or
+	    // Bernoulli trial; when trials = 1, the Binomial Distribution is a Bernoulli Distribution.
+	    function binomial_distribution(trials, probability) {
+	        // Check that `p` is a valid probability (0 ≤ p ≤ 1),
+	        // that `n` is an integer, strictly positive.
+	        if (probability < 0 || probability > 1 ||
+	            trials <= 0 || trials % 1 !== 0) {
+	            return null;
+	        }
+
+	        // a [probability mass function](https://en.wikipedia.org/wiki/Probability_mass_function)
+	        function probability_mass(x, trials, probability) {
+	            return factorial(trials) /
+	                (factorial(x) * factorial(trials - x)) *
+	                (Math.pow(probability, x) * Math.pow(1 - probability, trials - x));
+	        }
+
+	        // We initialize `x`, the random variable, and `accumulator`, an accumulator
+	        // for the cumulative distribution function to 0. `distribution_functions`
+	        // is the object we'll return with the `probability_of_x` and the
+	        // `cumulative_probability_of_x`, as well as the calculated mean &
+	        // variance. We iterate until the `cumulative_probability_of_x` is
+	        // within `epsilon` of 1.0.
+	        var x = 0,
+	            cumulative_probability = 0,
+	            cells = {};
+
+	        // This algorithm iterates through each potential outcome,
+	        // until the `cumulative_probability` is very close to 1, at
+	        // which point we've defined the vast majority of outcomes
+	        do {
+	            cells[x] = probability_mass(x, trials, probability);
+	            cumulative_probability += cells[x];
+	            x++;
+	        // when the cumulative_probability is nearly 1, we've calculated
+	        // the useful range of this distribution
+	        } while (cumulative_probability < 1 - epsilon);
+
+	        return cells;
+	    }
+
+	    // # Poisson Distribution
+	    //
+	    // The [Poisson Distribution](http://en.wikipedia.org/wiki/Poisson_distribution)
+	    // is a discrete probability distribution that expresses the probability
+	    // of a given number of events occurring in a fixed interval of time
+	    // and/or space if these events occur with a known average rate and
+	    // independently of the time since the last event.
+	    //
+	    // The Poisson Distribution is characterized by the strictly positive
+	    // mean arrival or occurrence rate, `λ`.
+	    function poisson_distribution(lambda) {
+	        // Check that lambda is strictly positive
+	        if (lambda <= 0) { return null; }
+
+	        // our current place in the distribution
+	        var x = 0,
+	            // and we keep track of the current cumulative probability, in
+	            // order to know when to stop calculating chances.
+	            cumulative_probability = 0,
+	            // the calculated cells to be returned
+	            cells = {};
+
+	        // a [probability mass function](https://en.wikipedia.org/wiki/Probability_mass_function)
+	        function probability_mass(x, lambda) {
+	            return (Math.pow(Math.E, -lambda) * Math.pow(lambda, x)) /
+	                factorial(x);
+	        }
+
+	        // This algorithm iterates through each potential outcome,
+	        // until the `cumulative_probability` is very close to 1, at
+	        // which point we've defined the vast majority of outcomes
+	        do {
+	            cells[x] = probability_mass(x, lambda);
+	            cumulative_probability += cells[x];
+	            x++;
+	        // when the cumulative_probability is nearly 1, we've calculated
+	        // the useful range of this distribution
+	        } while (cumulative_probability < 1 - epsilon);
+
+	        return cells;
+	    }
+
+	    // # Percentage Points of the χ2 (Chi-Squared) Distribution
+	    // The [χ2 (Chi-Squared) Distribution](http://en.wikipedia.org/wiki/Chi-squared_distribution) is used in the common
+	    // chi-squared tests for goodness of fit of an observed distribution to a theoretical one, the independence of two
+	    // criteria of classification of qualitative data, and in confidence interval estimation for a population standard
+	    // deviation of a normal distribution from a sample standard deviation.
+	    //
+	    // Values from Appendix 1, Table III of William W. Hines & Douglas C. Montgomery, "Probability and Statistics in
+	    // Engineering and Management Science", Wiley (1980).
+	    var chi_squared_distribution_table = {
+	        1: { 0.995:  0.00, 0.99:  0.00, 0.975:  0.00, 0.95:  0.00, 0.9:  0.02, 0.5:  0.45, 0.1:  2.71, 0.05:  3.84, 0.025:  5.02, 0.01:  6.63, 0.005:  7.88 },
+	        2: { 0.995:  0.01, 0.99:  0.02, 0.975:  0.05, 0.95:  0.10, 0.9:  0.21, 0.5:  1.39, 0.1:  4.61, 0.05:  5.99, 0.025:  7.38, 0.01:  9.21, 0.005: 10.60 },
+	        3: { 0.995:  0.07, 0.99:  0.11, 0.975:  0.22, 0.95:  0.35, 0.9:  0.58, 0.5:  2.37, 0.1:  6.25, 0.05:  7.81, 0.025:  9.35, 0.01: 11.34, 0.005: 12.84 },
+	        4: { 0.995:  0.21, 0.99:  0.30, 0.975:  0.48, 0.95:  0.71, 0.9:  1.06, 0.5:  3.36, 0.1:  7.78, 0.05:  9.49, 0.025: 11.14, 0.01: 13.28, 0.005: 14.86 },
+	        5: { 0.995:  0.41, 0.99:  0.55, 0.975:  0.83, 0.95:  1.15, 0.9:  1.61, 0.5:  4.35, 0.1:  9.24, 0.05: 11.07, 0.025: 12.83, 0.01: 15.09, 0.005: 16.75 },
+	        6: { 0.995:  0.68, 0.99:  0.87, 0.975:  1.24, 0.95:  1.64, 0.9:  2.20, 0.5:  5.35, 0.1: 10.65, 0.05: 12.59, 0.025: 14.45, 0.01: 16.81, 0.005: 18.55 },
+	        7: { 0.995:  0.99, 0.99:  1.25, 0.975:  1.69, 0.95:  2.17, 0.9:  2.83, 0.5:  6.35, 0.1: 12.02, 0.05: 14.07, 0.025: 16.01, 0.01: 18.48, 0.005: 20.28 },
+	        8: { 0.995:  1.34, 0.99:  1.65, 0.975:  2.18, 0.95:  2.73, 0.9:  3.49, 0.5:  7.34, 0.1: 13.36, 0.05: 15.51, 0.025: 17.53, 0.01: 20.09, 0.005: 21.96 },
+	        9: { 0.995:  1.73, 0.99:  2.09, 0.975:  2.70, 0.95:  3.33, 0.9:  4.17, 0.5:  8.34, 0.1: 14.68, 0.05: 16.92, 0.025: 19.02, 0.01: 21.67, 0.005: 23.59 },
+	        10: { 0.995:  2.16, 0.99:  2.56, 0.975:  3.25, 0.95:  3.94, 0.9:  4.87, 0.5:  9.34, 0.1: 15.99, 0.05: 18.31, 0.025: 20.48, 0.01: 23.21, 0.005: 25.19 },
+	        11: { 0.995:  2.60, 0.99:  3.05, 0.975:  3.82, 0.95:  4.57, 0.9:  5.58, 0.5: 10.34, 0.1: 17.28, 0.05: 19.68, 0.025: 21.92, 0.01: 24.72, 0.005: 26.76 },
+	        12: { 0.995:  3.07, 0.99:  3.57, 0.975:  4.40, 0.95:  5.23, 0.9:  6.30, 0.5: 11.34, 0.1: 18.55, 0.05: 21.03, 0.025: 23.34, 0.01: 26.22, 0.005: 28.30 },
+	        13: { 0.995:  3.57, 0.99:  4.11, 0.975:  5.01, 0.95:  5.89, 0.9:  7.04, 0.5: 12.34, 0.1: 19.81, 0.05: 22.36, 0.025: 24.74, 0.01: 27.69, 0.005: 29.82 },
+	        14: { 0.995:  4.07, 0.99:  4.66, 0.975:  5.63, 0.95:  6.57, 0.9:  7.79, 0.5: 13.34, 0.1: 21.06, 0.05: 23.68, 0.025: 26.12, 0.01: 29.14, 0.005: 31.32 },
+	        15: { 0.995:  4.60, 0.99:  5.23, 0.975:  6.27, 0.95:  7.26, 0.9:  8.55, 0.5: 14.34, 0.1: 22.31, 0.05: 25.00, 0.025: 27.49, 0.01: 30.58, 0.005: 32.80 },
+	        16: { 0.995:  5.14, 0.99:  5.81, 0.975:  6.91, 0.95:  7.96, 0.9:  9.31, 0.5: 15.34, 0.1: 23.54, 0.05: 26.30, 0.025: 28.85, 0.01: 32.00, 0.005: 34.27 },
+	        17: { 0.995:  5.70, 0.99:  6.41, 0.975:  7.56, 0.95:  8.67, 0.9: 10.09, 0.5: 16.34, 0.1: 24.77, 0.05: 27.59, 0.025: 30.19, 0.01: 33.41, 0.005: 35.72 },
+	        18: { 0.995:  6.26, 0.99:  7.01, 0.975:  8.23, 0.95:  9.39, 0.9: 10.87, 0.5: 17.34, 0.1: 25.99, 0.05: 28.87, 0.025: 31.53, 0.01: 34.81, 0.005: 37.16 },
+	        19: { 0.995:  6.84, 0.99:  7.63, 0.975:  8.91, 0.95: 10.12, 0.9: 11.65, 0.5: 18.34, 0.1: 27.20, 0.05: 30.14, 0.025: 32.85, 0.01: 36.19, 0.005: 38.58 },
+	        20: { 0.995:  7.43, 0.99:  8.26, 0.975:  9.59, 0.95: 10.85, 0.9: 12.44, 0.5: 19.34, 0.1: 28.41, 0.05: 31.41, 0.025: 34.17, 0.01: 37.57, 0.005: 40.00 },
+	        21: { 0.995:  8.03, 0.99:  8.90, 0.975: 10.28, 0.95: 11.59, 0.9: 13.24, 0.5: 20.34, 0.1: 29.62, 0.05: 32.67, 0.025: 35.48, 0.01: 38.93, 0.005: 41.40 },
+	        22: { 0.995:  8.64, 0.99:  9.54, 0.975: 10.98, 0.95: 12.34, 0.9: 14.04, 0.5: 21.34, 0.1: 30.81, 0.05: 33.92, 0.025: 36.78, 0.01: 40.29, 0.005: 42.80 },
+	        23: { 0.995:  9.26, 0.99: 10.20, 0.975: 11.69, 0.95: 13.09, 0.9: 14.85, 0.5: 22.34, 0.1: 32.01, 0.05: 35.17, 0.025: 38.08, 0.01: 41.64, 0.005: 44.18 },
+	        24: { 0.995:  9.89, 0.99: 10.86, 0.975: 12.40, 0.95: 13.85, 0.9: 15.66, 0.5: 23.34, 0.1: 33.20, 0.05: 36.42, 0.025: 39.36, 0.01: 42.98, 0.005: 45.56 },
+	        25: { 0.995: 10.52, 0.99: 11.52, 0.975: 13.12, 0.95: 14.61, 0.9: 16.47, 0.5: 24.34, 0.1: 34.28, 0.05: 37.65, 0.025: 40.65, 0.01: 44.31, 0.005: 46.93 },
+	        26: { 0.995: 11.16, 0.99: 12.20, 0.975: 13.84, 0.95: 15.38, 0.9: 17.29, 0.5: 25.34, 0.1: 35.56, 0.05: 38.89, 0.025: 41.92, 0.01: 45.64, 0.005: 48.29 },
+	        27: { 0.995: 11.81, 0.99: 12.88, 0.975: 14.57, 0.95: 16.15, 0.9: 18.11, 0.5: 26.34, 0.1: 36.74, 0.05: 40.11, 0.025: 43.19, 0.01: 46.96, 0.005: 49.65 },
+	        28: { 0.995: 12.46, 0.99: 13.57, 0.975: 15.31, 0.95: 16.93, 0.9: 18.94, 0.5: 27.34, 0.1: 37.92, 0.05: 41.34, 0.025: 44.46, 0.01: 48.28, 0.005: 50.99 },
+	        29: { 0.995: 13.12, 0.99: 14.26, 0.975: 16.05, 0.95: 17.71, 0.9: 19.77, 0.5: 28.34, 0.1: 39.09, 0.05: 42.56, 0.025: 45.72, 0.01: 49.59, 0.005: 52.34 },
+	        30: { 0.995: 13.79, 0.99: 14.95, 0.975: 16.79, 0.95: 18.49, 0.9: 20.60, 0.5: 29.34, 0.1: 40.26, 0.05: 43.77, 0.025: 46.98, 0.01: 50.89, 0.005: 53.67 },
+	        40: { 0.995: 20.71, 0.99: 22.16, 0.975: 24.43, 0.95: 26.51, 0.9: 29.05, 0.5: 39.34, 0.1: 51.81, 0.05: 55.76, 0.025: 59.34, 0.01: 63.69, 0.005: 66.77 },
+	        50: { 0.995: 27.99, 0.99: 29.71, 0.975: 32.36, 0.95: 34.76, 0.9: 37.69, 0.5: 49.33, 0.1: 63.17, 0.05: 67.50, 0.025: 71.42, 0.01: 76.15, 0.005: 79.49 },
+	        60: { 0.995: 35.53, 0.99: 37.48, 0.975: 40.48, 0.95: 43.19, 0.9: 46.46, 0.5: 59.33, 0.1: 74.40, 0.05: 79.08, 0.025: 83.30, 0.01: 88.38, 0.005: 91.95 },
+	        70: { 0.995: 43.28, 0.99: 45.44, 0.975: 48.76, 0.95: 51.74, 0.9: 55.33, 0.5: 69.33, 0.1: 85.53, 0.05: 90.53, 0.025: 95.02, 0.01: 100.42, 0.005: 104.22 },
+	        80: { 0.995: 51.17, 0.99: 53.54, 0.975: 57.15, 0.95: 60.39, 0.9: 64.28, 0.5: 79.33, 0.1: 96.58, 0.05: 101.88, 0.025: 106.63, 0.01: 112.33, 0.005: 116.32 },
+	        90: { 0.995: 59.20, 0.99: 61.75, 0.975: 65.65, 0.95: 69.13, 0.9: 73.29, 0.5: 89.33, 0.1: 107.57, 0.05: 113.14, 0.025: 118.14, 0.01: 124.12, 0.005: 128.30 },
+	        100: { 0.995: 67.33, 0.99: 70.06, 0.975: 74.22, 0.95: 77.93, 0.9: 82.36, 0.5: 99.33, 0.1: 118.50, 0.05: 124.34, 0.025: 129.56, 0.01: 135.81, 0.005: 140.17 }
+	    };
+
+	    // # χ2 (Chi-Squared) Goodness-of-Fit Test
+	    //
+	    // The [χ2 (Chi-Squared) Goodness-of-Fit Test](http://en.wikipedia.org/wiki/Goodness_of_fit#Pearson.27s_chi-squared_test)
+	    // uses a measure of goodness of fit which is the sum of differences between observed and expected outcome frequencies
+	    // (that is, counts of observations), each squared and divided by the number of observations expected given the
+	    // hypothesized distribution. The resulting χ2 statistic, `chi_squared`, can be compared to the chi-squared distribution
+	    // to determine the goodness of fit. In order to determine the degrees of freedom of the chi-squared distribution, one
+	    // takes the total number of observed frequencies and subtracts the number of estimated parameters. The test statistic
+	    // follows, approximately, a chi-square distribution with (k − c) degrees of freedom where `k` is the number of non-empty
+	    // cells and `c` is the number of estimated parameters for the distribution.
+	    function chi_squared_goodness_of_fit(data, distribution_type, significance) {
+	        // Estimate from the sample data, a weighted mean.
+	        var input_mean = mean(data),
+	            // Calculated value of the χ2 statistic.
+	            chi_squared = 0,
+	            // Degrees of freedom, calculated as (number of class intervals -
+	            // number of hypothesized distribution parameters estimated - 1)
+	            degrees_of_freedom,
+	            // Number of hypothesized distribution parameters estimated, expected to be supplied in the distribution test.
+	            // Lose one degree of freedom for estimating `lambda` from the sample data.
+	            c = 1,
+	            // The hypothesized distribution.
+	            // Generate the hypothesized distribution.
+	            hypothesized_distribution = distribution_type(input_mean),
+	            observed_frequencies = [],
+	            expected_frequencies = [],
+	            k;
+
+	        // Create an array holding a histogram from the sample data, of
+	        // the form `{ value: numberOfOcurrences }`
+	        for (var i = 0; i < data.length; i++) {
+	            if (observed_frequencies[data[i]] === undefined) {
+	                observed_frequencies[data[i]] = 0;
+	            }
+	            observed_frequencies[data[i]]++;
+	        }
+
+	        // The histogram we created might be sparse - there might be gaps
+	        // between values. So we iterate through the histogram, making
+	        // sure that instead of undefined, gaps have 0 values.
+	        for (i = 0; i < observed_frequencies.length; i++) {
+	            if (observed_frequencies[i] === undefined) {
+	                observed_frequencies[i] = 0;
+	            }
+	        }
+
+	        // Create an array holding a histogram of expected data given the
+	        // sample size and hypothesized distribution.
+	        for (k in hypothesized_distribution) {
+	            if (k in observed_frequencies) {
+	                expected_frequencies[k] = hypothesized_distribution[k] * data.length;
+	            }
+	        }
+
+	        // Working backward through the expected frequencies, collapse classes
+	        // if less than three observations are expected for a class.
+	        // This transformation is applied to the observed frequencies as well.
+	        for (k = expected_frequencies.length - 1; k >= 0; k--) {
+	            if (expected_frequencies[k] < 3) {
+	                expected_frequencies[k - 1] += expected_frequencies[k];
+	                expected_frequencies.pop();
+
+	                observed_frequencies[k - 1] += observed_frequencies[k];
+	                observed_frequencies.pop();
+	            }
+	        }
+
+	        // Iterate through the squared differences between observed & expected
+	        // frequencies, accumulating the `chi_squared` statistic.
+	        for (k = 0; k < observed_frequencies.length; k++) {
+	            chi_squared += Math.pow(
+	                observed_frequencies[k] - expected_frequencies[k], 2) /
+	                expected_frequencies[k];
+	        }
+
+	        // Calculate degrees of freedom for this test and look it up in the
+	        // `chi_squared_distribution_table` in order to
+	        // accept or reject the goodness-of-fit of the hypothesized distribution.
+	        degrees_of_freedom = observed_frequencies.length - c - 1;
+	        return chi_squared_distribution_table[degrees_of_freedom][significance] < chi_squared;
+	    }
+
+	    // # Mixin
+	    //
+	    // Mixin simple_statistics to a single Array instance if provided
+	    // or the Array native object if not. This is an optional
+	    // feature that lets you treat simple_statistics as a native feature
+	    // of Javascript.
+	    function mixin(array) {
+	        var support = !!(Object.defineProperty && Object.defineProperties);
+	        if (!support) throw new Error('without defineProperty, simple-statistics cannot be mixed in');
+
+	        // only methods which work on basic arrays in a single step
+	        // are supported
+	        var arrayMethods = ['median', 'standard_deviation', 'sum',
+	            'sample_skewness',
+	            'mean', 'min', 'max', 'quantile', 'geometric_mean',
+	            'harmonic_mean'];
+
+	        // create a closure with a method name so that a reference
+	        // like `arrayMethods[i]` doesn't follow the loop increment
+	        function wrap(method) {
+	            return function() {
+	                // cast any arguments into an array, since they're
+	                // natively objects
+	                var args = Array.prototype.slice.apply(arguments);
+	                // make the first argument the array itself
+	                args.unshift(this);
+	                // return the result of the ss method
+	                return ss[method].apply(ss, args);
+	            };
+	        }
+
+	        // select object to extend
+	        var extending;
+	        if (array) {
+	            // create a shallow copy of the array so that our internal
+	            // operations do not change it by reference
+	            extending = array.slice();
+	        } else {
+	            extending = Array.prototype;
+	        }
+
+	        // for each array function, define a function that gets
+	        // the array as the first argument.
+	        // We use [defineProperty](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/defineProperty)
+	        // because it allows these properties to be non-enumerable:
+	        // `for (var in x)` loops will not run into problems with this
+	        // implementation.
+	        for (var i = 0; i < arrayMethods.length; i++) {
+	            Object.defineProperty(extending, arrayMethods[i], {
+	                value: wrap(arrayMethods[i]),
+	                configurable: true,
+	                enumerable: false,
+	                writable: true
+	            });
+	        }
+
+	        return extending;
+	    }
+
+	    ss.linear_regression = linear_regression;
+	    ss.standard_deviation = standard_deviation;
+	    ss.r_squared = r_squared;
+	    ss.median = median;
+	    ss.mean = mean;
+	    ss.mode = mode;
+	    ss.min = min;
+	    ss.max = max;
+	    ss.sum = sum;
+	    ss.quantile = quantile;
+	    ss.quantile_sorted = quantile_sorted;
+	    ss.iqr = iqr;
+	    ss.mad = mad;
+
+	    ss.sample_covariance = sample_covariance;
+	    ss.sample_correlation = sample_correlation;
+	    ss.sample_variance = sample_variance;
+	    ss.sample_standard_deviation = sample_standard_deviation;
+	    ss.sample_skewness = sample_skewness;
+
+	    ss.geometric_mean = geometric_mean;
+	    ss.harmonic_mean = harmonic_mean;
+	    ss.variance = variance;
+	    ss.t_test = t_test;
+	    ss.t_test_two_sample = t_test_two_sample;
+
+	    // jenks
+	    ss.jenksMatrices = jenksMatrices;
+	    ss.jenksBreaks = jenksBreaks;
+	    ss.jenks = jenks;
+
+	    ss.bayesian = bayesian;
+
+	    // Distribution-related methods
+	    ss.epsilon = epsilon; // We make ε available to the test suite.
+	    ss.factorial = factorial;
+	    ss.bernoulli_distribution = bernoulli_distribution;
+	    ss.binomial_distribution = binomial_distribution;
+	    ss.poisson_distribution = poisson_distribution;
+	    ss.chi_squared_goodness_of_fit = chi_squared_goodness_of_fit;
+
+	    // Normal distribution
+	    ss.z_score = z_score;
+	    ss.cumulative_std_normal_probability = cumulative_std_normal_probability;
+	    ss.standard_normal_table = standard_normal_table;
+
+	    // Alias this into its common name
+	    ss.average = mean;
+	    ss.interquartile_range = iqr;
+	    ss.mixin = mixin;
+	    ss.median_absolute_deviation = mad;
+
+	})(this);
 
 
 /***/ },
-/* 59 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {// Generated by CoffeeScript 1.6.2
 	/**
 	 * @license
 	 *
 	 * chroma.js - JavaScript library for color conversions
 	 * 
-	 * Copyright (c) 2011-2015, Gregor Aisch
+	 * Copyright (c) 2011-2013, Gregor Aisch
 	 * All rights reserved.
 	 * 
 	 * Redistribution and use in source and binary forms, with or without
 	 * modification, are permitted provided that the following conditions are met:
 	 * 
 	 * 1. Redistributions of source code must retain the above copyright notice, this
-	 *    list of conditions and the following disclaimer.
+	 * list of conditions and the following disclaimer.
 	 * 
 	 * 2. Redistributions in binary form must reproduce the above copyright notice,
-	 *    this list of conditions and the following disclaimer in the documentation
-	 *    and/or other materials provided with the distribution.
+	 * this list of conditions and the following disclaimer in the documentation
+	 * and/or other materials provided with the distribution.
 	 * 
 	 * 3. The name Gregor Aisch may not be used to endorse or promote products
-	 *    derived from this software without specific prior written permission.
+	 * derived from this software without specific prior written permission.
 	 * 
 	 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 	 * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -4871,101 +3102,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 	 * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 	 * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-	 *
-	 */
+	*/
+
 
 	(function() {
-	  var Color, DEG2RAD, LAB_CONSTANTS, PI, PITHIRD, RAD2DEG, TWOPI, _guess_formats, _guess_formats_sorted, _input, _interpolators, abs, atan2, bezier, blend, blend_f, brewer, burn, chroma, clip_rgb, cmyk2rgb, colors, cos, css2rgb, darken, dodge, each, floor, hex2rgb, hsi2rgb, hsl2css, hsl2rgb, hsv2rgb, interpolate, interpolate_hsx, interpolate_lab, interpolate_num, interpolate_rgb, lab2lch, lab2rgb, lab_xyz, lch2lab, lch2rgb, lighten, limit, log, luminance_x, m, max, multiply, normal, num2rgb, overlay, pow, rgb2cmyk, rgb2css, rgb2hex, rgb2hsi, rgb2hsl, rgb2hsv, rgb2lab, rgb2lch, rgb2luminance, rgb2num, rgb2temperature, rgb2xyz, rgb_xyz, rnd, root, round, screen, sin, sqrt, temperature2rgb, type, unpack, w3cx11, xyz_lab, xyz_rgb,
-	    slice = [].slice;
+	  var Color, K, PITHIRD, TWOPI, X, Y, Z, bezier, brewer, chroma, clip_rgb, colors, cos, css2rgb, hex2rgb, hsi2rgb, hsl2rgb, hsv2rgb, lab2lch, lab2rgb, lab_xyz, lch2lab, lch2rgb, limit, luminance, luminance_x, rgb2hex, rgb2hsi, rgb2hsl, rgb2hsv, rgb2lab, rgb2lch, rgb_xyz, root, type, unpack, xyz_lab, xyz_rgb, _ref;
 
-	  type = (function() {
-
-	    /*
-	    for browser-safe type checking+
-	    ported from jQuery's $.type
-	     */
-	    var classToType, len, name, o, ref;
-	    classToType = {};
-	    ref = "Boolean Number String Function Array Date RegExp Undefined Null".split(" ");
-	    for (o = 0, len = ref.length; o < len; o++) {
-	      name = ref[o];
-	      classToType["[object " + name + "]"] = name.toLowerCase();
-	    }
-	    return function(obj) {
-	      var strType;
-	      strType = Object.prototype.toString.call(obj);
-	      return classToType[strType] || "object";
-	    };
-	  })();
-
-	  limit = function(x, min, max) {
-	    if (min == null) {
-	      min = 0;
-	    }
-	    if (max == null) {
-	      max = 1;
-	    }
-	    if (x < min) {
-	      x = min;
-	    }
-	    if (x > max) {
-	      x = max;
-	    }
-	    return x;
+	  chroma = function(x, y, z, m) {
+	    return new Color(x, y, z, m);
 	  };
-
-	  unpack = function(args) {
-	    if (args.length >= 3) {
-	      return [].slice.call(args);
-	    } else {
-	      return args[0];
-	    }
-	  };
-
-	  clip_rgb = function(rgb) {
-	    var i;
-	    for (i in rgb) {
-	      if (i < 3) {
-	        if (rgb[i] < 0) {
-	          rgb[i] = 0;
-	        }
-	        if (rgb[i] > 255) {
-	          rgb[i] = 255;
-	        }
-	      } else if (i === 3) {
-	        if (rgb[i] < 0) {
-	          rgb[i] = 0;
-	        }
-	        if (rgb[i] > 1) {
-	          rgb[i] = 1;
-	        }
-	      }
-	    }
-	    return rgb;
-	  };
-
-	  PI = Math.PI, round = Math.round, cos = Math.cos, floor = Math.floor, pow = Math.pow, log = Math.log, sin = Math.sin, sqrt = Math.sqrt, atan2 = Math.atan2, max = Math.max, abs = Math.abs;
-
-	  TWOPI = PI * 2;
-
-	  PITHIRD = PI / 3;
-
-	  DEG2RAD = PI / 180;
-
-	  RAD2DEG = 180 / PI;
-
-	  chroma = function() {
-	    if (arguments[0] instanceof Color) {
-	      return arguments[0];
-	    }
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, arguments, function(){});
-	  };
-
-	  _interpolators = [];
 
 	  if ((typeof module !== "undefined" && module !== null) && (module.exports != null)) {
 	    module.exports = chroma;
@@ -4980,8 +3125,84 @@ return /******/ (function(modules) { // webpackBootstrap
 	    root.chroma = chroma;
 	  }
 
-	  chroma.version = '1.1.1';
+	  chroma.color = function(x, y, z, m) {
+	    return new Color(x, y, z, m);
+	  };
 
+	  chroma.hsl = function(h, s, l, a) {
+	    return new Color(h, s, l, a, 'hsl');
+	  };
+
+	  chroma.hsv = function(h, s, v, a) {
+	    return new Color(h, s, v, a, 'hsv');
+	  };
+
+	  chroma.rgb = function(r, g, b, a) {
+	    return new Color(r, g, b, a, 'rgb');
+	  };
+
+	  chroma.hex = function(x) {
+	    return new Color(x);
+	  };
+
+	  chroma.css = function(x) {
+	    return new Color(x);
+	  };
+
+	  chroma.lab = function(l, a, b) {
+	    return new Color(l, a, b, 'lab');
+	  };
+
+	  chroma.lch = function(l, c, h) {
+	    return new Color(l, c, h, 'lch');
+	  };
+
+	  chroma.hsi = function(h, s, i) {
+	    return new Color(h, s, i, 'hsi');
+	  };
+
+	  chroma.gl = function(r, g, b, a) {
+	    return new Color(r * 255, g * 255, b * 255, a, 'gl');
+	  };
+
+	  chroma.interpolate = function(a, b, f, m) {
+	    if ((a == null) || (b == null)) {
+	      return '#000';
+	    }
+	    if (type(a) === 'string') {
+	      a = new Color(a);
+	    }
+	    if (type(b) === 'string') {
+	      b = new Color(b);
+	    }
+	    return a.interpolate(f, b, m);
+	  };
+
+	  chroma.mix = chroma.interpolate;
+
+	  chroma.contrast = function(a, b) {
+	    var l1, l2;
+
+	    if (type(a) === 'string') {
+	      a = new Color(a);
+	    }
+	    if (type(b) === 'string') {
+	      b = new Color(b);
+	    }
+	    l1 = a.luminance();
+	    l2 = b.luminance();
+	    if (l1 > l2) {
+	      return (l1 + 0.05) / (l2 + 0.05);
+	    } else {
+	      return (l2 + 0.05) / (l1 + 0.05);
+	    }
+	  };
+
+	  chroma.luminance = function(color) {
+	    return chroma(color).luminance();
+	  };
+
+	  chroma._Color = Color;
 
 	  /**
 	      chroma.js
@@ -5014,56 +3235,142 @@ return /******/ (function(modules) { // webpackBootstrap
 	      EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	  
 	      @source: https://github.com/gka/chroma.js
-	   */
+	  */
 
-	  _input = {};
-
-	  _guess_formats = [];
-
-	  _guess_formats_sorted = false;
 
 	  Color = (function() {
 	    function Color() {
-	      var arg, args, chk, len, len1, me, mode, o, w;
+	      var a, arg, args, m, me, me_rgb, x, y, z, _i, _len, _ref, _ref1, _ref2, _ref3;
+
 	      me = this;
 	      args = [];
-	      for (o = 0, len = arguments.length; o < len; o++) {
-	        arg = arguments[o];
+	      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
+	        arg = arguments[_i];
 	        if (arg != null) {
 	          args.push(arg);
 	        }
 	      }
-	      mode = args[args.length - 1];
-	      if (_input[mode] != null) {
-	        me._rgb = clip_rgb(_input[mode](unpack(args.slice(0, -1))));
-	      } else {
-	        if (!_guess_formats_sorted) {
-	          _guess_formats = _guess_formats.sort(function(a, b) {
-	            return b.p - a.p;
-	          });
-	          _guess_formats_sorted = true;
+	      if (args.length === 0) {
+	        _ref = [255, 0, 255, 1, 'rgb'], x = _ref[0], y = _ref[1], z = _ref[2], a = _ref[3], m = _ref[4];
+	      } else if (type(args[0]) === "array") {
+	        if (args[0].length === 3) {
+	          _ref1 = args[0], x = _ref1[0], y = _ref1[1], z = _ref1[2];
+	          a = 1;
+	        } else if (args[0].length === 4) {
+	          _ref2 = args[0], x = _ref2[0], y = _ref2[1], z = _ref2[2], a = _ref2[3];
+	        } else {
+	          throw 'unknown input argument';
 	        }
-	        for (w = 0, len1 = _guess_formats.length; w < len1; w++) {
-	          chk = _guess_formats[w];
-	          mode = chk.test.apply(chk, args);
-	          if (mode) {
-	            break;
-	          }
+	        m = args[1];
+	      } else if (type(args[0]) === "string") {
+	        x = args[0];
+	        m = 'hex';
+	      } else if (type(args[0]) === "object") {
+	        _ref3 = args[0]._rgb, x = _ref3[0], y = _ref3[1], z = _ref3[2], a = _ref3[3];
+	        m = 'rgb';
+	      } else if (args.length >= 3) {
+	        x = args[0];
+	        y = args[1];
+	        z = args[2];
+	      }
+	      if (args.length === 3) {
+	        m = 'rgb';
+	        a = 1;
+	      } else if (args.length === 4) {
+	        if (type(args[3]) === "string") {
+	          m = args[3];
+	          a = 1;
+	        } else if (type(args[3]) === "number") {
+	          m = 'rgb';
+	          a = args[3];
 	        }
-	        if (mode) {
-	          me._rgb = clip_rgb(_input[mode].apply(_input, args));
-	        }
+	      } else if (args.length === 5) {
+	        a = args[3];
+	        m = args[4];
 	      }
-	      if (me._rgb == null) {
-	        console.warn('unknown format: ' + args);
+	      if (a == null) {
+	        a = 1;
 	      }
-	      if (me._rgb == null) {
-	        me._rgb = [0, 0, 0];
+	      if (m === 'rgb') {
+	        me._rgb = [x, y, z, a];
+	      } else if (m === 'gl') {
+	        me._rgb = [x * 255, y * 255, z * 255, a];
+	      } else if (m === 'hsl') {
+	        me._rgb = hsl2rgb(x, y, z);
+	        me._rgb[3] = a;
+	      } else if (m === 'hsv') {
+	        me._rgb = hsv2rgb(x, y, z);
+	        me._rgb[3] = a;
+	      } else if (m === 'hex') {
+	        me._rgb = hex2rgb(x);
+	      } else if (m === 'lab') {
+	        me._rgb = lab2rgb(x, y, z);
+	        me._rgb[3] = a;
+	      } else if (m === 'lch') {
+	        me._rgb = lch2rgb(x, y, z);
+	        me._rgb[3] = a;
+	      } else if (m === 'hsi') {
+	        me._rgb = hsi2rgb(x, y, z);
+	        me._rgb[3] = a;
 	      }
-	      if (me._rgb.length === 3) {
-	        me._rgb.push(1);
-	      }
+	      me_rgb = clip_rgb(me._rgb);
 	    }
+
+	    Color.prototype.rgb = function() {
+	      return this._rgb.slice(0, 3);
+	    };
+
+	    Color.prototype.rgba = function() {
+	      return this._rgb;
+	    };
+
+	    Color.prototype.hex = function() {
+	      return rgb2hex(this._rgb);
+	    };
+
+	    Color.prototype.toString = function() {
+	      return this.name();
+	    };
+
+	    Color.prototype.hsl = function() {
+	      return rgb2hsl(this._rgb);
+	    };
+
+	    Color.prototype.hsv = function() {
+	      return rgb2hsv(this._rgb);
+	    };
+
+	    Color.prototype.lab = function() {
+	      return rgb2lab(this._rgb);
+	    };
+
+	    Color.prototype.lch = function() {
+	      return rgb2lch(this._rgb);
+	    };
+
+	    Color.prototype.hsi = function() {
+	      return rgb2hsi(this._rgb);
+	    };
+
+	    Color.prototype.gl = function() {
+	      return [this._rgb[0] / 255, this._rgb[1] / 255, this._rgb[2] / 255, this._rgb[3]];
+	    };
+
+	    Color.prototype.luminance = function() {
+	      return luminance(this._rgb);
+	    };
+
+	    Color.prototype.name = function() {
+	      var h, k;
+
+	      h = this.hex();
+	      for (k in chroma.colors) {
+	        if (h === chroma.colors[k]) {
+	          return k;
+	        }
+	      }
+	      return h;
+	    };
 
 	    Color.prototype.alpha = function(alpha) {
 	      if (arguments.length) {
@@ -5073,16 +3380,1176 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._rgb[3];
 	    };
 
-	    Color.prototype.toString = function() {
-	      return this.name();
+	    Color.prototype.css = function(mode) {
+	      var hsl, me, rgb, rnd;
+
+	      if (mode == null) {
+	        mode = 'rgb';
+	      }
+	      me = this;
+	      rgb = me._rgb;
+	      if (mode.length === 3 && rgb[3] < 1) {
+	        mode += 'a';
+	      }
+	      if (mode === 'rgb') {
+	        return mode + '(' + rgb.slice(0, 3).join(',') + ')';
+	      } else if (mode === 'rgba') {
+	        return mode + '(' + rgb.join(',') + ')';
+	      } else if (mode === 'hsl' || mode === 'hsla') {
+	        hsl = me.hsl();
+	        rnd = function(a) {
+	          return Math.round(a * 100) / 100;
+	        };
+	        hsl[0] = rnd(hsl[0]);
+	        hsl[1] = rnd(hsl[1] * 100) + '%';
+	        hsl[2] = rnd(hsl[2] * 100) + '%';
+	        if (mode.length === 4) {
+	          hsl[3] = rgb[3];
+	        }
+	        return mode + '(' + hsl.join(',') + ')';
+	      }
+	    };
+
+	    Color.prototype.interpolate = function(f, col, m) {
+	      /*
+	      interpolates between colors
+	      f = 0 --> me
+	      f = 1 --> col
+	      */
+
+	      var dh, hue, hue0, hue1, lbv, lbv0, lbv1, me, res, sat, sat0, sat1, xyz0, xyz1;
+
+	      me = this;
+	      if (m == null) {
+	        m = 'rgb';
+	      }
+	      if (type(col) === "string") {
+	        col = new Color(col);
+	      }
+	      if (m === 'hsl' || m === 'hsv' || m === 'lch' || m === 'hsi') {
+	        if (m === 'hsl') {
+	          xyz0 = me.hsl();
+	          xyz1 = col.hsl();
+	        } else if (m === 'hsv') {
+	          xyz0 = me.hsv();
+	          xyz1 = col.hsv();
+	        } else if (m === 'hsi') {
+	          xyz0 = me.hsi();
+	          xyz1 = col.hsi();
+	        } else if (m === 'lch') {
+	          xyz0 = me.lch();
+	          xyz1 = col.lch();
+	        }
+	        if (m.substr(0, 1) === 'h') {
+	          hue0 = xyz0[0], sat0 = xyz0[1], lbv0 = xyz0[2];
+	          hue1 = xyz1[0], sat1 = xyz1[1], lbv1 = xyz1[2];
+	        } else {
+	          lbv0 = xyz0[0], sat0 = xyz0[1], hue0 = xyz0[2];
+	          lbv1 = xyz1[0], sat1 = xyz1[1], hue1 = xyz1[2];
+	        }
+	        if (!isNaN(hue0) && !isNaN(hue1)) {
+	          if (hue1 > hue0 && hue1 - hue0 > 180) {
+	            dh = hue1 - (hue0 + 360);
+	          } else if (hue1 < hue0 && hue0 - hue1 > 180) {
+	            dh = hue1 + 360 - hue0;
+	          } else {
+	            dh = hue1 - hue0;
+	          }
+	          hue = hue0 + f * dh;
+	        } else if (!isNaN(hue0)) {
+	          hue = hue0;
+	          if (lbv1 === 1 || lbv1 === 0) {
+	            sat = sat0;
+	          }
+	        } else if (!isNaN(hue1)) {
+	          hue = hue1;
+	          if (lbv0 === 1 || lbv0 === 0) {
+	            sat = sat1;
+	          }
+	        } else {
+	          hue = Number.NaN;
+	        }
+	        if (sat == null) {
+	          sat = sat0 + f * (sat1 - sat0);
+	        }
+	        lbv = lbv0 + f * (lbv1 - lbv0);
+	        if (m.substr(0, 1) === 'h') {
+	          res = new Color(hue, sat, lbv, m);
+	        } else {
+	          res = new Color(lbv, sat, hue, m);
+	        }
+	      } else if (m === 'rgb') {
+	        xyz0 = me._rgb;
+	        xyz1 = col._rgb;
+	        res = new Color(xyz0[0] + f * (xyz1[0] - xyz0[0]), xyz0[1] + f * (xyz1[1] - xyz0[1]), xyz0[2] + f * (xyz1[2] - xyz0[2]), m);
+	      } else if (m === 'lab') {
+	        xyz0 = me.lab();
+	        xyz1 = col.lab();
+	        res = new Color(xyz0[0] + f * (xyz1[0] - xyz0[0]), xyz0[1] + f * (xyz1[1] - xyz0[1]), xyz0[2] + f * (xyz1[2] - xyz0[2]), m);
+	      } else {
+	        throw "color mode " + m + " is not supported";
+	      }
+	      res.alpha(me.alpha() + f * (col.alpha() - me.alpha()));
+	      return res;
+	    };
+
+	    Color.prototype.premultiply = function() {
+	      var a, rgb;
+
+	      rgb = this.rgb();
+	      a = this.alpha();
+	      return chroma(rgb[0] * a, rgb[1] * a, rgb[2] * a, a);
+	    };
+
+	    Color.prototype.darken = function(amount) {
+	      var lch, me;
+
+	      if (amount == null) {
+	        amount = 20;
+	      }
+	      me = this;
+	      lch = me.lch();
+	      lch[0] -= amount;
+	      return chroma.lch(lch).alpha(me.alpha());
+	    };
+
+	    Color.prototype.darker = function(amount) {
+	      return this.darken(amount);
+	    };
+
+	    Color.prototype.brighten = function(amount) {
+	      if (amount == null) {
+	        amount = 20;
+	      }
+	      return this.darken(-amount);
+	    };
+
+	    Color.prototype.brighter = function(amount) {
+	      return this.brighten(amount);
+	    };
+
+	    Color.prototype.saturate = function(amount) {
+	      var lch, me;
+
+	      if (amount == null) {
+	        amount = 20;
+	      }
+	      me = this;
+	      lch = me.lch();
+	      lch[1] += amount;
+	      return chroma.lch(lch).alpha(me.alpha());
+	    };
+
+	    Color.prototype.desaturate = function(amount) {
+	      if (amount == null) {
+	        amount = 20;
+	      }
+	      return this.saturate(-amount);
 	    };
 
 	    return Color;
 
 	  })();
 
-	  chroma._input = _input;
+	  clip_rgb = function(rgb) {
+	    var i;
 
+	    for (i in rgb) {
+	      if (i < 3) {
+	        if (rgb[i] < 0) {
+	          rgb[i] = 0;
+	        }
+	        if (rgb[i] > 255) {
+	          rgb[i] = 255;
+	        }
+	      } else if (i === 3) {
+	        if (rgb[i] < 0) {
+	          rgb[i] = 0;
+	        }
+	        if (rgb[i] > 1) {
+	          rgb[i] = 1;
+	        }
+	      }
+	    }
+	    return rgb;
+	  };
+
+	  css2rgb = function(css) {
+	    var hsl, i, m, rgb, _i, _j, _k, _l;
+
+	    if ((chroma.colors != null) && chroma.colors[css]) {
+	      return hex2rgb(chroma.colors[css]);
+	    }
+	    if (m = css.match(/rgb\(\s*(\-?\d+),\s*(\-?\d+)\s*,\s*(\-?\d+)\s*\)/)) {
+	      rgb = m.slice(1, 4);
+	      for (i = _i = 0; _i <= 2; i = ++_i) {
+	        rgb[i] = +rgb[i];
+	      }
+	      rgb[3] = 1;
+	    } else if (m = css.match(/rgba\(\s*(\-?\d+),\s*(\-?\d+)\s*,\s*(\-?\d+)\s*,\s*([01]|[01]?\.\d+)\)/)) {
+	      rgb = m.slice(1, 5);
+	      for (i = _j = 0; _j <= 3; i = ++_j) {
+	        rgb[i] = +rgb[i];
+	      }
+	    } else if (m = css.match(/rgb\(\s*(\-?\d+(?:\.\d+)?)%,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*\)/)) {
+	      rgb = m.slice(1, 4);
+	      for (i = _k = 0; _k <= 2; i = ++_k) {
+	        rgb[i] = Math.round(rgb[i] * 2.55);
+	      }
+	      rgb[3] = 1;
+	    } else if (m = css.match(/rgba\(\s*(\-?\d+(?:\.\d+)?)%,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*([01]|[01]?\.\d+)\)/)) {
+	      rgb = m.slice(1, 5);
+	      for (i = _l = 0; _l <= 2; i = ++_l) {
+	        rgb[i] = Math.round(rgb[i] * 2.55);
+	      }
+	      rgb[3] = +rgb[3];
+	    } else if (m = css.match(/hsl\(\s*(\-?\d+(?:\.\d+)?),\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*\)/)) {
+	      hsl = m.slice(1, 4);
+	      hsl[1] *= 0.01;
+	      hsl[2] *= 0.01;
+	      rgb = hsl2rgb(hsl);
+	      rgb[3] = 1;
+	    } else if (m = css.match(/hsla\(\s*(\-?\d+(?:\.\d+)?),\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*([01]|[01]?\.\d+)\)/)) {
+	      hsl = m.slice(1, 4);
+	      hsl[1] *= 0.01;
+	      hsl[2] *= 0.01;
+	      rgb = hsl2rgb(hsl);
+	      rgb[3] = +m[4];
+	    }
+	    return rgb;
+	  };
+
+	  hex2rgb = function(hex) {
+	    var a, b, g, r, rgb, u;
+
+	    if (hex.match(/^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)) {
+	      if (hex.length === 4 || hex.length === 7) {
+	        hex = hex.substr(1);
+	      }
+	      if (hex.length === 3) {
+	        hex = hex.split("");
+	        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+	      }
+	      u = parseInt(hex, 16);
+	      r = u >> 16;
+	      g = u >> 8 & 0xFF;
+	      b = u & 0xFF;
+	      return [r, g, b, 1];
+	    }
+	    if (hex.match(/^#?([A-Fa-f0-9]{8})$/)) {
+	      if (hex.length === 9) {
+	        hex = hex.substr(1);
+	      }
+	      u = parseInt(hex, 16);
+	      r = u >> 24 & 0xFF;
+	      g = u >> 16 & 0xFF;
+	      b = u >> 8 & 0xFF;
+	      a = u & 0xFF;
+	      return [r, g, b, a];
+	    }
+	    if (rgb = css2rgb(hex)) {
+	      return rgb;
+	    }
+	    throw "unknown color: " + hex;
+	  };
+
+	  hsi2rgb = function(h, s, i) {
+	    /*
+	    borrowed from here:
+	    http://hummer.stanford.edu/museinfo/doc/examples/humdrum/keyscape2/hsi2rgb.cpp
+	    */
+
+	    var b, g, r, _ref;
+
+	    _ref = unpack(arguments), h = _ref[0], s = _ref[1], i = _ref[2];
+	    h /= 360;
+	    if (h < 1 / 3) {
+	      b = (1 - s) / 3;
+	      r = (1 + s * cos(TWOPI * h) / cos(PITHIRD - TWOPI * h)) / 3;
+	      g = 1 - (b + r);
+	    } else if (h < 2 / 3) {
+	      h -= 1 / 3;
+	      r = (1 - s) / 3;
+	      g = (1 + s * cos(TWOPI * h) / cos(PITHIRD - TWOPI * h)) / 3;
+	      b = 1 - (r + g);
+	    } else {
+	      h -= 2 / 3;
+	      g = (1 - s) / 3;
+	      b = (1 + s * cos(TWOPI * h) / cos(PITHIRD - TWOPI * h)) / 3;
+	      r = 1 - (g + b);
+	    }
+	    r = limit(i * r * 3);
+	    g = limit(i * g * 3);
+	    b = limit(i * b * 3);
+	    return [r * 255, g * 255, b * 255];
+	  };
+
+	  hsl2rgb = function() {
+	    var b, c, g, h, i, l, r, s, t1, t2, t3, _i, _ref, _ref1;
+
+	    _ref = unpack(arguments), h = _ref[0], s = _ref[1], l = _ref[2];
+	    if (s === 0) {
+	      r = g = b = l * 255;
+	    } else {
+	      t3 = [0, 0, 0];
+	      c = [0, 0, 0];
+	      t2 = l < 0.5 ? l * (1 + s) : l + s - l * s;
+	      t1 = 2 * l - t2;
+	      h /= 360;
+	      t3[0] = h + 1 / 3;
+	      t3[1] = h;
+	      t3[2] = h - 1 / 3;
+	      for (i = _i = 0; _i <= 2; i = ++_i) {
+	        if (t3[i] < 0) {
+	          t3[i] += 1;
+	        }
+	        if (t3[i] > 1) {
+	          t3[i] -= 1;
+	        }
+	        if (6 * t3[i] < 1) {
+	          c[i] = t1 + (t2 - t1) * 6 * t3[i];
+	        } else if (2 * t3[i] < 1) {
+	          c[i] = t2;
+	        } else if (3 * t3[i] < 2) {
+	          c[i] = t1 + (t2 - t1) * ((2 / 3) - t3[i]) * 6;
+	        } else {
+	          c[i] = t1;
+	        }
+	      }
+	      _ref1 = [Math.round(c[0] * 255), Math.round(c[1] * 255), Math.round(c[2] * 255)], r = _ref1[0], g = _ref1[1], b = _ref1[2];
+	    }
+	    return [r, g, b];
+	  };
+
+	  hsv2rgb = function() {
+	    var b, f, g, h, i, p, q, r, s, t, v, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+
+	    _ref = unpack(arguments), h = _ref[0], s = _ref[1], v = _ref[2];
+	    v *= 255;
+	    if (s === 0) {
+	      r = g = b = v;
+	    } else {
+	      if (h === 360) {
+	        h = 0;
+	      }
+	      if (h > 360) {
+	        h -= 360;
+	      }
+	      if (h < 0) {
+	        h += 360;
+	      }
+	      h /= 60;
+	      i = Math.floor(h);
+	      f = h - i;
+	      p = v * (1 - s);
+	      q = v * (1 - s * f);
+	      t = v * (1 - s * (1 - f));
+	      switch (i) {
+	        case 0:
+	          _ref1 = [v, t, p], r = _ref1[0], g = _ref1[1], b = _ref1[2];
+	          break;
+	        case 1:
+	          _ref2 = [q, v, p], r = _ref2[0], g = _ref2[1], b = _ref2[2];
+	          break;
+	        case 2:
+	          _ref3 = [p, v, t], r = _ref3[0], g = _ref3[1], b = _ref3[2];
+	          break;
+	        case 3:
+	          _ref4 = [p, q, v], r = _ref4[0], g = _ref4[1], b = _ref4[2];
+	          break;
+	        case 4:
+	          _ref5 = [t, p, v], r = _ref5[0], g = _ref5[1], b = _ref5[2];
+	          break;
+	        case 5:
+	          _ref6 = [v, p, q], r = _ref6[0], g = _ref6[1], b = _ref6[2];
+	      }
+	    }
+	    r = Math.round(r);
+	    g = Math.round(g);
+	    b = Math.round(b);
+	    return [r, g, b];
+	  };
+
+	  K = 18;
+
+	  X = 0.950470;
+
+	  Y = 1;
+
+	  Z = 1.088830;
+
+	  lab2lch = function() {
+	    var a, b, c, h, l, _ref;
+
+	    _ref = unpack(arguments), l = _ref[0], a = _ref[1], b = _ref[2];
+	    c = Math.sqrt(a * a + b * b);
+	    h = Math.atan2(b, a) / Math.PI * 180;
+	    return [l, c, h];
+	  };
+
+	  lab2rgb = function(l, a, b) {
+	    /*
+	    adapted to match d3 implementation
+	    */
+
+	    var g, r, x, y, z, _ref, _ref1;
+
+	    if (l !== void 0 && l.length === 3) {
+	      _ref = l, l = _ref[0], a = _ref[1], b = _ref[2];
+	    }
+	    if (l !== void 0 && l.length === 3) {
+	      _ref1 = l, l = _ref1[0], a = _ref1[1], b = _ref1[2];
+	    }
+	    y = (l + 16) / 116;
+	    x = y + a / 500;
+	    z = y - b / 200;
+	    x = lab_xyz(x) * X;
+	    y = lab_xyz(y) * Y;
+	    z = lab_xyz(z) * Z;
+	    r = xyz_rgb(3.2404542 * x - 1.5371385 * y - 0.4985314 * z);
+	    g = xyz_rgb(-0.9692660 * x + 1.8760108 * y + 0.0415560 * z);
+	    b = xyz_rgb(0.0556434 * x - 0.2040259 * y + 1.0572252 * z);
+	    return [limit(r, 0, 255), limit(g, 0, 255), limit(b, 0, 255), 1];
+	  };
+
+	  lab_xyz = function(x) {
+	    if (x > 0.206893034) {
+	      return x * x * x;
+	    } else {
+	      return (x - 4 / 29) / 7.787037;
+	    }
+	  };
+
+	  xyz_rgb = function(r) {
+	    return Math.round(255 * (r <= 0.00304 ? 12.92 * r : 1.055 * Math.pow(r, 1 / 2.4) - 0.055));
+	  };
+
+	  lch2lab = function() {
+	    /*
+	    Convert from a qualitative parameter h and a quantitative parameter l to a 24-bit pixel. These formulas were invented by David Dalrymple to obtain maximum contrast without going out of gamut if the parameters are in the range 0-1.
+	    A saturation multiplier was added by Gregor Aisch
+	    */
+
+	    var c, h, l, _ref;
+
+	    _ref = unpack(arguments), l = _ref[0], c = _ref[1], h = _ref[2];
+	    h = h * Math.PI / 180;
+	    return [l, Math.cos(h) * c, Math.sin(h) * c];
+	  };
+
+	  lch2rgb = function(l, c, h) {
+	    var L, a, b, g, r, _ref, _ref1;
+
+	    _ref = lch2lab(l, c, h), L = _ref[0], a = _ref[1], b = _ref[2];
+	    _ref1 = lab2rgb(L, a, b), r = _ref1[0], g = _ref1[1], b = _ref1[2];
+	    return [limit(r, 0, 255), limit(g, 0, 255), limit(b, 0, 255)];
+	  };
+
+	  luminance = function(r, g, b) {
+	    var _ref;
+
+	    _ref = unpack(arguments), r = _ref[0], g = _ref[1], b = _ref[2];
+	    r = luminance_x(r);
+	    g = luminance_x(g);
+	    b = luminance_x(b);
+	    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+	  };
+
+	  luminance_x = function(x) {
+	    x /= 255;
+	    if (x <= 0.03928) {
+	      return x / 12.92;
+	    } else {
+	      return Math.pow((x + 0.055) / 1.055, 2.4);
+	    }
+	  };
+
+	  rgb2hex = function() {
+	    var b, g, r, str, u, _ref;
+
+	    _ref = unpack(arguments), r = _ref[0], g = _ref[1], b = _ref[2];
+	    u = r << 16 | g << 8 | b;
+	    str = "000000" + u.toString(16);
+	    return "#" + str.substr(str.length - 6);
+	  };
+
+	  rgb2hsi = function() {
+	    /*
+	    borrowed from here:
+	    http://hummer.stanford.edu/museinfo/doc/examples/humdrum/keyscape2/rgb2hsi.cpp
+	    */
+
+	    var TWOPI, b, g, h, i, min, r, s, _ref;
+
+	    _ref = unpack(arguments), r = _ref[0], g = _ref[1], b = _ref[2];
+	    TWOPI = Math.PI * 2;
+	    r /= 255;
+	    g /= 255;
+	    b /= 255;
+	    min = Math.min(r, g, b);
+	    i = (r + g + b) / 3;
+	    s = 1 - min / i;
+	    if (s === 0) {
+	      h = 0;
+	    } else {
+	      h = ((r - g) + (r - b)) / 2;
+	      h /= Math.sqrt((r - g) * (r - g) + (r - b) * (g - b));
+	      h = Math.acos(h);
+	      if (b > g) {
+	        h = TWOPI - h;
+	      }
+	      h /= TWOPI;
+	    }
+	    return [h * 360, s, i];
+	  };
+
+	  rgb2hsl = function(r, g, b) {
+	    var h, l, max, min, s, _ref;
+
+	    if (r !== void 0 && r.length >= 3) {
+	      _ref = r, r = _ref[0], g = _ref[1], b = _ref[2];
+	    }
+	    r /= 255;
+	    g /= 255;
+	    b /= 255;
+	    min = Math.min(r, g, b);
+	    max = Math.max(r, g, b);
+	    l = (max + min) / 2;
+	    if (max === min) {
+	      s = 0;
+	      h = Number.NaN;
+	    } else {
+	      s = l < 0.5 ? (max - min) / (max + min) : (max - min) / (2 - max - min);
+	    }
+	    if (r === max) {
+	      h = (g - b) / (max - min);
+	    } else if (g === max) {
+	      h = 2 + (b - r) / (max - min);
+	    } else if (b === max) {
+	      h = 4 + (r - g) / (max - min);
+	    }
+	    h *= 60;
+	    if (h < 0) {
+	      h += 360;
+	    }
+	    return [h, s, l];
+	  };
+
+	  rgb2hsv = function() {
+	    var b, delta, g, h, max, min, r, s, v, _ref;
+
+	    _ref = unpack(arguments), r = _ref[0], g = _ref[1], b = _ref[2];
+	    min = Math.min(r, g, b);
+	    max = Math.max(r, g, b);
+	    delta = max - min;
+	    v = max / 255.0;
+	    if (max === 0) {
+	      h = Number.NaN;
+	      s = 0;
+	    } else {
+	      s = delta / max;
+	      if (r === max) {
+	        h = (g - b) / delta;
+	      }
+	      if (g === max) {
+	        h = 2 + (b - r) / delta;
+	      }
+	      if (b === max) {
+	        h = 4 + (r - g) / delta;
+	      }
+	      h *= 60;
+	      if (h < 0) {
+	        h += 360;
+	      }
+	    }
+	    return [h, s, v];
+	  };
+
+	  rgb2lab = function() {
+	    var b, g, r, x, y, z, _ref;
+
+	    _ref = unpack(arguments), r = _ref[0], g = _ref[1], b = _ref[2];
+	    r = rgb_xyz(r);
+	    g = rgb_xyz(g);
+	    b = rgb_xyz(b);
+	    x = xyz_lab((0.4124564 * r + 0.3575761 * g + 0.1804375 * b) / X);
+	    y = xyz_lab((0.2126729 * r + 0.7151522 * g + 0.0721750 * b) / Y);
+	    z = xyz_lab((0.0193339 * r + 0.1191920 * g + 0.9503041 * b) / Z);
+	    return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
+	  };
+
+	  rgb_xyz = function(r) {
+	    if ((r /= 255) <= 0.04045) {
+	      return r / 12.92;
+	    } else {
+	      return Math.pow((r + 0.055) / 1.055, 2.4);
+	    }
+	  };
+
+	  xyz_lab = function(x) {
+	    if (x > 0.008856) {
+	      return Math.pow(x, 1 / 3);
+	    } else {
+	      return 7.787037 * x + 4 / 29;
+	    }
+	  };
+
+	  rgb2lch = function() {
+	    var a, b, g, l, r, _ref, _ref1;
+
+	    _ref = unpack(arguments), r = _ref[0], g = _ref[1], b = _ref[2];
+	    _ref1 = rgb2lab(r, g, b), l = _ref1[0], a = _ref1[1], b = _ref1[2];
+	    return lab2lch(l, a, b);
+	  };
+
+	  /*
+	      chroma.js
+	  
+	      Copyright (c) 2011-2013, Gregor Aisch
+	      All rights reserved.
+	  
+	      Redistribution and use in source and binary forms, with or without
+	      modification, are permitted provided that the following conditions are met:
+	  
+	      * Redistributions of source code must retain the above copyright notice, this
+	        list of conditions and the following disclaimer.
+	  
+	      * Redistributions in binary form must reproduce the above copyright notice,
+	        this list of conditions and the following disclaimer in the documentation
+	        and/or other materials provided with the distribution.
+	  
+	      * The name Gregor Aisch may not be used to endorse or promote products
+	        derived from this software without specific prior written permission.
+	  
+	      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	      AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	      IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	      DISCLAIMED. IN NO EVENT SHALL GREGOR AISCH OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+	      INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+	      BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+	      OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	      NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+	      EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	  
+	      @source: https://github.com/gka/chroma.js
+	  */
+
+
+	  chroma.scale = function(colors, positions) {
+	    var classifyValue, f, getClass, getColor, resetCache, setColors, setDomain, tmap, _colorCache, _colors, _correctLightness, _domain, _fixed, _max, _min, _mode, _nacol, _numClasses, _out, _pos, _spread;
+
+	    _mode = 'rgb';
+	    _nacol = chroma('#ccc');
+	    _spread = 0;
+	    _fixed = false;
+	    _domain = [0, 1];
+	    _colors = [];
+	    _out = false;
+	    _pos = [];
+	    _min = 0;
+	    _max = 1;
+	    _correctLightness = false;
+	    _numClasses = 0;
+	    _colorCache = {};
+	    setColors = function(colors, positions) {
+	      var c, col, _i, _j, _ref, _ref1, _ref2;
+
+	      if (colors == null) {
+	        colors = ['#ddd', '#222'];
+	      }
+	      if ((colors != null) && type(colors) === 'string' && (((_ref = chroma.brewer) != null ? _ref[colors] : void 0) != null)) {
+	        colors = chroma.brewer[colors];
+	      }
+	      if (type(colors) === 'array') {
+	        colors = colors.slice(0);
+	        for (c = _i = 0, _ref1 = colors.length - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; c = 0 <= _ref1 ? ++_i : --_i) {
+	          col = colors[c];
+	          if (type(col) === "string") {
+	            colors[c] = chroma(col);
+	          }
+	        }
+	        if (positions != null) {
+	          _pos = positions;
+	        } else {
+	          _pos = [];
+	          for (c = _j = 0, _ref2 = colors.length - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; c = 0 <= _ref2 ? ++_j : --_j) {
+	            _pos.push(c / (colors.length - 1));
+	          }
+	        }
+	      }
+	      resetCache();
+	      return _colors = colors;
+	    };
+	    setDomain = function(domain) {
+	      if (domain == null) {
+	        domain = [];
+	      }
+	      /*
+	      # use this if you want to display a limited number of data classes
+	      # possible methods are "equalinterval", "quantiles", "custom"
+	      */
+
+	      _domain = domain;
+	      _min = domain[0];
+	      _max = domain[domain.length - 1];
+	      resetCache();
+	      if (domain.length === 2) {
+	        return _numClasses = 0;
+	      } else {
+	        return _numClasses = domain.length - 1;
+	      }
+	    };
+	    getClass = function(value) {
+	      var i, n;
+
+	      if (_domain != null) {
+	        n = _domain.length - 1;
+	        i = 0;
+	        while (i < n && value >= _domain[i]) {
+	          i++;
+	        }
+	        return i - 1;
+	      }
+	      return 0;
+	    };
+	    tmap = function(t) {
+	      return t;
+	    };
+	    classifyValue = function(value) {
+	      var i, maxc, minc, n, val;
+
+	      val = value;
+	      if (_domain.length > 2) {
+	        n = _domain.length - 1;
+	        i = getClass(value);
+	        minc = _domain[0] + (_domain[1] - _domain[0]) * (0 + _spread * 0.5);
+	        maxc = _domain[n - 1] + (_domain[n] - _domain[n - 1]) * (1 - _spread * 0.5);
+	        val = _min + ((_domain[i] + (_domain[i + 1] - _domain[i]) * 0.5 - minc) / (maxc - minc)) * (_max - _min);
+	      }
+	      return val;
+	    };
+	    getColor = function(val, bypassMap) {
+	      var c, col, f0, i, k, p, t, _i, _ref;
+
+	      if (bypassMap == null) {
+	        bypassMap = false;
+	      }
+	      if (isNaN(val)) {
+	        return _nacol;
+	      }
+	      if (!bypassMap) {
+	        if (_domain.length > 2) {
+	          c = getClass(val);
+	          t = c / (_numClasses - 1);
+	        } else {
+	          t = f0 = (val - _min) / (_max - _min);
+	          t = Math.min(1, Math.max(0, t));
+	        }
+	      } else {
+	        t = val;
+	      }
+	      if (!bypassMap) {
+	        t = tmap(t);
+	      }
+	      k = Math.floor(t * 10000);
+	      if (_colorCache[k]) {
+	        col = _colorCache[k];
+	      } else {
+	        if (type(_colors) === 'array') {
+	          for (i = _i = 0, _ref = _pos.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+	            p = _pos[i];
+	            if (t <= p) {
+	              col = _colors[i];
+	              break;
+	            }
+	            if (t >= p && i === _pos.length - 1) {
+	              col = _colors[i];
+	              break;
+	            }
+	            if (t > p && t < _pos[i + 1]) {
+	              t = (t - p) / (_pos[i + 1] - p);
+	              col = chroma.interpolate(_colors[i], _colors[i + 1], t, _mode);
+	              break;
+	            }
+	          }
+	        } else if (type(_colors) === 'function') {
+	          col = _colors(t);
+	        }
+	        _colorCache[k] = col;
+	      }
+	      return col;
+	    };
+	    resetCache = function() {
+	      return _colorCache = {};
+	    };
+	    setColors(colors, positions);
+	    f = function(v) {
+	      var c;
+
+	      c = getColor(v);
+	      if (_out && c[_out]) {
+	        return c[_out]();
+	      } else {
+	        return c;
+	      }
+	    };
+	    f.domain = function(domain, classes, mode, key) {
+	      var d;
+
+	      if (mode == null) {
+	        mode = 'e';
+	      }
+	      if (!arguments.length) {
+	        return _domain;
+	      }
+	      if (classes != null) {
+	        d = chroma.analyze(domain, key);
+	        if (classes === 0) {
+	          domain = [d.min, d.max];
+	        } else {
+	          domain = chroma.limits(d, mode, classes);
+	        }
+	      }
+	      setDomain(domain);
+	      return f;
+	    };
+	    f.mode = function(_m) {
+	      if (!arguments.length) {
+	        return _mode;
+	      }
+	      _mode = _m;
+	      resetCache();
+	      return f;
+	    };
+	    f.range = function(colors, _pos) {
+	      setColors(colors, _pos);
+	      return f;
+	    };
+	    f.out = function(_o) {
+	      _out = _o;
+	      return f;
+	    };
+	    f.spread = function(val) {
+	      if (!arguments.length) {
+	        return _spread;
+	      }
+	      _spread = val;
+	      return f;
+	    };
+	    f.correctLightness = function(v) {
+	      if (!arguments.length) {
+	        return _correctLightness;
+	      }
+	      _correctLightness = v;
+	      resetCache();
+	      if (_correctLightness) {
+	        tmap = function(t) {
+	          var L0, L1, L_actual, L_diff, L_ideal, max_iter, pol, t0, t1;
+
+	          L0 = getColor(0, true).lab()[0];
+	          L1 = getColor(1, true).lab()[0];
+	          pol = L0 > L1;
+	          L_actual = getColor(t, true).lab()[0];
+	          L_ideal = L0 + (L1 - L0) * t;
+	          L_diff = L_actual - L_ideal;
+	          t0 = 0;
+	          t1 = 1;
+	          max_iter = 20;
+	          while (Math.abs(L_diff) > 1e-2 && max_iter-- > 0) {
+	            (function() {
+	              if (pol) {
+	                L_diff *= -1;
+	              }
+	              if (L_diff < 0) {
+	                t0 = t;
+	                t += (t1 - t) * 0.5;
+	              } else {
+	                t1 = t;
+	                t += (t0 - t) * 0.5;
+	              }
+	              L_actual = getColor(t, true).lab()[0];
+	              return L_diff = L_actual - L_ideal;
+	            })();
+	          }
+	          return t;
+	        };
+	      } else {
+	        tmap = function(t) {
+	          return t;
+	        };
+	      }
+	      return f;
+	    };
+	    f.colors = function(out) {
+	      var i, samples, _i, _j, _len, _ref;
+
+	      if (out == null) {
+	        out = 'hex';
+	      }
+	      colors = [];
+	      samples = [];
+	      if (_domain.length > 2) {
+	        for (i = _i = 1, _ref = _domain.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
+	          samples.push((_domain[i - 1] + _domain[i]) * 0.5);
+	        }
+	      } else {
+	        samples = _domain;
+	      }
+	      for (_j = 0, _len = samples.length; _j < _len; _j++) {
+	        i = samples[_j];
+	        colors.push(f(i)[out]());
+	      }
+	      return colors;
+	    };
+	    return f;
+	  };
+
+	  if ((_ref = chroma.scales) == null) {
+	    chroma.scales = {};
+	  }
+
+	  chroma.scales.cool = function() {
+	    return chroma.scale([chroma.hsl(180, 1, .9), chroma.hsl(250, .7, .4)]);
+	  };
+
+	  chroma.scales.hot = function() {
+	    return chroma.scale(['#000', '#f00', '#ff0', '#fff'], [0, .25, .75, 1]).mode('rgb');
+	  };
+
+	  /*
+	      chroma.js
+	  
+	      Copyright (c) 2011-2013, Gregor Aisch
+	      All rights reserved.
+	  
+	      Redistribution and use in source and binary forms, with or without
+	      modification, are permitted provided that the following conditions are met:
+	  
+	      * Redistributions of source code must retain the above copyright notice, this
+	        list of conditions and the following disclaimer.
+	  
+	      * Redistributions in binary form must reproduce the above copyright notice,
+	        this list of conditions and the following disclaimer in the documentation
+	        and/or other materials provided with the distribution.
+	  
+	      * The name Gregor Aisch may not be used to endorse or promote products
+	        derived from this software without specific prior written permission.
+	  
+	      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	      AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	      IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	      DISCLAIMED. IN NO EVENT SHALL GREGOR AISCH OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+	      INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+	      BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+	      OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	      NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+	      EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	  
+	      @source: https://github.com/gka/chroma.js
+	  */
+
+
+	  chroma.analyze = function(data, key, filter) {
+	    var add, k, r, val, visit, _i, _len;
+
+	    r = {
+	      min: Number.MAX_VALUE,
+	      max: Number.MAX_VALUE * -1,
+	      sum: 0,
+	      values: [],
+	      count: 0
+	    };
+	    if (filter == null) {
+	      filter = function() {
+	        return true;
+	      };
+	    }
+	    add = function(val) {
+	      if ((val != null) && !isNaN(val)) {
+	        r.values.push(val);
+	        r.sum += val;
+	        if (val < r.min) {
+	          r.min = val;
+	        }
+	        if (val > r.max) {
+	          r.max = val;
+	        }
+	        r.count += 1;
+	      }
+	    };
+	    visit = function(val, k) {
+	      if (filter(val, k)) {
+	        if ((key != null) && type(key) === 'function') {
+	          return add(key(val));
+	        } else if ((key != null) && type(key) === 'string' || type(key) === 'number') {
+	          return add(val[key]);
+	        } else {
+	          return add(val);
+	        }
+	      }
+	    };
+	    if (type(data) === 'array') {
+	      for (_i = 0, _len = data.length; _i < _len; _i++) {
+	        val = data[_i];
+	        visit(val);
+	      }
+	    } else {
+	      for (k in data) {
+	        val = data[k];
+	        visit(val, k);
+	      }
+	    }
+	    r.domain = [r.min, r.max];
+	    r.limits = function(mode, num) {
+	      return chroma.limits(r, mode, num);
+	    };
+	    return r;
+	  };
+
+	  chroma.limits = function(data, mode, num) {
+	    var assignments, best, centroids, cluster, clusterSizes, dist, i, j, kClusters, limits, max, max_log, min, min_log, mindist, n, nb_iters, newCentroids, p, pb, pr, repeat, sum, tmpKMeansBreaks, value, values, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v, _w;
+
+	    if (mode == null) {
+	      mode = 'equal';
+	    }
+	    if (num == null) {
+	      num = 7;
+	    }
+	    if (data.values == null) {
+	      data = chroma.analyze(data);
+	    }
+	    min = data.min;
+	    max = data.max;
+	    sum = data.sum;
+	    values = data.values.sort(function(a, b) {
+	      return a - b;
+	    });
+	    limits = [];
+	    if (mode.substr(0, 1) === 'c') {
+	      limits.push(min);
+	      limits.push(max);
+	    }
+	    if (mode.substr(0, 1) === 'e') {
+	      limits.push(min);
+	      for (i = _i = 1, _ref1 = num - 1; 1 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 1 <= _ref1 ? ++_i : --_i) {
+	        limits.push(min + (i / num) * (max - min));
+	      }
+	      limits.push(max);
+	    } else if (mode.substr(0, 1) === 'l') {
+	      if (min <= 0) {
+	        throw 'Logarithmic scales are only possible for values > 0';
+	      }
+	      min_log = Math.LOG10E * Math.log(min);
+	      max_log = Math.LOG10E * Math.log(max);
+	      limits.push(min);
+	      for (i = _j = 1, _ref2 = num - 1; 1 <= _ref2 ? _j <= _ref2 : _j >= _ref2; i = 1 <= _ref2 ? ++_j : --_j) {
+	        limits.push(Math.pow(10, min_log + (i / num) * (max_log - min_log)));
+	      }
+	      limits.push(max);
+	    } else if (mode.substr(0, 1) === 'q') {
+	      limits.push(min);
+	      for (i = _k = 1, _ref3 = num - 1; 1 <= _ref3 ? _k <= _ref3 : _k >= _ref3; i = 1 <= _ref3 ? ++_k : --_k) {
+	        p = values.length * i / num;
+	        pb = Math.floor(p);
+	        if (pb === p) {
+	          limits.push(values[pb]);
+	        } else {
+	          pr = p - pb;
+	          limits.push(values[pb] * pr + values[pb + 1] * (1 - pr));
+	        }
+	      }
+	      limits.push(max);
+	    } else if (mode.substr(0, 1) === 'k') {
+	      /*
+	      implementation based on
+	      http://code.google.com/p/figue/source/browse/trunk/figue.js#336
+	      simplified for 1-d input values
+	      */
+
+	      n = values.length;
+	      assignments = new Array(n);
+	      clusterSizes = new Array(num);
+	      repeat = true;
+	      nb_iters = 0;
+	      centroids = null;
+	      centroids = [];
+	      centroids.push(min);
+	      for (i = _l = 1, _ref4 = num - 1; 1 <= _ref4 ? _l <= _ref4 : _l >= _ref4; i = 1 <= _ref4 ? ++_l : --_l) {
+	        centroids.push(min + (i / num) * (max - min));
+	      }
+	      centroids.push(max);
+	      while (repeat) {
+	        for (j = _m = 0, _ref5 = num - 1; 0 <= _ref5 ? _m <= _ref5 : _m >= _ref5; j = 0 <= _ref5 ? ++_m : --_m) {
+	          clusterSizes[j] = 0;
+	        }
+	        for (i = _n = 0, _ref6 = n - 1; 0 <= _ref6 ? _n <= _ref6 : _n >= _ref6; i = 0 <= _ref6 ? ++_n : --_n) {
+	          value = values[i];
+	          mindist = Number.MAX_VALUE;
+	          for (j = _o = 0, _ref7 = num - 1; 0 <= _ref7 ? _o <= _ref7 : _o >= _ref7; j = 0 <= _ref7 ? ++_o : --_o) {
+	            dist = Math.abs(centroids[j] - value);
+	            if (dist < mindist) {
+	              mindist = dist;
+	              best = j;
+	            }
+	          }
+	          clusterSizes[best]++;
+	          assignments[i] = best;
+	        }
+	        newCentroids = new Array(num);
+	        for (j = _p = 0, _ref8 = num - 1; 0 <= _ref8 ? _p <= _ref8 : _p >= _ref8; j = 0 <= _ref8 ? ++_p : --_p) {
+	          newCentroids[j] = null;
+	        }
+	        for (i = _q = 0, _ref9 = n - 1; 0 <= _ref9 ? _q <= _ref9 : _q >= _ref9; i = 0 <= _ref9 ? ++_q : --_q) {
+	          cluster = assignments[i];
+	          if (newCentroids[cluster] === null) {
+	            newCentroids[cluster] = values[i];
+	          } else {
+	            newCentroids[cluster] += values[i];
+	          }
+	        }
+	        for (j = _r = 0, _ref10 = num - 1; 0 <= _ref10 ? _r <= _ref10 : _r >= _ref10; j = 0 <= _ref10 ? ++_r : --_r) {
+	          newCentroids[j] *= 1 / clusterSizes[j];
+	        }
+	        repeat = false;
+	        for (j = _s = 0, _ref11 = num - 1; 0 <= _ref11 ? _s <= _ref11 : _s >= _ref11; j = 0 <= _ref11 ? ++_s : --_s) {
+	          if (newCentroids[j] !== centroids[i]) {
+	            repeat = true;
+	            break;
+	          }
+	        }
+	        centroids = newCentroids;
+	        nb_iters++;
+	        if (nb_iters > 200) {
+	          repeat = false;
+	        }
+	      }
+	      kClusters = {};
+	      for (j = _t = 0, _ref12 = num - 1; 0 <= _ref12 ? _t <= _ref12 : _t >= _ref12; j = 0 <= _ref12 ? ++_t : --_t) {
+	        kClusters[j] = [];
+	      }
+	      for (i = _u = 0, _ref13 = n - 1; 0 <= _ref13 ? _u <= _ref13 : _u >= _ref13; i = 0 <= _ref13 ? ++_u : --_u) {
+	        cluster = assignments[i];
+	        kClusters[cluster].push(values[i]);
+	      }
+	      tmpKMeansBreaks = [];
+	      for (j = _v = 0, _ref14 = num - 1; 0 <= _ref14 ? _v <= _ref14 : _v >= _ref14; j = 0 <= _ref14 ? ++_v : --_v) {
+	        tmpKMeansBreaks.push(kClusters[j][0]);
+	        tmpKMeansBreaks.push(kClusters[j][kClusters[j].length - 1]);
+	      }
+	      tmpKMeansBreaks = tmpKMeansBreaks.sort(function(a, b) {
+	        return a - b;
+	      });
+	      limits.push(tmpKMeansBreaks[0]);
+	      for (i = _w = 1, _ref15 = tmpKMeansBreaks.length - 1; _w <= _ref15; i = _w += 2) {
+	        if (!isNaN(tmpKMeansBreaks[i])) {
+	          limits.push(tmpKMeansBreaks[i]);
+	        }
+	      }
+	    }
+	    return limits;
+	  };
 
 	  /**
 	  	ColorBrewer colors for chroma.js
@@ -5101,7 +4568,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  	specific language governing permissions and limitations under the License.
 	  
 	      @preserve
-	   */
+	  */
+
 
 	  chroma.brewer = brewer = {
 	    OrRd: ['#fff7ec', '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548', '#d7301f', '#b30000', '#7f0000'],
@@ -5141,14 +4609,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Pastel1: ['#fbb4ae', '#b3cde3', '#ccebc5', '#decbe4', '#fed9a6', '#ffffcc', '#e5d8bd', '#fddaec', '#f2f2f2']
 	  };
 
-
 	  /**
 	  	X11 color names
 	  
 	  	http://www.w3.org/TR/css3-color/#svg-color
-	   */
+	  */
 
-	  w3cx11 = {
+
+	  chroma.colors = colors = {
 	    indigo: "#4b0082",
 	    gold: "#ffd700",
 	    hotpink: "#ff69b4",
@@ -5295,203 +4763,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    blueviolet: "#8a2be2",
 	    azure: "#f0ffff",
 	    lightsteelblue: "#b0c4de",
-	    oldlace: "#fdf5e6",
-	    rebeccapurple: "#663399"
+	    oldlace: "#fdf5e6"
 	  };
-
-	  chroma.colors = colors = w3cx11;
-
-	  lab2rgb = function() {
-	    var a, args, b, g, l, r, x, y, z;
-	    args = unpack(arguments);
-	    l = args[0], a = args[1], b = args[2];
-	    y = (l + 16) / 116;
-	    x = isNaN(a) ? y : y + a / 500;
-	    z = isNaN(b) ? y : y - b / 200;
-	    y = LAB_CONSTANTS.Yn * lab_xyz(y);
-	    x = LAB_CONSTANTS.Xn * lab_xyz(x);
-	    z = LAB_CONSTANTS.Zn * lab_xyz(z);
-	    r = xyz_rgb(3.2404542 * x - 1.5371385 * y - 0.4985314 * z);
-	    g = xyz_rgb(-0.9692660 * x + 1.8760108 * y + 0.0415560 * z);
-	    b = xyz_rgb(0.0556434 * x - 0.2040259 * y + 1.0572252 * z);
-	    r = limit(r, 0, 255);
-	    g = limit(g, 0, 255);
-	    b = limit(b, 0, 255);
-	    return [r, g, b, args.length > 3 ? args[3] : 1];
-	  };
-
-	  xyz_rgb = function(r) {
-	    return round(255 * (r <= 0.00304 ? 12.92 * r : 1.055 * pow(r, 1 / 2.4) - 0.055));
-	  };
-
-	  lab_xyz = function(t) {
-	    if (t > LAB_CONSTANTS.t1) {
-	      return t * t * t;
-	    } else {
-	      return LAB_CONSTANTS.t2 * (t - LAB_CONSTANTS.t0);
-	    }
-	  };
-
-	  LAB_CONSTANTS = {
-	    Kn: 18,
-	    Xn: 0.950470,
-	    Yn: 1,
-	    Zn: 1.088830,
-	    t0: 0.137931034,
-	    t1: 0.206896552,
-	    t2: 0.12841855,
-	    t3: 0.008856452
-	  };
-
-	  rgb2lab = function() {
-	    var b, g, r, ref, ref1, x, y, z;
-	    ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-	    ref1 = rgb2xyz(r, g, b), x = ref1[0], y = ref1[1], z = ref1[2];
-	    return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
-	  };
-
-	  rgb_xyz = function(r) {
-	    if ((r /= 255) <= 0.04045) {
-	      return r / 12.92;
-	    } else {
-	      return pow((r + 0.055) / 1.055, 2.4);
-	    }
-	  };
-
-	  xyz_lab = function(t) {
-	    if (t > LAB_CONSTANTS.t3) {
-	      return pow(t, 1 / 3);
-	    } else {
-	      return t / LAB_CONSTANTS.t2 + LAB_CONSTANTS.t0;
-	    }
-	  };
-
-	  rgb2xyz = function() {
-	    var b, g, r, ref, x, y, z;
-	    ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-	    r = rgb_xyz(r);
-	    g = rgb_xyz(g);
-	    b = rgb_xyz(b);
-	    x = xyz_lab((0.4124564 * r + 0.3575761 * g + 0.1804375 * b) / LAB_CONSTANTS.Xn);
-	    y = xyz_lab((0.2126729 * r + 0.7151522 * g + 0.0721750 * b) / LAB_CONSTANTS.Yn);
-	    z = xyz_lab((0.0193339 * r + 0.1191920 * g + 0.9503041 * b) / LAB_CONSTANTS.Zn);
-	    return [x, y, z];
-	  };
-
-	  chroma.lab = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['lab']), function(){});
-	  };
-
-	  _input.lab = lab2rgb;
-
-	  Color.prototype.lab = function() {
-	    return rgb2lab(this._rgb);
-	  };
-
-	  bezier = function(colors) {
-	    var I, I0, I1, c, lab0, lab1, lab2, lab3, ref, ref1, ref2;
-	    colors = (function() {
-	      var len, o, results;
-	      results = [];
-	      for (o = 0, len = colors.length; o < len; o++) {
-	        c = colors[o];
-	        results.push(chroma(c));
-	      }
-	      return results;
-	    })();
-	    if (colors.length === 2) {
-	      ref = (function() {
-	        var len, o, results;
-	        results = [];
-	        for (o = 0, len = colors.length; o < len; o++) {
-	          c = colors[o];
-	          results.push(c.lab());
-	        }
-	        return results;
-	      })(), lab0 = ref[0], lab1 = ref[1];
-	      I = function(t) {
-	        var i, lab;
-	        lab = (function() {
-	          var o, results;
-	          results = [];
-	          for (i = o = 0; o <= 2; i = ++o) {
-	            results.push(lab0[i] + t * (lab1[i] - lab0[i]));
-	          }
-	          return results;
-	        })();
-	        return chroma.lab.apply(chroma, lab);
-	      };
-	    } else if (colors.length === 3) {
-	      ref1 = (function() {
-	        var len, o, results;
-	        results = [];
-	        for (o = 0, len = colors.length; o < len; o++) {
-	          c = colors[o];
-	          results.push(c.lab());
-	        }
-	        return results;
-	      })(), lab0 = ref1[0], lab1 = ref1[1], lab2 = ref1[2];
-	      I = function(t) {
-	        var i, lab;
-	        lab = (function() {
-	          var o, results;
-	          results = [];
-	          for (i = o = 0; o <= 2; i = ++o) {
-	            results.push((1 - t) * (1 - t) * lab0[i] + 2 * (1 - t) * t * lab1[i] + t * t * lab2[i]);
-	          }
-	          return results;
-	        })();
-	        return chroma.lab.apply(chroma, lab);
-	      };
-	    } else if (colors.length === 4) {
-	      ref2 = (function() {
-	        var len, o, results;
-	        results = [];
-	        for (o = 0, len = colors.length; o < len; o++) {
-	          c = colors[o];
-	          results.push(c.lab());
-	        }
-	        return results;
-	      })(), lab0 = ref2[0], lab1 = ref2[1], lab2 = ref2[2], lab3 = ref2[3];
-	      I = function(t) {
-	        var i, lab;
-	        lab = (function() {
-	          var o, results;
-	          results = [];
-	          for (i = o = 0; o <= 2; i = ++o) {
-	            results.push((1 - t) * (1 - t) * (1 - t) * lab0[i] + 3 * (1 - t) * (1 - t) * t * lab1[i] + 3 * (1 - t) * t * t * lab2[i] + t * t * t * lab3[i]);
-	          }
-	          return results;
-	        })();
-	        return chroma.lab.apply(chroma, lab);
-	      };
-	    } else if (colors.length === 5) {
-	      I0 = bezier(colors.slice(0, 3));
-	      I1 = bezier(colors.slice(2, 5));
-	      I = function(t) {
-	        if (t < 0.5) {
-	          return I0(t * 2);
-	        } else {
-	          return I1((t - 0.5) * 2);
-	        }
-	      };
-	    }
-	    return I;
-	  };
-
-	  chroma.bezier = function(colors) {
-	    var f;
-	    f = bezier(colors);
-	    f.scale = function() {
-	      return chroma.scale(f);
-	    };
-	    return f;
-	  };
-
 
 	  /*
 	      chroma.js
@@ -5524,1791 +4797,176 @@ return /******/ (function(modules) { // webpackBootstrap
 	      EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	  
 	      @source: https://github.com/gka/chroma.js
-	   */
+	  */
 
-	  chroma.cubehelix = function(start, rotations, hue, gamma, lightness) {
-	    var dh, dl, f;
-	    if (start == null) {
-	      start = 300;
+
+	  type = (function() {
+	    /*
+	    for browser-safe type checking+
+	    ported from jQuery's $.type
+	    */
+
+	    var classToType, name, _i, _len, _ref1;
+
+	    classToType = {};
+	    _ref1 = "Boolean Number String Function Array Date RegExp Undefined Null".split(" ");
+	    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+	      name = _ref1[_i];
+	      classToType["[object " + name + "]"] = name.toLowerCase();
 	    }
-	    if (rotations == null) {
-	      rotations = -1.5;
+	    return function(obj) {
+	      var strType;
+
+	      strType = Object.prototype.toString.call(obj);
+	      return classToType[strType] || "object";
+	    };
+	  })();
+
+	  limit = function(x, min, max) {
+	    if (min == null) {
+	      min = 0;
 	    }
-	    if (hue == null) {
-	      hue = 1;
+	    if (max == null) {
+	      max = 1;
 	    }
-	    if (gamma == null) {
-	      gamma = 1;
+	    if (x < min) {
+	      x = min;
 	    }
-	    if (lightness == null) {
-	      lightness = [0, 1];
+	    if (x > max) {
+	      x = max;
 	    }
-	    dl = lightness[1] - lightness[0];
-	    dh = 0;
-	    f = function(fract) {
-	      var a, amp, b, cos_a, g, h, l, r, sin_a;
-	      a = TWOPI * ((start + 120) / 360 + rotations * fract);
-	      l = pow(lightness[0] + dl * fract, gamma);
-	      h = dh !== 0 ? hue[0] + fract * dh : hue;
-	      amp = h * l * (1 - l) / 2;
-	      cos_a = cos(a);
-	      sin_a = sin(a);
-	      r = l + amp * (-0.14861 * cos_a + 1.78277 * sin_a);
-	      g = l + amp * (-0.29227 * cos_a - 0.90649 * sin_a);
-	      b = l + amp * (+1.97294 * cos_a);
-	      return chroma(clip_rgb([r * 255, g * 255, b * 255]));
-	    };
-	    f.start = function(s) {
-	      if (s == null) {
-	        return start;
-	      }
-	      start = s;
-	      return f;
-	    };
-	    f.rotations = function(r) {
-	      if (r == null) {
-	        return rotations;
-	      }
-	      rotations = r;
-	      return f;
-	    };
-	    f.gamma = function(g) {
-	      if (g == null) {
-	        return gamma;
-	      }
-	      gamma = g;
-	      return f;
-	    };
-	    f.hue = function(h) {
-	      if (h == null) {
-	        return hue;
-	      }
-	      hue = h;
-	      if (type(hue) === 'array') {
-	        dh = hue[1] - hue[0];
-	        if (dh === 0) {
-	          hue = hue[1];
-	        }
-	      } else {
-	        dh = 0;
-	      }
-	      return f;
-	    };
-	    f.lightness = function(h) {
-	      if (h == null) {
-	        return lightness;
-	      }
-	      lightness = h;
-	      if (type(lightness) === 'array') {
-	        dl = lightness[1] - lightness[0];
-	        if (dl === 0) {
-	          lightness = lightness[1];
-	        }
-	      } else {
-	        dl = 0;
-	      }
-	      return f;
-	    };
-	    f.scale = function() {
-	      return chroma.scale(f);
-	    };
-	    f.hue(hue);
-	    return f;
+	    return x;
 	  };
 
-	  chroma.random = function() {
-	    var code, digits, i, o;
-	    digits = '0123456789abcdef';
-	    code = '#';
-	    for (i = o = 0; o < 6; i = ++o) {
-	      code += digits.charAt(floor(Math.random() * 16));
+	  unpack = function(args) {
+	    if (args.length >= 3) {
+	      return args;
+	    } else {
+	      return args[0];
 	    }
-	    return new Color(code);
 	  };
 
-	  _input.rgb = function() {
-	    var k, ref, results, v;
-	    ref = unpack(arguments);
-	    results = [];
-	    for (k in ref) {
-	      v = ref[k];
-	      results.push(v);
-	    }
-	    return results;
-	  };
+	  TWOPI = Math.PI * 2;
 
-	  chroma.rgb = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['rgb']), function(){});
-	  };
+	  PITHIRD = Math.PI / 3;
 
-	  Color.prototype.rgb = function() {
-	    return this._rgb.slice(0, 3);
-	  };
+	  cos = Math.cos;
 
-	  Color.prototype.rgba = function() {
-	    return this._rgb;
-	  };
+	  /*
+	  interpolates between a set of colors uzing a bezier spline
+	  */
 
-	  _guess_formats.push({
-	    p: 15,
-	    test: function(n) {
-	      var a;
-	      a = unpack(arguments);
-	      if (type(a) === 'array' && a.length === 3) {
-	        return 'rgb';
-	      }
-	      if (a.length === 4 && type(a[3]) === "number" && a[3] >= 0 && a[3] <= 1) {
-	        return 'rgb';
-	      }
-	    }
-	  });
 
-	  hex2rgb = function(hex) {
-	    var a, b, g, r, rgb, u;
-	    if (hex.match(/^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)) {
-	      if (hex.length === 4 || hex.length === 7) {
-	        hex = hex.substr(1);
-	      }
-	      if (hex.length === 3) {
-	        hex = hex.split("");
-	        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-	      }
-	      u = parseInt(hex, 16);
-	      r = u >> 16;
-	      g = u >> 8 & 0xFF;
-	      b = u & 0xFF;
-	      return [r, g, b, 1];
-	    }
-	    if (hex.match(/^#?([A-Fa-f0-9]{8})$/)) {
-	      if (hex.length === 9) {
-	        hex = hex.substr(1);
-	      }
-	      u = parseInt(hex, 16);
-	      r = u >> 24 & 0xFF;
-	      g = u >> 16 & 0xFF;
-	      b = u >> 8 & 0xFF;
-	      a = round((u & 0xFF) / 0xFF * 100) / 100;
-	      return [r, g, b, a];
-	    }
-	    if ((_input.css != null) && (rgb = _input.css(hex))) {
-	      return rgb;
-	    }
-	    throw "unknown color: " + hex;
-	  };
+	  bezier = function(colors) {
+	    var I, I0, I1, c, lab0, lab1, lab2, lab3, _ref1, _ref2, _ref3;
 
-	  rgb2hex = function(channels, mode) {
-	    var a, b, g, hxa, r, str, u;
-	    if (mode == null) {
-	      mode = 'rgb';
-	    }
-	    r = channels[0], g = channels[1], b = channels[2], a = channels[3];
-	    u = r << 16 | g << 8 | b;
-	    str = "000000" + u.toString(16);
-	    str = str.substr(str.length - 6);
-	    hxa = '0' + round(a * 255).toString(16);
-	    hxa = hxa.substr(hxa.length - 2);
-	    return "#" + (function() {
-	      switch (mode.toLowerCase()) {
-	        case 'rgba':
-	          return str + hxa;
-	        case 'argb':
-	          return hxa + str;
-	        default:
-	          return str;
+	    colors = (function() {
+	      var _i, _len, _results;
+
+	      _results = [];
+	      for (_i = 0, _len = colors.length; _i < _len; _i++) {
+	        c = colors[_i];
+	        _results.push(chroma(c));
 	      }
+	      return _results;
 	    })();
-	  };
+	    if (colors.length === 2) {
+	      _ref1 = (function() {
+	        var _i, _len, _results;
 
-	  _input.hex = function(h) {
-	    return hex2rgb(h);
-	  };
-
-	  chroma.hex = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['hex']), function(){});
-	  };
-
-	  Color.prototype.hex = function(mode) {
-	    if (mode == null) {
-	      mode = 'rgb';
-	    }
-	    return rgb2hex(this._rgb, mode);
-	  };
-
-	  _guess_formats.push({
-	    p: 10,
-	    test: function(n) {
-	      if (arguments.length === 1 && type(n) === "string") {
-	        return 'hex';
-	      }
-	    }
-	  });
-
-	  hsl2rgb = function() {
-	    var args, b, c, g, h, i, l, o, r, ref, s, t1, t2, t3;
-	    args = unpack(arguments);
-	    h = args[0], s = args[1], l = args[2];
-	    if (s === 0) {
-	      r = g = b = l * 255;
-	    } else {
-	      t3 = [0, 0, 0];
-	      c = [0, 0, 0];
-	      t2 = l < 0.5 ? l * (1 + s) : l + s - l * s;
-	      t1 = 2 * l - t2;
-	      h /= 360;
-	      t3[0] = h + 1 / 3;
-	      t3[1] = h;
-	      t3[2] = h - 1 / 3;
-	      for (i = o = 0; o <= 2; i = ++o) {
-	        if (t3[i] < 0) {
-	          t3[i] += 1;
+	        _results = [];
+	        for (_i = 0, _len = colors.length; _i < _len; _i++) {
+	          c = colors[_i];
+	          _results.push(c.lab());
 	        }
-	        if (t3[i] > 1) {
-	          t3[i] -= 1;
-	        }
-	        if (6 * t3[i] < 1) {
-	          c[i] = t1 + (t2 - t1) * 6 * t3[i];
-	        } else if (2 * t3[i] < 1) {
-	          c[i] = t2;
-	        } else if (3 * t3[i] < 2) {
-	          c[i] = t1 + (t2 - t1) * ((2 / 3) - t3[i]) * 6;
-	        } else {
-	          c[i] = t1;
-	        }
-	      }
-	      ref = [round(c[0] * 255), round(c[1] * 255), round(c[2] * 255)], r = ref[0], g = ref[1], b = ref[2];
-	    }
-	    if (args.length > 3) {
-	      return [r, g, b, args[3]];
-	    } else {
-	      return [r, g, b];
-	    }
-	  };
+	        return _results;
+	      })(), lab0 = _ref1[0], lab1 = _ref1[1];
+	      I = function(t) {
+	        var i, lab;
 
-	  rgb2hsl = function(r, g, b) {
-	    var h, l, min, ref, s;
-	    if (r !== void 0 && r.length >= 3) {
-	      ref = r, r = ref[0], g = ref[1], b = ref[2];
-	    }
-	    r /= 255;
-	    g /= 255;
-	    b /= 255;
-	    min = Math.min(r, g, b);
-	    max = Math.max(r, g, b);
-	    l = (max + min) / 2;
-	    if (max === min) {
-	      s = 0;
-	      h = Number.NaN;
-	    } else {
-	      s = l < 0.5 ? (max - min) / (max + min) : (max - min) / (2 - max - min);
-	    }
-	    if (r === max) {
-	      h = (g - b) / (max - min);
-	    } else if (g === max) {
-	      h = 2 + (b - r) / (max - min);
-	    } else if (b === max) {
-	      h = 4 + (r - g) / (max - min);
-	    }
-	    h *= 60;
-	    if (h < 0) {
-	      h += 360;
-	    }
-	    return [h, s, l];
-	  };
+	        lab = (function() {
+	          var _i, _results;
 
-	  chroma.hsl = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['hsl']), function(){});
-	  };
-
-	  _input.hsl = hsl2rgb;
-
-	  Color.prototype.hsl = function() {
-	    return rgb2hsl(this._rgb);
-	  };
-
-	  hsv2rgb = function() {
-	    var args, b, f, g, h, i, p, q, r, ref, ref1, ref2, ref3, ref4, ref5, s, t, v;
-	    args = unpack(arguments);
-	    h = args[0], s = args[1], v = args[2];
-	    v *= 255;
-	    if (s === 0) {
-	      r = g = b = v;
-	    } else {
-	      if (h === 360) {
-	        h = 0;
-	      }
-	      if (h > 360) {
-	        h -= 360;
-	      }
-	      if (h < 0) {
-	        h += 360;
-	      }
-	      h /= 60;
-	      i = floor(h);
-	      f = h - i;
-	      p = v * (1 - s);
-	      q = v * (1 - s * f);
-	      t = v * (1 - s * (1 - f));
-	      switch (i) {
-	        case 0:
-	          ref = [v, t, p], r = ref[0], g = ref[1], b = ref[2];
-	          break;
-	        case 1:
-	          ref1 = [q, v, p], r = ref1[0], g = ref1[1], b = ref1[2];
-	          break;
-	        case 2:
-	          ref2 = [p, v, t], r = ref2[0], g = ref2[1], b = ref2[2];
-	          break;
-	        case 3:
-	          ref3 = [p, q, v], r = ref3[0], g = ref3[1], b = ref3[2];
-	          break;
-	        case 4:
-	          ref4 = [t, p, v], r = ref4[0], g = ref4[1], b = ref4[2];
-	          break;
-	        case 5:
-	          ref5 = [v, p, q], r = ref5[0], g = ref5[1], b = ref5[2];
-	      }
-	    }
-	    r = round(r);
-	    g = round(g);
-	    b = round(b);
-	    return [r, g, b, args.length > 3 ? args[3] : 1];
-	  };
-
-	  rgb2hsv = function() {
-	    var b, delta, g, h, min, r, ref, s, v;
-	    ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-	    min = Math.min(r, g, b);
-	    max = Math.max(r, g, b);
-	    delta = max - min;
-	    v = max / 255.0;
-	    if (max === 0) {
-	      h = Number.NaN;
-	      s = 0;
-	    } else {
-	      s = delta / max;
-	      if (r === max) {
-	        h = (g - b) / delta;
-	      }
-	      if (g === max) {
-	        h = 2 + (b - r) / delta;
-	      }
-	      if (b === max) {
-	        h = 4 + (r - g) / delta;
-	      }
-	      h *= 60;
-	      if (h < 0) {
-	        h += 360;
-	      }
-	    }
-	    return [h, s, v];
-	  };
-
-	  chroma.hsv = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['hsv']), function(){});
-	  };
-
-	  _input.hsv = hsv2rgb;
-
-	  Color.prototype.hsv = function() {
-	    return rgb2hsv(this._rgb);
-	  };
-
-	  num2rgb = function(num) {
-	    var b, g, r;
-	    if (type(num) === "number" && num >= 0 && num <= 0xFFFFFF) {
-	      r = num >> 16;
-	      g = (num >> 8) & 0xFF;
-	      b = num & 0xFF;
-	      return [r, g, b, 1];
-	    }
-	    console.warn("unknown num color: " + num);
-	    return [0, 0, 0, 1];
-	  };
-
-	  rgb2num = function() {
-	    var b, g, r, ref;
-	    ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-	    return (r << 16) + (g << 8) + b;
-	  };
-
-	  chroma.num = function(num) {
-	    return new Color(num, 'num');
-	  };
-
-	  Color.prototype.num = function(mode) {
-	    if (mode == null) {
-	      mode = 'rgb';
-	    }
-	    return rgb2num(this._rgb, mode);
-	  };
-
-	  _input.num = num2rgb;
-
-	  _guess_formats.push({
-	    p: 10,
-	    test: function(n) {
-	      if (arguments.length === 1 && type(n) === "number" && n >= 0 && n <= 0xFFFFFF) {
-	        return 'num';
-	      }
-	    }
-	  });
-
-	  css2rgb = function(css) {
-	    var aa, ab, hsl, i, m, o, rgb, w;
-	    css = css.toLowerCase();
-	    if ((chroma.colors != null) && chroma.colors[css]) {
-	      return hex2rgb(chroma.colors[css]);
-	    }
-	    if (m = css.match(/rgb\(\s*(\-?\d+),\s*(\-?\d+)\s*,\s*(\-?\d+)\s*\)/)) {
-	      rgb = m.slice(1, 4);
-	      for (i = o = 0; o <= 2; i = ++o) {
-	        rgb[i] = +rgb[i];
-	      }
-	      rgb[3] = 1;
-	    } else if (m = css.match(/rgba\(\s*(\-?\d+),\s*(\-?\d+)\s*,\s*(\-?\d+)\s*,\s*([01]|[01]?\.\d+)\)/)) {
-	      rgb = m.slice(1, 5);
-	      for (i = w = 0; w <= 3; i = ++w) {
-	        rgb[i] = +rgb[i];
-	      }
-	    } else if (m = css.match(/rgb\(\s*(\-?\d+(?:\.\d+)?)%,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*\)/)) {
-	      rgb = m.slice(1, 4);
-	      for (i = aa = 0; aa <= 2; i = ++aa) {
-	        rgb[i] = round(rgb[i] * 2.55);
-	      }
-	      rgb[3] = 1;
-	    } else if (m = css.match(/rgba\(\s*(\-?\d+(?:\.\d+)?)%,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*([01]|[01]?\.\d+)\)/)) {
-	      rgb = m.slice(1, 5);
-	      for (i = ab = 0; ab <= 2; i = ++ab) {
-	        rgb[i] = round(rgb[i] * 2.55);
-	      }
-	      rgb[3] = +rgb[3];
-	    } else if (m = css.match(/hsl\(\s*(\-?\d+(?:\.\d+)?),\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*\)/)) {
-	      hsl = m.slice(1, 4);
-	      hsl[1] *= 0.01;
-	      hsl[2] *= 0.01;
-	      rgb = hsl2rgb(hsl);
-	      rgb[3] = 1;
-	    } else if (m = css.match(/hsla\(\s*(\-?\d+(?:\.\d+)?),\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*([01]|[01]?\.\d+)\)/)) {
-	      hsl = m.slice(1, 4);
-	      hsl[1] *= 0.01;
-	      hsl[2] *= 0.01;
-	      rgb = hsl2rgb(hsl);
-	      rgb[3] = +m[4];
-	    }
-	    return rgb;
-	  };
-
-	  rgb2css = function(rgba) {
-	    var mode;
-	    mode = rgba[3] < 1 ? 'rgba' : 'rgb';
-	    if (mode === 'rgb') {
-	      return mode + '(' + rgba.slice(0, 3).map(round).join(',') + ')';
-	    } else if (mode === 'rgba') {
-	      return mode + '(' + rgba.slice(0, 3).map(round).join(',') + ',' + rgba[3] + ')';
-	    } else {
-
-	    }
-	  };
-
-	  rnd = function(a) {
-	    return round(a * 100) / 100;
-	  };
-
-	  hsl2css = function(hsl, alpha) {
-	    var mode;
-	    mode = alpha < 1 ? 'hsla' : 'hsl';
-	    hsl[0] = rnd(hsl[0] || 0);
-	    hsl[1] = rnd(hsl[1] * 100) + '%';
-	    hsl[2] = rnd(hsl[2] * 100) + '%';
-	    if (mode === 'hsla') {
-	      hsl[3] = alpha;
-	    }
-	    return mode + '(' + hsl.join(',') + ')';
-	  };
-
-	  _input.css = function(h) {
-	    return css2rgb(h);
-	  };
-
-	  chroma.css = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['css']), function(){});
-	  };
-
-	  Color.prototype.css = function(mode) {
-	    if (mode == null) {
-	      mode = 'rgb';
-	    }
-	    if (mode.slice(0, 3) === 'rgb') {
-	      return rgb2css(this._rgb);
-	    } else if (mode.slice(0, 3) === 'hsl') {
-	      return hsl2css(this.hsl(), this.alpha());
-	    }
-	  };
-
-	  _input.named = function(name) {
-	    return hex2rgb(w3cx11[name]);
-	  };
-
-	  _guess_formats.push({
-	    p: 20,
-	    test: function(n) {
-	      if (arguments.length === 1 && (w3cx11[n] != null)) {
-	        return 'named';
-	      }
-	    }
-	  });
-
-	  Color.prototype.name = function(n) {
-	    var h, k;
-	    if (arguments.length) {
-	      if (w3cx11[n]) {
-	        this._rgb = hex2rgb(w3cx11[n]);
-	      }
-	      this._rgb[3] = 1;
-	      this;
-	    }
-	    h = this.hex();
-	    for (k in w3cx11) {
-	      if (h === w3cx11[k]) {
-	        return k;
-	      }
-	    }
-	    return h;
-	  };
-
-	  lch2lab = function() {
-
-	    /*
-	    Convert from a qualitative parameter h and a quantitative parameter l to a 24-bit pixel.
-	    These formulas were invented by David Dalrymple to obtain maximum contrast without going
-	    out of gamut if the parameters are in the range 0-1.
-	    
-	    A saturation multiplier was added by Gregor Aisch
-	     */
-	    var c, h, l, ref;
-	    ref = unpack(arguments), l = ref[0], c = ref[1], h = ref[2];
-	    h = h * DEG2RAD;
-	    return [l, cos(h) * c, sin(h) * c];
-	  };
-
-	  lch2rgb = function() {
-	    var L, a, args, b, c, g, h, l, r, ref, ref1;
-	    args = unpack(arguments);
-	    l = args[0], c = args[1], h = args[2];
-	    ref = lch2lab(l, c, h), L = ref[0], a = ref[1], b = ref[2];
-	    ref1 = lab2rgb(L, a, b), r = ref1[0], g = ref1[1], b = ref1[2];
-	    return [limit(r, 0, 255), limit(g, 0, 255), limit(b, 0, 255), args.length > 3 ? args[3] : 1];
-	  };
-
-	  lab2lch = function() {
-	    var a, b, c, h, l, ref;
-	    ref = unpack(arguments), l = ref[0], a = ref[1], b = ref[2];
-	    c = sqrt(a * a + b * b);
-	    h = (atan2(b, a) * RAD2DEG + 360) % 360;
-	    if (round(c * 10000) === 0) {
-	      h = Number.NaN;
-	    }
-	    return [l, c, h];
-	  };
-
-	  rgb2lch = function() {
-	    var a, b, g, l, r, ref, ref1;
-	    ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-	    ref1 = rgb2lab(r, g, b), l = ref1[0], a = ref1[1], b = ref1[2];
-	    return lab2lch(l, a, b);
-	  };
-
-	  chroma.lch = function() {
-	    var args;
-	    args = unpack(arguments);
-	    return new Color(args, 'lch');
-	  };
-
-	  chroma.hcl = function() {
-	    var args;
-	    args = unpack(arguments);
-	    return new Color(args, 'hcl');
-	  };
-
-	  _input.lch = lch2rgb;
-
-	  _input.hcl = function() {
-	    var c, h, l, ref;
-	    ref = unpack(arguments), h = ref[0], c = ref[1], l = ref[2];
-	    return lch2rgb([l, c, h]);
-	  };
-
-	  Color.prototype.lch = function() {
-	    return rgb2lch(this._rgb);
-	  };
-
-	  Color.prototype.hcl = function() {
-	    return rgb2lch(this._rgb).reverse();
-	  };
-
-	  rgb2cmyk = function(mode) {
-	    var b, c, f, g, k, m, r, ref, y;
-	    if (mode == null) {
-	      mode = 'rgb';
-	    }
-	    ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-	    r = r / 255;
-	    g = g / 255;
-	    b = b / 255;
-	    k = 1 - Math.max(r, Math.max(g, b));
-	    f = k < 1 ? 1 / (1 - k) : 0;
-	    c = (1 - r - k) * f;
-	    m = (1 - g - k) * f;
-	    y = (1 - b - k) * f;
-	    return [c, m, y, k];
-	  };
-
-	  cmyk2rgb = function() {
-	    var alpha, args, b, c, g, k, m, r, y;
-	    args = unpack(arguments);
-	    c = args[0], m = args[1], y = args[2], k = args[3];
-	    alpha = args.length > 4 ? args[4] : 1;
-	    if (k === 1) {
-	      return [0, 0, 0, alpha];
-	    }
-	    r = c >= 1 ? 0 : round(255 * (1 - c) * (1 - k));
-	    g = m >= 1 ? 0 : round(255 * (1 - m) * (1 - k));
-	    b = y >= 1 ? 0 : round(255 * (1 - y) * (1 - k));
-	    return [r, g, b, alpha];
-	  };
-
-	  _input.cmyk = function() {
-	    return cmyk2rgb(unpack(arguments));
-	  };
-
-	  chroma.cmyk = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['cmyk']), function(){});
-	  };
-
-	  Color.prototype.cmyk = function() {
-	    return rgb2cmyk(this._rgb);
-	  };
-
-	  _input.gl = function() {
-	    var i, k, o, rgb, v;
-	    rgb = (function() {
-	      var ref, results;
-	      ref = unpack(arguments);
-	      results = [];
-	      for (k in ref) {
-	        v = ref[k];
-	        results.push(v);
-	      }
-	      return results;
-	    }).apply(this, arguments);
-	    for (i = o = 0; o <= 2; i = ++o) {
-	      rgb[i] *= 255;
-	    }
-	    return rgb;
-	  };
-
-	  chroma.gl = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['gl']), function(){});
-	  };
-
-	  Color.prototype.gl = function() {
-	    var rgb;
-	    rgb = this._rgb;
-	    return [rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, rgb[3]];
-	  };
-
-	  rgb2luminance = function(r, g, b) {
-	    var ref;
-	    ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-	    r = luminance_x(r);
-	    g = luminance_x(g);
-	    b = luminance_x(b);
-	    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-	  };
-
-	  luminance_x = function(x) {
-	    x /= 255;
-	    if (x <= 0.03928) {
-	      return x / 12.92;
-	    } else {
-	      return pow((x + 0.055) / 1.055, 2.4);
-	    }
-	  };
-
-	  _interpolators = [];
-
-	  interpolate = function(col1, col2, f, m) {
-	    var interpol, len, o, res;
-	    if (f == null) {
-	      f = 0.5;
-	    }
-	    if (m == null) {
-	      m = 'rgb';
-	    }
-
-	    /*
-	    interpolates between colors
-	    f = 0 --> me
-	    f = 1 --> col
-	     */
-	    if (type(col1) !== 'object') {
-	      col1 = chroma(col1);
-	    }
-	    if (type(col2) !== 'object') {
-	      col2 = chroma(col2);
-	    }
-	    for (o = 0, len = _interpolators.length; o < len; o++) {
-	      interpol = _interpolators[o];
-	      if (m === interpol[0]) {
-	        res = interpol[1](col1, col2, f, m);
-	        break;
-	      }
-	    }
-	    if (res == null) {
-	      throw "color mode " + m + " is not supported";
-	    }
-	    res.alpha(col1.alpha() + f * (col2.alpha() - col1.alpha()));
-	    return res;
-	  };
-
-	  chroma.interpolate = interpolate;
-
-	  Color.prototype.interpolate = function(col2, f, m) {
-	    return interpolate(this, col2, f, m);
-	  };
-
-	  chroma.mix = interpolate;
-
-	  Color.prototype.mix = Color.prototype.interpolate;
-
-	  interpolate_rgb = function(col1, col2, f, m) {
-	    var xyz0, xyz1;
-	    xyz0 = col1._rgb;
-	    xyz1 = col2._rgb;
-	    return new Color(xyz0[0] + f * (xyz1[0] - xyz0[0]), xyz0[1] + f * (xyz1[1] - xyz0[1]), xyz0[2] + f * (xyz1[2] - xyz0[2]), m);
-	  };
-
-	  _interpolators.push(['rgb', interpolate_rgb]);
-
-	  Color.prototype.luminance = function(lum, mode) {
-	    var cur_lum, eps, max_iter, test;
-	    if (mode == null) {
-	      mode = 'rgb';
-	    }
-	    if (!arguments.length) {
-	      return rgb2luminance(this._rgb);
-	    }
-	    if (lum === 0) {
-	      this._rgb = [0, 0, 0, this._rgb[3]];
-	    } else if (lum === 1) {
-	      this._rgb = [255, 255, 255, this._rgb[3]];
-	    } else {
-	      eps = 1e-7;
-	      max_iter = 20;
-	      test = function(l, h) {
-	        var lm, m;
-	        m = l.interpolate(h, 0.5, mode);
-	        lm = m.luminance();
-	        if (Math.abs(lum - lm) < eps || !max_iter--) {
-	          return m;
-	        }
-	        if (lm > lum) {
-	          return test(l, m);
-	        }
-	        return test(m, h);
+	          _results = [];
+	          for (i = _i = 0; _i <= 2; i = ++_i) {
+	            _results.push(lab0[i] + t * (lab1[i] - lab0[i]));
+	          }
+	          return _results;
+	        })();
+	        return chroma.lab.apply(chroma, lab);
 	      };
-	      cur_lum = rgb2luminance(this._rgb);
-	      this._rgb = (cur_lum > lum ? test(chroma('black'), this) : test(this, chroma('white'))).rgba();
-	    }
-	    return this;
-	  };
+	    } else if (colors.length === 3) {
+	      _ref2 = (function() {
+	        var _i, _len, _results;
 
-	  temperature2rgb = function(kelvin) {
-	    var b, g, r, temp;
-	    temp = kelvin / 100;
-	    if (temp < 66) {
-	      r = 255;
-	      g = -155.25485562709179 - 0.44596950469579133 * (g = temp - 2) + 104.49216199393888 * log(g);
-	      b = temp < 20 ? 0 : -254.76935184120902 + 0.8274096064007395 * (b = temp - 10) + 115.67994401066147 * log(b);
-	    } else {
-	      r = 351.97690566805693 + 0.114206453784165 * (r = temp - 55) - 40.25366309332127 * log(r);
-	      g = 325.4494125711974 + 0.07943456536662342 * (g = temp - 50) - 28.0852963507957 * log(g);
-	      b = 255;
-	    }
-	    return clip_rgb([r, g, b]);
-	  };
+	        _results = [];
+	        for (_i = 0, _len = colors.length; _i < _len; _i++) {
+	          c = colors[_i];
+	          _results.push(c.lab());
+	        }
+	        return _results;
+	      })(), lab0 = _ref2[0], lab1 = _ref2[1], lab2 = _ref2[2];
+	      I = function(t) {
+	        var i, lab;
 
-	  rgb2temperature = function() {
-	    var b, eps, g, maxTemp, minTemp, r, ref, rgb, temp;
-	    ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-	    minTemp = 1000;
-	    maxTemp = 40000;
-	    eps = 0.4;
-	    while (maxTemp - minTemp > eps) {
-	      temp = (maxTemp + minTemp) * 0.5;
-	      rgb = temperature2rgb(temp);
-	      if ((rgb[2] / rgb[0]) >= (b / r)) {
-	        maxTemp = temp;
-	      } else {
-	        minTemp = temp;
-	      }
-	    }
-	    return round(temp);
-	  };
+	        lab = (function() {
+	          var _i, _results;
 
-	  chroma.temperature = chroma.kelvin = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['temperature']), function(){});
-	  };
-
-	  _input.temperature = _input.kelvin = _input.K = temperature2rgb;
-
-	  Color.prototype.temperature = function() {
-	    return rgb2temperature(this._rgb);
-	  };
-
-	  Color.prototype.kelvin = Color.prototype.temperature;
-
-	  chroma.contrast = function(a, b) {
-	    var l1, l2, ref, ref1;
-	    if ((ref = type(a)) === 'string' || ref === 'number') {
-	      a = new Color(a);
-	    }
-	    if ((ref1 = type(b)) === 'string' || ref1 === 'number') {
-	      b = new Color(b);
-	    }
-	    l1 = a.luminance();
-	    l2 = b.luminance();
-	    if (l1 > l2) {
-	      return (l1 + 0.05) / (l2 + 0.05);
-	    } else {
-	      return (l2 + 0.05) / (l1 + 0.05);
-	    }
-	  };
-
-	  Color.prototype.get = function(modechan) {
-	    var channel, i, me, mode, ref, src;
-	    me = this;
-	    ref = modechan.split('.'), mode = ref[0], channel = ref[1];
-	    src = me[mode]();
-	    if (channel) {
-	      i = mode.indexOf(channel);
-	      if (i > -1) {
-	        return src[i];
-	      } else {
-	        return console.warn('unknown channel ' + channel + ' in mode ' + mode);
-	      }
-	    } else {
-	      return src;
-	    }
-	  };
-
-	  Color.prototype.set = function(modechan, value) {
-	    var channel, i, me, mode, ref, src;
-	    me = this;
-	    ref = modechan.split('.'), mode = ref[0], channel = ref[1];
-	    if (channel) {
-	      src = me[mode]();
-	      i = mode.indexOf(channel);
-	      if (i > -1) {
-	        if (type(value) === 'string') {
-	          switch (value.charAt(0)) {
-	            case '+':
-	              src[i] += +value;
-	              break;
-	            case '-':
-	              src[i] += +value;
-	              break;
-	            case '*':
-	              src[i] *= +(value.substr(1));
-	              break;
-	            case '/':
-	              src[i] /= +(value.substr(1));
-	              break;
-	            default:
-	              src[i] = +value;
+	          _results = [];
+	          for (i = _i = 0; _i <= 2; i = ++_i) {
+	            _results.push((1 - t) * (1 - t) * lab0[i] + 2 * (1 - t) * t * lab1[i] + t * t * lab2[i]);
 	          }
+	          return _results;
+	        })();
+	        return chroma.lab.apply(chroma, lab);
+	      };
+	    } else if (colors.length === 4) {
+	      _ref3 = (function() {
+	        var _i, _len, _results;
+
+	        _results = [];
+	        for (_i = 0, _len = colors.length; _i < _len; _i++) {
+	          c = colors[_i];
+	          _results.push(c.lab());
+	        }
+	        return _results;
+	      })(), lab0 = _ref3[0], lab1 = _ref3[1], lab2 = _ref3[2], lab3 = _ref3[3];
+	      I = function(t) {
+	        var i, lab;
+
+	        lab = (function() {
+	          var _i, _results;
+
+	          _results = [];
+	          for (i = _i = 0; _i <= 2; i = ++_i) {
+	            _results.push((1 - t) * (1 - t) * (1 - t) * lab0[i] + 3 * (1 - t) * (1 - t) * t * lab1[i] + 3 * (1 - t) * t * t * lab2[i] + t * t * t * lab3[i]);
+	          }
+	          return _results;
+	        })();
+	        return chroma.lab.apply(chroma, lab);
+	      };
+	    } else if (colors.length === 5) {
+	      I0 = bezier(colors.slice(0, 3));
+	      I1 = bezier(colors.slice(2, 5));
+	      I = function(t) {
+	        if (t < 0.5) {
+	          return I0(t * 2);
 	        } else {
-	          src[i] = value;
+	          return I1((t - 0.5) * 2);
 	        }
-	      } else {
-	        console.warn('unknown channel ' + channel + ' in mode ' + mode);
-	      }
-	    } else {
-	      src = value;
-	    }
-	    me._rgb = chroma(src, mode).alpha(me.alpha())._rgb;
-	    return me;
-	  };
-
-	  Color.prototype.darken = function(amount) {
-	    var lab, me;
-	    if (amount == null) {
-	      amount = 1;
-	    }
-	    me = this;
-	    lab = me.lab();
-	    lab[0] -= LAB_CONSTANTS.Kn * amount;
-	    return chroma.lab(lab).alpha(me.alpha());
-	  };
-
-	  Color.prototype.brighten = function(amount) {
-	    if (amount == null) {
-	      amount = 1;
-	    }
-	    return this.darken(-amount);
-	  };
-
-	  Color.prototype.darker = Color.prototype.darken;
-
-	  Color.prototype.brighter = Color.prototype.brighten;
-
-	  Color.prototype.saturate = function(amount) {
-	    var lch, me;
-	    if (amount == null) {
-	      amount = 1;
-	    }
-	    me = this;
-	    lch = me.lch();
-	    lch[1] += amount * LAB_CONSTANTS.Kn;
-	    if (lch[1] < 0) {
-	      lch[1] = 0;
-	    }
-	    return chroma.lch(lch).alpha(me.alpha());
-	  };
-
-	  Color.prototype.desaturate = function(amount) {
-	    if (amount == null) {
-	      amount = 1;
-	    }
-	    return this.saturate(-amount);
-	  };
-
-	  Color.prototype.premultiply = function() {
-	    var a, rgb;
-	    rgb = this.rgb();
-	    a = this.alpha();
-	    return chroma(rgb[0] * a, rgb[1] * a, rgb[2] * a, a);
-	  };
-
-	  blend = function(bottom, top, mode) {
-	    if (!blend[mode]) {
-	      throw 'unknown blend mode ' + mode;
-	    }
-	    return blend[mode](bottom, top);
-	  };
-
-	  blend_f = function(f) {
-	    return function(bottom, top) {
-	      var c0, c1;
-	      c0 = chroma(top).rgb();
-	      c1 = chroma(bottom).rgb();
-	      return chroma(f(c0, c1), 'rgb');
-	    };
-	  };
-
-	  each = function(f) {
-	    return function(c0, c1) {
-	      var i, o, out;
-	      out = [];
-	      for (i = o = 0; o <= 3; i = ++o) {
-	        out[i] = f(c0[i], c1[i]);
-	      }
-	      return out;
-	    };
-	  };
-
-	  normal = function(a, b) {
-	    return a;
-	  };
-
-	  multiply = function(a, b) {
-	    return a * b / 255;
-	  };
-
-	  darken = function(a, b) {
-	    if (a > b) {
-	      return b;
-	    } else {
-	      return a;
-	    }
-	  };
-
-	  lighten = function(a, b) {
-	    if (a > b) {
-	      return a;
-	    } else {
-	      return b;
-	    }
-	  };
-
-	  screen = function(a, b) {
-	    return 255 * (1 - (1 - a / 255) * (1 - b / 255));
-	  };
-
-	  overlay = function(a, b) {
-	    if (b < 128) {
-	      return 2 * a * b / 255;
-	    } else {
-	      return 255 * (1 - 2 * (1 - a / 255) * (1 - b / 255));
-	    }
-	  };
-
-	  burn = function(a, b) {
-	    return 255 * (1 - (1 - b / 255) / (a / 255));
-	  };
-
-	  dodge = function(a, b) {
-	    if (a === 255) {
-	      return 255;
-	    }
-	    a = 255 * (b / 255) / (1 - a / 255);
-	    if (a > 255) {
-	      return 255;
-	    } else {
-	      return a;
-	    }
-	  };
-
-	  blend.normal = blend_f(each(normal));
-
-	  blend.multiply = blend_f(each(multiply));
-
-	  blend.screen = blend_f(each(screen));
-
-	  blend.overlay = blend_f(each(overlay));
-
-	  blend.darken = blend_f(each(darken));
-
-	  blend.lighten = blend_f(each(lighten));
-
-	  blend.dodge = blend_f(each(dodge));
-
-	  blend.burn = blend_f(each(burn));
-
-	  chroma.blend = blend;
-
-	  chroma.analyze = function(data) {
-	    var len, o, r, val;
-	    r = {
-	      min: Number.MAX_VALUE,
-	      max: Number.MAX_VALUE * -1,
-	      sum: 0,
-	      values: [],
-	      count: 0
-	    };
-	    for (o = 0, len = data.length; o < len; o++) {
-	      val = data[o];
-	      if ((val != null) && !isNaN(val)) {
-	        r.values.push(val);
-	        r.sum += val;
-	        if (val < r.min) {
-	          r.min = val;
-	        }
-	        if (val > r.max) {
-	          r.max = val;
-	        }
-	        r.count += 1;
-	      }
-	    }
-	    r.domain = [r.min, r.max];
-	    r.limits = function(mode, num) {
-	      return chroma.limits(r, mode, num);
-	    };
-	    return r;
-	  };
-
-	  chroma.scale = function(colors, positions) {
-	    var _classes, _colorCache, _colors, _correctLightness, _domain, _fixed, _max, _min, _mode, _nacol, _out, _padding, _pos, _spread, classifyValue, f, getClass, getColor, resetCache, setColors, tmap;
-	    _mode = 'rgb';
-	    _nacol = chroma('#ccc');
-	    _spread = 0;
-	    _fixed = false;
-	    _domain = [0, 1];
-	    _pos = [];
-	    _padding = [0, 0];
-	    _classes = false;
-	    _colors = [];
-	    _out = false;
-	    _min = 0;
-	    _max = 1;
-	    _correctLightness = false;
-	    _colorCache = {};
-	    setColors = function(colors) {
-	      var c, col, o, ref, ref1, ref2, w;
-	      if (colors == null) {
-	        colors = ['#fff', '#000'];
-	      }
-	      if ((colors != null) && type(colors) === 'string' && (((ref = chroma.brewer) != null ? ref[colors] : void 0) != null)) {
-	        colors = chroma.brewer[colors];
-	      }
-	      if (type(colors) === 'array') {
-	        colors = colors.slice(0);
-	        for (c = o = 0, ref1 = colors.length - 1; 0 <= ref1 ? o <= ref1 : o >= ref1; c = 0 <= ref1 ? ++o : --o) {
-	          col = colors[c];
-	          if (type(col) === "string") {
-	            colors[c] = chroma(col);
-	          }
-	        }
-	        _pos.length = 0;
-	        for (c = w = 0, ref2 = colors.length - 1; 0 <= ref2 ? w <= ref2 : w >= ref2; c = 0 <= ref2 ? ++w : --w) {
-	          _pos.push(c / (colors.length - 1));
-	        }
-	      }
-	      resetCache();
-	      return _colors = colors;
-	    };
-	    getClass = function(value) {
-	      var i, n;
-	      if (_classes != null) {
-	        n = _classes.length - 1;
-	        i = 0;
-	        while (i < n && value >= _classes[i]) {
-	          i++;
-	        }
-	        return i - 1;
-	      }
-	      return 0;
-	    };
-	    tmap = function(t) {
-	      return t;
-	    };
-	    classifyValue = function(value) {
-	      var i, maxc, minc, n, val;
-	      val = value;
-	      if (_classes.length > 2) {
-	        n = _classes.length - 1;
-	        i = getClass(value);
-	        minc = _classes[0] + (_classes[1] - _classes[0]) * (0 + _spread * 0.5);
-	        maxc = _classes[n - 1] + (_classes[n] - _classes[n - 1]) * (1 - _spread * 0.5);
-	        val = _min + ((_classes[i] + (_classes[i + 1] - _classes[i]) * 0.5 - minc) / (maxc - minc)) * (_max - _min);
-	      }
-	      return val;
-	    };
-	    getColor = function(val, bypassMap) {
-	      var c, col, i, k, o, p, ref, t;
-	      if (bypassMap == null) {
-	        bypassMap = false;
-	      }
-	      if (isNaN(val)) {
-	        return _nacol;
-	      }
-	      if (!bypassMap) {
-	        if (_classes && _classes.length > 2) {
-	          c = getClass(val);
-	          t = c / (_classes.length - 2);
-	          t = _padding[0] + (t * (1 - _padding[0] - _padding[1]));
-	        } else if (_max !== _min) {
-	          t = (val - _min) / (_max - _min);
-	          t = _padding[0] + (t * (1 - _padding[0] - _padding[1]));
-	          t = Math.min(1, Math.max(0, t));
-	        } else {
-	          t = 1;
-	        }
-	      } else {
-	        t = val;
-	      }
-	      if (!bypassMap) {
-	        t = tmap(t);
-	      }
-	      k = Math.floor(t * 10000);
-	      if (_colorCache[k]) {
-	        col = _colorCache[k];
-	      } else {
-	        if (type(_colors) === 'array') {
-	          for (i = o = 0, ref = _pos.length - 1; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-	            p = _pos[i];
-	            if (t <= p) {
-	              col = _colors[i];
-	              break;
-	            }
-	            if (t >= p && i === _pos.length - 1) {
-	              col = _colors[i];
-	              break;
-	            }
-	            if (t > p && t < _pos[i + 1]) {
-	              t = (t - p) / (_pos[i + 1] - p);
-	              col = chroma.interpolate(_colors[i], _colors[i + 1], t, _mode);
-	              break;
-	            }
-	          }
-	        } else if (type(_colors) === 'function') {
-	          col = _colors(t);
-	        }
-	        _colorCache[k] = col;
-	      }
-	      return col;
-	    };
-	    resetCache = function() {
-	      return _colorCache = {};
-	    };
-	    setColors(colors);
-	    f = function(v) {
-	      var c;
-	      c = chroma(getColor(v));
-	      if (_out && c[_out]) {
-	        return c[_out]();
-	      } else {
-	        return c;
-	      }
-	    };
-	    f.classes = function(classes) {
-	      var d;
-	      if (classes != null) {
-	        if (type(classes) === 'array') {
-	          _classes = classes;
-	          _domain = [classes[0], classes[classes.length - 1]];
-	        } else {
-	          d = chroma.analyze(_domain);
-	          if (classes === 0) {
-	            _classes = [d.min, d.max];
-	          } else {
-	            _classes = chroma.limits(d, 'e', classes);
-	          }
-	        }
-	        return f;
-	      }
-	      return _classes;
-	    };
-	    f.domain = function(domain) {
-	      var c, d, k, len, o, ref, w;
-	      if (!arguments.length) {
-	        return _domain;
-	      }
-	      _min = domain[0];
-	      _max = domain[domain.length - 1];
-	      _pos = [];
-	      k = _colors.length;
-	      if (domain.length === k && _min !== _max) {
-	        for (o = 0, len = domain.length; o < len; o++) {
-	          d = domain[o];
-	          _pos.push((d - _min) / (_max - _min));
-	        }
-	      } else {
-	        for (c = w = 0, ref = k - 1; 0 <= ref ? w <= ref : w >= ref; c = 0 <= ref ? ++w : --w) {
-	          _pos.push(c / (k - 1));
-	        }
-	      }
-	      _domain = [_min, _max];
-	      return f;
-	    };
-	    f.mode = function(_m) {
-	      if (!arguments.length) {
-	        return _mode;
-	      }
-	      _mode = _m;
-	      resetCache();
-	      return f;
-	    };
-	    f.range = function(colors, _pos) {
-	      setColors(colors, _pos);
-	      return f;
-	    };
-	    f.out = function(_o) {
-	      _out = _o;
-	      return f;
-	    };
-	    f.spread = function(val) {
-	      if (!arguments.length) {
-	        return _spread;
-	      }
-	      _spread = val;
-	      return f;
-	    };
-	    f.correctLightness = function(v) {
-	      if (v == null) {
-	        v = true;
-	      }
-	      _correctLightness = v;
-	      resetCache();
-	      if (_correctLightness) {
-	        tmap = function(t) {
-	          var L0, L1, L_actual, L_diff, L_ideal, max_iter, pol, t0, t1;
-	          L0 = getColor(0, true).lab()[0];
-	          L1 = getColor(1, true).lab()[0];
-	          pol = L0 > L1;
-	          L_actual = getColor(t, true).lab()[0];
-	          L_ideal = L0 + (L1 - L0) * t;
-	          L_diff = L_actual - L_ideal;
-	          t0 = 0;
-	          t1 = 1;
-	          max_iter = 20;
-	          while (Math.abs(L_diff) > 1e-2 && max_iter-- > 0) {
-	            (function() {
-	              if (pol) {
-	                L_diff *= -1;
-	              }
-	              if (L_diff < 0) {
-	                t0 = t;
-	                t += (t1 - t) * 0.5;
-	              } else {
-	                t1 = t;
-	                t += (t0 - t) * 0.5;
-	              }
-	              L_actual = getColor(t, true).lab()[0];
-	              return L_diff = L_actual - L_ideal;
-	            })();
-	          }
-	          return t;
-	        };
-	      } else {
-	        tmap = function(t) {
-	          return t;
-	        };
-	      }
-	      return f;
-	    };
-	    f.padding = function(p) {
-	      if (p != null) {
-	        if (type(p) === 'number') {
-	          p = [p, p];
-	        }
-	        _padding = p;
-	        return f;
-	      } else {
-	        return _padding;
-	      }
-	    };
-	    f.colors = function() {
-	      var dd, dm, i, numColors, o, out, ref, results, samples, w;
-	      numColors = 0;
-	      out = 'hex';
-	      if (arguments.length === 1) {
-	        if (type(arguments[0]) === 'string') {
-	          out = arguments[0];
-	        } else {
-	          numColors = arguments[0];
-	        }
-	      }
-	      if (arguments.length === 2) {
-	        numColors = arguments[0], out = arguments[1];
-	      }
-	      if (numColors) {
-	        dm = _domain[0];
-	        dd = _domain[1] - dm;
-	        return (function() {
-	          results = [];
-	          for (var o = 0; 0 <= numColors ? o < numColors : o > numColors; 0 <= numColors ? o++ : o--){ results.push(o); }
-	          return results;
-	        }).apply(this).map(function(i) {
-	          return f(dm + i / (numColors - 1) * dd)[out]();
-	        });
-	      }
-	      colors = [];
-	      samples = [];
-	      if (_classes && _classes.length > 2) {
-	        for (i = w = 1, ref = _classes.length; 1 <= ref ? w < ref : w > ref; i = 1 <= ref ? ++w : --w) {
-	          samples.push((_classes[i - 1] + _classes[i]) * 0.5);
-	        }
-	      } else {
-	        samples = _domain;
-	      }
-	      return samples.map(function(v) {
-	        return f(v)[out]();
-	      });
-	    };
-	    return f;
-	  };
-
-	  if (chroma.scales == null) {
-	    chroma.scales = {};
-	  }
-
-	  chroma.scales.cool = function() {
-	    return chroma.scale([chroma.hsl(180, 1, .9), chroma.hsl(250, .7, .4)]);
-	  };
-
-	  chroma.scales.hot = function() {
-	    return chroma.scale(['#000', '#f00', '#ff0', '#fff'], [0, .25, .75, 1]).mode('rgb');
-	  };
-
-	  chroma.analyze = function(data, key, filter) {
-	    var add, k, len, o, r, val, visit;
-	    r = {
-	      min: Number.MAX_VALUE,
-	      max: Number.MAX_VALUE * -1,
-	      sum: 0,
-	      values: [],
-	      count: 0
-	    };
-	    if (filter == null) {
-	      filter = function() {
-	        return true;
 	      };
 	    }
-	    add = function(val) {
-	      if ((val != null) && !isNaN(val)) {
-	        r.values.push(val);
-	        r.sum += val;
-	        if (val < r.min) {
-	          r.min = val;
-	        }
-	        if (val > r.max) {
-	          r.max = val;
-	        }
-	        r.count += 1;
-	      }
-	    };
-	    visit = function(val, k) {
-	      if (filter(val, k)) {
-	        if ((key != null) && type(key) === 'function') {
-	          return add(key(val));
-	        } else if ((key != null) && type(key) === 'string' || type(key) === 'number') {
-	          return add(val[key]);
-	        } else {
-	          return add(val);
-	        }
-	      }
-	    };
-	    if (type(data) === 'array') {
-	      for (o = 0, len = data.length; o < len; o++) {
-	        val = data[o];
-	        visit(val);
-	      }
-	    } else {
-	      for (k in data) {
-	        val = data[k];
-	        visit(val, k);
-	      }
-	    }
-	    r.domain = [r.min, r.max];
-	    r.limits = function(mode, num) {
-	      return chroma.limits(r, mode, num);
-	    };
-	    return r;
+	    return I;
 	  };
 
-	  chroma.limits = function(data, mode, num) {
-	    var aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, assignments, best, centroids, cluster, clusterSizes, dist, i, j, kClusters, limits, max_log, min, min_log, mindist, n, nb_iters, newCentroids, o, p, pb, pr, ref, ref1, ref10, ref11, ref12, ref13, ref14, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, repeat, sum, tmpKMeansBreaks, value, values, w;
-	    if (mode == null) {
-	      mode = 'equal';
-	    }
-	    if (num == null) {
-	      num = 7;
-	    }
-	    if (type(data) === 'array') {
-	      data = chroma.analyze(data);
-	    }
-	    min = data.min;
-	    max = data.max;
-	    sum = data.sum;
-	    values = data.values.sort(function(a, b) {
-	      return a - b;
-	    });
-	    limits = [];
-	    if (mode.substr(0, 1) === 'c') {
-	      limits.push(min);
-	      limits.push(max);
-	    }
-	    if (mode.substr(0, 1) === 'e') {
-	      limits.push(min);
-	      for (i = o = 1, ref = num - 1; 1 <= ref ? o <= ref : o >= ref; i = 1 <= ref ? ++o : --o) {
-	        limits.push(min + (i / num) * (max - min));
-	      }
-	      limits.push(max);
-	    } else if (mode.substr(0, 1) === 'l') {
-	      if (min <= 0) {
-	        throw 'Logarithmic scales are only possible for values > 0';
-	      }
-	      min_log = Math.LOG10E * log(min);
-	      max_log = Math.LOG10E * log(max);
-	      limits.push(min);
-	      for (i = w = 1, ref1 = num - 1; 1 <= ref1 ? w <= ref1 : w >= ref1; i = 1 <= ref1 ? ++w : --w) {
-	        limits.push(pow(10, min_log + (i / num) * (max_log - min_log)));
-	      }
-	      limits.push(max);
-	    } else if (mode.substr(0, 1) === 'q') {
-	      limits.push(min);
-	      for (i = aa = 1, ref2 = num - 1; 1 <= ref2 ? aa <= ref2 : aa >= ref2; i = 1 <= ref2 ? ++aa : --aa) {
-	        p = values.length * i / num;
-	        pb = floor(p);
-	        if (pb === p) {
-	          limits.push(values[pb]);
-	        } else {
-	          pr = p - pb;
-	          limits.push(values[pb] * pr + values[pb + 1] * (1 - pr));
-	        }
-	      }
-	      limits.push(max);
-	    } else if (mode.substr(0, 1) === 'k') {
-
-	      /*
-	      implementation based on
-	      http://code.google.com/p/figue/source/browse/trunk/figue.js#336
-	      simplified for 1-d input values
-	       */
-	      n = values.length;
-	      assignments = new Array(n);
-	      clusterSizes = new Array(num);
-	      repeat = true;
-	      nb_iters = 0;
-	      centroids = null;
-	      centroids = [];
-	      centroids.push(min);
-	      for (i = ab = 1, ref3 = num - 1; 1 <= ref3 ? ab <= ref3 : ab >= ref3; i = 1 <= ref3 ? ++ab : --ab) {
-	        centroids.push(min + (i / num) * (max - min));
-	      }
-	      centroids.push(max);
-	      while (repeat) {
-	        for (j = ac = 0, ref4 = num - 1; 0 <= ref4 ? ac <= ref4 : ac >= ref4; j = 0 <= ref4 ? ++ac : --ac) {
-	          clusterSizes[j] = 0;
-	        }
-	        for (i = ad = 0, ref5 = n - 1; 0 <= ref5 ? ad <= ref5 : ad >= ref5; i = 0 <= ref5 ? ++ad : --ad) {
-	          value = values[i];
-	          mindist = Number.MAX_VALUE;
-	          for (j = ae = 0, ref6 = num - 1; 0 <= ref6 ? ae <= ref6 : ae >= ref6; j = 0 <= ref6 ? ++ae : --ae) {
-	            dist = abs(centroids[j] - value);
-	            if (dist < mindist) {
-	              mindist = dist;
-	              best = j;
-	            }
-	          }
-	          clusterSizes[best]++;
-	          assignments[i] = best;
-	        }
-	        newCentroids = new Array(num);
-	        for (j = af = 0, ref7 = num - 1; 0 <= ref7 ? af <= ref7 : af >= ref7; j = 0 <= ref7 ? ++af : --af) {
-	          newCentroids[j] = null;
-	        }
-	        for (i = ag = 0, ref8 = n - 1; 0 <= ref8 ? ag <= ref8 : ag >= ref8; i = 0 <= ref8 ? ++ag : --ag) {
-	          cluster = assignments[i];
-	          if (newCentroids[cluster] === null) {
-	            newCentroids[cluster] = values[i];
-	          } else {
-	            newCentroids[cluster] += values[i];
-	          }
-	        }
-	        for (j = ah = 0, ref9 = num - 1; 0 <= ref9 ? ah <= ref9 : ah >= ref9; j = 0 <= ref9 ? ++ah : --ah) {
-	          newCentroids[j] *= 1 / clusterSizes[j];
-	        }
-	        repeat = false;
-	        for (j = ai = 0, ref10 = num - 1; 0 <= ref10 ? ai <= ref10 : ai >= ref10; j = 0 <= ref10 ? ++ai : --ai) {
-	          if (newCentroids[j] !== centroids[i]) {
-	            repeat = true;
-	            break;
-	          }
-	        }
-	        centroids = newCentroids;
-	        nb_iters++;
-	        if (nb_iters > 200) {
-	          repeat = false;
-	        }
-	      }
-	      kClusters = {};
-	      for (j = aj = 0, ref11 = num - 1; 0 <= ref11 ? aj <= ref11 : aj >= ref11; j = 0 <= ref11 ? ++aj : --aj) {
-	        kClusters[j] = [];
-	      }
-	      for (i = ak = 0, ref12 = n - 1; 0 <= ref12 ? ak <= ref12 : ak >= ref12; i = 0 <= ref12 ? ++ak : --ak) {
-	        cluster = assignments[i];
-	        kClusters[cluster].push(values[i]);
-	      }
-	      tmpKMeansBreaks = [];
-	      for (j = al = 0, ref13 = num - 1; 0 <= ref13 ? al <= ref13 : al >= ref13; j = 0 <= ref13 ? ++al : --al) {
-	        tmpKMeansBreaks.push(kClusters[j][0]);
-	        tmpKMeansBreaks.push(kClusters[j][kClusters[j].length - 1]);
-	      }
-	      tmpKMeansBreaks = tmpKMeansBreaks.sort(function(a, b) {
-	        return a - b;
-	      });
-	      limits.push(tmpKMeansBreaks[0]);
-	      for (i = am = 1, ref14 = tmpKMeansBreaks.length - 1; am <= ref14; i = am += 2) {
-	        if (!isNaN(tmpKMeansBreaks[i])) {
-	          limits.push(tmpKMeansBreaks[i]);
-	        }
-	      }
-	    }
-	    return limits;
-	  };
-
-	  hsi2rgb = function(h, s, i) {
-
-	    /*
-	    borrowed from here:
-	    http://hummer.stanford.edu/museinfo/doc/examples/humdrum/keyscape2/hsi2rgb.cpp
-	     */
-	    var args, b, g, r;
-	    args = unpack(arguments);
-	    h = args[0], s = args[1], i = args[2];
-	    h /= 360;
-	    if (h < 1 / 3) {
-	      b = (1 - s) / 3;
-	      r = (1 + s * cos(TWOPI * h) / cos(PITHIRD - TWOPI * h)) / 3;
-	      g = 1 - (b + r);
-	    } else if (h < 2 / 3) {
-	      h -= 1 / 3;
-	      r = (1 - s) / 3;
-	      g = (1 + s * cos(TWOPI * h) / cos(PITHIRD - TWOPI * h)) / 3;
-	      b = 1 - (r + g);
-	    } else {
-	      h -= 2 / 3;
-	      g = (1 - s) / 3;
-	      b = (1 + s * cos(TWOPI * h) / cos(PITHIRD - TWOPI * h)) / 3;
-	      r = 1 - (g + b);
-	    }
-	    r = limit(i * r * 3);
-	    g = limit(i * g * 3);
-	    b = limit(i * b * 3);
-	    return [r * 255, g * 255, b * 255, args.length > 3 ? args[3] : 1];
-	  };
-
-	  rgb2hsi = function() {
-
-	    /*
-	    borrowed from here:
-	    http://hummer.stanford.edu/museinfo/doc/examples/humdrum/keyscape2/rgb2hsi.cpp
-	     */
-	    var b, g, h, i, min, r, ref, s;
-	    ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-	    TWOPI = Math.PI * 2;
-	    r /= 255;
-	    g /= 255;
-	    b /= 255;
-	    min = Math.min(r, g, b);
-	    i = (r + g + b) / 3;
-	    s = 1 - min / i;
-	    if (s === 0) {
-	      h = 0;
-	    } else {
-	      h = ((r - g) + (r - b)) / 2;
-	      h /= Math.sqrt((r - g) * (r - g) + (r - b) * (g - b));
-	      h = Math.acos(h);
-	      if (b > g) {
-	        h = TWOPI - h;
-	      }
-	      h /= TWOPI;
-	    }
-	    return [h * 360, s, i];
-	  };
-
-	  chroma.hsi = function() {
-	    return (function(func, args, ctor) {
-	      ctor.prototype = func.prototype;
-	      var child = new ctor, result = func.apply(child, args);
-	      return Object(result) === result ? result : child;
-	    })(Color, slice.call(arguments).concat(['hsi']), function(){});
-	  };
-
-	  _input.hsi = hsi2rgb;
-
-	  Color.prototype.hsi = function() {
-	    return rgb2hsi(this._rgb);
-	  };
-
-	  interpolate_hsx = function(col1, col2, f, m) {
-	    var dh, hue, hue0, hue1, lbv, lbv0, lbv1, res, sat, sat0, sat1, xyz0, xyz1;
-	    if (m === 'hsl') {
-	      xyz0 = col1.hsl();
-	      xyz1 = col2.hsl();
-	    } else if (m === 'hsv') {
-	      xyz0 = col1.hsv();
-	      xyz1 = col2.hsv();
-	    } else if (m === 'hsi') {
-	      xyz0 = col1.hsi();
-	      xyz1 = col2.hsi();
-	    } else if (m === 'lch' || m === 'hcl') {
-	      m = 'hcl';
-	      xyz0 = col1.hcl();
-	      xyz1 = col2.hcl();
-	    }
-	    if (m.substr(0, 1) === 'h') {
-	      hue0 = xyz0[0], sat0 = xyz0[1], lbv0 = xyz0[2];
-	      hue1 = xyz1[0], sat1 = xyz1[1], lbv1 = xyz1[2];
-	    }
-	    if (!isNaN(hue0) && !isNaN(hue1)) {
-	      if (hue1 > hue0 && hue1 - hue0 > 180) {
-	        dh = hue1 - (hue0 + 360);
-	      } else if (hue1 < hue0 && hue0 - hue1 > 180) {
-	        dh = hue1 + 360 - hue0;
-	      } else {
-	        dh = hue1 - hue0;
-	      }
-	      hue = hue0 + f * dh;
-	    } else if (!isNaN(hue0)) {
-	      hue = hue0;
-	      if ((lbv1 === 1 || lbv1 === 0) && m !== 'hsv') {
-	        sat = sat0;
-	      }
-	    } else if (!isNaN(hue1)) {
-	      hue = hue1;
-	      if ((lbv0 === 1 || lbv0 === 0) && m !== 'hsv') {
-	        sat = sat1;
-	      }
-	    } else {
-	      hue = Number.NaN;
-	    }
-	    if (sat == null) {
-	      sat = sat0 + f * (sat1 - sat0);
-	    }
-	    lbv = lbv0 + f * (lbv1 - lbv0);
-	    return res = chroma[m](hue, sat, lbv);
-	  };
-
-	  _interpolators = _interpolators.concat((function() {
-	    var len, o, ref, results;
-	    ref = ['hsv', 'hsl', 'hsi', 'hcl', 'lch'];
-	    results = [];
-	    for (o = 0, len = ref.length; o < len; o++) {
-	      m = ref[o];
-	      results.push([m, interpolate_hsx]);
-	    }
-	    return results;
-	  })());
-
-	  interpolate_num = function(col1, col2, f, m) {
-	    var n1, n2;
-	    n1 = col1.num();
-	    n2 = col2.num();
-	    return chroma.num(n1 + (n2 - n1) * f, 'num');
-	  };
-
-	  _interpolators.push(['num', interpolate_num]);
-
-	  interpolate_lab = function(col1, col2, f, m) {
-	    var res, xyz0, xyz1;
-	    xyz0 = col1.lab();
-	    xyz1 = col2.lab();
-	    return res = new Color(xyz0[0] + f * (xyz1[0] - xyz0[0]), xyz0[1] + f * (xyz1[1] - xyz0[1]), xyz0[2] + f * (xyz1[2] - xyz0[2]), m);
-	  };
-
-	  _interpolators.push(['lab', interpolate_lab]);
+	  chroma.interpolate.bezier = bezier;
 
 	}).call(this);
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(60)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)(module)))
 
 /***/ },
-/* 60 */
+/* 7 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -7324,26 +4982,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 61 */
+/* 8 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_61__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_8__;
 
 /***/ },
-/* 62 */
+/* 9 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_62__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
 
 /***/ },
-/* 63 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var utils = __webpack_require__(3);
-	var $ = __webpack_require__(61);
-	var _ = __webpack_require__(62);
+	var $ = __webpack_require__(8);
+	var _ = __webpack_require__(9);
 
 	function Visualization(element, vif) {
 
@@ -7488,16 +5146,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 64 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var $ = __webpack_require__(61);
-	var _ = __webpack_require__(62);
+	var $ = __webpack_require__(8);
+	var _ = __webpack_require__(9);
 	var utils = __webpack_require__(3);
 	var ss = __webpack_require__(5);
-	var chroma = __webpack_require__(59);
+	var chroma = __webpack_require__(6);
 
 	/**
 	 * Dynamic choropleth styles based on the individual dataset.
@@ -7804,15 +5462,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 65 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var $ = __webpack_require__(61);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var Visualization = __webpack_require__(63);
-	var _ = __webpack_require__(62);
+	var Visualization = __webpack_require__(10);
+	var _ = __webpack_require__(9);
 	var d3 = __webpack_require__(4);
 
 	// TODO: Figure out how to do this better (and probably not through jQuery).
@@ -8813,15 +6471,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 66 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var $ = __webpack_require__(61);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var Visualization = __webpack_require__(63);
-	var _ = __webpack_require__(62);
+	var Visualization = __webpack_require__(10);
+	var _ = __webpack_require__(9);
 
 	module.exports = function Pager(element, vif) {
 	  _.extend(this, new Visualization(element, vif));
@@ -8939,17 +6597,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 67 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var utils = __webpack_require__(3);
-	var Visualization = __webpack_require__(63);
+	var Visualization = __webpack_require__(10);
 	var d3 = __webpack_require__(4);
-	var moment = __webpack_require__(68);
-	var _ = __webpack_require__(62);
-	var $ = __webpack_require__(61);
+	var moment = __webpack_require__(15);
+	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
 
 	var Constants = {
 	  TIMELINE_CHART_MARGIN: {
@@ -11690,22 +9348,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 68 */
+/* 15 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_68__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_15__;
 
 /***/ },
-/* 69 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var $ = __webpack_require__(61);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var Visualization = __webpack_require__(63);
-	var _ = __webpack_require__(62);
-	var DataTypeFormatter = __webpack_require__(70);
+	var Visualization = __webpack_require__(10);
+	var _ = __webpack_require__(9);
+	var DataTypeFormatter = __webpack_require__(17);
 
 	module.exports = function Table(element, vif) {
 	  _.extend(this, new Visualization(element, vif));
@@ -12048,14 +9706,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 70 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	'use strict';
 	var utils = __webpack_require__(3);
-	var moment = __webpack_require__(68);
+	var moment = __webpack_require__(15);
 
 	module.exports = {
 	  renderCell: renderCell,
@@ -12447,16 +10105,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 71 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var utils = __webpack_require__(3);
-	var Visualization = __webpack_require__(63);
-	var L = __webpack_require__(72);
-	var _ = __webpack_require__(62);
-	var $ = __webpack_require__(61);
+	var Visualization = __webpack_require__(10);
+	var L = __webpack_require__(19);
+	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
 
 	var FEATURE_MAP_MIN_HOVER_THRESHOLD = 5;
 	var FEATURE_MAP_MAX_ZOOM = 18; // same as Leaflet default
@@ -13554,18 +11212,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 72 */
+/* 19 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_72__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_19__;
 
 /***/ },
-/* 73 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var $ = __webpack_require__(61);
+	var $ = __webpack_require__(8);
 
 	function FlyoutRenderer() {
 
@@ -13763,14 +11421,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 74 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var utils = __webpack_require__(3);
-	var _ = __webpack_require__(62);
-	var $ = __webpack_require__(61);
+	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
 
 	var ROW_INSPECTOR_WIDTH = 350;
 	var ROW_INSPECTOR_MAX_CONTENT_HEIGHT = 250;
@@ -14258,16 +11916,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 75 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var GeospaceDataProvider = __webpack_require__(76);
-	var MetadataProvider = __webpack_require__(78);
-	var SoqlDataProvider = __webpack_require__(79);
-	var TileserverDataProvider = __webpack_require__(80);
-	var VectorTileManager = __webpack_require__(81);
+	var GeospaceDataProvider = __webpack_require__(23);
+	var MetadataProvider = __webpack_require__(25);
+	var SoqlDataProvider = __webpack_require__(26);
+	var TileserverDataProvider = __webpack_require__(27);
+	var VectorTileManager = __webpack_require__(28);
 
 	module.exports = {
 	  GeospaceDataProvider: GeospaceDataProvider,
@@ -14280,14 +11938,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 76 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var utils = __webpack_require__(3);
-	var DataProvider = __webpack_require__(77);
-	var _ = __webpack_require__(62);
+	var DataProvider = __webpack_require__(24);
+	var _ = __webpack_require__(9);
 
 	function GeospaceDataProvider(config) {
 
@@ -14523,12 +12181,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 77 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(62);
+	var _ = __webpack_require__(9);
 
 	function DataProvider(config) {
 
@@ -14611,15 +12269,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 78 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var $ = __webpack_require__(61);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var DataProvider = __webpack_require__(77);
-	var _ = __webpack_require__(62);
+	var DataProvider = __webpack_require__(24);
+	var _ = __webpack_require__(9);
 
 	function MetadataProvider(config) {
 	  var self = this;
@@ -14809,15 +12467,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 79 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var $ = __webpack_require__(61);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var DataProvider = __webpack_require__(77);
-	var _ = __webpack_require__(62);
+	var DataProvider = __webpack_require__(24);
+	var _ = __webpack_require__(9);
 
 	/**
 	 * `SoqlDataProvider` is an implementation of `DataProvider` that enables
@@ -15094,14 +12752,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 80 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var utils = __webpack_require__(3);
-	var DataProvider = __webpack_require__(77);
-	var _ = __webpack_require__(62);
+	var DataProvider = __webpack_require__(24);
+	var _ = __webpack_require__(9);
 
 	var MAX_FEATURES_PER_TILE = 256 * 256;
 	var DEFAULT_FEATURES_PER_TILE = 50000;
@@ -15366,17 +13024,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 81 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(62);
+	var _ = __webpack_require__(9);
 	var utils = __webpack_require__(3);
 	var d3 = __webpack_require__(4);
-	var L = __webpack_require__(72);
-	var VectorTile = __webpack_require__(82).VectorTile;
-	var pbf = __webpack_require__(87);
+	var L = __webpack_require__(19);
+	var VectorTile = __webpack_require__(29).VectorTile;
+	var pbf = __webpack_require__(34);
 
 	/**
 	 *
@@ -16685,21 +14343,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 82 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports.VectorTile = __webpack_require__(83);
-	module.exports.VectorTileFeature = __webpack_require__(85);
-	module.exports.VectorTileLayer = __webpack_require__(84);
+	module.exports.VectorTile = __webpack_require__(30);
+	module.exports.VectorTileFeature = __webpack_require__(32);
+	module.exports.VectorTileLayer = __webpack_require__(31);
 
 
 /***/ },
-/* 83 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var VectorTileLayer = __webpack_require__(84);
+	var VectorTileLayer = __webpack_require__(31);
 
 	module.exports = VectorTile;
 
@@ -16736,12 +14394,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 84 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var VectorTileFeature = __webpack_require__(85);
+	var VectorTileFeature = __webpack_require__(32);
 
 	module.exports = VectorTileLayer;
 	function VectorTileLayer(buffer, end) {
@@ -16831,12 +14489,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 85 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Point = __webpack_require__(86);
+	var Point = __webpack_require__(33);
 
 	module.exports = VectorTileFeature;
 
@@ -16976,7 +14634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 86 */
+/* 33 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -17113,14 +14771,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 87 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
 	module.exports = Pbf;
 
-	var Buffer = global.Buffer || __webpack_require__(88);
+	var Buffer = global.Buffer || __webpack_require__(35);
 
 	function Pbf(buf) {
 	    this.buf = !Buffer.isBuffer(buf) ? new Buffer(buf || 0) : buf;
@@ -17546,7 +15204,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 88 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
@@ -17556,7 +15214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Buffer;
 
-	var ieee754 = __webpack_require__(91);
+	var ieee754 = __webpack_require__(38);
 
 	var BufferMethods;
 
@@ -17709,10 +15367,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return bytes;
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(89).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36).Buffer))
 
 /***/ },
-/* 89 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -17725,9 +15383,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict'
 
-	var base64 = __webpack_require__(90)
-	var ieee754 = __webpack_require__(91)
-	var isArray = __webpack_require__(92)
+	var base64 = __webpack_require__(37)
+	var ieee754 = __webpack_require__(38)
+	var isArray = __webpack_require__(39)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -19264,10 +16922,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return i
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(89).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 90 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -19397,7 +17055,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 91 */
+/* 38 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -19487,7 +17145,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 92 */
+/* 39 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -19498,19 +17156,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 93 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(62);
-	var $ = __webpack_require__(61);
+	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var ChoroplethMap = __webpack_require__(2);
-	var MetadataProvider = __webpack_require__(78);
-	var GeospaceDataProvider = __webpack_require__(76);
-	var SoqlDataProvider = __webpack_require__(79);
-	var SoqlHelpers = __webpack_require__(94);
+	var MetadataProvider = __webpack_require__(25);
+	var GeospaceDataProvider = __webpack_require__(23);
+	var SoqlDataProvider = __webpack_require__(26);
+	var SoqlHelpers = __webpack_require__(41);
 
 	var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -20250,13 +17908,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 94 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var utils = __webpack_require__(3);
-	var _ = __webpack_require__(62);
+	var _ = __webpack_require__(9);
 
 	var VALID_BINARY_OPERATORS = ['=', '!=', '<', '<=', '>', '>='];
 
@@ -20550,17 +18208,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 95 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(62);
-	var $ = __webpack_require__(61);
+	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var ColumnChart = __webpack_require__(65);
-	var SoqlDataProvider = __webpack_require__(79);
-	var SoqlHelpers = __webpack_require__(94);
+	var ColumnChart = __webpack_require__(12);
+	var SoqlDataProvider = __webpack_require__(26);
+	var SoqlHelpers = __webpack_require__(41);
 
 	var NAME_INDEX = 0;
 	var UNFILTERED_INDEX = 1;
@@ -21096,21 +18754,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 96 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(62);
-	var $ = __webpack_require__(61);
-	var L = __webpack_require__(72);
+	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
+	var L = __webpack_require__(19);
 	var utils = __webpack_require__(3);
-	var FeatureMap = __webpack_require__(71);
-	var GeospaceDataProvider = __webpack_require__(76);
-	var TileserverDataProvider = __webpack_require__(80);
-	var SoqlDataProvider = __webpack_require__(79);
-	var SoqlHelpers = __webpack_require__(94);
-	var MetadataProvider = __webpack_require__(78);
+	var FeatureMap = __webpack_require__(18);
+	var GeospaceDataProvider = __webpack_require__(23);
+	var TileserverDataProvider = __webpack_require__(27);
+	var SoqlDataProvider = __webpack_require__(26);
+	var SoqlHelpers = __webpack_require__(41);
+	var MetadataProvider = __webpack_require__(25);
 
 	var DEFAULT_TILESERVER_HOSTS = [
 	  'https://tileserver1.api.us.socrata.com',
@@ -21668,19 +19326,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 97 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(62);
-	var $ = __webpack_require__(61);
+	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var Table = __webpack_require__(69);
-	var Pager = __webpack_require__(66);
-	var SoqlHelpers = __webpack_require__(94);
-	var SoqlDataProvider = __webpack_require__(79);
-	var MetadataProvider = __webpack_require__(78);
+	var Table = __webpack_require__(16);
+	var Pager = __webpack_require__(13);
+	var SoqlHelpers = __webpack_require__(41);
+	var SoqlDataProvider = __webpack_require__(26);
+	var MetadataProvider = __webpack_require__(25);
 
 	var ROW_HEIGHT_PX = 39;
 
@@ -22097,18 +19755,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 98 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(62);
-	var $ = __webpack_require__(61);
+	var _ = __webpack_require__(9);
+	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
-	var moment = __webpack_require__(68);
-	var TimelineChart = __webpack_require__(67);
-	var SoqlDataProvider = __webpack_require__(79);
-	var SoqlHelpers = __webpack_require__(94);
+	var moment = __webpack_require__(15);
+	var TimelineChart = __webpack_require__(14);
+	var SoqlDataProvider = __webpack_require__(26);
+	var SoqlHelpers = __webpack_require__(41);
 
 	var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 	var DATE_INDEX = 0;

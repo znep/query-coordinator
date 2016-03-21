@@ -41,8 +41,8 @@ function VisualizationAddController(
     var defaultExtent;
     var vif = {
       aggregation: {
-        field: null,
-        'function': 'count'
+        field: card.aggregationField,
+        'function': card.aggregationFunction
       },
       columnName: card.fieldName,
       configuration: {

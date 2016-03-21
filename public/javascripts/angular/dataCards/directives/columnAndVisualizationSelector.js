@@ -206,15 +206,26 @@ function columnAndVisualizationSelector(
         selectedCardModel$.sample($scope.$eventToObservable('soc-select-change'))
       );
 
-      // No idea why this one has to be structured like it is, but using
-      // the same .sample() pattern as above ended up with it not triggering
-      // in all cases. Giacomo suspects some misunderstood behavior in the
-      // third-party angular rx extensions' .safeApply().
+      // No idea why the following has to be structured like it is, but using
+      // the same .sample() pattern as above ended up with it not triggering in
+      // all cases. Giacomo suspects some misunderstood behavior in the third-
+      // party angular rx extensions' .safeApply().
       $scope.$emitEventsFromObservable(
         'card-model-changed',
-        selectedCardModel$.observeOnLatest('cardType').map(function() {
-          return $scope.selectedCardModel;
-        })
+        Rx.Observable.combineLatest(
+          selectedCardModel$.observeOnLatest('cardType').map(function() {
+            return $scope.selectedCardModel;
+          }),
+          selectedCardModel$.observeOnLatest('aggregationField').map(function() {
+            return $scope.selectedCardModel;
+          }),
+          selectedCardModel$.observeOnLatest('aggregationFunction').map(function() {
+            return $scope.selectedCardModel;
+          }),
+          function(cardModel) {
+            return cardModel;
+          }
+        )
       );
 
       $scope.onCustomizeCard = function(selectedCardModel) {

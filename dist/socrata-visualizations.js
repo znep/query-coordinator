@@ -54,6 +54,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var views = __webpack_require__(1);
 	var dataProviders = __webpack_require__(22);
 	// vv these requires have the side effect of registering jQuery plugins vv
@@ -81,6 +83,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var ChoroplethMap = __webpack_require__(2);
 	var ChoroplethMapUtils = __webpack_require__(11);
 	var ColumnChart = __webpack_require__(12);
@@ -107,6 +111,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	/**
 	 * TODO:
@@ -4991,6 +4997,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var utils = __webpack_require__(3);
 	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
@@ -5140,6 +5148,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var $ = __webpack_require__(8);
 	var _ = __webpack_require__(9);
@@ -5454,6 +5464,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -6462,6 +6474,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -6585,6 +6599,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -9341,6 +9357,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
@@ -9689,6 +9707,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	'use strict';
 	var utils = __webpack_require__(3);
@@ -10052,6 +10072,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var utils = __webpack_require__(3);
 	var Visualization = __webpack_require__(10);
 	var L = __webpack_require__(19);
@@ -10366,10 +10388,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _map.on('dragstart zoomstart', _handlePanAndZoom);
 	      _map.on('mouseout', _hideFlyout);
 
+	      // react to the interactions that would close the RowInspector flannel
 	      if (_hover) {
-	        _map.on('mousemove', _handleMousemove);
-
-	        // react to the interactions that would close the RowInspector flannel
 	        $document.on('click', _captureLeftClickAndClearHighlight);
 	        $document.on('keydown', _captureEscapeAndClearHighlight);
 	      }
@@ -10405,8 +10425,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _map.off('mouseout', _hideFlyout);
 
 	      if (_hover) {
-	        _map.off('mousemove', _handleMousemove);
-
 	        $document.on('click', _captureLeftClickAndClearHighlight);
 	        $document.on('keydown', _captureEscapeAndClearHighlight);
 	      }
@@ -10475,22 +10493,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _hideFlyout();
 	    _hideRowInspector();
-	  }
-
-	  function _handleMousemove(event) {
-
-	    if (_flyoutData.count > 0) {
-
-	      event.originalEvent.target.style.cursor = 'pointer';
-	      _showFeatureFlyout(event);
-
-	    } else {
-
-	      event.originalEvent.target.style.cursor = 'inherit';
-	      _hideFlyout();
-
-	    }
-
 	  }
 
 	  function _handlePanZoomDisabledWarningMousemove() {
@@ -10641,6 +10643,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 	      _flyoutData.count = _.sum(event.points, 'count');
 	      _flyoutData.totalPoints = event.tile.totalPoints;
+
+	      if (_flyoutData.count > 0) {
+	        event.originalEvent.target.style.cursor = 'pointer';
+	        _showFeatureFlyout(event);
+	      } else {
+	        event.originalEvent.target.style.cursor = 'inherit';
+	        _hideFlyout();
+	      }
 	    }
 	  }
 
@@ -11175,6 +11185,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var $ = __webpack_require__(8);
 
 	function FlyoutRenderer() {
@@ -11375,6 +11387,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var utils = __webpack_require__(3);
 	var _ = __webpack_require__(9);
@@ -11869,6 +11883,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var GeospaceDataProvider = __webpack_require__(23);
 	var MetadataProvider = __webpack_require__(25);
 	var SoqlDataProvider = __webpack_require__(26);
@@ -11888,6 +11904,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var utils = __webpack_require__(3);
 	var DataProvider = __webpack_require__(24);
@@ -12130,6 +12148,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var _ = __webpack_require__(9);
 
 	function DataProvider(config) {
@@ -12215,6 +12235,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -12411,6 +12433,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -12695,6 +12719,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var utils = __webpack_require__(3);
 	var DataProvider = __webpack_require__(24);
 	var _ = __webpack_require__(9);
@@ -12964,6 +12990,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var utils = __webpack_require__(3);
@@ -17095,6 +17123,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -17845,6 +17875,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var utils = __webpack_require__(3);
 	var _ = __webpack_require__(9);
 
@@ -18142,6 +18174,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 42 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
@@ -18686,6 +18720,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 43 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
@@ -19257,6 +19293,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);
 	var utils = __webpack_require__(3);
@@ -19683,6 +19721,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 45 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	var _ = __webpack_require__(9);
 	var $ = __webpack_require__(8);

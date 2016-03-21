@@ -312,10 +312,8 @@ function FeatureMap(element, vif) {
       _map.on('dragstart zoomstart', _handlePanAndZoom);
       _map.on('mouseout', _hideFlyout);
 
+      // react to the interactions that would close the RowInspector flannel
       if (_hover) {
-        _map.on('mousemove', _handleMousemove);
-
-        // react to the interactions that would close the RowInspector flannel
         $document.on('click', _captureLeftClickAndClearHighlight);
         $document.on('keydown', _captureEscapeAndClearHighlight);
       }
@@ -351,8 +349,6 @@ function FeatureMap(element, vif) {
       _map.off('mouseout', _hideFlyout);
 
       if (_hover) {
-        _map.off('mousemove', _handleMousemove);
-
         $document.on('click', _captureLeftClickAndClearHighlight);
         $document.on('keydown', _captureEscapeAndClearHighlight);
       }
@@ -421,22 +417,6 @@ function FeatureMap(element, vif) {
 
     _hideFlyout();
     _hideRowInspector();
-  }
-
-  function _handleMousemove(event) {
-
-    if (_flyoutData.count > 0) {
-
-      event.originalEvent.target.style.cursor = 'pointer';
-      _showFeatureFlyout(event);
-
-    } else {
-
-      event.originalEvent.target.style.cursor = 'inherit';
-      _hideFlyout();
-
-    }
-
   }
 
   function _handlePanZoomDisabledWarningMousemove() {
@@ -587,6 +567,14 @@ function FeatureMap(element, vif) {
       };
       _flyoutData.count = _.sum(event.points, 'count');
       _flyoutData.totalPoints = event.tile.totalPoints;
+
+      if (_flyoutData.count > 0) {
+        event.originalEvent.target.style.cursor = 'pointer';
+        _showFeatureFlyout(event);
+      } else {
+        event.originalEvent.target.style.cursor = 'inherit';
+        _hideFlyout();
+      }
     }
   }
 

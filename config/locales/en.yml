@@ -2609,7 +2609,6 @@ en:
             no_precision: None
             precision: Precision
             title: Number Formatting
-            visual_percentage: Visualize Percentage
           number_advanced:
             format_mask: Format Mask
             format_mask_prompt: 'Use #s to indicate numeric digits, and other characters where you want them to go; for example a social security number would be ###-##-####'

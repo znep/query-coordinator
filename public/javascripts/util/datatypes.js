@@ -172,9 +172,7 @@ blist.namespace.fetch('blist.datatypes');
 
     var renderNumber = function(value, column)
     {
-        if (column.format.precisionStyle === 'percentage' &&
-            (column.format.visualPercentage === true ||
-            column.format.visualPercentage === 'true')) {
+        if (column.format.precisionStyle === 'percentage') {
           return renderPercent.apply(null, arguments);
         }
         var prefix = null;

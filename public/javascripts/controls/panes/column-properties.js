@@ -396,9 +396,11 @@
                             prompt: null
                         },
                         {
-                          text: $.t('screens.ds.grid_sidebar.column_properties.number.visual_percentage'),
-                          name: 'format.visualPercentage',
-                          type: 'checkbox',
+                          text: $.t('screens.ds.grid_sidebar.column_properties.formatting.view_style'),
+                          type: 'select',
+                          name: 'format.view',
+                          prompt: null,
+                          options: blist.datatypes.percent.viewTypes,
                           onlyIf: {
                             field: 'format.precisionStyle',
                             value: 'percentage'

@@ -38,6 +38,10 @@ class StoriesController < ApplicationController
   def tile
     @story = PublishedStory.find_by_uid(params[:uid])
 
+    if @story.blank? && can_view_unpublished_story?
+      @story = DraftStory.find_by_uid(params[:uid])
+    end
+
     if @story
       StoryAccessLogger.log_story_view_access(@story, embedded: true)
 

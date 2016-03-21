@@ -482,7 +482,7 @@
             if (!options.disableNavigation)
             {
                 options.controls.push(new OpenLayers.Control.Navigation(
-                        { zoomWheelEnabled: !options.interactToScroll }));
+                    { zoomWheelEnabled: !options.interactToScroll && !options.disableZoomWheel }));
                 options.controls.push(new blist.openLayers.ZoomBar());
             }
 
@@ -1384,7 +1384,7 @@
                 console.groupCollapsed('onMoveEnd');
                 console.groupCollapsed('trace'); console.trace(); console.groupEnd();
                 console.groupCollapsed('state');
-                    console.log('handlingEvent:', this.handlingEvent); 
+                    console.log('handlingEvent:', this.handlingEvent);
                     console.log('resizeEvent', !this.mapSize.equals(this.map.getSize()));
                     console.log('untouched', this._untouched);
                     console.log('expecting', this.expecting, this.expectReasons);

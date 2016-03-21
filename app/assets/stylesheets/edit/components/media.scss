@@ -66,6 +66,7 @@
   .component-socrata-visualization-classic,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-table,
   .component-socrata-visualization-timeline-chart,
   .component-story-tile,
   .component-story-widget,
@@ -87,6 +88,7 @@
 .component-socrata-visualization-classic,
 .component-socrata-visualization-column-chart,
 .component-socrata-visualization-feature-map,
+.component-socrata-visualization-table,
 .component-socrata-visualization-timeline-chart,
 .component-story-tile,
 .component-story-widget,
@@ -161,7 +163,6 @@
       margin-top: $author-component-profile-image-padding;
       margin-right: $author-component-profile-image-padding;
     }
-
   }
 }
 
@@ -302,7 +303,6 @@
       $col8-block-edit-content-width-extra-large * (3/5)
     );
   }
-
 }
 
 .col12 {

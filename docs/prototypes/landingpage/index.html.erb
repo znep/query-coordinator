@@ -140,9 +140,32 @@ layout: prototype-landingpage
             <span class="tag-category">Licensing</span>
           </div>
           <div class="infopane-actions">
-            <button class="btn btn-default btn-sm">Download Data</button>
-            <button class="btn btn-default btn-sm">API</button>
-            <button class="btn btn-default btn-sm">More <span class="icon-arrow-down"></span></button>
+            <div class="btn-group">
+              <button class="btn btn-primary grid btn-sm">View Grid</button>
+
+              <button id="du" class="dropdown btn btn-secondary download btn-sm" data-orientation="bottom">
+                <span>Download</span>
+                <ul class="dropdown-options">
+                    <li><a href="#">CSV</a></li>
+                    <li><a href="#">XLS</a></li>
+                    <li><a href="#">RDF</a></li>
+                    <li><a href="#">XLSX</a></li>
+                </ul>
+              </button>
+
+              <button class="btn btn-secondary api btn-sm"></span>API</button>
+              
+              <button id="dd" class="dropdown btn btn-secondary share btn-sm" data-orientation="bottom">
+                <span>Share</span>
+                <ul class="dropdown-options">
+                    <li><a href="#"><span class="icon-email"></span>Email</a></li>
+                    <li><a href="#"><span class="icon-facebook"></span>Facebook</a></li>
+                    <li><a href="#"><span class="icon-twitter"></span>Twitter</a></li>
+                </ul>
+              </button>
+
+              <button class="btn btn-secondary more btn-sm"><span class="icon-waiting"></span></button>
+            </div>
           </div>
         </div>
 
@@ -178,7 +201,7 @@ layout: prototype-landingpage
   </div>
   <div class="page-content">
     <div class="lp-section">
-      <h2 class="section-header">Featured Content</h2>
+      <h2 class="section-header">Popular Content Using this Data</h2>
       
       <div class="media-results">  
         <div class="result-card media no-meta">
@@ -195,7 +218,7 @@ layout: prototype-landingpage
               <span class="date">Mar. 12, 2016</span>
             </div>
             <div class="second">
-              <span class="icon-official"></span> OFFICIAL</span>
+              <span class="date">12,235 Views</span>
             </div>
           </div>
 
@@ -224,7 +247,7 @@ layout: prototype-landingpage
               <span class="date">Mar. 12, 2016</span>
             </div>
             <div class="second">
-              <span class="icon-official"></span> OFFICIAL</span>
+              <span class="date">12,234 Views</span>
             </div>
           </div>
           
@@ -253,7 +276,7 @@ layout: prototype-landingpage
               <span class="date">Mar. 12, 2016</span>
             </div>
             <div class="second">
-              <span class="icon-official"></span> OFFICIAL</span>
+              <span class="date">1,234 Views</span>
             </div>
           </div>
           
@@ -261,7 +284,7 @@ layout: prototype-landingpage
             <div class="entry-main">
               <div class="img-wrapper"><img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " /></div>
               <div class="entry-description">
-                Interactive experience showing licenses by type, filterable by neighborhood and business type. This data is based on the last 4 years... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+                Interactive experience showing licenses by type, filterable by neighborhood and business type. This data is based on the last 4 years...</span>
               </div>  
             </div>
           </div>
@@ -279,7 +302,7 @@ layout: prototype-landingpage
 
 
       <div class='lp-section'>
-        <h2 class="section-header">What's in this Dataset</h2>
+        <h2 class="section-header">Columns in this Dataset</h2>
 
         <div class="card-frame">
         <div class="table-wrapper schema-preview schema-preview-expanded">
@@ -295,7 +318,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Licensee</td>
                   <td>Legal name of the license holder</td>
-                  <td>Name, Text <span class="icon-text"></span></td>
+                  <td><span class="type">Name, Text</span><span class="icon icon-text"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -362,7 +385,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">DBA Name</td>
                   <td>Doing Business As name. The legal name of the business</td>
-                  <td>Name, Text <span class="icon-text"></span></td>
+                  <td><span class="type">Name, Text</span><span class="icon icon-text"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -429,7 +452,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">License Number</td>
                   <td>Unique Identifier for the license. Note: if licence gets renewed, multiple entries with the same identifier may appear.</td>
-                  <td>ID, Number <span class="icon-number"></span></td>
+                  <td><span class="type">ID, Number</span><span class="icon icon-number"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -496,7 +519,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Expiration Date</td>
                   <td></td></a>
-                  <td>Date, Timestamp<span class="icon-date"></span></td>
+                  <td><span class="type">Date, Timestamp</span><span class="icon icon-date"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
                 
@@ -551,7 +574,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Value</td>
                   <td>Value of the license</td>
-                  <td>Amount, Money<span class="icon-number"></span></td>
+                  <td><span class="type">Amount, Money</span><span class="icon icon-number"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -618,7 +641,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Location</td>
                   <td>Mailing Address of the Business</td>
-                  <td>Location, Point<span class="icon-map"></span></td>
+                  <td><span class="type">Location, Point</span><span class="icon icon-map"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -673,7 +696,7 @@ layout: prototype-landingpage
 
 
       <div class='lp-section'>
-        <h2 class="section-header">Additional Metadata</h2>
+        <h2 class="section-header">About this Dataset</h2>
 
         <div class="card-frame">
 

@@ -49,8 +49,8 @@
 @import "../../../src/scss/components/cards";
 
 // Media Queries
-$lgmobile: 468px 767px;
-$tablet: 769px;
+$lgmobile: 468px;
+$tablet: 767px;
 $desktop: 992px;
 
 
@@ -162,7 +162,6 @@ a {
 	.lp-section {
 
 		@include span-columns(12);
-		margin-bottom: ms(0);
 		padding: ms(-2);
 
 
@@ -186,6 +185,12 @@ a {
 			overflow-x: auto;
 			-webkit-overflow-scrolling: touch;
 			-ms-overflow-style: -ms-autohiding-scrollbar;
+
+			.second {
+				.date {
+					font-size: ms(-2);
+				}
+			}
 			
 			@include media($tablet) {
 				@include row();
@@ -205,7 +210,7 @@ a {
 				//border-bottom: 1px solid $light-grey-3;
 				.footer-action {
 					@include span-columns(12);
-					padding: 0 0 ms(1);
+					padding: 0;
 					font-size: ms(-1);
 				}
 			}
@@ -284,6 +289,9 @@ a {
 				}
 				td:nth-child(3) {
 					color: $grey;
+					span {
+						color: lighten($primary, 20%);
+					}
 				}
 				// hide the Type-column on mobile
 				th:nth-child(3), td:nth-child(3)  {
@@ -386,41 +394,27 @@ a {
 		  			}
 		  		}
 			}
-
 			@include breakpoint($tablet) {
-				.btn-block {
-					display: none;
-				}
-				.centered {
-					display: block;
-					@include span-columns(12);
-					.more-link {
-						float: right;
-						display: inline-block;
-						white-space: nowrap;
-						color: $light-grey-1;
-						text-decoration: underline;
-						margin: ms(-10);
-
-
-						&:hover {
-							color: $light-grey-0;
-						}
-					}
-					.btn {
-						margin: ms(-2) auto; 
-					}
-				}
+				// show only the Type-icon on tablets
 				.schema-preview {
+					th:nth-child(3) {
+						display: table-cell;
+					}
+					td:nth-child(3) {
+					    display: table-cell;
+					    width: 2em;
+					    .type {
+					    	display: none;
+					    }
+					    .icon {
+					    	float: left;
+					    }
+					}
 					.column-name {
 						font-size: ms(0);
 						font-weight: 600;
 					}
-					th:nth-child(3), td:nth-child(3) {
-					    display: table-cell;
-					    max-width: 6em;
-					}
-
+				
 					.details-row {
 						.details-content {
 							.row {	
@@ -445,7 +439,52 @@ a {
 								}
 							}
 						}
-					}		  							  					
+					}	
+
+				}
+
+			}
+
+			@include breakpoint($desktop) {
+				.btn-block {
+					display: none;
+				}
+				.centered {
+					display: block;
+					@include span-columns(12);
+					.more-link {
+						float: right;
+						display: inline-block;
+						white-space: nowrap;
+						color: $light-grey-1;
+						text-decoration: underline;
+						margin: ms(-10);
+
+
+						&:hover {
+							color: $light-grey-0;
+						}
+					}
+					.btn {
+						margin: ms(-2) auto; 
+					}
+				}
+				.schema-preview {
+					th:nth-child(3), td:nth-child(3) {
+					    display: table-cell;
+					    width: 12em;
+					    .icon, .type {
+					    	display: inline;
+					    }
+					    .icon {
+					    	float: right;
+					    }
+					    .type {
+					    	float: left;
+					    }
+					}
+
+	  							  					
 				}
 				.metadata-table {
 					float: left;
@@ -502,12 +541,26 @@ a {
 			color: $dark-grey-1;
 			font-weight: 300;
 			padding-top: ms(-6);
-
-			@include breakpoint($tablet) {
-				@include span-columns(4);
-				text-align: right;
-
+			.btn-group {
+				width: 100%;
+				.download, .grid {
+					width: 28%;
+				}
+				.api {
+					width: 13%;
+				} 
+				.share {
+					width: 19%;
+				}
+				.more {
+					width: 12%;
+				}
 				
+			}
+
+			@include breakpoint($desktop) {
+				@include span-columns(4);
+				text-align: right;				
 				font-size: ms(0);
 			}
 			

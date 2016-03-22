@@ -29,6 +29,15 @@ function renderCell(cellContent, column, i18n) {
     case 'number':
       cellText = _.escape(renderNumberCell(cellContent, column));
       break;
+    // EN-3548 - Note that only OBE datasets can have a column renderTypeName
+    // of 'percent'. Corresponding NBE datasets will have a column
+    // renderTypeName of 'number'. In order to keep that sort of logic somewhat
+    // contained, inside of the implementation of `renderNumberCell()` we do a
+    // few tests to figure out if we should be formatting the resulting value
+    // as a percentage.
+    case 'percent':
+      cellText = _.escape(renderNumberCell(cellContent, column));
+      break;
 
     // Avoid escaping because cell content is HTML.
     case 'geo_entity':
@@ -48,8 +57,6 @@ function renderCell(cellContent, column, i18n) {
   return cellText;
 }
 
-
-
 /**
 * Renders a boolean value in checkbox format
 */
@@ -62,12 +69,7 @@ function renderBooleanCell(cellContent) {
 * This has lots of possible options, so we delegate to helpers.
 */
 function renderNumberCell(input, column) {
-  if (_.isNull(input) || _.isUndefined(input) || input.toString().length === 0) {
-    return '';
-  }
-
   var amount = parseFloat(input);
-
   var format = _.extend({
     precisionStyle: 'standard',
     precision: undefined,
@@ -78,13 +80,36 @@ function renderNumberCell(input, column) {
     mask: null
   }, column.format || {});
 
+  if (_.isNull(input) || _.isUndefined(input) || input.toString().length === 0) {
+    return '';
+  }
+
   format.commaifyOptions = {
     decimalCharacter: format.decimalSeparator,
     groupCharacter: format.groupSeparator
   };
 
-  if (column.dataTypeName === 'percent') {
+  if (_isObePercentColumn(column)) {
+
+    // EN-3548 - OBE percent columns have a renderTypeName of 'percent'; the
+    // corresponding NBE version of the dataset will have a renderTypeName of
+    // 'number' but will have the `format.view` property set to
+    // 'percent_bar_and_text'. The `_isObePercentColumn()` test above will
+    // check the `renderTypeName`; the `_isNbePercentColumn()` test below will
+    // check the `format.view` property instead. We can't simply test for the
+    // `format.view` property and handle both cases because percentages are
+    // pre-multiplied in OBE but not in NBE (see below).
     return _renderPercentageNumber(amount, format);
+  } else if (_isNbePercentColumn(column)) {
+
+    // EN-3548 - Currently, NBE datasets for which the origin OBE dataset had a
+    // 'percent' column have the corresponding number column divided by 100 in
+    // the NBE copy. Multiplying here by 100 brings the rendered values into
+    // parity. As I understand, Chi has a fix in mind that would stop DI2 from
+    // dividing percentage values by 100, which would then make this
+    // multiplication redundant and incorrect. When that happens, let's remove
+    // this.
+    return _renderPercentageNumber(amount * 100, format);
   } else if (format.mask) {
     return _renderMaskedNumber(amount, format);
   } else {
@@ -254,6 +279,14 @@ function renderTimestampCell(cellContent, column) {
  * (must belong to this scope in order to access $window)
  */
 
+function _isObePercentColumn(column) {
+  return _.get(column, 'renderTypeName') === 'percent';
+}
+
+function _isNbePercentColumn(column) {
+  return _.get(column, 'format.view') === 'percent_bar_and_text';
+}
+
 function _renderCurrencyNumber(amount, format) {
   var isNegative = amount < 0;
 
@@ -303,11 +336,13 @@ function _renderScientificNumber(amount, format) {
 
 function _renderPercentageNumber(amount, format) {
   var value = amount;
+
   if (format.precision >= 0) {
     value = value.toFixed(format.precision);
   }
 
   value = utils.commaify(value, format.commaifyOptions);
+
   if (format.noCommas) {
     value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
   }

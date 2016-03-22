@@ -33,6 +33,7 @@ module.exports = function Table(element, vif) {
 
   this.render = function(data, options) {
     utils.assertHasProperties(data, 'rows', 'columns');
+
     if (_.isEqual(_lastRenderData, data) && _.isEqual(_lastRenderOptions, options)) {
       return;
     }
@@ -50,16 +51,16 @@ module.exports = function Table(element, vif) {
    * Currently this is true due to how the table is styled. Caveat emptor.
    */
   this.howManyRowsCanFitInHeight = function(overallHeightPx) {
-    if (!_.isFinite(overallHeightPx)) {
-      return 0;
-    }
-
     var headerHeightPx;
     var rowHeightPx;
     var heightLeftAfterHeaderPx;
     var maxRowCount;
     var numberOfRows;
     var alreadyHasData = _lastRenderData && _lastRenderOptions && _lastRenderData.rows.length > 0;
+
+    if (!_.isFinite(overallHeightPx)) {
+      return 0;
+    }
 
     // We need some data in the table to do the measurements.
     // If there is none there, render a placeholder.

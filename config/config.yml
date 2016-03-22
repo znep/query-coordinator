@@ -59,8 +59,8 @@ default: &default
     cuid: 'C95E515772DAE311BEDA0022196C4538'
   whats_new:
     article_count: 3
-    zendesk_section: 200633703
-    zendesk_link: 'https://support.socrata.com/hc/en-us/sections/200633703-Release-Notes-and-Updates'
+    zendesk_section: 203977877
+    zendesk_link: 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'
 
 # Local development
 development: &development

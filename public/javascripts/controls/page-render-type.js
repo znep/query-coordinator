@@ -101,7 +101,7 @@
                     if (typeof rowId == 'string' && rowId.indexOf('/') > -1)
                     {
                         var splitRowId = rowId.split('/');
-                        sameDS = splitRowId[0] == prtObj.settings.view.id;
+                        sameDS = splitRowId[0] == prtObj.settings.view.id || splitRowId[0] == blist.dataset.id;
                         rowId = splitRowId[1];
                     }
 

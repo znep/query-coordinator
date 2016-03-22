@@ -123,19 +123,24 @@
     <div class="browse2-result-divider"></div>
 
     <div class="browse2-result-metrics">
+      <%-
+        # Show Created instead of Updated when sorting by createdAt
+        timestamp, timelabel =
+          if current_sort && current_sort[:value] == 'newest'
+            [result_created_at, t("controls.browse.browse2.created_at.label")]
+          else
+            [result_last_updated, t("controls.browse.browse2.last_updated.label")]
+          end
+      -%>
 
-      <%- if result_last_updated.present? -%>
-
-        <div class="browse2-result-last-updated">
-          <div class="browse2-result-last-updated-label">
-            <%= t('controls.browse.browse2.last_updated.label') %>
-          </div>
-          <div class="browse2-result-last-updated-value">
-            <%= result_last_updated %>
-          </div>
+      <div class="browse2-result-timestamp">
+        <div class="browse2-result-timestamp-label">
+          <%= timelabel %>
         </div>
-
-      <%- end -%>
+        <div class="browse2-result-timestamp-value">
+          <%= timestamp %>
+        </div>
+      </div>
 
       <%- if result_view_count.present? -%>
 

@@ -1556,17 +1556,17 @@ html {
           .browse2-result-metrics {
             @include desktop {
               width: 20%;
-              .browse2-result-last-updated, .browse2-result-view-count {
+              .browse2-result-timestamp, .browse2-result-view-count {
                 padding-left: 1em;
               }
-              .browse2-result-last-updated {
+              .browse2-result-timestamp {
                 margin-bottom: 1em;
               }
             }
             @include mobile {
               width: 100%;
               padding: 1em;
-              .browse2-result-last-updated, .browse2-result-view-count {
+              .browse2-result-timestamp, .browse2-result-view-count {
                 width: 50%;
                 float: left;
                 > div {
@@ -1580,15 +1580,15 @@ html {
 
             padding-top: 0.8rem;
 
-            .browse2-result-last-updated {
-              .browse2-result-last-updated-label {
+            .browse2-result-timestamp {
+              .browse2-result-timestamp-label {
                 margin-bottom: 0.33em;
                 font-size: 1.1em;
                 font-weight: 700;
                 color: #aaa;
               }
 
-              .browse2-result-last-updated-value {
+              .browse2-result-timestamp-value {
                 font-size: 1.1em;
                 font-weight: 400;
                 color: #666;

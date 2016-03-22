@@ -83,11 +83,14 @@ module Cetera
         tags: @classification['domain_tags'],
         viewCount: @resource['view_count'] && @resource['view_count']['page_views_total'].to_i,
         domainCName: @metadata['domain'],
-        updatedAt: @resource['updatedAt']
+        updatedAt: @resource['updatedAt'],
+        createdAt: @resource['createdAt']
       )
     end
 
-    def_delegators :@data_ostruct, :id, :link, :name, :description, :type, :categories, :tags, :viewCount, :domainCName, :updatedAt
+    def_delegators :@data_ostruct,
+                   :id, :link, :name, :description, :type, :categories, :tags, :viewCount,
+                   :domainCName, :updatedAt, :createdAt
 
     def airbrake_type_error(type)
       Airbrake.notify(

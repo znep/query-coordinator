@@ -210,7 +210,6 @@ RSpec.describe StoriesController, type: :controller do
         it 'renders when unauthenticated' do
           stub_invalid_session
           get :tile, uid: story_revision.uid
-
           expect(response).to render_template(:tile)
         end
 
@@ -229,6 +228,28 @@ RSpec.describe StoriesController, type: :controller do
         it 'returns 404' do
           get :tile, uid: 'notf-ound'
           expect(response).to have_http_status(404)
+        end
+      end
+
+      describe 'when there is no published story with the given four by four' do
+        let(:story_revision) { FactoryGirl.build(:draft_story, uid: 'hasb-lock') }
+
+        before do
+          stub_valid_session
+          stub_core_view(story_revision.uid, {name: tile_title, description: tile_description})
+        end
+
+        it 'renders a 404 when unauthenticated' do
+          stub_invalid_session
+          stub_current_user_story_authorization(mock_user_authorization_unprivileged)
+
+          get :tile, uid: story_revision.uid
+          expect(response).to have_http_status(404)
+        end
+
+        it 'renders a draft story when authenticated' do
+          get :tile, uid: story_revision.uid
+          expect(response).to render_template(:tile)
         end
       end
 

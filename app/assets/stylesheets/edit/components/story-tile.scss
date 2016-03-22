@@ -5,6 +5,19 @@
   width: 100%;
   height: 42rem;
 
+  &.error {
+    display: flex;
+    border: 1px solid #ddd;
+
+    p {
+      margin: auto;
+      padding: 1rem;
+      color: #ad7500;
+      background-color: #fdedcc;
+      border: solid 1px #f7a700;
+    }
+  }
+
   .story-tile-container {
     position: relative;
     display: block;

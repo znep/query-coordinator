@@ -100,7 +100,8 @@ module.exports = function(values, $target) {
     'unit': {
       'one': 'record',
       'other': 'records'
-    }
+    },
+    'type': 'featureMap'
   };
 
   var $featureMapElement = $target;

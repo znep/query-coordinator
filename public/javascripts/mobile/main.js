@@ -22,6 +22,13 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
   var $dlName = $('.dl-name');
   $dlName.html(datasetMetadata.name);
 
+  const TABLE_UNSORTABLE_PHYSICAL_DATATYPES = ['geo_entity', 'point'];
+
+  var firstCard = _.sortBy(
+    _.filter(datasetMetadata.columns, function(column) {
+      return TABLE_UNSORTABLE_PHYSICAL_DATATYPES.indexOf(column.physicalDatatype) < 0;
+    }), 'position')[0];
+
   function getPageTemplate() {
 
     var intro;
@@ -272,7 +279,8 @@ import FilterContainer from './react-components/qfb/filtercontainer/FilterContai
           values = {
             domain: datasetMetadata.domain,
             datasetUid: datasetMetadata.id,
-            columnName: card.fieldName
+            columnName: card.fieldName,
+            orderColumnName: _.findKey(datasetMetadata.columns, firstCard)
           };
 
           mobileTable(values, $cardContainer.find('.' + cardOptions.componentClass));

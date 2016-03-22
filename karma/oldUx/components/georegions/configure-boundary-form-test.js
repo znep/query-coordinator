@@ -127,7 +127,7 @@ describe('ConfigureBoundaryForm', function() {
 
   });
 
-  it('saves on submit', function() {
+  it('saves on submit when configured', function() {
     var saveStub = sinon.stub();
     var node = this.renderIntoDocument({
       onSave: saveStub,
@@ -141,6 +141,43 @@ describe('ConfigureBoundaryForm', function() {
     var form = findByTag(node, 'form');
     TestUtils.Simulate.submit(form);
     expect(saveStub).to.have.been.calledOnce;
+  });
+
+  describe('when setting up a new boundary', function() {
+    it('advances to the confirm screen when "Next" is clicked', function() {
+      var saveStub = sinon.stub();
+      var node = this.renderIntoDocument({
+        onSave: saveStub,
+        initialState: {
+          name: 'name',
+          geometryLabel: 'geometryLabel',
+          isConfigured: false
+        }
+      });
+
+      var form = findByTag(node, 'form');
+      TestUtils.Simulate.submit(form);
+      expect(saveStub).to.not.have.been.called;
+      expect(node.state.isConfigured).to.be.true;
+      expect(node.state.backActions).to.have.length(1);
+    });
+
+    it('goes back to the configure screen when clicking "Back" from the confirm screen', function() {
+      var node = this.renderIntoDocument({
+        initialState: {
+          name: 'name',
+          geometryLabel: 'geometryLabel',
+          isConfigured: false
+        }
+      });
+      var form = findByTag(node, 'form');
+      TestUtils.Simulate.submit(form);
+
+      var backBtn = findAllByTag(node, 'button')[0];
+      TestUtils.Simulate.click(backBtn);
+      expect(node.state.isConfigured).to.be.false;
+      expect(node.state.backActions).to.have.length(0);
+    });
   });
 
 });

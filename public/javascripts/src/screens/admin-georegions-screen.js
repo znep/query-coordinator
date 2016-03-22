@@ -206,7 +206,7 @@ function showConfigureModal(id) {
       complete: completeCallback,
       success: ({ error, message, success }) => {
         if (success) {
-          successCallback(message);
+          successCallback(_.extend(message, {isConfigured: true}));
         } else if (error) {
           errorCallback(message);
         }

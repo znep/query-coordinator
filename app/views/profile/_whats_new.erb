@@ -30,7 +30,7 @@
           </div>
       <%- end -%>
       <div>
-          <a class="whats-new--post-list--see-older" target="_blank" href="https://support.socrata.com/hc/en-us/sections/200633703-Release-Notes-and-Updates"><%= t('screens.profile.whats_new.older_news') %> <span class="icon-arrow-next"></span></a>
+          <a class="whats-new--post-list--see-older" target="_blank" href="<%= APP_CONFIG.whats_new.fetch(:zendesk_link).html_safe %>"><%= t('screens.profile.whats_new.older_news') %> <span class="icon-arrow-next"></span></a>
       </div>
   </div>
 </div>

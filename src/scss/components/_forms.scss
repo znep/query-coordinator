@@ -3,7 +3,7 @@
   /* Size and position */
   display: inline-block;
   position: relative; /* Enable absolute positioning for children and pseudo elements */
-  span[class*="icon-"] {
+  >span[class*="icon-"] {
     padding-left: ms(2); /* Make room for the arrow */
   }
 }
@@ -13,6 +13,7 @@
   position: absolute;
   left: 0;
   right: inherit;
+  min-width: 8em;
 
   /* Styles */
   background: $white;
@@ -38,8 +39,12 @@
   @include ellipsis;
   display: block;
   text-decoration: none;
-  color: $grey;
+  text-align: left;
+  color: $dark-grey-1;
   padding: ms(-5) ms(0);
+  >span[class*="icon-"] {
+    padding-right: ms(-2);
+  }
 }
 
 /* Hover state */

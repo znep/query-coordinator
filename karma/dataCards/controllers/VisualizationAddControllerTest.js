@@ -181,6 +181,8 @@ describe('VisualizationAddController', function() {
           var cardSelected = Card.deserialize(
             $scope.page,
             {
+              aggregationField: null,
+              aggregationFunction: 'count',
               fieldName: validVIF.columnName,
               cardSize: 1,
               expanded: false,
@@ -192,6 +194,7 @@ describe('VisualizationAddController', function() {
 
           sinon.assert.calledOnce(window.frameElement.onVisualizationSelectedV2);
           var arg = window.frameElement.onVisualizationSelectedV2.getCalls()[0].args[0];
+
           expect(_.pick(
             JSON.parse(arg),
             _.keys(validVIF)
@@ -202,6 +205,8 @@ describe('VisualizationAddController', function() {
           var cardSelected = Card.deserialize(
             $scope.page,
             {
+              aggregationField: null,
+              aggregationFunction: 'count',
               fieldName: validVIF.columnName,
               cardSize: 1,
               expanded: false,
@@ -243,6 +248,8 @@ describe('VisualizationAddController', function() {
           var cardSelected = Card.deserialize(
             $scope.page,
             {
+              aggregationField: null,
+              aggregationFunction: 'count',
               fieldName: validVIF.columnName,
               cardSize: 1,
               expanded: false,

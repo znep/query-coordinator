@@ -16,6 +16,9 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 import FilterContainer from './react-components/qfb/filtercontainer/FilterContainer.js';
 
+import 'leaflet/dist/leaflet.css';
+import 'socrata-visualizations/dist/socrata-visualizations.css';
+
 (function() {
   'use strict';
 

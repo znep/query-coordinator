@@ -3,21 +3,9 @@
   /* Size and position */
   display: inline-block;
   position: relative; /* Enable absolute positioning for children and pseudo elements */
-  padding: ms(-5) ms(7) ms(-5) ms(0);
-
-  /* Styles */
-  color: $grey;
-  border: 1px solid $btn-default-border-color;
-  border-radius: 1px;
-  cursor: pointer;
-}
-
-.dropdown::after {
-  @include triangle-down;
-}
-
-.dropdown.dropdown-orientation-top::after {
-  @include triangle-up;
+  span[class*="icon-"] {
+    padding-left: ms(2); /* Make room for the arrow */
+  }
 }
 
 .dropdown .dropdown-options {
@@ -66,13 +54,7 @@
   margin: 1px 0;
 }
 
-.dropdown.active::after {
-  @include triangle-up;
-}
 
-.dropdown.active.dropdown-orientation-top::after {
-  @include triangle-down;
-}
 
 /////Forms
 form {

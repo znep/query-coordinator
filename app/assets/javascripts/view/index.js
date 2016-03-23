@@ -142,12 +142,8 @@ $(document).on('ready', function() {
 
   if (Environment.IS_STORY_PUBLISHED) {
     analytics.sendMetric('domain', 'js-page-view', 1);
-
-    // Remove this check when the frontend code that supports these metrics is stable
-    if (Environment.ENABLE_NEW_STORY_PAGE_VIEW_METRICS) {
-			analytics.sendMetric('domain', 'js-page-view-story', 1);
-			analytics.sendMetric('domain', 'page-view', 1);
-    }
+    analytics.sendMetric('domain', 'js-page-view-story', 1);
+    analytics.sendMetric('domain', 'page-view', 1);
 
     analytics.flushMetrics();
   }

@@ -36,6 +36,7 @@ function choropleth(
           return !_.isUndefined(data);
         });
       var primaryKey$ = $scope.$observe('primaryKey');
+      var hasNoPolygons$ = $scope.$observe('hasNoPolygons');
 
       var destroy$ = $scope.$destroyAsObservable(element);
 
@@ -495,9 +496,11 @@ function choropleth(
         tileLayer$,
         geojsonAggregateData$,
         primaryKey$,
-        function(dimensions, tileLayer, geojsonAggregateData, primaryKey) {
+        hasNoPolygons$,
+        function(dimensions, tileLayer, geojsonAggregateData, primaryKey, hasNoPolygons) {
 
           vif.configuration.shapefile.primaryKey = primaryKey;
+          vif.configuration.interactive = !hasNoPolygons;
 
           var options = {
             // In Data Lens we want the visualization to always show

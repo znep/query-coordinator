@@ -1606,7 +1606,7 @@ en:
         unpublished_datasets: Unpublished Datasets
         view_as_a_dataset: View as a Dataset
         asset_inventory:
-          tooltip: This option is not available due to an expected error. If the problem persists after 24 hours, please contact support.
+          tooltip: This option is not available due to an error. If the problem persists after 24 hours, please contact support.
       federation:
         accept: Accept
         accepted: Accepted

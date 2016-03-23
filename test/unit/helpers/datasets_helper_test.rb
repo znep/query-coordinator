@@ -2,7 +2,7 @@ require 'test_helper'
 
 require_relative '../../../app/helpers/datasets_helper'
 
-class DatasetsHelperTest < Test::Unit::TestCase
+class DatasetsHelperTest < Minitest::Test
 
   def setup
     init_current_domain

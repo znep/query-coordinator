@@ -27,7 +27,7 @@ class PolaroidControllerTest < ActionController::TestCase
     tracking_id = 'test_render_tracking_id'
     post :proxy_request, @request_params.merge('renderTrackingId' => tracking_id)
     assert_response(:success)
-    assert_not_nil(@response.cookies["renderTrackingId_#{tracking_id}"], 'renderTrackingId_(tracking_id) cookie should be present')
+    refute_nil(@response.cookies["renderTrackingId_#{tracking_id}"], 'renderTrackingId_(tracking_id) cookie should be present')
     assert_equal('1', @response.cookies["renderTrackingId_#{tracking_id}"], 'renderTrackingId cookie should equal 1')
   end
 

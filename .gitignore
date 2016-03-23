@@ -21,4 +21,6 @@ coverage
 frontend.iml
 manifest*.txt
 public/javascripts/dist
+log/
 .npmrc
+.byebug_history

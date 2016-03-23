@@ -101,7 +101,7 @@
         </a>
       </li>
       <li class="cancelButton">
-        <a href="<%= @accessible ? alt_view_path(@view) : '#close_print' %>" class="jqmClose button close">
+        <a href="<%= @accessible ? alt_view_path(@view.route_params) : '#close_print' %>" class="jqmClose button close">
           <span class="icon"></span><%= t('core.dialogs.cancel') %>
         </a>
       </li>

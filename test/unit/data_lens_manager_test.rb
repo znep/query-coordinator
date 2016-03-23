@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class DataLensManagerTest < Test::Unit::TestCase
+class DataLensManagerTest < Minitest::Test
 
   def data_lens_manager
     @data_lens_manager ||= DataLensManager.new
@@ -113,7 +113,7 @@ class DataLensManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    data_lens_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
+    data_lens_manager.update('asdf-asdf', :name => 'new name', :description => 'new description')
   end
 
   def test_update_does_not_raise_when_reporting_core_errors
@@ -127,9 +127,7 @@ class DataLensManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    assert_nothing_raised do
-      data_lens_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
-    end
+    data_lens_manager.update('asdf-asdf', :name => 'new name', :description => 'new description')
   end
 
   def test_update_does_not_raise_when_reporting_core_resource_not_found
@@ -143,9 +141,7 @@ class DataLensManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    assert_nothing_raised do
-      data_lens_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
-    end
+    data_lens_manager.update('asdf-asdf', :name => 'new name', :description => 'new description')
   end
 
   def test_fetch
@@ -229,9 +225,7 @@ class DataLensManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    assert_nothing_raised do
-      data_lens_manager.delete('asdf-asdf')
-    end
+    data_lens_manager.delete('asdf-asdf')
   end
 
   def test_delete_does_not_raise_when_core_resource_not_found
@@ -242,9 +236,7 @@ class DataLensManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    assert_nothing_raised do
-      data_lens_manager.delete('asdf-asdf')
-    end
+    data_lens_manager.delete('asdf-asdf')
   end
 
   def v2_page_metadata

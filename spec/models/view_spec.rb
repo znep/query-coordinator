@@ -48,9 +48,9 @@ describe View do
 
     it 'returns a hash from ids to values' do
       stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=fake-fak1&ids%5B%5D=fake-fak2&ids%5B%5D=fake-fak3').
-         with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456',
-                           'User-Agent'=>'Ruby', 'X-Socrata-Federation'=>'Honey Badger',
-                           'X-Socrata-Host'=>'localhost'}).
+         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                          'User-Agent'=>'Ruby', 'X-Socrata-Federation'=>'Honey Badger',
+                          'X-Socrata-Host'=>'localhost'}).
          to_return(
            :status => 200,
            :headers => {},
@@ -66,9 +66,9 @@ describe View do
 
     it 'puts a nil entry in the result if that id is not included in the API response' do
       stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=fake-fak1&ids%5B%5D=fake-fak2&ids%5B%5D=fake-fak3&ids%5B%5D=fake-fak5').
-         with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456',
-                           'User-Agent'=>'Ruby', 'X-Socrata-Federation'=>'Honey Badger',
-                           'X-Socrata-Host'=>'localhost'}).
+         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                          'User-Agent'=>'Ruby', 'X-Socrata-Federation'=>'Honey Badger',
+                          'X-Socrata-Host'=>'localhost'}).
          to_return(
            :status => 200,
            :headers => {},

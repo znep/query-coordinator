@@ -8,6 +8,11 @@ class AccountsControllerTest < ActionController::TestCase
     init_current_domain
   end
 
+  def teardown
+    @controller.request.core_session = nil
+    User.unstub(:create)
+  end
+
   def test_create_with_no_special_things
     post(:create, signup: some_user)
     assert(@response.redirect_url.include?(profile_index_path), 'should redirect to profile')

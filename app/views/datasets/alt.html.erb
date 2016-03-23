@@ -5,7 +5,7 @@
   <%= rendered_stylesheet_tag 'dataset-alt' %>
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
-  <link rel="canonical" href="<%= view_path(@view) %>" />
+  <link rel="canonical" href="<%= view_path(@view.route_params) %>"/>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -66,7 +66,7 @@
     <%- end -%>
   </ul>
 
-  <a class="interactiveBackButton" href="<%= view_path(@view) %>">Go back to the interactive dataset</a><!-- Back to the future -->
+  <a class="interactiveBackButton" href="<%= view_path(@view.route_params) %>">Go back to the interactive dataset</a><!-- Back to the future -->
   <a name="dataGrid" tabindex="-1"></a>
 
   <h2><%= @view.name %></h2>
@@ -76,7 +76,7 @@
 
   <%- if is_grid -%>
   <div id="pagination">
-    <%= create_pagination(@row_count, @per_page, @page, view_path(@view) + '/alt?' + @state_param) %>
+    <%= create_pagination(@row_count, @per_page, @page, view_path(@view.route_params) + '/alt?' + @state_param) %>
   </div>
   <%- end -%>
   <div class="dataGridWrapper">
@@ -99,7 +99,7 @@
   </div>
 
 <%- if is_grid -%>
-  <%= form_tag alt_view_path(@view), :method => :get, :id => 'queryForm' do -%>
+  <%= form_tag alt_view_path(@view.route_params), :method => :get, :id => 'queryForm' do -%>
     <h2>Filter</h2>
     <ul>
       <%- @viewable_columns.each do |column| -%>
@@ -152,7 +152,7 @@
       <%= submit_tag "Submit" %>
     <% end %>
   <%- else -%>
-    <p><%= link_to "Sign in to save this view.", "#{alt_view_path(@view)}?force_login=true&#{@state_param}" %></p>
+    <p><%= link_to "Sign in to save this view.", "#{alt_view_path(@view.route_params)}?force_login=true&#{@state_param}" %></p>
   <%- end -%>
 <%- end -%>
 
@@ -162,7 +162,7 @@
   <% if @view.filters.size > 0 %>
     <% @view.filters.each do |filter| %>
       <ul class="metaDataList">
-        <li><%= link_to filter.name, alt_view_path(filter) %></li>
+        <li><%= link_to filter.name, alt_view_path(filter.route_params) %></li>
       </ul>
     <% end %>
   <% else %>

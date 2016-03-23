@@ -19,18 +19,18 @@ describe Services::DataLens::RegionCoder do
 
     it 'raises a general error if the curated region region does not have an id' do
       expect(CuratedRegion).to receive(:find_by_view_id).and_return(CuratedRegion.new({ 'name' => 'foo' }))
-      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_exception
+      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_exception(RuntimeError)
     end
 
     it 'raises an error if the curated API request fails' do
       allow(CuratedRegion).to receive(:find_by_view_id).and_throw
-      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_error
+      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_error(RuntimeError)
     end
 
     it 'raises an error if the region job queue request fails' do
       expect(CuratedRegion).to receive(:find_by_view_id).and_return(test_curated_region)
       expect_any_instance_of(CuratedRegionJobQueue).to receive(:enqueue_job).and_throw
-      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_error
+      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_error(RuntimeError)
     end
 
     it 'enqueues the job and returns a job id if successful' do

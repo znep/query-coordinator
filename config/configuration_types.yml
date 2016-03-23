@@ -52,7 +52,7 @@ locales:
   description: Handle which locales are available for this domain, which is the default, and also different defaults for language-specific aliases.
   cs_wiki: https://sites.google.com/a/socrata.com/client-services/localization/localizing-content
   known_properties:
-  - *
+  - '*'
   - available_locales
   property_type_checking:
     available_locales: Array

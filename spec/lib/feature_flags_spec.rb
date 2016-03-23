@@ -41,7 +41,7 @@ describe 'FeatureFlags' do
 
   describe '.merge' do
     before :each do
-      ExternalConfig.stubs(:for => test_flags)
+      allow(ExternalConfig).to receive(:for).and_return(test_flags)
     end
 
     describe 'with no expected values' do
@@ -158,8 +158,8 @@ describe 'FeatureFlags' do
 
   describe '.derive' do
     before :each do
-      ExternalConfig.stubs(:for => config_defaults)
-      CurrentDomain.stubs(:feature_flags => domain_flags)
+      allow(ExternalConfig).to receive(:for).and_return(config_defaults)
+      allow(CurrentDomain).to receive(:feature_flags).and_return(domain_flags)
     end
 
     let(:config_defaults) do

@@ -6,7 +6,7 @@
 <% end %>
 
 <% content_for :skip_links do %>
-  <a href="<%= view_path(@view) %>/upload"><%= t("#{prefix}.upload_accessible") %></a><%# THIS LINK IS A LIE ?? %>
+  <a href="<%= view_path(@view.route_params) %>/upload"><%= t("#{prefix}.upload_accessible") %></a><%# THIS LINK IS A LIE ?? %>
 <% end %>
 
 <div class="contentBox fixedWidth">

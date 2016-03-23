@@ -9,12 +9,12 @@
   </li>
   <%- if @theme[:frame][:show_title] -%>
     <li class="subHeaderAction datasetName">
-      <a href="<%= view_path(@view) %>" title="Go to this Dataset" rel="external"><%= @view.name %></a>
+      <a href="<%= view_path(@view.route_params) %>" title="Go to this Dataset" rel="external"><%= @view.name %></a>
     </li>
   <%- end -%>
   <%- if @theme[:menu][:fullscreen] -%>
   <li class="subHeaderAction fullscreen right">
-    <a href="<%= view_path(@view) %>" class="icon" title="View this Dataset full screen" rel="external">Full screen</a>
+    <a href="<%= view_path(@view.route_params) %>" class="icon" title="View this Dataset full screen" rel="external">Full screen</a>
   </li>
   <%- end -%>
   <%- if @theme[:menu][:share] -%>

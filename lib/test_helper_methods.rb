@@ -2,6 +2,9 @@
 module TestHelperMethods
 
   def init_current_domain
+    # For some reason, Domain and Configuration aren't autoloaded at this point,
+    # so force them to load before we read test/fixtures/domain.yml
+    Domain && Configuration
     @domain = YAML::load(File.open("test/fixtures/domain.yml"))
     CurrentDomain.set_domain(@domain)
   end
@@ -12,8 +15,6 @@ module TestHelperMethods
     UserSession.update_current_user(user, session_token)
     user_session = UserSession.new
     controller.current_user_session = user_session
-    # Remove filters that wreck havoc with custom users
-    remove_filters(controller, ['hook_auth_controller',  'sync_logged_in_cookie', 'require_user'])
     user
   end
 
@@ -41,24 +42,6 @@ module TestHelperMethods
     @controller.current_user_session = nil
   end
 
-  def remove_filters(controller, filters)
-    @deleted_filters ||= []
-    regex = Regexp.new(filters.join("|"))
-    controller.class._process_action_callbacks.each do |f|
-      if f.raw_filter.to_s.match(regex)
-        @deleted_filters << f
-        controller.class._process_action_callbacks.delete(f)
-      end
-    end
-  end
-
-  def return_filters(controller)
-    return if @deleted_filters.nil?
-    @deleted_filters.each do |f|
-      controller.class._process_action_callbacks << f
-    end
-  end
-
   def init_core_session
     fake_core_session = CoreSession.new(self, @env)
     fake_core_session.pretend_loaded
@@ -73,14 +56,12 @@ module TestHelperMethods
   end
 
   def application_helper
-    @application_helper ||= begin
-      klass = ActionView::Base
-      Dir.foreach("#{Rails.root}/app/helpers").each do |file|
-        next if file =~ /^\./
-
-        klass.send(:include, File.basename(file, '.rb').classify.constantize)
-      end
-      klass.new
+    @application_helper ||= Object.new.tap do |object|
+      object.extend(ApplicationHelper)
+      object.extend(ActionView::Helpers::JavaScriptHelper)
+      object.extend(ActionView::Helpers::TagHelper)
+      object.extend(Jammit::Helper)
+      object.stubs(:request => stub(:query_parameters => {}))
     end
   end
 

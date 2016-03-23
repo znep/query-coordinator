@@ -30,7 +30,7 @@ module ApplicationHelper
     elsif view.pulse?
       "/pulse/view/#{view.id}"
     else
-      super
+      super(view.route_params)
     end
   end
 
@@ -808,7 +808,7 @@ module ApplicationHelper
   def request_id
     return 'Unavailable' unless request.present?
 
-    request.headers['X-Socrata-RequestId'] || request.headers['action_dispatch.request_id']
+    request.headers['X-Socrata-RequestId'] || request.headers['action_dispatch.request_id'].to_s.gsub('-', '')
   end
 
   # a snippet that can be included before any non-localized url

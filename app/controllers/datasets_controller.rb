@@ -104,7 +104,8 @@ class DatasetsController < ApplicationController
     # If a user sticks .json or similar at the end of a URL, redirect them to the API endpoint
     if params[:format].present?
       return redirect_to(resource_url(
-        { :id => @view.id, :format => params[:format] }.merge(params.except('controller')))
+        { :id => @view.id, :format => params[:format] }.
+          merge(params.except('controller')).symbolize_keys)
       )
     end
 
@@ -273,7 +274,7 @@ class DatasetsController < ApplicationController
     view = View.find_external(params[:id])
 
     if !view.blank?
-      redirect_to view_path(view[0])
+      redirect_to view_path(view[0].route_params)
     else
       render_404
     end
@@ -310,14 +311,14 @@ class DatasetsController < ApplicationController
       end
       return (render 'shared/error')
     end
-    redirect_to alt_view_path(@result)
+    redirect_to alt_view_path(@result.route_params)
   end
 
   def modify_permission
     view = View.find(params[:id])
     view.set_permission(params[:permission_type])
     respond_to do |format|
-      format.html { redirect_to alt_view_path(view) + '#sharing' }
+      format.html { redirect_to alt_view_path(view.route_params) + '#sharing' }
     end
   end
 
@@ -339,7 +340,7 @@ class DatasetsController < ApplicationController
     redirect_path = params[:redirect_to]
 
     respond_to do |format|
-      format.html { redirect_to(view_path(@view) + redirect_path) }
+      format.html { redirect_to(view_path(@view.route_params) + redirect_path) }
     end
   end
 
@@ -348,7 +349,7 @@ class DatasetsController < ApplicationController
     view.update_rating(params[:starsRating].to_i * 20, params[:ratingType])
 
     respond_to do |format|
-      format.html { redirect_to(view_path(view)) }
+      format.html { redirect_to(view_path(view.route_params)) }
     end
   end
 
@@ -394,7 +395,7 @@ class DatasetsController < ApplicationController
       # make copy
       unpub_ds = view.make_unpublished_copy
     end
-    redirect_to alt_view_path(unpub_ds)
+    redirect_to alt_view_path(unpub_ds.route_params)
   end
 
   def publish
@@ -403,14 +404,14 @@ class DatasetsController < ApplicationController
       sleep(10)
     end
     pub_ds = view.publish
-    redirect_to alt_view_path(pub_ds)
+    redirect_to alt_view_path(pub_ds.route_params)
   end
 
   def delete_working_copy
     view = View.find(params[:id])
     pub_ds = view.published_dataset
     view.delete
-    redirect_to (pub_ds.nil? ? profile_index_path : alt_view_path(pub_ds))
+    redirect_to (pub_ds.nil? ? profile_index_path : alt_view_path(pub_ds.route_params))
   end
 
 # end alt actions
@@ -442,7 +443,7 @@ class DatasetsController < ApplicationController
       format.html do
         if success
           flash[:notice] = 'Your message has been sent'
-          return (redirect_to alt_view_path(@view))
+          return (redirect_to alt_view_path(@view.route_params))
         else
           flash[:error] = 'Please fill in all fields'
           return (redirect_to contact_dataset_path(@view.id))

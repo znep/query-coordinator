@@ -73,8 +73,8 @@ module.exports = function ( karma ) {
       // 'public/javascripts/controls/render-type-manager.js',
       // 'public/javascripts/controls/grid-sidebar.js',
       // 'public/javascripts/screens/dataset-show.js',
-      'public/javascripts/screens/admin-jobs.js',
-      'public/javascripts/screens/admin-show-job.js',
+      // 'public/javascripts/screens/admin-jobs.js',
+      // 'public/javascripts/screens/admin-show-job.js',
 
       // Utilities/Libraries
       'public/javascripts/plugins/html4-defs.js',

@@ -94,7 +94,7 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/dist/rx.virtualtime.js',
       'bower_components/rxjs/dist/rx.testing.js',
       'bower_components/leaflet/dist/leaflet-src.js',
-      'app/styles/leaflet.css',
+      'node_modules/leaflet/dist/leaflet.css',
       'public/javascripts/util/typed-arrays.js',
       'public/javascripts/bower/pbf.min.js',
       'public/javascripts/bower/vectortile.min.js',

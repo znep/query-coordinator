@@ -181,7 +181,7 @@ module CoreServer
 
       # proxy user agent
       if @@env.present?
-        request['X-Socrata-RequestId'] = @@env['action_dispatch.request_id']
+        request['X-Socrata-RequestId'] = @@env['action_dispatch.request_id'].to_s.gsub('-', '')
         request['X-User-Agent'] = @@env['HTTP_USER_AGENT']
       else
         Rails.logger.warn("Missing env in CoreServer::Connection")

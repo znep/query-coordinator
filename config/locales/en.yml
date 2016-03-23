@@ -108,6 +108,7 @@ en:
         no_preview_available: No preview available
         pending_computation: <p>This is the first time this boundary is being used for this dataset.</p><p>It can take a few minutes (more for large datasets) for the map to render once you add it to the page.</p>
         computation_in_progress: This visualization is being computed. Check back in a few minutes.
+        has_no_polygons: No data is present within the boundaries.
       common:
         by: by
         cancel: Cancel

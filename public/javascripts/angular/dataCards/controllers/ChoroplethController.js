@@ -294,11 +294,11 @@ function ChoroplethController(
         _, _, whereClauseFragment, _, { limit: shapefileRegionQueryLimit });
 
       return Rx.Observable.combineLatest(
-          computedColumnName$,
-          datasetId$,
-          aggregation$,
-          computedColumn$,
-          getDataWithWhereClauseAndLimit
+        computedColumnName$,
+        datasetId$,
+        aggregation$,
+        computedColumn$,
+        getDataWithWhereClauseAndLimit
       ).
         tap(trackPromiseFlightStatus).
         switchLatest().
@@ -356,6 +356,17 @@ function ChoroplethController(
 
   var allCuratedRegions$ = dataset.flatMapLatest(SpatialLensService.getAvailableGeoregions$);
   $scope.$bindObservable('noAvailableBoundaries', allCuratedRegions$.map(_.isEmpty));
+
+  var hasNoPolygons$ = Rx.Observable.combineLatest(
+    geojsonRegions$,
+    unfilteredData$,
+    function(geojsonRegions, unfilteredData) {
+      var noRegions = _.isEmpty(_.get(geojsonRegions, 'features', []));
+      var noData = _.every(_.pluck(unfilteredData, 'name'), _.isUndefined);
+      return noRegions || noData;
+    });
+
+  $scope.$bindObservable('hasNoPolygons', hasNoPolygons$);
 
   /*********************************************************
   * Respond to events in the child 'choropleth' directive. *

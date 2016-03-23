@@ -776,13 +776,34 @@ describe('ChoroplethController', function() {
         return q.when({ features: [] });
       };
 
+      mockCardDataService.getData = function() {
+        return q.when({ data: [{ name: 'some', value: 'data' }] });
+      };
+
       var choropleth = createChoropleth({});
       expect(choropleth.$scope.hasNoPolygons).to.equal(true);
     });
 
-    it('is false if there are polygons', function() {
+    it('is true if there is no unfiltered data', function() {
+      mockCardDataService.getChoroplethRegionsUsingSourceColumn = function() {
+        return q.when({ features: [ 'i am a feature' ] });
+      };
+
+      mockCardDataService.getData = function() {
+        return q.when({ data: [{ name: undefined, value: 'data' }] });
+      };
+
+      var choropleth = createChoropleth({});
+      expect(choropleth.$scope.hasNoPolygons).to.equal(true);
+    });
+
+    it('is false if there are polygons and unfiltered data', function() {
       mockCardDataService.getChoroplethRegionsUsingSourceColumn = function() {
         return q.when({ features: [ 'hi i am a feature' ] });
+      };
+
+      mockCardDataService.getData = function() {
+        return q.when({ data: [{ name: 'some', value: 'data' }] });
       };
 
       var choropleth = createChoropleth({});

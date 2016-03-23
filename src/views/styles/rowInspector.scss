@@ -165,7 +165,6 @@ $action-btn-disabled-font-color: #c6c1bf;
       max-height: $row-inspector-max-height;
       right: inherit;
       left: 50%;
-      height: $row-inspector-content-max-height + $pagination-height + ($row-inspector-border-width * 2);
       z-index: 1003;
     }
 
@@ -288,12 +287,18 @@ $action-btn-disabled-font-color: #c6c1bf;
     font-size: $icon-size;
     cursor: pointer;
     top: 5px;
-    right: 20px;
+    right: 10px;
     position: absolute;
     z-index: 3;
 
     &::before {
       content: '\2715';
+    }
+  }
+
+  .scrollable {
+    .icon-close {
+      right: 20px;
     }
   }
 

@@ -543,6 +543,9 @@ a {
 			padding-top: ms(-6);
 			.btn-group {
 				width: 100%;
+				.btn-sm {
+					background-color: $light-grey-5;
+				}
 				.download, .grid {
 					width: 28%;
 				}
@@ -562,6 +565,13 @@ a {
 				@include span-columns(4);
 				text-align: right;				
 				font-size: ms(0);
+			
+				.flannel, .flannel-actions {
+					letter-spacing: 0;
+					text-align: left;
+					max-width: 420px;
+
+				}
 			}
 			
 			

@@ -141,9 +141,9 @@ layout: prototype-landingpage
           </div>
           <div class="infopane-actions">
             <div class="btn-group">
-              <button class="btn btn-primary grid btn-sm">View Grid</button>
+              <button class="btn btn-default grid btn-sm">View Grid</button>
 
-              <button id="du" class="dropdown btn btn-secondary download btn-sm" data-orientation="bottom">
+              <button id="du" class="dropdown btn btn-default download btn-sm" data-orientation="bottom">
                 <span>Download</span>
                 <ul class="dropdown-options">
                     <li><a href="#">CSV</a></li>
@@ -153,9 +153,35 @@ layout: prototype-landingpage
                 </ul>
               </button>
 
-              <button class="btn btn-secondary api btn-sm"></span>API</button>
+              <button class="btn btn-default api btn-sm" data-flannel="api-flannel" data-toggle>API</button>
+              <div id="api-flannel" class="flannel flannel-hidden">
+                <header class="flannel-header">
+                  <h4 class="flannel-header-title">Access this Dataset via SODA API</h4  >
+                  <button class="btn btn-transparent flannel-header-dismiss" data-flannel-dismiss>
+                    <span class="icon-close-2"></span>
+                  </button>
+                </header>
+                <section class="flannel-content">
+                  <p class="small">The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data. </p>
+
+                  <button class="btn btn-default btn-sm"><span class="icon-copy-document"></span>API Docs</button>
+                  <button class="btn btn-default btn-sm"><span class="icon-settings"></span>Developer Portal</button>
+                </section>
+                <section class="flannel-content">
+                  <h6>API Endpoint</h6>
+                  <form>
+                    <span class="input-group">
+                      <input class="text-input" type="text" placeholder="https://evergreen.data.socrata.com/resource/nijw-wqck.json" readonly=""/>
+                      <span class="input-group-btn">
+                        <button class="btn btn-primary">Copy</button>
+                      </span>
+                    </span>
+                  </form>
+                </section>
+
+              </div>
               
-              <button id="dd" class="dropdown btn btn-secondary share btn-sm" data-orientation="bottom">
+              <button id="dd" class="dropdown btn btn-default share btn-sm" data-orientation="bottom">
                 <span>Share</span>
                 <ul class="dropdown-options">
                     <li><a href="#"><span class="icon-email"></span>Email</a></li>
@@ -164,7 +190,13 @@ layout: prototype-landingpage
                 </ul>
               </button>
 
-              <button class="btn btn-secondary more btn-sm"><span class="icon-waiting"></span></button>
+              <button id="dd" class="dropdown btn btn-default more btn-sm" data-orientation="bottom">
+                <span><span class="icon-waiting"></span><span>
+                <ul class="dropdown-options">
+                    <li><a href="#"><span class="icon-email"></span>Contact Data Owner</a></li>
+                    <li><a href="#"><span class="icon-facebook"></span>Access Data via OData</a></li>
+                    <li><a href="#"><span class="icon-twitter"></span>Open Data in Tableau</a></li>
+                </ul>
             </div>
           </div>
         </div>

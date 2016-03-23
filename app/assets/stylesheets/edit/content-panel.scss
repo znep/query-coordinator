@@ -16,6 +16,12 @@
   background-color: $content-panel-bg-color;
 
   .scrollable {
+    position: absolute;
+    left: 0;
+    top: $rich-text-editor-toolbar-btn-height;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
     border-top: solid 1px $header-accent-color;
     padding-top: 2rem;
   }
@@ -25,17 +31,19 @@
   }
 
   .content-panel-close-btn-container {
-    display: inline-block;
-    width: 100%;
-    text-align: right;
-    margin-top: 0.2rem;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: $rich-text-editor-toolbar-btn-height;
 
     .content-panel-close-btn {
-      width: $content-panel-close-btn-width;
-      height: $content-panel-close-btn-width;
+      width: 100%;
+      height: 100%;
       padding: 0;
+      padding-right: 1rem;
       line-height: $content-panel-close-btn-width;
-      text-align: center;
+      text-align: right;
       background-color: transparent;
       border: none;
       cursor: pointer;
@@ -45,6 +53,7 @@
 
       &:hover {
         color: $content-panel-close-button-hover-color;
+        background-color: #f2f2f2;
       }
 
       &:focus {
@@ -71,14 +80,5 @@
     font-weight: 200;
     font-style: oblique;
     color: $content-panel-description-color;
-  }
-
-  .scrollable {
-    position: absolute;
-    left: 0;
-    top: 4rem;
-    right: 0;
-    bottom: 0;
-    overflow-y: auto;
   }
 }

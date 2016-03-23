@@ -10,6 +10,7 @@ export default function StoryPreviewLink() {
 
   function render() {
     $this.toggleClass('disabled', disabled);
+    $this.prop('disabled', disabled);
   }
 
   storySaveStatusStore.addChangeListener(function() {
@@ -21,6 +22,8 @@ export default function StoryPreviewLink() {
   $this.on('click', function(event) {
     if (disabled) {
       event.preventDefault();
+    } else {
+      window.open(event.target.getAttribute('data-href'), '_blank');
     }
   });
 

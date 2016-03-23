@@ -15,10 +15,6 @@ $inspiration-block-hover-border-color: #4a90e2;
 #add-content-panel {
   z-index: $add-content-panel-z-index;
   width: $add-content-panel-width;
-
-  .scrollable {
-    top: $add-content-panel-top;
-  }
 }
 
 .inspiration-block-list-error {
@@ -88,6 +84,10 @@ $inspiration-block-hover-border-color: #4a90e2;
   &:nth-child(2n) {
     margin-left: 2%;
     margin-right: 4%;
+  }
+
+  &:active {
+    cursor: -webkit-grabbing;
   }
 
   &:hover {

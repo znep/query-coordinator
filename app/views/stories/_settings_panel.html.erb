@@ -38,10 +38,10 @@
             <%- end %>
 
             <form>
-              <label><%= t('editor.settings_panel.displaying_section.title_label') %></label>
-              <input name="title" type="text" maxlength="254"<%= ' disabled' unless can_edit_title_and_description? %>>
-              <label><%= t('editor.settings_panel.displaying_section.description_label') %></label>
-              <textarea <%= ' disabled' unless can_edit_title_and_description? %>></textarea>
+              <label for="title"><%= t('editor.settings_panel.displaying_section.title_label') %></label>
+              <input id="title" name="title" type="text" maxlength="254"<%= ' disabled' unless can_edit_title_and_description? %>>
+              <label for="description"><%= t('editor.settings_panel.displaying_section.description_label') %></label>
+              <textarea id="description" name="description" <%= ' disabled' unless can_edit_title_and_description? %>></textarea>
             </form>
 
             <div class="settings-save-failure-message">

@@ -7,7 +7,7 @@ $header-right-pane-padding: 1em;
 $header-box-shadow-size: 0.15rem;
 
 // Story save error bar
-$story-save-error-bar-reserved-height: 3rem;
+$story-save-error-bar-reserved-height: 3.5rem;
 
 // Panels
 $panel-width: 38rem;
@@ -99,7 +99,7 @@ $media-component-large-margin-top: 3.2rem;
 $media-component-extra-large-margin-top: 3.2rem;
 
 // Rich Text Editor toolbar
-$rich-text-editor-toolbar-top-offset: $header-height + 2rem;
+$rich-text-editor-toolbar-top-offset: $header-height;
 $rich-text-editor-toolbar-btn-width: 4rem;
 $rich-text-editor-toolbar-btn-height: 4.2rem;
 $rich-text-editor-toolbar-select-width: 16rem;

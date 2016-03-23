@@ -11,7 +11,7 @@ var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d
 var DEFAULT_BASE_LAYER_OPACITY = 0.8;
 var NAME_ALIAS = '__NAME_ALIAS__';
 var VALUE_ALIAS = '__VALUE_ALIAS__';
-var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} {3} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+var BASE_QUERY = 'SELECT `{0}` AS {1}, {2} AS {3} {4} GROUP BY `{0}` ORDER BY {2} DESC NULL LAST LIMIT 200';
 var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
@@ -217,16 +217,19 @@ $.fn.socrataChoroplethMap = function(vif) {
    * Fetches SOQL data and aggregates with shapefile geoJSON
    */
   function _updateData(vifToRender) {
+    var aggregationClause = SoqlHelpers.aggregationClause(vifToRender);
     var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
     var unfilteredQueryString = BASE_QUERY.format(
       vifToRender.configuration.computedColumnName,
       NAME_ALIAS,
+      aggregationClause,
       VALUE_ALIAS,
       ''
     );
     var filteredQueryString = BASE_QUERY.format(
       vifToRender.configuration.computedColumnName,
       NAME_ALIAS,
+      aggregationClause,
       VALUE_ALIAS,
       (whereClauseComponents) ? 'WHERE {0}'.format(whereClauseComponents) : ''
     );

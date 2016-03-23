@@ -23,8 +23,8 @@ describe('SoqlHelpers', function() {
   function vifWithNoFilters() {
     return {
       'aggregation': {
-        'columnName': 'column_name',
-        'function': 'sum'
+        'columnName': null,
+        'function': 'count'
       },
       'columnName': TEST_OWN_COLUMN_NAME,
       'configuration': {
@@ -226,6 +226,22 @@ describe('SoqlHelpers', function() {
     });
 
   }
+
+  describe('aggregationClause', function() {
+    it('returns a count aggregation clause when `aggregation.function` is `count`', function() {
+      var vif = vifWithNoFilters();
+
+      assert.equal(SoqlHelpers.aggregationClause(vif), 'COUNT(*)');
+    });
+
+    it('returns a sum aggregation clause when `aggregation.function` is `sum`', function() {
+      var vif = vifWithNoFilters();
+      vif.aggregation['function'] = 'sum';
+      vif.aggregation.columnName = 'aggregated_column';
+
+      assert.equal(SoqlHelpers.aggregationClause(vif), 'SUM(`aggregated_column`)');
+    });
+  });
 
   describe('whereClauseNotFilteringOwnColumn', function() {
 

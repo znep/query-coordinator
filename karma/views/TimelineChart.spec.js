@@ -157,6 +157,10 @@ describe('socrata.visualizations.views.TimelineChart', function() {
     $('body').append(element);
 
     var timelineChartVIF = {
+      aggregation: {
+        columnName: null,
+        'function': 'count'
+      },
       configuration: {
         columns: {
           name: NAME_INDEX,

@@ -10,6 +10,10 @@ describe('ChoroplethMap', function() {
   var BLUE = 2;
 
   var choroplethVIF = {
+    aggregation: {
+      columnName: null,
+      'function': 'count'
+    },
     configuration: {
       baseLayerUrl: DEFAULT_BASE_LAYER_URL,
       baseLayerOpacity: DEFAULT_BASE_LAYER_OPACITY,

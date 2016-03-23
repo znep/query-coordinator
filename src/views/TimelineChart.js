@@ -468,7 +468,19 @@ function TimelineChart(element, vif) {
       utils.assert(!_.isNaN(value));
 
       var resolve = function(rule) {
-        return '{0} {1}'.format(utils.formatNumber(value), rule);
+
+        if (_.get(_lastRenderOptions, 'vif.aggregation.function') === 'sum') {
+
+          return '{0} {1}'.format(
+            utils.formatNumber(value),
+            utils.pluralize(
+              _.get(_lastRenderOptions, 'vif.aggregation.columnName'),
+              value
+            )
+          );
+        } else {
+          return '{0} {1}'.format(utils.formatNumber(value), rule);
+        }
       };
 
       if (value === 1 && rules.one) {

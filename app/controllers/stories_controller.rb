@@ -142,6 +142,10 @@ class StoriesController < ApplicationController
     view_copy = CoreServer.create_view(copy_title)
 
     return redirect_to '/', :flash => {
+      :error => I18n.t('stories_controller.failed_to_publish')
+    } unless view_copy.present?
+
+    return redirect_to '/', :flash => {
       :error => I18n.t('stories_controller.permissions_error_flash')
     } unless should_create_draft_story?(view_copy)
 

@@ -48,6 +48,7 @@ en:
     error_creating_story_flash: 'Error creating story.'
     permissions_error_flash: 'Permissions error.'
     not_found_error_flash: 'Story not found.'
+    failed_to_publish: 'Failed to copy story. Please try again later.'
   style_and_presentation_panel:
     custom_themes_title: 'Custom Themes'
     custom_themes_description: 'Made-to-order themes make you stand out'

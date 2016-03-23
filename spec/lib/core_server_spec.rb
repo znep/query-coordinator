@@ -163,6 +163,58 @@ describe CoreServer do
     end
   end
 
+  describe '#create_view' do
+    let(:title) { "A Title" }
+    let(:working_copy_4x4) { "test-test" }
+    let(:published_4x4) { "publ-ishd" }
+
+    before do
+      allow(CoreServer).to receive(:view_request).and_return("id" => working_copy_4x4)
+      allow(CoreServer).to receive(:core_server_request_with_retries).and_return("id" => published_4x4)
+    end
+
+    it 'creates a new view' do
+      expect(CoreServer).
+        to receive(:view_request).
+        with(verb: :post, data: CoreServer.view_with_title(title), query_params: nil)
+
+      CoreServer.create_view(title)
+    end
+
+    it 'publishes a working copy' do
+      expect(CoreServer).
+        to receive(:core_server_request_with_retries).
+        with(verb: :post, path: "/views/#{working_copy_4x4}/publication.json")
+
+      CoreServer.create_view(title)
+    end
+
+    describe 'when view publication succeeds' do
+      it 'returns a published view' do
+        view = CoreServer.create_view(title)
+        expect(view['id']).to eq(published_4x4)
+      end
+    end
+
+    describe 'when view publication fails' do
+      before do
+        allow(CoreServer).to receive(:core_server_request_with_retries).and_return(nil)
+      end
+
+      it 'deletes the working copy' do
+        expect(CoreServer).
+          to receive(:core_server_request_with_retries).
+          with(verb: :delete, path: "/views/#{working_copy_4x4}")
+
+        CoreServer.create_view(title)
+      end
+
+      it 'returns nil' do
+        expect(CoreServer.create_view(title)).to be(nil)
+      end
+    end
+  end
+
   describe '#core_server_http_request' do
     let(:mock_headers) do
       {

@@ -314,6 +314,14 @@ module.exports = function ( karma ) {
               'ngtemplate?relativeTo=' + templateDir,
               'html'
             ]
+          },
+          {
+            test: /\.scss|\.css$/,
+            loader: 'style!css!autoprefixer-loader!sass'
+          },
+          {
+            test: /\.png$/,
+            loader: 'url-loader?limit=100000'
           }
         ]
       },

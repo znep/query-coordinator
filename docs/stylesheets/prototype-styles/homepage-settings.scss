@@ -1,0 +1,163 @@
+@import "breakpoint";
+@import "vendor/reset";
+//@import "vendor/prism";
+@import "modular-scale";
+
+
+// Style Components
+@import "bourbon";
+@import "neat";
+
+@import "../../../src/scss/socrata-icons";
+
+@font-face {
+  font-family: "socrata-icons";
+  src: url("/fonts/socrata-icons.eot");
+  src: url("/fonts/socrata-icons.eot?#iefix") format("embedded-opentype"),
+       url("/fonts/socrata-icons.woff") format("woff"),
+       url("/fonts/socrata-icons.ttf") format("truetype"),
+       url("/fonts/socrata-icons.svg#socrata-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "socrata-icons";
+    src: url("/fonts/socrata-icons.svg#socrata-icons") format("svg");
+  }
+}
+
+@import "../../../src/scss/components/grid";
+@import "../../../src/scss/components/typography";
+@import "../../../src/scss/components/colors";
+@import "../../../src/scss/components/color-swatches";
+@import "../../../src/scss/components/button-group";
+@import "../../../src/scss/components/buttons";
+@import "../../../src/scss/components/list";
+@import "../../../src/scss/components/loader";
+@import "../../../src/scss/components/forms";
+@import "../../../src/scss/components/modal";
+@import "../../../src/scss/components/tags";
+@import "../../../src/scss/components/alerts";
+@import "../../../src/scss/components/dividers";
+@import "../../../src/scss/components/flyout";
+@import "../../../src/scss/components/flannel";
+@import "../../../src/scss/components/nav-bars";
+@import "../../../src/scss/components/tables";
+@import "../../../src/scss/components/menu";
+@import "../../../src/scss/components/pagination";
+@import "../../../src/scss/components/input-groups";
+@import "../../../src/scss/components/cards";
+
+// Media Queries
+$tablet: 769px;
+$desktop: 992px;
+
+// Consider for stylguide migration
+
+form input {
+	width: 100%;
+}
+
+label {
+	font-weight: 600;
+	.checkbox & {
+		font-weight: 400;
+	}
+}
+
+h1, h2, h3, h4, h5, h6 { letter-spacing: -0.5px; }
+
+
+.tabs {
+	@extend .list-inline;
+	.current {
+		a {
+			border-bottom: 4px solid $primary;
+			&:hover {
+				border-bottom: 4px solid $primary-dark;
+			}
+		}
+	}	
+	a {
+		text-decoration: none;
+		color: $dark-grey-1;
+		padding: ms(-8) ms(-4);
+		&.active {
+			border-bottom: 4px solid $primary;		
+		}
+		&:hover {
+			border-bottom: 4px solid $light-grey-3;
+			color: $dark-grey-3;
+		}
+	}
+	border-bottom: 1px solid $light-grey-3;
+	padding-bottom: ms(-6);
+
+}
+.tab-content {
+	&.current {
+		display: inherit;
+	}
+	display: none;
+}
+//
+
+.container  {
+	margin-top: ms(4);
+	@include outer-container();
+	background-color: red;
+}
+
+.content {
+	@include span-columns(12);
+	background-color: $white;
+}
+
+
+.admin-header {
+	@include row();
+	margin-bottom: ms(10);
+
+	.header-title {
+		@include span-columns(6);
+	}
+
+	.header-controls {
+		@include span-columns(6);
+		text-align: right;
+		//margin-top: ms(-);
+	}
+}
+
+.section-header {
+	margin-top: ms(5);
+}
+
+.settings-group {
+	@include row();
+	padding-top: ms(5);
+
+
+	.settings-form {
+		@include span-columns(8);
+		&.half {
+			@include span-columns(4);
+		}
+	}
+
+	aside {
+		@include span-columns(4);
+	}
+
+}
+
+.page-controls {
+	border-top: 1px solid $light-grey-4;
+	padding: ms(1) 0;
+	margin-bottom: ms(2);
+}
+
+
+

@@ -65,7 +65,7 @@ gem 'airbrake'
 
 group :development, :test do
   # Testing framework
-  gem 'rspec-rails', '~> 3.2'
+  gem 'rspec-rails', '~> 3.4'
 
   # Make pry the default in rails console
   gem 'pry-rails'
@@ -87,7 +87,6 @@ group :development, :test do
 
   gem 'simplecov', require: false
   gem 'simplecov-cobertura', require: false
-  gem 'nyan-cat-formatter', require: false
   gem 'factory_girl_rails'
 end
 

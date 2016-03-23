@@ -11807,6 +11807,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ROW_INSPECTOR_MAX_CONTENT_HEIGHT;
 
 	  utils.isolateScrolling(scrollingElement, isScrollable);
+	  _$rowInspectorToolPanel.toggleClass('scrollable', isScrollable);
 	}
 
 	function _renderError() {

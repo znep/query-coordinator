@@ -10,9 +10,9 @@
   },
   "scripts": {
     "postinstall": "npm rebuild node-sass",
-    "build": "webpack && node tools/compile-css.js",
+    "build": "webpack && npm run compile-css",
     "prebuild": "rimraf dist",
-    "prepublish": "webpack && node tools/compile-css.js",
+    "prepublish": "npm run build",
     "lint": "eslint -c package.json  --ignore-path .eslintignore src/**/*.js",
     "test": "karma start karma.conf.js --singleRun true",
     "version-bump-check": "node tools/version-bump-check.js",

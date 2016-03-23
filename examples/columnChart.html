@@ -13,7 +13,8 @@
 
       #column-chart-1,
       #column-chart-2,
-      #column-chart-3 {
+      #column-chart-3,
+      #column-chart-4 {
         display: block;
         position: relative;
         width: 640px;
@@ -27,6 +28,7 @@
     <div id="column-chart-1"></div>
     <div id="column-chart-2"></div>
     <div id="column-chart-3"></div>
+    <div id="column-chart-4"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -37,128 +39,158 @@
 
   <script type="text/javascript">
 
-    var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+    $(document).ready(function() {
 
-    var COLUMN_NAME = 'category';
-    var DATASET_UID = 'r6t9-rak2';
-    var DOMAIN = 'dataspace.demo.socrata.com';
+      /**
+       * Set up VIFs
+       */
 
-    var columnChart1VIF = {
-      'aggregation': {
-        'columnName': null,
-        'function': 'count'
-      },
-      'columnName': COLUMN_NAME,
-      'configuration': {
-        'interactive': true,
-        // The localization values should be set by the application but are set
-        // to string literals for the purposes of this example.
-        'localization': {
-          'NO_VALUE': 'No value',
-          'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
-          'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-          'FLYOUT_SELECTED_NOTICE': 'This column is selected'
+      var COLUMN_NAME = 'category';
+      var DATASET_UID = 'r6t9-rak2';
+      var DOMAIN = 'dataspace.demo.socrata.com';
+
+      var columnChart1VIF = {
+        'aggregation': {
+          'columnName': null,
+          'function': 'count'
+        },
+        'columnName': COLUMN_NAME,
+        'configuration': {
+          'interactive': true,
+          // The localization values should be set by the application but are set
+          // to string literals for the purposes of this example.
+          'localization': {
+            'NO_VALUE': 'No value',
+            'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
+            'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
+            'FLYOUT_SELECTED_NOTICE': 'This column is selected'
+          }
+        },
+        'createdAt': '2014-01-01T00:00:00',
+        'datasetUid': DATASET_UID,
+        'domain': DOMAIN,
+        'filters': [],
+        'format': {
+          'type': 'visualization_interchange_format',
+          'version': 1
+        },
+        'origin': {
+          'type': 'test_data',
+          'url': 'localhost'
+        },
+        'title': COLUMN_NAME,
+        'type': 'columnChart',
+        'unit': {
+          'one': 'case',
+          'other': 'cases'
         }
-      },
-      'createdAt': '2014-01-01T00:00:00',
-      'datasetUid': DATASET_UID,
-      'domain': DOMAIN,
-      'filters': [],
-      'format': {
-        'type': 'visualization_interchange_format',
-        'version': 1
-      },
-      'origin': {
-        'type': 'test_data',
-        'url': 'localhost'
-      },
-      'title': COLUMN_NAME,
-      'type': 'columnChart',
-      'unit': {
-        'one': 'case',
-        'other': 'cases'
-      }
-    };
-
-    var $columnChart1Element = $('#column-chart-1');
-    $columnChart1Element.socrataColumnChart(columnChart1VIF);
-
-    var columnChart2VIF = _.cloneDeep(columnChart1VIF);
-    columnChart2VIF.filters = [
-      {
-        'function': 'binaryOperator',
-        'columnName': 'source',
-        'arguments': {
-          'operator': '=',
-          'operand': 'Web Self Service'
-        }
-      }
-    ];
-
-    var $columnChart2Element = $('#column-chart-2');
-    $columnChart2Element.socrataColumnChart(columnChart2VIF);
-
-    var columnChart3VIF = _.cloneDeep(columnChart1VIF);
-    columnChart3VIF.columnName = 'source';
-    columnChart3VIF.filters = [
-      {
-        'function': 'binaryOperator',
-        'columnName': 'source',
-        'arguments': {
-          'operator': '=',
-          'operand': 'Web Self Service'
-        }
-      }
-    ];
-
-    var $columnChart3Element = $('#column-chart-3');
-    $columnChart3Element.socrataColumnChart(columnChart3VIF);
-
-    /**
-     * Handle flyout events.
-     */
-
-    $columnChart1Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
-    $columnChart1Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
-
-    $columnChart2Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
-    $columnChart2Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
-
-    $columnChart3Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
-    $columnChart3Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
-
-    function handleFlyout(event) {
-      var payload = event.originalEvent.detail;
-
-      // Render/hide a flyout
-      if (payload !== null) {
-
-        flyoutRenderer.render(payload);
-
-      } else {
-
-        flyoutRenderer.clear();
-      }
-    }
-
-    function handleVifUpdated(event) {
-      var payload = event.originalEvent.detail;
-      var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
-
-      renderVifEvent.originalEvent = {
-        detail: payload
       };
 
-      $(this).trigger(renderVifEvent);
-    }
+      var columnChart2VIF = _.cloneDeep(columnChart1VIF);
+      columnChart2VIF.filters = [
+        {
+          'function': 'binaryOperator',
+          'columnName': 'source',
+          'arguments': {
+            'operator': '=',
+            'operand': 'Web Self Service'
+          }
+        }
+      ];
 
-    /**
-     * Destroy the plugin.
-     *
-     * The plugin (and all internal modules) can be destroyed by triggering
-     * `destroy` on the element.
-     */
-    // $columnChart1Element.trigger('destroy');
-    // $columnChart2Element.trigger('destroy');
+      var columnChart3VIF = _.cloneDeep(columnChart1VIF);
+      columnChart3VIF.columnName = 'source';
+      columnChart3VIF.filters = [
+        {
+          'function': 'binaryOperator',
+          'columnName': 'source',
+          'arguments': {
+            'operator': '=',
+            'operand': 'Web Self Service'
+          }
+        }
+      ];
+
+      var columnChart4VIF = _.cloneDeep(columnChart1VIF);
+      columnChart4VIF.aggregation = {
+        'columnName': 'case_id',
+        'function': 'sum'
+      };
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+      var $columnChart1Element = $('#column-chart-1');
+      $columnChart1Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      $columnChart1Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $columnChart1Element.socrataColumnChart(columnChart1VIF);
+
+      var $columnChart2Element = $('#column-chart-2');
+      $columnChart2Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      $columnChart2Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $columnChart2Element.socrataColumnChart(columnChart2VIF);
+
+      var $columnChart3Element = $('#column-chart-3');
+      $columnChart3Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      $columnChart3Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $columnChart3Element.socrataColumnChart(columnChart3VIF);
+
+      var $columnChart4Element = $('#column-chart-4');
+      $columnChart4Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      $columnChart4Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $columnChart4Element.socrataColumnChart(columnChart4VIF);
+
+      /**
+       * Handle plugin events
+       */
+
+      function handleFlyout(event) {
+        var payload = event.originalEvent.detail;
+
+        // Render/hide a flyout
+        if (payload !== null) {
+
+          flyoutRenderer.render(payload);
+
+        } else {
+
+          flyoutRenderer.clear();
+        }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
+      }
+
+      /**
+       * Destroy the plugins
+       */
+
+      // $columnChart1Element.off('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      // $columnChart1Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $columnChart1Element.trigger('destroy');
+
+      // $columnChart2Element.off('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      // $columnChart2Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $columnChart2Element.trigger('destroy');
+
+      // $columnChart3Element.off('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      // $columnChart3Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $columnChart3Element.trigger('destroy');
+
+      // $columnChart4Element.off('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      // $columnChart4Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $columnChart4Element.trigger('destroy');
+    });
   </script>
 </html>

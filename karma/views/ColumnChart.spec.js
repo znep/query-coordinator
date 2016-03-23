@@ -163,6 +163,10 @@ describe('ColumnChart', function() {
     $('body').append(element);
 
     var columnChartVIF = {
+      aggregation: {
+        columnName: null,
+        'function': 'count'
+      },
       configuration: {
         columns: {
           name: NAME_INDEX,

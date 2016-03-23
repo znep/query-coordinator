@@ -277,32 +277,46 @@ function ColumnChart(element, vif) {
     var unfilteredValueUnit;
     var filteredValueUnit;
 
-    if (datum[UNFILTERED_INDEX] === 1) {
+    if (_.get(_lastRenderOptions, 'vif.aggregation.function') === 'sum') {
 
-      unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-        _lastRenderOptions.unit.one :
-        vif.unit.one;
+      unfilteredValueUnit = utils.pluralize(
+        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+        datum[UNFILTERED_INDEX]
+      );
 
+      filteredValueUnit = utils.pluralize(
+        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+        datum[FILTERED_INDEX]
+      );
     } else {
 
-      unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-        _lastRenderOptions.unit.other :
-        vif.unit.other;
+      if (datum[UNFILTERED_INDEX] === 1) {
 
-    }
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
 
-    if (datum[FILTERED_INDEX] === 1) {
+      } else {
 
-      filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-        _lastRenderOptions.unit.one :
-        vif.unit.one;
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
 
-    } else {
+      }
 
-      filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-        _lastRenderOptions.unit.other :
-        vif.unit.other;
+      if (datum[FILTERED_INDEX] === 1) {
 
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
+
+      } else {
+
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
+
+      }
     }
 
     var payload = {

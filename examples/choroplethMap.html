@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Example Usage: socrata.visualizations.Choropleth.js</title>
+    <title>Example Usage: ChoroplethMap.js</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <!-- `leaflet.css` must be included or the map will render incorrectly -->
     <link rel="stylesheet" media="all" href="../node_modules/leaflet/dist/leaflet.css">
@@ -15,7 +15,8 @@
 
       #choropleth-map-1,
       #choropleth-map-2,
-      #choropleth-map-3 {
+      #choropleth-map-3,
+      #choropleth-map-4 {
         display: block;
         position: relative;
         width: 640px;
@@ -29,6 +30,7 @@
     <div id="choropleth-map-1"></div>
     <div id="choropleth-map-2"></div>
     <div id="choropleth-map-3"></div>
+    <div id="choropleth-map-4"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -42,18 +44,12 @@
     $(document).ready(function() {
 
       /**
-       * Sample data!
+       * Set up VIFs
        */
 
       var DATASET_UID = '52my-2pak';
       var DOMAIN = 'dataspace.demo.socrata.com';
       var GEOJSON_UID = 'snuk-a5kv';
-
-      /**
-       * Render things!
-       */
-
-      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
       var choropleth1VIF = {
         'aggregation': {
@@ -141,27 +137,41 @@
         }
       ];
 
+      var choropleth4VIF = _.cloneDeep(choropleth1VIF);
+      choropleth4VIF.aggregation = {
+        'columnName': 'id',
+        'function': 'sum'
+      };
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
       var $choroplethElement1 = $('#choropleth-map-1');
+      $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+      $choroplethElement1.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement1.socrataChoroplethMap(choropleth1VIF);
 
       var $choroplethElement2 = $('#choropleth-map-2');
+      $choroplethElement2.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+      $choroplethElement2.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement2.socrataChoroplethMap(choropleth2VIF);
 
       var $choroplethElement3 = $('#choropleth-map-3');
-      $choroplethElement3.socrataChoroplethMap(choropleth3VIF);
-
-      /**
-       * Handle flyout events.
-       */
-
-      $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
-      $choroplethElement1.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
-
-      $choroplethElement2.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
-      $choroplethElement2.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
-
       $choroplethElement3.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       $choroplethElement3.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $choroplethElement3.socrataChoroplethMap(choropleth3VIF);
+
+      var $choroplethElement4 = $('#choropleth-map-4');
+      $choroplethElement4.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+      $choroplethElement4.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $choroplethElement4.socrataChoroplethMap(choropleth4VIF);
+
+      /**
+       * Handle plugin events
+       */
 
       function handleFlyout(event) {
 
@@ -187,18 +197,24 @@
       }
 
       /**
-       * Destroy the plugin.
-       *
-       * The plugin (and all internal modules) can be destroyed by calling
-       * `.destroySocrataChoroplethMap()` on the element.
+       * Destroy the plugins
        */
 
       // $choroplethElement1.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
-      // $choroplethElement1.destroySocrataChoroplethMap();
+      // $choroplethElement1.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $choroplethElement1.trigger('destroy');
 
       // $choroplethElement2.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
-      // $choroplethElement2.destroySocrataChoroplethMap();
+      // $choroplethElement2.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $choroplethElement2.trigger('destroy');
 
+      // $choroplethElement3.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+      // $choroplethElement3.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $choroplethElement3.trigger('destroy');
+
+      // $choroplethElement4.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+      // $choroplethElement4.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $choroplethElement4.trigger('destroy');
     });
   </script>
 </html>

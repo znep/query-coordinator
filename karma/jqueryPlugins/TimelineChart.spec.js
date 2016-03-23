@@ -22,6 +22,10 @@ describe('TimelineChart jQuery component', function() {
 
   var $container;
   var timelineChartVIF = {
+    aggregation: {
+      columnName: null,
+      'function': 'count'
+    },
     domain: 'data.cityofchicago.org',
     datasetUid: '6zsd-86xi',
     columnName: 'date',

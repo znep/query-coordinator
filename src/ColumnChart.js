@@ -11,7 +11,7 @@ var FILTERED_INDEX = 2;
 var SELECTED_INDEX = 3;
 var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
 var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
-var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} {3} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+var BASE_QUERY = 'SELECT `{0}` AS {1}, {2} AS {3} {4} GROUP BY `{0}` ORDER BY {2} DESC NULL LAST LIMIT 200';
 var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
@@ -422,14 +422,15 @@ $.fn.socrataColumnChart = function(vif) {
    */
 
   function _updateData(vifToRender) {
-
+    var aggregationClause = SoqlHelpers.aggregationClause(vifToRender);
+    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
     var unfilteredQueryString = BASE_QUERY.format(
       vifToRender.columnName,
       SOQL_DATA_PROVIDER_NAME_ALIAS,
+      aggregationClause,
       SOQL_DATA_PROVIDER_VALUE_ALIAS,
       ''
     );
-
     var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
       query(
         unfilteredQueryString,
@@ -440,17 +441,15 @@ $.fn.socrataColumnChart = function(vif) {
         _logError(error);
         visualization.renderError();
       });
-
-    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
     var filteredQueryString = BASE_QUERY.format(
       vifToRender.columnName,
       SOQL_DATA_PROVIDER_NAME_ALIAS,
+      aggregationClause,
       SOQL_DATA_PROVIDER_VALUE_ALIAS,
       (whereClauseComponents.length > 0) ?
         'WHERE {0}'.format(whereClauseComponents) :
         ''
     );
-
     var filteredSoqlQuery = filteredSoqlDataProvider.
       query(
         filteredQueryString,

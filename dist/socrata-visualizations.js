@@ -516,30 +516,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	      selected: feature.properties[SELECTED_GEOJSON_PROPERTY_NAME]
 	    };
 
-	    if (feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME] === 1) {
+	    if (_.get(_lastRenderedVif, 'aggregation.function') === 'sum') {
 
-	      unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-	        _lastRenderOptions.unit.one :
-	        vif.unit.one;
+	      unfilteredValueUnit = utils.pluralize(
+	        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+	        feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME]
+	      );
 
+	      filteredValueUnit = utils.pluralize(
+	        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+	        feature.properties[FILTERED_GEOJSON_PROPERTY_NAME]
+	      );
 	    } else {
 
-	      unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-	        _lastRenderOptions.unit.other :
-	        vif.unit.other;
-	    }
+	      if (feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME] === 1) {
 
-	    if (feature.properties[FILTERED_GEOJSON_PROPERTY_NAME] === 1) {
+	        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+	          _lastRenderOptions.unit.one :
+	          vif.unit.one;
 
-	      filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-	        _lastRenderOptions.unit.one :
-	        vif.unit.one;
+	      } else {
 
-	    } else {
+	        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+	          _lastRenderOptions.unit.other :
+	          vif.unit.other;
+	      }
 
-	      filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-	        _lastRenderOptions.unit.other :
-	        vif.unit.other;
+	      if (feature.properties[FILTERED_GEOJSON_PROPERTY_NAME] === 1) {
+
+	        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+	          _lastRenderOptions.unit.one :
+	          vif.unit.one;
+
+	      } else {
+
+	        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+	          _lastRenderOptions.unit.other :
+	          vif.unit.other;
+	      }
 	    }
 
 	    if (_.isNumber(feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME])) {
@@ -5746,32 +5760,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var unfilteredValueUnit;
 	    var filteredValueUnit;
 
-	    if (datum[UNFILTERED_INDEX] === 1) {
+	    if (_.get(_lastRenderOptions, 'vif.aggregation.function') === 'sum') {
 
-	      unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-	        _lastRenderOptions.unit.one :
-	        vif.unit.one;
+	      unfilteredValueUnit = utils.pluralize(
+	        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+	        datum[UNFILTERED_INDEX]
+	      );
 
+	      filteredValueUnit = utils.pluralize(
+	        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+	        datum[FILTERED_INDEX]
+	      );
 	    } else {
 
-	      unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-	        _lastRenderOptions.unit.other :
-	        vif.unit.other;
+	      if (datum[UNFILTERED_INDEX] === 1) {
 
-	    }
+	        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+	          _lastRenderOptions.unit.one :
+	          vif.unit.one;
 
-	    if (datum[FILTERED_INDEX] === 1) {
+	      } else {
 
-	      filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-	        _lastRenderOptions.unit.one :
-	        vif.unit.one;
+	        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+	          _lastRenderOptions.unit.other :
+	          vif.unit.other;
 
-	    } else {
+	      }
 
-	      filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-	        _lastRenderOptions.unit.other :
-	        vif.unit.other;
+	      if (datum[FILTERED_INDEX] === 1) {
 
+	        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+	          _lastRenderOptions.unit.one :
+	          vif.unit.one;
+
+	      } else {
+
+	        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+	          _lastRenderOptions.unit.other :
+	          vif.unit.other;
+
+	      }
 	    }
 
 	    var payload = {
@@ -7072,7 +7100,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      utils.assert(!_.isNaN(value));
 
 	      var resolve = function(rule) {
-	        return '{0} {1}'.format(utils.formatNumber(value), rule);
+
+	        if (_.get(_lastRenderOptions, 'vif.aggregation.function') === 'sum') {
+
+	          return '{0} {1}'.format(
+	            utils.formatNumber(value),
+	            utils.pluralize(
+	              _.get(_lastRenderOptions, 'vif.aggregation.columnName'),
+	              value
+	            )
+	          );
+	        } else {
+	          return '{0} {1}'.format(utils.formatNumber(value), rule);
+	        }
 	      };
 
 	      if (value === 1 && rules.one) {
@@ -17175,7 +17215,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var DEFAULT_BASE_LAYER_OPACITY = 0.8;
 	var NAME_ALIAS = '__NAME_ALIAS__';
 	var VALUE_ALIAS = '__VALUE_ALIAS__';
-	var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} {3} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+	var BASE_QUERY = 'SELECT `{0}` AS {1}, {2} AS {3} {4} GROUP BY `{0}` ORDER BY {2} DESC NULL LAST LIMIT 200';
 	var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 	/**
@@ -17381,16 +17421,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Fetches SOQL data and aggregates with shapefile geoJSON
 	   */
 	  function _updateData(vifToRender) {
+	    var aggregationClause = SoqlHelpers.aggregationClause(vifToRender);
 	    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
 	    var unfilteredQueryString = BASE_QUERY.format(
 	      vifToRender.configuration.computedColumnName,
 	      NAME_ALIAS,
+	      aggregationClause,
 	      VALUE_ALIAS,
 	      ''
 	    );
 	    var filteredQueryString = BASE_QUERY.format(
 	      vifToRender.configuration.computedColumnName,
 	      NAME_ALIAS,
+	      aggregationClause,
 	      VALUE_ALIAS,
 	      (whereClauseComponents) ? 'WHERE {0}'.format(whereClauseComponents) : ''
 	    );
@@ -17926,6 +17969,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * @param {Object} vif
 	 */
+	function aggregationClause(vif) {
+
+	  switch (_.get(vif, 'aggregation.function')) {
+
+	    case 'sum':
+	      return 'SUM(`{0}`)'.format(_.get(vif, 'aggregation.columnName'));
+
+	    case 'count':
+	    default:
+	      return 'COUNT(*)';
+	  }
+	}
+
+	/**
+	 * @param {Object} vif
+	 */
 	function whereClauseNotFilteringOwnColumn(vif) {
 	  var whereClauseComponents = _whereClauseFromVif(vif, false);
 
@@ -18203,6 +18262,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	module.exports = {
+	  aggregationClause: aggregationClause,
 	  whereClauseNotFilteringOwnColumn: whereClauseNotFilteringOwnColumn,
 	  whereClauseFilteringOwnColumn: whereClauseFilteringOwnColumn
 	};
@@ -18227,7 +18287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var SELECTED_INDEX = 3;
 	var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
 	var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
-	var BASE_QUERY = 'SELECT `{0}` AS {1}, COUNT(*) AS {2} {3} GROUP BY `{0}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200';
+	var BASE_QUERY = 'SELECT `{0}` AS {1}, {2} AS {3} {4} GROUP BY `{0}` ORDER BY {2} DESC NULL LAST LIMIT 200';
 	var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 	/**
@@ -18638,14 +18698,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  function _updateData(vifToRender) {
-
+	    var aggregationClause = SoqlHelpers.aggregationClause(vifToRender);
+	    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
 	    var unfilteredQueryString = BASE_QUERY.format(
 	      vifToRender.columnName,
 	      SOQL_DATA_PROVIDER_NAME_ALIAS,
+	      aggregationClause,
 	      SOQL_DATA_PROVIDER_VALUE_ALIAS,
 	      ''
 	    );
-
 	    var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
 	      query(
 	        unfilteredQueryString,
@@ -18656,17 +18717,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _logError(error);
 	        visualization.renderError();
 	      });
-
-	    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
 	    var filteredQueryString = BASE_QUERY.format(
 	      vifToRender.columnName,
 	      SOQL_DATA_PROVIDER_NAME_ALIAS,
+	      aggregationClause,
 	      SOQL_DATA_PROVIDER_VALUE_ALIAS,
 	      (whereClauseComponents.length > 0) ?
 	        'WHERE {0}'.format(whereClauseComponents) :
 	        ''
 	    );
-
 	    var filteredSoqlQuery = filteredSoqlDataProvider.
 	      query(
 	        filteredQueryString,
@@ -19779,11 +19838,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
 	var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
 	var PRECISION_QUERY = "SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < '{1}'";
-	var DATA_QUERY_PREFIX = 'SELECT {3}(`{0}`) AS {1}, count(*) AS {2}';
+	var DATA_QUERY_PREFIX = 'SELECT {4}(`{0}`) AS {1}, {2} AS {3}';
 	var DATA_QUERY_SUFFIX = 'GROUP BY {0}';
 	var DATA_QUERY_WHERE_CLAUSE_PREFIX = 'WHERE';
 	var DATA_QUERY_WHERE_CLAUSE_SUFFIX = "`{0}` IS NOT NULL AND `{0}` < '{1}' AND (1=1)";
-	//'SELECT {2}({0}) AS {4}, {3} AS {5} {1} GROUP BY {4}'.  format(fieldName, whereClause, dateTruncFunction, aggregationClause, dateAlias, valueAlias)
 	var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 	/**
@@ -20272,6 +20330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    function mapPrecisionToDataQuery(precision) {
 	      var date_trunc_function;
+	      var aggregationClause = SoqlHelpers.aggregationClause(vifToRender);
 
 	      switch (precision) {
 	        case 'YEAR':
@@ -20291,6 +20350,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        DATA_QUERY_PREFIX.format(
 	          vifToRender.columnName,
 	          SOQL_DATA_PROVIDER_NAME_ALIAS,
+	          aggregationClause,
 	          SOQL_DATA_PROVIDER_VALUE_ALIAS,
 	          date_trunc_function
 	        ) +

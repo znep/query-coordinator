@@ -400,30 +400,44 @@ function ChoroplethMap(element, vif) {
       selected: feature.properties[SELECTED_GEOJSON_PROPERTY_NAME]
     };
 
-    if (feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME] === 1) {
+    if (_.get(_lastRenderedVif, 'aggregation.function') === 'sum') {
 
-      unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-        _lastRenderOptions.unit.one :
-        vif.unit.one;
+      unfilteredValueUnit = utils.pluralize(
+        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+        feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME]
+      );
 
+      filteredValueUnit = utils.pluralize(
+        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+        feature.properties[FILTERED_GEOJSON_PROPERTY_NAME]
+      );
     } else {
 
-      unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-        _lastRenderOptions.unit.other :
-        vif.unit.other;
-    }
+      if (feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME] === 1) {
 
-    if (feature.properties[FILTERED_GEOJSON_PROPERTY_NAME] === 1) {
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
 
-      filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-        _lastRenderOptions.unit.one :
-        vif.unit.one;
+      } else {
 
-    } else {
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
+      }
 
-      filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-        _lastRenderOptions.unit.other :
-        vif.unit.other;
+      if (feature.properties[FILTERED_GEOJSON_PROPERTY_NAME] === 1) {
+
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
+
+      } else {
+
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
+      }
     }
 
     if (_.isNumber(feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME])) {

@@ -20,6 +20,10 @@ describe('ColumnChart jQuery component', function() {
 
   var $container;
   var columnChartVIF = {
+    aggregation: {
+      columnName: null,
+      'function': 'count'
+    },
     domain: 'dataspace.demo.socrata.com',
     datasetUid: 'r6t9-rak2',
     columnName: 'category',

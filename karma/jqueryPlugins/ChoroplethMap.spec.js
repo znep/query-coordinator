@@ -16,6 +16,10 @@ describe('ChoroplethMap jQuery component', function() {
   };
   var $container;
   var choroplethVIF = {
+    aggregation: {
+      columnName: null,
+      'function': 'count'
+    },
     columnName: 'ward',
     configuration: {
       computedColumnName: ':@wards',

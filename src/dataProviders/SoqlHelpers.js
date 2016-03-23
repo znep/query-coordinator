@@ -10,6 +10,22 @@ var VALID_BINARY_OPERATORS = ['=', '!=', '<', '<=', '>', '>='];
 /**
  * @param {Object} vif
  */
+function aggregationClause(vif) {
+
+  switch (_.get(vif, 'aggregation.function')) {
+
+    case 'sum':
+      return 'SUM(`{0}`)'.format(_.get(vif, 'aggregation.columnName'));
+
+    case 'count':
+    default:
+      return 'COUNT(*)';
+  }
+}
+
+/**
+ * @param {Object} vif
+ */
 function whereClauseNotFilteringOwnColumn(vif) {
   var whereClauseComponents = _whereClauseFromVif(vif, false);
 
@@ -287,6 +303,7 @@ function _valueRangeWhereClauseComponent(filter) {
 }
 
 module.exports = {
+  aggregationClause: aggregationClause,
   whereClauseNotFilteringOwnColumn: whereClauseNotFilteringOwnColumn,
   whereClauseFilteringOwnColumn: whereClauseFilteringOwnColumn
 };

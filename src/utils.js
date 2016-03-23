@@ -334,6 +334,61 @@ var utils = {
     return value;
   },
 
+  pluralize: function(str, count) {
+    var pluralRules = [
+      [new RegExp('(m)an$', 'gi'), '$1en'],
+      [new RegExp('(pe)rson$', 'gi'), '$1ople'],
+      [new RegExp('(child)$', 'gi'), '$1ren'],
+      [new RegExp('^(ox)$', 'gi'), '$1en'],
+      [new RegExp('(ax|test)is$', 'gi'), '$1es'],
+      [new RegExp('(octop|vir)us$', 'gi'), '$1i'],
+      [new RegExp('(alias|status)$', 'gi'), '$1es'],
+      [new RegExp('(bu)s$', 'gi'), '$1ses'],
+      [new RegExp('(buffal|tomat|potat)o$', 'gi'), '$1oes'],
+      [new RegExp('([ti])um$', 'gi'), '$1a'],
+      [new RegExp('sis$', 'gi'), 'ses'],
+      [new RegExp('(?:([^f])fe|([lr])f)$', 'gi'), '$1$2ves'],
+      [new RegExp('(hive)$', 'gi'), '$1s'],
+      [new RegExp('([^aeiouy]|qu)y$', 'gi'), '$1ies'],
+      [new RegExp('(x|ch|ss|sh)$', 'gi'), '$1es'],
+      [new RegExp('(matr|vert|ind)ix|ex$', 'gi'), '$1ices'],
+      [new RegExp('([m|l])ouse$', 'gi'), '$1ice'],
+      [new RegExp('(quiz)$', 'gi'), '$1zes'],
+      [new RegExp('s$', 'gi'), 's'],
+      [new RegExp('$', 'gi'), 's']
+    ];
+    var uncountableWords = [
+      'equipment', 'information', 'rice', 'money', 'species', 'series', 'fish',
+      'sheep', 'moose', 'deer', 'news', 'sugar', 'butter', 'water',
+      'furniture', 'luggage', 'advice', 'information', 'news', 'info', 'music',
+      'art', 'love', 'happiness', 'electricity', 'gas', 'power'
+    ];
+    var lastWord;
+    var ignore;
+
+    if (count === 1) {
+      return str;
+    } else {
+
+      str = str.trim();
+      lastWord = _.last(str.split(' '));
+      ignore = (uncountableWords.indexOf(lastWord.toLowerCase()) > -1);
+
+      if (!ignore) {
+
+        for (var i = 0; i < pluralRules.length; i++) {
+
+          if (str.match(pluralRules[i][0])) {
+            str = str.replace(pluralRules[i][0], pluralRules[i][1]);
+            break;
+          }
+        }
+      }
+
+      return str;
+    }
+  },
+
   /**
    * Controls page scrolling behavior when inside the given element.
    * If enable is true, isolates scrolling to given element when inside by preventing

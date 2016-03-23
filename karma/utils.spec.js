@@ -238,7 +238,9 @@ describe('utils.js', function() {
   });
 
   describe('assertLengthIs', function() {
+
     describe('given a value without a length property', function() {
+
       it('throws', function() {
         assert.throw(function() {
           utils.assertLengthIs(1, 10);
@@ -529,6 +531,35 @@ describe('utils.js', function() {
     it('should convert string numbers correctly', function() {
 
       expect(utils.commaify('20000.1234')).to.equal('20,000.1234');
+    });
+  });
+
+  describe('pluralize', function() {
+
+    it('should trim whitespace', function() {
+      expect(utils.pluralize('foo ')).to.equal('foos');
+    });
+
+    it('should pluralize octopus', function() {
+      expect(utils.pluralize('octopus')).to.equal('octopi');
+    });
+
+    it('should not pluralize money', function() {
+      expect(utils.pluralize('money')).to.equal('money');
+    });
+
+    it('should not pluralize money if it has other words before it', function() {
+      expect(utils.pluralize('cash money')).to.equal('cash money');
+    });
+
+    it('should not modify the string if the second parameter is 1', function() {
+      expect(utils.pluralize('cat')).to.equal('cats');
+      expect(utils.pluralize('cat', 0)).to.equal('cats');
+      expect(utils.pluralize('cat', 1)).to.equal('cat');
+      expect(utils.pluralize('cat', 2)).to.equal('cats');
+      expect(utils.pluralize('cat', '1')).to.equal('cats');
+      expect(utils.pluralize('cat', null)).to.equal('cats');
+      expect(utils.pluralize('cat', 'dog')).to.equal('cats');
     });
   });
 

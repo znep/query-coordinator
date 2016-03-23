@@ -8,3 +8,4 @@ marathon.properties
 npm-debug.log
 .idea
 .npmrc
+examples/vendor.js

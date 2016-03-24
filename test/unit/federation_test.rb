@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class FederationTest < Minitest::Test
+class FederationTest < Test::Unit::TestCase
   describe 'federated search boosts' do
     def federation_hash
       {

@@ -1,0 +1,16 @@
+{"namespace": "com.socrata.metrics",
+ "type": "record",
+ "name": "PageView",
+ "fields": [
+   {"name": "domain", "type": "string", "default": ""},
+   {"name": "path", "type": "string", "default": ""},
+   {"name": "search", "type": "string", "default": ""},
+   {"name": "user_agent", "type": "string", "default": ""},
+   {"name": "time_zone", "type": "int", "default": 0},
+   {"name": "embedded", "type": "boolean", "default": false},
+   {"name": "govstat", "type": "boolean", "default": false},
+   {"name": "configuration_page", "type": "boolean", "default": false},
+   {"name": "dataset_query", "type": "string", "default": ""},
+   {"name": "timing", "type": "string", "default": ""}
+ ]
+}

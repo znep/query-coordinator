@@ -27,19 +27,19 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     end
 
     should 'have no route if no id' do
-      assert_raises(ActionController::UrlGenerationError) do
-        get :bootstrap, app: 'dataCards'
+      assert_raise(ActionController::RoutingError) do
+        get :bootstrap
       end
     end
 
     should 'return 403 if anonymous - for V1 Data Lenses' do
-      get :bootstrap, id: 'four-four', app: 'dataCards'
+      get :bootstrap, id: 'four-four'
       assert_response(403)
     end
 
     should 'return 403 if anonymous - even for V2 Data Lenses' do
       stub_feature_flags_with(:create_v2_data_lens, true)
-      get :bootstrap, id: 'four-four', app: 'dataCards'
+      get :bootstrap, id: 'four-four'
       assert_response(403)
     end
 
@@ -54,7 +54,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub_user = stub(is_owner?: false, is_admin?: false, roleName: nil)
         @controller.stubs(is_owner?: false, is_admin?: false, current_user: stub_user)
 
-        get :bootstrap, id: 'four-four', app: 'dataCards'
+        get :bootstrap, id: 'four-four'
         assert_response(403)
       end
 
@@ -63,7 +63,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub_user = stub(is_owner?: false, is_admin?: false, roleName: nil)
         @controller.stubs(is_owner?: false, is_admin?: false, current_user: stub_user)
 
-        get :bootstrap, id: 'four-four', app: 'dataCards'
+        get :bootstrap, id: 'four-four'
         assert_response(403)
       end
 
@@ -72,7 +72,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'viewer')
         @controller.stubs(current_user: stub_user)
 
-        get :bootstrap, id: 'four-four', app: 'dataCards'
+        get :bootstrap, id: 'four-four'
         assert_response(403)
       end
 
@@ -80,7 +80,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub_user = stub(roleName: '', is_owner?: true)
         @controller.stubs(current_user: stub_user)
 
-        get :bootstrap, id: 'four-four', app: 'dataCards'
+        get :bootstrap, id: 'four-four'
         assert_not_equal(@response.response_code, 403)
       end
 
@@ -88,7 +88,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub_user = stub(roleName: '', is_admin?: true, is_owner?: false)
         @controller.stubs(current_user: stub_user)
 
-        get :bootstrap, id: 'four-four', app: 'dataCards'
+        get :bootstrap, id: 'four-four'
         assert_not_equal(@response.response_code, 403)
       end
 
@@ -96,7 +96,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub_user = stub(roleName: 'administrator')
         @controller.stubs(current_user: stub_user)
 
-        get :bootstrap, id: 'four-four', app: 'dataCards'
+        get :bootstrap, id: 'four-four'
         assert_not_equal(@response.response_code, 403)
       end
 
@@ -104,7 +104,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub_user = stub(roleName: 'publisher')
         @controller.stubs(current_user: stub_user)
 
-        get :bootstrap, id: 'four-four', app: 'dataCards'
+        get :bootstrap, id: 'four-four'
         assert_not_equal(@response.response_code, 403)
       end
 
@@ -114,7 +114,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
         stub_feature_flags_with(:use_ephemeral_bootstrap, true)
 
-        get :bootstrap, id: 'four-four', app: 'dataCards'
+        get :bootstrap, id: 'four-four'
         assert_not_equal(@response.response_code, 403)
       end
     end
@@ -131,7 +131,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         should 'show 400 error' do
           @controller.stubs(:dataset_is_new_backend? => false)
 
-          get :bootstrap, id: 'data-iden', app: 'dataCards'
+          get :bootstrap, id: 'data-iden'
           assert_response(400)
         end
       end
@@ -140,7 +140,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         should 'redirect to homepage' do
           @controller.stubs(:dataset_has_group_by? => true)
 
-          get :bootstrap, id: 'data-iden', app: 'dataCards'
+          get :bootstrap, id: 'data-iden'
           assert_response(302)
         end
       end
@@ -179,7 +179,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             )
             @controller.stubs(:default_page_accessible => true)
 
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
+            get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
           end
         end
@@ -227,7 +227,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           end
 
           should 'redirect to the default page' do
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
+            get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/defa-ultp')
           end
         end
@@ -258,7 +258,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               }
             )
 
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
+            get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
           end
         end
@@ -289,7 +289,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               }
             )
 
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
+            get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
           end
         end
@@ -320,7 +320,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               }
             )
 
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
+            get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
           end
         end
@@ -390,7 +390,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             @controller.stubs(page_accessible?: false)
 
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
+            get :bootstrap, id: 'data-iden'
 
             # Redirect to new default page
             assert_redirected_to('/view/abcd-efgh')
@@ -423,7 +423,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               }
             )
 
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
+            get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
           end
         end
@@ -458,7 +458,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 dataset_metadata[:defaultPage] == 'neww-page'
               end
             stub_fetch_dataset_metadata_without_default_page_and_fetch_pages_for_dataset
-            get :bootstrap, id: 'four-four', app: 'dataCards'
+            get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neww-page')
           end
         end
@@ -474,7 +474,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               status: '500', body: { error: '500 Internal Server Error' }
             }
           )
-          get :bootstrap, id: 'four-four', app: 'dataCards'
+          get :bootstrap, id: 'four-four'
           assert_redirected_to('/datasets/four-four')
           assert_equal(@controller.flash[:error], 'A preview is not available for this dataset.')
         end
@@ -485,7 +485,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               status: '404', body: { error: {} }
             }
           )
-          get :bootstrap, id: 'four-four', app: 'dataCards'
+          get :bootstrap, id: 'four-four'
           assert_response(404)
         end
       end
@@ -550,7 +550,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               next true
             end.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
-            get :bootstrap, id: 'four-four', app: 'dataCards'
+            get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
           end
         end
@@ -577,7 +577,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-            get :bootstrap, id: 'four-four', app: 'dataCards'
+            get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
           end
 
@@ -596,7 +596,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               assert(page['cards'].pluck('fieldName').map(&:downcase).none?(&is_money))
             end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-            get :bootstrap, id: 'four-four', app: 'dataCards'
+            get :bootstrap, id: 'four-four'
           end
 
           should 'not create a card for a latitude or longitude column' do
@@ -616,7 +616,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               assert(page['cards'].pluck('fieldName').map(&:downcase).none?(&is_longitude))
             end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-            get :bootstrap, id: 'four-four', app: 'dataCards'
+            get :bootstrap, id: 'four-four'
           end
 
 
@@ -643,7 +643,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-            get :bootstrap, id: 'four-four', app: 'dataCards'
+            get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
           end
 
@@ -667,7 +667,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               )
             end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-            get :bootstrap, id: 'four-four', app: 'dataCards'
+            get :bootstrap, id: 'four-four'
           end
 
           context 'on point columns' do
@@ -701,7 +701,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 )
               end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-              get :bootstrap, id: 'four-four', app: 'dataCards'
+              get :bootstrap, id: 'four-four'
             end
 
             should 'create point column cards for columns with sufficient cardinality' do
@@ -718,7 +718,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 )
               end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-              get :bootstrap, id: 'four-four', app: 'dataCards'
+              get :bootstrap, id: 'four-four'
             end
 
           end
@@ -747,7 +747,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 )
               end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-              get :bootstrap, id: 'four-four', app: 'dataCards'
+              get :bootstrap, id: 'four-four'
             end
 
             should 'create cards for computed columns that reference enabled curated regions' do
@@ -764,7 +764,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 )
               end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-              get :bootstrap, id: 'four-four', app: 'dataCards'
+              get :bootstrap, id: 'four-four'
             end
 
             should 'not fail if fetching the curated region errors' do
@@ -783,7 +783,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 )
               end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-              get :bootstrap, id: 'four-four', app: 'dataCards'
+              get :bootstrap, id: 'four-four'
             end
           end
 
@@ -802,7 +802,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               assert(page['cards'].pluck('fieldName').map(&:downcase).none?(&is_invalid_card))
             end.returns(status: '200', body: { pageId: 'neoo-page' })
 
-            get :bootstrap, id: 'four-four', app: 'dataCards'
+            get :bootstrap, id: 'four-four'
           end
         end
       end

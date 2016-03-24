@@ -253,7 +253,7 @@ class User < Model
   @@countries = {
             '--' => '------',
             "US" => "United States",
-            "UK" => "United Kingdom",
+            "GB" => "United Kingdom",
             "CA" => "Canada",
             "AF" => "Afghanistan",
             "AL" => "Albania",

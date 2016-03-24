@@ -113,7 +113,7 @@
 
     <div class="submitLine">
       <%= submit_tag t('core.dialogs.save'), :class => 'button default' %>
-      <%= link_to t('core.dialogs.cancel'), profile_path(current_user.route_params), :class => 'button' %>
+      <%= link_to t('core.dialogs.cancel'), profile_path(current_user), :class => 'button' %>
     </div>
   <% end %>
 </div>

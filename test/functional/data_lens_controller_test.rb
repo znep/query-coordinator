@@ -125,10 +125,10 @@ class DataLensControllerTest < ActionController::TestCase
   end
 
   test 'should raise an error when a non-existent app is requested' do
-    assert_raises(ActionController::UrlGenerationError) do
+    assert_raises(ActionController::RoutingError) do
       get :data_lens, :id => '1234-1234', :app => nil
     end
-    assert_raises(ActionController::UrlGenerationError) do
+    assert_raises(ActionController::RoutingError) do
       get :data_lens, :id => '1234-1234', :app => 'notAnApp'
     end
   end

@@ -28,17 +28,15 @@ class CustomContentControllerTest < ActionController::TestCase
     assert VersionAuthority.validate_manifest?(@basic_cache_key, 'test-test').nil?
   end
 
-  def stub_rails_cache
-    Manifest.new.tap do |manifest|
-      manifest.set_manifest(max_age: nil)
-      Rails.cache.stubs(read: manifest)
-    end
+  def teardown
+    return_filters(@controller)
   end
 
   def simple_render_with_user
     user = prepare_page
     get :page, :path => PAGE_PATH
     assert_response :success
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
   end
 
   def prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous = false)
@@ -90,13 +88,11 @@ class CustomContentControllerTest < ActionController::TestCase
   end
 
   test '304 for etag' do
-    stub_rails_cache
     simple_render_with_user
     assert_etag_request(@response.headers['ETag'], PAGE_PATH)
   end
 
   test '304 for Global Manifest Cache' do
-    stub_rails_cache
     prepare_page(fixture='test/fixtures/dataslate-global-hello.json', anonymous=true)
     init_current_user(@controller, ANONYMOUS_USER)
     get :page, :path => PAGE_PATH
@@ -109,15 +105,17 @@ class CustomContentControllerTest < ActionController::TestCase
   end
 
   test '304 for User Manifest Cache' do
-    stub_rails_cache
     user = prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
     get :page, :path => PAGE_PATH
     assert_response :success
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
     assert_etag_request(@response.headers['ETag'], PAGE_PATH)
 
     user = prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
     get :page, :path => PAGE_PATH
     assert_response :success
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
     assert_etag_request(@response.headers['ETag'], PAGE_PATH)
   end
 
@@ -126,6 +124,9 @@ class CustomContentControllerTest < ActionController::TestCase
     prepare_page(fixture = 'test/fixtures/pie-charts-and-repeaters.json', anonymous = true)
     get :page, :path => 'pie-repeat'
     assert_response :success
+    # This seems to be a dumb test, because the returned page content has things like 'Error Bars' in it
+    #assert !@response.body.match(/Error/)
+    assert_equal 1234, Canvas2::DataContext.manifest.max_age
   end
 
 end

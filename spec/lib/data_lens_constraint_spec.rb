@@ -14,6 +14,7 @@ describe Constraints::DataLensConstraint do
     let(:marshalled_out) { Marshal.dump({}) }
 
     before :each do
+      Rails.cache.clear
       allow(View).to receive(:find).and_return(data_lens)
       # We need to fake the dump mechanism because our view double is implemented
       # behind the scenes as a singleton or something else that can't be dumped,

@@ -249,7 +249,7 @@ class CoreMigration
   end
 end
 
-class LicenseTruthTestCases < Minitest::Test
+class LicenseTruthTestCases < Test::Unit::TestCase
 
   def minimum_viable_stub
     { 'id' => 'FOO',
@@ -269,13 +269,12 @@ class LicenseTruthTestCases < Minitest::Test
   end
 
   def test_validity
-    assert_raises(RuntimeError) { LicenseTruth.new('id' => 'FOO') }
-    assert_raises(RuntimeError) { LicenseTruth.new('id' => 'FOO', 'name' => 'Bar') }
-    LicenseTruth.new(
-      'id' => 'FOO',
-      'name' => 'Bar',
-      'terms_link' => 'http://www.example.com/'
-    )
+    assert_raises(RuntimeError) { LicenseTruth.new({ 'id' => 'FOO' }) }
+    assert_raises(RuntimeError) { LicenseTruth.new({ 'id' => 'FOO', 'name' => 'Bar' }) }
+    assert_nothing_raised do LicenseTruth.new({ 'id' => 'FOO',
+                                                'name' => 'Bar',
+                                                'terms_link' => 'http://www.example.com/' })
+    end
   end
 
   def test_truth_outputs_upsert

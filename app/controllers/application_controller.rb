@@ -4,9 +4,6 @@
 class ApplicationController < ActionController::Base
   include ActionControllerExtensions
   include UserAuthMethods
-  include ActionController::Caching::Pages
-
-  self.page_cache_directory = "#{Rails.root}/public/page_cache"
 
   def current_domain
     CurrentDomain
@@ -28,13 +25,9 @@ class ApplicationController < ActionController::Base
   rescue_from CoreServer::ResourceNotFound, :with => :render_404
   rescue_from ActionView::MissingTemplate, :with => :render_406
 
-  # Prevent CSRF attacks by raising an exception.
-  protect_from_forgery with: :exception
-
-  def valid_authenticity_token?(session, encoded_masked_token)
-    session['init'] = true unless session.loaded?
-    super
-  end
+  # See ActionController::RequestForgeryProtection for details
+  # Uncomment the :secret if you're not using the cookie session store
+  protect_from_forgery # :secret => 'e231a1e478cd7112967644be164e057e'
 
   def handle_unverified_request
     # As of Rails 2.3.11 (and in 3.0.4), the CSRF protection behavior

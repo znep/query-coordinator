@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 describe Model do
 
   describe '#==' do

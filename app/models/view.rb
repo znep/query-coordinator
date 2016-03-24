@@ -891,11 +891,9 @@ class View < Model
     # Stories do not use the `short_view_url` helper method, which hard-codes the `/d/` prefix.
     if self.story?
       story_domain = self.federated? ? self.domainCName : CurrentDomain.cname
-      I18n.t('controls.common.share.share_story_text', :name => name, :site => CurrentDomain.strings.company) +
-        "//#{story_domain}/stories/s/#{self.id}"
+      I18n.t('controls.common.share.share_story_text', :name => name, :site => CurrentDomain.strings.company) + "//#{story_domain}/stories/s/#{self.id}"
     else
-      I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) +
-        short_view_url(self, { :id => self.id, :host => route_params[:host] })
+      I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
     end
   end
 

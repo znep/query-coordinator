@@ -24,7 +24,7 @@ class LocaleMiddleware
       return @app.call(env)
     end
 
-    locales = ::CurrentDomain.configuration(:locales)
+    locales = CurrentDomain.configuration(:locales)
 
     # first, try loading from subdomain
     # this is to enable cname-based locale enforcement; eg fr.socrata.com
@@ -33,7 +33,7 @@ class LocaleMiddleware
     locale = locales.raw_properties[host]
 
     # now grab all the ones that are acceptable
-    domain_locales = ::CurrentDomain.available_locales + [ locale ]
+    domain_locales = CurrentDomain.available_locales + [ locale ]
 
     # read our path lead
     path_lead = request.path.match(/^\/([^\/]+)/)[1] rescue nil

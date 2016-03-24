@@ -76,7 +76,7 @@ Test suites:
 
 #### Setup
 
-Ensure that you are using Ruby version 2.3.0 or greater.
+Ensure that you are using Ruby version 1.9.3 or greater.
 
 Make sure you've installed karma-cli and phantomjs globally:
 

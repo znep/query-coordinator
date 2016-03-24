@@ -8,7 +8,7 @@
 
   <div class="mainContent">
     <% if !@bad_addresses.nil? && @bad_addresses.size <= 0 %>
-      <p>Your emails were sent successfully. You can now return to <%= link_to @view.name, alt_view_path(@view.route_params) %>.</p>
+      <p>Your emails were sent successfully. You can now return to <%= link_to @view.name, alt_view_path(@view) %>.</p>
     <% elsif !@bad_addresses.nil? && @bad_addresses.size > 0 %>
       <p>Errors were encountered while sending your emails:<p>
       <ul>
@@ -37,7 +37,7 @@
 
         <div class="footer clearfix">
           <%= submit_tag('Send Email') %>
-          <%= link_to "Back to #{@view.name}", alt_view_path(@view.route_params) %>
+          <%= link_to "Back to #{@view.name}", alt_view_path(@view) %>
         </div>
       <% end %>
     <% end %>

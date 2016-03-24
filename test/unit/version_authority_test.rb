@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'timecop'
 
-class VersionAuthorityTest < Minitest::Test
+class VersionAuthorityTest < Test::Unit::TestCase
 
   def setup
     init_current_domain
@@ -28,8 +28,15 @@ class VersionAuthorityTest < Minitest::Test
     manifest.set_manifest(test_manifest)
     manifest.max_age=check_age_override if !check_age_override.nil?
     hash = VersionAuthority.set_manifest(@path, @user, manifest)
-    Rails.cache.stubs(:read => manifest)
     assert_equal(Digest::MD5.hexdigest(test_manifest.to_json), hash)
+  end
+
+  def test_resource_mtime
+    mtime = VersionAuthority.resource("test-version-authority")
+    assert_nil(mtime)
+    VersionAuthority.set_resource("test-version-authority", 1234)
+    mtime = VersionAuthority.resource("test-version-authority")
+    assert_equal(1234, mtime)
   end
 
   def test_set_invalid_manifest

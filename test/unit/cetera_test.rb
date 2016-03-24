@@ -2,7 +2,7 @@ require 'test_helper'
 
 include Cetera
 
-class CeteraTest < Minitest::Test
+class CeteraTest < MiniTest::Unit::TestCase
   describe 'Cetera' do
     def sample_search_options
       {
@@ -152,7 +152,7 @@ class CeteraTest < Minitest::Test
           with(query: Cetera.cetera_soql_params(query)).
           to_timeout
 
-        assert_raises Timeout::Error do
+        assert_raises TimeoutError do
           Cetera.search_views(query)
         end
       end

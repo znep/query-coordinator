@@ -1,4 +1,5 @@
 module Userzoom
+
   def render_userzoom_survey(config_key)
     config = APP_CONFIG.userzoom.fetch(config_key, {})
     cuid = APP_CONFIG.userzoom.fetch('cuid', nil)
@@ -12,4 +13,5 @@ module Userzoom
       }
     end
   end
+
 end

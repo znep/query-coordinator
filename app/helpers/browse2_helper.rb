@@ -206,9 +206,17 @@ module Browse2Helper
   end
 
   def browse2_result_link(result_name, result_link, result_is_federated, result_link_rel_type)
-    result_name << ' <span class="icon-external-square"></span>' if result_is_federated
+    link_name = result_name
+    if result_is_federated
+      # EN-4168: We need to begin with an html_safe string, then add the result name (which is not safe),
+      # and then add the span with the icon class, which is safe. This allows the icon to be rendered
+      # while not potentially executing any injected html in the result_name.
+      link_name = ''.html_safe
+      link_name << result_name
+      link_name << ' <span class="icon-external-square"></span>'.html_safe
+    end
     link_to(
-      raw(result_name),
+      link_name,
       result_link,
       class: 'browse2-result-name-link',
       rel: result_link_rel_type,

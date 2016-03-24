@@ -604,6 +604,45 @@ describe Browse2Helper do
     end
   end
 
+  describe '#browse2_result_link' do
+    before(:each) do
+      @result_name = 'test-result'
+      @result_link = '/view/abcd-efgh'
+      @rel_type = nil
+    end
+
+    it 'returns a link without federated icon span for non-federated results' do
+      federated = false
+      link = helper.browse2_result_link(@result_name, @result_link, federated, @rel_type)
+      expect(link).not_to be_empty
+      link_parsed = Nokogiri.parse(link).at('a')
+      expect(link_parsed[:href]).to eq('/view/abcd-efgh')
+      expect(link_parsed[:class]).to eq('browse2-result-name-link')
+      expect(link_parsed.inner_html).to eq('test-result')
+    end
+
+    it 'returns a link with federated icon span for federated results' do
+      federated = true
+      link = helper.browse2_result_link(@result_name, @result_link, federated, @rel_type)
+      expect(link).not_to be_empty
+      link_parsed = Nokogiri.parse(link).at('a')
+      expect(link_parsed[:href]).to eq('/view/abcd-efgh')
+      expect(link_parsed[:class]).to eq('browse2-result-name-link')
+      expect(link_parsed.inner_html).to eq('test-result <span class="icon-external-square"></span>')
+    end
+
+    it 'escapes the link result_name in federated results' do
+      result_name = '<img src=x onerror=prompt(1)>'
+      federated = true
+      link = helper.browse2_result_link(result_name, @result_link, federated, @rel_type)
+      expect(link).not_to be_empty
+      link_parsed = Nokogiri.parse(link).at('a')
+      expect(link_parsed[:href]).to eq('/view/abcd-efgh')
+      expect(link_parsed[:class]).to eq('browse2-result-name-link')
+      expect(link_parsed.inner_html).to eq('&lt;img src=x onerror=prompt(1)&gt; <span class="icon-external-square"></span>')
+    end
+  end
+
   describe '#browse2_result_topic_url' do
     before(:each) do
       @base_url = '/browse'

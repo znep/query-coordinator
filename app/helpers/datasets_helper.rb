@@ -340,13 +340,19 @@ module DatasetsHelper
     end
   end
 
+  def enable_pdf_download_type
+    FeatureFlags.derive(view, request).enable_pdf_download_type
+  end
+
   def enable_xls_download_type
     FeatureFlags.derive(view, request).enable_xls_download_type
   end
 
   def normal_download_types
-    ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML'].
-      reject { |item| ['XLS', 'XLSX'].include?(item) unless enable_xls_download_type }
+    types = ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML']
+    types = types.reject { |item| ['XLS', 'XLSX'].include?(item) unless enable_xls_download_type }
+    types = types.reject { |item| ['PDF'].include?(item) unless enable_pdf_download_type }
+    types
   end
 
   def configuration

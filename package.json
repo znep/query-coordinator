@@ -44,6 +44,7 @@
     "rewire": "^2.5.0",
     "rewire-webpack": "^1.0.1",
     "rimraf": "^2.4.3",
+    "semver": "^5.1.0",
     "shelljs": "^0.6.0",
     "sinon": "^1.15.3",
     "socrata-styleguide": "0.4.2",

@@ -2,12 +2,9 @@
   <div
     class="hero<%= ' hero-no-image' if component['value']['url'].blank? %><%= ' hero-default-height' if component['value']['layout'].blank? %>"
     style="background-image: url('<%= component['value']['url'] %>');">
-
-    <% if Rails.application.config.full_bleed_image_enable_text_overlay %>
-      <div class="typeset squire-formatted remove-top-margin">
-        <%= component['value']['html'].to_s.html_safe %>
-      </div>
-    <% end %>
+    <div class="typeset squire-formatted remove-top-margin">
+      <%= component['value']['html'].to_s.html_safe %>
+    </div>
   </div>
 <% else -%>
   <div class="hero"></div>

@@ -57,7 +57,6 @@ describe('componentHero jQuery plugin', function() {
     componentHeroAPI.__Rewire__('dispatcher', dispatcher);
     componentHeroAPI.__Rewire__('richTextEditorManager', {getEditor: _.noop});
     componentHeroAPI.__Rewire__('Environment', {
-      FULL_BLEED_IMAGE_ENABLE_TEXT_OVERLAY: true,
       IMAGES: {COVER_IMAGE_ICON: ''}
     });
 

@@ -86,6 +86,7 @@
 .icon-plus3:before,
 .icon-presentation:before,
 .icon-preview:before,
+.icon-private:before,
 .icon-processing:before,
 .icon-pulse:before,
 .icon-puzzle:before,
@@ -185,6 +186,7 @@
 .icon-plus3:before { content: "\f136"; }
 .icon-presentation:before { content: "\f137"; }
 .icon-preview:before { content: "\f138"; }
+.icon-private:before { content: "\f155"; }
 .icon-processing:before { content: "\f139"; }
 .icon-pulse:before { content: "\f14c"; }
 .icon-puzzle:before { content: "\f13a"; }

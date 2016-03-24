@@ -1487,9 +1487,12 @@ export default function AssetSelectorRenderer(options) {
 
   function _mapOrChartChooserUrl() {
     // remove suppressed_facets param upon frontend release to show 'view types' menu
+    //
+    // cetera_search must be set to false until multiple limitTo parameters are enabled for cetera
+    // limitTo array parameter currently only works with clytemnestra
     return encodeURI(
       StorytellerUtils.format(
-        '{0}/browse/select_dataset?suppressed_facets[]=type&filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob',
+        '{0}/browse/select_dataset?suppressed_facets[]=type&filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&cetera_search=false',
         window.location.protocol + '//' + window.location.hostname
       )
     );

@@ -15,6 +15,7 @@
     "prepublish": "webpack && node tools/compile-css.js",
     "lint": "eslint -c package.json  --ignore-path .eslintignore src/**/*.js",
     "test": "karma start karma.conf.js --singleRun true",
+    "version-bump-check": "node tools/version-bump-check.js",
     "watch": "karma start karma.conf.js -v --singleRun false",
     "compile-css": "node tools/compile-css.js"
   },
@@ -43,9 +44,10 @@
     "rewire": "^2.5.0",
     "rewire-webpack": "^1.0.1",
     "rimraf": "^2.4.3",
+    "shelljs": "^0.6.0",
     "sinon": "^1.15.3",
-    "strict-loader": "^1.0.0",
     "socrata-styleguide": "0.4.2",
+    "strict-loader": "^1.0.0",
     "webpack": "^1.12.2"
   },
   "eslintConfig": {

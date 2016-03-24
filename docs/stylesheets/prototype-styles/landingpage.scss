@@ -46,10 +46,11 @@
 @import "../../../src/scss/components/menu";
 @import "../../../src/scss/components/pagination";
 @import "../../../src/scss/components/input-groups";
+@import "../../../src/scss/components/cards";
 
 // Media Queries
-$lgmobile: 468px 767px;
-$tablet: 769px;
+$lgmobile: 468px;
+$tablet: 767px;
 $desktop: 992px;
 
 
@@ -161,7 +162,6 @@ a {
 	.lp-section {
 
 		@include span-columns(12);
-		margin-bottom: ms(0);
 		padding: ms(-2);
 
 
@@ -176,13 +176,64 @@ a {
 			}
 		}
 
+
+		.media-results {
+			//display: flex;
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			-ms-overflow-style: -ms-autohiding-scrollbar;
+
+			.second {
+				.date {
+					font-size: ms(-2);
+				}
+			}
+			
+			@include media($tablet) {
+				@include row();
+			}
+
+			&.header {
+				@include row();
+				border-top: 1px solid $light-grey-3;
+				.header-content {
+					@include span-columns(12);
+					padding: ms(1) 0;
+				}
+			}
+
+			&.footer {
+				@include row();
+				//border-bottom: 1px solid $light-grey-3;
+				.footer-action {
+					@include span-columns(12);
+					padding: 0;
+					font-size: ms(-1);
+				}
+			}
+		}
+
+		//featured content
+		.result-card {
+			@include breakpoint($tablet) {
+				@include span-columns(4);
+				.entry-main .img-wrapper{
+					display: flex;
+					max-height: 150px;
+					//overflow: hidden;
+				}
+			}
+		}
+
 		.card-frame {
 			@include outer-container;
 			@include span-columns(12);
 			background-color: $white;
 			border: 1px solid $light-grey-4;
 			border-bottom: 2px solid $light-grey-4;
-			padding: ms(1);
 
 			.metadata-table:nth-child(1) {
 				display: none;
@@ -190,7 +241,7 @@ a {
 			.metadata-table {
 				td:nth-child(1) {
 					font-weight: 400;
-					color: $grey;
+					color: $light-grey-1;
 				}
 			}
 			.more-link {
@@ -199,19 +250,28 @@ a {
 
 			.table-condensed {
 				margin-top: 0;
-				th {
-					padding-top: 0;
-				}
+				margin-bottom: 0;
 			}
 			.table-borderless {
 				border-bottom: 1px solid $light-grey-3;
 			}
 			.schema-preview {
+				table {
+				margin-top: ms(0);
+
+				}
+				th {
+					padding-top: 0;
+					padding-left: ms(0);
+					padding-right:  ms(0);
+
+				}
 				td {
 					max-width: 7em;
 					white-space: nowrap;
 		  			overflow: hidden;
 					text-overflow: ellipsis;
+					padding: ms(-5) ms(0);
 					> span {
 						float: right;
 						&.icon-arrow-down {
@@ -225,9 +285,13 @@ a {
 				.column-name {
 					font-size: ms(-1);
 					font-weight: 800;
+					color: $primary;
 				}
 				td:nth-child(3) {
 					color: $grey;
+					span {
+						color: lighten($primary, 20%);
+					}
 				}
 				// hide the Type-column on mobile
 				th:nth-child(3), td:nth-child(3)  {
@@ -295,10 +359,10 @@ a {
 		  				.key, .value {
 		  					font-size: ms(-1);
 		  				}
-		  				.stat-details .key, .type-details .value {
+		  				.value {
 		  					color: $dark-grey-1;		  				
 		  				}
-		  				.stat-details .value, .type-details .key {
+		  				.key {
 		  					color: $light-grey-1;		  				
 		  				}
 		  				.type-details { 
@@ -330,37 +394,27 @@ a {
 		  			}
 		  		}
 			}
-
 			@include breakpoint($tablet) {
-				.btn-block {
-					display: none;
-				}
-				.centered {
-					display: block;
-					@include span-columns(12);
-					.more-link {
-						float: right;
-						display: inline-block;
-						white-space: nowrap;
-						color: $light-grey-1;
-						text-decoration: underline;
-						&:hover {
-							color: $light-grey-0;
-						}
-					}
-					.btn {
-						margin: ms(-2) auto; 
-					}
-				}
+				// show only the Type-icon on tablets
 				.schema-preview {
-					.column-name {
-						font-size: ms(1);
-						font-weight: 400;
+					th:nth-child(3) {
+						display: table-cell;
 					}
-					th:nth-child(3), td:nth-child(3) {
+					td:nth-child(3) {
 					    display: table-cell;
-					    max-width: 6em;
+					    width: 2em;
+					    .type {
+					    	display: none;
+					    }
+					    .icon {
+					    	float: left;
+					    }
 					}
+					.column-name {
+						font-size: ms(0);
+						font-weight: 600;
+					}
+				
 					.details-row {
 						.details-content {
 							.row {	
@@ -385,17 +439,63 @@ a {
 								}
 							}
 						}
-					}		  							  					
+					}	
+
+				}
+
+			}
+
+			@include breakpoint($desktop) {
+				.btn-block {
+					display: none;
+				}
+				.centered {
+					display: block;
+					@include span-columns(12);
+					.more-link {
+						float: right;
+						display: inline-block;
+						white-space: nowrap;
+						color: $light-grey-1;
+						text-decoration: underline;
+						margin: ms(-10);
+
+
+						&:hover {
+							color: $light-grey-0;
+						}
+					}
+					.btn {
+						margin: ms(-2) auto; 
+					}
+				}
+				.schema-preview {
+					th:nth-child(3), td:nth-child(3) {
+					    display: table-cell;
+					    width: 12em;
+					    .icon, .type {
+					    	display: inline;
+					    }
+					    .icon {
+					    	float: right;
+					    }
+					    .type {
+					    	float: left;
+					    }
+					}
+
+	  							  					
 				}
 				.metadata-table {
 					float: left;
 					@include span-columns(6);
 					margin: 0;
+					padding-top: ms(0);
+					padding-left: ms(0);
 				}
 				.metadata-table:nth-child(1) {
 					float: right !important;
 					@include span-columns(6);
-					margin: 0;
 				}
 
 			}
@@ -404,18 +504,18 @@ a {
 }
 
 
-.result-card {
+.header-card {
 	@include span-columns(12);
 
-	.entry-header {
+	.infopane-header {
 		@include outer-container();
 		padding: ms(-2);
 		border-bottom: 1px solid $light-grey-5;
 		
 
-		.entry-title {
+		.infopane-title {
 			@include span-columns(12);
-			.entry-name {
+			.infopane-name {
 				display: inline-block;
 				margin-right: ms(-2);
 				font-size: ms(3);
@@ -424,7 +524,7 @@ a {
 
 			@include breakpoint($tablet) {
 				@include span-columns(8);
-					.entry-name {
+					.infopane-name {
 						
 						font-size: ms(4);
 
@@ -435,29 +535,53 @@ a {
 		
 		}
 
-		.entry-view-type {
+		.infopane-actions {
 			@include span-columns(12);
 			font-size: ms(-1);
 			color: $dark-grey-1;
 			font-weight: 300;
 			padding-top: ms(-6);
-
-			@include breakpoint($tablet) {
-				@include span-columns(4);
-				text-align: right;
-
+			.btn-group {
+				width: 100%;
+				.btn-sm {
+					background-color: $light-grey-5;
+				}
+				.download, .grid {
+					width: 28%;
+				}
+				.api {
+					width: 13%;
+				} 
+				.share {
+					width: 19%;
+				}
+				.more {
+					width: 12%;
+				}
 				
+			}
+
+			@include breakpoint($desktop) {
+				@include span-columns(4);
+				text-align: right;				
 				font-size: ms(0);
+			
+				.flannel, .flannel-actions {
+					letter-spacing: 0;
+					text-align: left;
+					max-width: 420px;
+
+				}
 			}
 			
 			
 		}
 	}
-	.entry-content {
+	.infopane-content {
 		@include outer-container();
 		
 		
-		.entry-main {			
+		.infopane-main {			
 			@include breakpoint($tablet) {
 				@include span-columns(8, collapse);
 				border-right: 1px solid $light-grey-4;
@@ -465,7 +589,7 @@ a {
 				
 			}
 		
-			.entry-description {
+			.infopane-description {
 				padding: ms(-2);
 				font-size: ms(0);
 

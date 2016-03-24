@@ -34,7 +34,6 @@ DropDown.prototype = {
 
         obj.val = opt.textContent;
         obj.index = index;
-        obj.placeholder.textContent = 'Gender: ' + obj.val;
 
         return false;
       });

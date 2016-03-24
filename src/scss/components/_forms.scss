@@ -3,21 +3,9 @@
   /* Size and position */
   display: inline-block;
   position: relative; /* Enable absolute positioning for children and pseudo elements */
-  padding: ms(-5) ms(7) ms(-5) ms(0);
-
-  /* Styles */
-  color: $grey;
-  border: 1px solid $btn-default-border-color;
-  border-radius: 1px;
-  cursor: pointer;
-}
-
-.dropdown::after {
-  @include triangle-down;
-}
-
-.dropdown.dropdown-orientation-top::after {
-  @include triangle-up;
+  >span[class*="icon-"] {
+    padding-left: ms(2); /* Make room for the arrow */
+  }
 }
 
 .dropdown .dropdown-options {
@@ -25,6 +13,7 @@
   position: absolute;
   left: 0;
   right: inherit;
+  min-width: 8em;
 
   /* Styles */
   background: $white;
@@ -50,8 +39,12 @@
   @include ellipsis;
   display: block;
   text-decoration: none;
-  color: $grey;
+  text-align: left;
+  color: $dark-grey-1;
   padding: ms(-5) ms(0);
+  >span[class*="icon-"] {
+    padding-right: ms(-2);
+  }
 }
 
 /* Hover state */
@@ -66,13 +59,7 @@
   margin: 1px 0;
 }
 
-.dropdown.active::after {
-  @include triangle-up;
-}
 
-.dropdown.active.dropdown-orientation-top::after {
-  @include triangle-down;
-}
 
 /////Forms
 form {
@@ -83,11 +70,28 @@ form {
     border: solid 1px $light-grey-2;
     border-radius: 1px;
     box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
-    line-height: 1.53;
     font-size: ms(0);
     font-family: "Open Sans", "Helvetica", Arial, sans-serif;
     padding: ms(-6);
+
+   &.text-input-lg {
+      font-size: ms(1);
+      padding: ms(-2) ms(1);
+    }
+
+    &.text-input-sm {
+      font-size: ms(-1);
+      padding: ms(-6) ms(-1);
+    }
+
+    &.text-input-xs {
+      font-size: ms(-2);
+      padding: ms(-8) ms(-1);
+    }
+  
   }
+
+
   .block-label {
     display: block;
     margin-bottom: 0.2em;

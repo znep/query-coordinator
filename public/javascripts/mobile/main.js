@@ -1,20 +1,20 @@
 /* global pageMetadata, datasetMetadata, socrataConfig */
 
-/*
-* QFB components
-*/
+/* Dependencies */
+import _ from 'lodash';
+import React from 'react'; // eslint-disable-line no-unused-vars
+import ReactDOM from 'react-dom';
+import moment from 'moment';
+
+/* QFB components */
+import FilterContainer from './react-components/qfb/filtercontainer/FilterContainer.js';
+
+/* Visualizations components */
 var mobileColumnChart = require('./mobile.columnchart.js');
 var mobileTimelineChart = require('./mobile.timelinechart.js');
 var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 var mobileTable = require('./mobile.table.js');
-
-/*
-* QFB components
-*/
-import React from 'react'; // eslint-disable-line no-unused-vars
-import ReactDOM from 'react-dom';
-import FilterContainer from './react-components/qfb/filtercontainer/FilterContainer.js';
 
 import 'leaflet/dist/leaflet.css';
 import 'socrata-visualizations/dist/socrata-visualizations.css';
@@ -205,8 +205,229 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
     var $cardContainer;
     var values;
     var aPredefinedFilters = [];
+    var vifFilters = [];
 
-    $.each(pageMetadata.cards, function(i, card) {
+    /**
+     * Converts dataTypes to QFB format
+     * @param {string} dataTypeName
+     * @returns {string}
+     * @private
+     */
+    function _convertFilterType2QFB(dataTypeName) {
+      switch (dataTypeName) {
+        case 'number':
+          return 'int';
+        case 'calendar_date':
+          return 'calendar_date';
+        case 'text':
+        default:
+          return 'string';
+      }
+    }
+
+    /**
+     * Convert arguments with date ranges to QFB format
+     * @param {object} args
+     * @returns {object}
+     * @private
+     */
+    function _convertToQFBDate(args) {
+      var out = {};
+
+      if (args.start && args.end) {
+        out.dir = 'bt';
+        out.val1 = args.start.format('YYYY-MM-DD');
+        out.val2 = args.end.format('YYYY-MM-DD');
+      } else if (args.start) {
+        out.dir = 'lt';
+        out.val1 = args.start.format('YYYY-MM-DD');
+      } else {
+        out.dir = 'gt';
+        out.val2 = args.end.format('YYYY-MM-DD');
+      }
+
+      return out;
+    }
+
+    /**
+     * Convert arguments with numbers to QFB format
+     * @param {object} args
+     * @returns {object}
+     * @private
+     */
+    function _convertToQFBNumber(args) {
+
+      if (args.start && args.end) {
+        return { dir: 'bt', val1: args.start, val2: args.end };
+      } else if (args.start) {
+        return { dir: 'gt', val1: args.start };
+      } else if (args.end) {
+        return { dir: 'lt', val2: args.end };
+      }
+
+    }
+
+    /**
+     * Converts first char of the given string to lower case
+     * @param {string} str
+     * @returns {string}
+     * @private
+     */
+    function _convertLowerFirstChar(str) {
+      return str.charAt(0).toLowerCase() + str.slice(1);
+    }
+
+    /**
+     * Add filter to VIF filters collection
+     * @param {string} fieldName
+     * @param {object} args
+     * @param {string} _function
+     * @private
+     */
+    function _addToVIFFilters(fieldName, args, _function) {
+      vifFilters.push({
+        'columnName': fieldName,
+        'arguments': args,
+        'function': _convertLowerFirstChar(_function)
+      });
+    }
+
+    /**
+     * Add filter to QFB filters collection
+     * @param {string} position -- Yes it's string.
+     * @param {string} dataTypeName
+     * @param {string} fieldName
+     * @param {object} args
+     * @private
+     */
+    function _addToQFBFilters(position, dataTypeName, fieldName, args) {
+      aPredefinedFilters.push({
+        id: position,
+        type: _convertFilterType2QFB(dataTypeName),
+        name: fieldName,
+        displayName: findObjectWithProperties(fieldName).name,
+        data: args,
+        startWithClosedFlannel: true
+      });
+    }
+
+    // Go through all the cards and collect cards with filters
+    var sameColumnCards = {};
+    _.each(pageMetadata.cards, function(card) {
+
+      // Finding cards with same columns which has active filters
+      if (!sameColumnCards[card.fieldName]) {
+        sameColumnCards[card.fieldName] = _.filter(pageMetadata.cards, function(_card) {
+          return _card.fieldName == card.fieldName && _card.activeFilters && _card.activeFilters.length > 0;
+        });
+      }
+
+    });
+
+    // Filter out undefined cards
+    sameColumnCards = _.filter(sameColumnCards, function(_column) {
+      return _.filter(_column, function(card) {
+          return card != undefined;
+        }).length > 0;
+    });
+
+    _.each(sameColumnCards, function(cards) {
+      var thisSetFirstCard = cards[0];
+      // This used as a ID in QFB
+      var position = findObjectWithProperties(thisSetFirstCard.fieldName).position.toString();
+      var columnMeta = datasetMetadata.columns[thisSetFirstCard.fieldName];
+
+      switch (thisSetFirstCard.activeFilters[0]['function']) {
+        case 'TimeRange':
+          var args = {};
+
+          _.each(cards, function(card) {
+            _.each(card.activeFilters, function(filter) {
+
+              if (filter['arguments'].start) { // eslint-disable-line dot-notation
+                var _start = moment(filter['arguments'].start); // eslint-disable-line dot-notation
+
+                if (!args.start || args.start < _start) {
+                  args.start = _start;
+                }
+              }
+
+              if (filter['arguments'].end) { // eslint-disable-line dot-notation
+                var _end = moment(filter['arguments'].end); // eslint-disable-line dot-notation
+
+                if (!args.end || args.end > _end) {
+                  args.end = _end;
+                }
+              }
+
+              _addToVIFFilters(thisSetFirstCard.fieldName, filter['arguments'], filter['function']);// eslint-disable-line dot-notation
+            });
+          });
+
+          _addToQFBFilters(position, columnMeta.dataTypeName, thisSetFirstCard.fieldName, _convertToQFBDate(args));
+          break;
+
+        case 'BinaryOperator':
+          if ( columnMeta.dataTypeName == 'text') {
+            var valueList = [];
+
+            _.each(cards, function(card) {
+              _.each(card.activeFilters, function(filter) {
+                if (!_.find(valueList, { text: filter['arguments'].operand })) { // eslint-disable-line dot-notation
+                  valueList.push({ text: filter['arguments'].operand }); // eslint-disable-line dot-notation
+                }
+
+                _addToVIFFilters(thisSetFirstCard.fieldName, filter['arguments'], filter['function']);// eslint-disable-line dot-notation
+              });
+            });
+
+            _addToQFBFilters(position, columnMeta.dataTypeName, thisSetFirstCard.fieldName, valueList);
+          } else if (columnMeta.dataTypeName == 'number') {
+            var _args = {};
+
+            _.each(cards, function(card) {
+              _.each(card.activeFilters, function(filter) {
+
+                switch (filter['arguments'].operator) { // eslint-disable-line dot-notation
+                  case '=':
+                    if (!_.find(vifFilters, { 'function': 'binaryOperator', columnName: thisSetFirstCard.fieldName, arguments: { operator: '='}})) {
+                      _args.start = _args.end = filter['arguments'].operand; // eslint-disable-line dot-notation
+
+                      _addToVIFFilters(thisSetFirstCard.fieldName, filter['arguments'], filter['function']);// eslint-disable-line dot-notation
+                    }
+
+                    break;
+                  case '>=':
+                    if (!_args.start || _args.start < filter['arguments'].operand) { // eslint-disable-line dot-notation
+                      _args.start = filter['arguments'].operand; // eslint-disable-line dot-notation
+                    }
+
+                    _addToVIFFilters(thisSetFirstCard.fieldName, filter['arguments'], filter['function']);// eslint-disable-line dot-notation
+                    break;
+                  case '<':
+                    if (!_args.end || _args.end > filter['arguments'].operand) { // eslint-disable-line dot-notation
+                      _args.end = filter['arguments'].operand; // eslint-disable-line dot-notation
+                    }
+
+                    _addToVIFFilters(thisSetFirstCard.fieldName, filter['arguments'], filter['function']);// eslint-disable-line dot-notation
+                    break;
+                }
+
+              });
+            });
+
+            _addToQFBFilters(position, columnMeta.dataTypeName, thisSetFirstCard.fieldName, _convertToQFBNumber(_args));
+          }
+          break;
+      }
+
+    });
+
+    var _cardsWithTables = _.filter(pageMetadata.cards, {cardType: 'table'});
+    var _cardsWithoutTables = _.reject(pageMetadata.cards, {cardType: 'table'});
+    var allCardsWithOrder = _cardsWithoutTables.concat(_cardsWithTables);
+
+    _.each(allCardsWithOrder, function(card) {
       var cardOptions = {
         componentClass: '',
         metaData: datasetMetadata.columns[card.fieldName],
@@ -215,15 +436,19 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
 
       switch (card.cardType) {
         case 'search':
-          var filterObj = {
-            id: findObjectWithProperties(card.fieldName).position,
-            type: 'string',
-            name: card.fieldName,
-            displayName: findObjectWithProperties(card.fieldName).name,
-            data: null,
-            startWithClosedFlannel: true
-          };
-          aPredefinedFilters.push(filterObj);
+          var position = findObjectWithProperties(card.fieldName).position.toString();
+
+          if (!_.find(aPredefinedFilters, { id: position })) {
+            var filterObj = {
+              id: position,
+              type: 'string',
+              name: card.fieldName,
+              displayName: findObjectWithProperties(card.fieldName).name,
+              data: null,
+              startWithClosedFlannel: true
+            };
+            aPredefinedFilters.push(filterObj);
+          }
           break;
         case 'timeline':
           cardOptions.componentClass = 'timeline-chart';
@@ -232,7 +457,11 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
           values = {
             domain: datasetMetadata.domain,
             datasetUid: datasetMetadata.id,
-            columnName: card.fieldName
+            columnName: card.fieldName,
+            unitLabel: datasetMetadata.columns[(card.aggregationField || card.fieldName)].name,
+            aggregationFunction: card.aggregationFunction,
+            aggregationField: card.aggregationField,
+            filters: vifFilters
           };
 
           mobileTimelineChart(values, $cardContainer.find('.' + cardOptions.componentClass));
@@ -244,7 +473,10 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
           values = {
             domain: datasetMetadata.domain,
             datasetUid: datasetMetadata.id,
-            columnName: card.fieldName
+            columnName: card.fieldName,
+            aggregationFunction: card.aggregationFunction,
+            aggregationField: card.aggregationField,
+            filters: vifFilters
           };
 
           mobileFeatureMap(values, $($cardContainer.find('.' + cardOptions.componentClass)));
@@ -256,10 +488,12 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
             domain: datasetMetadata.domain,
             datasetUid: datasetMetadata.id,
             columnName: card.fieldName,
-            // TODO Write some bloody error handling
             computedColumnName: card.computedColumn,
             geojsonUid: datasetMetadata.columns[card.computedColumn].computationStrategy.parameters.region.substring(1),
-            map_extent: (card.cardOptions) ? card.cardOptions.mapExtent || {} : {}
+            mapExtent: (card.cardOptions) ? card.cardOptions.mapExtent || {} : {},
+            aggregationFunction: card.aggregationFunction,
+            aggregationField: card.aggregationField,
+            filters: vifFilters
           };
 
           mobileChoroplethMap(values, $cardContainer.find('.' + cardOptions.componentClass));
@@ -270,7 +504,10 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
           values = {
             domain: datasetMetadata.domain,
             datasetUid: datasetMetadata.id,
-            columnName: card.fieldName
+            columnName: card.fieldName,
+            aggregationFunction: card.aggregationFunction,
+            aggregationField: card.aggregationField,
+            filters: vifFilters
           };
 
           mobileColumnChart(values, $cardContainer.find('.' + cardOptions.componentClass));
@@ -283,7 +520,10 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
             domain: datasetMetadata.domain,
             datasetUid: datasetMetadata.id,
             columnName: card.fieldName,
-            orderColumnName: _.findKey(datasetMetadata.columns, firstCard)
+            orderColumnName: _.findKey(datasetMetadata.columns, firstCard),
+            aggregationFunction: card.aggregationFunction,
+            aggregationField: card.aggregationField,
+            filters: vifFilters
           };
 
           mobileTable(values, $cardContainer.find('.' + cardOptions.componentClass));

@@ -39,10 +39,11 @@ module.exports = function(values, $target) {
   }
 
   var featureMapVIF = {
-    'aggregation': {
-      'columnName': null,
-      'function': 'count'
+    aggregation: {
+      'columnName': values.aggregationField,
+      'function': values.aggregationFunction
     },
+    'type': 'featureMap',
     'columnName': values.columnName,
     'configuration': {
       // If the value of `datasetMetadata` is falsey then the feature map
@@ -88,7 +89,7 @@ module.exports = function(values, $target) {
     'createdAt': '2014-01-01T00:00:00',
     'datasetUid': values.datasetUid,
     'domain': values.domain,
-    'filters': [],
+    'filters': values.filters,
     'format': {
       'type': 'visualization_interchange_format',
       'version': 1
@@ -98,10 +99,9 @@ module.exports = function(values, $target) {
       'url': 'localhost'
     },
     'unit': {
-      'one': 'record',
-      'other': 'records'
-    },
-    'type': 'featureMap'
+      'one': ' ',
+      'other': ' '
+    }
   };
 
   var $featureMapElement = $target;

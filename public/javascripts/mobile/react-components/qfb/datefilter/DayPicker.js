@@ -42,7 +42,7 @@ class MonthCalendar extends React.Component {
 
   updateParent() {
     var date = moment(this.state.selectedDay).format('L');
-    if (this.props.handleChange && moment(date).isValid()) {
+    if (this.props.handleChange && moment(date, 'DD/MM/YYYY').isValid()) {
       this.props.handleChange(date);
     }
   }

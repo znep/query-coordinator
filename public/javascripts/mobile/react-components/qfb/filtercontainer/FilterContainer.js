@@ -3,6 +3,7 @@ import $ from 'jquery';
 import './filtercontainer.scss';
 import FilterItem from '../filteritem/FilterItem'; // eslint-disable-line no-unused-vars
 import FlannelUtils from '../../flannel/flannel';
+import moment from 'moment';
 
 class FilterContainer extends React.Component {
 
@@ -29,6 +30,7 @@ class FilterContainer extends React.Component {
   componentWillMount() {
 
   }
+
   componentDidMount() {
     $(document).keyup(function(e) {
       if (e.keyCode == 27) {
@@ -38,6 +40,7 @@ class FilterContainer extends React.Component {
     });
     FlannelUtils.init();
   }
+
   componentDidUpdate() {
     FlannelUtils.updateFlannels();
   }
@@ -70,6 +73,7 @@ class FilterContainer extends React.Component {
     $('body').addClass('is-modal-open');
     $('.qfb-row-filters').removeClass('hidden-xs');
   }
+
   onClickToggleFilters() {
     if ($('.qfb-row-filters').hasClass('hidden-xs')) {
       $('.qfb-row-filters').removeClass('hidden-xs');
@@ -147,12 +151,44 @@ class FilterContainer extends React.Component {
           break;
         case 'calendar_date':
           filterObj.columnName = filter.name;
-          filterObj.function = 'timeRange'; // eslint-disable-line dot-notation
-          filterObj.arguments = {
-            'start': filter.data.val1,
-            'end': filter.data.val2
-          };
-          modifiedFilters.push(filterObj);
+          filterObj.function = 'binaryOperator'; // eslint-disable-line dot-notation
+
+          if (filter.data.val1 && filter.data.val2) {
+            filterObj.columnName = filter.name;
+            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj.arguments = {
+              operator: '>=',
+              operand: moment(filter.data.val1).format('YYYY-MM-DD')
+            };
+
+            modifiedFilters.push(filterObj);
+
+            var filterObj2 = _.clone(filterObj);
+            filterObj2.arguments = {
+              operator: '<',
+              operand: moment(filter.data.val2).format('YYYY-MM-DD')
+            };
+
+            modifiedFilters.push(filterObj2);
+          } else if (filter.data.val1) {
+            filterObj.columnName = filter.name;
+            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj.arguments = {
+              operator: '>=',
+              operand: moment(filter.data.val1).format('YYYY-MM-DD')
+            };
+
+            modifiedFilters.push(filterObj);
+          } else if (filter.data.val2) {
+            filterObj.columnName = filter.name;
+            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj.arguments = {
+              operator: '<',
+              operand: moment(filter.data.val2).format('YYYY-MM-DD')
+            };
+
+            modifiedFilters.push(filterObj);
+          }
           break;
         default:
           break;
@@ -173,6 +209,7 @@ class FilterContainer extends React.Component {
 
     this.props.handleFilterBroadcast({filters: modifiedFilters});
   }
+
   handleFilterDeletion(filterId) {
     var aFilters = this.state.filters;
     var filterCount = aFilters.length;

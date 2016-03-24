@@ -13,8 +13,8 @@ module.exports = function(values, $target) {
 
   var columnChartVIF = {
     aggregation: {
-      'columnName': null,
-      'function': 'count'
+      'columnName': values.aggregationField,
+      'function': values.aggregationFunction
     },
     labelUnit: 'rows',
     showAllLabels: false,
@@ -32,7 +32,7 @@ module.exports = function(values, $target) {
     'createdAt': '2014-01-01T00:00:00',
     'datasetUid': values.datasetUid,
     'domain': values.domain,
-    'filters': [],
+    'filters': values.filters,
     'format': {
       'type': 'visualization_interchange_format',
       'version': 1
@@ -44,8 +44,8 @@ module.exports = function(values, $target) {
     'title': values.columnName,
     'type': 'columnChart',
     'unit': {
-      'one': 'case',
-      'other': 'cases'
+      'one': ' ',
+      'other': ' '
     }
   };
 

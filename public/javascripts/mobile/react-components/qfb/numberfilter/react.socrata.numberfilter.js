@@ -11,10 +11,10 @@ class SocrataNumberfilter extends React.Component {
     super(props);
 
     this.state = {
-      hasLowerBound: false,
-      hasUpperBound: false,
-      lowerBound: null,
-      upperBound: null,
+      hasLowerBound: this.props.data.dir == 'bt' || this.props.data.dir == 'gt',
+      hasUpperBound: this.props.data.dir == 'bt' || this.props.data.dir == 'lt',
+      lowerBound: this.props.data.val1,
+      upperBound: this.props.data.val2,
       isCorrect: true,
       isApplicable: false,
       editingFieldRefName: null
@@ -25,8 +25,14 @@ class SocrataNumberfilter extends React.Component {
 
   // LIFECYCLE METHODS
   componentDidMount() {
+
     FlannelUtils.showOverlay();
+
+    var formattedLabel = this.formattedLabel();
+    this.props.labelHandler(formattedLabel);
+    this.props.dataHandler(formattedLabel, this.props.data, true, true);
   }
+
   componentDidUpdate() {
     if (this.state.editingFieldRefName) {
       ReactDOM.findDOMNode(this.refs[this.state.editingFieldRefName]).focus();
@@ -49,6 +55,7 @@ class SocrataNumberfilter extends React.Component {
     }
     return valuePresenter;
   }
+
   validateFields() {
     var isCorrect;
     var isApplicable;
@@ -107,6 +114,7 @@ class SocrataNumberfilter extends React.Component {
     }
     this.validateFields();
   }
+
   onClickInputBound(whichBound) {
     var stateObj = {
       editingFieldRefName: whichBound
@@ -126,6 +134,7 @@ class SocrataNumberfilter extends React.Component {
     this.setState(stateObj);
     this.validateFields();
   }
+
   onChangeInputBound(whichBound) {
     if (whichBound == 'lower') {
       this.setState({ lowerBound: parseInt(this.refs.lower.value, 10) });
@@ -135,8 +144,6 @@ class SocrataNumberfilter extends React.Component {
     this.validateFields();
   }
 
-
-
   handleKeyboardEvents(e) {
     if (e.keyCode == 13) {
       // press enter(return) key
@@ -145,19 +152,17 @@ class SocrataNumberfilter extends React.Component {
   }
 
   render() {
-    var disabledLowerValue = this.state.hasLowerBound ? false : true;
-    var disabledUpperValue = this.state.hasUpperBound ? false : true;
 
     return (
       <div className="qfb-filter-item-flannel-numberfilter">
         <div className="qfb-filter-item-flannel-numberfilter-part">
           <label onClick={ this.onClickLimitCheckbox.bind(this, 'lower') }>
-            <input type="checkbox" ref="hasLowerBound" /> Min
+            <input type="checkbox" ref="hasLowerBound" checked={ this.state.hasLowerBound }/> Min
           </label>
           <br/>
           <input type="number" pattern="[0-9]*"
-            className={ disabledLowerValue && 'disabled' }
-            disabled={ disabledLowerValue && 'true' }
+            className={ !this.state.hasLowerBound && 'disabled' }
+            disabled={ !this.state.hasLowerBound && 'true' }
             ref="lower"
             onClick={ this.onClickInputBound.bind(this, 'lower') }
             onChange={ this.onChangeInputBound.bind(this, 'lower') }
@@ -167,12 +172,12 @@ class SocrataNumberfilter extends React.Component {
         <div className="qfb-filter-item-flannel-numberfilter-seperator">to</div>
         <div className="qfb-filter-item-flannel-numberfilter-part">
           <label onClick={ this.onClickLimitCheckbox.bind(this, 'upper') }>
-            <input type="checkbox" ref="hasUpperBound" /> Max
+            <input type="checkbox" ref="hasUpperBound" checked={ this.state.hasUpperBound }/> Max
           </label>
           <br/>
           <input type="number" pattern="[0-9]*"
-            className={ disabledUpperValue && 'disabled' }
-            disabled={ disabledUpperValue && 'true' }
+            className={ !this.state.hasUpperBound && 'disabled' }
+            disabled={ !this.state.hasUpperBound && 'true' }
             ref="upper"
             onClick={ this.onClickInputBound.bind(this, 'upper') }
             onChange={ this.onChangeInputBound.bind(this, 'upper') }

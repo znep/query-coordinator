@@ -39,7 +39,7 @@
       <%- else -%>
         <a href="#submit" class="button sendContactButton"><%= t('screens.ds.dataset_contact.form.send_button') %></a>
       <%- end -%>
-      <a href="<%= local_assigns[:static_links] ? alt_view_path(@view.route_params) : '#cancel' %>"
+      <a href="<%= local_assigns[:static_links] ? alt_view_path(@view) : '#cancel' %>"
         class="button cancelContactButton contactButton"><%= t('core.dialogs.cancel') %></a>
     <% end %>
   </div>

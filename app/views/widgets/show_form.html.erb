@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <%- if @view -%>
-    <link rel="canonical" href="<%= view_path(@view.route_params) %>"/>
+    <link rel="canonical" href="<%= view_path(@view) %>" />
   <%- end -%>
 
   <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
@@ -19,7 +19,7 @@
     <%- if current_user && current_user.id == @view.owner.id -%>
     <div class="viewError"><%= @view.message %></div>
     <ul class="actionButtons clearfix">
-      <li><a href="<%= view_path(@view.route_params) %>" rel="external"
+      <li><a href="<%= view_path(@view) %>" rel="external"
         class="arrowButton">Edit View</a></li>
     </ul>
     <%- else -%>

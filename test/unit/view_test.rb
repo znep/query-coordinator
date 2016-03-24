@@ -1,23 +1,25 @@
 require 'test_helper'
 
-class ViewTest < Minitest::Test
+class ViewTest < Test::Unit::TestCase
 
   def test_find_has_valid_custom_headers
     load_sample_data('test/fixtures/sample-data.json')
     invalid_cookies_1 = {
       'test_key' => 'random value'
     }
-    assert_raises ArgumentError do
+    assert_raise ArgumentError do
       view = View.find('does-not-matter', 'Cookie' => invalid_cookies_1)
     end
 
     invalid_cookies_2 = 234234
-    assert_raises ArgumentError do
+    assert_raise ArgumentError do
       view = View.find('does-not-matter', 'Cookie' => invalid_cookies_2)
     end
 
     valid_cookies = 'key1=value1;key2=value2'
-    view = View.find('does-not-matter', 'Cookie' => valid_cookies)
+    assert_nothing_raised do
+      view = View.find('does-not-matter', 'Cookie' => valid_cookies)
+    end
   end
 
   def test_prefetch
@@ -63,10 +65,10 @@ class ViewTest < Minitest::Test
 
   def test_find_in_store_does_not_raise_on_valid_store_ids
     stub_core_server_connection
-    View.find_in_store(1, 'pg.primus')
-    View.find_in_store(1, 'es.omega')
-    View.find_in_store(1, 'pg2.primus')
-    View.find_in_store(1, 'es0.omega1')
+    assert_nothing_raised { View.find_in_store(1, 'pg.primus') }
+    assert_nothing_raised { View.find_in_store(1, 'es.omega') }
+    assert_nothing_raised { View.find_in_store(1, 'pg2.primus') }
+    assert_nothing_raised { View.find_in_store(1, 'es0.omega1') }
   end
 
   def test_find_in_store_raises_on_invalid_store_ids
@@ -271,7 +273,7 @@ class ViewTest < Minitest::Test
     init_current_domain
     stub_feature_flags_with(:enable_data_lens_provenance, false)
     view = View.new
-    refute_nil(view.is_official?)
+    assert_not_nil(view.is_official?)
   end
 
   def test_is_official_returns_false_by_default_if_provenance_is_enabled
@@ -284,7 +286,7 @@ class ViewTest < Minitest::Test
   def test_is_official_returns_true
     view = View.new
     view.provenance = 'OFFICIAL'
-    refute_nil(view.is_official?)
+    assert_not_nil(view.is_official?)
   end
 
   def test_is_community_returns_false_by_default
@@ -295,7 +297,7 @@ class ViewTest < Minitest::Test
   def test_is_community_returns_true
     view = View.new
     view.provenance = 'COMMUNITY'
-    refute_nil(view.is_community?)
+    assert_not_nil(view.is_community?)
   end
 
   def test_has_rights_returns_true
@@ -605,7 +607,6 @@ class ViewTest < Minitest::Test
   end
 
   def test_resource_url_uses_proper_scheme
-    init_current_domain
     view = View.new('id' => '1234-1234')
     assert_equal('https://localhost/resource/1234-1234.json', view.resource_url)
     mock_request = stub

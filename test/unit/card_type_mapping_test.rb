@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class CardTypeMappingTest < Minitest::Test
+class CardTypeMappingTest < Test::Unit::TestCase
 
   include CardTypeMapping
 

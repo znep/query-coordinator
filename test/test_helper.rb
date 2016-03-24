@@ -1,11 +1,10 @@
-ENV['RAILS_ENV'] ||= 'test'
+ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'minitest/autorun'
 require 'minitest/reporters'
 require 'webmock/minitest'
 require 'simplecov_custom_profile'
-require 'test/unit'
 
 SimpleCov.start 'filtered'
 
@@ -16,7 +15,7 @@ if ENV['RM_INFO']
   MiniTest::Reporters.use!
 end
 
-[Minitest::Test, MiniTest::Test].each do |klass|
+[Test::Unit::TestCase, MiniTest::Unit::TestCase].each do |klass|
   klass.send(:include, TestHelperMethods)
 end
 
@@ -42,6 +41,20 @@ class ActionController::TestCase
         method: method,
         path: routelike_url.gsub(/:[^\/]+/) { |match| route_params[match[1..-1].to_sym] }
       }
+    end
+  end
+
+end
+
+# assert_select doesn't like the formatting of our HTML... this adds a quieter version
+ActionDispatch::Assertions::SelectorAssertions.class_eval do
+  def assert_select_quiet(*args, &block)
+    original_verbosity = $-v # store original output value
+    $-v = nil # set to nil
+    begin
+      assert_select(*args, &block)
+    ensure
+      $-v = original_verbosity # and restore after execute assert_select
     end
   end
 end

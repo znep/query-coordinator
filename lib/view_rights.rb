@@ -23,4 +23,6 @@ module ViewRights
   def self.to_h
     SOURCE_ARRAY.reduce({}) { |acc, right| acc[right.upcase] = right ; acc }
   end
+
 end
+

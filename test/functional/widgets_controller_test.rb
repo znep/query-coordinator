@@ -8,11 +8,6 @@ class WidgetsControllerTest < ActionController::TestCase
     load_sample_data('test/fixtures/sample-data.json')
   end
 
-  def teardown
-    View.unstub(:find)
-    View.unstub(:category_display)
-  end
-
   context 'helper methods' do
 
     should 'respond to is_mobile?' do
@@ -34,7 +29,7 @@ class WidgetsControllerTest < ActionController::TestCase
       @request.env['HTTPS'] = 'on'
       get :show, id: 'four-four', customization_id: 'default'
       assert_response :success
-      assert_select '.odataEndpointWrapper input' do |elements|
+      assert_select_quiet '.odataEndpointWrapper input' do |elements|
         elements.each do |element|
           element.to_s.scan(/http.?:\/\//).each do |match|
             assert_equal(match, 'https://')

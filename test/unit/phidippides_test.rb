@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class PhidippidesTest < Minitest::Test
+class PhidippidesTest < Test::Unit::TestCase
 
   def phidippides
     Phidippides.any_instance.expects(:connection_details).never
@@ -251,7 +251,7 @@ class PhidippidesTest < Minitest::Test
   def test_issue_request_invalid_response
     prepare_stubs(body: 'junk', path: 'datasets/four-four', verb: :get)
     result = phidippides.issue_request(verb: :get, path: 'datasets/four-four', request_id: 'request_id')
-    assert_equal({'status' => '500', 'body' => '"junk"', 'error' => '784: unexpected token at \'"junk"\''}, result)
+    assert_equal({'status' => '500', 'body' => '"junk"', 'error' => '757: unexpected token at \'"junk"\''}, result)
   end
 
   def test_augment_dataset_metadata_with_nbe_dataset

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class DataLensManagerTest < Minitest::Test
+class DataLensManagerTest < Test::Unit::TestCase
 
   def data_lens_manager
     @data_lens_manager ||= DataLensManager.new
@@ -113,7 +113,7 @@ class DataLensManagerTest < Minitest::Test
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    data_lens_manager.update('asdf-asdf', :name => 'new name', :description => 'new description')
+    data_lens_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
   end
 
   def test_update_does_not_raise_when_reporting_core_errors
@@ -127,7 +127,9 @@ class DataLensManagerTest < Minitest::Test
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    data_lens_manager.update('asdf-asdf', :name => 'new name', :description => 'new description')
+    assert_nothing_raised do
+      data_lens_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
+    end
   end
 
   def test_update_does_not_raise_when_reporting_core_resource_not_found
@@ -141,7 +143,9 @@ class DataLensManagerTest < Minitest::Test
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    data_lens_manager.update('asdf-asdf', :name => 'new name', :description => 'new description')
+    assert_nothing_raised do
+      data_lens_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
+    end
   end
 
   def test_fetch
@@ -225,7 +229,9 @@ class DataLensManagerTest < Minitest::Test
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    data_lens_manager.delete('asdf-asdf')
+    assert_nothing_raised do
+      data_lens_manager.delete('asdf-asdf')
+    end
   end
 
   def test_delete_does_not_raise_when_core_resource_not_found
@@ -236,7 +242,9 @@ class DataLensManagerTest < Minitest::Test
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    data_lens_manager.delete('asdf-asdf')
+    assert_nothing_raised do
+      data_lens_manager.delete('asdf-asdf')
+    end
   end
 
   def v2_page_metadata

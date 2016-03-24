@@ -11,7 +11,7 @@
         <h1 class="profile-header--user-name"><%= @user.displayName %></h1>
         <div class="profile-header--user-actions">
           <%- if @is_user_current -%>
-            <a href="<%= profile_account_path(@user.route_params) %>" class="editProfileLink iconLink accountSettings">
+            <a href="<%= profile_account_path(@user) %>" class="editProfileLink iconLink accountSettings">
               <span class="icon-settings"></span>
               <span class="editLinkText"><%= t('screens.profile.bar.edit_settings_link') %></span>
             </a>

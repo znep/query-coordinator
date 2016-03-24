@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class LicenseConfigTest < Minitest::Test
+class LicenseConfigTest < Test::Unit::TestCase
 
   def test_all_licenses_are_valid
     # Error checking

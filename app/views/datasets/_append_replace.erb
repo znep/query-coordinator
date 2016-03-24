@@ -1,5 +1,5 @@
 <div class="appendReplace">
-  <a href="<%= edit_view_path(@view.route_params) %>" class="button appendReplaceButton rightArrow">
+  <a href="<%= edit_view_path(@view) %>" class="button appendReplaceButton rightArrow">
     <span class="icon"></span>
     <%= @view.is_tabular? ? t('screens.ds.grid_sidebar.append_replace.wizard_button.mutable') : t('screens.ds.grid_sidebar.append_replace.wizard_button.immutable') %>
   </a>

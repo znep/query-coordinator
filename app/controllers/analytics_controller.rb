@@ -12,7 +12,7 @@ class AnalyticsController < ApplicationController
 
   def add_all
     data = begin
-      ActiveSupport::JSON.decode(request.body.read)
+      ActiveSupport::JSON.decode(request.body)
     rescue JSON::ParserError
       nil
     end

@@ -32,3 +32,4 @@ module ActionControllerExtensions
     true # so we can do "render_404 and return"
   end
 end
+

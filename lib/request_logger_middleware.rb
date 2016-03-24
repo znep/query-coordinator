@@ -65,4 +65,6 @@ class RequestLoggerMiddleware
   def extract_content_length(headers)
     (value = headers[CONTENT_LENGTH].to_i) == 0 ? '-' : value
   end
+
 end
+

@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 describe ImportStatusService do
 
   before(:each) do

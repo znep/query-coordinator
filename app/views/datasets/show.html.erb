@@ -10,16 +10,16 @@
   <%- end -%>
 
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
-  <link rel="canonical" href="<%= view_path(@view.route_params) %>"/>
+  <link rel="canonical" href="<%= view_path(@view) %>" />
 <% end %>
 
 <% content_for :skip_links do %>
   <%- unless @view.new_backend? -%>
-    <%= link_to 'Go to an accessible version of this page', alt_view_path(@view.route_params) %>
+    <%= link_to 'Go to an accessible version of this page', alt_view_path(@view) %>
   <%- end -%>
 
   <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) -%>
-    <%= link_to 'Edit the metadata of this dataset', edit_view_metadata_path(@view.route_params) %>
+    <%= link_to 'Edit the metadata of this dataset', edit_view_metadata_path(@view) %>
   <%- end -%>
 <% end %>
 

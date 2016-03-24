@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 describe DataLensMigrations do
 
   def migrate(version, page_metadata)

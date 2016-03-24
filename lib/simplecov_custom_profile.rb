@@ -12,3 +12,4 @@ SimpleCov.formatters = [
   SimpleCov::Formatter::HTMLFormatter,
   SimpleCov::Formatter::CoberturaFormatter
 ]
+

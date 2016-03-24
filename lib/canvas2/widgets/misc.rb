@@ -323,7 +323,7 @@ module Canvas2
       t += Util.app_helper.create_pagination(
         row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
 
-      t += '<a href="' + alt_view_path(ds.route_params) + '" class="altViewLink">Accessibly explore the data</a>'
+      t += '<a href="' + alt_view_path(ds) + '" class="altViewLink">Accessibly explore the data</a>'
       t += '</div></noscript>'
       [t, false]
     end

@@ -70,11 +70,28 @@ form {
     border: solid 1px $light-grey-2;
     border-radius: 1px;
     box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
-    line-height: 1.53;
     font-size: ms(0);
     font-family: "Open Sans", "Helvetica", Arial, sans-serif;
     padding: ms(-6);
+
+   &.text-input-lg {
+      font-size: ms(1);
+      padding: ms(-2) ms(1);
+    }
+
+    &.text-input-sm {
+      font-size: ms(-1);
+      padding: ms(-6) ms(-1);
+    }
+
+    &.text-input-xs {
+      font-size: ms(-2);
+      padding: ms(-8) ms(-1);
+    }
+  
   }
+
+
   .block-label {
     display: block;
     margin-bottom: 0.2em;

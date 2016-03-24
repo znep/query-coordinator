@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class PolaroidTest < Test::Unit::TestCase
+class PolaroidTest < Minitest::Test
 
   def polaroid
     @polaroid ||= Polaroid.new

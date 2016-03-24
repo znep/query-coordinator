@@ -23,3 +23,7 @@ public/stylesheets/styleguide
 frontend.tgz
 .byebug_history
 REVISION
+log/
+.npmrc
+public/stylesheets/styleguide
+app/styles/vendor

@@ -800,7 +800,7 @@ module ApplicationHelper
   def request_id(req = request)
     return 'Unavailable' unless req.present?
 
-    req.headers['X-Socrata-RequestId'] || req.headers['action_dispatch.req_id']
+    request.headers['X-Socrata-RequestId'] || request.headers['action_dispatch.request_id'].to_s.gsub('-', '')
   end
 
   # gets the active locale for the request.

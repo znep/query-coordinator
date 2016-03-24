@@ -38,7 +38,7 @@ module BrowseActions
     add_data_lens_view_type_if_enabled!(view_types)
     add_stories_view_type_if_enabled!(view_types)
     add_pulse_view_type_if_enabled!(view_types)
-    
+
     # EN-879: Hide API facet when using Cetera search because Cetera does not index API objects
     # because API foundry v1 is deprecated
     if module_enabled?(:api_foundry) && !using_cetera?

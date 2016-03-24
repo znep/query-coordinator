@@ -705,7 +705,7 @@ private
     config_type = params[:config_id]
     unless config_type.match /^\d+$/
       config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
-      return render_404 if config.nil? 
+      return render_404 if config.nil?
       redirect_to url_for(params.merge(config_id: config.id))
     end
   end

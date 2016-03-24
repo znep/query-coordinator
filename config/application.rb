@@ -1,12 +1,11 @@
 require File.expand_path('../boot', __FILE__)
 
-# require 'rails/all'
 require 'action_controller/railtie'
-require 'active_resource/railtie'
+require 'action_mailer/railtie'
+require 'sprockets/railtie'
 require 'rails/test_unit/railtie'
 require 'active_support/core_ext/numeric/time'
 require 'semver'
-# require 'sprockets/railtie'
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
@@ -38,7 +37,8 @@ module Frontend
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    # config.autoload_paths += %W(#{config.root}/extras)
+    config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += %W(#{Rails.root}/app/models/external_configs)
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -49,7 +49,7 @@ module Frontend
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # config.time_zone = 'Central Time (US & Canada)'
+    config.time_zone = 'UTC'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
@@ -77,6 +77,8 @@ module Frontend
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    config.cache_store = :dalli_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :expires_in => 1.day, :compress => true }
 
     # TTL for fragment caching, currently only used for DataSlate
     config.cache_ttl_fragment = 24.hours
@@ -108,5 +110,8 @@ module Frontend
       :dev_server_port => 3030,
       :asset_manifest => {}
     }
+
+    # Do not swallow errors in after_commit/after_rollback callbacks.
+    # config.active_record.raise_in_transactional_callbacks = true
   end
 end

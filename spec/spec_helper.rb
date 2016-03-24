@@ -47,6 +47,14 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  config.around(:each, verify_stubs: false) do |example|
+    config.mock_with :rspec do |mocks|
+      mocks.verify_partial_doubles = false
+      example.run
+      mocks.verify_partial_doubles = true
+    end
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
@@ -91,6 +99,13 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+end
+
+def rspec_stub_feature_flags_with(key, value) # todo rename
+  feature_flags = Hashie::Mash.new
+  feature_flags[key.to_s] = value
+  allow(CurrentDomain).to receive(:feature_flags).and_return(feature_flags)
+  allow(FeatureFlags).to receive(:derive).and_return(feature_flags)
 end
 
 def stub_logged_in

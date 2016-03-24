@@ -29,7 +29,7 @@ class Auth0HelperTest < ActionView::TestCase
                            )
   end
 
-  test 'Token is valid' do 
+  test 'Token is valid' do
     authHash = get_mock_federated_user_token
     assert(valid_token?(authHash))
   end

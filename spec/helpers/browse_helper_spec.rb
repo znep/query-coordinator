@@ -167,8 +167,10 @@ describe BrowseHelper do
       @options['cars'] = 'TRUCKASAURUS'
       @facet_option[:value] = 'TRUCKASAURUS'
       link = helper.link_for_facet(@facet, @facet_option, @options, @params)
-      regex = /<a href=\"\/browse\?\" class=\"active\">.+<\/a>/
-      expect(link).to match(regex)
+      class_regex = /class=\"active\"/
+      href_regex = /href=\"\/browse/
+      expect(link).to match(class_regex)
+      expect(link).to match(href_regex)
     end
 
     it 'creates a link to the base_url with the image icon' do

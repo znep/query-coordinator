@@ -36,13 +36,13 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path,
                                                   {'X-Socrata-Federation' => 'Honey Badger'}))
   end
-
+  
   def self.find_deleted_name(id)
     path = "/#{self.name.pluralize.downcase}.json?" + {'method' => 'getDeletedNameById', 'id' => id}.to_param
     name = CoreServer::Base.connection.get_request(path, {'X-Socrata-Federation' => 'Honey Badger'})
-    JSON.parse("[#{name}]").first # core returns this as a quoted string, so parse it as json to un-quote it
+    JSON.parse("[#{name}]").first # core returns this as a quoted string, so parse it as json to un-quote it 
   end
-
+  
   def self.find_for_user(id)
     path = "/users/#{id}/views.json"
     parse(CoreServer::Base.connection.get_request(path))

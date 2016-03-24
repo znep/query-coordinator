@@ -2,7 +2,7 @@ require 'test_helper'
 
 include Clytemnestra
 
-class ClytemnestraTest < MiniTest::Unit::TestCase
+class ClytemnestraTest < Minitest::Test
   # yes, this is a little silly
   def test_check_time_and_id_are_there_yo
     searchView = ViewSearchResult.new

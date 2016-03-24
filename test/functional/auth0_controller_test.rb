@@ -5,7 +5,7 @@ class Auth0ControllerTest < ActionController::TestCase
   include UserSessionsHelper
   def setup
     Frontend.stubs(:auth0_configured? => true)
-    Frontend::Application.reload_routes!
+    Rails.application.reload_routes!
     init_core_session
     init_current_domain
     OmniAuth.config.test_mode = true
@@ -14,7 +14,11 @@ class Auth0ControllerTest < ActionController::TestCase
   end
 
   def teardown
-    Frontend::Application.reload_routes!
+    Rails.application.reload_routes!
+    Frontend.unstub(:auth0_configured?)
+    OmniAuth.config.test_mode = false
+    OmniAuth.config.unstub(:auth0)
+    Auth0Controller.unstub(:authentication_provider_class)
   end
 
   def get_mock_token(provider,uid,socrata_user_id)
@@ -73,7 +77,7 @@ class Auth0ControllerTest < ActionController::TestCase
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
     get :callback, :protocol => 'https'
     assert_redirected_to('/profile')
-    assert_not_nil(@response.cookies['_core_session_id'])
+    refute_nil(@response.cookies['_core_session_id'])
     assert(@response.cookies['logged_in'])
   end
 
@@ -123,7 +127,7 @@ class Auth0ControllerTest < ActionController::TestCase
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
     Auth0Controller.any_instance.expects(:authentication_provider_class).returns(AuthenticatedStub)
     get :callback, :protocol => 'https'
-    assert_not_nil(@response.cookies['logged_in'])
+    refute_nil(@response.cookies['logged_in'])
     assert_redirected_to(login_redirect_url)
   end
 

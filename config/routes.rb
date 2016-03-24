@@ -1,7 +1,4 @@
-# encoding: utf-8
-
-Frontend::Application.routes do
-
+Rails.application.routes.draw do
   # NOTE: Currently socrata-analytics.js is dependent on path structure for accurately tracking metrics.
   # If you decide to change how pages are routed please reflect your changes in socrata-analytics 'determine_page_type'
 
@@ -38,16 +35,16 @@ Frontend::Application.routes do
     # New frontend pages
     get '/stat/version(.:format)' => 'odysseus#version'
     scope :controller => 'odysseus', :action => 'index' do
-      match '/stat', :as => 'govstat_root'
-      match '/stat/goals', :as => 'govstat_goals'
-      match '/stat/my/goals', :as => 'govstat_my_goals'
-      match '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
-      match '/stat/goals/single/:goal_id/edit', :as => 'govstat_single_goal_edit'
-      match '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
-      match '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
-      match '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
-      match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit'
-      match '/stat/data', :as => 'govstat_data'
+      get '/stat', :as => 'govstat_root'
+      get '/stat/goals', :as => 'govstat_goals'
+      get '/stat/my/goals', :as => 'govstat_my_goals'
+      get '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
+      get '/stat/goals/single/:goal_id/edit', :as => 'govstat_single_goal_edit'
+      get '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
+      get '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
+      get '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
+      match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit', :via => [:get, :post]
+      get '/stat/data', :as => 'govstat_data'
     end
 
     scope :path => '/internal', :controller => 'internal' do
@@ -78,7 +75,7 @@ Frontend::Application.routes do
         post '/aliases', :action => 'update_aliases', :as => 'update_aliases'
         post '/module_feature', :action => 'add_a_module_feature', :as => 'add_module_feature'
         post '/account_modules', :action => 'add_module_to_domain'
-        match '/flush_cache', :action => 'flush_cache'
+        post '/flush_cache', :action => 'flush_cache'
         get '/feature_flags(/:category)', :action => 'feature_flags', :as => 'feature_flags_config'
         post '/set_feature_flags', :action => 'set_feature_flags', :as => 'update_feature_flags'
 
@@ -103,7 +100,7 @@ Frontend::Application.routes do
       get :datasets
       get :data_slate, :as => 'canvas_admin', :action => 'canvas_pages'
       get 'data_slate/create', :as => 'canvas_create', :action => 'create_canvas_page'
-      post 'data_slate/create', :as => 'canvas_create', :action => 'post_canvas_page'
+      post 'data_slate/create', :action => 'post_canvas_page'
       get 'geo', :action => :georegions, :as => 'georegions_administration'
       get 'geo/candidate/:id', :action => :georegion_candidate, :format => 'json'
       get 'geo/:id', :action => :georegion, :format => 'json'
@@ -230,7 +227,7 @@ Frontend::Application.routes do
       get ':profile_name/:id/app_tokens', :action => 'edit_app_tokens', :as => 'app_tokens'
       get ':profile_name/:id/app_tokens/:token_id', :action => 'show_app_token', :as => 'app_token'
       get 'app_tokens', :action => 'edit_app_tokens'
-      match ':profile_name/:id/app_token/:token_id', :action => 'edit_app_token', :as => 'edit_app_token'
+      match ':profile_name/:id/app_token/:token_id', :action => 'edit_app_token', :as => 'edit_app_token', :via => [:get, :post]
       post ':profile_name/:id/app_token/:token_id/delete', :action => 'delete_app_token', :as => 'delete_app_token'
       get ':profile_name/:id/account', :action => 'edit_account', :as => 'profile_account'
       get 'account', :action => 'edit_account'
@@ -274,7 +271,7 @@ Frontend::Application.routes do
       end
     end
 
-    resources :resource, :controller => 'ResourcesController' do
+    resources :resource do
       member do
         get :show
       end
@@ -285,8 +282,8 @@ Frontend::Application.routes do
     end
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do
-      get '/view/bootstrap/:id', :action => 'bootstrap'
-      get '/dataset/:id/lens/new', :action => 'bootstrap'
+      get '/view/bootstrap/:id', :action => 'bootstrap', :app => 'dataCards'
+      get '/dataset/:id/lens/new', :action => 'bootstrap', :app => 'dataCards'
     end
 
     # don't change the order of these two
@@ -298,7 +295,7 @@ Frontend::Application.routes do
       # As of 9/24/2014, the angular app itself figures out what particular view to render.
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
       # reflect the changes.
-      match '/view/:id', :action => 'data_lens', :app => 'dataCards', :as => :opendata_cards_view
+      match '/view/:id', :action => 'data_lens', :app => 'dataCards', :as => :opendata_cards_view, :via => [:get, :post, :put, :delete]
     end
 
     scope do
@@ -306,11 +303,13 @@ Frontend::Application.routes do
       match '/component/visualization/add', {
         :controller => 'data_lens',
         :action => 'visualization_add',
-        :app => 'dataCards'
+        :app => 'dataCards',
+        :via => [:get, :post, :put]
       }
-      match '/component/visualization/v0/show', {
+      get '/component/visualization/v0/show', {
         :controller => 'classic_visualization',
-        :action => 'show'
+        :action => 'show',
+        :via => [:get, :post]
       }
     end
 
@@ -386,94 +385,98 @@ Frontend::Application.routes do
     get '/version(.:format)' => 'version#index'
 
     # Static error pages to be mirrored and served outside of our infrastructure.
-    match '/static_sitewide_messages/:action', :controller => 'static_sitewide_messages'
+    get '/static_sitewide_messages/:action', :controller => 'static_sitewide_messages'
 
     # Auth/login/register paths
-    match '/forgot_password', :to => 'accounts#forgot_password', :as => 'forgot_password'
-    match '/reset_password/:uid/:reset_code', :to => 'accounts#reset_password', :as => 'reset_password',
+    match '/forgot_password',
+      :to => 'accounts#forgot_password',
+      :as => 'forgot_password',
+      :via => [:get, :post]
+    match '/reset_password/:uid/:reset_code',
+      :to => 'accounts#reset_password',
+      :as => 'reset_password',
+      :via => [:get, :post],
       :conditions => {:uid => Frontend::UID_REGEXP}
     match '/verify_email', :to => 'accounts#verify_email', :as => 'verify_email'
 
     if Frontend.auth0_configured?
       scope :protocol => 'https' do
-        match '/auth/auth0/callback' => 'auth0#callback', :as => 'auth0_callback'
-        match '/auth/failure' => 'auth0#failure'
+        get '/auth/auth0/callback' => 'auth0#callback', :as => 'auth0_callback'
+        get '/auth/failure' => 'auth0#failure'
       end
     end
 
     scope :protocol => "https", :port => APP_CONFIG.ssl_port do
-      match '/login.json', :to => 'user_sessions#create', :format => 'json', :as => 'login_json'
-      match '/login', :to => 'user_sessions#new', :as => 'login'
-      match '/login/extend', :to => 'user_sessions#extend', :as => 'login_extend'
-      match '/logout', :to => 'user_sessions#destroy', :as => 'logout'
-      match '/logout/expire_if_idle', :to => 'user_sessions#expire_if_idle', :as => 'expire_if_idle'
-      match '/signup.json', :to => 'accounts#create', :format => 'json', :as => 'signup_json'
+      post '/login.json', :to => 'user_sessions#create', :format => 'json', :as => 'login_json'
+      get '/login', :to => 'user_sessions#new', :as => 'login'
+      post '/login/extend', :to => 'user_sessions#extend', :as => 'login_extend'
+      get '/logout', :to => 'user_sessions#destroy', :as => 'logout'
+      get '/logout/expire_if_idle', :to => 'user_sessions#expire_if_idle', :as => 'expire_if_idle'
+      post '/signup.json', :to => 'accounts#create', :format => 'json', :as => 'signup_json'
       get '/signup', :to => 'accounts#new', :as => 'signup'
       post '/signup', :to => 'accounts#create', :as => 'signup_submit'
-      match '/accounts.json', :to => 'accounts#update', :format => 'json', :as => 'accounts_json'
-      match '/login/rpx_return_login', :to => 'rpx#return_login', :as => 'rpx_return_login'
-      match '/login/rpx_return_signup', :to => 'rpx#return_signup', :as => 'rpx_return_signup'
-      match '/login/rpx_login', :to => 'rpx#login', :as => 'rpx_login'
-      match '/login/rpx_signup', :to => 'rpx#signup', :as => 'rpx_signup'
-      match '/account/add_rpx_token', :to => 'accounts#add_rpx_token', :as => 'add_rpx_token'
+      post '/accounts.json', :to => 'accounts#update', :format => 'json', :as => 'accounts_json'
+      get '/login/rpx_return_login', :to => 'rpx#return_login', :as => 'rpx_return_login'
+      get '/login/rpx_return_signup', :to => 'rpx#return_signup', :as => 'rpx_return_signup'
+      get '/login/rpx_login', :to => 'rpx#login', :as => 'rpx_login'
+      get '/login/rpx_signup', :to => 'rpx#signup', :as => 'rpx_signup'
+      get '/account/add_rpx_token', :to => 'accounts#add_rpx_token', :as => 'add_rpx_token'
       match  '/profile/:id/update_account', :to => 'profile#update_account', :as => 'update_account_profile',
         :via => [:post, :put], :constraints => { :id => Frontend::UID_REGEXP }
-      match '/oauth/authorize' => 'oauth#authorize'
+      get '/oauth/authorize' => 'oauth#authorize'
     end
 
     resource :account
     resources :user_sessions
 
-    match '/robots.txt' => 'robots_txt#show'
+    get '/robots.txt' => 'robots_txt#show'
 
-    match '/opensearch.xml' => 'open_search#show'
+    get '/opensearch.xml' => 'open_search#show'
 
     # Non-production environments get a special controller for test actions
     unless Rails.env.production?
-      match '/test_page/:action', :controller => 'test_pages'
+      get '/test_page/:action', :controller => 'test_pages'
     end
 
     # Govstat pages
     scope :controller => 'govstat' do
-      match '/manage/reports', :action => 'manage_reports'
-      match '/manage/site_config', :action => 'manage_config'
+      get '/manage/reports', :action => 'manage_reports'
+      get '/manage/site_config', :action => 'manage_config'
     end
 
     # V1 dataset metadata endpoints
     scope :controller => 'dataset_metadata' do
-      match '/metadata/v1/dataset/:id', :to => 'dataset_metadata#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
-      match '/metadata/v1/dataset/:id', :to => 'dataset_metadata#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
+      get '/metadata/v1/dataset/:id', :to => 'dataset_metadata#show', :constraints => { :id => Frontend::UID_REGEXP }
+      put '/metadata/v1/dataset/:id', :to => 'dataset_metadata#update', :constraints => { :id => Frontend::UID_REGEXP }
       # This endpoint should eventually be routed to the page_metadata_controller instead
-      match '/metadata/v1/dataset/:id/pages', :to => 'dataset_metadata#index', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
+      get '/metadata/v1/dataset/:id/pages', :to => 'dataset_metadata#index', :constraints => { :id => Frontend::UID_REGEXP }
     end
 
     # V1 page metadata endpoints
     scope :controller => 'page_metadata' do
-      match '/metadata/v1/page/:id', :to => 'page_metadata#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
-      match '/metadata/v1/page', :to => 'page_metadata#create', :via => [:post]
-      match '/metadata/v1/page/:id', :to => 'page_metadata#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
-      match '/metadata/v1/page/:id', :to => 'page_metadata#destroy', :via => [:delete], :constraints => { :id => Frontend::UID_REGEXP }
+      get '/metadata/v1/page/:id', :to => 'page_metadata#show', :constraints => { :id => Frontend::UID_REGEXP }
+      post '/metadata/v1/page', :to => 'page_metadata#create'
+      put '/metadata/v1/page/:id', :to => 'page_metadata#update', :constraints => { :id => Frontend::UID_REGEXP }
+      delete '/metadata/v1/page/:id', :to => 'page_metadata#destroy', :constraints => { :id => Frontend::UID_REGEXP }
     end
 
     scope :controller => 'data_lens' do
-      match '/geo/initiate',
-        :to => 'data_lens#initiate_region_coding',
-        :via => [:post]
-      match '/geo/status',
-        :to => 'data_lens#region_coding_status',
-        :via => [:get]
+      post '/geo/initiate',
+        :to => 'data_lens#initiate_region_coding'
+      get '/geo/status',
+        :to => 'data_lens#region_coding_status'
       get 'view/:id/mobile', :action => 'show_mobile'
     end
 
     # Custom pages, catalogs, facets
     scope :controller => 'custom_content' do
       # Canvas 1
-      match '/page/:page_name', :action => 'show_page'
-      match '/catalog/:page_name', :action => 'show_page'
-      match '/facet/:facet_name', :action => 'show_facet_listing'
-      match '/facet/:facet_name/:facet_value', :action => 'show_facet_page',
+      get '/page/:page_name', :action => 'show_page'
+      get '/catalog/:page_name', :action => 'show_page'
+      get '/facet/:facet_name', :action => 'show_facet_listing'
+      get '/facet/:facet_name/:facet_value', :action => 'show_facet_page',
         :constraints => { :facet_value => /.*/ }
-      match '/styles/:page_type/:config_name.css', :action => 'stylesheet',
+      get '/styles/:page_type/:config_name.css', :action => 'stylesheet',
         :constraints => { :page_type => /homepage|page|facet_(listing|page)/i }
 
       #####################################
@@ -481,9 +484,9 @@ Frontend::Application.routes do
       #####################################
 
       # Canvas 2
-      match '/template/:id', :action => 'template'
-      match '*path.*ext', :action => 'page'
-      match '*path', :action => 'page'
+      get '/template/:id', :action => 'template'
+      get '*path.*ext', :action => 'page'
+      get '*path', :action => 'page'
       root :action => 'page'
 
       # This goes after the global handler so that it never actual gets

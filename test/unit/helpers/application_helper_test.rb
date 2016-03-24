@@ -5,9 +5,12 @@ class ApplicationHelperTest < ActionView::TestCase
 
   include ERB::Util
 
+  def setup
+    init_current_domain
+  end
+
   def test_custom_ga_tracking_code
     FeatureFlags.stubs(:derive => { enable_standard_ga_tracking: false })
-
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
     assert(application_helper.use_ga_tracking_code? == true)
 
@@ -68,7 +71,6 @@ class ApplicationHelperTest < ActionView::TestCase
 
   def test_render_airbrake_shim_does_render
     FeatureFlags.stubs(:derive => { enable_airbrake_js: true })
-    ActionView::AssetPaths.any_instance.stubs(:config => OpenStruct.new(:assets_dir => '.')) # LOL
     assert(application_helper.render_airbrake_shim.to_s =~ /airbrake-shim/)
   end
 
@@ -91,7 +93,6 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_asset_revision_key_string
-    init_current_domain
     # See comment in #asset_revision_key_regex below about REVISION_NUMBER
     CurrentDomain.stubs(:default_config_id => '1234')
     CurrentDomain.stubs(:default_config_updated_at => '5678')
@@ -118,7 +119,6 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_font_tags_outputs_typekit_when_config_present
-    init_current_domain
     CurrentDomain.stubs(:properties => OpenStruct.new(typekit_id: 'abcdef'))
 
     assert_match(
@@ -132,7 +132,6 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_font_tags_outputs_google_font_for_govstat
-    init_current_domain
     application_helper.stubs(:module_enabled?).with(:govStat).returns(true)
 
     assert_match(
@@ -142,7 +141,6 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_font_tags_outputs_typekit_for_govstat_when_config_present
-    init_current_domain
     application_helper.stubs(:module_enabled?).with(:govStat).returns(true)
     CurrentDomain.stubs(:properties => OpenStruct.new(typekit_id: 'abcdef'))
 
@@ -151,21 +149,19 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_font_tags_does_not_output_google_font_for_govstat_when_typekit
-    init_current_domain
     application_helper.stubs(:module_enabled?).with(:govStat).returns(true)
     CurrentDomain.stubs(:properties => OpenStruct.new(typekit_id: 'abcdef'))
 
-    assert_not_match(/fonts.googleapis.com/, application_helper.font_tags)
+    assert_no_match(/fonts.googleapis.com/, application_helper.font_tags)
   end
 
   def test_font_tags_does_not_output_font_tags
-    init_current_domain
     application_helper.stubs(:module_enabled?).with(:govStat).returns(false)
     CurrentDomain.stubs(:properties => OpenStruct.new)
 
     output = application_helper.font_tags
-    assert_not_match(%r{//use.typekit.net/abcdef.js}, output)
-    assert_not_match(/fonts.googleapis.com/, output)
+    assert_no_match(%r{//use.typekit.net/abcdef.js}, output)
+    assert_no_match(/fonts.googleapis.com/, output)
   end
 
   def setup_current_user_can_create_story(booleans)
@@ -491,14 +487,12 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
-    init_current_domain
     @object = Object.new.tap { |object| object.extend(ApplicationHelper) }
     @view = View.new.tap { |view| view.stubs(default_view_state) }
     @object.stubs(:view => @view, :request => nil, :current_user => Object.new)
   end
 
   def init_current_domain_mobile_device
-    init_current_domain
     application_helper.stubs(:controller_name => 'test')
     CurrentDomain.stubs(:configuration => OpenStruct.new(:properties => OpenStruct.new(:view_type => 'table')))
     application_helper.stubs(:request => OpenStruct.new(:env => { 'HTTP_USER_AGENT' => 'IPHone'}))
@@ -508,4 +502,14 @@ class ApplicationHelperTest < ActionView::TestCase
     init_current_domain_mobile_device
     application_helper.stubs(:request => OpenStruct.new(:env => { 'HTTP_USER_AGENT' => 'MaCiNtOsH'}))
   end
+
+  def teardown
+    application_helper.unstub(:controller_name)
+    application_helper.unstub(:request)
+    CurrentDomain.unstub(:configuration)
+    CurrentDomain.unstub(:feature_flags)
+    CurrentDomain.unstub(:default_locale)
+    FeatureFlags.unstub(:derive)
+  end
+
 end

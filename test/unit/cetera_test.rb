@@ -2,8 +2,7 @@ require 'test_helper'
 
 include Cetera
 
-# TODO port be over to rspec, probably *after* the Rails 4 upgrade
-class CeteraTest < MiniTest::Unit::TestCase
+class CeteraTest < Minitest::Test
   describe 'Cetera' do
     def sample_search_options
       {

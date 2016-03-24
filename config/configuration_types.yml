@@ -84,7 +84,7 @@ locales:
   cs_wiki: https://sites.google.com/a/socrata.com/client-services/localization/localizing-content
   also_see_subpages_of: https://sites.google.com/a/socrata.com/client-services/localization
   known_properties:
-  - *
+  - '*'
   - available_locales
   property_type_checking:
     available_locales: Array

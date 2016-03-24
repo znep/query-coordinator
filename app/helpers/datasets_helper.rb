@@ -159,7 +159,7 @@ module DatasetsHelper
   def stars_control_interactive(rating_type, value, view, extra_class = '')
     @@stars_id ||= 1
     id = 'stars_' + (@@stars_id += 1).to_s
-    form_tag(update_rating_dataset_path(view), :id => id, :method => :post,
+    form_tag(update_rating_dataset_path(view, :id => id), :id => id, :method => :post,
              :class => "starsControl blueStars enabled #{extra_class}",
              :'data-rating' => (value || 0).to_s,
              :'data-rating-type' => rating_type,

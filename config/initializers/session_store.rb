@@ -1,6 +1,5 @@
 # Be sure to restart your server when you modify this file.
-
-Frontend::Application.config.session_store :socrata_cookie_store, {
+Rails.application.config.session_store :socrata_cookie_store, {
   :key => '_socrata_session_id',
   :core_key => ::CoreServer::Connection.cookie_name,
   :cookie_only => false,
@@ -11,4 +10,4 @@ Frontend::Application.config.session_store :socrata_cookie_store, {
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information
 # (create the session table with "rails generate session_migration")
-# Frontend::Application.config.session_store :active_record_store
+# Rails.application.config.session_store :active_record_store

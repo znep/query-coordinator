@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class HashExtensionsTest < Test::Unit::TestCase
+class HashExtensionsTest < Minitest::Test
 
   describe 'deep_string_strip!' do
     it 'should strip whitespace on any strings in self' do

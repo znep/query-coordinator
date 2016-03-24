@@ -30,6 +30,16 @@ class DatasetsControllerTest < ActionController::TestCase
     default_url_options[:host] = @request.host
   end
 
+  def teardown
+    @controller.unstub(:current_user)
+    @controller.stubs(:phidippides)
+    View.unstub(:new_backend?)
+    View.unstub(:category_display)
+    Phidippides.unstub(:fetch_pages_for_dataset)
+    CurrentDomain.unstub(:user_can?)
+    CurrentDomain.unstub(:default_widget_customization_id)
+  end
+
   # https://opendata.test-socrata.com/dataset/28-Formwidtest/zwjk-24g6.json?text=1
   # should redirect to https://opendata.test-socrata.com/resource/zwjk-24g6.json?text=1
   test 'redirects to format URLs include query string parameters' do
@@ -90,9 +100,9 @@ class DatasetsControllerTest < ActionController::TestCase
     )
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     notice_matcher = lambda { |element|
-      element.match(/#{I18n.t('screens.ds.new_ux_nbe_warning')}/i)
+      element =~ /#{I18n.t('screens.ds.new_ux_nbe_warning')}/i
     }
-    assert_select_quiet('.flash.notice').any?(&notice_matcher)
+    assert_select('.flash.notice').any?(&notice_matcher)
     assert_response 200
   end
 
@@ -235,7 +245,7 @@ class DatasetsControllerTest < ActionController::TestCase
     setup_nbe_dataset_test(true)
     @request.env['HTTPS'] = 'on'
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
-    assert_select_quiet 'meta' do |elements|
+    assert_select 'meta' do |elements|
       elements.each do |element|
         element.attributes.values.each do |value|
           value.to_s.scan(/http.?:\/\//).each do |match|

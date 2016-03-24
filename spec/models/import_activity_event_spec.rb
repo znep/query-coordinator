@@ -1,7 +1,13 @@
+require 'rails_helper'
+
 describe ImportActivityEvent do
 
   let(:fixture_prefix) { "#{Rails.root}/test/fixtures/import_status_service" }
-  let(:headers) { {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'} }
+  let(:headers) do
+    { 'Accept'=>'*/*', 'User-Agent'=>'Ruby',
+      'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      'X-Socrata-Host'=>'localhost' }
+  end
 
   before :each do
     CurrentDomain.stubs(:cname => 'localhost')

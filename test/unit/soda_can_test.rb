@@ -16,7 +16,7 @@ class ProcessorTestHelper < SodaCan::Processor
 
 end
 
-class SodaCanTest < Test::Unit::TestCase
+class SodaCanTest < Minitest::Test
   ROW_META_LAST_INDX = 7.freeze
 
   def test_isfilterable

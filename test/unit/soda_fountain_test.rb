@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class SodaFountainTest < Test::Unit::TestCase
+class SodaFountainTest < Minitest::Test
 
   def setup
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))

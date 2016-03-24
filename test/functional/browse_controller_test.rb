@@ -9,6 +9,15 @@ class BrowseControllerTest < ActionController::TestCase
     init_stubs
   end
 
+  def teardown
+    User.unstub(:find_profile)
+    @controller.unstub(:current_user)
+    @controller.unstub(:categories_facet)
+    Configuration.unstub(:find_by_type)
+    Federation.unstub(:find)
+    Tag.unstub(:find)
+  end
+
   # LOL! Stub all the things!!
   def init_stubs
     @user.stubs(
@@ -49,13 +58,13 @@ class BrowseControllerTest < ActionController::TestCase
     get :show, { 'data_lens_transition_state' => 'post_beta' }
 
     assert_response :success
-    assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 1
+    assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 1
   end
 
   test 'it should render page meta content over https and not http' do
     @request.env['HTTPS'] = 'on'
     get :show
-    assert_select_quiet 'meta' do |elements|
+    assert_select 'meta' do |elements|
       elements.each do |element|
         element.attributes.values.each do |value|
           value.to_s.scan(/http.?:\/\//).each do |match|
@@ -88,7 +97,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 0
+      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 0
     end
 
     should 'not show any new view facet for users able to edit the datasets of others' do
@@ -108,7 +117,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 0
+      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 0
     end
   end
 
@@ -134,7 +143,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 0
+      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 0
     end
 
     should 'show new view facets for users able to edit the datasets of others' do
@@ -154,7 +163,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 1
+      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 1
     end
   end
 
@@ -180,7 +189,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 1
+      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 1
     end
 
     should 'show new view facets for users able to edit the datasets of others' do
@@ -200,7 +209,7 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response :success
-      assert_select_quiet '.facetSection.limitTo > ul > li > .typeDataLens', 1
+      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 1
     end
   end
 
@@ -372,11 +381,16 @@ class BrowseControllerTest < ActionController::TestCase
 
       CurrentDomain.expects(:property).with(:view_types_facet, :catalog).
         returns(nil)
+#      CurrentDomain.expects(:property).with(:custom_facets, :catalog).returns(custom_facets).twice
+#      CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns('custom' => stubbed_custom_cutoff)
+#      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
     end
 
     teardown do
       CurrentDomain.unstub(:property)
       View.unstub(:category_tree)
+      Clytemnestra.unstub(:search_views)
+      Federation.unstub(:federations)
     end
 
     should 'send correct facet params to Core Cly with browse' do
@@ -389,7 +403,6 @@ class BrowseControllerTest < ActionController::TestCase
       assert_response :success
       assert_match(/This is my new view blah blah blah/, @response.body)
       assert_match(/Newest/, @response.body) # sort order
-
       Clytemnestra.unstub(:search_views)
     end
 
@@ -403,7 +416,6 @@ class BrowseControllerTest < ActionController::TestCase
       assert_response :success
       assert_match(/This is my new view blah blah blah/, @response.body)
       assert_match(/Recently Updated/, @response.body) # sort order
-
       Clytemnestra.unstub(:search_views)
     end
 
@@ -447,7 +459,6 @@ class BrowseControllerTest < ActionController::TestCase
     # Let's check default paths just to make sure we don't break these
 
     should 'send correct default params to Core with embed' do
-      CoreServer::Base.unstub(:connection) # stubbed willy nilly
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
         with(query: default_core_cly_params).
         to_return(status: 200, body: clytemnestra_payload, headers: {})
@@ -458,7 +469,6 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'send correct default params to Core with browse' do
-      CoreServer::Base.unstub(:connection) # stubbed willy nilly
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
         with(query: default_core_cly_params).
         to_return(status: 200, body: clytemnestra_payload, headers: {})
@@ -529,11 +539,11 @@ class BrowseControllerTest < ActionController::TestCase
       end
 
       visible.each_with_index do |text, index|
-        assert_select_quiet visible_selector(index + 1)
+        assert_select visible_selector(index + 1)
       end
 
       truncated.each_with_index do |text, index|
-        assert_select_quiet truncated_selector(index + 1)
+        assert_select truncated_selector(index + 1)
       end
     end
   end
@@ -548,12 +558,16 @@ class BrowseControllerTest < ActionController::TestCase
       CurrentDomain.stubs(:cname).returns('example.com')
     end
 
+    teardown do
+      CurrentDomain.unstub(:cname)
+    end
+
     ########
     # Cetera
 
     cetera_selector = 'div.browse2-results-pane.clearfix > div.browse2-results > div > span'
     search_failure_message =
-      'We&#x27;re sorry. Results could not be retrieved at this time. Please try again later.'
+      %q(We're sorry. Results could not be retrieved at this time. Please try again later.)
 
     should 'fail gracefully on Cetera timeout' do
       stub_feature_flags_with(:cetera_search, true)
@@ -632,7 +646,7 @@ class BrowseControllerTest < ActionController::TestCase
 
     should 'fail gracefully on Core/Cly 500' do
       stub_feature_flags_with(:cetera_search, false)
-      CoreServer::Base.unstub(:connection)
+      CoreServer::Base.unstub(:connection) # we stubbed all the things
 
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
         with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
@@ -646,7 +660,7 @@ class BrowseControllerTest < ActionController::TestCase
 
     should 'fail gracefully on Core/Cly unexpected payload' do
       stub_feature_flags_with(:cetera_search, false)
-      CoreServer::Base.unstub(:connection)
+      CoreServer::Base.unstub(:connection) # we stubbed all the things
 
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
         with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).

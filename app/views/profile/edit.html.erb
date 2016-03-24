@@ -12,12 +12,12 @@
 <%= render :partial => 'edit_nav' %>
 
 <div class="contentBox withLeftNavigation editProfile editBasicInfo">
-  <% link_to profile_path(current_user), :class => 'button backButton leftArrowNoHover' do %>
+  <% link_to profile_path(current_user.route_params), :class => 'button backButton leftArrowNoHover' do %>
     <span class="icon"></span>
     Back to My Profile
   <% end %>
   <div class="content">
-    <%= form_tag(profile_path(current_user), :id => "editProfileForm",
+    <%= form_tag(profile_path(current_user.route_params), :id => "editProfileForm",
                 :multipart => true, :class => 'commonForm', :method => :put) do %>
       <%= render :partial => 'edit_form' %>
       <%- unless params[:no_js].present? -%>

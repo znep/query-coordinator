@@ -9,6 +9,11 @@ class AccountsControllerTest < ActionController::TestCase
     # stub_feature_flags_with(:enable_new_account_verification_email, false)
   end
 
+  def teardown
+    @controller.request.core_session = nil
+    User.unstub(:create)
+  end
+
   def test_create_with_no_special_things
     post(:create, signup: some_user)
     assert(@response.redirect_url.include?(login_path), 'should redirect to login page')

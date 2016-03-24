@@ -39,6 +39,17 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/dist/rx.binding.js',
       'bower_components/rxjs/dist/rx.virtualtime.js',
       'bower_components/rxjs/dist/rx.testing.js',
+      'bower_components/leaflet/dist/leaflet-src.js',
+      'node_modules/leaflet/dist/leaflet.css',
+      'public/javascripts/util/typed-arrays.js',
+      'public/javascripts/bower/pbf.min.js',
+      'public/javascripts/bower/vectortile.min.js',
+      'public/javascripts/bower/filesaver.js',
+      'public/javascripts/bower/purify.min.js',
+      'public/javascripts/util/dompurify-extensions.js',
+
+      /* Angular itself */
+      'bower_components/angular/angular.js',
       'bower_components/angular-rx/dist/rx.angular.js',
       'bower_components/jjv/lib/jjv.js',
       'bower_components/d3/d3.min.js',

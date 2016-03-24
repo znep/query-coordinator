@@ -107,12 +107,13 @@ class InternalControllerTest < ActionController::TestCase
     Domain.stubs(:find => @domain)
     pretend_to_be_superadmin
 
-    stub_request(:post, "http://localhost:8080/batches").
+    stub_request(:post, 'http://localhost:8080/batches').
       to_return(:status => 200, :body => [{ no_idea: 'what goes here' }].to_json, :headers => {})
   end
 
   def pretend_to_be_superadmin
     init_current_user(@controller)
     @controller.current_user.stubs(:flag? => true)
+    @controller.stubs(:check_auth => true)
   end
 end

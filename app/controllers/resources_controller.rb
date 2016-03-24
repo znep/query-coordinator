@@ -31,7 +31,7 @@ class ResourcesController < DatasetsController
 
     respond_to do |format|
       format.html {
-        path = view_path(@view)
+        path = view_path(@view.route_params)
         unless row_id.nil?
           path += "/#{row_id}"
         end

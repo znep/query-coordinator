@@ -12584,9 +12584,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  };
 
-	  this.getRowCount = function() {
+	  this.getRowCount = function(whereClauseComponents) {
+	    var whereClause = (whereClauseComponents) ?
+	      '&$where={0}'.format(whereClauseComponents) :
+	      '';
+
 	    return Promise.resolve(
-	      $.get(_queryUrl('$select=count(*)'))
+	      $.get(
+	        _queryUrl(
+	          '$select=count(*){0}'.format(whereClause)
+	        )
+	      )
 	    ).then(
 	      function(data) {
 	        return parseInt(_.get(data, '[0].count'), 10);
@@ -19487,10 +19495,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  $element.addClass('socrata-paginated-table');
 
-	  soqlDataProvider.getRowCount().then(function(rowCount) {
-	    _updateState({ datasetRowCount: rowCount });
-	  });
-
 	  _render();
 
 	  _setDataQuery(
@@ -19539,7 +19543,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function _render() {
+
 	    if (_renderState.fetchedData) {
+
 	      visualization.render(
 	        _renderState.fetchedData,
 	        _renderState.fetchedData.order
@@ -19720,11 +19726,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Promise.all([
 	      _getDatasetMetadata(),
 	      displayableColumns,
+	      soqlDataProvider.getRowCount(whereClauseComponents),
 	      soqlData
 	    ]).then(function(resolutions) {
 	      var datasetMetadata = resolutions[0];
 	      var displayableColumns = resolutions[1];
-	      var soqlData = resolutions[2];
+	      var rowCount = resolutions[2];
+	      var soqlData = resolutions[3];
 
 	      // Rows can either be undefined OR of the exact length of the
 	      // displayableColumns.
@@ -19742,6 +19750,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          order: order,
 	          whereClauseComponents: whereClauseComponents
 	        },
+	        datasetRowCount: rowCount,
 	        busy: false
 	      });
 
@@ -19786,12 +19795,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function _setState(newState) {
 	    var becameIdle;
 	    var changedOrder;
+
 	    if (!_.isEqual(_renderState, newState)) {
 	      becameIdle = !newState.busy && _renderState.busy;
 	      changedOrder = !_.isEqual(
-	          _.get(_renderState, 'fetchedData.order'),
-	          _.get(newState, 'fetchedData.order')
-	        );
+	        _.get(_renderState, 'fetchedData.order'),
+	        _.get(newState, 'fetchedData.order')
+	      );
 
 	      _renderState = newState;
 

@@ -69,9 +69,17 @@ function SoqlDataProvider(config) {
     );
   };
 
-  this.getRowCount = function() {
+  this.getRowCount = function(whereClauseComponents) {
+    var whereClause = (whereClauseComponents) ?
+      '&$where={0}'.format(whereClauseComponents) :
+      '';
+
     return Promise.resolve(
-      $.get(_queryUrl('$select=count(*)'))
+      $.get(
+        _queryUrl(
+          '$select=count(*){0}'.format(whereClause)
+        )
+      )
     ).then(
       function(data) {
         return parseInt(_.get(data, '[0].count'), 10);

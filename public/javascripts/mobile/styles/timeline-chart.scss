@@ -1,14 +1,10 @@
 .timeline-chart {
   display: block;
   position: relative;
-  width: calc(100% - 4em);
-  height: 100%;
+  width: calc(100% - 2em);
+  height: 280px;
   float: right;
   margin-bottom: 20px;
-  
-  &.expanded {
-    margin-bottom: 75px;
-  }
 }
 
 .mobile-flyout .labels.mobile {
@@ -31,7 +27,7 @@
   }
 
   .values {
-    width: 30%;
+    width: 45%;
     font-size: 15px;
     font-weight: 500;
     line-height: 16.5px;
@@ -74,9 +70,13 @@
 .timeline-chart-container {
   position: relative;
   width: 100%;
-  height: 350px !important;
+  height: 375px;
   font-size: 14px;
   box-sizing: border-box;
+
+  &.expanded {
+    height: 425px;
+  }
 }
 
 .timeline-chart.selecting {
@@ -302,7 +302,7 @@ svg:not(:root).timeline-chart-highlight-container {
 
 .timeline-chart-unfiltered-visualization .context,
 .timeline-chart-filtered-visualization .context {
-  fill: rgba(148, 228, 214, 0.5);
+  fill: rgba(214, 212, 213, 0.5);
 }
 .timeline-chart-unfiltered-visualization .context-trace,
 .timeline-chart-filtered-visualization .context-trace {

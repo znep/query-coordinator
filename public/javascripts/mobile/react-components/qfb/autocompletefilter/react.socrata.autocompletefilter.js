@@ -10,7 +10,7 @@ class SocrataAutocompletefilter extends React.Component {
 
     this.state = {
       options: [],
-      selected: [],
+      selected: this.props.data || [],
       searchinput: '',
       activeIndex: undefined
     };
@@ -44,6 +44,8 @@ class SocrataAutocompletefilter extends React.Component {
     });
 
     FlannelUtils.showOverlay();
+
+    this.props.labelHandler(this.formattedLabel());
   }
 
   formattedLabel() {
@@ -116,11 +118,13 @@ class SocrataAutocompletefilter extends React.Component {
     this.setState({ searchinput: e.target.value});
     this.fetchSuggestions(e.target.value);
   }
+
   onClickClearSearchInput() {
     this.refs.searchinput.value = '';
     this.setState({ searchinput: '' });
     this.fetchSuggestions();
   }
+
   onClickSuggestion(suggestionObj, idx) {
     var aOptions = this.state.options;
     aOptions.splice(idx, 1);
@@ -138,6 +142,7 @@ class SocrataAutocompletefilter extends React.Component {
     });
 
   }
+
   onClickDeleteSelected(selectedObj) {
     // delete from filters list
     var aOptions = this.state.options;
@@ -307,9 +312,10 @@ class SocrataAutocompletefilter extends React.Component {
 }
 
 SocrataAutocompletefilter.propTypes = {
-  componentId: React.PropTypes.string,
+  componentId: React.PropTypes.string.isRequired,
   name: React.PropTypes.string,
-  dataHandler: React.PropTypes.func.isRequired
+  dataHandler: React.PropTypes.func.isRequired,
+  labelHandler: React.PropTypes.func.isRequired
 };
 
 export default SocrataAutocompletefilter;

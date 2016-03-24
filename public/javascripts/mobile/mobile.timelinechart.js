@@ -8,8 +8,8 @@ module.exports = function(values, $target) {
 
   var timelineChartVIF = {
     'aggregation': {
-      'columnName': null,
-      'function': 'count'
+      'columnName': values.aggregationField,
+      'function': values.aggregationFunction
     },
     'columnName': values.columnName,
     'configuration': {
@@ -24,7 +24,7 @@ module.exports = function(values, $target) {
     'createdAt': '2014-01-01T00:00:00',
     'datasetUid': values.datasetUid,
     'domain': values.domain,
-    'filters': [],
+    'filters': values.filters,
     'format': {
       'type': 'visualization_interchange_format',
       'version': 1
@@ -87,7 +87,7 @@ module.exports = function(values, $target) {
     // Render mobile flyout
     if (payload !== null) {
       mobileFlyoutRender(payload);
-      $timelineChartElement.addClass('expanded');
+      $timelineChartElement.parent().addClass('expanded');
     }
   }
 

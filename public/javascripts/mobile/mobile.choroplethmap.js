@@ -13,14 +13,15 @@ module.exports = function(values, $target) {
 
   var choroplethVIF = {
     'aggregation': {
-      // TODO: implement this!
+      'columnName': values.aggregationField,
+      'function': values.aggregationFunction
     },
     'columnName': values.columnName,
     'configuration': {
       'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
       'baseLayerOpacity': 0.8,
       'computedColumnName': values.computedColumnName,
-      'defaultExtent' : values.map_extent,
+      'defaultExtent' : values.mapExtent,
       'legend': {
         'type': 'continuous'
       },
@@ -32,10 +33,6 @@ module.exports = function(values, $target) {
         'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
         'NO_VALUE': '(No Value)',
         'CLEAR_FILTER_LABEL': 'Clear filter'
-      },
-      'savedExtent': {
-        'southwest': [41.42625319507272, -88.5662841796875],
-        'northeast': [42.24478535602799, -86.9183349609375]
       },
       'shapefile': {
         'columns': {
@@ -52,7 +49,7 @@ module.exports = function(values, $target) {
     'datasetUid': values.datasetUid,
     'description': 'An example choropleth',
     'domain': values.domain,
-    'filters': [],
+    'filters': values.filters,
     'format': {
       'type': 'visualization_interchange_format',
       'version': 1
@@ -60,8 +57,8 @@ module.exports = function(values, $target) {
     'title': 'Example Usage: socrata.visualizations.ChoroplethMap.js',
     'type': 'choropleth',
     'unit': {
-      'one': 'crime',
-      'other': 'crimes'
+      'one': ' ',
+      'other': ' '
     }
   };
 
@@ -85,18 +82,5 @@ module.exports = function(values, $target) {
       flyoutRenderer.clear();
     }
   }
-
-  /**
-   * Destroy the plugin.
-   *
-   * The plugin (and all internal modules) can be destroyed by calling
-   * `.destroySocrataChoroplethMap()` on the element.
-   */
-
-  // $choroplethElement1.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
-  // $choroplethElement1.destroySocrataChoroplethMap();
-
-  // $choroplethElement2.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
-  // $choroplethElement2.destroySocrataChoroplethMap();
 
 };

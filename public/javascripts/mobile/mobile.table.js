@@ -5,9 +5,9 @@ module.exports = function(values, $target) {
   'use strict';
 
   var tableVIF = {
-    'aggregation': {
-      'columnName': null,
-      'function': 'count'
+    aggregation: {
+      'columnName': values.aggregationField,
+      'function': values.aggregationFunction
     },
     'columnName': values.columnName,
     'configuration': {
@@ -53,7 +53,9 @@ module.exports = function(values, $target) {
     tableVIF.filters = data.filters;
 
     var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
-    changeEvent.originalEvent.detail = tableVIF;
+    changeEvent.originalEvent = {
+      detail: tableVIF
+    };
 
     $tableElement.trigger(changeEvent);
   }

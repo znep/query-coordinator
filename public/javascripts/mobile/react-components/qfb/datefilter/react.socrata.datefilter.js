@@ -13,9 +13,9 @@ class SocrataDatefilter extends React.Component {
     var secondDate = new Date(firstDate.getTime() + 14 * millisecondsPerDay).toISOString();
 
     this.state = {
-      firstCal: firstDate.toISOString(),
-      secondCal: secondDate,
-      pickerType: 'bt',
+      firstCal: this.props.data.val1 || firstDate.toISOString(),
+      secondCal: this.props.data.val2 || secondDate,
+      pickerType: this.props.data.dir || 'bt',
       isCorrect: true,
       isApplicable: true
     };
@@ -23,6 +23,9 @@ class SocrataDatefilter extends React.Component {
 
   componentDidMount() {
     FlannelUtils.showOverlay();
+
+    var formattedLabel = this.formattedLabel();
+    this.props.labelHandler(formattedLabel);
     this.props.dataHandler(
       this.formattedLabel(),
       this.filterData(),
@@ -135,41 +138,41 @@ class SocrataDatefilter extends React.Component {
     var hideRangePickers = (this.state.pickerType === 'bt') ? '' : 'hidden';
 
     return (
-        <div className={ filterContainerClass }>
-          <div className="filter-select">
-            <i className="icon-arrow-down"></i>
-            <select className="picker-category-selector"
-              value={this.state.pickerType}
-              onChange={this.onChangeType.bind(this)} >
-              <option value="bt">Between</option>
-              <option value="lt">Before</option>
-              <option value="gt">After</option>
-            </select>
-          </div>
-          <div className="pickers-container">
+      <div className={ filterContainerClass }>
+        <div className="filter-select">
+          <i className="icon-arrow-down"></i>
+          <select className="picker-category-selector"
+            value={this.state.pickerType}
+            onChange={this.onChangeType.bind(this)} >
+            <option value="bt">Between</option>
+            <option value="lt">Before</option>
+            <option value="gt">After</option>
+          </select>
+        </div>
+        <div className="pickers-container">
+          <DayPicker
+            initialDate={ new Date(this.state.firstCal) }
+            numberOfMonths={1}
+            handleChange={this.handleFirstCalChange.bind(this)} />
+          <div className={ hideRangePickers + ' separator' }>to</div>
+          <div className={ hideRangePickers }>
             <DayPicker
-              initialDate={ new Date(this.state.firstCal) }
+              initialDate={ new Date(this.state.secondCal) }
               numberOfMonths={1}
-              handleChange={this.handleFirstCalChange.bind(this)} />
-            <div className={ hideRangePickers + ' separator' }>to</div>
-            <div className={ hideRangePickers }>
-              <DayPicker
-                initialDate={ new Date(this.state.secondCal) }
-                numberOfMonths={1}
-                handleChange={this.handleSecondCalChange.bind(this)} />
-            </div>
+              handleChange={this.handleSecondCalChange.bind(this)} />
           </div>
         </div>
+      </div>
     );
   }
 
 }
 
 SocrataDatefilter.propTypes = {
-  key: React.PropTypes.string.isRequired,
   componentId: React.PropTypes.string.isRequired,
   name: React.PropTypes.string.isRequired,
-  dataHandler: React.PropTypes.func.isRequired
+  dataHandler: React.PropTypes.func.isRequired,
+  labelHandler: React.PropTypes.func
 };
 
 export default SocrataDatefilter;

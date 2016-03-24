@@ -30,34 +30,43 @@ class FilterItem extends React.Component {
     this.onClickApply = this.onClickApply.bind(this);
 
     this.handleFilterData = this.handleFilterData.bind(this);
+    this.handleFilterLabel = this.handleFilterLabel.bind(this);
   }
+
   componentDidMount() {
     if (this.props.startWithClosedFlannel) {
       FlannelUtils.closeAll();
     }
   }
+
   onClickFlannelCanvas(e) {
     e.stopPropagation();
     if ($(e.target).is('.qfb-filter-item-flannel')) {
       FlannelUtils.closeAll();
     }
   }
+
   onClickDeleteFilter(e) {
     e.stopPropagation();
     this.props.deletionHandler(this.props.filter.id);
   }
+
   onClickOpenFlannelFromSummary() {
     FlannelUtils.openFlannelForId(this.props.filter.id);
   }
+
   onClickOpenFlannel() {
     FlannelUtils.openFlannelForId(this.props.filter.id);
   }
+
   onClickCloseFlannel() {
     FlannelUtils.closeAll();
   }
+
   onClickCancel() {
     FlannelUtils.closeAll();
   }
+
   onClickApply() {
     if (this.state.isApplicable) {
       this.props.additionHandler(this.props.filter.id, this.state.pendingData );
@@ -75,6 +84,12 @@ class FilterItem extends React.Component {
     });
   }
 
+  handleFilterLabel(label) {
+    this.setState({
+      label: label
+    });
+  }
+
   render() {
     var filter;
 
@@ -88,6 +103,7 @@ class FilterItem extends React.Component {
           key={ 'qf-' + this.props.filter.id }
           componentId={ this.props.filter.id }
           name={ this.props.filter.name }
+          data={ this.props.filter.data || {} }
           labelHandler={ this.handleFilterLabel }
           dataHandler={ this.handleFilterData }
           remoteApply={ this.onClickApply } />;
@@ -99,6 +115,8 @@ class FilterItem extends React.Component {
           domain={ this.props.domain }
           datasetId={ this.props.datasetId }
           dataColumn={ this.props.filter.name }
+          data={ this.props.filter.data || [] }
+          labelHandler={ this.handleFilterLabel }
           dataHandler={ this.handleFilterData } />;
         break;
       case 'calendar_date':
@@ -106,6 +124,8 @@ class FilterItem extends React.Component {
           key={ 'qf-' + this.props.filter.id }
           componentId={ this.props.filter.id }
           name={ this.props.filter.name }
+          data={ this.props.filter.data || {} }
+          labelHandler={ this.handleFilterLabel }
           dataHandler={ this.handleFilterData } />;
         break;
       default:

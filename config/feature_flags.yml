@@ -107,6 +107,10 @@ enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false
   category: obe deprecation
+enable_embed_widget_for_nbe:
+  description: Enable embed widget for NBE datasets.
+  defaultValue: false
+  category: obe deprecation
 enable_spatial_lens_admin:
   description: Allow visibility of spatial lens admin panel at /admin/geo.
   defaultValue: false

@@ -83,14 +83,19 @@ class View < Model
   end
 
   def is_layered?
-    # checks for layers as direct child lenses
-    if metadata.present? &&
-       metadata.data['geo'].present? &&
-       metadata.data['geo']['layers'].respond_to?(:split) &&
-       metadata.data['geo']['layers'].split(",").length > 1
-        return true
-    end
-    # checks for layers that come from a separate dataset (derived views)
+    has_geo_layers? || has_derived_layers?
+  end
+
+  # checks for layers as direct child lenses
+  def has_geo_layers?
+    metadata.present? &&
+      metadata.data['geo'].present? &&
+      metadata.data['geo']['layers'].respond_to?(:split) &&
+      metadata.data['geo']['layers'].split(',').length > 1
+  end
+
+  # checks for layers that come from a separate dataset (derived views)
+  def has_derived_layers?
     if displayFormat.present? && displayFormat.viewDefinitions.present?
       return displayFormat.viewDefinitions.any? { |v| v["uid"] != "self" }
     end
@@ -103,6 +108,15 @@ class View < Model
     is_map = viewType == 'geo' && displayType == 'map'
     is_layer = viewType == 'tabular' && displayType == 'geoRows'
     new_backend? && (is_map || is_layer)
+  end
+
+  def geospatial_child_layers
+    if is_geospatial?
+      endpoint_ids = metadata.data['geo']['layers'].split(',')
+      View.find_multiple(endpoint_ids)
+    else
+      []
+    end
   end
 
   def nbe_view

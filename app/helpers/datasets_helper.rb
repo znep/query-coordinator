@@ -315,6 +315,23 @@ module DatasetsHelper
     ].all?
   end
 
+  def api_foundry_url_tag(url)
+    link_to(t('screens.ds.grid_sidebar.api.api_docs'), url, :class => 'button', :rel => 'external')
+  end
+
+  def endpoint_url_tag(url, options = {})
+    if options[:name]
+      name = options[:name]
+
+      content_tag('div', nil, class: 'labeledEndpointWrapper') do
+        label_tag(name, name) <<
+          text_field_tag(name, url, :readonly => 'readonly', :type => 'text', :onclick => 'this.select();')
+      end
+    else
+      text_field_tag(nil, url, :readonly => 'readonly', :type => 'text', :onclick => 'this.select();')
+    end
+  end
+
   def format_link_tag(format)
     translated_title = t("screens.ds.bar.format.#{format}")
     span = content_tag(:span, translated_title, :class => 'icon')
@@ -479,7 +496,7 @@ module DatasetsHelper
           view.is_form?
         ].any?
       when :api
-        view.non_tabular?
+        view.non_tabular? && !view.is_geospatial?
       when :odata
         [
           view.non_tabular?,
@@ -501,7 +518,7 @@ module DatasetsHelper
       !view.is_published?,
       view.is_api?,
       view.geoParent.present?,
-      view.new_backend? && FeatureFlags.derive(view, request).reenable_ui_for_nbe === false
+      view.new_backend? && !FeatureFlags.derive(view, request).enable_embed_widget_for_nbe
     ].any?
   end
 

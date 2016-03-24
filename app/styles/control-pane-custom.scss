@@ -168,6 +168,12 @@
         }
         button {}
       }
+      .multipleEndpointWrapper {
+        margin-bottom: 3em;
+        .actionButtons {
+          margin: 1em 0;
+        }
+      }
     }
   }
   &.odata {
@@ -187,6 +193,15 @@
         padding: 2em;
         input[type=text] {
           width: 95%;
+        }
+        .labeledEndpointWrapper {
+          margin-bottom: 2em;
+          label {
+            padding-left: 0;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5em;
+          }
         }
       }
     }

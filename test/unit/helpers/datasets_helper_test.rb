@@ -180,7 +180,7 @@ class DatasetsHelperTest < Test::Unit::TestCase
     assert @object.send(:hide_embed_sdp?), 'Embed pane should be hidden'
     @view.stubs(:is_published? => true, :is_api? => false, :new_backend? => true)
     assert @object.send(:hide_embed_sdp?), 'Embed pane should be hidden'
-    FeatureFlags.stubs(:derive => Hashie::Mash.new({ :reenable_ui_for_nbe => true }))
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_embed_widget_for_nbe => true))
     @view.stubs(:is_published? => true, :is_api? => false, :new_backend? => true)
     refute @object.send(:hide_embed_sdp?), 'Embed pane should not be hidden'
   end

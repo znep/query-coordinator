@@ -542,7 +542,7 @@ $.fn.socrataTimelineChart = function(vif) {
         DATA_QUERY_WHERE_CLAUSE_PREFIX,
         DATA_QUERY_WHERE_CLAUSE_SUFFIX.format(vifToRender.columnName, MAX_LEGAL_JAVASCRIPT_DATE_STRING)
       );
-      var whereClauseFilterComponents = SoqlHelpers.whereClauseNotFilteringOwnColumn(vifToRender);
+      var whereClauseFilterComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
       var filteredWhereClause = '{0} {1} {2} {3}'.format(
         DATA_QUERY_WHERE_CLAUSE_PREFIX,
         whereClauseFilterComponents,

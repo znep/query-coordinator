@@ -18,6 +18,13 @@ class DatasetsHelperTest < Minitest::Test
     refute @object.enable_xls_download_type, 'enable_xls_download_type to be false'
   end
 
+  def test_enable_pdf_download_type
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_pdf_download_type => true))
+    assert @object.enable_pdf_download_type, 'enable_pdf_download_type to be true'
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_pdf_download_type => false))
+    refute @object.enable_pdf_download_type, 'enable_pdf_download_type to be false'
+  end
+
   def test_normal_download_types
     @object.stubs(:enable_xls_download_type => true)
     assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML']

@@ -136,6 +136,9 @@ stories_show_facet_in_catalog:
   description: Show the Stories facet in the catalog.
   category: storyteller
   defaultValue: false
+enable_pdf_download_type:
+  description: Control visibility of the "Export > Download dataset as PDF" format. See enable_xls_download_type for more background.
+  defaultValue: true
 enable_xls_download_type:
   description: Control visibility of the "Export > Download dataset as XLS/XLSX" formats.  A reason for disabling these download types is to avoid customer confusion stemming from the fact that there is a hard limit on the number of cells that can be exported for XLS/XLSX downloads.  XLS and XLSX file exports are truncated at 250,000 cells to preserve performance.
   defaultValue: true
@@ -191,7 +194,7 @@ reenable_ui_for_nbe:
   category: obe deprecation
 see_socrata_news:
   description: Enable the "What's New" news widget and updated profile page
-  defaultValue: true 
+  defaultValue: true
 show_admin_processes:
   description: Enable the "Jobs" section of the admin interface, which allows users to monitor the status of ingress jobs
   defaultValue: true

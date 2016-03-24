@@ -32,7 +32,7 @@
   <%= display_standard_flashes %>
 
   <ul id="datasetMenu">
-    <%- if @view.can_print? -%>
+    <%- if @view.can_print? && enable_pdf_download_type -%>
       <li><a href="/api/views/<%= @view.id %>/rows.pdf?app_token=<%= APP_CONFIG.app_token %>">Print</a></li>
     <%- end -%>
     <%- if @view.can_email? -%>

@@ -470,6 +470,11 @@ function ColumnChart(element, vif) {
       // The `+ 3` term accounts for the border-width.
       var tickHeight = parseInt(el.css('font-size'), 10) + 3;
       var numberOfTicks = 3;
+
+      if (innerHeight < 70) {
+        numberOfTicks = 1;
+      }
+
       // We need to ensure that there is always a '0' tick mark, so we concat
       // the calculated ticks with '0' and then take the unique values. This
       // could potentially give us 4 overall tick marks, since the way that d3

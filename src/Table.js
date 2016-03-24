@@ -94,10 +94,6 @@ $.fn.socrataTable = function(vif) {
 
   $element.addClass('socrata-paginated-table');
 
-  soqlDataProvider.getRowCount().then(function(rowCount) {
-    _updateState({ datasetRowCount: rowCount });
-  });
-
   _render();
 
   _setDataQuery(
@@ -146,7 +142,9 @@ $.fn.socrataTable = function(vif) {
   }
 
   function _render() {
+
     if (_renderState.fetchedData) {
+
       visualization.render(
         _renderState.fetchedData,
         _renderState.fetchedData.order
@@ -327,11 +325,13 @@ $.fn.socrataTable = function(vif) {
     return Promise.all([
       _getDatasetMetadata(),
       displayableColumns,
+      soqlDataProvider.getRowCount(whereClauseComponents),
       soqlData
     ]).then(function(resolutions) {
       var datasetMetadata = resolutions[0];
       var displayableColumns = resolutions[1];
-      var soqlData = resolutions[2];
+      var rowCount = resolutions[2];
+      var soqlData = resolutions[3];
 
       // Rows can either be undefined OR of the exact length of the
       // displayableColumns.
@@ -349,6 +349,7 @@ $.fn.socrataTable = function(vif) {
           order: order,
           whereClauseComponents: whereClauseComponents
         },
+        datasetRowCount: rowCount,
         busy: false
       });
 
@@ -393,12 +394,13 @@ $.fn.socrataTable = function(vif) {
   function _setState(newState) {
     var becameIdle;
     var changedOrder;
+
     if (!_.isEqual(_renderState, newState)) {
       becameIdle = !newState.busy && _renderState.busy;
       changedOrder = !_.isEqual(
-          _.get(_renderState, 'fetchedData.order'),
-          _.get(newState, 'fetchedData.order')
-        );
+        _.get(_renderState, 'fetchedData.order'),
+        _.get(newState, 'fetchedData.order')
+      );
 
       _renderState = newState;
 

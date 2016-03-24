@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "8.3.2",
+  "version": "8.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/socrata/frontend-visualizations.git"
@@ -45,7 +45,7 @@
     "rimraf": "^2.4.3",
     "sinon": "^1.15.3",
     "strict-loader": "^1.0.0",
-    "styleguide": "socrata/styleguide.git#0.1.0",
+    "socrata-styleguide": "0.4.2",
     "webpack": "^1.12.2"
   },
   "eslintConfig": {

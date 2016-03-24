@@ -14,13 +14,18 @@
       #column-chart-1,
       #column-chart-2,
       #column-chart-3,
-      #column-chart-4 {
+      #column-chart-4,
+      #column-chart-5 {
         display: block;
         position: relative;
         width: 640px;
         height: 480px;
         margin: 100px auto 0 auto;
         border: 1px solid #aaa;
+      }
+
+      #column-chart-5 {
+        height: 160px;
       }
     </style>
   </head>
@@ -29,6 +34,7 @@
     <div id="column-chart-2"></div>
     <div id="column-chart-3"></div>
     <div id="column-chart-4"></div>
+    <div id="column-chart-5"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -143,6 +149,11 @@
       $columnChart4Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $columnChart4Element.socrataColumnChart(columnChart4VIF);
 
+      var $columnChart5Element = $('#column-chart-5');
+      $columnChart5Element .on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      $columnChart5Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $columnChart5Element.socrataColumnChart(columnChart3VIF);
+
       /**
        * Handle plugin events
        */
@@ -191,6 +202,10 @@
       // $columnChart4Element.off('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
       // $columnChart4Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $columnChart4Element.trigger('destroy');
+
+      // $columnChart5Element.off('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
+      // $columnChart5Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $columnChart5Element.trigger('destroy');
     });
   </script>
 </html>

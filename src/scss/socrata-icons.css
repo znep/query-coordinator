@@ -58,6 +58,7 @@
 .icon-external-square:before,
 .icon-eye:before,
 .icon-eye-blocked:before,
+.icon-facebook:before,
 .icon-failed:before,
 .icon-filter:before,
 .icon-geo:before,
@@ -101,6 +102,7 @@
 .icon-table:before,
 .icon-tag:before,
 .icon-text:before,
+.icon-twitter:before,
 .icon-undo:before,
 .icon-user:before,
 .icon-waiting:before,
@@ -145,59 +147,61 @@
 .icon-cross2:before { content: "\f117"; }
 .icon-data:before { content: "\f118"; }
 .icon-dataset:before { content: "\f119"; }
-.icon-date:before { content: "\f150"; }
-.icon-distribution:before { content: "\f11a"; }
-.icon-droplet:before { content: "\f11b"; }
-.icon-edit:before { content: "\f11c"; }
-.icon-expand:before { content: "\f11d"; }
-.icon-external:before { content: "\f11e"; }
-.icon-external-square:before { content: "\f14e"; }
-.icon-eye:before { content: "\f11f"; }
-.icon-eye-blocked:before { content: "\f120"; }
-.icon-failed:before { content: "\f121"; }
-.icon-filter:before { content: "\f122"; }
-.icon-geo:before { content: "\f123"; }
-.icon-hamburger:before { content: "\f152"; }
-.icon-info:before { content: "\f124"; }
-.icon-info-inverse:before { content: "\f125"; }
-.icon-italic2:before { content: "\f126"; }
-.icon-line-chart:before { content: "\f127"; }
-.icon-link:before { content: "\f128"; }
-.icon-link2:before { content: "\f129"; }
-.icon-linked:before { content: "\f12a"; }
-.icon-list-numbered:before { content: "\f12b"; }
-.icon-list2:before { content: "\f12c"; }
-.icon-map:before { content: "\f12e"; }
-.icon-move:before { content: "\f12f"; }
-.icon-number:before { content: "\f130"; }
-.icon-official:before { content: "\f131"; }
-.icon-paragraph-center3:before { content: "\f132"; }
-.icon-paragraph-left3:before { content: "\f133"; }
-.icon-paragraph-right3:before { content: "\f134"; }
-.icon-pause:before { content: "\f135"; }
-.icon-play:before { content: "\f136"; }
-.icon-plus2:before { content: "\f137"; }
-.icon-plus3:before { content: "\f138"; }
-.icon-presentation:before { content: "\f139"; }
-.icon-preview:before { content: "\f13a"; }
-.icon-processing:before { content: "\f13b"; }
-.icon-pulse:before { content: "\f14f"; }
-.icon-puzzle:before { content: "\f13c"; }
-.icon-question:before { content: "\f13d"; }
-.icon-question-inverse:before { content: "\f13e"; }
-.icon-quotes-left:before { content: "\f13f"; }
-.icon-redo:before { content: "\f140"; }
-.icon-region:before { content: "\f141"; }
-.icon-search:before { content: "\f142"; }
-.icon-settings:before { content: "\f143"; }
-.icon-share:before { content: "\f144"; }
-.icon-stories-icon:before { content: "\f145"; }
-.icon-stories-menu:before { content: "\f146"; }
-.icon-story:before { content: "\f147"; }
-.icon-table:before { content: "\f148"; }
-.icon-tag:before { content: "\f149"; }
-.icon-text:before { content: "\f151"; }
-.icon-undo:before { content: "\f14a"; }
-.icon-user:before { content: "\f14b"; }
-.icon-waiting:before { content: "\f14c"; }
-.icon-warning:before { content: "\f14d"; }
+.icon-date:before { content: "\f11a"; }
+.icon-distribution:before { content: "\f11b"; }
+.icon-droplet:before { content: "\f11c"; }
+.icon-edit:before { content: "\f11d"; }
+.icon-expand:before { content: "\f11e"; }
+.icon-external:before { content: "\f11f"; }
+.icon-external-square:before { content: "\f120"; }
+.icon-eye:before { content: "\f121"; }
+.icon-eye-blocked:before { content: "\f122"; }
+.icon-facebook:before { content: "\f123"; }
+.icon-failed:before { content: "\f124"; }
+.icon-filter:before { content: "\f125"; }
+.icon-geo:before { content: "\f126"; }
+.icon-hamburger:before { content: "\f127"; }
+.icon-info:before { content: "\f128"; }
+.icon-info-inverse:before { content: "\f129"; }
+.icon-italic2:before { content: "\f12a"; }
+.icon-line-chart:before { content: "\f12b"; }
+.icon-link:before { content: "\f12c"; }
+.icon-link2:before { content: "\f12d"; }
+.icon-linked:before { content: "\f12e"; }
+.icon-list-numbered:before { content: "\f12f"; }
+.icon-list2:before { content: "\f130"; }
+.icon-map:before { content: "\f131"; }
+.icon-move:before { content: "\f132"; }
+.icon-number:before { content: "\f133"; }
+.icon-official:before { content: "\f134"; }
+.icon-paragraph-center3:before { content: "\f135"; }
+.icon-paragraph-left3:before { content: "\f136"; }
+.icon-paragraph-right3:before { content: "\f137"; }
+.icon-pause:before { content: "\f138"; }
+.icon-play:before { content: "\f139"; }
+.icon-plus2:before { content: "\f13a"; }
+.icon-plus3:before { content: "\f13b"; }
+.icon-presentation:before { content: "\f13c"; }
+.icon-preview:before { content: "\f13d"; }
+.icon-processing:before { content: "\f13e"; }
+.icon-pulse:before { content: "\f13f"; }
+.icon-puzzle:before { content: "\f140"; }
+.icon-question:before { content: "\f141"; }
+.icon-question-inverse:before { content: "\f142"; }
+.icon-quotes-left:before { content: "\f143"; }
+.icon-redo:before { content: "\f144"; }
+.icon-region:before { content: "\f145"; }
+.icon-search:before { content: "\f146"; }
+.icon-settings:before { content: "\f147"; }
+.icon-share:before { content: "\f148"; }
+.icon-stories-icon:before { content: "\f149"; }
+.icon-stories-menu:before { content: "\f14a"; }
+.icon-story:before { content: "\f14b"; }
+.icon-table:before { content: "\f14c"; }
+.icon-tag:before { content: "\f14d"; }
+.icon-text:before { content: "\f14e"; }
+.icon-twitter:before { content: "\f14f"; }
+.icon-undo:before { content: "\f150"; }
+.icon-user:before { content: "\f151"; }
+.icon-waiting:before { content: "\f152"; }
+.icon-warning:before { content: "\f153"; }

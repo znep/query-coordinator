@@ -53,10 +53,12 @@
       "ecmaVersion": 6,
       "sourceType": "module",
       "ecmaFeatures": {
-        "impliedStrict": true
+        "impliedStrict": true,
+        "jsx": true
       }
     },
     "rules": {
+      "indent": [2, 2, {"SwitchCase": 1}],
       "dot-notation": [
         1,
         {

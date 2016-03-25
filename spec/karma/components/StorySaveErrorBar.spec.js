@@ -44,7 +44,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
     mockStore = new MockStore();
     userSessionStoreMock = new MockStore();
-		autosave = {saveASAP: sinon.stub()};
+    autosave = {saveASAP: sinon.stub()};
     StorySaveErrorBarAPI.__Rewire__('storySaveStatusStore', mockStore);
     StorySaveErrorBarAPI.__Rewire__('userSessionStore', userSessionStoreMock);
     StorySaveErrorBarAPI.__Rewire__('autosave', autosave);

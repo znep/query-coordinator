@@ -578,16 +578,16 @@ export default function AssetSelectorStore() {
         url: imageUrl
       };
     } else if (componentType === 'hero') {
-			var html = _.get(_state, 'componentProperties.html'); // Preserve any previous HTML content.
+      var html = _.get(_state, 'componentProperties.html'); // Preserve any previous HTML content.
 
-			_state.componentProperties = {
-				documentId: documentId,
-				url: imageUrl
-			};
+      _state.componentProperties = {
+        documentId: documentId,
+        url: imageUrl
+      };
 
-			if (html) {
-				_state.componentProperties.html = html;
-			}
+      if (html) {
+        _state.componentProperties.html = html;
+      }
     } else if (componentType === 'author') {
       _.set(_state.componentProperties, 'image.documentId', documentId);
       _.set(_state.componentProperties, 'image.url', imageUrl);

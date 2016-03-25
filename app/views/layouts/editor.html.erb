@@ -29,7 +29,6 @@
     window.AIRBRAKE = <%= airbrake_config_for_js.to_json.html_safe %>;
     window.RELATIVE_URL_ROOT = '<%= config.relative_url_root %>';
     window.THEMES_ASSET_PATH = '<%= asset_path("themes/themes.css") %>';
-    window.FULL_BLEED_IMAGE_ENABLE_TEXT_OVERLAY = <%= Rails.application.config.full_bleed_image_enable_text_overlay %>;
     window.EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES = '<%= embed_code_iframe_sandbox_allowances %>';
     window.IMAGES = {
       COVER_IMAGE_ICON: '<%= asset_path("editor/cover-image.png") %>'

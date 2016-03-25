@@ -130,40 +130,92 @@ layout: prototype-landingpage
 
   <div class="content">
 
-    <div class="result-card">
+    <div class="header-card">
 
-      <div class="entry-header">
-        <div class="entry-title">
-          <h1 class="entry-name">Current Liquor Licenses</h1>
+      <div class="infopane-header">
+        <div class="infopane-title">
+          <span class="icon-private"></span>
+          <h1 class="infopane-name">Current Liquor Licenses</h1>
           <span class="tag-official">
             <span class="icon-official"></span> OFFICIAL</span>
-            <span class="tag-category">Animal Control</span>
+            <span class="tag-category">Licensing</span>
           </div>
-          <div class="entry-view-type">
-            <button class="btn btn-default btn-sm">Download Data</button>
-            <button class="btn btn-default btn-sm">API</button>
-            <button class="btn btn-default btn-sm">More <span class="icon-arrow-down"></span></button>
+          <div class="infopane-actions">
+            <div class="btn-group">
+              <button class="btn btn-default grid btn-sm">View Data</button>
+
+              <button id="du" class="dropdown btn btn-default download btn-sm" data-orientation="bottom">
+                <span>Download</span>
+                <ul class="dropdown-options">
+                    <li><a href="#">CSV</a></li>
+                    <li><a href="#">XLS</a></li>
+                    <li><a href="#">RDF</a></li>
+                    <li><a href="#">XLSX</a></li>
+                </ul>
+              </button>
+
+              <button class="btn btn-default api btn-sm" data-flannel="api-flannel" data-toggle>API</button>
+              <div id="api-flannel" class="flannel flannel-hidden">
+                <header class="flannel-header">
+                  <h4 class="flannel-header-title">Access this Dataset via SODA API</h4  >
+                  <button class="btn btn-transparent flannel-header-dismiss" data-flannel-dismiss>
+                    <span class="icon-close-2"></span>
+                  </button>
+                </header>
+                <section class="flannel-content">
+                  <p class="small">The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data. </p>
+
+                  <button class="btn btn-default btn-sm"><span class="icon-copy-document"></span>API Docs</button>
+                  <button class="btn btn-default btn-sm"><span class="icon-settings"></span>Developer Portal</button>
+                </section>
+                <section class="flannel-content">
+                  <h6>API Endpoint</h6>
+                  <form>
+                    <span class="input-group">
+                      <input class="text-input text-input-sm" type="text" placeholder="https://evergreen.data.socrata.com/resource/nijw-wqck.json" readonly=""/>
+                      <span class="input-group-btn">
+                        <button class="btn btn-primary btn-sm">Copy</button>
+                      </span>
+                    </span>
+                  </form>
+                </section>
+
+              </div>
+              
+              <button id="dd" class="dropdown btn btn-default share btn-sm" data-orientation="bottom">
+                <span>Share</span>
+                <ul class="dropdown-options">
+                    <li><a href="#"><span class="icon-email"></span>Email</a></li>
+                    <li><a href="#"><span class="icon-facebook"></span>Facebook</a></li>
+                    <li><a href="#"><span class="icon-twitter"></span>Twitter</a></li>
+                </ul>
+              </button>
+
+              <button id="dd" class="dropdown btn btn-default more btn-sm" data-orientation="bottom">
+                <span><span class="icon-waiting"></span><span>
+                <ul class="dropdown-options">
+                    <li><a href="#"><span class="icon-email"></span>Contact Data Owner</a></li>
+                    <li><a href="#"><span class="icon-facebook"></span>Access Data via OData</a></li>
+                    <li><a href="#"><span class="icon-twitter"></span>Open Data in Tableau</a></li>
+                </ul>
+            </div>
           </div>
         </div>
 
-        <div class="entry-content">
-          <div class="entry-main">
-            <div class="entry-description">
-              City-wide listing of current liquor licenses, with location information. All renewal records are created with a term start date and term expiration date. The business liquor licenses layer contains an address point where an active liquor license issued in the City. The listing ... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+        <div class="infopane-content">
+          <div class="infopane-main">
+            <div class="infopane-description">
+              City-wide listing of current liquor licenses, with location information. All renewal records are created with a term start date and term expiration date. The business liquor licenses layer contains an address point where an active liquor license issued in the City. The listing is updated daily and doesn't get renewed when other things do, but it does have the ... <span class="more-link"><a class="more-link" href="#"> More </a></span>
             </div>
 
-            <div class="entry-meta first">
+<!--        <div class="entry-meta first">
               <div class="entry-meta topics">
                 <span class="meta-title">Topics</span> <span class="topic-list"><a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a>, <a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a></span>
-              </div>
+              </div> 
 
-              <div class="entry-meta api">
-                <span class="api-link"><a href="#">API Docs</a></span>
-              </div>
+            </div>-->
 
-            </div>
-
-          </div><!-- ./entry-main -->
+          </div><!-- ./infopane-main -->
 
           <div class="entry-meta second">
             <div class="entry-meta updated">
@@ -178,11 +230,112 @@ layout: prototype-landingpage
 
 
         </div><!-- /.entry-content -->
-      </div> <!-- /.result-card -->        
+      </div> <!-- /.header-card -->        
   </div>
   <div class="page-content">
+    <div class="lp-section">
+      <h2 class="section-header">Popular Content Using this Data</h2>
+      
+      <div class="media-results">  
+        <div class="result-card media no-meta">
+
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">How to Apply for a Liquor Licence</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-story"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">12,235 Views</span>
+            </div>
+          </div>
+
+          <div class="entry-content">
+            <div class="entry-main">
+              <div class="img-wrapper"><img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" " /></div>
+              <div class="entry-description">
+                Story explaining the procedure for applying for a license, as well as some general trends around current licensing.
+              </div>  
+            </div>
+          </div>
+
+        </div><!-- /.result-card --> 
+
+        <div class="result-card media no-meta">
+
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">Licensing trends by neighborhood. Number of approved licenses per ...</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-map"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">12,234 Views</span>
+            </div>
+          </div>
+          
+          <div class="entry-content">
+            <div class="entry-main">
+              <div class="img-wrapper"><img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " /></div>
+              <div class="entry-description">
+                Map showing the number of approved licenses for each neighborhood in the city.
+              </div>  
+            </div>
+          </div>
+
+        </div><!-- /.result-card -->
+
+        <div class="result-card media no-meta">
+
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">Licenses by Type</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-cards"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">1,234 Views</span>
+            </div>
+          </div>
+          
+          <div class="entry-content">
+            <div class="entry-main">
+              <div class="img-wrapper"><img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " /></div>
+              <div class="entry-description">
+                Interactive experience showing licenses by type, filterable by neighborhood and business type. This data is based on the last 4 years...</span>
+              </div>  
+            </div>
+          </div>
+
+        </div><!-- /.result-card -->  
+
+      </div><!-- /.media-results -->
+
+      <div class="media-results footer">
+        <div class="footer-action"><a href="#">View all content created from <i>Current Liquor Licenses</i></em> </a></div>
+      </div>
+
+    </div><!-- /.lp-section -->
+
+
+
       <div class='lp-section'>
-        <h2 class="section-header">What's in this Dataset</h2>
+        <h2 class="section-header">Columns in this Dataset</h2>
 
         <div class="card-frame">
         <div class="table-wrapper schema-preview schema-preview-expanded">
@@ -198,7 +351,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Licensee</td>
                   <td>Legal name of the license holder</td>
-                  <td>Name, Text <span class="icon-text"></span></td>
+                  <td><span class="type">Name, Text</span><span class="icon icon-text"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -265,7 +418,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">DBA Name</td>
                   <td>Doing Business As name. The legal name of the business</td>
-                  <td>Name, Text <span class="icon-text"></span></td>
+                  <td><span class="type">Name, Text</span><span class="icon icon-text"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -332,7 +485,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">License Number</td>
                   <td>Unique Identifier for the license. Note: if licence gets renewed, multiple entries with the same identifier may appear.</td>
-                  <td>ID, Number <span class="icon-number"></span></td>
+                  <td><span class="type">ID, Number</span><span class="icon icon-number"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -399,7 +552,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Expiration Date</td>
                   <td></td></a>
-                  <td>Date, Timestamp<span class="icon-date"></span></td>
+                  <td><span class="type">Date, Timestamp</span><span class="icon icon-date"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
                 
@@ -454,7 +607,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Value</td>
                   <td>Value of the license</td>
-                  <td>Amount, Money<span class="icon-number"></span></td>
+                  <td><span class="type">Amount, Money</span><span class="icon icon-number"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -521,7 +674,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Location</td>
                   <td>Mailing Address of the Business</td>
-                  <td>Location, Point<span class="icon-map"></span></td>
+                  <td><span class="type">Location, Point</span><span class="icon icon-map"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -576,7 +729,7 @@ layout: prototype-landingpage
 
 
       <div class='lp-section'>
-        <h2 class="section-header">Additional Metadata</h2>
+        <h2 class="section-header">About this Dataset</h2>
 
         <div class="card-frame">
 

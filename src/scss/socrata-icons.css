@@ -53,6 +53,7 @@
 .icon-distribution:before,
 .icon-droplet:before,
 .icon-edit:before,
+.icon-email:before,
 .icon-expand:before,
 .icon-external:before,
 .icon-external-square:before,
@@ -85,6 +86,7 @@
 .icon-plus3:before,
 .icon-presentation:before,
 .icon-preview:before,
+.icon-private:before,
 .icon-processing:before,
 .icon-pulse:before,
 .icon-puzzle:before,
@@ -151,12 +153,13 @@
 .icon-distribution:before { content: "\f11b"; }
 .icon-droplet:before { content: "\f11c"; }
 .icon-edit:before { content: "\f11d"; }
+.icon-email:before { content: "\f154"; }
 .icon-expand:before { content: "\f11e"; }
 .icon-external:before { content: "\f11f"; }
 .icon-external-square:before { content: "\f120"; }
 .icon-eye:before { content: "\f121"; }
 .icon-eye-blocked:before { content: "\f122"; }
-.icon-facebook:before { content: "\f123"; }
+.icon-facebook:before { content: "\f156"; }
 .icon-failed:before { content: "\f124"; }
 .icon-filter:before { content: "\f125"; }
 .icon-geo:before { content: "\f126"; }
@@ -183,6 +186,7 @@
 .icon-plus3:before { content: "\f13b"; }
 .icon-presentation:before { content: "\f13c"; }
 .icon-preview:before { content: "\f13d"; }
+.icon-private:before { content: "\f155"; }
 .icon-processing:before { content: "\f13e"; }
 .icon-pulse:before { content: "\f13f"; }
 .icon-puzzle:before { content: "\f140"; }
@@ -200,7 +204,7 @@
 .icon-table:before { content: "\f14c"; }
 .icon-tag:before { content: "\f14d"; }
 .icon-text:before { content: "\f14e"; }
-.icon-twitter:before { content: "\f14f"; }
+.icon-twitter:before { content: "\f157"; }
 .icon-undo:before { content: "\f150"; }
 .icon-user:before { content: "\f151"; }
 .icon-waiting:before { content: "\f152"; }

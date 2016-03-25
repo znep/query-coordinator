@@ -1,32 +1,30 @@
 # Site Chrome
 
+![chrome](http://www.3dtotal.com/admin/new_cropper/tutorial_content_images/208_tid_main_01.jpg)
+
 The "Chrome" is the header, footer, and navbar of a customer site. This gem exists so that our various services/pages (catalogs, storyteller, data_lens, etc.) can easily render the same html for these components.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'chrome'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install chrome
+TODO: write installation steps
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+domain = 'opendata-demo.rc-socrata.com'
+auth = Chrome::Auth.new(domain, email, password).authenticate
+configuration = Chrome::DomainConfig.new(domain, auth.cookie)
+
+configuration.header_html # html for site header
+configuration.footer_html # html for site footer
+configuration.json        # json of entire domain configuration
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `bundle exec rake` to run the tests.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+Run `bundle exec rake console` for an interactive promprt that will allow you to experiment.
 
 ## Contributing
 

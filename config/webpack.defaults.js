@@ -32,6 +32,7 @@ module.exports = {
       'd3': path.resolve('.', 'node_modules/d3/d3.js'),
       'jQuery': path.resolve('.', 'node_modules/jquery/dist/jquery.js'),
       'jQuery-sidebar': path.resolve('.', 'node_modules/jquery-sidebar/src/jquery.sidebar.js'),
+      'jQuery-ujs': path.resolve('.', 'node_modules/jquery-ujs/src/rails.js'),
       'L': path.resolve('.', 'node_modules/leaflet/dist/leaflet.js'),
       'socrata-utils': path.resolve('.', 'node_modules/socrata-utils/dist/socrata.utils.js'),
       'socrata.utils': path.resolve('.', 'node_modules/socrata-utils/dist/socrata.utils.js'),

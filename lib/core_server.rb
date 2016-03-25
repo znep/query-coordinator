@@ -464,7 +464,11 @@ class CoreServerResponse
 
   def initialize(http_response = nil)
     @raw = http_response
-    @json = JSON.parse(raw.body) if json?
+    begin
+      @json = JSON.parse(raw.body) if json?
+    rescue JSON::ParserError => error
+      @json = nil
+    end
   end
 
   def ok?
@@ -474,7 +478,7 @@ class CoreServerResponse
   private
 
   def json?
-    raw && raw.try(:[], 'Content-Type').include?('application/json') &&
-      raw.body.size > 0
+    raw && raw.try(:[], 'Content-Type') &&
+      raw['Content-Type'].include?('application/json') && raw.body.size > 0
   end
 end

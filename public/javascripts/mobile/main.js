@@ -350,6 +350,8 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
                 if (!args.start || args.start < _start) {
                   args.start = _start;
                 }
+
+                filter['arguments'].start = moment(filter['arguments'].start).format('YYYY-MM-DD');
               }
 
               if (filter['arguments'].end) { // eslint-disable-line dot-notation
@@ -358,6 +360,8 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
                 if (!args.end || args.end > _end) {
                   args.end = _end;
                 }
+
+                filter['arguments'].end = moment(filter['arguments'].end).format('YYYY-MM-DD');
               }
 
               _addToVIFFilters(thisSetFirstCard.fieldName, filter['arguments'], filter['function']);// eslint-disable-line dot-notation

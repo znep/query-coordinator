@@ -1,4 +1,5 @@
 import $ from 'jQuery';
+import 'jQuery-ujs';
 import StorytellerUtils from '../StorytellerUtils';
 
 function hookUpSectionCollapseCheckboxes() {

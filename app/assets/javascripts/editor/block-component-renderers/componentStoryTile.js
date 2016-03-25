@@ -165,18 +165,12 @@ function _renderStoryTile($element, componentData, storyTileData) {
     return;
   }
 
-  if ($element.hasClass('error')) {
-    $element.removeClass('error').empty();
-  }
+  $element.removeClass('error').empty();
 
   $element.attr(
     'data-rendered-story-tile-data',
     JSON.stringify(storyTileData)
   );
-
-  if ($existingStoryTileContainer.length > 0) {
-    $existingStoryTileContainer.remove();
-  }
 
   $tileContainer = $(
     '<a>',

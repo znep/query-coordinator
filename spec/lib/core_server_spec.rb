@@ -46,7 +46,7 @@ describe CoreServer do
       let(:user_role) { nil }
       let(:user_rights) { nil }
 
-      it 'returns role "unknown" and an empty list of rights' do
+      it "returns role 'unknown' and an empty list of rights" do
         expect(subject).to eql({
           'viewRole' => 'unknown',
           'viewRights' => [],
@@ -123,7 +123,7 @@ describe CoreServer do
     end
 
     context 'when cookie does not contain csrf token' do
-      let(:http_cookie) { "_core_session_id=bobloblaw" }
+      let(:http_cookie) { '_core_session_id=bobloblaw' }
 
       it 'returns Cookie and X-Socrata-Host headers only' do
         result = CoreServer.headers_from_request(request)
@@ -164,24 +164,24 @@ describe CoreServer do
   end
 
   describe '#create_view' do
-    let(:title) { "A Title" }
+    let(:title) { 'A Title' }
 
-    let(:published_4x4) { "publ-ishd" }
+    let(:published_4x4) { 'publ-ishd' }
     let(:published_copy_ok?) { true }
-    let(:published_copy_json) { { "id" => published_4x4 } }
+    let(:published_copy_json) { { 'id' => published_4x4 } }
     let(:published_copy_response) {
-      double("CoreServerResponse", ok?: published_copy_ok?, json: published_copy_json)
+      double('CoreServerResponse', ok?: published_copy_ok?, json: published_copy_json)
     }
 
-    let(:working_copy_4x4) { "test-test" }
+    let(:working_copy_4x4) { 'test-test' }
     let(:working_copy_ok?) { true }
-    let(:working_copy_json) { { "id" => working_copy_4x4 } }
+    let(:working_copy_json) { { 'id' => working_copy_4x4 } }
     let(:working_copy_response) {
-      double("CoreServerResponse", ok?: working_copy_ok?, json: working_copy_json)
+      double('CoreServerResponse', ok?: working_copy_ok?, json: working_copy_json)
     }
 
     let(:view_request) {
-      { path: "/views", verb: :post, body: CoreServer.view_with_title(title), query_params: nil }
+      { path: '/views', verb: :post, body: CoreServer.view_with_title(title), query_params: nil }
     }
 
     let(:publication_request) {
@@ -273,7 +273,7 @@ describe CoreServer do
     before do
       allow(RequestStore.store).to receive(:[]).with(:socrata_session_headers).and_return(mock_headers)
       allow(Net::HTTP).to receive(:new).and_return(mock_http)
-      allow(Net::HTTP::Get).to receive(:new).with("#{options[:path]}").and_return(mock_get)
+      allow(Net::HTTP::Get).to receive(:new).with(options[:path]).and_return(mock_get)
       expect(mock_http).to receive(:request).with(mock_get)
 
       allow(mock_get).to receive(:[]=)
@@ -360,7 +360,7 @@ describe CoreServer do
     let(:query_params) {
       { :defaultOnly => default_only, :merge => merge, :type => type }
     }
-    let(:core_server_response) { double("CoreServerResponse").as_null_object }
+    let(:core_server_response) { double('CoreServerResponse').as_null_object }
 
     before do
       stub_request(:get, /#{core_service_uri}\/configurations.json.*/).
@@ -531,3 +531,4 @@ describe CoreServer do
 
   end
 end
+

@@ -1,6 +1,7 @@
 require 'retries'
 require 'addressable/uri'
 require 'request_store'
+require 'core_server_response'
 
 class CoreServer
 
@@ -29,22 +30,22 @@ class CoreServer
       query_params: query_params
     }
 
-    core_server_http_request(creation_options).tap do |response|
-      if response.ok?
-        working_copy = response.json
-        publication_options = {
-          verb: :post,
-          path: view_url(working_copy["id"]) << "/publication.json"
-        }
+    response = core_server_http_request(creation_options)
 
-        core_server_http_request(publication_options).tap do |response|
-          unless response.ok?
-            delete_options = { verb: :delete, path: view_url(working_copy["id"]) }
-            core_server_request_with_retries(delete_options)
-          else
-            new_view = response.json
-          end
-        end
+    if response.ok?
+      working_copy = response.json
+      publication_options = {
+        verb: :post,
+        path: view_url(working_copy['id']) << '/publication.json'
+      }
+
+      response = core_server_http_request(publication_options)
+
+      if response.ok?
+        new_view = response.json
+      else
+        delete_options = { verb: :delete, path: view_url(working_copy['id']) }
+        core_server_request_with_retries(delete_options)
       end
     end
 
@@ -214,12 +215,7 @@ class CoreServer
   end
 
   def self.view_url(uid = nil)
-    url = "/views"
-    url = if uid
-      url << "/#{uid}"
-    else
-      url
-    end
+    uid ? "/views/#{uid}" : '/views'
   end
 
   def self.generate_query_params(params)
@@ -237,12 +233,12 @@ class CoreServer
 
     core_server_request_options = {
       verb: options[:verb],
-      path: "/views/#{options[:uid]}.json",
+      path: view_url(options[:uid]),
       query_params: options[:query_params]
     }
 
     response = core_server_request_with_retries(core_server_request_options)
-    response.raw.instance_of? Net::HTTPOK
+    response.ok?
   end
 
   def self.configuration_request(options)
@@ -314,14 +310,9 @@ class CoreServer
       # managed separate from their configurations.
       response = core_server_request_with_retries(core_server_request_options)
 
-      if response.raw.instance_of? Net::HTTPNotFound
+      if response.ok?
         response = core_server_request_with_retries(
-          {
-            verb: :post,
-            path: "#{base_path}.json",
-            body: property,
-            return_errors: true
-          }
+          verb: :post, path: "#{base_path}.json", body: property, return_errors: true
         )
       end
 
@@ -333,7 +324,7 @@ class CoreServer
     raise ArgumentError.new("':type' is required.") unless options.key?(:type)
 
     verb = options[:verb] || :get
-    path = "/configurations.json"
+    path = '/configurations.json'
 
     core_server_request_options = {
       verb: verb,
@@ -459,26 +450,3 @@ class CoreServer
   end
 end
 
-class CoreServerResponse
-  attr_reader :raw, :json
-
-  def initialize(http_response = nil)
-    @raw = http_response
-    begin
-      @json = JSON.parse(raw.body) if json?
-    rescue JSON::ParserError => error
-      @json = nil
-    end
-  end
-
-  def ok?
-    @raw && @raw.instance_of?(Net::HTTPOK)
-  end
-
-  private
-
-  def json?
-    raw && raw.try(:[], 'Content-Type') &&
-      raw['Content-Type'].include?('application/json') && raw.body.size > 0
-  end
-end

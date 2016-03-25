@@ -2,9 +2,14 @@ listen 3000
 {% if WORKER_PROCESSES is defined -%}
 worker_processes {{ WORKER_PROCESSES }}
 {% else %}
-worker_processes 1
+worker_processes 4
 {%- endif %}
-ENV["UNICORN"] = "1"
+ENV['UNICORN'] = '1'
+{% if WORKER_TIMEOUT is defined -%}
+timeout {{ WORKER_TIMEOUT }}
+{% else %}
+timeout 300
+{%- endif %}
 
 # By default, the Unicorn logger will write to stderr.
 # (http://unicorn.bogomips.org/Unicorn/Configurator.html)
@@ -21,4 +26,3 @@ ENV["UNICORN"] = "1"
   end
 
 logger get_logger
-

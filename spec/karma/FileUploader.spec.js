@@ -64,6 +64,44 @@ describe('FileUploader', function() {
     });
   }
 
+  function setupSuccessfulServerResponses(sinonServer, options) {
+    sinonServer.respondWith(
+      'POST', '/stories/api/v1/uploads',
+      [
+        200,
+        { 'Content-Type': 'application/json' },
+        JSON.stringify({ upload: { url: options.uploadUrl, content_type: 'image/jpeg' } }) //eslint-disable-line camelcase
+      ]
+    );
+
+    sinonServer.respondWith(
+      'PUT', options.uploadUrl,
+      [
+        200,
+        {},
+        ''
+      ]
+    );
+
+    sinonServer.respondWith(
+      'POST', '/stories/api/v1/documents',
+      [
+        200,
+        { 'Content-Type': 'application/json' },
+        JSON.stringify({ document: { id: options.documentId } })
+      ]
+    );
+
+    sinonServer.respondWith(
+      'GET', StorytellerUtils.format('/stories/api/v1/documents/{0}', options.documentId),
+      [
+        200,
+        { 'Content-Type': 'application/json' },
+        JSON.stringify({ document: { id: options.documentId, status: 'processed', url: options.documentUrl } })
+      ]
+    );
+  }
+
   describe('.upload()', function() {
 
     describe('file validations properly throw errors', function() {
@@ -103,48 +141,47 @@ describe('FileUploader', function() {
       });
     });
 
+    describe('cancelled in the middle of the process', function() {
+      beforeEach(function() {
+        setupSuccessfulServerResponses(server, {
+          uploadUrl: 'http://somestore.com/uploads/file.png',
+          documentUrl: 'http://somesotre.com/documents/1/file.png',
+          documentId: 1
+        });
+        server.autoRespond = true;
+      });
+
+      afterEach(function() {
+        server.autoRespond = false;
+      });
+
+      it('doesn\'t dispatch a FILE_UPLOAD_DONE', function(done) {
+        dispatcher.register(function(payload) {
+          if (payload.action === 'FILE_UPLOAD_DONE') {
+            done(new Error('There was an unexpected FILE_UPLOAD_DONE.'));
+          }
+        });
+
+        fileUploader.upload(mockFile);
+        fileUploader.cancel();
+
+        _.delay(function() {
+          done();
+        }, 1000);
+      });
+    });
+
     describe('successful completion', function() {
       var uploadUrl = 'http://somestore.com/uploads/file.png';
       var documentUrl = 'http://somesotre.com/documents/1/file.png';
       var documentId = 1;
 
       beforeEach(function() {
-        server.respondWith(
-          'POST', '/stories/api/v1/uploads',
-          [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify({ upload: { url: uploadUrl, content_type: 'image/jpeg' } }) //eslint-disable-line camelcase
-          ]
-        );
-
-        server.respondWith(
-          'PUT', uploadUrl,
-          [
-            200,
-            {},
-            ''
-          ]
-        );
-
-        server.respondWith(
-          'POST', '/stories/api/v1/documents',
-          [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify({ document: { id: documentId } })
-          ]
-        );
-
-        server.respondWith(
-          'GET', StorytellerUtils.format('/stories/api/v1/documents/{0}', documentId),
-          [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify({ document: { id: documentId, status: 'processed', url: documentUrl } })
-          ]
-        );
-
+        setupSuccessfulServerResponses(server, {
+          uploadUrl: uploadUrl,
+          documentUrl: documentUrl,
+          documentId: documentId
+        });
       });
 
       it('dispatches events including FILE_UPLOAD_DONE', function(done) {

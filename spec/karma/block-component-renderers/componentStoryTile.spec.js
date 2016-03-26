@@ -28,26 +28,12 @@ describe('componentStoryTile jQuery plugin', function() {
   var validStoryTileDataWithImage = _.clone(validStoryTileDataWithoutImage);
   validStoryTileDataWithImage.image = 'about:blank';
 
-  function stubTileJsonApiWith(blob) {
+  function stubTileJsonApiWith(blob, statusCode) {
     var server;
+    statusCode = statusCode || 200;
 
     beforeEach(function(done) {
-      server = sinon.fakeServer.create();
-      server.respondImmediately = true;
-      server.respondWith(
-        'GET',
-        StorytellerUtils.format(
-          'https://example.com/stories/s/{0}/tile.json',
-          validComponentData.value.storyUid
-        ),
-        [
-          200,
-          { 'Content-Type': 'application/json' },
-          JSON.stringify(blob)
-        ]
-      );
-
-      $component = $component.componentStoryTile(validComponentData);
+      server = mockTileServerResponse(blob, statusCode);
 
       // Need to use a setTimeout to escape the stack and resolve the promise.
       setTimeout(function() { done(); }, 0);
@@ -55,7 +41,28 @@ describe('componentStoryTile jQuery plugin', function() {
 
     afterEach(function() {
       server.restore();
+      statusCode = 200;
     });
+  }
+
+  function mockTileServerResponse(blob, statusCode) {
+    var server = sinon.fakeServer.create();
+    server.respondImmediately = true;
+    server.respondWith(
+      'GET',
+      StorytellerUtils.format(
+        'https://example.com/stories/s/{0}/tile.json',
+        validComponentData.value.storyUid
+      ),
+      [
+        statusCode,
+        { 'Content-Type': 'application/json' },
+        JSON.stringify(blob)
+      ]
+    );
+
+    $component = $component.componentStoryTile(validComponentData);
+    return server;
   }
 
   beforeEach(function() {
@@ -93,6 +100,28 @@ describe('componentStoryTile jQuery plugin', function() {
       });
     });
   });
+
+  describe('when the story tile 404s', function() {
+    stubTileJsonApiWith(validStoryTileDataWithoutImage, 404);
+
+    it('should render an error message, then clear when adding a valid tile', function(done) {
+      assert.isTrue($component.hasClass('error'));
+
+      var dataWithNewUrl = _.cloneDeep(validStoryTileDataWithoutImage);
+      dataWithNewUrl.url = 'https://example.com/stories/s/test-what';
+      var storyUid = validComponentData.value.storyUid;
+      validComponentData.value.storyUid = 'test-what'
+
+      var server = mockTileServerResponse(validStoryTileDataWithoutImage, 200);
+      validComponentData.value.storyUid = storyUid;
+
+      setTimeout(function() {
+        server.restore();
+        assert.isFalse($component.hasClass('error'));
+        done();
+      }, 1000);
+    });
+  })
 
   describe('given a valid component type and value', function() {
 

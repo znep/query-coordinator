@@ -141,6 +141,13 @@ export default function FileUploader() {
 
   // Private methods
 
+  function _cancelled() {
+
+    // If the _file is null, either we cancelled
+    // or there isn't an upload happening right now.
+    return _.isNull(_file);
+  }
+
   function _emitProgress(progressBytes) {
     if (!_cancelled) {
       _uploadedPercent = progressBytes / _file.size;

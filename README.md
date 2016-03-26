@@ -13,11 +13,13 @@ TODO: write installation steps
 ```ruby
 domain = 'opendata-demo.rc-socrata.com'
 auth = Chrome::Auth.new(domain, email, password).authenticate
-configuration = Chrome::DomainConfig.new(domain, auth.cookie)
+domain_config = Chrome::DomainConfig.new(domain, auth.cookie)
+site_chrome = Chrome::SiteChrome.init_from_core_config(domain_config.config)
 
-configuration.header_html # html for site header
-configuration.footer_html # html for site footer
-configuration.json        # json of entire domain configuration
+# Get rendered html for each section
+site_chrome.header_html
+site_chrome.footer_html
+site_chrome.navbar_html
 ```
 
 ## Development

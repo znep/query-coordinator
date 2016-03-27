@@ -35,30 +35,12 @@ describe('ErrorReporter', function() {
     new ErrorReporter(); // eslint-disable-line no-new
   });
 
-  describe('FILE_UPLOAD_ERROR', function() {
-
-    it('sends an exception report with ga', function(done) {
-      assertEventSentToGoogleAnalytics(done, 'FILE_UPLOAD_ERROR');
-
-      dispatchAction(Actions.FILE_UPLOAD_ERROR, mockPayload);
-    });
-  });
-
   describe('STORY_SAVE_FAILED', function() {
 
     it('sends an exception report with ga', function(done) {
       assertEventSentToGoogleAnalytics(done, 'STORY_SAVE_FAILED');
 
       dispatchAction(Actions.STORY_SAVE_FAILED, mockPayload);
-    });
-  });
-
-  describe('EMBED_CODE_UPLOAD_ERROR', function() {
-
-    it('sends an exception report with ga', function(done) {
-      assertEventSentToGoogleAnalytics(done, 'EMBED_CODE_UPLOAD_ERROR');
-
-      dispatchAction(Actions.EMBED_CODE_UPLOAD_ERROR, mockPayload);
     });
   });
 

@@ -7,7 +7,7 @@ import Actions from '../Actions';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
-import '../FileUploader';
+import {fileUploaderStore, STATUS} from './FileUploaderStore';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 // The step in the asset selection flow the user is in.
@@ -207,28 +207,12 @@ export default function AssetSelectorStore() {
         _updateVisualizationConfiguration(payload);
         break;
 
-      case Actions.FILE_UPLOAD_PROGRESS:
-        _updateImageUploadProgress(payload);
+      case Actions.ASSET_SELECTOR_DRAG_FILES:
+        _updateDroppedImage(payload);
         break;
 
-      case Actions.FILE_UPLOAD_DONE:
-        _updateImagePreview(payload);
-        break;
-
-      case Actions.FILE_UPLOAD_ERROR:
-        _updateImageUploadError(payload);
-        break;
-
-      case Actions.EMBED_CODE_UPLOAD_PROGRESS:
-        _updateEmbedCodeProgress(payload);
-        break;
-
-      case Actions.EMBED_CODE_UPLOAD_ERROR:
-        _updateEmbedCodeError(payload);
-        break;
-
-      case Actions.EMBED_CODE_UPLOAD_DONE:
-        _updateEmbedCodePreview(payload);
+      case Actions.FILE_UPLOAD:
+        _upload(payload);
         break;
 
       case Actions.ASSET_SELECTOR_CLOSE:
@@ -286,16 +270,31 @@ export default function AssetSelectorStore() {
     return _state.dataset;
   };
 
+  this.getFileId = function() {
+    return _.get(_state, 'fileId', null);
+  };
+
   this.isEditingExisting = function() {
     return _state.isEditingExisting === true;
   };
 
-  this.getUploadPercentLoaded = function() {
-    return _.get(_state, 'uploadPercentLoaded', null);
+  this.isUploadingFile = function() {
+    return !_.isNull(_.get(_state, 'fileId', null));
   };
 
-  this.isUploading = function() {
-    return _state.isUploading;
+  this.isHTMLFragment = function(filename) {
+    if (filename) {
+      return filename === Constants.EMBEDDED_FRAGMENT_FILE_NAME;
+    } else if (self.getFileId()) {
+      var file = fileUploaderStore.fileById(self.getFileId());
+      return file.raw.name === Constants.EMBEDDED_FRAGMENT_FILE_NAME;
+    } else {
+      return false;
+    }
+  };
+
+  this.getDroppedImage = function() {
+    return _.get(_state, 'droppedImage', null);
   };
 
   this.getImageSearchUrl = function() {
@@ -570,14 +569,12 @@ export default function AssetSelectorStore() {
 
   function _chooseImageUpload() {
     _state.step = WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
-    _cancelFileUploads();
     self._emitChange();
   }
 
   function _chooseEmbedCode() {
     _state.step = WIZARD_STEP.ENTER_EMBED_CODE;
     _state.componentProperties = {};
-    _cancelFileUploads();
     self._emitChange();
   }
 
@@ -831,16 +828,93 @@ export default function AssetSelectorStore() {
     }
   }
 
-  function _updateImageUploadProgress(payload) {
-    _state.step = WIZARD_STEP.IMAGE_UPLOADING;
-    _state.uploadPercentLoaded = payload.percentLoaded;
+  function _updateDroppedImage(payload) {
+    var hasFiles = Array.isArray(payload.files) && payload.files.length > 0;
+    var previouslyDroppedImage = self.getDroppedImage();
+    var fileChanged =  _.isNull(previouslyDroppedImage) || (previouslyDroppedImage.name !== payload.files[0].name);
 
-    self._emitChange();
+    if (hasFiles && fileChanged) {
+      _state.droppedImage = payload.files[0];
+      self._emitChange();
+    }
   }
 
+  function _upload(payload) {
+    var isNotHTMLFragment = !self.isHTMLFragment(payload.file.name);
+
+    _state.fileId = payload.id;
+
+    if (isNotHTMLFragment) {
+      _state.step = WIZARD_STEP.IMAGE_UPLOADING;
+    }
+  }
+
+  function _handleEmbedCodeFragment(file) {
+    switch (file.status) {
+      case STATUS.CANCELLED:
+        _state.fileId = null;
+        break;
+      case STATUS.COMPLETED:
+        _state.fileId = null;
+        _updateEmbedCodePreview(file.resource);
+        break;
+      case STATUS.ERRORED:
+        _state.fileId = null;
+        _updateEmbedCodeError({error: {reason: file.message}});
+        break;
+      case STATUS.SIGNED:
+      case STATUS.ACKNOWLEDGED:
+      case STATUS.PROGRESSING:
+        // Nothing.
+        break;
+      default:
+        _state.fileId = null;
+        break;
+    }
+  }
+
+  function _handleImage(file) {
+    switch (file.status) {
+      case STATUS.CANCELLED:
+        _state.fileId = null;
+        _state.step = WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
+        self._emitChange();
+        break;
+      case STATUS.COMPLETED:
+        _state.fileId = null;
+        _updateImagePreview({resource: file.resource});
+        break;
+      case STATUS.ERRORED:
+        _state.fileId = null;
+        _updateImageUploadError({error: {reason: file.message}});
+        break;
+      case STATUS.SIGNED:
+      case STATUS.ACKNOWLEDGED:
+      case STATUS.PROGRESSING:
+        // Nothing.
+        break;
+      default:
+        _state.fileId = null;
+        break;
+    }
+  }
+
+  fileUploaderStore.addChangeListener(function() {
+    if (self.isUploadingFile()) {
+      var id = self.getFileId();
+      var file = fileUploaderStore.fileById(id);
+
+      if (self.isHTMLFragment(file.raw.name)) {
+        _handleEmbedCodeFragment(file);
+      } else {
+        _handleImage(file);
+      }
+    }
+  });
+
   function _updateImagePreview(payload) {
-    var imageUrl = payload.url;
-    var documentId = payload.documentId;
+    var imageUrl = payload.resource.url;
+    var documentId = payload.resource.id;
     var componentType = _state.componentType;
 
     _state.step = WIZARD_STEP.IMAGE_PREVIEW;
@@ -873,11 +947,7 @@ export default function AssetSelectorStore() {
 
   function _updateImageUploadError(payload) {
     _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
-    _state.componentType = 'imageUploadError';
-
-    _state.componentProperties = {
-      step: payload.error.step
-    };
+    _state.componentProperties = {};
 
     if (!_.isUndefined(payload.error.reason)) {
       _state.componentProperties.reason = payload.error.reason;
@@ -954,8 +1024,6 @@ export default function AssetSelectorStore() {
   function _closeDialog() {
 
     _state = {};
-
-    _cancelFileUploads();
 
     self._emitChange();
   }
@@ -1040,21 +1108,11 @@ export default function AssetSelectorStore() {
     return youtubeId;
   }
 
-  function _updateEmbedCodeProgress(payload) {
-    _state.componentType = 'embeddedHtml';
-    _state.isUploading = true;
-    _state.uploadPercentLoaded = payload.percentLoaded;
-
-    self._emitChange();
-  }
-
   function _updateEmbedCodeError(payload) {
     _state.componentProperties = {
       error: true,
       step: payload.error.step
     };
-
-    _state.isUploading = false;
 
     if (!_.isUndefined(payload.error.reason)) {
       _state.componentProperties.reason = payload.error.reason;
@@ -1063,12 +1121,11 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
-  function _updateEmbedCodePreview(payload) {
-    var htmlFragmentUrl = payload.url;
-    var documentId = payload.documentId;
+  function _updateEmbedCodePreview(resource) {
+    var htmlFragmentUrl = resource.url;
+    var documentId = resource.id;
 
     _state.componentType = 'embeddedHtml';
-    _state.isUploading = false;
     _state.componentProperties = {
       url: htmlFragmentUrl,
       documentId: documentId,
@@ -1077,14 +1134,6 @@ export default function AssetSelectorStore() {
       }
     };
 
-    self._emitChange();
-  }
-
-  function _cancelFileUploads() {
-    if (storyteller.fileUploader && storyteller.fileUploader !== null) {
-      storyteller.fileUploader.cancel();
-    }
-    _state.isUploading = false;
     self._emitChange();
   }
 }

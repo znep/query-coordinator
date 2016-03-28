@@ -78,6 +78,8 @@ var _$target;
  *   - Accepts a payload and loads the first row into the view.
  *   SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE:
  *   - Hides the row inspector.
+ *   SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDDEN:
+ *   - Triggered after "HIDE" completes. Mainly for adjusting card properties after row inspector disappears.
  *
  * @param {Object} config - An object containing translations in a localization-keyed subobject.
  *
@@ -362,7 +364,9 @@ function _render() {
   var scrollingElement = _$rowInspectorContainer.find('.tool-panel-inner-container');
 
   // Set position
-  _adjustPosition(position);
+  if (!_config.isMobile) {
+    _adjustPosition(position);
+  }
 
   // Set initial paging button states
   _$paginationButtonPrevious.prop('disabled', true);
@@ -453,6 +457,7 @@ function _show() {
 
 function _hide() {
   _$rowInspectorContainer.removeClass('visible');
+  _$target.trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDDEN');
 }
 
 function _setState(payload) {

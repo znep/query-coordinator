@@ -64,6 +64,10 @@ $expanded-row-bg: transparent;
  *
  */ 
 
+h1, h2, h3, h4, h5, h6, {
+  letter-spacing: -0.5px;
+}
+
 .menu {
 	width: 100%;
 	@include breakpoint($tablet) {
@@ -157,6 +161,31 @@ a {
 
 
 }
+.alert.full-width {
+	border-top: 0;
+	border-left: 0;
+	border-right: 0;
+	
+	.alert-content {
+		@include outer-container;
+		padding: 0 ms(-2);
+
+		a {
+			font-size: ms(-2);
+		}
+		.icon-close-2 {
+			float: right;
+			&:hover {
+				cursor: pointer;
+			}
+		}
+	}
+	+ .content {
+		padding-top: ms(0);
+	}
+}
+
+
 .page-content {
 	@include outer-container();
 	.lp-section {
@@ -167,7 +196,7 @@ a {
 
 		.section-header {
 			padding: ms(-2) 0;
-			font-weight: 600;
+			font-weight: 500;
 			font-size: ms(0);
 		}
 		@include breakpoint($tablet) {
@@ -353,18 +382,13 @@ a {
 		  					font-size: ms(-1);
 							color: $light-grey-1;
 							text-align: left;
-							padding-bottom: ms(-10);
 							font-weight: 600;
 		  				}
 		  				.key, .value {
 		  					font-size: ms(-1);
+		  					color: $dark-grey-1;
 		  				}
-		  				.value {
-		  					color: $dark-grey-1;		  				
-		  				}
-		  				.key {
-		  					color: $light-grey-1;		  				
-		  				}
+		  				
 		  				.type-details { 
 		  					@include span-columns(12);
 		  					border-top: 1px solid $light-grey-3;
@@ -381,6 +405,9 @@ a {
 		  					tbody {
 		  						display: table;
 		  						width: 100%;
+		  						th {
+		  							margin-top: ms(-10);
+		  						}
 			  					td {
 			  						&.value {
 			  							text-align: right;
@@ -519,14 +546,19 @@ a {
 				display: inline-block;
 				margin-right: ms(-2);
 				font-size: ms(3);
+				font-weight: 300;
 				
+			}
+			.icon-private:before {
+				font-size: ms(3);
+				color: $grey;
 			}
 
 			@include breakpoint($tablet) {
 				@include span-columns(8);
 					.infopane-name {
 						
-						font-size: ms(4);
+						font-size: ms(6);
 
 					}
 
@@ -541,19 +573,21 @@ a {
 			color: $dark-grey-1;
 			font-weight: 300;
 			padding-top: ms(-6);
+
 			.btn-group {
 				width: 100%;
-				.btn-sm {
-					background-color: $light-grey-5;
-				}
-				.download, .grid {
+
+				.download {
+					width: 28%;
+				} 
+				.grid {
 					width: 28%;
 				}
 				.api {
-					width: 13%;
+					width: 14%;
 				} 
 				.share {
-					width: 19%;
+					width: 18%;
 				}
 				.more {
 					width: 12%;
@@ -561,17 +595,25 @@ a {
 				
 			}
 
+			// .flannel#api-flannel {
+			// 	left: 0 !important;
+			//     top: 0 !important;
+			//     width: 100%;
+			//     margin: auto 0;
+			//     height: 100%;
+			//     z-index: 99;
+			//     letter-spacing: normal;
+			//     max-width: none;
+			//     .flannel-header {
+			//     	max-width: 95%;
+			//     }
+			// }
+
 			@include breakpoint($desktop) {
 				@include span-columns(4);
 				text-align: right;				
 				font-size: ms(0);
 			
-				.flannel, .flannel-actions {
-					letter-spacing: 0;
-					text-align: left;
-					max-width: 420px;
-
-				}
 			}
 			
 			
@@ -724,7 +766,47 @@ a {
 	}
 }
 
+#share-modal {
 
+	.twitter, .facebook, .email {
+		padding-bottom: ms(-2);
+	}
+	.twitter a {
+		color: #55acee;
+	}
+	.facebook a {
+		color: #3b5998;
+	}
+	.email a {
+		color: $dark-grey-3;
+	}
+	.alert {
+		font-size: ms(-1);
+	}
+}
+.modal {
+	h1, h4, h6 {
+		font-weight: 400;
+	}
+
+}
+
+.flannel {
+	text-align: left;
+	max-width: 420px;
+
+	.flannel-header {
+		max-width: 95%;
+	}
+	h4, h6 {
+		font-weight: 400;
+	}
+
+	.input-group-btn .dropdown span.icon-arrow-down {
+		padding-left: ms(-2);
+		padding-right: 0;
+	}
+}
 
 /* .container {
 	@include outer-container();

@@ -45,7 +45,9 @@ layout: prototype-landingpage
       $(this).toggleClass("expanded");
 
    }) 
-
+  $(".alert .icon-close-2").on("click", function() {
+    $(".alert").hide();
+  })
 
   // Set the height of the menu content area to position the button
   $(".filter-wrapper").css("height", maxContentHeight);
@@ -127,24 +129,27 @@ layout: prototype-landingpage
 
 
 <div class="container main">
-
+  <div class="alert info full-width">
+    <div class="alert-content"> You are right now looking at a private dataset. <a href="#">Click here to manage permissions</a> <span class="icon-close-2"></span></div>
+  </div>
   <div class="content">
 
     <div class="header-card">
 
       <div class="infopane-header">
+
         <div class="infopane-title">
-          <span class="icon-private"></span>
-          <h1 class="infopane-name">Current Liquor Licenses</h1>
+          
+          <h1 class="infopane-name"><span class="icon-private" title="Private Dataset"></span> Current Liquor Licenses</h1>
           <span class="tag-official">
             <span class="icon-official"></span> OFFICIAL</span>
             <span class="tag-category">Licensing</span>
           </div>
           <div class="infopane-actions">
             <div class="btn-group">
-              <button class="btn btn-default grid btn-sm">View Data</button>
+              <button class="btn btn-default btn-simple grid btn-sm">View Data</button>
 
-              <button id="du" class="dropdown btn btn-default download btn-sm" data-orientation="bottom">
+              <button id="du" class="dropdown btn btn-default btn-simple download btn-sm" data-orientation="bottom">
                 <span>Download</span>
                 <ul class="dropdown-options">
                     <li><a href="#">CSV</a></li>
@@ -154,53 +159,31 @@ layout: prototype-landingpage
                 </ul>
               </button>
 
-              <button class="btn btn-default api btn-sm" data-flannel="api-flannel" data-toggle>API</button>
-              <div id="api-flannel" class="flannel flannel-hidden">
-                <header class="flannel-header">
-                  <h4 class="flannel-header-title">Access this Dataset via SODA API</h4  >
-                  <button class="btn btn-transparent flannel-header-dismiss" data-flannel-dismiss>
-                    <span class="icon-close-2"></span>
-                  </button>
-                </header>
-                <section class="flannel-content">
-                  <p class="small">The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data. </p>
+              <button class="btn btn-default btn-simple api btn-sm" data-flannel="api-flannel" data-toggle>API</button>
 
-                  <button class="btn btn-default btn-sm"><span class="icon-copy-document"></span>API Docs</button>
-                  <button class="btn btn-default btn-sm"><span class="icon-settings"></span>Developer Portal</button>
-                </section>
-                <section class="flannel-content">
-                  <h6>API Endpoint</h6>
-                  <form>
-                    <span class="input-group">
-                      <input class="text-input text-input-sm" type="text" placeholder="https://evergreen.data.socrata.com/resource/nijw-wqck.json" readonly=""/>
-                      <span class="input-group-btn">
-                        <button class="btn btn-primary btn-sm">Copy</button>
-                      </span>
-                    </span>
-                  </form>
-                </section>
+              <button class="btn btn-default btn-simple share btn-sm" data-modal="share-modal" data-toggle>Share</button>
 
-              </div>
-              
-              <button id="dd" class="dropdown btn btn-default share btn-sm" data-orientation="bottom">
+
+<!--               <button id="dd" class="dropdown btn btn-default btn-simple share btn-sm" data-orientation="bottom">
                 <span>Share</span>
                 <ul class="dropdown-options">
                     <li><a href="#"><span class="icon-email"></span>Email</a></li>
                     <li><a href="#"><span class="icon-facebook"></span>Facebook</a></li>
                     <li><a href="#"><span class="icon-twitter"></span>Twitter</a></li>
                 </ul>
-              </button>
+              </button> -->
 
-              <button id="dd" class="dropdown btn btn-default more btn-sm" data-orientation="bottom">
+              <button id="dd" class="dropdown btn btn-default btn-simple more btn-sm" data-orientation="bottom">
                 <span><span class="icon-waiting"></span><span>
                 <ul class="dropdown-options">
-                    <li><a href="#"><span class="icon-email"></span>Contact Data Owner</a></li>
-                    <li><a href="#"><span class="icon-facebook"></span>Access Data via OData</a></li>
-                    <li><a href="#"><span class="icon-twitter"></span>Open Data in Tableau</a></li>
+                    <li><a href="#">Contact Dataset Owner</a></li>
+                    <li><a href="#" data-modal="odata-modal">Access Data via OData</a></li>
                 </ul>
+              </button>
             </div>
-          </div>
-        </div>
+          </div><!-- /.infopane-actions -->
+
+        </div><!-- /.infopane-header -->
 
         <div class="infopane-content">
           <div class="infopane-main">
@@ -219,7 +202,7 @@ layout: prototype-landingpage
 
           <div class="entry-meta second">
             <div class="entry-meta updated">
-              <span class="meta-title">Data Updated</span>
+              <span class="meta-title">Data Last Updated</span>
               <span class="date">December 1, 2015</span>
             </div>                  
             <div class="entry-meta views">
@@ -395,18 +378,18 @@ layout: prototype-landingpage
                      
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">Semantic Type</span>
+                              <span class="title">Semantic Type</span>
                               <span class="value"> Name</span>
                             </div>
                             <div class="detail-group">
-                              <span class="key">Data Type</span>
+                              <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/text.html"> Text</a></span>
                             </div>
                       </div><!-- /type-details ><!/-->
 
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">API Fieldname</span>
+                              <span class="title">API Fieldname</span>
                               <span class="value"> licensee</span>
                             </div>
                       </div><!-- /type-details ><!/-->
@@ -462,18 +445,18 @@ layout: prototype-landingpage
                      
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">Semantic Type</span>
+                              <span class="title">Semantic Type</span>
                               <span class="value"> Name</span>
                             </div>
                             <div class="detail-group">
-                              <span class="key">Data Type</span>
+                              <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/text.html"> Text</a></span>
                             </div>
                       </div><!-- /type-details ><!/-->
 
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">API Fieldname</span>
+                              <span class="title">API Fieldname</span>
                               <span class="value">dba_name</span>
                             </div>
                       </div><!-- /type-details ><!/-->
@@ -529,18 +512,18 @@ layout: prototype-landingpage
                      
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">Semantic Type</span>
+                              <span class="title">Semantic Type</span>
                               <span class="value"> ID</span>
                             </div>
                             <div class="detail-group">
-                              <span class="key">Data Type</span>
+                              <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/number.html"> Number</a></span>
                             </div>
                       </div><!-- /type-details ><!/-->
 
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">API Fieldname</span>
+                              <span class="title">API Fieldname</span>
                               <span class="value"> license_number</span>
                             </div>
                       </div><!-- /type-details ><!/-->
@@ -584,18 +567,18 @@ layout: prototype-landingpage
                      
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">Semantic Type</span>
+                              <span class="title">Semantic Type</span>
                               <span class="value"> Date</span>
                             </div>
                             <div class="detail-group">
-                              <span class="key">Data Type</span>
+                              <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/floating_timestamp.html"> Timestamp</a></span>
                             </div>
                       </div><!-- /type-details ><!/-->
 
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">API Fieldname</span>
+                              <span class="title">API Fieldname</span>
                               <span class="value"> expiration_date</span>
                             </div>
                       </div><!-- /type-details ><!/-->
@@ -651,18 +634,18 @@ layout: prototype-landingpage
                      
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">Semantic Type</span>
+                              <span class="title">Semantic Type</span>
                               <span class="value"> Amount</span>
                             </div>
                             <div class="detail-group">
-                              <span class="key">Data Type</span>
+                              <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/money.html"> Money</a></span>
                             </div>
                       </div><!-- /type-details ><!/-->
 
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">API Fieldname</span>
+                              <span class="title">API Fieldname</span>
                               <span class="value"> value</span>
                             </div>
                       </div><!-- /type-details ><!/-->
@@ -696,18 +679,18 @@ layout: prototype-landingpage
                      
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">Semantic Type</span>
+                              <span class="title">Semantic Type</span>
                               <span class="value"> Location</span>
                             </div>
                             <div class="detail-group">
-                              <span class="key">Data Type</span>
+                              <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/point.html"> Point</a></span>
                             </div>
                       </div><!-- /type-details ><!/-->
 
                       <div class="type-details">
                             <div class="detail-group">
-                              <span class="key">API Fieldname</span>
+                              <span class="title">API Fieldname</span>
                               <span class="value"> location</span>
                             </div>
                       </div><!-- /type-details ><!/-->
@@ -791,3 +774,98 @@ layout: prototype-landingpage
 </div> <!-- ./wrapper -->
 
 </div> <!-- ./container.main -->
+
+<div id="api-flannel" class="flannel flannel-hidden">
+  <header class="flannel-header">
+    <h4 class="flannel-header-title">Access this Dataset via SODA API</h4>
+    <button class="btn btn-transparent flannel-header-dismiss" data-flannel-dismiss>
+      <span class="icon-close-2"></span>
+    </button>
+  </header>
+  <section class="flannel-content">
+    <p class="small">The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data. </p>
+
+    <button class="btn btn-default btn-sm"><span class="icon-copy-document"></span>API Docs</button>
+    <button class="btn btn-default btn-sm"><span class="icon-settings"></span>Developer Portal</button>
+  </section>
+  <section class="flannel-content">
+    <h6>API Endpoint</h6>
+    <form>
+      <span class="input-group">
+        <input class="text-input text-input-sm" type="text" placeholder="https://evergreen.data.socrata.com/resource/nijw-wqck.json" readonly=""/>
+        <span class="input-group-btn">
+            <button id="du" class="dropdown btn btn-default btn-simple btn-sm" data-orientation="bottom">
+            <span>JSON<span class="icon-arrow-down"></span></span>
+            <ul class="dropdown-options">
+                <li><a href="#">JSON</a></li>
+                <li><a href="#">GeoJSON</a></li>
+            </ul>
+          </button>
+        </span>
+        <span class="input-group-btn">
+          <button class="btn btn-primary btn-sm">Copy</button>
+        </span>
+      </span>
+    </form>
+  </section>
+
+</div>
+
+<div id="share-modal" class="modal modal-overlay modal-hidden" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h1 class="h5 modal-header-title">Share this Dataset</h1>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <section class="modal-content">
+      <div class="alert info">
+        <b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with. <a href=""> Click here to manage permissions</a>
+      </div>
+    </section>
+
+    <section class="modal-content">
+      <div class="facebook"><a href="#"><span class="icon-facebook"></span> Share via Facebook</a></div>
+      <div class="twitter"><a href="#"><span class="icon-twitter"></span> Share via Twitter</a></div>
+      <div class="email"><a href="#"><span class="icon-email"></span> Share via Email</a></div>
+    </section>
+
+    <footer class="modal-actions">
+      <button class="btn btn-default btn-sm" data-modal-dismiss>Close</button>
+    </footer>
+  </div>
+</div>
+
+
+<div id="odata-modal" class="modal modal-overlay modal-hidden" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h1 class="h5 modal-header-title">Access this Dataset via OData</h1>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <section class="modal-content">
+      <p class="small">Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable. </p>
+      <button class="btn btn-default btn-sm"><span class="icon-copy-document"></span>Socrata OData Documentation</button>
+    </section>
+    <section class="modal-content">
+      <h6>OData Endpoint</h6>
+      <form>
+        <span class="input-group">
+          <input class="text-input text-input-sm" type="text" placeholder="https://evergreen.data.socrata.com/OData.svc/7ais-f98f" readonly=""/>
+          <span class="input-group-btn">
+            <button class="btn btn-primary btn-sm">Copy</button>
+          </span>
+        </span>
+      </form>
+    </section>
+
+    <footer class="modal-actions">
+      <button class="btn btn-default btn-sm" data-modal-dismiss>Done</button>
+    </footer>
+  </div>
+</div>

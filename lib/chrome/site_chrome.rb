@@ -8,7 +8,6 @@ module Chrome
       @content = config['content'] || {}
       @updated_at = config['updated_at'] || 0
       @domain_cname = config['domain_cname']
-      @persisted = config['persisted'] || false
     end
 
     def header_html
@@ -22,11 +21,6 @@ module Chrome
     def navbar_html
       # TODO
     end
-
-    def persisted?
-      !!@persisted
-    end
-
 
     # Reads from a core config that looks like the following:
     # {
@@ -69,8 +63,6 @@ module Chrome
         end
         properties['styles'] = site_chrome_config_vars['value']['styles']
         properties['content'] = site_chrome_config_vars['value']['content']
-
-        properties['persisted'] = true
       end
 
       properties['id'] = core_config['id']

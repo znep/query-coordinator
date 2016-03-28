@@ -4,7 +4,6 @@ describe Chrome::SiteChrome do
   let(:id) { 2663 }
   let(:updated_at) { '123546789' }
   let(:domain_cname) { 'data.bobloblawslawblog.com' }
-  let(:persisted) { nil }
 
   let(:site_chrome_config_vars) do
     {
@@ -26,8 +25,7 @@ describe Chrome::SiteChrome do
       'styles' => site_chrome_config_vars['styles'],
       'content' => site_chrome_config_vars['content'],
       'updated_at' => updated_at,
-      'domain_cname' => domain_cname,
-      'persisted' => persisted
+      'domain_cname' => domain_cname
     }
   end
 
@@ -55,10 +53,6 @@ describe Chrome::SiteChrome do
 
   it 'sets domain_cname from properties' do
     expect(subject.domain_cname).to eq(domain_cname)
-  end
-
-  it 'sets persisted to false by default' do
-    expect(subject).to_not be_persisted
   end
 
   describe '#init_from_core_config' do
@@ -98,10 +92,6 @@ describe Chrome::SiteChrome do
       expect(subject.domain_cname).to eq(domain_cname)
     end
 
-    it 'sets persisted to true' do
-      expect(subject).to be_persisted
-    end
-
     context 'when core config does not exist' do
       let(:core_config) { {} }
 
@@ -111,7 +101,6 @@ describe Chrome::SiteChrome do
         expect(subject.domain_cname).to be_nil
         expect(subject.styles).to be_empty
         expect(subject.content).to be_empty
-        expect(subject).to_not be_persisted
       end
     end
 

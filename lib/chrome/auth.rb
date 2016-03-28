@@ -2,15 +2,14 @@ require 'core/auth/client'
 
 module Chrome
   class Auth
-    def initialize(domain, email, password, verify_ssl_cert = true)
+    def initialize(domain, email, password)
       @domain = domain
       @email = email
       @password = password
-      @verify_ssl_cert = verify_ssl_cert
     end
 
     def authenticate
-      Core::Auth::Client.new(@domain, email: @email, password: @password, verify_ssl_cert: @verify_ssl_cert).
+      Core::Auth::Client.new(@domain, email: @email, password: @password).
         tap do |auth|
           fail('Authentication failed') unless auth.logged_in?
         end

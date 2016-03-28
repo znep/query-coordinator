@@ -110,7 +110,7 @@ describe('componentStoryTile jQuery plugin', function() {
       var dataWithNewUrl = _.cloneDeep(validStoryTileDataWithoutImage);
       dataWithNewUrl.url = 'https://example.com/stories/s/test-what';
       var storyUid = validComponentData.value.storyUid;
-      validComponentData.value.storyUid = 'test-what'
+      validComponentData.value.storyUid = 'test-what';
 
       var server = mockTileServerResponse(validStoryTileDataWithoutImage, 200);
       validComponentData.value.storyUid = storyUid;
@@ -121,7 +121,7 @@ describe('componentStoryTile jQuery plugin', function() {
         done();
       }, 1000);
     });
-  })
+  });
 
   describe('given a valid component type and value', function() {
 

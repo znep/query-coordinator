@@ -128,11 +128,11 @@ function ChoroplethMap(element, vif) {
     }
 
     if (vif.configuration.legend.hasOwnProperty('zeroColor')) {
-      CONTINUOUS_LEGEND_ZERO_COLOR = vif.configuration.legend.negativeColor;
+      CONTINUOUS_LEGEND_ZERO_COLOR = vif.configuration.legend.zeroColor;
     }
 
     if (vif.configuration.legend.hasOwnProperty('positiveColor')) {
-      CONTINUOUS_LEGEND_POSITIVE_COLOR = vif.configuration.legend.negativeColor;
+      CONTINUOUS_LEGEND_POSITIVE_COLOR = vif.configuration.legend.positiveColor;
     }
 
     if (vif.configuration.legend.hasOwnProperty('type') && vif.configuration.legend.type === 'discrete') {
@@ -143,11 +143,11 @@ function ChoroplethMap(element, vif) {
       }
 
       if (vif.configuration.legend.hasOwnProperty('zeroColor')) {
-        DISCRETE_LEGEND_ZERO_COLOR = vif.configuration.legend.negativeColor;
+        DISCRETE_LEGEND_ZERO_COLOR = vif.configuration.legend.zeroColor;
       }
 
       if (vif.configuration.legend.hasOwnProperty('positiveColor')) {
-        DISCRETE_LEGEND_POSITIVE_COLOR = vif.configuration.legend.negativeColor;
+        DISCRETE_LEGEND_POSITIVE_COLOR = vif.configuration.legend.positiveColor;
       }
     }
   }

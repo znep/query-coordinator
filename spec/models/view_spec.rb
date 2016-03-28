@@ -8,12 +8,12 @@ describe View do
         {
           'id' => 'fake-fak1',
           'name' => 'Fake 1',
-          'view_type' => 'pulse'
+          'displayType' => 'pulse'
         },
         {
           'id' => 'fake-fak2',
           'name' => 'Fake 2',
-          'view_type' => 'story'
+          'displayType' => 'story'
         }
       ]
     end

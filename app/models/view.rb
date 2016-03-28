@@ -1190,7 +1190,7 @@ class View < Model
   end
 
   def pulse?
-    viewType == 'pulse'
+    displayType == 'pulse'
   end
 
   def story?

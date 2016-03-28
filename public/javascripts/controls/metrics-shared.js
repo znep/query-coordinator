@@ -465,12 +465,18 @@
 
   metricsNS.summaryDataDirective = {
     '.deltaValue': 'delta',
+    '.deltaValue@aria-label': 'deltaText',
     '.deltaBox@title': 'deltaText',
     '.deltaBox@aria-label': 'deltaText',
-    '.deltaValue@aria-label': 'deltaText',
+    '.deltaBox@class+': function(v) {
+      if (_.isString(v.context.delta) && v.context.delta != '0') {
+        return v.context.deltaClass
+      } else {
+        return 'hide';
+      }
+    },
     '.totalValue': 'total',
     '.totalValue@title': 'totalText',
-    '.deltaBox@class+': 'deltaClass',
     '.deltaCharacter': 'deltaCharacter'
   };
 

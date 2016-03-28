@@ -4,6 +4,7 @@
   <%= default_meta_tags() %>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= core_attributes['name'] || t('default_page_title') %></title>
+  <%= favicon_link_tag %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
   <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>

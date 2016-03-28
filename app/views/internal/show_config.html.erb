@@ -30,7 +30,7 @@
         <input type="submit" value="Set this config as Default" />
       <% end unless @config.default %>
       <%= form_tag "/internal/orgs/#{@domain.organizationId}/domains/#{@domain.cname}/delete_config/#{@config.id}", :class => 'oneButtonForm deleteConfig' do %>
-        <input type="submit" value="Delete this Config" />
+        <input type="submit" value="Delete this ENTIRE PAGE OF CONFIG SETTINGS" />
       <% end unless editing_this_page_is_dangerous? %>
 
       <input type="text" class="importExportBox" />

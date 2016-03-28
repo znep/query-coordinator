@@ -79,7 +79,7 @@ function _updateSrc($element, componentData) {
       ).
       catch(
         function() {
-          _renderStoryTileError($element, componentData);
+          _renderStoryTileError($element);
         }
       );
   }
@@ -144,7 +144,6 @@ function _updateTextEllipsification($element) {
 }
 
 function _renderStoryTile($element, componentData, storyTileData) {
-  var $existingStoryTileContainer = $element.find('.story-tile-container');
   var $tileContainer;
   var $tileContent;
   var $tileTitle;
@@ -165,14 +164,12 @@ function _renderStoryTile($element, componentData, storyTileData) {
     return;
   }
 
+  $element.removeClass('error').empty();
+
   $element.attr(
     'data-rendered-story-tile-data',
     JSON.stringify(storyTileData)
   );
-
-  if ($existingStoryTileContainer.length > 0) {
-    $existingStoryTileContainer.remove();
-  }
 
   $tileContainer = $(
     '<a>',
@@ -241,7 +238,7 @@ function _renderStoryTile($element, componentData, storyTileData) {
   $tileContainer.addClass('rendered');
 }
 
-function _renderStoryTileError($element, componentData, error) {
+function _renderStoryTileError($element) {
   $element.
     empty().
     addClass('error').

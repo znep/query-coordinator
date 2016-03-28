@@ -518,7 +518,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
           break;
         case 'table':
           cardOptions.id = 'table';
-          cardOptions.componentClass = 'socrata-table';
+          cardOptions.componentClass = 'socrata-table-container';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
             domain: datasetMetadata.domain,

@@ -18,12 +18,17 @@ module.exports = function(values, $target) {
     },
     'columnName': values.columnName,
     'configuration': {
+      'mapOptions': {
+        'tap': true
+      },
       'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
       'baseLayerOpacity': 0.8,
       'computedColumnName': values.computedColumnName,
       'defaultExtent' : values.mapExtent,
       'legend': {
-        'type': 'continuous'
+        'type': 'continuous',
+        'positiveColor': '#007862',
+        'negativeColor': '#CE6565'
       },
       // The localization values should be set by the application but are set to string literals
       // for the purposes of this example.
@@ -55,7 +60,7 @@ module.exports = function(values, $target) {
       'version': 1
     },
     'title': 'Example Usage: socrata.visualizations.ChoroplethMap.js',
-    'type': 'choropleth',
+    'type': 'choroplethMap',
     'unit': {
       'one': ' ',
       'other': ' '
@@ -82,5 +87,18 @@ module.exports = function(values, $target) {
       flyoutRenderer.clear();
     }
   }
+
+  function handleFiltersUpdated(event, data) {
+    choroplethVIF.filters = data.filters;
+
+    var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
+    changeEvent.originalEvent = {
+      detail: choroplethVIF
+    };
+
+    $choroplethElement1.trigger(changeEvent);
+  }
+
+  $(document).on('appliedFilters.qfb.socrata', handleFiltersUpdated);
 
 };

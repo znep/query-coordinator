@@ -81,7 +81,10 @@
   color: $btn-default-color;
   background-color: $btn-default-background-color;
   border-color: $btn-default-border-color;
-
+  &.btn-simple {
+    background-color: $light-grey-5;
+  }
+  
   &:hover {
     color: $btn-default-hover-color;
     background-color: $btn-default-hover-background-color;
@@ -96,6 +99,7 @@
     &.btn-dark {
       background-color: $btn-default-dark-hover-background-color;
     }
+
   }
 
   &:active,

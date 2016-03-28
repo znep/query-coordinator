@@ -9,9 +9,10 @@ module Chrome
     end
 
     def authenticate
-      auth = Core::Auth::Client.new(@domain, email: @email, password: @password)
-      fail('Authentication failed') unless auth.logged_in?
-      auth
+      Core::Auth::Client.new(@domain, email: @email, password: @password).
+        tap do |auth|
+          fail('Authentication failed') unless auth.logged_in?
+        end
     end
   end
 end

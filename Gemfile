@@ -3,9 +3,11 @@ source 'https://rubygems.org'
 ruby '2.3.0'
 
 gem 'core-auth-ruby', git: 'git@github.com:socrata/core-auth-ruby.git', tag: 'v0.3.0'
+gem 'httparty'
 
 group :test do
   gem 'rspec'
+  gem 'webmock'
 end
 
 group :development, :test do

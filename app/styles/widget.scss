@@ -288,10 +288,6 @@ html, body {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-
-    .layerTableDownloads {
-      display: none;
-    }
   }
   .widgetContentGrid {
     display: block;
@@ -333,6 +329,30 @@ html, body {
       padding-top: 2em;
     }
   }
+
+  .widgetContent_downloads {
+    &.geoDataset .gridListWrapper {
+      padding-top: 0.5em;
+    }
+    .layerTableDownloads {
+      .layerChooser {
+        display: none;
+      }
+      &.hasChoices {
+        .layerChooser {
+          display: inline-block;
+        }
+      }
+    }
+    .formHeader {
+      display: inline-block;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin: 1em;
+      margin-bottom: 0;
+    }
+  }
+
   .widgetContent_views .gridListWrapper table {
     tbody {
       .type {

@@ -16,6 +16,8 @@ class Displays::Table < Displays::Base
   def type
     if @view.is_unpublished?
       'unpublished'
+    elsif @view.is_api_geospatial?
+      'map'
     elsif @view.is_blist? && @view.is_snapshotted?
       'snapshotted'
     elsif @view.is_blist?

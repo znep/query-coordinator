@@ -650,10 +650,15 @@ module DatasetsHelper
   def hide_data_lens_create?
     return true unless current_user
 
+    # view.is_api_geospatial? can't be used at this point because
+    # we override dataset metadata after detecting the condition
+    is_api_geospatial = view.metadata && view.metadata.geo && view.metadata.geo['isApiGeospatial']
+
     [
       current_user.rights.blank?,
       view.is_unpublished?,
       !view.dataset?,
+      is_api_geospatial,
       view.geoParent.present?
     ].any?
   end

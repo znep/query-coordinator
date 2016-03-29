@@ -22,6 +22,7 @@
         <em><%= @domain.accountTier.name %></em>
       </a>
       domain.</p>
+      <p>Domain ID: <%= @domain.id %></p>
 
       <h2>Domain/Aliases:</h2>
       <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +

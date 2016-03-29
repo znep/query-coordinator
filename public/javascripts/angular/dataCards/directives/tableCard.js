@@ -284,9 +284,7 @@ function tableCard(
           _.defer(function() {
             columnWidths = {};
             var maxCells = {};
-            var cells = $expander.
-              // row_block.row.cell
-              children().children().children();
+            var cells = $expander.find('.cell');
             cells = cells.add($tableHead.children());
             var columns = $scope.columnDetails;
 
@@ -407,43 +405,38 @@ function tableCard(
             }
 
             var columns = $scope.columnDetails;
-            var blockDiv = $('<div>').
-              addClass(`row-block ${block}`).
-              css({
-                top: `${block * rowsPerBlock * rowHeight}px`,
-                display: 'none'
-              }).
-              attr('data-block-id', block);
+
+            var rows = [];
 
             _.each(data, function(dataRow) {
-              var tableRowDiv = $('<div>').addClass('table-row');
+              var cells = [];
 
               _.each(columns, function(column, index) {
                 var cellContent = _.hasValue(dataRow[column.fieldName]) ?
                   dataRow[column.fieldName] : '';
 
-                var tableCellDiv = $('<div>').
-                  addClass(`cell ${column.physicalDatatype}`).
-                  attr('data-index', index).
-                  css('width', `${columnWidths[column.fieldName]}px`);
+                var dataType = column.physicalDatatype;
+                var width = columnWidths[column.fieldName];
 
-                // CORE-7118: Place cell content inside a second div,
-                // improves ability to double-click select the cell text
-                var tableCellDivContent = $('<div class="cell-content">').
-                  html(formatCellText(
-                    column.physicalDatatype,
-                    cellContent,
-                    column
-                  ));
-
-                tableCellDiv.append(tableCellDivContent);
-                tableRowDiv.append(tableCellDiv);
+                cells.push([
+                  `<div class="cell ${dataType}" data-index="${index}" style="width: ${width}px;">`,
+                    `<div class="cell-content">${formatCellText(dataType, cellContent, column)}</div>`,
+                  `</div>`
+                ].join(''));
               });
 
-              blockDiv.append(tableRowDiv);
+              rows.push(`<div class="table-row">${cells.join('')}</div>`);
             });
 
-            $(blockDiv).appendTo($expander).fadeIn();
+            var top = block * rowsPerBlock * rowHeight;
+
+            var $block = $([
+              `<div class="row-block" data-block-id="${block}" style="top: ${top}px; display: none;">`,
+                `${rows.join('')}`,
+              `</div>`
+            ].join(''));
+
+            $block.appendTo($expander).fadeIn();
 
             calculateColumnWidths();
             _.defer(updateExpanderHeight);
@@ -462,7 +455,7 @@ function tableCard(
           }
           oldBlock = currentBlock;
 
-          var blocksToLoad = _.map([-1, 0, 1, 2], function(i) {
+          var blocksToLoad = _.map([-1, 0, 1], function(i) {
             return i + currentBlock;
           });
 

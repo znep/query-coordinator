@@ -389,7 +389,7 @@ describe('tableCard', function() {
     });
 
     it('should create and load data', function() {
-      expect(immutableTable.find('.row-block .cell').length).to.equal(columnCount * blockSize * 3);
+      expect(immutableTable.find('.row-block .cell').length).to.equal(columnCount * blockSize * 2);
       expect(immutableTable.find('.th').length).to.equal(columnCount);
     });
 
@@ -407,7 +407,7 @@ describe('tableCard', function() {
           expect($(cell).hasClass('number')).to.equal(true);
 
           if (column.name === 'Year') {
-            expect($(cell).text()).to.match(/^[1-9][0-9]{3}$/);
+            expect($(cell).text().trim()).to.match(/^[1-9][0-9]{3}$/);
             checkedYear = true;
           };
         }
@@ -425,7 +425,7 @@ describe('tableCard', function() {
         if (didScroll) {
           _.defer(function() {
             expect(el.find('.th').length).to.equal(columnCount);
-            expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 4);
+            expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 5);
             el.remove();
             done();
           });
@@ -433,7 +433,7 @@ describe('tableCard', function() {
       });
 
       _.defer(function() {
-        expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 3);
+        expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 2);
         var originalScrollTop = tableBody.scrollTop();
         var targetScrollTop = $.relativeToPx('2rem') * (blockSize + 1);
 
@@ -475,7 +475,7 @@ describe('tableCard', function() {
 
         // Value in corresponding cell matches with first data item?
         var expectedFirstDataItem = computeDisplayedValue(_.first(fixtureData)[columnMeta.fieldName]);
-        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(expectedFirstDataItem);
+        expect(el.find('.row-block .cell').eq(columnIndexToClick).text().trim()).to.equal(expectedFirstDataItem);
 
         // Apply a sort. Expect it to be DESC
         applicatorFunction(el);
@@ -489,7 +489,7 @@ describe('tableCard', function() {
 
         // Value in corresponding cell matches with last data item (since we're sorting in reverse).
         var expectedLastDataItem = computeDisplayedValue(_.last(fixtureData)[columnMeta.fieldName]);
-        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(expectedLastDataItem);
+        expect(el.find('.row-block .cell').eq(columnIndexToClick).text().trim()).to.equal(expectedLastDataItem);
 
         // Now, reverse the sort.
         applicatorFunction(el);
@@ -501,7 +501,7 @@ describe('tableCard', function() {
         expect(el.find('.row-block .cell').length).to.equal(columnCount * rowCount);
 
         // Value in corresponding cell matches with first data item (since we're sorting normally).
-        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(expectedFirstDataItem);
+        expect(el.find('.row-block .cell').eq(columnIndexToClick).text().trim()).to.equal(expectedFirstDataItem);
       }
 
       it('should only reflect the first value of the default sort', function() {
@@ -714,7 +714,7 @@ describe('tableCard', function() {
       expect(el.find('.row-block .cell').length).to.equal(columnCount * unfilteredData.length);
       expect(lastWhereClause).to.equal(''); // as opposed to null, which lastWhereClause is initialized to.
       // Verify first cell (= first column of first row).
-      expect(el.find('.row-block .cell').eq(beatColumnIndex).text()).to.equal(_.first(unfilteredData)[firstColumnName]);
+      expect(el.find('.row-block .cell').eq(beatColumnIndex).text().trim()).to.equal(_.first(unfilteredData)[firstColumnName]);
 
       el.scope().whereClause = 'district=004';
       $rootScope.$digest();
@@ -724,7 +724,7 @@ describe('tableCard', function() {
         expect(el.find('.row-block .cell').length).to.equal(columnCount * filteredData.length);
         expect(lastWhereClause).to.equal('district=004');
         // Verify first cell (= first column of first row).
-        expect(el.find('.row-block .cell').eq(beatColumnIndex).text()).to.equal(_.first(filteredData)[firstColumnName]);
+        expect(el.find('.row-block .cell').eq(beatColumnIndex).text().trim()).to.equal(_.first(filteredData)[firstColumnName]);
         el.remove();
         done();
       });

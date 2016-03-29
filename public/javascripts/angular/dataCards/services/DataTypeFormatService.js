@@ -35,7 +35,7 @@ function DataTypeFormatService(I18n, $window) {
     };
 
     if (column.dataTypeName === 'percent') {
-      return _renderPercentageNumber(amount * 100, format);
+      return _renderPercentageNumber(amount, format);
     } else if (format.mask) {
       return _renderMaskedNumber(amount, format);
     } else {
@@ -240,8 +240,7 @@ function DataTypeFormatService(I18n, $window) {
   }
 
   function _renderPercentageNumber(amount, format) {
-    var value = parseFloat(amount.toPrecision(12));
-
+    var value = amount;
     if (format.precision >= 0) {
       value = value.toFixed(format.precision);
     }

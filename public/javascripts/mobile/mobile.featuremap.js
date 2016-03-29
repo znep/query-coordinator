@@ -107,9 +107,6 @@ module.exports = function(values, $target) {
   var $featureMapElement = $target;
   $featureMapElement.socrataFeatureMap(featureMapVIF);
 
-  var mapHeight = (60 * $(window).height()) / 100;// Map should be 60% of device height
-  $featureMapElement.find('.feature-map-container').height(mapHeight);
-
   /**
    * Handle flyout events.
    * (RowInspector events are handled internally to the RowInspector)
@@ -118,6 +115,35 @@ module.exports = function(values, $target) {
   $featureMapElement.on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', handleFlyout);
 
   RowInspector.setup({ isMobile: true }, $target);
+
+  $target.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event, jQueryPayload) {
+
+    // These events are CustomEvents. jQuery < 3.0 does not understand that
+    // event.detail should be passed as an argument to the handler.
+    var payload = jQueryPayload || _.get(event, 'originalEvent.detail');
+    var contentLength = _.get(payload,'data[0]', 0).length;
+
+    if (contentLength > 0) {
+      _toggleSemiExpanded(true);
+
+      if (contentLength > 6) {
+        $target.find('.sticky-border.show-more').toggleClass('hidden', false);
+        $featureMapElement.find('.show-more-button').toggleClass('active', false);
+        $target.find('a.show-more-button').on('click', _showMoreButtonOnClick);
+      }
+
+    } else {
+      $target.find('.sticky-border.show-more').toggleClass('hidden', true);
+      $target.find('a.show-more-button').off('click', _showMoreButtonOnClick);
+    }
+  });
+
+  $featureMapElement.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDDEN', function() {
+    _toggleExpanded(false);
+    _toggleSemiExpanded(false);
+
+    $target.find('a.show-more-button').off('click', _showMoreButtonOnClick);
+  });
 
   function handleFlyout(event) {
 
@@ -145,6 +171,37 @@ module.exports = function(values, $target) {
     };
 
     $featureMapElement.trigger(renderVifEvent);
+  }
+
+  function _showMoreButtonOnClick() {
+    if ($featureMapElement.find('.show-more-button').hasClass('active')) {
+      _toggleExpanded(false);
+      _toggleSemiExpanded(true);
+    } else {
+      _toggleSemiExpanded(false);
+      _toggleExpanded(true);
+    }
+  }
+
+  function _toggleSemiExpanded(status) {
+
+    $featureMapElement.find('.tool-panel-inner-container').scrollTop(0);
+
+    $featureMapElement.parent().toggleClass('semi-expanded', status);
+    $featureMapElement.find('#socrata-row-inspector').toggleClass('semi-expanded', status);
+  }
+
+  function _toggleExpanded(status) {
+
+    if (status) {
+      $('html, body').scrollTop($('.component-container.map-container').offset().top - 50);
+    }
+
+    $featureMapElement.parent().toggleClass('expanded', status);
+    $featureMapElement.find('#socrata-row-inspector').toggleClass('expanded', status);
+
+    $featureMapElement.find('.show-more-button').toggleClass('active', status);
+    $featureMapElement.find('.tool-panel-inner-container').toggleClass('scroll', status);
   }
 
 };

@@ -46,7 +46,7 @@ describe CoreServer do
       let(:user_role) { nil }
       let(:user_rights) { nil }
 
-      it 'returns role "unknown" and an empty list of rights' do
+      it "returns role 'unknown' and an empty list of rights" do
         expect(subject).to eql({
           'viewRole' => 'unknown',
           'viewRights' => [],
@@ -123,7 +123,7 @@ describe CoreServer do
     end
 
     context 'when cookie does not contain csrf token' do
-      let(:http_cookie) { "_core_session_id=bobloblaw" }
+      let(:http_cookie) { '_core_session_id=bobloblaw' }
 
       it 'returns Cookie and X-Socrata-Host headers only' do
         result = CoreServer.headers_from_request(request)
@@ -163,6 +163,97 @@ describe CoreServer do
     end
   end
 
+  describe '#create_view' do
+    let(:title) { 'A Title' }
+
+    let(:published_4x4) { 'publ-ishd' }
+    let(:published_copy_ok?) { true }
+    let(:published_copy_json) { { 'id' => published_4x4 } }
+    let(:published_copy_response) {
+      double('CoreServerResponse', ok?: published_copy_ok?, json: published_copy_json)
+    }
+
+    let(:working_copy_4x4) { 'test-test' }
+    let(:working_copy_ok?) { true }
+    let(:working_copy_json) { { 'id' => working_copy_4x4 } }
+    let(:working_copy_response) {
+      double('CoreServerResponse', ok?: working_copy_ok?, json: working_copy_json)
+    }
+
+    let(:view_request) {
+      { path: '/views', verb: :post, body: CoreServer.view_with_title(title), query_params: nil }
+    }
+
+    let(:publication_request) {
+      { verb: :post, path: "/views/#{working_copy_4x4}/publication.json" }
+    }
+
+    describe 'when creation succeeds' do
+      it 'creates a new view and publishes the view' do
+        expect(CoreServer).
+          to receive(:core_server_http_request).
+          with(view_request).
+          and_return(working_copy_response)
+
+        expect(CoreServer).
+          to receive(:core_server_http_request).
+          with(publication_request).
+          and_return(published_copy_response)
+
+        view = CoreServer.create_view(title)
+
+        expect(view).to_not be_nil
+        expect(view['id']).to eq(published_4x4)
+      end
+    end
+
+    describe 'when creation fails' do
+      describe 'when working copy creation fails' do
+        let(:working_copy_ok?) { false }
+
+        it 'returns nil' do
+          expect(CoreServer).
+            to receive(:core_server_http_request).
+            and_return(working_copy_response)
+
+          view = CoreServer.create_view(title)
+
+          expect(view).to be_nil
+        end
+      end
+
+      describe 'when publishing a copy fails' do
+        let(:published_copy_ok?) { false }
+
+        before do
+          allow(CoreServer).
+            to receive(:core_server_http_request).
+            with(view_request).
+            and_return(working_copy_response)
+
+          allow(CoreServer).
+            to receive(:core_server_http_request).
+            with(publication_request).
+            and_return(published_copy_response)
+
+          allow(CoreServer).to receive(:core_server_request_with_retries).and_return(nil)
+        end
+
+        it 'deletes the working copy' do
+          expect(CoreServer).
+            to receive(:core_server_request_with_retries).
+            with(verb: :delete, path: "/views/#{working_copy_4x4}")
+
+          CoreServer.create_view(title)
+        end
+
+        it 'returns nil' do
+          expect(CoreServer.create_view(title)).to be(nil)
+        end
+      end
+    end
+  end
+
   describe '#core_server_http_request' do
     let(:mock_headers) do
       {
@@ -182,7 +273,7 @@ describe CoreServer do
     before do
       allow(RequestStore.store).to receive(:[]).with(:socrata_session_headers).and_return(mock_headers)
       allow(Net::HTTP).to receive(:new).and_return(mock_http)
-      allow(Net::HTTP::Get).to receive(:new).with("#{options[:path]}").and_return(mock_get)
+      allow(Net::HTTP::Get).to receive(:new).with(options[:path]).and_return(mock_get)
       expect(mock_http).to receive(:request).with(mock_get)
 
       allow(mock_get).to receive(:[]=)
@@ -198,7 +289,7 @@ describe CoreServer do
 
     it 'merges Content-type into request headers' do
       make_request
-      expect(mock_get).to have_received(:[]=).with('Content-type', 'application/json')
+      expect(mock_get).to have_received(:[]=).with('Content-Type', 'application/json')
     end
 
     it 'merges X-App-Token into request headers' do
@@ -224,57 +315,11 @@ describe CoreServer do
     end
   end
 
-  describe '#view_request' do
-
-    before do
-      allow(CoreServer).to receive(:core_server_request_with_retries) { false }
-    end
-
-    it 'raises without options' do
-      expect { CoreServer.view_request() }.to raise_error(ArgumentError, /0 for \d/)
-    end
-
-    it 'raises without uid' do
-      expect { CoreServer.view_request(verb: :get) }.to raise_error(ArgumentError, /':uid' is required/)
-    end
-
-    it 'does not raise for post without uid' do
-      expect { CoreServer.view_request(verb: :post) }.to_not raise_error
-    end
-
-    it 'raises when no verb is supplied' do
-      expect { CoreServer.view_request(uid: 'four-four') }.to raise_error(ArgumentError, /':verb' is required/)
-    end
-
-    it 'should make a request with GET query parameters' do
-      CoreServer.view_request(
-        uid: 'four-four',
-        verb: :get,
-        query_params: {hello: 'world'}
-      )
-
-      expect(CoreServer).to have_received(:core_server_request_with_retries).with(
-        hash_including(:path => '/views/four-four.json?hello=world')
-      )
-    end
-
-    it 'should make a request without query parameters' do
-      CoreServer.view_request(
-        uid: 'four-four',
-        verb: :put
-      )
-
-      expect(CoreServer).to have_received(:core_server_request_with_retries).with(
-        hash_including(:path => '/views/four-four.json')
-      )
-    end
-  end
-
   describe '#current_user' do
     context 'when user is logged in' do
       before do
         stub_request(:get, "#{core_service_uri}/users/current.json").
-          to_return(status: 200, body: fixture('current_user.json'))
+          to_return(status: 200, body: fixture('current_user.json'), headers: {'Content-Type': 'application/json'})
       end
 
       it 'returns user json' do
@@ -309,6 +354,14 @@ describe CoreServer do
   end
 
   describe '#configurations_request' do
+    let(:default_only) { true }
+    let(:merge) { true }
+    let(:type) { 'test_config' }
+    let(:query_params) {
+      { :defaultOnly => default_only, :merge => merge, :type => type }
+    }
+    let(:core_server_response) { double('CoreServerResponse').as_null_object }
+
     before do
       stub_request(:get, /#{core_service_uri}\/configurations.json.*/).
         to_return(status: 200, body: fixture('configurations.json'))
@@ -324,37 +377,55 @@ describe CoreServer do
 
     it 'makes a request with default options' do
       expect(CoreServer).to receive(:core_server_request_with_retries).with(
-        hash_including(:path => '/configurations.json?defaultOnly=true&merge=true&type=test_config')
-      )
+        hash_including(:path => '/configurations.json', :query_params => query_params)
+      ).and_return(core_server_response)
+
       CoreServer.configurations_request(verb: :get, type: 'test_config')
     end
 
     it 'does not set body' do
       expect(CoreServer).to receive(:core_server_request_with_retries).with(
-        hash_including(:path => '/configurations.json?defaultOnly=true&merge=true&type=test_config')
-      )
+        hash_including(:path => '/configurations.json', :query_params => query_params)
+      ).and_return(core_server_response)
+
       CoreServer.configurations_request(verb: :get, type: 'test_config')
     end
 
-    it 'should make a request with default_only set to false' do
-      expect(CoreServer).to receive(:core_server_request_with_retries).with(
-        hash_including(:path => '/configurations.json?defaultOnly=false&merge=true&type=test_config')
-      )
-      CoreServer.configurations_request(verb: :get, type: 'test_config', default_only: false)
+    describe 'when default_only is false' do
+      let(:default_only) { false }
+
+      it 'should make a request with default_only set to false' do
+        expect(CoreServer).to receive(:core_server_request_with_retries).with(
+          hash_including(:path => '/configurations.json', :query_params => query_params)
+        ).and_return(core_server_response)
+
+        CoreServer.configurations_request(verb: :get, type: 'test_config', default_only: false)
+      end
     end
 
-    it 'should make a request with merge set to false' do
-      expect(CoreServer).to receive(:core_server_request_with_retries).with(
-        hash_including(:path => '/configurations.json?defaultOnly=true&merge=false&type=test_config')
-      )
-      CoreServer.configurations_request(verb: :get, type: 'test_config', merge: false)
+    describe 'when merge is false' do
+      let(:merge) { false }
+
+      it 'should make a request with merge set to false' do
+        expect(CoreServer).to receive(:core_server_request_with_retries).with(
+          hash_including(:path => '/configurations.json', :query_params => query_params)
+        ).and_return(core_server_response)
+
+        CoreServer.configurations_request(verb: :get, type: 'test_config', merge: false)
+      end
     end
 
-    it 'should make a request with both merge and default_only set to false' do
-      expect(CoreServer).to receive(:core_server_request_with_retries).with(
-        hash_including(:path => '/configurations.json?defaultOnly=false&merge=false&type=test_config')
-      )
-      CoreServer.configurations_request(verb: :get, type: 'test_config', merge: false, default_only: false)
+    describe 'when default_only and merge are false' do
+      let(:default_only) { false }
+      let(:merge) { false }
+
+      it 'should make a request with both merge and default_only set to false' do
+        expect(CoreServer).to receive(:core_server_request_with_retries).with(
+          hash_including(:path => '/configurations.json', :query_params => query_params)
+        ).and_return(core_server_response)
+
+        CoreServer.configurations_request(verb: :get, type: 'test_config', merge: false, default_only: false)
+      end
     end
   end
 
@@ -384,7 +455,7 @@ describe CoreServer do
     context 'when no configurations exist' do
       before do
         stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
-          to_return(status: 200, body: '[]')
+          to_return(status: 200, body: '[]', headers: {'Content-Type': 'application/json'})
       end
 
       it 'is empty' do
@@ -396,7 +467,7 @@ describe CoreServer do
     context 'when one story config' do
       before do
         stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
-          to_return(status: 200, body: fixture('story_theme.json'))
+          to_return(status: 200, body: fixture('story_theme.json'), headers: {'Content-Type': 'application/json'})
       end
 
       it 'returns story config' do
@@ -410,7 +481,7 @@ describe CoreServer do
         theme_json = JSON.parse(fixture('story_theme.json').read) # this is an array of one theme
         two_themes = theme_json + theme_json
         stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
-          to_return(status: 200, body: two_themes.to_json)
+          to_return(status: 200, body: two_themes.to_json, headers: {'Content-Type': 'application/json'})
       end
 
       it 'returns all story configs' do
@@ -424,7 +495,7 @@ describe CoreServer do
 
     before do
       stub_request(:get, "#{core_service_uri}/domains").
-        to_return(status: 200, body: domain_json)
+        to_return(status: 200, body: domain_json, headers: {'Content-Type': 'application/json'})
     end
 
     it 'returns domain json' do
@@ -437,7 +508,7 @@ describe CoreServer do
     context 'when no configurations exist' do
       before do
         stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=site_chrome").
-          to_return(status: 200, body: '[]')
+          to_return(status: 200, body: '[]', headers: {'Content-Type': 'application/json'})
       end
 
       it 'is empty' do
@@ -449,7 +520,7 @@ describe CoreServer do
     context 'when one config exists' do
       before do
         stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=site_chrome").
-          to_return(status: 200, body: fixture('site_chrome_config.json'))
+          to_return(status: 200, body: fixture('site_chrome_config.json'), headers: {'Content-Type': 'application/json'})
       end
 
       it 'returns site_chrome config' do
@@ -460,3 +531,4 @@ describe CoreServer do
 
   end
 end
+

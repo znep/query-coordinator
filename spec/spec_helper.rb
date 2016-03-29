@@ -324,13 +324,13 @@ def stub_core_view(uid, options={})
     owner: {id: 'tugg-xxxx'}
   }.merge(options)
 
-  stub_request(:get, /\/views\/#{uid}.json/).
-    to_return(:status => 200, :body => view.to_json)
+  stub_request(:get, /\/views\/#{uid}/).
+    to_return(:status => 200, :body => view.to_json, :headers => {"Content-Type" => "application/json"})
 end
 
 def stub_core_view_as_missing(uid)
   allow(StoryAccessLogger).to receive(:log_story_view_access)
-  stub_request(:get, /\/views\/#{uid}.json/).
+  stub_request(:get, /\/views\/#{uid}/).
     to_return(:status => 404, :body => nil)
 end
 

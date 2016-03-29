@@ -1,11 +1,14 @@
 require 'retries'
 require 'addressable/uri'
 require 'request_store'
+require 'core_server_response'
 
 class CoreServer
 
   def self.get_view(uid)
-    view_request(uid: uid, verb: :get)
+    options = { uid: uid, verb: :get, path: view_url(uid) }
+    response = core_server_request_with_retries(options)
+    response.json if response.ok?
   end
 
   def self.view_accessible?(uid)
@@ -13,23 +16,55 @@ class CoreServer
   end
 
   def self.update_view(uid, view_data, query_params = nil)
-    view_request(uid: uid, verb: :put, data: view_data, query_params: query_params)
+    options = { uid: uid, verb: :put, body: view_data, query_params: query_params, path: view_url(uid) }
+    response = core_server_http_request(options)
+    response.json if response.ok?
   end
 
   def self.create_view(title, query_params = nil)
-    view_request(verb: :post, data: view_with_title(title), query_params: query_params)
+    new_view = nil
+    creation_options = {
+      verb: :post,
+      path: view_url,
+      body: view_with_title(title),
+      query_params: query_params
+    }
+
+    response = core_server_http_request(creation_options)
+
+    if response.ok?
+      working_copy = response.json
+      publication_options = {
+        verb: :post,
+        path: view_url(working_copy['id']) << '/publication.json'
+      }
+
+      response = core_server_http_request(publication_options)
+
+      if response.ok?
+        new_view = response.json
+      else
+        delete_options = { verb: :delete, path: view_url(working_copy['id']) }
+        core_server_request_with_retries(delete_options)
+      end
+    end
+
+    new_view
   end
 
   def self.update_permissions(uid, query_params)
-    permissions_request(uid: uid, verb: :put, query_params: query_params)
+    options = { uid: uid, verb: :put, query_params: query_params }
+    permissions_request(options)
   end
 
   def self.current_user
-    core_server_request_with_retries(verb: :get, path: '/users/current.json')
+    response = core_server_request_with_retries(verb: :get, path: '/users/current.json')
+    response.json if response.ok?
   end
 
   def self.current_domain
-    core_server_request_with_retries(verb: :get, path: '/domains')
+    response = core_server_request_with_retries(verb: :get, path: '/domains')
+    response.json if response.ok?
   end
 
   # Gets the configuration based on id
@@ -179,6 +214,10 @@ class CoreServer
     ]
   end
 
+  def self.view_url(uid = nil)
+    uid ? "/views/#{uid}" : '/views'
+  end
+
   def self.generate_query_params(params)
     if params.is_a?(String)
       params
@@ -187,46 +226,19 @@ class CoreServer
     end
   end
 
-  def self.view_request(options)
-    raise ArgumentError.new("':uid' is required.") if options[:verb] != :post && options.key?(:uid) == false
-    raise ArgumentError.new("':verb' is required.") unless options.key?(:verb)
-
-    verb = options[:verb]
-    path = if verb == :post
-      "/views.json"
-    else
-      "/views/#{options[:uid]}.json"
-    end
-
-    query_params = generate_query_params(options[:query_params])
-    path << "?#{query_params}" unless query_params.blank?
-
-    core_server_request_options = {
-      verb: verb,
-      path: path
-    }
-
-    if options[:data].present?
-      core_server_request_options[:body] = options[:data]
-    end
-
-    core_server_request_with_retries(core_server_request_options)
-  end
-
   def self.permissions_request(options)
     raise ArgumentError.new("':uid' is required.") unless options.key?(:uid)
     raise ArgumentError.new("':verb' is required.") unless options.key?(:verb)
     raise ArgumentError.new("':query_params' is required.") unless options.key?(:query_params)
 
-    verb = options[:verb]
-    path = "/views/#{options[:uid]}.json?#{generate_query_params(options[:query_params])}"
-
     core_server_request_options = {
-      verb: verb,
-      path: path
+      verb: options[:verb],
+      path: view_url(options[:uid]),
+      query_params: options[:query_params]
     }
 
-    core_server_permissions_request_with_retries(core_server_request_options)
+    response = core_server_request_with_retries(core_server_request_options)
+    response.ok?
   end
 
   def self.configuration_request(options)
@@ -251,14 +263,13 @@ class CoreServer
       return_errors: true
     }
 
-    if options[:data].present?
-      core_server_request_options[:body] = options[:data]
-    end
+    core_server_request_options[:body] = options[:data] if options[:data].present?
+
     response = core_server_request_with_retries(core_server_request_options)
 
     # For any update actions, we need to add/update properties.
     unless [:delete, :get].include?(verb)
-      config_id ||= response['id']
+      config_id ||= response.json['id']
 
       if [:put, :post].include?(verb) && config_id.present? && options[:data].key?('properties')
         configuration_properties_request(config_id: config_id, verb: verb, data: options[:data]['properties'], return_errors: true)
@@ -267,7 +278,7 @@ class CoreServer
       response = core_server_request_with_retries(verb: :get, path: "/configurations/#{config_id}")
     end
 
-    response
+    response.json
   end
 
   def self.configuration_properties_request(options)
@@ -297,20 +308,15 @@ class CoreServer
       # so we need to add the property in the case where it doesn't currently exist in
       # the configuration. This is due to the way the configurations API is defined where properties are
       # managed separate from their configurations.
-      result = core_server_request_with_retries(core_server_request_options)
+      response = core_server_request_with_retries(core_server_request_options)
 
-      if result.try(:[], 'code') == 'not_found'
-        result = core_server_request_with_retries(
-          {
-            verb: :post,
-            path: "#{base_path}.json",
-            body: property,
-            return_errors: true
-          }
+      if response.ok?
+        response = core_server_request_with_retries(
+          verb: :post, path: "#{base_path}.json", body: property, return_errors: true
         )
       end
 
-      raise result['message'] if result['error'].present?
+      raise response.json['message'] if response.json['error'].present?
     end
   end
 
@@ -318,119 +324,74 @@ class CoreServer
     raise ArgumentError.new("':type' is required.") unless options.key?(:type)
 
     verb = options[:verb] || :get
-
-    query_params = generate_query_params(
-      type: options[:type],
-      defaultOnly: options.fetch(:default_only, true),
-      merge: options.fetch(:merge, true)
-    )
-    path = "/configurations.json?#{query_params}"
+    path = '/configurations.json'
 
     core_server_request_options = {
       verb: verb,
-      path: path
+      path: path,
+      query_params: {
+        type: options[:type],
+        defaultOnly: options.fetch(:default_only, true),
+        merge: options.fetch(:merge, true)
+      }
     }
+    core_server_request_options[:body] = options[:data] if options[:data].present?
 
-    if options[:data].present?
-      core_server_request_options[:body] = options[:data]
-    end
-
-    core_server_request_with_retries(core_server_request_options)
+    response = core_server_request_with_retries(core_server_request_options)
+    response.json if response.ok?
   end
 
   def self.core_server_request_with_retries(request_options)
-    core_server_response = nil
-    json_response = nil
+    core_server_response = CoreServerResponse.new
 
     begin
-
       with_retries(retry_options) do
         core_server_response = core_server_http_request(request_options)
       end
-
-      status_code = core_server_response.code.to_i
-      response_body = core_server_response.body
-
-      if (status_code == 200 && request_options[:verb] != :delete) ||
-          (response_body.present? && request_options[:return_errors])
-        json_response = JSON.parse(response_body)
-      end
-
     rescue => error
       error_message = "[#{request_options[:verb].upcase} #{request_options[:path]}"
-      error_message << " - HTTP #{status_code}" unless status_code.blank?
-      error_message << " - '#{response_body.inspect}'" unless response_body.blank?
 
-      AirbrakeNotifier.report_error(error, message: error_message)
-    end
-
-    json_response
-  end
-
-  def self.core_server_permissions_request_with_retries(request_options)
-    core_server_response = nil
-
-    begin
-      with_retries(retry_options) do
-        core_server_response = core_server_http_request(request_options)
+      if core_server_response.raw
+        error_message << " - HTTP #{core_server_response.raw.code}"
+        error_message << " - '#{core_server_response.raw.body.inspect}'"
       end
 
-      core_server_response.code.to_i == 200
-    rescue => error
-      error_message = "[#{request_options[:verb].upcase}] #{request_options[:path]}"
-      error_message << " - HTTP #{status_code}" unless status_code.blank?
-      error_message << " - '#{response_body.inspect}'" unless response_body.blank?
-
       AirbrakeNotifier.report_error(error, message: error_message)
-      false
     end
+
+    core_server_response
   end
 
   def self.core_server_http_request(options)
     raise ArgumentError.new("':verb' is required.") unless options[:verb].present?
     raise ArgumentError.new("':path' is required.") unless options[:path].present?
 
-    headers = session_headers.merge('Content-type' => 'application/json')
+    verb = options[:verb].to_s.capitalize
+    body = JSON.dump(options[:body]) if options[:body].present?
+    query_params = generate_query_params(options[:query_params])
 
-    unless Rails.application.config.core_service_app_token.blank?
-      headers['X-App-Token'] = Rails.application.config.core_service_app_token
-    end
-
-    core_server_address = Rails.application.config.core_service_uri
-
-    uri = Addressable::URI.parse("#{core_server_address}#{options[:path]}")
+    path = options[:path]
+    path = options[:path] << "?#{query_params}" unless query_params.blank?
+    uri = Addressable::URI.parse("#{core_server_address}#{path}")
 
     http = Net::HTTP.new(uri.host, uri.port)
-    http.open_timeout = Rails.application.config.core_service_request_open_timeout
-    http.read_timeout = Rails.application.config.core_service_request_read_timeout
+    http.open_timeout = core_request_open_timeout
+    http.read_timeout = core_request_read_timeout
 
     # instantiates a class of Net:HTTP::Get (or insert other verb)
-    core_request = "Net::HTTP::#{options[:verb].to_s.capitalize}".constantize.new(uri.request_uri)
-
-    headers.each { |key, value| core_request[key] = value }
-
-    body = options.fetch(:body, nil)
-
-    if body.present?
-      core_request.body = JSON.dump(body)
+    core_request = "Net::HTTP::#{verb}".constantize.new(uri.request_uri)
+    core_request.body = body
+    core_server_headers.each do |key, value|
+      core_request[key] = value
     end
 
-    if options[:verb] == 'get'
-      checksum = Digest::MD5.hexdigest({
-        :options => options,
-        :headers => headers,
-        :body => body
-      }.to_s)
+    response = http.request(core_request)
 
-      if ::RequestStore.store[checksum]
-        ::RequestStore.store[checksum]
-      else
-        response = http.request(core_request)
-        ::RequestStore.store[checksum] = response
-      end
-    else
-      http.request(core_request)
+    if options[:verb] == :get
+      ::RequestStore.store[request_uid(core_server_headers, options)] = response
     end
+
+    CoreServerResponse.new(response)
   end
 
   def self.view_with_title(title)
@@ -455,7 +416,37 @@ class CoreServer
     }
   end
 
+  def self.request_uid(headers, request_options)
+    Digest::MD5.hexdigest({
+      :headers => headers,
+      :request_options => request_options
+    }.to_s)
+  end
+
+  def self.core_server_headers
+    headers = session_headers.merge('Content-Type' => 'application/json')
+    headers['X-App-Token'] = core_app_token if core_app_token.present?
+    headers
+  end
+
   def self.session_headers
     ::RequestStore.store[:socrata_session_headers] || {}
   end
+
+  def self.core_server_address
+    Rails.application.config.core_service_uri
+  end
+
+  def self.core_request_open_timeout
+    Rails.application.config.core_service_request_open_timeout
+  end
+
+  def self.core_request_read_timeout
+    Rails.application.config.core_service_request_read_timeout
+  end
+
+  def self.core_app_token
+    Rails.application.config.core_service_app_token
+  end
 end
+

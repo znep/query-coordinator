@@ -3,7 +3,14 @@
   position: absolute;
   width: 100%;
   bottom: 0;
-  height: 250px !important;
+
+  &.semi-expanded {
+    height: 44%;
+  }
+
+  &.expanded {
+    height: 60%;
+  }
 
   .pending-content {
     height: 140px;
@@ -29,10 +36,9 @@
 
   .tool-panel {
     width: 100% !important;
-    position: static !important;
+    height: 100%;
 
     .tool-panel-inner-container {
-      max-height: 107px;
       overflow: hidden;
       padding: 0px 10px 20px;
 
@@ -46,27 +52,28 @@
       bottom: inherit !important;
       max-width: 100%;
       width: 100% !important;
-      min-height: 180px;
-      max-height: 250px;
       background-color: #ffffff;
-      border: solid #A1A1A1;
-      border-width: 0 10px 10px;
       right: initial !important;
-      position: static !important;
+      height: 100%;
 
       .sticky-border.show-more {
-        bottom: 0 !important;
+        bottom: -2px !important;
         height: 24px;
         width: 100%;
         text-align: center;
         background-color: #fff;
-        display: none;
+
+        &.hidden {
+          display: none;
+        }
 
         .hide-details {
           display: none;
         }
 
         .show-more-button {
+          cursor: pointer;
+
           &.active {
             .show-details {
               display: none;
@@ -77,10 +84,6 @@
             }
           }
         }
-      }
-
-      .sticky-border.bottom {
-        display: none !important;
       }
 
       .paging-panel {
@@ -145,15 +148,6 @@
           }
         }
 
-      }
-
-      &.expand {
-        height: auto;
-        max-height: 1000px;
-
-        .tool-panel-inner-container {
-          max-height: 100%;
-        }
       }
     }
   }

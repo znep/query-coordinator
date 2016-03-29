@@ -1,19 +1,12 @@
-.component-container {
-  overflow: hidden;
-  border: 10px solid #A1A1A1;
-  position: relative;
+.component-container.map-container {
+  height: 60vh;
 
-  h5 {
-    margin: 10px 0 0 10px;
+  &.semi-expanded {
+    height: 65vh;
   }
 
-  .intro-text {
-    &.shadow {
-      -webkit-box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.25);
-      -moz-box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.25);
-      box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.25);
-      margin-bottom: 24px;
-    }
+  &.expanded {
+    height: 90vh;
   }
 }
 
@@ -39,6 +32,9 @@
   }
 }
 
+.feature-map-wrapper {
+  height: calc(100% - 55px);
+}
 
 .feature-map {
   display: block;

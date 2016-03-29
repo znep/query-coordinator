@@ -18,6 +18,7 @@ var mobileTable = require('./mobile.table.js');
 
 import 'leaflet/dist/leaflet.css';
 import 'socrata-visualizations/dist/socrata-visualizations.css';
+import './styles/mobile-general.scss';
 
 (function() {
   'use strict';
@@ -351,7 +352,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
                   args.start = _start;
                 }
 
-                filter['arguments'].start = moment(filter['arguments'].start).format('YYYY-MM-DD');
+                filter['arguments'].start = moment(filter['arguments'].start).format('YYYY-MM-DD'); // eslint-disable-line dot-notation
               }
 
               if (filter['arguments'].end) { // eslint-disable-line dot-notation
@@ -361,7 +362,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
                   args.end = _end;
                 }
 
-                filter['arguments'].end = moment(filter['arguments'].end).format('YYYY-MM-DD');
+                filter['arguments'].end = moment(filter['arguments'].end).format('YYYY-MM-DD'); // eslint-disable-line dot-notation
               }
 
               _addToVIFFilters(thisSetFirstCard.fieldName, filter['arguments'], filter['function']);// eslint-disable-line dot-notation
@@ -471,7 +472,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
           mobileTimelineChart(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
         case 'feature':
-          cardOptions.componentClass = 'feature-map';
+          cardOptions.componentClass = 'feature-map-wrapper';
           cardOptions.containerClass = 'map-container';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {

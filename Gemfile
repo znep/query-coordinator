@@ -114,4 +114,15 @@ group :development do
   gem 'aws-sdk'
 
   gem 'decima-ruby', '0.1.0', path: 'vendor/gems/decima-ruby-0.1.0'
+
+  # Ops tasks
+  gem 'net-ip'
+  gem 'mrdialog'
+  gem 'inifile'
+  # Fetch from git, we need some of the recent bugfixes.
+  gem 'marathon-api', :require => 'marathon', :git => 'https://github.com/otto-de/marathon-api.git', :ref => '0c5e5e0600b298ebb8f47d4007f96ac6bd5c34c6'
+  gem 'diplomat'
+  gem 'git'
+  gem 'clipboard'
+  gem 'jenkins_api_client'
 end

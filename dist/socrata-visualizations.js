@@ -7231,6 +7231,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var cachedChartDimensions = null;
 	  var cachedChartData = null;
 
+	  var lastHighlightData = {};
+
 	  // Keep track of whether or not the mouse position is within this
 	  // instance of a timeline chart's visualization area (the chart itself
 	  // and the x-axis labels beneath it).
@@ -8929,6 +8931,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {Date} endDate
 	   */
 	  function highlightChart(startDate, endDate) {
+
+	    if (vif.configuration.isMobile) {
+	      if (_.get(lastHighlightData, 'startDate', new Date()).getTime() == startDate.getTime() &&
+	        _.get(lastHighlightData, 'endDate', new Date()).getTime() == endDate.getTime()) {
+
+	        lastHighlightData = {};
+	        clearChartHighlight();
+	        return;
+	      }
+
+	      lastHighlightData = { startDate: startDate, endDate: endDate };
+	    }
+
 	    var highlightData;
 	    clearHighlightedLabels();
 	    setCurrentDatumByDate(startDate);

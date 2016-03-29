@@ -28,6 +28,7 @@ export default function SettingsPanel(toggleButton) {
   StorytellerUtils.assertInstanceOf(toggleButton, $);
 
   var settingsContainer = $(this);
+  var settingsOverlay = settingsContainer.find('#settings-panel-overlay');
   var settingsPanel = settingsContainer.find('.settings-panel').sidebar({
     side: 'left'
   });
@@ -204,14 +205,15 @@ export default function SettingsPanel(toggleButton) {
 
   settingsPanel.
     on('sidebar:open', function() {
-      settingsPanel.find('button[data-panel-toggle="settings-panel"]').eq(0).focus();
       toggleButton.addClass('active');
       settingsContainer.addClass('active');
+      settingsOverlay.addClass('active');
       loadCurrentMetadata();
     }).
     on('sidebar:close', function() {
       var hasError = coreSavingStore.lastRequestSaveErrorForStory(Environment.STORY_UID) !== null;
 
+      settingsOverlay.removeClass('active');
       settingsContainer.removeClass('active');
 
       toggleButton.

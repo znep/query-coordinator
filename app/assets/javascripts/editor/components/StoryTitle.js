@@ -9,19 +9,31 @@ export default function StoryTitle(storyUid) {
 
   StorytellerUtils.assertIsOneOfTypes(storyUid, 'string');
 
-  var titleNodes = this;
+  var $title = $(this);
+
+  function attachEvents() {
+    $title.click(function() {
+      $('#settings-panel-story-metadata button:not(.active)').
+        click();
+
+      $('#title').
+        focus().
+        select();
+    });
+
+  }
 
   function render() {
-    titleNodes.each(function() {
-      var title = storyStore.getStoryTitle(storyUid);
+    var title = storyStore.getStoryTitle(storyUid);
 
-      $(this).
-        text(title).
-        attr('title', title);
-    });
+    $title.
+      text(title).
+      attr('title', title);
   }
 
   storyStore.addChangeListener(render);
+
+  attachEvents();
   render();
 
   return this;

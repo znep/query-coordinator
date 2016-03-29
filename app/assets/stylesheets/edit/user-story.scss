@@ -44,7 +44,7 @@ body.story-save-error .user-story-container {
       position: absolute;
       width: $block-edit-controls-width;
       height: $block-edit-controls-height;
-      top: 0;
+      top: -1px;
       left: -$block-edit-controls-width;
       opacity: 0;
       background-color: $block-edit-controls-bg-color;

@@ -40,25 +40,10 @@ body .header-main {
   font-size: 15px;
   color: $header-text-color;
   background-color: $header-bg-color;
-  box-shadow: 0 $header-box-shadow-size $header-box-shadow-size $header-box-shadow-color;
+  box-shadow: 0 0 0.3rem $header-box-shadow-color;
   box-sizing: content-box;
   z-index: $site-header-z-index;
   min-width: 73rem; // current point where header would bump to line 2
-
-  &:after {
-    position: absolute;
-    top: $header-height;
-    left: 0px;
-    width: 100%;
-    height: 75px;
-    pointer-events: none;
-    // Gradient from white, start transitioning to transparent at 25%
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,rgba(255,255,255,1)), color-stop(25%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* IE10+ */
-    background: linear-gradient(to bottom, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* W3C */
-  }
 
   .header-right {
     display: inline-block;
@@ -66,7 +51,6 @@ body .header-main {
     line-height: $header-height;
     font-size: 1.5rem;
     font-weight: 100;
-    padding-right: 1rem;
   }
 
   .menu-divider {  // line divider
@@ -105,13 +89,19 @@ body .header-main {
 
   // Buttons
   .btn-transparent {
-    color: $header-text-color;
+    color: $header-story-title-color;
     background-color: transparent;
     font-weight: lighter;
+    display: inline-block;
+    line-height: normal;
+    padding: 0.8rem 1.5rem;
+    height: 100%;
+    box-sizing: border-box;
+    transition: none;
 
     &:hover,
     &:active {
-      color: $header-link-hover-color;
+      color: $header-story-title-hover-color;
       background-color: transparent;
     }
 
@@ -151,15 +141,16 @@ body .header-main {
     font-size: 3.5rem;
     line-height: $header-height;
     text-align: center;
-    background-color: $header-accent-color;
+    background-color: #e0e0e0;
     border: none;
     box-sizing: border-box;
     cursor: pointer;
+    border-bottom: solid 1px #aaa;
 
     &:hover,
     &:focus {
       outline: none;
-      color: lighten($header-bg-color, 10%);
+      color: #555;
     }
 
     &:before {
@@ -194,6 +185,7 @@ body .header-main {
 
     display: inline-block;
     cursor: default;
+    vertical-align: middle;
   }
 
   #story-publication-status {
@@ -207,7 +199,7 @@ body .header-main {
 
 #story-save-error-bar {
   position: fixed;
-  top: 7.5rem;
+  top: 6rem;
   left: 0;
   right: 0;
   text-align: center;
@@ -216,16 +208,18 @@ body .header-main {
   transition: opacity $transition-duration;
   opacity: 0;
   pointer-events: none;
+  padding: 0.4rem 1rem;
+  color: $story-save-error-bar-icon-color;
+  background: $story-save-error-bar-background;
+  border: 1px solid $story-save-error-bar-border-color;
+  border-left: none;
+  border-right: none;
 
   &.visible {
     opacity: 1;
   }
 
   .container {
-    padding: 0.4rem 1rem;
-    color: $story-save-error-bar-icon-color;
-    background: $story-save-error-bar-background;
-    border: 1px solid $story-save-error-bar-border-color;
     pointer-events: all;
 
     &.story-save-error-bar-trying-again {
@@ -290,6 +284,7 @@ ul.menu {
   li, ul {
     display: inline-block;
     height: $header-height;
+    vertical-align: top;
   }
 }
 

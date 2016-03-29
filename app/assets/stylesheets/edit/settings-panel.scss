@@ -37,6 +37,7 @@
 
       &:focus,
       &:hover {
+        color: white;
         outline: none;
       }
     }
@@ -45,8 +46,9 @@
       position: absolute;
       left: 0;
       top: 0px;
+      z-index: 1;
 
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: #565656;
       font-size: 1.2rem;
 
       .back-to-profile-icon {
@@ -57,9 +59,19 @@
 
     .close-side-panel-btn {
       position: absolute;
+      width: 100%;
       right: 0;
-      top: 0px;
-      background-color: $header-bg-color;
+      left: 0;
+      top: 0;
+      display: block;
+      height: 2.7rem;
+      background-color: #4a4747;
+      text-align: right;
+      transition: background-color 0.15s;
+
+      &:hover {
+        background-color: #333;
+      }
 
       .close-panel-icon {
         float: right;

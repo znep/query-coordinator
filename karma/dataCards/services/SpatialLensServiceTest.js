@@ -10,7 +10,9 @@ describe('SpatialLensService', function() {
     'Mockumentary'
   ];
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(inject(function($injector) {
     var testHelpers = $injector.get('testHelpers');

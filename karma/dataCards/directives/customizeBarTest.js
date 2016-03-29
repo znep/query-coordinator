@@ -7,6 +7,7 @@ describe('customizeBar', function() {
   var $rootScope;
   var ServerConfig;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(angular.mock.module(['$provide', function(_$provide) {

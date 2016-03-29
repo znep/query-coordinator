@@ -1,5 +1,4 @@
-const angular = require('angular');
-function Constants() {
+module.exports = function Constants() {
 
   return {
 
@@ -161,8 +160,4 @@ function Constants() {
     DEFAULT_SHAPE_FILE_REGION_QUERY_LIMIT: 5000
   };
 
-}
-
-angular.
-  module('dataCards.services').
-  factory('Constants', Constants);
+};

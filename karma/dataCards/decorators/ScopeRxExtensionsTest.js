@@ -4,6 +4,7 @@ describe('Scope RX Extensions', function() {
   var $rootScope;
   var testHelpers;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function(_$rootScope_, _testHelpers_) {

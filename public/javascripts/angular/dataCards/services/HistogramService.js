@@ -1,4 +1,3 @@
-const angular = require('angular');
 // Returns an object mapping magnitudes to buckets. Also merges the
 // bucket with magnitude zero into the bucket with magnitude one.
 function getDataByMagnitude(data) {
@@ -82,7 +81,7 @@ function getLinearBucket(magnitude, value, bucketSize) {
   };
 }
 
-function HistogramService(Constants, $log) {
+module.exports = function HistogramService(Constants, $log) {
 
   /**
    * Input: {min:, max:}
@@ -258,8 +257,4 @@ function HistogramService(Constants, $log) {
     getVisualizationTypeForData: getVisualizationTypeForData,
     transformDataForColumnChart: transformDataForColumnChart
   };
-}
-
-angular.
-  module('dataCards.services').
-    factory('HistogramService', HistogramService);
+};

@@ -1,7 +1,6 @@
-const angular = require('angular');
 // Service to build rich models.
 // REVISIT possibly start exposing a Model superclass?
-angular.module('dataCards.services').factory('ModelHelper', function(rx) {
+module.exports = function(rx) {
   const Rx = rx;
   // For a hack - see currentValueOfProperty.
   var currentValuePropertyNamePrefix = '__current_value_';
@@ -127,4 +126,4 @@ angular.module('dataCards.services').factory('ModelHelper', function(rx) {
     addReadOnlyProperty: addReadOnlyProperty,
     currentValueOfProperty: currentValueOfProperty
   };
-});
+};

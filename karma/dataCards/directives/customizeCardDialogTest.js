@@ -18,6 +18,7 @@ describe('Customize card dialog', function() {
   var $q;
   var SpatialLensService;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {

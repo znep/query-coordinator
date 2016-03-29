@@ -1,12 +1,12 @@
 var templateUrl = require('angular_templates/dataCards/choropleth.html');
-const angular = require('angular');
 const ChoroplethMap = require('socrata-visualizations').views.ChoroplethMap;
+
 // A WORD ON TERMINOLOGY:
 //
 // 'selected' is what happens when you are filtering by a feature (this is currently a yellow stroke).
 // 'highlighted' is what happens when you mouseover a feature (this is currently a white stroke).
 
-function choropleth(
+module.exports = function choropleth(
   Constants,
   $timeout,
   $window,
@@ -569,9 +569,4 @@ function choropleth(
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('choropleth', choropleth);
-
+};

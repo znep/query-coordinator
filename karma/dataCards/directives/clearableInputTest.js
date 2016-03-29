@@ -21,8 +21,9 @@ describe('clearableInput', function() {
     return element;
   }
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/clearable-input.scss'));
+  require('app/styles/dataCards/clearable-input.scss');
 
   beforeEach(function() {
     inject(['$document', '$rootScope', '$window', 'testHelpers', function(_$document, _$rootScope, _$window, _testHelpers) {

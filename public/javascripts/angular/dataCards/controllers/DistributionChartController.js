@@ -1,5 +1,4 @@
-const angular = require('angular');
-function DistributionChartController(
+module.exports = function DistributionChartController(
   $scope,
   CardDataService,
   HistogramService,
@@ -126,8 +125,4 @@ function DistributionChartController(
   $scope.$bindObservable('isFiltered', isFiltered$);
   $scope.$bindObservable('expanded', expanded$);
   $scope.$bindObservable('visualizationType', visualizationType$);
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('DistributionChartController', DistributionChartController);
+};

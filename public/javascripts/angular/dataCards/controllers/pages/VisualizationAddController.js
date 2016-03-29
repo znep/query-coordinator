@@ -1,5 +1,4 @@
-const angular = require('angular');
-function VisualizationAddController(
+module.exports = function VisualizationAddController(
   $scope,
   $window,
   DatasetColumnsService,
@@ -214,8 +213,4 @@ function VisualizationAddController(
     $scope.classicVisualization = null;
     sendVisualizationToEnclosingWindow(vif, 'vif', null);
   });
-}
-
-angular.
-  module('dataCards.controllers').
-    controller('VisualizationAddController', VisualizationAddController);
+};

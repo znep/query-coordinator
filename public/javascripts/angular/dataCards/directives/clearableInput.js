@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/clearableInput.html');
-const angular = require('angular');
-function ClearableInput(WindowState, rx) {
+
+module.exports = function ClearableInput(WindowState, rx) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -77,6 +77,4 @@ function ClearableInput(WindowState, rx) {
       $scope.$bindObservable('hasInput', hasInput$);
     }
   };
-}
-
-angular.module('dataCards.directives').directive('clearableInput', ClearableInput);
+};

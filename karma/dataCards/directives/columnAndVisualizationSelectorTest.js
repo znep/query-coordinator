@@ -109,6 +109,7 @@ describe('columnAndVisualizationSelectorTest', function() {
     };
   }
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {

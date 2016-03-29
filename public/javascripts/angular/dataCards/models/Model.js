@@ -1,4 +1,3 @@
-const angular = require('angular');
 // The Model class provides an implementation of an object having a well-defined set of observable fields,
 // primarily exposed as an RX Sequence of values. This allows our reactive UI to be fully decoupled from
 // the sources of new property values.
@@ -11,7 +10,7 @@ const angular = require('angular');
 // * Facilities to define lazy (JIT) defaults for properties.
 // * Automatic serialization, with consideration of ephemeral (non-serialized) properties.
 // * Recursive dirty checking/change tracking.
-angular.module('dataCards.models').factory('Model', function(Class, ModelHelper, rx) {
+module.exports = function(Class, ModelHelper, rx) {
   const Rx = rx;
   var Model = Class.extend({
     init: function Model() {
@@ -556,4 +555,4 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper,
   });
 
   return Model;
-});
+};

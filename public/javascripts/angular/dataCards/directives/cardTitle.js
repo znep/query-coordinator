@@ -1,6 +1,4 @@
-const angular = require('angular');
-
-function CardTitleDirective(Constants, Dataset, PageHelpersService) {
+module.exports = function CardTitleDirective(Constants, Dataset, PageHelpersService) {
   return {
     restrict: 'E',
     scope: {
@@ -43,7 +41,4 @@ function CardTitleDirective(Constants, Dataset, PageHelpersService) {
       );
     }
   };
-}
-angular.
-  module('dataCards.directives').
-  directive('cardTitle', CardTitleDirective);
+};

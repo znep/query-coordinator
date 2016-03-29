@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/selectionLabel.html');
-const angular = require('angular');
-function SelectionLabel($window) {
+
+module.exports = function SelectionLabel($window) {
   return {
     restrict: 'E',
     scope: {
@@ -49,8 +49,4 @@ function SelectionLabel($window) {
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('selectionLabel', SelectionLabel);
+};

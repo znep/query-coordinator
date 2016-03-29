@@ -1,5 +1,4 @@
-const angular = require('angular');
-function HistogramController(
+module.exports = function HistogramController(
   $scope,
   CardDataService,
   HistogramService,
@@ -265,8 +264,4 @@ function HistogramController(
   $scope.$bindObservable('expanded', expanded$);
   $scope.$bindObservable('currentRangeFilterValues', currentRangeFilterValues$);
   $scope.$bindObservable('loading', loading$);
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('HistogramController', HistogramController);
+};

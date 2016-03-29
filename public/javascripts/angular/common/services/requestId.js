@@ -1,4 +1,3 @@
-const angular = require('angular');
 var pageLoadId = randomNChars(16);
 
 function randomNChars(n) {
@@ -12,14 +11,10 @@ function randomNChars(n) {
   return text;
 }
 
-function requestIdProvider() {
+module.exports = function requestIdProvider() {
   return {
     generate: function() {
       return pageLoadId + randomNChars(16);
     }
   };
-}
-
-angular.
-  module('socrataCommon.services').
-  service('RequestId', requestIdProvider);
+};

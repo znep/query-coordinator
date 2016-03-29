@@ -9,9 +9,10 @@ describe('cardTitle', function() {
   var Mockumentary;
   var ServerConfig;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/cards.scss'));
-  beforeEach(angular.mock.module('dataCards/card.scss'));
+  require('app/styles/dataCards/cards.scss');
+  require('app/styles/dataCards/card.scss');
 
   beforeEach(inject(function($injector) {
     $rootScope = $injector.get('$rootScope');

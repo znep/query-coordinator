@@ -1,9 +1,9 @@
 var templateUrl = require('angular_templates/dataCards/cardAggregationSelector.html');
-const angular = require('angular');
+
 /**
  * UI for configuring card-level aggregation.
  */
-function cardAggregationSelector(Constants, I18n, PluralizeService) {
+module.exports = function cardAggregationSelector(Constants, I18n, PluralizeService) {
   return {
     restrict: 'E',
     scope: {
@@ -84,8 +84,4 @@ function cardAggregationSelector(Constants, I18n, PluralizeService) {
       $scope.$bindObservable('aggregationFunction', cardAggregationFunction$);
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-    directive('cardAggregationSelector', cardAggregationSelector);
+};

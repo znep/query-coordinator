@@ -70,6 +70,7 @@ describe('TableCardController', function() {
   var $q;
   var $controller;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {

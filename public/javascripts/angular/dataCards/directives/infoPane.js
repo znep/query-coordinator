@@ -1,5 +1,5 @@
 const templateUrl = require('angular_templates/dataCards/infoPane.html');
-const angular = require('angular');
+var DOMPurify = require('DOMPurify');
 
 function sanitizeUserHtml(htmlString) {
   if (!_.isString(htmlString) || htmlString.length === 0) {
@@ -15,7 +15,7 @@ function sanitizeUserHtml(htmlString) {
   });
 }
 
-function infoPane(ServerConfig, I18n, WindowOperations) {
+module.exports = function infoPane(ServerConfig, I18n, WindowOperations) {
   return {
     restrict: 'E',
     scope: true,
@@ -46,8 +46,4 @@ function infoPane(ServerConfig, I18n, WindowOperations) {
       $scope.$bindObservable('pageDescription', pageDescription$);
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('infoPane', infoPane);
+};

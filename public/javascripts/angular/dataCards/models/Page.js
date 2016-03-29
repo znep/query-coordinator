@@ -1,7 +1,6 @@
-const angular = require('angular');
 var DEFAULT_ROW_DISPLAY_UNIT = 'row';
 
-function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) {
+module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) {
   const Rx = rx;
 
   return Model.extend({
@@ -220,8 +219,4 @@ function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) 
       return cards;
     }
   });
-}
-
-angular.
-  module('dataCards.models').
-  factory('Page', PageModelFactory);
+};

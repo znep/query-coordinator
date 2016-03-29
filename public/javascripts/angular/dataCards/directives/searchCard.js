@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/searchCard.html');
-const angular = require('angular');
-function searchCard(CardDataService, ServerConfig, SoqlHelpers, Constants, ellipsifyFilter, rx) {
+
+module.exports = function searchCard(CardDataService, ServerConfig, SoqlHelpers, Constants, ellipsifyFilter, rx) {
   const Rx = rx;
 
   function pluckEventArg(val) {
@@ -280,8 +280,4 @@ function searchCard(CardDataService, ServerConfig, SoqlHelpers, Constants, ellip
       handleSampleData($scope, model, dataset$);
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('searchCard', searchCard);
+};

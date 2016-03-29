@@ -3,7 +3,7 @@ describe('LeafletHelpersService', function() {
 
   var LeafletHelpersService;
 
-  beforeEach(angular.mock.module('socrataCommon.services'));
+  beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(inject(function($injector) {
     LeafletHelpersService = $injector.get('LeafletHelpersService');

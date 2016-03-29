@@ -1,9 +1,8 @@
 var templateUrl = require('angular_templates/dataCards/tableCard.html');
-const angular = require('angular');
 var rowsPerBlock = 150;
 var rowHeight = $.relativeToPx('2rem');
 
-function tableCard(
+module.exports = function tableCard(
   Constants,
   Dataset,
   SoqlHelpers,
@@ -709,8 +708,4 @@ function tableCard(
       }
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('tableCard', tableCard);
+};

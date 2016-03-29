@@ -4,6 +4,7 @@ describe('removeAllCards', function() {
   var testHelpers;
   var $rootScope;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {

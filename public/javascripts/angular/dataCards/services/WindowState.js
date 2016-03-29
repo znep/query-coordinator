@@ -1,4 +1,3 @@
-const angular = require('angular');
 // A service providing some info on the current window state (including mouse position).
 // API:
 // {
@@ -8,7 +7,7 @@ const angular = require('angular');
 //   windowSize$: RX observable of window size.
 //   scrollPosition$: RX observable of Y scroll position.
 // }
-angular.module('dataCards.services').factory('WindowState', function($document, $window, rx) {
+module.exports = function($document, $window, rx) {
   const Rx = rx;
   var jqueryWindow = $($window);
   var root = $window.document.documentElement;
@@ -88,4 +87,4 @@ angular.module('dataCards.services').factory('WindowState', function($document, 
   );
 
   return WindowState;
-});
+};

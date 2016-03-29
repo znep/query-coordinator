@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/revertButton.html');
-const angular = require('angular');
-function revertButton(FlyoutService, I18n) {
+
+module.exports = function revertButton(FlyoutService, I18n) {
   return {
     restrict: 'E',
     scope: {
@@ -22,8 +22,4 @@ function revertButton(FlyoutService, I18n) {
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('revertButton', revertButton);
+};

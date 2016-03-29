@@ -1,4 +1,3 @@
-const angular = require('angular');
 // Yoinked from: http://ejohn.org/blog/simple-javascript-inheritance
 // Socrata wrapped it into a service.
 
@@ -7,7 +6,7 @@ const angular = require('angular');
  * MIT Licensed.
  */
 // Inspired by base2 and Prototype
-var ClassProvider = function() {
+module.exports = function() {
   var initializing = false;
   var fnTest = /return/.test(function() { return; }) ? /\b_super\b/ : /.*/;
 
@@ -72,7 +71,3 @@ var ClassProvider = function() {
 
   return Class;
 };
-
-angular.
-  module('socrataCommon.services').
-  factory('Class', ClassProvider);

@@ -1,11 +1,10 @@
-const angular = require('angular');
 /**
  * SortedTileLayout is a facility to group a list of tiles into tiers, each tier being
  * composed of a list of lines having a particular number of columns.  If the number of
  * items does not evenly divide into the number of columns for a given tier, the items are
  * rebalanced evenly across lines.
  */
-angular.module('dataCards.services').factory('SortedTileLayout', function() {
+module.exports = function() {
   var defaultOptions = {
     // Key: The name of the tier
     // Value: The max number of items per row in that tier
@@ -108,4 +107,4 @@ angular.module('dataCards.services').factory('SortedTileLayout', function() {
   };
 
   return SortedTileLayout;
-});
+};

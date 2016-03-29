@@ -29,6 +29,7 @@ describe('relatedViews', function() {
     user: []
   };
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {

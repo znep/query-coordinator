@@ -1,4 +1,3 @@
-const angular = require('angular');
 /**
  * Returns the line height for the given element.
  */
@@ -39,7 +38,7 @@ function getLineHeight(element) {
  *     show-more-mode="expand-link"
  *     text="{{large_multi_line_content}}"></div>
 */
-angular.module('dataCards.directives').directive('multilineEllipsis', function($q, FlyoutService, I18n, rx) {
+module.exports = function($q, FlyoutService, I18n, rx) {
   const Rx = rx;
   return {
     scope: {
@@ -247,4 +246,4 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
 
     }
   };
-});
+};

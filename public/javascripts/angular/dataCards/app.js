@@ -3,28 +3,6 @@ var templateUrl3 = require('angular_templates/dataCards/pages/single-card-view.h
 var templateUrl2 = require('angular_templates/dataCards/pages/cards-view.html');
 var templateUrl1 = require('angular_templates/dataCards/pages/test-page.html');
 const angular = require('angular');
-var dependencies = [
-  'ui.router',
-  'ngSanitize',
-  'monospaced.elastic',
-  'socrataCommon.values',
-  'socrataCommon.services',
-  'socrataCommon.decorators',
-  'socrataCommon.directives',
-  'socrataCommon.filters',
-  'dataCards.controllers',
-  'dataCards.services',
-  'dataCards.directives',
-  'dataCards.models',
-  'dataCards.filters',
-  'rx'
-];
-
-if (window.socrataConfig.enableAirbrakeJs) { // eslint-disable-line angular/window-service
-  dependencies.push('exceptionNotifier');
-}
-
-angular.module('dataCards', dependencies);
 
 angular.module('dataCards').config(function(ServerConfig, $httpProvider, $windowProvider) {
   ServerConfig.setup($windowProvider.$get().socrataConfig);

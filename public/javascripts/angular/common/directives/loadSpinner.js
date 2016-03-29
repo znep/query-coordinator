@@ -1,5 +1,4 @@
-const angular = require('angular');
-function SpinnerDirective() {
+module.exports = function SpinnerDirective() {
   return {
     restrict: 'E',
     scope: {
@@ -18,8 +17,4 @@ function SpinnerDirective() {
     link: function(/*scope, element, attrs*/) {
     }
   };
-}
-
-angular.
-  module('socrataCommon.directives').
-  directive('loadSpinner', SpinnerDirective);
+};

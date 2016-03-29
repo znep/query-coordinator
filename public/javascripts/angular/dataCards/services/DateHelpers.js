@@ -1,5 +1,4 @@
-const angular = require('angular');
-function DateHelpers() {
+module.exports = function DateHelpers() {
 
   function serializeFloatingTimestamp(date) {
     function formatToTwoPlaces(value) {
@@ -96,8 +95,4 @@ function DateHelpers() {
     decrementDateByHalfInterval: decrementDateByHalfInterval,
     incrementDateByHalfInterval: incrementDateByHalfInterval
   };
-}
-
-angular.
-  module('dataCards.services').
-    factory('DateHelpers', DateHelpers);
+};

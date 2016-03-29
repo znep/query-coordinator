@@ -27,6 +27,7 @@ describe('TimelineChartController', function() {
     });
   }
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(angular.mock.module(function($provide) {

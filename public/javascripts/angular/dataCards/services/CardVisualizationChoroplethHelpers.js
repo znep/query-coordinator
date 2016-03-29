@@ -1,6 +1,4 @@
-const angular = require('angular');
-
-function CardVisualizationChoroplethHelpers(Constants, $log) {
+module.exports = function CardVisualizationChoroplethHelpers(Constants, $log) {
 
   /**
    * Extracts the shapefile from a dataset metadata column.
@@ -133,11 +131,4 @@ function CardVisualizationChoroplethHelpers(Constants, $log) {
     extractShapeFileFromColumn: extractShapeFileFromColumn,
     aggregateGeoJsonData: aggregateGeoJsonData
   };
-}
-
-angular.
-  module('dataCards.services').
-    factory(
-      'CardVisualizationChoroplethHelpers',
-      CardVisualizationChoroplethHelpers
-    );
+};

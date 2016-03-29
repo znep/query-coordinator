@@ -1,5 +1,4 @@
-const angular = require('angular');
-angular.module('socrataCommon.services').factory('WindowOperations', function($window) {
+module.exports = function($window) {
   return {
     setTitle: function(title) {
       $window.document.title = title;
@@ -8,4 +7,4 @@ angular.module('socrataCommon.services').factory('WindowOperations', function($w
       $window.document.location.href = url;
     }
   };
-});
+};

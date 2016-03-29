@@ -52,6 +52,7 @@ describe('FeatureMapService', function() {
   }
 
   beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('test'));
 
   beforeEach(inject(function($injector) {
     FeatureMapService = $injector.get('FeatureMapService');

@@ -5,21 +5,20 @@ describe('Polaroid Service', function() {
   var testHelpers;
   var $rootScope;
   var $httpBackend;
+  var $window;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
   beforeEach(inject(function($injector) {
     PolaroidService = $injector.get('PolaroidService');
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');
     $httpBackend = $injector.get('$httpBackend');
+    $window = $injector.get('$window');
   }));
 
   beforeEach(function() {
-    sinon.stub(window, 'saveAs', _.noop);
-  });
-
-  afterEach(function() {
-    window.saveAs.restore();
+    $window.saveAs = _.noop;
   });
 
   afterEach(function() {

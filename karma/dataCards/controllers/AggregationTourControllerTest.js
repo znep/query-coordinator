@@ -1,4 +1,5 @@
 describe('AggregationTourController', function() {
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   var $controller;

@@ -1,9 +1,8 @@
-const angular = require('angular');
 function stringifySuggestionObject(suggestion) {
   return `${suggestion.displayName} (${suggestion.email})`;
 }
 
-function ManageLensDialogOwnershipController(
+module.exports = function ManageLensDialogOwnershipController(
   $scope,
   $document,
   UserSessionService,
@@ -238,8 +237,4 @@ function ManageLensDialogOwnershipController(
     $scope.isUserSearchAvailable = false;
     $scope.ownerInput = I18n.manageLensDialog.ownership.ownerUnavailable;
   }
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('ManageLensDialogOwnershipController', ManageLensDialogOwnershipController);
+};

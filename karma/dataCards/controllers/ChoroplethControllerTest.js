@@ -26,7 +26,9 @@ describe('ChoroplethController', function() {
   var testAggregates = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
   var testAggregatesWhere = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values_where.json';
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(function() {
     angular.mock.module(function($provide) {

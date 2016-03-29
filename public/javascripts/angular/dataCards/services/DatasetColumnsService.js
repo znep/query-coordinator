@@ -1,5 +1,4 @@
-const angular = require('angular');
-function DatasetColumnsService(Dataset) {
+module.exports = function DatasetColumnsService(Dataset) {
 
   // Create helper functions that identify columns that should be hidden from the dropdown.
   var isTableColumn = _.flow(_.property('physicalDatatype'), _.partial(_.isEqual, '*'));
@@ -54,8 +53,4 @@ function DatasetColumnsService(Dataset) {
     getReadableColumnNameFn$: getReadableColumnNameFn$,
     isSystemColumn: isSystemColumn
   };
-}
-
-angular.
-  module('dataCards.services').
-    factory('DatasetColumnsService', DatasetColumnsService);
+};

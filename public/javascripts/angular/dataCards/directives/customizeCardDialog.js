@@ -1,8 +1,7 @@
 var templateUrl = require('angular_templates/dataCards/customizeCardDialog.html');
-const angular = require('angular');
 var REFRESH_BASE_LAYER_DELAY = 1000;
 
-function customizeCardDialog(
+module.exports = function customizeCardDialog(
   Constants,
   Card,
   Dataset,
@@ -247,7 +246,4 @@ function customizeCardDialog(
       });
     }
   };
-}
-angular.
-  module('dataCards.directives').
-  directive('customizeCardDialog', customizeCardDialog);
+};

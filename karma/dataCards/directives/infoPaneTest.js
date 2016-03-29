@@ -11,6 +11,7 @@ describe('infoPane', function() {
     'WindowOperations'
   ];
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(angular.mock.module(function(_$provide_) {

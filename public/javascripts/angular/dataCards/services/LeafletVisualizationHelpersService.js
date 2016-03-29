@@ -1,4 +1,3 @@
-const angular = require('angular');
 var EXPAND_CARD_EVENT_ID = 'card-expanded';
 var EXTENT_EVENT_ID = 'set-extent';
 var EXTENT_MODEL_PROPERTY_NAME = 'mapExtent';
@@ -12,7 +11,7 @@ function leafletEventToObservable(map, eventName, Rx) {
     });
 }
 
-function LeafletVisualizationHelpersService(LeafletHelpersService, $rootScope, rx) {
+module.exports = function LeafletVisualizationHelpersService(LeafletHelpersService, $rootScope, rx) {
   const Rx = rx;
 
   /**
@@ -62,8 +61,4 @@ function LeafletVisualizationHelpersService(LeafletHelpersService, $rootScope, r
       $scope.$emit(EXTENT_EVENT_ID, mapExtents);
     });
   };
-}
-
-angular.
-  module('dataCards.services').
-  service('LeafletVisualizationHelpersService', LeafletVisualizationHelpersService);
+};

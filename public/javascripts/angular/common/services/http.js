@@ -1,4 +1,3 @@
-const angular = require('angular');
 var extend = _.extend;
 var forEach = _.forEach;
 var requestIdHeaderName = 'X-Socrata-RequestId';
@@ -10,7 +9,7 @@ function addCSRF(config) {
   }
 }
 
-function httpProvider($http, $rootScope, RequestId, $log) {
+module.exports = function httpProvider($http, $rootScope, RequestId, $log) {
   function http(requestConfig) {
     var id;
     var eventMetadata = {
@@ -106,8 +105,4 @@ function httpProvider($http, $rootScope, RequestId, $log) {
       };
     });
   }
-}
-
-angular.
-  module('socrataCommon.services').
-  service('http', httpProvider);
+};

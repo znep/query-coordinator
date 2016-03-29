@@ -1,4 +1,3 @@
-const angular = require('angular');
 var lowercase = angular.lowercase;
 var forEach = angular.forEach;
 var MAX_FEATURES_PER_TILE = 256 * 256;
@@ -13,7 +12,7 @@ function trim(value) {
   return _.isString(value) ? value.trim() : value;
 }
 
-function VectorTileDataService(RequestId, ServerConfig, $q, $window) {
+module.exports = function VectorTileDataService(RequestId, ServerConfig, $q, $window) {
   var VectorTileDataServiceDefinition = {};
   var tileserverHosts = ServerConfig.get('tileserverHosts');
   var originHost = $.baseUrl().host;
@@ -196,8 +195,4 @@ function VectorTileDataService(RequestId, ServerConfig, $q, $window) {
   };
 
   return VectorTileDataServiceDefinition;
-}
-
-angular.
-  module('dataCards.services').
-  service('VectorTileDataService', VectorTileDataService);
+};

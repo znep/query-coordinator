@@ -1,6 +1,5 @@
-const angular = require('angular');
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('dataCards.models').factory('Dataset', function(
+module.exports = function(
   ModelHelper,
   Model,
   CardDataService,
@@ -69,4 +68,4 @@ angular.module('dataCards.models').factory('Dataset', function(
   Dataset.extractHumanReadableColumnName = _.property('name');
 
   return Dataset;
-});
+};

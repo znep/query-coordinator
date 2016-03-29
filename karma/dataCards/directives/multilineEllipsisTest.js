@@ -12,6 +12,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
     register: function() {}
   };
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {

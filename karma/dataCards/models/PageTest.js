@@ -13,7 +13,9 @@ describe('Page model', function() {
   var sampleVifJson = 'karma/dataCards/test-data/pageTest/sampleVif.json';
   var sampleVif;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(inject(function($injector) {
     injector = $injector;

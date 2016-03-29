@@ -1,5 +1,4 @@
-const angular = require('angular');
-function Mockumentary(Page, Dataset, Card) {
+module.exports = function Mockumentary(Page, Dataset, Card) {
 
   function createCardMetadata(cardOptions) {
     var minimalInitialValues = {
@@ -130,8 +129,4 @@ function Mockumentary(Page, Dataset, Card) {
     createDatasetMetadata: createDatasetMetadata,
     createDataset: createDataset
   };
-}
-
-angular.
-  module('dataCards.services').
-  factory('Mockumentary', Mockumentary);
+};

@@ -703,7 +703,6 @@ javascripts:
     - public/javascripts/util/typed-arrays.js
     - public/javascripts/util/polyfills.js
     - public/javascripts/plugins/ieee754.js
-    - public/javascripts/util/dompurify-extensions.js
 
   # BEGIN BOWER-MANAGED ASSETS
   # NOTE this mega-package of all bower assets is not ideal.

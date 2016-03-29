@@ -29,10 +29,11 @@ describe('API Explorer', function() {
     return element;
   }
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/cards.scss'));
-  beforeEach(angular.mock.module('dataCards/action-button.scss'));
-  beforeEach(angular.mock.module('dataCards/flyout.scss'));
+  require('app/styles/dataCards/cards.scss');
+  require('app/styles/dataCards/action-button.scss');
+  require('app/styles/dataCards/flyout.scss');
 
   beforeEach(function() {
     $('body').addClass('state-view-cards');

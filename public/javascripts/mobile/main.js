@@ -455,8 +455,8 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
           }
           break;
         case 'timeline':
-          cardOptions.componentClass = 'timeline-chart';
-          cardOptions.containerClass = 'timeline-chart-container';
+          cardOptions.componentClass = 'timeline-chart-upper-wrapper';
+          cardOptions.containerClass = 'timeline-chart-upper-container';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
             domain: datasetMetadata.domain,

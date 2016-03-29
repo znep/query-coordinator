@@ -77,7 +77,7 @@ module.exports = function(values, $target) {
   }
 
   function clearFlyout() {
-    $timelineChartElement.removeClass('expanded');
+    $timelineChartContainer.removeClass('expanded');
     $timelineChartContainer.find('.mobile-flyout').html('');
   }
 

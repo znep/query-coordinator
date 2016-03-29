@@ -612,9 +612,11 @@ $(function()
 
     // downloads
     var dlType = blist.dataset.getDownloadType();
+    var layerDownloadType = ( blist.dataset.newBackend && blist.dataset.isLayered() ) ? 'layer_geojson_attributes' : 'layer_attributes';
 
     var downloadOptions = {
         downloadTypes: $.templates.downloadsTable.downloadTypes[dlType],
+        layerDownloadTypes: $.templates.downloadsTable.downloadTypes[layerDownloadType],
         view: blist.dataset
     };
 
@@ -625,6 +627,41 @@ $(function()
             $.templates.downloadsTable.directive[dlType])
         );
     $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
+
+    // This is duplicated from controls/panes/download-dataset.js
+    if (blist.dataset.isGeoDataset()) {
+        $('.widgetContent_downloads').addClass('geoDataset');
+
+        blist.dataset.getChildOptionsForType('table', function(views) {
+            var hookupLinks = function(uid) {
+                $('.widgetContent_downloads').find('.layerDownloadsContent .item a').each(function() {
+                    var $link = $(this);
+                    var childView = _.detect(views, function(view) {
+                        return view.id == uid;
+                    });
+                    $link.attr('href', childView.downloadUrl($link.data('type')));
+                });
+            };
+
+            hookupLinks(views[0].id);
+
+            if (views.length > 1)
+            {
+                $('.widgetContent_downloads').find('.layerTableDownloads')
+                    .find('.layerChooser')
+                    .append(_.map(views, function(view) {
+                        return $.tag({
+                            tagName: 'option',
+                            contents: view.name, 'data-uid': view.id
+                        }, true);
+                    }).join(''))
+                    .change(function() {
+                        hookupLinks($(this).find('option:selected').data('uid'));
+                    })
+                    .end().addClass('hasChoices');
+            }
+        });
+    }
 
     $.live('.feed .commentActions a, .feedNewCommentButton', 'click', function(event)
     {

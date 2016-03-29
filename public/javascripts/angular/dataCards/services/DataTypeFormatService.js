@@ -34,7 +34,7 @@ module.exports = function DataTypeFormatService(I18n, $window) {
     };
 
     if (column.dataTypeName === 'percent') {
-      return _renderPercentageNumber(amount, format);
+      return _renderPercentageNumber(amount * 100, format);
     } else if (format.mask) {
       return _renderMaskedNumber(amount, format);
     } else {
@@ -239,7 +239,8 @@ module.exports = function DataTypeFormatService(I18n, $window) {
   }
 
   function _renderPercentageNumber(amount, format) {
-    var value = amount;
+    var value = parseFloat(amount.toPrecision(12));
+
     if (format.precision >= 0) {
       value = value.toFixed(format.precision);
     }

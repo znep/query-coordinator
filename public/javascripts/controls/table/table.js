@@ -2418,9 +2418,14 @@
                 footerBottom += scrollbarWidth;
             }
             var paginationHeight = $pagination.filter(':visible').outerHeight() || 0;
-            $lockedFooter.css('bottom', lockedBottom + paginationHeight - 2);
+            $lockedFooter.css('bottom', paginationHeight - 2);
             $lockedScrolls.height($outside.height() - lockedBottom);
-            $footerScrolls.css('bottom', footerBottom + paginationHeight - 1);
+            $footerScrolls.css('bottom', footerBottom + paginationHeight - 2);
+            $pagination.css('bottom', scrollbarWidth);
+            // Don't cover up the bottom of the scrollbar.
+            if (scrollbarWidth > 0) {
+              $pagination.css('width', 'calc(100% - {0}px)'.format(scrollbarWidth));
+            }
 
             // Adjust the margin footer for the scrollbar if necessary
             // Adjusting the width directly caused Safari to lose scrolling

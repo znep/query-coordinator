@@ -1,5 +1,5 @@
 var templateUrl = require('angular_templates/dataCards/columnAndVisualizationSelector.html');
-const angular = require('angular');
+
 /**
  * UI for configuring a visualization.
  *
@@ -9,7 +9,7 @@ const angular = require('angular');
  * to decide when the user has finished editing
  * (for example, an OK button).
  */
-function columnAndVisualizationSelector(
+module.exports = function columnAndVisualizationSelector(
   Card,
   Constants,
   DatasetColumnsService,
@@ -233,8 +233,4 @@ function columnAndVisualizationSelector(
       };
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-    directive('columnAndVisualizationSelector', columnAndVisualizationSelector);
+};

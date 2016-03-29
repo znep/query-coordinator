@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/visualizationTypeSelector.html');
-const angular = require('angular');
-function visualizationTypeSelector(
+
+module.exports = function visualizationTypeSelector(
   Constants,
   FlyoutService,
   $log,
@@ -239,8 +239,4 @@ function visualizationTypeSelector(
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-    directive('visualizationTypeSelector', visualizationTypeSelector);
+};

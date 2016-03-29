@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/manageLensDialog.html');
-const angular = require('angular');
-function manageLensDialog(http, FlyoutService, I18n, ServerConfig, $timeout, $q) {
+
+module.exports = function manageLensDialog(http, FlyoutService, I18n, ServerConfig, $timeout, $q) {
   return {
     restrict: 'E',
     scope: true,
@@ -82,8 +82,4 @@ function manageLensDialog(http, FlyoutService, I18n, ServerConfig, $timeout, $q)
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('manageLensDialog', manageLensDialog);
+};

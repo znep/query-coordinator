@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/exportMenu.html');
-const angular = require('angular');
-function ExportMenu(WindowState, ServerConfig, CardDataService, rx, I18n) {
+
+module.exports = function ExportMenu(WindowState, ServerConfig, CardDataService, rx, I18n) {
   return {
     restrict: 'E',
     templateUrl: templateUrl,
@@ -145,8 +145,4 @@ function ExportMenu(WindowState, ServerConfig, CardDataService, rx, I18n) {
         });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('exportMenu', ExportMenu);
+};

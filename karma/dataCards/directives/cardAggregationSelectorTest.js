@@ -86,6 +86,7 @@ describe('cardAggregationSelector', function() {
     return directive;
   }
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {

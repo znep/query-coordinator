@@ -1,9 +1,9 @@
 var templateUrl = require('angular_templates/dataCards/classicVisualizationPreviewer.html');
-const angular = require('angular');
+
 /**
  * Places a classic visualization iframe on the page.
  */
-function classicVisualizationPreviewer($q) {
+module.exports = function classicVisualizationPreviewer($q) {
   return {
     restrict: 'E',
     scope: {
@@ -30,8 +30,4 @@ function classicVisualizationPreviewer($q) {
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-    directive('classicVisualizationPreviewer', classicVisualizationPreviewer);
+};

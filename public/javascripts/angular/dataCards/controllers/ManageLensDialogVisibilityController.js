@@ -1,5 +1,4 @@
-const angular = require('angular');
-function ManageLensDialogVisibilityController($q, $scope, $window, ServerConfig, UserRights, I18n, http, rx) {
+module.exports = function ManageLensDialogVisibilityController($q, $scope, $window, ServerConfig, UserRights, I18n, http, rx) {
   const Rx = rx;
   var self = this;
 
@@ -113,8 +112,4 @@ function ManageLensDialogVisibilityController($q, $scope, $window, ServerConfig,
     hasChanges: false,
     hasErrors: false
   };
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('ManageLensDialogVisibilityController', ManageLensDialogVisibilityController);
+};

@@ -31,6 +31,7 @@ describe('CardsViewController', function() {
   var datasetOwnerId = 'fdsa-asdf';
   var mockUserSessionService = {};
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
@@ -146,40 +147,6 @@ describe('CardsViewController', function() {
     });
   }
 
-  // NOTE [AMH]: I have added some gross hackiness because our existing test helpers
-  // did not allow us to customize the state adequately. This should be refactored
-  // when time allows.
-  function renderCardsView(options) {
-    var options = options || {};
-
-    var context = options.context || makeContext();
-    testHelpers.mockDirective(_$provide, 'apiExplorer');
-
-    var cardLayout = {};
-    testHelpers.mockDirective(_$provide, 'cardLayout', function() {
-      return {
-        link: function($scope) {
-          cardLayout.$scope = $scope;
-        }
-      };
-    });
-
-    testHelpers.mockDirective(_$provide, 'multilineEllipsis');
-    testHelpers.mockDirective(_$provide, 'notifyResize');
-    testHelpers.mockDirective(_$provide, 'aggregationChooser');
-    testHelpers.mockDirective(_$provide, 'newShareDialog');
-    _$provide.value('page', context.page);
-    var html = '<div class="cards-metadata"></div>' +
-      '<div class="quick-filter-bar"></div>' +
-      '<ng-include ng-controller="CardsViewController" ' +
-      'src="\'/angular_templates/dataCards/pages/cards-view.html\'"></ng-include>';
-    var element = testHelpers.TestDom.compileAndAppend(html, context.$scope);
-    return $.extend({
-      cardLayout: cardLayout,
-      element: element.parent().children()
-    }, context);
-  }
-
   function testCard(id) {
     return {
       'description': '',
@@ -251,17 +218,6 @@ describe('CardsViewController', function() {
       $scope.page.set('name', 'fireflower fireflower');
       testHelpers.fireMouseEvent(editPageWarningElement, 'mousemove');
       expect($('#uber-flyout').text()).to.equal('');
-    });
-  });
-
-  describe('page header', function() {
-    it('should not display if a feature flag is set', function() {
-      ServerConfig.override('showNewuxPageHeader', false);
-      var context = renderCardsView();
-      var pageHeader = context.element.find('page-header');
-      var metadata = context.element.find('.cards-metadata');
-      expect(pageHeader).to.have.class('ng-hide');
-      expect(metadata).to.not.have.class('page-header-enabled');
     });
   });
 
@@ -710,7 +666,6 @@ describe('CardsViewController', function() {
   });
 
   describe('mobile warning dialog', function() {
-
     var cookieSet = function() {
       return (/(^|;)\s*mobileWarningClosed=/).test(document.cookie);
     };
@@ -722,55 +677,6 @@ describe('CardsViewController', function() {
         controllerHarness = makeController();
         $scope = controllerHarness.$scope;
         expect($scope.mobileWarningState.show).to.equal(false);
-      });
-    });
-
-    describe('on a mobile device', function() {
-      beforeEach(inject(['testHelpers', function(_testHelpers) {
-        sinon.stub(DeviceService, 'isMobile').returns(true);
-        testHelpers = _testHelpers;
-
-        // Clear mobileWarningClosed cookie
-        document.cookie = 'mobileWarningClosed=1; expires=' + new Date(0).toUTCString();
-      }]));
-
-      it('should not be visible if the cookie "mobileWarningClosed" is set', function() {
-        document.cookie = 'mobileWarningClosed=1';
-
-        controllerHarness = makeController();
-        $scope = controllerHarness.$scope;
-
-        expect($scope.mobileWarningState.show).to.equal(false);
-      });
-
-      // Helper function to render the modal and click an element.
-      // Ensures the modal closes and the appropriate cookie is set.
-      var runCaseWithSelector = function(selector) {
-        var context = renderCardsView();
-        var $scope = context.cardLayout.$scope.$parent;
-
-        $scope.$digest();
-        expect($scope.mobileWarningState.show).to.equal(true);
-
-        var element = context.element.find(selector)[0];
-        expect(element).to.exist;
-        testHelpers.fireMouseEvent(element, 'click');
-
-        $scope.$digest();
-        expect($scope.mobileWarningState.show).to.equal(false);
-        expect(cookieSet()).to.equal(true);
-      };
-
-      it('should hide and set a cookie when the acknowledgement button is clicked', function() {
-        runCaseWithSelector('.mobile-warning-buttons button');
-      });
-
-      it('should hide and set a cookie when the close button is clicked', function() {
-        runCaseWithSelector('.modal-close-button');
-      });
-
-      it('should hide and set a cookie when the modal overlay is clicked', function() {
-        runCaseWithSelector('.modal-overlay');
       });
     });
   });

@@ -1,6 +1,8 @@
 describe('DOMPurify extensions', function() {
   'use strict';
 
+  var DOMPurify = require('DOMPurify');
+
   describe('link rel=noreferrer adder', function() {
     var $resultLink;
 

@@ -1,4 +1,3 @@
-const angular = require('angular');
 function renderHoverFlyoutTemplate(
   unfilteredBucket,
   filteredBucket,
@@ -47,7 +46,7 @@ function renderHoverFlyoutTemplate(
   return lines.join('');
 }
 
-function HistogramVisualizationService(
+module.exports = function HistogramVisualizationService(
   Constants,
   FlyoutService,
   I18n,
@@ -1182,8 +1181,4 @@ function HistogramVisualizationService(
     updateBrush: updateBrush,
     render: render
   };
-}
-
-angular.
-  module('dataCards.services').
-    factory('HistogramVisualizationService', HistogramVisualizationService);
+};

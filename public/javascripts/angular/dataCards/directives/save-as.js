@@ -1,6 +1,5 @@
 var templateUrl = require('angular_templates/dataCards/saveAs.html');
-const angular = require('angular');
-function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, UserRights, rx) {
+module.exports = function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, UserRights, rx) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -155,8 +154,4 @@ function saveAs($window, I18n, WindowState, FlyoutService, ServerConfig, UserRig
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('saveAs', saveAs);
+};

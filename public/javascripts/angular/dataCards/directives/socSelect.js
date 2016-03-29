@@ -1,9 +1,9 @@
 var templateUrl = require('angular_templates/dataCards/socSelect.html');
-const angular = require('angular');
+
 /**
  * A socrata-styled drop-down selector.
  */
-angular.module('dataCards.directives').directive('socSelect', function($window) {
+module.exports = function($window) {
 
   /**
    * Apply the given dom attributes to the given element, ignoring angular-specific ones (ie those
@@ -68,17 +68,4 @@ angular.module('dataCards.directives').directive('socSelect', function($window) 
       });
     }
   };
-}).
-  /**
-   * We create a <soc-option/> directive here because IE9 doesn't like transcluding <option/>s (it
-   * transforms them into spans and stuff before the link function can get at it). So create a new
-   * element IE9 won't mess with, that essentially just creates an <option/> tag.
-   */
-  directive('socOption', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      transclude: true,
-      template: '<option ng-transclude />'
-    };
-  });
+};

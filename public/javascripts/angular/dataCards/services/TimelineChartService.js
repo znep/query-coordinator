@@ -1,6 +1,4 @@
-const angular = require('angular');
-
-function TimelineChartService(I18n, PluralizeService) {
+module.exports = function TimelineChartService(I18n, PluralizeService) {
 
   /**
    * Precompute a bunch of things that are useful for rendering the timeline chart.
@@ -128,8 +126,4 @@ function TimelineChartService(I18n, PluralizeService) {
     getUnitConfiguration,
     renderFlyout
   };
-}
-
-angular.
-  module('dataCards.services').
-  factory('TimelineChartService', TimelineChartService);
+};

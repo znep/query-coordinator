@@ -1,5 +1,4 @@
-const angular = require('angular');
-function ColumnChartController($scope, CardDataService, rx) {
+module.exports = function ColumnChartController($scope, CardDataService, rx) {
   const Rx = rx;
   if ($scope.model.getCurrentValue('cardType') === 'histogram') {
     return;
@@ -162,8 +161,4 @@ function ColumnChartController($scope, CardDataService, rx) {
   );
 
   $scope.$bindObservable('expanded', model.observeOnLatest('expanded'));
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('ColumnChartController', ColumnChartController);
+};

@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/relatedViews.html');
-const angular = require('angular');
-function relatedViews(WindowState, Constants) {
+
+module.exports = function relatedViews(WindowState, Constants) {
   return {
     restrict: 'E',
     scope: true,
@@ -70,8 +70,4 @@ function relatedViews(WindowState, Constants) {
         });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('relatedViews', relatedViews);
+};

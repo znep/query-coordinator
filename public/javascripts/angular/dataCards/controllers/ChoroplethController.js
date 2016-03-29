@@ -1,5 +1,4 @@
-const angular = require('angular');
-function ChoroplethController(
+module.exports = function ChoroplethController(
   $scope,
   $element,
   Constants,
@@ -409,8 +408,4 @@ function ChoroplethController(
   $scope.savedExtent = $scope.model.getCurrentValue('cardOptions').getCurrentValue('mapExtent');
 
   $scope.$bindObservable('cardSize', model.observeOnLatest('cardSize'));
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('ChoroplethController', ChoroplethController);
+};

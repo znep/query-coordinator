@@ -1,4 +1,3 @@
-const angular = require('angular');
-angular.module('dataCards.services').factory('JJV', function($window) {
+module.exports = function($window) {
   return $window.jjv();
-});
+};

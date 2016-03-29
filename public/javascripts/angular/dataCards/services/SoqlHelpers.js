@@ -1,5 +1,4 @@
-const angular = require('angular');
-angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, DateHelpers, $window) {
+module.exports = function(Constants, DateHelpers, $window) {
   var timeIntervalToDateTrunc = {
     DAY: 'ymd',
     MONTH: 'ym',
@@ -82,4 +81,4 @@ angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, 
   }
 
   return SoqlHelpers;
-});
+};

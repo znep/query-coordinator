@@ -1,7 +1,6 @@
 const templateUrl = require('angular_templates/dataCards/quickFilterBar.html');
-const angular = require('angular');
 
-function quickFilterBar(
+module.exports = function quickFilterBar(
   $log,
   rx,
   $window,
@@ -136,8 +135,4 @@ function quickFilterBar(
       $scope.$bindObservable('quickFilterBarTitle', quickFilterBarTitle$);
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('quickFilterBar', quickFilterBar);
+};

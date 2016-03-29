@@ -1,5 +1,4 @@
-const angular = require('angular');
-angular.module('dataCards.models').factory('CardOptions', function(ServerConfig, Model) {
+module.exports = function(ServerConfig, Model) {
 
   var defaultCardOptions = {
     mapExtent: {},
@@ -47,4 +46,4 @@ angular.module('dataCards.models').factory('CardOptions', function(ServerConfig,
   };
 
   return CardOptions;
-});
+};

@@ -1,4 +1,3 @@
-const angular = require('angular');
 /**
  * Service responsible for providing versioned JSON schemas.
  * Example usages:
@@ -119,7 +118,7 @@ var getStringsForErrors = (function() {
   };
 })();
 
-angular.module('dataCards.services').factory('Schemas', function(JJV, SchemaDefinitions) {
+module.exports = function(JJV, SchemaDefinitions) {
   // Maps schema subject names ('dataset_metadata', 'page_metadata', etc) to a collection of
   // versioned schemas for that subject.  The collection of versioned schemas is stored as an
   // object whose keys are versions and whose values are the JSON schemas themselves.
@@ -210,4 +209,4 @@ angular.module('dataCards.services').factory('Schemas', function(JJV, SchemaDefi
   SchemaDefinitions.registerWith(Schemas);
 
   return Schemas;
-});
+};

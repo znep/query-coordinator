@@ -37,6 +37,8 @@ describe('CardDataService', function() {
   }
 
   beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards.templates'));
+  beforeEach(angular.mock.module('test'));
 
   function normalizeUrl(url) {
     return url.replace(/\s/g, '+').toLowerCase();

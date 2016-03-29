@@ -1,5 +1,4 @@
-const angular = require('angular');
-function SingleCardViewController($scope, $rootScope, $log, $window, page, WindowState, rx) {
+module.exports = function SingleCardViewController($scope, $rootScope, $log, $window, page, WindowState, rx) {
   const Rx = rx;
 
   var card$ = page.
@@ -59,8 +58,4 @@ function SingleCardViewController($scope, $rootScope, $log, $window, page, Windo
   // Disable mouse interaction to prevent flyouts and hover effects if
   // polaroid is taking a picture of us.
   $scope.interactive = !$window._phantom;
-}
-
-angular.
-  module('dataCards.controllers').
-    controller('SingleCardViewController', SingleCardViewController);
+};

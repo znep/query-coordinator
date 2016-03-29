@@ -1,9 +1,8 @@
 var templateUrl = require('angular_templates/dataCards/featureMap.html');
-const angular = require('angular');
 const FeatureMap = require('socrata-visualizations').views.FeatureMap;
 const RowInspector = require('socrata-visualizations').views.RowInspector;
 
-function featureMap(
+module.exports = function featureMap(
   $compile,
   $rootScope,
   $window,
@@ -476,8 +475,4 @@ function featureMap(
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('featureMap', featureMap);
+};

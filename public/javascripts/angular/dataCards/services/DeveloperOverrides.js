@@ -1,5 +1,4 @@
-const angular = require('angular');
-angular.module('dataCards.services').factory('DeveloperOverrides', function() {
+module.exports = function() {
   var datasetDataOverrides = {};
   return {
 
@@ -31,4 +30,4 @@ angular.module('dataCards.services').factory('DeveloperOverrides', function() {
       return datasetDataOverrides[datasetId];
     }
   };
-});
+};

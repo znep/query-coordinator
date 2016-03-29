@@ -48,6 +48,7 @@ describe('VisualizationAddController', function() {
     console.warn('WARNING: disabling some VisualizationAddController tests because test run is not in an iframe');
   }
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(

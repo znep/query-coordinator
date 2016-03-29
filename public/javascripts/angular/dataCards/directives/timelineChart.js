@@ -1,8 +1,7 @@
-const angular = require('angular');
 const TimelineChart = require('socrata-visualizations').views.TimelineChart;
 const templateUrl = require('angular_templates/dataCards/timelineChart.html');
 
-function timelineChart(
+module.exports = function timelineChart(
   $timeout,
   FlyoutService,
   rx,
@@ -135,8 +134,4 @@ function timelineChart(
       Rx.Observable.subscribeLatest(renderTriggers, render);
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('timelineChart', timelineChart);
+};

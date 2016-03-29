@@ -1,5 +1,4 @@
-const angular = require('angular');
-function ManageLensDialogController($scope, $window, ViewRights, ServerConfig) {
+module.exports = function ManageLensDialogController($scope, $window, ViewRights, ServerConfig) {
 
   // Show sharing section for users who have 'grant' right
   $scope.$bindObservable('shouldShowSharingSection',
@@ -40,8 +39,4 @@ function ManageLensDialogController($scope, $window, ViewRights, ServerConfig) {
   }, function(hasErrors) {
     $scope.dialogHasErrors = hasErrors;
   });
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('ManageLensDialogController', ManageLensDialogController);
+};

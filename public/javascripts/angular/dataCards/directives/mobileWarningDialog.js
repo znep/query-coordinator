@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/mobileWarningDialog.html');
-const angular = require('angular');
-function mobileWarningDialog() {
+
+module.exports = function mobileWarningDialog() {
   return {
     restrict: 'E',
     scope: {
@@ -8,8 +8,4 @@ function mobileWarningDialog() {
     },
     templateUrl: templateUrl
   };
-}
-
-angular.
-  module('dataCards.directives').
-    directive('mobileWarningDialog', mobileWarningDialog);
+};

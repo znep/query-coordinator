@@ -1,5 +1,4 @@
-const angular = require('angular');
-function PageDataService(http, Schemas, $window) {
+module.exports = function PageDataService(http, Schemas, $window) {
   var schemas = Schemas.regarding('page_metadata');
 
   function fetch(id) {
@@ -55,9 +54,4 @@ function PageDataService(http, Schemas, $window) {
   this.requesterLabel = function() {
     return 'page-data-service';
   };
-
-}
-
-angular.
-  module('dataCards.services').
-  service('PageDataService', PageDataService);
+};

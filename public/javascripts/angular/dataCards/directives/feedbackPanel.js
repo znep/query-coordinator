@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/feedbackPanel.html');
-const angular = require('angular');
-function feedbackPanel(ServerConfig, I18n) {
+
+module.exports = function feedbackPanel(ServerConfig, I18n) {
   return {
     restrict: 'E',
     scope: { },
@@ -146,8 +146,4 @@ function feedbackPanel(ServerConfig, I18n) {
 
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-    directive('feedbackPanel', feedbackPanel);
+};

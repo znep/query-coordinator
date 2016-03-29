@@ -12,7 +12,9 @@ describe('timelineChart', function() {
   var unfilteredTestData;
   var filteredTestData;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
+  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(function() {
     angular.mock.module(function($provide, $controllerProvider) {

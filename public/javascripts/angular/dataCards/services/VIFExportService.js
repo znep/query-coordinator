@@ -1,5 +1,4 @@
-const angular = require('angular');
-function VIFExportService(Page, DateHelpers, $window) {
+module.exports = function VIFExportService(Page, DateHelpers, $window) {
 
   /**
    * Return a representation of a card as a Visualization Interchange Format (VIF) JSON object.
@@ -181,8 +180,4 @@ function VIFExportService(Page, DateHelpers, $window) {
   return {
     exportVIF: exportVIF
   };
-}
-
-angular.
-  module('dataCards.services').
-  service('VIFExportService', VIFExportService);
+};

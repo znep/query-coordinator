@@ -1,4 +1,3 @@
-const angular = require('angular');
 function httpConfig(config) {
   return _.extend({
     requester: this,
@@ -6,7 +5,7 @@ function httpConfig(config) {
   }, config);
 }
 
-function UserSearchService($http, $q, rx) {
+module.exports = function UserSearchService($http, $q, rx) {
   const Rx = rx;
 
   // Helper for rejection branches.
@@ -77,8 +76,4 @@ function UserSearchService($http, $q, rx) {
     find: find,
     results$: results$
   };
-}
-
-angular.
-  module('socrataCommon.services').
-    service('UserSearchService', UserSearchService);
+};

@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/common/intractableList.html');
-const angular = require('angular');
-angular.module('socrataCommon.directives').directive('intractableList', function($document, rx) {
+
+module.exports = function($document, rx) {
   const Rx = rx;
 
   var DEFAULT_MAX_RESULTS = 10;
@@ -185,4 +185,4 @@ angular.module('socrataCommon.directives').directive('intractableList', function
       };
     }
   };
-});
+};

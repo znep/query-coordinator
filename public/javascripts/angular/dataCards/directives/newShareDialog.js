@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/new-share-dialog.html');
-const angular = require('angular');
-function newShareDialog($window) {
+
+module.exports = function newShareDialog($window) {
   return {
     restrict: 'E',
     scope: {
@@ -81,8 +81,4 @@ function newShareDialog($window) {
       };
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('newShareDialog', newShareDialog);
+};

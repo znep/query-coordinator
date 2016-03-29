@@ -1,5 +1,4 @@
-const angular = require('angular');
-function LeafletHelpersService($window) {
+module.exports = function LeafletHelpersService($window) {
   return {
     /**
      * Given an object specifying northeast and southwest extents, returns a valid
@@ -32,8 +31,4 @@ function LeafletHelpersService($window) {
       }
     }
   };
-}
-
-angular.
-  module('socrataCommon.services').
-  service('LeafletHelpersService', LeafletHelpersService);
+};

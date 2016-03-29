@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/lensType.html');
-const angular = require('angular');
-function lensType(ServerConfig, rx) {
+
+module.exports = function lensType(ServerConfig, rx) {
   const Rx = rx;
   return {
     templateUrl: templateUrl,
@@ -14,8 +14,4 @@ function lensType(ServerConfig, rx) {
         Rx.Observable.returnValue('official'));
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('lensType', lensType);
+};

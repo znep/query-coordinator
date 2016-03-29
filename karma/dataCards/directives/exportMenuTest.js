@@ -12,6 +12,7 @@ describe('Export Menu', function() {
   var context;
   var rowCountStub;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
@@ -179,6 +180,8 @@ describe('Export Menu', function() {
     });
 
     it('quits card selection mode when clicking Cancel', function(done) {
+      ServerConfig.override('enablePngDownloadUi', true);
+
       context = createElement();
 
       context.scope.$on('exit-export-card-visualization-mode', function() {
@@ -193,6 +196,8 @@ describe('Export Menu', function() {
     });
 
     it('quits card selection mode pressing the escape key', function(done) {
+      ServerConfig.override('enablePngDownloadUi', true);
+
       context = createElement();
 
       context.scope.$on('exit-export-card-visualization-mode', function() {

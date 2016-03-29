@@ -1,5 +1,5 @@
 var templateUrl = require('angular_templates/dataCards/cardLayout.html');
-const angular = require('angular');
+
 var sortedTileLayout;
 // Map from a cardSize category to a height in pixels
 var EXPANDED_SIZE_TO_HEIGHT = {
@@ -31,7 +31,7 @@ function initCardSelection(
   });
 }
 
-function cardLayout(
+module.exports = function cardLayout(
   Constants,
   WindowState,
   SortedTileLayout,
@@ -981,8 +981,4 @@ function cardLayout(
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('cardLayout', cardLayout);
+};

@@ -4,8 +4,9 @@ describe('histogram', function() {
   var testHelpers;
   var $rootScope;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/histogram.scss'));
+  require('app/styles/dataCards/histogram.scss');
 
   beforeEach(angular.mock.module(function($controllerProvider) {
     $controllerProvider.register('HistogramController', _.noop);

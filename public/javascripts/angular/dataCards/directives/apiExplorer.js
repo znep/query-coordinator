@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/apiExplorer.html');
-const angular = require('angular');
-function ApiExplorer($window, http, WindowState, rx) {
+
+module.exports = function ApiExplorer($window, http, WindowState, rx) {
   const Rx = rx;
   return {
     restrict: 'E',
@@ -151,8 +151,4 @@ function ApiExplorer($window, http, WindowState, rx) {
       });
     }
   };
-}
-
-angular.
-  module('dataCards.directives').
-  directive('apiExplorer', ApiExplorer);
+};

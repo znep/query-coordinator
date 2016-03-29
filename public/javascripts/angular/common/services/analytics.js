@@ -1,4 +1,3 @@
-const angular = require('angular');
 // Additional changes...
 
 var analyticsUrl = '/analytics/add';
@@ -10,7 +9,7 @@ var jsCardsViewBaseName = 'js-cardsview-{0}-time';
  *
  * @constructor
  */
-function Analytics($log, $window, http, ServerConfig, $rootScope, rx) {
+module.exports = function Analytics($log, $window, http, ServerConfig, $rootScope, rx) {
   const Rx = rx;
   // *** Set up utility functions. ***
 
@@ -203,8 +202,4 @@ function Analytics($log, $window, http, ServerConfig, $rootScope, rx) {
       http.post(analyticsUrl, analyticsPayload, analyticsConfig);
     }
   }
-}
-
-angular.
-  module('socrataCommon.services').
-  service('Analytics', Analytics);
+};

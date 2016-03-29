@@ -1,5 +1,3 @@
-const angular = require('angular');
-
 function initDownload($scope, WindowState) {
 
   // Close png export with escape
@@ -105,7 +103,7 @@ function bindWritableProperties($scope, page) {
   });
 }
 
-function CardsViewController(
+module.exports = function CardsViewController(
   $log,
   $q,
   $scope,
@@ -567,8 +565,4 @@ function CardsViewController(
     $apiUrlDisplay.off('mouseup');
     $apiUrlDisplay.off('blur');
   });
-}
-
-angular.
-  module('dataCards.controllers').
-    controller('CardsViewController', CardsViewController);
+};

@@ -1,5 +1,4 @@
-const angular = require('angular');
-function FeatureMapController(
+module.exports = function FeatureMapController(
   $scope,
   $q,
   $log,
@@ -448,8 +447,4 @@ function FeatureMapController(
   $scope.zoomDebounceMilliseconds = ServerConfig.get('featureMapZoomDebounce');
 
   $scope.disablePanAndZoom = ServerConfig.get('featureMapDisablePanZoom');
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('FeatureMapController', FeatureMapController);
+};

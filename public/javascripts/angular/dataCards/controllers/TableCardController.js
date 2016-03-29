@@ -1,5 +1,4 @@
-const angular = require('angular');
-function TableCardController(
+module.exports = function TableCardController(
   $scope,
   $window,
   Constants,
@@ -227,8 +226,4 @@ function TableCardController(
   $scope.$bindObservable('filteredRowCount', filteredRowCount$);
   $scope.$bindObservable('columnDetails', displayableColumnDetailsAsArray$);
   $scope.$bindObservable('defaultSortColumnName', defaultSortColumnName$);
-}
-
-angular.
-  module('dataCards.controllers').
-  controller('TableCardController', TableCardController);
+};

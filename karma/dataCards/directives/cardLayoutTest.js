@@ -17,13 +17,13 @@ describe('cardLayout', function() {
   var testHelpers;
   var Constants;
   var I18n;
-  var ServerConfig;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/theme/default.scss'));
-  beforeEach(angular.mock.module('dataCards/cards.scss'));
-  beforeEach(angular.mock.module('dataCards/card.scss'));
-  beforeEach(angular.mock.module('dataCards/flyout.scss'));
+  require('app/styles/dataCards/theme/default.scss');
+  require('app/styles/dataCards/cards.scss');
+  require('app/styles/dataCards/card.scss');
+  require('app/styles/dataCards/flyout.scss');
 
   beforeEach(function() {
     angular.mock.module(function($provide) {
@@ -68,7 +68,6 @@ describe('cardLayout', function() {
     $timeout = $injector.get('$timeout');
     Constants = $injector.get('Constants');
     I18n = $injector.get('I18n');
-    ServerConfig = $injector.get('ServerConfig');
 
     testHelpers.overrideTransitions(true);
     testHelpers.mockDirective(_$provide, 'aggregationChooser');

@@ -1,5 +1,4 @@
-const angular = require('angular');
-function PageHelpersService(I18n, PluralizeService, rx) {
+module.exports = function PageHelpersService(I18n, PluralizeService, rx) {
   const Rx = rx;
   return {
     dynamicCardAggregationTitle: function(cardModel$) {
@@ -22,8 +21,4 @@ function PageHelpersService(I18n, PluralizeService, rx) {
       );
     }
   };
-}
-
-angular.
-  module('dataCards.services').
-  service('PageHelpersService', PageHelpersService);
+};

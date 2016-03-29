@@ -1,9 +1,9 @@
-const angular = require('angular');
 var THEME_CONFIGURATION_KEY = 'themeV3';
 var FEATURE_SET_KEY = 'featureSet';
 
 var configurationStore = {};
-var ServerConfig = {
+
+var ServerConfig = module.exports = {
   get: function(key) {
     if (_.isDefined(configurationStore[key])) {
       return configurationStore[key];
@@ -32,7 +32,3 @@ var ServerConfig = {
     return value;
   }
 };
-
-angular.
-  module('socrataCommon.services').
-  constant('ServerConfig', ServerConfig);

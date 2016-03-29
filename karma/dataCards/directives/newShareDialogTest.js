@@ -8,8 +8,9 @@ describe('newShareDialog', function() {
   var $scope;
   var $window;
 
+  beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards/cards.scss'));
+  require('app/styles/dataCards/cards.scss');
 
   beforeEach(angular.mock.module(function(_$provide_) {
     $provide = _$provide_;

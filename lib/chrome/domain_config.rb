@@ -5,16 +5,17 @@ module Chrome
 
     attr_reader :config
 
-    def initialize(domain, auth_cookie)
+    def initialize(domain, auth_cookie, localhost = false)
       @domain = domain
       @auth_cookie = auth_cookie
+      @using_localhost = localhost
       @config = get_domain_config
     end
 
     private
 
     def get_domain_config
-      uri = "#{domain_with_scheme}/api/configurations.json?type=site_chrome&defaultOnly=true"
+      uri = domain_config_uri
       begin
         response = HTTParty.get(uri,
           headers: { 'Cookies' => @auth_cookie })
@@ -29,6 +30,14 @@ module Chrome
       rescue HTTParty::ResponseError => e
         raise "Failed to get domain configuration for #{@domain}: #{e}"
       end
+    end
+
+    def domain_config_uri
+      domain_config_url_params = '?type=site_chrome&defaultOnly=true'
+      (@using_localhost ?
+        'http://localhost:8080/configurations.json' :
+        "#{domain_with_scheme}/api/configurations.json"
+      ) << domain_config_url_params
     end
 
     def domain_with_scheme

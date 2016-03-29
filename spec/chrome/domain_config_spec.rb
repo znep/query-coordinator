@@ -24,6 +24,21 @@ describe Chrome::DomainConfig do
     end
   end
 
+  describe '#domain_config_uri' do
+    it 'returns the uri for a non-localhost domain' do
+      stub_configurations
+      domain_config = helper.new(domain, auth_cookie, false)
+      uri = 'https://data.seattle.gov/api/configurations.json?type=site_chrome&defaultOnly=true'
+      expect(domain_config.send(:domain_config_uri)).to eq(uri)
+    end
+
+    it 'returns a special localhost uri for "localhost" domain' do
+      localhost_domain_config = helper.new(domain, auth_cookie, true)
+      localhost_uri = 'http://localhost:8080/configurations.json?type=site_chrome&defaultOnly=true'
+      expect(localhost_domain_config.send(:domain_config_uri)).to eq(localhost_uri)
+    end
+  end
+
   describe '#domain_with_scheme' do
     it 'adds "https://" to a uri without a scheme' do
       stub_configurations
@@ -38,13 +53,5 @@ describe Chrome::DomainConfig do
       result = domain_config.send(:domain_with_scheme)
       expect(result).to eq('https://data.seattle.gov')
     end
-  end
-
-  describe '#header_html' do
-    # TODO
-  end
-
-  describe '#footer_html' do
-    # TODO
   end
 end

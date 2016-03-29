@@ -81,11 +81,11 @@ class CoreServer
   end
 
   def self.story_themes
-    configurations_request(verb: :get, type: 'story_theme', default_only: false, merge: false)
+    configurations_request(verb: :get, type: 'story_theme', default_only: true, merge: false)
   end
 
   def self.site_chrome
-    configurations_request(verb: :get, type: 'site_chrome', default_only: false, merge: false)
+    configurations_request(verb: :get, type: 'site_chrome', default_only: true, merge: false)
   end
 
   def self.current_user_story_authorization

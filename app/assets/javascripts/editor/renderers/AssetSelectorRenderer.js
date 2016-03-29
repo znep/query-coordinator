@@ -586,6 +586,7 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderFileUploadProgressTemplate() {
+    var componentType = assetSelectorStore.getComponentType();
     var progress = $(
       '<div>',
       { 'class': 'asset-selector-image-upload-progress' }
@@ -605,7 +606,7 @@ export default function AssetSelectorRenderer(options) {
       '<button>',
       {
         'class': 'btn-default btn-inverse asset-selector-cancel-upload',
-        'data-provider': 'IMAGE'
+        'data-provider': componentType.toUpperCase()
       }
     ).text(I18n.t('editor.asset_selector.cancel_button_text'));
 
@@ -613,7 +614,7 @@ export default function AssetSelectorRenderer(options) {
       '<button>',
       {
         'class': 'hidden btn-default btn-inverse asset-selector-try-again',
-        'data-provider': 'IMAGE'
+        'data-provider': componentType.toUpperCase()
       }
     ).text(I18n.t('editor.asset_selector.try_again_button_text'));
 

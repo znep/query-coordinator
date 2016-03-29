@@ -138,6 +138,13 @@ export default function FileUploader() {
 
   // Private methods
 
+  function _cancelled() {
+
+    // If the _file is null, either we cancelled
+    // or there isn't an upload happening right now.
+    return _.isNull(_file);
+  }
+
   function _emitProgress(progressBytes) {
     _uploadedPercent = progressBytes / _file.size;
 
@@ -287,11 +294,13 @@ export default function FileUploader() {
   }
 
   function _dispatchFileDone(resource) {
-    dispatcher.dispatch({
-      action: options.doneAction || Actions.FILE_UPLOAD_DONE,
-      documentId: resource.id,
-      url: resource.url
-    });
+    if (!_cancelled()) {
+      dispatcher.dispatch({
+        action: options.doneAction || Actions.FILE_UPLOAD_DONE,
+        documentId: resource.id,
+        url: resource.url
+      });
+    }
   }
 
   function _waitForResourceToBeProcessed(resource) {

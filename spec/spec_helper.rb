@@ -92,7 +92,6 @@ RSpec.configure do |config|
     # Run seed before each test run
     DatabaseCleaner.start
     system "RAILS_ENV=test rake db:seed"
-    system "RAILS_ENV=test rake webpack"
   end
 
   config.after(:suite) do
@@ -107,6 +106,7 @@ RSpec.configure do |config|
   config.before(:all, type: :feature) do
     # Integration tests need a web connection
     WebMock.allow_net_connect!
+    system "RAILS_ENV=test rake webpack"
   end
 
   # We stub the custom theme css because it's costly to build and we want tests to

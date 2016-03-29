@@ -115,6 +115,7 @@ class SiteChrome
       'domainCName' => domain_cname,
       'name' => "Site Chrome",
       'type' => 'site_chrome',
+      'default' => true,
       'properties' => [
         {
           'name' => 'siteChromeConfigVars',

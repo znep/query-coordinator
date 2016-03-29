@@ -81,7 +81,7 @@ class CoreServer
   end
 
   def self.story_themes
-    configurations_request(verb: :get, type: 'story_theme', default_only: true, merge: false)
+    configurations_request(verb: :get, type: 'story_theme', default_only: false, merge: false)
   end
 
   def self.site_chrome
@@ -310,7 +310,7 @@ class CoreServer
       # managed separate from their configurations.
       response = core_server_request_with_retries(core_server_request_options)
 
-      if response.ok?
+      if response.not_found?
         response = core_server_request_with_retries(
           verb: :post, path: "#{base_path}.json", body: property, return_errors: true
         )
@@ -449,4 +449,3 @@ class CoreServer
     Rails.application.config.core_service_app_token
   end
 end
-

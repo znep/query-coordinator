@@ -13,7 +13,8 @@ module.exports = [
       modulesDirectories: ['node_modules'],
       alias: {
         'socrata-utils': path.join(__dirname, '.', 'node_modules/socrata-utils/dist/socrata.utils.js'),
-        '_': path.join(__dirname, '.', 'node_modules/lodash/index.js')
+        '_': path.join(__dirname, '.', 'node_modules/lodash/index.js'),
+        'jQuery': path.join(__dirname, '.', 'node_modules/jquery/dist/jquery.js')
       }
     }
   },

@@ -58,9 +58,7 @@ RSpec.describe "themes/custom" do
   let(:themes) { [theme] }
 
   it "does not have a BOM" do
-    assign(:custom_themes, themes)
-
-    render
+    render(template: 'themes/custom.css.erb', locals: { custom_themes: themes })
 
     expect(rendered).to_not include("\xEF\xBB\xBF".force_encoding('utf-8'))
   end

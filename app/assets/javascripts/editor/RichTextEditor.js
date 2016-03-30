@@ -4,7 +4,6 @@ import Squire from 'squire';
 
 import Actions from './Actions';
 import Sanitizer from './Sanitizer';
-import StorytellerEnvironment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
 import CustomEvent from '../CustomEvent';
 import RichTextEditorFormatController from './RichTextEditorFormatController';
@@ -39,8 +38,8 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
   var _lastContentHeight = 0;
   var _self = this;
 
-  var _themes = $('#themes').html();
-  var _custom = $('#custom').html();
+  var _defaultThemesCss = $('#themes').html() || '';
+  var _customThemesCss = $('#custom').html() || '';
 
   if (typeof contentToPreload !== 'undefined') {
     _contentToPreload = contentToPreload;
@@ -357,14 +356,12 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
   }
 
   /**
-   * Since we will want to override the default browser styles but we are
-   * programmatically creating the iframe, we dynamically insert a link tag
-   * that points to our override stylesheet once the iframe element has been
-   * instantiated.
+   * Loads (default & custom) themes into the given document (from an iframe).
+   * The theme css is sourced from the styles already present on the
+   * main editor window.
    *
-   * Because we need to access the iframe's `contentWindow.document.head` in
-   * order to append a node to the internal document's head, however, we must
-   * wait until the iframe's internal document has actually loaded.
+   * Please note that this function requires that the document is
+   * loaded (i.e., wait for its `load` event).
    */
   function _addThemeStyles(document) {
     // Prevent flash of unstyled text by setting opacity to zero
@@ -373,10 +370,10 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
       css('opacity', 0).
       addClass('typeset squire-formatted');
 
-    var themes = makeStyleElement(_themes);
-    var custom = makeStyleElement(_custom);
+    var defaultThemesStyleElement = makeStyleElement(_defaultThemesCss);
+    var customThemesStyleElement = makeStyleElement(_customThemesCss);
 
-    themes.onload = function() {
+    defaultThemesStyleElement.onload = function() {
       _.delay(function() {
         _updateContentHeight();
         _broadcastHeightChange();
@@ -384,8 +381,8 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
       }, 10);
     };
 
-    document.head.appendChild(themes);
-    document.head.appendChild(custom);
+    document.head.appendChild(defaultThemesStyleElement);
+    document.head.appendChild(customThemesStyleElement);
   }
 
   /**

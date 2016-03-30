@@ -85,7 +85,7 @@
     "airbrake-js": "0.5.8",
     "d3": "3.5.14",
     "flux": "2.1.1",
-    "jquery": "2.2.0",
+    "jquery": "2.2.2",
     "jquery-sidebar": "3.3.2",
     "jquery-ujs": "1.2.0",
     "leaflet": "0.7.7",

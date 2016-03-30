@@ -26,13 +26,15 @@ module.exports = function(values, $target) {
 
   var domainBasedTileServerList;
   if (!_.isEmpty(socrataConfig.tileserverHosts)) {
-    domainBasedTileServerList = socrataConfig.tileserverHosts;
+    domainBasedTileServerList = _.map(socrataConfig.tileserverHosts, (serverUrl) => {
+      return serverUrl.match(/https?:\/\//) ? serverUrl : window.location.protocol + '//' + serverUrl;
+    });
   } else {
     var tileServerTemplate = [
-      'https://tileserver1.api.us.',
-      'https://tileserver2.api.us.',
-      'https://tileserver3.api.us.',
-      'https://tileserver4.api.us.'
+      window.location.protocol + '//tileserver1.api.us.',
+      window.location.protocol + '//tileserver2.api.us.',
+      window.location.protocol + '//tileserver3.api.us.',
+      window.location.protocol + '//tileserver4.api.us.'
     ];
     var topDomain = window.location.host.match(/[\w\-]+.com$/)[0];
     domainBasedTileServerList = _.map(tileServerTemplate, (server) => { return server + topDomain; });

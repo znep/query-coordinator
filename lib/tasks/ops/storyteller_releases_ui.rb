@@ -58,11 +58,11 @@ class StorytellerReleasesUi
       active = marathon_instances.select(&:active?)
       standby = marathon_instances - active
 
-      status_line = ''
-      status_line << "Serving: #{active.map(&:environment).sort.uniq.join(' ')}" unless active.empty?
-      status_line << " Standby: #{standby.map(&:environment).sort.uniq.join(' ')}" unless standby.empty?
+      status_line_components = []
+      status_line_components << "Serving: #{active.map(&:environment).sort.uniq.join(' ')}" unless active.empty?
+      status_line_components << "Standby: #{standby.map(&:environment).sort.uniq.join(' ')}" unless standby.empty?
 
-      [ release_semver.to_s, status_line ]
+      [ release_semver.to_s, status_line_components.join(' ') ]
     end
 
     items.unshift([ 'New', 'Create a new release'])
@@ -94,6 +94,7 @@ class StorytellerReleasesUi
       case selection.first
         when 'Activate'
           make_active(by_environment[selected_environment])
+          break
         when 'Deploy'
           deploy_to_env(selected_environment, selected_version)
         when 'Already'
@@ -161,21 +162,16 @@ Jenkins build number: #{build_number}
   def make_active(marathon_instances)
     #TODO make this a separate rake task
     environments = marathon_instances.map(&:environment).sort
+    return unless dialog.yesno('This is a partial implementation - it will not change the consul healthcheck timeout to 1s (from 60s).\
+It should not be used for production deploys yet. Use the steps in the Storyteller Deploy Guide in google docs for production,\
+under the heading Deploy To Production. Continue?')
     dialog.pause("About to activate #{marathon_instances[0].semver} in #{environments}...", 10, 50, 10)
     if dialog.exit_code == 0
-      dialog.gauge('Writing to Consul...', 8, 50) do |gauge|
-        # TODO this is mostly fake.
-        marathon_instances.each do |release|
-          release.activate!
-        end
-        gauge.puts('XXX')
-        gauge.puts(10)
-        gauge.puts('Waiting for traffic to cut over...')
-        gauge.puts('XXX')
-        sleep 5
+      dialog.infobox('Writing to consul...')
+      marathon_instances.each do |release|
+        release.activate!
       end
-
-      dialog.msgbox('JK that was totally fake, still working on it. Refer to the Storyteller Deploy Guide in google docs for now.')
+      dialog.msgbox('Complete. Please wait 60 seconds for the load balancers to notice the change.')
     end
   end
 

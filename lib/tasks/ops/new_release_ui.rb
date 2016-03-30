@@ -9,6 +9,7 @@ require_relative 'jenkins'
 
 class NewReleaseUi
   ADDITIONAL_MANIFEST_EMAIL = 'emily.rund@socrata.com'
+  MAX_MANIFEST_COMMITS = 1000 # This must be provided to the git library.
   MANIFEST_FILE = 'manifest.txt'
 
   attr_reader :dialog, :git, :new_release_commit, :new_semver, :jenkins_build_number
@@ -175,7 +176,7 @@ Proceed?
   # version. Example header:
   #   Storyteller v1.0.1 Manifest (old version: v1.0.0).
   def manifest_text
-    commits = git.log.between(current_release_commit, new_release_commit).select do |commit|
+    commits = git.log(MAX_MANIFEST_COMMITS).between(current_release_commit, new_release_commit).select do |commit|
       commit.parents.length == 1 # Ignore merge commits.
     end
 

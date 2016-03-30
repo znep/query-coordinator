@@ -171,6 +171,12 @@ class StoriesController < ApplicationController
     @story = DraftStory.find_by_uid(params[:uid])
 
     if @story
+      @custom_themes = Theme.all_custom_for_current_domain
+      @bootstrap_styles = {
+        themes: Rails.application.assets.find_asset(File.join(Rails.root, 'app/assets/stylesheets/themes/themes.scss')).to_s,
+        custom: render_to_string('stories/custom.css')
+      }
+
       @inspiration_category_list = InspirationCategoryList.new(current_user, relative_url_root).to_parsed_json
       theme_list = ThemeList.new
       @standard_theme_configs = theme_list.standard_theme_list.sort_by { |key| key["title"] }

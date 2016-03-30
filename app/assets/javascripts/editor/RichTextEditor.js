@@ -39,6 +39,9 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
   var _lastContentHeight = 0;
   var _self = this;
 
+  var _themes = $('#themes').html();
+  var _custom = $('#custom').html();
+
   if (typeof contentToPreload !== 'undefined') {
     _contentToPreload = contentToPreload;
   }
@@ -340,6 +343,19 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
   }
 
 
+  function makeStyleElement(css) {
+    var style = document.createElement('style');
+    style.type = 'text/css';
+
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+
+    return style;
+  }
+
   /**
    * Since we will want to override the default browser styles but we are
    * programmatically creating the iframe, we dynamically insert a link tag
@@ -357,58 +373,19 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
       css('opacity', 0).
       addClass('typeset squire-formatted');
 
-    var styleEl = document.createElement('link');
-    styleEl.setAttribute('rel', 'stylesheet');
-    styleEl.setAttribute('type', 'text/css');
-    styleEl.setAttribute(
-      'href',
-      StorytellerEnvironment.THEMES_ASSET_PATH
-    );
+    var themes = makeStyleElement(_themes);
+    var custom = makeStyleElement(_custom);
 
-    var customThemesEl = document.createElement('link');
-    customThemesEl.setAttribute('rel', 'stylesheet');
-    customThemesEl.setAttribute('type', 'text/css');
-    customThemesEl.setAttribute(
-      'href',
-      [
-        StorytellerEnvironment.RELATIVE_URL_ROOT,
-        '/themes/custom.css'
-      ].join('')
-    );
-
-    // There seems to be a race condition in Firefox whereby the onload
-    // event triggers before all styles have been applied to the DOM.
-    // This manifests itself as the bottom padding on elements not always
-    // being taken into account in the height calculation done in
-    // _handleContentChange().
-    //
-    // For the time being I am getting around that issue by letting the
-    // browser have 10ms to finalize its layout before invoking
-    // _handleContentChange(), which seems to do the trick. This delay
-    // is small enough that it should be imperceptible to users.
-    var defaultThemesLoaded = false;
-    var customThemesLoaded = false;
-
-    var handleStyleLoading = _.debounce(
-      function() {
+    themes.onload = function() {
+      _.delay(function() {
         _updateContentHeight();
         _broadcastHeightChange();
-        if (defaultThemesLoaded && customThemesLoaded) {
-          $(document.body).css('opacity', '');
-        }
+        $(document.body).css('opacity', '');
       }, 10);
-
-    styleEl.onload = function() {
-      defaultThemesLoaded = true;
-      handleStyleLoading();
-    };
-    customThemesEl.onload = function() {
-      customThemesLoaded = true;
-      handleStyleLoading();
     };
 
-    document.head.appendChild(styleEl);
-    document.head.appendChild(customThemesEl);
+    document.head.appendChild(themes);
+    document.head.appendChild(custom);
   }
 
   /**

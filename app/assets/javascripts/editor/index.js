@@ -44,7 +44,6 @@ dispatcher.dispatch({
 
 (new ErrorReporter());
 
-
 $(document).on('ready', function() {
   /**
    * Setup

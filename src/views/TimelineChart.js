@@ -499,7 +499,7 @@ function TimelineChart(element, vif) {
       filteredClass: null,
       flyoutPosition: {
         vertical: flyoutVerticalPosition(),
-        horizontal: null,
+        horizontal: null
       }
     };
 

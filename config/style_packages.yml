@@ -25,6 +25,9 @@ angular-app-dataCards:
 - dataCards/tour
 - dataCards/_leaflet
 
+dataset-landing-page:
+- vendor/styleguide
+
 ie9:
 - dataCards/ie9
 

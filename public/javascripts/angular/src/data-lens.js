@@ -4,6 +4,5 @@ import '../../util/dompurify-extensions.js';
 import 'script!plugins/modernizr';
 import '../../lib/RxExtensions';
 
-import './styles';
-import './module';
-import './app';
+import '../dataCards/styles';
+import '../dataCards/app';

@@ -606,6 +606,24 @@ class ViewTest < Test::Unit::TestCase
     assert(derived_view_from_multiple_datasets.is_layered?)
   end
 
+  def test_geospatial_child_layers
+    View.stubs(:find_multiple => ['giraffes'])
+    view = View.new('id' => '1234-1234', 'metadata' => {'geo' => {'layers' => '4444-4444'}})
+    view.stubs(:is_geospatial? => true)
+    view.stubs(:is_layered? => true)
+    assert_equal(view.geospatial_child_layers, ['giraffes'])
+    view.stubs(:is_geospatial? => false)
+    assert_equal(view.geospatial_child_layers, [])
+  end
+
+  def test_api_foundry_url
+    view = View.new('id' => '1234-1234')
+    CurrentDomain.stubs(:cname => 'giraffes')
+    assert_equal('https://dev.socrata.com/foundry/giraffes/1234-1234', view.api_foundry_url)
+    view.stubs(:federated? => true, :domainCName => 'wombats')
+    assert_equal('https://dev.socrata.com/foundry/wombats/1234-1234', view.api_foundry_url)
+  end
+
   def test_resource_url_uses_proper_scheme
     view = View.new('id' => '1234-1234')
     assert_equal('https://localhost/resource/1234-1234.json', view.resource_url)

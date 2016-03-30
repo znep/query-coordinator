@@ -5,6 +5,16 @@
   </div>
   <h3><%= t('screens.ds.grid_sidebar.odata.endpoint_action') %></h3>
   <div class="odataEndpointWrapper">
-    <%= content_tag('input', nil, value: @view.odata_url(request), readonly: 'readonly', type: 'text', onclick: 'this.select();') %>
+    <%- if @view.is_geospatial? -%>
+      <%- if @view.has_geo_layers? -%>
+        <%- @view.geospatial_child_layers.each do |child_layer| -%>
+          <%= endpoint_url_tag(child_layer.odata_url(request), :name => child_layer.name, :label_id => 'odata') %>
+        <%- end -%>
+      <%- else -%>
+        <%= endpoint_url_tag(@view.geospatial_child_layers[0].odata_url(request), :label_id => 'odata') %>
+      <%- end -%>
+    <%- else -%>
+      <%= endpoint_url_tag(@view.odata_url(request)) %>
+    <%- end -%>
   </div>
 </div>

@@ -28,7 +28,9 @@ $(document).ready(function() {
     'Opened Goal Chart',
     'Used Search Facets',
     'Used Search Field',
-    'Clicked Socrata News Link'
+    'Clicked Socrata News Link',
+    'Ingress: Started Wizard Page',
+    'Ingress: Left Wizard Page'
   ];
 
   // This is duplicated in angular/common/values.js
@@ -50,6 +52,7 @@ $(document).ready(function() {
     'Message Shown',
     'Name',
     'New URL',
+    'Next Action',
     'Page Number',
     'Pane Name',
     'On Page',
@@ -74,7 +77,9 @@ $(document).ready(function() {
     'User Role Name',
     'View Id',
     'View Type',
-    'Visualization Type'
+    'Visualization Type',
+    'Wizard Page',
+    'Wizard Page Visit Number'
   ];
 
   // Event name validation
@@ -160,10 +165,12 @@ $(document).ready(function() {
     }
   };
 
+  var sincePageOpened = function() { return Math.round(new Date().getTime() / 1000) - blist.pageOpened };
+
   // Page properties we want to also track
   var genericPagePayload = function() {
     var dynamicProperties = {
-      'Time Since Page Opened (sec)': Math.round(new Date().getTime() / 1000) - blist.pageOpened
+      'Time Since Page Opened (sec)': sincePageOpened()
     };
     var staticPropertyNames = [
       'Dataset Owner',
@@ -293,6 +300,32 @@ $(document).ready(function() {
 
     // Validate and track!
     validateAndSendPayload(eventName, mergedProperties, callback);
+  };
+
+  // Assemble and emit ingress wizard event payloads
+  // Note: this is used by screens/datasets-new.js
+  mixpanelNS.trackIngressWizardEvent = function(eventName, properties) {
+    registerUserProperties();
+
+    var staticPropertyNames = [
+      'Domain',
+      'IP',
+      'On Page',
+      'Request Id',
+      'Session Id',
+      'Socrata Employee',
+      'URL',
+      'User Id',
+      'User Role Name'
+    ];
+
+    var mergedProperties = _.extend(
+      { 'Time Since Page Opened (sec)': sincePageOpened() },
+      _.pick(staticPageProperties, staticPropertyNames),
+      properties
+    );
+
+    validateAndSendPayload(eventName, mergedProperties);
   };
 
   // Assemble and emit user error payloads

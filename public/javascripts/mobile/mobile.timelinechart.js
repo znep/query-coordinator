@@ -92,6 +92,7 @@ module.exports = function(values, $target) {
   }
 
   function mobileFlyoutRender(payload) {
+    var flyoutPosition = payload.flyoutPosition;
     var flyoutBounds = payload.element.getBoundingClientRect();
     var highlightedBarWidth = $('.timeline-chart-highlight-container').width();
     var filteredLabelLine = '';
@@ -109,10 +110,14 @@ module.exports = function(values, $target) {
     var unFilteredLabelLine = '<div class="text-right total-values"><span>' + payload.unfilteredLabel + '</span> ' +
       unFilteredValue[0] + '<span> ' + unFilteredValue[1] + '</span></div>';
 
+    var dotLeft = ((flyoutBounds.left - 15) + (highlightedBarWidth / 2));
+    var dotTop = flyoutPosition.vertical - 297;
+
     var flyoutData = $('<div>', {
       'class': 'title-wrapper',
       html:
       '<div class="labels mobile">' +
+        '<div class="dot" style="left: ' + dotLeft + 'px; top: ' + dotTop + 'px;"></div>' +
         '<div class="arrow" style="left: ' + ((flyoutBounds.left - 28) + (highlightedBarWidth / 2)) + 'px"></div>' +
         '<h4 class="title pull-left">' + payload.title + '</h4>' +
         '<div class="values pull-right ' + valuesStyleClass + '">' + filteredLabelLine + unFilteredLabelLine + '</div>' +

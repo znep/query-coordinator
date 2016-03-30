@@ -63,7 +63,7 @@ function getPlugins() {
       new webpack.optimize.OccurenceOrderPlugin(),
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin({
-        mangle: true,
+        mangle: false,
         compress: {
           drop_console: true,
           warnings: false
@@ -150,7 +150,6 @@ function generateOldUxConfig() {
       })
     ].concat(getPlugins())
   }, baseConfig);
-
 }
 
 // Generates the configurat for data-lens
@@ -158,10 +157,19 @@ function generateOldUxConfig() {
 function generateDataLensConfig() {
   var angularDir = path.resolve(projectRootDir, 'public/javascripts/angular');
   var templateDir = path.resolve(projectRootDir, 'public/angular_templates');
+  var srcDir = path.resolve(angularDir, 'src');
+
+  var entries = getEntriesInDir(srcDir);
+
+  console.log('Building datalens entrypoints: ', entries);
+
+  var entry = getEntryObjectFromArray(
+    entries.map(function(entryPoint) { return [entryPoint, './' + entryPoint]; })
+  );
 
   return _.defaultsDeep({
-    context: angularDir,
-    entry: path.resolve(angularDir, 'dataCards/index.js'),
+    context: srcDir,
+    entry: entry,
     externals: datalensWebpackExternals,
     module: {
       loaders: [
@@ -196,7 +204,7 @@ function generateDataLensConfig() {
       ]
     },
     output: {
-      filename: isProduction() ? 'angular/data-lens-[hash].js' : 'angular/data-lens.js'
+      filename: isProduction() ? 'angular/[name]-[hash].js' : 'angular/[name].js'
     },
     plugins: [
       new ManifestPlugin({

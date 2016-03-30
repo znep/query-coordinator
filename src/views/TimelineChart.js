@@ -496,7 +496,11 @@ function TimelineChart(element, vif) {
       unfilteredValue: null,
       filteredLabel: null,
       filteredValue: null,
-      filteredClass: null
+      filteredClass: null,
+      flyoutPosition: {
+        vertical: flyoutVerticalPosition(),
+        horizontal: null
+      }
     };
 
     var $target = $(event.target);
@@ -2178,6 +2182,17 @@ function TimelineChart(element, vif) {
     highlightChart(startDate, endDate);
   }
 
+  // This function determines the vertical position of the flyout.
+  // It always positions the flyout above all timeline paths.
+  function flyoutVerticalPosition() {
+    var hoveringWithinSelection =
+      currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
+
+    return (selectionIsCurrentlyRendered && !hoveringWithinSelection) ?
+      d3YScale(_.max([currentDatum.unfiltered, 0])) :
+      d3YScale(_.max([currentDatum.unfiltered, currentDatum.filtered, 0]));
+  }
+
   /**
    * This function renders the white highlight on the visualization.
    * This rendering is agnostic to how the underlying data has been filtered
@@ -2254,17 +2269,6 @@ function TimelineChart(element, vif) {
       datum(highlightData.data).
       attr('class', 'timeline-chart-highlight').
       attr('d', highlightArea);
-
-    // This function determines the vertical position of the flyout.
-    // It always positions the flyout above all timeline paths.
-    function flyoutVerticalPosition() {
-      var hoveringWithinSelection =
-        currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
-
-      return (selectionIsCurrentlyRendered && !hoveringWithinSelection) ?
-        d3YScale(_.max([currentDatum.unfiltered, 0])) :
-        d3YScale(_.max([currentDatum.unfiltered, currentDatum.filtered, 0]));
-    }
 
     // Sets the x and y flyout position.
     flyoutPosition = d3.

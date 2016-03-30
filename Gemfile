@@ -116,7 +116,7 @@ group :development do
   gem 'decima-ruby', '0.1.0', path: 'vendor/gems/decima-ruby-0.1.0'
 
   # Ops tasks
-  gem 'net-ip'
+  gem 'net-ping'
   gem 'mrdialog'
   gem 'inifile'
   # Fetch from git, we need some of the recent bugfixes.

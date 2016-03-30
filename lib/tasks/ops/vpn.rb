@@ -1,7 +1,7 @@
-require 'net/ip'
+require 'net/ping'
 
 class Vpn
   def self.active?
-    Net::IP.routes.any? { |r| r.prefix == '10.0.0.0/8' }
+    Net::Ping::External.new('marathon.aws-us-west-2-prod.socrata.net').ping?
   end
 end

@@ -127,6 +127,7 @@ function templateHeroText() {
 }
 
 function templateUnconfiguredHero() {
+  /* eslint-disable indent */
   return [
     '<div class="hero hero-unconfigured">',
       templateHeroText(),
@@ -136,14 +137,17 @@ function templateUnconfiguredHero() {
       '</div>',
     '</div>'
   ].join('');
+  /* eslint-enable indent */
 }
 
 function templateHero() {
+  /* eslint-disable indent */
   return [
     '<div class="hero" data-url="{image}">',
     templateHeroText(),
     '</div>'
   ].join('');
+  /* eslint-enable indent */
 }
 
 function renderUnconfiguredHero($element) {

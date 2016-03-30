@@ -49,6 +49,7 @@ export default function CollaboratorsRenderer() {
    */
 
   function template() {
+    /* eslint-disable indent */
     return [
       '<div>',
         '<div>',
@@ -112,9 +113,11 @@ export default function CollaboratorsRenderer() {
       // intentionally not a link, this should be pasted into an email by the user (not followed by them).
       domain: window.location.hostname
     });
+    /* eslint-enable indent */
   }
 
   function templateAccessLevel(role) {
+    /* eslint-disable indent */
     return [
       '<div class="modal-select">',
         StorytellerUtils.format('<select data-action="{0}">', Actions.COLLABORATORS_CHANGE),
@@ -124,15 +127,18 @@ export default function CollaboratorsRenderer() {
         '</select>',
       '</div>'
     ].join('');
+    /* eslint-enable indent */
   }
 
   function templateRemove() {
+    /* eslint-disable indent */
     return [
       '<button ',
         'class="btn-default btn-inverse"',
         StorytellerUtils.format('data-action="{0}"', Actions.COLLABORATORS_REMOVE),
       StorytellerUtils.format('>{0}</button>', t('editor.collaborators.modal.remove'))
     ].join('');
+    /* eslint-disable indent */
   }
 
   function templateContributor(contributor) {

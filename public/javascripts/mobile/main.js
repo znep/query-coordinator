@@ -618,7 +618,7 @@ import './styles/mobile-general.scss';
       }]
     };
 
-    $navbar.css('background-color', theme.header_background_color);
+    $navbar.css('background-color', theme.header_background_color || 'white');
     $logo.attr('src', theme.logo_url);
 
     (currentUser ? routes.user : routes.visitor).forEach(function(route) {

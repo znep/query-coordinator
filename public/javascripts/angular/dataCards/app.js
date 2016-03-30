@@ -4,6 +4,8 @@ var templateUrl2 = require('angular_templates/dataCards/pages/cards-view.html');
 var templateUrl1 = require('angular_templates/dataCards/pages/test-page.html');
 const angular = require('angular');
 
+require('./module');
+
 angular.module('dataCards').config(function(ServerConfig, $httpProvider, $windowProvider) {
   ServerConfig.setup($windowProvider.$get().socrataConfig);
 

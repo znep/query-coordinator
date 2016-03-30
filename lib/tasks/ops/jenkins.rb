@@ -1,3 +1,4 @@
+require 'logger'
 require 'jenkins_api_client'
 
 class Jenkins
@@ -41,7 +42,7 @@ class Jenkins
 
   def self.api
     assert_auth_configured
-    JenkinsApi::Client.new(server_url: JENKINS_URL, username: ENV[USERNAME_ENV_KEY], password: ENV[TOKEN_ENV_KEY])
+    JenkinsApi::Client.new(server_url: JENKINS_URL, username: ENV[USERNAME_ENV_KEY], password: ENV[TOKEN_ENV_KEY], log_level: Logger::WARN)
   end
     
 end

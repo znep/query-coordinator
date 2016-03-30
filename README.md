@@ -11,9 +11,15 @@ TODO: write installation steps
 ## Usage
 
 ```ruby
-domain = 'opendata-demo.rc-socrata.com'
+domain = 'storiespreview.rc-socrata.com'
 auth = Chrome::Auth.new(domain, email, password).authenticate
 domain_config = Chrome::DomainConfig.new(domain, auth.cookie)
+site_chrome = Chrome::SiteChrome.init_from_core_config(domain_config.config)
+
+# for Localhost there are some additional parameters you pass for auth to work without SSL errors
+domain = 'localhost'
+auth = Chrome::Auth.new(domain, email, password, false).authenticate
+domain_config = Chrome::DomainConfig.new(domain, auth.cookie, true)
 site_chrome = Chrome::SiteChrome.init_from_core_config(domain_config.config)
 
 # Get rendered html for each section

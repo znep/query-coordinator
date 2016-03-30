@@ -43,6 +43,7 @@
       padding-bottom: 3px;
       font-size: 14px;
       margin-bottom: 5px;
+      max-width: 180px;
       @media all and (max-width: $mobile-point) {
         font-size: 18px;
         margin-left: 0;
@@ -54,7 +55,7 @@
       align-items: baseline;
       cursor: pointer;
       min-width: 130px;
-      width: 100%;
+      max-width: 180px;
       padding: 5px;
       background-color: #FFF;
       border: 1px solid #B7B7B8;
@@ -168,6 +169,9 @@
       font-size: 16px;
       color: #555;
       min-width: 180px;
+      b {
+        line-height: 150%;
+      }
     }
     .qfb-filter-item-flannel-title-mobile {
       display: none;
@@ -179,6 +183,7 @@
     @media all and (max-width: $mobile-point) {
       .qfb-filter-item-main-group-2 {
         flex-grow: 2;
+        max-width: 75%;
       }
     }
 

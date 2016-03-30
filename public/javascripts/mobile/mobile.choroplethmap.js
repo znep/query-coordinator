@@ -19,7 +19,7 @@ module.exports = function(values, $target) {
     'columnName': values.columnName,
     'configuration': {
       'mapOptions': {
-        'tap': true
+        'tap': false
       },
       'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
       'baseLayerOpacity': 0.8,

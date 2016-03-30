@@ -1,0 +1,75 @@
+{
+  "updatedAt": "123546789",
+  "content": {
+    "footer": {
+      "logo": {
+        "alt": "my-footer",
+        "src": "http://i.imgur.com/rF2EJ4P.gif",
+        "href": "/"
+      },
+      "links": [ {
+        "label": "footer.home",
+        "url": "/"
+      }, {
+        "label": "footer.terms_of_service",
+        "url": "http://www.socrata.com/terms-of-service"
+      } ]
+    },
+    "navigation": {
+      "links": [ {
+        "label": "navigation.home",
+        "url": "/"
+      }, {
+        "label": "navigation.catalog",
+        "url": "/browse"
+      } ]
+    },
+    "locales": [ {
+      "en": {
+        "footer": {
+          "home": "Home Page",
+          "terms_of_service": "Terms of Service"
+        },
+        "navigation": {
+          "home": "Home Page",
+          "catalog": "Browse"
+        },
+        "header": {
+          "sign_in": "Sign In",
+          "admin": "Administration"
+        }
+      }
+    } ],
+    "general": {
+      "window_icon": "http://customer.com/favicon.ico",
+      "link_text_color": "#888",
+      "window_title": "Customer’s Open Data Portal",
+      "site_display_name": "Customer’s Open Data Portal",
+      "styles": {
+        "dark_bg": {
+          "bg_color": "#2c97de",
+          "font_color": "#fff"
+        },
+        "font_family": "Helvetica",
+        "light_bg": {
+          "bg_color": "#eee",
+          "font_color": "#333"
+        }
+      }
+    },
+    "header": {
+      "logo": {
+        "alt": "header-logo",
+        "src": "http://i.imgur.com/rF2EJ4P.gif",
+        "href": "/"
+      },
+      "links": [ {
+        "label": "header.admin",
+        "url": "/admin "
+      }, {
+        "label": "header.sign_in",
+        "url": "/signin"
+      } ]
+    }
+  }
+}

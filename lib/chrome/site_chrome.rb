@@ -1,75 +1,63 @@
+require 'erb'
+require 'ostruct'
+
 module Chrome
   class SiteChrome
     attr_reader :id, :styles, :content, :updated_at, :domain_cname
 
     def initialize(config = {})
-      @id = config['id']
-      @styles = config['styles'] || {}
-      @content = config['content'] || {}
-      @updated_at = config['updated_at'] || 0
-      @domain_cname = config['domain_cname']
+      @id = config[:id]
+      @content = config[:content] || {}
+      @updated_at = config[:updated_at] || 0
+      @domain_cname = config[:domain_cname]
     end
 
-    def header_html
-      # TODO
+    # General/universal settings in the Site Chrome config
+    def general_configs
+      @content['general']
     end
 
-    def footer_html
-      # TODO
+    def get_html(section)
+      raise 'Must provide a section name to render' if section.nil?
+      raise 'Invalid section name. Must be one of "header", "navigation", or "footer"' unless
+        %w(header navigation footer).include?(section)
+
+      section_content = OpenStruct.new(@content[section]) # TODO - combine general_configs into this?
+      template = File.read("templates/#{section}.html.erb")
+      ERB.new(template).result(section_content.instance_eval { binding })
     end
 
-    def navbar_html
-      # TODO
-    end
-
-    # Reads from a core config that looks like the following:
-    # {
-    #   "default": true,
-    #   "domainCName": "bobloblawslawblog.com",
-    #   "id": 345,
-    #   "name": "Site Chrome",
-    #   "type": "site_chrome",
-    #   "properties": [
-    #     {
-    #       "name": "siteChromeConfigVars",
-    #       "value": {
-    #         "styles": {
-    #           "$bg-color": "#abcdef",
-    #           "$font-color": "#012345"
-    #         },
-    #         "content": {
-    #           "logoUrl": "http://s3.bucket.com/images/001/logo.png",
-    #           "logoAltText": "Bob Loblaw's Law Blog",
-    #           "friendlySiteName": "Bob Loblaw's Law Blog",
-    #           "link1Label": "OpenData Portal",
-    #           "link1Url": "http://data.bobloblawslawblog.com/browse",
-    #           "link2Label": "Budget",
-    #           "link2Url": "http://budget.data.bobloblawslawblog.com",
-    #           "link3Label": "Spending",
-    #           "link3Url": "http://expenditures.data.bobloblawslawblog.com",
-    #         }
-    #       }
-    #     }
-    #   ]
-    # }
     def self.init_from_core_config(core_config)
       return if core_config.nil?
 
-      properties = {}
+      site_chrome_config = newest_published_site_chrome(core_config)
 
-      if core_config.has_key?('properties')
-        site_chrome_config_vars = core_config['properties'].detect do |config|
-          config['name'] == 'siteChromeConfigVars'
-        end
-        properties['styles'] = site_chrome_config_vars['value']['styles']
-        properties['content'] = site_chrome_config_vars['value']['content']
-      end
-
-      properties['id'] = core_config['id']
-      properties['updated_at'] = core_config['updatedAt']
-      properties['domain_cname'] = core_config['domainCName']
+      properties = {
+        id: core_config['id'],
+        content: site_chrome_config['content'],
+        updated_at: site_chrome_config['updatedAt'] || core_config['updatedAt'],
+        domain_cname: core_config['domainCName']
+      }
 
       SiteChrome.new(properties)
     end
+
+    private
+
+    # Core config contains various versions, each having a "published" and "draft" set of
+    # site chrome config vars. This finds and returns the newest published content.
+    def self.newest_published_site_chrome(core_config)
+      if core_config.has_key?('properties')
+        site_chrome_config = core_config['properties'].detect do |config|
+          config['name'] == 'siteChromeConfigVars'
+        end
+
+        latest_version = site_chrome_config['value']['versions'].keys.map(&:to_f).max.to_s
+        site_chrome_config['value']['versions'][latest_version]['published']
+      else
+        {}
+      end
+    end
+
   end
 end

@@ -4,103 +4,99 @@ describe Chrome::SiteChrome do
   let(:id) { 2663 }
   let(:updated_at) { '123546789' }
   let(:domain_cname) { 'data.bobloblawslawblog.com' }
-
-  let(:site_chrome_config_vars) do
-    {
-      'styles' => {
-        '$bg-color' => '#abcdef',
-        '$font-color' => '#012345'
-      },
-      'content' => {
-        'logoUrl' => 'http://s3.bucket.com/images/001/logo.png',
-        'logoAltText' => 'Bob Loblaw\'s Law Blog',
-        'friendlySiteName' => 'Bob Loblaw\'s Law Blog'
-      }
-    }
+  let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')) }
+  let(:core_config) do
+    JSON.parse(File.read('spec/fixtures/core_config.json')).tap do |config|
+      config['properties'].first['value']['versions']['0.1']['published'] = site_chrome_config_vars
+    end
   end
 
   let(:site_chrome_config) do
     {
-      'id' => id,
-      'styles' => site_chrome_config_vars['styles'],
-      'content' => site_chrome_config_vars['content'],
-      'updated_at' => updated_at,
-      'domain_cname' => domain_cname
+      id: id,
+      content: site_chrome_config_vars['content'],
+      updated_at: updated_at,
+      domain_cname: domain_cname
     }
   end
 
-  let(:subject) { Chrome::SiteChrome.new(site_chrome_config) }
+  let(:helper) { Chrome::SiteChrome.new(site_chrome_config) }
 
   it 'does not raise on initialization without parameters' do
     expect { Chrome::SiteChrome.new() }.to_not raise_error
   end
 
   it 'sets id from properties' do
-    expect(subject.id).to eq(id)
-  end
-
-  it 'sets styles from properties' do
-    expect(subject.styles).to eq(site_chrome_config_vars['styles'])
+    expect(helper.id).to eq(id)
   end
 
   it 'sets content from properties' do
-    expect(subject.content).to eq(site_chrome_config_vars['content'])
+    expect(helper.content).to eq(site_chrome_config_vars['content'])
   end
 
   it 'sets updated_at from properties' do
-    expect(subject.updated_at).to eq(updated_at)
+    expect(helper.updated_at).to eq(updated_at)
   end
 
   it 'sets domain_cname from properties' do
-    expect(subject.domain_cname).to eq(domain_cname)
+    expect(helper.domain_cname).to eq(domain_cname)
+  end
+
+  describe '#get_html' do
+    it 'should raise if nil section is passed' do
+      expect { helper.get_html(nil) }.to raise_error('Must provide a section name to render')
+    end
+
+    it 'should raise if invalid section is passed' do
+      expect { helper.get_html('wrong_section') }.to raise_error(
+        'Invalid section name. Must be one of "header", "navigation", or "footer"'
+      )
+    end
+
+    it 'returns an ERB template' do
+      html = '<header>test header</header>'
+      allow(File).to receive(:read).and_call_original
+      allow(File).to receive(:read).with('templates/header.html.erb').and_return(html)
+      expect(helper.get_html('header')).to eq(html)
+    end
+
+    it 'returns an ERB template with substitutions' do
+      html = '<header><img src="<%= logo["src"] %>" alt="<%= logo["alt"] %>"></header>'
+      allow(File).to receive(:read).and_call_original
+      allow(File).to receive(:read).with('templates/header.html.erb').and_return(html)
+      expect(helper.get_html('header')).to eq(
+        '<header><img src="http://i.imgur.com/rF2EJ4P.gif" alt="header-logo"></header>'
+      )
+    end
   end
 
   describe '#init_from_core_config' do
-    let(:core_config) do
-      {
-        'default' => true,
-        'domainCName' => domain_cname,
-        'id' => id,
-        'name' => 'Site Chrome',
-        'updatedAt' => updated_at,
-        'properties' => [
-          { 'name' => 'siteChromeConfigVars', 'value' => site_chrome_config_vars }
-        ],
-        'type' => 'site_chrome'
-      }
-    end
-
-    let(:subject) { Chrome::SiteChrome.init_from_core_config(core_config) }
+    let(:helper) { Chrome::SiteChrome.init_from_core_config(core_config) }
 
     it 'sets id from properties' do
-      expect(subject.id).to eq(id)
-    end
-
-    it 'sets styles from properties' do
-      expect(subject.styles).to eq(site_chrome_config_vars['styles'])
+      expect(helper.id).to eq(id)
     end
 
     it 'sets content from properties' do
-      expect(subject.content).to eq(site_chrome_config_vars['content'])
+      expect(helper.content).to eq(site_chrome_config_vars['content'])
     end
 
     it 'sets updated_at from properties' do
-      expect(subject.updated_at).to eq(updated_at)
+      expect(helper.updated_at).to eq(updated_at)
     end
 
     it 'sets domain_cname from properties' do
-      expect(subject.domain_cname).to eq(domain_cname)
+      expect(helper.domain_cname).to eq(domain_cname)
     end
 
     context 'when core config does not exist' do
       let(:core_config) { {} }
 
       it 'returns an empty initialized object' do
-        expect(subject).to be_a(Chrome::SiteChrome)
-        expect(subject.id).to be_nil
-        expect(subject.domain_cname).to be_nil
-        expect(subject.styles).to be_empty
-        expect(subject.content).to be_empty
+        expect(helper).to be_a(Chrome::SiteChrome)
+        expect(helper.id).to be_nil
+        expect(helper.domain_cname).to be_nil
+        expect(helper.content).to be_empty
       end
     end
 
@@ -108,8 +104,38 @@ describe Chrome::SiteChrome do
       let(:core_config) { nil }
 
       it 'returns nil' do
-        expect(subject).to be_nil
+        expect(helper).to be_nil
       end
     end
   end
+
+  describe '#newest_published_site_chrome' do
+    it 'returns an empty hash if core_config does not have properties' do
+      result = Chrome::SiteChrome.newest_published_site_chrome({})
+      expect(result).to eq({})
+    end
+
+    it 'returns the published config of the most recent version of the site chrome' do
+      core_config_with_various_versions = core_config.clone
+      core_config_with_various_versions['properties'].first['value']['versions'] =
+        {
+          '0.1' => {
+            'draft' => { 'value' => 'x' },
+            'published' => { 'value' => 'a' }
+          },
+          '23.8' => { # Ensure we are sorting by largest number, and not alpha
+            'draft' => { 'value' => 'y' },
+            'published' => { 'value' => 'b' }
+          },
+          '8.1' => {
+            'draft' => { 'value' => 'z' },
+            'published' => { 'value' => 'c' }
+          }
+        }
+
+      result = Chrome::SiteChrome.newest_published_site_chrome(core_config_with_various_versions)
+      expect(result).to eq({ 'value' => 'b' })
+    end
+  end
+
 end

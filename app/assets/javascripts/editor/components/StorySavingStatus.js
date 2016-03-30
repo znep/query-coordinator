@@ -16,10 +16,10 @@ export default function StorySavingStatus(options) {
   StorytellerUtils.assert(storySaveStatusStore, 'storySaveStatusStore must be instantiated');
   StorytellerUtils.assertIsOneOfTypes(options, 'object', 'undefined');
 
-	options = _.extend({}, {
-		savedMessageTimeout: 5000, // When the story saves, keep displaying 'Saved!' for this long.
-		statusDebounceTimeout: 250 // Prevent rapid changes in status from twitching the display.
-	}, options);
+  options = _.extend({}, {
+    savedMessageTimeout: 5000, // When the story saves, keep displaying 'Saved!' for this long.
+    statusDebounceTimeout: 250 // Prevent rapid changes in status from twitching the display.
+  }, options);
 
   var debouncedRender = _.debounce(render, options.statusDebounceTimeout);
 

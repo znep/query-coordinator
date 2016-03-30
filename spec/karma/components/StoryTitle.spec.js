@@ -75,8 +75,8 @@ describe('StoryTitle jQuery plugin', function() {
 
     describe('that changes', function() {
       it('should update the story title', function() {
-         title = 'New Story Title';
-         storyStoreMock._emitChange();
+        title = 'New Story Title';
+        storyStoreMock._emitChange();
 
         assert.equal(node.text(), title);
         assert.equal(node.attr('title'), title);

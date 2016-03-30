@@ -10,14 +10,14 @@ import StoryPermissionsRenderer from './StoryPermissionsRenderer';
 import StoryRenderer from './StoryRenderer';
 
 export default {
-	AssetSelectorRenderer: AssetSelectorRenderer,
-	CollaboratorsRenderer: CollaboratorsRenderer,
-	ErrorModalRenderer: ErrorModalRenderer,
-	LinkModalRenderer: LinkModalRenderer,
-	LinkTipRenderer: LinkTipRenderer,
-	LoginWindowRenderer: LoginWindowRenderer,
-	ShareAndEmbedRenderer: ShareAndEmbedRenderer,
-	StoryCopierRenderer: StoryCopierRenderer,
-	StoryPermissionsRenderer: StoryPermissionsRenderer,
-	StoryRenderer: StoryRenderer
+  AssetSelectorRenderer: AssetSelectorRenderer,
+  CollaboratorsRenderer: CollaboratorsRenderer,
+  ErrorModalRenderer: ErrorModalRenderer,
+  LinkModalRenderer: LinkModalRenderer,
+  LinkTipRenderer: LinkTipRenderer,
+  LoginWindowRenderer: LoginWindowRenderer,
+  ShareAndEmbedRenderer: ShareAndEmbedRenderer,
+  StoryCopierRenderer: StoryCopierRenderer,
+  StoryPermissionsRenderer: StoryPermissionsRenderer,
+  StoryRenderer: StoryRenderer
 };

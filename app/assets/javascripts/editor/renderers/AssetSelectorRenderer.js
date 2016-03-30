@@ -1347,21 +1347,21 @@ export default function AssetSelectorRenderer(options) {
       'class': 'modal-button-group r-to-l'
     }).append([ backButton, insertButton ]);
 
-		configureVisualizationIframe[0].onVisualizationSelectedV2 = function(datasetObjJson, format, originalUid) {
-			// This function is called by the visualization chooser when:
-			//   - The user makes or clears a selection (argument is either null or a visualization).
-			//   - The page finishes loading (argument is null).
-			// In either case, we should consider the iframe loaded.
-			// originalUid may be null (say if the user created the visualization inline).
-			configureVisualizationIframe.
-				trigger('visualizationSelected', {
-					data: JSON.parse(datasetObjJson),
+    configureVisualizationIframe[0].onVisualizationSelectedV2 = function(datasetObjJson, format, originalUid) {
+      // This function is called by the visualization chooser when:
+      //   - The user makes or clears a selection (argument is either null or a visualization).
+      //   - The page finishes loading (argument is null).
+      // In either case, we should consider the iframe loaded.
+      // originalUid may be null (say if the user created the visualization inline).
+      configureVisualizationIframe.
+        trigger('visualizationSelected', {
+          data: JSON.parse(datasetObjJson),
 
-					// format can either be 'classic' or 'vif'.
-					format: format,
-					originalUid: originalUid
-				});
-		};
+          // format can either be 'classic' or 'vif'.
+          format: format,
+          originalUid: originalUid
+        });
+    };
 
     return [ loadingButton, configureVisualizationIframe, buttonGroup ];
   }

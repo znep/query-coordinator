@@ -242,9 +242,7 @@ export default function StoryRenderer(options) {
     var layoutHeight = 0;
 
     blockIdsToRemove.forEach(function(blockId) {
-
-
-        storyStore.
+      storyStore.
         getBlockComponents(blockId).
         forEach(function(componentDatum, i) {
           var componentElement = elementCache.getComponent(blockId, i);

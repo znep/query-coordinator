@@ -468,6 +468,7 @@ describe('StorytellerUtils', function() {
       var element;
 
       beforeEach(function() {
+        /* eslint-disable indent */
         var html = [
           '<div data-on-one-ancestor="1" data-on-multiple-ancestors="2">',
             '<div data-on-multiple-ancestors="3">',
@@ -475,6 +476,7 @@ describe('StorytellerUtils', function() {
             '</div>',
           '</div>'
         ].join('');
+        /* eslint-enable indent */
 
         $transient.append(html);
         element = $transient.find('#element');

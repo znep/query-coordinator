@@ -167,37 +167,37 @@ export default function RichTextEditorFormatController(editor, formats) {
       return foundFormats;
     }
 
-		function _recordElementTextColor(element, foundTextStyles) {
+    function _recordElementTextColor(element, foundTextStyles) {
 
-			if (element.nodeType === element.ELEMENT_NODE) {
-				var computedStyles = window.getComputedStyle(element);
+      if (element.nodeType === element.ELEMENT_NODE) {
+        var computedStyles = window.getComputedStyle(element);
 
-				// Make a synthetic 'format' object here, since we cannot enumerate
-				// all possible color values but we want to conform to the downstream
-				// expectation that all of the active 'formats' are format objects.
-				foundTextStyles.push({
-					dropdown: false,
-					id: 'textColor',
-					name: 'textColor',
-					tag: null,
-					color: computedStyles.getPropertyValue('color')
-				});
-			}
-		}
+        // Make a synthetic 'format' object here, since we cannot enumerate
+        // all possible color values but we want to conform to the downstream
+        // expectation that all of the active 'formats' are format objects.
+        foundTextStyles.push({
+          dropdown: false,
+          id: 'textColor',
+          name: 'textColor',
+          tag: null,
+          color: computedStyles.getPropertyValue('color')
+        });
+      }
+    }
 
-		function _recordTextColor(element) {
+    function _recordTextColor(element) {
 
-			var foundTextStyles = StorytellerUtils.reduceDOMFragmentAscending(
-				element,
-				_recordElementTextColor,
-				function(el) {
-					return el.nodeType === el.ELEMENT_NODE;
-				},
-				[]
-			);
+      var foundTextStyles = StorytellerUtils.reduceDOMFragmentAscending(
+        element,
+        _recordElementTextColor,
+        function(el) {
+          return el.nodeType === el.ELEMENT_NODE;
+        },
+        []
+      );
 
-			return foundTextStyles;
-		}
+      return foundTextStyles;
+    }
 
     var selection = _squire.getSelection();
     var foundAlignmentFormats = _recordAlignmentFormats(selection.commonAncestorContainer);

@@ -15,6 +15,7 @@ describe('SettingsPanel jQuery plugin', function() {
   var coreSavingStore;
 
   beforeEach(function() {
+    /* eslint-disable indent */
     var dom = [
       '<div class="panel">',
         '<div class="settings-panel">',
@@ -30,6 +31,7 @@ describe('SettingsPanel jQuery plugin', function() {
         '</div>',
       '</div>'
     ].join('');
+    /* eslint-enable indent */
 
     $transient.append(dom);
     $transient.append('<div class="handle">');

@@ -11,8 +11,9 @@ class NewReleaseUi
   ADDITIONAL_MANIFEST_EMAIL = 'emily.rund@socrata.com'
   MAX_MANIFEST_COMMITS = 1000 # This must be provided to the git library.
   MANIFEST_FILE = 'manifest.txt'
+  RELEASE_BRANCH_NAME = 'release'
 
-  attr_reader :dialog, :git, :new_release_commit, :new_semver, :jenkins_build_number
+  attr_reader :dialog, :git, :new_release_commit, :new_semver, :jenkins_build_number, :last_released_commit, :current_master_commit
 
   def initialize
     @dialog = MRDialog.new
@@ -31,6 +32,11 @@ class NewReleaseUi
 
     return unless git_clean?
 
+    dialog.infobox('Fetching origin...', 3, 40)
+    git.fetch('origin')
+
+    @last_released_commit = git.object('origin/release')
+    @current_master_commit = git.object('origin/master')
     @new_release_commit = input_release_commit
 
     return unless @new_release_commit && user_approves_manifest?
@@ -53,10 +59,10 @@ class NewReleaseUi
   def make_the_release!
     # 1- Reset or merge local release to new_release_commit
     dialog.infobox('Prepare release branch')
-    git.checkout('release')
-    git.reset_hard('origin/release')
+    git.checkout(RELEASE_BRANCH_NAME)
 
     if merge_instead_of_reset?
+      git.reset_hard("origin/#{RELEASE_BRANCH_NAME}")
       if current_master_commit.sha == new_release_commit.sha
         git.merge('origin/master')
       else
@@ -67,7 +73,7 @@ Aborted.'
         return
       end
     else
-      git.reset_hard(current_release_commit)
+      git.reset_hard(new_release_commit)
     end
 
     # 2- Commit semver
@@ -79,14 +85,15 @@ Aborted.'
 
     # 3- Apply tag.
     dialog.infobox('Tag release')
-    Rake.application['tag:release'].execute
+    git.add_tag(new_semver.to_s.tr('v', ''))
 
     # 4- Push origin
     dialog.infobox('Git push')
-    git.push
+    git.push('origin', RELEASE_BRANCH_NAME, tags: true, force: true)
   end
 
   def wait_for_jenkins_build
+    build_number = nil
     dialog.infobox('Waiting for Jenkins build to complete successfully', 4, 50)
     loop do
       build_number = Jenkins.find_storyteller_release_build(git.object('release').sha)
@@ -101,16 +108,13 @@ Aborted.'
 
   def input_release_commit
     release_type_menu_items = [
-      [ 'master', 'Merge origin/master into origin/release' ],
-      [ 'custom', 'Reset origin/release to an arbitrary commit' ]
+      [ 'master', "Merge origin/master into origin/#{RELEASE_BRANCH_NAME}" ],
+      [ 'custom', "Reset origin/#{RELEASE_BRANCH_NAME} to an arbitrary commit" ]
     ]
 
     release_type = dialog.menu('Create a release from...', release_type_menu_items, 20, 80)
 
     return unless release_type
-
-    dialog.infobox('Fetching origin...', 3, 40)
-    git.fetch
 
     case release_type
       when 'master'
@@ -171,12 +175,12 @@ Proceed?
 ")
   end
 
-  # Generate a manifest between current_release_commit and new_release_commit.
+  # Generate a manifest between last_released_commit and new_release_commit.
   # If new_semver is set, a header will be generated mentioning the new
   # version. Example header:
   #   Storyteller v1.0.1 Manifest (old version: v1.0.0).
   def manifest_text
-    commits = git.log(MAX_MANIFEST_COMMITS).between(current_release_commit, new_release_commit).select do |commit|
+    commits = git.log(MAX_MANIFEST_COMMITS).between(last_released_commit, new_release_commit).select do |commit|
       commit.parents.length == 1 # Ignore merge commits.
     end
 
@@ -210,32 +214,37 @@ Copy manifest to clipboard?")
 
 
   def create_custom_release_commit
-    original_release = current_release_commit
-    dialog.msgbox("In another terminal, please get HEAD into the state you wish to release.
+    dialog.infobox('Checking out release...')
+    git.checkout(RELEASE_BRANCH_NAME)
+    git.reset_hard("origin/#{RELEASE_BRANCH_NAME}")
+
+    dialog.msgbox("I've checked out the origin/release branch for you. Please get this branch into what you intend to release.
 Don't worry about updating semver, that will be done in a minute.
 DON'T push release to github! (I'll notice).
 
 Cherry-pick example:
-# git checkout release       # Could be anything, really.
 # git cherry-pick abcd1234
-                  
+
+Reset to arbitrary commit example:
+# git reset --hard some_branch_tag_or_commit
+
 Press <enter> when you're done.")
 
-    if original_release.sha != current_release_commit.sha
-      dialog.msgbox("You pushed to origin/release! I told you not to!
-Reset origin/release to #{original_release.sha} and try again!")
-      while original_release.sha != current_release_commit.sha
-        dialog.msgbox("Srsly, reset origin/release to #{original_release.sha} (or ctrl-c if you must)")
+    if current_origin_release_commit.sha != last_released_commit.sha
+      dialog.msgbox("You pushed to origin/#{RELEASE_BRANCH_NAME}! I told you not to!
+Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit.sha} and try again!")
+      while current_origin_release_commit.sha != last_released_commit.sha
+        dialog.msgbox("Srsly, reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit.sha} (or ctrl-c if you must)")
       end
     end
 
-    head_commit = git.object('HEAD')
+    local_release_commit = git.object('release')
 
-    if current_release_commit.sha == head_commit.sha
-      dialog.msgbox('Your release branch is the same as origin/release!')
+    if last_released_commit.sha == local_release_commit.sha
+      dialog.msgbox("Your release branch is the same as origin/#{RELEASE_BRANCH_NAME}!")
       nil
     else
-      head_commit
+      local_release_commit
     end
   end
 
@@ -244,17 +253,9 @@ Reset origin/release to #{original_release.sha} and try again!")
   end
 
   def current_release_semver
-    semver_yaml = git.gblob("#{current_release_commit.sha}:.semver").contents
+    semver_yaml = git.gblob("#{last_released_commit.sha}:.semver").contents
     semver = YAML.load(semver_yaml)
     SemVer.new(semver[:major], semver[:minor], semver[:patch], semver[:special])
-  end
-
-  def current_release_commit
-    git.object('origin/release')
-  end
-
-  def current_master_commit
-    git.object('origin/master')
   end
 
   # Our policy is:
@@ -271,6 +272,10 @@ Reset origin/release to #{original_release.sha} and try again!")
     dialog.msgbox('Git working copy not clean. Cannot proceed.', 6, 35) unless clean
 
     clean
+  end
+
+  def current_origin_release_commit
+    git.object("origin/#{RELEASE_BRANCH_NAME}")
   end
 
   def open_git_repo

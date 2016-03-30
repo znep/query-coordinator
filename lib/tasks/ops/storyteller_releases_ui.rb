@@ -25,6 +25,7 @@ class StorytellerReleasesUi
     begin
       Rake.application['ops:jenkins:check_creds'].invoke
       Rake.application['ops:check_aws_creds'].invoke
+      dialog.infobox('Check VPN...')
       Rake.application['ops:check_vpn'].invoke
     rescue => e
       dialog.msgbox(e.message)
@@ -59,7 +60,7 @@ class StorytellerReleasesUi
 
       status_line = ''
       status_line << "Serving: #{active.map(&:environment).sort.uniq.join(' ')}" unless active.empty?
-      status_line << "Standby: #{standby.map(&:environment).sort.uniq.join(' ')}" unless standby.empty?
+      status_line << " Standby: #{standby.map(&:environment).sort.uniq.join(' ')}" unless standby.empty?
 
       [ release_semver.to_s, status_line ]
     end

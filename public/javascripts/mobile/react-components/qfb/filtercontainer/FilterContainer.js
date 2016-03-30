@@ -4,6 +4,7 @@ import './filtercontainer.scss';
 import FilterItem from '../filteritem/FilterItem'; // eslint-disable-line no-unused-vars
 import FlannelUtils from '../../flannel/flannel';
 import moment from 'moment';
+import _ from 'lodash';
 
 class FilterContainer extends React.Component {
 
@@ -94,6 +95,10 @@ class FilterContainer extends React.Component {
     var modifiedFilters = [];
 
     filters.forEach(function(filter) {
+      if (_.isEmpty(filter.data)) {
+        return;
+      }
+
       var filterObj = {};
 
       switch (filter.type) {

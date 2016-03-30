@@ -27,8 +27,8 @@ module.exports = function(config) { //eslint-disable-line no-undef
     webpack: {
       resolve: webpack.resolve,
       module: webpack.module,
-      devtool: 'eval',
-      watch: true
+      devtool: webpack.devtool,
+      watch: webpack.watch
     },
 
     webpackMiddleware: {

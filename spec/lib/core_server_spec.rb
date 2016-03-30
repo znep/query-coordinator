@@ -454,7 +454,7 @@ describe CoreServer do
   describe '#story_themes' do
     context 'when no configurations exist' do
       before do
-        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=true&merge=false&type=story_theme").
+        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
           to_return(status: 200, body: '[]', headers: {'Content-Type': 'application/json'})
       end
 
@@ -466,7 +466,7 @@ describe CoreServer do
 
     context 'when one story config' do
       before do
-        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=true&merge=false&type=story_theme").
+        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
           to_return(status: 200, body: fixture('story_theme.json'), headers: {'Content-Type': 'application/json'})
       end
 
@@ -480,7 +480,7 @@ describe CoreServer do
       before do
         theme_json = JSON.parse(fixture('story_theme.json').read) # this is an array of one theme
         two_themes = theme_json + theme_json
-        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=true&merge=false&type=story_theme").
+        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
           to_return(status: 200, body: two_themes.to_json, headers: {'Content-Type': 'application/json'})
       end
 

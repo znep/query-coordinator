@@ -39,4 +39,16 @@ describe 'CoreServerResponse' do
       expect(response.ok?).to be(false)
     end
   end
+
+  describe '#not_found?' do
+    it 'returns true if the response is an instance of Net::HTTPNotFound' do
+      response = CoreServerResponse.new(double('Net:HTTPNotFound', :instance_of? => true))
+      expect(response.not_found?).to be(true)
+    end
+
+    it 'returns false if the response is not an instance of Net::HTTPNotFound' do
+      response = CoreServerResponse.new(double('Net:HTTPOK', :instance_of? => false))
+      expect(response.not_found?).to be(false)
+    end
+  end
 end

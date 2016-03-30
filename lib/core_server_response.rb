@@ -14,6 +14,10 @@ class CoreServerResponse
     raw && raw.instance_of?(Net::HTTPOK)
   end
 
+  def not_found?
+    raw && raw.instance_of?(Net::HTTPNotFound)
+  end
+
   private
 
   def json?

@@ -1493,7 +1493,7 @@ export default function AssetSelectorRenderer(options) {
     // limitTo array parameter currently only works with clytemnestra
     return encodeURI(
       StorytellerUtils.format(
-        '{0}/browse/select_dataset?suppressed_facets[]=type&filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&cetera_search=false',
+        '{0}/browse/select_dataset?filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&cetera_search=false',
         window.location.protocol + '//' + window.location.hostname
       )
     );

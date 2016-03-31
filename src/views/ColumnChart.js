@@ -280,12 +280,12 @@ function ColumnChart(element, vif) {
     if (_.get(_lastRenderOptions, 'vif.aggregation.function') === 'sum') {
 
       unfilteredValueUnit = utils.pluralize(
-        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.field')),
         datum[UNFILTERED_INDEX]
       );
 
       filteredValueUnit = utils.pluralize(
-        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.field')),
         datum[FILTERED_INDEX]
       );
     } else {

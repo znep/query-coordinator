@@ -403,12 +403,12 @@ function ChoroplethMap(element, vif) {
     if (_.get(_lastRenderedVif, 'aggregation.function') === 'sum') {
 
       unfilteredValueUnit = utils.pluralize(
-        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.field')),
         feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME]
       );
 
       filteredValueUnit = utils.pluralize(
-        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.columnName')),
+        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.field')),
         feature.properties[FILTERED_GEOJSON_PROPERTY_NAME]
       );
     } else {

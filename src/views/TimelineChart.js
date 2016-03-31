@@ -474,7 +474,7 @@ function TimelineChart(element, vif) {
           return '{0} {1}'.format(
             utils.formatNumber(value),
             utils.pluralize(
-              _.get(_lastRenderOptions, 'vif.aggregation.columnName'),
+              _.get(_lastRenderOptions, 'vif.aggregation.field'),
               value
             )
           );

@@ -23,7 +23,7 @@ describe('SoqlHelpers', function() {
   function vifWithNoFilters() {
     return {
       'aggregation': {
-        'columnName': null,
+        'field': null,
         'function': 'count'
       },
       'columnName': TEST_OWN_COLUMN_NAME,
@@ -236,8 +236,8 @@ describe('SoqlHelpers', function() {
 
     it('returns a sum aggregation clause when `aggregation.function` is `sum`', function() {
       var vif = vifWithNoFilters();
+      vif.aggregation.field = 'aggregated_column';
       vif.aggregation['function'] = 'sum';
-      vif.aggregation.columnName = 'aggregated_column';
 
       assert.equal(SoqlHelpers.aggregationClause(vif), 'SUM(`aggregated_column`)');
     });

@@ -57,7 +57,7 @@
 
       var columnChart1VIF = {
         'aggregation': {
-          'columnName': null,
+          'field': null,
           'function': 'count'
         },
         'columnName': COLUMN_NAME,
@@ -119,7 +119,7 @@
 
       var columnChart4VIF = _.cloneDeep(columnChart1VIF);
       columnChart4VIF.aggregation = {
-        'columnName': 'case_id',
+        'field': 'case_id',
         'function': 'sum'
       };
 

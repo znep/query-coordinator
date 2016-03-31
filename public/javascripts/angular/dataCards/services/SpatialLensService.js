@@ -5,18 +5,19 @@ var httpConfig = {
   cache: true
 };
 
-module.exports = function SpatialLensService(http, rx, ServerConfig) {
+module.exports = function SpatialLensService($q, http, rx, ServerConfig, CardVisualizationChoroplethHelpers) {
   var spatialLensService = {
     isSpatialLensEnabled: isSpatialLensEnabled,
     isSpatialLensAdminEnabled: isSpatialLensAdminEnabled,
     getAvailableGeoregions$: getAvailableGeoregions$,
     findComputedColumnForRegion: findComputedColumnForRegion,
+    cardNeedsRegionCoding: cardNeedsRegionCoding,
+    initiateRegionCodingIfNecessaryForCard: initiateRegionCodingIfNecessaryForCard,
     getCuratedRegions: getCuratedRegions,
     initiateRegionCoding: initiateRegionCoding,
     getRegionCodingStatus: getRegionCodingStatus,
     getRegionCodingStatusFromJob: getRegionCodingStatusFromJob,
-    pollRegionCodingStatus: pollRegionCodingStatus,
-    executeRegionCodingJob: executeRegionCodingJob
+    pollRegionCodingStatus: pollRegionCodingStatus
   };
 
   function isSpatialLensEnabled() {
@@ -65,6 +66,37 @@ module.exports = function SpatialLensService(http, rx, ServerConfig) {
         parameters: {
           region: `_${region}`
         }
+      }
+    });
+  }
+
+  function cardNeedsRegionCoding(cardModel) {
+    var columns = cardModel.page.getCurrentValue('dataset').getCurrentValue('columns');
+    var computedColumnName = cardModel.getCurrentValue('computedColumn');
+
+    var cardIsChoropleth = cardModel.getCurrentValue('cardType') === 'choropleth';
+    var computedColumnMissing = !_.isPresent(columns[computedColumnName]);
+
+    return cardIsChoropleth && computedColumnMissing;
+  }
+
+  function initiateRegionCodingIfNecessaryForCard(cardModel) {
+    if (!isSpatialLensEnabled() || !cardNeedsRegionCoding(cardModel)) {
+      return $q.when(null);
+    }
+
+    var datasetId = cardModel.page.getCurrentValue('dataset').id;
+    var computedColumnName = cardModel.getCurrentValue('computedColumn');
+    var shapefileId = CardVisualizationChoroplethHelpers.computedColumnNameToShapefileId(computedColumnName);
+    var sourceColumn = cardModel.fieldName;
+
+    return getRegionCodingStatus(datasetId, shapefileId).then(function(response) {
+      var status = _.get(response, 'data.status');
+
+      if (status === 'completed' || status === 'processing') {
+        return null;
+      } else {
+        return initiateRegionCoding(datasetId, shapefileId, sourceColumn);
       }
     });
   }
@@ -133,16 +165,6 @@ module.exports = function SpatialLensService(http, rx, ServerConfig) {
       switchLatest().
       filter(isComplete).
       take(1);
-  }
-
-  function executeRegionCodingJob(datasetId, shapefileId, sourceColumn) {
-    var initiate$ = spatialLensService.initiateRegionCoding(datasetId, shapefileId, sourceColumn);
-    var getPollObservable = _.partial(spatialLensService.pollRegionCodingStatus, datasetId, _);
-
-    return rx.Observable.fromPromise(initiate$). // Make a request to /initiate
-      filter(_.property('data.success')). // Only continue if it was successful
-      pluck('data', 'jobId'). // Grab out the jobId
-      flatMapLatest(getPollObservable);
   }
 
   return spatialLensService;

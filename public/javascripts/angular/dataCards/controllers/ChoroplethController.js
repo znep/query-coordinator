@@ -51,7 +51,7 @@ module.exports = function ChoroplethController(
   // because we have separate behavior depending on whether or not the
   // computed column exists.
   var computedColumn$ = computedColumnBase$.filter(_.isPresent);
-  var computedColumnMissing$ = computedColumnBase$.filter(_.negate(_.isPresent)).first();
+  var computedColumnMissing$ = computedColumnBase$.filter(_.negate(_.isPresent));
 
   // In the add card dialog and the customize dialog, we do not do region
   // coding.
@@ -79,9 +79,12 @@ module.exports = function ChoroplethController(
       });
   } else {
 
-    // If the computed column is missing, enqueue an adhoc region coding job and poll for status.
+    // If the computed column is missing, poll a pending region coding job, if possible.
     computedColumnMissing$.
-      safeApply($scope, function() { $scope.isPendingComputation = true; }).
+      safeApply($scope, function() {
+        $scope.isPendingComputation = true;
+        if ($scope.geojsonAggregateData) { $scope.geojsonAggregateData.features = []; }
+      }).
 
       // Make an initial status request
       combineLatest(
@@ -97,8 +100,7 @@ module.exports = function ChoroplethController(
       combineLatest(
         datasetId$,
         shapefileId$,
-        fieldName$,
-        function(statusResponse, datasetId, shapefileId, fieldName) {
+        function(statusResponse, datasetId, shapefileId) {
           var status = _.get(statusResponse, 'data.status', 'failed');
           var jobId = _.get(statusResponse, 'data.data.jobId');
 
@@ -110,23 +112,11 @@ module.exports = function ChoroplethController(
           }
 
           // If this comes back as failed or unknown, then that means that no job is in progress and
-          // the computed column doesn't exist on the dataset.  In this case we'll try to add the
-          // computed column to the dataset again, but only if the current user is privileged. If
-          // they are not a privileged user then we'll show them an error and sob softly.
+          // the computed column doesn't exist on the dataset.  We will show an error.  The user
+          // must re-add the card to the page to retry the job.
           if (status === 'failed' || status === 'unknown') {
-            if (_.isPresent($window.currentUser)) {
-              var role = _.get($window.currentUser, 'role');
-              var userHasAdminOrPublisherRole = role === 'administrator' || role === 'publisher';
-              var userHasAdminRight = _.contains($window.currentUser.flags, 'admin');
-              if (userHasAdminOrPublisherRole || userHasAdminRight) {
-                return SpatialLensService.executeRegionCodingJob(datasetId, shapefileId, fieldName);
-              }
-            }
-
-            // An unprivileged user is viewing a choropleth that hasn't been region coded and no
-            // job is currently in progress. Display an error in the console.
-            var description = `Unable to start region coding job for shapefile ${shapefileId} ` +
-              `and dataset ${datasetId} due to insufficient permissions.`;
+            var description = `Detect failed state in region coding job for shapefile `
+              + `${shapefileId} and dataset ${datasetId}`;
             return Rx.Observable['throw'](new Error(description));
           }
 
@@ -199,11 +189,12 @@ module.exports = function ChoroplethController(
   Rx.Observable.subscribeLatest(
     model,
     dataset.observeOnLatest('columns'),
-    computedColumn$,
-    function(currentModel, columns, computedColumn) {
+    computedColumnName$,
+    function(currentModel, columns, computedColumnName) {
       var columnName = _.get(columns, `${currentModel.fieldName}.name`, '');
-      var regionName = computedColumn.name;
+      var regionName = _.get(columns, `${computedColumnName}.name`, '');
       if (_.isEmpty(columnName) || _.isEmpty(regionName)) {
+        currentModel.set('customTitle', undefined);
         return;
       }
       var customTitle = `${columnName} &mdash; ${regionName}`;
@@ -293,10 +284,9 @@ module.exports = function ChoroplethController(
         _, _, whereClauseFragment, _, { limit: shapefileRegionQueryLimit });
 
       return Rx.Observable.combineLatest(
-        computedColumnName$,
+        computedColumn$.pluck('fieldName'),
         datasetId$,
         aggregation$,
-        computedColumn$,
         getDataWithWhereClauseAndLimit
       ).
         tap(trackPromiseFlightStatus).
@@ -309,7 +299,7 @@ module.exports = function ChoroplethController(
         safeApply($scope, function() { $scope.isPendingComputation = false; }).
         safeApplyOnError($scope, function() { $scope.choroplethRenderError = true; }).
         pluck('data');
-    });
+    }).shareReplay(1);
   }
 
   unfilteredData$ = requestDataWithWhereClauseSequence(baseSoqlFilter, 'unfiltered_query:complete');

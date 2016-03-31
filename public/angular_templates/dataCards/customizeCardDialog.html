@@ -70,6 +70,9 @@
 </div>
 
 <div class="controls">
-  <button class="action-btn dark r-to-l" ng-click="updateCard()" ng-disabled="disableSave">{{::'common.done' | I18n}}</button>
+  <button class="action-btn dark r-to-l" ng-click="updateCard()" ng-disabled="disableSave">
+    {{::'common.done' | I18n}}
+    <spinner ng-if="busy"></spinner>
+  </button>
   <button class="action-btn dark r-to-l" ng-click="dialogState.show = false">{{::'common.cancel' | I18n}}</button>
 </div>

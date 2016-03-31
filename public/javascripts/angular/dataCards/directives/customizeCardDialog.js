@@ -12,6 +12,7 @@ module.exports = function customizeCardDialog(
   HistogramService,
   DatasetColumnsService,
   ServerConfig,
+  SpatialLensService,
   rx) {
   const Rx = rx;
 
@@ -232,10 +233,22 @@ module.exports = function customizeCardDialog(
 
       $scope.$bindObservable('disableSave', isRegionlessChoropleth$);
 
+      function updateCardAndHideDialog() {
+        $scope.$safeApply(function() {
+          $scope.dialogState.cardModel.setFrom($scope.customizedCard);
+          $scope.dialogState.show = false;
+          $scope.busy = false;
+        });
+      }
+
       // Save the model by updating with our cloned copy.
       $scope.updateCard = function() {
-        $scope.dialogState.cardModel.setFrom($scope.customizedCard);
-        $scope.dialogState.show = false;
+        $scope.$safeApply(function() {
+          $scope.busy = true;
+        });
+
+        SpatialLensService.initiateRegionCodingIfNecessaryForCard($scope.customizedCard).
+          then(updateCardAndHideDialog, updateCardAndHideDialog);
       };
 
       var FLYOUT_TEMPLATE = '<div class="flyout-title">{0}</div>';

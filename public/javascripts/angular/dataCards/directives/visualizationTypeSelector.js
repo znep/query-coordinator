@@ -20,6 +20,8 @@ module.exports = function visualizationTypeSelector(
     var columns$ = cardModel$.observeOnLatest('page.dataset.columns');
     var computedColumn$ = cardModel$.observeOnLatest('computedColumn');
 
+    var destroy$ = $scope.$destroyAsObservable();
+
     var regionCodingDetails$ = dataset$.map(function(dataset) {
       if (!SpatialLensService.isSpatialLensEnabled()) {
         return {
@@ -110,12 +112,27 @@ module.exports = function visualizationTypeSelector(
     // If the value of the dropdown changes, set it on the CardOptions.
     var selectedCuratedRegion$ = $scope.$observe('selectedCuratedRegion');
 
-    Rx.Observable.subscribeLatest(
+    Rx.Observable.combineLatest(
       columns$,
       cardModel$,
       selectedCuratedRegion$.filter(_.isPresent),
       cardType$,
       function(columns, cardModel, selectedCuratedRegion, cardType) {
+        return {
+          columns: columns,
+          cardModel: cardModel,
+          selectedCuratedRegion: selectedCuratedRegion,
+          cardType: cardType
+        };
+      }
+    ).
+      takeUntil(destroy$).
+      subscribe(function(values) {
+        var columns = values.columns;
+        var cardModel = values.cardModel;
+        var selectedCuratedRegion = values.selectedCuratedRegion;
+        var cardType = values.cardType;
+
         if (cardType !== 'choropleth') {
           cardModel.set('computedColumn', null);
           return;

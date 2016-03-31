@@ -11,10 +11,11 @@ module.exports = function cardAggregationSelector(Constants, I18n, PluralizeServ
       cardModel: '='
     },
     templateUrl: templateUrl,
-    link: function($scope) {
+    link: function($scope, element) {
 
       var dataset$ = $scope.page.observe('dataset');
       var columns$ = dataset$.observeOnLatest('columns');
+      var destroy$ = $scope.$destroyAsObservable(element);
 
       var cardModel$ = $scope.$observe('cardModel').filter(_.isPresent);
       var aggregation$ = cardModel$.observeOnLatest('aggregation');
@@ -58,23 +59,26 @@ module.exports = function cardAggregationSelector(Constants, I18n, PluralizeServ
       });
 
       // Persist aggregation selection to model
-      $scope.$observe('aggregationField').skip(1).subscribe(function(aggregationField) {
-        // aggregationField is actually null as far as the model is concerned,
-        // but our select gets confused when we have multiple options with null
-        // values, so we use '*' instead of null inside of the directive and
-        // do the conversion back to null before saving it
-        if (aggregationField === '*') {
-          aggregationField = null;
-        }
+      $scope.$observe('aggregationField').
+        skip(1).
+        takeUntil(destroy$).
+        subscribe(function(aggregationField) {
+          // aggregationField is actually null as far as the model is concerned,
+          // but our select gets confused when we have multiple options with null
+          // values, so we use '*' instead of null inside of the directive and
+          // do the conversion back to null before saving it
+          if (aggregationField === '*') {
+            aggregationField = null;
+          }
 
-        $scope.cardModel.set('aggregationField', aggregationField);
+          $scope.cardModel.set('aggregationField', aggregationField);
 
-        if (_.isNull(aggregationField)) {
-          $scope.cardModel.set('aggregationFunction', 'count');
-        } else {
-          $scope.cardModel.set('aggregationFunction', 'sum');
-        }
-      });
+          if (_.isNull(aggregationField)) {
+            $scope.cardModel.set('aggregationFunction', 'count');
+          } else {
+            $scope.cardModel.set('aggregationFunction', 'sum');
+          }
+        });
 
       // Bind observables to scope
       $scope.$bindObservable('hasNoAggregableColumns', aggregationColumns$.map(_.isEmpty));

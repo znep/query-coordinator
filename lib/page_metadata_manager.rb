@@ -312,6 +312,14 @@ class PageMetadataManager
   def ensure_page_metadata_properties(metadata)
     metadata[:primaryAggregation] ||= nil
     metadata[:primaryAmountField] ||= nil
+
+    if metadata[:version] >= 4
+      metadata[:cards].each { |card|
+        card[:aggregationField] ||= nil
+        card[:aggregationFunction] ||= nil
+      }
+    end
+
     metadata
   end
 

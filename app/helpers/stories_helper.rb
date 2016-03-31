@@ -145,6 +145,7 @@ module StoriesHelper
       allow-popups
       allow-scripts
       allow-same-origin
+      allow-forms
     ).join(' ')
   end
 

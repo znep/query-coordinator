@@ -10,26 +10,30 @@
     pageViewsSection = {
       text: 'Browser Page Views',
       title: 'Browser Page Views',
-      series: [{
-        method: 'js-page-view',
-        label: 'Browser Page Views',
-        options: {stacking: null}
-      }]
+      series: [
+        {
+          method: 'js-page-view',
+          label: 'Browser Page Views',
+          options: {stacking: null}
+        }
+      ]
     };
   } else {
     pageViewsSection = {
       text: 'Page Views',
       title: 'Page Views',
-      series: [{
-        method: 'page-views',
-        label: 'Page Requests',
-        options: {stacking: null, type: 'line'}
-      },
+      series: [
+        {
+          method: 'page-views',
+          label: 'Page Requests',
+          options: {stacking: null, type: 'line'}
+        },
         {
           method: 'js-page-view',
           label: t('browser_page_views'),
           options: {stacking: null, type: 'line'}
-        }]
+        }
+      ]
     };
   }
 
@@ -48,11 +52,12 @@
                 {
                   text: 'Browsers',
                   title: 'Browsers',
-                  series: [{
-                    method: 'browser-chrome',
-                    label: 'Chrome',
-                    options: {stacking: null, type: 'line'}
-                  },
+                  series: [
+                    {
+                      method: 'browser-chrome',
+                      label: 'Chrome',
+                      options: {stacking: null, type: 'line'}
+                    },
                     {
                       method: 'browser-firefox',
                       label: 'Firefox',
@@ -72,7 +77,8 @@
                       method: 'browser-other',
                       label: 'Other',
                       options: {stacking: null, type: 'line'}
-                    }]
+                    }
+                  ]
                 },
                 {
                   text: 'Page Types',
@@ -166,9 +172,11 @@
                 {
                   text: 'Rows Loaded',
                   title: 'Rows Loaded',
-                  series: [{method: 'rows-loaded-api', label: 'API'},
-                    {method: 'rows-loaded-website', label: 'Website'},
-                    {method: 'rows-loaded-widget', label: 'SDP'}]
+                  series: [
+                    { method: 'rows-loaded-api', label: 'API' },
+                    { method: 'rows-loaded-website', label: 'Website' },
+                    { method: 'rows-loaded-widget', label: 'SDP' }
+                  ]
                 }
               ], function(section) {
                 return section.enabled !== false;

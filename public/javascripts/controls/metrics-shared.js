@@ -276,6 +276,11 @@
       data = $context.data(metricsNS.DATA_KEY),
       mappedData = {},
       summaryCalculator = function(key, append) {
+        var overrideKey = _.get(summaries, ['override', key]);
+        if (!_.isUndefined(overrideKey)) {
+          mappedData[key] = data[overrideKey];
+          return;
+        }
         var i;
         if (_.isArray(summaries.plus)) {
           mappedData[key] = 0;

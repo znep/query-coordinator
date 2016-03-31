@@ -248,7 +248,7 @@
               </div>
 
               <div class="line clearfix">
-                <label for="view_row_label"><%= t("#{prefix}.row_label") %></label>
+                <label for="view_metadata_rowLabel"><%= t("#{prefix}.row_label") %></label>
                 <%= text_field_tag("view[metadata][rowLabel]", '', :title => t("#{prefix}.row_label_prompt"), :class => "textPrompt") %>
                 <div class="additionalHelp"><%= t("#{prefix}.row_label_help") %></div>
               </div>
@@ -282,8 +282,8 @@
               <h2><%= t("#{prefix}.privacy_security") %></h2>
 
               <div class="line clearfix">
-                <label for="privacy-settings"><%= t("#{prefix}.privacy_settings") %></label>
                 <fieldset id="privacy-settings" class="radioblock">
+                  <legend id="privacy-settings-legend"><%= t("#{prefix}.privacy_settings") %></legend>
                   <div>
                     <%= radio_button_tag('privacy', 'public', :id => 'privacy_public') %>
                     <label for="privacy_public">

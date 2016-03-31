@@ -15,7 +15,7 @@ function aggregationClause(vif) {
   switch (_.get(vif, 'aggregation.function')) {
 
     case 'sum':
-      return 'SUM(`{0}`)'.format(_.get(vif, 'aggregation.columnName'));
+      return 'SUM(`{0}`)'.format(_.get(vif, 'aggregation.field'));
 
     case 'count':
     default:

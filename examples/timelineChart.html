@@ -52,7 +52,7 @@
 
       var timelineChart1VIF = {
         'aggregation': {
-          'columnName': null,
+          'field': null,
           'function': 'count'
         },
         'columnName': COLUMN_NAME,
@@ -120,7 +120,7 @@
 
       var timelineChart4VIF = _.cloneDeep(timelineChart1VIF);
       timelineChart4VIF.aggregation = {
-        columnName: 'id',
+        field: 'id',
         'function': 'sum'
       };
       delete timelineChart4VIF.configuration.precision;

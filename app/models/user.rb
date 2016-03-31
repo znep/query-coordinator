@@ -23,6 +23,9 @@ class User < Model
       opts[:authToken] = authToken
     end
 
+    if FeatureFlags.derive[:enable_new_account_verification_email]
+      opts[:email_verification] = true
+    end
     path = "/#{self.name.pluralize.downcase}.json?#{opts.to_param}"
     return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
@@ -54,6 +57,12 @@ class User < Model
       inject([]) do |memo, config|
         memo.concat(config.properties.keys)
       end.uniq
+  end
+
+  def self.verify_email(token)
+    path = "/users.json?method=finishAccountCreate&token=#{token}"
+    result = CoreServer::Base.connection.create_request(path)
+    parse(result)
   end
 
   def create(inviteToken = nil, authToken = nil)

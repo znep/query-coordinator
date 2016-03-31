@@ -3,7 +3,7 @@ class AccountsController < ApplicationController
   include ActionView::Helpers::TranslationHelper
   include UserSessionsHelper
 
-  skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
+  skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password, :verify_email]
   skip_before_filter :adjust_format, :only => [:update]
 
   protect_from_forgery :except => [:add_rpx_token]
@@ -30,7 +30,7 @@ class AccountsController < ApplicationController
   # within the 'respond_to' block, but without the CSRF token, this is our only protection.
   def create
     @body_class = 'signup'
-    @token = params[:inviteToken] || ""
+    @token = params[:inviteToken] || ''
 
     if current_user_session
       current_user_session.destroy
@@ -49,9 +49,18 @@ class AccountsController < ApplicationController
         format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
       elsif @signup.create
-        format.html { redirect_to(login_redirect_url) }
-        format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
-        format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
+        if FeatureFlags.derive[:enable_new_account_verification_email]
+          flash[:notice] = t('screens.sign_up.email_verification.sent',
+            :email => params.fetch(:signup, {}).fetch(:email, ''))
+          format.html { redirect_to(login_url) }
+          body = { :notice => flash[:notice], :promptLogin => false }
+          format.data { render :json => body, :callback => params[:callback] }
+          format.json { render :json => body, :callback => params[:callback] }
+        else
+          format.html { redirect_to(login_redirect_url) }
+          format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
+          format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
+        end
       else
         flash.now[:error] = @signup.errors
         @user_session = UserSession.new
@@ -60,6 +69,18 @@ class AccountsController < ApplicationController
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
       end
     end
+  end
+
+  def verify_email
+    token = params.fetch(:token)
+    begin
+      User.verify_email(token)
+    rescue CoreServer::ResourceNotFound => _
+      flash[:error] = t('screens.sign_up.email_verification.expired')
+      return redirect_to(signup_path)
+    end
+    flash[:notice] = t('screens.sign_up.email_verification.success')
+    redirect_to(login_path)
   end
 
   def forgot_password

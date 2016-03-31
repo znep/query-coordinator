@@ -31,7 +31,12 @@ class SignupPresenter < Presenter
       @errors << t('account.common.validation.terms')
     end
     if @errors.empty?
-      return (create_user && login!)
+      if FeatureFlags.derive[:enable_new_account_verification_email]
+        user.create(inviteToken, authToken)
+        return true
+      else
+        return (create_user && login!)
+      end
     end
 
     false

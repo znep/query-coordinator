@@ -818,3 +818,17 @@
     top: 70%;
   }
 }
+
+// Fieldset for "privacy settings" needs to have a <legend> instead of a <label>
+// (for accessibility reasons)
+// So... gotta make the legend look like a label
+#privacy-settings {
+  position: relative;
+  left: 19em;
+}
+
+#privacy-settings-legend {
+  position: absolute;
+  left: -14.9em;
+  font-size: 1.2em;
+}

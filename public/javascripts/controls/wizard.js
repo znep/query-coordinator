@@ -210,6 +210,9 @@
                     var $button = buttonLookup[disable] || {}; // a bit of bulletproofing
                     if ($button.jquery) $button.addClass('disabled');
                 });
+                
+                // focus on the first input in the form
+                $('form :input:visible:enabled:first').focus();
 
                 // fire events the old pane is expecting
                 if (!_.isUndefined(currentPaneConfig) && _.isFunction(currentPaneConfig.onLeave))

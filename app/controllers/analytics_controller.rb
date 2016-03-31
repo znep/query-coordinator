@@ -24,6 +24,8 @@ class AnalyticsController < ApplicationController
       valid, error = add_metric(m['entity'], m['metric'], m['increment'])
       all_valid = all_valid && valid
       
+      Rails.logger.error "Analytics Controller Metric Error: #{error}. Returning 207 with 400 inside." unless valid
+      
       messages.push({
         :status => valid ? "200" : "400",
         :metric => "#{m['metric']}",

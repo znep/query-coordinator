@@ -19,7 +19,7 @@ $(function()
       pageViewsName = 'Browser Page Views';
     } else {
       datasetsListHeader = '';
-      pageViewsName = 'Page Views';
+      pageViewsName = 'Browser Page Views';
     }
 
     blist.metrics.sitewideShared = {
@@ -247,6 +247,9 @@ $(function()
           id: 'summaryVisits',
           displayName: pageViewsName,
           summary: {
+            override: {
+              delta: 'js-page-view'
+            },
             plus: 'page-views',
             verbPhrase: 'pages viewed',
             verbPhraseSingular: 'page viewed'

@@ -114,10 +114,10 @@ $wizard.wizard({
         // track left
         if (lastPageName != null)
         {
-          mixpanelNS.trackIngressWizardEvent(mixpanelEvents.left, {
-            'Wizard Page': lastPageName,
-            'Next Action': pageName
-          });
+            mixpanelNS.trackIngressWizardEvent(mixpanelEvents.left, {
+                'Wizard Page': lastPageName,
+                'Next Action': pageName
+            });
         }
         lastPageName = pageName;
     },

@@ -9,13 +9,27 @@ module StoriesHelper
   end
 
   def user_story_json
-    @story.as_json.merge(
+    story = @story.as_json.merge(
       {
         :title => core_attributes['name'] || '',
         :description => core_attributes['description'] || '',
         :permissions => determine_permissions_from_core_attributes
       }
-    ).to_json
+    )
+
+    update_classic_visualization(story)
+    story.to_json
+  end
+
+  def update_classic_visualization(story)
+    story['blocks'].each do |block|
+      block['components'].each do |component|
+        if component['type'] == 'socrata.visualization.classic'
+          component['value']['visualization'] = CoreServer.get_view(component['value']['originalUid'])
+          component['value']['visualization']['metadata']['renderTypeConfig']['visible']['table'] = false
+        end
+      end
+    end
   end
 
   def google_font_code_embed

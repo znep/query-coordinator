@@ -526,7 +526,6 @@ export default function AssetSelectorStore() {
 
     if (_.isEmpty(visualization)) {
       _state.componentType = null;
-
       _state.componentProperties = {
         dataset: _state.componentProperties.dataset
       };

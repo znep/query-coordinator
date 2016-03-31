@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CoreServer do
-  let(:core_service_uri) { 'http://123.45.67.89:8081' }
+  let(:coreservice_uri) { 'http://123.45.67.89:8081' }
   let(:app_token) { 'the_app_token' }
   let(:csrf_token) { 'the_csrf_token' }
   let(:http_cookie) { "_core_session_id=bobloblaw; socrata-csrf-token=#{csrf_token}" }
@@ -21,7 +21,7 @@ describe CoreServer do
   end
 
   before do
-    allow(Rails.application.config).to receive(:core_service_uri).and_return(core_service_uri)
+    allow(Rails.application.config).to receive(:coreservice_uri).and_return(coreservice_uri)
     allow(Rails.application.config).to receive(:core_service_app_token).and_return(app_token)
   end
 
@@ -267,34 +267,64 @@ describe CoreServer do
         path: '/blah.json'
       }
     end
+    let(:mock_get_redirection) do
+      double('mock_get_redirection', {
+        :body= => 'body'
+      })
+    end
     let(:mock_http) { double('net_http').as_null_object }
     let(:mock_get) { spy('net_http_get') }
 
-    before do
-      allow(RequestStore.store).to receive(:[]).with(:socrata_session_headers).and_return(mock_headers)
-      allow(Net::HTTP).to receive(:new).and_return(mock_http)
-      allow(Net::HTTP::Get).to receive(:new).with(options[:path]).and_return(mock_get)
-      expect(mock_http).to receive(:request).with(mock_get)
-
-      allow(mock_get).to receive(:[]=)
-    end
-
     let(:make_request) { CoreServer.core_server_http_request(options) }
 
-    it 'sets headers from request store' do
-      make_request
-      expect(mock_get).to have_received(:[]=).with('Cookie', 'Yummy')
-      expect(mock_get).to have_received(:[]=).with('Lucky', 'You')
+    before do
+      allow(Net::HTTP).to receive(:new).and_return(mock_http)
+      allow(Net::HTTP::Get).to receive(:new).with(Addressable::URI.parse(Rails.application.config.coreservice_uri + options[:path])).and_return(mock_get)
     end
 
-    it 'merges Content-type into request headers' do
-      make_request
-      expect(mock_get).to have_received(:[]=).with('Content-Type', 'application/json')
+    context 'unredirected core server http request' do
+
+      before do
+        allow(RequestStore.store).to receive(:[]).with(:socrata_session_headers).and_return(mock_headers)
+        expect(mock_http).to receive(:request).with(mock_get)
+
+        allow(mock_get).to receive(:[]=)
+      end
+
+      it 'sets headers from request store' do
+        make_request
+        expect(mock_get).to have_received(:[]=).with('Cookie', 'Yummy')
+        expect(mock_get).to have_received(:[]=).with('Lucky', 'You')
+      end
+
+      it 'merges Content-type into request headers' do
+        make_request
+        expect(mock_get).to have_received(:[]=).with('Content-Type', 'application/json')
+      end
+
+      it 'merges X-App-Token into request headers' do
+        make_request
+        expect(mock_get).to have_received(:[]=).with('X-App-Token', 'the_app_token')
+      end
     end
 
-    it 'merges X-App-Token into request headers' do
-      make_request
-      expect(mock_get).to have_received(:[]=).with('X-App-Token', 'the_app_token')
+    context 'redirected core server http request' do
+
+      before do
+        allow(mock_get_redirection).to receive(:[]=)
+        allow(mock_get_redirection).to receive(:instance_of?).with(Net::HTTPFound).and_return(true)
+        allow(mock_get_redirection).to receive(:[]).with('location').and_return('http://www.google.com')
+
+        allow(Net::HTTP::Get).to receive(:new).with(Addressable::URI.parse(Rails.application.config.coreservice_uri + options[:path])).and_return(mock_get_redirection)
+
+        allow(Net::HTTP::Get).to receive(:new).with(Addressable::URI.parse(mock_get_redirection['location'])).and_return('something')
+      end
+
+      it 'follows 302 redirection' do
+        response = CoreServer.send(:core_server_http_request, options)
+
+        expect(response).to be_a(CoreServerResponse)
+      end
     end
   end
 
@@ -318,7 +348,7 @@ describe CoreServer do
   describe '#current_user' do
     context 'when user is logged in' do
       before do
-        stub_request(:get, "#{core_service_uri}/users/current.json").
+        stub_request(:get, "#{coreservice_uri}/users/current.json").
           to_return(status: 200, body: fixture('current_user.json'), headers: {'Content-Type': 'application/json'})
       end
 
@@ -330,7 +360,7 @@ describe CoreServer do
 
     context 'when user is not logged in' do
       before do
-        stub_request(:get, "#{core_service_uri}/users/current.json").
+        stub_request(:get, "#{coreservice_uri}/users/current.json").
           to_return(status: 404)
       end
 
@@ -342,7 +372,7 @@ describe CoreServer do
 
     context 'when core server error' do
       before do
-        stub_request(:get, "#{core_service_uri}/users/current.json").
+        stub_request(:get, "#{coreservice_uri}/users/current.json").
           to_return(status: 500, body: fixture('error.html'), headers: { 'Content-Type' => 'text/html; charset=utf-8' })
       end
 
@@ -363,7 +393,7 @@ describe CoreServer do
     let(:core_server_response) { double('CoreServerResponse').as_null_object }
 
     before do
-      stub_request(:get, /#{core_service_uri}\/configurations.json.*/).
+      stub_request(:get, /#{coreservice_uri}\/configurations.json.*/).
         to_return(status: 200, body: fixture('configurations.json'))
     end
 
@@ -454,7 +484,7 @@ describe CoreServer do
   describe '#story_themes' do
     context 'when no configurations exist' do
       before do
-        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
+        stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
           to_return(status: 200, body: '[]', headers: {'Content-Type': 'application/json'})
       end
 
@@ -466,7 +496,7 @@ describe CoreServer do
 
     context 'when one story config' do
       before do
-        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
+        stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
           to_return(status: 200, body: fixture('story_theme.json'), headers: {'Content-Type': 'application/json'})
       end
 
@@ -480,7 +510,7 @@ describe CoreServer do
       before do
         theme_json = JSON.parse(fixture('story_theme.json').read) # this is an array of one theme
         two_themes = theme_json + theme_json
-        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
+        stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
           to_return(status: 200, body: two_themes.to_json, headers: {'Content-Type': 'application/json'})
       end
 
@@ -494,7 +524,7 @@ describe CoreServer do
     let(:domain_json) { fixture('domain.json').read }
 
     before do
-      stub_request(:get, "#{core_service_uri}/domains").
+      stub_request(:get, "#{coreservice_uri}/domains").
         to_return(status: 200, body: domain_json, headers: {'Content-Type': 'application/json'})
     end
 
@@ -507,7 +537,7 @@ describe CoreServer do
   describe '#site_chrome' do
     context 'when no configurations exist' do
       before do
-        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=true&merge=false&type=site_chrome").
+        stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=true&merge=false&type=site_chrome").
           to_return(status: 200, body: '[]', headers: {'Content-Type': 'application/json'})
       end
 
@@ -519,7 +549,7 @@ describe CoreServer do
 
     context 'when one config exists' do
       before do
-        stub_request(:get, "#{core_service_uri}/configurations.json?defaultOnly=true&merge=false&type=site_chrome").
+        stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=true&merge=false&type=site_chrome").
           to_return(status: 200, body: fixture('site_chrome_config.json'), headers: {'Content-Type': 'application/json'})
       end
 

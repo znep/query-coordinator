@@ -27,11 +27,8 @@ class StorytellerRelease
   end
 
   def activate!
-    # TODO i'm scared
-    # configure_diplomat
-    # Diplomat::Kv.put('storyteller/active_version', semver)
-    puts 'FAKE'
-    sleep 2
+    configure_diplomat
+    Diplomat::Kv.put('storyteller/active_version', semver.tr('v', ''))
   end
 
   def self.find_in_all_environments

@@ -182,7 +182,7 @@ GEM
     neat (1.7.2)
       bourbon (>= 4.0)
       sass (>= 3.3)
-    net-ip (0.0.8)
+    net-ping (1.7.8)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     nokogumbo (1.4.7)
@@ -365,7 +365,7 @@ DEPENDENCIES
   marathon-api!
   mrdialog
   neat
-  net-ip
+  net-ping
   os
   paperclip (~> 4.3)
   pg

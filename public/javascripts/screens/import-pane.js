@@ -17,6 +17,8 @@
 var importNS = blist.namespace.fetch('blist.importer');
 var t = function(str, props) { return $.t('screens.import_pane.' + str, props); };
 
+var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
+
 // globals
 var scan,
     columns,
@@ -1370,6 +1372,8 @@ importNS.uploadFilePaneConfig = {
                         $pane.find('.uploadFileName')
                             .val(t('filetype_error_shapefile'))
                             .addClass('error');
+
+                        mixpanelNS.trackUserError({ 'Message Shown': 'Ingress: Invalid geodataset file extension' });
                         return false;
                     }
                 }
@@ -1379,6 +1383,8 @@ importNS.uploadFilePaneConfig = {
                     $pane.find('.uploadFileName')
                         .val(t('filetype_error_blist'))
                         .addClass('error');
+
+                    mixpanelNS.trackUserError({ 'Message Shown': 'Ingress: Invalid tabular file extension' });
                     return false;
                 }
                 state.fileName = fileName; // save this off since the imports service needs it later
@@ -1409,6 +1415,8 @@ importNS.uploadFilePaneConfig = {
                     $pane.find('.uploadFileName')
                         .val(t('problem_' + ((state.type == 'blobby' || state.type == 'shapefile') ? 'uploading' : 'importing')))
                         .addClass('error');
+
+                    mixpanelNS.trackUserError({ 'Message Shown': 'Ingress: Unable to scan ' + state.type + ' file' });
                     return false;
                 }
 

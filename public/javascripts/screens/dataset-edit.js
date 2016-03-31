@@ -11,6 +11,13 @@ $wizard.wizard({
     {
         blist.importer.dataset.redirectTo();
     },
+    onAnyActivated: function($pane, state)
+    {
+        // track step in wizard as a pageview in GA
+        if (typeof _gaSocrata !== 'undefined') {
+            _gaSocrata('socrata.send', 'pageview', '{0}/{1}'.format(window.location.href, $pane.data('wizardpanename')));
+        }
+    },
     paneConfig: {
 
         'selectType': {

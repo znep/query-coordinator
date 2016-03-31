@@ -1,6 +1,7 @@
 $(function(){
 
 blist.namespace.fetch('blist.importer');
+var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
 
 var submitError = null;
 
@@ -55,6 +56,24 @@ var formToViewMetadata = function(metadataForm)
     return viewData;
 }
 
+
+// USER TRACKING
+var mixpanelEvents = { started: 'Ingress: Started Wizard Page', left: 'Ingress: Left Wizard Page' };
+var lastPageName = null;
+
+var timesVisited = {};
+var incrTimesVisited = function(pageName) {
+    if (_.isUndefined(timesVisited[pageName]))
+    {
+        return timesVisited[pageName] = 1;
+    }
+    else
+    {
+        return timesVisited[pageName] += 1;
+    }
+};
+
+
 // WIZARD (outdented for readability)
 var $wizard = $('.newDatasetWizard');
 $wizard.wizard({
@@ -76,6 +95,31 @@ $wizard.wizard({
         }
 
         return false;
+    },
+    onAnyActivated: function($pane, state)
+    {
+        // track step in wizard as a pageview in GA
+        if (typeof _gaSocrata !== 'undefined') {
+            _gaSocrata('socrata.send', 'pageview', '{0}/{1}'.format(window.location.href, $pane.data('wizardpanename')));
+        }
+
+        // track step load in mixpanel
+        // track started
+        var pageName = $pane.data('wizardpanename');
+        mixpanelNS.trackIngressWizardEvent(mixpanelEvents.started, {
+            'Wizard Page': pageName,
+            'Wizard Page Visit Number': incrTimesVisited(pageName)
+        });
+
+        // track left
+        if (lastPageName != null)
+        {
+            mixpanelNS.trackIngressWizardEvent(mixpanelEvents.left, {
+                'Wizard Page': lastPageName,
+                'Next Action': pageName
+            });
+        }
+        lastPageName = pageName;
     },
     paneConfig: {
 

@@ -164,10 +164,7 @@
             var activatePane = function($pane, state)
             {
                 var paneConfig = opts.paneConfig[$pane.data('wizardpanename')] || {};
-                // track step in wizard as a pageview
-                if (typeof _gaSocrata !== 'undefined') {
-                    _gaSocrata('socrata.send', 'pageview', '{0}/{1}'.format(window.location.href, $pane.data('wizardpanename')));
-                }
+                opts.onAnyActivated($pane, state);
 
                 // init command obj for consumers to trigger pane actions
                 var commandObj = {
@@ -287,6 +284,7 @@
         finishCallback: function() {},
         finishText: $.t('screens.wizard.finish'),
         nextText: $.t('screens.wizard.next'),
+        onAnyActivated: function($pane, state) {},
         onCancel: '#cancel', // either string (url path), or function (handle it yourself)
         paneConfig: {},
         // keys are values of data-wizardpanename elems that correlate; subkeys are:

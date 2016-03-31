@@ -67,13 +67,15 @@ const MIXPANEL_EVENTS = [
   'Clicked Header Item',
   'Clicked Next in Tour',
   'Clicked Sidebar Option',
+  'Clicked Socrata News Link',
   'Clicked Pane in Sidebar',
   'Closed Tour',
   'Encountered Error Message',
+  'Ingress: Started Wizard Page',
+  'Ingress: Left Wizard Page',
   'Opened Goal Chart',
   'Used Search Facets',
-  'Used Search Field',
-  'Clicked Socrata News Link'
+  'Used Search Field'
 ];
 
 // This is duplicated in mixpanel-analytics.js
@@ -95,6 +97,7 @@ const MIXPANEL_PROPERTIES = [
   'Message Shown',
   'Name',
   'New URL',
+  'Next Action',
   'Page Number',
   'Pane Name',
   'On Page',
@@ -119,7 +122,9 @@ const MIXPANEL_PROPERTIES = [
   'User Role Name',
   'View Id',
   'View Type',
-  'Visualization Type'
+  'Visualization Type',
+  'Wizard Page',
+  'Wizard Page Visit Number'
 ];
 
 function asObject(stringArray) {

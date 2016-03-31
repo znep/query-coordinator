@@ -22,15 +22,15 @@ $(document).ready(function() {
     'Clicked Header Item',
     'Clicked Next in Tour',
     'Clicked Sidebar Option',
+    'Clicked Socrata News Link',
     'Clicked Pane in Sidebar',
     'Closed Tour',
     'Encountered Error Message',
+    'Ingress: Started Wizard Page',
+    'Ingress: Left Wizard Page',
     'Opened Goal Chart',
     'Used Search Facets',
-    'Used Search Field',
-    'Clicked Socrata News Link',
-    'Ingress: Started Wizard Page',
-    'Ingress: Left Wizard Page'
+    'Used Search Field'
   ];
 
   // This is duplicated in angular/common/values.js
@@ -308,15 +308,11 @@ $(document).ready(function() {
     registerUserProperties();
 
     var staticPropertyNames = [
-      'Domain',
       'IP',
       'On Page',
       'Request Id',
       'Session Id',
-      'Socrata Employee',
-      'URL',
-      'User Id',
-      'User Role Name'
+      'URL'
     ];
 
     var mergedProperties = _.extend(

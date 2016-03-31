@@ -359,9 +359,14 @@ class BrowseControllerTest < ActionController::TestCase
       @controller.unstub(:categories_facet)
       View.expects(:category_tree).returns(view_category_tree)
 
-      CurrentDomain.expects(:property).with(:custom_facets, :catalog).returns(custom_facets).twice
-      CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns('custom' => stubbed_custom_cutoff)
-      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
+      CurrentDomain.expects(:property).with(:custom_facets, :catalog).
+        returns(custom_facets).at_most(2)
+
+      CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).
+        returns('custom' => stubbed_custom_cutoff).at_least(1)
+
+      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).
+        returns(nil)
     end
 
     teardown do
@@ -464,11 +469,11 @@ class BrowseControllerTest < ActionController::TestCase
         with(query: default_cetera_params).
         to_return(status: 200, body: cetera_payload, headers: {})
 
-      get(:embed, {})
+      get(:embed, view_type: 'browse2')
       assert_response :success
       assert_match(/Sold Fleet Equipment/, @response.body)
-      assert_match(/Newest/, @response.body) # sort order
-      assert_match(/Created/, @response.body) # created_at timestamp shows with Newest
+      assert_match(/Recently Added/, @response.body) # 'Newest' is now 'Recently Added'
+      assert_match(/Created/, @response.body) # created_at timestamp shows with 'Recently Added'
     end
 
     should 'send default params to Cetera with browse' do

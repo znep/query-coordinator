@@ -3,7 +3,7 @@
   position: relative;
   width: 100%;
   height: 420px;
-  margin: 10px auto 0 auto;
+  margin: 10px auto -81px auto;
   overflow: hidden;
 
   &.responsive {
@@ -92,7 +92,7 @@
         }
       }
     }
-    
+
     .ticks {
       z-index: 1;
       width: 100% !important;
@@ -122,7 +122,7 @@
       left: 0;
       right: 0;
       padding: 0 15px;
-      bottom: 0;
+      bottom: 41px;
       background-color: #fff;
       height: 40px;
       z-index: 9;

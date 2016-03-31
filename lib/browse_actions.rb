@@ -539,8 +539,12 @@ module BrowseActions
     end.to_str # force this string to be marked html unsafe
   end
 
+  # Yes, there is conflation between browse2 and cetera.
+  # browse2 and cetera are *always* coupled except in one temporary case:
+  # in-flight customers use browse2 w/ Core/Cly until Cetera supports
+  # staging lockdown sites via core auth (PR pending).
   def browse_sort_opts
-    using_cetera? ? cetera_browse_sort_opts : default_browse_sort_opts
+    using_cetera? ? cetera_sort_opts : default_browse_sort_opts
   end
 
   def default_browse_sort_opts
@@ -556,14 +560,14 @@ module BrowseActions
     ]
   end
 
-  # NOTE: Although Cetera may ultimately translate these to different display
-  # values, let's keep the underlying keys consistent.
-  def cetera_browse_sort_opts
+  # browse.browse2 translates these to different display values,
+  # but let's keep the underlying keys consistent.
+  def cetera_sort_opts
     [
-      { value: 'relevance', name: t('controls.browse.sorts.relevance') },
-      { value: 'most_accessed', name: t('controls.browse.sorts.most_accessed') },
-      { value: 'newest', name: t('controls.browse.sorts.newest') },
-      { value: 'last_modified', name: t('controls.browse.sorts.last_modified') }
+      { value: 'relevance', name: t('controls.browse.browse2.sorts.relevance') },
+      { value: 'most_accessed', name: t('controls.browse.browse2.sorts.most_accessed') },
+      { value: 'newest', name: t('controls.browse.browse2.sorts.newest') },
+      { value: 'last_modified', name: t('controls.browse.browse2.sorts.last_modified') }
     ]
   end
 

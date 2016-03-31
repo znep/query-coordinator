@@ -553,12 +553,12 @@ en:
         skiplinks:
           results: Skip to the results
         sort:
-          label: Order by
-          periods:
-            label: Sort Period
-            month: This month
-            week: This week
-            year: This year
+          label: Sort by
+        sorts:
+          last_modified: Recently Updated
+          most_accessed: Most Accessed
+          newest: Recently Added
+          relevance: Most Relevant
         topics:
           label: Topics
           empty: No topics assigned

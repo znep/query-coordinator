@@ -64,30 +64,13 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
-      'cut paste keyup',
+      'input',
       '.asset-selector-alt-text-input',
       function(event) {
-        // If no key was down then we can assume that a cut or paste event came
-        // from the mouse (keyboard-originated paste events will trigger the
-        // 'keyup' handler above).
-        //
-        // The `setTimeout` is necessary because the 'paste' event will fire
-        // before the paste action takes place, so we need to break execution
-        // to allow the DOM time to update itself before we query for the
-        // value of the input control.
-        if (!event.keyCode) {
-          setTimeout(function() {
-            dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
-              altAttribute: $(event.target).val()
-            });
-          }, 0);
-        } else {
-          dispatcher.dispatch({
-            action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
-            altAttribute: $(event.target).val()
-          });
-        }
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
+          altAttribute: $(event.target).val()
+        });
       }
     );
 
@@ -127,30 +110,13 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
-      'cut paste keyup',
+      'input',
       '[data-asset-selector-validate-field="youtubeId"]',
       function(event) {
-        // If no key was down then we can assume that a cut or paste event came
-        // from the mouse (keyboard-originated paste events will trigger the
-        // 'keyup' handler above).
-        //
-        // The `setTimeout` is necessary because the 'paste' event will fire
-        // before the paste action takes place, so we need to break execution
-        // to allow the DOM time to update itself before we query for the
-        // value of the input control.
-        if (!event.keyCode) {
-          setTimeout(function() {
-            dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
-              url: $(event.target).val()
-            });
-          }, 0);
-        } else {
-          dispatcher.dispatch({
-            action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
-            url: $(event.target).val()
-          });
-        }
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+          url: $(event.target).val()
+        });
       }
     );
 
@@ -214,7 +180,7 @@ export default function AssetSelectorRenderer(options) {
     }, Constants.EMBED_CODE_DEBOUNCE_DELAY);
 
     _container.on(
-      'keyup',
+      'input',
       '[data-asset-selector-field="embedHtml"]',
       debounceForOneSecondThenUploadHtmlFragment
     );

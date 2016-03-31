@@ -160,7 +160,7 @@ describe('AssetSelectorRenderer', function() {
         });
       });
 
-      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
+      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on an input event from the youtube url input field', function(done) {
         dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
@@ -168,46 +168,9 @@ describe('AssetSelectorRenderer', function() {
           done();
         });
 
-        var event = $.Event('keyup'); //eslint-disable-line new-cap
-        // `a`
-        event.keyCode = 65;
+        var event = $.Event('input'); //eslint-disable-line new-cap
+
         container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
-      });
-
-      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a delete key', function(done) {
-        dispatcher.register(function(payload) {
-          var action = payload.action;
-          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
-          assert.equal(payload.url, '');
-          done();
-        });
-
-        var event = $.Event('keyup'); //eslint-disable-line new-cap
-        // `BACKSPACE`
-        event.keyCode = 8;
-        container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
-      });
-
-      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a cut event from the youtube url input control', function(done) {
-        dispatcher.register(function(payload) {
-          var action = payload.action;
-          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
-          assert.equal(payload.url, '');
-          done();
-        });
-
-        container.find('[data-asset-selector-validate-field="youtubeId"]').trigger('cut');
-      });
-
-      it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a paste event from the youtube url input control', function(done) {
-        dispatcher.register(function(payload) {
-          var action = payload.action;
-          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
-          assert.equal(payload.url, '');
-          done();
-        });
-
-        container.find('[data-asset-selector-validate-field="youtubeId"]').trigger('paste');
       });
     });
 
@@ -228,7 +191,7 @@ describe('AssetSelectorRenderer', function() {
         });
       });
 
-      it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a keyup event from the image description input field where `.keyCode` is a character', function(done) {
+      it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a input event from the image description input field', function(done) {
         dispatcher.register(function(payload) {
           var action = payload.action;
           assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
@@ -237,65 +200,12 @@ describe('AssetSelectorRenderer', function() {
         });
 
         var altFieldInput = container.find('.asset-selector-alt-text-input');
+        var event = $.Event('input'); //eslint-disable-line new-cap
+
         assert.lengthOf(altFieldInput, 1);
 
         altFieldInput.val('Hey alt');
-
-        var event = $.Event('keyup'); //eslint-disable-line new-cap
-        // `a`
-        event.keyCode = 65;
         altFieldInput.trigger(event);
-      });
-
-      it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a keyup event from the image description input field where `.keyCode` is a delete key', function(done) {
-        dispatcher.register(function(payload) {
-          var action = payload.action;
-          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
-          assert.equal(payload.altAttribute, 'Hey alt');
-          done();
-        });
-
-        var altFieldInput = container.find('.asset-selector-alt-text-input');
-        assert.lengthOf(altFieldInput, 1);
-
-        altFieldInput.val('Hey alt');
-
-        var event = $.Event('keyup'); //eslint-disable-line new-cap
-        // `BACKSPACE`
-        event.keyCode = 8;
-        container.find('.asset-selector-alt-text-input').trigger(event);
-      });
-
-      it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a cut event from the image description input field', function(done) {
-        dispatcher.register(function(payload) {
-          var action = payload.action;
-          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
-          assert.equal(payload.altAttribute, 'Hey alt');
-          done();
-        });
-
-        var altFieldInput = container.find('.asset-selector-alt-text-input');
-        assert.lengthOf(altFieldInput, 1);
-
-        altFieldInput.val('Hey alt');
-
-        container.find('.asset-selector-alt-text-input').trigger('cut');
-      });
-
-      it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a paste event from the image description input field', function(done) {
-        dispatcher.register(function(payload) {
-          var action = payload.action;
-          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE);
-          assert.equal(payload.altAttribute, 'Hey alt');
-          done();
-        });
-
-        var altFieldInput = container.find('.asset-selector-alt-text-input');
-        assert.lengthOf(altFieldInput, 1);
-
-        altFieldInput.val('Hey alt');
-
-        container.find('.asset-selector-alt-text-input').trigger('paste');
       });
     });
 

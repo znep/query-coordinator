@@ -112,6 +112,8 @@ class UserSessionsController < ApplicationController
             t('core.auth.invalid_userpass')
           when 'Too many login attempts for that login. Account temporarily disabled.'
             t('core.auth.too_many_tries')
+          when 'Unverified email address.'
+            t('core.auth.need_email_verification')
           else
             default_response
           end

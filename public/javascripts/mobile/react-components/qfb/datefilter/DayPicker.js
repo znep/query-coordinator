@@ -41,16 +41,14 @@ class MonthCalendar extends React.Component {
   }
 
   updateParent() {
-    var date = moment(this.state.selectedDay).format('L');
-    if (this.props.handleChange && moment(date, 'DD/MM/YYYY').isValid()) {
+    var date = moment(this.state.selectedDay);
+    if (date.isValid()) {
       this.props.handleChange(date);
     }
   }
 
   isSameDay(day1, day2) {
-    day1.setHours(0, 0, 0, 0);
-    day2.setHours(0, 0, 0, 0);
-    return day1.getTime() === day2.getTime();
+    return moment(day1).isSame(day2, 'day');
   }
 
   render() {
@@ -71,16 +69,14 @@ class MonthCalendar extends React.Component {
           numberOfMonths={this.props.numberOfMonths}
           modifiers={modifiers}
           onDayClick={this.handleDayClick.bind(this)}
-          enableOutsideDays={true}
-        />
+          enableOutsideDays={true} />
         <input
           ref="input"
           type="text"
           className={'dateInput'}
           value={this.state.value}
           placeholder="MM/DD/YYYY"
-          onChange={this.handleInputChange.bind(this)}
-           />
+          onChange={this.handleInputChange.bind(this)} />
       </div>
     );
   }
@@ -91,7 +87,7 @@ MonthCalendar.propTypes = {
   switcher: React.PropTypes.bool,
   switchLabel: React.PropTypes.string,
   disable: React.PropTypes.bool,
-  handleChange: React.PropTypes.func
+  handleChange: React.PropTypes.func.isRequired
 };
 
 MonthCalendar.defaultProps = {

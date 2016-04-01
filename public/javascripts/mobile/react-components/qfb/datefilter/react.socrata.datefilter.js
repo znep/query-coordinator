@@ -2,19 +2,26 @@ import React from 'react';
 import FlannelUtils from '../../flannel/flannel';
 import './DatePicker.scss';
 import DayPicker from './DayPicker.js'; // eslint-disable-line no-unused-vars
+import moment from 'moment';
+
+const defaultGapBetweenDates = {
+  weeks: 2
+};
 
 class SocrataDatefilter extends React.Component {
 
   constructor(props) {
     super(props);
 
-    var millisecondsPerDay = 86400000; // 24 * 60 * 60 * 1000
-    var firstDate = new Date();
-    var secondDate = new Date(firstDate.getTime() + 14 * millisecondsPerDay).toISOString();
+    var firstCal = (this.props.data.val1) ?
+      moment(this.props.data.val1) : moment();
+
+    var secondCal = (this.props.data.val2) ?
+      moment(this.props.data.val2) : moment(firstCal, moment.ISO_8601).add(defaultGapBetweenDates);
 
     this.state = {
-      firstCal: this.props.data.val1 || firstDate.toISOString(),
-      secondCal: this.props.data.val2 || secondDate,
+      firstCal: firstCal,
+      secondCal: secondCal,
       pickerType: this.props.data.dir || 'bt',
       isCorrect: true,
       isApplicable: true
@@ -34,13 +41,7 @@ class SocrataDatefilter extends React.Component {
   }
 
   prettyDate(dateObj) {
-    dateObj = new Date(dateObj);
-
-    var year = dateObj.getFullYear();
-    var month = dateObj.getMonth() + 1;
-    var date = dateObj.getDate();
-
-    return month + '/' + date + '/' + year;
+    return moment(dateObj, moment.ISO_8601).format('MM/DD/YYYY');
   }
 
   formattedLabel() {
@@ -81,15 +82,10 @@ class SocrataDatefilter extends React.Component {
   }
 
   isApplicable() {
-    if (this.state.pickerType == 'bt') {
-      if (this.state.firstCal && this.state.secondCal && this.state.firstCal <= this.state.secondCal) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return true;
-    }
+    return this.state.pickerType == 'bt' &&
+      this.state.firstCal &&
+      this.state.secondCal &&
+      this.state.firstCal <= this.state.secondCal;
   }
 
   onChangeType(e) {
@@ -107,7 +103,7 @@ class SocrataDatefilter extends React.Component {
 
   handleFirstCalChange(day) {
     this.setState({
-      firstCal: new Date(day).toISOString()
+      firstCal: day
     }, () => {
       this.props.dataHandler(
         this.formattedLabel(),
@@ -120,7 +116,7 @@ class SocrataDatefilter extends React.Component {
 
   handleSecondCalChange(day) {
     this.setState({
-      secondCal: new Date(day).toISOString()
+      secondCal: day
     }, () => {
       this.props.dataHandler(
         this.formattedLabel(),

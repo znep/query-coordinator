@@ -166,26 +166,21 @@ import './styles/mobile-general.scss';
     $window.scroll(function() {
       var stp = $window.scrollTop();
 
-      if (stp > lastScrollTop) {
+      if ((stp + 20) > lastScrollTop && stp > 0) {
         if (!wasScrollingDown) {
-          $navbar.
-            removeClass('navbar-visible').
-            addClass('navbar-hidden');
-          $('#navbar').
-            removeClass('in').
-            attr('aria-expanded','false');
-
           wasScrollingDown = true;
+
+          $navbar.removeClass('navbar-visible').addClass('navbar-hidden');
+          $('#navbar').removeClass('in').attr('aria-expanded','false');
         }
       } else {
         if (wasScrollingDown) {
-          $navbar.
-            removeClass('navbar-hidden').
-            addClass('navbar-visible');
-
           wasScrollingDown = false;
+
+          $navbar.removeClass('navbar-hidden').addClass('navbar-visible');
         }
       }
+
       lastScrollTop = stp;
     });
   }

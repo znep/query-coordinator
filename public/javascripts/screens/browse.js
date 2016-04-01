@@ -209,8 +209,12 @@ $(function() {
       }
     });
 
+    var aboutUrl = (ds.type === 'story') ?
+      ds.domainUrl + '/d/' + ds.id + '/about':
+      ds.fullUrl + ((ds.type == 'blob' || ds.type == 'href') ? '' : '/about');
+
     $content.find('.button.about:not(.hide)').
-      attr('href', ds.fullUrl + ((ds.type == 'blob' || ds.type == 'href') ? '' : '/about')).
+      attr('href', aboutUrl).
       attr('rel', ds.isFederated() ? 'external' : '');
   };
 

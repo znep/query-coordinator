@@ -12,8 +12,9 @@ class NewReleaseUi
   MAX_MANIFEST_COMMITS = 1000 # This must be provided to the git library.
   MANIFEST_FILE = 'manifest.txt'
   RELEASE_BRANCH_NAME = 'release'
+  ACTUALLY_PUSH_TAG = true # Set this to false if you're debugging
 
-  attr_reader :dialog, :git, :new_release_commit, :new_semver, :jenkins_build_number, :last_released_commit, :current_master_commit
+  attr_reader :dialog, :git, :new_release_commit, :new_semver, :jenkins_build_number, :last_released_commit_sha, :current_master_commit
 
   def initialize
     @dialog = MRDialog.new
@@ -35,7 +36,11 @@ class NewReleaseUi
     dialog.infobox('Fetching origin...', 3, 40)
     git.fetch('origin')
 
-    @last_released_commit = git.object('origin/release')
+    # git.object('branch') returns a reference, not a sha. This means
+    # if the branch moves, so will that reference.
+    # Grab the sha to have an immutable reference, since we need to use
+    # last_released_commit_sha even after we push to origin.
+    @last_released_commit_sha = git.object("origin/#{RELEASE_BRANCH_NAME}").sha
     @current_master_commit = git.object('origin/master')
     @new_release_commit = input_release_commit
 
@@ -89,7 +94,7 @@ Aborted.'
 
     # 4- Push origin
     dialog.infobox('Git push')
-    git.push('origin', RELEASE_BRANCH_NAME, tags: true, force: true)
+    git.push('origin', RELEASE_BRANCH_NAME, tags: ACTUALLY_PUSH_TAG, force: true)
   end
 
   def wait_for_jenkins_build
@@ -175,12 +180,12 @@ Proceed?
 ")
   end
 
-  # Generate a manifest between last_released_commit and new_release_commit.
+  # Generate a manifest between last_released_commit_sha and new_release_commit.
   # If new_semver is set, a header will be generated mentioning the new
   # version. Example header:
   #   Storyteller v1.0.1 Manifest (old version: v1.0.0).
   def manifest_text
-    commits = git.log(MAX_MANIFEST_COMMITS).between(last_released_commit, new_release_commit).select do |commit|
+    commits = git.log(MAX_MANIFEST_COMMITS).between(last_released_commit_sha, new_release_commit).select do |commit|
       commit.parents.length == 1 # Ignore merge commits.
     end
 
@@ -230,17 +235,17 @@ Reset to arbitrary commit example:
 
 Press <enter> when you're done.")
 
-    if current_origin_release_commit.sha != last_released_commit.sha
+    if current_origin_release_commit.sha != last_released_commit_sha
       dialog.msgbox("You pushed to origin/#{RELEASE_BRANCH_NAME}! I told you not to!
-Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit.sha} and try again!")
-      while current_origin_release_commit.sha != last_released_commit.sha
-        dialog.msgbox("Srsly, reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit.sha} (or ctrl-c if you must)")
+Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} and try again!")
+      while current_origin_release_commit.sha != last_released_commit_sha
+        dialog.msgbox("Srsly, reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} (or ctrl-c if you must)")
       end
     end
 
     local_release_commit = git.object('release')
 
-    if last_released_commit.sha == local_release_commit.sha
+    if last_released_commit_sha == local_release_commit.sha
       dialog.msgbox("Your release branch is the same as origin/#{RELEASE_BRANCH_NAME}!")
       nil
     else
@@ -253,7 +258,7 @@ Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit.sha} and try again
   end
 
   def current_release_semver
-    semver_yaml = git.gblob("#{last_released_commit.sha}:.semver").contents
+    semver_yaml = git.gblob("#{last_released_commit_sha}:.semver").contents
     semver = YAML.load(semver_yaml)
     SemVer.new(semver[:major], semver[:minor], semver[:patch], semver[:special])
   end

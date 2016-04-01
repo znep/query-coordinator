@@ -42,14 +42,25 @@ ca:
     dataCards:
       add_card_dialog:
         add_card: Afegeix una targeta
+        add_card_title:
         add_this_card: Afegeix aquesta targeta
         card_on_page: La targeta ja és a la pàgina
         card_on_page_long: Aquesta targeta ja és a la pàgina
         choose_column: Tria una columna
+        choropleth_admin_message:
+        choropleth_message:
+        choropleth_warning:
         classic_chart:
         column_chart_warning: 'Nota: Això es convertirà en un gràfic de barres amb més de cent barres, pot ser que vagi una mica més lent que altres gràfics'
+        column_label:
+        curated_region_messages:
+          not_yet_computed:
+          permissions:
         custom:
         customize_prompt: Personalitza aquesta targeta
+        disabled_curated_region_message:
+          dataset_too_big:
+          permissions:
         generic_prompt:
         histogram_column_chart_warning:
         not_supported: Actualment no és compatible
@@ -63,19 +74,38 @@ ca:
           feature_map: Visualitza aquesta columna com a característica del mapa
           search_card: Visualitza aquesta columna com a cerca de targetes
           timeline_chart: Visualitza aquesta columna com a gràfica de línia del temps
+      aggregation_chooser:
+        by_the_number_of: <span class="information">per el</span> número de
+        by_the_sum_of: <span class="information">per la</span> quantitat de
+        count_label: compta {0} per element
+        description: 'Veges els elements de les dades amb mida o color per:'
+        option_disabled: Aquesta columna no es pot fer servir amb un<br>número total
+        sum_label: afegeix per cada {0}
+        the_number_of: El número de
+        the_sum_of: La quantitat de
+        title: Conjunt
+        too_many_columns:
+          message: Actualment no podem donar-vos una suma com a total per les pàgines de Visió de dades que tinguin més de {0} columnes de tipus de números o diners.
+          title: Sembla que aquesta taula de dades té més de {0} columnes de números
       api_explorer:
-        additional_resources: 'Recursos addicionals per aquest Institut Americà de Petroli:'
-        api_button: Institut Americà de Petroli
-        api_button_title: Accediu a aquesta taula de dades a traves de l'Institut Americà de Petroli
+        additional_resources: 'Recursos addicionals per aquest la API:'
+        api_button: API
+        api_button_title: Accediu a aquesta taula de dades a traves de la API
         code_libraries: Codi de biblioteques
-        code_libraries_title: 'Descarregueu-vos del codi de biblioteques els clients de l''Institut Americà de Petroli '
+        code_libraries_title: 'Descarregueu-vos del codi de biblioteques els clients de la API '
         documentation: Documentació
-        documentation_title: Vegeu la documentació de l'Institut Americà de Petroli
+        documentation_title: Vegeu la documentació de la API
         formats: 'Aquesta dada es troba disponible en diferents formats:'
         geojson: GeoJSON
         json: JSON
-        title: Institut Americà de Petroli
+        title: API
         url: 'Podeu accedir a aquesta informació a través de Socrata Open Data API a aquesta URL:'
+      card_aggregation_selector:
+        add_this_aggregation:
+        choose_count:
+        choose_sum:
+        function_label:
+        value_label:
       card_controls:
         collapse_card: Col·lapseu aquesta targeta
         customize_disabled: No hi ha cap mena de personalització disponible per a aquesta targeta encara
@@ -91,6 +121,9 @@ ca:
         average: mitjana de {0}
         number_of: número de {0}
         sum_of: quantitat de {0}
+      choropleth:
+        computation_in_progress:
+        pending_computation:
       common:
         by:
         cancel: Cancel·leu-ho
@@ -110,11 +143,13 @@ ca:
           export_visualization_disabled: Aquesta visualització no està disponible<br/> per exportar imatges
           invalid_card: Visualització d'una targeta invàlida
           map_render_error: Hem trobat un error mentre intentàvem representar el mapa.
-        export: Esportar
+        export: Exportar
         latitude: Latitud
         longitude: Longitud
         no_value: Cap valor
         ok: D'acord
+        pending_adding_column:
+        pending_computation:
         permissions:
           permissions: Permisos
           private: Privat
@@ -148,6 +183,7 @@ ca:
           simple_blue:
           simple_grey:
           title: Mapa basat en estrats
+        title:
         visualization_options:
           title: Tipus de targeta
       distribution_chart:
@@ -157,15 +193,25 @@ ca:
           error: Hem trobat un error mentre intentàvem de proveir aquesta targeta
           no_data: No hi ha cap dada per mostrar
       export_menu:
-        csv:
-          header:
-          current_filter:
-          all_rows:
-          not_available:
-        image:
-          header:
-          description:
         choose_card:
+        csv:
+          all_rows:
+          current_filter:
+          header:
+          not_available:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        image:
+          description:
+          header:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
+        standalone_visualization:
+          description:
+          header:
       feature_map:
         feature_map_disabled:
         zoom_disabled: El zoom no és disponible temporalment. Si us plau, proveu-ho més tard.
@@ -224,6 +270,10 @@ ca:
           owner_unavailable:
           title:
           warning:
+        provenance:
+          description:
+          label:
+          title:
         sharing:
           add_new:
           add_new_prompt:
@@ -242,6 +292,7 @@ ca:
           title:
           viewer:
         title: Dirigir
+        unsaved_changes_message:
         visibility:
           dataset_is_private:
           hidden:
@@ -261,6 +312,7 @@ ca:
         validation_error_min_length: Si us plau, entreu un títol
         validation_error_required: Si us plau, entreu un títol
         visualization_as_image: Visualització com a imatge
+        visualization_as_image_disabled_flyout: Si us plau, guardeu la pàgina per tal de descarregar la visualització com a imatge
       mobile_warning_dialog:
         acknowledgement: D'acord, ja ho tinc!
         description: 'Estem treballant per millorar el servei per mòbil d''aquesta pàgina. '
@@ -276,6 +328,7 @@ ca:
         clear_all: Esborra-ho tot
         clear_all_flyout: Feu clic per reconfigurar tots els filtres
         filter_title: Mostrant <span class="light">the {0}</span>
+        old_filter_title:
       related_views:
         button: Altres vistes d'aquesta dada
         title: Aaltres vistes d'aquesta dada
@@ -320,9 +373,21 @@ ca:
         flyoutFailedTitle: Hi ha hagut un error
         flyoutIdle: Feu clic per guardar els canvis
         flyoutNoChanges: No s'ha guardat cap canvi
+        flyoutNoEditPermission:
         save: Guardar
         saved: Guardat!
         saving: Guardant...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
         error_explanation:
         invalid_search: Intenteu buscar per números, no per lletres.
@@ -409,6 +474,116 @@ ca:
         suggest_dataset_short: Suggerir un Conjunt de Dades
         suggest_dataset_verb: Suggerir
       back_to_dataset: Torna al Conjunt de Dades
+      browse2:
+        api:
+          link:
+            label:
+            title:
+        comment_count:
+        create:
+          dataset:
+            label:
+            title:
+          label:
+          story:
+            label:
+            title:
+          title:
+        data_types:
+          label:
+        description:
+          show_less_label:
+          show_more_label:
+        display_types:
+          api:
+          blob:
+          calendar:
+          chart:
+          data_lens:
+          dataset:
+          filter:
+          form:
+          href:
+          map:
+          predeply_api:
+          pulse:
+          story:
+          unknown:
+        edit:
+          delete:
+            confirm:
+            error:
+            label:
+            title:
+          make_private:
+            error:
+            label:
+            title:
+          make_public:
+            error:
+            label:
+            title:
+        facets:
+          clear_all:
+            label:
+          contract:
+            label:
+            title:
+          expand:
+            label:
+            title:
+          header:
+            filter:
+            filtered_by:
+            result:
+          hint:
+          mobile:
+            all_filters:
+            back:
+            clear_all:
+            filter:
+        federation:
+          label:
+          label_with_source:
+          source:
+        last_updated:
+          label:
+        odn:
+          link:
+            label:
+            title:
+          prompt:
+        results:
+          cetera_count:
+          count:
+          summary:
+        search:
+          clear:
+            title:
+          placeholder:
+          title:
+        settings:
+          label:
+          title:
+        skiplinks:
+          results:
+        sort:
+          label:
+          periods:
+            label:
+            month:
+            week:
+            year:
+        topics:
+          empty:
+          label:
+        view_count:
+          label:
+        visibility:
+          private:
+            label:
+          public:
+            label:
       facets:
         categories_singular_title: categoria
         categories_title: Categories
@@ -453,6 +628,7 @@ ca:
           rss: RSS
           type: Tipus
         timeout: Ho lamentem. No podem mostrar resultats ara mateix. Provi més tard.
+      ordered_topics:
       row_results:
         less_link: Menys
         matching_rows: Buscant conjunt de dades amb files coincidents
@@ -485,6 +661,7 @@ ca:
           main: Resultats %{body}
           term: per "%{term}"
     charts:
+      missing_column_html:
       negatives_in_data: 'Gràfica Invàlida: apareixen valors negatius'
       no_data: Sense dades
       other_slice_label: Altre
@@ -524,6 +701,7 @@ ca:
           email: Correu Electrònic
           facebook: Facebook
           twitter: Twitter
+        share_story_text:
         share_text: 'Comprova el conjunt de dades %{name} a %{site}:'
       sidebar:
         tabs:
@@ -533,7 +711,7 @@ ca:
           discuss: Discussió
           edit: Editar
           embed: Encastar
-          export: Esportar
+          export: Exportar
           filter: Filtre
           manage: Gestionar
           moreViews: Més Vistes
@@ -724,6 +902,7 @@ ca:
       previous: Anterior
       previous_row: Anterior fila
       request_timed_out: La sol·licitud per a aquesta dada ha expirat.
+      unable_to_load_map_html:
     nominate:
       all: Tots
       approve: "(Aprovar)"
@@ -1374,6 +1553,7 @@ ca:
     about:
       actions: Accions
       activity: Activitat
+      admin_debugging:
       attachments: Adjunts
       category: Categoria
       comments: Comentaris
@@ -1382,6 +1562,7 @@ ca:
       contributors: Col·laboradors
       created: creat
       data_provided_by: Dades Proveïdes Per
+      datasync_status:
       description: Descripció
       downloads: Descàrregues
       edit_metadata: Editar Metadades
@@ -1424,6 +1605,8 @@ ca:
         saved: Desat
         saving: Desant
         sidebar_position: Posició de la Barra Lateral
+        skip_to_dataset_listing:
+        table_description:
         title: Conjunts de Dades
         unpublished_datasets: Conjunts de Dades no publicats
       federation:
@@ -1457,6 +1640,7 @@ ca:
         title: Federació de Dades Obertes
       georegions:
         actions:
+        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1487,6 +1671,8 @@ ca:
         enable_success:
         enabled?:
         enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
         flashes:
           add_georegion_error:
         page_subtitle:
@@ -1539,12 +1725,137 @@ ca:
         thumbnail: Miniatura
         title: Administrar Pàgina d'Inici
         up: Dalt
+      jobs:
+        actions:
+          geocoding:
+          import:
+          replace:
+          upsert:
+          working_copy:
+        index_page:
+          action:
+          dataset:
+          export_as_csv:
+          initiated_by:
+          no_jobs:
+          page_title:
+          showing_most_recent:
+          started:
+          status:
+          title:
+        show_page:
+          back:
+          error_details_heading:
+          fallback_event_title:
+          file_name_unknown:
+          import:
+          import_failures:
+            bad_timestamp_format:
+              description:
+              title:
+            bad_timezone:
+              description:
+              title:
+            control_file_invalid_json:
+              description:
+              title:
+            control_file_malformed:
+              description:
+              title:
+            control_file_too_large:
+              description:
+              title:
+            corrupt_gzip:
+              description:
+              title:
+            corrupt_xz:
+              description:
+              title:
+            delete_without_user_pk:
+              description:
+              title:
+            duplicated_fields_in_input:
+              description:
+              title:
+            field_not_in_dataset:
+              description:
+              title:
+            field_not_in_input:
+              description:
+              title:
+            field_wrong_format:
+              description:
+              title:
+            geocoding_failure:
+              description:
+              title:
+            geocoding_source_ignored:
+              description:
+              title:
+            geocoding_source_invalid_type:
+              description:
+              title:
+            ignored_synthetic_location_column_inputs_in_nbe_dataset:
+              description:
+              title:
+            invalid_encoding:
+              description:
+              title:
+            invalid_row_length:
+              description:
+              title:
+            malformed_upsert:
+              description:
+              title:
+            no_field_names_in_input:
+              description:
+              title:
+            no_identity_column:
+              description:
+              title:
+            permission_denied:
+              description:
+              title:
+            record_too_large:
+              description:
+              title:
+            synthetic_location_in_input:
+              description:
+              title:
+            too_many_errors_in_input:
+              description:
+              title:
+            too_many_records_in_input:
+              description:
+              title:
+            uninterpretable_value:
+              description:
+              title:
+            unknown_domain:
+              description:
+              title:
+            unknown_file_type:
+              description:
+              title:
+            upsert_already_in_progress_by_someone_else:
+              description:
+              title:
+          no_events:
+          page_title:
+          title:
+          to:
+        statuses:
+          failure:
+          inprogress:
+          notstarted:
+          success:
       metadata:
         add_new_category: Afegir una Categoria Nova
         add_new_field: Afegir un Camp nou
         allowed_values: 'Valors Permesos '
         are_you_sure: Està segur de voler eliminar aquest conjunt de camps i tots els camps associats?
         category_name: 'Nom de la Categoria '
+        category_table_description:
         create: Crear
         create_new_fieldset: Crear un Conjunt de Camps Nou
         define_categories: Definir les Categories dels Conjunts de Dades
@@ -1574,6 +1885,7 @@ ca:
         metadata_explain1: Les metadades personalitzades s'han desfet en <span class="code">conjunts de camps</span> i <span class="code">camps</span>. Un <span class="code">conjunt de dades</span> és la forma d'agrupar lògica i visualment un o més <span class="code">camps</span> junts.
         metadata_explain2: Els camps poden ser configurats de múltiples formes. Poden ser <span class="code">requerits</span>, el que farà que s'executin quan el editors creïn nous conjunts de dades i actualitzin metadades existents. També poden ser <span class="code">privats</span> i per tant, els valors introduïts no seran visibles pel públic.
         metadata_explain3: Finalment, pot elegir predefinir les opcions del seu <span class="code">camp</span> si desitja que els valors se seleccionin d'una llista en compte de ser introduïts en forma de text lliure de forma.
+        metadata_field_table_description:
         no_data: Encara no s'han definit camps de conjunts de dades personalitzats al seu domini. Introdueixi un nom a sota i cliqui 'Crear' per començar.
         no_fields_defined: Aquest conjunt de camps encara no té cap camp definit
         page_title: Administrar Metadades de Conjunts de Dades
@@ -1592,6 +1904,7 @@ ca:
         email_prompt: Introdueixi les adreces de correu electrònic per als comptes que desitgi crear
         emails: Correus electrònics
         error_permission_request: Ha ocorregut un error mentre processàvem la seva sol·licitud del permís
+        export_as_csv:
         filter_by: Filtrar per
         flashes:
           accounts_created:
@@ -1611,6 +1924,7 @@ ca:
         no_users_found: No s'han trobat usuaris existents
         no_users_match: Cap usuari coincideix amb el filtre actual
         pending_users: Els següents usuaris tenen comptes pendents, però no els han activat encara
+        pending_users_table_description:
         reenable_privileges: Restablir Privilegis
         remove: Eliminar
         reset_password: Reiniciar Contrasenya
@@ -1620,14 +1934,19 @@ ca:
           administrator: administrador
           designer: dissenyador
           editor: administrador
+          editor_stories:
           none: cap
           publisher: editor
+          publisher_stories:
           viewer: espectador
         search: Cercar
         search_for_users: Cercar Usuaris per a Afegir a
         search_results: Cercar Resultats per a '%{term}'
         title: Administrar Usuaris
         user_saved: Usuari desat
+        users_table_description:
+      view_moderation:
+        table_description:
     dataset_edit:
       append: Agregar
       append_and_replace: Agregar i Reemplaçar dades
@@ -1718,6 +2037,8 @@ ca:
         why_choose_now: Perquè és important elegir el tipus de les columnes ara?
       import_help: <strong>Necessita ajuda?</strong> Mantenim una <a href="%{common_errors}" rel="external">llista d'advertències i errors comuns</a> que li pot ajudar.
       import_shapefile:
+        abbreviatedSubheadline:
+        abbreviatedSummary:
         crs: Sistema de Referència de Coordinades
         headline: Especifiqui com s'importarà &ldquo;<span class="fileName"></span>&rdquo;
         layers_list: Capes a importar
@@ -1898,7 +2219,7 @@ ca:
           validation:
             view_column: No pot afegir una columna a la vista
         api:
-          api_docs: Documents de l'Institut Americà de Petroli
+          api_docs: Documents de la API
           column_ids_title: IDs de les Columnes
           developer_portal: Portal desenvolupador
           endpoint_title: 'Punt Final de l''Acces de l''API:'
@@ -2257,6 +2578,7 @@ ca:
             no_icons: Les icones són relevants únicament per a la vista de mapa
         data_lens:
           button:
+          button_flyout:
           subtitle:
           title:
         delete:
@@ -2285,6 +2607,8 @@ ca:
           download_dataset: Si us plau, descarregueu-vos la taula de dades de la qual deriva aquesta imatge.
           geo_header: Descarregar Dades Geoespacials
           layers_header: Descarregar Capes Tabulars
+          monolayer_header:
+          multilayer_header:
           subtitle: Descarregar una còpia d'aquest conjunt de dades en format estàtic
           title: Descarregar
         feed:
@@ -2588,6 +2912,7 @@ ca:
       dataset_title_prompt: Introdueixi un títol
       dataset_url: URL del Conjunt de Dades
       dataset_url_prompt: Introdueixi la localització del seu conjunt de dades extern
+      default_row_label:
       delete: Eliminar
       email_address: Adreça de Correu Electrònic
       email_help: Aquestes adreces no es faran públiques. Si ho deixa en blanc, l'adreça passarà per defecte a ser la seva
@@ -2893,6 +3218,7 @@ ca:
     stats:
       api: API
       apply: Aplicar
+      browser_page_views:
       bytes_out: Bits Fora
       chart_created: gràfica creada
       charts: Gràfiques
@@ -2901,6 +3227,7 @@ ca:
       comments: Comentaris
       comments_created: comentaris creats
       daily: Diàriament
+      date_range:
       deleted_application: aplicació eliminada
       delta_decrease:
       delta_decrease_compared:
@@ -2979,3 +3306,6 @@ ca:
     array_or:
       last_word_connector: ", o "
       two_words_connector: 'o '
+  table:
+    no_summary_available:
+    summary:

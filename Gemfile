@@ -63,6 +63,11 @@ gem 'request_store'
 # Exception notifier - required last so we get airbrake from delayed jobs
 gem 'airbrake'
 
+group :production do
+  # Reaps unicorn worker processes under predefined conditions
+  gem 'unicorn-worker-killer', '~> 0.4'
+end
+
 group :development, :test do
   # Testing framework
   gem 'rspec-rails', '~> 3.4'

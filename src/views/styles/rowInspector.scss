@@ -156,16 +156,21 @@ $action-btn-disabled-font-color: #c6c1bf;
 
   // General layout
   .tool-panel {
+    display: inline-block;
     position: absolute;
 
     .tool-panel-main {
+      position: absolute;
       margin: 0;
       display: block;
       width: 350px;
       max-height: $row-inspector-max-height;
+      margin-right: -10px;
       right: inherit;
       left: 50%;
+      right: 50%;
       z-index: 1003;
+      text-align: left;
     }
 
     &.north .tool-panel-main {
@@ -207,6 +212,7 @@ $action-btn-disabled-font-color: #c6c1bf;
         background: rgba(0,0,0,0.1);
       }
 
+      position: relative;
       padding: $sticky-border-height;
       overflow: auto;
       max-height: $row-inspector-content-max-height;
@@ -220,6 +226,15 @@ $action-btn-disabled-font-color: #c6c1bf;
       background-color: transparent;
       top: auto;
       right: auto;
+      border-width: 0 0 $tool-panel-hint-size $tool-panel-hint-size;
+
+      &:before {
+        right: -1px;
+        top: -2px;
+        z-index: -1;
+        border-style: solid;
+        border-width: 0 0 $tool-panel-hint-size + 1 $tool-panel-hint-size + 1;
+      }
 
       &:after, &:before {
         border: solid transparent;
@@ -434,49 +449,6 @@ $action-btn-disabled-font-color: #c6c1bf;
         }
       }
     }
-  }
-}
-
-.tool-panel {
-  display: inline-block;
-  position: relative;
-
-  .tool-panel-main {
-
-    position: absolute;
-    margin-top: $tool-panel-hint-size / 2;
-    right: 50%;
-    margin-right: -10px;
-    text-align: left;
-    z-index: $tool-panel-z-index;
-    width: $tool-panel-width;
-  }
-
-  .tool-panel-hint {
-    position: absolute;
-    right: 0;
-    top: -$tool-panel-hint-size;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 0 $tool-panel-hint-size $tool-panel-hint-size;
-
-    &:before {
-      content: '';
-      position: absolute;
-      right: -1px;
-      top: -2px;
-      width: 0;
-      height: 0;
-      z-index: -1;
-      border-style: solid;
-      border-width: 0 0 $tool-panel-hint-size + 1 $tool-panel-hint-size + 1;
-    }
-  }
-
-  .tool-panel-inner-container {
-    position: relative;
-    padding: $tool-panel-padding;
   }
 }
 

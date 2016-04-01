@@ -3,7 +3,7 @@
 @import 'media-queries.scss';
 
 header {
-  font-family: $font, 'Open Sans', Helvetica, Arial, 'sans-serif';
+  font-family: $font-family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .banner {
     color: $fg-color;
@@ -71,6 +71,39 @@ header {
           font-size: 12px;
         }
       }
+    }
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -120%;
+    bottom: 0;
+    overflow: auto;
+    z-index: 10;
+    background-color: #f8f8f8;
+    color: #949195;
+    width: 90%;
+    box-shadow: 0 8px 30px #a9a7aa;
+    transition: right 0.4s ease-in-out;
+
+    &.active {
+      right: 0%;
+    }
+
+    .menu-header-title {
+      color: #3b3a3c;
+      font-size: 20px;
+      font-weight: 300;
+      text-align: center;
+      margin: 1rem;
+      letter-spacing: -0.5px;
+    }
+    .menu-toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 1rem;
     }
   }
 }

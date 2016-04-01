@@ -62,5 +62,31 @@ header {
           display: block; } }
       header .banner > nav.mobile .menu-toggle {
         font-size: 12px; }
+  header .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -120%;
+    bottom: 0;
+    overflow: auto;
+    z-index: 10;
+    background-color: #f8f8f8;
+    color: #949195;
+    width: 90%;
+    box-shadow: 0 8px 30px #a9a7aa;
+    transition: right 0.4s ease-in-out; }
+    header .mobile-menu.active {
+      right: 0%; }
+    header .mobile-menu .menu-header-title {
+      color: #3b3a3c;
+      font-size: 20px;
+      font-weight: 300;
+      text-align: center;
+      margin: 1rem;
+      letter-spacing: -0.5px; }
+    header .mobile-menu .menu-toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 1rem; }
 
 /*# sourceMappingURL=header.css.map */

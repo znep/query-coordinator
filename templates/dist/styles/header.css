@@ -88,5 +88,17 @@ header {
       top: 0;
       right: 0;
       padding: 1rem; }
+    header .mobile-menu .menu-content a.menu-link {
+      color: #2c2c2c;
+      background-color: #fff;
+      display: block;
+      font-size: 15px;
+      border-top: 1px solid #f4f4f4;
+      padding: 15px 11px;
+      text-decoration: none; }
+      header .mobile-menu .menu-content a.menu-link:last-of-type {
+        border-bottom: 1px solid #f4f4f4; }
+      header .mobile-menu .menu-content a.menu-link:hover, header .mobile-menu .menu-content a.menu-link:focus, header .mobile-menu .menu-content a.menu-link:active {
+        background-color: #fafafa; }
 
 /*# sourceMappingURL=header.css.map */

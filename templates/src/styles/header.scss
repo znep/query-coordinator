@@ -99,11 +99,32 @@ header {
       margin: 1rem;
       letter-spacing: -0.5px;
     }
+
     .menu-toggle {
       position: absolute;
       top: 0;
       right: 0;
       padding: 1rem;
+    }
+
+    .menu-content {
+      a.menu-link {
+        color: #2c2c2c;
+        background-color: #fff;
+        display: block;
+        font-size: 15px;
+        border-top: 1px solid #f4f4f4;
+        padding: 15px 11px;
+        text-decoration: none;
+
+        &:last-of-type {
+          border-bottom: 1px solid #f4f4f4;
+        }
+
+        &:hover, &:focus, &:active {
+          background-color: #fafafa;
+        }
+      }
     }
   }
 }

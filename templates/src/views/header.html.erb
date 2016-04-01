@@ -69,5 +69,11 @@
     <a class="menu-toggle" href="#">
       <span class="icon-close-2"></span>
     </a>
+
+    <div class="menu-content">
+      <% nav_links.each do |nav_link| %>
+        <a class="menu-link" href="<%= nav_link[:href] %>"><%= nav_link[:text] %></a>
+      <% end %>
+    </div>
   </div>
 </header>

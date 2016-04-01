@@ -1,0 +1,134 @@
+@import "breakpoint";
+@import "vendor/reset";
+//@import "vendor/prism";
+@import "modular-scale";
+
+
+// Style Components
+@import "bourbon";
+@import "neat";
+
+@import "../../../src/scss/socrata-icons";
+
+@font-face {
+  font-family: "socrata-icons";
+  src: url("/fonts/socrata-icons.eot");
+  src: url("/fonts/socrata-icons.eot?#iefix") format("embedded-opentype"),
+       url("/fonts/socrata-icons.woff") format("woff"),
+       url("/fonts/socrata-icons.ttf") format("truetype"),
+       url("/fonts/socrata-icons.svg#socrata-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "socrata-icons";
+    src: url("/fonts/socrata-icons.svg#socrata-icons") format("svg");
+  }
+}
+
+@import "../../../src/scss/components/grid";
+@import "../../../src/scss/components/typography";
+@import "../../../src/scss/components/colors";
+@import "../../../src/scss/components/color-swatches";
+@import "../../../src/scss/components/button-group";
+@import "../../../src/scss/components/buttons";
+@import "../../../src/scss/components/list";
+@import "../../../src/scss/components/loader";
+@import "../../../src/scss/components/forms";
+@import "../../../src/scss/components/modal";
+@import "../../../src/scss/components/tags";
+@import "../../../src/scss/components/alerts";
+@import "../../../src/scss/components/dividers";
+@import "../../../src/scss/components/flyout";
+@import "../../../src/scss/components/flannel";
+@import "../../../src/scss/components/nav-bars";
+@import "../../../src/scss/components/tables";
+@import "../../../src/scss/components/menu";
+@import "../../../src/scss/components/pagination";
+@import "../../../src/scss/components/input-groups";
+@import "../../../src/scss/components/cards";
+
+// Media Queries
+$tablet: 769px;
+$desktop: 992px;
+
+
+.responsive-navbar {
+	.site-display-name a {
+		color: $white;
+		text-decoration: none;
+		font-weight: 300;
+	}
+
+	.nav-links {
+		margin-top: 0;
+		font-size: ms(0);
+		font-weight: 300;
+
+		
+		a {
+			color: $white;
+			text-decoration: none;
+			&:hover {
+				text-decoration: underline;
+			}
+			
+			&.social-link {
+				font-size: ms(1);
+			}
+		
+		}
+
+		.divider a {
+			border-left: 1px solid #3DC492;
+			padding-left: 1rem;
+			padding-top: 8px;
+			padding-bottom: 8px;
+
+		}
+
+		#sign-in-toggle {
+			font-weight: 500;
+			.icon-user {
+				font-size: ms(1);
+			}
+		}
+
+	}
+}
+
+.content {
+	min-height: 60vh;
+}
+
+footer {
+	@include row();
+	background-color: $black;
+	min-height: 200px;
+	padding: ms(8);
+	color: $white;
+	
+	a {
+		color: $white;
+		text-decoration: none;
+	}
+
+	img {
+		max-height: 80px;
+	}
+
+	.site-logo {
+		@include span-columns(5);
+	}
+
+	.links-col {
+		@include span-columns(2);
+		&.first {
+			@include shift(1);
+		}
+	}
+
+}
+

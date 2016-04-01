@@ -1,0 +1,93 @@
+---
+title: Homepage
+layout: prototype-homepage-view
+---
+
+
+<% content_for :page_js do %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script>
+
+$("#sign-in-toggle").on('click', function() {
+
+  $(this).parent().addClass("divider").html("<a href='#'><span class='icon-user'> </span>Ryan Collier</a>")
+
+});
+
+</script>
+
+
+<% end %> 
+
+<div class="responsive-navbar">
+  <img src="../../images/evergreen.png" />
+  <span class="site-display-name"><a href="#">City of Evergreen</a></span>
+  <div class="responsive-navbar-nav">
+    <ul class="nav-links list-inline">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Catalog</a></li>
+      <li><a href="#">Open Budget</a></li>
+      <li><a href="#">City of Evergreen</a></li>
+      <li><a href="#">About</a></li>
+      <li class="divider"><a class="social-link" href="#"><span class="icon-twitter"></span></a></li>
+      <li><a class="social-link" href="#"><span class="icon-facebook"></span></a></li>
+      <li><a id="sign-in-toggle" class="btn btn-sm btn-default btn-inverse" href="#">Sign In</a></li>
+    </ul>
+    <span class="divider"></span>
+    <ul class="nav-links">
+     
+    </ul>
+  </div>
+</div>
+
+
+<div class="container">
+  
+  <div class="content">
+
+   
+
+ 
+  
+  </div><!-- /.content -->
+
+  <footer>
+
+      <div class="site-logo">
+          <img src="../../images/evergreen.png" />
+          <span class="site-display-name">City of Evergreen</span>
+      </div>
+
+      <div class="links-col first">
+          <ul class="list-unstyled">
+              <li><a href="#">Link 1</a></li>
+              <li><a href="#">Link 2</a></li>
+              <li><a href="#">Link 3</a></li>
+              <li><a href="#">Link 4</a></li>
+              <li><a href="#">Link 5</a></li>
+          </ul>
+      </div>
+      <div class="links-col second">
+            <ul class="list-unstyled">
+              <li><a href="#">Link 1</a></li>
+              <li><a href="#">Link 2</a></li>
+              <li><a href="#">Link 3</a></li>
+              <li><a href="#">Link 4</a></li>
+              <li><a href="#">Link 5</a></li>
+          </ul>
+        </div>
+      <div class="links-col third">
+            <ul class="list-unstyled">
+              <li><a href="#">Link 1</a></li>
+              <li><a href="#">Link 2</a></li>
+              <li><a href="#">Link 3</a></li>
+              <li><a href="#">Link 4</a></li>
+              <li><a href="#">Link 5</a></li>
+          </ul>
+
+      </div>
+
+  </footer>
+
+</div><!-- /.container -->

@@ -1,12 +1,9 @@
-// TODO - media query variables
-
-$bg-color: #22B479;
-$fg-color: #fff;
-$font: 'Open Sans';
-
+@import 'variables.scss';
+@import 'common.scss';
+@import 'media-queries.scss';
 
 header {
-  font-family: $font, "Open Sans", "Helvetica", "Arial", "sans-serif";
+  font-family: $font, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .banner {
     color: $fg-color;
@@ -14,8 +11,10 @@ header {
     line-height: 60px;
     font-size: 18px;
     padding: 0 1rem;
+    overflow: hidden;
 
     > a.logo {
+      float: left;
       text-decoration: none;
       color: $fg-color;
 
@@ -31,11 +30,15 @@ header {
     }
 
     > nav {
-      &.desktop {
-        font-size: 15px;
-        font-weight: 300;
-        float: right;
+      font-size: 15px;
+      font-weight: 300;
+      float: right;
 
+      @include desktop {
+        &.desktop { display: block; }
+        &.mobile { display: none; }
+      }
+      &.desktop {
         a.nav-link {
           display: inline-block;
           padding: 0 11px;
@@ -45,24 +48,11 @@ header {
           &.social-link {
             font-size: 19px;
           }
-
         }
 
         a.sign-in-toggle {
-          color: $fg-color;
-          background: transparent;
           font-size: 12px;
           margin-left: 11px;
-          padding: 8px 12px;
-          border: 1px solid $fg-color;
-          text-decoration: none;
-          transition: color 0.2s, background-color 0.2s;
-
-          &:hover, &:focus, &:active {
-            text-decoration: underline;
-            background: #fff;
-            color: #999;
-          }
         }
 
         span.divider {
@@ -70,12 +60,16 @@ header {
           padding: 8px 0;
           border-left: 1px solid rgba(255, 255, 255, 0.3);
         }
-
-
       }
 
+      @include mobile {
+        &.desktop { display: none; }
+        &.mobile { display: block; }
+      }
       &.mobile {
-
+        .menu-toggle {
+          font-size: 12px;
+        }
       }
     }
   }

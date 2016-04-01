@@ -1,12 +1,29 @@
+.btn {
+  color: #fff;
+  background: transparent;
+  padding: 8px 12px;
+  border: 1px solid #fff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s; }
+  .btn:hover, .btn:focus, .btn:active {
+    background: #fff;
+    color: #999; }
+  .btn [class*="icon-"] {
+    position: relative;
+    padding-right: 11px; }
+
 header {
-  font-family: "Open Sans", "Open Sans", "Helvetica", "Arial", "sans-serif"; }
+  font-family: "Open Sans", "Open Sans", Helvetica, Arial, "sans-serif"; }
   header .banner {
     color: #fff;
     background-color: #22B479;
     line-height: 60px;
     font-size: 18px;
-    padding: 0 1rem; }
+    padding: 0 1rem;
+    overflow: hidden; }
     header .banner > a.logo {
+      float: left;
       text-decoration: none;
       color: #fff; }
       header .banner > a.logo > img {
@@ -15,10 +32,15 @@ header {
         margin-right: 0.5rem; }
       header .banner > a.logo > span.site-name {
         font-weight: 300; }
-    header .banner > nav.desktop {
+    header .banner > nav {
       font-size: 15px;
       font-weight: 300;
       float: right; }
+      @media screen and (min-width: 900px) {
+        header .banner > nav.desktop {
+          display: block; }
+        header .banner > nav.mobile {
+          display: none; } }
       header .banner > nav.desktop a.nav-link {
         display: inline-block;
         padding: 0 11px;
@@ -27,21 +49,18 @@ header {
         header .banner > nav.desktop a.nav-link.social-link {
           font-size: 19px; }
       header .banner > nav.desktop a.sign-in-toggle {
-        color: #fff;
-        background: transparent;
         font-size: 12px;
-        margin-left: 11px;
-        padding: 8px 12px;
-        border: 1px solid #fff;
-        text-decoration: none;
-        transition: color 0.2s, background-color 0.2s; }
-        header .banner > nav.desktop a.sign-in-toggle:hover, header .banner > nav.desktop a.sign-in-toggle:focus, header .banner > nav.desktop a.sign-in-toggle:active {
-          text-decoration: underline;
-          background: #fff;
-          color: #999; }
+        margin-left: 11px; }
       header .banner > nav.desktop span.divider {
         margin: 0 11px;
         padding: 8px 0;
         border-left: 1px solid rgba(255, 255, 255, 0.3); }
+      @media screen and (max-width: 900px) {
+        header .banner > nav.desktop {
+          display: none; }
+        header .banner > nav.mobile {
+          display: block; } }
+      header .banner > nav.mobile .menu-toggle {
+        font-size: 12px; }
 
 /*# sourceMappingURL=header.css.map */

@@ -329,10 +329,12 @@ Frontend::Application.routes do
       get 'blob/:id', :action => 'blob'
       get 'dataset/:id', :action => 'show'
       get 'dataset/:id/stats', :action => 'stats'
+      get 'dataset/:id/about', :action => 'about'
       # The ":as" option, provides the short_view_url helper method
       get 'd/:id', :action => 'show', :as => :short_view
       get 'd/:id/alt', :action => 'alt'
       get 'd/:id/stats', :action => 'stats'
+      get 'd/:id/about', :action => 'about'
 
       get 'd/:id/:row_id', :action => 'show',
         :constraints => {:row_id => /\d+/}
@@ -347,6 +349,8 @@ Frontend::Application.routes do
     scope :controller => 'datasets', :constraints => {:id => Frontend::UID_REGEXP} do
       get 'r/:id/:name', :action => 'bare'
       get ':category/:view_name/:id/stats', :action => 'stats',
+        :constraints => {:view_name => /(\w|-)+/, :category => /(\w|-)+/}
+      get ':category/:view_name/:id/about', :action => 'about',
         :constraints => {:view_name => /(\w|-)+/, :category => /(\w|-)+/}
     end
     # For screenshotting only

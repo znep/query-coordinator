@@ -1,0 +1,81 @@
+GIT
+  remote: git@github.com:socrata/core-auth-ruby.git
+  revision: 85a04f4aaf3e53e878b2563a04be11f0789af1e8
+  tag: v0.3.0
+  specs:
+    core-auth-ruby (0.3.0)
+      addressable (~> 2.3)
+      httparty (~> 0.13)
+      nokogiri (~> 1.6)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.4.0)
+    byebug (8.2.2)
+    coderay (1.1.1)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
+    diff-lcs (1.2.5)
+    hashdiff (0.3.0)
+    httparty (0.13.7)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
+    json (1.8.3)
+    method_source (0.8.2)
+    mini_portile2 (2.0.0)
+    multi_xml (0.5.5)
+    nokogiri (1.6.7.2)
+      mini_portile2 (~> 2.0.0.rc2)
+    pry (0.10.3)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    pry-byebug (3.3.0)
+      byebug (~> 8.0)
+      pry (~> 0.10)
+    pry-nav (0.2.4)
+      pry (>= 0.9.10, < 0.11.0)
+    pry-remote (0.1.8)
+      pry (~> 0.9)
+      slop (~> 3.0)
+    rake (11.1.2)
+    rspec (3.4.0)
+      rspec-core (~> 3.4.0)
+      rspec-expectations (~> 3.4.0)
+      rspec-mocks (~> 3.4.0)
+    rspec-core (3.4.4)
+      rspec-support (~> 3.4.0)
+    rspec-expectations (3.4.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.4.0)
+    rspec-mocks (3.4.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.4.0)
+    rspec-support (3.4.1)
+    safe_yaml (1.0.4)
+    sass (3.4.21)
+    slop (3.6.0)
+    webmock (1.24.2)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  byebug
+  core-auth-ruby!
+  httparty
+  pry
+  pry-byebug
+  pry-nav
+  pry-remote
+  rake
+  rspec
+  sass
+  webmock
+
+BUNDLED WITH
+   1.11.2

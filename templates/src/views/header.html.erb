@@ -1,0 +1,63 @@
+<%
+  # TODO - move to helper
+  def social_link_classname(type)
+    {
+      'Facebook' => 'icon-facebook',
+      'Twitter' => 'icon-twitter'
+    }[type.to_s]
+  end
+
+  # TESTING DATA
+  org_name = 'City of Evergreen'
+
+  nav_links = [
+    { text: 'Home', href: '/' },
+    { text: 'Catalog', href: '/browse' },
+    { text: 'Open Budget', href: '/budget' },
+    { text: org_name, href: '#' },
+    { text: 'About', href: '/about' }
+  ]
+
+  social_links = [
+    { type: 'Twitter', href: '//twitter.com' },
+    { type: 'Facebook', href: '//facebook.com' }
+  ]
+%>
+
+<link href='../../fonts/open-sans.css' rel='stylesheet' type='text/css'>
+<link href='../../fonts/socrata-icons/socrata-icons.css' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="../../base.css">
+<link rel="stylesheet" type="text/css" href="../../dist/styles/header.css">
+
+<script type="text/javascript">
+  // TODO - intead of the links above: http://sass-lang.com/documentation/file.SASS_REFERENCE.html
+</script>
+
+<header>
+  <div class="banner">
+    <a class="logo" href="#">
+      <img src="../../logo.png" alt="<%= org_name %>" />
+      <span class="site-name"><%= org_name %></span>
+    </a>
+
+    <nav class="desktop">
+      <% nav_links.each do |nav_link| %>
+        <a class="nav-link" href="<%= nav_link[:href] %>"><%= nav_link[:text] %></a>
+      <% end %>
+
+      <span class="divider"></span>
+
+      <% social_links.each do |social_link| %>
+        <a class="nav-link social-link" href="<%= social_link[:href] %>">
+          <span class="<%= social_link_classname(social_link[:type]) %>"></span>
+        </a>
+      <% end %>
+
+      <a class="sign-in-toggle" href="#">Sign In</a>
+    </nav>
+
+    <nav class="mobile">
+
+    </nav>
+  </div>
+</header>

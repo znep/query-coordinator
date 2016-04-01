@@ -1,0 +1,82 @@
+// TODO - media query variables
+
+$bg-color: #22B479;
+$fg-color: #fff;
+$font: 'Open Sans';
+
+
+header {
+  font-family: $font, "Open Sans", "Helvetica", "Arial", "sans-serif";
+
+  .banner {
+    color: $fg-color;
+    background-color: $bg-color;
+    line-height: 60px;
+    font-size: 18px;
+    padding: 0 1rem;
+
+    > a.logo {
+      text-decoration: none;
+      color: $fg-color;
+
+      > img {
+        height: 28px;
+        vertical-align: middle;
+        margin-right: 0.5rem;
+      }
+
+      > span.site-name {
+        font-weight: 300;
+      }
+    }
+
+    > nav {
+      &.desktop {
+        font-size: 15px;
+        font-weight: 300;
+        float: right;
+
+        a.nav-link {
+          display: inline-block;
+          padding: 0 11px;
+          color: $fg-color;
+          text-decoration: none;
+
+          &.social-link {
+            font-size: 19px;
+          }
+
+        }
+
+        a.sign-in-toggle {
+          color: $fg-color;
+          background: transparent;
+          font-size: 12px;
+          margin-left: 11px;
+          padding: 8px 12px;
+          border: 1px solid $fg-color;
+          text-decoration: none;
+          transition: color 0.2s, background-color 0.2s;
+
+          &:hover, &:focus, &:active {
+            text-decoration: underline;
+            background: #fff;
+            color: #999;
+          }
+        }
+
+        span.divider {
+          margin: 0 11px;
+          padding: 8px 0;
+          border-left: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+
+      }
+
+      &.mobile {
+
+      }
+    }
+  }
+}

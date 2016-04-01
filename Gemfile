@@ -4,6 +4,7 @@ ruby '2.3.0'
 
 gem 'core-auth-ruby', git: 'git@github.com:socrata/core-auth-ruby.git', tag: 'v0.3.0'
 gem 'httparty'
+gem 'sass'
 
 group :test do
   gem 'rspec'

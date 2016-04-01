@@ -1,0 +1,47 @@
+header {
+  font-family: "Open Sans", "Open Sans", "Helvetica", "Arial", "sans-serif"; }
+  header .banner {
+    color: #fff;
+    background-color: #22B479;
+    line-height: 60px;
+    font-size: 18px;
+    padding: 0 1rem; }
+    header .banner > a.logo {
+      text-decoration: none;
+      color: #fff; }
+      header .banner > a.logo > img {
+        height: 28px;
+        vertical-align: middle;
+        margin-right: 0.5rem; }
+      header .banner > a.logo > span.site-name {
+        font-weight: 300; }
+    header .banner > nav.desktop {
+      font-size: 15px;
+      font-weight: 300;
+      float: right; }
+      header .banner > nav.desktop a.nav-link {
+        display: inline-block;
+        padding: 0 11px;
+        color: #fff;
+        text-decoration: none; }
+        header .banner > nav.desktop a.nav-link.social-link {
+          font-size: 19px; }
+      header .banner > nav.desktop a.sign-in-toggle {
+        color: #fff;
+        background: transparent;
+        font-size: 12px;
+        margin-left: 11px;
+        padding: 8px 12px;
+        border: 1px solid #fff;
+        text-decoration: none;
+        transition: color 0.2s, background-color 0.2s; }
+        header .banner > nav.desktop a.sign-in-toggle:hover, header .banner > nav.desktop a.sign-in-toggle:focus, header .banner > nav.desktop a.sign-in-toggle:active {
+          text-decoration: underline;
+          background: #fff;
+          color: #999; }
+      header .banner > nav.desktop span.divider {
+        margin: 0 11px;
+        padding: 8px 0;
+        border-left: 1px solid rgba(255, 255, 255, 0.3); }
+
+/*# sourceMappingURL=header.css.map */

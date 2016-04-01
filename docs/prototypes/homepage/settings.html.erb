@@ -10,10 +10,10 @@ layout: prototype-homepage-settings
 
 $(document).ready(function(){
   
-  $('ul.tabs li').click(function(){
+  $('ul.nav-tabs li').click(function(){
     var tab_id = $(this).attr('data-tab-id');
 
-    $('ul.tabs li').removeClass('current');
+    $('ul.nav-tabs li').removeClass('current');
     $('.tab-content').removeClass('current');
 
     $(this).addClass('current');
@@ -54,7 +54,7 @@ $(document).ready(function(){
 
     </div><!-- /.admin-header -->
 
-    <ul class="tabs">
+    <ul class="nav-tabs">
         <li class="tab-link current" data-tab-id="tab-1"><a href="#">General Settings</a></li>
         <li class="tab-link" data-tab-id="tab-2"><a href="#" class="">Header Bar</a></li>
         <li class="tab-link" data-tab-id="tab-3"><a href="#">Footer</a></li>

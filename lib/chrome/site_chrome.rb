@@ -17,6 +17,11 @@ module Chrome
       @content['general']
     end
 
+    # Merge general configs with section configs
+    def get_configs(section)
+      
+    end
+
     def get_html(section)
       raise 'Must provide a section name to render' if section.nil?
       raise 'Invalid section name. Must be one of "header", "navigation", or "footer"' unless

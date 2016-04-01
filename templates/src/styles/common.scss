@@ -1,0 +1,19 @@
+.btn {
+  color: $fg-color;
+  background: transparent;
+  padding: 8px 12px;
+  border: 1px solid $fg-color;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+
+  &:hover, &:focus, &:active {
+    background: #fff;
+    color: #999;
+  }
+
+  [class*="icon-"] {
+    position: relative;
+    padding-right: 11px;
+  }
+}

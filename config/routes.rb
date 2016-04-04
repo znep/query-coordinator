@@ -397,7 +397,7 @@ Rails.application.routes.draw do
       :as => 'reset_password',
       :via => [:get, :post],
       :conditions => {:uid => Frontend::UID_REGEXP}
-    match '/verify_email', :to => 'accounts#verify_email', :as => 'verify_email'
+    match '/verify_email', :to => 'accounts#verify_email', :as => 'verify_email', :via => [:get, :post]
 
     if Frontend.auth0_configured?
       scope :protocol => 'https' do

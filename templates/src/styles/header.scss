@@ -2,7 +2,7 @@
 @import 'common.scss';
 @import 'media-queries.scss';
 
-header {
+header#chrome-header {
   font-family: $font-family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .banner {
@@ -41,7 +41,7 @@ header {
       &.desktop {
         a.nav-link {
           display: inline-block;
-          padding: 0 11px;
+          padding: 0 $text-padding;
           color: $fg-color;
           text-decoration: none;
 
@@ -52,11 +52,11 @@ header {
 
         a.sign-in-toggle {
           font-size: 12px;
-          margin-left: 11px;
+          margin-left: $text-padding;
         }
 
         span.divider {
-          margin: 0 11px;
+          margin: 0 $text-padding;
           padding: 8px 0;
           border-left: 1px solid rgba(255, 255, 255, 0.3);
         }
@@ -108,22 +108,38 @@ header {
     }
 
     .menu-content {
-      a.menu-link {
-        color: #2c2c2c;
-        background-color: #fff;
+      .menu-links {
+        a.menu-link {
+          color: #2c2c2c;
+          background-color: #fff;
+          display: block;
+          font-size: 15px;
+          border-top: 1px solid #f4f4f4;
+          padding: 15px $text-padding;
+          text-decoration: none;
+
+          &:last-of-type {
+            border-bottom: 1px solid #f4f4f4;
+          }
+
+          &:hover, &:focus, &:active {
+            background-color: #fafafa;
+          }
+        }
+      }
+      .menu-section-header {
+        margin-top: 20px;
+        padding: $text-padding;
+        font-weight: 300;
+        text-transform: uppercase;
+      }
+      .sign-in-toggle {
         display: block;
-        font-size: 15px;
-        border-top: 1px solid #f4f4f4;
-        padding: 15px 11px;
-        text-decoration: none;
-
-        &:last-of-type {
-          border-bottom: 1px solid #f4f4f4;
-        }
-
-        &:hover, &:focus, &:active {
-          background-color: #fafafa;
-        }
+        width: 90%;
+        margin: 0 auto;
+      }
+      .social-links {
+        margin-top: 35px;
       }
     }
   }

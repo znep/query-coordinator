@@ -13,56 +13,72 @@
     position: relative;
     padding-right: 11px; }
 
-header {
+.mobile-btn {
+  color: #fff;
+  background: #288dc1;
+  padding: 10px 15px;
+  font-size: 15px;
+  border: 1px solid #288dc1;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s; }
+  .mobile-btn:hover, .mobile-btn:focus, .mobile-btn:active {
+    background: #20719a; }
+  .mobile-btn [class*="icon-"] {
+    position: relative;
+    padding-right: 11px; }
+
+header#chrome-header {
   font-family: "Open Sans", "Open Sans", Helvetica, Arial, "sans-serif"; }
-  header .banner {
+  header#chrome-header .banner {
     color: #fff;
     background-color: #22B479;
     line-height: 60px;
     font-size: 18px;
     padding: 0 1rem;
     overflow: hidden; }
-    header .banner > a.logo {
+    header#chrome-header .banner > a.logo {
       float: left;
       text-decoration: none;
       color: #fff; }
-      header .banner > a.logo > img {
+      header#chrome-header .banner > a.logo > img {
         height: 28px;
         vertical-align: middle;
         margin-right: 0.5rem; }
-      header .banner > a.logo > span.site-name {
+      header#chrome-header .banner > a.logo > span.site-name {
         font-weight: 300; }
-    header .banner > nav {
+    header#chrome-header .banner > nav {
       font-size: 15px;
       font-weight: 300;
       float: right; }
       @media screen and (min-width: 900px) {
-        header .banner > nav.desktop {
+        header#chrome-header .banner > nav.desktop {
           display: block; }
-        header .banner > nav.mobile {
+        header#chrome-header .banner > nav.mobile {
           display: none; } }
-      header .banner > nav.desktop a.nav-link {
+      header#chrome-header .banner > nav.desktop a.nav-link {
         display: inline-block;
         padding: 0 11px;
         color: #fff;
         text-decoration: none; }
-        header .banner > nav.desktop a.nav-link.social-link {
+        header#chrome-header .banner > nav.desktop a.nav-link.social-link {
           font-size: 19px; }
-      header .banner > nav.desktop a.sign-in-toggle {
+      header#chrome-header .banner > nav.desktop a.sign-in-toggle {
         font-size: 12px;
         margin-left: 11px; }
-      header .banner > nav.desktop span.divider {
+      header#chrome-header .banner > nav.desktop span.divider {
         margin: 0 11px;
         padding: 8px 0;
         border-left: 1px solid rgba(255, 255, 255, 0.3); }
       @media screen and (max-width: 900px) {
-        header .banner > nav.desktop {
+        header#chrome-header .banner > nav.desktop {
           display: none; }
-        header .banner > nav.mobile {
+        header#chrome-header .banner > nav.mobile {
           display: block; } }
-      header .banner > nav.mobile .menu-toggle {
+      header#chrome-header .banner > nav.mobile .menu-toggle {
         font-size: 12px; }
-  header .mobile-menu {
+  header#chrome-header .mobile-menu {
     position: fixed;
     top: 0;
     right: -120%;
@@ -74,21 +90,21 @@ header {
     width: 90%;
     box-shadow: 0 8px 30px #a9a7aa;
     transition: right 0.4s ease-in-out; }
-    header .mobile-menu.active {
+    header#chrome-header .mobile-menu.active {
       right: 0%; }
-    header .mobile-menu .menu-header-title {
+    header#chrome-header .mobile-menu .menu-header-title {
       color: #3b3a3c;
       font-size: 20px;
       font-weight: 300;
       text-align: center;
       margin: 1rem;
       letter-spacing: -0.5px; }
-    header .mobile-menu .menu-toggle {
+    header#chrome-header .mobile-menu .menu-toggle {
       position: absolute;
       top: 0;
       right: 0;
       padding: 1rem; }
-    header .mobile-menu .menu-content a.menu-link {
+    header#chrome-header .mobile-menu .menu-content .menu-links a.menu-link {
       color: #2c2c2c;
       background-color: #fff;
       display: block;
@@ -96,9 +112,20 @@ header {
       border-top: 1px solid #f4f4f4;
       padding: 15px 11px;
       text-decoration: none; }
-      header .mobile-menu .menu-content a.menu-link:last-of-type {
+      header#chrome-header .mobile-menu .menu-content .menu-links a.menu-link:last-of-type {
         border-bottom: 1px solid #f4f4f4; }
-      header .mobile-menu .menu-content a.menu-link:hover, header .mobile-menu .menu-content a.menu-link:focus, header .mobile-menu .menu-content a.menu-link:active {
+      header#chrome-header .mobile-menu .menu-content .menu-links a.menu-link:hover, header#chrome-header .mobile-menu .menu-content .menu-links a.menu-link:focus, header#chrome-header .mobile-menu .menu-content .menu-links a.menu-link:active {
         background-color: #fafafa; }
+    header#chrome-header .mobile-menu .menu-content .menu-section-header {
+      margin-top: 20px;
+      padding: 11px;
+      font-weight: 300;
+      text-transform: uppercase; }
+    header#chrome-header .mobile-menu .menu-content .sign-in-toggle {
+      display: block;
+      width: 90%;
+      margin: 0 auto; }
+    header#chrome-header .mobile-menu .menu-content .social-links {
+      margin-top: 35px; }
 
 /*# sourceMappingURL=header.css.map */

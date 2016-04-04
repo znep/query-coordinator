@@ -16,6 +16,4 @@ task :templates do
   sh 'erb templates/src/views/header.html.erb > templates/dist/views/header.html'
   sh 'scss templates/src/styles/header.scss templates/dist/styles/header.css'
   sh 'cp templates/src/js/header.js templates/dist/js/header.js'
-  # TODO cleanup
-  sh 'cp templates/src/js/jquery-1.12.2.min.js templates/dist/js/jquery-1.12.2.min.js'
 end

@@ -99,6 +99,7 @@
     "webpack-manifest-plugin": "^0.4.0"
   },
   "dependencies": {
+    "clipboard": "^1.5.10",
     "dompurify": "^0.7.4",
     "dotdotdot": "^1.7.0",
     "file-loader": "^0.8.5",
@@ -107,6 +108,8 @@
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
     "socrata-styleguide": "^0.4.2",
+    "socrata-styleguide": "^0.6.0",
+    "socrata-visualizations": "8.8.2",
     "socrata-visualizations": "8.9.1",
     "tether-shepherd": "1.2.0",
     "velocity-animate": "^1.2.3"

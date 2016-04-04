@@ -76,7 +76,7 @@ class UserSessionsController < ApplicationController
     if session_response.is_a?(Net::HTTPSuccess)
       # User logged in successfully, but not using auth0...
       # check if we want to require auth0 for any of the user's roles
-      if use_auth0?
+      if use_auth0? and !@user_session.user.is_admin?
         auth0_properties = CurrentDomain.configuration('auth0').try(:properties)
 
         if auth0_properties.present?

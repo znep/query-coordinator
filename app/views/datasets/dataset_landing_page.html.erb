@@ -1,3 +1,45 @@
-<h1>Land on this page</h1>
+<div class="responsive-navbar">
+  <span>Site Header</span>
+</div>
 
-<button class="btn btn-default">Styleguide!</button>
+<div class="info-pane result-card">
+  <div class="container">
+    <div class="entry-header">
+      <div class="entry-title">
+        <h2 class="info-pane-name"><%= @view.name %></h2>
+        <span class="tag-official"><span class="icon-official"></span> <%= t('dataset_landing_page.official') %></span>
+        <%- if @view.category -%>
+          <span class="tag-category"><%= @view.category.capitalize %></span>
+        <%- end -%>
+      </div>
+    </div>
+
+    <div class="entry-content">
+      <div class="entry-main">
+        <div class="entry-description-container">
+          <div class="entry-description">
+            <%- if @view.description -%>
+              <%= @view.description %>
+            <%- end -%>
+            <a class="entry-description-toggle more"><%= t('dataset_landing_page.more') %></a>
+            <a class="entry-description-toggle less"><%= t('dataset_landing_page.less') %></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry-meta second">
+        <div class="entry-meta updated">
+          <span class="meta-title"><%= t('dataset_landing_page.updated') %></span>
+          <span class="date"><%= view_last_updated %></span>
+        </div>
+
+        <%- if @view.attribution -%>
+          <div class="entry-meta views">
+            <span class="meta-title"><%= t('dataset_landing_page.published_by') %></span>
+            <span class="attribution"><%= @view.attribution %></span>
+          </div>
+        <%- end -%>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1250,6 +1250,12 @@ en:
     visibility:
       private: private
       public: public
+  dataset_landing_page:
+    less: Less
+    more: More
+    official: Official
+    published_by: Published by
+    updated: Updated
   dataslate:
     component:
       edit: Edit this component

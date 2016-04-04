@@ -100,6 +100,7 @@
   },
   "dependencies": {
     "dompurify": "^0.7.4",
+    "dotdotdot": "^1.7.0",
     "file-loader": "^0.8.5",
     "leaflet": "0.7.3",
     "lodash": "^3.10.1",
@@ -107,6 +108,7 @@
     "react-dom": "^0.14.2",
     "socrata-styleguide": "^0.4.2",
     "socrata-visualizations": "8.8.2",
-    "tether-shepherd": "1.2.0"
+    "tether-shepherd": "1.2.0",
+    "velocity-animate": "^1.2.3"
   }
 }

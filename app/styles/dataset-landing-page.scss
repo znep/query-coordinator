@@ -1,0 +1,77 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #f8f8f8;
+}
+
+.info-pane {
+  background: #fff;
+  width: 100%;
+
+  .container {
+    margin-top: 0;
+    max-width: 68em;
+  }
+
+  h2.info-pane-name {
+    margin: 0;
+    display: inline;
+    font-size: 24px;
+    margin-right: 11px;
+  }
+
+  .entry-description-toggle {
+    margin-left: 4px;
+    text-decoration: underline;
+    color: #adadad;
+    cursor: pointer;
+  }
+
+  .entry-description-container {
+
+    // Note: these are duplicated in the landing page javascript.
+    $description-line-height: 24px;
+    $description-padding: 11px;
+
+    overflow: hidden;
+
+    &[data-description-display="truncate"] {
+      .entry-description {
+        height: $description-line-height * 4 + $description-padding * 2;
+      }
+
+      .entry-description-toggle.more {
+        display: inherit;
+      }
+
+      .entry-description-toggle.less {
+        display: none;
+      }
+    }
+
+    &[data-description-display="show"] {
+      .entry-description {
+        height: inherit;
+      }
+
+      .entry-description-toggle.more {
+        display: none;
+      }
+
+      .entry-description-toggle.less {
+        display: inherit;
+      }
+    }
+
+    .entry-description {
+      display: inline-block;
+      line-height: $description-line-height;
+    }
+  }
+
+  .entry-content {
+    .entry-meta.updated .meta-title {
+      padding-top: 0;
+    }
+  }
+}

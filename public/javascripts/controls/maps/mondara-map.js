@@ -150,7 +150,17 @@
           'line-simplify: 2' +
         '}'
       );
-      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$limit=200000&$overscan=32&$mondara=true&$style=' + style;
+
+      // The default name for geo columns ingressed normally is 'the_geom', but
+      // some datasets may have a different name which we should attempt first.
+      var geoColumnFieldName = _(blist.dataset.columns).filter(function(column) {
+        return /(polygon|line|point)$/.test(column.dataTypeName);
+      }).pluck('fieldName').first();
+      var tileUrl = [
+        '/tiles/' + layerName + '/' + (geoColumnFieldName || 'the_geom'),
+        '/${z}/${x}/${y}.png',
+        '?$limit=200000&$overscan=32&$mondara=true&$style=' + style
+      ].join('');
       return new OpenLayers.Layer.XYZ(layerName, tileUrl, layerOpts);
     },
 

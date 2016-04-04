@@ -5,12 +5,14 @@ require 'aws-sdk-resources'
 require 'yaml'
 require 'base64'
 require 'decima'
+require 'semver'
+require_relative '../tasks/ops/vpn'
 
 module Aws
   class DatabaseMaintainer
     # Acceptable AWS environments
-    KNOWN_ENVS = %w( staging rc prod fedramp-prod )
-    KNOWN_REGIONS = %w( us-west-2 us-east-1 )
+    KNOWN_ENVS = %w( staging rc prod fedramp-prod eu-west-1-prod )
+    KNOWN_REGIONS = %w( us-west-2 us-east-1 eu-west-1 )
     RAILS_ENV_FOR_MIGRATIONS = 'aws_migrations'
 
     # Initializes lots of things for running db tasks against AWS. Dynamically
@@ -25,8 +27,11 @@ module Aws
     def initialize(args)
       @environment = args[:environment]
       @region = args[:region]
+      @app_version = SemVer.find.format('%M.%m.%p')
 
       Rails.env = RAILS_ENV_FOR_MIGRATIONS
+
+      raise "VPN connection is not active." unless Vpn.active?
 
       validate_args
       ensure_local_matches_deployed_code unless environment == 'fedramp-prod'
@@ -55,7 +60,7 @@ module Aws
     end
 
     private
-    attr_reader :environment, :region
+    attr_reader :environment, :region, :app_version
 
     def validate_args
       unless KNOWN_ENVS.include?(environment)
@@ -82,6 +87,12 @@ module Aws
     end
 
     def update_aws_config
+      # If we have ENV vars set for the storyteller app config for file uploads, it conflicts with the AWS
+      # credentials used for the clortho bucket.
+      ENV.delete('AWS_S3_BUCKET_NAME')
+      ENV.delete('AWS_ACCESS_KEY_ID')
+      ENV.delete('AWS_SECRET_KEY')
+
       Aws.config[:region] = region
       Aws.config[:profile] = environment
     end
@@ -111,7 +122,14 @@ module Aws
 
     def marathon_config_url
       # Pull config from marathon for the storyteller app
-      "http://marathon.aws-#{region}-#{environment}.socrata.net/v2/apps/#{environment}/storyteller"
+      url = if environment == 'eu-west-1-prod'
+        "http://marathon.aws-eu-west-1-prod.socrata.net/v2/apps/#{environment}/storyteller"
+      else
+        "http://marathon.aws-#{region}-#{environment}.socrata.net/v2/apps/#{environment}/storyteller"
+      end
+
+      url << "/#{app_version.gsub('.', '-')}" unless environment == 'staging' # we don't version staging
+      url
     end
 
     def rake

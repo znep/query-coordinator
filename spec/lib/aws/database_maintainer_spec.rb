@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Aws::DatabaseMaintainer do
   let(:environment) { 'staging' }
   let(:region) { 'us-west-2' }
-  let(:marathon_config_url) { "http://marathon.aws-us-west-2-#{environment}.socrata.net/v2/apps/#{environment}/storyteller" }
+  let(:marathon_config_url) { "http://marathon.aws-#{region}-#{environment}.socrata.net/v2/apps/#{environment}/storyteller" }
   let(:rake_application) { spy('rake_application') }
   let(:decima_client) { double('decima_client') }
 
@@ -22,6 +22,8 @@ RSpec.describe Aws::DatabaseMaintainer do
     allow_any_instance_of(Aws::DatabaseMaintainer).to receive(:local_repository_sha).and_return('f89a7929abcdef234875ed')
 
     allow(Rake).to receive(:application).and_return(rake_application)
+
+    allow(Vpn).to receive(:active?).and_return(true)
   end
 
   after do
@@ -94,24 +96,36 @@ RSpec.describe Aws::DatabaseMaintainer do
       end
     end
 
+    context 'when VPN is inactive' do
+      before do
+        allow(Vpn).to receive(:active?).and_return(false)
+      end
+
+      it 'fails on initialization' do
+        expect {
+          Aws::DatabaseMaintainer.new(environment: environment, region: region)
+        }.to raise_error('VPN connection is not active.')
+      end
+    end
+
     describe 'sets environment from marathon config' do
       before do
         Aws::DatabaseMaintainer.new(environment: environment, region: region)
       end
       it 'sets PG_DB_HOST' do
-        expect(ENV['PG_DB_HOST']).to eq('storyteller-staging.abcdefghij.us-west-2.rds.amazonaws.com')
+        expect(ENV['PG_DB_HOST']).to eq('storyteller-test.abcdefghij.us-west-2.rds.amazonaws.com')
       end
       it 'sets PG_DB_NAME' do
-        expect(ENV['PG_DB_NAME']).to eq('storyteller_production')
+        expect(ENV['PG_DB_NAME']).to eq('storyteller_test_db_name')
       end
       it 'sets PG_DB_PORT' do
         expect(ENV['PG_DB_PORT']).to eq('5432')
       end
       it 'sets PG_DB_USER' do
-        expect(ENV['PG_DB_USER']).to eq('storyteller_rwc')
+        expect(ENV['PG_DB_USER']).to eq('storyteller_test_user')
       end
       it 'sets CLORTHO_BUCKET' do
-        expect(ENV['CLORTHO_BUCKET']).to eq('staging-credentials-bucket-credsbucket-abcdefghij')
+        expect(ENV['CLORTHO_BUCKET']).to eq('test-credentials-bucket-credsbucket-abcdefghij')
       end
       it 'sets CLORTHO_PATH' do
         expect(ENV['CLORTHO_PATH']).to eq('storyteller_secrets.sh')
@@ -135,6 +149,37 @@ RSpec.describe Aws::DatabaseMaintainer do
       it 'is set to "aws_migrations"' do
         Aws::DatabaseMaintainer.new(environment: environment, region: region)
         expect(Rails.env).to eq('aws_migrations')
+      end
+    end
+
+    it 'removes AWS env vars that cause conflicts' do
+      expect(ENV).to receive(:delete).with('AWS_S3_BUCKET_NAME')
+      expect(ENV).to receive(:delete).with('AWS_ACCESS_KEY_ID')
+      expect(ENV).to receive(:delete).with('AWS_SECRET_KEY')
+
+      Aws::DatabaseMaintainer.new(environment: environment, region: region)
+    end
+
+    context 'when environment is not staging' do
+      let(:environment) { 'rc' }
+      let(:app_version) { SemVer.find.format('%M.%m.%p') }
+      let(:app_version_for_url) { app_version.gsub('.', '-') }
+      let(:marathon_config_url) { "http://marathon.aws-#{region}-#{environment}.socrata.net/v2/apps/#{environment}/storyteller/#{app_version_for_url}" }
+
+      it 'calls marathon with version in endpoint' do
+        Aws::DatabaseMaintainer.new(environment: environment, region: region)
+        expect(ENV['PG_DB_HOST']).to eq('storyteller-test.abcdefghij.us-west-2.rds.amazonaws.com')
+      end
+
+      context 'when environment is eu-west-1-prod' do
+        let(:environment) { 'eu-west-1-prod' }
+        let(:region) { 'eu-west-1' }
+        let(:marathon_config_url) { "http://marathon.aws-#{environment}.socrata.net/v2/apps/#{environment}/storyteller/#{app_version_for_url}" }
+
+        it 'calls marathon with special endpoint' do
+          Aws::DatabaseMaintainer.new(environment: environment, region: region)
+          expect(ENV['PG_DB_HOST']).to eq('storyteller-test.abcdefghij.us-west-2.rds.amazonaws.com')
+        end
       end
     end
   end

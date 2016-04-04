@@ -573,7 +573,37 @@ ${JSON.stringify(errors)}`
           try {
             var extent = validateExtentResponse(response);
           } catch (e) {
-            return $q.reject(`Invalid extent response. ${e.message}`);
+            // If our dataset's extents failed validation, we need to check the cardinality of
+            // the sourceColumn so we can display a nice error message telling them they have
+            // an insufficient cardinality instead of the generic error message. Unfortunately
+            // the cardinality on the column is an estimate and is not always guaranteed to
+            // exist or be up-to-date, so for now we're verifying cardinality manually.
+            //
+            // We're doing this after the validation rather than returning early to avoid showing
+            // an error message for a choropleth that would have rendered successfully but its
+            // cardinality is wonky.
+            //
+            // TODO: Update this to use the column's cardinality once we're sure it's acurrate
+            var cardinalityUrl = $.baseUrl(`/resource/${datasetId}.json`);
+            cardinalityUrl.searchParams.set('$select', datasetSourceColumn);
+            cardinalityUrl.searchParams.set('$group', datasetSourceColumn);
+            cardinalityUrl.searchParams.set('$limit', 2);
+
+            var cardinalityConfig = httpConfig.call(self);
+
+            return http.get(cardinalityUrl.href, cardinalityConfig).then(function(points) {
+              if (points.data.length > 1) {
+                return $q.reject({
+                  message: `Invalid extent response. ${e.message}`,
+                  type: 'extentError'
+                });
+              } else {
+                return $q.reject({
+                  message: 'Invalid extent response. Source dataset has insufficient distinct points.',
+                  type: 'cardinalityError'
+                });
+              }
+            });
           }
 
           //  /resource/bwdd-ss8w.geojson?$select=*&$where=intersects(

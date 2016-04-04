@@ -15,4 +15,5 @@ desc 'Create HTMl from ERB and CSS from SCSS'
 task :templates do
   sh 'erb templates/src/views/header.html.erb > templates/dist/views/header.html'
   sh 'scss templates/src/styles/header.scss templates/dist/styles/header.css'
+  sh 'cp templates/src/js/header.js templates/dist/js/header.js'
 end

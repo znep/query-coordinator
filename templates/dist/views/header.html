@@ -4,12 +4,13 @@
 <link href='../../fonts/socrata-icons/socrata-icons.css' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="../../base.css">
 <link rel="stylesheet" type="text/css" href="../../dist/styles/header.css">
-
+<script type="text/javascript" src="../../../node_modules/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../../dist/js/header.js"></script>
 <script type="text/javascript">
   // TODO - intead of the links above: http://sass-lang.com/documentation/file.SASS_REFERENCE.html
 </script>
 
-<header>
+<header id="chrome-header">
   <div class="banner">
     <a class="logo" href="#">
       <img src="../../logo.png" alt="City of Evergreen" />
@@ -32,12 +33,14 @@
       <span class="divider"></span>
 
       
-        <a class="nav-link social-link" href="//twitter.com">
-          <span class="icon-twitter"></span>
+        <a class="nav-link social-link" href="http://twitter.com">
+          <span class="icon-twitter"
+            title="Follow us on Twitter"></span>
         </a>
       
-        <a class="nav-link social-link" href="//facebook.com">
-          <span class="icon-facebook"></span>
+        <a class="nav-link social-link" href="http://facebook.com">
+          <span class="icon-facebook"
+            title="Like us on Facebook"></span>
         </a>
       
 
@@ -50,5 +53,43 @@
         Menu
       </a>
     </nav>
+  </div>
+
+  <div class="mobile-menu">
+    <h2 class="menu-header-title">Menu</h2>
+    <a class="menu-toggle" href="#">
+      <span class="icon-close-2"></span>
+    </a>
+
+    <div class="menu-content">
+      <div class="menu-links">
+        
+          <a class="menu-link" href="/">Home</a>
+        
+          <a class="menu-link" href="/browse">Catalog</a>
+        
+          <a class="menu-link" href="/budget">Open Budget</a>
+        
+          <a class="menu-link" href="#">City of Evergreen</a>
+        
+          <a class="menu-link" href="/about">About</a>
+        
+      </div>
+      <div class="menu-section-header">Account</div>
+      <a class="mobile-btn sign-in-toggle" href="/login">Sign In</a>
+      <div class="menu-links social-links">
+        
+          <a class="menu-link social-link" href="http://twitter.com">
+            <span class="icon-twitter"></span>
+            Follow us on Twitter
+          </a>
+        
+          <a class="menu-link social-link" href="http://facebook.com">
+            <span class="icon-facebook"></span>
+            Like us on Facebook
+          </a>
+        
+      </div>
+    </div>
   </div>
 </header>

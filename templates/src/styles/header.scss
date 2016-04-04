@@ -2,8 +2,8 @@
 @import 'common.scss';
 @import 'media-queries.scss';
 
-header {
-  font-family: $font, 'Open Sans', Helvetica, Arial, 'sans-serif';
+header#chrome-header {
+  font-family: $font-family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .banner {
     color: $fg-color;
@@ -41,7 +41,7 @@ header {
       &.desktop {
         a.nav-link {
           display: inline-block;
-          padding: 0 11px;
+          padding: 0 $text-padding;
           color: $fg-color;
           text-decoration: none;
 
@@ -52,11 +52,11 @@ header {
 
         a.sign-in-toggle {
           font-size: 12px;
-          margin-left: 11px;
+          margin-left: $text-padding;
         }
 
         span.divider {
-          margin: 0 11px;
+          margin: 0 $text-padding;
           padding: 8px 0;
           border-left: 1px solid rgba(255, 255, 255, 0.3);
         }
@@ -70,6 +70,76 @@ header {
         .menu-toggle {
           font-size: 12px;
         }
+      }
+    }
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -120%;
+    bottom: 0;
+    overflow: auto;
+    z-index: 10;
+    background-color: #f8f8f8;
+    color: #949195;
+    width: 90%;
+    box-shadow: 0 8px 30px #a9a7aa;
+    transition: right 0.4s ease-in-out;
+
+    &.active {
+      right: 0%;
+    }
+
+    .menu-header-title {
+      color: #3b3a3c;
+      font-size: 20px;
+      font-weight: 300;
+      text-align: center;
+      margin: 1rem;
+      letter-spacing: -0.5px;
+    }
+
+    .menu-toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 1rem;
+    }
+
+    .menu-content {
+      .menu-links {
+        a.menu-link {
+          color: #2c2c2c;
+          background-color: #fff;
+          display: block;
+          font-size: 15px;
+          border-top: 1px solid #f4f4f4;
+          padding: 15px $text-padding;
+          text-decoration: none;
+
+          &:last-of-type {
+            border-bottom: 1px solid #f4f4f4;
+          }
+
+          &:hover, &:focus, &:active {
+            background-color: #fafafa;
+          }
+        }
+      }
+      .menu-section-header {
+        margin-top: 20px;
+        padding: $text-padding;
+        font-weight: 300;
+        text-transform: uppercase;
+      }
+      .sign-in-toggle {
+        display: block;
+        width: 90%;
+        margin: 0 auto;
+      }
+      .social-links {
+        margin-top: 35px;
       }
     }
   }

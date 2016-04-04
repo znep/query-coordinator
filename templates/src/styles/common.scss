@@ -14,6 +14,27 @@
 
   [class*="icon-"] {
     position: relative;
-    padding-right: 11px;
+    padding-right: $text-padding;
+  }
+}
+
+.mobile-btn {
+  color: $fg-color;
+  background: $mobile-btn-color;
+  padding: 10px 15px;
+  font-size: 15px;
+  border: 1px solid $mobile-btn-color;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+
+  &:hover, &:focus, &:active {
+    background: $mobile-btn-hover-color;
+  }
+
+  [class*="icon-"] {
+    position: relative;
+    padding-right: $text-padding;
   }
 }

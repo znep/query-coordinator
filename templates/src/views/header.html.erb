@@ -7,21 +7,8 @@
     }[type.to_s]
   end
 
-  # TESTING DATA
-  org_name = 'City of Evergreen'
+  site_display_name = general['site_display_name'] || ''
 
-  nav_links = [
-    { text: 'Home', href: '/' },
-    { text: 'Catalog', href: '/browse' },
-    { text: 'Open Budget', href: '/budget' },
-    { text: org_name, href: '#' },
-    { text: 'About', href: '/about' }
-  ]
-
-  social_links = [
-    { type: 'Twitter', href: 'http://twitter.com', text: 'Follow us on Twitter' },
-    { type: 'Facebook', href: 'http://facebook.com', text: 'Like us on Facebook' }
-  ]
 %>
 
 <link href='../../fonts/open-sans.css' rel='stylesheet' type='text/css'>
@@ -36,22 +23,22 @@
 
 <header id="chrome-header">
   <div class="banner">
-    <a class="logo" href="#">
-      <img src="../../logo.png" alt="<%= org_name %>" />
-      <span class="site-name"><%= org_name %></span>
+    <a class="logo" href="<%= logo['href'] %>">
+      <img src="<%= logo['src'] %>" alt="<%= logo['alt'] || site_display_name %>" />
+      <span class="site-name"><%= site_display_name %></span>
     </a>
 
     <nav class="desktop">
-      <% nav_links.each do |nav_link| %>
+      <% navigation['links'].each do |nav_link| %>
         <a class="nav-link" href="<%= nav_link[:href] %>"><%= nav_link[:text] %></a>
       <% end %>
 
       <span class="divider"></span>
 
-      <% social_links.each do |social_link| %>
-        <a class="nav-link social-link" href="<%= social_link[:href] %>">
+      <% navigation['social_shares'].each do |social_link| %>
+        <a class="nav-link social-link" href="<%= social_link[:url] %>">
           <span class="<%= social_link_classname(social_link[:type]) %>"
-            title="<%= social_link[:text] %>"></span>
+            title="<%= social_link[:label] %>"></span>
         </a>
       <% end %>
 
@@ -74,17 +61,17 @@
 
     <div class="menu-content">
       <div class="menu-links">
-        <% nav_links.each do |nav_link| %>
+        <% navigation['links'].each do |nav_link| %>
           <a class="menu-link" href="<%= nav_link[:href] %>"><%= nav_link[:text] %></a>
         <% end %>
       </div>
       <div class="menu-section-header">Account</div>
       <a class="mobile-btn sign-in-toggle" href="/login">Sign In</a>
       <div class="menu-links social-links">
-        <% social_links.each do |social_link| %>
-          <a class="menu-link social-link" href="<%= social_link[:href] %>">
+        <% navigation['social_shares'].each do |social_link| %>
+          <a class="menu-link social-link" href="<%= social_link[:url] %>">
             <span class="<%= social_link_classname(social_link[:type]) %>"></span>
-            <%= social_link[:text] %>
+            <%= social_link[:label] %>
           </a>
         <% end %>
       </div>

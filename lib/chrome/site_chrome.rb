@@ -12,24 +12,22 @@ module Chrome
       @domain_cname = config[:domain_cname]
     end
 
-    # General/universal settings in the Site Chrome config
-    def general_configs
-      @content['general']
-    end
-
-    # Merge general configs with section configs
-    def get_configs(section)
-      
-    end
-
     def get_html(section)
       raise 'Must provide a section name to render' if section.nil?
       raise 'Invalid section name. Must be one of "header", "navigation", or "footer"' unless
         %w(header navigation footer).include?(section)
 
-      section_content = OpenStruct.new(@content[section]) # TODO - combine general_configs into this?
-      template = File.read("templates/#{section}.html.erb")
-      ERB.new(template).result(section_content.instance_eval { binding })
+      content = @content[section]
+      # Add general content and locales inside section-specific content hash
+      content['general'] = @content['general']
+      content['locales'] = @content['locales']['en'] # TODO determine correct locale
+      if section == 'header'
+        # we need navbar to render header. seems like they should just be combined
+        content['navbar'] = @content['navbar']
+      end
+      template = File.read("templates/src/views/#{section}.html.erb")
+      # Returns template with content hash passed in as variables
+      ERB.new(template).result(OpenStruct.new(content).instance_eval { binding })
     end
 
     def self.init_from_core_config(core_config)

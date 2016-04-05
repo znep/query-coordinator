@@ -6,7 +6,6 @@
 #
 ###
 
-
 ###############################################################################
 # NOTE! All configuration information in this file are overwritten by chef when
 # the app is deployed. If you wish to ensure that new configuration information

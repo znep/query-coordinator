@@ -22,17 +22,28 @@ class SodaFountainTest < Test::Unit::TestCase
     )
   end
 
+  def test_get_extent_succeeds
+    response = { 'status' => '200', 'body' => { 'extent' => {} } }
+    SodaFountain.any_instance.stubs(:issue_request => response)
+    assert_equal(response, soda_fountain.get_extent(
+      dataset_id: 'q77b-s2zi',
+      field: 'my_location_field'
+    ))
+  end
+
   def test_delete_rollup_table_succeeds
-    SodaFountain.any_instance.stubs(:issue_request => { 'status' => '204' })
-    assert_equal({ 'status' => '204' }, soda_fountain.delete_rollup_table(
+    response = { 'status' => '204' }
+    SodaFountain.any_instance.stubs(:issue_request => response)
+    assert_equal(response, soda_fountain.delete_rollup_table(
       dataset_id: 'q77b-s2zi',
       identifier: 'rollup'
     ))
   end
 
   def test_create_rollup_table_succeeds
-    SodaFountain.any_instance.stubs(:issue_request => { 'status' => '204' })
-    assert_equal({ 'status' => '204' }, soda_fountain.create_or_update_rollup_table(
+    response = { 'status' => '204' }
+    SodaFountain.any_instance.stubs(:issue_request => response)
+    assert_equal(response, soda_fountain.create_or_update_rollup_table(
       dataset_id: 'q77b-s2zi',
       identifier: 'rollup',
       soql: 'select ward, count(*) as value group by ward'
@@ -40,8 +51,9 @@ class SodaFountainTest < Test::Unit::TestCase
   end
 
   def test_update_rollup_table_succeeds
-    SodaFountain.any_instance.stubs(:issue_request => { 'status' => '204' })
-    assert_equal({ 'status' => '204' }, soda_fountain.create_or_update_rollup_table(
+    response = { 'status' => '204' }
+    SodaFountain.any_instance.stubs(:issue_request => response)
+    assert_equal(response, soda_fountain.create_or_update_rollup_table(
       dataset_id: 'q77b-s2zi',
       identifier: 'rollup',
       soql: 'select district, count(*) as value group by district'

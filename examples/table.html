@@ -14,8 +14,9 @@
       }
 
       #table-1,
-      #table-2 {
-        height: 50vh;
+      #table-2,
+      #table-3 {
+        height: 640px;
       }
 
     </style>
@@ -23,6 +24,7 @@
   <body>
     <div id="table-1"></div>
     <div id="table-2"></div>
+    <div id="table-3"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -97,9 +99,21 @@
     ];
     $table2Element.socrataTable(table2VIF);
 
+    var $table3Element = $('#table-3');
+    var table3VIF = _.cloneDeep(table1VIF);
+    table3VIF.columnName = 'crime_type';
+    table3VIF.configuration.order = [{
+      ascending: true,
+      columnName: 'crime_type'
+    }];
+    table3VIF.datasetUid = 'kr2s-ychr';
+    table3VIF.domain = 'stories.demo.socrata.com';
+    $table3Element.socrataTable(table3VIF);
+
     $(window).resize(function() {
       $table1Element.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
       $table2Element.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
+      $table3Element.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
     });
 
     $table1Element.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
@@ -118,6 +132,14 @@
       }
     });
 
+    $table3Element.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+      if (event.originalEvent.detail) {
+        flyoutRenderer.render(event.originalEvent.detail);
+      } else {
+        flyoutRenderer.clear();
+      }
+    });
+
     /**
      * Destroy the plugin.
      *
@@ -126,5 +148,6 @@
      */
     // $table1Element.trigger('destroy');
     // $table2Element.trigger('destroy');
+    // $table3Element.trigger('destroy');
   </script>
 </html>

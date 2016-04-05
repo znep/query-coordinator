@@ -1,11 +1,13 @@
 @import "_flexbox";
 
+$whats_new_background_color: #f7f7f7;
 $whats_new_border_color: #b4c0dc;
 $whats_new_star_color: #d5c03e;
 
 .whats-new {
     margin-bottom: 2em;
     border: 2px solid $whats_new_border_color;
+    background-color: $whats_new_background_color;
   
     &--header {
         padding-left: 0.5em;

@@ -39,7 +39,14 @@ function renderCell(cellContent, column, i18n) {
       cellText = _.escape(renderNumberCell(cellContent, column));
       break;
 
+    // OBE location columns are actually objects with latitude and longitude
+    // keys, so we need to handle them as a special case.
+    case 'location':
+      cellText = _.escape(renderObeLocation(cellContent));
+      break;
     // Avoid escaping because cell content is HTML.
+    // TODO: Is it? I don't think so... let's verify next time we're in this
+    // code.
     case 'geo_entity':
     case 'point':
       cellText = renderGeoCellHTML(cellContent, column, i18n);
@@ -139,6 +146,23 @@ function renderNumberCell(input, column) {
 }
 
 /**
+ * Renders an OBE-style location (an object with latitude and longitude
+ * properties).
+ */
+function renderObeLocation(cellContent) {
+
+  if (cellContent.hasOwnProperty('latitude') && cellContent.hasOwnProperty('longitude')) {
+
+    return '({0}°, {1}°)'.format(
+      cellContent.latitude,
+      cellContent.longitude
+    );
+  }
+
+  return '';
+}
+
+/**
 * Renders a Point in plain text as a lat/lng pair.
 */
 function renderGeoCell(cellContent) {
@@ -146,10 +170,10 @@ function renderGeoCell(cellContent) {
   var longitudeIndex = 0;
   var coordinates = _cellCoordinates(cellContent);
   if (coordinates) {
-    return '({latitude}°, {longitude}°)'.format({
-      latitude: coordinates[latitudeIndex],
-      longitude: coordinates[longitudeIndex]
-    });
+    return '({0}°, {1}°)'.format(
+      coordinates[latitudeIndex],
+      coordinates[longitudeIndex]
+    );
   } else {
     return '';
   }
@@ -397,4 +421,3 @@ function _cellCoordinates(cellContent) {
   var coordinates = _.get(cellContent, 'value.coordinates', cellContent.coordinates);
   return _.isArray(coordinates) ? coordinates : null;
 }
-

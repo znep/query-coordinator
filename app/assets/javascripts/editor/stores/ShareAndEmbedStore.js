@@ -56,7 +56,7 @@ export default function ShareAndEmbedStore() {
         'src="{0}" ' +
         'style="' +
           'width:600px;' +
-          'height:320px;' +
+          'height:345px;' +
           'background-color:transparent;' +
           'overflow:hidden;' +
         '" ' +

@@ -176,10 +176,7 @@ function _renderStoryTile($element, componentData, storyTileData) {
     {
       'href': storyTileData.url,
       'target': '_blank',
-      'class': StorytellerUtils.format(
-        'story-tile-container theme-{0}',
-        storyTileData.theme
-      )
+      'class': 'story-tile-container'
     }
   );
 
@@ -213,7 +210,7 @@ function _renderStoryTile($element, componentData, storyTileData) {
     {'class': 'story-tile-view-story'}
   ).html(
     StorytellerUtils.format(
-      '&mdash; {0} &mdash;',
+      '{0}',
       I18n.t('editor.story_tile.view_story_prompt')
     )
   );

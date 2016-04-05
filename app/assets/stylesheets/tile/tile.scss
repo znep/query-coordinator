@@ -20,10 +20,11 @@ html {
       display: block;
       margin: 0.2rem auto;
       width: 590px;
-      height: 310px;
+      height: 340px;
       background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 0.25rem;
+      font-family: 'Open Sans', sans-serif !important;
       overflow: hidden;
 
       .tile-title,
@@ -37,18 +38,20 @@ html {
 
       .tile-title {
         margin: 0 !important;
-        padding: 0 1rem;
-        font-size: 2rem;
-        line-height: 3rem;
+        padding: 1rem;
+        color: #2c2c2c;
+        font-size: 2.3rem;
+        font-weight: 500;
+        letter-spacing: -0.5px;
       }
 
       .tile-image {
         position: absolute;
         width: 100%;
         height: 16.5rem;
-        top: 3rem;
+        top: 5rem;
         background-color: #e0e0e0;
-        background-image: asset-url('default-tile-image.png');
+        background-image: image-url('default-tile-image.png');
         background-size: cover, cover;
         background-position: 50% 50%;
         background-repeat: no-repeat;
@@ -59,14 +62,16 @@ html {
       .tile-description,
       .tile-no-description {
         position: absolute;
-        top: 20.5rem;
+        top: 22.75rem;
         margin: 0;
         padding: 0 1rem !important;
+        color: #2c2c2c;
         font-size: 1.5rem !important;
+        line-height: 2.5rem;
+        text-align: left;
       }
 
       .tile-no-description {
-        font-family: 'Open Sans', sans-serif !important;
         font-style: oblique;
         color: #aaa;
       }
@@ -86,7 +91,7 @@ html {
           line-height: 2rem;
           text-align: right;
           white-space: nowrap;
-          color: #888;
+          color: #2c2c2c;
 
           a {
             display: inline;

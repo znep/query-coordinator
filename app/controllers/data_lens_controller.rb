@@ -9,6 +9,7 @@ class DataLensController < ActionController::Base
 
   before_filter :hook_auth_controller
   before_filter :set_locale
+  before_filter :redirect_to_mobile, :only => :data_lens
   before_filter :preload_metadata, :only => [:data_lens, :show_mobile]
 
   helper_method :current_user
@@ -136,6 +137,12 @@ class DataLensController < ActionController::Base
     @region_coder ||= Services::DataLens::RegionCoder.new
   end
 
+  def redirect_to_mobile
+    if is_mobile?
+      redirect_to "#{request.path}/mobile"
+    end
+  end
+
   def preload_metadata
     # First fetch the current user's profile.
     current_user
@@ -150,6 +157,7 @@ class DataLensController < ActionController::Base
         unless request.path == href.call(locale: nil)
           locale = CurrentDomain.default_locale == I18n.locale.to_s ? nil : I18n.locale
           canonical_path = href.call(locale: locale)
+          canonical_path += '/mobile' if request.path =~ '\/mobile$'
           canonical_path += "?#{request.query_string}" unless request.query_string.empty?
           return redirect_to canonical_path
         end

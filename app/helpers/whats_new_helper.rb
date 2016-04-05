@@ -22,6 +22,7 @@ module WhatsNewHelper
       per_page = APP_CONFIG.whats_new.fetch(:article_count)
 
       news = zendesk_client.get_help_center_sections_articles(
+        locale: 'en-us',
         section_id: section_id, sort_by: 'created_at',
         per_page: per_page, page: 1
       ).body

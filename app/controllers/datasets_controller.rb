@@ -47,14 +47,14 @@ class DatasetsController < ApplicationController
     dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
     user = @current_user.nil? ? "ANONYMOUS" : @current_user.id
 
-    if @view.new_backend?
+    if @view.new_backend? && !permitted_nbe_view?
       destination_url = view_redirection_url
 
       if show_nbe_redirection_warning?
         flash[:notice] = I18n.t('screens.ds.new_ux_nbe_warning', url: "<a href=#{destination_url}>#{destination_url}</a>").html_safe
       end
 
-      if !is_admin? && !FeatureFlags.derive(@view, request).disable_obe_redirection && !@view.is_geospatial?
+      if !is_admin? && !FeatureFlags.derive(@view, request).disable_obe_redirection
         if FeatureFlags.derive(@view, request).force_redirect_to_data_lens === true
           begin
             pages = fetch_pages_for_dataset(@view.id).fetch(:publisher, [])
@@ -154,7 +154,26 @@ class DatasetsController < ApplicationController
       needs_view_js @view.modifyingViewUid, parent_view
     end
 
-    # add parent information if this view is a child layer
+    # fake geo metadata if this view has been ingressed to NBE via API
+    # but should behave as a normally-ingressed geo dataset (see EN-3889)
+    if @view.is_api_geospatial?
+      @view.displayType = 'map'
+      @view.metadata ||= Metadata.new({
+        'geo' => {
+          'bbox' => nil, # need to make a call to set this
+          'bboxCrs' => 'EPSG:4326', # we always reproject to this reference system
+          'isNbe' => true,
+          'isApiGeospatial' => true,
+          'layers' => @view.id, # "I'm my own grandpa..."
+          'namespace' => "_#{@view.id}",
+          'owsUrl' => "/api/geospatial/#{@view.id}"
+        },
+        'availableDisplayTypes' => %w(map table fatrow page),
+        'renderTypeConfig' => { 'visible' => { 'map' => true, 'table' => true } }
+      })
+    end
+
+    # add geo parent information if this view is a child layer
     if @view.is_geospatial? && @view.metadata.geo['parentUid'].present?
       @view.geoParent = get_view(@view.metadata.geo['parentUid'])
       if @view.geoParent.nil?
@@ -863,6 +882,22 @@ protected
 
       return layer
     end
+  end
+
+  def permitted_nbe_view?
+    # NBE geospatial views
+    if @view.is_geospatial?
+      Rails.logger.info("Not redirecting to OBE for geospatial dataset #{@view.id}")
+      return true
+    end
+
+    # NBE geospatial views ingressed via API (see EN-3889)
+    if @view.is_api_geospatial?
+      Rails.logger.info("Not redirecting to OBE for API-ingressed geospatial dataset #{@view.id}")
+      return true
+    end
+
+    false
   end
 
   def view_redirection_url

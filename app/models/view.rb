@@ -110,6 +110,14 @@ class View < Model
     new_backend? && (is_map || is_layer)
   end
 
+  # NBE geospatial datasets created via API end up with weird metadata.
+  def is_api_geospatial?
+    nbe_only = new_backend? && obe_view.nil?
+    has_geo_column = (columns || []).any? { |column| column.dataTypeName =~ /(polygon|line|point)$/i }
+    half_tabular = displayType.nil? && is_tabular?
+    nbe_only && has_geo_column && half_tabular
+  end
+
   def geospatial_child_layers
     if is_geospatial?
       endpoint_ids = metadata.data['geo']['layers'].split(',')
@@ -1274,6 +1282,10 @@ class View < Model
     return @display if @display
 
     dt = modern_display_type
+
+    if is_api_geospatial?
+      dt = 'map'
+    end
 
     # If we have a display attempt to load the implementing class
     if dt

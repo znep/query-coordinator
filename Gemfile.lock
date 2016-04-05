@@ -331,7 +331,7 @@ GEM
     xray (1.1)
     yard (0.8.7.6)
     yui-compressor (0.12.0)
-    zendesk2 (1.7.4)
+    zendesk2 (1.7.5)
       cistern (~> 2.2)
       faraday (~> 0.9)
       faraday_middleware (~> 0.9)
@@ -394,7 +394,10 @@ DEPENDENCIES
   unparser (= 0.2.4)
   webmock
   xray
-  zendesk2
+  zendesk2 (~> 1.7.5)
   zip
   zk (~> 1.9.2)
   zookeeper (~> 1.4.9)
+
+BUNDLED WITH
+   1.11.2

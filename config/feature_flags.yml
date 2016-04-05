@@ -113,7 +113,7 @@ enable_embed_widget_for_nbe:
   category: obe deprecation
 enable_spatial_lens_admin:
   description: Allow visibility of spatial lens admin panel at /admin/geo.
-  defaultValue: false
+  defaultValue: true
   category: spatial-lens
 enable_feedback:
   description: Include third-party feedback widgets.
@@ -127,7 +127,7 @@ enable_pulse:
 enable_spatial_lens_region_coding:
   description: Lets an admin kick off region coding for curated regions in the Data Lens interface.
   category: data lens
-  defaultValue: false
+  defaultValue: true
 enable_synthetic_spatial_lens_id:
   description: Enable synthetic primary keys for Spatial Lens shapes.
   category: data lens
@@ -139,6 +139,9 @@ stories_enabled:
 stories_show_facet_in_catalog:
   description: Show the Stories facet in the catalog.
   category: storyteller
+  defaultValue: false
+enable_new_account_verification_email:
+  description: When enabled, causes new accounts to receive an email with verification link that must be validated before account can be used.
   defaultValue: false
 enable_pdf_download_type:
   description: Control visibility of the "Export > Download dataset as PDF" format. See enable_xls_download_type for more background.

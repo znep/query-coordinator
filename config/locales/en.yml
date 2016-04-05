@@ -978,6 +978,7 @@ en:
     auth:
       invalid_userpass: Invalid username or password
       need_login: You must be logged in to access this page
+      need_email_verification: Before you can complete your registration and login, you need to verify the email address for this account. If you don't have access to the verification email we sent you, simply create a new account with the same email address and you will receive another email.
       need_permission: You do not have permission to view this page
       too_many_tries: Too many login attempts for that login. Account temporarily disabled.
     browser_support:
@@ -1606,7 +1607,7 @@ en:
         unpublished_datasets: Unpublished Datasets
         view_as_a_dataset: View as a Dataset
         asset_inventory:
-          tooltip: This option is not available due to an expected error. If the problem persists after 24 hours, please contact support.
+          tooltip: This option is not available due to an error. If the problem persists after 24 hours, please contact support.
       federation:
         accept: Accept
         accepted: Accepted
@@ -3317,6 +3318,10 @@ en:
       third_party_return: Before using these credentials, you must
       third_party_return_create: create a Socrata account
       third_party_return_link: link it to an existing Socrata ID
+      email_verification:
+        expired: This email verification link has expired. Please create a new account with the same email address and you will receive another verification email to complete the registration.
+        sent: We sent a verification email to %{email}, please follow the instructions in the email to complete the registration process.
+        success: Your email address has been verified, please log in.
     stats:
       api: API
       apply: Apply

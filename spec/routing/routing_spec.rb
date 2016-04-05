@@ -76,4 +76,32 @@ RSpec.describe 'routes for Data Lens' do
       )
     end
   end
+
+  describe 'dataset about routing' do
+    it 'routes /category/viewname/1234-1234/about to the about action of the datasets controller' do
+      expect(get: '/category/viewname/1234-1234/about').to route_to(
+        controller: 'datasets',
+        category: 'category',
+        view_name: 'viewname',
+        action: 'about',
+        id: '1234-1234'
+      )
+    end
+
+    it 'routes /dataset/four-four/about to the about action of the datasets controller' do
+      expect(get: '/dataset/four-four/about').to route_to(
+        controller: 'datasets',
+        action: 'about',
+        id: 'four-four'
+      )
+    end
+
+    it 'routes /d/four-four/about to the about action of the datasets controller' do
+      expect(get: '/d/four-four/about').to route_to(
+        controller: 'datasets',
+        action: 'about',
+        id: 'four-four'
+      )
+    end
+  end
 end

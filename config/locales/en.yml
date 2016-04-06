@@ -1235,6 +1235,7 @@ en:
       href: external dataset
       map: map
       table: table
+      story: story
       working_copy: working copy
     view_types_plural:
       api: APIs

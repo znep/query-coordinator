@@ -1,0 +1,7 @@
+<% @content['navigation']['social_shares'].each do |social_link| %>
+  <a class="nav-link social-link" href="<%= social_link['url'] %>">
+    <span class="<%= social_link_classname(social_link['type']) %>"
+      title="<%= social_link['label'] %>"></span>
+    <%= show_label ? social_link['label'] : '' %>
+  </a>
+<% end %>

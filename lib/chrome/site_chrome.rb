@@ -3,7 +3,7 @@ require 'ostruct'
 
 module Chrome
   class SiteChrome
-    attr_reader :id, :styles, :content, :updated_at, :domain_cname
+    attr_reader :id, :content, :updated_at, :domain_cname
 
     def initialize(config = {})
       @id = config[:id]
@@ -12,23 +12,27 @@ module Chrome
       @domain_cname = config[:domain_cname]
     end
 
-    def get_html(section)
-      raise 'Must provide a section name to render' if section.nil?
-      raise 'Invalid section name. Must be one of "header", "navigation", or "footer"' unless
-        %w(header navigation footer).include?(section)
-
+    def get_content(section)
+      valid_section_name?(section)
       content = @content[section]
       # Add general content and locales inside section-specific content hash
       content['general'] = @content['general']
-      content['locales'] = @content['locales']['en'] # TODO determine correct locale
+      content['locales'] = @content['locales']
+
       if section == 'header'
-        # we need navbar to render header. seems like they should just be combined
-        content['navbar'] = @content['navbar']
+        content['navigation'] = @content['navigation']
       end
-      template = File.read("templates/src/views/#{section}.html.erb")
-      # Returns template with content hash passed in as variables
-      ERB.new(template).result(OpenStruct.new(content).instance_eval { binding })
+
+      content
     end
+
+    # TODO - this method is a way the gem could handle rendering the HTML
+    # def get_html(section)
+    #   content = get_content(section)
+    #   # Returns template with content hash passed in as variables
+    #   template = File.read("app/views/chrome/#{section}.html.erb")
+    #   ERB.new(template).result(OpenStruct.new(content).instance_eval { binding })
+    # end
 
     def self.init_from_core_config(core_config)
       return if core_config.nil?
@@ -62,5 +66,10 @@ module Chrome
       end
     end
 
+    def valid_section_name?(section_name)
+      raise 'Must provide a section name to render' if section_name.nil?
+      raise 'Invalid section name. Must be one of "header", "navigation", or "footer"' unless
+        %w(header navigation footer).include?(section_name)
+    end
   end
 end

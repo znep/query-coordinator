@@ -35,6 +35,7 @@ describe Chrome::DomainConfig do
     it 'returns a special localhost uri for "localhost" domain' do
       localhost_domain_config = helper.new(domain, auth_cookie, true)
       localhost_uri = 'http://localhost:8080/configurations.json?type=site_chrome&defaultOnly=true'
+      stub_request(:get, localhost_uri).to_return(status: 200, body: '[]')
       expect(localhost_domain_config.send(:domain_config_uri)).to eq(localhost_uri)
     end
   end

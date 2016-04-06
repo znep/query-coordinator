@@ -447,6 +447,64 @@ class DataLensControllerTest < ActionController::TestCase
     end
   end
 
+  test 'should redirect to mobile when appending /mobile to the URL' do
+    View.any_instance.stubs(
+      :data_lens? => true
+    )
+
+    params = {
+      :controller => 'data_lens',
+      :action => 'show_mobile',
+      :id => '1234-five'
+    }
+
+    ActionDispatch::Request.any_instance.stubs(
+      :path_parameters => params.with_indifferent_access
+    )
+
+    assert_recognizes(params, 'view/1234-five/mobile')
+  end
+
+  test 'should redirect to mobile when appending /mobile to the SEO friendly URL' do
+    View.any_instance.stubs(
+      :data_lens? => true
+    )
+
+    params = {
+      :controller => 'data_lens',
+      :action => 'show_mobile',
+      :id => '1234-five'
+    }
+
+    ActionDispatch::Request.any_instance.stubs(
+      :path_parameters => params.with_indifferent_access
+    )
+
+    assert_recognizes(params, '/incredibly/friendly/view/1234-five/mobile')
+  end
+
+  test 'should show the mobile page when is_mobile is true' do
+    View.any_instance.stubs(
+      :data_lens? => true
+    )
+
+    ApplicationHelper.stubs(
+      :is_mobile? => true
+    )
+
+    params = {
+      :controller => 'data_lens',
+      :action => 'show_mobile',
+      :id => '1234-five'
+    }
+
+    ActionDispatch::Request.any_instance.stubs(
+      :path_parameters => params.with_indifferent_access
+    )
+
+    assert_recognizes(params, '/incredibly/friendly/view/1234-five')
+  end
+
   private
 
   def data_lens_page_metadata

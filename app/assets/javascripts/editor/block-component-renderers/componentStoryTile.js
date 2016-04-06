@@ -176,10 +176,7 @@ function _renderStoryTile($element, componentData, storyTileData) {
     {
       'href': storyTileData.url,
       'target': '_blank',
-      'class': StorytellerUtils.format(
-        'story-tile-container theme-{0}',
-        storyTileData.theme
-      )
+      'class': 'story-tile-container'
     }
   );
 
@@ -208,15 +205,8 @@ function _renderStoryTile($element, componentData, storyTileData) {
     $tileDescription.text(storyTileData.description);
   }
 
-  $tileViewStory = $(
-    '<div>',
-    {'class': 'story-tile-view-story'}
-  ).html(
-    StorytellerUtils.format(
-      '&mdash; {0} &mdash;',
-      I18n.t('editor.story_tile.view_story_prompt')
-    )
-  );
+  $tileViewStory = $('<div>', {'class': 'story-tile-view-story'}).
+    text(I18n.t('editor.story_tile.view_story_prompt'));
 
   $tileContent.append([
     $tileTitleContainer,

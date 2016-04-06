@@ -123,8 +123,8 @@ module.exports = function Constants() {
     TABLE_UNSORTABLE_PHYSICAL_DATATYPES: ['geo_entity', 'point'],
 
     // Icon Font
-    FILTER_ICON_UNICODE_GLYPH: '\ue62b',
-    CLOSE_ICON_UNICODE_GLYPH: '\ue62a',
+    FILTER_ICON_UNICODE_GLYPH: '\uf121',
+    CLOSE_ICON_UNICODE_GLYPH: '\uf112',
 
     // Flyout parameters
     FLYOUT_WINDOW_PADDING: 22,

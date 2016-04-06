@@ -12,7 +12,10 @@
   <button type="button"
     class="action-btn dark r-to-l"
     ng-disabled="disableSave"
-    ng-click="addCard()">{{::'addCardDialog.addCard' | I18n}}</button>
+    ng-click="addCard()">
+    {{::'addCardDialog.addCard' | I18n}}
+    <spinner ng-if="busy"></spinner>
+  </button>
   <button type="button"
     class="action-btn dark r-to-l"
     ng-click="dialogState.show = false">{{::'common.cancel' | I18n}}</button>

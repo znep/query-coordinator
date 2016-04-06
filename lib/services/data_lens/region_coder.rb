@@ -120,7 +120,7 @@ module Services
           computed_column = dataset_metadata['columns'].select { |key, column|
             column['computationStrategy'].present? &&
               column['computationStrategy']['parameters'].present? &&
-              column['computationStrategy']['parameters']['region'] == shapefile_id
+              column['computationStrategy']['parameters']['region'] == "_#{shapefile_id}"
           }
         rescue => exception
           raise "Unknown error fetching dataset metadata for dataset #{dataset_id}: #{exception.message}"

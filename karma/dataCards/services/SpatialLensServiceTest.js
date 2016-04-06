@@ -128,6 +128,149 @@ describe('SpatialLensService', function() {
     });
   });
 
+  describe('cardNeedsRegionCoding', function() {
+    var page;
+    var card;
+
+    beforeEach(function() {
+      page = self.Mockumentary.createPage({}, { columns: self.testColumns });
+      card = self.Mockumentary.createCard(page, 'location', {});
+    });
+
+    it('returns false if the card is not a choropleth', function() {
+      card.set('cardType', 'feature');
+      expect(self.SpatialLensService.cardNeedsRegionCoding(card)).to.equal(false);
+    });
+
+    it('returns true if the dataset is missing the computed column specified by the card', function() {
+      card.set('cardType', 'choropleth');
+      card.set('computedColumn', 'psh_this_computed_column_does_not_exist_are_you_crazy');
+      expect(self.SpatialLensService.cardNeedsRegionCoding(card)).to.equal(true);
+    });
+
+    it('returns false if the card\'s computed column exists on the dataset', function() {
+      card.set('cardType', 'choropleth');
+      card.set('computedColumn', 'computed_region_1');
+      expect(self.SpatialLensService.cardNeedsRegionCoding(card)).to.equal(false);
+    });
+  });
+
+  describe('initiateRegionCodingIfNecessaryForCard', function() {
+    var page;
+    var card;
+
+    beforeEach(function() {
+      page = self.Mockumentary.createPage({}, { columns: self.testColumns });
+      card = self.Mockumentary.createCard(page, 'location', {});
+      card.set('cardType', 'choropleth');
+    });
+
+    it('does not call the status or initiate endpoints if enable_spatial_lens_region_coding is disabled', function(done) {
+      self.ServerConfig.override('enableSpatialLensRegionCoding', false);
+      card.set('computedColumn', 'i_need_region_coding');
+
+      self.SpatialLensService.initiateRegionCodingIfNecessaryForCard(card).then(function(response) {
+        expect(response).to.equal(null);
+        done();
+      });
+
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('does not call the status or initiate endpoints if the card does not need region coding', function() {
+      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
+      card.set('computedColumn', 'computed_region_1');
+
+      self.SpatialLensService.initiateRegionCodingIfNecessaryForCard(card).then(function(response) {
+        expect(response).to.equal(null);
+      });
+
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('retrieves region coding status and takes no action if the status is completed', function() {
+      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
+      card.set('computedColumn', 'i_need_region_coding');
+
+      self.$httpBackend.expectGET(/\/geo\/status/).respond({
+        success: true,
+        status: 'completed'
+      });
+
+      self.SpatialLensService.initiateRegionCodingIfNecessaryForCard(card).then(function(response) {
+        expect(response).to.equal(null);
+      });
+
+      self.$httpBackend.flush();
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('retrieves region coding status and takes no action if the status is processing', function() {
+      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
+      card.set('computedColumn', 'i_need_region_coding');
+
+      self.$httpBackend.expectGET(/\/geo\/status/).respond({
+        success: true,
+        status: 'processing'
+      });
+
+      self.SpatialLensService.initiateRegionCodingIfNecessaryForCard(card).then(function(response) {
+        expect(response).to.equal(null);
+      });
+
+      self.$httpBackend.flush();
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('retrieves region coding status and initiates a new job if the status is unknown', function() {
+      sinon.stub(socrata.utils, 'getCookie').returns('CSRF-TOKEN');
+      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
+      card.set('computedColumn', 'i_need_region_coding');
+
+      self.$httpBackend.expectGET(/\/geo\/status/).respond({
+        success: true,
+        status: 'unknown'
+      });
+
+      self.$httpBackend.expectPOST(/\/geo\/initiate/).respond({
+        success: true
+      });
+
+      self.SpatialLensService.initiateRegionCodingIfNecessaryForCard(card);
+
+      self.$httpBackend.flush();
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+      socrata.utils.getCookie.restore();
+    });
+
+    it('retrieves region coding status and initiates a new job if the status is failed', function() {
+      sinon.stub(socrata.utils, 'getCookie').returns('CSRF-TOKEN');
+      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
+      card.set('computedColumn', 'i_need_region_coding');
+
+      self.$httpBackend.expectGET(/\/geo\/status/).respond({
+        success: true,
+        status: 'failed'
+      });
+
+      self.$httpBackend.expectPOST(/\/geo\/initiate/).respond({
+        success: true
+      });
+
+      self.SpatialLensService.initiateRegionCodingIfNecessaryForCard(card);
+
+      self.$httpBackend.flush();
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+      socrata.utils.getCookie.restore();
+    });
+  });
+
   describe('getCuratedRegions', function() {
     it('calls /api/curated_regions', function() {
       self.$httpBackend.expectGET(/\/api\/curated_regions$/).respond(self.testCuratedRegions);
@@ -222,48 +365,6 @@ describe('SpatialLensService', function() {
       self.$httpBackend.flush();
       self.$httpBackend.verifyNoOutstandingExpectation();
       self.$httpBackend.verifyNoOutstandingRequest();
-    });
-  });
-
-  describe('executeRegionCodingJob', function() {
-    var clock;
-
-    beforeEach(function() {
-      clock = sinon.useFakeTimers();
-    });
-
-    afterEach(function() {
-      clock.restore();
-    });
-
-    it('enqueues the job, then polls status', function() {
-      sinon.stub(socrata.utils, 'getCookie').returns('CSRF-TOKEN');
-
-      self.$httpBackend.expectPOST(/\/geo\/initiate$/, {
-        datasetId: 'asdf-fdsa',
-        shapefileId: 'four-four',
-        sourceColumn: 'location'
-      }).respond({ success: true, jobId: 'qwer-asdf-zxcv' });
-
-      self.SpatialLensService.executeRegionCodingJob('asdf-fdsa', 'four-four', 'location').subscribe();
-
-      self.$httpBackend.flush();
-
-      for (var i = 1; i <= 5; i++) {
-        self.$httpBackend.expectGET(function(url) {
-          if (url.indexOf('/geo/status') === -1) { return false; }
-          if (url.indexOf('datasetId=asdf-fdsa') === -1) { return false; }
-          if (url.indexOf('jobId=qwer-asdf-zxcv') === -1) { return false; }
-          return true;
-        }).respond({ success: true, status: i == 5 ? 'completed' : 'processing' });
-
-        clock.tick(5050);
-      }
-
-      self.$httpBackend.flush();
-      self.$httpBackend.verifyNoOutstandingExpectation();
-      self.$httpBackend.verifyNoOutstandingRequest();
-      socrata.utils.getCookie.restore();
     });
   });
 });

@@ -1,8 +1,0 @@
-body {
-  margin: 0;
-  padding: 0;
-}
-
-[class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "socrata-icons";
-}

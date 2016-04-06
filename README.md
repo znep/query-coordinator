@@ -22,8 +22,8 @@ auth = Chrome::Auth.new(domain, email, password, false).authenticate
 domain_config = Chrome::DomainConfig.new(domain, auth.cookie, true)
 site_chrome = Chrome::SiteChrome.init_from_core_config(domain_config.config)
 
-# Get rendered html for each section
-site_chrome.get_html('header') # 'header', 'navigation', or 'footer'
+# Get rendered html for each section (TODO)
+# site_chrome.get_html('header') # 'header', 'navigation', or 'footer'
 ```
 
 ## Development
@@ -42,4 +42,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

@@ -1,0 +1,23 @@
+$mobile-btn-color: #288dc1;
+$mobile-btn-hover-color: #20719a;
+$text-padding: 11px;
+$breakpoint-mobile: 900px;
+
+
+// TODO - get these variables from config. try adding .erb and calling <%= @content.xyz %>
+$bg-color: #22B479;
+$fg-color: #fff;
+$font-family: 'Open Sans';
+
+
+// Mixins
+@mixin desktop {
+  @media screen and (min-width: #{$breakpoint-mobile}) {
+    @content;
+  }
+}
+@mixin mobile {
+  @media screen and (max-width: #{$breakpoint-mobile}) {
+    @content;
+  }
+}

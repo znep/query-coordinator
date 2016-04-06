@@ -1,0 +1,18 @@
+<div class="mobile-menu">
+  <h2 class="menu-header-title">Menu</h2>
+  <a class="menu-toggle" href="#">
+    <span class="icon-close-2"></span>
+  </a>
+
+  <div class="menu-content">
+    <div class="nav-links">
+      <%= render 'nav_links' %>
+    </div>
+
+    <div class="menu-section-header">Account</div>
+    <a class="mobile-btn sign-in-toggle" href="/login">Sign In</a>
+    <div class="nav-links social-links">
+      <%= render 'social_links', show_label: true %>
+    </div>
+  </div>
+</div>

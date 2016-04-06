@@ -28,7 +28,8 @@ module Cetera
         name.underscore
       end
 
-      # Allow for customization of the CSS icon class, e.g. for icon font
+      # NOTE: icon_class is used to distinguish between view type icons in
+      # /stylesheets/images/icons/type_icons_50.png and view type icons in the socrata-icons font
       def self.icon_class
         'icon'
       end
@@ -47,6 +48,11 @@ module Cetera
       def self.front_end_type
         'data_lens'
       end
+
+      # Use cards icon from socrata-icons
+      def self.icon_class
+        'icon-cards'
+      end
     end
 
     class Story < Base
@@ -56,6 +62,11 @@ module Cetera
 
       def self.front_end_type
         'story'
+      end
+
+      # Use story icon from socrata-icons
+      def self.icon_class
+        'icon-story'
       end
     end
 

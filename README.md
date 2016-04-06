@@ -24,7 +24,12 @@ brew install rbenv ruby-build
 rbenv install 2.2.4
 ```
 
-Install the latest LTS node and npm: https://nodejs.org/download/,
+Install the latest LTS node and npm (https://nodejs.org/download/)
+
+```
+brew install node4-lts
+```
+
 then install npm dependencies:
 
 ```
@@ -60,10 +65,18 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 ### Run Servers and Jobs
 
+Run all three processes in the same terminal window with foreman.
+```
+bundle exec foreman start
+```
+
+*Alternatively*, you can run each process separately.
+
 To run the rails server:
 ```
 bin/start
 ```
+
 To run the webpack-dev-server:
 ```
 npm run webpack-dev-server
@@ -74,11 +87,6 @@ We also have a delayed job queue for processing uploaded files. Everything but u
 will work without this. The jobs can be processed manually with a rake task:
 ```
 bin/rake jobs:work
-```
-
-*Alternatively*, you can run all three processes in the same terminal window with foreman.
-```
-bundle exec forman start
 ```
 
 ### How to run the test suite
@@ -183,7 +191,7 @@ bin/rake aws:seed[us-west-2,staging]
 And migrating a different region might look like this:
 
 ```
-bin/rake aws:migrate[eu-west-1,staging]
+bin/rake aws:migrate[eu-west-1,eu-west-1-prod]
 ```
 
 ### Profiling

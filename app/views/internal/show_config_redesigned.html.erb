@@ -1,0 +1,360 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title><%=
+  [ "Config #{@config.try(:name) || ''}",
+    "Domain #{@domain.try(:name) || ''}",
+    'Internal Panel',
+    CurrentDomain.strings.site_title
+  ].join(' | ') %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation internalPanelRedesign">
+  <div class="content">
+
+    <%= render :partial => 'production_warning' %>
+    <h1><%= @config.name %></h1>
+    <%= display_standard_flashes %>
+
+    <div class="description expandable">
+      <%= expandable_header('Description', collapsed: false) %>
+      <div>
+        <dl class="config_type_description">
+          <%= definition('Type', @config.type) %>
+          <%= definition('Domain', domain_link) %>
+          <%= definition('Default', explain_defaultness) %>
+          <% @type_description.try(:each) do |key, value| %>
+            <%- next if key == 'hide_from_creator' %>
+            <%= definition(key.titleize, autolink(value)) %>
+          <% end %>
+          <%- if @type_description.nil? %>
+            <%# You can document config types in config/configuration_types.yml %>
+            <%= definition('Unknown Config Type', 'Help by documenting this and explaining how to use it!') %>
+          <%- end %>
+        </dl>
+      </div>
+    </div>
+
+    <div class="properties expandable">
+      <%= expandable_header('Properties', collapsed: false) %>
+      <div>
+        <%= form_tag(set_property_path, :class => 'wide configProperties') do %>
+          <%- if @properties.nil? -%>
+            <div class="line">No properties for this configuration</div>
+          <%- else -%>
+          <%- @properties.each do |prop| -%>
+            <div class="line property">
+              <label title="<%= prop['name'] %>"><%= prop['name'] %></label>
+              <%= text_area_tag "properties[#{prop['name']}]", property_value(prop['value']) %>
+              <div class="propertyActions">
+                <div><%= link_to 'Edit this field alone.',
+                  show_property_path(config_id: @config.id,
+                                     property_id: prop['name']),
+                  :class => 'editLink' %></div>
+                <%= property_actions_for(prop['name']) %>
+              </div>
+            </div>
+          <%- end # end each -%>
+          <input type="submit" value="Save"/>
+          <%- end # end if %>
+        <%- end # end form -%>
+      </div> <%# end collapsible div %>
+    </div> <%# end properties section %>
+
+    <%- if @parent_config.present? && @parent_config.data['properties'].present? -%>
+      <div class="inheritedProperties expandable">
+        <%=
+          link = link_to("#{@parent_config.name} at #{@parent_domain.cname}",
+                         show_config_path(org_id: @parent_domain.organizationId,
+                                          domain_id: @parent_domain.cname,
+                                          id: @parent_config.id))
+          link = link.prepend('Inherited Properties (from ')
+          link = link.html_safe
+          link << ')'
+          expandable_header(link, collapsed: true)
+        %>
+        <div class="collapsed">
+        <form class='wide inheritedProperties'>
+          <%- @parent_config.data['properties'].
+            sort{ |a, b| a['name'] <=> b['name'] }.
+            reject { |prop| @properties.try(:find) { |p| p['name'] == prop['name'] } }.
+            each do |prop| -%>
+              <div class="property line">
+                <label title="<%= prop['name'] %>"><%= prop['name'] %></label>
+                <%= text_area_tag '', property_value(prop['value']), :readonly => 'true' %>
+                <div class="propertyActions">
+                  <div>
+                    <a class="overrideInheritedProperty">Override Inherited Property</a>
+                  </div>
+                </div>
+              </div>
+            <%- end -%>
+        </form>
+        </div>
+      </div>
+    <%- end # end if -%>
+
+    <div class="serialization expandable">
+      <%= expandable_header('Import/Export Snapshot', collapsed: false) %>
+      <div>
+        <div class="importSection">
+          <textarea class="importBox"></textarea>
+          <button class="doImportLink">Import this</button>
+        </div>
+        <div class="exportSection">
+          <textarea id="exportBox" class="exportBox"></textarea>
+          <button class="exportAll">Export All Properties</button>
+          <button class="exportToClipboard" data-clipboard-target="exportBox">
+            Copy to Clipboard
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions expandable">
+      <%= expandable_header('Actions') %>
+      <div class="collapsed">
+        <dl class="config_type_description">
+          <dt>Change Mode</dt>
+          <dd class="modes">
+            <button data-mode="edit" class="disabled">Edit mode</button>
+            <button data-mode="delete">Delete mode</button>
+            <button data-mode="export">Export mode</button>
+            <button data-mode="import">Import mode</button>
+          </dd>
+          <dt>What does this mode do?</dt>
+          <dd class="modeDescriptions">
+            <div class="editMode">
+              This mode lets you bulk-edit several properties and also add properties.
+            </div>
+            <div class="deleteMode">
+              This mode lets you delete any property in THIS configuration.
+              Select which properties you wish to delete using the checkboxes on the right.
+            </div>
+            <div class="exportMode">
+              Select which properties you wish to export using the checkboxes on the right.
+              This will fill in the below text box, which you can copy to another config to use in Import Mode.
+            </div>
+            <div class="importMode">
+              Copy a blob from another config's Export Mode and paste it in the text box below, then click "Import this". Import is not 100% reliable, especially when pasting in large numbers of properties.
+            </div>
+          </dd>
+          <dt>Rename Config</dt>
+          <dd>
+            <%= one_button_form(url: rename_config_path,
+                                :class => 'oneButtonForm renameConfig',
+                                :text => 'Rename Config') do
+              text_field_tag('rename-config-to', @config.name)
+            end %>
+          </dd>
+          <%- unless @config.default %>
+          <dt>Set this Config to Default</dt>
+          <dd>
+            <%= one_button_form(url: default_site_config_path,
+                                text: 'Set this config as Default') do
+              hidden_field_tag 'default-site-config', @config.id
+            end %>
+          </dd>
+          <%- end %>
+          <%- unless editing_this_page_is_dangerous? %>
+          <dt class="deleteConfig">Delete Config</dt>
+          <dd class="deleteConfig">
+            <%= one_button_form(url: delete_site_config_path,
+                                text: 'Delete this ENTIRE PAGE OF CONFIG SETTINGS') %>
+            <div class="warning">To delete individual properties, use Delete Mode.</div>
+          </dd>
+          <%- end %>
+        </dl>
+    </div>
+  </div>
+
+  <div class="newProperty">
+    <h2>Add Property</h2>
+    <div>
+      <%= form_tag(set_property_path, :class => 'wide newProperty') do %>
+        <div class='line'>
+          <%= text_field_tag 'new-property_name' %>
+          <%= text_area_tag 'new-property_value' %>
+        </div>
+        <input type="submit" value="Add"/>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+      $('.deleteConfig').submit(function() {
+        return confirm('Are you sure you want to delete this config?');
+      });
+
+      $('.modes button').click(function() {
+        var mode = $(this).data('mode')
+        $('.content').
+          removeClass('viewMode deleteMode exportMode importMode').
+          addClass(mode + 'Mode');
+        $('.modes button').
+          removeClass('disabled').
+          filter('[data-mode=' + mode + ']').
+            addClass('disabled');
+        $('.modeDescriptions div').
+          hide().
+          filter('.' + mode + 'Mode').
+            show();
+
+        // Reset the "highlight when checked" thing.
+        $('.configProperties .line > label').css('font-weight', 'normal');
+
+        switch(mode) {
+        case 'edit':
+          $('.serialization').hide();
+          $('.configProperties input:submit').show().val('Save');
+          $('.newProperty').show();
+          $('.configProperties textarea').attr('readonly', false);
+          break;
+        case 'delete':
+          $('.serialization, .newProperty').hide();
+          $('.configProperties input:submit').show().val('Delete Selected Properties');
+          $('.configProperties textarea').attr('readonly', true);
+          break;
+        case 'import':
+          $('.serialization').show();
+          $('.configProperties input:submit').hide();
+          $('.configProperties textarea').attr('readonly', true);
+          $('.newProperty').hide();
+          break;
+        case 'export':
+          $('.serialization').show();
+          $('.configProperties input:submit').hide();
+          $('.configProperties textarea').attr('readonly', true);
+          $('.newProperty').hide();
+          break;
+        default: console.error('what just happened?');
+        }
+      });
+
+      ZeroClipboard.config({ swfPath: '/ZeroClipboard.swf' });
+      new ZeroClipboard( $('.exportToClipboard')[0] );
+
+      var buildExport = function() {
+        var aggrData = {};
+        $('.exportCheck:checked').each(function() {
+          var $this = $(this).parents('.line');
+          aggrData[$this.find('> label').text()] = $this.find('textarea').text();
+        });
+
+        $('.exportBox').val(JSON.stringify(aggrData));
+      };
+
+      $('.exportAll').click(function() {
+        $('.exportCheck').attr('checked', 'checked').trigger('change');
+        buildExport();
+      });
+
+      $('.exportCheck').click(buildExport);
+
+      $('.doImportLink').click(function() {
+        var aggrData = JSON.parse($('.importBox').val());
+        var $form = $('form.configProperties');
+
+        _.each(aggrData, function(value, key) {
+          $('<input />').
+            attr('type', 'hidden').
+            attr('name', 'properties[{0}]'.format(key)).
+            attr('value', value).
+            appendTo($form);
+        });
+
+        $form.submit();
+      });
+
+      $('form.configProperties input:checkbox').change(function() {
+          var $checkbox = $(this);
+          var $line = $checkbox.parents('.line');
+          var $label = $line.find('> label');
+
+          $label.css('font-weight', $checkbox.attr('checked') ? 'bold' : 'normal');
+      });
+
+      // Don't try to edit fields that are being deleted.
+      $('form.configProperties').submit(function() {
+        var $form = $(this);
+        if ($('.deleteMode').exists()) {
+          $form.find('.line').each(function() {
+            var $line = $(this);
+            var beingDeleted = !!$line.find('.deleteAction input').attr('checked');
+            if (!beingDeleted) {
+              $line.find('textarea').prop('disabled', true);
+            }
+          });
+        }
+      });
+
+      $('.overrideInheritedProperty').click(function() {
+        var $line = $(this).parents('.line');
+        var propertyName = $line.find('> label').text();
+        var propertyValue = $line.find('textarea').val();
+        $('input[name="new-property_name"]').val(propertyName);
+        $('textarea[name="new-property_value"]').val(propertyValue);
+        $('form.newProperty').submit();
+      });
+
+      var propertyTyping = <%== @property_type_checking.to_json %> || {};
+      $('form.configProperties, form.newProperty').find('textarea').change(function() {
+        var $this = $(this);
+        var propertyName = $this.attr('name');
+        var deleting = false;
+        if (propertyName === 'new-property_value') {
+          propertyName = $this.siblings('input').val();
+        } else {
+          propertyName = $this.siblings('label').text();
+          deleting = !!$this.siblings('input').attr('checked');
+        }
+
+        if (!deleting && propertyTyping[propertyName]) {
+          var validJSON, jsonIsNotValid;
+
+          try {
+            validJSON = JSON.parse($this.val());
+          } catch(e) {
+            if (e.name !== 'SyntaxError') {
+              console.error(e);
+            }
+            jsonIsNotValid = true;
+          }
+
+          if (jsonIsNotValid ||
+            (propertyTyping[propertyName] === 'Array' && !_.isArray(validJSON)) ||
+            (propertyTyping[propertyName] === 'Object' && !_.isPlainObject(validJSON)) ||
+            (propertyTyping[propertyName] === 'Number' && !_.isNumber(validJSON))
+          ) {
+            var errorMessage = [
+              'This should be a valid JSON {0} but it is not.',
+              'Make sure you\'re using double-quotes!'
+            ];
+
+            // Double-quotes are kinda irrelevant if it's a number.
+            if (propertyTyping[propertyName] === 'Number') {
+              errorMessage.pop();
+            }
+            errorMessage = errorMessage.join(' ').format(propertyTyping[propertyName]);
+
+            $this.css('background-color', '#FF9494');
+            $this.socrataTip({
+              trigger: 'none',
+              isSolo: true,
+              message: errorMessage,
+              'parent': 'body'
+            });
+            $this.btOn();
+          } else {
+            $this.css('background-color', 'white');
+            $this.btOff();
+          }
+        }
+      });
+    });
+  </script>
+<% end %>

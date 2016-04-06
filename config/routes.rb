@@ -71,20 +71,21 @@ Frontend::Application.routes do
         get '', :action => 'show_domain', :as => 'show_domain'
         get '/data', :action => 'show_domain', :format => :json
         post '/default_site_config', :action => 'set_default_site_config'
-        post '/delete_config/:id', :action => 'delete_site_config'
+        post '/delete_config/:id', :action => 'delete_site_config', :as => 'delete_site_config'
         post '/rename_config/:id', :action => 'rename_site_config', :as => 'rename_config'
-        post '/feature', :action => 'set_features'
-        post '/aliases', :action => 'update_aliases'
+        post '/feature', :action => 'set_features', :as => 'set_features'
+        post '/aliases', :action => 'update_aliases', :as => 'update_aliases'
+        post '/module_feature', :action => 'add_a_module_feature', :as => 'add_module_feature'
         post '/account_modules', :action => 'add_module_to_domain'
         match '/flush_cache', :action => 'flush_cache'
         get '/feature_flags(/:category)', :action => 'feature_flags', :as => 'feature_flags_config'
         post '/set_feature_flags', :action => 'set_feature_flags', :as => 'update_feature_flags'
 
         scope :path => '/site_config' do
-          post '', :action => 'create_site_config'
+          post '', :action => 'create_site_config', :as => 'create_site_config'
           get '/:id', :action => 'show_config', :as => :show_config
-          post '/:id/property', :action => 'set_property'
-          get '/:config_id/edit_property', :action => 'show_property'
+          post '/:id/property', :action => 'set_property', :as => 'set_property'
+          get '/:config_id/edit_property', :action => 'show_property', :as => 'show_property'
         end
       end
     end

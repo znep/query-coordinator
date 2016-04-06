@@ -185,6 +185,10 @@ ingress_strategy:
   disableTrueFalse: true
   expectedValues: obe nbe delta-importer
   category: obe deprecation
+internal_panel_redesign:
+  description: Redesign the UX for the Internal Panel so that useful actions are more exposed and scary options are more discouraged.
+  defaultValue: false
+  expectedValues: config domain all
 kill_esri_reprojection_and_pass_different_webm:
   description: 'Special magic for Iowa, whose ArcGIS server appears to hate EPSG:900913 and projected maps'
   defaultValue: false

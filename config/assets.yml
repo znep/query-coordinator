@@ -370,6 +370,7 @@ javascripts:
   screen-internal:
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/screens/internal.js
+    - public/javascripts/plugins/ZeroClipboard.js
   screen-videos:
     - public/javascripts/plugins/jquery.quicksand.js
     - public/javascripts/screens/videos.js

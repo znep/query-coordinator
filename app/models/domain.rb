@@ -72,6 +72,10 @@ class Domain < Model
     return @default_configs[type]
   end
 
+  def modules
+    data['accountModules'].try(:pluck, 'name') || []
+  end
+
   def features
     conf = default_configuration('feature_set')
     return conf.nil? ? Hashie::Mash.new : conf.properties

@@ -566,21 +566,10 @@ describe('ChoroplethController', function() {
     });
 
     describe('if the extent query used to get the choropleth regions fails', function() {
+      var columns;
 
       beforeEach(function() {
-        mockCardDataService.getChoroplethRegionsUsingSourceColumn = function() {
-          var deferred = q.defer();
-          deferred.reject('Invalid extent response.');
-          return deferred.promise;
-        };
-      });
-
-      afterEach(function() {
-        setMockCardDataServiceToDefault();
-      });
-
-      it("should display an error message", function() {
-        var columns = {
+        columns = {
           "points": {
             "name": "source column.",
             "description": "required",
@@ -602,6 +591,38 @@ describe('ChoroplethController', function() {
             }
           }
         };
+
+      });
+
+      afterEach(function() {
+        setMockCardDataServiceToDefault();
+      });
+
+      it('should display a cardinality error message when cardinality error detected', function() {
+        mockCardDataService.getChoroplethRegionsUsingSourceColumn = function() {
+          var deferred = q.defer();
+          deferred.reject({ message: 'Invalid extent response.', type: 'cardinalityError' });
+          return deferred.promise;
+        };
+
+        var testSubject = createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '1'),
+          version: '1'
+        });
+
+        expect(testSubject.$scope.hasCardinalityError).to.equal(true);
+      });
+
+      it("should display a generic error message when non-cardinality error detected", function() {
+        mockCardDataService.getChoroplethRegionsUsingSourceColumn = function() {
+          var deferred = q.defer();
+          deferred.reject({ message: 'Invalid extent response.', type: 'extentError' });
+          return deferred.promise;
+        };
+
         var testSubject = createChoropleth({
           id: 'choropleth-1',
           whereClause: '',

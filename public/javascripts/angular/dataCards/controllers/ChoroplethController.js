@@ -158,6 +158,17 @@ module.exports = function ChoroplethController(
   * FIRST set up the 'busy' indicator. *
   *************************************/
 
+  var hasErrors$ = Rx.Observable.merge(
+    $scope.$observe('choroplethRenderError'),
+    $scope.$observe('hasNoPolygons'),
+    $scope.$observe('hasCardinalityError')
+  ).startWith(false).distinctUntilChanged();
+
+  var isPending$ = Rx.Observable.merge(
+    $scope.$observe('isPendingColumnAddition'),
+    $scope.$observe('isPendingComputation')
+  ).startWith(false).distinctUntilChanged();
+
   // If the number of requests is greater than the number of responses, we have
   // a request in progress and we should display the spinner.
   // SUPER IMPORTANT NOTE: Because of the way that RxJS works, we need to bind
@@ -166,10 +177,11 @@ module.exports = function ChoroplethController(
   $scope.$bindObservable('busy',
     Rx.Observable.combineLatest(
       hasInFlightRequests$,
-      $scope.$observe('choroplethRenderError').startWith(null),
       waiting$,
-      function(hasInFlightRequests, error, waiting) {
-        if (!_.isEmpty(error)) {
+      hasErrors$,
+      isPending$,
+      function(hasInFlightRequests, waiting, hasErrors, isPending) {
+        if (hasErrors || isPending) {
           return false;
         }
 
@@ -257,13 +269,7 @@ module.exports = function ChoroplethController(
       // georegion_match_on_point strategy, make the more specific bounding
       // box query utilizing the source column's extents.
       if (computationStrategy === 'georegion_match_on_point') {
-
-        return CardDataService.getChoroplethRegionsUsingSourceColumn(
-          currentDataset.id,
-          sourceColumn,
-          shapefile
-        );
-
+        return CardDataService.getChoroplethRegionsUsingSourceColumn(currentDataset.id, sourceColumn, shapefile);
       // Otherwise, use the less efficient but more robust request.
       } else {
         return CardDataService.getChoroplethRegions(shapefile);
@@ -271,7 +277,13 @@ module.exports = function ChoroplethController(
     }).
     tap(trackPromiseFlightStatus).
     switchLatest().
-    safeApplyOnError($scope, function() { $scope.choroplethRenderError = true; });
+    safeApplyOnError($scope, function(error) {
+      if (error.type === 'cardinalityError') {
+        $scope.hasCardinalityError = true;
+      } else {
+        $scope.choroplethRenderError = true;
+      }
+    });
 
   function requestDataWithWhereClauseSequence(where$, eventLabel) {
 
@@ -339,7 +351,7 @@ module.exports = function ChoroplethController(
     // happen when we reject the regions promise because the extent
     // query that it depends on fails.
     function(e) {
-      $log.error(e);
+      $log.error(e.message);
     }
   );
 
@@ -355,7 +367,15 @@ module.exports = function ChoroplethController(
       return noRegions || noData;
     });
 
-  $scope.$bindObservable('hasNoPolygons', hasNoPolygons$);
+  // The second function argument to bindObservable is called when
+  // there is an error in one of the argument sequences. This can
+  // happen when we reject the regions promise because the extent
+  // query that it depends on fails.
+  $scope.$bindObservable(
+    'hasNoPolygons',
+    hasNoPolygons$,
+    function(e) { $log.error(e.message); }
+  );
 
   /*********************************************************
   * Respond to events in the child 'choropleth' directive. *

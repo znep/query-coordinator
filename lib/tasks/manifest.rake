@@ -18,8 +18,7 @@ namespace :manifest do
       end
 
       puts("= FRONTEND = (from #{from_tag} to #{to_tag})")
-      manifest_output = `git log --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
-
+      manifest_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
 
       if args.output_file.present?
         puts "Writing manifest file to... #{File.expand_path(args.output_file)}"
@@ -84,9 +83,9 @@ namespace :manifest do
     copy_cmd = "cat #{manifest_file_path} | pbcopy"
     puts 'Copying the manifest file contents to your clipboard...'
     puts
-    puts "\t`#{copy_cmd}`"
+    puts "\t#{copy_cmd}"
 
-    system copy_cmd
+    system(copy_cmd)
 
     puts
     puts 'Commits with JIRA tickets:'

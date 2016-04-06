@@ -6,6 +6,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   let(:settings_overlay_selector) { '#settings-panel-overlay' }
   let(:settings_title_description) { '.settings-panel .menu-list-item:first-child .menu-list-item-header' }
   let(:settings_make_copy) { '.settings-panel .menu-list-item:nth-child(2) .menu-list-item-header' }
+  let(:settings_share_embed) { '.settings-panel .menu-list-item:nth-child(5) .menu-list-item-header' }
 
   before do
     stub_logged_in_user
@@ -91,7 +92,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
       title_description.click()
     end
 
-    it 'closes settings panel and shows the modal' do
+    it 'shows the modal' do
       expect(page).to have_selector('#make-a-copy-container', visible: true)
     end
 
@@ -103,6 +104,30 @@ RSpec.describe 'settings panel', type: :feature, js: true do
       it 'opens settings panel and hides the modal' do
         expect_settings_panel_to_be_open
         expect(page).to have_selector('#make-a-copy-container', visible: false)
+      end
+    end
+  end
+
+  describe 'share and embed' do
+    before do
+      toggle_pane
+
+      title_description = page.all(settings_share_embed).first()
+      title_description.click()
+    end
+
+    it 'shows the modal' do
+      expect(page).to have_selector('#share-and-embed-modal', visible: true)
+    end
+
+    context 'when you click done' do
+      before do
+        page.find('#share-and-embed-modal .modal-button-group [data-action="SHARE_AND_EMBED_MODAL_CLOSE"]').click
+      end
+
+      it 'hides the modal' do
+        expect_settings_panel_to_be_open
+        expect(page).to have_selector('#share-and-embed-modal', visible: false)
       end
     end
   end

@@ -205,15 +205,8 @@ function _renderStoryTile($element, componentData, storyTileData) {
     $tileDescription.text(storyTileData.description);
   }
 
-  $tileViewStory = $(
-    '<div>',
-    {'class': 'story-tile-view-story'}
-  ).html(
-    StorytellerUtils.format(
-      '{0}',
-      I18n.t('editor.story_tile.view_story_prompt')
-    )
-  );
+  $tileViewStory = $('<div>', {'class': 'story-tile-view-story'}).
+    text(I18n.t('editor.story_tile.view_story_prompt'));
 
   $tileContent.append([
     $tileTitleContainer,

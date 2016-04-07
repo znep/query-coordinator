@@ -1,4 +1,4 @@
-function ToggleFactory(element) {
+var ToggleFactory = module.exports = function(element) {
   var toggles = Array.prototype.slice.apply(element.querySelectorAll('[data-toggle]'));
   this.element = element;
 

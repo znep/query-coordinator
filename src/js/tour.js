@@ -1,5 +1,4 @@
-//= require ./vendor/tether.min
-//= require ./vendor/shepherd.min
+var Shepherd = require('tether-shepherd');
 
 // CustomEvent polyfill for IE10/11 (from frontend-utils)
 var CustomEvent = function(eventName, params) {
@@ -23,7 +22,7 @@ var CustomEvent = function(eventName, params) {
   return customEvent;
 };
 
-function TourFactory(element) {
+var TourFactory = module.exports = function(element) {
   this.root = element;
   this.tourElements = Array.prototype.slice.apply(element.querySelectorAll('[data-tour]'));
 

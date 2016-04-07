@@ -1,4 +1,4 @@
-function DropDown(element) {
+var Dropdown = module.exports = function(element) {
   this.dd = element;
   this.orientation = element.getAttribute('data-orientation') || 'bottom';
   this.dd.classList.add('dropdown-orientation-' + this.orientation);
@@ -11,7 +11,7 @@ function DropDown(element) {
   this.initEvents();
 }
 
-DropDown.prototype = {
+Dropdown.prototype = {
   initEvents: function() {
     var obj = this;
 

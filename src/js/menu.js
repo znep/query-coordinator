@@ -1,4 +1,4 @@
-function MenuFactory(element) {
+var MenuFactory = module.exports = function(element) {
   var menus = Array.prototype.slice.call(element.querySelectorAll('.menu'));
   var toggles = Array.prototype.slice.call(element.querySelectorAll('[data-menu-toggle]'));
 

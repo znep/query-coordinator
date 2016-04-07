@@ -1,20 +1,13 @@
 //= require vendor/prism
-
-//= require js/dropdown
-//= require js/flannel
-//= require js/flyout
-//= require js/menu
-//= require js/modal
-//= require js/toggle
-//= require js/tour
+//= require vendor/styleguide
 
 document.addEventListener('DOMContentLoaded', function() {
   if (document.querySelector('#dd')) {
-    var dd = new DropDown( document.querySelector('#dd') );
+    var dd = new styleguide.Dropdown( document.querySelector('#dd') );
   }
 
   if (document.querySelector('#du')) {
-    var du = new DropDown( document.querySelector('#du') );
+    var du = new styleguide.Dropdown( document.querySelector('#du') );
   }
 
   document.addEventListener('click', function() {
@@ -25,12 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  var modalFactory = new ModalFactory( document );
-  var toggleFactory = new ToggleFactory( document );
-  var flyoutFactory = new FlyoutFactory( document );
-  var flannelFactory = new FlannelFactory( document );
-  var menuFactory = new MenuFactory( document );
-  var tourFactory = new TourFactory( document );
+  var modalFactory = new styleguide.ModalFactory( document );
+  var toggleFactory = new styleguide.ToggleFactory( document );
+  var flyoutFactory = new styleguide.FlyoutFactory( document );
+  var flannelFactory = new styleguide.FlannelFactory( document );
+  var menuFactory = new styleguide.MenuFactory( document );
+  var tourFactory = new styleguide.TourFactory( document );
 
   /**
    * Fancy demo stuff.

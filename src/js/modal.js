@@ -1,4 +1,4 @@
-function ModalFactory(element) {
+var ModalFactory = module.exports = function(element) {
   this.root = element;
   this.dismissals = Array.prototype.slice.apply(element.querySelectorAll('[data-modal-dismiss]'));
   this.openers = Array.prototype.slice.apply(element.querySelectorAll('[data-modal]'));

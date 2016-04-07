@@ -38,5 +38,3 @@ RUN chown socrata -R ${APP_TMP_DIR}
 ENV RAILS_SERVE_STATIC_FILES true
 
 EXPOSE 3010
-
-CMD ["run"]

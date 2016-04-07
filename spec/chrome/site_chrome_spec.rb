@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Chrome::SiteChrome do
   let(:id) { 2663 }

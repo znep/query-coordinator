@@ -1,17 +1,12 @@
-<%
-  site_name = localized('general.site_name', @locales) || ''
-%>
-
 <script type="text/javascript">
   // TODO - http://sass-lang.com/documentation/file.SASS_REFERENCE.html
 </script>
 
 <header id="chrome-header">
   <div class="banner">
-    <a class="logo" href="<%= @header['logo']['href'] %>">
-      <img src="<%= @header['logo']['src'] %>" alt="<%= localized('header.logo_alt', @locales) || site_name %>" />
-      <span class="site-name"><%= site_name %></span>
-    </a>
+    <%= link_to(@header['logo']['href'], class: 'logo') do
+      logo(@header) << content_tag(:span, site_name, :class => 'site-name')
+    end %>
 
     <nav class="desktop">
       <%= render 'nav_links' %>

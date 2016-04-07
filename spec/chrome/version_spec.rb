@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Chrome::VERSION do
   it 'has a version number' do

@@ -1,4 +1,16 @@
 module SiteChromeHelper
+  def site_name
+    @site_name ||= localized('general.site_name', @locales) || ''
+  end
+
+  def logo(source)
+    image_tag(source['logo']['src'], :alt => source['logo']['alt'] || site_name)
+  end
+
+  def copyright
+    "\u00A9 #{Time.now.year}, #{site_name}"
+  end
+
   def social_link_classname(type)
     {
       'facebook' => 'icon-facebook',

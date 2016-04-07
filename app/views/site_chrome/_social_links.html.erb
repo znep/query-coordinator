@@ -2,6 +2,6 @@
   <% label = localized("general.social_shares.#{social_share['type']}", @locales) %>
   <a class="nav-link social-link" href="<%= social_share['url'] %>">
     <span class="<%= social_link_classname(social_share['type']) %>" title="<%= label %>"></span>
-    <%= show_label ? label : '' %>
+    <%= label if show_label %>
   </a>
 <% end %>

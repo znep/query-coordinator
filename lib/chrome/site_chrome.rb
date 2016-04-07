@@ -12,15 +12,15 @@ module Chrome
       @domain_cname = config[:domain_cname]
     end
 
-    def header_content
+    def header
       @content['header']
     end
 
-    def footer_content
+    def footer
       @content['footer']
     end
 
-    def general_content
+    def general
       @content['general']
     end
 

@@ -1,5 +1,5 @@
 <%
-  site_display_name = @content['general']['site_display_name'] || ''
+  site_name = localized('general.site_name', @locales) || ''
 %>
 
 <script type="text/javascript">
@@ -8,9 +8,9 @@
 
 <header id="chrome-header">
   <div class="banner">
-    <a class="logo" href="<%= @content['logo']['href'] %>">
-      <img src="<%= @content['logo']['src'] %>" alt="<%= @content['logo']['alt'] || site_display_name %>" />
-      <span class="site-name"><%= site_display_name %></span>
+    <a class="logo" href="<%= @header['logo']['href'] %>">
+      <img src="<%= @header['logo']['src'] %>" alt="<%= localized('header.logo_alt', @locales) || site_name %>" />
+      <span class="site-name"><%= site_name %></span>
     </a>
 
     <nav class="desktop">

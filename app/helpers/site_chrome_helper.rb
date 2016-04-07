@@ -6,8 +6,8 @@ module SiteChromeHelper
     }[type.to_s.downcase]
   end
 
-  def localized(key, locales)
-    # TODO - handling different locales
-    locales['en'].dig(*key.split('.')) || key
+  def localized(locale_key, locales)
+    # TODO - actually handle different locales
+    locales['en'].dig(*locale_key.split('.'))
   end
 end

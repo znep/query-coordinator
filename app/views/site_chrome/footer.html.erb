@@ -1,0 +1,37 @@
+<%
+  site_name = localized('general.site_name', @locales) || ''
+%>
+
+<script type="text/javascript">
+  // TODO - http://sass-lang.com/documentation/file.SASS_REFERENCE.html
+</script>
+
+<footer id="chrome-footer">
+  <div class="content">
+    <div class="logo">
+      <img src="<%= @footer['logo']['src'] %>" alt="<%= @footer['logo']['alt'] || site_name %>" />
+      <span class="site-name"><%= site_name %></span>
+
+      <div class="social-links">
+        <%= render 'social_links', show_label: true %>
+      </div>
+    </div>
+
+    <div class="links">
+      <ul class="links-col">
+
+        <% @footer['links'].each do |link| %>
+          <li>
+            <a class="footer-link" href="<%= link['url'] %>">
+              <%= localized("footer.links.#{link['key']}", @locales) %>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <div class="copyright">
+    © Copyright 2016, City of Evergreen
+  </div>
+</footer>

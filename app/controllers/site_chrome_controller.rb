@@ -2,7 +2,15 @@ class SiteChromeController < ApplicationController
   before_filter :get_site_chrome
 
   def header
-    @content = @site_chrome.get_content('header')
+    @header = @site_chrome.header_content
+    @general = @site_chrome.general_content
+    @locales = @site_chrome.locales
+  end
+
+  def footer
+    @footer = @site_chrome.footer_content
+    @general = @site_chrome.general_content
+    @locales = @site_chrome.locales
   end
 
   private

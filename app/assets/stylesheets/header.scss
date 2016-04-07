@@ -4,8 +4,8 @@ header#chrome-header {
   font-family: $font-family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .banner {
-    color: $fg-color;
-    background-color: $bg-color;
+    color: $header-fg-color;
+    background-color: $header-bg-color;
     line-height: 60px;
     font-size: 18px;
     padding: 0 1rem;
@@ -14,7 +14,7 @@ header#chrome-header {
     > a.logo {
       float: left;
       text-decoration: none;
-      color: $fg-color;
+      color: $header-fg-color;
 
       > img {
         height: 28px;
@@ -40,8 +40,11 @@ header#chrome-header {
         a.nav-link {
           display: inline-block;
           padding: 0 $text-padding;
-          color: $fg-color;
+          color: $header-fg-color;
           text-decoration: none;
+          &:hover, &:focus, &:active {
+            text-decoration: underline;
+          }
 
           &.social-link {
             font-size: 19px;

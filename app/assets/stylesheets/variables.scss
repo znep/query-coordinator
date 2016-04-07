@@ -9,6 +9,13 @@ $bg-color: #22B479;
 $fg-color: #fff;
 $font-family: 'Open Sans';
 
+// TODO - care about section specific overrides
+$header-bg-color: $bg-color;
+$header-fg-color: $fg-color;
+
+$footer-bg-color: #3b3a3c;
+$footer-fg-color: $fg-color;
+
 
 // Mixins
 @mixin desktop {

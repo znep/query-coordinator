@@ -1,4 +1,4 @@
-FROM socrata/ruby2.2
+FROM socrata/runit-ruby-2.2
 MAINTAINER Socrata <sysadmin@socrata.com>
 
 ENV APP_DIR /opt/socrata/storyteller

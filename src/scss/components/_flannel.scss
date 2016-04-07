@@ -1,9 +1,11 @@
+@import "_grid";
+
 .flannel {
   position: absolute;
   background: white;
-  max-width: 300px;
+  width: 300px;
   box-shadow: 0 0 8px -2px #666;
-  border: solix 1px #ddd;
+  border: solid 1px #ddd;
   border-radius: 1px;
   border-top-left-radius: 0;
   padding: 1rem;
@@ -12,34 +14,60 @@
     visibility: hidden;
   }
 
-  &::before {
+  &::before, &::after {
     border-color: transparent;
-    border-bottom-color: #ddd;
-    border-width: 12px;
     border-style: solid;
     margin-top: -5px;
-    margin-left: -3px;
     content: "";
-    top: -7px;
-    left: -10px;
     display: block;
     position: absolute;
     transform: rotateZ(-135deg);
   }
 
+  &::before {
+    border-width: 12px;
+    top: -7px;
+  }
+
   &::after {
-    border-color: transparent;
-    border-bottom-color: white;
     border-width: 10px;
-    border-style: solid;
-    margin-top: -5px;
-    margin-left: -3px;
-    content: "";
     top: -5px;
-    left: -7px;
-    display: block;
-    position: absolute;
-    transform: rotateZ(-135deg);
+  }
+
+  &.flannel-right {
+    &::before {
+      border-bottom-color: #ddd;
+      margin-left: -3px;
+      left: -10px;
+    }
+
+    &::after {
+      border-bottom-color: white;
+      margin-left: -3px;
+      left: -7px;
+    }
+  }
+
+  &.flannel-left {
+    &::before {
+      border-right-color: #ddd;
+      margin-right: -3px;
+      right: -10px;
+    }
+
+    &::after {
+      border-right-color: white;
+      margin-right: -3px;
+      right: -7px;
+    }
+  }
+
+  @media(max-width: $small) {
+    max-width: none;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 5000;
   }
 }
 

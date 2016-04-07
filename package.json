@@ -62,6 +62,7 @@
     "prismjs": "^1.4.1",
     "rimraf": "^2.5.0",
     "tether": "^1.0.1",
-    "tether-shepherd": "1.2.0"
+    "tether-shepherd": "1.2.0",
+    "velocity-animate": "^1.2.3"
   }
 }

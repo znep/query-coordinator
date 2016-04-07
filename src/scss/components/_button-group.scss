@@ -7,6 +7,7 @@
     &.btn-primary:not(.btn-inverse), &.btn-secondary:not(.btn-inverse), &.btn-dark {
       border: 1px solid transparent;
     }
+    margin-right: 0;
   }
 
 
@@ -32,7 +33,7 @@
     width: 100%;
     float: none;
     border-bottom-width: 0px;
-    
+
     &:first-child:not(:last-child) {
       border-right-width: 1px;
       border-bottom-left-radius: 0px;
@@ -48,7 +49,7 @@
     }
 
 
-  } 
+  }
 }
 
 // Prevent double borders when buttons are next to each other

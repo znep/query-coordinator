@@ -175,6 +175,10 @@ TourFactory.prototype = {
     document.addEventListener('keyup', function(event) {
       var key = event.which || event.keyCode;
 
+      if (that.currentTourName === null) {
+        return;
+      }
+
       // ESC
       if (key === 27) {
         that.closeTour(that.currentTourName);
@@ -187,6 +191,7 @@ TourFactory.prototype = {
   },
   openTour: function(tourName) {
     var tourObject = this.tours[tourName];
+
     this.currentTourName = tourObject.name;
 
     tourObject.tour.start();

@@ -4333,6 +4333,10 @@ function cleanViewForCreate(ds) {
     dsCopy.metadata.jsonQuery.having = jsonQuery.having;
   }
 
+  if (dsCopy.displayType == 'assetinventory') {
+    delete dsCopy.displayType;
+  }
+
   return dsCopy;
 };
 

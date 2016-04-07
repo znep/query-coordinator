@@ -157,10 +157,34 @@ class DatasetsController < ApplicationController
     # fake geo metadata if this view has been ingressed to NBE via API
     # but should behave as a normally-ingressed geo dataset (see EN-3889)
     if @view.is_api_geospatial?
+
+      # attempt to get an extent for the data, falling back to nil if
+      # the calculation query can't be processed for any reason
+      begin
+        # (this shouldn't fail because it's one of the is_api_geospatial? conditions)
+        geo_column = (@view.columns || []).select do |column|
+          column.dataTypeName =~ /(polygon|line|point)$/i
+        end.first
+
+        # the response is an array containing an extent object containing a multipolygon,
+        # so we drill down into the nested structure and stringify opposing corners
+        extent_response = get_extent({dataset_id: @view.id, field: geo_column.fieldName}, @view.rowsUpdatedAt)
+        extent_coordinates = extent_response[:body][0][:extent][:coordinates][0][0]
+        bbox = [extent_coordinates[0], extent_coordinates[2]].join(',')
+
+        # (e.g. '-122.3099497,41.883846,-87.632322,47.601338')
+        unless bbox =~ /^(-?\d+\.\d+,){3}-?\d+\.\d+$/
+          raise "Malformed bbox generated from extent_response with body #{extent_response[:body]}"
+        end
+      rescue StandardError => ex
+        Rails.logger.warn("Failed to calculate bbox for #{@view.id}: #{ex}")
+        bbox = nil
+      end
+
       @view.displayType = 'map'
       @view.metadata ||= Metadata.new({
         'geo' => {
-          'bbox' => nil, # need to make a call to set this
+          'bbox' => bbox,
           'bboxCrs' => 'EPSG:4326', # we always reproject to this reference system
           'isNbe' => true,
           'isApiGeospatial' => true,
@@ -961,6 +985,28 @@ protected
     end
 
     true
+  end
+
+  # TODO: Move this method somewhere more appropriate.
+  def soda_fountain
+    @soda_fountain ||= SodaFountain.new(path: '/resource')
+  end
+
+  # TODO: Move this method somewhere more appropriate.
+  def get_extent(options, data_validity_timestamp)
+    # Caching strategy: regenerate on demand when the underlying data changes,
+    # once a day at minimum.
+    # data_validity_timestamp should be seconds since epoch.
+    cache_key = [
+      'extent',
+      data_validity_timestamp,
+      options.fetch(:dataset_id),
+      options.fetch(:field)
+    ].join('.')
+
+    Rails.cache.fetch(cache_key, expires_in: 1.day, race_condition_ttl: 15.seconds) do
+      soda_fountain.get_extent(options)
+    end
   end
 
 end

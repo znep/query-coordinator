@@ -53,17 +53,35 @@ class SodaFountain
     )
   end
 
+  def get_extent(options)
+    issue_request(
+      verb: :get,
+      dataset_id: options.fetch(:dataset_id),
+      query: "select extent(`#{options.fetch(:field)}`) as extent",
+      cookies: options[:cookies],
+      request_id: options[:request_id]
+    )
+  end
+
   def issue_request(options)
-    raise ArgumentError.new('Missing option :dataset_id') unless options[:dataset_id].present?
-    raise ArgumentError.new('Missing option :identifier') unless options[:identifier].present?
+    dataset_id = options.fetch(:dataset_id)
+    soda_fountain_url = "#{end_point}/_#{dataset_id}"
 
-    dataset_id        = options.fetch(:dataset_id)
-    identifier       = options.fetch(:identifier)
-    soda_fountain_url = "#{end_point}/_#{dataset_id}/#{identifier}"
-    verb              = options.fetch(:verb).to_s.capitalize
-    request           = "Net::HTTP::#{verb}".constantize.new(soda_fountain_url)
+    identifier = options[:identifier]
+    if identifier.present?
+      soda_fountain_url += "/#{identifier}"
+    end
 
-    if :put == options.fetch(:verb)
+    query = options[:query]
+    if query.present?
+      query_params = URI.encode_www_form('$query' => query)
+      soda_fountain_url += "?#{query_params}"
+    end
+
+    verb = options.fetch(:verb)
+    request = "Net::HTTP::#{verb.capitalize}".constantize.new(soda_fountain_url)
+
+    if :put == verb
       request.body = JSON.dump(soql: options.fetch(:data))
     end
 

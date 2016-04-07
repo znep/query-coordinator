@@ -1758,12 +1758,24 @@ en:
           working_copy: Working Copy
           geocoding: Geocoding
           upsert: Upsert
+        filters:
+          filter_by: Filter By
+          type: Type
+          all: All
+          apply_filters: Go
+          import_activity: Import Activity
+          import: Import
+          append: Append
+          replace: Replace
+          data_workflow: Data Workflow
+          working_copy: Working Copy
+          publish: Publish
         index_page:
           action: Action
           dataset: Dataset
           export_as_csv: Export As CSV
           initiated_by: Initiated by
-          no_jobs: No jobs yet.
+          no_jobs: No jobs to show
           page_title: Data Jobs
           started: Started
           status: Status

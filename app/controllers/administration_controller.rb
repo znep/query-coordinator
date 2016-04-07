@@ -929,13 +929,24 @@ class AdministrationController < ApplicationController
   #
   def jobs
     page_size = 30
+    all_threshold = 8
     page_idx = params.fetch(:page, '1').to_i
     offset = (page_idx - 1) * page_size
-    all_threshold = 8
-    activities_response = ImportActivity.find_all_by_created_at_descending(offset, page_size)
+
+    activity_type = params[:activity_type]
+    activity_type = activity_type == 'All' ? nil : activity_type
+
+    activities_response = ImportActivity.find_all_by_created_at_descending({:offset => offset, :limit => page_size, :activityType => activity_type})
     @activities = activities_response[:activities]
     count = activities_response[:count]
-    @pager_elements = Pager::paginate(count, page_size, page_idx, :all_threshold => all_threshold)
+    
+    # preserve URL parameters across pages
+    pager_params = {}
+    if activity_type.present?
+      pager_params[:activity_type] = activity_type
+    end
+    
+    @pager_elements = Pager::paginate(count, page_size, page_idx, { :all_threshold => all_threshold, :params => pager_params })
   end
 
   def show_job

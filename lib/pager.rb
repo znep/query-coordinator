@@ -1,7 +1,7 @@
 module Pager
 
-  def self.paginate(num_items, page_size, current_page, options)
-    options ||= {}
+  def self.paginate(num_items, page_size, current_page, options = {})
+    params = options.fetch(:params, {})
     middle_padding = options.fetch(:middle_padding, 2)
     edge = options.fetch(:edge, 2)
     all_threshold = options.fetch(:all_threshold, 8)
@@ -11,22 +11,22 @@ module Pager
     if total_num_pages <= all_threshold
       # e.g. [1,*2*,3,4]
       (1..total_num_pages).map do |idx|
-        PageElement.new(idx, idx == current_page)
+        PageElement.new(idx, idx == current_page, params)
       end
     elsif current_page - middle_padding <= edge + 2
       # e.g. [1,*2*,3,...]
       (1..all_threshold).map do |idx|
-        PageElement.new(idx, current_page == idx)
+        PageElement.new(idx, current_page == idx, params)
       end + [ELLIPSIS]
     elsif current_page + middle_padding >= total_num_pages
       # e.g. [1,2,...,7,*8*,9]
       FRONT_EDGE + (current_page - middle_padding..total_num_pages).map do |idx|
-        PageElement.new(idx, current_page == idx)
+        PageElement.new(idx, current_page == idx, params)
       end
     else
       # e.g. [1,2,...,7,*8*,9,...]
       middle_elements = (current_page - middle_padding..current_page + middle_padding).map do |idx|
-        PageElement.new(idx, current_page == idx)
+        PageElement.new(idx, current_page == idx, params)
       end
       FRONT_EDGE + middle_elements + [ELLIPSIS]
     end
@@ -36,9 +36,10 @@ module Pager
 
   class PageElement < PagerElement
 
-    def initialize(index, selected)
+    def initialize(index, selected, params = {})
       @index = index
       @selected = selected
+      @params = params
     end
 
     def ==(other)
@@ -47,6 +48,11 @@ module Pager
 
     def page?
       true
+    end
+    
+    # URL query parameters to add to the end of the <a>
+    def get_params
+      @params.to_query
     end
 
     attr_accessor :index, :selected

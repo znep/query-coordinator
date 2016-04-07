@@ -31,7 +31,7 @@
 <div class="visualization-render-error choro-processing-computation-error" ng-show="isPendingComputation">
   <div class="row">
     <div class="span2"><load-spinner busy="true"></load-spinner></div>
-    <div class="span10">{{::'choropleth.computationInProgress' | I18n}}</div>
+    <div class="span10" ng-bind-html="'choropleth.computationInProgress' | I18n"></div>
   </div>
 </div>
 

@@ -9,6 +9,7 @@ module.exports = function ChoroplethController(
   LeafletVisualizationHelpersService,
   ServerConfig,
   SpatialLensService,
+  ViewRights,
   $log,
   $window,
   rx) {
@@ -23,7 +24,7 @@ module.exports = function ChoroplethController(
   var filteredData$;
   var whereClause$ = $scope.$observe('whereClause');
   var computedColumnName$ = model.observeOnLatest('computedColumn').distinctUntilChanged();
-  var waiting$ = new Rx.BehaviorSubject(true);
+  var waiting$ = new Rx.BehaviorSubject(false);
 
   var inFlightRequestsTracker$ = new Rx.Subject();
 
@@ -355,8 +356,21 @@ module.exports = function ChoroplethController(
     }
   );
 
-  var allCuratedRegions$ = dataset.flatMapLatest(SpatialLensService.getAvailableGeoregions$);
-  $scope.$bindObservable('noAvailableBoundaries', allCuratedRegions$.map(_.isEmpty));
+  Rx.Observable.subscribeLatest(
+    dataset.flatMapLatest(SpatialLensService.getAvailableGeoregions$),
+    dataset.observeOnLatest('columns'),
+    dataset.observeOnLatest('permissions'),
+    function(allRegions, columns, permissions) {
+      function shouldEnableCuratedRegion(curatedRegion) {
+        return SpatialLensService.findComputedColumnForRegion(columns, curatedRegion.view.id);
+      }
+
+      var isAsyncEnabled = SpatialLensService.isSpatialLensEnabled();
+      var canWrite = _.includes(permissions.rights, ViewRights.WRITE);
+      var accessibleBoundaries = canWrite || !isAsyncEnabled ?
+        allRegions : _.filter(allRegions, shouldEnableCuratedRegion);
+      $scope.noAvailableBoundaries = _.isEmpty(accessibleBoundaries);
+    });
 
   var hasNoPolygons$ = Rx.Observable.combineLatest(
     geojsonRegions$,

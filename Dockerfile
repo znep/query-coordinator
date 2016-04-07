@@ -15,8 +15,11 @@ RUN DEBIAN_FRONTEND=noninteractive && \
 RUN mkdir ${SERVICE_DIR_BASE}/storyteller
 COPY runit/web_server ${SERVICE_DIR_BASE}/storyteller/run
 
-RUN mkdir ${SERVICE_DIR_BASE}/storyteller-worker
-COPY runit/job_worker ${SERVICE_DIR_BASE}/storyteller-worker/run
+RUN mkdir ${SERVICE_DIR_BASE}/storyteller-documents-queue-worker
+COPY runit/work_documents_queue ${SERVICE_DIR_BASE}/storyteller-documents-queue-worker/run
+
+RUN mkdir ${SERVICE_DIR_BASE}/storyteller-metrics-queue-worker
+COPY runit/work_metrics_queue ${SERVICE_DIR_BASE}/storyteller-metrics-queue-worker/run
 
 ADD . ${APP_DIR}
 

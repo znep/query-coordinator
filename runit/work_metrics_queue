@@ -1,0 +1,6 @@
+#!/bin/bash
+
+source /dev/shm/storyteller_secrets.sh
+
+cd $APP_DIR
+exec su socrata -c 'QUEUE=metrics DELAYED_JOB_SLEEP_DELAY=20 DELAYED_JOB_DESTROY_FAILED_JOBS=false bin/rake jobs:work'

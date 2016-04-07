@@ -2,6 +2,7 @@ FROM socrata/runit-ruby-2.2
 MAINTAINER Socrata <sysadmin@socrata.com>
 
 ENV APP_DIR /opt/socrata/storyteller
+ENV SERVICE_DIR /etc/service/storyteller
 
 # Install additional packages for building our gems
 RUN DEBIAN_FRONTEND=noninteractive && \
@@ -11,7 +12,7 @@ RUN DEBIAN_FRONTEND=noninteractive && \
   apt-get purge -y --auto-remove software-properties-common && \
   rm -rf /var/lib/apt/lists/*
 
-ADD ship.d /etc/ship.d
+COPY runit ${SERVICE_DIR}
 ADD . ${APP_DIR}
 
 WORKDIR ${APP_DIR}

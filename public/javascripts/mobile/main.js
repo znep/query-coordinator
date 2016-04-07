@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import moment from 'moment';
 
 /* QFB components */
-import FilterContainer from './react-components/qfb/filtercontainer/FilterContainer.js';
+import FilterContainer from './react-components/qfb/filtercontainer/FilterContainer';
 
 /* Visualizations components */
 var mobileColumnChart = require('./mobile.columnchart.js');
@@ -15,6 +15,8 @@ var mobileTimelineChart = require('./mobile.timelinechart.js');
 var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 var mobileTable = require('./mobile.table.js');
+
+var dataProviders = require('socrata-visualizations').dataProviders;
 
 import 'leaflet/dist/leaflet.css';
 import 'socrata-visualizations/dist/socrata-visualizations.css';
@@ -584,7 +586,20 @@ import './styles/mobile-general.scss';
       handleFilterBroadcast={ handleBroadcast } />, document.getElementById('filters'));
 
     function handleBroadcast(filterObject) {
-      $(document).trigger('appliedFilters.qfb.socrata', filterObject);
+      var whereClauseComponents = dataProviders.SoqlHelpers.whereClauseFilteringOwnColumn({
+        filters: filterObject.filters,
+        type: 'table'
+      });
+
+      var soqlDataProvider = new dataProviders.SoqlDataProvider({ datasetUid: datasetMetadata.id, domain: datasetMetadata.domain });
+
+      soqlDataProvider.getRowCount(whereClauseComponents).then(function(data) {
+        if (parseInt(data) > 0) {
+          $(document).trigger('appliedFilters.qfb.socrata', filterObject);
+        } else {
+          // TODO: open flannel here
+        }
+      });
     }
   }
 

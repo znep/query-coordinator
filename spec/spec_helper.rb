@@ -254,8 +254,15 @@ end
 
 def stub_valid_session
   allow(CoreServer).to receive(:current_user).and_return(mock_valid_user)
-  allow(@controller).to receive(:current_user).and_return(mock_valid_user)
+  allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(
+    mock_valid_user
+  )
   stub_current_user_story_authorization(mock_user_authorization_owner_publisher)
+end
+
+def stub_invalid_session
+  allow(CoreServer).to receive(:current_user).and_return(nil)
+  allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(nil)
 end
 
 def stub_current_user_story_authorization(authorization)
@@ -263,13 +270,9 @@ def stub_current_user_story_authorization(authorization)
 end
 
 def stub_super_admin_session
-  allow(@controller).to receive(:current_user).and_return(
+  allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(
     mock_valid_user.merge('flags' => ['admin'])
   )
-end
-
-def stub_invalid_session
-  allow(@controller).to receive(:current_user).and_return(nil)
 end
 
 def stub_valid_uninitialized_lenses_view
@@ -307,14 +310,7 @@ def stub_logged_in_user
 end
 
 def stub_sufficient_rights
-  if defined? controller
-    allow(controller).to receive(:require_sufficient_rights).and_return(true)
-  else
-    allow_any_instance_of(StoriesController).to receive(:require_sufficient_rights).and_return(true)
-    allow_any_instance_of(Api::V1::PublishedController).to receive(:require_sufficient_rights).and_return(true)
-    allow_any_instance_of(Api::V1::PermissionsController).to receive(:require_sufficient_rights).and_return(true)
-    allow_any_instance_of(Api::V1::DraftsController).to receive(:require_sufficient_rights).and_return(true)
-  end
+  allow_any_instance_of(ApplicationController).to receive(:handle_authorization).and_return(true)
 end
 
 def stub_core_view(uid, options={})

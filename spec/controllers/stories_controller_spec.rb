@@ -85,6 +85,7 @@ RSpec.describe StoriesController, type: :controller do
         let(:story_revision) { FactoryGirl.create(:published_story) }
 
         it 'renders 404' do
+          stub_valid_session
           stub_core_view_as_missing(story_revision.uid)
           get :show, uid: story_revision.uid
           expect(response).to be_not_found
@@ -97,7 +98,6 @@ RSpec.describe StoriesController, type: :controller do
       before do
         stub_sufficient_rights
         stub_core_view('unpu-blsh')
-
       end
 
       context 'when there is an unpublished story with the given four by four' do
@@ -202,7 +202,9 @@ RSpec.describe StoriesController, type: :controller do
 
     context 'when html is requested' do
       context 'when there is a story with the given four by four' do
+
         it 'ignores vanity_text' do
+          stub_valid_session
           get :tile, uid: story_revision.uid, vanity_text: 'haha'
           expect(assigns(:story)).to eq(story_revision)
         end
@@ -214,8 +216,8 @@ RSpec.describe StoriesController, type: :controller do
         end
 
         it 'renders when authenticated' do
+          stub_valid_session
           get :tile, uid: story_revision.uid
-
           expect(response).to render_template(:tile)
         end
       end
@@ -226,6 +228,7 @@ RSpec.describe StoriesController, type: :controller do
         end
 
         it 'returns 404' do
+          stub_valid_session
           get :tile, uid: 'notf-ound'
           expect(response).to have_http_status(404)
         end
@@ -235,7 +238,6 @@ RSpec.describe StoriesController, type: :controller do
         let(:story_revision) { FactoryGirl.build(:draft_story, uid: 'hasb-lock') }
 
         before do
-          stub_valid_session
           stub_core_view(story_revision.uid, {name: tile_title, description: tile_description})
         end
 
@@ -248,6 +250,7 @@ RSpec.describe StoriesController, type: :controller do
         end
 
         it 'renders a draft story when authenticated' do
+          stub_valid_session
           get :tile, uid: story_revision.uid
           expect(response).to render_template(:tile)
         end
@@ -255,6 +258,10 @@ RSpec.describe StoriesController, type: :controller do
 
       describe 'google analytics' do
         render_views
+
+        before do
+          stub_valid_session
+        end
 
         context 'when not configured' do
           it 'does not render google analytics partial' do
@@ -279,6 +286,7 @@ RSpec.describe StoriesController, type: :controller do
     context 'when json is requested' do
       context 'when there is a story with the given four by four' do
         it 'ignores vanity_text' do
+          stub_valid_session
           get :tile, uid: story_revision.uid, vanity_text: 'haha', format: :json
           expect(assigns(:story)).to eq(story_revision)
         end
@@ -295,7 +303,7 @@ RSpec.describe StoriesController, type: :controller do
         end
 
         it 'responds when authenticated' do
-          stub_invalid_session
+          stub_valid_session
           get :tile, uid: story_revision.uid, format: :json
 
           response_json_as_hash = JSON.parse(response.body)
@@ -308,6 +316,7 @@ RSpec.describe StoriesController, type: :controller do
 
       context 'when there is no story with the given four by four' do
         before do
+          stub_valid_session
           stub_core_view_as_missing('notf-ound')
         end
 
@@ -319,6 +328,10 @@ RSpec.describe StoriesController, type: :controller do
     end
 
     describe 'log view access' do
+      before do
+        stub_valid_session
+      end
+
       it 'logs view access when story exists' do
         expect(StoryAccessLogger).to receive(:log_story_view_access).with(story_revision, embedded: true)
         get :tile, uid: story_revision.uid
@@ -338,19 +351,16 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#about' do
-    before do
-      stub_sufficient_rights
-    end
-
     context 'when authenticated' do
       before do
         stub_valid_session
+        stub_sufficient_rights
       end
 
       context 'when there is no story with the given four by four' do
         it '404s' do
           get :about, uid: 'notf-ound'
-          expect(response.status).to be(404)
+          expect(response.status).to eq(404)
         end
       end
 
@@ -362,7 +372,7 @@ RSpec.describe StoriesController, type: :controller do
         it 'redirects to frontend, /datasets/four-four/about' do
           get :about, uid: 'test-test'
           expect(response).to redirect_to '/datasets/test-test/about'
-          expect(response.status).to be(302)
+          expect(response.status).to eq(302)
         end
       end
     end
@@ -372,13 +382,10 @@ RSpec.describe StoriesController, type: :controller do
     let!(:story_revision) { FactoryGirl.create(:draft_story_with_blocks) }
     let(:story_copy_title) { "Copy of #{mock_valid_lenses_view_title}" }
 
-    before do
-      stub_sufficient_rights
-    end
-
     context 'when authenticated' do
       before do
         stub_valid_session
+        stub_sufficient_rights
       end
 
       context 'when there is no story with the given four by four' do
@@ -439,7 +446,7 @@ RSpec.describe StoriesController, type: :controller do
           story = assigns(:story)
 
           expect(story).to be_a(DraftStory)
-          expect(story.block_ids.length).to be(2)
+          expect(story.block_ids.length).to eq(2)
           expect(story.uid).to eq(mock_valid_lenses_view_uid)
         end
 
@@ -492,14 +499,10 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#preview' do
-
-    before do
-      stub_sufficient_rights
-    end
-
     context 'when authenticated' do
       before do
         stub_valid_session
+        stub_sufficient_rights
       end
 
       let(:story_revision) { FactoryGirl.create(:draft_story) }
@@ -590,14 +593,10 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#new' do
-
-    before do
-      stub_sufficient_rights
-    end
-
     context 'when authenticated' do
       before do
         stub_valid_session
+        stub_sufficient_rights
       end
 
       context 'when there is an uninitialized lenses view with the given four by four' do
@@ -708,14 +707,10 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#create' do
-
-    before do
-      stub_sufficient_rights
-    end
-
     context 'when authenticated' do
       before do
         stub_valid_session
+        stub_sufficient_rights
       end
 
       context 'when there is an uninitialized lenses view with the given four by four' do
@@ -737,7 +732,7 @@ RSpec.describe StoriesController, type: :controller do
           story = assigns(:story)
 
           expect(story).to be_a(DraftStory)
-          expect(story.block_ids.length).to be(1)
+          expect(story.block_ids.length).to eq(1)
           expect(story.uid).to eq(story_uid)
         end
 
@@ -818,14 +813,10 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#edit' do
-
-    before do
-      stub_sufficient_rights
-    end
-
     context 'when authenticated' do
       before do
         stub_valid_session
+        stub_sufficient_rights
       end
 
       let(:draft_story) { FactoryGirl.create(:draft_story) }
@@ -939,13 +930,10 @@ RSpec.describe StoriesController, type: :controller do
   end
 
   describe '#stats' do
-    before do
-      stub_sufficient_rights
-    end
-
     context 'when authenticated' do
       before do
         stub_valid_session
+        stub_sufficient_rights
       end
 
       it 'redirects to /d/<four-four>/stats' do
@@ -966,7 +954,7 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
-  describe '#require_sufficient_rights' do
+  describe '#handle_authorization' do
     let(:action) { :nothing }
     let(:get_request) { get action, uid: 'test-test' }
 
@@ -978,7 +966,7 @@ RSpec.describe StoriesController, type: :controller do
       let(:action) { :edit }
 
       before do
-        allow(controller).to receive(:can_edit_story?).and_return(can_edit_story)
+        allow_any_instance_of(ApplicationController).to receive(:can_edit_story?).and_return(can_edit_story)
       end
 
       describe 'when user can edit story' do
@@ -986,7 +974,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'does not 404' do
           get_request
-          expect(response.status).to_not be(404)
+          expect(response.status).to_not eq(404)
         end
       end
 
@@ -995,7 +983,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it '404s' do
           get_request
-          expect(response.status).to be(404)
+          expect(response.status).to eq(404)
         end
       end
     end
@@ -1004,7 +992,7 @@ RSpec.describe StoriesController, type: :controller do
       let(:action) { :stats }
 
       before do
-        allow(controller).to receive(:can_see_story_stats?).and_return(can_see_story_stats)
+        allow_any_instance_of(ApplicationController).to receive(:can_see_story_stats?).and_return(can_see_story_stats)
       end
 
       describe 'when user can edit story' do
@@ -1012,7 +1000,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'does not 404' do
           get_request
-          expect(response.status).to_not be(404)
+          expect(response.status).to_not eq(404)
         end
       end
 
@@ -1021,7 +1009,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it '404s' do
           get_request
-          expect(response.status).to be(404)
+          expect(response.status).to eq(404)
         end
       end
     end
@@ -1030,7 +1018,7 @@ RSpec.describe StoriesController, type: :controller do
       let(:action) { :copy }
 
       before do
-        allow(controller).to receive(:can_make_copy?).and_return(can_make_copy)
+        allow_any_instance_of(ApplicationController).to receive(:can_make_copy?).and_return(can_make_copy)
         allow(DraftStory).to receive(:find_by_uid).and_return(nil)
       end
 
@@ -1039,7 +1027,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'does not 403' do
           get_request
-          expect(response.status).to_not be(403)
+          expect(response.status).to_not eq(403)
         end
       end
 
@@ -1048,7 +1036,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it '403s' do
           get_request
-          expect(response.status).to be(403)
+          expect(response.status).to eq(403)
         end
       end
     end
@@ -1065,7 +1053,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'does not 404' do
           get_request
-          expect(response.status).to_not be(404)
+          expect(response.status).to_not eq(404)
         end
       end
 
@@ -1074,7 +1062,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it '404s' do
           get_request
-          expect(response.status).to be(404)
+          expect(response.status).to eq(404)
         end
       end
     end

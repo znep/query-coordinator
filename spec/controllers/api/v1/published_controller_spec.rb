@@ -12,7 +12,6 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
     end
 
     before do
-      stub_sufficient_rights
       request.env['HTTPS'] = 'on'
     end
 
@@ -35,6 +34,7 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
       let(:published_story) { FactoryGirl.create(:published_story) }
 
       before do
+        stub_sufficient_rights
         allow(StoryPublisher).to receive(:new).and_return(mock_story_publisher)
         allow(mock_story_publisher).to receive(:publish) { success }
         allow(mock_story_publisher).to receive(:story).and_return(published_story)
@@ -74,7 +74,7 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
     end
   end
 
-  describe '#require_sufficient_rights' do
+  describe '#handle_authorization' do
     let(:action) { :nothing }
     let(:get_request) { get action, uid: 'test-test' }
 
@@ -92,8 +92,8 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
         story = double('story', :attributes => {})
         story_publisher = instance_double('story_publisher', :publish => true, :story => story)
 
-        allow(controller).to receive(:admin?).and_return(admin)
-        allow(controller).to receive(:owner?).and_return(owner)
+        allow_any_instance_of(ApplicationController).to receive(:admin?).and_return(admin)
+        allow_any_instance_of(ApplicationController).to receive(:owner?).and_return(owner)
         allow(StoryPublisher).to receive(:new).and_return(story_publisher)
       end
 

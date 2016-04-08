@@ -1,6 +1,4 @@
 class Admin::SiteChromesController < ApplicationController
-  prepend_before_filter :require_super_admin
-
   layout 'admin'
 
   def edit
@@ -32,5 +30,4 @@ class Admin::SiteChromesController < ApplicationController
       whitelisted['domain_cname'] = request.host
     end
   end
-
 end

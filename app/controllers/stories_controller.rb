@@ -4,30 +4,18 @@ require 'json'
 
 class StoriesController < ApplicationController
   include StoriesHelper
-  include UserAuthorizationHelper
 
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
-  # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
-  skip_before_filter :require_logged_in_user, only: [:show, :tile]
-
-  before_filter :require_sufficient_rights
-
   after_action :allow_iframe, only: :tile
+
   helper_method :needs_view_assets?, :contributor?
 
   force_ssl except: [:show, :tile], unless: :ssl_disabled?
 
   def show
-    # This param is set in the link provided to users who receive a collaboration request
-    # via email. In this case, we want to redirect them to the most privileged action they
-    # have access to.
-    if params['from_collaboration_email']
-      login_then_redirect_to_highest_privilege
-    else
-      @site_chrome = SiteChrome.for_current_domain
-      respond_with_story(PublishedStory.find_by_uid(params[:uid]))
-    end
+    @site_chrome = SiteChrome.for_current_domain
+    respond_with_story(PublishedStory.find_by_uid(params[:uid]))
   end
 
   def preview
@@ -304,46 +292,5 @@ class StoriesController < ApplicationController
     end
 
     redirect_to "/stories/s/#{uid}/edit"
-  end
-
-  # This logic is duplicated in Frontend/Browse as story_url
-  def require_sufficient_rights
-    # always check that the user has access to the 4x4
-    return render_404 unless CoreServer.view_accessible?(params[:uid])
-
-    # If that passes, check additional storyteller-specific
-    # permission rules.
-    action = params[:action]
-
-    if action == 'edit'
-      render_404 unless can_edit_story?
-    elsif action == 'stats'
-      render_404 unless can_see_story_stats?
-    elsif action == 'copy'
-      render text: 'It seems that you don\'t have access to do that. Sorry!', status: 403 unless can_make_copy?
-    elsif action == 'preview'
-      render_404 unless can_view_unpublished_story?
-    end
-  end
-
-  def render_404
-    respond_to do |format|
-      format.html { render 'stories/404', layout: '404', status: 404 }
-      format.json { render json: {error: '404 Not Found'}, status: 404 }
-    end
-  end
-
-  def login_then_redirect_to_highest_privilege
-    if current_user.present?
-      if can_edit_story?
-        redirect_to :action => :edit
-      elsif can_view_unpublished_story?
-        redirect_to :action => :preview
-      else
-        redirect_to :action => :show
-      end
-    else
-      require_logged_in_user # Redirect them to login, then back here.
-    end
   end
 end

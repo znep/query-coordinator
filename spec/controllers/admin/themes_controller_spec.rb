@@ -20,7 +20,7 @@ RSpec.describe Admin::ThemesController, type: :controller do
     allow(Theme).to receive(:find).with(theme.id.to_s).and_return(theme)
   end
 
-  context 'when user is unauthenticated' do
+  context 'when the user is unauthenticated' do
     before do
       stub_invalid_session
     end
@@ -56,7 +56,7 @@ RSpec.describe Admin::ThemesController, type: :controller do
     end
   end
 
-  context 'when signed-in user is not super admin' do
+  context 'when the signed-in user is not super admin' do
     before do
       stub_valid_session
     end
@@ -92,7 +92,7 @@ RSpec.describe Admin::ThemesController, type: :controller do
     end
   end
 
-  context 'when signed-in user is super admin' do
+  context 'when the signed-in user is super admin' do
     before do
       stub_super_admin_session
     end

@@ -1,6 +1,4 @@
 class Admin::ThemesController < ApplicationController
-  prepend_before_filter :require_super_admin
-
   layout 'admin'
 
   def index

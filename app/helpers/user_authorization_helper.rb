@@ -20,6 +20,10 @@ module UserAuthorizationHelper
     ['editor_stories', 'publisher_stories'].include?(authorization['domainRole'])
   end
 
+  def can_create_story?
+    admin? || (owner? && storyteller_role?)
+  end
+
   def can_edit_story?
     admin? ||
     (owner? && storyteller_role?) ||

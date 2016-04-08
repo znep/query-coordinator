@@ -1,8 +1,4 @@
 class Api::V1::PermissionsController < ApplicationController
-  include UserAuthorizationHelper
-
-  before_filter :require_sufficient_rights
-
   force_ssl
 
   def update
@@ -20,9 +16,5 @@ class Api::V1::PermissionsController < ApplicationController
     else
       render json: {isPublic: params[:isPublic]}, status: :ok
     end
-  end
-
-  def require_sufficient_rights
-    return render nothing: true, status: 403 unless admin? || owner?
   end
 end

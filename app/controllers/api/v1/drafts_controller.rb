@@ -1,8 +1,4 @@
 class Api::V1::DraftsController < ApplicationController
-  include UserAuthorizationHelper
-
-  before_filter :require_sufficient_rights
-
   force_ssl
 
   def latest
@@ -48,19 +44,5 @@ class Api::V1::DraftsController < ApplicationController
     response_obj = {}
 
     render json: response_obj
-  end
-
-  private
-
-  def require_sufficient_rights
-    action = params[:action]
-
-    if action == 'create'
-      return render nothing: true, status: 403 unless can_edit_story?
-    elsif action == 'latest'
-      return render nothing: true, status: 403 unless can_view_unpublished_story?
-    else
-      raise "Don't know how to require_sufficient_rights for (new?) action: #{action}"
-    end
   end
 end

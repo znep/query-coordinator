@@ -448,6 +448,7 @@ javascripts:
     - public/javascripts/controls/panes/api.js
     - public/javascripts/controls/panes/api-foundry.js
     - public/javascripts/controls/panes/append-replace.js
+    - public/javascripts/controls/panes/backups.js
     - public/javascripts/controls/panes/calendar-create.js
     - public/javascripts/controls/panes/cell-feed.js
     - public/javascripts/controls/panes/chart-config.js

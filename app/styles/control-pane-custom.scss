@@ -1589,3 +1589,17 @@
     }
   }
 }
+
+.backupList {
+  .createBackup {
+    margin-bottom: 0.9em;
+  }
+
+  .backupItem {
+    margin-top: 1em;
+
+    a.backupLink {
+      font-size: 1.3em;
+    }
+  }
+}

@@ -389,6 +389,7 @@ module DatasetsHelper
 
     hash.moreViews!.views = hide_more_views_views?
     hash.moreViews!.snapshots = hide_more_views_snapshots?
+    hash.moreViews!.backups = hide_more_views_backups?
 
     hash.edit!.appendReplace = hide_append_replace?
     hash.edit!.addColumn = hide_add_column?
@@ -705,4 +706,13 @@ module DatasetsHelper
     ].any?
   end
 
+  def hide_more_views_backups?
+    [
+      !view.new_backend?, # NBE only
+      view.is_unpublished?,
+      !view.flag?('default'),
+      view.is_arcgis?,
+      view.is_geo?
+    ].any?
+  end
 end

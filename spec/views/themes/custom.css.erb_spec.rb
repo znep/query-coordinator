@@ -60,6 +60,7 @@ RSpec.describe "themes/custom" do
   it "does not have a BOM" do
     render(template: 'themes/custom.css.erb', locals: { custom_themes: themes })
 
+    expect(rendered).to include('Indie Flower')
     expect(rendered).to_not include("\xEF\xBB\xBF".force_encoding('utf-8'))
   end
 end

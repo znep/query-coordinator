@@ -22,8 +22,8 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
   describe 'move' do
 
     before do
-      @last_block = @blocks.last
       @first_block = @blocks.first
+      @last_block = @blocks.last
 
       # Remove the transform transition so that we do not have to coordinate
       # checking blocks' positions with the transition animation.
@@ -36,7 +36,7 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
 
       # move block up
       @last_block.hover
-      @last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]').click
+      javascript_click(@last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]'))
       after_move_position = @last_block.native.location.y
 
       expect(after_move_position).to be < initial_position

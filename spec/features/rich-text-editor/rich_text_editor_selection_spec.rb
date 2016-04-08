@@ -75,6 +75,8 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
     before do
       @heading_block = @blocks.first
       @squire_frame = @heading_block.find('iframe')
+      link_toolbar_to_first_squire_instance
+      @text_color_button = @rte_toolbar.find('.rich-text-editor-toolbar-btn-textColor')
     end
 
     it 'changes to a default color when clicked or a custom color when a custom color is entered or clicked' do
@@ -83,9 +85,6 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
       current_h1_color = nil
       debb1e_hex = '#debb1e'
       debb1e_rgba = 'rgba(222, 187, 30, 1)'
-      text_color_button = @rte_toolbar.find('.rich-text-editor-toolbar-btn-textColor')
-
-      link_toolbar_to_first_squire_instance
 
       within_frame(@squire_frame) do
         initial_selection = select_text_in_element('body > h1')
@@ -93,7 +92,7 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
       end
 
       # First create a new custom color
-      text_color_button.click
+      @text_color_button.click
       custom_color_input = @rte_toolbar.find('.rich-text-editor-toolbar-text-color-panel-color-input')
       custom_color_input.set(debb1e_hex)
       @rte_toolbar.find('.rich-text-editor-toolbar-text-color-panel-active-custom-color-swatch').click
@@ -108,7 +107,7 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
       end
 
       # Next set the color back to a default color
-      text_color_button.click
+      @text_color_button.click
       default_swatches = @rte_toolbar.all('.rich-text-editor-toolbar-text-color-panel-color-swatch')
       swatch = default_swatches[2]
       swatch_background_color = swatch.native.css_value('background-color')
@@ -124,7 +123,7 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
       end
 
       # Finally set the color to the saved custom color
-      text_color_button.click
+      @text_color_button.click
       custom_swatches = @rte_toolbar.all('.rich-text-editor-toolbar-text-color-panel-custom-color-swatch')
       swatch = custom_swatches[0]
       swatch_background_color = swatch.native.css_value('background-color')
@@ -143,33 +142,41 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
         expect(current_h1_color).to eq(debb1e_rgba)
       end
     end
-
     it 'updates the default colors when the story theme is changed' do
-      initial_selection = nil
-      initial_h1_color = nil
-      current_h1_color = nil
-      text_color_button = @rte_toolbar.find('.rich-text-editor-toolbar-btn-textColor')
-      text_color_swatches = nil
+      @text_color_button.click
 
-      link_toolbar_to_first_squire_instance
+      default_swatches = @rte_toolbar.
+        find('.rich-text-editor-toolbar-text-color-panel').
+        all('.rich-text-editor-toolbar-text-color-panel-color-swatch')
 
-      text_color_button.click
+      original_bgcolors = swatch_bgcolors(default_swatches)
 
-      text_color_swatches = @rte_toolbar.all('.rich-text-editor-toolbar-text-color-panel-color-swatch')
-
-      original_first_theme_default_color = text_color_swatches[0].native.css_value('background-color')
-      original_second_theme_default_color = text_color_swatches[1].native.css_value('background-color')
-
+      # Switch to a new theme
       page.find('[data-panel-toggle="style-and-presentation-panel"]').click
-      page.find('[data-theme="sans"]').click
+      another_theme_button = page.all('.theme-list .theme:not(.active)').first
+      another_theme_button.click
 
-      text_color_button.click
+      @text_color_button.click
 
-      new_first_theme_default_color = text_color_swatches[0].native.css_value('background-color')
-      new_second_theme_default_color = text_color_swatches[1].native.css_value('background-color')
+      new_bgcolors = nil
 
-      expect(original_first_theme_default_color).to_not eq(new_first_theme_default_color)
-      expect(original_second_theme_default_color).to_not eq(new_second_theme_default_color)
+      wait_until do
+        new_bgcolors = swatch_bgcolors(default_swatches)
+        new_bgcolors != original_bgcolors
+      end
+
+      # first 2 colors should change
+      expect(new_bgcolors.first(2)).to_not eq(original_bgcolors.first(2))
+
+      # remaining colors should stay the same
+      expect(new_bgcolors.drop(2)).to eq(original_bgcolors.drop(2))
     end
   end
+
+  private
+
+  def swatch_bgcolors(swatches)
+    swatches.map { |swatch| swatch.native.css_value('background-color') }
+  end
+
 end

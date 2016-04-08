@@ -431,3 +431,18 @@ end
 def os_control_key
   OS.mac? ? :command : :control
 end
+
+def wait_until
+  require "timeout"
+  Timeout.timeout(Capybara.default_wait_time) do
+    sleep(0.1) until value = yield
+    value
+  end
+end
+
+# Trigger a mouse click on the given element via $(element).click().
+# Use this only as a last resort if selenium refuses to click on the element for you
+# (for instance, it can't figure out how to scroll the element into the viewport).
+def javascript_click(element)
+  page.driver.browser.execute_script("$(arguments[0]).click()", element.native)
+end

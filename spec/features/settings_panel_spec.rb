@@ -45,7 +45,9 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     page.find("#{settings_panel_selector} .close-side-panel-btn").click()
     expect_settings_panel_to_be_closed
 
-    first_toggle.click()
+    # Regular click is horribly unreliable here for some unknown reason.
+    # Probably because of some JS animation.
+    javascript_click(first_toggle)
 
     # Close with the esc key
     page.find('body').native.send_keys(:escape)
@@ -54,10 +56,12 @@ RSpec.describe 'settings panel', type: :feature, js: true do
 
   describe 'title' do
     before do
-      toggle_pane
+      open_pane
 
-      title_description = page.all(settings_title_description).first()
+      title_description = page.find(settings_title_description)
       title_description.click()
+      # Dummy action to force capybara to wait for the selector to return nonempty
+      page.find('#settings-panel-story-metadata .active').visible?
     end
 
     it 'loads the current title into the input box' do
@@ -86,7 +90,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   # than the modal z-index. This can be removed if fit-and-finish changes that.
   describe 'make a copy' do
     before do
-      toggle_pane
+      open_pane
 
       title_description = page.all(settings_make_copy).first()
       title_description.click()
@@ -98,7 +102,8 @@ RSpec.describe 'settings panel', type: :feature, js: true do
 
     context 'when you close the modal' do
       before do
-        page.find('#make-a-copy-container .make-a-copy-button-group button.back-btn').click
+        page.find('#make-a-copy-container .make-a-copy-button-group button.back-btn').
+          click
       end
 
       it 'opens settings panel and hides the modal' do
@@ -110,7 +115,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
 
   describe 'share and embed' do
     before do
-      toggle_pane
+      open_pane
 
       title_description = page.all(settings_share_embed).first()
       title_description.click()
@@ -142,9 +147,17 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     expect(page).to have_selector(settings_overlay_selector, visible: true)
   end
 
-  def toggle_pane
+  def open_pane
+    # Wait for existing animations. If you can come up with a good
+    # reliable selector for this, be my guest :)
+    sleep(0.5)
+
+    return unless page.all('#settings-panel-container.active').empty?
     first_toggle = page.all(data_toggle_selector).first()
     first_toggle.click()
+    # Dummy action to force capybara to wait for the selector to return nonempty
+    # I.e., wait for panel to open.
+    page.find('#settings-panel-container.active').visible?
   end
 
   def string_with_1024_chars

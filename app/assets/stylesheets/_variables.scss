@@ -1,0 +1,28 @@
+$breakpoint_mobile: 900px;
+
+// Mixins
+@mixin desktop {
+  @media screen and (min-width: #{$breakpoint_mobile}) {
+    @content;
+  }
+}
+@mixin mobile {
+  @media screen and (max-width: #{$breakpoint_mobile}) {
+    @content;
+  }
+}
+
+// Default variables (can be over-written by site_chrome styles)
+$bg_color: #22B479;
+$fg_color: #fff;
+$font_family: 'Open Sans';
+
+$header_bg_color: $bg_color;
+$header_fg_color: $fg_color;
+
+$footer_bg_color: #3b3a3c;
+$footer_fg_color: $fg_color;
+
+$mobile_btn_color: #288dc1;
+$mobile_btn_hover_color: #20719a;
+$text_padding: 11px;

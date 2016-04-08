@@ -1,12 +1,10 @@
-@import 'variables';
-
 footer#chrome-footer {
-  font-family: $font-family, 'Open Sans', Helvetica, Arial, 'sans-serif';
   display: block;
   min-height: 200px;
   padding: 37px;
-  color: $footer-fg-color;
-  background-color: $footer-bg-color;
+  color: $footer_fg_color;
+  background-color: $footer_bg_color;
+  font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .content {
     max-width: 68em;
@@ -36,7 +34,7 @@ footer#chrome-footer {
         margin: 1.5rem 0;
 
         a.social-link {
-          color: $footer-fg-color;
+          color: $footer_fg_color;
           opacity: 0.7;
           text-decoration: none;
           font-weight: 300;
@@ -68,7 +66,7 @@ footer#chrome-footer {
           text-overflow: ellipsis;
 
           a.footer-link {
-            color: $footer-fg-color;
+            color: $footer_fg_color;
             text-decoration: none;
             font-weight: 300;
             font-size: 15px;
@@ -87,7 +85,7 @@ footer#chrome-footer {
     margin-top: 46px;
     text-align: center;
     font-size: 12px;
-    color: $footer-fg-color;
+    color: $footer_fg_color;
     opacity: 0.7;
   }
 }

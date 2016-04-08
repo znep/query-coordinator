@@ -1,11 +1,9 @@
-@import 'variables';
-
 header#chrome-header {
-  font-family: $font-family, 'Open Sans', Helvetica, Arial, 'sans-serif';
+  font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .banner {
-    color: $header-fg-color;
-    background-color: $header-bg-color;
+    color: $header_fg_color;
+    background-color: $header_bg_color;
     line-height: 60px;
     font-size: 18px;
     padding: 0 1rem;
@@ -14,7 +12,7 @@ header#chrome-header {
     > a.logo {
       float: left;
       text-decoration: none;
-      color: $header-fg-color;
+      color: $header_fg_color;
 
       > img {
         height: 28px;
@@ -39,8 +37,8 @@ header#chrome-header {
       &.desktop {
         a.nav-link {
           display: inline-block;
-          padding: 0 $text-padding;
-          color: $header-fg-color;
+          padding: 0 $text_padding;
+          color: $header_fg_color;
           text-decoration: none;
           &:hover, &:focus, &:active {
             text-decoration: underline;
@@ -53,11 +51,11 @@ header#chrome-header {
 
         a.sign-in-toggle {
           font-size: 12px;
-          margin-left: $text-padding;
+          margin-left: $text_padding;
         }
 
         span.divider {
-          margin: 0 $text-padding;
+          margin: 0 $text_padding;
           padding: 8px 0;
           border-left: 1px solid rgba(255, 255, 255, 0.3);
         }
@@ -116,7 +114,7 @@ header#chrome-header {
           display: block;
           font-size: 15px;
           border-top: 1px solid #f4f4f4;
-          padding: 15px $text-padding;
+          padding: 15px $text_padding;
           text-decoration: none;
 
           &:last-of-type {
@@ -130,7 +128,7 @@ header#chrome-header {
       }
       .menu-section-header {
         margin-top: 20px;
-        padding: $text-padding;
+        padding: $text_padding;
         font-weight: 300;
         text-transform: uppercase;
       }

@@ -15,7 +15,6 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
     end
 
     before do
-      stub_sufficient_rights
       allow(AirbrakeNotifier).to receive(:report_error)
       request.env['HTTPS'] = 'on'
     end
@@ -36,6 +35,7 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
         allow(PermissionsUpdater).to receive(:new).and_return(mock_permissions_updater)
         allow(mock_permissions_updater).to receive(:update_permissions).and_return(true)
         stub_valid_session
+        stub_sufficient_rights
       end
 
       it 'initializes PermissionsUpdater with params' do
@@ -90,7 +90,7 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
     end
   end
 
-  describe 'require_sufficient_rights' do
+  describe '#handle_authorization' do
     let(:action) { :nothing }
     let(:get_request) { get action, uid: 'test-test' }
 
@@ -107,8 +107,8 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
       before do
         permissions_updater = instance_double('PermissionsUpdater', :update_permissions => true)
         allow(PermissionsUpdater).to receive(:new).and_return(permissions_updater)
-        allow(controller).to receive(:admin?).and_return(admin)
-        allow(controller).to receive(:owner?).and_return(owner)
+        allow_any_instance_of(ApplicationController).to receive(:admin?).and_return(admin)
+        allow_any_instance_of(ApplicationController).to receive(:owner?).and_return(owner)
       end
 
       describe 'when user is admin' do

@@ -1,5 +1,4 @@
 class VersionController < ApplicationController
-  skip_before_filter :require_logged_in_user
 
   # We use this endpoint as a health check and for monitoring.
   def show
@@ -17,5 +16,4 @@ class VersionController < ApplicationController
   def delayed_job_count(seconds)
     Delayed::Job.where('attempts = ? AND created_at < ?', 0, seconds.seconds.ago).size
   end
-
 end

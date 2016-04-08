@@ -1,8 +1,4 @@
 class Api::V1::PublishedController < ApplicationController
-  include UserAuthorizationHelper
-
-  before_filter :require_sufficient_rights
-
   force_ssl
 
   # Takes a draft story and creates a published version of it, then sets the published story
@@ -24,9 +20,5 @@ class Api::V1::PublishedController < ApplicationController
 
   def story_params
     params.permit(:uid, :digest, :theme)
-  end
-
-  def require_sufficient_rights
-    return render nothing: true, status: 403 unless admin? || owner?
   end
 end

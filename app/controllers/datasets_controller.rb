@@ -26,6 +26,14 @@ class DatasetsController < ApplicationController
 
 # member actions
   def show
+    if FeatureFlags.derive(nil, request).enable_dataset_landing_page == true
+      @view = get_view(params[:id])
+
+      return if @view.nil?
+
+      return render 'dataset_landing_page', :layout => 'dataset_landing_page'
+    end
+
     # adjust layout to thin versions (rather than '_full')
     @page_custom_header = 'header'
     @page_custom_footer = 'footer'

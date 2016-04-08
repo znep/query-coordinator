@@ -65,6 +65,10 @@ enable_data_lens_export_menu:
   description: Toggles visibility of the export menu, which also allows export of the current filter.
   defaultValue: true
   category: data lens
+enable_dataset_landing_page:
+  description: Enable the dataset landing page
+  defaultValue: false
+  category: dataset landing page
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false

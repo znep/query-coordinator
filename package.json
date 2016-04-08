@@ -32,7 +32,7 @@
     "webpack-dev-server": "webpack-dev-server --config ${npm_package_config_webpackConfig} --https --cert dev-server/ssl/host.crt --cacert dev-server/ssl/ca.crt --key dev-server/ssl/host.key",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint",
-    "postinstall": "cp node_modules/leaflet/dist/leaflet.css app/styles/mobile && cp node_modules/socrata-visualizations/dist/socrata-visualizations.css app/styles/mobile"
+    "postinstall": "sh ./tools/postinstall.sh"
   },
   "repository": {
     "type": "git",
@@ -99,13 +99,16 @@
     "webpack-manifest-plugin": "^0.4.0"
   },
   "dependencies": {
+    "dompurify": "^0.7.4",
+    "dotdotdot": "^1.7.0",
     "file-loader": "^0.8.5",
     "leaflet": "0.7.3",
-    "dompurify": "^0.7.4",
     "lodash": "^3.10.1",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
+    "socrata-styleguide": "^0.4.2",
     "socrata-visualizations": "8.8.2",
-    "tether-shepherd": "1.2.0"
+    "tether-shepherd": "1.2.0",
+    "velocity-animate": "^1.2.3"
   }
 }

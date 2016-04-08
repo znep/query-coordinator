@@ -26,10 +26,14 @@ class DatasetsHelperTest < Test::Unit::TestCase
   end
 
   def test_normal_download_types
-    @object.stubs(:enable_xls_download_type => true)
+    @object.stubs(:enable_xls_download_type => true, :enable_pdf_download_type => true)
     assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML']
-    @object.stubs(:enable_xls_download_type => false)
+    @object.stubs(:enable_xls_download_type => false, :enable_pdf_download_type => true)
     assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XML']
+    @object.stubs(:enable_xls_download_type => true, :enable_pdf_download_type => false)
+    assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML']
+    @object.stubs(:enable_xls_download_type => false, :enable_pdf_download_type => false)
+    assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'RSS', 'XML']
   end
 
   def test_row_identifier_select_tag

@@ -2183,14 +2183,20 @@ function TimelineChart(element, vif) {
   }
 
   // This function determines the vertical position of the flyout.
-  // It always positions the flyout above all timeline paths.
+  // If not mobile, it always positions the flyout above all timeline paths.
   function flyoutVerticalPosition() {
-    var hoveringWithinSelection =
-      currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
+    if (vif.configuration.isMobile) {
+      return d3YScale(currentDatum.filtered != currentDatum.unfiltered ?
+        currentDatum.filtered :
+        currentDatum.unfiltered);
+    } else {
+      var hoveringWithinSelection =
+        currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
 
-    return (selectionIsCurrentlyRendered && !hoveringWithinSelection) ?
-      d3YScale(_.max([currentDatum.unfiltered, 0])) :
-      d3YScale(_.max([currentDatum.unfiltered, currentDatum.filtered, 0]));
+      return (selectionIsCurrentlyRendered && !hoveringWithinSelection) ?
+        d3YScale(_.max([currentDatum.unfiltered, 0])) :
+        d3YScale(_.max([currentDatum.unfiltered, currentDatum.filtered, 0]));
+    }
   }
 
   /**

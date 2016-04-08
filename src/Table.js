@@ -245,6 +245,7 @@ $.fn.socrataTable = function(vif) {
       _renderState.fetchedData.whereClauseComponents
     );
   }
+
   function _handlePrevious() {
     _setDataQuery(
       Math.max(0, _renderState.fetchedData.startIndex - _renderState.fetchedData.pageSize),
@@ -284,7 +285,7 @@ $.fn.socrataTable = function(vif) {
     }
 
     _setDataQuery(
-      _renderState.fetchedData.startIndex,
+      0,
       _renderState.fetchedData.pageSize,
       _renderState.fetchedData.order,
       SoqlHelpers.whereClauseFilteringOwnColumn(newVif)

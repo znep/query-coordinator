@@ -1251,7 +1251,11 @@ en:
       private: private
       public: public
   dataset_landing_page:
-    api: API
+    action_buttons:
+      api: API
+      data: View Data
+      download: Download
+      share: Share
     api_flannel:
       description: The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data. 
       developer_portal_button: Developer Portal
@@ -1261,13 +1265,19 @@ en:
       title: Access this Dataset via SODA API
     copy: Copy
     copy_success: Copied!
-    data: View Data
-    download: Download
     less: Less
     more: More
     official: Official
     published_by: Published by
-    share: Share
+    share:
+      cancel: Cancel
+      title: Share this Dataset
+      email: Share via Email
+      email_body: 'Here is a dataset from %{provider} that I would like to share with you: %{url}'
+      facebook: Share via Facebook
+      manage_prompt: Click here to manage permissions
+      twitter: Share via Twitter
+      visibility_alert_html: <b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with.
     updated: Updated
   dataslate:
     component:

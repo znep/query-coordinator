@@ -115,4 +115,5 @@ $(function() {
 
   new Styleguide.FlannelFactory(document);
   new Styleguide.ToggleFactory(document);
+  new Styleguide.ModalFactory(document);
 });

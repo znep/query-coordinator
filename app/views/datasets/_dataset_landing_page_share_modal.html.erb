@@ -1,0 +1,50 @@
+<div id="share-modal" class="modal modal-overlay modal-hidden" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h5 class="h5 modal-header-title"><%= t('dataset_landing_page.share.title') %></h5>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <%- if @view.is_private? -%>
+      <section class="modal-content">
+        <div class="alert info">
+          <%= t('dataset_landing_page.share.visibility_alert_html') %>
+          <a href="/dataset/<%= @view.id %>?pane=manage&enable_dataset_landing_page=false">
+            <%= t('dataset_landing_page.share.manage_prompt') %>
+          </a>
+        </div>
+      </section>
+    <%- end -%>
+
+    <section class="modal-content">
+      <div class="facebook">
+        <a href="<%= share_facebook_url %>" target="_blank">
+          <span class="icon-facebook"></span>
+          <%= t('dataset_landing_page.share.facebook') %>
+        </a>
+      </div>
+
+      <div class="twitter">
+        <a href="<%= share_twitter_url %>" target="_blank">
+          <span class="icon-twitter"></span>
+          <%= t('dataset_landing_page.share.twitter') %>
+        </a>
+      </div>
+
+      <div class="email">
+        <a href="<%= share_email_url %>">
+          <span class="icon-email"></span>
+          <%= t('dataset_landing_page.share.email') %>
+        </a>
+      </div>
+    </section>
+
+    <footer class="modal-actions">
+      <button class="btn btn-default btn-sm" data-modal-dismiss>
+        <%= t('dataset_landing_page.share.cancel') %>
+      </button>
+    </footer>
+  </div>
+</div>

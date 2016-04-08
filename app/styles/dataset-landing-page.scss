@@ -1,13 +1,20 @@
+$body-background: #f8f8f8;
+$white: #fff;
 $whitesmoke: #f5f5f5;
+$description-toggle-color: #adadad;
+$alert-link-color: #5aafe1;
+$share-twitter-color: #55acee;
+$share-facebook-color: #3b5998;
+$share-email-color: #333;
 
 body {
   margin: 0;
   padding: 0;
-  background: #f8f8f8;
+  background: $body-background;
 }
 
 .info-pane {
-  background: #fff;
+  background: $white;
   width: 100%;
 
   .container {
@@ -24,7 +31,8 @@ body {
 
   .entry-header {
     .entry-title {
-      width: auto;
+      width: auto !important;
+      margin-right: 20px !important;
     }
 
     .entry-actions {
@@ -38,14 +46,13 @@ body {
       .dropdown:after {
         display: none;
       }
-
     }
   }
 
   .entry-description-toggle {
     margin-left: 4px;
     text-decoration: underline;
-    color: #adadad;
+    color: $description-toggle-color;
     cursor: pointer;
   }
 
@@ -154,5 +161,52 @@ body {
         }
       }
     }
+  }
+}
+
+#share-modal {
+  .modal-header {
+    h5 {
+      margin: 0;
+    }
+
+    margin-bottom: 24px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .alert a {
+    color: $alert-link-color;
+  }
+
+  .twitter, .facebook, .email {
+    margin-bottom: 12px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    [class^="icon"] {
+      margin-right: 8px;
+    }
+  }
+
+  .twitter a {
+    color: $share-twitter-color;
+  }
+
+  .facebook a {
+    color: $share-facebook-color;
+  }
+
+  .email a {
+    color: $share-email-color;
+  }
+}
+
+.btn {
+  [class^="icon-"]:last-child {
+    padding-right: 0;
   }
 }

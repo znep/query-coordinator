@@ -2,7 +2,7 @@
 
 ![chrome](http://www.3dtotal.com/admin/new_cropper/tutorial_content_images/208_tid_main_01.jpg)
 
-The "Chrome" is the header, footer, and navigation of a customer site. This gem exists so that our various services/pages (catalogs, storyteller, data_lens, etc.) can easily render the same html for these components.
+The "Chrome" is the header (including navigation bar) and footer of a customer site. This gem exists so that our various services/pages (catalogs, storyteller, data_lens, etc.) can easily render the same html for these components.
 
 ## Installation
 
@@ -23,7 +23,7 @@ domain_config = Chrome::DomainConfig.new(domain, auth.cookie, true)
 site_chrome = Chrome::SiteChrome.init_from_core_config(domain_config.config)
 
 # Get rendered html for each section (TODO)
-# site_chrome.get_html('header') # 'header', 'navigation', or 'footer'
+# site_chrome.get_html('header') # 'header' or 'footer'
 ```
 
 ## Development

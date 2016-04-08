@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Chrome::SiteChrome do
   let(:id) { 2663 }
@@ -40,18 +40,6 @@ describe Chrome::SiteChrome do
 
   it 'sets domain_cname from properties' do
     expect(helper.domain_cname).to eq(domain_cname)
-  end
-
-  describe '#get_content' do
-    it 'should raise if nil section is passed' do
-      expect { helper.get_content(nil) }.to raise_error('Must provide a section name to render')
-    end
-
-    it 'should raise if invalid section is passed' do
-      expect { helper.get_content('wrong_section') }.to raise_error(
-        'Invalid section name. Must be one of "header", "navigation", or "footer"'
-      )
-    end
   end
 
   describe '#init_from_core_config' do

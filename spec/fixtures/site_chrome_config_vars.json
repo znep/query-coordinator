@@ -3,73 +3,78 @@
   "content": {
     "footer": {
       "logo": {
-        "alt": "my-footer",
+        "alt": "Evergreen",
         "src": "http://i.imgur.com/rF2EJ4P.gif",
-        "href": "/"
+        "href": "#"
       },
-      "links": [ {
-        "label": "footer.home",
-        "url": "/"
-      }, {
-        "label": "footer.terms_of_service",
-        "url": "http://www.socrata.com/terms-of-service"
-      } ]
-    },
-    "navigation": {
-      "links": [ {
-        "label": "navigation.home",
-        "url": "/"
-      }, {
-        "label": "navigation.catalog",
-        "url": "/browse"
-      } ]
-    },
-    "locales": [ {
-      "en": {
-        "footer": {
-          "home": "Home Page",
-          "terms_of_service": "Terms of Service"
-        },
-        "navigation": {
-          "home": "Home Page",
-          "catalog": "Browse"
-        },
-        "header": {
-          "sign_in": "Sign In",
-          "admin": "Administration"
-        }
-      }
-    } ],
-    "general": {
-      "window_icon": "http://customer.com/favicon.ico",
-      "link_text_color": "#888",
-      "window_title": "Customer’s Open Data Portal",
-      "site_display_name": "Customer’s Open Data Portal",
       "styles": {
-        "dark_bg": {
-          "bg_color": "#2c97de",
-          "font_color": "#fff"
+        "fg_color": "yellow",
+        "bg_color": "blue"
+      },
+      "links": [
+        "/",
+        "http://www.socrata.com/terms-of-service",
+        "http://www.socrata.com/privacy/",
+        "http://www.socrata.com/accessibility/",
+        "http://www.socrata.com/contact-us/"
+      ]
+    },
+    "locales": {
+      "en": {
+        "footer": [
+          "Home Page",
+          "Terms of Service",
+          "Privacy Policy",
+          "Contact Us",
+          "Accessibility"
+        ],
+        "header": [
+          "Home Page",
+          "Support",
+          "Catalog",
+          "Evergreen",
+          "Developers"
+        ]
+      }
+    },
+    "general": {
+      "social_shares": [
+        {
+          "label": "Like us on Facebook",
+          "type": "facebook",
+          "url": "http://facebook.com"
         },
-        "font_family": "Helvetica",
-        "light_bg": {
-          "bg_color": "#eee",
-          "font_color": "#333"
+        {
+          "label": "Follow us on Twitter",
+          "type": "twitter",
+          "url": "http://twitter.com"
         }
+      ],
+      "link_text_color": "blue",
+      "site_display_name": "City of Evergreen",
+      "styles": {
+        "fg_color": "#fff",
+        "bg_color": "#2c97de",
+        "font_family": "Open Sans"
       }
     },
     "header": {
       "logo": {
-        "alt": "header-logo",
+        "alt": "test header",
         "src": "http://i.imgur.com/rF2EJ4P.gif",
-        "href": "/"
+        "href": "#"
       },
-      "links": [ {
-        "label": "header.admin",
-        "url": "/admin "
-      }, {
-        "label": "header.sign_in",
-        "url": "/signin"
-      } ]
+      "styles": {
+        "fg_color": "pink",
+        "bg_color": "blue"
+      },
+      "links": [
+        "/",
+        "/browse",
+        "http://dev.socrata.com",
+        "https://support.socrata.com",
+        "http://data.evergreen.gov"
+      ]
     }
   }
 }

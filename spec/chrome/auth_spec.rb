@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Chrome::Auth do
   it 'fails to initialize if missing a domain, email, or password' do

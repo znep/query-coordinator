@@ -12,26 +12,28 @@ module Chrome
       @domain_cname = config[:domain_cname]
     end
 
-    def get_content(section)
-      valid_section_name?(section)
-      content = @content[section]
-      # Add general content and locales inside section-specific content hash
-      content['general'] = @content['general']
-      content['locales'] = @content['locales']
-
-      if section == 'header'
-        content['navigation'] = @content['navigation']
-      end
-
-      content
+    def header
+      @content['header']
     end
 
-    # TODO - this method is a way the gem could handle rendering the HTML
-    # def get_html(section)
-    #   content = get_content(section)
+    def footer
+      @content['footer']
+    end
+
+    def general
+      @content['general']
+    end
+
+    def locales
+      @content['locales']
+    end
+
+
+    # TODO - this method is one way the gem could handle rendering the HTML
+    # def get_html(section_content)
     #   # Returns template with content hash passed in as variables
-    #   template = File.read("app/views/chrome/#{section}.html.erb")
-    #   ERB.new(template).result(OpenStruct.new(content).instance_eval { binding })
+    #   # eg: template = File.read("app/views/site_chrome/header.html.erb")
+    #   ERB.new(template).result(OpenStruct.new(section_content).instance_eval { binding })
     # end
 
     def self.init_from_core_config(core_config)
@@ -68,8 +70,8 @@ module Chrome
 
     def valid_section_name?(section_name)
       raise 'Must provide a section name to render' if section_name.nil?
-      raise 'Invalid section name. Must be one of "header", "navigation", or "footer"' unless
-        %w(header navigation footer).include?(section_name)
+      raise 'Invalid section name. Must be either "header" or "footer"' unless
+        %w(header footer).include?(section_name)
     end
   end
 end

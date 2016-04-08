@@ -1,17 +1,12 @@
-<%
-  site_display_name = @content['general']['site_display_name'] || ''
-%>
-
 <script type="text/javascript">
   // TODO - http://sass-lang.com/documentation/file.SASS_REFERENCE.html
 </script>
 
 <header id="chrome-header">
   <div class="banner">
-    <a class="logo" href="<%= @content['logo']['href'] %>">
-      <img src="<%= @content['logo']['src'] %>" alt="<%= @content['logo']['alt'] || site_display_name %>" />
-      <span class="site-name"><%= site_display_name %></span>
-    </a>
+    <%= link_to(@header['logo']['href'], class: 'logo') do
+      logo(@header) << content_tag(:span, site_name, :class => 'site-name')
+    end %>
 
     <nav class="desktop">
       <%= render 'nav_links' %>

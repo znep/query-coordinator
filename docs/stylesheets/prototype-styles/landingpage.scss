@@ -247,6 +247,41 @@ a {
 
 		//featured content
 		.result-card {
+			
+			//MVP icons
+			.img-wrapper {
+				&.story, &.map, &.data-lens, &.chart {
+					background-color: $light-grey-5;
+				}
+				&.story {
+					.x-large-icon {
+						color: #00a1af;
+					}
+				}
+				&.map {
+					.x-large-icon {
+						color: #218649;
+					}
+				}
+				&.data-lens {
+					.x-large-icon {
+						color: #288dc1;
+					}
+				}
+				&.chart {
+					.x-large-icon {
+						color: #e28432;
+					}
+				}
+				.x-large-icon {
+					margin: 0 37%;
+					font-size: ms(15);
+				}			
+			}
+
+
+		}
+		.result-card {
 			@include breakpoint($tablet) {
 				@include span-columns(4);
 				.entry-main .img-wrapper{
@@ -449,11 +484,13 @@ a {
 					  				font-size: ms(0);
 					  			}
 				  				.stat-details {
-				  					@include span-columns(5);				  					
+				  					//@include span-columns(5);	
+				  					@include span-columns(2); //MVP			  					
 								}
 								.type-details {
-				  					@include span-columns(2);
-				  					@include shift(1);
+				  					//@include span-columns(2);
+				  					//@include shift(1);
+				  					@include span-columns(2); //MVP
 				  					border-top: none;
 				  					.detail-group {
 				  						margin-top: ms(-8);
@@ -784,6 +821,28 @@ a {
 		font-size: ms(-1);
 	}
 }
+
+#contact-modal {
+	.modal-container {
+		max-width: 600px;
+		max-height: 700px;
+		margin-top: 50px;
+		.modal-content {
+			max-height: 500px;
+		}
+	}
+	.subject {
+		width: 80%;
+	}
+	.message {
+		width: 100%;
+		height: 7em;
+	}
+	.email {
+		width: 40%;
+	}
+}
+
 .modal {
 	h1, h4, h6 {
 		font-weight: 400;

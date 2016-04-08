@@ -73,6 +73,7 @@ form {
     font-size: ms(0);
     font-family: "Open Sans", "Helvetica", Arial, sans-serif;
     padding: ms(-6);
+    margin-bottom: ms(-1);
 
    &.text-input-lg {
       font-size: ms(1);
@@ -102,6 +103,7 @@ form {
   }
   .text-area {
     min-width: 350px;
+    margin-bottom: ms(-1);
   }
     .checkbox{
         input[type=checkbox] {

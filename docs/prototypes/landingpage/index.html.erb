@@ -1,5 +1,5 @@
 ---
-title: Socrata Styleguide
+title: Landing Page Prototype
 layout: prototype-landingpage
 
 ---
@@ -7,6 +7,7 @@ layout: prototype-landingpage
 
 <% content_for :page_js do %>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <script>
 
@@ -16,6 +17,13 @@ layout: prototype-landingpage
   var filterListActveHeight = $(".filter-list.active").outerHeight(true);
   var maxContentHeight = viewPortHeight - headerHeight - filterActionHeight - filterListActveHeight + 63;
 
+
+
+  $("#launch-congrats-modal").on("click", function(){
+    $("#contact-modal").addClass('modal-hidden');
+    //$("#congrats-modal").removeClass('modal-hidden');
+    $("#congrats-modal").removeClass("modal-hidden").delay(2000).fadeOut(400);
+  })
 
 
   //hide the expandable details
@@ -161,7 +169,7 @@ layout: prototype-landingpage
 
               <button class="btn btn-default btn-simple api btn-sm" data-flannel="api-flannel" data-toggle>API</button>
 
-              <button class="btn btn-default btn-simple share btn-sm" data-modal="share-modal" data-toggle>Share</button>
+              <button class="btn btn-default btn-simple share btn-sm" data-modal="share-modal">Share</button>
 
 
 <!--               <button id="dd" class="dropdown btn btn-default btn-simple share btn-sm" data-orientation="bottom">
@@ -176,7 +184,7 @@ layout: prototype-landingpage
               <button id="dd" class="dropdown btn btn-default btn-simple more btn-sm" data-orientation="bottom">
                 <span><span class="icon-waiting"></span><span>
                 <ul class="dropdown-options">
-                    <li><a href="#">Contact Dataset Owner</a></li>
+                    <li><a href="#" data-modal="contact-modal">Contact Dataset Owner</a></li>
                     <li><a href="#" data-modal="odata-modal">Access Data via OData</a></li>
                 </ul>
               </button>
@@ -219,6 +227,10 @@ layout: prototype-landingpage
     <div class="lp-section">
       <h2 class="section-header">Popular Content Using this Data</h2>
       
+      <div class="alert default" hidden="hidden">
+        <b>Hmm...</b> Looks like there is no public content using this data.</a>
+      </div>
+
       <div class="media-results">  
         <div class="result-card media no-meta">
 
@@ -226,7 +238,7 @@ layout: prototype-landingpage
             <div class="entry-title">
               <h2 class="entry-name"><a href="#">How to Apply for a Liquor Licence</a></h2>
             </div>
-            <div class="entry-view-type"><span class="icon-story"></span></div>
+            <div class="entry-view-type"><span class="icon-bar-chart"></span></div>
           </div>
 
           <div class="entry-meta">
@@ -240,7 +252,10 @@ layout: prototype-landingpage
 
           <div class="entry-content">
             <div class="entry-main">
-              <div class="img-wrapper"><img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" " /></div>
+              <div class="img-wrapper chart">
+                <span class="icon-bar-chart x-large-icon"></span> <!-- MVP -->
+<!--                 <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" " />-->
+              </div>
               <div class="entry-description">
                 Story explaining the procedure for applying for a license, as well as some general trends around current licensing.
               </div>  
@@ -269,7 +284,10 @@ layout: prototype-landingpage
           
           <div class="entry-content">
             <div class="entry-main">
-              <div class="img-wrapper"><img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " /></div>
+              <div class="img-wrapper map">
+                <span class="icon-map x-large-icon"></span> <!-- MVP -->
+<!--                 <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />-->
+              </div>
               <div class="entry-description">
                 Map showing the number of approved licenses for each neighborhood in the city.
               </div>  
@@ -298,7 +316,10 @@ layout: prototype-landingpage
           
           <div class="entry-content">
             <div class="entry-main">
-              <div class="img-wrapper"><img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " /></div>
+              <div class="img-wrapper data-lens">
+                <span class="icon-cards x-large-icon"></span> <!-- MVP -->
+<!--                 <img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " />-->
+              </div>
               <div class="entry-description">
                 Interactive experience showing licenses by type, filterable by neighborhood and business type. This data is based on the last 4 years...</span>
               </div>  
@@ -334,7 +355,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Licensee</td>
                   <td>Legal name of the license holder</td>
-                  <td><span class="type">Name, Text</span><span class="icon icon-text"></span></td>
+                  <td><span class="type">Text</span><span class="icon icon-text"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -344,7 +365,8 @@ layout: prototype-landingpage
                       <div class="stat-details"> 
                         <table>
                           <tbody>
-                          <th class="title">Most Common Values</th>
+                            <th class="title">Blank Values</th> <!-- MVP -->
+                     <!-- <th class="title">Most Common Values</th>
                           <tr>
                             <td class="key">John Smith</td>
                             <td class="value">254 Occurrences</td>
@@ -367,20 +389,20 @@ layout: prototype-landingpage
                           </tr>
                           <tr>
                             <td class="spacer"></td>
-                          </tr>
+                          </tr> -->
                           <tr>
-                            <td class="key">Blank Values</td>
-                            <td class="value">10.3%</td>
+                            <td class="key">10.3%</td>
+                            <!-- <td class="value">10.3%</td> -->
                           </tr>
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
                      
                       <div class="type-details">
-                            <div class="detail-group">
+                            <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
                               <span class="value"> Name</span>
-                            </div>
+                            </div> -->
                             <div class="detail-group">
                               <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/text.html"> Text</a></span>
@@ -401,7 +423,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">DBA Name</td>
                   <td>Doing Business As name. The legal name of the business</td>
-                  <td><span class="type">Name, Text</span><span class="icon icon-text"></span></td>
+                  <td><span class="type">Text</span><span class="icon icon-text"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -411,7 +433,8 @@ layout: prototype-landingpage
                       <div class="stat-details"> 
                         <table>
                           <tbody>
-                          <th class="title">Most Common Values</th>
+                            <th class="title">Blank Values</th> <!-- MVP -->                            
+                          <!-- <th class="title">Most Common Values</th>
                           <tr>
                             <td class="key">BevMo</td>
                             <td class="value">254 Occurrences</td>
@@ -434,20 +457,20 @@ layout: prototype-landingpage
                           </tr>
                           <tr>
                             <td class="spacer"></td>
-                          </tr>
+                          </tr> -->
                           <tr>
-                            <td class="key">Blank Values</td>
-                            <td class="value">10.3%</td>
+                            <td class="key">10.3%</td>
+                            <!-- <td class="value">10.3%</td> -->
                           </tr>
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
                      
                       <div class="type-details">
-                            <div class="detail-group">
+                            <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
                               <span class="value"> Name</span>
-                            </div>
+                            </div> -->
                             <div class="detail-group">
                               <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/text.html"> Text</a></span>
@@ -468,7 +491,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">License Number</td>
                   <td>Unique Identifier for the license. Note: if licence gets renewed, multiple entries with the same identifier may appear.</td>
-                  <td><span class="type">ID, Number</span><span class="icon icon-number"></span></td>
+                  <td><span class="type">Number</span><span class="icon icon-number"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -478,7 +501,8 @@ layout: prototype-landingpage
                       <div class="stat-details"> 
                         <table>
                           <tbody>
-                          <th class="title">Statistics</th>
+                            <th class="title">Blank Values</th> <!-- MVP -->                            
+                         <!--  <th class="title">Statistics</th>
                           <tr>
                             <td class="key">Minimum</td>
                             <td class="value">00012301</td>
@@ -501,21 +525,21 @@ layout: prototype-landingpage
                           </tr>
                           <tr>
                             <td class="spacer"></td>
-                          </tr>
+                          </tr> -->
                           <tr>
-                            <td class="key">Blank Values</td>
-                            <td class="value">10.3%</td>
+                            <td class="key">10.3%</td>
+                            <!-- <td class="value">10.3%</td> -->
                           </tr>
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
                      
                       <div class="type-details">
-                            <div class="detail-group">
+                           <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
                               <span class="value"> ID</span>
                             </div>
-                            <div class="detail-group">
+  -->                           <div class="detail-group">
                               <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/number.html"> Number</a></span>
                             </div>
@@ -535,7 +559,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Expiration Date</td>
                   <td></td></a>
-                  <td><span class="type">Date, Timestamp</span><span class="icon icon-date"></span></td>
+                  <td><span class="type">Timestamp</span><span class="icon icon-date"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
                 
@@ -545,7 +569,8 @@ layout: prototype-landingpage
                       <div class="stat-details"> 
                         <table>
                           <tbody>
-                            <th class="title">Data Range</th>
+                            <th class="title">Blank Values</th> <!-- MVP -->
+<!--                             <th class="title">Data Range</th>
                             <tr>
                               <td class="key">Earliest Date</td>
                               <td class="value">Jan 1, 2001</td>
@@ -556,20 +581,20 @@ layout: prototype-landingpage
                             </tr>
                             <tr>
                               <td class="spacer"></td>
-                            </tr>
+                            </tr> -->
                             <tr>
-                              <td class="key">Blank Values</td>
-                              <td class="value">10.3%</td>
+                              <td class="key">10.3%</td>
+                              <!-- <td class="value">10.3%</td> -->
                             </tr>
                           </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
                      
                       <div class="type-details">
-                            <div class="detail-group">
+                            <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
                               <span class="value"> Date</span>
-                            </div>
+                            </div> -->
                             <div class="detail-group">
                               <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/floating_timestamp.html"> Timestamp</a></span>
@@ -590,7 +615,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Value</td>
                   <td>Value of the license</td>
-                  <td><span class="type">Amount, Money</span><span class="icon icon-number"></span></td>
+                  <td><span class="type">Money</span><span class="icon icon-number"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -600,7 +625,8 @@ layout: prototype-landingpage
                       <div class="stat-details"> 
                         <table>
                           <tbody>
-                          <th class="title">Statistics</th>
+                            <th class="title">Blank Values</th> <!-- MVP -->                            
+                          <!-- <th class="title">Statistics</th>
                           <tr>
                             <td class="key">Minimum</td>
                             <td class="value">$-1,432</td>
@@ -623,20 +649,20 @@ layout: prototype-landingpage
                           </tr>
                           <tr>
                             <td class="spacer"></td>
-                          </tr>
+                          </tr> -->
                           <tr>
-                            <td class="key">Blank Values</td>
-                            <td class="value">11.3%</td>
+                            <td class="key">10.3%</td>
+                            <!-- <td class="value">11.3%</td> -->
                           </tr>
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
                      
                       <div class="type-details">
-                            <div class="detail-group">
+                            <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
                               <span class="value"> Amount</span>
-                            </div>
+                            </div> -->
                             <div class="detail-group">
                               <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/money.html"> Money</a></span>
@@ -657,7 +683,7 @@ layout: prototype-landingpage
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">Location</td>
                   <td>Mailing Address of the Business</td>
-                  <td><span class="type">Location, Point</span><span class="icon icon-map"></span></td>
+                  <td><span class="type">Point</span><span class="icon icon-map"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
 
@@ -667,21 +693,22 @@ layout: prototype-landingpage
                       <div class="stat-details"> 
                         <table>
                           <tbody>
-                          <th class="title">Statistics</th>
-
+<!--                           <th class="title">Statistics</th>
+ -->
+                          <th class="title">Blank Values</th> <!-- MVP -->
                           <tr>
-                            <td class="key">Blank Values</td>
-                            <td class="value">11.3%</td>
+                            <td class="key">10.3%</td>
+                            <!-- <td class="value">11.3%</td> -->
                           </tr>
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
                      
                       <div class="type-details">
-                            <div class="detail-group">
+                            <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
                               <span class="value"> Location</span>
-                            </div>
+                            </div> -->
                             <div class="detail-group">
                               <span class="title">Data Type</span>
                               <span class="value"> <a href="https://dev.socrata.com/docs/datatypes/point.html"> Point</a></span>
@@ -868,4 +895,56 @@ layout: prototype-landingpage
       <button class="btn btn-default btn-sm" data-modal-dismiss>Done</button>
     </footer>
   </div>
+</div>
+
+
+<div id="contact-modal" class="modal modal-overlay modal-hidden" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h1 class="h5 modal-header-title">Send a Message to the Owner of this Dataset</h1>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <section class="modal-content">
+      <p class="small">Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.</p>
+      <form>
+        <label class="block-label">Subject</label>
+        <input class="text-input subject" type="text" placeholder=""/>
+        
+        <label class="block-label">Message</label>
+        <textarea class="text-input text-area message" type="text" placeholder=""></textarea>
+
+        <label class="block-label">Your Email 
+          <span class="x-small quiet">(Your email address will be shared with the dataset owner so they can get back to you)</span>
+        </label>
+        <input class="text-input email" type="text" placeholder=""/>
+      </form>
+      <form action="?" method="POST">
+        <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+      </form>
+    </section>
+    
+    <section class="modal-content">
+      <div class="alert error" hidden="hidden">
+        Please enter a valid email address.</a>
+      </div>
+    </section>
+
+    <footer class="modal-actions">
+      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>      
+      <button class="btn btn-primary btn-sm" id="launch-congrats-modal">Send</button>
+    </footer>
+  </div>
+</div>
+
+<div id="congrats-modal" class="modal modal-overlay modal-hidden" data-modal-dismiss>
+  <div class="modal-container">
+    
+    <section class="modal-content">
+      <div class="alert success">
+        <b>Thank You!</b> Your message has been sent.</a>
+      </div>
+    </section>
 </div>

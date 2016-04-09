@@ -14,7 +14,7 @@ class InternalController < ApplicationController
   def show_org
     @org = Organization.find(params[:id])
     domains = Organization.find.collect {|o| o.domains}.flatten.compact
-    @default_domain = domains.detect { |d| d.shortName == 'default'}
+    @default_domain = domains.detect(&:default?)
   end
 
   KNOWN_FEATURES = [

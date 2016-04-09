@@ -49,6 +49,10 @@ class Domain < Model
     @@all_domains
   end
 
+  def default?
+    shortName == 'default'
+  end
+
   def configurations(type)
     if @configs.nil?
       @configs = Hash.new

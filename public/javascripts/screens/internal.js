@@ -48,4 +48,19 @@
   };
 
   $domainCenter.find('ul').css('width', '90%');
+
+  $('.expandable').each(function() {
+    var $expandable = $(this);
+    var $panel = $expandable.find('> div');
+    $expandable.find('h2.headerLink').click(function(evt) {
+      if (!$(evt.target).is('a')) {
+        $(this).toggleClass('collapsed');
+        $panel.toggleClass('collapsed');
+      }
+    });
+  });
+
+  if ($('body').is('action_internal_show_config')) {
+
+  }
 })(jQuery);

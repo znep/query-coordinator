@@ -11,28 +11,30 @@ class InternalController < ApplicationController
     @orgs = Organization.find()
   end
 
-  TIERS_WE_STILL_USE = [ 'Plus', 'Ultimate' ]
   def show_org
     @org = Organization.find(params[:id])
-    @tiers = AccountTier.find().select { |tier| TIERS_WE_STILL_USE.include?(tier.name) }
-    @domains = Organization.find().collect {|o| o.domains}.flatten.compact
-    default_domain = @domains.select {|d| d.shortName == 'default'}.first
-    @domains.unshift(Hashie::Mash.new(
-      {'shortName' => 'default',
-       'cname' =>default_domain.cname,
-       'id' => default_domain.id})).flatten unless default_domain.nil?
-
+    domains = Organization.find.collect {|o| o.domains}.flatten.compact
+    @default_domain = domains.detect { |d| d.shortName == 'default'}
   end
 
+  KNOWN_FEATURES = [
+    { name: 'view_moderation', description: 'Allows Publishers and Admin to moderate views.' },
+    { name: 'public_site_metrics', description: 'Adds a public analytics page at /analytics. See data.seattle.gov/analytics for an example; ONLY add if customer requests it.' },
+    { name: 'staging_lockdown', description: 'Frontend lockdown; prevents non-superadmin users without a domain role from viewing the UX.' },
+    { name: 'staging_api_lockdown', description: 'API lockdown; prevents non-superadmin users without a domain role from using the API, including the Frontend.' },
+    { name: 'fullMixpanelTracking', description: 'UX metrics gathering using persistent cookies; prefer over mixpanelTracking unless customer explicitly asks for session cookies.' },
+    { name: 'mixpanelTracking', description: 'UX metrics gathering using session cookies; prefer using fullMixpanelTracking when possible.' },
+  ]
   def show_domain
     @domain = Domain.find(params[:domain_id])
-    @modules = AccountModule.find().sort {|a,b| a.name <=> b.name}
+    @modules = AccountModule.find
     @configs = ::Configuration.find_by_type(nil, false, params[:domain_id], false)
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
     # lazily create it when you make a change anyways.
     unless @configs.detect { |config| config.type == 'feature_flags' }
       @configs << Struct.new(:type).new('feature_flags')
     end
+    @configs.reject! { |config| config.type == 'feature_set' }
     @configs.sort! do |a, b|
       type_for_sort = lambda do |type|
         case type
@@ -57,31 +59,23 @@ class InternalController < ApplicationController
         enable_ingress_geometry_types: true,
         geo_imports_to_nbe_enabled: true,
         ingress_strategy: 'delta-importer'
-      }
+      },
+      :enable_govstat => [
+        'canvas2', 'canvas_designer', 'govStat', 'govstat_15', 'govstat_target_tolerance'
+      ]
     }
 
-    @known_config_types = ExternalConfig.for(:configuration_types).
-      type_descriptions.
-      reject { |type, description| description.try(:[], 'hide_in_creation_ui') }.
-      inject([]) do |memo, (type, description)|
-        description ||= {}
-        description['description'] ||= %q(Haven't written a description yet.)
-        description.keys.each do |key|
-          description[key] =
-            case description[key]
-            when Array then description[key].join(', ')
-            else description[key]
-            end
-        end
-        memo << description.merge({ name: type })
-        memo
-      end
+    @known_config_types = ExternalConfig.for(:configuration_types).for_autocomplete(params)
+
+    @features = KNOWN_FEATURES
 
     respond_to do |format|
-      format.json do
-        render :json => @domain.data.to_json
+      format.json { render :json => @domain.data.to_json }
+      if %w(domain all).include? FeatureFlags.derive(nil, request).internal_panel_redesign
+        format.html { render 'show_domain_redesigned' }
+      else
+        format.html { render }
       end
-      format.html { render }
     end
   end
 
@@ -95,6 +89,14 @@ class InternalController < ApplicationController
   end
 
   def show_config
+    # If you put in a config type into the :id, it'll redirect you to the default config!
+    if /^\d+$/ !~ params[:id]
+      config_type = params[:id]
+      config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
+      if config.nil? then render_404 else redirect_to show_config_path(id: config.id) end
+      return
+    end
+
     @domain = Domain.find(params[:domain_id])
     @config = ::Configuration.find_unmerged(params[:id])
     if @config.parentId.present?
@@ -105,6 +107,13 @@ class InternalController < ApplicationController
     type_data = ExternalConfig.for(:configuration_types)
     @type_description = type_data.description_for(@config.type)
     @property_type_checking = type_data.property_type_checking_for(@config.type)
+
+    @properties = @config.data['properties'].try(:sort_by, &proc { |p| p['name'] })
+
+    if %w(config all).include? FeatureFlags.derive(nil, request).internal_panel_redesign
+      render 'show_config_redesigned'
+      return
+    end
   end
 
   def show_property
@@ -115,8 +124,8 @@ class InternalController < ApplicationController
   end
 
   def index_modules
-    @modules = AccountModule.find().sort {|a,b| a.name <=> b.name}
-    @tiers = AccountTier.find()
+    @modules = AccountModule.find
+    @tiers = AccountTier.find
   end
 
   def index_tiers
@@ -130,6 +139,8 @@ class InternalController < ApplicationController
 
   def create_org
     begin
+      params[:org][:url] = ' ' if params[:org][:url].blank?
+      params[:org][:shortName] = params[:org][:name] if params[:org][:shortName].blank?
       org = Organization.create(params[:org])
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
@@ -140,6 +151,8 @@ class InternalController < ApplicationController
 
   def create_domain
     begin
+      params[:domain]['shortName'] ||= params[:domain]['cName']
+      params[:domain]['accountTierId'] ||= AccountTier.find_by_name('Ultimate').id
       domain = Domain.create(params[:domain])
 
       parentConfigId = params[:config][:parentDomainCName]
@@ -172,6 +185,13 @@ class InternalController < ApplicationController
         'domainCName' => domain.cname
       )
 
+      features_on_by_default = %w(
+        canvas2 geospatial
+        staging_lockdown staging_api_lockdown
+      )
+      enabled = true
+      add_module_features(features_on_by_default, enabled, domain.cname)
+
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
       return (render 'shared/error', :status => :internal_server_error)
@@ -180,12 +200,16 @@ class InternalController < ApplicationController
   end
 
   def create_site_config
+    if params[:config][:type].blank?
+      flash[:error] = 'Cannot add a configuration set with no type.'
+      redirect_to show_domain_path(domain_id: params[:domain_id])
+      return
+    end
+
     begin
       conf_name = params[:config][:name]
-      if conf_name.blank?
-        flash.now[:error] = 'Name is required'
-        return (render 'shared/error', :status => :internal_server_error)
-      end
+      conf_name ||= ExternalConfig.for(:configuration_types).
+        default_config_name_for(params[:config][:type])
 
       parent_id = params[:config][:parentId]
       parent_id = nil if parent_id.blank?
@@ -203,18 +227,22 @@ class InternalController < ApplicationController
   end
 
   def rename_site_config
-    ::Configuration.update_attributes!(params['rename-config'],
-                                       { 'name' => params['rename-config-to'] })
+    if params['rename-config-to'].present?
+      ::Configuration.update_attributes!(params[:id], { 'name' => params['rename-config-to'] })
+      flash[:notice] = 'Renamed config successfully.'
 
-    CurrentDomain.flag_out_of_date!(params[:domain_id])
+      CurrentDomain.flag_out_of_date!(params[:domain_id])
+    else
+      flash[:error] = 'Cannot rename to an empty name.'
+    end
 
-    redirect_to show_config_path(domain_id: params[:domain_id],
-                                 id: params['rename-config'])
+    redirect_to show_config_path
   end
 
   def set_default_site_config
     ::Configuration.update_attributes!(params['default-site-config'],
                                      {'default' => true})
+    flash[:notice] = 'Set this config to be default for its type successfully.'
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
@@ -222,7 +250,10 @@ class InternalController < ApplicationController
   end
 
   def delete_site_config
+    config = ::Configuration.find(params[:id])
+    message = %Q(Soft-deleted configuration "#{config.name}" of type `#{config.type}` successfully.)
     ::Configuration.delete(params[:id])
+    flash[:notice] = message
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
@@ -256,8 +287,30 @@ class InternalController < ApplicationController
     redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
+  def add_a_module_feature
+    if params['new-feature_name'].present?
+      module_features = [ params['new-feature_name'].strip ]
+      enabled = params['new-feature_enabled'] == 'enabled'
+    elsif params['features_to_add'].present?
+      module_features = params['features_to_add']
+      enabled = true
+    else
+      flash[:error] = 'Did not add any modules; none passed.'
+      redirect_to show_domain_path(domain_id: params[:domain_id])
+      return
+    end
+
+    add_module_features(module_features, enabled, params[:domain_id])
+
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
+    flash[:notice] = @infos.try(:join, '|') unless @infos.try(:empty?)
+
+    redirect_to show_domain_path(domain_id: params[:domain_id])
+  end
+
   def update_aliases
     new_cname = params[:new_cname].strip
+    infos = []
 
     begin
       unless valid_cname?(new_cname)
@@ -266,22 +319,27 @@ class InternalController < ApplicationController
       end
 
       Domain.update_aliases(params[:domain_id], new_cname, params[:aliases])
+      infos << 'Updated cname successfully.'
+      infos << "Updated aliases (there are now #{params[:aliases].split(',').size}) successfully."
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
       return render 'shared/error', :status => :internal_server_error
     end
     CurrentDomain.flag_out_of_date!(params[:domain_id])
+    flash[:notice] = infos.join('|') unless infos.empty?
     redirect_to show_domain_path(domain_id: new_cname)
   end
 
 
   def set_property
     config = ::Configuration.find(params[:id])
+    infos = []
 
     if !params['new-property_name'].blank?
+      new_feature_name = params['new-feature_name']
       config.create_property(params['new-property_name'],
                            get_json_or_string(params['new-property_value']))
-
+      infos << "Created property #{new_feature_name} successfully."
     else
       begin
         CoreServer::Base.connection.batch_request do |batch_id|
@@ -290,12 +348,19 @@ class InternalController < ApplicationController
               if value == 'delete'
                 params[:properties].delete(name)
                 config.delete_property(name, false, batch_id)
+                infos << "Deleted property `#{name}` successfully."
               end
             end
           end
 
           params[:properties].each do |name, value|
-            config.update_property(name, get_json_or_string(value), batch_id)
+            if config.properties.keys.include? name
+              config.update_property(name, get_json_or_string(value), batch_id)
+              infos << "Updated property `#{name}` successfully."
+            else
+              config.create_property(name, get_json_or_string(value), batch_id)
+              infos << "Created property `#{name}` successfully."
+            end
           end
         end
       rescue CoreServer::CoreServerError => e
@@ -310,10 +375,18 @@ class InternalController < ApplicationController
     end
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
+    flash[:notice] = infos.join('|') unless infos.empty?
 
     respond_to do |format|
-      format.html { redirect_to show_config_path(domain_id: params[:domain_id],
-                                                 id: params[:id]) }
+      format.html do
+        redirect_to(
+          if config.type == 'feature_set' # I'd rather check the referer...
+            show_domain_path(domain_id: params[:domain_id])
+          else
+            show_config_path(domain_id: params[:domain_id], id: params[:id])
+          end
+        )
+      end
       format.data { render :json => { :success => true } }
     end
   end
@@ -504,5 +577,25 @@ private
     !Rails.env.development? && [ 'default', 'socrata' ].include?(domain.shortName)
   end
   helper_method :editing_this_page_is_dangerous?
+
+  def add_module_features(module_features, enabled, domain_cname)
+    @infos ||= []
+    module_features.try(:each) do |feature|
+      feature_is_a_module = AccountModule.include?(feature)
+      module_already_added = CurrentDomain.domain.modules.include?(feature)
+      if feature_is_a_module && !module_already_added
+        Domain.add_account_module(domain_cname, feature)
+        @infos << "Added account module `#{feature}` successfully."
+      end
+      config = ::Configuration.find_by_type('feature_set', true, domain_cname)[0]
+      if config.properties.keys.include? feature
+        config.update_proeprty(feature, enabled)
+        @infos << "Updated feature `#{feature}` as `#{enabled}` successfully."
+      else
+        config.create_property(feature, enabled)
+        @infos << "Created feature `#{feature}` as `#{enabled}` successfully."
+      end
+    end
+  end
 
 end

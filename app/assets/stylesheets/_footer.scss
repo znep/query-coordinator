@@ -12,9 +12,6 @@ footer#chrome-footer {
     overflow: hidden;
 
     > div.logo {
-      width: 50%;
-      float: left;
-
       > img {
         height: 60px;
         max-width: 200px;
@@ -48,9 +45,6 @@ footer#chrome-footer {
     }
 
     > div.links {
-      width: 50%;
-      float: right;
-
       ul.links-col {
         padding-left: 0;
         -webkit-column-count: 3;
@@ -59,11 +53,12 @@ footer#chrome-footer {
 
         li {
           list-style-type: none;
-          padding: 0 0.5em 0 0;
           display: inline-block;
           width: 10rem;
+          margin: 1px;
           overflow: hidden;
           text-overflow: ellipsis;
+          line-height: 1.2rem;
 
           a.footer-link {
             color: $footer_fg_color;
@@ -78,6 +73,57 @@ footer#chrome-footer {
         }
       }
     }
+
+    @include desktop {
+      > div.logo {
+        width: 50%;
+        float: left;
+      }
+      > div.links {
+        width: 50%;
+        float: right;
+      }
+    }
+    @include mobile-med {
+      > div.logo {
+        text-align: center;
+      }
+      > div.links {
+        clear: both;
+        margin-top: 3rem;
+      }
+    }
+    @include mobile-sm {
+      div.logo {
+        > img {
+          height: 40px;
+        }
+        > span.site-name {
+          font-size: 28px;
+        }
+      }
+      .social-link {
+        display: block;
+        margin-bottom: 0.7rem;
+      }
+      > div.links {
+        ul.links-col {
+          -webkit-column-count: auto;
+          -moz-column-count: auto;
+          column-count: auto;
+
+          li {
+            display: block;
+            width: auto;
+            text-align: center;
+            &:nth-child(5n + 1) {
+              margin-top: 2rem;
+            }
+          }
+        }
+      }
+    }
+
   }
 
   .copyright {

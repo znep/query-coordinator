@@ -30,10 +30,6 @@ header#chrome-header {
       font-weight: 300;
       float: right;
 
-      @include desktop {
-        &.desktop { display: block; }
-        &.mobile { display: none; }
-      }
       &.desktop {
         a.nav-link {
           display: inline-block;
@@ -61,14 +57,19 @@ header#chrome-header {
         }
       }
 
-      @include mobile {
-        &.desktop { display: none; }
-        &.mobile { display: block; }
-      }
       &.mobile {
         .menu-toggle {
           font-size: 12px;
         }
+      }
+
+      @include desktop {
+        &.desktop { display: block; }
+        &.mobile { display: none; }
+      }
+      @include mobile-med {
+        &.desktop { display: none; }
+        &.mobile { display: block; }
       }
     }
   }

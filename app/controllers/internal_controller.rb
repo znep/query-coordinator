@@ -185,12 +185,12 @@ class InternalController < ApplicationController
         'domainCName' => domain.cname
       )
 
-      features_on_by_default = %w(
+      module_features_on_by_default = %w(
         canvas2 geospatial
         staging_lockdown staging_api_lockdown
       )
       enabled = true
-      add_module_features(features_on_by_default, enabled, domain.cname)
+      add_module_features(module_features_on_by_default, enabled, domain.cname)
 
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message

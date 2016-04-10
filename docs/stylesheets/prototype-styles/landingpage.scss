@@ -62,7 +62,7 @@ $expanded-row-bg: transparent;
 /* Menu for mobile
  * needs to be refactored a bit, for sure
  *
- */ 
+ */
 
 h1, h2, h3, h4, h5, h6, {
   letter-spacing: -0.5px;
@@ -85,7 +85,7 @@ h1, h2, h3, h4, h5, h6, {
 	}
 
 	.container {
-		max-width: 100%;	
+		max-width: 100%;
 	}
 
 	.filter-wrapper {
@@ -132,7 +132,7 @@ body {
 
 a {
 	color: $primary;
-	text-decoration: none;	
+	text-decoration: none;
 	&:hover {
 		text-decoration: underline;
 	}
@@ -142,12 +142,12 @@ a {
 	@include outer-container();
 	max-width: 100%;
 	margin: 0px auto 0;
-	
+
 
 	@include breakpoint($tablet) {
 		//padding: 0 0.5em;
 		margin: 0 auto;
-	
+
 	}
 }
 
@@ -165,7 +165,7 @@ a {
 	border-top: 0;
 	border-left: 0;
 	border-right: 0;
-	
+
 	.alert-content {
 		@include outer-container;
 		padding: 0 ms(-2);
@@ -220,7 +220,7 @@ a {
 					font-size: ms(-2);
 				}
 			}
-			
+
 			@include media($tablet) {
 				@include row();
 			}
@@ -247,7 +247,7 @@ a {
 
 		//featured content
 		.result-card {
-			
+
 			//MVP icons
 			.img-wrapper {
 				&.story, &.map, &.data-lens, &.chart {
@@ -276,7 +276,7 @@ a {
 				.x-large-icon {
 					margin: 0 37%;
 					font-size: ms(15);
-				}			
+				}
 			}
 
 
@@ -292,6 +292,114 @@ a {
 			}
 		}
 
+
+		//row + column count section
+		.section {
+			margin: ms(0);
+			display: block;
+			float: left;
+			width: 100%;
+		}
+
+		//About this dataset section
+		.fancy-metadata {
+			@include span-columns(12);
+			hr {
+				margin: 0 ms(0);
+				width: 90%;
+				border-color: $light-grey-4;
+			}
+			.section {
+				//border-top: 1px solid $light-grey-5;
+				// margin-top: ms(1);
+				// margin: ms(0);
+				// display: block;
+				// float: left;
+				width: initial;
+				.row {
+					@include span-columns(12);
+				}
+			}
+			button {
+				margin-top: ms(0);
+			}
+
+			@include breakpoint($tablet) {
+				@include span-columns(4);
+				.row.middle {
+					margin: ms(0) 0;
+				}
+				.detail-group {
+					display: block;
+					float: left;
+					margin-right: ms(0);
+
+					.date {
+						max-width: 160px;
+					}
+				}
+			}
+		}
+
+		.standard-metadata {
+			@include span-columns(12);
+			padding: 0 ms(0);
+
+			.metadata-title {
+				font-size: ms(0);
+				font-weight: 600;
+				margin-top: ms(0);
+			}
+			.table-condensed {
+				td:first-child {
+					width: 35%;
+					color: $grey;
+				}
+				td {
+					padding: 0.2em;
+					.more-link {
+						display: inline;
+						color: $grey;
+						text-decoration: underline;
+						margin-left: ms(-5);
+					}
+				}
+			}
+			.more-button {
+				margin-bottom: ms(0);
+			}
+
+			@include breakpoint($tablet) {
+				@include span-columns(8);
+				margin-right: 0;
+				//width: 95%;
+
+			}
+		}
+
+
+		.key-value-pair {
+			display: block;
+			float: left;
+			margin-right: ms(10);
+			max-width: 160px;
+			.large-number {
+				line-height: ms(5);
+				color: $primary-dark;
+				font-size: ms(2);
+				@include breakpoint($tablet) {
+					font-size: ms(4);
+				}
+
+			}
+			.small-label {
+				font-size: ms(-1);
+				@include breakpoint($tablet) {
+					font-size: ms(0);
+				}
+			}
+		}
+
 		.card-frame {
 			@include outer-container;
 			@include span-columns(12);
@@ -299,26 +407,10 @@ a {
 			border: 1px solid $light-grey-4;
 			border-bottom: 2px solid $light-grey-4;
 
-			.metadata-table:nth-child(1) {
-				display: none;
-			}
-			.metadata-table {
-				td:nth-child(1) {
-					font-weight: 400;
-					color: $light-grey-1;
-				}
-			}
 			.more-link {
 				display: none;
 			}
 
-			.table-condensed {
-				margin-top: 0;
-				margin-bottom: 0;
-			}
-			.table-borderless {
-				border-bottom: 1px solid $light-grey-3;
-			}
 			.schema-preview {
 				table {
 				margin-top: ms(0);
@@ -362,7 +454,7 @@ a {
 				    display: none;
 
 				}
-				
+
 				tbody {
 					tr:hover {
 						background-color: $light-grey-7;
@@ -423,12 +515,12 @@ a {
 		  					font-size: ms(-1);
 		  					color: $dark-grey-1;
 		  				}
-		  				
-		  				.type-details { 
+
+		  				.type-details {
 		  					@include span-columns(12);
 		  					border-top: 1px solid $light-grey-3;
 		  					.detail-group {
-		  						margin: ms(-1) 0;  
+		  						margin: ms(-1) 0;
 		  						.key {
 		  							font-weight: 600;
 		  						}
@@ -446,7 +538,7 @@ a {
 			  					td {
 			  						&.value {
 			  							text-align: right;
-			  						}		  						
+			  						}
 			  						&.spacer {
 			  							padding-top: ms(-10);
 			  						}
@@ -476,16 +568,16 @@ a {
 						font-size: ms(0);
 						font-weight: 600;
 					}
-				
+
 					.details-row {
 						.details-content {
-							.row {	
+							.row {
 				  				.title, .key, .value {
 					  				font-size: ms(0);
 					  			}
 				  				.stat-details {
-				  					//@include span-columns(5);	
-				  					@include span-columns(2); //MVP			  					
+				  					//@include span-columns(5);
+				  					@include span-columns(2); //MVP
 								}
 								.type-details {
 				  					//@include span-columns(2);
@@ -503,14 +595,14 @@ a {
 								}
 							}
 						}
-					}	
+					}
 
 				}
 
 			}
 
 			@include breakpoint($desktop) {
-				.btn-block {
+				.more-button.btn-block {
 					display: none;
 				}
 				.centered {
@@ -530,7 +622,7 @@ a {
 						}
 					}
 					.btn {
-						margin: ms(-2) auto; 
+						margin: ms(-2) auto;
 					}
 				}
 				.schema-preview {
@@ -548,18 +640,7 @@ a {
 					    }
 					}
 
-	  							  					
-				}
-				.metadata-table {
-					float: left;
-					@include span-columns(6);
-					margin: 0;
-					padding-top: ms(0);
-					padding-left: ms(0);
-				}
-				.metadata-table:nth-child(1) {
-					float: right !important;
-					@include span-columns(6);
+
 				}
 
 			}
@@ -567,6 +648,17 @@ a {
 	}
 }
 
+.meta-title {
+		font-size: ms(-1);
+		color: $light-grey-0;
+		font-weight: 600;
+}
+.date {
+	font-size: ms(-1);
+	@include breakpoint($tablet) {
+		display: block;
+	}
+}
 
 .header-card {
 	@include span-columns(12);
@@ -575,7 +667,7 @@ a {
 		@include outer-container();
 		padding: ms(-2);
 		border-bottom: 1px solid $light-grey-5;
-		
+
 
 		.infopane-title {
 			@include span-columns(12);
@@ -584,7 +676,7 @@ a {
 				margin-right: ms(-2);
 				font-size: ms(3);
 				font-weight: 300;
-				
+
 			}
 			.icon-private:before {
 				font-size: ms(3);
@@ -594,14 +686,14 @@ a {
 			@include breakpoint($tablet) {
 				@include span-columns(8);
 					.infopane-name {
-						
+
 						font-size: ms(6);
 
 					}
 
 			}
 
-		
+
 		}
 
 		.infopane-actions {
@@ -616,20 +708,20 @@ a {
 
 				.download {
 					width: 28%;
-				} 
+				}
 				.grid {
 					width: 28%;
 				}
 				.api {
 					width: 14%;
-				} 
+				}
 				.share {
 					width: 18%;
 				}
 				.more {
 					width: 12%;
 				}
-				
+
 			}
 
 			// .flannel#api-flannel {
@@ -648,26 +740,28 @@ a {
 
 			@include breakpoint($desktop) {
 				@include span-columns(4);
-				text-align: right;				
+				text-align: right;
 				font-size: ms(0);
-			
+
 			}
-			
-			
+
+
 		}
 	}
+
+
 	.infopane-content {
 		@include outer-container();
-		
-		
-		.infopane-main {			
+
+
+		.infopane-main {
 			@include breakpoint($tablet) {
 				@include span-columns(8, collapse);
 				border-right: 1px solid $light-grey-4;
 
-				
+
 			}
-		
+
 			.infopane-description {
 				padding: ms(-2);
 				font-size: ms(0);
@@ -679,36 +773,29 @@ a {
 					&:hover {
 						color: $light-grey-0;
 					}
-					
+
 				}
 
 			}
 
 		}
 
-		.meta-title {
-			font-size: ms(-1);
-			color: $light-grey-0;
-			font-weight: 600;
-
-		}
-
 		.entry-meta {
 			font-size: ms(-1);
 
-			
+
 			&.first {
-				border-bottom: 1px solid $light-grey-5;	
+				border-bottom: 1px solid $light-grey-5;
 				overflow: hidden;
 				padding: ms(-4) ms(-2);
 
 				@include breakpoint($tablet) {
 					border-bottom: none;
-					border-top: 1px solid $light-grey-5;	
+					border-top: 1px solid $light-grey-5;
 
 				}
 
-				
+
 				.topics {
 					@include span-columns(12);
 
@@ -719,12 +806,12 @@ a {
 
 				.api {
 					display: none !important;
-					
+
 					@include breakpoint($tablet) {
 						@include span-columns(3);
 						text-align: right;
 					}
-					
+
 				}
 
 			}
@@ -732,7 +819,7 @@ a {
 			&.second {
 				@include row();
 				padding: ms(-4) ms(-2);
-				border-bottom: 1px solid $light-grey-5;	
+				border-bottom: 1px solid $light-grey-5;
 
 				@include breakpoint($tablet) {
 					@include span-columns(4);
@@ -755,7 +842,7 @@ a {
 							display: block;
 						}
 					}
-					
+
 				}
 
 				.views {
@@ -765,7 +852,7 @@ a {
 					@include breakpoint($tablet) {
 						@include span-columns(12);
 						text-align: left;
-						
+
 						.meta-title,
 						.views {
 							display: block;
@@ -773,17 +860,17 @@ a {
 					}
 				}
 			}
-		}	
+		}
 
 
 
 	}
 
 	.show-wrapper {
-		
+
 		font-size: ms(-1);
 		text-align: center;
-		
+
 
 		a {
 			padding: ms(-4) 0;
@@ -846,6 +933,9 @@ a {
 .modal {
 	h1, h4, h6 {
 		font-weight: 400;
+	}
+	.modal-header {
+		max-width: 95%;
 	}
 
 }

@@ -28,7 +28,7 @@ table {
         padding: ms(-5);
         font-size: ms(-1);
     }
-    @include breakpoint($medium) { 
+    @include breakpoint($medium) {
       th, td {
         padding: ms(-3);
         font-size: ms(0);
@@ -84,6 +84,11 @@ table {
     background-color: $light-grey-4;
   }
 }
+.table-striped.table-discrete {
+  > tbody > tr:nth-of-type(odd) {
+    background-color: $light-grey-7;
+  }
+}
 
 
 // Responsive Table
@@ -112,11 +117,11 @@ table {
           }
         }
       }
-    
-    @include media($small) { 
+
+    @include media($small) {
       border: none;
 
-    } 
+    }
 
   }
 

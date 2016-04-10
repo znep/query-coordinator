@@ -32,27 +32,27 @@ layout: prototype-landingpage
 
 
   //animations for schema preview
-  $(".schema-preview tr.no-details-row").on("click", function(e) {  
-      
+  $(".schema-preview tr.no-details-row").on("click", function(e) {
+
       //if the details aren't shown
       if($(this).next("tr.details-row").is(":visible") == false) {
-     
+
         //show the <tr> then animate
         $(this).next().show();
         $(this).next("tr").children().children(".row").slideToggle("slow");
-     
+
       } else {
 
           //animate then hide the <tr>
           $(this).next("tr").children().children(".row").slideToggle("slow", function() {
             $(this).parent().parent().hide();
-       
+
           });
       }
-      
+
       $(this).toggleClass("expanded");
 
-   }) 
+   })
   $(".alert .icon-close-2").on("click", function() {
     $(".alert").hide();
   })
@@ -109,8 +109,8 @@ layout: prototype-landingpage
     })
 
     $(".active-filters a.active").on("click", function(e) {
-        $(this).remove(); 
-    }) 
+        $(this).remove();
+    })
 
     $("#clear-filters").on("click", function(e) {
       $(".active-filters a.active").remove();
@@ -125,7 +125,7 @@ layout: prototype-landingpage
 </script>
 
 
-<% end %> 
+<% end %>
 
 <div class="responsive-navbar">
   <img src="../../images/evergreen.png" />
@@ -147,7 +147,7 @@ layout: prototype-landingpage
       <div class="infopane-header">
 
         <div class="infopane-title">
-          
+
           <h1 class="infopane-name"><span class="icon-private" title="Private Dataset"></span> Current Liquor Licenses</h1>
           <span class="tag-official">
             <span class="icon-official"></span> OFFICIAL</span>
@@ -202,7 +202,7 @@ layout: prototype-landingpage
 <!--        <div class="entry-meta first">
               <div class="entry-meta topics">
                 <span class="meta-title">Topics</span> <span class="topic-list"><a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a>, <a href="#">one</a>, <a href="#">two</a>, <a href="#">taggytagtag</a></span>
-              </div> 
+              </div>
 
             </div>-->
 
@@ -212,7 +212,7 @@ layout: prototype-landingpage
             <div class="entry-meta updated">
               <span class="meta-title">Data Last Updated</span>
               <span class="date">December 1, 2015</span>
-            </div>                  
+            </div>
             <div class="entry-meta views">
               <span class="meta-title">Published by</span>
               <span class="view-count">Department of Economic Development</span>
@@ -221,17 +221,17 @@ layout: prototype-landingpage
 
 
         </div><!-- /.entry-content -->
-      </div> <!-- /.header-card -->        
+      </div> <!-- /.header-card -->
   </div>
   <div class="page-content">
     <div class="lp-section">
       <h2 class="section-header">Popular Content Using this Data</h2>
-      
+
       <div class="alert default" hidden="hidden">
         <b>Hmm...</b> Looks like there is no public content using this data.</a>
       </div>
 
-      <div class="media-results">  
+      <div class="media-results">
         <div class="result-card media no-meta">
 
           <div class="entry-header">
@@ -258,11 +258,11 @@ layout: prototype-landingpage
               </div>
               <div class="entry-description">
                 Story explaining the procedure for applying for a license, as well as some general trends around current licensing.
-              </div>  
+              </div>
             </div>
           </div>
 
-        </div><!-- /.result-card --> 
+        </div><!-- /.result-card -->
 
         <div class="result-card media no-meta">
 
@@ -281,7 +281,7 @@ layout: prototype-landingpage
               <span class="date">12,234 Views</span>
             </div>
           </div>
-          
+
           <div class="entry-content">
             <div class="entry-main">
               <div class="img-wrapper map">
@@ -290,7 +290,7 @@ layout: prototype-landingpage
               </div>
               <div class="entry-description">
                 Map showing the number of approved licenses for each neighborhood in the city.
-              </div>  
+              </div>
             </div>
           </div>
 
@@ -313,7 +313,7 @@ layout: prototype-landingpage
               <span class="date">1,234 Views</span>
             </div>
           </div>
-          
+
           <div class="entry-content">
             <div class="entry-main">
               <div class="img-wrapper data-lens">
@@ -322,11 +322,11 @@ layout: prototype-landingpage
               </div>
               <div class="entry-description">
                 Interactive experience showing licenses by type, filterable by neighborhood and business type. This data is based on the last 4 years...</span>
-              </div>  
+              </div>
             </div>
           </div>
 
-        </div><!-- /.result-card -->  
+        </div><!-- /.result-card -->
 
       </div><!-- /.media-results -->
 
@@ -336,11 +336,169 @@ layout: prototype-landingpage
 
     </div><!-- /.lp-section -->
 
+    <div class='lp-section'>
+      <h2 class="section-header">About this Dataset</h2>
+
+      <div class="card-frame">
+
+        <div class="fancy-metadata">
+
+          <div class="section">
+            <div class="row">
+              <div class="key-value-pair">
+                <span class="small-label">Updated</span>
+                <h1 class="large-number">Jan, 10 2014</h1>
+              </div>
+            </div>
+            <div class="row middle">
+              <div class="detail-group">
+                <span class="meta-title">Data Last Updated</span>
+                <span class="date">Jan, 10 2014</span>
+              </div>
+              <div class="detail-group">
+                <span class="meta-title">Metadata Last Updated</span>
+                <span class="date">Jan, 09 2014</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="detail-group">
+                <span class="meta-title">Creation Date</span>
+                <span class="date">Jan, 6 2014</span>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="section">
+            <div class="row">
+              <div class="key-value-pair">
+                <span class="small-label">Views</span>
+                <h1 class="large-number">12,234</h1>
+              </div>
+              <div class="key-value-pair">
+                <span class="small-label">Downloads</span>
+                <h1 class="large-number">1,123</h1>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="section">
+
+            <div class="row">
+              <div class="detail-group">
+                <span class="meta-title">Data Provided by</span>
+                <span class="date">City of Evergreen, Department of Economic Development</span>
+              </div>
+              <div class="detail-group">
+                <span class="meta-title">Dataset Owner</span>
+                <span class="date"><a href="#">John Doe</a></span>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" data-modal="contact-modal">
+              Contact Data Owner
+            </button>
+          </div>
+
+
+
+        </div> <!-- /.fancy-metadata -->
+
+        <div class="table-wrapper standard-metadata">
+          <h5 class="metadata-title">Publishing Details</h5>
+          <table class="table-condensed table-borderless table-discrete table-striped">
+            <tbody>
+                <tr>
+                  <td scope="row">Data Update Frequency</td>
+                  <td>Daily</td>
+                </tr>
+                <tr>
+                  <td scope="row">Data Change Frequency</td>
+                  <td>Daily</td>
+                </tr>
+            </tbody>
+          </table><!-- /.metadata-table -->
+        </div>
+        <div class="table-wrapper standard-metadata">
+          <h5 class="metadata-title">Attachments</h5>
+          <table class="table-condensed table-borderless table-discrete table-striped">
+            <tbody>
+                <tr>
+                  <td scope="row"> Data Dictionary</td>
+                  <td><span class="icon-copy-document"></span><a href="#"> dictionary.pdf</td></a>
+                </tr>
+            </tbody>
+          </table><!-- /.metadata-table -->
+        </div>
+        <div class="table-wrapper standard-metadata">
+          <h5 class="metadata-title">Topics</h5>
+          <table class="table-condensed table-borderless table-discrete table-striped">
+            <tbody>
+                <tr>
+                  <td scope="row">Category</td>
+                  <td>Economic Development</td>
+                </tr>
+                <tr>
+                  <td scope="row">Tags</td>
+                  <td>
+                    <a href="#">licensing</a>, <a href="#">policy</a>, <a href="#">permits</a>, <a href="#">economy</a>, <a href="#">development</a>, <a href="#">data</a>, <a href="#">liquor</a>, <a href="#">sales</a>, <a href="#">other</a>, <a href="#">misc</a>, <a href="#">tabular</a>, <a href="#">maps</a>
+                    <span class="more-link"><a class="more-link" href="#">Show All</a></span>
+                  </td>
+                </tr>
+            </tbody>
+          </table><!-- /.metadata-table -->
+        </div>
+
+        <div class="table-wrapper standard-metadata">
+          <h5 class="metadata-title">Licensing and Attribution</h5>
+          <table class="table-condensed table-borderless table-discrete table-striped">
+            <tbody>
+                <tr>
+                  <td scope="row">License</td>
+                  <td>Creative Commons</td>
+                </tr>
+                <tr>
+                  <td scope="row">Source link</td>
+                  <td><a href="#">www.data.gov</a></td>
+                </tr>
+            </tbody>
+          </table><!-- /.metadata-table -->
+
+          <button class="btn btn-default btn-sm btn-block more-button">Show More</button>
+          <div class="centered">
+            <span class="more-link"><a class="more-link" href="#">Show More</a></span>
+          </div>
+
+        </div>
+
+      </div><!-- /.card-frame -->
+    </div><!-- /.lp-section -->
+
 
 
       <div class='lp-section'>
-        <h2 class="section-header">Columns in this Dataset</h2>
 
+        <h2 class="section-header">What's in this Dataset</h2>
+        <div class="card-frame">
+          <div class="section">
+            <div class="key-value-pair">
+              <span class="small-label" title="Each row in this dataset represents a License">Rows</span>
+              <h1 class="large-number">521,234</h1>
+            </div>
+            <div class="key-value-pair">
+              <span class="small-label">Columns</span>
+              <h1 class="large-number">12</h1>
+            </div>
+            <div class="key-value-pair">
+              <span class="small-label">Each row is a</span>
+              <h1 class="large-number">License</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='lp-section'>
+        <h2 class="section-header">Summary of Columns in this Dataset</h2>
         <div class="card-frame">
         <div class="table-wrapper schema-preview schema-preview-expanded">
           <table class="table-condensed table-borderless table-discrete">
@@ -361,8 +519,8 @@ layout: prototype-landingpage
 
                 <tr class="details-row">
                   <td class="details-content" colspan="4">
-                    <div class="row">   
-                      <div class="stat-details"> 
+                    <div class="row">
+                      <div class="stat-details">
                         <table>
                           <tbody>
                             <th class="title">Blank Values</th> <!-- MVP -->
@@ -397,7 +555,7 @@ layout: prototype-landingpage
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
-                     
+
                       <div class="type-details">
                             <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
@@ -415,11 +573,11 @@ layout: prototype-landingpage
                               <span class="value"> licensee</span>
                             </div>
                       </div><!-- /type-details ><!/-->
-                    
+
                     <div><!-- /row ><!/-->
                   </td><!-- /details-content ><!/-->
                 </tr> <!-- /details-row ><!/-->
-                
+
                 <tr class="no-details-row">
                   <td class="column-name" scope="row">DBA Name</td>
                   <td>Doing Business As name. The legal name of the business</td>
@@ -429,11 +587,11 @@ layout: prototype-landingpage
 
                 <tr class="details-row">
                   <td class="details-content" colspan="4">
-                    <div class="row">   
-                      <div class="stat-details"> 
+                    <div class="row">
+                      <div class="stat-details">
                         <table>
                           <tbody>
-                            <th class="title">Blank Values</th> <!-- MVP -->                            
+                            <th class="title">Blank Values</th> <!-- MVP -->
                           <!-- <th class="title">Most Common Values</th>
                           <tr>
                             <td class="key">BevMo</td>
@@ -465,7 +623,7 @@ layout: prototype-landingpage
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
-                     
+
                       <div class="type-details">
                             <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
@@ -483,7 +641,7 @@ layout: prototype-landingpage
                               <span class="value">dba_name</span>
                             </div>
                       </div><!-- /type-details ><!/-->
-                    
+
                     <div><!-- /row ><!/-->
                   </td><!-- /details-content ><!/-->
                 </tr> <!-- /details-row ><!/-->
@@ -497,11 +655,11 @@ layout: prototype-landingpage
 
                 <tr class="details-row">
                   <td class="details-content" colspan="4">
-                    <div class="row">   
-                      <div class="stat-details"> 
+                    <div class="row">
+                      <div class="stat-details">
                         <table>
                           <tbody>
-                            <th class="title">Blank Values</th> <!-- MVP -->                            
+                            <th class="title">Blank Values</th> <!-- MVP -->
                          <!--  <th class="title">Statistics</th>
                           <tr>
                             <td class="key">Minimum</td>
@@ -533,7 +691,7 @@ layout: prototype-landingpage
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
-                     
+
                       <div class="type-details">
                            <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
@@ -551,7 +709,7 @@ layout: prototype-landingpage
                               <span class="value"> license_number</span>
                             </div>
                       </div><!-- /type-details ><!/-->
-                    
+
                     <div><!-- /row ><!/-->
                   </td><!-- /details-content ><!/-->
                 </tr> <!-- /details-row ><!/-->
@@ -562,11 +720,11 @@ layout: prototype-landingpage
                   <td><span class="type">Timestamp</span><span class="icon icon-date"></span></td>
                   <td><span class="icon-arrow-down"></span><span class="icon-arrow-up"></span></td>
                 </tr>
-                
+
                 <tr class="details-row">
                   <td class="details-content" colspan="4">
-                    <div class="row">   
-                      <div class="stat-details"> 
+                    <div class="row">
+                      <div class="stat-details">
                         <table>
                           <tbody>
                             <th class="title">Blank Values</th> <!-- MVP -->
@@ -589,7 +747,7 @@ layout: prototype-landingpage
                           </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
-                     
+
                       <div class="type-details">
                             <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
@@ -607,7 +765,7 @@ layout: prototype-landingpage
                               <span class="value"> expiration_date</span>
                             </div>
                       </div><!-- /type-details ><!/-->
-                    
+
                     <div><!-- /row ><!/-->
                   </td><!-- /details-content ><!/-->
                 </tr> <!-- /details-row ><!/-->
@@ -621,11 +779,11 @@ layout: prototype-landingpage
 
                 <tr class="details-row">
                   <td class="details-content" colspan="4">
-                    <div class="row">   
-                      <div class="stat-details"> 
+                    <div class="row">
+                      <div class="stat-details">
                         <table>
                           <tbody>
-                            <th class="title">Blank Values</th> <!-- MVP -->                            
+                            <th class="title">Blank Values</th> <!-- MVP -->
                           <!-- <th class="title">Statistics</th>
                           <tr>
                             <td class="key">Minimum</td>
@@ -657,7 +815,7 @@ layout: prototype-landingpage
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
-                     
+
                       <div class="type-details">
                             <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
@@ -675,7 +833,7 @@ layout: prototype-landingpage
                               <span class="value"> value</span>
                             </div>
                       </div><!-- /type-details ><!/-->
-                    
+
                     <div><!-- /row ><!/-->
                   </td><!-- /details-content ><!/-->
                 </tr> <!-- /details-row ><!/-->
@@ -689,8 +847,8 @@ layout: prototype-landingpage
 
                 <tr class="details-row">
                   <td class="details-content" colspan="4">
-                    <div class="row">   
-                      <div class="stat-details"> 
+                    <div class="row">
+                      <div class="stat-details">
                         <table>
                           <tbody>
 <!--                           <th class="title">Statistics</th>
@@ -703,7 +861,7 @@ layout: prototype-landingpage
                         </tbody>
                         </table>
                       </div><!-- /stat-details ><!/-->
-                     
+
                       <div class="type-details">
                             <!-- <div class="detail-group">
                               <span class="title">Semantic Type</span>
@@ -721,7 +879,7 @@ layout: prototype-landingpage
                               <span class="value"> location</span>
                             </div>
                       </div><!-- /type-details ><!/-->
-                    
+
                     <div><!-- /row ><!/-->
                   </td><!-- /details-content ><!/-->
                 </tr> <!-- /details-row ><!/-->
@@ -729,72 +887,14 @@ layout: prototype-landingpage
             </tbody>
           </table><!-- /.metadata-table -->
           </div>
-          <button class="btn btn-default btn-sm btn-block">View All (12)</button>
+          <button class="btn btn-default btn-sm btn-block more-button">Show All (12)</button>
           <div class="centered">
-            <span class="more-link"><a class="more-link" href="#">View All (12)</a></span>
+            <span class="more-link"><a class="more-link" href="#">Show All (12)</a></span>
             <!-- <button class="btn btn-default btn-xs">See all metadata</button> -->
           </div>
         </div><!-- /.card-frame -->
       </div><!-- /.lp-section -->
 
-
-      <div class='lp-section'>
-        <h2 class="section-header">About this Dataset</h2>
-
-        <div class="card-frame">
-
-          <div class="table-wrapper metadata-table">
-          <table class="table-condensed table-borderless table-discrete">
-            <tbody>
-                <tr>
-                  <td scope="row">Data Owner</td>
-                  <td>John Smith</td>
-                </tr>
-                <tr>
-                  <td scope="row"> Data Dictionary</td>
-                  <td><span class="icon-copy-document"></span><a href="#"> dictionary.pdf</td></a>
-                </tr>
-                <tr>
-                  <td scope="row">Licensing</td>
-                  <td>Creative Commons</td>
-                </tr>
-                <tr>
-                  <td scope="row">Downloads</td>
-                  <td>1,234</td>
-                </tr>
-            </tbody>
-          </table><!-- /.metadata-table -->
-          </div>
-          <div class="table-wrapper metadata-table">
-            <table class="table-condensed table-borderless table-discrete">
-              <tbody>
-                  <tr>
-                    <td scope="row">Data Last Updated</td>
-                    <td>Jan 7, 2015</td>
-                  </tr>
-                  <tr>
-                    <td scope="row">Metadata Last updated</td>
-                    <td>Jan 12, 2016</td>
-                  </tr>
-                  <tr>
-                    <td scope="row">Date Created</td>
-                    <td>Jan 1, 2013</td>
-                  </tr>
-                  <tr>
-                    <td scope="row">Views</td>
-                    <td>1,345</td>
-                  </tr>
-              </tbody>
-            </table><!-- /.metadata-table -->
-            </div>
-
-          <button class="btn btn-default btn-sm btn-block">View All</button>
-          <div class="centered">
-            <span class="more-link"><a class="more-link" href="#">View All</a></span>
-            <!-- <button class="btn btn-default btn-xs">See all metadata</button> -->
-          </div>
-        </div><!-- /.card-frame -->
-      </div><!-- /.lp-section -->
     </div><!-- /.page-content -->
 
 
@@ -912,11 +1012,11 @@ layout: prototype-landingpage
       <form>
         <label class="block-label">Subject</label>
         <input class="text-input subject" type="text" placeholder=""/>
-        
+
         <label class="block-label">Message</label>
         <textarea class="text-input text-area message" type="text" placeholder=""></textarea>
 
-        <label class="block-label">Your Email 
+        <label class="block-label">Your Email
           <span class="x-small quiet">(Your email address will be shared with the dataset owner so they can get back to you)</span>
         </label>
         <input class="text-input email" type="text" placeholder=""/>
@@ -925,7 +1025,7 @@ layout: prototype-landingpage
         <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
       </form>
     </section>
-    
+
     <section class="modal-content">
       <div class="alert error" hidden="hidden">
         Please enter a valid email address.</a>
@@ -933,7 +1033,7 @@ layout: prototype-landingpage
     </section>
 
     <footer class="modal-actions">
-      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>      
+      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
       <button class="btn btn-primary btn-sm" id="launch-congrats-modal">Send</button>
     </footer>
   </div>
@@ -941,7 +1041,7 @@ layout: prototype-landingpage
 
 <div id="congrats-modal" class="modal modal-overlay modal-hidden" data-modal-dismiss>
   <div class="modal-container">
-    
+
     <section class="modal-content">
       <div class="alert success">
         <b>Thank You!</b> Your message has been sent.</a>

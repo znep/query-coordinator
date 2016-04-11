@@ -1611,7 +1611,7 @@ en:
         skip_to_dataset_listing: Skip to dataset listing
         table_description: Datasets
         title: Asset Inventory
-        description: List the assets on this domain and configure the layout of the dataset page 
+        description: List the assets on this domain and configure the layout of the dataset page
         unpublished_datasets: Unpublished Datasets
         view_as_a_dataset: View as a Dataset
         asset_inventory:
@@ -1674,11 +1674,11 @@ en:
         custom_georegions: Custom Boundaries
         date_added: Date Added
         description: Configure custom boundaries that can be used to create Spatial Lens maps
-        default: Set auto-encoding for boundary
-        default_georegions: 'Auto-encode on Ingress (%{count} of %{limit})'
-        default_georegions_flyout: Choose this option for your most commonly used boundaries. Auto-encoding on ingress allows for instant creation of choropleth maps when using Spatial Lens with these boundaries. You can select up to 5 auto-encoded boundaries.
-        default_georegions_limit: You can at most have %{limit} auto-encoded boundaries.
-        default_success: '%{name} has been set to auto-encode. All new datasets will automatically be region coded using this Spatial Lens boundary.'
+        default: Set Quick-add for boundary
+        default_georegions: 'Enable Quick-add for New Datasets (%{count} of %{limit})'
+        default_georegions_flyout: If you have a boundary you want to use on most Data Lens pages, this option will make it quicker to visualize for any dataset uploaded after enabling Quick-add. You can enable up to 5 Quick-add boundaries.
+        default_georegions_limit: You can at most have %{limit} Quick-add boundaries.
+        default_success: '%{name} has been set to Quick-add. All new datasets will automatically be region coded using this Spatial Lens boundary.'
         delete: Delete
         description: Configure custom boundaries that can be used to create Spatial Lens maps
         disable: Disable
@@ -1704,8 +1704,8 @@ en:
         substatus_failed_html: Please contact <a href="https://support.socrata.com">Socrata support</a> and include the code <strong>%{code}</strong>.
         substatus_progress: Available shortly
         title: Spatial Lens
-        undefault: Unset auto-encoding for boundary
-        undefault_success: 'Auto-encoding has been unset for %{name} and will no longer be automatically computed for new datasets.'
+        undefault: Unset Quick-add for boundary
+        undefault_success: 'Quick-add has been unset for %{name}. New datasets will no longer be automatically region coded using this Spatial Lens boundary.'
       home:
         add_featured_dataset: Add a New Featured Dataset
         are_you_sure: Are you sure? This action cannot be undone.

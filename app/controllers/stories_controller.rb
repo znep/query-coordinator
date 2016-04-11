@@ -8,6 +8,7 @@ class StoriesController < ApplicationController
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
   after_action :allow_iframe, only: :tile
+  after_action :allow_origin, only: :tile
 
   helper_method :needs_view_assets?, :contributor?
 
@@ -195,6 +196,11 @@ class StoriesController < ApplicationController
   # remove it for this endpoint.
   def allow_iframe
     response.headers.except! 'X-Frame-Options'
+  end
+
+  # We want to be able to embed story tiles on other domains
+  def allow_origin
+    response.headers['Access-Control-Allow-Origin'] = '*'
   end
 
   def respond_with_story(story)

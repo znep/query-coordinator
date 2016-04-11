@@ -303,14 +303,13 @@ class InternalController < ApplicationController
     add_module_features(module_features, enabled, params[:domain_id])
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
-    flash[:notice] = @infos.try(:join, '|') unless @infos.try(:empty?)
+    prepare_to_render_flashes!
 
     redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
   def update_aliases
     new_cname = params[:new_cname].strip
-    infos = []
 
     begin
       unless valid_cname?(new_cname)
@@ -319,27 +318,26 @@ class InternalController < ApplicationController
       end
 
       Domain.update_aliases(params[:domain_id], new_cname, params[:aliases])
-      infos << 'Updated cname successfully.'
-      infos << "Updated aliases (there are now #{params[:aliases].split(',').size}) successfully."
+      notices << 'Updated cname successfully.'
+      notices << "Updated aliases (there are now #{params[:aliases].split(',').size}) successfully."
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
       return render 'shared/error', :status => :internal_server_error
     end
     CurrentDomain.flag_out_of_date!(params[:domain_id])
-    flash[:notice] = infos.join('|') unless infos.empty?
+    prepare_to_render_flashes!
     redirect_to show_domain_path(domain_id: new_cname)
   end
 
 
   def set_property
     config = ::Configuration.find(params[:id])
-    infos = []
 
     if !params['new-property_name'].blank?
       new_feature_name = params['new-feature_name']
       config.create_property(params['new-property_name'],
                            get_json_or_string(params['new-property_value']))
-      infos << "Created property #{new_feature_name} successfully."
+      notices << "Created property #{new_feature_name} successfully."
     else
       begin
         CoreServer::Base.connection.batch_request do |batch_id|
@@ -348,7 +346,7 @@ class InternalController < ApplicationController
               if value == 'delete'
                 params[:properties].delete(name)
                 config.delete_property(name, false, batch_id)
-                infos << "Deleted property `#{name}` successfully."
+                notices << "Deleted property `#{name}` successfully."
               end
             end
           end
@@ -356,10 +354,10 @@ class InternalController < ApplicationController
           params[:properties].each do |name, value|
             if config.properties.keys.include? name
               config.update_property(name, get_json_or_string(value), batch_id)
-              infos << "Updated property `#{name}` successfully."
+              notices << "Updated property `#{name}` successfully."
             else
               config.create_property(name, get_json_or_string(value), batch_id)
-              infos << "Created property `#{name}` successfully."
+              notices << "Created property `#{name}` successfully."
             end
           end
         end
@@ -375,7 +373,7 @@ class InternalController < ApplicationController
     end
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
-    flash[:notice] = infos.join('|') unless infos.empty?
+    prepare_to_render_flashes!
 
     respond_to do |format|
       format.html do
@@ -472,8 +470,6 @@ class InternalController < ApplicationController
     end
 
     properties = config.properties
-    infos = []
-    errors = []
     CoreServer::Base.connection.batch_request do |batch_id|
       (params['feature_flags'] || []).each do |flag, value|
         unless FeatureFlags.list.include? flag
@@ -482,15 +478,15 @@ class InternalController < ApplicationController
         end
         processed_value = FeatureFlags.process_value(value).to_s
         if properties[flag] == processed_value
-          infos << "#{flag} was already set to \"#{processed_value}\"."
+          notices << "#{flag} was already set to \"#{processed_value}\"."
           next
         end
         if properties.has_key?(flag)
           config.update_property(flag, processed_value, batch_id)
-          infos << "#{flag} was updated with value \"#{processed_value}\"."
+          notices << "#{flag} was updated with value \"#{processed_value}\"."
         else
           config.create_property(flag, processed_value, batch_id)
-          infos << "#{flag} was created with value \"#{processed_value}\"."
+          notices << "#{flag} was created with value \"#{processed_value}\"."
         end
       end
 
@@ -498,18 +494,17 @@ class InternalController < ApplicationController
         if config.has_property?(flag)
           config.delete_property(flag, false, batch_id)
           default_value = FeatureFlags.default_for(flag).to_s
-          infos << "#{flag} was reset to its default value of \"#{default_value}\"."
+          notices << "#{flag} was reset to its default value of \"#{default_value}\"."
         else
           # Failure is not an error.
-          infos << "#{flag} could not be reset; it was not set in the first place."
+          notices << "#{flag} could not be reset; it was not set in the first place."
         end
       end
     end
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
-    flash[:error] = errors.join('|') unless errors.empty?
-    flash[:notice] = infos.join('|') unless infos.empty?
+    prepare_to_render_flashes!
 
     respond_to do |format|
       format.html do
@@ -517,7 +512,7 @@ class InternalController < ApplicationController
                                               category: params[:category])
       end
 
-      json_response = { :success => errors.empty?, :errors => errors, :infos => infos }
+      json_response = { :success => errors.empty?, :errors => errors, :infos => notices }
       format.data { render :json => json_response }
       format.json { render :json => json_response }
     end
@@ -579,22 +574,36 @@ private
   helper_method :editing_this_page_is_dangerous?
 
   def add_module_features(module_features, enabled, domain_cname)
-    @infos ||= []
     module_features.try(:each) do |feature|
       feature_is_a_module = AccountModule.include?(feature)
       module_already_added = CurrentDomain.domain.modules.include?(feature)
       if feature_is_a_module && !module_already_added
         Domain.add_account_module(domain_cname, feature)
-        @infos << "Added account module `#{feature}` successfully."
+        notices << "Added account module `#{feature}` successfully."
       end
       config = ::Configuration.find_by_type('feature_set', true, domain_cname)[0]
       if config.properties.keys.include? feature
         config.update_proeprty(feature, enabled)
-        @infos << "Updated feature `#{feature}` as `#{enabled}` successfully."
+        notices << "Updated feature `#{feature}` as `#{enabled}` successfully."
       else
         config.create_property(feature, enabled)
-        @infos << "Created feature `#{feature}` as `#{enabled}` successfully."
+        notices << "Created feature `#{feature}` as `#{enabled}` successfully."
       end
+    end
+  end
+
+  def notices
+    (@flashes ||= {})[:notice] ||= []
+  end
+
+  def errors
+    (@flashes ||= {})[:error] ||= []
+  end
+
+  def prepare_to_render_flashes!
+    if @flashes.present?
+      flash[:notice] = @flashes[:notice].join('|') unless @flashes[:notice].blank?
+      flash[:error] = @flashes[:error].join('|') unless @flashes[:error].blank?
     end
   end
 

@@ -22,26 +22,26 @@ Dropdown.prototype = {
       return false;
     });
 
-    obj.opts.forEach(function(opt) {
-      opt.addEventListener('click', function(event) {
-        event.preventDefault();
+    if (obj.selectable) {
+      obj.opts.forEach(function(opt) {
+        opt.addEventListener('click', function(event) {
+          event.preventDefault();
 
-        var node = opt;
-        var index = 0;
+          var node = opt;
+          var index = 0;
 
-        while ((node = node.previousElementSibling) !== null) {
-          index++;
-        }
+          while ((node = node.previousElementSibling) !== null) {
+            index++;
+          }
 
-        obj.val = opt.textContent;
-        obj.index = index;
+          obj.val = opt.textContent;
+          obj.index = index;
 
-        if (obj.selectable) {
           obj.placeholder.innerHTML = opt.innerText.trim();
-        }
 
-        return false;
+          return false;
+        });
       });
-    });
+    }
   }
 }

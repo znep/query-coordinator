@@ -482,4 +482,9 @@ ul.autocomplete {
       display: block;
     }
   }
+
+  .newProperty {
+    .warning div { display: none; }
+    .warning.duplicateProperty .duplicateProperty { display: block; }
+  }
 }

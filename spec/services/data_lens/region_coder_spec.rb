@@ -52,7 +52,76 @@ describe Services::DataLens::RegionCoder do
     end
   end
 
-  describe 'get_status_for_region' do
-    # TODO write tests for get_status_for_region
+  describe 'get_job_id' do
+    it 'returns a job id, given a datasetId and a shapefileId' do
+      expect(CuratedRegion).to receive(:find_by_view_id).and_return(test_curated_region)
+      expect_any_instance_of(CuratedRegionJobQueue).to receive(:get_queue).
+        with({ :jobType => 'add_region_columns' }, { :cookies => 'oatmeal' }).
+        and_return(
+          [{
+            'common' => {
+              'username' => 'some_user@socrata.com',
+              'requestId' => '4eb68c92555fa96d8d0542f1335e70c0',
+              'domain'=> 'some_domain.com',
+              'classifier' => 'abcd-else',
+              'internalId' => 'db03c916-6f9f-45ea-8065-same_region_different_dataset',
+              'externalId' => 'db03c916-6f9f-45ea-8065-same_region_different_dataset'
+            },
+            'dataset' => 'abcd-else',
+            'jobParameters'=> {
+              'columnInfos'=>
+              [
+                {
+                  'sourceColumn' => 'location',
+                  'curatedRegionId' => 1
+                }
+              ],
+              'type' => 'add_region_columns'
+            }
+          },
+          {
+            'common' => {
+              'username' => 'some_user@socrata.com',
+              'requestId' => '4eb68c92555fa96d8d0542f1335e70c0',
+              'domain'=> 'some_domain.com',
+              'classifier' => 'abcd-data',
+              'internalId' => 'db03c916-6f9f-45ea-8065-same_dataset_different_region',
+              'externalId' => 'db03c916-6f9f-45ea-8065-same_dataset_different_region'
+            },
+            'dataset' => 'abcd-data',
+            'jobParameters'=> {
+              'columnInfos'=>
+              [
+                {
+                  'sourceColumn' => 'location',
+                  'curatedRegionId' => 2
+                }
+              ],
+              'type' => 'add_region_columns'
+            }
+          },
+          {
+            'common' => {
+              'username' => 'some_user@socrata.com',
+              'requestId' => '4eb68c92555fa96d8d0542f1335e70c0',
+              'domain'=> 'some_domain.com',
+              'classifier' => 'abcd-data',
+              'internalId' => 'db03c916-6f9f-45ea-8065-c8a4ba5127be',
+              'externalId' => 'db03c916-6f9f-45ea-8065-c8a4ba5127be'
+            },
+            'dataset' => 'abcd-data',
+            'jobParameters'=> {
+              'columnInfos'=>
+              [
+                {
+                  'sourceColumn' => 'location',
+                  'curatedRegionId' => 1
+                }
+              ],
+              'type' => 'add_region_columns'
+            }
+          }])
+        expect(subject.get_job_id(dataset_id, shapefile_id, { :cookies => 'oatmeal' })).to eq("db03c916-6f9f-45ea-8065-c8a4ba5127be")
+    end
   end
 end

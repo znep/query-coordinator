@@ -11,14 +11,14 @@
 <%= render :partial => 'left_nav' %>
 
 <div id="routingApprovalContent" class="contentBox withLeftNavigation">
-  <%= render :partial => 'routing_approval_header',
+  <%= render :partial => 'header',
         :locals => {:active => 'manage'} %>
 
   <%= display_standard_flashes %>
 
   <div id="routingApprovalManagement">
     <h2>Manage Routing and Approval Process</h2>
-    <%= form_tag({:action => 'routing_approval_manage_save'},
+    <%= form_tag({:action => 'manage_save'},
       {:class => 'commonForm'}) do %>
       <div class="line">
         <label for="template_name" class="required">Name</label>

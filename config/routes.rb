@@ -118,7 +118,16 @@ Frontend::Application.routes do
       get 'jobs/:id', :action => 'show_job'
       get :views
       put :save_featured_views
-      get :routing_approval, :as => 'routing_approval_administration'
+
+      scope :controller => 'administration/routing_approval', :path => '/routing_approval' do
+        get '', :action => :index, :as => 'routing_approval_administration'
+
+        get '/queue', :action => 'queue'
+        post '/view/:id/set/:approval_type', :action => 'approve_view', :constraints => {:id => Frontend::UID_REGEXP}
+        get '/manage', :action => 'manage'
+        post '/manage', :action => 'manage_save'
+
+      end
 
       put '/users/:user_id/promote/:role', :action => 'set_user_role'
       put '/users/update', :action => 'set_user_role'
@@ -155,11 +164,6 @@ Frontend::Application.routes do
       post '/datasets/sidebar_config', :action => 'modify_sidebar_config'
       post '/views/:id/set/:approved', :action => 'set_view_moderation_status',
         :constraints => {:id => Frontend::UID_REGEXP}
-      get '/routing_approval/queue', :action => 'routing_approval_queue'
-      post '/routing_approval/view/:id/set/:approval_type',
-        :action => 'approve_view', :constraints => {:id => Frontend::UID_REGEXP}
-      get '/routing_approval/manage', :action => 'routing_approval_manage'
-      post '/routing_approval/manage', :action => 'routing_approval_manage_save'
 
       get '/configuration', :action => 'configuration'
       get '/flag_out_of_date', :action => 'flag_out_of_date'

@@ -304,6 +304,13 @@ RSpec.describe StoriesController, type: :controller do
           expect(response_json_as_hash['description']).to eq(tile_description)
           expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
         end
+
+        it 'sets Access-Control-Allow-Origin' do
+          stub_invalid_session
+          get :tile, uid: story_revision.uid, format: :json
+
+          expect(response.headers['Access-Control-Allow-Origin']).to eq('*')
+        end
       end
 
       context 'when there is no story with the given four by four' do

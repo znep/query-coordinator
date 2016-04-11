@@ -112,6 +112,8 @@ class View < Model
 
   # NBE geospatial datasets created via API end up with weird metadata.
   def is_api_geospatial?
+    return false unless FeatureFlags.derive.api_geospatial_hack
+
     nbe_only = new_backend? && obe_view.nil?
     has_geo_column = (columns || []).any? { |column| column.dataTypeName =~ /(polygon|line|point)$/i }
     half_tabular = displayType.nil? && is_tabular?

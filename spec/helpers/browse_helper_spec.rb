@@ -2,6 +2,18 @@ require 'rails_helper'
 
 describe BrowseHelper do
 
+  before do
+    feature_flag_mock = double('feature_flag_mock')
+
+    allow(FeatureFlags).
+      to receive(:derive).
+      and_return(feature_flag_mock)
+
+    allow(feature_flag_mock).
+      to receive(:api_geospatial_hack).
+      and_return(false)
+  end
+
   describe '#join_and_truncate_array' do
     it 'does not change a joined string shorter than requested length' do
       expect(helper.join_and_truncate_array(%w(one two))).to eql('one, two')

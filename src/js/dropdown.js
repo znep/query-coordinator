@@ -1,6 +1,7 @@
-function DropDown(element) {
+var Dropdown = module.exports = function(element) {
   this.dd = element;
   this.orientation = element.getAttribute('data-orientation') || 'bottom';
+  this.selectable = element.hasAttribute('data-selectable');
   this.dd.classList.add('dropdown-orientation-' + this.orientation);
 
   this.placeholder = this.dd.querySelector('span');
@@ -11,7 +12,7 @@ function DropDown(element) {
   this.initEvents();
 }
 
-DropDown.prototype = {
+Dropdown.prototype = {
   initEvents: function() {
     var obj = this;
 
@@ -21,22 +22,26 @@ DropDown.prototype = {
       return false;
     });
 
-    obj.opts.forEach(function(opt) {
-      opt.addEventListener('click', function(event) {
-        event.preventDefault();
+    if (obj.selectable) {
+      obj.opts.forEach(function(opt) {
+        opt.addEventListener('click', function(event) {
+          event.preventDefault();
 
-        var node = opt;
-        var index = 0;
+          var node = opt;
+          var index = 0;
 
-        while ((node = node.previousElementSibling) !== null) {
-          index++;
-        }
+          while ((node = node.previousElementSibling) !== null) {
+            index++;
+          }
 
-        obj.val = opt.textContent;
-        obj.index = index;
+          obj.val = opt.textContent;
+          obj.index = index;
 
-        return false;
+          obj.placeholder.innerHTML = opt.innerText.trim();
+
+          return false;
+        });
       });
-    });
+    }
   }
 }

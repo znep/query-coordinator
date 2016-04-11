@@ -1,4 +1,4 @@
-function FlyoutFactory(element) {
+var FlyoutFactory = module.exports = function(element) {
   var padding = 10;
   var hoverables = Array.prototype.slice.apply(document.querySelectorAll('[data-flyout]'));
 

@@ -7,5 +7,6 @@
 /node_modules
 .fontcustom-manifest.json
 /src/js/vendor
+/docs/javascripts/vendor
 .npmrc
 npm-debug.log

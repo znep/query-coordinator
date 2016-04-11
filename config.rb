@@ -4,10 +4,6 @@ compass_config do |config|
    config.output_style = :expanded
 end
 
-configure :development do
-   activate :livereload
-end
-
 sprockets.append_path '../src'
 set :source, 'docs'
 
@@ -25,14 +21,10 @@ configure :build do
 end
 
 after_configuration do
-  if !File.exists?('./docs/fonts')
-  	FileUtils.mkdir('./docs/fonts')
-  end
+  FileUtils.mkdir_p('./docs/fonts')
   FileUtils.cp(Dir.glob('./src/fonts/socrata-icons*'), './docs/fonts')
 
-  if !File.exists?('./src/js/vendor')
-    FileUtils.mkdir('./src/js/vendor')
-  end
-  FileUtils.cp(Dir.glob('./node_modules/tether-shepherd/dist/js/shepherd.min.js'), './src/js/vendor')
-  FileUtils.cp(Dir.glob('./node_modules/tether/dist/js/tether.min.js'), './src/js/vendor')
+  FileUtils.mkdir_p('./docs/javascripts/vendor')
+  FileUtils.cp(Dir.glob('./node_modules/prismjs/prism.js'), './docs/javascripts/vendor')
+  FileUtils.cp(Dir.glob('./dist/js/styleguide.js'), './docs/javascripts/vendor')
 end

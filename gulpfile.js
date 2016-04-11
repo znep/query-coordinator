@@ -10,6 +10,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var prepend = require('gulp-insert').prepend;
+var webpack = require('gulp-webpack');
 
 var package = require('./package.json');
 
@@ -72,8 +73,20 @@ gulp.task('sass', function() {
 
 gulp.task('javascript', function() {
   gulp.src('src/js/**/*.js').
+    pipe(webpack({
+      context: __dirname,
+      entry: './src/js/index.js',
+      output: {
+        path: __dirname + '/dist/js',
+        filename: 'styleguide.js',
+        libraryTarget: 'umd',
+        library: 'styleguide'
+      },
+      resolve: {
+        modulesDirectories: ['node_modules']
+      }
+    })).
     pipe(sourcemaps.init()).
-    pipe(concat('styleguide.js')).
     pipe(prepend(banner)).
     pipe(sourcemaps.write()).
     pipe(gulp.dest('dist/js')).

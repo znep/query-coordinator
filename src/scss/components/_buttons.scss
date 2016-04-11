@@ -29,6 +29,11 @@
   transition: color $btn-transition-duration, background-color $btn-transition-duration;
   cursor: pointer;
   text-decoration: none;
+  margin-right: 6px;
+
+  &:last-child {
+    margin-right: 0;
+  }
 
   &.btn-lg {
     font-size: ms(1);
@@ -84,7 +89,7 @@
   &.btn-simple {
     background-color: $light-grey-5;
   }
-  
+
   &:hover {
     color: $btn-default-hover-color;
     background-color: $btn-default-hover-background-color;

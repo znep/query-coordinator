@@ -1,0 +1,20 @@
+<form>
+<span class="input-group">
+  <input class="text-input" type="text" placeholder="<%= placeholder_text %>"/>
+
+  <span class="input-group-btn">
+    <div id="dd" class="dropdown btn btn-default" data-orientation="bottom" data-selectable>
+      <span><%= title %></span><span class="icon-arrow-down"></span>
+      <ul class="dropdown-options">
+        <% options.each do |option| %>
+          <li><a href="#"><%= option %></a></li>
+        <% end %>
+      </ul>
+    </div>
+  </span>
+  <span class="input-group-btn">
+    <button class="btn btn-default"><span class="icon-search"></span></button>
+  </span>
+
+</span>
+</form>

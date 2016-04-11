@@ -1,3 +1,5 @@
+@import "_grid";
+
 .input-group {
   position: relative;
   display: table;
@@ -5,7 +7,7 @@
     display: table-cell;
     border-top-right-radius: 0;
     border-bottom-left-radius: 0;
-    width: 100%;  
+    width: 100%;
   }
   .input-group-btn {
     display: table-cell;
@@ -16,6 +18,24 @@
       margin-left: 0px;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+    }
+
+    .dropdown {
+      margin-right: -0.1px;
+      padding: 6px 12px;
+
+      .icon-arrow-down {
+        padding-left: ms(-2);
+        padding-right: 0;
+      }
+    }
+  }
+}
+
+@media(max-width: $small) {
+  .input-group-btn {
+    .dropdown {
+      margin-right: 0;
     }
   }
 }

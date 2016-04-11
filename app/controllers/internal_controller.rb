@@ -14,7 +14,7 @@ class InternalController < ApplicationController
   def show_org
     @org = Organization.find(params[:id])
     domains = Organization.find.collect {|o| o.domains}.flatten.compact
-    @default_domain = domains.detect { |d| d.shortName == 'default'}
+    @default_domain = domains.detect(&:default?)
   end
 
   KNOWN_FEATURES = [
@@ -185,12 +185,12 @@ class InternalController < ApplicationController
         'domainCName' => domain.cname
       )
 
-      features_on_by_default = %w(
+      module_features_on_by_default = %w(
         canvas2 geospatial
         staging_lockdown staging_api_lockdown
       )
       enabled = true
-      add_module_features(features_on_by_default, enabled, domain.cname)
+      add_module_features(module_features_on_by_default, enabled, domain.cname)
 
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message

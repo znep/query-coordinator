@@ -281,7 +281,7 @@
       // Don't try to edit fields that are being deleted.
       $('form.configProperties').submit(function() {
         var $form = $(this);
-        if ($('.deleteMode').exists()) {
+        if ($('.content').is('.deleteMode')) {
           $form.find('.line').each(function() {
             var $line = $(this);
             var beingDeleted = !!$line.find('.deleteAction input').attr('checked');

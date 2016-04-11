@@ -59,6 +59,17 @@ module Chrome
       SiteChrome.new(properties)
     end
 
+    def self.get_core_config
+      domain, email, pass = ENV.values_at(*%w(DOMAIN EMAIL PASS))
+      raise 'Set environment variables for DOMAIN, EMAIL, and PASS' if
+        [domain, email, pass].include?(nil)
+
+      # For localhost dev, set VERIFY_SSL to false
+      verify_ssl = ENV['VERIFY_SSL'].to_s.downcase != 'false'
+      auth = Chrome::Auth.new(domain, email, pass, verify_ssl).authenticate
+      Chrome::DomainConfig.new(domain, auth.cookie, true)
+    end
+
     private
 
     # Core config contains various versions, each having a "published" and "draft" set of

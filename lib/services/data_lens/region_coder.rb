@@ -62,7 +62,7 @@ module Services
       # Given a dataset id and a region id, tries to obtain information about any pending jobs.
       # Provides less reliable information but can be convenient if no job ID is known. Future
       # intent is to improve the backend API to make this obsolete.
-      def get_status_for_region(dataset_id, shapefile_id, options = {})
+      def get_job_id(dataset_id, shapefile_id, options = {})
 
         # Convert the shapefile id into a curated region id
         Rails.logger.info "RegionCoder: looking up curated region for region #{shapefile_id}"
@@ -83,24 +83,32 @@ module Services
         begin
           params = { :jobType => 'add_region_columns' }
           response = curated_region_job_queue.get_queue(params, options)
+
           matching_job = response.find { |job|
             job['common'].present? &&
               job['dataset'].present? &&
               job['dataset'] == dataset_id &&
               job['jobParameters'].present? &&
-              job['jobParameters']['columnsInfos'].kind_of?(Array) &&
+              job['jobParameters']['columnInfos'].kind_of?(Array) &&
               job['jobParameters']['columnInfos'].length > 0 &&
-              job['jobParameters']['columnInfos'].first['curatedRegionId'].present?
+              job['jobParameters']['columnInfos'].first['curatedRegionId'].present? &&
               job['jobParameters']['columnInfos'].first['curatedRegionId'] == curated_region.id
           }
         rescue => exception
           raise "Unknown error fetching job queue: #{exception.message}"
         end
 
-        # Great! The job is on the queue. Use the status endpoint for fine-grained information
-        # about its progress.
         if matching_job
           job_id = matching_job['common']['externalId']
+        end
+        job_id
+      end
+
+      def get_status_for_region(dataset_id, shapefile_id, options = {})
+        job_id = get_job_id(dataset_id, shapefile_id, options)
+        # Use the status endpoint for fine-grained information
+        # about the progress of this job.
+        if job_id
           return get_status_for_job(dataset_id, job_id, options)
         end
 

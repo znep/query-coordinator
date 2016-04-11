@@ -1,7 +1,3 @@
-<script type="text/javascript">
-  // TODO - http://sass-lang.com/documentation/file.SASS_REFERENCE.html
-</script>
-
 <footer id="chrome-footer">
   <div class="content">
     <div class="logo">
@@ -16,9 +12,9 @@
     <div class="links">
       <ul class="links-col">
 
-        <% @footer['links'].each do |link| %>
+        <% @footer[:links].each do |link| %>
           <li>
-            <%= link_to(localized("footer.links.#{link['key']}", @locales), link['url'], :class => 'footer-link') %>
+            <%= link_to(localized("footer.links.#{link[:key]}", @locales), link[:url], :class => 'footer-link') %>
           </li>
         <% end %>
       </ul>

@@ -1,10 +1,6 @@
-<script type="text/javascript">
-  // TODO - http://sass-lang.com/documentation/file.SASS_REFERENCE.html
-</script>
-
 <header id="chrome-header">
   <div class="banner">
-    <%= link_to(@header['logo']['href'], class: 'logo') do
+    <%= link_to(@header[:logo][:href], class: 'logo') do
       logo(@header) << content_tag(:span, site_name, :class => 'site-name')
     end %>
 

@@ -13,19 +13,27 @@ module Chrome
     end
 
     def header
-      @content['header']
+      @content[:header]
     end
 
     def footer
-      @content['footer']
+      @content[:footer]
     end
 
     def general
-      @content['general']
+      @content[:general]
     end
 
     def locales
-      @content['locales']
+      @content[:locales]
+    end
+
+    def styles
+      {
+        general: general[:styles],
+        header: header[:styles],
+        footer: footer[:styles]
+      }
     end
 
 
@@ -42,10 +50,10 @@ module Chrome
       site_chrome_config = newest_published_site_chrome(core_config)
 
       properties = {
-        id: core_config['id'],
-        content: site_chrome_config['content'],
-        updated_at: site_chrome_config['updatedAt'] || core_config['updatedAt'],
-        domain_cname: core_config['domainCName']
+        id: core_config[:id],
+        content: site_chrome_config[:content],
+        updated_at: site_chrome_config[:updatedAt] || core_config[:updatedAt],
+        domain_cname: core_config[:domainCName]
       }
 
       SiteChrome.new(properties)
@@ -56,13 +64,13 @@ module Chrome
     # Core config contains various versions, each having a "published" and "draft" set of
     # site chrome config vars. This finds and returns the newest published content.
     def self.newest_published_site_chrome(core_config)
-      if core_config.has_key?('properties')
-        site_chrome_config = core_config['properties'].detect do |config|
-          config['name'] == 'siteChromeConfigVars'
+      if core_config.has_key?(:properties)
+        site_chrome_config = core_config[:properties].detect do |config|
+          config[:name] == 'siteChromeConfigVars'
         end
 
-        latest_version = site_chrome_config['value']['versions'].keys.map(&:to_f).max.to_s
-        site_chrome_config['value']['versions'][latest_version]['published']
+        latest_version = site_chrome_config[:value][:versions].keys.map(&:to_f).max.to_s
+        site_chrome_config[:value][:versions][latest_version][:published]
       else
         {}
       end

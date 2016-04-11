@@ -23,7 +23,7 @@ module Chrome
           when 200
             body = JSON.parse(response.body)
             raise "Configuration is empty on #{uri}" if body.nil? || body.empty?
-            body[0]
+            ActiveSupport::HashWithIndifferentAccess.new(body[0])
           else
             raise "#{response.code}: #{response.body}"
         end

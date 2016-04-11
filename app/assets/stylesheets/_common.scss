@@ -1,10 +1,8 @@
-@import 'variables';
-
 .btn {
-  color: $fg-color;
+  color: $fg_color;
   background: transparent;
   padding: 8px 12px;
-  border: 1px solid $fg-color;
+  border: 1px solid $fg_color;
   text-decoration: none;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
@@ -16,27 +14,27 @@
 
   [class*="icon-"] {
     position: relative;
-    padding-right: $text-padding;
+    padding-right: $text_padding;
   }
 }
 
 .mobile-btn {
-  color: $fg-color;
-  background: $mobile-btn-color;
+  color: $fg_color;
+  background: $mobile_btn_color;
   padding: 10px 15px;
   font-size: 15px;
-  border: 1px solid $mobile-btn-color;
+  border: 1px solid $mobile_btn_color;
   text-decoration: none;
   text-align: center;
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
 
   &:hover, &:focus, &:active {
-    background: $mobile-btn-hover-color;
+    background: $mobile_btn_hover_color;
   }
 
   [class*="icon-"] {
     position: relative;
-    padding-right: $text-padding;
+    padding-right: $text_padding;
   }
 }

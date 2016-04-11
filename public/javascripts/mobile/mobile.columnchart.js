@@ -13,7 +13,7 @@ module.exports = function(values, $target) {
 
   var columnChartVIF = {
     aggregation: {
-      'columnName': values.aggregationField,
+      'field': values.aggregationField,
       'function': values.aggregationFunction
     },
     labelUnit: 'rows',

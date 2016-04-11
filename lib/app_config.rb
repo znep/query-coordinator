@@ -48,6 +48,7 @@ class AppConfig < Hashie::Dash
 
   # Third-party analytics and errors
   property :opendata_ga_tracking_code
+  property :standard_ga_tracking_code
   property :airbrake_api_key
   property :mixpanel_token
 

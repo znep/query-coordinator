@@ -44,6 +44,7 @@ default: &default
   polaroid_hostname: polaroid.service.aws-us-west-2-production.socrata.consul
   polaroid_port: 13379
   opendata_ga_tracking_code: UA-52982454-21
+  standard_ga_tracking_code: UA-51039907-4
   data_cards_app_token: 'zvQamMSTi4GNuZWWDwjLdLPhW'
   feature_map_zoom_debounce: 500
   feature_map_features_per_tile: 50000

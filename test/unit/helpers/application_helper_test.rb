@@ -5,7 +5,9 @@ class ApplicationHelperTest < ActionView::TestCase
 
   include ERB::Util
 
-  def test_use_ga_tracking_code
+  def test_custom_ga_tracking_code
+    FeatureFlags.stubs(:derive => { enable_standard_ga_tracking: false })
+
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
     assert(application_helper.use_ga_tracking_code? == true)
 
@@ -20,6 +22,8 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_get_ga_tracking_code
+    FeatureFlags.stubs(:derive => { enable_standard_ga_tracking: false })
+
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
     APP_CONFIG.opendata_ga_tracking_code = 'UA-9999999'
     assert(application_helper.get_ga_tracking_code =~ /UA-9999999/)
@@ -33,6 +37,12 @@ class ApplicationHelperTest < ActionView::TestCase
 
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: false })
     assert(application_helper.get_ga_tracking_code == false)
+
+    # Test (if set to true) standard ga tracking code overrides custom
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: 'UA-123456' })
+    FeatureFlags.stubs(:derive => { enable_standard_ga_tracking: true })
+    APP_CONFIG.standard_ga_tracking_code = 'UA-51039907-4'
+    assert(application_helper.get_ga_tracking_code =~ /UA-51039907-4/)
   end
 
   def test_render_ga_tracking

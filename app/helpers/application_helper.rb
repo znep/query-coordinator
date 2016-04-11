@@ -674,16 +674,29 @@ module ApplicationHelper
     !!request.env['HTTP_USER_AGENT'].to_s.match(/(iPhone|iPod|iPad|Android|Windows Phone|BlackBerry)/i)
   end
 
-  # Returns true unless the opendata_ga_tracking_code feature flag is set to false
+  # Returns true unless the enable_standard_ga_tracking feature flag is set to false or the
+  # opendata_ga_tracking_code feature flag is set to false
   def use_ga_tracking_code?
-    FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking] != false
+    FeatureFlags.derive(nil, request)[:enable_standard_ga_tracking] ||
+      (FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking] != false)
   end
 
-  # If code is true or an empty string, fallback to the default GA code in APP_CONFIG.
-  # If it's set to a specific value, use that value. If it is false, return false.
-  def get_ga_tracking_code
+  # EN-4151: the "custom" ga tracking code is deprecated. We are moving towards a single
+  # standard code that we will use for tracking all sites - standard_ga_tracking_code
+  def custom_ga_tracking_code
+    # If code is true or an empty string, fallback to the default custom GA code in APP_CONFIG.
+    # If it's set to a specific value, use that value. If it is false, return false.
     code = FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking]
     (code == true || code.to_s.empty?) ? APP_CONFIG.opendata_ga_tracking_code : code
+  end
+
+  def standard_ga_tracking_code
+    APP_CONFIG.standard_ga_tracking_code
+  end
+
+  def get_ga_tracking_code
+    FeatureFlags.derive(nil, request)[:enable_standard_ga_tracking] ?
+      standard_ga_tracking_code : custom_ga_tracking_code
   end
 
   # Given that the Google Analytics feature flag is either set to true or an explicit value

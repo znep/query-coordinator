@@ -2,27 +2,29 @@
 
 .input-group {
   position: relative;
-  display: table;
+  display: flex;
   .text-input {
-    display: table-cell;
     border-top-right-radius: 0;
     border-bottom-left-radius: 0;
-    width: 100%;
+    flex: 1 0;
   }
   .input-group-btn {
-    display: table-cell;
     position: relative;
-    width: 1%;
     .btn {
       border-left: none;
       margin-left: 0px;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+      padding: 8px;
+
+      [class*="icon-"] {
+        padding-left: 11px;
+      }
     }
 
     .dropdown {
       margin-right: -0.1px;
-      padding: 6px 12px;
+      padding: 5px 12px;
 
       .icon-arrow-down {
         padding-left: ms(-2);

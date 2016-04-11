@@ -4,12 +4,10 @@ describe Chrome::SiteChrome do
   let(:id) { 2663 }
   let(:updated_at) { '123546789' }
   let(:domain_cname) { 'data.bobloblawslawblog.com' }
-  let(:site_chrome_config_vars) { ActiveSupport::HashWithIndifferentAccess.new(
-    JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json'))
-  ) }
+  let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')).with_indifferent_access }
   let(:core_config) do
-    ActiveSupport::HashWithIndifferentAccess.new(JSON.parse(File.read('spec/fixtures/core_config.json')))
-      .tap do |config|
+    JSON.parse(File.read('spec/fixtures/core_config.json')).with_indifferent_access.
+      tap do |config|
         config['properties'].first['value']['versions']['0.1']['published'] = site_chrome_config_vars
       end
   end

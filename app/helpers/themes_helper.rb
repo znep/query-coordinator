@@ -27,6 +27,6 @@ module ThemesHelper
 
   def theme_value(key, value)
     # Return font family values in quotes
-    key == 'font_family' ? "\"#{value}\"" : value
+    key == 'font_family' ? %Q{"#{value}"} : value
   end
 end

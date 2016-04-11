@@ -11,11 +11,9 @@ class SiteChromeController < ApplicationController
   private
 
   def get_site_chrome
-    domain = ENV['DOMAIN']
-    user = ENV['EMAIL']
-    pass = ENV['PASS']
-    auth = Chrome::Auth.new(domain, user, pass, false).authenticate
-    domain_config = Chrome::DomainConfig.new(ENV['DOMAIN'], auth.cookie, true)
+    domain, email, pass = ENV.values_at(*%w(DOMAIN EMAIL PASS))
+    auth = Chrome::Auth.new(domain, email, pass, false).authenticate
+    domain_config = Chrome::DomainConfig.new(domain, auth.cookie, true)
     @site_chrome = Chrome::SiteChrome.init_from_core_config(domain_config.config)
   end
 end

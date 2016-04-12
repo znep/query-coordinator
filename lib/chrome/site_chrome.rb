@@ -36,6 +36,16 @@ module Chrome
       }
     end
 
+    def current_user(localhost)
+      url = localhost ?
+        'http://localhost:8080/users.json?method=getCurrent' : '/api/users.json?method=getCurrent'
+      begin
+        response = HTTParty.get(url)
+        if response.code == 200 && response.body
+          JSON.parse(response.body)
+        end
+      end
+    end
 
     # TODO - this method is one way the gem could handle rendering the HTML
     # def get_html(section_content)
@@ -44,53 +54,5 @@ module Chrome
     #   ERB.new(template).result(OpenStruct.new(section_content).instance_eval { binding })
     # end
 
-    def self.init_from_core_config(core_config)
-      return if core_config.nil?
-
-      site_chrome_config = newest_published_site_chrome(core_config)
-
-      properties = {
-        id: core_config[:id],
-        content: site_chrome_config[:content],
-        updated_at: site_chrome_config[:updatedAt] || core_config[:updatedAt],
-        domain_cname: core_config[:domainCName]
-      }
-
-      SiteChrome.new(properties)
-    end
-
-    def self.get_core_config
-      domain, email, pass = ENV.values_at(*%w(DOMAIN EMAIL PASS))
-      raise 'Set environment variables for DOMAIN, EMAIL, and PASS' if
-        [domain, email, pass].include?(nil)
-
-      # For localhost dev, set VERIFY_SSL to false
-      verify_ssl = ENV['VERIFY_SSL'].to_s.downcase != 'false'
-      auth = Chrome::Auth.new(domain, email, pass, verify_ssl).authenticate
-      Chrome::DomainConfig.new(domain, auth.cookie, true)
-    end
-
-    private
-
-    # Core config contains various versions, each having a "published" and "draft" set of
-    # site chrome config vars. This finds and returns the newest published content.
-    def self.newest_published_site_chrome(core_config)
-      if core_config.has_key?(:properties)
-        site_chrome_config = core_config[:properties].detect do |config|
-          config[:name] == 'siteChromeConfigVars'
-        end
-
-        latest_version = site_chrome_config[:value][:versions].keys.map(&:to_f).max.to_s
-        site_chrome_config[:value][:versions][latest_version][:published]
-      else
-        {}
-      end
-    end
-
-    def valid_section_name?(section_name)
-      raise 'Must provide a section name to render' if section_name.nil?
-      raise 'Invalid section name. Must be either "header" or "footer"' unless
-        %w(header footer).include?(section_name)
-    end
   end
 end

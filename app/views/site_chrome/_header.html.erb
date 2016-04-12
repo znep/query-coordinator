@@ -7,11 +7,11 @@
     <nav class="desktop">
       <%= render 'nav_links' %>
 
-      <span class="divider"></span>
+      <%= content_tag(:span, nil, :class => 'divider') %>
 
       <%= render 'social_links', show_label: false %>
 
-      <a class="btn sign-in-toggle" href="/login">Sign In</a>
+      <%= render 'user_actions' %>
     </nav>
 
     <nav class="mobile">

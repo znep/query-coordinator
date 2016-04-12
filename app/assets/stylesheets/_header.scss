@@ -49,6 +49,14 @@ header#chrome-header {
           font-size: 12px;
           margin-left: $text_padding;
         }
+        a.profile-link {
+          padding: 0 $text_padding;
+          color: $header_fg_color;
+          text-decoration: none;
+          &:hover, &:focus, &:active {
+            text-decoration: underline;
+          }
+        }
 
         span.divider {
           margin: 0 $text_padding;
@@ -92,7 +100,7 @@ header#chrome-header {
     }
 
     .menu-header-title {
-      color: #3b3a3c;
+      color: $dark_text_color;
       font-size: 20px;
       font-weight: 300;
       text-align: center;
@@ -105,12 +113,13 @@ header#chrome-header {
       top: 0;
       right: 0;
       padding: 1rem;
+      color: $dark_text_color;
     }
 
     .menu-content {
       .nav-links {
         a.nav-link {
-          color: #2c2c2c;
+          color: $dark_text_color;
           background-color: #fff;
           display: block;
           font-size: 15px;
@@ -133,10 +142,11 @@ header#chrome-header {
         font-weight: 300;
         text-transform: uppercase;
       }
-      .sign-in-toggle {
-        display: block;
-        width: 90%;
-        margin: 0 auto;
+      .mobile-user-actions {
+        padding: 0 $text_padding;
+        a.mobile-btn {
+          display: block;
+        }
       }
       .social-links {
         margin-top: 35px;

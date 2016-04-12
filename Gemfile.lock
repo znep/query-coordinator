@@ -1,13 +1,3 @@
-GIT
-  remote: git@github.com:socrata/core-auth-ruby.git
-  revision: 85a04f4aaf3e53e878b2563a04be11f0789af1e8
-  tag: v0.3.0
-  specs:
-    core-auth-ruby (0.3.0)
-      addressable (~> 2.3)
-      httparty (~> 0.13)
-      nokogiri (~> 1.6)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -185,7 +175,6 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  core-auth-ruby!
   httparty
   jbuilder (~> 2.0)
   jquery-rails

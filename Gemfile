@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 # source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/'
 ruby '2.3.0'
 
-gem 'core-auth-ruby', git: 'git@github.com:socrata/core-auth-ruby.git', tag: 'v0.3.0'
 gem 'httparty'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

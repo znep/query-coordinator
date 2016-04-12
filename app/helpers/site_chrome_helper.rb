@@ -7,6 +7,14 @@ module SiteChromeHelper
     image_tag(source['logo']['src'], :alt => source['logo']['alt'] || site_name)
   end
 
+  def logged_in?
+    !!request.cookies['logged_in']
+  end
+
+  def username
+    (@current_user && @current_user['displayName'].present?) ? @current_user['displayName'] : 'Profile'
+  end
+
   def copyright
     "\u00A9 #{Time.now.year}, #{site_name}"
   end

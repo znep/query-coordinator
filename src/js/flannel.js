@@ -2,6 +2,8 @@ var velocity = require('velocity-animate');
 
 var FlannelFactory = module.exports = function(element) {
   var mobileBreakpoint = 420;
+  var animationDuration = 300;
+  var animationEasing = [.645, .045, .355, 1];
   var padding = 10;
   var hoverables = Array.prototype.slice.apply(document.querySelectorAll('[data-flannel]'));
 
@@ -10,14 +12,14 @@ var FlannelFactory = module.exports = function(element) {
       velocity(flannel, {
         left: document.body.offsetWidth
       }, {
-        duration: 350,
+        duration: animationDuration,
+        easing: animationEasing,
         complete: function() {
           flannel.classList.add('flannel-hidden');
           hoverable.classList.remove('active');
+          document.body.style.overflow = '';
         }
       });
-
-      document.body.style.overflow = '';
     } else {
       flannel.classList.add('flannel-hidden');
       hoverable.classList.remove('active');
@@ -51,13 +53,19 @@ var FlannelFactory = module.exports = function(element) {
     if (windowWidth >= mobileBreakpoint) {
       flannel.style.left = left + 'px';
       flannel.style.top = top + 'px';
+      document.body.style.overflow = '';
     } else {
       flannel.style.left = windowWidth + 'px';
       flannel.style.top = 0;
       velocity(flannel, {
         left: 0
-      }, 350);
-      document.body.style.overflow = 'hidden';
+      }, {
+        duration: animationDuration,
+        easing: animationEasing,
+        complete: function() {
+          document.body.style.overflow = 'hidden';
+        }
+      });
     }
   }
 
@@ -80,6 +88,10 @@ var FlannelFactory = module.exports = function(element) {
     });
 
     document.body.addEventListener('click', function(event) {
+      if (flannel.classList.contains('flannel-hidden')) {
+        return;
+      }
+
       var node = event.target;
 
       while (node.parentElement) {

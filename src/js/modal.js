@@ -1,3 +1,9 @@
+var velocity = require('velocity-animate');
+
+var mobileBreakpoint = 420;
+var animationDuration = 300;
+var animationEasing = [.645, .045, .355, 1];
+
 var ModalFactory = module.exports = function(element) {
   this.root = element;
   this.dismissals = Array.prototype.slice.apply(element.querySelectorAll('[data-modal-dismiss]'));
@@ -26,26 +32,99 @@ ModalFactory.prototype = {
         });
       }
     });
+
+    window.addEventListener('resize', function(event) {
+      var modals = Array.prototype.slice.call(document.querySelectorAll('.modal:not(.modal-hidden)'));
+      modals.forEach(function(modal) {
+        this.reposition(modal.querySelector('.modal-container'));
+      }.bind(this));
+    }.bind(this));
   },
+
   open: function(event) {
     var modal = event.target.getAttribute('data-modal');
     modal = this.root.querySelector('#' + modal);
     modal.classList.remove('modal-hidden');
-  },
-  dismiss: function(event) {
-    var target = event.target;
-    var closeable = target === event.currentTarget &&
-      target.classList.contains('modal-overlay');
 
+    var windowWidth = document.body.offsetWidth;
+    var modalContainer = modal.querySelector('.modal-container');
+
+    if (windowWidth <= mobileBreakpoint) {
+      modalContainer.style.left = windowWidth + 'px';
+
+      velocity(modalContainer, {
+        left: 0
+      }, {
+        duration: animationDuration,
+        easing: animationEasing,
+        complete: function() {
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    }
+
+    this.reposition(modalContainer);
+  },
+
+  dismiss: function(event) {
+    var self = this;
+    var target = event.target;
+
+    var closeable = target === event.currentTarget && target.classList.contains('modal-overlay');
+    var modal;
+
+    // Find the modal and figure out if it's closeable.
     do {
       if (target.hasAttribute('data-modal-dismiss') &&
           !target.classList.contains('modal')) {
         closeable = true;
-      } else if (target.classList.contains('modal') && closeable) {
-        return target.classList.add('modal-hidden');
       } else if (target.classList.contains('modal')){
-        return;
+        modal = target;
+        break;
       }
-    } while((target = target.parentNode) !== this.root);
+    } while((target = target.parentNode) !== self.root);
+
+    if (!modal) {
+      return;
+    }
+
+    function hideModal() {
+      document.body.style.overflow = '';
+
+      if (closeable) {
+        modal.classList.add('modal-hidden');
+      }
+    }
+
+    var windowWidth = document.body.offsetWidth;
+    var modalContainer = modal.querySelector('.modal-container');
+
+    if (windowWidth <= mobileBreakpoint) {
+      velocity(modalContainer, {
+        left: windowWidth
+      }, {
+        duration: animationDuration,
+        easing: animationEasing,
+        complete: hideModal
+      });
+    } else {
+      hideModal();
+    }
+  },
+
+  reposition: function(modal) {
+    if (modal.classList.contains('modal-hidden')) {
+      return;
+    }
+
+    var windowWidth = document.body.offsetWidth;
+
+    if (windowWidth >= mobileBreakpoint) {
+      modal.style.margin = '';
+      document.body.style.overflow = '';
+    } else {
+      modal.style.margin = 0;
+      document.body.style.overflow = 'hidden';
+    }
   }
 };

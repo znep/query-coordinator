@@ -28,7 +28,7 @@ module Chrome
 
     # Config contains various versions, each having a "published" and "draft" set of
     # site chrome config vars. This finds and returns the newest published content.
-    def newest_published_site_chrome()
+    def newest_published_site_chrome
       if @config.has_key?(:properties)
         site_chrome_config = @config[:properties].detect do |config|
           config[:name] == 'siteChromeConfigVars'

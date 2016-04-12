@@ -10,14 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var du = new styleguide.Dropdown( document.querySelector('#du') );
   }
 
-  document.addEventListener('click', function() {
-    // all dropdowns
-    var dropdowns = document.querySelectorAll('.dropdown')
-    for (var i = 0; i < dropdowns.length; i++) {
-      dropdowns[i].classList.remove('active');
-    }
-  });
-
   var modalFactory = new styleguide.ModalFactory( document );
   var toggleFactory = new styleguide.ToggleFactory( document );
   var flyoutFactory = new styleguide.FlyoutFactory( document );
